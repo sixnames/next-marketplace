@@ -244,7 +244,7 @@ export const getServerSideProps = async (
 ): Promise<GetServerSidePropsResult<BrandCollectionsPageInterface>> => {
   const { query } = context;
   const { search } = query;
-  const [brandId, ...filter] = alwaysArray(query.filter);
+  const [brandId, ...filters] = alwaysArray(query.filters);
   const { db } = await getDatabase();
   const brandsCollection = db.collection<BrandInterface>(COL_BRANDS);
   const brandCollectionsCollection = db.collection<BrandCollectionInterface>(COL_BRAND_COLLECTIONS);
@@ -273,15 +273,8 @@ export const getServerSideProps = async (
   };
 
   // Cast filters
-  const {
-    // realFilterOptions,
-    // noFiltersSelected,
-    page,
-    skip,
-    limit,
-    clearSlug,
-  } = castCatalogueFilters({
-    filters: alwaysArray(filter),
+  const { page, skip, limit, clearSlug } = castCatalogueFilters({
+    filters: alwaysArray(filters),
     initialLimit: CMS_BRANDS_LIMIT,
   });
   const itemPath = ``;

@@ -3,65 +3,87 @@ import FixedButtons from 'components/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls';
 import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
 import Inner from 'components/Inner';
-import Link from 'components/Link/Link';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
+import { SupplierModalInterface } from 'components/Modal/SupplierModal';
 import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
 import Table, { TableColumn } from 'components/Table';
 import Title from 'components/Title';
 import {
   ISO_LANGUAGES,
   DEFAULT_PAGE,
-  ROUTE_CMS,
-  CMS_BRANDS_LIMIT,
-  SORT_ASC,
-  DEFAULT_LOCALE,
   SORT_DESC,
+  CMS_BRANDS_LIMIT,
+  DEFAULT_LOCALE,
+  SORT_ASC,
 } from 'config/common';
-import { CONFIRM_MODAL, CREATE_BRAND_MODAL } from 'config/modalVariants';
-import { COL_BRANDS } from 'db/collectionNames';
+import { CONFIRM_MODAL, SUPPLIER_MODAL } from 'config/modalVariants';
+import { COL_SUPPLIERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { AppPaginationInterface, BrandInterface } from 'db/uiInterfaces';
-import { useDeleteBrandMutation } from 'generated/apolloComponents';
+import { AppPaginationInterface, SupplierInterface } from 'db/uiInterfaces';
+import { useDeleteSupplierMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import useValidationSchema from 'hooks/useValidationSchema';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import { alwaysArray } from 'lib/arrayUtils';
 import { castCatalogueFilters } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { createSupplierSchema, updateSupplierSchema } from 'validation/supplierSchema';
 
-type BrandsConsumerInterface = AppPaginationInterface<BrandInterface>;
+type SuppliersConsumerInterface = AppPaginationInterface<SupplierInterface>;
 
-const pageTitle = 'Бренды';
+const pageTitle = 'Поставщики';
 
-const BrandsConsumer: React.FC<BrandsConsumerInterface> = ({
-  docs,
-  page,
-  totalPages,
-  itemPath,
-}) => {
-  const router = useRouter();
+const SuppliersConsumer: React.FC<SuppliersConsumerInterface> = ({ docs, page, totalPages }) => {
   const setPageHandler = useNavigateToPageHandler();
   const { onCompleteCallback, onErrorCallback, showModal, showLoading } = useMutationCallbacks({
     reload: true,
   });
 
-  const [deleteBrandMutation] = useDeleteBrandMutation({
-    onCompleted: (data) => onCompleteCallback(data.deleteBrand),
+  const [deleteSupplierMutation] = useDeleteSupplierMutation({
+    onCompleted: (data) => onCompleteCallback(data.deleteSupplier),
     onError: onErrorCallback,
   });
+  const createValidationSchema = useValidationSchema({
+    schema: createSupplierSchema,
+  });
+  const updateValidationSchema = useValidationSchema({
+    schema: updateSupplierSchema,
+  });
 
-  const columns: TableColumn<BrandInterface>[] = [
+  const updateSupplierHandler = React.useCallback(
+    (dataItem: SupplierInterface) => {
+      showModal<SupplierModalInterface>({
+        variant: SUPPLIER_MODAL,
+        props: {
+          supplier: dataItem,
+          validationSchema: updateValidationSchema,
+        },
+      });
+    },
+    [showModal, updateValidationSchema],
+  );
+
+  const columns: TableColumn<SupplierInterface>[] = [
     {
       headTitle: 'ID',
       accessor: 'itemId',
       render: ({ cellData, dataItem }) => {
-        return <Link href={`${itemPath}/${dataItem._id}`}>{cellData}</Link>;
+        return (
+          <div
+            className='cursor-pointer text-theme hover:underline'
+            onClick={() => {
+              updateSupplierHandler(dataItem);
+            }}
+          >
+            {cellData}
+          </div>
+        );
       },
     },
     {
@@ -75,20 +97,20 @@ const BrandsConsumer: React.FC<BrandsConsumerInterface> = ({
           <div className='flex justify-end'>
             <ContentItemControls
               testId={`${dataItem.name}`}
-              updateTitle={'Редактировать бренд'}
+              updateTitle={'Редактировать поставщика'}
               updateHandler={() => {
-                router.push(`${itemPath}/${dataItem._id}`).catch((e) => console.log(e));
+                updateSupplierHandler(dataItem);
               }}
-              deleteTitle={'Удалить бренд'}
+              deleteTitle={'Удалить поставщика'}
               deleteHandler={() => {
                 showModal<ConfirmModalInterface>({
                   variant: CONFIRM_MODAL,
                   props: {
-                    testId: 'delete-brand-modal',
-                    message: `Вы уверены, что хотите удалить бренд ${dataItem.name}?`,
+                    testId: 'delete-supplier-modal',
+                    message: `Вы уверены, что хотите удалить поставщика ${dataItem.name}?`,
                     confirm: () => {
                       showLoading();
-                      deleteBrandMutation({
+                      deleteSupplierMutation({
                         variables: {
                           _id: dataItem._id,
                         },
@@ -105,7 +127,7 @@ const BrandsConsumer: React.FC<BrandsConsumerInterface> = ({
   ];
 
   return (
-    <AppContentWrapper testId={'brands-list'}>
+    <AppContentWrapper testId={'suppliers-list'}>
       <Head>
         <title>{pageTitle}</title>
       </Head>
@@ -115,12 +137,12 @@ const BrandsConsumer: React.FC<BrandsConsumerInterface> = ({
           <FormikRouterSearch testId={'brands'} />
 
           <div className='overflew-x-auto overflew-y-hidden'>
-            <Table<BrandInterface>
+            <Table<SupplierInterface>
               columns={columns}
               data={docs}
               testIdKey={'name'}
               onRowDoubleClick={(dataItem) => {
-                router.push(`${itemPath}/${dataItem._id}`).catch((e) => console.log(e));
+                updateSupplierHandler(dataItem);
               }}
             />
           </div>
@@ -135,15 +157,18 @@ const BrandsConsumer: React.FC<BrandsConsumerInterface> = ({
 
           <FixedButtons>
             <Button
-              testId={'create-brand'}
+              testId={'create-supplier'}
               size={'small'}
               onClick={() => {
-                showModal({
-                  variant: CREATE_BRAND_MODAL,
+                showModal<SupplierModalInterface>({
+                  variant: SUPPLIER_MODAL,
+                  props: {
+                    validationSchema: createValidationSchema,
+                  },
                 });
               }}
             >
-              Добавить бренд
+              Добавить поставщика
             </Button>
           </FixedButtons>
         </div>
@@ -152,19 +177,19 @@ const BrandsConsumer: React.FC<BrandsConsumerInterface> = ({
   );
 };
 
-interface BrandsPageInterface extends PagePropsInterface, BrandsConsumerInterface {}
+interface SuppliersPageInterface extends PagePropsInterface, SuppliersConsumerInterface {}
 
-const BrandsPage: NextPage<BrandsPageInterface> = ({ pageUrls, ...props }) => {
+const SuppliersPage: NextPage<SuppliersPageInterface> = ({ pageUrls, ...props }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <BrandsConsumer {...props} />
+      <SuppliersConsumer {...props} />
     </CmsLayout>
   );
 };
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<BrandsPageInterface>> => {
+): Promise<GetServerSidePropsResult<SuppliersPageInterface>> => {
   const { props } = await getAppInitialData({ context });
   if (!props) {
     return {
@@ -173,7 +198,7 @@ export const getServerSideProps = async (
   }
 
   const { query } = context;
-  const { filter, search } = query;
+  const { filters, search } = query;
   const locale = props.sessionLocale;
 
   // Cast filters
@@ -185,10 +210,10 @@ export const getServerSideProps = async (
     limit,
     clearSlug,
   } = castCatalogueFilters({
-    filters: alwaysArray(filter),
+    filters: alwaysArray(filters),
     initialLimit: CMS_BRANDS_LIMIT,
   });
-  const itemPath = `${ROUTE_CMS}/brands/brand`;
+  const itemPath = ``;
 
   const regexSearch = {
     $regex: search,
@@ -226,10 +251,10 @@ export const getServerSideProps = async (
     : [];
 
   const { db } = await getDatabase();
-  const brandsCollection = db.collection<BrandInterface>(COL_BRANDS);
+  const suppliersCollection = db.collection<SupplierInterface>(COL_SUPPLIERS);
 
-  const brandsAggregationResult = await brandsCollection
-    .aggregate<BrandsConsumerInterface>(
+  const suppliersAggregationResult = await suppliersCollection
+    .aggregate<SuppliersConsumerInterface>(
       [
         ...searchStage,
         {
@@ -296,25 +321,25 @@ export const getServerSideProps = async (
       { allowDiskUse: true },
     )
     .toArray();
-  const brandsResult = brandsAggregationResult[0];
-  if (!brandsResult) {
+  const suppliersResult = suppliersAggregationResult[0];
+  if (!suppliersResult) {
     return {
       notFound: true,
     };
   }
 
-  const docs: BrandInterface[] = [];
-  for await (const brand of brandsResult.docs) {
+  const docs: SupplierInterface[] = [];
+  for await (const supplier of suppliersResult.docs) {
     docs.push({
-      ...brand,
-      name: getFieldStringLocale(brand.nameI18n, locale),
+      ...supplier,
+      name: getFieldStringLocale(supplier.nameI18n, locale),
     });
   }
 
-  const payload: BrandsConsumerInterface = {
+  const payload: SuppliersConsumerInterface = {
     clearSlug,
-    totalDocs: brandsResult.totalDocs,
-    totalPages: brandsResult.totalPages,
+    totalDocs: suppliersResult.totalDocs,
+    totalPages: suppliersResult.totalPages,
     itemPath,
     page,
     docs,
@@ -328,4 +353,4 @@ export const getServerSideProps = async (
   };
 };
 
-export default BrandsPage;
+export default SuppliersPage;

@@ -13,7 +13,6 @@ import {
   ATTRIBUTE_VARIANT_STRING,
   ROUTE_CMS,
 } from 'config/common';
-import { getConstantTranslation } from 'config/constantTranslations';
 import { ATTRIBUTE_OPTIONS_MODAL } from 'config/modalVariants';
 import { COL_ATTRIBUTES_GROUPS } from 'db/collectionNames';
 import { rubricAttributesGroupAttributesPipeline } from 'db/dao/constantPipelines';
@@ -25,6 +24,7 @@ import {
   ProductInterface,
   RubricInterface,
   AttributesGroupInterface,
+  ProductAttributesGroupInterface,
 } from 'db/uiInterfaces';
 import {
   useUpdateProductNumberAttributeMutation,
@@ -36,10 +36,10 @@ import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsProductLayout from 'layout/CmsLayout/CmsProductLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
+import { sortByName } from 'lib/optionsUtils';
 import { getAttributeReadableValue } from 'lib/productAttributesUtils';
 import { getCmsProduct } from 'lib/productUtils';
 import { ObjectId } from 'mongodb';
-import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
@@ -61,7 +61,7 @@ interface ProductAttributesInterface {
   rubric: RubricInterface;
 }
 
-const attributesGroupClassName = 'relative mb-24';
+const attributesGroupClassName = 'relative mb-16';
 const attributesGroupTitleClassName = 'mb-4 font-medium text-xl';
 const selectsListClassName = 'grid sm:grid-cols-2 md:grid-cols-3 gap-x-8';
 
@@ -70,13 +70,7 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product, rubr
     // withModal: true,
     reload: true,
   });
-  const { locale } = useRouter();
-  const {
-    stringAttributesAST,
-    numberAttributesAST,
-    selectAttributesAST,
-    multipleSelectAttributesAST,
-  } = product;
+  const { attributesGroups } = product;
 
   const [updateProductSelectAttributeMutation] = useUpdateProductSelectAttributeMutation({
     onError: onErrorCallback,
@@ -137,235 +131,229 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product, rubr
   return (
     <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
       <Inner testId={'product-attributes-list'}>
-        {selectAttributesAST ? (
-          <div className={attributesGroupClassName}>
-            <div className={attributesGroupTitleClassName}>
-              {getConstantTranslation(
-                `selectsOptions.attributeVariantsPlural.${ATTRIBUTE_VARIANT_SELECT}.${locale}`,
-              )}
-            </div>
-
-            <div className={selectsListClassName}>
-              {(selectAttributesAST || []).map((attribute) => {
-                return (
-                  <FakeInput
-                    value={`${attribute.readableValue || ''}`}
-                    label={`${attribute.name}`}
-                    key={`${attribute.attributeId}`}
-                    testId={`${attribute.name}-attribute`}
-                    onClear={
-                      attribute.readableValue ? () => clearSelectFieldHandler(attribute) : undefined
-                    }
-                    onClick={() => {
-                      if (attribute.optionsGroupId) {
-                        showModal<AttributeOptionsModalInterface>({
-                          variant: ATTRIBUTE_OPTIONS_MODAL,
-                          props: {
-                            testId: 'select-attribute-options-modal',
-                            optionsGroupId: `${attribute.optionsGroupId}`,
-                            optionVariant: 'radio',
-                            title: `${attribute.name}`,
-                            notShowAsAlphabet: attribute.notShowAsAlphabet,
-                            initiallySelectedOptions: (attribute.options || []).map(
-                              castSelectedOptions,
-                            ),
-                            onSubmit: (value) => {
-                              showLoading();
-                              updateProductSelectAttributeMutation({
-                                variables: {
-                                  input: {
-                                    productId: product._id,
-                                    attributeId: attribute.attributeId,
-                                    productAttributeId: attribute._id,
-                                    selectedOptionsIds: value.map(({ _id }) => _id),
+        {(attributesGroups || []).map((attributesGroup) => {
+          const {
+            stringAttributesAST,
+            numberAttributesAST,
+            selectAttributesAST,
+            multipleSelectAttributesAST,
+          } = attributesGroup;
+          return (
+            <div className={attributesGroupClassName} key={`${attributesGroup._id}`}>
+              <div className={attributesGroupTitleClassName}>{attributesGroup.name}</div>
+              {selectAttributesAST && selectAttributesAST.length > 0 ? (
+                <div>
+                  <div className={selectsListClassName}>
+                    {(selectAttributesAST || []).map((attribute) => {
+                      return (
+                        <FakeInput
+                          value={`${attribute.readableValue || ''}`}
+                          label={`${attribute.name}`}
+                          key={`${attribute.attributeId}`}
+                          testId={`${attribute.name}-attribute`}
+                          onClear={
+                            attribute.readableValue
+                              ? () => clearSelectFieldHandler(attribute)
+                              : undefined
+                          }
+                          onClick={() => {
+                            if (attribute.optionsGroupId) {
+                              showModal<AttributeOptionsModalInterface>({
+                                variant: ATTRIBUTE_OPTIONS_MODAL,
+                                props: {
+                                  testId: 'select-attribute-options-modal',
+                                  optionsGroupId: `${attribute.optionsGroupId}`,
+                                  optionVariant: 'radio',
+                                  title: `${attribute.name}`,
+                                  notShowAsAlphabet: attribute.notShowAsAlphabet,
+                                  initiallySelectedOptions: (attribute.options || []).map(
+                                    castSelectedOptions,
+                                  ),
+                                  onSubmit: (value) => {
+                                    showLoading();
+                                    updateProductSelectAttributeMutation({
+                                      variables: {
+                                        input: {
+                                          productId: product._id,
+                                          attributeId: attribute.attributeId,
+                                          productAttributeId: attribute._id,
+                                          selectedOptionsIds: value.map(({ _id }) => _id),
+                                        },
+                                      },
+                                    }).catch((e) => console.log(e));
                                   },
                                 },
-                              }).catch((e) => console.log(e));
-                            },
-                          },
-                        });
-                      }
-                    }}
-                  />
-                );
-              })}
-            </div>
-          </div>
-        ) : null}
+                              });
+                            }
+                          }}
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
+              ) : null}
 
-        {multipleSelectAttributesAST ? (
-          <div className={attributesGroupClassName}>
-            <div className={attributesGroupTitleClassName}>
-              {getConstantTranslation(
-                `selectsOptions.attributeVariantsPlural.${ATTRIBUTE_VARIANT_MULTIPLE_SELECT}.${locale}`,
-              )}
-            </div>
-
-            <div className={selectsListClassName}>
-              {(multipleSelectAttributesAST || []).map((attribute) => {
-                return (
-                  <FakeInput
-                    value={`${attribute.readableValue || ''}`}
-                    label={`${attribute.name}`}
-                    key={`${attribute.attributeId}`}
-                    testId={`${attribute.name}-attribute`}
-                    onClear={
-                      attribute.readableValue ? () => clearSelectFieldHandler(attribute) : undefined
-                    }
-                    onClick={() => {
-                      if (attribute.optionsGroupId) {
-                        showModal<AttributeOptionsModalInterface>({
-                          variant: ATTRIBUTE_OPTIONS_MODAL,
-                          props: {
-                            testId: 'multi-select-attribute-options-modal',
-                            optionsGroupId: `${attribute.optionsGroupId}`,
-                            title: `${attribute.name}`,
-                            notShowAsAlphabet: attribute.notShowAsAlphabet,
-                            initiallySelectedOptions: (attribute.options || []).map(
-                              castSelectedOptions,
-                            ),
-                            onSubmit: (value) => {
-                              showLoading();
-                              updateProductSelectAttributeMutation({
-                                variables: {
-                                  input: {
-                                    productId: product._id,
-                                    attributeId: attribute.attributeId,
-                                    productAttributeId: attribute._id,
-                                    selectedOptionsIds: value.map(({ _id }) => _id),
+              {multipleSelectAttributesAST && multipleSelectAttributesAST.length > 0 ? (
+                <div>
+                  <div className={selectsListClassName}>
+                    {(multipleSelectAttributesAST || []).map((attribute) => {
+                      return (
+                        <FakeInput
+                          value={`${attribute.readableValue || ''}`}
+                          label={`${attribute.name}`}
+                          key={`${attribute.attributeId}`}
+                          testId={`${attribute.name}-attribute`}
+                          onClear={
+                            attribute.readableValue
+                              ? () => clearSelectFieldHandler(attribute)
+                              : undefined
+                          }
+                          onClick={() => {
+                            if (attribute.optionsGroupId) {
+                              showModal<AttributeOptionsModalInterface>({
+                                variant: ATTRIBUTE_OPTIONS_MODAL,
+                                props: {
+                                  testId: 'multi-select-attribute-options-modal',
+                                  optionsGroupId: `${attribute.optionsGroupId}`,
+                                  title: `${attribute.name}`,
+                                  notShowAsAlphabet: attribute.notShowAsAlphabet,
+                                  initiallySelectedOptions: (attribute.options || []).map(
+                                    castSelectedOptions,
+                                  ),
+                                  onSubmit: (value) => {
+                                    showLoading();
+                                    updateProductSelectAttributeMutation({
+                                      variables: {
+                                        input: {
+                                          productId: product._id,
+                                          attributeId: attribute.attributeId,
+                                          productAttributeId: attribute._id,
+                                          selectedOptionsIds: value.map(({ _id }) => _id),
+                                        },
+                                      },
+                                    }).catch((e) => console.log(e));
                                   },
                                 },
-                              }).catch((e) => console.log(e));
-                            },
-                          },
-                        });
-                      }
-                    }}
-                  />
-                );
-              })}
+                              });
+                            }
+                          }}
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
+              ) : null}
+
+              {numberAttributesAST && numberAttributesAST.length > 0 ? (
+                <Formik
+                  initialValues={{ attributes: numberAttributesAST }}
+                  onSubmit={(values) => {
+                    showLoading();
+                    updateProductNumberAttributeMutation({
+                      variables: {
+                        input: {
+                          productId: product._id,
+                          attributes: (values.attributes || []).map((attribute) => {
+                            return {
+                              attributeId: attribute.attributeId,
+                              productAttributeId: attribute._id,
+                              number:
+                                attribute.number && `${attribute.number}`.length > 0
+                                  ? noNaN(attribute.number)
+                                  : null,
+                            };
+                          }),
+                        },
+                      },
+                    }).catch((e) => console.log(e));
+                  }}
+                >
+                  {() => {
+                    return (
+                      <Form>
+                        <div>
+                          <div className='relative'>
+                            <div className={selectsListClassName}>
+                              {(numberAttributesAST || []).map((attribute, index) => {
+                                return (
+                                  <FormikInput
+                                    type={'number'}
+                                    label={`${attribute.name}`}
+                                    name={`attributes[${index}].number`}
+                                    key={`${attribute.attributeId}`}
+                                    testId={`${attribute.name}-attribute`}
+                                  />
+                                );
+                              })}
+                            </div>
+
+                            <FixedButtons>
+                              <Button testId={'submit-number-attributes'} type={'submit'}>
+                                Сохранить
+                              </Button>
+                            </FixedButtons>
+                          </div>
+                        </div>
+                      </Form>
+                    );
+                  }}
+                </Formik>
+              ) : null}
+
+              {stringAttributesAST && stringAttributesAST.length > 0 ? (
+                <Formik
+                  initialValues={{ attributes: stringAttributesAST }}
+                  onSubmit={(values) => {
+                    showLoading();
+                    updateProductTextAttributeMutation({
+                      variables: {
+                        input: {
+                          productId: product._id,
+                          attributes: (values.attributes || []).map((attribute) => {
+                            return {
+                              attributeId: attribute.attributeId,
+                              productAttributeId: attribute._id,
+                              textI18n: attribute.textI18n || null,
+                            };
+                          }),
+                        },
+                      },
+                    }).catch((e) => console.log(e));
+                  }}
+                >
+                  {() => {
+                    return (
+                      <Form>
+                        <div>
+                          <div className='relative'>
+                            {(stringAttributesAST || []).map((attribute, index) => {
+                              return (
+                                <FormikTranslationsInput
+                                  variant={'textarea'}
+                                  className='h-[15rem]'
+                                  label={`${attribute.name}`}
+                                  name={`attributes[${index}].textI18n`}
+                                  key={`${attribute.attributeId}`}
+                                  testId={`${attribute.name}-attribute`}
+                                />
+                              );
+                            })}
+
+                            <FixedButtons>
+                              <Button testId={'submit-text-attributes'} type={'submit'}>
+                                Сохранить
+                              </Button>
+                            </FixedButtons>
+                          </div>
+                        </div>
+                      </Form>
+                    );
+                  }}
+                </Formik>
+              ) : null}
             </div>
-          </div>
-        ) : null}
-
-        {numberAttributesAST ? (
-          <Formik
-            initialValues={{ attributes: numberAttributesAST }}
-            onSubmit={(values) => {
-              showLoading();
-              updateProductNumberAttributeMutation({
-                variables: {
-                  input: {
-                    productId: product._id,
-                    attributes: (values.attributes || []).map((attribute) => {
-                      return {
-                        attributeId: attribute.attributeId,
-                        productAttributeId: attribute._id,
-                        number:
-                          attribute.number && `${attribute.number}`.length > 0
-                            ? noNaN(attribute.number)
-                            : null,
-                      };
-                    }),
-                  },
-                },
-              }).catch((e) => console.log(e));
-            }}
-          >
-            {() => {
-              return (
-                <Form>
-                  <div className={attributesGroupClassName}>
-                    <div className={attributesGroupTitleClassName}>
-                      {getConstantTranslation(
-                        `selectsOptions.attributeVariantsPlural.${ATTRIBUTE_VARIANT_NUMBER}.${locale}`,
-                      )}
-                    </div>
-
-                    <div className='relative'>
-                      <div className={selectsListClassName}>
-                        {(numberAttributesAST || []).map((attribute, index) => {
-                          return (
-                            <FormikInput
-                              type={'number'}
-                              label={`${attribute.name}`}
-                              name={`attributes[${index}].number`}
-                              key={`${attribute.attributeId}`}
-                              testId={`${attribute.name}-attribute`}
-                            />
-                          );
-                        })}
-                      </div>
-
-                      <FixedButtons>
-                        <Button testId={'submit-number-attributes'} type={'submit'}>
-                          Сохранить
-                        </Button>
-                      </FixedButtons>
-                    </div>
-                  </div>
-                </Form>
-              );
-            }}
-          </Formik>
-        ) : null}
-
-        {stringAttributesAST ? (
-          <Formik
-            initialValues={{ attributes: stringAttributesAST }}
-            onSubmit={(values) => {
-              showLoading();
-              updateProductTextAttributeMutation({
-                variables: {
-                  input: {
-                    productId: product._id,
-                    attributes: (values.attributes || []).map((attribute) => {
-                      return {
-                        attributeId: attribute.attributeId,
-                        productAttributeId: attribute._id,
-                        textI18n: attribute.textI18n || null,
-                      };
-                    }),
-                  },
-                },
-              }).catch((e) => console.log(e));
-            }}
-          >
-            {() => {
-              return (
-                <Form>
-                  <div className={attributesGroupClassName}>
-                    <div className={attributesGroupTitleClassName}>
-                      {getConstantTranslation(
-                        `selectsOptions.attributeVariantsPlural.${ATTRIBUTE_VARIANT_STRING}.${locale}`,
-                      )}
-                    </div>
-
-                    <div className='relative'>
-                      {(stringAttributesAST || []).map((attribute, index) => {
-                        return (
-                          <FormikTranslationsInput
-                            variant={'textarea'}
-                            label={`${attribute.name}`}
-                            name={`attributes[${index}].textI18n`}
-                            key={`${attribute.attributeId}`}
-                            testId={`${attribute.name}-attribute`}
-                          />
-                        );
-                      })}
-
-                      <FixedButtons>
-                        <Button testId={'submit-text-attributes'} type={'submit'}>
-                          Сохранить
-                        </Button>
-                      </FixedButtons>
-                    </div>
-                  </div>
-                </Form>
-              );
-            }}
-          </Formik>
-        ) : null}
+          );
+        })}
       </Inner>
     </CmsProductLayout>
   );
@@ -430,13 +418,15 @@ export const getServerSideProps = async (
 
   // Cast rubric attributes to product attributes
   const { attributes, ...restProduct } = product;
-  let stringAttributesAST: ProductAttributeInterface[] = [];
-  let numberAttributesAST: ProductAttributeInterface[] = [];
-  let multipleSelectAttributesAST: ProductAttributeInterface[] = [];
-  let selectAttributesAST: ProductAttributeInterface[] = [];
 
+  const productAttributesGroups: ProductAttributesGroupInterface[] = [];
   rubricAttributes.forEach((group) => {
     const groupAttributes: ProductAttributeInterface[] = [];
+
+    const stringAttributesAST: ProductAttributeInterface[] = [];
+    const numberAttributesAST: ProductAttributeInterface[] = [];
+    const multipleSelectAttributesAST: ProductAttributeInterface[] = [];
+    const selectAttributesAST: ProductAttributeInterface[] = [];
 
     (group.attributes || []).forEach((attribute) => {
       const currentProductAttribute = (attributes || []).find(({ attributeId }) => {
@@ -495,14 +485,23 @@ export const getServerSideProps = async (
         selectAttributesAST.push(productAttribute);
       }
     });
+
+    const productAttributesGroup: ProductAttributesGroupInterface = {
+      ...group,
+      name: getFieldStringLocale(group.nameI18n),
+      attributes: [],
+      stringAttributesAST: sortByName(stringAttributesAST),
+      numberAttributesAST: sortByName(numberAttributesAST),
+      multipleSelectAttributesAST: sortByName(multipleSelectAttributesAST),
+      selectAttributesAST: sortByName(selectAttributesAST),
+    };
+
+    productAttributesGroups.push(productAttributesGroup);
   });
 
   const finalProduct: ProductInterface = {
     ...restProduct,
-    stringAttributesAST,
-    numberAttributesAST,
-    multipleSelectAttributesAST,
-    selectAttributesAST,
+    attributesGroups: sortByName(productAttributesGroups),
   };
 
   return {

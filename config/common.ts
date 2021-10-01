@@ -52,7 +52,7 @@ export const THEME_LIGHT = 'light';
 export const THEME_NOT_ALL = 'not all';
 
 // I18n
-export const DEFAULT_LOCALE = 'ru';
+export const DEFAULT_LOCALE = process.env.DEFAULT_LOCALE || 'ru';
 export const SECONDARY_LOCALE = 'en';
 export const LOCALES = [DEFAULT_LOCALE, SECONDARY_LOCALE];
 
@@ -64,7 +64,7 @@ export const LOCALE_HEADER = 'content-language';
 // Cities and countries
 export const DEFAULT_COUNTRY = 'Россия';
 export const SECONDARY_COUNTRY = 'USA';
-export const DEFAULT_CITY = 'msk';
+export const DEFAULT_CITY = process.env.DEFAULT_CITY || 'msk';
 export const SECONDARY_CITY = 'ny';
 export const DEFAULT_CURRENCY = 'р.';
 export const SECONDARY_CURRENCY = '$';
@@ -244,7 +244,7 @@ export const TABLE_IMAGE_WIDTH = 40;
 
 // PAGINATION
 export const QUERY_FILTER_PAGE = 'page';
-export const PAGINATION_DEFAULT_LIMIT = 30;
+export const PAGINATION_DEFAULT_LIMIT = 100;
 export const SORT_BY_ID_DIRECTION = SORT_DESC;
 export const SORT_BY_CREATED_AT = 'createdAt';
 export const SORT_BY_ID = '_id';

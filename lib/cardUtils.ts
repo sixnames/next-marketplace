@@ -859,6 +859,7 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
 
     const name = getFieldStringLocale(restProduct.nameI18n, locale);
     const description = getFieldStringLocale(restProduct.descriptionI18n, locale);
+    const cardDescription = getFieldStringLocale(restProduct.cardDescriptionI18n, locale);
     const shopsCount = finalCardShops.length;
     const isShopless = noNaN(shopsCount) < 1;
     const cardAssets = assets ? assets.assets : [];
@@ -937,6 +938,7 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
       product: {
         ...restProduct,
         name,
+        cardDescription,
         description: description || cardTitle,
         brand: brand
           ? {

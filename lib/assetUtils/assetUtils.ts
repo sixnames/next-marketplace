@@ -66,7 +66,6 @@ export async function storeUploads({
             url: `${assetsPath}/${fileName}.svg`,
             index: startIndex + index,
           });
-          console.log('file ', assets.length);
         });
         continue;
       }
@@ -80,8 +79,6 @@ export async function storeUploads({
         index: startIndex + index,
       });
     }
-
-    console.log('Final ', assets.length);
     return assets;
   } catch (e) {
     console.log(e);

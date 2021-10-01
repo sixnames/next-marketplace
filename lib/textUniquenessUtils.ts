@@ -1,5 +1,8 @@
-import { LOCALES, REQUEST_METHOD_POST } from 'config/common';
+import { DEFAULT_CITY, DEFAULT_LOCALE, LOCALES, REQUEST_METHOD_POST } from 'config/common';
+import { COL_CONFIGS } from 'db/collectionNames';
 import { ProductModel, TranslationModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { castConfigs, getConfigStringValue } from 'lib/configsUtils';
 import { get } from 'lodash';
 import fetch from 'node-fetch';
 import qs from 'qs';
@@ -13,8 +16,24 @@ export async function checkProductDescriptionUniqueness({
   product,
   cardDescriptionI18n,
 }: CheckProductDescriptionUniquenessInterface) {
+  const { db } = await getDatabase();
+  const configsCollection = db.collection(COL_CONFIGS);
+  const initialConfigs = await configsCollection
+    .find({
+      slug: 'uniqueTextApiKey',
+    })
+    .toArray();
+  const configs = castConfigs({
+    configs: initialConfigs,
+    city: DEFAULT_CITY,
+    locale: DEFAULT_LOCALE,
+  });
+  const uniqueTextApiKey = getConfigStringValue({
+    configs,
+    slug: 'buyButtonText',
+  });
   const uniqueTextApiUrl = process.env.UNIQUE_TEXT_API_URL;
-  const uniqueTextApiKey = process.env.UNIQUE_TEXT_API_KEY;
+
   if (uniqueTextApiUrl && uniqueTextApiKey) {
     for await (const locale of LOCALES) {
       const text = get(cardDescriptionI18n, locale);

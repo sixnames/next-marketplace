@@ -4,25 +4,29 @@ import ContentItemControls from 'components/ContentItemControls';
 import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
-import LinkPhone from 'components/Link/LinkPhone';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import { CreateUserModalInterface } from 'components/Modal/CreateUserModal';
 import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
 import Table, { TableColumn } from 'components/Table';
 import Title from 'components/Title';
-import { DEFAULT_PAGE, ROUTE_CMS, SORT_DESC } from 'config/common';
-import { CONFIRM_MODAL, CREATE_USER_MODAL } from 'config/modalVariants';
-import { COL_ROLES, COL_USERS } from 'db/collectionNames';
+import {
+  ISO_LANGUAGES,
+  DEFAULT_PAGE,
+  ROUTE_CMS,
+  CMS_BRANDS_LIMIT,
+  SORT_ASC,
+  DEFAULT_LOCALE,
+  SORT_DESC,
+} from 'config/common';
+import { CONFIRM_MODAL, CREATE_BRAND_MODAL } from 'config/modalVariants';
+import { COL_BRANDS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { AppPaginationInterface, RoleInterface, UserInterface } from 'db/uiInterfaces';
-import { useDeleteUserMutation } from 'generated/apolloComponents';
+import { AppPaginationInterface, BrandInterface } from 'db/uiInterfaces';
+import { useDeleteBrandMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import { alwaysArray } from 'lib/arrayUtils';
 import { castCatalogueFilters } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getFullName } from 'lib/nameUtils';
-import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
@@ -31,22 +35,15 @@ import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
-interface UsersConsumerFiltersInterface {
-  roles: RoleInterface[];
-}
+type BrandsConsumerInterface = AppPaginationInterface<BrandInterface>;
 
-interface UsersConsumerInterface extends AppPaginationInterface<UserInterface> {
-  filters: UsersConsumerFiltersInterface;
-}
+const pageTitle = 'Бренды';
 
-const pageTitle = 'Пользователи';
-
-const UsersConsumer: React.FC<UsersConsumerInterface> = ({
+const BrandsConsumer: React.FC<BrandsConsumerInterface> = ({
   docs,
   page,
   totalPages,
   itemPath,
-  filters: { roles },
 }) => {
   const router = useRouter();
   const setPageHandler = useNavigateToPageHandler();
@@ -54,12 +51,12 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
     reload: true,
   });
 
-  const [deleteUserMutation] = useDeleteUserMutation({
-    onCompleted: (data) => onCompleteCallback(data.deleteUser),
+  const [deleteBrandMutation] = useDeleteBrandMutation({
+    onCompleted: (data) => onCompleteCallback(data.deleteBrand),
     onError: onErrorCallback,
   });
 
-  const columns: TableColumn<UserInterface>[] = [
+  const columns: TableColumn<BrandInterface>[] = [
     {
       headTitle: 'ID',
       accessor: 'itemId',
@@ -68,29 +65,9 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
       },
     },
     {
-      headTitle: 'Имя',
-      accessor: 'fullName',
+      headTitle: 'Название',
+      accessor: 'name',
       render: ({ cellData }) => cellData,
-    },
-    {
-      headTitle: 'Email',
-      accessor: 'email',
-      render: ({ cellData }) => cellData,
-    },
-    {
-      accessor: 'formattedPhone',
-      headTitle: 'Телефон',
-      render: ({ cellData }) => <LinkPhone value={cellData} />,
-    },
-    {
-      headTitle: 'Роль',
-      accessor: 'role.name',
-      render: ({ cellData }) => cellData,
-    },
-    {
-      headTitle: 'Сотрудник сайта',
-      accessor: 'role.isStaff',
-      render: ({ cellData }) => (cellData ? 'Да' : 'Нет'),
     },
     {
       render: ({ dataItem }) => {
@@ -98,20 +75,20 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
           <div className='flex justify-end'>
             <ContentItemControls
               testId={`${dataItem.name}`}
-              updateTitle={'Редактировать пользователя'}
+              updateTitle={'Редактировать бренд'}
               updateHandler={() => {
                 router.push(`${itemPath}/${dataItem._id}`).catch((e) => console.log(e));
               }}
-              deleteTitle={'Удалить пользователя'}
+              deleteTitle={'Удалить бренд'}
               deleteHandler={() => {
                 showModal<ConfirmModalInterface>({
                   variant: CONFIRM_MODAL,
                   props: {
-                    testId: 'delete-user-modal',
-                    message: `Вы уверены, что хотите удалить пользователя ${dataItem.fullName}?`,
+                    testId: 'delete-brand-modal',
+                    message: `Вы уверены, что хотите удалить бренд ${dataItem.name}?`,
                     confirm: () => {
                       showLoading();
-                      deleteUserMutation({
+                      deleteBrandMutation({
                         variables: {
                           _id: dataItem._id,
                         },
@@ -128,17 +105,17 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
   ];
 
   return (
-    <AppContentWrapper testId={'users-list'}>
+    <AppContentWrapper testId={'brands-list'}>
       <Head>
         <title>{pageTitle}</title>
       </Head>
       <Inner>
         <Title>{pageTitle}</Title>
         <div className='relative'>
-          <FormikRouterSearch testId={'users'} />
+          <FormikRouterSearch testId={'brands'} />
 
           <div className='overflew-x-auto overflew-y-hidden'>
-            <Table<UserInterface>
+            <Table<BrandInterface>
               columns={columns}
               data={docs}
               testIdKey={'name'}
@@ -158,18 +135,15 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
 
           <FixedButtons>
             <Button
-              testId={'create-user'}
+              testId={'create-brand'}
               size={'small'}
               onClick={() => {
-                showModal<CreateUserModalInterface>({
-                  variant: CREATE_USER_MODAL,
-                  props: {
-                    roles,
-                  },
+                showModal({
+                  variant: CREATE_BRAND_MODAL,
                 });
               }}
             >
-              Добавить пользователя
+              Добавить бренд
             </Button>
           </FixedButtons>
         </div>
@@ -178,27 +152,19 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
   );
 };
 
-interface UsersPageInterface extends PagePropsInterface, UsersConsumerInterface {}
+interface BrandsPageInterface extends PagePropsInterface, BrandsConsumerInterface {}
 
-const UsersPage: NextPage<UsersPageInterface> = ({ pageUrls, ...props }) => {
+const BrandsPage: NextPage<BrandsPageInterface> = ({ pageUrls, ...props }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <UsersConsumer {...props} />
+      <BrandsConsumer {...props} />
     </CmsLayout>
   );
 };
 
-interface UsersAggregationInterface {
-  docs: UserInterface[];
-  totalDocs: number;
-  totalPages: number;
-  hasPrevPage: boolean;
-  hasNextPage: boolean;
-}
-
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<UsersPageInterface>> => {
+): Promise<GetServerSidePropsResult<BrandsPageInterface>> => {
   const { props } = await getAppInitialData({ context });
   if (!props) {
     return {
@@ -207,7 +173,7 @@ export const getServerSideProps = async (
   }
 
   const { query } = context;
-  const { filter, search } = query;
+  const { filters, search } = query;
   const locale = props.sessionLocale;
 
   // Cast filters
@@ -219,34 +185,36 @@ export const getServerSideProps = async (
     limit,
     clearSlug,
   } = castCatalogueFilters({
-    filters: alwaysArray(filter),
+    filters: alwaysArray(filters),
+    initialLimit: CMS_BRANDS_LIMIT,
   });
-  const itemPath = `${ROUTE_CMS}/users/user`;
+  const itemPath = `${ROUTE_CMS}/brands/brand`;
 
   const regexSearch = {
     $regex: search,
     $options: 'i',
   };
 
+  // TODO algolia
+  const nameSearch = search
+    ? ISO_LANGUAGES.map(({ slug }) => {
+        return {
+          [slug]: search,
+        };
+      })
+    : [];
+
   const searchStage = search
     ? [
         {
           $match: {
             $or: [
+              ...nameSearch,
               {
-                email: regexSearch,
+                url: regexSearch,
               },
               {
-                name: regexSearch,
-              },
-              {
-                lastName: regexSearch,
-              },
-              {
-                secondName: regexSearch,
-              },
-              {
-                phone: regexSearch,
+                slug: regexSearch,
               },
               {
                 itemId: regexSearch,
@@ -258,11 +226,10 @@ export const getServerSideProps = async (
     : [];
 
   const { db } = await getDatabase();
-  const usersCollection = db.collection<UserInterface>(COL_USERS);
-  const rolesCollection = db.collection<RoleInterface>(COL_ROLES);
+  const brandsCollection = db.collection<BrandInterface>(COL_BRANDS);
 
-  const usersAggregationResult = await usersCollection
-    .aggregate<UsersAggregationInterface>(
+  const brandsAggregationResult = await brandsCollection
+    .aggregate<BrandsConsumerInterface>(
       [
         ...searchStage,
         {
@@ -270,6 +237,7 @@ export const getServerSideProps = async (
             docs: [
               {
                 $sort: {
+                  [`nameI18n.${DEFAULT_LOCALE}`]: SORT_ASC,
                   _id: SORT_DESC,
                 },
               },
@@ -278,32 +246,6 @@ export const getServerSideProps = async (
               },
               {
                 $limit: limit,
-              },
-              {
-                $lookup: {
-                  from: COL_ROLES,
-                  as: 'role',
-                  let: { roleId: '$roleId' },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $eq: ['$_id', '$$roleId'],
-                        },
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                $addFields: {
-                  role: { $arrayElemAt: ['$role', 0] },
-                },
-              },
-              {
-                $project: {
-                  password: false,
-                },
               },
             ],
             countAllDocs: [
@@ -354,62 +296,28 @@ export const getServerSideProps = async (
       { allowDiskUse: true },
     )
     .toArray();
-  const usersResult = usersAggregationResult[0];
-  if (!usersResult) {
+  const brandsResult = brandsAggregationResult[0];
+  if (!brandsResult) {
     return {
       notFound: true,
     };
   }
 
-  const docs: UserInterface[] = [];
-  for await (const user of usersResult.docs) {
+  const docs: BrandInterface[] = [];
+  for await (const brand of brandsResult.docs) {
     docs.push({
-      ...user,
-      fullName: getFullName(user),
-      formattedPhone: {
-        raw: phoneToRaw(user.phone),
-        readable: phoneToReadable(user.phone),
-      },
-      role: user.role
-        ? {
-            ...user.role,
-            name: getFieldStringLocale(user.role.nameI18n, locale),
-          }
-        : null,
+      ...brand,
+      name: getFieldStringLocale(brand.nameI18n, locale),
     });
   }
 
-  const rolesQueryResult = await rolesCollection
-    .find(
-      {},
-      {
-        projection: {
-          slug: false,
-        },
-        sort: {
-          _id: SORT_DESC,
-        },
-      },
-    )
-    .toArray();
-
-  const roles = rolesQueryResult.map((role) => {
-    return {
-      ...role,
-      name: getFieldStringLocale(role.nameI18n, locale),
-    };
-  });
-
-  const payload: UsersConsumerInterface = {
+  const payload: BrandsConsumerInterface = {
     clearSlug,
-    totalDocs: usersResult.totalDocs,
-    totalPages: usersResult.totalPages,
+    totalDocs: brandsResult.totalDocs,
+    totalPages: brandsResult.totalPages,
     itemPath,
     page,
     docs,
-    filters: {
-      roles,
-    },
   };
   const castedPayload = castDbData(payload);
   return {
@@ -420,4 +328,4 @@ export const getServerSideProps = async (
   };
 };
 
-export default UsersPage;
+export default BrandsPage;

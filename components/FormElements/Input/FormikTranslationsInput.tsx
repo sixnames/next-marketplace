@@ -13,6 +13,7 @@ import { TranslationModel } from 'db/dbModels';
 
 interface FormikTranslationsInputInterface extends FormikInputPropsInterface {
   variant?: 'input' | 'textarea';
+  additionalUi?: (locale: string) => any;
 }
 
 const FormikTranslationsInput: React.FC<FormikTranslationsInputInterface> = ({
@@ -28,6 +29,7 @@ const FormikTranslationsInput: React.FC<FormikTranslationsInputInterface> = ({
   isHorizontal,
   labelTag,
   variant = 'input',
+  additionalUi,
   ...props
 }) => {
   const { dbLocales, defaultLocale } = useLocaleContext();
@@ -39,7 +41,30 @@ const FormikTranslationsInput: React.FC<FormikTranslationsInputInterface> = ({
   if (dbLocales.length < minimalLanguagesCount) {
     if (variant === 'textarea') {
       return (
-        <FormikTextarea
+        <React.Fragment>
+          {additionalUi ? additionalUi(defaultLocale) : null}
+          <FormikTextarea
+            {...props}
+            lineClass={lineClass}
+            low={low}
+            wide={wide}
+            labelPostfix={labelPostfix}
+            labelLink={labelLink}
+            isRequired={isRequired}
+            isHorizontal={isHorizontal}
+            labelTag={labelTag}
+            label={label}
+            name={`${inputName}.${defaultLocale}`}
+            testId={`${testId}-${defaultLocale}`}
+          />
+        </React.Fragment>
+      );
+    }
+
+    return (
+      <React.Fragment>
+        {additionalUi ? additionalUi(defaultLocale) : null}
+        <FormikInput
           {...props}
           lineClass={lineClass}
           low={low}
@@ -53,24 +78,7 @@ const FormikTranslationsInput: React.FC<FormikTranslationsInputInterface> = ({
           name={`${inputName}.${defaultLocale}`}
           testId={`${testId}-${defaultLocale}`}
         />
-      );
-    }
-
-    return (
-      <FormikInput
-        {...props}
-        lineClass={lineClass}
-        low={low}
-        wide={wide}
-        labelPostfix={labelPostfix}
-        labelLink={labelLink}
-        isRequired={isRequired}
-        isHorizontal={isHorizontal}
-        labelTag={labelTag}
-        label={label}
-        name={`${inputName}.${defaultLocale}`}
-        testId={`${testId}-${defaultLocale}`}
-      />
+      </React.Fragment>
     );
   }
 
@@ -115,6 +123,8 @@ const FormikTranslationsInput: React.FC<FormikTranslationsInputInterface> = ({
               }
             >
               <div className={classes.languageInput}>
+                {additionalUi ? additionalUi(localeSlug) : null}
+
                 {variant === 'textarea' ? (
                   <FormikTextarea {...props} name={name} testId={`${testId}-${localeSlug}`} low />
                 ) : (

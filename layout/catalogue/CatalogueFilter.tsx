@@ -11,6 +11,7 @@ export interface CatalogueFilterAttributePropsInterface {
   onClick: () => void;
   isSearchResult?: boolean;
   attributeIndex: number;
+  basePath: string;
 }
 
 export interface CatalogueFilterInterface {
@@ -23,6 +24,7 @@ export interface CatalogueFilterInterface {
   hideFilterHandler: () => void;
   companyId?: string;
   isSearchResult?: boolean;
+  basePath: string;
 }
 
 interface CatalogueFilterProviderInterface extends CatalogueFilterInterface {

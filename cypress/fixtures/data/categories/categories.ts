@@ -87,6 +87,58 @@ const categories: CategoryModel[] = [
     attributesGroupIds: [],
     ...DEFAULT_COUNTERS_OBJECT,
   },
+  {
+    _id: getObjectId('category C'),
+    parentTreeIds: [getObjectId('category C')],
+    rubricId: getObjectId('rubric Виски'),
+    slug: `${CATEGORY_SLUG_PREFIX}6`,
+    rubricSlug: 'viski',
+    variants: {},
+    nameI18n: {
+      ru: 'Category C',
+    },
+    attributesGroupIds: [],
+    ...DEFAULT_COUNTERS_OBJECT,
+  },
+  {
+    _id: getObjectId('category D'),
+    parentTreeIds: [getObjectId('category D')],
+    rubricId: getObjectId('rubric Виски'),
+    slug: `${CATEGORY_SLUG_PREFIX}7`,
+    rubricSlug: 'viski',
+    variants: {},
+    nameI18n: {
+      ru: 'Category D',
+    },
+    attributesGroupIds: [],
+    ...DEFAULT_COUNTERS_OBJECT,
+  },
+  {
+    _id: getObjectId('category E'),
+    parentTreeIds: [getObjectId('category E')],
+    rubricId: getObjectId('rubric Виски'),
+    slug: `${CATEGORY_SLUG_PREFIX}8`,
+    rubricSlug: 'viski',
+    variants: {},
+    nameI18n: {
+      ru: 'Category E',
+    },
+    attributesGroupIds: [],
+    ...DEFAULT_COUNTERS_OBJECT,
+  },
+  {
+    _id: getObjectId('category F'),
+    parentTreeIds: [getObjectId('category F')],
+    rubricId: getObjectId('rubric Виски'),
+    slug: `${CATEGORY_SLUG_PREFIX}9`,
+    rubricSlug: 'viski',
+    variants: {},
+    nameI18n: {
+      ru: 'Category F',
+    },
+    attributesGroupIds: [],
+    ...DEFAULT_COUNTERS_OBJECT,
+  },
 ];
 
 // @ts-ignore

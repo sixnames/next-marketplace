@@ -182,7 +182,7 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
         {/*title*/}
         {configTitle ? (
           <div className='mb-14 sm:mb-20'>
-            <Title textClassName='max-w-[690px]'>{configTitle}</Title>
+            <Title textClassName='max-w-[1440px]'>{configTitle}</Title>
             {configSeoText && configSeoText.length > 0 ? (
               <PageEditor value={JSON.parse(configSeoText)} readOnly />
             ) : null}

@@ -34,6 +34,11 @@ export async function checkProductDescriptionUniqueness({
   });
   const uniqueTextApiUrl = process.env.UNIQUE_TEXT_API_URL;
 
+  console.log({
+    uniqueTextApiKey,
+    uniqueTextApiUrl,
+  });
+
   if (uniqueTextApiUrl && uniqueTextApiKey) {
     for await (const locale of LOCALES) {
       const text = get(cardDescriptionI18n, locale);

@@ -1,4 +1,10 @@
-import { DEFAULT_CITY, DEFAULT_LOCALE, LOCALES, REQUEST_METHOD_POST } from 'config/common';
+import {
+  DEFAULT_CITY,
+  DEFAULT_COMPANY_SLUG,
+  DEFAULT_LOCALE,
+  LOCALES,
+  REQUEST_METHOD_POST,
+} from 'config/common';
 import { COL_CONFIGS } from 'db/collectionNames';
 import { ProductModel, TranslationModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -17,10 +23,12 @@ export async function checkProductDescriptionUniqueness({
   cardDescriptionI18n,
 }: CheckProductDescriptionUniquenessInterface) {
   const { db } = await getDatabase();
+  const configSlug = 'uniqueTextApiKey';
   const configsCollection = db.collection(COL_CONFIGS);
   const initialConfigs = await configsCollection
     .find({
-      slug: 'uniqueTextApiKey',
+      slug: configSlug,
+      companySlug: DEFAULT_COMPANY_SLUG,
     })
     .toArray();
   const configs = castConfigs({
@@ -30,14 +38,20 @@ export async function checkProductDescriptionUniqueness({
   });
   const uniqueTextApiKey = getConfigStringValue({
     configs,
-    slug: 'buyButtonText',
+    slug: configSlug,
   });
   const uniqueTextApiUrl = process.env.UNIQUE_TEXT_API_URL;
 
-  console.log({
-    uniqueTextApiKey,
-    uniqueTextApiUrl,
-  });
+  console.log(
+    JSON.stringify(
+      {
+        uniqueTextApiUrl,
+        uniqueTextApiKey,
+      },
+      null,
+      2,
+    ),
+  );
 
   if (uniqueTextApiUrl && uniqueTextApiKey) {
     for await (const locale of LOCALES) {

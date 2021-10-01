@@ -22,62 +22,66 @@ export async function checkProductDescriptionUniqueness({
   product,
   cardDescriptionI18n,
 }: CheckProductDescriptionUniquenessInterface) {
-  const { db } = await getDatabase();
-  const configSlug = 'uniqueTextApiKey';
-  const configsCollection = db.collection(COL_CONFIGS);
-  const initialConfigs = await configsCollection
-    .find({
+  try {
+    const { db } = await getDatabase();
+    const configSlug = 'uniqueTextApiKey';
+    const configsCollection = db.collection(COL_CONFIGS);
+    const initialConfigs = await configsCollection
+      .find({
+        slug: configSlug,
+        companySlug: DEFAULT_COMPANY_SLUG,
+      })
+      .toArray();
+    const configs = castConfigs({
+      configs: initialConfigs,
+      city: DEFAULT_CITY,
+      locale: DEFAULT_LOCALE,
+    });
+    const uniqueTextApiKey = getConfigStringValue({
+      configs,
       slug: configSlug,
-      companySlug: DEFAULT_COMPANY_SLUG,
-    })
-    .toArray();
-  const configs = castConfigs({
-    configs: initialConfigs,
-    city: DEFAULT_CITY,
-    locale: DEFAULT_LOCALE,
-  });
-  const uniqueTextApiKey = getConfigStringValue({
-    configs,
-    slug: configSlug,
-  });
-  const uniqueTextApiUrl = process.env.UNIQUE_TEXT_API_URL;
+    });
+    const uniqueTextApiUrl = process.env.UNIQUE_TEXT_API_URL;
 
-  console.log(
-    JSON.stringify(
-      {
-        uniqueTextApiUrl,
-        uniqueTextApiKey,
-      },
-      null,
-      2,
-    ),
-  );
+    console.log(
+      JSON.stringify(
+        {
+          uniqueTextApiUrl,
+          uniqueTextApiKey,
+        },
+        null,
+        2,
+      ),
+    );
 
-  if (uniqueTextApiUrl && uniqueTextApiKey) {
-    for await (const locale of LOCALES) {
-      const text = get(cardDescriptionI18n, locale);
-      const oldText = get(product.cardDescriptionI18n, locale);
+    if (uniqueTextApiUrl && uniqueTextApiKey) {
+      for await (const locale of LOCALES) {
+        const text = get(cardDescriptionI18n, locale);
+        const oldText = get(product.cardDescriptionI18n, locale);
 
-      if (text && text !== oldText) {
-        const body = {
-          userkey: uniqueTextApiKey,
-          exceptdomain: `${process.env.DEFAULT_DOMAIN}`,
-          callback: `https://${
-            process.env.DEFAULT_DOMAIN
-          }/api/product/uniqueness/${product._id.toHexString()}/${locale}`,
-          text,
-        };
+        if (text && text !== oldText) {
+          const body = {
+            userkey: uniqueTextApiKey,
+            exceptdomain: `${process.env.DEFAULT_DOMAIN}`,
+            callback: `https://${
+              process.env.DEFAULT_DOMAIN
+            }/api/product/uniqueness/${product._id.toHexString()}/${locale}`,
+            text,
+          };
 
-        const res = await fetch(uniqueTextApiUrl, {
-          method: REQUEST_METHOD_POST,
-          body: qs.stringify(body),
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-        });
-        const json = await res.json();
-        console.log(json);
+          const res = await fetch(uniqueTextApiUrl, {
+            method: REQUEST_METHOD_POST,
+            body: qs.stringify(body),
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+          });
+          const json = await res.json();
+          console.log(json);
+        }
       }
     }
+  } catch (e) {
+    console.log(e);
   }
 }

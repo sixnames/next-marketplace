@@ -298,7 +298,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
           />
 
           <div className='lg:col-span-5'>
-            <div id={'catalogue-products'}>
+            <div>
               {/*Mobile controls*/}
               <div className='grid grid-cols-2 gap-10 grid lg:hidden'>
                 <Button theme={'secondary'} onClick={showFilterHandler} short>
@@ -360,47 +360,49 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
                   </div>
                 ) : null}
 
-                <InfiniteScroll
-                  className='catalogue__list pt-8 flex flex-wrap gap-[1.5rem]'
-                  // className='catalogue__list pt-8 grid sm:grid-cols-20 gap-6 sm:gap-10'
-                  next={fetchMoreHandler}
-                  hasMore={state.products.length < state.totalProducts}
-                  dataLength={state.products.length}
-                  scrollableTarget={'#catalogue-products'}
-                  loader={<span />}
-                >
-                  {state.products.map((product, index) => {
-                    if (isRowView) {
+                <div id={'catalogue-products'}>
+                  <InfiniteScroll
+                    className='catalogue__list pt-8 flex flex-wrap gap-[1.5rem]'
+                    // className='catalogue__list pt-8 grid sm:grid-cols-20 gap-6 sm:gap-10'
+                    next={fetchMoreHandler}
+                    hasMore={state.products.length < state.totalProducts}
+                    dataLength={state.products.length}
+                    scrollableTarget={'#catalogue-products'}
+                    loader={<span />}
+                  >
+                    {state.products.map((product, index) => {
+                      if (isRowView) {
+                        return (
+                          <ProductSnippetRow
+                            layout={state.rowSnippetLayout}
+                            showSnippetConnections={state.showSnippetConnections}
+                            showSnippetBackground={state.showSnippetBackground}
+                            showSnippetArticle={state.showSnippetArticle}
+                            showSnippetButtonsOnHover={state.showSnippetButtonsOnHover}
+                            gridCatalogueColumns={state.gridCatalogueColumns}
+                            shopProduct={product}
+                            key={`${product._id}`}
+                            className={'flex-grow-0'}
+                            testId={`catalogue-item-${index}`}
+                          />
+                        );
+                      }
+
                       return (
-                        <ProductSnippetRow
-                          layout={state.rowSnippetLayout}
-                          showSnippetConnections={state.showSnippetConnections}
+                        <ProductSnippetGrid
+                          layout={state.gridSnippetLayout}
                           showSnippetBackground={state.showSnippetBackground}
                           showSnippetArticle={state.showSnippetArticle}
                           showSnippetButtonsOnHover={state.showSnippetButtonsOnHover}
                           gridCatalogueColumns={state.gridCatalogueColumns}
                           shopProduct={product}
                           key={`${product._id}`}
-                          className={'flex-grow-0'}
                           testId={`catalogue-item-${index}`}
                         />
                       );
-                    }
-
-                    return (
-                      <ProductSnippetGrid
-                        layout={state.gridSnippetLayout}
-                        showSnippetBackground={state.showSnippetBackground}
-                        showSnippetArticle={state.showSnippetArticle}
-                        showSnippetButtonsOnHover={state.showSnippetButtonsOnHover}
-                        gridCatalogueColumns={state.gridCatalogueColumns}
-                        shopProduct={product}
-                        key={`${product._id}`}
-                        testId={`catalogue-item-${index}`}
-                      />
-                    );
-                  })}
-                </InfiniteScroll>
+                    })}
+                  </InfiniteScroll>
+                </div>
                 {loading ? <Spinner isNested isTransparent /> : null}
               </div>
             </div>

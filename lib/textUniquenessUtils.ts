@@ -43,17 +43,6 @@ export async function checkProductDescriptionUniqueness({
     });
     const uniqueTextApiUrl = process.env.UNIQUE_TEXT_API_URL;
 
-    console.log(
-      JSON.stringify(
-        {
-          uniqueTextApiUrl,
-          uniqueTextApiKey,
-        },
-        null,
-        2,
-      ),
-    );
-
     if (uniqueTextApiUrl && uniqueTextApiKey) {
       for await (const locale of LOCALES) {
         const text = get(cardDescriptionI18n, locale);
@@ -69,15 +58,16 @@ export async function checkProductDescriptionUniqueness({
             text,
           };
 
-          const res = await fetch(uniqueTextApiUrl, {
+          // const res = await fetch(uniqueTextApiUrl, {
+          await fetch(uniqueTextApiUrl, {
             method: REQUEST_METHOD_POST,
             body: qs.stringify(body),
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded',
             },
           });
-          const json = await res.json();
-          console.log(json);
+          // const json = await res.json();
+          // console.log(json);
         }
       }
     }

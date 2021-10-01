@@ -128,7 +128,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
       headTitle: 'Наличие',
       render: ({ rowIndex, dataItem }) => {
         return (
-          <div data-cy={`${dataItem.itemId}-available`}>
+          <div data-cy={`${dataItem.barcode}-available`}>
             <FormikInput
               testId={`shop-product-available-${rowIndex}`}
               name={`input[${rowIndex}].available`}
@@ -144,7 +144,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
       headTitle: 'Цена',
       render: ({ rowIndex, dataItem }) => {
         return (
-          <div data-cy={`${dataItem.itemId}-price`}>
+          <div data-cy={`${dataItem.barcode}-price`}>
             <FormikInput
               testId={`shop-product-price-${rowIndex}`}
               name={`input[${rowIndex}].price`}

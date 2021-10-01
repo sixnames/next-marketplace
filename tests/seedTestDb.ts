@@ -1,15 +1,15 @@
-import { uploadTestAssets } from './uploadTestAssets';
-import {
-  ASSETS_DIST_COMPANIES,
-  ASSETS_DIST_PAGES,
-  ASSETS_DIST_BRANDS,
-  // ASSETS_DIST_CONFIGS,
-  ASSETS_DIST_SHOPS,
-  ASSETS_DIST_SHOPS_LOGOS,
-  ASSETS_DIST_TEMPLATES,
-  ASSETS_DIST_CATEGORIES,
-  ASSETS_DIST_BLOG,
-} from '../config/common';
+// import { uploadTestAssets } from './uploadTestAssets';
+// import {
+//   ASSETS_DIST_COMPANIES,
+//   ASSETS_DIST_PAGES,
+//   ASSETS_DIST_BRANDS,
+//   ASSETS_DIST_CONFIGS,
+// ASSETS_DIST_SHOPS,
+// ASSETS_DIST_SHOPS_LOGOS,
+// ASSETS_DIST_TEMPLATES,
+// ASSETS_DIST_CATEGORIES,
+// ASSETS_DIST_BLOG,
+// } from '../config/common';
 import { Seeder } from 'mongo-seeding';
 const path = require('path');
 require('dotenv').config();
@@ -47,7 +47,7 @@ const config = {
     },
   );
 
-  const bucketName = `${process.env.OBJECT_STORAGE_BUCKET_NAME}`;
+  // const bucketName = `${process.env.OBJECT_STORAGE_BUCKET_NAME}`;
 
   try {
     await seeder.import(collections);
@@ -55,7 +55,7 @@ const config = {
 
     // await uploadTestAssets('./cypress/fixtures/assets');
 
-    if (!process.env.CI) {
+    /*if (!process.env.CI) {
       await uploadTestAssets(
         `./cypress/fixtures/assets/${ASSETS_DIST_SHOPS_LOGOS}`,
         bucketName,
@@ -96,13 +96,13 @@ const config = {
         bucketName,
         `/${ASSETS_DIST_BLOG}`,
       );
-      /*await uploadTestAssets(
+      /!*await uploadTestAssets(
         `./cypress/fixtures/assets/${ASSETS_DIST_CONFIGS}`,
         `/${ASSETS_DIST_CONFIGS}`,
-      );*/
+      );*!/
 
       console.log(`Assets seeded in ${(new Date().getTime() - startTime) / 1000}s`);
-    }
+    }*/
   } catch (err) {
     console.log(err);
   }

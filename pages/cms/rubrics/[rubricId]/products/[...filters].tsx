@@ -128,7 +128,7 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
     },
     {
       accessor: 'seo',
-      headTitle: 'Атрибуты',
+      headTitle: 'Уникальность текста',
       render: ({ cellData }) => {
         return (
           <div className='space-y-3'>

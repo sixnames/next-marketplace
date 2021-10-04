@@ -12,6 +12,8 @@ export interface CatalogueFilterAttributePropsInterface {
   isSearchResult?: boolean;
   attributeIndex: number;
   basePath: string;
+  brandSlugs: string[];
+  categorySlugs: string[];
 }
 
 export interface CatalogueFilterInterface {
@@ -25,6 +27,8 @@ export interface CatalogueFilterInterface {
   companyId?: string;
   isSearchResult?: boolean;
   basePath: string;
+  brandSlugs: string[];
+  categorySlugs: string[];
 }
 
 interface CatalogueFilterProviderInterface extends CatalogueFilterInterface {

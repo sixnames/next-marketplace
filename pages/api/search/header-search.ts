@@ -137,7 +137,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       ])
       .toArray();
 
-    console.log(shopProductsAggregation.length);
     shopProductsAggregation.forEach((shopProduct) => {
       const { product, shopsCount, ...restShopProduct } = shopProduct;
       if (!product) {

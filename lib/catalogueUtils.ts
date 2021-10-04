@@ -54,6 +54,8 @@ import {
   DEFAULT_SORT_STAGE,
   GENDER_HE,
   CATALOGUE_GRID_DEFAULT_COLUMNS_COUNT,
+  CATEGORY_SLUG_PREFIX_SEPARATOR,
+  CATEGORY_SLUG_PREFIX_WORD,
 } from 'config/common';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -825,6 +827,8 @@ export const getCatalogueData = async ({
       showSnippetArticle: false,
       showSnippetButtonsOnHover: false,
       gridCatalogueColumns: CATALOGUE_GRID_DEFAULT_COLUMNS_COUNT,
+      brandSlugs: [],
+      categorySlugs: [],
       basePath,
       page,
     };
@@ -1057,6 +1061,30 @@ export const getCatalogueData = async ({
               },
             ],
 
+            // category slugs facet
+            selectedOptionsSlugs: [
+              {
+                $unwind: {
+                  path: '$selectedOptionsSlugs',
+                  preserveNullAndEmptyArrays: true,
+                },
+              },
+              {
+                $group: {
+                  _id: '$selectedOptionsSlugs',
+                },
+              },
+            ],
+
+            // brand slugs facet
+            brandSlugs: [
+              {
+                $group: {
+                  _id: '$brandSlug',
+                },
+              },
+            ],
+
             // brands facet
             brands: [
               {
@@ -1254,8 +1282,17 @@ export const getCatalogueData = async ({
       return fallbackPayload;
     }
 
-    const { docs, totalProducts, attributes, rubrics, brands, categories, prices } =
-      productDataAggregation;
+    const {
+      docs,
+      totalProducts,
+      attributes,
+      rubrics,
+      brands,
+      categories,
+      prices,
+      brandSlugs,
+      selectedOptionsSlugs,
+    } = productDataAggregation;
 
     if (rubrics.length < 1) {
       return fallbackPayload;
@@ -1412,16 +1449,23 @@ export const getCatalogueData = async ({
       });
 
       // product brand
-      const productBrand = shopProduct.brandSlug
+      const productBrand = product.brandSlug
         ? (brands || []).find(({ slug }) => {
-            return slug === shopProduct.brandSlug;
+            return slug === product.brandSlug;
           })
         : null;
 
       // snippet title
       const snippetTitle = generateSnippetTitle({
         locale,
-        brand: productBrand,
+        brand: productBrand
+          ? {
+              ...productBrand,
+              collections: (productBrand.collections || []).filter((collection) => {
+                return collection.slug === product.brandCollectionSlug;
+              }),
+            }
+          : null,
         rubricName: getFieldStringLocale(rubric.nameI18n, locale),
         showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
         showCategoryInProductTitle: rubric.showCategoryInProductTitle,
@@ -1589,6 +1633,16 @@ export const getCatalogueData = async ({
     return {
       _id: rubric._id,
       clearSlug,
+      categorySlugs: selectedOptionsSlugs
+        .filter((slug) => slug._id)
+        .reduce((acc: string[], slug) => {
+          const slugParts = slug._id.split(CATEGORY_SLUG_PREFIX_SEPARATOR);
+          if (slugParts[0] === CATEGORY_SLUG_PREFIX_WORD && slugParts[1]) {
+            return [...acc, slug._id];
+          }
+          return acc;
+        }, []),
+      brandSlugs: brandSlugs.filter((slug) => slug._id).map((slug) => slug._id),
       filters: input.filters,
       rubricName,
       rubricSlug: rubric.slug,

@@ -298,15 +298,26 @@ input CatalogueDataInput {
   rubricSlug: String!
 }
 
+type CategoriesAlphabetList implements AlphabetList {
+  docs: [Category!]!
+  letter: String!
+}
+
 type Category {
   _id: ObjectId!
+  categories: [Category!]!
   image: String
+  name: String!
   nameI18n: JSONObject!
   parentId: ObjectId
   priorities: JSONObject!
   rubricId: ObjectId!
   slug: String!
   views: JSONObject!
+}
+
+input CategoryAlphabetInput {
+  slugs: [String!]
 }
 
 type CategoryPayload implements Payload {
@@ -1687,7 +1698,7 @@ type PagesGroupPayload implements Payload {
 }
 
 input PaginationInput {
-  limit: Int = 100
+  limit: Int = 50
   page: Int = 1
   search: String
   sortBy: String = "createdAt"
@@ -1858,7 +1869,7 @@ input ProductsPaginationInput {
   Returns products not added to any rubric.
   """
   isWithoutRubrics: Boolean
-  limit: Int = 100
+  limit: Int = 50
   maxPrice: Int
   minPrice: Int
   page: Int = 1
@@ -1998,6 +2009,11 @@ type Query {
     input: BrandCollectionAlphabetInput
   ): [BrandCollectionsAlphabetList!]!
   getCatalogueAdditionalOptions(input: CatalogueAdditionalOptionsInput!): [OptionsAlphabetList!]
+
+  """
+  Should return categories grouped by alphabet
+  """
+  getCategoriesAlphabetLists(input: CategoryAlphabetInput): [CategoriesAlphabetList!]!
 
   """
   Should return city by given id

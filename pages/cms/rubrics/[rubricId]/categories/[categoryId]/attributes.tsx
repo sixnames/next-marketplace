@@ -101,7 +101,10 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
             </Link>
           );
         }
-        return 'На уровне рубрики';
+        if (!columnCategory) {
+          return 'На уровне рубрики';
+        }
+        return null;
       },
     },
   ];

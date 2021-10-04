@@ -337,6 +337,12 @@ export type CatalogueDataInput = {
   rubricSlug: Scalars['String'];
 };
 
+export type CategoriesAlphabetList = AlphabetList & {
+  __typename?: 'CategoriesAlphabetList';
+  letter: Scalars['String'];
+  docs: Array<Category>;
+};
+
 export type Category = {
   __typename?: 'Category';
   _id: Scalars['ObjectId'];
@@ -347,6 +353,12 @@ export type Category = {
   parentId?: Maybe<Scalars['ObjectId']>;
   views: Scalars['JSONObject'];
   priorities: Scalars['JSONObject'];
+  name: Scalars['String'];
+  categories: Array<Category>;
+};
+
+export type CategoryAlphabetInput = {
+  slugs?: Maybe<Array<Scalars['String']>>;
 };
 
 export type CategoryPayload = Payload & {
@@ -2165,6 +2177,8 @@ export type Query = {
   /** Should return brand collections grouped by alphabet */
   getBrandCollectionAlphabetLists: Array<BrandCollectionsAlphabetList>;
   getCatalogueAdditionalOptions?: Maybe<Array<OptionsAlphabetList>>;
+  /** Should return categories grouped by alphabet */
+  getCategoriesAlphabetLists: Array<CategoriesAlphabetList>;
   /** Should return city by given id */
   getCity: City;
   /** Should return city by given slug */
@@ -2305,6 +2319,11 @@ export type QueryGetBrandCollectionAlphabetListsArgs = {
 
 export type QueryGetCatalogueAdditionalOptionsArgs = {
   input: CatalogueAdditionalOptionsInput;
+};
+
+
+export type QueryGetCategoriesAlphabetListsArgs = {
+  input?: Maybe<CategoryAlphabetInput>;
 };
 
 
@@ -5310,6 +5329,43 @@ export type GetBrandCollectionAlphabetListsQuery = (
     & { docs: Array<(
       { __typename?: 'BrandCollection' }
       & Pick<BrandCollection, '_id' | 'slug' | 'name'>
+    )> }
+  )> }
+);
+
+export type GetCategoriesAlphabetListsQueryVariables = Exact<{
+  input?: Maybe<CategoryAlphabetInput>;
+}>;
+
+
+export type GetCategoriesAlphabetListsQuery = (
+  { __typename?: 'Query' }
+  & { getCategoriesAlphabetLists: Array<(
+    { __typename?: 'CategoriesAlphabetList' }
+    & Pick<CategoriesAlphabetList, 'letter'>
+    & { docs: Array<(
+      { __typename?: 'Category' }
+      & Pick<Category, '_id' | 'slug' | 'name'>
+      & { categories: Array<(
+        { __typename?: 'Category' }
+        & Pick<Category, '_id' | 'slug' | 'name'>
+        & { categories: Array<(
+          { __typename?: 'Category' }
+          & Pick<Category, '_id' | 'slug' | 'name'>
+          & { categories: Array<(
+            { __typename?: 'Category' }
+            & Pick<Category, '_id' | 'slug' | 'name'>
+            & { categories: Array<(
+              { __typename?: 'Category' }
+              & Pick<Category, '_id' | 'slug' | 'name'>
+              & { categories: Array<(
+                { __typename?: 'Category' }
+                & Pick<Category, '_id' | 'slug' | 'name'>
+              )> }
+            )> }
+          )> }
+        )> }
+      )> }
     )> }
   )> }
 );
@@ -10579,6 +10635,71 @@ export function useGetBrandCollectionAlphabetListsLazyQuery(baseOptions?: Apollo
 export type GetBrandCollectionAlphabetListsQueryHookResult = ReturnType<typeof useGetBrandCollectionAlphabetListsQuery>;
 export type GetBrandCollectionAlphabetListsLazyQueryHookResult = ReturnType<typeof useGetBrandCollectionAlphabetListsLazyQuery>;
 export type GetBrandCollectionAlphabetListsQueryResult = Apollo.QueryResult<GetBrandCollectionAlphabetListsQuery, GetBrandCollectionAlphabetListsQueryVariables>;
+export const GetCategoriesAlphabetListsDocument = gql`
+    query GetCategoriesAlphabetLists($input: CategoryAlphabetInput) {
+  getCategoriesAlphabetLists(input: $input) {
+    letter
+    docs {
+      _id
+      slug
+      name
+      categories {
+        _id
+        slug
+        name
+        categories {
+          _id
+          slug
+          name
+          categories {
+            _id
+            slug
+            name
+            categories {
+              _id
+              slug
+              name
+              categories {
+                _id
+                slug
+                name
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetCategoriesAlphabetListsQuery__
+ *
+ * To run a query within a React component, call `useGetCategoriesAlphabetListsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCategoriesAlphabetListsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCategoriesAlphabetListsQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetCategoriesAlphabetListsQuery(baseOptions?: Apollo.QueryHookOptions<GetCategoriesAlphabetListsQuery, GetCategoriesAlphabetListsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCategoriesAlphabetListsQuery, GetCategoriesAlphabetListsQueryVariables>(GetCategoriesAlphabetListsDocument, options);
+      }
+export function useGetCategoriesAlphabetListsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCategoriesAlphabetListsQuery, GetCategoriesAlphabetListsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCategoriesAlphabetListsQuery, GetCategoriesAlphabetListsQueryVariables>(GetCategoriesAlphabetListsDocument, options);
+        }
+export type GetCategoriesAlphabetListsQueryHookResult = ReturnType<typeof useGetCategoriesAlphabetListsQuery>;
+export type GetCategoriesAlphabetListsLazyQueryHookResult = ReturnType<typeof useGetCategoriesAlphabetListsLazyQuery>;
+export type GetCategoriesAlphabetListsQueryResult = Apollo.QueryResult<GetCategoriesAlphabetListsQuery, GetCategoriesAlphabetListsQueryVariables>;
 export const GetManufacturerAlphabetListsDocument = gql`
     query GetManufacturerAlphabetLists($input: ManufacturerAlphabetInput) {
   getManufacturerAlphabetLists(input: $input) {

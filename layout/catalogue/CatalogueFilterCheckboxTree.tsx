@@ -1,13 +1,28 @@
 import FilterCheckbox from 'components/FilterCheckbox';
 import FilterCheckboxGroup from 'components/FilterCheckboxGroup';
+import { BrandOptionsModalInterface } from 'components/Modal/BrandOptionsModal';
 import { CatalogueAdditionalOptionsModalInterface } from 'components/Modal/CatalogueAdditionalOptionsModal';
-import { CATALOGUE_FILTER_VISIBLE_OPTIONS, CATALOGUE_PRICE_KEY } from 'config/common';
-import { CATALOGUE_ADDITIONAL_OPTIONS_MODAL } from 'config/modalVariants';
+import { CategoryOptionsModalInterface } from 'components/Modal/CategoryOptionsModal';
+import { OptionsModalOptionInterface } from 'components/Modal/OptionsModal';
+import {
+  CATALOGUE_BRAND_KEY,
+  CATALOGUE_CATEGORY_KEY,
+  CATALOGUE_FILTER_VISIBLE_OPTIONS,
+  CATALOGUE_PRICE_KEY,
+  FILTER_SEPARATOR,
+} from 'config/common';
+import {
+  BRAND_OPTIONS_MODAL,
+  CATALOGUE_ADDITIONAL_OPTIONS_MODAL,
+  CATEGORY_OPTIONS_MODAL,
+} from 'config/modalVariants';
 import { useLocaleContext } from 'context/localeContext';
 import {
   CatalogueFilterAttributePropsInterface,
   CatalogueFilterInterface,
 } from 'layout/catalogue/CatalogueFilter';
+import { alwaysArray } from 'lib/arrayUtils';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import Link from 'components/Link/Link';
 import { useConfigContext } from 'context/configContext';
@@ -23,15 +38,79 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
   isSearchResult,
   attributeIndex,
   basePath,
+  brandSlugs,
+  categorySlugs,
 }) => {
-  const { showModal } = useAppContext();
+  const router = useRouter();
+  const { query } = router;
+  const { showModal, hideModal } = useAppContext();
   const { currency } = useLocaleContext();
   const { configs } = useConfigContext();
   const maxVisibleOptions =
     configs.catalogueFilterVisibleOptionsCount || CATALOGUE_FILTER_VISIBLE_OPTIONS;
 
   const { name, clearSlug, options, isSelected, metric, slug, totalOptionsCount } = attribute;
+  const isCategory = slug === CATALOGUE_CATEGORY_KEY;
+  const isBrand = slug === CATALOGUE_BRAND_KEY;
   const isPrice = slug === CATALOGUE_PRICE_KEY;
+  const hasMoreOptions =
+    (totalOptionsCount > maxVisibleOptions || isBrand || isCategory) && !isPrice;
+
+  const navigateFromModal = React.useCallback(
+    (selectedOptions: OptionsModalOptionInterface[]) => {
+      hideModal();
+      const selectedOptionsSlugs = selectedOptions.map(({ slug }) => {
+        return `${attribute.slug}${FILTER_SEPARATOR}${slug}`;
+      });
+      const nextParamsList = [...alwaysArray(query.filters), ...selectedOptionsSlugs];
+      const nextParams = nextParamsList.join('/');
+      router.push(`${basePath}/${nextParams}`).catch((e) => {
+        console.log(e);
+      });
+    },
+    [attribute.slug, basePath, hideModal, query.filters, router],
+  );
+
+  const showMoreHandler = () => {
+    // simple attribute options modal
+    if (hasMoreOptions) {
+      showModal<CatalogueAdditionalOptionsModalInterface>({
+        variant: CATALOGUE_ADDITIONAL_OPTIONS_MODAL,
+        props: {
+          basePath,
+          rubricSlug,
+          attributeSlug: attribute.slug,
+          notShowAsAlphabet: attribute.notShowAsAlphabet,
+          title: attribute.name,
+          companyId,
+          isSearchResult,
+        },
+      });
+    }
+
+    // brand attribute options modal
+    if (isBrand) {
+      showModal<BrandOptionsModalInterface>({
+        variant: BRAND_OPTIONS_MODAL,
+        props: {
+          onSubmit: navigateFromModal,
+          slugs: brandSlugs,
+        },
+      });
+    }
+
+    // brand attribute options modal
+    if (isCategory) {
+      showModal<CategoryOptionsModalInterface>({
+        variant: CATEGORY_OPTIONS_MODAL,
+        props: {
+          onSubmit: navigateFromModal,
+          slugs: categorySlugs,
+        },
+      });
+    }
+  };
+
   const postfix = isPrice ? ` ${currency}` : metric ? ` ${metric}` : null;
   const testId = `catalogue-option-${attributeIndex}`;
   return (
@@ -44,24 +123,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
       attributeSlug={slug}
       postfix={postfix}
       onClick={onClick}
-      showMoreHandler={
-        totalOptionsCount > maxVisibleOptions && !isPrice
-          ? () => {
-              showModal<CatalogueAdditionalOptionsModalInterface>({
-                variant: CATALOGUE_ADDITIONAL_OPTIONS_MODAL,
-                props: {
-                  basePath,
-                  rubricSlug,
-                  attributeSlug: attribute.slug,
-                  notShowAsAlphabet: attribute.notShowAsAlphabet,
-                  title: attribute.name,
-                  companyId,
-                  isSearchResult,
-                },
-              });
-            }
-          : null
-      }
+      showMoreHandler={hasMoreOptions ? showMoreHandler : null}
     />
   );
 };
@@ -77,6 +139,8 @@ const CatalogueFilterCheckboxTree: React.FC<CatalogueFilterInterface> = ({
   isSearchResult,
   clearSlug,
   basePath,
+  brandSlugs,
+  categorySlugs,
 }) => {
   const { currency } = useLocaleContext();
 
@@ -147,6 +211,8 @@ const CatalogueFilterCheckboxTree: React.FC<CatalogueFilterInterface> = ({
               key={`${attribute._id}`}
               isSearchResult={isSearchResult}
               attributeIndex={attributeIndex}
+              brandSlugs={brandSlugs}
+              categorySlugs={categorySlugs}
             />
           );
         })}

@@ -14,6 +14,7 @@ import {
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
 } from 'db/collectionNames';
+import { shopProductFieldsPipeline } from 'db/dao/constantPipelines';
 import { getDatabase } from 'db/mongodb';
 import { OrderInterface } from 'db/uiInterfaces';
 import { useCancelOrder, useConfirmOrder } from 'hooks/mutations/order/useOrderMutations';
@@ -198,6 +199,7 @@ export const getServerSideProps = async (
                       },
                     },
                   },
+                  ...shopProductFieldsPipeline('$productId'),
                 ],
               },
             },

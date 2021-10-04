@@ -13,7 +13,7 @@ const CardTextFeatures: React.FC<CardTextFeaturesInterface> = ({
   cardDescription,
   className,
 }) => {
-  if (textFeatures.length < 1) {
+  if (textFeatures.length < 1 && !cardDescription) {
     return null;
   }
 

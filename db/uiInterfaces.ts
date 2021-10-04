@@ -410,6 +410,8 @@ export interface CatalogueDataInterface {
   breadcrumbs: CatalogueBreadcrumbModel[];
   attributes: CatalogueFilterAttributeInterface[];
   selectedAttributes: CatalogueFilterAttributeInterface[];
+  brandSlugs: string[];
+  categorySlugs: string[];
   page: number;
 }
 
@@ -422,6 +424,10 @@ export interface CatalogueProductPricesInterface {
   _id: number;
 }
 
+export interface CatalogueSlugsGroupInterface {
+  _id: string;
+}
+
 export interface CatalogueProductsAggregationInterface {
   totalProducts: number;
   prices: CatalogueProductPricesInterface[];
@@ -430,6 +436,8 @@ export interface CatalogueProductsAggregationInterface {
   attributes?: AttributeInterface[] | null;
   categories?: CategoryInterface[];
   brands?: BrandInterface[];
+  brandSlugs: CatalogueSlugsGroupInterface[];
+  selectedOptionsSlugs: CatalogueSlugsGroupInterface[];
 }
 
 export interface ProductsPaginationAggregationInterface {

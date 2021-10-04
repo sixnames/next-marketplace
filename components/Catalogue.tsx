@@ -123,7 +123,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
   const fetchMoreHandler = React.useCallback(() => {
     if (state.products.length < state.totalProducts) {
       setLoading(true);
-      const filters = alwaysArray(router.query.catalogue).join('/');
+      const filters = alwaysArray(router.query.filters).join('/');
       const attributesCountParam = configs.catalogueFilterVisibleAttributesCount;
       const optionsCountParam = configs.catalogueFilterVisibleOptionsCount;
       const companyIdParam = companyId ? `&companyId=${companyId}` : '';
@@ -156,7 +156,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
     companySlug,
     configs.catalogueFilterVisibleAttributesCount,
     configs.catalogueFilterVisibleOptionsCount,
-    router.query.catalogue,
+    router.query.filters,
     router.query.rubricSlug,
     state.page,
     state.products.length,
@@ -285,6 +285,8 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
 
         <div className='grid lg:grid-cols-7 gap-12'>
           <CatalogueFilter
+            brandSlugs={state.brandSlugs}
+            categorySlugs={state.categorySlugs}
             basePath={state.basePath}
             companyId={companyId}
             filterLayoutVariant={catalogueData.catalogueFilterLayout}

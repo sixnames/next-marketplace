@@ -17,13 +17,14 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
   gridCatalogueColumns = 3,
 }) => {
   const { addShoplessProductToCart, addProductToCart } = useSiteContext();
-  const { _id, rubricSlug, itemId, product } = shopProduct;
+  const { _id, rubricSlug, product } = shopProduct;
 
   if (!product) {
     return null;
   }
 
-  const { slug, cardPrices, shopsCount, mainImage, shopProductsIds, snippetTitle, name } = product;
+  const { slug, cardPrices, shopsCount, mainImage, shopProductsIds, snippetTitle, name, itemId } =
+    product;
 
   const bgClassName = showSnippetBackground
     ? showSnippetButtonsOnHover

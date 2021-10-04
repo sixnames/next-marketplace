@@ -28,8 +28,8 @@ const CatalogueAdditionalOptionsModal: React.FC<CatalogueAdditionalOptionsModalI
   excludedParams,
 }) => {
   const router = useRouter();
-  const { hideModal } = useAppContext();
   const { query } = router;
+  const { hideModal } = useAppContext();
   const { data, loading, error } = useGetCatalogueAdditionalOptionsQuery({
     fetchPolicy: 'network-only',
     variables: {
@@ -51,9 +51,9 @@ const CatalogueAdditionalOptionsModal: React.FC<CatalogueAdditionalOptionsModalI
       loading={loading}
       alphabet={data?.getCatalogueAdditionalOptions}
       notShowAsAlphabet={notShowAsAlphabet}
-      onSubmit={(options) => {
+      onSubmit={(selectedOptions) => {
         hideModal();
-        const selectedOptionsSlugs = options.map(({ slug }) => {
+        const selectedOptionsSlugs = selectedOptions.map(({ slug }) => {
           return `${attributeSlug}${FILTER_SEPARATOR}${slug}`;
         });
         const nextParamsList = [...alwaysArray(query.filters), ...selectedOptionsSlugs].filter(

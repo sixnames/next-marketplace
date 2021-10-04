@@ -348,53 +348,6 @@ export const productAttributesPipeline = [
   },
 ];
 
-export const shopProductAttributesPipeline = [
-  {
-    $lookup: {
-      from: COL_PRODUCT_ATTRIBUTES,
-      as: 'attributes',
-      let: {
-        productId: '$productId',
-      },
-      pipeline: [
-        {
-          $match: {
-            $expr: {
-              $eq: ['$$productId', '$productId'],
-            },
-          },
-        },
-        {
-          $lookup: {
-            from: COL_OPTIONS,
-            as: 'options',
-            let: {
-              optionsGroupId: '$optionsGroupId',
-              selectedOptionsIds: '$selectedOptionsIds',
-            },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $and: [
-                      {
-                        $eq: ['$optionsGroupId', '$$optionsGroupId'],
-                      },
-                      {
-                        $in: ['$_id', '$$selectedOptionsIds'],
-                      },
-                    ],
-                  },
-                },
-              },
-            ],
-          },
-        },
-      ],
-    },
-  },
-];
-
 export const brandPipeline = [
   {
     $lookup: {

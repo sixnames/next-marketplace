@@ -44,6 +44,8 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
   totalPages,
   itemPath,
   basePath,
+  brandSlugs,
+  categorySlugs,
 }) => {
   const router = useRouter();
   const setPageHandler = useNavigateToPageHandler();
@@ -255,6 +257,8 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
         <div className={`max-w-full`}>
           <div className={'mb-8'}>
             <AppContentFilter
+              brandSlugs={brandSlugs}
+              categorySlugs={categorySlugs}
               basePath={basePath}
               rubricSlug={rubric.slug}
               attributes={attributes}

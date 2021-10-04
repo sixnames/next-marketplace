@@ -689,11 +689,12 @@ export interface ShopProductsAggregationInterface {
   totalPages: number;
   prices: CatalogueProductPricesInterface[];
   options: CatalogueProductOptionInterface[];
-  categories?: CategoryInterface[] | null;
-  brands?: BrandInterface[] | null;
   hasPrevPage: boolean;
   hasNextPage: boolean;
   attributes?: AttributeInterface[] | null;
+  brandSlugs: CatalogueSlugsGroupInterface[];
+  brandCollectionSlugs: CatalogueSlugsGroupInterface[];
+  selectedOptionsSlugs: CatalogueSlugsGroupInterface[];
 }
 
 export interface ProductsAggregationInterface {
@@ -703,9 +704,10 @@ export interface ProductsAggregationInterface {
   prices: CatalogueProductPricesInterface[];
   hasPrevPage: boolean;
   hasNextPage: boolean;
-  categories?: CategoryInterface[] | null;
-  brands?: BrandInterface[] | null;
   attributes?: AttributeInterface[] | null;
+  brandSlugs: CatalogueSlugsGroupInterface[];
+  brandCollectionSlugs: CatalogueSlugsGroupInterface[];
+  selectedOptionsSlugs: CatalogueSlugsGroupInterface[];
 }
 
 export interface AppPaginationAggregationInterface<Model> {
@@ -732,6 +734,8 @@ export interface AppPaginationWithFiltersInterface<Model> extends AppPaginationI
 export interface ConsoleRubricProductsInterface
   extends AppPaginationWithFiltersInterface<ProductInterface> {
   rubric?: RubricInterface | null;
+  brandSlugs: string[];
+  categorySlugs: string[];
 }
 
 export interface CompanyShopProductsPageInterface

@@ -1633,13 +1633,15 @@ export const getCatalogueData = async ({
     return {
       _id: rubric._id,
       clearSlug,
-      categorySlugs: selectedOptionsSlugs.reduce((acc: string[], slug) => {
-        const slugParts = slug._id.split(CATEGORY_SLUG_PREFIX_SEPARATOR);
-        if (slugParts[0] === CATEGORY_SLUG_PREFIX_WORD && slugParts[1]) {
-          return [...acc, slug._id];
-        }
-        return acc;
-      }, []),
+      categorySlugs: selectedOptionsSlugs
+        .filter((slug) => slug._id)
+        .reduce((acc: string[], slug) => {
+          const slugParts = slug._id.split(CATEGORY_SLUG_PREFIX_SEPARATOR);
+          if (slugParts[0] === CATEGORY_SLUG_PREFIX_WORD && slugParts[1]) {
+            return [...acc, slug._id];
+          }
+          return acc;
+        }, []),
       brandSlugs: brandSlugs.filter((slug) => slug._id).map((slug) => slug._id),
       filters: input.filters,
       rubricName,

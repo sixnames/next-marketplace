@@ -122,6 +122,18 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
           }
           return null;
         })}
+        {(categories || []).length > 0 ? (
+          <li className='mt-auto'>
+            <Link
+              onClick={hideDropdown}
+              prefetch={false}
+              href={`${ROUTE_CATALOGUE}/${rubricSlug}/${categoryPath}`}
+              className='flex items-center py-1 text-secondary-theme'
+            >
+              Показать все
+            </Link>
+          </li>
+        ) : null}
       </ul>
     </div>
   );

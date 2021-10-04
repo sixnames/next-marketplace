@@ -38,6 +38,8 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
   isSearchResult,
   attributeIndex,
   basePath,
+  brandSlugs,
+  categorySlugs,
 }) => {
   const router = useRouter();
   const { query } = router;
@@ -92,6 +94,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
         variant: BRAND_OPTIONS_MODAL,
         props: {
           onSubmit: navigateFromModal,
+          slugs: brandSlugs,
         },
       });
     }
@@ -102,6 +105,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
         variant: CATEGORY_OPTIONS_MODAL,
         props: {
           onSubmit: navigateFromModal,
+          slugs: categorySlugs,
         },
       });
     }
@@ -135,6 +139,8 @@ const CatalogueFilterCheckboxTree: React.FC<CatalogueFilterInterface> = ({
   isSearchResult,
   clearSlug,
   basePath,
+  brandSlugs,
+  categorySlugs,
 }) => {
   const { currency } = useLocaleContext();
 
@@ -205,6 +211,8 @@ const CatalogueFilterCheckboxTree: React.FC<CatalogueFilterInterface> = ({
               key={`${attribute._id}`}
               isSearchResult={isSearchResult}
               attributeIndex={attributeIndex}
+              brandSlugs={brandSlugs}
+              categorySlugs={categorySlugs}
             />
           );
         })}

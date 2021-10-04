@@ -285,6 +285,8 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
 
         <div className='grid lg:grid-cols-7 gap-12'>
           <CatalogueFilter
+            brandSlugs={state.brandSlugs}
+            categorySlugs={state.categorySlugs}
             basePath={state.basePath}
             companyId={companyId}
             filterLayoutVariant={catalogueData.catalogueFilterLayout}

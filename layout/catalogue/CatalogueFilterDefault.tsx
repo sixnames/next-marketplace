@@ -95,6 +95,8 @@ const CatalogueFilterDefault: React.FC<CatalogueFilterInterface> = ({
   isSearchResult,
   clearSlug,
   basePath,
+  brandSlugs,
+  categorySlugs,
 }) => {
   const { currency } = useLocaleContext();
 
@@ -165,6 +167,8 @@ const CatalogueFilterDefault: React.FC<CatalogueFilterInterface> = ({
               isSearchResult={isSearchResult}
               attributeIndex={attributeIndex}
               basePath={basePath}
+              brandSlugs={brandSlugs}
+              categorySlugs={categorySlugs}
             />
           );
         })}

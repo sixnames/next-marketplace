@@ -140,7 +140,6 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
           return (
             <div key={`${_id}`} className='mb-12'>
               <Accordion
-                isOpen
                 title={`${name}`}
                 titleRight={
                   <ContentItemControls
@@ -192,7 +191,6 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
                 return (
                   <div key={`${_id}`} className='mb-12'>
                     <Accordion
-                      isOpen
                       title={`${name}`}
                       titleRight={
                         <ContentItemControls

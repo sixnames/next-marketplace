@@ -13,8 +13,8 @@ import TableRowImage from 'components/TableRowImage';
 import { ROUTE_CMS } from 'config/common';
 import { useUserContext } from 'context/userContext';
 import {
-  AppPaginationInterface,
   CatalogueFilterAttributeInterface,
+  ConsoleRubricProductsInterface,
   ProductInterface,
   ShopInterface,
 } from 'db/uiInterfaces';
@@ -39,7 +39,7 @@ export type ShopAddProductsCreateChosenProduct = (product: ProductInterface) => 
 export type ShopAddProductsDeleteChosenProduct = (product: ProductInterface) => void;
 export type ShopAddProductsSetStepHandler = (step: ShopAddProductsStepType) => void;
 
-export interface ShopAddProductsListInterface extends AppPaginationInterface<ProductInterface> {
+export interface ShopAddProductsListInterface extends ConsoleRubricProductsInterface {
   shop: ShopInterface;
   chosen: ProductInterface[];
   createChosenProduct: ShopAddProductsCreateChosenProduct;
@@ -75,6 +75,8 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
   basePath,
   rubricSlug,
   rubricId,
+  brandSlugs,
+  categorySlugs,
 }) => {
   useReloadListener();
   const { me } = useUserContext();
@@ -199,6 +201,8 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
         <div className={`max-w-full`}>
           <div className={'mb-8'}>
             <AppContentFilter
+              brandSlugs={brandSlugs}
+              categorySlugs={categorySlugs}
               basePath={basePath}
               rubricSlug={rubricSlug}
               attributes={attributes}

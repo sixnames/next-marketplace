@@ -44,6 +44,7 @@ import {
   SUPPLIER_OPTIONS_MODAL,
   UPDATE_MY_PASSWORD_MODAL,
   USERS_SEARCH_MODAL,
+  CATEGORY_OPTIONS_MODAL,
 } from 'config/modalVariants';
 
 const AdultModal = dynamic(() => import('components/Modal/AdultModal'));
@@ -51,6 +52,7 @@ const BlogPostModal = dynamic(() => import('components/Modal/BlogPostModal'));
 const BlogAttributeModal = dynamic(() => import('components/Modal/BlogAttributeModal'));
 const CatalogueAdditionalOptionsModal = dynamic(() => import('./CatalogueAdditionalOptionsModal'));
 const BrandOptionsModal = dynamic(() => import('./BrandOptionsModal'));
+const CategoryOptionsModal = dynamic(() => import('./CategoryOptionsModal'));
 const BrandCollectionOptionsModal = dynamic(() => import('./BrandCollectionOptionsModal'));
 const ManufacturerOptionsModal = dynamic(() => import('./ManufacturerOptionsModal'));
 const SupplierOptionsModal = dynamic(() => import('./SupplierOptionsModal'));
@@ -163,6 +165,8 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
           {modalType === SUPPLIER_MODAL && <SupplierModal {...modalProps} />}
 
           {modalType === BRAND_OPTIONS_MODAL && <BrandOptionsModal {...modalProps} />}
+
+          {modalType === CATEGORY_OPTIONS_MODAL && <CategoryOptionsModal {...modalProps} />}
 
           {modalType === NAV_ITEM_MODAL && <NavItemModal {...modalProps} />}
 

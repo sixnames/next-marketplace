@@ -104,6 +104,44 @@ export const BRAND_COLLECTION_ALPHABET_OPTIONS_QUERY = gql`
   }
 `;
 
+export const CATEGORY_ALPHABET_OPTIONS_QUERY = gql`
+  query GetCategoriesAlphabetLists($input: CategoryAlphabetInput) {
+    getCategoriesAlphabetLists(input: $input) {
+      letter
+      docs {
+        _id
+        slug
+        name
+        categories {
+          _id
+          slug
+          name
+          categories {
+            _id
+            slug
+            name
+            categories {
+              _id
+              slug
+              name
+              categories {
+                _id
+                slug
+                name
+                categories {
+                  _id
+                  slug
+                  name
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
 export const MANUFACTURER_ALPHABET_OPTIONS_QUERY = gql`
   query GetManufacturerAlphabetLists($input: ManufacturerAlphabetInput) {
     getManufacturerAlphabetLists(input: $input) {

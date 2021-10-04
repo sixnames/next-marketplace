@@ -2,6 +2,7 @@ import FilterCheckbox from 'components/FilterCheckbox';
 import FilterCheckboxGroup from 'components/FilterCheckboxGroup';
 import { BrandOptionsModalInterface } from 'components/Modal/BrandOptionsModal';
 import { CatalogueAdditionalOptionsModalInterface } from 'components/Modal/CatalogueAdditionalOptionsModal';
+import { CategoryOptionsModalInterface } from 'components/Modal/CategoryOptionsModal';
 import { OptionsModalOptionInterface } from 'components/Modal/OptionsModal';
 import {
   CATALOGUE_BRAND_KEY,
@@ -10,7 +11,11 @@ import {
   CATALOGUE_PRICE_KEY,
   FILTER_SEPARATOR,
 } from 'config/common';
-import { BRAND_OPTIONS_MODAL, CATALOGUE_ADDITIONAL_OPTIONS_MODAL } from 'config/modalVariants';
+import {
+  BRAND_OPTIONS_MODAL,
+  CATALOGUE_ADDITIONAL_OPTIONS_MODAL,
+  CATEGORY_OPTIONS_MODAL,
+} from 'config/modalVariants';
 import { useLocaleContext } from 'context/localeContext';
 import {
   CatalogueFilterAttributePropsInterface,
@@ -85,6 +90,16 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
     if (isBrand) {
       showModal<BrandOptionsModalInterface>({
         variant: BRAND_OPTIONS_MODAL,
+        props: {
+          onSubmit: navigateFromModal,
+        },
+      });
+    }
+
+    // brand attribute options modal
+    if (isCategory) {
+      showModal<CategoryOptionsModalInterface>({
+        variant: CATEGORY_OPTIONS_MODAL,
         props: {
           onSubmit: navigateFromModal,
         },

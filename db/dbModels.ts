@@ -958,6 +958,7 @@ export interface CartPayloadModel {
 export type ManufacturersAlphabetListModel = AlphabetListModelType<ManufacturerModel>;
 export type SuppliersAlphabetListModel = AlphabetListModelType<SupplierModel>;
 export type BrandsAlphabetListModel = AlphabetListModelType<BrandModel>;
+export type CategoriesAlphabetListModel = AlphabetListModelType<CategoryModel>;
 export type BrandCollectionsAlphabetListModel = AlphabetListModelType<BrandCollectionModel>;
 export type OptionAlphabetListModel = AlphabetListModelType<OptionModel>;
 

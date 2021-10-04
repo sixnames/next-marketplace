@@ -2,9 +2,22 @@ import Accordion from 'components/Accordion';
 import FilterCheckbox from 'components/FilterCheckbox';
 import FilterLink from 'components/Link/FilterLink';
 import Link from 'components/Link/Link';
+import { BrandOptionsModalInterface } from 'components/Modal/BrandOptionsModal';
 import { CatalogueAdditionalOptionsModalInterface } from 'components/Modal/CatalogueAdditionalOptionsModal';
-import { CATALOGUE_FILTER_VISIBLE_OPTIONS, CATALOGUE_PRICE_KEY } from 'config/common';
-import { CATALOGUE_ADDITIONAL_OPTIONS_MODAL } from 'config/modalVariants';
+import { CategoryOptionsModalInterface } from 'components/Modal/CategoryOptionsModal';
+import { OptionsModalOptionInterface } from 'components/Modal/OptionsModal';
+import {
+  CATALOGUE_BRAND_KEY,
+  CATALOGUE_CATEGORY_KEY,
+  CATALOGUE_FILTER_VISIBLE_OPTIONS,
+  CATALOGUE_PRICE_KEY,
+  FILTER_SEPARATOR,
+} from 'config/common';
+import {
+  BRAND_OPTIONS_MODAL,
+  CATALOGUE_ADDITIONAL_OPTIONS_MODAL,
+  CATEGORY_OPTIONS_MODAL,
+} from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
 import { useLocaleContext } from 'context/localeContext';
@@ -12,6 +25,8 @@ import {
   CatalogueFilterAttributeInterface,
   CatalogueFilterAttributeOptionInterface,
 } from 'db/uiInterfaces';
+import { alwaysArray } from 'lib/arrayUtils';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 
 interface AppContentFilterAttributeInterface {
@@ -19,6 +34,8 @@ interface AppContentFilterAttributeInterface {
   basePath: string;
   rubricSlug: string;
   excludedParams: string[];
+  brandSlugs: string[];
+  categorySlugs: string[];
 }
 
 const AppContentFilterAttribute: React.FC<AppContentFilterAttributeInterface> = ({
@@ -26,8 +43,12 @@ const AppContentFilterAttribute: React.FC<AppContentFilterAttributeInterface> = 
   rubricSlug,
   basePath,
   excludedParams,
+  brandSlugs,
+  categorySlugs,
 }) => {
-  const { showModal } = useAppContext();
+  const router = useRouter();
+  const { query } = router;
+  const { showModal, hideModal } = useAppContext();
   const { currency } = useLocaleContext();
   const { configs } = useConfigContext();
   const maxVisibleOptions =
@@ -35,8 +56,73 @@ const AppContentFilterAttribute: React.FC<AppContentFilterAttributeInterface> = 
 
   const { name, clearSlug, options, isSelected, metric, slug, totalOptionsCount } = attribute;
 
+  const isCategory = slug === CATALOGUE_CATEGORY_KEY;
+  const isBrand = slug === CATALOGUE_BRAND_KEY;
   const isPrice = slug === CATALOGUE_PRICE_KEY;
+  const hasMoreOptions =
+    (totalOptionsCount > maxVisibleOptions || isBrand || isCategory) && !isPrice;
   const postfix = isPrice ? ` ${currency}` : metric ? ` ${metric}` : null;
+
+  const navigateFromModal = React.useCallback(
+    (selectedOptions: OptionsModalOptionInterface[]) => {
+      hideModal();
+      const selectedOptionsSlugs = selectedOptions.map(({ slug }) => {
+        return `${attribute.slug}${FILTER_SEPARATOR}${slug}`;
+      });
+      const nextParamsList = [...alwaysArray(query.filters), ...selectedOptionsSlugs].filter(
+        (param) => {
+          if (!excludedParams) {
+            return param;
+          }
+          return !excludedParams.includes(param);
+        },
+      );
+      const nextParams = nextParamsList.join('/');
+      router.push(`${basePath}/${nextParams}`).catch((e) => {
+        console.log(e);
+      });
+    },
+    [attribute.slug, basePath, hideModal, query.filters, router],
+  );
+
+  const showMoreHandler = () => {
+    // simple attribute options modal
+    if (hasMoreOptions) {
+      showModal<CatalogueAdditionalOptionsModalInterface>({
+        variant: CATALOGUE_ADDITIONAL_OPTIONS_MODAL,
+        props: {
+          basePath,
+          rubricSlug,
+          attributeSlug: attribute.slug,
+          notShowAsAlphabet: attribute.notShowAsAlphabet,
+          title: attribute.name,
+          excludedParams,
+        },
+      });
+    }
+
+    // brand attribute options modal
+    if (isBrand) {
+      showModal<BrandOptionsModalInterface>({
+        variant: BRAND_OPTIONS_MODAL,
+        props: {
+          onSubmit: navigateFromModal,
+          slugs: brandSlugs,
+        },
+      });
+    }
+
+    // brand attribute options modal
+    if (isCategory) {
+      showModal<CategoryOptionsModalInterface>({
+        variant: CATEGORY_OPTIONS_MODAL,
+        props: {
+          onSubmit: navigateFromModal,
+          slugs: categorySlugs,
+        },
+      });
+    }
+  };
 
   return (
     <div className={`mb-8`}>
@@ -56,23 +142,8 @@ const AppContentFilterAttribute: React.FC<AppContentFilterAttributeInterface> = 
         })}
       </div>
 
-      {totalOptionsCount > maxVisibleOptions && !isPrice ? (
-        <div
-          className='uppercase cursor-pointer hover:text-theme mt-6'
-          onClick={() => {
-            showModal<CatalogueAdditionalOptionsModalInterface>({
-              variant: CATALOGUE_ADDITIONAL_OPTIONS_MODAL,
-              props: {
-                rubricSlug,
-                excludedParams,
-                attributeSlug: attribute.slug,
-                notShowAsAlphabet: attribute.notShowAsAlphabet,
-                title: attribute.name,
-                basePath,
-              },
-            });
-          }}
-        >
+      {hasMoreOptions ? (
+        <div className='uppercase cursor-pointer hover:text-theme mt-6' onClick={showMoreHandler}>
           Показать еще
         </div>
       ) : null}
@@ -113,6 +184,8 @@ interface AppContentFilterInterface {
   basePath: string;
   rubricSlug: string;
   className?: string;
+  brandSlugs: string[];
+  categorySlugs: string[];
 }
 
 const AppContentFilter: React.FC<AppContentFilterInterface> = ({
@@ -123,6 +196,8 @@ const AppContentFilter: React.FC<AppContentFilterInterface> = ({
   basePath,
   rubricSlug,
   excludedParams,
+  brandSlugs,
+  categorySlugs,
 }) => {
   const { currency } = useLocaleContext();
 
@@ -183,6 +258,8 @@ const AppContentFilter: React.FC<AppContentFilterInterface> = ({
           {attributes.map((attribute) => {
             return (
               <AppContentFilterAttribute
+                brandSlugs={brandSlugs}
+                categorySlugs={categorySlugs}
                 excludedParams={excludedParams}
                 basePath={basePath}
                 rubricSlug={rubricSlug}

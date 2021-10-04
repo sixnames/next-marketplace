@@ -137,7 +137,6 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
           return (
             <div key={`${_id}`} className='mb-12'>
               <Accordion
-                isOpen
                 title={`${name}`}
                 titleRight={
                   <ContentItemControls
@@ -188,7 +187,6 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
                 return (
                   <div key={`${_id}`} className='mb-12'>
                     <Accordion
-                      isOpen
                       title={`${name}`}
                       titleRight={
                         <ContentItemControls

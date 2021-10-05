@@ -1,4 +1,4 @@
-import { DEFAULT_COMPANY_SLUG } from 'config/common';
+import { DEFAULT_COMPANY_SLUG, ROUTE_PROFILE } from 'config/common';
 import { COL_COMPANIES, COL_USERS } from 'db/collectionNames';
 import { CompanyModel, ObjectIdModel, UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -9,6 +9,7 @@ interface SendOrderCreatedEmailInterface
   orderItemId: string;
   customer: UserModel;
   companyId: ObjectIdModel;
+  orderObjectId: ObjectIdModel;
 }
 
 export const sendOrderCreatedEmail = async ({
@@ -18,6 +19,7 @@ export const sendOrderCreatedEmail = async ({
   companySiteSlug,
   city,
   locale,
+  orderObjectId,
 }: SendOrderCreatedEmailInterface) => {
   const { db } = await getDatabase();
   const usersCollection = db.collection<UserModel>(COL_USERS);
@@ -38,7 +40,7 @@ export const sendOrderCreatedEmail = async ({
       <div>
         <h2>Здравствуйте ${customer.name}!</h2>
         <h3>Спасибо за заказ!</h3>
-        <h4>Номер вашего заказа ${orderItemId}</h4>
+        <h4>Номер вашего заказа <a href='https://${process.env.DEFAULT_DOMAIN}${ROUTE_PROFILE}'>${orderItemId}</a></h4>
         <p>Наш менеджер свяжется с вами в ближайшее время, чтобы уточнить детали.</p>
       </div>
       `;
@@ -58,11 +60,13 @@ export const sendOrderCreatedEmail = async ({
   // admin email content
   const subject = 'Новый заказ';
   const text = `Поступил новый заказ № ${orderItemId}`;
-  const content = `
+  const content = (url: string) => {
+    return `
       <div>
-        <h1>Поступил новый заказ № ${orderItemId}</h1>
+        <h1>Поступил новый заказ № <a href='${url}'>${orderItemId}</a></h1>
       </div>
       `;
+  };
 
   // company admins
   if (company) {
@@ -85,7 +89,11 @@ export const sendOrderCreatedEmail = async ({
         locale,
         companySiteSlug,
         subject,
-        content,
+        content: content(
+          `https://${
+            process.env.DEFAULT_DOMAIN
+          }/console/${companyId.toHexString()}/orders/order/${orderObjectId.toHexString()}`,
+        ),
       });
     }
   }
@@ -106,7 +114,9 @@ export const sendOrderCreatedEmail = async ({
       locale,
       companySiteSlug: DEFAULT_COMPANY_SLUG,
       subject,
-      content,
+      content: content(
+        `https://${process.env.DEFAULT_DOMAIN}/cms/orders/${orderObjectId.toHexString()}`,
+      ),
     });
   }
 };

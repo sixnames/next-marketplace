@@ -20,6 +20,7 @@ export const REQUEST_METHOD_PATCH = 'PATCH' as RequestMethodType;
 
 export const ID_COUNTER_STEP = 1;
 export const ID_COUNTER_DIGITS = 6;
+export const ID_COUNTER_ORDER_DIGITS = 4;
 
 // Time
 export const ONE_SECOND = 1000;

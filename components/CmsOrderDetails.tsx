@@ -29,9 +29,10 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({ orderProduct }) 
 
   const { showModal } = useAppContext();
   const { showErrorNotification } = useNotificationsContext();
-  const { originalName, shopProduct, itemId, price, totalPrice, status, isCanceled } = orderProduct;
+  const { product, originalName, shopProduct, itemId, price, totalPrice, status, isCanceled } =
+    orderProduct;
   const productImageSrc = shopProduct
-    ? `${shopProduct?.product?.mainImage}`
+    ? `${product?.mainImage}`
     : `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`;
   const minAmount = 1;
 
@@ -49,7 +50,7 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({ orderProduct }) 
       className={`flex mb-4 py-8 bg-secondary rounded-lg pr-6 ${isCanceled ? 'opacity-60' : ''}`}
     >
       <div className='flex items-center justify-center px-2 w-28 lg:w-32'>
-        <div className='relative flex justify-center'>
+        <div className='relative flex justify-center flex-shrink-0 w-[120px]'>
           <Image
             objectFit={'contain'}
             objectPosition={'center'}
@@ -67,7 +68,7 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({ orderProduct }) 
         <div className='grid gap-4 lg:flex lg:items-baseline lg:justify-between'>
           <div>
             <div className='text-secondary-text mb-3 text-sm'>{`Артикул: ${itemId}`}</div>
-            <div className='text-lg font-bold flex-grow mb-2'>{originalName}</div>
+            <div className='text-lg font-bold flex-grow mb-2'>{product?.snippetTitle}</div>
             <div>
               {shopProduct ? (
                 <div>
@@ -130,7 +131,7 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({ orderProduct }) 
 
           <div className='flex flex-col gap-3'>
             {/*status*/}
-            <div className='flex items-baseline gap-2'>
+            <div className='flex items-baseline lg:justify-end gap-2'>
               <div className='text-secondary-text'>Статус</div>
               {status ? (
                 <div className='font-medium' style={status ? { color: status.color } : {}}>

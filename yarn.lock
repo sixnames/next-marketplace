@@ -2197,11 +2197,6 @@
   resolved "https://registry.yarnpkg.com/@types/trim/-/trim-0.1.1.tgz#6cf7fa12b9e605c4b3da25f02a2c19eb86a79a81"
   integrity sha512-msDmskBu0t+swWSnSMNjMo0Kgk5ZLbyMuEl3vxw7e/hKlJ+orQUV7J0S+FB5hp5T33GazBZIHAiyc6NNhpjf7A==
 
-"@types/uniqid@^5.3.1":
-  version "5.3.1"
-  resolved "https://registry.yarnpkg.com/@types/uniqid/-/uniqid-5.3.1.tgz#a3b39529183b355a9445e18f3cc509ad3a017c29"
-  integrity sha512-XNXc2abchKzhV8278+lxDOLEB6P8lslIczu7TTvY2+uyHWos3EVI6pNejJ5rLyOieZL22X6ZEepCOfXghSQw/w==
-
 "@types/websocket@1.0.2":
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@types/websocket/-/websocket-1.0.2.tgz#d2855c6a312b7da73ed16ba6781815bf30c6187a"
@@ -11641,7 +11636,7 @@ undeclared-identifiers@^1.1.2:
     lodash "^4.0.0"
     tslib "^2.2.0"
 
-uniqid@^5.0.3, uniqid@^5.3.0:
+uniqid@^5.0.3:
   version "5.3.0"
   resolved "https://registry.yarnpkg.com/uniqid/-/uniqid-5.3.0.tgz#4545f8e9c9a5830ef804e512cca6a9331e9761bf"
   integrity sha512-Jq8EzvAT8/CcLu8tzoSiylnzPkNhJJKpnMT964Dj1jI4pG4sKYP9aFVByNTp8KzMvYlW1Um63PCDqtOoujNzrA==

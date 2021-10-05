@@ -55,7 +55,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
         })}
 
         {showOptionsMoreLink ? (
-          <li className='mt-auto'>
+          <li>
             <Link
               onClick={hideDropdown}
               prefetch={false}

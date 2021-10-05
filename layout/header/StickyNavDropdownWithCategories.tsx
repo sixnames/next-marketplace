@@ -53,7 +53,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
         })}
 
         {showOptionsMoreLink ? (
-          <li className='mt-auto'>
+          <li>
             <Link
               onClick={hideDropdown}
               prefetch={false}
@@ -123,7 +123,7 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
           return null;
         })}
         {(categories || []).length > 0 ? (
-          <li className='mt-auto'>
+          <li>
             <Link
               onClick={hideDropdown}
               prefetch={false}

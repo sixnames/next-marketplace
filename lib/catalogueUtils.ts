@@ -66,6 +66,7 @@ import {
   CatalogueFilterAttributeOptionInterface,
   CatalogueProductPricesInterface,
   CatalogueProductsAggregationInterface,
+  CategoryInterface,
   OptionInterface,
   ProductAttributeInterface,
   ProductConnectionInterface,
@@ -783,7 +784,7 @@ export const getCatalogueData = async ({
     // args
     const { rubricSlug, search } = input;
     const companySlug = props.companySlug || DEFAULT_COMPANY_SLUG;
-    const searchCatalogueTitle = `Результаты поска по запросу "${search}"`;
+    const searchCatalogueTitle = `Результаты поиска по запросу "${search}"`;
 
     // cast selected filters
     const {
@@ -1603,6 +1604,32 @@ export const getCatalogueData = async ({
       clearSlug = basePath;
     }
 
+    // get seo text
+    const selectedCategories: CategoryInterface[] = [];
+    selectedAttributes.forEach((attribute) => {
+      const { options, slug } = attribute;
+      if (slug === CATALOGUE_CATEGORY_KEY) {
+        options.forEach((option) => {
+          const currentCategory = (categories || []).find(({ slug }) => {
+            return slug === option.slug;
+          });
+          if (currentCategory) {
+            selectedCategories.push(currentCategory);
+          }
+        });
+      }
+    });
+    let textTop: string | null | undefined = getFieldStringLocale(rubric.textTopI18n, locale);
+    let textBottom: string | null | undefined = getFieldStringLocale(rubric.textBottomI18n, locale);
+    if (selectedCategories.length > 0 && selectedCategories.length < 2 && selectedCategories[0]) {
+      textTop = getFieldStringLocale(selectedCategories[0].textTopI18n, locale);
+      textBottom = getFieldStringLocale(selectedCategories[0].textBottomI18n, locale);
+    }
+    if (selectedCategories.length > 1) {
+      textTop = null;
+      textBottom = null;
+    }
+
     // get layout configs
     const catalogueFilterLayout = search
       ? DEFAULT_LAYOUT
@@ -1647,6 +1674,8 @@ export const getCatalogueData = async ({
       filters: input.filters,
       rubricName,
       rubricSlug: rubric.slug,
+      textTop,
+      textBottom,
       products,
       catalogueTitle,
       catalogueFilterLayout,

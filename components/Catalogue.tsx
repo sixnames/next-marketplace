@@ -43,6 +43,8 @@ interface CatalogueConsumerInterface {
   isSearchResult?: boolean;
 }
 
+const seoTextClassName = 'prose max-w-full md:prose-lg lg:prose-xl';
+
 const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
   catalogueData,
   companyId,
@@ -285,6 +287,8 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
           {catalogueData.catalogueTitle}
         </Title>
 
+        {state.textTop ? <div className={`mb-12 ${seoTextClassName}`}>{state.textTop}</div> : null}
+
         <div className='grid lg:grid-cols-7 gap-12'>
           <CatalogueFilter
             brandSlugs={state.brandSlugs}
@@ -413,6 +417,10 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
             </div>
           </div>
         </div>
+
+        {state.textBottom ? (
+          <div className={`mt-16 ${seoTextClassName}`}>{state.textBottom}</div>
+        ) : null}
       </Inner>
 
       {isUpButtonVisible ? (

@@ -312,6 +312,8 @@ export interface RubricInterface extends RubricModel {
   variant?: RubricVariantInterface | null;
   attributesGroups?: AttributesGroupInterface[] | null;
   categories?: CategoryInterface[] | null;
+  textTop?: string | null;
+  textBottom?: string | null;
 }
 
 export interface CategoryInterface extends CategoryModel {
@@ -325,6 +327,8 @@ export interface CategoryInterface extends CategoryModel {
   categories?: CategoryInterface[] | null;
   parents?: CategoryInterface[] | null;
   icon?: IconModel | null;
+  textTop?: string | null;
+  textBottom?: string | null;
 }
 
 export interface ShopProductInterface extends ShopProductModel {
@@ -413,6 +417,8 @@ export interface CatalogueDataInterface {
   brandSlugs: string[];
   categorySlugs: string[];
   page: number;
+  textTop?: string | null;
+  textBottom?: string | null;
 }
 
 export interface CatalogueProductOptionInterface {

@@ -239,6 +239,8 @@ export const CATALOGUE_TOP_PRODUCTS_LIMIT = 20;
 export const CMS_FILTER_BRANDS_LIMIT = 20;
 export const CATALOGUE_TOP_FILTERS_LIMIT = 10;
 export const CMS_BRANDS_LIMIT = 100;
+export const CATALOGUE_SEO_TEXT_POSITION_TOP = 'top';
+export const CATALOGUE_SEO_TEXT_POSITION_BOTTOM = 'bottom';
 
 export const NEGATIVE_INDEX = -1;
 export const TABLE_IMAGE_WIDTH = 40;

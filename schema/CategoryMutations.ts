@@ -1,5 +1,6 @@
 import { getNextItemId } from 'lib/itemIdUtils';
 import { deleteDocumentsTree, getParentTreeIds } from 'lib/optionsUtils';
+import { checkCategorySeoTextUniqueness } from 'lib/textUniquenessUtils';
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
@@ -50,6 +51,8 @@ export const CreateCategoryInput = inputObjectType({
   name: 'CreateCategoryInput',
   definition(t) {
     t.nonNull.json('nameI18n');
+    t.json('textTopI18n');
+    t.json('textBottomI18n');
     t.objectId('parentId');
     t.nonNull.objectId('rubricId');
     t.nonNull.json('variants');
@@ -65,6 +68,8 @@ export const UpdateCategoryInput = inputObjectType({
   definition(t) {
     t.nonNull.objectId('categoryId');
     t.nonNull.json('nameI18n');
+    t.json('textTopI18n');
+    t.json('textBottomI18n');
     t.nonNull.objectId('rubricId');
     t.nonNull.json('variants');
     t.boolean('useChildNameInCatalogueTitle');
@@ -209,6 +214,13 @@ export const CategoryMutations = extendType({
             };
           }
 
+          // check text uniqueness
+          await checkCategorySeoTextUniqueness({
+            category: createdCategory,
+            textTopI18n: input.textTopI18n,
+            textBottomI18n: input.textBottomI18n,
+          });
+
           return {
             success: true,
             message: await getApiMessage('categories.create.success'),
@@ -281,6 +293,13 @@ export const CategoryMutations = extendType({
               message: await getApiMessage('categories.update.notFound'),
             };
           }
+
+          // check text uniqueness
+          await checkCategorySeoTextUniqueness({
+            category,
+            textTopI18n: input.textTopI18n,
+            textBottomI18n: input.textBottomI18n,
+          });
 
           // Check if category already exist
           const exist = await findDocumentByI18nField<CategoryModel>({

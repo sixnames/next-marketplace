@@ -279,6 +279,8 @@ export interface NexusGenInputs {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     parentId?: NexusGenScalars['ObjectId'] | null; // ObjectId
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
+    textBottomI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
+    textTopI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     useChildNameInCatalogueTitle?: boolean | null; // Boolean
     variants: NexusGenScalars['JSONObject']; // JSONObject!
   };
@@ -401,6 +403,8 @@ export interface NexusGenInputs {
     showBrandInNav?: boolean | null; // Boolean
     showCategoryInProductTitle?: boolean | null; // Boolean
     showRubricNameInProductTitle?: boolean | null; // Boolean
+    textBottomI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
+    textTopI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     variantId: NexusGenScalars['ObjectId']; // ObjectId!
   };
   CreateRubricVariantInput: {
@@ -653,6 +657,8 @@ export interface NexusGenInputs {
     gender?: NexusGenEnums['Gender'] | null; // Gender
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
+    textBottomI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
+    textTopI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     useChildNameInCatalogueTitle?: boolean | null; // Boolean
     variants: NexusGenScalars['JSONObject']; // JSONObject!
   };
@@ -949,6 +955,8 @@ export interface NexusGenInputs {
     showBrandInNav?: boolean | null; // Boolean
     showCategoryInProductTitle?: boolean | null; // Boolean
     showRubricNameInProductTitle?: boolean | null; // Boolean
+    textBottomI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
+    textTopI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     variantId: NexusGenScalars['ObjectId']; // ObjectId!
   };
   UpdateRubricVariantInput: {
@@ -1357,6 +1365,8 @@ export interface NexusGenFieldTypes {
     priorities: NexusGenScalars['JSONObject']; // JSONObject!
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
     slug: string; // String!
+    textBottomI18n: NexusGenScalars['JSONObject'] | null; // JSONObject
+    textTopI18n: NexusGenScalars['JSONObject'] | null; // JSONObject
     useChildNameInCatalogueTitle: boolean | null; // Boolean
     views: NexusGenScalars['JSONObject']; // JSONObject!
   };
@@ -2072,6 +2082,8 @@ export interface NexusGenFieldTypes {
     shortDescription: string; // String!
     shortDescriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
     slug: string; // String!
+    textBottomI18n: NexusGenScalars['JSONObject'] | null; // JSONObject
+    textTopI18n: NexusGenScalars['JSONObject'] | null; // JSONObject
     variant: NexusGenRootTypes['RubricVariant']; // RubricVariant!
     variantId: NexusGenScalars['ObjectId']; // ObjectId!
     views: NexusGenScalars['JSONObject']; // JSONObject!
@@ -2497,6 +2509,8 @@ export interface NexusGenFieldTypeNames {
     priorities: 'JSONObject';
     rubricId: 'ObjectId';
     slug: 'String';
+    textBottomI18n: 'JSONObject';
+    textTopI18n: 'JSONObject';
     useChildNameInCatalogueTitle: 'Boolean';
     views: 'JSONObject';
   };
@@ -3212,6 +3226,8 @@ export interface NexusGenFieldTypeNames {
     shortDescription: 'String';
     shortDescriptionI18n: 'JSONObject';
     slug: 'String';
+    textBottomI18n: 'JSONObject';
+    textTopI18n: 'JSONObject';
     variant: 'RubricVariant';
     variantId: 'ObjectId';
     views: 'JSONObject';

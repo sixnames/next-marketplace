@@ -26,6 +26,7 @@ const CategoryOptionsModal: React.FC<CategoryOptionsModalInterface> = ({
       loading={loading}
       error={error}
       title={title}
+      notShowAsAlphabet
       {...props}
     />
   );

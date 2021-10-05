@@ -71,10 +71,13 @@ export const CategoryQueries = extendType({
         const { db } = await getDatabase();
         const categoriesCollection = db.collection(COL_CATEGORIES);
         const { input } = args;
-        let query: Record<string, any> = {};
+        let query: Record<string, any> = {
+          parentId: null,
+        };
         if (input) {
           if (input.slugs) {
             query = {
+              parentId: null,
               slug: {
                 $in: input.slugs,
               },

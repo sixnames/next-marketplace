@@ -9,8 +9,10 @@ import {
 } from 'lib/sessionHelpers';
 import {
   DEFAULT_COUNTERS_OBJECT,
+  DEFAULT_LOCALE,
   OPTIONS_GROUP_VARIANT_COLOR,
   OPTIONS_GROUP_VARIANT_ENUMS,
+  SORT_ASC,
   SORT_DESC,
 } from 'config/common';
 import {
@@ -69,7 +71,21 @@ export const OptionsGroup = objectType({
       resolve: async (source): Promise<OptionModel[]> => {
         const { db } = await getDatabase();
         const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
-        const options = optionsCollection.find({ optionsGroupId: source._id }).toArray();
+        const options = await optionsCollection
+          .aggregate([
+            {
+              $match: {
+                optionsGroupId: source._id,
+                parentId: null,
+              },
+            },
+            {
+              $sort: {
+                [`nameI18n.${DEFAULT_LOCALE}`]: SORT_ASC,
+              },
+            },
+          ])
+          .toArray();
         return options;
       },
     });

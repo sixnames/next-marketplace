@@ -21,6 +21,12 @@ export const Option = objectType({
     });
     t.list.nonNull.field('options', {
       type: 'Option',
+      resolve: async (source): Promise<OptionModel[]> => {
+        const { db } = await getDatabase();
+        const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
+        const options = await optionsCollection.find({ parentId: source._id }).toArray();
+        return options;
+      },
     });
 
     // Option name translation field resolver

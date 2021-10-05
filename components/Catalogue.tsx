@@ -56,7 +56,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
   const { showErrorNotification } = useNotificationsContext();
   const [isUpButtonVisible, setIsUpButtonVisible] = React.useState<boolean>(false);
   const [isFilterVisible, setIsFilterVisible] = React.useState<boolean>(false);
-  const [catalogueView, setCatalogueVie] = React.useState<string>(CATALOGUE_VIEW_ROW);
+  const [catalogueView, setCatalogueVie] = React.useState<string>(CATALOGUE_VIEW_GRID);
   const [state, setState] = React.useState<CatalogueDataInterface>(() => {
     return catalogueData;
   });
@@ -89,7 +89,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
 
   React.useEffect(() => {
     const storageValue = window.localStorage.getItem(CATALOGUE_VIEW_STORAGE_KEY);
-    setCatalogueVie(storageValue || CATALOGUE_VIEW_ROW);
+    setCatalogueVie(storageValue || CATALOGUE_VIEW_GRID);
   }, []);
 
   const setIsRowViewHandler = React.useCallback((view: string) => {
@@ -97,7 +97,9 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
     window.localStorage.setItem(CATALOGUE_VIEW_STORAGE_KEY, view);
   }, []);
 
-  const isRowView = React.useMemo(() => catalogueView === CATALOGUE_VIEW_ROW, [catalogueView]);
+  const isRowView = React.useMemo(() => {
+    return catalogueView === CATALOGUE_VIEW_ROW;
+  }, [catalogueView]);
 
   React.useEffect(() => {
     setState(catalogueData);
@@ -365,12 +367,12 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
 
                 <div id={'catalogue-products'}>
                   <InfiniteScroll
+                    scrollThreshold={0.2}
+                    scrollableTarget={'#catalogue-products'}
                     className='catalogue__list pt-8 flex flex-wrap gap-[1.5rem]'
-                    // className='catalogue__list pt-8 grid sm:grid-cols-20 gap-6 sm:gap-10'
                     next={fetchMoreHandler}
                     hasMore={state.products.length < state.totalProducts}
                     dataLength={state.products.length}
-                    scrollableTarget={'#catalogue-products'}
                     loader={<span />}
                   >
                     {state.products.map((product, index) => {

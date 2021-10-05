@@ -33,6 +33,7 @@ const BrandCollectionOptionsModal: React.FC<BrandCollectionOptionsModalInterface
       error={error}
       title={title}
       initialEmptyListMessage={'У выбранного бренда нет коллекций'}
+      notShowAsAlphabet
       {...props}
     />
   );

@@ -2,14 +2,13 @@ import Button from 'components/Button';
 import FormikBarcodeInput from 'components/FormElements/FormikBarcodeInput/FormikBarcodeInput';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import Percent from 'components/Percent';
 import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
+import TextSeoInfo from 'components/TextSeoInfo';
 import { CONFIRM_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { ProductSeoModel } from 'db/dbModels';
 import { useFormikContext } from 'formik';
-import { noNaN } from 'lib/numbers';
 import * as React from 'react';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import FormikInput from 'components/FormElements/Input/FormikInput';
@@ -125,24 +124,11 @@ const ProductMainFields: React.FC<ProductMainFieldsInterface> = ({ seo }) => {
           }
 
           return (
-            <div className='mb-4 font-medium space-y-3'>
-              <div className='flex flex-wrap gap-4'>
-                <div>Кол-во слов</div>
-                <div>{noNaN(seoLocale.seoCheck?.count_words)}</div>
-              </div>
-
-              <div className='flex flex-wrap gap-4'>
-                <div>Кол-во символов</div>
-                <div>{noNaN(seoLocale.seoCheck?.count_chars_with_space)}</div>
-              </div>
-
-              <div className='flex flex-wrap gap-4'>
-                <div>Уникальность текста</div>
-                <div>
-                  <Percent value={seoLocale.textUnique} />
-                </div>
-              </div>
-            </div>
+            <TextSeoInfo
+              seoLocale={seoLocale}
+              className='mb-4 mt-4'
+              listClassName='flex gap-3 flex-wrap'
+            />
           );
         }}
       />

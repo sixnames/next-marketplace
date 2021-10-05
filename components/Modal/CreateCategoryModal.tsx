@@ -41,6 +41,7 @@ const CreateCategoryModal: React.FC<CreateCategoryModalInterface> = ({ parentId,
         initialValues={{
           rubricId,
           nameI18n: {},
+          useChildNameInCatalogueTitle: false,
           variants: GENDER_ENUMS.reduce((acc: OptionVariantsModel, gender) => {
             acc[gender] = {};
             return acc;

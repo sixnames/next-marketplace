@@ -1543,6 +1543,7 @@ export const getCatalogueData = async ({
           prefix: getFieldStringLocale(rubric.catalogueTitle.prefixI18n, locale),
           attributes: selectedFilters,
           capitaliseKeyWord: rubric.capitalise,
+          categories,
           locale,
           currency,
         });

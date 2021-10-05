@@ -4,9 +4,13 @@ import RubricMainFields from 'components/FormTemplates/RubricMainFields';
 import Inner from 'components/Inner';
 import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
-import { ROUTE_CMS } from 'config/common';
-import { COL_RUBRICS } from 'db/collectionNames';
-import { RubricModel } from 'db/dbModels';
+import {
+  CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+  CATALOGUE_SEO_TEXT_POSITION_TOP,
+  ROUTE_CMS,
+} from 'config/common';
+import { COL_RUBRIC_SEO, COL_RUBRICS } from 'db/collectionNames';
+import { ProductSeoModel, RubricModel, RubricSeoModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { RubricInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
@@ -30,9 +34,11 @@ import { updateRubricSchema } from 'validation/rubricSchema';
 
 interface RubricDetailsInterface {
   rubric: RubricInterface;
+  seoTop?: ProductSeoModel | null;
+  seoBottom?: ProductSeoModel | null;
 }
 
-const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric }) => {
+const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, seoTop, seoBottom }) => {
   const validationSchema = useValidationSchema({
     schema: updateRubricSchema,
   });
@@ -121,6 +127,8 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric }) => {
             return (
               <Form>
                 <RubricMainFields
+                  seoTop={seoTop}
+                  seoBottom={seoBottom}
                   rubricVariants={data.getAllRubricVariants}
                   genderOptions={data.getGenderOptions}
                 />
@@ -141,10 +149,10 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric }) => {
 
 interface RubricPageInterface extends PagePropsInterface, RubricDetailsInterface {}
 
-const RubricPage: NextPage<RubricPageInterface> = ({ pageUrls, rubric }) => {
+const RubricPage: NextPage<RubricPageInterface> = ({ pageUrls, rubric, seoBottom, seoTop }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <RubricDetails rubric={rubric} />
+      <RubricDetails rubric={rubric} seoBottom={seoBottom} seoTop={seoTop} />
     </CmsLayout>
   );
 };
@@ -155,6 +163,7 @@ export const getServerSideProps = async (
   const { query } = context;
   const { db } = await getDatabase();
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+  const rubricSeoCollection = db.collection<RubricSeoModel>(COL_RUBRIC_SEO);
 
   const { props } = await getAppInitialData({ context });
   if (!props || !query.rubricId) {
@@ -186,6 +195,18 @@ export const getServerSideProps = async (
     };
   }
 
+  const seoTop = await rubricSeoCollection.findOne({
+    rubricId: initialRubric._id,
+    position: CATALOGUE_SEO_TEXT_POSITION_TOP,
+    categoryId: null,
+  });
+
+  const seoBottom = await rubricSeoCollection.findOne({
+    rubricId: initialRubric._id,
+    position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+    categoryId: null,
+  });
+
   const { sessionLocale } = props;
   const rawRubric = {
     ...initialRubric,
@@ -196,6 +217,8 @@ export const getServerSideProps = async (
     props: {
       ...props,
       rubric: castDbData(rawRubric),
+      seoTop: castDbData(seoTop),
+      seoBottom: castDbData(seoBottom),
     },
   };
 };

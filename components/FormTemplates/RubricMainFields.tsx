@@ -1,19 +1,47 @@
 import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
+import TextSeoInfo from 'components/TextSeoInfo';
+import { ProductSeoModel } from 'db/dbModels';
 import { RubricVariant, SelectOption } from 'generated/apolloComponents';
 import * as React from 'react';
 
 interface RubricMainFieldsInterface {
   rubricVariants: Pick<RubricVariant, '_id' | 'name' | 'nameI18n'>[];
   genderOptions: Pick<SelectOption, '_id' | 'name'>[];
+  seoTop?: ProductSeoModel | null;
+  seoBottom?: ProductSeoModel | null;
 }
 const RubricMainFields: React.FC<RubricMainFieldsInterface> = ({
   genderOptions,
   rubricVariants,
+  seoTop,
+  seoBottom,
 }) => {
   return (
     <React.Fragment>
+      <FormikCheckboxLine label={'С заглавной буквы в заголовке'} name={'capitalise'} />
+
+      <FormikCheckboxLine
+        label={'Показывать название рубрики в заголовке товара'}
+        name={'showRubricNameInProductTitle'}
+      />
+
+      <FormikCheckboxLine
+        label={'Показывать названия категорий в заголовке товара'}
+        name={'showCategoryInProductTitle'}
+      />
+
+      <FormikCheckboxLine
+        label={'Показывать бренды в выпадающем меню каталога'}
+        name={'showBrandInNav'}
+      />
+
+      <FormikCheckboxLine
+        label={'Показывать бренды в фильтре каталога'}
+        name={'showBrandInFilter'}
+      />
+
       <FormikTranslationsInput
         label={'Название'}
         name={'nameI18n'}
@@ -79,26 +107,60 @@ const RubricMainFields: React.FC<RubricMainFieldsInterface> = ({
         options={rubricVariants}
       />
 
-      <FormikCheckboxLine label={'С заглавной буквы в заголовке'} name={'capitalise'} />
+      <FormikTranslationsInput
+        variant={'textarea'}
+        className='h-[30rem]'
+        label={'SEO текые вверху каталога'}
+        name={'textTopI18n'}
+        testId={'textTopI18n'}
+        additionalUi={(currentLocale) => {
+          if (!seoTop) {
+            return null;
+          }
+          const seoLocale = seoTop.locales.find(({ locale }) => {
+            return locale === currentLocale;
+          });
 
-      <FormikCheckboxLine
-        label={'Показывать название рубрики в заголовке товара'}
-        name={'showRubricNameInProductTitle'}
+          if (!seoLocale) {
+            return <div className='mb-4 font-medium'>Текст проверяется</div>;
+          }
+
+          return (
+            <TextSeoInfo
+              seoLocale={seoLocale}
+              className='mb-4 mt-4'
+              listClassName='flex gap-3 flex-wrap'
+            />
+          );
+        }}
       />
 
-      <FormikCheckboxLine
-        label={'Показывать названия категорий в заголовке товара'}
-        name={'showCategoryInProductTitle'}
-      />
+      <FormikTranslationsInput
+        variant={'textarea'}
+        className='h-[30rem]'
+        label={'SEO текые внизу каталога'}
+        name={'textBottomI18n'}
+        testId={'textBottomI18n'}
+        additionalUi={(currentLocale) => {
+          if (!seoBottom) {
+            return null;
+          }
+          const seoLocale = seoBottom.locales.find(({ locale }) => {
+            return locale === currentLocale;
+          });
 
-      <FormikCheckboxLine
-        label={'Показывать бренды в выпадающем меню каталога'}
-        name={'showBrandInNav'}
-      />
+          if (!seoLocale) {
+            return <div className='mb-4 font-medium'>Текст проверяется</div>;
+          }
 
-      <FormikCheckboxLine
-        label={'Показывать бренды в фильтре каталога'}
-        name={'showBrandInFilter'}
+          return (
+            <TextSeoInfo
+              seoLocale={seoLocale}
+              className='mb-4 mt-4'
+              listClassName='flex gap-3 flex-wrap'
+            />
+          );
+        }}
       />
     </React.Fragment>
   );

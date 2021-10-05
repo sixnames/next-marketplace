@@ -53,10 +53,10 @@ const productSeo: RubricSeoModel[] = [
       {
         locale: 'ru',
         uid: '6154cb45d400c',
-        textUnique: '68.00',
+        textUnique: '32.00',
         jsonResult: {
           date_check: '29.09.2021 23:24:17',
-          unique: 68,
+          unique: 32,
           urls: [],
         },
         spellCheck: [],
@@ -92,10 +92,10 @@ const productSeo: RubricSeoModel[] = [
       {
         locale: 'ru',
         uid: '6154cb45d400c',
-        textUnique: '78.00',
+        textUnique: '22.00',
         jsonResult: {
           date_check: '29.09.2021 23:24:17',
-          unique: 78,
+          unique: 22,
           urls: [],
         },
         spellCheck: [],

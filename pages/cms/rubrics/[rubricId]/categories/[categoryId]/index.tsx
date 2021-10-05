@@ -47,7 +47,16 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category }) => {
     onError: onErrorCallback,
   });
 
-  const { _id = '', nameI18n, rubricId, rubric, gender, image, variants } = category;
+  const {
+    _id = '',
+    nameI18n,
+    rubricId,
+    rubric,
+    gender,
+    image,
+    variants,
+    useChildNameInCatalogueTitle,
+  } = category;
   const variantKeys = Object.keys(variants);
 
   const initialValues: UpdateCategoryInput = {
@@ -55,6 +64,7 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category }) => {
     categoryId: _id,
     nameI18n,
     gender: gender ? (`${gender}` as Gender) : null,
+    useChildNameInCatalogueTitle,
     variants:
       variantKeys.length > 0
         ? variants

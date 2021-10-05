@@ -747,6 +747,7 @@ export interface CategoryModel extends CountersModel {
   parentId?: ObjectIdModel | null;
   image?: string | null;
   variants: OptionVariantsModel;
+  useChildNameInCatalogueTitle?: boolean | null;
 }
 
 export interface ShopProductModel

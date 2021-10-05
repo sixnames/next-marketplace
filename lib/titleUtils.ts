@@ -7,6 +7,7 @@ import {
   ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD,
   GENDER_IT,
   CATALOGUE_PRICE_KEY,
+  CATALOGUE_CATEGORY_KEY,
 } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { GenderModel } from 'db/dbModels';
@@ -30,6 +31,8 @@ interface GetTitleOptionNamesInterface {
   option: TitleOptionInterface;
   finalGender: string;
   acc: string[];
+  isCategory: boolean;
+  categories?: CategoryInterface[] | null;
 }
 
 export function getTitleOptionNames({
@@ -37,26 +40,41 @@ export function getTitleOptionNames({
   locale,
   option,
   acc,
+  isCategory,
+  categories,
 }: GetTitleOptionNamesInterface): string[] {
   const variant = get(option, `variants.${finalGender}.${locale}`);
   const name = getFieldStringLocale(option.nameI18n, locale);
+  const childOptions = option.options || [];
   const newAcc = [...acc];
   let optionValue = name;
   if (variant) {
     optionValue = variant;
   }
-  newAcc.push(optionValue);
+
+  if (isCategory) {
+    const currentCategory = (categories || []).find(({ slug }) => {
+      return slug === option.slug;
+    });
+    if (!currentCategory?.useChildNameInCatalogueTitle || childOptions.length < 1) {
+      newAcc.push(optionValue);
+    }
+  } else {
+    newAcc.push(optionValue);
+  }
 
   if (!option.options || option.options.length < 1) {
     return newAcc;
   }
 
-  return (option.options || []).reduce((childAcc: string[], childOption) => {
+  return childOptions.reduce((childAcc: string[], childOption) => {
     const childOptionResult = getTitleOptionNames({
       finalGender,
       locale,
       option: childOption,
       acc: [],
+      isCategory,
+      categories,
     });
     return [...childAcc, ...childOptionResult];
   }, newAcc);
@@ -79,6 +97,7 @@ interface GenerateTitleInterface {
   locale: string;
   currency?: string;
   capitaliseKeyWord?: boolean | null;
+  categories?: CategoryInterface[] | null;
   log?: boolean;
 }
 
@@ -94,6 +113,7 @@ export function generateTitle({
   positionFieldName,
   attributeVisibilityFieldName,
   attributeNameVisibilityFieldName,
+  categories,
 }: GenerateTitleInterface): string {
   // get title attributes separator
   const titleSeparator = getConstantTranslation(`catalogueTitleSeparator.${locale}`);
@@ -142,6 +162,7 @@ export function generateTitle({
   (attributes || []).forEach((attribute) => {
     const { nameI18n, options, capitalise, slug, metric } = attribute;
     const isPrice = slug === CATALOGUE_PRICE_KEY;
+    const isCategory = slug === CATALOGUE_CATEGORY_KEY;
     const visible = get(attribute, attributeVisibilityFieldName);
     if (!visible || !options || options.length < 1) {
       return;
@@ -166,6 +187,8 @@ export function generateTitle({
         locale,
         option,
         finalGender,
+        isCategory,
+        categories,
         acc: [],
       });
       const separator = optionResult.length > 0 && acc.length > 0 ? [titleSeparator] : [];

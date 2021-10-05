@@ -14,6 +14,7 @@ export const Category = objectType({
     t.string('image');
     t.nonNull.objectId('rubricId');
     t.objectId('parentId');
+    t.boolean('useChildNameInCatalogueTitle');
     t.nonNull.json('views');
     t.nonNull.json('priorities');
     t.nonNull.field('name', {

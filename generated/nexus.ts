@@ -279,6 +279,7 @@ export interface NexusGenInputs {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     parentId?: NexusGenScalars['ObjectId'] | null; // ObjectId
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
+    useChildNameInCatalogueTitle?: boolean | null; // Boolean
     variants: NexusGenScalars['JSONObject']; // JSONObject!
   };
   CreateCompanyInput: {
@@ -652,6 +653,7 @@ export interface NexusGenInputs {
     gender?: NexusGenEnums['Gender'] | null; // Gender
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
+    useChildNameInCatalogueTitle?: boolean | null; // Boolean
     variants: NexusGenScalars['JSONObject']; // JSONObject!
   };
   UpdateCityInCountryInput: {
@@ -1355,6 +1357,7 @@ export interface NexusGenFieldTypes {
     priorities: NexusGenScalars['JSONObject']; // JSONObject!
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
     slug: string; // String!
+    useChildNameInCatalogueTitle: boolean | null; // Boolean
     views: NexusGenScalars['JSONObject']; // JSONObject!
   };
   CategoryPayload: {
@@ -2494,6 +2497,7 @@ export interface NexusGenFieldTypeNames {
     priorities: 'JSONObject';
     rubricId: 'ObjectId';
     slug: 'String';
+    useChildNameInCatalogueTitle: 'Boolean';
     views: 'JSONObject';
   };
   CategoryPayload: {

@@ -25,6 +25,7 @@ export const sendOrderCanceledEmail = async ({
   const company = await companiesCollection.findOne({
     _id: companyId,
   });
+  const subject = 'Заказ отменён.';
 
   // customer
   if (customer && customer.notifications?.canceledOrder?.email) {
@@ -38,7 +39,6 @@ export const sendOrderCanceledEmail = async ({
         <h4>Заказ № ${orderItemId} подтверждён.</h4>
       </div>
       `;
-    const subject = 'Заказ отменён.';
 
     await sendEmail({
       text,
@@ -52,7 +52,6 @@ export const sendOrderCanceledEmail = async ({
   }
 
   // admin email content
-  const subject = 'Заказ отменён.';
   const text = `Заказ № ${orderItemId} отменён.`;
   const content = `
       <div>

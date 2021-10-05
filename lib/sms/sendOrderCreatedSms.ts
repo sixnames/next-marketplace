@@ -8,6 +8,7 @@ interface SendOrderCreatedSmsInterface extends Omit<SmsSenderInterface, 'text' |
   orderItemId: string;
   customer: UserModel;
   companyId: ObjectIdModel;
+  orderObjectId: ObjectIdModel;
 }
 
 export async function sendOrderCreatedSms({

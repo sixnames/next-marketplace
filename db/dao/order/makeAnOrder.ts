@@ -388,6 +388,7 @@ export async function makeAnOrder({
           orderItemId: order.orderId,
           companyId: order.companyId,
           companySiteSlug: order.companySiteSlug,
+          orderObjectId: order._id,
           city,
           locale,
         };

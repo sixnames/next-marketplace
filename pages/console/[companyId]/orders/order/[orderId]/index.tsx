@@ -20,9 +20,11 @@ import { OrderInterface } from 'db/uiInterfaces';
 import { useCancelOrder, useConfirmOrder } from 'hooks/mutations/order/useOrderMutations';
 import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/console/ConsoleLayout';
+import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
 import { castOrderStatus } from 'lib/orderUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
+import { generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
@@ -203,6 +205,7 @@ export const getServerSideProps = async (
                 ],
               },
             },
+            ...shopProductFieldsPipeline('$productId'),
             {
               $lookup: {
                 from: COL_ORDER_STATUSES,
@@ -234,6 +237,8 @@ export const getServerSideProps = async (
     };
   }
 
+  const locale = props.sessionLocale;
+
   const order: OrderInterface = {
     ...initialOrder,
     totalPrice: initialOrder.products?.reduce((acc: number, { totalPrice, status }) => {
@@ -250,13 +255,33 @@ export const getServerSideProps = async (
       initialStatus: initialOrder.status,
       locale: props.sessionLocale,
     }),
-    products: initialOrder.products?.map((product) => {
+    products: initialOrder.products?.map((orderProduct) => {
+      // title
+      const snippetTitle = generateSnippetTitle({
+        locale,
+        brand: orderProduct.product?.brand,
+        rubricName: getFieldStringLocale(orderProduct.product?.rubric?.nameI18n, locale),
+        showRubricNameInProductTitle: orderProduct.product?.rubric?.showRubricNameInProductTitle,
+        showCategoryInProductTitle: orderProduct.product?.rubric?.showCategoryInProductTitle,
+        attributes: orderProduct.product?.attributes || [],
+        categories: orderProduct.product?.categories,
+        titleCategoriesSlugs: orderProduct.product?.titleCategoriesSlugs,
+        originalName: `${orderProduct.product?.originalName}`,
+        defaultGender: `${orderProduct.product?.gender}`,
+      });
+
       return {
-        ...product,
+        ...orderProduct,
         status: castOrderStatus({
-          initialStatus: product.status,
+          initialStatus: orderProduct.status,
           locale: props.sessionLocale,
         }),
+        product: orderProduct.product
+          ? {
+              ...orderProduct.product,
+              snippetTitle,
+            }
+          : null,
       };
     }),
     customer: initialOrder.customer

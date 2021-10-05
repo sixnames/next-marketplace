@@ -18,6 +18,7 @@ import {
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
 } from 'db/collectionNames';
+import { shopProductFieldsPipeline } from 'db/dao/constantPipelines';
 import { OrderModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { OrderInterface, OrderProductInterface } from 'db/uiInterfaces';
@@ -26,6 +27,7 @@ import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayo
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { castOrderStatus } from 'lib/orderUtils';
+import { generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 import Image from 'next/image';
 import * as React from 'react';
@@ -44,7 +46,8 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({
   testId,
 }) => {
   const { addProductToCart, getShopProductInCartCount } = useSiteContext();
-  const { originalName, shopProduct, itemId, price, amount, totalPrice, productId } = orderProduct;
+  const { originalName, product, shopProduct, itemId, price, amount, totalPrice, productId } =
+    orderProduct;
   const rubricSlug = `${shopProduct?.rubricSlug}`;
   const slug = `${shopProduct?.product?.slug}`;
 
@@ -55,14 +58,14 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({
     productNotExist || addToCartAmount + inCartCount > noNaN(shopProduct?.available);
 
   const productImageSrc = shopProduct
-    ? `${shopProduct.product?.mainImage}`
+    ? `${product?.mainImage}`
     : `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`;
   const imageWidth = 35;
   const imageHeight = 120;
 
   return (
     <div className='relative py-10 flex pr-[calc(var(--controlButtonHeightBig)+1rem)]'>
-      <div className='flex items-center justify-center px-4 w-20 lg:w-28'>
+      <div className='flex items-center justify-center px-4 w-20 lg:w-28 flex-shrink-0 w-[120px]'>
         <Image
           src={productImageSrc}
           alt={`${originalName}`}
@@ -75,7 +78,7 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({
           className='block absolute z-10 inset-0 text-indent-full'
           href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
         >
-          {originalName}
+          {product?.snippetTitle}
         </Link>
       </div>
 
@@ -89,7 +92,7 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({
               className='block text-primary-text hover:no-underline hover:text-primary-text'
               href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
             >
-              {originalName}
+              {product?.snippetTitle}
             </Link>
           </div>
 
@@ -340,6 +343,7 @@ export async function getServerSideProps(
                 ],
               },
             },
+            ...shopProductFieldsPipeline('$productId'),
             {
               $lookup: {
                 from: COL_ORDER_STATUSES,
@@ -367,41 +371,61 @@ export async function getServerSideProps(
     ])
     .toArray();
 
+  const locale = props.sessionLocale;
   const orders = orderAggregation.map((order) => {
     return {
       ...order,
       totalPrice: order.products?.reduce((acc: number, { totalPrice, status }) => {
         const productStatus = castOrderStatus({
           initialStatus: status,
-          locale: props.sessionLocale,
+          locale,
         });
         if (productStatus && productStatus.isCanceled) {
           return acc;
         }
         return acc + totalPrice;
       }, 0),
-      products: order.products?.reduce((acc: OrderProductInterface[], product) => {
+      products: order.products?.reduce((acc: OrderProductInterface[], orderProduct) => {
         const productStatus = castOrderStatus({
-          initialStatus: product.status,
-          locale: props.sessionLocale,
+          initialStatus: orderProduct.status,
+          locale,
         });
         if (!productStatus || productStatus.isCanceled) {
           return acc;
         }
+
+        // title
+        const snippetTitle = generateSnippetTitle({
+          locale,
+          brand: orderProduct.product?.brand,
+          rubricName: getFieldStringLocale(orderProduct.product?.rubric?.nameI18n, locale),
+          showRubricNameInProductTitle: orderProduct.product?.rubric?.showRubricNameInProductTitle,
+          showCategoryInProductTitle: orderProduct.product?.rubric?.showCategoryInProductTitle,
+          attributes: orderProduct.product?.attributes || [],
+          categories: orderProduct.product?.categories,
+          titleCategoriesSlugs: orderProduct.product?.titleCategoriesSlugs,
+          originalName: `${orderProduct.product?.originalName}`,
+          defaultGender: `${orderProduct.product?.gender}`,
+        });
+
         return [
           ...acc,
           {
-            ...product,
+            ...orderProduct,
             status: productStatus,
+            product: orderProduct.product
+              ? {
+                  ...orderProduct.product,
+                  snippetTitle,
+                }
+              : null,
           },
         ];
       }, []),
-      status: order.status
-        ? {
-            ...order.status,
-            name: getFieldStringLocale(order.status.nameI18n, props.sessionLocale),
-          }
-        : null,
+      status: castOrderStatus({
+        initialStatus: order.status,
+        locale,
+      }),
     };
   });
 

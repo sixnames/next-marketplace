@@ -26,6 +26,7 @@ const BrandOptionsModal: React.FC<BrandOptionsModalInterface> = ({
       loading={loading}
       error={error}
       title={title}
+      notShowAsAlphabet
       {...props}
     />
   );

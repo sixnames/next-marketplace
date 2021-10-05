@@ -82,7 +82,7 @@ const AppContentFilterAttribute: React.FC<AppContentFilterAttributeInterface> = 
         console.log(e);
       });
     },
-    [attribute.slug, basePath, hideModal, query.filters, router],
+    [attribute.slug, basePath, excludedParams, hideModal, query.filters, router],
   );
 
   const showMoreHandler = () => {

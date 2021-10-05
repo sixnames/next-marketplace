@@ -349,13 +349,24 @@ export const getServerSideProps = async (
     };
   }
 
+  const options = getTreeFromList<OptionInterface>({
+    list: optionsGroupResult.options,
+    childrenFieldName: 'options',
+  });
+
+  /*let count = options.length;
+  function test(option: OptionInterface) {
+    count = count + (option.options || []).length;
+    (option.options || []).forEach(test);
+  }
+
+  options.forEach(test);
+  console.log(count);*/
+
   const optionsGroup: OptionsGroupInterface = {
     ...optionsGroupResult,
     name: getFieldStringLocale(optionsGroupResult.nameI18n, props.sessionLocale),
-    options: getTreeFromList<OptionInterface>({
-      list: optionsGroupResult.options,
-      childrenFieldName: 'options',
-    }),
+    options,
     variantName: getConstantTranslation(
       `selectsOptions.optionsGroupVariant.${optionsGroupResult.variant}.${props.sessionLocale}`,
     ),

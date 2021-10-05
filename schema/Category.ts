@@ -11,6 +11,8 @@ export const Category = objectType({
     t.nonNull.objectId('_id');
     t.nonNull.string('slug');
     t.nonNull.json('nameI18n');
+    t.json('textTopI18n');
+    t.json('textBottomI18n');
     t.string('image');
     t.nonNull.objectId('rubricId');
     t.objectId('parentId');

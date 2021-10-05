@@ -1,5 +1,6 @@
 import { deleteAlgoliaObjects } from 'lib/algoliaUtils';
 import { deleteUpload } from 'lib/assetUtils/assetUtils';
+import { checkRubricSeoTextUniqueness } from 'lib/textUniquenessUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   AttributeModel,
@@ -75,6 +76,8 @@ export const CreateRubricInput = inputObjectType({
     t.boolean('showBrandInFilter');
     t.nonNull.json('descriptionI18n');
     t.nonNull.json('shortDescriptionI18n');
+    t.json('textTopI18n');
+    t.json('textBottomI18n');
     t.nonNull.objectId('variantId');
     t.nonNull.field('catalogueTitle', {
       type: 'RubricCatalogueTitleInput',
@@ -94,6 +97,8 @@ export const UpdateRubricInput = inputObjectType({
     t.nonNull.json('nameI18n');
     t.nonNull.json('descriptionI18n');
     t.nonNull.json('shortDescriptionI18n');
+    t.json('textTopI18n');
+    t.json('textBottomI18n');
     t.nonNull.objectId('variantId');
     t.nonNull.boolean('active');
     t.nonNull.field('catalogueTitle', {
@@ -205,6 +210,13 @@ export const RubricMutations = extendType({
             };
           }
 
+          // check text uniqueness
+          await checkRubricSeoTextUniqueness({
+            rubric: createdRubric,
+            textTopI18n: input.textTopI18n,
+            textBottomI18n: input.textBottomI18n,
+          });
+
           return {
             success: true,
             message: await getApiMessage('rubrics.create.success'),
@@ -265,6 +277,13 @@ export const RubricMutations = extendType({
               message: await getApiMessage('rubrics.update.notFound'),
             };
           }
+
+          // check text uniqueness
+          await checkRubricSeoTextUniqueness({
+            rubric,
+            textTopI18n: input.textTopI18n,
+            textBottomI18n: input.textBottomI18n,
+          });
 
           // Check if rubric already exist
           const exist = await findDocumentByI18nField<RubricModel>({

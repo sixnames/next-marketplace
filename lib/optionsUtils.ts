@@ -31,14 +31,19 @@ export function getTreeFromList<T extends TreeItemInterface>({
   locale,
   childrenFieldName,
 }: GetTreeFromListInterface<T>): T[] {
-  const parentsList = (list || []).filter((listItem) =>
-    parentId ? listItem.parentId?.equals(parentId) : !listItem.parentId,
-  );
+  const parentsList = (list || []).filter((listItem) => {
+    return parentId ? listItem.parentId?.equals(parentId) : !listItem.parentId;
+  });
+
   return parentsList.map((parent) => {
     return {
       ...parent,
       name: getFieldStringLocale(parent.nameI18n, locale),
-      [childrenFieldName]: getTreeFromList({ list: list, parentId: parent._id, childrenFieldName }),
+      [childrenFieldName]: getTreeFromList({
+        list: list,
+        parentId: parent._id,
+        childrenFieldName,
+      }),
     };
   });
 }

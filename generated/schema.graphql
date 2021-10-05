@@ -313,6 +313,8 @@ type Category {
   priorities: JSONObject!
   rubricId: ObjectId!
   slug: String!
+  textBottomI18n: JSONObject
+  textTopI18n: JSONObject
   useChildNameInCatalogueTitle: Boolean
   views: JSONObject!
 }
@@ -508,6 +510,8 @@ input CreateCategoryInput {
   nameI18n: JSONObject!
   parentId: ObjectId
   rubricId: ObjectId!
+  textBottomI18n: JSONObject
+  textTopI18n: JSONObject
   useChildNameInCatalogueTitle: Boolean
   variants: JSONObject!
 }
@@ -630,6 +634,8 @@ input CreateRubricInput {
   showBrandInNav: Boolean
   showCategoryInProductTitle: Boolean
   showRubricNameInProductTitle: Boolean
+  textBottomI18n: JSONObject
+  textTopI18n: JSONObject
   variantId: ObjectId!
 }
 
@@ -2231,6 +2237,8 @@ type Rubric {
   shortDescription: String!
   shortDescriptionI18n: JSONObject!
   slug: String!
+  textBottomI18n: JSONObject
+  textTopI18n: JSONObject
   variant: RubricVariant!
   variantId: ObjectId!
   views: JSONObject!
@@ -2556,6 +2564,8 @@ input UpdateCategoryInput {
   gender: Gender
   nameI18n: JSONObject!
   rubricId: ObjectId!
+  textBottomI18n: JSONObject
+  textTopI18n: JSONObject
   useChildNameInCatalogueTitle: Boolean
   variants: JSONObject!
 }
@@ -2852,6 +2862,8 @@ input UpdateRubricInput {
   showBrandInNav: Boolean
   showCategoryInProductTitle: Boolean
   showRubricNameInProductTitle: Boolean
+  textBottomI18n: JSONObject
+  textTopI18n: JSONObject
   variantId: ObjectId!
 }
 

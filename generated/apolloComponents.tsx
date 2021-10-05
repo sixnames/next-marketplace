@@ -348,6 +348,8 @@ export type Category = {
   _id: Scalars['ObjectId'];
   slug: Scalars['String'];
   nameI18n: Scalars['JSONObject'];
+  textTopI18n?: Maybe<Scalars['JSONObject']>;
+  textBottomI18n?: Maybe<Scalars['JSONObject']>;
   image?: Maybe<Scalars['String']>;
   rubricId: Scalars['ObjectId'];
   parentId?: Maybe<Scalars['ObjectId']>;
@@ -548,6 +550,8 @@ export type CreateBrandInput = {
 
 export type CreateCategoryInput = {
   nameI18n: Scalars['JSONObject'];
+  textTopI18n?: Maybe<Scalars['JSONObject']>;
+  textBottomI18n?: Maybe<Scalars['JSONObject']>;
   parentId?: Maybe<Scalars['ObjectId']>;
   rubricId: Scalars['ObjectId'];
   variants: Scalars['JSONObject'];
@@ -672,6 +676,8 @@ export type CreateRubricInput = {
   showBrandInFilter?: Maybe<Scalars['Boolean']>;
   descriptionI18n: Scalars['JSONObject'];
   shortDescriptionI18n: Scalars['JSONObject'];
+  textTopI18n?: Maybe<Scalars['JSONObject']>;
+  textBottomI18n?: Maybe<Scalars['JSONObject']>;
   variantId: Scalars['ObjectId'];
   catalogueTitle: RubricCatalogueTitleInput;
 };
@@ -2521,6 +2527,8 @@ export type Rubric = {
   nameI18n: Scalars['JSONObject'];
   descriptionI18n: Scalars['JSONObject'];
   shortDescriptionI18n: Scalars['JSONObject'];
+  textTopI18n?: Maybe<Scalars['JSONObject']>;
+  textBottomI18n?: Maybe<Scalars['JSONObject']>;
   slug: Scalars['String'];
   icon?: Maybe<Scalars['String']>;
   image?: Maybe<Scalars['String']>;
@@ -2871,6 +2879,8 @@ export type UpdateBrandInput = {
 export type UpdateCategoryInput = {
   categoryId: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
+  textTopI18n?: Maybe<Scalars['JSONObject']>;
+  textBottomI18n?: Maybe<Scalars['JSONObject']>;
   rubricId: Scalars['ObjectId'];
   variants: Scalars['JSONObject'];
   useChildNameInCatalogueTitle?: Maybe<Scalars['Boolean']>;
@@ -3167,6 +3177,8 @@ export type UpdateRubricInput = {
   nameI18n: Scalars['JSONObject'];
   descriptionI18n: Scalars['JSONObject'];
   shortDescriptionI18n: Scalars['JSONObject'];
+  textTopI18n?: Maybe<Scalars['JSONObject']>;
+  textBottomI18n?: Maybe<Scalars['JSONObject']>;
   variantId: Scalars['ObjectId'];
   active: Scalars['Boolean'];
   catalogueTitle: RubricCatalogueTitleInput;

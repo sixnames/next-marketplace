@@ -292,6 +292,12 @@ export const ProductMutations = extendType({
               return;
             }
 
+            // check description uniqueness
+            await checkProductDescriptionUniqueness({
+              product: createdProduct,
+              cardDescriptionI18n: values.cardDescriptionI18n,
+            });
+
             mutationPayload = {
               success: true,
               message: await getApiMessage('products.create.success'),

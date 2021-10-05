@@ -32,7 +32,7 @@ import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
 import generator from 'generate-password';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getNextItemId } from 'lib/itemIdUtils';
+import { getNextItemId, getOrderNextItemId } from 'lib/itemIdUtils';
 import { getUserInitialNotificationsConf } from 'lib/getUserNotificationsTemplate';
 import { sendOrderCreatedEmail } from 'lib/email/sendOrderCreatedEmail';
 import { sendSignUpEmail } from 'lib/email/sendSignUpEmail';
@@ -45,7 +45,6 @@ import {
 } from 'lib/sessionHelpers';
 import { sendOrderCreatedSms } from 'lib/sms/sendOrderCreatedSms';
 import { ObjectId } from 'mongodb';
-import uniqid from 'uniqid';
 import { makeAnOrderSchema } from 'validation/orderSchema';
 
 export interface MakeAnOrderPayloadModel {
@@ -246,7 +245,8 @@ export async function makeAnOrder({
         });
 
         if (!existingOrder) {
-          const uniqueOrderId = uniqid.time();
+          const companySiteSlug = input.companySlug || DEFAULT_COMPANY_SLUG;
+          const uniqueOrderId = await getOrderNextItemId(companySiteSlug);
 
           // create new order
           existingOrder = {
@@ -255,7 +255,7 @@ export async function makeAnOrder({
             itemId: await getNextItemId(COL_ORDERS),
             statusId: initialStatus._id,
             customerId: user._id,
-            companySiteSlug: input.companySlug || DEFAULT_COMPANY_SLUG,
+            companySiteSlug,
             comment: input.comment,
             productIds: [product._id],
             shopProductIds: [shopProduct._id],

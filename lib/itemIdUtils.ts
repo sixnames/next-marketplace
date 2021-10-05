@@ -1,6 +1,6 @@
-import { COL_ID_COUNTERS } from 'db/collectionNames';
+import { COL_ID_COUNTERS, COL_ORDERS } from 'db/collectionNames';
 import { IdCounterModel } from 'db/dbModels';
-import { ID_COUNTER_STEP, ID_COUNTER_DIGITS } from 'config/common';
+import { ID_COUNTER_STEP, ID_COUNTER_DIGITS, ID_COUNTER_ORDER_DIGITS } from 'config/common';
 import { getDatabase } from 'db/mongodb';
 import addZero from 'add-zero';
 
@@ -39,7 +39,10 @@ export async function setCollectionItemId(collectionName: string, counter: numbe
   );
 }
 
-export async function getNextItemId(collectionName: string): Promise<string> {
+export async function getNextItemId(
+  collectionName: string,
+  digits: number = ID_COUNTER_DIGITS,
+): Promise<string> {
   const { db } = await getDatabase();
   const idCountersCollection = db.collection<IdCounterModel>(COL_ID_COUNTERS);
 
@@ -60,5 +63,9 @@ export async function getNextItemId(collectionName: string): Promise<string> {
     throw Error(`${collectionName} id counter update error`);
   }
 
-  return addZero(updatedCounter.value.counter, ID_COUNTER_DIGITS);
+  return addZero(updatedCounter.value.counter, digits);
+}
+
+export async function getOrderNextItemId(companySlug: string): Promise<string> {
+  return getNextItemId(`${COL_ORDERS}-${companySlug}`, ID_COUNTER_ORDER_DIGITS);
 }

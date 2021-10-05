@@ -1,3 +1,4 @@
+import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import InputLine from 'components/FormElements/Input/InputLine';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
@@ -25,6 +26,13 @@ const CategoryMainFields: React.FC = () => {
 
   return (
     <React.Fragment>
+      <FormikCheckboxLine
+        name={'useChildNameInCatalogueTitle'}
+        label={
+          'Заменять название категории в заголовке каталога названием выбранной  подкатегории '
+        }
+      />
+
       <FormikTranslationsInput
         name={'nameI18n'}
         testId={'nameI18n'}

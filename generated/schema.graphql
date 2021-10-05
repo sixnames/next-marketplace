@@ -313,6 +313,7 @@ type Category {
   priorities: JSONObject!
   rubricId: ObjectId!
   slug: String!
+  useChildNameInCatalogueTitle: Boolean
   views: JSONObject!
 }
 
@@ -507,6 +508,7 @@ input CreateCategoryInput {
   nameI18n: JSONObject!
   parentId: ObjectId
   rubricId: ObjectId!
+  useChildNameInCatalogueTitle: Boolean
   variants: JSONObject!
 }
 
@@ -2554,6 +2556,7 @@ input UpdateCategoryInput {
   gender: Gender
   nameI18n: JSONObject!
   rubricId: ObjectId!
+  useChildNameInCatalogueTitle: Boolean
   variants: JSONObject!
 }
 

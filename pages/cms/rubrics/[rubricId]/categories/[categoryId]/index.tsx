@@ -4,9 +4,14 @@ import WpIconUpload from 'components/FormElements/Upload/WpIconUpload';
 import WpImageUpload from 'components/FormElements/Upload/WpImageUpload';
 import CategoryMainFields from 'components/FormTemplates/CategoryMainFields';
 import Inner from 'components/Inner';
-import { GENDER_ENUMS, ROUTE_CMS } from 'config/common';
-import { COL_CATEGORIES, COL_ICONS, COL_RUBRICS } from 'db/collectionNames';
-import { OptionVariantsModel } from 'db/dbModels';
+import {
+  CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+  CATALOGUE_SEO_TEXT_POSITION_TOP,
+  GENDER_ENUMS,
+  ROUTE_CMS,
+} from 'config/common';
+import { COL_CATEGORIES, COL_ICONS, COL_RUBRIC_SEO, COL_RUBRICS } from 'db/collectionNames';
+import { OptionVariantsModel, ProductSeoModel, RubricSeoModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { CategoryInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
@@ -26,9 +31,11 @@ import { updateCategorySchema } from 'validation/categorySchema';
 
 interface CategoryDetailsInterface {
   category: CategoryInterface;
+  seoTop?: ProductSeoModel | null;
+  seoBottom?: ProductSeoModel | null;
 }
 
-const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category }) => {
+const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category, seoTop, seoBottom }) => {
   const validationSchema = useValidationSchema({
     schema: updateCategorySchema,
   });
@@ -56,13 +63,17 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category }) => {
     image,
     variants,
     useChildNameInCatalogueTitle,
+    textBottomI18n,
+    textTopI18n,
   } = category;
   const variantKeys = Object.keys(variants);
 
   const initialValues: UpdateCategoryInput = {
-    rubricId,
     categoryId: _id,
+    rubricId,
     nameI18n,
+    textBottomI18n,
+    textTopI18n,
     gender: gender ? (`${gender}` as Gender) : null,
     useChildNameInCatalogueTitle,
     variants:
@@ -233,7 +244,7 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category }) => {
           {() => {
             return (
               <Form>
-                <CategoryMainFields />
+                <CategoryMainFields seoTop={seoTop} seoBottom={seoBottom} />
 
                 <FixedButtons>
                   <Button type={'submit'} testId={'category-submit'} size={'small'}>
@@ -251,10 +262,15 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category }) => {
 
 interface CategoryPageInterface extends PagePropsInterface, CategoryDetailsInterface {}
 
-const CategoryPage: NextPage<CategoryPageInterface> = ({ pageUrls, category }) => {
+const CategoryPage: NextPage<CategoryPageInterface> = ({
+  pageUrls,
+  category,
+  seoBottom,
+  seoTop,
+}) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <CategoryDetails category={category} />
+      <CategoryDetails category={category} seoTop={seoTop} seoBottom={seoBottom} />
     </CmsLayout>
   );
 };
@@ -265,6 +281,7 @@ export const getServerSideProps = async (
   const { query } = context;
   const { db } = await getDatabase();
   const categoriesCollection = db.collection<CategoryInterface>(COL_CATEGORIES);
+  const rubricSeoCollection = db.collection<RubricSeoModel>(COL_RUBRIC_SEO);
 
   const { props } = await getAppInitialData({ context });
   if (!props || !query.categoryId) {
@@ -348,10 +365,22 @@ export const getServerSideProps = async (
       : null,
   };
 
+  const seoTop = await rubricSeoCollection.findOne({
+    categoryId: category._id,
+    position: CATALOGUE_SEO_TEXT_POSITION_TOP,
+  });
+
+  const seoBottom = await rubricSeoCollection.findOne({
+    categoryId: category._id,
+    position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+  });
+
   return {
     props: {
       ...props,
       category: castDbData(category),
+      seoTop: castDbData(seoTop),
+      seoBottom: castDbData(seoBottom),
     },
   };
 };

@@ -87,6 +87,7 @@ const productSeo: RubricSeoModel[] = [
   {
     _id: getObjectId('category Односолодовый seo top'),
     rubricId: getObjectId('rubric Виски'),
+    categoryId: getObjectId('category Односолодовый'),
     position: CATALOGUE_SEO_TEXT_POSITION_TOP,
     locales: [
       {
@@ -126,15 +127,16 @@ const productSeo: RubricSeoModel[] = [
   {
     _id: getObjectId('category Односолодовый seo bottom'),
     rubricId: getObjectId('rubric Виски'),
+    categoryId: getObjectId('category Односолодовый'),
     position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
     locales: [
       {
         locale: 'ru',
         uid: '6154cb45d400c',
-        textUnique: '68.00',
+        textUnique: '45.00',
         jsonResult: {
           date_check: '29.09.2021 23:24:17',
-          unique: 68,
+          unique: 45,
           urls: [],
         },
         spellCheck: [],

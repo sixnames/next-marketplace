@@ -75,6 +75,8 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, seoTop, seoBo
     showCategoryInProductTitle,
     showBrandInNav,
     showBrandInFilter,
+    textBottomI18n,
+    textTopI18n,
   } = rubric;
 
   const initialValues: UpdateRubricInput = {
@@ -83,6 +85,8 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, seoTop, seoBo
     nameI18n,
     descriptionI18n,
     shortDescriptionI18n,
+    textBottomI18n,
+    textTopI18n,
     capitalise: capitalise || false,
     showRubricNameInProductTitle: showRubricNameInProductTitle || false,
     showCategoryInProductTitle: showCategoryInProductTitle || false,

@@ -53,8 +53,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
   const isCategory = slug === CATALOGUE_CATEGORY_KEY;
   const isBrand = slug === CATALOGUE_BRAND_KEY;
   const isPrice = slug === CATALOGUE_PRICE_KEY;
-  const hasMoreOptions =
-    (totalOptionsCount > maxVisibleOptions || isBrand || isCategory) && !isPrice;
+  const hasMoreOptions = totalOptionsCount > maxVisibleOptions && !isPrice;
 
   const navigateFromModal = React.useCallback(
     (selectedOptions: OptionsModalOptionInterface[]) => {

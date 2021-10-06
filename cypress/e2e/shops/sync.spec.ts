@@ -12,16 +12,17 @@ const validRequestParamsA = 'token=000001&apiVersion=0.0.1&systemVersion=8.2';
 const validRequestParamsC = 'token=000003&apiVersion=0.0.1&systemVersion=8.2';
 
 const errorBarcode = '9999999999999999';
+const errorBarcodeB = '9999999999999999B';
 
 const initialBody: SyncProductInterface[] = [
   {
-    barcode: [errorBarcode],
+    barcode: [errorBarcode, errorBarcodeB],
     available: 999,
     price: 999,
     name: 'notFoundProduct',
   },
   {
-    barcode: ['000003'],
+    barcode: ['000003', '0000039999'],
     available: 10,
     price: 1890,
     name: '000003',
@@ -42,7 +43,7 @@ const initialBody: SyncProductInterface[] = [
 
 const secondarySyncBody: SyncProductInterface[] = [
   {
-    barcode: ['000003'],
+    barcode: ['000003', '0000039999'],
     available: 1,
     price: 1,
     name: '000003',
@@ -69,7 +70,7 @@ const secondarySyncBody: SyncProductInterface[] = [
 
 const updateBody: SyncProductInterface[] = [
   {
-    barcode: ['000003'],
+    barcode: ['000003', '0000039999'],
     available: 5,
     price: 890,
     name: '000003',
@@ -250,7 +251,7 @@ describe('Sync', () => {
     cy.getByCy(`Шампанское-update`).click();
     cy.wait(1500);
     cy.getByCy('shop-rubric-products-list').should('exist');
-    cy.getByCy('shop-product-main-image').should('have.length', 3);
+    cy.getByCy('shop-product-main-image').should('have.length', 4);
 
     // should update existing shop products and creat new ones
     cy.request({
@@ -321,7 +322,7 @@ describe('Sync', () => {
     }).then((res) => {
       const body = res.body as SyncShopProductsResponseInterface;
       expect(body.success).equals(true);
-      expect(body.shopProducts.length).equals(secondarySyncBody.length);
+      expect(body.shopProducts.length).equals(secondarySyncBody.length + 1);
     });
   });
 });

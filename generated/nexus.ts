@@ -278,10 +278,10 @@ export interface NexusGenInputs {
     gender?: NexusGenEnums['Gender'] | null; // Gender
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     parentId?: NexusGenScalars['ObjectId'] | null; // ObjectId
+    replaceParentNameInCatalogueTitle?: boolean | null; // Boolean
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
     textBottomI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     textTopI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
-    useChildNameInCatalogueTitle?: boolean | null; // Boolean
     variants: NexusGenScalars['JSONObject']; // JSONObject!
   };
   CreateCompanyInput: {
@@ -656,10 +656,10 @@ export interface NexusGenInputs {
     categoryId: NexusGenScalars['ObjectId']; // ObjectId!
     gender?: NexusGenEnums['Gender'] | null; // Gender
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    replaceParentNameInCatalogueTitle?: boolean | null; // Boolean
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
     textBottomI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     textTopI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
-    useChildNameInCatalogueTitle?: boolean | null; // Boolean
     variants: NexusGenScalars['JSONObject']; // JSONObject!
   };
   UpdateCityInCountryInput: {
@@ -1363,11 +1363,11 @@ export interface NexusGenFieldTypes {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     parentId: NexusGenScalars['ObjectId'] | null; // ObjectId
     priorities: NexusGenScalars['JSONObject']; // JSONObject!
+    replaceParentNameInCatalogueTitle: boolean | null; // Boolean
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
     slug: string; // String!
     textBottomI18n: NexusGenScalars['JSONObject'] | null; // JSONObject
     textTopI18n: NexusGenScalars['JSONObject'] | null; // JSONObject
-    useChildNameInCatalogueTitle: boolean | null; // Boolean
     views: NexusGenScalars['JSONObject']; // JSONObject!
   };
   CategoryPayload: {
@@ -2507,11 +2507,11 @@ export interface NexusGenFieldTypeNames {
     nameI18n: 'JSONObject';
     parentId: 'ObjectId';
     priorities: 'JSONObject';
+    replaceParentNameInCatalogueTitle: 'Boolean';
     rubricId: 'ObjectId';
     slug: 'String';
     textBottomI18n: 'JSONObject';
     textTopI18n: 'JSONObject';
-    useChildNameInCatalogueTitle: 'Boolean';
     views: 'JSONObject';
   };
   CategoryPayload: {

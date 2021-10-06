@@ -33,10 +33,8 @@ const CategoryMainFields: React.FC<CategoryMainFieldsInterface> = ({ seoBottom, 
   return (
     <React.Fragment>
       <FormikCheckboxLine
-        name={'useChildNameInCatalogueTitle'}
-        label={
-          'Заменять название категории в заголовке каталога названием выбранной  подкатегории '
-        }
+        name={'replaceParentNameInCatalogueTitle'}
+        label={'Заменять название родительской категории в заголовке каталога'}
       />
 
       <FormikTranslationsInput

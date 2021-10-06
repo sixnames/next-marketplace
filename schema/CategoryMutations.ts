@@ -56,7 +56,7 @@ export const CreateCategoryInput = inputObjectType({
     t.objectId('parentId');
     t.nonNull.objectId('rubricId');
     t.nonNull.json('variants');
-    t.boolean('useChildNameInCatalogueTitle');
+    t.boolean('replaceParentNameInCatalogueTitle');
     t.field('gender', {
       type: 'Gender',
     });
@@ -72,7 +72,7 @@ export const UpdateCategoryInput = inputObjectType({
     t.json('textBottomI18n');
     t.nonNull.objectId('rubricId');
     t.nonNull.json('variants');
-    t.boolean('useChildNameInCatalogueTitle');
+    t.boolean('replaceParentNameInCatalogueTitle');
     t.field('gender', {
       type: 'Gender',
     });

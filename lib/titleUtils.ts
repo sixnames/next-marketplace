@@ -52,19 +52,16 @@ export function getTitleOptionNames({
     optionValue = variant;
   }
 
+  // TODO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   if (isCategory) {
     const currentCategory = (categories || []).find(({ slug }) => {
       return slug === option.slug;
     });
-    if (!currentCategory?.useChildNameInCatalogueTitle || childOptions.length < 1) {
+    if (!currentCategory?.replaceParentNameInCatalogueTitle || childOptions.length < 1) {
       newAcc.push(optionValue);
     }
   } else {
     newAcc.push(optionValue);
-  }
-
-  if (!option.options || option.options.length < 1) {
-    return newAcc;
   }
 
   return childOptions.reduce((childAcc: string[], childOption) => {

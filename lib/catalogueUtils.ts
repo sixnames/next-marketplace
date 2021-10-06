@@ -1333,15 +1333,21 @@ export const getCatalogueData = async ({
     }
 
     // rubric attributes
-    const initialAttributes = (attributes || []).map((attribute) => {
-      return {
-        ...attribute,
-        options: getTreeFromList({
-          list: attribute.options,
-          childrenFieldName: 'options',
-        }),
-      };
-    });
+    const initialAttributes = (attributes || []).reduce((acc: AttributeInterface[], attribute) => {
+      if (!attribute.showInCatalogueFilter) {
+        return acc;
+      }
+      return [
+        ...acc,
+        {
+          ...attribute,
+          options: getTreeFromList({
+            list: attribute.options,
+            childrenFieldName: 'options',
+          }),
+        },
+      ];
+    }, []);
     const rubricAttributes = inCategory
       ? initialAttributes
       : initialAttributes.filter(({ _id }) => {

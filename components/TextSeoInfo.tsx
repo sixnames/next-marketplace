@@ -20,6 +20,36 @@ const TextSeoInfo: React.FC<TextSeoInfoInterface> = ({
     return null;
   }
 
+  const textUnique = noNaN(seoLocale.textUnique);
+  const spellCheckLength = noNaN(seoLocale.spellCheck?.length);
+  const spamPercent = noNaN(seoLocale.seoCheck?.spam_percent);
+  const waterPercent = noNaN(seoLocale.seoCheck?.water_percent);
+  const countCharsWithSpace = noNaN(seoLocale.seoCheck?.count_chars_with_space);
+  const countCharsWithoutSpace = noNaN(seoLocale.seoCheck?.count_chars_without_space);
+  const countWords = noNaN(seoLocale.seoCheck?.count_words);
+
+  function getColorClassName(value: number) {
+    let className = 'text-red-500';
+    if (value > 35) {
+      className = 'text-yellow-400';
+    }
+    if (value > 70) {
+      className = 'text-green-400';
+    }
+    return className;
+  }
+
+  function getReverseColorClassName(value: number) {
+    let className = 'text-green-400';
+    if (value > 35) {
+      className = 'text-yellow-400';
+    }
+    if (value > 70) {
+      className = 'text-red-500';
+    }
+    return className;
+  }
+
   return (
     <div className={className}>
       {showLocaleName ? (
@@ -28,43 +58,45 @@ const TextSeoInfo: React.FC<TextSeoInfoInterface> = ({
       <div className={listClassName || 'space-y-1 whitespace-nowrap'}>
         <div className='flex gap-1'>
           <div>Уникальность</div>
-          <div>
-            <Percent value={seoLocale.textUnique} />
+          <div className={getColorClassName(textUnique)}>
+            <Percent value={textUnique} />
           </div>
         </div>
 
         <div className='flex gap-1'>
           <div>Ошибки</div>
-          <div>{seoLocale.spellCheck?.length}</div>
+          <div className={spellCheckLength > 0 ? 'text-red-500' : 'text-green-400'}>
+            {spellCheckLength}
+          </div>
         </div>
 
         <div className='flex gap-1'>
           <div>Спам</div>
-          <div>
-            <Percent value={seoLocale.seoCheck?.spam_percent} />
+          <div className={getReverseColorClassName(spamPercent)}>
+            <Percent value={spamPercent} />
           </div>
         </div>
 
         <div className='flex gap-1'>
           <div>Вода</div>
-          <div>
-            <Percent value={seoLocale.seoCheck?.water_percent} />
+          <div className={getReverseColorClassName(waterPercent)}>
+            <Percent value={waterPercent} />
           </div>
         </div>
 
         <div className='flex gap-1'>
           <div>Символов</div>
-          <div>{noNaN(seoLocale.seoCheck?.count_chars_with_space)}</div>
+          <div>{countCharsWithSpace}</div>
         </div>
 
         <div className='flex gap-1'>
           <div>Без пробелов</div>
-          <div>{noNaN(seoLocale.seoCheck?.count_chars_without_space)}</div>
+          <div>{countCharsWithoutSpace}</div>
         </div>
 
         <div className='flex gap-1'>
           <div>Слов</div>
-          <div>{noNaN(seoLocale.seoCheck?.count_words)}</div>
+          <div>{countWords}</div>
         </div>
       </div>
     </div>

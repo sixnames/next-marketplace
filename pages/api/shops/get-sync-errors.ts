@@ -50,11 +50,23 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   // get order statuses
   const syncErrors = await notSyncedProductsCollection.find({ shopId: shop._id }).toArray();
+  const finalSyncErrors = syncErrors.map(
+    ({ price, available, shopId, barcode, createdAt, name }) => {
+      return {
+        price,
+        available,
+        shopId,
+        barcode,
+        createdAt,
+        name,
+      };
+    },
+  );
 
   res.status(200).send({
     success: true,
     message: 'success',
-    syncErrors,
+    syncErrors: finalSyncErrors,
   });
   return;
 };

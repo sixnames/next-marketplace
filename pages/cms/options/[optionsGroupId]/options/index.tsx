@@ -354,15 +354,6 @@ export const getServerSideProps = async (
     childrenFieldName: 'options',
   });
 
-  /*let count = options.length;
-  function test(option: OptionInterface) {
-    count = count + (option.options || []).length;
-    (option.options || []).forEach(test);
-  }
-
-  options.forEach(test);
-  console.log(count);*/
-
   const optionsGroup: OptionsGroupInterface = {
     ...optionsGroupResult,
     name: getFieldStringLocale(optionsGroupResult.nameI18n, props.sessionLocale),

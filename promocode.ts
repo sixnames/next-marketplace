@@ -67,17 +67,6 @@ export interface OrderModel {
   promoId: string;
 }
 
-// Promoter category
-export interface PromoterCategoryModel {
-  _id: string;
-  nameI18n: any;
-  descriptionI18n?: any;
-  discountPercent: number;
-  paybackPercent: number;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
 // User category
 export interface UserCategoryModel {
   _id: string;

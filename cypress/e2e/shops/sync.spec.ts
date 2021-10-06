@@ -322,7 +322,7 @@ describe('Sync', () => {
     }).then((res) => {
       const body = res.body as SyncShopProductsResponseInterface;
       expect(body.success).equals(true);
-      expect(body.shopProducts.length).equals(secondarySyncBody.length + 1);
+      expect(body.shopProducts.length).equals(secondarySyncBody.length);
     });
   });
 });

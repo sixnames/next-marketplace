@@ -1,9 +1,13 @@
 import { COL_PRODUCTS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
-import { ShopModel } from 'db/dbModels';
+import { ProductModel, ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { SyncParamsInterface, SyncProductInterface } from 'db/syncInterfaces';
 import { ShopProductInterface } from 'db/uiInterfaces';
 import { NextApiRequest, NextApiResponse } from 'next';
+
+interface SyncProductAggregationInterface extends SyncProductInterface {
+  product: ProductModel;
+}
 
 // TODO messages
 export default async (req: NextApiRequest, res: NextApiResponse) => {
@@ -51,17 +55,31 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   // get shop products
   const initialShopProducts = await shopProductsCollection
-    .aggregate([
+    .aggregate<SyncProductAggregationInterface>([
       {
         $match: {
           shopId: shop._id,
         },
       },
       {
+        $group: {
+          _id: '$productId',
+          barcode: {
+            $addToSet: '$barcode',
+          },
+          price: {
+            $first: '$price',
+          },
+          available: {
+            $first: '$available',
+          },
+        },
+      },
+      {
         $lookup: {
           from: COL_PRODUCTS,
           as: 'product',
-          localField: 'productId',
+          localField: '_id',
           foreignField: '_id',
         },
       },
@@ -80,7 +98,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const { barcode, available, price, product } = shopProduct;
     if (barcode && product) {
       shopProducts.push({
-        barcode: [barcode],
+        barcode,
         available,
         price,
         name: product.originalName,

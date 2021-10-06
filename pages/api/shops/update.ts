@@ -2,6 +2,7 @@ import { COL_PRODUCTS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { ProductModel, ShopModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { SyncProductInterface, SyncParamsInterface } from 'db/syncInterfaces';
+import { noNaN } from 'lib/numbers';
 import { getUpdatedShopProductPrices } from 'lib/shopUtils';
 import { NextApiRequest, NextApiResponse } from 'next';
 
@@ -76,8 +77,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   const updatedShopProducts: ShopProductModel[] = [];
   for await (const product of products) {
-    const bodyItem = body.find(({ barcode }) => product.barcode?.includes(`${barcode}`));
-    if (!bodyItem || !bodyItem.available || !bodyItem.price || !bodyItem.barcode) {
+    const bodyItem = body.find(({ barcode }) => {
+      return (barcode || []).some((barcodeItem) => {
+        return product.barcode?.includes(barcodeItem);
+      });
+    });
+    if (!bodyItem) {
       continue;
     }
 
@@ -89,7 +94,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const shopProduct = await shopProductsCollection.findOne({
       shopId: shop._id,
       barcode: {
-        $in: bodyItem.barcode,
+        $in: barcode,
       },
     });
 
@@ -99,7 +104,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     const { discountedPercent, oldPrice, oldPriceUpdater } = getUpdatedShopProductPrices({
       shopProduct,
-      newPrice: bodyItem.price,
+      newPrice: noNaN(bodyItem.price),
     });
 
     const updatedShopProductResult = await shopProductsCollection.findOneAndUpdate(
@@ -108,8 +113,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       },
       {
         $set: {
-          available: bodyItem.available,
-          price: bodyItem.price,
+          available: noNaN(bodyItem.available),
+          price: noNaN(bodyItem.price),
           oldPrice,
           discountedPercent,
           updatedAt: new Date(),

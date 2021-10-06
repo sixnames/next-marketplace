@@ -82,26 +82,27 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const shopProducts: ShopProductModel[] = [];
     const notSyncedProducts: NotSyncedProductModel[] = [];
     for await (const bodyItem of body) {
-      const product = products.find(({ barcode }) => barcode?.includes(`${bodyItem.barcode}`));
-      if (!product) {
+      if (!bodyItem.barcode || bodyItem.barcode.length < 1) {
         notSyncedProducts.push({
           _id: new ObjectId(),
           name: `${bodyItem?.name}`,
           price: noNaN(bodyItem?.price),
           available: noNaN(bodyItem?.available),
-          barcode: `${bodyItem?.barcode}`,
+          barcode: '',
           shopId: shop._id,
           createdAt: new Date(),
         });
         continue;
       }
 
-      if (!bodyItem.barcode || bodyItem.barcode.length < 1) {
-        continue;
-      }
+      const product = products.find(({ barcode }) => {
+        return (barcode || []).some((productBarcode) => {
+          return (bodyItem.barcode || []).includes(productBarcode);
+        });
+      });
 
-      if (!bodyItem.available || !bodyItem.price) {
-        bodyItem.barcode.forEach((barcodeItem) => {
+      if (!product) {
+        (bodyItem.barcode || []).forEach((barcodeItem) => {
           notSyncedProducts.push({
             _id: new ObjectId(),
             name: `${bodyItem?.name}`,
@@ -125,7 +126,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       if (exitingShopProduct) {
         const { discountedPercent, oldPrice, oldPriceUpdater } = getUpdatedShopProductPrices({
           shopProduct: exitingShopProduct,
-          newPrice: bodyItem.price,
+          newPrice: noNaN(bodyItem.price),
         });
 
         const updatedShopProductResult = await shopProductsCollection.findOneAndUpdate(
@@ -159,8 +160,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         const itemId = await getNextItemId(COL_SHOP_PRODUCTS);
         const shopProduct: ShopProductModel = {
           _id: new ObjectId(),
-          available,
-          price,
+          available: noNaN(available),
+          price: noNaN(price),
           itemId,
           discountedPercent: 0,
           productId: product._id,

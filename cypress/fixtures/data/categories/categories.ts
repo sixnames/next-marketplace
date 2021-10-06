@@ -103,7 +103,6 @@ const categories: CategoryModel[] = [
     nameI18n: {
       ru: 'Category C',
     },
-    useChildNameInCatalogueTitle: true,
     attributesGroupIds: [],
     ...DEFAULT_COUNTERS_OBJECT,
   },

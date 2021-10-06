@@ -749,7 +749,7 @@ export interface CategoryModel extends CountersModel {
   parentId?: ObjectIdModel | null;
   image?: string | null;
   variants: OptionVariantsModel;
-  useChildNameInCatalogueTitle?: boolean | null;
+  replaceParentNameInCatalogueTitle?: boolean | null;
   textTopI18n?: TranslationModel | null;
   textBottomI18n?: TranslationModel | null;
 }

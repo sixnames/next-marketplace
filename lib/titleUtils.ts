@@ -46,25 +46,25 @@ export function getTitleOptionNames({
   const variant = get(option, `variants.${finalGender}.${locale}`);
   const name = getFieldStringLocale(option.nameI18n, locale);
   const childOptions = option.options || [];
-  const newAcc = [...acc];
+  let newAcc = [...acc];
   let optionValue = name;
   if (variant) {
     optionValue = variant;
   }
 
   if (isCategory) {
-    const currentCategory = (categories || []).find(({ slug }) => {
-      return slug === option.slug;
+    const childSlugs = childOptions.map(({ slug }) => slug);
+    const childCategories = (categories || []).filter(({ slug }) => {
+      return childSlugs.includes(slug);
     });
-    if (!currentCategory?.useChildNameInCatalogueTitle || childOptions.length < 1) {
+    const skipParentName = childCategories.some(({ replaceParentNameInCatalogueTitle }) => {
+      return replaceParentNameInCatalogueTitle;
+    });
+    if (!skipParentName) {
       newAcc.push(optionValue);
     }
   } else {
     newAcc.push(optionValue);
-  }
-
-  if (!option.options || option.options.length < 1) {
-    return newAcc;
   }
 
   return childOptions.reduce((childAcc: string[], childOption) => {

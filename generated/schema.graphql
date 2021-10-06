@@ -311,11 +311,11 @@ type Category {
   nameI18n: JSONObject!
   parentId: ObjectId
   priorities: JSONObject!
+  replaceParentNameInCatalogueTitle: Boolean
   rubricId: ObjectId!
   slug: String!
   textBottomI18n: JSONObject
   textTopI18n: JSONObject
-  useChildNameInCatalogueTitle: Boolean
   views: JSONObject!
 }
 
@@ -509,10 +509,10 @@ input CreateCategoryInput {
   gender: Gender
   nameI18n: JSONObject!
   parentId: ObjectId
+  replaceParentNameInCatalogueTitle: Boolean
   rubricId: ObjectId!
   textBottomI18n: JSONObject
   textTopI18n: JSONObject
-  useChildNameInCatalogueTitle: Boolean
   variants: JSONObject!
 }
 
@@ -2563,10 +2563,10 @@ input UpdateCategoryInput {
   categoryId: ObjectId!
   gender: Gender
   nameI18n: JSONObject!
+  replaceParentNameInCatalogueTitle: Boolean
   rubricId: ObjectId!
   textBottomI18n: JSONObject
   textTopI18n: JSONObject
-  useChildNameInCatalogueTitle: Boolean
   variants: JSONObject!
 }
 

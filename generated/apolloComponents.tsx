@@ -353,7 +353,7 @@ export type Category = {
   image?: Maybe<Scalars['String']>;
   rubricId: Scalars['ObjectId'];
   parentId?: Maybe<Scalars['ObjectId']>;
-  useChildNameInCatalogueTitle?: Maybe<Scalars['Boolean']>;
+  replaceParentNameInCatalogueTitle?: Maybe<Scalars['Boolean']>;
   views: Scalars['JSONObject'];
   priorities: Scalars['JSONObject'];
   name: Scalars['String'];
@@ -555,7 +555,7 @@ export type CreateCategoryInput = {
   parentId?: Maybe<Scalars['ObjectId']>;
   rubricId: Scalars['ObjectId'];
   variants: Scalars['JSONObject'];
-  useChildNameInCatalogueTitle?: Maybe<Scalars['Boolean']>;
+  replaceParentNameInCatalogueTitle?: Maybe<Scalars['Boolean']>;
   gender?: Maybe<Gender>;
 };
 
@@ -2883,7 +2883,7 @@ export type UpdateCategoryInput = {
   textBottomI18n?: Maybe<Scalars['JSONObject']>;
   rubricId: Scalars['ObjectId'];
   variants: Scalars['JSONObject'];
-  useChildNameInCatalogueTitle?: Maybe<Scalars['Boolean']>;
+  replaceParentNameInCatalogueTitle?: Maybe<Scalars['Boolean']>;
   gender?: Maybe<Gender>;
 };
 

@@ -62,9 +62,9 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category, seoTop,
     gender,
     image,
     variants,
-    useChildNameInCatalogueTitle,
     textBottomI18n,
     textTopI18n,
+    replaceParentNameInCatalogueTitle,
   } = category;
   const variantKeys = Object.keys(variants);
 
@@ -75,7 +75,7 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category, seoTop,
     textBottomI18n,
     textTopI18n,
     gender: gender ? (`${gender}` as Gender) : null,
-    useChildNameInCatalogueTitle,
+    replaceParentNameInCatalogueTitle,
     variants:
       variantKeys.length > 0
         ? variants

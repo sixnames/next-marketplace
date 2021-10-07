@@ -2948,7 +2948,7 @@ input UpdateUserPasswordInput {
 input UpdateVisibleCategoriesInNavDropdownInput {
   _id: ObjectId!
   acceptedFormats: [String!]!
-  categoryIds: [ObjectId!]!
+  categoryId: ObjectId!
   cities: JSONObject!
   citySlug: String!
   companySlug: String!

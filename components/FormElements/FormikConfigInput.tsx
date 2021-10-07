@@ -203,7 +203,7 @@ interface RenderCategoriesInterface {
   category: CategoryInterface;
   rubricId: string;
   citySlug: string;
-  categoryIds: string[];
+  isParentSelected: boolean;
 }
 
 interface InitialValues {
@@ -379,7 +379,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
     });
 
   const renderCategories = React.useCallback(
-    ({ category, rubricId, citySlug, categoryIds }: RenderCategoriesInterface) => {
+    ({ category, rubricId, citySlug, isParentSelected }: RenderCategoriesInterface) => {
       const { name, categories } = category;
       const configValue = alwaysArray(get(config.cities, `${citySlug}.${DEFAULT_LOCALE}`));
       const categoryValue = `${rubricId}${FILTER_SEPARATOR}${category._id}`;
@@ -390,6 +390,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
           <div className='cms-option flex gap-4 items-center'>
             <div>
               <Checkbox
+                disabled={!isParentSelected}
                 testId={`${category.name}`}
                 checked={isSelected}
                 value={category._id}
@@ -408,7 +409,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
                         multi: config.multi,
                         name: config.name,
                         cities: config.cities,
-                        categoryIds,
+                        categoryId: category._id,
                         citySlug,
                         rubricId,
                       },
@@ -429,7 +430,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
                     category,
                     rubricId,
                     citySlug,
-                    categoryIds: [...categoryIds, `${category._id}`],
+                    isParentSelected: isSelected,
                   })}
                 </div>
               ))}
@@ -493,7 +494,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
                             category,
                             citySlug: slug,
                             rubricId: `${rubric._id}`,
-                            categoryIds: [`${category._id}`],
+                            isParentSelected: true,
                           })}
                         </div>
                       ))}

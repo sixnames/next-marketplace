@@ -3273,7 +3273,7 @@ export type UpdateVisibleCategoriesInNavDropdownInput = {
   description?: Maybe<Scalars['String']>;
   cities: Scalars['JSONObject'];
   variant: ConfigVariant;
-  categoryIds: Array<Scalars['ObjectId']>;
+  categoryId: Scalars['ObjectId'];
   rubricId: Scalars['ObjectId'];
   citySlug: Scalars['String'];
 };

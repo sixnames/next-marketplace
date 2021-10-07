@@ -1,4 +1,6 @@
+import { CategoryInterface } from 'db/uiInterfaces';
 import { alwaysArray } from 'lib/arrayUtils';
+import { getTreeFromList } from 'lib/optionsUtils';
 import { phoneToRaw } from 'lib/phoneUtils';
 import { arg, enumType, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
@@ -10,8 +12,8 @@ import {
 } from 'config/common';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { getDatabase } from 'db/mongodb';
-import { ConfigModel, ConfigPayloadModel } from 'db/dbModels';
-import { COL_CONFIGS } from 'db/collectionNames';
+import { CategoryModel, ConfigModel, ConfigPayloadModel, ObjectIdModel } from 'db/dbModels';
+import { COL_CATEGORIES, COL_CONFIGS } from 'db/collectionNames';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { get } from 'lodash';
 
@@ -127,7 +129,7 @@ export const UpdateVisibleCategoriesInNavDropdownInput = inputObjectType({
     t.nonNull.field('variant', {
       type: 'ConfigVariant',
     });
-    t.nonNull.list.nonNull.objectId('categoryIds');
+    t.nonNull.objectId('categoryId');
     t.nonNull.objectId('rubricId');
     t.nonNull.string('citySlug');
   },
@@ -239,6 +241,12 @@ export const ConfigMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<ConfigPayloadModel> => {
+        const childCategoryIds: ObjectIdModel[] = [];
+        function getChildCategoryIds(category: CategoryInterface) {
+          childCategoryIds.push(category._id);
+          (category.categories || []).forEach(getChildCategoryIds);
+        }
+
         try {
           // Permission
           const { allow, message } = await getOperationPermission({
@@ -255,27 +263,53 @@ export const ConfigMutations = extendType({
             };
           }
 
-          // Validate
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
           const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+          const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
           const { input } = args;
-          const { _id, rubricId, categoryIds, citySlug, cities, ...values } = input;
+          const { _id, rubricId, categoryId, citySlug, cities, ...values } = input;
+
+          const rubricCategoriesAggregation = await categoriesCollection
+            .aggregate([
+              {
+                $match: {
+                  rubricId,
+                },
+              },
+            ])
+            .toArray();
+          const currentCategory = rubricCategoriesAggregation.find(({ _id }) => {
+            return _id.equals(categoryId);
+          });
+          if (!currentCategory) {
+            return {
+              success: false,
+              message: await getApiMessage('configs.update.error'),
+            };
+          }
+
+          const childCategories = getTreeFromList({
+            list: rubricCategoriesAggregation,
+            childrenFieldName: 'categories',
+            parentId: currentCategory._id,
+          });
 
           let prevCityValue = alwaysArray(get(cities, `${citySlug}.${DEFAULT_LOCALE}`));
 
-          const castedInput = categoryIds.map((categoryId) => {
-            return `${rubricId.toHexString()}${FILTER_SEPARATOR}${categoryId.toHexString()}`;
-          });
-
-          castedInput.forEach((value) => {
-            const exist = prevCityValue.includes(value);
-            if (exist) {
-              prevCityValue = prevCityValue.filter((prevValue) => prevValue !== value);
-            } else {
-              prevCityValue.push(value);
-            }
-          });
+          const castedValue = `${rubricId.toHexString()}${FILTER_SEPARATOR}${categoryId.toHexString()}`;
+          const exist = prevCityValue.includes(castedValue);
+          if (exist) {
+            childCategories.forEach(getChildCategoryIds);
+            const castedChildValues = childCategoryIds.map((categoryId) => {
+              return `${rubricId.toHexString()}${FILTER_SEPARATOR}${categoryId.toHexString()}`;
+            });
+            prevCityValue = prevCityValue.filter((prevValue) => {
+              return ![...castedChildValues, castedValue].includes(prevValue);
+            });
+          } else {
+            prevCityValue.push(castedValue);
+          }
 
           // Update config
           const updatedConfigResult = await configsCollection.findOneAndUpdate(

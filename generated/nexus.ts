@@ -1033,7 +1033,7 @@ export interface NexusGenInputs {
     // input type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     acceptedFormats: string[]; // [String!]!
-    categoryIds: NexusGenScalars['ObjectId'][]; // [ObjectId!]!
+    categoryId: NexusGenScalars['ObjectId']; // ObjectId!
     cities: NexusGenScalars['JSONObject']; // JSONObject!
     citySlug: string; // String!
     companySlug: string; // String!

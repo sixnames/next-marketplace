@@ -2,16 +2,19 @@ import ConfigsAssetInput from 'components/FormElements/FormikConfigAssetInput';
 import FormikConfigInput from 'components/FormElements/FormikConfigInput';
 import Notification from 'components/Notification';
 import { ConfigModel } from 'db/dbModels';
+import { RubricInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 
-interface ConfigsFormTemplateInterface {
+export interface ConfigsFormTemplateInterface {
   assetConfigs: ConfigModel[];
   normalConfigs: ConfigModel[];
+  rubrics?: RubricInterface[];
 }
 
 const ConfigsFormTemplate: React.FC<ConfigsFormTemplateInterface> = ({
   assetConfigs,
   normalConfigs,
+  rubrics,
 }) => {
   return (
     <React.Fragment>
@@ -43,7 +46,7 @@ const ConfigsFormTemplate: React.FC<ConfigsFormTemplateInterface> = ({
       ) : null}
 
       {normalConfigs.map((config) => {
-        return <FormikConfigInput key={`${config._id}`} config={config} />;
+        return <FormikConfigInput key={`${config._id}`} config={config} rubrics={rubrics} />;
       })}
     </React.Fragment>
   );

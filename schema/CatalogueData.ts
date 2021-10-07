@@ -29,10 +29,10 @@ import {
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
 import {
-  CATALOGUE_BRAND_COLLECTION_KEY,
-  CATALOGUE_BRAND_KEY,
-  CATALOGUE_CATEGORY_KEY,
-  CATALOGUE_MANUFACTURER_KEY,
+  FILTER_BRAND_COLLECTION_KEY,
+  FILTER_BRAND_KEY,
+  FILTER_CATEGORY_KEY,
+  FILTER_MANUFACTURER_KEY,
   FILTER_SEPARATOR,
   DEFAULT_COMPANY_SLUG,
   VIEWS_COUNTER_STEP,
@@ -266,22 +266,22 @@ export const CatalogueMutations = extendType({
               const castedParam = castCatalogueParamToObject(param);
               const { slug, value } = castedParam;
 
-              if (slug === CATALOGUE_BRAND_KEY) {
+              if (slug === FILTER_BRAND_KEY) {
                 selectedBrandSlugs.push(value);
                 return;
               }
 
-              if (slug === CATALOGUE_BRAND_COLLECTION_KEY) {
+              if (slug === FILTER_BRAND_COLLECTION_KEY) {
                 selectedBrandCollectionSlugs.push(value);
                 return;
               }
 
-              if (slug === CATALOGUE_MANUFACTURER_KEY) {
+              if (slug === FILTER_MANUFACTURER_KEY) {
                 selectedManufacturerSlugs.push(value);
                 return;
               }
 
-              if (slug === CATALOGUE_CATEGORY_KEY) {
+              if (slug === FILTER_CATEGORY_KEY) {
                 selectedCategoriesSlugs.push(value);
                 return;
               }

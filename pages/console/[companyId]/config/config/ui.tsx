@@ -1,7 +1,9 @@
-import ConfigsFormTemplate from 'components/FormTemplates/ConfigsFormTemplate';
+import ConfigsFormTemplate, {
+  ConfigsFormTemplateInterface,
+} from 'components/FormTemplates/ConfigsFormTemplate';
 import Inner from 'components/Inner';
 import { CONFIG_GROUP_UI } from 'config/common';
-import { ConfigModel } from 'db/dbModels';
+import { getConfigRubrics } from 'db/dao/configs/getConfigRubrics';
 import { CompanyInterface } from 'db/uiInterfaces';
 import ConsoleCompanyLayout from 'layout/console/ConsoleCompanyLayout';
 import ConsoleLayout from 'layout/console/ConsoleLayout';
@@ -11,21 +13,24 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
-interface ConfigConsumerInterface {
+interface ConfigConsumerInterface extends ConfigsFormTemplateInterface {
   currentCompany?: CompanyInterface | null;
-  assetConfigs: ConfigModel[];
-  normalConfigs: ConfigModel[];
 }
 
 const ConfigConsumer: React.FC<ConfigConsumerInterface> = ({
   currentCompany,
   assetConfigs,
   normalConfigs,
+  rubrics,
 }) => {
   return (
     <ConsoleCompanyLayout company={currentCompany}>
       <Inner>
-        <ConfigsFormTemplate assetConfigs={assetConfigs} normalConfigs={normalConfigs} />
+        <ConfigsFormTemplate
+          assetConfigs={assetConfigs}
+          normalConfigs={normalConfigs}
+          rubrics={rubrics}
+        />
       </Inner>
     </ConsoleCompanyLayout>
   );
@@ -64,12 +69,15 @@ export const getServerSideProps = async (
     };
   }
 
+  const rubrics = await getConfigRubrics(props.sessionLocale);
+
   return {
     props: {
       ...props,
       assetConfigs: castDbData(configsPayload.assetConfigs),
       normalConfigs: castDbData(configsPayload.normalConfigs),
       currentCompany: props.currentCompany,
+      rubrics: castDbData(rubrics),
     },
   };
 };

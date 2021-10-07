@@ -2,6 +2,7 @@ import {
   CONFIG_VARIANT_ADDRESS,
   CONFIG_VARIANT_ASSET,
   CONFIG_VARIANT_BOOLEAN,
+  CONFIG_VARIANT_CATEGORIES_TREE,
   CONFIG_VARIANT_COLOR,
   CONFIG_VARIANT_CONSTRUCTOR,
   CONFIG_VARIANT_EMAIL,
@@ -571,6 +572,21 @@ export function getConfigTemplates({
       cities: {
         [DEFAULT_CITY]: {
           [DEFAULT_LOCALE]: ['false'],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'ui',
+      variant: CONFIG_VARIANT_CATEGORIES_TREE,
+      slug: 'visibleCategoriesInNavDropdown',
+      name: 'Видимые категории в выпадающем меню',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [],
         },
       },
     },

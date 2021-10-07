@@ -1,188 +1,56 @@
-import { noNaN } from '../../../lib/numbers';
-import { FILTER_SEPARATOR, SORT_ASC } from '../../../config/common';
-import { ObjectId } from 'mongodb';
-import { ObjectIdModel, ProductAttributeModel } from '../../../db/dbModels';
-import { OptionInterface, OptionsGroupInterface } from '../../../db/uiInterfaces';
-import {
-  COL_OPTIONS,
-  COL_OPTIONS_GROUPS,
-  COL_PRODUCT_ATTRIBUTES,
-} from '../../../db/collectionNames';
+import { ObjectIdModel, ProductModel, ShopProductModel } from '../../../db/dbModels';
+import { COL_PRODUCTS, COL_SHOP_PRODUCTS } from '../../../db/collectionNames';
 import { dbsConfig, getProdDb } from './getProdDb';
 require('dotenv').config();
 
-interface LostGroup {
+interface ShopProductsAggregation {
   _id: ObjectIdModel;
-  options: OptionInterface[];
+  shopProductIds: ObjectIdModel[];
 }
 
 async function updateProds() {
   for await (const dbConfig of dbsConfig) {
     const { db, client } = await getProdDb(dbConfig);
-    const optionsGroupsCollection = await db.collection<OptionsGroupInterface>(COL_OPTIONS_GROUPS);
-    const optionsCollection = await db.collection<OptionInterface>(COL_OPTIONS);
-    const productAttributesCollection =
-      db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
+    const shopProductsCollection = await db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+    const productsCollection = await db.collection<ProductModel>(COL_PRODUCTS);
 
     console.log(' ');
     console.log('>>>>>>>>>>>>>>>>>>>>>>>>');
     console.log(' ');
-    console.log(`Updating options in ${dbConfig.dbName} db`);
-    const optionGroups = await optionsGroupsCollection
-      .aggregate([
+    console.log(`Updating ${dbConfig.dbName} db`);
+
+    const shopProductsAggregation = await shopProductsCollection.aggregate<ShopProductsAggregation>(
+      [
         {
-          $match: {
-            _id: new ObjectId('608d83289af8419114a31a8a'),
+          $group: {
+            _id: '$productId',
+            shopProductIds: {
+              $addToSet: '$_id',
+            },
           },
         },
-        {
-          $lookup: {
-            from: COL_OPTIONS,
-            as: 'options',
-            let: { optionsGroupId: '$_id' },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $eq: ['$optionsGroupId', '$$optionsGroupId'],
-                  },
-                },
-              },
-            ],
-          },
-        },
-      ])
-      .toArray();
-    const optionsGroup = optionGroups[0];
+      ],
+    );
 
-    if (optionsGroup) {
-      let lostGroups: LostGroup[] = [];
-      const initialOptions = optionsGroup.options || [];
-      initialOptions.forEach((option) => {
-        const { parentId } = option;
-        if (parentId) {
-          const parent = initialOptions.some(({ _id }) => _id.equals(parentId));
-          if (!parent) {
-            const existingGroupIndex = lostGroups.findIndex(({ _id }) => _id.equals(parentId));
-            const existingGroup = lostGroups[existingGroupIndex];
-            if (existingGroupIndex > -1 && existingGroup) {
-              lostGroups[existingGroupIndex] = {
-                _id: parentId,
-                options: [...existingGroup.options, option],
-              };
-            } else {
-              lostGroups.push({
-                _id: parentId,
-                options: [option],
-              });
-            }
-          }
-        }
-      });
-
-      const lostIds = lostGroups.reduce((acc: ObjectIdModel[], { options }) => {
-        const optionIds = options.map(({ _id }) => _id);
-        return [...acc, ...optionIds];
-      }, []);
-
-      const productAttributes = await productAttributesCollection
-        .aggregate([
+    for await (const shopProduct of shopProductsAggregation) {
+      const product = await productsCollection.findOne({ _id: shopProduct._id });
+      if (product) {
+        await shopProductsCollection.updateMany(
           {
-            $match: {
-              optionsGroupId: optionsGroup._id,
+            _id: {
+              $in: shopProduct.shopProductIds,
             },
-          },
-          {
-            $unwind: {
-              path: '$selectedOptionsIds',
-              preserveNullAndEmptyArrays: true,
-            },
-          },
-          {
-            $match: {
-              selectedOptionsIds: {
-                $in: lostIds,
-              },
-            },
-          },
-          {
-            $group: {
-              _id: '$_id',
-              selectedOptionsSlugs: {
-                $first: '$selectedOptionsSlugs',
-              },
-            },
-          },
-        ])
-        .toArray();
-      console.log('lostIds.length ', lostIds.length);
-      console.log('productAttributes.length ', productAttributes.length);
-
-      for await (const productAttribute of productAttributes) {
-        const { selectedOptionsSlugs, _id } = productAttribute;
-        console.log('Updating ', _id);
-
-        const optionSlugs = selectedOptionsSlugs.reduce((acc: string[], slug) => {
-          const slugParts = slug.split(FILTER_SEPARATOR);
-          const optionSlug = slugParts[1];
-          if (optionSlug) {
-            return [...acc, optionSlug];
-          }
-          return acc;
-        }, []);
-
-        // get options
-        const attributeOptions = await optionsCollection
-          .aggregate([
-            {
-              $match: {
-                slug: {
-                  $in: optionSlugs,
-                },
-              },
-            },
-            {
-              $sort: {
-                slug: SORT_ASC,
-              },
-            },
-          ])
-          .toArray();
-        const selectedOptionsIds = attributeOptions.map(({ _id }) => _id);
-        const entries = Object.entries(attributeOptions);
-
-        for await (const [indexString, option] of entries) {
-          const index = noNaN(indexString);
-          const prevOption = attributeOptions[index - 1];
-          if (prevOption) {
-            await optionsCollection.findOneAndUpdate(
-              {
-                _id: option._id,
-              },
-              {
-                $set: {
-                  parentId: prevOption._id,
-                },
-              },
-            );
-          }
-        }
-
-        // update attribute
-        await productAttributesCollection.findOneAndUpdate(
-          {
-            _id,
           },
           {
             $set: {
-              selectedOptionsIds,
+              mainImage: product.mainImage,
             },
           },
         );
       }
     }
 
-    console.log(`Done options in ${dbConfig.dbName} db`);
+    console.log(`Done ${dbConfig.dbName} db`);
     console.log(' ');
 
     // disconnect form db

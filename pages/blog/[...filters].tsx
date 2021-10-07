@@ -289,13 +289,13 @@ const BlogFilterAttribute: React.FC<BlogFilterAttributeInterface> = ({
 
 interface BlogFilterInterface {
   blogFilter: CatalogueFilterAttributeInterface[];
-  isFilterVisible: boolean;
+  // isFilterVisible: boolean;
 }
 
-const BlogFilter: React.FC<BlogFilterInterface> = ({ isFilterVisible, blogFilter }) => {
-  if (!isFilterVisible) {
+const BlogFilter: React.FC<BlogFilterInterface> = ({ blogFilter }) => {
+  /*if (!isFilterVisible) {
     return null;
-  }
+  }*/
   return (
     <React.Fragment>
       {blogFilter.map((attribute, index) => {
@@ -322,7 +322,7 @@ const BlogListPageConsumer: React.FC<BlogListPageConsumerInterface> = ({
   topPosts,
   blogFilter,
   meta,
-  isFilterVisible,
+  // isFilterVisible,
 }) => {
   const { locale } = useLocaleContext();
   const { configs } = useConfigContext();
@@ -341,12 +341,8 @@ const BlogListPageConsumer: React.FC<BlogListPageConsumerInterface> = ({
           <Title>{blogLinkName}</Title>
 
           {posts.length > 0 ? (
-            <div className={`relative grid ${isFilterVisible ? 'lg:grid-cols-4' : ''} gap-6`}>
-              <div
-                className={`grid gap-6 sm:grid-cols-2 md:grid-cols-3 ${
-                  isFilterVisible ? 'col-span-3' : ''
-                }`}
-              >
+            <div className={`relative grid lg:grid-cols-4 gap-6`}>
+              <div className={`grid gap-6 sm:grid-cols-2 md:grid-cols-3 col-span-3`}>
                 {posts.map((post, index) => {
                   if (index === 0) {
                     return (
@@ -369,7 +365,7 @@ const BlogListPageConsumer: React.FC<BlogListPageConsumerInterface> = ({
 
               <div className='col-span-3 lg:col-span-1'>
                 <div className='sticky top-20'>
-                  <BlogFilter blogFilter={blogFilter} isFilterVisible={isFilterVisible} />
+                  <BlogFilter blogFilter={blogFilter} />
 
                   {/*top posts*/}
                   <div className='border border-border-100 rounded-md py-6 px-4'>
@@ -408,20 +404,13 @@ interface BlogListPageInterface
 const BlogListPage: React.FC<BlogListPageInterface> = ({
   posts,
   meta,
-  isFilterVisible,
   blogFilter,
   topPosts,
   ...props
 }) => {
   return (
     <SiteLayoutProvider {...props}>
-      <BlogListPageConsumer
-        topPosts={topPosts}
-        blogFilter={blogFilter}
-        posts={posts}
-        meta={meta}
-        isFilterVisible={isFilterVisible}
-      />
+      <BlogListPageConsumer topPosts={topPosts} blogFilter={blogFilter} posts={posts} meta={meta} />
     </SiteLayoutProvider>
   );
 };
@@ -834,7 +823,7 @@ export const getServerSideProps = async (
       posts: castDbData(posts),
       topPosts: castDbData(topPosts),
       blogFilter: castDbData(blogFilter),
-      isFilterVisible: blogFilter.length > 0,
+      // isFilterVisible: blogFilter.length > 0,
       meta: metaList.join(', '),
     },
   };

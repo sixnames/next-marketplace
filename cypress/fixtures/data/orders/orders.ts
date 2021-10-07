@@ -5,6 +5,7 @@ const orders: OrderModel[] = [
   {
     _id: getObjectId('order a'),
     itemId: '000001',
+    companySiteItemId: '000001',
     orderId: 'order-a-id',
     companyId: getObjectId('company Company A'),
     shopId: getObjectId('shop Shop A'),

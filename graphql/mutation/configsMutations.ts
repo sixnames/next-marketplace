@@ -8,3 +8,14 @@ export const UPDATE_SINGLE_CONFIG_MUTATION = gql`
     }
   }
 `;
+
+export const UPDATE_VISIBLE_CATEGORIES_IN_NAV_DROPDOWN_MUTATION = gql`
+  mutation UpdateVisibleCategoriesInNavDropdown(
+    $input: UpdateVisibleCategoriesInNavDropdownInput!
+  ) {
+    updateVisibleCategoriesInNavDropdown(input: $input) {
+      success
+      message
+    }
+  }
+`;

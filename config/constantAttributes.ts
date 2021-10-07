@@ -3,13 +3,15 @@ import {
   ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD,
   ATTRIBUTE_VARIANT_SELECT,
   ATTRIBUTE_VIEW_VARIANT_TAG,
-  CATALOGUE_BRAND_KEY,
-  CATALOGUE_CATEGORY_KEY,
+  FILTER_BRAND_KEY,
+  FILTER_CATEGORY_KEY,
   DEFAULT_LOCALE,
   GENDER_IT,
-  CATALOGUE_PRICE_KEY,
+  FILTER_PRICE_KEY,
   SECONDARY_LOCALE,
-  CATALOGUE_RUBRIC_KEY,
+  FILTER_RUBRIC_KEY,
+  FILTER_COMMON_KEY,
+  FILTER_NO_PHOTO_KEY,
 } from 'config/common';
 import { ObjectIdModel } from 'db/dbModels';
 import {
@@ -75,7 +77,7 @@ export function getCategoryFilterAttribute({
       [DEFAULT_LOCALE]: 'Категория',
       [SECONDARY_LOCALE]: 'Category',
     },
-    slug: CATALOGUE_CATEGORY_KEY,
+    slug: FILTER_CATEGORY_KEY,
     totalOptionsCount: initialOptions.length,
     priorities: {},
     views: {},
@@ -154,7 +156,7 @@ export function getBrandFilterAttribute({
       [DEFAULT_LOCALE]: 'Бренд',
       [SECONDARY_LOCALE]: 'Brand',
     },
-    slug: CATALOGUE_BRAND_KEY,
+    slug: FILTER_BRAND_KEY,
     totalOptionsCount: options.length,
     priorities: {},
     views: {},
@@ -221,7 +223,63 @@ export function getRubricFilterAttribute({
       [DEFAULT_LOCALE]: 'Рубрика',
       [SECONDARY_LOCALE]: 'Rubric',
     },
-    slug: CATALOGUE_RUBRIC_KEY,
+    slug: FILTER_RUBRIC_KEY,
+    priorities: {},
+    views: {},
+    showInCatalogueNav: false,
+    showInCatalogueFilter: true,
+    viewVariant: ATTRIBUTE_VIEW_VARIANT_TAG,
+    variant: ATTRIBUTE_VARIANT_SELECT,
+    showAsBreadcrumb: false,
+    showInCard: true,
+    showAsCatalogueBreadcrumb: true,
+    capitalise: true,
+    notShowAsAlphabet: true,
+    showInSnippet: false,
+    showInCardTitle: true,
+    showInCatalogueTitle: true,
+    showInSnippetTitle: true,
+    showNameInTitle: false,
+    showNameInCardTitle: false,
+    showNameInSelectedAttributes: false,
+    showNameInSnippetTitle: false,
+    positioningInTitle: {
+      [DEFAULT_LOCALE]: ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD,
+      [SECONDARY_LOCALE]: ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD,
+    },
+    options,
+  };
+
+  return attribute;
+}
+
+export function getCommonFilterAttribute(): AttributeInterface {
+  const optionsGroupId = new ObjectId();
+  const commonOptionFields = getCommonOptionFields(optionsGroupId);
+
+  const options: OptionInterface[] = [
+    {
+      ...commonOptionFields,
+      _id: new ObjectId(),
+      nameI18n: {
+        [DEFAULT_LOCALE]: 'Без фото',
+        [SECONDARY_LOCALE]: 'No photo',
+      },
+      slug: FILTER_NO_PHOTO_KEY,
+      gender: GENDER_IT,
+    },
+  ];
+
+  const attribute: AttributeInterface = {
+    _id: new ObjectId(),
+    attributesGroupId: new ObjectId(),
+    optionsGroupId,
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'Общее',
+      [SECONDARY_LOCALE]: 'Common',
+    },
+    slug: FILTER_COMMON_KEY,
+    totalOptionsCount: options.length,
     priorities: {},
     views: {},
     showInCatalogueNav: false,
@@ -263,7 +321,7 @@ export function getPriceAttribute(): AttributeInterface {
       ru: 'Цена',
       en: 'Price',
     },
-    slug: CATALOGUE_PRICE_KEY,
+    slug: FILTER_PRICE_KEY,
     priorities: {},
     views: {},
     viewVariant: ATTRIBUTE_VIEW_VARIANT_TAG,

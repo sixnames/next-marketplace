@@ -11,7 +11,7 @@ import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
 import Title from 'components/Title';
 import {
-  CATALOGUE_FILTER_SORT_KEYS,
+  FILTER_SORT_KEYS,
   CATALOGUE_VIEW_GRID,
   CATALOGUE_VIEW_ROW,
   CATALOGUE_VIEW_STORAGE_KEY,
@@ -201,7 +201,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
             onSelect: () => {
               const options = getCatalogueFilterNextPath({
                 asPath: router.asPath,
-                excludedKeys: CATALOGUE_FILTER_SORT_KEYS,
+                excludedKeys: FILTER_SORT_KEYS,
               });
               const nextPath = `${options}/${SORT_BY_KEY}-priority`;
               router.push(nextPath).catch(() => {
@@ -226,7 +226,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
             onSelect: () => {
               const options = getCatalogueFilterNextPath({
                 asPath: router.asPath,
-                excludedKeys: CATALOGUE_FILTER_SORT_KEYS,
+                excludedKeys: FILTER_SORT_KEYS,
               });
               const nextPath = `${options}/${SORT_BY_KEY}-price/${SORT_DIR_KEY}-${SORT_ASC_STR}`;
               router.push(nextPath).catch(() => {
@@ -251,7 +251,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
             onSelect: () => {
               const options = getCatalogueFilterNextPath({
                 asPath: router.asPath,
-                excludedKeys: CATALOGUE_FILTER_SORT_KEYS,
+                excludedKeys: FILTER_SORT_KEYS,
               });
               const nextPath = `${options}/${SORT_BY_KEY}-price/${SORT_DIR_KEY}-${SORT_DESC_STR}`;
               router.push(nextPath).catch(() => {

@@ -46,6 +46,7 @@ import {
 import { sendOrderCreatedSms } from 'lib/sms/sendOrderCreatedSms';
 import { ObjectId } from 'mongodb';
 import { makeAnOrderSchema } from 'validation/orderSchema';
+import uniqid from 'uniqid';
 
 export interface MakeAnOrderPayloadModel {
   success: boolean;
@@ -246,12 +247,12 @@ export async function makeAnOrder({
 
         if (!existingOrder) {
           const companySiteSlug = input.companySlug || DEFAULT_COMPANY_SLUG;
-          const uniqueOrderId = await getOrderNextItemId(companySiteSlug);
 
           // create new order
           existingOrder = {
             _id: new ObjectId(),
-            orderId: uniqueOrderId,
+            orderId: uniqid.time(),
+            companySiteItemId: await getOrderNextItemId(companySiteSlug),
             itemId: await getNextItemId(COL_ORDERS),
             statusId: initialStatus._id,
             customerId: user._id,

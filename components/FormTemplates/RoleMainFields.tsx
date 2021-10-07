@@ -29,6 +29,12 @@ const RoleMainFields: React.FC = () => {
         label={'Сотрудник компании'}
         name={'isCompanyStaff'}
       />
+
+      <FormikCheckboxLine
+        testId={'showAdminUiInCatalogue'}
+        label={'Показывать интерфейс администратора в каталоге'}
+        name={'showAdminUiInCatalogue'}
+      />
     </React.Fragment>
   );
 };

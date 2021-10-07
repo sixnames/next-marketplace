@@ -666,6 +666,7 @@ export type CreateRoleInput = {
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
   isStaff: Scalars['Boolean'];
   isCompanyStaff: Scalars['Boolean'];
+  showAdminUiInCatalogue: Scalars['Boolean'];
 };
 
 export type CreateRubricInput = {
@@ -3158,6 +3159,7 @@ export type UpdateRoleInput = {
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
   isStaff: Scalars['Boolean'];
   isCompanyStaff: Scalars['Boolean'];
+  showAdminUiInCatalogue: Scalars['Boolean'];
 };
 
 export type UpdateRoleNavInput = {

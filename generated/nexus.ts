@@ -391,6 +391,7 @@ export interface NexusGenInputs {
     isCompanyStaff: boolean; // Boolean!
     isStaff: boolean; // Boolean!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    showAdminUiInCatalogue: boolean; // Boolean!
   };
   CreateRubricInput: {
     // input type
@@ -926,6 +927,7 @@ export interface NexusGenInputs {
     isStaff: boolean; // Boolean!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     roleId: NexusGenScalars['ObjectId']; // ObjectId!
+    showAdminUiInCatalogue: boolean; // Boolean!
   };
   UpdateRoleNavInput: {
     // input type

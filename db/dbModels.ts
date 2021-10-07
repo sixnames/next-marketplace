@@ -672,6 +672,7 @@ export interface RoleModel extends TimestampModel {
   slug: string;
   isStaff: boolean;
   isCompanyStaff?: boolean;
+  showAdminUiInCatalogue?: boolean;
   allowedAppNavigation: string[];
 }
 

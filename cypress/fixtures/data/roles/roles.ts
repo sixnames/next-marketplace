@@ -15,6 +15,7 @@ const roles: RoleModel[] = [
     slug: 'admin',
     isStaff: true,
     isCompanyStaff: false,
+    showAdminUiInCatalogue: true,
     allowedAppNavigation: [],
     createdAt: new Date(),
     updatedAt: new Date(),

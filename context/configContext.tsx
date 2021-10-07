@@ -75,6 +75,7 @@ const ConfigContext = React.createContext<ConfigContextInterface>({
     useUniqueConstructor: false,
     showReservationDate: false,
     buyButtonText: '',
+    visibleCategoriesInNavDropdown: [],
   },
 });
 

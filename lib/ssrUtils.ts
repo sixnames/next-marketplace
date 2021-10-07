@@ -91,6 +91,7 @@ export interface GetCatalogueNavRubricsInterface {
   stickyNavVisibleCategoriesCount: number;
   stickyNavVisibleAttributesCount: number;
   stickyNavVisibleOptionsCount: number;
+  visibleCategoriesInNavDropdown: string[];
 }
 
 interface CatalogueNavConfigItemInterface {
@@ -114,6 +115,11 @@ interface CatalogueNavConfigsInterface {
   attributeConfigs: CatalogueNavConfigItemInterface[];
 }
 
+interface CatalogueNavCategoriesConfigInterface {
+  rubricId: ObjectIdModel;
+  categoryIds: ObjectIdModel[];
+}
+
 export const getCatalogueNavRubrics = async ({
   city,
   locale,
@@ -121,6 +127,7 @@ export const getCatalogueNavRubrics = async ({
   stickyNavVisibleCategoriesCount,
   stickyNavVisibleAttributesCount,
   stickyNavVisibleOptionsCount,
+  visibleCategoriesInNavDropdown,
 }: GetCatalogueNavRubricsInterface): Promise<RubricModel[]> => {
   // console.log(' ');
   // console.log('=================== getCatalogueNavRubrics =======================');
@@ -133,6 +140,26 @@ export const getCatalogueNavRubrics = async ({
   const companySlug = company?.slug || DEFAULT_COMPANY_SLUG;
 
   // console.log('Before rubrics', new Date().getTime() - timeStart);
+
+  let categoryConfigs: CatalogueNavCategoriesConfigInterface[] = [];
+  visibleCategoriesInNavDropdown.forEach((configString) => {
+    const configParts = configString.split(FILTER_SEPARATOR);
+    const rubricId = configParts[0] ? new ObjectId(`${configParts[0]}`) : null;
+    const categoryId = configParts[1] ? new ObjectId(`${configParts[1]}`) : null;
+    if (rubricId && categoryId) {
+      const existingIndex = categoryConfigs.findIndex((config) => {
+        return config.rubricId.equals(rubricId);
+      });
+      if (existingIndex > -1) {
+        categoryConfigs[existingIndex].categoryIds.push(categoryId);
+      } else {
+        categoryConfigs.push({
+          rubricId,
+          categoryIds: [categoryId],
+        });
+      }
+    }
+  });
 
   const sortStage = {
     [`priorities.${companySlug}.${city}`]: SORT_DESC,
@@ -456,10 +483,21 @@ export const getCatalogueNavRubrics = async ({
 
       let categories: CategoryModel[] = [];
       if (rubric.variant?.showCategoriesInNav) {
+        const rubricCategoriesConfig = categoryConfigs.find(({ rubricId }) => {
+          return rubricId.equals(rubric._id);
+        });
+        const idsMatch = rubricCategoriesConfig
+          ? {
+              _id: {
+                $in: rubricCategoriesConfig.categoryIds,
+              },
+            }
+          : {};
         categories = await categoriesCollection
           .aggregate([
             {
               $match: {
+                ...idsMatch,
                 rubricId: rubric._id,
                 slug: {
                   $in: rubricConfig.attributeSlugs,
@@ -831,6 +869,10 @@ export const getSsrConfigs = async ({
     configs,
     slug: 'showReservationDate',
   });
+  const visibleCategoriesInNavDropdown = getConfigListValue({
+    configs,
+    slug: 'visibleCategoriesInNavDropdown',
+  });
 
   return {
     showReservationDate,
@@ -846,6 +888,7 @@ export const getSsrConfigs = async ({
     catalogueFilterVisibleOptionsCount,
     stickyNavVisibleCategoriesCount,
     stickyNavVisibleSubCategoriesCount,
+    visibleCategoriesInNavDropdown,
     catalogueMetaPrefix,
     contactEmail,
     contactsContent,
@@ -1595,6 +1638,7 @@ export async function getSiteInitialData({
     stickyNavVisibleCategoriesCount: initialData.configs.stickyNavVisibleCategoriesCount,
     stickyNavVisibleAttributesCount: initialData.configs.stickyNavVisibleAttributesCount,
     stickyNavVisibleOptionsCount: initialData.configs.stickyNavVisibleOptionsCount,
+    visibleCategoriesInNavDropdown: initialData.configs.visibleCategoriesInNavDropdown,
   });
   const navRubrics = castDbData(rawNavRubrics);
   const catalogueCreatedPages = await getCatalogueCreatedPages({

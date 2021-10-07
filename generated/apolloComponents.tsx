@@ -480,7 +480,8 @@ export enum ConfigVariant {
   Constructor = 'constructor',
   Color = 'color',
   Address = 'address',
-  Password = 'password'
+  Password = 'password',
+  CategoriesTree = 'categoriesTree'
 }
 
 export type Contacts = {
@@ -1005,6 +1006,8 @@ export type Mutation = {
   deleteShopFromCompany: CompanyPayload;
   /** Should update config */
   updateConfig: ConfigPayload;
+  /** Should update nav categories config */
+  updateVisibleCategoriesInNavDropdown: ConfigPayload;
   /** Should create country */
   createCountry: CountryPayload;
   /** Should update country */
@@ -1361,6 +1364,11 @@ export type MutationDeleteShopFromCompanyArgs = {
 
 export type MutationUpdateConfigArgs = {
   input: UpdateConfigInput;
+};
+
+
+export type MutationUpdateVisibleCategoriesInNavDropdownArgs = {
+  input: UpdateVisibleCategoriesInNavDropdownInput;
 };
 
 
@@ -3254,6 +3262,22 @@ export type UpdateUserPasswordInput = {
   newPassword: Scalars['String'];
 };
 
+export type UpdateVisibleCategoriesInNavDropdownInput = {
+  _id: Scalars['ObjectId'];
+  multi: Scalars['Boolean'];
+  acceptedFormats: Array<Scalars['String']>;
+  slug: Scalars['String'];
+  companySlug: Scalars['String'];
+  group: Scalars['String'];
+  name: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  cities: Scalars['JSONObject'];
+  variant: ConfigVariant;
+  categoryIds: Array<Scalars['ObjectId']>;
+  rubricId: Scalars['ObjectId'];
+  citySlug: Scalars['String'];
+};
+
 export type User = Base & Timestamp & {
   __typename?: 'User';
   _id: Scalars['ObjectId'];
@@ -3941,6 +3965,19 @@ export type UpdateConfigMutationVariables = Exact<{
 export type UpdateConfigMutation = (
   { __typename?: 'Mutation' }
   & { updateConfig: (
+    { __typename?: 'ConfigPayload' }
+    & Pick<ConfigPayload, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateVisibleCategoriesInNavDropdownMutationVariables = Exact<{
+  input: UpdateVisibleCategoriesInNavDropdownInput;
+}>;
+
+
+export type UpdateVisibleCategoriesInNavDropdownMutation = (
+  { __typename?: 'Mutation' }
+  & { updateVisibleCategoriesInNavDropdown: (
     { __typename?: 'ConfigPayload' }
     & Pick<ConfigPayload, 'success' | 'message'>
   ) }
@@ -7302,6 +7339,40 @@ export function useUpdateConfigMutation(baseOptions?: Apollo.MutationHookOptions
 export type UpdateConfigMutationHookResult = ReturnType<typeof useUpdateConfigMutation>;
 export type UpdateConfigMutationResult = Apollo.MutationResult<UpdateConfigMutation>;
 export type UpdateConfigMutationOptions = Apollo.BaseMutationOptions<UpdateConfigMutation, UpdateConfigMutationVariables>;
+export const UpdateVisibleCategoriesInNavDropdownDocument = gql`
+    mutation UpdateVisibleCategoriesInNavDropdown($input: UpdateVisibleCategoriesInNavDropdownInput!) {
+  updateVisibleCategoriesInNavDropdown(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateVisibleCategoriesInNavDropdownMutationFn = Apollo.MutationFunction<UpdateVisibleCategoriesInNavDropdownMutation, UpdateVisibleCategoriesInNavDropdownMutationVariables>;
+
+/**
+ * __useUpdateVisibleCategoriesInNavDropdownMutation__
+ *
+ * To run a mutation, you first call `useUpdateVisibleCategoriesInNavDropdownMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateVisibleCategoriesInNavDropdownMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateVisibleCategoriesInNavDropdownMutation, { data, loading, error }] = useUpdateVisibleCategoriesInNavDropdownMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateVisibleCategoriesInNavDropdownMutation(baseOptions?: Apollo.MutationHookOptions<UpdateVisibleCategoriesInNavDropdownMutation, UpdateVisibleCategoriesInNavDropdownMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateVisibleCategoriesInNavDropdownMutation, UpdateVisibleCategoriesInNavDropdownMutationVariables>(UpdateVisibleCategoriesInNavDropdownDocument, options);
+      }
+export type UpdateVisibleCategoriesInNavDropdownMutationHookResult = ReturnType<typeof useUpdateVisibleCategoriesInNavDropdownMutation>;
+export type UpdateVisibleCategoriesInNavDropdownMutationResult = Apollo.MutationResult<UpdateVisibleCategoriesInNavDropdownMutation>;
+export type UpdateVisibleCategoriesInNavDropdownMutationOptions = Apollo.BaseMutationOptions<UpdateVisibleCategoriesInNavDropdownMutation, UpdateVisibleCategoriesInNavDropdownMutationVariables>;
 export const UpdateCatalogueCountersDocument = gql`
     mutation UpdateCatalogueCounters($input: CatalogueDataInput!) {
   updateCatalogueCounters(input: $input)

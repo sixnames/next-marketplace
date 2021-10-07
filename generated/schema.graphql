@@ -1502,6 +1502,13 @@ type Mutation {
   Should update user password
   """
   updateUserPassword(input: UpdateUserPasswordInput!): UserPayload!
+
+  """
+  Should update nav categories config
+  """
+  updateVisibleCategoriesInNavDropdown(
+    input: UpdateVisibleCategoriesInNavDropdownInput!
+  ): ConfigPayload!
 }
 
 type NavItem {
@@ -2936,6 +2943,22 @@ input UpdateUserInput {
 input UpdateUserPasswordInput {
   newPassword: String!
   userId: ObjectId!
+}
+
+input UpdateVisibleCategoriesInNavDropdownInput {
+  _id: ObjectId!
+  acceptedFormats: [String!]!
+  categoryIds: [ObjectId!]!
+  cities: JSONObject!
+  citySlug: String!
+  companySlug: String!
+  description: String
+  group: String!
+  multi: Boolean!
+  name: String!
+  rubricId: ObjectId!
+  slug: String!
+  variant: ConfigVariant!
 }
 
 type User implements Base & Timestamp {

@@ -1,12 +1,19 @@
 import { alwaysArray } from 'lib/arrayUtils';
 import { phoneToRaw } from 'lib/phoneUtils';
 import { arg, enumType, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { DEFAULT_COMPANY_SLUG, CONFIG_VARIANTS_ENUMS, SORT_ASC } from 'config/common';
+import {
+  DEFAULT_COMPANY_SLUG,
+  CONFIG_VARIANTS_ENUMS,
+  SORT_ASC,
+  DEFAULT_LOCALE,
+  FILTER_SEPARATOR,
+} from 'config/common';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { getDatabase } from 'db/mongodb';
 import { ConfigModel, ConfigPayloadModel } from 'db/dbModels';
 import { COL_CONFIGS } from 'db/collectionNames';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { get } from 'lodash';
 
 export const ConfigVariant = enumType({
   name: 'ConfigVariant',
@@ -105,6 +112,27 @@ export const UpdateConfigInput = inputObjectType({
   },
 });
 
+export const UpdateVisibleCategoriesInNavDropdownInput = inputObjectType({
+  name: 'UpdateVisibleCategoriesInNavDropdownInput',
+  definition(t) {
+    t.nonNull.objectId('_id');
+    t.nonNull.boolean('multi');
+    t.nonNull.list.nonNull.string('acceptedFormats');
+    t.nonNull.string('slug');
+    t.nonNull.string('companySlug');
+    t.nonNull.string('group');
+    t.nonNull.string('name');
+    t.string('description');
+    t.nonNull.json('cities');
+    t.nonNull.field('variant', {
+      type: 'ConfigVariant',
+    });
+    t.nonNull.list.nonNull.objectId('categoryIds');
+    t.nonNull.objectId('rubricId');
+    t.nonNull.string('citySlug');
+  },
+});
+
 // Config Mutations
 export const ConfigMutations = extendType({
   type: 'Mutation',
@@ -171,6 +199,99 @@ export const ConfigMutations = extendType({
             },
             {
               $set: castedValues,
+            },
+            {
+              returnDocument: 'after',
+              upsert: true,
+            },
+          );
+          const updatedConfig = updatedConfigResult.value;
+          if (!updatedConfigResult.ok || !updatedConfig) {
+            return {
+              success: false,
+              message: await getApiMessage('configs.update.error'),
+            };
+          }
+
+          return {
+            success: true,
+            message: await getApiMessage('configs.update.success'),
+            payload: updatedConfig,
+          };
+        } catch (e) {
+          return {
+            success: false,
+            message: await getResolverErrorMessage(e),
+          };
+        }
+      },
+    });
+
+    // Should update nav categories config
+    t.nonNull.field('updateVisibleCategoriesInNavDropdown', {
+      type: 'ConfigPayload',
+      description: 'Should update nav categories config',
+      args: {
+        input: nonNull(
+          arg({
+            type: 'UpdateVisibleCategoriesInNavDropdownInput',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<ConfigPayloadModel> => {
+        try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug:
+              args.input.companySlug === DEFAULT_COMPANY_SLUG
+                ? 'updateConfig'
+                : 'updateCompanyConfig',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
+          // Validate
+          const { getApiMessage } = await getRequestParams(context);
+          const { db } = await getDatabase();
+          const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+          const { input } = args;
+          const { _id, rubricId, categoryIds, citySlug, cities, ...values } = input;
+
+          let prevCityValue = alwaysArray(get(cities, `${citySlug}.${DEFAULT_LOCALE}`));
+
+          const castedInput = categoryIds.map((categoryId) => {
+            return `${rubricId.toHexString()}${FILTER_SEPARATOR}${categoryId.toHexString()}`;
+          });
+
+          castedInput.forEach((value) => {
+            const exist = prevCityValue.includes(value);
+            if (exist) {
+              prevCityValue = prevCityValue.filter((prevValue) => prevValue !== value);
+            } else {
+              prevCityValue.push(value);
+            }
+          });
+
+          // Update config
+          const updatedConfigResult = await configsCollection.findOneAndUpdate(
+            {
+              _id,
+            },
+            {
+              $set: {
+                ...values,
+                cities: {
+                  ...cities,
+                  [citySlug]: {
+                    [DEFAULT_LOCALE]: prevCityValue,
+                  },
+                },
+              },
             },
             {
               returnDocument: 'after',

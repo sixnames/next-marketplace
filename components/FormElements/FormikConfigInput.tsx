@@ -1,6 +1,7 @@
 import Accordion from 'components/Accordion';
 import Button from 'components/Button';
 import ButtonCross from 'components/ButtonCross';
+import Checkbox from 'components/FormElements/Checkbox/Checkbox';
 import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
 import FormikAddressInput from 'components/FormElements/Input/FormikAddressInput';
 import FormikInput, { FormikInputPropsInterface } from 'components/FormElements/Input/FormikInput';
@@ -12,11 +13,13 @@ import Tooltip from 'components/Tooltip';
 import {
   CONFIG_VARIANT_ADDRESS,
   CONFIG_VARIANT_BOOLEAN,
+  CONFIG_VARIANT_CATEGORIES_TREE,
   CONFIG_VARIANT_CONSTRUCTOR,
   CONFIG_VARIANT_NUMBER,
   CONFIG_VARIANT_STRING,
   DEFAULT_CITY,
   DEFAULT_LOCALE,
+  FILTER_SEPARATOR,
   GEO_POINT_TYPE,
 } from 'config/common';
 import { CONFIRM_MODAL } from 'config/modalVariants';
@@ -24,9 +27,12 @@ import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
 import { useLocaleContext } from 'context/localeContext';
 import { AddressModel, ConfigModel, JSONObjectModel, TranslationModel } from 'db/dbModels';
-import { RubricInterface } from 'db/uiInterfaces';
+import { CategoryInterface, RubricInterface } from 'db/uiInterfaces';
 import { Form, Formik, useField, useFormikContext } from 'formik';
-import { useUpdateConfigMutation } from 'generated/apolloComponents';
+import {
+  useUpdateConfigMutation,
+  useUpdateVisibleCategoriesInNavDropdownMutation,
+} from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { alwaysArray } from 'lib/arrayUtils';
@@ -193,6 +199,13 @@ const ConfigTranslationInput: React.FC<ConfigTranslationInputInterface> = ({
   );
 };
 
+interface RenderCategoriesInterface {
+  category: CategoryInterface;
+  rubricId: string;
+  citySlug: string;
+  categoryIds: string[];
+}
+
 interface InitialValues {
   configId: string;
   cities: JSONObjectModel;
@@ -204,7 +217,6 @@ interface FormikConfigInputInterface {
 }
 
 const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubrics }) => {
-  console.log(rubrics);
   const { cities } = useConfigContext();
   const { onErrorCallback, onCompleteCallback } = useMutationCallbacks({
     reload: true,
@@ -223,6 +235,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
   const isBoolean = variant === CONFIG_VARIANT_BOOLEAN;
   const isAddress = variant === CONFIG_VARIANT_ADDRESS;
   const isNumber = variant === CONFIG_VARIANT_NUMBER;
+  const isCategoriesTree = variant === CONFIG_VARIANT_CATEGORIES_TREE;
 
   const initialCities = Object.keys(configCities).reduce((acc: JSONObjectModel, cityKey) => {
     const cityLocales = configCities[cityKey] as JSONObjectModel | undefined;
@@ -358,6 +371,142 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
       updateConfigMutation,
     ],
   );
+
+  const [updateVisibleCategoriesInNavDropdownMutation] =
+    useUpdateVisibleCategoriesInNavDropdownMutation({
+      onCompleted: (data) => onCompleteCallback(data.updateVisibleCategoriesInNavDropdown),
+      onError: onErrorCallback,
+    });
+
+  const renderCategories = React.useCallback(
+    ({ category, rubricId, citySlug, categoryIds }: RenderCategoriesInterface) => {
+      const { name, categories } = category;
+      const configValue = alwaysArray(get(config.cities, `${citySlug}.${DEFAULT_LOCALE}`));
+      const categoryValue = `${rubricId}${FILTER_SEPARATOR}${category._id}`;
+      const isSelected = configValue.includes(categoryValue);
+
+      return (
+        <div>
+          <div className='cms-option flex gap-4 items-center'>
+            <div>
+              <Checkbox
+                testId={`${category.name}`}
+                checked={isSelected}
+                value={category._id}
+                name={`${category._id}`}
+                onChange={() => {
+                  updateVisibleCategoriesInNavDropdownMutation({
+                    variables: {
+                      input: {
+                        _id: config._id,
+                        slug: config.slug,
+                        companySlug: config.companySlug,
+                        description: config.description,
+                        variant: config.variant as any,
+                        acceptedFormats: config.acceptedFormats,
+                        group: config.group,
+                        multi: config.multi,
+                        name: config.name,
+                        cities: config.cities,
+                        categoryIds,
+                        citySlug,
+                        rubricId,
+                      },
+                    },
+                  }).catch(console.log);
+                }}
+              />
+            </div>
+            <div className='font-medium' data-cy={`category-${name}`}>
+              {name}
+            </div>
+          </div>
+          {categories && categories.length > 0 ? (
+            <div className='ml-4'>
+              {categories.map((category) => (
+                <div className='mt-4' key={`${category._id}`}>
+                  {renderCategories({
+                    category,
+                    rubricId,
+                    citySlug,
+                    categoryIds: [...categoryIds, `${category._id}`],
+                  })}
+                </div>
+              ))}
+            </div>
+          ) : null}
+        </div>
+      );
+    },
+    [
+      config._id,
+      config.acceptedFormats,
+      config.cities,
+      config.companySlug,
+      config.description,
+      config.group,
+      config.multi,
+      config.name,
+      config.slug,
+      config.variant,
+      updateVisibleCategoriesInNavDropdownMutation,
+    ],
+  );
+
+  if (isCategoriesTree) {
+    return (
+      <div className='mb-24' data-cy={`${configSlug}-config`} key={configSlug}>
+        <div
+          className='flex items-start min-h-[1.3rem] mb-3 font-medium overflow-ellipsis whitespace-nowrap text-secondary-text'
+          data-cy={`${configSlug}-config-name`}
+        >
+          <span>{name}</span>
+          {description ? (
+            <React.Fragment>
+              {' '}
+              <Tooltip title={description}>
+                <div className='inline-block cursor-pointer ml-3'>
+                  <Icon className='w-5 h-5' name={'question-circle'} />
+                </div>
+              </Tooltip>
+            </React.Fragment>
+          ) : null}
+        </div>
+        {cities.map(({ name, slug }) => {
+          const cityTestId = `${configSlug}-${slug}`;
+          return (
+            <Accordion
+              isOpen={slug === DEFAULT_CITY}
+              testId={cityTestId}
+              title={`${name}`}
+              key={slug}
+            >
+              <div className='ml-8 pt-[var(--lineGap-200)]'>
+                {(rubrics || []).map((rubric) => {
+                  return (
+                    <div className='mb-8' key={`${rubric._id}`}>
+                      <div className='font-medium text-lg'>{rubric.name}</div>
+
+                      {(rubric.categories || []).map((category) => (
+                        <div className='border-b border-border-300 py-6' key={`${category._id}`}>
+                          {renderCategories({
+                            category,
+                            citySlug: slug,
+                            rubricId: `${rubric._id}`,
+                            categoryIds: [`${category._id}`],
+                          })}
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })}
+              </div>
+            </Accordion>
+          );
+        })}
+      </div>
+    );
+  }
 
   if (isAddress) {
     return (

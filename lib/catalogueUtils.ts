@@ -37,7 +37,7 @@ import {
   CATALOGUE_SNIPPET_VISIBLE_ATTRIBUTES,
   DEFAULT_COMPANY_SLUG,
   DEFAULT_LOCALE,
-  CATALOGUE_PRICE_KEY,
+  FILTER_PRICE_KEY,
   ROUTE_CATALOGUE,
   SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY,
   SORT_ASC,
@@ -46,16 +46,18 @@ import {
   SORT_DESC_STR,
   SORT_DIR_KEY,
   DEFAULT_PAGE,
-  CATALOGUE_RUBRIC_KEY,
-  CATALOGUE_CATEGORY_KEY,
-  CATALOGUE_BRAND_KEY,
-  CATALOGUE_BRAND_COLLECTION_KEY,
+  FILTER_RUBRIC_KEY,
+  FILTER_CATEGORY_KEY,
+  FILTER_BRAND_KEY,
+  FILTER_BRAND_COLLECTION_KEY,
   ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
   DEFAULT_SORT_STAGE,
   GENDER_HE,
   CATALOGUE_GRID_DEFAULT_COLUMNS_COUNT,
   CATEGORY_SLUG_PREFIX_SEPARATOR,
   CATEGORY_SLUG_PREFIX_WORD,
+  FILTER_COMMON_KEY,
+  FILTER_NO_PHOTO_KEY,
 } from 'config/common';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -206,7 +208,7 @@ export async function getCatalogueAttributes({
     currentBrand,
   }: FilterSelectedOptionsInterface): OptionInterface | null {
     const optionSlug = `${attributeSlug}${FILTER_SEPARATOR}${option.slug}`;
-    const isBrand = attributeSlug === CATALOGUE_BRAND_KEY;
+    const isBrand = attributeSlug === FILTER_BRAND_KEY;
     const brand = isBrand
       ? (brands || []).find(({ slug }) => {
           return slug === option.slug;
@@ -232,7 +234,7 @@ export async function getCatalogueAttributes({
         isBrand,
         currentBrand: brand,
         option: nestedOption,
-        attributeSlug: isBrand ? CATALOGUE_BRAND_COLLECTION_KEY : attributeSlug,
+        attributeSlug: isBrand ? FILTER_BRAND_COLLECTION_KEY : attributeSlug,
       });
     });
 
@@ -274,8 +276,8 @@ export async function getCatalogueAttributes({
           .join('/')
       : [...realFilter, optionSlug].join('/');
 
-    const isCategory = attribute.slug === CATALOGUE_CATEGORY_KEY;
-    const isBrand = attribute.slug === CATALOGUE_BRAND_KEY;
+    const isCategory = attribute.slug === FILTER_CATEGORY_KEY;
+    const isBrand = attribute.slug === FILTER_BRAND_KEY;
     const nestedOptions: CatalogueFilterAttributeOptionInterface[] = [];
 
     if (isCategory || isBrand) {
@@ -284,7 +286,7 @@ export async function getCatalogueAttributes({
           option: nestedOption,
           attribute: {
             ...attribute,
-            slug: isBrand ? CATALOGUE_BRAND_COLLECTION_KEY : attribute.slug,
+            slug: isBrand ? FILTER_BRAND_COLLECTION_KEY : attribute.slug,
           },
         });
         nestedOptions.push(castedOption);
@@ -331,7 +333,7 @@ export async function getCatalogueAttributes({
       }
 
       // If price attribute
-      if (slug === CATALOGUE_PRICE_KEY) {
+      if (slug === FILTER_PRICE_KEY) {
         const splittedOption = optionSlug.split(FILTER_SEPARATOR);
         const filterOptionValue = splittedOption[1];
         const prices = filterOptionValue.split('_');
@@ -562,6 +564,7 @@ interface CastCatalogueFiltersPayloadInterface {
   brandCollectionStage: Record<any, any>;
   sortStage: Record<any, any>;
   defaultSortStage: Record<any, any>;
+  photoStage: Record<any, any>;
 }
 
 interface CastCatalogueFiltersInterface {
@@ -599,12 +602,15 @@ export function castCatalogueFilters({
   // rubrics
   const rubricFilters: string[] = [];
 
+  // photo stage
+  let photoStage: Record<any, any> = {};
+
   filters.forEach((filterOption) => {
     const splittedOption = filterOption.split(FILTER_SEPARATOR);
     const filterAttributeSlug = splittedOption[0];
     const filterOptionSlug = splittedOption[1];
     if (filterAttributeSlug) {
-      if (filterAttributeSlug === CATALOGUE_RUBRIC_KEY) {
+      if (filterAttributeSlug === FILTER_RUBRIC_KEY) {
         rubricFilters.push(filterOptionSlug);
         return;
       }
@@ -619,7 +625,7 @@ export function castCatalogueFilters({
         return;
       }
 
-      if (filterAttributeSlug === CATALOGUE_PRICE_KEY) {
+      if (filterAttributeSlug === FILTER_PRICE_KEY) {
         const prices = filterOptionSlug.split('_');
         minPrice = prices[0] ? noNaN(prices[0]) : null;
         maxPrice = prices[1] ? noNaN(prices[1]) : null;
@@ -638,13 +644,13 @@ export function castCatalogueFilters({
         return;
       }
 
-      if (filterAttributeSlug === CATALOGUE_CATEGORY_KEY) {
+      if (filterAttributeSlug === FILTER_CATEGORY_KEY) {
         realFilterOptions.push(filterOptionSlug);
         categoryFilters.push(filterOption);
         return;
       }
 
-      if (filterAttributeSlug === CATALOGUE_BRAND_KEY) {
+      if (filterAttributeSlug === FILTER_BRAND_KEY) {
         const slugParts = filterOption.split(FILTER_SEPARATOR);
         if (slugParts[1]) {
           brandFilters.push(slugParts[1]);
@@ -652,10 +658,19 @@ export function castCatalogueFilters({
         return;
       }
 
-      if (filterAttributeSlug === CATALOGUE_BRAND_COLLECTION_KEY) {
+      if (filterAttributeSlug === FILTER_BRAND_COLLECTION_KEY) {
         const slugParts = filterOption.split(FILTER_SEPARATOR);
         if (slugParts[1]) {
           brandCollectionFilters.push(slugParts[1]);
+        }
+        return;
+      }
+
+      if (filterAttributeSlug === FILTER_COMMON_KEY) {
+        if (filterOptionSlug === FILTER_NO_PHOTO_KEY) {
+          photoStage = {
+            mainImage: `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`,
+          };
         }
         return;
       }
@@ -743,6 +758,7 @@ export function castCatalogueFilters({
     brandCollectionStage,
     sortStage,
     defaultSortStage,
+    photoStage,
   };
 }
 
@@ -1184,13 +1200,6 @@ export const getCatalogueData = async ({
               },
             ],
 
-            // countAllDocs facet
-            countAllDocs: [
-              {
-                $count: 'totalDocs',
-              },
-            ],
-
             // rubric facet
             rubrics: [
               {
@@ -1260,6 +1269,13 @@ export const getCatalogueData = async ({
 
             // attributes facet
             attributes: filterAttributesPipeline(defaultSortStage),
+
+            // countAllDocs facet
+            countAllDocs: [
+              {
+                $count: 'totalDocs',
+              },
+            ],
           },
         },
 
@@ -1569,8 +1585,8 @@ export const getCatalogueData = async ({
 
     selectedAttributes.forEach((selectedAttribute) => {
       const { options, showAsCatalogueBreadcrumb, slug } = selectedAttribute;
-      const isPrice = slug === CATALOGUE_PRICE_KEY;
-      const isBrand = slug === CATALOGUE_BRAND_KEY;
+      const isPrice = slug === FILTER_PRICE_KEY;
+      const isBrand = slug === FILTER_BRAND_KEY;
       let metricValue = selectedAttribute.metric ? ` ${selectedAttribute.metric}` : '';
       if (isPrice) {
         metricValue = currency;
@@ -1614,7 +1630,7 @@ export const getCatalogueData = async ({
     const selectedCategories: CategoryInterface[] = [];
     selectedAttributes.forEach((attribute) => {
       const { options, slug } = attribute;
-      if (slug === CATALOGUE_CATEGORY_KEY) {
+      if (slug === FILTER_CATEGORY_KEY) {
         options.forEach((option) => {
           const currentCategory = (categories || []).find(({ slug }) => {
             return slug === option.slug;
@@ -1697,7 +1713,7 @@ export const getCatalogueData = async ({
       selectedAttributes: showCategoriesInFilter
         ? selectedAttributes
         : selectedAttributes.filter(({ slug }) => {
-            return slug !== CATALOGUE_CATEGORY_KEY;
+            return slug !== FILTER_CATEGORY_KEY;
           }),
       page,
       breadcrumbs,

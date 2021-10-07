@@ -3,14 +3,12 @@ import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
 import LinkEmail from 'components/Link/LinkEmail';
 import LinkPhone from 'components/Link/LinkPhone';
-import Pager from 'components/Pager/Pager';
-import RequestError from 'components/RequestError';
-import Spinner from 'components/Spinner';
+import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
 import Table, { TableColumn } from 'components/Table';
 import Title from 'components/Title';
 import { ROUTE_CONSOLE } from 'config/common';
+import { getConsoleOrders, GetConsoleOrdersPayloadType } from 'db/dao/order/getConsoleOrders';
 import { OrderInterface } from 'db/uiInterfaces';
-import { useConsoleOrders } from 'hooks/useConsoleOrders';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/console/ConsoleLayout';
 import Head from 'next/head';
@@ -18,23 +16,15 @@ import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { getConsoleInitialData } from 'lib/ssrUtils';
+import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 
-const OrdersRoute: React.FC = () => {
+interface OrdersRouteInterface {
+  data: GetConsoleOrdersPayloadType;
+}
+
+const OrdersRoute: React.FC<OrdersRouteInterface> = ({ data }) => {
+  const setPageHandler = useNavigateToPageHandler();
   const router = useRouter();
-  const { data, error } = useConsoleOrders({
-    input: {
-      companyId: `${router.query.companyId}`,
-    },
-  });
-
-  if (error) {
-    return <RequestError />;
-  }
-
-  if (!data) {
-    return <Spinner isNested isTransparent />;
-  }
 
   const columns: TableColumn<OrderInterface>[] = [
     {
@@ -99,12 +89,12 @@ const OrdersRoute: React.FC = () => {
         <title>{`Заказы`}</title>
       </Head>
       <Inner>
-        <Title>Заказы</Title>
+        <Title subtitle={<div>Всего заказов {data.totalDocs}</div>}>Заказы</Title>
 
         <div className='overflow-x-auto' data-cy={'orders-list'}>
           <Table<OrderInterface>
             columns={columns}
-            data={data}
+            data={data.docs}
             testIdKey={'itemId'}
             onRowDoubleClick={(dataItem) => {
               router
@@ -115,18 +105,18 @@ const OrdersRoute: React.FC = () => {
             }}
           />
         </div>
-        <Pager page={1} setPage={() => undefined} totalPages={0} />
+        <Pager page={data.page} setPage={setPageHandler} totalPages={data.totalPages} />
       </Inner>
     </AppContentWrapper>
   );
 };
 
-interface OrdersInterface extends PagePropsInterface {}
+interface OrdersInterface extends PagePropsInterface, OrdersRouteInterface {}
 
-const Orders: NextPage<OrdersInterface> = ({ pageUrls, currentCompany }) => {
+const Orders: NextPage<OrdersInterface> = ({ pageUrls, currentCompany, data }) => {
   return (
     <ConsoleLayout pageUrls={pageUrls} company={currentCompany}>
-      <OrdersRoute />
+      <OrdersRoute data={data} />
     </ConsoleLayout>
   );
 };
@@ -147,10 +137,18 @@ export const getServerSideProps = async (
     };
   }
 
+  const data = await getConsoleOrders({ context });
+  if (!data) {
+    return {
+      notFound: true,
+    };
+  }
+
   return {
     props: {
       ...props,
       currentCompany: props.currentCompany,
+      data: castDbData(data),
     },
   };
 };

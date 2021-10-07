@@ -1029,6 +1029,22 @@ export interface NexusGenInputs {
     newPassword: string; // String!
     userId: NexusGenScalars['ObjectId']; // ObjectId!
   };
+  UpdateVisibleCategoriesInNavDropdownInput: {
+    // input type
+    _id: NexusGenScalars['ObjectId']; // ObjectId!
+    acceptedFormats: string[]; // [String!]!
+    categoryId: NexusGenScalars['ObjectId']; // ObjectId!
+    cities: NexusGenScalars['JSONObject']; // JSONObject!
+    citySlug: string; // String!
+    companySlug: string; // String!
+    description?: string | null; // String
+    group: string; // String!
+    multi: boolean; // Boolean!
+    name: string; // String!
+    rubricId: NexusGenScalars['ObjectId']; // ObjectId!
+    slug: string; // String!
+    variant: NexusGenEnums['ConfigVariant']; // ConfigVariant!
+  };
   UserNotificationsInput: {
     // input type
     adminCanceledOrder?: NexusGenInputs['NotificationConfigInput'] | null; // NotificationConfigInput
@@ -1699,6 +1715,7 @@ export interface NexusGenFieldTypes {
     updateSupplier: NexusGenRootTypes['SupplierPayload']; // SupplierPayload!
     updateUser: NexusGenRootTypes['UserPayload']; // UserPayload!
     updateUserPassword: NexusGenRootTypes['UserPayload']; // UserPayload!
+    updateVisibleCategoriesInNavDropdown: NexusGenRootTypes['ConfigPayload']; // ConfigPayload!
   };
   NavItem: {
     // field return type
@@ -2843,6 +2860,7 @@ export interface NexusGenFieldTypeNames {
     updateSupplier: 'SupplierPayload';
     updateUser: 'UserPayload';
     updateUserPassword: 'UserPayload';
+    updateVisibleCategoriesInNavDropdown: 'ConfigPayload';
   };
   NavItem: {
     // field return type name
@@ -4006,6 +4024,10 @@ export interface NexusGenArgTypes {
     updateUserPassword: {
       // args
       input: NexusGenInputs['UpdateUserPasswordInput']; // UpdateUserPasswordInput!
+    };
+    updateVisibleCategoriesInNavDropdown: {
+      // args
+      input: NexusGenInputs['UpdateVisibleCategoriesInNavDropdownInput']; // UpdateVisibleCategoriesInNavDropdownInput!
     };
   };
   Query: {

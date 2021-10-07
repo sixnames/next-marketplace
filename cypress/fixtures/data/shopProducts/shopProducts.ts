@@ -45,6 +45,7 @@ shops.forEach((shop) => {
             brandCollectionSlug: product.brandCollectionSlug,
             brandSlug: product.brandSlug,
             manufacturerSlug: product.manufacturerSlug,
+            mainImage: product.mainImage,
             rubricId: product.rubricId,
             rubricSlug: product.rubricSlug,
             selectedOptionsSlugs: product.selectedOptionsSlugs,

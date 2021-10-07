@@ -1,6 +1,7 @@
 import ConfigsFormTemplate from 'components/FormTemplates/ConfigsFormTemplate';
 import Inner from 'components/Inner';
 import { CONFIG_GROUP_UI, ROUTE_CMS } from 'config/common';
+import { getConfigRubrics } from 'db/dao/configs/getConfigRubrics';
 import { CompanyInterface } from 'db/uiInterfaces';
 import { ConfigPageInterface } from 'layout/console/ConsoleConfigsLayout';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
@@ -20,6 +21,7 @@ const ConfigConsumer: React.FC<ConfigConsumerInterface> = ({
   assetConfigs,
   normalConfigs,
   currentCompany,
+  rubrics,
 }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Интерфейс',
@@ -38,7 +40,11 @@ const ConfigConsumer: React.FC<ConfigConsumerInterface> = ({
   return (
     <CmsCompanyLayout company={currentCompany} breadcrumbs={breadcrumbs}>
       <Inner testId={'company-config-ui'}>
-        <ConfigsFormTemplate assetConfigs={assetConfigs} normalConfigs={normalConfigs} />
+        <ConfigsFormTemplate
+          assetConfigs={assetConfigs}
+          normalConfigs={normalConfigs}
+          rubrics={rubrics}
+        />
       </Inner>
     </CmsCompanyLayout>
   );
@@ -87,12 +93,15 @@ export const getServerSideProps = async (
     };
   }
 
+  const rubrics = await getConfigRubrics(props.sessionLocale);
+
   return {
     props: {
       ...props,
       assetConfigs: castDbData(assetConfigs),
       normalConfigs: castDbData(normalConfigs),
       currentCompany: castDbData(currentCompany),
+      rubrics: castDbData(rubrics),
     },
   };
 };

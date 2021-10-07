@@ -547,6 +547,7 @@ export interface OrderModel extends TimestampModel, BaseModel {
   comment?: string | null;
   customerId: ObjectIdModel;
   companySiteSlug: string;
+  companySiteItemId: string;
   productIds: ObjectIdModel[];
   shopProductIds: ObjectIdModel[];
   shopId: ObjectIdModel;
@@ -769,6 +770,7 @@ export interface ShopProductModel
   productId: ObjectIdModel;
   shopId: ObjectIdModel;
   companyId: ObjectIdModel;
+  mainImage: string;
   barcode?: string | null;
 }
 

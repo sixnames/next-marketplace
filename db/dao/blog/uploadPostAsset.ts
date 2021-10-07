@@ -2,7 +2,7 @@ import { ASSETS_DIST_BLOG_CONTENT } from 'config/common';
 import { COL_BLOG_POSTS } from 'db/collectionNames';
 import { BlogPostModel, ConstructorAssetPayloadModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { deleteUpload, storeRestApiUploads } from 'lib/assetUtils/assetUtils';
+import { storeRestApiUploads } from 'lib/assetUtils/assetUtils';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { parseApiFormData, UploadRestApiImageInterface } from 'lib/restApi';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
@@ -69,11 +69,6 @@ export async function uploadPostAsset(req: NextApiRequest, res: NextApiResponse)
       return;
     }
 
-    // delete old asset
-    if (blogPost.previewImage) {
-      await deleteUpload({ filePath: blogPost.previewImage });
-    }
-
     // upload asset
     const uploadedAsset = await storeRestApiUploads({
       files: formData.files,
@@ -106,7 +101,7 @@ export async function uploadPostAsset(req: NextApiRequest, res: NextApiResponse)
     const updatedPostResult = await blogPostsCollection.findOneAndUpdate(
       { _id: blogPostId },
       {
-        $addToSet: {
+        $push: {
           assetKeys: asset.url,
         },
         $set: {

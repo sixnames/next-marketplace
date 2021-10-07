@@ -486,52 +486,50 @@ export const getCatalogueNavRubrics = async ({
         const rubricCategoriesConfig = categoryConfigs.find(({ rubricId }) => {
           return rubricId.equals(rubric._id);
         });
-        const idsMatch = rubricCategoriesConfig
-          ? {
-              _id: {
-                $in: rubricCategoriesConfig.categoryIds,
-              },
-            }
-          : {};
-        categories = await categoriesCollection
-          .aggregate([
-            {
-              $match: {
-                ...idsMatch,
-                rubricId: rubric._id,
-                slug: {
-                  $in: rubricConfig.attributeSlugs,
+
+        if (rubricCategoriesConfig) {
+          categories = await categoriesCollection
+            .aggregate([
+              {
+                $match: {
+                  _id: {
+                    $in: rubricCategoriesConfig.categoryIds,
+                  },
+                  rubricId: rubric._id,
+                  slug: {
+                    $in: rubricConfig.attributeSlugs,
+                  },
                 },
               },
-            },
-            {
-              $lookup: {
-                from: COL_ICONS,
-                as: 'icon',
-                let: {
-                  documentId: '$_id',
-                },
-                pipeline: [
-                  {
-                    $match: {
-                      collectionName: COL_CATEGORIES,
-                      $expr: {
-                        $eq: ['$documentId', '$$documentId'],
+              {
+                $lookup: {
+                  from: COL_ICONS,
+                  as: 'icon',
+                  let: {
+                    documentId: '$_id',
+                  },
+                  pipeline: [
+                    {
+                      $match: {
+                        collectionName: COL_CATEGORIES,
+                        $expr: {
+                          $eq: ['$documentId', '$$documentId'],
+                        },
                       },
                     },
-                  },
-                ],
-              },
-            },
-            {
-              $addFields: {
-                icon: {
-                  $arrayElemAt: ['$icon', 0],
+                  ],
                 },
               },
-            },
-          ])
-          .toArray();
+              {
+                $addFields: {
+                  icon: {
+                    $arrayElemAt: ['$icon', 0],
+                  },
+                },
+              },
+            ])
+            .toArray();
+        }
       }
 
       const categoriesTree = getTreeFromList({

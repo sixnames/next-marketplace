@@ -1,8 +1,9 @@
-import { DEFAULT_COMPANY_SLUG, ROUTE_PROFILE } from 'config/common';
+import { DEFAULT_COMPANY_SLUG } from 'config/common';
 import { COL_COMPANIES, COL_USERS } from 'db/collectionNames';
 import { CompanyModel, ObjectIdModel, UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { sendEmail, SendEmailInterface } from 'lib/email/mailer';
+import { getOrderLink } from 'lib/linkUtils';
 
 interface SendOrderCreatedEmailInterface
   extends Omit<SendEmailInterface, 'content' | 'text' | 'subject' | 'to'> {
@@ -30,6 +31,7 @@ export const sendOrderCreatedEmail = async ({
 
   // customer
   if (customer && customer.notifications?.newOrder?.email) {
+    const url = getOrderLink();
     const text = `
         Здравствуйте ${customer.name}!
         Спасибо за заказ!
@@ -40,7 +42,7 @@ export const sendOrderCreatedEmail = async ({
       <div>
         <h2>Здравствуйте ${customer.name}!</h2>
         <h3>Спасибо за заказ!</h3>
-        <h4>Номер вашего заказа <a href='https://${process.env.DEFAULT_DOMAIN}${ROUTE_PROFILE}'>${orderItemId}</a></h4>
+        <h4>Номер вашего заказа <a href='${url}'>${orderItemId}</a></h4>
         <p>Наш менеджер свяжется с вами в ближайшее время, чтобы уточнить детали.</p>
       </div>
       `;
@@ -81,6 +83,12 @@ export const sendOrderCreatedEmail = async ({
       .toArray();
     const emails = users.map(({ email }) => email);
 
+    const url = getOrderLink({
+      variant: 'companyManager',
+      orderObjectId,
+      companyId,
+    });
+
     if (emails.length > 0) {
       await sendEmail({
         text,
@@ -89,11 +97,7 @@ export const sendOrderCreatedEmail = async ({
         locale,
         companySiteSlug,
         subject,
-        content: content(
-          `https://${
-            process.env.DEFAULT_DOMAIN
-          }/console/${companyId.toHexString()}/orders/order/${orderObjectId.toHexString()}`,
-        ),
+        content: content(url),
       });
     }
   }
@@ -105,6 +109,10 @@ export const sendOrderCreatedEmail = async ({
     })
     .toArray();
   const emails = users.map(({ email }) => email);
+  const url = getOrderLink({
+    variant: 'siteAdmin',
+    orderObjectId,
+  });
 
   if (emails.length > 0) {
     await sendEmail({
@@ -114,9 +122,7 @@ export const sendOrderCreatedEmail = async ({
       locale,
       companySiteSlug: DEFAULT_COMPANY_SLUG,
       subject,
-      content: content(
-        `https://${process.env.DEFAULT_DOMAIN}/cms/orders/${orderObjectId.toHexString()}`,
-      ),
+      content: content(url),
     });
   }
 };

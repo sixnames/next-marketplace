@@ -2,6 +2,7 @@ import { DEFAULT_COMPANY_SLUG } from 'config/common';
 import { COL_COMPANIES, COL_USERS } from 'db/collectionNames';
 import { CompanyModel, ObjectIdModel, UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
+import { getOrderLink } from 'lib/linkUtils';
 import { smsSender, SmsSenderInterface } from 'lib/sms/smsUtils';
 
 interface SendOrderCreatedSmsInterface extends Omit<SmsSenderInterface, 'text' | 'numbers'> {
@@ -16,6 +17,7 @@ export async function sendOrderCreatedSms({
   orderItemId,
   customer,
   companySiteSlug,
+  orderObjectId,
   city,
   companyId,
 }: SendOrderCreatedSmsInterface) {
@@ -28,7 +30,8 @@ export async function sendOrderCreatedSms({
 
   // customer
   if (customer && customer.notifications?.newOrder?.sms) {
-    const text = `Здравствуйте ${customer.name}! Спасибо за заказ! Номер вашего заказа ${orderItemId}`;
+    const url = getOrderLink();
+    const text = `Здравствуйте ${customer.name}! Спасибо за заказ! Номер вашего заказа ${orderItemId} ${url}`;
 
     await smsSender({
       text,
@@ -40,7 +43,9 @@ export async function sendOrderCreatedSms({
   }
 
   // company admins
-  const text = `Поступил новый заказ № ${orderItemId}`;
+  const text = (url: string) => {
+    return `Поступил новый заказ № ${orderItemId} ${url}`;
+  };
   if (company) {
     const adminIds = [...company.staffIds, company.ownerId];
     const users = await usersCollection
@@ -52,9 +57,14 @@ export async function sendOrderCreatedSms({
       })
       .toArray();
     const numbers = users.map(({ phone }) => phone);
+    const url = getOrderLink({
+      variant: 'companyManager',
+      orderObjectId,
+      companyId,
+    });
     if (numbers.length > 0) {
       await smsSender({
-        text,
+        text: text(url),
         numbers,
         locale,
         city,
@@ -70,9 +80,14 @@ export async function sendOrderCreatedSms({
     })
     .toArray();
   const numbers = users.map(({ phone }) => phone);
+  const url = getOrderLink({
+    variant: 'siteAdmin',
+    orderObjectId,
+  });
+
   if (numbers.length > 0) {
     await smsSender({
-      text,
+      text: text(url),
       numbers,
       locale,
       city,

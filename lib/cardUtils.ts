@@ -8,10 +8,10 @@ import {
   DEFAULT_CITY,
   PAGE_EDITOR_DEFAULT_VALUE_STRING,
   ROUTE_CATALOGUE,
-  CATALOGUE_CATEGORY_KEY,
+  FILTER_CATEGORY_KEY,
   GENDER_IT,
-  CATALOGUE_BRAND_KEY,
-  CATALOGUE_BRAND_COLLECTION_KEY,
+  FILTER_BRAND_KEY,
+  FILTER_BRAND_COLLECTION_KEY,
   DEFAULT_COMPANY_SLUG,
   SORT_DESC,
 } from 'config/common';
@@ -72,7 +72,7 @@ function castCategoriesForBreadcrumbs({
   acc,
   hrefAcc,
 }: CastOptionsForBreadcrumbsInterface): ProductCardBreadcrumbModel[] {
-  const categorySlug = `${CATALOGUE_CATEGORY_KEY}${FILTER_SEPARATOR}${category.slug}`;
+  const categorySlug = `${FILTER_CATEGORY_KEY}${FILTER_SEPARATOR}${category.slug}`;
   const newAcc = [...acc];
   const href = `${hrefAcc}/${categorySlug}`;
   newAcc.push({
@@ -797,7 +797,7 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
       attributesBreadcrumbs.push({
         _id: brand._id,
         name: getFieldStringLocale(brand.nameI18n, locale),
-        href: `${ROUTE_CATALOGUE}/${rubric.slug}/${CATALOGUE_BRAND_KEY}${FILTER_SEPARATOR}${brand.slug}`,
+        href: `${ROUTE_CATALOGUE}/${rubric.slug}/${FILTER_BRAND_KEY}${FILTER_SEPARATOR}${brand.slug}`,
       });
     }
 
@@ -806,7 +806,7 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
       attributesBreadcrumbs.push({
         _id: brandCollection._id,
         name: getFieldStringLocale(brandCollection.nameI18n, locale),
-        href: `${ROUTE_CATALOGUE}/${rubric.slug}/${CATALOGUE_BRAND_COLLECTION_KEY}${FILTER_SEPARATOR}${brandCollection.slug}`,
+        href: `${ROUTE_CATALOGUE}/${rubric.slug}/${FILTER_BRAND_COLLECTION_KEY}${FILTER_SEPARATOR}${brandCollection.slug}`,
       });
     }
 

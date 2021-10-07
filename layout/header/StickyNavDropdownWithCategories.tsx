@@ -1,6 +1,6 @@
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
-import { CATALOGUE_CATEGORY_KEY, FILTER_SEPARATOR, ROUTE_CATALOGUE } from 'config/common';
+import { FILTER_CATEGORY_KEY, FILTER_SEPARATOR, ROUTE_CATALOGUE } from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import {
   dropdownClassName,
@@ -77,7 +77,7 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
   hideDropdown,
 }) => {
   const { categories, name, icon } = category;
-  const categoryPath = `${CATALOGUE_CATEGORY_KEY}${FILTER_SEPARATOR}${category.slug}`;
+  const categoryPath = `${FILTER_CATEGORY_KEY}${FILTER_SEPARATOR}${category.slug}`;
   const { configs } = useConfigContext();
   const stickyNavVisibleSubCategoriesCount = configs.stickyNavVisibleSubCategoriesCount;
 
@@ -103,7 +103,7 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
       </div>
       <ul className='flex-grow flex flex-col'>
         {(categories || []).map((childCategory, index) => {
-          const childCategoryPath = `${CATALOGUE_CATEGORY_KEY}${FILTER_SEPARATOR}${childCategory.slug}`;
+          const childCategoryPath = `${FILTER_CATEGORY_KEY}${FILTER_SEPARATOR}${childCategory.slug}`;
           if (index < stickyNavVisibleSubCategoriesCount) {
             return (
               <li key={`${childCategory._id}`}>

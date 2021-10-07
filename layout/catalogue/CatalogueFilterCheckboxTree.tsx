@@ -5,10 +5,10 @@ import { CatalogueAdditionalOptionsModalInterface } from 'components/Modal/Catal
 import { CategoryOptionsModalInterface } from 'components/Modal/CategoryOptionsModal';
 import { OptionsModalOptionInterface } from 'components/Modal/OptionsModal';
 import {
-  CATALOGUE_BRAND_KEY,
-  CATALOGUE_CATEGORY_KEY,
+  FILTER_BRAND_KEY,
+  FILTER_CATEGORY_KEY,
   CATALOGUE_FILTER_VISIBLE_OPTIONS,
-  CATALOGUE_PRICE_KEY,
+  FILTER_PRICE_KEY,
   FILTER_SEPARATOR,
 } from 'config/common';
 import {
@@ -50,9 +50,9 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
     configs.catalogueFilterVisibleOptionsCount || CATALOGUE_FILTER_VISIBLE_OPTIONS;
 
   const { name, clearSlug, options, isSelected, metric, slug, totalOptionsCount } = attribute;
-  const isCategory = slug === CATALOGUE_CATEGORY_KEY;
-  const isBrand = slug === CATALOGUE_BRAND_KEY;
-  const isPrice = slug === CATALOGUE_PRICE_KEY;
+  const isCategory = slug === FILTER_CATEGORY_KEY;
+  const isBrand = slug === FILTER_BRAND_KEY;
+  const isPrice = slug === FILTER_PRICE_KEY;
   const hasMoreOptions = totalOptionsCount > maxVisibleOptions && !isPrice;
 
   const navigateFromModal = React.useCallback(
@@ -179,7 +179,7 @@ const CatalogueFilterCheckboxTree: React.FC<CatalogueFilterInterface> = ({
             <div>
               {selectedAttributes.map((attribute) => {
                 const { metric, slug } = attribute;
-                const isPrice = slug === CATALOGUE_PRICE_KEY;
+                const isPrice = slug === FILTER_PRICE_KEY;
                 const postfix = isPrice ? ` ${currency}` : metric ? ` ${metric}` : null;
                 return attribute.options.map((option) => {
                   const key = `${option.slug}`;

@@ -770,6 +770,7 @@ export interface ShopProductModel
   productId: ObjectIdModel;
   shopId: ObjectIdModel;
   companyId: ObjectIdModel;
+  mainImage: string;
   barcode?: string | null;
 }
 

@@ -10,6 +10,7 @@ import {
 import {
   getBrandFilterAttribute,
   getCategoryFilterAttribute,
+  getCommonFilterAttribute,
   getPriceAttribute,
 } from 'config/constantAttributes';
 import {
@@ -125,6 +126,7 @@ export const getConsoleRubricProducts = async ({
       brandCollectionStage,
       optionsStage,
       pricesStage,
+      photoStage,
     } = castCatalogueFilters({
       filters,
       initialPage: page,
@@ -181,6 +183,7 @@ export const getConsoleRubricProducts = async ({
       ...brandCollectionStage,
       ...optionsStage,
       ...pricesStage,
+      ...photoStage,
     };
 
     const productDataAggregationResult = await productsCollection
@@ -506,9 +509,18 @@ export const getConsoleRubricProducts = async ({
       };
     });
 
+    // common attribute
+    const commonAttribute = getCommonFilterAttribute();
+
     // cast attributes
     const { castedAttributes, selectedAttributes } = await getCatalogueAttributes({
-      attributes: [...categoryAttribute, priceAttribute, ...brandAttribute, ...rubricAttributes],
+      attributes: [
+        ...categoryAttribute,
+        priceAttribute,
+        ...brandAttribute,
+        ...rubricAttributes,
+        commonAttribute,
+      ],
       locale,
       filters,
       productsPrices: prices,
@@ -663,6 +675,7 @@ export const getConsoleShopProducts = async ({
       brandCollectionStage,
       optionsStage,
       pricesStage,
+      photoStage,
     } = castCatalogueFilters({
       filters,
       initialPage: page,
@@ -709,6 +722,7 @@ export const getConsoleShopProducts = async ({
       ...optionsStage,
       ...pricesStage,
       ...searchStage,
+      ...photoStage,
     };
 
     const shopProductsAggregationResult = await shopProductsCollection
@@ -1020,9 +1034,18 @@ export const getConsoleShopProducts = async ({
       };
     });
 
+    // common attribute
+    const commonAttribute = getCommonFilterAttribute();
+
     // cast attributes
     const { castedAttributes, selectedAttributes } = await getCatalogueAttributes({
-      attributes: [...categoryAttribute, priceAttribute, ...brandAttribute, ...rubricAttributes],
+      attributes: [
+        ...categoryAttribute,
+        priceAttribute,
+        ...brandAttribute,
+        ...rubricAttributes,
+        commonAttribute,
+      ],
       locale,
       filters,
       productsPrices: prices,

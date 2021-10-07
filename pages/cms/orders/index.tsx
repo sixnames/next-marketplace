@@ -5,17 +5,15 @@ import Link from 'components/Link/Link';
 import LinkEmail from 'components/Link/LinkEmail';
 import LinkPhone from 'components/Link/LinkPhone';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import Pager from 'components/Pager/Pager';
-import RequestError from 'components/RequestError';
-import Spinner from 'components/Spinner';
+import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
 import Table, { TableColumn } from 'components/Table';
 import Title from 'components/Title';
 import { ROUTE_CMS } from 'config/common';
 import { CONFIRM_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
+import { getConsoleOrders, GetConsoleOrdersPayloadType } from 'db/dao/order/getConsoleOrders';
 import { OrderInterface } from 'db/uiInterfaces';
 import { useDeleteOrder } from 'hooks/mutations/order/useOrderMutations';
-import { useConsoleOrders } from 'hooks/useConsoleOrders';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import Head from 'next/head';
@@ -23,21 +21,17 @@ import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
-const OrdersRoute: React.FC = () => {
+interface OrdersRouteInterface {
+  data: GetConsoleOrdersPayloadType;
+}
+
+const OrdersRoute: React.FC<OrdersRouteInterface> = ({ data }) => {
   const { showModal } = useAppContext();
   const router = useRouter();
+  const setPageHandler = useNavigateToPageHandler();
   const [deleteOrder] = useDeleteOrder();
-  const { data, error } = useConsoleOrders();
-
-  if (error) {
-    return <RequestError />;
-  }
-
-  if (!data) {
-    return <Spinner isNested isTransparent />;
-  }
 
   const columns: TableColumn<OrderInterface>[] = [
     {
@@ -135,12 +129,12 @@ const OrdersRoute: React.FC = () => {
         <title>{`Заказы`}</title>
       </Head>
       <Inner>
-        <Title>Заказы</Title>
+        <Title subtitle={<div>Всего заказов {data.totalDocs}</div>}>Заказы</Title>
 
         <div className='overflow-x-auto' data-cy={'orders-list'}>
           <Table<OrderInterface>
             columns={columns}
-            data={data}
+            data={data.docs}
             testIdKey={'itemId'}
             onRowDoubleClick={(dataItem) => {
               router.push(`${ROUTE_CMS}/orders/${dataItem._id}`).catch((e) => {
@@ -149,18 +143,18 @@ const OrdersRoute: React.FC = () => {
             }}
           />
         </div>
-        <Pager page={1} setPage={() => undefined} totalPages={0} />
+        <Pager page={data.page} setPage={setPageHandler} totalPages={data.totalPages} />
       </Inner>
     </AppContentWrapper>
   );
 };
 
-interface OrdersInterface extends PagePropsInterface {}
+interface OrdersInterface extends PagePropsInterface, OrdersRouteInterface {}
 
-const Orders: NextPage<OrdersInterface> = ({ pageUrls }) => {
+const Orders: NextPage<OrdersInterface> = ({ pageUrls, data }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <OrdersRoute />
+      <OrdersRoute data={data} />
     </CmsLayout>
   );
 };
@@ -175,9 +169,17 @@ export const getServerSideProps = async (
     };
   }
 
+  const data = await getConsoleOrders({ context });
+  if (!data) {
+    return {
+      notFound: true,
+    };
+  }
+
   return {
     props: {
       ...props,
+      data: castDbData(data),
     },
   };
 };

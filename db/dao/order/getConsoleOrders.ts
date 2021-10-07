@@ -1,99 +1,173 @@
-import { SORT_DESC } from 'config/common';
+import { PAGINATION_DEFAULT_LIMIT, SORT_DESC } from 'config/common';
 import { COL_ORDER_CUSTOMERS, COL_ORDER_STATUSES, COL_ORDERS, COL_SHOPS } from 'db/collectionNames';
 import { OrderModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface, OrderInterface } from 'db/uiInterfaces';
+import {
+  AppPaginationAggregationInterface,
+  AppPaginationInterface,
+  OrderInterface,
+} from 'db/uiInterfaces';
+import { alwaysArray, alwaysString } from 'lib/arrayUtils';
+import { castCatalogueFilters } from 'lib/catalogueUtils';
 import { getShortName } from 'lib/nameUtils';
 import { castOrderStatus } from 'lib/orderUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { getRequestParams } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext } from 'next';
 
-export type GetConsoleOrdersPayloadType = OrderInterface[];
+export interface OrderPaginationAggregationInterface
+  extends AppPaginationAggregationInterface<OrderInterface> {}
+
+export type GetConsoleOrdersPayloadType = AppPaginationInterface<OrderInterface>;
+
 export interface GetConsoleOrdersInputInterface {
-  companyId?: string | null;
+  context: GetServerSidePropsContext;
 }
 
 export async function getConsoleOrders({
   context,
-  input,
-}: DaoPropsInterface<GetConsoleOrdersInputInterface>): Promise<GetConsoleOrdersPayloadType> {
+}: GetConsoleOrdersInputInterface): Promise<GetConsoleOrdersPayloadType | null> {
   try {
     const { locale } = await getRequestParams(context);
     const { db } = await getDatabase();
     const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
-    const matchByCompany = input?.companyId
+    const { query } = context;
+    const { companyId } = query;
+
+    const { page, skip, limit, clearSlug } = castCatalogueFilters({
+      filters: alwaysArray(query.filters),
+      initialLimit: PAGINATION_DEFAULT_LIMIT,
+    });
+
+    const matchByCompany = companyId
       ? [
           {
             $match: {
-              companyId: new ObjectId(input.companyId),
+              companyId: new ObjectId(alwaysString(companyId)),
             },
           },
         ]
       : [];
 
-    const initialOrders = await ordersCollection
-      .aggregate<OrderInterface>([
+    const ordersAggregationResult = await ordersCollection
+      .aggregate<OrderPaginationAggregationInterface>([
         ...matchByCompany,
+
+        // facets
         {
-          $lookup: {
-            from: COL_ORDER_STATUSES,
-            as: 'status',
-            localField: 'statusId',
-            foreignField: '_id',
-          },
-        },
-        {
-          $lookup: {
-            from: COL_ORDER_CUSTOMERS,
-            as: 'customer',
-            localField: '_id',
-            foreignField: 'orderId',
-          },
-        },
-        {
-          $lookup: {
-            from: COL_SHOPS,
-            as: 'shop',
-            let: { shopId: '$shopId' },
-            pipeline: [
+          $facet: {
+            // docs facet
+            docs: [
               {
-                $match: {
-                  $expr: {
-                    $eq: ['$$shopId', '$_id'],
+                $sort: {
+                  createdAt: SORT_DESC,
+                },
+              },
+              {
+                $skip: skip,
+              },
+              {
+                $limit: limit,
+              },
+              {
+                $lookup: {
+                  from: COL_ORDER_STATUSES,
+                  as: 'status',
+                  localField: 'statusId',
+                  foreignField: '_id',
+                },
+              },
+              {
+                $lookup: {
+                  from: COL_ORDER_CUSTOMERS,
+                  as: 'customer',
+                  localField: '_id',
+                  foreignField: 'orderId',
+                },
+              },
+              {
+                $lookup: {
+                  from: COL_SHOPS,
+                  as: 'shop',
+                  let: { shopId: '$shopId' },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $eq: ['$$shopId', '$_id'],
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                $addFields: {
+                  status: {
+                    $arrayElemAt: ['$status', 0],
+                  },
+                  customer: {
+                    $arrayElemAt: ['$customer', 0],
+                  },
+                  productsCount: {
+                    $size: '$shopProductIds',
+                  },
+                  shop: {
+                    $arrayElemAt: ['$shop', 0],
                   },
                 },
               },
             ],
+
+            // countAllDocs facet
+            countAllDocs: [
+              {
+                $count: 'totalDocs',
+              },
+            ],
+          },
+        },
+
+        // cast facets
+        {
+          $addFields: {
+            totalDocsObject: { $arrayElemAt: ['$countAllDocs', 0] },
           },
         },
         {
           $addFields: {
-            status: {
-              $arrayElemAt: ['$status', 0],
-            },
-            customer: {
-              $arrayElemAt: ['$customer', 0],
-            },
-            productsCount: {
-              $size: '$shopProductIds',
-            },
-            shop: {
-              $arrayElemAt: ['$shop', 0],
+            totalPagesFloat: {
+              $divide: ['$totalDocs', limit],
             },
           },
         },
         {
-          $sort: {
-            createdAt: SORT_DESC,
+          $addFields: {
+            totalPages: {
+              $ceil: '$totalPagesFloat',
+            },
+          },
+        },
+        {
+          $addFields: {
+            countAllDocs: null,
+            totalDocsObject: null,
+            totalDocs: '$totalDocsObject.totalDocs',
           },
         },
       ])
       .toArray();
+    const ordersAggregation = ordersAggregationResult[0];
+    if (!ordersAggregation) {
+      return null;
+    }
 
-    const orders: OrderInterface[] = [];
-    initialOrders.forEach((order) => {
-      orders.push({
+    const { totalDocs, totalPages } = ordersAggregation;
+
+    const docs: OrderInterface[] = [];
+    ordersAggregation.docs.forEach((order) => {
+      docs.push({
         ...order,
         totalPrice: order.products?.reduce((acc: number, { totalPrice, status }) => {
           const productStatus = castOrderStatus({
@@ -122,9 +196,15 @@ export async function getConsoleOrders({
       });
     });
 
-    return orders;
+    return {
+      docs,
+      totalDocs,
+      totalPages,
+      page,
+      clearSlug,
+    };
   } catch (e) {
     console.log(e);
-    return [];
+    return null;
   }
 }

@@ -1184,13 +1184,6 @@ export const getCatalogueData = async ({
               },
             ],
 
-            // countAllDocs facet
-            countAllDocs: [
-              {
-                $count: 'totalDocs',
-              },
-            ],
-
             // rubric facet
             rubrics: [
               {
@@ -1260,6 +1253,13 @@ export const getCatalogueData = async ({
 
             // attributes facet
             attributes: filterAttributesPipeline(defaultSortStage),
+
+            // countAllDocs facet
+            countAllDocs: [
+              {
+                $count: 'totalDocs',
+              },
+            ],
           },
         },
 

@@ -247,14 +247,12 @@ export async function makeAnOrder({
 
         if (!existingOrder) {
           const companySiteSlug = input.companySlug || DEFAULT_COMPANY_SLUG;
-          const uniqueOrderId = uniqid.time();
-          const companySiteItemId = await getOrderNextItemId(companySiteSlug);
 
           // create new order
           existingOrder = {
             _id: new ObjectId(),
-            orderId: uniqueOrderId,
-            companySiteItemId,
+            orderId: uniqid.time(),
+            companySiteItemId: await getOrderNextItemId(companySiteSlug),
             itemId: await getNextItemId(COL_ORDERS),
             statusId: initialStatus._id,
             customerId: user._id,

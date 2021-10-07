@@ -435,6 +435,7 @@ enum ConfigVariant {
   address
   asset
   boolean
+  categoriesTree
   color
   constructor
   email

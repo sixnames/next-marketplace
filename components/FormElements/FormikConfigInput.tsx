@@ -24,6 +24,7 @@ import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
 import { useLocaleContext } from 'context/localeContext';
 import { AddressModel, ConfigModel, JSONObjectModel, TranslationModel } from 'db/dbModels';
+import { RubricInterface } from 'db/uiInterfaces';
 import { Form, Formik, useField, useFormikContext } from 'formik';
 import { useUpdateConfigMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
@@ -199,9 +200,11 @@ interface InitialValues {
 
 interface FormikConfigInputInterface {
   config: ConfigModel;
+  rubrics?: RubricInterface[];
 }
 
-const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config }) => {
+const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubrics }) => {
+  console.log(rubrics);
   const { cities } = useConfigContext();
   const { onErrorCallback, onCompleteCallback } = useMutationCallbacks({
     reload: true,

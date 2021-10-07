@@ -3,6 +3,7 @@ import Title from 'components/Title';
 import { ROUTE_CONSOLE, ROUTE_CMS } from 'config/common';
 import { useUserContext } from 'context/userContext';
 import { ConfigModel } from 'db/dbModels';
+import { RubricInterface } from 'db/uiInterfaces';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import AppSubNav from 'layout/AppSubNav';
 import Head from 'next/head';
@@ -13,6 +14,7 @@ import { ClientNavItemInterface } from 'types/clientTypes';
 export interface ConfigPageInterface extends PagePropsInterface {
   assetConfigs: ConfigModel[];
   normalConfigs: ConfigModel[];
+  rubrics?: RubricInterface[];
 }
 
 export interface AppConfigsLayoutInterface {

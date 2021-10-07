@@ -98,6 +98,7 @@ export const CONFIG_VARIANT_CONSTRUCTOR = 'constructor' as ConfigVariantModel;
 export const CONFIG_VARIANT_COLOR = 'color' as ConfigVariantModel;
 export const CONFIG_VARIANT_ADDRESS = 'address' as ConfigVariantModel;
 export const CONFIG_VARIANT_PASSWORD = 'password' as ConfigVariantModel;
+export const CONFIG_VARIANT_CATEGORIES_TREE = 'categoriesTree' as ConfigVariantModel;
 
 export const CONFIG_VARIANTS_ENUMS = [
   CONFIG_VARIANT_STRING,
@@ -110,6 +111,7 @@ export const CONFIG_VARIANTS_ENUMS = [
   CONFIG_VARIANT_COLOR,
   CONFIG_VARIANT_ADDRESS,
   CONFIG_VARIANT_PASSWORD,
+  CONFIG_VARIANT_CATEGORIES_TREE,
 ];
 
 export const CONFIG_GROUP_GLOBALS = 'globals';

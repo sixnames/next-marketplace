@@ -601,6 +601,7 @@ export interface InitialCardDataInterface {
   cardLayout: string;
   rubric: RubricInterface;
   cardPrices: ProductCardPricesModel;
+  productSeo?: ProductSeoModel | null;
 }
 
 export interface SsrConfigsInterface {
@@ -674,6 +675,7 @@ export interface SsrConfigsInterface {
   cardListFeaturesCount: number;
   catalogueMetaPrefix: string;
   cardMetaPrefix: string;
+  showAdminUiInCatalogue: boolean;
 
   // Project
   useUniqueConstructor: boolean;

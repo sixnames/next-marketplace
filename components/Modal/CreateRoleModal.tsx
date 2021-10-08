@@ -31,6 +31,7 @@ const CreateRoleModal: React.FC<CreateRoleModalInterface> = ({ confirm }) => {
           descriptionI18n: null,
           isStaff: false,
           isCompanyStaff: false,
+          showAdminUiInCatalogue: false,
         }}
         onSubmit={(values) => {
           confirm(values);

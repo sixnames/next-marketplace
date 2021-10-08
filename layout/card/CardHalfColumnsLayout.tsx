@@ -57,6 +57,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
     showCardBrands,
     cardBrandsLabel,
     cardTitle,
+    productSeo,
   } = useCardData({
     cardData,
     companySlug,
@@ -366,6 +367,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
 
           {/*text features*/}
           <CardTextFeatures
+            productSeo={productSeo}
             textFeatures={textFeatures}
             cardDescription={cardDescription}
             className='mb-28'

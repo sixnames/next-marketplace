@@ -34,9 +34,15 @@ import {
   COL_ATTRIBUTES_GROUPS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
+  COL_PRODUCT_SEO,
 } from 'db/collectionNames';
 import { productCategoriesPipeline } from 'db/dao/constantPipelines';
-import { CatalogueBreadcrumbModel, ObjectIdModel, ProductCardBreadcrumbModel } from 'db/dbModels';
+import {
+  CatalogueBreadcrumbModel,
+  ObjectIdModel,
+  ProductCardBreadcrumbModel,
+  ProductSeoModel,
+} from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
   CategoryInterface,
@@ -104,6 +110,7 @@ export interface GetCardDataInterface {
   companySlug: string;
   companyId?: string | ObjectId | null;
   useUniqueConstructor: boolean;
+  showAdminUiInCatalogue: boolean;
 }
 
 export async function getCardData({
@@ -111,6 +118,7 @@ export async function getCardData({
   city,
   slug,
   companyId,
+  showAdminUiInCatalogue,
   ...props
 }: // companySlug,
 // useUniqueConstructor,
@@ -119,6 +127,7 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
     // const startTime = new Date().getTime();
     const { db } = await getDatabase();
     const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
+    const productSeoCollection = db.collection<ProductSeoModel>(COL_PRODUCT_SEO);
     const companyMatch = companyId ? { companyId: new ObjectId(companyId) } : {};
     const companySlug = props.useUniqueConstructor ? props.companySlug : DEFAULT_COMPANY_SLUG;
     const shopProductsMatch = {
@@ -934,6 +943,14 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
       categories: cardCategories,
     });
 
+    // admin data
+    let productSeo = null;
+    if (showAdminUiInCatalogue) {
+      productSeo = await productSeoCollection.findOne({
+        productId: restProduct._id,
+      });
+    }
+
     return {
       product: {
         ...restProduct,
@@ -964,6 +981,7 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
             }
           : null,
       },
+      productSeo,
       cardTitle,
       cardPrices,
       rubric,

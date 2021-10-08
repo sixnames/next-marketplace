@@ -1,10 +1,10 @@
 import { ProductSeoModel } from '../../../../db/dbModels';
-import { ObjectId } from 'mongodb';
+import { getObjectId } from 'mongo-seeding';
 
 const productSeo: ProductSeoModel[] = [
   {
-    _id: new ObjectId('6154cb725b4fad2944079f4c'),
-    productId: new ObjectId('fe57c5fa310ae737a372ae95'),
+    _id: getObjectId('product seo A'),
+    productId: getObjectId('viski 000081'),
     locales: [
       {
         locale: 'ru',

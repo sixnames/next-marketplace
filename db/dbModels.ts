@@ -842,7 +842,7 @@ export interface UserModel extends BaseModel, TimestampModel {
   avatar?: AssetModel | null;
   roleId: ObjectIdModel;
   cartId?: ObjectIdModel | null;
-  categoryIds: ObjectIdModel[];
+  categoryIds?: ObjectIdModel[] | null;
   notifications: UserNotificationsModel;
 }
 

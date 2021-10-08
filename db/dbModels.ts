@@ -773,6 +773,9 @@ export interface ShopProductModel
   companyId: ObjectIdModel;
   mainImage: string;
   barcode?: string | null;
+  useCategoryDiscount?: boolean | null;
+  useCategoryCashback?: boolean | null;
+  useCategoryPayFromCashback?: boolean | null;
 }
 
 export interface ShopModel extends BaseModel, TimestampModel {
@@ -839,14 +842,13 @@ export interface UserModel extends BaseModel, TimestampModel {
   avatar?: AssetModel | null;
   roleId: ObjectIdModel;
   cartId?: ObjectIdModel | null;
-  categoryIds: ObjectIdModel[]; // ????????????????????????????
+  categoryIds: ObjectIdModel[];
   notifications: UserNotificationsModel;
 }
 
 export interface UserCategoryModel extends TimestampModel {
   _id: ObjectIdModel;
-  // ???????????????????????????
-  // companyId: ObjectIdModel;
+  companyId: ObjectIdModel;
   nameI18n: TranslationModel;
   descriptionI18n?: TranslationModel;
   entryMinCharge: number;

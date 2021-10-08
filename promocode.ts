@@ -20,6 +20,7 @@ export interface PromoCodeModel {
 export interface PromoModel {
   _id: string;
   shopId: string;
+  companyId: string;
   discountPercent: number;
   cashbackPercent: number;
   nameI18n: any;
@@ -105,11 +106,4 @@ export interface UserCashbackModel {
   userId: string;
   companyId: string;
   value: number;
-}
-
-// product or shop product ????????????????????????
-export interface ProductModel {
-  useCategoryDiscount?: boolean | null;
-  useCategoryCashback?: boolean | null;
-  useCategoryPayFromCashback?: boolean | null;
 }

@@ -773,6 +773,9 @@ export interface ShopProductModel
   companyId: ObjectIdModel;
   mainImage: string;
   barcode?: string | null;
+  useCategoryDiscount?: boolean | null;
+  useCategoryCashback?: boolean | null;
+  useCategoryPayFromCashback?: boolean | null;
 }
 
 export interface ShopModel extends BaseModel, TimestampModel {
@@ -801,6 +804,7 @@ export interface NotSyncedProductModel {
   createdAt: DateModel;
 }
 
+// User
 export interface NotificationConfigModel {
   nameI18n: TranslationModel;
   group: string;
@@ -838,7 +842,19 @@ export interface UserModel extends BaseModel, TimestampModel {
   avatar?: AssetModel | null;
   roleId: ObjectIdModel;
   cartId?: ObjectIdModel | null;
+  categoryIds: ObjectIdModel[];
   notifications: UserNotificationsModel;
+}
+
+export interface UserCategoryModel extends TimestampModel {
+  _id: ObjectIdModel;
+  companyId: ObjectIdModel;
+  nameI18n: TranslationModel;
+  descriptionI18n?: TranslationModel;
+  entryMinCharge: number;
+  discountPercent: number;
+  cashbackPercent: number;
+  payFromCashbackPercent: number;
 }
 
 // Pages

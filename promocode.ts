@@ -20,6 +20,7 @@ export interface PromoCodeModel {
 export interface PromoModel {
   _id: string;
   shopId: string;
+  companyId: string;
   discountPercent: number;
   cashbackPercent: number;
   nameI18n: any;
@@ -67,15 +68,28 @@ export interface OrderModel {
   promoId: string;
 }
 
-// User category
-export interface UserCategoryModel {
+export interface UserPaybackLogModel {
   _id: string;
-  nameI18n: any;
-  entryMinCharge: number;
+  userId: string;
+  orderId?: string;
+  creatorId?: string;
+  variant: 'add' | 'subtract';
   descriptionI18n?: any;
-  discountPercent: number;
-  cashbackPercent: number;
-  payFromCashbackPercent: number;
+  value: number; // - / +
+  currency: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface UserCashbackLogModel {
+  _id: string;
+  userId: string;
+  orderId?: string;
+  creatorId?: string;
+  variant: 'add' | 'subtract';
+  descriptionI18n?: any;
+  value: number; // - / +
+  currency: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -83,37 +97,13 @@ export interface UserCategoryModel {
 export interface UserPaybackModel {
   _id: string;
   userId: string;
-  orderId?: string;
-  creatorId?: string;
-  variant: 'add' | 'subtract';
-  descriptionI18n?: any;
-  value: number; // - / +
-  currency: string;
-  createdAt: Date;
-  updatedAt: Date;
+  companyId: string;
+  value: number;
 }
 
 export interface UserCashbackModel {
   _id: string;
   userId: string;
-  orderId?: string;
-  creatorId?: string;
-  variant: 'add' | 'subtract';
-  descriptionI18n?: any;
-  value: number; // - / +
-  currency: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface ProductModel {
-  userCategoryDiscount?: boolean | null;
-  userCategoryCashback?: boolean | null;
-  userCategoryPayFromCashback?: boolean | null;
-}
-
-// Add userCategoryId to the UserModel
-export interface UserModel {
-  userCategoryId?: string;
-  usedPromoCodes?: string[];
+  companyId: string;
+  value: number;
 }

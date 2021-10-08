@@ -76,10 +76,12 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
   attributeLinkStyle,
   hideDropdown,
 }) => {
+  const { configs } = useConfigContext();
   const { categories, name, icon } = category;
   const categoryPath = `${FILTER_CATEGORY_KEY}${FILTER_SEPARATOR}${category.slug}`;
-  const { configs } = useConfigContext();
   const stickyNavVisibleSubCategoriesCount = configs.stickyNavVisibleSubCategoriesCount;
+  const showOptionsMoreLink =
+    noNaN(stickyNavVisibleSubCategoriesCount) <= noNaN(categories?.length);
 
   return (
     <div className='flex flex-col'>
@@ -122,7 +124,7 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
           }
           return null;
         })}
-        {(categories || []).length > 0 ? (
+        {showOptionsMoreLink ? (
           <li>
             <Link
               onClick={hideDropdown}

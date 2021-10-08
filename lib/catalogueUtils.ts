@@ -845,6 +845,7 @@ export const getCatalogueData = async ({
       showSnippetButtonsOnHover: false,
       gridCatalogueColumns: CATALOGUE_GRID_DEFAULT_COLUMNS_COUNT,
       brandSlugs: [],
+      brandCollectionSlugs: [],
       categorySlugs: [],
       basePath,
       page,
@@ -1102,6 +1103,15 @@ export const getCatalogueData = async ({
               },
             ],
 
+            // brandCollection slugs facet
+            brandCollectionSlugs: [
+              {
+                $group: {
+                  _id: '$brandCollectionSlug',
+                },
+              },
+            ],
+
             // brands facet
             brands: [
               {
@@ -1160,9 +1170,6 @@ export const getCatalogueData = async ({
                           },
                           {
                             $sort: defaultSortStage,
-                          },
-                          {
-                            $limit: visibleOptionsCount,
                           },
                         ],
                       },
@@ -1309,6 +1316,7 @@ export const getCatalogueData = async ({
       prices,
       brandSlugs,
       selectedOptionsSlugs,
+      brandCollectionSlugs,
     } = productDataAggregation;
 
     if (rubrics.length < 1) {
@@ -1693,6 +1701,7 @@ export const getCatalogueData = async ({
           return acc;
         }, []),
       brandSlugs: brandSlugs.filter((slug) => slug._id).map((slug) => slug._id),
+      brandCollectionSlugs: brandCollectionSlugs.filter((slug) => slug._id).map((slug) => slug._id),
       filters: input.filters,
       rubricName,
       rubricSlug: rubric.slug,

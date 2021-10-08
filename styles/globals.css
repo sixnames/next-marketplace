@@ -10,6 +10,10 @@
 }
 
 @layer utilities {
+  .backdrop-blur-md {
+    backdrop-filter: blur(3px);
+  }
+
   .text-indent-full {
     overflow: hidden;
     text-indent: -999em;

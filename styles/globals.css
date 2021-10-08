@@ -59,6 +59,21 @@
     box-shadow: 0 20px 30px rgba(0, 0, 0, 0.15);
   }
 
+  .visually-hidden {
+    position: absolute;
+    display: block;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+    outline: none;
+    box-shadow: 0 0 0 transparent;
+  }
+
   .wp-nav-dropdown-hidden {
     position: absolute;
     width: 1px;
@@ -123,6 +138,10 @@
   input[type="color"]::-webkit-color-swatch {
     border: none;
     border-radius: 0.5rem;
+  }
+
+  .radio-input:checked + span {
+    background-color: var(--theme);
   }
 
   .form-select,

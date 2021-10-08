@@ -1,7 +1,6 @@
 import * as React from 'react';
 import InputLine, { InputLinePropsInterface } from '../Input/InputLine';
 import FormikRadioLine from './FormikRadioLine';
-import classes from './FormikRadioGroup.module.css';
 
 interface RadioItemInterface {
   value: string;
@@ -35,7 +34,7 @@ const FormikRadioGroup: React.FC<FormikRadioGroupInterface> = ({
       isRequired={isRequired}
       low={low}
     >
-      <span className={`${classes.frame} ${holderClass ? holderClass : ''}`}>
+      <span className={`block ${holderClass ? holderClass : ''}`}>
         {radioItems.map(({ value, label }) => (
           <FormikRadioLine label={label} name={name} value={value} key={value} />
         ))}

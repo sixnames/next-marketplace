@@ -1,6 +1,5 @@
 import * as React from 'react';
 import FormikRadio from './FormikRadio';
-import classes from './FormikRadioLine.module.css';
 
 interface FormikRadioLineInterface {
   name: string;
@@ -16,9 +15,13 @@ const FormikRadioLine: React.FC<FormikRadioLineInterface> = ({
   ...props
 }) => {
   return (
-    <label className={`${classes.frame} ${className ? className : ''}`}>
+    <label
+      className={`cursor-pointer flex items-center mr-4 min-h-[var(--formInputHeight)] ${
+        className ? className : ''
+      }`}
+    >
       <FormikRadio name={name} {...props} />
-      <span>{label}</span>
+      <span className='pl-2 flex-grow text-secondary-text'>{label}</span>
     </label>
   );
 };

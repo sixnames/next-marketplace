@@ -37,6 +37,7 @@ const ConfigContext = React.createContext<ConfigContextInterface>({
     showAdultModal: false,
     showBlog: false,
     showBlogPostViews: false,
+    showAdminUiInCatalogue: false,
     contactEmail: [],
     phone: [],
     facebook: '',

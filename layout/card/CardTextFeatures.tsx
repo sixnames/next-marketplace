@@ -1,3 +1,6 @@
+import TextSeoInfo from 'components/TextSeoInfo';
+import { useConfigContext } from 'context/configContext';
+import { ProductSeoModel, TextUniquenessApiParsedResponseModel } from 'db/dbModels';
 import { ProductAttributeInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 
@@ -5,6 +8,7 @@ interface CardTextFeaturesInterface {
   textFeatures: ProductAttributeInterface[];
   className?: string;
   cardDescription?: string | null;
+  productSeo?: ProductSeoModel | null;
 }
 
 const CardTextFeatures: React.FC<CardTextFeaturesInterface> = ({
@@ -12,7 +16,9 @@ const CardTextFeatures: React.FC<CardTextFeaturesInterface> = ({
   children,
   cardDescription,
   className,
+  productSeo,
 }) => {
+  const { configs } = useConfigContext();
   if (textFeatures.length < 1 && !cardDescription) {
     return null;
   }
@@ -25,6 +31,23 @@ const CardTextFeatures: React.FC<CardTextFeaturesInterface> = ({
           <div className='prose max-w-full'>
             <p>{cardDescription}</p>
           </div>
+
+          {configs.showAdminUiInCatalogue ? (
+            <div className='space-y-3 mt-6'>
+              {(productSeo?.locales || []).map(
+                (seoLocale: TextUniquenessApiParsedResponseModel) => {
+                  return (
+                    <TextSeoInfo
+                      showLocaleName
+                      listClassName='flex gap-3 flex-wrap'
+                      key={seoLocale.locale}
+                      seoLocale={seoLocale}
+                    />
+                  );
+                },
+              )}
+            </div>
+          ) : null}
         </section>
       ) : null}
 

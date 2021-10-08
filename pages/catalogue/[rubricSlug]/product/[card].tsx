@@ -1,4 +1,8 @@
+import Button from 'components/Button';
 import ErrorBoundaryFallback from 'components/ErrorBoundaryFallback';
+import FixedButtons from 'components/FixedButtons';
+import Inner from 'components/Inner';
+import { ROUTE_CMS } from 'config/common';
 import { CARD_LAYOUT_HALF_COLUMNS, DEFAULT_LAYOUT } from 'config/constantSelects';
 import { useConfigContext } from 'context/configContext';
 import { InitialCardDataInterface } from 'db/uiInterfaces';
@@ -62,6 +66,22 @@ const Card: NextPage<CardInterface> = ({ cardData, company, ...props }) => {
         companySlug={company?.slug}
         companyId={company ? `${company._id}` : null}
       />
+      {configs.showAdminUiInCatalogue ? (
+        <FixedButtons>
+          <Inner lowTop lowBottom>
+            <Button
+              onClick={() => {
+                window.open(
+                  `${ROUTE_CMS}/rubrics/${cardData.product.rubricId}/products/product/${cardData.product._id}`,
+                  '_blank',
+                );
+              }}
+            >
+              Редактировать товар
+            </Button>
+          </Inner>
+        </FixedButtons>
+      ) : null}
     </SiteLayoutProvider>
   );
 };
@@ -80,13 +100,15 @@ export async function getServerSideProps(
   // console.log(`After initial data `, new Date().getTime() - startTime);
 
   // card data
+  const { useUniqueConstructor, showAdminUiInCatalogue } = props.initialData.configs;
   const rawCardData = await getCardData({
     locale: `${locale}`,
     city: props.sessionCity,
     slug: `${query.card}`,
     companyId: props.company?._id,
     companySlug: props.companySlug,
-    useUniqueConstructor: props.initialData.configs.useUniqueConstructor,
+    useUniqueConstructor,
+    showAdminUiInCatalogue,
   });
   const cardData = castDbData(rawCardData);
   // console.log(`After card `, new Date().getTime() - startTime);

@@ -8,7 +8,7 @@ const attributesGroups: AttributesGroupModel[] = [
       ru: 'Общие характеристики',
     },
     attributesIds: getObjectIds([
-      `attribute Описание`,
+      `attribute Текстовый`,
       `attribute Количество в упаковке`,
       `attribute Крепость`,
       `attribute Состав`,

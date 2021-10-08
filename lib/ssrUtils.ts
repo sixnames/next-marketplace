@@ -49,13 +49,13 @@ import {
   ObjectIdModel,
   RubricModel,
   ShopProductModel,
-  UserModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
   CityInterface,
   PageInterface,
   PagesGroupInterface,
+  RoleInterface,
   RubricInterface,
   SsrConfigsInterface,
   UserInterface,
@@ -557,20 +557,22 @@ export const getCatalogueNavRubrics = async ({
   return rubrics;
 };
 
-export interface GetPageInitialDataInterface {
+export interface GetPageInitialDataCommonInterface {
   locale: string;
   city: string;
   companySlug?: string;
 }
 
-export interface GetSsrConfigsInterface extends GetPageInitialDataInterface {
+export interface GetSsrConfigsInterface extends GetPageInitialDataCommonInterface {
   db: Db;
+  role?: RoleInterface | null;
 }
 
 export const getSsrConfigs = async ({
   locale,
   city,
   companySlug,
+  role,
   db,
 }: GetSsrConfigsInterface): Promise<SsrConfigsInterface> => {
   const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
@@ -872,7 +874,11 @@ export const getSsrConfigs = async ({
     slug: 'visibleCategoriesInNavDropdown',
   });
 
+  // from role
+  const showAdminUiInCatalogue = Boolean(role?.showAdminUiInCatalogue);
+
   return {
+    showAdminUiInCatalogue,
     showReservationDate,
     mapMarkerDarkTheme,
     mapMarkerLightTheme,
@@ -949,10 +955,18 @@ export interface PageInitialDataPayload {
   currency: string;
 }
 
+export interface GetPageInitialDataInterface extends GetPageInitialDataCommonInterface {
+  locale: string;
+  city: string;
+  companySlug?: string;
+  role?: RoleInterface | null;
+}
+
 export const getPageInitialData = async ({
   locale,
   city,
   companySlug,
+  role,
 }: GetPageInitialDataInterface): Promise<PageInitialDataPayload> => {
   // console.log(' ');
   // console.log('=================== getPageInitialData =======================');
@@ -965,6 +979,7 @@ export const getPageInitialData = async ({
     city,
     locale,
     companySlug,
+    role,
   });
   // console.log('After configs ', new Date().getTime() - timeStart);
 
@@ -1019,13 +1034,13 @@ export interface GetPageSessionUserInterface {
 export async function getPageSessionUser({
   email,
   locale,
-}: GetPageSessionUserInterface): Promise<UserModel | null | undefined> {
+}: GetPageSessionUserInterface): Promise<UserInterface | null | undefined> {
   if (!email) {
     return null;
   }
 
   const { db } = await getDatabase();
-  const usersCollection = db.collection<UserModel>(COL_USERS);
+  const usersCollection = db.collection<UserInterface>(COL_USERS);
   const userAggregation = await usersCollection
     .aggregate([
       {
@@ -1241,6 +1256,7 @@ export async function getPageInitialState({
     locale: sessionLocale,
     city: sessionCity,
     companySlug: company?.slug,
+    role: sessionUser?.role,
   });
   const initialData = castDbData(rawInitialData);
 

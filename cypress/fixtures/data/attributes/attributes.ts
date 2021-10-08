@@ -39,10 +39,10 @@ const booleans = {
 
 const attributes: AttributeModel[] = [
   {
-    _id: getObjectId(`attribute Описание`),
+    _id: getObjectId(`attribute Текстовый`),
     slug: 'tsvet',
     nameI18n: {
-      ru: 'Описание',
+      ru: 'Текстовый',
     },
     variant: ATTRIBUTE_VARIANT_STRING as AttributeVariantModel,
     viewVariant: ATTRIBUTE_VIEW_VARIANT_TEXT as AttributeViewVariantModel,

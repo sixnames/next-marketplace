@@ -416,6 +416,7 @@ export interface CatalogueDataInterface {
   selectedAttributes: CatalogueFilterAttributeInterface[];
   brandSlugs: string[];
   categorySlugs: string[];
+  brandCollectionSlugs: string[];
   page: number;
   textTop?: string | null;
   textBottom?: string | null;
@@ -443,6 +444,7 @@ export interface CatalogueProductsAggregationInterface {
   categories?: CategoryInterface[];
   brands?: BrandInterface[];
   brandSlugs: CatalogueSlugsGroupInterface[];
+  brandCollectionSlugs: CatalogueSlugsGroupInterface[];
   selectedOptionsSlugs: CatalogueSlugsGroupInterface[];
 }
 

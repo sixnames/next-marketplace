@@ -138,12 +138,20 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
                 </small>
               </div>
 
-              <a
-                className='text-secondary-text hover:text-theme hover:no-underline lg:text-right'
-                href={`mailTo:${contactEmail}`}
-              >
-                {contactEmail}
-              </a>
+              <div>
+                {(contactEmail || []).map((email) => {
+                  return (
+                    <div key={email}>
+                      <a
+                        className='text-secondary-text hover:text-theme hover:no-underline lg:text-right'
+                        href={`mailTo:${email}`}
+                      >
+                        {email}
+                      </a>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
 

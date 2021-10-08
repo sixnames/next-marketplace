@@ -91,7 +91,6 @@ interface BlogPostPageConsumerInterface {
 const BlogPostPageConsumer: React.FC<BlogPostPageConsumerInterface> = ({ post }) => {
   const { locale } = useLocaleContext();
   const blogLinkName = getConstantTranslation(`nav.blog.${locale}`);
-
   return (
     <div className='mb-12'>
       <Breadcrumbs
@@ -117,6 +116,10 @@ const BlogPostPageConsumer: React.FC<BlogPostPageConsumerInterface> = ({ post })
           <BlogListSnippetTags attributes={post.attributes} />
         </div>
         <PageEditor value={JSON.parse(post.content)} readOnly />
+
+        {post.source ? (
+          <div className='mt-8 text-secondary-text'>Источник {post.source}</div>
+        ) : null}
       </Inner>
     </div>
   );

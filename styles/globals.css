@@ -515,17 +515,23 @@
   --innerBlockVerticalPadding: 1.5rem;
   --innerBlockHorizontalPadding: 1.5rem;
   --fullHeight: 100vh;
-  --formInputHeight: 3.5rem;
   --smallButtonHeight: 2rem;
+
+  --formInputHeight: 3.5rem;
+  --formInputHeightBig: 4rem;
   --formInputHeightSmall: 2.5rem;
   --formInputHeightSmaller: 2rem;
+
   --formLineHeight: 2rem;
+
   --buttonMinWidth: 12rem;
   --buttonMinWidthSmall: 9rem;
+
   --controlButtonHeight: var(--formInputHeight);
   --controlButtonHeightSmall: var(--formInputHeightSmall);
   --controlButtonHeightSmaller: var(--formInputHeightSmaller);
-  --controlButtonHeightBig: 4rem;
+  --controlButtonHeightBig: var(--formInputHeightBig);
+
   --minLinkHeight: var(--formInputHeight);
   --minLinkHeightSmall: var(--formInputHeightSmall);
   --minLinkHeightSmaller: var(--formInputHeightSmaller);

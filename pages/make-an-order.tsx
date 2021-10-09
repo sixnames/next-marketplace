@@ -26,7 +26,7 @@ import { useRouter } from 'next/router';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { getSiteInitialData } from 'lib/ssrUtils';
-import CartAside from 'routes/CartRoute/CartAside';
+import CartAside from 'components/CartAside';
 import classes from 'styles/MakeAnOrderRoute.module.css';
 import { makeAnOrderSchema } from 'validation/orderSchema';
 

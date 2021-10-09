@@ -8,7 +8,7 @@ import * as React from 'react';
 import Button from 'components/Button';
 import Image from 'next/image';
 import RatingStars from 'components/RatingStars';
-import LinkPhone from '../../components/Link/LinkPhone';
+import LinkPhone from 'components/Link/LinkPhone';
 import ProductShopPrices from 'components/ProductShopPrices';
 
 interface CartShopInterface {

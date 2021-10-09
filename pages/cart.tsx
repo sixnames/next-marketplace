@@ -26,10 +26,10 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import CartAside from 'routes/CartRoute/CartAside';
+import CartAside from 'components/CartAside';
 import { getSiteInitialData } from 'lib/ssrUtils';
 import classes from 'styles/CartRoute.module.css';
-import CartShopsList from 'routes/CartRoute/CartShopsList';
+import CartShopsList from 'components/CartShopsList';
 
 interface CartProductFrameInterface {
   cartProductId: string;

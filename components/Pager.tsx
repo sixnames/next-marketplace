@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import * as React from 'react';
 import ReactPaginate from 'react-paginate';
 import Icon from 'components/Icon';
-import classes from './Pager.module.css';
 
 interface PagerInterface {
   page: number;
@@ -41,6 +40,10 @@ export const useNavigateToPageHandler = () => {
   );
 };
 
+const buttonClassName =
+  'flex items-center justify-center w-10 h-10 text-primary-text hover:text-theme hover:no-underline';
+const iconClassName = 'w-4 h-4';
+
 const Pager: React.FC<PagerInterface> = ({ page, totalPages, setPage }) => {
   const onPageChange = React.useCallback(
     (selectedItem: any) => {
@@ -60,16 +63,17 @@ const Pager: React.FC<PagerInterface> = ({ page, totalPages, setPage }) => {
         initialPage={page - pageStep}
         forcePage={page - pageStep}
         pageRangeDisplayed={1}
+        activeLinkClassName={'text-theme'}
         marginPagesDisplayed={marginPagesDisplayed}
-        previousLabel={<Icon name={'chevron-left'} />}
-        previousClassName={classes.prev}
-        previousLinkClassName={classes.butn}
-        nextLabel={<Icon name={'chevron-right'} />}
-        nextLinkClassName={classes.butn}
-        nextClassName={classes.next}
-        pageLinkClassName={classes.butn}
-        breakLinkClassName={classes.butn}
-        containerClassName={classes.container}
+        previousLabel={<Icon className={iconClassName} name={'chevron-left'} />}
+        previousClassName={'classes.prev'}
+        previousLinkClassName={buttonClassName}
+        nextLabel={<Icon className={iconClassName} name={'chevron-right'} />}
+        nextLinkClassName={buttonClassName}
+        nextClassName={'classes.next'}
+        pageLinkClassName={buttonClassName}
+        breakLinkClassName={buttonClassName}
+        containerClassName='flex items-center justify-center gap-2'
         onPageChange={onPageChange}
       />
     </div>

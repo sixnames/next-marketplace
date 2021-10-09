@@ -7,7 +7,7 @@ import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearc
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
+import Pager, { useNavigateToPageHandler } from 'components/Pager';
 import Table, { TableColumn } from 'components/Table';
 import TableRowImage from 'components/TableRowImage';
 import { ROUTE_CMS, ROUTE_CONSOLE } from 'config/common';

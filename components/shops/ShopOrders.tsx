@@ -3,7 +3,7 @@ import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
 import LinkEmail from 'components/Link/LinkEmail';
 import LinkPhone from 'components/Link/LinkPhone';
-import Pager from 'components/Pager/Pager';
+import Pager from 'components/Pager';
 import Table, { TableColumn } from 'components/Table';
 import { OrderInterface } from 'db/uiInterfaces';
 import ConsoleShopLayout, { AppShopLayoutInterface } from 'layout/console/ConsoleShopLayout';

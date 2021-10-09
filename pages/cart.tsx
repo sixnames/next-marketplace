@@ -28,7 +28,6 @@ import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import CartAside from 'components/CartAside';
 import { getSiteInitialData } from 'lib/ssrUtils';
-import classes from 'styles/CartRoute.module.css';
 import CartShopsList from 'components/CartShopsList';
 
 interface CartProductFrameInterface {
@@ -56,45 +55,50 @@ const CartProductFrame: React.FC<CartProductFrameInterface> = ({
   const { deleteProductFromCart } = useSiteContext();
 
   return (
-    <div className={classes.productHolder}>
-      <LayoutCard className={classes.product} testId={'cart-product'}>
-        <div className={classes.productMainGrid}>
-          <div className='relative'>
-            <div className={classes.productImage}>
-              <Image
-                src={`${mainImage}`}
-                alt={`${snippetTitle}`}
-                title={`${snippetTitle}`}
-                layout='fill'
-                objectFit='contain'
-              />
-              <Link
-                target={'_blank'}
-                className='block absolute z-10 inset-0 text-indent-full'
-                href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
-              >
-                {snippetTitle}
-              </Link>
-            </div>
-          </div>
-          <div className={classes.productContent}>
-            {children}
-            <ButtonCross
-              testId={`cart-product-${testId}-remove-from-cart`}
-              iconSize={'small'}
-              className={classes.productRemove}
-              onClick={() => {
-                deleteProductFromCart({
-                  cartProductId,
-                });
-              }}
+    <div className='grid gap-4'>
+      <LayoutCard className='grid px-6 py-8 gap-6 sm:grid-cols-8 relative' testId={'cart-product'}>
+        {/*image*/}
+        <div className='flex flex-col gap-4 items-center justify-center sm:col-span-2'>
+          <div className='relative flex justify-center flex-shrink-0 w-full max-w-[180px]'>
+            <Image
+              objectFit={'contain'}
+              objectPosition={'center'}
+              src={`${mainImage}`}
+              alt={`${snippetTitle}`}
+              title={`${snippetTitle}`}
+              width={240}
+              height={240}
+              quality={50}
             />
-            <div className={classes.productButns}>
-              <ControlButton iconSize={'mid'} icon={'compare'} />
-              <ControlButton iconSize={'mid'} icon={'heart'} />
-            </div>
+            <Link
+              target={'_blank'}
+              className='block absolute z-10 inset-0 text-indent-full'
+              href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
+            >
+              {snippetTitle}
+            </Link>
+          </div>
+
+          <div className='flex justify-center items-center gap-4 mt-auto'>
+            <ControlButton iconSize={'mid'} icon={'compare'} />
+            <ControlButton iconSize={'mid'} icon={'heart'} />
           </div>
         </div>
+
+        {/*main data*/}
+        <div className='sm:col-span-6'>{children}</div>
+
+        {/*remove button*/}
+        <ButtonCross
+          testId={`cart-product-${testId}-remove-from-cart`}
+          iconSize={'small'}
+          className='absolute top-0 right-0 z-30'
+          onClick={() => {
+            deleteProductFromCart({
+              cartProductId,
+            });
+          }}
+        />
       </LayoutCard>
 
       {isShopsVisible ? (
@@ -119,18 +123,14 @@ const CartProductMainData: React.FC<CartProductMainDataInterface> = ({
 }) => {
   return (
     <React.Fragment>
-      <div>
-        <div className={classes.productArt}>{`Артикул: ${itemId}`}</div>
-      </div>
-      <div className={classes.productName}>
-        <Link
-          target={'_blank'}
-          className='block text-primary-text hover:no-underline hover:text-primary-text'
-          href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
-        >
-          {snippetTitle}
-        </Link>
-      </div>
+      <div className='text-secondary-text'>{`Артикул: ${itemId}`}</div>
+      <Link
+        target={'_blank'}
+        className='block mb-6 text-primary-text hover:no-underline hover:text-primary-text font-medium text-lg lg:text-2xl'
+        href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
+      >
+        {snippetTitle}
+      </Link>
     </React.Fragment>
   );
 };
@@ -169,19 +169,15 @@ const CartShoplessProduct: React.FC<CartProductPropsInterface> = ({ cartProduct,
       shopProducts={shopProducts}
       isShopsVisible={isShopsVisible}
     >
-      <div className={classes.productGrid}>
-        <div>
-          <CartProductMainData
-            rubricSlug={rubricSlug}
-            slug={slug}
-            itemId={itemId}
-            snippetTitle={snippetTitle}
-          />
-        </div>
+      <CartProductMainData
+        rubricSlug={rubricSlug}
+        slug={slug}
+        itemId={itemId}
+        snippetTitle={snippetTitle}
+      />
 
-        <div className={classes.productGridRight}>
-          <ProductSnippetPrice shopsCount={shopsCount} value={cardPrices?.min} />
-        </div>
+      <div className='mb-4'>
+        <ProductSnippetPrice shopsCount={shopsCount} value={cardPrices?.min} />
       </div>
 
       <Button
@@ -227,74 +223,69 @@ const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId 
       mainImage={product.mainImage}
       snippetTitle={product.snippetTitle}
     >
-      <div className={classes.productGrid}>
-        <div>
-          <CartProductMainData
-            rubricSlug={rubricSlug}
-            slug={product.slug}
-            itemId={itemId}
-            snippetTitle={product.snippetTitle}
-          />
-          <SpinnerInput
-            name={'amount'}
-            value={amount}
-            min={minAmount}
-            max={noNaN(available)}
-            testId={`cart-product-${testId}-amount`}
-            plusTestId={`cart-product-${testId}-plus`}
-            minusTestId={`cart-product-${testId}-minus`}
-            frameClassName='w-[var(--buttonMinWidth)]'
-            onChange={(e) => {
-              const amount = noNaN(e.target.value);
-              if (amount >= minAmount && amount <= noNaN(available)) {
-                updateProductInCart({
-                  amount,
-                  cartProductId: _id,
-                });
-              }
-            }}
-          />
+      <CartProductMainData
+        rubricSlug={rubricSlug}
+        slug={product.slug}
+        itemId={itemId}
+        snippetTitle={product.snippetTitle}
+      />
+
+      {/*amount input*/}
+      <div className='mb-4'>
+        <SpinnerInput
+          name={'amount'}
+          value={amount}
+          min={minAmount}
+          max={noNaN(available)}
+          testId={`cart-product-${testId}-amount`}
+          plusTestId={`cart-product-${testId}-plus`}
+          minusTestId={`cart-product-${testId}-minus`}
+          frameClassName='w-[var(--buttonMinWidth)]'
+          onChange={(e) => {
+            const amount = noNaN(e.target.value);
+            if (amount >= minAmount && amount <= noNaN(available)) {
+              updateProductInCart({
+                amount,
+                cartProductId: _id,
+              });
+            }
+          }}
+        />
+      </div>
+
+      {/*shop product price*/}
+      <ProductShopPrices price={price} oldPrice={oldPrice} discountedPercent={discountedPercent} />
+
+      {/*available*/}
+      <div className='mb-4 text-secondary-text'>{`В наличии ${available} шт`}</div>
+
+      {/*shop info*/}
+      <div className=''>
+        <div className='mb-2'>
+          Магазин: <span className='font-medium text-lg'>{shop.name}</span>
         </div>
-
-        <div className={classes.productGridRight}>
-          <ProductShopPrices
-            price={price}
-            oldPrice={oldPrice}
-            discountedPercent={discountedPercent}
-          />
-          <div className={classes.productConnections}>
-            <div className={classes.connectionsGroup}>{`В наличии ${available} шт`}</div>
-          </div>
-
-          <div className={classes.shop}>
-            <div>
-              <span>Магазин: </span>
-              {shop.name}
-            </div>
-            <div>{shop.address.formattedAddress}</div>
-            <div
-              className={classes.shopMap}
-              onClick={() => {
-                showModal<MapModalInterface>({
-                  variant: MAP_MODAL,
-                  props: {
-                    title: shop.name,
-                    testId: `shop-map-modal`,
-                    markers: [
-                      {
-                        _id: shop._id,
-                        icon: marker,
-                        name: shop.name,
-                        address: shop.address,
-                      },
-                    ],
+        <div>{shop.address.formattedAddress}</div>
+        <div
+          className='text-theme cursor-pointer'
+          onClick={() => {
+            showModal<MapModalInterface>({
+              variant: MAP_MODAL,
+              props: {
+                title: shop.name,
+                testId: `shop-map-modal`,
+                markers: [
+                  {
+                    _id: shop._id,
+                    icon: marker,
+                    name: shop.name,
+                    address: shop.address,
                   },
-                });
-              }}
-            >
-              Смотреть на карте
-            </div>
-          </div>
+                ],
+              },
+            });
+          }}
+        >
+          Смотреть на карте
         </div>
       </div>
     </CartProductFrame>
@@ -309,7 +300,7 @@ const CartRoute: React.FC = () => {
 
   if (loadingCart && !cart) {
     return (
-      <div className={classes.cart}>
+      <div>
         <Breadcrumbs currentPageName={'Корзина'} />
 
         <Inner lowTop testId={'cart'}>
@@ -321,7 +312,7 @@ const CartRoute: React.FC = () => {
 
   if (!cart) {
     return (
-      <div className={classes.cart}>
+      <div>
         <Breadcrumbs currentPageName={'Корзина'} />
 
         <Inner lowTop testId={'cart'}>
@@ -335,11 +326,11 @@ const CartRoute: React.FC = () => {
 
   if (cartProducts.length < 1) {
     return (
-      <div className={classes.cart}>
+      <div>
         <Breadcrumbs currentPageName={'Корзина'} />
 
         <Inner lowTop testId={'cart'}>
-          <Title className={classes.cartTitle}>Корзина пуста</Title>
+          <Title>Корзина пуста</Title>
           <div className='flex gap-4 flex-wrap'>
             <Button
               theme={'secondary'}
@@ -368,13 +359,13 @@ const CartRoute: React.FC = () => {
   }
 
   return (
-    <div className={classes.cart}>
+    <div className='mb-12'>
       <Breadcrumbs currentPageName={'Корзина'} />
 
       <Inner lowTop testId={'cart'}>
-        <Title className={classes.cartTitle}>В корзине товаров {productsCount} шт.</Title>
-        <div className={classes.frame}>
-          <div data-cy={'cart-products'}>
+        <Title>В корзине товаров {productsCount} шт.</Title>
+        <div className='grid md:grid-cols-8 lg:grid-cols-16 gap-6'>
+          <div className='md:col-span-5 lg:col-span-11 grid gap-6' data-cy={'cart-products'}>
             {cartProducts.map((cartProduct, index) => {
               const { _id, shopProduct } = cartProduct;
 
@@ -388,7 +379,7 @@ const CartRoute: React.FC = () => {
             })}
           </div>
 
-          <div className={classes.aside}>
+          <div className='md:col-span-3 lg:col-span-5'>
             <CartAside
               cart={cart}
               buttonText={configs.buyButtonText}

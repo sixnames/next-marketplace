@@ -1,7 +1,3 @@
-.frame {
-  padding-top: 1.5rem;
-  padding-bottom: 4rem;
-}
 
 .container {
   display: flex;
@@ -79,12 +75,6 @@
 
 .item:not(:first-child) {
   margin-left: 0.75rem;
-}
-
-@media only screen and (max-width: 1024px) {
-  .frame {
-    padding-bottom: 8rem;
-  }
 }
 
 @media only screen and (max-width: 480px) {

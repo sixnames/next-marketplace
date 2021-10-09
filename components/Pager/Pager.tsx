@@ -54,7 +54,7 @@ const Pager: React.FC<PagerInterface> = ({ page, totalPages, setPage }) => {
   }
 
   return (
-    <div className={classes.frame}>
+    <div className='pt-6 pb-16'>
       <ReactPaginate
         pageCount={totalPages}
         initialPage={page - pageStep}

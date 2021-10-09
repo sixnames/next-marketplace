@@ -1,9 +1,11 @@
+import { MapModalInterface } from 'components/Modal/MapModal';
+import { MAP_MODAL } from 'config/modalVariants';
+import { useAppContext } from 'context/appContext';
 import { useSiteContext } from 'context/siteContext';
 import { ShopProductInterface } from 'db/uiInterfaces';
+import LayoutCard from 'layout/LayoutCard';
 import * as React from 'react';
-import { Disclosure } from '@headlessui/react';
 import Button from 'components/Button';
-import classes from './CartShopsList.module.css';
 import Image from 'next/image';
 import RatingStars from 'components/RatingStars';
 import LinkPhone from '../../components/Link/LinkPhone';
@@ -16,6 +18,7 @@ interface CartShopInterface {
 }
 
 const CartShop: React.FC<CartShopInterface> = ({ shopProduct, testId, cartProductId }) => {
+  const { showModal } = useAppContext();
   const { addShopToCartProduct } = useSiteContext();
   const { shop, oldPrice, price, discountedPercent, available } = shopProduct;
   if (!shop) {
@@ -25,64 +28,73 @@ const CartShop: React.FC<CartShopInterface> = ({ shopProduct, testId, cartProduc
   const {
     mainImage,
     name,
-    productsCount,
-    address: { formattedAddress },
+    address,
     contacts: { formattedPhones },
+    logo,
+    license,
   } = shop;
 
   return (
-    <div className={`${classes.frame}`}>
-      <div className={classes.imageHolder}>
-        <div className={classes.image}>
-          <Image objectFit={'cover'} layout={'fill'} src={mainImage} alt={name} title={name} />
-        </div>
-
-        <div className={classes.mobileSchedule}>
-          <div className={classes.schedule}>
-            Пн - Вс: <span>10.00 - 22.00</span>
-          </div>
-        </div>
+    <LayoutCard className='overflow-hidden gap-4 md:grid md:grid-cols-12'>
+      <div className='relative h-[120px] w-full md:col-span-4 lg:col-span-3 md:h-full'>
+        <Image objectFit={'cover'} layout={'fill'} src={mainImage} alt={name} title={name} />
       </div>
 
-      <div className={classes.content}>
-        <div className={classes.column}>
-          <div className={classes.name}>{name}</div>
-          <div className={classes.meta}>
-            <RatingStars
-              rating={4.5}
-              showRatingNumber={false}
-              smallStars={true}
-              className={classes.innerRating}
-            />
+      <div className='grid gap-4 px-4 py-6 md:col-span-8 lg:col-span-9 lg:grid-cols-5'>
+        <div className='lg:col-span-3'>
+          <div className='text-xl font-medium mb-2'>{name}</div>
+          <div className='mb-3'>
+            <RatingStars rating={4.5} showRatingNumber={false} smallStars={true} className='' />
+          </div>
 
-            <div className={classes.desktopSchedule}>
-              <div className={classes.schedule}>
-                Пн - Вс: <span>10.00 - 22.00</span>
-              </div>
+          <div
+            className='cursor-pointer hover:text-theme'
+            onClick={() => {
+              showModal<MapModalInterface>({
+                variant: MAP_MODAL,
+                props: {
+                  title: name,
+                  testId: `shop-map-modal`,
+                  markers: [
+                    {
+                      _id: shop._id,
+                      icon: logo.url,
+                      name,
+                      address,
+                    },
+                  ],
+                },
+              });
+            }}
+          >
+            {address.formattedAddress}
+          </div>
+
+          {(formattedPhones || []).map((phone, index) => {
+            return <LinkPhone key={index} value={phone} />;
+          })}
+
+          {license ? (
+            <div className='mt-3 text-sm text-secondary-text'>
+              Лицензия:
+              {` ${license}`}
             </div>
-          </div>
-
-          <div className={classes.contacts}>
-            <div className={classes.address}>{formattedAddress}</div>
-            {(formattedPhones || []).map((phone, index) => {
-              return <LinkPhone key={index} value={phone} />;
-            })}
-          </div>
+          ) : null}
         </div>
 
-        <div className={`${classes.column}`}>
-          <ProductShopPrices
-            className={classes.prices}
-            price={price}
-            discountedPercent={discountedPercent}
-            oldPrice={oldPrice}
-          />
-          <div className={classes.available}>В наличии {` ${available} `}шт.</div>
+        <div className='lg:col-span-2'>
+          <div className='mb-4'>
+            <ProductShopPrices
+              className=''
+              price={price}
+              discountedPercent={discountedPercent}
+              oldPrice={oldPrice}
+            />
+            <div className=''>В наличии {` ${available} `}шт.</div>
 
-          <div className={classes.productsCount}>Всего товаров: {productsCount}</div>
-
-          <div className={classes.moreLink}>
-            <a href='#'>Узнать больше</a>
+            <div className='mt-4'>
+              <a href='#'>Узнать больше</a>
+            </div>
           </div>
 
           <Button
@@ -98,7 +110,7 @@ const CartShop: React.FC<CartShopInterface> = ({ shopProduct, testId, cartProduc
           </Button>
         </div>
       </div>
-    </div>
+    </LayoutCard>
   );
 };
 
@@ -108,14 +120,9 @@ interface CartShopsInterface {
 }
 
 const CartShopsList: React.FC<CartShopsInterface> = ({ cartProductId, shopProducts }) => {
-  // TODO cart shops count config
-  const visibleShopsLimit = 4;
-  const visibleShops = shopProducts.slice(0, visibleShopsLimit);
-  const hiddenShops = shopProducts.slice(visibleShopsLimit);
-
   return (
-    <div data-cy={`cart-shops-list`}>
-      {visibleShops.map((shopProduct, index) => {
+    <div className='grid gap-4' data-cy={`cart-shops-list`}>
+      {shopProducts.map((shopProduct, index) => {
         return (
           <CartShop
             testId={index}
@@ -125,36 +132,6 @@ const CartShopsList: React.FC<CartShopsInterface> = ({ cartProductId, shopProduc
           />
         );
       })}
-
-      {hiddenShops.length > 0 ? (
-        <Disclosure>
-          {({ open }) => {
-            return (
-              <React.Fragment>
-                <Disclosure.Panel>
-                  <div>
-                    {hiddenShops.map((shopProduct, index) => {
-                      return (
-                        <CartShop
-                          testId={index}
-                          key={`${shopProduct._id}`}
-                          shopProduct={shopProduct}
-                          cartProductId={cartProductId}
-                        />
-                      );
-                    })}
-                  </div>
-                </Disclosure.Panel>
-                <Disclosure.Button as={React.Fragment}>
-                  <Button className={classes.moreShopsButton} theme={'secondary'}>
-                    {open ? 'Показать меньше магазинов' : 'Показать больше магазинов'}
-                  </Button>
-                </Disclosure.Button>
-              </React.Fragment>
-            );
-          }}
-        </Disclosure>
-      ) : null}
     </div>
   );
 };

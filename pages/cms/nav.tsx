@@ -216,7 +216,7 @@ export const getServerSideProps = async (
 
   // get grouped nav items ast
   const navItemGroupsAggregationResult = await navItemsCollection
-    .aggregate([
+    .aggregate<NavItemInterface>([
       {
         $sort: {
           index: SORT_ASC,

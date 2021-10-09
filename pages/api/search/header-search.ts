@@ -80,7 +80,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     };
 
     const shopProductsAggregation = await shopProductsCollection
-      .aggregate([
+      .aggregate<ShopProductInterface>([
         {
           $match: match,
         },

@@ -407,8 +407,7 @@ export const UserMutations = mutationType({
             createdAt: new Date(),
             updatedAt: new Date(),
           });
-          const createdUser = createdUserResult.ops[0];
-          if (!createdUserResult.result.ok || !createdUser) {
+          if (!createdUserResult.acknowledged) {
             return {
               success: false,
               message: await getApiMessage('users.create.error'),
@@ -418,7 +417,6 @@ export const UserMutations = mutationType({
           return {
             success: true,
             message: await getApiMessage('users.create.success'),
-            payload: createdUser,
           };
         } catch (e) {
           return {
@@ -804,8 +802,10 @@ export const UserMutations = mutationType({
             createdAt: new Date(),
             updatedAt: new Date(),
           });
-          const createdUser = createdUserResult.ops[0];
-          if (!createdUserResult.result.ok || !createdUser) {
+          const createdUser = await usersCollection.findOne({
+            _id: createdUserResult.insertedId,
+          });
+          if (!createdUserResult.acknowledged || !createdUser) {
             return {
               success: false,
               message: await getApiMessage('users.create.error'),
@@ -825,7 +825,6 @@ export const UserMutations = mutationType({
           return {
             success: true,
             message: await getApiMessage('users.create.success'),
-            payload: createdUser,
           };
         } catch (e) {
           return {

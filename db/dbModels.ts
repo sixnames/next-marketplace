@@ -657,7 +657,7 @@ export interface RoleRuleBase {
   slug: string;
   allow: boolean;
   nameI18n: TranslationModel;
-  descriptionI18n?: TranslationModel;
+  descriptionI18n?: TranslationModel | null;
 }
 
 export interface RoleRuleModel extends RoleRuleBase {

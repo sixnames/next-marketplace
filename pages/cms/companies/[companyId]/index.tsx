@@ -123,7 +123,7 @@ export const getServerSideProps = async (
   const { db } = await getDatabase();
   const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
   const companyAggregationResult = await companiesCollection
-    .aggregate([
+    .aggregate<CompanyInterface>([
       {
         $match: {
           _id: new ObjectId(`${query.companyId}`),

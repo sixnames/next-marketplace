@@ -287,7 +287,7 @@ export const getCatalogueNavRubrics = async ({
 
   const rubricsIds = catalogueGroupedNavConfigs.map(({ _id }) => _id);
   const initialRubricsAggregation = await rubricsCollection
-    .aggregate([
+    .aggregate<RubricInterface>([
       {
         $match: {
           _id: {
@@ -335,7 +335,7 @@ export const getCatalogueNavRubrics = async ({
 
     if (rubricConfig) {
       const rubricAttributesAggregation = await attributesCollection
-        .aggregate([
+        .aggregate<AttributeModel>([
           {
             $match: {
               showInCatalogueNav: true,
@@ -489,7 +489,7 @@ export const getCatalogueNavRubrics = async ({
 
         if (rubricCategoriesConfig) {
           categories = await categoriesCollection
-            .aggregate([
+            .aggregate<CategoryModel>([
               {
                 $match: {
                   _id: {
@@ -578,7 +578,7 @@ export const getSsrConfigs = async ({
   const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
 
   const projectConfigs = await configsCollection
-    .aggregate([
+    .aggregate<ConfigModel>([
       {
         $match: {
           group: CONFIG_GROUP_PROJECT,
@@ -589,7 +589,7 @@ export const getSsrConfigs = async ({
     .toArray();
 
   const companyConfigs = await configsCollection
-    .aggregate([
+    .aggregate<ConfigModel>([
       {
         $match: {
           group: {
@@ -1042,7 +1042,7 @@ export async function getPageSessionUser({
   const { db } = await getDatabase();
   const usersCollection = db.collection<UserInterface>(COL_USERS);
   const userAggregation = await usersCollection
-    .aggregate([
+    .aggregate<UserInterface>([
       {
         $match: {
           email,
@@ -1531,7 +1531,7 @@ async function getCatalogueCreatedPages({
   const { db } = await getDatabase();
   const pageGroupsCollection = db.collection<PagesGroupInterface>(COL_PAGES_GROUP);
   const pageGroupsAggregationInterface = await pageGroupsCollection
-    .aggregate([
+    .aggregate<PagesGroupInterface>([
       {
         $match: {
           companySlug,

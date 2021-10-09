@@ -188,7 +188,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (shopProducts.length > 0) {
       const createdShopProductsResult = await shopProductsCollection.insertMany(shopProducts);
-      if (!createdShopProductsResult.result.ok) {
+      if (!createdShopProductsResult.acknowledged) {
         res.status(500).send({
           success: false,
           message: 'shop products create error',

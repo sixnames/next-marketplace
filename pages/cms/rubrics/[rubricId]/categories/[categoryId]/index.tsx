@@ -291,7 +291,7 @@ export const getServerSideProps = async (
   }
 
   const categoryAggregation = await categoriesCollection
-    .aggregate([
+    .aggregate<CategoryInterface>([
       {
         $match: {
           _id: new ObjectId(`${query.categoryId}`),

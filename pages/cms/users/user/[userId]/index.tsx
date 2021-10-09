@@ -125,7 +125,7 @@ export const getServerSideProps = async (
     };
   }
   const userAggregationResult = await usersCollection
-    .aggregate([
+    .aggregate<UserInterface>([
       {
         $match: {
           _id: new ObjectId(`${userId}`),

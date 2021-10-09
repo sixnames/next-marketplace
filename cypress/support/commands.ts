@@ -124,7 +124,7 @@ Cypress.Commands.add('makeAnOrder', ({ callback, orderFields }: Cypress.MakeAnOr
   cy.visit(catalogueRoute);
 
   // Should navigate to cart
-  cy.get(`[data-cy=catalogue-item-0-name-row]`).invoke('removeAttr', 'target').click();
+  cy.get(`[data-cy=catalogue-item-0-name-grid]`).invoke('removeAttr', 'target').click();
 
   // Add product #1
   cy.getByCy(`card`).should('exist');

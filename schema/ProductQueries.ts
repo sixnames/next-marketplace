@@ -152,14 +152,18 @@ export const ProductQueries = extendType({
           const realSortBy = sortBy || SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY;
 
           const shopProducts = await shopProductsCollection
-            .find(
-              { productId },
+            .aggregate<ShopProductModel>([
               {
-                sort: {
+                $match: {
+                  productId,
+                },
+              },
+              {
+                $sort: {
                   [realSortBy]: sortDir,
                 },
               },
-            )
+            ])
             .toArray();
           return shopProducts;
         } catch (e) {

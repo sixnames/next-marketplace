@@ -133,8 +133,7 @@ export const LanguageMutations = extendType({
           const createdLanguageResult = await languagesCollection.insertOne({
             ...input,
           });
-          const createdLanguage = createdLanguageResult.ops[0];
-          if (!createdLanguageResult.result.ok || !createdLanguage) {
+          if (!createdLanguageResult.acknowledged) {
             return {
               success: false,
               message: await getApiMessage('languages.create.error'),
@@ -144,7 +143,6 @@ export const LanguageMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('languages.create.success'),
-            payload: createdLanguage,
           };
         } catch (e) {
           return {

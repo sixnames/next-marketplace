@@ -25,7 +25,7 @@ export const getBlogPost = async ({
   const blogAttributesCollection = db.collection<BlogAttributeInterface>(COL_BLOG_ATTRIBUTES);
 
   const initialBlogPostAggregation = await blogPostsCollection
-    .aggregate([
+    .aggregate<BlogPostInterface>([
       {
         $match: {
           _id: new ObjectId(`${blogPostId}`),
@@ -85,7 +85,7 @@ export const getBlogPost = async ({
   }, []);
 
   const initialBlogAttributesAggregation = await blogAttributesCollection
-    .aggregate([
+    .aggregate<BlogAttributeInterface>([
       {
         $sort: {
           [`nameI18n.${DEFAULT_LOCALE}`]: SORT_ASC,

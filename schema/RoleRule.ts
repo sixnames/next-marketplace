@@ -1,5 +1,5 @@
 import { COL_ROLE_RULES } from 'db/collectionNames';
-import { RoleRulePayloadModel } from 'db/dbModels';
+import { RoleRuleModel, RoleRulePayloadModel } from 'db/dbModels';
 import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
 import { getDatabase } from 'db/mongodb';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
@@ -98,7 +98,7 @@ export const RoleRuleMutations = extendType({
           await validationSchema.validate(args.input);
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
-          const roleRulesCollection = db.collection(COL_ROLE_RULES);
+          const roleRulesCollection = db.collection<RoleRuleModel>(COL_ROLE_RULES);
 
           // Check if role already exist
           const exist = await findDocumentByI18nField({

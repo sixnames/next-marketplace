@@ -147,9 +147,7 @@ export const PagesGroupMutations = extendType({
           const createdPagesGroupResult = await pagesGroupsCollection.insertOne({
             ...input,
           });
-          const createdPagesGroup = createdPagesGroupResult.ops[0];
-
-          if (!createdPagesGroupResult.result.ok || !createdPagesGroup) {
+          if (!createdPagesGroupResult.acknowledged) {
             return {
               success: false,
               message: await getApiMessage('pageGroups.create.error'),
@@ -159,7 +157,6 @@ export const PagesGroupMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('pageGroups.create.success'),
-            payload: createdPagesGroup,
           };
         } catch (e) {
           return {
@@ -333,7 +330,7 @@ export const PagesGroupMutations = extendType({
             const removedPagesResult = await pagesCollection.deleteMany({
               pagesGroupId: _id,
             });
-            if (!removedPagesResult.result.ok) {
+            if (!removedPagesResult.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('pageGroups.delete.error'),

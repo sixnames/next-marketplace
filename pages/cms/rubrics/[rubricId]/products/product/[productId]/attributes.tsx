@@ -403,7 +403,7 @@ export const getServerSideProps = async (
   });
 
   const rubricAttributes = await attributesGroupsCollection
-    .aggregate([
+    .aggregate<AttributesGroupInterface>([
       {
         $match: {
           _id: {

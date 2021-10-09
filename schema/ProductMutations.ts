@@ -237,8 +237,10 @@ export const ProductMutations = extendType({
               createdAt: new Date(),
               updatedAt: new Date(),
             });
-            const createdProduct = createdProductResult.ops[0];
-            if (!createdProductResult.result.ok || !createdProduct) {
+            const createdProduct = await productsCollection.findOne({
+              _id: createdProductResult.insertedId,
+            });
+            if (!createdProductResult.acknowledged || !createdProduct) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`products.create.error`),
@@ -258,8 +260,7 @@ export const ProductMutations = extendType({
                 },
               ],
             });
-            const createdAssets = createdAssetsResult.ops[0];
-            if (!createdAssetsResult.result.ok || !createdAssets) {
+            if (!createdAssetsResult.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`products.create.error`),
@@ -432,7 +433,7 @@ export const ProductMutations = extendType({
             if (
               !updatedProductResult.ok ||
               !updatedProduct ||
-              !updatedShopProductResult.result.ok
+              !updatedShopProductResult.acknowledged
             ) {
               mutationPayload = {
                 success: false,
@@ -624,7 +625,7 @@ export const ProductMutations = extendType({
                 },
               },
             );
-            if (!updatedShopProductsResult.result.ok) {
+            if (!updatedShopProductsResult.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`products.update.error`),
@@ -735,8 +736,10 @@ export const ProductMutations = extendType({
               createdAt: new Date(),
               updatedAt: new Date(),
             });
-            const createdProduct = createdProductResult.ops[0];
-            if (!createdProductResult.result.ok || !createdProduct) {
+            const createdProduct = await productsCollection.findOne({
+              _id: createdProductResult.insertedId,
+            });
+            if (!createdProductResult.acknowledged || !createdProduct) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`products.create.error`),
@@ -756,8 +759,7 @@ export const ProductMutations = extendType({
                 },
               ],
             });
-            const createdAssets = createdAssetsResult.ops[0];
-            if (!createdAssetsResult.result.ok || !createdAssets) {
+            if (!createdAssetsResult.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`products.create.error`),
@@ -786,7 +788,7 @@ export const ProductMutations = extendType({
               const newAttributesResult = await productAttributesCollection.insertMany(
                 createdProductAttributes,
               );
-              if (!newAttributesResult.result.ok) {
+              if (!newAttributesResult.acknowledged) {
                 mutationPayload = {
                   success: false,
                   message: await getApiMessage(`products.create.error`),
@@ -816,7 +818,7 @@ export const ProductMutations = extendType({
               const newCardContentsResult = await productCardContentsCollection.insertMany(
                 createdProductCardContents,
               );
-              if (!newCardContentsResult.result.ok) {
+              if (!newCardContentsResult.acknowledged) {
                 mutationPayload = {
                   success: false,
                   message: await getApiMessage(`products.create.error`),
@@ -1002,7 +1004,7 @@ export const ProductMutations = extendType({
                 },
               },
             );
-            if (!updatedShopProductsResult.result.ok) {
+            if (!updatedShopProductsResult.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`products.update.error`),
@@ -1167,7 +1169,7 @@ export const ProductMutations = extendType({
             const removedNotSyncedProductsResult = await notSyncedProductsCollection.deleteMany({
               barcode,
             });
-            if (!removedNotSyncedProductsResult.result.ok) {
+            if (!removedNotSyncedProductsResult.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`products.update.error`),
@@ -1200,8 +1202,7 @@ export const ProductMutations = extendType({
               createdAt: new Date(),
               ...DEFAULT_COUNTERS_OBJECT,
             });
-            const createdShopProduct = createdShopProductResult.ops[0];
-            if (!createdShopProductResult.result.ok || !createdShopProduct) {
+            if (!createdShopProductResult.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`shopProducts.create.error`),
@@ -1349,8 +1350,10 @@ export const ProductMutations = extendType({
               createdAt: new Date(),
               updatedAt: new Date(),
             });
-            const createdProduct = createdProductResult.ops[0];
-            if (!createdProductResult.result.ok || !createdProduct) {
+            const createdProduct = await productsCollection.findOne({
+              _id: createdProductResult.insertedId,
+            });
+            if (!createdProductResult.acknowledged || !createdProduct) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`products.create.error`),
@@ -1387,7 +1390,7 @@ export const ProductMutations = extendType({
             const removedNotSyncedProductsResult = await notSyncedProductsCollection.deleteMany({
               barcode,
             });
-            if (!removedNotSyncedProductsResult.result.ok) {
+            if (!removedNotSyncedProductsResult.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`products.create.error`),
@@ -1420,8 +1423,7 @@ export const ProductMutations = extendType({
               createdAt: new Date(),
               ...DEFAULT_COUNTERS_OBJECT,
             });
-            const createdShopProduct = createdShopProductResult.ops[0];
-            if (!createdShopProductResult.result.ok || !createdShopProduct) {
+            if (!createdShopProductResult.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`shopProducts.create.error`),
@@ -1589,7 +1591,7 @@ export const ProductMutations = extendType({
               },
               updater,
             );
-            if (!updatedShopProductsResult.result.ok) {
+            if (!updatedShopProductsResult.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`products.update.error`),
@@ -1723,7 +1725,7 @@ export const ProductMutations = extendType({
               },
               updater,
             );
-            if (!updatedShopProductsResult.result.ok) {
+            if (!updatedShopProductsResult.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`products.update.error`),
@@ -1781,7 +1783,7 @@ export const ProductMutations = extendType({
                 },
               },
             );
-            if (!updatedShopProductsResult.result.ok) {
+            if (!updatedShopProductsResult.acknowledged) {
               return false;
             }
             return true;

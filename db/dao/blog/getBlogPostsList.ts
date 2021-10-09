@@ -18,7 +18,7 @@ export const getBlogPostsList = async ({
   const blogPostsCollection = db.collection<BlogPostInterface>(COL_BLOG_POSTS);
 
   const initialBlogPostsAggregation = await blogPostsCollection
-    .aggregate([
+    .aggregate<BlogPostInterface>([
       {
         $match: {
           companySlug,

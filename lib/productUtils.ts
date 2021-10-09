@@ -38,7 +38,7 @@ export async function getCmsProduct({
   const { db } = await getDatabase();
   const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
   const productAggregation = await productsCollection
-    .aggregate([
+    .aggregate<ProductInterface>([
       {
         $match: {
           _id: new ObjectId(productId),

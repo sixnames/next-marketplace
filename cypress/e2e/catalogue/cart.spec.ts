@@ -7,7 +7,7 @@ describe('Cart', () => {
 
   it('Should CRUD cart items', () => {
     cy.getByCy('catalogue').should('exist');
-    cy.get(`[data-cy=catalogue-item-0-name-row]`).invoke('removeAttr', 'target').click();
+    cy.get(`[data-cy=catalogue-item-0-name-grid]`).invoke('removeAttr', 'target').click();
 
     // Add product #1
     cy.getByCy(`card`).should('exist');
@@ -22,7 +22,7 @@ describe('Cart', () => {
     cy.getByCy(`cart-modal-close`).click();
     cy.visit(`${ROUTE_CATALOGUE}/${CATALOGUE_DEFAULT_RUBRIC_SLUG}`);
     cy.getByCy('catalogue').should('exist');
-    cy.get(`[data-cy=catalogue-item-1-name-row]`).invoke('removeAttr', 'target').click();
+    cy.get(`[data-cy=catalogue-item-1-name-grid]`).invoke('removeAttr', 'target').click();
     cy.getByCy(`card`).should('exist');
     cy.getByCy(`card-connection`).first().click();
     cy.wait(1500);
@@ -33,12 +33,12 @@ describe('Cart', () => {
     cy.getByCy(`cart-modal-close`).click();
     cy.getByCy(`cart-counter`).should('contain', '2');
     cy.visit(`${ROUTE_CATALOGUE}/${CATALOGUE_DEFAULT_RUBRIC_SLUG}`);
-    cy.getByCy(`catalogue-item-2-add-to-cart-row`).click();
+    cy.getByCy(`catalogue-item-2-add-to-cart-grid`).click();
     cy.getByCy(`cart-modal-counter`).should('contain', '3');
 
     // Add shopless product from card
     cy.getByCy(`cart-modal-close`).click();
-    cy.get(`[data-cy=catalogue-item-3-name-row]`).invoke('removeAttr', 'target').click();
+    cy.get(`[data-cy=catalogue-item-3-name-grid]`).invoke('removeAttr', 'target').click();
     cy.getByCy(`card-add-to-cart`).click();
     cy.getByCy(`cart-modal-counter`).should('contain', '4');
 

@@ -77,7 +77,7 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
 
     // aggregate product similar products
     const shopProductsAggregation = await shopProductsCollection
-      .aggregate([
+      .aggregate<ShopProductInterface>([
         {
           $match: {
             productId: finalProductId,

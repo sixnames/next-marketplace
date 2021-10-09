@@ -399,7 +399,7 @@ export const getConsoleRubricProducts = async ({
         return acc;
       }, []);
     const categories = await categoriesCollection
-      .aggregate([
+      .aggregate<CategoryInterface>([
         {
           $match: {
             slug: {
@@ -420,7 +420,7 @@ export const getConsoleRubricProducts = async ({
       .filter((slug) => slug._id)
       .map((slug) => slug._id);
     const brands = await brandsCollection
-      .aggregate([
+      .aggregate<BrandInterface>([
         {
           $match: {
             slug: {
@@ -493,7 +493,7 @@ export const getConsoleRubricProducts = async ({
       brandAttribute = [
         getBrandFilterAttribute({
           locale,
-          brands: brands,
+          brands,
         }),
       ];
     }
@@ -623,7 +623,7 @@ export const getConsoleShopProducts = async ({
 
     // Get shop
     const shopAggregation = await shopsCollection
-      .aggregate([
+      .aggregate<ShopInterface>([
         {
           $match: { _id: new ObjectId(`${shopId}`) },
         },
@@ -924,7 +924,7 @@ export const getConsoleShopProducts = async ({
         return acc;
       }, []);
     const categories = await categoriesCollection
-      .aggregate([
+      .aggregate<CategoryInterface>([
         {
           $match: {
             slug: {
@@ -945,7 +945,7 @@ export const getConsoleShopProducts = async ({
       .filter((slug) => slug._id)
       .map((slug) => slug._id);
     const brands = await brandsCollection
-      .aggregate([
+      .aggregate<BrandInterface>([
         {
           $match: {
             slug: {
@@ -1018,7 +1018,7 @@ export const getConsoleShopProducts = async ({
       brandAttribute = [
         getBrandFilterAttribute({
           locale,
-          brands: brands,
+          brands,
         }),
       ];
     }
@@ -1194,7 +1194,7 @@ export async function getAddShopProductSsrData({
 
   // Get shop
   const shopAggregation = await shopsCollection
-    .aggregate([
+    .aggregate<ShopInterface>([
       {
         $match: { _id: new ObjectId(`${shopId}`) },
       },

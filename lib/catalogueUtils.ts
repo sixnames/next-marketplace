@@ -886,6 +886,10 @@ export const getCatalogueData = async ({
     // initial match
     const companyMatch = companyId ? { companyId: new ObjectId(companyId) } : {};
     const productsInitialMatch = {
+      ...rubricStage,
+      citySlug: city,
+    };
+    const productsMatch = {
       ...searchStage,
       ...companyMatch,
       ...rubricStage,
@@ -920,6 +924,7 @@ export const getCatalogueData = async ({
             itemId: { $first: '$itemId' },
             rubricId: { $first: '$rubricId' },
             rubricSlug: { $first: `$rubricSlug` },
+            citySlug: { $first: `$citySlug` },
             brandSlug: { $first: '$brandSlug' },
             brandCollectionSlug: { $first: '$brandCollectionSlug' },
             views: { $max: `$views.${companySlug}.${city}` },
@@ -950,6 +955,9 @@ export const getCatalogueData = async ({
           $facet: {
             // docs facet
             docs: [
+              {
+                $match: productsMatch,
+              },
               {
                 $sort: sortStage,
               },
@@ -1276,27 +1284,16 @@ export const getCatalogueData = async ({
 
             // attributes facet
             attributes: filterAttributesPipeline(defaultSortStage),
-
-            // countAllDocs facet
-            countAllDocs: [
-              {
-                $count: 'totalDocs',
-              },
-            ],
           },
         },
 
-        // cast facets
+        // TODO >>>>>>>>>>>>>>>>>>>>>>>>>
+        // countAllDocs facet
         {
           $addFields: {
-            totalDocsObject: { $arrayElemAt: ['$countAllDocs', 0] },
-          },
-        },
-        {
-          $addFields: {
-            countAllDocs: null,
-            totalDocsObject: null,
-            totalProducts: '$totalDocsObject.totalDocs',
+            totalProducts: {
+              $size: '$docs',
+            },
           },
         },
       ])

@@ -2,12 +2,12 @@ const { fontFamily, screens } = require('tailwindcss/defaultTheme');
 // const colors = require('tailwindcss/colors');
 
 module.exports = {
+  mode: 'jit',
   purge: [
     './pages/**/*.{js,ts,jsx,tsx}',
     './layout/**/*.{js,ts,jsx,tsx}',
     './components/**/*.{js,ts,jsx,tsx}',
     './hooks/**/*.{js,ts,jsx,tsx}',
-    './routes/**/*.{js,ts,jsx,tsx}',
   ],
   darkMode: 'class',
   theme: {

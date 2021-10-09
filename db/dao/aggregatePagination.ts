@@ -1,4 +1,3 @@
-import { CollectionAggregationOptions } from 'mongodb';
 import {
   DEFAULT_PAGE,
   PAGINATION_DEFAULT_LIMIT,
@@ -8,12 +7,13 @@ import {
 } from 'config/common';
 import { PaginationInputModel, PaginationPayloadType, SortDirectionModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
+import { AggregateOptions } from 'mongodb';
 
 interface AggregatePaginationPropsInterface {
   input?: PaginationInputModel | null;
   collectionName: string;
   pipeline?: Record<string, any>[];
-  options?: CollectionAggregationOptions;
+  options?: AggregateOptions;
   city: string;
 }
 

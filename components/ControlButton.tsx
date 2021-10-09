@@ -72,7 +72,7 @@ const ControlButton: React.FC<ControlButtonInterface> = ({
     roundedTopRight ? 'rounded-tr-md rounded-bl-md' : ''
   } ${roundedFull ? 'rounded-full' : ''}`;
 
-  const buttonClass = `relative z-30 flex items-center justify-center transition duration-150 hover:text-theme ${
+  const buttonClass = `z-30 flex items-center justify-center transition duration-150 hover:text-theme ${
     className ? className : ''
   } ${themeClass} ${roundedClass} ${sizeClass}`;
 

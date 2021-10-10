@@ -698,7 +698,7 @@ export function castCatalogueFilters({
     ? {}
     : {
         selectedOptionsSlugs: {
-          $all: realFilterOptions,
+          $in: realFilterOptions,
         },
       };
 
@@ -886,19 +886,28 @@ export const getCatalogueData = async ({
     // initial match
     const companyMatch = companyId ? { companyId: new ObjectId(companyId) } : {};
     const productsInitialMatch = {
-      ...rubricStage,
-      citySlug: city,
-    };
-    const productsMatch = {
       ...searchStage,
       ...companyMatch,
       ...rubricStage,
       citySlug: city,
+    };
+    const productsMatch = {
       ...brandStage,
       ...brandCollectionStage,
       ...optionsStage,
       ...pricesStage,
     };
+
+    console.log(
+      JSON.stringify(
+        {
+          productsInitialMatch,
+          productsMatch,
+        },
+        null,
+        2,
+      ),
+    );
 
     // aggregate catalogue initial data
     const productDataAggregationResult = await shopProductsCollection
@@ -1284,16 +1293,30 @@ export const getCatalogueData = async ({
 
             // attributes facet
             attributes: filterAttributesPipeline(defaultSortStage),
+
+            // countAllDocs facet
+            countAllDocs: [
+              {
+                $match: productsMatch,
+              },
+              {
+                $count: 'totalDocs',
+              },
+            ],
           },
         },
 
-        // TODO >>>>>>>>>>>>>>>>>>>>>>>>>
-        // countAllDocs facet
+        // cast facets
         {
           $addFields: {
-            totalProducts: {
-              $size: '$docs',
-            },
+            totalDocsObject: { $arrayElemAt: ['$countAllDocs', 0] },
+          },
+        },
+        {
+          $addFields: {
+            countAllDocs: null,
+            totalDocsObject: null,
+            totalProducts: '$totalDocsObject.totalDocs',
           },
         },
       ])

@@ -771,7 +771,7 @@ export const getServerSideProps = async (
       name: `${attribute.name}`,
       options: castedOptions,
       notShowAsAlphabet: true,
-      totalOptionsCount: attributeOptions.length,
+      childrenCount: attributeOptions.length,
       viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST as AttributeViewVariantModel,
     };
     return filterAttribute;

@@ -16,6 +16,7 @@ import trim from 'trim';
 
 interface TreeItemInterface extends Record<any, any> {
   parentId?: ObjectIdModel | null;
+  childrenCount?: number | null;
 }
 
 interface GetTreeFromListInterface<T> {
@@ -36,14 +37,17 @@ export function getTreeFromList<T extends TreeItemInterface>({
   });
 
   return parentsList.map((parent) => {
+    const children = getTreeFromList({
+      list: list,
+      parentId: parent._id,
+      childrenFieldName,
+    });
+
     return {
       ...parent,
       name: getFieldStringLocale(parent.nameI18n, locale),
-      [childrenFieldName]: getTreeFromList({
-        list: list,
-        parentId: parent._id,
-        childrenFieldName,
-      }),
+      [childrenFieldName]: children,
+      childrenCount: children.length,
     };
   });
 }

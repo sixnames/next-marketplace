@@ -32,6 +32,7 @@ export interface InputPropsInterface extends InputLinePropsInterface {
   theme?: InputTheme;
   readOnly?: boolean;
   autoFocus?: boolean;
+  size?: 'smaller' | 'small' | 'normal' | 'big';
 }
 
 const Input: React.FC<InputPropsInterface> = ({
@@ -59,9 +60,18 @@ const Input: React.FC<InputPropsInterface> = ({
   showInlineError,
   error,
   description,
-
+  size = 'normal',
   ...props
 }) => {
+  const sizeClass =
+    size === 'smaller'
+      ? 'h-input-height-xs'
+      : size === 'small'
+      ? 'h-input-height-s'
+      : size === 'big'
+      ? 'h-input-height-lg'
+      : 'h-input-height';
+
   const inputTheme = theme === 'primary' ? 'bg-primary' : 'bg-secondary';
   const inputBorder = notValid ? 'border-red-500' : `input-border`;
   const inputPaddingLeft = icon
@@ -76,7 +86,7 @@ const Input: React.FC<InputPropsInterface> = ({
     : 'pr-input-padding-horizontal';
   const additionalClass = className ? className : '';
   const disabledClass = readOnly || disabled ? 'cursor-default opacity-50 pointer-events-none' : '';
-  const inputClassName = `relative form-input flex items-center w-full h-[var(--formInputHeight)] text-[var(--inputTextColor)] outline-none rounded-lg border ${disabledClass} ${inputPaddingLeft} ${inputPaddingRight} ${inputBorder} ${inputTheme} ${additionalClass}`;
+  const inputClassName = `relative form-input flex items-center w-full text-[var(--inputTextColor)] outline-none rounded-lg border ${sizeClass} ${disabledClass} ${inputPaddingLeft} ${inputPaddingRight} ${inputBorder} ${inputTheme} ${additionalClass}`;
 
   const currentValue = !value && value !== 0 ? '' : value;
 

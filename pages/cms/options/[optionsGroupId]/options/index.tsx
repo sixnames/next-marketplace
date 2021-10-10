@@ -286,7 +286,7 @@ export const getServerSideProps = async (
   const optionsGroupsCollection = await db.collection<OptionsGroupInterface>(COL_OPTIONS_GROUPS);
 
   const optionsGroupAggregationResult = await optionsGroupsCollection
-    .aggregate([
+    .aggregate<OptionsGroupInterface>([
       {
         $match: {
           _id: new ObjectId(`${context.query.optionsGroupId}`),

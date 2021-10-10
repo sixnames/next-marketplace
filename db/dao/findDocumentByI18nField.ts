@@ -1,12 +1,11 @@
 import { getDatabase } from 'db/mongodb';
 import { LOCALES } from 'config/common';
-import { FilterQuery } from 'mongodb';
 
-export interface FindDocumentByI18nFieldInterface<TModel> {
+export interface FindDocumentByI18nFieldInterface {
   fieldName: string;
   fieldArg: Record<string, any>;
   collectionName: string;
-  additionalQuery?: FilterQuery<TModel>;
+  additionalQuery?: Record<any, any>;
   additionalOrQuery?: any[];
 }
 
@@ -16,7 +15,7 @@ export async function findDocumentByI18nField<TModel>({
   fieldName,
   additionalQuery = {},
   additionalOrQuery = [],
-}: FindDocumentByI18nFieldInterface<TModel>): Promise<TModel | null> {
+}: FindDocumentByI18nFieldInterface): Promise<TModel | null> {
   const { db } = await getDatabase();
   const collection = db.collection(collectionName);
 
@@ -34,7 +33,7 @@ export async function findDocumentByI18nField<TModel>({
     ];
   }, []);
 
-  const node = await collection.findOne({
+  const node = await collection.findOne<TModel>({
     $or: [...query, ...additionalOrQuery],
     ...additionalQuery,
   });

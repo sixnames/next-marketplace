@@ -2,7 +2,6 @@ import { NOTIFICATION_TIMEOUT } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import Portal from '@reach/portal';
 import Notification, { NotificationInterface } from 'components/Notification';
 
 interface StateNotificationInterface extends Omit<NotificationInterface, 'closeHandler'> {
@@ -57,20 +56,18 @@ const NotificationsProvider: React.FC = ({ children }) => {
   return (
     <NotificationsContext.Provider value={value}>
       {children}
-      <Portal>
-        <div style={notificationStyles}>
-          {notifications.map((notification, index) => {
-            return (
-              <Notification
-                {...notification}
-                className='mb-4'
-                key={`${notification.title}-${notification.message}-${index}`}
-                closeHandler={() => closeNotificationHandler(index)}
-              />
-            );
-          })}
-        </div>
-      </Portal>
+      <div style={notificationStyles}>
+        {notifications.map((notification, index) => {
+          return (
+            <Notification
+              {...notification}
+              className='mb-4'
+              key={`${notification.title}-${notification.message}-${index}`}
+              closeHandler={() => closeNotificationHandler(index)}
+            />
+          );
+        })}
+      </div>
     </NotificationsContext.Provider>
   );
 };

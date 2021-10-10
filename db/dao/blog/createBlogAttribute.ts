@@ -88,8 +88,7 @@ export async function createBlogAttribute(req: NextApiRequest, res: NextApiRespo
       optionsGroupId: new ObjectId(args.optionsGroupId),
       ...DEFAULT_COUNTERS_OBJECT,
     });
-    const createdBlogAttribute = createdBlogAttributeResult.ops[0];
-    if (!createdBlogAttributeResult.result.ok || !createdBlogAttribute) {
+    if (!createdBlogAttributeResult.acknowledged) {
       payload = {
         success: false,
         message: await getApiMessage('blogAttributes.create.error'),
@@ -102,7 +101,6 @@ export async function createBlogAttribute(req: NextApiRequest, res: NextApiRespo
     payload = {
       success: true,
       message: await getApiMessage('blogAttributes.create.success'),
-      payload: createdBlogAttribute,
     };
 
     // response

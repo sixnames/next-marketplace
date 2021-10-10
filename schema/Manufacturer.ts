@@ -286,8 +286,7 @@ export const ManufacturerMutations = extendType({
             createdAt: new Date(),
             updatedAt: new Date(),
           });
-          const createManufacturer = createManufacturerResult.ops[0];
-          if (!createManufacturerResult.result.ok || !createManufacturer) {
+          if (!createManufacturerResult.acknowledged) {
             return {
               success: false,
               message: await getApiMessage('manufacturers.create.error'),
@@ -297,7 +296,6 @@ export const ManufacturerMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('manufacturers.create.success'),
-            payload: createManufacturer,
           };
         } catch (e) {
           return {

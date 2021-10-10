@@ -19,7 +19,8 @@ export const reverseGeocode = async ({
   const apiKey = `key=${process.env.NEXT_GOOGLE_MAPS_API_KEY}`;
   const url = `https://maps.googleapis.com/maps/api/geocode/json?${coordinates}&${settings}&${apiKey}`;
   const res = await fetch(url);
-  return res.json();
+  const json = (await res.json()) as ReverseGeocodePayload;
+  return json;
 };
 
 interface GeocodeInterface {
@@ -44,7 +45,7 @@ export const geocode = async ({
   const apiKey = `key=${process.env.NEXT_GOOGLE_MAPS_API_KEY}`;
   const url = `https://maps.googleapis.com/maps/api/geocode/json?${address}&${settings}&${apiKey}`;
   const res = await fetch(url);
-  const json: ReverseGeocodeResponseData = await res.json();
+  const json = (await res.json()) as ReverseGeocodeResponseData;
   return json.results.map(({ formatted_address, geometry }) => {
     return {
       formattedAddress: formatted_address,

@@ -10,6 +10,10 @@
 }
 
 @layer utilities {
+  .backdrop-blur-md {
+    backdrop-filter: blur(3px);
+  }
+
   .text-indent-full {
     overflow: hidden;
     text-indent: -999em;
@@ -57,6 +61,21 @@
 
   .wp-shadow-200 {
     box-shadow: 0 20px 30px rgba(0, 0, 0, 0.15);
+  }
+
+  .visually-hidden {
+    position: absolute;
+    display: block;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+    outline: none;
+    box-shadow: 0 0 0 transparent;
   }
 
   .wp-nav-dropdown-hidden {
@@ -123,6 +142,10 @@
   input[type="color"]::-webkit-color-swatch {
     border: none;
     border-radius: 0.5rem;
+  }
+
+  .radio-input:checked + span {
+    background-color: var(--theme);
   }
 
   .form-select,
@@ -496,17 +519,23 @@
   --innerBlockVerticalPadding: 1.5rem;
   --innerBlockHorizontalPadding: 1.5rem;
   --fullHeight: 100vh;
-  --formInputHeight: 3.5rem;
   --smallButtonHeight: 2rem;
+
+  --formInputHeight: 3.5rem;
+  --formInputHeightBig: 4rem;
   --formInputHeightSmall: 2.5rem;
   --formInputHeightSmaller: 2rem;
+
   --formLineHeight: 2rem;
+
   --buttonMinWidth: 12rem;
   --buttonMinWidthSmall: 9rem;
+
   --controlButtonHeight: var(--formInputHeight);
   --controlButtonHeightSmall: var(--formInputHeightSmall);
   --controlButtonHeightSmaller: var(--formInputHeightSmaller);
-  --controlButtonHeightBig: 4rem;
+  --controlButtonHeightBig: var(--formInputHeightBig);
+
   --minLinkHeight: var(--formInputHeight);
   --minLinkHeightSmall: var(--formInputHeightSmall);
   --minLinkHeightSmaller: var(--formInputHeightSmaller);

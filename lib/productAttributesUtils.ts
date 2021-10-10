@@ -26,7 +26,7 @@ export async function getRubricAllAttributes(
   const { db } = await getDatabase();
   const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
   const rubricAggregationResult = await rubricsCollection
-    .aggregate([
+    .aggregate<RubricInterface>([
       {
         $match: {
           _id: new ObjectId(rubricId),
@@ -58,7 +58,7 @@ export async function getCategoryAllAttributes(
   const { db } = await getDatabase();
   const categoriesCollection = db.collection<CategoryInterface>(COL_CATEGORIES);
   const categories = await categoriesCollection
-    .aggregate([
+    .aggregate<CategoryInterface>([
       {
         $match: {
           slug: {

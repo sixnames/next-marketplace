@@ -102,7 +102,7 @@ export interface AttributeInterface extends AttributeModel {
   metric?: MetricInterface | null;
   optionsGroup?: OptionsGroupInterface | null;
   options?: OptionInterface[] | null;
-  totalOptionsCount?: number | null;
+  childrenCount?: number | null;
 }
 
 export interface AttributesGroupInterface extends AttributesGroupModel {
@@ -191,6 +191,7 @@ export interface OptionInterface extends OptionModel {
   options?: OptionInterface[] | null;
   icon?: IconModel | null;
   optionsGroup?: OptionsGroupInterface | null;
+  childrenCount?: number | null;
 }
 
 export interface OptionsGroupInterface extends OptionsGroupModel {
@@ -329,6 +330,7 @@ export interface CategoryInterface extends CategoryModel {
   icon?: IconModel | null;
   textTop?: string | null;
   textBottom?: string | null;
+  childrenCount?: number | null;
 }
 
 export interface ShopProductInterface extends ShopProductModel {
@@ -475,7 +477,7 @@ export interface CatalogueFilterAttributeInterface {
   isSelected: boolean;
   notShowAsAlphabet: boolean;
   options: CatalogueFilterAttributeOptionInterface[];
-  totalOptionsCount: number;
+  childrenCount: number;
   viewVariant: AttributeViewVariantModel;
   showAsCatalogueBreadcrumb?: boolean | null;
 }

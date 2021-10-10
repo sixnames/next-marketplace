@@ -286,8 +286,7 @@ export const SupplierMutations = extendType({
             createdAt: new Date(),
             updatedAt: new Date(),
           });
-          const createSupplier = createSupplierResult.ops[0];
-          if (!createSupplierResult.result.ok || !createSupplier) {
+          if (!createSupplierResult.acknowledged) {
             return {
               success: false,
               message: await getApiMessage('suppliers.create.error'),
@@ -297,7 +296,6 @@ export const SupplierMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('suppliers.create.success'),
-            payload: createSupplier,
           };
         } catch (e) {
           return {

@@ -381,7 +381,7 @@ export const getServerSideProps = async (
   const attributesGroupsCollection = db.collection<AttributesGroupInterface>(COL_ATTRIBUTES_GROUPS);
 
   const attributesGroupAggregationResult = await attributesGroupsCollection
-    .aggregate([
+    .aggregate<AttributesGroupInterface>([
       {
         $match: {
           _id: new ObjectId(`${query.attributesGroupId}`),

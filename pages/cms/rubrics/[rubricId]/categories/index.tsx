@@ -210,7 +210,7 @@ export const getServerSideProps = async (
   }
   const locale = initialProps.props.sessionLocale;
   const rubricAggregation = await rubricsCollection
-    .aggregate([
+    .aggregate<RubricInterface>([
       {
         $match: {
           _id: new ObjectId(`${rubricId}`),

@@ -416,7 +416,7 @@ export async function getServerSideProps(
 
   const companyRubricsMatch = company ? { companyId: new ObjectId(company._id) } : {};
   const shopProductsAggregation = await shopProductsCollection
-    .aggregate([
+    .aggregate<ShopProductInterface>([
       {
         $match: {
           ...companyRubricsMatch,
@@ -525,7 +525,7 @@ export async function getServerSideProps(
 
   // Get top shops
   const shopsAggregation = await shopsCollection
-    .aggregate([
+    .aggregate<ShopInterface>([
       {
         $match: {
           ...companyRubricsMatch,

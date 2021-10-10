@@ -123,8 +123,7 @@ export const CurrencyMutations = extendType({
           const createdCurrencyResult = await currenciesCollection.insertOne({
             ...input,
           });
-          const createdCurrency = createdCurrencyResult.ops[0];
-          if (!createdCurrencyResult.result.ok || !createdCurrency) {
+          if (!createdCurrencyResult.acknowledged) {
             return {
               success: false,
               message: await getApiMessage('currencies.create.error'),
@@ -134,7 +133,6 @@ export const CurrencyMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('currencies.create.success'),
-            payload: createdCurrency,
           };
         } catch (e) {
           return {

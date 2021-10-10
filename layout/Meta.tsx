@@ -58,7 +58,6 @@ const Meta: React.FC<MetaInterface> = ({
 
   return (
     <React.Fragment>
-      {/*<head dangerouslySetInnerHTML={{ __html: metricsCodeAsString }} />*/}
       <Head>
         {'<!-- Yandex.Metrika counter --> <!-- /Yandex.Metrika counter -->'}
         <title>{pageTitle}</title>

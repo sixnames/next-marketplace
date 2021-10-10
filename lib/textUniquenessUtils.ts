@@ -8,7 +8,13 @@ import {
   REQUEST_METHOD_POST,
 } from 'config/common';
 import { COL_CONFIGS } from 'db/collectionNames';
-import { CategoryModel, ProductModel, RubricModel, TranslationModel } from 'db/dbModels';
+import {
+  CategoryModel,
+  ConfigModel,
+  ProductModel,
+  RubricModel,
+  TranslationModel,
+} from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { castConfigs, getConfigStringValue } from 'lib/configsUtils';
 import { get } from 'lodash';
@@ -29,7 +35,7 @@ export async function checkTextUniqueness({
   try {
     const { db } = await getDatabase();
     const configSlug = 'uniqueTextApiKey';
-    const configsCollection = db.collection(COL_CONFIGS);
+    const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
     const initialConfigs = await configsCollection
       .find({
         slug: configSlug,

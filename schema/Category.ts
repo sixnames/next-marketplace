@@ -30,7 +30,7 @@ export const Category = objectType({
       type: 'Category',
       resolve: async (source): Promise<CategoryModel[]> => {
         const { db } = await getDatabase();
-        const categoriesCollection = db.collection(COL_CATEGORIES);
+        const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
         return categoriesCollection
           .find({
             parentId: source._id,
@@ -72,7 +72,7 @@ export const CategoryQueries = extendType({
       resolve: async (_root, args, context): Promise<CategoriesAlphabetListModel[]> => {
         const { locale } = await getRequestParams(context);
         const { db } = await getDatabase();
-        const categoriesCollection = db.collection(COL_CATEGORIES);
+        const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
         const { input } = args;
         let query: Record<string, any> = {
           parentId: null,

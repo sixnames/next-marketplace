@@ -312,9 +312,7 @@ export const attributesGroupMutations = extendType({
             ...args.input,
             attributesIds: [],
           });
-
-          const attributesGroup = createdAttributesGroup.ops[0];
-          if (!createdAttributesGroup.result.ok || !attributesGroup) {
+          if (!createdAttributesGroup.acknowledged) {
             return {
               success: false,
               message: await getApiMessage('attributesGroups.create.error'),
@@ -324,7 +322,6 @@ export const attributesGroupMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('attributesGroups.create.success'),
-            payload: attributesGroup,
           };
         } catch (e) {
           return {
@@ -506,7 +503,7 @@ export const attributesGroupMutations = extendType({
             const removedAttributes = await attributesCollection.deleteMany({
               _id: { $in: group.attributesIds },
             });
-            if (!removedAttributes.result.ok) {
+            if (!removedAttributes.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`attributesGroups.delete.attributesError`),
@@ -647,8 +644,7 @@ export const attributesGroupMutations = extendType({
               showInCard: true,
               attributesGroupId,
             });
-            const createdAttribute = createdAttributeResult.ops[0];
-            if (!createdAttributeResult.result.ok || !createdAttribute) {
+            if (!createdAttributeResult.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`attributesGroups.addAttribute.attributeError`),
@@ -662,7 +658,7 @@ export const attributesGroupMutations = extendType({
               { _id: attributesGroup._id },
               {
                 $push: {
-                  attributesIds: createdAttribute._id,
+                  attributesIds: createdAttributeResult.insertedId,
                 },
               },
               {
@@ -840,7 +836,7 @@ export const attributesGroupMutations = extendType({
                 },
               },
             );
-            if (!updatedProductAttributeResult.result.ok) {
+            if (!updatedProductAttributeResult.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`attributesGroups.updateAttribute.updateError`),
@@ -939,7 +935,7 @@ export const attributesGroupMutations = extendType({
             const removedProductAttributes = await productAttributesCollection.deleteMany({
               attributeId,
             });
-            if (!removedProductAttributes.result.ok) {
+            if (!removedProductAttributes.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`attributesGroups.deleteAttribute.deleteError`),
@@ -1120,7 +1116,7 @@ export const attributesGroupMutations = extendType({
                 },
               },
             );
-            if (!updatedProductAttributes.result.ok) {
+            if (!updatedProductAttributes.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`attributesGroups.updateAttribute.updateError`),

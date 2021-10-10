@@ -65,7 +65,7 @@ export async function addPostLike(req: NextApiRequest, res: NextApiResponse) {
       blogPostId: post._id,
       userId: sessionUser._id,
     });
-    if (!createdBlogLike.result.ok) {
+    if (!createdBlogLike.acknowledged) {
       payload = {
         success: false,
         message: await getApiMessage('blogPosts.update.error'),

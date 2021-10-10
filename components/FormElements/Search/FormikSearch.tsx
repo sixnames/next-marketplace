@@ -1,8 +1,6 @@
+import ControlButton from 'components/ControlButton';
 import * as React from 'react';
-import Icon from 'components/Icon';
 import FormikInput from '../Input/FormikInput';
-import classes from './FormikSearch.module.css';
-import Button from 'components/Button';
 
 interface FormikSearchInterface {
   resetForm?: (() => void) | null;
@@ -11,40 +9,42 @@ interface FormikSearchInterface {
 
 const FormikSearch: React.FC<FormikSearchInterface> = ({ resetForm, testId }) => {
   return (
-    <div className={classes.frame}>
-      <div className={classes.holder}>
+    <div className='relative flex gap-4 mb-6'>
+      <div className='flex-grow'>
         <FormikInput
-          frameClass={classes.line}
-          className={classes.input}
+          frameClass=''
+          className=''
           placeholder={`Поиск...`}
           name={'search'}
+          size={'small'}
           low
           testId={`${testId}-search-input`}
         />
-
-        <Button
-          circle
-          type={'submit'}
-          theme={'secondary'}
-          className={classes.butn}
-          testId={`${testId}-search-submit`}
-        >
-          <Icon name={'search'} />
-        </Button>
       </div>
 
-      {resetForm ? (
-        <Button
-          circle
-          type={'reset'}
-          theme={'secondary'}
-          className={classes.reset}
-          onClick={resetForm}
-          testId={`${testId}-search-reset`}
-        >
-          <Icon name={'arrow-clockwise'} />
-        </Button>
-      ) : null}
+      <div className='relative flex gap-4'>
+        <ControlButton
+          size={'small'}
+          type={'submit'}
+          className=''
+          testId={`${testId}-search-submit`}
+          icon={'search'}
+          theme={'accent'}
+          roundedFull
+        />
+
+        {resetForm ? (
+          <ControlButton
+            type={'reset'}
+            theme={'accent'}
+            size={'small'}
+            onClick={resetForm}
+            testId={`${testId}-search-reset`}
+            icon={'arrow-clockwise'}
+            roundedFull
+          />
+        ) : null}
+      </div>
     </div>
   );
 };

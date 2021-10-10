@@ -87,7 +87,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   const updatedAt = new Date(fromDate);
   const shopOrdersAggregation = await ordersCollection
-    .aggregate([
+    .aggregate<OrderInterface>([
       {
         $match: {
           shopId: shop._id,

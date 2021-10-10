@@ -29,7 +29,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
   const maxVisibleOptions =
     configs.catalogueFilterVisibleOptionsCount || CATALOGUE_FILTER_VISIBLE_OPTIONS;
 
-  const { name, clearSlug, options, isSelected, metric, slug, totalOptionsCount } = attribute;
+  const { name, clearSlug, options, isSelected, metric, slug, childrenCount } = attribute;
   const isPrice = slug === FILTER_PRICE_KEY;
   const postfix = isPrice ? ` ${currency}` : metric ? ` ${metric}` : null;
 
@@ -59,7 +59,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
         })}
       </div>
 
-      {totalOptionsCount > maxVisibleOptions && !isPrice ? (
+      {childrenCount > maxVisibleOptions && !isPrice ? (
         <div
           className='uppercase cursor-pointer hover:text-theme mt-6'
           onClick={() => {

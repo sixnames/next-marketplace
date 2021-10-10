@@ -49,6 +49,7 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({ orderProduct }) 
     <div
       className={`flex mb-4 py-8 bg-secondary rounded-lg pr-6 ${isCanceled ? 'opacity-60' : ''}`}
     >
+      {/*image*/}
       <div className='flex items-center justify-center px-2 w-28 lg:w-32'>
         <div className='relative flex justify-center flex-shrink-0 w-[120px]'>
           <Image

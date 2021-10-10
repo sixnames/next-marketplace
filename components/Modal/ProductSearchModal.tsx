@@ -1,4 +1,4 @@
-import Pager from 'components/Pager/Pager';
+import Pager from 'components/Pager';
 import * as React from 'react';
 import {
   RubricProductFragment,

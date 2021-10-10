@@ -381,8 +381,7 @@ export const BrandMutations = extendType({
             updatedAt: new Date(),
           });
 
-          const createdBrand = createdBrandResult.ops[0];
-          if (!createdBrandResult.result.ok || !createdBrand) {
+          if (!createdBrandResult.acknowledged) {
             return {
               success: false,
               message: await getApiMessage('brands.create.error'),
@@ -392,7 +391,6 @@ export const BrandMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('brands.create.success'),
-            payload: createdBrand,
           };
         } catch (e) {
           return {
@@ -668,8 +666,7 @@ export const BrandMutations = extendType({
               createdAt: new Date(),
               updatedAt: new Date(),
             });
-            const createdBrandCollection = createdBrandCollectionResult.ops[0];
-            if (!createdBrandCollectionResult.result.ok || !createdBrandCollection) {
+            if (!createdBrandCollectionResult.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('brandCollections.create.error'),
@@ -683,7 +680,7 @@ export const BrandMutations = extendType({
               { _id: brandId },
               {
                 $push: {
-                  collectionsIds: createdBrandCollection._id,
+                  collectionsIds: createdBrandCollectionResult.insertedId,
                 },
                 $set: {
                   updatedAt: new Date(),

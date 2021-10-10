@@ -55,6 +55,7 @@ export interface MakeAnOrderPayloadModel {
 
 export interface MakeAnOrderInputInterface {
   name: string;
+  lastName?: string | null;
   phone: string;
   email: string;
   reservationDate?: string | null;
@@ -149,6 +150,7 @@ export async function makeAnOrder({
         const itemId = await getNextItemId(COL_USERS);
         const createdUserResult = await usersCollection.insertOne({
           name: input.name,
+          lastName: input.lastName,
           email: input.email,
           roleId: guestRole._id,
           phone: phoneToRaw(input.phone),
@@ -158,8 +160,10 @@ export async function makeAnOrder({
           createdAt: new Date(),
           updatedAt: new Date(),
         });
-        const createdUser = createdUserResult.ops[0];
-        if (!createdUserResult.result.ok || !createdUser) {
+        const createdUser = await usersCollection.findOne({
+          _id: createdUserResult.insertedId,
+        });
+        if (!createdUserResult.acknowledged || !createdUser) {
           payload = {
             success: false,
             message: await getApiMessage('orders.makeAnOrder.userCreationError'),
@@ -309,7 +313,7 @@ export async function makeAnOrder({
       const createdOrderProductsResult = await orderProductsCollection.insertMany(
         castedOrderProducts,
       );
-      if (!createdOrderProductsResult.result.ok) {
+      if (!createdOrderProductsResult.acknowledged) {
         payload = {
           success: false,
           message: await getApiMessage('orders.makeAnOrder.error'),
@@ -350,7 +354,7 @@ export async function makeAnOrder({
 
       // Insert orders
       const createdOrdersResult = await ordersCollection.insertMany(ordersInCart);
-      if (!createdOrdersResult.result.ok) {
+      if (!createdOrdersResult.acknowledged) {
         payload = {
           success: false,
           message: await getApiMessage('orders.makeAnOrder.error'),

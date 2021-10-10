@@ -174,8 +174,7 @@ export const CountryMutations = extendType({
             ...input,
             citiesIds: [],
           });
-          const createdCountry = createdCountryResult.ops[0];
-          if (!createdCountryResult.result.ok || !createdCountry) {
+          if (!createdCountryResult.acknowledged) {
             return {
               success: false,
               message: await getApiMessage('countries.create.error'),
@@ -185,7 +184,6 @@ export const CountryMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('countries.create.success'),
-            payload: createdCountry,
           };
         } catch (e) {
           return {
@@ -357,7 +355,7 @@ export const CountryMutations = extendType({
             const removedCitiesResult = await citiesCollection.deleteMany({
               _id: { $in: country.citiesIds },
             });
-            if (!removedCitiesResult.result.ok) {
+            if (!removedCitiesResult.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('cities.delete.error'),
@@ -468,8 +466,7 @@ export const CountryMutations = extendType({
             const createdCityResult = await citiesCollection.insertOne({
               ...values,
             });
-            const createdCity = createdCityResult.ops[0];
-            if (!createdCityResult.result.ok || !createdCity) {
+            if (!createdCityResult.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('cities.create.error'),
@@ -483,7 +480,7 @@ export const CountryMutations = extendType({
               { _id: countryId },
               {
                 $push: {
-                  citiesIds: createdCity._id,
+                  citiesIds: createdCityResult.insertedId,
                 },
                 $set: {
                   updatedAt: new Date(),

@@ -1,5 +1,4 @@
 import FilterCheckbox from 'components/FilterCheckbox';
-import FilterCheckboxGroup from 'components/FilterCheckboxGroup';
 import { BrandOptionsModalInterface } from 'components/Modal/BrandOptionsModal';
 import { CatalogueAdditionalOptionsModalInterface } from 'components/Modal/CatalogueAdditionalOptionsModal';
 import { CategoryOptionsModalInterface } from 'components/Modal/CategoryOptionsModal';
@@ -17,6 +16,7 @@ import {
   CATEGORY_OPTIONS_MODAL,
 } from 'config/modalVariants';
 import { useLocaleContext } from 'context/localeContext';
+import { CatalogueFilterAttributeOptionInterface } from 'db/uiInterfaces';
 import {
   CatalogueFilterAttributePropsInterface,
   CatalogueFilterInterface,
@@ -29,6 +29,75 @@ import { useConfigContext } from 'context/configContext';
 import Icon from 'components/Icon';
 import { useAppContext } from 'context/appContext';
 import 'rc-slider/assets/index.css';
+
+interface FilterCheckboxGroupInterface {
+  checkboxItems: CatalogueFilterAttributeOptionInterface[];
+  className?: string;
+  checkboxClassName?: string;
+  label?: string;
+  attributeSlug: string;
+  clearSlug?: string;
+  onClick?: () => void;
+  isSelected?: boolean;
+  showMoreHandler?: (() => void) | null;
+  postfix?: string | null;
+  testId?: string;
+}
+
+const FilterCheckboxGroup: React.FC<FilterCheckboxGroupInterface> = ({
+  label,
+  checkboxItems,
+  className,
+  attributeSlug,
+  checkboxClassName,
+  clearSlug,
+  isSelected,
+  showMoreHandler,
+  postfix,
+  testId,
+  onClick,
+}) => {
+  return (
+    <div className={`mb-8 ${className ? className : ''}`}>
+      {label ? (
+        <div className='flex items-baseline mb-2 justify-between'>
+          <span className={`font-medium text-lg`}>{label}</span>
+          {isSelected && clearSlug ? (
+            <Link onClick={onClick} href={clearSlug} className={`ml-4`}>
+              Очистить
+            </Link>
+          ) : null}
+        </div>
+      ) : null}
+
+      <div className='space-y-1'>
+        {checkboxItems.map((option, optionIndex) => {
+          const key = `${attributeSlug}-${option.slug}`;
+          const optionTestId = `${testId}-${optionIndex}`;
+          return (
+            <FilterCheckbox
+              key={key}
+              onClick={onClick}
+              option={option}
+              testId={optionTestId}
+              className={`${checkboxClassName ? checkboxClassName : ''}`}
+              postfix={postfix}
+            />
+          );
+        })}
+      </div>
+
+      {showMoreHandler ? (
+        <div
+          className='uppercase cursor-pointer hover:text-theme mt-2 text-secondary-text'
+          onClick={showMoreHandler}
+        >
+          Показать еще
+        </div>
+      ) : null}
+    </div>
+  );
+};
 
 const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface> = ({
   attribute,
@@ -49,11 +118,11 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
   const maxVisibleOptions =
     configs.catalogueFilterVisibleOptionsCount || CATALOGUE_FILTER_VISIBLE_OPTIONS;
 
-  const { name, clearSlug, options, isSelected, metric, slug, totalOptionsCount } = attribute;
+  const { name, clearSlug, options, isSelected, metric, slug, childrenCount } = attribute;
   const isCategory = slug === FILTER_CATEGORY_KEY;
   const isBrand = slug === FILTER_BRAND_KEY;
   const isPrice = slug === FILTER_PRICE_KEY;
-  const hasMoreOptions = totalOptionsCount > maxVisibleOptions && !isPrice;
+  const hasMoreOptions = childrenCount > maxVisibleOptions && !isPrice;
 
   const navigateFromModal = React.useCallback(
     (selectedOptions: OptionsModalOptionInterface[]) => {

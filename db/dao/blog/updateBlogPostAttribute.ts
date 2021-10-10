@@ -81,7 +81,7 @@ export async function updateBlogPostAttribute(req: NextApiRequest, res: NextApiR
     const finalOptions: OptionModel[] = [];
     if (selectedOptionsIds.length > 0) {
       const optionsAggregation = await optionsCollection
-        .aggregate([
+        .aggregate<OptionModel>([
           {
             $match: {
               _id: {

@@ -121,7 +121,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   for await (const bodyItem of body) {
     const { orderId } = bodyItem;
     const shopOrdersAggregation = await ordersCollection
-      .aggregate([
+      .aggregate<OrderInterface>([
         {
           $match: {
             shopId: shop._id,

@@ -86,7 +86,7 @@ export const getServerSideProps = async (
 
   // get user
   const userAggregationResult = await usersCollection
-    .aggregate([
+    .aggregate<UserInterface>([
       {
         $match: {
           _id: new ObjectId(`${userId}`),
@@ -129,7 +129,7 @@ export const getServerSideProps = async (
 
   // get order
   const orderAggregationResult = await ordersCollection
-    .aggregate([
+    .aggregate<OrderInterface>([
       {
         $match: {
           _id: new ObjectId(`${query.orderId}`),

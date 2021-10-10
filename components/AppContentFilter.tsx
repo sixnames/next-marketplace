@@ -54,13 +54,12 @@ const AppContentFilterAttribute: React.FC<AppContentFilterAttributeInterface> = 
   const maxVisibleOptions =
     configs.catalogueFilterVisibleOptionsCount || CATALOGUE_FILTER_VISIBLE_OPTIONS;
 
-  const { name, clearSlug, options, isSelected, metric, slug, totalOptionsCount } = attribute;
+  const { name, clearSlug, options, isSelected, metric, slug, childrenCount } = attribute;
 
   const isCategory = slug === FILTER_CATEGORY_KEY;
   const isBrand = slug === FILTER_BRAND_KEY;
   const isPrice = slug === FILTER_PRICE_KEY;
-  const hasMoreOptions =
-    (totalOptionsCount > maxVisibleOptions || isBrand || isCategory) && !isPrice;
+  const hasMoreOptions = (childrenCount > maxVisibleOptions || isBrand || isCategory) && !isPrice;
   const postfix = isPrice ? ` ${currency}` : metric ? ` ${metric}` : null;
 
   const navigateFromModal = React.useCallback(

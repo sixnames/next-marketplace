@@ -36,7 +36,7 @@ export async function getPageGroupsSsr({
   );
 
   const pagesGroupsAggregationResult = await pagesGroupsCollection
-    .aggregate([
+    .aggregate<PagesGroupInterface>([
       {
         $match: {
           companySlug,
@@ -79,7 +79,7 @@ export async function getPagesListSsr({
   );
 
   const pagesGroupsAggregationResult = await pagesGroupsCollection
-    .aggregate([
+    .aggregate<PagesGroupInterface>([
       {
         $match: {
           _id: new ObjectId(pagesGroupId),
@@ -192,7 +192,7 @@ export async function getPageSsr({
   const citiesCollection = db.collection<CityInterface>(COL_CITIES);
 
   const initialPageAggregation = await pagesCollection
-    .aggregate([
+    .aggregate<PageInterface>([
       {
         $match: { _id: new ObjectId(`${pageId}`) },
       },

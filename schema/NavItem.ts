@@ -158,8 +158,7 @@ export const NavItemMutations = extendType({
           const createdNavItemResult = await navItemsCollection.insertOne({
             ...input,
           });
-          const createdNavItem = createdNavItemResult.ops[0];
-          if (!createdNavItemResult.result.ok || !createdNavItem) {
+          if (!createdNavItemResult.acknowledged) {
             return {
               success: false,
               message: await getApiMessage('navItems.create.error'),
@@ -169,7 +168,6 @@ export const NavItemMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('navItems.create.success'),
-            payload: createdNavItem,
           };
         } catch (e) {
           return {

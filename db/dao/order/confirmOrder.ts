@@ -184,7 +184,7 @@ export async function confirmOrder({
           },
         },
       );
-      if (!updatedOrderProductsResult.result.ok) {
+      if (!updatedOrderProductsResult.acknowledged) {
         mutationPayload = {
           success: false,
           message: await getApiMessage('orders.updateOrder.error'),

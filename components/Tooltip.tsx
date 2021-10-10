@@ -1,8 +1,7 @@
 import * as React from 'react';
-import TooltipRUI from '@reach/tooltip';
-import '@reach/tooltip/styles.css';
+import ReactTooltip, { TooltipProps } from 'react-tooltip';
 
-interface TooltipInterface {
+interface TooltipInterface extends Omit<TooltipProps, 'delayShow'> {
   title?: any | null;
 }
 
@@ -12,22 +11,10 @@ const Tooltip: React.FC<TooltipInterface> = ({ children, title }) => {
   }
 
   return (
-    <TooltipRUI
-      style={{
-        zIndex: 99999,
-        fontSize: '1rem',
-        color: 'white',
-        backgroundColor: '#5c626e',
-        boxShadow: `0 1px 10px -1px rgba(0, 0, 0, 0.4)`,
-        borderRadius: 4,
-        border: 'none',
-        maxWidth: 280,
-        whiteSpace: 'normal',
-      }}
-      label={title}
-    >
-      {children}
-    </TooltipRUI>
+    <React.Fragment>
+      <div data-tip={title}>{children}</div>
+      <ReactTooltip delayShow={100} effect={'solid'} />
+    </React.Fragment>
   );
 };
 

@@ -137,7 +137,7 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
 
     // const shopProductsStartTime = new Date().getTime();
     const shopProductsAggregation = await productsCollection
-      .aggregate([
+      .aggregate<ProductInterface>([
         {
           $match: {
             slug,

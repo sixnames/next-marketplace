@@ -141,8 +141,7 @@ export const OrderStatusMutations = extendType({
             createdAt: new Date(),
             updatedAt: new Date(),
           });
-          const createdOrderStatus = createdOrderStatusResult.ops[0];
-          if (!createdOrderStatusResult.result.ok || !createdOrderStatus) {
+          if (!createdOrderStatusResult.acknowledged) {
             return {
               success: false,
               message: await getApiMessage('orderStatuses.create.error'),
@@ -152,7 +151,6 @@ export const OrderStatusMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('orderStatuses.create.success'),
-            payload: createdOrderStatus,
           };
         } catch (e) {
           return {

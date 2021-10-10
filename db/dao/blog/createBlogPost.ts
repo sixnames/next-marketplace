@@ -90,8 +90,7 @@ export async function createBlogPost(req: NextApiRequest, res: NextApiResponse) 
       updatedAt: new Date(),
       ...DEFAULT_COUNTERS_OBJECT,
     });
-    const createdBlogPost = createdBlogPostResult.ops[0];
-    if (!createdBlogPostResult.result.ok || !createdBlogPost) {
+    if (!createdBlogPostResult.acknowledged) {
       payload = {
         success: false,
         message: await getApiMessage('blogPosts.create.error'),
@@ -104,7 +103,6 @@ export async function createBlogPost(req: NextApiRequest, res: NextApiResponse) 
     payload = {
       success: true,
       message: await getApiMessage('blogPosts.create.success'),
-      payload: createdBlogPost,
     };
 
     // response

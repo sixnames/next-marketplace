@@ -271,7 +271,7 @@ export const ConfigMutations = extendType({
           const { _id, rubricId, categoryId, citySlug, cities, ...values } = input;
 
           const rubricCategoriesAggregation = await categoriesCollection
-            .aggregate([
+            .aggregate<CategoryModel>([
               {
                 $match: {
                   rubricId,

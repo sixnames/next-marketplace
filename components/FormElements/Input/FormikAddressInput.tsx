@@ -3,7 +3,6 @@ import { useLocaleContext } from 'context/localeContext';
 import { get } from 'lodash';
 import Input, { InputPropsInterface } from './Input';
 import { Field, FieldProps } from 'formik';
-import classes from './FormikAddressInput.module.css';
 import Spinner from 'components/Spinner';
 import { useDebounce } from 'use-debounce';
 import { GeocodeResultInterface, ReverseGeocodePayload } from 'lib/geocode';
@@ -91,12 +90,12 @@ const FormikAddressInputConsumer: React.FC<FormikAddressInputConsumerInterface> 
   }
 
   return (
-    <div className={classes.inputHolder}>
+    <div className='relative z-10'>
       <Input
         {...props}
         disabled={disabled}
         name={name}
-        className={classes.input}
+        className='relative z-10'
         value={fieldValue ? fieldValue.formattedAddress : string}
         onChange={(e) => setString(e.target.value)}
         onClear={disabled ? clearInputHandler : null}
@@ -105,7 +104,7 @@ const FormikAddressInputConsumer: React.FC<FormikAddressInputConsumerInterface> 
         low={true}
       />
       {isOpen ? (
-        <div className={`${classes.list}`}>
+        <div className='absolute top-full left-0 w-full z-20 py-4 bg-secondary shadow-lg rounded-md divide-y divide-border-200'>
           {loading ? <Spinner isNested /> : null}
           {!loading
             ? results.map((result, index) => {
@@ -114,7 +113,7 @@ const FormikAddressInputConsumer: React.FC<FormikAddressInputConsumerInterface> 
                   <div
                     data-cy={`address-result-${index}`}
                     onClick={() => setFieldValue(name, result)}
-                    className={`${classes.listItem}`}
+                    className='px-4 py-2 min-h-[2rem] flex items-center cursor-pointer transition-all duration-200 hover:text-theme'
                     key={`${formattedAddress}-${index}`}
                   >
                     {formattedAddress}
@@ -151,9 +150,7 @@ const FormikAddressInput: React.FC<FormikAddressInputInterface> = ({
         const fieldValue = field.value;
 
         return (
-          <div
-            className={`${classes.frame} ${low ? classes.low : ''} ${frameClass ? frameClass : ''}`}
-          >
+          <div className={`relative z-50 ${low ? '' : 'mb-8'} ${frameClass ? frameClass : ''}`}>
             <FormikAddressInputConsumer
               setFieldValue={setFieldValue}
               notValid={notValid}

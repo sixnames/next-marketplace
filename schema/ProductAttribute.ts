@@ -233,7 +233,7 @@ export const ProductAttributeMutations = extendType({
                 },
               },
             );
-            if (!updatedShopProduct.result.ok) {
+            if (!updatedShopProduct.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('products.update.error'),
@@ -346,7 +346,7 @@ export const ProductAttributeMutations = extendType({
                 },
               },
             );
-            if (!updatedShopProduct.result.ok) {
+            if (!updatedShopProduct.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('products.update.error'),
@@ -459,7 +459,7 @@ export const ProductAttributeMutations = extendType({
                 },
               },
             );
-            if (!updatedShopProduct.result.ok) {
+            if (!updatedShopProduct.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('products.update.error'),
@@ -572,7 +572,7 @@ export const ProductAttributeMutations = extendType({
                 },
               },
             );
-            if (!updatedShopProduct.result.ok) {
+            if (!updatedShopProduct.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('products.update.error'),
@@ -698,7 +698,7 @@ export const ProductAttributeMutations = extendType({
             const finalOptions: OptionModel[] = [];
             if (selectedOptionsIds.length > 0) {
               const optionsAggregation = await optionsCollection
-                .aggregate([
+                .aggregate<OptionModel>([
                   {
                     $match: {
                       _id: {
@@ -796,7 +796,7 @@ export const ProductAttributeMutations = extendType({
               },
               productUpdater,
             );
-            if (!updatedProduct.ok || !updatedShopProduct.result.ok) {
+            if (!updatedProduct.ok || !updatedShopProduct.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('products.update.error'),

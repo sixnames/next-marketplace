@@ -170,7 +170,7 @@ export const getServerSideProps = async (
   const optionsGroupsCollection = await db.collection<OptionsGroupInterface>(COL_OPTIONS_GROUPS);
 
   const optionsGroupsAggregationResult = await optionsGroupsCollection
-    .aggregate([
+    .aggregate<OptionsGroupInterface>([
       {
         $sort: {
           [`nameI18n.${DEFAULT_LOCALE}`]: SORT_ASC,

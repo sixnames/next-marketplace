@@ -5,7 +5,7 @@ import Link from 'components/Link/Link';
 import LinkEmail from 'components/Link/LinkEmail';
 import LinkPhone from 'components/Link/LinkPhone';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
+import Pager, { useNavigateToPageHandler } from 'components/Pager';
 import Table, { TableColumn } from 'components/Table';
 import Title from 'components/Title';
 import { ROUTE_CMS } from 'config/common';

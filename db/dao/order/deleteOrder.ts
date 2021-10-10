@@ -78,7 +78,7 @@ export async function deleteOrder({
       const removedOrderProductsResult = await orderProductsCollection.deleteMany({
         orderId,
       });
-      if (!removedOrderProductsResult.result.ok) {
+      if (!removedOrderProductsResult.acknowledged) {
         payload = {
           success: false,
           message: await getApiMessage('orders.deleteOrder.error'),
@@ -104,7 +104,7 @@ export async function deleteOrder({
       const removedOrderLogsResult = await orderLogsCollection.deleteMany({
         orderId,
       });
-      if (!removedOrderLogsResult.result.ok) {
+      if (!removedOrderLogsResult.acknowledged) {
         payload = {
           success: false,
           message: await getApiMessage('orders.deleteOrder.error'),

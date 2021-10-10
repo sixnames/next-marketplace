@@ -1,5 +1,4 @@
 import * as React from 'react';
-import classes from './FormikMultiLineInput.module.css';
 import FormikInput, { FormikInputPropsInterface } from './FormikInput';
 import { useField } from 'formik';
 import Button from 'components/Button';
@@ -65,19 +64,19 @@ const FormikMultiLineInput: React.FC<FormikMultiLineInputInterface> = ({
       description={description}
       lineContentClass={lineContentClass}
     >
-      <div className={classes.inputsFrame}>
+      <div className='relative grid gap-6'>
         {(field.value || []).map((_: any, index: number) => {
           const isFirst = index === 0;
           const fieldName = `${name}[${index}]`;
           const fieldTestId = `${testId}-${index}`;
 
           return (
-            <div className={`${classes.inputHolder}`} key={index}>
-              <div className={`${classes.input} ${classes.inputMulti}`}>
+            <div className='flex items-start justify-center' key={index}>
+              <div className='w-[calc(100%-40px)]'>
                 <FormikInput name={fieldName} testId={fieldTestId} low {...props} />
               </div>
 
-              <div className={classes.inputControl}>
+              <div className='flex h-input-height w-[40px] items-center justify-end'>
                 {isFirst ? (
                   <Button
                     onClick={addFieldHandler}
@@ -103,9 +102,9 @@ const FormikMultiLineInput: React.FC<FormikMultiLineInputInterface> = ({
         })}
 
         {removeIndex > NEGATIVE_INDEX ? (
-          <div className={classes.prompt}>
-            <div className={classes.promptTitle}>Вы уверенны, что хотите удалить поле?</div>
-            <div className={classes.promptButtons}>
+          <div className='absolute inset-0 gap-4 flex flex-col items-center justify-center w-full h-full z-20 rounded-md backdrop-blur-md'>
+            <div className='font-medium'>Вы уверенны, что хотите удалить поле?</div>
+            <div className='flex gap-4'>
               <Button
                 theme={'secondary'}
                 size={'small'}

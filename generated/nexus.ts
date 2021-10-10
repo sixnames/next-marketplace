@@ -3,9 +3,9 @@
  * Do not make changes to this file directly
  */
 
-import * as dbModels from './../db/dbModels';
-import { NexusContext } from './../types/apiContextTypes';
-import { core } from 'nexus';
+import type * as dbModels from './../db/dbModels';
+import type { NexusContext } from './../types/apiContextTypes';
+import type { core } from 'nexus';
 declare global {
   interface NexusGenCustomInputMethods<TypeName extends string> {
     /**
@@ -4400,6 +4400,7 @@ export interface NexusGenTypes {
 
 declare global {
   interface NexusGenPluginTypeConfig<TypeName extends string> {}
+  interface NexusGenPluginInputTypeConfig<TypeName extends string> {}
   interface NexusGenPluginFieldConfig<TypeName extends string, FieldName extends string> {}
   interface NexusGenPluginInputFieldConfig<TypeName extends string, FieldName extends string> {}
   interface NexusGenPluginSchemaConfig {}

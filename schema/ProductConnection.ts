@@ -217,8 +217,7 @@ export const ProductConnectionMutations = extendType({
               attributeSlug: productAttribute.slug,
               productsIds: [productId],
             });
-            const createdConnection = createdConnectionResult.ops[0];
-            if (!createdConnectionResult.result.ok || !createdConnection) {
+            if (!createdConnectionResult.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`products.connection.createError`),
@@ -232,10 +231,9 @@ export const ProductConnectionMutations = extendType({
               optionId,
               productId,
               productSlug: product.slug,
-              connectionId: createdConnection._id,
+              connectionId: createdConnectionResult.insertedId,
             });
-            const createdConnectionItem = createdConnectionItemResult.ops[0];
-            if (!createdConnectionItemResult.result.ok || !createdConnectionItem) {
+            if (!createdConnectionItemResult.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`products.connection.createError`),
@@ -423,9 +421,7 @@ export const ProductConnectionMutations = extendType({
               productSlug: addProduct.slug,
               connectionId,
             });
-
-            const createdConnectionItem = createdConnectionItemResult.ops[0];
-            if (!createdConnectionItemResult.result.ok || !createdConnectionItem) {
+            if (!createdConnectionItemResult.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`products.connection.updateError`),

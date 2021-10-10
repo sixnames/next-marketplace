@@ -117,7 +117,7 @@ export const getServerSideProps = async (
   }
 
   const orderAggregationResult = await ordersCollection
-    .aggregate([
+    .aggregate<OrderInterface>([
       {
         $match: {
           _id: new ObjectId(`${query.orderId}`),

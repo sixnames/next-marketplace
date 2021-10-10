@@ -702,8 +702,7 @@ export const ShopMutations = extendType({
                 createdAt: new Date(),
                 ...DEFAULT_COUNTERS_OBJECT,
               });
-              const createdShopProduct = createdShopProductResult.ops[0];
-              if (!createdShopProductResult.result.ok || !createdShopProduct) {
+              if (!createdShopProductResult.acknowledged) {
                 break;
               }
 

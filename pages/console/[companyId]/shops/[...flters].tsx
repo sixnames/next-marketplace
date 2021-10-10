@@ -6,7 +6,7 @@ import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { CreateShopModalInterface } from 'components/Modal/CreateShopModal';
-import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
+import Pager, { useNavigateToPageHandler } from 'components/Pager';
 import Spinner from 'components/Spinner';
 import Table, { TableColumn } from 'components/Table';
 import TableRowImage from 'components/TableRowImage';

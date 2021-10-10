@@ -1,5 +1,4 @@
 import { CART_COOKIE_KEY, DEFAULT_LOCALE } from 'config/common';
-import Cookies from 'cookies';
 import {
   COL_CARTS,
   COL_PRODUCTS,
@@ -31,6 +30,7 @@ import { generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/client';
+import nookies from 'nookies';
 
 export interface CartQueryInterface {
   companyId?: string;
@@ -63,8 +63,8 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
     const userCartId = user ? user.cartId : null;
 
     // Get cart id from cookies or session user
-    const cookies = new Cookies(req, res);
-    const cartId = userCartId || cookies.get(CART_COOKIE_KEY);
+    const cookies = nookies.get({ req });
+    const cartId = userCartId || cookies[CART_COOKIE_KEY];
 
     const companyIdStage = companyId ? { companyId: new ObjectId(companyId) } : {};
     const shopProductPipeline = ({ letStage, expr, as }: ShopProductPipelineInterface) => ({
@@ -260,8 +260,10 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
         updatedAt: new Date(),
       });
 
-      const newCart = newCartResult.ops[0];
-      if (!newCartResult.result.ok || !newCart) {
+      const newCart = await cartsCollection.findOne({
+        _id: newCartResult.insertedId,
+      });
+      if (!newCartResult.acknowledged || !newCart) {
         res.statusCode = 500;
         res.setHeader('Content-Type', 'application/json');
         res.end(
@@ -269,11 +271,14 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
             sessionCart: null,
           }),
         );
+        return;
       }
 
       // Set cart _id to cookies
-      cookies.set(CART_COOKIE_KEY, newCart._id.toHexString(), {
-        httpOnly: true, // true by default
+      nookies.set({ res }, CART_COOKIE_KEY, newCart._id.toHexString(), {
+        httpOnly: true,
+        path: '/',
+        sameSite: 'strict',
       });
 
       // Update user cartId field

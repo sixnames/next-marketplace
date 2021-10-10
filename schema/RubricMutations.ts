@@ -202,8 +202,10 @@ export const RubricMutations = extendType({
             filterVisibleAttributeIds: [],
             ...DEFAULT_COUNTERS_OBJECT,
           });
-          const createdRubric = createdRubricResult.ops[0];
-          if (!createdRubricResult.result.ok || !createdRubric) {
+          const createdRubric = await rubricsCollection.findOne({
+            _id: createdRubricResult.insertedId,
+          });
+          if (!createdRubricResult.acknowledged || !createdRubric) {
             return {
               success: false,
               message: await getApiMessage('rubrics.create.error'),
@@ -396,7 +398,7 @@ export const RubricMutations = extendType({
             const removedProductsResult = await productsCollection.deleteMany({
               rubricId: _id,
             });
-            if (!removedProductsResult.result.ok || !removedShopProductsResult.result.ok) {
+            if (!removedProductsResult.acknowledged || !removedShopProductsResult.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('rubrics.deleteProduct.error'),
@@ -409,7 +411,7 @@ export const RubricMutations = extendType({
             const removedRubricsResult = await rubricsCollection.deleteOne({
               _id,
             });
-            if (!removedRubricsResult.result.ok) {
+            if (!removedRubricsResult.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('rubrics.delete.error'),
@@ -616,7 +618,7 @@ export const RubricMutations = extendType({
               attributesGroupId,
               rubricId: rubric._id,
             });
-            if (!removedProductAttributesResult.result.ok) {
+            if (!removedProductAttributesResult.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('rubrics.deleteAttributesGroup.error'),
@@ -884,7 +886,7 @@ export const RubricMutations = extendType({
             const removedProductAssetsResult = await productAssetsCollection.deleteMany({
               productId,
             });
-            if (!removedProductAssetsResult.result.ok) {
+            if (!removedProductAssetsResult.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`rubrics.deleteProduct.error`),
@@ -897,7 +899,7 @@ export const RubricMutations = extendType({
             const removedProductAttributesResult = await productAttributesCollection.deleteMany({
               productId,
             });
-            if (!removedProductAttributesResult.result.ok) {
+            if (!removedProductAttributesResult.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`rubrics.deleteProduct.error`),
@@ -924,7 +926,7 @@ export const RubricMutations = extendType({
             const removedProductCardContents = await productCardContentsCollection.deleteMany({
               productId,
             });
-            if (!removedProductCardContents.result.ok) {
+            if (!removedProductCardContents.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`rubrics.deleteProduct.error`),
@@ -938,7 +940,7 @@ export const RubricMutations = extendType({
               await productConnectionItemsCollection.deleteMany({
                 productId,
               });
-            if (!removedProductConnectionsResult.result.ok) {
+            if (!removedProductConnectionsResult.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`rubrics.deleteProduct.error`),
@@ -954,7 +956,7 @@ export const RubricMutations = extendType({
             const removedShopProductResult = await shopProductsCollection.deleteMany({
               productId,
             });
-            if (!removedProductResult.ok || !removedShopProductResult.result.ok) {
+            if (!removedProductResult.ok || !removedShopProductResult.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`rubrics.deleteProduct.error`),

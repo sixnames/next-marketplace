@@ -3,7 +3,7 @@ import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
 import LinkEmail from 'components/Link/LinkEmail';
 import LinkPhone from 'components/Link/LinkPhone';
-import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
+import Pager, { useNavigateToPageHandler } from 'components/Pager';
 import Table, { TableColumn } from 'components/Table';
 import Title from 'components/Title';
 import { ROUTE_CONSOLE } from 'config/common';

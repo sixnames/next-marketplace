@@ -118,8 +118,7 @@ export const RoleMutations = extendType({
             updatedAt: new Date(),
             createdAt: new Date(),
           });
-          const createdRole = createdRoleResult.ops[0];
-          if (!createdRoleResult.result.ok || !createdRole) {
+          if (!createdRoleResult.acknowledged) {
             return {
               success: false,
               message: await getApiMessage('roles.create.error'),
@@ -129,7 +128,6 @@ export const RoleMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('roles.create.success'),
-            payload: createdRole,
           };
         } catch (e) {
           return {
@@ -305,7 +303,7 @@ export const RoleMutations = extendType({
               { roleId: _id },
               { $set: { roleId: guestRole._id } },
             );
-            if (!updatedUsers.result.ok) {
+            if (!updatedUsers.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('roles.delete.usersUpdateError'),

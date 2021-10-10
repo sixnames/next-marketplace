@@ -163,7 +163,7 @@ export const getServerSideProps = async (
   };
 
   const initialBlogPostsAggregation = await blogPostsCollection
-    .aggregate([
+    .aggregate<BlogPostInterface>([
       {
         $match: {
           companySlug: props.companySlug,

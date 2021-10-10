@@ -1,3 +1,4 @@
+import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
 import { CartInterface } from 'db/uiInterfaces';
 import * as React from 'react';
@@ -29,6 +30,7 @@ const productContentClassName = 'relative col-span-6';
 
 const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
   const router = useRouter();
+  const { configs } = useConfigContext();
   const { showErrorNotification } = useNotificationsContext();
   const { deleteProductFromCart, updateProductInCart, clearCart } = useSiteContext();
   const { productsCount, cartProducts, formattedTotalPrice } = cart;
@@ -215,7 +217,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
             });
           }}
         >
-          оформить заказ
+          {configs.buyButtonText}
         </Button>
       </div>
     </div>

@@ -23,7 +23,6 @@ import { COL_CARTS, COL_ROLE_RULES, COL_ROLES, COL_USERS } from 'db/collectionNa
 import { getCityFieldData, getI18nLocaleValue } from 'lib/i18n';
 import { MessageSlug } from 'types/messageSlugTypes';
 import { getApiMessageValue, getValidationMessages } from 'lib/apiMessageUtils';
-import Cookies from 'cookies';
 import { ObjectId } from 'mongodb';
 import { ObjectSchema, ArraySchema } from 'yup';
 import { ValidationSchemaArgsInterface } from 'types/validataionTypes';
@@ -176,8 +175,8 @@ export const getSessionCart = async (context: NexusContext): Promise<CartModel> 
   const usersCollection = db.collection<UserModel>(COL_USERS);
 
   // Get cart id from cookies or session user
-  const cookies = new Cookies(context.req, context.res);
-  const cartId = userCartId || cookies.get(CART_COOKIE_KEY);
+  const cookies = nookies.get(context);
+  const cartId = userCartId || cookies[CART_COOKIE_KEY];
 
   // Find exiting cart
   const cart = cartId ? await cartsCollection.findOne({ _id: new ObjectId(cartId) }) : null;
@@ -189,15 +188,18 @@ export const getSessionCart = async (context: NexusContext): Promise<CartModel> 
       createdAt: new Date(),
       updatedAt: new Date(),
     });
-
-    const newCart = newCartResult.ops[0];
-    if (!newCartResult.result.ok || !newCart) {
+    const newCart = await cartsCollection.findOne({
+      _id: newCartResult.insertedId,
+    });
+    if (!newCartResult.acknowledged || !newCart) {
       throw Error('Cart creation error');
     }
 
     // Set cart _id to cookies
-    cookies.set(CART_COOKIE_KEY, newCart._id.toHexString(), {
-      httpOnly: true, // true by default
+    nookies.set(context, CART_COOKIE_KEY, newCartResult.insertedId.toHexString(), {
+      httpOnly: true,
+      path: '/',
+      sameSite: 'strict',
     });
 
     // Update user cartId field
@@ -206,7 +208,7 @@ export const getSessionCart = async (context: NexusContext): Promise<CartModel> 
         { _id: user._id },
         {
           $set: {
-            cartId: newCart._id,
+            cartId: newCartResult.insertedId,
           },
         },
         { returnDocument: 'after' },

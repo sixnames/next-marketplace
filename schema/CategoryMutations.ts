@@ -206,8 +206,7 @@ export const CategoryMutations = extendType({
             rubricSlug: rubric.slug,
             ...DEFAULT_COUNTERS_OBJECT,
           });
-          const createdCategory = createdCategoryResult.ops[0];
-          if (!createdCategoryResult.result.ok || !createdCategory) {
+          if (!createdCategoryResult.acknowledged) {
             return {
               success: false,
               message: await getApiMessage('categories.create.error'),
@@ -215,16 +214,20 @@ export const CategoryMutations = extendType({
           }
 
           // check text uniqueness
-          await checkCategorySeoTextUniqueness({
-            category: createdCategory,
-            textTopI18n: input.textTopI18n,
-            textBottomI18n: input.textBottomI18n,
+          const createdCategory = await categoriesCollection.findOne({
+            _id: createdCategoryResult.insertedId,
           });
+          if (createdCategory) {
+            await checkCategorySeoTextUniqueness({
+              category: createdCategory,
+              textTopI18n: input.textTopI18n,
+              textBottomI18n: input.textBottomI18n,
+            });
+          }
 
           return {
             success: true,
             message: await getApiMessage('categories.create.success'),
-            payload: createdCategory,
           };
         } catch (e) {
           return {
@@ -419,7 +422,7 @@ export const CategoryMutations = extendType({
             const removedProductsResult = await productsCollection.deleteMany({
               categoryId: _id,
             });
-            if (!removedProductsResult.result.ok || !removedShopProductsResult.result.ok) {
+            if (!removedProductsResult.acknowledged || !removedShopProductsResult.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('categories.deleteProduct.error'),
@@ -654,7 +657,7 @@ export const CategoryMutations = extendType({
               attributesGroupId,
               categoryId: category._id,
             });
-            if (!removedProductAttributesResult.result.ok) {
+            if (!removedProductAttributesResult.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('categories.deleteAttributesGroup.error'),

@@ -323,9 +323,7 @@ export const CompanyMutations = extendType({
               createdAt: new Date(),
               updatedAt: new Date(),
             });
-
-            const createdCompany = createdCompanyResult.ops[0];
-            if (!createdCompanyResult.result.ok || !createdCompany) {
+            if (!createdCompanyResult.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('companies.create.error'),
@@ -336,6 +334,17 @@ export const CompanyMutations = extendType({
 
             // Create company domain
             if (!sessionUser) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('companies.create.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+            const createdCompany = await companiesCollection.findOne({
+              _id: createdCompanyResult.insertedId,
+            });
+            if (!createdCompany) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('companies.create.error'),
@@ -365,7 +374,7 @@ export const CompanyMutations = extendType({
               siteName: input.name,
             });
             const createdCompanyConfigsResult = await configsCollection.insertMany(configTemplates);
-            if (!createdCompanyConfigsResult.result.ok) {
+            if (!createdCompanyConfigsResult.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('companies.create.error'),
@@ -390,8 +399,7 @@ export const CompanyMutations = extendType({
                   _id: new ObjectId(),
                   companySlug: createdCompany.slug,
                 });
-                const createdPagesGroup = createdPagesGroupResult.ops[0];
-                if (!createdPagesGroupResult.result.ok || !createdPagesGroup) {
+                if (!createdPagesGroupResult.acknowledged) {
                   continue;
                 }
 
@@ -400,7 +408,7 @@ export const CompanyMutations = extendType({
                   await pagesCollection.insertOne({
                     ...pageTemplate,
                     _id: new ObjectId(),
-                    pagesGroupId: createdPagesGroup._id,
+                    pagesGroupId: createdPagesGroupResult.insertedId,
                     companySlug: createdCompany.slug,
                     assetKeys: [],
                     mainBanner: null,
@@ -611,7 +619,7 @@ export const CompanyMutations = extendType({
             const removedConfigs = await configsCollection.deleteMany({
               companySlug: company.slug,
             });
-            if (!removedConfigs.result.ok) {
+            if (!removedConfigs.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('configs.delete.error'),
@@ -624,7 +632,7 @@ export const CompanyMutations = extendType({
             const removedShopsProducts = await shopProductsCollection.deleteMany({
               shopsId: { $in: company.shopsIds },
             });
-            if (!removedShopsProducts.result.ok) {
+            if (!removedShopsProducts.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('shopProducts.delete.error'),
@@ -637,7 +645,7 @@ export const CompanyMutations = extendType({
             const removedShops = await shopsCollection.deleteMany({
               _id: { $in: company.shopsIds },
             });
-            if (!removedShops.result.ok) {
+            if (!removedShops.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('companies.shopsDelete.error'),
@@ -661,7 +669,7 @@ export const CompanyMutations = extendType({
             const removedPageGroupsResult = await pagesGroupsCollection.deleteMany({
               companySlug: company.slug,
             });
-            if (!removedPageGroupsResult.result.ok) {
+            if (!removedPageGroupsResult.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('companies.delete.error'),
@@ -806,8 +814,7 @@ export const CompanyMutations = extendType({
                 },
               },
             });
-            const createdShop = createdShopResult.ops[0];
-            if (!createdShopResult.result.ok || !createdShop) {
+            if (!createdShopResult.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('shops.create.error'),
@@ -823,7 +830,7 @@ export const CompanyMutations = extendType({
               },
               {
                 $push: {
-                  shopsIds: createdShop._id,
+                  shopsIds: createdShopResult.insertedId,
                 },
                 $set: {
                   updatedAt: new Date(),
@@ -954,7 +961,7 @@ export const CompanyMutations = extendType({
             const removedShopProducts = await shopProductsCollection.deleteMany({
               shopId: shop._id,
             });
-            if (!removedShopProducts.result.ok) {
+            if (!removedShopProducts.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('shopProducts.delete.error'),

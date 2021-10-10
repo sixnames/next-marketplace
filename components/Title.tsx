@@ -1,4 +1,5 @@
 import * as React from 'react';
+import Tooltip from 'components/Tooltip';
 
 interface TitlePropsInterface {
   children: any;
@@ -35,9 +36,11 @@ const Title: React.FC<TitlePropsInterface> = ({
   return (
     <div className={`flex-shrink-0 ${low ? '' : 'mb-[1.25rem]'} ${className ? className : ''}`}>
       <div className={`flex flex-wrap items-baseline ${textClassName ? textClassName : ''}`}>
-        <TagName data-cy={testId} className={`font-bold ${fontSizeClassName}`}>
-          {children}
-        </TagName>
+        <Tooltip title={'tooltip'}>
+          <TagName data-cy={testId} className={`font-bold ${fontSizeClassName}`}>
+            {children}
+          </TagName>
+        </Tooltip>
       </div>
       {subtitle && <div className={`text-secondary-text mt-[0.5rem]`}>{subtitle}</div>}
     </div>

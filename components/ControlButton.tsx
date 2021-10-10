@@ -19,6 +19,7 @@ export interface ControlButtonInterface {
   testId?: string;
   roundedTopLeft?: boolean;
   roundedTopRight?: boolean;
+  roundedFull?: boolean;
   iconSize?: 'smaller' | 'small' | 'normal' | 'mid' | 'big';
   size?: 'smaller' | 'small' | 'normal' | 'big';
   theme?: 'blank' | 'accent';
@@ -35,6 +36,7 @@ const ControlButton: React.FC<ControlButtonInterface> = ({
   testId,
   roundedTopLeft,
   roundedTopRight,
+  roundedFull,
   theme = 'blank',
   onClick,
   iconSize = 'normal',
@@ -48,12 +50,12 @@ const ControlButton: React.FC<ControlButtonInterface> = ({
 
   const sizeClass =
     size === 'smaller'
-      ? 'w-[var(--controlButtonHeightSmaller)] h-[var(--controlButtonHeightSmaller)]'
+      ? 'w-control-button-height-xs h-control-button-height-xs'
       : size === 'small'
-      ? 'w-[var(--controlButtonHeightSmall)] h-[var(--controlButtonHeightSmall)]'
+      ? 'w-control-button-height-s h-control-button-height-s'
       : size === 'big'
-      ? 'w-[var(--controlButtonHeightBig)] h-[var(--controlButtonHeightBig)]'
-      : 'w-[var(--controlButtonHeight)] h-[var(--controlButtonHeight)]';
+      ? 'w-control-button-height-lg h-control-button-height-lg'
+      : 'w-control-button-height h-control-button-height';
 
   const iconSizeClass =
     iconSize === 'smaller'
@@ -68,9 +70,9 @@ const ControlButton: React.FC<ControlButtonInterface> = ({
 
   const roundedClass = `${roundedTopLeft ? 'rounded-tl-md rounded-br-md' : ''} ${
     roundedTopRight ? 'rounded-tr-md rounded-bl-md' : ''
-  }`;
+  } ${roundedFull ? 'rounded-full' : ''}`;
 
-  const buttonClass = `relative z-30 flex items-center justify-center transition duration-150 hover:text-theme ${
+  const buttonClass = `z-30 flex items-center justify-center transition duration-150 hover:text-theme ${
     className ? className : ''
   } ${themeClass} ${roundedClass} ${sizeClass}`;
 

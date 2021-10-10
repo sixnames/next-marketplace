@@ -207,8 +207,7 @@ export const PageMutations = extendType({
             createdAt: new Date(),
             updatedAt: new Date(),
           });
-          const createdPage = createdPageResult.ops[0];
-          if (!createdPageResult.result.ok || !createdPage) {
+          if (!createdPageResult.acknowledged) {
             return {
               success: false,
               message: await getApiMessage('pages.create.error'),
@@ -218,7 +217,6 @@ export const PageMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('pages.create.success'),
-            payload: createdPage,
           };
         } catch (e) {
           return {

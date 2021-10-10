@@ -92,7 +92,7 @@ export const RubricVariantQueries = extendType({
         const { db } = await getDatabase();
         const rubricVariantsCollection = db.collection<RubricVariantModel>(COL_RUBRIC_VARIANTS);
         const rubricVariants = await rubricVariantsCollection
-          .aggregate([
+          .aggregate<RubricVariantModel>([
             {
               $addFields: {
                 index: {
@@ -232,8 +232,7 @@ export const RubricVariantMutations = extendType({
             ...input,
             slug,
           });
-          const createdRubricVariant = createdRubricVariantResult.ops[0];
-          if (!createdRubricVariantResult.result.ok || !createdRubricVariant) {
+          if (!createdRubricVariantResult.acknowledged) {
             return {
               success: false,
               message: await getApiMessage('rubricVariants.create.error'),
@@ -243,7 +242,6 @@ export const RubricVariantMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('rubricVariants.create.success'),
-            payload: createdRubricVariant,
           };
         } catch (e) {
           return {

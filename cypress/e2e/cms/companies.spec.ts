@@ -263,7 +263,7 @@ describe('Companies list', () => {
     cy.getByCy('shop-rubric-products-list').should('exist');
   });
 
-  it.only('Should update company configs', () => {
+  it('Should update company configs', () => {
     cy.getByCy(`company_a-update`).click();
     cy.wait(1500);
     cy.getByCy(`company-global-config`).click();

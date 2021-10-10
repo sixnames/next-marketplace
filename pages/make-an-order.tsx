@@ -1,5 +1,6 @@
 import Breadcrumbs from 'components/Breadcrumbs';
 import Button from 'components/Button';
+import ControlButton from 'components/ControlButton';
 import Currency from 'components/Currency';
 import FormikDatePicker from 'components/FormElements/Input/FormikDatePicker';
 import FormikInput from 'components/FormElements/Input/FormikInput';
@@ -7,18 +8,23 @@ import FormikTextarea from 'components/FormElements/Textarea/FormikTextarea';
 import Icon from 'components/Icon';
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
+import { MapModalInterface } from 'components/Modal/MapModal';
 import ProductShopPrices from 'components/ProductShopPrices';
 import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
 import Title from 'components/Title';
 import { ROUTE_CATALOGUE } from 'config/common';
+import { MAP_MODAL } from 'config/modalVariants';
+import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
 import { useNotificationsContext } from 'context/notificationsContext';
 import { useSiteContext } from 'context/siteContext';
+import { useThemeContext } from 'context/themeContext';
 import { useUserContext } from 'context/userContext';
 import { CartProductInterface, CompanyInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import useValidationSchema from 'hooks/useValidationSchema';
+import LayoutCard from 'layout/LayoutCard';
 import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import { phoneToRaw } from 'lib/phoneUtils';
 import Image from 'next/image';
@@ -26,8 +32,7 @@ import { useRouter } from 'next/router';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { getSiteInitialData } from 'lib/ssrUtils';
-import CartAside from 'routes/CartRoute/CartAside';
-import classes from 'styles/MakeAnOrderRoute.module.css';
+import CartAside from 'components/CartAside';
 import { makeAnOrderSchema } from 'validation/orderSchema';
 
 interface OrderRouteProductInterface {
@@ -35,6 +40,8 @@ interface OrderRouteProductInterface {
 }
 
 const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }) => {
+  const { showModal } = useAppContext();
+  const { isDark } = useThemeContext();
   const { shopProduct, amount, totalPrice } = cartProduct;
   if (!shopProduct) {
     return null;
@@ -42,74 +49,104 @@ const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }
 
   const { shop, oldPrice, discountedPercent, price, product, itemId, rubricSlug } = shopProduct;
 
+  if (!product || !shop) {
+    return null;
+  }
+  const { mainImage, snippetTitle, slug } = product;
+  const lightThemeMarker = shop.mapMarker?.lightTheme;
+  const darkThemeMarker = shop.mapMarker?.darkTheme;
+  const marker = (isDark ? darkThemeMarker : lightThemeMarker) || '/marker.svg';
+
   return (
-    <div className={classes.productHolder}>
-      <div data-cy={'order-product'} className={classes.product}>
-        <div className={classes.productMainGrid}>
-          <div className={classes.productImage}>
-            <div className={classes.productImageHolder}>
-              <Image
-                src={`${product?.mainImage}`}
-                alt={product?.originalName}
-                title={product?.originalName}
-                layout='fill'
-                objectFit='contain'
-              />
-              <Link
-                target={'_blank'}
-                className='block absolute z-10 inset-0 text-indent-full'
-                href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${product?.slug}`}
-              >
-                {product?.originalName}
-              </Link>
-            </div>
+    <LayoutCard className='grid px-6 py-8 gap-6 sm:grid-cols-8 relative' testId='order-product'>
+      {/*image*/}
+      <div className='flex flex-col gap-4 items-center justify-center sm:col-span-2'>
+        <div className='relative flex justify-center flex-shrink-0 w-full max-w-[180px]'>
+          <Image
+            objectFit={'contain'}
+            objectPosition={'center'}
+            src={`${mainImage}`}
+            alt={`${snippetTitle}`}
+            title={`${snippetTitle}`}
+            width={240}
+            height={240}
+            quality={50}
+          />
+          <Link
+            target={'_blank'}
+            className='block absolute z-10 inset-0 text-indent-full'
+            href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
+          >
+            {snippetTitle}
+          </Link>
+        </div>
+
+        <div className='flex justify-center items-center gap-4 mt-auto'>
+          <ControlButton iconSize={'mid'} icon={'compare'} />
+          <ControlButton iconSize={'mid'} icon={'heart'} />
+        </div>
+      </div>
+
+      {/*main data*/}
+      <div className='sm:col-span-6'>
+        <div className='text-secondary-text'>{`Артикул: ${itemId}`}</div>
+        <Link
+          target={'_blank'}
+          className='block mb-6 text-primary-text hover:no-underline hover:text-primary-text font-medium text-lg lg:text-2xl'
+          href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
+        >
+          {snippetTitle}
+        </Link>
+
+        {/*price*/}
+        <div className='mb-6'>
+          <div className='flex items-baseline gap-2 md:gap-3 mb-3'>
+            <ProductShopPrices
+              className=''
+              price={price}
+              oldPrice={oldPrice}
+              discountedPercent={discountedPercent}
+              size={'small'}
+            />
+            <Icon name={'cross'} className='w-2 h-2 md:w-3 md:h-3' />
+            <div className='md:text-lg font-medium'>{amount}</div>
           </div>
-          <div>
-            <div className={classes.productArt}>{`Артикул: ${itemId}`}</div>
-            <div className={classes.productContent}>
-              <div>
-                <div className={classes.productName}>
-                  <Link
-                    target={'_blank'}
-                    className='block text-primary-text hover:no-underline hover:text-primary-text'
-                    href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${product?.slug}`}
-                  >
-                    {product?.originalName}
-                  </Link>
-                </div>
-              </div>
+          <div className='text-2xl'>
+            Итого <Currency value={totalPrice} />
+          </div>
+        </div>
 
-              <div>
-                <div className={classes.productTotals}>
-                  <ProductShopPrices
-                    className={classes.productTotalsPrice}
-                    price={price}
-                    oldPrice={oldPrice}
-                    discountedPercent={discountedPercent}
-                    size={'small'}
-                  />
-                  <Icon name={'cross'} className={classes.productTotalsIcon} />
-                  <div className={classes.productTotalsAmount}>{amount}</div>
-                </div>
-                <div className={classes.productTotalPrice}>
-                  Итого <Currency value={totalPrice} />
-                </div>
-              </div>
-
-              <div>
-                <div className={classes.shop}>
-                  <div>
-                    <span>Магазин: </span>
-                    {shop?.name}
-                  </div>
-                  <div>{shop?.address.formattedAddress}</div>
-                </div>
-              </div>
-            </div>
+        {/*shop info*/}
+        <div className=''>
+          <div className='mb-2'>
+            Магазин: <span className='font-medium text-lg'>{shop.name}</span>
+          </div>
+          <div>{shop.address.formattedAddress}</div>
+          <div
+            className='text-theme cursor-pointer'
+            onClick={() => {
+              showModal<MapModalInterface>({
+                variant: MAP_MODAL,
+                props: {
+                  title: shop.name,
+                  testId: `shop-map-modal`,
+                  markers: [
+                    {
+                      _id: shop._id,
+                      icon: marker,
+                      name: shop.name,
+                      address: shop.address,
+                    },
+                  ],
+                },
+              });
+            }}
+          >
+            Смотреть на карте
           </div>
         </div>
       </div>
-    </div>
+    </LayoutCard>
   );
 };
 
@@ -130,7 +167,7 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
 
   if (loadingCart && !cart) {
     return (
-      <div className={classes.cart}>
+      <div>
         <Breadcrumbs currentPageName={'Корзина'} />
 
         <Inner lowTop testId={'cart'}>
@@ -142,7 +179,7 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
 
   if (!cart) {
     return (
-      <div className={classes.cart}>
+      <div>
         <Breadcrumbs currentPageName={'Корзина'} />
 
         <Inner lowTop testId={'cart'}>
@@ -156,14 +193,13 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
 
   if (cartProducts.length < 1) {
     return (
-      <div className={classes.cart}>
+      <div>
         <Breadcrumbs currentPageName={'Корзина'} />
 
         <Inner lowTop testId={'cart'}>
-          <Title className={classes.cartTitle}>Корзина пуста</Title>
-          <div className={classes.emptyBtns}>
+          <Title>Корзина пуста</Title>
+          <div className='flex gap-4 flex-wrap'>
             <Button
-              className={classes.emptyBtnsItem}
               theme={'secondary'}
               onClick={() => {
                 router.push(`/`).catch(() => {
@@ -180,16 +216,17 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
   }
 
   return (
-    <div className={classes.cart} data-cy={'order-form'}>
+    <div className='mb-12' data-cy={'order-form'}>
       <Breadcrumbs currentPageName={'Корзина'} />
 
       <Inner lowTop testId={'cart'}>
-        <Title className={classes.cartTitle}>В корзине товаров {productsCount} шт.</Title>
+        <Title>В корзине товаров {productsCount} шт.</Title>
         <Formik
           enableReinitialize={true}
           validationSchema={validationSchema}
           initialValues={{
             name: me ? me.name : '',
+            lastName: me ? me.lastName : '',
             email: me ? me.email : '',
             phone: me ? me.phone : '',
             comment: '',
@@ -206,13 +243,19 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
           {() => {
             return (
               <Form>
-                <div className={classes.order}>
-                  <div data-cy={'order-products'}>
-                    <div className={classes.form}>
-                      <div className={classes.group}>
-                        <div className={classes.groupTitle}>
-                          <div className={classes.groupTitleCounter}>1</div>
-                          Личные данные
+                <div className='grid md:grid-cols-8 lg:grid-cols-16 gap-6'>
+                  <div
+                    className='md:col-span-5 lg:col-span-11 grid gap-8'
+                    data-cy={'order-products'}
+                  >
+                    <div>
+                      {/*form*/}
+                      <div className=''>
+                        <div className='flex items-center gap-4 mb-8 text-lg font-medium'>
+                          <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
+                            1
+                          </div>
+                          <div>Личные данные</div>
                         </div>
 
                         <FormikInput
@@ -222,6 +265,14 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
                           disabled={disabled}
                           isRequired
                         />
+
+                        <FormikInput
+                          disabled={disabled}
+                          name={'lastName'}
+                          label={'Фамилия'}
+                          testId={'lastName'}
+                        />
+
                         <FormikInput
                           testId={'order-form-phone'}
                           name={'phone'}
@@ -249,13 +300,16 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
                         ) : null}
                       </div>
 
-                      <div className={classes.group}>
-                        <div className={classes.groupTitle}>
-                          <div className={classes.groupTitleCounter}>2</div>
-                          Подтверждение заказа
+                      {/*products*/}
+                      <div>
+                        <div className='flex items-center gap-4 mb-8 text-lg font-medium'>
+                          <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
+                            2
+                          </div>
+                          <div>Подтверждение заказа</div>
                         </div>
 
-                        <div className={classes.products} data-cy={'order-products'}>
+                        <div className='grid gap-4 mb-8' data-cy={'order-products'}>
                           {cartProducts.map((cartProduct) => {
                             return (
                               <OrderRouteProduct
@@ -275,7 +329,7 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
                     </div>
                   </div>
 
-                  <div className={classes.aside}>
+                  <div className='md:col-span-3 lg:col-span-5'>
                     <CartAside
                       cart={cart}
                       buttonText={configs.buyButtonText}

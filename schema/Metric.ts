@@ -135,8 +135,7 @@ export const MetricMutations = extendType({
           const createdMetricResult = await metricsCollection.insertOne({
             ...input,
           });
-          const createdMetric = createdMetricResult.ops[0];
-          if (!createdMetricResult.result.ok || !createdMetric) {
+          if (!createdMetricResult.acknowledged) {
             return {
               success: false,
               message: await getApiMessage('metrics.create.error'),
@@ -146,7 +145,6 @@ export const MetricMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('metrics.create.success'),
-            payload: createdMetric,
           };
         } catch (e) {
           return {
@@ -277,7 +275,10 @@ export const MetricMutations = extendType({
                 },
               },
             );
-            if (!updatedAttributesResult.result.ok || !updatedProductAttributesResult.result.ok) {
+            if (
+              !updatedAttributesResult.acknowledged ||
+              !updatedProductAttributesResult.acknowledged
+            ) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('metrics.update.error'),

@@ -7,7 +7,7 @@ import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { CreateNewProductModalInterface } from 'components/Modal/CreateNewProductModal';
-import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
+import Pager, { useNavigateToPageHandler } from 'components/Pager';
 import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
 import Table, { TableColumn } from 'components/Table';

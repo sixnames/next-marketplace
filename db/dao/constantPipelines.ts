@@ -279,7 +279,7 @@ export function getCatalogueRubricPipeline(
 
                 {
                   $addFields: {
-                    totalOptionsCount: {
+                    childrenCount: {
                       $size: '$options',
                     },
                     ...optionsLimit,
@@ -698,7 +698,7 @@ export const filterAttributesPipeline = (sortStage: Record<any, any>) => {
           },
           {
             $addFields: {
-              totalOptionsCount: {
+              childrenCount: {
                 $size: '$options',
               },
             },

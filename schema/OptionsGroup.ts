@@ -72,7 +72,7 @@ export const OptionsGroup = objectType({
         const { db } = await getDatabase();
         const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
         const options = await optionsCollection
-          .aggregate([
+          .aggregate<OptionModel>([
             {
               $match: {
                 optionsGroupId: source._id,
@@ -275,8 +275,7 @@ export const OptionsGroupMutations = extendType({
 
           // Create options group
           const createdOptionsGroupResult = await optionsGroupsCollection.insertOne(input);
-          const createdOptionsGroup = createdOptionsGroupResult.ops[0];
-          if (!createdOptionsGroupResult.result.ok || !createdOptionsGroup) {
+          if (!createdOptionsGroupResult.acknowledged) {
             return {
               success: false,
               message: await getApiMessage('optionsGroups.create.error'),
@@ -286,7 +285,6 @@ export const OptionsGroupMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('optionsGroups.create.success'),
-            payload: createdOptionsGroup,
           };
         } catch (e) {
           return {
@@ -506,7 +504,7 @@ export const OptionsGroupMutations = extendType({
             const removedOptionsResult = await optionsCollection.deleteMany({
               optionsGroupId: _id,
             });
-            if (!removedOptionsResult.result.ok) {
+            if (!removedOptionsResult.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('optionsGroups.delete.error'),
@@ -629,8 +627,7 @@ export const OptionsGroupMutations = extendType({
             optionsGroupId,
             ...DEFAULT_COUNTERS_OBJECT,
           });
-          const createdOption = createdOptionResult.ops[0];
-          if (!createdOptionResult.result.ok || !createdOption) {
+          if (!createdOptionResult.acknowledged) {
             return {
               success: false,
               message: await getApiMessage('optionsGroups.addOption.error'),
@@ -640,7 +637,6 @@ export const OptionsGroupMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('optionsGroups.addOption.success'),
-            payload: optionsGroup,
           };
         } catch (e) {
           return {

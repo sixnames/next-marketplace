@@ -154,7 +154,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       },
     },
   );
-  if (!updatedShopProductsResult.result.ok) {
+  if (!updatedShopProductsResult.acknowledged) {
     res.status(500).send({
       success: false,
       message: await getApiMessage('products.update.error'),

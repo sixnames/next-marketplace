@@ -5,7 +5,7 @@ import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearc
 import Inner from 'components/Inner';
 import { BrandCollectionModalInterface } from 'components/Modal/BrandCollectionModal';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import Pager, { useNavigateToPageHandler } from 'components/Pager/Pager';
+import Pager, { useNavigateToPageHandler } from 'components/Pager';
 import Table, { TableColumn } from 'components/Table';
 import Title from 'components/Title';
 import {

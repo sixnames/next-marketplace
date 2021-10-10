@@ -15,14 +15,14 @@ import { getDatabase } from 'db/mongodb';
 import { ProductsPaginationAggregationInterface } from 'db/uiInterfaces';
 import { getAlgoliaProductsSearch } from 'lib/algoliaUtils';
 import { noNaN } from 'lib/numbers';
-import { CollectionAggregationOptions, ObjectId } from 'mongodb';
+import { AggregateOptions, ObjectId } from 'mongodb';
 
 export interface ProductsPaginationQueryInterface {
   input?: ProductsPaginationInputModel | null;
   city: string;
   initialMatchPipeline?: any[];
   shopsMatchPipeline?: any[];
-  options?: CollectionAggregationOptions;
+  options?: AggregateOptions;
   active?: boolean;
 }
 

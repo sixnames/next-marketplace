@@ -2,12 +2,12 @@ const { fontFamily, screens } = require('tailwindcss/defaultTheme');
 // const colors = require('tailwindcss/colors');
 
 module.exports = {
+  mode: 'jit',
   purge: [
     './pages/**/*.{js,ts,jsx,tsx}',
     './layout/**/*.{js,ts,jsx,tsx}',
     './components/**/*.{js,ts,jsx,tsx}',
     './hooks/**/*.{js,ts,jsx,tsx}',
-    './routes/**/*.{js,ts,jsx,tsx}',
   ],
   darkMode: 'class',
   theme: {
@@ -54,9 +54,6 @@ module.exports = {
       },
       minHeight: {
         'full-height': 'var(--fullHeight, 100vh)',
-        'control-button-height': 'var(--formInputHeight)',
-        'control-button-height-s': 'var(--formInputHeightSmall)',
-        'control-button-height-xs': 'var(--formInputHeightSmaller)',
       },
       height: {},
       boxShadow: {},
@@ -74,6 +71,11 @@ module.exports = {
         'input-padding-horizontal': 'var(--inputPaddingHorizontal)',
         'button-min-width': '14rem',
         'button-min-width-sm': '9rem',
+        'input-height-lg': 'var(--formInputHeightBig)',
+        'input-height': 'var(--formInputHeight)',
+        'input-height-s': 'var(--formInputHeightSmall)',
+        'input-height-xs': 'var(--formInputHeightSmaller)',
+        'control-button-height-lg': 'var(--controlButtonHeightBig)',
         'control-button-height': 'var(--formInputHeight)',
         'control-button-height-s': 'var(--formInputHeightSmall)',
         'control-button-height-xs': 'var(--formInputHeightSmaller)',

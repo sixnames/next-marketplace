@@ -6,7 +6,6 @@ import { get } from 'lodash';
 import { useLocaleContext } from 'context/localeContext';
 import Accordion from 'components/Accordion';
 import InputLine from './InputLine';
-import classes from './FormikTranslationsInput.module.css';
 import Icon from 'components/Icon';
 import Tooltip from 'components/Tooltip';
 import { TranslationModel } from 'db/dbModels';
@@ -96,33 +95,33 @@ const FormikTranslationsInput: React.FC<FormikTranslationsInputInterface> = ({
       isHorizontal={isHorizontal}
       labelTag={'div'}
       label={label}
-      labelClass={classes.listLabel}
+      labelClass='mb-3'
     >
       {dbLocales.map((localeSlug, index) => {
         const value: string | undefined = currentField[localeSlug];
         const notEmpty = value && value.length;
         const accordionIcon = notEmpty ? 'check' : 'cross';
         const accordionIconTooltip = notEmpty ? 'Поле заполнено' : 'Поле не заполнено';
-        const accordionIconClass = notEmpty ? classes.iconDone : classes.iconEmpty;
+        const accordionIconClass = notEmpty ? 'text-green-500' : 'text-red-500';
         const name = `${inputName}.${localeSlug}`;
         const isDefault = defaultLocale === localeSlug;
-        const isNotLast = index !== dbLocales.length - 1;
+        const isLast = index === dbLocales.length - 1;
 
         return (
-          <div className={isNotLast ? 'mb-6' : ''} key={name}>
+          <div className={isLast ? '' : 'mb-6'} key={name}>
             <Accordion
               testId={`${testId}-accordion-${localeSlug}`}
               isOpen={isDefault}
               title={localeSlug}
               titleRight={
                 <Tooltip title={accordionIconTooltip}>
-                  <div className={`${classes.accordionIcon} ${accordionIconClass}`}>
-                    <Icon name={accordionIcon} />
+                  <div className={accordionIconClass}>
+                    <Icon className='w-4 h-4' name={accordionIcon} />
                   </div>
                 </Tooltip>
               }
             >
-              <div className={classes.languageInput}>
+              <div className='mt-3 mb-6'>
                 {additionalUi ? additionalUi(localeSlug) : null}
 
                 {variant === 'textarea' ? (

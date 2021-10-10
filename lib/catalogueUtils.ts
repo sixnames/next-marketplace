@@ -54,8 +54,6 @@ import {
   DEFAULT_SORT_STAGE,
   GENDER_HE,
   CATALOGUE_GRID_DEFAULT_COLUMNS_COUNT,
-  CATEGORY_SLUG_PREFIX_SEPARATOR,
-  CATEGORY_SLUG_PREFIX_WORD,
   FILTER_COMMON_KEY,
   FILTER_NO_PHOTO_KEY,
 } from 'config/common';
@@ -376,7 +374,7 @@ export async function getCatalogueAttributes({
       name: getFieldStringLocale(attribute.nameI18n, locale),
       options: castedOptions,
       isSelected,
-      totalOptionsCount: noNaN(attribute.totalOptionsCount),
+      childrenCount: noNaN(attribute.childrenCount),
       metric: attribute.metric ? getFieldStringLocale(attribute.metric.nameI18n, locale) : null,
       viewVariant: attribute.viewVariant,
       notShowAsAlphabet: attribute.notShowAsAlphabet || false,
@@ -1315,7 +1313,6 @@ export const getCatalogueData = async ({
       categories,
       prices,
       brandSlugs,
-      selectedOptionsSlugs,
       brandCollectionSlugs,
     } = productDataAggregation;
 
@@ -1687,19 +1684,16 @@ export const getCatalogueData = async ({
       ? CATALOGUE_GRID_DEFAULT_COLUMNS_COUNT
       : rubric.variant?.gridCatalogueColumns || CATALOGUE_GRID_DEFAULT_COLUMNS_COUNT;
 
+    const categorySlugs = getTreeFromList({
+      list: categories,
+      childrenFieldName: 'categories',
+    }).map(({ slug }) => slug);
+
     // console.log(`Catalogue data >>>>>>>>>>>>>>>> `, new Date().getTime() - timeStart);
     return {
       _id: rubric._id,
       clearSlug,
-      categorySlugs: selectedOptionsSlugs
-        .filter((slug) => slug._id)
-        .reduce((acc: string[], slug) => {
-          const slugParts = slug._id.split(CATEGORY_SLUG_PREFIX_SEPARATOR);
-          if (slugParts[0] === CATEGORY_SLUG_PREFIX_WORD && slugParts[1]) {
-            return [...acc, slug._id];
-          }
-          return acc;
-        }, []),
+      categorySlugs: categorySlugs,
       brandSlugs: brandSlugs.filter((slug) => slug._id).map((slug) => slug._id),
       brandCollectionSlugs: brandCollectionSlugs.filter((slug) => slug._id).map((slug) => slug._id),
       filters: input.filters,

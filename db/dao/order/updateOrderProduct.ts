@@ -132,6 +132,7 @@ export async function updateOrderProduct({
         {
           $set: {
             amount: input.amount,
+            totalPrice: input.amount * orderProduct.price,
           },
         },
         {

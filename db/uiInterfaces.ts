@@ -452,6 +452,7 @@ export interface ProductsPaginationAggregationInterface {
 export interface CatalogueFilterAttributeOptionInterface {
   _id: ObjectIdModel;
   slug: string;
+  castedSlug: string;
   name: string;
   nextSlug: string;
   isSelected: boolean;

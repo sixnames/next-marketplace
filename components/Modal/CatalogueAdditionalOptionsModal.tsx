@@ -71,6 +71,7 @@ const CatalogueAdditionalOptionsModal: React.FC<CatalogueAdditionalOptionsModalI
 
   return (
     <OptionsModal
+      disableNestedOptions
       buttonText={'Показать'}
       title={title}
       alphabet={alphabet}

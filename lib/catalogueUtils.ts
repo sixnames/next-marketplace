@@ -189,6 +189,43 @@ export async function getCatalogueAttributes({
     return filteredNestedOptions;
   }
 
+  function getSelectedNestedOptionSlugs(
+    option: CatalogueFilterAttributeOptionInterface,
+    acc: string[],
+  ): string[] {
+    const newAcc = [...acc];
+    if (option.isSelected && !newAcc.includes(option.castedSlug)) {
+      newAcc.push(option.castedSlug);
+    }
+    if (!option.options || option.options.length < 1) {
+      return newAcc;
+    }
+    return option.options.reduce((innerAcc: string[], option) => {
+      return [...innerAcc, ...getSelectedNestedOptionSlugs(option, [])];
+    }, newAcc);
+  }
+
+  function getOptionNextSlug(
+    option: CatalogueFilterAttributeOptionInterface,
+  ): CatalogueFilterAttributeOptionInterface {
+    const { isSelected, castedSlug } = option;
+    if (isSelected) {
+      const selectedNestedOptionSlugs = getSelectedNestedOptionSlugs(option, []);
+      const newPathFilters = realFilter.filter((path) => {
+        return !selectedNestedOptionSlugs.includes(path);
+      });
+      return {
+        ...option,
+        nextSlug: `${basePath}/${newPathFilters.join('/')}`,
+        options: (option.options || []).map(getOptionNextSlug),
+      };
+    }
+    return {
+      ...option,
+      nextSlug: `${basePath}/${[...realFilter, castedSlug].join('/')}`,
+    };
+  }
+
   function filterSelectedOptions({
     option,
     attributeSlug,
@@ -237,13 +274,16 @@ export async function getCatalogueAttributes({
     return null;
   }
 
-  async function castOption({
-    option,
-    attribute,
-  }: CastOptionInterface): Promise<CastOptionPayloadInterface> {
+  function sortOptions(options: CatalogueFilterAttributeOptionInterface[]) {
+    return [...options].sort((a, b) => {
+      return a.isSelected === b.isSelected ? 0 : a.isSelected ? -1 : 1;
+    });
+  }
+
+  function castOption({ option, attribute }: CastOptionInterface): CastOptionPayloadInterface {
     // check if selected
-    const optionSlug = `${attribute.slug}${FILTER_SEPARATOR}${option.slug}`;
-    const isSelected = realFilter.includes(optionSlug);
+    const castedSlug = `${attribute.slug}${FILTER_SEPARATOR}${option.slug}`;
+    const isSelected = realFilter.includes(castedSlug);
     let optionName = getFieldStringLocale(option.nameI18n, locale);
     if (rubricGender) {
       const optionVariantGender = option.variants[rubricGender];
@@ -258,18 +298,18 @@ export async function getCatalogueAttributes({
     const optionNextSlug = isSelected
       ? [...realFilter]
           .filter((pathArg) => {
-            return pathArg !== optionSlug;
+            return pathArg !== castedSlug;
           })
           .join('/')
-      : [...realFilter, optionSlug].join('/');
+      : [...realFilter, castedSlug].join('/');
 
     const isCategory = attribute.slug === FILTER_CATEGORY_KEY;
     const isBrand = attribute.slug === FILTER_BRAND_KEY;
     const nestedOptions: CatalogueFilterAttributeOptionInterface[] = [];
 
     if (isCategory || isBrand) {
-      for await (const nestedOption of option.options || []) {
-        const { castedOption } = await castOption({
+      for (const nestedOption of option.options || []) {
+        const { castedOption } = castOption({
           option: nestedOption,
           attribute: {
             ...attribute,
@@ -279,8 +319,8 @@ export async function getCatalogueAttributes({
         nestedOptions.push(castedOption);
       }
     } else {
-      for await (const nestedOption of option.options || []) {
-        const { castedOption } = await castOption({
+      for (const nestedOption of option.options || []) {
+        const { castedOption } = castOption({
           option: nestedOption,
           attribute,
         });
@@ -292,15 +332,16 @@ export async function getCatalogueAttributes({
       _id: option._id,
       name: optionName,
       slug: option.slug,
+      castedSlug,
       nextSlug: `${basePath}/${optionNextSlug}`,
       isSelected,
-      options: nestedOptions,
+      options: sortOptions(nestedOptions),
     };
 
     return {
       castedOption,
       isSelected,
-      optionSlug,
+      optionSlug: castedSlug,
     };
   }
 
@@ -311,12 +352,12 @@ export async function getCatalogueAttributes({
     const selectedOptions: OptionInterface[] = [];
 
     for await (const option of options || []) {
-      const { castedOption, optionSlug, isSelected } = await castOption({ option, attribute });
-
+      const { castedOption, optionSlug, isSelected } = castOption({ option, attribute });
+      const finalOption = getOptionNextSlug(castedOption);
       // Push to the selected options list for catalogue title config and selected attributes view
       if (isSelected) {
         selectedOptions.push(option);
-        selectedFilterOptions.push(castedOption);
+        selectedFilterOptions.push(finalOption);
       }
 
       // If price attribute
@@ -336,10 +377,10 @@ export async function getCatalogueAttributes({
         });
 
         if (optionProduct) {
-          castedOptions.push(castedOption);
+          castedOptions.push(finalOption);
         }
       } else {
-        castedOptions.push(castedOption);
+        castedOptions.push(finalOption);
       }
     }
 
@@ -350,7 +391,9 @@ export async function getCatalogueAttributes({
     // attribute
     const otherSelectedValues = realFilter.filter((param) => {
       const castedParam = castCatalogueParamToObject(param);
-      return castedParam.slug !== attribute.slug;
+      return (
+        castedParam.slug !== attribute.slug && castedParam.slug !== FILTER_BRAND_COLLECTION_KEY
+      );
     });
     const clearSlug = `${basePath}/${otherSelectedValues.join('/')}`;
 
@@ -361,7 +404,7 @@ export async function getCatalogueAttributes({
       clearSlug,
       slug: attribute.slug,
       name: getFieldStringLocale(attribute.nameI18n, locale),
-      options: castedOptions,
+      options: sortOptions(castedOptions),
       isSelected,
       childrenCount: noNaN(attribute.childrenCount),
       metric: attribute.metric ? getFieldStringLocale(attribute.metric.nameI18n, locale) : null,

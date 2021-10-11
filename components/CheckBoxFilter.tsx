@@ -1,7 +1,12 @@
 import Icon from 'components/Icon';
 import Link from 'components/Link/Link';
 import { CatalogueAdditionalOptionsModalInterface } from 'components/Modal/CatalogueAdditionalOptionsModal';
-import { CATALOGUE_FILTER_VISIBLE_OPTIONS, FILTER_PRICE_KEY } from 'config/common';
+import {
+  CATALOGUE_FILTER_VISIBLE_OPTIONS,
+  FILTER_BRAND_COLLECTION_KEY,
+  FILTER_BRAND_KEY,
+  FILTER_PRICE_KEY,
+} from 'config/common';
 import { CATALOGUE_ADDITIONAL_OPTIONS_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
@@ -30,6 +35,7 @@ const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
   const maxVisibleOptions =
     configs.catalogueFilterVisibleOptionsCount || CATALOGUE_FILTER_VISIBLE_OPTIONS;
   const isPrice = attribute.slug === FILTER_PRICE_KEY;
+  const isBrand = attribute.slug === FILTER_BRAND_KEY;
 
   if (!attribute.options || attribute.options.length < 1) {
     return null;
@@ -104,9 +110,9 @@ const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
                   showModal<CatalogueAdditionalOptionsModalInterface>({
                     variant: CATALOGUE_ADDITIONAL_OPTIONS_MODAL,
                     props: {
-                      attributeSlug: attribute.slug,
+                      attributeSlug: isBrand ? FILTER_BRAND_COLLECTION_KEY : attribute.slug,
                       notShowAsAlphabet: attribute.notShowAsAlphabet,
-                      title: attribute.name,
+                      title: isBrand ? 'Линейка бренда' : attribute.name,
                       basePath,
                       options: hiddenOptions,
                     },

@@ -310,7 +310,7 @@ export const getServerSideProps = async (
     };
   }
   const locale = initialProps.props.sessionLocale;
-
+  const currency = initialProps.props.initialData.currency;
   const basePath = `${ROUTE_CMS}/rubrics/${rubricId}/products/${rubricId}/${DEFAULT_PAGE_FILTER}`;
   const itemPath = `${ROUTE_CMS}/rubrics/${rubricId}/products/product`;
 
@@ -318,6 +318,7 @@ export const getServerSideProps = async (
     query: context.query,
     locale,
     basePath,
+    currency,
   });
 
   const castedPayload = castDbData(payload);

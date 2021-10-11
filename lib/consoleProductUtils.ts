@@ -63,6 +63,7 @@ import { ParsedUrlQuery } from 'querystring';
 export interface GetConsoleRubricProductsInputInterface {
   locale: string;
   basePath: string;
+  currency: string;
   query: ParsedUrlQuery;
   page?: number;
   excludedProductsIds?: ObjectIdModel[] | null;
@@ -73,6 +74,7 @@ export const getConsoleRubricProducts = async ({
   basePath,
   page,
   query,
+  currency,
   excludedProductsIds,
 }: GetConsoleRubricProductsInputInterface): Promise<ConsoleRubricProductsInterface> => {
   let fallbackPayload: ConsoleRubricProductsInterface = {
@@ -498,7 +500,7 @@ export const getConsoleRubricProducts = async ({
 
     // get filter attributes
     // price attribute
-    const priceAttribute = getPriceAttribute();
+    const priceAttribute = getPriceAttribute(currency);
 
     // category attribute
     let categoryAttribute: AttributeInterface[] = [];
@@ -619,6 +621,7 @@ export const getConsoleRubricProducts = async ({
 export interface GetConsoleShopProductsInputInterface {
   locale: string;
   basePath: string;
+  currency: string;
   query: ParsedUrlQuery;
   page?: number;
   excludedProductsIds?: ObjectIdModel[] | null;
@@ -629,6 +632,7 @@ export const getConsoleShopProducts = async ({
   basePath,
   page,
   query,
+  currency,
   excludedProductsIds,
 }: GetConsoleShopProductsInputInterface): Promise<CompanyShopProductsPageInterface | null> => {
   try {
@@ -1048,7 +1052,7 @@ export const getConsoleShopProducts = async ({
 
     // get filter attributes
     // price attribute
-    const priceAttribute = getPriceAttribute();
+    const priceAttribute = getPriceAttribute(currency);
 
     // category attribute
     let categoryAttribute: AttributeInterface[] = [];
@@ -1219,15 +1223,13 @@ export const getConsoleShopProducts = async ({
   }
 };
 
-interface GetAddShopProductSsrDataInterface extends GetConsoleRubricProductsInputInterface {
-  locale: string;
-  basePath: string;
-}
+interface GetAddShopProductSsrDataInterface extends GetConsoleRubricProductsInputInterface {}
 
 export async function getAddShopProductSsrData({
   locale,
   basePath,
   query,
+  currency,
 }: GetAddShopProductSsrDataInterface): Promise<ShopAddProductsListRouteReduced | null> {
   const { db } = await getDatabase();
   const shopsCollection = db.collection<ShopInterface>(COL_SHOPS);
@@ -1295,6 +1297,7 @@ export async function getAddShopProductSsrData({
       query,
       locale,
       basePath,
+      currency,
     });
 
   if (!rubric) {

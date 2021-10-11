@@ -186,11 +186,16 @@ const CheckBoxFilter: React.FC<CheckBoxFilterInterface> = ({
   filterListClassName,
   onClick,
   basePath,
+  clearSlug,
 }) => {
   return (
     <div>
       {/*selected attributes*/}
-      <FilterSelectedAttributes selectedAttributes={selectedAttributes} />
+      <FilterSelectedAttributes
+        onClick={onClick}
+        clearSlug={clearSlug}
+        selectedAttributes={selectedAttributes}
+      />
 
       {/*filter*/}
       <div className={filterListClassName}>

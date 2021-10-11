@@ -282,6 +282,7 @@ export async function getCatalogueAttributes({
 
   function castOption({ option, attribute }: CastOptionInterface): CastOptionPayloadInterface {
     // check if selected
+    const metricName = getFieldStringLocale(attribute.metric?.nameI18n, locale);
     const castedSlug = `${attribute.slug}${FILTER_SEPARATOR}${option.slug}`;
     const isSelected = realFilter.includes(castedSlug);
     let optionName = getFieldStringLocale(option.nameI18n, locale);
@@ -330,7 +331,7 @@ export async function getCatalogueAttributes({
 
     const castedOption: CatalogueFilterAttributeOptionInterface = {
       _id: option._id,
-      name: optionName,
+      name: `${optionName}${metricName ? ` ${metricName}` : ''}`,
       slug: option.slug,
       castedSlug,
       nextSlug: `${basePath}/${optionNextSlug}`,
@@ -354,6 +355,7 @@ export async function getCatalogueAttributes({
     for await (const option of options || []) {
       const { castedOption, optionSlug, isSelected } = castOption({ option, attribute });
       const finalOption = getOptionNextSlug(castedOption);
+
       // Push to the selected options list for catalogue title config and selected attributes view
       if (isSelected) {
         selectedOptions.push(option);
@@ -416,14 +418,7 @@ export async function getCatalogueAttributes({
     if (isSelected) {
       selectedAttributes.push({
         ...castedAttribute,
-        options: attribute.showNameInSelectedAttributes
-          ? selectedFilterOptions.map((option) => {
-              return {
-                ...option,
-                name: `${getFieldStringLocale(attribute.nameI18n, locale)} - ${option.name}`,
-              };
-            })
-          : selectedFilterOptions,
+        options: selectedFilterOptions,
       });
 
       // Add selected items to the catalogue title config
@@ -1267,7 +1262,7 @@ export const getCatalogueData = async ({
 
     // get filter attributes
     // price attribute
-    const priceAttribute = getPriceAttribute();
+    const priceAttribute = getPriceAttribute(currency);
 
     // category attribute
     let categoryAttribute: AttributeInterface[] = [];
@@ -1623,6 +1618,24 @@ export const getCatalogueData = async ({
       ? CATALOGUE_GRID_DEFAULT_COLUMNS_COUNT
       : rubric.variant?.gridCatalogueColumns || CATALOGUE_GRID_DEFAULT_COLUMNS_COUNT;
 
+    const finalSelectedAttributes = selectedAttributes.reduce(
+      (acc: CatalogueFilterAttributeInterface[], attribute) => {
+        const { slug, options } = attribute;
+        if (!showCategoriesInFilter && slug !== FILTER_CATEGORY_KEY) {
+          return acc;
+        }
+
+        return [
+          ...acc,
+          {
+            ...attribute,
+            options,
+          },
+        ];
+      },
+      [],
+    );
+
     // console.log(`Catalogue data >>>>>>>>>>>>>>>> `, new Date().getTime() - timeStart);
     return {
       _id: rubric._id,
@@ -1644,11 +1657,7 @@ export const getCatalogueData = async ({
       gridCatalogueColumns,
       totalProducts: noNaN(totalProducts),
       attributes: castedAttributes,
-      selectedAttributes: showCategoriesInFilter
-        ? selectedAttributes
-        : selectedAttributes.filter(({ slug }) => {
-            return slug !== FILTER_CATEGORY_KEY;
-          }),
+      selectedAttributes: finalSelectedAttributes,
       page,
       breadcrumbs,
       basePath,

@@ -77,11 +77,13 @@ export const getServerSideProps = async (
 
   const basePath = `${ROUTE_CMS}/companies/${query.companyId}/shops/shop/${shopId}/products/${rubricId}/${QUERY_FILTER_PAGE}${FILTER_SEPARATOR}1`;
   const locale = initialProps.props.sessionLocale;
+  const currency = initialProps.props.initialData.currency;
 
   const payload = await getConsoleShopProducts({
     basePath,
     locale,
     query,
+    currency,
   });
   if (!payload) {
     return {

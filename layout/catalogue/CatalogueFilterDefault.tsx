@@ -1,7 +1,7 @@
+import FilterSelectedAttributes from 'components/FilterSelectedAttributes';
 import { CatalogueAdditionalOptionsModalInterface } from 'components/Modal/CatalogueAdditionalOptionsModal';
 import { CATALOGUE_FILTER_VISIBLE_OPTIONS, FILTER_PRICE_KEY } from 'config/common';
 import { CATALOGUE_ADDITIONAL_OPTIONS_MODAL } from 'config/modalVariants';
-import { useLocaleContext } from 'context/localeContext';
 import {
   CatalogueFilterAttributePropsInterface,
   CatalogueFilterInterface,
@@ -12,26 +12,24 @@ import Link from 'components/Link/Link';
 import { useConfigContext } from 'context/configContext';
 import Icon from 'components/Icon';
 import { useAppContext } from 'context/appContext';
-import 'rc-slider/assets/index.css';
 
 const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface> = ({
   attribute,
-  companyId,
-  rubricSlug,
   onClick,
-  isSearchResult,
   attributeIndex,
   basePath,
 }) => {
   const { showModal } = useAppContext();
-  const { currency } = useLocaleContext();
   const { configs } = useConfigContext();
   const maxVisibleOptions =
     configs.catalogueFilterVisibleOptionsCount || CATALOGUE_FILTER_VISIBLE_OPTIONS;
 
-  const { name, clearSlug, options, isSelected, metric, slug, childrenCount } = attribute;
+  const { name, clearSlug, options, isSelected, slug } = attribute;
   const isPrice = slug === FILTER_PRICE_KEY;
-  const postfix = isPrice ? ` ${currency}` : metric ? ` ${metric}` : null;
+
+  const visibleOptions = isPrice ? options : options.slice(0, maxVisibleOptions);
+  const hiddenOptions = isPrice ? [] : options.slice(maxVisibleOptions);
+  const hasMoreOptions = hiddenOptions.length > 0;
 
   return (
     <div className='mb-12'>
@@ -45,34 +43,24 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
       </div>
 
       <div className='flex flex-wrap gap-2'>
-        {options.map((option, optionIndex) => {
+        {visibleOptions.map((option, optionIndex) => {
           const testId = `catalogue-option-${attributeIndex}-${optionIndex}`;
-          return (
-            <FilterLink
-              onClick={onClick}
-              option={option}
-              key={option.slug}
-              testId={testId}
-              postfix={postfix}
-            />
-          );
+          return <FilterLink onClick={onClick} option={option} key={option.slug} testId={testId} />;
         })}
       </div>
 
-      {childrenCount > maxVisibleOptions && !isPrice ? (
+      {hasMoreOptions ? (
         <div
           className='uppercase cursor-pointer hover:text-theme mt-6'
           onClick={() => {
             showModal<CatalogueAdditionalOptionsModalInterface>({
               variant: CATALOGUE_ADDITIONAL_OPTIONS_MODAL,
               props: {
-                rubricSlug,
                 attributeSlug: attribute.slug,
                 notShowAsAlphabet: attribute.notShowAsAlphabet,
                 title: attribute.name,
-                companyId,
-                isSearchResult,
                 basePath,
+                options: hiddenOptions,
               },
             });
           }}
@@ -95,11 +83,7 @@ const CatalogueFilterDefault: React.FC<CatalogueFilterInterface> = ({
   isSearchResult,
   clearSlug,
   basePath,
-  brandSlugs,
-  categorySlugs,
 }) => {
-  const { currency } = useLocaleContext();
-
   return (
     <div
       className={`catalogue__filter lg:col-span-2 lg:flex lg:items-end inset-0 fixed z-[140] lg:z-10 bg-primary lg:relative overflow-auto h-[var(--fullHeight,100vh)] lg:h-auto ${
@@ -124,37 +108,11 @@ const CatalogueFilterDefault: React.FC<CatalogueFilterInterface> = ({
           </div>
         </div>
 
-        {selectedAttributes.length > 0 ? (
-          <div className='mb-12'>
-            <div className='flex items-baseline justify-between mb-4'>
-              <span className='text-lg font-bold'>Выбранные</span>
-              <Link href={clearSlug} className='font-medium text-theme' onClick={hideFilterHandler}>
-                Сбросить фильтр
-              </Link>
-            </div>
-
-            <div className='flex flex-wrap gap-2'>
-              {selectedAttributes.map((attribute) => {
-                const { metric, slug } = attribute;
-                const isPrice = slug === FILTER_PRICE_KEY;
-                const postfix = isPrice ? ` ${currency}` : metric ? ` ${metric}` : null;
-                return attribute.options.map((option) => {
-                  const key = `${option.slug}`;
-                  return (
-                    <FilterLink
-                      withCross
-                      onClick={hideFilterHandler}
-                      option={option}
-                      key={key}
-                      testId={key}
-                      postfix={postfix}
-                    />
-                  );
-                });
-              })}
-            </div>
-          </div>
-        ) : null}
+        <FilterSelectedAttributes
+          clearSlug={clearSlug}
+          selectedAttributes={selectedAttributes}
+          onClick={hideFilterHandler}
+        />
 
         {attributes.map((attribute, attributeIndex) => {
           return (
@@ -167,8 +125,6 @@ const CatalogueFilterDefault: React.FC<CatalogueFilterInterface> = ({
               isSearchResult={isSearchResult}
               attributeIndex={attributeIndex}
               basePath={basePath}
-              brandSlugs={brandSlugs}
-              categorySlugs={categorySlugs}
             />
           );
         })}

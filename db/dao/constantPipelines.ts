@@ -25,14 +25,13 @@ interface GetCatalogueRubricPipelineInterface {
   companySlug?: string;
   city?: string;
   visibleAttributesCount?: number | null;
-  visibleOptionsCount?: number | null;
   viewVariant?: 'filter' | 'nav';
 }
 
 export function getCatalogueRubricPipeline(
   props?: GetCatalogueRubricPipelineInterface,
 ): Record<string, any>[] {
-  const { companySlug, city, visibleAttributesCount, visibleOptionsCount, viewVariant } = props || {
+  const { companySlug, city, viewVariant } = props || {
     companySlug: DEFAULT_COMPANY_SLUG,
     city: DEFAULT_CITY,
     viewVariant: 'filter',
@@ -43,22 +42,6 @@ export function getCatalogueRubricPipeline(
     [`views.${companySlug}.${city}`]: SORT_DESC,
     _id: SORT_DESC,
   };
-
-  const attributesLimit = visibleAttributesCount
-    ? [
-        {
-          $limit: visibleAttributesCount,
-        },
-      ]
-    : [];
-
-  const optionsLimit = visibleOptionsCount
-    ? {
-        options: {
-          $slice: ['$options', visibleOptionsCount],
-        },
-      }
-    : {};
 
   const rubricAttributesViewVariant =
     viewVariant === 'filter'
@@ -205,7 +188,6 @@ export function getCatalogueRubricPipeline(
                 {
                   $sort: sortStage,
                 },
-                ...attributesLimit,
                 {
                   $addFields: {
                     config: {
@@ -282,7 +264,6 @@ export function getCatalogueRubricPipeline(
                     childrenCount: {
                       $size: '$options',
                     },
-                    ...optionsLimit,
                   },
                 },
               ],
@@ -694,13 +675,6 @@ export const filterAttributesPipeline = (sortStage: Record<any, any>) => {
                   $sort: sortStage,
                 },
               ],
-            },
-          },
-          {
-            $addFields: {
-              childrenCount: {
-                $size: '$options',
-              },
             },
           },
         ],

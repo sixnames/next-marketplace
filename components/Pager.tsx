@@ -1,4 +1,4 @@
-import { FILTER_SEPARATOR, QUERY_FILTER_PAGE } from 'config/common';
+import { FILTER_SEPARATOR, FILTER_PAGE_KEY } from 'config/common';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import ReactPaginate from 'react-paginate';
@@ -19,13 +19,13 @@ export const useNavigateToPageHandler = () => {
   return React.useCallback(
     (newPage: number) => {
       const { asPath, query } = router;
-      const pageParam = `${QUERY_FILTER_PAGE}${FILTER_SEPARATOR}${newPage}`;
+      const pageParam = `${FILTER_PAGE_KEY}${FILTER_SEPARATOR}${newPage}`;
       const prevUrlArray = asPath.split('/').filter((param) => {
         if (!param) {
           return false;
         }
         const paramParts = param.split(FILTER_SEPARATOR);
-        return paramParts[0] !== QUERY_FILTER_PAGE;
+        return paramParts[0] !== FILTER_PAGE_KEY;
       });
       const nextUrl = [...prevUrlArray, pageParam].join('/');
       router

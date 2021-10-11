@@ -743,6 +743,7 @@ export const getServerSideProps = async (
           isSelected,
           name: optionName,
           nextSlug: `${basePath}/${optionNextSlug}`,
+          castedSlug: optionNextSlug,
         };
         return castedOption;
       },

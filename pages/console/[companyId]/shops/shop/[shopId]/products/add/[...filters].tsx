@@ -130,13 +130,14 @@ export const getServerSideProps = async (
     };
   }
   const locale = initialProps.props.sessionLocale;
+  const currency = initialProps.props.initialData.currency;
   const basePath = `${ROUTE_CONSOLE}/${companyId}/shops/shop/${shopId}/products/add/${rubricId}`;
 
   const payload = await getAddShopProductSsrData({
     locale,
     basePath,
     query,
-    visibleOptionsCount: initialProps.props.initialData.configs.catalogueFilterVisibleOptionsCount,
+    currency,
   });
 
   if (!payload) {

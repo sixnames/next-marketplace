@@ -2012,7 +2012,6 @@ export interface NexusGenFieldTypes {
     getBrandAlphabetLists: NexusGenRootTypes['BrandsAlphabetList'][]; // [BrandsAlphabetList!]!
     getBrandBySlug: NexusGenRootTypes['Brand'] | null; // Brand
     getBrandCollectionAlphabetLists: NexusGenRootTypes['BrandCollectionsAlphabetList'][]; // [BrandCollectionsAlphabetList!]!
-    getCatalogueAdditionalOptions: NexusGenRootTypes['OptionsAlphabetList'][] | null; // [OptionsAlphabetList!]
     getCategoriesAlphabetLists: NexusGenRootTypes['CategoriesAlphabetList'][]; // [CategoriesAlphabetList!]!
     getCity: NexusGenRootTypes['City']; // City!
     getCityBySlug: NexusGenRootTypes['City']; // City!
@@ -3157,7 +3156,6 @@ export interface NexusGenFieldTypeNames {
     getBrandAlphabetLists: 'BrandsAlphabetList';
     getBrandBySlug: 'Brand';
     getBrandCollectionAlphabetLists: 'BrandCollectionsAlphabetList';
-    getCatalogueAdditionalOptions: 'OptionsAlphabetList';
     getCategoriesAlphabetLists: 'CategoriesAlphabetList';
     getCity: 'City';
     getCityBySlug: 'City';
@@ -4088,10 +4086,6 @@ export interface NexusGenArgTypes {
     getBrandCollectionAlphabetLists: {
       // args
       input?: NexusGenInputs['BrandCollectionAlphabetInput'] | null; // BrandCollectionAlphabetInput
-    };
-    getCatalogueAdditionalOptions: {
-      // args
-      input: NexusGenInputs['CatalogueAdditionalOptionsInput']; // CatalogueAdditionalOptionsInput!
     };
     getCategoriesAlphabetLists: {
       // args

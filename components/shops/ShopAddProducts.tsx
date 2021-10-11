@@ -75,8 +75,6 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
   basePath,
   rubricSlug,
   rubricId,
-  brandSlugs,
-  categorySlugs,
 }) => {
   useReloadListener();
   const { me } = useUserContext();
@@ -201,15 +199,12 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
         <div className={`max-w-full`}>
           <div className={'mb-8'}>
             <AppContentFilter
-              brandSlugs={brandSlugs}
-              categorySlugs={categorySlugs}
               basePath={basePath}
               rubricSlug={rubricSlug}
               attributes={attributes}
               excludedParams={[rubricId]}
               selectedAttributes={selectedAttributes}
               clearSlug={clearSlug}
-              className={`grid gap-x-8 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4`}
             />
           </div>
 

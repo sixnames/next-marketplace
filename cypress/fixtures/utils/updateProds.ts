@@ -34,8 +34,10 @@ async function updateProds() {
         const createdMessagesGroupResult = await messagesGroupsCollection.insertOne(
           messagesGroupTemplate,
         );
-        const createdMessagesGroup = createdMessagesGroupResult.ops[0];
-        if (createdMessagesGroupResult.result && createdMessagesGroup) {
+        const createdMessagesGroup = await messagesGroupsCollection.findOne({
+          _id: createdMessagesGroupResult.insertedId,
+        });
+        if (createdMessagesGroupResult.acknowledged && createdMessagesGroup) {
           messagesGroup = createdMessagesGroup;
         }
       }

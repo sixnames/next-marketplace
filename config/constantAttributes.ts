@@ -309,7 +309,7 @@ export function getCommonFilterAttribute(): AttributeInterface {
   return attribute;
 }
 
-export function getPriceAttribute(): AttributeInterface {
+export function getPriceAttribute(currency: string): AttributeInterface {
   const optionsGroupId = new ObjectId();
   const commonOptionFields = getCommonOptionFields(optionsGroupId);
 
@@ -318,12 +318,18 @@ export function getPriceAttribute(): AttributeInterface {
     attributesGroupId: new ObjectId(),
     optionsGroupId,
     nameI18n: {
-      ru: 'Цена',
-      en: 'Price',
+      [DEFAULT_LOCALE]: 'Цена',
+      [SECONDARY_LOCALE]: 'Price',
     },
     slug: FILTER_PRICE_KEY,
     priorities: {},
     views: {},
+    metric: {
+      _id: new ObjectId(),
+      nameI18n: {
+        [DEFAULT_LOCALE]: currency,
+      },
+    },
     viewVariant: ATTRIBUTE_VIEW_VARIANT_TAG,
     variant: ATTRIBUTE_VARIANT_SELECT,
     showInCatalogueNav: false,

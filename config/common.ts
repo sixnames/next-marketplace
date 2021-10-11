@@ -250,13 +250,13 @@ export const NEGATIVE_INDEX = -1;
 export const TABLE_IMAGE_WIDTH = 40;
 
 // PAGINATION
-export const QUERY_FILTER_PAGE = 'page';
+export const FILTER_PAGE_KEY = 'page';
 export const PAGINATION_DEFAULT_LIMIT = 50;
 export const SORT_BY_ID_DIRECTION = SORT_DESC;
 export const SORT_BY_CREATED_AT = 'createdAt';
 export const SORT_BY_ID = '_id';
 export const DEFAULT_PAGE = 1;
-export const DEFAULT_PAGE_FILTER = `${QUERY_FILTER_PAGE}${FILTER_SEPARATOR}${DEFAULT_PAGE}`;
+export const DEFAULT_PAGE_FILTER = `${FILTER_PAGE_KEY}${FILTER_SEPARATOR}${DEFAULT_PAGE}`;
 
 // ORDER LOG VARIANTS
 export const ORDER_LOG_VARIANT_STATUS = 'status' as OrderLogVariantModel;
@@ -389,7 +389,7 @@ export const ROUTE_SIGN_IN = '/sign-in';
 export const ROUTE_CONTACTS = `/contacts`;
 export const ROUTE_BLOG = `/blog`;
 export const ROUTE_BLOG_POST = `${ROUTE_BLOG}/post`;
-export const ROUTE_BLOG_WITH_PAGE = `${ROUTE_BLOG}/${QUERY_FILTER_PAGE}${FILTER_SEPARATOR}${DEFAULT_PAGE}`;
+export const ROUTE_BLOG_WITH_PAGE = `${ROUTE_BLOG}/${FILTER_PAGE_KEY}${FILTER_SEPARATOR}${DEFAULT_PAGE}`;
 export const CATALOGUE_DEFAULT_RUBRIC_SLUG = 'vino';
 export const ROUTE_CATALOGUE = `/catalogue`;
 export const ROUTE_THANK_YOU = `/thank-you`;

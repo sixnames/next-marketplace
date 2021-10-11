@@ -1,7 +1,4 @@
-import { OptionInterface } from 'db/uiInterfaces';
-import { getAlgoliaProductsSearch } from 'lib/algoliaUtils';
-import { castCatalogueFilters, castCatalogueParamToObject } from 'lib/catalogueUtils';
-import { getAlphabetList } from 'lib/optionsUtils';
+import { castCatalogueParamToObject } from 'lib/catalogueUtils';
 import { arg, extendType, inputObjectType, nonNull } from 'nexus';
 import {
   AttributeModel,
@@ -9,11 +6,9 @@ import {
   BrandModel,
   CategoryModel,
   ManufacturerModel,
-  OptionAlphabetListModel,
   OptionModel,
   ProductAttributeModel,
   RubricModel,
-  ShopProductModel,
 } from 'db/dbModels';
 import { getRequestParams, getSessionRole } from 'lib/sessionHelpers';
 import { getDatabase } from 'db/mongodb';
@@ -26,14 +21,12 @@ import {
   COL_OPTIONS,
   COL_PRODUCT_ATTRIBUTES,
   COL_RUBRICS,
-  COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
 import {
   FILTER_BRAND_COLLECTION_KEY,
   FILTER_BRAND_KEY,
   FILTER_CATEGORY_KEY,
   FILTER_MANUFACTURER_KEY,
-  FILTER_SEPARATOR,
   DEFAULT_COMPANY_SLUG,
   VIEWS_COUNTER_STEP,
 } from 'config/common';
@@ -46,162 +39,6 @@ export const CatalogueAdditionalOptionsInput = inputObjectType({
     t.nonNull.string('attributeSlug');
     t.nonNull.list.nonNull.string('filter');
     t.nonNull.string('rubricSlug');
-  },
-});
-
-export const CatalogueQueries = extendType({
-  type: 'Query',
-  definition(t) {
-    // Should return all options of current attribute for current catalogue rubric
-    t.list.nonNull.field('getCatalogueAdditionalOptions', {
-      type: 'OptionsAlphabetList',
-      args: {
-        input: nonNull(
-          arg({
-            type: 'CatalogueAdditionalOptionsInput',
-          }),
-        ),
-      },
-      resolve: async (_root, args, context): Promise<OptionAlphabetListModel[] | null> => {
-        const { db } = await getDatabase();
-        const { city, locale } = await getRequestParams(context);
-        const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-        const { companyId, filter, attributeSlug, rubricSlug, isSearchResult } = args.input;
-
-        const {
-          minPrice,
-          maxPrice,
-          realFilterOptions,
-          noFiltersSelected,
-          rubricFilters: filterRubrics,
-        } = castCatalogueFilters({
-          filters: filter,
-        });
-
-        const searchRubricsStage = filterRubrics
-          ? {
-              rubricSlug: {
-                $in: filterRubrics,
-              },
-            }
-          : {};
-
-        const rubricStage = isSearchResult ? searchRubricsStage : { rubricSlug };
-
-        let searchStage = {};
-        if (isSearchResult) {
-          // Get algolia search result
-          const searchIds = await getAlgoliaProductsSearch({
-            indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
-            search: rubricSlug,
-          });
-          searchStage = {
-            _id: {
-              $in: searchIds,
-            },
-          };
-        }
-
-        const pricesStage =
-          minPrice && maxPrice
-            ? {
-                price: {
-                  $gte: minPrice,
-                  $lte: maxPrice,
-                },
-              }
-            : {};
-
-        const optionsStage = noFiltersSelected
-          ? {}
-          : {
-              selectedOptionsSlugs: {
-                $in: realFilterOptions,
-              },
-            };
-
-        const companyRubricsMatch = companyId ? { companyId } : {};
-
-        const productsInitialMatch = {
-          ...searchStage,
-          ...rubricStage,
-          ...companyRubricsMatch,
-          citySlug: city,
-          ...optionsStage,
-          ...pricesStage,
-        };
-
-        const shopProductsAggregation = await shopProductsCollection
-          .aggregate<OptionInterface>([
-            {
-              $match: { ...productsInitialMatch },
-            },
-            {
-              $unwind: '$selectedOptionsSlugs',
-            },
-            {
-              $addFields: {
-                slugArray: {
-                  $split: ['$selectedOptionsSlugs', FILTER_SEPARATOR],
-                },
-              },
-            },
-            {
-              $addFields: {
-                attributeSlug: {
-                  $arrayElemAt: ['$slugArray', 0],
-                },
-                optionSlug: {
-                  $arrayElemAt: ['$slugArray', 1],
-                },
-              },
-            },
-            {
-              $match: {
-                attributeSlug,
-              },
-            },
-            {
-              $group: {
-                _id: '$attributeSlug',
-                optionsSlugs: {
-                  $addToSet: '$optionSlug',
-                },
-              },
-            },
-            {
-              $lookup: {
-                from: COL_OPTIONS,
-                as: 'options',
-                let: { optionsSlugs: '$optionsSlugs' },
-                pipeline: [
-                  {
-                    $match: {
-                      $expr: {
-                        $in: ['$slug', '$$optionsSlugs'],
-                      },
-                    },
-                  },
-                ],
-              },
-            },
-            {
-              $unwind: '$options',
-            },
-            {
-              $replaceRoot: {
-                newRoot: '$options',
-              },
-            },
-          ])
-          .toArray();
-
-        return getAlphabetList<OptionModel>({
-          entityList: shopProductsAggregation,
-          locale,
-        });
-      },
-    });
   },
 });
 

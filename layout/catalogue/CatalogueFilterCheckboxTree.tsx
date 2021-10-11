@@ -30,7 +30,7 @@ const CatalogueFilterCheckboxTree: React.FC<CatalogueFilterInterface> = (props) 
           </div>
         </div>
 
-        <CheckBoxFilter {...props} />
+        <CheckBoxFilter {...props} onClick={hideFilterHandler} />
       </div>
     </div>
   );

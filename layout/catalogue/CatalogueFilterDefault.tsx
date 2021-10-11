@@ -1,3 +1,4 @@
+import FilterSelectedAttributes from 'components/FilterSelectedAttributes';
 import { CatalogueAdditionalOptionsModalInterface } from 'components/Modal/CatalogueAdditionalOptionsModal';
 import { CATALOGUE_FILTER_VISIBLE_OPTIONS, FILTER_PRICE_KEY } from 'config/common';
 import { CATALOGUE_ADDITIONAL_OPTIONS_MODAL } from 'config/modalVariants';
@@ -90,8 +91,6 @@ const CatalogueFilterDefault: React.FC<CatalogueFilterInterface> = ({
   clearSlug,
   basePath,
 }) => {
-  const { currency } = useLocaleContext();
-
   return (
     <div
       className={`catalogue__filter lg:col-span-2 lg:flex lg:items-end inset-0 fixed z-[140] lg:z-10 bg-primary lg:relative overflow-auto h-[var(--fullHeight,100vh)] lg:h-auto ${
@@ -116,37 +115,11 @@ const CatalogueFilterDefault: React.FC<CatalogueFilterInterface> = ({
           </div>
         </div>
 
-        {selectedAttributes.length > 0 ? (
-          <div className='mb-12'>
-            <div className='flex items-baseline justify-between mb-4'>
-              <span className='text-lg font-bold'>Выбранные</span>
-              <Link href={clearSlug} className='font-medium text-theme' onClick={hideFilterHandler}>
-                Сбросить фильтр
-              </Link>
-            </div>
-
-            <div className='flex flex-wrap gap-2'>
-              {selectedAttributes.map((attribute) => {
-                const { metric, slug } = attribute;
-                const isPrice = slug === FILTER_PRICE_KEY;
-                const postfix = isPrice ? ` ${currency}` : metric ? ` ${metric}` : null;
-                return attribute.options.map((option) => {
-                  const key = `${option.slug}`;
-                  return (
-                    <FilterLink
-                      withCross
-                      onClick={hideFilterHandler}
-                      option={option}
-                      key={key}
-                      testId={key}
-                      postfix={postfix}
-                    />
-                  );
-                });
-              })}
-            </div>
-          </div>
-        ) : null}
+        <FilterSelectedAttributes
+          clearSlug={clearSlug}
+          selectedAttributes={selectedAttributes}
+          onClick={hideFilterHandler}
+        />
 
         {attributes.map((attribute, attributeIndex) => {
           return (

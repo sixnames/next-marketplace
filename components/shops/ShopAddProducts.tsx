@@ -205,7 +205,6 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
               excludedParams={[rubricId]}
               selectedAttributes={selectedAttributes}
               clearSlug={clearSlug}
-              filterListClassName={`grid gap-x-8 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4`}
             />
           </div>
 

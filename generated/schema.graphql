@@ -2025,7 +2025,6 @@ type Query {
   getBrandCollectionAlphabetLists(
     input: BrandCollectionAlphabetInput
   ): [BrandCollectionsAlphabetList!]!
-  getCatalogueAdditionalOptions(input: CatalogueAdditionalOptionsInput!): [OptionsAlphabetList!]
 
   """
   Should return categories grouped by alphabet

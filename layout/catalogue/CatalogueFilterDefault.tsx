@@ -12,14 +12,10 @@ import Link from 'components/Link/Link';
 import { useConfigContext } from 'context/configContext';
 import Icon from 'components/Icon';
 import { useAppContext } from 'context/appContext';
-import 'rc-slider/assets/index.css';
 
 const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface> = ({
   attribute,
-  companyId,
-  rubricSlug,
   onClick,
-  isSearchResult,
   attributeIndex,
   basePath,
 }) => {
@@ -66,13 +62,11 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
             showModal<CatalogueAdditionalOptionsModalInterface>({
               variant: CATALOGUE_ADDITIONAL_OPTIONS_MODAL,
               props: {
-                rubricSlug,
                 attributeSlug: attribute.slug,
                 notShowAsAlphabet: attribute.notShowAsAlphabet,
                 title: attribute.name,
-                companyId,
-                isSearchResult,
                 basePath,
+                options: [],
               },
             });
           }}
@@ -95,8 +89,6 @@ const CatalogueFilterDefault: React.FC<CatalogueFilterInterface> = ({
   isSearchResult,
   clearSlug,
   basePath,
-  brandSlugs,
-  categorySlugs,
 }) => {
   const { currency } = useLocaleContext();
 
@@ -167,8 +159,6 @@ const CatalogueFilterDefault: React.FC<CatalogueFilterInterface> = ({
               isSearchResult={isSearchResult}
               attributeIndex={attributeIndex}
               basePath={basePath}
-              brandSlugs={brandSlugs}
-              categorySlugs={categorySlugs}
             />
           );
         })}

@@ -783,9 +783,6 @@ export const getCatalogueData = async ({
       showSnippetArticle: false,
       showSnippetButtonsOnHover: false,
       gridCatalogueColumns: CATALOGUE_GRID_DEFAULT_COLUMNS_COUNT,
-      brandSlugs: [],
-      brandCollectionSlugs: [],
-      categorySlugs: [],
       basePath,
       page,
     };
@@ -1018,39 +1015,6 @@ export const getCatalogueData = async ({
               },
             ],
 
-            // category slugs facet
-            selectedOptionsSlugs: [
-              {
-                $unwind: {
-                  path: '$selectedOptionsSlugs',
-                  preserveNullAndEmptyArrays: true,
-                },
-              },
-              {
-                $group: {
-                  _id: '$selectedOptionsSlugs',
-                },
-              },
-            ],
-
-            // brand slugs facet
-            brandSlugs: [
-              {
-                $group: {
-                  _id: '$brandSlug',
-                },
-              },
-            ],
-
-            // brandCollection slugs facet
-            brandCollectionSlugs: [
-              {
-                $group: {
-                  _id: '$brandCollectionSlug',
-                },
-              },
-            ],
-
             // brands facet
             brands: [
               {
@@ -1246,17 +1210,8 @@ export const getCatalogueData = async ({
     }
     // console.log('aggregation ', new Date().getTime() - timeStart);
 
-    const {
-      docs,
-      totalProducts,
-      attributes,
-      rubrics,
-      brands,
-      categories,
-      prices,
-      brandSlugs,
-      brandCollectionSlugs,
-    } = productDataAggregation;
+    const { docs, totalProducts, attributes, rubrics, brands, categories, prices } =
+      productDataAggregation;
 
     if (rubrics.length < 1) {
       return fallbackPayload;
@@ -1625,20 +1580,10 @@ export const getCatalogueData = async ({
       ? CATALOGUE_GRID_DEFAULT_COLUMNS_COUNT
       : rubric.variant?.gridCatalogueColumns || CATALOGUE_GRID_DEFAULT_COLUMNS_COUNT;
 
-    const categorySlugs = getTreeFromList({
-      list: categories,
-      childrenFieldName: 'categories',
-    }).map(({ slug }) => slug);
-
     // console.log(`Catalogue data >>>>>>>>>>>>>>>> `, new Date().getTime() - timeStart);
     return {
       _id: rubric._id,
       clearSlug,
-      categorySlugs: categorySlugs,
-      brandSlugs: (brandSlugs || []).filter((slug) => slug._id).map((slug) => slug._id),
-      brandCollectionSlugs: (brandCollectionSlugs || [])
-        .filter((slug) => slug._id)
-        .map((slug) => slug._id),
       filters: input.filters,
       rubricName,
       rubricSlug: rubric.slug,

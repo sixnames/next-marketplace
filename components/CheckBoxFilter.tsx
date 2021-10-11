@@ -1,25 +1,31 @@
 import Icon from 'components/Icon';
 import Link from 'components/Link/Link';
+import { CatalogueAdditionalOptionsModalInterface } from 'components/Modal/CatalogueAdditionalOptionsModal';
 import { CATALOGUE_FILTER_VISIBLE_OPTIONS, FILTER_PRICE_KEY } from 'config/common';
+import { CATALOGUE_ADDITIONAL_OPTIONS_MODAL } from 'config/modalVariants';
+import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
 import {
   CatalogueFilterAttributeInterface,
   CatalogueFilterAttributeOptionInterface,
 } from 'db/uiInterfaces';
-import { CatalogueFilterInterface } from 'layout/catalogue/CatalogueFilter';
+import { FilterBaseInterface } from 'layout/catalogue/CatalogueFilter';
 import * as React from 'react';
 
 interface CheckBoxFilterAttributeInterface {
   attribute: CatalogueFilterAttributeInterface;
   onClick?: () => void | null;
   attributeIndex: number;
+  basePath: string;
 }
 
 const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
   attribute,
   onClick,
   attributeIndex,
+  basePath,
 }) => {
+  const { showModal } = useAppContext();
   const { configs } = useConfigContext();
   const maxVisibleOptions =
     configs.catalogueFilterVisibleOptionsCount || CATALOGUE_FILTER_VISIBLE_OPTIONS;
@@ -58,7 +64,7 @@ const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
   }
 
   function renderOption(option: CatalogueFilterAttributeOptionInterface, testId: string) {
-    const { visibleOptions } = getFilterOptions(option.options);
+    const { visibleOptions, hasMoreOptions, hiddenOptions } = getFilterOptions(option.options);
     const { nextSlug, isSelected, name } = option;
 
     return (
@@ -83,11 +89,33 @@ const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
           </span>
         </Link>
 
-        {visibleOptions.length > 0 ? (
+        {isSelected && visibleOptions.length > 0 ? (
           <div className='pl-5'>
-            {visibleOptions.map((option, optionIndex) => {
-              return renderOption(option, `${testId}-${optionIndex}`);
-            })}
+            <div>
+              {visibleOptions.map((option, optionIndex) => {
+                return renderOption(option, `${testId}-${optionIndex}`);
+              })}
+            </div>
+
+            {hasMoreOptions ? (
+              <div
+                className='uppercase cursor-pointer hover:text-theme mt-2 mb-4'
+                onClick={() => {
+                  showModal<CatalogueAdditionalOptionsModalInterface>({
+                    variant: CATALOGUE_ADDITIONAL_OPTIONS_MODAL,
+                    props: {
+                      attributeSlug: attribute.slug,
+                      notShowAsAlphabet: attribute.notShowAsAlphabet,
+                      title: attribute.name,
+                      basePath,
+                      options: hiddenOptions,
+                    },
+                  });
+                }}
+              >
+                Показать еще
+              </div>
+            ) : null}
           </div>
         ) : null}
       </div>
@@ -95,7 +123,7 @@ const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
   }
 
   // render attribute
-  const { visibleOptions } = getFilterOptions(attribute.options);
+  const { visibleOptions, hasMoreOptions, hiddenOptions } = getFilterOptions(attribute.options);
   return (
     <div className={`mb-8`}>
       {/*attribute name*/}
@@ -116,11 +144,31 @@ const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
           return renderOption(option, `${attributeIndex}-${optionIndex}`);
         })}
       </div>
+
+      {hasMoreOptions ? (
+        <div
+          className='uppercase cursor-pointer hover:text-theme mt-4'
+          onClick={() => {
+            showModal<CatalogueAdditionalOptionsModalInterface>({
+              variant: CATALOGUE_ADDITIONAL_OPTIONS_MODAL,
+              props: {
+                attributeSlug: attribute.slug,
+                notShowAsAlphabet: attribute.notShowAsAlphabet,
+                title: attribute.name,
+                basePath,
+                options: hiddenOptions,
+              },
+            });
+          }}
+        >
+          Показать еще
+        </div>
+      ) : null}
     </div>
   );
 };
 
-interface CheckBoxFilterInterface extends CatalogueFilterInterface {
+export interface CheckBoxFilterInterface extends FilterBaseInterface {
   filterListClassName?: string;
   onClick?: () => void | null;
 }
@@ -130,6 +178,7 @@ const CheckBoxFilter: React.FC<CheckBoxFilterInterface> = ({
   selectedAttributes,
   filterListClassName,
   onClick,
+  basePath,
 }) => {
   return (
     <div>
@@ -141,6 +190,7 @@ const CheckBoxFilter: React.FC<CheckBoxFilterInterface> = ({
         {attributes.map((attribute, attributeIndex) => {
           return (
             <CheckBoxFilterAttribute
+              basePath={basePath}
               attribute={attribute}
               onClick={onClick}
               attributeIndex={attributeIndex}

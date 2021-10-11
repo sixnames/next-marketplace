@@ -47,8 +47,6 @@ export interface ShopRubricProductsInterface
   rubricSlug: string;
   layoutBasePath: string;
   basePath: string;
-  brandSlugs: string[];
-  categorySlugs: string[];
 }
 
 const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
@@ -66,8 +64,6 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
   rubricSlug,
   breadcrumbs,
   basePath,
-  brandSlugs,
-  categorySlugs,
 }) => {
   const { me } = useUserContext();
   const router = useRouter();
@@ -247,15 +243,13 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
           {withProducts ? (
             <div className={'mb-8'}>
               <AppContentFilter
-                brandSlugs={brandSlugs}
-                categorySlugs={categorySlugs}
                 excludedParams={[rubricId]}
                 rubricSlug={rubricSlug}
                 basePath={basePath}
                 attributes={attributes}
                 selectedAttributes={selectedAttributes}
                 clearSlug={clearSlug}
-                className={`grid gap-x-8 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4`}
+                filterListClassName={`grid gap-x-8 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4`}
               />
             </div>
           ) : null}

@@ -416,9 +416,6 @@ export interface CatalogueDataInterface {
   breadcrumbs: CatalogueBreadcrumbModel[];
   attributes: CatalogueFilterAttributeInterface[];
   selectedAttributes: CatalogueFilterAttributeInterface[];
-  brandSlugs: string[];
-  categorySlugs: string[];
-  brandCollectionSlugs: string[];
   page: number;
   textTop?: string | null;
   textBottom?: string | null;
@@ -433,10 +430,6 @@ export interface CatalogueProductPricesInterface {
   _id: number;
 }
 
-export interface CatalogueSlugsGroupInterface {
-  _id: string;
-}
-
 export interface CatalogueProductsAggregationInterface {
   totalProducts: number;
   prices: CatalogueProductPricesInterface[];
@@ -445,9 +438,6 @@ export interface CatalogueProductsAggregationInterface {
   attributes?: AttributeInterface[] | null;
   categories?: CategoryInterface[];
   brands?: BrandInterface[];
-  brandSlugs?: CatalogueSlugsGroupInterface[];
-  brandCollectionSlugs?: CatalogueSlugsGroupInterface[];
-  selectedOptionsSlugs?: CatalogueSlugsGroupInterface[];
 }
 
 export interface ProductsPaginationAggregationInterface {
@@ -705,9 +695,8 @@ export interface ShopProductsAggregationInterface {
   hasPrevPage: boolean;
   hasNextPage: boolean;
   attributes?: AttributeInterface[] | null;
-  brandSlugs: CatalogueSlugsGroupInterface[];
-  brandCollectionSlugs: CatalogueSlugsGroupInterface[];
-  selectedOptionsSlugs: CatalogueSlugsGroupInterface[];
+  categories?: CategoryInterface[];
+  brands?: BrandInterface[];
 }
 
 export interface ProductsAggregationInterface {
@@ -718,9 +707,8 @@ export interface ProductsAggregationInterface {
   hasPrevPage: boolean;
   hasNextPage: boolean;
   attributes?: AttributeInterface[] | null;
-  brandSlugs: CatalogueSlugsGroupInterface[];
-  brandCollectionSlugs: CatalogueSlugsGroupInterface[];
-  selectedOptionsSlugs: CatalogueSlugsGroupInterface[];
+  categories?: CategoryInterface[];
+  brands?: BrandInterface[];
 }
 
 export interface AppPaginationAggregationInterface<Model> {
@@ -747,8 +735,6 @@ export interface AppPaginationWithFiltersInterface<Model> extends AppPaginationI
 export interface ConsoleRubricProductsInterface
   extends AppPaginationWithFiltersInterface<ProductInterface> {
   rubric?: RubricInterface | null;
-  brandSlugs: string[];
-  categorySlugs: string[];
 }
 
 export interface CompanyShopProductsPageInterface

@@ -2,7 +2,6 @@ import FilterSelectedAttributes from 'components/FilterSelectedAttributes';
 import { CatalogueAdditionalOptionsModalInterface } from 'components/Modal/CatalogueAdditionalOptionsModal';
 import { CATALOGUE_FILTER_VISIBLE_OPTIONS, FILTER_PRICE_KEY } from 'config/common';
 import { CATALOGUE_ADDITIONAL_OPTIONS_MODAL } from 'config/modalVariants';
-import { useLocaleContext } from 'context/localeContext';
 import {
   CatalogueFilterAttributePropsInterface,
   CatalogueFilterInterface,
@@ -21,17 +20,15 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
   basePath,
 }) => {
   const { showModal } = useAppContext();
-  const { currency } = useLocaleContext();
   const { configs } = useConfigContext();
   const maxVisibleOptions =
     configs.catalogueFilterVisibleOptionsCount || CATALOGUE_FILTER_VISIBLE_OPTIONS;
 
-  const { name, clearSlug, options, isSelected, metric, slug } = attribute;
+  const { name, clearSlug, options, isSelected, slug } = attribute;
   const isPrice = slug === FILTER_PRICE_KEY;
-  const postfix = isPrice ? ` ${currency}` : metric ? ` ${metric}` : null;
 
-  const visibleOptions = options.slice(0, maxVisibleOptions);
-  const hiddenOptions = options.slice(maxVisibleOptions);
+  const visibleOptions = isPrice ? options : options.slice(0, maxVisibleOptions);
+  const hiddenOptions = isPrice ? [] : options.slice(maxVisibleOptions);
   const hasMoreOptions = hiddenOptions.length > 0;
 
   return (
@@ -48,15 +45,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
       <div className='flex flex-wrap gap-2'>
         {visibleOptions.map((option, optionIndex) => {
           const testId = `catalogue-option-${attributeIndex}-${optionIndex}`;
-          return (
-            <FilterLink
-              onClick={onClick}
-              option={option}
-              key={option.slug}
-              testId={testId}
-              postfix={postfix}
-            />
-          );
+          return <FilterLink onClick={onClick} option={option} key={option.slug} testId={testId} />;
         })}
       </div>
 

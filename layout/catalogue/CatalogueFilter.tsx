@@ -2,7 +2,6 @@ import { CATALOGUE_FILTER_LAYOUT_CHECKBOX_TREE, DEFAULT_LAYOUT } from 'config/co
 import { CatalogueFilterAttributeInterface } from 'db/uiInterfaces';
 import dynamic from 'next/dynamic';
 import * as React from 'react';
-import 'rc-slider/assets/index.css';
 
 export interface CatalogueFilterAttributePropsInterface {
   attribute: CatalogueFilterAttributeInterface;
@@ -12,23 +11,23 @@ export interface CatalogueFilterAttributePropsInterface {
   isSearchResult?: boolean;
   attributeIndex: number;
   basePath: string;
-  brandSlugs: string[];
-  categorySlugs: string[];
 }
 
-export interface CatalogueFilterInterface {
+export interface FilterBaseInterface {
   attributes: CatalogueFilterAttributeInterface[];
   selectedAttributes: CatalogueFilterAttributeInterface[];
-  catalogueCounterString: string;
   rubricSlug: string;
   clearSlug: string;
-  isFilterVisible: boolean;
-  hideFilterHandler: () => void;
   companyId?: string;
   isSearchResult?: boolean;
   basePath: string;
-  brandSlugs: string[];
-  categorySlugs: string[];
+  excludedParams?: string[] | null;
+}
+
+export interface CatalogueFilterInterface extends FilterBaseInterface {
+  catalogueCounterString: string;
+  isFilterVisible: boolean;
+  hideFilterHandler: () => void;
 }
 
 interface CatalogueFilterProviderInterface extends CatalogueFilterInterface {

@@ -29,6 +29,7 @@ export interface OptionsModalCommonPropsInterface {
   initialEmptyListMessage?: string;
   testId?: string;
   notShowAsAlphabet?: boolean | null;
+  disableNestedOptions?: boolean;
   initiallySelectedOptions?: OptionsModalOptionInterface[];
 }
 
@@ -55,6 +56,7 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
   notShowAsAlphabet,
   testId,
   initiallySelectedOptions = [],
+  disableNestedOptions,
 }) => {
   const [emptyListMessage, setEmptyListMessage] = React.useState<string | null>(null);
   const [state, setState] = React.useState<OptionsModalLetterInterface[] | null>(null);
@@ -96,7 +98,7 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
       const { _id, name, options } = option;
       const isSelected = selectedOptions.some((option) => _id === option._id);
 
-      if (options && options.length > 0) {
+      if (options && options.length > 0 && !disableNestedOptions) {
         return (
           <div>
             <div
@@ -141,7 +143,7 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
         </div>
       );
     },
-    [inputIcon, isCheckbox, onOptionClickHandler, selectedOptions],
+    [disableNestedOptions, inputIcon, isCheckbox, onOptionClickHandler, selectedOptions],
   );
 
   React.useEffect(() => {

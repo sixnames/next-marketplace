@@ -44,8 +44,6 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
   totalPages,
   itemPath,
   basePath,
-  brandSlugs,
-  categorySlugs,
 }) => {
   const router = useRouter();
   const setPageHandler = useNavigateToPageHandler();
@@ -233,14 +231,11 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
         <div className={`max-w-full`}>
           <div className={'mb-8'}>
             <AppContentFilter
-              brandSlugs={brandSlugs}
-              categorySlugs={categorySlugs}
               basePath={basePath}
               rubricSlug={rubric.slug}
               attributes={attributes}
               selectedAttributes={selectedAttributes}
               clearSlug={clearSlug}
-              className={`grid gap-x-8 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4`}
               excludedParams={[`${rubric._id}`]}
             />
           </div>
@@ -314,15 +309,15 @@ export const getServerSideProps = async (
     };
   }
   const locale = initialProps.props.sessionLocale;
-
+  const currency = initialProps.props.initialData.currency;
   const basePath = `${ROUTE_CMS}/rubrics/${rubricId}/products/${rubricId}/${DEFAULT_PAGE_FILTER}`;
   const itemPath = `${ROUTE_CMS}/rubrics/${rubricId}/products/product`;
 
   const payload = await getConsoleRubricProducts({
-    visibleOptionsCount: initialProps.props.initialData.configs.catalogueFilterVisibleOptionsCount,
     query: context.query,
     locale,
     basePath,
+    currency,
   });
 
   const castedPayload = castDbData(payload);

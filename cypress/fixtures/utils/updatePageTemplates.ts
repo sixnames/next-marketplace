@@ -549,8 +549,7 @@ async function updatePageTemplates() {
       showInHeader: pagesGroup.showInHeader,
       showInFooter: pagesGroup.showInFooter,
     });
-    const createdPagesGroup = createdPagesGroupResult.ops[0];
-    if (!createdPagesGroupResult.result.ok || !createdPagesGroup) {
+    if (!createdPagesGroupResult.acknowledged) {
       continue;
     }
 
@@ -559,7 +558,7 @@ async function updatePageTemplates() {
         nameI18n: groupPage.nameI18n,
         descriptionI18n: groupPage.descriptionI18n,
         index: groupPage.index,
-        pagesGroupId: createdPagesGroup._id,
+        pagesGroupId: createdPagesGroupResult.insertedId,
         citySlug: groupPage.citySlug,
         slug: groupPage.slug,
         content: groupPage.content,

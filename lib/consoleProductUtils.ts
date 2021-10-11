@@ -1,7 +1,5 @@
 import {
   ATTRIBUTE_VIEW_VARIANT_LIST,
-  CATEGORY_SLUG_PREFIX_SEPARATOR,
-  CATEGORY_SLUG_PREFIX_WORD,
   FILTER_SEPARATOR,
   GENDER_HE,
   PAGINATION_DEFAULT_LIMIT,
@@ -36,8 +34,6 @@ import { ObjectIdModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
   AttributeInterface,
-  BrandInterface,
-  CategoryInterface,
   CompanyShopProductsPageInterface,
   ConsoleRubricProductsInterface,
   ProductAttributeInterface,
@@ -67,7 +63,7 @@ import { ParsedUrlQuery } from 'querystring';
 export interface GetConsoleRubricProductsInputInterface {
   locale: string;
   basePath: string;
-  visibleOptionsCount: number;
+  currency: string;
   query: ParsedUrlQuery;
   page?: number;
   excludedProductsIds?: ObjectIdModel[] | null;
@@ -75,10 +71,10 @@ export interface GetConsoleRubricProductsInputInterface {
 
 export const getConsoleRubricProducts = async ({
   locale,
-  visibleOptionsCount,
   basePath,
   page,
   query,
+  currency,
   excludedProductsIds,
 }: GetConsoleRubricProductsInputInterface): Promise<ConsoleRubricProductsInterface> => {
   let fallbackPayload: ConsoleRubricProductsInterface = {
@@ -90,16 +86,12 @@ export const getConsoleRubricProducts = async ({
     docs: [],
     attributes: [],
     selectedAttributes: [],
-    categorySlugs: [],
-    brandSlugs: [],
   };
 
   try {
     const { db } = await getDatabase();
     const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
     const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
-    const categoriesCollection = db.collection<CategoryInterface>(COL_CATEGORIES);
-    const brandsCollection = db.collection<BrandInterface>(COL_BRANDS);
     const [rubricId, ...filters] = alwaysArray(query.filters);
     const search = alwaysString(query.search);
 
@@ -263,8 +255,8 @@ export const getConsoleRubricProducts = async ({
               },
             ],
 
-            // category slugs facet
-            selectedOptionsSlugs: [
+            // categories facet
+            categories: [
               {
                 $unwind: {
                   path: '$selectedOptionsSlugs',
@@ -273,25 +265,149 @@ export const getConsoleRubricProducts = async ({
               },
               {
                 $group: {
-                  _id: '$selectedOptionsSlugs',
+                  _id: null,
+                  rubricId: { $first: '$rubricId' },
+                  selectedOptionsSlugs: {
+                    $addToSet: '$selectedOptionsSlugs',
+                  },
+                },
+              },
+              {
+                $lookup: {
+                  from: COL_CATEGORIES,
+                  as: 'categories',
+                  let: {
+                    rubricId: '$rubricId',
+                    selectedOptionsSlugs: '$selectedOptionsSlugs',
+                  },
+                  pipeline: [
+                    {
+                      $match: {
+                        $and: [
+                          {
+                            $expr: {
+                              $eq: ['$rubricId', '$$rubricId'],
+                            },
+                          },
+                          {
+                            $expr: {
+                              $in: ['$slug', '$$selectedOptionsSlugs'],
+                            },
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      $sort: {
+                        _id: SORT_DESC,
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                $unwind: {
+                  path: '$categories',
+                  preserveNullAndEmptyArrays: true,
+                },
+              },
+              {
+                $match: {
+                  categories: {
+                    $exists: true,
+                  },
+                },
+              },
+              {
+                $replaceRoot: {
+                  newRoot: '$categories',
                 },
               },
             ],
 
-            // brand slugs facet
-            brandSlugs: [
+            // brands facet
+            brands: [
               {
                 $group: {
                   _id: '$brandSlug',
+                  collectionSlugs: {
+                    $addToSet: '$brandCollectionSlug',
+                  },
                 },
               },
-            ],
-
-            // brand collection slugs facet
-            brandCollectionSlugs: [
               {
-                $group: {
-                  _id: '$brandCollectionSlug',
+                $lookup: {
+                  from: COL_BRANDS,
+                  as: 'brand',
+                  let: {
+                    slug: '$_id',
+                    collectionSlugs: '$collectionSlugs',
+                  },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $eq: ['$slug', '$$slug'],
+                        },
+                      },
+                    },
+                    {
+                      $lookup: {
+                        from: COL_BRAND_COLLECTIONS,
+                        as: 'collections',
+                        let: {
+                          brandId: '$_id',
+                        },
+                        pipeline: [
+                          {
+                            $match: {
+                              $and: [
+                                {
+                                  $expr: {
+                                    $eq: ['$brandId', '$$brandId'],
+                                  },
+                                },
+                                {
+                                  $expr: {
+                                    $in: ['$slug', '$$collectionSlugs'],
+                                  },
+                                },
+                              ],
+                            },
+                          },
+                          {
+                            $sort: {
+                              _id: SORT_DESC,
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                $addFields: {
+                  brand: {
+                    $arrayElemAt: ['$brand', 0],
+                  },
+                },
+              },
+              {
+                $match: {
+                  brand: {
+                    $exists: true,
+                  },
+                },
+              },
+              {
+                $replaceRoot: {
+                  newRoot: '$brand',
+                },
+              },
+              {
+                $sort: {
+                  _id: SORT_DESC,
                 },
               },
             ],
@@ -379,101 +495,12 @@ export const getConsoleRubricProducts = async ({
       return fallbackPayload;
     }
 
-    const {
-      totalDocs,
-      totalPages,
-      attributes,
-      prices,
-      selectedOptionsSlugs,
-      brandCollectionSlugs,
-    } = productDataAggregation;
-
-    // get categories
-    const categorySlugs = selectedOptionsSlugs
-      .filter((slug) => slug._id)
-      .reduce((acc: string[], slug) => {
-        const slugParts = slug._id.split(CATEGORY_SLUG_PREFIX_SEPARATOR);
-        if (slugParts[0] === CATEGORY_SLUG_PREFIX_WORD && slugParts[1]) {
-          return [...acc, slug._id];
-        }
-        return acc;
-      }, []);
-    const categories = await categoriesCollection
-      .aggregate<CategoryInterface>([
-        {
-          $match: {
-            slug: {
-              $in: categorySlugs,
-            },
-          },
-        },
-        {
-          $sort: {
-            _id: SORT_DESC,
-          },
-        },
-      ])
-      .toArray();
-
-    // get brands
-    const brandSlugs = productDataAggregation.brandSlugs
-      .filter((slug) => slug._id)
-      .map((slug) => slug._id);
-    const brands = await brandsCollection
-      .aggregate<BrandInterface>([
-        {
-          $match: {
-            slug: {
-              $in: brandSlugs,
-            },
-          },
-        },
-        {
-          $lookup: {
-            from: COL_BRAND_COLLECTIONS,
-            as: 'collections',
-            let: {
-              brandId: '$_id',
-            },
-            pipeline: [
-              {
-                $match: {
-                  $and: [
-                    {
-                      $expr: {
-                        $eq: ['$brandId', '$$brandId'],
-                      },
-                    },
-                    {
-                      $expr: {
-                        $in: ['$slug', brandCollectionSlugs],
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                $sort: {
-                  _id: SORT_DESC,
-                },
-              },
-              {
-                $limit: visibleOptionsCount,
-              },
-            ],
-          },
-        },
-        {
-          $sort: {
-            _id: SORT_DESC,
-          },
-        },
-      ])
-      .toArray();
+    const { totalDocs, totalPages, attributes, prices, brands, categories } =
+      productDataAggregation;
 
     // get filter attributes
     // price attribute
-    const priceAttribute = getPriceAttribute();
+    const priceAttribute = getPriceAttribute(currency);
 
     // category attribute
     let categoryAttribute: AttributeInterface[] = [];
@@ -525,7 +552,6 @@ export const getConsoleRubricProducts = async ({
       filters,
       productsPrices: prices,
       basePath,
-      visibleOptionsCount,
       rubricGender: search ? GENDER_HE : rubric.catalogueTitle.gender,
       brands,
     });
@@ -572,8 +598,6 @@ export const getConsoleRubricProducts = async ({
 
     const payload: ConsoleRubricProductsInterface = {
       clearSlug: basePath,
-      categorySlugs,
-      brandSlugs,
       basePath,
       page: 1,
       totalDocs,
@@ -597,7 +621,7 @@ export const getConsoleRubricProducts = async ({
 export interface GetConsoleShopProductsInputInterface {
   locale: string;
   basePath: string;
-  visibleOptionsCount: number;
+  currency: string;
   query: ParsedUrlQuery;
   page?: number;
   excludedProductsIds?: ObjectIdModel[] | null;
@@ -605,18 +629,16 @@ export interface GetConsoleShopProductsInputInterface {
 
 export const getConsoleShopProducts = async ({
   locale,
-  visibleOptionsCount,
   basePath,
   page,
   query,
+  currency,
   excludedProductsIds,
 }: GetConsoleShopProductsInputInterface): Promise<CompanyShopProductsPageInterface | null> => {
   try {
     const { db } = await getDatabase();
     const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
     const shopsCollection = db.collection<ShopInterface>(COL_SHOPS);
-    const categoriesCollection = db.collection<CategoryInterface>(COL_CATEGORIES);
-    const brandsCollection = db.collection<BrandInterface>(COL_BRANDS);
     const [rubricId, ...filters] = alwaysArray(query.filters);
     const search = alwaysString(query.search);
     const shopId = alwaysString(query.shopId);
@@ -658,8 +680,6 @@ export const getConsoleShopProducts = async ({
       docs: [],
       attributes: [],
       selectedAttributes: [],
-      categorySlugs: [],
-      brandSlugs: [],
       clearSlug: '',
       rubricId: '',
       rubricName: '',
@@ -783,8 +803,8 @@ export const getConsoleShopProducts = async ({
               },
             ],
 
-            // category slugs facet
-            selectedOptionsSlugs: [
+            // categories facet
+            categories: [
               {
                 $unwind: {
                   path: '$selectedOptionsSlugs',
@@ -793,25 +813,149 @@ export const getConsoleShopProducts = async ({
               },
               {
                 $group: {
-                  _id: '$selectedOptionsSlugs',
+                  _id: null,
+                  rubricId: { $first: '$rubricId' },
+                  selectedOptionsSlugs: {
+                    $addToSet: '$selectedOptionsSlugs',
+                  },
+                },
+              },
+              {
+                $lookup: {
+                  from: COL_CATEGORIES,
+                  as: 'categories',
+                  let: {
+                    rubricId: '$rubricId',
+                    selectedOptionsSlugs: '$selectedOptionsSlugs',
+                  },
+                  pipeline: [
+                    {
+                      $match: {
+                        $and: [
+                          {
+                            $expr: {
+                              $eq: ['$rubricId', '$$rubricId'],
+                            },
+                          },
+                          {
+                            $expr: {
+                              $in: ['$slug', '$$selectedOptionsSlugs'],
+                            },
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      $sort: {
+                        _id: SORT_DESC,
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                $unwind: {
+                  path: '$categories',
+                  preserveNullAndEmptyArrays: true,
+                },
+              },
+              {
+                $match: {
+                  categories: {
+                    $exists: true,
+                  },
+                },
+              },
+              {
+                $replaceRoot: {
+                  newRoot: '$categories',
                 },
               },
             ],
 
-            // brand slugs facet
-            brandSlugs: [
+            // brands facet
+            brands: [
               {
                 $group: {
                   _id: '$brandSlug',
+                  collectionSlugs: {
+                    $addToSet: '$brandCollectionSlug',
+                  },
                 },
               },
-            ],
-
-            // brand collection slugs facet
-            brandCollectionSlugs: [
               {
-                $group: {
-                  _id: '$brandCollectionSlug',
+                $lookup: {
+                  from: COL_BRANDS,
+                  as: 'brand',
+                  let: {
+                    slug: '$_id',
+                    collectionSlugs: '$collectionSlugs',
+                  },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $eq: ['$slug', '$$slug'],
+                        },
+                      },
+                    },
+                    {
+                      $lookup: {
+                        from: COL_BRAND_COLLECTIONS,
+                        as: 'collections',
+                        let: {
+                          brandId: '$_id',
+                        },
+                        pipeline: [
+                          {
+                            $match: {
+                              $and: [
+                                {
+                                  $expr: {
+                                    $eq: ['$brandId', '$$brandId'],
+                                  },
+                                },
+                                {
+                                  $expr: {
+                                    $in: ['$slug', '$$collectionSlugs'],
+                                  },
+                                },
+                              ],
+                            },
+                          },
+                          {
+                            $sort: {
+                              _id: SORT_DESC,
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                $addFields: {
+                  brand: {
+                    $arrayElemAt: ['$brand', 0],
+                  },
+                },
+              },
+              {
+                $match: {
+                  brand: {
+                    $exists: true,
+                  },
+                },
+              },
+              {
+                $replaceRoot: {
+                  newRoot: '$brand',
+                },
+              },
+              {
+                $sort: {
+                  _id: SORT_DESC,
                 },
               },
             ],
@@ -899,106 +1043,16 @@ export const getConsoleShopProducts = async ({
       return fallbackPayload;
     }
 
-    const {
-      totalDocs,
-      totalPages,
-      attributes,
-      rubric,
-      prices,
-      selectedOptionsSlugs,
-      brandCollectionSlugs,
-    } = shopProductsAggregation;
+    const { totalDocs, totalPages, attributes, rubric, prices, brands, categories } =
+      shopProductsAggregation;
 
     if (!rubric) {
       return fallbackPayload;
     }
 
-    // get categories
-    const categorySlugs = selectedOptionsSlugs
-      .filter((slug) => slug._id)
-      .reduce((acc: string[], slug) => {
-        const slugParts = slug._id.split(CATEGORY_SLUG_PREFIX_SEPARATOR);
-        if (slugParts[0] === CATEGORY_SLUG_PREFIX_WORD && slugParts[1]) {
-          return [...acc, slug._id];
-        }
-        return acc;
-      }, []);
-    const categories = await categoriesCollection
-      .aggregate<CategoryInterface>([
-        {
-          $match: {
-            slug: {
-              $in: categorySlugs,
-            },
-          },
-        },
-        {
-          $sort: {
-            _id: SORT_DESC,
-          },
-        },
-      ])
-      .toArray();
-
-    // get brands
-    const brandSlugs = shopProductsAggregation.brandSlugs
-      .filter((slug) => slug._id)
-      .map((slug) => slug._id);
-    const brands = await brandsCollection
-      .aggregate<BrandInterface>([
-        {
-          $match: {
-            slug: {
-              $in: brandSlugs,
-            },
-          },
-        },
-        {
-          $lookup: {
-            from: COL_BRAND_COLLECTIONS,
-            as: 'collections',
-            let: {
-              brandId: '$_id',
-            },
-            pipeline: [
-              {
-                $match: {
-                  $and: [
-                    {
-                      $expr: {
-                        $eq: ['$brandId', '$$brandId'],
-                      },
-                    },
-                    {
-                      $expr: {
-                        $in: ['$slug', brandCollectionSlugs],
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                $sort: {
-                  _id: SORT_DESC,
-                },
-              },
-              {
-                $limit: visibleOptionsCount,
-              },
-            ],
-          },
-        },
-        {
-          $sort: {
-            _id: SORT_DESC,
-          },
-        },
-      ])
-      .toArray();
-
     // get filter attributes
     // price attribute
-    const priceAttribute = getPriceAttribute();
+    const priceAttribute = getPriceAttribute(currency);
 
     // category attribute
     let categoryAttribute: AttributeInterface[] = [];
@@ -1050,7 +1104,6 @@ export const getConsoleShopProducts = async ({
       filters,
       productsPrices: prices,
       basePath,
-      visibleOptionsCount,
       rubricGender: search ? GENDER_HE : rubric.catalogueTitle.gender,
       brands,
     });
@@ -1149,8 +1202,6 @@ export const getConsoleShopProducts = async ({
     });
 
     const payload: CompanyShopProductsPageInterface = {
-      categorySlugs,
-      brandSlugs,
       shop,
       rubricName: getFieldStringLocale(rubric.nameI18n, locale),
       rubricId: rubric._id.toHexString(),
@@ -1172,16 +1223,13 @@ export const getConsoleShopProducts = async ({
   }
 };
 
-interface GetAddShopProductSsrDataInterface extends GetConsoleRubricProductsInputInterface {
-  locale: string;
-  basePath: string;
-}
+interface GetAddShopProductSsrDataInterface extends GetConsoleRubricProductsInputInterface {}
 
 export async function getAddShopProductSsrData({
   locale,
   basePath,
   query,
-  visibleOptionsCount,
+  currency,
 }: GetAddShopProductSsrDataInterface): Promise<ShopAddProductsListRouteReduced | null> {
   const { db } = await getDatabase();
   const shopsCollection = db.collection<ShopInterface>(COL_SHOPS);
@@ -1243,24 +1291,14 @@ export async function getAddShopProductSsrData({
   }
   const excludedProductsIds = (shop.shopProducts || []).map(({ productId }) => productId);
 
-  const {
-    selectedAttributes,
-    page,
-    docs,
-    clearSlug,
-    attributes,
-    totalPages,
-    totalDocs,
-    rubric,
-    categorySlugs,
-    brandSlugs,
-  } = await getConsoleRubricProducts({
-    excludedProductsIds,
-    visibleOptionsCount,
-    query,
-    locale,
-    basePath,
-  });
+  const { selectedAttributes, page, docs, clearSlug, attributes, totalPages, totalDocs, rubric } =
+    await getConsoleRubricProducts({
+      excludedProductsIds,
+      query,
+      locale,
+      basePath,
+      currency,
+    });
 
   if (!rubric) {
     return null;
@@ -1279,8 +1317,6 @@ export async function getAddShopProductSsrData({
     selectedAttributes,
     page,
     docs,
-    categorySlugs,
-    brandSlugs,
   };
 
   return payload;

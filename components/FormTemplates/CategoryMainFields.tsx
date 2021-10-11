@@ -7,14 +7,14 @@ import Spinner from 'components/Spinner';
 import TextSeoInfo from 'components/TextSeoInfo';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { useLocaleContext } from 'context/localeContext';
-import { ProductSeoModel } from 'db/dbModels';
+import { RubricSeoModel } from 'db/dbModels';
 import { useFormikContext } from 'formik';
 import { CreateCategoryInput, useGetGenderOptionsQuery } from 'generated/apolloComponents';
 import * as React from 'react';
 
 interface CategoryMainFieldsInterface {
-  seoTop?: ProductSeoModel | null;
-  seoBottom?: ProductSeoModel | null;
+  seoTop?: RubricSeoModel | null;
+  seoBottom?: RubricSeoModel | null;
 }
 const CategoryMainFields: React.FC<CategoryMainFieldsInterface> = ({ seoBottom, seoTop }) => {
   const { locale } = useLocaleContext();

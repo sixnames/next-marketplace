@@ -1,4 +1,4 @@
-import { FILTER_SEPARATOR, QUERY_FILTER_PAGE, ROUTE_CMS } from 'config/common';
+import { FILTER_SEPARATOR, FILTER_PAGE_KEY, ROUTE_CMS } from 'config/common';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import { alwaysArray } from 'lib/arrayUtils';
@@ -75,14 +75,15 @@ export const getServerSideProps = async (
     };
   }
 
-  const basePath = `${ROUTE_CMS}/companies/${query.companyId}/shops/shop/${shopId}/products/${rubricId}/${QUERY_FILTER_PAGE}${FILTER_SEPARATOR}1`;
+  const basePath = `${ROUTE_CMS}/companies/${query.companyId}/shops/shop/${shopId}/products/${rubricId}/${FILTER_PAGE_KEY}${FILTER_SEPARATOR}1`;
   const locale = initialProps.props.sessionLocale;
+  const currency = initialProps.props.initialData.currency;
 
   const payload = await getConsoleShopProducts({
-    visibleOptionsCount: initialProps.props.initialData.configs.catalogueFilterVisibleOptionsCount,
     basePath,
     locale,
     query,
+    currency,
   });
   if (!payload) {
     return {

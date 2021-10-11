@@ -4,6 +4,8 @@ import ErrorBoundaryFallback from 'components/ErrorBoundaryFallback';
 import Icon from 'components/Icon';
 import Inner from 'components/Inner';
 import MenuButtonWithName from 'components/MenuButtonWithName';
+import TextSeoInfo from 'components/TextSeoInfo';
+import { TextUniquenessApiParsedResponseModel } from 'db/dbModels';
 import ProductSnippetGrid from 'layout/snippet/ProductSnippetGrid';
 import ProductSnippetRow from 'layout/snippet/ProductSnippetRow';
 import HeadlessMenuButton from 'components/HeadlessMenuButton';
@@ -130,12 +132,16 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
       const filters = alwaysArray(router.query.filters).join('/');
       const attributesCountParam = configs.catalogueFilterVisibleAttributesCount;
       const optionsCountParam = configs.catalogueFilterVisibleOptionsCount;
+      const showAdminUiInCatalogue = configs.showAdminUiInCatalogue;
       const companyIdParam = companyId ? `&companyId=${companyId}` : '';
       const companySlugParam = companySlug ? `&companySlug=${companySlug}` : '';
+      const showAdminUiInCatalogueParam = showAdminUiInCatalogue
+        ? `&showAdminUiInCatalogue=${true}`
+        : '';
 
       const params = `?page=${
         state.page + 1
-      }&visibleOptionsCount=${optionsCountParam}&snippetVisibleAttributesCount=${attributesCountParam}${companyIdParam}${companySlugParam}`;
+      }&visibleOptionsCount=${optionsCountParam}&snippetVisibleAttributesCount=${attributesCountParam}${companyIdParam}${companySlugParam}${showAdminUiInCatalogueParam}`;
 
       fetch(`/api/catalogue/${router.query.rubricSlug}/${filters}${params}`)
         .then((res) => {
@@ -160,6 +166,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
     companySlug,
     configs.catalogueFilterVisibleAttributesCount,
     configs.catalogueFilterVisibleOptionsCount,
+    configs.showAdminUiInCatalogue,
     router.query.filters,
     router.query.rubricSlug,
     state.page,
@@ -287,12 +294,30 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
           {catalogueData.catalogueTitle}
         </Title>
 
-        {state.textTop ? <div className={`mb-12 ${seoTextClassName}`}>{state.textTop}</div> : null}
+        {state.textTop ? (
+          <div className={`mb-12`}>
+            <div className={seoTextClassName}>{state.textTop}</div>
+            {configs.showAdminUiInCatalogue && state.seoTop ? (
+              <div className='space-y-3 mt-6'>
+                {(state.seoTop.locales || []).map(
+                  (seoLocale: TextUniquenessApiParsedResponseModel) => {
+                    return (
+                      <TextSeoInfo
+                        showLocaleName
+                        listClassName='flex gap-3 flex-wrap'
+                        key={seoLocale.locale}
+                        seoLocale={seoLocale}
+                      />
+                    );
+                  },
+                )}
+              </div>
+            ) : null}
+          </div>
+        ) : null}
 
         <div className='grid lg:grid-cols-7 gap-12'>
           <CatalogueFilter
-            brandSlugs={state.brandSlugs}
-            categorySlugs={state.categorySlugs}
             basePath={state.basePath}
             companyId={companyId}
             filterLayoutVariant={catalogueData.catalogueFilterLayout}
@@ -419,7 +444,26 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
         </div>
 
         {state.textBottom ? (
-          <div className={`mt-16 ${seoTextClassName}`}>{state.textBottom}</div>
+          <div className={`mt-16`}>
+            <div className={seoTextClassName}>{state.textBottom}</div>
+
+            {configs.showAdminUiInCatalogue && state.seoBottom ? (
+              <div className='space-y-3 mt-6'>
+                {(state.seoBottom.locales || []).map(
+                  (seoLocale: TextUniquenessApiParsedResponseModel) => {
+                    return (
+                      <TextSeoInfo
+                        showLocaleName
+                        listClassName='flex gap-3 flex-wrap'
+                        key={seoLocale.locale}
+                        seoLocale={seoLocale}
+                      />
+                    );
+                  },
+                )}
+              </div>
+            ) : null}
+          </div>
         ) : null}
       </Inner>
 

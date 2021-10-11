@@ -3,9 +3,7 @@ import CheckBoxFilter, { CheckBoxFilterInterface } from 'components/CheckBoxFilt
 import Link from 'components/Link/Link';
 import * as React from 'react';
 
-interface AppContentFilterInterface extends Omit<CheckBoxFilterInterface, 'filterListClassName'> {
-  excludedParams: string[];
-}
+interface AppContentFilterInterface extends Omit<CheckBoxFilterInterface, 'filterListClassName'> {}
 
 const AppContentFilter: React.FC<AppContentFilterInterface> = (props) => {
   return (

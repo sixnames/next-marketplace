@@ -23,6 +23,7 @@ interface CheckBoxFilterAttributeInterface {
   onClick?: () => void | null;
   attributeIndex: number;
   basePath: string;
+  excludedParams?: string[] | null;
 }
 
 const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
@@ -30,6 +31,7 @@ const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
   onClick,
   attributeIndex,
   basePath,
+  excludedParams,
 }) => {
   const { showModal } = useAppContext();
   const { configs } = useConfigContext();
@@ -116,6 +118,7 @@ const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
                       title: isBrand ? 'Линейка бренда' : attribute.name,
                       basePath,
                       options: hiddenOptions,
+                      excludedParams,
                     },
                   });
                 }}
@@ -164,6 +167,7 @@ const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
                 title: attribute.name,
                 basePath,
                 options: hiddenOptions,
+                excludedParams,
               },
             });
           }}
@@ -187,6 +191,7 @@ const CheckBoxFilter: React.FC<CheckBoxFilterInterface> = ({
   onClick,
   basePath,
   clearSlug,
+  excludedParams,
 }) => {
   return (
     <div>
@@ -207,6 +212,7 @@ const CheckBoxFilter: React.FC<CheckBoxFilterInterface> = ({
               onClick={onClick}
               attributeIndex={attributeIndex}
               key={`${attribute._id}`}
+              excludedParams={excludedParams}
             />
           );
         })}

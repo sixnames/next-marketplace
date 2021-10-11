@@ -1,5 +1,5 @@
 import OptionsModal, { OptionsModalInterface } from 'components/Modal/OptionsModal';
-import { ALL_ALPHABETS, FILTER_SEPARATOR } from 'config/common';
+import { ALL_ALPHABETS, FILTER_PAGE_KEY, FILTER_SEPARATOR } from 'config/common';
 import { useAppContext } from 'context/appContext';
 import { AlphabetListModelType } from 'db/dbModels';
 import { CatalogueFilterAttributeOptionInterface } from 'db/uiInterfaces';
@@ -52,7 +52,7 @@ export interface CatalogueAdditionalOptionsModalInterface
   attributeSlug: string;
   title: string;
   basePath: string;
-  excludedParams?: string[];
+  excludedParams?: string[] | null;
   options: CatalogueFilterAttributeOptionInterface[];
 }
 
@@ -83,6 +83,10 @@ const CatalogueAdditionalOptionsModal: React.FC<CatalogueAdditionalOptionsModalI
         });
         const nextParamsList = [...alwaysArray(query.filters), ...selectedOptionsSlugs].filter(
           (param) => {
+            const paramParts = param.split(FILTER_SEPARATOR);
+            if (paramParts[0] === FILTER_PAGE_KEY) {
+              return false;
+            }
             if (!excludedParams) {
               return param;
             }

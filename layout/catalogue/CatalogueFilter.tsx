@@ -21,6 +21,7 @@ export interface FilterBaseInterface {
   companyId?: string;
   isSearchResult?: boolean;
   basePath: string;
+  excludedParams?: string[] | null;
 }
 
 export interface CatalogueFilterInterface extends FilterBaseInterface {

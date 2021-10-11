@@ -24,7 +24,7 @@ import { CatalogueBreadcrumbModel, ObjectIdModel, ShopProductModel } from 'db/db
 import {
   ATTRIBUTE_VIEW_VARIANT_LIST,
   CATALOGUE_FILTER_LIMIT,
-  QUERY_FILTER_PAGE,
+  FILTER_PAGE_KEY,
   FILTER_SEPARATOR,
   CATALOGUE_PRODUCTS_LIMIT,
   DEFAULT_COMPANY_SLUG,
@@ -175,7 +175,7 @@ export async function getCatalogueAttributes({
   const realFilter = filters.filter((filterItem) => {
     const filterItemArr = filterItem.split(FILTER_SEPARATOR);
     const filterName = filterItemArr[0];
-    return filterName !== QUERY_FILTER_PAGE;
+    return filterName !== FILTER_PAGE_KEY;
     // return filterName !== QUERY_FILTER_PAGE && filterName !== RUBRIC_KEY;
   });
 
@@ -594,7 +594,7 @@ export function castCatalogueFilters({
         return;
       }
 
-      if (filterAttributeSlug === QUERY_FILTER_PAGE) {
+      if (filterAttributeSlug === FILTER_PAGE_KEY) {
         page = noNaN(filterOptionSlug) || defaultPage;
         return;
       }

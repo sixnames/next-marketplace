@@ -319,7 +319,6 @@ export const getServerSideProps = async (
   const itemPath = `${ROUTE_CMS}/rubrics/${rubricId}/products/product`;
 
   const payload = await getConsoleRubricProducts({
-    visibleOptionsCount: initialProps.props.initialData.configs.catalogueFilterVisibleOptionsCount,
     query: context.query,
     locale,
     basePath,

@@ -67,7 +67,6 @@ import { ParsedUrlQuery } from 'querystring';
 export interface GetConsoleRubricProductsInputInterface {
   locale: string;
   basePath: string;
-  visibleOptionsCount: number;
   query: ParsedUrlQuery;
   page?: number;
   excludedProductsIds?: ObjectIdModel[] | null;
@@ -75,7 +74,6 @@ export interface GetConsoleRubricProductsInputInterface {
 
 export const getConsoleRubricProducts = async ({
   locale,
-  visibleOptionsCount,
   basePath,
   page,
   query,
@@ -457,9 +455,6 @@ export const getConsoleRubricProducts = async ({
                   _id: SORT_DESC,
                 },
               },
-              {
-                $limit: visibleOptionsCount,
-              },
             ],
           },
         },
@@ -525,7 +520,6 @@ export const getConsoleRubricProducts = async ({
       filters,
       productsPrices: prices,
       basePath,
-      visibleOptionsCount,
       rubricGender: search ? GENDER_HE : rubric.catalogueTitle.gender,
       brands,
     });
@@ -597,7 +591,6 @@ export const getConsoleRubricProducts = async ({
 export interface GetConsoleShopProductsInputInterface {
   locale: string;
   basePath: string;
-  visibleOptionsCount: number;
   query: ParsedUrlQuery;
   page?: number;
   excludedProductsIds?: ObjectIdModel[] | null;
@@ -605,7 +598,6 @@ export interface GetConsoleShopProductsInputInterface {
 
 export const getConsoleShopProducts = async ({
   locale,
-  visibleOptionsCount,
   basePath,
   page,
   query,
@@ -982,9 +974,6 @@ export const getConsoleShopProducts = async ({
                   _id: SORT_DESC,
                 },
               },
-              {
-                $limit: visibleOptionsCount,
-              },
             ],
           },
         },
@@ -1050,7 +1039,6 @@ export const getConsoleShopProducts = async ({
       filters,
       productsPrices: prices,
       basePath,
-      visibleOptionsCount,
       rubricGender: search ? GENDER_HE : rubric.catalogueTitle.gender,
       brands,
     });
@@ -1181,7 +1169,6 @@ export async function getAddShopProductSsrData({
   locale,
   basePath,
   query,
-  visibleOptionsCount,
 }: GetAddShopProductSsrDataInterface): Promise<ShopAddProductsListRouteReduced | null> {
   const { db } = await getDatabase();
   const shopsCollection = db.collection<ShopInterface>(COL_SHOPS);
@@ -1256,7 +1243,6 @@ export async function getAddShopProductSsrData({
     brandSlugs,
   } = await getConsoleRubricProducts({
     excludedProductsIds,
-    visibleOptionsCount,
     query,
     locale,
     basePath,

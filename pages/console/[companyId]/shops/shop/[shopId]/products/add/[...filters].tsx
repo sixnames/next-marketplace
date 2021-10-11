@@ -136,7 +136,6 @@ export const getServerSideProps = async (
     locale,
     basePath,
     query,
-    visibleOptionsCount: initialProps.props.initialData.configs.catalogueFilterVisibleOptionsCount,
   });
 
   if (!payload) {

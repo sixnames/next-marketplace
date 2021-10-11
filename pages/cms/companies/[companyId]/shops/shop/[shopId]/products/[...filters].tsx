@@ -79,7 +79,6 @@ export const getServerSideProps = async (
   const locale = initialProps.props.sessionLocale;
 
   const payload = await getConsoleShopProducts({
-    visibleOptionsCount: initialProps.props.initialData.configs.catalogueFilterVisibleOptionsCount,
     basePath,
     locale,
     query,

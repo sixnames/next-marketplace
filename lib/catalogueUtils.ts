@@ -14,29 +14,20 @@ import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_CATEGORIES,
-  COL_CONFIGS,
   COL_PRODUCT_ATTRIBUTES,
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
 import { filterAttributesPipeline, shopProductFieldsPipeline } from 'db/dao/constantPipelines';
-import {
-  CatalogueBreadcrumbModel,
-  ConfigModel,
-  ObjectIdModel,
-  ShopProductModel,
-} from 'db/dbModels';
+import { CatalogueBreadcrumbModel, ObjectIdModel, ShopProductModel } from 'db/dbModels';
 import {
   ATTRIBUTE_VIEW_VARIANT_LIST,
   CATALOGUE_FILTER_LIMIT,
   QUERY_FILTER_PAGE,
-  CATALOGUE_FILTER_VISIBLE_OPTIONS,
   FILTER_SEPARATOR,
   CATALOGUE_PRODUCTS_LIMIT,
-  CATALOGUE_SNIPPET_VISIBLE_ATTRIBUTES,
   DEFAULT_COMPANY_SLUG,
-  DEFAULT_LOCALE,
   FILTER_PRICE_KEY,
   ROUTE_CATALOGUE,
   SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY,
@@ -139,7 +130,6 @@ export interface GetCatalogueAttributesInterface {
   productsPrices: CatalogueProductPricesInterface[];
   basePath: string;
   visibleAttributesCount?: number | null;
-  visibleOptionsCount?: number | null;
   rubricGender?: string;
   brands?: BrandInterface[] | null;
 }
@@ -174,7 +164,6 @@ export async function getCatalogueAttributes({
   attributes,
   productsPrices,
   basePath,
-  visibleOptionsCount,
   visibleAttributesCount,
   rubricGender,
   brands,
@@ -409,15 +398,7 @@ export async function getCatalogueAttributes({
       });
     }
 
-    // slice options if limit is specified
-    const finalCastedAttribute = visibleOptionsCount
-      ? {
-          ...castedAttribute,
-          options: castedAttribute.options.slice(0, visibleOptionsCount),
-        }
-      : castedAttribute;
-
-    castedAttributes.push(finalCastedAttribute);
+    castedAttributes.push(castedAttribute);
   }
 
   return {
@@ -499,44 +480,6 @@ export function castOptionsForBreadcrumbs({
     });
     return [...innerAcc, ...castedOptionAcc];
   }, newAcc);
-}
-
-interface GetCatalogueConfigsInterface {
-  companySlug: string;
-  city: string;
-}
-
-interface GetCatalogueConfigsPayloadInterface {
-  visibleOptionsCount: number;
-  snippetVisibleAttributesCount: number;
-}
-
-export async function getCatalogueConfigs({
-  companySlug,
-  city,
-}: GetCatalogueConfigsInterface): Promise<GetCatalogueConfigsPayloadInterface> {
-  const { db } = await getDatabase();
-  const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
-  const catalogueFilterVisibleOptionsCount = await configsCollection.findOne({
-    slug: 'catalogueFilterVisibleOptionsCount',
-    companySlug,
-  });
-  const visibleOptionsCount =
-    noNaN(catalogueFilterVisibleOptionsCount?.cities[city][DEFAULT_LOCALE][0]) ||
-    noNaN(CATALOGUE_FILTER_VISIBLE_OPTIONS);
-
-  const snippetVisibleAttributesCountConfig = await configsCollection.findOne({
-    slug: 'snippetAttributesCount',
-    companySlug,
-  });
-  const snippetVisibleAttributesCount =
-    noNaN(snippetVisibleAttributesCountConfig?.cities[city][DEFAULT_LOCALE][0]) ||
-    noNaN(CATALOGUE_SNIPPET_VISIBLE_ATTRIBUTES);
-
-  return {
-    visibleOptionsCount,
-    snippetVisibleAttributesCount,
-  };
 }
 
 interface CastCatalogueFiltersPayloadInterface {
@@ -767,7 +710,6 @@ export interface GetCatalogueDataInterface {
   companySlug?: string;
   companyId?: string | ObjectIdModel | null;
   snippetVisibleAttributesCount: number;
-  visibleOptionsCount: number;
   currency: string;
   input: {
     search?: string;
@@ -783,7 +725,6 @@ export const getCatalogueData = async ({
   input,
   companyId,
   snippetVisibleAttributesCount,
-  visibleOptionsCount,
   currency,
   basePath,
   ...props
@@ -1303,6 +1244,7 @@ export const getCatalogueData = async ({
     if (!productDataAggregation) {
       return fallbackPayload;
     }
+    // console.log('aggregation ', new Date().getTime() - timeStart);
 
     const {
       docs,
@@ -1400,7 +1342,6 @@ export const getCatalogueData = async ({
       filters: input.filters,
       productsPrices: prices,
       basePath,
-      visibleOptionsCount,
       rubricGender: search ? GENDER_HE : rubric.catalogueTitle.gender,
       brands,
       // visibleAttributesCount,
@@ -1694,8 +1635,10 @@ export const getCatalogueData = async ({
       _id: rubric._id,
       clearSlug,
       categorySlugs: categorySlugs,
-      brandSlugs: brandSlugs.filter((slug) => slug._id).map((slug) => slug._id),
-      brandCollectionSlugs: brandCollectionSlugs.filter((slug) => slug._id).map((slug) => slug._id),
+      brandSlugs: (brandSlugs || []).filter((slug) => slug._id).map((slug) => slug._id),
+      brandCollectionSlugs: (brandCollectionSlugs || [])
+        .filter((slug) => slug._id)
+        .map((slug) => slug._id),
       filters: input.filters,
       rubricName,
       rubricSlug: rubric.slug,
@@ -1762,7 +1705,6 @@ export async function getCatalogueServerSideProps(
     currency: props.initialData.currency,
     basePath: `${ROUTE_CATALOGUE}/${rubricSlug}`,
     snippetVisibleAttributesCount: props.initialData.configs.snippetAttributesCount,
-    visibleOptionsCount: props.initialData.configs.catalogueFilterVisibleOptionsCount,
     input: {
       rubricSlug: `${rubricSlug}`,
       filters: alwaysArray(query.filters),

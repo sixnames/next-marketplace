@@ -445,9 +445,9 @@ export interface CatalogueProductsAggregationInterface {
   attributes?: AttributeInterface[] | null;
   categories?: CategoryInterface[];
   brands?: BrandInterface[];
-  brandSlugs: CatalogueSlugsGroupInterface[];
-  brandCollectionSlugs: CatalogueSlugsGroupInterface[];
-  selectedOptionsSlugs: CatalogueSlugsGroupInterface[];
+  brandSlugs?: CatalogueSlugsGroupInterface[];
+  brandCollectionSlugs?: CatalogueSlugsGroupInterface[];
+  selectedOptionsSlugs?: CatalogueSlugsGroupInterface[];
 }
 
 export interface ProductsPaginationAggregationInterface {

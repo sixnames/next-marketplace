@@ -1621,7 +1621,7 @@ export const getCatalogueData = async ({
     const finalSelectedAttributes = selectedAttributes.reduce(
       (acc: CatalogueFilterAttributeInterface[], attribute) => {
         const { slug, options } = attribute;
-        if (!showCategoriesInFilter && slug !== FILTER_CATEGORY_KEY) {
+        if (!showCategoriesInFilter && slug === FILTER_CATEGORY_KEY) {
           return acc;
         }
 

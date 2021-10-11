@@ -26,9 +26,13 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
   const maxVisibleOptions =
     configs.catalogueFilterVisibleOptionsCount || CATALOGUE_FILTER_VISIBLE_OPTIONS;
 
-  const { name, clearSlug, options, isSelected, metric, slug, childrenCount } = attribute;
+  const { name, clearSlug, options, isSelected, metric, slug } = attribute;
   const isPrice = slug === FILTER_PRICE_KEY;
   const postfix = isPrice ? ` ${currency}` : metric ? ` ${metric}` : null;
+
+  const visibleOptions = options.slice(0, maxVisibleOptions);
+  const hiddenOptions = options.slice(maxVisibleOptions);
+  const hasMoreOptions = hiddenOptions.length > 0;
 
   return (
     <div className='mb-12'>
@@ -42,7 +46,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
       </div>
 
       <div className='flex flex-wrap gap-2'>
-        {options.map((option, optionIndex) => {
+        {visibleOptions.map((option, optionIndex) => {
           const testId = `catalogue-option-${attributeIndex}-${optionIndex}`;
           return (
             <FilterLink
@@ -56,7 +60,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
         })}
       </div>
 
-      {childrenCount > maxVisibleOptions && !isPrice ? (
+      {hasMoreOptions ? (
         <div
           className='uppercase cursor-pointer hover:text-theme mt-6'
           onClick={() => {
@@ -67,7 +71,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
                 notShowAsAlphabet: attribute.notShowAsAlphabet,
                 title: attribute.name,
                 basePath,
-                options: [],
+                options: hiddenOptions,
               },
             });
           }}

@@ -10,7 +10,7 @@ import {
   ROUTE_CMS,
 } from 'config/common';
 import { COL_RUBRIC_SEO, COL_RUBRICS } from 'db/collectionNames';
-import { ProductSeoModel, RubricModel, RubricSeoModel } from 'db/dbModels';
+import { RubricModel, RubricSeoModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { RubricInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
@@ -34,8 +34,8 @@ import { updateRubricSchema } from 'validation/rubricSchema';
 
 interface RubricDetailsInterface {
   rubric: RubricInterface;
-  seoTop?: ProductSeoModel | null;
-  seoBottom?: ProductSeoModel | null;
+  seoTop?: RubricSeoModel | null;
+  seoBottom?: RubricSeoModel | null;
 }
 
 const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, seoTop, seoBottom }) => {

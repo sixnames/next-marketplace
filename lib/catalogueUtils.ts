@@ -15,12 +15,18 @@ import {
   COL_BRANDS,
   COL_CATEGORIES,
   COL_PRODUCT_ATTRIBUTES,
+  COL_RUBRIC_SEO,
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
 import { filterAttributesPipeline, shopProductFieldsPipeline } from 'db/dao/constantPipelines';
-import { CatalogueBreadcrumbModel, ObjectIdModel, ShopProductModel } from 'db/dbModels';
+import {
+  CatalogueBreadcrumbModel,
+  ObjectIdModel,
+  RubricSeoModel,
+  ShopProductModel,
+} from 'db/dbModels';
 import {
   ATTRIBUTE_VIEW_VARIANT_LIST,
   CATALOGUE_FILTER_LIMIT,
@@ -47,6 +53,8 @@ import {
   CATALOGUE_GRID_DEFAULT_COLUMNS_COUNT,
   FILTER_COMMON_KEY,
   FILTER_NO_PHOTO_KEY,
+  CATALOGUE_SEO_TEXT_POSITION_TOP,
+  CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
 } from 'config/common';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -748,6 +756,7 @@ export interface GetCatalogueDataInterface {
   companySlug?: string;
   companyId?: string | ObjectIdModel | null;
   snippetVisibleAttributesCount: number;
+  showAdminUiInCatalogue: boolean;
   currency: string;
   input: {
     search?: string;
@@ -765,6 +774,7 @@ export const getCatalogueData = async ({
   snippetVisibleAttributesCount,
   currency,
   basePath,
+  showAdminUiInCatalogue,
   ...props
 }: GetCatalogueDataInterface): Promise<CatalogueDataInterface | null> => {
   try {
@@ -772,6 +782,7 @@ export const getCatalogueData = async ({
     // console.log('===========================================================');
     // const timeStart = new Date().getTime();
     const { db } = await getDatabase();
+    const rubricSeoCollection = db.collection<RubricSeoModel>(COL_RUBRIC_SEO);
     const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
 
     // args
@@ -1580,12 +1591,36 @@ export const getCatalogueData = async ({
         });
       }
     });
+
+    // rubric seo text as default
     let textTop: string | null | undefined = getFieldStringLocale(rubric.textTopI18n, locale);
     let textBottom: string | null | undefined = getFieldStringLocale(rubric.textBottomI18n, locale);
+    let seoTop = await rubricSeoCollection.findOne({
+      rubricId: rubric._id,
+      position: CATALOGUE_SEO_TEXT_POSITION_TOP,
+      categoryId: null,
+    });
+    let seoBottom = await rubricSeoCollection.findOne({
+      rubricId: rubric._id,
+      position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+      categoryId: null,
+    });
+
+    // category seo text if selected
     if (selectedCategories.length > 0 && selectedCategories.length < 2 && selectedCategories[0]) {
       textTop = getFieldStringLocale(selectedCategories[0].textTopI18n, locale);
       textBottom = getFieldStringLocale(selectedCategories[0].textBottomI18n, locale);
+      seoTop = await rubricSeoCollection.findOne({
+        position: CATALOGUE_SEO_TEXT_POSITION_TOP,
+        categoryId: selectedCategories[0]._id,
+      });
+      seoBottom = await rubricSeoCollection.findOne({
+        position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+        categoryId: selectedCategories[0]._id,
+      });
     }
+
+    // remove seo text if selected more then one category
     if (selectedCategories.length > 1) {
       textTop = null;
       textBottom = null;
@@ -1638,15 +1673,15 @@ export const getCatalogueData = async ({
 
     // console.log(`Catalogue data >>>>>>>>>>>>>>>> `, new Date().getTime() - timeStart);
     return {
+      // rubric
       _id: rubric._id,
-      clearSlug,
-      filters: input.filters,
       rubricName,
       rubricSlug: rubric.slug,
-      textTop,
-      textBottom,
+
+      // products
       products,
-      catalogueTitle,
+
+      // configs
       catalogueFilterLayout,
       gridSnippetLayout,
       rowSnippetLayout,
@@ -1655,12 +1690,23 @@ export const getCatalogueData = async ({
       showSnippetArticle,
       showSnippetButtonsOnHover,
       gridCatalogueColumns,
+
+      // filter
       totalProducts: noNaN(totalProducts),
       attributes: castedAttributes,
       selectedAttributes: finalSelectedAttributes,
       page,
-      breadcrumbs,
       basePath,
+      clearSlug,
+      filters: input.filters,
+
+      //seo
+      textTop,
+      textBottom,
+      catalogueTitle,
+      breadcrumbs,
+      seoTop,
+      seoBottom,
     };
   } catch (e) {
     console.log(e);
@@ -1702,6 +1748,7 @@ export async function getCatalogueServerSideProps(
     currency: props.initialData.currency,
     basePath: `${ROUTE_CATALOGUE}/${rubricSlug}`,
     snippetVisibleAttributesCount: props.initialData.configs.snippetAttributesCount,
+    showAdminUiInCatalogue: props.initialData.configs.showAdminUiInCatalogue,
     input: {
       rubricSlug: `${rubricSlug}`,
       filters: alwaysArray(query.filters),

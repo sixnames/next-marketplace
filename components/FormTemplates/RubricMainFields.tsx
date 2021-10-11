@@ -2,15 +2,15 @@ import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxL
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import TextSeoInfo from 'components/TextSeoInfo';
-import { ProductSeoModel } from 'db/dbModels';
+import { RubricSeoModel } from 'db/dbModels';
 import { RubricVariant, SelectOption } from 'generated/apolloComponents';
 import * as React from 'react';
 
 interface RubricMainFieldsInterface {
   rubricVariants: Pick<RubricVariant, '_id' | 'name' | 'nameI18n'>[];
   genderOptions: Pick<SelectOption, '_id' | 'name'>[];
-  seoTop?: ProductSeoModel | null;
-  seoBottom?: ProductSeoModel | null;
+  seoTop?: RubricSeoModel | null;
+  seoBottom?: RubricSeoModel | null;
 }
 const RubricMainFields: React.FC<RubricMainFieldsInterface> = ({
   genderOptions,

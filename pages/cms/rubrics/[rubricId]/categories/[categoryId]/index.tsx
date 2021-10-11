@@ -11,7 +11,7 @@ import {
   ROUTE_CMS,
 } from 'config/common';
 import { COL_CATEGORIES, COL_ICONS, COL_RUBRIC_SEO, COL_RUBRICS } from 'db/collectionNames';
-import { OptionVariantsModel, ProductSeoModel, RubricSeoModel } from 'db/dbModels';
+import { OptionVariantsModel, RubricSeoModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { CategoryInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
@@ -31,8 +31,8 @@ import { updateCategorySchema } from 'validation/categorySchema';
 
 interface CategoryDetailsInterface {
   category: CategoryInterface;
-  seoTop?: ProductSeoModel | null;
-  seoBottom?: ProductSeoModel | null;
+  seoTop?: RubricSeoModel | null;
+  seoBottom?: RubricSeoModel | null;
 }
 
 const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category, seoTop, seoBottom }) => {

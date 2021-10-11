@@ -4,6 +4,8 @@ import ErrorBoundaryFallback from 'components/ErrorBoundaryFallback';
 import Icon from 'components/Icon';
 import Inner from 'components/Inner';
 import MenuButtonWithName from 'components/MenuButtonWithName';
+import TextSeoInfo from 'components/TextSeoInfo';
+import { TextUniquenessApiParsedResponseModel } from 'db/dbModels';
 import ProductSnippetGrid from 'layout/snippet/ProductSnippetGrid';
 import ProductSnippetRow from 'layout/snippet/ProductSnippetRow';
 import HeadlessMenuButton from 'components/HeadlessMenuButton';
@@ -287,7 +289,27 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
           {catalogueData.catalogueTitle}
         </Title>
 
-        {state.textTop ? <div className={`mb-12 ${seoTextClassName}`}>{state.textTop}</div> : null}
+        {state.textTop ? (
+          <div className={`mb-12`}>
+            <div className={seoTextClassName}>{state.textTop}</div>
+            {configs.showAdminUiInCatalogue && state.seoTop ? (
+              <div className='space-y-3 mt-6'>
+                {(state.seoTop.locales || []).map(
+                  (seoLocale: TextUniquenessApiParsedResponseModel) => {
+                    return (
+                      <TextSeoInfo
+                        showLocaleName
+                        listClassName='flex gap-3 flex-wrap'
+                        key={seoLocale.locale}
+                        seoLocale={seoLocale}
+                      />
+                    );
+                  },
+                )}
+              </div>
+            ) : null}
+          </div>
+        ) : null}
 
         <div className='grid lg:grid-cols-7 gap-12'>
           <CatalogueFilter
@@ -417,7 +439,26 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
         </div>
 
         {state.textBottom ? (
-          <div className={`mt-16 ${seoTextClassName}`}>{state.textBottom}</div>
+          <div className={`mt-16`}>
+            <div className={seoTextClassName}>{state.textBottom}</div>
+
+            {configs.showAdminUiInCatalogue && state.seoBottom ? (
+              <div className='space-y-3 mt-6'>
+                {(state.seoBottom.locales || []).map(
+                  (seoLocale: TextUniquenessApiParsedResponseModel) => {
+                    return (
+                      <TextSeoInfo
+                        showLocaleName
+                        listClassName='flex gap-3 flex-wrap'
+                        key={seoLocale.locale}
+                        seoLocale={seoLocale}
+                      />
+                    );
+                  },
+                )}
+              </div>
+            ) : null}
+          </div>
         ) : null}
       </Inner>
 

@@ -40,6 +40,7 @@ export async function getServerSideProps(
     currency: props.initialData.currency,
     basePath: `${ROUTE_SEARCH_RESULT}/${search}`,
     snippetVisibleAttributesCount: props.initialData.configs.snippetAttributesCount,
+    showAdminUiInCatalogue: props.initialData.configs.showAdminUiInCatalogue,
     input: {
       search,
       filters: alwaysArray(filters),

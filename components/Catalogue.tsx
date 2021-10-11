@@ -132,12 +132,16 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
       const filters = alwaysArray(router.query.filters).join('/');
       const attributesCountParam = configs.catalogueFilterVisibleAttributesCount;
       const optionsCountParam = configs.catalogueFilterVisibleOptionsCount;
+      const showAdminUiInCatalogue = configs.showAdminUiInCatalogue;
       const companyIdParam = companyId ? `&companyId=${companyId}` : '';
       const companySlugParam = companySlug ? `&companySlug=${companySlug}` : '';
+      const showAdminUiInCatalogueParam = showAdminUiInCatalogue
+        ? `&showAdminUiInCatalogue=${true}`
+        : '';
 
       const params = `?page=${
         state.page + 1
-      }&visibleOptionsCount=${optionsCountParam}&snippetVisibleAttributesCount=${attributesCountParam}${companyIdParam}${companySlugParam}`;
+      }&visibleOptionsCount=${optionsCountParam}&snippetVisibleAttributesCount=${attributesCountParam}${companyIdParam}${companySlugParam}${showAdminUiInCatalogueParam}`;
 
       fetch(`/api/catalogue/${router.query.rubricSlug}/${filters}${params}`)
         .then((res) => {
@@ -162,6 +166,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
     companySlug,
     configs.catalogueFilterVisibleAttributesCount,
     configs.catalogueFilterVisibleOptionsCount,
+    configs.showAdminUiInCatalogue,
     router.query.filters,
     router.query.rubricSlug,
     state.page,

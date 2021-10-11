@@ -11,6 +11,7 @@ export interface CatalogueQueryInterface {
   companyId?: string;
   page: number;
   snippetVisibleAttributesCount: string;
+  showAdminUiInCatalogue?: string;
 }
 
 async function catalogueData(req: NextApiRequest, res: NextApiResponse) {
@@ -19,8 +20,14 @@ async function catalogueData(req: NextApiRequest, res: NextApiResponse) {
     const { query } = req;
     const anyQuery = query as unknown;
 
-    const { filters, companySlug, companyId, page, snippetVisibleAttributesCount } =
-      anyQuery as CatalogueQueryInterface;
+    const {
+      filters,
+      companySlug,
+      companyId,
+      page,
+      snippetVisibleAttributesCount,
+      showAdminUiInCatalogue,
+    } = anyQuery as CatalogueQueryInterface;
     const [rubricSlug, ...restFilters] = filters;
 
     const rawCatalogueData = await getCatalogueData({
@@ -29,6 +36,7 @@ async function catalogueData(req: NextApiRequest, res: NextApiResponse) {
       companyId,
       currency,
       city,
+      showAdminUiInCatalogue: Boolean(showAdminUiInCatalogue),
       basePath: `${ROUTE_CATALOGUE}/${rubricSlug}`,
       snippetVisibleAttributesCount: noNaN(snippetVisibleAttributesCount) || 5,
       input: {

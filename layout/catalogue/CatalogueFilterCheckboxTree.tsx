@@ -1,3 +1,4 @@
+import CheckBoxFilter from 'components/CheckBoxFilter';
 import FilterCheckbox from 'components/FilterCheckbox';
 import { BrandOptionsModalInterface } from 'components/Modal/BrandOptionsModal';
 import { CatalogueAdditionalOptionsModalInterface } from 'components/Modal/CatalogueAdditionalOptionsModal';
@@ -99,7 +100,7 @@ const FilterCheckboxGroup: React.FC<FilterCheckboxGroupInterface> = ({
   );
 };
 
-const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface> = ({
+export const OldCatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface> = ({
   attribute,
   companyId,
   rubricSlug,
@@ -196,21 +197,8 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
   );
 };
 
-const CatalogueFilterCheckboxTree: React.FC<CatalogueFilterInterface> = ({
-  attributes,
-  selectedAttributes,
-  rubricSlug,
-  catalogueCounterString,
-  hideFilterHandler,
-  isFilterVisible,
-  companyId,
-  isSearchResult,
-  clearSlug,
-  basePath,
-  brandSlugs,
-  categorySlugs,
-}) => {
-  const { currency } = useLocaleContext();
+const CatalogueFilterCheckboxTree: React.FC<CatalogueFilterInterface> = (props) => {
+  const { isFilterVisible, catalogueCounterString, hideFilterHandler } = props;
 
   return (
     <div
@@ -236,54 +224,7 @@ const CatalogueFilterCheckboxTree: React.FC<CatalogueFilterInterface> = ({
           </div>
         </div>
 
-        {selectedAttributes.length > 0 ? (
-          <div className='mb-12'>
-            <div className='flex items-baseline justify-between mb-4'>
-              <span className='text-lg font-bold'>Выбранные</span>
-              <Link href={clearSlug} className='font-medium text-theme' onClick={hideFilterHandler}>
-                Сбросить фильтр
-              </Link>
-            </div>
-
-            <div>
-              {selectedAttributes.map((attribute) => {
-                const { metric, slug } = attribute;
-                const isPrice = slug === FILTER_PRICE_KEY;
-                const postfix = isPrice ? ` ${currency}` : metric ? ` ${metric}` : null;
-                return attribute.options.map((option) => {
-                  const key = `${option.slug}`;
-                  return (
-                    <FilterCheckbox
-                      postfix={postfix}
-                      option={option}
-                      key={key}
-                      onClick={hideFilterHandler}
-                      testId={key}
-                      hidden={({ isSelected }) => !isSelected}
-                    />
-                  );
-                });
-              })}
-            </div>
-          </div>
-        ) : null}
-
-        {attributes.map((attribute, attributeIndex) => {
-          return (
-            <CatalogueFilterAttribute
-              onClick={hideFilterHandler}
-              rubricSlug={rubricSlug}
-              basePath={basePath}
-              companyId={companyId}
-              attribute={attribute}
-              key={`${attribute._id}`}
-              isSearchResult={isSearchResult}
-              attributeIndex={attributeIndex}
-              brandSlugs={brandSlugs}
-              categorySlugs={categorySlugs}
-            />
-          );
-        })}
+        <CheckBoxFilter {...props} />
       </div>
     </div>
   );

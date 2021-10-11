@@ -40,7 +40,6 @@ const FilterCheckboxLink: React.FC<FilterCheckboxLinkInterface> = ({
             {name}
             {postfix ? ` ${postfix}` : ''}
           </span>
-          {/*<span className='text-sm'>{counter}</span>*/}
         </span>
       </a>
     </Link>

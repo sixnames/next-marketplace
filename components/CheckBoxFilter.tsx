@@ -1,3 +1,4 @@
+import FilterSelectedAttributes from 'components/FilterSelectedAttributes';
 import Icon from 'components/Icon';
 import Link from 'components/Link/Link';
 import { CatalogueAdditionalOptionsModalInterface } from 'components/Modal/CatalogueAdditionalOptionsModal';
@@ -189,7 +190,7 @@ const CheckBoxFilter: React.FC<CheckBoxFilterInterface> = ({
   return (
     <div>
       {/*selected attributes*/}
-      {selectedAttributes.length > 0 ? <div>{selectedAttributes.length}</div> : null}
+      <FilterSelectedAttributes selectedAttributes={selectedAttributes} />
 
       {/*filter*/}
       <div className={filterListClassName}>

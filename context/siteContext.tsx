@@ -65,7 +65,6 @@ interface SiteContextProviderInterface {
 
 const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
   children,
-  sessionCity,
   navRubrics,
   company,
 }) => {
@@ -111,7 +110,7 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
           });
         });
     },
-    [company, router.locale, sessionCity, hideLoading],
+    [company, hideLoading],
   );
 
   React.useEffect(() => {

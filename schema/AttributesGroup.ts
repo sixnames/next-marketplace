@@ -859,7 +859,7 @@ export const attributesGroupMutations = extendType({
             message: getResolverErrorMessage(e),
           };
         } finally {
-          session.endSession();
+          await session.endSession();
         }
       },
     });

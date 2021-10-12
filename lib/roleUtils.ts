@@ -158,7 +158,12 @@ export type RoleRuleSlugType =
   | 'createUser'
   | 'updateUser'
   | 'updateUserPassword'
-  | 'deleteUser';
+  | 'deleteUser'
+
+  // UserCategory
+  | 'createUserCategory'
+  | 'updateUserCategory'
+  | 'deleteUserCategory';
 
 interface RoleRuleBaseExtended extends Omit<RoleRuleBase, 'slug'> {
   slug: RoleRuleSlugType;
@@ -1002,6 +1007,32 @@ const baseRoleRules: RoleRuleBaseExtended[] = [
     descriptionI18n: {},
     nameI18n: {
       ru: 'Обновление пароля пользователя',
+    },
+  },
+
+  // UserCategory
+  {
+    allow: false,
+    slug: 'deleteUserCategory',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Создание категории пользователя',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deleteUserCategory',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление категории пользователя',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deleteUserCategory',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление категории пользователя',
     },
   },
 ];

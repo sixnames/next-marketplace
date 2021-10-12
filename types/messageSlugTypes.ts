@@ -230,6 +230,21 @@ export type MessageSlug =
   | 'validation.users.password'
   | 'validation.users.passwordCompare'
 
+  // User categories ----------
+  | 'userCategories.create.duplicate'
+  | 'userCategories.create.error'
+  | 'userCategories.create.success'
+  | 'userCategories.update.duplicate'
+  | 'userCategories.update.error'
+  | 'userCategories.update.success'
+  | 'userCategories.delete.error'
+  | 'userCategories.delete.success'
+  // User categories validation
+  | 'validation.userCategories.id'
+  | 'validation.userCategories.companyId'
+  | 'validation.userCategories.name'
+  | 'validation.userCategories.entryMinCharge'
+
   // Companies ----------
   | 'companies.create.duplicate'
   | 'companies.create.error'

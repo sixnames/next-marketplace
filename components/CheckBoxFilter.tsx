@@ -73,7 +73,7 @@ const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
   }
 
   function renderOption(option: CatalogueFilterAttributeOptionInterface, testId: string) {
-    const { visibleOptions, hasMoreOptions, hiddenOptions } = getFilterOptions(option.options);
+    const { visibleOptions, hasMoreOptions } = getFilterOptions(option.options);
     const { nextSlug, isSelected, name } = option;
 
     return (
@@ -117,7 +117,7 @@ const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
                       notShowAsAlphabet: attribute.notShowAsAlphabet,
                       title: isBrand ? 'Линейка бренда' : attribute.name,
                       basePath,
-                      options: hiddenOptions,
+                      options: option.options,
                       excludedParams,
                     },
                   });
@@ -133,7 +133,7 @@ const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
   }
 
   // render attribute
-  const { visibleOptions, hasMoreOptions, hiddenOptions } = getFilterOptions(attribute.options);
+  const { visibleOptions, hasMoreOptions } = getFilterOptions(attribute.options);
   return (
     <div className={`mb-8`}>
       {/*attribute name*/}
@@ -166,7 +166,7 @@ const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
                 notShowAsAlphabet: attribute.notShowAsAlphabet,
                 title: attribute.name,
                 basePath,
-                options: hiddenOptions,
+                options: attribute.options,
                 excludedParams,
               },
             });

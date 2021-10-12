@@ -1,6 +1,7 @@
 import Breadcrumbs from 'components/Breadcrumbs';
 import Button from 'components/Button';
 import ErrorBoundaryFallback from 'components/ErrorBoundaryFallback';
+import FixedButtons from 'components/FixedButtons';
 import Icon from 'components/Icon';
 import Inner from 'components/Inner';
 import MenuButtonWithName from 'components/MenuButtonWithName';
@@ -524,6 +525,20 @@ const Catalogue: React.FC<CatalogueInterface> = ({
         companySlug={company?.slug}
         companyId={company?._id ? `${company?._id}` : undefined}
       />
+
+      {configs.showAdminUiInCatalogue ? (
+        <FixedButtons>
+          <Inner lowTop lowBottom>
+            <Button
+              onClick={() => {
+                window.open(catalogueData?.editUrl, '_blank');
+              }}
+            >
+              Редактировать
+            </Button>
+          </Inner>
+        </FixedButtons>
+      ) : null}
     </SiteLayoutProvider>
   );
 };

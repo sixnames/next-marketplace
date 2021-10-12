@@ -403,6 +403,7 @@ export interface CatalogueDataInterface {
   filters: string[];
   rubricName: string;
   rubricSlug: string;
+  editUrl: string;
   catalogueFilterLayout: string;
   gridSnippetLayout: string;
   rowSnippetLayout: string;

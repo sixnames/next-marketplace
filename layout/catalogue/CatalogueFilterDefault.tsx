@@ -60,7 +60,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
                 notShowAsAlphabet: attribute.notShowAsAlphabet,
                 title: attribute.name,
                 basePath,
-                options: hiddenOptions,
+                options: attribute.options,
               },
             });
           }}

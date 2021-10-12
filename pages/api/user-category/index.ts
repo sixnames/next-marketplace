@@ -1,5 +1,6 @@
 import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'config/common';
 import { createUserCategory } from 'db/dao/userCategory/createUserCategory';
+import { updateUserCategory } from 'db/dao/userCategory/updateUserCategory';
 import { sendApiRouteResponse } from 'lib/sessionHelpers';
 import { NextApiRequest, NextApiResponse } from 'next';
 
@@ -19,7 +20,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   // update
   if (req.method === REQUEST_METHOD_PATCH) {
-    const payload = await createUserCategory({
+    const payload = await updateUserCategory({
       context: { req, res },
       input: JSON.parse(req.body),
     });

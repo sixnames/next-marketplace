@@ -5,7 +5,7 @@ import Pager, { useNavigateToPageHandler } from 'components/Pager';
 import Table, { TableColumn } from 'components/Table';
 import Title from 'components/Title';
 import { DEFAULT_PAGE, ROUTE_CONSOLE, SORT_DESC } from 'config/common';
-import { COL_ORDERS, COL_USERS } from 'db/collectionNames';
+import { COL_ORDERS, COL_USER_CATEGORIES, COL_USERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import {
   AppPaginationInterface,
@@ -72,6 +72,11 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
       headTitle: 'Телефон',
       render: ({ cellData }) => <LinkPhone value={cellData} />,
     },
+    {
+      accessor: 'category.name',
+      headTitle: 'Категория',
+      render: ({ cellData }) => cellData,
+    },
   ];
 
   return (
@@ -130,7 +135,7 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<UsersPageInterface>> => {
   const { query } = context;
-  const { search, filters, companyId } = query;
+  const { search, filters } = query;
   const { props } = await getConsoleInitialData({ context });
   if (!props) {
     return {
@@ -139,6 +144,7 @@ export const getServerSideProps = async (
   }
 
   const locale = props.sessionLocale;
+  const companyId = new ObjectId(`${query.companyId}`);
 
   // Cast filters
   const {
@@ -195,7 +201,7 @@ export const getServerSideProps = async (
       [
         {
           $match: {
-            companyId: new ObjectId(`${companyId}`),
+            companyId,
           },
         },
         ...searchStage,
@@ -237,6 +243,7 @@ export const getServerSideProps = async (
         },
         {
           $facet: {
+            // docs facet
             docs: [
               {
                 $sort: {
@@ -249,7 +256,37 @@ export const getServerSideProps = async (
               {
                 $limit: limit,
               },
+
+              // get category
+              {
+                $lookup: {
+                  from: COL_USER_CATEGORIES,
+                  as: 'category',
+                  let: {
+                    categoryIds: '$categoryIds',
+                  },
+                  pipeline: [
+                    {
+                      $match: {
+                        companyId,
+                        $expr: {
+                          $in: ['$_id', '$$categoryIds'],
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                $addFields: {
+                  category: {
+                    $arrayElemAt: ['$category', 0],
+                  },
+                },
+              },
             ],
+
+            // counter facet
             countAllDocs: [
               {
                 $count: 'totalDocs',
@@ -336,6 +373,12 @@ export const getServerSideProps = async (
         ? {
             ...user.role,
             name: getFieldStringLocale(user.role.nameI18n, locale),
+          }
+        : null,
+      category: user.category
+        ? {
+            ...user.category,
+            name: getFieldStringLocale(user.category.nameI18n, locale),
           }
         : null,
     });

@@ -421,6 +421,7 @@ export interface UserInterface extends UserModel {
   adminNotifications?: NotificationConfigInterface[] | null;
   companyNotifications?: NotificationConfigInterface[] | null;
   categories?: UserCategoryInterface[] | null;
+  category?: UserCategoryInterface | null;
   cashback?: UserCashbackInterface[] | null;
   payback?: UserPaybackInterface[] | null;
   cashbackLog?: UserCashbackLogInterface[] | null;

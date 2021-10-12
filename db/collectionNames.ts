@@ -48,3 +48,4 @@ export const COL_SHOPS = 'shops';
 export const COL_SHOP_PRODUCTS = 'shopProducts';
 export const COL_SUPPLIERS = 'suppliers';
 export const COL_USERS = 'users';
+export const COL_USER_CATEGORIES = 'userCategories';

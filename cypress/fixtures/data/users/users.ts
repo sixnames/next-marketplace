@@ -1,6 +1,6 @@
 import { getUserInitialNotificationsConf } from '../../../../lib/getUserNotificationsTemplate';
 import { UserModel } from '../../../../db/dbModels';
-import { getObjectId } from 'mongo-seeding';
+import { getObjectId, getObjectIds } from 'mongo-seeding';
 
 const password = '$2b$10$u7zEl9.8vpdshO9tbBIHXeM5HrhLQBCEJ6mcQVSSP0B.WCb9rVE.K';
 
@@ -18,6 +18,7 @@ const users: UserModel[] = [
     cartId: null,
     roleId: getObjectId('adminRole'),
     notifications: getUserInitialNotificationsConf(),
+    categoryIds: getObjectIds(['Company A category 1']),
     createdAt: new Date(),
     updatedAt: new Date(),
   },

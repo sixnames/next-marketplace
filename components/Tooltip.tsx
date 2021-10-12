@@ -1,20 +1,52 @@
 import * as React from 'react';
-import ReactTooltip, { TooltipProps } from 'react-tooltip';
+import ReactDOM from 'react-dom';
 
-interface TooltipInterface extends Omit<TooltipProps, 'delayShow'> {
-  title?: any | null;
+interface TooltipPositionInterface {
+  top: number;
+  left: number;
 }
 
-const Tooltip: React.FC<TooltipInterface> = ({ children, title }) => {
-  if (!title) {
+interface TooltipInterface {
+  title?: string | null;
+  className?: string;
+}
+
+const Tooltip: React.FC<TooltipInterface> = ({ children, className, title }) => {
+  const [position, setPosition] = React.useState<TooltipPositionInterface | null>(null);
+  const [portal, setPortal] = React.useState<Element | null>(null);
+
+  React.useEffect(() => {
+    setPortal(document.getElementById('tooltip-container'));
+  }, []);
+
+  if (!title || !portal) {
     return <React.Fragment>{children}</React.Fragment>;
   }
 
   return (
-    <React.Fragment>
-      <div data-tip={title}>{children}</div>
-      <ReactTooltip delayShow={100} effect={'solid'} />
-    </React.Fragment>
+    <div className={`relative ${className ? className : ''}`}>
+      {position ? (
+        <React.Fragment>
+          {ReactDOM.createPortal(
+            <div style={position} className='fixed px-3 py-2 rounded-md shadow-md bg-secondary'>
+              {title}
+            </div>,
+            portal,
+          )}
+        </React.Fragment>
+      ) : null}
+      <div
+        onMouseLeave={() => setPosition(null)}
+        onMouseEnter={(e) => {
+          setPosition({
+            left: e.clientX,
+            top: e.clientY,
+          });
+        }}
+      >
+        {children}
+      </div>
+    </div>
   );
 };
 

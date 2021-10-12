@@ -55,6 +55,7 @@ import {
   FILTER_NO_PHOTO_KEY,
   CATALOGUE_SEO_TEXT_POSITION_TOP,
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+  ROUTE_CMS,
 } from 'config/common';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -816,6 +817,7 @@ export const getCatalogueData = async ({
       _id: new ObjectId(),
       clearSlug: basePath,
       filters: input.filters,
+      editUrl: '',
       rubricName: '',
       rubricSlug: '',
       products: [],
@@ -1593,6 +1595,7 @@ export const getCatalogueData = async ({
     });
 
     // rubric seo text as default
+    let editUrl = `${ROUTE_CMS}/rubrics/${rubric._id}`;
     let textTop: string | null | undefined = getFieldStringLocale(rubric.textTopI18n, locale);
     let textBottom: string | null | undefined = getFieldStringLocale(rubric.textBottomI18n, locale);
     let seoTop = await rubricSeoCollection.findOne({
@@ -1608,6 +1611,7 @@ export const getCatalogueData = async ({
 
     // category seo text if selected
     if (selectedCategories.length > 0 && selectedCategories.length < 2 && selectedCategories[0]) {
+      editUrl = `${ROUTE_CMS}/rubrics/${rubric._id}/categories/${selectedCategories[0]._id}`;
       textTop = getFieldStringLocale(selectedCategories[0].textTopI18n, locale);
       textBottom = getFieldStringLocale(selectedCategories[0].textBottomI18n, locale);
       seoTop = await rubricSeoCollection.findOne({
@@ -1677,6 +1681,7 @@ export const getCatalogueData = async ({
       _id: rubric._id,
       rubricName,
       rubricSlug: rubric.slug,
+      editUrl,
 
       // products
       products,

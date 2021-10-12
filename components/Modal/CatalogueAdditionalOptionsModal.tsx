@@ -9,11 +9,11 @@ import { useRouter } from 'next/router';
 import * as React from 'react';
 
 interface GetFilterOptionsAlphabetListInterface {
-  options: CatalogueFilterAttributeOptionInterface[];
+  options?: CatalogueFilterAttributeOptionInterface[] | null;
 }
 
 function getFilterOptionsAlphabetList({ options }: GetFilterOptionsAlphabetListInterface) {
-  const countOptionNames = options.reduce((acc: number, option) => {
+  const countOptionNames = (options || []).reduce((acc: number, option) => {
     return acc + noNaN(option.name);
   }, 0);
   const isNumber = countOptionNames > 0;
@@ -21,7 +21,7 @@ function getFilterOptionsAlphabetList({ options }: GetFilterOptionsAlphabetListI
   const payload: AlphabetListModelType<CatalogueFilterAttributeOptionInterface>[] = [];
   ALL_ALPHABETS.forEach((letter) => {
     const realLetter = letter.toLowerCase();
-    const letterOptions = options.filter(({ name }) => {
+    const letterOptions = (options || []).filter(({ name }) => {
       const firstLetter = name.charAt(0).toLowerCase();
       return realLetter === firstLetter;
     });
@@ -53,7 +53,7 @@ export interface CatalogueAdditionalOptionsModalInterface
   title: string;
   basePath: string;
   excludedParams?: string[] | null;
-  options: CatalogueFilterAttributeOptionInterface[];
+  options?: CatalogueFilterAttributeOptionInterface[] | null;
 }
 
 const CatalogueAdditionalOptionsModal: React.FC<CatalogueAdditionalOptionsModalInterface> = ({

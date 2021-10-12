@@ -66,6 +66,7 @@ export default class MyDocument extends Document {
           ></script>
           <Main />
           <NextScript />
+          <div className='relative z-[999999]' id='tooltip-container' />
         </body>
       </Html>
     );

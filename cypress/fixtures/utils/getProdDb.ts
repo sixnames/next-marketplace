@@ -28,6 +28,7 @@ import {
   SupplierModel,
   UserModel,
   ProductSeoModel,
+  UserCategoryModel,
 } from '../../../db/dbModels';
 import {
   COL_ATTRIBUTES,
@@ -58,6 +59,7 @@ import {
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
   COL_SUPPLIERS,
+  COL_USER_CATEGORIES,
   COL_USERS,
 } from '../../../db/collectionNames';
 import { Db, MongoClient } from 'mongodb';
@@ -161,6 +163,11 @@ export async function updateIndexes(db: Db) {
   const usersCollection = db.collection<UserModel>(COL_USERS);
   await usersCollection.createIndex({ email: 1 }, { unique: true });
   await usersCollection.createIndex({ roleId: 1 });
+
+  // User categories
+  await createCollectionIfNotExist(COL_USER_CATEGORIES);
+  const userCategoriesCollection = db.collection<UserCategoryModel>(COL_USER_CATEGORIES);
+  await userCategoriesCollection.createIndex({ companyId: 1 });
 
   // Brands
   await createCollectionIfNotExist(COL_BRANDS);

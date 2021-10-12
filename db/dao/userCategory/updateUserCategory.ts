@@ -76,7 +76,7 @@ export async function updateUserCategory({
 
     // create
     const { _id, ...values } = input;
-    const createdUserCategoryResult = await userCategoriesCollection.findOneAndUpdate(
+    const updatedUserCategoryResult = await userCategoriesCollection.findOneAndUpdate(
       {
         _id: new ObjectId(_id),
       },
@@ -86,7 +86,7 @@ export async function updateUserCategory({
         updatedAt: new Date(),
       },
     );
-    if (!createdUserCategoryResult.ok) {
+    if (!updatedUserCategoryResult.ok) {
       return errorPayload;
     }
 

@@ -1,5 +1,6 @@
 import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'config/common';
 import { createUserCategory } from 'db/dao/userCategory/createUserCategory';
+import { deleteUserCategory } from 'db/dao/userCategory/deleteUserCategory';
 import { updateUserCategory } from 'db/dao/userCategory/updateUserCategory';
 import { sendApiRouteResponse } from 'lib/sessionHelpers';
 import { NextApiRequest, NextApiResponse } from 'next';
@@ -33,7 +34,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   // delete
   if (req.method === REQUEST_METHOD_DELETE) {
-    const payload = await createUserCategory({
+    const payload = await deleteUserCategory({
       context: { req, res },
       input: JSON.parse(req.body),
     });

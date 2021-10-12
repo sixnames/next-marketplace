@@ -17,7 +17,7 @@ import {
 import { shopProductFieldsPipeline } from 'db/dao/constantPipelines';
 import { getDatabase } from 'db/mongodb';
 import { OrderInterface } from 'db/uiInterfaces';
-import { useCancelOrder, useConfirmOrder } from 'hooks/mutations/order/useOrderMutations';
+import { useCancelOrder, useConfirmOrder } from 'hooks/mutations/useOrderMutations';
 import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/console/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';

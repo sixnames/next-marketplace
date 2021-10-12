@@ -11,10 +11,7 @@ import { CONFIRM_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { useNotificationsContext } from 'context/notificationsContext';
 import { OrderInterface, OrderProductInterface } from 'db/uiInterfaces';
-import {
-  useCancelOrderProduct,
-  useUpdateOrderProduct,
-} from 'hooks/mutations/order/useOrderMutations';
+import { useCancelOrderProduct, useUpdateOrderProduct } from 'hooks/mutations/useOrderMutations';
 import { noNaN } from 'lib/numbers';
 import Image from 'next/image';
 import * as React from 'react';

@@ -868,7 +868,7 @@ export interface UserCategoryModel extends TimestampModel {
   payFromCashbackPercent: number;
 }
 
-export interface UserCashbackLogModel {
+export interface UserCashbackLogModel extends TimestampModel {
   _id: ObjectIdModel;
   userId: ObjectIdModel;
   orderId?: ObjectIdModel;
@@ -878,8 +878,6 @@ export interface UserCashbackLogModel {
   descriptionI18n?: any;
   value: number; // - / +
   currency: string;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 export interface UserPaybackLogModel extends UserCashbackLogModel {}
@@ -998,6 +996,7 @@ export type RoleRulePayloadModel = PayloadType<RoleRuleModel>;
 export type PagesGroupPayloadModel = PayloadType<PagesGroupModel>;
 export type PagePayloadModel = PayloadType<PageModel>;
 export type OrderPayloadModel = PayloadType<OrderModel>;
+export type UserCategoryPayloadModel = PayloadType<UserCategoryModel>;
 export type OrderProductPayloadModel = PayloadType<OrderProductModel>;
 
 export interface CartPayloadModel {

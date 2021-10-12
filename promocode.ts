@@ -2,15 +2,15 @@
 // У блогера должен быть промокод для каждой акции отдельно
 // Промокод можно создавать вручную (вписавать значение кода вручную. не менее 4 символов) или генерировать. Валидировать пересечения промокодов
 
-import { AssetModel } from 'db/dbModels';
+import { AssetModel, ObjectIdModel } from 'db/dbModels';
 
 // Промокод
 export interface PromoCodeModel {
-  _id: string;
+  _id: ObjectIdModel;
   code: string;
   active: boolean;
-  promoId: string;
-  promoterId?: string;
+  promoId: ObjectIdModel;
+  promoterId?: ObjectIdModel;
   paybackPercent: number;
   createdAt: Date;
   updatedAt: Date;
@@ -18,9 +18,9 @@ export interface PromoCodeModel {
 
 // Акция
 export interface PromoModel {
-  _id: string;
-  shopId: string;
-  companyId: string;
+  _id: ObjectIdModel;
+  shopId: ObjectIdModel;
+  companyId: ObjectIdModel;
   discountPercent: number;
   cashbackPercent: number;
   nameI18n: any;
@@ -57,53 +57,8 @@ export interface PromoModel {
 
 // Товары акции
 export interface ProductPromoModel {
-  _id: string;
-  promoId: string;
-  shopId: string;
-  shopProductId: string;
-}
-
-// Order
-export interface OrderModel {
-  promoId: string;
-}
-
-export interface UserPaybackLogModel {
-  _id: string;
-  userId: string;
-  orderId?: string;
-  creatorId?: string;
-  variant: 'add' | 'subtract';
-  descriptionI18n?: any;
-  value: number; // - / +
-  currency: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface UserCashbackLogModel {
-  _id: string;
-  userId: string;
-  orderId?: string;
-  creatorId?: string;
-  variant: 'add' | 'subtract';
-  descriptionI18n?: any;
-  value: number; // - / +
-  currency: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface UserPaybackModel {
-  _id: string;
-  userId: string;
-  companyId: string;
-  value: number;
-}
-
-export interface UserCashbackModel {
-  _id: string;
-  userId: string;
-  companyId: string;
-  value: number;
+  _id: ObjectIdModel;
+  promoId: ObjectIdModel;
+  shopId: ObjectIdModel;
+  shopProductId: ObjectIdModel;
 }

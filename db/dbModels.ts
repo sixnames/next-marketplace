@@ -862,10 +862,10 @@ export interface UserCategoryModel extends TimestampModel {
   companyId: ObjectIdModel;
   nameI18n: TranslationModel;
   descriptionI18n?: TranslationModel;
-  entryMinCharge: number;
   discountPercent: number;
   cashbackPercent: number;
   payFromCashbackPercent: number;
+  entryMinCharge: number;
 }
 
 export interface UserCashbackLogModel extends TimestampModel {

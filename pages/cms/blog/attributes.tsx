@@ -12,7 +12,7 @@ import { useAppContext } from 'context/appContext';
 import { COL_BLOG_ATTRIBUTES, COL_OPTIONS_GROUPS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { BlogAttributeInterface } from 'db/uiInterfaces';
-import { useDeleteBlogAttribute } from 'hooks/mutations/blog/useBlogMutations';
+import { useDeleteBlogAttribute } from 'hooks/mutations/useBlogMutations';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import AppSubNav from 'layout/AppSubNav';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';

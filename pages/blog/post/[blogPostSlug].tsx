@@ -23,7 +23,7 @@ import {
 } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { BlogAttributeInterface, BlogPostInterface, OptionInterface } from 'db/uiInterfaces';
-import { useCreateBlogPostLike } from 'hooks/mutations/blog/useBlogMutations';
+import { useCreateBlogPostLike } from 'hooks/mutations/useBlogMutations';
 import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';

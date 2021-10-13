@@ -557,6 +557,7 @@ export interface OrderModel extends TimestampModel, BaseModel {
   reservationDate?: DateModel | null;
   isCanceled?: boolean;
   requests?: OrderRequestModel[] | null;
+  promoId?: ObjectIdModel;
 }
 
 export interface ProductConnectionItemModel {
@@ -832,6 +833,14 @@ export interface UserNotificationsModel {
   companyCanceledOrderProduct?: NotificationConfigModel | null;
 }
 
+export interface UserCashbackModel {
+  _id: ObjectIdModel;
+  companyId: ObjectIdModel;
+  value: number;
+}
+
+export interface UserPaybackModel extends UserCashbackModel {}
+
 export interface UserModel extends BaseModel, TimestampModel {
   name: string;
   lastName?: string | null;
@@ -842,8 +851,10 @@ export interface UserModel extends BaseModel, TimestampModel {
   avatar?: AssetModel | null;
   roleId: ObjectIdModel;
   cartId?: ObjectIdModel | null;
-  categoryIds?: ObjectIdModel[] | null;
   notifications: UserNotificationsModel;
+  categoryIds?: ObjectIdModel[] | null;
+  cashback?: UserCashbackModel[] | null;
+  payback?: UserPaybackModel[] | null;
 }
 
 export interface UserCategoryModel extends TimestampModel {
@@ -851,11 +862,25 @@ export interface UserCategoryModel extends TimestampModel {
   companyId: ObjectIdModel;
   nameI18n: TranslationModel;
   descriptionI18n?: TranslationModel;
-  entryMinCharge: number;
   discountPercent: number;
   cashbackPercent: number;
   payFromCashbackPercent: number;
+  entryMinCharge?: number | null;
 }
+
+export interface UserCashbackLogModel extends TimestampModel {
+  _id: ObjectIdModel;
+  userId: ObjectIdModel;
+  orderId?: ObjectIdModel;
+  creatorId?: ObjectIdModel;
+  companyId: ObjectIdModel;
+  variant: 'add' | 'subtract';
+  descriptionI18n?: any;
+  value: number; // - / +
+  currency: string;
+}
+
+export interface UserPaybackLogModel extends UserCashbackLogModel {}
 
 // Pages
 export interface PagesGroupModel {
@@ -971,6 +996,7 @@ export type RoleRulePayloadModel = PayloadType<RoleRuleModel>;
 export type PagesGroupPayloadModel = PayloadType<PagesGroupModel>;
 export type PagePayloadModel = PayloadType<PageModel>;
 export type OrderPayloadModel = PayloadType<OrderModel>;
+export type UserCategoryPayloadModel = PayloadType<UserCategoryModel>;
 export type OrderProductPayloadModel = PayloadType<OrderProductModel>;
 
 export interface CartPayloadModel {

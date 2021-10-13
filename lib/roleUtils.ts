@@ -1013,7 +1013,7 @@ const baseRoleRules: RoleRuleBaseExtended[] = [
   // UserCategory
   {
     allow: false,
-    slug: 'deleteUserCategory',
+    slug: 'createUserCategory',
     descriptionI18n: {},
     nameI18n: {
       ru: 'Создание категории пользователя',
@@ -1021,7 +1021,7 @@ const baseRoleRules: RoleRuleBaseExtended[] = [
   },
   {
     allow: false,
-    slug: 'deleteUserCategory',
+    slug: 'updateUserCategory',
     descriptionI18n: {},
     nameI18n: {
       ru: 'Обновление категории пользователя',

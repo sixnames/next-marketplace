@@ -8,6 +8,7 @@ import {
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { noNaN } from 'lib/numbers';
 import {
   getApiResolverValidationSchema,
   getOperationPermission,
@@ -20,7 +21,7 @@ export interface CreateUserCategoryInputInterface {
   companyId: string;
   nameI18n: TranslationModel;
   descriptionI18n?: TranslationModel;
-  entryMinCharge: number;
+  entryMinCharge?: number | null;
   discountPercent: number;
   cashbackPercent: number;
   payFromCashbackPercent: number;
@@ -77,6 +78,10 @@ export async function createUserCategory({
     const createdUserCategoryResult = await userCategoriesCollection.insertOne({
       ...input,
       companyId,
+      cashbackPercent: noNaN(input.cashbackPercent),
+      discountPercent: noNaN(input.discountPercent),
+      payFromCashbackPercent: noNaN(input.payFromCashbackPercent),
+      entryMinCharge: input.payFromCashbackPercent || null,
       createdAt: new Date(),
       updatedAt: new Date(),
     });

@@ -865,7 +865,7 @@ export interface UserCategoryModel extends TimestampModel {
   discountPercent: number;
   cashbackPercent: number;
   payFromCashbackPercent: number;
-  entryMinCharge: number;
+  entryMinCharge?: number | null;
 }
 
 export interface UserCashbackLogModel extends TimestampModel {

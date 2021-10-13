@@ -8,6 +8,7 @@ import {
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { noNaN } from 'lib/numbers';
 import {
   getApiResolverValidationSchema,
   getOperationPermission,
@@ -21,7 +22,7 @@ export interface UpdateUserCategoryInputInterface {
   companyId: string;
   nameI18n: TranslationModel;
   descriptionI18n?: TranslationModel;
-  entryMinCharge: number;
+  entryMinCharge?: number | null;
   discountPercent: number;
   cashbackPercent: number;
   payFromCashbackPercent: number;
@@ -83,6 +84,10 @@ export async function updateUserCategory({
       {
         ...values,
         companyId,
+        cashbackPercent: noNaN(values.cashbackPercent),
+        discountPercent: noNaN(values.discountPercent),
+        payFromCashbackPercent: noNaN(values.payFromCashbackPercent),
+        entryMinCharge: values.payFromCashbackPercent || null,
         updatedAt: new Date(),
       },
     );

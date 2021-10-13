@@ -92,7 +92,7 @@ const BlogAttributeModal: React.FC<BlogAttributeModalInterface> = ({ attribute }
 
               <ModalButtons>
                 <Button testId={'blog-attribute-submit'} type={'submit'}>
-                  Создать
+                  {attribute ? 'Обновить' : 'Создать'}
                 </Button>
               </ModalButtons>
             </Form>

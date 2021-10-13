@@ -1,3 +1,4 @@
+import ContentItemControls from 'components/ContentItemControls';
 import Currency from 'components/Currency';
 import Inner from 'components/Inner';
 import Percent from 'components/Percent';
@@ -46,13 +47,22 @@ const UserCategoriesConsumer: NextPage<UserCategoriesConsumerInterface> = ({ use
       accessor: 'entryMinCharge',
       render: ({ cellData }) => <Currency value={cellData} />,
     },
+    {
+      render: ({ dataItem }) => {
+        return (
+          <div className='flex justify-end'>
+            <ContentItemControls testId={`${dataItem.name}`} />
+          </div>
+        );
+      },
+    },
   ];
 
   return (
     <AppContentWrapper>
       <Inner testId={'user-categories-list'}>
         <Title>Категории клиентов</Title>
-        <Table<UserCategoryInterface> columns={columns} data={userCategories} />
+        <Table<UserCategoryInterface> testIdKey={'name'} columns={columns} data={userCategories} />
       </Inner>
     </AppContentWrapper>
   );

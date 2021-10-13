@@ -13,7 +13,7 @@ import { CONFIRM_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { getConsoleOrders, GetConsoleOrdersPayloadType } from 'db/dao/order/getConsoleOrders';
 import { OrderInterface } from 'db/uiInterfaces';
-import { useDeleteOrder } from 'hooks/mutations/order/useOrderMutations';
+import { useDeleteOrder } from 'hooks/mutations/useOrderMutations';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
 import Head from 'next/head';

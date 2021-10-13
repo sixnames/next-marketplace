@@ -19,7 +19,7 @@ import {
   useUpdateBlogPostAttribute,
   useUploadBlogPostAsset,
   useUploadBlogPostPreviewImage,
-} from 'hooks/mutations/blog/useBlogMutations';
+} from 'hooks/mutations/useBlogMutations';
 import useValidationSchema from 'hooks/useValidationSchema';
 import * as React from 'react';
 import { updateBlogPostSchema } from 'validation/blogSchema';

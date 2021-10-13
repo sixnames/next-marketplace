@@ -55,6 +55,9 @@ import {
   ShopProductModel,
   SupplierModel,
   TranslationModel,
+  UserCashbackLogModel,
+  UserCashbackModel,
+  UserCategoryModel,
   UserModel,
   UserNotificationsModel,
 } from './dbModels';
@@ -383,6 +386,29 @@ export interface UserNotificationsInterface extends UserNotificationsModel {
   companyCanceledOrderProduct?: NotificationConfigInterface | null;
 }
 
+// User
+export interface UserCashbackInterface extends UserCashbackModel {
+  company?: CompanyInterface | null;
+}
+
+export interface UserPaybackInterface extends UserCashbackInterface {}
+
+export interface UserCategoryInterface extends UserCategoryModel {
+  company?: CompanyInterface | null;
+  name?: string | null;
+  description?: string | null;
+}
+
+export interface UserCashbackLogInterface extends UserCashbackLogModel {
+  user?: UserInterface | null;
+  order?: OrderInterface | null;
+  creator?: UserInterface | null;
+  company?: CompanyInterface | null;
+  description?: string | null;
+}
+
+export interface UserPaybackLogInterface extends UserCashbackLogInterface {}
+
 export interface UserInterface extends UserModel {
   role?: RoleInterface | null;
   fullName?: string;
@@ -394,6 +420,12 @@ export interface UserInterface extends UserModel {
   customerNotifications?: NotificationConfigInterface[] | null;
   adminNotifications?: NotificationConfigInterface[] | null;
   companyNotifications?: NotificationConfigInterface[] | null;
+  categories?: UserCategoryInterface[] | null;
+  category?: UserCategoryInterface | null;
+  cashback?: UserCashbackInterface[] | null;
+  payback?: UserPaybackInterface[] | null;
+  cashbackLog?: UserCashbackLogInterface[] | null;
+  paybackLog?: UserPaybackLogInterface[] | null;
 }
 
 export interface CatalogueDataInterface {

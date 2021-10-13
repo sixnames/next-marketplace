@@ -5,6 +5,7 @@ import { getObjectId } from 'mongo-seeding';
 const navItemsDefaultSlug = 'navItem';
 
 const navItems: NavItemModel[] = [
+  // Console
   {
     _id: getObjectId(`${navItemsDefaultSlug} console-base`),
     slug: 'console',
@@ -42,13 +43,25 @@ const navItems: NavItemModel[] = [
     navGroup: ROUTE_CONSOLE_NAV_GROUP,
   },
   {
+    _id: getObjectId(`${navItemsDefaultSlug} console-user-categories`),
+    slug: 'console-user-categories',
+    nameI18n: {
+      ru: 'Категории клиентов',
+      en: 'Customer categories',
+    },
+    index: 3,
+    icon: 'user',
+    path: `/user-categories`,
+    navGroup: ROUTE_CONSOLE_NAV_GROUP,
+  },
+  {
     _id: getObjectId(`${navItemsDefaultSlug} console-shops`),
     slug: 'console-shops',
     nameI18n: {
       ru: 'Магазины',
       en: 'Shops',
     },
-    index: 3,
+    index: 4,
     icon: 'marker',
     path: `/shops`,
     navGroup: ROUTE_CONSOLE_NAV_GROUP,
@@ -59,7 +72,7 @@ const navItems: NavItemModel[] = [
       ru: 'Страницы',
       en: 'Pages',
     },
-    index: 4,
+    index: 5,
     icon: 'filter',
     slug: 'console-pages',
     path: `/pages`,
@@ -71,7 +84,7 @@ const navItems: NavItemModel[] = [
       ru: 'Блог',
       en: 'Blog',
     },
-    index: 5,
+    index: 6,
     icon: 'pencil',
     slug: 'console-blog',
     path: `/blog`,
@@ -89,6 +102,8 @@ const navItems: NavItemModel[] = [
     path: `/config`,
     navGroup: ROUTE_CONSOLE_NAV_GROUP,
   },
+
+  // CMS
   {
     _id: getObjectId(`${navItemsDefaultSlug} cms-base`),
     nameI18n: {

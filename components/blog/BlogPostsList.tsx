@@ -9,7 +9,7 @@ import { PAGE_STATE_DRAFT, ROUTE_BLOG } from 'config/common';
 import { BLOG_POST_MODAL, CONFIRM_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { BlogPostInterface } from 'db/uiInterfaces';
-import { useDeleteBlogPost } from 'hooks/mutations/blog/useBlogMutations';
+import { useDeleteBlogPost } from 'hooks/mutations/useBlogMutations';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 

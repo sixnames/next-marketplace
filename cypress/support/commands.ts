@@ -116,7 +116,7 @@ Cypress.Commands.add(
 Cypress.Commands.add('signOut', (redirect = '/') => {
   cy.visit('/api/auth/signout');
   cy.get('[type="submit"]').click();
-  cy.visit('/');
+  cy.visit(redirect);
 });
 
 Cypress.Commands.add('makeAnOrder', ({ callback, orderFields }: Cypress.MakeAnOrderInterface) => {

@@ -87,6 +87,7 @@ const UserCategoryModal: React.FC<UserCategoryModalInterface> = ({ userCategory,
                 label={'Процент скидки'}
                 name={'discountPercent'}
                 testId={'discountPercent'}
+                type={'number'}
                 isRequired
                 showInlineError
               />
@@ -95,6 +96,7 @@ const UserCategoryModal: React.FC<UserCategoryModalInterface> = ({ userCategory,
                 label={'Процент кешбека'}
                 name={'cashbackPercent'}
                 testId={'cashbackPercent'}
+                type={'number'}
                 isRequired
                 showInlineError
               />
@@ -103,6 +105,7 @@ const UserCategoryModal: React.FC<UserCategoryModalInterface> = ({ userCategory,
                 label={'Процент оплаты кешбеком'}
                 name={'payFromCashbackPercent'}
                 testId={'payFromCashbackPercent'}
+                type={'number'}
                 isRequired
                 showInlineError
               />
@@ -111,6 +114,7 @@ const UserCategoryModal: React.FC<UserCategoryModalInterface> = ({ userCategory,
                 label={'Порог вхождения в категорию'}
                 name={'entryMinCharge'}
                 testId={'entryMinCharge'}
+                type={'number'}
               />
 
               <ModalButtons>

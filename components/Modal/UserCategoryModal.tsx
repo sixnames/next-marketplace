@@ -118,7 +118,7 @@ const UserCategoryModal: React.FC<UserCategoryModalInterface> = ({ userCategory,
               />
 
               <ModalButtons>
-                <Button testId={'user-category-submit'} type={'submit'}>
+                <Button testId={'submit-user-category'} type={'submit'}>
                   {userCategory ? 'Обновить' : 'Создать'}
                 </Button>
               </ModalButtons>

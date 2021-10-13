@@ -82,13 +82,15 @@ export async function updateUserCategory({
         _id: new ObjectId(_id),
       },
       {
-        ...values,
-        companyId,
-        cashbackPercent: noNaN(values.cashbackPercent),
-        discountPercent: noNaN(values.discountPercent),
-        payFromCashbackPercent: noNaN(values.payFromCashbackPercent),
-        entryMinCharge: values.payFromCashbackPercent || null,
-        updatedAt: new Date(),
+        $set: {
+          ...values,
+          companyId,
+          cashbackPercent: noNaN(values.cashbackPercent),
+          discountPercent: noNaN(values.discountPercent),
+          payFromCashbackPercent: noNaN(values.payFromCashbackPercent),
+          entryMinCharge: values.payFromCashbackPercent || null,
+          updatedAt: new Date(),
+        },
       },
     );
     if (!updatedUserCategoryResult.ok) {

@@ -38,15 +38,15 @@ describe('User categories', () => {
     cy.getByCy(`cashbackPercent`).clear().type(updatedPercentValue);
     cy.getByCy(`payFromCashbackPercent`).clear().type(updatedPercentValue);
     cy.getByCy(`entryMinCharge`).clear().type(updatedChargeValue);
-    cy.getByCy('submit-user-category').clear().click();
+    cy.getByCy('submit-user-category').click();
     cy.wait(1500);
     cy.getByCy(`${newCategoryName}-row`).should('not.exist');
     cy.getByCy(`${updatedCategoryName}-row`).should('exist');
 
     // should delete
-    cy.getByCy(`${newCategoryName}-delete`).click();
+    cy.getByCy(`${updatedCategoryName}-delete`).click();
     cy.getByCy('delete-user-category-modal').should('exist');
-    cy.getByCy('delete').click();
+    cy.getByCy('confirm').click();
     cy.wait(1500);
     cy.getByCy(`${updatedCategoryName}-row`).should('not.exist');
   });

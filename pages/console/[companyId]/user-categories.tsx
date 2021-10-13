@@ -82,6 +82,7 @@ const UserCategoriesConsumer: NextPage<UserCategoriesConsumerInterface> = ({
                 showModal<ConfirmModalInterface>({
                   variant: CONFIRM_MODAL,
                   props: {
+                    testId: 'delete-user-category-modal',
                     message: `Вы уверенны, что хотите удалить категорию клиента ${dataItem.name}?`,
                     confirm: () => {
                       deleteUserCategory({

@@ -6,7 +6,7 @@ import { useLocaleContext } from 'context/localeContext';
 import Accordion from 'components/Accordion';
 import InputLine from '../Input/InputLine';
 import Icon from 'components/Icon';
-import Tooltip from 'components/Tooltip';
+import WpTooltip from 'components/WpTooltip';
 import { TranslationModel } from 'db/dbModels';
 
 const FormikTranslationsSelect: React.FC<FormikSelectInterface> = ({
@@ -84,11 +84,11 @@ const FormikTranslationsSelect: React.FC<FormikSelectInterface> = ({
               isOpen={isDefault}
               title={localeSlug}
               titleRight={
-                <Tooltip title={accordionIconTooltip}>
+                <WpTooltip title={accordionIconTooltip}>
                   <div className={accordionIconClass}>
                     <Icon className='w-4 h-4' name={accordionIcon} />
                   </div>
-                </Tooltip>
+                </WpTooltip>
               }
             >
               <div className='mt-3 mb-6'>

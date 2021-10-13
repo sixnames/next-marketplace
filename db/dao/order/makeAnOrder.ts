@@ -157,6 +157,7 @@ export async function makeAnOrder({
           itemId,
           password,
           notifications: getUserInitialNotificationsConf(),
+          categoryIds: [],
           createdAt: new Date(),
           updatedAt: new Date(),
         });

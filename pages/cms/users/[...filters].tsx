@@ -12,9 +12,14 @@ import Table, { TableColumn } from 'components/Table';
 import Title from 'components/Title';
 import { DEFAULT_PAGE, ROUTE_CMS, SORT_DESC } from 'config/common';
 import { CONFIRM_MODAL, CREATE_USER_MODAL } from 'config/modalVariants';
-import { COL_ROLES, COL_USERS } from 'db/collectionNames';
+import { COL_ROLES, COL_USER_CATEGORIES, COL_USERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { AppPaginationInterface, RoleInterface, UserInterface } from 'db/uiInterfaces';
+import {
+  AppPaginationInterface,
+  RoleInterface,
+  UserCategoryInterface,
+  UserInterface,
+} from 'db/uiInterfaces';
 import { useDeleteUserMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppContentWrapper from 'layout/AppContentWrapper';
@@ -91,6 +96,20 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
       headTitle: 'Сотрудник сайта',
       accessor: 'role.isStaff',
       render: ({ cellData }) => (cellData ? 'Да' : 'Нет'),
+    },
+    {
+      headTitle: 'Категории',
+      accessor: 'categories',
+      render: ({ cellData }) => {
+        const categories = (cellData || []) as UserCategoryInterface[];
+        return (
+          <React.Fragment>
+            {categories.map((category) => {
+              return <div key={`${category._id}`}>{category.name}</div>;
+            })}
+          </React.Fragment>
+        );
+      },
     },
     {
       render: ({ dataItem }) => {
@@ -279,6 +298,28 @@ export const getServerSideProps = async (
               {
                 $limit: limit,
               },
+
+              // get categories
+              {
+                $lookup: {
+                  from: COL_USER_CATEGORIES,
+                  as: 'categories',
+                  let: {
+                    categoryIds: '$categoryIds',
+                  },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $in: ['$_id', '$$categoryIds'],
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+
+              // get role
               {
                 $lookup: {
                   from: COL_ROLES,
@@ -363,6 +404,7 @@ export const getServerSideProps = async (
 
   const docs: UserInterface[] = [];
   for await (const user of usersResult.docs) {
+    console.log(user);
     docs.push({
       ...user,
       fullName: getFullName(user),
@@ -370,6 +412,14 @@ export const getServerSideProps = async (
         raw: phoneToRaw(user.phone),
         readable: phoneToReadable(user.phone),
       },
+      categories: user.categories
+        ? user.categories.map((category) => {
+            return {
+              ...category,
+              name: getFieldStringLocale(category.nameI18n, locale),
+            };
+          })
+        : null,
       role: user.role
         ? {
             ...user.role,

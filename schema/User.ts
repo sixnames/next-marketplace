@@ -404,6 +404,7 @@ export const UserMutations = mutationType({
             itemId,
             password,
             notifications: getUserInitialNotificationsConf(),
+            categoryIds: [],
             createdAt: new Date(),
             updatedAt: new Date(),
           });
@@ -799,6 +800,7 @@ export const UserMutations = mutationType({
             password,
             roleId: guestRole._id,
             notifications: getUserInitialNotificationsConf(),
+            categoryIds: [],
             createdAt: new Date(),
             updatedAt: new Date(),
           });

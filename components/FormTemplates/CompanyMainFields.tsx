@@ -1,9 +1,10 @@
 import LinkEmail from 'components/Link/LinkEmail';
 import LinkPhone from 'components/Link/LinkPhone';
 import { ROUTE_CMS } from 'config/common';
+import { UserInterface } from 'db/uiInterfaces';
 import Link from 'next/link';
 import * as React from 'react';
-import { UpdateCompanyInput, UserInListFragment } from 'generated/apolloComponents';
+import { UpdateCompanyInput } from 'generated/apolloComponents';
 import { useAppContext } from 'context/appContext';
 import { useFormikContext } from 'formik';
 import { UsersSearchModalInterface } from 'components/Modal/UsersSearchModal';
@@ -17,8 +18,8 @@ import Button from 'components/Button';
 import Table, { TableColumn } from 'components/Table';
 
 export interface CompanyFormMainValuesInterface extends Omit<UpdateCompanyInput, 'companyId'> {
-  owner: UserInListFragment | null;
-  staff: UserInListFragment[];
+  owner: UserInterface | null;
+  staff: UserInterface[];
 }
 
 interface UsersSearchModalControlsInterface
@@ -31,12 +32,12 @@ interface UsersSearchModalControlsInterface
     | 'updateHandler'
     | 'deleteHandler'
   > {
-  createHandler?: (user: UserInListFragment) => void;
-  updateHandler?: (user: UserInListFragment) => void;
-  deleteHandler?: (user: UserInListFragment) => void;
-  isCreateDisabled?: (user: UserInListFragment) => boolean;
-  isUpdateDisabled?: (user: UserInListFragment) => boolean;
-  isDeleteDisabled?: (user: UserInListFragment) => boolean;
+  createHandler?: (user: UserInterface) => void;
+  updateHandler?: (user: UserInterface) => void;
+  deleteHandler?: (user: UserInterface) => void;
+  isCreateDisabled?: (user: UserInterface) => boolean;
+  isUpdateDisabled?: (user: UserInterface) => boolean;
+  isDeleteDisabled?: (user: UserInterface) => boolean;
 }
 
 interface CompanyMainFieldsInterface {
@@ -49,7 +50,7 @@ const CompanyMainFields: React.FC<CompanyMainFieldsInterface> = ({ inConsole }) 
 
   const { owner, staff } = values;
 
-  const columns: TableColumn<UserInListFragment>[] = [
+  const columns: TableColumn<UserInterface>[] = [
     {
       accessor: 'itemId',
       headTitle: 'ID',
@@ -172,7 +173,7 @@ const CompanyMainFields: React.FC<CompanyMainFieldsInterface> = ({ inConsole }) 
       )}
 
       <InputLine label={'Персонал компании'} labelTag={'div'}>
-        <Table<UserInListFragment>
+        <Table<UserInterface>
           columns={columns}
           data={staff}
           testIdKey={'itemId'}

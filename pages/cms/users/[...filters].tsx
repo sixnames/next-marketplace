@@ -399,7 +399,6 @@ export const getServerSideProps = async (
 
   const docs: UserInterface[] = [];
   for await (const user of usersResult.docs) {
-    console.log(user);
     docs.push({
       ...user,
       fullName: getFullName(user),

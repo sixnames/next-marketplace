@@ -163,6 +163,7 @@ export type RoleRuleSlugType =
   // UserCategory
   | 'createUserCategory'
   | 'updateUserCategory'
+  | 'setUserCategory'
   | 'deleteUserCategory';
 
 interface RoleRuleBaseExtended extends Omit<RoleRuleBase, 'slug'> {
@@ -1033,6 +1034,14 @@ const baseRoleRules: RoleRuleBaseExtended[] = [
     descriptionI18n: {},
     nameI18n: {
       ru: 'Удаление категории пользователя',
+    },
+  },
+  {
+    allow: false,
+    slug: 'setUserCategory',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Назначение категории пользователя',
     },
   },
 ];

@@ -7,7 +7,7 @@ import * as React from 'react';
 import Icon from 'components/Icon';
 import Link from '../../components/Link/Link';
 import useCompact from '../../hooks/useCompact';
-import Tooltip from 'components/Tooltip';
+import WpTooltip from 'components/WpTooltip';
 import { IconType } from 'types/iconTypes';
 
 interface CmsNavItemNameInterface {
@@ -120,11 +120,11 @@ const CmsNavItem: React.FC<AppNavItemInterface> = ({
   if (children && children.length) {
     return (
       <li className={itemClassName} data-cy={`app-nav-item-${slug}`}>
-        <Tooltip title={isCompact ? name : null}>
+        <WpTooltip title={isCompact ? `${name}` : ''}>
           <div onClick={dropdownNavHandler}>
             <CmsNavItemName name={name} compact={isCompact} icon={icon} />
           </div>
-        </Tooltip>
+        </WpTooltip>
 
         {innerIsCompact || isCompact ? null : (
           <ul className='pb-10px pl-[38px]'>
@@ -154,7 +154,7 @@ const CmsNavItem: React.FC<AppNavItemInterface> = ({
   const isCurrent = checkIsCurrent(`${path}`);
   return (
     <li className={itemClassName} data-cy={`app-nav-item-${slug}`}>
-      <Tooltip title={isCompact ? name : null}>
+      <WpTooltip title={isCompact ? `${name}` : ''}>
         <div>
           <Link
             href={`${basePath}${path}`}
@@ -165,7 +165,7 @@ const CmsNavItem: React.FC<AppNavItemInterface> = ({
             <CmsNavItemName name={name} compact={isCompact} icon={icon} counter={counter} />
           </Link>
         </div>
-      </Tooltip>
+      </WpTooltip>
     </li>
   );
 };

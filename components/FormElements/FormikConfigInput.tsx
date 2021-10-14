@@ -9,7 +9,7 @@ import InputLine from 'components/FormElements/Input/InputLine';
 import Icon from 'components/Icon';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import PageEditor from 'components/PageEditor';
-import Tooltip from 'components/Tooltip';
+import WpTooltip from 'components/WpTooltip';
 import {
   CONFIG_VARIANT_ADDRESS,
   CONFIG_VARIANT_BOOLEAN,
@@ -180,11 +180,11 @@ const ConfigTranslationInput: React.FC<ConfigTranslationInputInterface> = ({
               isOpen={localeSlug === defaultLocale}
               title={localeSlug}
               titleRight={
-                <Tooltip title={accordionIconTooltip}>
+                <WpTooltip title={accordionIconTooltip}>
                   <div>
                     <Icon className={`w-4 h-4 ${accordionIconClass}`} name={accordionIcon} />
                   </div>
-                </Tooltip>
+                </WpTooltip>
               }
               key={`${inputName}-${localeSlug}`}
             >
@@ -465,11 +465,11 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
           {description ? (
             <React.Fragment>
               {' '}
-              <Tooltip title={description}>
+              <WpTooltip title={description}>
                 <div className='inline-block cursor-pointer ml-3'>
                   <Icon className='w-5 h-5' name={'question-circle'} />
                 </div>
-              </Tooltip>
+              </WpTooltip>
             </React.Fragment>
           ) : null}
         </div>
@@ -520,11 +520,11 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
           {description ? (
             <React.Fragment>
               {' '}
-              <Tooltip title={description}>
+              <WpTooltip title={description}>
                 <div className='inline-block cursor-pointer ml-3'>
                   <Icon className='w-5 h-5' name={'question-circle'} />
                 </div>
-              </Tooltip>
+              </WpTooltip>
             </React.Fragment>
           ) : null}
         </div>
@@ -583,11 +583,11 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
           {description ? (
             <React.Fragment>
               {' '}
-              <Tooltip title={description}>
+              <WpTooltip title={description}>
                 <div className='inline-block cursor-pointer ml-3'>
                   <Icon className='w-5 h-5' name={'question-circle'} />
                 </div>
-              </Tooltip>
+              </WpTooltip>
             </React.Fragment>
           ) : null}
         </div>
@@ -674,11 +674,11 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
         {description ? (
           <React.Fragment>
             {' '}
-            <Tooltip title={description}>
+            <WpTooltip title={description}>
               <div className='inline-block cursor-pointer ml-3'>
                 <Icon className='w-5 h-5' name={'question-circle'} />
               </div>
-            </Tooltip>
+            </WpTooltip>
           </React.Fragment>
         ) : null}
       </div>

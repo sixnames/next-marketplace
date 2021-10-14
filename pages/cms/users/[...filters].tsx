@@ -12,10 +12,15 @@ import Table, { TableColumn } from 'components/Table';
 import Title from 'components/Title';
 import { DEFAULT_PAGE, ROUTE_CMS, SORT_DESC } from 'config/common';
 import { CONFIRM_MODAL, CREATE_USER_MODAL } from 'config/modalVariants';
-import { COL_ROLES, COL_USERS } from 'db/collectionNames';
+import { COL_ROLES, COL_USER_CATEGORIES, COL_USERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { AppPaginationInterface, RoleInterface, UserInterface } from 'db/uiInterfaces';
-import { useDeleteUserMutation } from 'generated/apolloComponents';
+import {
+  AppPaginationInterface,
+  RoleInterface,
+  UserCategoryInterface,
+  UserInterface,
+} from 'db/uiInterfaces';
+import { useDeleteUserMutation } from 'hooks/mutations/useUserMutations';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import { alwaysArray } from 'lib/arrayUtils';
@@ -50,14 +55,11 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
 }) => {
   const router = useRouter();
   const setPageHandler = useNavigateToPageHandler();
-  const { onCompleteCallback, onErrorCallback, showModal, showLoading } = useMutationCallbacks({
+  const { showModal, showLoading } = useMutationCallbacks({
     reload: true,
   });
 
-  const [deleteUserMutation] = useDeleteUserMutation({
-    onCompleted: (data) => onCompleteCallback(data.deleteUser),
-    onError: onErrorCallback,
-  });
+  const [deleteUserMutation] = useDeleteUserMutation();
 
   const columns: TableColumn<UserInterface>[] = [
     {
@@ -93,6 +95,20 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
       render: ({ cellData }) => (cellData ? 'Да' : 'Нет'),
     },
     {
+      headTitle: 'Категории',
+      accessor: 'categories',
+      render: ({ cellData }) => {
+        const categories = (cellData || []) as UserCategoryInterface[];
+        return (
+          <React.Fragment>
+            {categories.map((category) => {
+              return <div key={`${category._id}`}>{category.name}</div>;
+            })}
+          </React.Fragment>
+        );
+      },
+    },
+    {
       render: ({ dataItem }) => {
         return (
           <div className='flex justify-end'>
@@ -112,9 +128,7 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
                     confirm: () => {
                       showLoading();
                       deleteUserMutation({
-                        variables: {
-                          _id: dataItem._id,
-                        },
+                        _id: `${dataItem._id}`,
                       }).catch(console.log);
                     },
                   },
@@ -279,6 +293,28 @@ export const getServerSideProps = async (
               {
                 $limit: limit,
               },
+
+              // get categories
+              {
+                $lookup: {
+                  from: COL_USER_CATEGORIES,
+                  as: 'categories',
+                  let: {
+                    categoryIds: '$categoryIds',
+                  },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $in: ['$_id', '$$categoryIds'],
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+
+              // get role
               {
                 $lookup: {
                   from: COL_ROLES,
@@ -370,6 +406,14 @@ export const getServerSideProps = async (
         raw: phoneToRaw(user.phone),
         readable: phoneToReadable(user.phone),
       },
+      categories: user.categories
+        ? user.categories.map((category) => {
+            return {
+              ...category,
+              name: getFieldStringLocale(category.nameI18n, locale),
+            };
+          })
+        : null,
       role: user.role
         ? {
             ...user.role,

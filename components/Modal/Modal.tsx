@@ -46,6 +46,7 @@ import {
   USERS_SEARCH_MODAL,
   CATEGORY_OPTIONS_MODAL,
   USER_CATEGORY_MODAL,
+  SET_USER_CATEGORY_MODAL,
 } from 'config/modalVariants';
 
 const AdultModal = dynamic(() => import('components/Modal/AdultModal'));
@@ -97,6 +98,7 @@ const CreateRoleModal = dynamic(() => import('components/Modal/CreateRoleModal')
 const MetricModal = dynamic(() => import('components/Modal/MetricModal'));
 const OrderStatusModal = dynamic(() => import('components/Modal/OrderStatusModal'));
 const UserCategoryModal = dynamic(() => import('components/Modal/UserCategoryModal'));
+const SetUserCategoryModal = dynamic(() => import('components/Modal/SetUserCategoryModal'));
 
 interface ModalInterface {
   modalType: string;
@@ -199,6 +201,8 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
           {modalType === MOVE_ATTRIBUTE_MODAL && <MoveAttributeModal {...modalProps} />}
 
           {modalType === USER_CATEGORY_MODAL && <UserCategoryModal {...modalProps} />}
+
+          {modalType === SET_USER_CATEGORY_MODAL && <SetUserCategoryModal {...modalProps} />}
 
           {modalType === CATALOGUE_ADDITIONAL_OPTIONS_MODAL && (
             <CatalogueAdditionalOptionsModal {...modalProps} />

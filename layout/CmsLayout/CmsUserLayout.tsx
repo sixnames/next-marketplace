@@ -39,6 +39,12 @@ const CmsUserLayout: React.FC<CmsUserLayoutInterface> = ({ user, children, bread
         exact: true,
       },
       {
+        name: 'Категории',
+        testId: 'user-categories',
+        path: `${ROUTE_CMS}/users/user/${user._id}/categories`,
+        exact: true,
+      },
+      {
         name: 'Пароль',
         testId: 'user-password',
         path: `${ROUTE_CMS}/users/user/${user._id}/password`,

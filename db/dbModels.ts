@@ -852,7 +852,7 @@ export interface UserModel extends BaseModel, TimestampModel {
   roleId: ObjectIdModel;
   cartId?: ObjectIdModel | null;
   notifications: UserNotificationsModel;
-  categoryIds?: ObjectIdModel[] | null;
+  categoryIds: ObjectIdModel[];
   cashback?: UserCashbackModel[] | null;
   payback?: UserPaybackModel[] | null;
 }

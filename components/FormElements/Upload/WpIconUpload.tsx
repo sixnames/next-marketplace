@@ -3,7 +3,7 @@ import Icon from 'components/Icon';
 import InputLine, { InputLinePropsInterface } from '../Input/InputLine';
 import ButtonCross from 'components/ButtonCross';
 import { useDropzone } from 'react-dropzone';
-import Tooltip from 'components/Tooltip';
+import WpTooltip from 'components/WpTooltip';
 
 interface WpIconUploadInterface extends InputLinePropsInterface {
   tooltip?: any;
@@ -60,7 +60,7 @@ const WpIconUpload: React.FC<WpIconUploadInterface> = ({
       lineContentClass={lineContentClass}
       error={error}
     >
-      <Tooltip title={tooltip}>
+      <WpTooltip title={tooltip}>
         <div
           className='relative cursor-pointer text-secondary w-24 h-24 flex-shrink-0 border border-border-300 rounded-md bg-white overflow-hidden'
           style={{ width, height }}
@@ -96,7 +96,7 @@ const WpIconUpload: React.FC<WpIconUploadInterface> = ({
             <Icon name={'image'} className='absolute top-[10%] left-[10%] w-[80%] h-[80%]' />
           )}
         </div>
-      </Tooltip>
+      </WpTooltip>
       {children}
     </InputLine>
   );

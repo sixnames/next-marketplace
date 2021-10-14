@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Icon from 'components/Icon';
-import Tooltip from 'components/Tooltip';
+import WpTooltip from 'components/WpTooltip';
 import { ButtonTheme, ButtonType, SizeType } from 'types/clientTypes';
 import { IconType } from 'types/iconTypes';
 
@@ -12,7 +12,7 @@ export interface ButtonPropsInterface {
   type?: ButtonType;
   disabled?: boolean;
   circle?: boolean;
-  title?: string;
+  title?: any;
   icon?: IconType;
   onClick?: (e: any) => void;
   testId?: string;
@@ -59,7 +59,7 @@ const Button: React.FC<ButtonPropsInterface> = ({
 
   return (
     <React.Fragment>
-      <Tooltip title={!disabled ? title : null}>
+      <WpTooltip title={!disabled ? title : null}>
         <button
           aria-label={ariaLabel}
           data-cy={testId}
@@ -79,7 +79,7 @@ const Button: React.FC<ButtonPropsInterface> = ({
 
           {children}
         </button>
-      </Tooltip>
+      </WpTooltip>
     </React.Fragment>
   );
 };

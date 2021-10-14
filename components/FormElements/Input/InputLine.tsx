@@ -2,7 +2,7 @@ import FieldErrorMessage from 'components/FormElements/FieldErrorMessage/FieldEr
 import * as React from 'react';
 import { IconType } from 'types/iconTypes';
 import Icon from 'components/Icon';
-import Tooltip from 'components/Tooltip';
+import WpTooltip from 'components/WpTooltip';
 
 export interface InputLinePropsInterface {
   name?: string;
@@ -77,11 +77,11 @@ const InputLine: React.FC<InputLinePropsInterface> = ({
             </sup>
           ) : null}
           {description ? (
-            <Tooltip title={description}>
+            <WpTooltip title={description}>
               <div className='inline cursor-pointer ml-3'>
                 <Icon className='w-5 h-5' name={'question-circle'} />
               </div>
-            </Tooltip>
+            </WpTooltip>
           ) : null}
         </TagName>
       ) : null}

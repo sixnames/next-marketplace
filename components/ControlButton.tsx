@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Icon from 'components/Icon';
-import Tooltip from 'components/Tooltip';
+import WpTooltip from 'components/WpTooltip';
 import { noNaN } from 'lib/numbers';
 import { ButtonType } from 'types/clientTypes';
 import { IconType } from 'types/iconTypes';
@@ -78,7 +78,7 @@ const ControlButton: React.FC<ControlButtonInterface> = ({
 
   return (
     <React.Fragment>
-      <Tooltip title={!disabled ? title : null}>
+      <WpTooltip title={!disabled ? `${title}` : ''}>
         <button
           aria-label={ariaLabel}
           onClick={onClick}
@@ -96,7 +96,7 @@ const ControlButton: React.FC<ControlButtonInterface> = ({
             className={`${iconSizeClass} ${iconClass ? iconClass : ''}`}
           />
         </button>
-      </Tooltip>
+      </WpTooltip>
     </React.Fragment>
   );
 };

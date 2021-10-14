@@ -18,7 +18,7 @@ const users: UserModel[] = [
     cartId: null,
     roleId: getObjectId('adminRole'),
     notifications: getUserInitialNotificationsConf(),
-    categoryIds: getObjectIds(['Company A category 1']),
+    categoryIds: getObjectIds(['Company A category 1', 'Company B category 1']),
     createdAt: new Date(),
     updatedAt: new Date(),
   },

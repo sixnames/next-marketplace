@@ -18,6 +18,38 @@ const userCategories: UserCategoryModel[] = [
     createdAt: new Date(),
     updatedAt: new Date(),
   },
+  {
+    _id: getObjectId('Company B category 1'),
+    cashbackPercent: 50,
+    discountPercent: 50,
+    payFromCashbackPercent: 50,
+    entryMinCharge: 999,
+    companyId: getObjectId('company Company B'),
+    nameI18n: {
+      ru: 'Company B category 1',
+    },
+    descriptionI18n: {
+      ru: 'Company B category 1 description',
+    },
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    _id: getObjectId('Company C category 1'),
+    cashbackPercent: 0,
+    discountPercent: 5,
+    payFromCashbackPercent: 0,
+    entryMinCharge: 999,
+    companyId: getObjectId('company Company C'),
+    nameI18n: {
+      ru: 'Company C category 1',
+    },
+    descriptionI18n: {
+      ru: 'Company C category 1 description',
+    },
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
 ];
 
 // @ts-ignore

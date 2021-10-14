@@ -3,7 +3,7 @@ import FormattedDate from 'components/FormattedDate';
 import Icon from 'components/Icon';
 import Inner from 'components/Inner';
 import PageEditor from 'components/PageEditor';
-import Tooltip from 'components/Tooltip';
+import WpTooltip from 'components/WpTooltip';
 import {
   FILTER_SEPARATOR,
   ROUTE_BLOG_WITH_PAGE,
@@ -65,7 +65,7 @@ const BlogPostMeta: React.FC<BlogListSnippetMetaInterface> = ({
       ) : null}
 
       {/*likes counter*/}
-      <Tooltip title={me ? '' : 'Вы должны быть авторизованны для данного действия'}>
+      <WpTooltip title={me ? '' : 'Вы должны быть авторизованны для данного действия'}>
         <div
           className={`flex items-center gap-2 ${
             isLikeAllowed ? 'cursor-pointer transition-all duration-150 hover:text-theme' : ''
@@ -79,7 +79,7 @@ const BlogPostMeta: React.FC<BlogListSnippetMetaInterface> = ({
           <Icon className='w-4 h-4' name={'like'} />
           <div>{noNaN(likesCount)}</div>
         </div>
-      </Tooltip>
+      </WpTooltip>
     </div>
   );
 };

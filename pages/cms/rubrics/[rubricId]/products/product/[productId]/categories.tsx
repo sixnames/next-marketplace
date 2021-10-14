@@ -1,7 +1,7 @@
 import Checkbox from 'components/FormElements/Checkbox/Checkbox';
 import Inner from 'components/Inner';
 import RequestError from 'components/RequestError';
-import Tooltip from 'components/Tooltip';
+import WpTooltip from 'components/WpTooltip';
 import { ROUTE_CMS } from 'config/common';
 import { COL_CATEGORIES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
@@ -83,7 +83,7 @@ const ProductCategories: React.FC<ProductCategoriesInterface> = ({
             <div className='font-medium' data-cy={`category-${name}`}>
               {name}
             </div>
-            <Tooltip
+            <WpTooltip
               title={isViewChecked ? 'Показывать в заголовке товара' : 'Категория не выбрана'}
             >
               <div>
@@ -106,7 +106,7 @@ const ProductCategories: React.FC<ProductCategoriesInterface> = ({
                   }}
                 />
               </div>
-            </Tooltip>
+            </WpTooltip>
           </div>
           {categories && categories.length > 0 ? (
             <div className='ml-4'>

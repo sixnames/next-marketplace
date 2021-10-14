@@ -5,11 +5,12 @@ import InputLine from 'components/FormElements/Input/InputLine';
 import Inner from 'components/Inner';
 import { ROUTE_CMS } from 'config/common';
 import { COL_ROLES, COL_USERS } from 'db/collectionNames';
+import { UpdateUserInputInterface } from 'db/dao/user/updateUser';
 import { NotificationConfigModel, UserNotificationsModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { NotificationConfigInterface, UserInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
-import { UpdateUserInput, useUpdateUserMutation } from 'generated/apolloComponents';
+import { useUpdateUserMutation } from 'hooks/mutations/useUserMutations';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
@@ -49,22 +50,19 @@ const UserNotificationsConsumer: React.FC<UseNotificationsConsumerInterface> = (
   const validationSchema = useValidationSchema({
     schema: updateUserSchema,
   });
-  const { onErrorCallback, onCompleteCallback, showLoading } = useMutationCallbacks({
+  const { showLoading } = useMutationCallbacks({
     reload: true,
   });
-  const [updateUserMutation] = useUpdateUserMutation({
-    onError: onErrorCallback,
-    onCompleted: (data) => onCompleteCallback(data.updateUser),
-  });
+  const [updateUserMutation] = useUpdateUserMutation();
 
-  const initialValues: UpdateUserInput = {
+  const initialValues: UpdateUserInputInterface = {
+    _id: `${user._id}`,
     name: user.name,
     lastName: user.lastName,
     secondName: user.secondName,
     email: user.email,
     phone: user.phone,
-    roleId: user.roleId,
-    userId: user._id,
+    roleId: `${user.roleId}`,
     notifications: user.notifications,
   };
 
@@ -92,23 +90,19 @@ const UserNotificationsConsumer: React.FC<UseNotificationsConsumerInterface> = (
           onSubmit={(values) => {
             showLoading();
             updateUserMutation({
-              variables: {
-                input: {
-                  ...values,
-                  phone: phoneToRaw(values.phone),
-                  notifications: Object.keys(values.notifications || {}).reduce(
-                    (acc: UserNotificationsModel, key) => {
-                      const config: NotificationConfigModel = get(values.notifications, key);
-                      if (!config) {
-                        return acc;
-                      }
-                      set(acc, key, omit(config, 'name'));
-                      return acc;
-                    },
-                    {},
-                  ),
+              ...values,
+              phone: phoneToRaw(values.phone),
+              notifications: Object.keys(values.notifications || {}).reduce(
+                (acc: UserNotificationsModel, key) => {
+                  const config: NotificationConfigModel = get(values.notifications, key);
+                  if (!config) {
+                    return acc;
+                  }
+                  set(acc, key, omit(config, 'name'));
+                  return acc;
                 },
-              },
+                {},
+              ),
             }).catch(console.log);
           }}
         >

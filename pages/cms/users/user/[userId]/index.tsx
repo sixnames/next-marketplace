@@ -4,10 +4,11 @@ import UserMainFields from 'components/FormTemplates/UserMainFields';
 import Inner from 'components/Inner';
 import { ROUTE_CMS, SORT_DESC } from 'config/common';
 import { COL_ROLES, COL_USERS } from 'db/collectionNames';
+import { UpdateUserInputInterface } from 'db/dao/user/updateUser';
 import { getDatabase } from 'db/mongodb';
 import { RoleInterface, UserInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
-import { UpdateUserInput, useUpdateUserMutation } from 'generated/apolloComponents';
+import { useUpdateUserMutation } from 'hooks/mutations/useUserMutations';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
@@ -32,22 +33,19 @@ const UserDetailsConsumer: React.FC<UserDetailsConsumerInterface> = ({ user, rol
   const validationSchema = useValidationSchema({
     schema: updateUserSchema,
   });
-  const { onErrorCallback, onCompleteCallback, showLoading } = useMutationCallbacks({
+  const { showLoading } = useMutationCallbacks({
     reload: true,
   });
-  const [updateUserMutation] = useUpdateUserMutation({
-    onError: onErrorCallback,
-    onCompleted: (data) => onCompleteCallback(data.updateUser),
-  });
+  const [updateUserMutation] = useUpdateUserMutation();
 
-  const initialValues: UpdateUserInput = {
+  const initialValues: UpdateUserInputInterface = {
+    _id: `${user._id}`,
     name: user.name,
     lastName: user.lastName,
     secondName: user.secondName,
     email: user.email,
     phone: user.phone,
-    roleId: user.roleId,
-    userId: user._id,
+    roleId: `${user.roleId}`,
     notifications: user.notifications,
   };
 
@@ -71,12 +69,8 @@ const UserDetailsConsumer: React.FC<UserDetailsConsumerInterface> = ({ user, rol
           onSubmit={(values) => {
             showLoading();
             updateUserMutation({
-              variables: {
-                input: {
-                  ...values,
-                  phone: phoneToRaw(values.phone),
-                },
-              },
+              ...values,
+              phone: phoneToRaw(values.phone),
             }).catch(console.log);
           }}
         >

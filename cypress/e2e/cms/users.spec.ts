@@ -56,6 +56,22 @@ describe('Users', () => {
     cy.getByCy('submit-password').click();
     cy.wait(1500);
 
+    // Should CRUD user categories
+    cy.getByCy('user-categories').click();
+    cy.wait(1500);
+    cy.getByCy(`user-categories-page`).should('exist');
+    cy.getByCy('add-user-category').click();
+    cy.getByCy(`set-user-category-modal`).should('exist');
+    cy.selectOptionByTestId(`companyId`, 'Company A');
+    cy.selectOptionByTestId(`categoryId`, 'Company A category 1');
+    cy.getByCy('submit-user-category').click();
+    cy.wait(1500);
+    cy.getByCy(`Company A category 1-delete`).click();
+    cy.getByCy(`unset-user-category-modal`).should('exist');
+    cy.getByCy('confirm').click();
+    cy.wait(1500);
+    cy.getByCy(`Company A category 1-delete`).should('not.exist');
+
     // Should delete user
     cy.getByCy('app-nav-item-cms-users').click();
     cy.getByCy(`${updatedUserName}-delete`).click();

@@ -1,4 +1,5 @@
 import ModalText from 'components/Modal/ModalText';
+import { UpdateMyPasswordInputInterface } from 'db/dao/user/updateMyPassword';
 import * as React from 'react';
 import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
@@ -6,7 +7,6 @@ import ModalButtons from 'components/Modal/ModalButtons';
 import { Form, Formik } from 'formik';
 import Button from 'components/Button';
 import { useAppContext } from 'context/appContext';
-import { UpdateMyPasswordInput } from 'generated/apolloComponents';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { useUserContext } from 'context/userContext';
 import RequestError from 'components/RequestError';
@@ -14,7 +14,7 @@ import FormikInput from 'components/FormElements/Input/FormikInput';
 import { updateMyPasswordSchema } from 'validation/userSchema';
 
 export interface UpdateMyPasswordModalInterface {
-  confirm: (input: UpdateMyPasswordInput) => void;
+  confirm: (input: UpdateMyPasswordInputInterface) => void;
 }
 
 const UpdateMyPasswordModal: React.FC<UpdateMyPasswordModalInterface> = ({ confirm }) => {

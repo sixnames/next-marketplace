@@ -6,7 +6,7 @@ import { COL_ROLES, COL_USERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { UserInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
-import { useUpdateUserPasswordMutation } from 'generated/apolloComponents';
+import { useUpdateUserPasswordMutation } from 'hooks/mutations/useUserMutations';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsUserLayout from 'layout/CmsLayout/CmsUserLayout';
@@ -24,14 +24,10 @@ interface UserPasswordInterface {
 }
 
 const UserPasswordConsumer: React.FC<UserPasswordInterface> = ({ user }) => {
-  const { onCompleteCallback, onErrorCallback, showLoading, showErrorNotification } =
-    useMutationCallbacks({
-      reload: true,
-    });
-  const [updateUserPasswordMutation] = useUpdateUserPasswordMutation({
-    onCompleted: (data) => onCompleteCallback(data.updateUserPassword),
-    onError: onErrorCallback,
+  const { showLoading, showErrorNotification } = useMutationCallbacks({
+    reload: true,
   });
+  const [updateUserPasswordMutation] = useUpdateUserPasswordMutation();
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `Пароль`,
@@ -59,12 +55,8 @@ const UserPasswordConsumer: React.FC<UserPasswordInterface> = ({ user }) => {
             if (newPassword === repeatPassword) {
               showLoading();
               updateUserPasswordMutation({
-                variables: {
-                  input: {
-                    userId: user._id,
-                    newPassword,
-                  },
-                },
+                _id: `${user._id}`,
+                newPassword,
               }).catch(console.log);
             } else {
               showErrorNotification({
@@ -100,9 +92,9 @@ const UserPasswordConsumer: React.FC<UserPasswordInterface> = ({ user }) => {
   );
 };
 
-interface ProductPageInterface extends PagePropsInterface, UserPasswordInterface {}
+interface UserPasswordPageInterface extends PagePropsInterface, UserPasswordInterface {}
 
-const UserPasswordPage: NextPage<ProductPageInterface> = ({ pageUrls, ...props }) => {
+const UserPasswordPage: NextPage<UserPasswordPageInterface> = ({ pageUrls, ...props }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
       <UserPasswordConsumer {...props} />
@@ -112,7 +104,7 @@ const UserPasswordPage: NextPage<ProductPageInterface> = ({ pageUrls, ...props }
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<ProductPageInterface>> => {
+): Promise<GetServerSidePropsResult<UserPasswordPageInterface>> => {
   const { query } = context;
   const { userId } = query;
   const { db } = await getDatabase();

@@ -141,3 +141,34 @@ export function useMutation<T extends PayloadModel>({
     },
   ];
 }
+
+interface UseMutationHandlerInputInterface {
+  path: string;
+  method: string;
+  reload?: boolean;
+}
+
+export function useMutationHandler<TPayload extends PayloadModel, TArgs>({
+  path,
+  method,
+  reload = true,
+}: UseMutationHandlerInputInterface): UseMutationConsumerPayload<TPayload, TArgs> {
+  const [handle, payload] = useMutation<TPayload>({
+    input: path,
+    reload,
+  });
+
+  const handler = React.useCallback(
+    async (args: TArgs) => {
+      const payload = await handle({
+        method,
+        body: JSON.stringify(args),
+      });
+      return payload;
+    },
+    /* eslint-disable react-app/react-hooks/exhaustive-deps */
+    [handle, method],
+  );
+
+  return [handler, payload];
+}

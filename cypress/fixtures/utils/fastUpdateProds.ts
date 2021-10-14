@@ -1,54 +1,26 @@
-import { ObjectIdModel, ProductModel, ShopProductModel } from '../../../db/dbModels';
-import { COL_PRODUCTS, COL_SHOP_PRODUCTS } from '../../../db/collectionNames';
+import { UserModel } from '../../../db/dbModels';
+import { COL_USERS } from '../../../db/collectionNames';
 import { dbsConfig, getProdDb } from './getProdDb';
 require('dotenv').config();
-
-interface ShopProductsAggregation {
-  _id: ObjectIdModel;
-  shopProductIds: ObjectIdModel[];
-}
 
 async function updateProds() {
   for await (const dbConfig of dbsConfig) {
     const { db, client } = await getProdDb(dbConfig);
-    const shopProductsCollection = await db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-    const productsCollection = await db.collection<ProductModel>(COL_PRODUCTS);
+    const usersCollection = await db.collection<UserModel>(COL_USERS);
 
     console.log(' ');
     console.log('>>>>>>>>>>>>>>>>>>>>>>>>');
     console.log(' ');
     console.log(`Updating ${dbConfig.dbName} db`);
 
-    const shopProductsAggregation = await shopProductsCollection.aggregate<ShopProductsAggregation>(
-      [
-        {
-          $group: {
-            _id: '$productId',
-            shopProductIds: {
-              $addToSet: '$_id',
-            },
-          },
+    await usersCollection.updateMany(
+      {},
+      {
+        $set: {
+          categoryIds: [],
         },
-      ],
+      },
     );
-
-    for await (const shopProduct of shopProductsAggregation) {
-      const product = await productsCollection.findOne({ _id: shopProduct._id });
-      if (product) {
-        await shopProductsCollection.updateMany(
-          {
-            _id: {
-              $in: shopProduct.shopProductIds,
-            },
-          },
-          {
-            $set: {
-              mainImage: product.mainImage,
-            },
-          },
-        );
-      }
-    }
 
     console.log(`Done ${dbConfig.dbName} db`);
     console.log(' ');

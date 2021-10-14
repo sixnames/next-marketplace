@@ -8,7 +8,7 @@ import Link from 'components/Link/Link';
 import ProductShopPrices from 'components/ProductShopPrices';
 import RequestError from 'components/RequestError';
 import Title from 'components/Title';
-import Tooltip from 'components/Tooltip';
+import WpTooltip from 'components/WpTooltip';
 import { ROUTE_CATALOGUE, ROUTE_SIGN_IN } from 'config/common';
 import { useSiteContext } from 'context/siteContext';
 import {
@@ -111,7 +111,7 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({
       </div>
 
       <div className='absolute top-0 right-0'>
-        <Tooltip title={'Добавить в корзину'}>
+        <WpTooltip title={'Добавить в корзину'}>
           <div>
             <ControlButton
               disabled={isCartButtonDisabled}
@@ -127,7 +127,7 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({
               icon={'cart'}
             />
           </div>
-        </Tooltip>
+        </WpTooltip>
       </div>
     </div>
   );
@@ -170,7 +170,7 @@ const ProfileOrder: React.FC<ProfileOrderInterface> = ({ order, orderIndex }) =>
             </div>
 
             <div className='absolute top-0 right-0'>
-              <Tooltip title={'Повторить заказ'}>
+              <WpTooltip title={'Повторить заказ'}>
                 <div>
                   <ControlButton
                     roundedTopRight
@@ -182,7 +182,7 @@ const ProfileOrder: React.FC<ProfileOrderInterface> = ({ order, orderIndex }) =>
                     testId={`profile-order-${itemId}-repeat`}
                   />
                 </div>
-              </Tooltip>
+              </WpTooltip>
             </div>
           </div>
 

@@ -652,15 +652,6 @@ input CreateSupplierInput {
   url: [URL!]
 }
 
-input CreateUserInput {
-  email: EmailAddress!
-  lastName: String
-  name: String!
-  phone: PhoneNumber!
-  roleId: ObjectId!
-  secondName: String
-}
-
 type Currency {
   _id: ObjectId!
   name: String!
@@ -1068,11 +1059,6 @@ type Mutation {
   createSupplier(input: CreateSupplierInput!): SupplierPayload!
 
   """
-  Should create user
-  """
-  createUser(input: CreateUserInput!): UserPayload!
-
-  """
   Should delete attribute from the attributes group
   """
   deleteAttributeFromGroup(input: DeleteAttributeFromGroupInput!): AttributesGroupPayload!
@@ -1230,11 +1216,6 @@ type Mutation {
   deleteSupplier(_id: ObjectId!): SupplierPayload!
 
   """
-  Should delete user
-  """
-  deleteUser(_id: ObjectId!): UserPayload!
-
-  """
   Should generate shop token
   """
   generateShopToken(_id: ObjectId!): ShopPayload!
@@ -1248,11 +1229,6 @@ type Mutation {
   Should add all products to the cart from user's old order
   """
   repeatOrder(input: RepeatOrderInput!): CartPayload!
-
-  """
-  Should sign up user
-  """
-  signUp(input: SignUpInput!): UserPayload!
 
   """
   Should update attribute in the attributes group
@@ -1333,16 +1309,6 @@ type Mutation {
   Should update metric
   """
   updateMetric(input: UpdateMetricInput!): MetricPayload!
-
-  """
-  Should update session user password
-  """
-  updateMyPassword(input: UpdateMyPasswordInput!): UserPayload!
-
-  """
-  Should update session user profile
-  """
-  updateMyProfile(input: UpdateMyProfileInput!): UserPayload!
 
   """
   Should update nav item
@@ -1495,16 +1461,6 @@ type Mutation {
   updateSupplier(input: UpdateSupplierInput!): SupplierPayload!
 
   """
-  Should update user
-  """
-  updateUser(input: UpdateUserInput!): UserPayload!
-
-  """
-  Should update user password
-  """
-  updateUserPassword(input: UpdateUserPasswordInput!): UserPayload!
-
-  """
   Should update nav categories config
   """
   updateVisibleCategoriesInNavDropdown(
@@ -1529,13 +1485,6 @@ type NavItemPayload implements Payload {
   message: String!
   payload: NavItem
   success: Boolean!
-}
-
-input NotificationConfigInput {
-  email: Boolean
-  group: String!
-  nameI18n: JSONObject!
-  sms: Boolean
 }
 
 """
@@ -2445,15 +2394,6 @@ type ShopsPaginationPayload implements PaginationPayload {
   totalPages: Int!
 }
 
-input SignUpInput {
-  email: EmailAddress!
-  lastName: String
-  name: String!
-  password: String!
-  phone: PhoneNumber!
-  secondName: String
-}
-
 """
 Sort direction enum.
 """
@@ -2647,20 +2587,6 @@ input UpdateManufacturerInput {
 input UpdateMetricInput {
   metricId: ObjectId!
   nameI18n: JSONObject!
-}
-
-input UpdateMyPasswordInput {
-  newPassword: String!
-  newPasswordB: String!
-  oldPassword: String!
-}
-
-input UpdateMyProfileInput {
-  email: EmailAddress!
-  lastName: String
-  name: String!
-  phone: PhoneNumber!
-  secondName: String
 }
 
 input UpdateNavItemInput {
@@ -2930,22 +2856,6 @@ input UpdateSupplierInput {
   url: [URL!]
 }
 
-input UpdateUserInput {
-  email: EmailAddress!
-  lastName: String
-  name: String!
-  notifications: UserNotificationsInput!
-  phone: PhoneNumber!
-  roleId: ObjectId!
-  secondName: String
-  userId: ObjectId!
-}
-
-input UpdateUserPasswordInput {
-  newPassword: String!
-  userId: ObjectId!
-}
-
 input UpdateVisibleCategoriesInNavDropdownInput {
   _id: ObjectId!
   acceptedFormats: [String!]!
@@ -2977,27 +2887,6 @@ type User implements Base & Timestamp {
   secondName: String
   shortName: String!
   updatedAt: Date!
-}
-
-input UserNotificationsInput {
-  adminCanceledOrder: NotificationConfigInput
-  adminCanceledOrderProduct: NotificationConfigInput
-  adminConfirmedOrder: NotificationConfigInput
-  adminNewOrder: NotificationConfigInput
-  canceledOrder: NotificationConfigInput
-  canceledOrderProduct: NotificationConfigInput
-  companyCanceledOrder: NotificationConfigInput
-  companyCanceledOrderProduct: NotificationConfigInput
-  companyConfirmedOrder: NotificationConfigInput
-  companyNewOrder: NotificationConfigInput
-  confirmedOrder: NotificationConfigInput
-  newOrder: NotificationConfigInput
-}
-
-type UserPayload implements Payload {
-  message: String!
-  payload: User
-  success: Boolean!
 }
 
 type UsersPaginationPayload implements PaginationPayload {

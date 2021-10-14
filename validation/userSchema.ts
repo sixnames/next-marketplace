@@ -151,7 +151,7 @@ export const updateMyPasswordSchema = (args: ValidationSchemaArgsInterface) => {
 
 export const updateUserSchema = (args: ValidationSchemaArgsInterface) => {
   return Yup.object({
-    userId: userIdSchema(args),
+    _id: userIdSchema(args),
     roleId: userRoleIdSchema(args),
     ...userCommonFieldsSchema(args),
   });

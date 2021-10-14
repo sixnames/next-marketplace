@@ -1,5 +1,8 @@
 import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'config/common';
 import { DeleteUserInputInterface } from 'db/dao/user/deleteUser';
+import { SignUpInputInterface } from 'db/dao/user/signUp';
+import { UpdateMyPasswordInputInterface } from 'db/dao/user/updateMyPassword';
+import { UpdateMyProfileInputInterface } from 'db/dao/user/updateMyProfile';
 import { UpdateUserInputInterface } from 'db/dao/user/updateUser';
 import { UpdateUserPasswordInputInterface } from 'db/dao/user/updateUserPassword';
 import { CreateUserInputInterface } from 'db/dao/user/createUser';
@@ -31,7 +34,28 @@ export const useDeleteUserMutation = () => {
 
 export const useUpdateUserPasswordMutation = () => {
   return useMutationHandler<UserPayloadModel, UpdateUserPasswordInputInterface>({
-    path: basePath,
-    method: REQUEST_METHOD_DELETE,
+    path: `${basePath}/password`,
+    method: REQUEST_METHOD_PATCH,
+  });
+};
+
+export const useUpdateMyPasswordMutation = () => {
+  return useMutationHandler<UserPayloadModel, UpdateMyPasswordInputInterface>({
+    path: `${basePath}/profile/password`,
+    method: REQUEST_METHOD_PATCH,
+  });
+};
+
+export const useUpdateMyProfileMutation = () => {
+  return useMutationHandler<UserPayloadModel, UpdateMyProfileInputInterface>({
+    path: `${basePath}/profile`,
+    method: REQUEST_METHOD_PATCH,
+  });
+};
+
+export const useSignUpMutation = () => {
+  return useMutationHandler<UserPayloadModel, SignUpInputInterface>({
+    path: `${basePath}/sign-up`,
+    method: REQUEST_METHOD_PATCH,
   });
 };

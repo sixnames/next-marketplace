@@ -50,6 +50,11 @@ const CmsCompanyLayout: React.FC<CmsCompanyLayoutInterface> = ({
         hidden: !company?.domain,
       },
       {
+        name: 'Категории',
+        testId: 'company-categories',
+        path: `${ROUTE_CMS}/companies/${company?._id}/categories`,
+      },
+      {
         name: 'Основные настройки',
         testId: 'company-global-config',
         path: `${ROUTE_CMS}/companies/${company?._id}/config`,

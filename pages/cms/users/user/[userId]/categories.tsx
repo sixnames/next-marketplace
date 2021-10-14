@@ -3,12 +3,16 @@ import ContentItemControls from 'components/ContentItemControls';
 import Currency from 'components/Currency';
 import FixedButtons from 'components/FixedButtons';
 import Inner from 'components/Inner';
+import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import Percent from 'components/Percent';
 import Table, { TableColumn } from 'components/Table';
 import { ROUTE_CMS } from 'config/common';
+import { CONFIRM_MODAL } from 'config/modalVariants';
+import { useAppContext } from 'context/appContext';
 import { COL_COMPANIES, COL_ROLES, COL_USER_CATEGORIES, COL_USERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { UserCategoryInterface, UserInterface } from 'db/uiInterfaces';
+import { useSetUserCategoryMutation } from 'hooks/mutations/useUserMutations';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsUserLayout from 'layout/CmsLayout/CmsUserLayout';
 import { getFieldStringLocale } from 'lib/i18n';
@@ -25,6 +29,9 @@ interface UserCategoriesConsumerInterface {
 }
 
 const UserCategoriesConsumer: React.FC<UserCategoriesConsumerInterface> = ({ user }) => {
+  const { showModal } = useAppContext();
+  const [setUserCategoryMutation] = useSetUserCategoryMutation();
+
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `Категории`,
     config: [
@@ -78,7 +85,19 @@ const UserCategoriesConsumer: React.FC<UserCategoriesConsumerInterface> = ({ use
               testId={`${dataItem.name}`}
               deleteTitle={'Удалить категорию пользователя'}
               deleteHandler={() => {
-                console.log('delete');
+                showModal<ConfirmModalInterface>({
+                  variant: CONFIRM_MODAL,
+                  props: {
+                    testId: 'unset-user-category-modal',
+                    message: `Вы уверенны, что хотите убрать у пользователя категорию ${dataItem.name}?`,
+                    confirm: () => {
+                      setUserCategoryMutation({
+                        userId: `${user._id}`,
+                        categoryId: `${dataItem._id}`,
+                      }).catch(console.log);
+                    },
+                  },
+                });
               }}
             />
           </div>

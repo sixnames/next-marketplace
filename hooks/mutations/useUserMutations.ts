@@ -1,5 +1,6 @@
 import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'config/common';
 import { DeleteUserInputInterface } from 'db/dao/user/deleteUser';
+import { SetUserCategoryInputInterface } from 'db/dao/user/setUserCategory';
 import { SignUpInputInterface } from 'db/dao/user/signUp';
 import { UpdateMyPasswordInputInterface } from 'db/dao/user/updateMyPassword';
 import { UpdateMyProfileInputInterface } from 'db/dao/user/updateMyProfile';
@@ -9,7 +10,7 @@ import { CreateUserInputInterface } from 'db/dao/user/createUser';
 import { UserPayloadModel } from 'db/dbModels';
 import { useMutationHandler } from 'hooks/mutations/useFetch';
 
-const basePath = 'api/user';
+const basePath = '/api/user';
 
 export const useCreateUserMutation = () => {
   return useMutationHandler<UserPayloadModel, CreateUserInputInterface>({
@@ -56,6 +57,13 @@ export const useUpdateMyProfileMutation = () => {
 export const useSignUpMutation = () => {
   return useMutationHandler<UserPayloadModel, SignUpInputInterface>({
     path: `${basePath}/sign-up`,
+    method: REQUEST_METHOD_PATCH,
+  });
+};
+
+export const useSetUserCategoryMutation = () => {
+  return useMutationHandler<UserPayloadModel, SetUserCategoryInputInterface>({
+    path: `${basePath}/category`,
     method: REQUEST_METHOD_PATCH,
   });
 };

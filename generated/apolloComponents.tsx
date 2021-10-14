@@ -2110,12 +2110,8 @@ export type ProductsPaginationPayload = {
 
 export type Query = {
   __typename?: 'Query';
-  /** Should return user by _id */
-  getUser: User;
   /** Should return paginated users */
   getAllUsers: UsersPaginationPayload;
-  /** Should return user company */
-  getUserCompany?: Maybe<Company>;
   getAttributesGroup: AttributesGroup;
   getAllAttributesGroups: Array<AttributesGroup>;
   /** Should return brand by _id */
@@ -2220,11 +2216,6 @@ export type Query = {
   getAllSuppliers: SuppliersPaginationPayload;
   /** Should return suppliers grouped by alphabet */
   getSupplierAlphabetLists: Array<SuppliersAlphabetList>;
-};
-
-
-export type QueryGetUserArgs = {
-  _id: Scalars['ObjectId'];
 };
 
 
@@ -5300,22 +5291,6 @@ export type UsersSerchQuery = (
   ) }
 );
 
-export type UserCompanyFragment = (
-  { __typename?: 'Company' }
-  & Pick<Company, '_id' | 'name' | 'slug'>
-);
-
-export type UserCompanyQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type UserCompanyQuery = (
-  { __typename?: 'Query' }
-  & { getUserCompany?: Maybe<(
-    { __typename?: 'Company' }
-    & UserCompanyFragment
-  )> }
-);
-
 export const RubricInListFragmentDoc = gql`
     fragment RubricInList on Rubric {
   _id
@@ -5545,13 +5520,6 @@ export const SelectOptionFragmentDoc = gql`
   _id
   name
   icon
-}
-    `;
-export const UserCompanyFragmentDoc = gql`
-    fragment UserCompany on Company {
-  _id
-  name
-  slug
 }
     `;
 export const GetAllRubricsDocument = gql`
@@ -10525,37 +10493,3 @@ export function useUsersSerchLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type UsersSerchQueryHookResult = ReturnType<typeof useUsersSerchQuery>;
 export type UsersSerchLazyQueryHookResult = ReturnType<typeof useUsersSerchLazyQuery>;
 export type UsersSerchQueryResult = Apollo.QueryResult<UsersSerchQuery, UsersSerchQueryVariables>;
-export const UserCompanyDocument = gql`
-    query UserCompany {
-  getUserCompany {
-    ...UserCompany
-  }
-}
-    ${UserCompanyFragmentDoc}`;
-
-/**
- * __useUserCompanyQuery__
- *
- * To run a query within a React component, call `useUserCompanyQuery` and pass it any options that fit your needs.
- * When your component renders, `useUserCompanyQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useUserCompanyQuery({
- *   variables: {
- *   },
- * });
- */
-export function useUserCompanyQuery(baseOptions?: Apollo.QueryHookOptions<UserCompanyQuery, UserCompanyQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<UserCompanyQuery, UserCompanyQueryVariables>(UserCompanyDocument, options);
-      }
-export function useUserCompanyLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserCompanyQuery, UserCompanyQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<UserCompanyQuery, UserCompanyQueryVariables>(UserCompanyDocument, options);
-        }
-export type UserCompanyQueryHookResult = ReturnType<typeof useUserCompanyQuery>;
-export type UserCompanyLazyQueryHookResult = ReturnType<typeof useUserCompanyLazyQuery>;
-export type UserCompanyQueryResult = Apollo.QueryResult<UserCompanyQuery, UserCompanyQueryVariables>;

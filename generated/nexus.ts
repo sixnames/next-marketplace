@@ -1963,8 +1963,6 @@ export interface NexusGenFieldTypes {
     getSupplier: NexusGenRootTypes['Supplier']; // Supplier!
     getSupplierAlphabetLists: NexusGenRootTypes['SuppliersAlphabetList'][]; // [SuppliersAlphabetList!]!
     getSupplierBySlug: NexusGenRootTypes['Supplier']; // Supplier!
-    getUser: NexusGenRootTypes['User']; // User!
-    getUserCompany: NexusGenRootTypes['Company'] | null; // Company
     getValidationMessages: NexusGenRootTypes['Message'][]; // [Message!]!
   };
   Role: {
@@ -3094,8 +3092,6 @@ export interface NexusGenFieldTypeNames {
     getSupplier: 'Supplier';
     getSupplierAlphabetLists: 'SuppliersAlphabetList';
     getSupplierBySlug: 'Supplier';
-    getUser: 'User';
-    getUserCompany: 'Company';
     getValidationMessages: 'Message';
   };
   Role: {
@@ -4054,10 +4050,6 @@ export interface NexusGenArgTypes {
     getSupplierBySlug: {
       // args
       slug: string; // String!
-    };
-    getUser: {
-      // args
-      _id: NexusGenScalars['ObjectId']; // ObjectId!
     };
   };
   Rubric: {

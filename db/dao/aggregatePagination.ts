@@ -5,9 +5,33 @@ import {
   SORT_BY_ID_DIRECTION,
   SORT_DESC,
 } from 'config/common';
-import { PaginationInputModel, PaginationPayloadType, SortDirectionModel } from 'db/dbModels';
+import { PaginationInputModel, PaginationPayloadType } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { AggregateOptions } from 'mongodb';
+
+interface CastPaginationInputPayload {
+  search?: string | null;
+  sortBy: string;
+  sortDir: number;
+  page: number;
+  limit: number;
+  skip: number;
+}
+
+export function castPaginationInput(
+  input?: PaginationInputModel | null,
+): CastPaginationInputPayload {
+  const realLimit = input?.limit || PAGINATION_DEFAULT_LIMIT;
+  const realPage = input?.page || DEFAULT_PAGE;
+  return {
+    search: input?.search,
+    limit: realLimit,
+    page: realPage,
+    sortDir: input?.sortDir || SORT_DESC,
+    sortBy: input?.sortBy || SORT_BY_CREATED_AT,
+    skip: (realPage - 1) * realLimit,
+  };
+}
 
 interface AggregatePaginationPropsInterface {
   input?: PaginationInputModel | null;
@@ -19,7 +43,7 @@ interface AggregatePaginationPropsInterface {
 
 const aggregationFallback = {
   sortBy: SORT_BY_CREATED_AT,
-  sortDir: SORT_DESC as SortDirectionModel,
+  sortDir: SORT_DESC,
   docs: [],
   page: 1,
   limit: 0,
@@ -38,20 +62,8 @@ export async function aggregatePagination<TModel>({
   city,
 }: AggregatePaginationPropsInterface): Promise<PaginationPayloadType<TModel>> {
   try {
-    const { page, sortDir, sortBy, limit } = input || {
-      page: DEFAULT_PAGE,
-      sortDir: SORT_DESC,
-      sortBy: SORT_BY_CREATED_AT,
-      limit: PAGINATION_DEFAULT_LIMIT,
-    };
-
-    const realLimit = limit || PAGINATION_DEFAULT_LIMIT;
-    const realPage = page || DEFAULT_PAGE;
-    const realSortDir = sortDir || SORT_DESC;
-    const realSortBy = sortBy || SORT_BY_CREATED_AT;
-
     const { db } = await getDatabase();
-    const skip = realPage ? (realPage - 1) * realLimit : 0;
+    const { page, sortDir, sortBy, limit, skip } = castPaginationInput(input);
 
     const aggregated = await db
       .collection<TModel>(collectionName)
@@ -60,7 +72,7 @@ export async function aggregatePagination<TModel>({
           ...pipeline,
           {
             $sort: {
-              [realSortBy]: realSortDir,
+              [`${sortBy}`]: sortDir,
               [`views.${city}`]: SORT_DESC,
               [`priorities.${city}`]: SORT_DESC,
               _id: SORT_BY_ID_DIRECTION,
@@ -68,7 +80,7 @@ export async function aggregatePagination<TModel>({
           },
           {
             $facet: {
-              docs: [{ $skip: skip }, { $limit: realLimit }],
+              docs: [{ $skip: skip }, { $limit: limit }],
               countAllDocs: [{ $count: 'totalDocs' }],
               countActiveDocs: [{ $match: { active: true } }, { $count: 'totalActiveDocs' }],
             },
@@ -88,7 +100,7 @@ export async function aggregatePagination<TModel>({
           {
             $addFields: {
               totalPagesFloat: {
-                $divide: ['$totalDocs', realLimit],
+                $divide: ['$totalDocs', limit],
               },
             },
           },
@@ -132,10 +144,10 @@ export async function aggregatePagination<TModel>({
       totalDocs: aggregationResult.totalDocs || 0,
       totalActiveDocs: aggregationResult.totalActiveDocs || 0,
       totalPages: aggregationResult.totalPages || DEFAULT_PAGE,
-      sortBy: realSortBy,
-      sortDir: realSortDir,
-      page: realPage,
-      limit: realLimit,
+      sortBy,
+      sortDir,
+      page,
+      limit,
     };
   } catch (e) {
     console.log(e);

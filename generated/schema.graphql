@@ -2121,16 +2121,6 @@ type Query {
   getSupplierBySlug(slug: String!): Supplier!
 
   """
-  Should return user by _id
-  """
-  getUser(_id: ObjectId!): User!
-
-  """
-  Should return user company
-  """
-  getUserCompany: Company
-
-  """
   Should return validation messages list
   """
   getValidationMessages: [Message!]!

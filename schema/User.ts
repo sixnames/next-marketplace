@@ -1,16 +1,15 @@
 import { aggregatePagination } from 'db/dao/aggregatePagination';
-import { arg, nonNull, objectType, queryType } from 'nexus';
-import { getRequestParams, getSessionRole } from 'lib/sessionHelpers';
+import { arg, objectType, queryType } from 'nexus';
+import { getRequestParams } from 'lib/sessionHelpers';
 import { getDatabase } from 'db/mongodb';
 import {
-  CompanyModel,
   FormattedPhoneModel,
   RoleModel,
   UserModel,
   UsersPaginationPayloadModel,
 } from 'db/dbModels';
-import { COL_COMPANIES, COL_ROLES, COL_USERS } from 'db/collectionNames';
-import { ROLE_SLUG_COMPANY_MANAGER, ROLE_SLUG_COMPANY_OWNER, ROLE_SLUG_GUEST } from 'config/common';
+import { COL_ROLES, COL_USERS } from 'db/collectionNames';
+import { ROLE_SLUG_GUEST } from 'config/common';
 import { getFullName, getShortName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 
@@ -96,28 +95,6 @@ export const UsersPaginationPayload = objectType({
 // User Queries
 export const UserQuery = queryType({
   definition(t) {
-    // Should return user by _id
-    t.nonNull.field('getUser', {
-      type: 'User',
-      description: 'Should return user by _id',
-      args: {
-        _id: nonNull(
-          arg({
-            type: 'ObjectId',
-          }),
-        ),
-      },
-      resolve: async (_source, args): Promise<UserModel> => {
-        const { db } = await getDatabase();
-        const collection = db.collection<UserModel>(COL_USERS);
-        const user = await collection.findOne({ _id: args._id });
-        if (!user) {
-          throw Error('User not found by given id');
-        }
-        return user;
-      },
-    });
-
     // Should return paginated users
     t.nonNull.field('getAllUsers', {
       type: 'UsersPaginationPayload',
@@ -173,34 +150,6 @@ export const UserQuery = queryType({
           city,
         });
         return paginationResult;
-      },
-    });
-
-    // Should return user company
-    t.field('getUserCompany', {
-      type: 'Company',
-      description: 'Should return user company',
-      resolve: async (_source, _args, context): Promise<CompanyModel | null> => {
-        try {
-          const { db } = await getDatabase();
-          const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
-          const { user, role } = await getSessionRole(context);
-
-          if (user && role.slug === ROLE_SLUG_COMPANY_OWNER) {
-            const company = await companiesCollection.findOne({ ownerId: user._id });
-            return company;
-          }
-
-          if (user && role.slug === ROLE_SLUG_COMPANY_MANAGER) {
-            const company = await companiesCollection.findOne({ staffIds: user._id });
-            return company;
-          }
-
-          return null;
-        } catch (e) {
-          console.log(e);
-          return null;
-        }
       },
     });
   },

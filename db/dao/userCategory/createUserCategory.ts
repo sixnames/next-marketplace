@@ -81,7 +81,7 @@ export async function createUserCategory({
       cashbackPercent: noNaN(input.cashbackPercent),
       discountPercent: noNaN(input.discountPercent),
       payFromCashbackPercent: noNaN(input.payFromCashbackPercent),
-      entryMinCharge: input.payFromCashbackPercent || null,
+      entryMinCharge: input.entryMinCharge || null,
       createdAt: new Date(),
       updatedAt: new Date(),
     });

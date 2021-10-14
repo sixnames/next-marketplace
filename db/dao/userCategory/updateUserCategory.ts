@@ -88,7 +88,7 @@ export async function updateUserCategory({
           cashbackPercent: noNaN(values.cashbackPercent),
           discountPercent: noNaN(values.discountPercent),
           payFromCashbackPercent: noNaN(values.payFromCashbackPercent),
-          entryMinCharge: values.payFromCashbackPercent || null,
+          entryMinCharge: values.entryMinCharge || null,
           updatedAt: new Date(),
         },
       },

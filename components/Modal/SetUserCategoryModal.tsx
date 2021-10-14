@@ -45,12 +45,14 @@ const SetUserCategoryModal: React.FC<SetUserCategoryModalInterface> = ({ userId,
           return (
             <Form>
               <FormikSelect
+                testId={'companyId'}
                 firstOption={true}
                 label={'Компания'}
                 name={'companyId'}
                 options={companies}
               />
               <FormikSelect
+                testId={'categoryId'}
                 firstOption={true}
                 label={'Категория'}
                 name={'categoryId'}

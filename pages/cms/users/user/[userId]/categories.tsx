@@ -118,6 +118,8 @@ const UserCategoriesConsumer: React.FC<UserCategoriesConsumerInterface> = ({ use
 
           <FixedButtons>
             <Button
+              size={'small'}
+              testId={'add-user-category'}
               onClick={() => {
                 showModal<SetUserCategoryModalInterface>({
                   variant: SET_USER_CATEGORY_MODAL,
@@ -127,7 +129,6 @@ const UserCategoriesConsumer: React.FC<UserCategoriesConsumerInterface> = ({ use
                   },
                 });
               }}
-              size={'small'}
             >
               Добавить категорию пользователя
             </Button>
@@ -319,7 +320,6 @@ export const getServerSideProps = async (
     .toArray();
 
   const companies = companiesAggregation.map((company) => {
-    console.log(company);
     return {
       ...company,
       categories: (company.categories || []).map((category) => {

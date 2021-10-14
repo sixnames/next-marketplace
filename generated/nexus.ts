@@ -419,15 +419,6 @@ export interface NexusGenInputs {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     url?: NexusGenScalars['URL'][] | null; // [URL!]
   };
-  CreateUserInput: {
-    // input type
-    email: NexusGenScalars['EmailAddress']; // EmailAddress!
-    lastName?: string | null; // String
-    name: string; // String!
-    phone: NexusGenScalars['PhoneNumber']; // PhoneNumber!
-    roleId: NexusGenScalars['ObjectId']; // ObjectId!
-    secondName?: string | null; // String
-  };
   DeleteAttributeFromGroupInput: {
     // input type
     attributeId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -527,13 +518,6 @@ export interface NexusGenInputs {
     attributeId: NexusGenScalars['ObjectId']; // ObjectId!
     attributesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
   };
-  NotificationConfigInput: {
-    // input type
-    email?: boolean | null; // Boolean
-    group: string; // String!
-    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    sms?: boolean | null; // Boolean
-  };
   OptionAlphabetInput: {
     // input type
     optionsGroupId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -584,15 +568,6 @@ export interface NexusGenInputs {
     // input type
     attributesIds?: NexusGenScalars['ObjectId'][] | null; // [ObjectId!]
     excludedProductsIds?: NexusGenScalars['ObjectId'][] | null; // [ObjectId!]
-  };
-  SignUpInput: {
-    // input type
-    email: NexusGenScalars['EmailAddress']; // EmailAddress!
-    lastName?: string | null; // String
-    name: string; // String!
-    password: string; // String!
-    phone: NexusGenScalars['PhoneNumber']; // PhoneNumber!
-    secondName?: string | null; // String
   };
   SupplierAlphabetInput: {
     // input type
@@ -733,20 +708,6 @@ export interface NexusGenInputs {
     // input type
     metricId: NexusGenScalars['ObjectId']; // ObjectId!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
-  };
-  UpdateMyPasswordInput: {
-    // input type
-    newPassword: string; // String!
-    newPasswordB: string; // String!
-    oldPassword: string; // String!
-  };
-  UpdateMyProfileInput: {
-    // input type
-    email: NexusGenScalars['EmailAddress']; // EmailAddress!
-    lastName?: string | null; // String
-    name: string; // String!
-    phone: NexusGenScalars['PhoneNumber']; // PhoneNumber!
-    secondName?: string | null; // String
   };
   UpdateNavItemInput: {
     // input type
@@ -1015,22 +976,6 @@ export interface NexusGenInputs {
     supplierId: NexusGenScalars['ObjectId']; // ObjectId!
     url?: NexusGenScalars['URL'][] | null; // [URL!]
   };
-  UpdateUserInput: {
-    // input type
-    email: NexusGenScalars['EmailAddress']; // EmailAddress!
-    lastName?: string | null; // String
-    name: string; // String!
-    notifications: NexusGenInputs['UserNotificationsInput']; // UserNotificationsInput!
-    phone: NexusGenScalars['PhoneNumber']; // PhoneNumber!
-    roleId: NexusGenScalars['ObjectId']; // ObjectId!
-    secondName?: string | null; // String
-    userId: NexusGenScalars['ObjectId']; // ObjectId!
-  };
-  UpdateUserPasswordInput: {
-    // input type
-    newPassword: string; // String!
-    userId: NexusGenScalars['ObjectId']; // ObjectId!
-  };
   UpdateVisibleCategoriesInNavDropdownInput: {
     // input type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
@@ -1046,21 +991,6 @@ export interface NexusGenInputs {
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
     slug: string; // String!
     variant: NexusGenEnums['ConfigVariant']; // ConfigVariant!
-  };
-  UserNotificationsInput: {
-    // input type
-    adminCanceledOrder?: NexusGenInputs['NotificationConfigInput'] | null; // NotificationConfigInput
-    adminCanceledOrderProduct?: NexusGenInputs['NotificationConfigInput'] | null; // NotificationConfigInput
-    adminConfirmedOrder?: NexusGenInputs['NotificationConfigInput'] | null; // NotificationConfigInput
-    adminNewOrder?: NexusGenInputs['NotificationConfigInput'] | null; // NotificationConfigInput
-    canceledOrder?: NexusGenInputs['NotificationConfigInput'] | null; // NotificationConfigInput
-    canceledOrderProduct?: NexusGenInputs['NotificationConfigInput'] | null; // NotificationConfigInput
-    companyCanceledOrder?: NexusGenInputs['NotificationConfigInput'] | null; // NotificationConfigInput
-    companyCanceledOrderProduct?: NexusGenInputs['NotificationConfigInput'] | null; // NotificationConfigInput
-    companyConfirmedOrder?: NexusGenInputs['NotificationConfigInput'] | null; // NotificationConfigInput
-    companyNewOrder?: NexusGenInputs['NotificationConfigInput'] | null; // NotificationConfigInput
-    confirmedOrder?: NexusGenInputs['NotificationConfigInput'] | null; // NotificationConfigInput
-    newOrder?: NexusGenInputs['NotificationConfigInput'] | null; // NotificationConfigInput
   };
 }
 
@@ -1221,7 +1151,6 @@ export interface NexusGenObjects {
   SuppliersAlphabetList: dbModels.SuppliersAlphabetListModel;
   SuppliersPaginationPayload: dbModels.SuppliersPaginationPayloadModel;
   User: dbModels.UserModel;
-  UserPayload: dbModels.UserPayloadModel;
   UsersPaginationPayload: dbModels.UsersPaginationPayloadModel;
 }
 
@@ -1630,7 +1559,6 @@ export interface NexusGenFieldTypes {
     createRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
     createRubricVariant: NexusGenRootTypes['RubricVariantPayload']; // RubricVariantPayload!
     createSupplier: NexusGenRootTypes['SupplierPayload']; // SupplierPayload!
-    createUser: NexusGenRootTypes['UserPayload']; // UserPayload!
     deleteAttributeFromGroup: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
     deleteAttributesGroup: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
     deleteAttributesGroupFromCategory: NexusGenRootTypes['CategoryPayload']; // CategoryPayload!
@@ -1662,11 +1590,9 @@ export interface NexusGenFieldTypes {
     deleteShopAsset: NexusGenRootTypes['ShopPayload']; // ShopPayload!
     deleteShopFromCompany: NexusGenRootTypes['CompanyPayload']; // CompanyPayload!
     deleteSupplier: NexusGenRootTypes['SupplierPayload']; // SupplierPayload!
-    deleteUser: NexusGenRootTypes['UserPayload']; // UserPayload!
     generateShopToken: NexusGenRootTypes['ShopPayload']; // ShopPayload!
     moveAttribute: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
     repeatOrder: NexusGenRootTypes['CartPayload']; // CartPayload!
-    signUp: NexusGenRootTypes['UserPayload']; // UserPayload!
     updateAttributeInGroup: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
     updateAttributeInRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
     updateAttributesGroup: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
@@ -1683,8 +1609,6 @@ export interface NexusGenFieldTypes {
     updateManufacturer: NexusGenRootTypes['ManufacturerPayload']; // ManufacturerPayload!
     updateManyShopProducts: NexusGenRootTypes['ShopProductPayload']; // ShopProductPayload!
     updateMetric: NexusGenRootTypes['MetricPayload']; // MetricPayload!
-    updateMyPassword: NexusGenRootTypes['UserPayload']; // UserPayload!
-    updateMyProfile: NexusGenRootTypes['UserPayload']; // UserPayload!
     updateNavItem: NexusGenRootTypes['NavItemPayload']; // NavItemPayload!
     updateOptionInGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
     updateOptionsGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
@@ -1715,8 +1639,6 @@ export interface NexusGenFieldTypes {
     updateShopAssetIndex: NexusGenRootTypes['ShopPayload']; // ShopPayload!
     updateShopProduct: NexusGenRootTypes['ShopProductPayload']; // ShopProductPayload!
     updateSupplier: NexusGenRootTypes['SupplierPayload']; // SupplierPayload!
-    updateUser: NexusGenRootTypes['UserPayload']; // UserPayload!
-    updateUserPassword: NexusGenRootTypes['UserPayload']; // UserPayload!
     updateVisibleCategoriesInNavDropdown: NexusGenRootTypes['ConfigPayload']; // ConfigPayload!
   };
   NavItem: {
@@ -2331,12 +2253,6 @@ export interface NexusGenFieldTypes {
     shortName: string; // String!
     updatedAt: NexusGenScalars['Date']; // Date!
   };
-  UserPayload: {
-    // field return type
-    message: string; // String!
-    payload: NexusGenRootTypes['User'] | null; // User
-    success: boolean; // Boolean!
-  };
   UsersPaginationPayload: {
     // field return type
     docs: NexusGenRootTypes['User'][]; // [User!]!
@@ -2774,7 +2690,6 @@ export interface NexusGenFieldTypeNames {
     createRubric: 'RubricPayload';
     createRubricVariant: 'RubricVariantPayload';
     createSupplier: 'SupplierPayload';
-    createUser: 'UserPayload';
     deleteAttributeFromGroup: 'AttributesGroupPayload';
     deleteAttributesGroup: 'AttributesGroupPayload';
     deleteAttributesGroupFromCategory: 'CategoryPayload';
@@ -2806,11 +2721,9 @@ export interface NexusGenFieldTypeNames {
     deleteShopAsset: 'ShopPayload';
     deleteShopFromCompany: 'CompanyPayload';
     deleteSupplier: 'SupplierPayload';
-    deleteUser: 'UserPayload';
     generateShopToken: 'ShopPayload';
     moveAttribute: 'AttributesGroupPayload';
     repeatOrder: 'CartPayload';
-    signUp: 'UserPayload';
     updateAttributeInGroup: 'AttributesGroupPayload';
     updateAttributeInRubric: 'RubricPayload';
     updateAttributesGroup: 'AttributesGroupPayload';
@@ -2827,8 +2740,6 @@ export interface NexusGenFieldTypeNames {
     updateManufacturer: 'ManufacturerPayload';
     updateManyShopProducts: 'ShopProductPayload';
     updateMetric: 'MetricPayload';
-    updateMyPassword: 'UserPayload';
-    updateMyProfile: 'UserPayload';
     updateNavItem: 'NavItemPayload';
     updateOptionInGroup: 'OptionsGroupPayload';
     updateOptionsGroup: 'OptionsGroupPayload';
@@ -2859,8 +2770,6 @@ export interface NexusGenFieldTypeNames {
     updateShopAssetIndex: 'ShopPayload';
     updateShopProduct: 'ShopProductPayload';
     updateSupplier: 'SupplierPayload';
-    updateUser: 'UserPayload';
-    updateUserPassword: 'UserPayload';
     updateVisibleCategoriesInNavDropdown: 'ConfigPayload';
   };
   NavItem: {
@@ -3475,12 +3384,6 @@ export interface NexusGenFieldTypeNames {
     shortName: 'String';
     updatedAt: 'Date';
   };
-  UserPayload: {
-    // field return type name
-    message: 'String';
-    payload: 'User';
-    success: 'Boolean';
-  };
   UsersPaginationPayload: {
     // field return type name
     docs: 'User';
@@ -3677,10 +3580,6 @@ export interface NexusGenArgTypes {
       // args
       input: NexusGenInputs['CreateSupplierInput']; // CreateSupplierInput!
     };
-    createUser: {
-      // args
-      input: NexusGenInputs['CreateUserInput']; // CreateUserInput!
-    };
     deleteAttributeFromGroup: {
       // args
       input: NexusGenInputs['DeleteAttributeFromGroupInput']; // DeleteAttributeFromGroupInput!
@@ -3805,10 +3704,6 @@ export interface NexusGenArgTypes {
       // args
       _id: NexusGenScalars['ObjectId']; // ObjectId!
     };
-    deleteUser: {
-      // args
-      _id: NexusGenScalars['ObjectId']; // ObjectId!
-    };
     generateShopToken: {
       // args
       _id: NexusGenScalars['ObjectId']; // ObjectId!
@@ -3820,10 +3715,6 @@ export interface NexusGenArgTypes {
     repeatOrder: {
       // args
       input: NexusGenInputs['RepeatOrderInput']; // RepeatOrderInput!
-    };
-    signUp: {
-      // args
-      input: NexusGenInputs['SignUpInput']; // SignUpInput!
     };
     updateAttributeInGroup: {
       // args
@@ -3888,14 +3779,6 @@ export interface NexusGenArgTypes {
     updateMetric: {
       // args
       input: NexusGenInputs['UpdateMetricInput']; // UpdateMetricInput!
-    };
-    updateMyPassword: {
-      // args
-      input: NexusGenInputs['UpdateMyPasswordInput']; // UpdateMyPasswordInput!
-    };
-    updateMyProfile: {
-      // args
-      input: NexusGenInputs['UpdateMyProfileInput']; // UpdateMyProfileInput!
     };
     updateNavItem: {
       // args
@@ -4016,14 +3899,6 @@ export interface NexusGenArgTypes {
     updateSupplier: {
       // args
       input: NexusGenInputs['UpdateSupplierInput']; // UpdateSupplierInput!
-    };
-    updateUser: {
-      // args
-      input: NexusGenInputs['UpdateUserInput']; // UpdateUserInput!
-    };
-    updateUserPassword: {
-      // args
-      input: NexusGenInputs['UpdateUserPasswordInput']; // UpdateUserPasswordInput!
     };
     updateVisibleCategoriesInNavDropdown: {
       // args
@@ -4252,8 +4127,7 @@ export interface NexusGenAbstractTypeMembers {
     | 'RubricVariantPayload'
     | 'ShopPayload'
     | 'ShopProductPayload'
-    | 'SupplierPayload'
-    | 'UserPayload';
+    | 'SupplierPayload';
   Timestamp:
     | 'Brand'
     | 'BrandCollection'
@@ -4325,7 +4199,6 @@ export interface NexusGenTypeInterfaces {
   SuppliersAlphabetList: 'AlphabetList';
   SuppliersPaginationPayload: 'PaginationPayload';
   User: 'Base' | 'Timestamp';
-  UserPayload: 'Payload';
   UsersPaginationPayload: 'PaginationPayload';
 }
 

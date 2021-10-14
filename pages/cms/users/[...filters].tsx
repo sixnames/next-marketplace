@@ -20,7 +20,7 @@ import {
   UserCategoryInterface,
   UserInterface,
 } from 'db/uiInterfaces';
-import { useDeleteUserMutation } from 'generated/apolloComponents';
+import { useDeleteUserMutation } from 'hooks/mutations/useUserMutations';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import { alwaysArray } from 'lib/arrayUtils';
@@ -55,14 +55,11 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
 }) => {
   const router = useRouter();
   const setPageHandler = useNavigateToPageHandler();
-  const { onCompleteCallback, onErrorCallback, showModal, showLoading } = useMutationCallbacks({
+  const { showModal, showLoading } = useMutationCallbacks({
     reload: true,
   });
 
-  const [deleteUserMutation] = useDeleteUserMutation({
-    onCompleted: (data) => onCompleteCallback(data.deleteUser),
-    onError: onErrorCallback,
-  });
+  const [deleteUserMutation] = useDeleteUserMutation();
 
   const columns: TableColumn<UserInterface>[] = [
     {
@@ -131,9 +128,7 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
                     confirm: () => {
                       showLoading();
                       deleteUserMutation({
-                        variables: {
-                          _id: dataItem._id,
-                        },
+                        _id: `${dataItem._id}`,
                       }).catch(console.log);
                     },
                   },

@@ -8,12 +8,12 @@ import Title from 'components/Title';
 import { ROUTE_SIGN_IN } from 'config/common';
 import { CONFIRM_MODAL, UPDATE_MY_PASSWORD_MODAL } from 'config/modalVariants';
 import { useUserContext } from 'context/userContext';
+import { UpdateMyProfileInputInterface } from 'db/dao/user/updateMyProfile';
 import { Form, Formik } from 'formik';
 import {
-  UpdateMyProfileInput,
   useUpdateMyPasswordMutation,
   useUpdateMyProfileMutation,
-} from 'generated/apolloComponents';
+} from 'hooks/mutations/useUserMutations';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import ProfileLayout from 'layout/ProfileLayout/ProfileLayout';
@@ -30,53 +30,15 @@ import { signOut } from 'next-auth/client';
 const ProfileDetailsRoute: React.FC = () => {
   const router = useRouter();
   const { me } = useUserContext();
-  const { onErrorCallback, showModal, showLoading, showErrorNotification, hideLoading, hideModal } =
+  const { showModal, showLoading, showErrorNotification, hideLoading, hideModal } =
     useMutationCallbacks({
       withModal: true,
     });
-  const [updateMyProfileMutation] = useUpdateMyProfileMutation({
-    onError: onErrorCallback,
-    onCompleted: (data) => {
-      if (data.updateMyProfile.success) {
-        signOut({
-          redirect: false,
-        })
-          .then(() => {
-            router.push(ROUTE_SIGN_IN).catch((e) => {
-              console.log(e);
-            });
-          })
-          .catch((e) => {
-            console.log(e);
-          });
-      } else {
-        hideLoading();
-        hideModal();
-        showErrorNotification();
-      }
-    },
-  });
+  const [updateMyProfileMutation] = useUpdateMyProfileMutation();
   const validationSchema = useValidationSchema({
     schema: updateMyProfileSchema,
   });
-  const [updateMyPasswordMutation] = useUpdateMyPasswordMutation({
-    onError: onErrorCallback,
-    onCompleted: (data) => {
-      if (data.updateMyPassword.success) {
-        signOut({
-          redirect: false,
-        })
-          .then(() => {
-            router.push(ROUTE_SIGN_IN).catch((e) => {
-              console.log(e);
-            });
-          })
-          .catch((e) => {
-            console.log(e);
-          });
-      }
-    },
-  });
+  const [updateMyPasswordMutation] = useUpdateMyPasswordMutation();
 
   if (!me) {
     return <RequestError message={'Пользователь не найден'} />;
@@ -86,7 +48,7 @@ const ProfileDetailsRoute: React.FC = () => {
 
   return (
     <div data-cy={'profile-details'}>
-      <Formik<UpdateMyProfileInput>
+      <Formik<UpdateMyProfileInputInterface>
         validationSchema={validationSchema}
         initialValues={{
           name,
@@ -104,15 +66,31 @@ const ProfileDetailsRoute: React.FC = () => {
               confirm: () => {
                 showLoading();
                 updateMyProfileMutation({
-                  variables: {
-                    input: {
-                      ...values,
-                      phone: phoneToRaw(values.phone),
-                    },
-                  },
-                }).catch((e) => {
-                  console.log(e);
-                });
+                  ...values,
+                  phone: phoneToRaw(values.phone),
+                })
+                  .then((payload) => {
+                    if (payload && payload.success) {
+                      signOut({
+                        redirect: false,
+                      })
+                        .then(() => {
+                          router.push(ROUTE_SIGN_IN).catch((e) => {
+                            console.log(e);
+                          });
+                        })
+                        .catch((e) => {
+                          console.log(e);
+                        });
+                    } else {
+                      hideLoading();
+                      hideModal();
+                      showErrorNotification();
+                    }
+                  })
+                  .catch((e) => {
+                    console.log(e);
+                  });
               },
             },
           });
@@ -182,12 +160,26 @@ const ProfileDetailsRoute: React.FC = () => {
                         confirm: async (input) => {
                           showLoading();
                           updateMyPasswordMutation({
-                            variables: {
-                              input,
-                            },
-                          }).catch((e) => {
-                            console.log(e);
-                          });
+                            ...input,
+                          })
+                            .then((payload) => {
+                              if (payload && payload.success) {
+                                signOut({
+                                  redirect: false,
+                                })
+                                  .then(() => {
+                                    router.push(ROUTE_SIGN_IN).catch((e) => {
+                                      console.log(e);
+                                    });
+                                  })
+                                  .catch((e) => {
+                                    console.log(e);
+                                  });
+                              }
+                            })
+                            .catch((e) => {
+                              console.log(e);
+                            });
                         },
                       },
                     });

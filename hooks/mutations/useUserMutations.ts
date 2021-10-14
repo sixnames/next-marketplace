@@ -11,7 +11,7 @@ import { useMutationHandler } from 'hooks/mutations/useFetch';
 
 const basePath = 'api/user';
 
-export const useCreatUserMutation = () => {
+export const useCreateUserMutation = () => {
   return useMutationHandler<UserPayloadModel, CreateUserInputInterface>({
     path: basePath,
     method: REQUEST_METHOD_POST,

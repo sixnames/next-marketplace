@@ -1,4 +1,4 @@
-import { FILTER_SEPARATOR, FILTER_PAGE_KEY, ROUTE_CMS } from 'config/common';
+import { ROUTE_CMS, DEFAULT_PAGE_FILTER } from 'config/common';
 import { ProductInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsLayout from 'layout/CmsLayout/CmsLayout';
@@ -137,7 +137,7 @@ export const getServerSideProps = async (
   }
   const locale = initialProps.props.sessionLocale;
   const currency = initialProps.props.initialData.currency;
-  const basePath = `${ROUTE_CMS}/companies/${query.companyId}/shops/shop/${shopId}/products/add/${rubricId}/${FILTER_PAGE_KEY}${FILTER_SEPARATOR}1`;
+  const basePath = `${ROUTE_CMS}/companies/${query.companyId}/shops/shop/${shopId}/products/add/${rubricId}/${DEFAULT_PAGE_FILTER}`;
 
   const payload = await getAddShopProductSsrData({
     locale,

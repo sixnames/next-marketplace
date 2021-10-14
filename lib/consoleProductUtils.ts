@@ -674,6 +674,7 @@ export const getConsoleShopProducts = async ({
     const fallbackPayload: CompanyShopProductsPageInterface = {
       basePath: '',
       rubricSlug: '',
+      rubricId,
       totalDocs: 0,
       totalPages: 0,
       page: 1,
@@ -681,7 +682,6 @@ export const getConsoleShopProducts = async ({
       attributes: [],
       selectedAttributes: [],
       clearSlug: '',
-      rubricId: '',
       rubricName: '',
       shop,
     };

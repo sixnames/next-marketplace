@@ -100,9 +100,9 @@ const UserPasswordConsumer: React.FC<UserPasswordInterface> = ({ user }) => {
   );
 };
 
-interface ProductPageInterface extends PagePropsInterface, UserPasswordInterface {}
+interface UserPasswordPageInterface extends PagePropsInterface, UserPasswordInterface {}
 
-const UserPasswordPage: NextPage<ProductPageInterface> = ({ pageUrls, ...props }) => {
+const UserPasswordPage: NextPage<UserPasswordPageInterface> = ({ pageUrls, ...props }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
       <UserPasswordConsumer {...props} />
@@ -112,7 +112,7 @@ const UserPasswordPage: NextPage<ProductPageInterface> = ({ pageUrls, ...props }
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<ProductPageInterface>> => {
+): Promise<GetServerSidePropsResult<UserPasswordPageInterface>> => {
   const { query } = context;
   const { userId } = query;
   const { db } = await getDatabase();

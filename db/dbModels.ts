@@ -1021,7 +1021,7 @@ export type ManufacturersPaginationPayloadModel = PaginationPayloadType<Manufact
 export type SuppliersPaginationPayloadModel = PaginationPayloadType<SupplierModel>;
 export type ShopProductsPaginationPayloadModel = PaginationPayloadType<ShopProductModel>;
 export type ShopsPaginationPayloadModel = PaginationPayloadType<ShopModel>;
-export type UsersPaginationPayloadModel = PaginationPayloadType<UserModel>;
+export type UsersPaginationPayloadModel = PayloadType<PaginationPayloadType<UserModel>>;
 export interface ProductsPaginationPayloadModel {
   sortBy: string;
   sortDir: SortDirectionModel;

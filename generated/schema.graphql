@@ -1933,11 +1933,6 @@ type Query {
   getAllSuppliers(input: PaginationInput): SuppliersPaginationPayload!
 
   """
-  Should return paginated users
-  """
-  getAllUsers(input: PaginationInput): UsersPaginationPayload!
-
-  """
   Should return attribute positioning options
   """
   getAttributePositioningOptions: [SelectOption!]!
@@ -2877,17 +2872,4 @@ type User implements Base & Timestamp {
   secondName: String
   shortName: String!
   updatedAt: Date!
-}
-
-type UsersPaginationPayload implements PaginationPayload {
-  docs: [User!]!
-  hasNextPage: Boolean!
-  hasPrevPage: Boolean!
-  limit: Int!
-  page: Int!
-  sortBy: String!
-  sortDir: SortDirection!
-  totalActiveDocs: Int!
-  totalDocs: Int!
-  totalPages: Int!
 }

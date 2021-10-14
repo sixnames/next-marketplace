@@ -2110,8 +2110,6 @@ export type ProductsPaginationPayload = {
 
 export type Query = {
   __typename?: 'Query';
-  /** Should return paginated users */
-  getAllUsers: UsersPaginationPayload;
   getAttributesGroup: AttributesGroup;
   getAllAttributesGroups: Array<AttributesGroup>;
   /** Should return brand by _id */
@@ -2216,11 +2214,6 @@ export type Query = {
   getAllSuppliers: SuppliersPaginationPayload;
   /** Should return suppliers grouped by alphabet */
   getSupplierAlphabetLists: Array<SuppliersAlphabetList>;
-};
-
-
-export type QueryGetAllUsersArgs = {
-  input?: Maybe<PaginationInput>;
 };
 
 
@@ -3177,20 +3170,6 @@ export type User = Base & Timestamp & {
   shortName: Scalars['String'];
   formattedPhone: FormattedPhone;
   role: Role;
-};
-
-export type UsersPaginationPayload = PaginationPayload & {
-  __typename?: 'UsersPaginationPayload';
-  sortBy: Scalars['String'];
-  sortDir: SortDirection;
-  totalDocs: Scalars['Int'];
-  totalActiveDocs: Scalars['Int'];
-  page: Scalars['Int'];
-  limit: Scalars['Int'];
-  totalPages: Scalars['Int'];
-  hasPrevPage: Scalars['Boolean'];
-  hasNextPage: Scalars['Boolean'];
-  docs: Array<User>;
 };
 
 export type RubricInListFragment = (
@@ -4788,37 +4767,6 @@ export type ShopInListFragment = (
   ) }
 );
 
-export type CompanyFragment = (
-  { __typename?: 'Company' }
-  & Pick<Company, '_id' | 'itemId' | 'slug' | 'name' | 'ownerId' | 'staffIds' | 'domain'>
-  & { staff: Array<(
-    { __typename?: 'User' }
-    & UserInListFragment
-  )>, owner: (
-    { __typename?: 'User' }
-    & UserInListFragment
-  ), logo: (
-    { __typename?: 'Asset' }
-    & Pick<Asset, 'index' | 'url'>
-  ), contacts: (
-    { __typename?: 'Contacts' }
-    & Pick<Contacts, 'emails' | 'phones'>
-  ) }
-);
-
-export type GetCompanyQueryVariables = Exact<{
-  _id: Scalars['ObjectId'];
-}>;
-
-
-export type GetCompanyQuery = (
-  { __typename?: 'Query' }
-  & { getCompany?: Maybe<(
-    { __typename?: 'Company' }
-    & CompanyFragment
-  )> }
-);
-
 export type GetCompanyShopsQueryVariables = Exact<{
   companyId: Scalars['ObjectId'];
   input?: Maybe<PaginationInput>;
@@ -5262,35 +5210,6 @@ export type GetSessionCitiesQuery = (
   )> }
 );
 
-export type UserInListFragment = (
-  { __typename?: 'User' }
-  & Pick<User, '_id' | 'itemId' | 'email' | 'fullName' | 'shortName'>
-  & { formattedPhone: (
-    { __typename?: 'FormattedPhone' }
-    & Pick<FormattedPhone, 'raw' | 'readable'>
-  ), role: (
-    { __typename?: 'Role' }
-    & Pick<Role, '_id' | 'name'>
-  ) }
-);
-
-export type UsersSerchQueryVariables = Exact<{
-  input: PaginationInput;
-}>;
-
-
-export type UsersSerchQuery = (
-  { __typename?: 'Query' }
-  & { getAllUsers: (
-    { __typename?: 'UsersPaginationPayload' }
-    & Pick<UsersPaginationPayload, 'totalDocs' | 'page' | 'totalPages'>
-    & { docs: Array<(
-      { __typename?: 'User' }
-      & UserInListFragment
-    )> }
-  ) }
-);
-
 export const RubricInListFragmentDoc = gql`
     fragment RubricInList on Rubric {
   _id
@@ -5386,48 +5305,6 @@ export const ShopInListFragmentDoc = gql`
   }
 }
     `;
-export const UserInListFragmentDoc = gql`
-    fragment UserInList on User {
-  _id
-  itemId
-  email
-  fullName
-  shortName
-  formattedPhone {
-    raw
-    readable
-  }
-  role {
-    _id
-    name
-  }
-}
-    `;
-export const CompanyFragmentDoc = gql`
-    fragment Company on Company {
-  _id
-  itemId
-  slug
-  name
-  ownerId
-  staffIds
-  domain
-  staff {
-    ...UserInList
-  }
-  owner {
-    ...UserInList
-  }
-  logo {
-    index
-    url
-  }
-  contacts {
-    emails
-    phones
-  }
-}
-    ${UserInListFragmentDoc}`;
 export const ShopProductNodeFragmentDoc = gql`
     fragment ShopProductNode on Product {
   _id
@@ -9506,41 +9383,6 @@ export function useGetAllCompaniesLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetAllCompaniesQueryHookResult = ReturnType<typeof useGetAllCompaniesQuery>;
 export type GetAllCompaniesLazyQueryHookResult = ReturnType<typeof useGetAllCompaniesLazyQuery>;
 export type GetAllCompaniesQueryResult = Apollo.QueryResult<GetAllCompaniesQuery, GetAllCompaniesQueryVariables>;
-export const GetCompanyDocument = gql`
-    query GetCompany($_id: ObjectId!) {
-  getCompany(_id: $_id) {
-    ...Company
-  }
-}
-    ${CompanyFragmentDoc}`;
-
-/**
- * __useGetCompanyQuery__
- *
- * To run a query within a React component, call `useGetCompanyQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetCompanyQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetCompanyQuery({
- *   variables: {
- *      _id: // value for '_id'
- *   },
- * });
- */
-export function useGetCompanyQuery(baseOptions: Apollo.QueryHookOptions<GetCompanyQuery, GetCompanyQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetCompanyQuery, GetCompanyQueryVariables>(GetCompanyDocument, options);
-      }
-export function useGetCompanyLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCompanyQuery, GetCompanyQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetCompanyQuery, GetCompanyQueryVariables>(GetCompanyDocument, options);
-        }
-export type GetCompanyQueryHookResult = ReturnType<typeof useGetCompanyQuery>;
-export type GetCompanyLazyQueryHookResult = ReturnType<typeof useGetCompanyLazyQuery>;
-export type GetCompanyQueryResult = Apollo.QueryResult<GetCompanyQuery, GetCompanyQueryVariables>;
 export const GetCompanyShopsDocument = gql`
     query GetCompanyShops($companyId: ObjectId!, $input: PaginationInput) {
   getCompany(_id: $companyId) {
@@ -10453,43 +10295,3 @@ export function useGetSessionCitiesLazyQuery(baseOptions?: Apollo.LazyQueryHookO
 export type GetSessionCitiesQueryHookResult = ReturnType<typeof useGetSessionCitiesQuery>;
 export type GetSessionCitiesLazyQueryHookResult = ReturnType<typeof useGetSessionCitiesLazyQuery>;
 export type GetSessionCitiesQueryResult = Apollo.QueryResult<GetSessionCitiesQuery, GetSessionCitiesQueryVariables>;
-export const UsersSerchDocument = gql`
-    query UsersSerch($input: PaginationInput!) {
-  getAllUsers(input: $input) {
-    totalDocs
-    page
-    totalPages
-    docs {
-      ...UserInList
-    }
-  }
-}
-    ${UserInListFragmentDoc}`;
-
-/**
- * __useUsersSerchQuery__
- *
- * To run a query within a React component, call `useUsersSerchQuery` and pass it any options that fit your needs.
- * When your component renders, `useUsersSerchQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useUsersSerchQuery({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUsersSerchQuery(baseOptions: Apollo.QueryHookOptions<UsersSerchQuery, UsersSerchQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<UsersSerchQuery, UsersSerchQueryVariables>(UsersSerchDocument, options);
-      }
-export function useUsersSerchLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UsersSerchQuery, UsersSerchQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<UsersSerchQuery, UsersSerchQueryVariables>(UsersSerchDocument, options);
-        }
-export type UsersSerchQueryHookResult = ReturnType<typeof useUsersSerchQuery>;
-export type UsersSerchLazyQueryHookResult = ReturnType<typeof useUsersSerchLazyQuery>;
-export type UsersSerchQueryResult = Apollo.QueryResult<UsersSerchQuery, UsersSerchQueryVariables>;

@@ -1,14 +1,7 @@
-import { aggregatePagination } from 'db/dao/aggregatePagination';
-import { arg, objectType, queryType } from 'nexus';
-import { getRequestParams } from 'lib/sessionHelpers';
+import { objectType } from 'nexus';
 import { getDatabase } from 'db/mongodb';
-import {
-  FormattedPhoneModel,
-  RoleModel,
-  UserModel,
-  UsersPaginationPayloadModel,
-} from 'db/dbModels';
-import { COL_ROLES, COL_USERS } from 'db/collectionNames';
+import { FormattedPhoneModel, RoleModel } from 'db/dbModels';
+import { COL_ROLES } from 'db/collectionNames';
 import { ROLE_SLUG_GUEST } from 'config/common';
 import { getFullName, getShortName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
@@ -77,79 +70,6 @@ export const User = objectType({
           return guestRole;
         }
         return role;
-      },
-    });
-  },
-});
-
-export const UsersPaginationPayload = objectType({
-  name: 'UsersPaginationPayload',
-  definition(t) {
-    t.implements('PaginationPayload');
-    t.nonNull.list.nonNull.field('docs', {
-      type: 'User',
-    });
-  },
-});
-
-// User Queries
-export const UserQuery = queryType({
-  definition(t) {
-    // Should return paginated users
-    t.nonNull.field('getAllUsers', {
-      type: 'UsersPaginationPayload',
-      description: 'Should return paginated users',
-      args: {
-        input: arg({
-          type: 'PaginationInput',
-        }),
-      },
-      resolve: async (_source, args, context): Promise<UsersPaginationPayloadModel> => {
-        const { city } = await getRequestParams(context);
-        const { input } = args;
-        const { search } = input || { search: null };
-
-        const regexSearch = {
-          $regex: search,
-          $options: 'i',
-        };
-
-        const searchStage = search
-          ? [
-              {
-                $match: {
-                  $or: [
-                    {
-                      email: regexSearch,
-                    },
-                    {
-                      name: regexSearch,
-                    },
-                    {
-                      lastName: regexSearch,
-                    },
-                    {
-                      secondName: regexSearch,
-                    },
-                    {
-                      phone: regexSearch,
-                    },
-                    {
-                      itemId: regexSearch,
-                    },
-                  ],
-                },
-              },
-            ]
-          : [];
-
-        const paginationResult = await aggregatePagination<UserModel>({
-          input: args.input,
-          collectionName: COL_USERS,
-          pipeline: searchStage,
-          city,
-        });
-        return paginationResult;
       },
     });
   },

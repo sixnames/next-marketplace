@@ -4,14 +4,15 @@ import Currency from 'components/Currency';
 import FixedButtons from 'components/FixedButtons';
 import Inner from 'components/Inner';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
+import { SetUserCategoryModalInterface } from 'components/Modal/SetUserCategoryModal';
 import Percent from 'components/Percent';
 import Table, { TableColumn } from 'components/Table';
-import { ROUTE_CMS } from 'config/common';
-import { CONFIRM_MODAL } from 'config/modalVariants';
+import { ROUTE_CMS, SORT_ASC } from 'config/common';
+import { CONFIRM_MODAL, SET_USER_CATEGORY_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { COL_COMPANIES, COL_ROLES, COL_USER_CATEGORIES, COL_USERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { UserCategoryInterface, UserInterface } from 'db/uiInterfaces';
+import { CompanyInterface, UserCategoryInterface, UserInterface } from 'db/uiInterfaces';
 import { useSetUserCategoryMutation } from 'hooks/mutations/useUserMutations';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsUserLayout from 'layout/CmsLayout/CmsUserLayout';
@@ -26,9 +27,10 @@ import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
 interface UserCategoriesConsumerInterface {
   user: UserInterface;
+  companies: CompanyInterface[];
 }
 
-const UserCategoriesConsumer: React.FC<UserCategoriesConsumerInterface> = ({ user }) => {
+const UserCategoriesConsumer: React.FC<UserCategoriesConsumerInterface> = ({ user, companies }) => {
   const { showModal } = useAppContext();
   const [setUserCategoryMutation] = useSetUserCategoryMutation();
 
@@ -115,7 +117,20 @@ const UserCategoriesConsumer: React.FC<UserCategoriesConsumerInterface> = ({ use
           </div>
 
           <FixedButtons>
-            <Button size={'small'}>Добавить категорию пользователя</Button>
+            <Button
+              onClick={() => {
+                showModal<SetUserCategoryModalInterface>({
+                  variant: SET_USER_CATEGORY_MODAL,
+                  props: {
+                    companies,
+                    userId: `${user._id}`,
+                  },
+                });
+              }}
+              size={'small'}
+            >
+              Добавить категорию пользователя
+            </Button>
           </FixedButtons>
         </div>
       </Inner>
@@ -140,6 +155,7 @@ export const getServerSideProps = async (
   const { userId } = query;
   const { db } = await getDatabase();
   const usersCollection = db.collection<UserInterface>(COL_USERS);
+  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
 
   const { props } = await getAppInitialData({ context });
   if (!props || !userId) {
@@ -253,10 +269,73 @@ export const getServerSideProps = async (
     }),
   };
 
+  // get companies list
+  const companiesAggregation = await companiesCollection
+    .aggregate<CompanyInterface>([
+      {
+        $lookup: {
+          from: COL_USER_CATEGORIES,
+          as: 'categories',
+          let: {
+            companyId: '$_id',
+          },
+          pipeline: [
+            {
+              $match: {
+                _id: {
+                  $nin: userResult.categoryIds,
+                },
+                $expr: {
+                  $eq: ['$companyId', '$$companyId'],
+                },
+              },
+            },
+          ],
+        },
+      },
+      {
+        $project: {
+          _id: true,
+          name: true,
+          categories: true,
+          categoriesCount: {
+            $size: '$categories',
+          },
+        },
+      },
+      {
+        $match: {
+          categoriesCount: {
+            $gt: 0,
+          },
+        },
+      },
+      {
+        $sort: {
+          name: SORT_ASC,
+        },
+      },
+    ])
+    .toArray();
+
+  const companies = companiesAggregation.map((company) => {
+    console.log(company);
+    return {
+      ...company,
+      categories: (company.categories || []).map((category) => {
+        return {
+          ...category,
+          name: getFieldStringLocale(category.nameI18n, props.sessionLocale),
+        };
+      }),
+    };
+  });
+
   return {
     props: {
       ...props,
       user: castDbData(user),
+      companies: castDbData(companies),
     },
   };
 };

@@ -72,6 +72,16 @@ const roleRules: RoleRuleModel[] = [
     descriptionI18n: {},
     roleId: getObjectId('companyOwnerRole'),
   },
+  {
+    _id: getObjectId('roleRule setUserCategory'),
+    slug: 'setUserCategory',
+    allow: true,
+    nameI18n: {
+      ru: 'Назначение категории пользователя',
+    },
+    descriptionI18n: {},
+    roleId: getObjectId('companyOwnerRole'),
+  },
 ];
 
 // @ts-ignore

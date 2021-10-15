@@ -9,8 +9,8 @@ import {
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/CmsLayout/CmsLayout';
-import CmsProductLayout from 'layout/CmsLayout/CmsProductLayout';
+import CmsLayout from 'layout/cms/CmsLayout';
+import CmsProductLayout from 'layout/cms/CmsProductLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getCmsProduct } from 'lib/productUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';

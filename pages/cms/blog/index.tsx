@@ -6,7 +6,7 @@ import { getBlogPostsList } from 'db/dao/blog/getBlogPostsList';
 import { BlogPostInterface } from 'db/uiInterfaces';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import AppSubNav from 'layout/AppSubNav';
-import CmsLayout from 'layout/CmsLayout/CmsLayout';
+import CmsLayout from 'layout/cms/CmsLayout';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsResult, GetServerSidePropsContext } from 'next';
 import { PagePropsInterface } from 'pages/_app';

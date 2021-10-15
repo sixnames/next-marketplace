@@ -12,14 +12,21 @@ import { Formik, Form } from 'formik';
 export interface SetUserCategoryModalInterface {
   userId: string;
   companies: CompanyInterface[];
+  hideCompaniesSelect?: boolean;
+  companyId?: string;
 }
 
-const SetUserCategoryModal: React.FC<SetUserCategoryModalInterface> = ({ userId, companies }) => {
+const SetUserCategoryModal: React.FC<SetUserCategoryModalInterface> = ({
+  userId,
+  companyId,
+  companies,
+  hideCompaniesSelect,
+}) => {
   const [setUserCategoryMutation] = useSetUserCategoryMutation();
 
   const initialValues = {
     userId,
-    companyId: '',
+    companyId: companyId || '',
     categoryId: '',
   };
 
@@ -44,13 +51,16 @@ const SetUserCategoryModal: React.FC<SetUserCategoryModalInterface> = ({ userId,
 
           return (
             <Form>
-              <FormikSelect
-                testId={'companyId'}
-                firstOption={true}
-                label={'Компания'}
-                name={'companyId'}
-                options={companies}
-              />
+              {hideCompaniesSelect ? null : (
+                <FormikSelect
+                  testId={'companyId'}
+                  firstOption={true}
+                  label={'Компания'}
+                  name={'companyId'}
+                  options={companies}
+                />
+              )}
+
               <FormikSelect
                 testId={'categoryId'}
                 firstOption={true}

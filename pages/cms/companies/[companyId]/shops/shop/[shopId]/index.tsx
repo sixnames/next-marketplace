@@ -3,7 +3,7 @@ import { COL_COMPANIES, COL_SHOPS } from 'db/collectionNames';
 import { ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/CmsLayout/CmsLayout';
+import CmsLayout from 'layout/cms/CmsLayout';
 import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';

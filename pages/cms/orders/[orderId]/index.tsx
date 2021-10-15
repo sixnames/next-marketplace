@@ -12,7 +12,7 @@ import { shopProductFieldsPipeline } from 'db/dao/constantPipelines';
 import { getDatabase } from 'db/mongodb';
 import { OrderInterface } from 'db/uiInterfaces';
 import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/CmsLayout/CmsLayout';
+import CmsLayout from 'layout/cms/CmsLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
 import { castOrderStatus } from 'lib/orderUtils';

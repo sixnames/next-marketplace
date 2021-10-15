@@ -7,12 +7,12 @@ import { CompanyInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsCompanyLayout from 'layout/CmsLayout/CmsCompanyLayout';
+import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
 import { ObjectId } from 'mongodb';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/CmsLayout/CmsLayout';
+import CmsLayout from 'layout/cms/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 

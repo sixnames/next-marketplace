@@ -1,5 +1,5 @@
 import { CompanyInterface } from 'db/uiInterfaces';
-import CmsWrapper from 'layout/CmsLayout/CmsWrapper';
+import CmsWrapper from 'layout/cms/CmsWrapper';
 import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';
 import * as React from 'react';

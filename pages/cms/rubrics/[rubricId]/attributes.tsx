@@ -23,8 +23,8 @@ import {
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/CmsLayout/CmsLayout';
-import CmsRubricLayout from 'layout/CmsLayout/CmsRubricLayout';
+import CmsLayout from 'layout/cms/CmsLayout';
+import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { castRubricForUI } from 'lib/uiDataUtils';
 import { ObjectId } from 'mongodb';

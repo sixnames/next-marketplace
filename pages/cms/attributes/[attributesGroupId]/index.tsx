@@ -18,7 +18,7 @@ import { getFieldStringLocale } from 'lib/i18n';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import Head from 'next/head';
 import { PagePropsInterface } from 'pages/_app';
-import CmsLayout from 'layout/CmsLayout/CmsLayout';
+import CmsLayout from 'layout/cms/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { Form, Formik } from 'formik';
 import { attributesGroupModalSchema } from 'validation/attributesGroupSchema';

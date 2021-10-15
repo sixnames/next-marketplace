@@ -5,7 +5,7 @@ import { ROUTE_CMS } from 'config/common';
 import { getBlogPost } from 'db/dao/blog/getBlogPost';
 import { BlogAttributeInterface, BlogPostInterface } from 'db/uiInterfaces';
 import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/CmsLayout/CmsLayout';
+import CmsLayout from 'layout/cms/CmsLayout';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsResult, GetServerSidePropsContext } from 'next';
 import Head from 'next/head';

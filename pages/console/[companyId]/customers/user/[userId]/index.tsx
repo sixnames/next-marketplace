@@ -1,14 +1,21 @@
+import FakeInput from 'components/FormElements/Input/FakeInput';
 import Inner from 'components/Inner';
-import Title from 'components/Title';
-import { COL_ROLES, COL_USER_CATEGORIES, COL_USERS } from 'db/collectionNames';
+import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
+import { SetUserCategoryModalInterface } from 'components/Modal/SetUserCategoryModal';
+import { ROUTE_CONSOLE, SORT_ASC } from 'config/common';
+import { CONFIRM_MODAL, SET_USER_CATEGORY_MODAL } from 'config/modalVariants';
+import { useAppContext } from 'context/appContext';
+import { COL_COMPANIES, COL_ROLES, COL_USER_CATEGORIES, COL_USERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { UserInterface } from 'db/uiInterfaces';
-import AppContentWrapper from 'layout/AppContentWrapper';
+import { CompanyInterface, UserInterface } from 'db/uiInterfaces';
+import { useSetUserCategoryMutation } from 'hooks/mutations/useUserMutations';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/console/ConsoleLayout';
+import ConsoleUserLayout from 'layout/console/ConsoleUserLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
+import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { ObjectId } from 'mongodb';
-import Head from 'next/head';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -16,19 +23,70 @@ import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 
 interface UsersConsumerInterface {
   user: UserInterface;
+  currentCompany?: CompanyInterface | null;
+  companies: CompanyInterface[];
 }
 
-const UsersConsumer: React.FC<UsersConsumerInterface> = ({ user }) => {
-  console.log(user);
+const UsersConsumer: React.FC<UsersConsumerInterface> = ({ user, currentCompany, companies }) => {
+  const { showModal } = useAppContext();
+  const [setUserCategoryMutation] = useSetUserCategoryMutation();
+
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: `${user.fullName}`,
+    config: [
+      {
+        name: 'Клиенты',
+        href: `${ROUTE_CONSOLE}/${currentCompany?._id}/customers`,
+      },
+      /*{
+        name: `${user.fullName}`,
+        href: `${ROUTE_CONSOLE}/${currentCompany?._id}/customers/user/${user._id}`,
+      },*/
+    ],
+  };
+
   return (
-    <AppContentWrapper testId={'users-list'}>
-      <Head>
-        <title>pageTitle</title>
-      </Head>
+    <ConsoleUserLayout companyId={`${currentCompany?._id}`} user={user} breadcrumbs={breadcrumbs}>
       <Inner>
-        <Title>pageTitle</Title>
+        <FakeInput label={'Имя'} value={user.name} testId={'name'} />
+        <FakeInput label={'Фамилия'} value={user.lastName} testId={'lastName'} />
+        <FakeInput label={'Отчество'} value={user.secondName} testId={'lastName'} />
+        <FakeInput label={'Отчество'} value={user.secondName} testId={'secondName'} />
+        <FakeInput label={'Email'} value={user.email} testId={'email'} />
+        <FakeInput label={'Телефон'} value={user.formattedPhone?.readable} testId={'phone'} />
+        <FakeInput
+          label={'Категория'}
+          value={user.category?.name}
+          testId={'category'}
+          onClick={() => {
+            showModal<SetUserCategoryModalInterface>({
+              variant: SET_USER_CATEGORY_MODAL,
+              props: {
+                companies,
+                companyId: `${currentCompany?._id}`,
+                hideCompaniesSelect: true,
+                userId: `${user._id}`,
+              },
+            });
+          }}
+          onClear={() => {
+            showModal<ConfirmModalInterface>({
+              variant: CONFIRM_MODAL,
+              props: {
+                testId: 'unset-user-category-modal',
+                message: `Вы уверенны, что хотите убрать у пользователя категорию ${user.category?.name}?`,
+                confirm: () => {
+                  setUserCategoryMutation({
+                    userId: `${user._id}`,
+                    categoryId: `${user.category?._id}`,
+                  }).catch(console.log);
+                },
+              },
+            });
+          }}
+        />
       </Inner>
-    </AppContentWrapper>
+    </ConsoleUserLayout>
   );
 };
 
@@ -37,7 +95,7 @@ interface UsersPageInterface extends PagePropsInterface, UsersConsumerInterface 
 const UsersPage: NextPage<UsersPageInterface> = ({ pageUrls, currentCompany, ...props }) => {
   return (
     <ConsoleLayout pageUrls={pageUrls} company={currentCompany}>
-      <UsersConsumer {...props} />
+      <UsersConsumer {...props} currentCompany={currentCompany} />
     </ConsoleLayout>
   );
 };
@@ -48,6 +106,7 @@ export const getServerSideProps = async (
   const { query } = context;
   const { db } = await getDatabase();
   const usersCollection = db.collection<UserInterface>(COL_USERS);
+  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
   const { props } = await getConsoleInitialData({ context });
 
   const companyId = new ObjectId(`${query.companyId}`);
@@ -140,12 +199,89 @@ export const getServerSideProps = async (
           name: getFieldStringLocale(userResult.role.nameI18n, props.sessionLocale),
         }
       : null,
+    formattedPhone: {
+      raw: phoneToRaw(userResult.phone),
+      readable: phoneToReadable(userResult.phone),
+    },
+    category: userResult.category
+      ? {
+          ...userResult.category,
+          name: getFieldStringLocale(userResult.category.nameI18n, props.sessionLocale),
+        }
+      : null,
   };
+
+  // get companies list for modal
+  const companiesAggregation = await companiesCollection
+    .aggregate<CompanyInterface>([
+      {
+        $match: {
+          _id: companyId,
+        },
+      },
+      {
+        $lookup: {
+          from: COL_USER_CATEGORIES,
+          as: 'categories',
+          let: {
+            companyId: '$_id',
+          },
+          pipeline: [
+            {
+              $match: {
+                _id: {
+                  $nin: userResult.categoryIds,
+                },
+                $expr: {
+                  $eq: ['$companyId', '$$companyId'],
+                },
+              },
+            },
+          ],
+        },
+      },
+      {
+        $project: {
+          _id: true,
+          name: true,
+          categories: true,
+          categoriesCount: {
+            $size: '$categories',
+          },
+        },
+      },
+      {
+        $match: {
+          categoriesCount: {
+            $gt: 0,
+          },
+        },
+      },
+      {
+        $sort: {
+          name: SORT_ASC,
+        },
+      },
+    ])
+    .toArray();
+
+  const companies = companiesAggregation.map((company) => {
+    return {
+      ...company,
+      categories: (company.categories || []).map((category) => {
+        return {
+          ...category,
+          name: getFieldStringLocale(category.nameI18n, props.sessionLocale),
+        };
+      }),
+    };
+  });
 
   return {
     props: {
       ...props,
       user: castDbData(user),
+      companies: castDbData(companies),
     },
   };
 };

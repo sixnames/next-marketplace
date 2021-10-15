@@ -2,7 +2,7 @@ import ConfigsFormTemplate from 'components/FormTemplates/ConfigsFormTemplate';
 import Inner from 'components/Inner';
 import { DEFAULT_COMPANY_SLUG, CONFIG_GROUP_PROJECT } from 'config/common';
 import ConsoleConfigsLayout, { ConfigPageInterface } from 'layout/console/ConsoleConfigsLayout';
-import CmsLayout from 'layout/CmsLayout/CmsLayout';
+import CmsLayout from 'layout/cms/CmsLayout';
 import { getConfigPageData } from 'lib/configsUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';

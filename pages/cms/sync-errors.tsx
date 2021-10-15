@@ -5,7 +5,7 @@ import { COL_NOT_SYNCED_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { NotSyncedProductInterface } from 'db/uiInterfaces';
 import AppContentWrapper from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/CmsLayout/CmsLayout';
+import CmsLayout from 'layout/cms/CmsLayout';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';

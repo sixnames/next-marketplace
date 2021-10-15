@@ -65,7 +65,7 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({
 
   return (
     <div className='relative py-10 flex pr-[calc(var(--controlButtonHeightBig)+1rem)]'>
-      <div className='flex items-center justify-center px-4 w-20 lg:w-28 flex-shrink-0 w-[120px]'>
+      <div className='relative flex items-center justify-center px-4 w-20 lg:w-28 flex-shrink-0 w-[120px]'>
         <Image
           src={productImageSrc}
           alt={`${originalName}`}

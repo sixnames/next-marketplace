@@ -361,6 +361,8 @@ export interface ShopInterface extends ShopModel {
 
 export interface NotSyncedProductInterface extends NotSyncedProductModel {
   shop?: ShopInterface | null;
+  errorIds?: ObjectIdModel[] | null;
+  barcodeList?: string[] | null;
 }
 
 export interface NotificationConfigInterface extends NotificationConfigModel {

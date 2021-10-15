@@ -33,7 +33,7 @@ import {
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsProductLayout from 'layout/CmsLayout/CmsProductLayout';
+import CmsProductLayout from 'layout/cms/CmsProductLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { sortByName } from 'lib/optionsUtils';
@@ -42,7 +42,7 @@ import { getCmsProduct } from 'lib/productUtils';
 import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/CmsLayout/CmsLayout';
+import CmsLayout from 'layout/cms/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { Form, Formik } from 'formik';

@@ -1,6 +1,6 @@
 import { FILTER_SEPARATOR, FILTER_PAGE_KEY, ROUTE_CMS } from 'config/common';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/CmsLayout/CmsLayout';
+import CmsLayout from 'layout/cms/CmsLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getConsoleShopProducts } from 'lib/consoleProductUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';

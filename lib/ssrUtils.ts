@@ -665,7 +665,7 @@ export const getSsrConfigs = async ({
   });
   const faviconIco = getConfigStringValue({
     configs,
-    slug: 'favicon.ico',
+    slug: 'favicon-ico',
   });
   const googleAnalytics = getConfigStringValue({
     configs,
@@ -685,7 +685,7 @@ export const getSsrConfigs = async ({
   });
   const iconSvg = getConfigStringValue({
     configs,
-    slug: 'icon.svg',
+    slug: 'icon-svg',
   });
   const instagram = getConfigStringValue({
     configs,

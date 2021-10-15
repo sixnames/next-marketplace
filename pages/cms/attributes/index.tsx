@@ -23,7 +23,7 @@ import { noNaN } from 'lib/numbers';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import Head from 'next/head';
 import { PagePropsInterface } from 'pages/_app';
-import CmsLayout from 'layout/CmsLayout/CmsLayout';
+import CmsLayout from 'layout/cms/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 
 const pageTitle = `Группы атрибутов`;

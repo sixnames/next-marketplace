@@ -4,7 +4,7 @@ import { RubricModel, ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { RubricInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/CmsLayout/CmsLayout';
+import CmsLayout from 'layout/cms/CmsLayout';
 import { getI18nLocaleValue } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';

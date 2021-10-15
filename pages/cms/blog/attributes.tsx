@@ -15,7 +15,7 @@ import { BlogAttributeInterface } from 'db/uiInterfaces';
 import { useDeleteBlogAttribute } from 'hooks/mutations/useBlogMutations';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import AppSubNav from 'layout/AppSubNav';
-import CmsLayout from 'layout/CmsLayout/CmsLayout';
+import CmsLayout from 'layout/cms/CmsLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsResult, GetServerSidePropsContext } from 'next';

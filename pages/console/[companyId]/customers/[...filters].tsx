@@ -1,5 +1,6 @@
 import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
 import Inner from 'components/Inner';
+import Link from 'components/Link/Link';
 import LinkPhone from 'components/Link/LinkPhone';
 import Pager, { useNavigateToPageHandler } from 'components/Pager';
 import Table, { TableColumn } from 'components/Table';
@@ -22,6 +23,7 @@ import { getFullName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { ObjectId } from 'mongodb';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -37,25 +39,17 @@ interface UsersConsumerInterface extends AppPaginationInterface<UserInterface> {
 
 const pageTitle = 'Клиенты';
 
-const UsersConsumer: React.FC<UsersConsumerInterface> = ({
-  docs,
-  page,
-  totalPages,
-  // itemPath
-}) => {
-  // const router = useRouter();
+const UsersConsumer: React.FC<UsersConsumerInterface> = ({ docs, page, totalPages, itemPath }) => {
+  const router = useRouter();
   const setPageHandler = useNavigateToPageHandler();
 
   const columns: TableColumn<UserInterface>[] = [
     {
       headTitle: 'ID',
       accessor: 'itemId',
-      render: ({ cellData }) => {
-        return cellData;
-      },
-      /*render: ({ cellData, dataItem }) => {
+      render: ({ cellData, dataItem }) => {
         return <Link href={`${itemPath}/${dataItem._id}`}>{cellData}</Link>;
-      },*/
+      },
     },
     {
       headTitle: 'Имя',
@@ -94,9 +88,9 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
               columns={columns}
               data={docs}
               testIdKey={'name'}
-              /*onRowDoubleClick={(dataItem) => {
+              onRowDoubleClick={(dataItem) => {
                 router.push(`${itemPath}/${dataItem._id}`).catch((e) => console.log(e));
-              }}*/
+              }}
             />
           </div>
 
@@ -157,7 +151,7 @@ export const getServerSideProps = async (
   } = castCatalogueFilters({
     filters: alwaysArray(filters),
   });
-  const itemPath = `${ROUTE_CONSOLE}/${companyId}/customers/customer`;
+  const itemPath = `${ROUTE_CONSOLE}/${companyId}/customers/user`;
 
   const regexSearch = {
     $regex: search,

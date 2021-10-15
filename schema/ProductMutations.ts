@@ -5,6 +5,7 @@ import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   CategoryModel,
+  ObjectIdModel,
   ProductAssetsModel,
   ProductAttributeModel,
   ProductCardContentModel,
@@ -52,7 +53,7 @@ export const CreateProductInput = inputObjectType({
   name: 'CreateProductInput',
   definition(t) {
     t.nonNull.boolean('active');
-    t.list.nonNull.string('barcode');
+    t.nonNull.list.nonNull.string('barcode');
     t.nonNull.string('originalName');
     t.json('nameI18n');
     t.json('descriptionI18n');
@@ -68,7 +69,7 @@ export const CopyProductInput = inputObjectType({
   name: 'CopyProductInput',
   definition(t) {
     t.nonNull.objectId('productId');
-    t.list.nonNull.string('barcode');
+    t.nonNull.list.nonNull.string('barcode');
     t.nonNull.boolean('active');
     t.nonNull.string('originalName');
     t.json('nameI18n');
@@ -100,7 +101,7 @@ export const UpdateProductWithSyncErrorInput = inputObjectType({
   name: 'UpdateProductWithSyncErrorInput',
   definition(t) {
     t.nonNull.objectId('productId');
-    t.nonNull.string('barcode');
+    t.nonNull.list.nonNull.string('barcode');
     t.nonNull.int('available');
     t.nonNull.int('price');
     t.nonNull.objectId('shopId');
@@ -110,7 +111,6 @@ export const UpdateProductWithSyncErrorInput = inputObjectType({
 export const CreateProductWithSyncErrorInput = inputObjectType({
   name: 'CreateProductWithSyncErrorInput',
   definition(t) {
-    t.nonNull.string('barcode');
     t.nonNull.int('available');
     t.nonNull.int('price');
     t.nonNull.objectId('shopId');
@@ -1075,7 +1075,7 @@ export const ProductMutations = extendType({
             }
 
             const { input } = args;
-            const { productId, barcode, available, price, shopId } = input;
+            const { productId, available, price, shopId } = input;
 
             // Check product availability
             const product = await productsCollection.findOne({ _id: productId });
@@ -1101,7 +1101,9 @@ export const ProductMutations = extendType({
 
             // Check if shop product already exist
             const shopProduct = await shopProductsCollection.findOne({
-              barcode,
+              barcode: {
+                $in: input.barcode,
+              },
               productId,
               shopId,
             });
@@ -1121,7 +1123,9 @@ export const ProductMutations = extendType({
               },
               {
                 $addToSet: {
-                  barcode,
+                  barcode: {
+                    $each: input.barcode,
+                  },
                 },
                 $set: {
                   updatedAt: new Date(),
@@ -1167,7 +1171,9 @@ export const ProductMutations = extendType({
 
             // Delete sync errors
             const removedNotSyncedProductsResult = await notSyncedProductsCollection.deleteMany({
-              barcode,
+              barcode: {
+                $in: input.barcode,
+              },
             });
             if (!removedNotSyncedProductsResult.acknowledged) {
               mutationPayload = {
@@ -1178,31 +1184,38 @@ export const ProductMutations = extendType({
               return;
             }
 
-            const itemId = await getNextItemId(COL_SHOP_PRODUCTS);
-            const createdShopProductResult = await shopProductsCollection.insertOne({
-              barcode,
-              available,
-              price,
-              itemId,
-              productId,
-              discountedPercent: 0,
-              shopId: shop._id,
-              citySlug: shop.citySlug,
-              oldPrices: [],
-              rubricId: product.rubricId,
-              rubricSlug: product.rubricSlug,
-              companyId: shop.companyId,
-              brandSlug: product.brandSlug,
-              mainImage: product.mainImage,
-              brandCollectionSlug: product.brandCollectionSlug,
-              manufacturerSlug: product.manufacturerSlug,
-              supplierSlugs: product.supplierSlugs,
-              selectedOptionsSlugs: product.selectedOptionsSlugs,
-              updatedAt: new Date(),
-              createdAt: new Date(),
-              ...DEFAULT_COUNTERS_OBJECT,
-            });
-            if (!createdShopProductResult.acknowledged) {
+            // create shop products
+            const createdShopProductIds: ObjectIdModel[] = [];
+            for await (const barcode of input.barcode) {
+              const itemId = await getNextItemId(COL_SHOP_PRODUCTS);
+              const createdShopProductResult = await shopProductsCollection.insertOne({
+                barcode,
+                available,
+                price,
+                itemId,
+                productId,
+                discountedPercent: 0,
+                shopId: shop._id,
+                citySlug: shop.citySlug,
+                oldPrices: [],
+                rubricId: product.rubricId,
+                rubricSlug: product.rubricSlug,
+                companyId: shop.companyId,
+                brandSlug: product.brandSlug,
+                mainImage: product.mainImage,
+                brandCollectionSlug: product.brandCollectionSlug,
+                manufacturerSlug: product.manufacturerSlug,
+                supplierSlugs: product.supplierSlugs,
+                selectedOptionsSlugs: product.selectedOptionsSlugs,
+                updatedAt: new Date(),
+                createdAt: new Date(),
+                ...DEFAULT_COUNTERS_OBJECT,
+              });
+              if (createdShopProductResult.acknowledged) {
+                createdShopProductIds.push(createdShopProductResult.insertedId);
+              }
+            }
+            if (createdShopProductIds.length < input.barcode.length) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`shopProducts.create.error`),
@@ -1281,13 +1294,27 @@ export const ProductMutations = extendType({
             await validationSchema.validate(args.input.productFields);
 
             const { input } = args;
-            const { productFields, barcode, available, price, shopId } = input;
+            const { productFields, available, price, shopId } = input;
 
             // Check if product already exist
-            const product = await productsCollection.findOne({
-              barcode,
-            });
-            if (product) {
+            const existingProducts = await productsCollection
+              .aggregate([
+                {
+                  $unwind: {
+                    path: '$barcode',
+                    preserveNullAndEmptyArrays: true,
+                  },
+                },
+                {
+                  $match: {
+                    barcode: {
+                      $in: productFields.barcode,
+                    },
+                  },
+                },
+              ])
+              .toArray();
+            if (existingProducts.length > 0) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`products.create.error`),
@@ -1319,11 +1346,17 @@ export const ProductMutations = extendType({
             }
 
             // Check if shop product already exist
-            const shopProduct = await shopProductsCollection.findOne({
-              barcode,
-              shopId,
-            });
-            if (shopProduct) {
+            const existingShopProducts: ShopProductModel[] = [];
+            for await (const barcode of productFields.barcode) {
+              const shopProduct = await shopProductsCollection.findOne({
+                barcode,
+                shopId,
+              });
+              if (shopProduct) {
+                existingShopProducts.push(shopProduct);
+              }
+            }
+            if (existingShopProducts.length > 0) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`shopProducts.create.duplicate`),
@@ -1388,7 +1421,9 @@ export const ProductMutations = extendType({
 
             // Delete sync errors
             const removedNotSyncedProductsResult = await notSyncedProductsCollection.deleteMany({
-              barcode,
+              barcode: {
+                $in: productFields.barcode,
+              },
             });
             if (!removedNotSyncedProductsResult.acknowledged) {
               mutationPayload = {
@@ -1399,31 +1434,37 @@ export const ProductMutations = extendType({
               return;
             }
 
-            const shopProductItemId = await getNextItemId(COL_SHOP_PRODUCTS);
-            const createdShopProductResult = await shopProductsCollection.insertOne({
-              barcode,
-              available,
-              price,
-              itemId: shopProductItemId,
-              productId,
-              discountedPercent: 0,
-              shopId: shop._id,
-              citySlug: shop.citySlug,
-              oldPrices: [],
-              rubricId: createdProduct.rubricId,
-              rubricSlug: createdProduct.rubricSlug,
-              companyId: shop.companyId,
-              brandSlug: createdProduct.brandSlug,
-              mainImage: createdProduct.mainImage,
-              brandCollectionSlug: createdProduct.brandCollectionSlug,
-              manufacturerSlug: createdProduct.manufacturerSlug,
-              supplierSlugs: createdProduct.supplierSlugs,
-              selectedOptionsSlugs: createdProduct.selectedOptionsSlugs,
-              updatedAt: new Date(),
-              createdAt: new Date(),
-              ...DEFAULT_COUNTERS_OBJECT,
-            });
-            if (!createdShopProductResult.acknowledged) {
+            const createdShopProductIds: ObjectIdModel[] = [];
+            for await (const barcode of productFields.barcode) {
+              const shopProductItemId = await getNextItemId(COL_SHOP_PRODUCTS);
+              const createdShopProductResult = await shopProductsCollection.insertOne({
+                barcode,
+                available,
+                price,
+                itemId: shopProductItemId,
+                productId,
+                discountedPercent: 0,
+                shopId: shop._id,
+                citySlug: shop.citySlug,
+                oldPrices: [],
+                rubricId: createdProduct.rubricId,
+                rubricSlug: createdProduct.rubricSlug,
+                companyId: shop.companyId,
+                brandSlug: createdProduct.brandSlug,
+                mainImage: createdProduct.mainImage,
+                brandCollectionSlug: createdProduct.brandCollectionSlug,
+                manufacturerSlug: createdProduct.manufacturerSlug,
+                supplierSlugs: createdProduct.supplierSlugs,
+                selectedOptionsSlugs: createdProduct.selectedOptionsSlugs,
+                updatedAt: new Date(),
+                createdAt: new Date(),
+                ...DEFAULT_COUNTERS_OBJECT,
+              });
+              if (createdShopProductResult.acknowledged) {
+                createdShopProductIds.push(createdShopProductResult.insertedId);
+              }
+            }
+            if (createdShopProductIds.length < productFields.barcode.length) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`shopProducts.create.error`),

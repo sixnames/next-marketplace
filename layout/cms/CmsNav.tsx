@@ -1,7 +1,7 @@
 import { NavItemModel } from 'db/dbModels';
 import { CompanyInterface } from 'db/uiInterfaces';
 import * as React from 'react';
-import CmsNavItem from 'layout/CmsLayout/CmsNavItem';
+import CmsNavItem from 'layout/cms/CmsNavItem';
 import { useRouter } from 'next/router';
 import { UseCompactReturnInterface } from 'hooks/useCompact';
 

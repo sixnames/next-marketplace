@@ -157,7 +157,7 @@ export const getServerSideProps = async (
   } = castCatalogueFilters({
     filters: alwaysArray(filters),
   });
-  const itemPath = `${ROUTE_CONSOLE}/${companyId}/customers/customer`;
+  const itemPath = `${ROUTE_CONSOLE}/${companyId}/customers/user`;
 
   const regexSearch = {
     $regex: search,

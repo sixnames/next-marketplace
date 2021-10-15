@@ -1,5 +1,5 @@
 import CmsOrderDetails from 'components/CmsOrderDetails';
-import { ROUTE_CMS } from 'config/common';
+import { ROUTE_CONSOLE } from 'config/common';
 import {
   COL_ORDER_CUSTOMERS,
   COL_ORDER_PRODUCTS,
@@ -8,13 +8,15 @@ import {
   COL_ROLES,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
+  COL_USER_CATEGORIES,
   COL_USERS,
 } from 'db/collectionNames';
 import { shopProductFieldsPipeline } from 'db/dao/constantPipelines';
 import { getDatabase } from 'db/mongodb';
-import { OrderInterface, UserInterface } from 'db/uiInterfaces';
+import { CompanyInterface, OrderInterface, UserInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsUserLayout from 'layout/cms/CmsUserLayout';
+import ConsoleLayout from 'layout/console/ConsoleLayout';
+import ConsoleUserLayout from 'layout/console/ConsoleUserLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
 import { castOrderStatus } from 'lib/orderUtils';
@@ -23,77 +25,91 @@ import { generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 
 interface UserOrderConsumerInterface {
   user: UserInterface;
   order: OrderInterface;
+  currentCompany?: CompanyInterface | null;
 }
 
-const UserOrdersConsumer: React.FC<UserOrderConsumerInterface> = ({ user, order }) => {
-  const title = `Заказ №${order.itemId}`;
+const UserOrderConsumer: React.FC<UserOrderConsumerInterface> = ({
+  user,
+  order,
+  currentCompany,
+}) => {
+  const basePath = `${ROUTE_CONSOLE}/${currentCompany?._id}/customers`;
+  const title = `Заказ №${order.orderId}`;
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: title,
     config: [
       {
-        name: 'Пользователи',
-        href: `${ROUTE_CMS}/users`,
+        name: 'Клиенты',
+        href: basePath,
       },
       {
         name: `${user.fullName}`,
-        href: `${ROUTE_CMS}/users/user/${user._id}`,
+        href: `${basePath}/user/${user._id}`,
       },
       {
         name: `Заказы`,
-        href: `${ROUTE_CMS}/users/user/${user._id}/orders`,
+        href: `${basePath}/user/${user._id}/orders`,
       },
     ],
   };
 
   return (
-    <CmsUserLayout user={user} breadcrumbs={breadcrumbs}>
+    <ConsoleUserLayout companyId={`${currentCompany?._id}`} user={user} breadcrumbs={breadcrumbs}>
       <CmsOrderDetails order={order} title={title} />
-    </CmsUserLayout>
+    </ConsoleUserLayout>
   );
 };
 
-interface UserOrderInterface extends PagePropsInterface, UserOrderConsumerInterface {}
+interface UserOrderPageInterface extends PagePropsInterface, UserOrderConsumerInterface {}
 
-const UserOrderPage: NextPage<UserOrderInterface> = ({ pageUrls, ...props }) => {
+const UserOrderPage: NextPage<UserOrderPageInterface> = ({
+  pageUrls,
+  currentCompany,
+  ...props
+}) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
-      <UserOrdersConsumer {...props} />
-    </CmsLayout>
+    <ConsoleLayout pageUrls={pageUrls} company={currentCompany}>
+      <UserOrderConsumer {...props} currentCompany={currentCompany} />
+    </ConsoleLayout>
   );
 };
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<UserOrderInterface>> => {
+): Promise<GetServerSidePropsResult<UserOrderPageInterface>> => {
   const { query } = context;
-  const { userId, orderId } = query;
   const { db } = await getDatabase();
   const usersCollection = db.collection<UserInterface>(COL_USERS);
   const ordersCollection = db.collection<OrderInterface>(COL_ORDERS);
 
-  const { props } = await getAppInitialData({ context });
-  if (!props || !userId || !orderId) {
+  const { props } = await getConsoleInitialData({ context });
+
+  const companyId = new ObjectId(`${query.companyId}`);
+  const orderId = new ObjectId(`${query.orderId}`);
+
+  const userId = new ObjectId(`${query.userId}`);
+  if (!props) {
     return {
       notFound: true,
     };
   }
 
-  // get user
   const userAggregationResult = await usersCollection
     .aggregate<UserInterface>([
       {
         $match: {
-          _id: new ObjectId(`${userId}`),
+          _id: userId,
         },
       },
+
+      // get role
       {
         $lookup: {
           from: COL_ROLES,
@@ -115,6 +131,34 @@ export const getServerSideProps = async (
           role: { $arrayElemAt: ['$role', 0] },
         },
       },
+
+      // get category
+      {
+        $lookup: {
+          from: COL_USER_CATEGORIES,
+          as: 'category',
+          let: {
+            categoryIds: '$categoryIds',
+          },
+          pipeline: [
+            {
+              $match: {
+                companyId,
+                $expr: {
+                  $in: ['$_id', '$$categoryIds'],
+                },
+              },
+            },
+          ],
+        },
+      },
+      {
+        $addFields: {
+          category: {
+            $arrayElemAt: ['$category', 0],
+          },
+        },
+      },
       {
         $project: {
           password: false,
@@ -129,12 +173,34 @@ export const getServerSideProps = async (
     };
   }
 
+  const user: UserInterface = {
+    ...userResult,
+    fullName: getFullName(userResult),
+    role: userResult.role
+      ? {
+          ...userResult.role,
+          name: getFieldStringLocale(userResult.role.nameI18n, props.sessionLocale),
+        }
+      : null,
+    formattedPhone: {
+      raw: phoneToRaw(userResult.phone),
+      readable: phoneToReadable(userResult.phone),
+    },
+    category: userResult.category
+      ? {
+          ...userResult.category,
+          name: getFieldStringLocale(userResult.category.nameI18n, props.sessionLocale),
+        }
+      : null,
+  };
+
+  // get order
   // get order
   const orderAggregationResult = await ordersCollection
     .aggregate<OrderInterface>([
       {
         $match: {
-          _id: new ObjectId(`${query.orderId}`),
+          _id: orderId,
         },
       },
       {
@@ -292,17 +358,6 @@ export const getServerSideProps = async (
             raw: phoneToRaw(initialOrder.customer.phone),
             readable: phoneToReadable(initialOrder.customer.phone),
           },
-        }
-      : null,
-  };
-
-  const user: UserInterface = {
-    ...userResult,
-    fullName: getFullName(userResult),
-    role: userResult.role
-      ? {
-          ...userResult.role,
-          name: getFieldStringLocale(userResult.role.nameI18n, props.sessionLocale),
         }
       : null,
   };

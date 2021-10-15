@@ -1,6 +1,6 @@
 import Inner from 'components/Inner';
 import Title from 'components/Title';
-import { COL_ROLES, COL_USERS } from 'db/collectionNames';
+import { COL_ROLES, COL_USER_CATEGORIES, COL_USERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { UserInterface } from 'db/uiInterfaces';
 import AppContentWrapper from 'layout/AppContentWrapper';
@@ -46,11 +46,13 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<UsersPageInterface>> => {
   const { query } = context;
-  const { userId } = query;
   const { db } = await getDatabase();
   const usersCollection = db.collection<UserInterface>(COL_USERS);
   const { props } = await getConsoleInitialData({ context });
-  if (!props || !userId) {
+
+  const companyId = new ObjectId(`${query.companyId}`);
+  const userId = new ObjectId(`${query.userId}`);
+  if (!props) {
     return {
       notFound: true,
     };
@@ -60,9 +62,11 @@ export const getServerSideProps = async (
     .aggregate<UserInterface>([
       {
         $match: {
-          _id: new ObjectId(`${userId}`),
+          _id: userId,
         },
       },
+
+      // get role
       {
         $lookup: {
           from: COL_ROLES,
@@ -84,6 +88,35 @@ export const getServerSideProps = async (
           role: { $arrayElemAt: ['$role', 0] },
         },
       },
+
+      // get category
+      {
+        $lookup: {
+          from: COL_USER_CATEGORIES,
+          as: 'category',
+          let: {
+            categoryIds: '$categoryIds',
+          },
+          pipeline: [
+            {
+              $match: {
+                companyId,
+                $expr: {
+                  $in: ['$_id', '$$categoryIds'],
+                },
+              },
+            },
+          ],
+        },
+      },
+      {
+        $addFields: {
+          category: {
+            $arrayElemAt: ['$category', 0],
+          },
+        },
+      },
+
       {
         $project: {
           password: false,

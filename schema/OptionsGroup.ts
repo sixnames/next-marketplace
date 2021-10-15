@@ -13,7 +13,6 @@ import {
   OPTIONS_GROUP_VARIANT_COLOR,
   OPTIONS_GROUP_VARIANT_ENUMS,
   SORT_ASC,
-  SORT_DESC,
 } from 'config/common';
 import {
   AttributeModel,
@@ -122,7 +121,8 @@ export const OptionsGroupQueries = extendType({
     t.nonNull.list.nonNull.field('getAllOptionsGroups', {
       type: 'OptionsGroup',
       description: 'Should return options groups list',
-      resolve: async (): Promise<OptionsGroupModel[]> => {
+      resolve: async (_root, _args, context): Promise<OptionsGroupModel[]> => {
+        const { locale } = await getRequestParams(context);
         const { db } = await getDatabase();
         const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
         const optionsGroups = await optionsGroupsCollection
@@ -130,7 +130,7 @@ export const OptionsGroupQueries = extendType({
             {},
             {
               sort: {
-                _id: SORT_DESC,
+                [`nameI18n.${locale}`]: SORT_ASC,
               },
             },
           )

@@ -509,7 +509,7 @@ export type CoordinatesInput = {
 
 export type CopyProductInput = {
   productId: Scalars['ObjectId'];
-  barcode?: Maybe<Array<Scalars['String']>>;
+  barcode: Array<Scalars['String']>;
   active: Scalars['Boolean'];
   originalName: Scalars['String'];
   nameI18n?: Maybe<Scalars['JSONObject']>;
@@ -644,7 +644,7 @@ export type CreateProductConnectionInput = {
 
 export type CreateProductInput = {
   active: Scalars['Boolean'];
-  barcode?: Maybe<Array<Scalars['String']>>;
+  barcode: Array<Scalars['String']>;
   originalName: Scalars['String'];
   nameI18n?: Maybe<Scalars['JSONObject']>;
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
@@ -654,7 +654,6 @@ export type CreateProductInput = {
 };
 
 export type CreateProductWithSyncErrorInput = {
-  barcode: Scalars['String'];
   available: Scalars['Int'];
   price: Scalars['Int'];
   shopId: Scalars['ObjectId'];
@@ -3037,7 +3036,7 @@ export type UpdateProductTextAttributeItemInput = {
 
 export type UpdateProductWithSyncErrorInput = {
   productId: Scalars['ObjectId'];
-  barcode: Scalars['String'];
+  barcode: Array<Scalars['String']>;
   available: Scalars['Int'];
   price: Scalars['Int'];
   shopId: Scalars['ObjectId'];

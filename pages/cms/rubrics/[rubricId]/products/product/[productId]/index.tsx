@@ -61,7 +61,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, rubric }) 
     originalName,
     descriptionI18n,
     active,
-    barcode,
+    barcode: barcode || [],
     gender: gender as any,
     cardDescriptionI18n,
   };

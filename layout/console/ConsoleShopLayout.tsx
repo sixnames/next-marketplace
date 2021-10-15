@@ -46,7 +46,6 @@ const ConsoleShopLayout: React.FC<AppShopLayoutInterface> = ({
         name: 'Ошибки синхронизации',
         testId: 'shop-sync-errors',
         path: `${basePath}/${shop._id}/sync-errors`,
-        exact: true,
       },
     ];
   }, [basePath, shop._id]);

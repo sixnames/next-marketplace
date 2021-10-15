@@ -3,15 +3,17 @@ import ContentItemControls from 'components/ContentItemControls';
 import Currency from 'components/Currency';
 import { CreateProductWithSyncErrorModalInterface } from 'components/Modal/CreateProductWithSyncErrorModal';
 import { ProductSearchModalInterface } from 'components/Modal/ProductSearchModal';
+import Pager, { useNavigateToPageHandler } from 'components/Pager';
 import Table, { TableColumn } from 'components/Table';
 import { CREATE_PRODUCT_WITH_SYNC_ERROR_MODAL, PRODUCT_SEARCH_MODAL } from 'config/modalVariants';
-import { NotSyncedProductInterface } from 'db/uiInterfaces';
+import { AppPaginationInterface, NotSyncedProductInterface } from 'db/uiInterfaces';
 import { useUpdateProductWithSyncErrorMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import { getNumWord } from 'lib/i18n';
 import * as React from 'react';
 
 export interface SyncErrorsListInterface {
-  notSyncedProducts: NotSyncedProductInterface[];
+  notSyncedProducts: AppPaginationInterface<NotSyncedProductInterface>;
   showShopName?: boolean;
   showControls?: boolean;
 }
@@ -21,6 +23,7 @@ const SyncErrorsList: React.FC<SyncErrorsListInterface> = ({
   showShopName = true,
   showControls = true,
 }) => {
+  const setPage = useNavigateToPageHandler();
   const { showModal, onErrorCallback, onCompleteCallback, showLoading } = useMutationCallbacks({
     reload: true,
   });
@@ -32,10 +35,21 @@ const SyncErrorsList: React.FC<SyncErrorsListInterface> = ({
 
   const columns: TableColumn<NotSyncedProductInterface>[] = [
     {
-      accessor: 'barcode',
+      accessor: 'barcodeList',
       headTitle: 'Штрих-код',
       render: ({ cellData }) => {
-        return <div className='max-w-[150px] truncate'>{cellData}</div>;
+        const barcodeList = cellData as string[];
+        return (
+          <React.Fragment>
+            {(barcodeList || []).map((barcode) => {
+              return (
+                <div key={barcode} className='max-w-[150px] truncate'>
+                  {barcode}
+                </div>
+              );
+            })}
+          </React.Fragment>
+        );
       },
     },
     {
@@ -101,7 +115,7 @@ const SyncErrorsList: React.FC<SyncErrorsListInterface> = ({
                           input: {
                             productId: product._id,
                             available: dataItem.available,
-                            barcode: dataItem.barcode,
+                            barcode: dataItem.barcodeList || [],
                             price: dataItem.price,
                             shopId: dataItem.shopId,
                           },
@@ -118,13 +132,21 @@ const SyncErrorsList: React.FC<SyncErrorsListInterface> = ({
     },
   ];
 
+  const { docs, page, totalPages, totalDocs } = notSyncedProducts;
+
+  const word = getNumWord(totalDocs, ['ошибка', 'ошибки', 'ошибок']);
+
   return (
-    <div className='overflow-x-auto overflow-y-hidden'>
-      <Table<NotSyncedProductInterface>
-        testIdKey={'name'}
-        columns={columns}
-        data={notSyncedProducts}
-      />
+    <div>
+      {totalDocs > 0 ? (
+        <div className='mb-4 text-secondary-text'>
+          Всего {totalDocs} {word}
+        </div>
+      ) : null}
+      <div className='overflow-x-auto overflow-y-hidden'>
+        <Table<NotSyncedProductInterface> testIdKey={'name'} columns={columns} data={docs} />
+      </div>
+      <Pager page={page} setPage={setPage} totalPages={totalPages} />
     </div>
   );
 };

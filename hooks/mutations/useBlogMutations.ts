@@ -34,14 +34,14 @@ export const useCreateBlogPostLike = () => {
 };
 
 // post
-export const useCreateBlogPost = () => {
+export const useCreateBlogPost = (redirectPath: string) => {
   const router = useRouter();
   return useMutationHandler<BlogPostPayloadModel, CreateBlogPostInputInterface>({
     path: `${basePath}/post`,
     method: REQUEST_METHOD_POST,
     onSuccess: (payload) => {
       if (payload.payload) {
-        router.push(`${basePath}${ROUTE_BLOG}/post/${payload.payload._id}`).catch(console.log);
+        router.push(`${redirectPath}${ROUTE_BLOG}/post/${payload.payload._id}`).catch(console.log);
       }
     },
   });

@@ -82,19 +82,16 @@ export async function aggregatePagination<TModel>({
             $facet: {
               docs: [{ $skip: skip }, { $limit: limit }],
               countAllDocs: [{ $count: 'totalDocs' }],
-              countActiveDocs: [{ $match: { active: true } }, { $count: 'totalActiveDocs' }],
             },
           },
           {
             $addFields: {
               totalDocsObject: { $arrayElemAt: ['$countAllDocs', 0] },
-              totalActiveDocsObject: { $arrayElemAt: ['$countActiveDocs', 0] },
             },
           },
           {
             $addFields: {
               totalDocs: '$totalDocsObject.totalDocs',
-              totalActiveDocs: '$totalActiveDocsObject.totalActiveDocs',
             },
           },
           {
@@ -115,7 +112,6 @@ export async function aggregatePagination<TModel>({
             $project: {
               docs: 1,
               totalDocs: 1,
-              totalActiveDocs: 1,
               totalPages: 1,
               hasPrevPage: {
                 $gt: [page, DEFAULT_PAGE],

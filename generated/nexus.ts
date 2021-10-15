@@ -250,7 +250,7 @@ export interface NexusGenInputs {
   CopyProductInput: {
     // input type
     active: boolean; // Boolean!
-    barcode?: string[] | null; // [String!]
+    barcode: string[]; // [String!]!
     cardDescriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     gender: NexusGenEnums['Gender']; // Gender!
@@ -369,7 +369,7 @@ export interface NexusGenInputs {
   CreateProductInput: {
     // input type
     active: boolean; // Boolean!
-    barcode?: string[] | null; // [String!]
+    barcode: string[]; // [String!]!
     cardDescriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     gender: NexusGenEnums['Gender']; // Gender!
@@ -380,7 +380,6 @@ export interface NexusGenInputs {
   CreateProductWithSyncErrorInput: {
     // input type
     available: number; // Int!
-    barcode: string; // String!
     price: number; // Int!
     productFields: NexusGenInputs['CreateProductInput']; // CreateProductInput!
     shopId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -876,7 +875,7 @@ export interface NexusGenInputs {
   UpdateProductWithSyncErrorInput: {
     // input type
     available: number; // Int!
-    barcode: string; // String!
+    barcode: string[]; // [String!]!
     price: number; // Int!
     productId: NexusGenScalars['ObjectId']; // ObjectId!
     shopId: NexusGenScalars['ObjectId']; // ObjectId!

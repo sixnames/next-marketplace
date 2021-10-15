@@ -1,4 +1,4 @@
-import { PAGINATION_DEFAULT_LIMIT } from 'config/common';
+import { PAGINATION_DEFAULT_LIMIT, SORT_DESC } from 'config/common';
 import { COL_NOT_SYNCED_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -127,7 +127,19 @@ export async function getPaginatedNotSyncedProducts({
       // facets
       {
         $facet: {
-          docs: [{ $skip: skip }, { $limit: limit }],
+          docs: [
+            {
+              $sort: {
+                createdAt: SORT_DESC,
+              },
+            },
+            {
+              $skip: skip,
+            },
+            {
+              $limit: limit,
+            },
+          ],
           countAllDocs: [{ $count: 'totalDocs' }],
         },
       },

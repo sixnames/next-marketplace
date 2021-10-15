@@ -102,10 +102,10 @@ const CmsNavItem: React.FC<AppNavItemInterface> = ({
 
   const checkIsCurrent = React.useCallback(
     (path: string) => {
-      const reg = RegExp(`${path}`);
+      const reg = RegExp(`${basePath}${path}`);
       return reg.test(asPath);
     },
-    [asPath],
+    [asPath, basePath],
   );
 
   function dropdownNavHandler() {

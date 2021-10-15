@@ -186,7 +186,6 @@ export const getServerSideProps = async (
   }
 
   const locale = props.sessionLocale;
-
   const order: OrderInterface = {
     ...initialOrder,
     totalPrice: initialOrder.products?.reduce((acc: number, { totalPrice }) => {

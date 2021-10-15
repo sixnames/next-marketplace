@@ -131,6 +131,7 @@ export async function getPaginatedNotSyncedProducts({
             {
               $sort: {
                 createdAt: SORT_DESC,
+                name: SORT_DESC,
               },
             },
             {

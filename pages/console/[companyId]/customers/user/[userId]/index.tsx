@@ -21,13 +21,17 @@ import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 
-interface UsersConsumerInterface {
+interface UserDetailsConsumerInterface {
   user: UserInterface;
   currentCompany?: CompanyInterface | null;
   companies: CompanyInterface[];
 }
 
-const UsersConsumer: React.FC<UsersConsumerInterface> = ({ user, currentCompany, companies }) => {
+const UserDetailsConsumer: React.FC<UserDetailsConsumerInterface> = ({
+  user,
+  currentCompany,
+  companies,
+}) => {
   const { showModal } = useAppContext();
   const [setUserCategoryMutation] = useSetUserCategoryMutation();
 
@@ -38,10 +42,6 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({ user, currentCompany,
         name: 'Клиенты',
         href: `${ROUTE_CONSOLE}/${currentCompany?._id}/customers`,
       },
-      /*{
-        name: `${user.fullName}`,
-        href: `${ROUTE_CONSOLE}/${currentCompany?._id}/customers/user/${user._id}`,
-      },*/
     ],
   };
 
@@ -90,19 +90,23 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({ user, currentCompany,
   );
 };
 
-interface UsersPageInterface extends PagePropsInterface, UsersConsumerInterface {}
+interface UserDetailsPageInterface extends PagePropsInterface, UserDetailsConsumerInterface {}
 
-const UsersPage: NextPage<UsersPageInterface> = ({ pageUrls, currentCompany, ...props }) => {
+const UserDetailsPage: NextPage<UserDetailsPageInterface> = ({
+  pageUrls,
+  currentCompany,
+  ...props
+}) => {
   return (
     <ConsoleLayout pageUrls={pageUrls} company={currentCompany}>
-      <UsersConsumer {...props} currentCompany={currentCompany} />
+      <UserDetailsConsumer {...props} currentCompany={currentCompany} />
     </ConsoleLayout>
   );
 };
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<UsersPageInterface>> => {
+): Promise<GetServerSidePropsResult<UserDetailsPageInterface>> => {
   const { query } = context;
   const { db } = await getDatabase();
   const usersCollection = db.collection<UserInterface>(COL_USERS);
@@ -286,4 +290,4 @@ export const getServerSideProps = async (
   };
 };
 
-export default UsersPage;
+export default UserDetailsPage;

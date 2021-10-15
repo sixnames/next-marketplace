@@ -15,7 +15,7 @@ import { omit } from 'lodash';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import CmsLayout from 'layout/CmsLayout/CmsLayout';
+import CmsLayout from 'layout/cms/CmsLayout';
 import { PagePropsInterface } from 'pages/_app';
 import { GetServerSidePropsContext, NextPage } from 'next';
 import { getAppInitialData } from 'lib/ssrUtils';

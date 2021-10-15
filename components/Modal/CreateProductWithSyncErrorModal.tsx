@@ -106,7 +106,7 @@ const CreateProductWithSyncErrorModal: React.FC<CreateProductWithSyncErrorModalI
     descriptionI18n: {
       [DEFAULT_LOCALE]: '',
     },
-    barcode: [notSyncedProduct.barcode],
+    barcode: notSyncedProduct.barcodeList || [],
     rubricId: undefined,
     gender: GENDER_IT as any,
   };
@@ -125,12 +125,12 @@ const CreateProductWithSyncErrorModal: React.FC<CreateProductWithSyncErrorModalI
             return;
           }
           showLoading();
+
           return createProductWithSyncErrorMutation({
             variables: {
               input: {
                 available: notSyncedProduct.available,
                 price: notSyncedProduct.price,
-                barcode: notSyncedProduct.barcode,
                 shopId: notSyncedProduct.shopId,
                 productFields: {
                   ...values,

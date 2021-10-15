@@ -10,18 +10,20 @@ import {
   COL_SHOPS,
   COL_USERS,
 } from 'db/collectionNames';
+import { shopProductFieldsPipeline } from 'db/dao/constantPipelines';
 import { getDatabase } from 'db/mongodb';
 import { OrderInterface, UserInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsUserLayout from 'layout/CmsLayout/CmsUserLayout';
+import CmsUserLayout from 'layout/cms/CmsUserLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
 import { castOrderStatus } from 'lib/orderUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
+import { generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/CmsLayout/CmsLayout';
+import CmsLayout from 'layout/cms/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
@@ -209,6 +211,7 @@ export const getServerSideProps = async (
                 ],
               },
             },
+            ...shopProductFieldsPipeline('$productId'),
             {
               $lookup: {
                 from: COL_ORDER_STATUSES,
@@ -240,6 +243,7 @@ export const getServerSideProps = async (
     };
   }
 
+  const locale = props.sessionLocale;
   const order: OrderInterface = {
     ...initialOrder,
     totalPrice: initialOrder.products?.reduce((acc: number, { totalPrice }) => {
@@ -248,16 +252,36 @@ export const getServerSideProps = async (
     status: initialOrder.status
       ? {
           ...initialOrder.status,
-          name: getFieldStringLocale(initialOrder.status.nameI18n, props.sessionLocale),
+          name: getFieldStringLocale(initialOrder.status.nameI18n, locale),
         }
       : null,
-    products: initialOrder.products?.map((product) => {
+    products: initialOrder.products?.map((orderProduct) => {
+      // title
+      const snippetTitle = generateSnippetTitle({
+        locale,
+        brand: orderProduct.product?.brand,
+        rubricName: getFieldStringLocale(orderProduct.product?.rubric?.nameI18n, locale),
+        showRubricNameInProductTitle: orderProduct.product?.rubric?.showRubricNameInProductTitle,
+        showCategoryInProductTitle: orderProduct.product?.rubric?.showCategoryInProductTitle,
+        attributes: orderProduct.product?.attributes || [],
+        categories: orderProduct.product?.categories,
+        titleCategoriesSlugs: orderProduct.product?.titleCategoriesSlugs,
+        originalName: `${orderProduct.product?.originalName}`,
+        defaultGender: `${orderProduct.product?.gender}`,
+      });
+
       return {
-        ...product,
+        ...orderProduct,
         status: castOrderStatus({
-          initialStatus: product.status,
+          initialStatus: orderProduct.status,
           locale: props.sessionLocale,
         }),
+        product: orderProduct.product
+          ? {
+              ...orderProduct.product,
+              snippetTitle,
+            }
+          : null,
       };
     }),
     customer: initialOrder.customer

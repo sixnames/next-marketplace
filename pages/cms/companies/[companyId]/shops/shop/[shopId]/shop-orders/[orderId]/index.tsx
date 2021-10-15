@@ -8,15 +8,17 @@ import {
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
 } from 'db/collectionNames';
+import { shopProductFieldsPipeline } from 'db/dao/constantPipelines';
 import { getDatabase } from 'db/mongodb';
 import { OrderInterface, ShopInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/CmsLayout/CmsLayout';
+import CmsLayout from 'layout/cms/CmsLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
 import { castOrderStatus } from 'lib/orderUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { PagePropsInterface } from 'pages/_app';
@@ -200,6 +202,7 @@ export const getServerSideProps = async (
                 ],
               },
             },
+            ...shopProductFieldsPipeline('$productId'),
             {
               $lookup: {
                 from: COL_ORDER_STATUSES,
@@ -231,6 +234,7 @@ export const getServerSideProps = async (
     };
   }
 
+  const locale = initialProps.props.sessionLocale;
   const order: OrderInterface = {
     ...initialOrder,
     totalPrice: initialOrder.products?.reduce((acc: number, { totalPrice }) => {
@@ -245,13 +249,33 @@ export const getServerSideProps = async (
           ),
         }
       : null,
-    products: initialOrder.products?.map((product) => {
+    products: initialOrder.products?.map((orderProduct) => {
+      // title
+      const snippetTitle = generateSnippetTitle({
+        locale,
+        brand: orderProduct.product?.brand,
+        rubricName: getFieldStringLocale(orderProduct.product?.rubric?.nameI18n, locale),
+        showRubricNameInProductTitle: orderProduct.product?.rubric?.showRubricNameInProductTitle,
+        showCategoryInProductTitle: orderProduct.product?.rubric?.showCategoryInProductTitle,
+        attributes: orderProduct.product?.attributes || [],
+        categories: orderProduct.product?.categories,
+        titleCategoriesSlugs: orderProduct.product?.titleCategoriesSlugs,
+        originalName: `${orderProduct.product?.originalName}`,
+        defaultGender: `${orderProduct.product?.gender}`,
+      });
+
       return {
-        ...product,
+        ...orderProduct,
         status: castOrderStatus({
-          initialStatus: product.status,
-          locale: initialProps.props?.sessionLocale,
+          initialStatus: orderProduct.status,
+          locale,
         }),
+        product: orderProduct.product
+          ? {
+              ...orderProduct.product,
+              snippetTitle,
+            }
+          : null,
       };
     }),
     customer: initialOrder.customer

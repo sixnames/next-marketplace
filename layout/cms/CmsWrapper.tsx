@@ -9,7 +9,7 @@ import { useConfigContext } from 'context/configContext';
 import { useUserContext } from 'context/userContext';
 import { CompanyInterface } from 'db/uiInterfaces';
 import useCompact from 'hooks/useCompact';
-import CmsNav from 'layout/CmsLayout/CmsNav';
+import CmsNav from 'layout/cms/CmsNav';
 import Meta, { PageUrlsInterface } from 'layout/Meta';
 import { useRouter } from 'next/router';
 import * as React from 'react';

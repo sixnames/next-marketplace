@@ -1643,9 +1643,9 @@ export const getCatalogueData = async ({
       ? ROW_SNIPPET_LAYOUT_BIG_IMAGE
       : rubric.variant?.rowSnippetLayout || DEFAULT_LAYOUT;
 
-    const showSnippetConnections = search ? true : rubric.variant?.showSnippetConnections || true;
+    const showSnippetConnections = search ? true : rubric.variant?.showSnippetConnections || false;
 
-    const showSnippetBackground = search ? true : rubric.variant?.showSnippetBackground || true;
+    const showSnippetBackground = search ? true : rubric.variant?.showSnippetBackground || false;
 
     const showSnippetArticle = search ? false : rubric.variant?.showSnippetArticle || false;
 

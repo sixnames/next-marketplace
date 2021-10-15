@@ -250,7 +250,7 @@ export interface NexusGenInputs {
   CopyProductInput: {
     // input type
     active: boolean; // Boolean!
-    barcode?: string[] | null; // [String!]
+    barcode: string[]; // [String!]!
     cardDescriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     gender: NexusGenEnums['Gender']; // Gender!
@@ -369,7 +369,7 @@ export interface NexusGenInputs {
   CreateProductInput: {
     // input type
     active: boolean; // Boolean!
-    barcode?: string[] | null; // [String!]
+    barcode: string[]; // [String!]!
     cardDescriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     gender: NexusGenEnums['Gender']; // Gender!
@@ -380,7 +380,6 @@ export interface NexusGenInputs {
   CreateProductWithSyncErrorInput: {
     // input type
     available: number; // Int!
-    barcode: string; // String!
     price: number; // Int!
     productFields: NexusGenInputs['CreateProductInput']; // CreateProductInput!
     shopId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -876,7 +875,7 @@ export interface NexusGenInputs {
   UpdateProductWithSyncErrorInput: {
     // input type
     available: number; // Int!
-    barcode: string; // String!
+    barcode: string[]; // [String!]!
     price: number; // Int!
     productId: NexusGenScalars['ObjectId']; // ObjectId!
     shopId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -1151,7 +1150,6 @@ export interface NexusGenObjects {
   SuppliersAlphabetList: dbModels.SuppliersAlphabetListModel;
   SuppliersPaginationPayload: dbModels.SuppliersPaginationPayloadModel;
   User: dbModels.UserModel;
-  UsersPaginationPayload: dbModels.UsersPaginationPayloadModel;
 }
 
 export interface NexusGenInterfaces {
@@ -1925,7 +1923,6 @@ export interface NexusGenFieldTypes {
     getAllRubrics: NexusGenRootTypes['Rubric'][]; // [Rubric!]!
     getAllShops: NexusGenRootTypes['ShopsPaginationPayload']; // ShopsPaginationPayload!
     getAllSuppliers: NexusGenRootTypes['SuppliersPaginationPayload']; // SuppliersPaginationPayload!
-    getAllUsers: NexusGenRootTypes['UsersPaginationPayload']; // UsersPaginationPayload!
     getAttributePositioningOptions: NexusGenRootTypes['SelectOption'][]; // [SelectOption!]!
     getAttributeVariantsOptions: NexusGenRootTypes['SelectOption'][]; // [SelectOption!]!
     getAttributeViewVariantsOptions: NexusGenRootTypes['SelectOption'][]; // [SelectOption!]!
@@ -1963,8 +1960,6 @@ export interface NexusGenFieldTypes {
     getSupplier: NexusGenRootTypes['Supplier']; // Supplier!
     getSupplierAlphabetLists: NexusGenRootTypes['SuppliersAlphabetList'][]; // [SuppliersAlphabetList!]!
     getSupplierBySlug: NexusGenRootTypes['Supplier']; // Supplier!
-    getUser: NexusGenRootTypes['User']; // User!
-    getUserCompany: NexusGenRootTypes['Company'] | null; // Company
     getValidationMessages: NexusGenRootTypes['Message'][]; // [Message!]!
   };
   Role: {
@@ -2252,19 +2247,6 @@ export interface NexusGenFieldTypes {
     secondName: string | null; // String
     shortName: string; // String!
     updatedAt: NexusGenScalars['Date']; // Date!
-  };
-  UsersPaginationPayload: {
-    // field return type
-    docs: NexusGenRootTypes['User'][]; // [User!]!
-    hasNextPage: boolean; // Boolean!
-    hasPrevPage: boolean; // Boolean!
-    limit: number; // Int!
-    page: number; // Int!
-    sortBy: string; // String!
-    sortDir: NexusGenEnums['SortDirection']; // SortDirection!
-    totalActiveDocs: number; // Int!
-    totalDocs: number; // Int!
-    totalPages: number; // Int!
   };
   AlphabetList: {
     // field return type
@@ -3056,7 +3038,6 @@ export interface NexusGenFieldTypeNames {
     getAllRubrics: 'Rubric';
     getAllShops: 'ShopsPaginationPayload';
     getAllSuppliers: 'SuppliersPaginationPayload';
-    getAllUsers: 'UsersPaginationPayload';
     getAttributePositioningOptions: 'SelectOption';
     getAttributeVariantsOptions: 'SelectOption';
     getAttributeViewVariantsOptions: 'SelectOption';
@@ -3094,8 +3075,6 @@ export interface NexusGenFieldTypeNames {
     getSupplier: 'Supplier';
     getSupplierAlphabetLists: 'SuppliersAlphabetList';
     getSupplierBySlug: 'Supplier';
-    getUser: 'User';
-    getUserCompany: 'Company';
     getValidationMessages: 'Message';
   };
   Role: {
@@ -3383,19 +3362,6 @@ export interface NexusGenFieldTypeNames {
     secondName: 'String';
     shortName: 'String';
     updatedAt: 'Date';
-  };
-  UsersPaginationPayload: {
-    // field return type name
-    docs: 'User';
-    hasNextPage: 'Boolean';
-    hasPrevPage: 'Boolean';
-    limit: 'Int';
-    page: 'Int';
-    sortBy: 'String';
-    sortDir: 'SortDirection';
-    totalActiveDocs: 'Int';
-    totalDocs: 'Int';
-    totalPages: 'Int';
   };
   AlphabetList: {
     // field return type name
@@ -3938,10 +3904,6 @@ export interface NexusGenArgTypes {
       // args
       input?: NexusGenInputs['PaginationInput'] | null; // PaginationInput
     };
-    getAllUsers: {
-      // args
-      input?: NexusGenInputs['PaginationInput'] | null; // PaginationInput
-    };
     getAttributesGroup: {
       // args
       _id: NexusGenScalars['ObjectId']; // ObjectId!
@@ -4055,10 +4017,6 @@ export interface NexusGenArgTypes {
       // args
       slug: string; // String!
     };
-    getUser: {
-      // args
-      _id: NexusGenScalars['ObjectId']; // ObjectId!
-    };
   };
   Rubric: {
     products: {
@@ -4101,8 +4059,7 @@ export interface NexusGenAbstractTypeMembers {
     | 'ManufacturersPaginationPayload'
     | 'ShopProductsPaginationPayload'
     | 'ShopsPaginationPayload'
-    | 'SuppliersPaginationPayload'
-    | 'UsersPaginationPayload';
+    | 'SuppliersPaginationPayload';
   Payload:
     | 'AttributesGroupPayload'
     | 'BrandPayload'
@@ -4199,7 +4156,6 @@ export interface NexusGenTypeInterfaces {
   SuppliersAlphabetList: 'AlphabetList';
   SuppliersPaginationPayload: 'PaginationPayload';
   User: 'Base' | 'Timestamp';
-  UsersPaginationPayload: 'PaginationPayload';
 }
 
 export type NexusGenObjectNames = keyof NexusGenObjects;

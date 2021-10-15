@@ -10,6 +10,7 @@ import {
   OrderRequestStateModel,
   OrderRequestVariantModel,
   PageStateModel,
+  SortDirectionModel,
 } from '../db/dbModels';
 
 export type RequestMethodType = 'GET' | 'POST' | 'DELETE' | 'PATCH';
@@ -197,9 +198,9 @@ export const DEFAULT_COUNTERS_OBJECT = {
 };
 
 // SORT
-export const SORT_ASC = 1;
+export const SORT_ASC = 1 as SortDirectionModel;
 export const SORT_ASC_STR = 'ASC';
-export const SORT_DESC = -1;
+export const SORT_DESC = -1 as SortDirectionModel;
 export const SORT_DESC_STR = 'DESC';
 export const DEFAULT_SORT_STAGE = {
   priorities: SORT_DESC,

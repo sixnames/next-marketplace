@@ -38,7 +38,7 @@ import Inner from 'components/Inner';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
 import ImageGallery, { ReactImageGalleryItem } from 'react-image-gallery';
 
-interface HomeRoutInterface {
+interface HomeRouteInterface {
   topProducts: ShopProductInterface[];
   topShops: ShopInterface[];
   topFilters: TopFilterInterface[];
@@ -47,7 +47,7 @@ interface HomeRoutInterface {
   bannerPages: PageInterface[];
 }
 
-const HomeRoute: React.FC<HomeRoutInterface> = ({
+const HomeRoute: React.FC<HomeRouteInterface> = ({
   topProducts,
   topShops,
   sliderPages,
@@ -363,7 +363,7 @@ const HomeRoute: React.FC<HomeRoutInterface> = ({
   );
 };
 
-interface HomeInterface extends SiteLayoutProviderInterface, HomeRoutInterface {}
+interface HomeInterface extends SiteLayoutProviderInterface, HomeRouteInterface {}
 
 const Home: NextPage<HomeInterface> = ({
   topProducts,

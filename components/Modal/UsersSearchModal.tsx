@@ -1,6 +1,9 @@
 import LinkEmail from 'components/Link/LinkEmail';
 import LinkPhone from 'components/Link/LinkPhone';
-import { ROUTE_CMS } from 'config/common';
+import Pager from 'components/Pager';
+import { DEFAULT_PAGE, REQUEST_METHOD_POST, ROUTE_CMS } from 'config/common';
+import { UsersPaginationPayloadModel } from 'db/dbModels';
+import { UserInterface } from 'db/uiInterfaces';
 import Link from 'next/link';
 import * as React from 'react';
 import Spinner from 'components/Spinner';
@@ -8,12 +11,11 @@ import RequestError from 'components/RequestError';
 import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
 import FormikIndividualSearch from 'components/FormElements/Search/FormikIndividualSearch';
-import { UserInListFragment, useUsersSerchQuery } from 'generated/apolloComponents';
 import Table, { TableColumn } from 'components/Table';
 
 export interface UsersSearchModalInterface {
   testId?: string;
-  controlsColumn?: TableColumn<UserInListFragment>;
+  controlsColumn?: TableColumn<UserInterface>;
 }
 
 const UsersSearchModal: React.FC<UsersSearchModalInterface> = ({
@@ -21,22 +23,31 @@ const UsersSearchModal: React.FC<UsersSearchModalInterface> = ({
   controlsColumn = {},
 }) => {
   // const { setPage, page } = useDataLayoutMethods();
+  const [page, setPage] = React.useState<number>(DEFAULT_PAGE);
   const [search, setSearch] = React.useState<string | null>(null);
-  const { data, error, loading } = useUsersSerchQuery({
-    fetchPolicy: 'network-only',
-    variables: {
-      input: {
-        search,
-        limit: 1000,
-      },
-    },
-  });
+  const [data, setData] = React.useState<UsersPaginationPayloadModel | null>(null);
 
-  if (loading) {
+  React.useEffect(() => {
+    const body = {
+      search,
+      page,
+    };
+    fetch(`/api/user/paginated`, {
+      method: REQUEST_METHOD_POST,
+      body: JSON.stringify(body),
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        setData(json);
+      })
+      .catch(console.log);
+  }, [search, page]);
+
+  if (!data) {
     return <Spinner isNested />;
   }
 
-  if (error || !data || !data.getAllUsers) {
+  if (!data.success || !data.payload) {
     return (
       <ModalFrame>
         <RequestError />
@@ -44,9 +55,9 @@ const UsersSearchModal: React.FC<UsersSearchModalInterface> = ({
     );
   }
 
-  const { docs } = data.getAllUsers;
+  const { docs } = data.payload;
 
-  const columns: TableColumn<UserInListFragment>[] = [
+  const columns: TableColumn<UserInterface>[] = [
     {
       accessor: 'itemId',
       headTitle: 'ID',
@@ -89,8 +100,8 @@ const UsersSearchModal: React.FC<UsersSearchModalInterface> = ({
         onReset={() => setSearch(null)}
       />
 
-      <Table<UserInListFragment> columns={columns} data={docs} testIdKey={'itemId'} />
-      {/*<Pager page={page} setPage={setPage} totalPages={totalPages} />*/}
+      <Table<UserInterface> columns={columns} data={docs} testIdKey={'itemId'} />
+      <Pager page={data.payload.page} setPage={setPage} totalPages={data.payload.totalPages} />
     </ModalFrame>
   );
 };

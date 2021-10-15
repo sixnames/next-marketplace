@@ -15,7 +15,7 @@ import { getConsoleOrders, GetConsoleOrdersPayloadType } from 'db/dao/order/getC
 import { OrderInterface } from 'db/uiInterfaces';
 import { useDeleteOrder } from 'hooks/mutations/useOrderMutations';
 import AppContentWrapper from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/CmsLayout/CmsLayout';
+import CmsLayout from 'layout/cms/CmsLayout';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';

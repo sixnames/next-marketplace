@@ -22,8 +22,8 @@ import {
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsCategoryLayout from 'layout/CmsLayout/CmsCategoryLayout';
-import CmsLayout from 'layout/CmsLayout/CmsLayout';
+import CmsCategoryLayout from 'layout/cms/CmsCategoryLayout';
+import CmsLayout from 'layout/cms/CmsLayout';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { castCategoryForUI } from 'lib/uiDataUtils';
 import { ObjectId } from 'mongodb';

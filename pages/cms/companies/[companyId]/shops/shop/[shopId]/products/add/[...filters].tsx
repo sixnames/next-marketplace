@@ -1,7 +1,7 @@
 import { ROUTE_CMS, DEFAULT_PAGE_FILTER } from 'config/common';
 import { ProductInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/CmsLayout/CmsLayout';
+import CmsLayout from 'layout/cms/CmsLayout';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { getAddShopProductSsrData } from 'lib/consoleProductUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';

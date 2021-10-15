@@ -13,13 +13,13 @@ import {
 import { getDatabase } from 'db/mongodb';
 import { OrderInterface, UserInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsUserLayout from 'layout/CmsLayout/CmsUserLayout';
+import CmsUserLayout from 'layout/cms/CmsUserLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
 import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/CmsLayout/CmsLayout';
+import CmsLayout from 'layout/cms/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
@@ -86,6 +86,7 @@ const UserOrdersConsumer: React.FC<UserOrdersInterface> = ({ user }) => {
   return (
     <CmsUserLayout user={user} breadcrumbs={breadcrumbs}>
       <Inner testId={'user-orders-page'}>
+        <div className='mb-4 text-secondary-text'>Всего заказов {user.orders?.length}</div>
         <div className='overflow-x-auto'>
           <Table<OrderInterface> columns={columns} data={user.orders} testIdKey={'itemId'} />
         </div>
@@ -230,8 +231,8 @@ export const getServerSideProps = async (
     orders: (userResult.orders || []).map((order) => {
       return {
         ...order,
-        totalPrice: order.products?.reduce((acc: number, { amount, price }) => {
-          return acc + amount * price;
+        totalPrice: order.products?.reduce((acc: number, { totalPrice }) => {
+          return acc + totalPrice;
         }, 0),
         status: order.status
           ? {

@@ -15,12 +15,12 @@ import { getDatabase } from 'db/mongodb';
 import { CompanyInterface, UserCategoryInterface } from 'db/uiInterfaces';
 import { useDeleteUserCategory } from 'hooks/mutations/useUserCategoryMutations';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsCompanyLayout from 'layout/CmsLayout/CmsCompanyLayout';
+import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/CmsLayout/CmsLayout';
+import CmsLayout from 'layout/cms/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 

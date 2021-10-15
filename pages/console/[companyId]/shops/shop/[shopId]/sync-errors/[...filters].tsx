@@ -1,10 +1,12 @@
 import ShopSyncErrors, { ShopSyncErrorsInterface } from 'components/shops/ShopSyncErrors';
 import { ROUTE_CONSOLE } from 'config/common';
-import { COL_NOT_SYNCED_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
-import { NotSyncedProductModel, ShopModel } from 'db/dbModels';
+import { COL_SHOPS } from 'db/collectionNames';
+import { getPaginatedNotSyncedProducts } from 'db/dao/notSyncedProducts/getPaginatedNotSyncedProducts';
+import { ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/console/ConsoleLayout';
+import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
@@ -55,7 +57,6 @@ export const getServerSideProps = async (
 ): Promise<GetServerSidePropsResult<CompanyShopSyncErrorsInterface>> => {
   const { db } = await getDatabase();
   const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
-  const notSyncedProductsCollection = db.collection<NotSyncedProductModel>(COL_NOT_SYNCED_PRODUCTS);
   const { query } = context;
   const { shopId } = query;
   const initialProps = await getConsoleInitialData({ context });
@@ -67,17 +68,16 @@ export const getServerSideProps = async (
     };
   }
 
-  const notSyncedProducts = await notSyncedProductsCollection
-    .find({
-      shopId: shop._id,
-    })
-    .toArray();
+  const payload = await getPaginatedNotSyncedProducts({
+    filters: alwaysArray(query.filters),
+    shopId: alwaysString(shopId),
+  });
 
   return {
     props: {
       ...initialProps.props,
       shop: castDbData(shop),
-      notSyncedProducts: castDbData(notSyncedProducts),
+      notSyncedProducts: castDbData(payload),
     },
   };
 };

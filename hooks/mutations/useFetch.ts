@@ -142,20 +142,23 @@ export function useMutation<T extends PayloadModel>({
   ];
 }
 
-interface UseMutationHandlerInputInterface {
+interface UseMutationHandlerInputInterface<TPayload extends PayloadModel> {
   path: string;
   method: string;
   reload?: boolean;
+  onSuccess?: (payload: TPayload) => void;
 }
 
 export function useMutationHandler<TPayload extends PayloadModel, TArgs>({
   path,
   method,
   reload = true,
-}: UseMutationHandlerInputInterface): UseMutationConsumerPayload<TPayload, TArgs> {
+  onSuccess,
+}: UseMutationHandlerInputInterface<TPayload>): UseMutationConsumerPayload<TPayload, TArgs> {
   const [handle, payload] = useMutation<TPayload>({
     input: path,
     reload,
+    onSuccess,
   });
 
   const handler = React.useCallback(

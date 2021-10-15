@@ -1,11 +1,10 @@
 import Inner from 'components/Inner';
 import SyncErrorsList, { SyncErrorsListInterface } from 'components/SyncErrorsList';
 import Title from 'components/Title';
-import { COL_NOT_SYNCED_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { NotSyncedProductInterface } from 'db/uiInterfaces';
+import { getPaginatedNotSyncedProducts } from 'db/dao/notSyncedProducts/getPaginatedNotSyncedProducts';
 import AppContentWrapper from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/CmsLayout/CmsLayout';
+import CmsLayout from 'layout/cms/CmsLayout';
+import { alwaysArray } from 'lib/arrayUtils';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -13,9 +12,7 @@ import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
 const pageTitle = 'Ошибки синхронизации';
 
-type CompanyShopSyncErrorsConsumerInterface = SyncErrorsListInterface;
-
-const CompanyShopSyncErrorsConsumer: React.FC<CompanyShopSyncErrorsConsumerInterface> = ({
+const CompanyShopSyncErrorsConsumer: React.FC<SyncErrorsListInterface> = ({
   notSyncedProducts,
 }) => {
   return (
@@ -28,9 +25,7 @@ const CompanyShopSyncErrorsConsumer: React.FC<CompanyShopSyncErrorsConsumerInter
   );
 };
 
-interface CompanyShopSyncErrorsInterface
-  extends PagePropsInterface,
-    CompanyShopSyncErrorsConsumerInterface {}
+interface CompanyShopSyncErrorsInterface extends PagePropsInterface, SyncErrorsListInterface {}
 
 const CompanyShopSyncErrors: NextPage<CompanyShopSyncErrorsInterface> = ({
   pageUrls,
@@ -46,45 +41,23 @@ const CompanyShopSyncErrors: NextPage<CompanyShopSyncErrorsInterface> = ({
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<CompanyShopSyncErrorsInterface>> => {
-  const { db } = await getDatabase();
-  const notSyncedProductsCollection =
-    db.collection<NotSyncedProductInterface>(COL_NOT_SYNCED_PRODUCTS);
-  const initialProps = await getAppInitialData({ context });
+  const { query } = context;
+  const { props } = await getAppInitialData({ context });
 
-  if (!initialProps.props) {
+  if (!props) {
     return {
       notFound: true,
     };
   }
 
-  const notSyncedProducts = await notSyncedProductsCollection
-    .aggregate([
-      {
-        $lookup: {
-          from: COL_SHOPS,
-          as: 'shop',
-          foreignField: '_id',
-          localField: 'shopId',
-        },
-      },
-      {
-        $addFields: {
-          shop: {
-            $arrayElemAt: ['$shop', 0],
-          },
-        },
-      },
-    ])
-    .toArray();
-
-  const filteredNotSyncedProducts = notSyncedProducts.filter(({ shop }) => {
-    return Boolean(shop);
+  const payload = await getPaginatedNotSyncedProducts({
+    filters: alwaysArray(query.filters),
   });
 
   return {
     props: {
-      ...initialProps.props,
-      notSyncedProducts: castDbData(filteredNotSyncedProducts),
+      ...props,
+      notSyncedProducts: castDbData(payload),
     },
   };
 };

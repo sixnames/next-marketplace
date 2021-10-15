@@ -1,4 +1,4 @@
-import CmsWrapper from 'layout/CmsLayout/CmsWrapper';
+import CmsWrapper from 'layout/cms/CmsWrapper';
 import * as React from 'react';
 import { PageUrlsInterface } from '../Meta';
 

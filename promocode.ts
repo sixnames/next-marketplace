@@ -21,8 +21,8 @@ export interface PromoModel {
   _id: ObjectIdModel;
   shopId: ObjectIdModel;
   companyId: ObjectIdModel;
-  discountPercent: number;
-  cashbackPercent: number;
+  discountPercent: number; // ???
+  cashbackPercent: number; // ???
   nameI18n: any;
   descriptionI18n?: any;
 

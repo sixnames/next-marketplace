@@ -70,7 +70,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       }
       return [...acc, ...barcode];
     }, []);
-
     const products = await productsCollection
       .find({
         barcode: {
@@ -80,10 +79,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       .toArray();
 
     const shopProducts: ShopProductModel[] = [];
-    const notSyncedProducts: NotSyncedProductModel[] = [];
     for await (const bodyItem of body) {
       if (!bodyItem.barcode || bodyItem.barcode.length < 1) {
-        notSyncedProducts.push({
+        /*notSyncedProducts.push({
           _id: new ObjectId(),
           name: `${bodyItem?.name}`,
           price: noNaN(bodyItem?.price),
@@ -91,7 +89,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           barcode: '',
           shopId: shop._id,
           createdAt: new Date(),
-        });
+        });*/
         continue;
       }
 
@@ -101,91 +99,124 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         });
       });
 
+      // create sync errors if product not found
       if (!product) {
-        (bodyItem.barcode || []).forEach((barcodeItem) => {
-          notSyncedProducts.push({
-            _id: new ObjectId(),
-            name: `${bodyItem?.name}`,
-            price: noNaN(bodyItem?.price),
-            available: noNaN(bodyItem?.available),
+        for await (const barcodeItem of bodyItem.barcode || []) {
+          const existingSyncError = await notSyncedProductsCollection.findOne({
             barcode: barcodeItem,
             shopId: shop._id,
-            createdAt: new Date(),
           });
-        });
-        continue;
-      }
 
-      // Check existing shop product
-      const exitingShopProduct = await shopProductsCollection.findOne({
-        shopId: shop._id,
-        barcode: {
-          $in: bodyItem.barcode,
-        },
-      });
-      if (exitingShopProduct) {
-        const { discountedPercent, oldPrice, oldPriceUpdater } = getUpdatedShopProductPrices({
-          shopProduct: exitingShopProduct,
-          newPrice: noNaN(bodyItem.price),
-        });
-
-        const updatedShopProductResult = await shopProductsCollection.findOneAndUpdate(
-          {
-            _id: exitingShopProduct._id,
-          },
-          {
-            $set: {
-              available: bodyItem.available,
-              price: bodyItem.price,
-              oldPrice,
-              discountedPercent,
-              updatedAt: new Date(),
-            },
-            ...oldPriceUpdater,
-          },
-          {
-            returnDocument: 'after',
-          },
-        );
-        const updatedShopProduct = updatedShopProductResult.value;
-        if (!updatedShopProductResult.ok || !updatedShopProduct) {
-          break;
+          if (existingSyncError) {
+            await notSyncedProductsCollection.findOneAndUpdate(
+              {
+                _id: existingSyncError._id,
+              },
+              {
+                $set: {
+                  available: noNaN(existingSyncError.available),
+                  price: noNaN(existingSyncError.price),
+                  name: existingSyncError.name,
+                },
+              },
+            );
+          } else {
+            await notSyncedProductsCollection.insertOne({
+              name: `${bodyItem?.name}`,
+              price: noNaN(bodyItem?.price),
+              available: noNaN(bodyItem?.available),
+              barcode: barcodeItem,
+              shopId: shop._id,
+              createdAt: new Date(),
+            });
+          }
         }
         continue;
       }
 
-      // Create new shop product
       const { available, price, barcode } = bodyItem;
       for await (const barcodeItem of barcode) {
-        const itemId = await getNextItemId(COL_SHOP_PRODUCTS);
-        const shopProduct: ShopProductModel = {
-          _id: new ObjectId(),
-          available: noNaN(available),
-          price: noNaN(price),
-          itemId,
-          discountedPercent: 0,
-          productId: product._id,
+        const oldShopProduct = await shopProductsCollection.findOne({
           shopId: shop._id,
-          citySlug: shop.citySlug,
-          oldPrices: [],
-          rubricId: product.rubricId,
-          rubricSlug: product.rubricSlug,
-          companyId: shop.companyId,
-          brandSlug: product.brandSlug,
-          mainImage: product.mainImage,
-          brandCollectionSlug: product.brandCollectionSlug,
-          manufacturerSlug: product.manufacturerSlug,
-          selectedOptionsSlugs: product.selectedOptionsSlugs,
-          supplierSlugs: product.supplierSlugs,
           barcode: barcodeItem,
-          updatedAt: new Date(),
-          createdAt: new Date(),
-          ...DEFAULT_COUNTERS_OBJECT,
-        };
-        shopProducts.push(shopProduct);
+        });
+        if (oldShopProduct) {
+          // update existing shop product
+          const { discountedPercent, oldPrice, oldPriceUpdater } = getUpdatedShopProductPrices({
+            shopProduct: oldShopProduct,
+            newPrice: noNaN(bodyItem.price),
+          });
+          await shopProductsCollection.findOneAndUpdate(
+            {
+              _id: oldShopProduct._id,
+            },
+            {
+              $set: {
+                available: noNaN(bodyItem.available),
+                price: noNaN(bodyItem.price),
+                oldPrice,
+                discountedPercent,
+                updatedAt: new Date(),
+              },
+              ...oldPriceUpdater,
+            },
+            {
+              returnDocument: 'after',
+            },
+          );
+        } else {
+          // create new shop product
+          const itemId = await getNextItemId(COL_SHOP_PRODUCTS);
+          const shopProduct: ShopProductModel = {
+            _id: new ObjectId(),
+            available: noNaN(available),
+            price: noNaN(price),
+            itemId,
+            discountedPercent: 0,
+            productId: product._id,
+            shopId: shop._id,
+            citySlug: shop.citySlug,
+            oldPrices: [],
+            rubricId: product.rubricId,
+            rubricSlug: product.rubricSlug,
+            companyId: shop.companyId,
+            brandSlug: product.brandSlug,
+            mainImage: product.mainImage,
+            brandCollectionSlug: product.brandCollectionSlug,
+            manufacturerSlug: product.manufacturerSlug,
+            selectedOptionsSlugs: product.selectedOptionsSlugs,
+            supplierSlugs: product.supplierSlugs,
+            barcode: barcodeItem,
+            updatedAt: new Date(),
+            createdAt: new Date(),
+            ...DEFAULT_COUNTERS_OBJECT,
+          };
+          shopProducts.push(shopProduct);
+        }
       }
+
+      // update product barcode list
+      await productsCollection.findOneAndUpdate(
+        {
+          _id: product._id,
+        },
+        {
+          $addToSet: {
+            barcode: {
+              $each: barcode,
+            },
+          },
+          $set: {
+            updatedAt: new Date(),
+          },
+        },
+        {
+          returnDocument: 'after',
+        },
+      );
     }
 
+    // insert all created shop products
     if (shopProducts.length > 0) {
       const createdShopProductsResult = await shopProductsCollection.insertMany(shopProducts);
       if (!createdShopProductsResult.acknowledged) {
@@ -195,29 +226,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         });
         return;
       }
-    }
-
-    // Save not synced shop products
-    for await (const notSyncedProduct of notSyncedProducts) {
-      const existingSyncError = await notSyncedProductsCollection.findOne({
-        barcode: notSyncedProduct.barcode,
-        shopId: notSyncedProduct.shopId,
-      });
-
-      if (existingSyncError) {
-        await notSyncedProductsCollection.findOneAndUpdate(
-          {
-            _id: existingSyncError._id,
-          },
-          {
-            $set: {
-              available: existingSyncError.available,
-              price: existingSyncError.price,
-              name: existingSyncError.name,
-            },
-          },
-        );
-      } else await notSyncedProductsCollection.insertOne(notSyncedProduct);
     }
 
     res.status(200).send({

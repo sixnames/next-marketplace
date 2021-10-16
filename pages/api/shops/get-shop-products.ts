@@ -96,7 +96,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const shopProducts: SyncProductInterface[] = [];
   initialShopProducts.forEach((shopProduct) => {
     const { barcode, available, price, product } = shopProduct;
-    if (barcode && product) {
+    if (barcode && barcode.length > 0 && product) {
       shopProducts.push({
         barcode,
         available,

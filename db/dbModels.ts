@@ -882,6 +882,64 @@ export interface UserCashbackLogModel extends TimestampModel {
 
 export interface UserPaybackLogModel extends UserCashbackLogModel {}
 
+// Promo
+export interface PromoModel {
+  _id: ObjectIdModel;
+  shopId: ObjectIdModel;
+  companyId: ObjectIdModel;
+  discountPercent: number; // ???
+  cashbackPercent: number; // ???
+  nameI18n: any;
+  descriptionI18n?: any;
+
+  // ui configs
+  showAsPromoPage?: boolean | null;
+  assetKeys: string[];
+  content: string; // constructor
+  mainBanner?: AssetModel | null;
+  mainBannerMobile?: AssetModel | null;
+  showAsMainBanner?: boolean | null;
+  mainBannerTextColor?: string | null;
+  mainBannerVerticalTextAlign?: string | null;
+  mainBannerHorizontalTextAlign?: string | null;
+  mainBannerTextAlign?: string | null;
+  mainBannerTextPadding?: number | null;
+  mainBannerTextMaxWidth?: number | null;
+  secondaryBanner?: AssetModel | null;
+  showAsSecondaryBanner?: boolean | null;
+  secondaryBannerTextColor?: string | null;
+  secondaryBannerVerticalTextAlign?: string | null;
+  secondaryBannerHorizontalTextAlign?: string | null;
+  secondaryBannerTextAlign?: string | null;
+  secondaryBannerTextPadding?: number | null;
+  secondaryBannerTextMaxWidth?: number | null;
+
+  // dates
+  createdAt: Date;
+  updatedAt: Date;
+  startAt: Date;
+  endAt: Date;
+}
+
+export interface ProductPromoModel {
+  _id: ObjectIdModel;
+  promoId: ObjectIdModel;
+  shopId: ObjectIdModel;
+  companyId: ObjectIdModel;
+  shopProductId: ObjectIdModel;
+}
+
+export interface PromoCodeModel {
+  _id: ObjectIdModel;
+  code: string;
+  active: boolean;
+  promoId: ObjectIdModel;
+  promoterId?: ObjectIdModel;
+  paybackPercent: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 // Pages
 export interface PagesGroupModel {
   _id: ObjectIdModel;

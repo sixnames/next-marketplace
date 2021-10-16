@@ -70,6 +70,7 @@ const Card: NextPage<CardInterface> = ({ cardData, company, ...props }) => {
         <FixedButtons>
           <Inner lowTop lowBottom>
             <Button
+              size={'small'}
               onClick={() => {
                 window.open(
                   `${ROUTE_CMS}/rubrics/${cardData.product.rubricId}/products/product/${cardData.product._id}`,

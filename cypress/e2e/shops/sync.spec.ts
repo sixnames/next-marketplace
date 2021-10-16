@@ -19,7 +19,7 @@ const initialBody: SyncProductInterface[] = [
     barcode: [errorBarcode, errorBarcodeB],
     available: 999,
     price: 999,
-    name: 'notFoundProduct',
+    name: errorBarcode,
   },
   {
     barcode: ['000003', '0000039999'],
@@ -43,7 +43,7 @@ const initialBody: SyncProductInterface[] = [
 
 const secondarySyncBody: SyncProductInterface[] = [
   {
-    barcode: ['000003', '0000039999'],
+    barcode: ['000003', '0000039999', '0000039999000000000000876876878767'],
     available: 1,
     price: 1,
     name: '000003',
@@ -283,9 +283,10 @@ describe('Sync', () => {
 
     // should update synced products
     cy.request({
-      method: 'PATCH',
-      url: `/api/shops/update?${validRequestParamsC}`,
+      method: 'POST',
+      url: `/api/shops/sync?${validRequestParamsC}`,
       body: JSON.stringify(updateBody),
+      failOnStatusCode: false,
     }).then((res) => {
       const body = res.body as SyncResponseInterface;
       expect(body.success).equals(true);
@@ -313,7 +314,7 @@ describe('Sync', () => {
     cy.getByCy('shop-sync-errors').click();
     cy.wait(1500);
     cy.getByCy('shop-sync-errors-page').should('exist');
-    cy.getByCy('notFoundProduct-row').should('exist');
+    cy.getByCy(`${errorBarcode}-row`).should('exist');
 
     // should return shop products list
     cy.request({

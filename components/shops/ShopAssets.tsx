@@ -59,7 +59,7 @@ const ShopAssets: React.FC<ShopAssetsInterface> = ({ shop, basePath, breadcrumbs
                         formData.append('assets', files[0]);
                         formData.append('shopId', `${shop._id}`);
 
-                        fetch('/api/update-shop-logo', {
+                        fetch('/api/shops/update-shop-logo', {
                           method: 'POST',
                           body: formData,
                         })
@@ -130,7 +130,7 @@ const ShopAssets: React.FC<ShopAssetsInterface> = ({ shop, basePath, breadcrumbs
                 });
                 formData.append('shopId', `${_id}`);
 
-                fetch('/api/add-shop-asset', {
+                fetch('/api/shops/add-shop-asset', {
                   method: 'POST',
                   body: formData,
                 })

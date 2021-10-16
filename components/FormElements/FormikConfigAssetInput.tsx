@@ -43,7 +43,7 @@ const ConfigsAssetInput: React.FC<ConfigsAssetInputInterface> = ({ config }) => 
             showLoading();
             const formData = new FormData();
             formData.append('config', JSON.stringify(config));
-            fetch('/api/update-asset-config', {
+            fetch('/api/config/update-asset-config', {
               method: REQUEST_METHOD_DELETE,
               body: formData,
             })
@@ -64,7 +64,7 @@ const ConfigsAssetInput: React.FC<ConfigsAssetInputInterface> = ({ config }) => 
               formData.append('assets', files[0]);
               formData.append('config', JSON.stringify(config));
 
-              fetch('/api/update-asset-config', {
+              fetch('/api/config/update-asset-config', {
                 method: REQUEST_METHOD_POST,
                 body: formData,
               })

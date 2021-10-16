@@ -229,7 +229,7 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate 
                           formData.append('isTemplate', `${isTemplate}`);
                         }
 
-                        fetch('/api/update-page-main-banner', {
+                        fetch('/api/page/update-page-main-banner', {
                           method: REQUEST_METHOD_POST,
                           body: formData,
                         })
@@ -269,7 +269,7 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate 
                           formData.append('isTemplate', `${isTemplate}`);
                         }
 
-                        fetch('/api/update-page-main-banner', {
+                        fetch('/api/page/update-page-main-banner', {
                           method: REQUEST_METHOD_POST,
                           body: formData,
                         })
@@ -355,7 +355,7 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate 
                           formData.append('isTemplate', `${isTemplate}`);
                         }
 
-                        fetch('/api/update-page-secondary-banner', {
+                        fetch('/api/page/update-page-secondary-banner', {
                           method: REQUEST_METHOD_POST,
                           body: formData,
                         })
@@ -438,7 +438,7 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate 
                           formData.append('isTemplate', `${isTemplate}`);
                         }
 
-                        fetch('/api/update-page-screenshot', {
+                        fetch('/api/page/update-page-screenshot', {
                           method: REQUEST_METHOD_POST,
                           body: formData,
                         })
@@ -480,7 +480,7 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate 
                           formData.append('isTemplate', `${isTemplate}`);
                         }
 
-                        const responseFetch = await fetch('/api/add-page-asset', {
+                        const responseFetch = await fetch('/api/page/add-page-asset', {
                           method: REQUEST_METHOD_POST,
                           body: formData,
                         });

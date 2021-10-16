@@ -107,10 +107,13 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, cardConten
                               formData.append('productId', `${product._id}`);
                               formData.append('productCardContentId', `${cardContent._id}`);
 
-                              const responseFetch = await fetch('/api/add-card-content-asset', {
-                                method: 'POST',
-                                body: formData,
-                              });
+                              const responseFetch = await fetch(
+                                '/api/product/add-card-content-asset',
+                                {
+                                  method: 'POST',
+                                  body: formData,
+                                },
+                              );
                               const responseJson = await responseFetch.json();
 
                               return {

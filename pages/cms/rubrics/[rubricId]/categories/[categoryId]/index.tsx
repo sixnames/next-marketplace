@@ -115,7 +115,7 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category, seoTop,
             const formData = new FormData();
             formData.append('categoryId', `${category._id}`);
 
-            fetch('/api/update-category-image', {
+            fetch('/api/category/update-category-image', {
               method: 'DELETE',
               body: formData,
             })
@@ -143,7 +143,7 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category, seoTop,
               formData.append('assets', files[0]);
               formData.append('categoryId', `${category._id}`);
 
-              fetch('/api/update-category-image', {
+              fetch('/api/category/update-category-image', {
                 method: 'POST',
                 body: formData,
               })
@@ -176,7 +176,7 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category, seoTop,
             const formData = new FormData();
             formData.append('categoryId', `${category._id}`);
 
-            fetch('/api/update-category-icon', {
+            fetch('/api/category/update-category-icon', {
               method: 'DELETE',
               body: formData,
             })
@@ -204,7 +204,7 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category, seoTop,
               formData.append('assets', files[0]);
               formData.append('categoryId', `${category._id}`);
 
-              fetch('/api/update-category-icon', {
+              fetch('/api/category/update-category-icon', {
                 method: 'POST',
                 body: formData,
               })

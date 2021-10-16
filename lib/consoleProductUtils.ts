@@ -72,10 +72,10 @@ export interface GetConsoleRubricProductsInputInterface {
 export const getConsoleRubricProducts = async ({
   locale,
   basePath,
-  page,
   query,
   currency,
   excludedProductsIds,
+  ...props
 }: GetConsoleRubricProductsInputInterface): Promise<ConsoleRubricProductsInterface> => {
   let fallbackPayload: ConsoleRubricProductsInterface = {
     clearSlug: basePath,
@@ -112,6 +112,7 @@ export const getConsoleRubricProducts = async ({
     // cast selected filters
     const {
       skip,
+      page,
       limit,
       rubricFilters,
       brandStage,
@@ -121,7 +122,7 @@ export const getConsoleRubricProducts = async ({
       photoStage,
     } = castCatalogueFilters({
       filters,
-      initialPage: page,
+      initialPage: props.page,
       initialLimit: PAGINATION_DEFAULT_LIMIT,
     });
 
@@ -599,7 +600,7 @@ export const getConsoleRubricProducts = async ({
     const payload: ConsoleRubricProductsInterface = {
       clearSlug: basePath,
       basePath,
-      page: 1,
+      page,
       totalDocs,
       totalPages,
       docs,
@@ -630,10 +631,10 @@ export interface GetConsoleShopProductsInputInterface {
 export const getConsoleShopProducts = async ({
   locale,
   basePath,
-  page,
   query,
   currency,
   excludedProductsIds,
+  ...props
 }: GetConsoleShopProductsInputInterface): Promise<CompanyShopProductsPageInterface | null> => {
   try {
     const { db } = await getDatabase();
@@ -696,9 +697,10 @@ export const getConsoleShopProducts = async ({
       optionsStage,
       pricesStage,
       photoStage,
+      page,
     } = castCatalogueFilters({
       filters,
-      initialPage: page,
+      initialPage: props.page,
       initialLimit: PAGINATION_DEFAULT_LIMIT,
     });
 
@@ -1208,7 +1210,7 @@ export const getConsoleShopProducts = async ({
       rubricSlug: rubric.slug,
       clearSlug: basePath,
       basePath,
-      page: 1,
+      page,
       totalDocs,
       totalPages,
       attributes: castedAttributes,

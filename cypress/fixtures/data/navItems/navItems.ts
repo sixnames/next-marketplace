@@ -91,6 +91,18 @@ const navItems: NavItemModel[] = [
     navGroup: ROUTE_CONSOLE_NAV_GROUP,
   },
   {
+    _id: getObjectId(`${navItemsDefaultSlug} console-promo`),
+    nameI18n: {
+      ru: 'Акции',
+      en: 'Promo',
+    },
+    index: 7,
+    icon: 'pencil',
+    slug: 'console-promo',
+    path: `/promo`,
+    navGroup: ROUTE_CONSOLE_NAV_GROUP,
+  },
+  {
     _id: getObjectId(`${navItemsDefaultSlug} console-config`),
     slug: 'console-config',
     nameI18n: {

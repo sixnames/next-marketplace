@@ -188,6 +188,12 @@ const messagesGroups: MessagesGroupModel[] = [
       ru: 'Категории пользователя',
     },
   },
+  {
+    _id: getObjectId('messagesGroups Акции'),
+    nameI18n: {
+      ru: 'Акции',
+    },
+  },
 ];
 
 export = messagesGroups;

@@ -885,6 +885,7 @@ export interface UserPaybackLogModel extends UserCashbackLogModel {}
 // Promo
 export interface PromoModel {
   _id: ObjectIdModel;
+  slug: string; // itemId
   shopId: ObjectIdModel;
   companyId: ObjectIdModel;
   discountPercent: number; // ???

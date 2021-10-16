@@ -667,5 +667,16 @@ export type MessageSlug =
   | 'validation.orderStatuses.color'
   | 'validation.orderStatuses.index'
 
+  // Promo ----------
+  | 'promo.create.error'
+  | 'promo.create.success'
+  | 'promo.update.error'
+  | 'promo.update.success'
+  | 'promo.delete.error'
+  | 'promo.delete.success'
+  // Promo validation
+  | 'validation.promo.id'
+  | 'validation.promo.name'
+
   // Fallback for empty key
   | 'none';

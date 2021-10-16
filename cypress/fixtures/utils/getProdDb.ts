@@ -29,6 +29,7 @@ import {
   UserModel,
   ProductSeoModel,
   UserCategoryModel,
+  PromoModel,
 } from '../../../db/dbModels';
 import {
   COL_ATTRIBUTES,
@@ -55,6 +56,7 @@ import {
   COL_PRODUCT_CONNECTIONS,
   COL_PRODUCT_SEO,
   COL_PRODUCTS,
+  COL_PROMO,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
@@ -238,6 +240,13 @@ export async function updateIndexes(db: Db) {
   await createCollectionIfNotExist(COL_BLOG_ATTRIBUTES);
   const blogAttributesCollection = db.collection<BlogAttributeModel>(COL_BLOG_ATTRIBUTES);
   await blogAttributesCollection.createIndex({ slug: 1 }, { unique: true });
+
+  // Promo
+  await createCollectionIfNotExist(COL_PROMO);
+  const promoCollection = db.collection<PromoModel>(COL_PROMO);
+  await promoCollection.createIndex({ slug: 1 }, { unique: true });
+  await promoCollection.createIndex({ shopId: 1 });
+  await promoCollection.createIndex({ companyId: 1, shopId: 1 });
 
   // Rubrics
   await createCollectionIfNotExist(COL_RUBRICS);

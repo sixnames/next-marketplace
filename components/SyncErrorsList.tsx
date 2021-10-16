@@ -79,7 +79,7 @@ const SyncErrorsList: React.FC<SyncErrorsListInterface> = ({
         return (
           <div className='flex justify-end'>
             <ContentItemControls
-              testId={dataItem.barcode}
+              testId={`${dataItem.name}`}
               createTitle={'Найти или создать товар'}
               createHandler={() => {
                 showModal<ProductSearchModalInterface>({

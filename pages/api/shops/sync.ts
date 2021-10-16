@@ -160,9 +160,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
               },
               ...oldPriceUpdater,
             },
-            {
-              returnDocument: 'after',
-            },
           );
         } else {
           // create new shop product
@@ -209,9 +206,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           $set: {
             updatedAt: new Date(),
           },
-        },
-        {
-          returnDocument: 'after',
         },
       );
     }

@@ -530,6 +530,7 @@ const Catalogue: React.FC<CatalogueInterface> = ({
         <FixedButtons>
           <Inner lowTop lowBottom>
             <Button
+              size={'small'}
               onClick={() => {
                 window.open(catalogueData?.editUrl, '_blank');
               }}

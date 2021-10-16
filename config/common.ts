@@ -334,6 +334,7 @@ export const ASSETS_DIST_CONFIGS = 'configs';
 export const ASSETS_DIST_PAGES = 'pages';
 export const ASSETS_DIST_SEO = 'seo';
 export const ASSETS_DIST_TEMPLATES = 'templates';
+export const ASSETS_DIST_PROMO = 'templates';
 export const ASSETS_DIST_OPTIONS = 'options';
 export const ASSETS_DIST_BRANDS = 'brands';
 export const ASSETS_DIST_CATEGORIES = 'categories';

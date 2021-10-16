@@ -11,7 +11,7 @@ import {
   PagesGroupInterface,
   PagesGroupTemplateInterface,
 } from 'db/uiInterfaces';
-import { useDeletePagesGroupMutation } from 'generated/apolloComponents';
+import { useDeletePagesGroup } from 'hooks/mutations/usePageMutations';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { useRouter } from 'next/router';
@@ -33,7 +33,7 @@ const PageGroupsList: React.FC<PageGroupsListInterface> = ({
   companySlug,
 }) => {
   const router = useRouter();
-  const { showLoading, showModal, onCompleteCallback, onErrorCallback } = useMutationCallbacks({
+  const { showLoading, showModal } = useMutationCallbacks({
     reload: true,
   });
 
@@ -45,10 +45,7 @@ const PageGroupsList: React.FC<PageGroupsListInterface> = ({
     schema: updatePagesGroupSchema,
   });
 
-  const [deletePagesGroupMutation] = useDeletePagesGroupMutation({
-    onCompleted: (data) => onCompleteCallback(data.deletePagesGroup),
-    onError: onErrorCallback,
-  });
+  const [deletePagesGroupMutation] = useDeletePagesGroup();
 
   const columns: TableColumn<PagesGroupInterface | PagesGroupTemplateInterface>[] = [
     {
@@ -99,12 +96,8 @@ const PageGroupsList: React.FC<PageGroupsListInterface> = ({
                     confirm: () => {
                       showLoading();
                       deletePagesGroupMutation({
-                        variables: {
-                          input: {
-                            _id: dataItem._id,
-                            isTemplate,
-                          },
-                        },
+                        _id: `${dataItem._id}`,
+                        isTemplate,
                       }).catch(console.log);
                     },
                   },

@@ -13,7 +13,7 @@ import {
   PagesGroupTemplateInterface,
   PagesTemplateInterface,
 } from 'db/uiInterfaces';
-import { useDeletePageMutation } from 'generated/apolloComponents';
+import { useDeletePage } from 'hooks/mutations/usePageMutations';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -26,14 +26,11 @@ export interface PagesListInterface {
 
 const PagesList: React.FC<PagesListInterface> = ({ pagesGroup, isTemplate, basePath }) => {
   const router = useRouter();
-  const { showModal, onErrorCallback, onCompleteCallback, showLoading } = useMutationCallbacks({
+  const { showModal, showLoading } = useMutationCallbacks({
     reload: true,
   });
 
-  const [deletePageMutation] = useDeletePageMutation({
-    onError: onErrorCallback,
-    onCompleted: (data) => onCompleteCallback(data.deletePage),
-  });
+  const [deletePageMutation] = useDeletePage();
 
   const columns: TableColumn<PageInterface | PagesTemplateInterface>[] = [
     {
@@ -82,12 +79,8 @@ const PagesList: React.FC<PagesListInterface> = ({ pagesGroup, isTemplate, baseP
                     confirm: () => {
                       showLoading();
                       deletePageMutation({
-                        variables: {
-                          input: {
-                            _id: dataItem._id,
-                            isTemplate,
-                          },
-                        },
+                        _id: `${dataItem._id}`,
+                        isTemplate,
                       }).catch(console.log);
                     },
                   },

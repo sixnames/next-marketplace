@@ -18,7 +18,7 @@ import {
 } from 'config/common';
 import { CityInterface, PageInterface, PagesTemplateInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
-import { PageState, useUpdatePageMutation } from 'generated/apolloComponents';
+import { useUpdatePage } from 'hooks/mutations/usePageMutations';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { noNaN } from 'lib/numbers';
@@ -93,14 +93,10 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate 
   const validationSchema = useValidationSchema({
     schema: updatePageSchema,
   });
-  const { onCompleteCallback, onErrorCallback, showLoading, hideLoading, showErrorNotification } =
-    useMutationCallbacks({
-      reload: true,
-    });
-  const [updatePageMutation] = useUpdatePageMutation({
-    onError: onErrorCallback,
-    onCompleted: (data) => onCompleteCallback(data.updatePage),
+  const { showLoading, hideLoading, showErrorNotification } = useMutationCallbacks({
+    reload: true,
   });
+  const [updatePageMutation] = useUpdatePage();
 
   return (
     <div data-cy={'page-details'}>
@@ -130,33 +126,29 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate 
         onSubmit={(values) => {
           showLoading();
           updatePageMutation({
-            variables: {
-              input: {
-                _id: values._id,
-                content: JSON.stringify(values.content),
-                nameI18n: values.nameI18n,
-                descriptionI18n: values.descriptionI18n,
-                pagesGroupId: values.pagesGroupId,
-                state: values.state as unknown as PageState,
-                citySlug: `${values.citySlug}`,
-                index: noNaN(values.index),
-                showAsMainBanner: values.showAsMainBanner,
-                mainBannerTextColor: values.mainBannerTextColor,
-                mainBannerTextAlign: values.mainBannerTextAlign,
-                mainBannerVerticalTextAlign: values.mainBannerVerticalTextAlign,
-                mainBannerHorizontalTextAlign: values.mainBannerHorizontalTextAlign,
-                mainBannerTextPadding: noNaN(values.mainBannerTextPadding),
-                mainBannerTextMaxWidth: noNaN(values.mainBannerTextMaxWidth),
-                showAsSecondaryBanner: values.showAsSecondaryBanner,
-                secondaryBannerTextColor: values.secondaryBannerTextColor,
-                secondaryBannerTextAlign: values.secondaryBannerTextAlign,
-                secondaryBannerVerticalTextAlign: values.secondaryBannerVerticalTextAlign,
-                secondaryBannerHorizontalTextAlign: values.secondaryBannerHorizontalTextAlign,
-                secondaryBannerTextPadding: noNaN(values.secondaryBannerTextPadding),
-                secondaryBannerTextMaxWidth: noNaN(values.secondaryBannerTextMaxWidth),
-                isTemplate,
-              },
-            },
+            _id: `${values._id}`,
+            content: JSON.stringify(values.content),
+            nameI18n: values.nameI18n,
+            descriptionI18n: values.descriptionI18n,
+            pagesGroupId: `${values.pagesGroupId}`,
+            state: values.state,
+            citySlug: `${values.citySlug}`,
+            index: noNaN(values.index),
+            showAsMainBanner: values.showAsMainBanner,
+            mainBannerTextColor: values.mainBannerTextColor,
+            mainBannerTextAlign: values.mainBannerTextAlign,
+            mainBannerVerticalTextAlign: values.mainBannerVerticalTextAlign,
+            mainBannerHorizontalTextAlign: values.mainBannerHorizontalTextAlign,
+            mainBannerTextPadding: noNaN(values.mainBannerTextPadding),
+            mainBannerTextMaxWidth: noNaN(values.mainBannerTextMaxWidth),
+            showAsSecondaryBanner: values.showAsSecondaryBanner,
+            secondaryBannerTextColor: values.secondaryBannerTextColor,
+            secondaryBannerTextAlign: values.secondaryBannerTextAlign,
+            secondaryBannerVerticalTextAlign: values.secondaryBannerVerticalTextAlign,
+            secondaryBannerHorizontalTextAlign: values.secondaryBannerHorizontalTextAlign,
+            secondaryBannerTextPadding: noNaN(values.secondaryBannerTextPadding),
+            secondaryBannerTextMaxWidth: noNaN(values.secondaryBannerTextMaxWidth),
+            isTemplate,
           }).catch(console.log);
         }}
       >

@@ -7,6 +7,6 @@ describe('Promo', () => {
   });
 
   it('Should CRUD prop', () => {
-    cy.getByCy('user-categories-list').should('exist');
+    cy.getByCy('promo-list').should('exist');
   });
 });

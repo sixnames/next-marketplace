@@ -58,4 +58,18 @@ export const promoMessages: MessageBaseInterface[] = [
       [SECONDARY_LOCALE]: `Name is required`,
     },
   },
+  {
+    slug: 'validation.promo.discountPercent',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Размер скидки акции обязателен к заполнению`,
+      [SECONDARY_LOCALE]: `Discount is required`,
+    },
+  },
+  {
+    slug: 'validation.promo.cashbackPercent',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Размер кешбека акции обязателен к заполнению`,
+      [SECONDARY_LOCALE]: `Cashback is required`,
+    },
+  },
 ];

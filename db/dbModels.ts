@@ -919,7 +919,7 @@ export interface PromoModel extends TimestampModel {
   endAt: DateModel;
 }
 
-export interface ProductPromoModel {
+export interface PromoProductModel {
   _id: ObjectIdModel;
   promoId: ObjectIdModel;
   shopId: ObjectIdModel;

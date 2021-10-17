@@ -1,17 +1,5 @@
-import {
-  COL_PAGE_TEMPLATES,
-  COL_PAGES,
-  COL_PAGES_GROUP,
-  COL_PAGES_GROUP_TEMPLATES,
-} from 'db/collectionNames';
-import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
-import {
-  PageModel,
-  PagePayloadModel,
-  PagesGroupModel,
-  PageStateModel,
-  TranslationModel,
-} from 'db/dbModels';
+import { COL_PROMO } from 'db/collectionNames';
+import { DateModel, PromoModel, PromoPayloadModel, TranslationModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
@@ -21,17 +9,15 @@ import {
   getResolverValidationSchema,
 } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
-import { updatePageSchema } from 'validation/pagesSchema';
+import { updatePromoSchema } from 'validation/promoSchema';
 
-export interface UpdatePageInputInterface {
+export interface UpdatePromoInputInterface {
   _id: string;
+  discountPercent: number;
+  cashbackPercent: number;
   nameI18n: TranslationModel;
   descriptionI18n?: TranslationModel | null;
-  index: number;
-  pagesGroupId: string;
-  citySlug: string;
   content: string;
-  state: PageStateModel;
   showAsMainBanner?: boolean | null;
   mainBannerTextColor?: string | null;
   mainBannerVerticalTextAlign?: string | null;
@@ -46,13 +32,14 @@ export interface UpdatePageInputInterface {
   secondaryBannerTextAlign?: string | null;
   secondaryBannerTextPadding?: number | null;
   secondaryBannerTextMaxWidth?: number | null;
-  isTemplate?: boolean | null;
+  startAt: DateModel;
+  endAt: DateModel;
 }
 
 export async function updatePromo({
   context,
   input,
-}: DaoPropsInterface<UpdatePageInputInterface>): Promise<PagePayloadModel> {
+}: DaoPropsInterface<UpdatePromoInputInterface>): Promise<PromoPayloadModel> {
   try {
     const { getApiMessage } = await getRequestParams(context);
     const { db } = await getDatabase();
@@ -60,7 +47,7 @@ export async function updatePromo({
     // permission
     const { allow, message } = await getOperationPermission({
       context,
-      slug: 'updatePage',
+      slug: 'updatePromo',
     });
     if (!allow) {
       return {
@@ -73,93 +60,56 @@ export async function updatePromo({
     if (!input) {
       return {
         success: false,
-        message: await getApiMessage('pages.update.error'),
+        message: await getApiMessage('promo.update.error'),
       };
     }
 
     // validate
     const validationSchema = await getResolverValidationSchema({
       context,
-      schema: updatePageSchema,
+      schema: updatePromoSchema,
     });
     await validationSchema.validate(input);
 
-    const { _id, isTemplate, pagesGroupId, ...values } = input;
-    const pageId = new ObjectId(input._id);
-    const pagesGroupObjectId = new ObjectId(input.pagesGroupId);
-    const pagesGroupsCollection = db.collection<PagesGroupModel>(
-      isTemplate ? COL_PAGES_GROUP_TEMPLATES : COL_PAGES_GROUP,
-    );
-    const pagesCollection = db.collection<PageModel>(isTemplate ? COL_PAGE_TEMPLATES : COL_PAGES);
+    const { _id, ...values } = input;
+    const promoId = new ObjectId(_id);
+    const promoCollection = db.collection<PromoModel>(COL_PROMO);
 
     // check availability
-    const page = await pagesCollection.findOne({ _id: pageId });
-    if (!page) {
+    const promo = await promoCollection.findOne({ _id: promoId });
+    if (!promo) {
       return {
         success: false,
-        message: await getApiMessage('pages.update.notFound'),
-      };
-    }
-
-    // check if already exist
-    const exist = await findDocumentByI18nField({
-      collectionName: isTemplate ? COL_PAGE_TEMPLATES : COL_PAGES,
-      fieldName: 'nameI18n',
-      fieldArg: input.nameI18n,
-      additionalQuery: {
-        citySlug: page.citySlug,
-        pagesGroupId,
-        _id: {
-          $ne: _id,
-        },
-      },
-      additionalOrQuery: [
-        {
-          index: input.index,
-        },
-      ],
-    });
-    if (exist) {
-      return {
-        success: false,
-        message: await getApiMessage('pages.update.duplicate'),
-      };
-    }
-
-    // get pages group
-    const pagesGroup = await pagesGroupsCollection.findOne({ _id: pagesGroupObjectId });
-    if (!pagesGroup) {
-      return {
-        success: false,
-        message: await getApiMessage('pages.update.error'),
+        message: await getApiMessage('promo.update.error'),
       };
     }
 
     // update
-    const updatedPageResult = await pagesCollection.findOneAndUpdate(
-      { _id: pageId },
+    const updatedPromoResult = await promoCollection.findOneAndUpdate(
+      { _id: promoId },
       {
         $set: {
           ...values,
-          pagesGroupId: pagesGroupObjectId,
           updatedAt: new Date(),
+          startAt: new Date(input.startAt),
+          endAt: new Date(input.endAt),
         },
       },
       {
         returnDocument: 'after',
       },
     );
-    const updatedPage = updatedPageResult.value;
-    if (!updatedPageResult.ok || !updatedPage) {
+    const updatedPromo = updatedPromoResult.value;
+    if (!updatedPromoResult.ok || !updatedPromo) {
       return {
         success: false,
-        message: await getApiMessage('pages.update.error'),
+        message: await getApiMessage('promo.update.error'),
       };
     }
 
     return {
       success: true,
-      message: await getApiMessage('pages.update.success'),
+      message: await getApiMessage('promo.update.success'),
     };
   } catch (e) {
     console.log(e);

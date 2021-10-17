@@ -29,6 +29,7 @@ export const COL_ORDER_PRODUCTS = 'ordersProducts';
 export const COL_ORDER_STATUSES = 'orderStatuses';
 export const COL_PAGES = 'pages';
 export const COL_PROMO = 'promo';
+export const COL_PROMO_PRODUCTS = 'promoProducts';
 export const COL_PAGES_GROUP = 'pagesGroups';
 export const COL_PAGES_GROUP_TEMPLATES = 'pagesGroupTemplates';
 export const COL_PAGE_TEMPLATES = 'pageTemplates';

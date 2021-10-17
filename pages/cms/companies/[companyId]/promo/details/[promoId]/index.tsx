@@ -1,7 +1,8 @@
+import PromoDetails, { PromoDetailsInterface } from 'components/Promo/PromoDetails';
 import { ROUTE_CMS } from 'config/common';
 import { COL_COMPANIES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { CompanyInterface, PromoInterface } from 'db/uiInterfaces';
+import { CompanyInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
 import CmsLayout from 'layout/cms/CmsLayout';
@@ -12,9 +13,7 @@ import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
-interface PromoDetailsPageInterface extends PagePropsInterface {
-  promo: PromoInterface;
-  basePath: string;
+interface PromoDetailsPageInterface extends PagePropsInterface, PromoDetailsInterface {
   currentCompany: CompanyInterface;
 }
 
@@ -24,7 +23,6 @@ const PromoDetailsPage: React.FC<PromoDetailsPageInterface> = ({
   currentCompany,
   basePath,
 }) => {
-  console.log(basePath);
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${promo.name}`,
     config: [
@@ -46,9 +44,7 @@ const PromoDetailsPage: React.FC<PromoDetailsPageInterface> = ({
   return (
     <CmsLayout title={`${promo.name}`} pageUrls={pageUrls}>
       <CmsCompanyLayout company={currentCompany} breadcrumbs={breadcrumbs}>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores deleniti dolorum, esse
-        est, in inventore itaque laudantium natus nihil nulla odit pariatur perspiciatis porro
-        provident quas quo, sint tempora voluptatum.
+        <PromoDetails basePath={basePath} currentCompany={currentCompany} promo={promo} />
       </CmsCompanyLayout>
     </CmsLayout>
   );

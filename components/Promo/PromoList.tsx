@@ -66,6 +66,7 @@ const PromoList: React.FC<PromoListInterface> = ({ promoList, basePath, currentC
                 showModal<ConfirmModalInterface>({
                   variant: CONFIRM_MODAL,
                   props: {
+                    testId: 'delete-promo-modal',
                     message: `Вы уверенны, что хотите удалить акцию ${dataItem.name}?`,
                     confirm: () => {
                       deletePromo({

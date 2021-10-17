@@ -43,7 +43,6 @@ export const createPromoSchema = (args: ValidationSchemaArgsInterface) => {
 export const updatePromoSchema = (args: ValidationSchemaArgsInterface) => {
   return Yup.object({
     _id: promoIdSchema(args),
-    companyId: companyIdSchema(args),
     ...promoCommonFieldsSchema(args),
   });
 };

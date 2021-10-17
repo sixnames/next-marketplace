@@ -354,6 +354,61 @@ export const FLEX_START = 'flex-start';
 export const FLEX_CENTER = 'center';
 export const FLEX_END = 'flex-end';
 
+// FLEX ALIGNMENT options
+export const TEXT_HORIZONTAL_ALIGN_OPTIONS = [
+  {
+    _id: TEXT_HORIZONTAL_LEFT,
+    slug: TEXT_HORIZONTAL_LEFT,
+    name: 'Слева',
+  },
+  {
+    _id: TEXT_HORIZONTAL_CENTER,
+    slug: TEXT_HORIZONTAL_CENTER,
+    name: 'Центр',
+  },
+  {
+    _id: TEXT_HORIZONTAL_RIGHT,
+    slug: TEXT_HORIZONTAL_RIGHT,
+    name: 'Справа',
+  },
+];
+
+export const TEXT_HORIZONTAL_FLEX_OPTIONS = [
+  {
+    _id: FLEX_START,
+    slug: FLEX_START,
+    name: 'Слева',
+  },
+  {
+    _id: FLEX_CENTER,
+    slug: FLEX_CENTER,
+    name: 'Центр',
+  },
+  {
+    _id: FLEX_END,
+    slug: FLEX_END,
+    name: 'Справа',
+  },
+];
+
+export const TEXT_VERTICAL_FLEX_OPTIONS = [
+  {
+    _id: FLEX_START,
+    slug: FLEX_START,
+    name: 'Сверху',
+  },
+  {
+    _id: FLEX_CENTER,
+    slug: FLEX_CENTER,
+    name: 'Центр',
+  },
+  {
+    _id: FLEX_END,
+    slug: FLEX_END,
+    name: 'Снизу',
+  },
+];
+
 // SEARCH
 export const HEADER_SEARCH_PRODUCTS_LIMIT = 5;
 

@@ -38,9 +38,7 @@ const ConsolePromoLayout: React.FC<ConsolePromoLayoutInterface> = ({
         <title>{promo.name}</title>
       </Head>
       <Inner lowBottom>
-        <Title size={'small'} tag={'h2'}>
-          {promo.name}
-        </Title>
+        <Title tag={'div'}>{promo.name}</Title>
       </Inner>
       <AppSubNav navConfig={navConfig} />
       {children}

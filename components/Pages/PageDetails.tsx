@@ -7,14 +7,11 @@ import FormikImageUpload from 'components/FormElements/Upload/FormikImageUpload'
 import PageEditor from 'components/PageEditor';
 import Title from 'components/Title';
 import {
-  FLEX_CENTER,
-  FLEX_START,
-  FLEX_END,
-  TEXT_HORIZONTAL_LEFT,
-  TEXT_HORIZONTAL_CENTER,
-  TEXT_HORIZONTAL_RIGHT,
   REQUEST_METHOD_POST,
   PAGE_STATE_OPTIONS,
+  TEXT_HORIZONTAL_ALIGN_OPTIONS,
+  TEXT_VERTICAL_FLEX_OPTIONS,
+  TEXT_HORIZONTAL_FLEX_OPTIONS,
 } from 'config/common';
 import { CityInterface, PageInterface, PagesTemplateInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
@@ -25,60 +22,6 @@ import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { updatePageSchema } from 'validation/pagesSchema';
-
-const TEXT_HORIZONTAL_ALIGN_OPTIONS = [
-  {
-    _id: TEXT_HORIZONTAL_LEFT,
-    slug: TEXT_HORIZONTAL_LEFT,
-    name: 'Слева',
-  },
-  {
-    _id: TEXT_HORIZONTAL_CENTER,
-    slug: TEXT_HORIZONTAL_CENTER,
-    name: 'Центр',
-  },
-  {
-    _id: TEXT_HORIZONTAL_RIGHT,
-    slug: TEXT_HORIZONTAL_RIGHT,
-    name: 'Справа',
-  },
-];
-
-const TEXT_HORIZONTAL_FLEX_OPTIONS = [
-  {
-    _id: FLEX_START,
-    slug: FLEX_START,
-    name: 'Слева',
-  },
-  {
-    _id: FLEX_CENTER,
-    slug: FLEX_CENTER,
-    name: 'Центр',
-  },
-  {
-    _id: FLEX_END,
-    slug: FLEX_END,
-    name: 'Справа',
-  },
-];
-
-const TEXT_VERTICAL_FLEX_OPTIONS = [
-  {
-    _id: FLEX_START,
-    slug: FLEX_START,
-    name: 'Сверху',
-  },
-  {
-    _id: FLEX_CENTER,
-    slug: FLEX_CENTER,
-    name: 'Центр',
-  },
-  {
-    _id: FLEX_END,
-    slug: FLEX_END,
-    name: 'Снизу',
-  },
-];
 
 const sectionClassName = 'border-t border-border-300 pt-8 mt-12';
 

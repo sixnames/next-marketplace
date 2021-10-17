@@ -68,8 +68,15 @@ export const promoMessages: MessageBaseInterface[] = [
   {
     slug: 'validation.promo.cashbackPercent',
     messageI18n: {
-      [DEFAULT_LOCALE]: `Размер кешбека акции обязателен к заполнению`,
+      [DEFAULT_LOCALE]: `Размер кэшбэка акции обязателен к заполнению`,
       [SECONDARY_LOCALE]: `Cashback is required`,
+    },
+  },
+  {
+    slug: 'validation.promo.datesError',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Даты акции обязателен к заполнению`,
+      [SECONDARY_LOCALE]: `Promo dates is required`,
     },
   },
 ];

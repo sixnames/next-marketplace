@@ -5,7 +5,6 @@ import {
   requiredNumberSchema,
   requiredStringTranslationSchema,
 } from 'validation/schemaTemplates';
-import { shopIdSchema } from 'validation/shopSchema';
 import * as Yup from 'yup';
 
 export const promoIdSchema = (args: ValidationSchemaArgsInterface) => {
@@ -37,7 +36,6 @@ export const promoCommonFieldsSchema = (args: ValidationSchemaArgsInterface) => 
 export const createPromoSchema = (args: ValidationSchemaArgsInterface) => {
   return Yup.object({
     ...promoCommonFieldsSchema(args),
-    shopId: shopIdSchema(args),
     companyId: companyIdSchema(args),
   });
 };
@@ -45,7 +43,6 @@ export const createPromoSchema = (args: ValidationSchemaArgsInterface) => {
 export const updatePromoSchema = (args: ValidationSchemaArgsInterface) => {
   return Yup.object({
     _id: promoIdSchema(args),
-    shopId: shopIdSchema(args),
     companyId: companyIdSchema(args),
     ...promoCommonFieldsSchema(args),
   });

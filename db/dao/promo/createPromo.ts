@@ -20,8 +20,8 @@ export interface CreatePromoInputInterface {
   companySlug: string;
   discountPercent: number;
   cashbackPercent: number;
-  startAt: DateModel;
-  endAt: DateModel;
+  startAt?: DateModel | null;
+  endAt?: DateModel | null;
 }
 
 export async function createPromo({
@@ -49,6 +49,13 @@ export async function createPromo({
       return {
         success: false,
         message: await getApiMessage('promo.create.error'),
+      };
+    }
+    // check input
+    if (!input.startAt || !input.endAt) {
+      return {
+        success: false,
+        message: await getApiMessage('validation.promo.datesError'),
       };
     }
 

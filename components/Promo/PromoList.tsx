@@ -4,9 +4,10 @@ import FixedButtons from 'components/FixedButtons';
 import FormattedDateTime from 'components/FormattedDateTime';
 import Inner from 'components/Inner';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
+import { CreatePromoModalInterface } from 'components/Modal/CreatePromoModal';
 import Percent from 'components/Percent';
 import Table, { TableColumn } from 'components/Table';
-import { CONFIRM_MODAL } from 'config/modalVariants';
+import { CONFIRM_MODAL, CREATE_PROMO_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { CompanyInterface, PromoInterface } from 'db/uiInterfaces';
 import { useDeletePromo } from 'hooks/mutations/usePromoMutations';
@@ -19,7 +20,7 @@ export interface PromoListInterface {
   basePath: string;
 }
 
-const PromoList: React.FC<PromoListInterface> = ({ promoList, basePath }) => {
+const PromoList: React.FC<PromoListInterface> = ({ promoList, basePath, currentCompany }) => {
   const router = useRouter();
   const { showModal } = useAppContext();
   const [deletePromo] = useDeletePromo();
@@ -37,7 +38,7 @@ const PromoList: React.FC<PromoListInterface> = ({ promoList, basePath }) => {
     },
     {
       accessor: 'cashbackPercent',
-      headTitle: 'Кешбек',
+      headTitle: 'Кэшбэк',
       render: ({ cellData }) => <Percent value={cellData} />,
     },
     {
@@ -86,6 +87,7 @@ const PromoList: React.FC<PromoListInterface> = ({ promoList, basePath }) => {
       <div className='relative'>
         <div className='overflow-y-hidden overflow-x-auto'>
           <Table<PromoInterface>
+            testIdKey={'name'}
             columns={columns}
             data={promoList}
             onRowDoubleClick={(dataItem) => {
@@ -94,7 +96,19 @@ const PromoList: React.FC<PromoListInterface> = ({ promoList, basePath }) => {
           />
         </div>
         <FixedButtons>
-          <Button testId={'create-promo'}>Создать акцию</Button>
+          <Button
+            testId={'create-promo'}
+            onClick={() => {
+              showModal<CreatePromoModalInterface>({
+                variant: CREATE_PROMO_MODAL,
+                props: {
+                  currentCompany,
+                },
+              });
+            }}
+          >
+            Создать акцию
+          </Button>
         </FixedButtons>
       </div>
     </Inner>

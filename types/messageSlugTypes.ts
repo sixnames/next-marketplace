@@ -679,6 +679,7 @@ export type MessageSlug =
   | 'validation.promo.name'
   | 'validation.promo.discountPercent'
   | 'validation.promo.cashbackPercent'
+  | 'validation.promo.datesError'
 
   // Fallback for empty key
   | 'none';

@@ -1,4 +1,6 @@
+import Inner from 'components/Inner';
 import PromoList, { PromoListInterface } from 'components/Promo/PromoList';
+import Title from 'components/Title';
 import { ROUTE_CONSOLE } from 'config/common';
 import { CompanyInterface } from 'db/uiInterfaces';
 import AppContentWrapper from 'layout/AppContentWrapper';
@@ -24,7 +26,10 @@ const PromoListPage: NextPage<PromoListPageInterface> = ({
   return (
     <ConsoleLayout title={pageTitle} pageUrls={pageUrls} company={currentCompany}>
       <AppContentWrapper>
-        <PromoList promoList={promoList} currentCompany={currentCompany} basePath={basePath} />
+        <Inner>
+          <Title>{pageTitle}</Title>
+          <PromoList promoList={promoList} currentCompany={currentCompany} basePath={basePath} />
+        </Inner>
       </AppContentWrapper>
     </ConsoleLayout>
   );
@@ -42,7 +47,7 @@ export const getServerSideProps = async (
 
   const promoList = await getPromoListSsr({
     locale: props.sessionLocale,
-    companyId: props.currentCompany._id.toHexString(),
+    companyId: `${props.currentCompany._id}`,
   });
 
   return {

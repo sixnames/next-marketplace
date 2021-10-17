@@ -1,3 +1,4 @@
+import Inner from 'components/Inner';
 import PromoList, { PromoListInterface } from 'components/Promo/PromoList';
 import { ROUTE_CMS } from 'config/common';
 import { COL_COMPANIES } from 'db/collectionNames';
@@ -42,7 +43,9 @@ const PromoListPage: NextPage<PromoListPageInterface> = ({
   return (
     <CmsLayout title={pageTitle} pageUrls={pageUrls}>
       <CmsCompanyLayout company={currentCompany} breadcrumbs={breadcrumbs}>
-        <PromoList promoList={promoList} currentCompany={currentCompany} basePath={basePath} />
+        <Inner>
+          <PromoList promoList={promoList} currentCompany={currentCompany} basePath={basePath} />
+        </Inner>
       </CmsCompanyLayout>
     </CmsLayout>
   );

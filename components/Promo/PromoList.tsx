@@ -2,7 +2,6 @@ import Button from 'components/Button';
 import ContentItemControls from 'components/ContentItemControls';
 import FixedButtons from 'components/FixedButtons';
 import FormattedDateTime from 'components/FormattedDateTime';
-import Inner from 'components/Inner';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { CreatePromoModalInterface } from 'components/Modal/CreatePromoModal';
 import Percent from 'components/Percent';
@@ -84,35 +83,33 @@ const PromoList: React.FC<PromoListInterface> = ({ promoList, basePath, currentC
   ];
 
   return (
-    <Inner testId={'promo-list'}>
-      <div className='relative'>
-        <div className='overflow-y-hidden overflow-x-auto'>
-          <Table<PromoInterface>
-            testIdKey={'name'}
-            columns={columns}
-            data={promoList}
-            onRowDoubleClick={(dataItem) => {
-              router.push(`${basePath}/details/${dataItem._id}`).catch(console.log);
-            }}
-          />
-        </div>
-        <FixedButtons>
-          <Button
-            testId={'create-promo'}
-            onClick={() => {
-              showModal<CreatePromoModalInterface>({
-                variant: CREATE_PROMO_MODAL,
-                props: {
-                  currentCompany,
-                },
-              });
-            }}
-          >
-            Создать акцию
-          </Button>
-        </FixedButtons>
+    <div className='relative' data-cy={'promo-list'}>
+      <div className='overflow-y-hidden overflow-x-auto'>
+        <Table<PromoInterface>
+          testIdKey={'name'}
+          columns={columns}
+          data={promoList}
+          onRowDoubleClick={(dataItem) => {
+            router.push(`${basePath}/details/${dataItem._id}`).catch(console.log);
+          }}
+        />
       </div>
-    </Inner>
+      <FixedButtons>
+        <Button
+          testId={'create-promo'}
+          onClick={() => {
+            showModal<CreatePromoModalInterface>({
+              variant: CREATE_PROMO_MODAL,
+              props: {
+                currentCompany,
+              },
+            });
+          }}
+        >
+          Создать акцию
+        </Button>
+      </FixedButtons>
+    </div>
   );
 };
 

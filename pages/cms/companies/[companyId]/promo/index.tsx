@@ -41,7 +41,7 @@ const PromoListPage: NextPage<PromoListPageInterface> = ({
   return (
     <CmsLayout title={pageTitle} pageUrls={pageUrls}>
       <CmsCompanyLayout company={currentCompany} breadcrumbs={breadcrumbs}>
-        <PromoList promoList={promoList} />
+        <PromoList promoList={promoList} currentCompany={currentCompany} />
       </CmsCompanyLayout>
     </CmsLayout>
   );

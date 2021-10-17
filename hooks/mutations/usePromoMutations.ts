@@ -1,4 +1,4 @@
-import { REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'config/common';
+import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'config/common';
 import { CreatePromoInputInterface } from 'db/dao/promo/createPromo';
 import { DeletePromoInputInterface } from 'db/dao/promo/deletePromo';
 import { UpdatePromoInputInterface } from 'db/dao/promo/updatePromo';
@@ -28,6 +28,6 @@ export const useUpdatePromo = () => {
 export const useDeletePromo = () => {
   return useMutationHandler<PromoPayloadModel, DeletePromoInputInterface>({
     path: basePath,
-    method: REQUEST_METHOD_PATCH,
+    method: REQUEST_METHOD_DELETE,
   });
 };

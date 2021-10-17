@@ -1,5 +1,11 @@
-import { COL_PROMO } from 'db/collectionNames';
-import { DateModel, PromoModel, PromoPayloadModel, TranslationModel } from 'db/dbModels';
+import { COL_PROMO, COL_PROMO_PRODUCTS } from 'db/collectionNames';
+import {
+  DateModel,
+  PromoModel,
+  PromoPayloadModel,
+  PromoProductModel,
+  TranslationModel,
+} from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
@@ -40,82 +46,123 @@ export async function updatePromo({
   context,
   input,
 }: DaoPropsInterface<UpdatePromoInputInterface>): Promise<PromoPayloadModel> {
+  const { getApiMessage } = await getRequestParams(context);
+  const { db, client } = await getDatabase();
+  const promoCollection = db.collection<PromoModel>(COL_PROMO);
+  const promoProductsCollection = db.collection<PromoProductModel>(COL_PROMO_PRODUCTS);
+  const session = client.startSession();
+  let mutationPayload: PromoPayloadModel = {
+    success: false,
+    message: await getApiMessage('promo.update.error'),
+  };
+
   try {
-    const { getApiMessage } = await getRequestParams(context);
-    const { db } = await getDatabase();
+    await session.withTransaction(async () => {
+      // permission
+      const { allow, message } = await getOperationPermission({
+        context,
+        slug: 'updatePromo',
+      });
+      if (!allow) {
+        mutationPayload = {
+          success: false,
+          message,
+        };
+        await session.abortTransaction();
+        return;
+      }
 
-    // permission
-    const { allow, message } = await getOperationPermission({
-      context,
-      slug: 'updatePromo',
-    });
-    if (!allow) {
-      return {
-        success: false,
-        message,
-      };
-    }
+      // check input
+      if (!input) {
+        mutationPayload = {
+          success: false,
+          message: await getApiMessage('promo.update.error'),
+        };
+        await session.abortTransaction();
+        return;
+      }
 
-    // check input
-    if (!input) {
-      return {
-        success: false,
-        message: await getApiMessage('promo.update.error'),
-      };
-    }
+      // validate
+      const validationSchema = await getResolverValidationSchema({
+        context,
+        schema: updatePromoSchema,
+      });
+      await validationSchema.validate(input);
 
-    // validate
-    const validationSchema = await getResolverValidationSchema({
-      context,
-      schema: updatePromoSchema,
-    });
-    await validationSchema.validate(input);
+      const { _id, ...values } = input;
+      const promoId = new ObjectId(_id);
 
-    const { _id, ...values } = input;
-    const promoId = new ObjectId(_id);
-    const promoCollection = db.collection<PromoModel>(COL_PROMO);
+      // check availability
+      const promo = await promoCollection.findOne({ _id: promoId });
+      if (!promo) {
+        mutationPayload = {
+          success: false,
+          message: await getApiMessage('promo.update.error'),
+        };
+        await session.abortTransaction();
+        return;
+      }
 
-    // check availability
-    const promo = await promoCollection.findOne({ _id: promoId });
-    if (!promo) {
-      return {
-        success: false,
-        message: await getApiMessage('promo.update.error'),
-      };
-    }
-
-    // update
-    const updatedPromoResult = await promoCollection.findOneAndUpdate(
-      { _id: promoId },
-      {
-        $set: {
-          ...values,
-          updatedAt: new Date(),
-          startAt: new Date(input.startAt),
-          endAt: new Date(input.endAt),
+      // update product dates
+      const updatedPromoProductsResult = await promoProductsCollection.updateMany(
+        {
+          promoId,
         },
-      },
-      {
-        returnDocument: 'after',
-      },
-    );
-    const updatedPromo = updatedPromoResult.value;
-    if (!updatedPromoResult.ok || !updatedPromo) {
-      return {
-        success: false,
-        message: await getApiMessage('promo.update.error'),
-      };
-    }
+        {
+          $set: {
+            startAt: new Date(input.startAt),
+            endAt: new Date(input.endAt),
+          },
+        },
+      );
+      if (!updatedPromoProductsResult.acknowledged) {
+        mutationPayload = {
+          success: false,
+          message: await getApiMessage('promo.update.error'),
+        };
+        await session.abortTransaction();
+        return;
+      }
 
-    return {
-      success: true,
-      message: await getApiMessage('promo.update.success'),
-    };
+      // update
+      const updatedPromoResult = await promoCollection.findOneAndUpdate(
+        { _id: promoId },
+        {
+          $set: {
+            ...values,
+            updatedAt: new Date(),
+            startAt: new Date(input.startAt),
+            endAt: new Date(input.endAt),
+          },
+        },
+        {
+          returnDocument: 'after',
+        },
+      );
+      const updatedPromo = updatedPromoResult.value;
+      if (!updatedPromoResult.ok || !updatedPromo) {
+        mutationPayload = {
+          success: false,
+          message: await getApiMessage('promo.update.error'),
+        };
+        await session.abortTransaction();
+        return;
+      }
+
+      mutationPayload = {
+        success: true,
+        message: await getApiMessage('promo.update.success'),
+      };
+    });
+
+    return mutationPayload;
   } catch (e) {
     console.log(e);
     return {
       success: false,
       message: getResolverErrorMessage(e),
     };
+  } finally {
+    await session.endSession();
   }
 }

@@ -925,6 +925,10 @@ export interface PromoProductModel {
   shopId: ObjectIdModel;
   companyId: ObjectIdModel;
   shopProductId: ObjectIdModel;
+
+  // dates
+  startAt: DateModel;
+  endAt: DateModel;
 }
 
 export interface PromoCodeModel {

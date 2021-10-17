@@ -1,5 +1,5 @@
-import { COL_PAGE_TEMPLATES, COL_PAGES } from 'db/collectionNames';
-import { PageModel, PagePayloadModel } from 'db/dbModels';
+import { COL_PROMO, COL_PROMO_PRODUCTS } from 'db/collectionNames';
+import { PromoModel, PromoPayloadModel, PromoProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
 import { deleteUpload } from 'lib/assetUtils/assetUtils';
@@ -7,77 +7,107 @@ import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
 
-export interface DeletePageInputInterface {
+export interface DeletePromoInputInterface {
   _id: string;
-  isTemplate?: boolean | null;
 }
 
 export async function deletePromo({
   context,
   input,
-}: DaoPropsInterface<DeletePageInputInterface>): Promise<PagePayloadModel> {
+}: DaoPropsInterface<DeletePromoInputInterface>): Promise<PromoPayloadModel> {
+  const { getApiMessage } = await getRequestParams(context);
+  const { db, client } = await getDatabase();
+  const promoCollection = db.collection<PromoModel>(COL_PROMO);
+  const promoProductsCollection = db.collection<PromoProductModel>(COL_PROMO_PRODUCTS);
+  const session = client.startSession();
+  let mutationPayload: PromoPayloadModel = {
+    success: false,
+    message: await getApiMessage('promo.delete.error'),
+  };
+
   try {
-    const { getApiMessage } = await getRequestParams(context);
-    const { db } = await getDatabase();
-
-    // permission
-    const { allow, message } = await getOperationPermission({
-      context,
-      slug: 'deletePage',
-    });
-    if (!allow) {
-      return {
-        success: false,
-        message,
-      };
-    }
-
-    // check input
-    if (!input) {
-      return {
-        success: false,
-        message: await getApiMessage('pages.update.error'),
-      };
-    }
-
-    const { isTemplate } = input;
-    const pagesCollection = db.collection<PageModel>(isTemplate ? COL_PAGE_TEMPLATES : COL_PAGES);
-
-    // check availability
-    const _id = new ObjectId(input._id);
-    const page = await pagesCollection.findOne({ _id });
-    if (!page) {
-      return {
-        success: false,
-        message: await getApiMessage('pages.delete.notFound'),
-      };
-    }
-
-    // delete assets from cloud
-    for await (const filePath of page.assetKeys) {
-      await deleteUpload({
-        filePath,
+    await session.withTransaction(async () => {
+      // permission
+      const { allow, message } = await getOperationPermission({
+        context,
+        slug: 'deletePromo',
       });
-    }
+      if (!allow) {
+        mutationPayload = {
+          success: false,
+          message,
+        };
+        await session.abortTransaction();
+        return;
+      }
 
-    // delete
-    const removedPageResult = await pagesCollection.findOneAndDelete({ _id });
-    if (!removedPageResult.ok) {
-      return {
-        success: false,
-        message: await getApiMessage('pages.delete.error'),
+      // check input
+      if (!input) {
+        mutationPayload = {
+          success: false,
+          message: await getApiMessage('promo.delete.error'),
+        };
+        await session.abortTransaction();
+        return;
+      }
+
+      // check availability
+      const _id = new ObjectId(input._id);
+      const promo = await promoCollection.findOne({ _id });
+      if (!promo) {
+        mutationPayload = {
+          success: false,
+          message: await getApiMessage('promo.delete.error'),
+        };
+        await session.abortTransaction();
+        return;
+      }
+
+      // delete assets from cloud
+      for await (const filePath of promo.assetKeys) {
+        await deleteUpload({
+          filePath,
+        });
+      }
+
+      // delete promo products
+      const removedPromoProductsResult = await promoProductsCollection.deleteMany({
+        promoId: promo._id,
+      });
+      if (!removedPromoProductsResult.acknowledged) {
+        mutationPayload = {
+          success: false,
+          message: await getApiMessage('promo.delete.error'),
+        };
+        await session.abortTransaction();
+        return;
+      }
+
+      // delete
+      const removedPromoResult = await promoCollection.findOneAndDelete({ _id });
+      if (!removedPromoResult.ok) {
+        mutationPayload = {
+          success: false,
+          message: await getApiMessage('promo.delete.error'),
+        };
+        await session.abortTransaction();
+        return;
+      }
+
+      mutationPayload = {
+        success: true,
+        message: await getApiMessage('promo.delete.success'),
       };
-    }
+    });
 
-    return {
-      success: true,
-      message: await getApiMessage('pages.delete.success'),
-    };
+    return mutationPayload;
   } catch (e) {
     console.log(e);
     return {
       success: false,
       message: getResolverErrorMessage(e),
     };
+  } finally {
+    await session.endSession();
   }
 }

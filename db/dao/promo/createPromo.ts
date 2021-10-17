@@ -17,6 +17,7 @@ export interface CreatePromoInputInterface {
   nameI18n: TranslationModel;
   descriptionI18n?: TranslationModel | null;
   companyId: string;
+  companySlug: string;
   discountPercent: number;
   cashbackPercent: number;
   startAt: DateModel;

@@ -887,6 +887,7 @@ export interface PromoModel extends TimestampModel {
   _id: ObjectIdModel;
   slug: string; // itemId
   companyId: ObjectIdModel;
+  companySlug: string;
   discountPercent: number;
   cashbackPercent: number;
   nameI18n: any;

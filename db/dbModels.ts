@@ -883,13 +883,12 @@ export interface UserCashbackLogModel extends TimestampModel {
 export interface UserPaybackLogModel extends UserCashbackLogModel {}
 
 // Promo
-export interface PromoModel {
+export interface PromoModel extends TimestampModel {
   _id: ObjectIdModel;
   slug: string; // itemId
-  shopId: ObjectIdModel;
   companyId: ObjectIdModel;
-  discountPercent: number; // ???
-  cashbackPercent: number; // ???
+  discountPercent: number;
+  cashbackPercent: number;
   nameI18n: any;
   descriptionI18n?: any;
 
@@ -916,10 +915,8 @@ export interface PromoModel {
   secondaryBannerTextMaxWidth?: number | null;
 
   // dates
-  createdAt: Date;
-  updatedAt: Date;
-  startAt: Date;
-  endAt: Date;
+  startAt: DateModel;
+  endAt: DateModel;
 }
 
 export interface ProductPromoModel {
@@ -1054,6 +1051,7 @@ export type NavItemPayloadModel = PayloadType<NavItemModel>;
 export type RoleRulePayloadModel = PayloadType<RoleRuleModel>;
 export type PagesGroupPayloadModel = PayloadType<PagesGroupModel>;
 export type PagePayloadModel = PayloadType<PageModel>;
+export type PromoPayloadModel = PayloadType<PromoModel>;
 export type OrderPayloadModel = PayloadType<OrderModel>;
 export type UserCategoryPayloadModel = PayloadType<UserCategoryModel>;
 export type OrderProductPayloadModel = PayloadType<OrderProductModel>;

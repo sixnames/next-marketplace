@@ -10,12 +10,12 @@ import { PageModel, PagePayloadModel, PagesGroupModel, TranslationModel } from '
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getNextItemId } from 'lib/itemIdUtils';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
 } from 'lib/sessionHelpers';
-import { generateDefaultLangSlug } from 'lib/slugUtils';
 import { ObjectId } from 'mongodb';
 import { createPageSchema } from 'validation/pagesSchema';
 
@@ -107,7 +107,7 @@ export async function createPage({
     const createdPageResult = await pagesCollection.insertOne({
       ...input,
       pagesGroupId,
-      slug: generateDefaultLangSlug(input.nameI18n),
+      slug: await getNextItemId(isTemplate ? COL_PAGE_TEMPLATES : COL_PAGES),
       content: PAGE_EDITOR_DEFAULT_VALUE_STRING,
       assetKeys: [],
       state: PAGE_STATE_PUBLISHED,

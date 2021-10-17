@@ -9,14 +9,17 @@ import { CONFIRM_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { CompanyInterface, PromoInterface } from 'db/uiInterfaces';
 import { useDeletePromo } from 'hooks/mutations/usePromoMutations';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 
 export interface PromoListInterface {
   promoList: PromoInterface[];
   currentCompany: CompanyInterface;
+  basePath: string;
 }
 
-const PromoList: React.FC<PromoListInterface> = ({ promoList }) => {
+const PromoList: React.FC<PromoListInterface> = ({ promoList, basePath }) => {
+  const router = useRouter();
   const { showModal } = useAppContext();
   const [deletePromo] = useDeletePromo();
 
@@ -42,6 +45,10 @@ const PromoList: React.FC<PromoListInterface> = ({ promoList }) => {
           <div className='flex justify-end'>
             <ContentItemControls
               testId={`${dataItem.name}`}
+              updateTitle={'Редактировать акцию'}
+              updateHandler={() => {
+                router.push(`${basePath}/details/${dataItem._id}`).catch(console.log);
+              }}
               deleteTitle={'Удалить акцию'}
               deleteHandler={() => {
                 showModal<ConfirmModalInterface>({
@@ -67,7 +74,13 @@ const PromoList: React.FC<PromoListInterface> = ({ promoList }) => {
     <Inner testId={'promo-list'}>
       <div className='relative'>
         <div className='overflow-y-hidden overflow-x-auto'>
-          <Table columns={columns} data={promoList} />
+          <Table<PromoInterface>
+            columns={columns}
+            data={promoList}
+            onRowDoubleClick={(dataItem) => {
+              router.push(`${basePath}/details/${dataItem._id}`).catch(console.log);
+            }}
+          />
         </div>
         <FixedButtons>
           <Button testId={'create-promo'}>Создать акцию</Button>

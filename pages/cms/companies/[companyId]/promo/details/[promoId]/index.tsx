@@ -1,32 +1,32 @@
-import PromoList, { PromoListInterface } from 'components/Promo/PromoList';
 import { ROUTE_CMS } from 'config/common';
 import { COL_COMPANIES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { CompanyInterface } from 'db/uiInterfaces';
+import { CompanyInterface, PromoInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
-import { getPromoListSsr } from 'lib/promoUtils';
+import CmsLayout from 'layout/cms/CmsLayout';
+import { getPromoSsr } from 'lib/promoUtils';
+import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
-const pageTitle = 'Акции';
-
-interface PromoListPageInterface extends PagePropsInterface, PromoListInterface {
+interface PromoDetailsPageInterface extends PagePropsInterface {
+  promo: PromoInterface;
+  basePath: string;
   currentCompany: CompanyInterface;
 }
 
-const PromoListPage: NextPage<PromoListPageInterface> = ({
+const PromoDetailsPage: React.FC<PromoDetailsPageInterface> = ({
   pageUrls,
-  promoList,
+  promo,
   currentCompany,
   basePath,
 }) => {
+  console.log(basePath);
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: pageTitle,
+    currentPageName: `${promo.name}`,
     config: [
       {
         name: 'Компании',
@@ -36,13 +36,19 @@ const PromoListPage: NextPage<PromoListPageInterface> = ({
         name: currentCompany.name,
         href: `${ROUTE_CMS}/companies/${currentCompany._id}`,
       },
+      {
+        name: 'Акции',
+        href: `${ROUTE_CMS}/companies/${currentCompany._id}/promo`,
+      },
     ],
   };
 
   return (
-    <CmsLayout title={pageTitle} pageUrls={pageUrls}>
+    <CmsLayout title={`${promo.name}`} pageUrls={pageUrls}>
       <CmsCompanyLayout company={currentCompany} breadcrumbs={breadcrumbs}>
-        <PromoList promoList={promoList} currentCompany={currentCompany} basePath={basePath} />
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores deleniti dolorum, esse
+        est, in inventore itaque laudantium natus nihil nulla odit pariatur perspiciatis porro
+        provident quas quo, sint tempora voluptatum.
       </CmsCompanyLayout>
     </CmsLayout>
   );
@@ -50,10 +56,10 @@ const PromoListPage: NextPage<PromoListPageInterface> = ({
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<PromoListPageInterface>> => {
+): Promise<GetServerSidePropsResult<PromoDetailsPageInterface>> => {
   const { query } = context;
   const { props } = await getAppInitialData({ context });
-  if (!props || !query.companyId) {
+  if (!props || !query.companyId || !query.promoId) {
     return {
       notFound: true,
     };
@@ -70,19 +76,24 @@ export const getServerSideProps = async (
     };
   }
 
-  const promoList = await getPromoListSsr({
+  const promo = await getPromoSsr({
     locale: props.sessionLocale,
-    companyId: company._id.toHexString(),
+    promoId: `${query.promoId}`,
   });
+  if (!promo) {
+    return {
+      notFound: true,
+    };
+  }
 
   return {
     props: {
       ...props,
-      basePath: `${ROUTE_CMS}/companies/${company._id}/promo`,
+      basePath: `${ROUTE_CMS}/companies/${company._id}/promo/details/${promo._id}`,
       currentCompany: castDbData(company),
-      promoList: castDbData(promoList),
+      promo: castDbData(promo),
     },
   };
 };
 
-export default PromoListPage;
+export default PromoDetailsPage;

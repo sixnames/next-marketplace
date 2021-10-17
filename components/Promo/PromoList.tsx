@@ -1,6 +1,7 @@
 import Button from 'components/Button';
 import ContentItemControls from 'components/ContentItemControls';
 import FixedButtons from 'components/FixedButtons';
+import FormattedDateTime from 'components/FormattedDateTime';
 import Inner from 'components/Inner';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import Percent from 'components/Percent';
@@ -38,6 +39,16 @@ const PromoList: React.FC<PromoListInterface> = ({ promoList, basePath }) => {
       accessor: 'cashbackPercent',
       headTitle: 'Кешбек',
       render: ({ cellData }) => <Percent value={cellData} />,
+    },
+    {
+      accessor: 'startAt',
+      headTitle: 'Дата начала',
+      render: ({ cellData }) => <FormattedDateTime value={cellData} />,
+    },
+    {
+      accessor: 'endAt',
+      headTitle: 'Дата окончания',
+      render: ({ cellData }) => <FormattedDateTime value={cellData} />,
     },
     {
       render: ({ dataItem }) => {

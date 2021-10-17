@@ -41,3 +41,42 @@ export async function getPromoListSsr({
 
   return promoList;
 }
+
+interface GetPromoSsrInterface {
+  locale: string;
+  promoId: string;
+}
+
+export async function getPromoSsr({
+  promoId,
+  locale,
+}: GetPromoSsrInterface): Promise<PromoInterface | null> {
+  const { db } = await getDatabase();
+  const promoCollection = db.collection<PromoInterface>(COL_PROMO);
+  const promoAggregation = await promoCollection
+    .aggregate<PromoInterface>([
+      {
+        $match: {
+          _id: new ObjectId(promoId),
+        },
+      },
+      {
+        $sort: {
+          endAt: SORT_DESC,
+        },
+      },
+    ])
+    .toArray();
+  const promoResult = promoAggregation[0];
+  if (!promoResult) {
+    return null;
+  }
+
+  const promo: PromoInterface = {
+    ...promoResult,
+    name: getFieldStringLocale(promoResult.nameI18n, locale),
+    description: getFieldStringLocale(promoResult.descriptionI18n, locale),
+  };
+
+  return promo;
+}

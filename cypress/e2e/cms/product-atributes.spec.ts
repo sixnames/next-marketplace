@@ -10,7 +10,9 @@ describe('Product products', () => {
     cy.getByCy('rubric-products-list').should('exist');
     cy.getByCy('product-link-0').click();
     cy.wait(1500);
+    cy.getByCy('product-details').should('exist');
     cy.getByCy('attributes').click();
+    cy.wait(1500);
     cy.getByCy('product-attributes-list').should('exist');
 
     // clear select attribute
@@ -43,7 +45,7 @@ describe('Product products', () => {
     cy.wait(1500);
 
     // update text attributes
-    cy.getByCy('Описание-attribute-ru').clear().type('lorem');
+    cy.getByCy('Текстовый-attribute-ru').clear().type('lorem');
     cy.getByCy('submit-text-attributes').click();
   });
 });

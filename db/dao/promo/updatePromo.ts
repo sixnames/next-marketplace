@@ -19,25 +19,43 @@ import { updatePromoSchema } from 'validation/promoSchema';
 
 export interface UpdatePromoInputInterface {
   _id: string;
-  discountPercent: number;
-  cashbackPercent: number;
   nameI18n: TranslationModel;
-  descriptionI18n?: TranslationModel | null;
+  descriptionI18n: TranslationModel;
+
+  // discount
+  discountPercent: number;
+  addCategoryDiscount: boolean;
+  useBiggestDiscount: boolean;
+
+  // cashback
+  cashbackPercent: number;
+  addCategoryCashback: boolean;
+  useBiggestCashback: boolean;
+  allowPayFromCashback: boolean;
+
+  // ui configs
+  showAsPromoPage: boolean;
   content: string;
-  showAsMainBanner?: boolean | null;
-  mainBannerTextColor?: string | null;
-  mainBannerVerticalTextAlign?: string | null;
-  mainBannerHorizontalTextAlign?: string | null;
-  mainBannerTextAlign?: string | null;
-  mainBannerTextPadding?: number | null;
-  mainBannerTextMaxWidth?: number | null;
-  showAsSecondaryBanner?: boolean | null;
-  secondaryBannerTextColor?: string | null;
-  secondaryBannerVerticalTextAlign?: string | null;
-  secondaryBannerHorizontalTextAlign?: string | null;
-  secondaryBannerTextAlign?: string | null;
-  secondaryBannerTextPadding?: number | null;
-  secondaryBannerTextMaxWidth?: number | null;
+
+  // main banner
+  showAsMainBanner: boolean;
+  mainBannerTextColor: string;
+  mainBannerVerticalTextAlign: string;
+  mainBannerHorizontalTextAlign: string;
+  mainBannerTextAlign: string;
+  mainBannerTextPadding: number;
+  mainBannerTextMaxWidth: number;
+
+  //secondary banner
+  showAsSecondaryBanner: boolean;
+  secondaryBannerTextColor: string;
+  secondaryBannerVerticalTextAlign: string;
+  secondaryBannerHorizontalTextAlign: string;
+  secondaryBannerTextAlign: string;
+  secondaryBannerTextPadding: number;
+  secondaryBannerTextMaxWidth: number;
+
+  // dates
   startAt: DateModel;
   endAt: DateModel;
 }

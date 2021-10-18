@@ -885,35 +885,48 @@ export interface UserPaybackLogModel extends UserCashbackLogModel {}
 // Promo
 export interface PromoModel extends TimestampModel {
   _id: ObjectIdModel;
-  slug: string; // itemId
+  slug: string;
   companyId: ObjectIdModel;
   companySlug: string;
+  nameI18n: TranslationModel;
+  descriptionI18n: TranslationModel;
+
+  // discount
   discountPercent: number;
+  addCategoryDiscount: boolean;
+  useBiggestDiscount: boolean;
+
+  // cashback
   cashbackPercent: number;
-  nameI18n: any;
-  descriptionI18n?: any;
+  addCategoryCashback: boolean;
+  useBiggestCashback: boolean;
+  allowPayFromCashback: boolean;
 
   // ui configs
-  showAsPromoPage?: boolean | null;
+  showAsPromoPage: boolean;
   assetKeys: string[];
-  content: string; // constructor
+  content: string;
+
+  // main banner
+  showAsMainBanner: boolean;
   mainBanner?: AssetModel | null;
   mainBannerMobile?: AssetModel | null;
-  showAsMainBanner?: boolean | null;
-  mainBannerTextColor?: string | null;
-  mainBannerVerticalTextAlign?: string | null;
-  mainBannerHorizontalTextAlign?: string | null;
-  mainBannerTextAlign?: string | null;
-  mainBannerTextPadding?: number | null;
-  mainBannerTextMaxWidth?: number | null;
+  mainBannerTextColor: string;
+  mainBannerVerticalTextAlign: string;
+  mainBannerHorizontalTextAlign: string;
+  mainBannerTextAlign: string;
+  mainBannerTextPadding: number;
+  mainBannerTextMaxWidth: number;
+
+  //secondary banner
+  showAsSecondaryBanner: boolean;
   secondaryBanner?: AssetModel | null;
-  showAsSecondaryBanner?: boolean | null;
-  secondaryBannerTextColor?: string | null;
-  secondaryBannerVerticalTextAlign?: string | null;
-  secondaryBannerHorizontalTextAlign?: string | null;
-  secondaryBannerTextAlign?: string | null;
-  secondaryBannerTextPadding?: number | null;
-  secondaryBannerTextMaxWidth?: number | null;
+  secondaryBannerTextColor: string;
+  secondaryBannerVerticalTextAlign: string;
+  secondaryBannerHorizontalTextAlign: string;
+  secondaryBannerTextAlign: string;
+  secondaryBannerTextPadding: number;
+  secondaryBannerTextMaxWidth: number;
 
   // dates
   startAt: DateModel;

@@ -56,45 +56,50 @@ const PromoDetails: React.FC<PromoDetailsInterface> = ({ promo, basePath }) => {
             mainBannerMobile: [promo.mainBannerMobile?.url],
             secondaryBanner: [promo.secondaryBanner?.url],
             content: JSON.parse(promo.content),
-            mainBannerTextColor: promo.mainBannerTextColor || '#000000',
-            mainBannerTextAlign: promo.mainBannerTextAlign || TEXT_HORIZONTAL_ALIGN_OPTIONS[0]._id,
-            mainBannerVerticalTextAlign:
-              promo.mainBannerVerticalTextAlign || TEXT_VERTICAL_FLEX_OPTIONS[0]._id,
-            mainBannerHorizontalTextAlign:
-              promo.mainBannerHorizontalTextAlign || TEXT_HORIZONTAL_FLEX_OPTIONS[0]._id,
-            secondaryBannerTextColor: promo.secondaryBannerTextColor || '#000000',
-            secondaryBannerTextAlign:
-              promo.secondaryBannerTextAlign || TEXT_HORIZONTAL_ALIGN_OPTIONS[0]._id,
-            secondaryBannerVerticalTextAlign:
-              promo.secondaryBannerVerticalTextAlign || TEXT_VERTICAL_FLEX_OPTIONS[0]._id,
-            secondaryBannerHorizontalTextAlign:
-              promo.secondaryBannerHorizontalTextAlign || TEXT_HORIZONTAL_FLEX_OPTIONS[0]._id,
           }}
           onSubmit={(values) => {
             showLoading();
             updatePromoMutation({
               _id: `${values._id}`,
-              endAt: values.endAt,
-              startAt: values.startAt,
-              cashbackPercent: values.cashbackPercent,
-              discountPercent: values.discountPercent,
-              content: JSON.stringify(values.content),
               nameI18n: values.nameI18n,
               descriptionI18n: values.descriptionI18n,
+
+              // discount
+              discountPercent: values.discountPercent,
+              addCategoryDiscount: values.addCategoryDiscount,
+              useBiggestDiscount: values.useBiggestDiscount,
+
+              // cashback
+              cashbackPercent: values.cashbackPercent,
+              addCategoryCashback: values.addCategoryCashback,
+              useBiggestCashback: values.useBiggestCashback,
+              allowPayFromCashback: values.allowPayFromCashback,
+
+              // ui configs
+              showAsPromoPage: values.showAsPromoPage,
+              content: JSON.stringify(values.content),
+
+              // main banner
               showAsMainBanner: values.showAsMainBanner,
               mainBannerTextColor: values.mainBannerTextColor,
-              mainBannerTextAlign: values.mainBannerTextAlign,
               mainBannerVerticalTextAlign: values.mainBannerVerticalTextAlign,
               mainBannerHorizontalTextAlign: values.mainBannerHorizontalTextAlign,
+              mainBannerTextAlign: values.mainBannerTextAlign,
               mainBannerTextPadding: noNaN(values.mainBannerTextPadding),
               mainBannerTextMaxWidth: noNaN(values.mainBannerTextMaxWidth),
+
+              //secondary banner
               showAsSecondaryBanner: values.showAsSecondaryBanner,
               secondaryBannerTextColor: values.secondaryBannerTextColor,
-              secondaryBannerTextAlign: values.secondaryBannerTextAlign,
               secondaryBannerVerticalTextAlign: values.secondaryBannerVerticalTextAlign,
               secondaryBannerHorizontalTextAlign: values.secondaryBannerHorizontalTextAlign,
+              secondaryBannerTextAlign: values.secondaryBannerTextAlign,
               secondaryBannerTextPadding: noNaN(values.secondaryBannerTextPadding),
               secondaryBannerTextMaxWidth: noNaN(values.secondaryBannerTextMaxWidth),
+
+              // dates
+              endAt: values.endAt,
+              startAt: values.startAt,
             }).catch(console.log);
           }}
         >
@@ -128,6 +133,18 @@ const PromoDetails: React.FC<PromoDetailsInterface> = ({ promo, basePath }) => {
                     isRequired
                   />
 
+                  <FormikCheckboxLine
+                    label={'Плюсовать скидку категории пользователя'}
+                    name={'addCategoryDiscount'}
+                  />
+
+                  <FormikCheckboxLine
+                    label={
+                      'Использвоать большее заначение скидки относительно акции и категории пользователя'
+                    }
+                    name={'useBiggestDiscount'}
+                  />
+
                   <FormikInput
                     label={'Кэшбэк %'}
                     name={'cashbackPercent'}
@@ -136,6 +153,23 @@ const PromoDetails: React.FC<PromoDetailsInterface> = ({ promo, basePath }) => {
                     min={0}
                     showInlineError
                     isRequired
+                  />
+
+                  <FormikCheckboxLine
+                    label={'Плюсовать кэшбэк категории пользователя'}
+                    name={'addCategoryCashback'}
+                  />
+
+                  <FormikCheckboxLine
+                    label={
+                      'Использвоать большее заначение кэшбэка относительно акции и категории пользователя'
+                    }
+                    name={'useBiggestCashback'}
+                  />
+
+                  <FormikCheckboxLine
+                    label={'Разрешается оплата кэшбэком'}
+                    name={'allowPayFromCashback'}
                   />
 
                   <FormikDatePicker

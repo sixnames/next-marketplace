@@ -1181,7 +1181,14 @@ export const getConsoleShopProducts = async ({
       // snippet title
       const snippetTitle = generateSnippetTitle({
         locale,
-        brand: productBrand,
+        brand: productBrand
+          ? {
+              ...productBrand,
+              collections: (productBrand.collections || []).filter(({ slug }) => {
+                return slug === shopProduct.brandCollectionSlug;
+              }),
+            }
+          : null,
         rubricName: getFieldStringLocale(rubric.nameI18n, locale),
         showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
         showCategoryInProductTitle: rubric.showCategoryInProductTitle,

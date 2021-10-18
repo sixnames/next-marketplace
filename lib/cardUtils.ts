@@ -57,7 +57,7 @@ import {
 } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
-import { getTreeFromList } from 'lib/optionsUtils';
+import { getTreeFromList, sortByName } from 'lib/optionsUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import {
   castProductAttributeForUi,
@@ -885,25 +885,27 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
         );
 
         if (visibleAttributes.length > 0) {
+          const groupAttributes = visibleAttributes.reduce(
+            (acc: ProductAttributeInterface[], productAttribute) => {
+              const castedAttribute = castProductAttributeForUi({
+                productAttribute,
+                locale,
+                gender: product.gender,
+              });
+              if (!castedAttribute) {
+                return acc;
+              }
+              return [...acc, castedAttribute];
+            },
+            [],
+          );
+
           return [
             ...acc,
             {
               ...attributesGroup,
               name: getFieldStringLocale(attributesGroup.nameI18n, locale),
-              attributes: visibleAttributes.reduce(
-                (acc: ProductAttributeInterface[], productAttribute) => {
-                  const castedAttribute = castProductAttributeForUi({
-                    productAttribute,
-                    locale,
-                    gender: product.gender,
-                  });
-                  if (!castedAttribute) {
-                    return acc;
-                  }
-                  return [...acc, castedAttribute];
-                },
-                [],
-              ),
+              attributes: sortByName(groupAttributes),
             },
           ];
         }
@@ -998,7 +1000,7 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
       isShopless,
       cardContent: castedCardContent,
       shopsCounterPostfix,
-      attributesGroups: cardAttributesGroups,
+      attributesGroups: sortByName(cardAttributesGroups),
       assets: cardAssets,
       showArticle,
       isSingleImage,

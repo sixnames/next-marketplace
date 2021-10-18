@@ -47,6 +47,7 @@ import {
   CATEGORY_OPTIONS_MODAL,
   USER_CATEGORY_MODAL,
   SET_USER_CATEGORY_MODAL,
+  CREATE_PROMO_MODAL,
 } from 'config/modalVariants';
 
 const AdultModal = dynamic(() => import('components/Modal/AdultModal'));
@@ -99,6 +100,7 @@ const MetricModal = dynamic(() => import('components/Modal/MetricModal'));
 const OrderStatusModal = dynamic(() => import('components/Modal/OrderStatusModal'));
 const UserCategoryModal = dynamic(() => import('components/Modal/UserCategoryModal'));
 const SetUserCategoryModal = dynamic(() => import('components/Modal/SetUserCategoryModal'));
+const CreatePromoModal = dynamic(() => import('components/Modal/CreatePromoModal'));
 
 interface ModalInterface {
   modalType: string;
@@ -207,6 +209,8 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
           {modalType === CATALOGUE_ADDITIONAL_OPTIONS_MODAL && (
             <CatalogueAdditionalOptionsModal {...modalProps} />
           )}
+
+          {modalType === CREATE_PROMO_MODAL && <CreatePromoModal {...modalProps} />}
         </React.Suspense>
       </div>
 

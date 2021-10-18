@@ -64,7 +64,7 @@ const CompanyAssetsConsumer: React.FC<CompanyAssetsConsumerInterface> = ({ curre
                       formData.append('assets', files[0]);
                       formData.append('companyId', `${currentCompany?._id}`);
 
-                      fetch('/api/update-company-logo', {
+                      fetch('/api/company/update-company-logo', {
                         method: 'POST',
                         body: formData,
                       })

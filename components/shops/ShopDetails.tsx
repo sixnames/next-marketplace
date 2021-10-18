@@ -117,7 +117,7 @@ const ShopDetails: React.FC<ShopDetailsInterface> = ({ shop, basePath, breadcrum
                       const formData = new FormData();
                       formData.append('shopId', `${shop._id}`);
 
-                      fetch('/api/update-shop-marker', {
+                      fetch('/api/shops/update-shop-marker', {
                         method: REQUEST_METHOD_DELETE,
                         body: formData,
                       })
@@ -144,7 +144,7 @@ const ShopDetails: React.FC<ShopDetailsInterface> = ({ shop, basePath, breadcrum
                         formData.append('assets', files[0]);
                         formData.append('shopId', `${shop._id}`);
 
-                        fetch('/api/update-shop-marker', {
+                        fetch('/api/shops/update-shop-marker', {
                           method: REQUEST_METHOD_POST,
                           body: formData,
                         })
@@ -179,7 +179,7 @@ const ShopDetails: React.FC<ShopDetailsInterface> = ({ shop, basePath, breadcrum
                       formData.append('shopId', `${shop._id}`);
                       formData.append('isDark', 'true');
 
-                      fetch('/api/update-shop-marker', {
+                      fetch('/api/shops/update-shop-marker', {
                         method: REQUEST_METHOD_DELETE,
                         body: formData,
                       })
@@ -207,7 +207,7 @@ const ShopDetails: React.FC<ShopDetailsInterface> = ({ shop, basePath, breadcrum
                         formData.append('shopId', `${shop._id}`);
                         formData.append('isDark', 'true');
 
-                        fetch('/api/update-shop-marker', {
+                        fetch('/api/shops/update-shop-marker', {
                           method: REQUEST_METHOD_POST,
                           body: formData,
                         })

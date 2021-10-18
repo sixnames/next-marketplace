@@ -866,6 +866,7 @@ export interface UserCategoryModel extends TimestampModel {
   cashbackPercent: number;
   payFromCashbackPercent: number;
   entryMinCharge?: number | null;
+  // addCashbackIfPayFromCashback: boolean;
 }
 
 export interface UserCashbackLogModel extends TimestampModel {
@@ -883,50 +884,66 @@ export interface UserCashbackLogModel extends TimestampModel {
 export interface UserPaybackLogModel extends UserCashbackLogModel {}
 
 // Promo
-export interface PromoModel {
+export interface PromoModel extends TimestampModel {
   _id: ObjectIdModel;
-  shopId: ObjectIdModel;
+  slug: string;
   companyId: ObjectIdModel;
-  discountPercent: number; // ???
-  cashbackPercent: number; // ???
-  nameI18n: any;
-  descriptionI18n?: any;
+  companySlug: string;
+  nameI18n: TranslationModel;
+  descriptionI18n: TranslationModel;
+
+  // discount
+  discountPercent: number;
+  addCategoryDiscount: boolean;
+  useBiggestDiscount: boolean;
+
+  // cashback
+  cashbackPercent: number;
+  addCategoryCashback: boolean;
+  useBiggestCashback: boolean;
+  allowPayFromCashback: boolean;
 
   // ui configs
-  showAsPromoPage?: boolean | null;
+  showAsPromoPage: boolean;
   assetKeys: string[];
-  content: string; // constructor
+  content: string;
+
+  // main banner
+  showAsMainBanner: boolean;
   mainBanner?: AssetModel | null;
   mainBannerMobile?: AssetModel | null;
-  showAsMainBanner?: boolean | null;
-  mainBannerTextColor?: string | null;
-  mainBannerVerticalTextAlign?: string | null;
-  mainBannerHorizontalTextAlign?: string | null;
-  mainBannerTextAlign?: string | null;
-  mainBannerTextPadding?: number | null;
-  mainBannerTextMaxWidth?: number | null;
+  mainBannerTextColor: string;
+  mainBannerVerticalTextAlign: string;
+  mainBannerHorizontalTextAlign: string;
+  mainBannerTextAlign: string;
+  mainBannerTextPadding: number;
+  mainBannerTextMaxWidth: number;
+
+  //secondary banner
+  showAsSecondaryBanner: boolean;
   secondaryBanner?: AssetModel | null;
-  showAsSecondaryBanner?: boolean | null;
-  secondaryBannerTextColor?: string | null;
-  secondaryBannerVerticalTextAlign?: string | null;
-  secondaryBannerHorizontalTextAlign?: string | null;
-  secondaryBannerTextAlign?: string | null;
-  secondaryBannerTextPadding?: number | null;
-  secondaryBannerTextMaxWidth?: number | null;
+  secondaryBannerTextColor: string;
+  secondaryBannerVerticalTextAlign: string;
+  secondaryBannerHorizontalTextAlign: string;
+  secondaryBannerTextAlign: string;
+  secondaryBannerTextPadding: number;
+  secondaryBannerTextMaxWidth: number;
 
   // dates
-  createdAt: Date;
-  updatedAt: Date;
-  startAt: Date;
-  endAt: Date;
+  startAt: DateModel;
+  endAt: DateModel;
 }
 
-export interface ProductPromoModel {
+export interface PromoProductModel {
   _id: ObjectIdModel;
   promoId: ObjectIdModel;
   shopId: ObjectIdModel;
   companyId: ObjectIdModel;
   shopProductId: ObjectIdModel;
+
+  // dates
+  startAt: DateModel;
+  endAt: DateModel;
 }
 
 export interface PromoCodeModel {
@@ -1053,6 +1070,7 @@ export type NavItemPayloadModel = PayloadType<NavItemModel>;
 export type RoleRulePayloadModel = PayloadType<RoleRuleModel>;
 export type PagesGroupPayloadModel = PayloadType<PagesGroupModel>;
 export type PagePayloadModel = PayloadType<PageModel>;
+export type PromoPayloadModel = PayloadType<PromoModel>;
 export type OrderPayloadModel = PayloadType<OrderModel>;
 export type UserCategoryPayloadModel = PayloadType<UserCategoryModel>;
 export type OrderProductPayloadModel = PayloadType<OrderProductModel>;

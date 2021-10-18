@@ -104,7 +104,7 @@ const ProductAssets: React.FC<ProductAssetsInterface> = ({ product, rubric }) =>
               });
               formData.append('productId', `${product._id}`);
 
-              fetch('/api/add-product-asset', {
+              fetch('/api/product/add-product-asset', {
                 method: 'POST',
                 body: formData,
               })

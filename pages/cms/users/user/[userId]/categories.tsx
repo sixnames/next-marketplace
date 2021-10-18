@@ -60,12 +60,12 @@ const UserCategoriesConsumer: React.FC<UserCategoriesConsumerInterface> = ({ use
       render: ({ cellData }) => <Percent value={cellData} />,
     },
     {
-      headTitle: 'Кешбек',
+      headTitle: 'Кэшбэк',
       accessor: 'cashbackPercent',
       render: ({ cellData }) => <Percent value={cellData} />,
     },
     {
-      headTitle: 'Оплата кешбеком',
+      headTitle: 'Оплата кэшбэком',
       accessor: 'payFromCashbackPercent',
       render: ({ cellData }) => <Percent value={cellData} />,
     },

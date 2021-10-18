@@ -47,12 +47,12 @@ const UserCategoriesConsumer: NextPage<UserCategoriesConsumerInterface> = ({
       render: ({ cellData }) => <Percent showNegativeValue value={cellData} />,
     },
     {
-      headTitle: 'Кешбек',
+      headTitle: 'Кэшбэк',
       accessor: 'cashbackPercent',
       render: ({ cellData }) => <Percent showNegativeValue value={cellData} />,
     },
     {
-      headTitle: 'Оплата кешбеком',
+      headTitle: 'Оплата кэшбэком',
       accessor: 'payFromCashbackPercent',
       render: ({ cellData }) => <Percent showNegativeValue value={cellData} />,
     },

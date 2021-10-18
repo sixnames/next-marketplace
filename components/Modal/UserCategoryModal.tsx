@@ -93,7 +93,7 @@ const UserCategoryModal: React.FC<UserCategoryModalInterface> = ({ userCategory,
               />
 
               <FormikInput
-                label={'Процент кешбека'}
+                label={'Процент кэшбэка'}
                 name={'cashbackPercent'}
                 testId={'cashbackPercent'}
                 type={'number'}
@@ -102,7 +102,7 @@ const UserCategoryModal: React.FC<UserCategoryModalInterface> = ({ userCategory,
               />
 
               <FormikInput
-                label={'Процент оплаты кешбеком'}
+                label={'Процент оплаты кэшбэком'}
                 name={'payFromCashbackPercent'}
                 testId={'payFromCashbackPercent'}
                 type={'number'}

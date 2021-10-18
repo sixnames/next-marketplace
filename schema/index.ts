@@ -25,8 +25,6 @@ export * from './OrderCustomer';
 export * from './OrderLog';
 export * from './OrderProduct';
 export * from './OrderStatus';
-export * from './Page';
-export * from './PagesGroup';
 export * from './Product';
 export * from './ProductCardContent';
 export * from './ProductAttribute';

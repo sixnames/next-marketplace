@@ -576,24 +576,6 @@ input CreateOrderStatusInput {
   nameI18n: JSONObject!
 }
 
-input CreatePageInput {
-  citySlug: String!
-  descriptionI18n: JSONObject
-  index: Int!
-  isTemplate: Boolean
-  nameI18n: JSONObject!
-  pagesGroupId: ObjectId!
-}
-
-input CreatePagesGroupInput {
-  companySlug: String!
-  index: Int!
-  isTemplate: Boolean
-  nameI18n: JSONObject!
-  showInFooter: Boolean!
-  showInHeader: Boolean!
-}
-
 input CreateProductConnectionInput {
   attributeId: ObjectId!
   productId: ObjectId!
@@ -695,16 +677,6 @@ input DeleteCollectionFromBrandInput {
 input DeleteOptionFromGroupInput {
   optionId: ObjectId!
   optionsGroupId: ObjectId!
-}
-
-input DeletePageInput {
-  _id: ObjectId!
-  isTemplate: Boolean
-}
-
-input DeletePagesGroupInput {
-  _id: ObjectId!
-  isTemplate: Boolean
 }
 
 input DeleteProductAssetInput {
@@ -1013,16 +985,6 @@ type Mutation {
   createOrderStatus(input: CreateOrderStatusInput!): OrderStatusPayload!
 
   """
-  Should crate page
-  """
-  createPage(input: CreatePageInput!): PagePayload!
-
-  """
-  Should create pages group
-  """
-  createPagesGroup(input: CreatePagesGroupInput!): PagesGroupPayload!
-
-  """
   Should create product
   """
   createProduct(input: CreateProductInput!): ProductPayload!
@@ -1148,16 +1110,6 @@ type Mutation {
   Should delete order status
   """
   deleteOrderStatus(_id: ObjectId!): OrderStatusPayload!
-
-  """
-  Should delete page
-  """
-  deletePage(input: DeletePageInput!): PagePayload!
-
-  """
-  Should delete pages group
-  """
-  deletePagesGroup(input: DeletePagesGroupInput!): PagesGroupPayload!
 
   """
   Should update product assets
@@ -1328,16 +1280,6 @@ type Mutation {
   Should update order status
   """
   updateOrderStatus(input: UpdateOrderStatusInput!): OrderStatusPayload!
-
-  """
-  Should update page
-  """
-  updatePage(input: UpdatePageInput!): PagePayload!
-
-  """
-  Should update pages group
-  """
-  updatePagesGroup(input: UpdatePagesGroupInput!): PagesGroupPayload!
 
   """
   Should update product
@@ -1615,50 +1557,6 @@ type OrderStatus implements Timestamp {
 type OrderStatusPayload implements Payload {
   message: String!
   payload: OrderStatus
-  success: Boolean!
-}
-
-type Page {
-  _id: ObjectId!
-  assetKeys: [String!]!
-  citySlug: String!
-  content: String!
-  descriptionI18n: JSONObject
-  index: Int!
-  name: String!
-  nameI18n: JSONObject!
-  pagesGroupId: ObjectId!
-  slug: String!
-  state: PageState!
-}
-
-type PagePayload implements Payload {
-  message: String!
-  payload: Page
-  success: Boolean!
-}
-
-"""
-Page state enum.
-"""
-enum PageState {
-  draft
-  published
-}
-
-type PagesGroup {
-  _id: ObjectId!
-  companySlug: String!
-  index: Int!
-  name: String!
-  nameI18n: JSONObject!
-  showInFooter: Boolean!
-  showInHeader: Boolean!
-}
-
-type PagesGroupPayload implements Payload {
-  message: String!
-  payload: PagesGroup
   success: Boolean!
 }
 
@@ -2610,41 +2508,6 @@ input UpdateOrderStatusInput {
   isPayed: Boolean!
   nameI18n: JSONObject!
   orderStatusId: ObjectId!
-}
-
-input UpdatePageInput {
-  _id: ObjectId!
-  citySlug: String!
-  content: String!
-  descriptionI18n: JSONObject
-  index: Int!
-  isTemplate: Boolean
-  mainBannerHorizontalTextAlign: String
-  mainBannerTextAlign: String
-  mainBannerTextColor: String
-  mainBannerTextMaxWidth: Float
-  mainBannerTextPadding: Float
-  mainBannerVerticalTextAlign: String
-  nameI18n: JSONObject!
-  pagesGroupId: ObjectId!
-  secondaryBannerHorizontalTextAlign: String
-  secondaryBannerTextAlign: String
-  secondaryBannerTextColor: String
-  secondaryBannerTextMaxWidth: Float
-  secondaryBannerTextPadding: Float
-  secondaryBannerVerticalTextAlign: String
-  showAsMainBanner: Boolean
-  showAsSecondaryBanner: Boolean
-  state: PageState!
-}
-
-input UpdatePagesGroupInput {
-  _id: ObjectId!
-  index: Int!
-  isTemplate: Boolean
-  nameI18n: JSONObject!
-  showInFooter: Boolean!
-  showInHeader: Boolean!
 }
 
 input UpdateProductAssetIndexInput {

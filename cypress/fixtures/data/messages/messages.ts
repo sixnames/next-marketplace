@@ -33,6 +33,7 @@ import { orderStatusesMessages } from '../../apiMessages/orderStatusesMessages';
 import { blogAttributeMessages } from '../../apiMessages/blogAttributeMessages';
 import { blogPostsMessages } from '../../apiMessages/blogPostsMessages';
 import { userCategoryMessages } from '../../apiMessages/userCategoryMessages';
+import { promoMessages } from '../../apiMessages/promoMessages';
 
 interface GenerateMessagesForGroupInterface {
   initialMessages: MessageBaseInterface[];
@@ -182,6 +183,10 @@ const config: GenerateMessagesForGroupInterface[] = [
   {
     initialMessages: userCategoryMessages,
     groupName: 'Категории пользователя',
+  },
+  {
+    initialMessages: promoMessages,
+    groupName: 'Акции',
   },
 ];
 

@@ -139,6 +139,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                     {/*availability*/}
                     <a
                       href={`#card-shops`}
+                      className='flex items-center'
                       onClick={(e) => {
                         e.preventDefault();
                         const target = e.target as Element;
@@ -156,10 +157,10 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                       {isShopless ? (
                         'Нет в наличии'
                       ) : (
-                        <span className='flex items-center'>
+                        <React.Fragment>
                           В наличии в {shopsCount} {shopsCounterPostfix}. Посмотреть
                           <Icon name={'eye'} className='w-5 h-5 ml-2' />
-                        </span>
+                        </React.Fragment>
                       )}
                     </a>
                   </div>

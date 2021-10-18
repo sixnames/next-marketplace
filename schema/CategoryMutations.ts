@@ -146,7 +146,7 @@ export const CategoryMutations = extendType({
           });
           await validationSchema.validate(args.input);
 
-          const { getApiMessage } = await getRequestParams(context);
+          const { getApiMessage, companySlug } = await getRequestParams(context);
           const { db } = await getDatabase();
           const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
@@ -222,6 +222,7 @@ export const CategoryMutations = extendType({
               category: createdCategory,
               textTopI18n: input.textTopI18n,
               textBottomI18n: input.textBottomI18n,
+              companySlug,
             });
           }
 
@@ -270,7 +271,7 @@ export const CategoryMutations = extendType({
           });
           await validationSchema.validate(args.input);
 
-          const { getApiMessage } = await getRequestParams(context);
+          const { getApiMessage, companySlug } = await getRequestParams(context);
           const { db } = await getDatabase();
           const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
@@ -302,6 +303,7 @@ export const CategoryMutations = extendType({
             category,
             textTopI18n: input.textTopI18n,
             textBottomI18n: input.textBottomI18n,
+            companySlug,
           });
 
           // Check if category already exist

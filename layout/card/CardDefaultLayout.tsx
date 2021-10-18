@@ -186,11 +186,17 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                   {/*availability*/}
                   <a
                     href={`#card-shops`}
+                    className='flex items-center'
                     onClick={(e) => {
                       e.preventDefault();
                       const target = e.target as Element;
                       const distId = target.getAttribute('href');
                       const distElement = document.querySelector(`${distId}`);
+                      console.log({
+                        target,
+                        distId,
+                        distElement,
+                      });
                       if (distElement) {
                         window.scrollTo({
                           top: noNaN(distElement.getBoundingClientRect().top),
@@ -203,10 +209,10 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                     {isShopless ? (
                       'Нет в наличии'
                     ) : (
-                      <span className='flex items-center'>
+                      <React.Fragment>
                         В наличии в {shopsCount} {shopsCounterPostfix}. Посмотреть
                         <Icon name={'eye'} className='w-5 h-5 ml-2' />
-                      </span>
+                      </React.Fragment>
                     )}
                   </a>
                 </div>

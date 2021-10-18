@@ -73,7 +73,7 @@ require('dotenv').config();
 export interface GetProdDd {
   uri: string;
   dbName: string;
-  fallbackImage: string;
+  fallbackImage?: string;
 }
 
 export async function getProdDb({ uri, dbName }: GetProdDd) {

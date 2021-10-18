@@ -604,7 +604,6 @@ export interface ProductModel extends ProductMainFieldsInterface, BaseModel, Tim
   originalName: string;
   nameI18n?: TranslationModel | null;
   descriptionI18n?: TranslationModel | null;
-  cardDescriptionI18n?: TranslationModel | null;
   mainImage: string;
   titleCategoriesSlugs: string[];
   selectedAttributesIds: ObjectId[];
@@ -625,6 +624,14 @@ export interface ProductAssetsModel {
   productSlug: string;
   productId: ObjectIdModel;
   assets: AssetModel[];
+}
+
+export interface ProductCardDescriptionModel {
+  _id: ObjectIdModel;
+  companySlug: string;
+  productSlug: string;
+  productId: ObjectIdModel;
+  textI18n: TranslationModel;
 }
 
 export interface ProductCardContentModel {

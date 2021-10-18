@@ -41,6 +41,7 @@ import {
   ProductAttributeModel,
   ProductCardBreadcrumbModel,
   ProductCardContentModel,
+  ProductCardDescriptionModel,
   ProductCardPricesModel,
   ProductConnectionItemModel,
   ProductConnectionModel,
@@ -255,6 +256,11 @@ export interface ProductAttributesGroupInterface extends AttributesGroupModel {
   selectAttributesAST?: ProductAttributeInterface[] | null;
 }
 
+export interface ProductCardDescriptionInterface extends ProductCardDescriptionModel {
+  text?: string | null;
+  seo?: ProductSeoModel | null;
+}
+
 export interface ProductInterface extends ProductModel {
   name?: string | null;
   description?: string | null;
@@ -290,9 +296,8 @@ export interface ProductInterface extends ProductModel {
   categories?: CategoryInterface[] | null;
   snippetTitle?: string | null;
   cardTitle?: string | null;
-  cardDescription?: string | null;
+  cardDescription?: ProductCardDescriptionInterface | null;
   shops?: ShopInterface[] | null;
-  seo?: ProductSeoModel | null;
 }
 
 export interface RoleRuleInterface extends RoleRuleModel {

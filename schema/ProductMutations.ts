@@ -169,7 +169,7 @@ export const ProductMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
-        const { getApiMessage } = await getRequestParams(context);
+        const { getApiMessage, companySlug } = await getRequestParams(context);
         const { db, client } = await getDatabase();
         const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
         const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
@@ -297,6 +297,7 @@ export const ProductMutations = extendType({
             await checkProductDescriptionUniqueness({
               product: createdProduct,
               cardDescriptionI18n: values.cardDescriptionI18n,
+              companySlug,
             });
 
             mutationPayload = {
@@ -330,7 +331,7 @@ export const ProductMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
-        const { getApiMessage } = await getRequestParams(context);
+        const { getApiMessage, companySlug } = await getRequestParams(context);
         const { db, client } = await getDatabase();
         const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
@@ -395,6 +396,7 @@ export const ProductMutations = extendType({
             await checkProductDescriptionUniqueness({
               product,
               cardDescriptionI18n: values.cardDescriptionI18n,
+              companySlug,
             });
 
             // Update product

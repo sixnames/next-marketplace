@@ -123,6 +123,7 @@ const PromoDetails: React.FC<PromoDetailsInterface> = ({ promo, basePath }) => {
                     isRequired
                   />
 
+                  {/*discount*/}
                   <FormikInput
                     label={'Скидка %'}
                     name={'discountPercent'}
@@ -145,6 +146,7 @@ const PromoDetails: React.FC<PromoDetailsInterface> = ({ promo, basePath }) => {
                     name={'useBiggestDiscount'}
                   />
 
+                  {/*cashback*/}
                   <FormikInput
                     label={'Кэшбэк %'}
                     name={'cashbackPercent'}
@@ -172,6 +174,7 @@ const PromoDetails: React.FC<PromoDetailsInterface> = ({ promo, basePath }) => {
                     name={'allowPayFromCashback'}
                   />
 
+                  {/*dates*/}
                   <FormikDatePicker
                     label={'Начало акции'}
                     name={'startAt'}
@@ -188,6 +191,7 @@ const PromoDetails: React.FC<PromoDetailsInterface> = ({ promo, basePath }) => {
                     isRequired
                   />
 
+                  {/*ui*/}
                   <div className={sectionClassName}>
                     <Title tag={'div'} size={'small'}>
                       Слайдер на главной странице

@@ -1,5 +1,6 @@
 import Breadcrumbs from 'components/Breadcrumbs';
 import Button from 'components/Button';
+import Icon from 'components/Icon';
 import Inner from 'components/Inner';
 import TagLink from 'components/Link/TagLink';
 import CardSimilarProducts from 'layout/card/CardSimilarProducts';
@@ -199,9 +200,14 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                       }
                     }}
                   >
-                    {isShopless
-                      ? 'Нет в наличии'
-                      : `В наличии в ${shopsCount} ${shopsCounterPostfix}`}
+                    {isShopless ? (
+                      'Нет в наличии'
+                    ) : (
+                      <span className='flex items-center'>
+                        В наличии в {shopsCount} {shopsCounterPostfix}. Посмотреть
+                        <Icon name={'eye'} className='w-5 h-5 ml-2' />
+                      </span>
+                    )}
                   </a>
                 </div>
 

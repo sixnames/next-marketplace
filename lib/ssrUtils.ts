@@ -191,6 +191,16 @@ export const getCatalogueNavRubrics = async ({
         $match: {
           ...companyRubricsMatch,
           citySlug: city,
+          $or: [
+            {
+              mainImage: {
+                $ne: process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK,
+              },
+            },
+            {
+              mainImage: null,
+            },
+          ],
         },
       },
       {

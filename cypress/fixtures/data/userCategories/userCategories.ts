@@ -9,6 +9,7 @@ const userCategories: UserCategoryModel[] = [
     payFromCashbackPercent: 3,
     entryMinCharge: 10000,
     companyId: getObjectId('company Company A'),
+    // addCashbackIfPayFromCashback: false,
     nameI18n: {
       ru: 'Company A category 1',
     },
@@ -25,6 +26,7 @@ const userCategories: UserCategoryModel[] = [
     payFromCashbackPercent: 50,
     entryMinCharge: 999,
     companyId: getObjectId('company Company B'),
+    // addCashbackIfPayFromCashback: false,
     nameI18n: {
       ru: 'Company B category 1',
     },
@@ -41,6 +43,7 @@ const userCategories: UserCategoryModel[] = [
     payFromCashbackPercent: 0,
     entryMinCharge: 999,
     companyId: getObjectId('company Company C'),
+    // addCashbackIfPayFromCashback: false,
     nameI18n: {
       ru: 'Company C category 1',
     },

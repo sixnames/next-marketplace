@@ -44,6 +44,7 @@ export const useUpdateMyPasswordMutation = () => {
   return useMutationHandler<UserPayloadModel, UpdateMyPasswordInputInterface>({
     path: `${basePath}/profile/password`,
     method: REQUEST_METHOD_PATCH,
+    reload: false,
   });
 };
 
@@ -51,6 +52,7 @@ export const useUpdateMyProfileMutation = () => {
   return useMutationHandler<UserPayloadModel, UpdateMyProfileInputInterface>({
     path: `${basePath}/profile`,
     method: REQUEST_METHOD_PATCH,
+    reload: false,
   });
 };
 

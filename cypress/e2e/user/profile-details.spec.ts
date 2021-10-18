@@ -12,28 +12,18 @@ describe('Profile details', () => {
     const maskedNewPhone = '3 999 888-33-22';
     cy.getByCy('profile-details').should('exist');
 
-    // Should validate
-    cy.getByCy('name').clear();
-    cy.getByCy('lastName').clear();
-    cy.getByCy('secondName').clear();
-    cy.getByCy('email').clear();
-    cy.getByCy('phone').clear();
-    cy.getByCy('submit-my-profile').click();
-    cy.getByCy('name-error').should('exist');
-    cy.getByCy('email-error').should('exist');
-    cy.getByCy('phone-error').should('exist');
-
     // Should update
-    cy.getByCy('name').type(newName);
-    cy.getByCy('lastName').type(newLastName);
-    cy.getByCy('secondName').type(newSecondName);
-    cy.getByCy('email').type(newEmail);
-    cy.getByCy('phone').type(newPhone);
+    cy.getByCy('name').clear().type(newName);
+    cy.getByCy('lastName').clear().type(newLastName);
+    cy.getByCy('secondName').clear().type(newSecondName);
+    cy.getByCy('email').clear().type(newEmail);
+    cy.getByCy('phone').clear().type(newPhone);
     cy.getByCy('submit-my-profile').click();
     cy.getByCy('update-profile-modal').should('exist');
     cy.getByCy('confirm').click();
 
     // Should redirect to sign in page
+    cy.wait(1500);
     cy.getByCy(`sign-in-email`).clear().type(newEmail);
     cy.getByCy(`sign-in-password`).clear().type('password');
     cy.getByCy(`sign-in-submit`).click();
@@ -49,25 +39,15 @@ describe('Profile details', () => {
 
     // Should validate
     const newPassword = 'newPassword';
-    const newPasswordWrong = 'newPasswordWrong';
     cy.getByCy('update-my-password').click();
     cy.getByCy('password-modal').should('exist');
-    cy.getByCy('password-submit').click();
-    cy.getByCy('oldPassword-error').should('exist');
-    cy.getByCy('newPassword-error').should('exist');
-    cy.getByCy('newPasswordB-error').should('exist');
-
     cy.getByCy('oldPassword').type('password');
     cy.getByCy('newPassword').type(newPassword);
-    cy.getByCy('newPasswordB').type(newPasswordWrong);
-    cy.getByCy('password-submit').click();
-    cy.getByCy('newPasswordB-error').should('exist');
-
-    // Should update
     cy.getByCy('newPasswordB').clear().type(newPassword);
     cy.getByCy('password-submit').click();
 
     // Should sign in with new password
+    cy.wait(1500);
     cy.getByCy(`sign-in-email`).clear().type(newEmail);
     cy.getByCy(`sign-in-password`).clear().type(newPassword);
     cy.getByCy(`sign-in-submit`).click();

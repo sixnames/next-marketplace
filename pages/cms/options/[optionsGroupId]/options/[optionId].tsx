@@ -106,7 +106,7 @@ const OptionPageConsumer: React.FC<OptionPageConsumerInterface> = ({ option }) =
               const formData = new FormData();
               formData.append('optionId', `${_id}`);
 
-              fetch('/api/update-option-image', {
+              fetch('/api/option/update-option-image', {
                 method: 'DELETE',
                 body: formData,
               })
@@ -134,7 +134,7 @@ const OptionPageConsumer: React.FC<OptionPageConsumerInterface> = ({ option }) =
                 formData.append('assets', files[0]);
                 formData.append('optionId', `${_id}`);
 
-                fetch('/api/update-option-image', {
+                fetch('/api/option/update-option-image', {
                   method: 'POST',
                   body: formData,
                 })
@@ -167,7 +167,7 @@ const OptionPageConsumer: React.FC<OptionPageConsumerInterface> = ({ option }) =
               const formData = new FormData();
               formData.append('optionId', `${_id}`);
 
-              fetch('/api/update-option-icon', {
+              fetch('/api/option/update-option-icon', {
                 method: 'DELETE',
                 body: formData,
               })
@@ -195,7 +195,7 @@ const OptionPageConsumer: React.FC<OptionPageConsumerInterface> = ({ option }) =
                 formData.append('assets', files[0]);
                 formData.append('optionId', `${_id}`);
 
-                fetch('/api/update-option-icon', {
+                fetch('/api/option/update-option-icon', {
                   method: 'POST',
                   body: formData,
                 })

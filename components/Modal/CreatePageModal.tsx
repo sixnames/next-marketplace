@@ -8,13 +8,14 @@ import ModalTitle from 'components/Modal/ModalTitle';
 import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
 import { DEFAULT_LOCALE } from 'config/common';
+import { useCreatePage } from 'hooks/mutations/usePageMutations';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { noNaN } from 'lib/numbers';
 import * as React from 'react';
 import { createPageSchema } from 'validation/pagesSchema';
 import { Form, Formik } from 'formik';
-import { useCreatePageMutation, useGetSessionCitiesQuery } from 'generated/apolloComponents';
+import { useGetSessionCitiesQuery } from 'generated/apolloComponents';
 
 export interface CreatePageModalInterface {
   pagesGroupId: string;
@@ -22,17 +23,14 @@ export interface CreatePageModalInterface {
 }
 
 const CreatePageModal: React.FC<CreatePageModalInterface> = ({ pagesGroupId, isTemplate }) => {
-  const { showLoading, hideModal, onCompleteCallback, onErrorCallback } = useMutationCallbacks({
+  const { showLoading, hideModal } = useMutationCallbacks({
     reload: true,
   });
   const validationSchema = useValidationSchema({
     schema: createPageSchema,
   });
 
-  const [createPageMutation] = useCreatePageMutation({
-    onCompleted: (data) => onCompleteCallback(data.createPage),
-    onError: onErrorCallback,
-  });
+  const [createPageMutation] = useCreatePage();
 
   const { data, loading, error } = useGetSessionCitiesQuery();
 
@@ -72,14 +70,10 @@ const CreatePageModal: React.FC<CreatePageModalInterface> = ({ pagesGroupId, isT
         onSubmit={(values) => {
           showLoading();
           createPageMutation({
-            variables: {
-              input: {
-                ...values,
-                citySlug: `${values.citySlug}`,
-                index: noNaN(values.index),
-                isTemplate,
-              },
-            },
+            ...values,
+            citySlug: `${values.citySlug}`,
+            index: noNaN(values.index),
+            isTemplate,
           }).catch(console.log);
         }}
       >

@@ -90,7 +90,10 @@ export async function createBlogPost(req: NextApiRequest, res: NextApiResponse) 
       updatedAt: new Date(),
       ...DEFAULT_COUNTERS_OBJECT,
     });
-    if (!createdBlogPostResult.acknowledged) {
+    const createdBlogPost = await blogPostsCollection.findOne({
+      _id: createdBlogPostResult.insertedId,
+    });
+    if (!createdBlogPostResult.acknowledged || !createdBlogPost) {
       payload = {
         success: false,
         message: await getApiMessage('blogPosts.create.error'),
@@ -103,6 +106,7 @@ export async function createBlogPost(req: NextApiRequest, res: NextApiResponse) 
     payload = {
       success: true,
       message: await getApiMessage('blogPosts.create.success'),
+      payload: createdBlogPost,
     };
 
     // response

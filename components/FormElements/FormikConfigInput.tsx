@@ -625,7 +625,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
                               formData.append('assets', file);
                               formData.append('companySlug', config.companySlug);
 
-                              const responseFetch = await fetch('/api/add-seo-text-asset', {
+                              const responseFetch = await fetch('/api/config/add-seo-text-asset', {
                                 method: 'POST',
                                 body: formData,
                               });

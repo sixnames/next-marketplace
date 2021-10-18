@@ -105,7 +105,7 @@ const BrandDetailsConsumer: React.FC<BrandDetailsConsumerInterface> = ({ brand }
               formData.append('assets', files[0]);
               formData.append('brandId', `${brand._id}`);
 
-              fetch('/api/add-brand-logo', {
+              fetch('/api/brand/add-brand-logo', {
                 method: 'POST',
                 body: formData,
               })

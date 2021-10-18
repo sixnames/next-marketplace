@@ -159,9 +159,7 @@ const ProfileDetailsRoute: React.FC = () => {
                       props: {
                         confirm: async (input) => {
                           showLoading();
-                          updateMyPasswordMutation({
-                            ...input,
-                          })
+                          updateMyPasswordMutation(input)
                             .then((payload) => {
                               if (payload && payload.success) {
                                 signOut({

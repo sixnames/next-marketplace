@@ -46,6 +46,7 @@ import {
   ProductConnectionModel,
   ProductModel,
   ProductSeoModel,
+  PromoModel,
   RoleModel,
   RoleRuleModel,
   RubricModel,
@@ -151,6 +152,11 @@ export interface CartInterface extends CartModel {
   formattedTotalPrice?: string;
   isWithShopless?: boolean;
   cartProducts: CartProductInterface[];
+}
+
+export interface PromoInterface extends PromoModel {
+  name?: string | null;
+  description?: string | null;
 }
 
 export interface CityInterface extends CityModel {

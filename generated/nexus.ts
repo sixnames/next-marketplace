@@ -343,24 +343,6 @@ export interface NexusGenInputs {
     isPayed: boolean; // Boolean!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
   };
-  CreatePageInput: {
-    // input type
-    citySlug: string; // String!
-    descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
-    index: number; // Int!
-    isTemplate?: boolean | null; // Boolean
-    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    pagesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
-  };
-  CreatePagesGroupInput: {
-    // input type
-    companySlug: string; // String!
-    index: number; // Int!
-    isTemplate?: boolean | null; // Boolean
-    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    showInFooter: boolean; // Boolean!
-    showInHeader: boolean; // Boolean!
-  };
   CreateProductConnectionInput: {
     // input type
     attributeId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -447,16 +429,6 @@ export interface NexusGenInputs {
     // input type
     optionId: NexusGenScalars['ObjectId']; // ObjectId!
     optionsGroupId: NexusGenScalars['ObjectId']; // ObjectId!
-  };
-  DeletePageInput: {
-    // input type
-    _id: NexusGenScalars['ObjectId']; // ObjectId!
-    isTemplate?: boolean | null; // Boolean
-  };
-  DeletePagesGroupInput: {
-    // input type
-    _id: NexusGenScalars['ObjectId']; // ObjectId!
-    isTemplate?: boolean | null; // Boolean
   };
   DeleteProductAssetInput: {
     // input type
@@ -747,41 +719,6 @@ export interface NexusGenInputs {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     orderStatusId: NexusGenScalars['ObjectId']; // ObjectId!
   };
-  UpdatePageInput: {
-    // input type
-    _id: NexusGenScalars['ObjectId']; // ObjectId!
-    citySlug: string; // String!
-    content: string; // String!
-    descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
-    index: number; // Int!
-    isTemplate?: boolean | null; // Boolean
-    mainBannerHorizontalTextAlign?: string | null; // String
-    mainBannerTextAlign?: string | null; // String
-    mainBannerTextColor?: string | null; // String
-    mainBannerTextMaxWidth?: number | null; // Float
-    mainBannerTextPadding?: number | null; // Float
-    mainBannerVerticalTextAlign?: string | null; // String
-    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    pagesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
-    secondaryBannerHorizontalTextAlign?: string | null; // String
-    secondaryBannerTextAlign?: string | null; // String
-    secondaryBannerTextColor?: string | null; // String
-    secondaryBannerTextMaxWidth?: number | null; // Float
-    secondaryBannerTextPadding?: number | null; // Float
-    secondaryBannerVerticalTextAlign?: string | null; // String
-    showAsMainBanner?: boolean | null; // Boolean
-    showAsSecondaryBanner?: boolean | null; // Boolean
-    state: NexusGenEnums['PageState']; // PageState!
-  };
-  UpdatePagesGroupInput: {
-    // input type
-    _id: NexusGenScalars['ObjectId']; // ObjectId!
-    index: number; // Int!
-    isTemplate?: boolean | null; // Boolean
-    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    showInFooter: boolean; // Boolean!
-    showInHeader: boolean; // Boolean!
-  };
   UpdateProductAssetIndexInput: {
     // input type
     assetNewIndex: number; // Int!
@@ -1001,7 +938,6 @@ export interface NexusGenEnums {
   Gender: dbModels.GenderModel;
   OptionsGroupVariant: dbModels.OptionsGroupVariantModel;
   OrderLogVariant: dbModels.OrderLogVariantModel;
-  PageState: dbModels.PageStateModel;
   SortDirection: dbModels.SortDirectionModel;
 }
 
@@ -1080,10 +1016,6 @@ export interface NexusGenObjects {
   OrderProduct: dbModels.OrderProductModel;
   OrderStatus: dbModels.OrderStatusModel;
   OrderStatusPayload: dbModels.OrderStatusPayloadModel;
-  Page: dbModels.PageModel;
-  PagePayload: dbModels.PagePayloadModel;
-  PagesGroup: dbModels.PagesGroupModel;
-  PagesGroupPayload: dbModels.PagesGroupPayloadModel;
   PointGeoJSON: dbModels.PointGeoJSONModel;
   Product: dbModels.ProductModel;
   ProductAssets: dbModels.ProductAssetsModel;
@@ -1548,8 +1480,6 @@ export interface NexusGenFieldTypes {
     createNavItem: NexusGenRootTypes['NavItemPayload']; // NavItemPayload!
     createOptionsGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
     createOrderStatus: NexusGenRootTypes['OrderStatusPayload']; // OrderStatusPayload!
-    createPage: NexusGenRootTypes['PagePayload']; // PagePayload!
-    createPagesGroup: NexusGenRootTypes['PagesGroupPayload']; // PagesGroupPayload!
     createProduct: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     createProductConnection: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     createProductWithSyncError: NexusGenRootTypes['ProductPayload']; // ProductPayload!
@@ -1575,8 +1505,6 @@ export interface NexusGenFieldTypes {
     deleteOptionFromGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
     deleteOptionsGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
     deleteOrderStatus: NexusGenRootTypes['OrderStatusPayload']; // OrderStatusPayload!
-    deletePage: NexusGenRootTypes['PagePayload']; // PagePayload!
-    deletePagesGroup: NexusGenRootTypes['PagesGroupPayload']; // PagesGroupPayload!
     deleteProductAsset: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     deleteProductFromCart: NexusGenRootTypes['CartPayload']; // CartPayload!
     deleteProductFromConnection: NexusGenRootTypes['ProductPayload']; // ProductPayload!
@@ -1611,8 +1539,6 @@ export interface NexusGenFieldTypes {
     updateOptionInGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
     updateOptionsGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
     updateOrderStatus: NexusGenRootTypes['OrderStatusPayload']; // OrderStatusPayload!
-    updatePage: NexusGenRootTypes['PagePayload']; // PagePayload!
-    updatePagesGroup: NexusGenRootTypes['PagesGroupPayload']; // PagesGroupPayload!
     updateProduct: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateProductAssetIndex: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateProductBrand: NexusGenRootTypes['ProductPayload']; // ProductPayload!
@@ -1757,42 +1683,6 @@ export interface NexusGenFieldTypes {
     // field return type
     message: string; // String!
     payload: NexusGenRootTypes['OrderStatus'] | null; // OrderStatus
-    success: boolean; // Boolean!
-  };
-  Page: {
-    // field return type
-    _id: NexusGenScalars['ObjectId']; // ObjectId!
-    assetKeys: string[]; // [String!]!
-    citySlug: string; // String!
-    content: string; // String!
-    descriptionI18n: NexusGenScalars['JSONObject'] | null; // JSONObject
-    index: number; // Int!
-    name: string; // String!
-    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    pagesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
-    slug: string; // String!
-    state: NexusGenEnums['PageState']; // PageState!
-  };
-  PagePayload: {
-    // field return type
-    message: string; // String!
-    payload: NexusGenRootTypes['Page'] | null; // Page
-    success: boolean; // Boolean!
-  };
-  PagesGroup: {
-    // field return type
-    _id: NexusGenScalars['ObjectId']; // ObjectId!
-    companySlug: string; // String!
-    index: number; // Int!
-    name: string; // String!
-    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    showInFooter: boolean; // Boolean!
-    showInHeader: boolean; // Boolean!
-  };
-  PagesGroupPayload: {
-    // field return type
-    message: string; // String!
-    payload: NexusGenRootTypes['PagesGroup'] | null; // PagesGroup
     success: boolean; // Boolean!
   };
   PointGeoJSON: {
@@ -2663,8 +2553,6 @@ export interface NexusGenFieldTypeNames {
     createNavItem: 'NavItemPayload';
     createOptionsGroup: 'OptionsGroupPayload';
     createOrderStatus: 'OrderStatusPayload';
-    createPage: 'PagePayload';
-    createPagesGroup: 'PagesGroupPayload';
     createProduct: 'ProductPayload';
     createProductConnection: 'ProductPayload';
     createProductWithSyncError: 'ProductPayload';
@@ -2690,8 +2578,6 @@ export interface NexusGenFieldTypeNames {
     deleteOptionFromGroup: 'OptionsGroupPayload';
     deleteOptionsGroup: 'OptionsGroupPayload';
     deleteOrderStatus: 'OrderStatusPayload';
-    deletePage: 'PagePayload';
-    deletePagesGroup: 'PagesGroupPayload';
     deleteProductAsset: 'ProductPayload';
     deleteProductFromCart: 'CartPayload';
     deleteProductFromConnection: 'ProductPayload';
@@ -2726,8 +2612,6 @@ export interface NexusGenFieldTypeNames {
     updateOptionInGroup: 'OptionsGroupPayload';
     updateOptionsGroup: 'OptionsGroupPayload';
     updateOrderStatus: 'OrderStatusPayload';
-    updatePage: 'PagePayload';
-    updatePagesGroup: 'PagesGroupPayload';
     updateProduct: 'ProductPayload';
     updateProductAssetIndex: 'ProductPayload';
     updateProductBrand: 'ProductPayload';
@@ -2872,42 +2756,6 @@ export interface NexusGenFieldTypeNames {
     // field return type name
     message: 'String';
     payload: 'OrderStatus';
-    success: 'Boolean';
-  };
-  Page: {
-    // field return type name
-    _id: 'ObjectId';
-    assetKeys: 'String';
-    citySlug: 'String';
-    content: 'String';
-    descriptionI18n: 'JSONObject';
-    index: 'Int';
-    name: 'String';
-    nameI18n: 'JSONObject';
-    pagesGroupId: 'ObjectId';
-    slug: 'String';
-    state: 'PageState';
-  };
-  PagePayload: {
-    // field return type name
-    message: 'String';
-    payload: 'Page';
-    success: 'Boolean';
-  };
-  PagesGroup: {
-    // field return type name
-    _id: 'ObjectId';
-    companySlug: 'String';
-    index: 'Int';
-    name: 'String';
-    nameI18n: 'JSONObject';
-    showInFooter: 'Boolean';
-    showInHeader: 'Boolean';
-  };
-  PagesGroupPayload: {
-    // field return type name
-    message: 'String';
-    payload: 'PagesGroup';
     success: 'Boolean';
   };
   PointGeoJSON: {
@@ -3510,14 +3358,6 @@ export interface NexusGenArgTypes {
       // args
       input: NexusGenInputs['CreateOrderStatusInput']; // CreateOrderStatusInput!
     };
-    createPage: {
-      // args
-      input: NexusGenInputs['CreatePageInput']; // CreatePageInput!
-    };
-    createPagesGroup: {
-      // args
-      input: NexusGenInputs['CreatePagesGroupInput']; // CreatePagesGroupInput!
-    };
     createProduct: {
       // args
       input: NexusGenInputs['CreateProductInput']; // CreateProductInput!
@@ -3617,14 +3457,6 @@ export interface NexusGenArgTypes {
     deleteOrderStatus: {
       // args
       _id: NexusGenScalars['ObjectId']; // ObjectId!
-    };
-    deletePage: {
-      // args
-      input: NexusGenInputs['DeletePageInput']; // DeletePageInput!
-    };
-    deletePagesGroup: {
-      // args
-      input: NexusGenInputs['DeletePagesGroupInput']; // DeletePagesGroupInput!
     };
     deleteProductAsset: {
       // args
@@ -3761,14 +3593,6 @@ export interface NexusGenArgTypes {
     updateOrderStatus: {
       // args
       input: NexusGenInputs['UpdateOrderStatusInput']; // UpdateOrderStatusInput!
-    };
-    updatePage: {
-      // args
-      input: NexusGenInputs['UpdatePageInput']; // UpdatePageInput!
-    };
-    updatePagesGroup: {
-      // args
-      input: NexusGenInputs['UpdatePagesGroupInput']; // UpdatePagesGroupInput!
     };
     updateProduct: {
       // args
@@ -4074,8 +3898,6 @@ export interface NexusGenAbstractTypeMembers {
     | 'NavItemPayload'
     | 'OptionsGroupPayload'
     | 'OrderStatusPayload'
-    | 'PagePayload'
-    | 'PagesGroupPayload'
     | 'ProductCardContentPayload'
     | 'ProductPayload'
     | 'RolePayload'
@@ -4134,8 +3956,6 @@ export interface NexusGenTypeInterfaces {
   OrderLog: 'Timestamp';
   OrderStatus: 'Timestamp';
   OrderStatusPayload: 'Payload';
-  PagePayload: 'Payload';
-  PagesGroupPayload: 'Payload';
   Product: 'Base' | 'Timestamp';
   ProductCardContentPayload: 'Payload';
   ProductPayload: 'Payload';

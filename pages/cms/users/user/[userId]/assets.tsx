@@ -65,7 +65,7 @@ const UserAssetsConsumer: React.FC<UserAssetsInterface> = ({ user }) => {
                       formData.append('avatar', files[0]);
                       formData.append('userId', `${user._id}`);
 
-                      fetch('/api/update-user-avatar', {
+                      fetch('/api/user/update-user-avatar', {
                         method: 'POST',
                         body: formData,
                       })

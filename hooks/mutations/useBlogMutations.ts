@@ -39,6 +39,7 @@ export const useCreateBlogPost = (redirectPath: string) => {
   return useMutationHandler<BlogPostPayloadModel, CreateBlogPostInputInterface>({
     path: `${basePath}/post`,
     method: REQUEST_METHOD_POST,
+    reload: false,
     onSuccess: (payload) => {
       if (payload.payload) {
         router.push(`${redirectPath}${ROUTE_BLOG}/post/${payload.payload._id}`).catch(console.log);

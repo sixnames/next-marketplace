@@ -7,78 +7,21 @@ import FormikImageUpload from 'components/FormElements/Upload/FormikImageUpload'
 import PageEditor from 'components/PageEditor';
 import Title from 'components/Title';
 import {
-  FLEX_CENTER,
-  FLEX_START,
-  FLEX_END,
-  TEXT_HORIZONTAL_LEFT,
-  TEXT_HORIZONTAL_CENTER,
-  TEXT_HORIZONTAL_RIGHT,
   REQUEST_METHOD_POST,
   PAGE_STATE_OPTIONS,
+  TEXT_HORIZONTAL_ALIGN_OPTIONS,
+  TEXT_VERTICAL_FLEX_OPTIONS,
+  TEXT_HORIZONTAL_FLEX_OPTIONS,
 } from 'config/common';
 import { CityInterface, PageInterface, PagesTemplateInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
-import { PageState, useUpdatePageMutation } from 'generated/apolloComponents';
+import { useUpdatePage } from 'hooks/mutations/usePageMutations';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { updatePageSchema } from 'validation/pagesSchema';
-
-const TEXT_HORIZONTAL_ALIGN_OPTIONS = [
-  {
-    _id: TEXT_HORIZONTAL_LEFT,
-    slug: TEXT_HORIZONTAL_LEFT,
-    name: 'Слева',
-  },
-  {
-    _id: TEXT_HORIZONTAL_CENTER,
-    slug: TEXT_HORIZONTAL_CENTER,
-    name: 'Центр',
-  },
-  {
-    _id: TEXT_HORIZONTAL_RIGHT,
-    slug: TEXT_HORIZONTAL_RIGHT,
-    name: 'Справа',
-  },
-];
-
-const TEXT_HORIZONTAL_FLEX_OPTIONS = [
-  {
-    _id: FLEX_START,
-    slug: FLEX_START,
-    name: 'Слева',
-  },
-  {
-    _id: FLEX_CENTER,
-    slug: FLEX_CENTER,
-    name: 'Центр',
-  },
-  {
-    _id: FLEX_END,
-    slug: FLEX_END,
-    name: 'Справа',
-  },
-];
-
-const TEXT_VERTICAL_FLEX_OPTIONS = [
-  {
-    _id: FLEX_START,
-    slug: FLEX_START,
-    name: 'Сверху',
-  },
-  {
-    _id: FLEX_CENTER,
-    slug: FLEX_CENTER,
-    name: 'Центр',
-  },
-  {
-    _id: FLEX_END,
-    slug: FLEX_END,
-    name: 'Снизу',
-  },
-];
 
 const sectionClassName = 'border-t border-border-300 pt-8 mt-12';
 
@@ -93,14 +36,10 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate 
   const validationSchema = useValidationSchema({
     schema: updatePageSchema,
   });
-  const { onCompleteCallback, onErrorCallback, showLoading, hideLoading, showErrorNotification } =
-    useMutationCallbacks({
-      reload: true,
-    });
-  const [updatePageMutation] = useUpdatePageMutation({
-    onError: onErrorCallback,
-    onCompleted: (data) => onCompleteCallback(data.updatePage),
+  const { showLoading, hideLoading, showErrorNotification } = useMutationCallbacks({
+    reload: true,
   });
+  const [updatePageMutation] = useUpdatePage();
 
   return (
     <div data-cy={'page-details'}>
@@ -130,33 +69,29 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate 
         onSubmit={(values) => {
           showLoading();
           updatePageMutation({
-            variables: {
-              input: {
-                _id: values._id,
-                content: JSON.stringify(values.content),
-                nameI18n: values.nameI18n,
-                descriptionI18n: values.descriptionI18n,
-                pagesGroupId: values.pagesGroupId,
-                state: values.state as unknown as PageState,
-                citySlug: `${values.citySlug}`,
-                index: noNaN(values.index),
-                showAsMainBanner: values.showAsMainBanner,
-                mainBannerTextColor: values.mainBannerTextColor,
-                mainBannerTextAlign: values.mainBannerTextAlign,
-                mainBannerVerticalTextAlign: values.mainBannerVerticalTextAlign,
-                mainBannerHorizontalTextAlign: values.mainBannerHorizontalTextAlign,
-                mainBannerTextPadding: noNaN(values.mainBannerTextPadding),
-                mainBannerTextMaxWidth: noNaN(values.mainBannerTextMaxWidth),
-                showAsSecondaryBanner: values.showAsSecondaryBanner,
-                secondaryBannerTextColor: values.secondaryBannerTextColor,
-                secondaryBannerTextAlign: values.secondaryBannerTextAlign,
-                secondaryBannerVerticalTextAlign: values.secondaryBannerVerticalTextAlign,
-                secondaryBannerHorizontalTextAlign: values.secondaryBannerHorizontalTextAlign,
-                secondaryBannerTextPadding: noNaN(values.secondaryBannerTextPadding),
-                secondaryBannerTextMaxWidth: noNaN(values.secondaryBannerTextMaxWidth),
-                isTemplate,
-              },
-            },
+            _id: `${values._id}`,
+            content: JSON.stringify(values.content),
+            nameI18n: values.nameI18n,
+            descriptionI18n: values.descriptionI18n,
+            pagesGroupId: `${values.pagesGroupId}`,
+            state: values.state,
+            citySlug: `${values.citySlug}`,
+            index: noNaN(values.index),
+            showAsMainBanner: values.showAsMainBanner,
+            mainBannerTextColor: values.mainBannerTextColor,
+            mainBannerTextAlign: values.mainBannerTextAlign,
+            mainBannerVerticalTextAlign: values.mainBannerVerticalTextAlign,
+            mainBannerHorizontalTextAlign: values.mainBannerHorizontalTextAlign,
+            mainBannerTextPadding: noNaN(values.mainBannerTextPadding),
+            mainBannerTextMaxWidth: noNaN(values.mainBannerTextMaxWidth),
+            showAsSecondaryBanner: values.showAsSecondaryBanner,
+            secondaryBannerTextColor: values.secondaryBannerTextColor,
+            secondaryBannerTextAlign: values.secondaryBannerTextAlign,
+            secondaryBannerVerticalTextAlign: values.secondaryBannerVerticalTextAlign,
+            secondaryBannerHorizontalTextAlign: values.secondaryBannerHorizontalTextAlign,
+            secondaryBannerTextPadding: noNaN(values.secondaryBannerTextPadding),
+            secondaryBannerTextMaxWidth: noNaN(values.secondaryBannerTextMaxWidth),
+            isTemplate,
           }).catch(console.log);
         }}
       >
@@ -229,7 +164,7 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate 
                           formData.append('isTemplate', `${isTemplate}`);
                         }
 
-                        fetch('/api/update-page-main-banner', {
+                        fetch('/api/page/update-page-main-banner', {
                           method: REQUEST_METHOD_POST,
                           body: formData,
                         })
@@ -269,7 +204,7 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate 
                           formData.append('isTemplate', `${isTemplate}`);
                         }
 
-                        fetch('/api/update-page-main-banner', {
+                        fetch('/api/page/update-page-main-banner', {
                           method: REQUEST_METHOD_POST,
                           body: formData,
                         })
@@ -355,7 +290,7 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate 
                           formData.append('isTemplate', `${isTemplate}`);
                         }
 
-                        fetch('/api/update-page-secondary-banner', {
+                        fetch('/api/page/update-page-secondary-banner', {
                           method: REQUEST_METHOD_POST,
                           body: formData,
                         })
@@ -438,7 +373,7 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate 
                           formData.append('isTemplate', `${isTemplate}`);
                         }
 
-                        fetch('/api/update-page-screenshot', {
+                        fetch('/api/page/update-page-screenshot', {
                           method: REQUEST_METHOD_POST,
                           body: formData,
                         })
@@ -480,7 +415,7 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate 
                           formData.append('isTemplate', `${isTemplate}`);
                         }
 
-                        const responseFetch = await fetch('/api/add-page-asset', {
+                        const responseFetch = await fetch('/api/page/add-page-asset', {
                           method: REQUEST_METHOD_POST,
                           body: formData,
                         });

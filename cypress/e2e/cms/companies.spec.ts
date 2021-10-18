@@ -214,7 +214,6 @@ describe('Companies list', () => {
 
     // add assets
     cy.getByCy('assets').attachFile('test-shop-asset-0.png', { subjectType: 'drag-n-drop' });
-    cy.getByCy(`submit-shop-assets`).click();
   });
 
   it('Should CRUD shop products', () => {

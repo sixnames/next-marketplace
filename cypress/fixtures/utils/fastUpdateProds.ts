@@ -1,23 +1,24 @@
-import { UserModel } from '../../../db/dbModels';
-import { COL_USERS } from '../../../db/collectionNames';
+import { COL_SHOP_PRODUCTS } from '../../../db/collectionNames';
 import { dbsConfig, getProdDb } from './getProdDb';
 require('dotenv').config();
 
 async function updateProds() {
   for await (const dbConfig of dbsConfig) {
     const { db, client } = await getProdDb(dbConfig);
-    const usersCollection = await db.collection<UserModel>(COL_USERS);
+    const shopProductsCollection = await db.collection<any>(COL_SHOP_PRODUCTS);
 
     console.log(' ');
     console.log('>>>>>>>>>>>>>>>>>>>>>>>>');
     console.log(' ');
     console.log(`Updating ${dbConfig.dbName} db`);
 
-    await usersCollection.updateMany(
-      {},
+    await shopProductsCollection.updateMany(
+      {
+        mainImage: null,
+      },
       {
         $set: {
-          categoryIds: [],
+          mainImage: dbConfig.fallbackImage,
         },
       },
     );

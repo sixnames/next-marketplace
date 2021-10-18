@@ -870,6 +870,19 @@ export const getCatalogueData = async ({
       return fallbackPayload;
     }
 
+    const imageStage = {
+      $or: [
+        {
+          mainImage: {
+            $ne: process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK,
+          },
+        },
+        {
+          mainImage: null,
+        },
+      ],
+    };
+
     // initial match
     const companyMatch = companyId ? { companyId: new ObjectId(companyId) } : {};
     const productsInitialMatch = {
@@ -881,6 +894,7 @@ export const getCatalogueData = async ({
       ...brandCollectionStage,
       ...optionsStage,
       ...pricesStage,
+      ...imageStage,
     };
 
     // aggregate catalogue initial data
@@ -908,6 +922,7 @@ export const getCatalogueData = async ({
             rubricId: { $first: '$rubricId' },
             rubricSlug: { $first: `$rubricSlug` },
             brandSlug: { $first: '$brandSlug' },
+            mainImage: { $first: '$mainImage' },
             brandCollectionSlug: { $first: '$brandCollectionSlug' },
             views: { $max: `$views.${companySlug}.${city}` },
             priorities: { $max: `$priorities.${companySlug}.${city}` },

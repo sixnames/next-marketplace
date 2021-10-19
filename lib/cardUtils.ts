@@ -979,6 +979,7 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
     if (showAdminUiInCatalogue) {
       productSeo = await productSeoCollection.findOne({
         productId: restProduct._id,
+        companySlug,
       });
     }
 

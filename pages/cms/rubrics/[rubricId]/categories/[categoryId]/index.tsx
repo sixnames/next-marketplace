@@ -11,7 +11,13 @@ import {
   GENDER_ENUMS,
   ROUTE_CMS,
 } from 'config/common';
-import { COL_CATEGORIES, COL_ICONS, COL_RUBRIC_SEO, COL_RUBRICS } from 'db/collectionNames';
+import {
+  COL_CATEGORIES,
+  COL_CATEGORY_DESCRIPTIONS,
+  COL_ICONS,
+  COL_RUBRIC_SEO,
+  COL_RUBRICS,
+} from 'db/collectionNames';
 import { OptionVariantsModel, RubricSeoModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { CategoryInterface } from 'db/uiInterfaces';
@@ -79,8 +85,8 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
     categoryId: _id,
     rubricId,
     nameI18n,
-    textBottomI18n: seoDescriptionBottom,
-    textTopI18n: seoDescriptionTop,
+    textBottomI18n: seoDescriptionBottom?.textI18n,
+    textTopI18n: seoDescriptionTop?.textI18n,
     gender: gender ? (`${gender}` as Gender) : null,
     replaceParentNameInCatalogueTitle,
     companySlug,
@@ -304,6 +310,8 @@ export const getServerSideProps = async (
     };
   }
 
+  const companySlug = DEFAULT_COMPANY_SLUG;
+
   const categoryAggregation = await categoriesCollection
     .aggregate<CategoryInterface>([
       {
@@ -348,6 +356,65 @@ export const getServerSideProps = async (
           ],
         },
       },
+
+      // get top seo text
+      {
+        $lookup: {
+          from: COL_CATEGORY_DESCRIPTIONS,
+          as: 'seoDescriptionTop',
+          let: {
+            categoryId: '$_id',
+          },
+          pipeline: [
+            {
+              $match: {
+                position: CATALOGUE_SEO_TEXT_POSITION_TOP,
+                companySlug,
+                $expr: {
+                  $eq: ['$$categoryId', '$categoryId'],
+                },
+              },
+            },
+          ],
+        },
+      },
+      {
+        $addFields: {
+          seoDescriptionTop: {
+            $arrayElemAt: ['$seoDescriptionTop', 0],
+          },
+        },
+      },
+
+      // get bottom seo text
+      {
+        $lookup: {
+          from: COL_CATEGORY_DESCRIPTIONS,
+          as: 'seoDescriptionBottom',
+          let: {
+            categoryId: '$_id',
+          },
+          pipeline: [
+            {
+              $match: {
+                position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+                companySlug,
+                $expr: {
+                  $eq: ['$$categoryId', '$categoryId'],
+                },
+              },
+            },
+          ],
+        },
+      },
+      {
+        $addFields: {
+          seoDescriptionBottom: {
+            $arrayElemAt: ['$seoDescriptionBottom', 0],
+          },
+        },
+      },
+
       {
         $addFields: {
           icon: {
@@ -368,7 +435,7 @@ export const getServerSideProps = async (
   }
 
   const { sessionLocale } = props;
-  const category = {
+  const category: CategoryInterface = {
     ...initialCategory,
     name: getFieldStringLocale(initialCategory.nameI18n, sessionLocale),
     rubric: initialCategory.rubric

@@ -10,7 +10,7 @@ import {
   DEFAULT_COMPANY_SLUG,
   ROUTE_CMS,
 } from 'config/common';
-import { COL_RUBRIC_SEO, COL_RUBRICS } from 'db/collectionNames';
+import { COL_CATEGORY_DESCRIPTIONS, COL_RUBRIC_SEO, COL_RUBRICS } from 'db/collectionNames';
 import { RubricModel, RubricSeoModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { RubricInterface } from 'db/uiInterfaces';
@@ -195,6 +195,8 @@ export const getServerSideProps = async (
     };
   }
 
+  const companySlug = DEFAULT_COMPANY_SLUG;
+
   const initialRubrics = await rubricsCollection
     .aggregate([
       {
@@ -202,6 +204,65 @@ export const getServerSideProps = async (
           _id: new ObjectId(`${query.rubricId}`),
         },
       },
+
+      // get top seo text
+      {
+        $lookup: {
+          from: COL_CATEGORY_DESCRIPTIONS,
+          as: 'seoDescriptionTop',
+          let: {
+            rubricId: '$_id',
+          },
+          pipeline: [
+            {
+              $match: {
+                position: CATALOGUE_SEO_TEXT_POSITION_TOP,
+                companySlug,
+                $expr: {
+                  $eq: ['$$rubricId', '$rubricId'],
+                },
+              },
+            },
+          ],
+        },
+      },
+      {
+        $addFields: {
+          seoDescriptionTop: {
+            $arrayElemAt: ['$seoDescriptionTop', 0],
+          },
+        },
+      },
+
+      // get bottom seo text
+      {
+        $lookup: {
+          from: COL_CATEGORY_DESCRIPTIONS,
+          as: 'seoDescriptionBottom',
+          let: {
+            rubricId: '$_id',
+          },
+          pipeline: [
+            {
+              $match: {
+                position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+                companySlug,
+                $expr: {
+                  $eq: ['$$rubricId', '$rubricId'],
+                },
+              },
+            },
+          ],
+        },
+      },
+      {
+        $addFields: {
+          seoDescriptionBottom: {
+            $arrayElemAt: ['$seoDescriptionBottom', 0],
+          },
+        },
+      },
+
       {
         $project: {
           attributes: false,
@@ -222,12 +283,14 @@ export const getServerSideProps = async (
     rubricId: initialRubric._id,
     position: CATALOGUE_SEO_TEXT_POSITION_TOP,
     categoryId: null,
+    companySlug,
   });
 
   const seoBottom = await rubricSeoCollection.findOne({
     rubricId: initialRubric._id,
     position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
     categoryId: null,
+    companySlug,
   });
 
   const { sessionLocale } = props;

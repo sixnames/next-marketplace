@@ -1236,7 +1236,7 @@ export const getCatalogueData = async ({
                       },
                     },
 
-                    // get rubric top seo text
+                    // get rubric bottom seo text
                     {
                       $lookup: {
                         from: COL_RUBRIC_DESCRIPTIONS,

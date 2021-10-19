@@ -646,7 +646,6 @@ export interface InitialCardDataInterface {
   cardLayout: string;
   rubric: RubricInterface;
   cardPrices: ProductCardPricesModel;
-  productSeo?: ProductSeoModel | null;
 }
 
 export interface SsrConfigsInterface {

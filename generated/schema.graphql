@@ -507,6 +507,7 @@ input CreateBrandInput {
 }
 
 input CreateCategoryInput {
+  companySlug: String!
   gender: Gender
   nameI18n: JSONObject!
   parentId: ObjectId
@@ -585,6 +586,7 @@ input CreateProductInput {
   active: Boolean!
   barcode: [String!]!
   cardDescriptionI18n: JSONObject
+  companySlug: String!
   descriptionI18n: JSONObject
   gender: Gender!
   nameI18n: JSONObject
@@ -610,6 +612,7 @@ input CreateRoleInput {
 input CreateRubricInput {
   capitalise: Boolean
   catalogueTitle: RubricCatalogueTitleInput!
+  companySlug: String!
   descriptionI18n: JSONObject!
   nameI18n: JSONObject!
   shortDescriptionI18n: JSONObject!
@@ -2391,6 +2394,7 @@ input UpdateBrandInput {
 
 input UpdateCategoryInput {
   categoryId: ObjectId!
+  companySlug: String!
   gender: Gender
   nameI18n: JSONObject!
   replaceParentNameInCatalogueTitle: Boolean
@@ -2554,6 +2558,7 @@ input UpdateProductInput {
   active: Boolean!
   barcode: [String!]
   cardDescriptionI18n: JSONObject
+  companySlug: String!
   descriptionI18n: JSONObject
   gender: Gender!
   nameI18n: JSONObject
@@ -2636,6 +2641,7 @@ input UpdateRubricInput {
   active: Boolean!
   capitalise: Boolean
   catalogueTitle: RubricCatalogueTitleInput!
+  companySlug: String!
   descriptionI18n: JSONObject!
   nameI18n: JSONObject!
   rubricId: ObjectId!

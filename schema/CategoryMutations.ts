@@ -50,6 +50,7 @@ export const CategoryPayload = objectType({
 export const CreateCategoryInput = inputObjectType({
   name: 'CreateCategoryInput',
   definition(t) {
+    t.nonNull.string('companySlug');
     t.nonNull.json('nameI18n');
     t.json('textTopI18n');
     t.json('textBottomI18n');
@@ -66,6 +67,7 @@ export const CreateCategoryInput = inputObjectType({
 export const UpdateCategoryInput = inputObjectType({
   name: 'UpdateCategoryInput',
   definition(t) {
+    t.nonNull.string('companySlug');
     t.nonNull.objectId('categoryId');
     t.nonNull.json('nameI18n');
     t.json('textTopI18n');
@@ -146,7 +148,7 @@ export const CategoryMutations = extendType({
           });
           await validationSchema.validate(args.input);
 
-          const { getApiMessage, companySlug } = await getRequestParams(context);
+          const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
           const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
@@ -196,10 +198,11 @@ export const CategoryMutations = extendType({
           }
 
           // Create category
+          const { companySlug, ...values } = input;
           const slug = await getNextItemId(COL_CATEGORIES);
           const createdCategoryId = new ObjectId();
           const createdCategoryResult = await categoriesCollection.insertOne({
-            ...input,
+            ...values,
             parentTreeIds: [...parentTreeIds, createdCategoryId],
             slug: `${CATEGORY_SLUG_PREFIX}${slug}`,
             attributesGroupIds: [],
@@ -271,12 +274,12 @@ export const CategoryMutations = extendType({
           });
           await validationSchema.validate(args.input);
 
-          const { getApiMessage, companySlug } = await getRequestParams(context);
+          const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
           const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const { input } = args;
-          const { categoryId, rubricId, ...values } = input;
+          const { categoryId, rubricId, companySlug, ...values } = input;
 
           // Check rubric availability
           const rubric = await rubricsCollection.findOne({

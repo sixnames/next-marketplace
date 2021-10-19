@@ -68,6 +68,7 @@ export const RubricCatalogueTitleInput = inputObjectType({
 export const CreateRubricInput = inputObjectType({
   name: 'CreateRubricInput',
   definition(t) {
+    t.nonNull.string('companySlug');
     t.nonNull.json('nameI18n');
     t.boolean('capitalise');
     t.boolean('showRubricNameInProductTitle');
@@ -88,6 +89,7 @@ export const CreateRubricInput = inputObjectType({
 export const UpdateRubricInput = inputObjectType({
   name: 'UpdateRubricInput',
   definition(t) {
+    t.nonNull.string('companySlug');
     t.nonNull.objectId('rubricId');
     t.boolean('capitalise');
     t.boolean('showRubricNameInProductTitle');
@@ -178,11 +180,12 @@ export const RubricMutations = extendType({
           const { db } = await getDatabase();
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const { input } = args;
+          const { companySlug, ...values } = input;
 
           // Check if rubric already exist
           const exist = await findDocumentByI18nField<RubricModel>({
             collectionName: COL_RUBRICS,
-            fieldArg: input.nameI18n,
+            fieldArg: values.nameI18n,
             fieldName: 'nameI18n',
           });
           if (exist) {
@@ -193,9 +196,9 @@ export const RubricMutations = extendType({
           }
 
           // Create rubric
-          const slug = generateDefaultLangSlug(input.nameI18n);
+          const slug = generateDefaultLangSlug(values.nameI18n);
           const createdRubricResult = await rubricsCollection.insertOne({
-            ...input,
+            ...values,
             slug,
             active: true,
             attributesGroupIds: [],
@@ -217,6 +220,7 @@ export const RubricMutations = extendType({
             rubric: createdRubric,
             textTopI18n: input.textTopI18n,
             textBottomI18n: input.textBottomI18n,
+            companySlug,
           });
 
           return {
@@ -269,7 +273,7 @@ export const RubricMutations = extendType({
           const { db } = await getDatabase();
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const { input } = args;
-          const { rubricId, ...values } = input;
+          const { rubricId, companySlug, ...values } = input;
 
           // Check rubric availability
           const rubric = await rubricsCollection.findOne({ _id: rubricId });
@@ -285,6 +289,7 @@ export const RubricMutations = extendType({
             rubric,
             textTopI18n: input.textTopI18n,
             textBottomI18n: input.textBottomI18n,
+            companySlug,
           });
 
           // Check if rubric already exist

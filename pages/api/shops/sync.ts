@@ -136,31 +136,35 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
       const { available, price, barcode } = bodyItem;
       for await (const barcodeItem of barcode) {
-        const oldShopProduct = await shopProductsCollection.findOne({
-          shopId: shop._id,
-          barcode: barcodeItem,
-        });
-        if (oldShopProduct) {
-          // update existing shop product
-          const { discountedPercent, oldPrice, oldPriceUpdater } = getUpdatedShopProductPrices({
-            shopProduct: oldShopProduct,
-            newPrice: noNaN(bodyItem.price),
-          });
-          await shopProductsCollection.findOneAndUpdate(
-            {
-              _id: oldShopProduct._id,
-            },
-            {
-              $set: {
-                available: noNaN(bodyItem.available),
-                price: noNaN(bodyItem.price),
-                oldPrice,
-                discountedPercent,
-                updatedAt: new Date(),
+        const oldShopProducts = await shopProductsCollection
+          .find({
+            shopId: shop._id,
+            barcode: barcodeItem,
+          })
+          .toArray();
+        if (oldShopProducts.length > 0) {
+          for await (const oldShopProduct of oldShopProducts) {
+            // update existing shop product
+            const { discountedPercent, oldPrice, oldPriceUpdater } = getUpdatedShopProductPrices({
+              shopProduct: oldShopProduct,
+              newPrice: noNaN(bodyItem.price),
+            });
+            await shopProductsCollection.findOneAndUpdate(
+              {
+                _id: oldShopProduct._id,
               },
-              ...oldPriceUpdater,
-            },
-          );
+              {
+                $set: {
+                  available: noNaN(bodyItem.available),
+                  price: noNaN(bodyItem.price),
+                  oldPrice,
+                  discountedPercent,
+                  updatedAt: new Date(),
+                },
+                ...oldPriceUpdater,
+              },
+            );
+          }
         } else {
           // create new shop product
           const itemId = await getNextItemId(COL_SHOP_PRODUCTS);

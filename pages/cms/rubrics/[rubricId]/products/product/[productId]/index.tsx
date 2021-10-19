@@ -51,8 +51,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, rubric }) 
     mainImage,
     barcode,
     gender,
-    cardDescriptionI18n,
-    seo,
+    cardDescription,
   } = product;
 
   const initialValues: ProductFormValuesInterface = {
@@ -63,7 +62,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, rubric }) 
     active,
     barcode: barcode || [],
     gender: gender as any,
-    cardDescriptionI18n,
+    cardDescriptionI18n: cardDescription?.textI18n || {},
   };
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -121,7 +120,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, rubric }) 
 
                 {/*<FormikCheckboxLine label={'Активен'} name={'active'} testId={'active'} />*/}
 
-                <ProductMainFields seo={seo} />
+                <ProductMainFields seo={cardDescription?.seo} />
 
                 <FixedButtons>
                   <Button testId={'submit-product'} type={'submit'}>

@@ -550,6 +550,7 @@ export type CreateBrandInput = {
 };
 
 export type CreateCategoryInput = {
+  companySlug: Scalars['String'];
   nameI18n: Scalars['JSONObject'];
   textTopI18n?: Maybe<Scalars['JSONObject']>;
   textBottomI18n?: Maybe<Scalars['JSONObject']>;
@@ -625,6 +626,7 @@ export type CreateProductConnectionInput = {
 };
 
 export type CreateProductInput = {
+  companySlug: Scalars['String'];
   active: Scalars['Boolean'];
   barcode: Array<Scalars['String']>;
   originalName: Scalars['String'];
@@ -651,6 +653,7 @@ export type CreateRoleInput = {
 };
 
 export type CreateRubricInput = {
+  companySlug: Scalars['String'];
   nameI18n: Scalars['JSONObject'];
   capitalise?: Maybe<Scalars['Boolean']>;
   showRubricNameInProductTitle?: Maybe<Scalars['Boolean']>;
@@ -2673,6 +2676,7 @@ export type UpdateBrandInput = {
 };
 
 export type UpdateCategoryInput = {
+  companySlug: Scalars['String'];
   categoryId: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
   textTopI18n?: Maybe<Scalars['JSONObject']>;
@@ -2834,6 +2838,7 @@ export type UpdateProductInCartInput = {
 };
 
 export type UpdateProductInput = {
+  companySlug: Scalars['String'];
   productId: Scalars['ObjectId'];
   barcode?: Maybe<Array<Scalars['String']>>;
   active: Scalars['Boolean'];
@@ -2916,6 +2921,7 @@ export type UpdateRoleRuleInput = {
 };
 
 export type UpdateRubricInput = {
+  companySlug: Scalars['String'];
   rubricId: Scalars['ObjectId'];
   capitalise?: Maybe<Scalars['Boolean']>;
   showRubricNameInProductTitle?: Maybe<Scalars['Boolean']>;

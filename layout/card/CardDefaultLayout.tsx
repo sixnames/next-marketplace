@@ -75,7 +75,6 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
     assets,
     showCardImagesSlider,
     cardTitle,
-    productSeo,
   } = useCardData({
     cardData,
     companySlug,
@@ -296,7 +295,6 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
 
               {/*text features*/}
               <CardTextFeatures
-                productSeo={productSeo}
                 cardDescription={cardDescription}
                 textFeatures={textFeatures}
                 className='md:col-span-5'

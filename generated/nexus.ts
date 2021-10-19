@@ -275,6 +275,7 @@ export interface NexusGenInputs {
   };
   CreateCategoryInput: {
     // input type
+    companySlug: string; // String!
     gender?: NexusGenEnums['Gender'] | null; // Gender
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     parentId?: NexusGenScalars['ObjectId'] | null; // ObjectId
@@ -353,6 +354,7 @@ export interface NexusGenInputs {
     active: boolean; // Boolean!
     barcode: string[]; // [String!]!
     cardDescriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
+    companySlug: string; // String!
     descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     gender: NexusGenEnums['Gender']; // Gender!
     nameI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
@@ -378,6 +380,7 @@ export interface NexusGenInputs {
     // input type
     capitalise?: boolean | null; // Boolean
     catalogueTitle: NexusGenInputs['RubricCatalogueTitleInput']; // RubricCatalogueTitleInput!
+    companySlug: string; // String!
     descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     shortDescriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
@@ -601,6 +604,7 @@ export interface NexusGenInputs {
   UpdateCategoryInput: {
     // input type
     categoryId: NexusGenScalars['ObjectId']; // ObjectId!
+    companySlug: string; // String!
     gender?: NexusGenEnums['Gender'] | null; // Gender
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     replaceParentNameInCatalogueTitle?: boolean | null; // Boolean
@@ -764,6 +768,7 @@ export interface NexusGenInputs {
     active: boolean; // Boolean!
     barcode?: string[] | null; // [String!]
     cardDescriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
+    companySlug: string; // String!
     descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     gender: NexusGenEnums['Gender']; // Gender!
     nameI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
@@ -846,6 +851,7 @@ export interface NexusGenInputs {
     active: boolean; // Boolean!
     capitalise?: boolean | null; // Boolean
     catalogueTitle: NexusGenInputs['RubricCatalogueTitleInput']; // RubricCatalogueTitleInput!
+    companySlug: string; // String!
     descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!

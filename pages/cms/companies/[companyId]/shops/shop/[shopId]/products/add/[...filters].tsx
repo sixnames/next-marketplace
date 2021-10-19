@@ -1,4 +1,4 @@
-import { ROUTE_CMS, DEFAULT_PAGE_FILTER } from 'config/common';
+import { ROUTE_CMS, DEFAULT_PAGE_FILTER, DEFAULT_COMPANY_SLUG } from 'config/common';
 import { ProductInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsLayout from 'layout/cms/CmsLayout';
@@ -144,6 +144,7 @@ export const getServerSideProps = async (
     basePath,
     query,
     currency,
+    companySlug: DEFAULT_COMPANY_SLUG,
   });
   if (!payload) {
     return {

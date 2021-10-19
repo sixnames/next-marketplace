@@ -7,6 +7,7 @@ import Spinner from 'components/Spinner';
 import {
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   CATALOGUE_SEO_TEXT_POSITION_TOP,
+  DEFAULT_COMPANY_SLUG,
   ROUTE_CMS,
 } from 'config/common';
 import { COL_RUBRIC_SEO, COL_RUBRICS } from 'db/collectionNames';
@@ -36,9 +37,15 @@ interface RubricDetailsInterface {
   rubric: RubricInterface;
   seoTop?: RubricSeoModel | null;
   seoBottom?: RubricSeoModel | null;
+  companySlug: string;
 }
 
-const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, seoTop, seoBottom }) => {
+const RubricDetails: React.FC<RubricDetailsInterface> = ({
+  rubric,
+  companySlug,
+  seoTop,
+  seoBottom,
+}) => {
   const validationSchema = useValidationSchema({
     schema: updateRubricSchema,
   });
@@ -87,6 +94,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, seoTop, seoBo
     shortDescriptionI18n,
     textBottomI18n,
     textTopI18n,
+    companySlug,
     capitalise: capitalise || false,
     showRubricNameInProductTitle: showRubricNameInProductTitle || false,
     showCategoryInProductTitle: showCategoryInProductTitle || false,
@@ -153,10 +161,21 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, seoTop, seoBo
 
 interface RubricPageInterface extends PagePropsInterface, RubricDetailsInterface {}
 
-const RubricPage: NextPage<RubricPageInterface> = ({ pageUrls, rubric, seoBottom, seoTop }) => {
+const RubricPage: NextPage<RubricPageInterface> = ({
+  pageUrls,
+  companySlug,
+  rubric,
+  seoBottom,
+  seoTop,
+}) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <RubricDetails rubric={rubric} seoBottom={seoBottom} seoTop={seoTop} />
+      <RubricDetails
+        rubric={rubric}
+        seoBottom={seoBottom}
+        seoTop={seoTop}
+        companySlug={companySlug}
+      />
     </CmsLayout>
   );
 };
@@ -223,6 +242,7 @@ export const getServerSideProps = async (
       rubric: castDbData(rawRubric),
       seoTop: castDbData(seoTop),
       seoBottom: castDbData(seoBottom),
+      companySlug: DEFAULT_COMPANY_SLUG,
     },
   };
 };

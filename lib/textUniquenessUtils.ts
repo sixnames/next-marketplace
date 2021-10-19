@@ -115,6 +115,8 @@ export async function checkProductDescriptionUniqueness({
 interface CheckRubricSeoTextUniquenessInterface {
   textTopI18n?: TranslationModel | null;
   textBottomI18n?: TranslationModel | null;
+  oldTextTopI18n?: TranslationModel | null;
+  oldTextBottomI18n?: TranslationModel | null;
   rubric: RubricModel;
   companySlug: string;
 }
@@ -123,13 +125,15 @@ export async function checkRubricSeoTextUniqueness({
   rubric,
   textTopI18n,
   textBottomI18n,
+  oldTextTopI18n,
+  oldTextBottomI18n,
   companySlug,
 }: CheckRubricSeoTextUniquenessInterface) {
   try {
     await checkTextUniqueness({
       companySlug,
       textI18n: textTopI18n,
-      oldTextI18n: rubric.textTopI18n,
+      oldTextI18n: oldTextTopI18n,
       callback: (locale) => {
         return `/api/rubric/uniqueness/${rubric._id.toHexString()}/${locale}/${CATALOGUE_SEO_TEXT_POSITION_TOP}`;
       },
@@ -137,7 +141,7 @@ export async function checkRubricSeoTextUniqueness({
     await checkTextUniqueness({
       companySlug,
       textI18n: textBottomI18n,
-      oldTextI18n: rubric.textBottomI18n,
+      oldTextI18n: oldTextBottomI18n,
       callback: (locale) => {
         return `/api/rubric/uniqueness/${rubric._id.toHexString()}/${locale}/${CATALOGUE_SEO_TEXT_POSITION_BOTTOM}`;
       },

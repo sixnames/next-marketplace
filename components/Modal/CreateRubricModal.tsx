@@ -18,9 +18,10 @@ import { createRubricSchema } from 'validation/rubricSchema';
 
 export interface CreateRubricModalInterface {
   confirm: (values: CreateRubricInput) => void;
+  companySlug: string;
 }
 
-const CreateRubricModal: React.FC<CreateRubricModalInterface> = ({ confirm }) => {
+const CreateRubricModal: React.FC<CreateRubricModalInterface> = ({ confirm, companySlug }) => {
   const { hideModal } = useAppContext();
   const validationSchema = useValidationSchema({
     schema: createRubricSchema,
@@ -44,6 +45,7 @@ const CreateRubricModal: React.FC<CreateRubricModalInterface> = ({ confirm }) =>
       <Formik<CreateRubricInput>
         validationSchema={validationSchema}
         initialValues={{
+          companySlug,
           nameI18n: {},
           descriptionI18n: {},
           shortDescriptionI18n: {},

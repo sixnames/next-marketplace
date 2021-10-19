@@ -4,7 +4,7 @@ import FixedButtons from 'components/FixedButtons';
 import Inner from 'components/Inner';
 import { CreateCategoryModalInterface } from 'components/Modal/CreateCategoryModal';
 import RequestError from 'components/RequestError';
-import { DEFAULT_LOCALE, ROUTE_CMS, SORT_ASC } from 'config/common';
+import { DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE, ROUTE_CMS, SORT_ASC } from 'config/common';
 import { CONFIRM_MODAL, CREATE_CATEGORY_MODAL } from 'config/modalVariants';
 import { COL_CATEGORIES, COL_ICONS, COL_RUBRICS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
@@ -25,9 +25,13 @@ import * as React from 'react';
 
 interface RubricCategoriesConsumerInterface {
   rubric: RubricInterface;
+  companySlug: string;
 }
 
-const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({ rubric }) => {
+const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
+  rubric,
+  companySlug,
+}) => {
   const { showModal, onCompleteCallback, onErrorCallback, showLoading, router } =
     useMutationCallbacks({
       withModal: true,
@@ -79,6 +83,7 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
                   showModal<CreateCategoryModalInterface>({
                     variant: CREATE_CATEGORY_MODAL,
                     props: {
+                      companySlug,
                       parentId: `${category._id}`,
                       rubricId: `${rubric._id}`,
                     },
@@ -169,6 +174,7 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
                 showModal<CreateCategoryModalInterface>({
                   variant: CREATE_CATEGORY_MODAL,
                   props: {
+                    companySlug,
                     rubricId: `${rubric._id}`,
                   },
                 });
@@ -280,6 +286,7 @@ export const getServerSideProps = async (
   const sortedCategories = sortByName(categories);
 
   const payload: RubricCategoriesConsumerInterface = {
+    companySlug: DEFAULT_COMPANY_SLUG,
     rubric: {
       ...rubric,
       name: getFieldStringLocale(rubric?.nameI18n, locale),

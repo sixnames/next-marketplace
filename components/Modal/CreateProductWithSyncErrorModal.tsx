@@ -27,10 +27,12 @@ interface InitialValuesInterface extends ProductFormValuesInterface {
 
 export interface CreateProductWithSyncErrorModalInterface {
   notSyncedProduct: NotSyncedProductInterface;
+  companySlug: string;
 }
 
 const CreateProductWithSyncErrorModal: React.FC<CreateProductWithSyncErrorModalInterface> = ({
   notSyncedProduct,
+  companySlug,
 }) => {
   const router = useRouter();
   const { data, error, loading } = useGetAllRubricsQuery({
@@ -98,6 +100,7 @@ const CreateProductWithSyncErrorModal: React.FC<CreateProductWithSyncErrorModalI
   const { getAllRubrics } = data;
 
   const initialValues: InitialValuesInterface = {
+    companySlug,
     active: true,
     nameI18n: {
       [DEFAULT_LOCALE]: notSyncedProduct.name,

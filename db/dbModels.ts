@@ -743,8 +743,15 @@ export interface RubricModel extends CountersModel {
   showBrandInFilter?: boolean | null;
   icon?: string;
   image?: string;
-  textTopI18n?: TranslationModel | null;
-  textBottomI18n?: TranslationModel | null;
+}
+
+export interface RubricDescriptionModel {
+  _id: ObjectIdModel;
+  companySlug: string;
+  rubricSlug: string;
+  position: 'top' | 'bottom';
+  rubricId: ObjectIdModel;
+  textI18n: TranslationModel;
 }
 
 export interface CategoryModel extends CountersModel {
@@ -762,6 +769,23 @@ export interface CategoryModel extends CountersModel {
   replaceParentNameInCatalogueTitle?: boolean | null;
   textTopI18n?: TranslationModel | null;
   textBottomI18n?: TranslationModel | null;
+}
+
+export interface CategoryDescriptionModel {
+  _id: ObjectIdModel;
+  companySlug: string;
+  rubricSlug: string;
+  position: 'top' | 'bottom';
+  rubricId: ObjectIdModel;
+  textI18n: TranslationModel;
+}
+
+export interface RubricSeoModel {
+  _id: ObjectIdModel;
+  rubricId: ObjectIdModel;
+  position: 'top' | 'bottom';
+  categoryId?: ObjectIdModel | null;
+  locales: TextUniquenessApiParsedResponseModel[];
 }
 
 export interface ShopProductModel
@@ -1177,13 +1201,5 @@ export interface TextUniquenessApiParsedResponseModel {
 export interface ProductSeoModel {
   _id: ObjectIdModel;
   productId: ObjectIdModel;
-  locales: TextUniquenessApiParsedResponseModel[];
-}
-
-export interface RubricSeoModel {
-  _id: ObjectIdModel;
-  rubricId: ObjectIdModel;
-  position: 'top' | 'bottom';
-  categoryId?: ObjectIdModel | null;
   locales: TextUniquenessApiParsedResponseModel[];
 }

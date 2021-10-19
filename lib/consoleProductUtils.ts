@@ -67,6 +67,7 @@ export interface GetConsoleRubricProductsInputInterface {
   query: ParsedUrlQuery;
   page?: number;
   excludedProductsIds?: ObjectIdModel[] | null;
+  companySlug: string;
 }
 
 export const getConsoleRubricProducts = async ({
@@ -75,6 +76,7 @@ export const getConsoleRubricProducts = async ({
   query,
   currency,
   excludedProductsIds,
+  companySlug,
   ...props
 }: GetConsoleRubricProductsInputInterface): Promise<ConsoleRubricProductsInterface> => {
   let fallbackPayload: ConsoleRubricProductsInterface = {
@@ -86,6 +88,7 @@ export const getConsoleRubricProducts = async ({
     docs: [],
     attributes: [],
     selectedAttributes: [],
+    companySlug,
   };
 
   try {
@@ -599,6 +602,7 @@ export const getConsoleRubricProducts = async ({
 
     const payload: ConsoleRubricProductsInterface = {
       clearSlug: basePath,
+      companySlug,
       basePath,
       page,
       totalDocs,
@@ -1239,6 +1243,7 @@ export async function getAddShopProductSsrData({
   basePath,
   query,
   currency,
+  companySlug,
 }: GetAddShopProductSsrDataInterface): Promise<ShopAddProductsListRouteReduced | null> {
   const { db } = await getDatabase();
   const shopsCollection = db.collection<ShopInterface>(COL_SHOPS);
@@ -1307,6 +1312,7 @@ export async function getAddShopProductSsrData({
       locale,
       basePath,
       currency,
+      companySlug,
     });
 
   if (!rubric) {
@@ -1326,6 +1332,7 @@ export async function getAddShopProductSsrData({
     selectedAttributes,
     page,
     docs,
+    companySlug,
   };
 
   return payload;

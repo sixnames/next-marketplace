@@ -18,9 +18,14 @@ import ProductMainFields, {
 export interface CreateNewProductModalInterface {
   rubricId: string;
   product?: ProductInterface | null;
+  companySlug: string;
 }
 
-const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({ rubricId, product }) => {
+const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({
+  rubricId,
+  companySlug,
+  product,
+}) => {
   const router = useRouter();
   const validationSchema = useValidationSchema({
     schema: createProductSchema,
@@ -80,6 +85,7 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({ rubri
     descriptionI18n: product?.descriptionI18n || {},
     barcode: [],
     gender: GENDER_IT as any,
+    companySlug,
   };
 
   return (

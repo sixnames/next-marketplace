@@ -7,6 +7,7 @@ import Inner from 'components/Inner';
 import {
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   CATALOGUE_SEO_TEXT_POSITION_TOP,
+  DEFAULT_COMPANY_SLUG,
   GENDER_ENUMS,
   ROUTE_CMS,
 } from 'config/common';
@@ -33,9 +34,15 @@ interface CategoryDetailsInterface {
   category: CategoryInterface;
   seoTop?: RubricSeoModel | null;
   seoBottom?: RubricSeoModel | null;
+  companySlug: string;
 }
 
-const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category, seoTop, seoBottom }) => {
+const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
+  category,
+  companySlug,
+  seoTop,
+  seoBottom,
+}) => {
   const validationSchema = useValidationSchema({
     schema: updateCategorySchema,
   });
@@ -76,6 +83,7 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category, seoTop,
     textTopI18n,
     gender: gender ? (`${gender}` as Gender) : null,
     replaceParentNameInCatalogueTitle,
+    companySlug,
     variants:
       variantKeys.length > 0
         ? variants
@@ -267,10 +275,16 @@ const CategoryPage: NextPage<CategoryPageInterface> = ({
   category,
   seoBottom,
   seoTop,
+  companySlug,
 }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <CategoryDetails category={category} seoTop={seoTop} seoBottom={seoBottom} />
+      <CategoryDetails
+        category={category}
+        seoTop={seoTop}
+        companySlug={companySlug}
+        seoBottom={seoBottom}
+      />
     </CmsLayout>
   );
 };
@@ -381,6 +395,7 @@ export const getServerSideProps = async (
       category: castDbData(category),
       seoTop: castDbData(seoTop),
       seoBottom: castDbData(seoBottom),
+      companySlug: DEFAULT_COMPANY_SLUG,
     },
   };
 };

@@ -155,6 +155,8 @@ export async function checkRubricSeoTextUniqueness({
 interface CheckCategorySeoTextUniquenessInterface {
   textTopI18n?: TranslationModel | null;
   textBottomI18n?: TranslationModel | null;
+  oldTextTopI18n?: TranslationModel | null;
+  oldTextBottomI18n?: TranslationModel | null;
   category: CategoryModel;
   companySlug: string;
 }
@@ -163,13 +165,15 @@ export async function checkCategorySeoTextUniqueness({
   category,
   textTopI18n,
   textBottomI18n,
+  oldTextTopI18n,
+  oldTextBottomI18n,
   companySlug,
 }: CheckCategorySeoTextUniquenessInterface) {
   try {
     await checkTextUniqueness({
       companySlug,
       textI18n: textTopI18n,
-      oldTextI18n: category.textTopI18n,
+      oldTextI18n: oldTextTopI18n,
       callback: (locale) => {
         return `/api/category/uniqueness/${category._id.toHexString()}/${locale}/${CATALOGUE_SEO_TEXT_POSITION_TOP}`;
       },
@@ -177,7 +181,7 @@ export async function checkCategorySeoTextUniqueness({
     await checkTextUniqueness({
       companySlug,
       textI18n: textBottomI18n,
-      oldTextI18n: category.textBottomI18n,
+      oldTextI18n: oldTextBottomI18n,
       callback: (locale) => {
         return `/api/category/uniqueness/${category._id.toHexString()}/${locale}/${CATALOGUE_SEO_TEXT_POSITION_BOTTOM}`;
       },

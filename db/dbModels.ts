@@ -767,16 +767,14 @@ export interface CategoryModel extends CountersModel {
   image?: string | null;
   variants: OptionVariantsModel;
   replaceParentNameInCatalogueTitle?: boolean | null;
-  textTopI18n?: TranslationModel | null;
-  textBottomI18n?: TranslationModel | null;
 }
 
 export interface CategoryDescriptionModel {
   _id: ObjectIdModel;
   companySlug: string;
-  rubricSlug: string;
+  categoryId: ObjectIdModel;
+  categorySlug: string;
   position: 'top' | 'bottom';
-  rubricId: ObjectIdModel;
   textI18n: TranslationModel;
 }
 

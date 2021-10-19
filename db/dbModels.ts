@@ -634,6 +634,13 @@ export interface ProductCardDescriptionModel {
   textI18n: TranslationModel;
 }
 
+export interface ProductSeoModel {
+  _id: ObjectIdModel;
+  productId: ObjectIdModel;
+  companySlug: string;
+  locales: TextUniquenessApiParsedResponseModel[];
+}
+
 export interface ProductCardContentModel {
   _id: ObjectIdModel;
   companySlug: string;
@@ -780,6 +787,7 @@ export interface CategoryDescriptionModel {
 
 export interface RubricSeoModel {
   _id: ObjectIdModel;
+  companySlug: string;
   rubricId: ObjectIdModel;
   position: 'top' | 'bottom';
   categoryId?: ObjectIdModel | null;
@@ -1194,10 +1202,4 @@ export interface TextUniquenessApiParsedResponseModel {
   jsonResult?: TextUniquenessApiJsonResultModel | null;
   spellCheck?: TextUniquenessApiSpellCheckModel[] | null;
   seoCheck?: TextUniquenessApiSeoCheckModel | null;
-}
-
-export interface ProductSeoModel {
-  _id: ObjectIdModel;
-  productId: ObjectIdModel;
-  locales: TextUniquenessApiParsedResponseModel[];
 }

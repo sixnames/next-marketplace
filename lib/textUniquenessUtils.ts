@@ -2,13 +2,15 @@ import {
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   CATALOGUE_SEO_TEXT_POSITION_TOP,
   DEFAULT_CITY,
+  DEFAULT_COMPANY_SLUG,
   DEFAULT_LOCALE,
   LOCALES,
   REQUEST_METHOD_POST,
 } from 'config/common';
-import { COL_CONFIGS } from 'db/collectionNames';
+import { COL_COMPANIES, COL_CONFIGS } from 'db/collectionNames';
 import {
   CategoryModel,
+  CompanyModel,
   ConfigModel,
   ProductModel,
   RubricModel,
@@ -37,6 +39,7 @@ export async function checkTextUniqueness({
     const { db } = await getDatabase();
     const configSlug = 'textUniquenessApiKey';
     const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+    const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
     const initialConfigs = await configsCollection
       .find({
         slug: configSlug,
@@ -53,7 +56,15 @@ export async function checkTextUniqueness({
       slug: configSlug,
     });
     const uniqueTextApiUrl = process.env.UNIQUE_TEXT_API_URL;
-    const domain = process.env.DEFAULT_DOMAIN;
+
+    // get excluded domain
+    let domain = process.env.DEFAULT_DOMAIN;
+    if (companySlug !== DEFAULT_COMPANY_SLUG) {
+      const company = await companiesCollection.findOne({
+        slug: companySlug,
+      });
+      domain = company?.domain || process.env.DEFAULT_DOMAIN;
+    }
 
     if (uniqueTextApiUrl && uniqueTextApiKey && domain) {
       for await (const locale of LOCALES) {
@@ -103,7 +114,7 @@ export async function checkProductDescriptionUniqueness({
       textI18n: cardDescriptionI18n,
       oldTextI18n: oldCardDescriptionI18n,
       callback: (locale) => {
-        return `/api/product/uniqueness/${product._id.toHexString()}/${locale}`;
+        return `/api/product/uniqueness/${product._id.toHexString()}/${locale}/${companySlug}`;
       },
     });
   } catch (e) {
@@ -135,7 +146,7 @@ export async function checkRubricSeoTextUniqueness({
       textI18n: textTopI18n,
       oldTextI18n: oldTextTopI18n,
       callback: (locale) => {
-        return `/api/rubric/uniqueness/${rubric._id.toHexString()}/${locale}/${CATALOGUE_SEO_TEXT_POSITION_TOP}`;
+        return `/api/rubric/uniqueness/${rubric._id.toHexString()}/${locale}/${CATALOGUE_SEO_TEXT_POSITION_TOP}/${companySlug}`;
       },
     });
     await checkTextUniqueness({
@@ -143,7 +154,7 @@ export async function checkRubricSeoTextUniqueness({
       textI18n: textBottomI18n,
       oldTextI18n: oldTextBottomI18n,
       callback: (locale) => {
-        return `/api/rubric/uniqueness/${rubric._id.toHexString()}/${locale}/${CATALOGUE_SEO_TEXT_POSITION_BOTTOM}`;
+        return `/api/rubric/uniqueness/${rubric._id.toHexString()}/${locale}/${CATALOGUE_SEO_TEXT_POSITION_BOTTOM}/${companySlug}`;
       },
     });
   } catch (e) {
@@ -175,7 +186,7 @@ export async function checkCategorySeoTextUniqueness({
       textI18n: textTopI18n,
       oldTextI18n: oldTextTopI18n,
       callback: (locale) => {
-        return `/api/category/uniqueness/${category._id.toHexString()}/${locale}/${CATALOGUE_SEO_TEXT_POSITION_TOP}`;
+        return `/api/category/uniqueness/${category._id.toHexString()}/${locale}/${CATALOGUE_SEO_TEXT_POSITION_TOP}/${companySlug}`;
       },
     });
     await checkTextUniqueness({
@@ -183,7 +194,7 @@ export async function checkCategorySeoTextUniqueness({
       textI18n: textBottomI18n,
       oldTextI18n: oldTextBottomI18n,
       callback: (locale) => {
-        return `/api/category/uniqueness/${category._id.toHexString()}/${locale}/${CATALOGUE_SEO_TEXT_POSITION_BOTTOM}`;
+        return `/api/category/uniqueness/${category._id.toHexString()}/${locale}/${CATALOGUE_SEO_TEXT_POSITION_BOTTOM}/${companySlug}`;
       },
     });
   } catch (e) {

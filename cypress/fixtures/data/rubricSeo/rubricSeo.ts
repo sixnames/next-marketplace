@@ -1,6 +1,7 @@
 import {
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   CATALOGUE_SEO_TEXT_POSITION_TOP,
+  DEFAULT_COMPANY_SLUG,
 } from '../../../../config/common';
 import { RubricSeoModel } from '../../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
@@ -10,6 +11,7 @@ const productSeo: RubricSeoModel[] = [
     _id: getObjectId('rubric Виски seo top'),
     rubricId: getObjectId('rubric Виски'),
     position: CATALOGUE_SEO_TEXT_POSITION_TOP,
+    companySlug: DEFAULT_COMPANY_SLUG,
     locales: [
       {
         locale: 'ru',
@@ -49,6 +51,7 @@ const productSeo: RubricSeoModel[] = [
     _id: getObjectId('rubric Виски seo bottom'),
     rubricId: getObjectId('rubric Виски'),
     position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+    companySlug: DEFAULT_COMPANY_SLUG,
     locales: [
       {
         locale: 'ru',
@@ -89,6 +92,7 @@ const productSeo: RubricSeoModel[] = [
     rubricId: getObjectId('rubric Виски'),
     categoryId: getObjectId('category Односолодовый'),
     position: CATALOGUE_SEO_TEXT_POSITION_TOP,
+    companySlug: DEFAULT_COMPANY_SLUG,
     locales: [
       {
         locale: 'ru',
@@ -129,6 +133,7 @@ const productSeo: RubricSeoModel[] = [
     rubricId: getObjectId('rubric Виски'),
     categoryId: getObjectId('category Односолодовый'),
     position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+    companySlug: DEFAULT_COMPANY_SLUG,
     locales: [
       {
         locale: 'ru',

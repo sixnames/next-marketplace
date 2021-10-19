@@ -14,7 +14,7 @@ const rubricDescriptions: RubricDescriptionModel[] = [
     },
   },
   {
-    _id: getObjectId('description A'),
+    _id: getObjectId('description B'),
     rubricId: getObjectId('rubric Виски'),
     rubricSlug: 'viski',
     companySlug: DEFAULT_COMPANY_SLUG,

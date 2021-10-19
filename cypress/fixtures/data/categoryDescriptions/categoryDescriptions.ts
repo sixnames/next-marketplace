@@ -14,7 +14,7 @@ const categoryDescriptions: CategoryDescriptionModel[] = [
     },
   },
   {
-    _id: getObjectId('description A'),
+    _id: getObjectId('description B'),
     categoryId: getObjectId('category Односолодовый'),
     categorySlug: `${CATEGORY_SLUG_PREFIX}1`,
     companySlug: DEFAULT_COMPANY_SLUG,

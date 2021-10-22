@@ -7,7 +7,6 @@ import { DeleteBlogPostPreviewImageInterface } from 'db/dao/blog/deletePostPrevi
 import { UpdateBlogAttributeInputInterface } from 'db/dao/blog/updateBlogAttribute';
 import { UpdateBlogPostInputInterface } from 'db/dao/blog/updateBlogPost';
 import { UpdateBlogPostAttributeInterface } from 'db/dao/blog/updateBlogPostAttribute';
-import { UploadBlogPostAssetInputInterface } from 'db/dao/blog/uploadPostAsset';
 import { UpdateBlogPostPreviewInputInterface } from 'db/dao/blog/uploadPostPreviewImage';
 import { useRouter } from 'next/router';
 import {
@@ -16,11 +15,7 @@ import {
   REQUEST_METHOD_POST,
   ROUTE_BLOG,
 } from 'config/common';
-import {
-  BlogAttributePayloadModel,
-  BlogPostPayloadModel,
-  ConstructorAssetPayloadModel,
-} from 'db/dbModels';
+import { BlogAttributePayloadModel, BlogPostPayloadModel } from 'db/dbModels';
 import { UseMutationConsumerPayload, useMutationHandler } from 'hooks/mutations/useFetch';
 
 const basePath = '/api/blog';
@@ -96,17 +91,6 @@ export const useUploadBlogPostPreviewImage = (): UseMutationConsumerPayload<
 > => {
   return useMutationHandler<BlogPostPayloadModel, UpdateBlogPostPreviewInputInterface>({
     path: `${basePath}/post-preview-image`,
-    method: REQUEST_METHOD_PATCH,
-  });
-};
-
-// upload post asset
-export const useUploadBlogPostAsset = (): UseMutationConsumerPayload<
-  ConstructorAssetPayloadModel,
-  UploadBlogPostAssetInputInterface
-> => {
-  return useMutationHandler<ConstructorAssetPayloadModel, UploadBlogPostAssetInputInterface>({
-    path: `${basePath}/add-post-asset`,
     method: REQUEST_METHOD_PATCH,
   });
 };

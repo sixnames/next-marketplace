@@ -13,10 +13,16 @@ import Spinner from 'components/Spinner';
 import Table, { TableColumn } from 'components/Table';
 import TableRowImage from 'components/TableRowImage';
 import TextSeoInfo from 'components/TextSeoInfo';
-import { ROUTE_CMS, DEFAULT_PAGE_FILTER, DEFAULT_COMPANY_SLUG } from 'config/common';
+import { ROUTE_CMS, DEFAULT_PAGE_FILTER } from 'config/common';
 import { CONFIRM_MODAL, CREATE_NEW_PRODUCT_MODAL } from 'config/modalVariants';
+import { COL_COMPANIES } from 'db/collectionNames';
 import { TextUniquenessApiParsedResponseModel } from 'db/dbModels';
-import { ConsoleRubricProductsInterface, ProductInterface } from 'db/uiInterfaces';
+import { getDatabase } from 'db/mongodb';
+import {
+  CompanyInterface,
+  ConsoleRubricProductsInterface,
+  ProductInterface,
+} from 'db/uiInterfaces';
 import { useDeleteProductFromRubricMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import usePageLoadingState from 'hooks/usePageLoadingState';
@@ -28,12 +34,17 @@ import { getConsoleRubricProducts } from 'lib/consoleProductUtils';
 import { getNumWord } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
-const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
+interface RubricProductsConsumerInterface extends ConsoleRubricProductsInterface {
+  currentCompany?: CompanyInterface | null;
+}
+
+const RubricProductsConsumer: React.FC<RubricProductsConsumerInterface> = ({
   rubric,
   attributes,
   clearSlug,
@@ -45,6 +56,7 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
   itemPath,
   basePath,
   companySlug,
+  currentCompany,
 }) => {
   const router = useRouter();
   const setPageHandler = useNavigateToPageHandler();
@@ -205,16 +217,25 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
     return `Найдено ${counter} ${catalogueCounterPostfix}`;
   }, [totalDocs]);
 
+  const routeBasePath = `${ROUTE_CMS}/companies/${currentCompany?._id}`;
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: 'Товары',
+    currentPageName: `Товары`,
     config: [
       {
-        name: 'Рубрикатор',
-        href: `${ROUTE_CMS}/rubrics`,
+        name: 'Компании',
+        href: `${ROUTE_CMS}/companies`,
+      },
+      {
+        name: `${currentCompany?.name}`,
+        href: routeBasePath,
+      },
+      {
+        name: `Рубрикатор`,
+        href: `${routeBasePath}/rubrics`,
       },
       {
         name: `${rubric?.name}`,
-        href: `${ROUTE_CMS}/rubrics/${rubric?._id}`,
+        href: `${routeBasePath}/rubrics/${rubric?._id}`,
       },
     ],
   };
@@ -224,7 +245,7 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
   }
 
   return (
-    <CmsRubricLayout rubric={rubric} breadcrumbs={breadcrumbs}>
+    <CmsRubricLayout rubric={rubric} breadcrumbs={breadcrumbs} basePath={routeBasePath}>
       <Inner testId={'rubric-products-list'}>
         <div className={`text-xl font-medium mb-2`}>{catalogueCounterString}</div>
 
@@ -302,26 +323,47 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<RubricProductsPageInterface>> => {
   const { query } = context;
+  const { db } = await getDatabase();
+  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
   const rubricId = alwaysString(query.rubricId);
   const initialProps = await getAppInitialData({ context });
-
-  // Get shop
-  if (!initialProps.props) {
+  if (!initialProps.props || !query.companyId) {
     return {
       notFound: true,
     };
   }
+
+  // get company
+  const companyId = new ObjectId(`${query.companyId}`);
+  const companyAggregationResult = await companiesCollection
+    .aggregate([
+      {
+        $match: {
+          _id: companyId,
+        },
+      },
+    ])
+    .toArray();
+  const companyResult = companyAggregationResult[0];
+  if (!companyResult) {
+    return {
+      notFound: true,
+    };
+  }
+  const companySlug = companyResult.slug;
+
   const locale = initialProps.props.sessionLocale;
   const currency = initialProps.props.initialData.currency;
-  const basePath = `${ROUTE_CMS}/rubrics/${rubricId}/products/${rubricId}/${DEFAULT_PAGE_FILTER}`;
-  const itemPath = `${ROUTE_CMS}/rubrics/${rubricId}/products/product`;
+  const basePath = `${ROUTE_CMS}/companies/${companyResult._id}/rubrics/${rubricId}/products/${rubricId}/${DEFAULT_PAGE_FILTER}`;
+  const itemPath = `${ROUTE_CMS}/companies/${companyResult._id}/rubrics/${rubricId}/products/product`;
 
+  // TODO getConsoleCompanyRubricProducts
   const payload = await getConsoleRubricProducts({
     query: context.query,
     locale,
     basePath,
     currency,
-    companySlug: DEFAULT_COMPANY_SLUG,
+    companySlug,
   });
 
   const castedPayload = castDbData(payload);
@@ -331,7 +373,8 @@ export const getServerSideProps = async (
       ...initialProps.props,
       ...castedPayload,
       itemPath,
-      companySlug: DEFAULT_COMPANY_SLUG,
+      companySlug,
+      currentCompany: castDbData(companyResult),
     },
   };
 };

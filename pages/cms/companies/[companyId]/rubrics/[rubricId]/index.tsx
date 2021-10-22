@@ -231,9 +231,9 @@ export const getServerSideProps = async (
 ): Promise<GetServerSidePropsResult<RubricPageInterface>> => {
   const { query } = context;
   const { db } = await getDatabase();
+  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
   const rubricSeoCollection = db.collection<RubricSeoModel>(COL_RUBRIC_SEO);
-  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
 
   const { props } = await getAppInitialData({ context });
   if (!props || !query.rubricId || !query.companyId) {

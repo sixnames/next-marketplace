@@ -1,13 +1,8 @@
-import Button from 'components/Button';
-import FixedButtons from 'components/FixedButtons';
-import ContentItemControls from 'components/ContentItemControls';
 import Inner from 'components/Inner';
-import { CreateRubricModalInterface } from 'components/Modal/CreateRubricModal';
 import Table, { TableColumn } from 'components/Table';
-import Title from 'components/Title';
-import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
-import { CONFIRM_MODAL, CREATE_RUBRIC_MODAL } from 'config/modalVariants';
+import { ROUTE_CMS } from 'config/common';
 import {
+  COL_COMPANIES,
   COL_PRODUCTS,
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
@@ -15,40 +10,40 @@ import {
 } from 'db/collectionNames';
 import { RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { RubricInterface } from 'db/uiInterfaces';
-import { useCreateRubricMutation, useDeleteRubricMutation } from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper from 'layout/AppContentWrapper';
+import { CompanyInterface, RubricInterface } from 'db/uiInterfaces';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
 import CmsLayout from 'layout/cms/CmsLayout';
 import { getFieldStringLocale } from 'lib/i18n';
-import Head from 'next/head';
+import { ObjectId } from 'mongodb';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import ContentItemControls from 'components/ContentItemControls';
 
 interface RubricsRouteInterface {
   rubrics: RubricInterface[];
-  companySlug: string;
+  currentCompany?: CompanyInterface | null;
 }
 
-const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, companySlug }) => {
+const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, currentCompany }) => {
   const router = useRouter();
-  const { onCompleteCallback, onErrorCallback, showModal, showLoading } = useMutationCallbacks({
-    withModal: true,
-    reload: true,
-  });
 
-  const [deleteRubricMutation] = useDeleteRubricMutation({
-    onCompleted: (data) => onCompleteCallback(data.deleteRubric),
-    onError: onErrorCallback,
-  });
-
-  const [createRubricMutation] = useCreateRubricMutation({
-    onCompleted: (data) => onCompleteCallback(data.createRubric),
-    onError: onErrorCallback,
-  });
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: 'Рубрикатор',
+    config: [
+      {
+        name: 'Компании',
+        href: `${ROUTE_CMS}/companies`,
+      },
+      {
+        name: `${currentCompany?.name}`,
+        href: `${ROUTE_CMS}/companies/${currentCompany?._id}`,
+      },
+    ],
+  };
 
   const columns: TableColumn<RubricInterface>[] = [
     {
@@ -71,11 +66,6 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, companySlug })
       },
     },
     {
-      accessor: 'variant.name',
-      headTitle: 'Тип',
-      render: ({ cellData }) => cellData,
-    },
-    {
       render: ({ dataItem }) => {
         return (
           <ContentItemControls
@@ -84,26 +74,8 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, companySlug })
             updateTitle={'Редактировать рубрику'}
             updateHandler={() => {
               router
-                .push(`${ROUTE_CMS}/rubrics/${dataItem._id}/products/${dataItem._id}`)
+                .push(`${ROUTE_CMS}/companies/${currentCompany?._id}/rubrics/${dataItem._id}`)
                 .catch((e) => console.log(e));
-            }}
-            deleteTitle={'Удалить рубрику'}
-            deleteHandler={() => {
-              showModal({
-                variant: CONFIRM_MODAL,
-                props: {
-                  testId: 'delete-rubric-modal',
-                  message: 'Рубрика будет удалена',
-                  confirm: () => {
-                    showLoading();
-                    return deleteRubricMutation({
-                      variables: {
-                        _id: dataItem._id,
-                      },
-                    });
-                  },
-                },
-              });
             }}
           />
         );
@@ -112,59 +84,32 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, companySlug })
   ];
 
   return (
-    <AppContentWrapper>
-      <Head>
-        <title>{`Рубрикатор`}</title>
-      </Head>
-      <Inner>
-        <Title>Рубрикатор</Title>
-
+    <CmsCompanyLayout company={currentCompany} breadcrumbs={breadcrumbs}>
+      <Inner testId={'company-rubrics-list'}>
         <div className='overflow-x-auto'>
           <Table<RubricInterface>
             columns={columns}
             data={rubrics}
             testIdKey={'name'}
             emptyMessage={'Список пуст'}
-            onRowDoubleClick={(rubric) => {
+            onRowDoubleClick={(dataItem) => {
               router
-                .push(`${ROUTE_CMS}/rubrics/${rubric._id}/products/${rubric._id}`)
+                .push(`${ROUTE_CMS}/companies/${currentCompany?._id}/rubrics/${dataItem._id}`)
                 .catch((e) => console.log(e));
             }}
           />
         </div>
-
-        <FixedButtons>
-          <Button
-            testId={'create-rubric'}
-            size={'small'}
-            className={'mt-6 sm:mt-0'}
-            onClick={() => {
-              showModal<CreateRubricModalInterface>({
-                variant: CREATE_RUBRIC_MODAL,
-                props: {
-                  companySlug,
-                  confirm: (values) => {
-                    showLoading();
-                    return createRubricMutation({ variables: { input: values } });
-                  },
-                },
-              });
-            }}
-          >
-            Создать рубрику
-          </Button>
-        </FixedButtons>
       </Inner>
-    </AppContentWrapper>
+    </CmsCompanyLayout>
   );
 };
 
 interface RubricsInterface extends PagePropsInterface, RubricsRouteInterface {}
 
-const Rubrics: NextPage<RubricsInterface> = ({ pageUrls, companySlug, rubrics }) => {
+const Rubrics: NextPage<RubricsInterface> = ({ pageUrls, currentCompany, rubrics }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <RubricsRoute rubrics={rubrics} companySlug={companySlug} />
+      <RubricsRoute rubrics={rubrics} currentCompany={currentCompany} />
     </CmsLayout>
   );
 };
@@ -173,15 +118,36 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<RubricsInterface>> => {
   const { db } = await getDatabase();
+  const { query } = context;
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
 
   const { props } = await getAppInitialData({ context });
-  if (!props) {
+  if (!props || !query.companyId) {
     return {
       notFound: true,
     };
   }
 
+  // get company
+  const companyId = new ObjectId(`${query.companyId}`);
+  const companyAggregationResult = await companiesCollection
+    .aggregate([
+      {
+        $match: {
+          _id: companyId,
+        },
+      },
+    ])
+    .toArray();
+  const companyResult = companyAggregationResult[0];
+  if (!companyResult) {
+    return {
+      notFound: true,
+    };
+  }
+
+  // get rubrics
   const initialRubrics = await rubricsCollection
     .aggregate<RubricInterface>([
       {
@@ -218,6 +184,7 @@ export const getServerSideProps = async (
                 $expr: {
                   $eq: ['$$rubricId', '$rubricId'],
                 },
+                companyId,
               },
             },
             {
@@ -309,7 +276,7 @@ export const getServerSideProps = async (
     props: {
       ...props,
       rubrics: castDbData(rawRubrics),
-      companySlug: DEFAULT_COMPANY_SLUG,
+      currentCompany: castDbData(companyResult),
     },
   };
 };

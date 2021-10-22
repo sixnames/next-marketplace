@@ -5,12 +5,10 @@ import ModalTitle from 'components/Modal/ModalTitle';
 import { GENDER_IT, ROUTE_CMS } from 'config/common';
 import { ProductInterface } from 'db/uiInterfaces';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useValidationSchema from 'hooks/useValidationSchema';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { useCopyProductMutation, useCreateProductMutation } from 'generated/apolloComponents';
 import { Form, Formik } from 'formik';
-import { createProductSchema } from 'validation/productSchema';
 import ProductMainFields, {
   ProductFormValuesInterface,
 } from 'components/FormTemplates/ProductMainFields';
@@ -27,9 +25,6 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({
   product,
 }) => {
   const router = useRouter();
-  const validationSchema = useValidationSchema({
-    schema: createProductSchema,
-  });
 
   const {
     onErrorCallback,
@@ -92,7 +87,6 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({
     <ModalFrame testId={'create-new-product-modal'}>
       <ModalTitle>Создание товара</ModalTitle>
       <Formik<ProductFormValuesInterface>
-        validationSchema={validationSchema}
         initialValues={initialValues}
         onSubmit={(values) => {
           showLoading();

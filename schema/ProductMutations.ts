@@ -38,7 +38,7 @@ import {
 } from 'db/collectionNames';
 import { DEFAULT_COMPANY_SLUG, DEFAULT_COUNTERS_OBJECT, VIEWS_COUNTER_STEP } from 'config/common';
 import { getNextItemId } from 'lib/itemIdUtils';
-import { createProductSchema, updateProductSchema } from 'validation/productSchema';
+import { updateProductSchema } from 'validation/productSchema';
 import { deleteUpload, getMainImage, reorderAssets } from 'lib/assetUtils/assetUtils';
 
 export const ProductPayload = objectType({
@@ -74,7 +74,7 @@ export const CopyProductInput = inputObjectType({
     t.nonNull.objectId('productId');
     t.nonNull.list.nonNull.string('barcode');
     t.nonNull.boolean('active');
-    t.nonNull.string('originalName');
+    t.string('originalName');
     t.json('nameI18n');
     t.json('descriptionI18n');
     t.json('cardDescriptionI18n');
@@ -91,7 +91,7 @@ export const UpdateProductInput = inputObjectType({
     t.nonNull.objectId('productId');
     t.list.nonNull.string('barcode');
     t.nonNull.boolean('active');
-    t.nonNull.string('originalName');
+    t.string('originalName');
     t.json('nameI18n');
     t.json('descriptionI18n');
     t.json('cardDescriptionI18n');
@@ -204,13 +204,6 @@ export const ProductMutations = extendType({
               await session.abortTransaction();
               return;
             }
-
-            // Validate
-            const validationSchema = await getResolverValidationSchema({
-              context,
-              schema: createProductSchema,
-            });
-            await validationSchema.validate(args.input);
 
             const { input } = args;
             const { rubricId, cardDescriptionI18n, companySlug, ...values } = input;
@@ -437,6 +430,7 @@ export const ProductMutations = extendType({
               {
                 $set: {
                   ...values,
+                  originalName: values.originalName || '',
                   updatedAt: new Date(),
                 },
               },
@@ -764,6 +758,7 @@ export const ProductMutations = extendType({
               _id: newProductId,
               itemId,
               slug: itemId,
+              originalName: values.originalName || '',
               mainImage: `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`,
               rubricId: sourceProduct.rubricId,
               rubricSlug: sourceProduct.rubricSlug,
@@ -1322,13 +1317,6 @@ export const ProductMutations = extendType({
               await session.abortTransaction();
               return;
             }
-
-            // Validate
-            const validationSchema = await getResolverValidationSchema({
-              context,
-              schema: createProductSchema,
-            });
-            await validationSchema.validate(args.input.productFields);
 
             const { input } = args;
             const { productFields, available, price, shopId } = input;

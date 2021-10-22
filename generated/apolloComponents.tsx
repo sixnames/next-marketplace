@@ -511,7 +511,7 @@ export type CopyProductInput = {
   productId: Scalars['ObjectId'];
   barcode: Array<Scalars['String']>;
   active: Scalars['Boolean'];
-  originalName: Scalars['String'];
+  originalName?: Maybe<Scalars['String']>;
   nameI18n?: Maybe<Scalars['JSONObject']>;
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
   cardDescriptionI18n?: Maybe<Scalars['JSONObject']>;
@@ -2842,7 +2842,7 @@ export type UpdateProductInput = {
   productId: Scalars['ObjectId'];
   barcode?: Maybe<Array<Scalars['String']>>;
   active: Scalars['Boolean'];
-  originalName: Scalars['String'];
+  originalName?: Maybe<Scalars['String']>;
   nameI18n?: Maybe<Scalars['JSONObject']>;
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
   cardDescriptionI18n?: Maybe<Scalars['JSONObject']>;

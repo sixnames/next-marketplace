@@ -255,7 +255,7 @@ export interface NexusGenInputs {
     descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     gender: NexusGenEnums['Gender']; // Gender!
     nameI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
-    originalName: string; // String!
+    originalName?: string | null; // String
     productId: NexusGenScalars['ObjectId']; // ObjectId!
   };
   CreateAttributesGroupInput: {
@@ -772,7 +772,7 @@ export interface NexusGenInputs {
     descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     gender: NexusGenEnums['Gender']; // Gender!
     nameI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
-    originalName: string; // String!
+    originalName?: string | null; // String
     productId: NexusGenScalars['ObjectId']; // ObjectId!
   };
   UpdateProductManufacturerInput: {

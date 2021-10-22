@@ -10,7 +10,7 @@ import {
   DEFAULT_COMPANY_SLUG,
   ROUTE_CMS,
 } from 'config/common';
-import { COL_CATEGORY_DESCRIPTIONS, COL_RUBRIC_SEO, COL_RUBRICS } from 'db/collectionNames';
+import { COL_RUBRIC_DESCRIPTIONS, COL_RUBRIC_SEO, COL_RUBRICS } from 'db/collectionNames';
 import { RubricModel, RubricSeoModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { RubricInterface } from 'db/uiInterfaces';
@@ -208,7 +208,7 @@ export const getServerSideProps = async (
       // get top seo text
       {
         $lookup: {
-          from: COL_CATEGORY_DESCRIPTIONS,
+          from: COL_RUBRIC_DESCRIPTIONS,
           as: 'seoDescriptionTop',
           let: {
             rubricId: '$_id',
@@ -237,7 +237,7 @@ export const getServerSideProps = async (
       // get bottom seo text
       {
         $lookup: {
-          from: COL_CATEGORY_DESCRIPTIONS,
+          from: COL_RUBRIC_DESCRIPTIONS,
           as: 'seoDescriptionBottom',
           let: {
             rubricId: '$_id',

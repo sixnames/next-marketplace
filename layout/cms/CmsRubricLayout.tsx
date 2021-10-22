@@ -6,39 +6,47 @@ import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppConte
 import AppSubNav from 'layout/AppSubNav';
 import Head from 'next/head';
 import * as React from 'react';
+import { ClientNavItemInterface } from 'types/clientTypes';
 
 interface CmsRubricLayoutInterface {
   rubric: RubricInterface;
+  basePath?: string;
   breadcrumbs?: AppContentWrapperBreadCrumbs;
 }
 
-const CmsRubricLayout: React.FC<CmsRubricLayoutInterface> = ({ rubric, breadcrumbs, children }) => {
-  const navConfig = React.useMemo(() => {
+const CmsRubricLayout: React.FC<CmsRubricLayoutInterface> = ({
+  rubric,
+  basePath,
+  breadcrumbs,
+  children,
+}) => {
+  const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
     return [
       {
         name: 'Товары',
         testId: 'products',
-        path: `${ROUTE_CMS}/rubrics/${rubric._id}/products/${rubric._id}`,
+        path: `${basePath || ROUTE_CMS}/rubrics/${rubric._id}/products/${rubric._id}`,
       },
       {
         name: 'Атрибуты',
         testId: 'attributes',
-        path: `${ROUTE_CMS}/rubrics/${rubric._id}/attributes`,
+        path: `${basePath || ROUTE_CMS}/rubrics/${rubric._id}/attributes`,
         exact: true,
+        hidden: Boolean(basePath),
       },
       {
         name: 'Категории',
         testId: 'categories',
-        path: `${ROUTE_CMS}/rubrics/${rubric._id}/categories`,
+        path: `${basePath || ROUTE_CMS}/rubrics/${rubric._id}/categories`,
       },
       {
         name: 'Детали',
         testId: 'details',
-        path: `${ROUTE_CMS}/rubrics/${rubric._id}`,
+        path: `${basePath || ROUTE_CMS}/rubrics/${rubric._id}`,
         exact: true,
       },
     ];
-  }, [rubric._id]);
+  }, [basePath, rubric._id]);
 
   return (
     <AppContentWrapper breadcrumbs={breadcrumbs}>

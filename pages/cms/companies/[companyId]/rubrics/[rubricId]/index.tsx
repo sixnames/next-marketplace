@@ -1,25 +1,24 @@
 import Button from 'components/Button';
 import FixedButtons from 'components/FixedButtons';
-import RubricMainFields from 'components/FormTemplates/RubricMainFields';
+import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import Inner from 'components/Inner';
-import RequestError from 'components/RequestError';
-import Spinner from 'components/Spinner';
+import TextSeoInfo from 'components/TextSeoInfo';
 import {
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   CATALOGUE_SEO_TEXT_POSITION_TOP,
-  DEFAULT_COMPANY_SLUG,
   ROUTE_CMS,
 } from 'config/common';
-import { COL_CATEGORY_DESCRIPTIONS, COL_RUBRIC_SEO, COL_RUBRICS } from 'db/collectionNames';
+import {
+  COL_COMPANIES,
+  COL_RUBRIC_DESCRIPTIONS,
+  COL_RUBRIC_SEO,
+  COL_RUBRICS,
+} from 'db/collectionNames';
 import { RubricModel, RubricSeoModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { RubricInterface } from 'db/uiInterfaces';
+import { CompanyInterface, RubricInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
-import {
-  UpdateRubricInput,
-  useGetAllRubricVariantsQuery,
-  useUpdateRubricMutation,
-} from 'generated/apolloComponents';
+import { UpdateRubricInput, useUpdateRubricMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
@@ -37,14 +36,14 @@ interface RubricDetailsInterface {
   rubric: RubricInterface;
   seoTop?: RubricSeoModel | null;
   seoBottom?: RubricSeoModel | null;
-  companySlug: string;
+  currentCompany?: CompanyInterface | null;
 }
 
 const RubricDetails: React.FC<RubricDetailsInterface> = ({
   rubric,
-  companySlug,
   seoTop,
   seoBottom,
+  currentCompany,
 }) => {
   const validationSchema = useValidationSchema({
     schema: updateRubricSchema,
@@ -52,22 +51,11 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
   const { onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
     reload: true,
   });
-  const { data, loading, error } = useGetAllRubricVariantsQuery();
 
   const [updateRubricMutation] = useUpdateRubricMutation({
     onCompleted: (data) => onCompleteCallback(data.updateRubric),
     onError: onErrorCallback,
   });
-
-  if (loading) {
-    return <Spinner isNested isTransparent />;
-  }
-  if (error) {
-    return <RequestError />;
-  }
-  if (!data) {
-    return <RequestError />;
-  }
 
   const {
     _id = '',
@@ -94,7 +82,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
     shortDescriptionI18n,
     textBottomI18n: seoDescriptionBottom?.textI18n || {},
     textTopI18n: seoDescriptionTop?.textI18n || {},
-    companySlug,
+    companySlug: `${currentCompany?.slug}`,
     capitalise: capitalise || false,
     showRubricNameInProductTitle: showRubricNameInProductTitle || false,
     showCategoryInProductTitle: showCategoryInProductTitle || false,
@@ -109,18 +97,27 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
     variantId,
   };
 
+  const basePath = `${ROUTE_CMS}/companies/${currentCompany?._id}`;
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${rubric.name}`,
     config: [
       {
-        name: 'Рубрикатор',
-        href: `${ROUTE_CMS}/rubrics`,
+        name: 'Компании',
+        href: `${ROUTE_CMS}/companies`,
+      },
+      {
+        name: `${currentCompany?.name}`,
+        href: basePath,
+      },
+      {
+        name: `Рубрикатор`,
+        href: `${basePath}/rubrics`,
       },
     ],
   };
 
   return (
-    <CmsRubricLayout rubric={rubric} breadcrumbs={breadcrumbs}>
+    <CmsRubricLayout rubric={rubric} breadcrumbs={breadcrumbs} basePath={basePath}>
       <Inner testId={'rubric-details'}>
         <Formik
           validationSchema={validationSchema}
@@ -138,11 +135,60 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
           {() => {
             return (
               <Form>
-                <RubricMainFields
-                  seoTop={seoTop}
-                  seoBottom={seoBottom}
-                  rubricVariants={data.getAllRubricVariants}
-                  genderOptions={data.getGenderOptions}
+                <FormikTranslationsInput
+                  variant={'textarea'}
+                  className='h-[30rem]'
+                  label={'SEO текст вверху каталога'}
+                  name={'textTopI18n'}
+                  testId={'textTopI18n'}
+                  additionalUi={(currentLocale) => {
+                    if (!seoTop) {
+                      return null;
+                    }
+                    const seoLocale = seoTop.locales.find(({ locale }) => {
+                      return locale === currentLocale;
+                    });
+
+                    if (!seoLocale) {
+                      return <div className='mb-4 font-medium'>Текст проверяется</div>;
+                    }
+
+                    return (
+                      <TextSeoInfo
+                        seoLocale={seoLocale}
+                        className='mb-4 mt-4'
+                        listClassName='flex gap-3 flex-wrap'
+                      />
+                    );
+                  }}
+                />
+
+                <FormikTranslationsInput
+                  variant={'textarea'}
+                  className='h-[30rem]'
+                  label={'SEO текст внизу каталога'}
+                  name={'textBottomI18n'}
+                  testId={'textBottomI18n'}
+                  additionalUi={(currentLocale) => {
+                    if (!seoBottom) {
+                      return null;
+                    }
+                    const seoLocale = seoBottom.locales.find(({ locale }) => {
+                      return locale === currentLocale;
+                    });
+
+                    if (!seoLocale) {
+                      return <div className='mb-4 font-medium'>Текст проверяется</div>;
+                    }
+
+                    return (
+                      <TextSeoInfo
+                        seoLocale={seoLocale}
+                        className='mb-4 mt-4'
+                        listClassName='flex gap-3 flex-wrap'
+                      />
+                    );
+                  }}
                 />
 
                 <FixedButtons>
@@ -163,10 +209,10 @@ interface RubricPageInterface extends PagePropsInterface, RubricDetailsInterface
 
 const RubricPage: NextPage<RubricPageInterface> = ({
   pageUrls,
-  companySlug,
   rubric,
   seoBottom,
   seoTop,
+  currentCompany,
 }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
@@ -174,7 +220,7 @@ const RubricPage: NextPage<RubricPageInterface> = ({
         rubric={rubric}
         seoBottom={seoBottom}
         seoTop={seoTop}
-        companySlug={companySlug}
+        currentCompany={currentCompany}
       />
     </CmsLayout>
   );
@@ -187,15 +233,33 @@ export const getServerSideProps = async (
   const { db } = await getDatabase();
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
   const rubricSeoCollection = db.collection<RubricSeoModel>(COL_RUBRIC_SEO);
+  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
 
   const { props } = await getAppInitialData({ context });
-  if (!props || !query.rubricId) {
+  if (!props || !query.rubricId || !query.companyId) {
     return {
       notFound: true,
     };
   }
 
-  const companySlug = DEFAULT_COMPANY_SLUG;
+  // get company
+  const companyId = new ObjectId(`${query.companyId}`);
+  const companyAggregationResult = await companiesCollection
+    .aggregate([
+      {
+        $match: {
+          _id: companyId,
+        },
+      },
+    ])
+    .toArray();
+  const companyResult = companyAggregationResult[0];
+  if (!companyResult) {
+    return {
+      notFound: true,
+    };
+  }
+  const companySlug = companyResult.slug;
 
   const initialRubrics = await rubricsCollection
     .aggregate([
@@ -208,7 +272,7 @@ export const getServerSideProps = async (
       // get top seo text
       {
         $lookup: {
-          from: COL_CATEGORY_DESCRIPTIONS,
+          from: COL_RUBRIC_DESCRIPTIONS,
           as: 'seoDescriptionTop',
           let: {
             rubricId: '$_id',
@@ -237,7 +301,7 @@ export const getServerSideProps = async (
       // get bottom seo text
       {
         $lookup: {
-          from: COL_CATEGORY_DESCRIPTIONS,
+          from: COL_RUBRIC_DESCRIPTIONS,
           as: 'seoDescriptionBottom',
           let: {
             rubricId: '$_id',
@@ -305,7 +369,7 @@ export const getServerSideProps = async (
       rubric: castDbData(rawRubric),
       seoTop: castDbData(seoTop),
       seoBottom: castDbData(seoBottom),
-      companySlug: DEFAULT_COMPANY_SLUG,
+      currentCompany: castDbData(companyResult),
     },
   };
 };

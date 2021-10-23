@@ -449,11 +449,13 @@ export const getServerSideProps = async (
   const seoTop = await rubricSeoCollection.findOne({
     categoryId: category._id,
     position: CATALOGUE_SEO_TEXT_POSITION_TOP,
+    companySlug,
   });
 
   const seoBottom = await rubricSeoCollection.findOne({
     categoryId: category._id,
     position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+    companySlug,
   });
 
   return {

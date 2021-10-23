@@ -6,33 +6,41 @@ import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppConte
 import AppSubNav from 'layout/AppSubNav';
 import Head from 'next/head';
 import * as React from 'react';
+import { ClientNavItemInterface } from 'types/clientTypes';
 
 interface CmsCategoryLayoutInterface {
   category: CategoryInterface;
   breadcrumbs?: AppContentWrapperBreadCrumbs;
+  basePath?: string;
+  hideAttributesPath?: boolean;
 }
 
 const CmsCategoryLayout: React.FC<CmsCategoryLayoutInterface> = ({
   category,
   breadcrumbs,
   children,
+  basePath,
+  hideAttributesPath,
 }) => {
-  const navConfig = React.useMemo(() => {
+  const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
     return [
       {
         name: 'Детали',
         testId: 'details',
-        path: `${ROUTE_CMS}/rubrics/${category.rubricId}/categories/${category._id}`,
+        path: `${basePath || ROUTE_CMS}/rubrics/${category.rubricId}/categories/${category._id}`,
         exact: true,
       },
       {
         name: 'Атрибуты',
         testId: 'attributes',
-        path: `${ROUTE_CMS}/rubrics/${category.rubricId}/categories/${category._id}/attributes`,
+        path: `${basePath || ROUTE_CMS}/rubrics/${category.rubricId}/categories/${
+          category._id
+        }/attributes`,
         exact: true,
+        hidden: hideAttributesPath,
       },
     ];
-  }, [category]);
+  }, [basePath, category._id, category.rubricId, hideAttributesPath]);
 
   return (
     <AppContentWrapper breadcrumbs={breadcrumbs}>

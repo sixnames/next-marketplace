@@ -14,12 +14,19 @@ const disabledClassName = `opacity-50 pointer-events-none cursor-default`;
 
 const AppSubNav: React.FC<AppSubNavInterface> = ({ navConfig }) => {
   const { asPath } = useRouter();
+  const [config] = React.useState<ClientNavItemInterface[]>(() => {
+    return navConfig.filter(({ hidden }) => !hidden);
+  });
+
+  if (config.length < 2) {
+    return null;
+  }
 
   return (
     <Inner lowTop>
       <div className={'border-b border-[var(--border-300)] overflow-auto whitespace-nowrap'}>
         <div className={'flex items-baseline'}>
-          {navConfig.map(({ path, name, testId, shallow, disabled, hidden, exact }) => {
+          {config.map(({ path, name, testId, shallow, disabled, hidden, exact }) => {
             if (hidden) {
               return null;
             }

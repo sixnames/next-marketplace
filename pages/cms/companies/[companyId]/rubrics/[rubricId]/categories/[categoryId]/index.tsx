@@ -1,26 +1,25 @@
 import Button from 'components/Button';
 import FixedButtons from 'components/FixedButtons';
-import WpIconUpload from 'components/FormElements/Upload/WpIconUpload';
-import WpImageUpload from 'components/FormElements/Upload/WpImageUpload';
-import CategoryMainFields from 'components/FormTemplates/CategoryMainFields';
+import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import Inner from 'components/Inner';
+import TextSeoInfo from 'components/TextSeoInfo';
 import {
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   CATALOGUE_SEO_TEXT_POSITION_TOP,
-  DEFAULT_COMPANY_SLUG,
   GENDER_ENUMS,
   ROUTE_CMS,
 } from 'config/common';
 import {
   COL_CATEGORIES,
   COL_CATEGORY_DESCRIPTIONS,
+  COL_COMPANIES,
   COL_ICONS,
   COL_RUBRIC_SEO,
   COL_RUBRICS,
 } from 'db/collectionNames';
 import { OptionVariantsModel, RubricSeoModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { CategoryInterface } from 'db/uiInterfaces';
+import { CategoryInterface, CompanyInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import { Gender, UpdateCategoryInput, useUpdateCategoryMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
@@ -40,32 +39,28 @@ interface CategoryDetailsInterface {
   category: CategoryInterface;
   seoTop?: RubricSeoModel | null;
   seoBottom?: RubricSeoModel | null;
-  companySlug: string;
+  currentCompany?: CompanyInterface | null;
 }
 
 const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
   category,
-  companySlug,
+  currentCompany,
   seoTop,
   seoBottom,
 }) => {
   const validationSchema = useValidationSchema({
     schema: updateCategorySchema,
   });
-  const {
-    onCompleteCallback,
-    onErrorCallback,
-    showLoading,
-    router,
-    showErrorNotification,
-    hideLoading,
-  } = useMutationCallbacks({
+  const { onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
     reload: true,
   });
   const [updateCategoryMutation] = useUpdateCategoryMutation({
     onCompleted: (data) => onCompleteCallback(data.updateCategory),
     onError: onErrorCallback,
   });
+  const routeBasePath = React.useMemo(() => {
+    return `${ROUTE_CMS}/companies/${currentCompany?._id}`;
+  }, [currentCompany]);
 
   const {
     _id = '',
@@ -73,7 +68,6 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
     rubricId,
     rubric,
     gender,
-    image,
     variants,
     seoDescriptionTop,
     seoDescriptionBottom,
@@ -89,7 +83,7 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
     textTopI18n: seoDescriptionTop?.textI18n,
     gender: gender ? (`${gender}` as Gender) : null,
     replaceParentNameInCatalogueTitle,
-    companySlug,
+    companySlug: `${currentCompany?.slug}`,
     variants:
       variantKeys.length > 0
         ? variants
@@ -103,145 +97,36 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
     currentPageName: `${category.name}`,
     config: [
       {
-        name: 'Рубрикатор',
-        href: `${ROUTE_CMS}/rubrics`,
+        name: 'Компании',
+        href: `${ROUTE_CMS}/companies`,
+      },
+      {
+        name: `${currentCompany?.name}`,
+        href: routeBasePath,
+      },
+      {
+        name: `Рубрикатор`,
+        href: `${routeBasePath}/rubrics`,
       },
       {
         name: `${rubric?.name}`,
-        href: `${ROUTE_CMS}/rubrics/${rubricId}`,
+        href: `${routeBasePath}/rubrics/${rubric?._id}`,
       },
       {
         name: `Категории`,
-        href: `${ROUTE_CMS}/rubrics/${rubricId}/categories`,
+        href: `${routeBasePath}/rubrics/${rubricId}/categories`,
       },
     ],
   };
 
   return (
-    <CmsCategoryLayout category={category} breadcrumbs={breadcrumbs}>
+    <CmsCategoryLayout
+      category={category}
+      breadcrumbs={breadcrumbs}
+      basePath={routeBasePath}
+      hideAttributesPath
+    >
       <Inner testId={'category-details'}>
-        <WpImageUpload
-          previewUrl={image}
-          testId={'image'}
-          label={'Изображение'}
-          removeImageHandler={() => {
-            showLoading();
-            const formData = new FormData();
-            formData.append('categoryId', `${category._id}`);
-
-            fetch('/api/category/update-category-image', {
-              method: 'DELETE',
-              body: formData,
-            })
-              .then((res) => {
-                return res.json();
-              })
-              .then((json) => {
-                if (json.success) {
-                  hideLoading();
-                  router.reload();
-                  return;
-                }
-                hideLoading();
-                showErrorNotification({ title: json.message });
-              })
-              .catch(() => {
-                hideLoading();
-                showErrorNotification({ title: 'error' });
-              });
-          }}
-          uploadImageHandler={(files) => {
-            if (files) {
-              showLoading();
-              const formData = new FormData();
-              formData.append('assets', files[0]);
-              formData.append('categoryId', `${category._id}`);
-
-              fetch('/api/category/update-category-image', {
-                method: 'POST',
-                body: formData,
-              })
-                .then((res) => {
-                  return res.json();
-                })
-                .then((json) => {
-                  if (json.success) {
-                    hideLoading();
-                    router.reload();
-                    return;
-                  }
-                  hideLoading();
-                  showErrorNotification({ title: json.message });
-                })
-                .catch(() => {
-                  hideLoading();
-                  showErrorNotification({ title: 'error' });
-                });
-            }
-          }}
-        />
-
-        <WpIconUpload
-          previewIcon={category.icon?.icon}
-          testId={'icon'}
-          label={'Иконка'}
-          removeImageHandler={() => {
-            showLoading();
-            const formData = new FormData();
-            formData.append('categoryId', `${category._id}`);
-
-            fetch('/api/category/update-category-icon', {
-              method: 'DELETE',
-              body: formData,
-            })
-              .then((res) => {
-                return res.json();
-              })
-              .then((json) => {
-                if (json.success) {
-                  hideLoading();
-                  router.reload();
-                  return;
-                }
-                hideLoading();
-                showErrorNotification({ title: json.message });
-              })
-              .catch(() => {
-                hideLoading();
-                showErrorNotification({ title: 'error' });
-              });
-          }}
-          uploadImageHandler={(files) => {
-            if (files) {
-              showLoading();
-              const formData = new FormData();
-              formData.append('assets', files[0]);
-              formData.append('categoryId', `${category._id}`);
-
-              fetch('/api/category/update-category-icon', {
-                method: 'POST',
-                body: formData,
-              })
-                .then((res) => {
-                  return res.json();
-                })
-                .then((json) => {
-                  if (json.success) {
-                    hideLoading();
-                    router.reload();
-                    return;
-                  }
-                  hideLoading();
-                  showErrorNotification({ title: json.message });
-                })
-                .catch(() => {
-                  hideLoading();
-                  showErrorNotification({ title: 'error' });
-                });
-            }
-          }}
-        />
-
         <Formik
           validationSchema={validationSchema}
           initialValues={initialValues}
@@ -258,7 +143,61 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
           {() => {
             return (
               <Form>
-                <CategoryMainFields seoTop={seoTop} seoBottom={seoBottom} />
+                <FormikTranslationsInput
+                  variant={'textarea'}
+                  className='h-[30rem]'
+                  label={'SEO текст вверху каталога'}
+                  name={'textTopI18n'}
+                  testId={'textTopI18n'}
+                  additionalUi={(currentLocale) => {
+                    if (!seoTop) {
+                      return null;
+                    }
+                    const seoLocale = seoTop.locales.find(({ locale }) => {
+                      return locale === currentLocale;
+                    });
+
+                    if (!seoLocale) {
+                      return <div className='mb-4 font-medium'>Текст проверяется</div>;
+                    }
+
+                    return (
+                      <TextSeoInfo
+                        seoLocale={seoLocale}
+                        className='mb-4 mt-4'
+                        listClassName='flex gap-3 flex-wrap'
+                      />
+                    );
+                  }}
+                />
+
+                <FormikTranslationsInput
+                  variant={'textarea'}
+                  className='h-[30rem]'
+                  label={'SEO текст внизу каталога'}
+                  name={'textBottomI18n'}
+                  testId={'textBottomI18n'}
+                  additionalUi={(currentLocale) => {
+                    if (!seoBottom) {
+                      return null;
+                    }
+                    const seoLocale = seoBottom.locales.find(({ locale }) => {
+                      return locale === currentLocale;
+                    });
+
+                    if (!seoLocale) {
+                      return <div className='mb-4 font-medium'>Текст проверяется</div>;
+                    }
+
+                    return (
+                      <TextSeoInfo
+                        seoLocale={seoLocale}
+                        className='mb-4 mt-4'
+                        listClassName='flex gap-3 flex-wrap'
+                      />
+                    );
+                  }}
+                />
 
                 <FixedButtons>
                   <Button type={'submit'} testId={'category-submit'} size={'small'}>
@@ -276,21 +215,10 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
 
 interface CategoryPageInterface extends PagePropsInterface, CategoryDetailsInterface {}
 
-const CategoryPage: NextPage<CategoryPageInterface> = ({
-  pageUrls,
-  category,
-  seoBottom,
-  seoTop,
-  companySlug,
-}) => {
+const CategoryPage: NextPage<CategoryPageInterface> = ({ pageUrls, ...props }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <CategoryDetails
-        category={category}
-        seoTop={seoTop}
-        companySlug={companySlug}
-        seoBottom={seoBottom}
-      />
+      <CategoryDetails {...props} />
     </CmsLayout>
   );
 };
@@ -302,15 +230,33 @@ export const getServerSideProps = async (
   const { db } = await getDatabase();
   const categoriesCollection = db.collection<CategoryInterface>(COL_CATEGORIES);
   const rubricSeoCollection = db.collection<RubricSeoModel>(COL_RUBRIC_SEO);
+  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
 
   const { props } = await getAppInitialData({ context });
-  if (!props || !query.categoryId) {
+  if (!props || !query.categoryId || !query.companyId) {
     return {
       notFound: true,
     };
   }
 
-  const companySlug = DEFAULT_COMPANY_SLUG;
+  // get company
+  const companyId = new ObjectId(`${query.companyId}`);
+  const companyAggregationResult = await companiesCollection
+    .aggregate<CompanyInterface>([
+      {
+        $match: {
+          _id: companyId,
+        },
+      },
+    ])
+    .toArray();
+  const companyResult = companyAggregationResult[0];
+  if (!companyResult) {
+    return {
+      notFound: true,
+    };
+  }
+  const companySlug = companyResult.slug;
 
   const categoryAggregation = await categoriesCollection
     .aggregate<CategoryInterface>([
@@ -449,11 +395,13 @@ export const getServerSideProps = async (
   const seoTop = await rubricSeoCollection.findOne({
     categoryId: category._id,
     position: CATALOGUE_SEO_TEXT_POSITION_TOP,
+    companySlug,
   });
 
   const seoBottom = await rubricSeoCollection.findOne({
     categoryId: category._id,
     position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+    companySlug,
   });
 
   return {
@@ -462,7 +410,7 @@ export const getServerSideProps = async (
       category: castDbData(category),
       seoTop: castDbData(seoTop),
       seoBottom: castDbData(seoBottom),
-      companySlug: DEFAULT_COMPANY_SLUG,
+      currentCompany: castDbData(companyResult),
     },
   };
 };

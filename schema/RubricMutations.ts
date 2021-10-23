@@ -55,18 +55,6 @@ export const RubricPayload = objectType({
   },
 });
 
-export const RubricCatalogueTitleInput = inputObjectType({
-  name: 'RubricCatalogueTitleInput',
-  definition(t) {
-    t.nonNull.json('defaultTitleI18n');
-    t.json('prefixI18n');
-    t.nonNull.json('keywordI18n');
-    t.nonNull.field('gender', {
-      type: 'Gender',
-    });
-  },
-});
-
 export const CreateRubricInput = inputObjectType({
   name: 'CreateRubricInput',
   definition(t) {
@@ -82,8 +70,11 @@ export const CreateRubricInput = inputObjectType({
     t.json('textTopI18n');
     t.json('textBottomI18n');
     t.nonNull.objectId('variantId');
-    t.nonNull.field('catalogueTitle', {
-      type: 'RubricCatalogueTitleInput',
+    t.nonNull.json('defaultTitleI18n');
+    t.json('prefixI18n');
+    t.nonNull.json('keywordI18n');
+    t.nonNull.field('gender', {
+      type: 'Gender',
     });
   },
 });
@@ -105,8 +96,11 @@ export const UpdateRubricInput = inputObjectType({
     t.json('textBottomI18n');
     t.nonNull.objectId('variantId');
     t.nonNull.boolean('active');
-    t.nonNull.field('catalogueTitle', {
-      type: 'RubricCatalogueTitleInput',
+    t.nonNull.json('defaultTitleI18n');
+    t.json('prefixI18n');
+    t.nonNull.json('keywordI18n');
+    t.nonNull.field('gender', {
+      type: 'Gender',
     });
   },
 });

@@ -55,12 +55,10 @@ const CreateRubricModal: React.FC<CreateRubricModalInterface> = ({ confirm, comp
           showCategoryInProductTitle: false,
           showBrandInNav: false,
           showBrandInFilter: false,
-          catalogueTitle: {
-            defaultTitleI18n: {},
-            prefixI18n: {},
-            keywordI18n: {},
-            gender: '' as Gender,
-          },
+          defaultTitleI18n: {},
+          prefixI18n: {},
+          keywordI18n: {},
+          gender: '' as Gender,
         }}
         onSubmit={(values) => {
           confirm(values);

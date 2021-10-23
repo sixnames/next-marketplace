@@ -611,10 +611,13 @@ input CreateRoleInput {
 
 input CreateRubricInput {
   capitalise: Boolean
-  catalogueTitle: RubricCatalogueTitleInput!
   companySlug: String!
+  defaultTitleI18n: JSONObject!
   descriptionI18n: JSONObject!
+  gender: Gender!
+  keywordI18n: JSONObject!
   nameI18n: JSONObject!
+  prefixI18n: JSONObject
   shortDescriptionI18n: JSONObject!
   showBrandInFilter: Boolean
   showBrandInNav: Boolean
@@ -2067,13 +2070,16 @@ type Rubric {
   _id: ObjectId!
   active: Boolean!
   capitalise: Boolean
-  catalogueTitle: RubricCatalogueTitle!
+  defaultTitleI18n: JSONObject!
   description: String!
   descriptionI18n: JSONObject!
+  gender: Gender!
   icon: String
   image: String
+  keywordI18n: JSONObject!
   name: String!
   nameI18n: JSONObject!
+  prefixI18n: JSONObject
   priorities: JSONObject!
   products(input: ProductsPaginationInput): ProductsPaginationPayload!
   shortDescription: String!
@@ -2108,23 +2114,6 @@ type RubricAttributesGroup {
   attributesIds: [ObjectId!]!
   name: String!
   nameI18n: JSONObject!
-}
-
-type RubricCatalogueTitle {
-  defaultTitle: String!
-  defaultTitleI18n: JSONObject!
-  gender: Gender!
-  keyword: String!
-  keywordI18n: JSONObject!
-  prefix: String
-  prefixI18n: JSONObject
-}
-
-input RubricCatalogueTitleInput {
-  defaultTitleI18n: JSONObject!
-  gender: Gender!
-  keywordI18n: JSONObject!
-  prefixI18n: JSONObject
 }
 
 type RubricOption {
@@ -2640,10 +2629,13 @@ input UpdateRoleRuleInput {
 input UpdateRubricInput {
   active: Boolean!
   capitalise: Boolean
-  catalogueTitle: RubricCatalogueTitleInput!
   companySlug: String!
+  defaultTitleI18n: JSONObject!
   descriptionI18n: JSONObject!
+  gender: Gender!
+  keywordI18n: JSONObject!
   nameI18n: JSONObject!
+  prefixI18n: JSONObject
   rubricId: ObjectId!
   shortDescriptionI18n: JSONObject!
   showBrandInFilter: Boolean

@@ -571,42 +571,44 @@ export async function getServerSideProps(
   // console.log(JSON.stringify(props.navRubrics, null, 2));
 
   const topFilters: TopFilterInterface[] = [];
-  props.navRubrics.forEach(({ catalogueTitle, slug, attributes }) => {
-    (attributes || []).forEach((attribute) => {
-      const options = (attribute.options || []).slice(0, 2);
-      if (options.length < 1) {
-        return;
-      }
-
-      options.forEach((option) => {
-        const name = generateTitle({
-          attributes: [
-            {
-              ...attribute,
-              options: [option],
-            },
-          ],
-          attributeNameVisibilityFieldName: 'showNameInTitle',
-          positionFieldName: 'positioningInTitle',
-          attributeVisibilityFieldName: 'showInCatalogueTitle',
-          defaultGender: catalogueTitle.gender,
-          fallbackTitle: getFieldStringLocale(catalogueTitle.defaultTitleI18n, sessionLocale),
-          defaultKeyword: getFieldStringLocale(catalogueTitle.keywordI18n, sessionLocale),
-          prefix: getFieldStringLocale(catalogueTitle.prefixI18n, sessionLocale),
-          locale: sessionLocale,
-          currency: initialData.currency,
-        });
-
-        const exist = topFilters.some((topFilter) => topFilter.name === name);
-        if (!exist) {
-          topFilters.push({
-            name,
-            href: `${ROUTE_CATALOGUE}/${slug}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`,
-          });
+  props.navRubrics.forEach(
+    ({ gender, defaultTitleI18n, keywordI18n, prefixI18n, slug, attributes }) => {
+      (attributes || []).forEach((attribute) => {
+        const options = (attribute.options || []).slice(0, 2);
+        if (options.length < 1) {
+          return;
         }
+
+        options.forEach((option) => {
+          const name = generateTitle({
+            attributes: [
+              {
+                ...attribute,
+                options: [option],
+              },
+            ],
+            attributeNameVisibilityFieldName: 'showNameInTitle',
+            positionFieldName: 'positioningInTitle',
+            attributeVisibilityFieldName: 'showInCatalogueTitle',
+            defaultGender: gender,
+            fallbackTitle: getFieldStringLocale(defaultTitleI18n, sessionLocale),
+            defaultKeyword: getFieldStringLocale(keywordI18n, sessionLocale),
+            prefix: getFieldStringLocale(prefixI18n, sessionLocale),
+            locale: sessionLocale,
+            currency: initialData.currency,
+          });
+
+          const exist = topFilters.some((topFilter) => topFilter.name === name);
+          if (!exist) {
+            topFilters.push({
+              name,
+              href: `${ROUTE_CATALOGUE}/${slug}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`,
+            });
+          }
+        });
       });
-    });
-  });
+    },
+  );
 
   const allPageGroups: PagesGroupInterface[] = castDbData([
     ...headerPageGroups,

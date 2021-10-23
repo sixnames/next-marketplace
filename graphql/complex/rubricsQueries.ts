@@ -56,12 +56,10 @@ export const RUBRIC_QUERY = gql`
       variantId
       descriptionI18n
       shortDescriptionI18n
-      catalogueTitle {
-        defaultTitleI18n
-        prefixI18n
-        keywordI18n
-        gender
-      }
+      defaultTitleI18n
+      prefixI18n
+      keywordI18n
+      gender
     }
   }
   ${rubricInListFragment}
@@ -75,12 +73,10 @@ export const RUBRIC_BY_SLUG_QUERY = gql`
       variantId
       descriptionI18n
       shortDescriptionI18n
-      catalogueTitle {
-        defaultTitleI18n
-        prefixI18n
-        keywordI18n
-        gender
-      }
+      defaultTitleI18n
+      prefixI18n
+      keywordI18n
+      gender
     }
   }
   ${rubricInListFragment}

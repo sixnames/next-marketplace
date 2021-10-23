@@ -725,19 +725,15 @@ export interface RubricVariantModel {
   cardBrandsLabelI18n?: TranslationModel | null;
 }
 
-export interface RubricCatalogueTitleModel {
-  defaultTitleI18n: TranslationModel;
-  prefixI18n?: TranslationModel | null;
-  keywordI18n: TranslationModel;
-  gender: GenderModel;
-}
-
 export interface RubricModel extends CountersModel {
   _id: ObjectIdModel;
   nameI18n: TranslationModel;
   descriptionI18n: TranslationModel;
   shortDescriptionI18n: TranslationModel;
-  catalogueTitle: RubricCatalogueTitleModel;
+  defaultTitleI18n: TranslationModel;
+  prefixI18n?: TranslationModel | null;
+  keywordI18n: TranslationModel;
+  gender: GenderModel;
   slug: string;
   active: boolean;
   variantId: ObjectIdModel;

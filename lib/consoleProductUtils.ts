@@ -556,7 +556,7 @@ export const getConsoleRubricProducts = async ({
       filters,
       productsPrices: prices,
       basePath,
-      rubricGender: search ? GENDER_HE : rubric.catalogueTitle.gender,
+      rubricGender: search ? GENDER_HE : rubric.gender,
       brands,
     });
 
@@ -1153,7 +1153,7 @@ export const getConsoleCompanyRubricProducts = async ({
       filters,
       productsPrices: prices,
       basePath,
-      rubricGender: search ? GENDER_HE : rubric.catalogueTitle.gender,
+      rubricGender: search ? GENDER_HE : rubric.gender,
       brands,
     });
 
@@ -1707,7 +1707,7 @@ export const getConsoleShopProducts = async ({
       filters,
       productsPrices: prices,
       basePath,
-      rubricGender: search ? GENDER_HE : rubric.catalogueTitle.gender,
+      rubricGender: search ? GENDER_HE : rubric.gender,
       brands,
     });
 

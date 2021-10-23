@@ -812,7 +812,7 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
 
     // cardBreadcrumbs
     const attributesBreadcrumbs: ProductCardBreadcrumbModel[] = [];
-    let breadcrumbsGender = rubric?.catalogueTitle.gender || GENDER_IT;
+    let breadcrumbsGender = rubric?.gender || GENDER_IT;
 
     // category breadcrumbs
     const breadcrumbCategories = cardCategories.reduce(

@@ -379,10 +379,13 @@ export interface NexusGenInputs {
   CreateRubricInput: {
     // input type
     capitalise?: boolean | null; // Boolean
-    catalogueTitle: NexusGenInputs['RubricCatalogueTitleInput']; // RubricCatalogueTitleInput!
     companySlug: string; // String!
+    defaultTitleI18n: NexusGenScalars['JSONObject']; // JSONObject!
     descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    gender: NexusGenEnums['Gender']; // Gender!
+    keywordI18n: NexusGenScalars['JSONObject']; // JSONObject!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    prefixI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     shortDescriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
     showBrandInFilter?: boolean | null; // Boolean
     showBrandInNav?: boolean | null; // Boolean
@@ -530,13 +533,6 @@ export interface NexusGenInputs {
   RepeatOrderInput: {
     // input type
     orderId: NexusGenScalars['ObjectId']; // ObjectId!
-  };
-  RubricCatalogueTitleInput: {
-    // input type
-    defaultTitleI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    gender: NexusGenEnums['Gender']; // Gender!
-    keywordI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    prefixI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
   };
   RubricProductsCountersInput: {
     // input type
@@ -850,10 +846,13 @@ export interface NexusGenInputs {
     // input type
     active: boolean; // Boolean!
     capitalise?: boolean | null; // Boolean
-    catalogueTitle: NexusGenInputs['RubricCatalogueTitleInput']; // RubricCatalogueTitleInput!
     companySlug: string; // String!
+    defaultTitleI18n: NexusGenScalars['JSONObject']; // JSONObject!
     descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    gender: NexusGenEnums['Gender']; // Gender!
+    keywordI18n: NexusGenScalars['JSONObject']; // JSONObject!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    prefixI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
     shortDescriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
     showBrandInFilter?: boolean | null; // Boolean
@@ -1060,7 +1059,6 @@ export interface NexusGenObjects {
     attributesIds: NexusGenScalars['ObjectId'][]; // [ObjectId!]!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
   };
-  RubricCatalogueTitle: dbModels.RubricCatalogueTitleModel;
   RubricOption: {
     // root type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
@@ -1901,13 +1899,16 @@ export interface NexusGenFieldTypes {
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     active: boolean; // Boolean!
     capitalise: boolean | null; // Boolean
-    catalogueTitle: NexusGenRootTypes['RubricCatalogueTitle']; // RubricCatalogueTitle!
+    defaultTitleI18n: NexusGenScalars['JSONObject']; // JSONObject!
     description: string; // String!
     descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    gender: NexusGenEnums['Gender']; // Gender!
     icon: string | null; // String
     image: string | null; // String
+    keywordI18n: NexusGenScalars['JSONObject']; // JSONObject!
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    prefixI18n: NexusGenScalars['JSONObject'] | null; // JSONObject
     priorities: NexusGenScalars['JSONObject']; // JSONObject!
     products: NexusGenRootTypes['ProductsPaginationPayload']; // ProductsPaginationPayload!
     shortDescription: string; // String!
@@ -1942,16 +1943,6 @@ export interface NexusGenFieldTypes {
     attributesIds: NexusGenScalars['ObjectId'][]; // [ObjectId!]!
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
-  };
-  RubricCatalogueTitle: {
-    // field return type
-    defaultTitle: string; // String!
-    defaultTitleI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    gender: NexusGenEnums['Gender']; // Gender!
-    keyword: string; // String!
-    keywordI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    prefix: string | null; // String
-    prefixI18n: NexusGenScalars['JSONObject'] | null; // JSONObject
   };
   RubricOption: {
     // field return type
@@ -2974,13 +2965,16 @@ export interface NexusGenFieldTypeNames {
     _id: 'ObjectId';
     active: 'Boolean';
     capitalise: 'Boolean';
-    catalogueTitle: 'RubricCatalogueTitle';
+    defaultTitleI18n: 'JSONObject';
     description: 'String';
     descriptionI18n: 'JSONObject';
+    gender: 'Gender';
     icon: 'String';
     image: 'String';
+    keywordI18n: 'JSONObject';
     name: 'String';
     nameI18n: 'JSONObject';
+    prefixI18n: 'JSONObject';
     priorities: 'JSONObject';
     products: 'ProductsPaginationPayload';
     shortDescription: 'String';
@@ -3015,16 +3009,6 @@ export interface NexusGenFieldTypeNames {
     attributesIds: 'ObjectId';
     name: 'String';
     nameI18n: 'JSONObject';
-  };
-  RubricCatalogueTitle: {
-    // field return type name
-    defaultTitle: 'String';
-    defaultTitleI18n: 'JSONObject';
-    gender: 'Gender';
-    keyword: 'String';
-    keywordI18n: 'JSONObject';
-    prefix: 'String';
-    prefixI18n: 'JSONObject';
   };
   RubricOption: {
     // field return type name

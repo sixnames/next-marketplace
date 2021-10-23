@@ -64,7 +64,6 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
     descriptionI18n,
     shortDescriptionI18n,
     nameI18n,
-    catalogueTitle,
     capitalise,
     showRubricNameInProductTitle,
     showCategoryInProductTitle,
@@ -72,6 +71,10 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
     showBrandInFilter,
     seoDescriptionTop,
     seoDescriptionBottom,
+    defaultTitleI18n,
+    prefixI18n,
+    keywordI18n,
+    gender,
   } = rubric;
 
   const initialValues: UpdateRubricInput = {
@@ -88,12 +91,10 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
     showCategoryInProductTitle: showCategoryInProductTitle || false,
     showBrandInNav: showBrandInNav || false,
     showBrandInFilter: showBrandInFilter || false,
-    catalogueTitle: {
-      defaultTitleI18n: catalogueTitle?.defaultTitleI18n,
-      prefixI18n: catalogueTitle?.prefixI18n,
-      keywordI18n: catalogueTitle?.keywordI18n,
-      gender: catalogueTitle?.gender as any,
-    },
+    defaultTitleI18n,
+    prefixI18n,
+    keywordI18n,
+    gender: gender as any,
     variantId,
   };
 

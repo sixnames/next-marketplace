@@ -208,7 +208,7 @@ export function getRubricFilterAttribute({
       slug: rubric.slug,
       priorities: rubric.priorities,
       views: rubric.views,
-      gender: rubric.catalogueTitle.gender,
+      gender: rubric.gender,
     };
     return option;
   }

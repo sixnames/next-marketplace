@@ -46,7 +46,7 @@ export function getTreeFromList<T extends TreeItemInterface>({
     return {
       ...parent,
       name: getFieldStringLocale(parent.nameI18n, locale),
-      [childrenFieldName]: children,
+      [childrenFieldName]: sortByName(children),
       childrenCount: children.length,
     };
   });

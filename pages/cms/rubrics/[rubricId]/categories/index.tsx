@@ -128,7 +128,7 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
         </div>
       );
     },
-    [deleteCategoryMutation, router, rubric._id, showLoading, showModal],
+    [companySlug, deleteCategoryMutation, router, rubric._id, showLoading, showModal],
   );
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {

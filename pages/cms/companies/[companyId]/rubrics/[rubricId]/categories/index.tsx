@@ -1,16 +1,21 @@
-import Button from 'components/Button';
 import ContentItemControls from 'components/ContentItemControls';
-import FixedButtons from 'components/FixedButtons';
 import Inner from 'components/Inner';
-import { CreateCategoryModalInterface } from 'components/Modal/CreateCategoryModal';
 import RequestError from 'components/RequestError';
-import { DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE, ROUTE_CMS, SORT_ASC } from 'config/common';
-import { CONFIRM_MODAL, CREATE_CATEGORY_MODAL } from 'config/modalVariants';
-import { COL_CATEGORIES, COL_ICONS, COL_RUBRICS } from 'db/collectionNames';
+import { ROUTE_CMS } from 'config/common';
+import {
+  COL_CATEGORIES,
+  COL_COMPANIES,
+  COL_ICONS,
+  COL_RUBRICS,
+  COL_SHOP_PRODUCTS,
+} from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { CategoryInterface, RubricInterface } from 'db/uiInterfaces';
-import { useDeleteCategoryMutation } from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import {
+  CategoryInterface,
+  CompanyInterface,
+  RubricInterface,
+  ShopProductInterface,
+} from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsLayout from 'layout/cms/CmsLayout';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
@@ -20,28 +25,23 @@ import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
 interface RubricCategoriesConsumerInterface {
   rubric: RubricInterface;
-  companySlug: string;
+  currentCompany?: CompanyInterface | null;
 }
 
 const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
   rubric,
-  companySlug,
+  currentCompany,
 }) => {
-  const { showModal, onCompleteCallback, onErrorCallback, showLoading, router } =
-    useMutationCallbacks({
-      withModal: true,
-      reload: true,
-    });
-
-  const [deleteCategoryMutation] = useDeleteCategoryMutation({
-    onCompleted: (data) => onCompleteCallback(data.deleteCategory),
-    onError: onErrorCallback,
-  });
+  const router = useRouter();
+  const routeBasePath = React.useMemo(() => {
+    return `${ROUTE_CMS}/companies/${currentCompany?._id}`;
+  }, [currentCompany]);
 
   const renderCategories = React.useCallback(
     (category: CategoryInterface) => {
@@ -78,40 +78,11 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
               <ContentItemControls
                 testId={`${name}`}
                 justifyContent={'flex-end'}
-                createTitle={'Добавить дочернюю категорию'}
-                createHandler={() => {
-                  showModal<CreateCategoryModalInterface>({
-                    variant: CREATE_CATEGORY_MODAL,
-                    props: {
-                      companySlug,
-                      parentId: `${category._id}`,
-                      rubricId: `${rubric._id}`,
-                    },
-                  });
-                }}
                 updateTitle={'Редактировать категорию'}
                 updateHandler={() => {
                   router
-                    .push(`${ROUTE_CMS}/rubrics/${rubric._id}/categories/${category._id}`)
+                    .push(`${routeBasePath}/rubrics/${rubric._id}/categories/${category._id}`)
                     .catch(console.log);
-                }}
-                deleteTitle={'Удалить категорию'}
-                deleteHandler={() => {
-                  showModal({
-                    variant: CONFIRM_MODAL,
-                    props: {
-                      testId: 'delete-category-modal',
-                      message: 'Категория будет удалена',
-                      confirm: () => {
-                        showLoading();
-                        return deleteCategoryMutation({
-                          variables: {
-                            _id: category._id,
-                          },
-                        });
-                      },
-                    },
-                  });
                 }}
               />
             </div>
@@ -128,19 +99,27 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
         </div>
       );
     },
-    [deleteCategoryMutation, router, rubric._id, showLoading, showModal],
+    [routeBasePath, router, rubric._id],
   );
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: 'Категории',
+    currentPageName: `Категории`,
     config: [
       {
-        name: 'Рубрикатор',
-        href: `${ROUTE_CMS}/rubrics`,
+        name: 'Компании',
+        href: `${ROUTE_CMS}/companies`,
       },
       {
-        name: `${rubric.name}`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}`,
+        name: `${currentCompany?.name}`,
+        href: routeBasePath,
+      },
+      {
+        name: `Рубрикатор`,
+        href: `${routeBasePath}/rubrics`,
+      },
+      {
+        name: `${rubric?.name}`,
+        href: `${routeBasePath}/rubrics/${rubric?._id}`,
       },
     ],
   };
@@ -148,7 +127,12 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
   const { categories } = rubric;
 
   return (
-    <CmsRubricLayout rubric={rubric} breadcrumbs={breadcrumbs}>
+    <CmsRubricLayout
+      hideAttributesPath
+      basePath={routeBasePath}
+      rubric={rubric}
+      breadcrumbs={breadcrumbs}
+    >
       <Inner testId={'rubric-categories-list'}>
         <div className='relative'>
           {!categories || categories.length < 1 ? (
@@ -165,24 +149,6 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
               ))}
             </div>
           )}
-
-          <FixedButtons>
-            <Button
-              testId={'create-category'}
-              size={'small'}
-              onClick={() => {
-                showModal<CreateCategoryModalInterface>({
-                  variant: CREATE_CATEGORY_MODAL,
-                  props: {
-                    companySlug,
-                    rubricId: `${rubric._id}`,
-                  },
-                });
-              }}
-            >
-              Создать категорию
-            </Button>
-          </FixedButtons>
         </div>
       </Inner>
     </CmsRubricLayout>
@@ -206,20 +172,97 @@ export const getServerSideProps = async (
 ): Promise<GetServerSidePropsResult<RubricCategoriesPageInterface>> => {
   const { db } = await getDatabase();
   const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
+  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
+  const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
   const { query } = context;
-  const { rubricId } = query;
   const initialProps = await getAppInitialData({ context });
-  if (!initialProps.props || !rubricId) {
+  if (!initialProps.props || !query.rubricId || !query.companyId) {
     return {
       notFound: true,
     };
   }
+
+  // get company
   const locale = initialProps.props.sessionLocale;
+  const rubricId = new ObjectId(`${query.rubricId}`);
+  const companyId = new ObjectId(`${query.companyId}`);
+  const companyAggregationResult = await companiesCollection
+    .aggregate<CompanyInterface>([
+      {
+        $match: {
+          _id: companyId,
+        },
+      },
+    ])
+    .toArray();
+  const companyResult = companyAggregationResult[0];
+  if (!companyResult) {
+    return {
+      notFound: true,
+    };
+  }
+
+  // get categories config
+  const categoriesConfigAggregationResult = await shopProductsCollection
+    .aggregate<ShopProductInterface>([
+      {
+        $match: {
+          companyId,
+          rubricId,
+        },
+      },
+      {
+        $unwind: {
+          path: '$selectedOptionsSlugs',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          selectedOptionsSlugs: {
+            $addToSet: '$selectedOptionsSlugs',
+          },
+        },
+      },
+    ])
+    .toArray();
+  const categoriesConfig = categoriesConfigAggregationResult[0];
+  if (!categoriesConfig || categoriesConfig.selectedOptionsSlugs.length < 1) {
+    const rubric = await rubricsCollection.findOne({
+      _id: rubricId,
+    });
+
+    if (!rubric) {
+      return {
+        notFound: true,
+      };
+    }
+
+    const payload: RubricCategoriesConsumerInterface = {
+      currentCompany: castDbData(companyResult),
+      rubric: {
+        ...rubric,
+        name: getFieldStringLocale(rubric?.nameI18n, locale),
+      },
+    };
+
+    const castedPayload = castDbData(payload);
+
+    return {
+      props: {
+        ...initialProps.props,
+        ...castedPayload,
+      },
+    };
+  }
+
+  // get rubric with categories
   const rubricAggregation = await rubricsCollection
     .aggregate<RubricInterface>([
       {
         $match: {
-          _id: new ObjectId(`${rubricId}`),
+          _id: rubricId,
         },
       },
       {
@@ -230,6 +273,9 @@ export const getServerSideProps = async (
           pipeline: [
             {
               $match: {
+                slug: {
+                  $in: categoriesConfig.selectedOptionsSlugs,
+                },
                 $expr: {
                   $eq: ['$rubricId', '$$rubricId'],
                 },
@@ -261,11 +307,6 @@ export const getServerSideProps = async (
                 },
               },
             },
-            {
-              $sort: {
-                [`nameI18n.${DEFAULT_LOCALE}`]: SORT_ASC,
-              },
-            },
           ],
         },
       },
@@ -286,7 +327,7 @@ export const getServerSideProps = async (
   const sortedCategories = sortByName(categories);
 
   const payload: RubricCategoriesConsumerInterface = {
-    companySlug: DEFAULT_COMPANY_SLUG,
+    currentCompany: companyResult,
     rubric: {
       ...rubric,
       name: getFieldStringLocale(rubric?.nameI18n, locale),

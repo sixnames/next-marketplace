@@ -112,7 +112,7 @@ export async function getCmsProduct({
       ...productConnectionsSimplePipeline,
 
       // get product seo info
-      ...productSeoPipeline,
+      ...productSeoPipeline(companySlug),
     ])
     .toArray();
   const initialProduct = productAggregation[0];

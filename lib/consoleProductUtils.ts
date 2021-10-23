@@ -217,7 +217,7 @@ export const getConsoleRubricProducts = async ({
               ...productCategoriesPipeline(),
 
               // get product seo info
-              ...productSeoPipeline,
+              ...productSeoPipeline(companySlug),
 
               // count shop products
               {
@@ -841,6 +841,9 @@ export const getConsoleCompanyRubricProducts = async ({
                   ],
                 },
               },
+
+              // get product seo info
+              ...productSeoPipeline(companySlug),
             ],
 
             // prices facet

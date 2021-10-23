@@ -1,6 +1,6 @@
-import ContentItemControls from 'components/ContentItemControls';
-import Inner from 'components/Inner';
-import RequestError from 'components/RequestError';
+import CompanyRubricCategoriesList, {
+  CompanyRubricCategoriesListInterface,
+} from 'components/CompanyRubricCategoriesList';
 import { ROUTE_CMS } from 'config/common';
 import {
   COL_CATEGORIES,
@@ -24,84 +24,15 @@ import { getTreeFromList, sortByName } from 'lib/optionsUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import Image from 'next/image';
-import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
-interface RubricCategoriesConsumerInterface {
-  rubric: RubricInterface;
-  currentCompany?: CompanyInterface | null;
-}
-
+interface RubricCategoriesConsumerInterface extends CompanyRubricCategoriesListInterface {}
 const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
   rubric,
   currentCompany,
+  routeBasePath,
 }) => {
-  const router = useRouter();
-  const routeBasePath = React.useMemo(() => {
-    return `${ROUTE_CMS}/companies/${currentCompany?._id}`;
-  }, [currentCompany]);
-
-  const renderCategories = React.useCallback(
-    (category: CategoryInterface) => {
-      const { name, categories, image } = category;
-
-      return (
-        <div>
-          {image ? (
-            <div>
-              <Image
-                src={image}
-                width={80}
-                height={80}
-                quality={50}
-                alt={`${name}`}
-                title={`${name}`}
-                objectFit={'contain'}
-                objectPosition={'center'}
-              />
-            </div>
-          ) : null}
-
-          <div className='cms-option flex items-center gap-4'>
-            {category.icon ? (
-              <div
-                className='categories-icon-preview'
-                dangerouslySetInnerHTML={{ __html: category.icon.icon }}
-              />
-            ) : null}
-            <div className='font-medium' data-cy={`category-${name}`}>
-              {name}
-            </div>
-            <div className='cms-option__controls'>
-              <ContentItemControls
-                testId={`${name}`}
-                justifyContent={'flex-end'}
-                updateTitle={'Редактировать категорию'}
-                updateHandler={() => {
-                  router
-                    .push(`${routeBasePath}/rubrics/${rubric._id}/categories/${category._id}`)
-                    .catch(console.log);
-                }}
-              />
-            </div>
-          </div>
-          {categories && categories.length > 0 ? (
-            <div className='ml-4'>
-              {categories.map((category) => (
-                <div className='mt-4' key={`${category._id}`}>
-                  {renderCategories(category)}
-                </div>
-              ))}
-            </div>
-          ) : null}
-        </div>
-      );
-    },
-    [routeBasePath, router, rubric._id],
-  );
-
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `Категории`,
     config: [
@@ -124,8 +55,6 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
     ],
   };
 
-  const { categories } = rubric;
-
   return (
     <CmsRubricLayout
       hideAttributesPath
@@ -133,24 +62,11 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
       rubric={rubric}
       breadcrumbs={breadcrumbs}
     >
-      <Inner testId={'rubric-categories-list'}>
-        <div className='relative'>
-          {!categories || categories.length < 1 ? (
-            <RequestError message={'Список пуст'} />
-          ) : (
-            <div className='border-t border-border-300'>
-              {categories.map((category) => (
-                <div
-                  className='border-b border-border-300 py-6 px-inner-block-horizontal-padding'
-                  key={`${category._id}`}
-                >
-                  {renderCategories(category)}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </Inner>
+      <CompanyRubricCategoriesList
+        rubric={rubric}
+        routeBasePath={routeBasePath}
+        currentCompany={currentCompany}
+      />
     </CmsRubricLayout>
   );
 };
@@ -201,6 +117,7 @@ export const getServerSideProps = async (
       notFound: true,
     };
   }
+  const routeBasePath = `${ROUTE_CMS}/companies/${companyResult._id}`;
 
   // get categories config
   const categoriesConfigAggregationResult = await shopProductsCollection
@@ -238,8 +155,8 @@ export const getServerSideProps = async (
         notFound: true,
       };
     }
-
     const payload: RubricCategoriesConsumerInterface = {
+      routeBasePath,
       currentCompany: castDbData(companyResult),
       rubric: {
         ...rubric,
@@ -327,6 +244,7 @@ export const getServerSideProps = async (
   const sortedCategories = sortByName(categories);
 
   const payload: RubricCategoriesConsumerInterface = {
+    routeBasePath,
     currentCompany: companyResult,
     rubric: {
       ...rubric,

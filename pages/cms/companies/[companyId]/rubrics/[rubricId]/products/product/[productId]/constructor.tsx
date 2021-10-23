@@ -2,17 +2,12 @@ import Accordion from 'components/Accordion';
 import Button from 'components/Button';
 import Inner from 'components/Inner';
 import PageEditor from 'components/PageEditor';
-import {
-  DEFAULT_CITY,
-  DEFAULT_COMPANY_SLUG,
-  PAGE_EDITOR_DEFAULT_VALUE_STRING,
-  ROUTE_CMS,
-} from 'config/common';
+import { DEFAULT_CITY, PAGE_EDITOR_DEFAULT_VALUE_STRING, ROUTE_CMS } from 'config/common';
 import { useConfigContext } from 'context/configContext';
-import { COL_PRODUCT_CARD_CONTENTS } from 'db/collectionNames';
+import { COL_COMPANIES, COL_PRODUCT_CARD_CONTENTS } from 'db/collectionNames';
 import { ProductCardContentModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { ProductInterface, RubricInterface } from 'db/uiInterfaces';
+import { CompanyInterface, ProductInterface, RubricInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import {
   UpdateProductCardContentInput,
@@ -35,12 +30,14 @@ interface ProductAttributesInterface {
   product: ProductInterface;
   rubric: RubricInterface;
   cardContent: ProductCardContentModel;
+  currentCompany?: CompanyInterface | null;
 }
 
 const ProductAttributes: React.FC<ProductAttributesInterface> = ({
   product,
   rubric,
   cardContent,
+  currentCompany,
 }) => {
   const { cities } = useConfigContext();
   const { onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
@@ -51,24 +48,33 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({
     onError: onErrorCallback,
   });
 
+  const basePath = `${ROUTE_CMS}/companies/${currentCompany?._id}`;
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Контент карточки',
     config: [
       {
-        name: 'Рубрикатор',
-        href: `${ROUTE_CMS}/rubrics`,
+        name: 'Компании',
+        href: `${ROUTE_CMS}/companies`,
+      },
+      {
+        name: `${currentCompany?.name}`,
+        href: basePath,
+      },
+      {
+        name: `Рубрикатор`,
+        href: `${basePath}/rubrics`,
       },
       {
         name: `${rubric.name}`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}`,
+        href: `${basePath}/rubrics/${rubric._id}`,
       },
       {
         name: `Товары`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}/products/${rubric._id}`,
+        href: `${basePath}/rubrics/${rubric._id}/products/${rubric._id}`,
       },
       {
         name: `${product.cardTitle}`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}/products/product/${product._id}`,
+        href: `${basePath}/rubrics/${rubric._id}/products/product/${product._id}`,
       },
     ],
   };
@@ -76,7 +82,16 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({
   const initialValues: UpdateProductCardContentInput = cardContent;
 
   return (
-    <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
+    <CmsProductLayout
+      hideAssetsPath
+      hideAttributesPath
+      hideBrandPath
+      hideCategoriesPath
+      hideConnectionsPath
+      product={product}
+      basePath={basePath}
+      breadcrumbs={breadcrumbs}
+    >
       <Inner testId={'product-card-constructor'}>
         <Formik<UpdateProductCardContentInput>
           initialValues={initialValues}
@@ -163,10 +178,10 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({
 
 interface ProductPageInterface extends PagePropsInterface, ProductAttributesInterface {}
 
-const Product: NextPage<ProductPageInterface> = ({ pageUrls, cardContent, product, rubric }) => {
+const Product: NextPage<ProductPageInterface> = ({ pageUrls, ...props }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <ProductAttributes product={product} rubric={rubric} cardContent={cardContent} />
+      <ProductAttributes {...props} />
     </CmsLayout>
   );
 };
@@ -179,17 +194,37 @@ export const getServerSideProps = async (
   const { db } = await getDatabase();
   const productCardContentsCollection =
     db.collection<ProductCardContentModel>(COL_PRODUCT_CARD_CONTENTS);
+  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
   const { props } = await getAppInitialData({ context });
-  if (!props || !productId || !rubricId) {
+  if (!props || !productId || !rubricId || !query.companyId) {
     return {
       notFound: true,
     };
   }
 
+  // get company
+  const companyId = new ObjectId(`${query.companyId}`);
+  const companyAggregationResult = await companiesCollection
+    .aggregate([
+      {
+        $match: {
+          _id: companyId,
+        },
+      },
+    ])
+    .toArray();
+  const companyResult = companyAggregationResult[0];
+  if (!companyResult) {
+    return {
+      notFound: true,
+    };
+  }
+  const companySlug = companyResult.slug;
+
   const payload = await getCmsProduct({
     locale: props.sessionLocale,
     productId: `${productId}`,
-    companySlug: DEFAULT_COMPANY_SLUG,
+    companySlug,
   });
 
   if (!payload) {
@@ -202,7 +237,7 @@ export const getServerSideProps = async (
 
   let cardContent = await productCardContentsCollection.findOne({
     productId: product._id,
-    companySlug: DEFAULT_COMPANY_SLUG,
+    companySlug,
   });
 
   if (!cardContent) {
@@ -210,7 +245,7 @@ export const getServerSideProps = async (
       _id: new ObjectId(),
       productId: product._id,
       productSlug: product.slug,
-      companySlug: DEFAULT_COMPANY_SLUG,
+      companySlug,
       assetKeys: [],
       content: {
         [DEFAULT_CITY]: PAGE_EDITOR_DEFAULT_VALUE_STRING,
@@ -224,6 +259,7 @@ export const getServerSideProps = async (
       product: castDbData(product),
       rubric: castDbData(rubric),
       cardContent: castDbData(cardContent),
+      currentCompany: castDbData(companyResult),
     },
   };
 };

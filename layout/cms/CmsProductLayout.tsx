@@ -7,64 +7,103 @@ import AppSubNav from 'layout/AppSubNav';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import * as React from 'react';
+import { ClientNavItemInterface } from 'types/clientTypes';
 
 interface CmsProductLayoutInterface {
   product: ProductInterface;
   breadcrumbs?: AppContentWrapperBreadCrumbs;
+  basePath?: string;
+  hideAttributesPath?: boolean;
+  hideCategoriesPath?: boolean;
+  hideConnectionsPath?: boolean;
+  hideBrandPath?: boolean;
+  hideAssetsPath?: boolean;
 }
 
 const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({
   product,
   breadcrumbs,
+  hideAttributesPath,
+  hideCategoriesPath,
+  hideConnectionsPath,
+  hideBrandPath,
+  hideAssetsPath,
   children,
+  basePath,
 }) => {
   const { query } = useRouter();
-  const navConfig = React.useMemo(() => {
+  const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
     return [
       {
         name: 'Детали',
         testId: 'details',
-        path: `${ROUTE_CMS}/rubrics/${query.rubricId}/products/product/${product._id}`,
+        path: `${basePath || ROUTE_CMS}/rubrics/${query.rubricId}/products/product/${product._id}`,
         exact: true,
       },
       {
         name: 'Категории',
         testId: 'categories',
-        path: `${ROUTE_CMS}/rubrics/${query.rubricId}/products/product/${product._id}/categories`,
+        path: `${basePath || ROUTE_CMS}/rubrics/${query.rubricId}/products/product/${
+          product._id
+        }/categories`,
+        hidden: hideCategoriesPath,
         exact: true,
       },
       {
         name: 'Атрибуты',
         testId: 'attributes',
-        path: `${ROUTE_CMS}/rubrics/${query.rubricId}/products/product/${product._id}/attributes`,
+        path: `${basePath || ROUTE_CMS}/rubrics/${query.rubricId}/products/product/${
+          product._id
+        }/attributes`,
+        hidden: hideAttributesPath,
         exact: true,
       },
       {
         name: 'Связи',
         testId: 'connections',
-        path: `${ROUTE_CMS}/rubrics/${query.rubricId}/products/product/${product._id}/connections`,
+        path: `${basePath || ROUTE_CMS}/rubrics/${query.rubricId}/products/product/${
+          product._id
+        }/connections`,
+        hidden: hideConnectionsPath,
         exact: true,
       },
       {
         name: 'Бренд / Производитель / Поставщики',
         testId: 'brands',
-        path: `${ROUTE_CMS}/rubrics/${query.rubricId}/products/product/${product._id}/brands`,
+        path: `${basePath || ROUTE_CMS}/rubrics/${query.rubricId}/products/product/${
+          product._id
+        }/brands`,
+        hidden: hideBrandPath,
         exact: true,
       },
       {
         name: 'Изображения',
         testId: 'assets',
-        path: `${ROUTE_CMS}/rubrics/${query.rubricId}/products/product/${product._id}/assets`,
+        path: `${basePath || ROUTE_CMS}/rubrics/${query.rubricId}/products/product/${
+          product._id
+        }/assets`,
+        hidden: hideAssetsPath,
         exact: true,
       },
       {
         name: 'Контент карточки',
         testId: 'constructor',
-        path: `${ROUTE_CMS}/rubrics/${query.rubricId}/products/product/${product._id}/constructor`,
+        path: `${basePath || ROUTE_CMS}/rubrics/${query.rubricId}/products/product/${
+          product._id
+        }/constructor`,
         exact: true,
       },
     ];
-  }, [product._id, query.rubricId]);
+  }, [
+    basePath,
+    hideAssetsPath,
+    hideAttributesPath,
+    hideBrandPath,
+    hideCategoriesPath,
+    hideConnectionsPath,
+    product._id,
+    query.rubricId,
+  ]);
 
   return (
     <AppContentWrapper breadcrumbs={breadcrumbs}>

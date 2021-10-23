@@ -12,6 +12,7 @@ interface CmsRubricLayoutInterface {
   rubric: RubricInterface;
   basePath?: string;
   breadcrumbs?: AppContentWrapperBreadCrumbs;
+  hideAttributesPath?: boolean;
 }
 
 const CmsRubricLayout: React.FC<CmsRubricLayoutInterface> = ({
@@ -19,6 +20,7 @@ const CmsRubricLayout: React.FC<CmsRubricLayoutInterface> = ({
   basePath,
   breadcrumbs,
   children,
+  hideAttributesPath,
 }) => {
   const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
     return [
@@ -32,7 +34,7 @@ const CmsRubricLayout: React.FC<CmsRubricLayoutInterface> = ({
         testId: 'attributes',
         path: `${basePath || ROUTE_CMS}/rubrics/${rubric._id}/attributes`,
         exact: true,
-        hidden: Boolean(basePath),
+        hidden: hideAttributesPath,
       },
       {
         name: 'Категории',

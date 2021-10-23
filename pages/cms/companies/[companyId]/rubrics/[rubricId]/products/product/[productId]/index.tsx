@@ -1,11 +1,13 @@
 import Button from 'components/Button';
 import FixedButtons from 'components/FixedButtons';
-import ProductMainFields, {
-  ProductFormValuesInterface,
-} from 'components/FormTemplates/ProductMainFields';
+import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
+import { ProductFormValuesInterface } from 'components/FormTemplates/ProductMainFields';
 import Inner from 'components/Inner';
-import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
-import { ProductInterface, RubricInterface } from 'db/uiInterfaces';
+import TextSeoInfo from 'components/TextSeoInfo';
+import { ROUTE_CMS } from 'config/common';
+import { COL_COMPANIES } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
+import { CompanyInterface, ProductInterface, RubricInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import { useUpdateProductMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
@@ -14,6 +16,7 @@ import useValidationSchema from 'hooks/useValidationSchema';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsProductLayout from 'layout/cms/CmsProductLayout';
 import { getCmsProduct } from 'lib/productUtils';
+import { ObjectId } from 'mongodb';
 import Image from 'next/image';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
@@ -25,10 +28,10 @@ import { updateProductSchema } from 'validation/productSchema';
 interface ProductDetailsInterface {
   product: ProductInterface;
   rubric: RubricInterface;
-  companySlug: string;
+  currentCompany?: CompanyInterface | null;
 }
 
-const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, companySlug, rubric }) => {
+const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, currentCompany, rubric }) => {
   const { setReloadToTrue } = useReloadListener();
   const validationSchema = useValidationSchema({
     schema: updateProductSchema,
@@ -64,29 +67,47 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, companySlu
     barcode: barcode || [],
     gender: gender as any,
     cardDescriptionI18n: cardDescription?.textI18n || {},
-    companySlug,
+    companySlug: `${currentCompany?.slug}`,
   };
 
+  const basePath = `${ROUTE_CMS}/companies/${currentCompany?._id}`;
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${product.cardTitle}`,
     config: [
       {
-        name: 'Рубрикатор',
-        href: `${ROUTE_CMS}/rubrics`,
+        name: 'Компании',
+        href: `${ROUTE_CMS}/companies`,
+      },
+      {
+        name: `${currentCompany?.name}`,
+        href: basePath,
+      },
+      {
+        name: `Рубрикатор`,
+        href: `${basePath}/rubrics`,
       },
       {
         name: `${rubric.name}`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}`,
+        href: `${basePath}/rubrics/${rubric._id}`,
       },
       {
         name: `Товары`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}/products/${rubric._id}`,
+        href: `${basePath}/rubrics/${rubric._id}/products/${rubric._id}`,
       },
     ],
   };
 
   return (
-    <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
+    <CmsProductLayout
+      hideAssetsPath
+      hideAttributesPath
+      hideBrandPath
+      hideCategoriesPath
+      hideConnectionsPath
+      product={product}
+      basePath={basePath}
+      breadcrumbs={breadcrumbs}
+    >
       <Inner testId={'product-details'}>
         <Formik
           enableReinitialize
@@ -120,9 +141,33 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, companySlu
                   />
                 </div>
 
-                {/*<FormikCheckboxLine label={'Активен'} name={'active'} testId={'active'} />*/}
+                <FormikTranslationsInput
+                  variant={'textarea'}
+                  className='h-[30rem]'
+                  label={'Описание карточки товара'}
+                  name={'cardDescriptionI18n'}
+                  testId={'cardDescriptionI18n'}
+                  additionalUi={(currentLocale) => {
+                    if (!cardDescription?.seo) {
+                      return null;
+                    }
+                    const seoLocale = cardDescription.seo.locales.find(({ locale }) => {
+                      return locale === currentLocale;
+                    });
 
-                <ProductMainFields seo={cardDescription?.seo} />
+                    if (!seoLocale) {
+                      return <div className='mb-4 font-medium'>Текст проверяется</div>;
+                    }
+
+                    return (
+                      <TextSeoInfo
+                        seoLocale={seoLocale}
+                        className='mb-4 mt-4'
+                        listClassName='flex gap-3 flex-wrap'
+                      />
+                    );
+                  }}
+                />
 
                 <FixedButtons>
                   <Button testId={'submit-product'} type={'submit'}>
@@ -140,10 +185,10 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, companySlu
 
 interface ProductPageInterface extends PagePropsInterface, ProductDetailsInterface {}
 
-const Product: NextPage<ProductPageInterface> = ({ pageUrls, product, companySlug, rubric }) => {
+const Product: NextPage<ProductPageInterface> = ({ pageUrls, product, currentCompany, rubric }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <ProductDetails product={product} rubric={rubric} companySlug={companySlug} />
+      <ProductDetails product={product} rubric={rubric} currentCompany={currentCompany} />
     </CmsLayout>
   );
 };
@@ -153,18 +198,39 @@ export const getServerSideProps = async (
 ): Promise<GetServerSidePropsResult<ProductPageInterface>> => {
   const { query } = context;
   const { productId, rubricId } = query;
+  const { db } = await getDatabase();
+  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
   const { props } = await getAppInitialData({ context });
 
-  if (!props || !productId || !rubricId) {
+  if (!props || !productId || !rubricId || !query.companyId) {
     return {
       notFound: true,
     };
   }
 
+  // get company
+  const companyId = new ObjectId(`${query.companyId}`);
+  const companyAggregationResult = await companiesCollection
+    .aggregate([
+      {
+        $match: {
+          _id: companyId,
+        },
+      },
+    ])
+    .toArray();
+  const companyResult = companyAggregationResult[0];
+  if (!companyResult) {
+    return {
+      notFound: true,
+    };
+  }
+  const companySlug = companyResult.slug;
+
   const payload = await getCmsProduct({
     locale: props.sessionLocale,
     productId: `${productId}`,
-    companySlug: DEFAULT_COMPANY_SLUG,
+    companySlug,
   });
 
   if (!payload) {
@@ -178,7 +244,7 @@ export const getServerSideProps = async (
       ...props,
       product: castDbData(payload.product),
       rubric: castDbData(payload.rubric),
-      companySlug: DEFAULT_COMPANY_SLUG,
+      currentCompany: castDbData(companyResult),
     },
   };
 };

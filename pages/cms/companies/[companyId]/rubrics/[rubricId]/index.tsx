@@ -117,7 +117,12 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
   };
 
   return (
-    <CmsRubricLayout rubric={rubric} breadcrumbs={breadcrumbs} basePath={basePath}>
+    <CmsRubricLayout
+      hideAttributesPath
+      rubric={rubric}
+      breadcrumbs={breadcrumbs}
+      basePath={basePath}
+    >
       <Inner testId={'rubric-details'}>
         <Formik
           validationSchema={validationSchema}

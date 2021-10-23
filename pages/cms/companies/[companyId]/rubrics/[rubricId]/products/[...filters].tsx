@@ -245,7 +245,12 @@ const RubricProductsConsumer: React.FC<RubricProductsConsumerInterface> = ({
   }
 
   return (
-    <CmsRubricLayout rubric={rubric} breadcrumbs={breadcrumbs} basePath={routeBasePath}>
+    <CmsRubricLayout
+      hideAttributesPath
+      rubric={rubric}
+      breadcrumbs={breadcrumbs}
+      basePath={routeBasePath}
+    >
       <Inner testId={'rubric-products-list'}>
         <div className={`text-xl font-medium mb-2`}>{catalogueCounterString}</div>
 

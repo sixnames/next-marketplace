@@ -30,7 +30,7 @@ import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsLayout from 'layout/cms/CmsLayout';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
-import { getConsoleRubricProducts } from 'lib/consoleProductUtils';
+import { getConsoleCompanyRubricProducts } from 'lib/consoleProductUtils';
 import { getNumWord } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
@@ -357,13 +357,13 @@ export const getServerSideProps = async (
   const basePath = `${ROUTE_CMS}/companies/${companyResult._id}/rubrics/${rubricId}/products/${rubricId}/${DEFAULT_PAGE_FILTER}`;
   const itemPath = `${ROUTE_CMS}/companies/${companyResult._id}/rubrics/${rubricId}/products/product`;
 
-  // TODO getConsoleCompanyRubricProducts
-  const payload = await getConsoleRubricProducts({
+  const payload = await getConsoleCompanyRubricProducts({
     query: context.query,
     locale,
     basePath,
     currency,
     companySlug,
+    companyId: `${companyResult._id}`,
   });
 
   const castedPayload = castDbData(payload);

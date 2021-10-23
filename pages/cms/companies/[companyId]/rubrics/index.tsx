@@ -1,5 +1,3 @@
-import Inner from 'components/Inner';
-import Table, { TableColumn } from 'components/Table';
 import { ROUTE_CMS } from 'config/common';
 import {
   COL_COMPANIES,
@@ -14,23 +12,21 @@ import { CompanyInterface, RubricInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
 import CmsLayout from 'layout/cms/CmsLayout';
+import CompanyRubricsList, { CompanyRubricsListInterface } from 'layout/CompanyRubricsList';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
-import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
-import ContentItemControls from 'components/ContentItemControls';
 
-interface RubricsRouteInterface {
-  rubrics: RubricInterface[];
-  currentCompany?: CompanyInterface | null;
-}
+interface RubricsRouteInterface extends CompanyRubricsListInterface {}
 
-const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, currentCompany }) => {
-  const router = useRouter();
-
+const RubricsRoute: React.FC<RubricsRouteInterface> = ({
+  rubrics,
+  currentCompany,
+  routeBasePath,
+}) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Рубрикатор',
     config: [
@@ -45,71 +41,23 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, currentCompany
     ],
   };
 
-  const columns: TableColumn<RubricInterface>[] = [
-    {
-      accessor: 'name',
-      headTitle: 'Название',
-      render: ({ cellData }) => cellData,
-    },
-    {
-      accessor: 'productsCount',
-      headTitle: 'Всего товаров',
-      render: ({ cellData, dataItem }) => {
-        return <div data-cy={`${dataItem.name}-productsCount`}>{cellData}</div>;
-      },
-    },
-    {
-      accessor: 'activeProductsCount',
-      headTitle: 'Активных товаров',
-      render: ({ cellData, dataItem }) => {
-        return <div data-cy={`${dataItem.name}-activeProductsCount`}>{cellData}</div>;
-      },
-    },
-    {
-      render: ({ dataItem }) => {
-        return (
-          <ContentItemControls
-            testId={`${dataItem.name}`}
-            justifyContent={'flex-end'}
-            updateTitle={'Редактировать рубрику'}
-            updateHandler={() => {
-              router
-                .push(`${ROUTE_CMS}/companies/${currentCompany?._id}/rubrics/${dataItem._id}`)
-                .catch((e) => console.log(e));
-            }}
-          />
-        );
-      },
-    },
-  ];
-
   return (
     <CmsCompanyLayout company={currentCompany} breadcrumbs={breadcrumbs}>
-      <Inner testId={'company-rubrics-list'}>
-        <div className='overflow-x-auto'>
-          <Table<RubricInterface>
-            columns={columns}
-            data={rubrics}
-            testIdKey={'name'}
-            emptyMessage={'Список пуст'}
-            onRowDoubleClick={(dataItem) => {
-              router
-                .push(`${ROUTE_CMS}/companies/${currentCompany?._id}/rubrics/${dataItem._id}`)
-                .catch((e) => console.log(e));
-            }}
-          />
-        </div>
-      </Inner>
+      <CompanyRubricsList
+        rubrics={rubrics}
+        currentCompany={currentCompany}
+        routeBasePath={routeBasePath}
+      />
     </CmsCompanyLayout>
   );
 };
 
 interface RubricsInterface extends PagePropsInterface, RubricsRouteInterface {}
 
-const Rubrics: NextPage<RubricsInterface> = ({ pageUrls, currentCompany, rubrics }) => {
+const Rubrics: NextPage<RubricsInterface> = ({ pageUrls, ...props }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <RubricsRoute rubrics={rubrics} currentCompany={currentCompany} />
+      <RubricsRoute {...props} />
     </CmsLayout>
   );
 };
@@ -277,6 +225,7 @@ export const getServerSideProps = async (
       ...props,
       rubrics: castDbData(rawRubrics),
       currentCompany: castDbData(companyResult),
+      routeBasePath: `${ROUTE_CMS}/companies/${companyResult._id}/rubrics`,
     },
   };
 };

@@ -5,26 +5,10 @@ import { GENDER_ENUMS } from 'config/common';
 import { attributeIdSchema, attributesGroupIdSchema } from 'validation/attributesGroupSchema';
 import { productIdSchema } from 'validation/productSchema';
 import { rubricVariantIdSchema } from 'validation/rubricVariantSchema';
-import { getFieldValidationMessage } from '../lib/getFieldValidationMessage';
+import { getFieldValidationMessage } from 'lib/getFieldValidationMessage';
 
 export const rubricIdSchema = (args: ValidationSchemaArgsInterface) => {
   return objectIdSchema({ ...args, slug: 'validation.rubrics.id' });
-};
-
-export const rubricCatalogueTitleSchema = (args: ValidationSchemaArgsInterface) => {
-  return Yup.object({
-    defaultTitleI18n: requiredStringTranslationSchema({
-      ...args,
-      slug: 'validation.rubrics.defaultTitle',
-    }),
-    keywordI18n: requiredStringTranslationSchema({
-      ...args,
-      slug: 'validation.rubrics.keyword',
-    }),
-    gender: Yup.mixed()
-      .oneOf(GENDER_ENUMS)
-      .required(getFieldValidationMessage({ ...args, slug: 'validation.rubrics.gender' })),
-  });
 };
 
 export const rubricCommonFieldsSchema = (args: ValidationSchemaArgsInterface) => {
@@ -42,7 +26,17 @@ export const rubricCommonFieldsSchema = (args: ValidationSchemaArgsInterface) =>
       slug: 'validation.rubrics.name',
     }),
     variantId: rubricVariantIdSchema(args),
-    catalogueTitle: rubricCatalogueTitleSchema(args),
+    defaultTitleI18n: requiredStringTranslationSchema({
+      ...args,
+      slug: 'validation.rubrics.defaultTitle',
+    }),
+    keywordI18n: requiredStringTranslationSchema({
+      ...args,
+      slug: 'validation.rubrics.keyword',
+    }),
+    gender: Yup.mixed()
+      .oneOf(GENDER_ENUMS)
+      .required(getFieldValidationMessage({ ...args, slug: 'validation.rubrics.gender' })),
   };
 };
 

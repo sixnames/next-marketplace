@@ -1,8 +1,6 @@
-import Button from 'components/Button';
-import FixedButtons from 'components/FixedButtons';
-import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
-import Inner from 'components/Inner';
-import TextSeoInfo from 'components/TextSeoInfo';
+import CompanyRubricDetails, {
+  CompanyRubricDetailsInterface,
+} from 'components/CompanyRubricDetails';
 import {
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   CATALOGUE_SEO_TEXT_POSITION_TOP,
@@ -16,11 +14,7 @@ import {
 } from 'db/collectionNames';
 import { RubricModel, RubricSeoModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { CompanyInterface, RubricInterface } from 'db/uiInterfaces';
-import { Form, Formik } from 'formik';
-import { UpdateRubricInput, useUpdateRubricMutation } from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useValidationSchema from 'hooks/useValidationSchema';
+import { CompanyInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsLayout from 'layout/cms/CmsLayout';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
@@ -30,14 +24,8 @@ import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
-import { updateRubricSchema } from 'validation/rubricSchema';
 
-interface RubricDetailsInterface {
-  rubric: RubricInterface;
-  seoTop?: RubricSeoModel | null;
-  seoBottom?: RubricSeoModel | null;
-  currentCompany?: CompanyInterface | null;
-}
+interface RubricDetailsInterface extends CompanyRubricDetailsInterface {}
 
 const RubricDetails: React.FC<RubricDetailsInterface> = ({
   rubric,
@@ -45,59 +33,6 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
   seoBottom,
   currentCompany,
 }) => {
-  const validationSchema = useValidationSchema({
-    schema: updateRubricSchema,
-  });
-  const { onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
-    reload: true,
-  });
-
-  const [updateRubricMutation] = useUpdateRubricMutation({
-    onCompleted: (data) => onCompleteCallback(data.updateRubric),
-    onError: onErrorCallback,
-  });
-
-  const {
-    _id = '',
-    active,
-    variantId,
-    descriptionI18n,
-    shortDescriptionI18n,
-    nameI18n,
-    capitalise,
-    showRubricNameInProductTitle,
-    showCategoryInProductTitle,
-    showBrandInNav,
-    showBrandInFilter,
-    seoDescriptionTop,
-    seoDescriptionBottom,
-    defaultTitleI18n,
-    prefixI18n,
-    keywordI18n,
-    gender,
-  } = rubric;
-
-  const initialValues: UpdateRubricInput = {
-    rubricId: _id,
-    active,
-    nameI18n,
-    descriptionI18n,
-    shortDescriptionI18n,
-    textBottomI18n: seoDescriptionBottom?.textI18n || {},
-    textTopI18n: seoDescriptionTop?.textI18n || {},
-    companySlug: `${currentCompany?.slug}`,
-    capitalise: capitalise || false,
-    showRubricNameInProductTitle: showRubricNameInProductTitle || false,
-    showCategoryInProductTitle: showCategoryInProductTitle || false,
-    showBrandInNav: showBrandInNav || false,
-    showBrandInFilter: showBrandInFilter || false,
-    defaultTitleI18n,
-    prefixI18n,
-    keywordI18n,
-    gender: gender as any,
-    variantId,
-  };
-
   const basePath = `${ROUTE_CMS}/companies/${currentCompany?._id}`;
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${rubric.name}`,
@@ -124,89 +59,12 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
       breadcrumbs={breadcrumbs}
       basePath={basePath}
     >
-      <Inner testId={'rubric-details'}>
-        <Formik
-          validationSchema={validationSchema}
-          initialValues={initialValues}
-          enableReinitialize
-          onSubmit={(values) => {
-            showLoading();
-            return updateRubricMutation({
-              variables: {
-                input: values,
-              },
-            });
-          }}
-        >
-          {() => {
-            return (
-              <Form>
-                <FormikTranslationsInput
-                  variant={'textarea'}
-                  className='h-[30rem]'
-                  label={'SEO текст вверху каталога'}
-                  name={'textTopI18n'}
-                  testId={'textTopI18n'}
-                  additionalUi={(currentLocale) => {
-                    if (!seoTop) {
-                      return null;
-                    }
-                    const seoLocale = seoTop.locales.find(({ locale }) => {
-                      return locale === currentLocale;
-                    });
-
-                    if (!seoLocale) {
-                      return <div className='mb-4 font-medium'>Текст проверяется</div>;
-                    }
-
-                    return (
-                      <TextSeoInfo
-                        seoLocale={seoLocale}
-                        className='mb-4 mt-4'
-                        listClassName='flex gap-3 flex-wrap'
-                      />
-                    );
-                  }}
-                />
-
-                <FormikTranslationsInput
-                  variant={'textarea'}
-                  className='h-[30rem]'
-                  label={'SEO текст внизу каталога'}
-                  name={'textBottomI18n'}
-                  testId={'textBottomI18n'}
-                  additionalUi={(currentLocale) => {
-                    if (!seoBottom) {
-                      return null;
-                    }
-                    const seoLocale = seoBottom.locales.find(({ locale }) => {
-                      return locale === currentLocale;
-                    });
-
-                    if (!seoLocale) {
-                      return <div className='mb-4 font-medium'>Текст проверяется</div>;
-                    }
-
-                    return (
-                      <TextSeoInfo
-                        seoLocale={seoLocale}
-                        className='mb-4 mt-4'
-                        listClassName='flex gap-3 flex-wrap'
-                      />
-                    );
-                  }}
-                />
-
-                <FixedButtons>
-                  <Button type={'submit'} testId={'rubric-submit'}>
-                    Сохранить
-                  </Button>
-                </FixedButtons>
-              </Form>
-            );
-          }}
-        </Formik>
-      </Inner>
+      <CompanyRubricDetails
+        rubric={rubric}
+        currentCompany={currentCompany}
+        seoBottom={seoBottom}
+        seoTop={seoTop}
+      />
     </CmsRubricLayout>
   );
 };

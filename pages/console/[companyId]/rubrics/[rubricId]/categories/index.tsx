@@ -1,27 +1,16 @@
 import CompanyRubricCategoriesList, {
   CompanyRubricCategoriesListInterface,
 } from 'components/CompanyRubricCategoriesList';
-import { ROUTE_CMS } from 'config/common';
-import {
-  COL_CATEGORIES,
-  COL_COMPANIES,
-  COL_ICONS,
-  COL_RUBRICS,
-  COL_SHOP_PRODUCTS,
-} from 'db/collectionNames';
+import { ROUTE_CONSOLE } from 'config/common';
+import { COL_CATEGORIES, COL_ICONS, COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import {
-  CategoryInterface,
-  CompanyInterface,
-  RubricInterface,
-  ShopProductInterface,
-} from 'db/uiInterfaces';
+import { CategoryInterface, RubricInterface, ShopProductInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/cms/CmsLayout';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
+import ConsoleLayout from 'layout/console/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getTreeFromList, sortByName } from 'lib/optionsUtils';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { PagePropsInterface } from 'pages/_app';
@@ -36,14 +25,6 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `Категории`,
     config: [
-      {
-        name: 'Компании',
-        href: `${ROUTE_CMS}/companies`,
-      },
-      {
-        name: `${currentCompany?.name}`,
-        href: routeBasePath,
-      },
       {
         name: `Рубрикатор`,
         href: `${routeBasePath}/rubrics`,
@@ -77,9 +58,9 @@ interface RubricCategoriesPageInterface
 
 const RubricCategoriesPage: NextPage<RubricCategoriesPageInterface> = ({ pageUrls, ...props }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout pageUrls={pageUrls} company={props.currentCompany}>
       <RubricCategoriesConsumer {...props} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 
@@ -88,36 +69,20 @@ export const getServerSideProps = async (
 ): Promise<GetServerSidePropsResult<RubricCategoriesPageInterface>> => {
   const { db } = await getDatabase();
   const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
-  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
   const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
   const { query } = context;
-  const initialProps = await getAppInitialData({ context });
-  if (!initialProps.props || !query.rubricId || !query.companyId) {
+  const { props } = await getConsoleInitialData({ context });
+  if (!props || !query.rubricId) {
     return {
       notFound: true,
     };
   }
 
   // get company
-  const locale = initialProps.props.sessionLocale;
+  const locale = props.sessionLocale;
   const rubricId = new ObjectId(`${query.rubricId}`);
   const companyId = new ObjectId(`${query.companyId}`);
-  const companyAggregationResult = await companiesCollection
-    .aggregate<CompanyInterface>([
-      {
-        $match: {
-          _id: companyId,
-        },
-      },
-    ])
-    .toArray();
-  const companyResult = companyAggregationResult[0];
-  if (!companyResult) {
-    return {
-      notFound: true,
-    };
-  }
-  const routeBasePath = `${ROUTE_CMS}/companies/${companyResult._id}`;
+  const routeBasePath = `${ROUTE_CONSOLE}/${props.currentCompany._id}`;
 
   // get categories config
   const categoriesConfigAggregationResult = await shopProductsCollection
@@ -157,7 +122,7 @@ export const getServerSideProps = async (
     }
     const payload: RubricCategoriesConsumerInterface = {
       routeBasePath,
-      currentCompany: castDbData(companyResult),
+      currentCompany: castDbData(props.currentCompany),
       rubric: {
         ...rubric,
         name: getFieldStringLocale(rubric?.nameI18n, locale),
@@ -168,7 +133,7 @@ export const getServerSideProps = async (
 
     return {
       props: {
-        ...initialProps.props,
+        ...props,
         ...castedPayload,
       },
     };
@@ -245,7 +210,7 @@ export const getServerSideProps = async (
 
   const payload: RubricCategoriesConsumerInterface = {
     routeBasePath,
-    currentCompany: companyResult,
+    currentCompany: props.currentCompany,
     rubric: {
       ...rubric,
       name: getFieldStringLocale(rubric?.nameI18n, locale),
@@ -257,7 +222,7 @@ export const getServerSideProps = async (
 
   return {
     props: {
-      ...initialProps.props,
+      ...props,
       ...castedPayload,
     },
   };

@@ -8,7 +8,7 @@ import { CreateConnectionModalInterface } from 'components/Modal/CreateConnectio
 import { ProductSearchModalInterface } from 'components/Modal/ProductSearchModal';
 import Table, { TableColumn } from 'components/Table';
 import TableRowImage from 'components/TableRowImage';
-import { FILTER_SEPARATOR, ROUTE_CMS } from 'config/common';
+import { DEFAULT_COMPANY_SLUG, FILTER_SEPARATOR, ROUTE_CMS } from 'config/common';
 import { CONFIRM_MODAL, CREATE_CONNECTION_MODAL, PRODUCT_SEARCH_MODAL } from 'config/modalVariants';
 import { ProductConnectionItemModel } from 'db/dbModels';
 import {
@@ -313,6 +313,7 @@ export const getServerSideProps = async (
   const payload = await getCmsProduct({
     locale: props.sessionLocale,
     productId: `${productId}`,
+    companySlug: DEFAULT_COMPANY_SLUG,
   });
 
   if (!payload) {

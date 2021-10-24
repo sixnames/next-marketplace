@@ -14,7 +14,9 @@ import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_CATEGORIES,
+  COL_CATEGORY_DESCRIPTIONS,
   COL_PRODUCT_ATTRIBUTES,
+  COL_RUBRIC_DESCRIPTIONS,
   COL_RUBRIC_SEO,
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
@@ -23,6 +25,7 @@ import {
 import { filterAttributesPipeline, shopProductFieldsPipeline } from 'db/dao/constantPipelines';
 import {
   CatalogueBreadcrumbModel,
+  CategoryDescriptionModel,
   ObjectIdModel,
   RubricSeoModel,
   ShopProductModel,
@@ -784,6 +787,8 @@ export const getCatalogueData = async ({
     // const timeStart = new Date().getTime();
     const { db } = await getDatabase();
     const rubricSeoCollection = db.collection<RubricSeoModel>(COL_RUBRIC_SEO);
+    const categoryDescriptionsCollection =
+      db.collection<CategoryDescriptionModel>(COL_CATEGORY_DESCRIPTIONS);
     const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
 
     // args
@@ -1205,6 +1210,58 @@ export const getCatalogueData = async ({
                       },
                     },
 
+                    // get rubric top seo text
+                    {
+                      $lookup: {
+                        from: COL_RUBRIC_DESCRIPTIONS,
+                        as: 'seoDescriptionTop',
+                        pipeline: [
+                          {
+                            $match: {
+                              position: CATALOGUE_SEO_TEXT_POSITION_TOP,
+                              companySlug,
+                              $expr: {
+                                $eq: ['$$rubricId', '$rubricId'],
+                              },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      $addFields: {
+                        seoDescriptionTop: {
+                          $arrayElemAt: ['$seoDescriptionTop', 0],
+                        },
+                      },
+                    },
+
+                    // get rubric bottom seo text
+                    {
+                      $lookup: {
+                        from: COL_RUBRIC_DESCRIPTIONS,
+                        as: 'seoDescriptionBottom',
+                        pipeline: [
+                          {
+                            $match: {
+                              position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+                              companySlug,
+                              $expr: {
+                                $eq: ['$$rubricId', '$rubricId'],
+                              },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      $addFields: {
+                        seoDescriptionBottom: {
+                          $arrayElemAt: ['$seoDescriptionBottom', 0],
+                        },
+                      },
+                    },
+
                     // get rubric variant
                     {
                       $lookup: {
@@ -1363,7 +1420,7 @@ export const getCatalogueData = async ({
       filters: input.filters,
       productsPrices: prices,
       basePath,
-      rubricGender: search ? GENDER_HE : rubric.catalogueTitle.gender,
+      rubricGender: search ? GENDER_HE : rubric.gender,
       brands,
       // visibleAttributesCount,
     });
@@ -1527,10 +1584,10 @@ export const getCatalogueData = async ({
           positionFieldName: 'positioningInTitle',
           attributeNameVisibilityFieldName: 'showNameInTitle',
           attributeVisibilityFieldName: 'showInCatalogueTitle',
-          defaultGender: rubric.catalogueTitle.gender,
-          fallbackTitle: getFieldStringLocale(rubric.catalogueTitle.defaultTitleI18n, locale),
-          defaultKeyword: getFieldStringLocale(rubric.catalogueTitle.keywordI18n, locale),
-          prefix: getFieldStringLocale(rubric.catalogueTitle.prefixI18n, locale),
+          defaultGender: rubric.gender,
+          fallbackTitle: getFieldStringLocale(rubric.defaultTitleI18n, locale),
+          defaultKeyword: getFieldStringLocale(rubric.keywordI18n, locale),
+          prefix: getFieldStringLocale(rubric.prefixI18n, locale),
           attributes: selectedFilters,
           capitaliseKeyWord: rubric.capitalise,
           categories,
@@ -1611,32 +1668,59 @@ export const getCatalogueData = async ({
 
     // rubric seo text as default
     let editUrl = `${ROUTE_CMS}/rubrics/${rubric._id}`;
-    let textTop: string | null | undefined = getFieldStringLocale(rubric.textTopI18n, locale);
-    let textBottom: string | null | undefined = getFieldStringLocale(rubric.textBottomI18n, locale);
+    let textTop: string | null | undefined = getFieldStringLocale(
+      rubric.seoDescriptionTop?.textI18n,
+      locale,
+    );
+    let textBottom: string | null | undefined = getFieldStringLocale(
+      rubric.seoDescriptionBottom?.textI18n,
+      locale,
+    );
     let seoTop = await rubricSeoCollection.findOne({
       rubricId: rubric._id,
       position: CATALOGUE_SEO_TEXT_POSITION_TOP,
       categoryId: null,
+      companySlug,
     });
     let seoBottom = await rubricSeoCollection.findOne({
       rubricId: rubric._id,
       position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
       categoryId: null,
+      companySlug,
     });
 
     // category seo text if selected
     if (selectedCategories.length > 0 && selectedCategories.length < 2 && selectedCategories[0]) {
       editUrl = `${ROUTE_CMS}/rubrics/${rubric._id}/categories/${selectedCategories[0]._id}`;
-      textTop = getFieldStringLocale(selectedCategories[0].textTopI18n, locale);
-      textBottom = getFieldStringLocale(selectedCategories[0].textBottomI18n, locale);
-      seoTop = await rubricSeoCollection.findOne({
+      const textTopDoc = await categoryDescriptionsCollection.findOne({
+        categoryId: selectedCategories[0]._id,
+        companySlug,
         position: CATALOGUE_SEO_TEXT_POSITION_TOP,
-        categoryId: selectedCategories[0]._id,
       });
-      seoBottom = await rubricSeoCollection.findOne({
+      textTop = getFieldStringLocale(textTopDoc?.textI18n, locale);
+      if (textTop) {
+        seoTop = await rubricSeoCollection.findOne({
+          position: CATALOGUE_SEO_TEXT_POSITION_TOP,
+          categoryId: selectedCategories[0]._id,
+        });
+      } else {
+        seoTop = null;
+      }
+
+      const textBottomDoc = await categoryDescriptionsCollection.findOne({
+        categoryId: selectedCategories[0]._id,
+        companySlug,
         position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
-        categoryId: selectedCategories[0]._id,
       });
+      textBottom = getFieldStringLocale(textBottomDoc?.textI18n, locale);
+      if (textBottom) {
+        seoBottom = await rubricSeoCollection.findOne({
+          position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+          categoryId: selectedCategories[0]._id,
+        });
+      } else {
+        seoBottom = null;
+      }
     }
 
     // remove seo text if selected more then one category

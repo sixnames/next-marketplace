@@ -25,18 +25,16 @@ const rubrics: RubricModel[] = [
     shortDescriptionI18n: {
       ru: 'Шампанское',
     },
-    catalogueTitle: {
-      defaultTitleI18n: {
-        ru: 'Шампанское',
-      },
-      keywordI18n: {
-        ru: 'Шампанское',
-      },
-      prefixI18n: {
-        ru: '',
-      },
-      gender: GENDER_IT as GenderModel,
+    defaultTitleI18n: {
+      ru: 'Шампанское',
     },
+    keywordI18n: {
+      ru: 'Шампанское',
+    },
+    prefixI18n: {
+      ru: '',
+    },
+    gender: GENDER_IT as GenderModel,
     variantId: getObjectId('rubricVariant alcohol'),
     filterVisibleAttributeIds: attributes.reduce((acc: ObjectIdModel[], attribute) => {
       const exist =
@@ -68,18 +66,16 @@ const rubrics: RubricModel[] = [
     shortDescriptionI18n: {
       ru: 'Виски',
     },
-    catalogueTitle: {
-      defaultTitleI18n: {
-        ru: 'Виски',
-      },
-      keywordI18n: {
-        ru: 'Виски',
-      },
-      prefixI18n: {
-        ru: '',
-      },
-      gender: GENDER_IT as GenderModel,
+    defaultTitleI18n: {
+      ru: 'Виски',
     },
+    keywordI18n: {
+      ru: 'Виски',
+    },
+    prefixI18n: {
+      ru: '',
+    },
+    gender: GENDER_IT as GenderModel,
     variantId: getObjectId('rubricVariant water'),
     filterVisibleAttributeIds: attributes.reduce((acc: ObjectIdModel[], attribute) => {
       const exist =
@@ -91,12 +87,6 @@ const rubrics: RubricModel[] = [
       return acc;
     }, []),
     attributesGroupIds: [],
-    textTopI18n: {
-      ru: 'Rubric top Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias, doloribus laborum maxime non nulla pariatur repellendus tenetur vel. Alias doloremque dolores earum ipsa magnam maxime nemo quos repellendus suscipit veritatis.',
-    },
-    textBottomI18n: {
-      ru: 'Rubric bottom Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias, doloribus laborum maxime non nulla pariatur repellendus tenetur vel. Alias doloremque dolores earum ipsa magnam maxime nemo quos repellendus suscipit veritatis.',
-    },
     ...booleans,
     ...DEFAULT_COUNTERS_OBJECT,
   },
@@ -112,18 +102,16 @@ const rubrics: RubricModel[] = [
     shortDescriptionI18n: {
       ru: 'Вино',
     },
-    catalogueTitle: {
-      defaultTitleI18n: {
-        ru: 'Вино',
-      },
-      keywordI18n: {
-        ru: 'Вино',
-      },
-      prefixI18n: {
-        ru: 'Купить',
-      },
-      gender: GENDER_IT as GenderModel,
+    defaultTitleI18n: {
+      ru: 'Вино',
     },
+    keywordI18n: {
+      ru: 'Вино',
+    },
+    prefixI18n: {
+      ru: 'Купить',
+    },
+    gender: GENDER_IT as GenderModel,
     variantId: getObjectId('rubricVariant alcohol'),
     filterVisibleAttributeIds: attributes.reduce((acc: ObjectIdModel[], attribute) => {
       const exist =

@@ -13,7 +13,7 @@ import Spinner from 'components/Spinner';
 import Table, { TableColumn } from 'components/Table';
 import TableRowImage from 'components/TableRowImage';
 import TextSeoInfo from 'components/TextSeoInfo';
-import { ROUTE_CMS, DEFAULT_PAGE_FILTER } from 'config/common';
+import { ROUTE_CMS, DEFAULT_PAGE_FILTER, DEFAULT_COMPANY_SLUG } from 'config/common';
 import { CONFIRM_MODAL, CREATE_NEW_PRODUCT_MODAL } from 'config/modalVariants';
 import { TextUniquenessApiParsedResponseModel } from 'db/dbModels';
 import { ConsoleRubricProductsInterface, ProductInterface } from 'db/uiInterfaces';
@@ -44,6 +44,7 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
   totalPages,
   itemPath,
   basePath,
+  companySlug,
 }) => {
   const router = useRouter();
   const setPageHandler = useNavigateToPageHandler();
@@ -150,6 +151,7 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
                 showModal<CreateNewProductModalInterface>({
                   variant: CREATE_NEW_PRODUCT_MODAL,
                   props: {
+                    companySlug,
                     rubricId: `${rubric?._id}`,
                     product: dataItem,
                   },
@@ -270,6 +272,7 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
                   showModal<CreateNewProductModalInterface>({
                     variant: CREATE_NEW_PRODUCT_MODAL,
                     props: {
+                      companySlug,
                       rubricId: `${rubric._id}`,
                     },
                   });
@@ -318,6 +321,7 @@ export const getServerSideProps = async (
     locale,
     basePath,
     currency,
+    companySlug: DEFAULT_COMPANY_SLUG,
   });
 
   const castedPayload = castDbData(payload);
@@ -327,6 +331,7 @@ export const getServerSideProps = async (
       ...initialProps.props,
       ...castedPayload,
       itemPath,
+      companySlug: DEFAULT_COMPANY_SLUG,
     },
   };
 };

@@ -8,7 +8,7 @@ import WpImageUpload from 'components/FormElements/Upload/WpImageUpload';
 import { AttributeOptionsModalInterface } from 'components/Modal/AttributeOptionsModal';
 import PageEditor from 'components/PageEditor';
 import Title from 'components/Title';
-import { PAGE_STATE_OPTIONS } from 'config/common';
+import { PAGE_STATE_OPTIONS, REQUEST_METHOD_PATCH } from 'config/common';
 import { ATTRIBUTE_OPTIONS_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { BlogAttributeInterface, BlogPostInterface } from 'db/uiInterfaces';
@@ -17,7 +17,6 @@ import {
   useDeleteBlogPostPreviewImage,
   useUpdateBlogPost,
   useUpdateBlogPostAttribute,
-  useUploadBlogPostAsset,
   useUploadBlogPostPreviewImage,
 } from 'hooks/mutations/useBlogMutations';
 import useValidationSchema from 'hooks/useValidationSchema';
@@ -39,7 +38,6 @@ const BlogPostsDetails: React.FC<BlogPostsDetailsInterface> = ({ post, attribute
   const [updateBlogPost] = useUpdateBlogPost();
   const [deleteBlogPostPreviewImage] = useDeleteBlogPostPreviewImage();
   const [uploadBlogPostPreviewImage] = useUploadBlogPostPreviewImage();
-  const [uploadBlogPostAsset] = useUploadBlogPostAsset();
   const [updateBlogPostAttribute] = useUpdateBlogPostAttribute();
 
   return (
@@ -179,19 +177,26 @@ const BlogPostsDetails: React.FC<BlogPostsDetailsInterface> = ({ post, attribute
                     setFieldValue('content', value);
                   }}
                   imageUpload={async (file) => {
-                    const payload = await uploadBlogPostAsset({
-                      blogPostId: `${post._id}`,
-                      assets: [file],
-                    });
+                    try {
+                      const formData = new FormData();
+                      formData.append('assets', file);
+                      formData.append('blogPostId', `${post._id}`);
 
-                    if (payload) {
+                      const responseFetch = await fetch('/api/blog/add-post-asset', {
+                        method: REQUEST_METHOD_PATCH,
+                        body: formData,
+                      });
+                      const responseJson = await responseFetch.json();
+
                       return {
-                        url: payload.payload,
+                        url: responseJson.payload,
+                      };
+                    } catch (e) {
+                      console.log(e);
+                      return {
+                        url: '',
                       };
                     }
-                    return {
-                      url: '',
-                    };
                   }}
                 />
               </div>

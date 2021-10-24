@@ -9,6 +9,7 @@ import {
   ProductAssetsModel,
   ProductAttributeModel,
   ProductCardContentModel,
+  ProductCardDescriptionModel,
   ProductModel,
   ProductPayloadModel,
   RubricModel,
@@ -29,6 +30,7 @@ import {
   COL_PRODUCT_ASSETS,
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCT_CARD_CONTENTS,
+  COL_PRODUCT_CARD_DESCRIPTIONS,
   COL_PRODUCTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
@@ -36,7 +38,7 @@ import {
 } from 'db/collectionNames';
 import { DEFAULT_COMPANY_SLUG, DEFAULT_COUNTERS_OBJECT, VIEWS_COUNTER_STEP } from 'config/common';
 import { getNextItemId } from 'lib/itemIdUtils';
-import { createProductSchema, updateProductSchema } from 'validation/productSchema';
+import { updateProductSchema } from 'validation/productSchema';
 import { deleteUpload, getMainImage, reorderAssets } from 'lib/assetUtils/assetUtils';
 
 export const ProductPayload = objectType({
@@ -52,6 +54,7 @@ export const ProductPayload = objectType({
 export const CreateProductInput = inputObjectType({
   name: 'CreateProductInput',
   definition(t) {
+    t.nonNull.string('companySlug');
     t.nonNull.boolean('active');
     t.nonNull.list.nonNull.string('barcode');
     t.nonNull.string('originalName');
@@ -71,7 +74,7 @@ export const CopyProductInput = inputObjectType({
     t.nonNull.objectId('productId');
     t.nonNull.list.nonNull.string('barcode');
     t.nonNull.boolean('active');
-    t.nonNull.string('originalName');
+    t.string('originalName');
     t.json('nameI18n');
     t.json('descriptionI18n');
     t.json('cardDescriptionI18n');
@@ -84,10 +87,11 @@ export const CopyProductInput = inputObjectType({
 export const UpdateProductInput = inputObjectType({
   name: 'UpdateProductInput',
   definition(t) {
+    t.nonNull.string('companySlug');
     t.nonNull.objectId('productId');
     t.list.nonNull.string('barcode');
     t.nonNull.boolean('active');
-    t.nonNull.string('originalName');
+    t.string('originalName');
     t.json('nameI18n');
     t.json('descriptionI18n');
     t.json('cardDescriptionI18n');
@@ -174,6 +178,9 @@ export const ProductMutations = extendType({
         const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
         const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
         const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+        const productsCardDescriptionsCollection = db.collection<ProductCardDescriptionModel>(
+          COL_PRODUCT_CARD_DESCRIPTIONS,
+        );
 
         const session = client.startSession();
 
@@ -198,15 +205,8 @@ export const ProductMutations = extendType({
               return;
             }
 
-            // Validate
-            const validationSchema = await getResolverValidationSchema({
-              context,
-              schema: createProductSchema,
-            });
-            await validationSchema.validate(args.input);
-
             const { input } = args;
-            const { rubricId, ...values } = input;
+            const { rubricId, cardDescriptionI18n, companySlug, ...values } = input;
 
             // Get selected rubric
             const rubric = await rubricsCollection.findOne({ _id: rubricId });
@@ -269,6 +269,22 @@ export const ProductMutations = extendType({
               return;
             }
 
+            // Create card description
+            const createdCardDescription = await productsCardDescriptionsCollection.insertOne({
+              productSlug: itemId,
+              productId,
+              textI18n: cardDescriptionI18n || {},
+              companySlug,
+            });
+            if (!createdCardDescription.acknowledged) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.create.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
             // Create algolia object
             const algoliaResult = await saveAlgoliaObjects({
               indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
@@ -296,7 +312,8 @@ export const ProductMutations = extendType({
             // check description uniqueness
             await checkProductDescriptionUniqueness({
               product: createdProduct,
-              cardDescriptionI18n: values.cardDescriptionI18n,
+              cardDescriptionI18n: cardDescriptionI18n,
+              companySlug,
             });
 
             mutationPayload = {
@@ -333,8 +350,10 @@ export const ProductMutations = extendType({
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
         const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-        const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
         const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+        const productsCardDescriptionsCollection = db.collection<ProductCardDescriptionModel>(
+          COL_PRODUCT_CARD_DESCRIPTIONS,
+        );
 
         const session = client.startSession();
 
@@ -367,7 +386,7 @@ export const ProductMutations = extendType({
             await validationSchema.validate(args.input);
 
             const { input } = args;
-            const { productId, ...values } = input;
+            const { productId, companySlug, cardDescriptionI18n, ...values } = input;
 
             // Check product availability
             const product = await productsCollection.findOne({ _id: productId });
@@ -392,9 +411,15 @@ export const ProductMutations = extendType({
             }
 
             // check description uniqueness
+            const cardDescription = await productsCardDescriptionsCollection.findOne({
+              productId,
+              companySlug,
+            });
             await checkProductDescriptionUniqueness({
               product,
-              cardDescriptionI18n: values.cardDescriptionI18n,
+              cardDescriptionI18n,
+              oldCardDescriptionI18n: cardDescription?.textI18n,
+              companySlug,
             });
 
             // Update product
@@ -405,6 +430,7 @@ export const ProductMutations = extendType({
               {
                 $set: {
                   ...values,
+                  originalName: values.originalName || '',
                   updatedAt: new Date(),
                 },
               },
@@ -413,28 +439,33 @@ export const ProductMutations = extendType({
               },
             );
 
-            // update shop products
-            const updatedShopProductResult = await shopProductsCollection.updateMany(
-              {
-                productId,
-              },
-              {
-                $set: {
-                  nameI18n: values.nameI18n,
-                  descriptionI18n: values.descriptionI18n,
-                  originalName: values.originalName,
-                  gender: values.gender,
-                  updatedAt: new Date(),
+            // Update card description
+            const createdCardDescription =
+              await productsCardDescriptionsCollection.findOneAndUpdate(
+                {
+                  productId,
+                  companySlug,
                 },
-              },
-            );
+                {
+                  $set: {
+                    textI18n: cardDescriptionI18n || {},
+                  },
+                },
+                {
+                  upsert: true,
+                },
+              );
+            if (!createdCardDescription.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage(`products.create.error`),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
             const updatedProduct = updatedProductResult.value;
-            if (
-              !updatedProductResult.ok ||
-              !updatedProduct ||
-              !updatedShopProductResult.acknowledged
-            ) {
+            if (!updatedProductResult.ok || !updatedProduct) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`products.update.error`),
@@ -727,6 +758,7 @@ export const ProductMutations = extendType({
               _id: newProductId,
               itemId,
               slug: itemId,
+              originalName: values.originalName || '',
               mainImage: `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`,
               rubricId: sourceProduct.rubricId,
               rubricSlug: sourceProduct.rubricSlug,
@@ -1285,13 +1317,6 @@ export const ProductMutations = extendType({
               await session.abortTransaction();
               return;
             }
-
-            // Validate
-            const validationSchema = await getResolverValidationSchema({
-              context,
-              schema: createProductSchema,
-            });
-            await validationSchema.validate(args.input.productFields);
 
             const { input } = args;
             const { productFields, available, price, shopId } = input;

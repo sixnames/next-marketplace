@@ -13,6 +13,7 @@ import {
   CartModel,
   CartProductModel,
   CatalogueBreadcrumbModel,
+  CategoryDescriptionModel,
   CategoryModel,
   CityModel,
   CompanyModel,
@@ -41,6 +42,7 @@ import {
   ProductAttributeModel,
   ProductCardBreadcrumbModel,
   ProductCardContentModel,
+  ProductCardDescriptionModel,
   ProductCardPricesModel,
   ProductConnectionItemModel,
   ProductConnectionModel,
@@ -49,6 +51,7 @@ import {
   PromoModel,
   RoleModel,
   RoleRuleModel,
+  RubricDescriptionModel,
   RubricModel,
   RubricSeoModel,
   RubricVariantModel,
@@ -255,6 +258,11 @@ export interface ProductAttributesGroupInterface extends AttributesGroupModel {
   selectAttributesAST?: ProductAttributeInterface[] | null;
 }
 
+export interface ProductCardDescriptionInterface extends ProductCardDescriptionModel {
+  text?: string | null;
+  seo?: ProductSeoModel | null;
+}
+
 export interface ProductInterface extends ProductModel {
   name?: string | null;
   description?: string | null;
@@ -290,9 +298,8 @@ export interface ProductInterface extends ProductModel {
   categories?: CategoryInterface[] | null;
   snippetTitle?: string | null;
   cardTitle?: string | null;
-  cardDescription?: string | null;
+  cardDescription?: ProductCardDescriptionInterface | null;
   shops?: ShopInterface[] | null;
-  seo?: ProductSeoModel | null;
 }
 
 export interface RoleRuleInterface extends RoleRuleModel {
@@ -326,6 +333,13 @@ export interface RubricInterface extends RubricModel {
   categories?: CategoryInterface[] | null;
   textTop?: string | null;
   textBottom?: string | null;
+  seoDescriptionTop?: RubricDescriptionInterface | null;
+  seoDescriptionBottom?: RubricDescriptionInterface | null;
+}
+
+export interface RubricDescriptionInterface extends RubricDescriptionModel {
+  text?: string | null;
+  seo?: ProductSeoModel | null;
 }
 
 export interface CategoryInterface extends CategoryModel {
@@ -342,6 +356,13 @@ export interface CategoryInterface extends CategoryModel {
   textTop?: string | null;
   textBottom?: string | null;
   childrenCount?: number | null;
+  seoDescriptionTop?: CategoryDescriptionInterface | null;
+  seoDescriptionBottom?: CategoryDescriptionInterface | null;
+}
+
+export interface CategoryDescriptionInterface extends CategoryDescriptionModel {
+  text?: string | null;
+  seo?: ProductSeoModel | null;
 }
 
 export interface ShopProductInterface extends ShopProductModel {
@@ -641,7 +662,6 @@ export interface InitialCardDataInterface {
   cardLayout: string;
   rubric: RubricInterface;
   cardPrices: ProductCardPricesModel;
-  productSeo?: ProductSeoModel | null;
 }
 
 export interface SsrConfigsInterface {
@@ -781,6 +801,7 @@ export interface AppPaginationWithFiltersInterface<Model> extends AppPaginationI
 export interface ConsoleRubricProductsInterface
   extends AppPaginationWithFiltersInterface<ProductInterface> {
   rubric?: RubricInterface | null;
+  companySlug: string;
 }
 
 export interface CompanyShopProductsPageInterface

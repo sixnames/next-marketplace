@@ -70,7 +70,7 @@ const CategoryMainFields: React.FC<CategoryMainFieldsInterface> = ({ seoBottom, 
       <FormikTranslationsInput
         variant={'textarea'}
         className='h-[30rem]'
-        label={'SEO текые вверху каталога'}
+        label={'SEO текст вверху каталога'}
         name={'textTopI18n'}
         testId={'textTopI18n'}
         additionalUi={(currentLocale) => {
@@ -98,7 +98,7 @@ const CategoryMainFields: React.FC<CategoryMainFieldsInterface> = ({ seoBottom, 
       <FormikTranslationsInput
         variant={'textarea'}
         className='h-[30rem]'
-        label={'SEO текые внизу каталога'}
+        label={'SEO текст внизу каталога'}
         name={'textBottomI18n'}
         testId={'textBottomI18n'}
         additionalUi={(currentLocale) => {

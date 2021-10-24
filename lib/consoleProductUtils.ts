@@ -67,6 +67,7 @@ export interface GetConsoleRubricProductsInputInterface {
   query: ParsedUrlQuery;
   page?: number;
   excludedProductsIds?: ObjectIdModel[] | null;
+  companySlug: string;
 }
 
 export const getConsoleRubricProducts = async ({
@@ -75,6 +76,7 @@ export const getConsoleRubricProducts = async ({
   query,
   currency,
   excludedProductsIds,
+  companySlug,
   ...props
 }: GetConsoleRubricProductsInputInterface): Promise<ConsoleRubricProductsInterface> => {
   let fallbackPayload: ConsoleRubricProductsInterface = {
@@ -86,6 +88,7 @@ export const getConsoleRubricProducts = async ({
     docs: [],
     attributes: [],
     selectedAttributes: [],
+    companySlug,
   };
 
   try {
@@ -214,7 +217,7 @@ export const getConsoleRubricProducts = async ({
               ...productCategoriesPipeline(),
 
               // get product seo info
-              ...productSeoPipeline,
+              ...productSeoPipeline(companySlug),
 
               // count shop products
               {
@@ -553,7 +556,7 @@ export const getConsoleRubricProducts = async ({
       filters,
       productsPrices: prices,
       basePath,
-      rubricGender: search ? GENDER_HE : rubric.catalogueTitle.gender,
+      rubricGender: search ? GENDER_HE : rubric.gender,
       brands,
     });
 
@@ -599,6 +602,604 @@ export const getConsoleRubricProducts = async ({
 
     const payload: ConsoleRubricProductsInterface = {
       clearSlug: basePath,
+      companySlug,
+      basePath,
+      page,
+      totalDocs,
+      totalPages,
+      docs,
+      attributes: castedAttributes,
+      selectedAttributes,
+      rubric: {
+        ...rubric,
+        name: getFieldStringLocale(rubric.nameI18n, locale),
+      },
+    };
+
+    return payload;
+  } catch (e) {
+    console.log(e);
+    return fallbackPayload;
+  }
+};
+
+export interface GetConsoleCompanyRubricProductsInputInterface {
+  locale: string;
+  basePath: string;
+  currency: string;
+  query: ParsedUrlQuery;
+  page?: number;
+  excludedProductsIds?: ObjectIdModel[] | null;
+  companySlug: string;
+  companyId: string;
+}
+
+export const getConsoleCompanyRubricProducts = async ({
+  locale,
+  basePath,
+  query,
+  currency,
+  excludedProductsIds,
+  companySlug,
+  companyId,
+  ...props
+}: GetConsoleCompanyRubricProductsInputInterface): Promise<ConsoleRubricProductsInterface> => {
+  let fallbackPayload: ConsoleRubricProductsInterface = {
+    clearSlug: basePath,
+    basePath,
+    page: 1,
+    totalDocs: 0,
+    totalPages: 0,
+    docs: [],
+    attributes: [],
+    selectedAttributes: [],
+    companySlug,
+  };
+
+  try {
+    const { db } = await getDatabase();
+    const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
+    const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
+    const [rubricId, ...filters] = alwaysArray(query.filters);
+    const search = alwaysString(query.search);
+
+    // get rubric
+    const rubric = await rubricsCollection.findOne({
+      _id: new ObjectId(rubricId),
+    });
+    if (!rubric) {
+      return fallbackPayload;
+    }
+
+    // update fallback payload
+    fallbackPayload = {
+      ...fallbackPayload,
+      rubric,
+    };
+
+    // cast selected filters
+    const {
+      skip,
+      page,
+      limit,
+      rubricFilters,
+      brandStage,
+      brandCollectionStage,
+      optionsStage,
+      pricesStage,
+      photoStage,
+    } = castCatalogueFilters({
+      filters,
+      initialPage: props.page,
+      initialLimit: PAGINATION_DEFAULT_LIMIT,
+    });
+
+    // rubric stage
+    let rubricStage: Record<any, any> = {
+      rubricId: new ObjectId(rubricId),
+    };
+    if (rubricFilters && rubricFilters.length > 0) {
+      rubricStage = {
+        rubricSlug: {
+          $in: rubricFilters,
+        },
+      };
+    }
+
+    // search stage
+    let searchStage = {};
+    let searchIds: ObjectIdModel[] = [];
+    if (search) {
+      searchIds = await getAlgoliaProductsSearch({
+        indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
+        search,
+        excludedProductsIds,
+      });
+      searchStage = {
+        productId: {
+          $in: searchIds,
+        },
+      };
+    }
+    if (search && searchIds.length < 1) {
+      return fallbackPayload;
+    }
+
+    // excluded ids stage
+    const excludedIdsStage =
+      excludedProductsIds && excludedProductsIds.length > 0
+        ? {
+            _id: {
+              $nin: excludedProductsIds,
+            },
+          }
+        : {};
+
+    // initial match
+    const productsInitialMatch = {
+      companyId: new ObjectId(companyId),
+      ...searchStage,
+      ...excludedIdsStage,
+      ...rubricStage,
+      ...brandStage,
+      ...brandCollectionStage,
+      ...optionsStage,
+      ...pricesStage,
+      ...photoStage,
+    };
+
+    const productDataAggregationResult = await shopProductsCollection
+      .aggregate<ProductsAggregationInterface>([
+        // match shop products
+        {
+          $match: productsInitialMatch,
+        },
+
+        // unwind selectedOptionsSlugs field
+        {
+          $unwind: {
+            path: '$selectedOptionsSlugs',
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+
+        // group by productId
+        {
+          $group: {
+            _id: '$productId',
+            rubricId: { $first: '$rubricId' },
+            rubricSlug: { $first: `$rubricSlug` },
+            brandSlug: { $first: '$brandSlug' },
+            brandCollectionSlug: { $first: '$brandCollectionSlug' },
+            minPrice: {
+              $min: '$price',
+            },
+            maxPrice: {
+              $min: '$price',
+            },
+            available: {
+              $max: '$available',
+            },
+            selectedOptionsSlugs: {
+              $addToSet: '$selectedOptionsSlugs',
+            },
+            shopsIds: {
+              $addToSet: '$shopId',
+            },
+          },
+        },
+
+        // facets
+        {
+          $facet: {
+            // docs facet
+            docs: [
+              {
+                $sort: {
+                  _id: SORT_DESC,
+                },
+              },
+              {
+                $skip: skip,
+              },
+              {
+                $limit: limit,
+              },
+
+              // get shop product fields
+              ...shopProductFieldsPipeline('$_id'),
+              {
+                $match: {
+                  product: {
+                    $exists: true,
+                  },
+                },
+              },
+              {
+                $replaceRoot: {
+                  newRoot: '$product',
+                },
+              },
+
+              // get product attributes
+              {
+                $lookup: {
+                  from: COL_PRODUCT_ATTRIBUTES,
+                  as: 'attributes',
+                  let: {
+                    productId: '$_id',
+                  },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $eq: ['$$productId', '$productId'],
+                        },
+                        viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
+                      },
+                    },
+                  ],
+                },
+              },
+
+              // get product seo info
+              ...productSeoPipeline(companySlug),
+            ],
+
+            // prices facet
+            prices: [
+              {
+                $group: {
+                  _id: '$minPrice',
+                },
+              },
+            ],
+
+            // categories facet
+            categories: [
+              {
+                $unwind: {
+                  path: '$selectedOptionsSlugs',
+                  preserveNullAndEmptyArrays: true,
+                },
+              },
+              {
+                $group: {
+                  _id: null,
+                  rubricId: { $first: '$rubricId' },
+                  selectedOptionsSlugs: {
+                    $addToSet: '$selectedOptionsSlugs',
+                  },
+                },
+              },
+              {
+                $lookup: {
+                  from: COL_CATEGORIES,
+                  as: 'categories',
+                  let: {
+                    rubricId: '$rubricId',
+                    selectedOptionsSlugs: '$selectedOptionsSlugs',
+                  },
+                  pipeline: [
+                    {
+                      $match: {
+                        $and: [
+                          {
+                            $expr: {
+                              $eq: ['$rubricId', '$$rubricId'],
+                            },
+                          },
+                          {
+                            $expr: {
+                              $in: ['$slug', '$$selectedOptionsSlugs'],
+                            },
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      $sort: {
+                        _id: SORT_DESC,
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                $unwind: {
+                  path: '$categories',
+                  preserveNullAndEmptyArrays: true,
+                },
+              },
+              {
+                $match: {
+                  categories: {
+                    $exists: true,
+                  },
+                },
+              },
+              {
+                $replaceRoot: {
+                  newRoot: '$categories',
+                },
+              },
+            ],
+
+            // brands facet
+            brands: [
+              {
+                $group: {
+                  _id: '$brandSlug',
+                  collectionSlugs: {
+                    $addToSet: '$brandCollectionSlug',
+                  },
+                },
+              },
+              {
+                $lookup: {
+                  from: COL_BRANDS,
+                  as: 'brand',
+                  let: {
+                    slug: '$_id',
+                    collectionSlugs: '$collectionSlugs',
+                  },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $eq: ['$slug', '$$slug'],
+                        },
+                      },
+                    },
+                    {
+                      $lookup: {
+                        from: COL_BRAND_COLLECTIONS,
+                        as: 'collections',
+                        let: {
+                          brandId: '$_id',
+                        },
+                        pipeline: [
+                          {
+                            $match: {
+                              $and: [
+                                {
+                                  $expr: {
+                                    $eq: ['$brandId', '$$brandId'],
+                                  },
+                                },
+                                {
+                                  $expr: {
+                                    $in: ['$slug', '$$collectionSlugs'],
+                                  },
+                                },
+                              ],
+                            },
+                          },
+                          {
+                            $sort: {
+                              _id: SORT_DESC,
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                $addFields: {
+                  brand: {
+                    $arrayElemAt: ['$brand', 0],
+                  },
+                },
+              },
+              {
+                $match: {
+                  brand: {
+                    $exists: true,
+                  },
+                },
+              },
+              {
+                $replaceRoot: {
+                  newRoot: '$brand',
+                },
+              },
+              {
+                $sort: {
+                  _id: SORT_DESC,
+                },
+              },
+            ],
+
+            // countAllDocs facet
+            countAllDocs: [
+              {
+                $count: 'totalDocs',
+              },
+            ],
+
+            // rubric facet
+            rubric: [
+              {
+                $group: {
+                  _id: '$rubricId',
+                },
+              },
+              {
+                $lookup: {
+                  from: COL_RUBRICS,
+                  as: 'rubric',
+                  let: {
+                    rubricId: '$_id',
+                  },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $eq: ['$_id', '$$rubricId'],
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                $replaceRoot: {
+                  newRoot: {
+                    $arrayElemAt: ['$rubric', 0],
+                  },
+                },
+              },
+            ],
+
+            // attributes facet
+            attributes: filterAttributesPipeline({
+              _id: SORT_DESC,
+            }),
+          },
+        },
+
+        // cast facets
+        {
+          $addFields: {
+            totalDocsObject: { $arrayElemAt: ['$countAllDocs', 0] },
+            rubric: { $arrayElemAt: ['$rubric', 0] },
+          },
+        },
+        {
+          $addFields: {
+            countAllDocs: null,
+            totalDocsObject: null,
+            totalDocs: '$totalDocsObject.totalDocs',
+          },
+        },
+        {
+          $addFields: {
+            totalPagesFloat: {
+              $divide: ['$totalDocs', limit],
+            },
+          },
+        },
+        {
+          $addFields: {
+            totalPages: {
+              $ceil: '$totalPagesFloat',
+            },
+          },
+        },
+      ])
+      .toArray();
+    const productDataAggregation = productDataAggregationResult[0];
+
+    if (!productDataAggregation) {
+      return fallbackPayload;
+    }
+
+    const { totalDocs, totalPages, attributes, prices, brands, categories } =
+      productDataAggregation;
+
+    // get filter attributes
+    // price attribute
+    const priceAttribute = getPriceAttribute(currency);
+
+    // category attribute
+    let categoryAttribute: AttributeInterface[] = [];
+    if (categories && categories.length) {
+      categoryAttribute = [
+        getCategoryFilterAttribute({
+          locale,
+          categories,
+        }),
+      ];
+    }
+
+    // brand attribute
+    let brandAttribute: AttributeInterface[] = [];
+    const showBrandInFilter = search ? true : Boolean(rubric?.showBrandInFilter);
+    if (brands && brands.length > 0 && showBrandInFilter) {
+      brandAttribute = [
+        getBrandFilterAttribute({
+          locale,
+          brands,
+        }),
+      ];
+    }
+
+    // rubric attributes
+    const rubricAttributes = (attributes || []).map((attribute) => {
+      return {
+        ...attribute,
+        options: getTreeFromList({
+          list: attribute.options,
+          childrenFieldName: 'options',
+        }),
+      };
+    });
+
+    // common attribute
+    const commonAttribute = getCommonFilterAttribute();
+
+    // cast attributes
+    const { castedAttributes, selectedAttributes } = await getCatalogueAttributes({
+      attributes: [
+        ...categoryAttribute,
+        priceAttribute,
+        ...brandAttribute,
+        ...rubricAttributes,
+        commonAttribute,
+      ],
+      locale,
+      filters,
+      productsPrices: prices,
+      basePath,
+      rubricGender: search ? GENDER_HE : rubric.gender,
+      brands,
+    });
+
+    // rubric attributes
+    const allRubricAttributes = await getRubricAllAttributes(rubric._id);
+    const docs: ProductInterface[] = [];
+    for await (const product of productDataAggregation.docs) {
+      const cardPrices = {
+        _id: new ObjectId(),
+        min: `${noNaN(product.cardPrices?.min)}`,
+        max: `${noNaN(product.cardPrices?.max)}`,
+      };
+
+      const productCategoryAttributes = await getCategoryAllAttributes(
+        product.selectedOptionsSlugs,
+      );
+
+      // title
+      const snippetTitle = generateSnippetTitle({
+        locale,
+        brand: product.brand,
+        rubricName: getFieldStringLocale(rubric.nameI18n, locale),
+        showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
+        showCategoryInProductTitle: rubric.showCategoryInProductTitle,
+        attributes: product.attributes || [],
+        categories: product.categories,
+        titleCategoriesSlugs: product.titleCategoriesSlugs,
+        originalName: product.originalName,
+        defaultGender: product.gender,
+      });
+
+      const castedProduct: ProductInterface = {
+        ...product,
+        cardPrices,
+        snippetTitle,
+        name: getFieldStringLocale(product.nameI18n, locale),
+        attributesCount: countProductAttributes(product.attributes),
+        totalAttributesCount: allRubricAttributes.length + productCategoryAttributes.length,
+      };
+
+      docs.push(castedProduct);
+    }
+
+    const payload: ConsoleRubricProductsInterface = {
+      clearSlug: basePath,
+      companySlug,
       basePath,
       page,
       totalDocs,
@@ -1106,7 +1707,7 @@ export const getConsoleShopProducts = async ({
       filters,
       productsPrices: prices,
       basePath,
-      rubricGender: search ? GENDER_HE : rubric.catalogueTitle.gender,
+      rubricGender: search ? GENDER_HE : rubric.gender,
       brands,
     });
 
@@ -1239,6 +1840,7 @@ export async function getAddShopProductSsrData({
   basePath,
   query,
   currency,
+  companySlug,
 }: GetAddShopProductSsrDataInterface): Promise<ShopAddProductsListRouteReduced | null> {
   const { db } = await getDatabase();
   const shopsCollection = db.collection<ShopInterface>(COL_SHOPS);
@@ -1307,6 +1909,7 @@ export async function getAddShopProductSsrData({
       locale,
       basePath,
       currency,
+      companySlug,
     });
 
   if (!rubric) {
@@ -1326,6 +1929,7 @@ export async function getAddShopProductSsrData({
     selectedAttributes,
     page,
     docs,
+    companySlug,
   };
 
   return payload;

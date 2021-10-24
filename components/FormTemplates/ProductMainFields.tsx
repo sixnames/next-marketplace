@@ -42,14 +42,7 @@ const ProductMainFields: React.FC<ProductMainFieldsInterface> = ({ seo }) => {
 
   return (
     <React.Fragment>
-      <FormikInput
-        isRequired
-        label={'Оригинальное название'}
-        name={'originalName'}
-        testId={'originalName'}
-        showInlineError
-      />
-
+      <FormikInput label={'Оригинальное название'} name={'originalName'} testId={'originalName'} />
       <FormikTranslationsInput label={'Название'} name={'nameI18n'} testId={'nameI18n'} />
 
       <FormikSelect

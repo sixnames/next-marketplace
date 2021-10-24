@@ -2,7 +2,7 @@ import Checkbox from 'components/FormElements/Checkbox/Checkbox';
 import Inner from 'components/Inner';
 import RequestError from 'components/RequestError';
 import WpTooltip from 'components/WpTooltip';
-import { ROUTE_CMS } from 'config/common';
+import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
 import { COL_CATEGORIES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -200,6 +200,7 @@ export const getServerSideProps = async (
   const payload = await getCmsProduct({
     locale: props.sessionLocale,
     productId: `${productId}`,
+    companySlug: DEFAULT_COMPANY_SLUG,
   });
 
   if (!payload) {

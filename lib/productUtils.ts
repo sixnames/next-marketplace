@@ -1,4 +1,8 @@
-import { COL_PRODUCT_ASSETS, COL_PRODUCTS } from 'db/collectionNames';
+import {
+  COL_PRODUCT_ASSETS,
+  COL_PRODUCT_CARD_DESCRIPTIONS,
+  COL_PRODUCTS,
+} from 'db/collectionNames';
 import {
   brandPipeline,
   productAttributesPipeline,
@@ -23,6 +27,7 @@ import { ObjectId } from 'mongodb';
 interface GetCmsProductInterface {
   productId: string;
   locale: string;
+  companySlug: string;
 }
 
 interface GetCmsProductPayloadInterface {
@@ -34,6 +39,7 @@ interface GetCmsProductPayloadInterface {
 export async function getCmsProduct({
   productId,
   locale,
+  companySlug,
 }: GetCmsProductInterface): Promise<GetCmsProductPayloadInterface | null> {
   const { db } = await getDatabase();
   const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
@@ -42,6 +48,34 @@ export async function getCmsProduct({
       {
         $match: {
           _id: new ObjectId(productId),
+        },
+      },
+
+      // get seo text
+      {
+        $lookup: {
+          from: COL_PRODUCT_CARD_DESCRIPTIONS,
+          as: 'cardDescription',
+          let: {
+            productId: '$_id',
+          },
+          pipeline: [
+            {
+              $match: {
+                companySlug,
+                $expr: {
+                  $eq: ['$$productId', '$productId'],
+                },
+              },
+            },
+          ],
+        },
+      },
+      {
+        $addFields: {
+          cardDescription: {
+            $arrayElemAt: ['$cardDescription', 0],
+          },
         },
       },
 
@@ -78,7 +112,7 @@ export async function getCmsProduct({
       ...productConnectionsSimplePipeline,
 
       // get product seo info
-      ...productSeoPipeline,
+      ...productSeoPipeline(companySlug),
     ])
     .toArray();
   const initialProduct = productAggregation[0];

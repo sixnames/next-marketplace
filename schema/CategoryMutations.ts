@@ -12,6 +12,7 @@ import {
   ShopProductModel,
   RubricModel,
   ObjectIdModel,
+  CategoryDescriptionModel,
 } from 'db/dbModels';
 import {
   getOperationPermission,
@@ -26,6 +27,7 @@ import {
   COL_RUBRICS,
   COL_CATEGORIES,
   COL_SHOP_PRODUCTS,
+  COL_CATEGORY_DESCRIPTIONS,
 } from 'db/collectionNames';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
@@ -50,6 +52,7 @@ export const CategoryPayload = objectType({
 export const CreateCategoryInput = inputObjectType({
   name: 'CreateCategoryInput',
   definition(t) {
+    t.nonNull.string('companySlug');
     t.nonNull.json('nameI18n');
     t.json('textTopI18n');
     t.json('textBottomI18n');
@@ -66,6 +69,7 @@ export const CreateCategoryInput = inputObjectType({
 export const UpdateCategoryInput = inputObjectType({
   name: 'UpdateCategoryInput',
   definition(t) {
+    t.nonNull.string('companySlug');
     t.nonNull.objectId('categoryId');
     t.nonNull.json('nameI18n');
     t.json('textTopI18n');
@@ -150,6 +154,8 @@ export const CategoryMutations = extendType({
           const { db } = await getDatabase();
           const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+          const categoryDescriptionsCollection =
+            db.collection<CategoryDescriptionModel>(COL_CATEGORY_DESCRIPTIONS);
           const { input } = args;
 
           // Check rubric availability
@@ -196,10 +202,11 @@ export const CategoryMutations = extendType({
           }
 
           // Create category
+          const { companySlug, textBottomI18n, textTopI18n, ...values } = input;
           const slug = await getNextItemId(COL_CATEGORIES);
           const createdCategoryId = new ObjectId();
           const createdCategoryResult = await categoriesCollection.insertOne({
-            ...input,
+            ...values,
             parentTreeIds: [...parentTreeIds, createdCategoryId],
             slug: `${CATEGORY_SLUG_PREFIX}${slug}`,
             attributesGroupIds: [],
@@ -217,11 +224,36 @@ export const CategoryMutations = extendType({
           const createdCategory = await categoriesCollection.findOne({
             _id: createdCategoryResult.insertedId,
           });
-          if (createdCategory) {
-            await checkCategorySeoTextUniqueness({
-              category: createdCategory,
-              textTopI18n: input.textTopI18n,
-              textBottomI18n: input.textBottomI18n,
+          if (!createdCategory) {
+            return {
+              success: false,
+              message: await getApiMessage('categories.create.error'),
+            };
+          }
+          await checkCategorySeoTextUniqueness({
+            category: createdCategory,
+            textTopI18n: input.textTopI18n,
+            textBottomI18n: input.textBottomI18n,
+            companySlug,
+          });
+
+          // create seo texts
+          if (textTopI18n) {
+            await categoryDescriptionsCollection.insertOne({
+              companySlug,
+              position: 'top',
+              categorySlug: slug,
+              categoryId: createdCategory._id,
+              textI18n: textTopI18n,
+            });
+          }
+          if (textBottomI18n) {
+            await categoryDescriptionsCollection.insertOne({
+              companySlug,
+              position: 'bottom',
+              categorySlug: slug,
+              categoryId: createdCategory._id,
+              textI18n: textBottomI18n,
             });
           }
 
@@ -274,8 +306,11 @@ export const CategoryMutations = extendType({
           const { db } = await getDatabase();
           const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+          const categoryDescriptionsCollection =
+            db.collection<CategoryDescriptionModel>(COL_CATEGORY_DESCRIPTIONS);
           const { input } = args;
-          const { categoryId, rubricId, ...values } = input;
+          const { categoryId, rubricId, companySlug, textTopI18n, textBottomI18n, ...values } =
+            input;
 
           // Check rubric availability
           const rubric = await rubricsCollection.findOne({
@@ -296,13 +331,6 @@ export const CategoryMutations = extendType({
               message: await getApiMessage('categories.update.notFound'),
             };
           }
-
-          // check text uniqueness
-          await checkCategorySeoTextUniqueness({
-            category,
-            textTopI18n: input.textTopI18n,
-            textBottomI18n: input.textBottomI18n,
-          });
 
           // Check if category already exist
           const exist = await findDocumentByI18nField<CategoryModel>({
@@ -327,7 +355,7 @@ export const CategoryMutations = extendType({
             };
           }
 
-          // Create category
+          // update category
           const updatedCategoryResult = await categoriesCollection.findOneAndUpdate(
             { _id: categoryId },
             {
@@ -345,6 +373,58 @@ export const CategoryMutations = extendType({
               success: false,
               message: await getApiMessage('categories.update.error'),
             };
+          }
+
+          // check text uniqueness
+          await checkCategorySeoTextUniqueness({
+            category,
+            textTopI18n,
+            textBottomI18n,
+            companySlug,
+          });
+
+          // update seo text
+          if (textTopI18n) {
+            await categoryDescriptionsCollection.findOneAndUpdate(
+              {
+                companySlug,
+                position: 'top',
+                categoryId: updatedCategory._id,
+              },
+              {
+                $set: {
+                  companySlug,
+                  position: 'top',
+                  categoryId: updatedCategory._id,
+                  categorySlug: updatedCategory.slug,
+                  textI18n: textTopI18n || {},
+                },
+              },
+              {
+                upsert: true,
+              },
+            );
+          }
+          if (textBottomI18n) {
+            await categoryDescriptionsCollection.findOneAndUpdate(
+              {
+                companySlug,
+                position: 'bottom',
+                categoryId: updatedCategory._id,
+              },
+              {
+                $set: {
+                  companySlug,
+                  position: 'bottom',
+                  categoryId: updatedCategory._id,
+                  categorySlug: updatedCategory.slug,
+                  textI18n: textBottomI18n || {},
+                },
+              },
+              {
+                upsert: true,
+              },
+            );
           }
 
           return {

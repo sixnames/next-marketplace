@@ -511,7 +511,7 @@ export type CopyProductInput = {
   productId: Scalars['ObjectId'];
   barcode: Array<Scalars['String']>;
   active: Scalars['Boolean'];
-  originalName: Scalars['String'];
+  originalName?: Maybe<Scalars['String']>;
   nameI18n?: Maybe<Scalars['JSONObject']>;
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
   cardDescriptionI18n?: Maybe<Scalars['JSONObject']>;
@@ -550,6 +550,7 @@ export type CreateBrandInput = {
 };
 
 export type CreateCategoryInput = {
+  companySlug: Scalars['String'];
   nameI18n: Scalars['JSONObject'];
   textTopI18n?: Maybe<Scalars['JSONObject']>;
   textBottomI18n?: Maybe<Scalars['JSONObject']>;
@@ -625,6 +626,7 @@ export type CreateProductConnectionInput = {
 };
 
 export type CreateProductInput = {
+  companySlug: Scalars['String'];
   active: Scalars['Boolean'];
   barcode: Array<Scalars['String']>;
   originalName: Scalars['String'];
@@ -651,6 +653,7 @@ export type CreateRoleInput = {
 };
 
 export type CreateRubricInput = {
+  companySlug: Scalars['String'];
   nameI18n: Scalars['JSONObject'];
   capitalise?: Maybe<Scalars['Boolean']>;
   showRubricNameInProductTitle?: Maybe<Scalars['Boolean']>;
@@ -662,7 +665,10 @@ export type CreateRubricInput = {
   textTopI18n?: Maybe<Scalars['JSONObject']>;
   textBottomI18n?: Maybe<Scalars['JSONObject']>;
   variantId: Scalars['ObjectId'];
-  catalogueTitle: RubricCatalogueTitleInput;
+  defaultTitleI18n: Scalars['JSONObject'];
+  prefixI18n?: Maybe<Scalars['JSONObject']>;
+  keywordI18n: Scalars['JSONObject'];
+  gender: Gender;
 };
 
 export type CreateRubricVariantInput = {
@@ -2342,7 +2348,10 @@ export type Rubric = {
   views: Scalars['JSONObject'];
   capitalise?: Maybe<Scalars['Boolean']>;
   priorities: Scalars['JSONObject'];
-  catalogueTitle: RubricCatalogueTitle;
+  defaultTitleI18n: Scalars['JSONObject'];
+  prefixI18n?: Maybe<Scalars['JSONObject']>;
+  keywordI18n: Scalars['JSONObject'];
+  gender: Gender;
   name: Scalars['String'];
   description: Scalars['String'];
   shortDescription: Scalars['String'];
@@ -2379,24 +2388,6 @@ export type RubricAttributesGroup = {
   nameI18n: Scalars['JSONObject'];
   attributesIds: Array<Scalars['ObjectId']>;
   name: Scalars['String'];
-};
-
-export type RubricCatalogueTitle = {
-  __typename?: 'RubricCatalogueTitle';
-  defaultTitleI18n: Scalars['JSONObject'];
-  prefixI18n?: Maybe<Scalars['JSONObject']>;
-  keywordI18n: Scalars['JSONObject'];
-  gender: Gender;
-  defaultTitle: Scalars['String'];
-  prefix?: Maybe<Scalars['String']>;
-  keyword: Scalars['String'];
-};
-
-export type RubricCatalogueTitleInput = {
-  defaultTitleI18n: Scalars['JSONObject'];
-  prefixI18n?: Maybe<Scalars['JSONObject']>;
-  keywordI18n: Scalars['JSONObject'];
-  gender: Gender;
 };
 
 export type RubricOption = {
@@ -2673,6 +2664,7 @@ export type UpdateBrandInput = {
 };
 
 export type UpdateCategoryInput = {
+  companySlug: Scalars['String'];
   categoryId: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
   textTopI18n?: Maybe<Scalars['JSONObject']>;
@@ -2834,10 +2826,11 @@ export type UpdateProductInCartInput = {
 };
 
 export type UpdateProductInput = {
+  companySlug: Scalars['String'];
   productId: Scalars['ObjectId'];
   barcode?: Maybe<Array<Scalars['String']>>;
   active: Scalars['Boolean'];
-  originalName: Scalars['String'];
+  originalName?: Maybe<Scalars['String']>;
   nameI18n?: Maybe<Scalars['JSONObject']>;
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
   cardDescriptionI18n?: Maybe<Scalars['JSONObject']>;
@@ -2916,6 +2909,7 @@ export type UpdateRoleRuleInput = {
 };
 
 export type UpdateRubricInput = {
+  companySlug: Scalars['String'];
   rubricId: Scalars['ObjectId'];
   capitalise?: Maybe<Scalars['Boolean']>;
   showRubricNameInProductTitle?: Maybe<Scalars['Boolean']>;
@@ -2929,7 +2923,10 @@ export type UpdateRubricInput = {
   textBottomI18n?: Maybe<Scalars['JSONObject']>;
   variantId: Scalars['ObjectId'];
   active: Scalars['Boolean'];
-  catalogueTitle: RubricCatalogueTitleInput;
+  defaultTitleI18n: Scalars['JSONObject'];
+  prefixI18n?: Maybe<Scalars['JSONObject']>;
+  keywordI18n: Scalars['JSONObject'];
+  gender: Gender;
 };
 
 export type UpdateRubricVariantInput = {
@@ -3065,11 +3062,7 @@ export type GetRubricQuery = (
   { __typename?: 'Query' }
   & { getRubric: (
     { __typename?: 'Rubric' }
-    & Pick<Rubric, 'active' | 'variantId' | 'descriptionI18n' | 'shortDescriptionI18n'>
-    & { catalogueTitle: (
-      { __typename?: 'RubricCatalogueTitle' }
-      & Pick<RubricCatalogueTitle, 'defaultTitleI18n' | 'prefixI18n' | 'keywordI18n' | 'gender'>
-    ) }
+    & Pick<Rubric, 'active' | 'variantId' | 'descriptionI18n' | 'shortDescriptionI18n' | 'defaultTitleI18n' | 'prefixI18n' | 'keywordI18n' | 'gender'>
     & RubricInListFragment
   ) }
 );
@@ -3083,11 +3076,7 @@ export type GetRubricBySlugQuery = (
   { __typename?: 'Query' }
   & { getRubricBySlug: (
     { __typename?: 'Rubric' }
-    & Pick<Rubric, 'active' | 'variantId' | 'descriptionI18n' | 'shortDescriptionI18n'>
-    & { catalogueTitle: (
-      { __typename?: 'RubricCatalogueTitle' }
-      & Pick<RubricCatalogueTitle, 'defaultTitleI18n' | 'prefixI18n' | 'keywordI18n' | 'gender'>
-    ) }
+    & Pick<Rubric, 'active' | 'variantId' | 'descriptionI18n' | 'shortDescriptionI18n' | 'defaultTitleI18n' | 'prefixI18n' | 'keywordI18n' | 'gender'>
     & RubricInListFragment
   ) }
 );
@@ -5212,12 +5201,10 @@ export const GetRubricDocument = gql`
     variantId
     descriptionI18n
     shortDescriptionI18n
-    catalogueTitle {
-      defaultTitleI18n
-      prefixI18n
-      keywordI18n
-      gender
-    }
+    defaultTitleI18n
+    prefixI18n
+    keywordI18n
+    gender
   }
 }
     ${RubricInListFragmentDoc}`;
@@ -5257,12 +5244,10 @@ export const GetRubricBySlugDocument = gql`
     variantId
     descriptionI18n
     shortDescriptionI18n
-    catalogueTitle {
-      defaultTitleI18n
-      prefixI18n
-      keywordI18n
-      gender
-    }
+    defaultTitleI18n
+    prefixI18n
+    keywordI18n
+    gender
   }
 }
     ${RubricInListFragmentDoc}`;

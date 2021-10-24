@@ -1,7 +1,7 @@
 import AssetsManager from 'components/AssetsManager';
 import WpDropZone from 'components/FormElements/Upload/WpDropZone';
 import Inner from 'components/Inner';
-import { ROUTE_CMS } from 'config/common';
+import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
 import { ProductInterface, RubricInterface } from 'db/uiInterfaces';
 import {
   useDeleteProductAssetMutation,
@@ -156,6 +156,7 @@ export const getServerSideProps = async (
   const payload = await getCmsProduct({
     locale: props.sessionLocale,
     productId: `${productId}`,
+    companySlug: DEFAULT_COMPANY_SLUG,
   });
 
   if (!payload) {

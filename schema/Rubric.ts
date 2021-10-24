@@ -34,8 +34,11 @@ export const Rubric = objectType({
     t.nonNull.json('views');
     t.boolean('capitalise');
     t.nonNull.json('priorities');
-    t.nonNull.field('catalogueTitle', {
-      type: 'RubricCatalogueTitle',
+    t.nonNull.json('defaultTitleI18n');
+    t.json('prefixI18n');
+    t.nonNull.json('keywordI18n');
+    t.nonNull.field('gender', {
+      type: 'Gender',
     });
 
     // Rubric name translation field resolver

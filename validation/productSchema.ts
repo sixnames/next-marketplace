@@ -1,9 +1,5 @@
 import { ValidationSchemaArgsInterface } from 'types/validataionTypes';
-import {
-  objectIdSchema,
-  requiredAssetSchema,
-  requiredStringSchema,
-} from 'validation/schemaTemplates';
+import { objectIdSchema, requiredAssetSchema } from 'validation/schemaTemplates';
 import * as Yup from 'yup';
 import { attributeIdSchema } from 'validation/attributesGroupSchema';
 
@@ -15,25 +11,9 @@ export const productConnectionIdSchema = (args: ValidationSchemaArgsInterface) =
   return objectIdSchema({ ...args, slug: 'validation.productConnections.id' });
 };
 
-export const productCommonFieldsSchema = (args: ValidationSchemaArgsInterface) => {
-  return {
-    originalName: requiredStringSchema({
-      ...args,
-      slug: 'validation.products.originalName',
-    }),
-  };
-};
-
-export const createProductSchema = (args: ValidationSchemaArgsInterface) => {
-  return Yup.object({
-    ...productCommonFieldsSchema(args),
-  });
-};
-
 export const updateProductSchema = (args: ValidationSchemaArgsInterface) => {
   return Yup.object({
     productId: productIdSchema(args),
-    ...productCommonFieldsSchema(args),
   });
 };
 

@@ -4,7 +4,7 @@ import ProductMainFields, {
   ProductFormValuesInterface,
 } from 'components/FormTemplates/ProductMainFields';
 import Inner from 'components/Inner';
-import { ROUTE_CMS } from 'config/common';
+import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
 import { ProductInterface, RubricInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import { useUpdateProductMutation } from 'generated/apolloComponents';
@@ -25,9 +25,10 @@ import { updateProductSchema } from 'validation/productSchema';
 interface ProductDetailsInterface {
   product: ProductInterface;
   rubric: RubricInterface;
+  companySlug: string;
 }
 
-const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, rubric }) => {
+const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, companySlug, rubric }) => {
   const { setReloadToTrue } = useReloadListener();
   const validationSchema = useValidationSchema({
     schema: updateProductSchema,
@@ -51,8 +52,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, rubric }) 
     mainImage,
     barcode,
     gender,
-    cardDescriptionI18n,
-    seo,
+    cardDescription,
   } = product;
 
   const initialValues: ProductFormValuesInterface = {
@@ -63,7 +63,8 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, rubric }) 
     active,
     barcode: barcode || [],
     gender: gender as any,
-    cardDescriptionI18n,
+    cardDescriptionI18n: cardDescription?.textI18n || {},
+    companySlug,
   };
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -121,7 +122,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, rubric }) 
 
                 {/*<FormikCheckboxLine label={'Активен'} name={'active'} testId={'active'} />*/}
 
-                <ProductMainFields seo={seo} />
+                <ProductMainFields seo={cardDescription?.seo} />
 
                 <FixedButtons>
                   <Button testId={'submit-product'} type={'submit'}>
@@ -139,10 +140,10 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, rubric }) 
 
 interface ProductPageInterface extends PagePropsInterface, ProductDetailsInterface {}
 
-const Product: NextPage<ProductPageInterface> = ({ pageUrls, product, rubric }) => {
+const Product: NextPage<ProductPageInterface> = ({ pageUrls, product, companySlug, rubric }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <ProductDetails product={product} rubric={rubric} />
+      <ProductDetails product={product} rubric={rubric} companySlug={companySlug} />
     </CmsLayout>
   );
 };
@@ -163,6 +164,7 @@ export const getServerSideProps = async (
   const payload = await getCmsProduct({
     locale: props.sessionLocale,
     productId: `${productId}`,
+    companySlug: DEFAULT_COMPANY_SLUG,
   });
 
   if (!payload) {
@@ -176,6 +178,7 @@ export const getServerSideProps = async (
       ...props,
       product: castDbData(payload.product),
       rubric: castDbData(payload.rubric),
+      companySlug: DEFAULT_COMPANY_SLUG,
     },
   };
 };

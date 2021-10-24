@@ -1,19 +1,15 @@
 import CompanyProductDetails, {
   CompanyProductDetailsInterface,
 } from 'components/CompanyProductDetails';
-import { ROUTE_CMS } from 'config/common';
-import { COL_COMPANIES } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { CompanyInterface } from 'db/uiInterfaces';
+import { ROUTE_CONSOLE } from 'config/common';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsProductLayout from 'layout/cms/CmsProductLayout';
 import { getCmsProduct } from 'lib/productUtils';
-import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import ConsoleLayout from 'layout/console/ConsoleLayout';
 
 interface ProductDetailsInterface extends CompanyProductDetailsInterface {}
 
@@ -26,14 +22,6 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${product.cardTitle}`,
     config: [
-      {
-        name: 'Компании',
-        href: `${ROUTE_CMS}/companies`,
-      },
-      {
-        name: `${currentCompany?.name}`,
-        href: routeBasePath,
-      },
       {
         name: `Рубрикатор`,
         href: `${routeBasePath}/rubrics`,
@@ -74,9 +62,9 @@ interface ProductPageInterface extends PagePropsInterface, ProductDetailsInterfa
 
 const Product: NextPage<ProductPageInterface> = ({ pageUrls, ...props }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout pageUrls={pageUrls} company={props.currentCompany}>
       <ProductDetails {...props} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 
@@ -85,9 +73,7 @@ export const getServerSideProps = async (
 ): Promise<GetServerSidePropsResult<ProductPageInterface>> => {
   const { query } = context;
   const { productId, rubricId } = query;
-  const { db } = await getDatabase();
-  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
-  const { props } = await getAppInitialData({ context });
+  const { props } = await getConsoleInitialData({ context });
 
   if (!props || !productId || !rubricId || !query.companyId) {
     return {
@@ -96,23 +82,7 @@ export const getServerSideProps = async (
   }
 
   // get company
-  const companyId = new ObjectId(`${query.companyId}`);
-  const companyAggregationResult = await companiesCollection
-    .aggregate([
-      {
-        $match: {
-          _id: companyId,
-        },
-      },
-    ])
-    .toArray();
-  const companyResult = companyAggregationResult[0];
-  if (!companyResult) {
-    return {
-      notFound: true,
-    };
-  }
-  const companySlug = companyResult.slug;
+  const companySlug = props.currentCompany.slug;
 
   const payload = await getCmsProduct({
     locale: props.sessionLocale,
@@ -131,8 +101,7 @@ export const getServerSideProps = async (
       ...props,
       product: castDbData(payload.product),
       rubric: castDbData(payload.rubric),
-      currentCompany: castDbData(companyResult),
-      routeBasePath: `${ROUTE_CMS}/companies/${companyResult._id}`,
+      routeBasePath: `${ROUTE_CONSOLE}/${props.currentCompany._id}`,
     },
   };
 };

@@ -11,6 +11,7 @@ import {
   ATTRIBUTE_VARIANT_NUMBER,
   ATTRIBUTE_VARIANT_SELECT,
   ATTRIBUTE_VARIANT_STRING,
+  DEFAULT_COMPANY_SLUG,
   ROUTE_CMS,
 } from 'config/common';
 import { ATTRIBUTE_OPTIONS_MODAL } from 'config/modalVariants';
@@ -386,6 +387,7 @@ export const getServerSideProps = async (
   const payload = await getCmsProduct({
     locale: props.sessionLocale,
     productId: `${productId}`,
+    companySlug: DEFAULT_COMPANY_SLUG,
   });
 
   if (!payload) {

@@ -17,7 +17,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
     const productSeoCollection = db.collection<ProductSeoModel>(COL_PRODUCT_SEO);
     const initialBody = req.body as TextUniquenessApiResponseInterface;
-    const [productId, locale] = alwaysArray(req.query.props);
+    const [productId, locale, companySlug] = alwaysArray(req.query.props);
 
     if (!initialBody) {
       res.status(200).send('ok');
@@ -46,12 +46,14 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     // get seo data
     let seo = await productSeoCollection.findOne({
       productId: product._id,
+      companySlug,
     });
     if (!seo) {
       seo = {
         _id: new ObjectId(),
         productId: product._id,
         locales: [body],
+        companySlug,
       };
     }
 

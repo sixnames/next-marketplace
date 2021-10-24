@@ -169,6 +169,22 @@ export function getConfigTemplates({
         },
       },
     },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'globals',
+      variant: CONFIG_VARIANT_PASSWORD,
+      slug: 'textUniquenessApiKey',
+      name: 'API ключ для проверки уникальности текса',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [''],
+        },
+      },
+    },
 
     // Analytics
     {
@@ -1169,22 +1185,6 @@ export function getConfigTemplates({
       variant: CONFIG_VARIANT_STRING,
       slug: 'buyButtonText',
       name: 'Текст кнопки при оформлении заказа',
-      description: '',
-      multi: false,
-      acceptedFormats: [],
-      cities: {
-        [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: [''],
-        },
-      },
-    },
-    {
-      _id: new ObjectId(),
-      companySlug,
-      group: 'project',
-      variant: CONFIG_VARIANT_STRING,
-      slug: 'uniqueTextApiKey',
-      name: 'API ключ для проверки уникальности текса',
       description: '',
       multi: false,
       acceptedFormats: [],

@@ -22,12 +22,6 @@ const categories: CategoryModel[] = [
       'attributesGroup Общие характеристики',
       'attributesGroup Характеристики виски',
     ]),
-    textTopI18n: {
-      ru: 'Category top Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias, doloribus laborum maxime non nulla pariatur repellendus tenetur vel. Alias doloremque dolores earum ipsa magnam maxime nemo quos repellendus suscipit veritatis.',
-    },
-    textBottomI18n: {
-      ru: 'Category bottom Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias, doloribus laborum maxime non nulla pariatur repellendus tenetur vel. Alias doloremque dolores earum ipsa magnam maxime nemo quos repellendus suscipit veritatis.',
-    },
     ...DEFAULT_COUNTERS_OBJECT,
   },
   {

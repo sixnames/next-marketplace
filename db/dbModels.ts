@@ -604,7 +604,6 @@ export interface ProductModel extends ProductMainFieldsInterface, BaseModel, Tim
   originalName: string;
   nameI18n?: TranslationModel | null;
   descriptionI18n?: TranslationModel | null;
-  cardDescriptionI18n?: TranslationModel | null;
   mainImage: string;
   titleCategoriesSlugs: string[];
   selectedAttributesIds: ObjectId[];
@@ -625,6 +624,21 @@ export interface ProductAssetsModel {
   productSlug: string;
   productId: ObjectIdModel;
   assets: AssetModel[];
+}
+
+export interface ProductCardDescriptionModel {
+  _id: ObjectIdModel;
+  companySlug: string;
+  productSlug: string;
+  productId: ObjectIdModel;
+  textI18n: TranslationModel;
+}
+
+export interface ProductSeoModel {
+  _id: ObjectIdModel;
+  productId: ObjectIdModel;
+  companySlug: string;
+  locales: TextUniquenessApiParsedResponseModel[];
 }
 
 export interface ProductCardContentModel {
@@ -711,19 +725,15 @@ export interface RubricVariantModel {
   cardBrandsLabelI18n?: TranslationModel | null;
 }
 
-export interface RubricCatalogueTitleModel {
-  defaultTitleI18n: TranslationModel;
-  prefixI18n?: TranslationModel | null;
-  keywordI18n: TranslationModel;
-  gender: GenderModel;
-}
-
 export interface RubricModel extends CountersModel {
   _id: ObjectIdModel;
   nameI18n: TranslationModel;
   descriptionI18n: TranslationModel;
   shortDescriptionI18n: TranslationModel;
-  catalogueTitle: RubricCatalogueTitleModel;
+  defaultTitleI18n: TranslationModel;
+  prefixI18n?: TranslationModel | null;
+  keywordI18n: TranslationModel;
+  gender: GenderModel;
   slug: string;
   active: boolean;
   variantId: ObjectIdModel;
@@ -736,8 +746,15 @@ export interface RubricModel extends CountersModel {
   showBrandInFilter?: boolean | null;
   icon?: string;
   image?: string;
-  textTopI18n?: TranslationModel | null;
-  textBottomI18n?: TranslationModel | null;
+}
+
+export interface RubricDescriptionModel {
+  _id: ObjectIdModel;
+  companySlug: string;
+  rubricSlug: string;
+  position: 'top' | 'bottom';
+  rubricId: ObjectIdModel;
+  textI18n: TranslationModel;
 }
 
 export interface CategoryModel extends CountersModel {
@@ -753,8 +770,24 @@ export interface CategoryModel extends CountersModel {
   image?: string | null;
   variants: OptionVariantsModel;
   replaceParentNameInCatalogueTitle?: boolean | null;
-  textTopI18n?: TranslationModel | null;
-  textBottomI18n?: TranslationModel | null;
+}
+
+export interface CategoryDescriptionModel {
+  _id: ObjectIdModel;
+  companySlug: string;
+  categoryId: ObjectIdModel;
+  categorySlug: string;
+  position: 'top' | 'bottom';
+  textI18n: TranslationModel;
+}
+
+export interface RubricSeoModel {
+  _id: ObjectIdModel;
+  companySlug: string;
+  rubricId: ObjectIdModel;
+  position: 'top' | 'bottom';
+  categoryId?: ObjectIdModel | null;
+  locales: TextUniquenessApiParsedResponseModel[];
 }
 
 export interface ShopProductModel
@@ -1165,18 +1198,4 @@ export interface TextUniquenessApiParsedResponseModel {
   jsonResult?: TextUniquenessApiJsonResultModel | null;
   spellCheck?: TextUniquenessApiSpellCheckModel[] | null;
   seoCheck?: TextUniquenessApiSeoCheckModel | null;
-}
-
-export interface ProductSeoModel {
-  _id: ObjectIdModel;
-  productId: ObjectIdModel;
-  locales: TextUniquenessApiParsedResponseModel[];
-}
-
-export interface RubricSeoModel {
-  _id: ObjectIdModel;
-  rubricId: ObjectIdModel;
-  position: 'top' | 'bottom';
-  categoryId?: ObjectIdModel | null;
-  locales: TextUniquenessApiParsedResponseModel[];
 }

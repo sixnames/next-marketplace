@@ -7,10 +7,17 @@ import Inner from 'components/Inner';
 import {
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   CATALOGUE_SEO_TEXT_POSITION_TOP,
+  DEFAULT_COMPANY_SLUG,
   GENDER_ENUMS,
   ROUTE_CMS,
 } from 'config/common';
-import { COL_CATEGORIES, COL_ICONS, COL_RUBRIC_SEO, COL_RUBRICS } from 'db/collectionNames';
+import {
+  COL_CATEGORIES,
+  COL_CATEGORY_DESCRIPTIONS,
+  COL_ICONS,
+  COL_RUBRIC_SEO,
+  COL_RUBRICS,
+} from 'db/collectionNames';
 import { OptionVariantsModel, RubricSeoModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { CategoryInterface } from 'db/uiInterfaces';
@@ -33,9 +40,15 @@ interface CategoryDetailsInterface {
   category: CategoryInterface;
   seoTop?: RubricSeoModel | null;
   seoBottom?: RubricSeoModel | null;
+  companySlug: string;
 }
 
-const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category, seoTop, seoBottom }) => {
+const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
+  category,
+  companySlug,
+  seoTop,
+  seoBottom,
+}) => {
   const validationSchema = useValidationSchema({
     schema: updateCategorySchema,
   });
@@ -62,8 +75,8 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category, seoTop,
     gender,
     image,
     variants,
-    textBottomI18n,
-    textTopI18n,
+    seoDescriptionTop,
+    seoDescriptionBottom,
     replaceParentNameInCatalogueTitle,
   } = category;
   const variantKeys = Object.keys(variants);
@@ -72,10 +85,11 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({ category, seoTop,
     categoryId: _id,
     rubricId,
     nameI18n,
-    textBottomI18n,
-    textTopI18n,
+    textBottomI18n: seoDescriptionBottom?.textI18n,
+    textTopI18n: seoDescriptionTop?.textI18n,
     gender: gender ? (`${gender}` as Gender) : null,
     replaceParentNameInCatalogueTitle,
+    companySlug,
     variants:
       variantKeys.length > 0
         ? variants
@@ -267,10 +281,16 @@ const CategoryPage: NextPage<CategoryPageInterface> = ({
   category,
   seoBottom,
   seoTop,
+  companySlug,
 }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <CategoryDetails category={category} seoTop={seoTop} seoBottom={seoBottom} />
+      <CategoryDetails
+        category={category}
+        seoTop={seoTop}
+        companySlug={companySlug}
+        seoBottom={seoBottom}
+      />
     </CmsLayout>
   );
 };
@@ -289,6 +309,8 @@ export const getServerSideProps = async (
       notFound: true,
     };
   }
+
+  const companySlug = DEFAULT_COMPANY_SLUG;
 
   const categoryAggregation = await categoriesCollection
     .aggregate<CategoryInterface>([
@@ -334,6 +356,65 @@ export const getServerSideProps = async (
           ],
         },
       },
+
+      // get top seo text
+      {
+        $lookup: {
+          from: COL_CATEGORY_DESCRIPTIONS,
+          as: 'seoDescriptionTop',
+          let: {
+            categoryId: '$_id',
+          },
+          pipeline: [
+            {
+              $match: {
+                position: CATALOGUE_SEO_TEXT_POSITION_TOP,
+                companySlug,
+                $expr: {
+                  $eq: ['$$categoryId', '$categoryId'],
+                },
+              },
+            },
+          ],
+        },
+      },
+      {
+        $addFields: {
+          seoDescriptionTop: {
+            $arrayElemAt: ['$seoDescriptionTop', 0],
+          },
+        },
+      },
+
+      // get bottom seo text
+      {
+        $lookup: {
+          from: COL_CATEGORY_DESCRIPTIONS,
+          as: 'seoDescriptionBottom',
+          let: {
+            categoryId: '$_id',
+          },
+          pipeline: [
+            {
+              $match: {
+                position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+                companySlug,
+                $expr: {
+                  $eq: ['$$categoryId', '$categoryId'],
+                },
+              },
+            },
+          ],
+        },
+      },
+      {
+        $addFields: {
+          seoDescriptionBottom: {
+            $arrayElemAt: ['$seoDescriptionBottom', 0],
+          },
+        },
+      },
+
       {
         $addFields: {
           icon: {
@@ -354,7 +435,7 @@ export const getServerSideProps = async (
   }
 
   const { sessionLocale } = props;
-  const category = {
+  const category: CategoryInterface = {
     ...initialCategory,
     name: getFieldStringLocale(initialCategory.nameI18n, sessionLocale),
     rubric: initialCategory.rubric
@@ -368,11 +449,13 @@ export const getServerSideProps = async (
   const seoTop = await rubricSeoCollection.findOne({
     categoryId: category._id,
     position: CATALOGUE_SEO_TEXT_POSITION_TOP,
+    companySlug,
   });
 
   const seoBottom = await rubricSeoCollection.findOne({
     categoryId: category._id,
     position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+    companySlug,
   });
 
   return {
@@ -381,6 +464,7 @@ export const getServerSideProps = async (
       category: castDbData(category),
       seoTop: castDbData(seoTop),
       seoBottom: castDbData(seoBottom),
+      companySlug: DEFAULT_COMPANY_SLUG,
     },
   };
 };

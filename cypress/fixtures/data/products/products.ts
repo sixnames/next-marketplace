@@ -292,9 +292,6 @@ const products = rubrics.reduce((acc: ProductModel[], rubric) => {
       descriptionI18n: {
         ru: `Description ${name} RU`,
       },
-      cardDescriptionI18n: {
-        ru: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi debitis eligendi eum, excepturi iure libero molestias quas quis ratione reiciendis sed sequi sint sit! Architecto minus modi officia provident voluptates. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi debitis eligendi eum, excepturi iure libero molestias quas quis ratione reiciendis sed sequi sint sit! Architecto minus modi officia provident voluptates.',
-      },
       mainImage: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_PRODUCTS}/${itemId}/${itemId}-0.png`,
       selectedOptionsSlugs,
       titleCategoriesSlugs,

@@ -1,5 +1,5 @@
 import ShopSyncErrors, { ShopSyncErrorsInterface } from 'components/shops/ShopSyncErrors';
-import { ROUTE_CMS } from 'config/common';
+import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
 import { COL_COMPANIES, COL_SHOPS } from 'db/collectionNames';
 import { getPaginatedNotSyncedProducts } from 'db/dao/notSyncedProducts/getPaginatedNotSyncedProducts';
 import { ShopModel } from 'db/dbModels';
@@ -21,6 +21,7 @@ const CompanyShopSyncErrors: NextPage<CompanyShopSyncErrorsInterface> = ({
   pageUrls,
   shop,
   notSyncedProducts,
+  companySlug,
 }) => {
   const companyBasePath = `${ROUTE_CMS}/companies/${shop.companyId}`;
 
@@ -49,6 +50,7 @@ const CompanyShopSyncErrors: NextPage<CompanyShopSyncErrorsInterface> = ({
   return (
     <CmsLayout pageUrls={pageUrls}>
       <ShopSyncErrors
+        companySlug={companySlug}
         breadcrumbs={breadcrumbs}
         notSyncedProducts={notSyncedProducts}
         showShopName={false}
@@ -108,6 +110,7 @@ export const getServerSideProps = async (
       ...initialProps.props,
       shop: castDbData(shop),
       notSyncedProducts: castDbData(payload),
+      companySlug: DEFAULT_COMPANY_SLUG,
     },
   };
 };

@@ -1,3 +1,4 @@
+import { DEFAULT_COMPANY_SLUG } from '../../../../config/common';
 import { ProductSeoModel } from '../../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
@@ -5,6 +6,7 @@ const productSeo: ProductSeoModel[] = [
   {
     _id: getObjectId('product seo A'),
     productId: getObjectId('viski 000081'),
+    companySlug: DEFAULT_COMPANY_SLUG,
     locales: [
       {
         locale: 'ru',

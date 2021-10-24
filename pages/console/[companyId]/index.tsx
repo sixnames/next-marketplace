@@ -25,13 +25,7 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<OrdersInterface>> => {
   const { props } = await getConsoleInitialData({ context });
-  if (!props || !props.sessionUser) {
-    return {
-      notFound: true,
-    };
-  }
-
-  if (!props.currentCompany) {
+  if (!props) {
     return {
       notFound: true,
     };

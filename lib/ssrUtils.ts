@@ -53,6 +53,7 @@ import {
 import { getDatabase } from 'db/mongodb';
 import {
   CityInterface,
+  CompanyInterface,
   PageInterface,
   PagesGroupInterface,
   RoleInterface,
@@ -1389,7 +1390,8 @@ interface GetCompanyAppInitialDataInterface {
 }
 
 interface GetCompanyAppInitialDataPropsInterface extends PagePropsInterface {
-  currentCompany?: CompanyModel;
+  currentCompany: CompanyInterface;
+  sessionUser: UserInterface;
 }
 
 interface GetCompanyAppInitialDataPayloadInterface {
@@ -1440,6 +1442,14 @@ export async function getConsoleInitialData({
   const currentCompany = (sessionUser.companies || []).find((company) => {
     return company._id.toHexString() === `${context.query.companyId}`;
   });
+  if (!currentCompany) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: ROUTE_SIGN_IN,
+      },
+    };
+  }
 
   return {
     props: {
@@ -1449,7 +1459,7 @@ export async function getConsoleInitialData({
       sessionCity,
       themeStyle,
       sessionUser: castDbData(sessionUser),
-      currentCompany: currentCompany ? castDbData(currentCompany) : null,
+      currentCompany: castDbData(currentCompany),
       sessionLocale,
       pageUrls,
     },

@@ -16,12 +16,14 @@ export interface SyncErrorsListInterface {
   notSyncedProducts: AppPaginationInterface<NotSyncedProductInterface>;
   showShopName?: boolean;
   showControls?: boolean;
+  companySlug: string;
 }
 
 const SyncErrorsList: React.FC<SyncErrorsListInterface> = ({
   notSyncedProducts,
   showShopName = true,
   showControls = true,
+  companySlug,
 }) => {
   const setPage = useNavigateToPageHandler();
   const { showModal, onErrorCallback, onCompleteCallback, showLoading } = useMutationCallbacks({
@@ -98,6 +100,7 @@ const SyncErrorsList: React.FC<SyncErrorsListInterface> = ({
                               showModal<CreateProductWithSyncErrorModalInterface>({
                                 variant: CREATE_PRODUCT_WITH_SYNC_ERROR_MODAL,
                                 props: {
+                                  companySlug,
                                   notSyncedProduct: dataItem,
                                 },
                               });

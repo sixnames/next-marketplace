@@ -103,6 +103,18 @@ const navItems: NavItemModel[] = [
     navGroup: ROUTE_CONSOLE_NAV_GROUP,
   },
   {
+    _id: getObjectId(`${navItemsDefaultSlug} console-rubrics`),
+    nameI18n: {
+      ru: 'Рубрикатор',
+      en: 'Rubrics',
+    },
+    index: 8,
+    icon: 'filter',
+    slug: 'console-rubrics',
+    path: `/rubrics`,
+    navGroup: ROUTE_CONSOLE_NAV_GROUP,
+  },
+  {
     _id: getObjectId(`${navItemsDefaultSlug} console-config`),
     slug: 'console-config',
     nameI18n: {

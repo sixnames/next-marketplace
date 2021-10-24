@@ -1,4 +1,4 @@
-import { ROUTE_CONSOLE } from 'config/common';
+import { DEFAULT_COMPANY_SLUG, ROUTE_CONSOLE } from 'config/common';
 import { ProductInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/console/ConsoleLayout';
@@ -138,6 +138,7 @@ export const getServerSideProps = async (
     basePath,
     query,
     currency,
+    companySlug: initialProps.props.currentCompany?.slug || DEFAULT_COMPANY_SLUG,
   });
 
   if (!payload) {

@@ -5,7 +5,7 @@ import { BrandCollectionOptionsModalInterface } from 'components/Modal/BrandColl
 import { BrandOptionsModalInterface } from 'components/Modal/BrandOptionsModal';
 import { ManufacturerOptionsModalInterface } from 'components/Modal/ManufacturerOptionsModal';
 import { SupplierOptionsModalInterface } from 'components/Modal/SupplierOptionsModal';
-import { ROUTE_CMS } from 'config/common';
+import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
 import {
   BRAND_COLLECTION_OPTIONS_MODAL,
   BRAND_OPTIONS_MODAL,
@@ -396,6 +396,7 @@ export const getServerSideProps = async (
   const payload = await getCmsProduct({
     locale: props.sessionLocale,
     productId: `${productId}`,
+    companySlug: DEFAULT_COMPANY_SLUG,
   });
 
   if (!payload) {

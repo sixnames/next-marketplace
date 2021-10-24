@@ -733,33 +733,36 @@ export const productRubricPipeline = [
   },
 ];
 
-export const productSeoPipeline = [
-  {
-    $lookup: {
-      from: COL_PRODUCT_SEO,
-      as: 'seo',
-      let: {
-        productId: '$_id',
-      },
-      pipeline: [
-        {
-          $match: {
-            $expr: {
-              $eq: ['$productId', '$$productId'],
+export const productSeoPipeline = (companySlug: string) => {
+  return [
+    {
+      $lookup: {
+        from: COL_PRODUCT_SEO,
+        as: 'seo',
+        let: {
+          productId: '$_id',
+        },
+        pipeline: [
+          {
+            $match: {
+              companySlug,
+              $expr: {
+                $eq: ['$productId', '$$productId'],
+              },
             },
           },
-        },
-      ],
-    },
-  },
-  {
-    $addFields: {
-      seo: {
-        $arrayElemAt: ['$seo', 0],
+        ],
       },
     },
-  },
-];
+    {
+      $addFields: {
+        seo: {
+          $arrayElemAt: ['$seo', 0],
+        },
+      },
+    },
+  ];
+};
 
 export const productConnectionsSimplePipeline = [
   {

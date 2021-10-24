@@ -17,7 +17,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
     const rubricSeoCollection = db.collection<RubricSeoModel>(COL_RUBRIC_SEO);
     const initialBody = req.body as TextUniquenessApiResponseInterface;
-    const [rubricId, locale, position] = alwaysArray(req.query.props);
+    const [rubricId, locale, position, companySlug] = alwaysArray(req.query.props);
 
     if (!initialBody) {
       res.status(200).send('ok');
@@ -48,6 +48,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       rubricId: rubric._id,
       categoryId: null,
       position,
+      companySlug,
     });
     if (!seo) {
       seo = {
@@ -55,6 +56,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         rubricId: rubric._id,
         locales: [body],
         position,
+        companySlug,
       };
     }
 

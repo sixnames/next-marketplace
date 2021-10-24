@@ -35,6 +35,7 @@ import {
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
   COL_PRODUCT_SEO,
+  COL_PRODUCT_CARD_DESCRIPTIONS,
 } from 'db/collectionNames';
 import { productCategoriesPipeline } from 'db/dao/constantPipelines';
 import {
@@ -219,6 +220,34 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
             as: 'assets',
             localField: '_id',
             foreignField: 'productId',
+          },
+        },
+
+        // get seo text
+        {
+          $lookup: {
+            from: COL_PRODUCT_CARD_DESCRIPTIONS,
+            as: 'cardDescription',
+            let: {
+              productId: '$_id',
+            },
+            pipeline: [
+              {
+                $match: {
+                  companySlug,
+                  $expr: {
+                    $eq: ['$$productId', '$productId'],
+                  },
+                },
+              },
+            ],
+          },
+        },
+        {
+          $addFields: {
+            cardDescription: {
+              $arrayElemAt: ['$cardDescription', 0],
+            },
           },
         },
 
@@ -597,6 +626,7 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
       manufacturer,
       categories,
       shops,
+      cardDescription,
       ...restProduct
     } = product;
 
@@ -782,7 +812,7 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
 
     // cardBreadcrumbs
     const attributesBreadcrumbs: ProductCardBreadcrumbModel[] = [];
-    let breadcrumbsGender = rubric?.catalogueTitle.gender || GENDER_IT;
+    let breadcrumbsGender = rubric?.gender || GENDER_IT;
 
     // category breadcrumbs
     const breadcrumbCategories = cardCategories.reduce(
@@ -868,7 +898,6 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
 
     const name = getFieldStringLocale(restProduct.nameI18n, locale);
     const description = getFieldStringLocale(restProduct.descriptionI18n, locale);
-    const cardDescription = getFieldStringLocale(restProduct.cardDescriptionI18n, locale);
     const shopsCount = finalCardShops.length;
     const isShopless = noNaN(shopsCount) < 1;
     const cardAssets = assets ? assets.assets : [];
@@ -950,6 +979,7 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
     if (showAdminUiInCatalogue) {
       productSeo = await productSeoCollection.findOne({
         productId: restProduct._id,
+        companySlug,
       });
     }
 
@@ -957,7 +987,13 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
       product: {
         ...restProduct,
         name,
-        cardDescription,
+        cardDescription: cardDescription
+          ? {
+              ...cardDescription,
+              text: getFieldStringLocale(cardDescription.textI18n, locale),
+              seo: productSeo,
+            }
+          : null,
         description: description || cardTitle,
         brand: brand
           ? {
@@ -983,7 +1019,6 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
             }
           : null,
       },
-      productSeo,
       cardTitle,
       cardPrices,
       rubric,

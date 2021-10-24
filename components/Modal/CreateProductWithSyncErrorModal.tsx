@@ -8,7 +8,6 @@ import Spinner from 'components/Spinner';
 import { DEFAULT_LOCALE, GENDER_IT, ROUTE_CMS } from 'config/common';
 import { NotSyncedProductInterface } from 'db/uiInterfaces';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useValidationSchema from 'hooks/useValidationSchema';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import {
@@ -16,7 +15,6 @@ import {
   useGetAllRubricsQuery,
 } from 'generated/apolloComponents';
 import { Form, Formik } from 'formik';
-import { createProductSchema } from 'validation/productSchema';
 import ProductMainFields, {
   ProductFormValuesInterface,
 } from 'components/FormTemplates/ProductMainFields';
@@ -27,17 +25,16 @@ interface InitialValuesInterface extends ProductFormValuesInterface {
 
 export interface CreateProductWithSyncErrorModalInterface {
   notSyncedProduct: NotSyncedProductInterface;
+  companySlug: string;
 }
 
 const CreateProductWithSyncErrorModal: React.FC<CreateProductWithSyncErrorModalInterface> = ({
   notSyncedProduct,
+  companySlug,
 }) => {
   const router = useRouter();
   const { data, error, loading } = useGetAllRubricsQuery({
     fetchPolicy: 'network-only',
-  });
-  const validationSchema = useValidationSchema({
-    schema: createProductSchema,
   });
 
   const {
@@ -98,6 +95,7 @@ const CreateProductWithSyncErrorModal: React.FC<CreateProductWithSyncErrorModalI
   const { getAllRubrics } = data;
 
   const initialValues: InitialValuesInterface = {
+    companySlug,
     active: true,
     nameI18n: {
       [DEFAULT_LOCALE]: notSyncedProduct.name,
@@ -115,7 +113,6 @@ const CreateProductWithSyncErrorModal: React.FC<CreateProductWithSyncErrorModalI
     <ModalFrame testId={'create-product-with-sync-error-modal'}>
       <ModalTitle>Создание товара</ModalTitle>
       <Formik<InitialValuesInterface>
-        validationSchema={validationSchema}
         initialValues={initialValues}
         onSubmit={(values) => {
           if (!values.rubricId) {

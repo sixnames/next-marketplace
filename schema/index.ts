@@ -37,7 +37,6 @@ export * from './RoleQueries';
 export * from './RoleRule';
 export * from './Rubric';
 export * from './RubricAttributesGroup';
-export * from './RubricCatalogueTitle';
 export * from './RubricMutations';
 export * from './RubricQueries';
 export * from './RubricVariant';

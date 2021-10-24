@@ -5,7 +5,7 @@ import Inner from 'components/Inner';
 import { CreateRubricModalInterface } from 'components/Modal/CreateRubricModal';
 import Table, { TableColumn } from 'components/Table';
 import Title from 'components/Title';
-import { ROUTE_CMS } from 'config/common';
+import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
 import { CONFIRM_MODAL, CREATE_RUBRIC_MODAL } from 'config/modalVariants';
 import {
   COL_PRODUCTS,
@@ -30,9 +30,10 @@ import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
 interface RubricsRouteInterface {
   rubrics: RubricInterface[];
+  companySlug: string;
 }
 
-const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics }) => {
+const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, companySlug }) => {
   const router = useRouter();
   const { onCompleteCallback, onErrorCallback, showModal, showLoading } = useMutationCallbacks({
     withModal: true,
@@ -141,6 +142,7 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics }) => {
               showModal<CreateRubricModalInterface>({
                 variant: CREATE_RUBRIC_MODAL,
                 props: {
+                  companySlug,
                   confirm: (values) => {
                     showLoading();
                     return createRubricMutation({ variables: { input: values } });
@@ -159,10 +161,10 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics }) => {
 
 interface RubricsInterface extends PagePropsInterface, RubricsRouteInterface {}
 
-const Rubrics: NextPage<RubricsInterface> = ({ pageUrls, rubrics }) => {
+const Rubrics: NextPage<RubricsInterface> = ({ pageUrls, companySlug, rubrics }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <RubricsRoute rubrics={rubrics} />
+      <RubricsRoute rubrics={rubrics} companySlug={companySlug} />
     </CmsLayout>
   );
 };
@@ -307,6 +309,7 @@ export const getServerSideProps = async (
     props: {
       ...props,
       rubrics: castDbData(rawRubrics),
+      companySlug: DEFAULT_COMPANY_SLUG,
     },
   };
 };

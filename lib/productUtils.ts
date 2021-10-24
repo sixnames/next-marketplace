@@ -120,7 +120,7 @@ export async function getCmsProduct({
     return null;
   }
 
-  const { rubric, ...restProduct } = initialProduct;
+  const { rubric, seo, cardDescription, ...restProduct } = initialProduct;
   if (!rubric) {
     return null;
   }
@@ -207,6 +207,12 @@ export async function getCmsProduct({
 
   const product: ProductInterface = {
     ...initialProduct,
+    cardDescription: cardDescription
+      ? {
+          ...cardDescription,
+          seo,
+        }
+      : null,
     cardTitle,
     snippetTitle,
     connections,

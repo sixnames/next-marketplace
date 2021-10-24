@@ -3,7 +3,6 @@ import { BlogPostModel, BlogPostPayloadModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { deleteUpload } from 'lib/assetUtils/assetUtils';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { parseApiFormData } from 'lib/restApi';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
@@ -16,14 +15,14 @@ export async function deletePostPreviewImage(req: NextApiRequest, res: NextApiRe
   const { db } = await getDatabase();
   const { getApiMessage } = await getRequestParams({ req, res });
   const blogPostsCollection = db.collection<BlogPostModel>(COL_BLOG_POSTS);
-  const formData = await parseApiFormData<DeleteBlogPostPreviewImageInterface>(req);
+  const args = JSON.parse(req.body) as DeleteBlogPostPreviewImageInterface;
 
   let payload: BlogPostPayloadModel = {
     success: false,
     message: await getApiMessage('blogPosts.create.error'),
   };
 
-  if (!formData || !formData.fields) {
+  if (!args.blogPostId) {
     res.status(500).send(payload);
     return;
   }
@@ -47,8 +46,7 @@ export async function deletePostPreviewImage(req: NextApiRequest, res: NextApiRe
     }
 
     // check availability
-    const { fields } = formData;
-    const blogPostId = new ObjectId(`${fields.blogPostId}`);
+    const blogPostId = new ObjectId(`${args.blogPostId}`);
     const blogPost = await blogPostsCollection.findOne({
       _id: blogPostId,
     });

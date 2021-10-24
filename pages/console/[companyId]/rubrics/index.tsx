@@ -1,12 +1,7 @@
 import Inner from 'components/Inner';
 import Title from 'components/Title';
 import { ROUTE_CONSOLE } from 'config/common';
-import {
-  COL_PRODUCTS,
-  COL_RUBRIC_VARIANTS,
-  COL_RUBRICS,
-  COL_SHOP_PRODUCTS,
-} from 'db/collectionNames';
+import { COL_RUBRIC_VARIANTS, COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import { RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { RubricInterface } from 'db/uiInterfaces';
@@ -125,7 +120,7 @@ export const getServerSideProps = async (
       },
       {
         $addFields: {
-          activeProductsCount: '$totalShopProductsObject.totalDocs',
+          productsCount: '$totalShopProductsObject.totalDocs',
         },
       },
       {
@@ -136,43 +131,10 @@ export const getServerSideProps = async (
         },
       },
       {
-        $lookup: {
-          from: COL_PRODUCTS,
-          as: 'products',
-          let: { rubricId: '$_id' },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $eq: ['$$rubricId', '$rubricId'],
-                },
-              },
-            },
-            {
-              $project: {
-                _id: true,
-              },
-            },
-            {
-              $count: 'totalDocs',
-            },
-          ],
-        },
-      },
-      {
-        $addFields: {
-          totalProductsObject: { $arrayElemAt: ['$products', 0] },
-        },
-      },
-      {
-        $addFields: {
-          productsCount: '$totalProductsObject.totalDocs',
-        },
-      },
-      {
-        $project: {
-          products: false,
-          totalProductsObject: false,
+        $match: {
+          productsCount: {
+            $gt: 0,
+          },
         },
       },
     ])

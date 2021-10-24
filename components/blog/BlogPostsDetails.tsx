@@ -11,15 +11,16 @@ import Title from 'components/Title';
 import { PAGE_STATE_OPTIONS, REQUEST_METHOD_PATCH } from 'config/common';
 import { ATTRIBUTE_OPTIONS_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
+import { useNotificationsContext } from 'context/notificationsContext';
 import { BlogAttributeInterface, BlogPostInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import {
   useDeleteBlogPostPreviewImage,
   useUpdateBlogPost,
   useUpdateBlogPostAttribute,
-  useUploadBlogPostPreviewImage,
 } from 'hooks/mutations/useBlogMutations';
 import useValidationSchema from 'hooks/useValidationSchema';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import { updateBlogPostSchema } from 'validation/blogSchema';
 
@@ -31,13 +32,14 @@ interface BlogPostsDetailsInterface {
 }
 
 const BlogPostsDetails: React.FC<BlogPostsDetailsInterface> = ({ post, attributes }) => {
+  const router = useRouter();
   const validationSchema = useValidationSchema({
     schema: updateBlogPostSchema,
   });
-  const { showModal } = useAppContext();
+  const { showErrorNotification } = useNotificationsContext();
+  const { showModal, showLoading, hideLoading } = useAppContext();
   const [updateBlogPost] = useUpdateBlogPost();
   const [deleteBlogPostPreviewImage] = useDeleteBlogPostPreviewImage();
-  const [uploadBlogPostPreviewImage] = useUploadBlogPostPreviewImage();
   const [updateBlogPostAttribute] = useUpdateBlogPostAttribute();
 
   return (
@@ -80,10 +82,31 @@ const BlogPostsDetails: React.FC<BlogPostsDetailsInterface> = ({ post, attribute
                   }).catch(console.log);
                 }}
                 uploadImageHandler={(files) => {
-                  uploadBlogPostPreviewImage({
-                    blogPostId: `${post._id}`,
-                    assets: files,
-                  }).catch(console.log);
+                  showLoading();
+                  const formData = new FormData();
+                  formData.append('assets', files[0]);
+                  formData.append('blogPostId', `${post._id}`);
+
+                  fetch('/api/blog/post-preview-image', {
+                    method: REQUEST_METHOD_PATCH,
+                    body: formData,
+                  })
+                    .then((res) => {
+                      return res.json();
+                    })
+                    .then((json) => {
+                      if (json.success) {
+                        router.reload();
+                        return;
+                      }
+                      hideLoading();
+                      showErrorNotification({ title: json.message });
+                    })
+                    .catch((e) => {
+                      console.log(e);
+                      hideLoading();
+                      showErrorNotification({ title: 'error' });
+                    });
                 }}
               />
 

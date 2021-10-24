@@ -1,24 +1,14 @@
-import Accordion from 'components/Accordion';
-import Button from 'components/Button';
-import Inner from 'components/Inner';
-import PageEditor from 'components/PageEditor';
+import CompanyProductConstructor, {
+  CompanyProductConstructorInterface,
+} from 'components/CompanyProductConstructor';
 import { DEFAULT_CITY, PAGE_EDITOR_DEFAULT_VALUE_STRING, ROUTE_CMS } from 'config/common';
-import { useConfigContext } from 'context/configContext';
 import { COL_COMPANIES, COL_PRODUCT_CARD_CONTENTS } from 'db/collectionNames';
 import { ProductCardContentModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { CompanyInterface, ProductInterface, RubricInterface } from 'db/uiInterfaces';
-import { Form, Formik } from 'formik';
-import {
-  UpdateProductCardContentInput,
-  useUpdateProductCardContentMutation,
-} from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import { CompanyInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsProductLayout from 'layout/cms/CmsProductLayout';
-import { getConstructorDefaultValue } from 'lib/constructorUtils';
 import { getCmsProduct } from 'lib/productUtils';
-import { get } from 'lodash';
 import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
@@ -26,29 +16,15 @@ import CmsLayout from 'layout/cms/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
-interface ProductAttributesInterface {
-  product: ProductInterface;
-  rubric: RubricInterface;
-  cardContent: ProductCardContentModel;
-  currentCompany?: CompanyInterface | null;
-}
+interface ProductConstructorConsumerInterface extends CompanyProductConstructorInterface {}
 
-const ProductAttributes: React.FC<ProductAttributesInterface> = ({
+const ProductConstructorConsumer: React.FC<ProductConstructorConsumerInterface> = ({
   product,
   rubric,
   cardContent,
   currentCompany,
+  routeBasePath,
 }) => {
-  const { cities } = useConfigContext();
-  const { onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
-    reload: true,
-  });
-  const [updateProductCardContentMutation] = useUpdateProductCardContentMutation({
-    onCompleted: (data) => onCompleteCallback(data.updateProductCardContent),
-    onError: onErrorCallback,
-  });
-
-  const basePath = `${ROUTE_CMS}/companies/${currentCompany?._id}`;
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Контент карточки',
     config: [
@@ -58,28 +34,26 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({
       },
       {
         name: `${currentCompany?.name}`,
-        href: basePath,
+        href: routeBasePath,
       },
       {
         name: `Рубрикатор`,
-        href: `${basePath}/rubrics`,
+        href: `${routeBasePath}/rubrics`,
       },
       {
         name: `${rubric.name}`,
-        href: `${basePath}/rubrics/${rubric._id}`,
+        href: `${routeBasePath}/rubrics/${rubric._id}`,
       },
       {
         name: `Товары`,
-        href: `${basePath}/rubrics/${rubric._id}/products/${rubric._id}`,
+        href: `${routeBasePath}/rubrics/${rubric._id}/products/${rubric._id}`,
       },
       {
         name: `${product.cardTitle}`,
-        href: `${basePath}/rubrics/${rubric._id}/products/product/${product._id}`,
+        href: `${routeBasePath}/rubrics/${rubric._id}/products/product/${product._id}`,
       },
     ],
   };
-
-  const initialValues: UpdateProductCardContentInput = cardContent;
 
   return (
     <CmsProductLayout
@@ -89,106 +63,35 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({
       hideCategoriesPath
       hideConnectionsPath
       product={product}
-      basePath={basePath}
+      basePath={routeBasePath}
       breadcrumbs={breadcrumbs}
     >
-      <Inner testId={'product-card-constructor'}>
-        <Formik<UpdateProductCardContentInput>
-          initialValues={initialValues}
-          onSubmit={(values) => {
-            showLoading();
-            updateProductCardContentMutation({
-              variables: {
-                input: values,
-              },
-            }).catch(console.log);
-          }}
-        >
-          {({ values, setFieldValue }) => {
-            return (
-              <Form>
-                {cities.map(({ name, slug }) => {
-                  const cityTestId = `${product.slug}-${slug}`;
-                  const fieldName = `content.${slug}`;
-                  const fieldValue = get(values, fieldName);
-                  const constructorValue = getConstructorDefaultValue(fieldValue);
-
-                  return (
-                    <Accordion
-                      isOpen={slug === DEFAULT_CITY}
-                      testId={cityTestId}
-                      title={`${name}`}
-                      key={slug}
-                    >
-                      <div className='ml-8 pt-[var(--lineGap-200)]'>
-                        <PageEditor
-                          value={constructorValue}
-                          setValue={(value) => {
-                            setFieldValue(fieldName, JSON.stringify(value));
-                          }}
-                          imageUpload={async (file) => {
-                            try {
-                              const formData = new FormData();
-                              formData.append('assets', file);
-                              formData.append('productId', `${product._id}`);
-                              formData.append('productCardContentId', `${cardContent._id}`);
-
-                              const responseFetch = await fetch(
-                                '/api/product/add-card-content-asset',
-                                {
-                                  method: 'POST',
-                                  body: formData,
-                                },
-                              );
-                              const responseJson = await responseFetch.json();
-
-                              return {
-                                url: responseJson.url,
-                              };
-                            } catch (e) {
-                              console.log(e);
-                              return {
-                                url: '',
-                              };
-                            }
-                          }}
-                        />
-                      </div>
-                    </Accordion>
-                  );
-                })}
-                <div className='flex mb-12 mt-4'>
-                  <Button
-                    theme={'secondary'}
-                    size={'small'}
-                    type={'submit'}
-                    testId={`card-content-submit`}
-                  >
-                    Сохранить
-                  </Button>
-                </div>
-              </Form>
-            );
-          }}
-        </Formik>
-      </Inner>
+      <CompanyProductConstructor
+        product={product}
+        rubric={rubric}
+        cardContent={cardContent}
+        routeBasePath={routeBasePath}
+        currentCompany={currentCompany}
+      />
     </CmsProductLayout>
   );
 };
 
-interface ProductPageInterface extends PagePropsInterface, ProductAttributesInterface {}
+interface ProductConstructorPageInterface
+  extends PagePropsInterface,
+    ProductConstructorConsumerInterface {}
 
-const Product: NextPage<ProductPageInterface> = ({ pageUrls, ...props }) => {
+const ProductConstructor: NextPage<ProductConstructorPageInterface> = ({ pageUrls, ...props }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <ProductAttributes {...props} />
+      <ProductConstructorConsumer {...props} />
     </CmsLayout>
   );
 };
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<ProductPageInterface>> => {
+): Promise<GetServerSidePropsResult<ProductConstructorPageInterface>> => {
   const { query } = context;
   const { productId, rubricId } = query;
   const { db } = await getDatabase();
@@ -260,8 +163,9 @@ export const getServerSideProps = async (
       rubric: castDbData(rubric),
       cardContent: castDbData(cardContent),
       currentCompany: castDbData(companyResult),
+      routeBasePath: `${ROUTE_CMS}/companies/${companyResult._id}`,
     },
   };
 };
 
-export default Product;
+export default ProductConstructor;

@@ -17,6 +17,7 @@ export interface CompanyRubricDetailsInterface {
   seoTop?: RubricSeoModel | null;
   seoBottom?: RubricSeoModel | null;
   currentCompany?: CompanyInterface | null;
+  routeBasePath: string;
 }
 
 const CompanyRubricDetails: React.FC<CompanyRubricDetailsInterface> = ({

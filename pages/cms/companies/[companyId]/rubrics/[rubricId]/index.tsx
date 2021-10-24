@@ -32,8 +32,8 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
   seoTop,
   seoBottom,
   currentCompany,
+  routeBasePath,
 }) => {
-  const basePath = `${ROUTE_CMS}/companies/${currentCompany?._id}`;
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${rubric.name}`,
     config: [
@@ -43,11 +43,11 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
       },
       {
         name: `${currentCompany?.name}`,
-        href: basePath,
+        href: routeBasePath,
       },
       {
         name: `Рубрикатор`,
-        href: `${basePath}/rubrics`,
+        href: `${routeBasePath}/rubrics`,
       },
     ],
   };
@@ -57,13 +57,14 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
       hideAttributesPath
       rubric={rubric}
       breadcrumbs={breadcrumbs}
-      basePath={basePath}
+      basePath={routeBasePath}
     >
       <CompanyRubricDetails
         rubric={rubric}
         currentCompany={currentCompany}
         seoBottom={seoBottom}
         seoTop={seoTop}
+        routeBasePath={routeBasePath}
       />
     </CmsRubricLayout>
   );
@@ -71,21 +72,10 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
 
 interface RubricPageInterface extends PagePropsInterface, RubricDetailsInterface {}
 
-const RubricPage: NextPage<RubricPageInterface> = ({
-  pageUrls,
-  rubric,
-  seoBottom,
-  seoTop,
-  currentCompany,
-}) => {
+const RubricPage: NextPage<RubricPageInterface> = ({ pageUrls, ...props }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <RubricDetails
-        rubric={rubric}
-        seoBottom={seoBottom}
-        seoTop={seoTop}
-        currentCompany={currentCompany}
-      />
+      <RubricDetails {...props} />
     </CmsLayout>
   );
 };
@@ -234,6 +224,7 @@ export const getServerSideProps = async (
       seoTop: castDbData(seoTop),
       seoBottom: castDbData(seoBottom),
       currentCompany: castDbData(companyResult),
+      routeBasePath: `${ROUTE_CMS}/companies/${companyResult._id}`,
     },
   };
 };

@@ -60,7 +60,7 @@ export const getServerSideProps = async (
   const { query } = context;
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
   const { props } = await getConsoleInitialData({ context });
-  if (!props || !query.companyId) {
+  if (!props) {
     return {
       notFound: true,
     };

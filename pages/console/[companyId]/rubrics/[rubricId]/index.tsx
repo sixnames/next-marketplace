@@ -4,26 +4,20 @@ import CompanyRubricDetails, {
 import {
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   CATALOGUE_SEO_TEXT_POSITION_TOP,
-  ROUTE_CMS,
+  ROUTE_CONSOLE,
 } from 'config/common';
-import {
-  COL_COMPANIES,
-  COL_RUBRIC_DESCRIPTIONS,
-  COL_RUBRIC_SEO,
-  COL_RUBRICS,
-} from 'db/collectionNames';
+import { COL_RUBRIC_DESCRIPTIONS, COL_RUBRIC_SEO, COL_RUBRICS } from 'db/collectionNames';
 import { RubricModel, RubricSeoModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { CompanyInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/cms/CmsLayout';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
+import ConsoleLayout from 'layout/console/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 
 interface RubricDetailsInterface extends CompanyRubricDetailsInterface {}
 
@@ -32,22 +26,14 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
   seoTop,
   seoBottom,
   currentCompany,
+  routeBasePath,
 }) => {
-  const basePath = `${ROUTE_CMS}/companies/${currentCompany?._id}`;
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${rubric.name}`,
     config: [
       {
-        name: 'Компании',
-        href: `${ROUTE_CMS}/companies`,
-      },
-      {
-        name: `${currentCompany?.name}`,
-        href: basePath,
-      },
-      {
         name: `Рубрикатор`,
-        href: `${basePath}/rubrics`,
+        href: `${routeBasePath}/rubrics`,
       },
     ],
   };
@@ -57,9 +43,10 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
       hideAttributesPath
       rubric={rubric}
       breadcrumbs={breadcrumbs}
-      basePath={basePath}
+      basePath={routeBasePath}
     >
       <CompanyRubricDetails
+        routeBasePath={routeBasePath}
         rubric={rubric}
         currentCompany={currentCompany}
         seoBottom={seoBottom}
@@ -71,22 +58,11 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
 
 interface RubricPageInterface extends PagePropsInterface, RubricDetailsInterface {}
 
-const RubricPage: NextPage<RubricPageInterface> = ({
-  pageUrls,
-  rubric,
-  seoBottom,
-  seoTop,
-  currentCompany,
-}) => {
+const RubricPage: NextPage<RubricPageInterface> = ({ pageUrls, ...props }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
-      <RubricDetails
-        rubric={rubric}
-        seoBottom={seoBottom}
-        seoTop={seoTop}
-        currentCompany={currentCompany}
-      />
-    </CmsLayout>
+    <ConsoleLayout pageUrls={pageUrls} company={props.currentCompany}>
+      <RubricDetails {...props} />
+    </ConsoleLayout>
   );
 };
 
@@ -95,35 +71,16 @@ export const getServerSideProps = async (
 ): Promise<GetServerSidePropsResult<RubricPageInterface>> => {
   const { query } = context;
   const { db } = await getDatabase();
-  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
   const rubricSeoCollection = db.collection<RubricSeoModel>(COL_RUBRIC_SEO);
 
-  const { props } = await getAppInitialData({ context });
-  if (!props || !query.rubricId || !query.companyId) {
+  const { props } = await getConsoleInitialData({ context });
+  if (!props || !query.rubricId) {
     return {
       notFound: true,
     };
   }
-
-  // get company
-  const companyId = new ObjectId(`${query.companyId}`);
-  const companyAggregationResult = await companiesCollection
-    .aggregate([
-      {
-        $match: {
-          _id: companyId,
-        },
-      },
-    ])
-    .toArray();
-  const companyResult = companyAggregationResult[0];
-  if (!companyResult) {
-    return {
-      notFound: true,
-    };
-  }
-  const companySlug = companyResult.slug;
+  const companySlug = props.currentCompany.slug;
 
   const initialRubrics = await rubricsCollection
     .aggregate([
@@ -233,7 +190,7 @@ export const getServerSideProps = async (
       rubric: castDbData(rawRubric),
       seoTop: castDbData(seoTop),
       seoBottom: castDbData(seoBottom),
-      currentCompany: castDbData(companyResult),
+      routeBasePath: `${ROUTE_CONSOLE}/${props.currentCompany._id}`,
     },
   };
 };

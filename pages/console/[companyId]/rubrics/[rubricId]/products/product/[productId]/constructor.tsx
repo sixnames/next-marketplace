@@ -1,20 +1,19 @@
 import CompanyProductConstructor, {
   CompanyProductConstructorInterface,
 } from 'components/CompanyProductConstructor';
-import { DEFAULT_CITY, PAGE_EDITOR_DEFAULT_VALUE_STRING, ROUTE_CMS } from 'config/common';
-import { COL_COMPANIES, COL_PRODUCT_CARD_CONTENTS } from 'db/collectionNames';
+import { DEFAULT_CITY, PAGE_EDITOR_DEFAULT_VALUE_STRING, ROUTE_CONSOLE } from 'config/common';
+import { COL_PRODUCT_CARD_CONTENTS } from 'db/collectionNames';
 import { ProductCardContentModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { CompanyInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsProductLayout from 'layout/cms/CmsProductLayout';
 import { getCmsProduct } from 'lib/productUtils';
 import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import ConsoleLayout from 'layout/console/ConsoleLayout';
 
 interface ProductConstructorConsumerInterface extends CompanyProductConstructorInterface {}
 
@@ -28,14 +27,6 @@ const ProductConstructorConsumer: React.FC<ProductConstructorConsumerInterface> 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Контент карточки',
     config: [
-      {
-        name: 'Компании',
-        href: `${ROUTE_CMS}/companies`,
-      },
-      {
-        name: `${currentCompany?.name}`,
-        href: routeBasePath,
-      },
       {
         name: `Рубрикатор`,
         href: `${routeBasePath}/rubrics`,
@@ -83,9 +74,9 @@ interface ProductConstructorPageInterface
 
 const ProductConstructor: NextPage<ProductConstructorPageInterface> = ({ pageUrls, ...props }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout pageUrls={pageUrls} company={props.currentCompany}>
       <ProductConstructorConsumer {...props} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 
@@ -97,32 +88,13 @@ export const getServerSideProps = async (
   const { db } = await getDatabase();
   const productCardContentsCollection =
     db.collection<ProductCardContentModel>(COL_PRODUCT_CARD_CONTENTS);
-  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
-  const { props } = await getAppInitialData({ context });
-  if (!props || !productId || !rubricId || !query.companyId) {
+  const { props } = await getConsoleInitialData({ context });
+  if (!props || !productId || !rubricId) {
     return {
       notFound: true,
     };
   }
-
-  // get company
-  const companyId = new ObjectId(`${query.companyId}`);
-  const companyAggregationResult = await companiesCollection
-    .aggregate([
-      {
-        $match: {
-          _id: companyId,
-        },
-      },
-    ])
-    .toArray();
-  const companyResult = companyAggregationResult[0];
-  if (!companyResult) {
-    return {
-      notFound: true,
-    };
-  }
-  const companySlug = companyResult.slug;
+  const companySlug = props.currentCompany.slug;
 
   const payload = await getCmsProduct({
     locale: props.sessionLocale,
@@ -162,8 +134,7 @@ export const getServerSideProps = async (
       product: castDbData(product),
       rubric: castDbData(rubric),
       cardContent: castDbData(cardContent),
-      currentCompany: castDbData(companyResult),
-      routeBasePath: `${ROUTE_CMS}/companies/${companyResult._id}`,
+      routeBasePath: `${ROUTE_CONSOLE}/${props.currentCompany._id}`,
     },
   };
 };

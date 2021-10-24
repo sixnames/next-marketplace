@@ -5,7 +5,7 @@ import RequestError from 'components/RequestError';
 import { ROUTE_CMS, DEFAULT_PAGE_FILTER } from 'config/common';
 import { COL_COMPANIES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { CompanyInterface, ConsoleRubricProductsInterface } from 'db/uiInterfaces';
+import { CompanyInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsLayout from 'layout/cms/CmsLayout';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
@@ -20,7 +20,6 @@ import * as React from 'react';
 interface RubricProductsConsumerInterface extends CompanyRubricProductsListInterface {}
 
 const RubricProductsConsumer: React.FC<RubricProductsConsumerInterface> = (props) => {
-  const routeBasePath = `${ROUTE_CMS}/companies/${props.currentCompany?._id}`;
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `Товары`,
     config: [
@@ -30,15 +29,15 @@ const RubricProductsConsumer: React.FC<RubricProductsConsumerInterface> = (props
       },
       {
         name: `${props.currentCompany?.name}`,
-        href: routeBasePath,
+        href: props.routeBasePath,
       },
       {
         name: `Рубрикатор`,
-        href: `${routeBasePath}/rubrics`,
+        href: `${props.routeBasePath}/rubrics`,
       },
       {
         name: `${props.rubric?.name}`,
-        href: `${routeBasePath}/rubrics/${props.rubric?._id}`,
+        href: `${props.routeBasePath}/rubrics/${props.rubric?._id}`,
       },
     ],
   };
@@ -52,14 +51,14 @@ const RubricProductsConsumer: React.FC<RubricProductsConsumerInterface> = (props
       hideAttributesPath
       rubric={props.rubric}
       breadcrumbs={breadcrumbs}
-      basePath={routeBasePath}
+      basePath={props.routeBasePath}
     >
       <CompanyRubricProductsList {...props} />
     </CmsRubricLayout>
   );
 };
 
-interface RubricProductsPageInterface extends PagePropsInterface, ConsoleRubricProductsInterface {}
+interface RubricProductsPageInterface extends PagePropsInterface, RubricProductsConsumerInterface {}
 
 const RubricProducts: NextPage<RubricProductsPageInterface> = ({ pageUrls, ...props }) => {
   return (
@@ -125,6 +124,7 @@ export const getServerSideProps = async (
       itemPath,
       companySlug,
       currentCompany: castDbData(companyResult),
+      routeBasePath: `${ROUTE_CMS}/companies/${companyResult._id}`,
     },
   };
 };

@@ -24,6 +24,7 @@ import * as React from 'react';
 
 export interface CompanyRubricProductsListInterface extends ConsoleRubricProductsInterface {
   currentCompany?: CompanyInterface | null;
+  routeBasePath: string;
 }
 
 const CompanyRubricProductsList: React.FC<CompanyRubricProductsListInterface> = ({

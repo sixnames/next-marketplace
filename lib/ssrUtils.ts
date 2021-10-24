@@ -1260,7 +1260,7 @@ export async function getPageInitialState({
     company = await companiesCollection.findOne({ domain });
   }
   // For development
-  // company = await companiesCollection.findOne({ slug: 'company_a' });
+  // company = await companiesCollection.findOne({ slug: 'womens_secretary_000003' });
 
   // Page initial data
   const rawInitialData = await getPageInitialData({

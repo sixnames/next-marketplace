@@ -28,13 +28,6 @@ const CompanyRubricsList: React.FC<CompanyRubricsListInterface> = ({ rubrics, ro
       },
     },
     {
-      accessor: 'activeProductsCount',
-      headTitle: 'Активных товаров',
-      render: ({ cellData, dataItem }) => {
-        return <div data-cy={`${dataItem.name}-activeProductsCount`}>{cellData}</div>;
-      },
-    },
-    {
       render: ({ dataItem }) => {
         return (
           <ContentItemControls
@@ -42,7 +35,9 @@ const CompanyRubricsList: React.FC<CompanyRubricsListInterface> = ({ rubrics, ro
             justifyContent={'flex-end'}
             updateTitle={'Редактировать рубрику'}
             updateHandler={() => {
-              router.push(`${routeBasePath}/${dataItem._id}`).catch((e) => console.log(e));
+              router
+                .push(`${routeBasePath}/${dataItem._id}/products/${dataItem._id}`)
+                .catch((e) => console.log(e));
             }}
           />
         );
@@ -59,7 +54,9 @@ const CompanyRubricsList: React.FC<CompanyRubricsListInterface> = ({ rubrics, ro
           testIdKey={'name'}
           emptyMessage={'Список пуст'}
           onRowDoubleClick={(dataItem) => {
-            router.push(`${routeBasePath}/${dataItem._id}`).catch((e) => console.log(e));
+            router
+              .push(`${routeBasePath}/${dataItem._id}/products/${dataItem._id}`)
+              .catch((e) => console.log(e));
           }}
         />
       </div>

@@ -1387,6 +1387,7 @@ function checkPagePermission({
 
 interface GetCompanyAppInitialDataInterface {
   context: GetServerSidePropsContext;
+  checkCompany?: boolean;
 }
 
 interface GetCompanyAppInitialDataPropsInterface extends PagePropsInterface {
@@ -1402,6 +1403,7 @@ interface GetCompanyAppInitialDataPayloadInterface {
 
 export async function getConsoleInitialData({
   context,
+  checkCompany,
 }: GetCompanyAppInitialDataInterface): Promise<GetCompanyAppInitialDataPayloadInterface> {
   const {
     sessionUser,
@@ -1442,7 +1444,7 @@ export async function getConsoleInitialData({
   const currentCompany = (sessionUser.companies || []).find((company) => {
     return company._id.toHexString() === `${context.query.companyId}`;
   });
-  if (!currentCompany) {
+  if (!currentCompany && checkCompany) {
     return {
       redirect: {
         permanent: false,
@@ -1459,7 +1461,7 @@ export async function getConsoleInitialData({
       sessionCity,
       themeStyle,
       sessionUser: castDbData(sessionUser),
-      currentCompany: castDbData(currentCompany),
+      currentCompany: currentCompany ? castDbData(currentCompany) : null,
       sessionLocale,
       pageUrls,
     },

@@ -300,6 +300,7 @@ export interface ProductInterface extends ProductModel {
   cardTitle?: string | null;
   cardDescription?: ProductCardDescriptionInterface | null;
   shops?: ShopInterface[] | null;
+  seo?: ProductSeoModel | null;
 }
 
 export interface RoleRuleInterface extends RoleRuleModel {
@@ -339,7 +340,7 @@ export interface RubricInterface extends RubricModel {
 
 export interface RubricDescriptionInterface extends RubricDescriptionModel {
   text?: string | null;
-  seo?: ProductSeoModel | null;
+  seo?: RubricSeoModel | null;
 }
 
 export interface CategoryInterface extends CategoryModel {
@@ -362,7 +363,7 @@ export interface CategoryInterface extends CategoryModel {
 
 export interface CategoryDescriptionInterface extends CategoryDescriptionModel {
   text?: string | null;
-  seo?: ProductSeoModel | null;
+  seo?: RubricSeoModel | null;
 }
 
 export interface ShopProductInterface extends ShopProductModel {

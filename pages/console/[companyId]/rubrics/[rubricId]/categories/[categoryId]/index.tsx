@@ -4,28 +4,27 @@ import CompanyRubricCategoryDetails, {
 import {
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   CATALOGUE_SEO_TEXT_POSITION_TOP,
-  ROUTE_CMS,
+  ROUTE_CONSOLE,
 } from 'config/common';
 import {
   COL_CATEGORIES,
   COL_CATEGORY_DESCRIPTIONS,
-  COL_COMPANIES,
   COL_ICONS,
   COL_RUBRIC_SEO,
   COL_RUBRICS,
 } from 'db/collectionNames';
 import { RubricSeoModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { CategoryInterface, CompanyInterface } from 'db/uiInterfaces';
+import { CategoryInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCategoryLayout from 'layout/cms/CmsCategoryLayout';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/console/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 
 interface CategoryDetailsInterface extends CompanyRubricCategoryDetailsInterface {}
 
@@ -39,14 +38,6 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${category.name}`,
     config: [
-      {
-        name: 'Компании',
-        href: `${ROUTE_CMS}/companies`,
-      },
-      {
-        name: `${currentCompany?.name}`,
-        href: routeBasePath,
-      },
       {
         name: `Рубрикатор`,
         href: `${routeBasePath}/rubrics`,
@@ -84,9 +75,9 @@ interface CategoryPageInterface extends PagePropsInterface, CategoryDetailsInter
 
 const CategoryPage: NextPage<CategoryPageInterface> = ({ pageUrls, ...props }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout pageUrls={pageUrls} company={props.currentCompany}>
       <CategoryDetails {...props} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 
@@ -97,33 +88,15 @@ export const getServerSideProps = async (
   const { db } = await getDatabase();
   const categoriesCollection = db.collection<CategoryInterface>(COL_CATEGORIES);
   const rubricSeoCollection = db.collection<RubricSeoModel>(COL_RUBRIC_SEO);
-  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
 
-  const { props } = await getAppInitialData({ context });
-  if (!props || !query.categoryId || !query.companyId) {
+  const { props } = await getConsoleInitialData({ context });
+  if (!props || !query.categoryId) {
     return {
       notFound: true,
     };
   }
 
-  // get company
-  const companyId = new ObjectId(`${query.companyId}`);
-  const companyAggregationResult = await companiesCollection
-    .aggregate<CompanyInterface>([
-      {
-        $match: {
-          _id: companyId,
-        },
-      },
-    ])
-    .toArray();
-  const companyResult = companyAggregationResult[0];
-  if (!companyResult) {
-    return {
-      notFound: true,
-    };
-  }
-  const companySlug = companyResult.slug;
+  const companySlug = props.currentCompany.slug;
 
   const categoryAggregation = await categoriesCollection
     .aggregate<CategoryInterface>([
@@ -277,8 +250,7 @@ export const getServerSideProps = async (
       category: castDbData(category),
       seoTop: castDbData(seoTop),
       seoBottom: castDbData(seoBottom),
-      currentCompany: castDbData(companyResult),
-      routeBasePath: `${ROUTE_CMS}/companies/${companyResult._id}`,
+      routeBasePath: `${ROUTE_CONSOLE}/${props.currentCompany._id}`,
     },
   };
 };

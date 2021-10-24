@@ -12,7 +12,6 @@ import {
   GENDER_IT,
   FILTER_BRAND_KEY,
   FILTER_BRAND_COLLECTION_KEY,
-  DEFAULT_COMPANY_SLUG,
   SORT_DESC,
 } from 'config/common';
 import { DEFAULT_LAYOUT } from 'config/constantSelects';
@@ -130,7 +129,7 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
     const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
     const productSeoCollection = db.collection<ProductSeoModel>(COL_PRODUCT_SEO);
     const companyMatch = companyId ? { companyId: new ObjectId(companyId) } : {};
-    const companySlug = props.useUniqueConstructor ? props.companySlug : DEFAULT_COMPANY_SLUG;
+    const companySlug = props.companySlug;
     const shopProductsMatch = {
       citySlug: city,
       ...companyMatch,

@@ -49,7 +49,6 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<any>> => {
   const { props } = await getConsoleInitialData({ context });
-
   if (!props?.sessionUser) {
     return {
       redirect: {

@@ -7,7 +7,6 @@ import { DeleteBlogPostPreviewImageInterface } from 'db/dao/blog/deletePostPrevi
 import { UpdateBlogAttributeInputInterface } from 'db/dao/blog/updateBlogAttribute';
 import { UpdateBlogPostInputInterface } from 'db/dao/blog/updateBlogPost';
 import { UpdateBlogPostAttributeInterface } from 'db/dao/blog/updateBlogPostAttribute';
-import { UpdateBlogPostPreviewInputInterface } from 'db/dao/blog/uploadPostPreviewImage';
 import { useRouter } from 'next/router';
 import {
   REQUEST_METHOD_DELETE,
@@ -79,19 +78,8 @@ export const useDeleteBlogPostPreviewImage = (): UseMutationConsumerPayload<
   DeleteBlogPostPreviewImageInterface
 > => {
   return useMutationHandler<BlogPostPayloadModel, DeleteBlogPostPreviewImageInterface>({
-    path: `${basePath}/post-preview-image`,
+    path: `${basePath}/delete-preview-image`,
     method: REQUEST_METHOD_DELETE,
-  });
-};
-
-// upload post preview image
-export const useUploadBlogPostPreviewImage = (): UseMutationConsumerPayload<
-  BlogPostPayloadModel,
-  UpdateBlogPostPreviewInputInterface
-> => {
-  return useMutationHandler<BlogPostPayloadModel, UpdateBlogPostPreviewInputInterface>({
-    path: `${basePath}/post-preview-image`,
-    method: REQUEST_METHOD_PATCH,
   });
 };
 

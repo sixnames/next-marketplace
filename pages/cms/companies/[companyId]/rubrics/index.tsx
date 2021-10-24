@@ -1,7 +1,6 @@
 import { ROUTE_CMS } from 'config/common';
 import {
   COL_COMPANIES,
-  COL_PRODUCTS,
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
@@ -153,7 +152,7 @@ export const getServerSideProps = async (
       },
       {
         $addFields: {
-          activeProductsCount: '$totalShopProductsObject.totalDocs',
+          productsCount: '$totalShopProductsObject.totalDocs',
         },
       },
       {
@@ -164,43 +163,10 @@ export const getServerSideProps = async (
         },
       },
       {
-        $lookup: {
-          from: COL_PRODUCTS,
-          as: 'products',
-          let: { rubricId: '$_id' },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $eq: ['$$rubricId', '$rubricId'],
-                },
-              },
-            },
-            {
-              $project: {
-                _id: true,
-              },
-            },
-            {
-              $count: 'totalDocs',
-            },
-          ],
-        },
-      },
-      {
-        $addFields: {
-          totalProductsObject: { $arrayElemAt: ['$products', 0] },
-        },
-      },
-      {
-        $addFields: {
-          productsCount: '$totalProductsObject.totalDocs',
-        },
-      },
-      {
-        $project: {
-          products: false,
-          totalProductsObject: false,
+        $match: {
+          productsCount: {
+            $gt: 0,
+          },
         },
       },
     ])

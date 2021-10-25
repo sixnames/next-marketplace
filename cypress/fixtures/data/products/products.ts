@@ -134,7 +134,7 @@ const products = rubrics.reduce((acc: ProductModel[], rubric) => {
           return attribute.optionsGroupId && optionsGroupId.equals(attribute.optionsGroupId);
         });
 
-        if (attribute.slug === 'region') {
+        if (attribute.slug === '000006') {
           const randomOptionIndex = getNextOptionIndex({
             optionsLength: attributeOptions.length,
             attributeSlug: attribute.slug,

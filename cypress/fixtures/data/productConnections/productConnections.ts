@@ -7,27 +7,27 @@ import rubrics from '../rubrics/rubrics';
 const connectionAttributesConfig = [
   {
     attributeId: getObjectId(`attribute Объем`),
-    attributeSlug: 'obem',
+    attributeSlug: '000007',
   },
   {
     attributeId: getObjectId(`attribute Тип ёмкости`),
-    attributeSlug: 'tip_yomkosti',
+    attributeSlug: '000008',
   },
   {
     attributeId: getObjectId(`attribute Год`),
-    attributeSlug: 'god',
+    attributeSlug: '000009',
   },
   {
     attributeId: getObjectId(`attribute Винтаж`),
-    attributeSlug: 'vintazh',
+    attributeSlug: '000011',
   },
   {
     attributeId: getObjectId(`attribute Сахар`),
-    attributeSlug: 'sakhar',
+    attributeSlug: '000012',
   },
   {
     attributeId: getObjectId(`attribute Тип вина`),
-    attributeSlug: 'tip_vina',
+    attributeSlug: '000015',
   },
 ];
 

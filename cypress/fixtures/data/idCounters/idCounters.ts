@@ -1,4 +1,5 @@
 import {
+  COL_ATTRIBUTES,
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_CATEGORIES,
@@ -66,6 +67,10 @@ const idCounters: IdCounterModel[] = [
   },
   {
     collection: COL_PROMO,
+    counter: 999999,
+  },
+  {
+    collection: COL_ATTRIBUTES,
     counter: 999999,
   },
 ];

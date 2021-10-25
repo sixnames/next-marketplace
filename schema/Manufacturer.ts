@@ -19,7 +19,6 @@ import { aggregatePagination } from 'db/dao/aggregatePagination';
 import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getNextItemId } from 'lib/itemIdUtils';
-import { generateDefaultLangSlug } from 'lib/slugUtils';
 import { createManufacturerSchema, updateManufacturerSchema } from 'validation/manufacturerSchema';
 
 export const Manufacturer = objectType({
@@ -28,8 +27,8 @@ export const Manufacturer = objectType({
     t.implements('Base');
     t.implements('Timestamp');
     t.list.nonNull.url('url');
-    t.nonNull.string('slug');
     t.nonNull.json('nameI18n');
+    t.nonNull.string('itemId');
     t.json('descriptionI18n');
 
     // Manufacturer name translation field resolver
@@ -175,7 +174,7 @@ export const ManufacturerQueries = extendType({
           .find(query, {
             projection: {
               _id: true,
-              slug: true,
+              itemId: true,
               nameI18n: true,
             },
           })
@@ -274,11 +273,9 @@ export const ManufacturerMutations = extendType({
 
           // Create manufacturer
           const itemId = await getNextItemId(COL_MANUFACTURERS);
-          const slug = generateDefaultLangSlug(input.nameI18n);
           const createManufacturerResult = await manufacturersCollection.insertOne({
             ...input,
             itemId,
-            slug,
             url: (input.url || []).map((link) => {
               return `${link}`;
             }),
@@ -446,7 +443,7 @@ export const ManufacturerMutations = extendType({
           }
 
           // Check if manufacturer is used in products
-          const used = await productsCollection.findOne({ manufacturerSlug: manufacturer.slug });
+          const used = await productsCollection.findOne({ manufacturerSlug: manufacturer.itemId });
           if (used) {
             return {
               success: false,

@@ -3,6 +3,7 @@ import ControlButton from 'components/ControlButton';
 import Link from 'components/Link/Link';
 import RatingStars from 'components/RatingStars';
 import { ROUTE_CATALOGUE } from 'config/common';
+import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
 import { ProductSnippetInterface } from 'db/uiInterfaces';
 import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
@@ -20,6 +21,7 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
   showSnippetArticle,
   showSnippetRating,
 }) => {
+  const { configs } = useConfigContext();
   const { addShoplessProductToCart, addProductToCart } = useSiteContext();
   const { product } = shopProduct;
   if (!product) {
@@ -53,6 +55,26 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
         className ? className : ''
       }`}
     >
+      {/*edit button for admin*/}
+      {configs.showAdminUiInCatalogue ? (
+        <div className='absolute top-0 left-0 z-50'>
+          <ControlButton
+            size={'small'}
+            iconSize={'small'}
+            icon={'pencil'}
+            theme={'accent'}
+            ariaLabel={'edit'}
+            roundedTopLeft
+            onClick={() => {
+              window.open(
+                `${configs.editLinkBasePath}/rubrics/${product.rubricId}/products/product/${product._id}`,
+                '_blank',
+              );
+            }}
+          />
+        </div>
+      ) : null}
+
       <div className='relative flex flex-col col-span-3 md:col-span-2 items-center justify-center flex-grow pt-4 pl-5 pr-5 dark:snippet-image'>
         {/*image*/}
         <div className='relative flex-grow pb-5 pt-5'>

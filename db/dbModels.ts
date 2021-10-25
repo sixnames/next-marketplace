@@ -266,7 +266,6 @@ export interface BrandBaseModel {
 }
 
 export interface BrandModel extends BaseModel, TimestampModel, CountersModel, BrandBaseModel {
-  slug: string;
   url?: URLModel[] | null;
   nameI18n: TranslationModel;
   descriptionI18n?: TranslationModel | null;
@@ -278,7 +277,6 @@ export interface BrandCollectionModel
     TimestampModel,
     CountersModel,
     BrandBaseModel {
-  slug: string;
   nameI18n: TranslationModel;
   brandSlug: string;
   brandId: ObjectIdModel;
@@ -287,14 +285,12 @@ export interface BrandCollectionModel
 
 export interface ManufacturerModel extends BaseModel, TimestampModel, CountersModel {
   nameI18n: TranslationModel;
-  slug: string;
   url?: URLModel[] | null;
   descriptionI18n?: TranslationModel | null;
 }
 
 export interface SupplierModel extends BaseModel, TimestampModel {
   nameI18n: TranslationModel;
-  slug: string;
   url?: URLModel[] | null;
   descriptionI18n?: TranslationModel | null;
 }

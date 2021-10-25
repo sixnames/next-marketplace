@@ -218,7 +218,6 @@ export type Brand = Base & Timestamp & {
   createdAt: Scalars['Date'];
   updatedAt: Scalars['Date'];
   url?: Maybe<Array<Scalars['URL']>>;
-  slug: Scalars['String'];
   nameI18n: Scalars['String'];
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
   name: Scalars['String'];
@@ -242,7 +241,6 @@ export type BrandCollection = Base & Timestamp & {
   itemId: Scalars['String'];
   createdAt: Scalars['Date'];
   updatedAt: Scalars['Date'];
-  slug: Scalars['String'];
   nameI18n: Scalars['JSONObject'];
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
   name: Scalars['String'];
@@ -815,7 +813,6 @@ export type Manufacturer = Base & Timestamp & {
   createdAt: Scalars['Date'];
   updatedAt: Scalars['Date'];
   url?: Maybe<Array<Scalars['URL']>>;
-  slug: Scalars['String'];
   nameI18n: Scalars['JSONObject'];
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
   name: Scalars['String'];
@@ -2565,7 +2562,6 @@ export type Supplier = Base & Timestamp & {
   createdAt: Scalars['Date'];
   updatedAt: Scalars['Date'];
   url?: Maybe<Array<Scalars['URL']>>;
-  slug: Scalars['String'];
   nameI18n: Scalars['JSONObject'];
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
   name: Scalars['String'];
@@ -4832,7 +4828,7 @@ export type GetBrandAlphabetListsQuery = (
     & Pick<BrandsAlphabetList, 'letter'>
     & { docs: Array<(
       { __typename?: 'Brand' }
-      & Pick<Brand, '_id' | 'slug' | 'name'>
+      & Pick<Brand, '_id' | 'itemId' | 'name'>
     )> }
   )> }
 );
@@ -4849,7 +4845,7 @@ export type GetBrandCollectionAlphabetListsQuery = (
     & Pick<BrandCollectionsAlphabetList, 'letter'>
     & { docs: Array<(
       { __typename?: 'BrandCollection' }
-      & Pick<BrandCollection, '_id' | 'slug' | 'name'>
+      & Pick<BrandCollection, '_id' | 'itemId' | 'name'>
     )> }
   )> }
 );
@@ -4903,7 +4899,7 @@ export type GetManufacturerAlphabetListsQuery = (
     & Pick<ManufacturersAlphabetList, 'letter'>
     & { docs: Array<(
       { __typename?: 'Manufacturer' }
-      & Pick<Manufacturer, '_id' | 'slug' | 'name'>
+      & Pick<Manufacturer, '_id' | 'itemId' | 'name'>
     )> }
   )> }
 );
@@ -4920,7 +4916,7 @@ export type GetSupplierAlphabetListsQuery = (
     & Pick<SuppliersAlphabetList, 'letter'>
     & { docs: Array<(
       { __typename?: 'Supplier' }
-      & Pick<Supplier, '_id' | 'slug' | 'name'>
+      & Pick<Supplier, '_id' | 'itemId' | 'name'>
     )> }
   )> }
 );
@@ -9531,7 +9527,7 @@ export const GetBrandAlphabetListsDocument = gql`
     letter
     docs {
       _id
-      slug
+      itemId
       name
     }
   }
@@ -9571,7 +9567,7 @@ export const GetBrandCollectionAlphabetListsDocument = gql`
     letter
     docs {
       _id
-      slug
+      itemId
       name
     }
   }
@@ -9676,7 +9672,7 @@ export const GetManufacturerAlphabetListsDocument = gql`
     letter
     docs {
       _id
-      slug
+      itemId
       name
     }
   }
@@ -9716,7 +9712,7 @@ export const GetSupplierAlphabetListsDocument = gql`
     letter
     docs {
       _id
-      slug
+      itemId
       name
     }
   }

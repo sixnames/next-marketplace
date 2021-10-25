@@ -1154,7 +1154,6 @@ export interface NexusGenFieldTypes {
     itemId: string; // String!
     name: string; // String!
     nameI18n: string; // String!
-    slug: string; // String!
     updatedAt: NexusGenScalars['Date']; // Date!
     url: NexusGenScalars['URL'][] | null; // [URL!]
   };
@@ -1167,7 +1166,6 @@ export interface NexusGenFieldTypes {
     itemId: string; // String!
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    slug: string; // String!
     updatedAt: NexusGenScalars['Date']; // Date!
   };
   BrandCollectionsAlphabetList: {
@@ -1398,7 +1396,6 @@ export interface NexusGenFieldTypes {
     itemId: string; // String!
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    slug: string; // String!
     updatedAt: NexusGenScalars['Date']; // Date!
     url: NexusGenScalars['URL'][] | null; // [URL!]
   };
@@ -2090,7 +2087,6 @@ export interface NexusGenFieldTypes {
     itemId: string; // String!
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    slug: string; // String!
     updatedAt: NexusGenScalars['Date']; // Date!
     url: NexusGenScalars['URL'][] | null; // [URL!]
   };
@@ -2220,7 +2216,6 @@ export interface NexusGenFieldTypeNames {
     itemId: 'String';
     name: 'String';
     nameI18n: 'String';
-    slug: 'String';
     updatedAt: 'Date';
     url: 'URL';
   };
@@ -2233,7 +2228,6 @@ export interface NexusGenFieldTypeNames {
     itemId: 'String';
     name: 'String';
     nameI18n: 'JSONObject';
-    slug: 'String';
     updatedAt: 'Date';
   };
   BrandCollectionsAlphabetList: {
@@ -2464,7 +2458,6 @@ export interface NexusGenFieldTypeNames {
     itemId: 'String';
     name: 'String';
     nameI18n: 'JSONObject';
-    slug: 'String';
     updatedAt: 'Date';
     url: 'URL';
   };
@@ -3156,7 +3149,6 @@ export interface NexusGenFieldTypeNames {
     itemId: 'String';
     name: 'String';
     nameI18n: 'JSONObject';
-    slug: 'String';
     updatedAt: 'Date';
     url: 'URL';
   };

@@ -2,7 +2,6 @@ import Button from 'components/Button';
 import ErrorBoundaryFallback from 'components/ErrorBoundaryFallback';
 import FixedButtons from 'components/FixedButtons';
 import Inner from 'components/Inner';
-import { ROUTE_CMS } from 'config/common';
 import { CARD_LAYOUT_HALF_COLUMNS, DEFAULT_LAYOUT } from 'config/constantSelects';
 import { useConfigContext } from 'context/configContext';
 import { InitialCardDataInterface } from 'db/uiInterfaces';
@@ -73,7 +72,7 @@ const Card: NextPage<CardInterface> = ({ cardData, company, ...props }) => {
               size={'small'}
               onClick={() => {
                 window.open(
-                  `${ROUTE_CMS}/rubrics/${cardData.product.rubricId}/products/product/${cardData.product._id}`,
+                  `${configs.editLinkBasePath}/rubrics/${cardData.product.rubricId}/products/product/${cardData.product._id}`,
                   '_blank',
                 );
               }}

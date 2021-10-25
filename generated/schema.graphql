@@ -197,7 +197,6 @@ type Brand implements Base & Timestamp {
   itemId: String!
   name: String!
   nameI18n: String!
-  slug: String!
   updatedAt: Date!
   url: [URL!]
 }
@@ -214,7 +213,6 @@ type BrandCollection implements Base & Timestamp {
   itemId: String!
   name: String!
   nameI18n: JSONObject!
-  slug: String!
   updatedAt: Date!
 }
 
@@ -783,7 +781,6 @@ type Manufacturer implements Base & Timestamp {
   itemId: String!
   name: String!
   nameI18n: JSONObject!
-  slug: String!
   updatedAt: Date!
   url: [URL!]
 }
@@ -2284,7 +2281,6 @@ type Supplier implements Base & Timestamp {
   itemId: String!
   name: String!
   nameI18n: JSONObject!
-  slug: String!
   updatedAt: Date!
   url: [URL!]
 }

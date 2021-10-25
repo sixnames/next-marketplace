@@ -10,8 +10,8 @@ export const BrandCollection = objectType({
   definition(t) {
     t.implements('Base');
     t.implements('Timestamp');
-    t.nonNull.string('slug');
     t.nonNull.json('nameI18n');
+    t.nonNull.string('itemId');
     t.json('descriptionI18n');
 
     // BrandCollection name translation field resolver
@@ -98,7 +98,7 @@ export const BrandCollectionQueries = extendType({
           .find(query, {
             projection: {
               _id: true,
-              slug: true,
+              itemId: true,
               nameI18n: true,
             },
           })

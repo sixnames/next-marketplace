@@ -58,7 +58,6 @@ import {
   FILTER_NO_PHOTO_KEY,
   CATALOGUE_SEO_TEXT_POSITION_TOP,
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
-  ROUTE_CMS,
 } from 'config/common';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -246,8 +245,8 @@ export async function getCatalogueAttributes({
     const optionSlug = `${attributeSlug}${FILTER_SEPARATOR}${option.slug}`;
     const isBrand = attributeSlug === FILTER_BRAND_KEY;
     const brand = isBrand
-      ? (brands || []).find(({ slug }) => {
-          return slug === option.slug;
+      ? (brands || []).find(({ itemId }) => {
+          return itemId === option.slug;
         })
       : null;
 
@@ -256,8 +255,8 @@ export async function getCatalogueAttributes({
     }
 
     if (currentBrand) {
-      const collection = (currentBrand.collections || []).find(({ slug }) => {
-        return slug === option.slug;
+      const collection = (currentBrand.collections || []).find(({ itemId }) => {
+        return itemId === option.slug;
       });
       if (!collection?.showInCatalogueTitle) {
         return null;
@@ -484,8 +483,8 @@ export function castOptionsForBreadcrumbs({
   const optionSlug = `${attribute.slug}${FILTER_SEPARATOR}${option.slug}`;
   const newAcc = [...acc];
   const brand = isBrand
-    ? (brands || []).find(({ slug }) => {
-        return slug === option.slug;
+    ? (brands || []).find(({ itemId }) => {
+        return itemId === option.slug;
       })
     : null;
 
@@ -496,8 +495,8 @@ export function castOptionsForBreadcrumbs({
 
     if (currentBrand) {
       const collections = currentBrand?.collections;
-      const currentBrandCollection = (collections || []).find(({ slug }) => {
-        return slug === option.slug;
+      const currentBrandCollection = (collections || []).find(({ itemId }) => {
+        return itemId === option.slug;
       });
       if (!currentBrandCollection?.showAsCatalogueBreadcrumb) {
         return acc;
@@ -1101,14 +1100,14 @@ export const getCatalogueData = async ({
                   from: COL_BRANDS,
                   as: 'brand',
                   let: {
-                    slug: '$_id',
+                    itemId: '$_id',
                     collectionSlugs: '$collectionSlugs',
                   },
                   pipeline: [
                     {
                       $match: {
                         $expr: {
-                          $eq: ['$slug', '$$slug'],
+                          $eq: ['$itemId', '$$itemId'],
                         },
                       },
                     },
@@ -1130,7 +1129,7 @@ export const getCatalogueData = async ({
                                 },
                                 {
                                   $expr: {
-                                    $in: ['$slug', '$$collectionSlugs'],
+                                    $in: ['$itemId', '$$collectionSlugs'],
                                   },
                                 },
                               ],
@@ -1497,8 +1496,8 @@ export const getCatalogueData = async ({
 
       // product brand
       const productBrand = product.brandSlug
-        ? (brands || []).find(({ slug }) => {
-            return slug === product.brandSlug;
+        ? (brands || []).find(({ itemId }) => {
+            return itemId === product.brandSlug;
           })
         : null;
 
@@ -1509,7 +1508,7 @@ export const getCatalogueData = async ({
           ? {
               ...productBrand,
               collections: (productBrand.collections || []).filter((collection) => {
-                return collection.slug === product.brandCollectionSlug;
+                return collection.itemId === product.brandCollectionSlug;
               }),
             }
           : null,
@@ -1667,7 +1666,7 @@ export const getCatalogueData = async ({
     });
 
     // rubric seo text as default
-    let editUrl = `${ROUTE_CMS}/rubrics/${rubric._id}`;
+    let editUrl = `/rubrics/${rubric._id}`;
     let textTop: string | null | undefined = getFieldStringLocale(
       rubric.seoDescriptionTop?.textI18n,
       locale,
@@ -1691,7 +1690,7 @@ export const getCatalogueData = async ({
 
     // category seo text if selected
     if (selectedCategories.length > 0 && selectedCategories.length < 2 && selectedCategories[0]) {
-      editUrl = `${ROUTE_CMS}/rubrics/${rubric._id}/categories/${selectedCategories[0]._id}`;
+      editUrl = `/rubrics/${rubric._id}/categories/${selectedCategories[0]._id}`;
       const textTopDoc = await categoryDescriptionsCollection.findOne({
         categoryId: selectedCategories[0]._id,
         companySlug,

@@ -10,6 +10,7 @@ interface ConfigContextInterface {
 const ConfigContext = React.createContext<ConfigContextInterface>({
   cities: [],
   configs: {
+    editLinkBasePath: '',
     siteName: '',
     siteFoundationYear: 0,
     yaVerification: '',

@@ -179,18 +179,26 @@ const HeaderCartLink: React.FC<HeaderCartLinkInterface> = ({ testId }) => {
 interface BurgerDropdownInterface {
   isBurgerDropdownOpen: boolean;
   hideBurgerDropdown: () => void;
+  headerPageGroups: PagesGroupInterface[];
 }
 
 const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
   isBurgerDropdownOpen,
   hideBurgerDropdown,
+  headerPageGroups,
 }) => {
+  const { locale } = useLocaleContext();
+  const { configs } = useConfigContext();
   const { query, asPath } = useRouter();
   const { navRubrics } = useSiteContext();
   const { rubricSlug } = query;
   if (!isBurgerDropdownOpen) {
     return null;
   }
+
+  const showBlog = configs.showBlog;
+  const blogLinkName = getConstantTranslation(`nav.blog.${locale}`);
+  const contactsLinkName = getConstantTranslation(`nav.contacts.${locale}`);
 
   return (
     <div className='fixed inset-0 bg-primary z-[140] w-full pt-4 pb-8 overflow-y-auto'>
@@ -203,7 +211,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
           </div>
         </div>
 
-        <ul className='headless-mobile-nav pb-20'>
+        <ul className='headless-mobile-nav pb-10'>
           {navRubrics.map((rubric) => {
             const { name, attributes, variant, categories } = rubric;
 
@@ -228,7 +236,9 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                     <div>
                       {variant?.showCategoriesInNav && (categories || []).length > 0 ? (
                         <div className='mt-2 mb-10'>
-                          <div className='mb-2 text-secondary-text'>Категории</div>
+                          <div className='mb-2 text-xl font-medium text-secondary-text'>
+                            Категории
+                          </div>
                           <ul>
                             {(categories || []).map((category) => {
                               const isCurrent = asPath === category.slug;
@@ -253,7 +263,9 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                       {(attributes || []).map((attribute) => {
                         return (
                           <div className='mt-2 mb-10' key={`${attribute._id}`}>
-                            <div className='mb-2 text-secondary-text'>{attribute.name}</div>
+                            <div className='mb-2 text-xl font-medium text-secondary-text'>
+                              {attribute.name}
+                            </div>
                             <ul>
                               {(attribute.options || []).map((option) => {
                                 const isCurrent = asPath === option.slug;
@@ -287,6 +299,63 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
             );
           })}
         </ul>
+
+        <div className='pb-20'>
+          {headerPageGroups.map(({ name, _id, pages }, index) => {
+            return (
+              <div className='relative mb-8' key={`${_id}`}>
+                <div
+                  className={`flex items-center justify-between text-lg mb-3 font-medium flex-grow`}
+                >
+                  {name}
+                </div>
+
+                <ul>
+                  {(pages || []).map((page) => {
+                    return (
+                      <li className='' key={`${page._id}`}>
+                        <Link
+                          href={`${ROUTE_DOCS_PAGES}/${page.slug}`}
+                          onClick={hideBurgerDropdown}
+                          className={`flex items-center h-10 text-secondary-text`}
+                        >
+                          <span>{page.name}</span>
+                        </Link>
+                      </li>
+                    );
+                  })}
+
+                  {index === 0 ? (
+                    <li className=''>
+                      <div className=''>
+                        <Link
+                          href={ROUTE_CONTACTS}
+                          onClick={hideBurgerDropdown}
+                          className={`flex items-center h-10 text-secondary-text`}
+                        >
+                          <span>{contactsLinkName}</span>
+                        </Link>
+                      </div>
+                    </li>
+                  ) : null}
+                </ul>
+              </div>
+            );
+          })}
+
+          {showBlog ? (
+            <div className='relative mb-8'>
+              <Link
+                target={'_blank'}
+                href={ROUTE_BLOG_WITH_PAGE}
+                onClick={hideBurgerDropdown}
+                className={`flex items-center justify-between text-lg mb-3 font-medium flex-grow text-primary-text`}
+              >
+                {blogLinkName}
+              </Link>
+            </div>
+          ) : null}
+        </div>
       </Inner>
     </div>
   );
@@ -505,6 +574,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
       <StickyNav />
 
       <BurgerDropdown
+        headerPageGroups={headerPageGroups}
         hideBurgerDropdown={hideBurgerDropdown}
         isBurgerDropdownOpen={isBurgerDropdownOpen}
       />

@@ -1,6 +1,7 @@
 import ControlButton from 'components/ControlButton';
 import Link from 'components/Link/Link';
 import { ROUTE_CATALOGUE } from 'config/common';
+import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
 import { ProductSnippetInterface } from 'db/uiInterfaces';
 import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
@@ -16,6 +17,7 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
   showSnippetArticle,
   gridCatalogueColumns = 3,
 }) => {
+  const { configs } = useConfigContext();
   const { addShoplessProductToCart, addProductToCart } = useSiteContext();
   const { _id, rubricSlug, product } = shopProduct;
 
@@ -54,6 +56,26 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
         className ? className : columnsClassName
       }`}
     >
+      {/*edit button for admin*/}
+      {configs.showAdminUiInCatalogue ? (
+        <div className='absolute top-0 left-0 z-50'>
+          <ControlButton
+            size={'small'}
+            iconSize={'small'}
+            icon={'pencil'}
+            theme={'accent'}
+            ariaLabel={'edit'}
+            roundedTopLeft
+            onClick={() => {
+              window.open(
+                `${configs.editLinkBasePath}/rubrics/${product.rubricId}/products/product/${product._id}`,
+                '_blank',
+              );
+            }}
+          />
+        </div>
+      ) : null}
+
       <div
         className={`rounded-md h-full flex flex-col ${
           showSnippetBackground && showSnippetButtonsOnHover

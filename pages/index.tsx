@@ -193,7 +193,7 @@ const HomeRoute: React.FC<HomeRouteInterface> = ({
         {topProducts.length > 0 ? (
           <section className={sectionClassName}>
             <div className='text-2xl mb-4 font-medium'>
-              <h2>Бестселлеры</h2>
+              <h2>Популярные товары</h2>
             </div>
             <HorizontalScroll>
               {topProducts.map((product) => {

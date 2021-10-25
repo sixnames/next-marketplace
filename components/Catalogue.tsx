@@ -532,7 +532,7 @@ const Catalogue: React.FC<CatalogueInterface> = ({
             <Button
               size={'small'}
               onClick={() => {
-                window.open(catalogueData?.editUrl, '_blank');
+                window.open(`${configs.editLinkBasePath}${catalogueData?.editUrl}`, '_blank');
               }}
             >
               Редактировать

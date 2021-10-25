@@ -44,11 +44,7 @@ const SyncErrorsList: React.FC<SyncErrorsListInterface> = ({
         return (
           <React.Fragment>
             {(barcodeList || []).map((barcode) => {
-              return (
-                <div key={barcode} className='max-w-[150px] truncate'>
-                  {barcode}
-                </div>
-              );
+              return <div key={barcode}>{barcode}</div>;
             })}
           </React.Fragment>
         );

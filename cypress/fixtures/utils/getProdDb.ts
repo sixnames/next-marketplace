@@ -181,9 +181,9 @@ export async function updateIndexes(db: Db) {
   // Brands
   await createCollectionIfNotExist(COL_BRANDS);
   const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
-  await brandsCollection.createIndex({ slug: 1 }, { unique: true });
+  await brandsCollection.createIndex({ itemId: 1 }, { unique: true });
   await brandsCollection.createIndex({
-    slug: -1,
+    itemId: -1,
     priorities: -1,
     views: -1,
     _id: -1,
@@ -192,10 +192,10 @@ export async function updateIndexes(db: Db) {
   // Brand collections
   await createCollectionIfNotExist(COL_BRAND_COLLECTIONS);
   const brandCollectionsCollection = db.collection<BrandCollectionModel>(COL_BRAND_COLLECTIONS);
-  await brandCollectionsCollection.createIndex({ slug: 1 });
+  await brandCollectionsCollection.createIndex({ itemId: 1 }, { unique: true });
   await brandCollectionsCollection.createIndex({ brandId: 1 });
   await brandCollectionsCollection.createIndex({
-    slug: -1,
+    itemId: -1,
     priorities: -1,
     views: -1,
     _id: -1,
@@ -204,9 +204,9 @@ export async function updateIndexes(db: Db) {
   // Manufacturers
   await createCollectionIfNotExist(COL_MANUFACTURERS);
   const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
-  await manufacturersCollection.createIndex({ slug: 1 }, { unique: true });
+  await manufacturersCollection.createIndex({ itemId: 1 }, { unique: true });
   await manufacturersCollection.createIndex({
-    slug: -1,
+    itemId: -1,
     priorities: -1,
     views: -1,
     _id: -1,
@@ -215,9 +215,9 @@ export async function updateIndexes(db: Db) {
   // Suppliers
   await createCollectionIfNotExist(COL_SUPPLIERS);
   const suppliersCollection = db.collection<SupplierModel>(COL_SUPPLIERS);
-  await suppliersCollection.createIndex({ slug: 1 }, { unique: true });
+  await suppliersCollection.createIndex({ itemId: 1 }, { unique: true });
   await suppliersCollection.createIndex({
-    slug: -1,
+    itemId: -1,
     priorities: -1,
     views: -1,
     _id: -1,

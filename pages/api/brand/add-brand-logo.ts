@@ -70,7 +70,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const assets = await storeRestApiUploads({
     files: formData.files,
     dist: ASSETS_DIST_BRANDS,
-    itemId: `${brand.slug}`,
+    itemId: `${brand.itemId}`,
   });
 
   if (!assets) {

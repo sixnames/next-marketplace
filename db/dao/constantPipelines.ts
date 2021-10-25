@@ -342,7 +342,7 @@ export const brandPipeline = [
         {
           $match: {
             $expr: {
-              $eq: ['$$slug', '$slug'],
+              $eq: ['$$slug', '$itemId'],
             },
           },
         },
@@ -364,7 +364,7 @@ export const brandPipeline = [
                     },
                     {
                       $expr: {
-                        $eq: ['$slug', '$$brandCollectionSlug'],
+                        $eq: ['$itemId', '$$brandCollectionSlug'],
                       },
                     },
                   ],
@@ -425,7 +425,7 @@ export const filterBrandsPipeline = ({ additionalStage }: FilterBrandsPipelineIn
           {
             $match: {
               $expr: {
-                $eq: ['$slug', '$$slug'],
+                $eq: ['$itemId', '$$slug'],
               },
             },
           },
@@ -447,7 +447,7 @@ export const filterBrandsPipeline = ({ additionalStage }: FilterBrandsPipelineIn
                       },
                       {
                         $expr: {
-                          $in: ['$slug', '$$collectionSlugs'],
+                          $in: ['$itemId', '$$collectionSlugs'],
                         },
                       },
                     ],

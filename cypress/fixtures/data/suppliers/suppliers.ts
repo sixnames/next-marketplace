@@ -6,7 +6,6 @@ const suppliers: SupplierModel[] = [
   {
     _id: getObjectId('supplier Supplier A'),
     itemId: '000001',
-    slug: 'supplier_a',
     nameI18n: {
       ru: 'Supplier A',
     },
@@ -17,7 +16,6 @@ const suppliers: SupplierModel[] = [
   {
     _id: getObjectId('supplier Supplier B'),
     itemId: '000002',
-    slug: 'supplier_b',
     nameI18n: {
       ru: 'Supplier B',
     },

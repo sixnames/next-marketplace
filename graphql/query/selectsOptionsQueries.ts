@@ -84,7 +84,7 @@ export const BRAND_ALPHABET_OPTIONS_QUERY = gql`
       letter
       docs {
         _id
-        slug
+        itemId
         name
       }
     }
@@ -97,7 +97,7 @@ export const BRAND_COLLECTION_ALPHABET_OPTIONS_QUERY = gql`
       letter
       docs {
         _id
-        slug
+        itemId
         name
       }
     }
@@ -148,7 +148,7 @@ export const MANUFACTURER_ALPHABET_OPTIONS_QUERY = gql`
       letter
       docs {
         _id
-        slug
+        itemId
         name
       }
     }
@@ -161,7 +161,7 @@ export const SUPPLIER_ALPHABET_OPTIONS_QUERY = gql`
       letter
       docs {
         _id
-        slug
+        itemId
         name
       }
     }

@@ -20,7 +20,6 @@ import { COL_BRAND_COLLECTIONS, COL_BRANDS, COL_PRODUCTS } from 'db/collectionNa
 import { aggregatePagination } from 'db/dao/aggregatePagination';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
-import { generateDefaultLangSlug } from 'lib/slugUtils';
 import { getNextItemId } from 'lib/itemIdUtils';
 import {
   addCollectionToBrandSchema,
@@ -46,8 +45,8 @@ export const Brand = objectType({
     t.implements('Base');
     t.implements('Timestamp');
     t.list.nonNull.url('url');
-    t.nonNull.string('slug');
     t.nonNull.string('nameI18n');
+    t.nonNull.string('itemId');
     t.json('descriptionI18n');
 
     // Brand name translation field resolver
@@ -223,7 +222,7 @@ export const BrandQueries = extendType({
           .find(query, {
             projection: {
               _id: true,
-              slug: true,
+              itemId: true,
               nameI18n: true,
             },
           })
@@ -367,14 +366,12 @@ export const BrandMutations = extendType({
           }
 
           // Create brand
-          const slug = generateDefaultLangSlug(args.input.nameI18n);
           const itemId = await getNextItemId(COL_BRANDS);
           const createdBrandResult = await brandsCollection.insertOne({
             ...args.input,
             url: (args.input.url || []).map((link) => {
               return `${link}`;
             }),
-            slug,
             itemId,
             ...DEFAULT_COUNTERS_OBJECT,
             createdAt: new Date(),
@@ -542,7 +539,7 @@ export const BrandMutations = extendType({
           }
 
           // Check if brand is used in products
-          const used = await productsCollection.findOne({ brandSlug: brand.slug });
+          const used = await productsCollection.findOne({ brandSlug: brand.itemId });
           if (used) {
             return {
               success: false,
@@ -655,13 +652,11 @@ export const BrandMutations = extendType({
 
             // Create brand collection
             const itemId = await getNextItemId(COL_BRAND_COLLECTIONS);
-            const slug = generateDefaultLangSlug(values.nameI18n);
             const createdBrandCollectionResult = await brandsCollectionsCollection.insertOne({
               ...values,
               itemId,
-              slug,
               brandId: brand._id,
-              brandSlug: brand.slug,
+              brandSlug: brand.itemId,
               ...DEFAULT_COUNTERS_OBJECT,
               createdAt: new Date(),
               updatedAt: new Date(),
@@ -953,7 +948,7 @@ export const BrandMutations = extendType({
 
             // Check if brand collection is used in products
             const used = await dbProductsCollection.findOne({
-              brandCollectionSlug: brandCollection.slug,
+              brandCollectionSlug: brandCollection.itemId,
             });
             if (used) {
               mutationPayload = {

@@ -3,12 +3,12 @@ import { getObjectId } from 'mongo-seeding';
 
 const carts: NotSyncedProductModel[] = [
   {
-    _id: getObjectId('fakeOrder'),
-    shopId: getObjectId('fake'),
-    barcode: '0',
-    available: 0,
-    price: 0,
-    name: '',
+    _id: getObjectId('sync error a'),
+    shopId: getObjectId('shop Shop B'),
+    barcode: '0987932498798wer9898ewr98wre9e8',
+    available: 99,
+    price: 99,
+    name: 'Error product',
     createdAt: new Date(),
   },
 ];

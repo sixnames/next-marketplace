@@ -1,4 +1,5 @@
 import { ROUTE_CATALOGUE } from 'config/common';
+import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
 import { ProductSnippetInterface } from 'db/uiInterfaces';
 import * as React from 'react';
@@ -19,6 +20,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
   showSnippetRating,
   gridCatalogueColumns,
 }) => {
+  const { configs } = useConfigContext();
   const { addShoplessProductToCart, addProductToCart } = useSiteContext();
   const { _id, rubricSlug, product } = shopProduct;
   if (!product) {
@@ -64,6 +66,26 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
         className ? className : columnsClassName
       }`}
     >
+      {/*edit button for admin*/}
+      {configs.showAdminUiInCatalogue ? (
+        <div className='absolute top-0 left-0 z-50'>
+          <ControlButton
+            size={'small'}
+            iconSize={'small'}
+            icon={'pencil'}
+            theme={'accent'}
+            ariaLabel={'edit'}
+            roundedTopLeft
+            onClick={() => {
+              window.open(
+                `${configs.editLinkBasePath}/rubrics/${product.rubricId}/products/product/${product._id}`,
+                '_blank',
+              );
+            }}
+          />
+        </div>
+      ) : null}
+
       <div className='grid grid-cols-12 flex-grow'>
         {/*image*/}
         <div className='relative flex items-center justify-center flex-grow pt-4 pl-4 pr-4 col-span-3 dark:snippet-image'>

@@ -11,7 +11,7 @@ import * as React from 'react';
 
 export interface OptionsModalOptionInterface extends Record<string, any> {
   _id: any;
-  slug: string;
+  slug?: string;
   itemId?: string;
   name: string;
   options?: OptionsModalOptionInterface[] | null;

@@ -506,6 +506,7 @@ export type CoordinatesInput = {
 };
 
 export type CopyProductInput = {
+  companySlug: Scalars['String'];
   productId: Scalars['ObjectId'];
   barcode: Array<Scalars['String']>;
   active: Scalars['Boolean'];

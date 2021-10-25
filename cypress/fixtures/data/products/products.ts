@@ -241,7 +241,7 @@ const products = rubrics.reduce((acc: ProductModel[], rubric) => {
 
     // brand collection
     const currentBrandCollections = brandCollections.filter(({ brandSlug }) => {
-      return brand && brand.slug === brandSlug;
+      return brand && brand.itemId === brandSlug;
     });
     const brandCollectionIndex = getNextOptionIndex({
       optionsLength: currentBrandCollections.length,
@@ -296,10 +296,10 @@ const products = rubrics.reduce((acc: ProductModel[], rubric) => {
       selectedOptionsSlugs,
       titleCategoriesSlugs,
       selectedAttributesIds,
-      brandSlug: brand?.slug,
-      brandCollectionSlug: brandCollection?.slug,
-      manufacturerSlug: manufacturer?.slug,
-      supplierSlugs: supplier ? [supplier.slug] : null,
+      brandSlug: brand?.itemId,
+      brandCollectionSlug: brandCollection?.itemId,
+      manufacturerSlug: manufacturer?.itemId,
+      supplierSlugs: supplier ? [supplier.itemId] : null,
       createdAt: new Date(),
       updatedAt: new Date(),
     });

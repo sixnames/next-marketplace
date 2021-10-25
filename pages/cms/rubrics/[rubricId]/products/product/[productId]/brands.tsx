@@ -146,7 +146,7 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
                         {
                           _id: brand._id,
                           name: `${brand.name}`,
-                          slug: brand.slug,
+                          slug: brand.itemId,
                         },
                       ]
                     : [],
@@ -206,7 +206,7 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
                         {
                           _id: brandCollection._id,
                           name: `${brandCollection.name}`,
-                          slug: brandCollection.slug,
+                          slug: brandCollection.itemId,
                         },
                       ]
                     : [],
@@ -264,7 +264,7 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
                         {
                           _id: manufacturer._id,
                           name: `${manufacturer.name}`,
-                          slug: manufacturer.slug,
+                          slug: manufacturer.itemId,
                         },
                       ]
                     : [],
@@ -326,7 +326,7 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
                           return {
                             _id: supplier._id,
                             name: `${supplier.name}`,
-                            slug: supplier.slug,
+                            slug: supplier.itemId,
                           };
                         })
                       : [],

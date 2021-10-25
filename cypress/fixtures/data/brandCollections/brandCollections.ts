@@ -14,7 +14,6 @@ const brandCollections: BrandCollectionModel[] = [
   {
     _id: getObjectId('brandCollection Brand collection A'),
     itemId: '000001',
-    slug: 'brand_collection_a',
     brandSlug: `brand_a`,
     brandId: getObjectId('brand Brand A'),
     nameI18n: {
@@ -28,7 +27,6 @@ const brandCollections: BrandCollectionModel[] = [
   {
     _id: getObjectId('brandCollection Brand collection B'),
     itemId: '000002',
-    slug: 'brand_collection_b',
     brandSlug: `brand_b`,
     brandId: getObjectId('brand Brand B'),
     nameI18n: {

@@ -1774,8 +1774,8 @@ export const getConsoleShopProducts = async ({
 
       // product brand
       const productBrand = shopProduct.brandSlug
-        ? (brands || []).find(({ slug }) => {
-            return slug === shopProduct.brandSlug;
+        ? (brands || []).find(({ itemId }) => {
+            return itemId === shopProduct.brandSlug;
           })
         : null;
 
@@ -1785,8 +1785,8 @@ export const getConsoleShopProducts = async ({
         brand: productBrand
           ? {
               ...productBrand,
-              collections: (productBrand.collections || []).filter(({ slug }) => {
-                return slug === shopProduct.brandCollectionSlug;
+              collections: (productBrand.collections || []).filter(({ itemId }) => {
+                return itemId === shopProduct.brandCollectionSlug;
               }),
             }
           : null,

@@ -835,7 +835,7 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
       attributesBreadcrumbs.push({
         _id: brand._id,
         name: getFieldStringLocale(brand.nameI18n, locale),
-        href: `${ROUTE_CATALOGUE}/${rubric.slug}/${FILTER_BRAND_KEY}${FILTER_SEPARATOR}${brand.slug}`,
+        href: `${ROUTE_CATALOGUE}/${rubric.slug}/${FILTER_BRAND_KEY}${FILTER_SEPARATOR}${brand.itemId}`,
       });
     }
 
@@ -844,7 +844,7 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
       attributesBreadcrumbs.push({
         _id: brandCollection._id,
         name: getFieldStringLocale(brandCollection.nameI18n, locale),
-        href: `${ROUTE_CATALOGUE}/${rubric.slug}/${FILTER_BRAND_COLLECTION_KEY}${FILTER_SEPARATOR}${brandCollection.slug}`,
+        href: `${ROUTE_CATALOGUE}/${rubric.slug}/${FILTER_BRAND_COLLECTION_KEY}${FILTER_SEPARATOR}${brandCollection.itemId}`,
       });
     }
 

@@ -10,7 +10,6 @@ export const BrandCollection = objectType({
   definition(t) {
     t.implements('Base');
     t.implements('Timestamp');
-    t.nonNull.string('slug');
     t.nonNull.json('nameI18n');
     t.json('descriptionI18n');
 

@@ -246,8 +246,8 @@ export async function getCatalogueAttributes({
     const optionSlug = `${attributeSlug}${FILTER_SEPARATOR}${option.slug}`;
     const isBrand = attributeSlug === FILTER_BRAND_KEY;
     const brand = isBrand
-      ? (brands || []).find(({ slug }) => {
-          return slug === option.slug;
+      ? (brands || []).find(({ itemId }) => {
+          return itemId === option.slug;
         })
       : null;
 
@@ -256,8 +256,8 @@ export async function getCatalogueAttributes({
     }
 
     if (currentBrand) {
-      const collection = (currentBrand.collections || []).find(({ slug }) => {
-        return slug === option.slug;
+      const collection = (currentBrand.collections || []).find(({ itemId }) => {
+        return itemId === option.slug;
       });
       if (!collection?.showInCatalogueTitle) {
         return null;
@@ -484,8 +484,8 @@ export function castOptionsForBreadcrumbs({
   const optionSlug = `${attribute.slug}${FILTER_SEPARATOR}${option.slug}`;
   const newAcc = [...acc];
   const brand = isBrand
-    ? (brands || []).find(({ slug }) => {
-        return slug === option.slug;
+    ? (brands || []).find(({ itemId }) => {
+        return itemId === option.slug;
       })
     : null;
 
@@ -496,8 +496,8 @@ export function castOptionsForBreadcrumbs({
 
     if (currentBrand) {
       const collections = currentBrand?.collections;
-      const currentBrandCollection = (collections || []).find(({ slug }) => {
-        return slug === option.slug;
+      const currentBrandCollection = (collections || []).find(({ itemId }) => {
+        return itemId === option.slug;
       });
       if (!currentBrandCollection?.showAsCatalogueBreadcrumb) {
         return acc;
@@ -1497,8 +1497,8 @@ export const getCatalogueData = async ({
 
       // product brand
       const productBrand = product.brandSlug
-        ? (brands || []).find(({ slug }) => {
-            return slug === product.brandSlug;
+        ? (brands || []).find(({ itemId }) => {
+            return itemId === product.brandSlug;
           })
         : null;
 
@@ -1509,7 +1509,7 @@ export const getCatalogueData = async ({
           ? {
               ...productBrand,
               collections: (productBrand.collections || []).filter((collection) => {
-                return collection.slug === product.brandCollectionSlug;
+                return collection.itemId === product.brandCollectionSlug;
               }),
             }
           : null,

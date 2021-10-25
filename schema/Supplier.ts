@@ -19,7 +19,6 @@ import { aggregatePagination } from 'db/dao/aggregatePagination';
 import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getNextItemId } from 'lib/itemIdUtils';
-import { generateDefaultLangSlug } from 'lib/slugUtils';
 import { createSupplierSchema, updateSupplierSchema } from 'validation/supplierSchema';
 
 export const Supplier = objectType({
@@ -28,7 +27,6 @@ export const Supplier = objectType({
     t.implements('Base');
     t.implements('Timestamp');
     t.list.nonNull.url('url');
-    t.nonNull.string('slug');
     t.nonNull.json('nameI18n');
     t.json('descriptionI18n');
 
@@ -274,11 +272,9 @@ export const SupplierMutations = extendType({
 
           // Create supplier
           const itemId = await getNextItemId(COL_SUPPLIERS);
-          const slug = generateDefaultLangSlug(input.nameI18n);
           const createSupplierResult = await suppliersCollection.insertOne({
             ...input,
             itemId,
-            slug,
             url: (input.url || []).map((link) => {
               return `${link}`;
             }),
@@ -446,7 +442,7 @@ export const SupplierMutations = extendType({
           }
 
           // Check if supplier is used in products
-          const used = await productsCollection.findOne({ supplierSlugs: supplier.slug });
+          const used = await productsCollection.findOne({ supplierSlugs: supplier.itemId });
           if (used) {
             return {
               success: false,

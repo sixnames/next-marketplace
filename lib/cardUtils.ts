@@ -479,7 +479,7 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
             from: COL_MANUFACTURERS,
             as: 'manufacturer',
             localField: 'manufacturerSlug',
-            foreignField: 'slug',
+            foreignField: 'itemId',
           },
         },
 
@@ -489,7 +489,7 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
             from: COL_BRANDS,
             as: 'brand',
             localField: 'brandSlug',
-            foreignField: 'slug',
+            foreignField: 'itemId',
           },
         },
 
@@ -499,7 +499,7 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
             from: COL_BRAND_COLLECTIONS,
             as: 'brandCollection',
             localField: 'brandCollectionSlug',
-            foreignField: 'slug',
+            foreignField: 'itemId',
           },
         },
 

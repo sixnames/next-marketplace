@@ -1101,14 +1101,14 @@ export const getCatalogueData = async ({
                   from: COL_BRANDS,
                   as: 'brand',
                   let: {
-                    slug: '$_id',
+                    itemId: '$_id',
                     collectionSlugs: '$collectionSlugs',
                   },
                   pipeline: [
                     {
                       $match: {
                         $expr: {
-                          $eq: ['$slug', '$$slug'],
+                          $eq: ['$itemId', '$$itemId'],
                         },
                       },
                     },
@@ -1130,7 +1130,7 @@ export const getCatalogueData = async ({
                                 },
                                 {
                                   $expr: {
-                                    $in: ['$slug', '$$collectionSlugs'],
+                                    $in: ['$itemId', '$$collectionSlugs'],
                                   },
                                 },
                               ],

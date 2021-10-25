@@ -28,6 +28,7 @@ export const Supplier = objectType({
     t.implements('Timestamp');
     t.list.nonNull.url('url');
     t.nonNull.json('nameI18n');
+    t.nonNull.string('itemId');
     t.json('descriptionI18n');
 
     // Supplier name translation field resolver
@@ -116,7 +117,7 @@ export const SupplierQueries = extendType({
       resolve: async (_root, args): Promise<SupplierModel> => {
         const { db } = await getDatabase();
         const suppliersCollection = db.collection<SupplierModel>(COL_SUPPLIERS);
-        const supplier = await suppliersCollection.findOne({ slug: args.slug });
+        const supplier = await suppliersCollection.findOne({ itemId: args.slug });
         if (!supplier) {
           throw Error('Supplier not found by given slug');
         }
@@ -173,7 +174,7 @@ export const SupplierQueries = extendType({
           .find(query, {
             projection: {
               _id: true,
-              slug: true,
+              itemId: true,
               nameI18n: true,
             },
           })

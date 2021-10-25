@@ -344,14 +344,14 @@ export const getConsoleRubricProducts = async ({
                   from: COL_BRANDS,
                   as: 'brand',
                   let: {
-                    slug: '$_id',
+                    itemId: '$_id',
                     collectionSlugs: '$collectionSlugs',
                   },
                   pipeline: [
                     {
                       $match: {
                         $expr: {
-                          $eq: ['$slug', '$$slug'],
+                          $eq: ['$itemId', '$$itemId'],
                         },
                       },
                     },
@@ -373,7 +373,7 @@ export const getConsoleRubricProducts = async ({
                                 },
                                 {
                                   $expr: {
-                                    $in: ['$slug', '$$collectionSlugs'],
+                                    $in: ['$itemId', '$$collectionSlugs'],
                                   },
                                 },
                               ],
@@ -940,14 +940,14 @@ export const getConsoleCompanyRubricProducts = async ({
                   from: COL_BRANDS,
                   as: 'brand',
                   let: {
-                    slug: '$_id',
+                    itemId: '$_id',
                     collectionSlugs: '$collectionSlugs',
                   },
                   pipeline: [
                     {
                       $match: {
                         $expr: {
-                          $eq: ['$slug', '$$slug'],
+                          $eq: ['$itemId', '$$itemId'],
                         },
                       },
                     },
@@ -969,7 +969,7 @@ export const getConsoleCompanyRubricProducts = async ({
                                 },
                                 {
                                   $expr: {
-                                    $in: ['$slug', '$$collectionSlugs'],
+                                    $in: ['$itemId', '$$collectionSlugs'],
                                   },
                                 },
                               ],
@@ -1491,14 +1491,14 @@ export const getConsoleShopProducts = async ({
                   from: COL_BRANDS,
                   as: 'brand',
                   let: {
-                    slug: '$_id',
+                    itemId: '$_id',
                     collectionSlugs: '$collectionSlugs',
                   },
                   pipeline: [
                     {
                       $match: {
                         $expr: {
-                          $eq: ['$slug', '$$slug'],
+                          $eq: ['$itemId', '$$itemId'],
                         },
                       },
                     },
@@ -1520,7 +1520,7 @@ export const getConsoleShopProducts = async ({
                                 },
                                 {
                                   $expr: {
-                                    $in: ['$slug', '$$collectionSlugs'],
+                                    $in: ['$itemId', '$$collectionSlugs'],
                                   },
                                 },
                               ],

@@ -46,6 +46,7 @@ export const Brand = objectType({
     t.implements('Timestamp');
     t.list.nonNull.url('url');
     t.nonNull.string('nameI18n');
+    t.nonNull.string('itemId');
     t.json('descriptionI18n');
 
     // Brand name translation field resolver
@@ -221,7 +222,7 @@ export const BrandQueries = extendType({
           .find(query, {
             projection: {
               _id: true,
-              slug: true,
+              itemId: true,
               nameI18n: true,
             },
           })

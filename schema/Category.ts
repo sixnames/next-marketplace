@@ -92,7 +92,7 @@ export const CategoryQueries = extendType({
           .find(query, {
             projection: {
               _id: true,
-              slug: true,
+              itemId: true,
               nameI18n: true,
             },
           })

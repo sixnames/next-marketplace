@@ -28,6 +28,7 @@ export const Manufacturer = objectType({
     t.implements('Timestamp');
     t.list.nonNull.url('url');
     t.nonNull.json('nameI18n');
+    t.nonNull.string('itemId');
     t.json('descriptionI18n');
 
     // Manufacturer name translation field resolver
@@ -173,7 +174,7 @@ export const ManufacturerQueries = extendType({
           .find(query, {
             projection: {
               _id: true,
-              slug: true,
+              itemId: true,
               nameI18n: true,
             },
           })

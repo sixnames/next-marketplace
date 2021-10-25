@@ -159,7 +159,7 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
                         variables: {
                           input: {
                             productId: product._id,
-                            brandSlug: brand.slug,
+                            brandSlug: brand.itemId,
                           },
                         },
                       }).catch((e) => console.log(e));
@@ -219,7 +219,7 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
                         variables: {
                           input: {
                             productId: product._id,
-                            brandCollectionSlug: brandCollection.slug,
+                            brandCollectionSlug: brandCollection.itemId,
                           },
                         },
                       }).catch((e) => console.log(e));
@@ -275,7 +275,7 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
                       variables: {
                         input: {
                           productId: product._id,
-                          manufacturerSlug: manufacturer.slug,
+                          manufacturerSlug: manufacturer.itemId,
                         },
                       },
                     }).catch((e) => console.log(e));
@@ -336,7 +336,14 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
                       variables: {
                         input: {
                           productId: product._id,
-                          supplierSlugs: selectedOptions.map(({ slug }) => slug),
+                          supplierSlugs: selectedOptions
+                            .map(({ itemId }) => itemId)
+                            .reduce((acc: string[], itemId) => {
+                              if (!itemId) {
+                                return acc;
+                              }
+                              return [...acc, itemId];
+                            }, []),
                         },
                       },
                     }).catch((e) => console.log(e));
@@ -409,13 +416,13 @@ export const getServerSideProps = async (
   const manufacturerEntity = product.manufacturerSlug
     ? await manufacturersCollection.findOne(
         {
-          slug: product.manufacturerSlug,
+          itemId: product.manufacturerSlug,
         },
         {
           projection: {
             _id: true,
             nameI18n: true,
-            slug: true,
+            itemId: true,
           },
         },
       )
@@ -432,7 +439,7 @@ export const getServerSideProps = async (
       ? await suppliersCollection
           .find(
             {
-              slug: {
+              itemId: {
                 $in: product.supplierSlugs,
               },
             },
@@ -440,7 +447,7 @@ export const getServerSideProps = async (
               projection: {
                 _id: true,
                 nameI18n: true,
-                slug: true,
+                itemId: true,
               },
             },
           )
@@ -455,12 +462,12 @@ export const getServerSideProps = async (
 
   const brandEntity = product.brandSlug
     ? await brandsCollection.findOne(
-        { slug: product.brandSlug },
+        { itemId: product.brandSlug },
         {
           projection: {
             _id: true,
             nameI18n: true,
-            slug: true,
+            itemId: true,
           },
         },
       )
@@ -475,13 +482,13 @@ export const getServerSideProps = async (
   const brandCollectionEntity = product.brandCollectionSlug
     ? await brandCollectionsCollection.findOne(
         {
-          slug: product.brandCollectionSlug,
+          itemId: product.brandCollectionSlug,
         },
         {
           projection: {
             _id: true,
             nameI18n: true,
-            slug: true,
+            itemId: true,
           },
         },
       )

@@ -737,6 +737,7 @@ export interface SsrConfigsInterface {
   catalogueMetaPrefix: string;
   cardMetaPrefix: string;
   showAdminUiInCatalogue: boolean;
+  editLinkBasePath: string;
 
   // Project
   useUniqueConstructor: boolean;

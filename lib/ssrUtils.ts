@@ -572,6 +572,7 @@ export interface GetPageInitialDataCommonInterface {
   locale: string;
   city: string;
   companySlug?: string;
+  companyId?: string;
 }
 
 export interface GetSsrConfigsInterface extends GetPageInitialDataCommonInterface {
@@ -583,6 +584,7 @@ export const getSsrConfigs = async ({
   locale,
   city,
   companySlug,
+  companyId,
   role,
   db,
 }: GetSsrConfigsInterface): Promise<SsrConfigsInterface> => {
@@ -887,8 +889,11 @@ export const getSsrConfigs = async ({
 
   // from role
   const showAdminUiInCatalogue = Boolean(role?.showAdminUiInCatalogue);
+  const isCompanyStaff = Boolean(role?.isCompanyStaff);
+  const editLinkBasePath = isCompanyStaff ? `${ROUTE_CONSOLE}/${companyId}` : ROUTE_CMS;
 
   return {
+    editLinkBasePath,
     showAdminUiInCatalogue,
     showReservationDate,
     mapMarkerDarkTheme,
@@ -970,6 +975,7 @@ export interface GetPageInitialDataInterface extends GetPageInitialDataCommonInt
   locale: string;
   city: string;
   companySlug?: string;
+  companyId?: string;
   role?: RoleInterface | null;
 }
 
@@ -977,6 +983,7 @@ export const getPageInitialData = async ({
   locale,
   city,
   companySlug,
+  companyId,
   role,
 }: GetPageInitialDataInterface): Promise<PageInitialDataPayload> => {
   // console.log(' ');
@@ -989,8 +996,9 @@ export const getPageInitialData = async ({
     db,
     city,
     locale,
-    companySlug,
     role,
+    companySlug,
+    companyId,
   });
   // console.log('After configs ', new Date().getTime() - timeStart);
 
@@ -1267,6 +1275,10 @@ export async function getPageInitialState({
     locale: sessionLocale,
     city: sessionCity,
     companySlug: company?.slug,
+    companyId:
+      sessionUser && sessionUser.companies && sessionUser.companies[0]
+        ? `${sessionUser.companies[0]._id}`
+        : '',
     role: sessionUser?.role,
   });
   const initialData = castDbData(rawInitialData);

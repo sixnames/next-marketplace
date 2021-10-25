@@ -58,7 +58,6 @@ import {
   FILTER_NO_PHOTO_KEY,
   CATALOGUE_SEO_TEXT_POSITION_TOP,
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
-  ROUTE_CMS,
 } from 'config/common';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -1667,7 +1666,7 @@ export const getCatalogueData = async ({
     });
 
     // rubric seo text as default
-    let editUrl = `${ROUTE_CMS}/rubrics/${rubric._id}`;
+    let editUrl = `/rubrics/${rubric._id}`;
     let textTop: string | null | undefined = getFieldStringLocale(
       rubric.seoDescriptionTop?.textI18n,
       locale,
@@ -1691,7 +1690,7 @@ export const getCatalogueData = async ({
 
     // category seo text if selected
     if (selectedCategories.length > 0 && selectedCategories.length < 2 && selectedCategories[0]) {
-      editUrl = `${ROUTE_CMS}/rubrics/${rubric._id}/categories/${selectedCategories[0]._id}`;
+      editUrl = `/rubrics/${rubric._id}/categories/${selectedCategories[0]._id}`;
       const textTopDoc = await categoryDescriptionsCollection.findOne({
         categoryId: selectedCategories[0]._id,
         companySlug,

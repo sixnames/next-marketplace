@@ -40,7 +40,7 @@ const booleans = {
 const attributes: AttributeModel[] = [
   {
     _id: getObjectId(`attribute Текстовый`),
-    slug: 'tsvet',
+    slug: '000001',
     nameI18n: {
       ru: 'Текстовый',
     },
@@ -53,7 +53,7 @@ const attributes: AttributeModel[] = [
   },
   {
     _id: getObjectId(`attribute Количество в упаковке`),
-    slug: 'kolichestvo_v_upakovke',
+    slug: '000002',
     nameI18n: {
       ru: 'Количество в упаковке',
     },
@@ -73,7 +73,7 @@ const attributes: AttributeModel[] = [
   },
   {
     _id: getObjectId(`attribute Сочетание`),
-    slug: 'sochetanie',
+    slug: '000003',
     nameI18n: {
       ru: 'Сочетание',
     },
@@ -86,7 +86,7 @@ const attributes: AttributeModel[] = [
   },
   {
     _id: getObjectId(`attribute Крепость`),
-    slug: 'krepost',
+    slug: '000004',
     nameI18n: {
       ru: 'Крепость',
     },
@@ -106,7 +106,7 @@ const attributes: AttributeModel[] = [
   },
   {
     _id: getObjectId(`attribute Состав`),
-    slug: 'sostav',
+    slug: '000005',
     nameI18n: {
       ru: 'Состав',
     },
@@ -121,7 +121,7 @@ const attributes: AttributeModel[] = [
   },
   {
     _id: getObjectId(`attribute Регион`),
-    slug: 'region',
+    slug: '000006',
     nameI18n: {
       ru: 'Регион',
     },
@@ -136,7 +136,7 @@ const attributes: AttributeModel[] = [
   },
   {
     _id: getObjectId(`attribute Объем`),
-    slug: 'obem',
+    slug: '000007',
     nameI18n: {
       ru: 'Объем',
     },
@@ -158,7 +158,7 @@ const attributes: AttributeModel[] = [
   },
   {
     _id: getObjectId(`attribute Тип ёмкости`),
-    slug: 'tip_yomkosti',
+    slug: '000008',
     nameI18n: {
       ru: 'Тип ёмкости',
     },
@@ -173,7 +173,7 @@ const attributes: AttributeModel[] = [
   },
   {
     _id: getObjectId(`attribute Год`),
-    slug: 'god',
+    slug: '000009',
     nameI18n: {
       ru: 'Год',
     },
@@ -188,7 +188,7 @@ const attributes: AttributeModel[] = [
   },
   {
     _id: getObjectId(`attribute Виноград`),
-    slug: 'vinograd',
+    slug: '000010',
     nameI18n: {
       ru: 'Виноград',
     },
@@ -203,7 +203,7 @@ const attributes: AttributeModel[] = [
   },
   {
     _id: getObjectId(`attribute Винтаж`),
-    slug: 'vintazh',
+    slug: '000011',
     nameI18n: {
       ru: 'Винтаж',
     },
@@ -218,7 +218,7 @@ const attributes: AttributeModel[] = [
   },
   {
     _id: getObjectId(`attribute Сахар`),
-    slug: 'sakhar',
+    slug: '000012',
     nameI18n: {
       ru: 'Сахар',
     },
@@ -233,7 +233,7 @@ const attributes: AttributeModel[] = [
   },
   {
     _id: getObjectId(`attribute Тип шампанского`),
-    slug: 'tip_vina',
+    slug: '000013',
     nameI18n: {
       ru: 'Тип шампанского',
     },
@@ -248,7 +248,7 @@ const attributes: AttributeModel[] = [
   },
   {
     _id: getObjectId(`attribute Тип виски`),
-    slug: 'tip_vina',
+    slug: '000014',
     nameI18n: {
       ru: 'Тип виски',
     },
@@ -263,7 +263,7 @@ const attributes: AttributeModel[] = [
   },
   {
     _id: getObjectId(`attribute Тип вина`),
-    slug: 'tip_vina',
+    slug: '000015',
     nameI18n: {
       ru: 'Тип вина',
     },

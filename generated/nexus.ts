@@ -252,6 +252,7 @@ export interface NexusGenInputs {
     active: boolean; // Boolean!
     barcode: string[]; // [String!]!
     cardDescriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
+    companySlug: string; // String!
     descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     gender: NexusGenEnums['Gender']; // Gender!
     nameI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject

@@ -71,6 +71,7 @@ export const CreateProductInput = inputObjectType({
 export const CopyProductInput = inputObjectType({
   name: 'CopyProductInput',
   definition(t) {
+    t.nonNull.string('companySlug');
     t.nonNull.objectId('productId');
     t.nonNull.list.nonNull.string('barcode');
     t.nonNull.boolean('active');

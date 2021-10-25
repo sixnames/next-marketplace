@@ -468,6 +468,7 @@ input CopyProductInput {
   active: Boolean!
   barcode: [String!]!
   cardDescriptionI18n: JSONObject
+  companySlug: String!
   descriptionI18n: JSONObject
   gender: Gender!
   nameI18n: JSONObject

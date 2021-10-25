@@ -1,4 +1,5 @@
 import { DEFAULT_LOCALE, SORT_ASC } from 'config/common';
+import { getNextItemId } from 'lib/itemIdUtils';
 import { arg, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
 import {
   getOperationPermission,
@@ -23,7 +24,6 @@ import {
 } from 'db/collectionNames';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
-import { generateDefaultLangSlug } from 'lib/slugUtils';
 import {
   addAttributeToGroupSchema,
   createAttributesGroupSchema,
@@ -635,7 +635,7 @@ export const attributesGroupMutations = extendType({
             }
 
             // Create attribute
-            const slug = generateDefaultLangSlug(values.nameI18n);
+            const slug = await getNextItemId(COL_ATTRIBUTES);
             const createdAttributeResult = await attributesCollection.insertOne({
               ...values,
               slug,

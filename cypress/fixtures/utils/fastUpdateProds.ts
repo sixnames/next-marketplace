@@ -113,7 +113,9 @@ async function updateProds() {
           _id: attribute._id,
         },
         {
-          slug: newSlug,
+          $set: {
+            slug: newSlug,
+          },
         },
       );
     }

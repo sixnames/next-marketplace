@@ -16,6 +16,7 @@ import {
   BrandInterface,
   CategoryInterface,
   OptionInterface,
+  ProductAttributeInterface,
 } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { get } from 'lodash';
@@ -396,12 +397,23 @@ function generateProductTitle({
 interface GenerateCardTitleInterface
   extends Omit<
     GenerateProductTitleInterface,
-    'attributeNameVisibilityFieldName' | 'attributeVisibilityFieldName' | 'brandVisibilityFieldName'
-  > {}
+    | 'attributes'
+    | 'attributeNameVisibilityFieldName'
+    | 'attributeVisibilityFieldName'
+    | 'brandVisibilityFieldName'
+  > {
+  attributes?: ProductAttributeInterface[] | null;
+}
 
 export function generateCardTitle(props: GenerateCardTitleInterface): string {
   return generateProductTitle({
     ...props,
+    attributes: (props.attributes || []).reduce((acc: TitleAttributeInterface[], { attribute }) => {
+      if (attribute) {
+        return [...acc, attribute];
+      }
+      return acc;
+    }, []),
     brandVisibilityFieldName: 'showInCardTitle',
     attributeNameVisibilityFieldName: 'showNameInCardTitle',
     attributeVisibilityFieldName: 'showInCardTitle',
@@ -411,6 +423,12 @@ export function generateCardTitle(props: GenerateCardTitleInterface): string {
 export function generateSnippetTitle(props: GenerateCardTitleInterface): string {
   return generateProductTitle({
     ...props,
+    attributes: (props.attributes || []).reduce((acc: TitleAttributeInterface[], { attribute }) => {
+      if (attribute) {
+        return [...acc, attribute];
+      }
+      return acc;
+    }, []),
     brandVisibilityFieldName: 'showInSnippetTitle',
     attributeNameVisibilityFieldName: 'showNameInSnippetTitle',
     attributeVisibilityFieldName: 'showInSnippetTitle',

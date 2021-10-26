@@ -1,4 +1,4 @@
-import { FILTER_SEPARATOR, DEFAULT_COUNTERS_OBJECT } from 'config/common';
+import { FILTER_SEPARATOR } from 'config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { noNaN } from 'lib/numbers';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
@@ -24,8 +24,6 @@ export const ProductAttribute = objectType({
   name: 'ProductAttribute',
   definition(t) {
     t.nonNull.objectId('_id');
-    t.nonNull.boolean('showInCard');
-    t.nonNull.boolean('showAsBreadcrumb');
     t.nonNull.objectId('attributeId');
     t.json('textI18n');
     t.float('number');
@@ -677,7 +675,6 @@ export const ProductAttributeMutations = extendType({
             // Create new product attribute if original is absent
             if (!productAttribute) {
               productAttribute = {
-                ...attribute,
                 _id: productAttributeId,
                 attributeId,
                 productId: product._id,
@@ -688,9 +685,6 @@ export const ProductAttributeMutations = extendType({
                 selectedOptionsSlugs: [],
                 number: undefined,
                 textI18n: {},
-                showAsBreadcrumb: false,
-                showInCard: true,
-                ...DEFAULT_COUNTERS_OBJECT,
               };
             }
 
@@ -888,7 +882,6 @@ export const ProductAttributeMutations = extendType({
               }
 
               productAttribute = {
-                ...attribute,
                 _id: productAttributeId,
                 attributeId,
                 productId: product._id,
@@ -899,9 +892,6 @@ export const ProductAttributeMutations = extendType({
                 selectedOptionsSlugs: [],
                 number: undefined,
                 textI18n: {},
-                showAsBreadcrumb: false,
-                showInCard: true,
-                ...DEFAULT_COUNTERS_OBJECT,
               };
             }
 
@@ -1002,7 +992,6 @@ export const ProductAttributeMutations = extendType({
               }
 
               productAttribute = {
-                ...attribute,
                 _id: productAttributeId,
                 attributeId,
                 productId: product._id,
@@ -1013,9 +1002,6 @@ export const ProductAttributeMutations = extendType({
                 selectedOptionsSlugs: [],
                 number: undefined,
                 textI18n: {},
-                showAsBreadcrumb: false,
-                showInCard: true,
-                ...DEFAULT_COUNTERS_OBJECT,
               };
             }
 

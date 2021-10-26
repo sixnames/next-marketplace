@@ -686,11 +686,14 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
 
     const initialProductAttributes = (attributesGroups || []).reduce(
       (acc: ProductAttributeInterface[], { attributes }) => {
-        const visibleAttributes = attributes.filter(({ showInCard, attributeId }) => {
+        const visibleAttributes = attributes.filter(({ attribute, attributeId }) => {
+          if (!attribute) {
+            return false;
+          }
           const excluded = excludedAttributesIds.some((excludedAttributeId) => {
             return excludedAttributeId.equals(attributeId);
           });
-          return showInCard && !excluded;
+          return attribute.showInCard && !excluded;
         });
 
         return [...acc, ...visibleAttributes];
@@ -851,8 +854,12 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
     // Collect breadcrumbs configs for all product attributes
     // that have showAsBreadcrumb option enabled
     for await (const productAttribute of initialProductAttributes || []) {
+      const { attribute } = productAttribute;
+      if (!attribute) {
+        continue;
+      }
       if (
-        !productAttribute.showAsBreadcrumb ||
+        !attribute.showAsBreadcrumb ||
         !productAttribute.selectedOptionsSlugs ||
         productAttribute.selectedOptionsSlugs.length < 1
       ) {
@@ -860,7 +867,7 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
       }
 
       // Get all selected options
-      const options = productAttribute.options || [];
+      const options = attribute.options || [];
 
       // Get first selected option
       const firstSelectedOption = options[0];
@@ -880,7 +887,7 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
       attributesBreadcrumbs.push({
         _id: productAttribute.attributeId,
         name: optionValue,
-        href: `${ROUTE_CATALOGUE}/${rubric.slug}/${productAttribute.slug}${FILTER_SEPARATOR}${firstSelectedOption.slug}`,
+        href: `${ROUTE_CATALOGUE}/${rubric.slug}/${attribute.slug}${FILTER_SEPARATOR}${firstSelectedOption.slug}`,
       });
     }
 
@@ -903,12 +910,15 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
     const cardAttributesGroups = (attributesGroups || []).reduce(
       (acc: ProductAttributesGroupInterface[], attributesGroup) => {
         const visibleAttributes = attributesGroup.attributes.filter(
-          ({ showInCard, attributeId, viewVariant }) => {
-            const isListViewAttribute = viewVariant === ATTRIBUTE_VIEW_VARIANT_LIST;
+          ({ attributeId, attribute }) => {
+            if (!attribute) {
+              return false;
+            }
+            const isListViewAttribute = attribute.viewVariant === ATTRIBUTE_VIEW_VARIANT_LIST;
             const excluded = excludedAttributesIds.some((excludedAttributeId) => {
               return excludedAttributeId.equals(attributeId);
             });
-            return showInCard && !excluded && isListViewAttribute;
+            return attribute.showInCard && !excluded && isListViewAttribute;
           },
         );
 

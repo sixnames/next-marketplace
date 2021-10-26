@@ -1,8 +1,8 @@
 import { GEO_POINT_TYPE } from 'config/common';
 import {
-  AttributeInterface,
   BrandInterface,
   CategoryInterface,
+  ProductAttributeInterface,
   RubricInterface,
 } from 'db/uiInterfaces';
 import { ObjectId } from 'mongodb';
@@ -571,7 +571,7 @@ export interface ProductConnectionModel {
   productsIds: ObjectIdModel[];
 }
 
-export interface ProductAttributeModel extends AttributeModel {
+export interface ProductAttributeModel {
   _id: ObjectIdModel;
   rubricId: ObjectIdModel;
   rubricSlug: string;
@@ -609,7 +609,7 @@ export interface ProductModel extends ProductMainFieldsInterface, BaseModel, Tim
   // types for aggregation
   shopsCount?: number | null;
   cardPrices?: ProductCardPricesModel | null;
-  attributes?: AttributeInterface[] | null;
+  attributes?: ProductAttributeInterface[] | null;
   categories?: CategoryInterface[] | null;
   rubric?: RubricInterface | null;
   brand?: BrandInterface | null;

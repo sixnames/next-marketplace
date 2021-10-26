@@ -300,28 +300,60 @@ export const productAttributesPipeline = [
         },
         {
           $lookup: {
-            from: COL_OPTIONS,
-            as: 'options',
+            from: COL_ATTRIBUTES,
+            as: 'attribute',
             let: {
-              optionsGroupId: '$optionsGroupId',
-              selectedOptionsIds: '$selectedOptionsIds',
+              attributeId: '$attributeId',
             },
             pipeline: [
               {
                 $match: {
                   $expr: {
-                    $and: [
-                      {
-                        $eq: ['$optionsGroupId', '$$optionsGroupId'],
-                      },
-                      {
-                        $in: ['$_id', '$$selectedOptionsIds'],
-                      },
-                    ],
+                    $eq: ['$$attributeId', '$_id'],
                   },
                 },
               },
+              {
+                $lookup: {
+                  from: COL_OPTIONS,
+                  as: 'options',
+                  let: {
+                    optionsGroupId: '$optionsGroupId',
+                    selectedOptionsIds: '$selectedOptionsIds',
+                  },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $and: [
+                            {
+                              $eq: ['$optionsGroupId', '$$optionsGroupId'],
+                            },
+                            {
+                              $in: ['$_id', '$$selectedOptionsIds'],
+                            },
+                          ],
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
             ],
+          },
+        },
+        {
+          $addFields: {
+            attribute: {
+              $arrayElemAt: ['$attribute', 0],
+            },
+          },
+        },
+        {
+          $match: {
+            attribute: {
+              $exists: true,
+            },
           },
         },
       ],

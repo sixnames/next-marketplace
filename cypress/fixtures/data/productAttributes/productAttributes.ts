@@ -74,7 +74,6 @@ const productAttributes: ProductAttributeModel[] = products.reduce(
         });
 
         const payload: ProductAttributeModel = {
-          ...rubricAttribute,
           _id: getObjectId(`${product.slug} ${rubricAttribute.slug}`),
           rubricSlug: rubric.slug,
           rubricId: rubric._id,

@@ -1466,18 +1466,21 @@ export const getCatalogueData = async ({
 
           const productAttribute: ProductAttributeInterface = {
             ...attribute,
-            name: getFieldStringLocale(attribute.nameI18n, locale),
-            metric: attribute.metric
-              ? {
-                  ...attribute.metric,
-                  name: getFieldStringLocale(attribute.metric.nameI18n, locale),
-                }
-              : null,
-            options: getTreeFromList({
-              list: options,
-              childrenFieldName: 'options',
-              locale,
-            }),
+            attribute: {
+              ...existingAttribute,
+              name: getFieldStringLocale(existingAttribute.nameI18n, locale),
+              metric: existingAttribute.metric
+                ? {
+                    ...existingAttribute.metric,
+                    name: getFieldStringLocale(existingAttribute.metric.nameI18n, locale),
+                  }
+                : null,
+              options: getTreeFromList({
+                list: options,
+                childrenFieldName: 'options',
+                locale,
+              }),
+            },
           };
           return [...acc, productAttribute];
         },
@@ -1529,8 +1532,8 @@ export const getCatalogueData = async ({
         locale,
       });
       const listFeatures = initialListFeatures
-        .filter(({ showInSnippet }) => {
-          return showInSnippet;
+        .filter(({ attribute }) => {
+          return attribute?.showInSnippet;
         })
         .slice(0, snippetVisibleAttributesCount);
 
@@ -1540,8 +1543,8 @@ export const getCatalogueData = async ({
         viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
         locale,
       });
-      const ratingFeatures = initialRatingFeatures.filter(({ showInSnippet }) => {
-        return showInSnippet;
+      const ratingFeatures = initialRatingFeatures.filter(({ attribute }) => {
+        return attribute?.showInSnippet;
       });
 
       // connections

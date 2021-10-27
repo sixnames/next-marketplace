@@ -1740,8 +1740,6 @@ export interface NexusGenFieldTypes {
     number: number | null; // Float
     selectedOptionsIds: NexusGenScalars['ObjectId'][]; // [ObjectId!]!
     selectedOptionsSlugs: string[]; // [String!]!
-    showAsBreadcrumb: boolean; // Boolean!
-    showInCard: boolean; // Boolean!
     text: string; // String!
     textI18n: NexusGenScalars['JSONObject'] | null; // JSONObject
   };
@@ -2802,8 +2800,6 @@ export interface NexusGenFieldTypeNames {
     number: 'Float';
     selectedOptionsIds: 'ObjectId';
     selectedOptionsSlugs: 'String';
-    showAsBreadcrumb: 'Boolean';
-    showInCard: 'Boolean';
     text: 'String';
     textI18n: 'JSONObject';
   };

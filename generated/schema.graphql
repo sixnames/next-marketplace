@@ -1661,8 +1661,6 @@ type ProductAttribute {
   List of selected options slug
   """
   selectedOptionsSlugs: [String!]!
-  showAsBreadcrumb: Boolean!
-  showInCard: Boolean!
   text: String!
   textI18n: JSONObject
 }

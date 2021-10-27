@@ -98,7 +98,13 @@ async function updateProds() {
           console.log('products done');
           await shopProductsCollection.updateMany({}, updater, updateOptions);
           console.log('shop products done');
-          await productAttributesCollection.updateMany({}, updater, updateOptions);
+          await productAttributesCollection.updateMany(
+            {
+              attributeId: attribute._id,
+            },
+            updater,
+            updateOptions,
+          );
           console.log('product attributes done');
         }
       }

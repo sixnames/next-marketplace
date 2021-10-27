@@ -716,8 +716,6 @@ export const attributesGroupMutations = extendType({
           db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
         const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
         const metricsCollection = db.collection<MetricModel>(COL_METRICS);
-        const productAttributesCollection =
-          db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
 
         const session = client.startSession();
 
@@ -818,25 +816,6 @@ export const attributesGroupMutations = extendType({
             );
             const updatedAttribute = updatedAttributeResult.value;
             if (!updatedAttributeResult.ok || !updatedAttribute) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`attributesGroups.updateAttribute.updateError`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Update product attribute
-            const updatedProductAttributeResult = await productAttributesCollection.updateMany(
-              { attributeId },
-              {
-                $set: {
-                  ...values,
-                  metric,
-                },
-              },
-            );
-            if (!updatedProductAttributeResult.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`attributesGroups.updateAttribute.updateError`),
@@ -1013,8 +992,6 @@ export const attributesGroupMutations = extendType({
       resolve: async (_root, args, context): Promise<AttributesGroupPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
-        const productAttributesCollection =
-          db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
         const attributesGroupCollection =
           db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
         const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
@@ -1097,26 +1074,6 @@ export const attributesGroupMutations = extendType({
               },
             );
             if (!updatedAttributeResult.ok) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`attributesGroups.updateAttribute.updateError`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Update product attributes
-            const updatedProductAttributes = await productAttributesCollection.updateMany(
-              {
-                attributeId,
-              },
-              {
-                $set: {
-                  attributesGroupId,
-                },
-              },
-            );
-            if (!updatedProductAttributes.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`attributesGroups.updateAttribute.updateError`),

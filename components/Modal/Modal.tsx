@@ -32,6 +32,7 @@ import {
   MAP_MODAL,
   METRIC_MODAL,
   MOVE_ATTRIBUTE_MODAL,
+  MOVE_OPTION_MODAL,
   NAV_ITEM_MODAL,
   OPTIONS_GROUP_MODAL,
   OPTION_IN_GROUP_MODAL,
@@ -79,6 +80,7 @@ const ManufacturerModal = dynamic(() => import('components/Modal/ManufacturerMod
 const SupplierModal = dynamic(() => import('components/Modal/SupplierModal'));
 const AddAssetsModal = dynamic(() => import('components/Modal/AddAssetsModal'));
 const MoveAttributeModal = dynamic(() => import('components/Modal/MoveAttributeModal'));
+const MoveOptionModal = dynamic(() => import('components/Modal/MoveOptionModal'));
 const AddAttributesGroupToRubricModal = dynamic(
   () => import('components/Modal/AddAttributesGroupToRubricModal'),
 );
@@ -201,6 +203,8 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
           {modalType === ADD_ASSETS_MODAL && <AddAssetsModal {...modalProps} />}
 
           {modalType === MOVE_ATTRIBUTE_MODAL && <MoveAttributeModal {...modalProps} />}
+
+          {modalType === MOVE_OPTION_MODAL && <MoveOptionModal {...modalProps} />}
 
           {modalType === USER_CATEGORY_MODAL && <UserCategoryModal {...modalProps} />}
 

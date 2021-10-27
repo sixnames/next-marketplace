@@ -115,6 +115,7 @@ export const OptionQueries = extendType({
           list: options,
           parentId,
           childrenFieldName: 'options',
+          locale,
         });
 
         return getAlphabetList<OptionModel>({

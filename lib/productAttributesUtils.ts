@@ -92,8 +92,13 @@ export function getProductCurrentViewAttributes({
   attributes,
   viewVariant,
 }: GetProductCurrentViewAttributesInterface): ProductAttributeInterface[] {
-  return attributes.filter((attribute) => {
-    const { variant, selectedOptionsSlugs, textI18n, number } = attribute;
+  return attributes.filter((productAttribute) => {
+    const { attribute } = productAttribute;
+    if (!attribute) {
+      return false;
+    }
+    const { variant } = attribute;
+    const { selectedOptionsSlugs, textI18n, number } = productAttribute;
     const isSelect =
       variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT || variant === ATTRIBUTE_VARIANT_SELECT;
     const isText = variant === ATTRIBUTE_VARIANT_STRING;
@@ -130,19 +135,24 @@ export function getAttributeReadableValue({
   locale,
   gender,
 }: GetAttributeReadableValueInterface): string | null {
-  const metricName = productAttribute.metric
-    ? ` ${getFieldStringLocale(productAttribute.metric.nameI18n, locale)}`
+  const { attribute } = productAttribute;
+  if (!attribute) {
+    return null;
+  }
+
+  const metricName = attribute.metric
+    ? ` ${getFieldStringLocale(attribute.metric.nameI18n, locale)}`
     : '';
 
   if (
-    (productAttribute.variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT ||
-      productAttribute.variant === ATTRIBUTE_VARIANT_SELECT) &&
+    (attribute.variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT ||
+      attribute.variant === ATTRIBUTE_VARIANT_SELECT) &&
     productAttribute.selectedOptionsSlugs.length > 0 &&
-    productAttribute.options &&
-    productAttribute.options.length > 0
+    attribute.options &&
+    attribute.options.length > 0
   ) {
     return getStringValueFromOptionsList({
-      options: productAttribute.options,
+      options: attribute.options,
       locale,
       metricName,
       gender,
@@ -150,7 +160,7 @@ export function getAttributeReadableValue({
   }
 
   // String
-  if (productAttribute.variant === ATTRIBUTE_VARIANT_STRING) {
+  if (attribute.variant === ATTRIBUTE_VARIANT_STRING) {
     const text = getFieldStringLocale(productAttribute.textI18n, locale);
     if (text) {
       return `${text}${metricName}`;
@@ -158,7 +168,7 @@ export function getAttributeReadableValue({
   }
 
   // Number
-  if (productAttribute.variant === ATTRIBUTE_VARIANT_NUMBER) {
+  if (attribute.variant === ATTRIBUTE_VARIANT_NUMBER) {
     return productAttribute.number ? `${productAttribute.number}${metricName}` : null;
   }
 
@@ -176,6 +186,10 @@ export function castProductAttributeForUi({
   locale,
   gender,
 }: CastProductAttributeForUiInterface): ProductAttributeInterface | null {
+  if (!productAttribute.attribute) {
+    return null;
+  }
+  const { attribute } = productAttribute;
   const readableValue = getAttributeReadableValue({
     productAttribute,
     locale,
@@ -186,24 +200,29 @@ export function castProductAttributeForUi({
     return null;
   }
 
-  const metric = productAttribute.metric
+  const metric = attribute.metric
     ? {
-        ...productAttribute.metric,
-        name: getFieldStringLocale(productAttribute.metric.nameI18n, locale),
+        ...attribute.metric,
+        name: getFieldStringLocale(attribute.metric.nameI18n, locale),
       }
     : null;
 
   const castedAttribute: ProductAttributeInterface = {
     ...productAttribute,
-    name: getFieldStringLocale(productAttribute.nameI18n, locale),
-    metric,
+    attribute: {
+      ...attribute,
+      name: getFieldStringLocale(attribute.nameI18n, locale),
+      metric,
+      options: (attribute.options || []).map((option) => {
+        return {
+          ...option,
+          name: `${getFieldStringLocale(option.nameI18n, locale)}${
+            metric ? ` ${metric.name}` : ''
+          }`,
+        };
+      }),
+    },
     readableValue,
-    options: (productAttribute.options || []).map((option) => {
-      return {
-        ...option,
-        name: `${getFieldStringLocale(option.nameI18n, locale)}${metric ? ` ${metric.name}` : ''}`,
-      };
-    }),
   };
 
   return castedAttribute;
@@ -255,7 +274,8 @@ export function getProductCurrentViewCastedAttributes({
 
 export function countProductAttributes(attributes?: ProductAttributeInterface[] | null): number {
   let counter = 0;
-  (attributes || []).forEach(({ variant, number, textI18n, selectedOptionsIds }) => {
+  (attributes || []).forEach(({ attribute, number, textI18n, selectedOptionsIds }) => {
+    const variant = attribute?.variant;
     if (variant === ATTRIBUTE_VARIANT_NUMBER && number) {
       counter += 1;
     }

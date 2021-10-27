@@ -857,6 +857,11 @@ input MoveAttributeInput {
   attributesGroupId: ObjectId!
 }
 
+input MoveOptionInput {
+  optionId: ObjectId!
+  optionsGroupId: ObjectId!
+}
+
 type Mutation {
   """
   Should create attribute and add it to the attributes group
@@ -1179,6 +1184,11 @@ type Mutation {
   Should move attribute to another attributes group
   """
   moveAttribute(input: MoveAttributeInput!): AttributesGroupPayload!
+
+  """
+  Should move option to another options group
+  """
+  moveOption(input: MoveOptionInput!): OptionsGroupPayload!
 
   """
   Should add all products to the cart from user's old order
@@ -1661,8 +1671,6 @@ type ProductAttribute {
   List of selected options slug
   """
   selectedOptionsSlugs: [String!]!
-  showAsBreadcrumb: Boolean!
-  showInCard: Boolean!
   text: String!
   textI18n: JSONObject
 }
@@ -1806,7 +1814,7 @@ type Query {
   """
   Should return options groups list
   """
-  getAllOptionsGroups: [OptionsGroup!]!
+  getAllOptionsGroups(excludedIds: [ObjectId!] = []): [OptionsGroup!]!
 
   """
   Should return all roles list

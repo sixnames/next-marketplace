@@ -1730,9 +1730,9 @@ export const getConsoleShopProducts = async ({
       }, []);
 
       const productAttributes = (product.attributes || []).reduce(
-        (acc: ProductAttributeInterface[], attribute) => {
+        (acc: ProductAttributeInterface[], productAttribute) => {
           const existingAttribute = (attributes || []).find(({ _id }) => {
-            return _id.equals(attribute.attributeId);
+            return _id.equals(productAttribute.attributeId);
           });
           if (!existingAttribute) {
             return acc;
@@ -1742,22 +1742,25 @@ export const getConsoleShopProducts = async ({
             return optionSlugs.includes(slug);
           });
 
-          const productAttribute: ProductAttributeInterface = {
-            ...attribute,
-            name: getFieldStringLocale(attribute.nameI18n, locale),
-            metric: attribute.metric
-              ? {
-                  ...attribute.metric,
-                  name: getFieldStringLocale(attribute.metric.nameI18n, locale),
-                }
-              : null,
-            options: getTreeFromList({
-              list: options,
-              childrenFieldName: 'options',
-              locale,
-            }),
+          const resultProductAttribute: ProductAttributeInterface = {
+            ...productAttribute,
+            attribute: {
+              ...existingAttribute,
+              name: getFieldStringLocale(existingAttribute.nameI18n, locale),
+              metric: existingAttribute.metric
+                ? {
+                    ...existingAttribute.metric,
+                    name: getFieldStringLocale(existingAttribute.metric.nameI18n, locale),
+                  }
+                : null,
+              options: getTreeFromList({
+                list: options,
+                childrenFieldName: 'options',
+                locale,
+              }),
+            },
           };
-          return [...acc, productAttribute];
+          return [...acc, resultProductAttribute];
         },
         [],
       );

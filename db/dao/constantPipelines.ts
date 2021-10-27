@@ -300,28 +300,54 @@ export const productAttributesPipeline = [
         },
         {
           $lookup: {
-            from: COL_OPTIONS,
-            as: 'options',
+            from: COL_ATTRIBUTES,
+            as: 'attribute',
             let: {
-              optionsGroupId: '$optionsGroupId',
+              attributeId: '$attributeId',
               selectedOptionsIds: '$selectedOptionsIds',
             },
             pipeline: [
               {
                 $match: {
                   $expr: {
-                    $and: [
-                      {
-                        $eq: ['$optionsGroupId', '$$optionsGroupId'],
-                      },
-                      {
-                        $in: ['$_id', '$$selectedOptionsIds'],
-                      },
-                    ],
+                    $eq: ['$$attributeId', '$_id'],
                   },
                 },
               },
+              {
+                $lookup: {
+                  from: COL_OPTIONS,
+                  as: 'options',
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $and: [
+                            {
+                              $in: ['$_id', '$$selectedOptionsIds'],
+                            },
+                          ],
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
             ],
+          },
+        },
+        {
+          $addFields: {
+            attribute: {
+              $arrayElemAt: ['$attribute', 0],
+            },
+          },
+        },
+        {
+          $match: {
+            attribute: {
+              $exists: true,
+            },
           },
         },
       ],
@@ -971,6 +997,7 @@ export const shopProductFieldsPipeline = (idFieldName: string) => {
               pipeline: [
                 {
                   $match: {
+                    _id: null,
                     $expr: {
                       $in: ['$$productId', '$productsIds'],
                     },

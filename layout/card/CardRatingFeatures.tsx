@@ -20,11 +20,14 @@ const CardRatingFeatures: React.FC<CardRatingFeaturesInterface> = ({
         <div className=''>
           <div className=''>Мнение экспертов:</div>
           <ul className='flex flex-wrap gap-4'>
-            {ratingFeatures.map(({ _id, name, number }) => {
-              const optionName = `${name} ${number}`;
+            {ratingFeatures.map(({ _id, attribute, number }) => {
+              if (!attribute) {
+                return null;
+              }
+              const optionName = `${attribute.name} ${number}`;
               return (
                 <li key={`${_id}`}>
-                  <TagLink testId={`card-rating-option-${name}`}>{optionName}</TagLink>
+                  <TagLink testId={`card-rating-option-${attribute.name}`}>{optionName}</TagLink>
                 </li>
               );
             })}

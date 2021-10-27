@@ -234,9 +234,7 @@ export interface ProductConnectionInterface extends ProductConnectionModel {
 export interface ProductAttributeInterface extends ProductAttributeModel {
   readableValue?: string | null;
   index?: number | null;
-  options?: OptionInterface[] | null;
-  name?: string | null;
-  metric?: MetricInterface | null;
+  attribute?: AttributeInterface | null;
 }
 
 export interface ProductCategoryInterface extends CategoryInterface {

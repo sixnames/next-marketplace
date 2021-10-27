@@ -78,7 +78,7 @@ import { getAlgoliaProductsSearch } from 'lib/algoliaUtils';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
-import { getTreeFromList } from 'lib/optionsUtils';
+import { getTreeFromList, sortStringArray } from 'lib/optionsUtils';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
 import { generateSnippetTitle, generateTitle } from 'lib/titleUtils';
@@ -222,18 +222,21 @@ export async function getCatalogueAttributes({
     const { isSelected, castedSlug } = option;
     if (isSelected) {
       const selectedNestedOptionSlugs = getSelectedNestedOptionSlugs(option, []);
-      const newPathFilters = realFilter.filter((path) => {
-        return !selectedNestedOptionSlugs.includes(path);
-      });
+      const newPathFilters = sortStringArray(
+        realFilter.filter((path) => {
+          return !selectedNestedOptionSlugs.includes(path);
+        }),
+      );
       return {
         ...option,
         nextSlug: `${basePath}/${newPathFilters.join('/')}`,
         options: (option.options || []).map(getOptionNextSlug),
       };
     }
+    const newPathFilters = sortStringArray([...realFilter, castedSlug]);
     return {
       ...option,
-      nextSlug: `${basePath}/${[...realFilter, castedSlug].join('/')}`,
+      nextSlug: `${basePath}/${newPathFilters.join('/')}`,
     };
   }
 
@@ -462,7 +465,6 @@ export async function getCatalogueAttributes({
 interface CastOptionsForBreadcrumbsInterface {
   option: CatalogueFilterAttributeOptionInterface;
   attribute: CatalogueFilterAttributeInterface;
-  metricValue: string;
   rubricSlug: string;
   isBrand: boolean;
   currentBrand?: BrandInterface | null;
@@ -474,7 +476,6 @@ export function castOptionsForBreadcrumbs({
   option,
   attribute,
   rubricSlug,
-  metricValue,
   currentBrand,
   isBrand,
   brands,
@@ -507,7 +508,7 @@ export function castOptionsForBreadcrumbs({
   if (option.isSelected) {
     newAcc.push({
       _id: option._id,
-      name: `${option.name}${metricValue}`,
+      name: `${option.name}`,
       href: `${ROUTE_CATALOGUE}/${rubricSlug}/${optionSlug}`,
     });
   }
@@ -521,7 +522,6 @@ export function castOptionsForBreadcrumbs({
       option: childOption,
       attribute,
       rubricSlug,
-      metricValue,
       brands,
       isBrand,
       currentBrand: brand,
@@ -752,6 +752,92 @@ export function castCatalogueFilters({
   };
 }
 
+interface SetCategorySeoTextInterface {
+  categories: CategoryInterface[];
+  locale: string;
+  companySlug: string;
+  rubricId: string;
+}
+
+interface SetCategorySeoTextPayloadInterface {
+  editUrl: string;
+  textTop: string | null | undefined;
+  textBottom: string | null | undefined;
+  seoTop: RubricSeoModel | null | undefined;
+  seoBottom: RubricSeoModel | null | undefined;
+}
+
+async function setCategorySeoText({
+  categories,
+  companySlug,
+  locale,
+  rubricId,
+}: SetCategorySeoTextInterface): Promise<SetCategorySeoTextPayloadInterface | null> {
+  const { db } = await getDatabase();
+  const categoryDescriptionsCollection =
+    db.collection<CategoryDescriptionModel>(COL_CATEGORY_DESCRIPTIONS);
+  const rubricSeoCollection = db.collection<RubricSeoModel>(COL_RUBRIC_SEO);
+
+  let editUrl = ``;
+  let textTop: string | null | undefined;
+  let textBottom: string | null | undefined;
+  let seoTop: RubricSeoModel | null | undefined;
+  let seoBottom: RubricSeoModel | null | undefined;
+  const currentCategory = categories[0];
+  if (categories.length > 0 && categories.length < 2 && currentCategory) {
+    if (currentCategory.categories && currentCategory.categories.length > 0) {
+      return setCategorySeoText({
+        categories: currentCategory.categories,
+        locale,
+        companySlug,
+        rubricId,
+      });
+    }
+
+    editUrl = `/rubrics/${rubricId}/categories/${categories[0]._id}`;
+    const textTopDoc = await categoryDescriptionsCollection.findOne({
+      categoryId: currentCategory._id,
+      companySlug,
+      position: CATALOGUE_SEO_TEXT_POSITION_TOP,
+    });
+
+    textTop = getFieldStringLocale(textTopDoc?.textI18n, locale);
+    if (textTop) {
+      seoTop = await rubricSeoCollection.findOne({
+        position: CATALOGUE_SEO_TEXT_POSITION_TOP,
+        categoryId: currentCategory._id,
+      });
+    } else {
+      seoTop = null;
+    }
+
+    const textBottomDoc = await categoryDescriptionsCollection.findOne({
+      categoryId: currentCategory._id,
+      companySlug,
+      position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+    });
+    textBottom = getFieldStringLocale(textBottomDoc?.textI18n, locale);
+    if (textBottom) {
+      seoBottom = await rubricSeoCollection.findOne({
+        position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+        categoryId: currentCategory._id,
+      });
+    } else {
+      seoBottom = null;
+    }
+
+    return {
+      editUrl,
+      textTop,
+      textBottom,
+      seoTop,
+      seoBottom,
+    };
+  } else {
+    return null;
+  }
+}
+
 export interface GetCatalogueDataInterface {
   locale: string;
   city: string;
@@ -786,8 +872,6 @@ export const getCatalogueData = async ({
     // const timeStart = new Date().getTime();
     const { db } = await getDatabase();
     const rubricSeoCollection = db.collection<RubricSeoModel>(COL_RUBRIC_SEO);
-    const categoryDescriptionsCollection =
-      db.collection<CategoryDescriptionModel>(COL_CATEGORY_DESCRIPTIONS);
     const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
 
     // args
@@ -1466,18 +1550,21 @@ export const getCatalogueData = async ({
 
           const productAttribute: ProductAttributeInterface = {
             ...attribute,
-            name: getFieldStringLocale(attribute.nameI18n, locale),
-            metric: attribute.metric
-              ? {
-                  ...attribute.metric,
-                  name: getFieldStringLocale(attribute.metric.nameI18n, locale),
-                }
-              : null,
-            options: getTreeFromList({
-              list: options,
-              childrenFieldName: 'options',
-              locale,
-            }),
+            attribute: {
+              ...existingAttribute,
+              name: getFieldStringLocale(existingAttribute.nameI18n, locale),
+              metric: existingAttribute.metric
+                ? {
+                    ...existingAttribute.metric,
+                    name: getFieldStringLocale(existingAttribute.metric.nameI18n, locale),
+                  }
+                : null,
+              options: getTreeFromList({
+                list: options,
+                childrenFieldName: 'options',
+                locale,
+              }),
+            },
           };
           return [...acc, productAttribute];
         },
@@ -1527,10 +1614,11 @@ export const getCatalogueData = async ({
         attributes: productAttributes,
         viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
         locale,
+        gender: product.gender,
       });
       const listFeatures = initialListFeatures
-        .filter(({ showInSnippet }) => {
-          return showInSnippet;
+        .filter(({ attribute }) => {
+          return attribute?.showInSnippet;
         })
         .slice(0, snippetVisibleAttributesCount);
 
@@ -1539,9 +1627,10 @@ export const getCatalogueData = async ({
         attributes: productAttributes,
         viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
         locale,
+        gender: product.gender,
       });
-      const ratingFeatures = initialRatingFeatures.filter(({ showInSnippet }) => {
-        return showInSnippet;
+      const ratingFeatures = initialRatingFeatures.filter(({ attribute }) => {
+        return attribute?.showInSnippet;
       });
 
       // connections
@@ -1610,10 +1699,6 @@ export const getCatalogueData = async ({
       const { options, showAsCatalogueBreadcrumb, slug } = selectedAttribute;
       const isPrice = slug === FILTER_PRICE_KEY;
       const isBrand = slug === FILTER_BRAND_KEY;
-      let metricValue = selectedAttribute.metric ? ` ${selectedAttribute.metric}` : '';
-      if (isPrice) {
-        metricValue = currency;
-      }
 
       if ((showAsCatalogueBreadcrumb || isPrice || isBrand) && rubricSlug) {
         const optionBreadcrumbs = options.reduce((acc: CatalogueBreadcrumbModel[], option) => {
@@ -1623,7 +1708,6 @@ export const getCatalogueData = async ({
             brands,
             attribute: selectedAttribute,
             rubricSlug,
-            metricValue,
             acc: [],
           });
           return [...acc, ...tree];
@@ -1650,80 +1734,59 @@ export const getCatalogueData = async ({
     }
 
     // get seo text
-    const selectedCategories: CategoryInterface[] = [];
-    selectedAttributes.forEach((attribute) => {
-      const { options, slug } = attribute;
-      if (slug === FILTER_CATEGORY_KEY) {
-        options.forEach((option) => {
-          const currentCategory = (categories || []).find(({ slug }) => {
-            return slug === option.slug;
-          });
-          if (currentCategory) {
-            selectedCategories.push(currentCategory);
-          }
-        });
-      }
+    const selectedCategorySlugs = categoryFilters.map((slug) => {
+      const slugParts = slug.split(FILTER_SEPARATOR);
+      return `${slugParts[1]}`;
+    });
+    const selectedCategories: CategoryInterface[] = (categories || []).filter((category) => {
+      return selectedCategorySlugs.includes(category.slug);
+    });
+    const selectedCategoriesTree = getTreeFromList({
+      list: selectedCategories,
+      childrenFieldName: 'categories',
+      locale,
     });
 
     // rubric seo text as default
     let editUrl = `/rubrics/${rubric._id}`;
-    let textTop: string | null | undefined = getFieldStringLocale(
-      rubric.seoDescriptionTop?.textI18n,
-      locale,
-    );
-    let textBottom: string | null | undefined = getFieldStringLocale(
-      rubric.seoDescriptionBottom?.textI18n,
-      locale,
-    );
-    let seoTop = await rubricSeoCollection.findOne({
-      rubricId: rubric._id,
-      position: CATALOGUE_SEO_TEXT_POSITION_TOP,
-      categoryId: null,
-      companySlug,
-    });
-    let seoBottom = await rubricSeoCollection.findOne({
-      rubricId: rubric._id,
-      position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
-      categoryId: null,
-      companySlug,
-    });
+    let textTop: string | null | undefined;
+    let textBottom: string | null | undefined;
+    let seoTop: RubricSeoModel | null | undefined;
+    let seoBottom: RubricSeoModel | null | undefined;
 
     // category seo text if selected
-    if (selectedCategories.length > 0 && selectedCategories.length < 2 && selectedCategories[0]) {
-      editUrl = `/rubrics/${rubric._id}/categories/${selectedCategories[0]._id}`;
-      const textTopDoc = await categoryDescriptionsCollection.findOne({
-        categoryId: selectedCategories[0]._id,
-        companySlug,
-        position: CATALOGUE_SEO_TEXT_POSITION_TOP,
-      });
-      textTop = getFieldStringLocale(textTopDoc?.textI18n, locale);
-      if (textTop) {
-        seoTop = await rubricSeoCollection.findOne({
-          position: CATALOGUE_SEO_TEXT_POSITION_TOP,
-          categoryId: selectedCategories[0]._id,
-        });
-      } else {
-        seoTop = null;
-      }
+    const categorySeoTexts = await setCategorySeoText({
+      categories: selectedCategoriesTree,
+      companySlug,
+      locale,
+      rubricId: rubric._id.toHexString(),
+    });
 
-      const textBottomDoc = await categoryDescriptionsCollection.findOne({
-        categoryId: selectedCategories[0]._id,
+    if (categorySeoTexts) {
+      editUrl = categorySeoTexts.editUrl;
+      textTop = categorySeoTexts.textTop;
+      textBottom = categorySeoTexts.textBottom;
+      seoTop = categorySeoTexts.seoTop;
+      seoBottom = categorySeoTexts.seoBottom;
+    } else {
+      textTop = getFieldStringLocale(rubric.seoDescriptionTop?.textI18n, locale);
+      textBottom = getFieldStringLocale(rubric.seoDescriptionBottom?.textI18n, locale);
+      seoTop = await rubricSeoCollection.findOne({
+        rubricId: rubric._id,
+        position: CATALOGUE_SEO_TEXT_POSITION_TOP,
+        categoryId: null,
         companySlug,
-        position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
       });
-      textBottom = getFieldStringLocale(textBottomDoc?.textI18n, locale);
-      if (textBottom) {
-        seoBottom = await rubricSeoCollection.findOne({
-          position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
-          categoryId: selectedCategories[0]._id,
-        });
-      } else {
-        seoBottom = null;
-      }
+      seoBottom = await rubricSeoCollection.findOne({
+        rubricId: rubric._id,
+        position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+        categoryId: null,
+        companySlug,
+      });
     }
 
     // remove seo text if selected more then one category
-    if (selectedCategories.length > 1) {
+    if (selectedCategoriesTree.length > 1) {
       textTop = null;
       textBottom = null;
     }

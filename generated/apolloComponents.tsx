@@ -893,6 +893,11 @@ export type MoveAttributeInput = {
   attributeId: Scalars['ObjectId'];
 };
 
+export type MoveOptionInput = {
+  optionsGroupId: Scalars['ObjectId'];
+  optionId: Scalars['ObjectId'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   /** Should create attributes group */
@@ -1013,6 +1018,8 @@ export type Mutation = {
   addOptionToGroup: OptionsGroupPayload;
   /** Should update option in the group */
   updateOptionInGroup: OptionsGroupPayload;
+  /** Should move option to another options group */
+  moveOption: OptionsGroupPayload;
   /** Should delete option from the group */
   deleteOptionFromGroup: OptionsGroupPayload;
   /** Should create order status */
@@ -1405,6 +1412,11 @@ export type MutationAddOptionToGroupArgs = {
 
 export type MutationUpdateOptionInGroupArgs = {
   input: UpdateOptionInGroupInput;
+};
+
+
+export type MutationMoveOptionArgs = {
+  input: MoveOptionInput;
 };
 
 
@@ -1897,8 +1909,6 @@ export type ProductAssets = {
 export type ProductAttribute = {
   __typename?: 'ProductAttribute';
   _id: Scalars['ObjectId'];
-  showInCard: Scalars['Boolean'];
-  showAsBreadcrumb: Scalars['Boolean'];
   attributeId: Scalars['ObjectId'];
   textI18n?: Maybe<Scalars['JSONObject']>;
   number?: Maybe<Scalars['Float']>;
@@ -2196,6 +2206,11 @@ export type QueryGetOptionAlphabetListsArgs = {
 
 export type QueryGetOptionsGroupArgs = {
   _id: Scalars['ObjectId'];
+};
+
+
+export type QueryGetAllOptionsGroupsArgs = {
+  excludedIds?: Maybe<Array<Scalars['ObjectId']>>;
 };
 
 
@@ -3911,6 +3926,19 @@ export type DeleteOptionFromGroupMutation = (
   ) }
 );
 
+export type MoveOptionMutationVariables = Exact<{
+  input: MoveOptionInput;
+}>;
+
+
+export type MoveOptionMutation = (
+  { __typename?: 'Mutation' }
+  & { moveOption: (
+    { __typename?: 'OptionsGroupPayload' }
+    & Pick<OptionsGroupPayload, 'success' | 'message'>
+  ) }
+);
+
 export type CreateOrderStatusMutationVariables = Exact<{
   input: CreateOrderStatusInput;
 }>;
@@ -4963,6 +4991,19 @@ export type GetSessionCitiesQuery = (
   & { getSessionCities: Array<(
     { __typename?: 'City' }
     & Pick<City, '_id' | 'slug' | 'name'>
+  )> }
+);
+
+export type GetAllOptionsGroupsQueryVariables = Exact<{
+  excludedIds?: Maybe<Array<Scalars['ObjectId']> | Scalars['ObjectId']>;
+}>;
+
+
+export type GetAllOptionsGroupsQuery = (
+  { __typename?: 'Query' }
+  & { getAllOptionsGroups: Array<(
+    { __typename?: 'OptionsGroup' }
+    & Pick<OptionsGroup, '_id' | 'name'>
   )> }
 );
 
@@ -7415,6 +7456,40 @@ export function useDeleteOptionFromGroupMutation(baseOptions?: Apollo.MutationHo
 export type DeleteOptionFromGroupMutationHookResult = ReturnType<typeof useDeleteOptionFromGroupMutation>;
 export type DeleteOptionFromGroupMutationResult = Apollo.MutationResult<DeleteOptionFromGroupMutation>;
 export type DeleteOptionFromGroupMutationOptions = Apollo.BaseMutationOptions<DeleteOptionFromGroupMutation, DeleteOptionFromGroupMutationVariables>;
+export const MoveOptionDocument = gql`
+    mutation MoveOption($input: MoveOptionInput!) {
+  moveOption(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type MoveOptionMutationFn = Apollo.MutationFunction<MoveOptionMutation, MoveOptionMutationVariables>;
+
+/**
+ * __useMoveOptionMutation__
+ *
+ * To run a mutation, you first call `useMoveOptionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useMoveOptionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [moveOptionMutation, { data, loading, error }] = useMoveOptionMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useMoveOptionMutation(baseOptions?: Apollo.MutationHookOptions<MoveOptionMutation, MoveOptionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<MoveOptionMutation, MoveOptionMutationVariables>(MoveOptionDocument, options);
+      }
+export type MoveOptionMutationHookResult = ReturnType<typeof useMoveOptionMutation>;
+export type MoveOptionMutationResult = Apollo.MutationResult<MoveOptionMutation>;
+export type MoveOptionMutationOptions = Apollo.BaseMutationOptions<MoveOptionMutation, MoveOptionMutationVariables>;
 export const CreateOrderStatusDocument = gql`
     mutation CreateOrderStatus($input: CreateOrderStatusInput!) {
   createOrderStatus(input: $input) {
@@ -9843,3 +9918,39 @@ export function useGetSessionCitiesLazyQuery(baseOptions?: Apollo.LazyQueryHookO
 export type GetSessionCitiesQueryHookResult = ReturnType<typeof useGetSessionCitiesQuery>;
 export type GetSessionCitiesLazyQueryHookResult = ReturnType<typeof useGetSessionCitiesLazyQuery>;
 export type GetSessionCitiesQueryResult = Apollo.QueryResult<GetSessionCitiesQuery, GetSessionCitiesQueryVariables>;
+export const GetAllOptionsGroupsDocument = gql`
+    query GetAllOptionsGroups($excludedIds: [ObjectId!]) {
+  getAllOptionsGroups(excludedIds: $excludedIds) {
+    _id
+    name
+  }
+}
+    `;
+
+/**
+ * __useGetAllOptionsGroupsQuery__
+ *
+ * To run a query within a React component, call `useGetAllOptionsGroupsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllOptionsGroupsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllOptionsGroupsQuery({
+ *   variables: {
+ *      excludedIds: // value for 'excludedIds'
+ *   },
+ * });
+ */
+export function useGetAllOptionsGroupsQuery(baseOptions?: Apollo.QueryHookOptions<GetAllOptionsGroupsQuery, GetAllOptionsGroupsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllOptionsGroupsQuery, GetAllOptionsGroupsQueryVariables>(GetAllOptionsGroupsDocument, options);
+      }
+export function useGetAllOptionsGroupsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllOptionsGroupsQuery, GetAllOptionsGroupsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllOptionsGroupsQuery, GetAllOptionsGroupsQueryVariables>(GetAllOptionsGroupsDocument, options);
+        }
+export type GetAllOptionsGroupsQueryHookResult = ReturnType<typeof useGetAllOptionsGroupsQuery>;
+export type GetAllOptionsGroupsLazyQueryHookResult = ReturnType<typeof useGetAllOptionsGroupsLazyQuery>;
+export type GetAllOptionsGroupsQueryResult = Apollo.QueryResult<GetAllOptionsGroupsQuery, GetAllOptionsGroupsQueryVariables>;

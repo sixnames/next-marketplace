@@ -18,7 +18,7 @@ import { COL_MANUFACTURERS, COL_PRODUCTS } from 'db/collectionNames';
 import { aggregatePagination } from 'db/dao/aggregatePagination';
 import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getNextItemId } from 'lib/itemIdUtils';
+import { getNextNumberItemId } from 'lib/itemIdUtils';
 import { createManufacturerSchema, updateManufacturerSchema } from 'validation/manufacturerSchema';
 
 export const Manufacturer = objectType({
@@ -272,7 +272,7 @@ export const ManufacturerMutations = extendType({
           }
 
           // Create manufacturer
-          const itemId = await getNextItemId(COL_MANUFACTURERS);
+          const itemId = await getNextNumberItemId(COL_MANUFACTURERS);
           const createManufacturerResult = await manufacturersCollection.insertOne({
             ...input,
             itemId,

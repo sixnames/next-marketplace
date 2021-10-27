@@ -11,7 +11,7 @@ export interface FormikDatePickerInterface
 
 const FormikDatePicker: React.FC<FormikDatePickerInterface> = ({
   name,
-  autoComplete = 'on',
+  autoComplete = 'off',
   isRequired,
   showInlineError,
   frameClass,

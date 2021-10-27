@@ -19,7 +19,6 @@ Disallow: /profile/*
 Disallow: /cart
 Disallow: /make-an-order
 Disallow: /thank-you
-Host: ${siteUrl}
 Sitemap: ${siteUrl}/sitemap.xml
     `,
   );

@@ -31,6 +31,30 @@ export async function getNextItemId(
   return addZero(updatedCounter.value.counter, digits);
 }
 
+export async function getNextNumberItemId(collectionName: string): Promise<string> {
+  const { db } = await getDatabase();
+  const idCountersCollection = db.collection<IdCounterModel>(COL_ID_COUNTERS);
+
+  const updatedCounter = await idCountersCollection.findOneAndUpdate(
+    { collection: collectionName },
+    {
+      $inc: {
+        counter: ID_COUNTER_STEP,
+      },
+    },
+    {
+      upsert: true,
+      returnDocument: 'after',
+    },
+  );
+
+  if (!updatedCounter.ok || !updatedCounter.value) {
+    throw Error(`${collectionName} id counter update error`);
+  }
+
+  return `${updatedCounter.value.counter}`;
+}
+
 export async function getOrderNextItemId(companySlug: string): Promise<string> {
   return getNextItemId(`${COL_ORDERS}-${companySlug}`, ID_COUNTER_ORDER_DIGITS);
 }

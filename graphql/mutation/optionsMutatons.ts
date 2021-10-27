@@ -53,3 +53,12 @@ export const DELETE_OPTION_FROM_GROUP_MUTATION = gql`
     }
   }
 `;
+
+export const MOVE_OPTION_MUTATION = gql`
+  mutation MoveOption($input: MoveOptionInput!) {
+    moveOption(input: $input) {
+      success
+      message
+    }
+  }
+`;

@@ -30,7 +30,9 @@ export async function sendOrderCreatedSms({
 
   // customer
   if (customer && customer.notifications?.newOrder?.sms) {
-    const url = getOrderLink();
+    const url = getOrderLink({
+      orderObjectId,
+    });
     const text = `Здравствуйте ${customer.name}! Спасибо за заказ! Номер вашего заказа ${orderItemId} ${url}`;
 
     await smsSender({

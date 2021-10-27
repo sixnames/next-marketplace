@@ -31,7 +31,9 @@ export const sendOrderCreatedEmail = async ({
 
   // customer
   if (customer && customer.notifications?.newOrder?.email) {
-    const url = getOrderLink();
+    const url = getOrderLink({
+      orderObjectId,
+    });
     const text = `
         Здравствуйте ${customer.name}!
         Спасибо за заказ!

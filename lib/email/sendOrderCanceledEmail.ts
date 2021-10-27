@@ -3,12 +3,14 @@ import { COL_COMPANIES, COL_USERS } from 'db/collectionNames';
 import { CompanyModel, ObjectIdModel, UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { sendEmail, SendEmailInterface } from 'lib/email/mailer';
+import { getOrderLink } from 'lib/linkUtils';
 
 interface SendOrderCanceledEmailInterface
   extends Omit<SendEmailInterface, 'content' | 'text' | 'subject' | 'to'> {
   orderItemId: string;
   customer: UserModel;
   companyId: ObjectIdModel;
+  orderObjectId: ObjectIdModel;
 }
 
 export const sendOrderCanceledEmail = async ({
@@ -18,6 +20,7 @@ export const sendOrderCanceledEmail = async ({
   city,
   locale,
   companySiteSlug,
+  orderObjectId,
 }: SendOrderCanceledEmailInterface) => {
   const { db } = await getDatabase();
   const usersCollection = db.collection<UserModel>(COL_USERS);
@@ -29,6 +32,9 @@ export const sendOrderCanceledEmail = async ({
 
   // customer
   if (customer && customer.notifications?.canceledOrder?.email) {
+    const url = getOrderLink({
+      orderObjectId,
+    });
     const text = `
         Здравствуйте ${customer.name}!
         Заказ № ${orderItemId} отменён.
@@ -36,7 +42,7 @@ export const sendOrderCanceledEmail = async ({
     const content = `
       <div>
         <h2>Здравствуйте ${customer.name}!</h2>
-        <h4>Заказ № ${orderItemId} подтверждён.</h4>
+        <h4>Заказ № <a href='${url}'>${orderItemId}</a> подтверждён.</h4>
       </div>
       `;
 
@@ -53,11 +59,13 @@ export const sendOrderCanceledEmail = async ({
 
   // admin email content
   const text = `Заказ № ${orderItemId} отменён.`;
-  const content = `
+  const content = (url: string) => {
+    return `
       <div>
-        <h1>Заказ № ${orderItemId} отменён.</h1>
+        <h1>Заказ № <a href='${url}'>${orderItemId}</a> отменён.</h1>
       </div>
       `;
+  };
 
   // company admins
   if (company) {
@@ -72,6 +80,12 @@ export const sendOrderCanceledEmail = async ({
       .toArray();
     const emails = users.map(({ email }) => email);
 
+    const url = getOrderLink({
+      variant: 'companyManager',
+      orderObjectId,
+      companyId,
+    });
+
     if (emails.length > 0) {
       await sendEmail({
         text,
@@ -80,7 +94,7 @@ export const sendOrderCanceledEmail = async ({
         locale,
         companySiteSlug,
         subject,
-        content,
+        content: content(url),
       });
     }
   }
@@ -92,6 +106,11 @@ export const sendOrderCanceledEmail = async ({
     })
     .toArray();
   const emails = users.map(({ email }) => email);
+  const url = getOrderLink({
+    variant: 'siteAdmin',
+    orderObjectId,
+  });
+
   if (emails.length > 0) {
     await sendEmail({
       text,
@@ -100,7 +119,7 @@ export const sendOrderCanceledEmail = async ({
       locale,
       companySiteSlug: DEFAULT_COMPANY_SLUG,
       subject,
-      content,
+      content: content(url),
     });
   }
 };

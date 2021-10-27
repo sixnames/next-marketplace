@@ -304,6 +304,7 @@ export const productAttributesPipeline = [
             as: 'attribute',
             let: {
               attributeId: '$attributeId',
+              selectedOptionsIds: '$selectedOptionsIds',
             },
             pipeline: [
               {
@@ -317,18 +318,11 @@ export const productAttributesPipeline = [
                 $lookup: {
                   from: COL_OPTIONS,
                   as: 'options',
-                  let: {
-                    optionsGroupId: '$optionsGroupId',
-                    selectedOptionsIds: '$selectedOptionsIds',
-                  },
                   pipeline: [
                     {
                       $match: {
                         $expr: {
                           $and: [
-                            {
-                              $eq: ['$optionsGroupId', '$$optionsGroupId'],
-                            },
                             {
                               $in: ['$_id', '$$selectedOptionsIds'],
                             },
@@ -1003,6 +997,7 @@ export const shopProductFieldsPipeline = (idFieldName: string) => {
               pipeline: [
                 {
                   $match: {
+                    _id: null,
                     $expr: {
                       $in: ['$$productId', '$productsIds'],
                     },

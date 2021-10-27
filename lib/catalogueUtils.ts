@@ -462,7 +462,6 @@ export async function getCatalogueAttributes({
 interface CastOptionsForBreadcrumbsInterface {
   option: CatalogueFilterAttributeOptionInterface;
   attribute: CatalogueFilterAttributeInterface;
-  metricValue: string;
   rubricSlug: string;
   isBrand: boolean;
   currentBrand?: BrandInterface | null;
@@ -474,7 +473,6 @@ export function castOptionsForBreadcrumbs({
   option,
   attribute,
   rubricSlug,
-  metricValue,
   currentBrand,
   isBrand,
   brands,
@@ -507,7 +505,7 @@ export function castOptionsForBreadcrumbs({
   if (option.isSelected) {
     newAcc.push({
       _id: option._id,
-      name: `${option.name}${metricValue}`,
+      name: `${option.name}`,
       href: `${ROUTE_CATALOGUE}/${rubricSlug}/${optionSlug}`,
     });
   }
@@ -521,7 +519,6 @@ export function castOptionsForBreadcrumbs({
       option: childOption,
       attribute,
       rubricSlug,
-      metricValue,
       brands,
       isBrand,
       currentBrand: brand,
@@ -1699,10 +1696,6 @@ export const getCatalogueData = async ({
       const { options, showAsCatalogueBreadcrumb, slug } = selectedAttribute;
       const isPrice = slug === FILTER_PRICE_KEY;
       const isBrand = slug === FILTER_BRAND_KEY;
-      let metricValue = selectedAttribute.metric ? ` ${selectedAttribute.metric}` : '';
-      if (isPrice) {
-        metricValue = currency;
-      }
 
       if ((showAsCatalogueBreadcrumb || isPrice || isBrand) && rubricSlug) {
         const optionBreadcrumbs = options.reduce((acc: CatalogueBreadcrumbModel[], option) => {
@@ -1712,7 +1705,6 @@ export const getCatalogueData = async ({
             brands,
             attribute: selectedAttribute,
             rubricSlug,
-            metricValue,
             acc: [],
           });
           return [...acc, ...tree];

@@ -118,8 +118,6 @@ export const OptionQueries = extendType({
           locale,
         });
 
-        console.log(JSON.stringify(optionsTree, null, 2));
-
         return getAlphabetList<OptionModel>({
           entityList: optionsTree,
           locale,

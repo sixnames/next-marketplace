@@ -752,6 +752,92 @@ export function castCatalogueFilters({
   };
 }
 
+interface SetCategorySeoTextInterface {
+  categories: CategoryInterface[];
+  locale: string;
+  companySlug: string;
+  rubricId: string;
+}
+
+interface SetCategorySeoTextPayloadInterface {
+  editUrl: string;
+  textTop: string | null | undefined;
+  textBottom: string | null | undefined;
+  seoTop: RubricSeoModel | null | undefined;
+  seoBottom: RubricSeoModel | null | undefined;
+}
+
+async function setCategorySeoText({
+  categories,
+  companySlug,
+  locale,
+  rubricId,
+}: SetCategorySeoTextInterface): Promise<SetCategorySeoTextPayloadInterface | null> {
+  const { db } = await getDatabase();
+  const categoryDescriptionsCollection =
+    db.collection<CategoryDescriptionModel>(COL_CATEGORY_DESCRIPTIONS);
+  const rubricSeoCollection = db.collection<RubricSeoModel>(COL_RUBRIC_SEO);
+
+  let editUrl = ``;
+  let textTop: string | null | undefined;
+  let textBottom: string | null | undefined;
+  let seoTop: RubricSeoModel | null | undefined;
+  let seoBottom: RubricSeoModel | null | undefined;
+  const currentCategory = categories[0];
+  if (categories.length > 0 && categories.length < 2 && currentCategory) {
+    if (currentCategory.categories && currentCategory.categories.length > 0) {
+      return setCategorySeoText({
+        categories: currentCategory.categories,
+        locale,
+        companySlug,
+        rubricId,
+      });
+    }
+
+    editUrl = `/rubrics/${rubricId}/categories/${categories[0]._id}`;
+    const textTopDoc = await categoryDescriptionsCollection.findOne({
+      categoryId: currentCategory._id,
+      companySlug,
+      position: CATALOGUE_SEO_TEXT_POSITION_TOP,
+    });
+
+    textTop = getFieldStringLocale(textTopDoc?.textI18n, locale);
+    if (textTop) {
+      seoTop = await rubricSeoCollection.findOne({
+        position: CATALOGUE_SEO_TEXT_POSITION_TOP,
+        categoryId: currentCategory._id,
+      });
+    } else {
+      seoTop = null;
+    }
+
+    const textBottomDoc = await categoryDescriptionsCollection.findOne({
+      categoryId: currentCategory._id,
+      companySlug,
+      position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+    });
+    textBottom = getFieldStringLocale(textBottomDoc?.textI18n, locale);
+    if (textBottom) {
+      seoBottom = await rubricSeoCollection.findOne({
+        position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+        categoryId: currentCategory._id,
+      });
+    } else {
+      seoBottom = null;
+    }
+
+    return {
+      editUrl,
+      textTop,
+      textBottom,
+      seoTop,
+      seoBottom,
+    };
+  } else {
+    return null;
+  }
+}
+
 export interface GetCatalogueDataInterface {
   locale: string;
   city: string;
@@ -786,8 +872,6 @@ export const getCatalogueData = async ({
     // const timeStart = new Date().getTime();
     const { db } = await getDatabase();
     const rubricSeoCollection = db.collection<RubricSeoModel>(COL_RUBRIC_SEO);
-    const categoryDescriptionsCollection =
-      db.collection<CategoryDescriptionModel>(COL_CATEGORY_DESCRIPTIONS);
     const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
 
     // args
@@ -1655,80 +1739,60 @@ export const getCatalogueData = async ({
     }
 
     // get seo text
-    const selectedCategories: CategoryInterface[] = [];
-    selectedAttributes.forEach((attribute) => {
-      const { options, slug } = attribute;
-      if (slug === FILTER_CATEGORY_KEY) {
-        options.forEach((option) => {
-          const currentCategory = (categories || []).find(({ slug }) => {
-            return slug === option.slug;
-          });
-          if (currentCategory) {
-            selectedCategories.push(currentCategory);
-          }
-        });
-      }
+    const selectedCategorySlugs = categoryFilters.map((slug) => {
+      const slugParts = slug.split(FILTER_SEPARATOR);
+      return `${slugParts[1]}`;
+    });
+    const selectedCategories: CategoryInterface[] = (categories || []).filter((category) => {
+      return selectedCategorySlugs.includes(category.slug);
+    });
+    const selectedCategoriesTree = getTreeFromList({
+      list: selectedCategories,
+      childrenFieldName: 'categories',
+      locale,
     });
 
     // rubric seo text as default
-    let editUrl = `/rubrics/${rubric._id}`;
-    let textTop: string | null | undefined = getFieldStringLocale(
-      rubric.seoDescriptionTop?.textI18n,
-      locale,
-    );
-    let textBottom: string | null | undefined = getFieldStringLocale(
-      rubric.seoDescriptionBottom?.textI18n,
-      locale,
-    );
-    let seoTop = await rubricSeoCollection.findOne({
-      rubricId: rubric._id,
-      position: CATALOGUE_SEO_TEXT_POSITION_TOP,
-      categoryId: null,
-      companySlug,
-    });
-    let seoBottom = await rubricSeoCollection.findOne({
-      rubricId: rubric._id,
-      position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
-      categoryId: null,
-      companySlug,
-    });
+    let editUrl = ``;
+    let textTop: string | null | undefined;
+    let textBottom: string | null | undefined;
+    let seoTop: RubricSeoModel | null | undefined;
+    let seoBottom: RubricSeoModel | null | undefined;
 
     // category seo text if selected
-    if (selectedCategories.length > 0 && selectedCategories.length < 2 && selectedCategories[0]) {
-      editUrl = `/rubrics/${rubric._id}/categories/${selectedCategories[0]._id}`;
-      const textTopDoc = await categoryDescriptionsCollection.findOne({
-        categoryId: selectedCategories[0]._id,
-        companySlug,
-        position: CATALOGUE_SEO_TEXT_POSITION_TOP,
-      });
-      textTop = getFieldStringLocale(textTopDoc?.textI18n, locale);
-      if (textTop) {
-        seoTop = await rubricSeoCollection.findOne({
-          position: CATALOGUE_SEO_TEXT_POSITION_TOP,
-          categoryId: selectedCategories[0]._id,
-        });
-      } else {
-        seoTop = null;
-      }
+    const categorySeoTexts = await setCategorySeoText({
+      categories: selectedCategoriesTree,
+      companySlug,
+      locale,
+      rubricId: rubric._id.toHexString(),
+    });
 
-      const textBottomDoc = await categoryDescriptionsCollection.findOne({
-        categoryId: selectedCategories[0]._id,
+    if (categorySeoTexts) {
+      editUrl = categorySeoTexts.editUrl;
+      textTop = categorySeoTexts.textTop;
+      textBottom = categorySeoTexts.textBottom;
+      seoTop = categorySeoTexts.seoTop;
+      seoBottom = categorySeoTexts.seoBottom;
+    } else {
+      editUrl = `/rubrics/${rubric._id}`;
+      textTop = getFieldStringLocale(rubric.seoDescriptionTop?.textI18n, locale);
+      textBottom = getFieldStringLocale(rubric.seoDescriptionBottom?.textI18n, locale);
+      seoTop = await rubricSeoCollection.findOne({
+        rubricId: rubric._id,
+        position: CATALOGUE_SEO_TEXT_POSITION_TOP,
+        categoryId: null,
         companySlug,
-        position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
       });
-      textBottom = getFieldStringLocale(textBottomDoc?.textI18n, locale);
-      if (textBottom) {
-        seoBottom = await rubricSeoCollection.findOne({
-          position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
-          categoryId: selectedCategories[0]._id,
-        });
-      } else {
-        seoBottom = null;
-      }
+      seoBottom = await rubricSeoCollection.findOne({
+        rubricId: rubric._id,
+        position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+        categoryId: null,
+        companySlug,
+      });
     }
 
     // remove seo text if selected more then one category
-    if (selectedCategories.length > 1) {
+    if (selectedCategoriesTree.length > 1) {
       textTop = null;
       textBottom = null;
     }

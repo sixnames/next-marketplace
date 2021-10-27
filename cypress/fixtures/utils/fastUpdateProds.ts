@@ -1,5 +1,5 @@
 import { ProductAttributeModel } from '../../../db/dbModels';
-import { COL_PRODUCT_ATTRIBUTES } from '../../../db/collectionNames';
+import { COL_CATEGORIES, COL_PRODUCT_ATTRIBUTES } from '../../../db/collectionNames';
 import { dbsConfig, getProdDb } from './getProdDb';
 require('dotenv').config();
 
@@ -33,11 +33,22 @@ async function updateProds() {
     const productAttributesCollection = await db.collection<ProductAttributeModel>(
       COL_PRODUCT_ATTRIBUTES,
     );
+    const categoriesCollection = await db.collection<any>(COL_CATEGORIES);
 
     console.log(' ');
     console.log('>>>>>>>>>>>>>>>>>>>>>>>>');
     console.log(' ');
     console.log(`Updating ${dbConfig.dbName} db`);
+
+    await categoriesCollection.updateMany(
+      {},
+      {
+        $unset: {
+          textTopI18n: '',
+          textBottomI18n: '',
+        },
+      },
+    );
 
     await productAttributesCollection.updateMany(
       {},

@@ -103,7 +103,12 @@ const OptionsGroupOptionsConsumer: React.FC<OptionsGroupOptionsConsumerInterface
             <div className='font-medium' data-cy={`option-${name}`}>
               {name}
             </div>
-            <div className='cms-option__controls'>
+            <div
+              className='cms-option__controls'
+              data-cy={`${option.name}-option`}
+              data-id={`${option._id}`}
+              data-group-id={`${option._id}`}
+            >
               <ContentItemControls
                 testId={`${name}`}
                 justifyContent={'flex-end'}

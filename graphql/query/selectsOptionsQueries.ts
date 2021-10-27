@@ -210,3 +210,12 @@ export const CITIES_LIST_QUERY = gql`
     }
   }
 `;
+
+export const OPTION_GROUPS_LIST_QUERY = gql`
+  query GetAllOptionsGroups($excludedIds: [ObjectId!]) {
+    getAllOptionsGroups(excludedIds: $excludedIds) {
+      _id
+      name
+    }
+  }
+`;

@@ -131,7 +131,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
     if (state.products.length < state.totalProducts) {
       setLoading(true);
       const filters = alwaysArray(router.query.filters).join('/');
-      const attributesCountParam = configs.catalogueFilterVisibleAttributesCount;
+      const attributesCountParam = configs.snippetAttributesCount;
       const optionsCountParam = configs.catalogueFilterVisibleOptionsCount;
       const showAdminUiInCatalogue = configs.showAdminUiInCatalogue;
       const companyIdParam = companyId ? `&companyId=${companyId}` : '';

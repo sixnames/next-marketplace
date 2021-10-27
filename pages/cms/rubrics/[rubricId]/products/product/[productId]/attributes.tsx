@@ -89,15 +89,15 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product, rubr
   });
 
   const clearSelectFieldHandler = React.useCallback(
-    (attribute: ProductAttributeInterface) => {
-      if (attribute.optionsGroupId) {
+    (productAttribute: ProductAttributeInterface) => {
+      if (productAttribute.attribute?.optionsGroupId) {
         showLoading();
         updateProductSelectAttributeMutation({
           variables: {
             input: {
               productId: product._id,
-              attributeId: attribute.attributeId,
-              productAttributeId: attribute._id,
+              attributeId: productAttribute.attributeId,
+              productAttributeId: productAttribute._id,
               selectedOptionsIds: [],
             },
           },
@@ -145,16 +145,20 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product, rubr
               {selectAttributesAST && selectAttributesAST.length > 0 ? (
                 <div>
                   <div className={selectsListClassName}>
-                    {(selectAttributesAST || []).map((attribute) => {
+                    {(selectAttributesAST || []).map((productAttribute) => {
+                      const { attribute, readableValue } = productAttribute;
+                      if (!attribute) {
+                        return null;
+                      }
                       return (
                         <FakeInput
-                          value={`${attribute.readableValue || ''}`}
+                          value={`${readableValue || ''}`}
                           label={`${attribute.name}`}
-                          key={`${attribute.attributeId}`}
+                          key={`${attribute._id}`}
                           testId={`${attribute.name}-attribute`}
                           onClear={
-                            attribute.readableValue
-                              ? () => clearSelectFieldHandler(attribute)
+                            readableValue
+                              ? () => clearSelectFieldHandler(productAttribute)
                               : undefined
                           }
                           onClick={() => {
@@ -176,8 +180,8 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product, rubr
                                       variables: {
                                         input: {
                                           productId: product._id,
-                                          attributeId: attribute.attributeId,
-                                          productAttributeId: attribute._id,
+                                          attributeId: attribute._id,
+                                          productAttributeId: productAttribute._id,
                                           selectedOptionsIds: value.map(({ _id }) => _id),
                                         },
                                       },
@@ -197,16 +201,20 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product, rubr
               {multipleSelectAttributesAST && multipleSelectAttributesAST.length > 0 ? (
                 <div>
                   <div className={selectsListClassName}>
-                    {(multipleSelectAttributesAST || []).map((attribute) => {
+                    {(multipleSelectAttributesAST || []).map((productAttribute) => {
+                      const { attribute } = productAttribute;
+                      if (!attribute) {
+                        return null;
+                      }
                       return (
                         <FakeInput
-                          value={`${attribute.readableValue || ''}`}
+                          value={`${productAttribute.readableValue || ''}`}
                           label={`${attribute.name}`}
-                          key={`${attribute.attributeId}`}
+                          key={`${productAttribute.attributeId}`}
                           testId={`${attribute.name}-attribute`}
                           onClear={
-                            attribute.readableValue
-                              ? () => clearSelectFieldHandler(attribute)
+                            productAttribute.readableValue
+                              ? () => clearSelectFieldHandler(productAttribute)
                               : undefined
                           }
                           onClick={() => {
@@ -227,8 +235,8 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product, rubr
                                       variables: {
                                         input: {
                                           productId: product._id,
-                                          attributeId: attribute.attributeId,
-                                          productAttributeId: attribute._id,
+                                          attributeId: productAttribute.attributeId,
+                                          productAttributeId: productAttribute._id,
                                           selectedOptionsIds: value.map(({ _id }) => _id),
                                         },
                                       },
@@ -275,13 +283,17 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product, rubr
                         <div>
                           <div className='relative'>
                             <div className={selectsListClassName}>
-                              {(numberAttributesAST || []).map((attribute, index) => {
+                              {(numberAttributesAST || []).map((productAttribute, index) => {
+                                const { attribute } = productAttribute;
+                                if (!attribute) {
+                                  return null;
+                                }
                                 return (
                                   <FormikInput
                                     type={'number'}
                                     label={`${attribute.name}`}
                                     name={`attributes[${index}].number`}
-                                    key={`${attribute.attributeId}`}
+                                    key={`${productAttribute.attributeId}`}
                                     testId={`${attribute.name}-attribute`}
                                   />
                                 );
@@ -327,14 +339,18 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product, rubr
                       <Form>
                         <div>
                           <div className='relative'>
-                            {(stringAttributesAST || []).map((attribute, index) => {
+                            {(stringAttributesAST || []).map((productAttribute, index) => {
+                              const { attribute } = productAttribute;
+                              if (!attribute) {
+                                return null;
+                              }
                               return (
                                 <FormikTranslationsInput
                                   variant={'textarea'}
                                   className='h-[15rem]'
                                   label={`${attribute.name}`}
                                   name={`attributes[${index}].textI18n`}
-                                  key={`${attribute.attributeId}`}
+                                  key={`${productAttribute.attributeId}`}
                                   testId={`${attribute.name}-attribute`}
                                 />
                               );
@@ -436,6 +452,10 @@ export const getServerSideProps = async (
       });
 
       if (currentProductAttribute) {
+        const { attribute } = currentProductAttribute;
+        if (!attribute) {
+          return;
+        }
         const readableValue = getAttributeReadableValue({
           productAttribute: currentProductAttribute,
           locale: props.sessionLocale,
@@ -444,13 +464,18 @@ export const getServerSideProps = async (
         groupAttributes.push({
           ...currentProductAttribute,
           readableValue: readableValue || '',
-          name: getFieldStringLocale(currentProductAttribute.nameI18n, props.sessionLocale),
+          attribute: {
+            ...attribute,
+            name: getFieldStringLocale(attribute.nameI18n, props.sessionLocale),
+          },
         });
       } else {
         const newProductAttribute: ProductAttributeInterface = {
-          ...attribute,
           _id: new ObjectId(),
-          name: getFieldStringLocale(attribute.nameI18n, props.sessionLocale),
+          attribute: {
+            ...attribute,
+            name: getFieldStringLocale(attribute.nameI18n, props.sessionLocale),
+          },
           rubricId: rubric._id,
           rubricSlug: rubric.slug,
           attributeId: attribute._id,
@@ -460,8 +485,6 @@ export const getServerSideProps = async (
           selectedOptionsSlugs: [],
           number: undefined,
           textI18n: {},
-          showAsBreadcrumb: false,
-          showInCard: true,
         };
 
         groupAttributes.push(newProductAttribute);
@@ -469,7 +492,11 @@ export const getServerSideProps = async (
     });
 
     groupAttributes.forEach((productAttribute) => {
-      const variant = productAttribute.variant;
+      const { attribute } = productAttribute;
+      if (!attribute) {
+        return;
+      }
+      const { variant } = attribute;
 
       if (variant === ATTRIBUTE_VARIANT_STRING) {
         stringAttributesAST.push(productAttribute);

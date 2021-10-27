@@ -173,7 +173,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
                   key={`${firstRatingFeature.attributeId}`}
                   className='text-secondary-text text-sm uppercase whitespace-nowrap mr-3 mt-1 mb-1'
                 >
-                  {`${firstRatingFeature.name} ${firstRatingFeature.readableValue}`}
+                  {`${firstRatingFeature.attribute?.name} ${firstRatingFeature.readableValue}`}
                 </div>
               ) : null}
             </div>

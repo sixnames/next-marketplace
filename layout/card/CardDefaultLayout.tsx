@@ -245,14 +245,14 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
 
               {/*list features*/}
               <div className='flex flex-col justify-center md:col-span-1 md:order-1 lg:col-span-2'>
-                {visibleListFeatures.map(({ showInCard, _id, name, readableValue }) => {
-                  if (!showInCard) {
+                {visibleListFeatures.map(({ attribute, _id, readableValue }) => {
+                  if (!attribute || !attribute.showInCard) {
                     return null;
                   }
 
                   return (
                     <div key={`${_id}`} className='mb-6'>
-                      <div className='text-secondary-text mb-1 font-bold'>{name}</div>
+                      <div className='text-secondary-text mb-1 font-bold'>{attribute.name}</div>
                       <div>{readableValue}</div>
                     </div>
                   );

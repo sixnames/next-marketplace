@@ -496,6 +496,11 @@ export interface NexusGenInputs {
     attributeId: NexusGenScalars['ObjectId']; // ObjectId!
     attributesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
   };
+  MoveOptionInput: {
+    // input type
+    optionId: NexusGenScalars['ObjectId']; // ObjectId!
+    optionsGroupId: NexusGenScalars['ObjectId']; // ObjectId!
+  };
   OptionAlphabetInput: {
     // input type
     optionsGroupId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -1520,6 +1525,7 @@ export interface NexusGenFieldTypes {
     deleteSupplier: NexusGenRootTypes['SupplierPayload']; // SupplierPayload!
     generateShopToken: NexusGenRootTypes['ShopPayload']; // ShopPayload!
     moveAttribute: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
+    moveOption: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
     repeatOrder: NexusGenRootTypes['CartPayload']; // CartPayload!
     updateAttributeInGroup: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
     updateAttributeInRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
@@ -1740,8 +1746,6 @@ export interface NexusGenFieldTypes {
     number: number | null; // Float
     selectedOptionsIds: NexusGenScalars['ObjectId'][]; // [ObjectId!]!
     selectedOptionsSlugs: string[]; // [String!]!
-    showAsBreadcrumb: boolean; // Boolean!
-    showInCard: boolean; // Boolean!
     text: string; // String!
     textI18n: NexusGenScalars['JSONObject'] | null; // JSONObject
   };
@@ -2582,6 +2586,7 @@ export interface NexusGenFieldTypeNames {
     deleteSupplier: 'SupplierPayload';
     generateShopToken: 'ShopPayload';
     moveAttribute: 'AttributesGroupPayload';
+    moveOption: 'OptionsGroupPayload';
     repeatOrder: 'CartPayload';
     updateAttributeInGroup: 'AttributesGroupPayload';
     updateAttributeInRubric: 'RubricPayload';
@@ -2802,8 +2807,6 @@ export interface NexusGenFieldTypeNames {
     number: 'Float';
     selectedOptionsIds: 'ObjectId';
     selectedOptionsSlugs: 'String';
-    showAsBreadcrumb: 'Boolean';
-    showInCard: 'Boolean';
     text: 'String';
     textI18n: 'JSONObject';
   };
@@ -3493,6 +3496,10 @@ export interface NexusGenArgTypes {
       // args
       input: NexusGenInputs['MoveAttributeInput']; // MoveAttributeInput!
     };
+    moveOption: {
+      // args
+      input: NexusGenInputs['MoveOptionInput']; // MoveOptionInput!
+    };
     repeatOrder: {
       // args
       input: NexusGenInputs['RepeatOrderInput']; // RepeatOrderInput!
@@ -3698,6 +3705,10 @@ export interface NexusGenArgTypes {
     getAllManufacturers: {
       // args
       input?: NexusGenInputs['PaginationInput'] | null; // PaginationInput
+    };
+    getAllOptionsGroups: {
+      // args
+      excludedIds: NexusGenScalars['ObjectId'][] | null; // [ObjectId!]
     };
     getAllRubrics: {
       // args

@@ -8,6 +8,7 @@ import {
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
+  AttributeModel,
   OptionModel,
   ProductAttributeModel,
   ProductConnectionItemModel,
@@ -17,6 +18,7 @@ import {
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
+  COL_ATTRIBUTES,
   COL_OPTIONS,
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCT_CONNECTION_ITEMS,
@@ -102,6 +104,7 @@ export const ProductConnectionMutations = extendType({
       resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
+        const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
         const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
         const productsAttributesCollection =
           db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
@@ -157,9 +160,12 @@ export const ProductConnectionMutations = extendType({
               productId,
               attributeId,
             });
+            const attribute = await attributesCollection.findOne({
+              _id: attributeId,
+            });
 
             // Find current attribute in product
-            if (!product || !productAttribute) {
+            if (!product || !productAttribute || !attribute) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`products.update.notFound`),
@@ -169,7 +175,7 @@ export const ProductConnectionMutations = extendType({
             }
 
             // Check attribute variant. Must be as Select
-            if (productAttribute.variant !== ATTRIBUTE_VARIANT_SELECT) {
+            if (attribute.variant !== ATTRIBUTE_VARIANT_SELECT) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`products.update.attributeVariantError`),
@@ -214,7 +220,7 @@ export const ProductConnectionMutations = extendType({
             // Create connection
             const createdConnectionResult = await productConnectionsCollection.insertOne({
               attributeId: productAttribute.attributeId,
-              attributeSlug: productAttribute.slug,
+              attributeSlug: attribute.slug,
               productsIds: [productId],
             });
             if (!createdConnectionResult.acknowledged) {

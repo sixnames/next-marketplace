@@ -396,31 +396,61 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
                   },
                 },
               },
-              // get attribute options
               {
                 $lookup: {
-                  from: COL_OPTIONS,
-                  as: 'options',
+                  from: COL_ATTRIBUTES,
+                  as: 'attribute',
                   let: {
-                    optionsGroupId: '$optionsGroupId',
+                    attributeId: '$attributeId',
                     selectedOptionsIds: '$selectedOptionsIds',
                   },
                   pipeline: [
                     {
                       $match: {
                         $expr: {
-                          $and: [
-                            {
-                              $eq: ['$optionsGroupId', '$$optionsGroupId'],
-                            },
-                            {
-                              $in: ['$_id', '$$selectedOptionsIds'],
-                            },
-                          ],
+                          $eq: ['$$attributeId', '$_id'],
                         },
                       },
                     },
+                    {
+                      $lookup: {
+                        from: COL_OPTIONS,
+                        as: 'options',
+                        pipeline: [
+                          {
+                            $match: {
+                              $expr: {
+                                $and: [
+                                  {
+                                    $in: ['$_id', '$$selectedOptionsIds'],
+                                  },
+                                ],
+                              },
+                            },
+                          },
+                        ],
+                      },
+                    },
                   ],
+                },
+              },
+              {
+                $addFields: {
+                  attribute: {
+                    $arrayElemAt: ['$attribute', 0],
+                  },
+                },
+              },
+              {
+                $match: {
+                  attribute: {
+                    $exists: true,
+                  },
+                },
+              },
+              {
+                $addFields: {
+                  attributesGroupId: '$attribute.attributesGroupId',
                 },
               },
               {
@@ -686,11 +716,14 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
 
     const initialProductAttributes = (attributesGroups || []).reduce(
       (acc: ProductAttributeInterface[], { attributes }) => {
-        const visibleAttributes = attributes.filter(({ showInCard, attributeId }) => {
+        const visibleAttributes = attributes.filter(({ attribute, attributeId }) => {
+          if (!attribute) {
+            return false;
+          }
           const excluded = excludedAttributesIds.some((excludedAttributeId) => {
             return excludedAttributeId.equals(attributeId);
           });
-          return showInCard && !excluded;
+          return attribute.showInCard && !excluded;
         });
 
         return [...acc, ...visibleAttributes];
@@ -851,8 +884,12 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
     // Collect breadcrumbs configs for all product attributes
     // that have showAsBreadcrumb option enabled
     for await (const productAttribute of initialProductAttributes || []) {
+      const { attribute } = productAttribute;
+      if (!attribute) {
+        continue;
+      }
       if (
-        !productAttribute.showAsBreadcrumb ||
+        !attribute.showAsBreadcrumb ||
         !productAttribute.selectedOptionsSlugs ||
         productAttribute.selectedOptionsSlugs.length < 1
       ) {
@@ -860,7 +897,7 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
       }
 
       // Get all selected options
-      const options = productAttribute.options || [];
+      const options = attribute.options || [];
 
       // Get first selected option
       const firstSelectedOption = options[0];
@@ -869,6 +906,9 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
       }
 
       // Get option name
+      const metricValue = attribute.metric
+        ? ` ${getFieldStringLocale(attribute.metric.nameI18n, locale)}`
+        : '';
       const variant = get(firstSelectedOption, `variants.${breadcrumbsGender}.${locale}`);
       const name = getFieldStringLocale(firstSelectedOption.nameI18n, locale);
       let optionValue = name;
@@ -879,8 +919,8 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
       // Push breadcrumb config to the list
       attributesBreadcrumbs.push({
         _id: productAttribute.attributeId,
-        name: optionValue,
-        href: `${ROUTE_CATALOGUE}/${rubric.slug}/${productAttribute.slug}${FILTER_SEPARATOR}${firstSelectedOption.slug}`,
+        name: `${optionValue}${metricValue}`,
+        href: `${ROUTE_CATALOGUE}/${rubric.slug}/${attribute.slug}${FILTER_SEPARATOR}${firstSelectedOption.slug}`,
       });
     }
 
@@ -903,12 +943,15 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
     const cardAttributesGroups = (attributesGroups || []).reduce(
       (acc: ProductAttributesGroupInterface[], attributesGroup) => {
         const visibleAttributes = attributesGroup.attributes.filter(
-          ({ showInCard, attributeId, viewVariant }) => {
-            const isListViewAttribute = viewVariant === ATTRIBUTE_VIEW_VARIANT_LIST;
+          ({ attributeId, attribute }) => {
+            if (!attribute) {
+              return false;
+            }
+            const isListViewAttribute = attribute.viewVariant === ATTRIBUTE_VIEW_VARIANT_LIST;
             const excluded = excludedAttributesIds.some((excludedAttributeId) => {
               return excludedAttributeId.equals(attributeId);
             });
-            return showInCard && !excluded && isListViewAttribute;
+            return attribute.showInCard && !excluded && isListViewAttribute;
           },
         );
 

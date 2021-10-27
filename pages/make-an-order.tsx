@@ -250,7 +250,7 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
                   >
                     <div>
                       {/*form*/}
-                      <div className=''>
+                      <div className='relative z-20'>
                         <div className='flex items-center gap-4 mb-8 text-lg font-medium'>
                           <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
                             1
@@ -301,7 +301,7 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
                       </div>
 
                       {/*products*/}
-                      <div>
+                      <div className='relative z-10'>
                         <div className='flex items-center gap-4 mb-8 text-lg font-medium'>
                           <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
                             2

@@ -255,11 +255,14 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                       <h2 className='text-2xl mb-4 font-medium'>{attributesGroup.name}</h2>
 
                       <ul className='space-y-4 sm:space-y-2'>
-                        {attributesGroup.attributes.map(({ _id, name, readableValue }) => {
+                        {attributesGroup.attributes.map(({ _id, attribute, readableValue }) => {
+                          if (!attribute) {
+                            return null;
+                          }
                           return (
                             <li key={`${_id}`} className='sm:flex justify-between'>
                               <div className='text-secondary-text mb-1 font-bold sm:half-column'>
-                                {name}
+                                {attribute.name}
                               </div>
                               <div className='sm:text-right sm:half-column'>{readableValue}</div>
                             </li>

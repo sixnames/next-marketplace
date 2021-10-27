@@ -19,9 +19,13 @@ const CardIconFeatures: React.FC<CardIconFeaturesInterface> = ({
   }
   return (
     <div className={className}>
-      {iconFeatures.map((attribute) => {
+      {iconFeatures.map((productAttribute) => {
+        const { attribute } = productAttribute;
+        if (!attribute) {
+          return null;
+        }
         return (
-          <div key={`${attribute._id}`} className='mb-8'>
+          <div key={`${productAttribute._id}`} className='mb-8'>
             <div className='text-secondary-text mb-3 font-medium'>{`${attribute.name}:`}</div>
             <ul className='flex flex-wrap gap-4'>
               {(attribute.options || []).map((option) => {

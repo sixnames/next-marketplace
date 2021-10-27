@@ -14,6 +14,7 @@ import {
 import { getDatabase } from 'db/mongodb';
 import {
   CategoryInterface,
+  ProductAttributeInterface,
   ProductConnectionInterface,
   ProductConnectionItemInterface,
   ProductInterface,
@@ -198,12 +199,25 @@ export async function getCmsProduct({
   }
 
   // attributes
-  const attributes = (initialProduct.attributes || []).map((productAttribute) => {
-    return {
-      ...productAttribute,
-      name: getFieldStringLocale(productAttribute.nameI18n, locale),
-    };
-  });
+  const attributes = (initialProduct.attributes || []).reduce(
+    (acc: ProductAttributeInterface[], productAttribute) => {
+      const { attribute } = productAttribute;
+      if (!attribute) {
+        return acc;
+      }
+      return [
+        ...acc,
+        {
+          ...productAttribute,
+          attribute: {
+            ...attribute,
+            name: getFieldStringLocale(attribute.nameI18n, locale),
+          },
+        },
+      ];
+    },
+    [],
+  );
 
   const product: ProductInterface = {
     ...initialProduct,

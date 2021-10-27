@@ -3,12 +3,13 @@ import FixedButtons from 'components/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls';
 import Inner from 'components/Inner';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
+import { MoveOptionModalInterface } from 'components/Modal/MoveOptionModal';
 import { OptionInGroupModalInterface } from 'components/Modal/OptionInGroupModal';
 import RequestError from 'components/RequestError';
 import Title from 'components/Title';
 import { DEFAULT_LOCALE, ROUTE_CMS, SORT_ASC } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
-import { CONFIRM_MODAL, OPTION_IN_GROUP_MODAL } from 'config/modalVariants';
+import { CONFIRM_MODAL, MOVE_OPTION_MODAL, OPTION_IN_GROUP_MODAL } from 'config/modalVariants';
 import { COL_ICONS, COL_OPTIONS, COL_OPTIONS_GROUPS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { OptionInterface, OptionsGroupInterface } from 'db/uiInterfaces';
@@ -102,7 +103,12 @@ const OptionsGroupOptionsConsumer: React.FC<OptionsGroupOptionsConsumerInterface
             <div className='font-medium' data-cy={`option-${name}`}>
               {name}
             </div>
-            <div className='cms-option__controls'>
+            <div
+              className='cms-option__controls'
+              data-cy={`${option.name}-option`}
+              data-id={`${option._id}`}
+              data-group-id={`${option._id}`}
+            >
               <ContentItemControls
                 testId={`${name}`}
                 justifyContent={'flex-end'}
@@ -128,11 +134,21 @@ const OptionsGroupOptionsConsumer: React.FC<OptionsGroupOptionsConsumerInterface
                     },
                   });
                 }}
+                moveTitle={'Переместить опцию'}
+                moveHandler={() => {
+                  showModal<MoveOptionModalInterface>({
+                    variant: MOVE_OPTION_MODAL,
+                    props: {
+                      option,
+                    },
+                  });
+                }}
                 updateTitle={'Редактировать опцию'}
                 updateHandler={() => {
-                  router
-                    .push(`${ROUTE_CMS}/options/${optionsGroup._id}/options/${option._id}`)
-                    .catch(console.log);
+                  window.open(
+                    `${ROUTE_CMS}/options/${optionsGroup._id}/options/${option._id}`,
+                    '_blank',
+                  );
                 }}
                 deleteTitle={'Удалить опцию'}
                 deleteHandler={() => {

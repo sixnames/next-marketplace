@@ -132,10 +132,13 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
         {/*list features*/}
         {(listFeatures || []).length > 0 ? (
           <div className='mb-6 space-y-2 md:space-y-2'>
-            {(listFeatures || []).map(({ name, _id, readableValue }) => {
+            {(listFeatures || []).map(({ attribute, _id, readableValue }) => {
+              if (!attribute) {
+                return null;
+              }
               return (
                 <div className='md:grid grid-cols-12 gap-x-4 gap-y-2' key={`${_id}`}>
-                  <div className='col-span-5 text-secondary-text'>{name}</div>
+                  <div className='col-span-5 text-secondary-text'>{attribute.name}</div>
                   <div className='col-span-7'>{readableValue}</div>
                 </div>
               );
@@ -146,13 +149,16 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
         {/*rating features*/}
         {(ratingFeatures || []).length > 0 ? (
           <div className='flex flex-wrap items-center min-h-control-button-height'>
-            {(ratingFeatures || []).map(({ _id, name, readableValue }) => {
+            {(ratingFeatures || []).map(({ _id, attribute, readableValue }) => {
+              if (!attribute) {
+                return null;
+              }
               return (
                 <div
                   key={`${_id}`}
                   className='text-secondary-text text-sm uppercase whitespace-nowrap mr-3 mt-1 mb-1'
                 >
-                  {`${name} ${readableValue}`}
+                  {`${attribute.name} ${readableValue}`}
                 </div>
               );
             })}

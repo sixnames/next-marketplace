@@ -130,9 +130,10 @@ const OptionsGroupOptionsConsumer: React.FC<OptionsGroupOptionsConsumerInterface
                 }}
                 updateTitle={'Редактировать опцию'}
                 updateHandler={() => {
-                  router
-                    .push(`${ROUTE_CMS}/options/${optionsGroup._id}/options/${option._id}`)
-                    .catch(console.log);
+                  window.open(
+                    `${ROUTE_CMS}/options/${optionsGroup._id}/options/${option._id}`,
+                    '_blank',
+                  );
                 }}
                 deleteTitle={'Удалить опцию'}
                 deleteHandler={() => {

@@ -252,7 +252,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
 
                   return (
                     <div key={`${_id}`} className='mb-6'>
-                      <div className='text-secondary-text mb-1 font-bold'>{name}</div>
+                      <div className='text-secondary-text mb-1 font-bold'>{attribute.name}</div>
                       <div>{readableValue}</div>
                     </div>
                   );

@@ -396,31 +396,61 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
                   },
                 },
               },
-              // get attribute options
               {
                 $lookup: {
-                  from: COL_OPTIONS,
-                  as: 'options',
+                  from: COL_ATTRIBUTES,
+                  as: 'attribute',
                   let: {
-                    optionsGroupId: '$optionsGroupId',
+                    attributeId: '$attributeId',
                     selectedOptionsIds: '$selectedOptionsIds',
                   },
                   pipeline: [
                     {
                       $match: {
                         $expr: {
-                          $and: [
-                            {
-                              $eq: ['$optionsGroupId', '$$optionsGroupId'],
-                            },
-                            {
-                              $in: ['$_id', '$$selectedOptionsIds'],
-                            },
-                          ],
+                          $eq: ['$$attributeId', '$_id'],
                         },
                       },
                     },
+                    {
+                      $lookup: {
+                        from: COL_OPTIONS,
+                        as: 'options',
+                        pipeline: [
+                          {
+                            $match: {
+                              $expr: {
+                                $and: [
+                                  {
+                                    $in: ['$_id', '$$selectedOptionsIds'],
+                                  },
+                                ],
+                              },
+                            },
+                          },
+                        ],
+                      },
+                    },
                   ],
+                },
+              },
+              {
+                $addFields: {
+                  attribute: {
+                    $arrayElemAt: ['$attribute', 0],
+                  },
+                },
+              },
+              {
+                $match: {
+                  attribute: {
+                    $exists: true,
+                  },
+                },
+              },
+              {
+                $addFields: {
+                  attributesGroupId: '$attribute.attributesGroupId',
                 },
               },
               {
@@ -876,6 +906,9 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
       }
 
       // Get option name
+      const metricValue = attribute.metric
+        ? ` ${getFieldStringLocale(attribute.metric.nameI18n, locale)}`
+        : '';
       const variant = get(firstSelectedOption, `variants.${breadcrumbsGender}.${locale}`);
       const name = getFieldStringLocale(firstSelectedOption.nameI18n, locale);
       let optionValue = name;
@@ -886,7 +919,7 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
       // Push breadcrumb config to the list
       attributesBreadcrumbs.push({
         _id: productAttribute.attributeId,
-        name: optionValue,
+        name: `${optionValue}${metricValue}`,
         href: `${ROUTE_CATALOGUE}/${rubric.slug}/${attribute.slug}${FILTER_SEPARATOR}${firstSelectedOption.slug}`,
       });
     }

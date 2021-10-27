@@ -1,7 +1,7 @@
 import { getFieldStringLocale } from 'lib/i18n';
 import { getNextItemId } from 'lib/itemIdUtils';
 import { deleteDocumentsTree, trimOptionNames } from 'lib/optionsUtils';
-import { arg, enumType, extendType, inputObjectType, nonNull, objectType } from 'nexus';
+import { arg, enumType, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
 import {
   getOperationPermission,
   getRequestParams,
@@ -120,14 +120,20 @@ export const OptionsGroupQueries = extendType({
     // Should return options groups list
     t.nonNull.list.nonNull.field('getAllOptionsGroups', {
       type: 'OptionsGroup',
+      args: {
+        excludedIds: arg({
+          type: list(nonNull('ObjectId')),
+          default: [],
+        }),
+      },
       description: 'Should return options groups list',
-      resolve: async (_root, _args, context): Promise<OptionsGroupModel[]> => {
+      resolve: async (_root, args, context): Promise<OptionsGroupModel[]> => {
         const { locale } = await getRequestParams(context);
         const { db } = await getDatabase();
         const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
         const optionsGroups = await optionsGroupsCollection
           .find(
-            {},
+            { _id: { $nin: args.excludedIds || [] } },
             {
               sort: {
                 [`nameI18n.${locale}`]: SORT_ASC,
@@ -172,15 +178,13 @@ export const UpdateOptionsGroupInput = inputObjectType({
   },
 });
 
-/*export const OptionVariantInput = inputObjectType({
-  name: 'OptionVariantInput',
+export const MoveOptionInput = inputObjectType({
+  name: 'MoveOptionInput',
   definition(t) {
-    t.nonNull.json('value');
-    t.nonNull.field('gender', {
-      type: 'Gender',
-    });
+    t.nonNull.objectId('optionsGroupId');
+    t.nonNull.objectId('optionId');
   },
-});*/
+});
 
 export const AddOptionToGroupInput = inputObjectType({
   name: 'AddOptionToGroupInput',
@@ -748,6 +752,86 @@ export const OptionsGroupMutations = extendType({
             success: true,
             message: await getApiMessage('optionsGroups.updateOption.success'),
             payload: optionsGroup,
+          };
+        } catch (e) {
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        }
+      },
+    });
+
+    // Should move option to another options group
+    t.nonNull.field('moveOption', {
+      type: 'OptionsGroupPayload',
+      description: 'Should move option to another options group',
+      args: {
+        input: nonNull(
+          arg({
+            type: 'MoveOptionInput',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<OptionsGroupPayloadModel> => {
+        try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug: 'updateOption',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
+          const { getApiMessage } = await getRequestParams(context);
+          const { db } = await getDatabase();
+          const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
+          const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
+          const { input } = args;
+          const { optionsGroupId, optionId } = input;
+
+          // get new options group
+          const newOptionsGroup = await optionsGroupsCollection.findOne({ _id: optionsGroupId });
+          if (!newOptionsGroup) {
+            return {
+              success: false,
+              message: await getApiMessage('optionsGroups.updateOption.error'),
+            };
+          }
+
+          // get option
+          const option = await optionsCollection.findOne({ _id: optionId });
+          if (!option) {
+            return {
+              success: false,
+              message: await getApiMessage('optionsGroups.updateOption.error'),
+            };
+          }
+
+          const updatedOptionResult = await optionsCollection.findOneAndUpdate(
+            {
+              _id: option._id,
+            },
+            {
+              $set: {
+                optionsGroupId: newOptionsGroup._id,
+              },
+            },
+          );
+          if (!updatedOptionResult.ok) {
+            return {
+              success: false,
+              message: await getApiMessage('optionsGroups.updateOption.error'),
+            };
+          }
+
+          return {
+            success: true,
+            message: await getApiMessage('optionsGroups.updateOption.success'),
           };
         } catch (e) {
           return {

@@ -1530,6 +1530,7 @@ export const getCatalogueData = async ({
         attributes: productAttributes,
         viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
         locale,
+        gender: product.gender,
       });
       const listFeatures = initialListFeatures
         .filter(({ attribute }) => {
@@ -1542,6 +1543,7 @@ export const getCatalogueData = async ({
         attributes: productAttributes,
         viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
         locale,
+        gender: product.gender,
       });
       const ratingFeatures = initialRatingFeatures.filter(({ attribute }) => {
         return attribute?.showInSnippet;

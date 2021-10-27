@@ -1,8 +1,6 @@
-import { ALL_ALPHABETS, DEFAULT_LOCALE, GENDER_ENUMS, GENDER_HE } from 'config/common';
-import { COL_LANGUAGES } from 'db/collectionNames';
+import { ALL_ALPHABETS, GENDER_ENUMS, GENDER_HE } from 'config/common';
 import {
   AlphabetListModelType,
-  LanguageModel,
   ObjectIdModel,
   OptionVariantsModel,
   TranslationModel,
@@ -121,12 +119,8 @@ export async function getAlphabetList<TModel extends Record<string, any>>({
   entityList,
   locale,
 }: GetAlphabetListInterface<TModel>) {
-  const { db } = await getDatabase();
-  const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
-  const languages = await languagesCollection.find({}).toArray();
-
   function getOptionName(option: TModel) {
-    return option.nameI18n ? option.nameI18n[locale] || option.nameI18n[DEFAULT_LOCALE] : '';
+    return trim(getFieldStringLocale(option.nameI18n, locale));
   }
 
   const countOptionNames = entityList.reduce((acc: number, option) => {
@@ -137,15 +131,9 @@ export async function getAlphabetList<TModel extends Record<string, any>>({
   const payload: AlphabetListModelType<TModel>[] = [];
   ALL_ALPHABETS.forEach((letter) => {
     const realLetter = letter.toLowerCase();
-    const docs = entityList.filter(({ nameI18n }) => {
-      const nameFirstLetters: string[] = [];
-      languages.forEach(({ slug }) => {
-        const firstLetter = nameI18n ? (nameI18n[slug] || '').charAt(0) : null;
-        if (firstLetter) {
-          nameFirstLetters.push(firstLetter.toLowerCase());
-        }
-      });
-      return nameFirstLetters.includes(realLetter);
+    const docs = entityList.filter((option) => {
+      const optionName = getOptionName(option).charAt(0).toLowerCase();
+      return realLetter === optionName;
     });
 
     const sortedDocs = docs.sort((a, b) => {

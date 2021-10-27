@@ -1753,7 +1753,7 @@ export const getCatalogueData = async ({
     });
 
     // rubric seo text as default
-    let editUrl = ``;
+    let editUrl = `/rubrics/${rubric._id}`;
     let textTop: string | null | undefined;
     let textBottom: string | null | undefined;
     let seoTop: RubricSeoModel | null | undefined;
@@ -1774,7 +1774,6 @@ export const getCatalogueData = async ({
       seoTop = categorySeoTexts.seoTop;
       seoBottom = categorySeoTexts.seoBottom;
     } else {
-      editUrl = `/rubrics/${rubric._id}`;
       textTop = getFieldStringLocale(rubric.seoDescriptionTop?.textI18n, locale);
       textBottom = getFieldStringLocale(rubric.seoDescriptionBottom?.textI18n, locale);
       seoTop = await rubricSeoCollection.findOne({

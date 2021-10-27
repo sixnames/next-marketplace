@@ -115,7 +115,10 @@ export const OptionQueries = extendType({
           list: options,
           parentId,
           childrenFieldName: 'options',
+          locale,
         });
+
+        console.log(JSON.stringify(optionsTree, null, 2));
 
         return getAlphabetList<OptionModel>({
           entityList: optionsTree,

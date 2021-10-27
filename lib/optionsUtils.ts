@@ -259,6 +259,20 @@ export function sortByName(list: any[]): any[] {
   });
 }
 
+export function sortStringArray(list: string[]): any[] {
+  return [...list].sort((a, b) => {
+    const nameA = `${a}`.toUpperCase();
+    const nameB = `${b}`.toUpperCase();
+    if (nameA < nameB) {
+      return -1;
+    }
+    if (nameA > nameB) {
+      return 1;
+    }
+    return 0;
+  });
+}
+
 export function trimTranslationField(fieldII18n: TranslationModel) {
   return Object.keys(fieldII18n).reduce((acc: TranslationModel, key) => {
     const value = fieldII18n[key];

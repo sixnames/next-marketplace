@@ -78,7 +78,7 @@ import { getAlgoliaProductsSearch } from 'lib/algoliaUtils';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
-import { getTreeFromList } from 'lib/optionsUtils';
+import { getTreeFromList, sortStringArray } from 'lib/optionsUtils';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
 import { generateSnippetTitle, generateTitle } from 'lib/titleUtils';
@@ -222,18 +222,21 @@ export async function getCatalogueAttributes({
     const { isSelected, castedSlug } = option;
     if (isSelected) {
       const selectedNestedOptionSlugs = getSelectedNestedOptionSlugs(option, []);
-      const newPathFilters = realFilter.filter((path) => {
-        return !selectedNestedOptionSlugs.includes(path);
-      });
+      const newPathFilters = sortStringArray(
+        realFilter.filter((path) => {
+          return !selectedNestedOptionSlugs.includes(path);
+        }),
+      );
       return {
         ...option,
         nextSlug: `${basePath}/${newPathFilters.join('/')}`,
         options: (option.options || []).map(getOptionNextSlug),
       };
     }
+    const newPathFilters = sortStringArray([...realFilter, castedSlug]);
     return {
       ...option,
-      nextSlug: `${basePath}/${[...realFilter, castedSlug].join('/')}`,
+      nextSlug: `${basePath}/${newPathFilters.join('/')}`,
     };
   }
 

@@ -136,6 +136,18 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
       const { available, price, barcode } = bodyItem;
       for await (const barcodeItem of barcode) {
+        // add new barcode to product
+        await productsCollection.findOneAndUpdate(
+          {
+            _id: product._id,
+          },
+          {
+            $addToSet: {
+              barcode: barcodeItem,
+            },
+          },
+        );
+
         const oldShopProducts = await shopProductsCollection
           .find({
             shopId: shop._id,

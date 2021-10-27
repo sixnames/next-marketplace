@@ -1,10 +1,8 @@
-import addZero from 'add-zero';
 import { Db } from 'mongodb';
 import {
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
   ATTRIBUTE_VARIANT_SELECT,
   FILTER_SEPARATOR,
-  ID_COUNTER_DIGITS,
   ID_COUNTER_STEP,
 } from '../../../config/common';
 import {
@@ -17,6 +15,7 @@ import {
 } from '../../../db/dbModels';
 import {
   COL_ATTRIBUTES,
+  COL_CATEGORIES,
   COL_ID_COUNTERS,
   COL_OPTIONS,
   COL_PRODUCT_ATTRIBUTES,
@@ -46,7 +45,7 @@ export async function getNextItemId(collectionName: string, db: Db): Promise<str
     throw Error(`${collectionName} id counter update error`);
   }
 
-  return addZero(updatedCounter.value.counter, ID_COUNTER_DIGITS);
+  return `${updatedCounter.value.counter}`;
 }
 
 async function updateProds() {
@@ -60,6 +59,7 @@ async function updateProds() {
     const productAttributesCollection = await db.collection<ProductAttributeModel>(
       COL_PRODUCT_ATTRIBUTES,
     );
+    const categoriesCollection = await db.collection<any>(COL_CATEGORIES);
 
     console.log(' ');
     console.log('>>>>>>>>>>>>>>>>>>>>>>>>');
@@ -68,7 +68,11 @@ async function updateProds() {
 
     const attributes = await attributesCollection.find({});
     for await (const attribute of attributes) {
-      console.log('<<<<<<< Attribute', attribute.nameI18n.ru);
+      console.log(
+        '<<<<<<<<<<<<<<<<<<<< Attribute',
+        attribute.nameI18n.ru,
+        ' >>>>>>>>>>>>>>>>>>>>>>>>>>>>',
+      );
       const isWithOptions =
         attribute.variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT ||
         attribute.variant === ATTRIBUTE_VARIANT_SELECT;
@@ -81,8 +85,9 @@ async function updateProds() {
 
         for await (const option of options) {
           console.log('option ====== ', option.nameI18n.ru);
+          const setOptionSlug = await getNextItemId(COL_OPTIONS, db);
           const oldOptionSlug = `${attribute.slug}${FILTER_SEPARATOR}${option.slug}`;
-          const newOptionSlug = `${newSlug}${FILTER_SEPARATOR}${option.slug}`;
+          const newOptionSlug = `${newSlug}${FILTER_SEPARATOR}${setOptionSlug}`;
 
           const updater = {
             $set: {
@@ -106,6 +111,14 @@ async function updateProds() {
             updateOptions,
           );
           console.log('product attributes done');
+          await optionsCollection.findOneAndUpdate(
+            { _id: option._id },
+            {
+              $set: {
+                slug: setOptionSlug,
+              },
+            },
+          );
         }
       }
 
@@ -121,6 +134,50 @@ async function updateProds() {
         },
       );
     }
+
+    console.log('=========================== remove old fields ===========================');
+    await categoriesCollection.updateMany(
+      {},
+      {
+        $unset: {
+          textTopI18n: '',
+          textBottomI18n: '',
+        },
+      },
+    );
+    await productAttributesCollection.updateMany(
+      {},
+      {
+        $unset: {
+          slug: '',
+          attributesGroupId: '',
+          nameI18n: '',
+          optionsGroupId: '',
+          metric: '',
+          capitalise: '',
+          variant: '',
+          viewVariant: '',
+          positioningInTitle: '',
+          positioningInCardTitle: '',
+          showAsBreadcrumb: '',
+          showAsCatalogueBreadcrumb: '',
+          notShowAsAlphabet: '',
+          showInSnippet: '',
+          showInCard: '',
+          showInCatalogueFilter: '',
+          showInCatalogueNav: '',
+          showInCatalogueTitle: '',
+          showInCardTitle: '',
+          showInSnippetTitle: '',
+          showNameInTitle: '',
+          showNameInSelectedAttributes: '',
+          showNameInCardTitle: '',
+          showNameInSnippetTitle: '',
+          views: '',
+          priorities: '',
+        },
+      },
+    );
 
     console.log(`Done ${dbConfig.dbName} db`);
     console.log(' ');

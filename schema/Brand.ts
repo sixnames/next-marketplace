@@ -20,7 +20,7 @@ import { COL_BRAND_COLLECTIONS, COL_BRANDS, COL_PRODUCTS } from 'db/collectionNa
 import { aggregatePagination } from 'db/dao/aggregatePagination';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
-import { getNextItemId } from 'lib/itemIdUtils';
+import { getNextNumberItemId } from 'lib/itemIdUtils';
 import {
   addCollectionToBrandSchema,
   createBrandSchema,
@@ -366,7 +366,7 @@ export const BrandMutations = extendType({
           }
 
           // Create brand
-          const itemId = await getNextItemId(COL_BRANDS);
+          const itemId = await getNextNumberItemId(COL_BRANDS);
           const createdBrandResult = await brandsCollection.insertOne({
             ...args.input,
             url: (args.input.url || []).map((link) => {
@@ -651,7 +651,7 @@ export const BrandMutations = extendType({
             }
 
             // Create brand collection
-            const itemId = await getNextItemId(COL_BRAND_COLLECTIONS);
+            const itemId = await getNextNumberItemId(COL_BRAND_COLLECTIONS);
             const createdBrandCollectionResult = await brandsCollectionsCollection.insertOne({
               ...values,
               itemId,

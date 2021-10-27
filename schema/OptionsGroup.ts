@@ -1,5 +1,5 @@
 import { getFieldStringLocale } from 'lib/i18n';
-import { getNextItemId } from 'lib/itemIdUtils';
+import { getNextNumberItemId } from 'lib/itemIdUtils';
 import { deleteDocumentsTree, trimOptionNames } from 'lib/optionsUtils';
 import { arg, enumType, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
 import {
@@ -615,7 +615,7 @@ export const OptionsGroupMutations = extendType({
           }
 
           // Create new option slug
-          const newOptionSlug = await getNextItemId(COL_OPTIONS);
+          const newOptionSlug = await getNextNumberItemId(COL_OPTIONS);
 
           // Add option
           const { nameI18n, variants } = trimOptionNames({

@@ -1,5 +1,5 @@
 import { DEFAULT_LOCALE, SORT_ASC } from 'config/common';
-import { getNextItemId } from 'lib/itemIdUtils';
+import { getNextNumberItemId } from 'lib/itemIdUtils';
 import { arg, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
 import {
   getOperationPermission,
@@ -635,7 +635,7 @@ export const attributesGroupMutations = extendType({
             }
 
             // Create attribute
-            const slug = await getNextItemId(COL_ATTRIBUTES);
+            const slug = await getNextNumberItemId(COL_ATTRIBUTES);
             const createdAttributeResult = await attributesCollection.insertOne({
               ...values,
               slug,

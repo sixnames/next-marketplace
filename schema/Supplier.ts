@@ -18,7 +18,7 @@ import { COL_SUPPLIERS, COL_PRODUCTS } from 'db/collectionNames';
 import { aggregatePagination } from 'db/dao/aggregatePagination';
 import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getNextItemId } from 'lib/itemIdUtils';
+import { getNextNumberItemId } from 'lib/itemIdUtils';
 import { createSupplierSchema, updateSupplierSchema } from 'validation/supplierSchema';
 
 export const Supplier = objectType({
@@ -272,7 +272,7 @@ export const SupplierMutations = extendType({
           }
 
           // Create supplier
-          const itemId = await getNextItemId(COL_SUPPLIERS);
+          const itemId = await getNextNumberItemId(COL_SUPPLIERS);
           const createSupplierResult = await suppliersCollection.insertOne({
             ...input,
             itemId,

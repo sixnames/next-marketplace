@@ -2221,7 +2221,7 @@ type ShopPayload implements Payload {
 type ShopProduct implements Timestamp {
   _id: ObjectId!
   available: Int!
-  barcode: String
+  barcode: [String!]
   citySlug: String!
   createdAt: Date!
   discountedPercent: Int
@@ -2693,7 +2693,7 @@ input UpdateShopInput {
 
 input UpdateShopProductInput {
   available: Int!
-  barcode: String
+  barcode: [String!]
   price: Int!
   productId: ObjectId!
   shopProductId: ObjectId!

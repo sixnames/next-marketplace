@@ -26,56 +26,55 @@ shops.forEach((shop) => {
       });
 
       if (product) {
-        product.barcode?.forEach((barcode) => {
-          const available = 5;
-          const withDiscount = i % 2 === 0;
-          const price = Math.round(Math.random() * 1000) * 100;
-          const oldPrice = price + Math.round(price / 3);
-          const pricePercent = oldPrice / 100;
-          const discountedPercent = 100 - Math.floor(price / pricePercent);
+        const available = 5;
+        const withDiscount = i % 2 === 0;
+        const price = Math.round(Math.random() * 1000) * 100;
+        const oldPrice = price + Math.round(price / 3);
+        const pricePercent = oldPrice / 100;
+        const discountedPercent = 100 - Math.floor(price / pricePercent);
+        const barcode = product.barcode;
 
-          shopProducts.push({
-            _id: getObjectId(`shopProduct ${shop.slug} ${product.slug} ${barcode}`),
-            barcode,
-            productId,
-            shopId: shop._id,
-            companyId: shop.companyId,
-            citySlug: DEFAULT_CITY,
-            itemId: addZero(i, ID_COUNTER_DIGITS),
-            brandCollectionSlug: product.brandCollectionSlug,
-            brandSlug: product.brandSlug,
-            manufacturerSlug: product.manufacturerSlug,
-            mainImage: product.mainImage,
-            rubricId: product.rubricId,
-            rubricSlug: product.rubricSlug,
-            selectedOptionsSlugs: product.selectedOptionsSlugs,
-            supplierSlugs: product.supplierSlugs,
-            discountedPercent: withDiscount ? discountedPercent : 0,
-            oldPrice,
-            price,
-            available,
-            oldPrices: withDiscount
-              ? [
-                  {
-                    price: oldPrice,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                  },
-                ]
-              : [],
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            views: {
-              default: {
-                msk: withConnection ? i : 1,
-              },
+        shopProducts.push({
+          _id: getObjectId(`shopProduct ${shop.slug} ${product.slug} ${barcode}`),
+          barcode,
+          productId,
+          shopId: shop._id,
+          companyId: shop.companyId,
+          citySlug: DEFAULT_CITY,
+          itemId: addZero(i, ID_COUNTER_DIGITS),
+          brandCollectionSlug: product.brandCollectionSlug,
+          brandSlug: product.brandSlug,
+          manufacturerSlug: product.manufacturerSlug,
+          mainImage: product.mainImage,
+          rubricId: product.rubricId,
+          rubricSlug: product.rubricSlug,
+          selectedOptionsSlugs: product.selectedOptionsSlugs,
+          supplierSlugs: product.supplierSlugs,
+          discountedPercent: withDiscount ? discountedPercent : 0,
+          oldPrice,
+          price,
+          available,
+          oldPrices: withDiscount
+            ? [
+                {
+                  price: oldPrice,
+                  createdAt: new Date(),
+                  updatedAt: new Date(),
+                },
+              ]
+            : [],
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          views: {
+            default: {
+              msk: withConnection ? i : 1,
             },
-            priorities: {
-              default: {
-                msk: withConnection ? i : 1,
-              },
+          },
+          priorities: {
+            default: {
+              msk: withConnection ? i : 1,
             },
-          });
+          },
         });
       }
     }

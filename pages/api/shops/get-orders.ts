@@ -13,6 +13,7 @@ import {
   GetOrdersParamsInterface,
 } from 'db/syncInterfaces';
 import { OrderInterface } from 'db/uiInterfaces';
+import { alwaysArray } from 'lib/arrayUtils';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 // TODO messages
@@ -174,7 +175,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             ...acc,
             {
               status: status.slug,
-              barcode: [`${barcode}`],
+              barcode: alwaysArray(barcode),
               name: originalName,
               amount,
               price,

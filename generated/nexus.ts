@@ -911,7 +911,7 @@ export interface NexusGenInputs {
   UpdateShopProductInput: {
     // input type
     available: number; // Int!
-    barcode?: string | null; // String
+    barcode?: string[] | null; // [String!]
     price: number; // Int!
     productId: NexusGenScalars['ObjectId']; // ObjectId!
     shopProductId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -2031,7 +2031,7 @@ export interface NexusGenFieldTypes {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     available: number; // Int!
-    barcode: string | null; // String
+    barcode: string[] | null; // [String!]
     citySlug: string; // String!
     createdAt: NexusGenScalars['Date']; // Date!
     discountedPercent: number | null; // Int

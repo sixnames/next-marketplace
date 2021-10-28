@@ -11,18 +11,23 @@ import {
   ROW_SNIPPET_LAYOUT_BIG_IMAGE,
 } from 'config/constantSelects';
 import {
+  COL_ATTRIBUTES,
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_CATEGORIES,
   COL_CATEGORY_DESCRIPTIONS,
+  COL_OPTIONS,
   COL_PRODUCT_ATTRIBUTES,
+  COL_PRODUCT_CONNECTION_ITEMS,
+  COL_PRODUCT_CONNECTIONS,
+  COL_PRODUCTS,
   COL_RUBRIC_DESCRIPTIONS,
   COL_RUBRIC_SEO,
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
-import { filterAttributesPipeline, shopProductFieldsPipeline } from 'db/dao/constantPipelines';
+import { filterAttributesPipeline } from 'db/dao/constantPipelines';
 import {
   CatalogueBreadcrumbModel,
   CategoryDescriptionModel,
@@ -1062,13 +1067,10 @@ export const getCatalogueData = async ({
               },
 
               // get shop product fields
-              ...shopProductFieldsPipeline('$_id'),
-
-              // get product attributes
               {
                 $lookup: {
-                  from: COL_PRODUCT_ATTRIBUTES,
-                  as: 'attributes',
+                  from: COL_PRODUCTS,
+                  as: 'product',
                   let: {
                     productId: '$_id',
                   },
@@ -1076,12 +1078,126 @@ export const getCatalogueData = async ({
                     {
                       $match: {
                         $expr: {
-                          $eq: ['$$productId', '$productId'],
+                          $eq: ['$$productId', '$_id'],
                         },
-                        viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
+                      },
+                    },
+
+                    // get product attributes
+                    {
+                      $lookup: {
+                        from: COL_PRODUCT_ATTRIBUTES,
+                        as: 'attributes',
+                        let: {
+                          productId: '$_id',
+                        },
+                        pipeline: [
+                          {
+                            $match: {
+                              $expr: {
+                                $eq: ['$$productId', '$productId'],
+                              },
+                            },
+                          },
+                        ],
+                      },
+                    },
+
+                    // get product connections
+                    {
+                      $lookup: {
+                        from: COL_PRODUCT_CONNECTIONS,
+                        as: 'connections',
+                        let: {
+                          productId: '$_id',
+                        },
+                        pipeline: [
+                          {
+                            $match: {
+                              _id: null,
+                              $expr: {
+                                $in: ['$$productId', '$productsIds'],
+                              },
+                            },
+                          },
+                          {
+                            $lookup: {
+                              from: COL_ATTRIBUTES,
+                              as: 'attribute',
+                              let: { attributeId: '$attributeId' },
+                              pipeline: [
+                                {
+                                  $match: {
+                                    $expr: {
+                                      $eq: ['$$attributeId', '$_id'],
+                                    },
+                                  },
+                                },
+                              ],
+                            },
+                          },
+                          {
+                            $addFields: {
+                              attribute: {
+                                $arrayElemAt: ['$attribute', 0],
+                              },
+                            },
+                          },
+                          {
+                            $lookup: {
+                              from: COL_PRODUCT_CONNECTION_ITEMS,
+                              as: 'connectionProducts',
+                              let: {
+                                connectionId: '$_id',
+                              },
+                              pipeline: [
+                                {
+                                  $match: {
+                                    $expr: {
+                                      $eq: ['$connectionId', '$$connectionId'],
+                                    },
+                                  },
+                                },
+                                {
+                                  $lookup: {
+                                    from: COL_OPTIONS,
+                                    as: 'option',
+                                    let: { optionId: '$optionId' },
+                                    pipeline: [
+                                      {
+                                        $match: {
+                                          $expr: {
+                                            $eq: ['$$optionId', '$_id'],
+                                          },
+                                        },
+                                      },
+                                    ],
+                                  },
+                                },
+                                {
+                                  $addFields: {
+                                    option: {
+                                      $arrayElemAt: ['$option', 0],
+                                    },
+                                  },
+                                },
+                              ],
+                            },
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      $project: {
+                        descriptionI18n: false,
                       },
                     },
                   ],
+                },
+              },
+              {
+                $addFields: {
+                  product: { $arrayElemAt: ['$product', 0] },
                 },
               },
             ],

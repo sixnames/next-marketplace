@@ -1,10 +1,4 @@
-import {
-  FILTER_CATEGORY_KEY,
-  FILTER_SEPARATOR,
-  CATEGORY_SLUG_PREFIX_SEPARATOR,
-  CATEGORY_SLUG_PREFIX_WORD,
-} from 'config/common';
-import { COL_COMPANIES, COL_LANGUAGES, COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import { COL_COMPANIES, COL_LANGUAGES, COL_PRODUCTS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import { CompanyModel, LanguageModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { GetServerSidePropsContext } from 'next';
@@ -38,11 +32,8 @@ const createSitemap = ({
     `;
 
 interface SlugsAggregationInterface {
+  _id: string;
   productSlugs: string[];
-  selectedOptionsSlugs: string[];
-  rubric: {
-    slug: string;
-  };
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
@@ -71,29 +62,25 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         },
       },
       {
-        $unwind: '$selectedOptionsSlugs',
-      },
-      {
         $group: {
-          _id: '$rubricId',
-          productSlugs: {
-            $addToSet: '$slug',
-          },
-          selectedOptionsSlugs: {
-            $addToSet: '$selectedOptionsSlugs',
+          _id: '$rubricSlug',
+          productIds: {
+            $addToSet: '$productId',
           },
         },
       },
       {
         $lookup: {
-          from: COL_RUBRICS,
-          as: 'rubrics',
-          let: { rubricId: '$_id' },
+          from: COL_PRODUCTS,
+          as: 'products',
+          let: {
+            productIds: '$productIds',
+          },
           pipeline: [
             {
               $match: {
                 $expr: {
-                  $eq: ['$$rubricId', '$_id'],
+                  $in: ['$_id', '$$productIds'],
                 },
               },
             },
@@ -106,41 +93,32 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         },
       },
       {
-        $addFields: {
-          rubric: {
-            $arrayElemAt: ['$rubrics', 0],
-          },
+        $unwind: {
+          path: '$products',
+          preserveNullAndEmptyArrays: true,
         },
       },
       {
-        $project: {
-          rubrics: false,
+        $group: {
+          _id: '$_id',
+          productSlugs: {
+            $addToSet: '$products.slug',
+          },
         },
       },
     ])
     .toArray();
 
   productOptionsAggregation.forEach((template) => {
-    const { rubric, productSlugs, selectedOptionsSlugs } = template;
+    const { _id, productSlugs } = template;
 
     // rubric
-    initialSlugs.push(`catalogue/${rubric.slug}`);
-
-    // catalogue filters
-    selectedOptionsSlugs.forEach((slug) => {
-      const slugParts = slug.split(CATEGORY_SLUG_PREFIX_SEPARATOR);
-      const isCategory = slugParts[0] === CATEGORY_SLUG_PREFIX_WORD;
-
-      initialSlugs.push(
-        `catalogue/${rubric.slug}/${
-          isCategory ? `${FILTER_CATEGORY_KEY}${FILTER_SEPARATOR}${slug}` : slug
-        }`,
-      );
-    });
+    initialSlugs.push(`catalogue/${_id}`);
 
     // products
     productSlugs.forEach((slug) => {
-      initialSlugs.push(`/catalogue/${rubric.slug}/product/${slug}`);
+      console.log(slug);
+      initialSlugs.push(`/catalogue/${_id}/product/${slug}`);
     });
   });
 

@@ -103,21 +103,21 @@ export const dbsConfig: GetProdDd[] = [
     dbName: `${process.env.WP_DB_NAME}`,
     fallbackImage: `${process.env.WP_FALLBACK_IMAGE}`,
   },
-  /*{
+  {
     uri: `${process.env.SC_DB_URI}`,
     dbName: `${process.env.SC_DB_NAME}`,
     fallbackImage: `${process.env.SC_FALLBACK_IMAGE}`,
-  },*/
-  /*{
+  },
+  {
     uri: `${process.env.AG_DB_URI}`,
     dbName: `${process.env.AG_DB_NAME}`,
     fallbackImage: `${process.env.AG_FALLBACK_IMAGE}`,
-  },*/
-  /*{
+  },
+  {
     uri: `${process.env.KB_DB_URI}`,
     dbName: `${process.env.KB_DB_NAME}`,
     fallbackImage: `${process.env.KB_FALLBACK_IMAGE}`,
-  },*/
+  },
 ];
 
 export async function updateIndexes(db: Db) {

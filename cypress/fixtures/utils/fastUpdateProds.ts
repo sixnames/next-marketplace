@@ -1,5 +1,5 @@
-import { ShopProductModel } from '../../../db/dbModels';
-import { COL_SHOP_PRODUCTS } from '../../../db/collectionNames';
+import { OrderProductModel, ShopProductModel } from '../../../db/dbModels';
+import { COL_ORDER_PRODUCTS, COL_SHOP_PRODUCTS } from '../../../db/collectionNames';
 import { dbsConfig, getProdDb } from './getProdDb';
 require('dotenv').config();
 
@@ -27,13 +27,15 @@ require('dotenv').config();
 }*/
 
 type ShopProductBaseInterface = Omit<ShopProductModel, '_id'>;
+type OrderProductBaseInterface = Omit<OrderProductModel, '_id'>;
 
 async function updateProds() {
   for await (const dbConfig of dbsConfig) {
     const { db, client } = await getProdDb(dbConfig);
 
     const shopProductsCollection = await db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-    /*const orderProductsCollection = await db.collection<OrderProductModel>(COL_ORDER_PRODUCTS);
+    const orderProductsCollection = await db.collection<OrderProductModel>(COL_ORDER_PRODUCTS);
+    /*
     const notSyncedProductsCollection = await db.collection<NotSyncedProductModel>(
       COL_NOT_SYNCED_PRODUCTS,
     );*/
@@ -83,7 +85,6 @@ async function updateProds() {
         },
       ])
       .toArray();
-
     const shopProducts: ShopProductBaseInterface[] = shopProductsAggregation.map(
       ({ _id, ...shopProduct }) => {
         return {
@@ -92,10 +93,48 @@ async function updateProds() {
         };
       },
     );
-
-    console.log(shopProducts);
     console.log(shopProducts.length);
-    console.log((await shopProductsCollection.find({}).toArray()).length);
+    console.log('shop products done');
+
+    const orderProductsAggregation = await orderProductsCollection
+      .aggregate<OrderProductModel>([
+        {
+          $group: {
+            _id: '$shopProductId',
+            itemId: { $first: '$itemId' },
+            price: { $first: '$price' },
+            amount: { $first: '$amount' },
+            totalPrice: { $first: '$totalPrice' },
+            slug: { $first: '$slug' },
+            originalName: { $first: '$originalName' },
+            nameI18n: { $first: '$nameI18n' },
+            productId: { $first: '$productId' },
+            customerId: { $first: '$customerId' },
+            shopProductId: { $first: '$shopProductId' },
+            shopId: { $first: '$shopId' },
+            companyId: { $first: '$companyId' },
+            orderId: { $first: '$orderId' },
+            statusId: { $first: '$statusId' },
+            isCanceled: { $first: '$isCanceled' },
+            createdAt: { $first: '$createdAt' },
+            updatedAt: { $first: '$updatedAt' },
+            barcode: {
+              $addToSet: '$barcode',
+            },
+          },
+        },
+      ])
+      .toArray();
+    const orderProducts: OrderProductBaseInterface[] = orderProductsAggregation.map(
+      ({ _id, ...orderProduct }) => {
+        return {
+          ...orderProduct,
+          barcode: (orderProduct.barcode || []).filter((code) => code),
+        };
+      },
+    );
+    console.log(orderProducts.length);
+    console.log('order products done');
 
     console.log(`Done ${dbConfig.dbName} db`);
     console.log(' ');

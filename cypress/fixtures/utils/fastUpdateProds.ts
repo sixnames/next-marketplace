@@ -1,31 +1,9 @@
-import { Db } from 'mongodb';
-import {
-  ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
-  ATTRIBUTE_VARIANT_SELECT,
-  FILTER_SEPARATOR,
-  ID_COUNTER_STEP,
-} from '../../../config/common';
-import {
-  AttributeModel,
-  IdCounterModel,
-  OptionModel,
-  ProductAttributeModel,
-  ProductModel,
-  ShopProductModel,
-} from '../../../db/dbModels';
-import {
-  COL_ATTRIBUTES,
-  COL_CATEGORIES,
-  COL_ID_COUNTERS,
-  COL_OPTIONS,
-  COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCTS,
-  COL_SHOP_PRODUCTS,
-} from '../../../db/collectionNames';
+import { ShopProductModel } from '../../../db/dbModels';
+import { COL_SHOP_PRODUCTS } from '../../../db/collectionNames';
 import { dbsConfig, getProdDb } from './getProdDb';
 require('dotenv').config();
 
-export async function getNextItemId(collectionName: string, db: Db): Promise<string> {
+/*export async function getNextItemId(collectionName: string, db: Db): Promise<string> {
   const idCountersCollection = db.collection<IdCounterModel>(COL_ID_COUNTERS);
 
   const updatedCounter = await idCountersCollection.findOneAndUpdate(
@@ -46,138 +24,78 @@ export async function getNextItemId(collectionName: string, db: Db): Promise<str
   }
 
   return `${updatedCounter.value.counter}`;
-}
+}*/
+
+type ShopProductBaseInterface = Omit<ShopProductModel, '_id'>;
 
 async function updateProds() {
   for await (const dbConfig of dbsConfig) {
     const { db, client } = await getProdDb(dbConfig);
 
-    const attributesCollection = await db.collection<AttributeModel>(COL_ATTRIBUTES);
-    const optionsCollection = await db.collection<OptionModel>(COL_OPTIONS);
-    const productsCollection = await db.collection<ProductModel>(COL_PRODUCTS);
     const shopProductsCollection = await db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-    const productAttributesCollection = await db.collection<ProductAttributeModel>(
-      COL_PRODUCT_ATTRIBUTES,
-    );
-    const categoriesCollection = await db.collection<any>(COL_CATEGORIES);
+    /*const orderProductsCollection = await db.collection<OrderProductModel>(COL_ORDER_PRODUCTS);
+    const notSyncedProductsCollection = await db.collection<NotSyncedProductModel>(
+      COL_NOT_SYNCED_PRODUCTS,
+    );*/
 
     console.log(' ');
     console.log('>>>>>>>>>>>>>>>>>>>>>>>>');
     console.log(' ');
     console.log(`Updating ${dbConfig.dbName} db`);
 
-    const attributes = await attributesCollection.find({});
-    for await (const attribute of attributes) {
-      console.log(
-        '<<<<<<<<<<<<<<<<<<<< Attribute',
-        attribute.nameI18n.ru,
-        ' >>>>>>>>>>>>>>>>>>>>>>>>>>>>',
-      );
-      const isWithOptions =
-        attribute.variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT ||
-        attribute.variant === ATTRIBUTE_VARIANT_SELECT;
-      const newSlug = await getNextItemId(COL_ATTRIBUTES, db);
-
-      if (isWithOptions && attribute.optionsGroupId) {
-        const options = await optionsCollection
-          .find({ optionsGroupId: attribute.optionsGroupId })
-          .toArray();
-
-        for await (const option of options) {
-          console.log('option ====== ', option.nameI18n.ru);
-          const setOptionSlug = await getNextItemId(COL_OPTIONS, db);
-          const oldOptionSlug = `${attribute.slug}${FILTER_SEPARATOR}${option.slug}`;
-          const newOptionSlug = `${newSlug}${FILTER_SEPARATOR}${setOptionSlug}`;
-
-          const updater = {
-            $set: {
-              [`selectedOptionsSlugs.$[element]`]: newOptionSlug,
-            },
-          };
-          const updateOptions = {
-            multi: true,
-            arrayFilters: [{ element: { $eq: oldOptionSlug } }],
-          };
-
-          await productsCollection.updateMany({}, updater, updateOptions);
-          console.log('products done');
-          await shopProductsCollection.updateMany({}, updater, updateOptions);
-          console.log('shop products done');
-          await productAttributesCollection.updateMany(
-            {
-              attributeId: attribute._id,
-            },
-            updater,
-            updateOptions,
-          );
-          console.log('product attributes done');
-          await optionsCollection.findOneAndUpdate(
-            { _id: option._id },
-            {
-              $set: {
-                slug: setOptionSlug,
-              },
-            },
-          );
-        }
-      }
-
-      // update attribute
-      await attributesCollection.findOneAndUpdate(
+    const shopProductsAggregation = await shopProductsCollection
+      .aggregate<ShopProductModel>([
         {
-          _id: attribute._id,
-        },
-        {
-          $set: {
-            slug: newSlug,
+          $group: {
+            _id: {
+              productId: '$productId',
+              shopId: '$shopId',
+            },
+            available: { $first: '$available' },
+            citySlug: { $first: '$citySlug' },
+            price: { $first: '$price' },
+            oldPrice: { $first: '$oldPrice' },
+            oldPrices: { $first: '$oldPrices' },
+            discountedPercent: { $first: '$discountedPercent' },
+            itemId: { $first: '$itemId' },
+            productId: { $first: '$productId' },
+            shopId: { $first: '$shopId' },
+            companyId: { $first: '$companyId' },
+            mainImage: { $first: '$mainImage' },
+            useCategoryDiscount: { $first: '$useCategoryDiscount' },
+            useCategoryCashback: { $first: '$useCategoryCashback' },
+            useCategoryPayFromCashback: { $first: '$useCategoryPayFromCashback' },
+            createdAt: { $first: '$createdAt' },
+            updatedAt: { $first: '$updatedAt' },
+            priorities: { $first: '$priorities' },
+            views: { $first: '$views' },
+            supplierSlugs: { $first: '$supplierSlugs' },
+            brandSlug: { $first: '$brandSlug' },
+            brandCollectionSlug: { $first: '$brandCollectionSlug' },
+            rubricId: { $first: '$rubricId' },
+            rubricSlug: { $first: '$rubricSlug' },
+            manufacturerSlug: { $first: '$manufacturerSlug' },
+            selectedOptionsSlugs: { $first: '$selectedOptionsSlugs' },
+            barcode: {
+              $addToSet: '$barcode',
+            },
           },
         },
-      );
-    }
+      ])
+      .toArray();
 
-    console.log('=========================== remove old fields ===========================');
-    await categoriesCollection.updateMany(
-      {},
-      {
-        $unset: {
-          textTopI18n: '',
-          textBottomI18n: '',
-        },
+    const shopProducts: ShopProductBaseInterface[] = shopProductsAggregation.map(
+      ({ _id, ...shopProduct }) => {
+        return {
+          ...shopProduct,
+          barcode: (shopProduct.barcode || []).filter((code) => code),
+        };
       },
     );
-    await productAttributesCollection.updateMany(
-      {},
-      {
-        $unset: {
-          slug: '',
-          attributesGroupId: '',
-          nameI18n: '',
-          optionsGroupId: '',
-          metric: '',
-          capitalise: '',
-          variant: '',
-          viewVariant: '',
-          positioningInTitle: '',
-          positioningInCardTitle: '',
-          showAsBreadcrumb: '',
-          showAsCatalogueBreadcrumb: '',
-          notShowAsAlphabet: '',
-          showInSnippet: '',
-          showInCard: '',
-          showInCatalogueFilter: '',
-          showInCatalogueNav: '',
-          showInCatalogueTitle: '',
-          showInCardTitle: '',
-          showInSnippetTitle: '',
-          showNameInTitle: '',
-          showNameInSelectedAttributes: '',
-          showNameInCardTitle: '',
-          showNameInSnippetTitle: '',
-          views: '',
-          priorities: '',
-        },
-      },
-    );
+
+    console.log(shopProducts);
+    console.log(shopProducts.length);
+    console.log((await shopProductsCollection.find({}).toArray()).length);
 
     console.log(`Done ${dbConfig.dbName} db`);
     console.log(' ');
@@ -198,111 +116,3 @@ async function updateProds() {
       process.exit();
     });
 })();
-
-/*
-* import { ProductAttributeModel } from '../../../db/dbModels';
-import { COL_CATEGORIES, COL_PRODUCT_ATTRIBUTES } from '../../../db/collectionNames';
-import { dbsConfig, getProdDb } from './getProdDb';
-require('dotenv').config();
-
-export async function getNextItemId(collectionName: string, db: Db): Promise<string> {
-  const idCountersCollection = db.collection<IdCounterModel>(COL_ID_COUNTERS);
-
-  const updatedCounter = await idCountersCollection.findOneAndUpdate(
-    { collection: collectionName },
-    {
-      $inc: {
-        counter: ID_COUNTER_STEP,
-      },
-    },
-    {
-      upsert: true,
-      returnDocument: 'after',
-    },
-  );
-
-  if (!updatedCounter.ok || !updatedCounter.value) {
-    throw Error(`${collectionName} id counter update error`);
-  }
-
-  return addZero(updatedCounter.value.counter, ID_COUNTER_DIGITS);
-}
-
-async function updateProds() {
-  for await (const dbConfig of dbsConfig) {
-    const { db, client } = await getProdDb(dbConfig);
-    
-    const productAttributesCollection = await db.collection<ProductAttributeModel>(
-      COL_PRODUCT_ATTRIBUTES,
-    );
-    const categoriesCollection = await db.collection<any>(COL_CATEGORIES);
-    
-    console.log(' ');
-    console.log('>>>>>>>>>>>>>>>>>>>>>>>>');
-    console.log(' ');
-    console.log(`Updating ${dbConfig.dbName} db`);
-    
-    await categoriesCollection.updateMany(
-      {},
-      {
-        $unset: {
-          textTopI18n: '',
-          textBottomI18n: '',
-        },
-      },
-    );
-    
-    await productAttributesCollection.updateMany(
-      {},
-      {
-        $unset: {
-          slug: '',
-          attributesGroupId: '',
-          nameI18n: '',
-          optionsGroupId: '',
-          metric: '',
-          capitalise: '',
-          variant: '',
-          viewVariant: '',
-          positioningInTitle: '',
-          positioningInCardTitle: '',
-          showAsBreadcrumb: '',
-          showAsCatalogueBreadcrumb: '',
-          notShowAsAlphabet: '',
-          showInSnippet: '',
-          showInCard: '',
-          showInCatalogueFilter: '',
-          showInCatalogueNav: '',
-          showInCatalogueTitle: '',
-          showInCardTitle: '',
-          showInSnippetTitle: '',
-          showNameInTitle: '',
-          showNameInSelectedAttributes: '',
-          showNameInCardTitle: '',
-          showNameInSnippetTitle: '',
-          views: '',
-          priorities: '',
-        },
-      },
-    );
-    
-    console.log(`Done ${dbConfig.dbName} db`);
-    console.log(' ');
-    
-    // disconnect form db
-    await client.close();
-  }
-}
-
-(() => {
-  updateProds()
-    .then(() => {
-      console.log('Success!');
-      process.exit();
-    })
-    .catch((e) => {
-      console.log(e);
-      process.exit();
-    });
-})();
-* */

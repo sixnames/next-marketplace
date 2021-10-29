@@ -1,9 +1,41 @@
 import { Seeder } from 'mongo-seeding';
-// import { uploadTestAssets } from '../tests/uploadTestAssets';
+import products from '../cypress/fixtures/data/products/products';
+const mkdirp = require('mkdirp');
 const path = require('path');
+const fs = require('fs');
+const rimraf = require('rimraf');
+const copy = require('recursive-copy');
 require('dotenv').config();
 
-// const tlsCAFile = path.join(process.cwd(), 'db', 'root.crt');
+function prepareTestAssets() {
+  products.forEach(({ itemId }) => {
+    const pathToSrc = path.join(process.cwd(), 'cypress/fixtures/test-image-0.png');
+    const fileName = `${itemId}-0.png`;
+    const pathToDist = path.join(process.cwd(), `cypress/fixtures/assets/products/${itemId}`);
+    fs.access(pathToDist, (err: any) => {
+      if (err) {
+        mkdirp(pathToDist).then(() => {
+          fs.copyFileSync(pathToSrc, path.join(pathToDist, fileName));
+        });
+      } else {
+        fs.copyFileSync(pathToSrc, path.join(pathToDist, fileName));
+      }
+    });
+  });
+
+  const src = './cypress/fixtures/assets';
+  const dist = './public/assets';
+  rimraf(dist, (e: any) => {
+    if (e) {
+      console.log(e);
+    } else {
+      console.log('old assets removed');
+    }
+  });
+  copy(src, dist).catch((e: any) => {
+    console.log(e);
+  });
+}
 
 const config = {
   database: {
@@ -13,12 +45,6 @@ const config = {
     username: `${process.env.MONGO_TEST_USER_NAME}`,
     password: `${process.env.MONGO_TEST_USER_PWD}`,
     name: `${process.env.MONGO_DB_NAME}`,
-    /*options: {
-      tls: 'true',
-      tlsCAFile,
-      replicaSet: `${process.env.MONGO_DB_RS}`,
-      authSource: `${process.env.MONGO_DB_NAME}`,
-    },*/
   },
   dropDatabase: false,
   dropCollections: true,
@@ -39,58 +65,7 @@ const config = {
   try {
     await seeder.import(collections);
     console.log(`Test data seeded in ${(new Date().getTime() - startTime) / 1000}s`);
-
-    // const bucketName = `${process.env.OBJECT_STORAGE_BUCKET_NAME}`;
-    // await uploadTestAssets('./cypress/fixtures/assets', bucketName);
-
-    /*if (!process.env.CI) {
-      await uploadTestAssets(
-        `./cypress/fixtures/assets/${ASSETS_DIST_SHOPS_LOGOS}`,
-        bucketName,
-        `/${ASSETS_DIST_SHOPS_LOGOS}`,
-      );
-      await uploadTestAssets(
-        `./cypress/fixtures/assets/${ASSETS_DIST_SHOPS}`,
-        bucketName,
-        `/${ASSETS_DIST_SHOPS}`,
-      );
-      await uploadTestAssets(
-        `./cypress/fixtures/assets/${ASSETS_DIST_COMPANIES}`,
-        bucketName,
-        `/${ASSETS_DIST_COMPANIES}`,
-      );
-      await uploadTestAssets(
-        `./cypress/fixtures/assets/${ASSETS_DIST_PAGES}`,
-        bucketName,
-        `/${ASSETS_DIST_PAGES}`,
-      );
-      await uploadTestAssets(
-        `./cypress/fixtures/assets/${ASSETS_DIST_TEMPLATES}`,
-        bucketName,
-        `/${ASSETS_DIST_TEMPLATES}`,
-      );
-      await uploadTestAssets(
-        `./cypress/fixtures/assets/${ASSETS_DIST_BRANDS}`,
-        bucketName,
-        `/${ASSETS_DIST_BRANDS}`,
-      );
-      await uploadTestAssets(
-        `./cypress/fixtures/assets/${ASSETS_DIST_CATEGORIES}`,
-        bucketName,
-        `/${ASSETS_DIST_CATEGORIES}`,
-      );
-      await uploadTestAssets(
-        `./cypress/fixtures/assets/${ASSETS_DIST_BLOG}`,
-        bucketName,
-        `/${ASSETS_DIST_BLOG}`,
-      );
-      /!*await uploadTestAssets(
-        `./cypress/fixtures/assets/${ASSETS_DIST_CONFIGS}`,
-        `/${ASSETS_DIST_CONFIGS}`,
-      );*!/
-
-      console.log(`Assets seeded in ${(new Date().getTime() - startTime) / 1000}s`);
-    }*/
+    prepareTestAssets();
   } catch (err) {
     console.log(err);
   }

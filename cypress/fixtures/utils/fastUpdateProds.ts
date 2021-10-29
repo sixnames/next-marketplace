@@ -1,5 +1,6 @@
 // @ts-ignore
 import EasyYandexS3 from 'easy-yandex-s3';
+import { getProdDb } from 'cypress/fixtures/utils/getProdDb';
 import mkdirp from 'mkdirp';
 import FileType from 'file-type';
 import sharp from 'sharp';
@@ -37,7 +38,6 @@ async function getPaths(initialPath: string, Bucket: string, s3Instance: any) {
       };
       await mkdirp(`${basePath}/${initialPath}`);
       const url = `https://${Bucket}.storage.yandexcloud.net/${path.src}`;
-      console.log(path.src);
       const response = await fetch(url);
       const buffer = await response.buffer();
       if (!buffer) {
@@ -47,7 +47,6 @@ async function getPaths(initialPath: string, Bucket: string, s3Instance: any) {
 
       const fileType = await FileType.fromBuffer(buffer);
       if (!fileType) {
-        console.log('not image ', path.src);
         await fs.writeFile(path.dist, buffer.toString(), (error) => {
           if (error) {
             console.log('fs.writeFile Error ========================== ', path.dist);
@@ -80,7 +79,20 @@ async function updateProds() {
   });
 
   await getPaths('', `${process.env.OBJECT_STORAGE_BUCKET_NAME}`, s3Instance);
+  console.log('assets downloaded ============================');
 
+  // updating db
+  console.log('updating db');
+  const { db, client } = await getProdDb({
+    bucketName: `${process.env.OBJECT_STORAGE_BUCKET_NAME}`,
+    dbName: `${process.env.MONGO_DB_NAME}`,
+    uri: `${process.env.MONGO_URL}`,
+  });
+
+  console.log(db);
+
+  // disconnect form db
+  await client.close();
   console.log(`Done ${process.env.OBJECT_STORAGE_BUCKET_NAME} bucket`);
   console.log(' ');
 }

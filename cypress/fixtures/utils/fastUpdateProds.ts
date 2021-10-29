@@ -1,5 +1,14 @@
-import { OrderProductModel, ShopProductModel } from '../../../db/dbModels';
-import { COL_ORDER_PRODUCTS, COL_SHOP_PRODUCTS } from '../../../db/collectionNames';
+import {
+  NotSyncedProductModel,
+  ObjectIdModel,
+  OrderProductModel,
+  ShopProductModel,
+} from '../../../db/dbModels';
+import {
+  COL_NOT_SYNCED_PRODUCTS,
+  COL_ORDER_PRODUCTS,
+  COL_SHOP_PRODUCTS,
+} from '../../../db/collectionNames';
 import { dbsConfig, getProdDb } from './getProdDb';
 require('dotenv').config();
 
@@ -27,7 +36,19 @@ require('dotenv').config();
 }*/
 
 type ShopProductBaseInterface = Omit<ShopProductModel, '_id'>;
+interface ShopProductInterface extends ShopProductModel {
+  ids: ObjectIdModel[];
+}
+
 type OrderProductBaseInterface = Omit<OrderProductModel, '_id'>;
+interface OrderProductInterface extends OrderProductModel {
+  ids: ObjectIdModel[];
+}
+
+type NotSyncedProductBaseInterface = Omit<NotSyncedProductModel, '_id'>;
+interface NotSyncedProductInterface extends NotSyncedProductModel {
+  ids: ObjectIdModel[];
+}
 
 async function updateProds() {
   for await (const dbConfig of dbsConfig) {
@@ -35,18 +56,18 @@ async function updateProds() {
 
     const shopProductsCollection = await db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
     const orderProductsCollection = await db.collection<OrderProductModel>(COL_ORDER_PRODUCTS);
-    /*
     const notSyncedProductsCollection = await db.collection<NotSyncedProductModel>(
       COL_NOT_SYNCED_PRODUCTS,
-    );*/
+    );
 
     console.log(' ');
     console.log('>>>>>>>>>>>>>>>>>>>>>>>>');
     console.log(' ');
     console.log(`Updating ${dbConfig.dbName} db`);
 
+    // shop products
     const shopProductsAggregation = await shopProductsCollection
-      .aggregate<ShopProductModel>([
+      .aggregate<ShopProductInterface>([
         {
           $group: {
             _id: {
@@ -81,23 +102,33 @@ async function updateProds() {
             barcode: {
               $addToSet: '$barcode',
             },
+            ids: {
+              $addToSet: '$_id',
+            },
           },
         },
       ])
       .toArray();
+    const deleteShopProductIds: ObjectIdModel[] = [];
     const shopProducts: ShopProductBaseInterface[] = shopProductsAggregation.map(
-      ({ _id, ...shopProduct }) => {
+      ({ _id, ids, ...shopProduct }) => {
+        ids.forEach((_id) => deleteShopProductIds.push(_id));
         return {
           ...shopProduct,
           barcode: (shopProduct.barcode || []).filter((code) => code),
         };
       },
     );
-    console.log(shopProducts.length);
+    await shopProductsCollection.insertMany(shopProducts);
+    const deleteShopProductsResult = await shopProductsCollection.deleteMany({
+      _id: { $in: deleteShopProductIds },
+    });
+    console.log(shopProducts.length, deleteShopProductsResult.deletedCount);
     console.log('shop products done');
 
+    // order products
     const orderProductsAggregation = await orderProductsCollection
-      .aggregate<OrderProductModel>([
+      .aggregate<OrderProductInterface>([
         {
           $group: {
             _id: '$shopProductId',
@@ -121,20 +152,67 @@ async function updateProds() {
             barcode: {
               $addToSet: '$barcode',
             },
+            ids: {
+              $addToSet: '$_id',
+            },
           },
         },
       ])
       .toArray();
+    const deleteOrderProductIds: ObjectIdModel[] = [];
     const orderProducts: OrderProductBaseInterface[] = orderProductsAggregation.map(
-      ({ _id, ...orderProduct }) => {
+      ({ _id, ids, ...orderProduct }) => {
+        ids.forEach((_id) => deleteOrderProductIds.push(_id));
         return {
           ...orderProduct,
           barcode: (orderProduct.barcode || []).filter((code) => code),
         };
       },
     );
-    console.log(orderProducts.length);
+    await orderProductsCollection.insertMany(orderProducts);
+    const deleteOrderProductsResult = await orderProductsCollection.deleteMany({
+      _id: { $in: deleteOrderProductIds },
+    });
+    console.log(orderProducts.length, deleteOrderProductsResult.deletedCount);
     console.log('order products done');
+
+    // not synced products
+    const notSyncedProductsAggregation = await notSyncedProductsCollection
+      .aggregate<NotSyncedProductInterface>([
+        {
+          $group: {
+            _id: '$name',
+            name: { $first: '$name' },
+            price: { $first: '$price' },
+            available: { $first: '$available' },
+            shopId: { $first: '$shopId' },
+            createdAt: { $first: '$createdAt' },
+            barcode: {
+              $addToSet: '$barcode',
+            },
+            ids: {
+              $addToSet: '$_id',
+            },
+          },
+        },
+      ])
+      .toArray();
+    const deleteNotSyncedProductIds: ObjectIdModel[] = [];
+    const notSyncedProducts: NotSyncedProductBaseInterface[] = notSyncedProductsAggregation.map(
+      ({ _id, ids, ...notSyncedProduct }) => {
+        ids.forEach((_id) => deleteNotSyncedProductIds.push(_id));
+        return {
+          ...notSyncedProduct,
+          barcode: (notSyncedProduct.barcode || []).filter((code) => code),
+        };
+      },
+    );
+    await notSyncedProductsCollection.insertMany(notSyncedProducts);
+    const deleteNotSyncedProductsResult = await notSyncedProductsCollection.deleteMany({
+      _id: { $in: deleteNotSyncedProductIds },
+    });
+    console.log(notSyncedProducts.length, deleteNotSyncedProductsResult.deletedCount);
+    console.log('not synced products done');
 
     console.log(`Done ${dbConfig.dbName} db`);
     console.log(' ');

@@ -30,10 +30,10 @@ function prepareTestAssets() {
       console.log(e);
     } else {
       console.log('old assets removed');
+      copy(src, dist).catch((e: any) => {
+        console.log(e);
+      });
     }
-  });
-  copy(src, dist).catch((e: any) => {
-    console.log(e);
   });
 }
 

@@ -120,7 +120,7 @@ async function updateProds() {
     uri: `${process.env.MONGO_URL}`,
   });
   function replaceUrl(key: string) {
-    return key.replace(`https://${process.env.OBJECT_STORAGE_DOMAIN}`, '');
+    return key.replace(`https://${process.env.OBJECT_STORAGE_DOMAIN}`, '/assets');
   }
 
   // blog

@@ -6,9 +6,6 @@ module.exports = {
     locales: ['ru', 'en'],
     defaultLocale: 'ru',
   },
-  images: {
-    domains: [process.env.OBJECT_STORAGE_DOMAIN],
-  },
   env: {
     DEV_ENV: process.env.DEV_ENV,
     OBJECT_STORAGE_IMAGE_FALLBACK: process.env.OBJECT_STORAGE_IMAGE_FALLBACK,

@@ -292,7 +292,7 @@ const products = rubrics.reduce((acc: ProductModel[], rubric) => {
       descriptionI18n: {
         ru: `Description ${name} RU`,
       },
-      mainImage: `/${ASSETS_DIST_PRODUCTS}/${itemId}/${itemId}-0.png`,
+      mainImage: `/assets/${ASSETS_DIST_PRODUCTS}/${itemId}/${itemId}-0.png`,
       selectedOptionsSlugs,
       titleCategoriesSlugs,
       selectedAttributesIds,

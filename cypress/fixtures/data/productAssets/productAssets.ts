@@ -13,7 +13,7 @@ const productAssets: ProductAssetsModel[] = products.map((product) => {
     assets: [
       {
         index: 0,
-        url: `/${ASSETS_DIST_PRODUCTS}/${itemId}/${itemId}-0.png`,
+        url: `/assets/${ASSETS_DIST_PRODUCTS}/${itemId}/${itemId}-0.png`,
       },
     ],
   };

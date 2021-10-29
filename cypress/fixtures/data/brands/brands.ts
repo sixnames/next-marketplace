@@ -14,7 +14,7 @@ const brands: BrandModel[] = [
   {
     _id: getObjectId('brand Brand A'),
     itemId: '000001',
-    logo: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_BRANDS}/000001/000001.png`,
+    logo: `/${ASSETS_DIST_BRANDS}/000001/000001.png`,
     nameI18n: {
       ru: 'Brand A',
     },
@@ -27,7 +27,7 @@ const brands: BrandModel[] = [
   {
     _id: getObjectId('brand Brand B'),
     itemId: '000002',
-    logo: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_BRANDS}/000002/000002.png`,
+    logo: `/${ASSETS_DIST_BRANDS}/000002/000002.png`,
     nameI18n: {
       ru: 'Brand B',
     },

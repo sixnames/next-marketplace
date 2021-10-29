@@ -21,18 +21,18 @@ const shops: ShopModel[] = [
     license: 'Shop A license 098324knlkajdf98798',
     logo: {
       index: 0,
-      url: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_SHOPS_LOGOS}/000001/000001-0.webp`,
+      url: `/${ASSETS_DIST_SHOPS_LOGOS}/000001/000001-0.webp`,
     },
-    mainImage: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_SHOPS}/000001/000001-0.webp`,
+    mainImage: `/${ASSETS_DIST_SHOPS}/000001/000001-0.webp`,
     assets: [
       {
         index: 0,
-        url: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_SHOPS}/000001/000001-0.webp`,
+        url: `/${ASSETS_DIST_SHOPS}/000001/000001-0.webp`,
       },
     ],
     mapMarker: {
-      lightTheme: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_SHOPS}/000001/marker-light.png`,
-      darkTheme: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_SHOPS}/000001/marker-dark.png`,
+      lightTheme: `/${ASSETS_DIST_SHOPS}/000001/marker-light.png`,
+      darkTheme: `/${ASSETS_DIST_SHOPS}/000001/marker-dark.png`,
     },
     contacts: {
       emails: ['shopA@gmail.com'],
@@ -58,13 +58,13 @@ const shops: ShopModel[] = [
     license: 'Shop B license 098324knlkajdf98798',
     logo: {
       index: 0,
-      url: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_SHOPS_LOGOS}/000002/000002-0.webp`,
+      url: `/${ASSETS_DIST_SHOPS_LOGOS}/000002/000002-0.webp`,
     },
-    mainImage: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_SHOPS}/000002/000002-0.webp`,
+    mainImage: `/${ASSETS_DIST_SHOPS}/000002/000002-0.webp`,
     assets: [
       {
         index: 0,
-        url: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_SHOPS}/000002/000002-0.webp`,
+        url: `/${ASSETS_DIST_SHOPS}/000002/000002-0.webp`,
       },
     ],
     contacts: {
@@ -93,13 +93,13 @@ const shops: ShopModel[] = [
     license: 'Shop C license 098324knlkajdf98798',
     logo: {
       index: 0,
-      url: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_SHOPS_LOGOS}/000003/000003-0.webp`,
+      url: `/${ASSETS_DIST_SHOPS_LOGOS}/000003/000003-0.webp`,
     },
-    mainImage: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_SHOPS}/000003/000003-0.webp`,
+    mainImage: `/${ASSETS_DIST_SHOPS}/000003/000003-0.webp`,
     assets: [
       {
         index: 0,
-        url: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_SHOPS}/000003/000003-0.webp`,
+        url: `/${ASSETS_DIST_SHOPS}/000003/000003-0.webp`,
       },
     ],
     contacts: {
@@ -128,13 +128,13 @@ const shops: ShopModel[] = [
     license: 'Shop D license 098324knlkajdf98798',
     logo: {
       index: 0,
-      url: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_SHOPS_LOGOS}/000004/000004-0.webp`,
+      url: `/${ASSETS_DIST_SHOPS_LOGOS}/000004/000004-0.webp`,
     },
-    mainImage: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_SHOPS}/000004/000004-0.webp`,
+    mainImage: `/${ASSETS_DIST_SHOPS}/000004/000004-0.webp`,
     assets: [
       {
         index: 0,
-        url: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_SHOPS}/000004/000004-0.webp`,
+        url: `/${ASSETS_DIST_SHOPS}/000004/000004-0.webp`,
       },
     ],
     contacts: {

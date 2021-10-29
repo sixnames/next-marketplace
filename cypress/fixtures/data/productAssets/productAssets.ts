@@ -13,7 +13,7 @@ const productAssets: ProductAssetsModel[] = products.map((product) => {
     assets: [
       {
         index: 0,
-        url: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_PRODUCTS}/${itemId}/${itemId}-0.png`,
+        url: `/${ASSETS_DIST_PRODUCTS}/${itemId}/${itemId}-0.png`,
       },
     ],
   };

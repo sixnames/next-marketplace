@@ -18,7 +18,7 @@ const companies: CompanyModel[] = [
     },
     logo: {
       index: 1,
-      url: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_COMPANIES}/000001/000001-0.webp`,
+      url: `/${ASSETS_DIST_COMPANIES}/000001/000001-0.webp`,
     },
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -37,7 +37,7 @@ const companies: CompanyModel[] = [
     },
     logo: {
       index: 1,
-      url: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_COMPANIES}/000002/000002-0.webp`,
+      url: `/${ASSETS_DIST_COMPANIES}/000002/000002-0.webp`,
     },
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -56,7 +56,7 @@ const companies: CompanyModel[] = [
     },
     logo: {
       index: 1,
-      url: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_COMPANIES}/000003/000003-0.webp`,
+      url: `/${ASSETS_DIST_COMPANIES}/000003/000003-0.webp`,
     },
     createdAt: new Date(),
     updatedAt: new Date(),

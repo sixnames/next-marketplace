@@ -119,11 +119,15 @@ async function updateProds() {
         };
       },
     );
-    await shopProductsCollection.insertMany(shopProducts);
-    const deleteShopProductsResult = await shopProductsCollection.deleteMany({
-      _id: { $in: deleteShopProductIds },
-    });
-    console.log(shopProducts.length, deleteShopProductsResult.deletedCount);
+    if (shopProducts.length > 0) {
+      await shopProductsCollection.insertMany(shopProducts);
+    }
+    if (deleteShopProductIds.length > 0) {
+      const deleteShopProductsResult = await shopProductsCollection.deleteMany({
+        _id: { $in: deleteShopProductIds },
+      });
+      console.log(shopProducts.length, deleteShopProductsResult.deletedCount);
+    }
     console.log('shop products done');
 
     // order products
@@ -169,11 +173,15 @@ async function updateProds() {
         };
       },
     );
-    await orderProductsCollection.insertMany(orderProducts);
-    const deleteOrderProductsResult = await orderProductsCollection.deleteMany({
-      _id: { $in: deleteOrderProductIds },
-    });
-    console.log(orderProducts.length, deleteOrderProductsResult.deletedCount);
+    if (orderProducts.length > 0) {
+      await orderProductsCollection.insertMany(orderProducts);
+    }
+    if (deleteOrderProductIds.length > 0) {
+      const deleteOrderProductsResult = await orderProductsCollection.deleteMany({
+        _id: { $in: deleteOrderProductIds },
+      });
+      console.log(orderProducts.length, deleteOrderProductsResult.deletedCount);
+    }
     console.log('order products done');
 
     // not synced products
@@ -207,11 +215,15 @@ async function updateProds() {
         };
       },
     );
-    await notSyncedProductsCollection.insertMany(notSyncedProducts);
-    const deleteNotSyncedProductsResult = await notSyncedProductsCollection.deleteMany({
-      _id: { $in: deleteNotSyncedProductIds },
-    });
-    console.log(notSyncedProducts.length, deleteNotSyncedProductsResult.deletedCount);
+    if (notSyncedProducts.length > 0) {
+      await notSyncedProductsCollection.insertMany(notSyncedProducts);
+    }
+    if (deleteNotSyncedProductIds.length > 0) {
+      const deleteNotSyncedProductsResult = await notSyncedProductsCollection.deleteMany({
+        _id: { $in: deleteNotSyncedProductIds },
+      });
+      console.log(notSyncedProducts.length, deleteNotSyncedProductsResult.deletedCount);
+    }
     console.log('not synced products done');
 
     console.log(`Done ${dbConfig.dbName} db`);

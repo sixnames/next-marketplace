@@ -37,7 +37,7 @@ const SyncErrorsList: React.FC<SyncErrorsListInterface> = ({
 
   const columns: TableColumn<NotSyncedProductInterface>[] = [
     {
-      accessor: 'barcodeList',
+      accessor: 'barcode',
       headTitle: 'Штрих-код',
       render: ({ cellData }) => {
         const barcodeList = cellData as string[];
@@ -114,7 +114,7 @@ const SyncErrorsList: React.FC<SyncErrorsListInterface> = ({
                           input: {
                             productId: product._id,
                             available: dataItem.available,
-                            barcode: dataItem.barcodeList || [],
+                            barcode: dataItem.barcode || [],
                             price: dataItem.price,
                             shopId: dataItem.shopId,
                           },

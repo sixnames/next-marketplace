@@ -501,7 +501,7 @@ export interface OrderProductModel extends TimestampModel {
   companyId: ObjectIdModel;
   orderId: ObjectIdModel;
   statusId: ObjectIdModel;
-  barcode?: string | null;
+  barcode?: string[] | null;
   isCanceled?: boolean | null;
 }
 
@@ -592,6 +592,7 @@ interface ProductMainFieldsInterface {
   rubricSlug: string;
   manufacturerSlug?: string | null;
   selectedOptionsSlugs: string[];
+  barcode?: string[] | null;
 }
 
 export interface ProductModel extends ProductMainFieldsInterface, BaseModel, TimestampModel {
@@ -604,7 +605,6 @@ export interface ProductModel extends ProductMainFieldsInterface, BaseModel, Tim
   titleCategoriesSlugs: string[];
   selectedAttributesIds: ObjectId[];
   gender: GenderModel;
-  barcode?: string[] | null;
 
   // types for aggregation
   shopsCount?: number | null;
@@ -802,7 +802,6 @@ export interface ShopProductModel
   shopId: ObjectIdModel;
   companyId: ObjectIdModel;
   mainImage: string;
-  barcode?: string | null;
   useCategoryDiscount?: boolean | null;
   useCategoryCashback?: boolean | null;
   useCategoryPayFromCashback?: boolean | null;
@@ -829,7 +828,7 @@ export interface NotSyncedProductModel {
   name: string;
   price: number;
   available: number;
-  barcode: string;
+  barcode: string[];
   shopId: ObjectIdModel;
   createdAt: DateModel;
 }

@@ -101,111 +101,119 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
       // create sync errors if product not found
       if (!product) {
-        for await (const barcodeItem of bodyItem.barcode || []) {
-          const existingSyncError = await notSyncedProductsCollection.findOne({
-            barcode: barcodeItem,
-            shopId: shop._id,
-          });
+        const existingSyncError = await notSyncedProductsCollection.findOne({
+          shopId: shop._id,
+          barcode: {
+            $in: bodyItem.barcode,
+          },
+        });
 
-          if (existingSyncError) {
-            await notSyncedProductsCollection.findOneAndUpdate(
-              {
-                _id: existingSyncError._id,
+        if (existingSyncError) {
+          await notSyncedProductsCollection.findOneAndUpdate(
+            {
+              _id: existingSyncError._id,
+            },
+            {
+              $set: {
+                available: noNaN(existingSyncError.available),
+                price: noNaN(existingSyncError.price),
+                name: existingSyncError.name,
               },
-              {
-                $set: {
-                  available: noNaN(existingSyncError.available),
-                  price: noNaN(existingSyncError.price),
-                  name: existingSyncError.name,
-                },
-              },
-            );
-          } else {
-            await notSyncedProductsCollection.insertOne({
-              name: `${bodyItem?.name}`,
-              price: noNaN(bodyItem?.price),
-              available: noNaN(bodyItem?.available),
-              barcode: barcodeItem,
-              shopId: shop._id,
-              createdAt: new Date(),
-            });
-          }
+            },
+          );
+        } else {
+          await notSyncedProductsCollection.insertOne({
+            name: `${bodyItem?.name}`,
+            price: noNaN(bodyItem?.price),
+            available: noNaN(bodyItem?.available),
+            barcode: bodyItem.barcode,
+            shopId: shop._id,
+            createdAt: new Date(),
+          });
         }
         continue;
       }
 
       const { available, price, barcode } = bodyItem;
-      for await (const barcodeItem of barcode) {
-        // add new barcode to product
-        await productsCollection.findOneAndUpdate(
-          {
-            _id: product._id,
-          },
-          {
-            $addToSet: {
-              barcode: barcodeItem,
+      // add new barcode to product
+      await productsCollection.findOneAndUpdate(
+        {
+          _id: product._id,
+        },
+        {
+          $addToSet: {
+            barcode: {
+              $each: bodyItem.barcode,
             },
           },
-        );
+        },
+      );
 
-        const oldShopProducts = await shopProductsCollection
-          .find({
-            shopId: shop._id,
-            barcode: barcodeItem,
-          })
-          .toArray();
-        if (oldShopProducts.length > 0) {
-          for await (const oldShopProduct of oldShopProducts) {
-            // update existing shop product
-            const { discountedPercent, oldPrice, oldPriceUpdater } = getUpdatedShopProductPrices({
-              shopProduct: oldShopProduct,
-              newPrice: noNaN(bodyItem.price),
-            });
-            await shopProductsCollection.findOneAndUpdate(
-              {
-                _id: oldShopProduct._id,
-              },
-              {
-                $set: {
-                  available: noNaN(bodyItem.available),
-                  price: noNaN(bodyItem.price),
-                  oldPrice,
-                  discountedPercent,
-                  updatedAt: new Date(),
+      const oldShopProducts = await shopProductsCollection
+        .find({
+          shopId: shop._id,
+          productId: product._id,
+          barcode: {
+            $in: bodyItem.barcode,
+          },
+        })
+        .toArray();
+      if (oldShopProducts.length > 0) {
+        for await (const oldShopProduct of oldShopProducts) {
+          // update existing shop product
+          const { discountedPercent, oldPrice, oldPriceUpdater } = getUpdatedShopProductPrices({
+            shopProduct: oldShopProduct,
+            newPrice: noNaN(bodyItem.price),
+          });
+          await shopProductsCollection.findOneAndUpdate(
+            {
+              _id: oldShopProduct._id,
+            },
+            {
+              $set: {
+                available: noNaN(bodyItem.available),
+                price: noNaN(bodyItem.price),
+                oldPrice,
+                discountedPercent,
+                $addToSet: {
+                  barcode: {
+                    $each: bodyItem.barcode,
+                  },
                 },
-                ...oldPriceUpdater,
+                updatedAt: new Date(),
               },
-            );
-          }
-        } else {
-          // create new shop product
-          const itemId = await getNextItemId(COL_SHOP_PRODUCTS);
-          const shopProduct: ShopProductModel = {
-            _id: new ObjectId(),
-            available: noNaN(available),
-            price: noNaN(price),
-            itemId,
-            discountedPercent: 0,
-            productId: product._id,
-            shopId: shop._id,
-            citySlug: shop.citySlug,
-            oldPrices: [],
-            rubricId: product.rubricId,
-            rubricSlug: product.rubricSlug,
-            companyId: shop.companyId,
-            brandSlug: product.brandSlug,
-            mainImage: product.mainImage,
-            brandCollectionSlug: product.brandCollectionSlug,
-            manufacturerSlug: product.manufacturerSlug,
-            selectedOptionsSlugs: product.selectedOptionsSlugs,
-            supplierSlugs: product.supplierSlugs,
-            barcode: barcodeItem,
-            updatedAt: new Date(),
-            createdAt: new Date(),
-            ...DEFAULT_COUNTERS_OBJECT,
-          };
-          shopProducts.push(shopProduct);
+              ...oldPriceUpdater,
+            },
+          );
         }
+      } else {
+        // create new shop product
+        const itemId = await getNextItemId(COL_SHOP_PRODUCTS);
+        const shopProduct: ShopProductModel = {
+          _id: new ObjectId(),
+          available: noNaN(available),
+          price: noNaN(price),
+          itemId,
+          discountedPercent: 0,
+          productId: product._id,
+          shopId: shop._id,
+          citySlug: shop.citySlug,
+          oldPrices: [],
+          rubricId: product.rubricId,
+          rubricSlug: product.rubricSlug,
+          companyId: shop.companyId,
+          brandSlug: product.brandSlug,
+          mainImage: product.mainImage,
+          brandCollectionSlug: product.brandCollectionSlug,
+          manufacturerSlug: product.manufacturerSlug,
+          selectedOptionsSlugs: product.selectedOptionsSlugs,
+          supplierSlugs: product.supplierSlugs,
+          barcode: bodyItem.barcode,
+          updatedAt: new Date(),
+          createdAt: new Date(),
+          ...DEFAULT_COUNTERS_OBJECT,
+        };
+        shopProducts.push(shopProduct);
       }
 
       // update product barcode list

@@ -104,7 +104,7 @@ const CreateProductWithSyncErrorModal: React.FC<CreateProductWithSyncErrorModalI
     descriptionI18n: {
       [DEFAULT_LOCALE]: '',
     },
-    barcode: notSyncedProduct.barcodeList || [],
+    barcode: notSyncedProduct.barcode || [],
     rubricId: undefined,
     gender: GENDER_IT as any,
   };

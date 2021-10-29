@@ -67,19 +67,6 @@ export async function getPaginatedNotSyncedProducts({
                 },
               },
             },
-
-            // group by name
-            {
-              $group: {
-                _id: '$name',
-                name: { $first: '$name' },
-                price: { $first: '$price' },
-                available: { $first: '$available' },
-                shopId: { $first: '$shopId' },
-                createdAt: { $first: '$createdAt' },
-                barcodeList: { $addToSet: '$barcode' },
-              },
-            },
           ],
         },
       },

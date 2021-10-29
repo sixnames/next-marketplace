@@ -1,3 +1,4 @@
+import { IMAGE_FALLBACK } from 'config/common';
 import Formidable from 'formidable';
 import { AssetModel } from 'db/dbModels';
 import { alwaysArray } from 'lib/arrayUtils';
@@ -95,7 +96,7 @@ export async function storeUploads({
 }
 
 export const deleteUpload = async (filePath: string): Promise<boolean> => {
-  if (filePath === `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`) {
+  if (filePath === IMAGE_FALLBACK) {
     return true;
   }
   const pathParts = filePath.split('/');
@@ -160,7 +161,7 @@ export function getMainImage(assets: AssetModel[]): string {
     return assetA.index - assetB.index;
   });
   const firstAsset = sortedAssets[0];
-  let mainImage = `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`;
+  let mainImage = IMAGE_FALLBACK;
 
   if (firstAsset) {
     mainImage = firstAsset.url;

@@ -324,6 +324,7 @@ export const ISO_LANGUAGES = [
 export const HITS_PER_PAGE = 150;
 
 // ASSETS
+export const IMAGE_FALLBACK = '/assets/image-fallback.png';
 export const ASSETS_DIST_USERS = 'users';
 export const ASSETS_DIST_PRODUCTS = 'products';
 export const ASSETS_DIST_PRODUCT_CARD_CONTENT = 'card-content';

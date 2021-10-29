@@ -34,6 +34,7 @@ import {
   ROUTE_CONTACTS,
   FILTER_CATEGORY_KEY,
   ROUTE_BLOG_WITH_PAGE,
+  IMAGE_FALLBACK,
 } from 'config/common';
 
 const middleLinkClassName =
@@ -378,7 +379,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
   const headerRef = React.useRef<HTMLElement | null>(null);
   const { logoSlug } = useThemeContext();
 
-  const siteLogoSrc = get(configs, logoSlug) || `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`;
+  const siteLogoSrc = get(configs, logoSlug) || IMAGE_FALLBACK;
   const configLogoWidth = configs.siteLogoWidth || '10rem';
   const configLogoMobileWidth = configs.siteMobileLogoWidth || '7rem';
   const configSiteName = configs.siteName;

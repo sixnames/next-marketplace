@@ -35,7 +35,12 @@ import {
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
 } from 'db/collectionNames';
-import { DEFAULT_COMPANY_SLUG, DEFAULT_COUNTERS_OBJECT, VIEWS_COUNTER_STEP } from 'config/common';
+import {
+  DEFAULT_COMPANY_SLUG,
+  DEFAULT_COUNTERS_OBJECT,
+  IMAGE_FALLBACK,
+  VIEWS_COUNTER_STEP,
+} from 'config/common';
 import { getNextItemId } from 'lib/itemIdUtils';
 import { updateProductSchema } from 'validation/productSchema';
 import { deleteUpload, getMainImage, reorderAssets } from 'lib/assetUtils/assetUtils';
@@ -226,7 +231,7 @@ export const ProductMutations = extendType({
               ...values,
               _id: productId,
               itemId,
-              mainImage: `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`,
+              mainImage: IMAGE_FALLBACK,
               slug: itemId,
               rubricId,
               rubricSlug: rubric.slug,
@@ -256,7 +261,7 @@ export const ProductMutations = extendType({
               assets: [
                 {
                   index: 1,
-                  url: `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`,
+                  url: IMAGE_FALLBACK,
                 },
               ],
             });
@@ -756,7 +761,7 @@ export const ProductMutations = extendType({
               itemId,
               slug: itemId,
               originalName: values.originalName || '',
-              mainImage: `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`,
+              mainImage: IMAGE_FALLBACK,
               rubricId: sourceProduct.rubricId,
               rubricSlug: sourceProduct.rubricSlug,
               active: true,
@@ -784,7 +789,7 @@ export const ProductMutations = extendType({
               assets: [
                 {
                   index: 1,
-                  url: `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`,
+                  url: IMAGE_FALLBACK,
                 },
               ],
             });
@@ -1391,7 +1396,7 @@ export const ProductMutations = extendType({
               _id: productId,
               itemId: productItemId,
               slug: productItemId,
-              mainImage: `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`,
+              mainImage: IMAGE_FALLBACK,
               rubricId: rubric._id,
               rubricSlug: rubric.slug,
               active: false,

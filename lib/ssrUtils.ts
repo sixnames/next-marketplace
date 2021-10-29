@@ -18,6 +18,7 @@ import {
   FILTER_SEPARATOR,
   CONFIG_GROUP_PROJECT,
   COOKIE_CURRENCY,
+  IMAGE_FALLBACK,
 } from 'config/common';
 import {
   COL_ATTRIBUTES,
@@ -195,7 +196,7 @@ export const getCatalogueNavRubrics = async ({
           $or: [
             {
               mainImage: {
-                $ne: process.env.OBJECT_STORAGE_IMAGE_FALLBACK,
+                $ne: IMAGE_FALLBACK,
               },
             },
             {

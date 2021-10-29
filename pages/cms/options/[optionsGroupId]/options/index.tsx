@@ -40,11 +40,10 @@ interface OptionsGroupOptionsConsumerInterface {
 const OptionsGroupOptionsConsumer: React.FC<OptionsGroupOptionsConsumerInterface> = ({
   optionsGroup,
 }) => {
-  const { onCompleteCallback, onErrorCallback, showLoading, showModal, router } =
-    useMutationCallbacks({
-      reload: true,
-      withModal: true,
-    });
+  const { onCompleteCallback, onErrorCallback, showLoading, showModal } = useMutationCallbacks({
+    reload: true,
+    withModal: true,
+  });
 
   const [addOptionToGroupMutation] = useAddOptionToGroupMutation({
     onCompleted: (data) => onCompleteCallback(data.addOptionToGroup),
@@ -190,7 +189,6 @@ const OptionsGroupOptionsConsumer: React.FC<OptionsGroupOptionsConsumerInterface
       deleteOptionFromGroupMutation,
       optionsGroup._id,
       optionsGroup.variant,
-      router,
       showLoading,
       showModal,
     ],

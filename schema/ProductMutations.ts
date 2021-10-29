@@ -5,7 +5,6 @@ import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   CategoryModel,
-  ObjectIdModel,
   ProductAssetsModel,
   ProductAttributeModel,
   ProductCardContentModel,
@@ -1168,6 +1167,7 @@ export const ProductMutations = extendType({
                 returnDocument: 'after',
               },
             );
+
             const updatedProduct = updatedProductResult.value;
             if (!updatedProductResult.ok || !updatedProduct) {
               mutationPayload = {
@@ -1218,37 +1218,32 @@ export const ProductMutations = extendType({
             }
 
             // create shop products
-            const createdShopProductIds: ObjectIdModel[] = [];
-            for await (const barcode of input.barcode) {
-              const itemId = await getNextItemId(COL_SHOP_PRODUCTS);
-              const createdShopProductResult = await shopProductsCollection.insertOne({
-                barcode,
-                available,
-                price,
-                itemId,
-                productId,
-                discountedPercent: 0,
-                shopId: shop._id,
-                citySlug: shop.citySlug,
-                oldPrices: [],
-                rubricId: product.rubricId,
-                rubricSlug: product.rubricSlug,
-                companyId: shop.companyId,
-                brandSlug: product.brandSlug,
-                mainImage: product.mainImage,
-                brandCollectionSlug: product.brandCollectionSlug,
-                manufacturerSlug: product.manufacturerSlug,
-                supplierSlugs: product.supplierSlugs,
-                selectedOptionsSlugs: product.selectedOptionsSlugs,
-                updatedAt: new Date(),
-                createdAt: new Date(),
-                ...DEFAULT_COUNTERS_OBJECT,
-              });
-              if (createdShopProductResult.acknowledged) {
-                createdShopProductIds.push(createdShopProductResult.insertedId);
-              }
-            }
-            if (createdShopProductIds.length < input.barcode.length) {
+            const itemId = await getNextItemId(COL_SHOP_PRODUCTS);
+            const createdShopProductResult = await shopProductsCollection.insertOne({
+              barcode: input.barcode,
+              available,
+              price,
+              itemId,
+              productId,
+              discountedPercent: 0,
+              shopId: shop._id,
+              citySlug: shop.citySlug,
+              oldPrices: [],
+              rubricId: product.rubricId,
+              rubricSlug: product.rubricSlug,
+              companyId: shop.companyId,
+              brandSlug: product.brandSlug,
+              mainImage: product.mainImage,
+              brandCollectionSlug: product.brandCollectionSlug,
+              manufacturerSlug: product.manufacturerSlug,
+              supplierSlugs: product.supplierSlugs,
+              selectedOptionsSlugs: product.selectedOptionsSlugs,
+              updatedAt: new Date(),
+              createdAt: new Date(),
+              ...DEFAULT_COUNTERS_OBJECT,
+            });
+
+            if (!createdShopProductResult.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`shopProducts.create.error`),
@@ -1460,37 +1455,31 @@ export const ProductMutations = extendType({
               return;
             }
 
-            const createdShopProductIds: ObjectIdModel[] = [];
-            for await (const barcode of productFields.barcode) {
-              const shopProductItemId = await getNextItemId(COL_SHOP_PRODUCTS);
-              const createdShopProductResult = await shopProductsCollection.insertOne({
-                barcode,
-                available,
-                price,
-                itemId: shopProductItemId,
-                productId,
-                discountedPercent: 0,
-                shopId: shop._id,
-                citySlug: shop.citySlug,
-                oldPrices: [],
-                rubricId: createdProduct.rubricId,
-                rubricSlug: createdProduct.rubricSlug,
-                companyId: shop.companyId,
-                brandSlug: createdProduct.brandSlug,
-                mainImage: createdProduct.mainImage,
-                brandCollectionSlug: createdProduct.brandCollectionSlug,
-                manufacturerSlug: createdProduct.manufacturerSlug,
-                supplierSlugs: createdProduct.supplierSlugs,
-                selectedOptionsSlugs: createdProduct.selectedOptionsSlugs,
-                updatedAt: new Date(),
-                createdAt: new Date(),
-                ...DEFAULT_COUNTERS_OBJECT,
-              });
-              if (createdShopProductResult.acknowledged) {
-                createdShopProductIds.push(createdShopProductResult.insertedId);
-              }
-            }
-            if (createdShopProductIds.length < productFields.barcode.length) {
+            const shopProductItemId = await getNextItemId(COL_SHOP_PRODUCTS);
+            const createdShopProductResult = await shopProductsCollection.insertOne({
+              barcode: productFields.barcode,
+              available,
+              price,
+              itemId: shopProductItemId,
+              productId,
+              discountedPercent: 0,
+              shopId: shop._id,
+              citySlug: shop.citySlug,
+              oldPrices: [],
+              rubricId: createdProduct.rubricId,
+              rubricSlug: createdProduct.rubricSlug,
+              companyId: shop.companyId,
+              brandSlug: createdProduct.brandSlug,
+              mainImage: createdProduct.mainImage,
+              brandCollectionSlug: createdProduct.brandCollectionSlug,
+              manufacturerSlug: createdProduct.manufacturerSlug,
+              supplierSlugs: createdProduct.supplierSlugs,
+              selectedOptionsSlugs: createdProduct.selectedOptionsSlugs,
+              updatedAt: new Date(),
+              createdAt: new Date(),
+              ...DEFAULT_COUNTERS_OBJECT,
+            });
+            if (!createdShopProductResult.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`shopProducts.create.error`),

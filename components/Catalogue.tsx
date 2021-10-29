@@ -165,9 +165,9 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
   }, [
     companyId,
     companySlug,
-    configs.catalogueFilterVisibleAttributesCount,
     configs.catalogueFilterVisibleOptionsCount,
     configs.showAdminUiInCatalogue,
+    configs.snippetAttributesCount,
     router.query.filters,
     router.query.rubricSlug,
     state.page,
@@ -390,7 +390,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
               {/*Products*/}
               <div className='relative'>
                 {isPageLoading ? (
-                  <div className='absolute inset-0 z-50 w-full h-full bg-primary opacity-50'>
+                  <div className='absolute inset-0 z-50 w-full h-full'>
                     <Spinner className='absolute inset-0 w-full h-[50vh]' isNested isTransparent />
                   </div>
                 ) : null}

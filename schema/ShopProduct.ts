@@ -30,7 +30,7 @@ export const ShopProduct = objectType({
     t.nonNull.int('price');
     t.nonNull.objectId('productId');
     t.nonNull.objectId('shopId');
-    t.string('barcode');
+    t.list.nonNull.string('barcode');
     t.nonNull.list.nonNull.field('oldPrices', {
       type: 'ShopProductOldPrice',
     });
@@ -103,7 +103,7 @@ export const UpdateShopProductInput = inputObjectType({
     t.nonNull.int('price');
     t.nonNull.objectId('productId');
     t.nonNull.objectId('shopProductId');
-    t.string('barcode');
+    t.list.nonNull.string('barcode');
   },
 });
 

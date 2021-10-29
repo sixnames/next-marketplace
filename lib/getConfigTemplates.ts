@@ -247,7 +247,7 @@ export function getConfigTemplates({
       acceptedFormats: ['image/svg+xml', 'image/png'],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: assetsPath ? [`/assets/${assetsPath}/siteLogo/siteLogo.svg`] : [],
+          [DEFAULT_LOCALE]: assetsPath ? [`/assets${assetsPath}/siteLogo/siteLogo.svg`] : [],
         },
       },
     },
@@ -264,7 +264,7 @@ export function getConfigTemplates({
       cities: {
         [DEFAULT_CITY]: {
           [DEFAULT_LOCALE]: assetsPath
-            ? [`/assets/${assetsPath}/siteLogoDark/siteLogoDark.svg`]
+            ? [`/assets${assetsPath}/siteLogoDark/siteLogoDark.svg`]
             : [],
         },
       },
@@ -828,7 +828,7 @@ export function getConfigTemplates({
       cities: {
         [DEFAULT_CITY]: {
           [DEFAULT_LOCALE]: assetsPath
-            ? [`/assets/${assetsPath}/pageDefaultPreviewImage/pageDefaultPreviewImage.jpg`]
+            ? [`/assets${assetsPath}/pageDefaultPreviewImage/pageDefaultPreviewImage.jpg`]
             : [],
         },
       },
@@ -846,7 +846,7 @@ export function getConfigTemplates({
       cities: {
         [DEFAULT_CITY]: {
           [DEFAULT_LOCALE]: assetsPath
-            ? [`/assets/${assetsPath}/android-chrome-192x192/android-chrome-192x192.png`]
+            ? [`/assets${assetsPath}/android-chrome-192x192/android-chrome-192x192.png`]
             : [],
         },
       },
@@ -864,7 +864,7 @@ export function getConfigTemplates({
       cities: {
         [DEFAULT_CITY]: {
           [DEFAULT_LOCALE]: assetsPath
-            ? [`/assets/${assetsPath}/android-chrome-512x512/android-chrome-512x512.png`]
+            ? [`/assets${assetsPath}/android-chrome-512x512/android-chrome-512x512.png`]
             : [],
         },
       },
@@ -882,7 +882,7 @@ export function getConfigTemplates({
       cities: {
         [DEFAULT_CITY]: {
           [DEFAULT_LOCALE]: assetsPath
-            ? [`/assets/${assetsPath}/apple-touch-icon/apple-touch-icon.png`]
+            ? [`/assets${assetsPath}/apple-touch-icon/apple-touch-icon.png`]
             : [],
         },
       },
@@ -899,7 +899,7 @@ export function getConfigTemplates({
       acceptedFormats: ['image/x-icon', 'image/vnd.microsoft.icon'],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: assetsPath ? [`/assets/${assetsPath}/favicon/favicon.ico`] : [],
+          [DEFAULT_LOCALE]: assetsPath ? [`/assets${assetsPath}/favicon/favicon.ico`] : [],
         },
       },
     },
@@ -915,7 +915,7 @@ export function getConfigTemplates({
       acceptedFormats: ['image/svg+xml'],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: assetsPath ? [`/assets/${assetsPath}/icon/icon.svg`] : [],
+          [DEFAULT_LOCALE]: assetsPath ? [`/assets${assetsPath}/icon/icon.svg`] : [],
         },
       },
     },

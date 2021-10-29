@@ -80,7 +80,6 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
         <div className='relative flex-grow pb-5 pt-5'>
           <div className='flex justify-center'>
             <Image
-              priority={true}
               src={mainImage}
               objectFit={'contain'}
               objectPosition={'center'}

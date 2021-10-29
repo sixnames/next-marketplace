@@ -79,7 +79,6 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
         {/*image*/}
         <div className='relative flex-grow pb-5 pt-5'>
           <Image
-            priority={true}
             src={mainImage}
             objectFit={'contain'}
             objectPosition={'center'}

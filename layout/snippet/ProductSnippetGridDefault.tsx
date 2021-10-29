@@ -90,7 +90,6 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
         {/*image*/}
         <div className='relative flex items-center justify-center flex-grow pt-4 pl-4 pr-4 col-span-3 dark:snippet-image'>
           <Image
-            priority={true}
             src={mainImage}
             objectFit={'contain'}
             objectPosition={'center'}

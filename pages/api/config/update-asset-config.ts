@@ -9,7 +9,7 @@ import { COL_CONFIGS } from 'db/collectionNames';
 import { ConfigModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { getApiMessageValue } from 'lib/apiMessageUtils';
-import { storeRestApiUploads } from 'lib/assetUtils/assetUtils';
+import { storeUploads } from 'lib/assetUtils/assetUtils';
 import { parseRestApiFormData } from 'lib/restApi';
 import { getOperationPermission } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
@@ -98,10 +98,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   // update asset
-  const assets = await storeRestApiUploads({
+  const assets = await storeUploads({
     files: formData.files,
     dist: `${ASSETS_DIST_CONFIGS}/${config.companySlug}`,
-    itemId: `${config.slug}`,
+    dirName: `${config.slug}`,
   });
 
   if (!assets) {

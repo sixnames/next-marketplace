@@ -2,7 +2,7 @@ import { ASSETS_DIST_PRODUCT_CARD_CONTENT } from 'config/common';
 import { COL_PRODUCT_CARD_CONTENTS, COL_PRODUCTS } from 'db/collectionNames';
 import { ProductCardContentModel, ProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { storeRestApiUploads } from 'lib/assetUtils/assetUtils';
+import { storeUploads } from 'lib/assetUtils/assetUtils';
 import { parseRestApiFormData } from 'lib/restApi';
 import { getRequestParams } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
@@ -57,10 +57,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   // upload asset
-  const assets = await storeRestApiUploads({
+  const assets = await storeUploads({
     files,
     dist: ASSETS_DIST_PRODUCT_CARD_CONTENT,
-    itemId: `${product.itemId}`,
+    dirName: `${product.itemId}`,
   });
   if (!assets) {
     res.status(500).send({

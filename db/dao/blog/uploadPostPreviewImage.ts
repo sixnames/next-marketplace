@@ -2,7 +2,7 @@ import { ASSETS_DIST_BLOG } from 'config/common';
 import { COL_BLOG_POSTS } from 'db/collectionNames';
 import { BlogPostModel, BlogPostPayloadModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { deleteUpload, storeRestApiUploads } from 'lib/assetUtils/assetUtils';
+import { deleteUpload, storeUploads } from 'lib/assetUtils/assetUtils';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { parseApiFormData, UploadRestApiImageInterface } from 'lib/restApi';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
@@ -68,13 +68,13 @@ export async function updatePostPreviewImage(req: NextApiRequest, res: NextApiRe
 
     // delete old asset
     if (blogPost.previewImage) {
-      await deleteUpload({ filePath: blogPost.previewImage });
+      await deleteUpload(blogPost.previewImage);
     }
 
     // upload asset
-    const uploadedAsset = await storeRestApiUploads({
+    const uploadedAsset = await storeUploads({
       files: formData.files,
-      itemId: blogPost.slug,
+      dirName: blogPost.slug,
       dist: ASSETS_DIST_BLOG,
       startIndex: 0,
     });

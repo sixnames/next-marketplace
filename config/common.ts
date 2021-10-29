@@ -342,7 +342,7 @@ export const ASSETS_DIST_BLOG = 'blog';
 export const ASSETS_DIST_BLOG_CONTENT = 'blog-content';
 export const ASSETS_LOGO_WIDTH = 150;
 export const ASSETS_SHOP_IMAGE_WIDTH = 1080;
-export const ASSETS_PRODUCT_IMAGE_WIDTH = 300;
+export const ASSETS_PRODUCT_IMAGE_WIDTH = 480;
 
 // TEXT HORIZONTAL ALIGNMENT
 export const TEXT_HORIZONTAL_LEFT = 'left';

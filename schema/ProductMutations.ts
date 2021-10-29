@@ -576,11 +576,8 @@ export const ProductMutations = extendType({
 
             // Delete product asset
             const currentAsset = initialAssets.assets.find(({ index }) => index === assetIndex);
-            if (
-              currentAsset &&
-              currentAsset.url !== process.env.OBJECT_STORAGE_IMAGE_FALLBACK
-            ) {
-              const removedAsset = await deleteUpload({ filePath: `${currentAsset?.url}` });
+            if (currentAsset) {
+              const removedAsset = await deleteUpload(`${currentAsset?.url}`);
               if (!removedAsset) {
                 mutationPayload = {
                   success: false,

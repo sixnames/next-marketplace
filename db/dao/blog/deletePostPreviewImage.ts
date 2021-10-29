@@ -84,7 +84,7 @@ export async function deletePostPreviewImage(req: NextApiRequest, res: NextApiRe
 
     // delete old asset
     if (blogPost.previewImage) {
-      await deleteUpload({ filePath: blogPost.previewImage });
+      await deleteUpload(blogPost.previewImage);
     }
 
     // success

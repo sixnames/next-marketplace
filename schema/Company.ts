@@ -683,9 +683,7 @@ export const CompanyMutations = extendType({
             for await (const page of pages) {
               // Delete page assets from cloud
               for await (const filePath of page.assetKeys) {
-                await deleteUpload({
-                  filePath,
-                });
+                await deleteUpload(filePath);
               }
               await pagesCollection.findOneAndDelete({
                 _id: page._id,

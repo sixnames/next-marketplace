@@ -1,9 +1,9 @@
-import { ASSETS_DIST_COMPANIES } from 'config/common';
+import { ASSETS_DIST_COMPANIES, ASSETS_LOGO_WIDTH } from 'config/common';
 import { COL_COMPANIES } from 'db/collectionNames';
 import { CompanyModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { getApiMessageValue } from 'lib/apiMessageUtils';
-import { deleteUpload, storeRestApiUploads } from 'lib/assetUtils/assetUtils';
+import { deleteUpload, storeUploads } from 'lib/assetUtils/assetUtils';
 import { parseRestApiFormData } from 'lib/restApi';
 import { getOperationPermission } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
@@ -64,7 +64,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   // Delete company logo
-  const removedAsset = await deleteUpload({ filePath: `${company.logo.url}` });
+  const removedAsset = await deleteUpload(`${company.logo.url}`);
   if (!removedAsset) {
     res.status(500).send({
       success: false,
@@ -77,11 +77,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   // Upload new company logo
-  const uploadedLogo = await storeRestApiUploads({
+  const uploadedLogo = await storeUploads({
     files: formData.files,
-    itemId: company.itemId,
+    dirName: company.itemId,
     dist: ASSETS_DIST_COMPANIES,
     startIndex: 0,
+    width: ASSETS_LOGO_WIDTH,
   });
 
   if (!uploadedLogo) {

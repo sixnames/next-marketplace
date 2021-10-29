@@ -3,7 +3,7 @@ import { COL_CATEGORIES } from 'db/collectionNames';
 import { CategoryModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { getApiMessageValue } from 'lib/apiMessageUtils';
-import { deleteUpload, storeRestApiUploads } from 'lib/assetUtils/assetUtils';
+import { deleteUpload, storeUploads } from 'lib/assetUtils/assetUtils';
 import { parseRestApiFormData } from 'lib/restApi';
 import { getOperationPermission } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
@@ -66,7 +66,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     // remove old image
     if (category.image) {
-      await deleteUpload({ filePath: category.image });
+      await deleteUpload(category.image);
     }
 
     const updatedCategoryResult = await categoriesCollection.findOneAndUpdate(
@@ -130,13 +130,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   // remove old image
   if (category.image) {
-    await deleteUpload({ filePath: category.image });
+    await deleteUpload(category.image);
   }
 
-  const assets = await storeRestApiUploads({
+  const assets = await storeUploads({
     files: formData.files,
     dist: ASSETS_DIST_CATEGORIES,
-    itemId: `${category.slug}`,
+    dirName: `${category.slug}`,
   });
 
   if (!assets) {

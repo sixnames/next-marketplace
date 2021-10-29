@@ -59,7 +59,7 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({
 
   const productImageSrc = shopProduct
     ? `${product?.mainImage}`
-    : `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`;
+    : `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`;
   const imageWidth = 35;
   const imageHeight = 120;
 

@@ -30,7 +30,7 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({ orderProduct }) 
     orderProduct;
   const productImageSrc = shopProduct
     ? `${product?.mainImage}`
-    : `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`;
+    : `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`;
   const minAmount = 1;
 
   const [cancelOrderProductMutation] = useCancelOrderProduct();

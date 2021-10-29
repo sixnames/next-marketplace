@@ -226,7 +226,7 @@ export const ProductMutations = extendType({
               ...values,
               _id: productId,
               itemId,
-              mainImage: `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`,
+              mainImage: `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`,
               slug: itemId,
               rubricId,
               rubricSlug: rubric.slug,
@@ -256,7 +256,7 @@ export const ProductMutations = extendType({
               assets: [
                 {
                   index: 1,
-                  url: `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`,
+                  url: `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`,
                 },
               ],
             });
@@ -578,7 +578,7 @@ export const ProductMutations = extendType({
             const currentAsset = initialAssets.assets.find(({ index }) => index === assetIndex);
             if (
               currentAsset &&
-              currentAsset.url !== process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK
+              currentAsset.url !== process.env.OBJECT_STORAGE_IMAGE_FALLBACK
             ) {
               const removedAsset = await deleteUpload({ filePath: `${currentAsset?.url}` });
               if (!removedAsset) {
@@ -759,7 +759,7 @@ export const ProductMutations = extendType({
               itemId,
               slug: itemId,
               originalName: values.originalName || '',
-              mainImage: `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`,
+              mainImage: `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`,
               rubricId: sourceProduct.rubricId,
               rubricSlug: sourceProduct.rubricSlug,
               active: true,
@@ -787,7 +787,7 @@ export const ProductMutations = extendType({
               assets: [
                 {
                   index: 1,
-                  url: `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`,
+                  url: `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`,
                 },
               ],
             });
@@ -1394,7 +1394,7 @@ export const ProductMutations = extendType({
               _id: productId,
               itemId: productItemId,
               slug: productItemId,
-              mainImage: `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`,
+              mainImage: `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`,
               rubricId: rubric._id,
               rubricSlug: rubric.slug,
               active: false,

@@ -664,7 +664,7 @@ export function castCatalogueFilters({
       if (filterAttributeSlug === FILTER_COMMON_KEY) {
         if (filterOptionSlug === FILTER_NO_PHOTO_KEY) {
           photoStage = {
-            mainImage: `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`,
+            mainImage: `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`,
           };
         }
         return;
@@ -967,7 +967,7 @@ export const getCatalogueData = async ({
       $or: [
         {
           mainImage: {
-            $ne: process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK,
+            $ne: process.env.OBJECT_STORAGE_IMAGE_FALLBACK,
           },
         },
         {

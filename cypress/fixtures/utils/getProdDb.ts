@@ -74,7 +74,7 @@ export interface GetProdDd {
   uri: string;
   dbName: string;
   fallbackImage?: string;
-  bucketName: string;
+  bucketName?: string;
 }
 
 export async function getProdDb({ uri, dbName }: GetProdDd) {

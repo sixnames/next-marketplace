@@ -84,7 +84,6 @@ async function updateProds() {
   // updating db
   console.log('updating db');
   const { db, client } = await getProdDb({
-    bucketName: `${process.env.OBJECT_STORAGE_BUCKET_NAME}`,
     dbName: `${process.env.MONGO_DB_NAME}`,
     uri: `${process.env.MONGO_URL}`,
   });

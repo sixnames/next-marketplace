@@ -11,15 +11,11 @@ import {
   ROW_SNIPPET_LAYOUT_BIG_IMAGE,
 } from 'config/constantSelects';
 import {
-  COL_ATTRIBUTES,
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_CATEGORIES,
   COL_CATEGORY_DESCRIPTIONS,
-  COL_OPTIONS,
   COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCT_CONNECTION_ITEMS,
-  COL_PRODUCT_CONNECTIONS,
   COL_PRODUCTS,
   COL_RUBRIC_DESCRIPTIONS,
   COL_RUBRIC_SEO,
@@ -63,6 +59,7 @@ import {
   FILTER_NO_PHOTO_KEY,
   CATALOGUE_SEO_TEXT_POSITION_TOP,
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+  IMAGE_FALLBACK,
 } from 'config/common';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -664,7 +661,7 @@ export function castCatalogueFilters({
       if (filterAttributeSlug === FILTER_COMMON_KEY) {
         if (filterOptionSlug === FILTER_NO_PHOTO_KEY) {
           photoStage = {
-            mainImage: `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`,
+            mainImage: IMAGE_FALLBACK,
           };
         }
         return;
@@ -967,7 +964,7 @@ export const getCatalogueData = async ({
       $or: [
         {
           mainImage: {
-            $ne: process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK,
+            $ne: IMAGE_FALLBACK,
           },
         },
         {
@@ -1104,7 +1101,7 @@ export const getCatalogueData = async ({
                     },
 
                     // get product connections
-                    {
+                    /*{
                       $lookup: {
                         from: COL_PRODUCT_CONNECTIONS,
                         as: 'connections',
@@ -1186,7 +1183,7 @@ export const getCatalogueData = async ({
                           },
                         ],
                       },
-                    },
+                    },*/
                     {
                       $project: {
                         descriptionI18n: false,

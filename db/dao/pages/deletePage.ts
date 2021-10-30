@@ -55,9 +55,7 @@ export async function deletePage({
 
     // delete assets from cloud
     for await (const filePath of page.assetKeys) {
-      await deleteUpload({
-        filePath,
-      });
+      await deleteUpload(filePath);
     }
 
     // delete

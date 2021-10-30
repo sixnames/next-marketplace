@@ -13,7 +13,7 @@ const categories: CategoryModel[] = [
     rubricId: getObjectId('rubric Виски'),
     slug: `${CATEGORY_SLUG_PREFIX}1`,
     rubricSlug: 'viski',
-    image: `https://${process.env.OBJECT_STORAGE_DOMAIN}/${ASSETS_DIST_CATEGORIES}/${CATEGORY_SLUG_PREFIX}1/${CATEGORY_SLUG_PREFIX}1-0.png`,
+    image: `/assets/${ASSETS_DIST_CATEGORIES}/${CATEGORY_SLUG_PREFIX}1/${CATEGORY_SLUG_PREFIX}1-0.png`,
     variants: {},
     nameI18n: {
       ru: 'Односолодовый',

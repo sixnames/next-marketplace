@@ -3,7 +3,7 @@ import { COL_PAGE_TEMPLATES, COL_PAGES } from 'db/collectionNames';
 import { PageModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { getApiMessageValue } from 'lib/apiMessageUtils';
-import { deleteUpload, storeRestApiUploads } from 'lib/assetUtils/assetUtils';
+import { deleteUpload, storeUploads } from 'lib/assetUtils/assetUtils';
 import { parseRestApiFormData } from 'lib/restApi';
 import { getOperationPermission } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
@@ -67,13 +67,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   // Delete page main banner
   if (page.secondaryBanner) {
-    await deleteUpload({ filePath: page.secondaryBanner.url });
+    await deleteUpload(page.secondaryBanner.url);
   }
 
   // Upload new company logo
-  const uploadedAsset = await storeRestApiUploads({
+  const uploadedAsset = await storeUploads({
     files: formData.files,
-    itemId: `${formData.fields.pageId}`,
+    dirName: `${formData.fields.pageId}`,
     dist: isTemplate ? ASSETS_DIST_TEMPLATES : ASSETS_DIST_PAGES,
     startIndex: 0,
   });

@@ -175,12 +175,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
                 price: noNaN(bodyItem.price),
                 oldPrice,
                 discountedPercent,
-                $addToSet: {
-                  barcode: {
-                    $each: bodyItem.barcode,
-                  },
-                },
                 updatedAt: new Date(),
+              },
+              $addToSet: {
+                barcode: {
+                  $each: bodyItem.barcode,
+                },
               },
               ...oldPriceUpdater,
             },

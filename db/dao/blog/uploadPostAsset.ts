@@ -2,7 +2,7 @@ import { ASSETS_DIST_BLOG_CONTENT } from 'config/common';
 import { COL_BLOG_POSTS } from 'db/collectionNames';
 import { BlogPostModel, ConstructorAssetPayloadModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { storeRestApiUploads } from 'lib/assetUtils/assetUtils';
+import { storeUploads } from 'lib/assetUtils/assetUtils';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { parseApiFormData, UploadRestApiImageInterface } from 'lib/restApi';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
@@ -70,9 +70,9 @@ export async function uploadPostAsset(req: NextApiRequest, res: NextApiResponse)
     }
 
     // upload asset
-    const uploadedAsset = await storeRestApiUploads({
+    const uploadedAsset = await storeUploads({
       files: formData.files,
-      itemId: blogPost.slug,
+      dirName: blogPost.slug,
       dist: ASSETS_DIST_BLOG_CONTENT,
       startIndex: blogPost.assetKeys.length,
     });

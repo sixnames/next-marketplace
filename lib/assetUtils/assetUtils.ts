@@ -1,10 +1,10 @@
+import { ASSETS_DIST, IMAGE_FALLBACK } from 'config/common';
 import Formidable from 'formidable';
 import { AssetModel } from 'db/dbModels';
 import { alwaysArray } from 'lib/arrayUtils';
-import { deleteFileFromS3, DeleteFileToS3Interface, uploadFileToS3 } from 'lib/s3';
-import imagemin from 'imagemin';
 import mkdirp from 'mkdirp';
 import extName from 'ext-name';
+import rimraf from 'rimraf';
 import { FormatEnum } from 'sharp';
 import fs from 'fs';
 import path from 'path';
@@ -15,6 +15,7 @@ const readFile = promisify(fs.readFile);
 export interface StoreUploadsInterface {
   files: Formidable.Files;
   dist: string;
+  dirName: string;
   startIndex?: number;
   format?: keyof FormatEnum;
   width?: number;
@@ -25,10 +26,12 @@ export async function storeUploads({
   files,
   dist,
   startIndex = 0,
+  dirName,
   format = 'webp',
+  width,
 }: StoreUploadsInterface): Promise<AssetModel[] | null> {
   try {
-    const filesPath = path.join(process.cwd(), `public/assets`, dist);
+    const filesPath = path.join(process.cwd(), `public${ASSETS_DIST}`, dist, dirName);
     const assetsPath = `${dist}`;
 
     // Create directory if not exists
@@ -72,10 +75,15 @@ export async function storeUploads({
 
       // Save file to the FS
       const fileFullName = `${fileName}.${format}`;
-      await sharp(buffer).toFormat(format).toFile(`${filesPath}/${fileFullName}`);
+      const transform = sharp(buffer);
+      await transform.toFormat(format);
+      if (width) {
+        transform.resize(width);
+      }
+      await transform.toFile(`${filesPath}/${fileFullName}`);
 
       assets.push({
-        url: `${assetsPath}/${fileFullName}`,
+        url: `${ASSETS_DIST}/${dist}/${dirName}/${fileFullName}`,
         index: startIndex + index,
       });
     }
@@ -86,98 +94,24 @@ export async function storeUploads({
   }
 }
 
-interface StoreRestApiUploadsAsset {
-  buffer: Buffer;
-  ext: string | false;
-}
-
-export interface StoreRestApiUploadsInterface {
-  files: Formidable.Files;
-  itemId: number | string;
-  dist: string;
-  startIndex?: number;
-}
-
-export async function storeRestApiUploads({
-  files,
-  itemId,
-  dist,
-  startIndex = 0,
-}: StoreRestApiUploadsInterface): Promise<AssetModel[] | null> {
-  try {
-    const filePath = `${dist}/${itemId}`;
-    const assets: AssetModel[] = [];
-    const initialFiles: Formidable.File[][] = [];
-    Object.keys(files).forEach((key) => {
-      initialFiles.push(alwaysArray(files[key]));
-    });
-
-    const uploads: StoreRestApiUploadsAsset[] = [];
-    for await (const file of initialFiles) {
-      // const buffer = await fs.readFile(file[0].path);
-      // console.log(file);
-      // compress buffer
-
-      const imageminResult = await imagemin(
-        [file[0].path] /*{
-        plugins: [
-          imageminWebp({
-            quality: 50,
-          }),
-        ],
-      }*/,
-      );
-
-      const compressedBuffer = imageminResult[0]?.data;
-
-      if (!compressedBuffer) {
-        break;
-      }
-
-      const fileTypeResult = extName(file[0]?.name);
-      const fileType = alwaysArray(fileTypeResult)[0];
-
-      if (!fileType || !fileType.ext) {
-        break;
-      }
-
-      uploads.push({
-        buffer: compressedBuffer,
-        ext: `${fileType.ext}`.replace('.', ''),
-      });
-    }
-
-    for await (const [index, file] of uploads.entries()) {
-      const currentTimeStamp = new Date().getTime();
-      const fileIndex = index + 1;
-      const finalStartIndex = startIndex + 1;
-      const finalIndex = finalStartIndex + fileIndex;
-      const { buffer, ext } = file;
-      const fileName = `${currentTimeStamp}-${finalIndex}${ext ? `.${ext}` : ''}`;
-
-      if (!buffer) {
-        return null;
-      }
-
-      // Upload Buffer to the S3
-      const url = await uploadFileToS3({
-        buffer,
-        filePath,
-        fileName,
-      });
-
-      assets.push({ index: finalIndex, url });
-    }
-
-    return assets;
-  } catch (e) {
-    console.log(e);
-    return null;
+export const deleteUpload = async (filePath: string): Promise<boolean> => {
+  if (filePath === IMAGE_FALLBACK) {
+    return true;
   }
-}
+  const pathParts = filePath.split('/');
+  const pathWithoutFile = pathParts.slice(0, pathParts.length - 1);
+  const dirPath = pathWithoutFile.join('/');
+  const deletePath = path.join(process.cwd(), `public`, dirPath);
 
-export const deleteUpload = async ({ filePath }: DeleteFileToS3Interface): Promise<boolean> => {
-  return deleteFileFromS3({ filePath });
+  return new Promise((resolve) => {
+    rimraf(deletePath, (e: any) => {
+      if (e) {
+        resolve(false);
+      } else {
+        resolve(true);
+      }
+    });
+  });
 };
 
 export interface ReorderAssetsInterface {
@@ -226,7 +160,7 @@ export function getMainImage(assets: AssetModel[]): string {
     return assetA.index - assetB.index;
   });
   const firstAsset = sortedAssets[0];
-  let mainImage = `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`;
+  let mainImage = IMAGE_FALLBACK;
 
   if (firstAsset) {
     mainImage = firstAsset.url;

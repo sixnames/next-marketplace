@@ -1,5 +1,4 @@
 import { Seeder } from 'mongo-seeding';
-import { uploadTestAssets } from '../../../tests/uploadTestAssets';
 import { getProdDb, GetProdDd, updateIndexes } from './getProdDb';
 const path = require('path');
 require('dotenv').config();
@@ -37,6 +36,7 @@ const config = {
 const dbConfig: GetProdDd = {
   uri: `${protocol}://${username}:${password}@${host}:${port}`,
   dbName,
+  bucketName,
 };
 
 async function seedNewDb() {
@@ -52,9 +52,6 @@ async function seedNewDb() {
 
     await seeder.import(collections);
     console.log('Initial data seeded');
-
-    // upload assets
-    await uploadTestAssets(`./cypress/fixtures/initialData/assets`, bucketName);
 
     // create indexes
     const { db, client } = await getProdDb(dbConfig);

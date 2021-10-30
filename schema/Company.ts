@@ -1,4 +1,4 @@
-import { GEO_POINT_TYPE } from 'config/common';
+import { GEO_POINT_TYPE, IMAGE_FALLBACK } from 'config/common';
 import { deleteUpload } from 'lib/assetUtils/assetUtils';
 import { updateCompanyDomain } from 'lib/companyUtils';
 import { getConfigTemplates } from 'lib/getConfigTemplates';
@@ -317,7 +317,7 @@ export const CompanyMutations = extendType({
               slug,
               logo: {
                 index: 1,
-                url: `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`,
+                url: IMAGE_FALLBACK,
               },
               shopsIds: [],
               createdAt: new Date(),
@@ -683,9 +683,7 @@ export const CompanyMutations = extendType({
             for await (const page of pages) {
               // Delete page assets from cloud
               for await (const filePath of page.assetKeys) {
-                await deleteUpload({
-                  filePath,
-                });
+                await deleteUpload(filePath);
               }
               await pagesCollection.findOneAndDelete({
                 _id: page._id,
@@ -798,10 +796,10 @@ export const CompanyMutations = extendType({
               itemId,
               logo: {
                 index: 1,
-                url: `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`,
+                url: IMAGE_FALLBACK,
               },
               assets: [],
-              mainImage: `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`,
+              mainImage: IMAGE_FALLBACK,
               companyId: companyId,
               rating: 0,
               createdAt: new Date(),

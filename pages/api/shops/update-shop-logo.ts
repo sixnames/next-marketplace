@@ -1,9 +1,9 @@
-import { ASSETS_DIST_SHOPS_LOGOS } from 'config/common';
+import { ASSETS_DIST_SHOPS_LOGOS, ASSETS_LOGO_WIDTH } from 'config/common';
 import { COL_SHOPS } from 'db/collectionNames';
 import { ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { getApiMessageValue } from 'lib/apiMessageUtils';
-import { deleteUpload, storeRestApiUploads } from 'lib/assetUtils/assetUtils';
+import { deleteUpload, storeUploads } from 'lib/assetUtils/assetUtils';
 import { parseRestApiFormData } from 'lib/restApi';
 import { getOperationPermission } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
@@ -64,7 +64,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   // Delete shop logo
-  const removedAsset = await deleteUpload({ filePath: `${shop.logo.url}` });
+  const removedAsset = await deleteUpload(`${shop.logo.url}`);
   if (!removedAsset) {
     res.status(500).send({
       success: false,
@@ -77,10 +77,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   // Upload new shop logo
-  const assets = await storeRestApiUploads({
+  const assets = await storeUploads({
     files: formData.files,
-    itemId: shop.itemId,
+    dirName: shop.itemId,
     dist: ASSETS_DIST_SHOPS_LOGOS,
+    width: ASSETS_LOGO_WIDTH,
     startIndex: 0,
   });
   if (!assets) {

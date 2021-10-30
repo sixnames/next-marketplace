@@ -1,9 +1,9 @@
-import { ASSETS_DIST_SHOPS } from 'config/common';
+import { ASSETS_DIST_SHOPS, ASSETS_SHOP_IMAGE_WIDTH } from 'config/common';
 import { COL_SHOPS } from 'db/collectionNames';
 import { ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { getApiMessageValue } from 'lib/apiMessageUtils';
-import { getMainImage, storeRestApiUploads } from 'lib/assetUtils/assetUtils';
+import { getMainImage, storeUploads } from 'lib/assetUtils/assetUtils';
 import { noNaN } from 'lib/numbers';
 import { parseRestApiFormData } from 'lib/restApi';
 import { getOperationPermission } from 'lib/sessionHelpers';
@@ -71,10 +71,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   });
   const firstAsset = sortedAssets[0];
   const startIndex = noNaN(firstAsset?.index);
-  const assets = await storeRestApiUploads({
+  const assets = await storeUploads({
     files: formData.files,
-    itemId: shop.itemId,
+    dirName: shop.itemId,
     dist: ASSETS_DIST_SHOPS,
+    width: ASSETS_SHOP_IMAGE_WIDTH,
     startIndex,
   });
   if (!assets) {

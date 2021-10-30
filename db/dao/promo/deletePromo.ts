@@ -65,9 +65,7 @@ export async function deletePromo({
 
       // delete assets from cloud
       for await (const filePath of promo.assetKeys) {
-        await deleteUpload({
-          filePath,
-        });
+        await deleteUpload(filePath);
       }
 
       // delete promo products

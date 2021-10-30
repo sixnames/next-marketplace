@@ -17,6 +17,7 @@ import {
   SORT_DESC,
   VIEWS_COUNTER_STEP,
   ROUTE_BLOG,
+  IMAGE_FALLBACK,
 } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { useConfigContext } from 'context/configContext';
@@ -140,7 +141,7 @@ const BlogListSnippet: React.FC<BlogListSnippetInterface> = ({ post, showViews }
       <div className='relative flex-shrink-0 overflow-hidden h-[200px] group-hover:opacity-50 transition-opacity duration-150'>
         <img
           className='absolute h-full w-full inset-0 object-cover'
-          src={post.previewImage || `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`}
+          src={post.previewImage || IMAGE_FALLBACK}
           alt={`${post.title}`}
           title={`${post.title}`}
         />
@@ -190,7 +191,7 @@ const BlogListMainSnippet: React.FC<BlogListSnippetInterface> = ({ post, showVie
     <div className={`${snippetClassName} min-h-[300px] sm:col-span-2`}>
       <img
         className='absolute h-full w-full inset-0 object-cover'
-        src={post.previewImage || `${process.env.OBJECT_STORAGE_IMAGE_FALLBACK}`}
+        src={post.previewImage || IMAGE_FALLBACK}
         alt={`${post.title}`}
         title={`${post.title}`}
       />

@@ -138,11 +138,6 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
       },
     },
     {
-      accessor: 'product.active',
-      headTitle: 'Активен',
-      render: ({ cellData }) => (cellData ? 'Да' : 'Нет'),
-    },
-    {
       accessor: 'option.name',
       headTitle: 'Значение',
       render: ({ cellData }) => {

@@ -22,7 +22,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
 }) => {
   const { configs } = useConfigContext();
   const { addShoplessProductToCart, addProductToCart } = useSiteContext();
-  const { _id, rubricSlug, product } = shopProduct;
+  const { rubricSlug, product } = shopProduct;
   if (!product) {
     return null;
   }
@@ -90,7 +90,6 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
         {/*image*/}
         <div className='relative flex items-center justify-center flex-grow pt-4 pl-4 pr-4 col-span-3 dark:snippet-image'>
           <Image
-            priority={true}
             src={mainImage}
             objectFit={'contain'}
             objectPosition={'center'}
@@ -102,7 +101,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
           />
           <Link
             testId={`${testId}-image-grid`}
-            target={'_blank'}
+            // target={'_blank'}
             className='block absolute z-10 inset-0 text-indent-full'
             href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
           >
@@ -116,7 +115,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
             <div className='mb-3'>
               <Link
                 testId={`${testId}-name-grid`}
-                target={'_blank'}
+                // target={'_blank'}
                 className='text-lg sm:text-xl font-medium block text-primary-text hover:no-underline hover:text-primary-text'
                 href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
               >
@@ -198,13 +197,13 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
                   if (shopProductsIds && shopProductsIds.length < 2) {
                     addProductToCart({
                       amount: 1,
-                      productId: _id,
+                      productId: product._id,
                       shopProductId: `${shopProductsIds[0]}`,
                     });
                   } else {
                     addShoplessProductToCart({
                       amount: 1,
-                      productId: _id,
+                      productId: product._id,
                     });
                   }
                 }}

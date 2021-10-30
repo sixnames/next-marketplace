@@ -449,7 +449,7 @@ export const ShopMutations = extendType({
 
           // Delete shop asset
           const currentAsset = shop.assets.find(({ index }) => index === assetIndex);
-          const removedAsset = await deleteUpload({ filePath: `${currentAsset?.url}` });
+          const removedAsset = await deleteUpload(`${currentAsset?.url}`);
           if (!removedAsset) {
             return {
               success: false,

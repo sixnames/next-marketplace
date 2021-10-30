@@ -945,9 +945,7 @@ export const RubricMutations = extendType({
               .toArray();
             for await (const productAsset of productAssets) {
               for await (const asset of productAsset.assets) {
-                await deleteUpload({
-                  filePath: asset.url,
-                });
+                await deleteUpload(asset.url);
               }
             }
 
@@ -985,9 +983,7 @@ export const RubricMutations = extendType({
               .toArray();
             for await (const productCardContent of productCardContents) {
               for await (const filePath of productCardContent.assetKeys) {
-                await deleteUpload({
-                  filePath,
-                });
+                await deleteUpload(filePath);
               }
             }
 

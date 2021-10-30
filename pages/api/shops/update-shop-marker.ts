@@ -3,7 +3,7 @@ import { COL_SHOPS } from 'db/collectionNames';
 import { ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { getApiMessageValue } from 'lib/apiMessageUtils';
-import { deleteUpload, storeRestApiUploads } from 'lib/assetUtils/assetUtils';
+import { deleteUpload, storeUploads } from 'lib/assetUtils/assetUtils';
 import { parseRestApiFormData } from 'lib/restApi';
 import { getOperationPermission } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
@@ -109,13 +109,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   // Delete old asset
   const oldAsset = isDark ? shop.mapMarker?.darkTheme : shop.mapMarker?.lightTheme;
   if (oldAsset) {
-    await deleteUpload({ filePath: oldAsset });
+    await deleteUpload(oldAsset);
   }
 
   // Upload new asset
-  const uploadedAsset = await storeRestApiUploads({
+  const uploadedAsset = await storeUploads({
     files: formData.files,
-    itemId: shop.itemId,
+    dirName: shop.itemId,
     dist: ASSETS_DIST_SHOPS,
     startIndex: 0,
   });

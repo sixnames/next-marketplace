@@ -3,7 +3,7 @@ import { COL_USERS } from 'db/collectionNames';
 import { UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { getApiMessageValue } from 'lib/apiMessageUtils';
-import { deleteUpload, storeRestApiUploads } from 'lib/assetUtils/assetUtils';
+import { deleteUpload, storeUploads } from 'lib/assetUtils/assetUtils';
 import { parseRestApiFormData } from 'lib/restApi';
 import { getOperationPermission } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
@@ -65,7 +65,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   // Delete user logo
   if (user.avatar) {
-    const removedAsset = await deleteUpload({ filePath: `${user.avatar.url}` });
+    const removedAsset = await deleteUpload(`${user.avatar.url}`);
     if (!removedAsset) {
       res.status(500).send({
         success: false,
@@ -79,9 +79,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   // Upload new company logo
-  const uploadedAvatar = await storeRestApiUploads({
+  const uploadedAvatar = await storeUploads({
     files: formData.files,
-    itemId: user.itemId,
+    dirName: user.itemId,
     dist: ASSETS_DIST_USERS,
     startIndex: 0,
   });

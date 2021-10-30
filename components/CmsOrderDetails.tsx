@@ -7,6 +7,7 @@ import LinkEmail from 'components/Link/LinkEmail';
 import LinkPhone from 'components/Link/LinkPhone';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import Title from 'components/Title';
+import { IMAGE_FALLBACK } from 'config/common';
 import { CONFIRM_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { useNotificationsContext } from 'context/notificationsContext';
@@ -28,9 +29,7 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({ orderProduct }) 
   const { showErrorNotification } = useNotificationsContext();
   const { product, originalName, shopProduct, itemId, price, totalPrice, status, isCanceled } =
     orderProduct;
-  const productImageSrc = shopProduct
-    ? `${product?.mainImage}`
-    : `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`;
+  const productImageSrc = shopProduct ? `${product?.mainImage}` : IMAGE_FALLBACK;
   const minAmount = 1;
 
   const [cancelOrderProductMutation] = useCancelOrderProduct();

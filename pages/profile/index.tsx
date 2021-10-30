@@ -9,7 +9,7 @@ import ProductShopPrices from 'components/ProductShopPrices';
 import RequestError from 'components/RequestError';
 import Title from 'components/Title';
 import WpTooltip from 'components/WpTooltip';
-import { ROUTE_CATALOGUE, ROUTE_SIGN_IN } from 'config/common';
+import { IMAGE_FALLBACK, ROUTE_CATALOGUE, ROUTE_SIGN_IN } from 'config/common';
 import { useSiteContext } from 'context/siteContext';
 import {
   COL_ORDER_PRODUCTS,
@@ -57,9 +57,7 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({
   const isCartButtonDisabled =
     productNotExist || addToCartAmount + inCartCount > noNaN(shopProduct?.available);
 
-  const productImageSrc = shopProduct
-    ? `${product?.mainImage}`
-    : `${process.env.OBJECT_STORAGE_PRODUCT_IMAGE_FALLBACK}`;
+  const productImageSrc = shopProduct ? `${product?.mainImage}` : IMAGE_FALLBACK;
   const imageWidth = 35;
   const imageHeight = 120;
 

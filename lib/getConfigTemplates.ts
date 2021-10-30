@@ -1,4 +1,5 @@
 import {
+  ASSETS_DIST,
   CONFIG_VARIANT_ADDRESS,
   CONFIG_VARIANT_ASSET,
   CONFIG_VARIANT_BOOLEAN,
@@ -37,8 +38,6 @@ export function getConfigTemplates({
   foundationYear = `${new Date().getFullYear()}`,
   address,
 }: GetConfigTemplatesInterface): ConfigModel[] {
-  const objectStorageDomain = `${process.env.OBJECT_STORAGE_DOMAIN}`;
-
   return [
     // Site globals
     {
@@ -249,9 +248,7 @@ export function getConfigTemplates({
       acceptedFormats: ['image/svg+xml', 'image/png'],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: assetsPath
-            ? [`https://${objectStorageDomain}${assetsPath}/siteLogo/siteLogo.svg`]
-            : [],
+          [DEFAULT_LOCALE]: assetsPath ? [`${ASSETS_DIST}${assetsPath}/siteLogo/siteLogo.svg`] : [],
         },
       },
     },
@@ -268,7 +265,7 @@ export function getConfigTemplates({
       cities: {
         [DEFAULT_CITY]: {
           [DEFAULT_LOCALE]: assetsPath
-            ? [`https://${objectStorageDomain}${assetsPath}/siteLogoDark/siteLogoDark.svg`]
+            ? [`${ASSETS_DIST}${assetsPath}/siteLogoDark/siteLogoDark.svg`]
             : [],
         },
       },
@@ -832,9 +829,7 @@ export function getConfigTemplates({
       cities: {
         [DEFAULT_CITY]: {
           [DEFAULT_LOCALE]: assetsPath
-            ? [
-                `https://${objectStorageDomain}${assetsPath}/pageDefaultPreviewImage/pageDefaultPreviewImage.jpg`,
-              ]
+            ? [`${ASSETS_DIST}${assetsPath}/pageDefaultPreviewImage/pageDefaultPreviewImage.jpg`]
             : [],
         },
       },
@@ -852,9 +847,7 @@ export function getConfigTemplates({
       cities: {
         [DEFAULT_CITY]: {
           [DEFAULT_LOCALE]: assetsPath
-            ? [
-                `https://${objectStorageDomain}${assetsPath}/android-chrome-192x192/android-chrome-192x192.png`,
-              ]
+            ? [`${ASSETS_DIST}${assetsPath}/android-chrome-192x192/android-chrome-192x192.png`]
             : [],
         },
       },
@@ -872,9 +865,7 @@ export function getConfigTemplates({
       cities: {
         [DEFAULT_CITY]: {
           [DEFAULT_LOCALE]: assetsPath
-            ? [
-                `https://${objectStorageDomain}${assetsPath}/android-chrome-512x512/android-chrome-512x512.png`,
-              ]
+            ? [`${ASSETS_DIST}${assetsPath}/android-chrome-512x512/android-chrome-512x512.png`]
             : [],
         },
       },
@@ -892,7 +883,7 @@ export function getConfigTemplates({
       cities: {
         [DEFAULT_CITY]: {
           [DEFAULT_LOCALE]: assetsPath
-            ? [`https://${objectStorageDomain}${assetsPath}/apple-touch-icon/apple-touch-icon.png`]
+            ? [`${ASSETS_DIST}${assetsPath}/apple-touch-icon/apple-touch-icon.png`]
             : [],
         },
       },
@@ -909,9 +900,7 @@ export function getConfigTemplates({
       acceptedFormats: ['image/x-icon', 'image/vnd.microsoft.icon'],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: assetsPath
-            ? [`https://${objectStorageDomain}${assetsPath}/favicon/favicon.ico`]
-            : [],
+          [DEFAULT_LOCALE]: assetsPath ? [`${ASSETS_DIST}${assetsPath}/favicon/favicon.ico`] : [],
         },
       },
     },
@@ -927,9 +916,7 @@ export function getConfigTemplates({
       acceptedFormats: ['image/svg+xml'],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: assetsPath
-            ? [`https://${objectStorageDomain}${assetsPath}/icon/icon.svg`]
-            : [],
+          [DEFAULT_LOCALE]: assetsPath ? [`${ASSETS_DIST}${assetsPath}/icon/icon.svg`] : [],
         },
       },
     },

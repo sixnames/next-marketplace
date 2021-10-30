@@ -324,6 +324,8 @@ export const ISO_LANGUAGES = [
 export const HITS_PER_PAGE = 150;
 
 // ASSETS
+export const ASSETS_DIST = `/assets`;
+export const IMAGE_FALLBACK = `${ASSETS_DIST}/image-fallback.png`;
 export const ASSETS_DIST_USERS = 'users';
 export const ASSETS_DIST_PRODUCTS = 'products';
 export const ASSETS_DIST_PRODUCT_CARD_CONTENT = 'card-content';
@@ -334,7 +336,7 @@ export const ASSETS_DIST_CONFIGS = 'configs';
 export const ASSETS_DIST_PAGES = 'pages';
 export const ASSETS_DIST_SEO = 'seo';
 export const ASSETS_DIST_TEMPLATES = 'templates';
-export const ASSETS_DIST_PROMO = 'templates';
+export const ASSETS_DIST_PROMO = 'promo';
 export const ASSETS_DIST_OPTIONS = 'options';
 export const ASSETS_DIST_BRANDS = 'brands';
 export const ASSETS_DIST_CATEGORIES = 'categories';
@@ -342,7 +344,7 @@ export const ASSETS_DIST_BLOG = 'blog';
 export const ASSETS_DIST_BLOG_CONTENT = 'blog-content';
 export const ASSETS_LOGO_WIDTH = 150;
 export const ASSETS_SHOP_IMAGE_WIDTH = 1080;
-export const ASSETS_PRODUCT_IMAGE_WIDTH = 300;
+export const ASSETS_PRODUCT_IMAGE_WIDTH = 480;
 
 // TEXT HORIZONTAL ALIGNMENT
 export const TEXT_HORIZONTAL_LEFT = 'left';

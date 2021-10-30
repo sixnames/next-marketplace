@@ -3,7 +3,7 @@ import { COL_OPTIONS } from 'db/collectionNames';
 import { OptionModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { getApiMessageValue } from 'lib/apiMessageUtils';
-import { deleteUpload, storeRestApiUploads } from 'lib/assetUtils/assetUtils';
+import { deleteUpload, storeUploads } from 'lib/assetUtils/assetUtils';
 import { parseRestApiFormData } from 'lib/restApi';
 import { getOperationPermission } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
@@ -65,7 +65,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     }
     // remove old image
     if (option.image) {
-      await deleteUpload({ filePath: option.image });
+      await deleteUpload(option.image);
     }
 
     const updatedOptionResult = await optionsCollection.findOneAndUpdate(
@@ -129,13 +129,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   // remove old image
   if (option.image) {
-    await deleteUpload({ filePath: option.image });
+    await deleteUpload(option.image);
   }
 
-  const assets = await storeRestApiUploads({
+  const assets = await storeUploads({
     files: formData.files,
     dist: ASSETS_DIST_OPTIONS,
-    itemId: `${option.slug}`,
+    dirName: `${option.slug}`,
   });
 
   if (!assets) {

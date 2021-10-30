@@ -1,5 +1,4 @@
 import { Seeder } from 'mongo-seeding';
-import { uploadTestAssets } from './uploadTestAssets';
 const path = require('path');
 require('dotenv').config();
 
@@ -38,11 +37,6 @@ const config = {
   try {
     await seeder.import(collections);
     console.log('Test data seeded');
-    // await uploadTestAssets('./cypress/fixtures/assets');
-
-    const bucketName = `${process.env.STAGE_OBJECT_STORAGE_BUCKET_NAME}`;
-
-    await uploadTestAssets(`./cypress/fixtures/assets/`, bucketName, `/`);
   } catch (err) {
     console.log(err);
   }

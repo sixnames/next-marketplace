@@ -1,8 +1,8 @@
-import { ASSETS_DIST_PRODUCTS } from 'config/common';
+import { ASSETS_DIST_PRODUCTS, ASSETS_PRODUCT_IMAGE_WIDTH } from 'config/common';
 import { COL_PRODUCT_ASSETS, COL_PRODUCTS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import { ProductAssetsModel, ProductModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { getMainImage, storeRestApiUploads } from 'lib/assetUtils/assetUtils';
+import { getMainImage, storeUploads } from 'lib/assetUtils/assetUtils';
 import { noNaN } from 'lib/numbers';
 import { parseRestApiFormData } from 'lib/restApi';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
@@ -73,18 +73,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const firstAsset = sortedAssets[0];
   const startIndex = noNaN(firstAsset?.index);
 
-  /*const test = await storeUploads({
-    files: formData.files,
-    dist: `/${ASSETS_DIST_PRODUCTS}/${product.itemId}`,
-    startIndex,
-  });
-  console.log('test ', test);*/
-
-  const assets = await storeRestApiUploads({
+  const assets = await storeUploads({
     files: formData.files,
     dist: ASSETS_DIST_PRODUCTS,
-    itemId: product.itemId,
+    dirName: product.itemId,
     startIndex,
+    width: ASSETS_PRODUCT_IMAGE_WIDTH,
   });
   if (!assets) {
     res.status(500).send({

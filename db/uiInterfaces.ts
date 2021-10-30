@@ -221,11 +221,6 @@ export interface ProductConnectionItemInterface extends ProductConnectionItemMod
   option?: OptionInterface | null;
 }
 
-export interface ShopProductsGroupInterface {
-  _id: ObjectIdModel;
-  shopProducts: ShopProductInterface[];
-}
-
 export interface ProductConnectionInterface extends ProductConnectionModel {
   attribute?: AttributeInterface | null;
   connectionProducts?: ProductConnectionItemInterface[];

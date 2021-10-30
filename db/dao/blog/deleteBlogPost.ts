@@ -54,9 +54,7 @@ export async function deleteBlogPost(req: NextApiRequest, res: NextApiResponse) 
 
     // delete assets
     for await (const filePath of blogPost.assetKeys) {
-      await deleteUpload({
-        filePath,
-      });
+      await deleteUpload(filePath);
     }
 
     // delete

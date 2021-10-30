@@ -29,6 +29,7 @@ import {
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import ConsoleShopLayout, { AppShopLayoutInterface } from 'layout/console/ConsoleShopLayout';
+import { alwaysArray } from 'lib/arrayUtils';
 import { getNumWord } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';
@@ -126,9 +127,9 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
     },
     {
       headTitle: 'Наличие',
-      render: ({ rowIndex, dataItem }) => {
+      render: ({ rowIndex }) => {
         return (
-          <div data-cy={`${dataItem.barcode}-available`}>
+          <div data-cy={`${rowIndex}-available`}>
             <FormikInput
               testId={`shop-product-available-${rowIndex}`}
               name={`input[${rowIndex}].available`}
@@ -142,9 +143,9 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
     },
     {
       headTitle: 'Цена',
-      render: ({ rowIndex, dataItem }) => {
+      render: ({ rowIndex }) => {
         return (
-          <div data-cy={`${dataItem.barcode}-price`}>
+          <div data-cy={`${rowIndex}-price`}>
             <FormikInput
               testId={`shop-product-price-${rowIndex}`}
               name={`input[${rowIndex}].price`}
@@ -158,7 +159,12 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
     {
       accessor: 'barcode',
       headTitle: 'Штрих-код',
-      render: ({ cellData }) => cellData,
+      render: ({ cellData }) => {
+        const barcode = alwaysArray(cellData);
+        return barcode.map((barcodeItem) => {
+          return <div key={barcodeItem}>{barcodeItem}</div>;
+        });
+      },
     },
     {
       render: ({ dataItem, rowIndex }) => {

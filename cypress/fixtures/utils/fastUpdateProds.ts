@@ -1,225 +1,465 @@
+// @ts-ignore
+import EasyYandexS3 from 'easy-yandex-s3';
+import { alwaysArray } from '../../../lib/arrayUtils';
+import { CONFIG_VARIANT_ASSET, DEFAULT_CITY, DEFAULT_LOCALE } from '../../../config/common';
 import {
-  NotSyncedProductModel,
-  ObjectIdModel,
-  OrderProductModel,
+  COL_BLOG_POSTS,
+  COL_BRANDS,
+  COL_CATEGORIES,
+  COL_COMPANIES,
+  COL_CONFIGS,
+  COL_PAGE_TEMPLATES,
+  COL_PAGES,
+  COL_PRODUCT_ASSETS,
+  COL_PRODUCT_CARD_CONTENTS,
+  COL_PRODUCTS,
+  COL_PROMO,
+  COL_SHOP_PRODUCTS,
+  COL_SHOPS,
+} from '../../../db/collectionNames';
+import {
+  BlogPostModel,
+  BrandModel,
+  CategoryModel,
+  CompanyModel,
+  ConfigModel,
+  PageModel,
+  PagesTemplateModel,
+  ProductAssetsModel,
+  ProductCardContentModel,
+  ProductModel,
+  PromoModel,
+  ShopModel,
   ShopProductModel,
 } from '../../../db/dbModels';
-import {
-  COL_NOT_SYNCED_PRODUCTS,
-  COL_ORDER_PRODUCTS,
-  COL_SHOP_PRODUCTS,
-} from '../../../db/collectionNames';
-import { dbsConfig, getProdDb } from './getProdDb';
+import { getProdDb } from './getProdDb';
+import mkdirp from 'mkdirp';
+import FileType from 'file-type';
+import sharp from 'sharp';
+import fetch from 'node-fetch';
+import fs from 'fs';
+import { get } from 'lodash';
 require('dotenv').config();
 
-/*export async function getNextItemId(collectionName: string, db: Db): Promise<string> {
-  const idCountersCollection = db.collection<IdCounterModel>(COL_ID_COUNTERS);
+interface ContentsInterface {
+  Key: string;
+}
 
-  const updatedCounter = await idCountersCollection.findOneAndUpdate(
-    { collection: collectionName },
-    {
-      $inc: {
-        counter: ID_COUNTER_STEP,
-      },
-    },
-    {
-      upsert: true,
-      returnDocument: 'after',
-    },
-  );
+interface CommonPrefixesInterface {
+  Prefix: string;
+}
 
-  if (!updatedCounter.ok || !updatedCounter.value) {
-    throw Error(`${collectionName} id counter update error`);
+interface GetListInterface {
+  Contents?: ContentsInterface[];
+  Prefix: string;
+  CommonPrefixes?: CommonPrefixesInterface[];
+}
+
+interface PathInterface {
+  src: string;
+  dist: string;
+}
+
+const basePath = 'public/assets/';
+async function getPaths(initialPath: string, Bucket: string, s3Instance: any) {
+  try {
+    const list: GetListInterface = await s3Instance.GetList(initialPath);
+    for await (const content of list.Contents || []) {
+      const path: PathInterface = {
+        src: `${content.Key}`,
+        dist: `${basePath}${content.Key}`,
+      };
+      await mkdirp(`${basePath}/${initialPath}`);
+      const url = `https://${Bucket}.storage.yandexcloud.net/${path.src}`;
+      const response = await fetch(url);
+      const buffer = await response.buffer();
+      if (!buffer) {
+        console.log('Error ========================== ', path.src);
+        continue;
+      }
+
+      const fileType = await FileType.fromBuffer(buffer);
+      if (!fileType) {
+        await fs.writeFile(path.dist, buffer.toString(), (error) => {
+          if (error) {
+            console.log('fs.writeFile Error ========================== ', path.dist);
+          }
+        });
+        continue;
+      }
+      await sharp(buffer).trim().toFile(path.dist);
+    }
+
+    for await (const prefix of list.CommonPrefixes || []) {
+      await getPaths(prefix.Prefix, Bucket, s3Instance);
+    }
+  } catch (e) {
+    console.log(e);
   }
-
-  return `${updatedCounter.value.counter}`;
-}*/
-
-type ShopProductBaseInterface = Omit<ShopProductModel, '_id'>;
-interface ShopProductInterface extends ShopProductModel {
-  ids: ObjectIdModel[];
-}
-
-type OrderProductBaseInterface = Omit<OrderProductModel, '_id'>;
-interface OrderProductInterface extends OrderProductModel {
-  ids: ObjectIdModel[];
-}
-
-type NotSyncedProductBaseInterface = Omit<NotSyncedProductModel, '_id'>;
-interface NotSyncedProductInterface extends NotSyncedProductModel {
-  ids: ObjectIdModel[];
 }
 
 async function updateProds() {
-  for await (const dbConfig of dbsConfig) {
-    const { db, client } = await getProdDb(dbConfig);
+  console.log(' ');
+  console.log('>>>>>>>>>>>>>>>>>>>>>>>>');
+  console.log(' ');
+  console.log(`Updating ${process.env.MONGO_DB_NAME}`);
+  const s3Instance = new EasyYandexS3({
+    auth: {
+      accessKeyId: `${process.env.OBJECT_STORAGE_KEY_ID}`,
+      secretAccessKey: `${process.env.OBJECT_STORAGE_KEY}`,
+    },
+    Bucket: `${process.env.OBJECT_STORAGE_BUCKET_NAME}`,
+  });
+  await getPaths('', `${process.env.OBJECT_STORAGE_BUCKET_NAME}`, s3Instance);
+  console.log('assets downloaded ============================');
 
-    const shopProductsCollection = await db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-    const orderProductsCollection = await db.collection<OrderProductModel>(COL_ORDER_PRODUCTS);
-    const notSyncedProductsCollection = await db.collection<NotSyncedProductModel>(
-      COL_NOT_SYNCED_PRODUCTS,
-    );
-
-    console.log(' ');
-    console.log('>>>>>>>>>>>>>>>>>>>>>>>>');
-    console.log(' ');
-    console.log(`Updating ${dbConfig.dbName} db`);
-
-    // shop products
-    const shopProductsAggregation = await shopProductsCollection
-      .aggregate<ShopProductInterface>([
-        {
-          $group: {
-            _id: {
-              productId: '$productId',
-              shopId: '$shopId',
-            },
-            available: { $first: '$available' },
-            citySlug: { $first: '$citySlug' },
-            price: { $first: '$price' },
-            oldPrice: { $first: '$oldPrice' },
-            oldPrices: { $first: '$oldPrices' },
-            discountedPercent: { $first: '$discountedPercent' },
-            itemId: { $first: '$itemId' },
-            productId: { $first: '$productId' },
-            shopId: { $first: '$shopId' },
-            companyId: { $first: '$companyId' },
-            mainImage: { $first: '$mainImage' },
-            useCategoryDiscount: { $first: '$useCategoryDiscount' },
-            useCategoryCashback: { $first: '$useCategoryCashback' },
-            useCategoryPayFromCashback: { $first: '$useCategoryPayFromCashback' },
-            createdAt: { $first: '$createdAt' },
-            updatedAt: { $first: '$updatedAt' },
-            priorities: { $first: '$priorities' },
-            views: { $first: '$views' },
-            supplierSlugs: { $first: '$supplierSlugs' },
-            brandSlug: { $first: '$brandSlug' },
-            brandCollectionSlug: { $first: '$brandCollectionSlug' },
-            rubricId: { $first: '$rubricId' },
-            rubricSlug: { $first: '$rubricSlug' },
-            manufacturerSlug: { $first: '$manufacturerSlug' },
-            selectedOptionsSlugs: { $first: '$selectedOptionsSlugs' },
-            barcode: {
-              $addToSet: '$barcode',
-            },
-            ids: {
-              $addToSet: '$_id',
-            },
-          },
-        },
-      ])
-      .toArray();
-    const deleteShopProductIds: ObjectIdModel[] = [];
-    const shopProducts: ShopProductBaseInterface[] = shopProductsAggregation.map(
-      ({ _id, ids, ...shopProduct }) => {
-        ids.forEach((_id) => deleteShopProductIds.push(_id));
-        return {
-          ...shopProduct,
-          barcode: (shopProduct.barcode || []).filter((code) => code),
-        };
-      },
-    );
-    await shopProductsCollection.insertMany(shopProducts);
-    const deleteShopProductsResult = await shopProductsCollection.deleteMany({
-      _id: { $in: deleteShopProductIds },
-    });
-    console.log(shopProducts.length, deleteShopProductsResult.deletedCount);
-    console.log('shop products done');
-
-    // order products
-    const orderProductsAggregation = await orderProductsCollection
-      .aggregate<OrderProductInterface>([
-        {
-          $group: {
-            _id: '$shopProductId',
-            itemId: { $first: '$itemId' },
-            price: { $first: '$price' },
-            amount: { $first: '$amount' },
-            totalPrice: { $first: '$totalPrice' },
-            slug: { $first: '$slug' },
-            originalName: { $first: '$originalName' },
-            nameI18n: { $first: '$nameI18n' },
-            productId: { $first: '$productId' },
-            customerId: { $first: '$customerId' },
-            shopProductId: { $first: '$shopProductId' },
-            shopId: { $first: '$shopId' },
-            companyId: { $first: '$companyId' },
-            orderId: { $first: '$orderId' },
-            statusId: { $first: '$statusId' },
-            isCanceled: { $first: '$isCanceled' },
-            createdAt: { $first: '$createdAt' },
-            updatedAt: { $first: '$updatedAt' },
-            barcode: {
-              $addToSet: '$barcode',
-            },
-            ids: {
-              $addToSet: '$_id',
-            },
-          },
-        },
-      ])
-      .toArray();
-    const deleteOrderProductIds: ObjectIdModel[] = [];
-    const orderProducts: OrderProductBaseInterface[] = orderProductsAggregation.map(
-      ({ _id, ids, ...orderProduct }) => {
-        ids.forEach((_id) => deleteOrderProductIds.push(_id));
-        return {
-          ...orderProduct,
-          barcode: (orderProduct.barcode || []).filter((code) => code),
-        };
-      },
-    );
-    await orderProductsCollection.insertMany(orderProducts);
-    const deleteOrderProductsResult = await orderProductsCollection.deleteMany({
-      _id: { $in: deleteOrderProductIds },
-    });
-    console.log(orderProducts.length, deleteOrderProductsResult.deletedCount);
-    console.log('order products done');
-
-    // not synced products
-    const notSyncedProductsAggregation = await notSyncedProductsCollection
-      .aggregate<NotSyncedProductInterface>([
-        {
-          $group: {
-            _id: '$name',
-            name: { $first: '$name' },
-            price: { $first: '$price' },
-            available: { $first: '$available' },
-            shopId: { $first: '$shopId' },
-            createdAt: { $first: '$createdAt' },
-            barcode: {
-              $addToSet: '$barcode',
-            },
-            ids: {
-              $addToSet: '$_id',
-            },
-          },
-        },
-      ])
-      .toArray();
-    const deleteNotSyncedProductIds: ObjectIdModel[] = [];
-    const notSyncedProducts: NotSyncedProductBaseInterface[] = notSyncedProductsAggregation.map(
-      ({ _id, ids, ...notSyncedProduct }) => {
-        ids.forEach((_id) => deleteNotSyncedProductIds.push(_id));
-        return {
-          ...notSyncedProduct,
-          barcode: (notSyncedProduct.barcode || []).filter((code) => code),
-        };
-      },
-    );
-    await notSyncedProductsCollection.insertMany(notSyncedProducts);
-    const deleteNotSyncedProductsResult = await notSyncedProductsCollection.deleteMany({
-      _id: { $in: deleteNotSyncedProductIds },
-    });
-    console.log(notSyncedProducts.length, deleteNotSyncedProductsResult.deletedCount);
-    console.log('not synced products done');
-
-    console.log(`Done ${dbConfig.dbName} db`);
-    console.log(' ');
-
-    // disconnect form db
-    await client.close();
+  // updating db
+  console.log('updating db');
+  const { db, client } = await getProdDb({
+    dbName: `${process.env.MONGO_DB_NAME}`,
+    uri: `${process.env.MONGO_URL}`,
+  });
+  function replaceUrl(key: string) {
+    return key.replace(`https://${process.env.OBJECT_STORAGE_DOMAIN}`, '/assets');
   }
+
+  // blog
+  const blogPostsCollection = db.collection<BlogPostModel>(COL_BLOG_POSTS);
+  const posts = await blogPostsCollection.find({}).toArray();
+  for await (const doc of posts) {
+    const updated: BlogPostModel = {
+      ...doc,
+      previewImage: doc.previewImage ? replaceUrl(doc.previewImage) : null,
+      assetKeys: doc.assetKeys.map(replaceUrl),
+      content: replaceUrl(doc.content),
+    };
+    const { _id, ...rest } = updated;
+    await blogPostsCollection.findOneAndUpdate(
+      { _id },
+      {
+        $set: rest,
+      },
+    );
+  }
+  console.log('blog posts updated');
+
+  // brands
+  const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
+  const brands = await brandsCollection.find({}).toArray();
+  for await (const doc of brands) {
+    const updated: BrandModel = {
+      ...doc,
+      logo: doc.logo ? replaceUrl(doc.logo) : '',
+    };
+    const { _id, ...rest } = updated;
+    await brandsCollection.findOneAndUpdate(
+      { _id },
+      {
+        $set: rest,
+      },
+    );
+  }
+  console.log('brands updated');
+
+  // card contents
+  const cardContentsCollection = db.collection<ProductCardContentModel>(COL_PRODUCT_CARD_CONTENTS);
+  const cardContents = await cardContentsCollection.find({}).toArray();
+  for await (const doc of cardContents) {
+    const content = Object.keys(doc.content).reduce((acc: Record<any, any>, key) => {
+      const city = doc.content[key] as string;
+      if (!city) {
+        return acc;
+      }
+      acc[key] = replaceUrl(city);
+      return acc;
+    }, {});
+    const updated: ProductCardContentModel = {
+      ...doc,
+      assetKeys: doc.assetKeys.map(replaceUrl),
+      content,
+    };
+    const { _id, ...rest } = updated;
+    await cardContentsCollection.findOneAndUpdate(
+      { _id },
+      {
+        $set: rest,
+      },
+    );
+  }
+  console.log('card contents updated');
+
+  // categories
+  const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
+  const categories = await categoriesCollection.find({}).toArray();
+  for await (const doc of categories) {
+    const updated: CategoryModel = {
+      ...doc,
+      image: doc.image ? replaceUrl(doc.image) : '',
+    };
+    const { _id, ...rest } = updated;
+    await categoriesCollection.findOneAndUpdate(
+      { _id },
+      {
+        $set: rest,
+      },
+    );
+  }
+  console.log('categories updated');
+
+  // companies
+  const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
+  const companies = await companiesCollection.find({}).toArray();
+  for await (const doc of companies) {
+    const updated: CompanyModel = {
+      ...doc,
+      logo: {
+        ...doc.logo,
+        url: replaceUrl(doc.logo.url),
+      },
+    };
+    const { _id, ...rest } = updated;
+    await companiesCollection.findOneAndUpdate(
+      { _id },
+      {
+        $set: rest,
+      },
+    );
+  }
+  console.log('companies updated');
+
+  // configs
+  const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+  const configs = await configsCollection
+    .find({
+      variant: CONFIG_VARIANT_ASSET,
+    })
+    .toArray();
+  for await (const doc of configs) {
+    const value = alwaysArray(get(doc, `cities.${DEFAULT_CITY}.${DEFAULT_LOCALE}`));
+    const updated: ConfigModel = {
+      ...doc,
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: value.map(replaceUrl),
+        },
+      },
+    };
+    const { _id, ...rest } = updated;
+    await configsCollection.findOneAndUpdate(
+      { _id },
+      {
+        $set: rest,
+      },
+    );
+  }
+  console.log('configs updated');
+
+  // pages
+  const pagesCollection = db.collection<PageModel>(COL_PAGES);
+  const pages = await pagesCollection.find({}).toArray();
+  for await (const doc of pages) {
+    const updated: PageModel = {
+      ...doc,
+      assetKeys: doc.assetKeys.map(replaceUrl),
+      content: replaceUrl(doc.content),
+      mainBanner: doc.mainBanner
+        ? {
+            ...doc.mainBanner,
+            url: replaceUrl(doc.mainBanner.url),
+          }
+        : null,
+      mainBannerMobile: doc.mainBannerMobile
+        ? {
+            ...doc.mainBannerMobile,
+            url: replaceUrl(doc.mainBannerMobile.url),
+          }
+        : null,
+      secondaryBanner: doc.secondaryBanner
+        ? {
+            ...doc.secondaryBanner,
+            url: replaceUrl(doc.secondaryBanner.url),
+          }
+        : null,
+    };
+    const { _id, ...rest } = updated;
+    await pagesCollection.findOneAndUpdate(
+      { _id },
+      {
+        $set: rest,
+      },
+    );
+  }
+
+  const pageTemplatesCollection = db.collection<PagesTemplateModel>(COL_PAGE_TEMPLATES);
+  const pageTemplates = await pageTemplatesCollection.find({}).toArray();
+  for await (const doc of pageTemplates) {
+    const updated: PagesTemplateModel = {
+      ...doc,
+      assetKeys: doc.assetKeys.map(replaceUrl),
+      content: replaceUrl(doc.content),
+      mainBanner: doc.mainBanner
+        ? {
+            ...doc.mainBanner,
+            url: replaceUrl(doc.mainBanner.url),
+          }
+        : null,
+      mainBannerMobile: doc.mainBannerMobile
+        ? {
+            ...doc.mainBannerMobile,
+            url: replaceUrl(doc.mainBannerMobile.url),
+          }
+        : null,
+      secondaryBanner: doc.secondaryBanner
+        ? {
+            ...doc.secondaryBanner,
+            url: replaceUrl(doc.secondaryBanner.url),
+          }
+        : null,
+    };
+    const { _id, ...rest } = updated;
+    await pageTemplatesCollection.findOneAndUpdate(
+      { _id },
+      {
+        $set: rest,
+      },
+    );
+  }
+  console.log('pages updated');
+
+  // productAssets
+  const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
+  const productAssets = await productAssetsCollection.find({}).toArray();
+  for await (const doc of productAssets) {
+    const updated: ProductAssetsModel = {
+      ...doc,
+      assets: doc.assets.map((asset) => {
+        return {
+          ...asset,
+          url: replaceUrl(asset.url),
+        };
+      }),
+    };
+    const { _id, ...rest } = updated;
+    await productAssetsCollection.findOneAndUpdate(
+      { _id },
+      {
+        $set: rest,
+      },
+    );
+  }
+  console.log('productAssets updated');
+
+  // products
+  const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+  const products = await productsCollection.find({}).toArray();
+  for await (const doc of products) {
+    const updated: ProductModel = {
+      ...doc,
+      mainImage: replaceUrl(doc.mainImage),
+    };
+    const { _id, ...rest } = updated;
+    await productsCollection.findOneAndUpdate(
+      { _id },
+      {
+        $set: rest,
+      },
+    );
+  }
+  console.log('products updated');
+
+  // promos
+  const promosCollection = db.collection<PromoModel>(COL_PROMO);
+  const promos = await promosCollection.find({}).toArray();
+  for await (const doc of promos) {
+    const updated: PromoModel = {
+      ...doc,
+      assetKeys: doc.assetKeys.map(replaceUrl),
+      content: replaceUrl(doc.content),
+      mainBanner: doc.mainBanner
+        ? {
+            ...doc.mainBanner,
+            url: replaceUrl(doc.mainBanner.url),
+          }
+        : null,
+      mainBannerMobile: doc.mainBannerMobile
+        ? {
+            ...doc.mainBannerMobile,
+            url: replaceUrl(doc.mainBannerMobile.url),
+          }
+        : null,
+      secondaryBanner: doc.secondaryBanner
+        ? {
+            ...doc.secondaryBanner,
+            url: replaceUrl(doc.secondaryBanner.url),
+          }
+        : null,
+    };
+    const { _id, ...rest } = updated;
+    await promosCollection.findOneAndUpdate(
+      { _id },
+      {
+        $set: rest,
+      },
+    );
+  }
+  console.log('promos updated');
+
+  // shopProducts
+  const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+  const shopProducts = await shopProductsCollection.find({}).toArray();
+  for await (const doc of shopProducts) {
+    const updated: ShopProductModel = {
+      ...doc,
+      mainImage: replaceUrl(doc.mainImage),
+    };
+    const { _id, ...rest } = updated;
+    await shopProductsCollection.findOneAndUpdate(
+      { _id },
+      {
+        $set: rest,
+      },
+    );
+  }
+  console.log('shopProducts updated');
+
+  // shops
+  const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
+  const shops = await shopsCollection.find({}).toArray();
+  for await (const doc of shops) {
+    const updated: ShopModel = {
+      ...doc,
+      mainImage: replaceUrl(doc.mainImage),
+      logo: {
+        ...doc.logo,
+        url: replaceUrl(doc.logo.url),
+      },
+      assets: doc.assets.map((asset) => {
+        return {
+          ...asset,
+          url: replaceUrl(asset.url),
+        };
+      }),
+      mapMarker: doc.mapMarker
+        ? {
+            lightTheme: doc.mapMarker.lightTheme ? replaceUrl(doc.mapMarker.lightTheme) : null,
+            darkTheme: doc.mapMarker.darkTheme ? replaceUrl(doc.mapMarker.darkTheme) : null,
+          }
+        : null,
+    };
+    const { _id, ...rest } = updated;
+    await shopsCollection.findOneAndUpdate(
+      { _id },
+      {
+        $set: rest,
+      },
+    );
+  }
+  console.log('shops updated');
+
+  // disconnect form db
+  await client.close();
+  console.log(`Done ${process.env.MONGO_DB_NAME}`);
+  console.log(' ');
 }
 
 (() => {

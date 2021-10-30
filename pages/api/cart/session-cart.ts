@@ -15,13 +15,9 @@ import {
 } from 'db/dao/constantPipelines';
 import { CartModel, UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import {
-  CartInterface,
-  CartProductInterface,
-  ShopProductInterface,
-  ShopProductsGroupInterface,
-} from 'db/uiInterfaces';
+import { CartInterface, CartProductInterface, ShopProductInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
+import { noNaN } from 'lib/numbers';
 import { getTreeFromList } from 'lib/optionsUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { getRequestParams } from 'lib/sessionHelpers';
@@ -320,40 +316,8 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
       (acc: CartProductInterface[], initialCartProduct) => {
         let product = initialCartProduct.product;
         if (product && product.shopProducts && product.shopProducts.length > 0) {
-          const groupedByShops = (product.shopProducts || []).reduce(
-            (acc: ShopProductsGroupInterface[], shopProduct) => {
-              const existingShopIndex = acc.findIndex(({ _id }) => _id.equals(shopProduct.shopId));
-              if (existingShopIndex > -1) {
-                acc[existingShopIndex].shopProducts.push(shopProduct);
-                return acc;
-              }
-
-              return [
-                ...acc,
-                {
-                  _id: shopProduct.shopId,
-                  shopProducts: [shopProduct],
-                },
-              ];
-            },
-            [],
-          );
-
-          const finalShopProducts: ShopProductInterface[] = [];
-          groupedByShops.forEach((group) => {
-            const { shopProducts } = group;
-            const sortedShopProducts = shopProducts.sort((a, b) => {
-              return b.available - a.available;
-            });
-
-            const firstShopProduct = sortedShopProducts[0];
-            if (firstShopProduct) {
-              finalShopProducts.push(firstShopProduct);
-            }
-          });
-
-          const sortedShopProductsByPrice = finalShopProducts.sort((a, b) => {
-            return b?.price - a?.price;
+          const sortedShopProductsByPrice = product.shopProducts.sort((a, b) => {
+            return noNaN(b?.price) - noNaN(a?.price);
           });
 
           const minPriceShopProduct =
@@ -383,7 +347,7 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
           product = {
             ...product,
             snippetTitle,
-            shopProducts: finalShopProducts,
+            shopProducts: sortedShopProductsByPrice,
             cardPrices: {
               _id: new ObjectId(),
               min: `${minPriceShopProduct?.price}`,

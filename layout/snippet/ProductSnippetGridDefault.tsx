@@ -22,7 +22,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
 }) => {
   const { configs } = useConfigContext();
   const { addShoplessProductToCart, addProductToCart } = useSiteContext();
-  const { _id, rubricSlug, product } = shopProduct;
+  const { rubricSlug, product } = shopProduct;
   if (!product) {
     return null;
   }
@@ -197,13 +197,13 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
                   if (shopProductsIds && shopProductsIds.length < 2) {
                     addProductToCart({
                       amount: 1,
-                      productId: _id,
+                      productId: product._id,
                       shopProductId: `${shopProductsIds[0]}`,
                     });
                   } else {
                     addShoplessProductToCart({
                       amount: 1,
-                      productId: _id,
+                      productId: product._id,
                     });
                   }
                 }}

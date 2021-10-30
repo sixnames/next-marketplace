@@ -244,13 +244,13 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
                     if (shopProductsIds && shopProductsIds.length < 2) {
                       addProductToCart({
                         amount: 1,
-                        productId: shopProduct._id,
+                        productId: product._id,
                         shopProductId: `${shopProductsIds[0]}`,
                       });
                     } else {
                       addShoplessProductToCart({
                         amount: 1,
-                        productId: shopProduct._id,
+                        productId: product._id,
                       });
                     }
                   }}

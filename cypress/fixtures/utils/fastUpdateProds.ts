@@ -1,6 +1,6 @@
 // @ts-ignore
 import EasyYandexS3 from 'easy-yandex-s3';
-import { ASSETS_DIST_PRODUCTS } from '../../../config/common';
+// import { ASSETS_DIST_PRODUCTS } from '../../../config/common';
 /*import { alwaysArray } from '../../../lib/arrayUtils';
 import { CONFIG_VARIANT_ASSET, DEFAULT_CITY, DEFAULT_LOCALE } from '../../../config/common';
 import {
@@ -85,7 +85,7 @@ async function getPaths(initialPath: string, Bucket: string, s3Instance: any) {
       }
 
       const fileType = await FileType.fromBuffer(buffer);
-      if (!fileType) {
+      if (!fileType || fileType.ext === 'ico') {
         await fs.writeFile(path.dist, buffer.toString(), (error) => {
           if (error) {
             console.log(error);
@@ -123,7 +123,7 @@ async function updateProds() {
     },
     Bucket: `${process.env.OBJECT_STORAGE_BUCKET_NAME}`,
   });
-  await getPaths(ASSETS_DIST_PRODUCTS, `${process.env.OBJECT_STORAGE_BUCKET_NAME}`, s3Instance);
+  await getPaths('', `${process.env.OBJECT_STORAGE_BUCKET_NAME}`, s3Instance);
   console.log('assets downloaded ============================');
 
   // updating db

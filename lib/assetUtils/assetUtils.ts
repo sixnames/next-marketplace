@@ -11,6 +11,7 @@ import path from 'path';
 import sharp from 'sharp';
 import { promisify } from 'util';
 const readFile = promisify(fs.readFile);
+const writeFile = promisify(fs.writeFile);
 
 export interface StoreUploadsInterface {
   files: Formidable.Files;
@@ -32,7 +33,7 @@ export async function storeUploads({
 }: StoreUploadsInterface): Promise<AssetModel[] | null> {
   try {
     const filesPath = path.join(process.cwd(), `public${ASSETS_DIST}`, dist, dirName);
-    const assetsPath = `${dist}`;
+    const assetsPath = `${ASSETS_DIST}/${dist}/${dirName}`;
 
     // Create directory if not exists
     await mkdirp(filesPath);
@@ -58,35 +59,29 @@ export async function storeUploads({
       const buffer = await readFile(file.path);
 
       // save as svg if file type is svg
-      if (fileType.ext === `svg`) {
-        await fs.writeFile(`${filesPath}/${fileName}.svg`, buffer, (error) => {
-          if (error) {
-            console.log(error);
-            return;
-          }
-
-          assets.push({
-            url: `${assetsPath}/${fileName}.svg`,
-            index: startIndex + index,
-          });
+      if (fileType.ext === `svg` || fileType.ext === `ico`) {
+        await writeFile(`${filesPath}/${fileName}.${fileType.ext}`, buffer);
+        assets.push({
+          url: `${assetsPath}/${fileName}.${fileType.ext}`,
+          index: startIndex + index,
         });
-        continue;
-      }
+      } else {
+        // Save file to the FS
+        const fileFullName = `${fileName}.${format}`;
+        const transform = sharp(buffer);
+        await transform.toFormat(format);
+        if (width) {
+          transform.resize(width);
+        }
+        await transform.toFile(`${filesPath}/${fileFullName}`);
 
-      // Save file to the FS
-      const fileFullName = `${fileName}.${format}`;
-      const transform = sharp(buffer);
-      await transform.toFormat(format);
-      if (width) {
-        transform.resize(width);
+        assets.push({
+          url: `${assetsPath}/${fileFullName}`,
+          index: startIndex + index,
+        });
       }
-      await transform.toFile(`${filesPath}/${fileFullName}`);
-
-      assets.push({
-        url: `${ASSETS_DIST}/${dist}/${dirName}/${fileFullName}`,
-        index: startIndex + index,
-      });
     }
+
     return assets;
   } catch (e) {
     console.log(e);

@@ -1,4 +1,4 @@
-import { IMAGE_FALLBACK } from 'config/common';
+import { ASSETS_DIST, IMAGE_FALLBACK } from 'config/common';
 import Formidable from 'formidable';
 import { AssetModel } from 'db/dbModels';
 import { alwaysArray } from 'lib/arrayUtils';
@@ -31,8 +31,7 @@ export async function storeUploads({
   width,
 }: StoreUploadsInterface): Promise<AssetModel[] | null> {
   try {
-    const assetsDir = '/assets';
-    const filesPath = path.join(process.cwd(), `public${assetsDir}`, dist, dirName);
+    const filesPath = path.join(process.cwd(), `public${ASSETS_DIST}`, dist, dirName);
     const assetsPath = `${dist}`;
 
     // Create directory if not exists
@@ -84,7 +83,7 @@ export async function storeUploads({
       await transform.toFile(`${filesPath}/${fileFullName}`);
 
       assets.push({
-        url: `${assetsDir}/${dist}/${dirName}/${fileFullName}`,
+        url: `${ASSETS_DIST}/${dist}/${dirName}/${fileFullName}`,
         index: startIndex + index,
       });
     }

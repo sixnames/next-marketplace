@@ -11,15 +11,11 @@ import {
   ROW_SNIPPET_LAYOUT_BIG_IMAGE,
 } from 'config/constantSelects';
 import {
-  COL_ATTRIBUTES,
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_CATEGORIES,
   COL_CATEGORY_DESCRIPTIONS,
-  COL_OPTIONS,
   COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCT_CONNECTION_ITEMS,
-  COL_PRODUCT_CONNECTIONS,
   COL_PRODUCTS,
   COL_RUBRIC_DESCRIPTIONS,
   COL_RUBRIC_SEO,
@@ -1105,7 +1101,7 @@ export const getCatalogueData = async ({
                     },
 
                     // get product connections
-                    {
+                    /*{
                       $lookup: {
                         from: COL_PRODUCT_CONNECTIONS,
                         as: 'connections',
@@ -1187,7 +1183,7 @@ export const getCatalogueData = async ({
                           },
                         ],
                       },
-                    },
+                    },*/
                     {
                       $project: {
                         descriptionI18n: false,

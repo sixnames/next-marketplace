@@ -1,4 +1,5 @@
 import { ROUTE_CMS } from 'config/common';
+import { fixtureIds } from 'cypress/fixtures/fixtureIds';
 import {
   SyncOrderResponseInterface,
   SyncOrderStatusesResponseInterface,
@@ -140,13 +141,7 @@ describe('Sync', () => {
   });
 
   it('Should generate shop token', () => {
-    cy.visit(`${ROUTE_CMS}/companies`);
-    cy.wait(1500);
-    cy.getByCy(`company_b-update`).click();
-    cy.getByCy(`company-shops`).click();
-    cy.wait(1500);
-    cy.getByCy('company-shops-list').should('exist');
-    cy.getByCy(`Shop B-update`).click();
+    cy.visit(`${ROUTE_CMS}/companies/${fixtureIds.companyB}/shops/shop/${fixtureIds.shopB}`);
     cy.wait(1500);
     cy.getByCy('shop-details-page').should('exist');
     cy.getByCy('generate-api-token').click();
@@ -237,21 +232,12 @@ describe('Sync', () => {
     });
 
     // should display synced products
-    cy.visit(`${ROUTE_CMS}/companies`);
-    cy.getByCy('companies-list').should('exist');
-    cy.getByCy(`company_b-update`).click();
-    cy.wait(1500);
-    cy.getByCy(`company-shops`).click();
-    cy.wait(1500);
-    cy.getByCy(`Shop C-update`).click();
-    cy.wait(1500);
-    cy.getByCy(`shop-products`).click();
-    cy.wait(1500);
-    cy.getByCy('shop-rubrics-list').should('exist');
-    cy.getByCy(`Шампанское-update`).click();
+    cy.visit(
+      `${ROUTE_CMS}/companies/${fixtureIds.companyB}/shops/shop/${fixtureIds.shopC}/products/${fixtureIds.rubricChampagne}`,
+    );
     cy.wait(1500);
     cy.getByCy('shop-rubric-products-list').should('exist');
-    cy.getByCy('shop-product-main-image').should('have.length', 4);
+    cy.getByCy('shop-product-main-image').should('have.length', 3);
 
     // should update existing shop products and creat new ones
     cy.request({
@@ -264,19 +250,19 @@ describe('Sync', () => {
     });
     cy.reload();
     cy.wait(1500);
-    cy.getByCy('000003-available').then((el: any) => {
+    cy.getByCy('3-available').then((el: any) => {
       const input = el.find('input');
       expect(input.val()).to.equals('1');
     });
-    cy.getByCy('000003-price').then((el: any) => {
+    cy.getByCy('3-price').then((el: any) => {
       const input = el.find('input');
       expect(input.val()).to.equals('1');
     });
-    cy.getByCy('000006-available').then((el: any) => {
+    cy.getByCy('0-available').then((el: any) => {
       const input = el.find('input');
       expect(input.val()).to.equals('1');
     });
-    cy.getByCy('000006-price').then((el: any) => {
+    cy.getByCy('0-price').then((el: any) => {
       const input = el.find('input');
       expect(input.val()).to.equals('1');
     });
@@ -293,19 +279,19 @@ describe('Sync', () => {
     });
     cy.reload();
     cy.wait(1500);
-    cy.getByCy('000003-available').then((el: any) => {
+    cy.getByCy('3-available').then((el: any) => {
       const input = el.find('input');
       expect(input.val()).to.equals('5');
     });
-    cy.getByCy('000003-price').then((el: any) => {
+    cy.getByCy('3-price').then((el: any) => {
       const input = el.find('input');
       expect(input.val()).to.equals('890');
     });
-    cy.getByCy('000004-available').then((el: any) => {
+    cy.getByCy('2-available').then((el: any) => {
       const input = el.find('input');
       expect(input.val()).to.equals('5');
     });
-    cy.getByCy('000004-price').then((el: any) => {
+    cy.getByCy('2-price').then((el: any) => {
       const input = el.find('input');
       expect(input.val()).to.equals('1000');
     });

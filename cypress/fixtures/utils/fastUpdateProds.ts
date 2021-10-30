@@ -1,5 +1,6 @@
 // @ts-ignore
 import EasyYandexS3 from 'easy-yandex-s3';
+// import { ASSETS_DIST_PRODUCTS } from '../../../config/common';
 /*import { alwaysArray } from '../../../lib/arrayUtils';
 import { CONFIG_VARIANT_ASSET, DEFAULT_CITY, DEFAULT_LOCALE } from '../../../config/common';
 import {
@@ -38,6 +39,8 @@ import FileType from 'file-type';
 import sharp from 'sharp';
 import fetch from 'node-fetch';
 import fs from 'fs';
+import { promisify } from 'util';
+const writeFile = promisify(fs.writeFile);
 // import { get } from 'lodash';
 require('dotenv').config();
 
@@ -84,13 +87,8 @@ async function getPaths(initialPath: string, Bucket: string, s3Instance: any) {
       }
 
       const fileType = await FileType.fromBuffer(buffer);
-      if (!fileType) {
-        await fs.writeFile(path.dist, buffer.toString(), (error) => {
-          if (error) {
-            console.log(error);
-            console.log('fs.writeFile Error ========================== ', path.dist);
-          }
-        });
+      if (!fileType || fileType.ext === 'ico') {
+        await writeFile(path.dist, buffer);
         continue;
       }
       await sharp(buffer).trim().toFile(path.dist);
@@ -100,7 +98,13 @@ async function getPaths(initialPath: string, Bucket: string, s3Instance: any) {
       await getPaths(prefix.Prefix, Bucket, s3Instance);
     }
   } catch (e) {
+    console.log('-------------------------------------------------------------------');
+    console.log('=========================== Catch Error ===========================');
+    console.log('-------------------------------------------------------------------');
     console.log(e);
+    console.log('-------------------------------------------------------------------');
+    console.log('-------------------------------------------------------------------');
+    console.log(' ');
   }
 }
 

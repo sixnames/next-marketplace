@@ -1,5 +1,6 @@
 // @ts-ignore
 import EasyYandexS3 from 'easy-yandex-s3';
+import { ASSETS_DIST_PRODUCTS } from '../../../config/common';
 /*import { alwaysArray } from '../../../lib/arrayUtils';
 import { CONFIG_VARIANT_ASSET, DEFAULT_CITY, DEFAULT_LOCALE } from '../../../config/common';
 import {
@@ -116,7 +117,7 @@ async function updateProds() {
     },
     Bucket: `${process.env.OBJECT_STORAGE_BUCKET_NAME}`,
   });
-  await getPaths('', `${process.env.OBJECT_STORAGE_BUCKET_NAME}`, s3Instance);
+  await getPaths(ASSETS_DIST_PRODUCTS, `${process.env.OBJECT_STORAGE_BUCKET_NAME}`, s3Instance);
   console.log('assets downloaded ============================');
 
   // updating db

@@ -101,7 +101,13 @@ async function getPaths(initialPath: string, Bucket: string, s3Instance: any) {
       await getPaths(prefix.Prefix, Bucket, s3Instance);
     }
   } catch (e) {
+    console.log('-------------------------------------------------------------------');
+    console.log('=========================== Catch Error ===========================');
+    console.log('-------------------------------------------------------------------');
     console.log(e);
+    console.log('-------------------------------------------------------------------');
+    console.log('-------------------------------------------------------------------');
+    console.log(' ');
   }
 }
 

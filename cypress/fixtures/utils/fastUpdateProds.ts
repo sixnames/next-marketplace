@@ -39,6 +39,8 @@ import FileType from 'file-type';
 import sharp from 'sharp';
 import fetch from 'node-fetch';
 import fs from 'fs';
+import { promisify } from 'util';
+const writeFile = promisify(fs.writeFile);
 // import { get } from 'lodash';
 require('dotenv').config();
 
@@ -86,12 +88,7 @@ async function getPaths(initialPath: string, Bucket: string, s3Instance: any) {
 
       const fileType = await FileType.fromBuffer(buffer);
       if (!fileType || fileType.ext === 'ico') {
-        await fs.writeFile(path.dist, buffer.toString(), (error) => {
-          if (error) {
-            console.log(error);
-            console.log('fs.writeFile Error ========================== ', path.dist);
-          }
-        });
+        await writeFile(path.dist, buffer);
         continue;
       }
       await sharp(buffer).trim().toFile(path.dist);

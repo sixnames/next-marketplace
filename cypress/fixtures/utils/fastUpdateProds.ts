@@ -1,5 +1,5 @@
 // @ts-ignore
-import EasyYandexS3 from 'easy-yandex-s3';
+import EasyYandexS3 from '../../../lib/s3';
 // import { ASSETS_DIST_PRODUCTS } from '../../../config/common';
 /*import { alwaysArray } from '../../../lib/arrayUtils';
 import { CONFIG_VARIANT_ASSET, DEFAULT_CITY, DEFAULT_LOCALE } from '../../../config/common';
@@ -53,9 +53,11 @@ interface CommonPrefixesInterface {
 }
 
 interface GetListInterface {
+  IsTruncated: boolean;
   Contents?: ContentsInterface[];
   Prefix: string;
   CommonPrefixes?: CommonPrefixesInterface[];
+  NextContinuationToken?: string;
 }
 
 interface PathInterface {
@@ -64,13 +66,14 @@ interface PathInterface {
 }
 
 const basePath = 'public/assets/';
-async function getPaths(initialPath: string, Bucket: string, s3Instance: any) {
+async function getPaths(
+  initialPath: string,
+  Bucket: string,
+  s3Instance: any,
+  ContinuationToken?: string,
+) {
   try {
-    console.log('Path >>>>>>>>>>>>>>> ', initialPath);
-    if (initialPath.indexOf('056821') > -1) {
-      console.log('lost dir <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
-    }
-    const list: GetListInterface = await s3Instance.GetList(initialPath);
+    const list: GetListInterface = await s3Instance.GetList(initialPath, ContinuationToken);
 
     for await (const content of list.Contents || []) {
       const path: PathInterface = {
@@ -97,14 +100,15 @@ async function getPaths(initialPath: string, Bucket: string, s3Instance: any) {
     for await (const prefix of list.CommonPrefixes || []) {
       await getPaths(prefix.Prefix, Bucket, s3Instance);
     }
+
+    if (list.IsTruncated && list.NextContinuationToken) {
+      console.log('IsTruncated ', initialPath);
+      await getPaths(initialPath, Bucket, s3Instance, list.NextContinuationToken);
+    }
   } catch (e) {
-    console.log('-------------------------------------------------------------------');
     console.log('=========================== Catch Error ===========================');
-    console.log('-------------------------------------------------------------------');
     console.log(e);
-    console.log('-------------------------------------------------------------------');
-    console.log('-------------------------------------------------------------------');
-    console.log(' ');
+    console.log('===================================================================');
   }
 }
 

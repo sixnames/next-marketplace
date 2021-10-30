@@ -4,6 +4,8 @@ import {
   DEFAULT_CITY,
   SORT_DESC,
   CMS_FILTER_BRANDS_LIMIT,
+  IMAGE_FALLBACK,
+  IMAGE_FALLBACK_BOTTLE,
 } from 'config/common';
 import {
   COL_ATTRIBUTES,
@@ -20,6 +22,22 @@ import {
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
 } from 'db/collectionNames';
+
+export const noImageStage = {
+  $or: [
+    {
+      mainImage: {
+        $ne: IMAGE_FALLBACK,
+      },
+    },
+    {
+      mainImage: null,
+    },
+    {
+      mainImage: IMAGE_FALLBACK_BOTTLE,
+    },
+  ],
+};
 
 interface GetCatalogueRubricPipelineInterface {
   companySlug?: string;

@@ -6,6 +6,7 @@ import {
 import { COL_PRODUCTS, COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import {
   brandPipeline,
+  noImageStage,
   productAttributesPipeline,
   productCategoriesPipeline,
   shopProductFieldsPipeline,
@@ -83,6 +84,7 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
             productId: finalProductId,
             citySlug: city,
             ...companyRubricsMatch,
+            ...noImageStage,
           },
         },
         {

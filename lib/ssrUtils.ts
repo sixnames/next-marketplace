@@ -19,6 +19,7 @@ import {
   CONFIG_GROUP_PROJECT,
   COOKIE_CURRENCY,
   IMAGE_FALLBACK,
+  IMAGE_FALLBACK_BOTTLE,
 } from 'config/common';
 import {
   COL_ATTRIBUTES,
@@ -201,6 +202,9 @@ export const getCatalogueNavRubrics = async ({
             },
             {
               mainImage: null,
+            },
+            {
+              mainImage: IMAGE_FALLBACK_BOTTLE,
             },
           ],
         },

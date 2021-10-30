@@ -13,7 +13,7 @@ import {
 } from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import { COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
-import { shopProductFieldsPipeline } from 'db/dao/constantPipelines';
+import { noImageStage, shopProductFieldsPipeline } from 'db/dao/constantPipelines';
 import { getDatabase } from 'db/mongodb';
 import {
   MobileTopFilters,
@@ -422,6 +422,7 @@ export async function getServerSideProps(
           $match: {
             ...companyRubricsMatch,
             citySlug: sessionCity,
+            ...noImageStage,
           },
         },
         {

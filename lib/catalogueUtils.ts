@@ -23,7 +23,7 @@ import {
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
-import { filterAttributesPipeline } from 'db/dao/constantPipelines';
+import { filterAttributesPipeline, noImageStage } from 'db/dao/constantPipelines';
 import {
   CatalogueBreadcrumbModel,
   CategoryDescriptionModel,
@@ -960,19 +960,6 @@ export const getCatalogueData = async ({
       return fallbackPayload;
     }
 
-    const imageStage = {
-      $or: [
-        {
-          mainImage: {
-            $ne: IMAGE_FALLBACK,
-          },
-        },
-        {
-          mainImage: null,
-        },
-      ],
-    };
-
     // initial match
     const companyMatch = companyId ? { companyId: new ObjectId(companyId) } : {};
     const productsInitialMatch = {
@@ -984,7 +971,7 @@ export const getCatalogueData = async ({
       ...brandCollectionStage,
       ...optionsStage,
       ...pricesStage,
-      ...imageStage,
+      ...noImageStage,
     };
 
     // aggregate catalogue initial data

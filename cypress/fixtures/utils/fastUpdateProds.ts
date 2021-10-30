@@ -1,6 +1,6 @@
 // @ts-ignore
 import EasyYandexS3 from 'easy-yandex-s3';
-import { alwaysArray } from '../../../lib/arrayUtils';
+/*import { alwaysArray } from '../../../lib/arrayUtils';
 import { CONFIG_VARIANT_ASSET, DEFAULT_CITY, DEFAULT_LOCALE } from '../../../config/common';
 import {
   COL_BLOG_POSTS,
@@ -32,13 +32,13 @@ import {
   ShopModel,
   ShopProductModel,
 } from '../../../db/dbModels';
-import { getProdDb } from './getProdDb';
+import { getProdDb } from './getProdDb';*/
 import mkdirp from 'mkdirp';
 import FileType from 'file-type';
 import sharp from 'sharp';
 import fetch from 'node-fetch';
 import fs from 'fs';
-import { get } from 'lodash';
+// import { get } from 'lodash';
 require('dotenv').config();
 
 interface ContentsInterface {
@@ -63,7 +63,12 @@ interface PathInterface {
 const basePath = 'public/assets/';
 async function getPaths(initialPath: string, Bucket: string, s3Instance: any) {
   try {
+    console.log('Path >>>>>>>>>>>>>>> ', initialPath);
+    if (initialPath.indexOf('056821') > -1) {
+      console.log('lost dir <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
+    }
     const list: GetListInterface = await s3Instance.GetList(initialPath);
+
     for await (const content of list.Contents || []) {
       const path: PathInterface = {
         src: `${content.Key}`,
@@ -82,6 +87,7 @@ async function getPaths(initialPath: string, Bucket: string, s3Instance: any) {
       if (!fileType) {
         await fs.writeFile(path.dist, buffer.toString(), (error) => {
           if (error) {
+            console.log(error);
             console.log('fs.writeFile Error ========================== ', path.dist);
           }
         });
@@ -114,17 +120,17 @@ async function updateProds() {
   console.log('assets downloaded ============================');
 
   // updating db
-  console.log('updating db');
-  const { db, client } = await getProdDb({
+  // console.log('updating db');
+  /*const { db, client } = await getProdDb({
     dbName: `${process.env.MONGO_DB_NAME}`,
     uri: `${process.env.MONGO_URL}`,
   });
   function replaceUrl(key: string) {
     return key.replace(`https://${process.env.OBJECT_STORAGE_DOMAIN}`, '/assets');
-  }
+  }*/
 
   // blog
-  const blogPostsCollection = db.collection<BlogPostModel>(COL_BLOG_POSTS);
+  /*const blogPostsCollection = db.collection<BlogPostModel>(COL_BLOG_POSTS);
   const posts = await blogPostsCollection.find({}).toArray();
   for await (const doc of posts) {
     const updated: BlogPostModel = {
@@ -454,10 +460,10 @@ async function updateProds() {
       },
     );
   }
-  console.log('shops updated');
+  console.log('shops updated');*/
 
   // disconnect form db
-  await client.close();
+  // await client.close();
   console.log(`Done ${process.env.MONGO_DB_NAME}`);
   console.log(' ');
 }

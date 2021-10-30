@@ -99,7 +99,7 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
             />
             <Link
               testId={`${testId}-image-grid`}
-              target={'_blank'}
+              // target={'_blank'}
               className='block absolute z-10 inset-0 text-indent-full'
               href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
             >
@@ -111,7 +111,7 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
           <div className='mb-4'>
             <Link
               testId={`${testId}-name-grid`}
-              target={'_blank'}
+              // target={'_blank'}
               className='text-lg block text-primary-text hover:no-underline hover:text-primary-text'
               href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
             >

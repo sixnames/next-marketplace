@@ -1,4 +1,4 @@
-import { ASSETS_DIST, IMAGE_FALLBACK } from 'config/common';
+import { ASSETS_DIST, IMAGE_FALLBACK, IMAGE_FALLBACK_BOTTLE } from 'config/common';
 import Formidable from 'formidable';
 import { AssetModel } from 'db/dbModels';
 import { alwaysArray } from 'lib/arrayUtils';
@@ -120,7 +120,7 @@ export async function storeUploads({
 
 export const deleteUpload = async (filePath: string): Promise<boolean> => {
   const minFilesCount = 2;
-  if (filePath === IMAGE_FALLBACK) {
+  if (filePath === IMAGE_FALLBACK || filePath === IMAGE_FALLBACK_BOTTLE) {
     return true;
   }
   const pathParts = filePath.split('/');

@@ -78,7 +78,7 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
       <div className='md:col-span-4'>
         {/*image*/}
         <div className='relative flex-grow p-5'>
-          <div className='flex justify-center'>
+          <div className='flex p-3 justify-center'>
             <div className='relative pb-[100%] w-full'>
               <WpImage
                 url={mainImage}

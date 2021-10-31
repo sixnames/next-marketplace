@@ -11,6 +11,7 @@ import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { ObjectId } from 'mongodb';
 import trim from 'trim';
+import { get } from 'lodash';
 
 interface TreeItemInterface extends Record<any, any> {
   parentId?: ObjectIdModel | null;
@@ -245,10 +246,11 @@ export async function getParentTreeSlugs({
   return getParentTreeSlugs({ _id: document.parentId, collectionName, acc });
 }
 
-export function sortByName(list: any[]): any[] {
+export function sortByName(list: any[], fieldName = 'name'): any[] {
   return [...list].sort((a, b) => {
-    const nameA = `${a.name}`.toUpperCase();
-    const nameB = `${b.name}`.toUpperCase();
+    const nameA = `${get(a, fieldName)}`.toUpperCase();
+    const nameB = `${get(b, fieldName)}`.toUpperCase();
+
     if (nameA < nameB) {
       return -1;
     }

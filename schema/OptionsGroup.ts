@@ -10,25 +10,37 @@ import {
 import {
   DEFAULT_COUNTERS_OBJECT,
   DEFAULT_LOCALE,
+  FILTER_SEPARATOR,
   OPTIONS_GROUP_VARIANT_COLOR,
   OPTIONS_GROUP_VARIANT_ENUMS,
   SORT_ASC,
 } from 'config/common';
 import {
   AttributeModel,
+  CategoryModel,
+  ObjectIdModel,
   OptionModel,
   OptionsGroupModel,
   OptionsGroupPayloadModel,
+  ProductAttributeModel,
   ProductConnectionItemModel,
   ProductConnectionModel,
+  ProductModel,
+  RubricModel,
+  ShopProductModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
   COL_ATTRIBUTES,
+  COL_CATEGORIES,
   COL_OPTIONS,
   COL_OPTIONS_GROUPS,
+  COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCT_CONNECTION_ITEMS,
   COL_PRODUCT_CONNECTIONS,
+  COL_PRODUCTS,
+  COL_RUBRICS,
+  COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
@@ -791,6 +803,13 @@ export const OptionsGroupMutations = extendType({
           const { db } = await getDatabase();
           const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
           const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
+          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+          const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
+          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+          const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
+          const productAttributesCollection =
+            db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
           const { input } = args;
           const { optionsGroupId, optionId } = input;
 
@@ -812,6 +831,129 @@ export const OptionsGroupMutations = extendType({
             };
           }
 
+          // update product attributes
+          const oldAttributes = await attributesCollection
+            .find({
+              optionsGroupId: option.optionsGroupId,
+            })
+            .toArray();
+          for await (const attribute of oldAttributes) {
+            const oldProductAttributes = await productAttributesCollection
+              .find({
+                attributeId: attribute._id,
+              })
+              .toArray();
+
+            for await (const oldProductAttribute of oldProductAttributes) {
+              const isOptionSelected = oldProductAttribute.selectedOptionsIds.some((_id) => {
+                return _id.equals(option._id);
+              });
+
+              if (isOptionSelected) {
+                const product = await productsCollection.findOne({
+                  _id: oldProductAttribute.productId,
+                });
+
+                if (!product) {
+                  continue;
+                }
+                const rubric = await rubricsCollection.findOne({ _id: product.rubricId });
+                const categories = await categoriesCollection
+                  .find({
+                    slug: {
+                      $in: product.selectedOptionsSlugs,
+                    },
+                  })
+                  .toArray();
+                if (!rubric) {
+                  continue;
+                }
+
+                // remove option from old product attribute, product and shop product
+                const updater = {
+                  $pull: {
+                    selectedOptionsIds: option._id,
+                    selectedOptionsSlugs: `${attribute.slug}${FILTER_SEPARATOR}${option.slug}`,
+                  },
+                };
+                await productAttributesCollection.findOneAndUpdate(
+                  {
+                    _id: oldProductAttribute._id,
+                  },
+                  updater,
+                );
+                await productsCollection.findOneAndUpdate(
+                  {
+                    _id: product._id,
+                  },
+                  updater,
+                );
+                await shopProductsCollection.findOneAndUpdate(
+                  {
+                    productId: product._id,
+                  },
+                  updater,
+                );
+
+                const categoryAttributesGroupIds = categories.reduce(
+                  (acc: ObjectIdModel[], { attributesGroupIds }) => {
+                    return [...acc, ...attributesGroupIds];
+                  },
+                  [],
+                );
+                const allAttributesGroupIds = [
+                  ...categoryAttributesGroupIds,
+                  ...rubric.attributesGroupIds,
+                ];
+
+                // get new attributes
+                const newAttributes = await attributesCollection
+                  .find({
+                    optionsGroupId: newOptionsGroup._id,
+                    attributesGroupId: {
+                      $in: allAttributesGroupIds,
+                    },
+                  })
+                  .toArray();
+
+                // update or create product attributes
+                for await (const newAttribute of newAttributes) {
+                  const existingProductAttribute = await productAttributesCollection.findOne({
+                    productId: product._id,
+                    attributeId: newAttribute._id,
+                  });
+                  const selectedOptionSlug = `${newAttribute.slug}${FILTER_SEPARATOR}${option.slug}`;
+                  if (existingProductAttribute) {
+                    await productAttributesCollection.findOneAndUpdate(
+                      {
+                        _id: existingProductAttribute._id,
+                      },
+                      {
+                        $push: {
+                          selectedOptionsIds: option._id,
+                          selectedOptionsSlugs: selectedOptionSlug,
+                        },
+                      },
+                    );
+                  } else {
+                    await productAttributesCollection.insertOne({
+                      rubricId: rubric._id,
+                      rubricSlug: rubric.slug,
+                      attributeId: newAttribute._id,
+                      productId: product._id,
+                      productSlug: product.slug,
+                      selectedOptionsIds: [option._id],
+                      selectedOptionsSlugs: [selectedOptionSlug],
+                      number: undefined,
+                      textI18n: {},
+                    });
+                  }
+                }
+              }
+            }
+          }
+
+          // move option
           const updatedOptionResult = await optionsCollection.findOneAndUpdate(
             {
               _id: option._id,

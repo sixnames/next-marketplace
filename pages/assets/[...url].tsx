@@ -1,4 +1,4 @@
-import { ASSETS_DIST } from 'config/common';
+import { ASSETS_DIST, ONE_WEEK } from 'config/common';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { getSharpImage } from 'lib/assetUtils/assetUtils';
 import { noNaN } from 'lib/numbers';
@@ -31,6 +31,7 @@ export async function getServerSideProps(
 
   // set the content-type of the response
   res.setHeader('Content-Type', `image/${format}`);
+  res.setHeader('Cache-Control', `public, max-age=${ONE_WEEK}`);
 
   // send ico and svg files
   if (

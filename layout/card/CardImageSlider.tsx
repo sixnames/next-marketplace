@@ -1,4 +1,5 @@
 import ControlButton from 'components/ControlButton';
+import WpImage from 'components/WpImage';
 import { useAppContext } from 'context/appContext';
 import { AssetModel } from 'db/dbModels';
 import * as React from 'react';
@@ -30,6 +31,32 @@ const CardImageSlider: React.FC<CardImageSliderInterface> = ({
     return {
       original: url,
       thumbnail: url,
+      renderItem: () => {
+        return (
+          <div className='relative pb-[100%] w-full'>
+            <WpImage
+              url={url}
+              alt={url}
+              title={url}
+              width={480}
+              className='absolute inset-0 w-full h-full object-contain'
+            />
+          </div>
+        );
+      },
+      renderThumbInner: () => {
+        return (
+          <div className='relative pb-[100%] w-full'>
+            <WpImage
+              url={url}
+              alt={url}
+              title={url}
+              width={80}
+              className='absolute inset-0 w-full h-full object-contain'
+            />
+          </div>
+        );
+      },
     };
   });
 

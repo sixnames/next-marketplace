@@ -3,6 +3,7 @@ import Button from 'components/Button';
 import FixedButtons from 'components/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls';
 import Inner from 'components/Inner';
+import Link from 'components/Link/Link';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { CreateConnectionModalInterface } from 'components/Modal/CreateConnectionModal';
 import { ProductSearchModalInterface } from 'components/Modal/ProductSearchModal';
@@ -110,9 +111,18 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
 
   const columns: TableColumn<ProductConnectionItemInterface>[] = [
     {
-      accessor: 'product.itemId',
-      headTitle: 'Арт.',
-      render: ({ cellData }) => cellData,
+      headTitle: 'Арт',
+      render: ({ dataItem, rowIndex }) => {
+        return (
+          <Link
+            target={'_blank'}
+            testId={`product-link-${rowIndex}`}
+            href={`${ROUTE_CMS}/rubrics/${dataItem.product?.rubricId}/products/product/${dataItem.product?._id}`}
+          >
+            {dataItem.product?.itemId}
+          </Link>
+        );
+      },
     },
     {
       accessor: 'product',

@@ -13,6 +13,7 @@ import ProductShopPrices from 'components/ProductShopPrices';
 import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
 import Title from 'components/Title';
+import WpImage from 'components/WpImage';
 import { ROUTE_CATALOGUE } from 'config/common';
 import { MAP_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
@@ -27,7 +28,6 @@ import useValidationSchema from 'hooks/useValidationSchema';
 import LayoutCard from 'layout/LayoutCard';
 import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
 import { phoneToRaw } from 'lib/phoneUtils';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -62,16 +62,15 @@ const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }
       {/*image*/}
       <div className='flex flex-col gap-4 items-center justify-center sm:col-span-2'>
         <div className='relative flex justify-center flex-shrink-0 w-full max-w-[180px]'>
-          <Image
-            objectFit={'contain'}
-            objectPosition={'center'}
-            src={`${mainImage}`}
-            alt={`${snippetTitle}`}
-            title={`${snippetTitle}`}
-            width={240}
-            height={240}
-            quality={50}
-          />
+          <div className='relative pb-[100%] w-full'>
+            <WpImage
+              url={mainImage}
+              alt={`${snippetTitle}`}
+              title={`${snippetTitle}`}
+              width={240}
+              className='absolute inset-0 w-full h-full object-contain'
+            />
+          </div>
           <Link
             target={'_blank'}
             className='block absolute z-10 inset-0 text-indent-full'

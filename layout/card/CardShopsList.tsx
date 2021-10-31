@@ -6,13 +6,13 @@ import { MapModalInterface } from 'components/Modal/MapModal';
 import ProductShopPrices from 'components/ProductShopPrices';
 import RatingStars from 'components/RatingStars';
 import ShopsMap from 'components/ShopsMap';
+import WpImage from 'components/WpImage';
 import { MAP_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { useSiteContext } from 'context/siteContext';
 import { ShopInterface } from 'db/uiInterfaces';
 import LayoutCard from 'layout/LayoutCard';
 import { noNaN } from 'lib/numbers';
-import Image from 'next/image';
 import * as React from 'react';
 
 interface CardShopInterface {
@@ -52,7 +52,13 @@ const CardShop: React.FC<CardShopInterface> = ({ shop, testId }) => {
   return (
     <LayoutCard className='overflow-hidden gap-4 md:grid md:grid-cols-12'>
       <div className='relative h-[120px] w-full md:col-span-4 lg:col-span-3 md:h-full'>
-        <Image objectFit={'cover'} layout={'fill'} src={mainImage} alt={name} title={name} />
+        <WpImage
+          url={mainImage}
+          alt={name}
+          title={name}
+          width={240}
+          className='absolute inset-0 w-full h-full object-cover'
+        />
       </div>
 
       <div className='grid gap-4 px-4 py-6 md:col-span-8 lg:col-span-9 lg:grid-cols-5'>

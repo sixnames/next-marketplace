@@ -77,18 +77,18 @@ const Meta: React.FC<MetaInterface> = ({
 
         <meta property='og:title' content={`${pageTitle}`} />
         <meta property='og:type' content='website' />
-        <meta property='og:image' content={pagePreviewImage} />
+        <meta property='og:image' content={`${pagePreviewImage}?format=png`} />
         <meta property='og:url' content={pageUrls.canonicalUrl} />
         <meta property='og:description' content={pageDescription} />
 
         <meta name='twitter:title' content={`${pageTitle}`} />
         <meta name='twitter:card' content='summary' />
-        <meta name='twitter:image' content={pagePreviewImage} />
+        <meta name='twitter:image' content={`${pagePreviewImage}?format=png`} />
         <meta name='twitter:description' content={pageDescription} />
 
         <link rel='icon' href={`${faviconIco}`} />
         <link rel='icon' href={`${iconSvg}`} type={'image/svg+xml'} />
-        <link rel={'apple-touch-icon'} href={`${appleTouchIcon}`} />
+        <link rel={'apple-touch-icon'} href={`${appleTouchIcon}?format=png`} />
         <link rel={'manifest'} href={'/site.webmanifest'} />
 
         <meta name='theme-color' content='#ffffff' />

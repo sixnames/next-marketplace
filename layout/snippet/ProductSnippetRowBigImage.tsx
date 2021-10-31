@@ -2,13 +2,13 @@ import Button from 'components/Button';
 import ControlButton from 'components/ControlButton';
 import Link from 'components/Link/Link';
 import RatingStars from 'components/RatingStars';
+import WpImage from 'components/WpImage';
 import { ROUTE_CATALOGUE } from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
 import { ProductSnippetInterface } from 'db/uiInterfaces';
 import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
 import { noNaN } from 'lib/numbers';
-import Image from 'next/image';
 import * as React from 'react';
 
 const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
@@ -77,22 +77,21 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
 
       <div className='md:col-span-4'>
         {/*image*/}
-        <div className='relative flex-grow pb-5 pt-5'>
+        <div className='relative flex-grow p-5'>
           <div className='flex justify-center'>
-            <Image
-              src={mainImage}
-              objectFit={'contain'}
-              objectPosition={'center'}
-              alt={`${snippetTitle}`}
-              title={`${snippetTitle}`}
-              width={260}
-              height={260}
-              quality={50}
-            />
+            <div className='relative pb-[100%] w-full'>
+              <WpImage
+                url={mainImage}
+                alt={`${snippetTitle}`}
+                title={`${snippetTitle}`}
+                width={260}
+                className='absolute inset-0 w-full h-full object-contain'
+              />
+            </div>
           </div>
           <Link
             testId={`${testId}-image-row`}
-            // target={'_blank'}
+            target={'_blank'}
             className='block absolute z-10 inset-0 text-indent-full'
             href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
           >
@@ -119,7 +118,7 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
         <div className='mb-3'>
           <Link
             testId={`${testId}-name-row`}
-            // target={'_blank'}
+            target={'_blank'}
             className='block text-2xl font-medium text-primary-text hover:no-underline hover:text-primary-text'
             href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
           >

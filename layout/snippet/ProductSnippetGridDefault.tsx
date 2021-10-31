@@ -1,9 +1,9 @@
+import WpImage from 'components/WpImage';
 import { ROUTE_CATALOGUE } from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
 import { ProductSnippetInterface } from 'db/uiInterfaces';
 import * as React from 'react';
-import Image from 'next/image';
 import Link from 'components/Link/Link';
 import RatingStars from 'components/RatingStars';
 import ControlButton from 'components/ControlButton';
@@ -89,19 +89,16 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
       <div className='grid grid-cols-12 flex-grow'>
         {/*image*/}
         <div className='relative flex items-center justify-center flex-grow pt-4 pl-4 pr-4 col-span-3 dark:snippet-image'>
-          <Image
-            src={mainImage}
-            objectFit={'contain'}
-            objectPosition={'center'}
+          <WpImage
+            url={mainImage}
             alt={`${snippetTitle}`}
             title={`${snippetTitle}`}
             width={85}
-            height={190}
-            quality={50}
+            className='w-full h-full object-contain'
           />
           <Link
             testId={`${testId}-image-grid`}
-            // target={'_blank'}
+            target={'_blank'}
             className='block absolute z-10 inset-0 text-indent-full'
             href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
           >
@@ -115,7 +112,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
             <div className='mb-3'>
               <Link
                 testId={`${testId}-name-grid`}
-                // target={'_blank'}
+                target={'_blank'}
                 className='text-lg sm:text-xl font-medium block text-primary-text hover:no-underline hover:text-primary-text'
                 href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
               >

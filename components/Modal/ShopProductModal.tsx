@@ -1,3 +1,4 @@
+import WpImage from 'components/WpImage';
 import { ProductInterface, ShopProductInterface } from 'db/uiInterfaces';
 import { noNaN } from 'lib/numbers';
 import * as React from 'react';
@@ -8,7 +9,6 @@ import { Form, Formik } from 'formik';
 import useValidationSchema from 'hooks/useValidationSchema';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import Button from 'components/Button';
-import Image from 'next/image';
 import { shopProductInModalSchema } from 'validation/shopSchema';
 
 interface ModalShopProductInterface extends Partial<Omit<ShopProductInterface, 'product'>> {
@@ -38,14 +38,15 @@ const ShopProductModal: React.FC<ShopProductModalInterface> = ({ shopProduct, ti
       <ModalTitle>{title}</ModalTitle>
       <div className='flex gap-4'>
         <div className='w-28 flex-shrink-0'>
-          <Image
-            src={`${product?.mainImage}`}
-            alt={`${product?.name}`}
-            title={`${product?.name}`}
-            objectFit={'contain'}
-            width={100}
-            height={100}
-          />
+          <div className='relative pb-[100%] w-full'>
+            <WpImage
+              url={`${product?.mainImage}`}
+              alt={`${product?.name}`}
+              title={`${product?.name}`}
+              width={100}
+              className='absolute inset-0 w-full h-full object-contain'
+            />
+          </div>
         </div>
         <div className='font-medium text-lg'>{product?.name}</div>
       </div>

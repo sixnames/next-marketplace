@@ -3,6 +3,7 @@ import Button from 'components/Button';
 import Inner from 'components/Inner';
 import PageEditor from 'components/PageEditor';
 import Title from 'components/Title';
+import WpImage from 'components/WpImage';
 import { DEFAULT_CITY, PAGE_EDITOR_DEFAULT_VALUE_STRING } from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import { COL_COMPANIES, COL_PRODUCT_CARD_CONTENTS, COL_PRODUCTS } from 'db/collectionNames';
@@ -21,7 +22,6 @@ import { getConstructorDefaultValue } from 'lib/constructorUtils';
 import { get } from 'lodash';
 import { ObjectId } from 'mongodb';
 import Head from 'next/head';
-import Image from 'next/image';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -58,12 +58,12 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, cardConten
         </Title>
 
         <div className='relative w-[15rem] h-[15rem] mb-8'>
-          <Image
-            src={mainImage}
+          <WpImage
+            url={mainImage}
             alt={originalName}
             title={originalName}
-            layout='fill'
-            objectFit='contain'
+            width={240}
+            className='absolute inset-0 w-full h-full object-contain'
           />
         </div>
 

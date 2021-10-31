@@ -4,6 +4,7 @@ import ProductMainFields, {
   ProductFormValuesInterface,
 } from 'components/FormTemplates/ProductMainFields';
 import Inner from 'components/Inner';
+import WpImage from 'components/WpImage';
 import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
 import { ProductInterface, RubricInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
@@ -14,7 +15,6 @@ import useValidationSchema from 'hooks/useValidationSchema';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsProductLayout from 'layout/cms/CmsProductLayout';
 import { getCmsProduct } from 'lib/productUtils';
-import Image from 'next/image';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import CmsLayout from 'layout/cms/CmsLayout';
@@ -111,12 +111,12 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, companySlu
             return (
               <Form noValidate>
                 <div className='relative w-[15rem] h-[15rem] mb-8'>
-                  <Image
-                    src={mainImage}
+                  <WpImage
+                    url={mainImage}
                     alt={originalName}
                     title={originalName}
-                    layout='fill'
-                    objectFit='contain'
+                    width={240}
+                    className='absolute inset-0 w-full h-full object-contain'
                   />
                 </div>
 

@@ -4,13 +4,13 @@ import FormikTranslationsInput from 'components/FormElements/Input/FormikTransla
 import { ProductFormValuesInterface } from 'components/FormTemplates/ProductMainFields';
 import Inner from 'components/Inner';
 import TextSeoInfo from 'components/TextSeoInfo';
+import WpImage from 'components/WpImage';
 import { CompanyInterface, ProductInterface, RubricInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import { useUpdateProductMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { useReloadListener } from 'hooks/useReloadListener';
 import useValidationSchema from 'hooks/useValidationSchema';
-import Image from 'next/image';
 import * as React from 'react';
 import { updateProductSchema } from 'validation/productSchema';
 
@@ -88,12 +88,12 @@ const CompanyProductDetails: React.FC<CompanyProductDetailsInterface> = ({
           return (
             <Form noValidate>
               <div className='relative w-[15rem] h-[15rem] mb-8'>
-                <Image
-                  src={mainImage}
+                <WpImage
+                  url={mainImage}
                   alt={originalName}
                   title={originalName}
-                  layout='fill'
-                  objectFit='contain'
+                  width={120}
+                  className='absolute inset-0 w-full h-full object-contain'
                 />
               </div>
 

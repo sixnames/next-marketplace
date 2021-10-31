@@ -5,13 +5,43 @@ import { alwaysArray } from 'lib/arrayUtils';
 import mkdirp from 'mkdirp';
 import extName from 'ext-name';
 import rimraf from 'rimraf';
-import { FormatEnum } from 'sharp';
+import sharp, { AvailableFormatInfo, FormatEnum } from 'sharp';
 import fs from 'fs';
 import path from 'path';
-import sharp from 'sharp';
 import { promisify } from 'util';
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
+
+interface GetSharpImageInterface {
+  filePath: string;
+  format?: keyof FormatEnum | AvailableFormatInfo;
+  width?: number;
+}
+
+export async function getSharpImage({ filePath, format = 'webp', width }: GetSharpImageInterface) {
+  try {
+    const dist = path.join(process.cwd(), filePath);
+
+    const exists = fs.existsSync(dist);
+    if (!exists) {
+      return null;
+    }
+
+    let transform = sharp(dist);
+    if (format) {
+      transform = transform.toFormat(format);
+    }
+
+    if (width) {
+      transform = transform.resize(width);
+    }
+
+    return transform.toBuffer();
+  } catch (e) {
+    console.log('getSharpImage ERROR==== ', e);
+    return null;
+  }
+}
 
 export interface StoreUploadsInterface {
   files: Formidable.Files;
@@ -68,10 +98,9 @@ export async function storeUploads({
       } else {
         // Save file to the FS
         const fileFullName = `${fileName}.${format}`;
-        const transform = sharp(buffer);
-        await transform.toFormat(format);
+        let transform = sharp(buffer).toFormat(format);
         if (width) {
-          transform.resize(width);
+          transform = transform.resize(width);
         }
         await transform.toFile(`${filesPath}/${fileFullName}`);
 
@@ -90,17 +119,32 @@ export async function storeUploads({
 }
 
 export const deleteUpload = async (filePath: string): Promise<boolean> => {
+  const minFilesCount = 2;
   if (filePath === IMAGE_FALLBACK) {
     return true;
   }
   const pathParts = filePath.split('/');
   const pathWithoutFile = pathParts.slice(0, pathParts.length - 1);
   const dirPath = pathWithoutFile.join('/');
-  const deletePath = path.join(process.cwd(), `public`, dirPath);
+  const deleteDirPath = path.join(process.cwd(), `public`, dirPath);
+  const dirFilesList = fs.readdirSync(deleteDirPath);
 
+  if (dirFilesList.length < minFilesCount) {
+    return new Promise((resolve) => {
+      rimraf(deleteDirPath, (e: any) => {
+        if (e) {
+          resolve(false);
+        } else {
+          resolve(true);
+        }
+      });
+    });
+  }
   return new Promise((resolve) => {
-    rimraf(deletePath, (e: any) => {
+    const fileFinalPath = path.join(process.cwd(), 'public', filePath);
+    fs.unlink(fileFinalPath, (e) => {
       if (e) {
+        console.log(e);
         resolve(false);
       } else {
         resolve(true);

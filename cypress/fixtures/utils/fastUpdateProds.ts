@@ -65,7 +65,7 @@ interface PathInterface {
   dist: string;
 }
 
-const basePath = 'public/assets/';
+const basePath = 'assets/';
 async function getPaths(
   initialPath: string,
   Bucket: string,

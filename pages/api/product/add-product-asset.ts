@@ -3,7 +3,6 @@ import { COL_PRODUCT_ASSETS, COL_PRODUCTS, COL_SHOP_PRODUCTS } from 'db/collecti
 import { ProductAssetsModel, ProductModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { getMainImage, storeUploads } from 'lib/assetUtils/assetUtils';
-import { noNaN } from 'lib/numbers';
 import { parseRestApiFormData } from 'lib/restApi';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
@@ -67,17 +66,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   // Update product assets
-  const sortedAssets = initialAssets.sort((assetA, assetB) => {
-    return assetB.index - assetA.index;
-  });
-  const firstAsset = sortedAssets[0];
-  const startIndex = noNaN(firstAsset?.index);
-
   const assets = await storeUploads({
     files: formData.files,
     dist: ASSETS_DIST_PRODUCTS,
     dirName: product.itemId,
-    startIndex,
+    startIndex: initialAssets.length,
     width: ASSETS_PRODUCT_IMAGE_WIDTH,
   });
   if (!assets) {

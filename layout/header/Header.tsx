@@ -520,7 +520,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
             >
               <img
                 className='w-full h-full object-contain object-left lg:object-center'
-                src={siteLogoSrc}
+                src={`${siteLogoSrc}`}
                 width='150'
                 height='24'
                 alt={`${configSiteName}`}

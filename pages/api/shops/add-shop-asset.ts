@@ -4,7 +4,6 @@ import { ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { getApiMessageValue } from 'lib/apiMessageUtils';
 import { getMainImage, storeUploads } from 'lib/assetUtils/assetUtils';
-import { noNaN } from 'lib/numbers';
 import { parseRestApiFormData } from 'lib/restApi';
 import { getOperationPermission } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
@@ -66,17 +65,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   // Update shop assets
-  const sortedAssets = shop.assets.sort((assetA, assetB) => {
-    return assetB.index - assetA.index;
-  });
-  const firstAsset = sortedAssets[0];
-  const startIndex = noNaN(firstAsset?.index);
   const assets = await storeUploads({
     files: formData.files,
     dirName: shop.itemId,
     dist: ASSETS_DIST_SHOPS,
     width: ASSETS_SHOP_IMAGE_WIDTH,
-    startIndex,
+    startIndex: shop.assets.length,
   });
   if (!assets) {
     res.status(500).send({

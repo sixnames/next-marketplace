@@ -1,8 +1,8 @@
 import ContentItemControls from 'components/ContentItemControls';
 import Inner from 'components/Inner';
 import RequestError from 'components/RequestError';
+import WpImage from 'components/WpImage';
 import { CategoryInterface, CompanyInterface, RubricInterface } from 'db/uiInterfaces';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 
@@ -25,16 +25,15 @@ const CompanyRubricCategoriesList: React.FC<CompanyRubricCategoriesListInterface
         <div>
           {image ? (
             <div>
-              <Image
-                src={image}
-                width={80}
-                height={80}
-                quality={50}
-                alt={`${name}`}
-                title={`${name}`}
-                objectFit={'contain'}
-                objectPosition={'center'}
-              />
+              <div className='relative pb-[100%] w-[80px]'>
+                <WpImage
+                  url={image}
+                  alt={`${name}`}
+                  title={`${name}`}
+                  width={80}
+                  className='absolute inset-0 w-full h-full object-contain'
+                />
+              </div>
             </div>
           ) : null}
 

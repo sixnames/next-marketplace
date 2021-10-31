@@ -4,6 +4,7 @@ import FixedButtons from 'components/FixedButtons';
 import Inner from 'components/Inner';
 import { CreateCategoryModalInterface } from 'components/Modal/CreateCategoryModal';
 import RequestError from 'components/RequestError';
+import WpImage from 'components/WpImage';
 import { DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE, ROUTE_CMS, SORT_ASC } from 'config/common';
 import { CONFIRM_MODAL, CREATE_CATEGORY_MODAL } from 'config/modalVariants';
 import { COL_CATEGORIES, COL_ICONS, COL_RUBRICS } from 'db/collectionNames';
@@ -19,7 +20,6 @@ import { getTreeFromList, sortByName } from 'lib/optionsUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import Image from 'next/image';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
@@ -50,16 +50,13 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
       return (
         <div>
           {image ? (
-            <div>
-              <Image
-                src={image}
-                width={80}
-                height={80}
-                quality={50}
+            <div className='relative pb-[100%] w-[80px]'>
+              <WpImage
+                url={image}
                 alt={`${name}`}
                 title={`${name}`}
-                objectFit={'contain'}
-                objectPosition={'center'}
+                width={80}
+                className='absolute inset-0 w-full h-full object-contain'
               />
             </div>
           ) : null}

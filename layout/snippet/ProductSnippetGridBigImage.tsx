@@ -1,11 +1,11 @@
 import ControlButton from 'components/ControlButton';
 import Link from 'components/Link/Link';
+import WpImage from 'components/WpImage';
 import { ROUTE_CATALOGUE } from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
 import { ProductSnippetInterface } from 'db/uiInterfaces';
 import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
-import Image from 'next/image';
 import * as React from 'react';
 
 const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
@@ -87,19 +87,18 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
       >
         <div className='px-4 pt-6'>
           <div className='relative flex justify-center dark:snippet-image mb-4'>
-            <Image
-              src={mainImage}
-              objectFit={'contain'}
-              objectPosition={'center'}
-              alt={`${snippetTitle}`}
-              title={`${snippetTitle}`}
-              width={240}
-              height={240}
-              quality={50}
-            />
+            <div className='relative pb-[100%] w-full'>
+              <WpImage
+                url={mainImage}
+                alt={`${snippetTitle}`}
+                title={`${snippetTitle}`}
+                width={240}
+                className='absolute inset-0 w-full h-full object-contain'
+              />
+            </div>
             <Link
               testId={`${testId}-image-grid`}
-              // target={'_blank'}
+              target={'_blank'}
               className='block absolute z-10 inset-0 text-indent-full'
               href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
             >
@@ -111,7 +110,7 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
           <div className='mb-4'>
             <Link
               testId={`${testId}-name-grid`}
-              // target={'_blank'}
+              target={'_blank'}
               className='text-lg block text-primary-text hover:no-underline hover:text-primary-text'
               href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
             >

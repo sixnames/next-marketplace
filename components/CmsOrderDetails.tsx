@@ -7,6 +7,7 @@ import LinkEmail from 'components/Link/LinkEmail';
 import LinkPhone from 'components/Link/LinkPhone';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import Title from 'components/Title';
+import WpImage from 'components/WpImage';
 import { IMAGE_FALLBACK } from 'config/common';
 import { CONFIRM_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
@@ -14,7 +15,6 @@ import { useNotificationsContext } from 'context/notificationsContext';
 import { OrderInterface, OrderProductInterface } from 'db/uiInterfaces';
 import { useCancelOrderProduct, useUpdateOrderProduct } from 'hooks/mutations/useOrderMutations';
 import { noNaN } from 'lib/numbers';
-import Image from 'next/image';
 import * as React from 'react';
 
 interface OrderProductProductInterface {
@@ -48,16 +48,15 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({ orderProduct }) 
       {/*image*/}
       <div className='flex items-center justify-center px-2 w-28 lg:w-32'>
         <div className='relative flex justify-center flex-shrink-0 w-[120px]'>
-          <Image
-            objectFit={'contain'}
-            objectPosition={'center'}
-            src={productImageSrc}
-            alt={`${originalName}`}
-            title={`${originalName}`}
-            width={240}
-            height={240}
-            quality={50}
-          />
+          <div className='relative pb-[100%] w-full'>
+            <WpImage
+              url={productImageSrc}
+              alt={`${originalName}`}
+              title={`${originalName}`}
+              width={120}
+              className='absolute inset-0 w-full h-full object-contain'
+            />
+          </div>
         </div>
       </div>
 

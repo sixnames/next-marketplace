@@ -8,6 +8,7 @@ import Link from 'components/Link/Link';
 import ProductShopPrices from 'components/ProductShopPrices';
 import RequestError from 'components/RequestError';
 import Title from 'components/Title';
+import WpImage from 'components/WpImage';
 import WpTooltip from 'components/WpTooltip';
 import { IMAGE_FALLBACK, ROUTE_CATALOGUE, ROUTE_SIGN_IN } from 'config/common';
 import { useSiteContext } from 'context/siteContext';
@@ -29,7 +30,6 @@ import { noNaN } from 'lib/numbers';
 import { castOrderStatus } from 'lib/orderUtils';
 import { generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
-import Image from 'next/image';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
@@ -58,19 +58,20 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({
     productNotExist || addToCartAmount + inCartCount > noNaN(shopProduct?.available);
 
   const productImageSrc = shopProduct ? `${product?.mainImage}` : IMAGE_FALLBACK;
-  const imageWidth = 35;
-  const imageHeight = 120;
 
   return (
     <div className='relative py-10 flex pr-[calc(var(--controlButtonHeightBig)+1rem)]'>
       <div className='relative flex items-center justify-center px-4 w-20 lg:w-28 flex-shrink-0 w-[120px]'>
-        <Image
-          src={productImageSrc}
-          alt={`${originalName}`}
-          title={`${originalName}`}
-          width={imageWidth}
-          height={imageHeight}
-        />
+        <div className='relative pb-[100%] w-full'>
+          <WpImage
+            url={productImageSrc}
+            alt={`${originalName}`}
+            title={`${originalName}`}
+            width={240}
+            className='absolute inset-0 w-full h-full object-contain'
+          />
+        </div>
+
         <Link
           target={'_blank'}
           className='block absolute z-10 inset-0 text-indent-full'

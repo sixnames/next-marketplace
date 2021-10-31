@@ -3,6 +3,7 @@ import Button from 'components/Button';
 import Icon from 'components/Icon';
 import Inner from 'components/Inner';
 import TagLink from 'components/Link/TagLink';
+import WpImage from 'components/WpImage';
 import CardSimilarProducts from 'layout/card/CardSimilarProducts';
 import Title from 'components/Title';
 import { ROUTE_CATALOGUE } from 'config/common';
@@ -17,7 +18,6 @@ import CardTagFeatures from 'layout/card/CardTagFeatures';
 import CardTextFeatures from 'layout/card/CardTextFeatures';
 import { noNaN } from 'lib/numbers';
 import dynamic from 'next/dynamic';
-import Image from 'next/image';
 import { CardLayoutInterface } from 'pages/catalogue/[rubricSlug]/product/[card]';
 import * as React from 'react';
 
@@ -120,12 +120,12 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                   </div>
                 ) : (
                   <div className='relative w-[160px] md:h-[500px] lg:h-[600px]'>
-                    <Image
-                      src={`${product.mainImage}`}
+                    <WpImage
+                      url={`${product.mainImage}`}
                       alt={cardTitle}
                       title={cardTitle}
-                      layout='fill'
-                      objectFit='contain'
+                      width={240}
+                      className='absolute inset-0 w-full h-full object-contain'
                     />
                   </div>
                 )}

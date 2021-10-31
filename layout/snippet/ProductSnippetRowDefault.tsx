@@ -2,13 +2,13 @@ import Button from 'components/Button';
 import ControlButton from 'components/ControlButton';
 import Link from 'components/Link/Link';
 import RatingStars from 'components/RatingStars';
+import WpImage from 'components/WpImage';
 import { ROUTE_CATALOGUE } from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
 import { ProductSnippetInterface } from 'db/uiInterfaces';
 import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
 import { noNaN } from 'lib/numbers';
-import Image from 'next/image';
 import * as React from 'react';
 
 const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
@@ -78,19 +78,16 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
       <div className='relative flex flex-col col-span-3 md:col-span-2 items-center justify-center flex-grow pt-4 pl-5 pr-5 dark:snippet-image'>
         {/*image*/}
         <div className='relative flex-grow pb-5 pt-5'>
-          <Image
-            src={mainImage}
-            objectFit={'contain'}
-            objectPosition={'center'}
+          <WpImage
+            url={mainImage}
             alt={`${snippetTitle}`}
             title={`${snippetTitle}`}
-            width={85}
-            height={190}
-            quality={50}
+            width={100}
+            className='w-full h-full object-contain'
           />
           <Link
             testId={`${testId}-image-row`}
-            // target={'_blank'}
+            target={'_blank'}
             className='block absolute z-10 inset-0 text-indent-full'
             href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
           >
@@ -118,7 +115,7 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
             <div className='mb-3'>
               <Link
                 testId={`${testId}-name-row`}
-                // target={'_blank'}
+                target={'_blank'}
                 className='text-2xl font-medium block text-primary-text hover:no-underline hover:text-primary-text'
                 href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
               >

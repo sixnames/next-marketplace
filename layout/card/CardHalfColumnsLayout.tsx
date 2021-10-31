@@ -3,6 +3,7 @@ import Button from 'components/Button';
 import Icon from 'components/Icon';
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
+import WpImage from 'components/WpImage';
 import CardSimilarProducts from 'layout/card/CardSimilarProducts';
 import Title from 'components/Title';
 import { ROUTE_CATALOGUE } from 'config/common';
@@ -17,7 +18,6 @@ import CardTagFeatures from 'layout/card/CardTagFeatures';
 import CardTextFeatures from 'layout/card/CardTextFeatures';
 import { noNaN } from 'lib/numbers';
 import dynamic from 'next/dynamic';
-import Image from 'next/image';
 import { CardLayoutInterface } from 'pages/catalogue/[rubricSlug]/product/[card]';
 import * as React from 'react';
 
@@ -219,11 +219,12 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                                   }`}
                                 >
                                   <div className='relative h-16 w-full'>
-                                    <Image
-                                      src={mainImage}
+                                    <WpImage
+                                      url={mainImage}
                                       alt={name}
-                                      layout='fill'
-                                      objectFit='contain'
+                                      title={name}
+                                      width={100}
+                                      className='absolute inset-0 w-full h-full object-contain'
                                     />
                                   </div>
                                   <div className='mt-3 text-sm'>{name}</div>

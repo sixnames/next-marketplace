@@ -7,6 +7,7 @@ import { MoveOptionModalInterface } from 'components/Modal/MoveOptionModal';
 import { OptionInGroupModalInterface } from 'components/Modal/OptionInGroupModal';
 import RequestError from 'components/RequestError';
 import Title from 'components/Title';
+import WpImage from 'components/WpImage';
 import { DEFAULT_LOCALE, ROUTE_CMS, SORT_ASC } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { CONFIRM_MODAL, MOVE_OPTION_MODAL, OPTION_IN_GROUP_MODAL } from 'config/modalVariants';
@@ -31,7 +32,6 @@ import CmsLayout from 'layout/cms/CmsLayout';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { PagePropsInterface } from 'pages/_app';
-import Image from 'next/image';
 
 interface OptionsGroupOptionsConsumerInterface {
   optionsGroup: OptionsGroupInterface;
@@ -79,16 +79,13 @@ const OptionsGroupOptionsConsumer: React.FC<OptionsGroupOptionsConsumerInterface
       return (
         <div>
           {image ? (
-            <div>
-              <Image
-                src={image}
-                width={80}
-                height={80}
-                quality={50}
+            <div className='relative pb-[100%] w-[80px]'>
+              <WpImage
+                url={image}
                 alt={`${name}`}
                 title={`${name}`}
-                objectFit={'contain'}
-                objectPosition={'center'}
+                width={80}
+                className='absolute inset-0 w-full h-full object-contain'
               />
             </div>
           ) : null}

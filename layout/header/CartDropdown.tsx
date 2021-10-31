@@ -1,8 +1,8 @@
+import WpImage from 'components/WpImage';
 import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
 import { CartInterface } from 'db/uiInterfaces';
 import * as React from 'react';
-import Image from 'next/image';
 import ProductShopPrices from 'components/ProductShopPrices';
 import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
 import ButtonCross from 'components/ButtonCross';
@@ -24,8 +24,8 @@ const cartDropdownCssVars = {
 } as React.CSSProperties;
 
 const productClassName = 'relative grid grid-cols-8 pb-16 px-2 gap-4';
-const productImageClassName = 'relative col-span-2 flex items-center justify-center';
-const productImageHolderClassName = 'w-16';
+const productImageClassName = 'relative col-span-2 flex items-start justify-center';
+const productImageHolderClassName = 'w-full';
 const productContentClassName = 'relative col-span-6';
 
 const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
@@ -73,14 +73,15 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
                 >
                   <div className={productImageClassName}>
                     <div className={productImageHolderClassName}>
-                      <Image
-                        src={`${product.mainImage}`}
-                        objectFit='contain'
-                        alt={`${product.snippetTitle}`}
-                        title={`${product.snippetTitle}`}
-                        width={70}
-                        height={185}
-                      />
+                      <div className='relative pb-[100%] w-full'>
+                        <WpImage
+                          url={`${product.mainImage}`}
+                          alt={`${product.snippetTitle}`}
+                          title={`${product.snippetTitle}`}
+                          width={100}
+                          className='absolute inset-0 w-full h-full object-contain'
+                        />
+                      </div>
                     </div>
                   </div>
                   <div className={productContentClassName}>
@@ -148,20 +149,21 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
               return null;
             }
 
-            const { mainImage, snippetTitle, shopsCount, cardPrices } = product;
+            const { snippetTitle, shopsCount, cardPrices } = product;
 
             return (
               <div key={`${_id}`} className={productClassName} data-cy={`cart-dropdown-product`}>
                 <div className={productImageClassName}>
                   <div className={productImageHolderClassName}>
-                    <Image
-                      src={`${mainImage}`}
-                      objectFit='contain'
-                      alt={`${snippetTitle}`}
-                      title={`${snippetTitle}`}
-                      width={70}
-                      height={185}
-                    />
+                    <div className='relative pb-[100%] w-full'>
+                      <WpImage
+                        url={`${product.mainImage}`}
+                        alt={`${product.snippetTitle}`}
+                        title={`${product.snippetTitle}`}
+                        width={100}
+                        className='absolute inset-0 w-full h-full object-contain'
+                      />
+                    </div>
                   </div>
                 </div>
                 <div className={productContentClassName}>

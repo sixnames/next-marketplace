@@ -62,8 +62,8 @@ export async function storeUploads({
   width,
 }: StoreUploadsInterface): Promise<AssetModel[] | null> {
   try {
-    const filesPath = path.join(process.cwd(), `public${ASSETS_DIST}`, dist, dirName);
     const assetsPath = `${ASSETS_DIST}/${dist}/${dirName}`;
+    const filesPath = path.join(process.cwd(), assetsPath);
 
     // Create directory if not exists
     await mkdirp(filesPath);
@@ -126,9 +126,11 @@ export const deleteUpload = async (filePath: string): Promise<boolean> => {
   const pathParts = filePath.split('/');
   const pathWithoutFile = pathParts.slice(0, pathParts.length - 1);
   const dirPath = pathWithoutFile.join('/');
-  const deleteDirPath = path.join(process.cwd(), `public`, dirPath);
+  const deleteDirPath = path.join(process.cwd(), dirPath);
   const dirFilesList = fs.readdirSync(deleteDirPath);
 
+  // remove file and parent directory
+  // if there is one file in directory
   if (dirFilesList.length < minFilesCount) {
     return new Promise((resolve) => {
       rimraf(deleteDirPath, (e: any) => {
@@ -140,8 +142,10 @@ export const deleteUpload = async (filePath: string): Promise<boolean> => {
       });
     });
   }
+
+  // remove file
   return new Promise((resolve) => {
-    const fileFinalPath = path.join(process.cwd(), 'public', filePath);
+    const fileFinalPath = path.join(process.cwd(), filePath);
     fs.unlink(fileFinalPath, (e) => {
       if (e) {
         console.log(e);

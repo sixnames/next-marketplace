@@ -37,6 +37,7 @@
     "@react-page/plugins-slate": "^4.0.1",
     "@react-page/plugins-spacer": "^4.0.1",
     "@react-page/plugins-video": "^4.0.1",
+    "@tailwindcss/aspect-ratio": "^0.3.0",
     "@tailwindcss/typography": "0.4.1",
     "add-zero": "^1.0.0",
     "algoliasearch": "^4.9.1",

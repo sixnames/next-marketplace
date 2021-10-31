@@ -1,5 +1,5 @@
+import WpImage from 'components/WpImage';
 import { AssetModel } from 'db/dbModels';
-import Image from 'next/image';
 import * as React from 'react';
 
 interface CardSimpleGalleryInterface {
@@ -23,14 +23,15 @@ const CardSimpleGallery: React.FC<CardSimpleGalleryInterface> = ({
     return (
       <div className={className}>
         <div className='relative mb-12 lg:mb-0 w-full max-w-[480px] mx-auto'>
-          <Image
-            src={`${mainImage}`}
-            alt={alt}
-            title={title}
-            width={480}
-            height={480}
-            objectFit='contain'
-          />
+          <div className='relative pb-[100%] w-full'>
+            <WpImage
+              url={mainImage}
+              alt={alt}
+              title={title}
+              width={480}
+              className='absolute inset-0 w-full h-full object-contain'
+            />
+          </div>
         </div>
       </div>
     );
@@ -43,14 +44,13 @@ const CardSimpleGallery: React.FC<CardSimpleGalleryInterface> = ({
           {assets.map(({ url }, index) => {
             return (
               <div key={url} className='min-w-[260px] lg:min-w-full rounded-lg shadow-lg p-1'>
-                <div className='relative'>
-                  <Image
-                    src={url}
+                <div className='relative pb-[100%] w-full'>
+                  <WpImage
+                    url={url}
                     alt={`${alt} photo ${index}`}
                     title={`${title} photo ${index}`}
-                    width={400}
-                    height={400}
-                    objectFit='contain'
+                    width={480}
+                    className='absolute inset-0 w-full h-full object-contain'
                   />
                 </div>
               </div>

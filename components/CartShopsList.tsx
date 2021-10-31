@@ -1,4 +1,5 @@
 import { MapModalInterface } from 'components/Modal/MapModal';
+import WpImage from 'components/WpImage';
 import { MAP_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { useSiteContext } from 'context/siteContext';
@@ -6,7 +7,6 @@ import { ShopProductInterface } from 'db/uiInterfaces';
 import LayoutCard from 'layout/LayoutCard';
 import * as React from 'react';
 import Button from 'components/Button';
-import Image from 'next/image';
 import RatingStars from 'components/RatingStars';
 import LinkPhone from 'components/Link/LinkPhone';
 import ProductShopPrices from 'components/ProductShopPrices';
@@ -37,7 +37,13 @@ const CartShop: React.FC<CartShopInterface> = ({ shopProduct, testId, cartProduc
   return (
     <LayoutCard className='overflow-hidden gap-4 md:grid md:grid-cols-12'>
       <div className='relative h-[120px] w-full md:col-span-4 lg:col-span-3 md:h-full'>
-        <Image objectFit={'cover'} layout={'fill'} src={mainImage} alt={name} title={name} />
+        <WpImage
+          url={mainImage}
+          alt={`${name}`}
+          title={`${name}`}
+          width={120}
+          className='absolute inset-0 w-full h-full object-contain'
+        />
       </div>
 
       <div className='grid gap-4 px-4 py-6 md:col-span-8 lg:col-span-9 lg:grid-cols-5'>

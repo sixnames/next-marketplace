@@ -1,15 +1,14 @@
+import WpImage from 'components/WpImage';
 import WpMap from 'components/WpMap';
 import { useThemeContext } from 'context/themeContext';
 import { ShopInterface } from 'db/uiInterfaces';
 import LayoutCard from 'layout/LayoutCard';
 import * as React from 'react';
 import { Coordinates } from 'generated/apolloComponents';
-import Image from 'next/image';
 
 interface ShopsMapInterface {
   shops: ShopInterface[];
 }
-const shopImageSize = 120;
 
 const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
   const { isDark } = useThemeContext();
@@ -35,13 +34,12 @@ const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
                 onClick={() => panTo(address.formattedCoordinates)}
               >
                 <div className='col-span-1 relative shops-map-snippet'>
-                  <Image
-                    src={mainImage}
+                  <WpImage
+                    url={mainImage}
                     alt={name}
                     title={name}
-                    width={shopImageSize}
-                    height={shopImageSize}
-                    objectFit={'cover'}
+                    width={150}
+                    className='absolute inset-0 w-full h-full object-cover'
                   />
                 </div>
 

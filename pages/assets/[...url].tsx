@@ -1,8 +1,10 @@
 import { ASSETS_DIST } from 'config/common';
-import { alwaysArray } from 'lib/arrayUtils';
+import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { getSharpImage } from 'lib/assetUtils/assetUtils';
 import { noNaN } from 'lib/numbers';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import path from 'path';
+import fs from 'fs';
 import * as React from 'react';
 import { AvailableFormatInfo, FormatEnum } from 'sharp';
 
@@ -14,22 +16,44 @@ export async function getServerSideProps(
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<any>> {
   const { res, query } = context;
-  // Extract the query-parameter
+  // extract the query parameters
   const widthString = (query.width as string) || undefined;
-  const format = (query.format || 'webp') as keyof FormatEnum | AvailableFormatInfo | undefined;
+  const format = (query.format || 'webp') as
+    | keyof FormatEnum
+    | AvailableFormatInfo
+    | 'ico'
+    | undefined;
   const urlArray = [ASSETS_DIST, ...alwaysArray(query.url)];
   let filePath = urlArray.join('/');
+  const fileName = alwaysString(urlArray[urlArray.length - 1]);
+  const initialFileFormatArray = fileName.split('.');
+  const initialFileFormat = alwaysString(initialFileFormatArray[initialFileFormatArray.length - 1]);
 
-  // Set the content-type of the response
+  // set the content-type of the response
   res.setHeader('Content-Type', `image/${format}`);
 
-  console.log({
-    filePath,
-    format,
-    width: noNaN(widthString),
-  });
+  // send ico and svg files
+  if (
+    format === 'svg' ||
+    format === 'ico' ||
+    initialFileFormat === 'svg' ||
+    initialFileFormat === 'ico'
+  ) {
+    const dist = path.join(process.cwd(), filePath);
+    const contentType = initialFileFormat === 'ico' ? 'image/ico' : 'image/svg+xml';
+    const stat = fs.statSync(dist);
+    res.setHeader('Content-Type', contentType);
+    res.setHeader('Content-Length', stat.size);
 
-  // Get the processed image
+    const buffer = fs.readFileSync(dist);
+    res.write(buffer);
+    res.end();
+    return {
+      props: {},
+    };
+  }
+
+  // get the processed image
   const file = await getSharpImage({
     filePath,
     format,

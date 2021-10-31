@@ -29,7 +29,6 @@ import { getNumWord } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
@@ -46,7 +45,6 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
   basePath,
   companySlug,
 }) => {
-  const router = useRouter();
   const setPageHandler = useNavigateToPageHandler();
   const isPageLoading = usePageLoadingState();
   const { onErrorCallback, onCompleteCallback, showLoading, showModal } = useMutationCallbacks({
@@ -64,7 +62,11 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
       headTitle: 'Арт',
       render: ({ dataItem, rowIndex }) => {
         return (
-          <Link testId={`product-link-${rowIndex}`} href={`${itemPath}/${dataItem._id}`}>
+          <Link
+            testId={`product-link-${rowIndex}`}
+            target={'_blank'}
+            href={`${itemPath}/${dataItem._id}`}
+          >
             {dataItem.itemId}
           </Link>
         );
@@ -159,9 +161,7 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
               }}
               updateTitle={'Редактировать товар'}
               updateHandler={() => {
-                router.push(`${itemPath}/${dataItem._id}`).catch((e) => {
-                  console.log(e);
-                });
+                window.open(`${itemPath}/${dataItem._id}`, '_blank');
               }}
               deleteTitle={'Удалить товар из рубрики'}
               deleteHandler={() => {
@@ -246,7 +246,7 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
             <div className={`relative overflow-x-auto overflow-y-hidden`}>
               <Table<ProductInterface>
                 onRowDoubleClick={(dataItem) => {
-                  router.push(`${itemPath}/${dataItem._id}`).catch(console.log);
+                  window.open(`${itemPath}/${dataItem._id}`, '_blank');
                 }}
                 columns={columns}
                 data={docs}

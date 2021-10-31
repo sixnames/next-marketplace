@@ -342,7 +342,7 @@ const BlogListPageConsumer: React.FC<BlogListPageConsumerInterface> = ({
           <Title>{blogLinkName}</Title>
 
           {posts.length > 0 ? (
-            <div className={`relative grid lg:grid-cols-4 gap-6`}>
+            <div className={`grid lg:grid-cols-4 gap-6`}>
               <div className={`grid gap-6 sm:grid-cols-2 md:grid-cols-3 col-span-3`}>
                 {posts.map((post, index) => {
                   if (index === 0) {
@@ -364,8 +364,8 @@ const BlogListPageConsumer: React.FC<BlogListPageConsumerInterface> = ({
                 })}
               </div>
 
-              <div className='col-span-3 lg:col-span-1'>
-                <div className='sticky top-20'>
+              <div className='relative col-span-3 lg:col-span-1 flex items-end'>
+                <div className='sticky bottom-12'>
                   <BlogFilter blogFilter={blogFilter} />
 
                   {/*top posts*/}

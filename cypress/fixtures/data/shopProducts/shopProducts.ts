@@ -49,7 +49,6 @@ shops.forEach((shop) => {
           rubricId: product.rubricId,
           rubricSlug: product.rubricSlug,
           selectedOptionsSlugs: product.selectedOptionsSlugs,
-          supplierSlugs: product.supplierSlugs,
           discountedPercent: withDiscount ? discountedPercent : 0,
           oldPrice,
           price,

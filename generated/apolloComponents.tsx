@@ -1036,8 +1036,6 @@ export type Mutation = {
   updateProductBrandCollection: ProductPayload;
   /** Should update product manufacturer */
   updateProductManufacturer: ProductPayload;
-  /** Should update product supplier */
-  updateProductSupplier: ProductPayload;
   /** Should update product select attribute */
   updateProductSelectAttribute: ProductPayload;
   /** Should update product number attribute */
@@ -1457,11 +1455,6 @@ export type MutationUpdateProductBrandCollectionArgs = {
 
 export type MutationUpdateProductManufacturerArgs = {
   input: UpdateProductManufacturerInput;
-};
-
-
-export type MutationUpdateProductSupplierArgs = {
-  input: UpdateProductSupplierInput;
 };
 
 
@@ -2514,7 +2507,7 @@ export type ShopProduct = Timestamp & {
   price: Scalars['Int'];
   productId: Scalars['ObjectId'];
   shopId: Scalars['ObjectId'];
-  barcode?: Maybe<Scalars['String']>;
+  barcode?: Maybe<Array<Scalars['String']>>;
   oldPrices: Array<ShopProductOldPrice>;
   oldPrice?: Maybe<Scalars['Int']>;
   discountedPercent?: Maybe<Scalars['Int']>;
@@ -2872,11 +2865,6 @@ export type UpdateProductSelectAttributeInput = {
   selectedOptionsIds: Array<Scalars['ObjectId']>;
 };
 
-export type UpdateProductSupplierInput = {
-  productId: Scalars['ObjectId'];
-  supplierSlugs: Array<Scalars['String']>;
-};
-
 export type UpdateProductTextAttributeInput = {
   productId: Scalars['ObjectId'];
   attributes: Array<UpdateProductTextAttributeItemInput>;
@@ -2985,7 +2973,7 @@ export type UpdateShopProductInput = {
   price: Scalars['Int'];
   productId: Scalars['ObjectId'];
   shopProductId: Scalars['ObjectId'];
-  barcode?: Maybe<Scalars['String']>;
+  barcode?: Maybe<Array<Scalars['String']>>;
 };
 
 export type UpdateSupplierInput = {
@@ -4124,19 +4112,6 @@ export type UpdateProductManufacturerMutationVariables = Exact<{
 export type UpdateProductManufacturerMutation = (
   { __typename?: 'Mutation' }
   & { updateProductManufacturer: (
-    { __typename?: 'ProductPayload' }
-    & Pick<ProductPayload, 'success' | 'message'>
-  ) }
-);
-
-export type UpdateProductSupplierMutationVariables = Exact<{
-  input: UpdateProductSupplierInput;
-}>;
-
-
-export type UpdateProductSupplierMutation = (
-  { __typename?: 'Mutation' }
-  & { updateProductSupplier: (
     { __typename?: 'ProductPayload' }
     & Pick<ProductPayload, 'success' | 'message'>
   ) }
@@ -7974,40 +7949,6 @@ export function useUpdateProductManufacturerMutation(baseOptions?: Apollo.Mutati
 export type UpdateProductManufacturerMutationHookResult = ReturnType<typeof useUpdateProductManufacturerMutation>;
 export type UpdateProductManufacturerMutationResult = Apollo.MutationResult<UpdateProductManufacturerMutation>;
 export type UpdateProductManufacturerMutationOptions = Apollo.BaseMutationOptions<UpdateProductManufacturerMutation, UpdateProductManufacturerMutationVariables>;
-export const UpdateProductSupplierDocument = gql`
-    mutation UpdateProductSupplier($input: UpdateProductSupplierInput!) {
-  updateProductSupplier(input: $input) {
-    success
-    message
-  }
-}
-    `;
-export type UpdateProductSupplierMutationFn = Apollo.MutationFunction<UpdateProductSupplierMutation, UpdateProductSupplierMutationVariables>;
-
-/**
- * __useUpdateProductSupplierMutation__
- *
- * To run a mutation, you first call `useUpdateProductSupplierMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateProductSupplierMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateProductSupplierMutation, { data, loading, error }] = useUpdateProductSupplierMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateProductSupplierMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProductSupplierMutation, UpdateProductSupplierMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateProductSupplierMutation, UpdateProductSupplierMutationVariables>(UpdateProductSupplierDocument, options);
-      }
-export type UpdateProductSupplierMutationHookResult = ReturnType<typeof useUpdateProductSupplierMutation>;
-export type UpdateProductSupplierMutationResult = Apollo.MutationResult<UpdateProductSupplierMutation>;
-export type UpdateProductSupplierMutationOptions = Apollo.BaseMutationOptions<UpdateProductSupplierMutation, UpdateProductSupplierMutationVariables>;
 export const UpdateProductSelectAttributeDocument = gql`
     mutation UpdateProductSelectAttribute($input: UpdateProductSelectAttributeInput!) {
   updateProductSelectAttribute(input: $input) {

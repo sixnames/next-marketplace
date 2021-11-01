@@ -4,21 +4,14 @@ import Inner from 'components/Inner';
 import { BrandCollectionOptionsModalInterface } from 'components/Modal/BrandCollectionOptionsModal';
 import { BrandOptionsModalInterface } from 'components/Modal/BrandOptionsModal';
 import { ManufacturerOptionsModalInterface } from 'components/Modal/ManufacturerOptionsModal';
-import { SupplierOptionsModalInterface } from 'components/Modal/SupplierOptionsModal';
 import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
 import {
   BRAND_COLLECTION_OPTIONS_MODAL,
   BRAND_OPTIONS_MODAL,
   MANUFACTURER_OPTIONS_MODAL,
-  SUPPLIER_OPTIONS_MODAL,
 } from 'config/modalVariants';
-import {
-  COL_BRAND_COLLECTIONS,
-  COL_BRANDS,
-  COL_MANUFACTURERS,
-  COL_SUPPLIERS,
-} from 'db/collectionNames';
-import { BrandCollectionModel, BrandModel, ManufacturerModel, SupplierModel } from 'db/dbModels';
+import { COL_BRAND_COLLECTIONS, COL_BRANDS, COL_MANUFACTURERS } from 'db/collectionNames';
+import { BrandCollectionModel, BrandModel, ManufacturerModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
   BrandCollectionInterface,
@@ -26,13 +19,11 @@ import {
   ManufacturerInterface,
   ProductInterface,
   RubricInterface,
-  SupplierInterface,
 } from 'db/uiInterfaces';
 import {
   useUpdateProductBrandCollectionMutation,
   useUpdateProductBrandMutation,
   useUpdateProductManufacturerMutation,
-  useUpdateProductSupplierMutation,
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
@@ -50,7 +41,6 @@ interface ProductBrandsInterface {
   brand?: BrandInterface | null;
   brandCollection?: BrandCollectionInterface | null;
   manufacturer?: ManufacturerInterface | null;
-  suppliers?: SupplierInterface[] | null;
   rubric: RubricInterface;
 }
 
@@ -61,7 +51,6 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
   brand,
   brandCollection,
   manufacturer,
-  suppliers,
   rubric,
 }) => {
   const { onErrorCallback, onCompleteCallback, showLoading, showErrorNotification, showModal } =
@@ -83,11 +72,6 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
   const [updateProductManufacturerMutation] = useUpdateProductManufacturerMutation({
     onError: onErrorCallback,
     onCompleted: (data) => onCompleteCallback(data.updateProductManufacturer),
-  });
-
-  const [updateProductSupplierMutation] = useUpdateProductSupplierMutation({
-    onError: onErrorCallback,
-    onCompleted: (data) => onCompleteCallback(data.updateProductSupplier),
   });
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -285,74 +269,6 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
             }}
           />
         </InputLine>
-
-        <InputLine label={'Поставщики'}>
-          <FakeInput
-            low
-            testId={'supplier-input'}
-            value={
-              suppliers && suppliers.length > 0
-                ? suppliers
-                    .map((supplier) => {
-                      return `${supplier.name}`;
-                    })
-                    .join(', ')
-                : emptyValue
-            }
-            onClear={
-              product.supplierSlugs && product.supplierSlugs.length > 0
-                ? () => {
-                    showLoading();
-                    updateProductSupplierMutation({
-                      variables: {
-                        input: {
-                          productId: product._id,
-                          supplierSlugs: [],
-                        },
-                      },
-                    }).catch((e) => console.log(e));
-                  }
-                : undefined
-            }
-            onClick={() => {
-              showModal<SupplierOptionsModalInterface>({
-                variant: SUPPLIER_OPTIONS_MODAL,
-                props: {
-                  testId: 'supplier-options-modal',
-                  optionVariant: 'checkbox',
-                  initiallySelectedOptions:
-                    suppliers && suppliers.length > 0
-                      ? suppliers.map((supplier) => {
-                          return {
-                            _id: supplier._id,
-                            name: `${supplier.name}`,
-                            slug: supplier.itemId,
-                          };
-                        })
-                      : [],
-                  onSubmit: (selectedOptions) => {
-                    showLoading();
-                    updateProductSupplierMutation({
-                      variables: {
-                        input: {
-                          productId: product._id,
-                          supplierSlugs: selectedOptions
-                            .map(({ itemId }) => itemId)
-                            .reduce((acc: string[], itemId) => {
-                              if (!itemId) {
-                                return acc;
-                              }
-                              return [...acc, itemId];
-                            }, []),
-                        },
-                      },
-                    }).catch((e) => console.log(e));
-                  },
-                },
-              });
-            }}
-          />
-        </InputLine>
       </Inner>
     </CmsProductLayout>
   );
@@ -367,7 +283,6 @@ const Product: NextPage<ProductPageInterface> = ({
   brandCollection,
   manufacturer,
   rubric,
-  suppliers,
 }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
@@ -377,7 +292,6 @@ const Product: NextPage<ProductPageInterface> = ({
         brand={brand}
         brandCollection={brandCollection}
         manufacturer={manufacturer}
-        suppliers={suppliers}
       />
     </CmsLayout>
   );
@@ -390,7 +304,6 @@ export const getServerSideProps = async (
   const { productId, rubricId } = query;
   const { db } = await getDatabase();
   const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
-  const suppliersCollection = db.collection<SupplierModel>(COL_SUPPLIERS);
   const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
   const brandCollectionsCollection = db.collection<BrandCollectionModel>(COL_BRAND_COLLECTIONS);
   const { props } = await getAppInitialData({ context });
@@ -433,32 +346,6 @@ export const getServerSideProps = async (
         name: getFieldStringLocale(manufacturerEntity.nameI18n, props.sessionLocale),
       }
     : null;
-
-  const initialSuppliers =
-    product.supplierSlugs && product.supplierSlugs.length > 0
-      ? await suppliersCollection
-          .find(
-            {
-              itemId: {
-                $in: product.supplierSlugs,
-              },
-            },
-            {
-              projection: {
-                _id: true,
-                nameI18n: true,
-                itemId: true,
-              },
-            },
-          )
-          .toArray()
-      : [];
-  const suppliers = initialSuppliers.map((supplier) => {
-    return {
-      ...supplier,
-      name: getFieldStringLocale(supplier.nameI18n, props.sessionLocale),
-    };
-  });
 
   const brandEntity = product.brandSlug
     ? await brandsCollection.findOne(
@@ -507,7 +394,6 @@ export const getServerSideProps = async (
       brand: castDbData(brand),
       brandCollection: castDbData(brandCollection),
       manufacturer: castDbData(manufacturer),
-      suppliers: castDbData(suppliers),
       rubric: castDbData(rubric),
     },
   };

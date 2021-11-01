@@ -585,7 +585,6 @@ export interface ProductAttributeModel {
 }
 
 interface ProductMainFieldsInterface {
-  supplierSlugs?: string[] | null;
   brandSlug?: string | null;
   brandCollectionSlug?: string | null;
   rubricId: ObjectIdModel;

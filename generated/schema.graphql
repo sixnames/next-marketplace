@@ -1401,11 +1401,6 @@ type Mutation {
   updateShopAssetIndex(input: UpdateShopAssetIndexInput!): ShopPayload!
 
   """
-  Should update shop product
-  """
-  updateShopProduct(input: UpdateShopProductInput!): ShopProductPayload!
-
-  """
   Should update supplier
   """
   updateSupplier(input: UpdateSupplierInput!): SupplierPayload!

@@ -10,7 +10,7 @@ import {
   getSessionCart,
 } from 'lib/sessionHelpers';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { updateManyShopProductsSchema, updateShopProductSchema } from 'validation/shopSchema';
+import { updateManyShopProductsSchema } from 'validation/shopSchema';
 
 export const ShopProductOldPrice = objectType({
   name: 'ShopProductOldPrice',
@@ -110,96 +110,6 @@ export const UpdateShopProductInput = inputObjectType({
 export const ShopProductMutations = extendType({
   type: 'Mutation',
   definition(t) {
-    // Should update shop product
-    t.nonNull.field('updateShopProduct', {
-      type: 'ShopProductPayload',
-      description: 'Should update shop product',
-      args: {
-        input: nonNull(
-          arg({
-            type: 'UpdateShopProductInput',
-          }),
-        ),
-      },
-      resolve: async (_root, args, context): Promise<ShopProductPayloadModel> => {
-        try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'updateShopProduct',
-          });
-          if (!allow) {
-            return {
-              success: false,
-              message,
-            };
-          }
-
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: updateShopProductSchema,
-          });
-          await validationSchema.validate(args.input);
-
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-          const { input } = args;
-          const { shopProductId, ...values } = input;
-
-          // Check shop product availability
-          const shopProduct = await shopProductsCollection.findOne({ _id: shopProductId });
-          if (!shopProduct) {
-            return {
-              success: false,
-              message: await getApiMessage('shopProducts.update.notFound'),
-            };
-          }
-
-          const { discountedPercent, oldPrice, oldPriceUpdater } = getUpdatedShopProductPrices({
-            shopProduct,
-            newPrice: values.price,
-          });
-
-          // Update shop product
-          const updatedShopProductResult = await shopProductsCollection.findOneAndUpdate(
-            { _id: shopProductId },
-            {
-              $set: {
-                ...values,
-                oldPrice,
-                discountedPercent,
-                updatedAt: new Date(),
-              },
-              ...oldPriceUpdater,
-            },
-            {
-              returnDocument: 'after',
-            },
-          );
-          const updatedShopProduct = updatedShopProductResult.value;
-          if (!updatedShopProductResult.ok || !updatedShopProduct) {
-            return {
-              success: false,
-              message: await getApiMessage('shopProducts.update.error'),
-            };
-          }
-
-          return {
-            success: true,
-            message: await getApiMessage('shopProducts.update.success'),
-            payload: updatedShopProduct,
-          };
-        } catch (e) {
-          return {
-            success: false,
-            message: getResolverErrorMessage(e),
-          };
-        }
-      },
-    });
-
     // Should update many shop products
     t.nonNull.field('updateManyShopProducts', {
       type: 'ShopProductPayload',

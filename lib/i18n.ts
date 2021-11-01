@@ -27,9 +27,9 @@ export function getFieldStringLocale(
   let translation = getI18nLocaleValue<string>(i18nField, locale);
 
   // Get fallback language if chosen not found
-  if (!translation) {
+  /*if (!translation) {
     translation = i18nField[SECONDARY_LOCALE];
-  }
+  }*/
 
   // Get default language if fallback not found
   if (!translation) {

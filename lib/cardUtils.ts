@@ -9,7 +9,6 @@ import {
   PAGE_EDITOR_DEFAULT_VALUE_STRING,
   ROUTE_CATALOGUE,
   FILTER_CATEGORY_KEY,
-  GENDER_IT,
   FILTER_BRAND_KEY,
   FILTER_BRAND_COLLECTION_KEY,
   SORT_DESC,
@@ -845,12 +844,10 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
 
     // cardBreadcrumbs
     const attributesBreadcrumbs: ProductCardBreadcrumbModel[] = [];
-    let breadcrumbsGender = rubric?.gender || GENDER_IT;
 
     // category breadcrumbs
     const breadcrumbCategories = cardCategories.reduce(
       (acc: ProductCardBreadcrumbModel[], category) => {
-        breadcrumbsGender = category.gender || GENDER_IT;
         const categoryList = castCategoriesForBreadcrumbs({
           category,
           acc: [],
@@ -910,7 +907,7 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
       const metricValue = attribute.metric
         ? ` ${getFieldStringLocale(attribute.metric.nameI18n, locale)}`
         : '';
-      const variant = get(firstSelectedOption, `variants.${breadcrumbsGender}.${locale}`);
+      const variant = get(firstSelectedOption, `variants.${restProduct.gender}.${locale}`);
       const name = getFieldStringLocale(firstSelectedOption.nameI18n, locale);
       let optionValue = name;
       if (variant) {

@@ -12,6 +12,10 @@ interface CardImageSliderInterface
   arrowClassName?: string;
   arrowLeftClassName?: string;
   arrowRightClassName?: string;
+  slideClassName?: string;
+  imageWidth?: number;
+  slideImageClassName?: string;
+  slideTitle: string;
 }
 
 const CardImageSlider: React.FC<CardImageSliderInterface> = ({
@@ -24,27 +28,53 @@ const CardImageSlider: React.FC<CardImageSliderInterface> = ({
   showBullets = false,
   showFullscreenButton = false,
   showThumbnails = true,
+  slideClassName,
+  slideImageClassName,
+  imageWidth = 480,
+  slideTitle,
   ...props
 }) => {
   const { isMobile } = useAppContext();
-  const items: ReactImageGalleryItem[] = assets.map(({ url }) => {
+  const items: ReactImageGalleryItem[] = assets.map(({ url }, index) => {
     return {
       original: url,
       thumbnail: url,
       renderItem: () => {
-        return (
-          <div className='px-6 md:px-8'>
-            <div>
-              <div className='relative pb-[100%] w-full'>
-                <WpImage
-                  url={url}
-                  alt={url}
-                  title={url}
-                  width={480}
-                  className='absolute inset-0 w-full h-full object-contain'
-                />
+        if (showThumbnails) {
+          return (
+            <div className='px-6 md:px-8'>
+              <div>
+                <div
+                  className={`relative pb-[100%] w-full ${slideClassName ? slideClassName : ''}`}
+                >
+                  <WpImage
+                    url={url}
+                    title={`${slideTitle} ${index}`}
+                    alt={`${slideTitle} ${index}`}
+                    width={imageWidth}
+                    loading={'eager'}
+                    className={`absolute inset-0 w-full h-full object-contain ${
+                      slideImageClassName ? slideImageClassName : ''
+                    }`}
+                  />
+                </div>
               </div>
             </div>
+          );
+        }
+
+        return (
+          <div className={slideClassName}>
+            <WpImage
+              url={url}
+              title={`${slideTitle} ${index}`}
+              alt={`${slideTitle} ${index}`}
+              width={imageWidth}
+              loading={'eager'}
+              className={`w-full h-full object-contain ${
+                slideImageClassName ? slideImageClassName : ''
+              }`}
+            />
           </div>
         );
       },
@@ -53,9 +83,10 @@ const CardImageSlider: React.FC<CardImageSliderInterface> = ({
           <div className='relative pb-[100%] w-full'>
             <WpImage
               url={url}
-              alt={url}
-              title={url}
+              title={`${slideTitle}`}
+              alt={`${slideTitle}`}
               width={80}
+              loading={'eager'}
               className='absolute inset-0 w-full h-full object-contain'
             />
           </div>

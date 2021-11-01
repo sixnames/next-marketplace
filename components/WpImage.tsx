@@ -7,6 +7,7 @@ interface WpImageInterface {
   width: number;
   format?: string;
   className?: string;
+  loading?: 'lazy' | 'eager';
 }
 
 const WpImage: React.FC<WpImageInterface> = ({
@@ -16,6 +17,7 @@ const WpImage: React.FC<WpImageInterface> = ({
   title,
   width,
   format = 'webp',
+  loading = 'lazy',
 }) => {
   return (
     <picture>
@@ -35,7 +37,7 @@ const WpImage: React.FC<WpImageInterface> = ({
         alt={alt}
         title={title}
         width={width}
-        loading={'lazy'}
+        loading={loading}
       />
     </picture>
   );

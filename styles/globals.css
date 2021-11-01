@@ -935,6 +935,10 @@ table {
   position: static;
 }
 
+.standard-card-image-slider .image-gallery-slide-wrapper {
+  width: 100%;
+}
+
 .image-gallery-thumbnail {
   outline: none;
   border-width: 2px;

@@ -105,7 +105,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
             {/*content*/}
             <div className='relative z-20 grid gap-12 py-8 pr-inner-block-horizontal-padding md:grid-cols-2 lg:py-10 lg:grid-cols-12'>
               {/*image*/}
-              <div className='md:col-span-1 md:order-2 lg:col-span-3 flex justify-center'>
+              <div className='md:col-span-1 md:order-2 lg:col-span-3 flex justify-center items-center'>
                 {showCardImagesSlider ? (
                   <div className='relative w-full min-h-[560px] md:min-h-[500px] md:h-[500px] lg:h-[600px]'>
                     <CardImageSlider
@@ -113,8 +113,12 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                       showThumbnails={false}
                       showBullets={false}
                       showFullscreenButton={false}
-                      arrowLeftClassName={'absolute top-half -left-14 z-40'}
-                      arrowRightClassName={'absolute top-half -right-14 z-40'}
+                      imageWidth={270}
+                      slideTitle={cardTitle}
+                      slideClassName='relative w-full min-h-[560px] md:min-h-[500px] md:h-[500px] lg:h-[600px]'
+                      slideImageClassName='absolute inset-0'
+                      arrowLeftClassName={'absolute top-half left-0 lg:-left-10 z-40'}
+                      arrowRightClassName={'absolute top-half right-0 lg:-right-10 z-40'}
                       additionalClass='standard-card-image-slider'
                     />
                   </div>

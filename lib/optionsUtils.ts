@@ -1,6 +1,7 @@
 import { ALL_ALPHABETS, GENDER_ENUMS, GENDER_HE } from 'config/common';
 import {
   AlphabetListModelType,
+  GenderModel,
   ObjectIdModel,
   OptionVariantsModel,
   TranslationModel,
@@ -16,6 +17,7 @@ import { get } from 'lodash';
 interface TreeItemInterface extends Record<any, any> {
   parentId?: ObjectIdModel | null;
   childrenCount?: number | null;
+  variants?: OptionVariantsModel | null;
 }
 
 interface GetTreeFromListInterface<T> {
@@ -23,6 +25,7 @@ interface GetTreeFromListInterface<T> {
   list?: T[] | null;
   parentId?: ObjectId | null;
   locale?: string;
+  gender?: GenderModel | null;
 }
 
 export function getTreeFromList<T extends TreeItemInterface>({
@@ -30,6 +33,7 @@ export function getTreeFromList<T extends TreeItemInterface>({
   parentId,
   locale,
   childrenFieldName,
+  gender,
 }: GetTreeFromListInterface<T>): T[] {
   const parentsList = (list || []).filter((listItem) => {
     return parentId ? listItem.parentId?.equals(parentId) : !listItem.parentId;
@@ -38,13 +42,27 @@ export function getTreeFromList<T extends TreeItemInterface>({
   return parentsList.map((parent) => {
     const children = getTreeFromList({
       list: list,
+      locale,
       parentId: parent._id,
       childrenFieldName,
+      gender,
     });
+
+    const nameTranslation = getFieldStringLocale(parent.nameI18n, locale);
+    let name = nameTranslation;
+    if (parent.variants && gender) {
+      const variant = get(parent.variants, gender);
+      if (variant) {
+        name = getFieldStringLocale(variant, locale);
+      }
+    }
+    if (!name) {
+      name = nameTranslation;
+    }
 
     return {
       ...parent,
-      name: getFieldStringLocale(parent.nameI18n, locale),
+      name,
       [childrenFieldName]: sortByName(children),
       childrenCount: children.length,
     };

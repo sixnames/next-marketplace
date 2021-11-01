@@ -4,8 +4,8 @@ import {
   DEFAULT_CITY,
   SORT_DESC,
   CMS_FILTER_BRANDS_LIMIT,
-  IMAGE_FALLBACK,
-  IMAGE_FALLBACK_BOTTLE,
+  // IMAGE_FALLBACK,
+  // IMAGE_FALLBACK_BOTTLE,
 } from 'config/common';
 import {
   COL_ATTRIBUTES,
@@ -24,7 +24,7 @@ import {
 } from 'db/collectionNames';
 
 export const noImageStage = {
-  $and: [
+  /*$and: [
     {
       mainImage: {
         $ne: IMAGE_FALLBACK,
@@ -38,7 +38,7 @@ export const noImageStage = {
         $ne: IMAGE_FALLBACK_BOTTLE,
       },
     },
-  ],
+  ],*/
 };
 
 interface GetCatalogueRubricPipelineInterface {

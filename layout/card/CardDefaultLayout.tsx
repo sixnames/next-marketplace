@@ -107,7 +107,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
               {/*image*/}
               <div className='md:col-span-1 md:order-2 lg:col-span-3 flex justify-center'>
                 {showCardImagesSlider ? (
-                  <div className='relative w-[160px] min-h-[560px] md:min-h-[500px] md:h-[500px] lg:h-[600px]'>
+                  <div className='relative w-full min-h-[560px] md:min-h-[500px] md:h-[500px] lg:h-[600px]'>
                     <CardImageSlider
                       assets={assets}
                       showThumbnails={false}
@@ -119,7 +119,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                     />
                   </div>
                 ) : (
-                  <div className='relative w-[160px] md:h-[500px] lg:h-[600px]'>
+                  <div className='relative w-full md:h-[500px] lg:h-[600px]'>
                     <WpImage
                       url={`${product.mainImage}`}
                       alt={cardTitle}

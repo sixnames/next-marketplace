@@ -1,6 +1,7 @@
 import { ALL_ALPHABETS, GENDER_ENUMS, GENDER_HE } from 'config/common';
 import {
   AlphabetListModelType,
+  GenderModel,
   ObjectIdModel,
   OptionVariantsModel,
   TranslationModel,
@@ -11,10 +12,12 @@ import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { ObjectId } from 'mongodb';
 import trim from 'trim';
+import { get } from 'lodash';
 
 interface TreeItemInterface extends Record<any, any> {
   parentId?: ObjectIdModel | null;
   childrenCount?: number | null;
+  variants?: OptionVariantsModel | null;
 }
 
 interface GetTreeFromListInterface<T> {
@@ -22,6 +25,7 @@ interface GetTreeFromListInterface<T> {
   list?: T[] | null;
   parentId?: ObjectId | null;
   locale?: string;
+  gender?: GenderModel | null;
 }
 
 export function getTreeFromList<T extends TreeItemInterface>({
@@ -29,6 +33,7 @@ export function getTreeFromList<T extends TreeItemInterface>({
   parentId,
   locale,
   childrenFieldName,
+  gender,
 }: GetTreeFromListInterface<T>): T[] {
   const parentsList = (list || []).filter((listItem) => {
     return parentId ? listItem.parentId?.equals(parentId) : !listItem.parentId;
@@ -37,13 +42,27 @@ export function getTreeFromList<T extends TreeItemInterface>({
   return parentsList.map((parent) => {
     const children = getTreeFromList({
       list: list,
+      locale,
       parentId: parent._id,
       childrenFieldName,
+      gender,
     });
+
+    const nameTranslation = getFieldStringLocale(parent.nameI18n, locale);
+    let name = nameTranslation;
+    if (parent.variants && gender) {
+      const variant = get(parent.variants, gender);
+      if (variant) {
+        name = getFieldStringLocale(variant, locale);
+      }
+    }
+    if (!name) {
+      name = nameTranslation;
+    }
 
     return {
       ...parent,
-      name: getFieldStringLocale(parent.nameI18n, locale),
+      name,
       [childrenFieldName]: sortByName(children),
       childrenCount: children.length,
     };
@@ -245,10 +264,11 @@ export async function getParentTreeSlugs({
   return getParentTreeSlugs({ _id: document.parentId, collectionName, acc });
 }
 
-export function sortByName(list: any[]): any[] {
+export function sortByName(list: any[], fieldName = 'name'): any[] {
   return [...list].sort((a, b) => {
-    const nameA = `${a.name}`.toUpperCase();
-    const nameB = `${b.name}`.toUpperCase();
+    const nameA = `${get(a, fieldName)}`.toUpperCase();
+    const nameB = `${get(b, fieldName)}`.toUpperCase();
+
     if (nameA < nameB) {
       return -1;
     }

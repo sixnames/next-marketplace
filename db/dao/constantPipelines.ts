@@ -34,7 +34,9 @@ export const noImageStage = {
       mainImage: null,
     },
     {
-      mainImage: IMAGE_FALLBACK_BOTTLE,
+      mainImage: {
+        $ne: IMAGE_FALLBACK_BOTTLE,
+      },
     },
   ],
 };

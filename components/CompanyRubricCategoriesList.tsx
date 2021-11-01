@@ -3,7 +3,6 @@ import Inner from 'components/Inner';
 import RequestError from 'components/RequestError';
 import WpImage from 'components/WpImage';
 import { CategoryInterface, CompanyInterface, RubricInterface } from 'db/uiInterfaces';
-import { useRouter } from 'next/router';
 import * as React from 'react';
 
 export interface CompanyRubricCategoriesListInterface {
@@ -16,7 +15,6 @@ const CompanyRubricCategoriesList: React.FC<CompanyRubricCategoriesListInterface
   routeBasePath,
   rubric,
 }) => {
-  const router = useRouter();
   const renderCategories = React.useCallback(
     (category: CategoryInterface) => {
       const { name, categories, image } = category;
@@ -36,7 +34,6 @@ const CompanyRubricCategoriesList: React.FC<CompanyRubricCategoriesListInterface
               </div>
             </div>
           ) : null}
-
           <div className='cms-option flex items-center gap-4'>
             {category.icon ? (
               <div
@@ -53,9 +50,10 @@ const CompanyRubricCategoriesList: React.FC<CompanyRubricCategoriesListInterface
                 justifyContent={'flex-end'}
                 updateTitle={'Редактировать категорию'}
                 updateHandler={() => {
-                  router
-                    .push(`${routeBasePath}/rubrics/${rubric._id}/categories/${category._id}`)
-                    .catch(console.log);
+                  window.open(
+                    `${routeBasePath}/rubrics/${rubric._id}/categories/${category._id}`,
+                    '_blank',
+                  );
                 }}
               />
             </div>
@@ -72,7 +70,7 @@ const CompanyRubricCategoriesList: React.FC<CompanyRubricCategoriesListInterface
         </div>
       );
     },
-    [routeBasePath, router, rubric._id],
+    [routeBasePath, rubric._id],
   );
   const { categories } = rubric;
 

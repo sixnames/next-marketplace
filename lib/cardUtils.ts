@@ -840,6 +840,7 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
       list: categories,
       childrenFieldName: 'categories',
       locale,
+      gender: restProduct.gender,
     });
 
     // cardBreadcrumbs

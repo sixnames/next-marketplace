@@ -3,6 +3,7 @@ import Button from 'components/Button';
 import FixedButtons from 'components/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls';
 import Inner from 'components/Inner';
+import Link from 'components/Link/Link';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { CreateConnectionModalInterface } from 'components/Modal/CreateConnectionModal';
 import { ProductSearchModalInterface } from 'components/Modal/ProductSearchModal';
@@ -10,7 +11,6 @@ import Table, { TableColumn } from 'components/Table';
 import TableRowImage from 'components/TableRowImage';
 import { DEFAULT_COMPANY_SLUG, FILTER_SEPARATOR, ROUTE_CMS } from 'config/common';
 import { CONFIRM_MODAL, CREATE_CONNECTION_MODAL, PRODUCT_SEARCH_MODAL } from 'config/modalVariants';
-import { ProductConnectionItemModel } from 'db/dbModels';
 import {
   ProductConnectionInterface,
   ProductConnectionItemInterface,
@@ -110,9 +110,18 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
 
   const columns: TableColumn<ProductConnectionItemInterface>[] = [
     {
-      accessor: 'product.itemId',
-      headTitle: 'Арт.',
-      render: ({ cellData }) => cellData,
+      headTitle: 'Арт',
+      render: ({ dataItem, rowIndex }) => {
+        return (
+          <Link
+            target={'_blank'}
+            testId={`product-link-${rowIndex}`}
+            href={`${ROUTE_CMS}/rubrics/${dataItem.product?.rubricId}/products/product/${dataItem.product?._id}`}
+          >
+            {dataItem.product?.itemId}
+          </Link>
+        );
+      },
     },
     {
       accessor: 'product',
@@ -149,8 +158,15 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
         return (
           <ContentItemControls
             testId={`${dataItem?.product?.originalName}`}
-            deleteTitle={'Удалить товар из связи'}
             justifyContent={'flex-end'}
+            updateTitle={'Редактировать товар'}
+            updateHandler={() => {
+              window.open(
+                `${ROUTE_CMS}/rubrics/${dataItem.product?.rubricId}/products/product/${dataItem.product?._id}`,
+                '_blank',
+              );
+            }}
+            deleteTitle={'Удалить товар из связи'}
             deleteHandler={() => {
               showModal<ConfirmModalInterface>({
                 variant: CONFIRM_MODAL,
@@ -191,10 +207,16 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
       titleRight={<ProductConnectionControls connection={connection} product={product} />}
     >
       <div className='mt-4'>
-        <Table<ProductConnectionItemModel>
+        <Table<ProductConnectionItemInterface>
           columns={columns}
           data={connectionProducts}
           tableTestId={`${connection.attribute.name}-connection-list`}
+          onRowDoubleClick={(dataItem) => {
+            window.open(
+              `${ROUTE_CMS}/rubrics/${dataItem.product?.rubricId}/products/product/${dataItem.product?._id}`,
+              '_blank',
+            );
+          }}
           testIdKey={'product.name'}
         />
       </div>

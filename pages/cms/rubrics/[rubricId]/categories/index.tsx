@@ -32,11 +32,10 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
   rubric,
   companySlug,
 }) => {
-  const { showModal, onCompleteCallback, onErrorCallback, showLoading, router } =
-    useMutationCallbacks({
-      withModal: true,
-      reload: true,
-    });
+  const { showModal, onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
+    withModal: true,
+    reload: true,
+  });
 
   const [deleteCategoryMutation] = useDeleteCategoryMutation({
     onCompleted: (data) => onCompleteCallback(data.deleteCategory),
@@ -88,9 +87,10 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
                 }}
                 updateTitle={'Редактировать категорию'}
                 updateHandler={() => {
-                  router
-                    .push(`${ROUTE_CMS}/rubrics/${rubric._id}/categories/${category._id}`)
-                    .catch(console.log);
+                  window.open(
+                    `${ROUTE_CMS}/rubrics/${rubric._id}/categories/${category._id}`,
+                    '_blank',
+                  );
                 }}
                 deleteTitle={'Удалить категорию'}
                 deleteHandler={() => {
@@ -125,7 +125,7 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
         </div>
       );
     },
-    [companySlug, deleteCategoryMutation, router, rubric._id, showLoading, showModal],
+    [companySlug, deleteCategoryMutation, rubric._id, showLoading, showModal],
   );
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {

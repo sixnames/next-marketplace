@@ -58,6 +58,7 @@ import {
   ShopModel,
   ShopProductModel,
   SupplierModel,
+  SupplierProductModel,
   TranslationModel,
   UserCashbackLogModel,
   UserCashbackModel,
@@ -140,6 +141,7 @@ export interface ManufacturerInterface extends ManufacturerModel {
 export interface SupplierInterface extends SupplierModel {
   name?: string | null;
   description?: string | null;
+  products?: SupplierProductInterface[] | null;
 }
 
 export interface CartProductInterface extends CartProductModel {
@@ -359,6 +361,13 @@ export interface CategoryDescriptionInterface extends CategoryDescriptionModel {
   seo?: RubricSeoModel | null;
 }
 
+export interface SupplierProductInterface extends SupplierProductModel {
+  supplier?: SupplierInterface | null;
+  shop?: ShopInterface | null;
+  company?: CompanyInterface | null;
+  shopProduct?: ShopProductInterface;
+}
+
 export interface ShopProductInterface extends ShopProductModel {
   shop?: ShopInterface | null;
   product?: ProductInterface | null;
@@ -367,6 +376,8 @@ export interface ShopProductInterface extends ShopProductModel {
   cardPrices?: ProductCardPricesModel | null;
   shopsCount?: number | null;
   similarProducts?: ShopProductInterface[] | null;
+  suppliers?: SupplierInterface[] | null;
+  supplierProducts?: SupplierProductInterface[] | null;
 }
 
 export interface ShopInterface extends ShopModel {

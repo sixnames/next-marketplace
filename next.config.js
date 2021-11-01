@@ -1,9 +1,6 @@
 require('dotenv').config();
 
 module.exports = {
-  experimental: {
-    scrollRestoration: true,
-  },
   i18n: {
     localeDetection: false,
     locales: ['ru', 'en'],

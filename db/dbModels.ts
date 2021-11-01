@@ -295,6 +295,16 @@ export interface SupplierModel extends BaseModel, TimestampModel {
   descriptionI18n?: TranslationModel | null;
 }
 
+export interface SupplierProductModel {
+  _id: ObjectIdModel;
+  shopProductId: ObjectIdModel;
+  shopId: ObjectIdModel;
+  companyId: ObjectIdModel;
+  companySlug: ObjectIdModel;
+  price: number;
+  charge: number;
+}
+
 export interface CartProductModel {
   _id: ObjectIdModel;
   shopProductId?: ObjectIdModel | null;
@@ -793,6 +803,7 @@ export interface ShopProductModel
   available: number;
   citySlug: string;
   price: number;
+  recommendedPrice?: number | null;
   oldPrice?: number | null;
   oldPrices: ShopProductOldPriceModel[];
   discountedPercent: number;

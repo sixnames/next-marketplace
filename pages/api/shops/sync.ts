@@ -207,7 +207,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           brandCollectionSlug: product.brandCollectionSlug,
           manufacturerSlug: product.manufacturerSlug,
           selectedOptionsSlugs: product.selectedOptionsSlugs,
-          supplierSlugs: product.supplierSlugs,
           barcode: bodyItem.barcode,
           updatedAt: new Date(),
           createdAt: new Date(),

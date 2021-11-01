@@ -107,15 +107,6 @@ export const UPDATE_PRODUCT_MANUFACTURER_MUTATION = gql`
   }
 `;
 
-export const UPDATE_PRODUCT_SUPPLIER_MUTATION = gql`
-  mutation UpdateProductSupplier($input: UpdateProductSupplierInput!) {
-    updateProductSupplier(input: $input) {
-      success
-      message
-    }
-  }
-`;
-
 export const UPDATE_PRODUCT_SELECT_ATTRIBUTE_MUTATION = gql`
   mutation UpdateProductSelectAttribute($input: UpdateProductSelectAttributeInput!) {
     updateProductSelectAttribute(input: $input) {

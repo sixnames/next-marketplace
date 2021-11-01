@@ -49,7 +49,6 @@
     "classnames": "^2.3.1",
     "cookies": "^0.8.0",
     "cyrillic-to-translit-js": "^3.1.0",
-    "easy-yandex-s3": "^1.1.6",
     "ext-name": "^5.0.0",
     "file-type": "^16.5.3",
     "formidable": "^1.2.2",

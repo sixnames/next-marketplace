@@ -80,7 +80,7 @@ import { getAlgoliaProductsSearch } from 'lib/algoliaUtils';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
-import { getTreeFromList, sortStringArray } from 'lib/optionsUtils';
+import { getTreeFromList, sortByName, sortStringArray } from 'lib/optionsUtils';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
 import { generateSnippetTitle, generateTitle } from 'lib/titleUtils';
@@ -1716,11 +1716,14 @@ export const getCatalogueData = async ({
         locale,
         gender: product.gender,
       });
-      const listFeatures = initialListFeatures
-        .filter(({ attribute }) => {
-          return attribute?.showInSnippet;
-        })
-        .slice(0, snippetVisibleAttributesCount);
+      const listFeatures = sortByName(
+        initialListFeatures
+          .filter(({ attribute }) => {
+            return attribute?.showInSnippet;
+          })
+          .slice(0, snippetVisibleAttributesCount),
+        'attribute.name',
+      );
 
       // rating features
       const initialRatingFeatures = getProductCurrentViewCastedAttributes({
@@ -1749,6 +1752,8 @@ export const getCatalogueData = async ({
         },
         [],
       );
+
+      // console.log(listFeatures.length);
 
       products.push({
         ...shopProduct,

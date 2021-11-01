@@ -230,34 +230,41 @@ const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId 
         snippetTitle={product.snippetTitle}
       />
 
-      {/*amount input*/}
-      <div className='mb-4'>
-        <SpinnerInput
-          name={'amount'}
-          value={amount}
-          min={minAmount}
-          max={noNaN(available)}
-          testId={`cart-product-${testId}-amount`}
-          plusTestId={`cart-product-${testId}-plus`}
-          minusTestId={`cart-product-${testId}-minus`}
-          frameClassName='w-[var(--buttonMinWidth)]'
-          onChange={(e) => {
-            const amount = noNaN(e.target.value);
-            if (amount >= minAmount && amount <= noNaN(available)) {
-              updateProductInCart({
-                amount,
-                cartProductId: _id,
-              });
-            }
-          }}
-        />
+      <div className='flex flex-wrap gap-6 mb-4'>
+        {/*amount input*/}
+        <div>
+          <SpinnerInput
+            name={'amount'}
+            value={amount}
+            min={minAmount}
+            max={noNaN(available)}
+            testId={`cart-product-${testId}-amount`}
+            plusTestId={`cart-product-${testId}-plus`}
+            minusTestId={`cart-product-${testId}-minus`}
+            frameClassName='w-[var(--buttonMinWidth)]'
+            onChange={(e) => {
+              const amount = noNaN(e.target.value);
+              if (amount >= minAmount && amount <= noNaN(available)) {
+                updateProductInCart({
+                  amount,
+                  cartProductId: _id,
+                });
+              }
+            }}
+          />
+        </div>
+
+        <div>
+          {/*shop product price*/}
+          <ProductShopPrices
+            price={price}
+            oldPrice={oldPrice}
+            discountedPercent={discountedPercent}
+          />
+          {/*available*/}
+          <div className='text-secondary-text'>{`В наличии ${available} шт`}</div>
+        </div>
       </div>
-
-      {/*shop product price*/}
-      <ProductShopPrices price={price} oldPrice={oldPrice} discountedPercent={discountedPercent} />
-
-      {/*available*/}
-      <div className='mb-4 text-secondary-text'>{`В наличии ${available} шт`}</div>
 
       {/*shop info*/}
       <div className=''>

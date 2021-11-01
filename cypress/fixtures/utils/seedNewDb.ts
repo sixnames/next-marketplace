@@ -3,7 +3,6 @@ import { getProdDb, GetProdDd, updateIndexes } from './getProdDb';
 const path = require('path');
 require('dotenv').config();
 
-const bucketName = `wp-test`;
 const protocol = 'mongodb';
 const host = 'localhost';
 const port = 27017;
@@ -36,7 +35,6 @@ const config = {
 const dbConfig: GetProdDd = {
   uri: `${protocol}://${username}:${password}@${host}:${port}`,
   dbName,
-  bucketName,
 };
 
 async function seedNewDb() {

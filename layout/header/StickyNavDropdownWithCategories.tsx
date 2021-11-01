@@ -32,7 +32,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
     <div className='flex flex-col'>
       <div
         style={attributeStyle}
-        className='flex items-center pb-1 text-secondary-text text-lg font-medium'
+        className='flex items-center pb-1 text-secondary-text text-lg font-medium py-2'
       >
         {name}
       </div>

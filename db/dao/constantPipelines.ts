@@ -24,7 +24,7 @@ import {
 } from 'db/collectionNames';
 
 export const noImageStage = {
-  $or: [
+  $and: [
     {
       mainImage: {
         $ne: IMAGE_FALLBACK,

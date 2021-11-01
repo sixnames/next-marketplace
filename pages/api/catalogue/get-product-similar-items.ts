@@ -84,7 +84,6 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
             productId: finalProductId,
             citySlug: city,
             ...companyRubricsMatch,
-            ...noImageStage,
           },
         },
         {
@@ -167,6 +166,7 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
                       { $in: ['$$selectedOptionsSlugs', '$selectedOptionsSlugs'] },
                     ],
                   },
+                  ...noImageStage,
                 },
               },
               {

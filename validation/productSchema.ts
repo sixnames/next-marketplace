@@ -1,5 +1,5 @@
 import { ValidationSchemaArgsInterface } from 'types/validataionTypes';
-import { objectIdSchema, requiredAssetSchema } from 'validation/schemaTemplates';
+import { objectIdSchema } from 'validation/schemaTemplates';
 import * as Yup from 'yup';
 import { attributeIdSchema } from 'validation/attributesGroupSchema';
 
@@ -14,13 +14,6 @@ export const productConnectionIdSchema = (args: ValidationSchemaArgsInterface) =
 export const updateProductSchema = (args: ValidationSchemaArgsInterface) => {
   return Yup.object({
     productId: productIdSchema(args),
-  });
-};
-
-export const addProductAssetsSchema = (args: ValidationSchemaArgsInterface) => {
-  return Yup.object({
-    productId: productIdSchema(args),
-    assets: requiredAssetSchema({ ...args, slug: 'validation.products.assets' }),
   });
 };
 

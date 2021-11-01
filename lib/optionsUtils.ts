@@ -26,6 +26,7 @@ interface GetTreeFromListInterface<T> {
   parentId?: ObjectId | null;
   locale?: string;
   gender?: GenderModel | null;
+  log?: boolean;
 }
 
 export function getTreeFromList<T extends TreeItemInterface>({
@@ -34,6 +35,7 @@ export function getTreeFromList<T extends TreeItemInterface>({
   locale,
   childrenFieldName,
   gender,
+  log,
 }: GetTreeFromListInterface<T>): T[] {
   const parentsList = (list || []).filter((listItem) => {
     return parentId ? listItem.parentId?.equals(parentId) : !listItem.parentId;
@@ -46,6 +48,7 @@ export function getTreeFromList<T extends TreeItemInterface>({
       parentId: parent._id,
       childrenFieldName,
       gender,
+      log,
     });
 
     const nameTranslation = getFieldStringLocale(parent.nameI18n, locale);

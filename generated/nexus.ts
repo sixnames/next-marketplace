@@ -1563,7 +1563,6 @@ export interface NexusGenFieldTypes {
     updateRubricVariant: NexusGenRootTypes['RubricVariantPayload']; // RubricVariantPayload!
     updateShop: NexusGenRootTypes['ShopPayload']; // ShopPayload!
     updateShopAssetIndex: NexusGenRootTypes['ShopPayload']; // ShopPayload!
-    updateShopProduct: NexusGenRootTypes['ShopProductPayload']; // ShopProductPayload!
     updateSupplier: NexusGenRootTypes['SupplierPayload']; // SupplierPayload!
     updateVisibleCategoriesInNavDropdown: NexusGenRootTypes['ConfigPayload']; // ConfigPayload!
   };
@@ -2623,7 +2622,6 @@ export interface NexusGenFieldTypeNames {
     updateRubricVariant: 'RubricVariantPayload';
     updateShop: 'ShopPayload';
     updateShopAssetIndex: 'ShopPayload';
-    updateShopProduct: 'ShopProductPayload';
     updateSupplier: 'SupplierPayload';
     updateVisibleCategoriesInNavDropdown: 'ConfigPayload';
   };
@@ -3660,10 +3658,6 @@ export interface NexusGenArgTypes {
     updateShopAssetIndex: {
       // args
       input: NexusGenInputs['UpdateShopAssetIndexInput']; // UpdateShopAssetIndexInput!
-    };
-    updateShopProduct: {
-      // args
-      input: NexusGenInputs['UpdateShopProductInput']; // UpdateShopProductInput!
     };
     updateSupplier: {
       // args

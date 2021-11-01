@@ -62,13 +62,6 @@ export const addManyProductsToShopSchema = (args: ValidationSchemaArgsInterface)
   });
 };
 
-export const updateShopProductSchema = (args: ValidationSchemaArgsInterface) => {
-  return Yup.object({
-    shopProductId: shopProductIdSchema(args),
-    ...shopProductCommonFieldsSchema(args),
-  });
-};
-
 export const updateManyShopProductsSchema = (args: ValidationSchemaArgsInterface) => {
   return Yup.object({
     input: Yup.array().of(

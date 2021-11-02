@@ -1,3 +1,6 @@
+import { useLocaleContext } from 'context/localeContext';
+import { TranslationModel } from 'db/dbModels';
+import { getFieldStringLocale } from 'lib/i18n';
 import * as React from 'react';
 import InputLine, { InputLinePropsInterface } from '../Input/InputLine';
 import Icon from 'components/Icon';
@@ -8,6 +11,7 @@ export interface SelectOptionInterface {
   slug?: string | null;
   name?: string | null;
   lastName?: string | null;
+  nameI18n?: TranslationModel | null;
   [key: string]: any;
 }
 
@@ -55,6 +59,7 @@ const Select: React.FC<SelectInterface> = ({
   useIdField,
   ...props
 }) => {
+  const { locale } = useLocaleContext();
   const withFirstOptions: SelectOptionInterface[] = firstOption
     ? [
         {
@@ -74,15 +79,18 @@ const Select: React.FC<SelectInterface> = ({
     : `border-gray-300 focus:border-gray-400 dark:border-gray-600 dark:focus:border-gray-400`;
   const selectClassName = `relative z-20 block form-select pl-input-padding-horizontal input-with-clear-padding w-full h-[var(--formInputHeight)] text-[var(--inputTextColor)] rounded-lg cursor-pointer bg-transparent border outline-none ${disabledClass} ${inputBorder} ${additionalClassName}`;
 
-  const getOptionName = React.useCallback((name = '', lastName?: string | null) => {
-    const optionName = lastName ? `${name.charAt(0)}. ${lastName}` : name;
-    // const optionTestIdName = name.split(' ').join('_');
+  const getOptionName = React.useCallback(
+    (option: SelectOptionInterface) => {
+      const { name, lastName, nameI18n } = option;
+      let optionName = lastName ? `${`${name}`.charAt(0)}. ${lastName}` : name;
+      if (nameI18n) {
+        optionName = getFieldStringLocale(nameI18n, locale);
+      }
 
-    return {
-      optionName,
-      // optionTestIdName,
-    };
-  }, []);
+      return optionName;
+    },
+    [locale],
+  );
 
   return (
     <InputLine
@@ -112,8 +120,9 @@ const Select: React.FC<SelectInterface> = ({
           disabled={disabled}
           {...props}
         >
-          {withFirstOptions.map(({ name, lastName, _id, slug }) => {
-            const { optionName } = getOptionName(name, lastName);
+          {withFirstOptions.map((option) => {
+            const { _id, slug } = option;
+            const optionName = getOptionName(option);
             let value = slug ? slug : setNameToValue ? optionName : _id;
             if (useIdField) {
               value = _id;

@@ -308,8 +308,8 @@ export interface SupplierProductModel {
   companyId: ObjectIdModel;
 
   // тип формирования цены
-  // Диллеская наценка
-  // Диллеская скидка
+  // Диллерская наценка
+  // Диллерская скидка
   variant: SupplierPriceVariantModel;
   price: number;
   percent: number;

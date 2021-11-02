@@ -1,8 +1,11 @@
 import { SUPPLIER_PRICE_VARIANT_CHARGE } from 'config/common';
 import {
+  COL_COMPANIES,
   COL_PRODUCT_ASSETS,
   COL_PRODUCT_CARD_DESCRIPTIONS,
   COL_PRODUCTS,
+  COL_SHOP_PRODUCTS,
+  COL_SHOPS,
 } from 'db/collectionNames';
 import {
   brandPipeline,
@@ -11,6 +14,8 @@ import {
   productConnectionsSimplePipeline,
   productRubricPipeline,
   productSeoPipeline,
+  shopProductFieldsPipeline,
+  shopProductSupplierProductsPipeline,
 } from 'db/dao/constantPipelines';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -359,6 +364,10 @@ export function castProduct({ product, locale }: CastProductInterface): ProductI
     ...product,
     name: getFieldStringLocale(product.nameI18n, locale),
     snippetTitle,
+    rubric: {
+      ...rubric,
+      name: getFieldStringLocale(rubric.nameI18n, locale),
+    },
   };
 
   return payload;
@@ -392,4 +401,82 @@ export function castShopProduct({
     product: castedProduct,
   };
   return payload;
+}
+
+interface GetConsoleShopProductInterface {
+  shopProductId: string | string[];
+  locale: string;
+}
+
+export async function getConsoleShopProduct({
+  shopProductId,
+  locale,
+}: GetConsoleShopProductInterface): Promise<ShopProductInterface | null> {
+  const { db } = await getDatabase();
+  const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
+
+  // get shop product
+  const shopProductsAggregation = await shopProductsCollection
+    .aggregate<ShopProductInterface>([
+      {
+        $match: {
+          _id: new ObjectId(`${shopProductId}`),
+        },
+      },
+
+      // get shop product fields
+      ...shopProductFieldsPipeline('$productId'),
+
+      // get supplier products
+      ...shopProductSupplierProductsPipeline,
+
+      // get company
+      {
+        $lookup: {
+          from: COL_COMPANIES,
+          as: 'company',
+          localField: 'companyId',
+          foreignField: '_id',
+        },
+      },
+      {
+        $addFields: {
+          company: {
+            $arrayElemAt: ['$company', 0],
+          },
+        },
+      },
+
+      // get shop
+      {
+        $lookup: {
+          from: COL_SHOPS,
+          as: 'shop',
+          localField: 'shopId',
+          foreignField: '_id',
+        },
+      },
+      {
+        $addFields: {
+          shop: {
+            $arrayElemAt: ['$shop', 0],
+          },
+        },
+      },
+    ])
+    .toArray();
+  const shopProductResult = shopProductsAggregation[0];
+  if (!shopProductResult) {
+    return null;
+  }
+
+  const shopProduct = castShopProduct({
+    shopProduct: shopProductResult,
+    locale,
+  });
+  if (!shopProduct || !shopProduct.product) {
+    return null;
+  }
+
+  return shopProduct;
 }

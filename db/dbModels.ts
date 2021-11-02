@@ -295,15 +295,24 @@ export interface SupplierModel extends BaseModel, TimestampModel {
   descriptionI18n?: TranslationModel | null;
 }
 
+export enum SupplierPriceVariantModel {
+  discount = 'discount',
+  charge = 'charge',
+}
+
 export interface SupplierProductModel {
   _id: ObjectIdModel;
   supplierId: ObjectIdModel;
   shopProductId: ObjectIdModel;
   shopId: ObjectIdModel;
   companyId: ObjectIdModel;
-  companySlug: ObjectIdModel;
-  price?: number | null;
-  charge?: number | null;
+
+  // тип формирования цены
+  // Диллеская наценка
+  // Диллеская скидка
+  variant: SupplierPriceVariantModel;
+  price: number;
+  percent: number;
 }
 
 export interface CartProductModel {
@@ -804,8 +813,6 @@ export interface ShopProductModel
   available: number;
   citySlug: string;
   price: number;
-  recommendedPrice?: number | null;
-  finalPrice?: number | null;
   oldPrice?: number | null;
   oldPrices: ShopProductOldPriceModel[];
   discountedPercent: number;

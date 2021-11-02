@@ -187,10 +187,11 @@ export interface NexusGenInputs {
   };
   AddShopProductSupplierInput: {
     // input type
-    charge?: number | null; // Int
-    price?: number | null; // Int
+    percent: number; // Int!
+    price: number; // Int!
     shopProductId: NexusGenScalars['ObjectId']; // ObjectId!
     supplierId: NexusGenScalars['ObjectId']; // ObjectId!
+    variant: NexusGenEnums['SupplierPriceVariant']; // SupplierPriceVariant!
   };
   AddShopToCartProductInput: {
     // input type
@@ -952,6 +953,7 @@ export interface NexusGenEnums {
   OptionsGroupVariant: dbModels.OptionsGroupVariantModel;
   OrderLogVariant: dbModels.OrderLogVariantModel;
   SortDirection: dbModels.SortDirectionModel;
+  SupplierPriceVariant: dbModels.SupplierPriceVariantModel;
 }
 
 export interface NexusGenScalars {

@@ -11,6 +11,7 @@ import {
   OrderRequestVariantModel,
   PageStateModel,
   SortDirectionModel,
+  SupplierPriceVariantModel,
 } from '../db/dbModels';
 
 export type RequestMethodType = 'GET' | 'POST' | 'DELETE' | 'PATCH';
@@ -471,6 +472,14 @@ export const ROUTE_PROFILE_PREFERENCES = `${ROUTE_PROFILE}/preferences`;
 export const ROUTE_PROFILE_CHATS = `${ROUTE_PROFILE}/chats`;
 export const ROUTE_PROFILE_FEEDBACK = `${ROUTE_PROFILE}/feedback`;
 export const ROUTE_PROFILE_DETAILS = `${ROUTE_PROFILE}/details`;
+
+// suppliers
+export const SUPPLIER_PRICE_VARIANT_DISCOUNT = 'discount' as SupplierPriceVariantModel;
+export const SUPPLIER_PRICE_VARIANT_CHARGE = 'charge' as SupplierPriceVariantModel;
+export const SUPPLIER_PRICE_VARIANT_ENUMS = [
+  SUPPLIER_PRICE_VARIANT_DISCOUNT,
+  SUPPLIER_PRICE_VARIANT_CHARGE,
+];
 
 // Alphabets
 export const ALPHABET_EN = [

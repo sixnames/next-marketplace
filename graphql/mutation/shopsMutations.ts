@@ -84,3 +84,12 @@ export const CREATE_PRODUCT_WITH_SYNC_ERROR_MUTATION = gql`
     }
   }
 `;
+
+export const ADD_SHOP_PRODUCT_SUPPLIER_MUTATION = gql`
+  mutation AddShopProductSupplier($input: AddShopProductSupplierInput!) {
+    addShopProductSupplier(input: $input) {
+      success
+      message
+    }
+  }
+`;

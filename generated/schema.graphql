@@ -83,10 +83,11 @@ input AddProductToShopInput {
 }
 
 input AddShopProductSupplierInput {
-  charge: Int
-  price: Int
+  percent: Int!
+  price: Int!
   shopProductId: ObjectId!
   supplierId: ObjectId!
+  variant: SupplierPriceVariant!
 }
 
 input AddShopToCartProductInput {
@@ -2304,6 +2305,14 @@ type SupplierPayload implements Payload {
   message: String!
   payload: Supplier
   success: Boolean!
+}
+
+"""
+SupplierPriceVariant variant enum.
+"""
+enum SupplierPriceVariant {
+  charge
+  discount
 }
 
 type SuppliersAlphabetList implements AlphabetList {

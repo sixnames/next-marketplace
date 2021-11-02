@@ -301,8 +301,8 @@ export interface SupplierProductModel {
   shopId: ObjectIdModel;
   companyId: ObjectIdModel;
   companySlug: ObjectIdModel;
-  price: number;
-  charge: number;
+  price?: number | null;
+  charge?: number | null;
 }
 
 export interface CartProductModel {

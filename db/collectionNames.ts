@@ -52,5 +52,6 @@ export const COL_RUBRIC_VARIANTS = 'rubricVariants';
 export const COL_SHOPS = 'shops';
 export const COL_SHOP_PRODUCTS = 'shopProducts';
 export const COL_SUPPLIERS = 'suppliers';
+export const COL_SUPPLIER_PRODUCTS = 'supplierProducts';
 export const COL_USERS = 'users';
 export const COL_USER_CATEGORIES = 'userCategories';

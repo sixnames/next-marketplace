@@ -31,6 +31,7 @@ import {
   UserCategoryModel,
   PromoModel,
   PromoProductModel,
+  SupplierProductModel,
 } from '../../../db/dbModels';
 import {
   COL_ATTRIBUTES,
@@ -62,6 +63,7 @@ import {
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
+  COL_SUPPLIER_PRODUCTS,
   COL_SUPPLIERS,
   COL_USER_CATEGORIES,
   COL_USERS,
@@ -217,6 +219,14 @@ export async function updateIndexes(db: Db) {
     views: -1,
     _id: -1,
   });
+
+  // Supplier products
+  await createCollectionIfNotExist(COL_SUPPLIER_PRODUCTS);
+  const supplierProductsCollection = db.collection<SupplierProductModel>(COL_SUPPLIER_PRODUCTS);
+  await supplierProductsCollection.createIndex({ shopProductId: 1, price: -1 });
+  await supplierProductsCollection.createIndex({ companySlug: 1, shopId: 1, price: -1 });
+  await supplierProductsCollection.createIndex({ companyId: 1, shopId: 1, price: -1 });
+  await supplierProductsCollection.createIndex({ shopId: 1, price: -1 });
 
   // Blog posts
   await createCollectionIfNotExist(COL_BLOG_POSTS);

@@ -1,3 +1,4 @@
+import { SUPPLIER_PRICE_VARIANT_CHARGE } from 'config/common';
 import {
   COL_PRODUCT_ASSETS,
   COL_PRODUCT_CARD_DESCRIPTIONS,
@@ -19,6 +20,7 @@ import {
   ProductConnectionItemInterface,
   ProductInterface,
   RubricInterface,
+  SupplierProductInterface,
 } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getTreeFromList } from 'lib/optionsUtils';
@@ -238,4 +240,13 @@ export async function getCmsProduct({
     rubric: castedRubric,
     categoriesList: initialProduct.categories || [],
   };
+}
+
+export function getSupplierPrice(supplierProduct: SupplierProductInterface): number {
+  const { variant, price, percent } = supplierProduct;
+  if (variant === SUPPLIER_PRICE_VARIANT_CHARGE) {
+    const charge = (price / 100) * percent;
+    return charge + price;
+  }
+  return price;
 }

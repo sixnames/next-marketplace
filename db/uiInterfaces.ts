@@ -366,6 +366,7 @@ export interface SupplierProductInterface extends SupplierProductModel {
   shop?: ShopInterface | null;
   company?: CompanyInterface | null;
   shopProduct?: ShopProductInterface;
+  recommendedPrice?: number | null;
 }
 
 export interface ShopProductInterface extends ShopProductModel {

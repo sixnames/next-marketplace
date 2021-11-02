@@ -11,10 +11,10 @@ import {
   SupplierPayloadModel,
   SuppliersAlphabetListModel,
   SuppliersPaginationPayloadModel,
-  ProductModel,
+  SupplierProductModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { COL_SUPPLIERS, COL_PRODUCTS } from 'db/collectionNames';
+import { COL_SUPPLIERS, COL_SUPPLIER_PRODUCTS } from 'db/collectionNames';
 import { aggregatePagination } from 'db/dao/aggregatePagination';
 import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
@@ -430,7 +430,8 @@ export const SupplierMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
           const suppliersCollection = db.collection<SupplierModel>(COL_SUPPLIERS);
-          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const supplierProductsCollection =
+            db.collection<SupplierProductModel>(COL_SUPPLIER_PRODUCTS);
           const { _id } = args;
 
           // Check supplier availability
@@ -442,12 +443,14 @@ export const SupplierMutations = extendType({
             };
           }
 
-          // Check if supplier is used in products
-          const used = await productsCollection.findOne({ supplierSlugs: supplier.itemId });
-          if (used) {
+          // delete supplier products
+          const removedSupplierProductsResult = await supplierProductsCollection.deleteMany({
+            supplierId: _id,
+          });
+          if (!removedSupplierProductsResult.acknowledged) {
             return {
               success: false,
-              message: await getApiMessage('suppliers.delete.used'),
+              message: await getApiMessage('suppliers.delete.error'),
             };
           }
 

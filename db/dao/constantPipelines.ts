@@ -21,6 +21,8 @@ import {
   COL_PRODUCTS,
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
+  COL_SUPPLIER_PRODUCTS,
+  COL_SUPPLIERS,
 } from 'db/collectionNames';
 
 export const noImageStage = {
@@ -971,6 +973,54 @@ export const rubricAttributeGroupsPipeline = [
 
         // get attributes
         ...rubricAttributesGroupAttributesPipeline,
+      ],
+    },
+  },
+];
+
+export const shopProductSupplierProductsPipeline = [
+  {
+    $lookup: {
+      from: COL_SUPPLIER_PRODUCTS,
+      as: 'supplierProducts',
+      let: {
+        shopProductId: '$_id',
+      },
+      pipeline: [
+        {
+          $match: {
+            $expr: {
+              $eq: ['$shopProductId', '$$shopProductId'],
+            },
+          },
+        },
+
+        // get supplier
+        {
+          $lookup: {
+            from: COL_SUPPLIERS,
+            as: 'supplier',
+            let: {
+              supplierId: '$supplierId',
+            },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $eq: ['$_id', '$$supplierId'],
+                  },
+                },
+              },
+            ],
+          },
+        },
+        {
+          $addFields: {
+            supplier: {
+              $arrayElemAt: ['$supplier', 0],
+            },
+          },
+        },
       ],
     },
   },

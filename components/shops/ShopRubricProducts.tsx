@@ -1,5 +1,6 @@
 import AppContentFilter from 'components/AppContentFilter';
 import Button from 'components/Button';
+import Currency from 'components/Currency';
 import FixedButtons from 'components/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls';
 import FormikInput from 'components/FormElements/Input/FormikInput';
@@ -20,6 +21,7 @@ import {
   CatalogueFilterAttributeInterface,
   ShopInterface,
   ShopProductInterface,
+  SupplierProductInterface,
 } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import {
@@ -152,6 +154,27 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
               type={'number'}
               low
             />
+          </div>
+        );
+      },
+    },
+    {
+      accessor: 'supplierProducts',
+      headTitle: 'Поставщики',
+      render: ({ cellData }) => {
+        const supplierProducts = (cellData || []) as SupplierProductInterface[];
+        return (
+          <div className='space-y-2'>
+            {supplierProducts.map((supplierProduct) => {
+              return (
+                <div className='flex gap-3' key={`${supplierProduct._id}`}>
+                  <div className='whitespace-nowrap'>{supplierProduct.supplier?.name}</div>
+                  <div>
+                    <Currency value={supplierProduct.recommendedPrice} />
+                  </div>
+                </div>
+              );
+            })}
           </div>
         );
       },

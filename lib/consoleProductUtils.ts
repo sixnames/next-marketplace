@@ -26,6 +26,7 @@ import {
   filterAttributesPipeline,
   productSeoPipeline,
   shopProductFieldsPipeline,
+  shopProductSupplierProductsPipeline,
 } from 'db/dao/constantPipelines';
 import { ObjectIdModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -40,6 +41,7 @@ import {
   ShopInterface,
   ShopProductInterface,
   ShopProductsAggregationInterface,
+  SupplierProductInterface,
 } from 'db/uiInterfaces';
 import { getAlgoliaProductsSearch } from 'lib/algoliaUtils';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
@@ -52,6 +54,7 @@ import {
   getCategoryAllAttributes,
   getRubricAllAttributes,
 } from 'lib/productAttributesUtils';
+import { getSupplierPrice } from 'lib/productUtils';
 import { generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 import { ShopAddProductsListRouteReduced } from 'pages/cms/companies/[companyId]/shops/shop/[shopId]/products/add/[...filters]';
@@ -1449,26 +1452,8 @@ export const getConsoleShopProducts = async ({
               // get shop product fields
               ...shopProductFieldsPipeline('$productId'),
 
-              // get product attributes
-              {
-                $lookup: {
-                  from: COL_PRODUCT_ATTRIBUTES,
-                  as: 'attributes',
-                  let: {
-                    productId: '$_id',
-                  },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $eq: ['$$productId', '$productId'],
-                        },
-                        viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
-                      },
-                    },
-                  ],
-                },
-              },
+              // get supplier products
+              ...shopProductSupplierProductsPipeline,
             ],
 
             // prices facet
@@ -1877,8 +1862,29 @@ export const getConsoleShopProducts = async ({
         defaultGender: product.gender,
       });
 
+      // supplier products
+      const supplierProducts = (shopProduct.supplierProducts || []).reduce(
+        (acc: SupplierProductInterface[], supplierProduct) => {
+          const { supplier } = supplierProduct;
+          if (!supplier) {
+            return acc;
+          }
+          const payload: SupplierProductInterface = {
+            ...supplierProduct,
+            recommendedPrice: getSupplierPrice(supplierProduct),
+            supplier: {
+              ...supplier,
+              name: getFieldStringLocale(supplier.nameI18n, locale),
+            },
+          };
+          return [...acc, payload];
+        },
+        [],
+      );
+
       docs.push({
         ...shopProduct,
+        supplierProducts,
         product: {
           ...product,
           shopsCount: shopProduct.shopsCount,

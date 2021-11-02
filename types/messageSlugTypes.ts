@@ -331,6 +331,7 @@ export type MessageSlug =
   | 'optionsGroups.updateOption.groupError'
   | 'optionsGroups.updateOption.duplicate'
   | 'optionsGroups.updateOption.error'
+  | 'optionsGroups.updateOption.attributeNotFound'
   | 'optionsGroups.updateOption.success'
   | 'optionsGroups.deleteOption.notFound'
   | 'optionsGroups.deleteOption.used'

@@ -157,6 +157,13 @@ export const optionsGroupsMessages: MessageBaseInterface[] = [
     },
   },
   {
+    slug: 'optionsGroups.updateOption.attributeNotFound',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Новая группа опций не назначена ни одному атрибуту`,
+      [SECONDARY_LOCALE]: `New options group is not connected to the attribute`,
+    },
+  },
+  {
     slug: 'optionsGroups.updateOption.success',
     messageI18n: {
       [DEFAULT_LOCALE]: `Опция обновлена.`,

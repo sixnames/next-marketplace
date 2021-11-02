@@ -82,6 +82,13 @@ input AddProductToShopInput {
   shopId: ObjectId!
 }
 
+input AddShopProductSupplierInput {
+  charge: Int
+  price: Int
+  shopProductId: ObjectId!
+  supplierId: ObjectId!
+}
+
 input AddShopToCartProductInput {
   cartProductId: ObjectId!
   shopProductId: ObjectId!
@@ -907,6 +914,11 @@ type Mutation {
   Should create product connection
   """
   addProductToConnection(input: AddProductToConnectionInput!): ProductPayload!
+
+  """
+  Should add shop products supplier
+  """
+  addShopProductSupplier(input: AddShopProductSupplierInput!): ShopProductPayload!
 
   """
   Should add shop to the cart product

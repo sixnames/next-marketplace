@@ -185,6 +185,13 @@ export interface NexusGenInputs {
     productId: NexusGenScalars['ObjectId']; // ObjectId!
     shopId: NexusGenScalars['ObjectId']; // ObjectId!
   };
+  AddShopProductSupplierInput: {
+    // input type
+    charge?: number | null; // Int
+    price?: number | null; // Int
+    shopProductId: NexusGenScalars['ObjectId']; // ObjectId!
+    supplierId: NexusGenScalars['ObjectId']; // ObjectId!
+  };
   AddShopToCartProductInput: {
     // input type
     cartProductId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -1465,6 +1472,7 @@ export interface NexusGenFieldTypes {
     addOptionToGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
     addProductToCart: NexusGenRootTypes['CartPayload']; // CartPayload!
     addProductToConnection: NexusGenRootTypes['ProductPayload']; // ProductPayload!
+    addShopProductSupplier: NexusGenRootTypes['ShopProductPayload']; // ShopProductPayload!
     addShopToCartProduct: NexusGenRootTypes['CartPayload']; // CartPayload!
     addShopToCompany: NexusGenRootTypes['CompanyPayload']; // CompanyPayload!
     addShoplessProductToCart: NexusGenRootTypes['CartPayload']; // CartPayload!
@@ -2524,6 +2532,7 @@ export interface NexusGenFieldTypeNames {
     addOptionToGroup: 'OptionsGroupPayload';
     addProductToCart: 'CartPayload';
     addProductToConnection: 'ProductPayload';
+    addShopProductSupplier: 'ShopProductPayload';
     addShopToCartProduct: 'CartPayload';
     addShopToCompany: 'CompanyPayload';
     addShoplessProductToCart: 'CartPayload';
@@ -3270,6 +3279,10 @@ export interface NexusGenArgTypes {
     addProductToConnection: {
       // args
       input: NexusGenInputs['AddProductToConnectionInput']; // AddProductToConnectionInput!
+    };
+    addShopProductSupplier: {
+      // args
+      input: NexusGenInputs['AddShopProductSupplierInput']; // AddShopProductSupplierInput!
     };
     addShopToCartProduct: {
       // args

@@ -223,6 +223,7 @@ export async function updateIndexes(db: Db) {
   // Supplier products
   await createCollectionIfNotExist(COL_SUPPLIER_PRODUCTS);
   const supplierProductsCollection = db.collection<SupplierProductModel>(COL_SUPPLIER_PRODUCTS);
+  await supplierProductsCollection.createIndex({ supplierId: 1, shopProductId: 1, price: -1 });
   await supplierProductsCollection.createIndex({ shopProductId: 1, price: -1 });
   await supplierProductsCollection.createIndex({ companySlug: 1, shopId: 1, price: -1 });
   await supplierProductsCollection.createIndex({ companyId: 1, shopId: 1, price: -1 });

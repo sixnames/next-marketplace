@@ -297,6 +297,7 @@ export interface SupplierModel extends BaseModel, TimestampModel {
 
 export interface SupplierProductModel {
   _id: ObjectIdModel;
+  supplierId: ObjectIdModel;
   shopProductId: ObjectIdModel;
   shopId: ObjectIdModel;
   companyId: ObjectIdModel;
@@ -804,6 +805,7 @@ export interface ShopProductModel
   citySlug: string;
   price: number;
   recommendedPrice?: number | null;
+  finalPrice?: number | null;
   oldPrice?: number | null;
   oldPrices: ShopProductOldPriceModel[];
   discountedPercent: number;

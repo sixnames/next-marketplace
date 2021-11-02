@@ -3,8 +3,8 @@ import {
   SECONDARY_LOCALE,
   SUPPLIER_PRICE_VARIANT_CHARGE,
   SUPPLIER_PRICE_VARIANT_DISCOUNT,
-} from 'config/common';
-import { TranslationModel } from 'db/dbModels';
+} from '../config/common';
+import { TranslationModel } from '../db/dbModels';
 
 export const DEFAULT_LAYOUT = 'default';
 

@@ -3,42 +3,47 @@ import Button from 'components/Button';
 import Inner from 'components/Inner';
 import PageEditor from 'components/PageEditor';
 import RequestError from 'components/RequestError';
-import Title from 'components/Title';
 import WpImage from 'components/WpImage';
-import { DEFAULT_CITY, PAGE_EDITOR_DEFAULT_VALUE_STRING } from 'config/common';
+import { DEFAULT_CITY, PAGE_EDITOR_DEFAULT_VALUE_STRING, ROUTE_CMS } from 'config/common';
 import { useConfigContext } from 'context/configContext';
-import { COL_COMPANIES, COL_PRODUCT_CARD_CONTENTS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import {
+  COL_COMPANIES,
+  COL_PRODUCT_CARD_CONTENTS,
+  COL_SHOP_PRODUCTS,
+  COL_SHOPS,
+} from 'db/collectionNames';
 import {
   shopProductFieldsPipeline,
   shopProductSupplierProductsPipeline,
 } from 'db/dao/constantPipelines';
 import { ProductCardContentModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { CompanyInterface, ShopProductInterface } from 'db/uiInterfaces';
+import { CompanyInterface, ShopInterface, ShopProductInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import {
   UpdateProductCardContentInput,
   useUpdateProductCardContentMutation,
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper from 'layout/AppContentWrapper';
+import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleShopProductLayout from 'layout/console/ConsoleShopProductLayout';
 import { getConstructorDefaultValue } from 'lib/constructorUtils';
 import { castShopProduct } from 'lib/productUtils';
 import { get } from 'lodash';
 import { ObjectId } from 'mongodb';
-import Head from 'next/head';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
 interface ProductDetailsInterface {
+  shop: ShopInterface;
   shopProduct: ShopProductInterface;
   cardContent: ProductCardContentModel;
 }
 
-const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct, cardContent }) => {
+const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct, shop, cardContent }) => {
   const { cities } = useConfigContext();
   const { onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
     reload: true,
@@ -53,19 +58,48 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct, cardCo
     return <RequestError />;
   }
 
-  const { originalName, mainImage, snippetTitle } = product;
+  const { originalName, mainImage, rubric, snippetTitle } = product;
+
+  const companyBasePath = `${ROUTE_CMS}/companies/${shopProduct.companyId}`;
+  const breadcrumbs: AppContentWrapperBreadCrumbs = {
+    currentPageName: `${snippetTitle}`,
+    config: [
+      {
+        name: 'Компании',
+        href: `${ROUTE_CMS}/companies`,
+      },
+      {
+        name: `${shop.company?.name}`,
+        href: companyBasePath,
+      },
+      {
+        name: 'Магазины',
+        href: `${companyBasePath}/shops/${shop.companyId}`,
+      },
+      {
+        name: shop.name,
+        href: `${companyBasePath}/shops/shop/${shop._id}`,
+      },
+      {
+        name: 'Товары',
+        href: `${companyBasePath}/shops/shop/${shop._id}/products`,
+      },
+      {
+        name: `${rubric?.name}`,
+        href: `${companyBasePath}/shops/shop/${shop._id}/products/${rubric?._id}`,
+      },
+    ],
+  };
 
   const initialValues: UpdateProductCardContentInput = cardContent;
 
   return (
-    <AppContentWrapper>
-      <Head>
-        <title>{snippetTitle}</title>
-      </Head>
-
+    <ConsoleShopProductLayout
+      breadcrumbs={breadcrumbs}
+      shopProduct={shopProduct}
+      basePath={`${companyBasePath}/shops/shop/${shopProduct.shopId}/products/product`}
+    >
       <Inner testId={'product-details'}>
-        <Title subtitle={`Арт. ${shopProduct.itemId}`}>{snippetTitle}</Title>
-
         <div className='relative w-[15rem] h-[15rem] mb-8'>
           <WpImage
             url={mainImage}
@@ -155,16 +189,16 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct, cardCo
           }}
         </Formik>
       </Inner>
-    </AppContentWrapper>
+    </ConsoleShopProductLayout>
   );
 };
 
 interface ProductPageInterface extends PagePropsInterface, ProductDetailsInterface {}
 
-const Product: NextPage<ProductPageInterface> = ({ pageUrls, cardContent, shopProduct }) => {
+const Product: NextPage<ProductPageInterface> = ({ pageUrls, cardContent, shop, shopProduct }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <ProductDetails shopProduct={shopProduct} cardContent={cardContent} />
+      <ProductDetails shopProduct={shopProduct} cardContent={cardContent} shop={shop} />
     </CmsLayout>
   );
 };
@@ -173,14 +207,15 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<ProductPageInterface>> => {
   const { query } = context;
-  const { shopProductId, companyId } = query;
+  const { shopProductId, companyId, shopId } = query;
   const { db } = await getDatabase();
+  const shopsCollection = db.collection<ShopInterface>(COL_SHOPS);
   const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
   const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
   const productCardContentsCollection =
     db.collection<ProductCardContentModel>(COL_PRODUCT_CARD_CONTENTS);
   const { props } = await getAppInitialData({ context });
-  if (!props || !shopProductId || !companyId) {
+  if (!props || !shopProductId || !companyId || !shopId) {
     return {
       notFound: true,
     };
@@ -194,6 +229,19 @@ export const getServerSideProps = async (
       notFound: true,
     };
   }
+
+  const shopResult = await shopsCollection.findOne({
+    _id: new ObjectId(`${shopId}`),
+  });
+  if (!shopResult) {
+    return {
+      notFound: true,
+    };
+  }
+  const shop: ShopInterface = {
+    ...shopResult,
+    company,
+  };
 
   const shopProductsAggregation = await shopProductsCollection
     .aggregate<ShopProductInterface>([
@@ -250,6 +298,7 @@ export const getServerSideProps = async (
       ...props,
       shopProduct: castDbData(shopProduct),
       cardContent: castDbData(cardContent),
+      shop: castDbData(shop),
     },
   };
 };

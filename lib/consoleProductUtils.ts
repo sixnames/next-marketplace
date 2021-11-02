@@ -41,7 +41,6 @@ import {
   ShopInterface,
   ShopProductInterface,
   ShopProductsAggregationInterface,
-  SupplierProductInterface,
 } from 'db/uiInterfaces';
 import { getAlgoliaProductsSearch } from 'lib/algoliaUtils';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
@@ -54,7 +53,7 @@ import {
   getCategoryAllAttributes,
   getRubricAllAttributes,
 } from 'lib/productAttributesUtils';
-import { getSupplierPrice } from 'lib/productUtils';
+import { castSupplierProductsList } from 'lib/productUtils';
 import { generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 import { ShopAddProductsListRouteReduced } from 'pages/cms/companies/[companyId]/shops/shop/[shopId]/products/add/[...filters]';
@@ -1862,29 +1861,12 @@ export const getConsoleShopProducts = async ({
         defaultGender: product.gender,
       });
 
-      // supplier products
-      const supplierProducts = (shopProduct.supplierProducts || []).reduce(
-        (acc: SupplierProductInterface[], supplierProduct) => {
-          const { supplier } = supplierProduct;
-          if (!supplier) {
-            return acc;
-          }
-          const payload: SupplierProductInterface = {
-            ...supplierProduct,
-            recommendedPrice: getSupplierPrice(supplierProduct),
-            supplier: {
-              ...supplier,
-              name: getFieldStringLocale(supplier.nameI18n, locale),
-            },
-          };
-          return [...acc, payload];
-        },
-        [],
-      );
-
       docs.push({
         ...shopProduct,
-        supplierProducts,
+        supplierProducts: castSupplierProductsList({
+          supplierProducts: shopProduct.supplierProducts,
+          locale,
+        }),
         product: {
           ...product,
           shopsCount: shopProduct.shopsCount,

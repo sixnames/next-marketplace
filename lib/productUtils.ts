@@ -20,6 +20,7 @@ import {
   ProductConnectionItemInterface,
   ProductInterface,
   RubricInterface,
+  ShopProductInterface,
   SupplierProductInterface,
 } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
@@ -275,4 +276,120 @@ export function castSupplierProductsList({
     };
     return [...acc, payload];
   }, []);
+}
+
+interface CastProductInterface {
+  product?: ProductInterface | null;
+  locale: string;
+}
+
+export function castProduct({ product, locale }: CastProductInterface): ProductInterface | null {
+  if (!product) {
+    return null;
+  }
+
+  const { rubric } = product;
+  if (!rubric) {
+    return null;
+  }
+
+  // attributes
+  const productAttributes = (product.attributes || []).reduce(
+    (acc: ProductAttributeInterface[], productAttribute) => {
+      const { attribute } = productAttribute;
+      if (!attribute) {
+        return acc;
+      }
+
+      const resultProductAttribute: ProductAttributeInterface = {
+        ...productAttribute,
+        attribute: {
+          ...attribute,
+          name: getFieldStringLocale(attribute.nameI18n, locale),
+          metric: attribute.metric
+            ? {
+                ...attribute.metric,
+                name: getFieldStringLocale(attribute.metric.nameI18n, locale),
+              }
+            : null,
+          options: getTreeFromList({
+            list: attribute.options,
+            childrenFieldName: 'options',
+            locale,
+          }),
+        },
+      };
+      return [...acc, resultProductAttribute];
+    },
+    [],
+  );
+
+  // categories
+  const productCategories = getTreeFromList({
+    list: product.categories,
+    childrenFieldName: 'categories',
+    locale,
+  });
+
+  // brand
+  const productBrand = product.brand
+    ? {
+        ...product.brand,
+        collections: (product.brand.collections || []).filter(({ itemId }) => {
+          return itemId === product.brandCollectionSlug;
+        }),
+      }
+    : null;
+
+  // snippet title
+  const snippetTitle = generateSnippetTitle({
+    locale,
+    brand: productBrand,
+    rubricName: getFieldStringLocale(rubric.nameI18n, locale),
+    showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
+    showCategoryInProductTitle: rubric.showCategoryInProductTitle,
+    attributes: productAttributes,
+    categories: productCategories,
+    titleCategoriesSlugs: product.titleCategoriesSlugs,
+    originalName: product.originalName,
+    defaultGender: product.gender,
+  });
+
+  const payload: ProductInterface = {
+    ...product,
+    name: getFieldStringLocale(product.nameI18n, locale),
+    snippetTitle,
+  };
+
+  return payload;
+}
+
+interface CastShopProductInterface {
+  shopProduct: ShopProductInterface;
+  locale: string;
+}
+
+export function castShopProduct({
+  shopProduct,
+  locale,
+}: CastShopProductInterface): ShopProductInterface | null {
+  const { product } = shopProduct;
+  const castedProduct = castProduct({ product, locale });
+  if (!product) {
+    return null;
+  }
+  const { rubric } = product;
+  if (!rubric) {
+    return null;
+  }
+
+  const payload: ShopProductInterface = {
+    ...shopProduct,
+    supplierProducts: castSupplierProductsList({
+      supplierProducts: shopProduct.supplierProducts,
+      locale,
+    }),
+    product: castedProduct,
+  };
+  return payload;
 }

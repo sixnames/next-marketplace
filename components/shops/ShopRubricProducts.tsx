@@ -94,15 +94,13 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
       accessor: 'itemId',
       headTitle: 'Арт',
       render: ({ dataItem }) => {
-        return me?.role?.isStaff ? (
+        return (
           <Link
             href={`${layoutBasePath}/${shop._id}/products/product/${dataItem._id}`}
             target={'_blank'}
           >
             {dataItem.itemId}
           </Link>
-        ) : (
-          dataItem.itemId
         );
       },
     },

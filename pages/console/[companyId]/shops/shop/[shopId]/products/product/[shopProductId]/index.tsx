@@ -2,24 +2,24 @@ import Button from 'components/Button';
 import CompanyProductDetails from 'components/CompanyProductDetails';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import RequestError from 'components/RequestError';
-import { ROUTE_CMS } from 'config/common';
+import { ROUTE_CONSOLE } from 'config/common';
 import { COL_PRODUCT_CARD_DESCRIPTIONS, COL_PRODUCT_SEO } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { ProductCardDescriptionInterface, ShopProductInterface } from 'db/uiInterfaces';
+import { Form, Formik } from 'formik';
 import { useUpdateManyShopProductsMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/console/ConsoleLayout';
 import ConsoleShopProductLayout from 'layout/console/ConsoleShopProductLayout';
 import { noNaN } from 'lib/numbers';
 import { getConsoleShopProduct } from 'lib/productUtils';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 import { updateManyShopProductsSchema } from 'validation/shopSchema';
-import { Form, Formik } from 'formik';
 
 interface ProductDetailsInterface {
   shopProduct: ShopProductInterface;
@@ -47,33 +47,25 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct }) => {
     return <RequestError />;
   }
 
-  const companyBasePath = `${ROUTE_CMS}/companies/${shopProduct.companyId}`;
+  const companyBasePath = `${ROUTE_CONSOLE}/${shop.companyId}/shops`;
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${snippetTitle}`,
     config: [
       {
-        name: 'Компании',
-        href: `${ROUTE_CMS}/companies`,
-      },
-      {
-        name: `${company.name}`,
+        name: 'Магазины',
         href: companyBasePath,
       },
       {
-        name: 'Магазины',
-        href: `${companyBasePath}/shops/${shop.companyId}`,
-      },
-      {
         name: shop.name,
-        href: `${companyBasePath}/shops/shop/${shop._id}`,
+        href: `${companyBasePath}/shop/${shop._id}`,
       },
       {
         name: 'Товары',
-        href: `${companyBasePath}/shops/shop/${shop._id}/products`,
+        href: `${companyBasePath}/shop/${shop._id}/products`,
       },
       {
-        name: `${rubric?.name}`,
-        href: `${companyBasePath}/shops/shop/${shop._id}/products/${rubric?._id}`,
+        name: `${rubric.name}`,
+        href: `${companyBasePath}/shop/${shop._id}/products/${rubric._id}`,
       },
     ],
   };
@@ -91,9 +83,9 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct }) => {
 
   return (
     <ConsoleShopProductLayout
-      breadcrumbs={breadcrumbs}
       shopProduct={shopProduct}
-      basePath={`${companyBasePath}/shops/shop/${shopProduct.shopId}/products/product`}
+      basePath={`${companyBasePath}/shop/${shopProduct.shopId}/products/product`}
+      breadcrumbs={breadcrumbs}
     >
       <CompanyProductDetails
         routeBasePath={''}
@@ -144,11 +136,11 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct }) => {
 
 interface ProductPageInterface extends PagePropsInterface, ProductDetailsInterface {}
 
-const Product: NextPage<ProductPageInterface> = ({ pageUrls, ...props }) => {
+const Product: NextPage<ProductPageInterface> = ({ pageUrls, currentCompany, ...props }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout pageUrls={pageUrls} company={currentCompany}>
       <ProductDetails {...props} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 
@@ -156,13 +148,13 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<ProductPageInterface>> => {
   const { query } = context;
+  const { shopProductId } = query;
   const { db } = await getDatabase();
   const cardDescriptionsCollection = db.collection<ProductCardDescriptionInterface>(
     COL_PRODUCT_CARD_DESCRIPTIONS,
   );
-  const { shopProductId, companyId, shopId } = query;
-  const { props } = await getAppInitialData({ context });
-  if (!props || !shopProductId || !companyId || !shopId) {
+  const { props } = await getConsoleInitialData({ context });
+  if (!props || !shopProductId) {
     return {
       notFound: true,
     };

@@ -8,7 +8,9 @@ import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { ShopProductSupplierModalInterface } from 'components/Modal/ShopProductSupplierModal';
 import Percent from 'components/Percent';
 import Table, { TableColumn } from 'components/Table';
+import { getConstantTranslation } from 'config/constantTranslations';
 import { CONFIRM_MODAL, SHOP_PRODUCT_SUPPLIER_MODAL } from 'config/modalVariants';
+import { useLocaleContext } from 'context/localeContext';
 import { ShopProductInterface, SupplierProductInterface } from 'db/uiInterfaces';
 import { useDeleteShopProductSupplierMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
@@ -26,6 +28,7 @@ const CompanyProductSuppliers: React.FC<CompanyProductSuppliersInterface> = ({
   shopProduct,
   disableAddSupplier,
 }) => {
+  const { locale } = useLocaleContext();
   const { onCompleteCallback, onErrorCallback, showModal, showLoading } = useMutationCallbacks({
     reload: true,
   });
@@ -43,7 +46,8 @@ const CompanyProductSuppliers: React.FC<CompanyProductSuppliersInterface> = ({
     {
       headTitle: 'Тип формирования цены',
       accessor: 'variant',
-      render: ({ cellData }) => cellData,
+      render: ({ cellData }) =>
+        getConstantTranslation(`suppliers.priceVariant.${cellData}.${locale}`),
     },
     {
       headTitle: 'Цена',

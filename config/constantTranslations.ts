@@ -26,6 +26,8 @@ import {
   ROUTE_CONSOLE_NAV_GROUP,
   GENDER_PLURAL,
   GENDER_SINGULAR,
+  SUPPLIER_PRICE_VARIANT_DISCOUNT,
+  SUPPLIER_PRICE_VARIANT_CHARGE,
 } from './common';
 
 export const constantTranslations = {
@@ -105,6 +107,18 @@ export const constantTranslations = {
     [ROUTE_CONSOLE_NAV_GROUP]: {
       [DEFAULT_LOCALE]: 'Панель управления компании',
       [SECONDARY_LOCALE]: 'Company console',
+    },
+  },
+  suppliers: {
+    priceVariant: {
+      [SUPPLIER_PRICE_VARIANT_DISCOUNT]: {
+        [DEFAULT_LOCALE]: 'Диллерская скидка',
+        [SECONDARY_LOCALE]: 'Dealer discount',
+      },
+      [SUPPLIER_PRICE_VARIANT_CHARGE]: {
+        [DEFAULT_LOCALE]: 'Диллерская наценка',
+        [SECONDARY_LOCALE]: 'Dealer charge',
+      },
     },
   },
   selectsOptions: {

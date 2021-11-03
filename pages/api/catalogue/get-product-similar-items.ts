@@ -1,16 +1,6 @@
-import {
-  CATEGORY_SLUG_PREFIX_SEPARATOR,
-  CATEGORY_SLUG_PREFIX_WORD,
-  SORT_DESC,
-} from 'config/common';
-import { COL_PRODUCTS, COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
-import {
-  brandPipeline,
-  noImageStage,
-  productAttributesPipeline,
-  productCategoriesPipeline,
-  shopProductFieldsPipeline,
-} from 'db/dao/constantPipelines';
+import { SORT_DESC } from 'config/common';
+import { COL_PRODUCTS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import { noImageStage, shopProductFieldsPipeline } from 'db/dao/constantPipelines';
 import { ProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { ShopProductInterface } from 'db/uiInterfaces';
@@ -62,21 +52,8 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
       return;
     }
 
-    // get category slugs
-    const categoriesSlugs = product.selectedOptionsSlugs.filter((slug) => {
-      const slugParts = slug.split(CATEGORY_SLUG_PREFIX_SEPARATOR);
-      return slugParts[0] === CATEGORY_SLUG_PREFIX_WORD && slugParts[1];
-    });
-    const categoriesMatch =
-      categoriesSlugs.length > 0
-        ? {
-            selectedOptionsSlugs: {
-              $all: categoriesSlugs,
-            },
-          }
-        : {};
-
     // aggregate product similar products
+    // const start = new Date().getTime();
     const shopProductsAggregation = await shopProductsCollection
       .aggregate<ShopProductInterface>([
         {
@@ -89,9 +66,6 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
         {
           $group: {
             _id: '$productId',
-            rubricId: { $first: `$rubricId` },
-            rubricSlug: { $first: `$rubricSlug` },
-            selectedOptionsSlugs: { $first: `$selectedOptionsSlugs` },
             minPrice: {
               $min: '$price',
             },
@@ -137,15 +111,10 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
 
         // Lookup similar products
         {
-          $unwind: '$selectedOptionsSlugs',
-        },
-        {
           $lookup: {
             from: COL_SHOP_PRODUCTS,
             as: 'similarProducts',
             let: {
-              rubricSlug: '$rubricSlug',
-              selectedOptionsSlugs: '$selectedOptionsSlugs',
               minFilterPrice: '$minFilterPrice',
               maxFilterPrice: '$maxFilterPrice',
             },
@@ -153,7 +122,11 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
               {
                 $match: {
                   ...companyRubricsMatch,
-                  ...categoriesMatch,
+                  rubricSlug: product.rubricSlug,
+                  selectedOptionsSlugs: {
+                    $in: product.selectedOptionsSlugs,
+                  },
+                  // ...categoriesMatch,
                   citySlug: city,
                   productId: {
                     $ne: finalProductId,
@@ -162,8 +135,6 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
                     $and: [
                       { $gte: ['$price', '$$minFilterPrice'] },
                       { $lte: ['$price', '$$maxFilterPrice'] },
-                      { $eq: ['$$rubricSlug', '$rubricSlug'] },
-                      { $in: ['$$selectedOptionsSlugs', '$selectedOptionsSlugs'] },
                     ],
                   },
                   ...noImageStage,
@@ -216,51 +187,8 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
                 },
               },
 
-              // get product brand
-              ...brandPipeline,
-
-              // get product attributes
-              ...productAttributesPipeline,
-
-              // get product categories
-              ...productCategoriesPipeline(),
-
               // get shop product fields
               ...shopProductFieldsPipeline('$_id'),
-
-              // get product rubric
-              {
-                $lookup: {
-                  from: COL_RUBRICS,
-                  as: 'rubric',
-                  let: {
-                    rubricId: '$rubricId',
-                  },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $eq: ['$$rubricId', '$_id'],
-                        },
-                      },
-                    },
-                    {
-                      $project: {
-                        _id: true,
-                        slug: true,
-                        nameI18n: true,
-                        showRubricNameInProductTitle: true,
-                        showCategoryInProductTitle: true,
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                $addFields: {
-                  rubric: { $arrayElemAt: ['$rubric', 0] },
-                },
-              },
             ],
           },
         },
@@ -284,6 +212,7 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
       ])
       .toArray();
     const productResult = shopProductsAggregation[0];
+    // console.log('aggregation ', new Date().getTime() - start);
 
     if (!productResult || !productResult.similarProducts) {
       res.statusCode = 500;

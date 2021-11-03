@@ -173,7 +173,7 @@ const StickyNavDropdownWithCategories: React.FC<StickyNavDropdownInterface> = ({
               })}
             </div>
           </div>
-          <div className='grid gap-x-4 gap-y-8 grid-cols-2 pl-8 col-span-2'>
+          <div className='grid gap-x-4 gap-y-8 grid-cols-2 pl-8 col-span-2 self-start'>
             {(attributes || []).map((attribute) => {
               return (
                 <StickyNavAttribute

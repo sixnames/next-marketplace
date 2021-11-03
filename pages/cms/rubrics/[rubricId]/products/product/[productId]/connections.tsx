@@ -91,11 +91,13 @@ const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = 
 export interface ProductConnectionsItemInterface {
   product: ProductInterface;
   connection: ProductConnectionInterface;
+  connectionIndex: number;
 }
 
 const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
   connection,
   product,
+  connectionIndex,
 }) => {
   const { showModal, showLoading, onCompleteCallback, onErrorCallback } = useMutationCallbacks({
     withModal: true,
@@ -154,10 +156,10 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
       },
     },
     {
-      render: ({ dataItem }) => {
+      render: ({ dataItem, rowIndex }) => {
         return (
           <ContentItemControls
-            testId={`${dataItem?.product?.originalName}`}
+            testId={`${connectionIndex}-${rowIndex}`}
             justifyContent={'flex-end'}
             updateTitle={'Редактировать товар'}
             updateHandler={() => {
@@ -265,12 +267,13 @@ const ProductConnections: React.FC<ProductConnectionsPropsInterface> = ({ produc
     <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
       <Inner testId={'product-connections-list'}>
         <div className='mb-8'>
-          {(product.connections || []).map((connection) => {
+          {(product.connections || []).map((connection, connectionIndex) => {
             return (
               <ProductConnectionsItem
                 key={`${connection._id}`}
                 product={product}
                 connection={connection}
+                connectionIndex={connectionIndex}
               />
             );
           })}

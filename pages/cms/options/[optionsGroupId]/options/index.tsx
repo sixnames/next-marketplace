@@ -75,9 +75,9 @@ const OptionsGroupOptionsConsumer: React.FC<OptionsGroupOptionsConsumerInterface
   const renderOptions = React.useCallback(
     (option: OptionInterface) => {
       const { name, options, image } = option;
-
+      const optionUrl = `${ROUTE_CMS}/options/${optionsGroup._id}/options/${option._id}`;
       return (
-        <div>
+        <div data-cy={name} data-url={optionUrl}>
           {image ? (
             <div className='relative pb-[100%] w-[80px]'>
               <WpImage
@@ -99,12 +99,7 @@ const OptionsGroupOptionsConsumer: React.FC<OptionsGroupOptionsConsumerInterface
             <div className='font-medium' data-cy={`option-${name}`}>
               {name}
             </div>
-            <div
-              className='cms-option__controls'
-              data-cy={`${option.name}-option`}
-              data-id={`${option._id}`}
-              data-group-id={`${option._id}`}
-            >
+            <div className='cms-option__controls'>
               <ContentItemControls
                 testId={`${name}`}
                 justifyContent={'flex-end'}
@@ -141,10 +136,7 @@ const OptionsGroupOptionsConsumer: React.FC<OptionsGroupOptionsConsumerInterface
                 }}
                 updateTitle={'Редактировать опцию'}
                 updateHandler={() => {
-                  window.open(
-                    `${ROUTE_CMS}/options/${optionsGroup._id}/options/${option._id}`,
-                    '_blank',
-                  );
+                  window.open(optionUrl, '_blank');
                 }}
                 deleteTitle={'Удалить опцию'}
                 deleteHandler={() => {

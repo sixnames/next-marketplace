@@ -45,9 +45,9 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
   const renderCategories = React.useCallback(
     (category: CategoryInterface) => {
       const { name, categories, image } = category;
-
+      const categoryUrl = `${ROUTE_CMS}/rubrics/${rubric._id}/categories/${category._id}`;
       return (
-        <div>
+        <div data-cy={`${name}`} data-url={categoryUrl}>
           {image ? (
             <div className='relative pb-[100%] w-[80px]'>
               <WpImage
@@ -87,10 +87,7 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
                 }}
                 updateTitle={'Редактировать категорию'}
                 updateHandler={() => {
-                  window.open(
-                    `${ROUTE_CMS}/rubrics/${rubric._id}/categories/${category._id}`,
-                    '_blank',
-                  );
+                  window.open(categoryUrl, '_blank');
                 }}
                 deleteTitle={'Удалить категорию'}
                 deleteHandler={() => {

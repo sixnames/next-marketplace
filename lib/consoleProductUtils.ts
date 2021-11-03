@@ -26,6 +26,7 @@ import {
   filterAttributesPipeline,
   productSeoPipeline,
   shopProductFieldsPipeline,
+  shopProductSupplierProductsPipeline,
 } from 'db/dao/constantPipelines';
 import { ObjectIdModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -52,6 +53,7 @@ import {
   getCategoryAllAttributes,
   getRubricAllAttributes,
 } from 'lib/productAttributesUtils';
+import { castSupplierProductsList } from 'lib/productUtils';
 import { generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 import { ShopAddProductsListRouteReduced } from 'pages/cms/companies/[companyId]/shops/shop/[shopId]/products/add/[...filters]';
@@ -1449,26 +1451,8 @@ export const getConsoleShopProducts = async ({
               // get shop product fields
               ...shopProductFieldsPipeline('$productId'),
 
-              // get product attributes
-              {
-                $lookup: {
-                  from: COL_PRODUCT_ATTRIBUTES,
-                  as: 'attributes',
-                  let: {
-                    productId: '$_id',
-                  },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $eq: ['$$productId', '$productId'],
-                        },
-                        viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
-                      },
-                    },
-                  ],
-                },
-              },
+              // get supplier products
+              ...shopProductSupplierProductsPipeline,
             ],
 
             // prices facet
@@ -1879,6 +1863,10 @@ export const getConsoleShopProducts = async ({
 
       docs.push({
         ...shopProduct,
+        supplierProducts: castSupplierProductsList({
+          supplierProducts: shopProduct.supplierProducts,
+          locale,
+        }),
         product: {
           ...product,
           shopsCount: shopProduct.shopsCount,

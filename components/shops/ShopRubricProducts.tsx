@@ -1,5 +1,6 @@
 import AppContentFilter from 'components/AppContentFilter';
 import Button from 'components/Button';
+import Currency from 'components/Currency';
 import FixedButtons from 'components/FixedButtons';
 import ContentItemControls from 'components/ContentItemControls';
 import FormikInput from 'components/FormElements/Input/FormikInput';
@@ -10,9 +11,7 @@ import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import Pager, { useNavigateToPageHandler } from 'components/Pager';
 import Table, { TableColumn } from 'components/Table';
 import TableRowImage from 'components/TableRowImage';
-import { ROUTE_CMS, ROUTE_CONSOLE } from 'config/common';
 import { CONFIRM_MODAL } from 'config/modalVariants';
-import { useConfigContext } from 'context/configContext';
 import { useUserContext } from 'context/userContext';
 import { ShopProductModel } from 'db/dbModels';
 import {
@@ -20,6 +19,7 @@ import {
   CatalogueFilterAttributeInterface,
   ShopInterface,
   ShopProductInterface,
+  SupplierProductInterface,
 } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import {
@@ -69,7 +69,6 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
   const { me } = useUserContext();
   const router = useRouter();
   const setPageHandler = useNavigateToPageHandler();
-  const { configs } = useConfigContext();
   const { showModal, onErrorCallback, onCompleteCallback, showLoading, showErrorNotification } =
     useMutationCallbacks({ withModal: true, reload: true });
 
@@ -95,15 +94,13 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
       accessor: 'itemId',
       headTitle: 'Арт',
       render: ({ dataItem }) => {
-        return me?.role?.isStaff ? (
+        return (
           <Link
-            href={`${ROUTE_CMS}/rubrics/${dataItem.rubricId}/products/product/${dataItem.productId}`}
+            href={`${layoutBasePath}/${shop._id}/products/product/${dataItem._id}`}
             target={'_blank'}
           >
             {dataItem.itemId}
           </Link>
-        ) : (
-          dataItem.itemId
         );
       },
     },
@@ -157,6 +154,27 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
       },
     },
     {
+      accessor: 'supplierProducts',
+      headTitle: 'Поставщики',
+      render: ({ cellData }) => {
+        const supplierProducts = (cellData || []) as SupplierProductInterface[];
+        return (
+          <div className='space-y-2'>
+            {supplierProducts.map((supplierProduct) => {
+              return (
+                <div className='flex gap-3' key={`${supplierProduct._id}`}>
+                  <div className='whitespace-nowrap'>{supplierProduct.supplier?.name}</div>
+                  <div>
+                    <Currency value={supplierProduct.recommendedPrice} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        );
+      },
+    },
+    {
       accessor: 'barcode',
       headTitle: 'Штрих-код',
       render: ({ cellData }) => {
@@ -173,23 +191,12 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
             justifyContent={'flex-end'}
             testId={`shop-product-${rowIndex}`}
             updateTitle={'Редактировать товар'}
-            updateHandler={
-              me?.role?.isStaff
-                ? () => {
-                    window.open(
-                      `${ROUTE_CMS}/rubrics/${dataItem.rubricId}/products/product/${dataItem.productId}`,
-                      '_blank',
-                    );
-                  }
-                : configs.useUniqueConstructor
-                ? () => {
-                    window.open(
-                      `${ROUTE_CONSOLE}/${router.query.companyId}/shops/shop/${router.query.shopId}/products/product/${dataItem.productId}`,
-                      '_blank',
-                    );
-                  }
-                : undefined
-            }
+            updateHandler={() => {
+              window.open(
+                `${layoutBasePath}/${shop._id}/products/product/${dataItem._id}`,
+                '_blank',
+              );
+            }}
             deleteTitle={'Удалить товар из магазина'}
             deleteHandler={() => {
               showModal<ConfirmModalInterface>({
@@ -309,7 +316,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
                         onRowDoubleClick={(dataItem) => {
                           if (me?.role?.isStaff) {
                             window.open(
-                              `${ROUTE_CMS}/rubrics/${dataItem.rubricId}/products/product/${dataItem.productId}`,
+                              `${layoutBasePath}/${shop._id}/products/product/${dataItem._id}`,
                               '_blank',
                             );
                           }

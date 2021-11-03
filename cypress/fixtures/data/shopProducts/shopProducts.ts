@@ -35,7 +35,7 @@ shops.forEach((shop) => {
         const barcode = product.barcode;
 
         shopProducts.push({
-          _id: getObjectId(`shopProduct ${shop.slug} ${product.slug} ${barcode}`),
+          _id: getObjectId(`shopProduct ${shop.slug} ${product.slug}`),
           barcode,
           productId,
           shopId: shop._id,

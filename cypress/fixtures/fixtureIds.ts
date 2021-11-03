@@ -4,9 +4,17 @@ export const fixtureIds = {
   companyB: 'df129750c1931a2cee0eb789',
 
   // shops
+  shopA: 'bbc3ef381b3ace0baedc8459',
   shopB: '7eaef2134e8f5f1f5af22a37',
   shopC: '6905de65e5567a92a5dff7a7',
 
   // rubrics
+  rubricWine: '7e2498e646ba5939eda457c7',
   rubricChampagne: '63c19173a47d7857c77cb696',
+
+  // products
+  wineProductA: 'fe57c5fa310ae737a372ae95',
+
+  // shop products
+  shopAShopProduct: 'f9f0b8c4ce95ac4ea9ed1e57',
 };

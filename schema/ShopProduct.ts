@@ -1,8 +1,22 @@
+import { SUPPLIER_PRICE_VARIANT_ENUMS } from 'config/common';
 import { getUpdatedShopProductPrices } from 'lib/shopUtils';
-import { arg, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
+import { arg, enumType, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
 import { getDatabase } from 'db/mongodb';
-import { COL_PRODUCTS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
-import { ProductModel, ShopModel, ShopProductModel, ShopProductPayloadModel } from 'db/dbModels';
+import {
+  COL_PRODUCTS,
+  COL_SHOP_PRODUCTS,
+  COL_SHOPS,
+  COL_SUPPLIER_PRODUCTS,
+  COL_SUPPLIERS,
+} from 'db/collectionNames';
+import {
+  ProductModel,
+  ShopModel,
+  ShopProductModel,
+  ShopProductPayloadModel,
+  SupplierModel,
+  SupplierProductModel,
+} from 'db/dbModels';
 import {
   getOperationPermission,
   getRequestParams,
@@ -107,6 +121,37 @@ export const UpdateShopProductInput = inputObjectType({
   },
 });
 
+export const SupplierPriceVariant = enumType({
+  name: 'SupplierPriceVariant',
+  members: SUPPLIER_PRICE_VARIANT_ENUMS,
+  description: 'SupplierPriceVariant variant enum.',
+});
+
+export const AddShopProductSupplierInput = inputObjectType({
+  name: 'AddShopProductSupplierInput',
+  definition(t) {
+    t.nonNull.objectId('shopProductId');
+    t.nonNull.objectId('supplierId');
+    t.nonNull.int('price');
+    t.nonNull.int('percent');
+    t.nonNull.field('variant', {
+      type: 'SupplierPriceVariant',
+    });
+  },
+});
+
+export const UpdateShopProductSupplierInput = inputObjectType({
+  name: 'UpdateShopProductSupplierInput',
+  definition(t) {
+    t.nonNull.objectId('supplierProductId');
+    t.nonNull.int('price');
+    t.nonNull.int('percent');
+    t.nonNull.field('variant', {
+      type: 'SupplierPriceVariant',
+    });
+  },
+});
+
 export const ShopProductMutations = extendType({
   type: 'Mutation',
   definition(t) {
@@ -206,6 +251,297 @@ export const ShopProductMutations = extendType({
             success: false,
             message: getResolverErrorMessage(e),
           };
+        }
+      },
+    });
+
+    // Should add shop products supplier
+    t.nonNull.field('addShopProductSupplier', {
+      type: 'ShopProductPayload',
+      description: 'Should add shop products supplier',
+      args: {
+        input: nonNull(
+          arg({
+            type: 'AddShopProductSupplierInput',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<ShopProductPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+        const suppliersCollection = db.collection<SupplierModel>(COL_SUPPLIERS);
+        const supplierProductsCollection =
+          db.collection<SupplierProductModel>(COL_SUPPLIER_PRODUCTS);
+
+        const session = client.startSession();
+
+        let mutationPayload: ShopProductPayloadModel = {
+          success: false,
+          message: await getApiMessage('shopProducts.update.error'),
+        };
+
+        try {
+          await session.withTransaction(async () => {
+            // permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'updateShopProduct',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            const { input } = args;
+
+            // get shop product
+            const shopProduct = await shopProductsCollection.findOne({
+              _id: input.shopProductId,
+            });
+            if (!shopProduct) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('shopProducts.update.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // get supplier
+            const supplier = await suppliersCollection.findOne({
+              _id: input.supplierId,
+            });
+            if (!supplier) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('shopProducts.update.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // check if supplier product already exist
+            const existingSupplierProduct = await supplierProductsCollection.findOne({
+              supplierId: input.supplierId,
+              shopProductId: input.shopProductId,
+            });
+            if (existingSupplierProduct) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('shopProducts.update.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // create supplier product
+            const createdSupplierProductResult = await supplierProductsCollection.insertOne({
+              shopProductId: shopProduct._id,
+              supplierId: supplier._id,
+              percent: input.percent,
+              price: input.price,
+              variant: input.variant,
+              companyId: shopProduct.companyId,
+              shopId: shopProduct.shopId,
+            });
+            if (!createdSupplierProductResult.acknowledged) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('shopProducts.update.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('shopProducts.update.success'),
+            };
+          });
+
+          return mutationPayload;
+        } catch (e) {
+          console.log(e);
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        } finally {
+          await session.endSession();
+        }
+      },
+    });
+
+    // Should update shop products supplier
+    t.nonNull.field('updateShopProductSupplier', {
+      type: 'ShopProductPayload',
+      description: 'Should update shop products supplier',
+      args: {
+        input: nonNull(
+          arg({
+            type: 'UpdateShopProductSupplierInput',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<ShopProductPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const supplierProductsCollection =
+          db.collection<SupplierProductModel>(COL_SUPPLIER_PRODUCTS);
+
+        const session = client.startSession();
+
+        let mutationPayload: ShopProductPayloadModel = {
+          success: false,
+          message: await getApiMessage('shopProducts.update.error'),
+        };
+
+        try {
+          await session.withTransaction(async () => {
+            // permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'updateShopProduct',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            const { input } = args;
+            const { supplierProductId, ...values } = input;
+
+            // get supplier product
+            const supplierProduct = await supplierProductsCollection.findOne({
+              _id: supplierProductId,
+            });
+            if (!supplierProduct) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('shopProducts.update.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // create supplier product
+            const updatedSupplierProductResult = await supplierProductsCollection.findOneAndUpdate(
+              {
+                _id: supplierProduct._id,
+              },
+              {
+                $set: {
+                  percent: values.percent,
+                  price: values.price,
+                  variant: values.variant,
+                },
+              },
+            );
+            if (!updatedSupplierProductResult.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('shopProducts.update.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('shopProducts.update.success'),
+            };
+          });
+
+          return mutationPayload;
+        } catch (e) {
+          console.log(e);
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        } finally {
+          await session.endSession();
+        }
+      },
+    });
+
+    // Should delete shop products supplier
+    t.nonNull.field('deleteShopProductSupplier', {
+      type: 'ShopProductPayload',
+      description: 'Should delete shop products supplier',
+      args: {
+        _id: nonNull(
+          arg({
+            type: 'ObjectId',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<ShopProductPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const supplierProductsCollection =
+          db.collection<SupplierProductModel>(COL_SUPPLIER_PRODUCTS);
+
+        const session = client.startSession();
+
+        let mutationPayload: ShopProductPayloadModel = {
+          success: false,
+          message: await getApiMessage('shopProducts.update.error'),
+        };
+
+        try {
+          await session.withTransaction(async () => {
+            // permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'updateShopProduct',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // create supplier product
+            const removedSupplierProductResult = await supplierProductsCollection.findOneAndDelete({
+              _id: args._id,
+            });
+            if (!removedSupplierProductResult.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('shopProducts.update.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('shopProducts.update.success'),
+            };
+          });
+
+          return mutationPayload;
+        } catch (e) {
+          console.log(e);
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        } finally {
+          await session.endSession();
         }
       },
     });

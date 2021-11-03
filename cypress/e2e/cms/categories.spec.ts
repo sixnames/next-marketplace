@@ -33,7 +33,7 @@ describe('Categories', () => {
     cy.getByCy(`category-${childCategoryName}`).should('exist');
 
     // Should update top level category
-    cy.getByCy(`${categoryName}-update`).click();
+    cy.visitBlank(categoryName);
     cy.wait(1500);
     cy.getByCy('category-details').should('exist');
     cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).clear().type(categoryNewName);

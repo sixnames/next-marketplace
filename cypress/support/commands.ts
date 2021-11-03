@@ -35,6 +35,14 @@ Cypress.Commands.add('getByCy', (testId) => {
   cy.get(`[data-cy="${testId}"]`);
 });
 
+Cypress.Commands.add('visitBlank', (testId) => {
+  cy.getByCy(testId)
+    .first()
+    .then((el: any) => {
+      cy.visit(el.data('url'));
+    });
+});
+
 Cypress.Commands.add('shouldSuccess', (log?: string) => {
   if (log) {
     cy.log(log);

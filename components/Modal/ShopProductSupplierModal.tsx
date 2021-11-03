@@ -45,7 +45,7 @@ const ShopProductSupplierModal: React.FC<ShopProductSupplierModalInterface> = ({
 
   if (suppliers.length < 1) {
     return (
-      <ModalFrame testId={'add-shop-product-supplier-modal'}>
+      <ModalFrame testId={'shop-product-supplier-modal'}>
         <ModalTitle>Добавление поставщика</ModalTitle>
         <ModalText>Использованны высе доступные поставщики</ModalText>
       </ModalFrame>
@@ -61,7 +61,7 @@ const ShopProductSupplierModal: React.FC<ShopProductSupplierModalInterface> = ({
   };
 
   return (
-    <ModalFrame testId={'add-shop-product-supplier-modal'}>
+    <ModalFrame testId={'shop-product-supplier-modal'}>
       <ModalTitle>{supplierProduct ? 'Обновление' : 'Добавление'} поставщика</ModalTitle>
       <Formik<AddShopProductSupplierInput>
         enableReinitialize

@@ -43,6 +43,10 @@ Cypress.Commands.add('visitBlank', (testId) => {
     });
 });
 
+Cypress.Commands.add('visitLinkHref', (testId) => {
+  cy.get(`[data-cy="${testId}"]`).invoke('removeAttr', 'target').click();
+});
+
 Cypress.Commands.add('shouldSuccess', (log?: string) => {
   if (log) {
     cy.log(log);

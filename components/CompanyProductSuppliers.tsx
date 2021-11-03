@@ -75,6 +75,7 @@ const CompanyProductSuppliers: React.FC<CompanyProductSuppliersInterface> = ({
                 showModal<ConfirmModalInterface>({
                   variant: CONFIRM_MODAL,
                   props: {
+                    testId: 'delete-shop-product-supplier-modal',
                     message: `Вы уверенны, что хотите удалить поствщика ${dataItem.supplier?.name}?`,
                     confirm: () => {
                       showLoading();
@@ -111,6 +112,7 @@ const CompanyProductSuppliers: React.FC<CompanyProductSuppliersInterface> = ({
         <Table<SupplierProductInterface>
           columns={columns}
           data={shopProduct.supplierProducts}
+          testIdKey={'supplier.name'}
           onRowDoubleClick={(dataItem) => {
             showModal<ShopProductSupplierModalInterface>({
               variant: SHOP_PRODUCT_SUPPLIER_MODAL,

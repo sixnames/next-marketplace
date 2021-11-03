@@ -1,16 +1,14 @@
 import { ROUTE_CMS } from 'config/common';
+import { fixtureIds } from 'cypress/fixtures/fixtureIds';
 
 describe('Rubric products', () => {
   beforeEach(() => {
-    cy.testAuth(`${ROUTE_CMS}/rubrics`);
+    cy.testAuth(
+      `${ROUTE_CMS}/rubrics/${fixtureIds.rubricWine}/products/product/${fixtureIds.wineProductA}/connections`,
+    );
   });
 
   it('Should CRUD product connections', () => {
-    cy.getByCy(`Вино-update`).click();
-    cy.getByCy('rubric-products-list').should('exist');
-    cy.getByCy('product-link-0').click();
-    cy.wait(1500);
-    cy.getByCy('connections').click();
     cy.getByCy('product-connections-list').should('exist');
     cy.getByCy('create-connection').click();
     cy.getByCy('create-connection-modal').should('exist');
@@ -26,18 +24,12 @@ describe('Rubric products', () => {
     cy.wait(1500);
 
     // delete first product
-    cy.getByCy('Объем-connection-list-0-row').then(($row: any) => {
-      const button = $row.find('button');
-      cy.wrap(button).click();
-    });
+    cy.getByCy('0-0-delete').click();
     cy.getByCy('confirm').click();
     cy.wait(1500);
 
     // delete second product
-    cy.getByCy('Объем-connection-list-0-row').then(($row: any) => {
-      const button = $row.find('button');
-      cy.wrap(button).click();
-    });
+    cy.getByCy('0-0-delete').click();
     cy.getByCy('confirm').click();
     cy.wait(1500);
 

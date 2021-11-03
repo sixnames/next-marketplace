@@ -20,6 +20,7 @@ declare namespace Cypress {
      */
     getByCy(testId: string): Chainable<Element>;
     visitBlank(testId: string): Chainable<Element>;
+    visitLinkHref(testId: string): Chainable<Element>;
     shouldSuccess(log?: string): void;
     shouldError(log?: string): void;
     shouldNotError(): void;

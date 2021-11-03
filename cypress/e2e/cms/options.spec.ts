@@ -48,12 +48,7 @@ describe('Options', () => {
     cy.visit(`${ROUTE_CMS}/options`);
     cy.getByCy(`Тип вина-update`).click();
     cy.wait(1500);
-    cy.getByCy(`Крепленое-option`).click();
-    cy.get('[data-cy="Крепленое-option"]')
-      .first()
-      .then((el: any) => {
-        cy.visit(`${ROUTE_CMS}/options/${el.data('group-id')}/options/${el.data('id')}`);
-      });
+    cy.visitBlank('Крепленое');
     cy.wait(1500);
     cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).clear().type(optionNewName);
     cy.getByCy(`option-color`).invoke('val', optionNewColor).trigger('change');

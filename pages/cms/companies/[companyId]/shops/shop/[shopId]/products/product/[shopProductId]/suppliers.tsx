@@ -3,14 +3,20 @@ import ContentItemControls from 'components/ContentItemControls';
 import Currency from 'components/Currency';
 import FixedButtons from 'components/FixedButtons';
 import Inner from 'components/Inner';
+import { ShopProductSupplierModalInterface } from 'components/Modal/ShopProductSupplierModal';
 import Percent from 'components/Percent';
 import RequestError from 'components/RequestError';
 import Table, { TableColumn } from 'components/Table';
-import { ROUTE_CMS } from 'config/common';
-import { ShopProductInterface, SupplierProductInterface } from 'db/uiInterfaces';
+import { ROUTE_CMS, SORT_ASC } from 'config/common';
+import { SHOP_PRODUCT_SUPPLIER_MODAL } from 'config/modalVariants';
+import { useAppContext } from 'context/appContext';
+import { COL_SUPPLIERS } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
+import { ShopProductInterface, SupplierInterface, SupplierProductInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsLayout from 'layout/cms/CmsLayout';
 import ConsoleShopProductLayout from 'layout/console/ConsoleShopProductLayout';
+import { getFieldStringLocale } from 'lib/i18n';
 import { getConsoleShopProduct } from 'lib/productUtils';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
@@ -19,10 +25,13 @@ import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
 interface ProductDetailsInterface {
   shopProduct: ShopProductInterface;
+  suppliers: SupplierInterface[];
 }
 
-const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct }) => {
+const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct, suppliers }) => {
   const { product, shop, company } = shopProduct;
+  const { showModal } = useAppContext();
+
   if (!product || !shop || !company) {
     return <RequestError />;
   }
@@ -129,7 +138,13 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct }) => {
             testId={'add-supplier'}
             size={'small'}
             onClick={() => {
-              console.log('create');
+              showModal<ShopProductSupplierModalInterface>({
+                variant: SHOP_PRODUCT_SUPPLIER_MODAL,
+                props: {
+                  suppliers,
+                  shopProduct,
+                },
+              });
             }}
           >
             Добавить поставщика
@@ -142,10 +157,10 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct }) => {
 
 interface ProductPageInterface extends PagePropsInterface, ProductDetailsInterface {}
 
-const Product: NextPage<ProductPageInterface> = ({ pageUrls, shopProduct }) => {
+const Product: NextPage<ProductPageInterface> = ({ pageUrls, shopProduct, suppliers }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <ProductDetails shopProduct={shopProduct} />
+      <ProductDetails shopProduct={shopProduct} suppliers={suppliers} />
     </CmsLayout>
   );
 };
@@ -156,15 +171,18 @@ export const getServerSideProps = async (
   const { query } = context;
   const { shopProductId, companyId, shopId } = query;
   const { props } = await getAppInitialData({ context });
+  const { db } = await getDatabase();
+  const suppliersCollection = db.collection<SupplierInterface>(COL_SUPPLIERS);
   if (!props || !shopProductId || !companyId || !shopId) {
     return {
       notFound: true,
     };
   }
 
+  const locale = props.sessionLocale;
   const shopProduct = await getConsoleShopProduct({
     shopProductId,
-    locale: props.sessionLocale,
+    locale,
   });
   if (!shopProduct) {
     return {
@@ -172,10 +190,45 @@ export const getServerSideProps = async (
     };
   }
 
+  const selectedSupplierIds = (shopProduct.supplierProducts || []).map(({ supplierId }) => {
+    return supplierId;
+  });
+  const excludedIdsStage =
+    selectedSupplierIds.length > 0
+      ? [
+          {
+            $match: {
+              _id: {
+                $nin: selectedSupplierIds,
+              },
+            },
+          },
+        ]
+      : [];
+
+  const suppliersAggregation = await suppliersCollection
+    .aggregate<SupplierInterface>([
+      ...excludedIdsStage,
+      {
+        $sort: {
+          [`nameI18n.${locale}`]: SORT_ASC,
+        },
+      },
+    ])
+    .toArray();
+
+  const suppliers = suppliersAggregation.map((supplier) => {
+    return {
+      ...supplier,
+      name: getFieldStringLocale(supplier.nameI18n, locale),
+    };
+  });
+
   return {
     props: {
       ...props,
       shopProduct: castDbData(shopProduct),
+      suppliers: castDbData(suppliers),
     },
   };
 };

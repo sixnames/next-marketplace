@@ -1,3 +1,4 @@
+import { getFieldStringLocale } from 'lib/i18n';
 import {
   DEFAULT_LOCALE,
   SECONDARY_LOCALE,
@@ -11,6 +12,7 @@ export const DEFAULT_LAYOUT = 'default';
 export interface ConstantOptionInterface {
   _id: string;
   nameI18n: TranslationModel;
+  name?: string | null;
 }
 
 export type ConstantOptionsType = ConstantOptionInterface[];
@@ -91,6 +93,15 @@ export const CATALOGUE_FILTER_LAYOUT_OPTIONS: LayoutOptionsType = [
     asset: `/layout/catalogue-filter/${CATALOGUE_FILTER_LAYOUT_CHECKBOX_TREE}.png`,
   },
 ];
+
+export function getConstantOptions(options: ConstantOptionsType, locale: string) {
+  return options.map((option) => {
+    return {
+      ...option,
+      name: getFieldStringLocale(option.nameI18n, locale),
+    };
+  });
+}
 
 // supplier price variant
 export const SUPPLIER_PRICE_VARIANT_OPTIONS: ConstantOptionsType = [

@@ -108,6 +108,7 @@ const ShopProductSupplierModal: React.FC<ShopProductSupplierModalInterface> = ({
                 options={suppliers}
                 isRequired
                 showInlineError
+                useIdField
               />
 
               <FormikSelect

@@ -1,7 +1,13 @@
+import Button from 'components/Button';
+import ContentItemControls from 'components/ContentItemControls';
+import Currency from 'components/Currency';
+import FixedButtons from 'components/FixedButtons';
 import Inner from 'components/Inner';
+import Percent from 'components/Percent';
 import RequestError from 'components/RequestError';
+import Table, { TableColumn } from 'components/Table';
 import { ROUTE_CMS } from 'config/common';
-import { ShopProductInterface } from 'db/uiInterfaces';
+import { ShopProductInterface, SupplierProductInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsLayout from 'layout/cms/CmsLayout';
 import ConsoleShopProductLayout from 'layout/console/ConsoleShopProductLayout';
@@ -61,7 +67,52 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct }) => {
     ],
   };
 
-  console.log(shopProduct.supplierProducts);
+  const columns: TableColumn<SupplierProductInterface>[] = [
+    {
+      headTitle: 'Название',
+      accessor: 'supplier.name',
+      render: ({ cellData }) => cellData,
+    },
+    {
+      headTitle: 'Тип формирования цены',
+      accessor: 'variant',
+      render: ({ cellData }) => cellData,
+    },
+    {
+      headTitle: 'Цена',
+      accessor: 'price',
+      render: ({ cellData }) => <Currency value={cellData} />,
+    },
+    {
+      headTitle: 'Процент',
+      accessor: 'percent',
+      render: ({ cellData }) => <Percent value={cellData} />,
+    },
+    {
+      headTitle: 'Рекоммендованная цена',
+      accessor: 'recommendedPrice',
+      render: ({ cellData }) => <Currency value={cellData} />,
+    },
+    {
+      render: ({ dataItem }) => {
+        return (
+          <div className='flex justify-end'>
+            <ContentItemControls
+              testId={`${dataItem.supplier?.name}`}
+              deleteTitle={'Удалить поставщика'}
+              deleteHandler={() => {
+                console.log('delete');
+              }}
+              updateTitle={'Редактировать поставщика'}
+              updateHandler={() => {
+                console.log('update');
+              }}
+            />
+          </div>
+        );
+      },
+    },
+  ];
 
   return (
     <ConsoleShopProductLayout
@@ -69,10 +120,21 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct }) => {
       shopProduct={shopProduct}
       basePath={`${companyBasePath}/shops/shop/${shopProduct.shopId}/products/product`}
     >
-      <Inner testId={'shop-product-shuppliers-list'}>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. A cupiditate nobis provident qui,
-        quisquam temporibus ut vel. Aspernatur, commodi dolore eaque eos ex explicabo iusto, natus
-        quae, quasi rem vero?
+      <Inner testId={'shop-product-suppliers-list'}>
+        <div className='overflow-x-auto overflow-y-hidden'>
+          <Table<SupplierProductInterface> columns={columns} data={shopProduct.supplierProducts} />
+        </div>
+        <FixedButtons>
+          <Button
+            testId={'add-supplier'}
+            size={'small'}
+            onClick={() => {
+              console.log('create');
+            }}
+          >
+            Добавить поставщика
+          </Button>
+        </FixedButtons>
       </Inner>
     </ConsoleShopProductLayout>
   );

@@ -1184,6 +1184,11 @@ type Mutation {
   deleteShopFromCompany(input: DeleteShopFromCompanyInput!): CompanyPayload!
 
   """
+  Should delete shop products supplier
+  """
+  deleteShopProductSupplier(_id: ObjectId!): ShopProductPayload!
+
+  """
   Should delete supplier
   """
   deleteSupplier(_id: ObjectId!): SupplierPayload!
@@ -1412,6 +1417,11 @@ type Mutation {
   Should update shop asset index
   """
   updateShopAssetIndex(input: UpdateShopAssetIndexInput!): ShopPayload!
+
+  """
+  Should update shop products supplier
+  """
+  updateShopProductSupplier(input: UpdateShopProductSupplierInput!): ShopProductPayload!
 
   """
   Should update supplier
@@ -2703,6 +2713,13 @@ input UpdateShopProductInput {
   price: Int!
   productId: ObjectId!
   shopProductId: ObjectId!
+}
+
+input UpdateShopProductSupplierInput {
+  percent: Int!
+  price: Int!
+  supplierProductId: ObjectId!
+  variant: SupplierPriceVariant!
 }
 
 input UpdateSupplierInput {

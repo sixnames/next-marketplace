@@ -2,17 +2,20 @@ import Button from 'components/Button';
 import ContentItemControls from 'components/ContentItemControls';
 import Currency from 'components/Currency';
 import FixedButtons from 'components/FixedButtons';
+import { SelectOptionInterface } from 'components/FormElements/Select/Select';
 import Inner from 'components/Inner';
+import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { ShopProductSupplierModalInterface } from 'components/Modal/ShopProductSupplierModal';
 import Percent from 'components/Percent';
 import RequestError from 'components/RequestError';
 import Table, { TableColumn } from 'components/Table';
 import { ROUTE_CMS, SORT_ASC } from 'config/common';
-import { SHOP_PRODUCT_SUPPLIER_MODAL } from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
+import { CONFIRM_MODAL, SHOP_PRODUCT_SUPPLIER_MODAL } from 'config/modalVariants';
 import { COL_SUPPLIERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { ShopProductInterface, SupplierInterface, SupplierProductInterface } from 'db/uiInterfaces';
+import { useDeleteShopProductSupplierMutation } from 'generated/apolloComponents';
+import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsLayout from 'layout/cms/CmsLayout';
 import ConsoleShopProductLayout from 'layout/console/ConsoleShopProductLayout';
@@ -25,12 +28,23 @@ import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
 interface ProductDetailsInterface {
   shopProduct: ShopProductInterface;
-  suppliers: SupplierInterface[];
+  suppliers: SelectOptionInterface[];
+  disableAddSupplier: boolean;
 }
 
-const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct, suppliers }) => {
+const ProductDetails: React.FC<ProductDetailsInterface> = ({
+  shopProduct,
+  disableAddSupplier,
+  suppliers,
+}) => {
   const { product, shop, company } = shopProduct;
-  const { showModal } = useAppContext();
+  const { onCompleteCallback, onErrorCallback, showModal, showLoading } = useMutationCallbacks({
+    reload: true,
+  });
+  const [deleteShopProductSupplierMutation] = useDeleteShopProductSupplierMutation({
+    onCompleted: (data) => onCompleteCallback(data.deleteShopProductSupplier),
+    onError: onErrorCallback,
+  });
 
   if (!product || !shop || !company) {
     return <RequestError />;
@@ -110,11 +124,31 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct, suppli
               testId={`${dataItem.supplier?.name}`}
               deleteTitle={'Удалить поставщика'}
               deleteHandler={() => {
-                console.log('delete');
+                showModal<ConfirmModalInterface>({
+                  variant: CONFIRM_MODAL,
+                  props: {
+                    message: `Вы уверенны, что хотите удалить поствщика ${dataItem.supplier?.name}?`,
+                    confirm: () => {
+                      showLoading();
+                      deleteShopProductSupplierMutation({
+                        variables: {
+                          _id: dataItem._id,
+                        },
+                      }).catch(console.log);
+                    },
+                  },
+                });
               }}
               updateTitle={'Редактировать поставщика'}
               updateHandler={() => {
-                console.log('update');
+                showModal<ShopProductSupplierModalInterface>({
+                  variant: SHOP_PRODUCT_SUPPLIER_MODAL,
+                  props: {
+                    suppliers,
+                    supplierProduct: dataItem,
+                    shopProduct,
+                  },
+                });
               }}
             />
           </div>
@@ -131,10 +165,24 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct, suppli
     >
       <Inner testId={'shop-product-suppliers-list'}>
         <div className='overflow-x-auto overflow-y-hidden'>
-          <Table<SupplierProductInterface> columns={columns} data={shopProduct.supplierProducts} />
+          <Table<SupplierProductInterface>
+            columns={columns}
+            data={shopProduct.supplierProducts}
+            onRowDoubleClick={(dataItem) => {
+              showModal<ShopProductSupplierModalInterface>({
+                variant: SHOP_PRODUCT_SUPPLIER_MODAL,
+                props: {
+                  suppliers,
+                  supplierProduct: dataItem,
+                  shopProduct,
+                },
+              });
+            }}
+          />
         </div>
         <FixedButtons>
           <Button
+            disabled={disableAddSupplier}
             testId={'add-supplier'}
             size={'small'}
             onClick={() => {
@@ -157,10 +205,10 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct, suppli
 
 interface ProductPageInterface extends PagePropsInterface, ProductDetailsInterface {}
 
-const Product: NextPage<ProductPageInterface> = ({ pageUrls, shopProduct, suppliers }) => {
+const Product: NextPage<ProductPageInterface> = ({ pageUrls, ...props }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <ProductDetails shopProduct={shopProduct} suppliers={suppliers} />
+      <ProductDetails {...props} />
     </CmsLayout>
   );
 };
@@ -193,22 +241,9 @@ export const getServerSideProps = async (
   const selectedSupplierIds = (shopProduct.supplierProducts || []).map(({ supplierId }) => {
     return supplierId;
   });
-  const excludedIdsStage =
-    selectedSupplierIds.length > 0
-      ? [
-          {
-            $match: {
-              _id: {
-                $nin: selectedSupplierIds,
-              },
-            },
-          },
-        ]
-      : [];
 
   const suppliersAggregation = await suppliersCollection
     .aggregate<SupplierInterface>([
-      ...excludedIdsStage,
       {
         $sort: {
           [`nameI18n.${locale}`]: SORT_ASC,
@@ -217,18 +252,23 @@ export const getServerSideProps = async (
     ])
     .toArray();
 
-  const suppliers = suppliersAggregation.map((supplier) => {
-    return {
+  const suppliers: SelectOptionInterface[] = suppliersAggregation.map((supplier) => {
+    const option: SelectOptionInterface = {
       ...supplier,
       name: getFieldStringLocale(supplier.nameI18n, locale),
+      disabled: selectedSupplierIds.some((_id) => _id.equals(supplier._id)),
     };
+    return option;
   });
+
+  const disabledSuppliers = suppliers.filter(({ disabled }) => disabled);
 
   return {
     props: {
       ...props,
       shopProduct: castDbData(shopProduct),
       suppliers: castDbData(suppliers),
+      disableAddSupplier: disabledSuppliers.length === suppliers.length,
     },
   };
 };

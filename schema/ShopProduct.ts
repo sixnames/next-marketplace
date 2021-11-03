@@ -140,6 +140,18 @@ export const AddShopProductSupplierInput = inputObjectType({
   },
 });
 
+export const UpdateShopProductSupplierInput = inputObjectType({
+  name: 'UpdateShopProductSupplierInput',
+  definition(t) {
+    t.nonNull.objectId('supplierProductId');
+    t.nonNull.int('price');
+    t.nonNull.int('percent');
+    t.nonNull.field('variant', {
+      type: 'SupplierPriceVariant',
+    });
+  },
+});
+
 export const ShopProductMutations = extendType({
   type: 'Mutation',
   definition(t) {
@@ -338,6 +350,175 @@ export const ShopProductMutations = extendType({
               shopId: shopProduct.shopId,
             });
             if (!createdSupplierProductResult.acknowledged) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('shopProducts.update.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('shopProducts.update.success'),
+            };
+          });
+
+          return mutationPayload;
+        } catch (e) {
+          console.log(e);
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        } finally {
+          await session.endSession();
+        }
+      },
+    });
+
+    // Should update shop products supplier
+    t.nonNull.field('updateShopProductSupplier', {
+      type: 'ShopProductPayload',
+      description: 'Should update shop products supplier',
+      args: {
+        input: nonNull(
+          arg({
+            type: 'UpdateShopProductSupplierInput',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<ShopProductPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const supplierProductsCollection =
+          db.collection<SupplierProductModel>(COL_SUPPLIER_PRODUCTS);
+
+        const session = client.startSession();
+
+        let mutationPayload: ShopProductPayloadModel = {
+          success: false,
+          message: await getApiMessage('shopProducts.update.error'),
+        };
+
+        try {
+          await session.withTransaction(async () => {
+            // permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'updateShopProduct',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            const { input } = args;
+            const { supplierProductId, ...values } = input;
+
+            // get supplier product
+            const supplierProduct = await supplierProductsCollection.findOne({
+              _id: supplierProductId,
+            });
+            if (!supplierProduct) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('shopProducts.update.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // create supplier product
+            const updatedSupplierProductResult = await supplierProductsCollection.findOneAndUpdate(
+              {
+                _id: supplierProduct._id,
+              },
+              {
+                $set: {
+                  percent: values.percent,
+                  price: values.price,
+                  variant: values.variant,
+                },
+              },
+            );
+            if (!updatedSupplierProductResult.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('shopProducts.update.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('shopProducts.update.success'),
+            };
+          });
+
+          return mutationPayload;
+        } catch (e) {
+          console.log(e);
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        } finally {
+          await session.endSession();
+        }
+      },
+    });
+
+    // Should delete shop products supplier
+    t.nonNull.field('deleteShopProductSupplier', {
+      type: 'ShopProductPayload',
+      description: 'Should delete shop products supplier',
+      args: {
+        _id: nonNull(
+          arg({
+            type: 'ObjectId',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<ShopProductPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const supplierProductsCollection =
+          db.collection<SupplierProductModel>(COL_SUPPLIER_PRODUCTS);
+
+        const session = client.startSession();
+
+        let mutationPayload: ShopProductPayloadModel = {
+          success: false,
+          message: await getApiMessage('shopProducts.update.error'),
+        };
+
+        try {
+          await session.withTransaction(async () => {
+            // permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'updateShopProduct',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // create supplier product
+            const removedSupplierProductResult = await supplierProductsCollection.findOneAndDelete({
+              _id: args._id,
+            });
+            if (!removedSupplierProductResult.ok) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('shopProducts.update.error'),

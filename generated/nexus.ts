@@ -919,6 +919,13 @@ export interface NexusGenInputs {
     productId: NexusGenScalars['ObjectId']; // ObjectId!
     shopProductId: NexusGenScalars['ObjectId']; // ObjectId!
   };
+  UpdateShopProductSupplierInput: {
+    // input type
+    percent: number; // Int!
+    price: number; // Int!
+    supplierProductId: NexusGenScalars['ObjectId']; // ObjectId!
+    variant: NexusGenEnums['SupplierPriceVariant']; // SupplierPriceVariant!
+  };
   UpdateSupplierInput: {
     // input type
     descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
@@ -1527,6 +1534,7 @@ export interface NexusGenFieldTypes {
     deleteRubricVariant: NexusGenRootTypes['RubricVariantPayload']; // RubricVariantPayload!
     deleteShopAsset: NexusGenRootTypes['ShopPayload']; // ShopPayload!
     deleteShopFromCompany: NexusGenRootTypes['CompanyPayload']; // CompanyPayload!
+    deleteShopProductSupplier: NexusGenRootTypes['ShopProductPayload']; // ShopProductPayload!
     deleteSupplier: NexusGenRootTypes['SupplierPayload']; // SupplierPayload!
     generateShopToken: NexusGenRootTypes['ShopPayload']; // ShopPayload!
     moveAttribute: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
@@ -1573,6 +1581,7 @@ export interface NexusGenFieldTypes {
     updateRubricVariant: NexusGenRootTypes['RubricVariantPayload']; // RubricVariantPayload!
     updateShop: NexusGenRootTypes['ShopPayload']; // ShopPayload!
     updateShopAssetIndex: NexusGenRootTypes['ShopPayload']; // ShopPayload!
+    updateShopProductSupplier: NexusGenRootTypes['ShopProductPayload']; // ShopProductPayload!
     updateSupplier: NexusGenRootTypes['SupplierPayload']; // SupplierPayload!
     updateVisibleCategoriesInNavDropdown: NexusGenRootTypes['ConfigPayload']; // ConfigPayload!
   };
@@ -2587,6 +2596,7 @@ export interface NexusGenFieldTypeNames {
     deleteRubricVariant: 'RubricVariantPayload';
     deleteShopAsset: 'ShopPayload';
     deleteShopFromCompany: 'CompanyPayload';
+    deleteShopProductSupplier: 'ShopProductPayload';
     deleteSupplier: 'SupplierPayload';
     generateShopToken: 'ShopPayload';
     moveAttribute: 'AttributesGroupPayload';
@@ -2633,6 +2643,7 @@ export interface NexusGenFieldTypeNames {
     updateRubricVariant: 'RubricVariantPayload';
     updateShop: 'ShopPayload';
     updateShopAssetIndex: 'ShopPayload';
+    updateShopProductSupplier: 'ShopProductPayload';
     updateSupplier: 'SupplierPayload';
     updateVisibleCategoriesInNavDropdown: 'ConfigPayload';
   };
@@ -3490,6 +3501,10 @@ export interface NexusGenArgTypes {
       // args
       input: NexusGenInputs['DeleteShopFromCompanyInput']; // DeleteShopFromCompanyInput!
     };
+    deleteShopProductSupplier: {
+      // args
+      _id: NexusGenScalars['ObjectId']; // ObjectId!
+    };
     deleteSupplier: {
       // args
       _id: NexusGenScalars['ObjectId']; // ObjectId!
@@ -3673,6 +3688,10 @@ export interface NexusGenArgTypes {
     updateShopAssetIndex: {
       // args
       input: NexusGenInputs['UpdateShopAssetIndexInput']; // UpdateShopAssetIndexInput!
+    };
+    updateShopProductSupplier: {
+      // args
+      input: NexusGenInputs['UpdateShopProductSupplierInput']; // UpdateShopProductSupplierInput!
     };
     updateSupplier: {
       // args

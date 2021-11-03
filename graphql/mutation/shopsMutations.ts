@@ -93,3 +93,21 @@ export const ADD_SHOP_PRODUCT_SUPPLIER_MUTATION = gql`
     }
   }
 `;
+
+export const UPDATE_SHOP_PRODUCT_SUPPLIER_MUTATION = gql`
+  mutation UpdateShopProductSupplier($input: UpdateShopProductSupplierInput!) {
+    updateShopProductSupplier(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
+export const DELETE_SHOP_PRODUCT_SUPPLIER_MUTATION = gql`
+  mutation DeleteShopProductSupplier($_id: ObjectId!) {
+    deleteShopProductSupplier(_id: $_id) {
+      success
+      message
+    }
+  }
+`;

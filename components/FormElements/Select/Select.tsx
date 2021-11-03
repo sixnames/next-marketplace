@@ -12,6 +12,7 @@ export interface SelectOptionInterface {
   name?: string | null;
   lastName?: string | null;
   nameI18n?: TranslationModel | null;
+  disabled?: boolean;
   [key: string]: any;
 }
 
@@ -121,7 +122,7 @@ const Select: React.FC<SelectInterface> = ({
           {...props}
         >
           {withFirstOptions.map((option) => {
-            const { _id, slug } = option;
+            const { _id, slug, disabled } = option;
             const optionName = getOptionName(option);
             let value = slug ? slug : setNameToValue ? optionName : _id;
             if (useIdField) {
@@ -130,7 +131,12 @@ const Select: React.FC<SelectInterface> = ({
             const key = _id || slug || optionName;
 
             return (
-              <option key={key} value={value} data-cy={`option-${slug || optionName}`}>
+              <option
+                key={key}
+                value={value}
+                data-cy={`option-${slug || optionName}`}
+                disabled={disabled}
+              >
                 {optionName}
               </option>
             );

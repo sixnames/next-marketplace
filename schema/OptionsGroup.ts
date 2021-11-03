@@ -827,7 +827,7 @@ export const OptionsGroupMutations = extendType({
           if (newAttributesCount < 1) {
             return {
               success: false,
-              message: 'Новая группа опций не назначена ни одному атрибуту',
+              message: await getApiMessage('optionsGroups.updateOption.attributeNotFound'),
             };
           }
 

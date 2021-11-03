@@ -1,4 +1,21 @@
+import { getFieldStringLocale } from '../lib/i18n';
+import {
+  DEFAULT_LOCALE,
+  SECONDARY_LOCALE,
+  SUPPLIER_PRICE_VARIANT_CHARGE,
+  SUPPLIER_PRICE_VARIANT_DISCOUNT,
+} from '../config/common';
+import { TranslationModel } from '../db/dbModels';
+
 export const DEFAULT_LAYOUT = 'default';
+
+export interface ConstantOptionInterface {
+  _id: string;
+  nameI18n: TranslationModel;
+  name?: string | null;
+}
+
+export type ConstantOptionsType = ConstantOptionInterface[];
 
 export interface LayoutOptionInterface {
   _id: string;
@@ -7,7 +24,7 @@ export interface LayoutOptionInterface {
 
 export type LayoutOptionsType = LayoutOptionInterface[];
 
-// card
+// card layout
 export const CARD_LAYOUT_HALF_COLUMNS = 'half-columns';
 export const CARD_LAYOUT_OPTIONS: LayoutOptionsType = [
   {
@@ -20,7 +37,7 @@ export const CARD_LAYOUT_OPTIONS: LayoutOptionsType = [
   },
 ];
 
-// nav dropdown
+// nav dropdown layout
 export const NAV_DROPDOWN_LAYOUT_OPTIONS_ONLY = 'options-only';
 export const NAV_DROPDOWN_LAYOUT_WITH_CATEGORIES = 'with-categories';
 export const NAV_DROPDOWN_LAYOUT_OPTIONS: LayoutOptionsType = [
@@ -38,7 +55,7 @@ export const NAV_DROPDOWN_LAYOUT_OPTIONS: LayoutOptionsType = [
   },
 ];
 
-// row snippet
+// row snippet layout
 export const ROW_SNIPPET_LAYOUT_BIG_IMAGE = 'big-image';
 export const ROW_SNIPPET_LAYOUT_OPTIONS: LayoutOptionsType = [
   {
@@ -51,7 +68,7 @@ export const ROW_SNIPPET_LAYOUT_OPTIONS: LayoutOptionsType = [
   },
 ];
 
-// grid snippet
+// grid snippet layout
 export const GRID_SNIPPET_LAYOUT_BIG_IMAGE = 'big-image';
 export const GRID_SNIPPET_LAYOUT_OPTIONS: LayoutOptionsType = [
   {
@@ -64,7 +81,7 @@ export const GRID_SNIPPET_LAYOUT_OPTIONS: LayoutOptionsType = [
   },
 ];
 
-// catalogue filter
+// catalogue filter layout
 export const CATALOGUE_FILTER_LAYOUT_CHECKBOX_TREE = 'checkbox-tree';
 export const CATALOGUE_FILTER_LAYOUT_OPTIONS: LayoutOptionsType = [
   {
@@ -74,5 +91,32 @@ export const CATALOGUE_FILTER_LAYOUT_OPTIONS: LayoutOptionsType = [
   {
     _id: CATALOGUE_FILTER_LAYOUT_CHECKBOX_TREE,
     asset: `/layout/catalogue-filter/${CATALOGUE_FILTER_LAYOUT_CHECKBOX_TREE}.png`,
+  },
+];
+
+export function getConstantOptions(options: ConstantOptionsType, locale: string) {
+  return options.map((option) => {
+    return {
+      ...option,
+      name: getFieldStringLocale(option.nameI18n, locale),
+    };
+  });
+}
+
+// supplier price variant
+export const SUPPLIER_PRICE_VARIANT_OPTIONS: ConstantOptionsType = [
+  {
+    _id: SUPPLIER_PRICE_VARIANT_DISCOUNT,
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'Диллерская скидка',
+      [SECONDARY_LOCALE]: 'Dealer discount',
+    },
+  },
+  {
+    _id: SUPPLIER_PRICE_VARIANT_CHARGE,
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'Диллерская наценка',
+      [SECONDARY_LOCALE]: 'Dealer charge',
+    },
   },
 ];

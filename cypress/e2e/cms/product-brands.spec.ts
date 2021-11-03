@@ -8,7 +8,7 @@ describe('Rubric products', () => {
   it('Should CRUD product brands', () => {
     cy.getByCy(`Вино-update`).click();
     cy.getByCy('rubric-products-list').should('exist');
-    cy.getByCy('product-link-0').click();
+    cy.visitLinkHref('product-link-0');
     cy.wait(1500);
     cy.getByCy('brands').click();
     cy.wait(1500);
@@ -42,15 +42,5 @@ describe('Rubric products', () => {
     cy.getByCy('options-submit').click();
     cy.wait(1500);
     cy.getByCy('manufacturer-input').should('contain', 'Manufacturer B');
-
-    // supplier
-    cy.getByCy('supplier-input-clear').click();
-    cy.wait(1500);
-    cy.getByCy('supplier-input').click();
-    cy.getByCy('supplier-options-modal').should('exist');
-    cy.getByCy('option-Supplier B').click();
-    cy.getByCy('options-submit').click();
-    cy.wait(1500);
-    cy.getByCy('supplier-input').should('contain', 'Supplier B');
   });
 });

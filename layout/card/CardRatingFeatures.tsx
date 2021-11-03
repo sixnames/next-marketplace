@@ -18,7 +18,7 @@ const CardRatingFeatures: React.FC<CardRatingFeaturesInterface> = ({
     <div className={className}>
       {ratingFeatures.length > 0 ? (
         <div className=''>
-          <div className=''>Мнение экспертов:</div>
+          <div className='text-2xl mb-4 font-medium'>Мнение экспертов:</div>
           <ul className='flex flex-wrap gap-4'>
             {ratingFeatures.map(({ _id, attribute, number }) => {
               if (!attribute) {

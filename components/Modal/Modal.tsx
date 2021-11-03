@@ -49,6 +49,7 @@ import {
   USER_CATEGORY_MODAL,
   SET_USER_CATEGORY_MODAL,
   CREATE_PROMO_MODAL,
+  SHOP_PRODUCT_SUPPLIER_MODAL,
 } from 'config/modalVariants';
 
 const AdultModal = dynamic(() => import('components/Modal/AdultModal'));
@@ -78,6 +79,7 @@ const CreateBrandModal = dynamic(() => import('components/Modal/CreateBrandModal
 const BrandCollectionModal = dynamic(() => import('components/Modal/BrandCollectionModal'));
 const ManufacturerModal = dynamic(() => import('components/Modal/ManufacturerModal'));
 const SupplierModal = dynamic(() => import('components/Modal/SupplierModal'));
+const ShopProductSupplierModal = dynamic(() => import('components/Modal/ShopProductSupplierModal'));
 const AddAssetsModal = dynamic(() => import('components/Modal/AddAssetsModal'));
 const MoveAttributeModal = dynamic(() => import('components/Modal/MoveAttributeModal'));
 const MoveOptionModal = dynamic(() => import('components/Modal/MoveOptionModal'));
@@ -171,6 +173,10 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
           {modalType === MANUFACTURER_MODAL && <ManufacturerModal {...modalProps} />}
 
           {modalType === SUPPLIER_MODAL && <SupplierModal {...modalProps} />}
+
+          {modalType === SHOP_PRODUCT_SUPPLIER_MODAL && (
+            <ShopProductSupplierModal {...modalProps} />
+          )}
 
           {modalType === BRAND_OPTIONS_MODAL && <BrandOptionsModal {...modalProps} />}
 

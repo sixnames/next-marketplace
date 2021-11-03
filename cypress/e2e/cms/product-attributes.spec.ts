@@ -8,7 +8,7 @@ describe('Product products', () => {
   it('Should CRUD product attributes', () => {
     cy.getByCy(`Вино-update`).click();
     cy.getByCy('rubric-products-list').should('exist');
-    cy.getByCy('product-link-0').click();
+    cy.visitLinkHref('product-link-0');
     cy.wait(1500);
     cy.getByCy('product-details').should('exist');
     cy.getByCy('attributes').click();

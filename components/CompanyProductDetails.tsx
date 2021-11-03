@@ -24,6 +24,7 @@ export interface CompanyProductDetailsInterface {
 const CompanyProductDetails: React.FC<CompanyProductDetailsInterface> = ({
   product,
   currentCompany,
+  children,
 }) => {
   const { setReloadToTrue } = useReloadListener();
   const validationSchema = useValidationSchema({
@@ -65,6 +66,18 @@ const CompanyProductDetails: React.FC<CompanyProductDetailsInterface> = ({
 
   return (
     <Inner testId={'product-details'}>
+      <div className='relative w-[15rem] h-[15rem] mb-8'>
+        <WpImage
+          url={mainImage}
+          alt={originalName}
+          title={originalName}
+          width={120}
+          className='absolute inset-0 w-full h-full object-contain'
+        />
+      </div>
+
+      {children}
+
       <Formik
         enableReinitialize
         validationSchema={validationSchema}
@@ -87,16 +100,6 @@ const CompanyProductDetails: React.FC<CompanyProductDetailsInterface> = ({
         {() => {
           return (
             <Form noValidate>
-              <div className='relative w-[15rem] h-[15rem] mb-8'>
-                <WpImage
-                  url={mainImage}
-                  alt={originalName}
-                  title={originalName}
-                  width={120}
-                  className='absolute inset-0 w-full h-full object-contain'
-                />
-              </div>
-
               <FormikTranslationsInput
                 variant={'textarea'}
                 className='h-[30rem]'

@@ -8,7 +8,7 @@ describe('Product categories', () => {
   it('Should CRUD product categories', () => {
     cy.getByCy(`Виски-update`).click();
     cy.getByCy('rubric-products-list').should('exist');
-    cy.getByCy('product-link-0').click();
+    cy.visitLinkHref('product-link-0');
     cy.wait(1500);
 
     // check attributes from category

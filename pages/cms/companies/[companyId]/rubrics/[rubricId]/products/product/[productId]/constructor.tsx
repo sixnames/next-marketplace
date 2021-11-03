@@ -142,7 +142,6 @@ export const getServerSideProps = async (
     productId: product._id,
     companySlug,
   });
-
   if (!cardContent) {
     cardContent = {
       _id: new ObjectId(),

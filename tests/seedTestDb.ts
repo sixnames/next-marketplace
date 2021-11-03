@@ -24,7 +24,7 @@ function prepareTestAssets() {
   });
 
   const src = './cypress/fixtures/assets';
-  const dist = './public/assets';
+  const dist = './assets';
   rimraf(dist, (e: any) => {
     if (e) {
       console.log(e);

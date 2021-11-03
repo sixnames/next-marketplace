@@ -82,6 +82,14 @@ input AddProductToShopInput {
   shopId: ObjectId!
 }
 
+input AddShopProductSupplierInput {
+  percent: Int!
+  price: Int!
+  shopProductId: ObjectId!
+  supplierId: ObjectId!
+  variant: SupplierPriceVariant!
+}
+
 input AddShopToCartProductInput {
   cartProductId: ObjectId!
   shopProductId: ObjectId!
@@ -909,6 +917,11 @@ type Mutation {
   addProductToConnection(input: AddProductToConnectionInput!): ProductPayload!
 
   """
+  Should add shop products supplier
+  """
+  addShopProductSupplier(input: AddShopProductSupplierInput!): ShopProductPayload!
+
+  """
   Should add shop to the cart product
   """
   addShopToCartProduct(input: AddShopToCartProductInput!): CartPayload!
@@ -1171,6 +1184,11 @@ type Mutation {
   deleteShopFromCompany(input: DeleteShopFromCompanyInput!): CompanyPayload!
 
   """
+  Should delete shop products supplier
+  """
+  deleteShopProductSupplier(_id: ObjectId!): ShopProductPayload!
+
+  """
   Should delete supplier
   """
   deleteSupplier(_id: ObjectId!): SupplierPayload!
@@ -1399,6 +1417,11 @@ type Mutation {
   Should update shop asset index
   """
   updateShopAssetIndex(input: UpdateShopAssetIndexInput!): ShopPayload!
+
+  """
+  Should update shop products supplier
+  """
+  updateShopProductSupplier(input: UpdateShopProductSupplierInput!): ShopProductPayload!
 
   """
   Should update supplier
@@ -2294,6 +2317,14 @@ type SupplierPayload implements Payload {
   success: Boolean!
 }
 
+"""
+SupplierPriceVariant variant enum.
+"""
+enum SupplierPriceVariant {
+  charge
+  discount
+}
+
 type SuppliersAlphabetList implements AlphabetList {
   docs: [Supplier!]!
   letter: String!
@@ -2682,6 +2713,13 @@ input UpdateShopProductInput {
   price: Int!
   productId: ObjectId!
   shopProductId: ObjectId!
+}
+
+input UpdateShopProductSupplierInput {
+  percent: Int!
+  price: Int!
+  supplierProductId: ObjectId!
+  variant: SupplierPriceVariant!
 }
 
 input UpdateSupplierInput {

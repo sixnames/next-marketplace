@@ -268,14 +268,18 @@ export async function getCatalogueAttributes({
       }
     }
 
-    const isSelected = realFilter.includes(optionSlug);
+    let isSelected = realFilter.includes(optionSlug);
     const nestedOptions = (option.options || []).map((nestedOption) => {
-      return filterSelectedOptions({
+      const child = filterSelectedOptions({
         isBrand,
         currentBrand: brand,
         option: nestedOption,
         attributeSlug: isBrand ? FILTER_BRAND_COLLECTION_KEY : attributeSlug,
       });
+      if (child?.isSelected) {
+        isSelected = true;
+      }
+      return child;
     });
 
     const filteredNestedOptions = filterOptionsList(nestedOptions);
@@ -283,6 +287,7 @@ export async function getCatalogueAttributes({
     if (isSelected) {
       return {
         ...option,
+        isSelected,
         options: filteredNestedOptions,
       };
     }
@@ -300,7 +305,7 @@ export async function getCatalogueAttributes({
     // check if selected
     const metricName = getFieldStringLocale(attribute.metric?.nameI18n, locale);
     const castedSlug = `${attribute.slug}${FILTER_SEPARATOR}${option.slug}`;
-    const isSelected = realFilter.includes(castedSlug);
+    let isSelected = realFilter.includes(castedSlug);
     let optionName = getFieldStringLocale(option.nameI18n, locale);
     if (rubricGender) {
       const optionVariantGender = option.variants[rubricGender];
@@ -311,14 +316,6 @@ export async function getCatalogueAttributes({
         optionName = getFieldStringLocale(option.nameI18n, locale);
       }
     }
-
-    const optionNextSlug = isSelected
-      ? [...realFilter]
-          .filter((pathArg) => {
-            return pathArg !== castedSlug;
-          })
-          .join('/')
-      : [...realFilter, castedSlug].join('/');
 
     const isCategory = attribute.slug === FILTER_CATEGORY_KEY;
     const isBrand = attribute.slug === FILTER_BRAND_KEY;
@@ -341,9 +338,20 @@ export async function getCatalogueAttributes({
           option: nestedOption,
           attribute,
         });
+        if (castedOption.isSelected) {
+          isSelected = true;
+        }
         nestedOptions.push(castedOption);
       }
     }
+
+    const optionNextSlug = isSelected
+      ? [...realFilter]
+          .filter((pathArg) => {
+            return pathArg !== castedSlug;
+          })
+          .join('/')
+      : [...realFilter, castedSlug].join('/');
 
     const castedOption: CatalogueFilterAttributeOptionInterface = {
       _id: option._id,

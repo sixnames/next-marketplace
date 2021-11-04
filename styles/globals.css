@@ -210,10 +210,13 @@
     overflow: unset !important;
   }
 
-  @media only screen and (min-width: 1024px) {
-    div.catalogue__filter {
-      overflow: unset;
-    }
+  .catalogue__filter-scroll {
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
+  }
+
+  .catalogue__filter-scroll::-webkit-scrollbar {
+    display: none;  /* Safari and Chrome */
   }
 
   /* Grid Snippet */

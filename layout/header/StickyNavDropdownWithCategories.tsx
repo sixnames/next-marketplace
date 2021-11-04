@@ -32,7 +32,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
     <div className='flex flex-col'>
       <div
         style={attributeStyle}
-        className='flex items-center pb-1 text-secondary-text text-lg font-medium py-2'
+        className='flex items-center pb-1 text-secondary-text text-lg font-medium'
       >
         {name}
       </div>
@@ -95,7 +95,7 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
           testId={`header-nav-dropdown-option`}
           prefetch={false}
           href={`${ROUTE_CATALOGUE}/${rubricSlug}/${categoryPath}`}
-          className='flex items-center gap-3 py-2 text-secondary-text text-lg font-medium'
+          className='flex items-center gap-3 leading-snug text-secondary-text text-lg font-medium'
         >
           {icon ? (
             <span
@@ -173,7 +173,7 @@ const StickyNavDropdownWithCategories: React.FC<StickyNavDropdownInterface> = ({
               })}
             </div>
           </div>
-          <div className='grid gap-x-4 gap-y-8 grid-cols-2 pl-8 col-span-2'>
+          <div className='grid gap-x-4 gap-y-8 grid-cols-2 pl-8 col-span-2 self-start'>
             {(attributes || []).map((attribute) => {
               return (
                 <StickyNavAttribute

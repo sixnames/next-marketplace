@@ -208,6 +208,7 @@ export interface OptionInterface extends OptionModel {
   icon?: IconModel | null;
   optionsGroup?: OptionsGroupInterface | null;
   childrenCount?: number | null;
+  isSelected?: boolean;
 }
 
 export interface OptionsGroupInterface extends OptionsGroupModel {

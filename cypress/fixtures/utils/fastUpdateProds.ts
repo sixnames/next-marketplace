@@ -1,6 +1,6 @@
 import { dbsConfig, getProdDb } from './getProdDb';
-import { COL_PRODUCTS, COL_SHOP_PRODUCTS } from '../../../db/collectionNames';
-import { ProductModel, ShopProductModel } from '../../../db/dbModels';
+import { COL_ATTRIBUTES } from '../../../db/collectionNames';
+import { AttributeModel } from '../../../db/dbModels';
 
 require('dotenv').config();
 
@@ -11,17 +11,16 @@ async function updateProds() {
     console.log(' ');
     console.log(`Updating ${dbConfig.dbName} db`);
     const { db, client } = await getProdDb(dbConfig);
-    const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-    const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+    const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
 
-    const updater = {
-      $unset: {
-        supplierSlugs: '',
+    await attributesCollection.updateMany(
+      {},
+      {
+        $set: {
+          showInCatalogueTitle: true,
+        },
       },
-    };
-
-    await productsCollection.updateMany({}, updater);
-    await shopProductsCollection.updateMany({}, updater);
+    );
 
     // disconnect form db
     await client.close();

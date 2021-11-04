@@ -537,6 +537,7 @@ interface CastCatalogueFiltersPayloadInterface {
   minPrice?: number | null;
   maxPrice?: number | null;
   realFilterOptions: string[];
+  realFilterAttributes: string[];
   categoryFilters: string[];
   brandFilters: string[];
   brandCollectionFilters: string[];
@@ -571,6 +572,7 @@ export function castCatalogueFilters({
   initialLimit,
 }: CastCatalogueFiltersInterface): CastCatalogueFiltersPayloadInterface {
   const realFilterOptions: string[] = [];
+  const realFilterAttributes: string[] = [];
   const categoryFilters: string[] = [];
   const brandFilters: string[] = [];
   const brandCollectionFilters: string[] = [];
@@ -667,6 +669,7 @@ export function castCatalogueFilters({
         return;
       }
 
+      realFilterAttributes.push(filterAttributeSlug);
       realFilterOptions.push(filterOption);
     }
   });
@@ -733,6 +736,7 @@ export function castCatalogueFilters({
     minPrice,
     maxPrice,
     realFilterOptions,
+    realFilterAttributes,
     categoryFilters,
     brandFilters,
     brandCollectionFilters,
@@ -896,6 +900,7 @@ export const getCatalogueData = async ({
       brandCollectionStage,
       optionsStage,
       pricesStage,
+      realFilterAttributes,
     } = castCatalogueFilters({
       filters: input.filters,
       initialPage: input.page,
@@ -1558,9 +1563,10 @@ export const getCatalogueData = async ({
 
     // rubric attributes
     const initialAttributes = (attributes || []).reduce((acc: AttributeInterface[], attribute) => {
-      if (!attribute.showInCatalogueFilter) {
+      if (!attribute.showInCatalogueFilter && !realFilterAttributes.includes(attribute.slug)) {
         return acc;
       }
+
       return [
         ...acc,
         {

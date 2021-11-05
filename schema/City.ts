@@ -1,10 +1,10 @@
 import { arg, extendType, nonNull, objectType, stringArg } from 'nexus';
-import { getRequestParams, getSessionCity } from 'lib/sessionHelpers';
-import { CitiesPaginationPayloadModel, CityModel, CountryModel } from 'db/dbModels';
+import { getRequestParams } from 'lib/sessionHelpers';
+import { CitiesPaginationPayloadModel, CityModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { COL_CITIES, COL_COUNTRIES } from 'db/collectionNames';
+import { COL_CITIES } from 'db/collectionNames';
 import { aggregatePagination } from 'db/dao/aggregatePagination';
-import { DEFAULT_CURRENCY, SORT_DESC } from 'config/common';
+import { SORT_DESC } from 'config/common';
 
 export const City = objectType({
   name: 'City',
@@ -102,24 +102,6 @@ export const CityQueries = extendType({
         const citiesCollection = db.collection<CityModel>(COL_CITIES);
         const cities = await citiesCollection.find({}, { sort: { itemId: SORT_DESC } }).toArray();
         return cities;
-      },
-    });
-
-    // Should return currency for session locale
-    t.nonNull.field('getSessionCurrency', {
-      type: 'String',
-      description: 'Should return currency for session locale',
-      resolve: async (_root, _args, context): Promise<string> => {
-        const citySlug = getSessionCity(context);
-        const { db } = await getDatabase();
-        const citiesCollection = db.collection<CityModel>(COL_CITIES);
-        const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
-        const city = await citiesCollection.findOne({ slug: citySlug });
-        const country = await countriesCollection.findOne({ citiesIds: city?._id });
-        if (!country) {
-          return DEFAULT_CURRENCY;
-        }
-        return country.currency;
       },
     });
   },

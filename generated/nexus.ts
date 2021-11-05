@@ -1365,7 +1365,6 @@ export interface NexusGenFieldTypes {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     cities: NexusGenRootTypes['City'][]; // [City!]!
-    citiesIds: NexusGenScalars['ObjectId'][]; // [ObjectId!]!
     currency: string; // String!
     name: string; // String!
   };
@@ -1862,7 +1861,6 @@ export interface NexusGenFieldTypes {
     getRubricBySlug: NexusGenRootTypes['Rubric']; // Rubric!
     getRubricVariant: NexusGenRootTypes['RubricVariant']; // RubricVariant!
     getSessionCities: NexusGenRootTypes['City'][]; // [City!]!
-    getSessionCurrency: string; // String!
     getShop: NexusGenRootTypes['Shop']; // Shop!
     getShopBySlug: NexusGenRootTypes['Shop']; // Shop!
     getSupplier: NexusGenRootTypes['Supplier']; // Supplier!
@@ -2427,7 +2425,6 @@ export interface NexusGenFieldTypeNames {
     // field return type name
     _id: 'ObjectId';
     cities: 'City';
-    citiesIds: 'ObjectId';
     currency: 'String';
     name: 'String';
   };
@@ -2924,7 +2921,6 @@ export interface NexusGenFieldTypeNames {
     getRubricBySlug: 'Rubric';
     getRubricVariant: 'RubricVariant';
     getSessionCities: 'City';
-    getSessionCurrency: 'String';
     getShop: 'Shop';
     getShopBySlug: 'Shop';
     getSupplier: 'Supplier';

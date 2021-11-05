@@ -1,5 +1,6 @@
 import {
   ATTRIBUTE_VIEW_VARIANT_LIST,
+  DEFAULT_CURRENCY,
   FILTER_SEPARATOR,
   GENDER_HE,
   PAGINATION_DEFAULT_LIMIT,
@@ -15,6 +16,7 @@ import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_CATEGORIES,
+  COL_CITIES,
   COL_COMPANIES,
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCTS,
@@ -1336,9 +1338,20 @@ export const getConsoleShopProducts = async ({
           },
         },
         {
+          $lookup: {
+            from: COL_CITIES,
+            as: 'city',
+            foreignField: 'slug',
+            localField: 'citySlug',
+          },
+        },
+        {
           $addFields: {
             company: {
               $arrayElemAt: ['$company', 0],
+            },
+            city: {
+              $arrayElemAt: ['$city', 0],
             },
           },
         },
@@ -1361,6 +1374,7 @@ export const getConsoleShopProducts = async ({
       selectedAttributes: [],
       clearSlug: '',
       rubricName: '',
+      currency: DEFAULT_CURRENCY,
       shop,
     };
 
@@ -1878,6 +1892,7 @@ export const getConsoleShopProducts = async ({
 
     const payload: CompanyShopProductsPageInterface = {
       shop,
+      currency: shop.city?.currency || DEFAULT_CURRENCY,
       rubricName: getFieldStringLocale(rubric.nameI18n, locale),
       rubricId: rubric._id.toHexString(),
       rubricSlug: rubric.slug,

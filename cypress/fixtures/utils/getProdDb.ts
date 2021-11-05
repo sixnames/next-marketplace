@@ -9,7 +9,6 @@ import {
   CityModel,
   CompanyModel,
   ConfigModel,
-  CountryModel,
   ManufacturerModel,
   OptionModel,
   OrderCustomerModel,
@@ -44,7 +43,6 @@ import {
   COL_CITIES,
   COL_COMPANIES,
   COL_CONFIGS,
-  COL_COUNTRIES,
   COL_MANUFACTURERS,
   COL_OPTIONS,
   COL_ORDER_CUSTOMERS,
@@ -294,15 +292,11 @@ export async function updateIndexes(db: Db) {
   await configsCollection.createIndex({ companySlug: 1 });
   await configsCollection.createIndex({ companySlug: 1, group: 1 });
 
-  // Countries
-  await createCollectionIfNotExist(COL_COUNTRIES);
-  const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
-  await countriesCollection.createIndex({ citiesIds: 1 });
-
   // Cities
   await createCollectionIfNotExist(COL_CITIES);
   const citiesCollection = db.collection<CityModel>(COL_CITIES);
   await citiesCollection.createIndex({ slug: 1 });
+  await citiesCollection.createIndex({ countryId: 1 });
 
   // Companies
   await createCollectionIfNotExist(COL_COMPANIES);

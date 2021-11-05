@@ -487,7 +487,6 @@ input CopyProductInput {
 type Country {
   _id: ObjectId!
   cities: [City!]!
-  citiesIds: [ObjectId!]!
   currency: String!
   name: String!
 }
@@ -2006,11 +2005,6 @@ type Query {
   Should return cities list
   """
   getSessionCities: [City!]!
-
-  """
-  Should return currency for session locale
-  """
-  getSessionCurrency: String!
 
   """
   Should return shop by given id

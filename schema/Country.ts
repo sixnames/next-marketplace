@@ -24,7 +24,6 @@ export const Country = objectType({
     t.nonNull.objectId('_id');
     t.nonNull.string('name');
     t.nonNull.string('currency');
-    t.nonNull.list.nonNull.objectId('citiesIds');
 
     // Country cities list field resolver
     t.nonNull.list.nonNull.field('cities', {
@@ -32,7 +31,7 @@ export const Country = objectType({
       resolve: async (source) => {
         const { db } = await getDatabase();
         const citiesCollection = db.collection<CityModel>(COL_CITIES);
-        return citiesCollection.find({ _id: { $in: source.citiesIds } }).toArray();
+        return citiesCollection.find({ countryId: source._id }).toArray();
       },
     });
   },
@@ -170,10 +169,7 @@ export const CountryMutations = extendType({
           }
 
           // Create country
-          const createdCountryResult = await countriesCollection.insertOne({
-            ...input,
-            citiesIds: [],
-          });
+          const createdCountryResult = await countriesCollection.insertOne(input);
           if (!createdCountryResult.acknowledged) {
             return {
               success: false,
@@ -353,7 +349,7 @@ export const CountryMutations = extendType({
 
             // Delete all country cities
             const removedCitiesResult = await citiesCollection.deleteMany({
-              _id: { $in: country.citiesIds },
+              countryId: country._id,
             });
             if (!removedCitiesResult.acknowledged) {
               mutationPayload = {
@@ -450,7 +446,7 @@ export const CountryMutations = extendType({
               fieldArg: values.nameI18n,
               collectionName: COL_CITIES,
               additionalQuery: {
-                _id: { $in: country.citiesIds },
+                countryId: country._id,
               },
             });
             if (exist) {
@@ -465,6 +461,8 @@ export const CountryMutations = extendType({
             // Create city
             const createdCityResult = await citiesCollection.insertOne({
               ...values,
+              countryId: country._id,
+              currency: country.currency,
             });
             if (!createdCityResult.acknowledged) {
               mutationPayload = {
@@ -479,9 +477,6 @@ export const CountryMutations = extendType({
             const updatedCountryResult = await countriesCollection.findOneAndUpdate(
               { _id: countryId },
               {
-                $push: {
-                  citiesIds: createdCityResult.insertedId,
-                },
                 $set: {
                   updatedAt: new Date(),
                 },
@@ -583,7 +578,16 @@ export const CountryMutations = extendType({
             fieldArg: values.nameI18n,
             collectionName: COL_CITIES,
             additionalQuery: {
-              $and: [{ _id: { $in: country.citiesIds } }, { _id: { $ne: cityId } }],
+              $and: [
+                {
+                  countryId: country._id,
+                },
+                {
+                  _id: {
+                    $ne: cityId,
+                  },
+                },
+              ],
             },
           });
           if (exist) {
@@ -710,34 +714,9 @@ export const CountryMutations = extendType({
               return;
             }
 
-            // Update country cities list
-            const updatedCountryResult = await countriesCollection.findOneAndUpdate(
-              {
-                _id: countryId,
-              },
-              {
-                $pull: {
-                  citiesIds: cityId,
-                },
-              },
-              {
-                returnDocument: 'after',
-              },
-            );
-            const updatedCountry = updatedCountryResult.value;
-            if (!updatedCountryResult.ok || !updatedCountry) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage('cities.delete.error'),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
             mutationPayload = {
               success: true,
               message: await getApiMessage('cities.delete.success'),
-              payload: updatedCountry,
             };
           });
 

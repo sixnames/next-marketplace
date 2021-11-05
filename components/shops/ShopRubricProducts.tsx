@@ -48,6 +48,7 @@ export interface ShopRubricProductsInterface
   rubricSlug: string;
   layoutBasePath: string;
   basePath: string;
+  currency: string;
 }
 
 const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
@@ -65,6 +66,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
   rubricSlug,
   breadcrumbs,
   basePath,
+  currency,
 }) => {
   const { me } = useUserContext();
   const router = useRouter();
@@ -126,7 +128,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
       headTitle: 'Наличие',
       render: ({ rowIndex }) => {
         return (
-          <div data-cy={`${rowIndex}-available`}>
+          <div className='w-[90px]' data-cy={`${rowIndex}-available`}>
             <FormikInput
               testId={`shop-product-available-${rowIndex}`}
               name={`input[${rowIndex}].available`}
@@ -142,13 +144,14 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
       headTitle: 'Цена',
       render: ({ rowIndex }) => {
         return (
-          <div data-cy={`${rowIndex}-price`}>
+          <div className='flex items-center gap-3 w-[120px]' data-cy={`${rowIndex}-price`}>
             <FormikInput
               testId={`shop-product-price-${rowIndex}`}
               name={`input[${rowIndex}].price`}
               type={'number'}
               low
             />
+            <div>{currency}</div>
           </div>
         );
       },

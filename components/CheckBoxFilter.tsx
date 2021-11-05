@@ -6,6 +6,7 @@ import {
   CATALOGUE_FILTER_VISIBLE_OPTIONS,
   FILTER_BRAND_COLLECTION_KEY,
   FILTER_BRAND_KEY,
+  FILTER_CATEGORY_KEY,
   FILTER_PRICE_KEY,
 } from 'config/common';
 import { CATALOGUE_ADDITIONAL_OPTIONS_MODAL } from 'config/modalVariants';
@@ -164,6 +165,7 @@ const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
               props: {
                 attributeSlug: attribute.slug,
                 notShowAsAlphabet: attribute.notShowAsAlphabet,
+                optionVariant: attribute.slug === FILTER_CATEGORY_KEY ? 'radio' : 'checkbox',
                 title: attribute.name,
                 basePath,
                 options: attribute.options,

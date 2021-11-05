@@ -63,6 +63,7 @@ const CatalogueAdditionalOptionsModal: React.FC<CatalogueAdditionalOptionsModalI
   excludedParams,
   attributeSlug,
   options,
+  optionVariant,
 }) => {
   const router = useRouter();
   const { query } = router;
@@ -75,6 +76,7 @@ const CatalogueAdditionalOptionsModal: React.FC<CatalogueAdditionalOptionsModalI
       buttonText={'Показать'}
       title={title}
       alphabet={alphabet}
+      optionVariant={optionVariant}
       notShowAsAlphabet={notShowAsAlphabet}
       onSubmit={(selectedOptions) => {
         hideModal();

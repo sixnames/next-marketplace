@@ -1,5 +1,6 @@
 import Button from 'components/Button';
 import FormikBarcodeInput from 'components/FormElements/FormikBarcodeInput/FormikBarcodeInput';
+import InputLine from 'components/FormElements/Input/InputLine';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import RequestError from 'components/RequestError';
@@ -13,7 +14,6 @@ import * as React from 'react';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import { CreateProductInput, useGetGenderOptionsQuery } from 'generated/apolloComponents';
-import { get } from 'lodash';
 
 export type ProductFormValuesBaseType = Omit<CreateProductInput, 'rubricId'>;
 
@@ -28,7 +28,6 @@ interface ProductMainFieldsInterface {
 const ProductMainFields: React.FC<ProductMainFieldsInterface> = ({ seo }) => {
   const { setFieldValue, values } = useFormikContext<ProductFormValuesInterface>();
   const { showModal } = useAppContext();
-  const barcode = get(values, 'barcode') || [''];
   const { data, loading, error } = useGetGenderOptionsQuery();
   if (error || (!loading && !data)) {
     return <RequestError />;
@@ -53,43 +52,44 @@ const ProductMainFields: React.FC<ProductMainFieldsInterface> = ({ seo }) => {
         label={'Род названия'}
       />
 
-      {barcode.map((barcodeItem, index) => {
-        return (
-          <FormikBarcodeInput
-            label={index === 0 ? 'Штрих-код' : undefined}
-            name={`barcode[${index}]`}
-            testId={'barcode'}
-            key={index}
-            onClear={() => {
-              showModal<ConfirmModalInterface>({
-                variant: CONFIRM_MODAL,
-                props: {
-                  message: `Вы уверенны, что хотите удалить штрих-код ${barcodeItem}`,
-                  confirm: () => {
-                    const barcodesCopy = [...barcode];
-                    const updatedBarcodesList = barcodesCopy.filter((_item, itemIndex) => {
-                      return itemIndex !== index;
-                    });
-                    setFieldValue(`barcode`, updatedBarcodesList);
+      <InputLine labelTag={'div'}>
+        {values.barcode.map((barcodeItem, index) => {
+          return (
+            <FormikBarcodeInput
+              label={index === 0 ? 'Штрих-код' : undefined}
+              name={`barcode[${index}]`}
+              testId={'barcode'}
+              key={index}
+              onClear={() => {
+                showModal<ConfirmModalInterface>({
+                  variant: CONFIRM_MODAL,
+                  props: {
+                    message: `Вы уверенны, что хотите удалить штрих-код ${barcodeItem}`,
+                    confirm: () => {
+                      const barcodesCopy = [...values.barcode];
+                      const updatedBarcodesList = barcodesCopy.filter((_item, itemIndex) => {
+                        return itemIndex !== index;
+                      });
+                      setFieldValue(`barcode`, updatedBarcodesList);
+                    },
                   },
-                },
-              });
+                });
+              }}
+            />
+          );
+        })}
+        <div>
+          <Button
+            onClick={() => {
+              setFieldValue('barcode', [...values.barcode, '']);
             }}
-          />
-        );
-      })}
-
-      <div className='mb-8'>
-        <Button
-          theme={'secondary'}
-          size={'small'}
-          onClick={() => {
-            setFieldValue(`barcode[${(barcode || []).length}]`, '');
-          }}
-        >
-          Добавить штрих-код
-        </Button>
-      </div>
+            theme={'secondary'}
+            size={'small'}
+          >
+            Добавить штрих-код
+          </Button>
+        </div>
+      </InputLine>
 
       <FormikTranslationsInput
         label={'Мета-тег Description'}

@@ -911,6 +911,11 @@ export interface NexusGenInputs {
     name: string; // String!
     shopId: NexusGenScalars['ObjectId']; // ObjectId!
   };
+  UpdateShopProductBarcodeInput: {
+    // input type
+    barcode: string[]; // [String!]!
+    shopProductId: NexusGenScalars['ObjectId']; // ObjectId!
+  };
   UpdateShopProductInput: {
     // input type
     available: number; // Int!
@@ -1580,6 +1585,7 @@ export interface NexusGenFieldTypes {
     updateRubricVariant: NexusGenRootTypes['RubricVariantPayload']; // RubricVariantPayload!
     updateShop: NexusGenRootTypes['ShopPayload']; // ShopPayload!
     updateShopAssetIndex: NexusGenRootTypes['ShopPayload']; // ShopPayload!
+    updateShopProductBarcode: NexusGenRootTypes['ShopProductPayload']; // ShopProductPayload!
     updateShopProductSupplier: NexusGenRootTypes['ShopProductPayload']; // ShopProductPayload!
     updateSupplier: NexusGenRootTypes['SupplierPayload']; // SupplierPayload!
     updateVisibleCategoriesInNavDropdown: NexusGenRootTypes['ConfigPayload']; // ConfigPayload!
@@ -2640,6 +2646,7 @@ export interface NexusGenFieldTypeNames {
     updateRubricVariant: 'RubricVariantPayload';
     updateShop: 'ShopPayload';
     updateShopAssetIndex: 'ShopPayload';
+    updateShopProductBarcode: 'ShopProductPayload';
     updateShopProductSupplier: 'ShopProductPayload';
     updateSupplier: 'SupplierPayload';
     updateVisibleCategoriesInNavDropdown: 'ConfigPayload';
@@ -3684,6 +3691,10 @@ export interface NexusGenArgTypes {
     updateShopAssetIndex: {
       // args
       input: NexusGenInputs['UpdateShopAssetIndexInput']; // UpdateShopAssetIndexInput!
+    };
+    updateShopProductBarcode: {
+      // args
+      input: NexusGenInputs['UpdateShopProductBarcodeInput']; // UpdateShopProductBarcodeInput!
     };
     updateShopProductSupplier: {
       // args

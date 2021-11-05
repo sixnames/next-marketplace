@@ -55,7 +55,7 @@ const ConsoleShopProductLayout: React.FC<ConsoleShopProductLayoutInterface> = ({
         <Title
           subtitle={
             <div>
-              <div>Арт. ${shopProduct.product?.itemId}</div>
+              <div>Арт. {shopProduct.itemId}</div>
               {showEditButton ? (
                 <div className='mt-4'>
                   <Button

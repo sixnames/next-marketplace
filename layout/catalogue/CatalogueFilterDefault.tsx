@@ -50,7 +50,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
 
       {hasMoreOptions ? (
         <div
-          className='uppercase cursor-pointer hover:text-theme mt-6'
+          className='uppercase cursor-pointer text-theme mt-6'
           onClick={() => {
             showModal<CatalogueAdditionalOptionsModalInterface>({
               variant: CATALOGUE_ADDITIONAL_OPTIONS_MODAL,

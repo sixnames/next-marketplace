@@ -106,12 +106,7 @@ const CompanyProductConstructor: React.FC<CompanyProductConstructorInterface> = 
                 );
               })}
               <div className='flex mb-12 mt-4'>
-                <Button
-                  theme={'secondary'}
-                  size={'small'}
-                  type={'submit'}
-                  testId={`card-content-submit`}
-                >
+                <Button size={'small'} type={'submit'} testId={`card-content-submit`}>
                   Сохранить
                 </Button>
               </div>

@@ -165,7 +165,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
           <div className='space-y-2'>
             {supplierProducts.map((supplierProduct) => {
               return (
-                <div className='flex gap-3' key={`${supplierProduct._id}`}>
+                <div className='flex justify-between gap-3' key={`${supplierProduct._id}`}>
                   <div className='whitespace-nowrap'>{supplierProduct.supplier?.name}</div>
                   <div>
                     <Currency value={supplierProduct.recommendedPrice} />

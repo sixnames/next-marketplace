@@ -2045,6 +2045,10 @@ export async function getCatalogueServerSideProps(
     return notFoundResponse;
   }
 
+  if (rawCatalogueData.products.length < 1) {
+    return notFoundResponse;
+  }
+
   // console.log('Catalogue getServerSideProps total time ', new Date().getTime() - timeStart);
 
   return {

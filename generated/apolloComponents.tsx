@@ -530,7 +530,6 @@ export type Country = {
   _id: Scalars['ObjectId'];
   name: Scalars['String'];
   currency: Scalars['String'];
-  citiesIds: Array<Scalars['ObjectId']>;
   cities: Array<City>;
 };
 
@@ -2044,8 +2043,6 @@ export type Query = {
   getAllCities: CitiesPaginationPayload;
   /** Should return cities list */
   getSessionCities: Array<City>;
-  /** Should return currency for session locale */
-  getSessionCurrency: Scalars['String'];
   /** Should return company by given id */
   getCompany?: Maybe<Company>;
   /** Should return paginated companies */

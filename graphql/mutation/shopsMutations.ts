@@ -111,3 +111,12 @@ export const DELETE_SHOP_PRODUCT_SUPPLIER_MUTATION = gql`
     }
   }
 `;
+
+export const UPDATE_SHOP_PRODUCT_BARCODE_MUTATION = gql`
+  mutation UpdateShopProductBarcode($input: UpdateShopProductBarcodeInput!) {
+    updateShopProductBarcode(input: $input) {
+      success
+      message
+    }
+  }
+`;

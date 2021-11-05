@@ -530,7 +530,6 @@ export type Country = {
   _id: Scalars['ObjectId'];
   name: Scalars['String'];
   currency: Scalars['String'];
-  citiesIds: Array<Scalars['ObjectId']>;
   cities: Array<City>;
 };
 
@@ -1126,6 +1125,8 @@ export type Mutation = {
   updateShopProductSupplier: ShopProductPayload;
   /** Should delete shop products supplier */
   deleteShopProductSupplier: ShopProductPayload;
+  /** Should update shop products barcode */
+  updateShopProductBarcode: ShopProductPayload;
   /** Should create supplier */
   createSupplier: SupplierPayload;
   /** Should update supplier */
@@ -1675,6 +1676,11 @@ export type MutationDeleteShopProductSupplierArgs = {
 };
 
 
+export type MutationUpdateShopProductBarcodeArgs = {
+  input: UpdateShopProductBarcodeInput;
+};
+
+
 export type MutationCreateSupplierArgs = {
   input: CreateSupplierInput;
 };
@@ -2044,8 +2050,6 @@ export type Query = {
   getAllCities: CitiesPaginationPayload;
   /** Should return cities list */
   getSessionCities: Array<City>;
-  /** Should return currency for session locale */
-  getSessionCurrency: Scalars['String'];
   /** Should return company by given id */
   getCompany?: Maybe<Company>;
   /** Should return paginated companies */
@@ -2994,6 +2998,11 @@ export type UpdateShopInput = {
   license?: Maybe<Scalars['String']>;
   contacts: ContactsInput;
   address: AddressInput;
+};
+
+export type UpdateShopProductBarcodeInput = {
+  shopProductId: Scalars['ObjectId'];
+  barcode: Array<Scalars['String']>;
 };
 
 export type UpdateShopProductInput = {
@@ -4489,6 +4498,19 @@ export type DeleteShopProductSupplierMutationVariables = Exact<{
 export type DeleteShopProductSupplierMutation = (
   { __typename?: 'Mutation' }
   & { deleteShopProductSupplier: (
+    { __typename?: 'ShopProductPayload' }
+    & Pick<ShopProductPayload, 'success' | 'message'>
+  ) }
+);
+
+export type UpdateShopProductBarcodeMutationVariables = Exact<{
+  input: UpdateShopProductBarcodeInput;
+}>;
+
+
+export type UpdateShopProductBarcodeMutation = (
+  { __typename?: 'Mutation' }
+  & { updateShopProductBarcode: (
     { __typename?: 'ShopProductPayload' }
     & Pick<ShopProductPayload, 'success' | 'message'>
   ) }
@@ -8898,6 +8920,40 @@ export function useDeleteShopProductSupplierMutation(baseOptions?: Apollo.Mutati
 export type DeleteShopProductSupplierMutationHookResult = ReturnType<typeof useDeleteShopProductSupplierMutation>;
 export type DeleteShopProductSupplierMutationResult = Apollo.MutationResult<DeleteShopProductSupplierMutation>;
 export type DeleteShopProductSupplierMutationOptions = Apollo.BaseMutationOptions<DeleteShopProductSupplierMutation, DeleteShopProductSupplierMutationVariables>;
+export const UpdateShopProductBarcodeDocument = gql`
+    mutation UpdateShopProductBarcode($input: UpdateShopProductBarcodeInput!) {
+  updateShopProductBarcode(input: $input) {
+    success
+    message
+  }
+}
+    `;
+export type UpdateShopProductBarcodeMutationFn = Apollo.MutationFunction<UpdateShopProductBarcodeMutation, UpdateShopProductBarcodeMutationVariables>;
+
+/**
+ * __useUpdateShopProductBarcodeMutation__
+ *
+ * To run a mutation, you first call `useUpdateShopProductBarcodeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateShopProductBarcodeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateShopProductBarcodeMutation, { data, loading, error }] = useUpdateShopProductBarcodeMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateShopProductBarcodeMutation(baseOptions?: Apollo.MutationHookOptions<UpdateShopProductBarcodeMutation, UpdateShopProductBarcodeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateShopProductBarcodeMutation, UpdateShopProductBarcodeMutationVariables>(UpdateShopProductBarcodeDocument, options);
+      }
+export type UpdateShopProductBarcodeMutationHookResult = ReturnType<typeof useUpdateShopProductBarcodeMutation>;
+export type UpdateShopProductBarcodeMutationResult = Apollo.MutationResult<UpdateShopProductBarcodeMutation>;
+export type UpdateShopProductBarcodeMutationOptions = Apollo.BaseMutationOptions<UpdateShopProductBarcodeMutation, UpdateShopProductBarcodeMutationVariables>;
 export const CreateSupplierDocument = gql`
     mutation CreateSupplier($input: CreateSupplierInput!) {
   createSupplier(input: $input) {

@@ -911,6 +911,11 @@ export interface NexusGenInputs {
     name: string; // String!
     shopId: NexusGenScalars['ObjectId']; // ObjectId!
   };
+  UpdateShopProductBarcodeInput: {
+    // input type
+    barcode: string[]; // [String!]!
+    shopProductId: NexusGenScalars['ObjectId']; // ObjectId!
+  };
   UpdateShopProductInput: {
     // input type
     available: number; // Int!
@@ -1365,7 +1370,6 @@ export interface NexusGenFieldTypes {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     cities: NexusGenRootTypes['City'][]; // [City!]!
-    citiesIds: NexusGenScalars['ObjectId'][]; // [ObjectId!]!
     currency: string; // String!
     name: string; // String!
   };
@@ -1581,6 +1585,7 @@ export interface NexusGenFieldTypes {
     updateRubricVariant: NexusGenRootTypes['RubricVariantPayload']; // RubricVariantPayload!
     updateShop: NexusGenRootTypes['ShopPayload']; // ShopPayload!
     updateShopAssetIndex: NexusGenRootTypes['ShopPayload']; // ShopPayload!
+    updateShopProductBarcode: NexusGenRootTypes['ShopProductPayload']; // ShopProductPayload!
     updateShopProductSupplier: NexusGenRootTypes['ShopProductPayload']; // ShopProductPayload!
     updateSupplier: NexusGenRootTypes['SupplierPayload']; // SupplierPayload!
     updateVisibleCategoriesInNavDropdown: NexusGenRootTypes['ConfigPayload']; // ConfigPayload!
@@ -1862,7 +1867,6 @@ export interface NexusGenFieldTypes {
     getRubricBySlug: NexusGenRootTypes['Rubric']; // Rubric!
     getRubricVariant: NexusGenRootTypes['RubricVariant']; // RubricVariant!
     getSessionCities: NexusGenRootTypes['City'][]; // [City!]!
-    getSessionCurrency: string; // String!
     getShop: NexusGenRootTypes['Shop']; // Shop!
     getShopBySlug: NexusGenRootTypes['Shop']; // Shop!
     getSupplier: NexusGenRootTypes['Supplier']; // Supplier!
@@ -2427,7 +2431,6 @@ export interface NexusGenFieldTypeNames {
     // field return type name
     _id: 'ObjectId';
     cities: 'City';
-    citiesIds: 'ObjectId';
     currency: 'String';
     name: 'String';
   };
@@ -2643,6 +2646,7 @@ export interface NexusGenFieldTypeNames {
     updateRubricVariant: 'RubricVariantPayload';
     updateShop: 'ShopPayload';
     updateShopAssetIndex: 'ShopPayload';
+    updateShopProductBarcode: 'ShopProductPayload';
     updateShopProductSupplier: 'ShopProductPayload';
     updateSupplier: 'SupplierPayload';
     updateVisibleCategoriesInNavDropdown: 'ConfigPayload';
@@ -2924,7 +2928,6 @@ export interface NexusGenFieldTypeNames {
     getRubricBySlug: 'Rubric';
     getRubricVariant: 'RubricVariant';
     getSessionCities: 'City';
-    getSessionCurrency: 'String';
     getShop: 'Shop';
     getShopBySlug: 'Shop';
     getSupplier: 'Supplier';
@@ -3688,6 +3691,10 @@ export interface NexusGenArgTypes {
     updateShopAssetIndex: {
       // args
       input: NexusGenInputs['UpdateShopAssetIndexInput']; // UpdateShopAssetIndexInput!
+    };
+    updateShopProductBarcode: {
+      // args
+      input: NexusGenInputs['UpdateShopProductBarcodeInput']; // UpdateShopProductBarcodeInput!
     };
     updateShopProductSupplier: {
       // args

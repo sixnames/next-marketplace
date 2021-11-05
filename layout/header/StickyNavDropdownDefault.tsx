@@ -45,7 +45,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
                 testId={`header-nav-dropdown-option`}
                 prefetch={false}
                 href={`${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`}
-                className='flex items-center min-h-[var(--minLinkHeight)] text-secondary-text'
+                className='flex items-center py-1 text-secondary-text'
               >
                 {option.name}
                 {postfix}

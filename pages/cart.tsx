@@ -78,11 +78,6 @@ const CartProductFrame: React.FC<CartProductFrameInterface> = ({
               {snippetTitle}
             </Link>
           </div>
-
-          <div className='flex justify-center items-center gap-4 mt-auto'>
-            <ControlButton iconSize={'mid'} icon={'compare'} />
-            <ControlButton iconSize={'mid'} icon={'heart'} />
-          </div>
         </div>
 
         {/*main data*/}
@@ -176,8 +171,15 @@ const CartShoplessProduct: React.FC<CartProductPropsInterface> = ({ cartProduct,
         snippetTitle={snippetTitle}
       />
 
-      <div className='mb-4'>
-        <ProductSnippetPrice shopsCount={shopsCount} value={cardPrices?.min} />
+      <div className='flex flex-wrap gap-6 mb-4 items-center'>
+        <div>
+          <ProductSnippetPrice shopsCount={shopsCount} value={cardPrices?.min} />
+        </div>
+
+        <div className='flex justify-center items-center gap-4'>
+          <ControlButton iconSize={'mid'} icon={'compare'} />
+          <ControlButton iconSize={'mid'} icon={'heart'} />
+        </div>
       </div>
 
       <Button
@@ -263,6 +265,11 @@ const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId 
           />
           {/*available*/}
           <div className='text-secondary-text'>{`В наличии ${available} шт`}</div>
+        </div>
+
+        <div className='flex justify-center items-center gap-4'>
+          <ControlButton iconSize={'mid'} icon={'compare'} />
+          <ControlButton iconSize={'mid'} icon={'heart'} />
         </div>
       </div>
 

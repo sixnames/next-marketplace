@@ -323,12 +323,6 @@ export interface CartModel extends TimestampModel {
   cartProducts: CartProductModel[];
 }
 
-export interface CityModel {
-  _id: ObjectIdModel;
-  nameI18n: TranslationModel;
-  slug: string;
-}
-
 export interface CompanyModel extends BaseModel, TimestampModel {
   name: string;
   slug: string;
@@ -384,13 +378,20 @@ export interface ConfigModel {
 export interface CountryModel {
   _id: ObjectIdModel;
   name: string;
-  citiesIds: ObjectIdModel[];
   currency: string;
 }
 
 export interface CurrencyModel {
   _id: ObjectIdModel;
   name: string;
+}
+
+export interface CityModel {
+  _id: ObjectIdModel;
+  nameI18n: TranslationModel;
+  slug: string;
+  currency: string;
+  countryId: ObjectIdModel;
 }
 
 export interface LanguageModel {

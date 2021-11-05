@@ -27,7 +27,6 @@ import {
   COL_CITIES,
   COL_COMPANIES,
   COL_CONFIGS,
-  COL_COUNTRIES,
   COL_ICONS,
   COL_LANGUAGES,
   COL_NAV_ITEMS,
@@ -46,7 +45,6 @@ import {
   CityModel,
   CompanyModel,
   ConfigModel,
-  CountryModel,
   LanguageModel,
   ObjectIdModel,
   RubricModel,
@@ -1033,12 +1031,10 @@ export const getPageInitialData = async ({
   // console.log('After cities ', new Date().getTime() - timeStart);
 
   // currency
-  const countriesCollection = db.collection<CountryModel>(COL_COUNTRIES);
   let currency = DEFAULT_CURRENCY;
   const sessionCity = initialCities.find(({ slug }) => slug === city);
-  const country = await countriesCollection.findOne({ citiesIds: sessionCity?._id });
-  if (country) {
-    currency = country.currency;
+  if (sessionCity) {
+    currency = sessionCity.currency || DEFAULT_CURRENCY;
   }
   // console.log('After currency ', new Date().getTime() - timeStart);
 

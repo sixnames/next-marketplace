@@ -68,6 +68,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct, cardCo
 
   return (
     <ConsoleShopProductLayout
+      showEditButton
       breadcrumbs={breadcrumbs}
       shopProduct={shopProduct}
       basePath={`${companyBasePath}/shops/shop/${shopProduct.shopId}/products/product`}

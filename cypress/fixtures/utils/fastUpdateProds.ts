@@ -1,6 +1,7 @@
-import { dbsConfig, getProdDb, updateIndexes } from './getProdDb';
-import { COL_CITIES, COL_COUNTRIES } from '../../../db/collectionNames';
-import { CityModel } from '../../../db/dbModels';
+import { ObjectId } from 'mongodb';
+import { dbsConfig, getProdDb } from './getProdDb';
+import { COL_PRODUCTS, COL_SHOP_PRODUCTS } from '../../../db/collectionNames';
+import { ProductModel, ShopProductModel } from '../../../db/dbModels';
 
 require('dotenv').config();
 
@@ -11,38 +12,40 @@ async function updateProds() {
     console.log(' ');
     console.log(`Updating ${dbConfig.dbName} db`);
     const { db, client } = await getProdDb(dbConfig);
-    const countriesCollection = db.collection<any>(COL_COUNTRIES);
-    const citiesCollection = db.collection<CityModel>(COL_CITIES);
+    const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+    const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
 
-    const countries = await countriesCollection.find({}).toArray();
-    for await (const country of countries) {
-      await citiesCollection.updateMany(
+    const shopProducts = await shopProductsCollection
+      .find({
+        shopId: new ObjectId('60f7e437a0b68100095774b2'),
+      })
+      .toArray();
+    const productIds = shopProducts.map(({ productId }) => productId);
+    const products = await productsCollection
+      .find({
+        _id: {
+          $in: productIds,
+        },
+      })
+      .toArray();
+    console.log({
+      shopProducts: shopProducts.length,
+      products: products.length,
+    });
+    for await (const product of products) {
+      await shopProductsCollection.updateMany(
         {
-          _id: {
-            $in: country.citiesIds,
-          },
+          productId: product._id,
         },
         {
-          $set: {
-            countryId: country._id,
-            currency: country.currency,
-          },
-        },
-      );
-      await countriesCollection.findOneAndUpdate(
-        { _id: country._id },
-        {
-          $unset: {
-            citiesIds: '',
+          $addToSet: {
+            barcode: {
+              $each: product.barcode,
+            },
           },
         },
       );
     }
-
-    // update indexes
-    console.log(`Updating indexes in ${dbConfig.dbName} db`);
-    await updateIndexes(db);
-    console.log(`Indexes updated in ${dbConfig.dbName} db`);
 
     // disconnect form db
     await client.close();

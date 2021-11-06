@@ -1,9 +1,13 @@
 import { FILTER_SEPARATOR, FILTER_PAGE_KEY, ROUTE_CMS } from 'config/common';
+import { COL_COMPANIES } from 'db/collectionNames';
+import { CompanyModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsLayout from 'layout/cms/CmsLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getConsoleShopProducts } from 'lib/consoleProductUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
@@ -65,11 +69,22 @@ const CompanyShopProductsList: NextPage<CompanyShopProductsListInterface> = ({
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<CompanyShopProductsListInterface>> => {
+  const { db } = await getDatabase();
+  const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
   const { query } = context;
   const { shopId, filters } = query;
   const [rubricId] = alwaysArray(filters);
   const initialProps = await getAppInitialData({ context });
   if (!initialProps || !initialProps.props) {
+    return {
+      notFound: true,
+    };
+  }
+
+  const company = await companiesCollection.findOne({
+    _id: new ObjectId(`${query.companyId}`),
+  });
+  if (!company) {
     return {
       notFound: true,
     };
@@ -84,6 +99,7 @@ export const getServerSideProps = async (
     locale,
     query,
     currency,
+    companySlug: company.slug,
   });
   if (!payload) {
     return {

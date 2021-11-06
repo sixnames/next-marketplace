@@ -1,7 +1,6 @@
 import Button from 'components/Button';
 import ContentItemControls from 'components/ContentItemControls';
 import Currency from 'components/Currency';
-import FixedButtons from 'components/FixedButtons';
 import FormikBarcodeInput from 'components/FormElements/FormikBarcodeInput/FormikBarcodeInput';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import InputLine from 'components/FormElements/Input/InputLine';
@@ -144,6 +143,7 @@ const CompanyProductSuppliers: React.FC<CompanyProductSuppliersInterface> = ({
 
   return (
     <Inner testId={'shop-product-suppliers-list'}>
+      {/*price and availability*/}
       <div className='mb-16'>
         <Formik
           initialValues={initialValues}
@@ -158,21 +158,23 @@ const CompanyProductSuppliers: React.FC<CompanyProductSuppliersInterface> = ({
           {() => {
             return (
               <Form>
-                <FormikInput
-                  label={'Цена'}
-                  testId={`price`}
-                  name={`input[0].price`}
-                  type={'number'}
-                  min={0}
-                />
+                <div className='md:grid gap-8 grid-cols-2'>
+                  <FormikInput
+                    label={'Цена'}
+                    testId={`price`}
+                    name={`input[0].price`}
+                    type={'number'}
+                    min={0}
+                  />
 
-                <FormikInput
-                  label={'Наличие'}
-                  testId={`available`}
-                  name={`input[0].available`}
-                  type={'number'}
-                  min={0}
-                />
+                  <FormikInput
+                    label={'Наличие'}
+                    testId={`available`}
+                    name={`input[0].available`}
+                    type={'number'}
+                    min={0}
+                  />
+                </div>
 
                 <Button size={'small'} type={'submit'}>
                   Сохранить
@@ -183,6 +185,44 @@ const CompanyProductSuppliers: React.FC<CompanyProductSuppliersInterface> = ({
         </Formik>
       </div>
 
+      {/*suppliers list*/}
+      <div className='mb-16'>
+        <div className='overflow-x-auto overflow-y-hidden'>
+          <Table<SupplierProductInterface>
+            columns={columns}
+            data={shopProduct.supplierProducts}
+            testIdKey={'supplier.name'}
+            onRowDoubleClick={(dataItem) => {
+              showModal<ShopProductSupplierModalInterface>({
+                variant: SHOP_PRODUCT_SUPPLIER_MODAL,
+                props: {
+                  suppliers,
+                  supplierProduct: dataItem,
+                  shopProduct,
+                },
+              });
+            }}
+          />
+        </div>
+        <Button
+          disabled={disableAddSupplier}
+          testId={'add-supplier'}
+          size={'small'}
+          onClick={() => {
+            showModal<ShopProductSupplierModalInterface>({
+              variant: SHOP_PRODUCT_SUPPLIER_MODAL,
+              props: {
+                suppliers,
+                shopProduct,
+              },
+            });
+          }}
+        >
+          Добавить поставщика
+        </Button>
+      </div>
+
+      {/*barcode*/}
       <div className='mb-16'>
         <Formik
           initialValues={{ barcode }}
@@ -250,42 +290,6 @@ const CompanyProductSuppliers: React.FC<CompanyProductSuppliersInterface> = ({
           }}
         </Formik>
       </div>
-
-      <div className='overflow-x-auto overflow-y-hidden'>
-        <Table<SupplierProductInterface>
-          columns={columns}
-          data={shopProduct.supplierProducts}
-          testIdKey={'supplier.name'}
-          onRowDoubleClick={(dataItem) => {
-            showModal<ShopProductSupplierModalInterface>({
-              variant: SHOP_PRODUCT_SUPPLIER_MODAL,
-              props: {
-                suppliers,
-                supplierProduct: dataItem,
-                shopProduct,
-              },
-            });
-          }}
-        />
-      </div>
-      <FixedButtons>
-        <Button
-          disabled={disableAddSupplier}
-          testId={'add-supplier'}
-          size={'small'}
-          onClick={() => {
-            showModal<ShopProductSupplierModalInterface>({
-              variant: SHOP_PRODUCT_SUPPLIER_MODAL,
-              props: {
-                suppliers,
-                shopProduct,
-              },
-            });
-          }}
-        >
-          Добавить поставщика
-        </Button>
-      </FixedButtons>
     </Inner>
   );
 };

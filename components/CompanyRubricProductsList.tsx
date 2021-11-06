@@ -62,8 +62,8 @@ const CompanyRubricProductsList: React.FC<CompanyRubricProductsListInterface> = 
         return (
           <TableRowImage
             src={`${dataItem.mainImage}`}
-            alt={`${dataItem.originalName}`}
-            title={`${dataItem.originalName}`}
+            alt={`${dataItem.snippetTitle}`}
+            title={`${dataItem.snippetTitle}`}
           />
         );
       },

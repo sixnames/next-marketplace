@@ -141,7 +141,7 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({ attributesG
     },
     {
       accessor: 'viewVariant',
-      headTitle: 'Тип',
+      headTitle: 'Тип отображения',
       render: ({ cellData }) =>
         getConstantTranslation(`selectsOptions.attributeView.${cellData}.${locale}`),
     },

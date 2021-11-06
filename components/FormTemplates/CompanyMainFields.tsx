@@ -42,9 +42,15 @@ interface UsersSearchModalControlsInterface
 
 interface CompanyMainFieldsInterface {
   inConsole?: boolean;
+  addStaffUserHandler?: (user: UserInterface) => void;
+  setOwnerHandler?: (user: UserInterface) => void;
 }
 
-const CompanyMainFields: React.FC<CompanyMainFieldsInterface> = ({ inConsole }) => {
+const CompanyMainFields: React.FC<CompanyMainFieldsInterface> = ({
+  inConsole,
+  setOwnerHandler,
+  addStaffUserHandler,
+}) => {
   const { showModal, hideModal } = useAppContext();
   const { values, setFieldValue } = useFormikContext<CompanyFormMainValuesInterface>();
 
@@ -161,8 +167,12 @@ const CompanyMainFields: React.FC<CompanyMainFieldsInterface> = ({ inConsole }) 
               showUsersSearchModal({
                 createTitle: 'Назначить владельцем компании',
                 createHandler: (user) => {
-                  setFieldValue('owner', user);
-                  hideModal();
+                  if (setOwnerHandler) {
+                    setOwnerHandler(user);
+                  } else {
+                    setFieldValue('owner', user);
+                    hideModal();
+                  }
                 },
               })
             }
@@ -191,8 +201,12 @@ const CompanyMainFields: React.FC<CompanyMainFieldsInterface> = ({ inConsole }) 
               showUsersSearchModal({
                 createTitle: 'Добавить в список сотрудников компании',
                 createHandler: (user) => {
-                  setFieldValue(`staff[${staff.length}]`, user);
-                  hideModal();
+                  if (addStaffUserHandler) {
+                    addStaffUserHandler(user);
+                  } else {
+                    setFieldValue(`staff[${staff.length}]`, user);
+                    hideModal();
+                  }
                 },
               })
             }

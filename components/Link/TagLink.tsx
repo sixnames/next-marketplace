@@ -1,13 +1,11 @@
-import Icon from 'components/Icon';
 import * as React from 'react';
-import { IconType } from 'types/iconTypes';
 import Link, { LinkInterface } from './Link';
 
 export interface TagLinkInterface extends Omit<LinkInterface, 'activeClassName' | 'href'> {
   theme?: 'primary' | 'secondary';
   isActive?: boolean;
   href?: string;
-  icon?: IconType | null;
+  icon?: string | null;
   size?: 'small' | 'normal' | 'big';
 }
 
@@ -38,7 +36,7 @@ const TagLink: React.FC<TagLinkInterface> = ({
       ? 'min-h-[1.5rem] rounded-xl px-3'
       : `min-h-[2.5rem] rounded-2xl px-4 py-1`;
   const tagClassName = `flex items-center border text-secondary-text ${tagSizeClassName} ${variantClassName} ${borderClassName}`;
-  const iconClassName = `flex-shrink-0 w-10 h-10 mr-6`;
+  const iconClassName = `flex-shrink-0 tag-link__icon text-secondary-text mr-4`;
 
   if (href) {
     return (
@@ -53,7 +51,9 @@ const TagLink: React.FC<TagLinkInterface> = ({
         }`}
         {...props}
       >
-        {icon ? <Icon className={iconClassName} name={icon} /> : null}
+        {icon ? (
+          <span dangerouslySetInnerHTML={{ __html: icon }} className={iconClassName} />
+        ) : null}
         {children}
       </Link>
     );
@@ -66,7 +66,7 @@ const TagLink: React.FC<TagLinkInterface> = ({
       className={`${tagClassName} ${className ? className : ''}`}
       {...props}
     >
-      {icon ? <Icon className={iconClassName} name={icon} /> : null}
+      {icon ? <span dangerouslySetInnerHTML={{ __html: icon }} className={iconClassName} /> : null}
       {children}
     </div>
   );

@@ -1,5 +1,6 @@
 import ControlButton from 'components/ControlButton';
 import ErrorBoundary from 'components/ErrorBoundary';
+import LanguageTrigger from 'components/LanguageTrigger';
 import Modal from 'components/Modal/Modal';
 import Spinner from 'components/Spinner';
 import ThemeTrigger from 'components/ThemeTrigger';
@@ -56,6 +57,9 @@ const CmsWrapper: React.FC<CmsWrapperInterface> = ({ title, company, pageUrls, c
         </div>
 
         <div className='flex items-center text-white gap-1 pr-[5px]'>
+          <div className='mr-4'>
+            <LanguageTrigger />
+          </div>
           <ThemeTrigger staticColors />
           <ControlButton
             icon={'exit'}

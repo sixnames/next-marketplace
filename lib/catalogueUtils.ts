@@ -242,6 +242,22 @@ export async function getCatalogueAttributes({
     };
   }
 
+  function checkIfOptionSelected(option: OptionInterface, attributeSlug: string): boolean {
+    const castedSlug = `${attributeSlug}${FILTER_SEPARATOR}${option.slug}`;
+    let isSelected = realFilter.includes(castedSlug);
+    if (option.options && option.options.length > 0) {
+      const childBooleans = option.options.map((childOption) => {
+        return checkIfOptionSelected(childOption, attributeSlug);
+      });
+      const isChildSelected = childBooleans.some((bool) => bool);
+      if (isChildSelected) {
+        isSelected = true;
+      }
+    }
+
+    return isSelected;
+  }
+
   function filterSelectedOptions({
     option,
     attributeSlug,
@@ -305,7 +321,7 @@ export async function getCatalogueAttributes({
     // check if selected
     const metricName = getFieldStringLocale(attribute.metric?.nameI18n, locale);
     const castedSlug = `${attribute.slug}${FILTER_SEPARATOR}${option.slug}`;
-    let isSelected = realFilter.includes(castedSlug);
+    let isSelected = checkIfOptionSelected(option, attribute.slug);
     let optionName = getFieldStringLocale(option.nameI18n, locale);
     if (rubricGender) {
       const optionVariantGender = option.variants[rubricGender];
@@ -1588,9 +1604,9 @@ export const getCatalogueData = async ({
     }, []);
     const rubricAttributes = inCategory
       ? initialAttributes
-      : initialAttributes.filter(({ _id }) => {
+      : initialAttributes.filter(({ _id, slug }) => {
           return (rubric?.filterVisibleAttributeIds || []).some((attributeId) => {
-            return attributeId.equals(_id);
+            return attributeId.equals(_id) || realFilterAttributes.includes(slug);
           });
         });
 

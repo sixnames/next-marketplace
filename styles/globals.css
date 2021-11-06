@@ -219,6 +219,11 @@
     display: none;  /* Safari and Chrome */
   }
 
+  .tag-link__icon > svg {
+    width: 2rem;
+    height: 2rem;
+  }
+
   /* Grid Snippet */
   .grid-snippet {
     width: 100%;

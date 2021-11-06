@@ -34,6 +34,7 @@ import {
   COL_SHOPS,
   COL_PRODUCT_SEO,
   COL_PRODUCT_CARD_DESCRIPTIONS,
+  COL_ICONS,
 } from 'db/collectionNames';
 import { productCategoriesPipeline } from 'db/dao/constantPipelines';
 import {
@@ -424,6 +425,32 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
                                     $in: ['$_id', '$$selectedOptionsIds'],
                                   },
                                 ],
+                              },
+                            },
+                          },
+                          {
+                            $lookup: {
+                              from: COL_ICONS,
+                              as: 'icon',
+                              let: {
+                                documentId: '$_id',
+                              },
+                              pipeline: [
+                                {
+                                  $match: {
+                                    collectionName: COL_OPTIONS,
+                                    $expr: {
+                                      $eq: ['$documentId', '$$documentId'],
+                                    },
+                                  },
+                                },
+                              ],
+                            },
+                          },
+                          {
+                            $addFields: {
+                              icon: {
+                                $arrayElemAt: ['$icon', 0],
                               },
                             },
                           },

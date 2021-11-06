@@ -4,6 +4,7 @@ import {
   COL_PRODUCT_ASSETS,
   COL_PRODUCT_CARD_DESCRIPTIONS,
   COL_PRODUCTS,
+  COL_RUBRICS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
 } from 'db/collectionNames';
@@ -17,6 +18,7 @@ import {
   shopProductFieldsPipeline,
   shopProductSupplierProductsPipeline,
 } from 'db/dao/constantPipelines';
+import { ObjectIdModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
   CategoryInterface,
@@ -479,4 +481,111 @@ export async function getConsoleShopProduct({
   }
 
   return shopProduct;
+}
+
+interface CheckBarcodeIntersectsInterface {
+  barcode: string;
+  productId: ObjectIdModel;
+  locale: string;
+}
+
+interface CheckBarcodeIntersectsPayloadInterface {
+  products: ProductInterface[];
+  barcode: string;
+}
+
+export async function checkBarcodeIntersects({
+  barcode,
+  locale,
+  productId,
+}: CheckBarcodeIntersectsInterface): Promise<CheckBarcodeIntersectsPayloadInterface | null> {
+  const { db } = await getDatabase();
+  const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
+  const products = await productsCollection
+    .aggregate<ProductInterface>([
+      {
+        $match: {
+          _id: {
+            $ne: productId,
+          },
+          barcode,
+        },
+      },
+      {
+        $project: {
+          descriptionI18n: false,
+        },
+      },
+
+      // get product attributes
+      ...productAttributesPipeline,
+
+      // get product brand
+      ...brandPipeline,
+
+      // get product categories
+      ...productCategoriesPipeline(),
+
+      // get product rubric
+      {
+        $lookup: {
+          from: COL_RUBRICS,
+          as: 'rubric',
+          let: {
+            rubricId: '$rubricId',
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ['$$rubricId', '$_id'],
+                },
+              },
+            },
+            {
+              $project: {
+                _id: true,
+                slug: true,
+                nameI18n: true,
+                showRubricNameInProductTitle: true,
+                showCategoryInProductTitle: true,
+              },
+            },
+          ],
+        },
+      },
+      {
+        $addFields: {
+          rubric: { $arrayElemAt: ['$rubric', 0] },
+        },
+      },
+    ])
+    .toArray();
+
+  if (products.length > 0) {
+    return {
+      barcode,
+      products: products.map((product) => {
+        const snippetTitle = generateSnippetTitle({
+          locale,
+          brand: product.brand,
+          rubricName: getFieldStringLocale(product.rubric?.nameI18n, locale),
+          showRubricNameInProductTitle: product.rubric?.showRubricNameInProductTitle,
+          showCategoryInProductTitle: product.rubric?.showCategoryInProductTitle,
+          attributes: product.attributes || [],
+          categories: product.categories,
+          titleCategoriesSlugs: product.titleCategoriesSlugs,
+          originalName: `${product.originalName}`,
+          defaultGender: `${product.gender}`,
+        });
+
+        return {
+          ...product,
+          snippetTitle,
+        };
+      }),
+    };
+  }
+
+  return null;
 }

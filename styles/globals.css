@@ -218,7 +218,7 @@
   .catalogue__filter-scroll::-webkit-scrollbar {
     display: none;  /* Safari and Chrome */
   }
-  
+
   .tag-link__icon > svg {
     width: 2rem;
     height: 2rem;

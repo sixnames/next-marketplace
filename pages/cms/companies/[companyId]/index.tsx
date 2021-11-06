@@ -6,7 +6,7 @@ import { COL_COMPANIES, COL_ROLES, COL_USERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { CompanyInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
-import { useUpdateCompanyMutation } from 'generated/apolloComponents';
+import { UpdateCompanyInput, useUpdateCompanyMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
@@ -48,6 +48,18 @@ const CompanyDetailsConsumer: React.FC<CompanyDetailsConsumerInterface> = ({ cur
     ],
   };
 
+  const updateCompanyHandler = React.useCallback(
+    (input: UpdateCompanyInput) => {
+      showLoading();
+      updateCompanyMutation({
+        variables: {
+          input,
+        },
+      }).catch((e) => console.log(e));
+    },
+    [showLoading, updateCompanyMutation],
+  );
+
   return (
     <CmsCompanyLayout company={currentCompany} breadcrumbs={breadcrumbs}>
       <Inner testId={'company-details'}>
@@ -61,28 +73,52 @@ const CompanyDetailsConsumer: React.FC<CompanyDetailsConsumerInterface> = ({ cur
             },
           }}
           onSubmit={(values) => {
-            showLoading();
-            updateCompanyMutation({
-              variables: {
-                input: {
-                  domain: values.domain,
-                  name: `${values?.name}`,
-                  contacts: {
-                    emails: values.contacts.emails,
-                    phones: values.contacts.phones.map((phone) => phoneToRaw(phone)),
-                  },
-                  companyId: currentCompany?._id,
-                  ownerId: `${values.owner?._id}`,
-                  staffIds: (values.staff || []).map(({ _id }) => _id),
-                },
+            updateCompanyHandler({
+              domain: values.domain,
+              name: `${values?.name}`,
+              contacts: {
+                emails: values.contacts.emails,
+                phones: values.contacts.phones.map((phone) => phoneToRaw(phone)),
               },
-            }).catch((e) => console.log(e));
+              companyId: currentCompany?._id,
+              ownerId: `${values.owner?._id}`,
+              staffIds: (values.staff || []).map(({ _id }) => _id),
+            });
           }}
         >
-          {() => {
+          {({ values }) => {
             return (
               <Form>
-                <CompanyMainFields />
+                <CompanyMainFields
+                  setOwnerHandler={(user) => {
+                    updateCompanyHandler({
+                      domain: values.domain,
+                      name: `${values?.name}`,
+                      contacts: {
+                        emails: values.contacts.emails,
+                        phones: values.contacts.phones.map((phone) => phoneToRaw(phone)),
+                      },
+                      companyId: currentCompany?._id,
+                      ownerId: user._id,
+                      staffIds: (values.staff || []).map(({ _id }) => _id),
+                    });
+                  }}
+                  addStaffUserHandler={(user) => {
+                    const staff = [...(values.staff || []), user];
+
+                    updateCompanyHandler({
+                      domain: values.domain,
+                      name: `${values?.name}`,
+                      contacts: {
+                        emails: values.contacts.emails,
+                        phones: values.contacts.phones.map((phone) => phoneToRaw(phone)),
+                      },
+                      companyId: currentCompany?._id,
+                      ownerId: `${values.owner?._id}`,
+                      staffIds: staff.map(({ _id }) => _id),
+                    });
+                  }}
+                />
                 <Button type={'submit'} testId={'company-submit'}>
                   Сохранить
                 </Button>

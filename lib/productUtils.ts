@@ -251,7 +251,7 @@ export async function getCmsProduct({
 export function getSupplierPrice(supplierProduct: SupplierProductInterface): number {
   const { variant, price, percent } = supplierProduct;
   if (variant === SUPPLIER_PRICE_VARIANT_CHARGE) {
-    const charge = (price / 100) * percent;
+    const charge = Math.round((price / 100) * percent);
     return charge + price;
   }
   return price;

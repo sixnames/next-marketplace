@@ -32,12 +32,6 @@ const ConsoleShopProductLayout: React.FC<ConsoleShopProductLayoutInterface> = ({
         exact: true,
       },
       {
-        name: 'Контент карточки',
-        testId: 'constructor',
-        path: `${basePath}/${shopProduct._id}/constructor`,
-        exact: true,
-      },
-      {
         name: 'Ценообразование',
         testId: 'suppliers',
         path: `${basePath}/${shopProduct._id}/suppliers`,

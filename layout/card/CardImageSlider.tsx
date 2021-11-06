@@ -104,7 +104,7 @@ const CardImageSlider: React.FC<CardImageSliderInterface> = ({
         showThumbnails={showThumbnails}
         thumbnailPosition={isMobile ? 'bottom' : 'left'}
         items={items}
-        disableThumbnailScroll
+        // disableThumbnailScroll
         renderLeftNav={(onClick, disabled) => {
           return (
             <div className={arrowLeftClassName}>

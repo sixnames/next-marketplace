@@ -1,4 +1,4 @@
-import { FILTER_SEPARATOR } from 'config/common';
+import { ATTRIBUTE_VARIANT_SELECT, FILTER_SEPARATOR } from 'config/common';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { noNaN } from 'lib/numbers';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
@@ -6,6 +6,8 @@ import {
   AttributeModel,
   OptionModel,
   ProductAttributeModel,
+  ProductConnectionItemModel,
+  ProductConnectionModel,
   ProductModel,
   ProductPayloadModel,
   ShopProductModel,
@@ -15,6 +17,8 @@ import {
   COL_ATTRIBUTES,
   COL_OPTIONS,
   COL_PRODUCT_ATTRIBUTES,
+  COL_PRODUCT_CONNECTION_ITEMS,
+  COL_PRODUCT_CONNECTIONS,
   COL_PRODUCTS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
@@ -492,6 +496,11 @@ export const ProductAttributeMutations = extendType({
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
         const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+        const productConnectionsCollection =
+          db.collection<ProductConnectionModel>(COL_PRODUCT_CONNECTIONS);
+        const productConnectionItemsCollection = db.collection<ProductConnectionItemModel>(
+          COL_PRODUCT_CONNECTION_ITEMS,
+        );
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
         const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
         const productAttributesCollection =
@@ -676,6 +685,32 @@ export const ProductAttributeMutations = extendType({
               };
               await session.abortTransaction();
               return;
+            }
+
+            // update connections
+            if (attribute.variant === ATTRIBUTE_VARIANT_SELECT) {
+              const selectedOption = finalOptions[0];
+              if (selectedOption) {
+                const connections = await productConnectionsCollection
+                  .find({
+                    productsIds: product._id,
+                    attributeId: attribute._id,
+                  })
+                  .toArray();
+                for await (const connection of connections) {
+                  await productConnectionItemsCollection.updateMany(
+                    {
+                      productId: product._id,
+                      connectionId: connection._id,
+                    },
+                    {
+                      $set: {
+                        optionId: selectedOption._id,
+                      },
+                    },
+                  );
+                }
+              }
             }
 
             mutationPayload = {

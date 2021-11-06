@@ -75,6 +75,7 @@ export const getServerSideProps = async (
     locale,
     query,
     currency,
+    companySlug: initialProps.props.currentCompany.slug,
   });
 
   if (!payload) {

@@ -27,7 +27,6 @@ import {
 import {
   filterAttributesPipeline,
   productSeoPipeline,
-  shopProductFieldsPipeline,
   shopProductSupplierProductsPipeline,
 } from 'db/dao/constantPipelines';
 import { ObjectIdModel } from 'db/dbModels';
@@ -885,12 +884,27 @@ export const getConsoleCompanyRubricProducts = async ({
               },
 
               // get shop product fields
-              ...shopProductFieldsPipeline('$_id'),
               {
-                $match: {
-                  product: {
-                    $exists: true,
+                $lookup: {
+                  from: COL_PRODUCTS,
+                  as: 'product',
+                  let: {
+                    productId: '$_id',
                   },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $eq: ['$$productId', '$_id'],
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                $addFields: {
+                  product: { $arrayElemAt: ['$product', 0] },
                 },
               },
               {
@@ -1249,15 +1263,84 @@ export const getConsoleCompanyRubricProducts = async ({
         product.selectedOptionsSlugs,
       );
 
+      // product attributes
+      const optionSlugs = product.selectedOptionsSlugs.reduce((acc: string[], selectedSlug) => {
+        const slugParts = selectedSlug.split(FILTER_SEPARATOR);
+        const optionSlug = slugParts[1];
+        if (!optionSlug) {
+          return acc;
+        }
+        return [...acc, optionSlug];
+      }, []);
+      const productAttributes = (product.attributes || []).reduce(
+        (acc: ProductAttributeInterface[], attribute) => {
+          const existingAttribute = (attributes || []).find(({ _id }) => {
+            return _id.equals(attribute.attributeId);
+          });
+          if (!existingAttribute) {
+            return acc;
+          }
+
+          const options = (existingAttribute.options || []).filter(({ slug }) => {
+            return optionSlugs.includes(slug);
+          });
+
+          const productAttribute: ProductAttributeInterface = {
+            ...attribute,
+            attribute: {
+              ...existingAttribute,
+              name: getFieldStringLocale(existingAttribute.nameI18n, locale),
+              metric: existingAttribute.metric
+                ? {
+                    ...existingAttribute.metric,
+                    name: getFieldStringLocale(existingAttribute.metric.nameI18n, locale),
+                  }
+                : null,
+              options: getTreeFromList({
+                list: options,
+                childrenFieldName: 'options',
+                locale,
+              }),
+            },
+          };
+          return [...acc, productAttribute];
+        },
+        [],
+      );
+
+      // product categories
+      const initialProductCategories = (categories || []).filter(({ slug }) => {
+        return product.selectedOptionsSlugs.includes(slug);
+      });
+      const productCategories = getTreeFromList({
+        list: initialProductCategories,
+        childrenFieldName: 'categories',
+        locale,
+      });
+
+      // product brand
+      const productBrand = product.brandSlug
+        ? (brands || []).find(({ itemId }) => {
+            return itemId === product.brandSlug;
+          })
+        : null;
+
       // title
       const snippetTitle = generateSnippetTitle({
         locale,
-        brand: product.brand,
+        brand: productBrand
+          ? {
+              ...productBrand,
+              collections: (productBrand.collections || []).filter((collection) => {
+                return collection.itemId === product.brandCollectionSlug;
+              }),
+            }
+          : null,
         rubricName: getFieldStringLocale(rubric.nameI18n, locale),
         showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
         showCategoryInProductTitle: rubric.showCategoryInProductTitle,
-        attributes: product.attributes || [],
-        categories: product.categories,
+        attributes: productAttributes,
+        categories: productCategories,
         titleCategoriesSlugs: product.titleCategoriesSlugs,
         originalName: product.originalName,
         defaultGender: product.gender,
@@ -1305,6 +1388,7 @@ export interface GetConsoleShopProductsInputInterface {
   query: ParsedUrlQuery;
   page?: number;
   excludedProductsIds?: ObjectIdModel[] | null;
+  companySlug: string;
 }
 
 export const getConsoleShopProducts = async ({
@@ -1313,6 +1397,7 @@ export const getConsoleShopProducts = async ({
   query,
   currency,
   excludedProductsIds,
+  companySlug,
   ...props
 }: GetConsoleShopProductsInputInterface): Promise<CompanyShopProductsPageInterface | null> => {
   try {
@@ -1463,7 +1548,32 @@ export const getConsoleShopProducts = async ({
               },
 
               // get shop product fields
-              ...shopProductFieldsPipeline('$productId'),
+              {
+                $lookup: {
+                  from: COL_PRODUCTS,
+                  as: 'product',
+                  let: {
+                    productId: '$productId',
+                  },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $eq: ['$$productId', '$_id'],
+                        },
+                      },
+                    },
+
+                    // get product seo info
+                    ...productSeoPipeline(companySlug),
+                  ],
+                },
+              },
+              {
+                $addFields: {
+                  product: { $arrayElemAt: ['$product', 0] },
+                },
+              },
 
               // get supplier products
               ...shopProductSupplierProductsPipeline,

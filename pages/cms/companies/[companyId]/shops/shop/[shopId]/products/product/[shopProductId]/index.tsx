@@ -1,13 +1,19 @@
 import CompanyProductDetails from 'components/CompanyProductDetails';
 import RequestError from 'components/RequestError';
-import { ROUTE_CMS } from 'config/common';
-import { COL_PRODUCT_CARD_DESCRIPTIONS, COL_PRODUCT_SEO } from 'db/collectionNames';
+import { DEFAULT_CITY, PAGE_EDITOR_DEFAULT_VALUE_STRING, ROUTE_CMS } from 'config/common';
+import {
+  COL_PRODUCT_CARD_CONTENTS,
+  COL_PRODUCT_CARD_DESCRIPTIONS,
+  COL_PRODUCT_SEO,
+} from 'db/collectionNames';
+import { ProductCardContentModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { ProductCardDescriptionInterface, ShopProductInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsLayout from 'layout/cms/CmsLayout';
 import ConsoleShopProductLayout from 'layout/console/ConsoleShopProductLayout';
 import { getConsoleShopProduct } from 'lib/productUtils';
+import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -15,9 +21,10 @@ import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
 interface ProductDetailsInterface {
   shopProduct: ShopProductInterface;
+  cardContent: ProductCardContentModel;
 }
 
-const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct }) => {
+const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct, cardContent }) => {
   const { product, shop, company } = shopProduct;
   if (!product || !shop || !company) {
     return <RequestError />;
@@ -71,6 +78,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct }) => {
         rubric={rubric}
         product={product}
         currentCompany={company}
+        cardContent={cardContent}
       />
     </ConsoleShopProductLayout>
   );
@@ -161,10 +169,30 @@ export const getServerSideProps = async (
       : null,
   };
 
+  const productCardContentsCollection =
+    db.collection<ProductCardContentModel>(COL_PRODUCT_CARD_CONTENTS);
+  let cardContent = await productCardContentsCollection.findOne({
+    productId: shopProduct.productId,
+    companySlug,
+  });
+  if (!cardContent) {
+    cardContent = {
+      _id: new ObjectId(),
+      productId: shopProduct.productId,
+      productSlug: `${shopProduct.product?.slug}`,
+      companySlug,
+      assetKeys: [],
+      content: {
+        [DEFAULT_CITY]: PAGE_EDITOR_DEFAULT_VALUE_STRING,
+      },
+    };
+  }
+
   return {
     props: {
       ...props,
       shopProduct: castDbData(shopProduct),
+      cardContent: castDbData(cardContent),
     },
   };
 };

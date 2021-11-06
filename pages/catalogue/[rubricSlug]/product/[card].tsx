@@ -113,6 +113,12 @@ export async function getServerSideProps(
   const cardData = castDbData(rawCardData);
   // console.log(`After card `, new Date().getTime() - startTime);
 
+  if (!cardData) {
+    return {
+      notFound: true,
+    };
+  }
+
   return {
     props: {
       ...props,

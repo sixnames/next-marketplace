@@ -75,11 +75,11 @@ export const CreateProductInput = inputObjectType({
 export const CopyProductInput = inputObjectType({
   name: 'CopyProductInput',
   definition(t) {
-    t.nonNull.string('companySlug');
     t.nonNull.objectId('productId');
-    t.nonNull.list.nonNull.string('barcode');
+    t.nonNull.string('companySlug');
     t.nonNull.boolean('active');
-    t.string('originalName');
+    t.nonNull.list.nonNull.string('barcode');
+    t.nonNull.string('originalName');
     t.json('nameI18n');
     t.json('descriptionI18n');
     t.json('cardDescriptionI18n');
@@ -92,10 +92,10 @@ export const CopyProductInput = inputObjectType({
 export const UpdateProductInput = inputObjectType({
   name: 'UpdateProductInput',
   definition(t) {
-    t.nonNull.string('companySlug');
     t.nonNull.objectId('productId');
-    t.list.nonNull.string('barcode');
+    t.nonNull.string('companySlug');
     t.nonNull.boolean('active');
+    t.list.nonNull.string('barcode');
     t.string('originalName');
     t.json('nameI18n');
     t.json('descriptionI18n');
@@ -166,180 +166,6 @@ export const UpdateProductCategoryInput = inputObjectType({
 export const ProductMutations = extendType({
   type: 'Mutation',
   definition(t) {
-    // Should create product
-    t.nonNull.field('createProduct', {
-      type: 'ProductPayload',
-      description: 'Should create product',
-      args: {
-        input: nonNull(
-          arg({
-            type: 'CreateProductInput',
-          }),
-        ),
-      },
-      resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
-        const { getApiMessage } = await getRequestParams(context);
-        const { db, client } = await getDatabase();
-        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-        const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
-        const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-        const productsCardDescriptionsCollection = db.collection<ProductCardDescriptionModel>(
-          COL_PRODUCT_CARD_DESCRIPTIONS,
-        );
-
-        const session = client.startSession();
-
-        let mutationPayload: ProductPayloadModel = {
-          success: false,
-          message: await getApiMessage(`products.create.error`),
-        };
-
-        try {
-          await session.withTransaction(async () => {
-            // Permission
-            const { allow, message } = await getOperationPermission({
-              context,
-              slug: 'createProduct',
-            });
-            if (!allow) {
-              mutationPayload = {
-                success: false,
-                message,
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            const { input } = args;
-            const { rubricId, cardDescriptionI18n, companySlug, ...values } = input;
-
-            // Get selected rubric
-            const rubric = await rubricsCollection.findOne({ _id: rubricId });
-            if (!rubric) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`products.create.error`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Create product
-            const itemId = await getNextItemId(COL_PRODUCTS);
-            const productId = new ObjectId();
-            const createdProductResult = await productsCollection.insertOne({
-              ...values,
-              _id: productId,
-              itemId,
-              mainImage: IMAGE_FALLBACK,
-              slug: itemId,
-              rubricId,
-              rubricSlug: rubric.slug,
-              active: false,
-              titleCategoriesSlugs: [],
-              selectedOptionsSlugs: [],
-              selectedAttributesIds: [],
-              createdAt: new Date(),
-              updatedAt: new Date(),
-            });
-            const createdProduct = await productsCollection.findOne({
-              _id: createdProductResult.insertedId,
-            });
-            if (!createdProductResult.acknowledged || !createdProduct) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`products.create.error`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Create product assets
-            const createdAssetsResult = await productAssetsCollection.insertOne({
-              productId,
-              productSlug: itemId,
-              assets: [
-                {
-                  index: 1,
-                  url: IMAGE_FALLBACK,
-                },
-              ],
-            });
-            if (!createdAssetsResult.acknowledged) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`products.create.error`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Create card description
-            const createdCardDescription = await productsCardDescriptionsCollection.insertOne({
-              productSlug: itemId,
-              productId,
-              textI18n: cardDescriptionI18n || {},
-              companySlug,
-            });
-            if (!createdCardDescription.acknowledged) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`products.create.error`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Create algolia object
-            const algoliaResult = await saveAlgoliaObjects({
-              indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
-              objects: [
-                {
-                  _id: createdProduct._id.toHexString(),
-                  objectID: createdProduct._id.toHexString(),
-                  itemId: createdProduct.itemId,
-                  originalName: createdProduct.originalName,
-                  nameI18n: createdProduct.nameI18n,
-                  descriptionI18n: createdProduct.descriptionI18n,
-                  barcode: createdProduct.barcode,
-                },
-              ],
-            });
-            if (!algoliaResult) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`products.create.error`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // check description uniqueness
-            await checkProductDescriptionUniqueness({
-              product: createdProduct,
-              cardDescriptionI18n: cardDescriptionI18n,
-              companySlug,
-            });
-
-            mutationPayload = {
-              success: true,
-              message: await getApiMessage('products.create.success'),
-              payload: createdProduct,
-            };
-          });
-
-          return mutationPayload;
-        } catch (e) {
-          return {
-            success: false,
-            message: getResolverErrorMessage(e),
-          };
-        } finally {
-          await session.endSession();
-        }
-      },
-    });
-
     // Should update product
     t.nonNull.field('updateProduct', {
       type: 'ProductPayload',

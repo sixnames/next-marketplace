@@ -8,7 +8,7 @@ import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayo
 import { getSiteInitialData } from 'lib/ssrUtils';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { getSession, signIn } from 'next-auth/client';
+import { signIn } from 'next-auth/client';
 import { signInSchema } from 'validation/userSchema';
 import { Form, Formik } from 'formik';
 
@@ -107,14 +107,12 @@ const SignIn: NextPage<SignInPageInterface> = (props) => {
 export async function getServerSideProps(
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<SignInPageInterface>> {
-  const session = await getSession(context);
-
   const { props } = await getSiteInitialData({
     context,
   });
 
   // Redirect user to the Home page if already authorized
-  if (session?.user) {
+  if (props.sessionUser) {
     return {
       redirect: {
         permanent: false,

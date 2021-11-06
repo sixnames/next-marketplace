@@ -1,5 +1,6 @@
 import { GEO_POINT_TYPE } from 'config/common';
 import {
+  BarcodeDoublesInterface,
   BrandInterface,
   CategoryInterface,
   ProductAttributeInterface,
@@ -14,6 +15,7 @@ export type ObjectIdModel = ObjectId;
 export type EmailAddressModel = string;
 export type PhoneNumberModel = string;
 export type URLModel = string;
+export type Maybe<T> = T | undefined | null;
 
 // Gender enum
 export enum GenderModel {
@@ -1088,36 +1090,39 @@ export interface ConstructorAssetPayloadModel extends PayloadType<string> {
   payload: string;
 }
 export type AttributesGroupPayloadModel = PayloadType<AttributesGroupModel>;
-export type BrandPayloadModel = PayloadType<BrandModel>;
-export type BlogPostPayloadModel = PayloadType<BlogPostModel>;
 export type BlogAttributePayloadModel = PayloadType<BlogAttributeModel>;
+export type BlogPostPayloadModel = PayloadType<BlogPostModel>;
+export type BrandPayloadModel = PayloadType<BrandModel>;
+export type CategoryPayloadModel = PayloadType<CategoryModel>;
 export type CompanyPayloadModel = PayloadType<CompanyModel>;
 export type ConfigPayloadModel = PayloadType<ConfigModel>;
 export type CountryPayloadModel = PayloadType<CountryModel>;
 export type CurrencyPayloadModel = PayloadType<CurrencyModel>;
 export type LanguagePayloadModel = PayloadType<LanguageModel>;
 export type ManufacturerPayloadModel = PayloadType<ManufacturerModel>;
-export type SupplierPayloadModel = PayloadType<SupplierModel>;
 export type MetricPayloadModel = PayloadType<MetricModel>;
-export type OrderStatusPayloadModel = PayloadType<OrderStatusModel>;
-export type OptionsGroupPayloadModel = PayloadType<OptionsGroupModel>;
-export type ProductPayloadModel = PayloadType<ProductModel>;
-export type ProductCardContentPayloadModel = PayloadType<ProductCardContentModel>;
-export type RubricVariantPayloadModel = PayloadType<RubricVariantModel>;
-export type RubricPayloadModel = PayloadType<RubricModel>;
-export type CategoryPayloadModel = PayloadType<CategoryModel>;
-export type ShopProductPayloadModel = PayloadType<ShopProductModel>;
-export type ShopPayloadModel = PayloadType<ShopModel>;
-export type UserPayloadModel = PayloadType<UserModel>;
-export type RolePayloadModel = PayloadType<RoleModel>;
 export type NavItemPayloadModel = PayloadType<NavItemModel>;
-export type RoleRulePayloadModel = PayloadType<RoleRuleModel>;
-export type PagesGroupPayloadModel = PayloadType<PagesGroupModel>;
-export type PagePayloadModel = PayloadType<PageModel>;
-export type PromoPayloadModel = PayloadType<PromoModel>;
+export type OptionsGroupPayloadModel = PayloadType<OptionsGroupModel>;
 export type OrderPayloadModel = PayloadType<OrderModel>;
-export type UserCategoryPayloadModel = PayloadType<UserCategoryModel>;
 export type OrderProductPayloadModel = PayloadType<OrderProductModel>;
+export type OrderStatusPayloadModel = PayloadType<OrderStatusModel>;
+export type PagePayloadModel = PayloadType<PageModel>;
+export type PagesGroupPayloadModel = PayloadType<PagesGroupModel>;
+export type ProductCardContentPayloadModel = PayloadType<ProductCardContentModel>;
+export type PromoPayloadModel = PayloadType<PromoModel>;
+export type RolePayloadModel = PayloadType<RoleModel>;
+export type RoleRulePayloadModel = PayloadType<RoleRuleModel>;
+export type RubricPayloadModel = PayloadType<RubricModel>;
+export type RubricVariantPayloadModel = PayloadType<RubricVariantModel>;
+export type ShopPayloadModel = PayloadType<ShopModel>;
+export type ShopProductPayloadModel = PayloadType<ShopProductModel>;
+export type SupplierPayloadModel = PayloadType<SupplierModel>;
+export type UserCategoryPayloadModel = PayloadType<UserCategoryModel>;
+export type UserPayloadModel = PayloadType<UserModel>;
+
+export interface ProductPayloadModel extends PayloadType<ProductModel> {
+  barcodeDoubles?: BarcodeDoublesInterface[] | null;
+}
 
 export interface CartPayloadModel {
   success: boolean;

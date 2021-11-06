@@ -299,6 +299,11 @@ export interface ProductInterface extends ProductModel {
   seo?: ProductSeoModel | null;
 }
 
+export interface BarcodeDoublesInterface {
+  products: ProductInterface[];
+  barcode: string;
+}
+
 export interface RoleRuleInterface extends RoleRuleModel {
   name?: string | null;
   description?: string | null;

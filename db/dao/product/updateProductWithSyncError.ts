@@ -1,40 +1,38 @@
-import { COL_PRODUCT_CARD_DESCRIPTIONS, COL_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
-import { CreateProductInterface } from 'db/dao/product/createProduct';
+import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
 import {
-  ProductCardDescriptionModel,
-  ProductModel,
-  ProductPayloadModel,
-  RubricModel,
-} from 'db/dbModels';
+  COL_NOT_SYNCED_PRODUCTS,
+  COL_PRODUCTS,
+  COL_SHOP_PRODUCTS,
+  COL_SHOPS,
+} from 'db/collectionNames';
+import { ProductModel, ProductPayloadModel, ShopModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
 import { saveAlgoliaObjects } from 'lib/algoliaUtils';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getNextItemId } from 'lib/itemIdUtils';
 import { checkBarcodeIntersects } from 'lib/productUtils';
-import {
-  getOperationPermission,
-  getRequestParams,
-  getResolverValidationSchema,
-} from 'lib/sessionHelpers';
-import { checkProductDescriptionUniqueness } from 'lib/textUniquenessUtils';
+import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
-import { updateProductSchema } from 'validation/productSchema';
 
-export interface UpdateProductInterface extends CreateProductInterface {
+export interface UpdateProductWithSyncErrorInput {
   productId: string;
+  shopId: string;
+  barcode: string[];
+  available: number;
+  price: number;
 }
 
-export async function updateProduct({
+export async function updateProductWithSyncError({
   context,
   input,
-}: DaoPropsInterface<UpdateProductInterface>): Promise<ProductPayloadModel> {
+}: DaoPropsInterface<UpdateProductWithSyncErrorInput>): Promise<ProductPayloadModel> {
   const { getApiMessage, locale } = await getRequestParams(context);
   const { db, client } = await getDatabase();
   const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-  const productsCardDescriptionsCollection = db.collection<ProductCardDescriptionModel>(
-    COL_PRODUCT_CARD_DESCRIPTIONS,
-  );
+  const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+  const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
+  const notSyncedProductsCollection = db.collection<ShopModel>(COL_NOT_SYNCED_PRODUCTS);
 
   const session = client.startSession();
 
@@ -54,7 +52,7 @@ export async function updateProduct({
       // permission
       const { allow, message } = await getOperationPermission({
         context,
-        slug: 'updateProduct',
+        slug: 'createShopProduct',
       });
       if (!allow) {
         mutationPayload = {
@@ -65,14 +63,7 @@ export async function updateProduct({
         return;
       }
 
-      // validate
-      const validationSchema = await getResolverValidationSchema({
-        context,
-        schema: updateProductSchema,
-      });
-      await validationSchema.validate(input);
-
-      const { productId, companySlug, cardDescriptionI18n, rubricId, ...values } = input;
+      const { productId, available, price, shopId, barcode } = input;
 
       // check product availability
       const productObjectId = new ObjectId(productId);
@@ -89,7 +80,7 @@ export async function updateProduct({
       // check barcode intersects
       const barcodeDoubles = await checkBarcodeIntersects({
         locale,
-        barcode: values.barcode,
+        barcode: barcode,
         productId: product._id,
       });
       if (barcodeDoubles.length > 0) {
@@ -102,39 +93,47 @@ export async function updateProduct({
         return;
       }
 
-      // get selected rubric
-      const rubricObjectId = new ObjectId(rubricId);
-      const rubric = await rubricsCollection.findOne({ _id: rubricObjectId });
-      if (!rubric) {
+      // check shop availability
+      const shopObjectId = new ObjectId(shopId);
+      const shop = await shopsCollection.findOne({ _id: shopObjectId });
+      if (!shop) {
         mutationPayload = {
           success: false,
-          message: await getApiMessage(`products.update.error`),
+          message: await getApiMessage(`shops.update.notFound`),
         };
         await session.abortTransaction();
         return;
       }
 
-      // check description uniqueness
-      const cardDescription = await productsCardDescriptionsCollection.findOne({
-        productId: product._id,
-        companySlug,
+      // Check if shop product already exist
+      const shopProduct = await shopProductsCollection.findOne({
+        productId: productObjectId,
+        shopId: shopObjectId,
+        barcode: {
+          $in: barcode,
+        },
       });
-      await checkProductDescriptionUniqueness({
-        product,
-        cardDescriptionI18n,
-        oldCardDescriptionI18n: cardDescription?.textI18n,
-        companySlug,
-      });
+      if (shopProduct) {
+        mutationPayload = {
+          success: false,
+          message: await getApiMessage(`shopProducts.create.duplicate`),
+        };
+        await session.abortTransaction();
+        return;
+      }
 
-      // update product
+      // Update product
       const updatedProductResult = await productsCollection.findOneAndUpdate(
         {
           _id: product._id,
         },
         {
+          $addToSet: {
+            barcode: {
+              $each: barcode,
+            },
+          },
           $set: {
-            ...values,
-            originalName: values.originalName || '',
             updatedAt: new Date(),
           },
         },
@@ -142,30 +141,6 @@ export async function updateProduct({
           returnDocument: 'after',
         },
       );
-
-      // Update card description
-      const createdCardDescription = await productsCardDescriptionsCollection.findOneAndUpdate(
-        {
-          productId: product._id,
-          companySlug,
-        },
-        {
-          $set: {
-            textI18n: cardDescriptionI18n || {},
-          },
-        },
-        {
-          upsert: true,
-        },
-      );
-      if (!createdCardDescription.ok) {
-        mutationPayload = {
-          success: false,
-          message: await getApiMessage(`products.create.error`),
-        };
-        await session.abortTransaction();
-        return;
-      }
 
       const updatedProduct = updatedProductResult.value;
       if (!updatedProductResult.ok || !updatedProduct) {
@@ -177,8 +152,8 @@ export async function updateProduct({
         return;
       }
 
-      // Update algolia product object
-      const algoliaProductResult = await saveAlgoliaObjects({
+      // Update product algolia object
+      const productAlgoliaResult = await saveAlgoliaObjects({
         indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
         objects: [
           {
@@ -192,7 +167,22 @@ export async function updateProduct({
           },
         ],
       });
-      if (!algoliaProductResult) {
+      if (!productAlgoliaResult) {
+        mutationPayload = {
+          success: false,
+          message: await getApiMessage(`products.create.error`),
+        };
+        await session.abortTransaction();
+        return;
+      }
+
+      // Delete sync errors
+      const removedNotSyncedProductsResult = await notSyncedProductsCollection.deleteMany({
+        barcode: {
+          $in: input.barcode,
+        },
+      });
+      if (!removedNotSyncedProductsResult.acknowledged) {
         mutationPayload = {
           success: false,
           message: await getApiMessage(`products.update.error`),
@@ -201,16 +191,49 @@ export async function updateProduct({
         return;
       }
 
+      // create shop products
+      const itemId = await getNextItemId(COL_SHOP_PRODUCTS);
+      const createdShopProductResult = await shopProductsCollection.insertOne({
+        barcode: input.barcode,
+        available,
+        price,
+        itemId,
+        productId: product._id,
+        discountedPercent: 0,
+        shopId: shop._id,
+        citySlug: shop.citySlug,
+        oldPrices: [],
+        rubricId: product.rubricId,
+        rubricSlug: product.rubricSlug,
+        companyId: shop.companyId,
+        brandSlug: product.brandSlug,
+        mainImage: product.mainImage,
+        brandCollectionSlug: product.brandCollectionSlug,
+        manufacturerSlug: product.manufacturerSlug,
+        selectedOptionsSlugs: product.selectedOptionsSlugs,
+        updatedAt: new Date(),
+        createdAt: new Date(),
+        ...DEFAULT_COUNTERS_OBJECT,
+      });
+
+      if (!createdShopProductResult.acknowledged) {
+        mutationPayload = {
+          success: false,
+          message: await getApiMessage(`shopProducts.create.error`),
+        };
+        await session.abortTransaction();
+        return;
+      }
+
       mutationPayload = {
         success: true,
-        message: await getApiMessage('products.update.success'),
+        message: await getApiMessage('shopProducts.create.success'),
         payload: updatedProduct,
       };
     });
 
     return mutationPayload;
   } catch (e) {
-    console.log(e);
     return {
       success: false,
       message: getResolverErrorMessage(e),

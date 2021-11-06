@@ -25,7 +25,7 @@ import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { checkProductDescriptionUniqueness } from 'lib/textUniquenessUtils';
 import { ObjectId } from 'mongodb';
 
-export interface CreateProductInterface {
+export interface CreateProductInputInterface {
   companySlug: string;
   active: boolean;
   barcode: string[];
@@ -40,7 +40,7 @@ export interface CreateProductInterface {
 export async function createProduct({
   context,
   input,
-}: DaoPropsInterface<CreateProductInterface>): Promise<ProductPayloadModel> {
+}: DaoPropsInterface<CreateProductInputInterface>): Promise<ProductPayloadModel> {
   const { getApiMessage, locale } = await getRequestParams(context);
   const { db, client } = await getDatabase();
   const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);

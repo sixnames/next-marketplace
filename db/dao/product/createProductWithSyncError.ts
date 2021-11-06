@@ -1,11 +1,19 @@
-import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
+import { DEFAULT_COUNTERS_OBJECT, IMAGE_FALLBACK } from 'config/common';
 import {
   COL_NOT_SYNCED_PRODUCTS,
   COL_PRODUCTS,
+  COL_RUBRICS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
 } from 'db/collectionNames';
-import { ProductModel, ProductPayloadModel, ShopModel, ShopProductModel } from 'db/dbModels';
+import { CreateProductInputInterface } from 'db/dao/product/createProduct';
+import {
+  ProductModel,
+  ProductPayloadModel,
+  RubricModel,
+  ShopModel,
+  ShopProductModel,
+} from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
 import { saveAlgoliaObjects } from 'lib/algoliaUtils';
@@ -15,24 +23,24 @@ import { checkBarcodeIntersects } from 'lib/productUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
 
-export interface UpdateProductWithSyncErrorInputInterface {
-  productId: string;
+export interface CreateProductWithSyncErrorInputInterface {
   shopId: string;
-  barcode: string[];
   available: number;
   price: number;
+  productFields: CreateProductInputInterface;
 }
 
-export async function updateProductWithSyncError({
+export async function createProductWithSyncError({
   context,
   input,
-}: DaoPropsInterface<UpdateProductWithSyncErrorInputInterface>): Promise<ProductPayloadModel> {
+}: DaoPropsInterface<CreateProductWithSyncErrorInputInterface>): Promise<ProductPayloadModel> {
   const { getApiMessage, locale } = await getRequestParams(context);
   const { db, client } = await getDatabase();
   const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
   const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
   const notSyncedProductsCollection = db.collection<ShopModel>(COL_NOT_SYNCED_PRODUCTS);
+  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
 
   const session = client.startSession();
 
@@ -52,7 +60,7 @@ export async function updateProductWithSyncError({
       // permission
       const { allow, message } = await getOperationPermission({
         context,
-        slug: 'createShopProduct',
+        slug: 'createProduct',
       });
       if (!allow) {
         mutationPayload = {
@@ -63,31 +71,31 @@ export async function updateProductWithSyncError({
         return;
       }
 
-      const { productId, available, price, shopId, barcode } = input;
+      const { productFields, available, price, shopId } = input;
 
-      // check product availability
-      const productObjectId = new ObjectId(productId);
-      const product = await productsCollection.findOne({ _id: productObjectId });
-      if (!product) {
+      // check barcode intersects
+      const barcodeDoubles = await checkBarcodeIntersects({
+        locale,
+        barcode: productFields.barcode,
+        productId: null,
+      });
+      if (barcodeDoubles.length > 0) {
         mutationPayload = {
           success: false,
-          message: await getApiMessage(`products.update.notFound`),
+          message: await getApiMessage(`products.create.error`),
+          barcodeDoubles,
         };
         await session.abortTransaction();
         return;
       }
 
-      // check barcode intersects
-      const barcodeDoubles = await checkBarcodeIntersects({
-        locale,
-        barcode: barcode,
-        productId: product._id,
-      });
-      if (barcodeDoubles.length > 0) {
+      // get selected rubric
+      const rubricObjectId = new ObjectId(productFields.rubricId);
+      const rubric = await rubricsCollection.findOne({ _id: rubricObjectId });
+      if (!rubric) {
         mutationPayload = {
           success: false,
-          message: await getApiMessage(`products.update.error`),
-          barcodeDoubles,
+          message: await getApiMessage(`products.create.error`),
         };
         await session.abortTransaction();
         return;
@@ -105,15 +113,18 @@ export async function updateProductWithSyncError({
         return;
       }
 
-      // Check if shop product already exist
-      const shopProduct = await shopProductsCollection.findOne({
-        productId: productObjectId,
-        shopId: shopObjectId,
-        barcode: {
-          $in: barcode,
-        },
-      });
-      if (shopProduct) {
+      // check if shop product already exist
+      const existingShopProducts: ShopProductModel[] = [];
+      for await (const barcode of productFields.barcode) {
+        const shopProduct = await shopProductsCollection.findOne({
+          barcode,
+          shopId: shop._id,
+        });
+        if (shopProduct) {
+          existingShopProducts.push(shopProduct);
+        }
+      }
+      if (existingShopProducts.length > 0) {
         mutationPayload = {
           success: false,
           message: await getApiMessage(`shopProducts.create.duplicate`),
@@ -122,48 +133,48 @@ export async function updateProductWithSyncError({
         return;
       }
 
-      // Update product
-      const updatedProductResult = await productsCollection.findOneAndUpdate(
-        {
-          _id: product._id,
-        },
-        {
-          $addToSet: {
-            barcode: {
-              $each: barcode,
-            },
-          },
-          $set: {
-            updatedAt: new Date(),
-          },
-        },
-        {
-          returnDocument: 'after',
-        },
-      );
-
-      const updatedProduct = updatedProductResult.value;
-      if (!updatedProductResult.ok || !updatedProduct) {
+      // create product
+      const productItemId = await getNextItemId(COL_PRODUCTS);
+      const productId = new ObjectId();
+      const createdProductResult = await productsCollection.insertOne({
+        ...productFields,
+        _id: productId,
+        itemId: productItemId,
+        slug: productItemId,
+        mainImage: IMAGE_FALLBACK,
+        rubricId: rubric._id,
+        rubricSlug: rubric.slug,
+        active: false,
+        selectedOptionsSlugs: [],
+        selectedAttributesIds: [],
+        titleCategoriesSlugs: [],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+      const createdProduct = await productsCollection.findOne({
+        _id: createdProductResult.insertedId,
+      });
+      if (!createdProductResult.acknowledged || !createdProduct) {
         mutationPayload = {
           success: false,
-          message: await getApiMessage(`products.update.error`),
+          message: await getApiMessage(`products.create.error`),
         };
         await session.abortTransaction();
         return;
       }
 
-      // Update product algolia object
+      // create product algolia object
       const productAlgoliaResult = await saveAlgoliaObjects({
         indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
         objects: [
           {
-            _id: updatedProduct._id.toHexString(),
-            objectID: updatedProduct._id.toHexString(),
-            itemId: updatedProduct.itemId,
-            originalName: updatedProduct.originalName,
-            nameI18n: updatedProduct.nameI18n,
-            descriptionI18n: updatedProduct.descriptionI18n,
-            barcode: updatedProduct.barcode,
+            _id: createdProduct._id.toHexString(),
+            objectID: createdProduct._id.toHexString(),
+            itemId: createdProduct.itemId,
+            originalName: createdProduct.originalName,
+            nameI18n: createdProduct.nameI18n,
+            descriptionI18n: createdProduct.descriptionI18n,
+            barcode: createdProduct.barcode,
           },
         ],
       });
@@ -176,46 +187,44 @@ export async function updateProductWithSyncError({
         return;
       }
 
-      // Delete sync errors
+      // delete sync errors
       const removedNotSyncedProductsResult = await notSyncedProductsCollection.deleteMany({
         barcode: {
-          $in: input.barcode,
+          $in: productFields.barcode,
         },
       });
       if (!removedNotSyncedProductsResult.acknowledged) {
         mutationPayload = {
           success: false,
-          message: await getApiMessage(`products.update.error`),
+          message: await getApiMessage(`products.create.error`),
         };
         await session.abortTransaction();
         return;
       }
 
-      // create shop products
-      const itemId = await getNextItemId(COL_SHOP_PRODUCTS);
+      const shopProductItemId = await getNextItemId(COL_SHOP_PRODUCTS);
       const createdShopProductResult = await shopProductsCollection.insertOne({
-        barcode: input.barcode,
+        barcode: productFields.barcode,
         available,
         price,
-        itemId,
-        productId: product._id,
+        itemId: shopProductItemId,
+        productId,
         discountedPercent: 0,
         shopId: shop._id,
         citySlug: shop.citySlug,
         oldPrices: [],
-        rubricId: product.rubricId,
-        rubricSlug: product.rubricSlug,
+        rubricId: createdProduct.rubricId,
+        rubricSlug: createdProduct.rubricSlug,
         companyId: shop.companyId,
-        brandSlug: product.brandSlug,
-        mainImage: product.mainImage,
-        brandCollectionSlug: product.brandCollectionSlug,
-        manufacturerSlug: product.manufacturerSlug,
-        selectedOptionsSlugs: product.selectedOptionsSlugs,
+        brandSlug: createdProduct.brandSlug,
+        mainImage: createdProduct.mainImage,
+        brandCollectionSlug: createdProduct.brandCollectionSlug,
+        manufacturerSlug: createdProduct.manufacturerSlug,
+        selectedOptionsSlugs: createdProduct.selectedOptionsSlugs,
         updatedAt: new Date(),
         createdAt: new Date(),
         ...DEFAULT_COUNTERS_OBJECT,
       });
-
       if (!createdShopProductResult.acknowledged) {
         mutationPayload = {
           success: false,
@@ -228,7 +237,7 @@ export async function updateProductWithSyncError({
       mutationPayload = {
         success: true,
         message: await getApiMessage('shopProducts.create.success'),
-        payload: updatedProduct,
+        payload: createdProduct,
       };
     });
 

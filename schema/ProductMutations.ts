@@ -1,14 +1,10 @@
-import { saveAlgoliaObjects } from 'lib/algoliaUtils';
 import { getParentTreeSlugs } from 'lib/optionsUtils';
-import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   CategoryModel,
   ProductAssetsModel,
   ProductModel,
   ProductPayloadModel,
-  RubricModel,
-  ShopModel,
   ShopProductModel,
 } from 'db/dbModels';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
@@ -16,20 +12,11 @@ import { getOperationPermission, getRequestParams, getSessionRole } from 'lib/se
 import { getDatabase } from 'db/mongodb';
 import {
   COL_CATEGORIES,
-  COL_NOT_SYNCED_PRODUCTS,
   COL_PRODUCT_ASSETS,
   COL_PRODUCTS,
-  COL_RUBRICS,
   COL_SHOP_PRODUCTS,
-  COL_SHOPS,
 } from 'db/collectionNames';
-import {
-  DEFAULT_COMPANY_SLUG,
-  DEFAULT_COUNTERS_OBJECT,
-  IMAGE_FALLBACK,
-  VIEWS_COUNTER_STEP,
-} from 'config/common';
-import { getNextItemId } from 'lib/itemIdUtils';
+import { DEFAULT_COMPANY_SLUG, VIEWS_COUNTER_STEP } from 'config/common';
 import { deleteUpload, getMainImage, reorderAssets } from 'lib/assetUtils/assetUtils';
 
 export const ProductPayload = objectType({
@@ -38,18 +25,6 @@ export const ProductPayload = objectType({
     t.implements('Payload');
     t.field('payload', {
       type: 'Product',
-    });
-  },
-});
-
-export const CreateProductWithSyncErrorInput = inputObjectType({
-  name: 'CreateProductWithSyncErrorInput',
-  definition(t) {
-    t.nonNull.int('available');
-    t.nonNull.int('price');
-    t.nonNull.objectId('shopId');
-    t.nonNull.field('productFields', {
-      type: 'CreateProductInput',
     });
   },
 });
@@ -400,241 +375,6 @@ export const ProductMutations = extendType({
               success: true,
               message: await getApiMessage('products.update.success'),
               payload: updatedProduct,
-            };
-          });
-
-          return mutationPayload;
-        } catch (e) {
-          return {
-            success: false,
-            message: getResolverErrorMessage(e),
-          };
-        } finally {
-          await session.endSession();
-        }
-      },
-    });
-
-    // Should create product with syn error and remove sync error
-    t.nonNull.field('createProductWithSyncError', {
-      type: 'ProductPayload',
-      description: 'Should create product with syn error and remove sync error',
-      args: {
-        input: nonNull(
-          arg({
-            type: 'CreateProductWithSyncErrorInput',
-          }),
-        ),
-      },
-      resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
-        const { getApiMessage } = await getRequestParams(context);
-        const { db, client } = await getDatabase();
-        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-        const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-        const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
-        const notSyncedProductsCollection = db.collection<ShopModel>(COL_NOT_SYNCED_PRODUCTS);
-        const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-
-        const session = client.startSession();
-
-        let mutationPayload: ProductPayloadModel = {
-          success: false,
-          message: await getApiMessage(`products.update.error`),
-        };
-
-        try {
-          await session.withTransaction(async () => {
-            // Permission
-            const { allow, message } = await getOperationPermission({
-              context,
-              slug: 'createProduct',
-            });
-            if (!allow) {
-              mutationPayload = {
-                success: false,
-                message,
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            const { input } = args;
-            const { productFields, available, price, shopId } = input;
-
-            // Check if product already exist
-            const existingProducts = await productsCollection
-              .aggregate([
-                {
-                  $unwind: {
-                    path: '$barcode',
-                    preserveNullAndEmptyArrays: true,
-                  },
-                },
-                {
-                  $match: {
-                    barcode: {
-                      $in: productFields.barcode,
-                    },
-                  },
-                },
-              ])
-              .toArray();
-            if (existingProducts.length > 0) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`products.create.error`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Get selected rubric
-            const rubric = await rubricsCollection.findOne({ _id: productFields.rubricId });
-            if (!rubric) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`products.create.error`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Check shop availability
-            const shop = await shopsCollection.findOne({ _id: shopId });
-            if (!shop) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`shops.update.notFound`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Check if shop product already exist
-            const existingShopProducts: ShopProductModel[] = [];
-            for await (const barcode of productFields.barcode) {
-              const shopProduct = await shopProductsCollection.findOne({
-                barcode,
-                shopId,
-              });
-              if (shopProduct) {
-                existingShopProducts.push(shopProduct);
-              }
-            }
-            if (existingShopProducts.length > 0) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`shopProducts.create.duplicate`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Create product
-            const productItemId = await getNextItemId(COL_PRODUCTS);
-            const productId = new ObjectId();
-            const createdProductResult = await productsCollection.insertOne({
-              ...productFields,
-              _id: productId,
-              itemId: productItemId,
-              slug: productItemId,
-              mainImage: IMAGE_FALLBACK,
-              rubricId: rubric._id,
-              rubricSlug: rubric.slug,
-              active: false,
-              selectedOptionsSlugs: [],
-              selectedAttributesIds: [],
-              titleCategoriesSlugs: [],
-              createdAt: new Date(),
-              updatedAt: new Date(),
-            });
-            const createdProduct = await productsCollection.findOne({
-              _id: createdProductResult.insertedId,
-            });
-            if (!createdProductResult.acknowledged || !createdProduct) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`products.create.error`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Create product algolia object
-            const productAlgoliaResult = await saveAlgoliaObjects({
-              indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
-              objects: [
-                {
-                  _id: createdProduct._id.toHexString(),
-                  objectID: createdProduct._id.toHexString(),
-                  itemId: createdProduct.itemId,
-                  originalName: createdProduct.originalName,
-                  nameI18n: createdProduct.nameI18n,
-                  descriptionI18n: createdProduct.descriptionI18n,
-                  barcode: createdProduct.barcode,
-                },
-              ],
-            });
-            if (!productAlgoliaResult) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`products.create.error`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Delete sync errors
-            const removedNotSyncedProductsResult = await notSyncedProductsCollection.deleteMany({
-              barcode: {
-                $in: productFields.barcode,
-              },
-            });
-            if (!removedNotSyncedProductsResult.acknowledged) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`products.create.error`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            const shopProductItemId = await getNextItemId(COL_SHOP_PRODUCTS);
-            const createdShopProductResult = await shopProductsCollection.insertOne({
-              barcode: productFields.barcode,
-              available,
-              price,
-              itemId: shopProductItemId,
-              productId,
-              discountedPercent: 0,
-              shopId: shop._id,
-              citySlug: shop.citySlug,
-              oldPrices: [],
-              rubricId: createdProduct.rubricId,
-              rubricSlug: createdProduct.rubricSlug,
-              companyId: shop.companyId,
-              brandSlug: createdProduct.brandSlug,
-              mainImage: createdProduct.mainImage,
-              brandCollectionSlug: createdProduct.brandCollectionSlug,
-              manufacturerSlug: createdProduct.manufacturerSlug,
-              selectedOptionsSlugs: createdProduct.selectedOptionsSlugs,
-              updatedAt: new Date(),
-              createdAt: new Date(),
-              ...DEFAULT_COUNTERS_OBJECT,
-            });
-            if (!createdShopProductResult.acknowledged) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`shopProducts.create.error`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            mutationPayload = {
-              success: true,
-              message: await getApiMessage('shopProducts.create.success'),
-              payload: createdProduct,
             };
           });
 

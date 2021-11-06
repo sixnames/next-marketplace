@@ -5,7 +5,7 @@ import {
   COL_PRODUCT_CARD_CONTENTS,
   COL_PRODUCTS,
 } from 'db/collectionNames';
-import { CreateProductInterface } from 'db/dao/product/createProduct';
+import { CreateProductInputInterface } from 'db/dao/product/createProduct';
 import {
   ProductAssetsModel,
   ProductAttributeModel,
@@ -26,14 +26,14 @@ import {
 import { ObjectId } from 'mongodb';
 import { updateProductSchema } from 'validation/productSchema';
 
-export interface CopyProductInterface extends CreateProductInterface {
+export interface CopyProductInputInterface extends CreateProductInputInterface {
   productId: string;
 }
 
 export async function copyProduct({
   input,
   context,
-}: DaoPropsInterface<CopyProductInterface>): Promise<ProductPayloadModel> {
+}: DaoPropsInterface<CopyProductInputInterface>): Promise<ProductPayloadModel> {
   const { getApiMessage } = await getRequestParams(context);
   const { db, client } = await getDatabase();
   const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);

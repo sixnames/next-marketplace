@@ -1,5 +1,5 @@
 import { COL_PRODUCT_CARD_DESCRIPTIONS, COL_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
-import { CreateProductInterface } from 'db/dao/product/createProduct';
+import { CreateProductInputInterface } from 'db/dao/product/createProduct';
 import {
   ProductCardDescriptionModel,
   ProductModel,
@@ -20,14 +20,14 @@ import { checkProductDescriptionUniqueness } from 'lib/textUniquenessUtils';
 import { ObjectId } from 'mongodb';
 import { updateProductSchema } from 'validation/productSchema';
 
-export interface UpdateProductInterface extends CreateProductInterface {
+export interface UpdateProductInputInterface extends CreateProductInputInterface {
   productId: string;
 }
 
 export async function updateProduct({
   context,
   input,
-}: DaoPropsInterface<UpdateProductInterface>): Promise<ProductPayloadModel> {
+}: DaoPropsInterface<UpdateProductInputInterface>): Promise<ProductPayloadModel> {
   const { getApiMessage, locale } = await getRequestParams(context);
   const { db, client } = await getDatabase();
   const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);

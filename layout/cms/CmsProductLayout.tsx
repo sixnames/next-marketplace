@@ -18,6 +18,7 @@ interface CmsProductLayoutInterface {
   hideConnectionsPath?: boolean;
   hideBrandPath?: boolean;
   hideAssetsPath?: boolean;
+  hideCardConstructor?: boolean;
 }
 
 const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({
@@ -28,6 +29,7 @@ const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({
   hideConnectionsPath,
   hideBrandPath,
   hideAssetsPath,
+  hideCardConstructor,
   children,
   basePath,
 }) => {
@@ -91,6 +93,7 @@ const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({
         path: `${basePath || ROUTE_CMS}/rubrics/${query.rubricId}/products/product/${
           product._id
         }/constructor`,
+        hidden: hideCardConstructor,
         exact: true,
       },
     ];

@@ -691,7 +691,7 @@ export function castCatalogueFilters({
     minPrice && maxPrice
       ? {
           price: {
-            $gte: minPrice,
+            $gt: minPrice,
             $lte: maxPrice,
           },
         }

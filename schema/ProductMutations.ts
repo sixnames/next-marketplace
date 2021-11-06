@@ -1,12 +1,10 @@
 import { saveAlgoliaObjects } from 'lib/algoliaUtils';
 import { getParentTreeSlugs } from 'lib/optionsUtils';
-import { checkProductDescriptionUniqueness } from 'lib/textUniquenessUtils';
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   CategoryModel,
   ProductAssetsModel,
-  ProductCardDescriptionModel,
   ProductModel,
   ProductPayloadModel,
   RubricModel,
@@ -14,18 +12,12 @@ import {
   ShopProductModel,
 } from 'db/dbModels';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import {
-  getOperationPermission,
-  getRequestParams,
-  getResolverValidationSchema,
-  getSessionRole,
-} from 'lib/sessionHelpers';
+import { getOperationPermission, getRequestParams, getSessionRole } from 'lib/sessionHelpers';
 import { getDatabase } from 'db/mongodb';
 import {
   COL_CATEGORIES,
   COL_NOT_SYNCED_PRODUCTS,
   COL_PRODUCT_ASSETS,
-  COL_PRODUCT_CARD_DESCRIPTIONS,
   COL_PRODUCTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
@@ -38,7 +30,6 @@ import {
   VIEWS_COUNTER_STEP,
 } from 'config/common';
 import { getNextItemId } from 'lib/itemIdUtils';
-import { updateProductSchema } from 'validation/productSchema';
 import { deleteUpload, getMainImage, reorderAssets } from 'lib/assetUtils/assetUtils';
 
 export const ProductPayload = objectType({
@@ -47,23 +38,6 @@ export const ProductPayload = objectType({
     t.implements('Payload');
     t.field('payload', {
       type: 'Product',
-    });
-  },
-});
-
-export const UpdateProductInput = inputObjectType({
-  name: 'UpdateProductInput',
-  definition(t) {
-    t.nonNull.objectId('productId');
-    t.nonNull.string('companySlug');
-    t.nonNull.boolean('active');
-    t.list.nonNull.string('barcode');
-    t.string('originalName');
-    t.json('nameI18n');
-    t.json('descriptionI18n');
-    t.json('cardDescriptionI18n');
-    t.nonNull.field('gender', {
-      type: 'Gender',
     });
   },
 });
@@ -128,189 +102,6 @@ export const UpdateProductCategoryInput = inputObjectType({
 export const ProductMutations = extendType({
   type: 'Mutation',
   definition(t) {
-    // Should update product
-    t.nonNull.field('updateProduct', {
-      type: 'ProductPayload',
-      description: 'Should update product',
-      args: {
-        input: nonNull(
-          arg({
-            type: 'UpdateProductInput',
-          }),
-        ),
-      },
-      resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
-        const { getApiMessage } = await getRequestParams(context);
-        const { db, client } = await getDatabase();
-        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-        const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-        const productsCardDescriptionsCollection = db.collection<ProductCardDescriptionModel>(
-          COL_PRODUCT_CARD_DESCRIPTIONS,
-        );
-
-        const session = client.startSession();
-
-        let mutationPayload: ProductPayloadModel = {
-          success: false,
-          message: await getApiMessage(`products.update.error`),
-        };
-
-        try {
-          await session.withTransaction(async () => {
-            // Permission
-            const { allow, message } = await getOperationPermission({
-              context,
-              slug: 'updateProduct',
-            });
-            if (!allow) {
-              mutationPayload = {
-                success: false,
-                message,
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Validate
-            const validationSchema = await getResolverValidationSchema({
-              context,
-              schema: updateProductSchema,
-            });
-            await validationSchema.validate(args.input);
-
-            const { input } = args;
-            const { productId, companySlug, cardDescriptionI18n, ...values } = input;
-
-            // Check product availability
-            const product = await productsCollection.findOne({ _id: productId });
-            if (!product) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`products.update.notFound`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Get selected rubric
-            const rubric = await rubricsCollection.findOne({ _id: product.rubricId });
-            if (!rubric) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`products.update.error`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // check description uniqueness
-            const cardDescription = await productsCardDescriptionsCollection.findOne({
-              productId,
-              companySlug,
-            });
-            await checkProductDescriptionUniqueness({
-              product,
-              cardDescriptionI18n,
-              oldCardDescriptionI18n: cardDescription?.textI18n,
-              companySlug,
-            });
-
-            // Update product
-            const updatedProductResult = await productsCollection.findOneAndUpdate(
-              {
-                _id: productId,
-              },
-              {
-                $set: {
-                  ...values,
-                  originalName: values.originalName || '',
-                  updatedAt: new Date(),
-                },
-              },
-              {
-                returnDocument: 'after',
-              },
-            );
-
-            // Update card description
-            const createdCardDescription =
-              await productsCardDescriptionsCollection.findOneAndUpdate(
-                {
-                  productId,
-                  companySlug,
-                },
-                {
-                  $set: {
-                    textI18n: cardDescriptionI18n || {},
-                  },
-                },
-                {
-                  upsert: true,
-                },
-              );
-            if (!createdCardDescription.ok) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`products.create.error`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            const updatedProduct = updatedProductResult.value;
-            if (!updatedProductResult.ok || !updatedProduct) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`products.update.error`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Update algolia product object
-            const algoliaProductResult = await saveAlgoliaObjects({
-              indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
-              objects: [
-                {
-                  _id: updatedProduct._id.toHexString(),
-                  objectID: updatedProduct._id.toHexString(),
-                  itemId: updatedProduct.itemId,
-                  originalName: updatedProduct.originalName,
-                  nameI18n: updatedProduct.nameI18n,
-                  descriptionI18n: updatedProduct.descriptionI18n,
-                  barcode: updatedProduct.barcode,
-                },
-              ],
-            });
-            if (!algoliaProductResult) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`products.update.error`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            mutationPayload = {
-              success: true,
-              message: await getApiMessage('products.update.success'),
-              payload: updatedProduct,
-            };
-          });
-
-          return mutationPayload;
-        } catch (e) {
-          console.log(e);
-          return {
-            success: false,
-            message: getResolverErrorMessage(e),
-          };
-        } finally {
-          await session.endSession();
-        }
-      },
-    });
-
     // Should delete product asset
     t.nonNull.field('deleteProductAsset', {
       type: 'ProductPayload',

@@ -8,7 +8,6 @@ import {
 import {
   GenderModel,
   Maybe,
-  ObjectIdModel,
   ProductAssetsModel,
   ProductCardDescriptionModel,
   ProductModel,
@@ -34,7 +33,7 @@ export interface CreateProductInterface {
   nameI18n: Maybe<TranslationModel>;
   descriptionI18n: Maybe<TranslationModel>;
   cardDescriptionI18n: Maybe<TranslationModel>;
-  rubricId: ObjectIdModel;
+  rubricId: string;
   gender: GenderModel;
 }
 
@@ -81,9 +80,10 @@ export async function createProduct({
       }
 
       const { rubricId, cardDescriptionI18n, companySlug, ...values } = input;
+      const rubricObjectId = new ObjectId(rubricId);
 
       // get selected rubric
-      const rubric = await rubricsCollection.findOne({ _id: rubricId });
+      const rubric = await rubricsCollection.findOne({ _id: rubricObjectId });
       if (!rubric) {
         mutationPayload = {
           success: false,
@@ -118,7 +118,7 @@ export async function createProduct({
         itemId,
         mainImage: IMAGE_FALLBACK,
         slug: itemId,
-        rubricId,
+        rubricId: rubric._id,
         rubricSlug: rubric.slug,
         active: false,
         titleCategoriesSlugs: [],

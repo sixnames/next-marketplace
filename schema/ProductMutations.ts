@@ -17,7 +17,7 @@ import {
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
 import { DEFAULT_COMPANY_SLUG, VIEWS_COUNTER_STEP } from 'config/common';
-import { deleteUpload, getMainImage, reorderAssets } from 'lib/assetUtils/assetUtils';
+import { getMainImage, reorderAssets } from 'lib/assetUtils/assetUtils';
 
 export const ProductPayload = objectType({
   name: 'ProductPayload',
@@ -26,14 +26,6 @@ export const ProductPayload = objectType({
     t.field('payload', {
       type: 'Product',
     });
-  },
-});
-
-export const DeleteProductAssetInput = inputObjectType({
-  name: 'DeleteProductAssetInput',
-  definition(t) {
-    t.nonNull.objectId('productId');
-    t.nonNull.int('assetIndex');
   },
 });
 
@@ -66,169 +58,6 @@ export const UpdateProductCategoryInput = inputObjectType({
 export const ProductMutations = extendType({
   type: 'Mutation',
   definition(t) {
-    // Should delete product asset
-    t.nonNull.field('deleteProductAsset', {
-      type: 'ProductPayload',
-      description: 'Should update product assets',
-      args: {
-        input: nonNull(
-          arg({
-            type: 'DeleteProductAssetInput',
-          }),
-        ),
-      },
-      resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
-        const { getApiMessage } = await getRequestParams(context);
-        const { db, client } = await getDatabase();
-        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-        const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-        const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
-
-        const session = client.startSession();
-
-        let mutationPayload: ProductPayloadModel = {
-          success: false,
-          message: await getApiMessage(`products.update.error`),
-        };
-
-        try {
-          await session.withTransaction(async () => {
-            // Permission
-            const { allow, message } = await getOperationPermission({
-              context,
-              slug: 'updateProduct',
-            });
-            if (!allow) {
-              mutationPayload = {
-                success: false,
-                message,
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            const { input } = args;
-            const { productId, assetIndex } = input;
-
-            // Check product availability
-            const product = await productsCollection.findOne({ _id: productId });
-            const initialAssets = await productAssetsCollection.findOne({ productId });
-            if (!product || !initialAssets) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`products.update.notFound`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Delete product asset
-            const currentAsset = initialAssets.assets.find(({ index }) => index === assetIndex);
-            if (currentAsset) {
-              const removedAsset = await deleteUpload(`${currentAsset?.url}`);
-              if (!removedAsset) {
-                mutationPayload = {
-                  success: false,
-                  message: await getApiMessage(`products.update.error`),
-                };
-                await session.abortTransaction();
-                return;
-              }
-            }
-
-            // Update product assets
-            const updatedProductAssetsResult = await productAssetsCollection.findOneAndUpdate(
-              {
-                productId,
-              },
-              {
-                $pull: {
-                  assets: {
-                    index: assetIndex,
-                  },
-                },
-              },
-              {
-                returnDocument: 'after',
-              },
-            );
-            const updatedProductAssets = updatedProductAssetsResult.value;
-            if (!updatedProductAssetsResult.ok || !updatedProductAssets) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`products.update.error`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            const newAssets = updatedProductAssets.assets;
-            const mainImage = getMainImage(newAssets);
-
-            // Update product
-            const updatedProductResult = await productsCollection.findOneAndUpdate(
-              {
-                _id: productId,
-              },
-              {
-                $set: {
-                  mainImage,
-                  updatedAt: new Date(),
-                },
-              },
-              {
-                returnDocument: 'after',
-              },
-            );
-            const updatedProduct = updatedProductResult.value;
-            if (!updatedProductResult.ok || !updatedProduct) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`products.update.error`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            const updatedShopProductsResult = await shopProductsCollection.updateMany(
-              {
-                productId,
-              },
-              {
-                $set: {
-                  mainImage,
-                  updatedAt: new Date(),
-                },
-              },
-            );
-            if (!updatedShopProductsResult.acknowledged) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`products.update.error`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            mutationPayload = {
-              success: true,
-              message: await getApiMessage('products.update.success'),
-              payload: updatedProduct,
-            };
-          });
-
-          return mutationPayload;
-        } catch (e) {
-          return {
-            success: false,
-            message: getResolverErrorMessage(e),
-          };
-        } finally {
-          await session.endSession();
-        }
-      },
-    });
-
     // Should update product asset index
     t.nonNull.field('updateProductAssetIndex', {
       type: 'ProductPayload',

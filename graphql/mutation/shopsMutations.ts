@@ -63,28 +63,6 @@ export const DELETE_PRODUCT_FROM_SHOP_MUTATION = gql`
   }
 `;
 
-export const UPDATE_PRODUCT_WITH_SYNC_ERROR_MUTATION = gql`
-  mutation UpdateProductWithSyncError($input: UpdateProductWithSyncErrorInput!) {
-    updateProductWithSyncError(input: $input) {
-      success
-      message
-    }
-  }
-`;
-
-export const CREATE_PRODUCT_WITH_SYNC_ERROR_MUTATION = gql`
-  mutation CreateProductWithSyncError($input: CreateProductWithSyncErrorInput!) {
-    createProductWithSyncError(input: $input) {
-      success
-      message
-      payload {
-        _id
-        rubricId
-      }
-    }
-  }
-`;
-
 export const ADD_SHOP_PRODUCT_SUPPLIER_MUTATION = gql`
   mutation AddShopProductSupplier($input: AddShopProductSupplierInput!) {
     addShopProductSupplier(input: $input) {

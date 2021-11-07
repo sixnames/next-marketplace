@@ -472,18 +472,6 @@ input CoordinatesInput {
   lng: Float!
 }
 
-input CopyProductInput {
-  active: Boolean!
-  barcode: [String!]!
-  cardDescriptionI18n: JSONObject
-  companySlug: String!
-  descriptionI18n: JSONObject
-  gender: Gender!
-  nameI18n: JSONObject
-  originalName: String
-  productId: ObjectId!
-}
-
 type Country {
   _id: ObjectId!
   cities: [City!]!
@@ -588,25 +576,6 @@ input CreateProductConnectionInput {
   productId: ObjectId!
 }
 
-input CreateProductInput {
-  active: Boolean!
-  barcode: [String!]!
-  cardDescriptionI18n: JSONObject
-  companySlug: String!
-  descriptionI18n: JSONObject
-  gender: Gender!
-  nameI18n: JSONObject
-  originalName: String!
-  rubricId: ObjectId!
-}
-
-input CreateProductWithSyncErrorInput {
-  available: Int!
-  price: Int!
-  productFields: CreateProductInput!
-  shopId: ObjectId!
-}
-
 input CreateRoleInput {
   descriptionI18n: JSONObject
   isCompanyStaff: Boolean!
@@ -691,11 +660,6 @@ input DeleteOptionFromGroupInput {
   optionsGroupId: ObjectId!
 }
 
-input DeleteProductAssetInput {
-  assetIndex: Int!
-  productId: ObjectId!
-}
-
 input DeleteProductFromCartInput {
   cartProductId: ObjectId!
 }
@@ -709,11 +673,6 @@ input DeleteProductFromConnectionInput {
   connectionId: ObjectId!
   deleteProductId: ObjectId!
   productId: ObjectId!
-}
-
-input DeleteProductFromRubricInput {
-  productId: ObjectId!
-  rubricId: ObjectId!
 }
 
 input DeleteProductFromShopInput {
@@ -941,11 +900,6 @@ type Mutation {
   clearCart: CartPayload!
 
   """
-  Should copy product
-  """
-  copyProduct(input: CopyProductInput!): ProductPayload!
-
-  """
   Should create attributes group
   """
   createAttributesGroup(input: CreateAttributesGroupInput!): AttributesGroupPayload!
@@ -1006,19 +960,9 @@ type Mutation {
   createOrderStatus(input: CreateOrderStatusInput!): OrderStatusPayload!
 
   """
-  Should create product
-  """
-  createProduct(input: CreateProductInput!): ProductPayload!
-
-  """
   Should create product connection
   """
   createProductConnection(input: CreateProductConnectionInput!): ProductPayload!
-
-  """
-  Should create product with syn error and remove sync error
-  """
-  createProductWithSyncError(input: CreateProductWithSyncErrorInput!): ProductPayload!
 
   """
   Should create role
@@ -1133,11 +1077,6 @@ type Mutation {
   deleteOrderStatus(_id: ObjectId!): OrderStatusPayload!
 
   """
-  Should update product assets
-  """
-  deleteProductAsset(input: DeleteProductAssetInput!): ProductPayload!
-
-  """
   Should delete product from cart
   """
   deleteProductFromCart(input: DeleteProductFromCartInput!): CartPayload!
@@ -1146,11 +1085,6 @@ type Mutation {
   Should delete product from connection and delete connection if there is no products left
   """
   deleteProductFromConnection(input: DeleteProductFromConnectionInput!): ProductPayload!
-
-  """
-  Should remove product from rubric
-  """
-  deleteProductFromRubric(input: DeleteProductFromRubricInput!): RubricPayload!
 
   """
   Should delete product from shop
@@ -1313,16 +1247,6 @@ type Mutation {
   updateOrderStatus(input: UpdateOrderStatusInput!): OrderStatusPayload!
 
   """
-  Should update product
-  """
-  updateProduct(input: UpdateProductInput!): ProductPayload!
-
-  """
-  Should update product asset index
-  """
-  updateProductAssetIndex(input: UpdateProductAssetIndexInput!): ProductPayload!
-
-  """
   Should update product brand
   """
   updateProductBrand(input: UpdateProductBrandInput!): ProductPayload!
@@ -1336,21 +1260,6 @@ type Mutation {
   Should update / create product card content
   """
   updateProductCardContent(input: UpdateProductCardContentInput!): ProductCardContentPayload!
-
-  """
-  Should update product category
-  """
-  updateProductCategory(input: UpdateProductCategoryInput!): ProductPayload!
-
-  """
-  Should update product category visibility
-  """
-  updateProductCategoryVisibility(input: UpdateProductCategoryInput!): ProductPayload!
-
-  """
-  Should update product counter
-  """
-  updateProductCounter(input: UpdateProductCounterInput!): Boolean!
 
   """
   Should update cart product amount
@@ -1376,11 +1285,6 @@ type Mutation {
   Should update product text attribute
   """
   updateProductTextAttribute(input: UpdateProductTextAttributeInput!): ProductPayload!
-
-  """
-  Should update product with syn error and remove sync error
-  """
-  updateProductWithSyncError(input: UpdateProductWithSyncErrorInput!): ProductPayload!
 
   """
   Should update role
@@ -2528,12 +2432,6 @@ input UpdateOrderStatusInput {
   orderStatusId: ObjectId!
 }
 
-input UpdateProductAssetIndexInput {
-  assetNewIndex: Int!
-  assetUrl: String!
-  productId: ObjectId!
-}
-
 input UpdateProductBrandCollectionInput {
   brandCollectionSlug: String
   productId: ObjectId!
@@ -2553,31 +2451,9 @@ input UpdateProductCardContentInput {
   productSlug: String!
 }
 
-input UpdateProductCategoryInput {
-  categoryId: ObjectId!
-  productId: ObjectId!
-}
-
-input UpdateProductCounterInput {
-  companySlug: String = "default"
-  shopProductIds: [ObjectId!]!
-}
-
 input UpdateProductInCartInput {
   amount: Int!
   cartProductId: ObjectId!
-}
-
-input UpdateProductInput {
-  active: Boolean!
-  barcode: [String!]
-  cardDescriptionI18n: JSONObject
-  companySlug: String!
-  descriptionI18n: JSONObject
-  gender: Gender!
-  nameI18n: JSONObject
-  originalName: String
-  productId: ObjectId!
 }
 
 input UpdateProductManufacturerInput {
@@ -2612,14 +2488,6 @@ input UpdateProductTextAttributeItemInput {
   attributeId: ObjectId!
   productAttributeId: ObjectId!
   textI18n: JSONObject
-}
-
-input UpdateProductWithSyncErrorInput {
-  available: Int!
-  barcode: [String!]!
-  price: Int!
-  productId: ObjectId!
-  shopId: ObjectId!
 }
 
 input UpdateRoleInput {

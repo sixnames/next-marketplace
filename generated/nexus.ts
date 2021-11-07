@@ -255,18 +255,6 @@ export interface NexusGenInputs {
     lat: number; // Float!
     lng: number; // Float!
   };
-  CopyProductInput: {
-    // input type
-    active: boolean; // Boolean!
-    barcode: string[]; // [String!]!
-    cardDescriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
-    companySlug: string; // String!
-    descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
-    gender: NexusGenEnums['Gender']; // Gender!
-    nameI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
-    originalName?: string | null; // String
-    productId: NexusGenScalars['ObjectId']; // ObjectId!
-  };
   CreateAttributesGroupInput: {
     // input type
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
@@ -358,25 +346,6 @@ export interface NexusGenInputs {
     attributeId: NexusGenScalars['ObjectId']; // ObjectId!
     productId: NexusGenScalars['ObjectId']; // ObjectId!
   };
-  CreateProductInput: {
-    // input type
-    active: boolean; // Boolean!
-    barcode: string[]; // [String!]!
-    cardDescriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
-    companySlug: string; // String!
-    descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
-    gender: NexusGenEnums['Gender']; // Gender!
-    nameI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
-    originalName: string; // String!
-    rubricId: NexusGenScalars['ObjectId']; // ObjectId!
-  };
-  CreateProductWithSyncErrorInput: {
-    // input type
-    available: number; // Int!
-    price: number; // Int!
-    productFields: NexusGenInputs['CreateProductInput']; // CreateProductInput!
-    shopId: NexusGenScalars['ObjectId']; // ObjectId!
-  };
   CreateRoleInput: {
     // input type
     descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
@@ -445,11 +414,6 @@ export interface NexusGenInputs {
     optionId: NexusGenScalars['ObjectId']; // ObjectId!
     optionsGroupId: NexusGenScalars['ObjectId']; // ObjectId!
   };
-  DeleteProductAssetInput: {
-    // input type
-    assetIndex: number; // Int!
-    productId: NexusGenScalars['ObjectId']; // ObjectId!
-  };
   DeleteProductFromCartInput: {
     // input type
     cartProductId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -464,11 +428,6 @@ export interface NexusGenInputs {
     connectionId: NexusGenScalars['ObjectId']; // ObjectId!
     deleteProductId: NexusGenScalars['ObjectId']; // ObjectId!
     productId: NexusGenScalars['ObjectId']; // ObjectId!
-  };
-  DeleteProductFromRubricInput: {
-    // input type
-    productId: NexusGenScalars['ObjectId']; // ObjectId!
-    rubricId: NexusGenScalars['ObjectId']; // ObjectId!
   };
   DeleteProductFromShopInput: {
     // input type
@@ -733,12 +692,6 @@ export interface NexusGenInputs {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     orderStatusId: NexusGenScalars['ObjectId']; // ObjectId!
   };
-  UpdateProductAssetIndexInput: {
-    // input type
-    assetNewIndex: number; // Int!
-    assetUrl: string; // String!
-    productId: NexusGenScalars['ObjectId']; // ObjectId!
-  };
   UpdateProductBrandCollectionInput: {
     // input type
     brandCollectionSlug?: string | null; // String
@@ -758,32 +711,10 @@ export interface NexusGenInputs {
     productId: NexusGenScalars['ObjectId']; // ObjectId!
     productSlug: string; // String!
   };
-  UpdateProductCategoryInput: {
-    // input type
-    categoryId: NexusGenScalars['ObjectId']; // ObjectId!
-    productId: NexusGenScalars['ObjectId']; // ObjectId!
-  };
-  UpdateProductCounterInput: {
-    // input type
-    companySlug: string | null; // String
-    shopProductIds: NexusGenScalars['ObjectId'][]; // [ObjectId!]!
-  };
   UpdateProductInCartInput: {
     // input type
     amount: number; // Int!
     cartProductId: NexusGenScalars['ObjectId']; // ObjectId!
-  };
-  UpdateProductInput: {
-    // input type
-    active: boolean; // Boolean!
-    barcode?: string[] | null; // [String!]
-    cardDescriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
-    companySlug: string; // String!
-    descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
-    gender: NexusGenEnums['Gender']; // Gender!
-    nameI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
-    originalName?: string | null; // String
-    productId: NexusGenScalars['ObjectId']; // ObjectId!
   };
   UpdateProductManufacturerInput: {
     // input type
@@ -818,14 +749,6 @@ export interface NexusGenInputs {
     attributeId: NexusGenScalars['ObjectId']; // ObjectId!
     productAttributeId: NexusGenScalars['ObjectId']; // ObjectId!
     textI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
-  };
-  UpdateProductWithSyncErrorInput: {
-    // input type
-    available: number; // Int!
-    barcode: string[]; // [String!]!
-    price: number; // Int!
-    productId: NexusGenScalars['ObjectId']; // ObjectId!
-    shopId: NexusGenScalars['ObjectId']; // ObjectId!
   };
   UpdateRoleInput: {
     // input type
@@ -1490,7 +1413,6 @@ export interface NexusGenFieldTypes {
     addShopToCompany: NexusGenRootTypes['CompanyPayload']; // CompanyPayload!
     addShoplessProductToCart: NexusGenRootTypes['CartPayload']; // CartPayload!
     clearCart: NexusGenRootTypes['CartPayload']; // CartPayload!
-    copyProduct: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     createAttributesGroup: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
     createBrand: NexusGenRootTypes['BrandPayload']; // BrandPayload!
     createCategory: NexusGenRootTypes['CategoryPayload']; // CategoryPayload!
@@ -1503,9 +1425,7 @@ export interface NexusGenFieldTypes {
     createNavItem: NexusGenRootTypes['NavItemPayload']; // NavItemPayload!
     createOptionsGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
     createOrderStatus: NexusGenRootTypes['OrderStatusPayload']; // OrderStatusPayload!
-    createProduct: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     createProductConnection: NexusGenRootTypes['ProductPayload']; // ProductPayload!
-    createProductWithSyncError: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     createRole: NexusGenRootTypes['RolePayload']; // RolePayload!
     createRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
     createRubricVariant: NexusGenRootTypes['RubricVariantPayload']; // RubricVariantPayload!
@@ -1528,10 +1448,8 @@ export interface NexusGenFieldTypes {
     deleteOptionFromGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
     deleteOptionsGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
     deleteOrderStatus: NexusGenRootTypes['OrderStatusPayload']; // OrderStatusPayload!
-    deleteProductAsset: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     deleteProductFromCart: NexusGenRootTypes['CartPayload']; // CartPayload!
     deleteProductFromConnection: NexusGenRootTypes['ProductPayload']; // ProductPayload!
-    deleteProductFromRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
     deleteProductFromShop: NexusGenRootTypes['ShopPayload']; // ShopPayload!
     deleteRole: NexusGenRootTypes['RolePayload']; // RolePayload!
     deleteRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
@@ -1564,20 +1482,14 @@ export interface NexusGenFieldTypes {
     updateOptionInGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
     updateOptionsGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
     updateOrderStatus: NexusGenRootTypes['OrderStatusPayload']; // OrderStatusPayload!
-    updateProduct: NexusGenRootTypes['ProductPayload']; // ProductPayload!
-    updateProductAssetIndex: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateProductBrand: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateProductBrandCollection: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateProductCardContent: NexusGenRootTypes['ProductCardContentPayload']; // ProductCardContentPayload!
-    updateProductCategory: NexusGenRootTypes['ProductPayload']; // ProductPayload!
-    updateProductCategoryVisibility: NexusGenRootTypes['ProductPayload']; // ProductPayload!
-    updateProductCounter: boolean; // Boolean!
     updateProductInCart: NexusGenRootTypes['CartPayload']; // CartPayload!
     updateProductManufacturer: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateProductNumberAttribute: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateProductSelectAttribute: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateProductTextAttribute: NexusGenRootTypes['ProductPayload']; // ProductPayload!
-    updateProductWithSyncError: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateRole: NexusGenRootTypes['RolePayload']; // RolePayload!
     updateRoleNav: NexusGenRootTypes['RolePayload']; // RolePayload!
     updateRoleRule: NexusGenRootTypes['RoleRulePayload']; // RoleRulePayload!
@@ -2551,7 +2463,6 @@ export interface NexusGenFieldTypeNames {
     addShopToCompany: 'CompanyPayload';
     addShoplessProductToCart: 'CartPayload';
     clearCart: 'CartPayload';
-    copyProduct: 'ProductPayload';
     createAttributesGroup: 'AttributesGroupPayload';
     createBrand: 'BrandPayload';
     createCategory: 'CategoryPayload';
@@ -2564,9 +2475,7 @@ export interface NexusGenFieldTypeNames {
     createNavItem: 'NavItemPayload';
     createOptionsGroup: 'OptionsGroupPayload';
     createOrderStatus: 'OrderStatusPayload';
-    createProduct: 'ProductPayload';
     createProductConnection: 'ProductPayload';
-    createProductWithSyncError: 'ProductPayload';
     createRole: 'RolePayload';
     createRubric: 'RubricPayload';
     createRubricVariant: 'RubricVariantPayload';
@@ -2589,10 +2498,8 @@ export interface NexusGenFieldTypeNames {
     deleteOptionFromGroup: 'OptionsGroupPayload';
     deleteOptionsGroup: 'OptionsGroupPayload';
     deleteOrderStatus: 'OrderStatusPayload';
-    deleteProductAsset: 'ProductPayload';
     deleteProductFromCart: 'CartPayload';
     deleteProductFromConnection: 'ProductPayload';
-    deleteProductFromRubric: 'RubricPayload';
     deleteProductFromShop: 'ShopPayload';
     deleteRole: 'RolePayload';
     deleteRubric: 'RubricPayload';
@@ -2625,20 +2532,14 @@ export interface NexusGenFieldTypeNames {
     updateOptionInGroup: 'OptionsGroupPayload';
     updateOptionsGroup: 'OptionsGroupPayload';
     updateOrderStatus: 'OrderStatusPayload';
-    updateProduct: 'ProductPayload';
-    updateProductAssetIndex: 'ProductPayload';
     updateProductBrand: 'ProductPayload';
     updateProductBrandCollection: 'ProductPayload';
     updateProductCardContent: 'ProductCardContentPayload';
-    updateProductCategory: 'ProductPayload';
-    updateProductCategoryVisibility: 'ProductPayload';
-    updateProductCounter: 'Boolean';
     updateProductInCart: 'CartPayload';
     updateProductManufacturer: 'ProductPayload';
     updateProductNumberAttribute: 'ProductPayload';
     updateProductSelectAttribute: 'ProductPayload';
     updateProductTextAttribute: 'ProductPayload';
-    updateProductWithSyncError: 'ProductPayload';
     updateRole: 'RolePayload';
     updateRoleNav: 'RolePayload';
     updateRoleRule: 'RoleRulePayload';
@@ -3312,10 +3213,6 @@ export interface NexusGenArgTypes {
       // args
       input: NexusGenInputs['AddShoplessProductToCartInput']; // AddShoplessProductToCartInput!
     };
-    copyProduct: {
-      // args
-      input: NexusGenInputs['CopyProductInput']; // CopyProductInput!
-    };
     createAttributesGroup: {
       // args
       input: NexusGenInputs['CreateAttributesGroupInput']; // CreateAttributesGroupInput!
@@ -3364,17 +3261,9 @@ export interface NexusGenArgTypes {
       // args
       input: NexusGenInputs['CreateOrderStatusInput']; // CreateOrderStatusInput!
     };
-    createProduct: {
-      // args
-      input: NexusGenInputs['CreateProductInput']; // CreateProductInput!
-    };
     createProductConnection: {
       // args
       input: NexusGenInputs['CreateProductConnectionInput']; // CreateProductConnectionInput!
-    };
-    createProductWithSyncError: {
-      // args
-      input: NexusGenInputs['CreateProductWithSyncErrorInput']; // CreateProductWithSyncErrorInput!
     };
     createRole: {
       // args
@@ -3464,10 +3353,6 @@ export interface NexusGenArgTypes {
       // args
       _id: NexusGenScalars['ObjectId']; // ObjectId!
     };
-    deleteProductAsset: {
-      // args
-      input: NexusGenInputs['DeleteProductAssetInput']; // DeleteProductAssetInput!
-    };
     deleteProductFromCart: {
       // args
       input: NexusGenInputs['DeleteProductFromCartInput']; // DeleteProductFromCartInput!
@@ -3475,10 +3360,6 @@ export interface NexusGenArgTypes {
     deleteProductFromConnection: {
       // args
       input: NexusGenInputs['DeleteProductFromConnectionInput']; // DeleteProductFromConnectionInput!
-    };
-    deleteProductFromRubric: {
-      // args
-      input: NexusGenInputs['DeleteProductFromRubricInput']; // DeleteProductFromRubricInput!
     };
     deleteProductFromShop: {
       // args
@@ -3608,14 +3489,6 @@ export interface NexusGenArgTypes {
       // args
       input: NexusGenInputs['UpdateOrderStatusInput']; // UpdateOrderStatusInput!
     };
-    updateProduct: {
-      // args
-      input: NexusGenInputs['UpdateProductInput']; // UpdateProductInput!
-    };
-    updateProductAssetIndex: {
-      // args
-      input: NexusGenInputs['UpdateProductAssetIndexInput']; // UpdateProductAssetIndexInput!
-    };
     updateProductBrand: {
       // args
       input: NexusGenInputs['UpdateProductBrandInput']; // UpdateProductBrandInput!
@@ -3627,18 +3500,6 @@ export interface NexusGenArgTypes {
     updateProductCardContent: {
       // args
       input: NexusGenInputs['UpdateProductCardContentInput']; // UpdateProductCardContentInput!
-    };
-    updateProductCategory: {
-      // args
-      input: NexusGenInputs['UpdateProductCategoryInput']; // UpdateProductCategoryInput!
-    };
-    updateProductCategoryVisibility: {
-      // args
-      input: NexusGenInputs['UpdateProductCategoryInput']; // UpdateProductCategoryInput!
-    };
-    updateProductCounter: {
-      // args
-      input: NexusGenInputs['UpdateProductCounterInput']; // UpdateProductCounterInput!
     };
     updateProductInCart: {
       // args
@@ -3659,10 +3520,6 @@ export interface NexusGenArgTypes {
     updateProductTextAttribute: {
       // args
       input: NexusGenInputs['UpdateProductTextAttributeInput']; // UpdateProductTextAttributeInput!
-    };
-    updateProductWithSyncError: {
-      // args
-      input: NexusGenInputs['UpdateProductWithSyncErrorInput']; // UpdateProductWithSyncErrorInput!
     };
     updateRole: {
       // args

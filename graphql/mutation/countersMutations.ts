@@ -5,9 +5,3 @@ export const UPDATE_CATALOGUE_COUNTERS_MUTATION = gql`
     updateCatalogueCounters(input: $input)
   }
 `;
-
-export const CARD_COUNTERS_MUTATION = gql`
-  mutation UpdateProductCounter($input: UpdateProductCounterInput!) {
-    updateProductCounter(input: $input)
-  }
-`;

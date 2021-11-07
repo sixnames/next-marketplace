@@ -65,6 +65,16 @@ export const ProductAttribute = objectType({
   },
 });
 
+export const ProductPayload = objectType({
+  name: 'ProductPayload',
+  definition(t) {
+    t.implements('Payload');
+    t.field('payload', {
+      type: 'Product',
+    });
+  },
+});
+
 export const UpdateProductBrandInput = inputObjectType({
   name: 'UpdateProductBrandInput',
   definition(t) {

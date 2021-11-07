@@ -279,7 +279,7 @@ export interface ProductInterface extends ProductModel {
   cardShopProducts?: ShopProductInterface[] | null;
   price?: number | null;
   cardBreadcrumbs?: ProductCardBreadcrumbModel[] | null;
-  shopProductIds?: ObjectIdModel[] | null;
+  shopProductIds?: string[] | null;
   shopProducts?: ShopProductInterface[] | null;
   shopProduct?: ShopProductInterface | null;
   rubric?: RubricInterface | null;
@@ -297,6 +297,11 @@ export interface ProductInterface extends ProductModel {
   cardDescription?: ProductCardDescriptionInterface | null;
   shops?: ShopInterface[] | null;
   seo?: ProductSeoModel | null;
+}
+
+export interface BarcodeDoublesInterface {
+  products: ProductInterface[];
+  barcode: string;
 }
 
 export interface RoleRuleInterface extends RoleRuleModel {

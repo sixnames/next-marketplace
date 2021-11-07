@@ -6,6 +6,7 @@ import useGetSimilarProducts, {
   UseGetSimilarProductsPayloadInterface,
 } from 'hooks/useGetSimilarProducts';
 import useUpdateCardCounter from 'hooks/useUpdateCardCounter';
+import { alwaysArray } from 'lib/arrayUtils';
 import { noNaN } from 'lib/numbers';
 import * as React from 'react';
 
@@ -52,7 +53,7 @@ const useCardData = ({
   // update product counters
   useUpdateCardCounter({
     companySlug,
-    shopProductIds: cardData.product.shopProductIds,
+    shopProductIds: alwaysArray(cardData.product.shopProductIds),
   });
 
   return {

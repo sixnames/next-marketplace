@@ -8,9 +8,7 @@ import {
   DEFAULT_LOCALE,
   ROLE_SLUG_ADMIN,
   ROUTE_CONSOLE,
-  ROUTE_CONSOLE_NAV_GROUP,
   ROUTE_CMS,
-  ROUTE_CMS_NAV_GROUP,
   ROUTE_SIGN_IN,
   SORT_ASC,
   SORT_DESC,
@@ -29,16 +27,14 @@ import {
   COL_CONFIGS,
   COL_ICONS,
   COL_LANGUAGES,
-  COL_NAV_ITEMS,
   COL_OPTIONS,
   COL_PAGES,
   COL_PAGES_GROUP,
-  COL_ROLES,
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
-  COL_USERS,
 } from 'db/collectionNames';
+import { getPageSessionUser } from 'db/dao/user/getPageSessionUser';
 import {
   AttributeModel,
   CategoryModel,
@@ -73,7 +69,6 @@ import {
   getConfigStringValue,
 } from 'lib/configsUtils';
 import { getFieldStringLocale, getI18nLocaleValue } from 'lib/i18n';
-import { getFullName, getShortName } from 'lib/nameUtils';
 import { noNaN } from 'lib/numbers';
 import { getTreeFromList } from 'lib/optionsUtils';
 import { castAttributeForUI } from 'lib/uiDataUtils';
@@ -1049,174 +1044,6 @@ export const getPageInitialData = async ({
   };
 };
 
-export interface GetPageSessionUserInterface {
-  email?: string | null;
-  locale: string;
-}
-
-export async function getPageSessionUser({
-  email,
-  locale,
-}: GetPageSessionUserInterface): Promise<UserInterface | null | undefined> {
-  if (!email) {
-    return null;
-  }
-
-  const { db } = await getDatabase();
-  const usersCollection = db.collection<UserInterface>(COL_USERS);
-  const userAggregation = await usersCollection
-    .aggregate<UserInterface>([
-      {
-        $match: {
-          email,
-        },
-      },
-      {
-        $lookup: {
-          from: COL_COMPANIES,
-          as: 'companies',
-          let: { userId: '$_id' },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $or: [
-                    {
-                      $eq: ['$ownerId', '$$userId'],
-                    },
-                    {
-                      $in: ['$$userId', '$staffIds'],
-                    },
-                  ],
-                },
-              },
-            },
-          ],
-        },
-      },
-      {
-        $lookup: {
-          from: COL_ROLES,
-          as: 'role',
-          let: { roleId: '$roleId' },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $eq: ['$_id', '$$roleId'],
-                },
-              },
-            },
-            {
-              $lookup: {
-                from: COL_NAV_ITEMS,
-                as: 'navItems',
-                let: {
-                  allowedAppNavigation: '$allowedAppNavigation',
-                  slug: '$slug',
-                },
-                pipeline: [
-                  {
-                    $match: {
-                      $expr: {
-                        $or: [
-                          { $in: ['$path', '$$allowedAppNavigation'] },
-                          { $eq: ['$$slug', ROLE_SLUG_ADMIN] },
-                        ],
-                      },
-                      // exclude base paths
-                      path: {
-                        $nin: [ROUTE_CMS, ROUTE_CONSOLE],
-                      },
-                    },
-                  },
-                  {
-                    $sort: {
-                      index: SORT_ASC,
-                    },
-                  },
-                  {
-                    $addFields: {
-                      name: `$nameI18n.${locale}`,
-                    },
-                  },
-                ],
-              },
-            },
-            {
-              $addFields: {
-                name: `$nameI18n.${locale}`,
-                appNavigation: {
-                  $filter: {
-                    input: '$navItems',
-                    as: 'navItem',
-                    cond: {
-                      $and: [
-                        {
-                          $eq: ['$$navItem.navGroup', ROUTE_CONSOLE_NAV_GROUP],
-                        },
-                        {
-                          $ne: ['$$navItem.path', ''],
-                        },
-                      ],
-                    },
-                  },
-                },
-                cmsNavigation: {
-                  $filter: {
-                    input: '$navItems',
-                    as: 'navItem',
-                    cond: {
-                      $and: [
-                        {
-                          $eq: ['$$navItem.navGroup', ROUTE_CMS_NAV_GROUP],
-                        },
-                        {
-                          $ne: ['$$navItem.path', ROUTE_CMS],
-                        },
-                      ],
-                    },
-                  },
-                },
-              },
-            },
-            {
-              $project: {
-                nameI18n: false,
-                navItems: false,
-                createdAt: false,
-                updatedAt: false,
-              },
-            },
-          ],
-        },
-      },
-      {
-        $addFields: {
-          role: { $arrayElemAt: ['$role', 0] },
-        },
-      },
-      {
-        $project: {
-          password: false,
-          createdAt: false,
-          updatedAt: false,
-          notifications: false,
-        },
-      },
-    ])
-    .toArray();
-  const user = userAggregation[0];
-  const sessionUser: UserInterface | null = user
-    ? {
-        ...user,
-        fullName: getFullName(user),
-        shortName: getShortName(user),
-      }
-    : null;
-  return sessionUser;
-}
-
 interface GetPageInitialStateInterface {
   context: GetServerSidePropsContext;
 }
@@ -1248,7 +1075,7 @@ export async function getPageInitialState({
   // Session user
   // const sessionUserStart = new Date().getTime();
   const sessionUser = await getPageSessionUser({
-    email: session?.user?.email,
+    context,
     locale: sessionLocale,
   });
   // console.log(sessionUser);

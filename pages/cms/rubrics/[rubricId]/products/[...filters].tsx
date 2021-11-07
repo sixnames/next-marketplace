@@ -17,7 +17,7 @@ import { ROUTE_CMS, DEFAULT_PAGE_FILTER, DEFAULT_COMPANY_SLUG } from 'config/com
 import { CONFIRM_MODAL, CREATE_NEW_PRODUCT_MODAL } from 'config/modalVariants';
 import { TextUniquenessApiParsedResponseModel } from 'db/dbModels';
 import { ConsoleRubricProductsInterface, ProductInterface } from 'db/uiInterfaces';
-import { useDeleteProductFromRubricMutation } from 'generated/apolloComponents';
+import { useDeleteProduct } from 'hooks/mutations/useProductMutations';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import usePageLoadingState from 'hooks/usePageLoadingState';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
@@ -47,15 +47,12 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
 }) => {
   const setPageHandler = useNavigateToPageHandler();
   const isPageLoading = usePageLoadingState();
-  const { onErrorCallback, onCompleteCallback, showLoading, showModal } = useMutationCallbacks({
+  const { showModal } = useMutationCallbacks({
     withModal: true,
     reload: true,
   });
 
-  const [deleteProductFromRubricMutation] = useDeleteProductFromRubricMutation({
-    onError: onErrorCallback,
-    onCompleted: (data) => onCompleteCallback(data.deleteProductFromRubric),
-  });
+  const [deleteProductFromRubricMutation] = useDeleteProduct();
 
   const columns: TableColumn<ProductInterface>[] = [
     {
@@ -171,14 +168,8 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
                     testId: 'delete-product-modal',
                     message: `Вы уверенны, что хотите удалить товар ${dataItem.originalName}?`,
                     confirm: () => {
-                      showLoading();
                       deleteProductFromRubricMutation({
-                        variables: {
-                          input: {
-                            rubricId: rubric?._id,
-                            productId: dataItem._id,
-                          },
-                        },
+                        productId: `${dataItem._id}`,
                       }).catch((e) => console.log(e));
                     },
                   },

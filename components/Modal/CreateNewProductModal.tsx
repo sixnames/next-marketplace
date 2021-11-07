@@ -2,12 +2,11 @@ import Button from 'components/Button';
 import ModalButtons from 'components/Modal/ModalButtons';
 import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
-import { GENDER_IT, ROUTE_CMS } from 'config/common';
+import { GENDER_IT } from 'config/common';
 import { ProductInterface } from 'db/uiInterfaces';
+import { useCopyProduct, useCreateProduct } from 'hooks/mutations/useProductMutations';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import { useRouter } from 'next/router';
 import * as React from 'react';
-import { useCopyProductMutation, useCreateProductMutation } from 'generated/apolloComponents';
 import { Form, Formik } from 'formik';
 import ProductMainFields, {
   ProductFormValuesInterface,
@@ -24,60 +23,19 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({
   companySlug,
   product,
 }) => {
-  const router = useRouter();
-
-  const {
-    onErrorCallback,
-    onCompleteCallback,
-    hideModal,
-    showLoading,
-    showErrorNotification,
-    hideLoading,
-  } = useMutationCallbacks({
+  const { hideModal } = useMutationCallbacks({
     withModal: true,
   });
 
-  const [createProductMutation] = useCreateProductMutation({
-    awaitRefetchQueries: true,
-    onCompleted: (data) => {
-      if (data.createProduct.success) {
-        onCompleteCallback(data.createProduct);
-        router
-          .push(
-            `${ROUTE_CMS}/rubrics/${rubricId}/products/product/${data.createProduct.payload?._id}`,
-          )
-          .catch((e) => console.log(e));
-      } else {
-        hideLoading();
-        showErrorNotification({ title: data.createProduct.message });
-      }
-    },
-    onError: onErrorCallback,
-  });
-
-  const [copyProductMutation] = useCopyProductMutation({
-    awaitRefetchQueries: true,
-    onCompleted: (data) => {
-      if (data.copyProduct.success) {
-        onCompleteCallback(data.copyProduct);
-        router
-          .push(
-            `${ROUTE_CMS}/rubrics/${rubricId}/products/product/${data.copyProduct.payload?._id}`,
-          )
-          .catch((e) => console.log(e));
-      } else {
-        hideLoading();
-        showErrorNotification({ title: data.copyProduct.message });
-      }
-    },
-    onError: onErrorCallback,
-  });
+  const [createProductMutation] = useCreateProduct();
+  const [copyProductMutation] = useCopyProduct();
 
   const initialValues: ProductFormValuesInterface = {
     active: true,
     nameI18n: product?.nameI18n || {},
     originalName: product?.originalName || '',
     descriptionI18n: product?.descriptionI18n || {},
+    cardDescriptionI18n: {},
     barcode: [],
     gender: GENDER_IT as any,
     companySlug,
@@ -89,32 +47,24 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({
       <Formik<ProductFormValuesInterface>
         initialValues={initialValues}
         onSubmit={(values) => {
-          showLoading();
           if (product) {
             copyProductMutation({
-              variables: {
-                input: {
-                  ...values,
-                  productId: product._id,
-                  barcode: (values.barcode || []).filter((currentBarcode) => {
-                    return Boolean(currentBarcode);
-                  }),
-                },
-              },
+              ...values,
+              productId: `${product._id}`,
+              rubricId: `${product.rubricId}`,
+              barcode: (values.barcode || []).filter((currentBarcode) => {
+                return Boolean(currentBarcode);
+              }),
             }).catch(console.log);
             return;
           }
 
           createProductMutation({
-            variables: {
-              input: {
-                ...values,
-                rubricId,
-                barcode: (values.barcode || []).filter((currentBarcode) => {
-                  return Boolean(currentBarcode);
-                }),
-              },
-            },
+            ...values,
+            rubricId,
+            barcode: (values.barcode || []).filter((currentBarcode) => {
+              return Boolean(currentBarcode);
+            }),
           }).catch(console.log);
         }}
       >

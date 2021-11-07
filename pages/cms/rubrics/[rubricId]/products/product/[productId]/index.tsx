@@ -8,9 +8,8 @@ import WpImage from 'components/WpImage';
 import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
 import { ProductInterface, RubricInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
-import { useUpdateProductMutation } from 'generated/apolloComponents';
+import { useUpdateProduct } from 'hooks/mutations/useProductMutations';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import { useReloadListener } from 'hooks/useReloadListener';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsProductLayout from 'layout/cms/CmsProductLayout';
@@ -29,20 +28,13 @@ interface ProductDetailsInterface {
 }
 
 const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, companySlug, rubric }) => {
-  const { setReloadToTrue } = useReloadListener();
   const validationSchema = useValidationSchema({
     schema: updateProductSchema,
   });
-  const { onErrorCallback, onCompleteCallback, showLoading } = useMutationCallbacks({
+  const { showLoading } = useMutationCallbacks({
     reload: true,
   });
-  const [updateProductMutation] = useUpdateProductMutation({
-    onError: onErrorCallback,
-    onCompleted: (data) => {
-      setReloadToTrue();
-      onCompleteCallback(data.updateProduct);
-    },
-  });
+  const [updateProductMutation] = useUpdateProduct();
 
   const {
     nameI18n,
@@ -95,15 +87,12 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, companySlu
           onSubmit={(values) => {
             showLoading();
             return updateProductMutation({
-              variables: {
-                input: {
-                  ...values,
-                  productId: product._id,
-                  barcode: (values.barcode || []).filter((currentBarcode) => {
-                    return Boolean(currentBarcode);
-                  }),
-                },
-              },
+              ...values,
+              productId: `${product._id}`,
+              rubricId: `${product.rubricId}`,
+              barcode: (values.barcode || []).filter((currentBarcode) => {
+                return Boolean(currentBarcode);
+              }),
             });
           }}
         >

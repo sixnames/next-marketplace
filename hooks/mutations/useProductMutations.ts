@@ -4,10 +4,12 @@ import {
   REQUEST_METHOD_POST,
   ROUTE_CMS,
 } from 'config/common';
+import { useNotificationsContext } from 'context/notificationsContext';
 import { CopyProductInputInterface } from 'db/dao/product/copyProduct';
 import { CreateProductInputInterface } from 'db/dao/product/createProduct';
 import { CreateProductWithSyncErrorInputInterface } from 'db/dao/product/createProductWithSyncError';
 import { DeleteProductInputInterface } from 'db/dao/product/deleteProduct';
+import { DeleteProductAssetInputInterface } from 'db/dao/product/deleteProductAsset';
 import { UpdateProductInputInterface } from 'db/dao/product/updateProduct';
 import { UpdateProductAssetIndexInputInterface } from 'db/dao/product/updateProductAssetIndex';
 import { UpdateProductCategoryInputInterface } from 'db/dao/product/updateProductCategory';
@@ -16,6 +18,7 @@ import { UpdateProductWithSyncErrorInputInterface } from 'db/dao/product/updateP
 import { ProductPayloadModel } from 'db/dbModels';
 import { ProductInterface } from 'db/uiInterfaces';
 import { useMutationHandler } from 'hooks/mutations/useFetch';
+import { useReloadListener } from 'hooks/useReloadListener';
 import { useRouter } from 'next/router';
 
 const basePath = '/api/product';
@@ -26,13 +29,16 @@ function getCmsProductUrl(product: ProductInterface) {
 
 // create
 export const useCreateProduct = () => {
+  const { showErrorNotification } = useNotificationsContext();
   const router = useRouter();
   return useMutationHandler<ProductPayloadModel, CreateProductInputInterface>({
     path: basePath,
     method: REQUEST_METHOD_POST,
-    onSuccess: ({ payload }) => {
+    onSuccess: ({ payload, message }) => {
       if (payload) {
         router.push(getCmsProductUrl(payload)).catch(console.log);
+      } else {
+        showErrorNotification({ title: message });
       }
     },
   });
@@ -40,9 +46,13 @@ export const useCreateProduct = () => {
 
 // update
 export const useUpdateProduct = () => {
+  const { setReloadToTrue } = useReloadListener();
   return useMutationHandler<ProductPayloadModel, UpdateProductInputInterface>({
     path: basePath,
     method: REQUEST_METHOD_PATCH,
+    onSuccess: () => {
+      setReloadToTrue();
+    },
   });
 };
 
@@ -56,13 +66,16 @@ export const useDeleteProduct = () => {
 
 // copy
 export const useCopyProduct = () => {
+  const { showErrorNotification } = useNotificationsContext();
   const router = useRouter();
   return useMutationHandler<ProductPayloadModel, CopyProductInputInterface>({
     path: `${basePath}/copy`,
     method: REQUEST_METHOD_POST,
-    onSuccess: ({ payload }) => {
+    onSuccess: ({ payload, message }) => {
       if (payload) {
         router.push(getCmsProductUrl(payload)).catch(console.log);
+      } else {
+        showErrorNotification({ title: message });
       }
     },
   });
@@ -70,13 +83,16 @@ export const useCopyProduct = () => {
 
 // create with sync error
 export const useCreateProductWithSyncError = () => {
+  const { showErrorNotification } = useNotificationsContext();
   const router = useRouter();
   return useMutationHandler<ProductPayloadModel, CreateProductWithSyncErrorInputInterface>({
     path: `${basePath}/sync-error`,
     method: REQUEST_METHOD_POST,
-    onSuccess: ({ payload }) => {
+    onSuccess: ({ payload, message }) => {
       if (payload) {
         router.push(getCmsProductUrl(payload)).catch(console.log);
+      } else {
+        showErrorNotification({ title: message });
       }
     },
   });
@@ -101,6 +117,14 @@ export const useUpdateProductAssetIndex = () => {
   return useMutationHandler<ProductPayloadModel, UpdateProductAssetIndexInputInterface>({
     path: `${basePath}/asset-index`,
     method: REQUEST_METHOD_PATCH,
+  });
+};
+
+// delete asset
+export const useDeleteProductAsset = () => {
+  return useMutationHandler<ProductPayloadModel, DeleteProductAssetInputInterface>({
+    path: `${basePath}/delete-asset`,
+    method: REQUEST_METHOD_DELETE,
   });
 };
 

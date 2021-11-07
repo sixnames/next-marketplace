@@ -8,14 +8,15 @@ import Spinner from 'components/Spinner';
 import TextSeoInfo from 'components/TextSeoInfo';
 import { CONFIRM_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
+import { CreateProductInputInterface } from 'db/dao/product/createProduct';
 import { ProductSeoModel } from 'db/dbModels';
 import { useFormikContext } from 'formik';
 import * as React from 'react';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import FormikInput from 'components/FormElements/Input/FormikInput';
-import { CreateProductInput, useGetGenderOptionsQuery } from 'generated/apolloComponents';
+import { useGetGenderOptionsQuery } from 'generated/apolloComponents';
 
-export type ProductFormValuesBaseType = Omit<CreateProductInput, 'rubricId'>;
+export type ProductFormValuesBaseType = Omit<CreateProductInputInterface, 'rubricId'>;
 
 export interface ProductFormValuesInterface extends ProductFormValuesBaseType {
   productId?: string;

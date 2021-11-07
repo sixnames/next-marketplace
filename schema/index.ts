@@ -29,7 +29,6 @@ export * from './Product';
 export * from './ProductCardContent';
 export * from './ProductAttribute';
 export * from './ProductConnection';
-export * from './ProductMutations';
 export * from './ProductQueries';
 export * from './Role';
 export * from './RoleMutations';

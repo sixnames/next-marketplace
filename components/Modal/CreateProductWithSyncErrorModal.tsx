@@ -5,15 +5,12 @@ import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
 import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
-import { DEFAULT_LOCALE, GENDER_IT, ROUTE_CMS } from 'config/common';
+import { DEFAULT_LOCALE, GENDER_IT } from 'config/common';
 import { NotSyncedProductInterface } from 'db/uiInterfaces';
+import { useCreateProductWithSyncError } from 'hooks/mutations/useProductMutations';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import { useRouter } from 'next/router';
 import * as React from 'react';
-import {
-  useCreateProductWithSyncErrorMutation,
-  useGetAllRubricsQuery,
-} from 'generated/apolloComponents';
+import { useGetAllRubricsQuery } from 'generated/apolloComponents';
 import { Form, Formik } from 'formik';
 import ProductMainFields, {
   ProductFormValuesInterface,
@@ -32,41 +29,15 @@ const CreateProductWithSyncErrorModal: React.FC<CreateProductWithSyncErrorModalI
   notSyncedProduct,
   companySlug,
 }) => {
-  const router = useRouter();
   const { data, error, loading } = useGetAllRubricsQuery({
     fetchPolicy: 'network-only',
   });
 
-  const {
-    onErrorCallback,
-    onCompleteCallback,
-    hideModal,
-    showLoading,
-    showErrorNotification,
-    hideLoading,
-  } = useMutationCallbacks({
+  const { hideModal, showErrorNotification } = useMutationCallbacks({
     withModal: true,
   });
 
-  const [createProductWithSyncErrorMutation] = useCreateProductWithSyncErrorMutation({
-    awaitRefetchQueries: true,
-    onCompleted: (data) => {
-      if (data.createProductWithSyncError.success) {
-        onCompleteCallback(data.createProductWithSyncError);
-        router
-          .push(
-            `${ROUTE_CMS}/rubrics/${data.createProductWithSyncError.payload?.rubricId}/products/product/${data.createProductWithSyncError.payload?._id}`,
-          )
-          .catch((e) => console.log(e));
-      } else {
-        hideLoading();
-        showErrorNotification({
-          title: data.createProductWithSyncError.message,
-        });
-      }
-    },
-    onError: onErrorCallback,
-  });
+  const [createProductWithSyncErrorMutation] = useCreateProductWithSyncError();
 
   if (loading) {
     return (
@@ -104,6 +75,7 @@ const CreateProductWithSyncErrorModal: React.FC<CreateProductWithSyncErrorModalI
     descriptionI18n: {
       [DEFAULT_LOCALE]: '',
     },
+    cardDescriptionI18n: {},
     barcode: notSyncedProduct.barcode || [],
     rubricId: undefined,
     gender: GENDER_IT as any,
@@ -121,22 +93,17 @@ const CreateProductWithSyncErrorModal: React.FC<CreateProductWithSyncErrorModalI
             });
             return;
           }
-          showLoading();
 
           return createProductWithSyncErrorMutation({
-            variables: {
-              input: {
-                available: notSyncedProduct.available,
-                price: notSyncedProduct.price,
-                shopId: notSyncedProduct.shopId,
-                productFields: {
-                  ...values,
-                  rubricId: `${values.rubricId}`,
-                  barcode: (values.barcode || []).filter((currentBarcode) => {
-                    return Boolean(currentBarcode);
-                  }),
-                },
-              },
+            available: notSyncedProduct.available,
+            price: notSyncedProduct.price,
+            shopId: `${notSyncedProduct.shopId}`,
+            productFields: {
+              ...values,
+              rubricId: `${values.rubricId}`,
+              barcode: (values.barcode || []).filter((currentBarcode) => {
+                return Boolean(currentBarcode);
+              }),
             },
           });
         }}

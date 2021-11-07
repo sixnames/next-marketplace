@@ -12,9 +12,9 @@ import {
   RubricInterface,
 } from 'db/uiInterfaces';
 import {
-  useUpdateProductCategoryMutation,
-  useUpdateProductCategoryVisibilityMutation,
-} from 'generated/apolloComponents';
+  useUpdateProductCategory,
+  useUpdateProductCategoryVisibility,
+} from 'hooks/mutations/useProductMutations';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsProductLayout from 'layout/cms/CmsProductLayout';
@@ -37,19 +37,11 @@ const ProductCategories: React.FC<ProductCategoriesInterface> = ({
   categoriesTree,
   rubric,
 }) => {
-  const { showLoading, onErrorCallback, onCompleteCallback } = useMutationCallbacks({
+  const { showLoading } = useMutationCallbacks({
     reload: true,
   });
-
-  const [updateProductCategoryMutation] = useUpdateProductCategoryMutation({
-    onCompleted: (data) => onCompleteCallback(data.updateProductCategory),
-    onError: onErrorCallback,
-  });
-
-  const [updateProductCategoryVisibilityMutation] = useUpdateProductCategoryVisibilityMutation({
-    onCompleted: (data) => onCompleteCallback(data.updateProductCategoryVisibility),
-    onError: onErrorCallback,
-  });
+  const [updateProductCategoryMutation] = useUpdateProductCategory();
+  const [updateProductCategoryVisibilityMutation] = useUpdateProductCategoryVisibility();
 
   const renderCategories = React.useCallback(
     (category: ProductCategoryInterface) => {
@@ -70,12 +62,8 @@ const ProductCategories: React.FC<ProductCategoriesInterface> = ({
                 onChange={() => {
                   showLoading();
                   updateProductCategoryMutation({
-                    variables: {
-                      input: {
-                        productId: product._id,
-                        categoryId: category._id,
-                      },
-                    },
+                    productId: `${product._id}`,
+                    categoryId: `${category._id}`,
                   }).catch(console.log);
                 }}
               />
@@ -96,12 +84,8 @@ const ProductCategories: React.FC<ProductCategoriesInterface> = ({
                   onChange={() => {
                     showLoading();
                     updateProductCategoryVisibilityMutation({
-                      variables: {
-                        input: {
-                          productId: product._id,
-                          categoryId: category._id,
-                        },
-                      },
+                      productId: `${product._id}`,
+                      categoryId: `${category._id}`,
                     }).catch(console.log);
                   }}
                 />

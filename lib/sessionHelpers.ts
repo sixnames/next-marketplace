@@ -338,12 +338,18 @@ export const getRequestParams = async (
 
 interface GetResponseStatusInterface extends Record<any, any> {
   success: boolean;
+  statusCode?: number | null;
 }
 
 function getResponseStatus(payload: GetResponseStatusInterface): number {
+  if (payload.statusCode) {
+    return payload.statusCode;
+  }
+
   if (payload.success) {
     return 200;
   }
+
   return 500;
 }
 

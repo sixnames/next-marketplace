@@ -15,10 +15,9 @@ import { Form, Formik } from 'formik';
 import {
   UpdateProductCardContentInput,
   useUpdateProductCardContentMutation,
-  useUpdateProductMutation,
 } from 'generated/apolloComponents';
+import { useUpdateProduct } from 'hooks/mutations/useProductMutations';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import { useReloadListener } from 'hooks/useReloadListener';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { getConstructorDefaultValue } from 'lib/constructorUtils';
 import { get } from 'lodash';
@@ -40,20 +39,13 @@ const CompanyProductDetails: React.FC<CompanyProductDetailsInterface> = ({
   cardContent,
 }) => {
   const { cities } = useConfigContext();
-  const { setReloadToTrue } = useReloadListener();
   const validationSchema = useValidationSchema({
     schema: updateProductSchema,
   });
   const { onErrorCallback, onCompleteCallback, showLoading } = useMutationCallbacks({
     reload: true,
   });
-  const [updateProductMutation] = useUpdateProductMutation({
-    onError: onErrorCallback,
-    onCompleted: (data) => {
-      setReloadToTrue();
-      onCompleteCallback(data.updateProduct);
-    },
-  });
+  const [updateProductMutation] = useUpdateProduct();
 
   const [updateProductCardContentMutation] = useUpdateProductCardContentMutation({
     onCompleted: (data) => onCompleteCallback(data.updateProductCardContent),
@@ -99,22 +91,18 @@ const CompanyProductDetails: React.FC<CompanyProductDetailsInterface> = ({
 
       {children}
 
-      <Formik
+      <Formik<ProductFormValuesInterface>
         enableReinitialize
         validationSchema={validationSchema}
         initialValues={initialValues}
         onSubmit={(values) => {
-          showLoading();
           return updateProductMutation({
-            variables: {
-              input: {
-                ...values,
-                productId: product._id,
-                barcode: (values.barcode || []).filter((currentBarcode) => {
-                  return Boolean(currentBarcode);
-                }),
-              },
-            },
+            ...values,
+            productId: `${product._id}`,
+            rubricId: `${product.rubricId}`,
+            barcode: (values.barcode || []).filter((currentBarcode) => {
+              return Boolean(currentBarcode);
+            }),
           });
         }}
       >

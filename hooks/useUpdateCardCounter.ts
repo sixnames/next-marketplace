@@ -1,25 +1,23 @@
-import { ObjectIdModel } from 'db/dbModels';
-import { useUpdateProductCounterMutation } from 'generated/apolloComponents';
-import { alwaysArray } from 'lib/arrayUtils';
+/* eslint-disable react-app/react-hooks/exhaustive-deps */
+import { DEFAULT_COMPANY_SLUG, REQUEST_METHOD_PATCH } from 'config/common';
+import { UpdateProductCounterInputInterface } from 'db/dao/product/updateProductCounter';
 import * as React from 'react';
 
-interface UseUpdateCardCounterInterface {
-  shopProductIds?: ObjectIdModel[] | null;
-  companySlug?: string | null;
-}
-
-const useUpdateCardCounter = ({ shopProductIds, companySlug }: UseUpdateCardCounterInterface) => {
-  const [updateProductCounterMutation] = useUpdateProductCounterMutation();
+const useUpdateCardCounter = ({
+  shopProductIds,
+  companySlug = DEFAULT_COMPANY_SLUG,
+}: UpdateProductCounterInputInterface) => {
   React.useEffect(() => {
-    updateProductCounterMutation({
-      variables: {
-        input: {
-          shopProductIds: alwaysArray(shopProductIds),
-          companySlug,
-        },
-      },
-    }).catch((e) => console.log(e));
-  }, [shopProductIds, companySlug, updateProductCounterMutation]);
+    fetch(`/api/product/counter`, {
+      method: REQUEST_METHOD_PATCH,
+      body: JSON.stringify({
+        shopProductIds,
+        companySlug,
+      }),
+    }).catch((e) => {
+      console.log(e);
+    });
+  }, [shopProductIds, companySlug]);
 };
 
 export default useUpdateCardCounter;

@@ -11,14 +11,14 @@ describe('Shop product suppliers', () => {
     cy.getByCy('shop-product-suppliers-list');
     const supplierAName = 'Supplier A';
     const supplierBName = 'Supplier B';
-    
+
     // should add supplier
     cy.getByCy('add-supplier').click();
     cy.getByCy('shop-product-supplier-modal').should('exist');
     cy.selectOptionByTestId('supplierId', supplierAName);
     cy.selectOptionByTestId('variant', 'Диллерская наценка');
-    cy.getByCy('price').clear().type('1000');
-    cy.getByCy('percent').clear().type('10');
+    cy.getByCy('supplier-price').clear().type('1000');
+    cy.getByCy('supplier-percent').clear().type('10');
     cy.getByCy('submit-supplier-product').click();
     cy.wait(1500);
     cy.getByCy(`${supplierAName}-row`).should('exist');
@@ -28,8 +28,8 @@ describe('Shop product suppliers', () => {
     cy.getByCy('shop-product-supplier-modal').should('exist');
     cy.selectOptionByTestId('supplierId', supplierBName);
     cy.selectOptionByTestId('variant', 'Диллерская скидка');
-    cy.getByCy('price').clear().type('2000');
-    cy.getByCy('percent').clear().type('50');
+    cy.getByCy('supplier-price').clear().type('2000');
+    cy.getByCy('supplier-percent').clear().type('50');
     cy.getByCy('submit-supplier-product').click();
     cy.wait(1500);
     cy.getByCy(`${supplierBName}-row`).should('exist');
@@ -37,8 +37,8 @@ describe('Shop product suppliers', () => {
     // should update first supplier
     cy.getByCy(`${supplierAName}-update`).click();
     cy.getByCy('shop-product-supplier-modal').should('exist');
-    cy.getByCy('price').clear().type('2000');
-    cy.getByCy('percent').clear().type('30');
+    cy.getByCy('supplier-price').clear().type('2000');
+    cy.getByCy('supplier-percent').clear().type('30');
     cy.getByCy('submit-supplier-product').click();
     cy.wait(1500);
 

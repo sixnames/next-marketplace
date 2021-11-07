@@ -4,9 +4,9 @@ import Inner from 'components/Inner';
 import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
 import { ProductInterface, RubricInterface } from 'db/uiInterfaces';
 import {
-  useDeleteProductAssetMutation,
-  useUpdateProductAssetIndexMutation,
-} from 'generated/apolloComponents';
+  useDeleteProductAsset,
+  useUpdateProductAssetIndex,
+} from 'hooks/mutations/useProductMutations';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsLayout from 'layout/cms/CmsLayout';
@@ -26,20 +26,12 @@ interface ProductAssetsInterface {
 
 const ProductAssets: React.FC<ProductAssetsInterface> = ({ product, rubric }) => {
   const router = useRouter();
-  const { onErrorCallback, onCompleteCallback, showLoading, hideLoading, showErrorNotification } =
-    useMutationCallbacks({
-      reload: true,
-    });
-
-  const [deleteProductAssetMutation] = useDeleteProductAssetMutation({
-    onError: onErrorCallback,
-    onCompleted: (data) => onCompleteCallback(data.deleteProductAsset),
+  const { showLoading, hideLoading, showErrorNotification } = useMutationCallbacks({
+    reload: true,
   });
 
-  const [updateProductAssetIndexMutation] = useUpdateProductAssetIndexMutation({
-    onError: onErrorCallback,
-    onCompleted: (data) => onCompleteCallback(data.updateProductAssetIndex),
-  });
+  const [deleteProductAssetMutation] = useDeleteProductAsset();
+  const [updateProductAssetIndexMutation] = useUpdateProductAssetIndex();
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Изображения',
@@ -71,23 +63,15 @@ const ProductAssets: React.FC<ProductAssetsInterface> = ({ product, rubric }) =>
           assetsTitle={product.originalName}
           onRemoveHandler={(assetIndex) => {
             deleteProductAssetMutation({
-              variables: {
-                input: {
-                  productId: product._id,
-                  assetIndex,
-                },
-              },
+              productId: `${product._id}`,
+              assetIndex,
             }).catch((e) => console.log(e));
           }}
           onReorderHandler={({ assetNewIndex, assetUrl }) => {
             updateProductAssetIndexMutation({
-              variables: {
-                input: {
-                  productId: product._id,
-                  assetNewIndex,
-                  assetUrl,
-                },
-              },
+              productId: `${product._id}`,
+              assetNewIndex,
+              assetUrl,
             }).catch((e) => console.log(e));
           }}
         />

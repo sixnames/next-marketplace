@@ -1,58 +1,5 @@
 import { gql } from '@apollo/client';
 
-export const UPDATE_PRODUCT_MUTATION = gql`
-  mutation UpdateProduct($input: UpdateProductInput!) {
-    updateProduct(input: $input) {
-      success
-      message
-    }
-  }
-`;
-
-export const DELETE_PRODUCT_ASSET_MUTATION = gql`
-  mutation DeleteProductAsset($input: DeleteProductAssetInput!) {
-    deleteProductAsset(input: $input) {
-      success
-      message
-    }
-  }
-`;
-
-export const UPDATE_PRODUCT_ASSET_INDEX_MUTATION = gql`
-  mutation UpdateProductAssetIndex($input: UpdateProductAssetIndexInput!) {
-    updateProductAssetIndex(input: $input) {
-      success
-      message
-    }
-  }
-`;
-
-export const CREATE_PRODUCT_MUTATION = gql`
-  mutation CreateProduct($input: CreateProductInput!) {
-    createProduct(input: $input) {
-      success
-      message
-      payload {
-        _id
-        rubricId
-      }
-    }
-  }
-`;
-
-export const COPY_PRODUCT_MUTATION = gql`
-  mutation CopyProduct($input: CopyProductInput!) {
-    copyProduct(input: $input) {
-      success
-      message
-      payload {
-        _id
-        rubricId
-      }
-    }
-  }
-`;
-
 export const CREATE_PRODUCT_CONNECTION_MUTATION = gql`
   mutation CreateProductConnection($input: CreateProductConnectionInput!) {
     createProductConnection(input: $input) {
@@ -137,24 +84,6 @@ export const UPDATE_PRODUCT_TEXT_ATTRIBUTE_MUTATION = gql`
 export const UPDATE_PRODUCT_CARD_CONTENT_MUTATION = gql`
   mutation UpdateProductCardContent($input: UpdateProductCardContentInput!) {
     updateProductCardContent(input: $input) {
-      success
-      message
-    }
-  }
-`;
-
-export const UPDATE_PRODUCT_CATEGORY_MUTATION = gql`
-  mutation UpdateProductCategory($input: UpdateProductCategoryInput!) {
-    updateProductCategory(input: $input) {
-      success
-      message
-    }
-  }
-`;
-
-export const UPDATE_PRODUCT_CATEGORY_VISIBILITY_MUTATION = gql`
-  mutation UpdateProductCategoryVisibility($input: UpdateProductCategoryInput!) {
-    updateProductCategoryVisibility(input: $input) {
       success
       message
     }

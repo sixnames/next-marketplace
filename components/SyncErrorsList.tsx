@@ -7,7 +7,7 @@ import Pager, { useNavigateToPageHandler } from 'components/Pager';
 import Table, { TableColumn } from 'components/Table';
 import { CREATE_PRODUCT_WITH_SYNC_ERROR_MODAL, PRODUCT_SEARCH_MODAL } from 'config/modalVariants';
 import { AppPaginationInterface, NotSyncedProductInterface } from 'db/uiInterfaces';
-import { useUpdateProductWithSyncErrorMutation } from 'generated/apolloComponents';
+import { useUpdateProductWithSyncError } from 'hooks/mutations/useProductMutations';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { getNumWord } from 'lib/i18n';
 import * as React from 'react';
@@ -26,14 +26,11 @@ const SyncErrorsList: React.FC<SyncErrorsListInterface> = ({
   companySlug,
 }) => {
   const setPage = useNavigateToPageHandler();
-  const { showModal, onErrorCallback, onCompleteCallback, showLoading } = useMutationCallbacks({
+  const { showModal } = useMutationCallbacks({
     reload: true,
   });
 
-  const [updateProductWithSyncErrorMutation] = useUpdateProductWithSyncErrorMutation({
-    onCompleted: (data) => onCompleteCallback(data.updateProductWithSyncError),
-    onError: onErrorCallback,
-  });
+  const [updateProductWithSyncErrorMutation] = useUpdateProductWithSyncError();
 
   const columns: TableColumn<NotSyncedProductInterface>[] = [
     {
@@ -108,17 +105,12 @@ const SyncErrorsList: React.FC<SyncErrorsListInterface> = ({
                       </div>
                     ),
                     createHandler: (product) => {
-                      showLoading();
                       updateProductWithSyncErrorMutation({
-                        variables: {
-                          input: {
-                            productId: product._id,
-                            available: dataItem.available,
-                            barcode: dataItem.barcode || [],
-                            price: dataItem.price,
-                            shopId: dataItem.shopId,
-                          },
-                        },
+                        productId: product._id,
+                        available: dataItem.available,
+                        barcode: dataItem.barcode || [],
+                        price: dataItem.price,
+                        shopId: `${dataItem.shopId}`,
                       }).catch(console.log);
                     },
                   },

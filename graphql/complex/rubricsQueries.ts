@@ -133,15 +133,6 @@ export const GET_NON_RUBRIC_PRODUCTS_QUERY = gql`
   ${rubricProductsFragment}
 `;
 
-export const DELETE_PRODUCT_FROM_RUBRIC_MUTATION = gql`
-  mutation DeleteProductFromRubric($input: DeleteProductFromRubricInput!) {
-    deleteProductFromRubric(input: $input) {
-      success
-      message
-    }
-  }
-`;
-
 export const GET_ALL_PRODUCTS_QUERY = gql`
   query GetAllProducts($input: ProductsPaginationInput!) {
     getProductsList(input: $input) {

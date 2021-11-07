@@ -11,10 +11,9 @@ import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import Pager, { useNavigateToPageHandler } from 'components/Pager';
 import Table, { TableColumn } from 'components/Table';
 import TableRowImage from 'components/TableRowImage';
-import TextSeoInfo from 'components/TextSeoInfo';
 import { CONFIRM_MODAL } from 'config/modalVariants';
 import { useUserContext } from 'context/userContext';
-import { ShopProductModel, TextUniquenessApiParsedResponseModel } from 'db/dbModels';
+import { ShopProductModel } from 'db/dbModels';
 import {
   AppPaginationInterface,
   CatalogueFilterAttributeInterface,
@@ -186,19 +185,6 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
         return barcode.map((barcodeItem) => {
           return <div key={barcodeItem}>{barcodeItem}</div>;
         });
-      },
-    },
-    {
-      accessor: 'product.seo',
-      headTitle: 'Уникальность текста',
-      render: ({ cellData }) => {
-        return (
-          <div className='space-y-3'>
-            {(cellData?.locales || []).map((seoLocale: TextUniquenessApiParsedResponseModel) => {
-              return <TextSeoInfo showLocaleName key={seoLocale.locale} seoLocale={seoLocale} />;
-            })}
-          </div>
-        );
       },
     },
     {

@@ -1,8 +1,9 @@
 import { DEFAULT_COMPANY_SLUG, VIEWS_COUNTER_STEP } from 'config/common';
 import { COL_SHOP_PRODUCTS } from 'db/collectionNames';
-import { Maybe, ShopProductModel } from 'db/dbModels';
+import { Maybe, ProductPayloadModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
+import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getRequestParams, getSessionRole } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
 
@@ -14,7 +15,7 @@ export interface UpdateProductCounterInputInterface {
 export async function updateProductCounter({
   input,
   context,
-}: DaoPropsInterface<UpdateProductCounterInputInterface>): Promise<boolean> {
+}: DaoPropsInterface<UpdateProductCounterInputInterface>): Promise<ProductPayloadModel> {
   try {
     const { db } = await getDatabase();
     const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
@@ -23,14 +24,17 @@ export async function updateProductCounter({
 
     // check input
     if (!input) {
-      return false;
+      return {
+        success: false,
+        message: 'no input',
+      };
     }
 
-    if (!role.isStaff) {
-      const { shopProductIds } = input;
-      const companySlug = input.companySlug || DEFAULT_COMPANY_SLUG;
+    const { shopProductIds } = input;
+    const shopProductObjectIds = shopProductIds.map((_id) => new ObjectId(_id));
 
-      const shopProductObjectIds = shopProductIds.map((_id) => new ObjectId(_id));
+    if (!role.isStaff && shopProductObjectIds.length > 0) {
+      const companySlug = input.companySlug || DEFAULT_COMPANY_SLUG;
       const updatedShopProductsResult = await shopProductsCollection.updateMany(
         {
           _id: { $in: shopProductObjectIds },
@@ -42,13 +46,25 @@ export async function updateProductCounter({
         },
       );
       if (!updatedShopProductsResult.acknowledged) {
-        return false;
+        return {
+          success: false,
+          message: 'update error',
+        };
       }
-      return true;
+      return {
+        success: true,
+        message: 'success',
+      };
     }
-    return true;
+    return {
+      success: true,
+      message: 'success',
+    };
   } catch (e) {
     console.log(e);
-    return false;
+    return {
+      success: false,
+      message: getResolverErrorMessage(e),
+    };
   }
 }

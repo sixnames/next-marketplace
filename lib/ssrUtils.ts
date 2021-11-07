@@ -575,7 +575,7 @@ export interface GetPageInitialDataCommonInterface {
   locale: string;
   city: string;
   companySlug?: string;
-  companyId?: string;
+  company?: CompanyInterface | null;
 }
 
 export interface GetSsrConfigsInterface extends GetPageInitialDataCommonInterface {
@@ -587,7 +587,7 @@ export const getSsrConfigs = async ({
   locale,
   city,
   companySlug,
-  companyId,
+  company,
   role,
   db,
 }: GetSsrConfigsInterface): Promise<SsrConfigsInterface> => {
@@ -893,7 +893,10 @@ export const getSsrConfigs = async ({
   // from role
   const showAdminUiInCatalogue = Boolean(role?.showAdminUiInCatalogue);
   const isCompanyStaff = Boolean(role?.isCompanyStaff);
-  const editLinkBasePath = isCompanyStaff ? `${ROUTE_CONSOLE}/${companyId}` : ROUTE_CMS;
+  let editLinkBasePath = company ? `${ROUTE_CMS}/companies/${company?._id}` : ROUTE_CMS;
+  if (isCompanyStaff) {
+    editLinkBasePath = `${ROUTE_CONSOLE}/${company?._id}`;
+  }
 
   return {
     editLinkBasePath,
@@ -978,7 +981,7 @@ export interface GetPageInitialDataInterface extends GetPageInitialDataCommonInt
   locale: string;
   city: string;
   companySlug?: string;
-  companyId?: string;
+  company?: CompanyInterface | null;
   role?: RoleInterface | null;
 }
 
@@ -986,7 +989,7 @@ export const getPageInitialData = async ({
   locale,
   city,
   companySlug,
-  companyId,
+  company,
   role,
 }: GetPageInitialDataInterface): Promise<PageInitialDataPayload> => {
   // console.log(' ');
@@ -1001,7 +1004,7 @@ export const getPageInitialData = async ({
     locale,
     role,
     companySlug,
-    companyId,
+    company,
   });
   // console.log('After configs ', new Date().getTime() - timeStart);
 
@@ -1269,17 +1272,19 @@ export async function getPageInitialState({
     company = await companiesCollection.findOne({ domain });
   }
   // For development
+  // company = await companiesCollection.findOne({ slug: 'company_a' });
   // company = await companiesCollection.findOne({ slug: 'womens_secretary_000003' });
 
   // Page initial data
+  const sessionUserCompany =
+    sessionUser && sessionUser.companies && sessionUser.companies[0]
+      ? sessionUser.companies[0]
+      : null;
   const rawInitialData = await getPageInitialData({
     locale: sessionLocale,
     city: sessionCity,
     companySlug: company?.slug,
-    companyId:
-      sessionUser && sessionUser.companies && sessionUser.companies[0]
-        ? `${sessionUser.companies[0]._id}`
-        : '',
+    company: sessionUserCompany || company,
     role: sessionUser?.role,
   });
   const initialData = castDbData(rawInitialData);

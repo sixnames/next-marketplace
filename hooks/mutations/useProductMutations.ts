@@ -13,7 +13,6 @@ import { DeleteProductAssetInputInterface } from 'db/dao/product/deleteProductAs
 import { UpdateProductInputInterface } from 'db/dao/product/updateProduct';
 import { UpdateProductAssetIndexInputInterface } from 'db/dao/product/updateProductAssetIndex';
 import { UpdateProductCategoryInputInterface } from 'db/dao/product/updateProductCategory';
-import { UpdateProductCounterInputInterface } from 'db/dao/product/updateProductCounter';
 import { UpdateProductWithSyncErrorInputInterface } from 'db/dao/product/updateProductWithSyncError';
 import { ProductPayloadModel } from 'db/dbModels';
 import { ProductInterface } from 'db/uiInterfaces';
@@ -140,14 +139,6 @@ export const useUpdateProductCategory = () => {
 export const useUpdateProductCategoryVisibility = () => {
   return useMutationHandler<ProductPayloadModel, UpdateProductCategoryInputInterface>({
     path: `${basePath}/category/visibility`,
-    method: REQUEST_METHOD_PATCH,
-  });
-};
-
-// update counter
-export const useUpdateProductCounter = () => {
-  return useMutationHandler<ProductPayloadModel, UpdateProductCounterInputInterface>({
-    path: `${basePath}/counter`,
     method: REQUEST_METHOD_PATCH,
   });
 };

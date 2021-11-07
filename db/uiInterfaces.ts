@@ -279,7 +279,7 @@ export interface ProductInterface extends ProductModel {
   cardShopProducts?: ShopProductInterface[] | null;
   price?: number | null;
   cardBreadcrumbs?: ProductCardBreadcrumbModel[] | null;
-  shopProductIds?: ObjectIdModel[] | null;
+  shopProductIds?: string[] | null;
   shopProducts?: ShopProductInterface[] | null;
   shopProduct?: ShopProductInterface | null;
   rubric?: RubricInterface | null;

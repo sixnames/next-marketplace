@@ -804,12 +804,14 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
 
     // cast shops and get card prices
     const prices: number[] = [];
+    const shopProductIds: string[] = [];
     const finalCardShops = (shops || []).reduce((acc: ShopInterface[], shop) => {
       if (!shop.cardShopProduct) {
         return acc;
       }
 
       prices.push(shop.cardShopProduct.price);
+      shopProductIds.push(`${shop.cardShopProduct._id}`);
 
       return [
         ...acc,
@@ -1054,6 +1056,7 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
       product: {
         ...restProduct,
         name,
+        shopProductIds,
         cardDescription: cardDescription
           ? {
               ...cardDescription,

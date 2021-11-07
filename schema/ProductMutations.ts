@@ -25,14 +25,6 @@ export const UpdateProductCounterInput = inputObjectType({
   },
 });
 
-export const UpdateProductCategoryInput = inputObjectType({
-  name: 'UpdateProductCategoryInput',
-  definition(t) {
-    t.nonNull.objectId('productId');
-    t.nonNull.objectId('categoryId');
-  },
-});
-
 // Product Mutations
 export const ProductMutations = extendType({
   type: 'Mutation',

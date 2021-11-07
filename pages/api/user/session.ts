@@ -12,6 +12,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       locale,
     });
     res.status(200).send(sessionUser);
+    return;
   }
 
   res.status(405).send({

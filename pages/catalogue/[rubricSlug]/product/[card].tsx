@@ -5,7 +5,7 @@ import Inner from 'components/Inner';
 import { CARD_LAYOUT_HALF_COLUMNS, DEFAULT_LAYOUT } from 'config/constantSelects';
 import { useConfigContext } from 'context/configContext';
 import { InitialCardDataInterface } from 'db/uiInterfaces';
-import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
+import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
 import { getCardData } from 'lib/cardUtils';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
 import { cityIn } from 'lvovich';
@@ -41,9 +41,9 @@ const Card: NextPage<CardInterface> = ({ cardData, company, ...props }) => {
   const { configs } = useConfigContext();
   if (!cardData) {
     return (
-      <SiteLayoutProvider {...props}>
+      <SiteLayout {...props}>
         <ErrorBoundaryFallback />
-      </SiteLayoutProvider>
+      </SiteLayout>
     );
   }
 
@@ -53,7 +53,7 @@ const Card: NextPage<CardInterface> = ({ cardData, company, ...props }) => {
   const cityDescription = currentCity ? ` в ${cityIn(`${currentCity.name}`)}` : '';
 
   return (
-    <SiteLayoutProvider
+    <SiteLayout
       previewImage={cardData.product.mainImage}
       title={`${cardData.cardTitle}${prefix} ${siteName}${cityDescription}`}
       description={`${cardData.cardTitle} ${cardData.product.description}`}
@@ -82,7 +82,7 @@ const Card: NextPage<CardInterface> = ({ cardData, company, ...props }) => {
           </Inner>
         </FixedButtons>
       ) : null}
-    </SiteLayoutProvider>
+    </SiteLayout>
   );
 };
 

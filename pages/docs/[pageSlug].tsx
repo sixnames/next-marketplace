@@ -5,7 +5,7 @@ import { PAGE_STATE_PUBLISHED } from 'config/common';
 import { COL_PAGES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { PageInterface } from 'db/uiInterfaces';
-import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
+import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -31,13 +31,13 @@ interface CreatedPageInterface extends SiteLayoutProviderInterface, CreatedPageC
 
 const CreatedPage: NextPage<CreatedPageInterface> = ({ page, ...props }) => {
   return (
-    <SiteLayoutProvider
+    <SiteLayout
       {...props}
       title={`${page.name}`}
       description={page.description ? page.description : `${page.name}`}
     >
       <CreatedPageConsumer page={page} />
-    </SiteLayoutProvider>
+    </SiteLayout>
   );
 };
 

@@ -28,7 +28,7 @@ import { useNotificationsContext } from 'context/notificationsContext';
 import { CatalogueDataInterface } from 'db/uiInterfaces';
 import { useUpdateCatalogueCountersMutation } from 'generated/apolloComponents';
 import usePageLoadingState from 'hooks/usePageLoadingState';
-import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
+import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getCatalogueFilterNextPath, getCatalogueFilterValueByKey } from 'lib/catalogueHelpers';
 import { getNumWord } from 'lib/i18n';
@@ -501,9 +501,9 @@ const Catalogue: React.FC<CatalogueInterface> = ({
   const { configs } = useConfigContext();
   if (!catalogueData) {
     return (
-      <SiteLayoutProvider {...props}>
+      <SiteLayout {...props}>
         <ErrorBoundaryFallback />
-      </SiteLayoutProvider>
+      </SiteLayout>
     );
   }
   const siteName = configs.siteName;
@@ -512,7 +512,7 @@ const Catalogue: React.FC<CatalogueInterface> = ({
   const cityDescription = currentCity ? ` в ${cityIn(`${currentCity.name}`)}` : '';
 
   return (
-    <SiteLayoutProvider
+    <SiteLayout
       currentCity={currentCity}
       company={company}
       title={`${catalogueData.catalogueTitle}${prefix} ${siteName}${cityDescription}`}
@@ -540,7 +540,7 @@ const Catalogue: React.FC<CatalogueInterface> = ({
           </Inner>
         </FixedButtons>
       ) : null}
-    </SiteLayoutProvider>
+    </SiteLayout>
   );
 };
 

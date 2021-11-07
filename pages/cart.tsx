@@ -21,7 +21,7 @@ import { useNotificationsContext } from 'context/notificationsContext';
 import { useSiteContext } from 'context/siteContext';
 import { CartProductInterface, ShopProductInterface } from 'db/uiInterfaces';
 import LayoutCard from 'layout/LayoutCard';
-import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
+import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
 import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -414,9 +414,9 @@ type CartPageInterface = SiteLayoutProviderInterface;
 
 const CartPage: NextPage<CartPageInterface> = (props) => {
   return (
-    <SiteLayoutProvider title={'Корзина'} {...props}>
+    <SiteLayout title={'Корзина'} {...props}>
       <CartRoute />
-    </SiteLayoutProvider>
+    </SiteLayout>
   );
 };
 

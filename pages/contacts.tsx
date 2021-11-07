@@ -6,7 +6,7 @@ import WpMap from 'components/WpMap';
 import { useConfigContext } from 'context/configContext';
 import { useThemeContext } from 'context/themeContext';
 import { AddressModel } from 'db/dbModels';
-import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
+import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
 import { noNaN } from 'lib/numbers';
 import { phoneToReadable } from 'lib/phoneUtils';
 import { getSiteInitialData } from 'lib/ssrUtils';
@@ -144,9 +144,9 @@ type ContactsInterface = SiteLayoutProviderInterface;
 
 const Contacts: NextPage<ContactsInterface> = (props) => {
   return (
-    <SiteLayoutProvider {...props}>
+    <SiteLayout {...props}>
       <ContactsRoute />
-    </SiteLayoutProvider>
+    </SiteLayout>
   );
 };
 

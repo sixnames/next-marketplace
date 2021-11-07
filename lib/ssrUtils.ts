@@ -57,10 +57,7 @@ import {
   SsrConfigsInterface,
   UserInterface,
 } from 'db/uiInterfaces';
-import {
-  SiteLayoutCatalogueCreatedPages,
-  SiteLayoutProviderInterface,
-} from 'layout/SiteLayoutProvider';
+import { SiteLayoutCatalogueCreatedPages, SiteLayoutProviderInterface } from 'layout/SiteLayout';
 import {
   castConfigs,
   getConfigBooleanValue,

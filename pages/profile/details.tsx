@@ -18,7 +18,7 @@ import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import ProfileLayout from 'layout/ProfileLayout/ProfileLayout';
 import RowWithGap from 'layout/RowWithGap/RowWithGap';
-import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
+import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
 import { phoneToRaw } from 'lib/phoneUtils';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -198,12 +198,12 @@ type ProfileDetailsInterface = SiteLayoutProviderInterface;
 
 const ProfileDetails: NextPage<ProfileDetailsInterface> = (props) => {
   return (
-    <SiteLayoutProvider title={'Профиль'} {...props}>
+    <SiteLayout title={'Профиль'} {...props}>
       <ProfileLayout>
         <Title size={'small'}>Профиль</Title>
         <ProfileDetailsRoute />
       </ProfileLayout>
-    </SiteLayoutProvider>
+    </SiteLayout>
   );
 };
 

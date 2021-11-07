@@ -1,17 +1,29 @@
-import { useConfigContext } from 'context/configContext';
-import {
-  SiteLayoutCatalogueCreatedPages,
-  SiteLayoutProviderInterface,
-} from 'layout/SiteLayoutProvider';
-import * as React from 'react';
 import ErrorBoundary from 'components/ErrorBoundary';
+import Modal from 'components/Modal/Modal';
+import Spinner from 'components/Spinner';
+import { useAppContext } from 'context/appContext';
+import { useConfigContext } from 'context/configContext';
+import { SiteContextProvider } from 'context/siteContext';
+import { PagesGroupInterface, RubricInterface } from 'db/uiInterfaces';
 import Footer from 'layout/footer/Footer';
 import Header from 'layout/header/Header';
-import Spinner from 'components/Spinner';
-import Meta, { MetaInterface } from '../Meta';
-import { useAppContext } from 'context/appContext';
-import { SiteContextProvider } from 'context/siteContext';
-import Modal from 'components/Modal/Modal';
+import Meta, { MetaInterface } from 'layout/Meta';
+import { PagePropsInterface } from 'pages/_app';
+import * as React from 'react';
+
+export interface SiteLayoutCatalogueCreatedPages {
+  footerPageGroups: PagesGroupInterface[];
+  headerPageGroups: PagesGroupInterface[];
+}
+
+export interface SiteLayoutProviderInterface
+  extends PagePropsInterface,
+    SiteLayoutCatalogueCreatedPages {
+  title?: string;
+  description?: string;
+  navRubrics: RubricInterface[];
+  previewImage?: string;
+}
 
 interface SiteLayoutConsumerInterface extends SiteLayoutCatalogueCreatedPages, MetaInterface {}
 
@@ -32,10 +44,11 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
   // Metrics
   const yaMetrica = configs.yaMetrica;
   const googleAnalytics = configs.googleAnalytics;
+  const metricsCodeAsString = `${yaMetrica}${googleAnalytics}`;
 
   return (
     <div className='relative flex flex-col text-primary-text bg-primary min-h-full-height'>
-      <div dangerouslySetInnerHTML={{ __html: `${yaMetrica}${googleAnalytics}` }} />
+      <div dangerouslySetInnerHTML={{ __html: metricsCodeAsString }} />
 
       <Meta
         title={title}

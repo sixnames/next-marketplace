@@ -3,7 +3,7 @@ import Inner from 'components/Inner';
 import Title from 'components/Title';
 import { ROUTE_PROFILE } from 'config/common';
 import { useNotificationsContext } from 'context/notificationsContext';
-import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
+import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -55,9 +55,9 @@ type ThankYouInterface = SiteLayoutProviderInterface;
 
 const ThankYou: NextPage<ThankYouInterface> = (props) => {
   return (
-    <SiteLayoutProvider title={'Спасибо за заказ!'} {...props}>
+    <SiteLayout title={'Спасибо за заказ!'} {...props}>
       <ThankYouRoute />
-    </SiteLayoutProvider>
+    </SiteLayout>
   );
 };
 

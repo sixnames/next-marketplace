@@ -38,8 +38,8 @@ import {
   getResolverValidationSchema,
   getSessionUser,
 } from 'lib/sessionHelpers';
-import { generateCompanySlug, generateShopSlug } from 'lib/slugUtils';
-import { getNextItemId } from 'lib/itemIdUtils';
+import { generateShopSlug } from 'lib/slugUtils';
+import { getNextItemId, getNextNumberItemId } from 'lib/itemIdUtils';
 import {
   addShopToCompanySchema,
   createCompanySchema,
@@ -305,12 +305,8 @@ export const CompanyMutations = extendType({
 
             // Store company logo
             const itemId = await getNextItemId(COL_COMPANIES);
-
+            const slug = await getNextNumberItemId(COL_COMPANIES);
             // Create company
-            const slug = generateCompanySlug({
-              name: input.name,
-              itemId,
-            });
             const createdCompanyResult = await companiesCollection.insertOne({
               ...input,
               itemId,

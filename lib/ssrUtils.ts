@@ -74,8 +74,6 @@ import { getTreeFromList } from 'lib/optionsUtils';
 import { castAttributeForUI } from 'lib/uiDataUtils';
 import { Db, ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, Redirect } from 'next';
-import { Session } from 'next-auth';
-import { getSession } from 'next-auth/client';
 import { PagePropsInterface } from 'pages/_app';
 import { getSubdomain, getDomain } from 'tldts';
 import nookies from 'nookies';
@@ -1053,7 +1051,6 @@ interface GetPageInitialStatePayloadInterface extends PagePropsInterface {
   path: string;
   host: string;
   domain: string | null;
-  session: Session | null;
 }
 
 export async function getPageInitialState({
@@ -1070,8 +1067,6 @@ export async function getPageInitialState({
   const domain = getDomain(host, { validHosts: ['localhost'] });
   const sessionLocale = locale || DEFAULT_LOCALE;
 
-  // Get session
-  const session = await getSession(context);
   // Session user
   // const sessionUserStart = new Date().getTime();
   const sessionUser = await getPageSessionUser({
@@ -1166,7 +1161,6 @@ export async function getPageInitialState({
     path,
     host,
     domain,
-    session,
     initialData,
     themeStyle,
     company: castDbData(company),
@@ -1258,12 +1252,11 @@ export async function getConsoleInitialData({
     sessionLocale,
     initialData,
     companySlug,
-    session,
     themeStyle,
   } = await getPageInitialState({ context });
 
   // Check if user authenticated
-  if (!session?.user || !sessionUser) {
+  if (!sessionUser) {
     return {
       redirect: {
         permanent: false,
@@ -1334,12 +1327,11 @@ export async function getAppInitialData({
     sessionLocale,
     initialData,
     companySlug,
-    session,
     themeStyle,
   } = await getPageInitialState({ context });
 
   // Check if user authenticated
-  if (!session?.user || !sessionUser) {
+  if (!sessionUser) {
     return {
       redirect: {
         permanent: false,

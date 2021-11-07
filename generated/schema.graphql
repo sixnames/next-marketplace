@@ -299,7 +299,7 @@ input CatalogueAdditionalOptionsInput {
 }
 
 input CatalogueDataInput {
-  companySlug: String = "default"
+  companySlug: String = "0"
   filter: [String!]!
   rubricSlug: String!
 }

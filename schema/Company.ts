@@ -39,7 +39,7 @@ import {
   getSessionUser,
 } from 'lib/sessionHelpers';
 import { generateShopSlug } from 'lib/slugUtils';
-import { getNextItemId } from 'lib/itemIdUtils';
+import { getNextItemId, getNextNumberItemId } from 'lib/itemIdUtils';
 import {
   addShopToCompanySchema,
   createCompanySchema,
@@ -305,12 +305,12 @@ export const CompanyMutations = extendType({
 
             // Store company logo
             const itemId = await getNextItemId(COL_COMPANIES);
-
+            const slug = await getNextNumberItemId(COL_COMPANIES);
             // Create company
             const createdCompanyResult = await companiesCollection.insertOne({
               ...input,
               itemId,
-              slug: itemId,
+              slug,
               logo: {
                 index: 1,
                 url: IMAGE_FALLBACK,
@@ -364,7 +364,7 @@ export const CompanyMutations = extendType({
 
             // Create company configs
             const configTemplates = getConfigTemplates({
-              companySlug: itemId,
+              companySlug: slug,
               phone: input.contacts.phones,
               email: input.contacts.emails,
               siteName: input.name,

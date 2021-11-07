@@ -26,10 +26,6 @@ export interface GenerateCompanySlugInterface {
   itemId: string;
 }
 
-export const generateCompanySlug = ({ name, itemId }: GenerateCompanySlugInterface) => {
-  return generateSlug(`${name} ${itemId}`);
-};
-
 export interface GenerateShopSlugInterface {
   name: string;
   itemId: string;

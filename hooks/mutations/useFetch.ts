@@ -7,7 +7,7 @@ import * as React from 'react';
 export interface UseFetchInterface<T> {
   input: RequestInfo;
   onSuccess: (payload: T) => void;
-  onError: (payload?: T) => void;
+  onError: (payload: T) => void;
   onFetchStart?: () => void;
   reload?: boolean;
 }
@@ -87,7 +87,7 @@ export function useFetch<T>({
 export interface UseMutationInterface<T> {
   input: RequestInfo;
   onSuccess?: (payload: T) => void;
-  onError?: (payload?: T) => void;
+  onError?: (payload: T) => void;
   reload?: boolean;
 }
 
@@ -147,6 +147,7 @@ interface UseMutationHandlerInputInterface<TPayload extends PayloadModel> {
   method: string;
   reload?: boolean;
   onSuccess?: (payload: TPayload) => void;
+  onError?: (payload: TPayload) => void;
 }
 
 export function useMutationHandler<TPayload extends PayloadModel, TArgs>({
@@ -154,11 +155,13 @@ export function useMutationHandler<TPayload extends PayloadModel, TArgs>({
   method,
   reload = true,
   onSuccess,
+  onError,
 }: UseMutationHandlerInputInterface<TPayload>): UseMutationConsumerPayload<TPayload, TArgs> {
   const [handle, payload] = useMutation<TPayload>({
     input: path,
     reload,
     onSuccess,
+    onError,
   });
 
   const handler = React.useCallback(

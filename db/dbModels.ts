@@ -40,6 +40,7 @@ export interface MapMarkerModel {
 export interface PayloadModel {
   success: boolean;
   message: string;
+  statusCode?: number | null;
   type?: any;
 }
 

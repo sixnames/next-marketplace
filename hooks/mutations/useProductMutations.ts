@@ -1,9 +1,12 @@
+import { BarcodeIntersectsModalInterface } from 'components/Modal/BarcodeIntertsectsModal';
 import {
   REQUEST_METHOD_DELETE,
   REQUEST_METHOD_PATCH,
   REQUEST_METHOD_POST,
   ROUTE_CMS,
 } from 'config/common';
+import { BARCODE_INTERSECTS_MODAL } from 'config/modalVariants';
+import { useAppContext } from 'context/appContext';
 import { useNotificationsContext } from 'context/notificationsContext';
 import { CopyProductInputInterface } from 'db/dao/product/copyProduct';
 import { CreateProductInputInterface } from 'db/dao/product/createProduct';
@@ -28,11 +31,23 @@ function getCmsProductUrl(product: ProductInterface) {
 
 // create
 export const useCreateProduct = () => {
+  const { showModal } = useAppContext();
   const { showErrorNotification } = useNotificationsContext();
   const router = useRouter();
   return useMutationHandler<ProductPayloadModel, CreateProductInputInterface>({
     path: basePath,
     method: REQUEST_METHOD_POST,
+    onError: ({ barcodeDoubles }) => {
+      if (barcodeDoubles) {
+        showModal<BarcodeIntersectsModalInterface>({
+          variant: BARCODE_INTERSECTS_MODAL,
+          props: {
+            barcodeDoubles,
+          },
+        });
+        return;
+      }
+    },
     onSuccess: ({ payload, message }) => {
       if (payload) {
         router.push(getCmsProductUrl(payload)).catch(console.log);
@@ -45,10 +60,22 @@ export const useCreateProduct = () => {
 
 // update
 export const useUpdateProduct = () => {
+  const { showModal } = useAppContext();
   const { setReloadToTrue } = useReloadListener();
   return useMutationHandler<ProductPayloadModel, UpdateProductInputInterface>({
     path: basePath,
     method: REQUEST_METHOD_PATCH,
+    onError: ({ barcodeDoubles }) => {
+      if (barcodeDoubles) {
+        showModal<BarcodeIntersectsModalInterface>({
+          variant: BARCODE_INTERSECTS_MODAL,
+          props: {
+            barcodeDoubles,
+          },
+        });
+        return;
+      }
+    },
     onSuccess: () => {
       setReloadToTrue();
     },
@@ -82,11 +109,23 @@ export const useCopyProduct = () => {
 
 // create with sync error
 export const useCreateProductWithSyncError = () => {
+  const { showModal } = useAppContext();
   const { showErrorNotification } = useNotificationsContext();
   const router = useRouter();
   return useMutationHandler<ProductPayloadModel, CreateProductWithSyncErrorInputInterface>({
     path: `${basePath}/sync-error`,
     method: REQUEST_METHOD_POST,
+    onError: ({ barcodeDoubles }) => {
+      if (barcodeDoubles) {
+        showModal<BarcodeIntersectsModalInterface>({
+          variant: BARCODE_INTERSECTS_MODAL,
+          props: {
+            barcodeDoubles,
+          },
+        });
+        return;
+      }
+    },
     onSuccess: ({ payload, message }) => {
       if (payload) {
         router.push(getCmsProductUrl(payload)).catch(console.log);
@@ -99,10 +138,22 @@ export const useCreateProductWithSyncError = () => {
 
 // create with sync error
 export const useUpdateProductWithSyncError = () => {
+  const { showModal } = useAppContext();
   const router = useRouter();
   return useMutationHandler<ProductPayloadModel, UpdateProductWithSyncErrorInputInterface>({
     path: `${basePath}/sync-error`,
     method: REQUEST_METHOD_PATCH,
+    onError: ({ barcodeDoubles }) => {
+      if (barcodeDoubles) {
+        showModal<BarcodeIntersectsModalInterface>({
+          variant: BARCODE_INTERSECTS_MODAL,
+          props: {
+            barcodeDoubles,
+          },
+        });
+        return;
+      }
+    },
     onSuccess: ({ payload }) => {
       if (payload) {
         router.push(getCmsProductUrl(payload)).catch(console.log);

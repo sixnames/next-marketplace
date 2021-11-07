@@ -22,13 +22,8 @@ import { DaoPropsInterface } from 'db/uiInterfaces';
 import { deleteAlgoliaObjects } from 'lib/algoliaUtils';
 import { deleteUpload } from 'lib/assetUtils/assetUtils';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import {
-  getOperationPermission,
-  getRequestParams,
-  getResolverValidationSchema,
-} from 'lib/sessionHelpers';
+import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
-import { deleteProductFromRubricSchema } from 'validation/rubricSchema';
 
 export interface DeleteProductInputInterface {
   productId: string;
@@ -79,13 +74,6 @@ export async function deleteProduct({
         await session.abortTransaction();
         return;
       }
-
-      // validate
-      const validationSchema = await getResolverValidationSchema({
-        context,
-        schema: deleteProductFromRubricSchema,
-      });
-      await validationSchema.validate(input);
 
       const { productId } = input;
 

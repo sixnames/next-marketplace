@@ -123,7 +123,7 @@ const ShopProductSupplierModal: React.FC<ShopProductSupplierModalInterface> = ({
               <FormikInput
                 label={'Цена'}
                 name={'price'}
-                testId={'price'}
+                testId={'supplier-price'}
                 type={'number'}
                 isRequired
                 showInlineError
@@ -132,7 +132,7 @@ const ShopProductSupplierModal: React.FC<ShopProductSupplierModalInterface> = ({
               <FormikInput
                 label={'Процент'}
                 name={'percent'}
-                testId={'percent'}
+                testId={'supplier-percent'}
                 type={'number'}
                 isRequired
                 showInlineError

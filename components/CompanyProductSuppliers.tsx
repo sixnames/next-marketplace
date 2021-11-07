@@ -187,7 +187,7 @@ const CompanyProductSuppliers: React.FC<CompanyProductSuppliersInterface> = ({
 
       {/*suppliers list*/}
       <div className='mb-16'>
-        <div className='overflow-x-auto overflow-y-hidden'>
+        <div className='overflow-x-auto overflow-y-hidden mb-8'>
           <Table<SupplierProductInterface>
             columns={columns}
             data={shopProduct.supplierProducts}

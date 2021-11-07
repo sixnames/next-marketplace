@@ -505,6 +505,9 @@ export async function checkBarcodeIntersects({
       }
     : {};
   const barcodeDoubles: BarcodeDoublesInterface[] = [];
+  if (barcode.length < 1) {
+    return barcodeDoubles;
+  }
 
   for await (const barcodeItem of barcode) {
     const products = await productsCollection

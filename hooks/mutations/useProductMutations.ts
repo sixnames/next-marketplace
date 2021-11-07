@@ -37,6 +37,7 @@ export const useCreateProduct = () => {
   return useMutationHandler<ProductPayloadModel, CreateProductInputInterface>({
     path: basePath,
     method: REQUEST_METHOD_POST,
+    reload: false,
     onError: ({ barcodeDoubles }) => {
       if (barcodeDoubles) {
         showModal<BarcodeIntersectsModalInterface>({
@@ -97,6 +98,7 @@ export const useCopyProduct = () => {
   return useMutationHandler<ProductPayloadModel, CopyProductInputInterface>({
     path: `${basePath}/copy`,
     method: REQUEST_METHOD_POST,
+    reload: false,
     onSuccess: ({ payload, message }) => {
       if (payload) {
         router.push(getCmsProductUrl(payload)).catch(console.log);
@@ -115,6 +117,7 @@ export const useCreateProductWithSyncError = () => {
   return useMutationHandler<ProductPayloadModel, CreateProductWithSyncErrorInputInterface>({
     path: `${basePath}/sync-error`,
     method: REQUEST_METHOD_POST,
+    reload: false,
     onError: ({ barcodeDoubles }) => {
       if (barcodeDoubles) {
         showModal<BarcodeIntersectsModalInterface>({
@@ -143,6 +146,7 @@ export const useUpdateProductWithSyncError = () => {
   return useMutationHandler<ProductPayloadModel, UpdateProductWithSyncErrorInputInterface>({
     path: `${basePath}/sync-error`,
     method: REQUEST_METHOD_PATCH,
+    reload: false,
     onError: ({ barcodeDoubles }) => {
       if (barcodeDoubles) {
         showModal<BarcodeIntersectsModalInterface>({

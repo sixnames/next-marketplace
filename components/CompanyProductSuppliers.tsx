@@ -160,17 +160,17 @@ const CompanyProductSuppliers: React.FC<CompanyProductSuppliersInterface> = ({
               <Form>
                 <div className='md:grid gap-8 grid-cols-2'>
                   <FormikInput
-                    label={'Цена'}
-                    testId={`price`}
-                    name={`input[0].price`}
+                    label={'Наличие'}
+                    testId={`available`}
+                    name={`input[0].available`}
                     type={'number'}
                     min={0}
                   />
 
                   <FormikInput
-                    label={'Наличие'}
-                    testId={`available`}
-                    name={`input[0].available`}
+                    label={'Цена'}
+                    testId={`price`}
+                    name={`input[0].price`}
                     type={'number'}
                     min={0}
                   />

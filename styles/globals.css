@@ -210,14 +210,14 @@
     overflow: unset !important;
   }
 
-  .catalogue__filter-scroll {
-    -ms-overflow-style: none;  /* Internet Explorer 10+ */
-    scrollbar-width: none;  /* Firefox */
+  /*.catalogue__filter-scroll {
+    -ms-overflow-style: none;  !* Internet Explorer 10+ *!
+    scrollbar-width: none;  !* Firefox *!
   }
 
   .catalogue__filter-scroll::-webkit-scrollbar {
-    display: none;  /* Safari and Chrome */
-  }
+    display: none;  !* Safari and Chrome *!
+  }*/
 
   .tag-link__icon > svg {
     width: 2rem;

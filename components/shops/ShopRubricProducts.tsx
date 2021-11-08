@@ -25,10 +25,8 @@ import {
   SupplierProductInterface,
 } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
-import {
-  useDeleteProductFromShopMutation,
-  useUpdateManyShopProductsMutation,
-} from 'generated/apolloComponents';
+import { useDeleteProductFromShopMutation } from 'generated/apolloComponents';
+import { useUpdateManyShopProducts } from 'hooks/mutations/useShopProductMutations';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import ConsoleShopLayout, { AppShopLayoutInterface } from 'layout/console/ConsoleShopLayout';
@@ -125,10 +123,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
 
   const withProducts = docs.length > 0;
 
-  const [updateManyShopProductsMutation] = useUpdateManyShopProductsMutation({
-    onCompleted: (data) => onCompleteCallback(data.updateManyShopProducts),
-    onError: onErrorCallback,
-  });
+  const [updateManyShopProductsMutation] = useUpdateManyShopProducts();
 
   const [deleteProductFromShopMutation] = useDeleteProductFromShopMutation({
     onCompleted: (data) => onCompleteCallback(data.deleteProductFromShop),
@@ -320,18 +315,16 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
                 if (updatedProducts.length > 0) {
                   showLoading();
 
-                  updateManyShopProductsMutation({
-                    variables: {
-                      input: updatedProducts.map(({ productId, price, available, _id }) => {
-                        return {
-                          shopProductId: `${_id}`,
-                          productId: `${productId}`,
-                          price: noNaN(price),
-                          available: noNaN(available),
-                        };
-                      }),
-                    },
-                  }).catch((e) => console.log(e));
+                  updateManyShopProductsMutation(
+                    updatedProducts.map(({ barcode, price, available, _id }) => {
+                      return {
+                        shopProductId: `${_id}`,
+                        price: noNaN(price),
+                        available: noNaN(available),
+                        barcode: barcode || [],
+                      };
+                    }),
+                  ).catch((e) => console.log(e));
                 } else {
                   showErrorNotification({
                     title: 'Нет изменённых товаров',

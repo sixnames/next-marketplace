@@ -1,5 +1,5 @@
-import { COL_SHOP_PRODUCTS } from 'db/collectionNames';
-import { ShopProductModel, ShopProductPayloadModel } from 'db/dbModels';
+import { COL_PRODUCTS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import { ProductModel, ShopProductModel, ShopProductPayloadModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface, ShopProductBarcodeDoublesInterface } from 'db/uiInterfaces';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
@@ -20,121 +20,159 @@ export interface UpdateShopProductInputInterface {
   barcode: string[];
 }
 
-export type UpdateManyShopProductsInputInterface = UpdateShopProductInputInterface[];
+export type UpdateManyShopProductsInputType = UpdateShopProductInputInterface[];
 
 export async function updateManyShopProducts({
   input,
   context,
-}: DaoPropsInterface<UpdateManyShopProductsInputInterface>): Promise<ShopProductPayloadModel> {
+}: DaoPropsInterface<UpdateManyShopProductsInputType>): Promise<ShopProductPayloadModel> {
+  const { getApiMessage, locale } = await getRequestParams(context);
+  const { db, client } = await getDatabase();
+  const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+  const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+
+  const session = client.startSession();
+
+  let mutationPayload: ShopProductPayloadModel = {
+    success: false,
+    message: await getApiMessage('shopProducts.update.error'),
+  };
+
   try {
-    const { getApiMessage, locale } = await getRequestParams(context);
-    const { db } = await getDatabase();
-    const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-
-    // check input
-    if (!input) {
-      return {
-        success: false,
-        message: await getApiMessage('shopProducts.update.error'),
-      };
-    }
-
-    // permission
-    const { allow, message } = await getOperationPermission({
-      context,
-      slug: 'updateShopProduct',
-    });
-    if (!allow) {
-      return {
-        success: false,
-        message,
-      };
-    }
-
-    // Validate
-    const validationSchema = await getResolverValidationSchema({
-      context,
-      schema: updateManyShopProductsSchema,
-    });
-    await validationSchema.validate(input);
-
-    let doneCount = 0;
-    const barcodeDoubles: ShopProductBarcodeDoublesInterface[] = [];
-    for await (const shopProductValues of input) {
-      const { shopProductId, ...values } = shopProductValues;
-
-      // Check shop product availability
-      const shopProductObjectId = new ObjectId(shopProductId);
-      const shopProduct = await shopProductsCollection.findOne({ _id: shopProductObjectId });
-      if (!shopProduct) {
-        break;
+    await session.withTransaction(async () => {
+      // check input
+      if (!input) {
+        await session.abortTransaction();
+        return;
       }
 
-      const { discountedPercent, oldPrice, oldPriceUpdater } = getUpdatedShopProductPrices({
-        shopProduct,
-        newPrice: values.price,
+      // permission
+      const { allow, message } = await getOperationPermission({
+        context,
+        slug: 'updateShopProduct',
       });
+      if (!allow) {
+        mutationPayload = {
+          success: false,
+          message,
+        };
+        await session.abortTransaction();
+        return;
+      }
 
-      // check barcode doubles
-      const shopProductBarcodeDoubles = await checkShopProductBarcodeIntersects({
-        barcode: values.barcode,
-        locale,
-        shopProductId: shopProduct._id,
+      // validate
+      const validationSchema = await getResolverValidationSchema({
+        context,
+        schema: updateManyShopProductsSchema,
       });
-      if (shopProductBarcodeDoubles.length > 0) {
-        shopProductBarcodeDoubles.forEach((double) => {
-          barcodeDoubles.push(double);
+      await validationSchema.validate(input);
+
+      let doneCount = 0;
+      const barcodeDoubles: ShopProductBarcodeDoublesInterface[] = [];
+      for await (const shopProductValues of input) {
+        const { shopProductId, barcode, ...values } = shopProductValues;
+
+        // Check shop product availability
+        const shopProductObjectId = new ObjectId(shopProductId);
+        const shopProduct = await shopProductsCollection.findOne({ _id: shopProductObjectId });
+        if (!shopProduct) {
+          break;
+        }
+
+        const { discountedPercent, oldPrice, oldPriceUpdater } = getUpdatedShopProductPrices({
+          shopProduct,
+          newPrice: values.price,
         });
-        break;
-      }
 
-      // Update shop product
-      const updatedShopProductResult = await shopProductsCollection.findOneAndUpdate(
-        { _id: shopProduct._id },
-        {
-          $set: {
-            ...values,
-            oldPrice,
-            discountedPercent,
-            updatedAt: new Date(),
+        // check barcode doubles
+        const shopProductBarcodeDoubles = await checkShopProductBarcodeIntersects({
+          barcode,
+          locale,
+          shopProductId: shopProduct._id,
+        });
+
+        if (shopProductBarcodeDoubles.length > 0) {
+          shopProductBarcodeDoubles.forEach((double) => {
+            barcodeDoubles.push(double);
+          });
+          break;
+        }
+
+        // Update shop product
+        const updatedShopProductResult = await shopProductsCollection.findOneAndUpdate(
+          { _id: shopProduct._id },
+          {
+            $set: {
+              ...values,
+              barcode,
+              oldPrice,
+              discountedPercent,
+              updatedAt: new Date(),
+            },
+            ...oldPriceUpdater,
           },
-          ...oldPriceUpdater,
-        },
-        {
-          returnDocument: 'after',
-        },
-      );
-      const updatedShopProduct = updatedShopProductResult.value;
-      if (!updatedShopProductResult.ok || !updatedShopProduct) {
-        break;
+          {
+            returnDocument: 'after',
+          },
+        );
+        const updatedShopProduct = updatedShopProductResult.value;
+        if (!updatedShopProductResult.ok || !updatedShopProduct) {
+          break;
+        }
+
+        // update product barcode
+        const updatedProductResult = await productsCollection.findOneAndUpdate(
+          {
+            _id: shopProduct.productId,
+          },
+          {
+            $addToSet: {
+              barcode: {
+                $each: barcode,
+              },
+            },
+          },
+        );
+        if (!updatedProductResult.ok) {
+          break;
+        }
+
+        doneCount = doneCount + 1;
       }
 
-      doneCount = doneCount + 1;
-    }
+      if (barcodeDoubles.length > 0) {
+        mutationPayload = {
+          success: false,
+          message: await getApiMessage('shopProducts.update.error'),
+          barcodeDoubles,
+        };
+        await session.abortTransaction();
+        return;
+      }
 
-    if (barcodeDoubles.length > 0) {
-      return {
-        success: false,
-        message: await getApiMessage('shopProducts.update.error'),
-        barcodeDoubles,
+      if (doneCount !== input.length) {
+        mutationPayload = {
+          success: false,
+          message: await getApiMessage('shopProducts.update.error'),
+        };
+        await session.abortTransaction();
+        return;
+      }
+
+      mutationPayload = {
+        success: true,
+        message: await getApiMessage('shopProducts.update.success'),
       };
-    }
+    });
 
-    if (doneCount !== input.length) {
-      return {
-        success: false,
-        message: await getApiMessage('shopProducts.update.error'),
-      };
-    }
-
-    return {
-      success: true,
-      message: await getApiMessage('shopProducts.update.success'),
-    };
+    return mutationPayload;
   } catch (e) {
+    console.log(e);
     return {
       success: false,
       message: getResolverErrorMessage(e),
     };
+  } finally {
+    await session.endSession();
   }
 }

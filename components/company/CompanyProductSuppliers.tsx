@@ -15,11 +15,8 @@ import { CONFIRM_MODAL, SHOP_PRODUCT_SUPPLIER_MODAL } from 'config/modalVariants
 import { useLocaleContext } from 'context/localeContext';
 import { ShopProductInterface, SupplierProductInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
-import {
-  useDeleteShopProductSupplierMutation,
-  useUpdateManyShopProductsMutation,
-  useUpdateShopProductBarcodeMutation,
-} from 'generated/apolloComponents';
+import { useDeleteShopProductSupplierMutation } from 'generated/apolloComponents';
+import { useUpdateManyShopProducts } from 'hooks/mutations/useShopProductMutations';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { noNaN } from 'lib/numbers';
@@ -47,15 +44,7 @@ const CompanyProductSuppliers: React.FC<CompanyProductSuppliersInterface> = ({
     onError: onErrorCallback,
   });
 
-  const [updateShopProductBarcodeMutation] = useUpdateShopProductBarcodeMutation({
-    onCompleted: (data) => onCompleteCallback(data.updateShopProductBarcode),
-    onError: onErrorCallback,
-  });
-
-  const [updateManyShopProductsMutation] = useUpdateManyShopProductsMutation({
-    onCompleted: (data) => onCompleteCallback(data.updateManyShopProducts),
-    onError: onErrorCallback,
-  });
+  const [updateManyShopProductsMutation] = useUpdateManyShopProducts();
   const validationSchema = useValidationSchema({
     schema: updateManyShopProductsSchema,
   });
@@ -130,16 +119,12 @@ const CompanyProductSuppliers: React.FC<CompanyProductSuppliersInterface> = ({
   ];
 
   const initialValues = {
-    input: [
-      {
-        productId: shopProduct.productId,
-        shopProductId: shopProduct._id,
-        price: noNaN(shopProduct.price),
-        available: noNaN(shopProduct.available),
-      },
-    ],
+    productId: shopProduct.productId,
+    shopProductId: shopProduct._id,
+    price: noNaN(shopProduct.price),
+    available: noNaN(shopProduct.available),
+    barcode: shopProduct.barcode || [''],
   };
-  const barcode = shopProduct.barcode || [''];
 
   return (
     <Inner testId={'shop-product-suppliers-list'}>
@@ -149,20 +134,24 @@ const CompanyProductSuppliers: React.FC<CompanyProductSuppliersInterface> = ({
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={(values) => {
-            showLoading();
-            updateManyShopProductsMutation({
-              variables: values,
-            }).catch((e) => console.log(e));
+            updateManyShopProductsMutation([
+              {
+                barcode: values.barcode,
+                price: values.price,
+                available: values.available,
+                shopProductId: `${values.shopProductId}`,
+              },
+            ]).catch((e) => console.log(e));
           }}
         >
-          {() => {
+          {({ values, setFieldValue }) => {
             return (
               <Form>
                 <div className='md:grid gap-8 grid-cols-2'>
                   <FormikInput
                     label={'Наличие'}
                     testId={`available`}
-                    name={`input[0].available`}
+                    name={`.available`}
                     type={'number'}
                     min={0}
                   />
@@ -170,11 +159,52 @@ const CompanyProductSuppliers: React.FC<CompanyProductSuppliersInterface> = ({
                   <FormikInput
                     label={'Цена'}
                     testId={`price`}
-                    name={`input[0].price`}
+                    name={`.price`}
                     type={'number'}
                     min={0}
                   />
                 </div>
+
+                <InputLine labelTag={'div'}>
+                  {values.barcode.map((barcodeItem, index) => {
+                    return (
+                      <FormikBarcodeInput
+                        label={index === 0 ? 'Штрих-код' : undefined}
+                        name={`barcode[${index}]`}
+                        testId={'barcode'}
+                        key={index}
+                        onClear={() => {
+                          showModal<ConfirmModalInterface>({
+                            variant: CONFIRM_MODAL,
+                            props: {
+                              message: `Вы уверенны, что хотите удалить штрих-код ${barcodeItem}`,
+                              confirm: () => {
+                                const barcodesCopy = [...values.barcode];
+                                const updatedBarcodesList = barcodesCopy.filter(
+                                  (_item, itemIndex) => {
+                                    return itemIndex !== index;
+                                  },
+                                );
+                                setFieldValue(`barcode`, updatedBarcodesList);
+                              },
+                            },
+                          });
+                        }}
+                      />
+                    );
+                  })}
+                  <div>
+                    <Button
+                      theme={'secondary'}
+                      size={'small'}
+                      onClick={() => {
+                        setFieldValue('barcode', [...values.barcode, '']);
+                      }}
+                    >
+                      Добавить штрих-код
+                    </Button>
+                  </div>
+                </InputLine>
 
                 <Button size={'small'} type={'submit'}>
                   Сохранить
@@ -223,7 +253,7 @@ const CompanyProductSuppliers: React.FC<CompanyProductSuppliersInterface> = ({
       </div>
 
       {/*barcode*/}
-      <div className='mb-16'>
+      {/*<div className='mb-16'>
         <Formik
           initialValues={{ barcode }}
           onSubmit={(values) => {
@@ -289,7 +319,7 @@ const CompanyProductSuppliers: React.FC<CompanyProductSuppliersInterface> = ({
             );
           }}
         </Formik>
-      </div>
+      </div>*/}
     </Inner>
   );
 };

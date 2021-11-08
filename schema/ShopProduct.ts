@@ -134,14 +134,6 @@ export const UpdateShopProductSupplierInput = inputObjectType({
   },
 });
 
-export const UpdateShopProductBarcodeInput = inputObjectType({
-  name: 'UpdateShopProductBarcodeInput',
-  definition(t) {
-    t.nonNull.objectId('shopProductId');
-    t.nonNull.list.nonNull.string('barcode');
-  },
-});
-
 export const ShopProductMutations = extendType({
   type: 'Mutation',
   definition(t) {
@@ -409,124 +401,6 @@ export const ShopProductMutations = extendType({
               _id: args._id,
             });
             if (!removedSupplierProductResult.ok) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage('shopProducts.update.error'),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            mutationPayload = {
-              success: true,
-              message: await getApiMessage('shopProducts.update.success'),
-            };
-          });
-
-          return mutationPayload;
-        } catch (e) {
-          console.log(e);
-          return {
-            success: false,
-            message: getResolverErrorMessage(e),
-          };
-        } finally {
-          await session.endSession();
-        }
-      },
-    });
-
-    // Should update shop products barcode
-    t.nonNull.field('updateShopProductBarcode', {
-      type: 'ShopProductPayload',
-      description: 'Should update shop products barcode',
-      args: {
-        input: nonNull(
-          arg({
-            type: 'UpdateShopProductBarcodeInput',
-          }),
-        ),
-      },
-      resolve: async (_root, args, context): Promise<ShopProductPayloadModel> => {
-        const { getApiMessage } = await getRequestParams(context);
-        const { db, client } = await getDatabase();
-        const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-
-        const session = client.startSession();
-
-        let mutationPayload: ShopProductPayloadModel = {
-          success: false,
-          message: await getApiMessage('shopProducts.update.error'),
-        };
-
-        try {
-          await session.withTransaction(async () => {
-            // permission
-            const { allow, message } = await getOperationPermission({
-              context,
-              slug: 'updateShopProduct',
-            });
-            if (!allow) {
-              mutationPayload = {
-                success: false,
-                message,
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            const { input } = args;
-            const { shopProductId, barcode } = input;
-
-            // get shop product
-            const shopProduct = await shopProductsCollection.findOne({
-              _id: shopProductId,
-            });
-            if (!shopProduct) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage('shopProducts.update.error'),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // update shop product
-            const updatedShopProductResult = await shopProductsCollection.findOneAndUpdate(
-              {
-                _id: shopProduct._id,
-              },
-              {
-                $set: {
-                  barcode,
-                },
-              },
-            );
-            if (!updatedShopProductResult.ok) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage('shopProducts.update.error'),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // update product
-            const updatedProductResult = await productsCollection.findOneAndUpdate(
-              {
-                _id: shopProduct.productId,
-              },
-              {
-                $addToSet: {
-                  barcode: {
-                    $each: barcode,
-                  },
-                },
-              },
-            );
-
-            if (!updatedProductResult.ok) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('shopProducts.update.error'),

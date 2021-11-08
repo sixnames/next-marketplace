@@ -612,7 +612,10 @@ export async function checkShopProductBarcodeIntersects({
   const { db } = await getDatabase();
   const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
   const barcodeDoubles: ShopProductBarcodeDoublesInterface[] = [];
-  if (barcode.length < 1) {
+  const shopProduct = await shopProductsCollection.findOne({
+    _id: shopProductId,
+  });
+  if (barcode.length < 1 || !shopProduct) {
     return barcodeDoubles;
   }
 
@@ -624,6 +627,7 @@ export async function checkShopProductBarcodeIntersects({
             _id: {
               $ne: shopProductId,
             },
+            shopId: shopProduct.shopId,
             barcode: barcodeItem,
           },
         },

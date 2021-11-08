@@ -1,10 +1,10 @@
 import WpImage from 'components/WpImage';
+import { UpdateShopProductInputInterface } from 'db/dao/shopProduct/updateManyShopProducts';
 import { ProductInterface, ShopProductInterface } from 'db/uiInterfaces';
 import { noNaN } from 'lib/numbers';
 import * as React from 'react';
 import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
-import { UpdateShopProductInput } from 'generated/apolloComponents';
 import { Form, Formik } from 'formik';
 import useValidationSchema from 'hooks/useValidationSchema';
 import FormikInput from 'components/FormElements/Input/FormikInput';
@@ -17,7 +17,7 @@ interface ModalShopProductInterface extends Partial<Omit<ShopProductInterface, '
 
 export interface ShopProductModalInterface {
   shopProduct: ModalShopProductInterface;
-  confirm: (values: Omit<UpdateShopProductInput, 'productId' | 'shopProductId'>) => void;
+  confirm: (values: Omit<UpdateShopProductInputInterface, 'shopProductId'>) => void;
   title: string;
 }
 
@@ -55,7 +55,11 @@ const ShopProductModal: React.FC<ShopProductModalInterface> = ({ shopProduct, ti
           validationSchema={validationSchema}
           initialValues={initialValues}
           onSubmit={(values) => {
-            confirm(values);
+            confirm({
+              available: values.available,
+              price: values.price,
+              barcode: [],
+            });
           }}
         >
           {() => {

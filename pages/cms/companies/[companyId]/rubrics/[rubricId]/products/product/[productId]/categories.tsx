@@ -85,8 +85,8 @@ export const getServerSideProps = async (
   const { query } = context;
   const { productId, rubricId } = query;
   const { db } = await getDatabase();
-  const categoriesCollection = db.collection<CategoryInterface>(COL_CATEGORIES);
   const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
+  const categoriesCollection = db.collection<CategoryInterface>(COL_CATEGORIES);
   const { props } = await getAppInitialData({ context });
   if (!props || !productId || !rubricId || !query.companyId) {
     return {

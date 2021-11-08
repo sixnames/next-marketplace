@@ -1,6 +1,6 @@
 import Breadcrumbs from 'components/Breadcrumbs';
-import Button from 'components/Button';
-import ControlButton from 'components/ControlButton';
+import Button from 'components/button/Button';
+import ControlButton from 'components/button/ControlButton';
 import Currency from 'components/Currency';
 import FormikDatePicker from 'components/FormElements/Input/FormikDatePicker';
 import FormikInput from 'components/FormElements/Input/FormikInput';
@@ -26,7 +26,7 @@ import { CartProductInterface, CompanyInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import useValidationSchema from 'hooks/useValidationSchema';
 import LayoutCard from 'layout/LayoutCard';
-import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
+import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
 import { phoneToRaw } from 'lib/phoneUtils';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -350,9 +350,9 @@ type MakeAnOrderInterface = SiteLayoutProviderInterface;
 
 const MakeAnOrder: NextPage<MakeAnOrderInterface> = (props) => {
   return (
-    <SiteLayoutProvider title={'Корзина'} {...props}>
+    <SiteLayout title={'Корзина'} {...props}>
       <MakeAnOrderRoute company={props.company} />
-    </SiteLayoutProvider>
+    </SiteLayout>
   );
 };
 

@@ -1,6 +1,6 @@
 import CompanyProductDetails, {
   CompanyProductDetailsInterface,
-} from 'components/CompanyProductDetails';
+} from 'components/company/CompanyProductDetails';
 import { DEFAULT_CITY, PAGE_EDITOR_DEFAULT_VALUE_STRING, ROUTE_CONSOLE } from 'config/common';
 import { COL_PRODUCT_CARD_CONTENTS } from 'db/collectionNames';
 import { ProductCardContentModel } from 'db/dbModels';
@@ -23,7 +23,6 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
   product,
   routeBasePath,
   currentCompany,
-  rubric,
   cardContent,
 }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -34,12 +33,12 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
         href: `${routeBasePath}/rubrics`,
       },
       {
-        name: `${rubric.name}`,
-        href: `${routeBasePath}/rubrics/${rubric._id}`,
+        name: `${product.rubric?.name}`,
+        href: `${routeBasePath}/rubrics/${product.rubric?._id}`,
       },
       {
         name: `Товары`,
-        href: `${routeBasePath}/rubrics/${rubric._id}/products/${rubric._id}`,
+        href: `${routeBasePath}/rubrics/${product.rubric?._id}/products/${product.rubric?._id}`,
       },
     ],
   };
@@ -58,7 +57,6 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
     >
       <CompanyProductDetails
         routeBasePath={routeBasePath}
-        rubric={rubric}
         product={product}
         currentCompany={currentCompany}
         cardContent={cardContent}
@@ -129,7 +127,6 @@ export const getServerSideProps = async (
     props: {
       ...props,
       product: castDbData(payload.product),
-      rubric: castDbData(payload.rubric),
       cardContent: castDbData(cardContent),
       routeBasePath: `${ROUTE_CONSOLE}/${props.currentCompany._id}`,
     },

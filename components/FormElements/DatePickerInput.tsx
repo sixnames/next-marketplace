@@ -1,4 +1,4 @@
-import ButtonCross from 'components/ButtonCross';
+import ButtonCross from 'components/button/ButtonCross';
 import InputLine, { InputLinePropsInterface } from 'components/FormElements/Input/InputLine';
 import Icon from 'components/Icon';
 import {

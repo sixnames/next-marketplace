@@ -1,5 +1,5 @@
-import Button from 'components/Button';
-import FixedButtons from 'components/FixedButtons';
+import Button from 'components/button/Button';
+import FixedButtons from 'components/button/FixedButtons';
 import RoleMainFields from 'components/FormTemplates/RoleMainFields';
 import Inner from 'components/Inner';
 import Title from 'components/Title';

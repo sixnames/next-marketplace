@@ -1,5 +1,5 @@
-import Button from 'components/Button';
-import FixedButtons from 'components/FixedButtons';
+import Button from 'components/button/Button';
+import FixedButtons from 'components/button/FixedButtons';
 import RubricMainFields from 'components/FormTemplates/RubricMainFields';
 import Inner from 'components/Inner';
 import RequestError from 'components/RequestError';

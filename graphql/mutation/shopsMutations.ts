@@ -36,15 +36,6 @@ export const UPDATE_SHOP_ASSET_INDEX_MUTATION = gql`
   }
 `;
 
-export const UPDATE_MANY_SHOP_PRODUCTS_MUTATION = gql`
-  mutation UpdateManyShopProducts($input: [UpdateShopProductInput!]!) {
-    updateManyShopProducts(input: $input) {
-      success
-      message
-    }
-  }
-`;
-
 export const ADD_MANY_SHOP_PRODUCTS_MUTATION = gql`
   mutation AddManyProductsToShop($input: [AddProductToShopInput!]!) {
     addManyProductsToShop(input: $input) {
@@ -84,15 +75,6 @@ export const UPDATE_SHOP_PRODUCT_SUPPLIER_MUTATION = gql`
 export const DELETE_SHOP_PRODUCT_SUPPLIER_MUTATION = gql`
   mutation DeleteShopProductSupplier($_id: ObjectId!) {
     deleteShopProductSupplier(_id: $_id) {
-      success
-      message
-    }
-  }
-`;
-
-export const UPDATE_SHOP_PRODUCT_BARCODE_MUTATION = gql`
-  mutation UpdateShopProductBarcode($input: UpdateShopProductBarcodeInput!) {
-    updateShopProductBarcode(input: $input) {
       success
       message
     }

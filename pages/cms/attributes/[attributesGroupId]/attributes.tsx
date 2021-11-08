@@ -1,5 +1,5 @@
-import FixedButtons from 'components/FixedButtons';
-import ContentItemControls from 'components/ContentItemControls';
+import FixedButtons from 'components/button/FixedButtons';
+import ContentItemControls from 'components/button/ContentItemControls';
 import { AddAttributeToGroupModalInterface } from 'components/Modal/AttributeInGroupModal';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { MoveAttributeModalInterface } from 'components/Modal/MoveAttributeModal';
@@ -21,7 +21,7 @@ import {
 import AppSubNav from 'layout/AppSubNav';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
-import Button from 'components/Button';
+import Button from 'components/button/Button';
 import Inner from 'components/Inner';
 import Title from 'components/Title';
 import { COL_ATTRIBUTES, COL_ATTRIBUTES_GROUPS, COL_OPTIONS_GROUPS } from 'db/collectionNames';

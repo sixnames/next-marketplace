@@ -6,7 +6,7 @@ import { useSiteContext } from 'context/siteContext';
 import { ShopProductInterface } from 'db/uiInterfaces';
 import LayoutCard from 'layout/LayoutCard';
 import * as React from 'react';
-import Button from 'components/Button';
+import Button from 'components/button/Button';
 import RatingStars from 'components/RatingStars';
 import LinkPhone from 'components/Link/LinkPhone';
 import ProductShopPrices from 'components/ProductShopPrices';

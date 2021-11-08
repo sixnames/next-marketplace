@@ -304,6 +304,11 @@ export interface BarcodeDoublesInterface {
   barcode: string;
 }
 
+export interface ShopProductBarcodeDoublesInterface {
+  products: ShopProductInterface[];
+  barcode: string;
+}
+
 export interface RoleRuleInterface extends RoleRuleModel {
   name?: string | null;
   description?: string | null;

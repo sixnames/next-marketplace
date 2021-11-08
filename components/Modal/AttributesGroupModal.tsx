@@ -3,7 +3,7 @@ import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
 import ModalButtons from 'components/Modal/ModalButtons';
 import { Form, Formik } from 'formik';
-import Button from 'components/Button';
+import Button from 'components/button/Button';
 import { useAppContext } from 'context/appContext';
 import { CreateAttributesGroupInput, UpdateAttributesGroupInput } from 'generated/apolloComponents';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';

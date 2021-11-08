@@ -1,4 +1,4 @@
-import Button from 'components/Button';
+import Button from 'components/button/Button';
 import CompanyMainFields from 'components/FormTemplates/CompanyMainFields';
 import Inner from 'components/Inner';
 import { COL_COMPANIES, COL_ROLES, COL_USERS } from 'db/collectionNames';

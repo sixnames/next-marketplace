@@ -3,7 +3,6 @@ import * as React from 'react';
 import { PageUrlsInterface } from '../Meta';
 
 interface AppLayoutInterface {
-  description?: string;
   title?: string;
   pageUrls: PageUrlsInterface;
 }

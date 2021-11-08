@@ -3,7 +3,7 @@ import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
 import ModalText from 'components/Modal/ModalText';
 import ModalButtons from 'components/Modal/ModalButtons';
-import Button from 'components/Button';
+import Button from 'components/button/Button';
 import { useAppContext } from 'context/appContext';
 
 export interface ConfirmModalInterface {

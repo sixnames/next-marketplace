@@ -1,4 +1,4 @@
-import Button from 'components/Button';
+import Button from 'components/button/Button';
 import FakeInput from 'components/FormElements/Input/FakeInput';
 import Link from 'components/Link/Link';
 import Socials from 'components/Socials';

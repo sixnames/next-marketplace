@@ -1,5 +1,5 @@
-import Button from 'components/Button';
-import ContentItemControls from 'components/ContentItemControls';
+import Button from 'components/button/Button';
+import ContentItemControls from 'components/button/ContentItemControls';
 import Currency from 'components/Currency';
 import { CreateProductWithSyncErrorModalInterface } from 'components/Modal/CreateProductWithSyncErrorModal';
 import { ProductSearchModalInterface } from 'components/Modal/ProductSearchModal';

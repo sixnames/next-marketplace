@@ -23,7 +23,7 @@ import {
   ShopProductInterface,
   TopFilterInterface,
 } from 'db/uiInterfaces';
-import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
+import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
 import ProductSnippetGridBigImage from 'layout/snippet/ProductSnippetGridBigImage';
 import { getTreeFromList } from 'lib/optionsUtils';
 import { generateSnippetTitle, generateTitle } from 'lib/titleUtils';
@@ -375,7 +375,7 @@ const Home: NextPage<HomeInterface> = ({
   ...props
 }) => {
   return (
-    <SiteLayoutProvider {...props}>
+    <SiteLayout {...props}>
       <HomeRoute
         topProducts={topProducts}
         topFilters={topFilters}
@@ -384,7 +384,7 @@ const Home: NextPage<HomeInterface> = ({
         bannerPages={bannerPages}
         mobileTopFilters={mobileTopFilters}
       />
-    </SiteLayoutProvider>
+    </SiteLayout>
   );
 };
 

@@ -1,6 +1,6 @@
-import Button from 'components/Button';
-import ContentItemControls from 'components/ContentItemControls';
-import FixedButtons from 'components/FixedButtons';
+import Button from 'components/button/Button';
+import ContentItemControls from 'components/button/ContentItemControls';
+import FixedButtons from 'components/button/FixedButtons';
 import FormattedDateTime from 'components/FormattedDateTime';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { CreatePromoModalInterface } from 'components/Modal/CreatePromoModal';

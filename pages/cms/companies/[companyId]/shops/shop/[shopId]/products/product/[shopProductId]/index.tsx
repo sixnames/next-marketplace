@@ -1,4 +1,4 @@
-import CompanyProductDetails from 'components/CompanyProductDetails';
+import CompanyProductDetails from 'components/company/CompanyProductDetails';
 import RequestError from 'components/RequestError';
 import { DEFAULT_CITY, PAGE_EDITOR_DEFAULT_VALUE_STRING, ROUTE_CMS } from 'config/common';
 import {
@@ -75,7 +75,6 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct, cardCo
     >
       <CompanyProductDetails
         routeBasePath={''}
-        rubric={rubric}
         product={product}
         currentCompany={company}
         cardContent={cardContent}

@@ -1,4 +1,4 @@
-import { BarcodeIntersectsModalInterface } from 'components/Modal/BarcodeIntertsectsModal';
+import { BarcodeIntersectsModalInterface } from 'components/Modal/BarcodeIntersectsModal';
 import {
   REQUEST_METHOD_DELETE,
   REQUEST_METHOD_PATCH,

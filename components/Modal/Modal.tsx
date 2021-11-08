@@ -9,6 +9,7 @@ import {
   ATTRIBUTE_IN_GROUP_MODAL,
   ATTRIBUTE_OPTIONS_MODAL,
   BARCODE_INTERSECTS_MODAL,
+  SHOP_PRODUCT_BARCODE_INTERSECTS_MODAL,
   BLOG_ATTRIBUTE_MODAL,
   BLOG_POST_MODAL,
   BRAND_COLLECTION_MODAL,
@@ -54,7 +55,10 @@ import {
 } from 'config/modalVariants';
 
 const AdultModal = dynamic(() => import('components/Modal/AdultModal'));
-const BarcodeIntertsectsModal = dynamic(() => import('components/Modal/BarcodeIntertsectsModal'));
+const BarcodeIntersectsModal = dynamic(() => import('components/Modal/BarcodeIntersectsModal'));
+const ShopProductBarcodeIntersectsModal = dynamic(
+  () => import('components/Modal/ShopProductBarcodeIntersectsModal'),
+);
 const BlogPostModal = dynamic(() => import('components/Modal/BlogPostModal'));
 const BlogAttributeModal = dynamic(() => import('components/Modal/BlogAttributeModal'));
 const CatalogueAdditionalOptionsModal = dynamic(() => import('./CatalogueAdditionalOptionsModal'));
@@ -224,7 +228,11 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
 
           {modalType === CREATE_PROMO_MODAL && <CreatePromoModal {...modalProps} />}
 
-          {modalType === BARCODE_INTERSECTS_MODAL && <BarcodeIntertsectsModal {...modalProps} />}
+          {modalType === BARCODE_INTERSECTS_MODAL && <BarcodeIntersectsModal {...modalProps} />}
+
+          {modalType === SHOP_PRODUCT_BARCODE_INTERSECTS_MODAL && (
+            <ShopProductBarcodeIntersectsModal {...modalProps} />
+          )}
         </React.Suspense>
       </div>
 

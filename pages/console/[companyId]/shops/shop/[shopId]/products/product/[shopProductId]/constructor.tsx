@@ -1,4 +1,4 @@
-import CompanyProductConstructor from 'components/CompanyProductConstructor';
+import CompanyProductConstructor from 'components/company/CompanyProductConstructor';
 import RequestError from 'components/RequestError';
 import { DEFAULT_CITY, PAGE_EDITOR_DEFAULT_VALUE_STRING, ROUTE_CONSOLE } from 'config/common';
 import { COL_PRODUCT_CARD_CONTENTS } from 'db/collectionNames';

@@ -1,4 +1,4 @@
-import ControlButton from 'components/ControlButton';
+import ControlButton from 'components/button/ControlButton';
 import { REQUEST_METHOD_POST, ROUTE_SEARCH_RESULT } from 'config/common';
 import { CompanyInterface, ShopProductInterface } from 'db/uiInterfaces';
 import ProductSnippetGridBigImage from 'layout/snippet/ProductSnippetGridBigImage';

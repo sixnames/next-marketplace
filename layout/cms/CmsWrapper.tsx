@@ -1,4 +1,4 @@
-import ControlButton from 'components/ControlButton';
+import ControlButton from 'components/button/ControlButton';
 import ErrorBoundary from 'components/ErrorBoundary';
 import LanguageTrigger from 'components/LanguageTrigger';
 import Modal from 'components/Modal/Modal';

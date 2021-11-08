@@ -1,4 +1,4 @@
-import ButtonCross from 'components/ButtonCross';
+import ButtonCross from 'components/button/ButtonCross';
 import InputLine from 'components/FormElements/Input/InputLine';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import WpImage from 'components/WpImage';

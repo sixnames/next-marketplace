@@ -1,4 +1,4 @@
-import Button from 'components/Button';
+import Button from 'components/button/Button';
 import Input, { InputPropsInterface } from 'components/FormElements/Input/Input';
 import InputLine from 'components/FormElements/Input/InputLine';
 import dynamic from 'next/dynamic';

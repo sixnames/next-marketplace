@@ -1,16 +1,6 @@
-import Button from 'components/Button';
-import FixedButtons from 'components/FixedButtons';
-import ProductMainFields, {
-  ProductFormValuesInterface,
-} from 'components/FormTemplates/ProductMainFields';
-import Inner from 'components/Inner';
-import WpImage from 'components/WpImage';
+import ConsoleRubricProductDetails from 'components/console/ConsoleRubricProductDetails';
 import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
-import { ProductInterface, RubricInterface } from 'db/uiInterfaces';
-import { Form, Formik } from 'formik';
-import { useUpdateProduct } from 'hooks/mutations/useProductMutations';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useValidationSchema from 'hooks/useValidationSchema';
+import { ProductInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsProductLayout from 'layout/cms/CmsProductLayout';
 import { getCmsProduct } from 'lib/productUtils';
@@ -19,46 +9,13 @@ import * as React from 'react';
 import CmsLayout from 'layout/cms/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
-import { updateProductSchema } from 'validation/productSchema';
 
 interface ProductDetailsInterface {
   product: ProductInterface;
-  rubric: RubricInterface;
   companySlug: string;
 }
 
-const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, companySlug, rubric }) => {
-  const validationSchema = useValidationSchema({
-    schema: updateProductSchema,
-  });
-  const { showLoading } = useMutationCallbacks({
-    reload: true,
-  });
-  const [updateProductMutation] = useUpdateProduct();
-
-  const {
-    nameI18n,
-    originalName,
-    descriptionI18n,
-    active,
-    mainImage,
-    barcode,
-    gender,
-    cardDescription,
-  } = product;
-
-  const initialValues: ProductFormValuesInterface = {
-    productId: `${product._id}`,
-    nameI18n: nameI18n || {},
-    originalName,
-    descriptionI18n,
-    active,
-    barcode: barcode || [],
-    gender: gender as any,
-    cardDescriptionI18n: cardDescription?.textI18n || {},
-    companySlug,
-  };
-
+const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, companySlug }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${product.cardTitle}`,
     config: [
@@ -67,72 +24,29 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, companySlu
         href: `${ROUTE_CMS}/rubrics`,
       },
       {
-        name: `${rubric.name}`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}`,
+        name: `${product.rubric?.name}`,
+        href: `${ROUTE_CMS}/rubrics/${product.rubric?._id}`,
       },
       {
         name: `Товары`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}/products/${rubric._id}`,
+        href: `${ROUTE_CMS}/rubrics/${product.rubric?._id}/products/${product.rubric?._id}`,
       },
     ],
   };
 
   return (
     <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
-      <Inner testId={'product-details'}>
-        <Formik
-          enableReinitialize
-          validationSchema={validationSchema}
-          initialValues={initialValues}
-          onSubmit={(values) => {
-            showLoading();
-            return updateProductMutation({
-              ...values,
-              productId: `${product._id}`,
-              rubricId: `${product.rubricId}`,
-              barcode: (values.barcode || []).filter((currentBarcode) => {
-                return Boolean(currentBarcode);
-              }),
-            });
-          }}
-        >
-          {() => {
-            return (
-              <Form noValidate>
-                <div className='relative w-[15rem] h-[15rem] mb-8'>
-                  <WpImage
-                    url={mainImage}
-                    alt={originalName}
-                    title={originalName}
-                    width={240}
-                    className='absolute inset-0 w-full h-full object-contain'
-                  />
-                </div>
-
-                {/*<FormikCheckboxLine label={'Активен'} name={'active'} testId={'active'} />*/}
-
-                <ProductMainFields seo={cardDescription?.seo} />
-
-                <FixedButtons>
-                  <Button testId={'submit-product'} type={'submit'}>
-                    Сохранить
-                  </Button>
-                </FixedButtons>
-              </Form>
-            );
-          }}
-        </Formik>
-      </Inner>
+      <ConsoleRubricProductDetails product={product} companySlug={companySlug} />
     </CmsProductLayout>
   );
 };
 
 interface ProductPageInterface extends PagePropsInterface, ProductDetailsInterface {}
 
-const Product: NextPage<ProductPageInterface> = ({ pageUrls, product, companySlug, rubric }) => {
+const Product: NextPage<ProductPageInterface> = ({ pageUrls, ...props }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <ProductDetails product={product} rubric={rubric} companySlug={companySlug} />
+      <ProductDetails {...props} />
     </CmsLayout>
   );
 };
@@ -166,7 +80,6 @@ export const getServerSideProps = async (
     props: {
       ...props,
       product: castDbData(payload.product),
-      rubric: castDbData(payload.rubric),
       companySlug: DEFAULT_COMPANY_SLUG,
     },
   };

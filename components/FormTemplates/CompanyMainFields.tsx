@@ -9,12 +9,14 @@ import { useAppContext } from 'context/appContext';
 import { useFormikContext } from 'formik';
 import { UsersSearchModalInterface } from 'components/Modal/UsersSearchModal';
 import { USERS_SEARCH_MODAL } from 'config/modalVariants';
-import ContentItemControls, { ContentItemControlsInterface } from 'components/ContentItemControls';
+import ContentItemControls, {
+  ContentItemControlsInterface,
+} from 'components/button/ContentItemControls';
 import FormikInput from '../../components/FormElements/Input/FormikInput';
 import FormikMultiLineInput from '../../components/FormElements/Input/FormikMultiLineInput';
 import FakeInput from '../../components/FormElements/Input/FakeInput';
 import InputLine from '../../components/FormElements/Input/InputLine';
-import Button from 'components/Button';
+import Button from 'components/button/Button';
 import Table, { TableColumn } from 'components/Table';
 
 export interface CompanyFormMainValuesInterface extends Omit<UpdateCompanyInput, 'companyId'> {

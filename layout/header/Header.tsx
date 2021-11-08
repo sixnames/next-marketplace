@@ -1,5 +1,5 @@
 import { Disclosure, Popover } from '@headlessui/react';
-import ButtonCross from 'components/ButtonCross';
+import ButtonCross from 'components/button/ButtonCross';
 import LanguageTrigger from 'components/LanguageTrigger';
 import ThemeTrigger from 'components/ThemeTrigger';
 import { getConstantTranslation } from 'config/constantTranslations';

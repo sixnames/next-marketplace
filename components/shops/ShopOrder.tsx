@@ -1,4 +1,4 @@
-import CmsOrderDetails from 'components/CmsOrderDetails';
+import CmsOrderDetails from 'components/order/CmsOrderDetails';
 import { OrderInterface } from 'db/uiInterfaces';
 import ConsoleShopLayout, { AppShopLayoutInterface } from 'layout/console/ConsoleShopLayout';
 import * as React from 'react';

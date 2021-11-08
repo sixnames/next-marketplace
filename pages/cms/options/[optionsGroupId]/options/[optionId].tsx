@@ -1,5 +1,5 @@
-import Button from 'components/Button';
-import FixedButtons from 'components/FixedButtons';
+import Button from 'components/button/Button';
+import FixedButtons from 'components/button/FixedButtons';
 import WpIconUpload from 'components/FormElements/Upload/WpIconUpload';
 import WpImageUpload from 'components/FormElements/Upload/WpImageUpload';
 import OptionMainFields from 'components/FormTemplates/OptionMainFields';

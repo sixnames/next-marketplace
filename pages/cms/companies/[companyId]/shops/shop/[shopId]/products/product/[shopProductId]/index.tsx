@@ -1,4 +1,4 @@
-import CompanyProductDetails from 'components/CompanyProductDetails';
+import CompanyProductDetails from 'components/company/CompanyProductDetails';
 import RequestError from 'components/RequestError';
 import { DEFAULT_CITY, PAGE_EDITOR_DEFAULT_VALUE_STRING, ROUTE_CMS } from 'config/common';
 import {

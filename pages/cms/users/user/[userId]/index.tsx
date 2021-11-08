@@ -1,5 +1,5 @@
-import Button from 'components/Button';
-import FixedButtons from 'components/FixedButtons';
+import Button from 'components/button/Button';
+import FixedButtons from 'components/button/FixedButtons';
 import UserMainFields from 'components/FormTemplates/UserMainFields';
 import Inner from 'components/Inner';
 import { ROUTE_CMS, SORT_DESC } from 'config/common';

@@ -1,4 +1,4 @@
-import Button from 'components/Button';
+import Button from 'components/button/Button';
 import { debounce } from 'lodash';
 import * as React from 'react';
 import BarcodeScannerComponent from 'react-qr-barcode-scanner';

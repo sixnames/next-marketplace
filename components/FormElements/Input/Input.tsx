@@ -2,7 +2,7 @@ import * as React from 'react';
 import InputLine, { InputLinePropsInterface } from './InputLine';
 import MaskedField from 'react-masked-field';
 import Icon from 'components/Icon';
-import ButtonCross from 'components/ButtonCross';
+import ButtonCross from 'components/button/ButtonCross';
 import { InputTheme, InputType, OnOffType } from 'types/clientTypes';
 import { IconType } from 'types/iconTypes';
 

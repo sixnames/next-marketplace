@@ -1,5 +1,5 @@
 import Breadcrumbs from 'components/Breadcrumbs';
-import Button from 'components/Button';
+import Button from 'components/button/Button';
 import Icon from 'components/Icon';
 import Inner from 'components/Inner';
 import TagLink from 'components/Link/TagLink';

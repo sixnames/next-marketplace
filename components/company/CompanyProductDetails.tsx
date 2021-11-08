@@ -1,5 +1,5 @@
 import Accordion from 'components/Accordion';
-import Button from 'components/Button';
+import Button from 'components/button/Button';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import InputLine from 'components/FormElements/Input/InputLine';
 import { ProductFormValuesInterface } from 'components/FormTemplates/ProductMainFields';

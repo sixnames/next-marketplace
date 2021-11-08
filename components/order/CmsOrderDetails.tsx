@@ -1,4 +1,4 @@
-import Button from 'components/Button';
+import Button from 'components/button/Button';
 import Currency from 'components/Currency';
 import FormattedDate from 'components/FormattedDate';
 import SpinnerInput from 'components/FormElements/SpinnerInput/SpinnerInput';

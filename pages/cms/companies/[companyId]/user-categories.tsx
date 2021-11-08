@@ -1,7 +1,7 @@
-import Button from 'components/Button';
-import ContentItemControls from 'components/ContentItemControls';
+import Button from 'components/button/Button';
+import ContentItemControls from 'components/button/ContentItemControls';
 import Currency from 'components/Currency';
-import FixedButtons from 'components/FixedButtons';
+import FixedButtons from 'components/button/FixedButtons';
 import Inner from 'components/Inner';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { UserCategoryModalInterface } from 'components/Modal/UserCategoryModal';

@@ -1,93 +1,82 @@
-import Button from 'components/Button';
-import FixedButtons from 'components/FixedButtons';
+import Button from 'components/button/Button';
+import FixedButtons from 'components/button/FixedButtons';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import Inner from 'components/Inner';
 import TextSeoInfo from 'components/TextSeoInfo';
-import { RubricSeoModel } from 'db/dbModels';
-import { CompanyInterface, RubricInterface } from 'db/uiInterfaces';
+import { GENDER_ENUMS } from 'config/common';
+import { OptionVariantsModel, RubricSeoModel } from 'db/dbModels';
+import { CategoryInterface, CompanyInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
-import { UpdateRubricInput, useUpdateRubricMutation } from 'generated/apolloComponents';
+import { Gender, UpdateCategoryInput, useUpdateCategoryMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import * as React from 'react';
-import { updateRubricSchema } from 'validation/rubricSchema';
+import { updateCategorySchema } from 'validation/categorySchema';
 
-export interface CompanyRubricDetailsInterface {
-  rubric: RubricInterface;
+export interface CompanyRubricCategoryDetailsInterface {
+  category: CategoryInterface;
   seoTop?: RubricSeoModel | null;
   seoBottom?: RubricSeoModel | null;
   currentCompany?: CompanyInterface | null;
   routeBasePath: string;
 }
 
-const CompanyRubricDetails: React.FC<CompanyRubricDetailsInterface> = ({
-  rubric,
+const CompanyRubricCategoryDetails: React.FC<CompanyRubricCategoryDetailsInterface> = ({
+  category,
+  currentCompany,
   seoTop,
   seoBottom,
-  currentCompany,
 }) => {
   const validationSchema = useValidationSchema({
-    schema: updateRubricSchema,
+    schema: updateCategorySchema,
   });
   const { onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
     reload: true,
   });
-
-  const [updateRubricMutation] = useUpdateRubricMutation({
-    onCompleted: (data) => onCompleteCallback(data.updateRubric),
+  const [updateCategoryMutation] = useUpdateCategoryMutation({
+    onCompleted: (data) => onCompleteCallback(data.updateCategory),
     onError: onErrorCallback,
   });
 
   const {
     _id = '',
-    active,
-    variantId,
-    descriptionI18n,
-    shortDescriptionI18n,
     nameI18n,
-    capitalise,
-    showRubricNameInProductTitle,
-    showCategoryInProductTitle,
-    showBrandInNav,
-    showBrandInFilter,
+    rubricId,
+    gender,
+    variants,
     seoDescriptionTop,
     seoDescriptionBottom,
-    defaultTitleI18n,
-    prefixI18n,
-    keywordI18n,
-    gender,
-  } = rubric;
+    replaceParentNameInCatalogueTitle,
+  } = category;
+  const variantKeys = Object.keys(variants);
 
-  const initialValues: UpdateRubricInput = {
-    rubricId: _id,
-    active,
+  const initialValues: UpdateCategoryInput = {
+    categoryId: _id,
+    rubricId,
     nameI18n,
-    descriptionI18n,
-    shortDescriptionI18n,
-    textBottomI18n: seoDescriptionBottom?.textI18n || {},
-    textTopI18n: seoDescriptionTop?.textI18n || {},
+    textBottomI18n: seoDescriptionBottom?.textI18n,
+    textTopI18n: seoDescriptionTop?.textI18n,
+    gender: gender ? (`${gender}` as Gender) : null,
+    replaceParentNameInCatalogueTitle,
     companySlug: `${currentCompany?.slug}`,
-    capitalise: capitalise || false,
-    showRubricNameInProductTitle: showRubricNameInProductTitle || false,
-    showCategoryInProductTitle: showCategoryInProductTitle || false,
-    showBrandInNav: showBrandInNav || false,
-    showBrandInFilter: showBrandInFilter || false,
-    defaultTitleI18n,
-    prefixI18n,
-    keywordI18n,
-    gender: gender as any,
-    variantId,
+    variants:
+      variantKeys.length > 0
+        ? variants
+        : GENDER_ENUMS.reduce((acc: OptionVariantsModel, gender) => {
+            acc[gender] = {};
+            return acc;
+          }, {}),
   };
 
   return (
-    <Inner testId={'rubric-details'}>
+    <Inner testId={'category-details'}>
       <Formik
         validationSchema={validationSchema}
         initialValues={initialValues}
         enableReinitialize
         onSubmit={(values) => {
           showLoading();
-          return updateRubricMutation({
+          return updateCategoryMutation({
             variables: {
               input: values,
             },
@@ -154,7 +143,7 @@ const CompanyRubricDetails: React.FC<CompanyRubricDetailsInterface> = ({
               />
 
               <FixedButtons>
-                <Button type={'submit'} testId={'rubric-submit'}>
+                <Button type={'submit'} testId={'category-submit'} size={'small'}>
                   Сохранить
                 </Button>
               </FixedButtons>
@@ -166,4 +155,4 @@ const CompanyRubricDetails: React.FC<CompanyRubricDetailsInterface> = ({
   );
 };
 
-export default CompanyRubricDetails;
+export default CompanyRubricCategoryDetails;

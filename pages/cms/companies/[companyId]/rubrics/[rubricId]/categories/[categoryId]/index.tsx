@@ -1,6 +1,6 @@
 import CompanyRubricCategoryDetails, {
   CompanyRubricCategoryDetailsInterface,
-} from 'components/CompanyRubricCategoryDetails';
+} from 'components/company/CompanyRubricCategoryDetails';
 import {
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   CATALOGUE_SEO_TEXT_POSITION_TOP,

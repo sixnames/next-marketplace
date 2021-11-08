@@ -1,5 +1,5 @@
-import Button from 'components/Button';
-import ControlButton from 'components/ControlButton';
+import Button from 'components/button/Button';
+import ControlButton from 'components/button/ControlButton';
 import Link from 'components/Link/Link';
 import RatingStars from 'components/RatingStars';
 import WpImage from 'components/WpImage';

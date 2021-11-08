@@ -1,4 +1,4 @@
-import ContentItemControls from 'components/ContentItemControls';
+import ContentItemControls from 'components/button/ContentItemControls';
 import Inner from 'components/Inner';
 import RequestError from 'components/RequestError';
 import WpImage from 'components/WpImage';

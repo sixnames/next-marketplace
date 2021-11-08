@@ -1,6 +1,6 @@
 import CompanyProductSuppliers, {
   CompanyProductSuppliersInterface,
-} from 'components/CompanyProductSuppliers';
+} from 'components/company/CompanyProductSuppliers';
 import { SelectOptionInterface } from 'components/FormElements/Select/Select';
 import RequestError from 'components/RequestError';
 import { ROUTE_CMS, ROUTE_CONSOLE, SORT_ASC } from 'config/common';

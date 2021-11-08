@@ -1,4 +1,4 @@
-import Button from 'components/Button';
+import Button from 'components/button/Button';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import Inner from 'components/Inner';
 import Title from 'components/Title';

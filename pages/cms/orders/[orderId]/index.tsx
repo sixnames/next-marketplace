@@ -1,4 +1,4 @@
-import CmsOrderDetails from 'components/CmsOrderDetails';
+import CmsOrderDetails from 'components/order/CmsOrderDetails';
 import { ROUTE_CMS } from 'config/common';
 import {
   COL_ORDER_CUSTOMERS,

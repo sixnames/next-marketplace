@@ -5,12 +5,7 @@ import WpTooltip from 'components/WpTooltip';
 import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
 import { COL_CATEGORIES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import {
-  CategoryInterface,
-  ProductCategoryInterface,
-  ProductInterface,
-  RubricInterface,
-} from 'db/uiInterfaces';
+import { CategoryInterface, ProductCategoryInterface, ProductInterface } from 'db/uiInterfaces';
 import {
   useUpdateProductCategory,
   useUpdateProductCategoryVisibility,
@@ -28,15 +23,10 @@ import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
 interface ProductCategoriesInterface {
   product: ProductInterface;
-  rubric: RubricInterface;
   categoriesTree: ProductCategoryInterface[];
 }
 
-const ProductCategories: React.FC<ProductCategoriesInterface> = ({
-  product,
-  categoriesTree,
-  rubric,
-}) => {
+const ProductCategories: React.FC<ProductCategoriesInterface> = ({ product, categoriesTree }) => {
   const { showLoading } = useMutationCallbacks({
     reload: true,
   });
@@ -121,16 +111,16 @@ const ProductCategories: React.FC<ProductCategoriesInterface> = ({
         href: `${ROUTE_CMS}/rubrics`,
       },
       {
-        name: `${rubric.name}`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}`,
+        name: `${product.rubric?.name}`,
+        href: `${ROUTE_CMS}/rubrics/${product.rubric?._id}`,
       },
       {
         name: `Товары`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}/products/${rubric._id}`,
+        href: `${ROUTE_CMS}/rubrics/${product.rubric?._id}/products/${product.rubric?._id}`,
       },
       {
         name: `${product.cardTitle}`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}/products/product/${product._id}`,
+        href: `${ROUTE_CMS}/rubrics/${product.rubric?._id}/products/product/${product._id}`,
       },
     ],
   };
@@ -159,10 +149,10 @@ const ProductCategories: React.FC<ProductCategoriesInterface> = ({
 
 interface ProductPageInterface extends PagePropsInterface, ProductCategoriesInterface {}
 
-const Product: NextPage<ProductPageInterface> = ({ pageUrls, product, categoriesTree, rubric }) => {
+const Product: NextPage<ProductPageInterface> = ({ pageUrls, product, categoriesTree }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <ProductCategories product={product} rubric={rubric} categoriesTree={categoriesTree} />
+      <ProductCategories product={product} categoriesTree={categoriesTree} />
     </CmsLayout>
   );
 };
@@ -218,7 +208,6 @@ export const getServerSideProps = async (
     props: {
       ...props,
       product: castDbData(product),
-      rubric: castDbData(rubric),
       categoriesTree: castDbData(categoriesTree),
     },
   };

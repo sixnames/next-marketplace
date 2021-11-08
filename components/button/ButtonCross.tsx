@@ -1,5 +1,5 @@
 import * as React from 'react';
-import ControlButton, { ControlButtonInterface } from 'components/ControlButton';
+import ControlButton, { ControlButtonInterface } from 'components/button/ControlButton';
 
 type ButtonCrossInterface = Omit<ControlButtonInterface, 'icon'>;
 

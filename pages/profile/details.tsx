@@ -1,4 +1,4 @@
-import Button from 'components/Button';
+import Button from 'components/button/Button';
 import StringButton from 'components/StringButton';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';

@@ -1,5 +1,5 @@
 import Accordion from 'components/Accordion';
-import Button from 'components/Button';
+import Button from 'components/button/Button';
 import Inner from 'components/Inner';
 import PageEditor from 'components/PageEditor';
 import { DEFAULT_CITY } from 'config/common';

@@ -8,7 +8,7 @@ import { UpdateShopProductInput } from 'generated/apolloComponents';
 import { Form, Formik } from 'formik';
 import useValidationSchema from 'hooks/useValidationSchema';
 import FormikInput from 'components/FormElements/Input/FormikInput';
-import Button from 'components/Button';
+import Button from 'components/button/Button';
 import { shopProductInModalSchema } from 'validation/shopSchema';
 
 interface ModalShopProductInterface extends Partial<Omit<ShopProductInterface, 'product'>> {

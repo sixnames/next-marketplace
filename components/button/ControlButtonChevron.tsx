@@ -1,5 +1,7 @@
 import * as React from 'react';
-import CircleControlButton, { CircleControlButtonInterface } from 'components/CircleControlButton';
+import CircleControlButton, {
+  CircleControlButtonInterface,
+} from 'components/button/CircleControlButton';
 
 interface ControlButtonChevronInterface
   extends Omit<

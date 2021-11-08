@@ -1,7 +1,7 @@
 import { CartInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import Currency from 'components/Currency';
-import Button from 'components/Button';
+import Button from 'components/button/Button';
 import Link from 'components/Link/Link';
 import LayoutCard from 'layout/LayoutCard';
 import { ButtonType } from 'types/clientTypes';

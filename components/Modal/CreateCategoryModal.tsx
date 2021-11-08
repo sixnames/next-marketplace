@@ -7,7 +7,7 @@ import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
 import ModalButtons from 'components/Modal/ModalButtons';
 import { Form, Formik } from 'formik';
-import Button from 'components/Button';
+import Button from 'components/button/Button';
 import { CreateCategoryInput, useCreateCategoryMutation } from 'generated/apolloComponents';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { createCategorySchema } from 'validation/categorySchema';

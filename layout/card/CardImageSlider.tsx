@@ -1,4 +1,4 @@
-import ControlButton from 'components/ControlButton';
+import ControlButton from 'components/button/ControlButton';
 import WpImage from 'components/WpImage';
 import { useAppContext } from 'context/appContext';
 import { AssetModel } from 'db/dbModels';

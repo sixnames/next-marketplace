@@ -1,5 +1,5 @@
-import Button from 'components/Button';
-import FixedButtons from 'components/FixedButtons';
+import Button from 'components/button/Button';
+import FixedButtons from 'components/button/FixedButtons';
 import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
 import InputLine from 'components/FormElements/Input/InputLine';
 import Inner from 'components/Inner';

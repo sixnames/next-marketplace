@@ -1,7 +1,7 @@
-import Button from 'components/Button';
+import Button from 'components/button/Button';
 import ColorPreview from 'components/ColorPreview';
-import FixedButtons from 'components/FixedButtons';
-import ContentItemControls from 'components/ContentItemControls';
+import FixedButtons from 'components/button/FixedButtons';
+import ContentItemControls from 'components/button/ContentItemControls';
 import Inner from 'components/Inner';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { OrderStatusModalInterface } from 'components/Modal/OrderStatusModal';

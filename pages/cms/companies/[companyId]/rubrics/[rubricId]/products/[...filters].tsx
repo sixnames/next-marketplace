@@ -1,6 +1,6 @@
 import CompanyRubricProductsList, {
   CompanyRubricProductsListInterface,
-} from 'components/CompanyRubricProductsList';
+} from 'components/company/CompanyRubricProductsList';
 import RequestError from 'components/RequestError';
 import { ROUTE_CMS, DEFAULT_PAGE_FILTER } from 'config/common';
 import { COL_COMPANIES } from 'db/collectionNames';

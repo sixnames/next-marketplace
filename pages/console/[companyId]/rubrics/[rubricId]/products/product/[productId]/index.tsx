@@ -1,6 +1,6 @@
 import CompanyProductDetails, {
   CompanyProductDetailsInterface,
-} from 'components/CompanyProductDetails';
+} from 'components/company/CompanyProductDetails';
 import { DEFAULT_CITY, PAGE_EDITOR_DEFAULT_VALUE_STRING, ROUTE_CONSOLE } from 'config/common';
 import { COL_PRODUCT_CARD_CONTENTS } from 'db/collectionNames';
 import { ProductCardContentModel } from 'db/dbModels';

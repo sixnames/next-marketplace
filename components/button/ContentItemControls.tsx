@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Button from 'components/Button';
+import Button from 'components/button/Button';
 import { ButtonTheme, JustifyType, SizeType } from 'types/clientTypes';
 
 export interface ContentItemControlsInterface {

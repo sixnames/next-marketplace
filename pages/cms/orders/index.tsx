@@ -1,4 +1,4 @@
-import ContentItemControls from 'components/ContentItemControls';
+import ContentItemControls from 'components/button/ContentItemControls';
 import FormattedDateTime from 'components/FormattedDateTime';
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';

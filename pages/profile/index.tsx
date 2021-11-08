@@ -1,6 +1,6 @@
 import { Disclosure } from '@headlessui/react';
-import ControlButton from 'components/ControlButton';
-import ControlButtonChevron from 'components/ControlButtonChevron';
+import ControlButton from 'components/button/ControlButton';
+import ControlButtonChevron from 'components/button/ControlButtonChevron';
 import Currency from 'components/Currency';
 import FormattedDate from 'components/FormattedDate';
 import Icon from 'components/Icon';

@@ -1,5 +1,5 @@
 import AppContentFilter from 'components/AppContentFilter';
-import ContentItemControls from 'components/ContentItemControls';
+import ContentItemControls from 'components/button/ContentItemControls';
 import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';

@@ -1,16 +1,6 @@
-import Button from 'components/Button';
-import FixedButtons from 'components/FixedButtons';
-import ProductMainFields, {
-  ProductFormValuesInterface,
-} from 'components/FormTemplates/ProductMainFields';
-import Inner from 'components/Inner';
-import WpImage from 'components/WpImage';
+import ConsoleRubricProductDetails from 'components/console/ConsoleRubricProductDetails';
 import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
 import { ProductInterface, RubricInterface } from 'db/uiInterfaces';
-import { Form, Formik } from 'formik';
-import { useUpdateProduct } from 'hooks/mutations/useProductMutations';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useValidationSchema from 'hooks/useValidationSchema';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsProductLayout from 'layout/cms/CmsProductLayout';
 import { getCmsProduct } from 'lib/productUtils';
@@ -19,7 +9,6 @@ import * as React from 'react';
 import CmsLayout from 'layout/cms/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
-import { updateProductSchema } from 'validation/productSchema';
 
 interface ProductDetailsInterface {
   product: ProductInterface;
@@ -28,37 +17,6 @@ interface ProductDetailsInterface {
 }
 
 const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, companySlug, rubric }) => {
-  const validationSchema = useValidationSchema({
-    schema: updateProductSchema,
-  });
-  const { showLoading } = useMutationCallbacks({
-    reload: true,
-  });
-  const [updateProductMutation] = useUpdateProduct();
-
-  const {
-    nameI18n,
-    originalName,
-    descriptionI18n,
-    active,
-    mainImage,
-    barcode,
-    gender,
-    cardDescription,
-  } = product;
-
-  const initialValues: ProductFormValuesInterface = {
-    productId: `${product._id}`,
-    nameI18n: nameI18n || {},
-    originalName,
-    descriptionI18n,
-    active,
-    barcode: barcode || [],
-    gender: gender as any,
-    cardDescriptionI18n: cardDescription?.textI18n || {},
-    companySlug,
-  };
-
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${product.cardTitle}`,
     config: [
@@ -79,50 +37,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, companySlu
 
   return (
     <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
-      <Inner testId={'product-details'}>
-        <Formik
-          enableReinitialize
-          validationSchema={validationSchema}
-          initialValues={initialValues}
-          onSubmit={(values) => {
-            showLoading();
-            return updateProductMutation({
-              ...values,
-              productId: `${product._id}`,
-              rubricId: `${product.rubricId}`,
-              barcode: (values.barcode || []).filter((currentBarcode) => {
-                return Boolean(currentBarcode);
-              }),
-            });
-          }}
-        >
-          {() => {
-            return (
-              <Form noValidate>
-                <div className='relative w-[15rem] h-[15rem] mb-8'>
-                  <WpImage
-                    url={mainImage}
-                    alt={originalName}
-                    title={originalName}
-                    width={240}
-                    className='absolute inset-0 w-full h-full object-contain'
-                  />
-                </div>
-
-                {/*<FormikCheckboxLine label={'Активен'} name={'active'} testId={'active'} />*/}
-
-                <ProductMainFields seo={cardDescription?.seo} />
-
-                <FixedButtons>
-                  <Button testId={'submit-product'} type={'submit'}>
-                    Сохранить
-                  </Button>
-                </FixedButtons>
-              </Form>
-            );
-          }}
-        </Formik>
-      </Inner>
+      <ConsoleRubricProductDetails product={product} companySlug={companySlug} />
     </CmsProductLayout>
   );
 };

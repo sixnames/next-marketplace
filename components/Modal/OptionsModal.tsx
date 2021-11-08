@@ -1,5 +1,5 @@
-import Button from 'components/Button';
-import FixedButtons from 'components/FixedButtons';
+import Button from 'components/button/Button';
+import FixedButtons from 'components/button/FixedButtons';
 import FormikIndividualSearch from 'components/FormElements/Search/FormikIndividualSearch';
 import Icon from 'components/Icon';
 import ModalFrame from 'components/Modal/ModalFrame';

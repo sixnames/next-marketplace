@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Icon from 'components/Icon';
-import ButtonCross from 'components/ButtonCross';
+import ButtonCross from 'components/button/ButtonCross';
 import { IconType } from 'types/iconTypes';
 import { NotificationVariant } from 'types/clientTypes';
 

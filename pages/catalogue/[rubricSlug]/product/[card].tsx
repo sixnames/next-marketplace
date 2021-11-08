@@ -1,6 +1,6 @@
-import Button from 'components/Button';
+import Button from 'components/button/Button';
 import ErrorBoundaryFallback from 'components/ErrorBoundaryFallback';
-import FixedButtons from 'components/FixedButtons';
+import FixedButtons from 'components/button/FixedButtons';
 import Inner from 'components/Inner';
 import { CARD_LAYOUT_HALF_COLUMNS, DEFAULT_LAYOUT } from 'config/constantSelects';
 import { useConfigContext } from 'context/configContext';

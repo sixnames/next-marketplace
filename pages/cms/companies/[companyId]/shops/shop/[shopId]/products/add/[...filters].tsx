@@ -1,12 +1,11 @@
 import { ROUTE_CMS, DEFAULT_PAGE_FILTER, DEFAULT_COMPANY_SLUG } from 'config/common';
 import { ProductInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout, { ConsoleLayoutInterface } from 'layout/cms/ConsoleLayout';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { getAddShopProductSsrData } from 'lib/consoleProductUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import {
   ShopAddProductsCreateChosenProduct,
@@ -24,7 +23,7 @@ export type ShopAddProductsListRouteReduced = Omit<
 >;
 
 interface CompanyShopProductsListInterface
-  extends PagePropsInterface,
+  extends ConsoleLayoutInterface,
     ShopAddProductsListRouteReduced {}
 
 const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = ({
@@ -32,6 +31,7 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
   shop,
   rubricName,
   rubricId,
+  sessionUser,
   ...props
 }) => {
   const [chosen, setChosen] = React.useState<ProductInterface[]>([]);
@@ -87,7 +87,7 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
 
   if (step === 2) {
     return (
-      <CmsLayout pageUrls={pageUrls}>
+      <ConsoleLayout pageUrls={pageUrls} sessionUser={sessionUser}>
         <ShopAddProductsFinalStep
           breadcrumbs={breadcrumbs}
           rubricName={rubricName}
@@ -100,12 +100,12 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
           shop={shop}
           {...props}
         />
-      </CmsLayout>
+      </ConsoleLayout>
     );
   }
 
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout pageUrls={pageUrls} sessionUser={sessionUser}>
       <ShopAddProductsList
         breadcrumbs={breadcrumbs}
         rubricName={rubricName}
@@ -118,7 +118,7 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
         shop={shop}
         {...props}
       />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

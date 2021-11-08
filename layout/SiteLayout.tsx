@@ -4,6 +4,7 @@ import Spinner from 'components/Spinner';
 import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
 import { SiteContextProvider } from 'context/siteContext';
+import { SiteUserContextProvider } from 'context/userSiteUserContext';
 import { PagesGroupInterface, RubricInterface } from 'db/uiInterfaces';
 import Footer from 'layout/footer/Footer';
 import Header from 'layout/header/Header';
@@ -82,24 +83,30 @@ const SiteLayout: React.FC<SiteLayoutProviderInterface> = ({
   description,
   pageUrls,
   sessionCity,
-  company,
+  domainCompany,
   footerPageGroups,
   headerPageGroups,
   ...props
 }) => {
   return (
-    <SiteContextProvider navRubrics={navRubrics} sessionCity={sessionCity} company={company}>
-      <SiteLayoutConsumer
-        title={title}
-        description={description}
-        pageUrls={pageUrls}
-        footerPageGroups={footerPageGroups}
-        headerPageGroups={headerPageGroups}
-        {...props}
+    <SiteUserContextProvider>
+      <SiteContextProvider
+        navRubrics={navRubrics}
+        sessionCity={sessionCity}
+        company={domainCompany}
       >
-        {children}
-      </SiteLayoutConsumer>
-    </SiteContextProvider>
+        <SiteLayoutConsumer
+          title={title}
+          description={description}
+          pageUrls={pageUrls}
+          footerPageGroups={footerPageGroups}
+          headerPageGroups={headerPageGroups}
+          {...props}
+        >
+          {children}
+        </SiteLayoutConsumer>
+      </SiteContextProvider>
+    </SiteUserContextProvider>
   );
 };
 

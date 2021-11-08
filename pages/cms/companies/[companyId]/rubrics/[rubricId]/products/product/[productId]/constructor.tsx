@@ -146,7 +146,7 @@ export const getServerSideProps = async (
       ...props,
       product: castDbData(product),
       cardContent: castDbData(cardContent),
-      currentCompany: castDbData(companyResult),
+      pageCompany: castDbData(companyResult),
       routeBasePath: `${ROUTE_CMS}/companies/${companyResult._id}`,
     },
   };

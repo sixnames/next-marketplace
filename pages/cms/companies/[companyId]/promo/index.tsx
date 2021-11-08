@@ -17,13 +17,13 @@ import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 const pageTitle = 'Акции';
 
 interface PromoListPageInterface extends PagePropsInterface, PromoListInterface {
-  currentCompany: CompanyInterface;
+  pageCompany: CompanyInterface;
 }
 
 const PromoListPage: NextPage<PromoListPageInterface> = ({
   pageUrls,
   promoList,
-  currentCompany,
+  pageCompany,
   basePath,
 }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -34,17 +34,17 @@ const PromoListPage: NextPage<PromoListPageInterface> = ({
         href: `${ROUTE_CMS}/companies`,
       },
       {
-        name: currentCompany.name,
-        href: `${ROUTE_CMS}/companies/${currentCompany._id}`,
+        name: pageCompany.name,
+        href: `${ROUTE_CMS}/companies/${pageCompany._id}`,
       },
     ],
   };
 
   return (
     <CmsLayout title={pageTitle} pageUrls={pageUrls}>
-      <CmsCompanyLayout company={currentCompany} breadcrumbs={breadcrumbs}>
+      <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
         <Inner>
-          <PromoList promoList={promoList} currentCompany={currentCompany} basePath={basePath} />
+          <PromoList promoList={promoList} currentCompany={pageCompany} basePath={basePath} />
         </Inner>
       </CmsCompanyLayout>
     </CmsLayout>
@@ -82,7 +82,7 @@ export const getServerSideProps = async (
     props: {
       ...props,
       basePath: `${ROUTE_CMS}/companies/${company._id}/promo`,
-      currentCompany: castDbData(company),
+      pageCompany: castDbData(company),
       promoList: castDbData(promoList),
     },
   };

@@ -12,13 +12,13 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 
 interface PageDetailsPageInterface extends PagePropsInterface, PageDetailsInterface {
-  currentCompany: CompanyInterface;
+  pageCompany: CompanyInterface;
 }
 
 const PageDetailsPage: NextPage<PageDetailsPageInterface> = ({
   pageUrls,
   page,
-  currentCompany,
+  pageCompany,
   cities,
 }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -26,17 +26,17 @@ const PageDetailsPage: NextPage<PageDetailsPageInterface> = ({
     config: [
       {
         name: 'Группы страниц',
-        href: `${ROUTE_CONSOLE}/${currentCompany._id}/pages`,
+        href: `${ROUTE_CONSOLE}/${pageCompany._id}/pages`,
       },
       {
         name: `${page.pagesGroup?.name}`,
-        href: `${ROUTE_CONSOLE}/${currentCompany._id}/pages/${page.pagesGroup?._id}`,
+        href: `${ROUTE_CONSOLE}/${pageCompany._id}/pages/${page.pagesGroup?._id}`,
       },
     ],
   };
 
   return (
-    <ConsoleLayout title={`${page.name}`} pageUrls={pageUrls} company={currentCompany}>
+    <ConsoleLayout title={`${page.name}`} pageUrls={pageUrls} company={pageCompany}>
       <AppContentWrapper breadcrumbs={breadcrumbs}>
         <Inner>
           <Title>{page.name}</Title>
@@ -53,7 +53,7 @@ export const getServerSideProps = async (
   const { query } = context;
   const { pageId } = query;
   const { props } = await getConsoleInitialData({ context });
-  if (!props || !pageId || !props.currentCompany) {
+  if (!props || !pageId || !props.pageCompany) {
     return {
       notFound: true,
     };
@@ -75,7 +75,7 @@ export const getServerSideProps = async (
       ...props,
       page: castDbData(getPageSsrResult.page),
       cities: castDbData(getPageSsrResult.cities),
-      currentCompany: props.currentCompany,
+      pageCompany: props.pageCompany,
     },
   };
 };

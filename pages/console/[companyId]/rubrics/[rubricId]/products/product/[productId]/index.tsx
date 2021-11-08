@@ -69,7 +69,7 @@ interface ProductPageInterface extends PagePropsInterface, ProductDetailsInterfa
 
 const Product: NextPage<ProductPageInterface> = ({ pageUrls, ...props }) => {
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={props.currentCompany}>
+    <ConsoleLayout pageUrls={pageUrls} company={props.pageCompany}>
       <ProductDetails {...props} />
     </ConsoleLayout>
   );
@@ -90,7 +90,7 @@ export const getServerSideProps = async (
   }
 
   // get company
-  const companySlug = props.currentCompany.slug;
+  const companySlug = props.pageCompany.slug;
 
   const payload = await getCmsProduct({
     locale: props.sessionLocale,
@@ -128,7 +128,7 @@ export const getServerSideProps = async (
       ...props,
       product: castDbData(payload.product),
       cardContent: castDbData(cardContent),
-      routeBasePath: `${ROUTE_CONSOLE}/${props.currentCompany._id}`,
+      routeBasePath: `${ROUTE_CONSOLE}/${props.pageCompany._id}`,
     },
   };
 };

@@ -94,12 +94,12 @@ interface UserDetailsPageInterface extends PagePropsInterface, UserDetailsConsum
 
 const UserDetailsPage: NextPage<UserDetailsPageInterface> = ({
   pageUrls,
-  currentCompany,
+  pageCompany,
   ...props
 }) => {
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={currentCompany}>
-      <UserDetailsConsumer {...props} currentCompany={currentCompany} />
+    <ConsoleLayout pageUrls={pageUrls} company={pageCompany}>
+      <UserDetailsConsumer {...props} currentCompany={pageCompany} />
     </ConsoleLayout>
   );
 };

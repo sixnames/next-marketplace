@@ -113,9 +113,9 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ data }) => {
 
 interface OrdersInterface extends PagePropsInterface, OrdersRouteInterface {}
 
-const Orders: NextPage<OrdersInterface> = ({ pageUrls, currentCompany, data }) => {
+const Orders: NextPage<OrdersInterface> = ({ pageUrls, pageCompany, data }) => {
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={currentCompany}>
+    <ConsoleLayout pageUrls={pageUrls} company={pageCompany}>
       <OrdersRoute data={data} />
     </ConsoleLayout>
   );
@@ -131,7 +131,7 @@ export const getServerSideProps = async (
     };
   }
 
-  if (!props.currentCompany) {
+  if (!props.pageCompany) {
     return {
       notFound: true,
     };
@@ -147,7 +147,7 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      currentCompany: props.currentCompany,
+      pageCompany: props.pageCompany,
       data: castDbData(data),
     },
   };

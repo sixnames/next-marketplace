@@ -19,16 +19,16 @@ interface PageGroupsPageInterface
 const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({
   pageUrls,
   pagesGroups,
-  currentCompany,
+  pageCompany,
 }) => {
   return (
-    <ConsoleLayout title={pageTitle} pageUrls={pageUrls} company={currentCompany}>
+    <ConsoleLayout title={pageTitle} pageUrls={pageUrls} company={pageCompany}>
       <AppContentWrapper>
         <Inner>
           <Title>{pageTitle}</Title>
           <PageGroupsList
-            companySlug={`${currentCompany?.slug}`}
-            basePath={`${ROUTE_CONSOLE}/${currentCompany?._id}/pages`}
+            companySlug={`${pageCompany?.slug}`}
+            basePath={`${ROUTE_CONSOLE}/${pageCompany?._id}/pages`}
             pagesGroups={pagesGroups}
           />
         </Inner>
@@ -41,7 +41,7 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<PageGroupsPageInterface>> => {
   const { props } = await getConsoleInitialData({ context });
-  if (!props || !props.currentCompany) {
+  if (!props || !props.pageCompany) {
     return {
       notFound: true,
     };
@@ -49,14 +49,14 @@ export const getServerSideProps = async (
 
   const pagesGroups = await getPageGroupsSsr({
     locale: props.sessionLocale,
-    companySlug: props.currentCompany.slug,
+    companySlug: props.pageCompany.slug,
   });
 
   return {
     props: {
       ...props,
       pagesGroups: castDbData(pagesGroups),
-      currentCompany: props.currentCompany,
+      pageCompany: props.pageCompany,
     },
   };
 };

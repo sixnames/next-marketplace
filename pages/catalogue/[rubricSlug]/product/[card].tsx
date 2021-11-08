@@ -36,7 +36,7 @@ interface CardInterface extends SiteLayoutProviderInterface {
   cardData?: InitialCardDataInterface | null;
 }
 
-const Card: NextPage<CardInterface> = ({ cardData, company, ...props }) => {
+const Card: NextPage<CardInterface> = ({ cardData, domainCompany, ...props }) => {
   const { currentCity } = props;
   const { configs } = useConfigContext();
   if (!cardData) {
@@ -57,13 +57,13 @@ const Card: NextPage<CardInterface> = ({ cardData, company, ...props }) => {
       previewImage={cardData.product.mainImage}
       title={`${cardData.cardTitle}${prefix} ${siteName}${cityDescription}`}
       description={`${cardData.cardTitle} ${cardData.product.description}`}
-      company={company}
+      domainCompany={domainCompany}
       {...props}
     >
       <CardConsumer
         cardData={cardData}
-        companySlug={company?.slug}
-        companyId={company ? `${company._id}` : null}
+        companySlug={domainCompany?.slug}
+        companyId={domainCompany ? `${domainCompany._id}` : null}
       />
       {configs.showAdminUiInCatalogue ? (
         <FixedButtons>
@@ -105,7 +105,7 @@ export async function getServerSideProps(
     locale: `${locale}`,
     city: props.sessionCity,
     slug: `${query.card}`,
-    companyId: props.company?._id,
+    companyId: props.domainCompany?._id,
     companySlug: props.companySlug,
     useUniqueConstructor,
     showAdminUiInCatalogue,

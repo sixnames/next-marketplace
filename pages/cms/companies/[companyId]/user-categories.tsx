@@ -142,13 +142,10 @@ const CompanyDetailsConsumer: React.FC<CompanyDetailsConsumerInterface> = ({ cur
 
 interface CompanyDetailsPageInterface extends PagePropsInterface, CompanyDetailsConsumerInterface {}
 
-const CompanyDetailsPage: NextPage<CompanyDetailsPageInterface> = ({
-  currentCompany,
-  ...props
-}) => {
+const CompanyDetailsPage: NextPage<CompanyDetailsPageInterface> = ({ pageCompany, ...props }) => {
   return (
     <CmsLayout {...props}>
-      <CompanyDetailsConsumer currentCompany={currentCompany} />
+      <CompanyDetailsConsumer currentCompany={pageCompany} />
     </CmsLayout>
   );
 };
@@ -212,7 +209,7 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      currentCompany: castDbData(company),
+      pageCompany: castDbData(company),
     },
   };
 };

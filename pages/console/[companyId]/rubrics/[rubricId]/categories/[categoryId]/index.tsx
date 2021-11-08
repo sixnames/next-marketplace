@@ -75,7 +75,7 @@ interface CategoryPageInterface extends PagePropsInterface, CategoryDetailsInter
 
 const CategoryPage: NextPage<CategoryPageInterface> = ({ pageUrls, ...props }) => {
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={props.currentCompany}>
+    <ConsoleLayout pageUrls={pageUrls} company={props.pageCompany}>
       <CategoryDetails {...props} />
     </ConsoleLayout>
   );
@@ -96,7 +96,7 @@ export const getServerSideProps = async (
     };
   }
 
-  const companySlug = props.currentCompany.slug;
+  const companySlug = props.pageCompany.slug;
 
   const categoryAggregation = await categoriesCollection
     .aggregate<CategoryInterface>([
@@ -250,7 +250,7 @@ export const getServerSideProps = async (
       category: castDbData(category),
       seoTop: castDbData(seoTop),
       seoBottom: castDbData(seoBottom),
-      routeBasePath: `${ROUTE_CONSOLE}/${props.currentCompany._id}`,
+      routeBasePath: `${ROUTE_CONSOLE}/${props.pageCompany._id}`,
     },
   };
 };

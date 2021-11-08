@@ -9,12 +9,12 @@ import { getConsoleInitialData } from 'lib/ssrUtils';
 
 interface OrdersInterface extends PagePropsInterface {}
 
-const Orders: NextPage<OrdersInterface> = ({ pageUrls, currentCompany }) => {
+const Orders: NextPage<OrdersInterface> = ({ pageUrls, pageCompany }) => {
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={currentCompany}>
+    <ConsoleLayout pageUrls={pageUrls} company={pageCompany}>
       <AppContentWrapper>
         <Inner>
-          <Title>{currentCompany?.name}</Title>
+          <Title>{pageCompany?.name}</Title>
         </Inner>
       </AppContentWrapper>
     </ConsoleLayout>
@@ -34,7 +34,7 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      currentCompany: props.currentCompany,
+      pageCompany: props.pageCompany,
     },
   };
 };

@@ -13,13 +13,13 @@ import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
 interface ConfigConsumerInterface extends ConfigPageInterface {
-  currentCompany?: CompanyInterface | null;
+  pageCompany?: CompanyInterface | null;
 }
 
 const ConfigConsumer: React.FC<ConfigConsumerInterface> = ({
   assetConfigs,
   normalConfigs,
-  currentCompany,
+  pageCompany,
 }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Основные настройки',
@@ -29,14 +29,14 @@ const ConfigConsumer: React.FC<ConfigConsumerInterface> = ({
         href: `${ROUTE_CMS}/companies`,
       },
       {
-        name: `${currentCompany?.name}`,
-        href: `${ROUTE_CMS}/companies/${currentCompany?._id}`,
+        name: `${pageCompany?.name}`,
+        href: `${ROUTE_CMS}/companies/${pageCompany?._id}`,
       },
     ],
   };
 
   return (
-    <CmsCompanyLayout company={currentCompany} breadcrumbs={breadcrumbs}>
+    <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
       <Inner testId={'company-config-globals'}>
         <ConfigsFormTemplate assetConfigs={assetConfigs} normalConfigs={normalConfigs} />
       </Inner>
@@ -92,7 +92,7 @@ export const getServerSideProps = async (
       ...props,
       assetConfigs: castDbData(assetConfigs),
       normalConfigs: castDbData(normalConfigs),
-      currentCompany: castDbData(currentCompany),
+      pageCompany: castDbData(currentCompany),
     },
   };
 };

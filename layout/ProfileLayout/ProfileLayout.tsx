@@ -11,12 +11,12 @@ import {
   ROUTE_PROFILE_PROPOSALS,
   ROUTE_PROFILE_VIEWED,
 } from 'config/common';
+import { useSiteUserContext } from 'context/userSiteUserContext';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import Breadcrumbs from 'components/Breadcrumbs';
 import Inner from 'components/Inner';
 import Title from 'components/Title';
-import { useUserContext } from 'context/userContext';
 import AsideNav from 'components/AsideNav';
 
 interface ProfileLayoutInterface {
@@ -25,7 +25,7 @@ interface ProfileLayoutInterface {
 
 const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) => {
   const router = useRouter();
-  const { me } = useUserContext();
+  const sessionUser = useSiteUserContext();
 
   const navConfig = React.useMemo<HeadlessMenuGroupInterface[]>(() => {
     return [
@@ -168,7 +168,9 @@ const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) =
         <div className='flex flex-col gap-8 md:flex-row'>
           <div className='relative z-20 md:w-[var(--catalogue-filter-width)] flex-shrink-0'>
             <Title>Личный кабинет</Title>
-            <div className='text-5 font-medium mb-8 md:mb-12'>С возвращением, {me?.name}</div>
+            <div className='text-5 font-medium mb-8 md:mb-12'>
+              С возвращением, {sessionUser?.me.name}
+            </div>
             <AsideNav
               className='sticky left-0 top-6 lg:top-16'
               config={navConfig}

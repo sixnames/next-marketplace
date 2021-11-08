@@ -10,7 +10,6 @@ interface ConfigContextInterface {
 const ConfigContext = React.createContext<ConfigContextInterface>({
   cities: [],
   configs: {
-    editLinkBasePath: '',
     siteName: '',
     siteFoundationYear: 0,
     yaVerification: '',
@@ -38,7 +37,6 @@ const ConfigContext = React.createContext<ConfigContextInterface>({
     showAdultModal: false,
     showBlog: false,
     showBlogPostViews: false,
-    showAdminUiInCatalogue: false,
     contactEmail: [],
     phone: [],
     facebook: '',

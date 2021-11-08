@@ -494,7 +494,7 @@ export interface CatalogueInterface extends SiteLayoutProviderInterface {
 const Catalogue: React.FC<CatalogueInterface> = ({
   catalogueData,
   currentCity,
-  company,
+  domainCompany,
   isSearchResult,
   ...props
 }) => {
@@ -514,7 +514,7 @@ const Catalogue: React.FC<CatalogueInterface> = ({
   return (
     <SiteLayout
       currentCity={currentCity}
-      company={company}
+      domainCompany={domainCompany}
       title={`${catalogueData.catalogueTitle}${prefix} ${siteName}${cityDescription}`}
       description={`${catalogueData.catalogueTitle} ${prefix} ${siteName}${cityDescription}`}
       {...props}
@@ -522,8 +522,8 @@ const Catalogue: React.FC<CatalogueInterface> = ({
       <CatalogueConsumer
         isSearchResult={isSearchResult}
         catalogueData={catalogueData}
-        companySlug={company?.slug}
-        companyId={company?._id ? `${company?._id}` : undefined}
+        companySlug={domainCompany?.slug}
+        companyId={domainCompany?._id ? `${domainCompany?._id}` : undefined}
       />
 
       {configs.showAdminUiInCatalogue ? (

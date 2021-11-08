@@ -17,14 +17,10 @@ import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 interface PagesListPageInterface
   extends PagePropsInterface,
     Omit<PagesListInterface, 'basePath' | 'breadcrumbs'> {
-  currentCompany: CompanyInterface;
+  pageCompany: CompanyInterface;
 }
 
-const PagesListPage: NextPage<PagesListPageInterface> = ({
-  pageUrls,
-  currentCompany,
-  pagesGroup,
-}) => {
+const PagesListPage: NextPage<PagesListPageInterface> = ({ pageUrls, pageCompany, pagesGroup }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${pagesGroup?.name}`,
     config: [
@@ -33,22 +29,22 @@ const PagesListPage: NextPage<PagesListPageInterface> = ({
         href: `${ROUTE_CMS}/companies`,
       },
       {
-        name: currentCompany.name,
-        href: `${ROUTE_CMS}/companies/${currentCompany._id}`,
+        name: pageCompany.name,
+        href: `${ROUTE_CMS}/companies/${pageCompany._id}`,
       },
       {
         name: 'Группы страниц',
-        href: `${ROUTE_CMS}/companies/${currentCompany._id}/pages`,
+        href: `${ROUTE_CMS}/companies/${pageCompany._id}/pages`,
       },
     ],
   };
 
   return (
     <CmsLayout title={`${pagesGroup.name}`} pageUrls={pageUrls}>
-      <CmsCompanyLayout company={currentCompany} breadcrumbs={breadcrumbs}>
+      <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
         <Inner>
           <PagesList
-            basePath={`${ROUTE_CMS}/companies/${currentCompany._id}/pages`}
+            basePath={`${ROUTE_CMS}/companies/${pageCompany._id}/pages`}
             pagesGroup={pagesGroup}
           />
         </Inner>
@@ -94,7 +90,7 @@ export const getServerSideProps = async (
     props: {
       ...props,
       pagesGroup: castDbData(pagesGroup),
-      currentCompany: castDbData(company),
+      pageCompany: castDbData(company),
     },
   };
 };

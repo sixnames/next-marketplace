@@ -19,7 +19,7 @@ const CompanyShopProductsList: NextPage<CompanyShopProductsListInterface> = ({
   pageUrls,
   shop,
   rubricName,
-  currentCompany,
+  pageCompany,
   ...props
 }) => {
   const companyBasePath = `${ROUTE_CONSOLE}/${shop.companyId}/shops`;
@@ -42,7 +42,7 @@ const CompanyShopProductsList: NextPage<CompanyShopProductsListInterface> = ({
   };
 
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={currentCompany}>
+    <ConsoleLayout pageUrls={pageUrls} company={pageCompany}>
       <ShopRubricProducts
         rubricName={rubricName}
         breadcrumbs={breadcrumbs}
@@ -75,7 +75,7 @@ export const getServerSideProps = async (
     locale,
     query,
     currency,
-    companySlug: initialProps.props.currentCompany.slug,
+    companySlug: initialProps.props.pageCompany.slug,
   });
 
   if (!payload) {

@@ -77,9 +77,9 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct, cardCo
 
 interface ProductPageInterface extends PagePropsInterface, ProductDetailsInterface {}
 
-const Product: NextPage<ProductPageInterface> = ({ pageUrls, currentCompany, ...props }) => {
+const Product: NextPage<ProductPageInterface> = ({ pageUrls, pageCompany, ...props }) => {
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={currentCompany}>
+    <ConsoleLayout pageUrls={pageUrls} company={pageCompany}>
       <ProductDetails {...props} />
     </ConsoleLayout>
   );

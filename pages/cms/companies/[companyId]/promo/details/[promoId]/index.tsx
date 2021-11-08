@@ -14,13 +14,13 @@ import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
 interface PromoDetailsPageInterface extends PagePropsInterface, PromoDetailsInterface {
-  currentCompany: CompanyInterface;
+  pageCompany: CompanyInterface;
 }
 
 const PromoDetailsPage: React.FC<PromoDetailsPageInterface> = ({
   pageUrls,
   promo,
-  currentCompany,
+  pageCompany,
   basePath,
 }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -31,20 +31,20 @@ const PromoDetailsPage: React.FC<PromoDetailsPageInterface> = ({
         href: `${ROUTE_CMS}/companies`,
       },
       {
-        name: currentCompany.name,
-        href: `${ROUTE_CMS}/companies/${currentCompany._id}`,
+        name: pageCompany.name,
+        href: `${ROUTE_CMS}/companies/${pageCompany._id}`,
       },
       {
         name: 'Акции',
-        href: `${ROUTE_CMS}/companies/${currentCompany._id}/promo`,
+        href: `${ROUTE_CMS}/companies/${pageCompany._id}/promo`,
       },
     ],
   };
 
   return (
     <CmsLayout title={`${promo.name}`} pageUrls={pageUrls}>
-      <CmsCompanyLayout company={currentCompany} breadcrumbs={breadcrumbs}>
-        <PromoDetails basePath={basePath} currentCompany={currentCompany} promo={promo} />
+      <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
+        <PromoDetails basePath={basePath} currentCompany={pageCompany} promo={promo} />
       </CmsCompanyLayout>
     </CmsLayout>
   );
@@ -86,7 +86,7 @@ export const getServerSideProps = async (
     props: {
       ...props,
       basePath: `${ROUTE_CMS}/companies/${company._id}/promo/details/${promo._id}`,
-      currentCompany: castDbData(company),
+      pageCompany: castDbData(company),
       promo: castDbData(promo),
     },
   };

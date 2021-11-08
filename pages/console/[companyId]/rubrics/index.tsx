@@ -42,7 +42,7 @@ interface RubricsInterface extends PagePropsInterface, RubricsRouteInterface {}
 
 const Rubrics: NextPage<RubricsInterface> = ({ pageUrls, ...props }) => {
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={props.currentCompany} title={pageTitle}>
+    <ConsoleLayout pageUrls={pageUrls} company={props.pageCompany} title={pageTitle}>
       <RubricsRoute {...props} />
     </ConsoleLayout>
   );
@@ -158,7 +158,7 @@ export const getServerSideProps = async (
     props: {
       ...props,
       rubrics: castDbData(rawRubrics),
-      routeBasePath: `${ROUTE_CONSOLE}/${props.currentCompany._id}/rubrics`,
+      routeBasePath: `${ROUTE_CONSOLE}/${props.pageCompany._id}/rubrics`,
     },
   };
 };

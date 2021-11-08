@@ -50,7 +50,7 @@ interface RubricProductsPageInterface extends PagePropsInterface, RubricProducts
 
 const RubricProducts: NextPage<RubricProductsPageInterface> = ({ pageUrls, ...props }) => {
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={props.currentCompany}>
+    <ConsoleLayout pageUrls={pageUrls} company={props.pageCompany}>
       <RubricProductsConsumer {...props} />
     </ConsoleLayout>
   );
@@ -69,12 +69,12 @@ export const getServerSideProps = async (
   }
 
   // get company
-  const companySlug = props.currentCompany.slug;
+  const companySlug = props.pageCompany.slug;
 
   const locale = props.sessionLocale;
   const currency = props.initialData.currency;
-  const basePath = `${ROUTE_CONSOLE}/${props.currentCompany._id}/rubrics/${rubricId}/products/${rubricId}/${DEFAULT_PAGE_FILTER}`;
-  const itemPath = `${ROUTE_CONSOLE}/${props.currentCompany._id}/rubrics/${rubricId}/products/product`;
+  const basePath = `${ROUTE_CONSOLE}/${props.pageCompany._id}/rubrics/${rubricId}/products/${rubricId}/${DEFAULT_PAGE_FILTER}`;
+  const itemPath = `${ROUTE_CONSOLE}/${props.pageCompany._id}/rubrics/${rubricId}/products/product`;
 
   const payload = await getConsoleCompanyRubricProducts({
     query: context.query,
@@ -82,7 +82,7 @@ export const getServerSideProps = async (
     basePath,
     currency,
     companySlug,
-    companyId: `${props.currentCompany._id}`,
+    companyId: `${props.pageCompany._id}`,
   });
 
   const castedPayload = castDbData(payload);
@@ -93,7 +93,7 @@ export const getServerSideProps = async (
       ...castedPayload,
       itemPath,
       companySlug,
-      routeBasePath: `${ROUTE_CONSOLE}/${props.currentCompany._id}`,
+      routeBasePath: `${ROUTE_CONSOLE}/${props.pageCompany._id}`,
     },
   };
 };

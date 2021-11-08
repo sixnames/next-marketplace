@@ -49,12 +49,12 @@ interface BlogPostPageInterface extends PagePropsInterface, BlogPostConsumerInte
 const BlogPostPage: React.FC<BlogPostPageInterface> = ({
   post,
   pageUrls,
-  currentCompany,
+  pageCompany,
   attributes,
 }) => {
   return (
-    <ConsoleLayout pageUrls={pageUrls} title={pageTitle} company={currentCompany}>
-      <BlogPostConsumer post={post} attributes={attributes} currentCompany={currentCompany} />
+    <ConsoleLayout pageUrls={pageUrls} title={pageTitle} company={pageCompany}>
+      <BlogPostConsumer post={post} attributes={attributes} currentCompany={pageCompany} />
     </ConsoleLayout>
   );
 };
@@ -63,7 +63,7 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<BlogPostPageInterface>> => {
   const { props } = await getConsoleInitialData({ context });
-  if (!props || !props.currentCompany || !context.query.companyId) {
+  if (!props || !props.pageCompany || !context.query.companyId) {
     return {
       notFound: true,
     };
@@ -84,7 +84,7 @@ export const getServerSideProps = async (
       ...props,
       post: castDbData(payload.post),
       attributes: castDbData(payload.attributes),
-      currentCompany: props.currentCompany,
+      pageCompany: props.pageCompany,
     },
   };
 };

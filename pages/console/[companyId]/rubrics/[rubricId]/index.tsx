@@ -60,7 +60,7 @@ interface RubricPageInterface extends PagePropsInterface, RubricDetailsInterface
 
 const RubricPage: NextPage<RubricPageInterface> = ({ pageUrls, ...props }) => {
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={props.currentCompany}>
+    <ConsoleLayout pageUrls={pageUrls} company={props.pageCompany}>
       <RubricDetails {...props} />
     </ConsoleLayout>
   );
@@ -80,7 +80,7 @@ export const getServerSideProps = async (
       notFound: true,
     };
   }
-  const companySlug = props.currentCompany.slug;
+  const companySlug = props.pageCompany.slug;
 
   const initialRubrics = await rubricsCollection
     .aggregate([
@@ -190,7 +190,7 @@ export const getServerSideProps = async (
       rubric: castDbData(rawRubric),
       seoTop: castDbData(seoTop),
       seoBottom: castDbData(seoBottom),
-      routeBasePath: `${ROUTE_CONSOLE}/${props.currentCompany._id}`,
+      routeBasePath: `${ROUTE_CONSOLE}/${props.pageCompany._id}`,
     },
   };
 };

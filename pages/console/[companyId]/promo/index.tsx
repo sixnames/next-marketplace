@@ -14,21 +14,21 @@ import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 const pageTitle = 'Акции';
 
 interface PromoListPageInterface extends PagePropsInterface, PromoListInterface {
-  currentCompany: CompanyInterface;
+  pageCompany: CompanyInterface;
 }
 
 const PromoListPage: NextPage<PromoListPageInterface> = ({
   pageUrls,
   promoList,
-  currentCompany,
+  pageCompany,
   basePath,
 }) => {
   return (
-    <ConsoleLayout title={pageTitle} pageUrls={pageUrls} company={currentCompany}>
+    <ConsoleLayout title={pageTitle} pageUrls={pageUrls} company={pageCompany}>
       <AppContentWrapper>
         <Inner>
           <Title>{pageTitle}</Title>
-          <PromoList promoList={promoList} currentCompany={currentCompany} basePath={basePath} />
+          <PromoList promoList={promoList} currentCompany={pageCompany} basePath={basePath} />
         </Inner>
       </AppContentWrapper>
     </ConsoleLayout>
@@ -39,7 +39,7 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<PromoListPageInterface>> => {
   const { props } = await getConsoleInitialData({ context });
-  if (!props || !props.currentCompany) {
+  if (!props || !props.pageCompany) {
     return {
       notFound: true,
     };
@@ -47,15 +47,15 @@ export const getServerSideProps = async (
 
   const promoList = await getPromoListSsr({
     locale: props.sessionLocale,
-    companyId: `${props.currentCompany._id}`,
+    companyId: `${props.pageCompany._id}`,
   });
 
   return {
     props: {
       ...props,
-      basePath: `${ROUTE_CONSOLE}/${props.currentCompany._id}/promo`,
+      basePath: `${ROUTE_CONSOLE}/${props.pageCompany._id}/promo`,
       promoList: castDbData(promoList),
-      currentCompany: props.currentCompany,
+      pageCompany: props.pageCompany,
     },
   };
 };

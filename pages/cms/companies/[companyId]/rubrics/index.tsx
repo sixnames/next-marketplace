@@ -190,7 +190,7 @@ export const getServerSideProps = async (
     props: {
       ...props,
       rubrics: castDbData(rawRubrics),
-      currentCompany: castDbData(companyResult),
+      pageCompany: castDbData(companyResult),
       routeBasePath: `${ROUTE_CMS}/companies/${companyResult._id}/rubrics`,
     },
   };

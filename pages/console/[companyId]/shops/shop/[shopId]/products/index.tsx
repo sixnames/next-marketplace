@@ -22,7 +22,7 @@ const CompanyShopProducts: NextPage<CompanyShopProductsInterface> = ({
   pageUrls,
   rubrics,
   shop,
-  currentCompany,
+  pageCompany,
 }) => {
   const companyBasePath = `${ROUTE_CONSOLE}/${shop.companyId}/shops`;
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -40,7 +40,7 @@ const CompanyShopProducts: NextPage<CompanyShopProductsInterface> = ({
   };
 
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={currentCompany}>
+    <ConsoleLayout pageUrls={pageUrls} company={pageCompany}>
       <ShopRubrics
         shop={shop}
         rubrics={rubrics}

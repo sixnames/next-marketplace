@@ -31,7 +31,7 @@ interface CompanyShopAssetsInterface
 
 const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({
   pageUrls,
-  currentCompany,
+  pageCompany,
   shop,
   order,
 }) => {
@@ -57,7 +57,7 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({
   };
 
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={currentCompany}>
+    <ConsoleLayout pageUrls={pageUrls} company={pageCompany}>
       <ShopOrder
         title={title}
         order={order}

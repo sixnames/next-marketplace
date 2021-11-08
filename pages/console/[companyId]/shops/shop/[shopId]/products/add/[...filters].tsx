@@ -32,7 +32,7 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
   shop,
   rubricName,
   rubricId,
-  currentCompany,
+  pageCompany,
   ...props
 }) => {
   const [chosen, setChosen] = React.useState<ProductInterface[]>([]);
@@ -81,7 +81,7 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
 
   if (step === 2) {
     return (
-      <ConsoleLayout pageUrls={pageUrls} company={currentCompany}>
+      <ConsoleLayout pageUrls={pageUrls} company={pageCompany}>
         <ShopAddProductsFinalStep
           breadcrumbs={breadcrumbs}
           rubricName={rubricName}
@@ -99,7 +99,7 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
   }
 
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={currentCompany}>
+    <ConsoleLayout pageUrls={pageUrls} company={pageCompany}>
       <ShopAddProductsList
         breadcrumbs={breadcrumbs}
         rubricName={rubricName}
@@ -138,7 +138,7 @@ export const getServerSideProps = async (
     basePath,
     query,
     currency,
-    companySlug: initialProps.props.currentCompany?.slug || DEFAULT_COMPANY_SLUG,
+    companySlug: initialProps.props.pageCompany?.slug || DEFAULT_COMPANY_SLUG,
   });
 
   if (!payload) {

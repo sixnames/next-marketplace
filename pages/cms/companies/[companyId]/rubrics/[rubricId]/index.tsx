@@ -223,7 +223,7 @@ export const getServerSideProps = async (
       rubric: castDbData(rawRubric),
       seoTop: castDbData(seoTop),
       seoBottom: castDbData(seoBottom),
-      currentCompany: castDbData(companyResult),
+      pageCompany: castDbData(companyResult),
       routeBasePath: `${ROUTE_CMS}/companies/${companyResult._id}`,
     },
   };

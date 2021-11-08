@@ -10,13 +10,13 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
 
 interface PromoDetailsPageInterface extends PagePropsInterface, PromoDetailsInterface {
-  currentCompany: CompanyInterface;
+  pageCompany: CompanyInterface;
 }
 
 const PromoListPage: NextPage<PromoDetailsPageInterface> = ({
   pageUrls,
   promo,
-  currentCompany,
+  pageCompany,
   basePath,
 }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -24,15 +24,15 @@ const PromoListPage: NextPage<PromoDetailsPageInterface> = ({
     config: [
       {
         name: 'Акции',
-        href: `${ROUTE_CONSOLE}/${currentCompany._id}/promo`,
+        href: `${ROUTE_CONSOLE}/${pageCompany._id}/promo`,
       },
     ],
   };
 
   return (
-    <ConsoleLayout title={`${promo.name}`} pageUrls={pageUrls} company={currentCompany}>
+    <ConsoleLayout title={`${promo.name}`} pageUrls={pageUrls} company={pageCompany}>
       <AppContentWrapper breadcrumbs={breadcrumbs}>
-        <PromoDetails basePath={basePath} currentCompany={currentCompany} promo={promo} />
+        <PromoDetails basePath={basePath} currentCompany={pageCompany} promo={promo} />
       </AppContentWrapper>
     </ConsoleLayout>
   );
@@ -43,7 +43,7 @@ export const getServerSideProps = async (
 ): Promise<GetServerSidePropsResult<PromoDetailsPageInterface>> => {
   const { query } = context;
   const { props } = await getConsoleInitialData({ context });
-  if (!props || !props.currentCompany) {
+  if (!props || !props.pageCompany) {
     return {
       notFound: true,
     };
@@ -62,9 +62,9 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      basePath: `${ROUTE_CONSOLE}/${props.currentCompany._id}/promo/details/${promo._id}`,
+      basePath: `${ROUTE_CONSOLE}/${props.pageCompany._id}/promo/details/${promo._id}`,
       promo: castDbData(promo),
-      currentCompany: props.currentCompany,
+      pageCompany: props.pageCompany,
     },
   };
 };

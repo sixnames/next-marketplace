@@ -133,14 +133,11 @@ interface UserCategoriesInterface
 const UserCategories: NextPage<UserCategoriesInterface> = ({
   pageUrls,
   userCategories,
-  currentCompany,
+  pageCompany,
 }) => {
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={currentCompany}>
-      <UserCategoriesConsumer
-        userCategories={userCategories}
-        companyId={`${currentCompany?._id}`}
-      />
+    <ConsoleLayout pageUrls={pageUrls} company={pageCompany}>
+      <UserCategoriesConsumer userCategories={userCategories} companyId={`${pageCompany?._id}`} />
     </ConsoleLayout>
   );
 };
@@ -151,7 +148,7 @@ export const getServerSideProps = async (
   const { props } = await getConsoleInitialData({ context });
   const { db } = await getDatabase();
   const userCategoriesCollection = db.collection<UserCategoryInterface>(COL_USER_CATEGORIES);
-  if (!props || !props.sessionUser || !props.currentCompany) {
+  if (!props || !props.sessionUser || !props.pageCompany) {
     return {
       notFound: true,
     };
@@ -161,7 +158,7 @@ export const getServerSideProps = async (
     .aggregate<UserCategoryInterface>([
       {
         $match: {
-          companyId: new ObjectId(props.currentCompany._id),
+          companyId: new ObjectId(props.pageCompany._id),
         },
       },
     ])
@@ -178,7 +175,7 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      currentCompany: props.currentCompany,
+      pageCompany: props.pageCompany,
       userCategories: castDbData(userCategories),
     },
   };

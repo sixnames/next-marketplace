@@ -58,7 +58,7 @@ interface RubricCategoriesPageInterface
 
 const RubricCategoriesPage: NextPage<RubricCategoriesPageInterface> = ({ pageUrls, ...props }) => {
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={props.currentCompany}>
+    <ConsoleLayout pageUrls={pageUrls} company={props.pageCompany}>
       <RubricCategoriesConsumer {...props} />
     </ConsoleLayout>
   );
@@ -82,7 +82,7 @@ export const getServerSideProps = async (
   const locale = props.sessionLocale;
   const rubricId = new ObjectId(`${query.rubricId}`);
   const companyId = new ObjectId(`${query.companyId}`);
-  const routeBasePath = `${ROUTE_CONSOLE}/${props.currentCompany._id}`;
+  const routeBasePath = `${ROUTE_CONSOLE}/${props.pageCompany._id}`;
 
   // get categories config
   const categoriesConfigAggregationResult = await shopProductsCollection
@@ -122,7 +122,7 @@ export const getServerSideProps = async (
     }
     const payload: RubricCategoriesConsumerInterface = {
       routeBasePath,
-      currentCompany: castDbData(props.currentCompany),
+      currentCompany: castDbData(props.pageCompany),
       rubric: {
         ...rubric,
         name: getFieldStringLocale(rubric?.nameI18n, locale),
@@ -210,7 +210,7 @@ export const getServerSideProps = async (
 
   const payload: RubricCategoriesConsumerInterface = {
     routeBasePath,
-    currentCompany: props.currentCompany,
+    currentCompany: props.pageCompany,
     rubric: {
       ...rubric,
       name: getFieldStringLocale(rubric?.nameI18n, locale),

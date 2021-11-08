@@ -69,14 +69,10 @@ const UserOrderConsumer: React.FC<UserOrderConsumerInterface> = ({
 
 interface UserOrderPageInterface extends PagePropsInterface, UserOrderConsumerInterface {}
 
-const UserOrderPage: NextPage<UserOrderPageInterface> = ({
-  pageUrls,
-  currentCompany,
-  ...props
-}) => {
+const UserOrderPage: NextPage<UserOrderPageInterface> = ({ pageUrls, pageCompany, ...props }) => {
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={currentCompany}>
-      <UserOrderConsumer {...props} currentCompany={currentCompany} />
+    <ConsoleLayout pageUrls={pageUrls} company={pageCompany}>
+      <UserOrderConsumer {...props} currentCompany={pageCompany} />
     </ConsoleLayout>
   );
 };

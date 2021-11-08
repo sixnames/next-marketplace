@@ -109,9 +109,9 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({ docs, page, totalPage
 
 interface UsersPageInterface extends PagePropsInterface, UsersConsumerInterface {}
 
-const UsersPage: NextPage<UsersPageInterface> = ({ pageUrls, currentCompany, ...props }) => {
+const UsersPage: NextPage<UsersPageInterface> = ({ pageUrls, pageCompany, ...props }) => {
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={currentCompany}>
+    <ConsoleLayout pageUrls={pageUrls} company={pageCompany}>
       <UsersConsumer {...props} />
     </ConsoleLayout>
   );

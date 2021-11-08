@@ -7,7 +7,6 @@ import {
   DEFAULT_CURRENCY,
   DEFAULT_LOCALE,
   ROLE_SLUG_ADMIN,
-  ROUTE_CONSOLE,
   ROUTE_CMS,
   ROUTE_SIGN_IN,
   SORT_ASC,
@@ -39,7 +38,6 @@ import {
   AttributeModel,
   CategoryModel,
   CityModel,
-  CompanyModel,
   ConfigModel,
   LanguageModel,
   ObjectIdModel,
@@ -52,7 +50,6 @@ import {
   CompanyInterface,
   PageInterface,
   PagesGroupInterface,
-  RoleInterface,
   RubricInterface,
   SsrConfigsInterface,
   UserInterface,
@@ -78,7 +75,7 @@ import nookies from 'nookies';
 export interface GetCatalogueNavRubricsInterface {
   locale: string;
   city: string;
-  company?: CompanyModel | null;
+  domainCompany?: CompanyInterface | null;
   stickyNavVisibleCategoriesCount: number;
   stickyNavVisibleAttributesCount: number;
   stickyNavVisibleOptionsCount: number;
@@ -114,7 +111,7 @@ interface CatalogueNavCategoriesConfigInterface {
 export const getCatalogueNavRubrics = async ({
   city,
   locale,
-  company,
+  domainCompany,
   stickyNavVisibleCategoriesCount,
   stickyNavVisibleAttributesCount,
   stickyNavVisibleOptionsCount,
@@ -128,7 +125,7 @@ export const getCatalogueNavRubrics = async ({
   const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
   const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
   const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-  const companySlug = company?.slug || DEFAULT_COMPANY_SLUG;
+  const companySlug = domainCompany?.slug || DEFAULT_COMPANY_SLUG;
 
   // console.log('Before rubrics', new Date().getTime() - timeStart);
 
@@ -158,7 +155,7 @@ export const getCatalogueNavRubrics = async ({
     _id: SORT_DESC,
   };
 
-  const companyRubricsMatch = company ? { companyId: new ObjectId(company._id) } : {};
+  const companyRubricsMatch = domainCompany ? { companyId: new ObjectId(domainCompany._id) } : {};
 
   const attributesLimit = stickyNavVisibleAttributesCount
     ? [
@@ -565,20 +562,16 @@ export interface GetPageInitialDataCommonInterface {
   locale: string;
   city: string;
   companySlug?: string;
-  company?: CompanyInterface | null;
 }
 
 export interface GetSsrConfigsInterface extends GetPageInitialDataCommonInterface {
   db: Db;
-  role?: RoleInterface | null;
 }
 
 export const getSsrConfigs = async ({
   locale,
   city,
   companySlug,
-  company,
-  role,
   db,
 }: GetSsrConfigsInterface): Promise<SsrConfigsInterface> => {
   const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
@@ -880,17 +873,7 @@ export const getSsrConfigs = async ({
     slug: 'visibleCategoriesInNavDropdown',
   });
 
-  // from role
-  const showAdminUiInCatalogue = Boolean(role?.showAdminUiInCatalogue);
-  const isCompanyStaff = Boolean(role?.isCompanyStaff);
-  let editLinkBasePath = company ? `${ROUTE_CMS}/companies/${company?._id}` : ROUTE_CMS;
-  if (isCompanyStaff) {
-    editLinkBasePath = `${ROUTE_CONSOLE}/${company?._id}`;
-  }
-
   return {
-    editLinkBasePath,
-    showAdminUiInCatalogue,
     showReservationDate,
     mapMarkerDarkTheme,
     mapMarkerLightTheme,
@@ -971,16 +954,12 @@ export interface GetPageInitialDataInterface extends GetPageInitialDataCommonInt
   locale: string;
   city: string;
   companySlug?: string;
-  company?: CompanyInterface | null;
-  role?: RoleInterface | null;
 }
 
 export const getPageInitialData = async ({
   locale,
   city,
   companySlug,
-  company,
-  role,
 }: GetPageInitialDataInterface): Promise<PageInitialDataPayload> => {
   // console.log(' ');
   // console.log('=================== getPageInitialData =======================');
@@ -992,9 +971,7 @@ export const getPageInitialData = async ({
     db,
     city,
     locale,
-    role,
     companySlug,
-    company,
   });
   // console.log('After configs ', new Date().getTime() - timeStart);
 
@@ -1055,7 +1032,7 @@ export async function getPageInitialState({
 }: GetPageInitialStateInterface): Promise<GetPageInitialStatePayloadInterface> {
   const { locale, resolvedUrl } = context;
   const { db } = await getDatabase();
-  const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
+  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
   const citiesCollection = db.collection<CityModel>(COL_CITIES);
 
   const path = `${resolvedUrl}`;
@@ -1063,15 +1040,6 @@ export async function getPageInitialState({
   const subdomain = getSubdomain(host, { validHosts: ['localhost'] });
   const domain = getDomain(host, { validHosts: ['localhost'] });
   const sessionLocale = locale || DEFAULT_LOCALE;
-
-  // Session user
-  // const sessionUserStart = new Date().getTime();
-  const sessionUser = await getPageSessionUser({
-    context,
-    locale: sessionLocale,
-  });
-  // console.log(sessionUser);
-  // console.log('Session user ', new Date().getTime() - sessionUserStart);
 
   // Session city
   let currentCity: CityModel | null | undefined;
@@ -1085,31 +1053,24 @@ export async function getPageInitialState({
   }
   const sessionCity = currentCity?.slug || DEFAULT_CITY;
 
-  // Session company
-  let company: CompanyModel | null | undefined = null;
+  // Domain company
+  let domainCompany: CompanyInterface | null | undefined = null;
   if (domain && process.env.DEFAULT_DOMAIN && domain !== process.env.DEFAULT_DOMAIN) {
-    company = await companiesCollection.findOne({ domain });
+    domainCompany = await companiesCollection.findOne({ domain });
   }
   // For development
   // company = await companiesCollection.findOne({ slug: 'company_a' });
-  // company = await companiesCollection.findOne({ slug: 'womens_secretary_000003' });
 
   // Page initial data
-  const sessionUserCompany =
-    sessionUser && sessionUser.companies && sessionUser.companies[0]
-      ? sessionUser.companies[0]
-      : null;
   const rawInitialData = await getPageInitialData({
     locale: sessionLocale,
     city: sessionCity,
-    companySlug: company?.slug,
-    company: sessionUserCompany || company,
-    role: sessionUser?.role,
+    companySlug: domainCompany?.slug,
   });
   const initialData = castDbData(rawInitialData);
 
   // Set company slug as a cookie
-  nookies.set(context, COOKIE_COMPANY_SLUG, company ? company.slug : DEFAULT_COMPANY_SLUG, {
+  nookies.set(context, COOKIE_COMPANY_SLUG, domainCompany?.slug || DEFAULT_COMPANY_SLUG, {
     httpOnly: true,
     path: '/',
     sameSite: 'strict',
@@ -1160,11 +1121,10 @@ export async function getPageInitialState({
     domain,
     initialData,
     themeStyle,
-    company: castDbData(company),
-    companySlug: company ? company.slug : DEFAULT_COMPANY_SLUG,
+    domainCompany: castDbData(domainCompany),
+    companySlug: domainCompany ? domainCompany.slug : DEFAULT_COMPANY_SLUG,
     sessionCity,
     sessionLocale,
-    sessionUser,
     currentCity: currentCity
       ? {
           ...currentCity,
@@ -1223,11 +1183,10 @@ function checkPagePermission({
 
 interface GetCompanyAppInitialDataInterface {
   context: GetServerSidePropsContext;
-  checkCompany?: boolean;
 }
 
 interface GetCompanyAppInitialDataPropsInterface extends PagePropsInterface {
-  currentCompany: CompanyInterface;
+  pageCompany: CompanyInterface;
   sessionUser: UserInterface;
 }
 
@@ -1235,14 +1194,13 @@ interface GetCompanyAppInitialDataPayloadInterface {
   props?: GetCompanyAppInitialDataPropsInterface;
   redirect?: Redirect;
   notFound?: true;
+  sessionUser?: UserInterface | null;
 }
 
 export async function getConsoleInitialData({
   context,
-  checkCompany,
 }: GetCompanyAppInitialDataInterface): Promise<GetCompanyAppInitialDataPayloadInterface> {
   const {
-    sessionUser,
     pageUrls,
     currentCity,
     sessionCity,
@@ -1251,6 +1209,12 @@ export async function getConsoleInitialData({
     companySlug,
     themeStyle,
   } = await getPageInitialState({ context });
+
+  // Session user
+  const sessionUser = await getPageSessionUser({
+    context,
+    locale: sessionLocale,
+  });
 
   // Check if user authenticated
   if (!sessionUser) {
@@ -1264,22 +1228,29 @@ export async function getConsoleInitialData({
 
   // Check if page is allowed
   const isAllowed = checkPagePermission({
-    allowedAppNavItems: sessionUser.role?.allowedAppNavigation,
+    allowedAppNavItems: sessionUser?.me.role?.allowedAppNavigation,
     url: context.resolvedUrl,
     isCms: false,
   });
 
-  if (!isAllowed || !sessionUser.role || !sessionUser.role.isCompanyStaff) {
+  if (!isAllowed || !sessionUser?.me.role || !sessionUser?.me.role.isCompanyStaff) {
     return {
       notFound: true,
     };
   }
 
   // Get current company
-  const currentCompany = (sessionUser.companies || []).find((company) => {
+  const companies = sessionUser?.me.companies || [];
+  if (companies.length < 1) {
+    return {
+      notFound: true,
+    };
+  }
+
+  const pageCompany = companies.find((company) => {
     return company._id.toHexString() === `${context.query.companyId}`;
   });
-  if (!currentCompany && checkCompany) {
+  if (!pageCompany) {
     return {
       redirect: {
         permanent: false,
@@ -1296,7 +1267,7 @@ export async function getConsoleInitialData({
       sessionCity,
       themeStyle,
       sessionUser: castDbData(sessionUser),
-      currentCompany: currentCompany ? castDbData(currentCompany) : null,
+      pageCompany: castDbData(pageCompany),
       sessionLocale,
       pageUrls,
     },
@@ -1307,6 +1278,10 @@ interface GetAppInitialDataInterface {
   context: GetServerSidePropsContext;
 }
 
+interface GetAppInitialDataPropsInterface extends PagePropsInterface {
+  sessionUser?: UserInterface | null;
+}
+
 interface GetAppInitialDataPayloadInterface<T> {
   props?: T;
   redirect?: Redirect;
@@ -1315,9 +1290,10 @@ interface GetAppInitialDataPayloadInterface<T> {
 
 export async function getAppInitialData({
   context,
-}: GetAppInitialDataInterface): Promise<GetAppInitialDataPayloadInterface<PagePropsInterface>> {
+}: GetAppInitialDataInterface): Promise<
+  GetAppInitialDataPayloadInterface<GetAppInitialDataPropsInterface>
+> {
   const {
-    sessionUser,
     pageUrls,
     currentCity,
     sessionCity,
@@ -1326,6 +1302,12 @@ export async function getAppInitialData({
     companySlug,
     themeStyle,
   } = await getPageInitialState({ context });
+
+  // Session user
+  const sessionUser = await getPageSessionUser({
+    context,
+    locale: sessionLocale,
+  });
 
   // Check if user authenticated
   if (!sessionUser) {
@@ -1339,17 +1321,17 @@ export async function getAppInitialData({
 
   // Check if page is allowed
   const isAllowed = checkPagePermission({
-    allowedAppNavItems: sessionUser.role?.allowedAppNavigation,
+    allowedAppNavItems: sessionUser?.me.role?.allowedAppNavigation,
     url: context.resolvedUrl,
     isCms: true,
   });
-  if (!isAllowed && sessionUser.role?.slug !== ROLE_SLUG_ADMIN) {
+  if (!isAllowed && sessionUser?.me.role?.slug !== ROLE_SLUG_ADMIN) {
     return {
       notFound: true,
     };
   }
 
-  if (!sessionUser.role?.isStaff) {
+  if (!sessionUser?.me.role?.isStaff) {
     return {
       notFound: true,
     };
@@ -1494,8 +1476,7 @@ export async function getSiteInitialData({
     sessionCity,
     sessionLocale,
     initialData,
-    company,
-    sessionUser,
+    domainCompany,
     companySlug,
     themeStyle,
   } = await getPageInitialState({ context });
@@ -1504,7 +1485,7 @@ export async function getSiteInitialData({
   const rawNavRubrics = await getCatalogueNavRubrics({
     locale: sessionLocale,
     city: sessionCity,
-    company,
+    domainCompany,
     stickyNavVisibleCategoriesCount: initialData.configs.stickyNavVisibleCategoriesCount,
     stickyNavVisibleAttributesCount: initialData.configs.stickyNavVisibleAttributesCount,
     stickyNavVisibleOptionsCount: initialData.configs.stickyNavVisibleOptionsCount,
@@ -1529,9 +1510,8 @@ export async function getSiteInitialData({
       currentCity,
       sessionCity,
       sessionLocale,
-      company,
+      domainCompany,
       pageUrls,
-      sessionUser: castDbData(sessionUser),
     },
   };
 }

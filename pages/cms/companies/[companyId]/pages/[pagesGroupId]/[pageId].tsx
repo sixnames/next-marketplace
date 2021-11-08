@@ -15,12 +15,12 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
 export interface PageDetailsPageInterface extends PagePropsInterface, PageDetailsInterface {
-  currentCompany: CompanyInterface;
+  pageCompany: CompanyInterface;
 }
 
 const PageDetailsPage: NextPage<PageDetailsPageInterface> = ({
   pageUrls,
-  currentCompany,
+  pageCompany,
   page,
   cities,
 }) => {
@@ -32,23 +32,23 @@ const PageDetailsPage: NextPage<PageDetailsPageInterface> = ({
         href: `${ROUTE_CMS}/companies`,
       },
       {
-        name: currentCompany.name,
-        href: `${ROUTE_CMS}/companies/${currentCompany._id}`,
+        name: pageCompany.name,
+        href: `${ROUTE_CMS}/companies/${pageCompany._id}`,
       },
       {
         name: 'Группы страниц',
-        href: `${ROUTE_CMS}/companies/${currentCompany._id}/pages`,
+        href: `${ROUTE_CMS}/companies/${pageCompany._id}/pages`,
       },
       {
         name: `${page.pagesGroup?.name}`,
-        href: `${ROUTE_CMS}/companies/${currentCompany._id}/pages/${page.pagesGroup?._id}`,
+        href: `${ROUTE_CMS}/companies/${pageCompany._id}/pages/${page.pagesGroup?._id}`,
       },
     ],
   };
 
   return (
     <CmsLayout title={`${page.name}`} pageUrls={pageUrls}>
-      <CmsCompanyLayout company={currentCompany} breadcrumbs={breadcrumbs}>
+      <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
         <Inner>
           <PageDetails page={page} cities={cities} />
         </Inner>
@@ -96,7 +96,7 @@ export const getServerSideProps = async (
       ...props,
       page: castDbData(getPageSsrResult.page),
       cities: castDbData(getPageSsrResult.cities),
-      currentCompany: castDbData(company),
+      pageCompany: castDbData(company),
     },
   };
 };

@@ -19,13 +19,13 @@ const pageTitle = 'Группы страниц';
 interface PageGroupsPageInterface
   extends PagePropsInterface,
     Omit<PageGroupsListInterface, 'basePath' | 'pageTitle'> {
-  currentCompany: CompanyInterface;
+  pageCompany: CompanyInterface;
 }
 
 const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({
   pageUrls,
   pagesGroups,
-  currentCompany,
+  pageCompany,
 }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Группы страниц',
@@ -35,19 +35,19 @@ const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({
         href: `${ROUTE_CMS}/companies`,
       },
       {
-        name: currentCompany.name,
-        href: `${ROUTE_CMS}/companies/${currentCompany._id}`,
+        name: pageCompany.name,
+        href: `${ROUTE_CMS}/companies/${pageCompany._id}`,
       },
     ],
   };
 
   return (
     <CmsLayout title={pageTitle} pageUrls={pageUrls}>
-      <CmsCompanyLayout company={currentCompany} breadcrumbs={breadcrumbs}>
+      <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
         <Inner>
           <PageGroupsList
-            companySlug={currentCompany.slug}
-            basePath={`${ROUTE_CMS}/companies/${currentCompany._id}/pages`}
+            companySlug={pageCompany.slug}
+            basePath={`${ROUTE_CMS}/companies/${pageCompany._id}/pages`}
             pagesGroups={pagesGroups}
           />
         </Inner>
@@ -87,7 +87,7 @@ export const getServerSideProps = async (
     props: {
       ...props,
       pagesGroups: castDbData(pagesGroups),
-      currentCompany: castDbData(company),
+      pageCompany: castDbData(company),
     },
   };
 };

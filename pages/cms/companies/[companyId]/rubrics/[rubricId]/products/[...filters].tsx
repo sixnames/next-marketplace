@@ -123,7 +123,7 @@ export const getServerSideProps = async (
       ...castedPayload,
       itemPath,
       companySlug,
-      currentCompany: castDbData(companyResult),
+      pageCompany: castDbData(companyResult),
       routeBasePath: `${ROUTE_CMS}/companies/${companyResult._id}`,
     },
   };

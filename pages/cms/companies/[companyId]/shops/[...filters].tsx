@@ -451,7 +451,7 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      currentCompany: castDbData(companyResult),
+      pageCompany: castDbData(companyResult),
       itemPath,
       clearSlug,
       page,

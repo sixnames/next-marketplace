@@ -34,9 +34,9 @@ const ConfigConsumer: React.FC<ConfigConsumerInterface> = ({
 interface ConfigPageInterface extends PagePropsInterface, ConfigConsumerInterface {}
 
 const Config: NextPage<ConfigPageInterface> = (props) => {
-  const { pageUrls, currentCompany } = props;
+  const { pageUrls, pageCompany } = props;
   return (
-    <ConsoleLayout title={'Настройки сайта'} pageUrls={pageUrls} company={currentCompany}>
+    <ConsoleLayout title={'Настройки сайта'} pageUrls={pageUrls} company={pageCompany}>
       <ConfigConsumer {...props} />
     </ConsoleLayout>
   );
@@ -58,7 +58,7 @@ export const getServerSideProps = async (
     group: CONFIG_GROUP_ANALYTICS,
   });
 
-  if (!configsPayload || !props.currentCompany) {
+  if (!configsPayload || !props.pageCompany) {
     return {
       notFound: true,
     };
@@ -69,7 +69,7 @@ export const getServerSideProps = async (
       ...props,
       assetConfigs: castDbData(configsPayload.assetConfigs),
       normalConfigs: castDbData(configsPayload.normalConfigs),
-      currentCompany: props.currentCompany,
+      pageCompany: props.pageCompany,
     },
   };
 };

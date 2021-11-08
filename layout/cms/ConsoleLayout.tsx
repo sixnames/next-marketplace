@@ -7,7 +7,8 @@ import ThemeTrigger from 'components/ThemeTrigger';
 import { ROUTE_CONSOLE } from 'config/common';
 import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
-import { useUserContext } from 'context/userContext';
+import { UserContextProvider, useUserContext } from 'context/userContext';
+import { SessionUserPayloadInterface } from 'db/dao/user/getPageSessionUser';
 import { CompanyInterface } from 'db/uiInterfaces';
 import useCompact from 'hooks/useCompact';
 import CmsNav from 'layout/cms/CmsNav';
@@ -15,16 +16,21 @@ import Meta, { PageUrlsInterface } from 'layout/Meta';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 
-interface CmsWrapperInterface {
+interface ConsoleLayoutConsumerInterface {
   title?: string;
   pageUrls: PageUrlsInterface;
-  company?: CompanyInterface;
+  pageCompany?: CompanyInterface | null;
 }
 
 const narrowContentClass = 'lg:pl-[250px]';
 const wideContentClass = 'lg:pl-[60px]';
 
-const CmsWrapper: React.FC<CmsWrapperInterface> = ({ title, company, pageUrls, children }) => {
+const ConsoleLayoutConsumer: React.FC<ConsoleLayoutConsumerInterface> = ({
+  title,
+  pageCompany,
+  pageUrls,
+  children,
+}) => {
   const { isMobile } = useAppContext();
   const compact = useCompact(isMobile);
   const router = useRouter();
@@ -37,8 +43,8 @@ const CmsWrapper: React.FC<CmsWrapperInterface> = ({ title, company, pageUrls, c
     return <Spinner />;
   }
 
-  const navItems = company ? me.role?.appNavigation : me.role?.cmsNavigation;
-  const basePath = company ? `${ROUTE_CONSOLE}/${company._id}` : '';
+  const navItems = pageCompany ? me.role?.appNavigation : me.role?.cmsNavigation;
+  const basePath = pageCompany ? `${ROUTE_CONSOLE}/${pageCompany._id}` : '';
 
   // Metrics
   const yaMetrica = configs.yaMetrica;
@@ -87,7 +93,7 @@ const CmsWrapper: React.FC<CmsWrapperInterface> = ({ title, company, pageUrls, c
       <CmsNav
         isMobile={isMobile}
         compact={compact}
-        company={company}
+        pageCompany={pageCompany}
         basePath={basePath}
         navItems={navItems || []}
       />
@@ -98,4 +104,16 @@ const CmsWrapper: React.FC<CmsWrapperInterface> = ({ title, company, pageUrls, c
   );
 };
 
-export default CmsWrapper;
+export interface ConsoleLayoutInterface extends ConsoleLayoutConsumerInterface {
+  sessionUser: SessionUserPayloadInterface;
+}
+
+export const ConsoleLayout: React.FC<ConsoleLayoutInterface> = ({ sessionUser, ...props }) => {
+  return (
+    <UserContextProvider sessionUser={sessionUser?.me}>
+      <ConsoleLayoutConsumer {...props} />
+    </UserContextProvider>
+  );
+};
+
+export default ConsoleLayout;

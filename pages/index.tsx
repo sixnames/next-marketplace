@@ -410,12 +410,12 @@ export async function getServerSideProps(
       sessionCity,
       sessionLocale,
       initialData,
-      company,
+      domainCompany,
       footerPageGroups,
       headerPageGroups,
     } = props;
 
-    const companyRubricsMatch = company ? { companyId: new ObjectId(company._id) } : {};
+    const companyRubricsMatch = domainCompany ? { companyId: new ObjectId(domainCompany._id) } : {};
     const shopProductsAggregation = await shopProductsCollection
       .aggregate<ShopProductInterface>([
         {

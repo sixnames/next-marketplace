@@ -87,10 +87,10 @@ const CompanyAssetsConsumer: React.FC<CompanyAssetsConsumerInterface> = ({ curre
 
 interface CompanyAssetsPageInterface extends PagePropsInterface, CompanyAssetsConsumerInterface {}
 
-const CompanyAssetsPage: NextPage<CompanyAssetsPageInterface> = ({ currentCompany, ...props }) => {
+const CompanyAssetsPage: NextPage<CompanyAssetsPageInterface> = ({ pageCompany, ...props }) => {
   return (
-    <ConsoleLayout {...props} company={currentCompany}>
-      <CompanyAssetsConsumer currentCompany={currentCompany} />
+    <ConsoleLayout {...props} company={pageCompany}>
+      <CompanyAssetsConsumer currentCompany={pageCompany} />
     </ConsoleLayout>
   );
 };
@@ -128,7 +128,7 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      currentCompany: castDbData(companyResult),
+      pageCompany: castDbData(companyResult),
     },
   };
 };

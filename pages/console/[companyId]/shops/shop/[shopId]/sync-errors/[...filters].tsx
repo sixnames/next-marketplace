@@ -21,7 +21,7 @@ const CompanyShopSyncErrors: NextPage<CompanyShopSyncErrorsInterface> = ({
   pageUrls,
   shop,
   notSyncedProducts,
-  currentCompany,
+  pageCompany,
   companySlug,
 }) => {
   const companyBasePath = `${ROUTE_CONSOLE}/${shop.companyId}/shops`;
@@ -40,7 +40,7 @@ const CompanyShopSyncErrors: NextPage<CompanyShopSyncErrorsInterface> = ({
   };
 
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={currentCompany}>
+    <ConsoleLayout pageUrls={pageUrls} company={pageCompany}>
       <ShopSyncErrors
         showControls={false}
         showShopName={false}

@@ -63,12 +63,12 @@ interface BlogPostPageInterface extends PagePropsInterface, BlogPostConsumerInte
 const BlogPostPage: React.FC<BlogPostPageInterface> = ({
   post,
   pageUrls,
-  currentCompany,
+  pageCompany,
   attributes,
 }) => {
   return (
     <CmsLayout pageUrls={pageUrls} title={pageTitle}>
-      <BlogPostConsumer post={post} attributes={attributes} currentCompany={currentCompany} />
+      <BlogPostConsumer post={post} attributes={attributes} currentCompany={pageCompany} />
     </CmsLayout>
   );
 };
@@ -116,7 +116,7 @@ export const getServerSideProps = async (
       ...props,
       post: castDbData(payload.post),
       attributes: castDbData(payload.attributes),
-      currentCompany: castDbData(companyResult),
+      pageCompany: castDbData(companyResult),
     },
   };
 };

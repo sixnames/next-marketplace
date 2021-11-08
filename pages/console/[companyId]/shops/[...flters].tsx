@@ -196,10 +196,10 @@ const CompanyShopsPageConsumer: React.FC<CompanyShopsPageConsumerInterface> = ({
 interface CompanyShopsPageInterface extends PagePropsInterface, CompanyShopsPageConsumerInterface {}
 
 const CompanyShopsPage: NextPage<CompanyShopsPageInterface> = (props) => {
-  const { pageUrls, currentCompany } = props;
+  const { pageUrls, pageCompany } = props;
 
   return (
-    <ConsoleLayout title={'Магазины компании'} pageUrls={pageUrls} company={currentCompany}>
+    <ConsoleLayout title={'Магазины компании'} pageUrls={pageUrls} company={pageCompany}>
       <CompanyShopsPageConsumer {...props} />
     </ConsoleLayout>
   );
@@ -400,7 +400,7 @@ export const getServerSideProps = async (
     };
   });
 
-  if (!props.currentCompany) {
+  if (!props.pageCompany) {
     return {
       notFound: true,
     };
@@ -412,7 +412,7 @@ export const getServerSideProps = async (
       itemPath,
       clearSlug,
       page,
-      currentCompany: props.currentCompany,
+      pageCompany: props.pageCompany,
       totalPages: noNaN(shopsAggregation.totalPages),
       totalDocs: noNaN(shopsAggregation.totalDocs),
       docs: castDbData(docs),

@@ -4,6 +4,7 @@ import LanguageTrigger from 'components/LanguageTrigger';
 import ThemeTrigger from 'components/ThemeTrigger';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { useLocaleContext } from 'context/localeContext';
+import { useSiteUserContext } from 'context/userSiteUserContext';
 import { CompanyInterface, PagesGroupInterface } from 'db/uiInterfaces';
 import useSignOut from 'hooks/useSignOut';
 import LayoutCard from 'layout/LayoutCard';
@@ -19,7 +20,6 @@ import Icon from 'components/Icon';
 import Inner from 'components/Inner';
 import { useSiteContext } from 'context/siteContext';
 import HeaderSearch from 'layout/header/HeaderSearch';
-import { useUserContext } from 'context/userContext';
 import CounterSticker from 'components/CounterSticker';
 import CartDropdown from 'layout/header/CartDropdown';
 import { get } from 'lodash';
@@ -46,9 +46,9 @@ interface HeaderProfileLinkInterface {
 
 const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => {
   const signOut = useSignOut();
-  const { me } = useUserContext();
+  const sessionUser = useSiteUserContext();
 
-  if (me) {
+  if (sessionUser) {
     return (
       <Popover className='relative flex items-center'>
         {() => {
@@ -67,7 +67,7 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
               <Popover.Panel className='absolute z-10 top-full right-0'>
                 <LayoutCard className='w-52 pb-4'>
                   <div className='pt-6 pb-6 pl-[var(--reachMenuItemHorizontalPadding)] pr-[var(--reachMenuItemHorizontalPadding)]'>
-                    <div className='font-medium text-sm'>{me?.shortName}</div>
+                    <div className='font-medium text-sm'>{sessionUser.me.shortName}</div>
                   </div>
 
                   <ul className='divide-y divide-gray-300 dark:divide-gray-600'>
@@ -81,7 +81,8 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
                       </Link>
                     </li>
 
-                    {me?.role?.isStaff && (me?.role?.cmsNavigation || []).length > 0 ? (
+                    {sessionUser.me.role?.isStaff &&
+                    (sessionUser.me.role?.cmsNavigation || []).length > 0 ? (
                       <li>
                         <Link
                           testId={`${testId}-user-dropdown-cms-link`}
@@ -93,7 +94,8 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
                       </li>
                     ) : null}
 
-                    {me?.role?.isCompanyStaff && (me?.role?.appNavigation || []).length > 0 ? (
+                    {sessionUser.me.role?.isCompanyStaff &&
+                    (sessionUser.me.role?.appNavigation || []).length > 0 ? (
                       <li>
                         <Link
                           testId={`${testId}-user-dropdown-app-link`}

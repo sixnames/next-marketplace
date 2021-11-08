@@ -27,7 +27,7 @@ interface CompanyShopAssetsInterface
 
 const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({
   pageUrls,
-  currentCompany,
+  pageCompany,
   shop,
 }) => {
   const companyBasePath = `${ROUTE_CONSOLE}/${shop.companyId}/shops`;
@@ -47,7 +47,7 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({
   };
 
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={currentCompany}>
+    <ConsoleLayout pageUrls={pageUrls} company={pageCompany}>
       <ShopOrders breadcrumbs={breadcrumbs} basePath={`${companyBasePath}/shop`} shop={shop} />
     </ConsoleLayout>
   );

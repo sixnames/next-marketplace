@@ -1,10 +1,16 @@
-import ConsoleRubricProductDetails from 'components/console/ConsoleRubricProductDetails';
+import ConsoleRubricProductCategories from 'components/console/ConsoleRubricProductCategories';
 import { ROUTE_CMS } from 'config/common';
-import { COL_COMPANIES } from 'db/collectionNames';
+import { COL_CATEGORIES, COL_COMPANIES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { CompanyInterface, ProductInterface } from 'db/uiInterfaces';
+import {
+  CategoryInterface,
+  CompanyInterface,
+  ProductCategoryInterface,
+  ProductInterface,
+} from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsProductLayout from 'layout/cms/CmsProductLayout';
+import { getTreeFromList } from 'lib/optionsUtils';
 import { getCmsProduct } from 'lib/productUtils';
 import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
@@ -13,19 +19,21 @@ import CmsLayout from 'layout/cms/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
-interface ProductDetailsInterface {
+interface ProductCategoriesInterface {
   product: ProductInterface;
+  categoriesTree: ProductCategoryInterface[];
   currentCompany?: CompanyInterface | null;
   routeBasePath: string;
 }
 
-const ProductDetails: React.FC<ProductDetailsInterface> = ({
+const ProductCategories: React.FC<ProductCategoriesInterface> = ({
   product,
   routeBasePath,
   currentCompany,
+  categoriesTree,
 }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: `${product.cardTitle}`,
+    currentPageName: 'Категории',
     config: [
       {
         name: 'Компании',
@@ -47,22 +55,26 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
         name: `Товары`,
         href: `${routeBasePath}/rubrics/${product.rubric?._id}/products/${product.rubric?._id}`,
       },
+      {
+        name: `${product.snippetTitle}`,
+        href: `${routeBasePath}/rubrics/${product.rubric?._id}/products/product/${product._id}`,
+      },
     ],
   };
 
   return (
-    <CmsProductLayout product={product} basePath={routeBasePath} breadcrumbs={breadcrumbs}>
-      <ConsoleRubricProductDetails product={product} companySlug={`${currentCompany?.slug}`} />
+    <CmsProductLayout product={product} breadcrumbs={breadcrumbs} basePath={routeBasePath}>
+      <ConsoleRubricProductCategories product={product} categoriesTree={categoriesTree} />
     </CmsProductLayout>
   );
 };
 
-interface ProductPageInterface extends PagePropsInterface, ProductDetailsInterface {}
+interface ProductPageInterface extends PagePropsInterface, ProductCategoriesInterface {}
 
 const Product: NextPage<ProductPageInterface> = ({ pageUrls, ...props }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <ProductDetails {...props} />
+      <ProductCategories {...props} />
     </CmsLayout>
   );
 };
@@ -73,9 +85,9 @@ export const getServerSideProps = async (
   const { query } = context;
   const { productId, rubricId } = query;
   const { db } = await getDatabase();
+  const categoriesCollection = db.collection<CategoryInterface>(COL_CATEGORIES);
   const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
   const { props } = await getAppInitialData({ context });
-
   if (!props || !productId || !rubricId || !query.companyId) {
     return {
       notFound: true,
@@ -113,10 +125,32 @@ export const getServerSideProps = async (
     };
   }
 
+  const { product } = payload;
+
+  // Get rubric categories
+  const initialCategories = await categoriesCollection
+    .find({
+      rubricId: product.rubricId,
+    })
+    .toArray();
+  const categories: ProductCategoryInterface[] = initialCategories.map((category) => {
+    return {
+      ...category,
+      categories: [],
+      selected: product.selectedOptionsSlugs.some((slug) => slug === category.slug),
+    };
+  });
+
+  const categoriesTree = getTreeFromList<ProductCategoryInterface>({
+    list: categories,
+    childrenFieldName: 'categories',
+  });
+
   return {
     props: {
       ...props,
-      product: castDbData(payload.product),
+      product: castDbData(product),
+      categoriesTree: castDbData(categoriesTree),
       currentCompany: castDbData(companyResult),
       routeBasePath: `${ROUTE_CMS}/companies/${companyResult._id}`,
     },

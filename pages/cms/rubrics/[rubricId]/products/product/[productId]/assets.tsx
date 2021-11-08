@@ -2,7 +2,7 @@ import AssetsManager from 'components/AssetsManager';
 import WpDropZone from 'components/FormElements/Upload/WpDropZone';
 import Inner from 'components/Inner';
 import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
-import { ProductInterface, RubricInterface } from 'db/uiInterfaces';
+import { ProductInterface } from 'db/uiInterfaces';
 import {
   useDeleteProductAsset,
   useUpdateProductAssetIndex,
@@ -21,10 +21,9 @@ import * as React from 'react';
 
 interface ProductAssetsInterface {
   product: ProductInterface;
-  rubric: RubricInterface;
 }
 
-const ProductAssets: React.FC<ProductAssetsInterface> = ({ product, rubric }) => {
+const ProductAssets: React.FC<ProductAssetsInterface> = ({ product }) => {
   const router = useRouter();
   const { showLoading, hideLoading, showErrorNotification } = useMutationCallbacks({
     reload: true,
@@ -41,16 +40,16 @@ const ProductAssets: React.FC<ProductAssetsInterface> = ({ product, rubric }) =>
         href: `${ROUTE_CMS}/rubrics`,
       },
       {
-        name: `${rubric.name}`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}`,
+        name: `${product.rubric?.name}`,
+        href: `${ROUTE_CMS}/rubrics/${product.rubric?._id}`,
       },
       {
         name: `Товары`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}/products/${rubric._id}`,
+        href: `${ROUTE_CMS}/rubrics/${product.rubric?._id}/products/${product.rubric?._id}`,
       },
       {
         name: `${product.cardTitle}`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}/products/product/${product._id}`,
+        href: `${ROUTE_CMS}/rubrics/${product.rubric?._id}/products/product/${product._id}`,
       },
     ],
   };
@@ -117,10 +116,10 @@ const ProductAssets: React.FC<ProductAssetsInterface> = ({ product, rubric }) =>
 
 interface ProductPageInterface extends PagePropsInterface, ProductAssetsInterface {}
 
-const Product: NextPage<ProductPageInterface> = ({ pageUrls, product, rubric }) => {
+const Product: NextPage<ProductPageInterface> = ({ pageUrls, ...props }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <ProductAssets product={product} rubric={rubric} />
+      <ProductAssets {...props} />
     </CmsLayout>
   );
 };
@@ -153,7 +152,6 @@ export const getServerSideProps = async (
     props: {
       ...props,
       product: castDbData(payload.product),
-      rubric: castDbData(payload.rubric),
     },
   };
 };

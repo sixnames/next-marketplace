@@ -18,7 +18,6 @@ import {
   BrandInterface,
   ManufacturerInterface,
   ProductInterface,
-  RubricInterface,
 } from 'db/uiInterfaces';
 import {
   useUpdateProductBrandCollectionMutation,
@@ -41,7 +40,6 @@ interface ProductBrandsInterface {
   brand?: BrandInterface | null;
   brandCollection?: BrandCollectionInterface | null;
   manufacturer?: ManufacturerInterface | null;
-  rubric: RubricInterface;
 }
 
 const emptyValue = 'Не назначено';
@@ -51,7 +49,6 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
   brand,
   brandCollection,
   manufacturer,
-  rubric,
 }) => {
   const { onErrorCallback, onCompleteCallback, showLoading, showErrorNotification, showModal } =
     useMutationCallbacks({
@@ -82,16 +79,16 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
         href: `${ROUTE_CMS}/rubrics`,
       },
       {
-        name: `${rubric.name}`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}`,
+        name: `${product.rubric?.name}`,
+        href: `${ROUTE_CMS}/rubrics/${product.rubric?._id}`,
       },
       {
         name: `Товары`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}/products/${rubric._id}`,
+        href: `${ROUTE_CMS}/rubrics/${product.rubric?._id}/products/${product.rubric?._id}`,
       },
       {
         name: `${product.cardTitle}`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}/products/product/${product._id}`,
+        href: `${ROUTE_CMS}/rubrics/${product.rubric?._id}/products/product/${product._id}`,
       },
     ],
   };
@@ -276,23 +273,10 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
 
 interface ProductPageInterface extends PagePropsInterface, ProductBrandsInterface {}
 
-const Product: NextPage<ProductPageInterface> = ({
-  pageUrls,
-  product,
-  brand,
-  brandCollection,
-  manufacturer,
-  rubric,
-}) => {
+const Product: NextPage<ProductPageInterface> = ({ pageUrls, ...props }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <ProductBrands
-        rubric={rubric}
-        product={product}
-        brand={brand}
-        brandCollection={brandCollection}
-        manufacturer={manufacturer}
-      />
+      <ProductBrands {...props} />
     </CmsLayout>
   );
 };
@@ -324,7 +308,7 @@ export const getServerSideProps = async (
       notFound: true,
     };
   }
-  const { product, rubric } = payload;
+  const { product } = payload;
 
   const manufacturerEntity = product.manufacturerSlug
     ? await manufacturersCollection.findOne(
@@ -394,7 +378,6 @@ export const getServerSideProps = async (
       brand: castDbData(brand),
       brandCollection: castDbData(brandCollection),
       manufacturer: castDbData(manufacturer),
-      rubric: castDbData(rubric),
     },
   };
 };

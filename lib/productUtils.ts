@@ -44,7 +44,6 @@ interface GetCmsProductInterface {
 
 interface GetCmsProductPayloadInterface {
   product: ProductInterface;
-  rubric: RubricInterface;
   categoriesList: CategoryInterface[];
 }
 
@@ -238,6 +237,7 @@ export async function getCmsProduct({
           seo,
         }
       : null,
+    rubric: castedRubric,
     cardTitle,
     snippetTitle,
     connections,
@@ -246,7 +246,6 @@ export async function getCmsProduct({
 
   return {
     product,
-    rubric: castedRubric,
     categoriesList: initialProduct.categories || [],
   };
 }

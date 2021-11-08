@@ -12,7 +12,7 @@ import { useConfigContext } from 'context/configContext';
 import { COL_PRODUCT_CARD_CONTENTS } from 'db/collectionNames';
 import { ProductCardContentModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { ProductInterface, RubricInterface } from 'db/uiInterfaces';
+import { ProductInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import {
   UpdateProductCardContentInput,
@@ -33,15 +33,10 @@ import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
 interface ProductAttributesInterface {
   product: ProductInterface;
-  rubric: RubricInterface;
   cardContent: ProductCardContentModel;
 }
 
-const ProductAttributes: React.FC<ProductAttributesInterface> = ({
-  product,
-  rubric,
-  cardContent,
-}) => {
+const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product, cardContent }) => {
   const { cities } = useConfigContext();
   const { onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
     reload: true,
@@ -59,16 +54,16 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({
         href: `${ROUTE_CMS}/rubrics`,
       },
       {
-        name: `${rubric.name}`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}`,
+        name: `${product.rubric?.name}`,
+        href: `${ROUTE_CMS}/rubrics/${product.rubric?._id}`,
       },
       {
         name: `Товары`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}/products/${rubric._id}`,
+        href: `${ROUTE_CMS}/rubrics/${product.rubric?._id}/products/${product.rubric?._id}`,
       },
       {
         name: `${product.cardTitle}`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}/products/product/${product._id}`,
+        href: `${ROUTE_CMS}/rubrics/${product.rubric?._id}/products/product/${product._id}`,
       },
     ],
   };
@@ -163,10 +158,10 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({
 
 interface ProductPageInterface extends PagePropsInterface, ProductAttributesInterface {}
 
-const Product: NextPage<ProductPageInterface> = ({ pageUrls, cardContent, product, rubric }) => {
+const Product: NextPage<ProductPageInterface> = ({ pageUrls, ...props }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <ProductAttributes product={product} rubric={rubric} cardContent={cardContent} />
+      <ProductAttributes {...props} />
     </CmsLayout>
   );
 };
@@ -198,7 +193,7 @@ export const getServerSideProps = async (
     };
   }
 
-  const { product, rubric } = payload;
+  const { product } = payload;
 
   let cardContent = await productCardContentsCollection.findOne({
     productId: product._id,
@@ -222,7 +217,6 @@ export const getServerSideProps = async (
     props: {
       ...props,
       product: castDbData(product),
-      rubric: castDbData(rubric),
       cardContent: castDbData(cardContent),
     },
   };

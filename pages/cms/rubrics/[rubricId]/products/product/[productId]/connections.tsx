@@ -15,7 +15,6 @@ import {
   ProductConnectionInterface,
   ProductConnectionItemInterface,
   ProductInterface,
-  RubricInterface,
 } from 'db/uiInterfaces';
 import {
   useAddProductToConnectionMutation,
@@ -228,10 +227,9 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
 
 interface ProductConnectionsPropsInterface {
   product: ProductInterface;
-  rubric: RubricInterface;
 }
 
-const ProductConnections: React.FC<ProductConnectionsPropsInterface> = ({ product, rubric }) => {
+const ProductConnections: React.FC<ProductConnectionsPropsInterface> = ({ product }) => {
   const { onCompleteCallback, onErrorCallback, showLoading, showModal } = useMutationCallbacks({
     withModal: true,
     reload: true,
@@ -249,16 +247,16 @@ const ProductConnections: React.FC<ProductConnectionsPropsInterface> = ({ produc
         href: `${ROUTE_CMS}/rubrics`,
       },
       {
-        name: `${rubric.name}`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}`,
+        name: `${product.rubric?.name}`,
+        href: `${ROUTE_CMS}/rubrics/${product.rubric?._id}`,
       },
       {
         name: `Товары`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}/products/${rubric._id}`,
+        href: `${ROUTE_CMS}/rubrics/${product.rubric?._id}/products/${product.rubric?._id}`,
       },
       {
         name: `${product.cardTitle}`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}/products/product/${product._id}`,
+        href: `${ROUTE_CMS}/rubrics/${product.rubric?._id}/products/product/${product._id}`,
       },
     ],
   };
@@ -310,10 +308,10 @@ const ProductConnections: React.FC<ProductConnectionsPropsInterface> = ({ produc
 
 interface ProductPageInterface extends PagePropsInterface, ProductConnectionsPropsInterface {}
 
-const Product: NextPage<ProductPageInterface> = ({ pageUrls, product, rubric }) => {
+const Product: NextPage<ProductPageInterface> = ({ pageUrls, ...props }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <ProductConnections product={product} rubric={rubric} />
+      <ProductConnections {...props} />
     </CmsLayout>
   );
 };
@@ -342,13 +340,12 @@ export const getServerSideProps = async (
     };
   }
 
-  const { product, rubric } = payload;
+  const { product } = payload;
 
   return {
     props: {
       ...props,
       product: castDbData(product),
-      rubric: castDbData(rubric),
     },
   };
 };

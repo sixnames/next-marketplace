@@ -10,7 +10,7 @@ import WpImage from 'components/WpImage';
 import { DEFAULT_CITY } from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import { ProductCardContentModel } from 'db/dbModels';
-import { CompanyInterface, ProductInterface, RubricInterface } from 'db/uiInterfaces';
+import { CompanyInterface, ProductInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import {
   UpdateProductCardContentInput,
@@ -26,7 +26,6 @@ import { updateProductSchema } from 'validation/productSchema';
 
 export interface CompanyProductDetailsInterface {
   product: ProductInterface;
-  rubric: RubricInterface;
   currentCompany?: CompanyInterface | null;
   routeBasePath: string;
   cardContent: ProductCardContentModel;

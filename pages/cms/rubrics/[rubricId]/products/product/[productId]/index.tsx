@@ -1,6 +1,6 @@
 import ConsoleRubricProductDetails from 'components/console/ConsoleRubricProductDetails';
 import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
-import { ProductInterface, RubricInterface } from 'db/uiInterfaces';
+import { ProductInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsProductLayout from 'layout/cms/CmsProductLayout';
 import { getCmsProduct } from 'lib/productUtils';
@@ -12,11 +12,10 @@ import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
 interface ProductDetailsInterface {
   product: ProductInterface;
-  rubric: RubricInterface;
   companySlug: string;
 }
 
-const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, companySlug, rubric }) => {
+const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, companySlug }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${product.cardTitle}`,
     config: [
@@ -25,12 +24,12 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, companySlu
         href: `${ROUTE_CMS}/rubrics`,
       },
       {
-        name: `${rubric.name}`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}`,
+        name: `${product.rubric?.name}`,
+        href: `${ROUTE_CMS}/rubrics/${product.rubric?._id}`,
       },
       {
         name: `Товары`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}/products/${rubric._id}`,
+        href: `${ROUTE_CMS}/rubrics/${product.rubric?._id}/products/${product.rubric?._id}`,
       },
     ],
   };
@@ -44,10 +43,10 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, companySlu
 
 interface ProductPageInterface extends PagePropsInterface, ProductDetailsInterface {}
 
-const Product: NextPage<ProductPageInterface> = ({ pageUrls, product, companySlug, rubric }) => {
+const Product: NextPage<ProductPageInterface> = ({ pageUrls, ...props }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <ProductDetails product={product} rubric={rubric} companySlug={companySlug} />
+      <ProductDetails {...props} />
     </CmsLayout>
   );
 };
@@ -81,7 +80,6 @@ export const getServerSideProps = async (
     props: {
       ...props,
       product: castDbData(payload.product),
-      rubric: castDbData(payload.rubric),
       companySlug: DEFAULT_COMPANY_SLUG,
     },
   };

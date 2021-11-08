@@ -1,16 +1,8 @@
-import Checkbox from 'components/FormElements/Checkbox/Checkbox';
-import Inner from 'components/Inner';
-import RequestError from 'components/RequestError';
-import WpTooltip from 'components/WpTooltip';
+import ConsoleRubricProductCategories from 'components/console/ConsoleRubricProductCategories';
 import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
 import { COL_CATEGORIES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { CategoryInterface, ProductCategoryInterface, ProductInterface } from 'db/uiInterfaces';
-import {
-  useUpdateProductCategory,
-  useUpdateProductCategoryVisibility,
-} from 'hooks/mutations/useProductMutations';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsProductLayout from 'layout/cms/CmsProductLayout';
 import { getTreeFromList } from 'lib/optionsUtils';
@@ -27,82 +19,6 @@ interface ProductCategoriesInterface {
 }
 
 const ProductCategories: React.FC<ProductCategoriesInterface> = ({ product, categoriesTree }) => {
-  const { showLoading } = useMutationCallbacks({
-    reload: true,
-  });
-  const [updateProductCategoryMutation] = useUpdateProductCategory();
-  const [updateProductCategoryVisibilityMutation] = useUpdateProductCategoryVisibility();
-
-  const renderCategories = React.useCallback(
-    (category: ProductCategoryInterface) => {
-      const { name, categories } = category;
-      const hasSelectedChildren = categories.some(({ selected }) => selected);
-      const isViewChecked = product.titleCategoriesSlugs.includes(category.slug);
-
-      return (
-        <div>
-          <div className='cms-option flex gap-4 items-center'>
-            <div>
-              <Checkbox
-                disabled={hasSelectedChildren}
-                testId={`${category.name}`}
-                checked={category.selected}
-                value={category._id}
-                name={`${category._id}`}
-                onChange={() => {
-                  showLoading();
-                  updateProductCategoryMutation({
-                    productId: `${product._id}`,
-                    categoryId: `${category._id}`,
-                  }).catch(console.log);
-                }}
-              />
-            </div>
-            <div className='font-medium' data-cy={`category-${name}`}>
-              {name}
-            </div>
-            <WpTooltip
-              title={isViewChecked ? 'Показывать в заголовке товара' : 'Категория не выбрана'}
-            >
-              <div>
-                <Checkbox
-                  disabled={!category.selected}
-                  testId={`${category.name}-view`}
-                  checked={isViewChecked}
-                  value={`${category._id}-view`}
-                  name={`${category._id}-view`}
-                  onChange={() => {
-                    showLoading();
-                    updateProductCategoryVisibilityMutation({
-                      productId: `${product._id}`,
-                      categoryId: `${category._id}`,
-                    }).catch(console.log);
-                  }}
-                />
-              </div>
-            </WpTooltip>
-          </div>
-          {categories && categories.length > 0 ? (
-            <div className='ml-4'>
-              {categories.map((category) => (
-                <div className='mt-4' key={`${category._id}`}>
-                  {renderCategories(category)}
-                </div>
-              ))}
-            </div>
-          ) : null}
-        </div>
-      );
-    },
-    [
-      product._id,
-      product.titleCategoriesSlugs,
-      showLoading,
-      updateProductCategoryMutation,
-      updateProductCategoryVisibilityMutation,
-    ],
-  );
-
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Категории',
     config: [
@@ -127,22 +43,7 @@ const ProductCategories: React.FC<ProductCategoriesInterface> = ({ product, cate
 
   return (
     <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
-      <Inner testId={'product-categories-list'}>
-        {!categoriesTree || categoriesTree.length < 1 ? (
-          <RequestError message={'Список пуст'} />
-        ) : (
-          <div className='border-t border-border-300'>
-            {categoriesTree.map((category) => (
-              <div
-                className='border-b border-border-300 py-6 px-inner-block-horizontal-padding'
-                key={`${category._id}`}
-              >
-                {renderCategories(category)}
-              </div>
-            ))}
-          </div>
-        )}
-      </Inner>
+      <ConsoleRubricProductCategories product={product} categoriesTree={categoriesTree} />
     </CmsProductLayout>
   );
 };
@@ -183,12 +84,12 @@ export const getServerSideProps = async (
     };
   }
 
-  const { rubric, product } = payload;
+  const { product } = payload;
 
   // Get rubric categories
   const initialCategories = await categoriesCollection
     .find({
-      rubricId: rubric._id,
+      rubricId: product.rubric?._id,
     })
     .toArray();
   const categories: ProductCategoryInterface[] = initialCategories.map((category) => {

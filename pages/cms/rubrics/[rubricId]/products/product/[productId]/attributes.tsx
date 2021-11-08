@@ -23,7 +23,6 @@ import {
   OptionInterface,
   ProductAttributeInterface,
   ProductInterface,
-  RubricInterface,
   AttributesGroupInterface,
   ProductAttributesGroupInterface,
 } from 'db/uiInterfaces';
@@ -59,14 +58,13 @@ function castSelectedOptions(option: OptionInterface): OptionsModalOptionInterfa
 
 interface ProductAttributesInterface {
   product: ProductInterface;
-  rubric: RubricInterface;
 }
 
 const attributesGroupClassName = 'relative mb-16';
 const attributesGroupTitleClassName = 'mb-4 font-medium text-xl';
 const selectsListClassName = 'grid sm:grid-cols-2 md:grid-cols-3 gap-x-8';
 
-const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product, rubric }) => {
+const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) => {
   const { showModal, onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
     // withModal: true,
     reload: true,
@@ -115,16 +113,16 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product, rubr
         href: `${ROUTE_CMS}/rubrics`,
       },
       {
-        name: `${rubric.name}`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}`,
+        name: `${product.rubric?.name}`,
+        href: `${ROUTE_CMS}/rubrics/${product.rubric?._id}`,
       },
       {
         name: `Товары`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}/products/${rubric._id}`,
+        href: `${ROUTE_CMS}/rubrics/${product.rubric?._id}/products/${product.rubric?._id}`,
       },
       {
         name: `${product.cardTitle}`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}/products/product/${product._id}`,
+        href: `${ROUTE_CMS}/rubrics/${product.rubric?._id}/products/product/${product._id}`,
       },
     ],
   };
@@ -378,10 +376,10 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product, rubr
 
 interface ProductPageInterface extends PagePropsInterface, ProductAttributesInterface {}
 
-const Product: NextPage<ProductPageInterface> = ({ pageUrls, product, rubric }) => {
+const Product: NextPage<ProductPageInterface> = ({ pageUrls, ...props }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <ProductAttributes product={product} rubric={rubric} />
+      <ProductAttributes {...props} />
     </CmsLayout>
   );
 };
@@ -412,8 +410,8 @@ export const getServerSideProps = async (
     };
   }
 
-  const { product, rubric, categoriesList } = payload;
-  const attributesGroupIds: ObjectIdModel[] = rubric.attributesGroupIds;
+  const { product, categoriesList } = payload;
+  const attributesGroupIds: ObjectIdModel[] = product.rubric?.attributesGroupIds || [];
   categoriesList.forEach((category) => {
     category.attributesGroupIds.forEach((_id) => {
       attributesGroupIds.push(_id);
@@ -476,8 +474,8 @@ export const getServerSideProps = async (
             ...attribute,
             name: getFieldStringLocale(attribute.nameI18n, props.sessionLocale),
           },
-          rubricId: rubric._id,
-          rubricSlug: rubric.slug,
+          rubricId: product.rubricId,
+          rubricSlug: product.rubricSlug,
           attributeId: attribute._id,
           productId: product._id,
           productSlug: product.slug,
@@ -537,7 +535,6 @@ export const getServerSideProps = async (
     props: {
       ...props,
       product: castDbData(finalProduct),
-      rubric: castDbData(rubric),
     },
   };
 };

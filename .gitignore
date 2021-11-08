@@ -50,3 +50,6 @@ cypress/fixtures/initialData
 public/assets
 assets
 !pages/assets
+!/cypress/fixtures/assets/configs/0/
+products.json
+shopProducts.json

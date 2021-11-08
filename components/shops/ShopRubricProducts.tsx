@@ -1,17 +1,20 @@
 import AppContentFilter from 'components/AppContentFilter';
-import Button from 'components/Button';
+import Button from 'components/button/Button';
 import Currency from 'components/Currency';
-import FixedButtons from 'components/FixedButtons';
-import ContentItemControls from 'components/ContentItemControls';
+import FixedButtons from 'components/button/FixedButtons';
+import ContentItemControls from 'components/button/ContentItemControls';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import Pager, { useNavigateToPageHandler } from 'components/Pager';
+import Percent from 'components/Percent';
 import Table, { TableColumn } from 'components/Table';
 import TableRowImage from 'components/TableRowImage';
+import { getConstantTranslation } from 'config/constantTranslations';
 import { CONFIRM_MODAL } from 'config/modalVariants';
+import { useLocaleContext } from 'context/localeContext';
 import { useUserContext } from 'context/userContext';
 import { ShopProductModel } from 'db/dbModels';
 import {
@@ -22,10 +25,8 @@ import {
   SupplierProductInterface,
 } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
-import {
-  useDeleteProductFromShopMutation,
-  useUpdateManyShopProductsMutation,
-} from 'generated/apolloComponents';
+import { useDeleteProductFromShopMutation } from 'generated/apolloComponents';
+import { useUpdateManyShopProducts } from 'hooks/mutations/useShopProductMutations';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import ConsoleShopLayout, { AppShopLayoutInterface } from 'layout/console/ConsoleShopLayout';
@@ -35,6 +36,47 @@ import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { updateManyShopProductsSchema } from 'validation/shopSchema';
+
+interface ProductsListSuppliersListInterface {
+  supplierProducts: SupplierProductInterface[];
+}
+
+const ProductsListSuppliersList: React.FC<ProductsListSuppliersListInterface> = ({
+  supplierProducts,
+}) => {
+  const { locale } = useLocaleContext();
+
+  return (
+    <div className='space-y-4'>
+      {supplierProducts.map((supplierProduct) => {
+        const { supplier, price, percent, variant, recommendedPrice } = supplierProduct;
+        if (!supplier) {
+          return null;
+        }
+        const variantName = getConstantTranslation(`suppliers.priceVariant.${variant}.${locale}`);
+
+        return (
+          <div key={`${supplierProduct._id}`}>
+            <div className='flex justify-between items-baseline gap-3 mb-2'>
+              <div className='whitespace-nowrap font-medium'>{supplier.name}</div>
+              <div className='whitespace-nowrap text-sm text-secondary-text'>{variantName}</div>
+            </div>
+            <div className='flex justify-between gap-3'>
+              <div className='flex justify-between gap-1'>
+                <Currency value={price} />
+                <span>/</span>
+                <Percent value={percent} />
+              </div>
+              <div>
+                <Currency value={recommendedPrice} />
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
 
 export interface ShopRubricProductsInterface
   extends AppPaginationInterface<ShopProductInterface>,
@@ -81,10 +123,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
 
   const withProducts = docs.length > 0;
 
-  const [updateManyShopProductsMutation] = useUpdateManyShopProductsMutation({
-    onCompleted: (data) => onCompleteCallback(data.updateManyShopProducts),
-    onError: onErrorCallback,
-  });
+  const [updateManyShopProductsMutation] = useUpdateManyShopProducts();
 
   const [deleteProductFromShopMutation] = useDeleteProductFromShopMutation({
     onCompleted: (data) => onCompleteCallback(data.deleteProductFromShop),
@@ -158,23 +197,10 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
     },
     {
       accessor: 'supplierProducts',
-      headTitle: 'Поставщики',
+      headTitle: 'Ценообразование',
       render: ({ cellData }) => {
         const supplierProducts = (cellData || []) as SupplierProductInterface[];
-        return (
-          <div className='space-y-2'>
-            {supplierProducts.map((supplierProduct) => {
-              return (
-                <div className='flex justify-between gap-3' key={`${supplierProduct._id}`}>
-                  <div className='whitespace-nowrap'>{supplierProduct.supplier?.name}</div>
-                  <div>
-                    <Currency value={supplierProduct.recommendedPrice} />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        );
+        return <ProductsListSuppliersList supplierProducts={supplierProducts} />;
       },
     },
     {
@@ -289,18 +315,16 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
                 if (updatedProducts.length > 0) {
                   showLoading();
 
-                  updateManyShopProductsMutation({
-                    variables: {
-                      input: updatedProducts.map(({ productId, price, available, _id }) => {
-                        return {
-                          shopProductId: `${_id}`,
-                          productId: `${productId}`,
-                          price: noNaN(price),
-                          available: noNaN(available),
-                        };
-                      }),
-                    },
-                  }).catch((e) => console.log(e));
+                  updateManyShopProductsMutation(
+                    updatedProducts.map(({ barcode, price, available, _id }) => {
+                      return {
+                        shopProductId: `${_id}`,
+                        price: noNaN(price),
+                        available: noNaN(available),
+                        barcode: barcode || [],
+                      };
+                    }),
+                  ).catch((e) => console.log(e));
                 } else {
                   showErrorNotification({
                     title: 'Нет изменённых товаров',

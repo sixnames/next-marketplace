@@ -1,5 +1,5 @@
 import ArrowTrigger from 'components/ArrowTrigger';
-import Button from 'components/Button';
+import Button from 'components/button/Button';
 import SpinnerInput from 'components/FormElements/SpinnerInput/SpinnerInput';
 import LinkPhone from 'components/Link/LinkPhone';
 import { MapModalInterface } from 'components/Modal/MapModal';

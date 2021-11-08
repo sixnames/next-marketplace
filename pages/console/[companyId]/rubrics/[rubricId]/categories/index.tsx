@@ -1,6 +1,6 @@
 import CompanyRubricCategoriesList, {
   CompanyRubricCategoriesListInterface,
-} from 'components/CompanyRubricCategoriesList';
+} from 'components/company/CompanyRubricCategoriesList';
 import { ROUTE_CONSOLE } from 'config/common';
 import { COL_CATEGORIES, COL_ICONS, COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';

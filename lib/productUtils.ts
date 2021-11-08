@@ -28,6 +28,7 @@ import {
   ProductConnectionItemInterface,
   ProductInterface,
   RubricInterface,
+  ShopProductBarcodeDoublesInterface,
   ShopProductInterface,
   SupplierProductInterface,
 } from 'db/uiInterfaces';
@@ -44,7 +45,6 @@ interface GetCmsProductInterface {
 
 interface GetCmsProductPayloadInterface {
   product: ProductInterface;
-  rubric: RubricInterface;
   categoriesList: CategoryInterface[];
 }
 
@@ -238,6 +238,7 @@ export async function getCmsProduct({
           seo,
         }
       : null,
+    rubric: castedRubric,
     cardTitle,
     snippetTitle,
     connections,
@@ -246,7 +247,6 @@ export async function getCmsProduct({
 
   return {
     product,
-    rubric: castedRubric,
     categoriesList: initialProduct.categories || [],
   };
 }
@@ -592,6 +592,91 @@ export async function checkBarcodeIntersects({
           };
         }),
       });
+    }
+  }
+
+  return barcodeDoubles;
+}
+
+interface CheckShopProductBarcodeIntersectsInterface {
+  barcode: string[];
+  shopProductId: ObjectIdModel;
+  locale: string;
+}
+
+export async function checkShopProductBarcodeIntersects({
+  barcode,
+  locale,
+  shopProductId,
+}: CheckShopProductBarcodeIntersectsInterface): Promise<ShopProductBarcodeDoublesInterface[]> {
+  const { db } = await getDatabase();
+  const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
+  const barcodeDoubles: ShopProductBarcodeDoublesInterface[] = [];
+  const shopProduct = await shopProductsCollection.findOne({
+    _id: shopProductId,
+  });
+  if (barcode.length < 1 || !shopProduct) {
+    return barcodeDoubles;
+  }
+
+  for await (const barcodeItem of barcode) {
+    const shopProducts = await shopProductsCollection
+      .aggregate<ShopProductInterface>([
+        {
+          $match: {
+            _id: {
+              $ne: shopProductId,
+            },
+            shopId: shopProduct.shopId,
+            barcode: barcodeItem,
+          },
+        },
+        {
+          $project: {
+            descriptionI18n: false,
+          },
+        },
+
+        // get product
+        ...shopProductFieldsPipeline('$productId'),
+      ])
+      .toArray();
+
+    if (shopProducts.length > 0) {
+      const double: ShopProductBarcodeDoublesInterface = {
+        barcode: barcodeItem,
+        products: shopProducts.reduce((acc: ShopProductInterface[], shopProduct) => {
+          const { product } = shopProduct;
+          if (!product) {
+            return acc;
+          }
+
+          const snippetTitle = generateSnippetTitle({
+            locale,
+            brand: product.brand,
+            rubricName: getFieldStringLocale(product.rubric?.nameI18n, locale),
+            showRubricNameInProductTitle: product.rubric?.showRubricNameInProductTitle,
+            showCategoryInProductTitle: product.rubric?.showCategoryInProductTitle,
+            attributes: product.attributes || [],
+            categories: product.categories,
+            titleCategoriesSlugs: product.titleCategoriesSlugs,
+            originalName: `${product.originalName}`,
+            defaultGender: `${product.gender}`,
+          });
+
+          const productPayload: ProductInterface = {
+            ...product,
+            snippetTitle,
+          };
+
+          const payload: ShopProductInterface = {
+            ...shopProduct,
+            product: productPayload,
+          };
+          return [...acc, payload];
+        }, []),
+      };
+      barcodeDoubles.push(double);
     }
   }
 

@@ -1,4 +1,4 @@
-import ContentItemControls from 'components/ContentItemControls';
+import ContentItemControls from 'components/button/ContentItemControls';
 import Inner from 'components/Inner';
 import Table, { TableColumn } from 'components/Table';
 import { CompanyInterface, RubricInterface } from 'db/uiInterfaces';

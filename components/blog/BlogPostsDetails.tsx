@@ -1,5 +1,5 @@
-import Button from 'components/Button';
-import FixedButtons from 'components/FixedButtons';
+import Button from 'components/button/Button';
+import FixedButtons from 'components/button/FixedButtons';
 import FakeInput from 'components/FormElements/Input/FakeInput';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';

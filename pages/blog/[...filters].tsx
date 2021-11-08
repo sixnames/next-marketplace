@@ -37,7 +37,7 @@ import {
   CatalogueFilterAttributeOptionInterface,
   OptionInterface,
 } from 'db/uiInterfaces';
-import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
+import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { castCatalogueFilters, castCatalogueParamToObject } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
@@ -410,9 +410,9 @@ const BlogListPage: React.FC<BlogListPageInterface> = ({
   ...props
 }) => {
   return (
-    <SiteLayoutProvider {...props}>
+    <SiteLayout {...props}>
       <BlogListPageConsumer topPosts={topPosts} blogFilter={blogFilter} posts={posts} meta={meta} />
-    </SiteLayoutProvider>
+    </SiteLayout>
   );
 };
 

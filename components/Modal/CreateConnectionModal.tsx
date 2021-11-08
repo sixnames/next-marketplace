@@ -7,7 +7,7 @@ import { CreateProductConnectionInput } from 'generated/apolloComponents';
 import { Form, Formik } from 'formik';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import useValidationSchema from 'hooks/useValidationSchema';
-import Button from 'components/Button';
+import Button from 'components/button/Button';
 import { SelectOptionInterface } from 'components/FormElements/Select/Select';
 import { createProductConnectionModalSchema } from 'validation/productSchema';
 import { ATTRIBUTE_VARIANT_SELECT } from 'config/common';

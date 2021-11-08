@@ -1,6 +1,6 @@
 import CompanyRubricCategoriesList, {
   CompanyRubricCategoriesListInterface,
-} from 'components/CompanyRubricCategoriesList';
+} from 'components/company/CompanyRubricCategoriesList';
 import { ROUTE_CMS } from 'config/common';
 import {
   COL_CATEGORIES,

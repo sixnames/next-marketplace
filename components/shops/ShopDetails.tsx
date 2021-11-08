@@ -1,4 +1,4 @@
-import Button from 'components/Button';
+import Button from 'components/button/Button';
 import FakeInput from 'components/FormElements/Input/FakeInput';
 import WpImageUpload from 'components/FormElements/Upload/WpImageUpload';
 import ShopMainFields from 'components/FormTemplates/ShopMainFields';

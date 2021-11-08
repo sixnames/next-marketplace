@@ -6,7 +6,7 @@ import * as React from 'react';
 import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
 import ModalButtons from 'components/Modal/ModalButtons';
-import Button from 'components/Button';
+import Button from 'components/button/Button';
 import { Formik, Form } from 'formik';
 
 export interface SetUserCategoryModalInterface {

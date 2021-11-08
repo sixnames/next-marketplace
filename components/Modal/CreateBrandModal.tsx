@@ -1,4 +1,4 @@
-import Button from 'components/Button';
+import Button from 'components/button/Button';
 import BrandMainFields from 'components/FormTemplates/BrandMainFields';
 import * as React from 'react';
 import ModalFrame from 'components/Modal/ModalFrame';

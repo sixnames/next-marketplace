@@ -7,7 +7,7 @@ import ModalButtons from 'components/Modal/ModalButtons';
 import { Form, Formik } from 'formik';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import Spinner from 'components/Spinner';
-import Button from 'components/Button';
+import Button from 'components/button/Button';
 import {
   AddAttributeToGroupInput,
   UpdateAttributeInGroupInput,

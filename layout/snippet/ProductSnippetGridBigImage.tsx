@@ -1,4 +1,4 @@
-import ControlButton from 'components/ControlButton';
+import ControlButton from 'components/button/ControlButton';
 import Link from 'components/Link/Link';
 import WpImage from 'components/WpImage';
 import { ROUTE_CATALOGUE } from 'config/common';

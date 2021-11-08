@@ -1,6 +1,8 @@
 import Link from 'components/Link/Link';
 import * as React from 'react';
-import ContentItemControls, { ContentItemControlsInterface } from 'components/ContentItemControls';
+import ContentItemControls, {
+  ContentItemControlsInterface,
+} from 'components/button/ContentItemControls';
 import TableRowImage from 'components/TableRowImage';
 import { RubricProductFragment } from 'generated/apolloComponents';
 import { TableColumn } from 'components/Table';

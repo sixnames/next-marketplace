@@ -1,4 +1,4 @@
-import { CART_COOKIE_KEY, DEFAULT_LOCALE } from 'config/common';
+import { CART_COOKIE_KEY } from 'config/common';
 import {
   COL_CARTS,
   COL_PRODUCTS,
@@ -13,6 +13,7 @@ import {
   productRubricPipeline,
   shopProductFieldsPipeline,
 } from 'db/dao/constantPipelines';
+import { getPageSessionUser } from 'db/dao/user/getPageSessionUser';
 import { CartModel, UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { CartInterface, CartProductInterface, ShopProductInterface } from 'db/uiInterfaces';
@@ -21,11 +22,9 @@ import { noNaN } from 'lib/numbers';
 import { getTreeFromList } from 'lib/optionsUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { getRequestParams } from 'lib/sessionHelpers';
-import { getPageSessionUser } from 'lib/ssrUtils';
 import { generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getSession } from 'next-auth/client';
 import nookies from 'nookies';
 
 export interface CartQueryInterface {
@@ -41,20 +40,20 @@ interface ShopProductPipelineInterface {
 async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
   try {
     const { db } = await getDatabase();
-    const { locale, city } = await getRequestParams({ req, res });
+    const context = { req, res };
+    const { locale, city } = await getRequestParams(context);
     const cartsCollection = db.collection<CartModel>(COL_CARTS);
     const usersCollection = db.collection<UserModel>(COL_USERS);
     const { query } = req;
     const anyQuery = query as unknown;
     const { companyId } = anyQuery as CartQueryInterface;
-    const session = await getSession({ req });
 
     // Get session
     // Session user
     // const sessionUserStart = new Date().getTime();
     const user = await getPageSessionUser({
-      email: session?.user?.email,
-      locale: locale || DEFAULT_LOCALE,
+      context,
+      locale,
     });
     const userCartId = user ? user.cartId : null;
 

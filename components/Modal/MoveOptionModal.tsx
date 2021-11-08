@@ -9,7 +9,7 @@ import RequestError from 'components/RequestError';
 import { Formik, Form } from 'formik';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import ModalButtons from 'components/Modal/ModalButtons';
-import Button from 'components/Button';
+import Button from 'components/button/Button';
 
 export interface MoveOptionModalInterface {
   option: OptionInterface;

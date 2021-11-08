@@ -1,4 +1,4 @@
-import ControlButton from 'components/ControlButton';
+import ControlButton from 'components/button/ControlButton';
 import * as React from 'react';
 
 interface CardActionsInterface {

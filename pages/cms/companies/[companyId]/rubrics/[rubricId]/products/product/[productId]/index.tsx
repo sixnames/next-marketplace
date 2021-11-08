@@ -1,11 +1,8 @@
-import CompanyProductDetails, {
-  CompanyProductDetailsInterface,
-} from 'components/CompanyProductDetails';
-import { DEFAULT_CITY, PAGE_EDITOR_DEFAULT_VALUE_STRING, ROUTE_CMS } from 'config/common';
-import { COL_COMPANIES, COL_PRODUCT_CARD_CONTENTS } from 'db/collectionNames';
-import { ProductCardContentModel } from 'db/dbModels';
+import ConsoleRubricProductDetails from 'components/console/ConsoleRubricProductDetails';
+import { ROUTE_CMS } from 'config/common';
+import { COL_COMPANIES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { CompanyInterface } from 'db/uiInterfaces';
+import { CompanyInterface, ProductInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsProductLayout from 'layout/cms/CmsProductLayout';
 import { getCmsProduct } from 'lib/productUtils';
@@ -16,16 +13,16 @@ import CmsLayout from 'layout/cms/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
-interface ProductDetailsInterface extends CompanyProductDetailsInterface {
-  cardContent: ProductCardContentModel;
+interface ProductDetailsInterface {
+  product: ProductInterface;
+  currentCompany?: CompanyInterface | null;
+  routeBasePath: string;
 }
 
 const ProductDetails: React.FC<ProductDetailsInterface> = ({
   product,
   routeBasePath,
   currentCompany,
-  rubric,
-  cardContent,
 }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${product.cardTitle}`,
@@ -43,35 +40,19 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
         href: `${routeBasePath}/rubrics`,
       },
       {
-        name: `${rubric.name}`,
-        href: `${routeBasePath}/rubrics/${rubric._id}`,
+        name: `${product.rubric?.name}`,
+        href: `${routeBasePath}/rubrics/${product.rubric?._id}`,
       },
       {
         name: `Товары`,
-        href: `${routeBasePath}/rubrics/${rubric._id}/products/${rubric._id}`,
+        href: `${routeBasePath}/rubrics/${product.rubric?._id}/products/${product.rubric?._id}`,
       },
     ],
   };
 
   return (
-    <CmsProductLayout
-      hideAssetsPath
-      hideAttributesPath
-      hideBrandPath
-      hideCategoriesPath
-      hideConnectionsPath
-      hideCardConstructor
-      product={product}
-      basePath={routeBasePath}
-      breadcrumbs={breadcrumbs}
-    >
-      <CompanyProductDetails
-        routeBasePath={routeBasePath}
-        rubric={rubric}
-        product={product}
-        currentCompany={currentCompany}
-        cardContent={cardContent}
-      />
+    <CmsProductLayout product={product} basePath={routeBasePath} breadcrumbs={breadcrumbs}>
+      <ConsoleRubricProductDetails product={product} companySlug={`${currentCompany?.slug}`} />
     </CmsProductLayout>
   );
 };
@@ -132,31 +113,10 @@ export const getServerSideProps = async (
     };
   }
 
-  const productCardContentsCollection =
-    db.collection<ProductCardContentModel>(COL_PRODUCT_CARD_CONTENTS);
-  let cardContent = await productCardContentsCollection.findOne({
-    productId: payload.product._id,
-    companySlug,
-  });
-  if (!cardContent) {
-    cardContent = {
-      _id: new ObjectId(),
-      productId: payload.product._id,
-      productSlug: payload.product.slug,
-      companySlug,
-      assetKeys: [],
-      content: {
-        [DEFAULT_CITY]: PAGE_EDITOR_DEFAULT_VALUE_STRING,
-      },
-    };
-  }
-
   return {
     props: {
       ...props,
       product: castDbData(payload.product),
-      rubric: castDbData(payload.rubric),
-      cardContent: castDbData(cardContent),
       currentCompany: castDbData(companyResult),
       routeBasePath: `${ROUTE_CMS}/companies/${companyResult._id}`,
     },

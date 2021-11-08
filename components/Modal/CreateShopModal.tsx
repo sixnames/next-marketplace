@@ -1,4 +1,4 @@
-import Button from 'components/Button';
+import Button from 'components/button/Button';
 import ShopMainFields from 'components/FormTemplates/ShopMainFields';
 import { phoneToRaw } from 'lib/phoneUtils';
 import * as React from 'react';

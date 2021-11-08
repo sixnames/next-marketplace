@@ -1,8 +1,8 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import Button from 'components/Button';
-import FixedButtons from 'components/FixedButtons';
-import ContentItemControls from 'components/ContentItemControls';
+import Button from 'components/button/Button';
+import FixedButtons from 'components/button/FixedButtons';
+import ContentItemControls from 'components/button/ContentItemControls';
 import Inner from 'components/Inner';
 import { AttributesGroupModalInterface } from 'components/Modal/AttributesGroupModal';
 import Table, { TableColumn } from 'components/Table';

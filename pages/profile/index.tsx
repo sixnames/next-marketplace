@@ -1,6 +1,6 @@
 import { Disclosure } from '@headlessui/react';
-import ControlButton from 'components/ControlButton';
-import ControlButtonChevron from 'components/ControlButtonChevron';
+import ControlButton from 'components/button/ControlButton';
+import ControlButtonChevron from 'components/button/ControlButtonChevron';
 import Currency from 'components/Currency';
 import FormattedDate from 'components/FormattedDate';
 import Icon from 'components/Icon';
@@ -24,7 +24,7 @@ import { OrderModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { OrderInterface, OrderProductInterface } from 'db/uiInterfaces';
 import ProfileLayout from 'layout/ProfileLayout/ProfileLayout';
-import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
+import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { castOrderStatus } from 'lib/orderUtils';
@@ -251,11 +251,11 @@ interface ProfileInterface extends SiteLayoutProviderInterface, ProfileOrdersRou
 
 const Profile: NextPage<ProfileInterface> = ({ orders, ...props }) => {
   return (
-    <SiteLayoutProvider title={'История заказов'} {...props}>
+    <SiteLayout title={'История заказов'} {...props}>
       <ProfileLayout>
         <ProfileOrdersRoute orders={orders} />
       </ProfileLayout>
-    </SiteLayoutProvider>
+    </SiteLayout>
   );
 };
 

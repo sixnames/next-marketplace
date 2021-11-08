@@ -1,6 +1,6 @@
-import Button from 'components/Button';
-import ContentItemControls from 'components/ContentItemControls';
-import FixedButtons from 'components/FixedButtons';
+import Button from 'components/button/Button';
+import ContentItemControls from 'components/button/ContentItemControls';
+import FixedButtons from 'components/button/FixedButtons';
 import Inner from 'components/Inner';
 import { CreateCategoryModalInterface } from 'components/Modal/CreateCategoryModal';
 import RequestError from 'components/RequestError';

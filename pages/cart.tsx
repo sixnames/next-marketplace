@@ -1,7 +1,7 @@
 import Breadcrumbs from 'components/Breadcrumbs';
-import Button from 'components/Button';
-import ButtonCross from 'components/ButtonCross';
-import ControlButton from 'components/ControlButton';
+import Button from 'components/button/Button';
+import ButtonCross from 'components/button/ButtonCross';
+import ControlButton from 'components/button/ControlButton';
 import SpinnerInput from 'components/FormElements/SpinnerInput/SpinnerInput';
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
@@ -21,7 +21,7 @@ import { useNotificationsContext } from 'context/notificationsContext';
 import { useSiteContext } from 'context/siteContext';
 import { CartProductInterface, ShopProductInterface } from 'db/uiInterfaces';
 import LayoutCard from 'layout/LayoutCard';
-import SiteLayoutProvider, { SiteLayoutProviderInterface } from 'layout/SiteLayoutProvider';
+import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
 import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -414,9 +414,9 @@ type CartPageInterface = SiteLayoutProviderInterface;
 
 const CartPage: NextPage<CartPageInterface> = (props) => {
   return (
-    <SiteLayoutProvider title={'Корзина'} {...props}>
+    <SiteLayout title={'Корзина'} {...props}>
       <CartRoute />
-    </SiteLayoutProvider>
+    </SiteLayout>
   );
 };
 

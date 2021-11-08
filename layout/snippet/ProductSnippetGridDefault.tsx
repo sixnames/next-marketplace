@@ -6,7 +6,7 @@ import { ProductSnippetInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import Link from 'components/Link/Link';
 import RatingStars from 'components/RatingStars';
-import ControlButton from 'components/ControlButton';
+import ControlButton from 'components/button/ControlButton';
 import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
 
 const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({

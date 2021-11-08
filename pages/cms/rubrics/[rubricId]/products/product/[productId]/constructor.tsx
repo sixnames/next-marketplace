@@ -1,29 +1,17 @@
-import Accordion from 'components/Accordion';
-import Button from 'components/Button';
-import Inner from 'components/Inner';
-import PageEditor from 'components/PageEditor';
+import ConsoleRubricProductConstructor from 'components/console/ConsoleRubricProductConstructor';
 import {
   DEFAULT_CITY,
   DEFAULT_COMPANY_SLUG,
   PAGE_EDITOR_DEFAULT_VALUE_STRING,
   ROUTE_CMS,
 } from 'config/common';
-import { useConfigContext } from 'context/configContext';
 import { COL_PRODUCT_CARD_CONTENTS } from 'db/collectionNames';
 import { ProductCardContentModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { ProductInterface, RubricInterface } from 'db/uiInterfaces';
-import { Form, Formik } from 'formik';
-import {
-  UpdateProductCardContentInput,
-  useUpdateProductCardContentMutation,
-} from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import { ProductInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsProductLayout from 'layout/cms/CmsProductLayout';
-import { getConstructorDefaultValue } from 'lib/constructorUtils';
 import { getCmsProduct } from 'lib/productUtils';
-import { get } from 'lodash';
 import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
@@ -33,24 +21,10 @@ import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
 interface ProductAttributesInterface {
   product: ProductInterface;
-  rubric: RubricInterface;
   cardContent: ProductCardContentModel;
 }
 
-const ProductAttributes: React.FC<ProductAttributesInterface> = ({
-  product,
-  rubric,
-  cardContent,
-}) => {
-  const { cities } = useConfigContext();
-  const { onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
-    reload: true,
-  });
-  const [updateProductCardContentMutation] = useUpdateProductCardContentMutation({
-    onCompleted: (data) => onCompleteCallback(data.updateProductCardContent),
-    onError: onErrorCallback,
-  });
-
+const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product, cardContent }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Контент карточки',
     config: [
@@ -59,114 +33,33 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({
         href: `${ROUTE_CMS}/rubrics`,
       },
       {
-        name: `${rubric.name}`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}`,
+        name: `${product.rubric?.name}`,
+        href: `${ROUTE_CMS}/rubrics/${product.rubric?._id}`,
       },
       {
         name: `Товары`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}/products/${rubric._id}`,
+        href: `${ROUTE_CMS}/rubrics/${product.rubric?._id}/products/${product.rubric?._id}`,
       },
       {
         name: `${product.cardTitle}`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}/products/product/${product._id}`,
+        href: `${ROUTE_CMS}/rubrics/${product.rubric?._id}/products/product/${product._id}`,
       },
     ],
   };
 
-  const initialValues: UpdateProductCardContentInput = cardContent;
-
   return (
     <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
-      <Inner testId={'product-card-constructor'}>
-        <Formik<UpdateProductCardContentInput>
-          initialValues={initialValues}
-          onSubmit={(values) => {
-            showLoading();
-            updateProductCardContentMutation({
-              variables: {
-                input: values,
-              },
-            }).catch(console.log);
-          }}
-        >
-          {({ values, setFieldValue }) => {
-            return (
-              <Form>
-                {cities.map(({ name, slug }) => {
-                  const cityTestId = `${product.slug}-${slug}`;
-                  const fieldName = `content.${slug}`;
-                  const fieldValue = get(values, fieldName);
-                  const constructorValue = getConstructorDefaultValue(fieldValue);
-
-                  return (
-                    <Accordion
-                      isOpen={slug === DEFAULT_CITY}
-                      testId={cityTestId}
-                      title={`${name}`}
-                      key={slug}
-                    >
-                      <div className='ml-8 pt-[var(--lineGap-200)]'>
-                        <PageEditor
-                          value={constructorValue}
-                          setValue={(value) => {
-                            setFieldValue(fieldName, JSON.stringify(value));
-                          }}
-                          imageUpload={async (file) => {
-                            try {
-                              const formData = new FormData();
-                              formData.append('assets', file);
-                              formData.append('productId', `${product._id}`);
-                              formData.append('productCardContentId', `${cardContent._id}`);
-
-                              const responseFetch = await fetch(
-                                '/api/product/add-card-content-asset',
-                                {
-                                  method: 'POST',
-                                  body: formData,
-                                },
-                              );
-                              const responseJson = await responseFetch.json();
-
-                              return {
-                                url: responseJson.url,
-                              };
-                            } catch (e) {
-                              console.log(e);
-                              return {
-                                url: '',
-                              };
-                            }
-                          }}
-                        />
-                      </div>
-                    </Accordion>
-                  );
-                })}
-                <div className='flex mb-12 mt-4'>
-                  <Button
-                    theme={'secondary'}
-                    size={'small'}
-                    type={'submit'}
-                    testId={`card-content-submit`}
-                  >
-                    Сохранить
-                  </Button>
-                </div>
-              </Form>
-            );
-          }}
-        </Formik>
-      </Inner>
+      <ConsoleRubricProductConstructor product={product} cardContent={cardContent} />
     </CmsProductLayout>
   );
 };
 
 interface ProductPageInterface extends PagePropsInterface, ProductAttributesInterface {}
 
-const Product: NextPage<ProductPageInterface> = ({ pageUrls, cardContent, product, rubric }) => {
+const Product: NextPage<ProductPageInterface> = ({ pageUrls, ...props }) => {
   return (
     <CmsLayout pageUrls={pageUrls}>
-      <ProductAttributes product={product} rubric={rubric} cardContent={cardContent} />
+      <ProductAttributes {...props} />
     </CmsLayout>
   );
 };
@@ -198,7 +91,7 @@ export const getServerSideProps = async (
     };
   }
 
-  const { product, rubric } = payload;
+  const { product } = payload;
 
   let cardContent = await productCardContentsCollection.findOne({
     productId: product._id,
@@ -222,7 +115,6 @@ export const getServerSideProps = async (
     props: {
       ...props,
       product: castDbData(product),
-      rubric: castDbData(rubric),
       cardContent: castDbData(cardContent),
     },
   };

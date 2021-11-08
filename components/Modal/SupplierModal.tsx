@@ -1,4 +1,4 @@
-import Button from 'components/Button';
+import Button from 'components/button/Button';
 import FormikMultiLineInput from 'components/FormElements/Input/FormikMultiLineInput';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import { SupplierInterface } from 'db/uiInterfaces';

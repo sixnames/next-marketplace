@@ -1217,11 +1217,6 @@ type Mutation {
   updateManufacturer(input: UpdateManufacturerInput!): ManufacturerPayload!
 
   """
-  Should update many shop products
-  """
-  updateManyShopProducts(input: [UpdateShopProductInput!]!): ShopProductPayload!
-
-  """
   Should update metric
   """
   updateMetric(input: UpdateMetricInput!): MetricPayload!
@@ -1320,11 +1315,6 @@ type Mutation {
   Should update shop asset index
   """
   updateShopAssetIndex(input: UpdateShopAssetIndexInput!): ShopPayload!
-
-  """
-  Should update shop products barcode
-  """
-  updateShopProductBarcode(input: UpdateShopProductBarcodeInput!): ShopProductPayload!
 
   """
   Should update shop products supplier
@@ -2572,19 +2562,6 @@ input UpdateShopInput {
   license: String
   name: String!
   shopId: ObjectId!
-}
-
-input UpdateShopProductBarcodeInput {
-  barcode: [String!]!
-  shopProductId: ObjectId!
-}
-
-input UpdateShopProductInput {
-  available: Int!
-  barcode: [String!]
-  price: Int!
-  productId: ObjectId!
-  shopProductId: ObjectId!
 }
 
 input UpdateShopProductSupplierInput {

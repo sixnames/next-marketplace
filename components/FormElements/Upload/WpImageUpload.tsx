@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Icon from 'components/Icon';
 import InputLine, { InputLinePropsInterface } from '../Input/InputLine';
-import ButtonCross from 'components/ButtonCross';
+import ButtonCross from 'components/button/ButtonCross';
 import { useDropzone } from 'react-dropzone';
 import WpTooltip from 'components/WpTooltip';
 

@@ -1,6 +1,6 @@
 import CompanyRubricProductsList, {
   CompanyRubricProductsListInterface,
-} from 'components/CompanyRubricProductsList';
+} from 'components/company/CompanyRubricProductsList';
 import RequestError from 'components/RequestError';
 import { DEFAULT_PAGE_FILTER, ROUTE_CONSOLE } from 'config/common';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';

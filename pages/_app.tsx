@@ -2,7 +2,6 @@ import { ConfigContextProvider } from 'context/configContext';
 import { LocaleContextProvider } from 'context/localeContext';
 import { ThemeContextProvider } from 'context/themeContext';
 import { CityInterface, CompanyInterface } from 'db/uiInterfaces';
-import { PageUrlsInterface } from 'layout/Meta';
 import { PageInitialDataPayload } from 'lib/ssrUtils';
 import * as React from 'react';
 import 'styles/globals.css';
@@ -22,7 +21,6 @@ export interface PagePropsInterface {
   sessionLocale: string;
   initialApolloState?: any;
   currentCity?: CityInterface | null;
-  pageUrls: PageUrlsInterface;
   themeStyle: Record<string, any>;
   companySlug: string;
   domainCompany?: CompanyInterface | null;

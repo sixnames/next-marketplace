@@ -33,7 +33,7 @@ import {
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
-import { getPageSessionUser } from 'db/dao/user/getPageSessionUser';
+import { getPageSessionUser, SessionUserPayloadInterface } from 'db/dao/user/getPageSessionUser';
 import {
   AttributeModel,
   CategoryModel,
@@ -52,8 +52,8 @@ import {
   PagesGroupInterface,
   RubricInterface,
   SsrConfigsInterface,
-  UserInterface,
 } from 'db/uiInterfaces';
+import { PageUrlsInterface } from 'layout/Meta';
 import { SiteLayoutCatalogueCreatedPages, SiteLayoutProviderInterface } from 'layout/SiteLayout';
 import {
   castConfigs,
@@ -1020,7 +1020,11 @@ interface GetPageInitialStateInterface {
   context: GetServerSidePropsContext;
 }
 
-interface GetPageInitialStatePayloadInterface extends PagePropsInterface {
+interface ConsoleNavPropsInterface {
+  pageUrls: PageUrlsInterface;
+}
+
+interface GetPageInitialStatePayloadInterface extends PagePropsInterface, ConsoleNavPropsInterface {
   db: Db;
   path: string;
   host: string;
@@ -1181,25 +1185,28 @@ function checkPagePermission({
   });
 }
 
-interface GetCompanyAppInitialDataInterface {
+interface GetConsoleInitialDataInterface {
   context: GetServerSidePropsContext;
 }
 
-interface GetCompanyAppInitialDataPropsInterface extends PagePropsInterface {
+interface GetConsoleInitialDataLayoutProps extends ConsoleNavPropsInterface {
   pageCompany: CompanyInterface;
-  sessionUser: UserInterface;
+  sessionUser: SessionUserPayloadInterface;
 }
 
-interface GetCompanyAppInitialDataPayloadInterface {
-  props?: GetCompanyAppInitialDataPropsInterface;
+export interface GetConsoleInitialDataPropsInterface extends PagePropsInterface {
+  layoutProps: GetConsoleInitialDataLayoutProps;
+}
+
+interface GetConsoleInitialDataPayloadInterface {
+  props?: GetConsoleInitialDataPropsInterface;
   redirect?: Redirect;
   notFound?: true;
-  sessionUser?: UserInterface | null;
 }
 
 export async function getConsoleInitialData({
   context,
-}: GetCompanyAppInitialDataInterface): Promise<GetCompanyAppInitialDataPayloadInterface> {
+}: GetConsoleInitialDataInterface): Promise<GetConsoleInitialDataPayloadInterface> {
   const {
     pageUrls,
     currentCity,
@@ -1261,15 +1268,17 @@ export async function getConsoleInitialData({
 
   return {
     props: {
+      layoutProps: {
+        sessionUser: castDbData(sessionUser),
+        pageCompany: castDbData(pageCompany),
+        pageUrls,
+      },
       companySlug,
       initialData,
       currentCity,
       sessionCity,
       themeStyle,
-      sessionUser: castDbData(sessionUser),
-      pageCompany: castDbData(pageCompany),
       sessionLocale,
-      pageUrls,
     },
   };
 }
@@ -1278,21 +1287,23 @@ interface GetAppInitialDataInterface {
   context: GetServerSidePropsContext;
 }
 
-interface GetAppInitialDataPropsInterface extends PagePropsInterface {
-  sessionUser?: UserInterface | null;
+interface GetAppInitialDataLayoutProps extends ConsoleNavPropsInterface {
+  sessionUser: SessionUserPayloadInterface;
 }
 
-interface GetAppInitialDataPayloadInterface<T> {
-  props?: T;
+export interface GetAppInitialDataPropsInterface extends PagePropsInterface {
+  layoutProps: GetAppInitialDataLayoutProps;
+}
+
+interface GetAppInitialDataPayloadInterface {
+  props?: GetAppInitialDataPropsInterface;
   redirect?: Redirect;
   notFound?: true;
 }
 
 export async function getAppInitialData({
   context,
-}: GetAppInitialDataInterface): Promise<
-  GetAppInitialDataPayloadInterface<GetAppInitialDataPropsInterface>
-> {
+}: GetAppInitialDataInterface): Promise<GetAppInitialDataPayloadInterface> {
   const {
     pageUrls,
     currentCity,
@@ -1339,14 +1350,16 @@ export async function getAppInitialData({
 
   return {
     props: {
+      layoutProps: {
+        sessionUser: castDbData(sessionUser),
+        pageUrls,
+      },
       themeStyle,
       companySlug,
       initialData,
       currentCity,
       sessionCity,
-      sessionUser: castDbData(sessionUser),
       sessionLocale,
-      pageUrls,
     },
   };
 }
@@ -1458,6 +1471,7 @@ export interface GetSiteInitialDataInterface {
 
 export interface SiteInitialDataPropsInterface
   extends PagePropsInterface,
+    ConsoleNavPropsInterface,
     Omit<SiteLayoutProviderInterface, 'description' | 'title'> {}
 
 export interface SiteInitialDataPayloadInterface {

@@ -9,9 +9,12 @@ import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import Pager, { useNavigateToPageHandler } from 'components/Pager';
+import Percent from 'components/Percent';
 import Table, { TableColumn } from 'components/Table';
 import TableRowImage from 'components/TableRowImage';
+import { getConstantTranslation } from 'config/constantTranslations';
 import { CONFIRM_MODAL } from 'config/modalVariants';
+import { useLocaleContext } from 'context/localeContext';
 import { useUserContext } from 'context/userContext';
 import { ShopProductModel } from 'db/dbModels';
 import {
@@ -35,6 +38,47 @@ import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { updateManyShopProductsSchema } from 'validation/shopSchema';
+
+interface ProductsListSuppliersListInterface {
+  supplierProducts: SupplierProductInterface[];
+}
+
+const ProductsListSuppliersList: React.FC<ProductsListSuppliersListInterface> = ({
+  supplierProducts,
+}) => {
+  const { locale } = useLocaleContext();
+
+  return (
+    <div className='space-y-4'>
+      {supplierProducts.map((supplierProduct) => {
+        const { supplier, price, percent, variant, recommendedPrice } = supplierProduct;
+        if (!supplier) {
+          return null;
+        }
+        const variantName = getConstantTranslation(`suppliers.priceVariant.${variant}.${locale}`);
+
+        return (
+          <div key={`${supplierProduct._id}`}>
+            <div className='flex justify-between items-baseline gap-3 mb-2'>
+              <div className='whitespace-nowrap font-medium'>{supplier.name}</div>
+              <div className='whitespace-nowrap text-sm text-secondary-text'>{variantName}</div>
+            </div>
+            <div className='flex justify-between gap-3'>
+              <div className='flex justify-between gap-1'>
+                <Currency value={price} />
+                <span>/</span>
+                <Percent value={percent} />
+              </div>
+              <div>
+                <Currency value={recommendedPrice} />
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
 
 export interface ShopRubricProductsInterface
   extends AppPaginationInterface<ShopProductInterface>,
@@ -158,23 +202,10 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
     },
     {
       accessor: 'supplierProducts',
-      headTitle: 'Поставщики',
+      headTitle: 'Ценообразование',
       render: ({ cellData }) => {
         const supplierProducts = (cellData || []) as SupplierProductInterface[];
-        return (
-          <div className='space-y-2'>
-            {supplierProducts.map((supplierProduct) => {
-              return (
-                <div className='flex justify-between gap-3' key={`${supplierProduct._id}`}>
-                  <div className='whitespace-nowrap'>{supplierProduct.supplier?.name}</div>
-                  <div>
-                    <Currency value={supplierProduct.recommendedPrice} />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        );
+        return <ProductsListSuppliersList supplierProducts={supplierProducts} />;
       },
     },
     {

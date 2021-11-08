@@ -34,7 +34,6 @@ export const shopProductIdSchema = (args: ValidationSchemaArgsInterface) => {
 
 export const shopProductCommonFieldsSchema = (args: ValidationSchemaArgsInterface) => {
   return {
-    productId: productIdSchema(args),
     price: requiredNumberSchema({ ...args, slug: 'validation.shopProducts.price', min: 1 }),
     available: requiredNumberSchema({
       ...args,
@@ -44,18 +43,12 @@ export const shopProductCommonFieldsSchema = (args: ValidationSchemaArgsInterfac
   };
 };
 
-export const addProductToShopSchema = (args: ValidationSchemaArgsInterface) => {
-  return Yup.object({
-    shopId: shopIdSchema(args),
-    ...shopProductCommonFieldsSchema(args),
-  });
-};
-
 export const addManyProductsToShopSchema = (args: ValidationSchemaArgsInterface) => {
   return Yup.object({
     input: Yup.array().of(
       Yup.object({
         shopId: shopIdSchema(args),
+        productId: productIdSchema(args),
         ...shopProductCommonFieldsSchema(args),
       }),
     ),

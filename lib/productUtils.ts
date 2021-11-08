@@ -600,7 +600,7 @@ export async function checkBarcodeIntersects({
 
 interface CheckShopProductBarcodeIntersectsInterface {
   barcode: string[];
-  shopProductId: Maybe<ObjectIdModel>;
+  shopProductId: ObjectIdModel;
   locale: string;
 }
 
@@ -611,13 +611,6 @@ export async function checkShopProductBarcodeIntersects({
 }: CheckShopProductBarcodeIntersectsInterface): Promise<ShopProductBarcodeDoublesInterface[]> {
   const { db } = await getDatabase();
   const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
-  const idMatch = shopProductId
-    ? {
-        _id: {
-          $ne: shopProductId,
-        },
-      }
-    : {};
   const barcodeDoubles: ShopProductBarcodeDoublesInterface[] = [];
   if (barcode.length < 1) {
     return barcodeDoubles;
@@ -628,7 +621,9 @@ export async function checkShopProductBarcodeIntersects({
       .aggregate<ShopProductInterface>([
         {
           $match: {
-            ...idMatch,
+            _id: {
+              $ne: shopProductId,
+            },
             barcode: barcodeItem,
           },
         },

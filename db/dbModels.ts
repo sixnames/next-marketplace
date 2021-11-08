@@ -5,6 +5,7 @@ import {
   CategoryInterface,
   ProductAttributeInterface,
   RubricInterface,
+  ShopProductBarcodeDoublesInterface,
 } from 'db/uiInterfaces';
 import { ObjectId } from 'mongodb';
 import { IconType } from 'types/iconTypes';
@@ -1116,13 +1117,16 @@ export type RoleRulePayloadModel = PayloadType<RoleRuleModel>;
 export type RubricPayloadModel = PayloadType<RubricModel>;
 export type RubricVariantPayloadModel = PayloadType<RubricVariantModel>;
 export type ShopPayloadModel = PayloadType<ShopModel>;
-export type ShopProductPayloadModel = PayloadType<ShopProductModel>;
 export type SupplierPayloadModel = PayloadType<SupplierModel>;
 export type UserCategoryPayloadModel = PayloadType<UserCategoryModel>;
 export type UserPayloadModel = PayloadType<UserModel>;
 
 export interface ProductPayloadModel extends PayloadType<ProductModel> {
   barcodeDoubles?: BarcodeDoublesInterface[] | null;
+}
+
+export interface ShopProductPayloadModel extends PayloadType<ShopProductModel> {
+  barcodeDoubles?: ShopProductBarcodeDoublesInterface[] | null;
 }
 
 export interface CartPayloadModel {

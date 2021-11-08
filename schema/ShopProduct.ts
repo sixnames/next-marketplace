@@ -1,6 +1,5 @@
 import { SUPPLIER_PRICE_VARIANT_ENUMS } from 'config/common';
-import { getUpdatedShopProductPrices } from 'lib/shopUtils';
-import { arg, enumType, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
+import { arg, enumType, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import { getDatabase } from 'db/mongodb';
 import {
   COL_PRODUCTS,
@@ -17,14 +16,8 @@ import {
   SupplierModel,
   SupplierProductModel,
 } from 'db/dbModels';
-import {
-  getOperationPermission,
-  getRequestParams,
-  getResolverValidationSchema,
-  getSessionCart,
-} from 'lib/sessionHelpers';
+import { getOperationPermission, getRequestParams, getSessionCart } from 'lib/sessionHelpers';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { updateManyShopProductsSchema } from 'validation/shopSchema';
 
 export const ShopProductOldPrice = objectType({
   name: 'ShopProductOldPrice',
@@ -110,17 +103,6 @@ export const ShopProductPayload = objectType({
   },
 });
 
-export const UpdateShopProductInput = inputObjectType({
-  name: 'UpdateShopProductInput',
-  definition(t) {
-    t.nonNull.int('available');
-    t.nonNull.int('price');
-    t.nonNull.objectId('productId');
-    t.nonNull.objectId('shopProductId');
-    t.list.nonNull.string('barcode');
-  },
-});
-
 export const SupplierPriceVariant = enumType({
   name: 'SupplierPriceVariant',
   members: SUPPLIER_PRICE_VARIANT_ENUMS,
@@ -163,106 +145,6 @@ export const UpdateShopProductBarcodeInput = inputObjectType({
 export const ShopProductMutations = extendType({
   type: 'Mutation',
   definition(t) {
-    // Should update many shop products
-    t.nonNull.field('updateManyShopProducts', {
-      type: 'ShopProductPayload',
-      description: 'Should update many shop products',
-      args: {
-        input: nonNull(
-          list(
-            nonNull(
-              arg({
-                type: 'UpdateShopProductInput',
-              }),
-            ),
-          ),
-        ),
-      },
-      resolve: async (_root, args, context): Promise<ShopProductPayloadModel> => {
-        try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'updateShopProduct',
-          });
-          if (!allow) {
-            return {
-              success: false,
-              message,
-            };
-          }
-
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: updateManyShopProductsSchema,
-          });
-          await validationSchema.validate(args);
-
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-          const { input } = args;
-
-          let doneCount = 0;
-          for await (const shopProductValues of input) {
-            const { shopProductId, ...values } = shopProductValues;
-
-            // Check shop product availability
-            const shopProduct = await shopProductsCollection.findOne({ _id: shopProductId });
-            if (!shopProduct) {
-              break;
-            }
-
-            const { discountedPercent, oldPrice, oldPriceUpdater } = getUpdatedShopProductPrices({
-              shopProduct,
-              newPrice: values.price,
-            });
-
-            // Update shop product
-            const updatedShopProductResult = await shopProductsCollection.findOneAndUpdate(
-              { _id: shopProductId },
-              {
-                $set: {
-                  ...values,
-                  oldPrice,
-                  discountedPercent,
-                  updatedAt: new Date(),
-                },
-                ...oldPriceUpdater,
-              },
-              {
-                returnDocument: 'after',
-              },
-            );
-            const updatedShopProduct = updatedShopProductResult.value;
-            if (!updatedShopProductResult.ok || !updatedShopProduct) {
-              break;
-            }
-
-            doneCount = doneCount + 1;
-          }
-
-          if (doneCount !== input.length) {
-            return {
-              success: false,
-              message: await getApiMessage('shopProducts.update.error'),
-            };
-          }
-
-          return {
-            success: true,
-            message: await getApiMessage('shopProducts.update.success'),
-          };
-        } catch (e) {
-          return {
-            success: false,
-            message: getResolverErrorMessage(e),
-          };
-        }
-      },
-    });
-
     // Should add shop products supplier
     t.nonNull.field('addShopProductSupplier', {
       type: 'ShopProductPayload',

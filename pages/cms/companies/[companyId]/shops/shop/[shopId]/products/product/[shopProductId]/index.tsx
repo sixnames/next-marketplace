@@ -75,7 +75,6 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct, cardCo
     >
       <CompanyProductDetails
         routeBasePath={''}
-        rubric={rubric}
         product={product}
         currentCompany={company}
         cardContent={cardContent}

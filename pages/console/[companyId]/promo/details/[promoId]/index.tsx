@@ -4,17 +4,22 @@ import { CompanyInterface } from 'db/uiInterfaces';
 import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getPromoSsr } from 'lib/promoUtils';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import {
+  castDbData,
+  getConsoleInitialData,
+  GetConsoleInitialDataPropsInterface,
+} from 'lib/ssrUtils';
 
-interface PromoDetailsPageInterface extends PagePropsInterface, PromoDetailsInterface {
+interface PromoDetailsPageInterface
+  extends GetConsoleInitialDataPropsInterface,
+    PromoDetailsInterface {
   pageCompany: CompanyInterface;
 }
 
 const PromoListPage: NextPage<PromoDetailsPageInterface> = ({
-  pageUrls,
+  layoutProps,
   promo,
   pageCompany,
   basePath,
@@ -32,7 +37,7 @@ const PromoListPage: NextPage<PromoDetailsPageInterface> = ({
   return (
     <ConsoleLayout title={`${promo.name}`} {...layoutProps}>
       <AppContentWrapper breadcrumbs={breadcrumbs}>
-        <PromoDetails basePath={basePath} currentCompany={pageCompany} promo={promo} />
+        <PromoDetails basePath={basePath} pageCompany={pageCompany} promo={promo} />
       </AppContentWrapper>
     </ConsoleLayout>
   );

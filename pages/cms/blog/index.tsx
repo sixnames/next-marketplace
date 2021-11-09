@@ -7,9 +7,8 @@ import { BlogPostInterface } from 'db/uiInterfaces';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import AppSubNav from 'layout/AppSubNav';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsResult, GetServerSidePropsContext } from 'next';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { ClientNavItemInterface } from 'types/clientTypes';
 
@@ -50,12 +49,14 @@ const BlogPostsListConsumer: React.FC<BlogPostsListConsumerInterface> = ({ posts
   );
 };
 
-interface BlogPostsListPageInterface extends PagePropsInterface, BlogPostsListConsumerInterface {}
+interface BlogPostsListPageInterface
+  extends GetAppInitialDataPropsInterface,
+    BlogPostsListConsumerInterface {}
 
-const BlogPostsListPage: React.FC<BlogPostsListPageInterface> = ({ posts, pageUrls }) => {
+const BlogPostsListPage: React.FC<BlogPostsListPageInterface> = ({ layoutProps, ...props }) => {
   return (
     <ConsoleLayout {...layoutProps} title={pageTitle}>
-      <BlogPostsListConsumer posts={posts} />
+      <BlogPostsListConsumer {...props} />
     </ConsoleLayout>
   );
 };

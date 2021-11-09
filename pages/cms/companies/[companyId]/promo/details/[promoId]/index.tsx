@@ -7,18 +7,17 @@ import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getPromoSsr } from 'lib/promoUtils';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
-interface PromoDetailsPageInterface extends PagePropsInterface, PromoDetailsInterface {
-  pageCompany: CompanyInterface;
-}
+interface PromoDetailsPageInterface
+  extends GetAppInitialDataPropsInterface,
+    PromoDetailsInterface {}
 
 const PromoDetailsPage: React.FC<PromoDetailsPageInterface> = ({
-  pageUrls,
+  layoutProps,
   promo,
   pageCompany,
   basePath,
@@ -44,7 +43,7 @@ const PromoDetailsPage: React.FC<PromoDetailsPageInterface> = ({
   return (
     <ConsoleLayout title={`${promo.name}`} {...layoutProps}>
       <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
-        <PromoDetails basePath={basePath} currentCompany={pageCompany} promo={promo} />
+        <PromoDetails basePath={basePath} pageCompany={pageCompany} promo={promo} />
       </CmsCompanyLayout>
     </ConsoleLayout>
   );

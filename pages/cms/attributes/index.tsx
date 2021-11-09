@@ -20,9 +20,8 @@ import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import Head from 'next/head';
-import { PagePropsInterface } from 'pages/_app';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 
@@ -139,12 +138,14 @@ const AttributesGroupsConsumer: React.FC<AttributesGroupsConsumerInterface> = ({
   );
 };
 
-interface AttributesGroupsInterface extends PagePropsInterface, AttributesGroupsConsumerInterface {}
+interface AttributesGroupsInterface
+  extends GetAppInitialDataPropsInterface,
+    AttributesGroupsConsumerInterface {}
 
-const AttributesGroups: NextPage<AttributesGroupsInterface> = ({ attributesGroups, ...props }) => {
+const AttributesGroups: NextPage<AttributesGroupsInterface> = ({ layoutProps, ...props }) => {
   return (
-    <ConsoleLayout title={pageTitle} {...props}>
-      <AttributesGroupsConsumer attributesGroups={attributesGroups} />
+    <ConsoleLayout title={pageTitle} {...layoutProps}>
+      <AttributesGroupsConsumer {...props} />
     </ConsoleLayout>
   );
 };

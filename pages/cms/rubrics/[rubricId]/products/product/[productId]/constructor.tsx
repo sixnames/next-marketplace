@@ -13,11 +13,10 @@ import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsProductLayout from 'layout/cms/CmsProductLayout';
 import { getCmsProduct } from 'lib/productUtils';
 import { ObjectId } from 'mongodb';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface ProductAttributesInterface {
   product: ProductInterface;
@@ -54,7 +53,9 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product, card
   );
 };
 
-interface ProductPageInterface extends PagePropsInterface, ProductAttributesInterface {}
+interface ProductPageInterface
+  extends GetAppInitialDataPropsInterface,
+    ProductAttributesInterface {}
 
 const Product: NextPage<ProductPageInterface> = ({ layoutProps, ...props }) => {
   return (

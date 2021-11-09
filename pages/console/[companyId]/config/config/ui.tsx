@@ -8,23 +8,26 @@ import { CompanyInterface } from 'db/uiInterfaces';
 import ConsoleCompanyLayout from 'layout/console/ConsoleCompanyLayout';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getConfigPageData } from 'lib/configsUtils';
-import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import {
+  castDbData,
+  getConsoleInitialData,
+  GetConsoleInitialDataPropsInterface,
+} from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
 interface ConfigConsumerInterface extends ConfigsFormTemplateInterface {
-  currentCompany?: CompanyInterface | null;
+  pageCompany: CompanyInterface;
 }
 
 const ConfigConsumer: React.FC<ConfigConsumerInterface> = ({
-  currentCompany,
+  pageCompany,
   assetConfigs,
   normalConfigs,
   rubrics,
 }) => {
   return (
-    <ConsoleCompanyLayout company={currentCompany}>
+    <ConsoleCompanyLayout pageCompany={pageCompany}>
       <Inner>
         <ConfigsFormTemplate
           assetConfigs={assetConfigs}
@@ -36,10 +39,11 @@ const ConfigConsumer: React.FC<ConfigConsumerInterface> = ({
   );
 };
 
-interface ConfigPageInterface extends PagePropsInterface, ConfigConsumerInterface {}
+interface ConfigPageInterface
+  extends GetConsoleInitialDataPropsInterface,
+    ConfigConsumerInterface {}
 
-const Config: NextPage<ConfigPageInterface> = (props) => {
-  const { layoutProps, pageCompany } = props;
+const Config: NextPage<ConfigPageInterface> = ({ layoutProps, ...props }) => {
   return (
     <ConsoleLayout title={'Настройки сайта'} {...layoutProps}>
       <ConfigConsumer {...props} />

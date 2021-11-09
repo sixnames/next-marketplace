@@ -4,7 +4,7 @@ import { DEFAULT_COMPANY_SLUG, CONFIG_GROUP_CATALOGUE } from 'config/common';
 import ConsoleConfigsLayout, { ConfigPageInterface } from 'layout/console/ConsoleConfigsLayout';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getConfigPageData } from 'lib/configsUtils';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 
@@ -18,8 +18,9 @@ const ConfigConsumer: React.FC<ConfigPageInterface> = ({ assetConfigs, normalCon
   );
 };
 
-const Config: NextPage<ConfigPageInterface> = (props) => {
-  const { layoutProps } = props;
+interface ConfigInterface extends ConfigPageInterface, GetAppInitialDataPropsInterface {}
+
+const Config: NextPage<ConfigInterface> = ({ layoutProps, ...props }) => {
   return (
     <ConsoleLayout title={'Настройки сайта'} {...layoutProps}>
       <ConfigConsumer {...props} />

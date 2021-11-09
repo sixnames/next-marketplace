@@ -23,23 +23,22 @@ import { castOrderStatus } from 'lib/orderUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import {
+  castDbData,
+  getConsoleInitialData,
+  GetConsoleInitialDataPropsInterface,
+} from 'lib/ssrUtils';
 
 interface UserOrderConsumerInterface {
   user: UserInterface;
   order: OrderInterface;
-  currentCompany?: CompanyInterface | null;
+  pageCompany: CompanyInterface;
 }
 
-const UserOrderConsumer: React.FC<UserOrderConsumerInterface> = ({
-  user,
-  order,
-  currentCompany,
-}) => {
-  const basePath = `${ROUTE_CONSOLE}/${currentCompany?._id}/customers`;
+const UserOrderConsumer: React.FC<UserOrderConsumerInterface> = ({ user, order, pageCompany }) => {
+  const basePath = `${ROUTE_CONSOLE}/${pageCompany?._id}/customers`;
   const title = `Заказ №${order.orderId}`;
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -61,22 +60,20 @@ const UserOrderConsumer: React.FC<UserOrderConsumerInterface> = ({
   };
 
   return (
-    <ConsoleUserLayout companyId={`${currentCompany?._id}`} user={user} breadcrumbs={breadcrumbs}>
+    <ConsoleUserLayout companyId={`${pageCompany?._id}`} user={user} breadcrumbs={breadcrumbs}>
       <CmsOrderDetails order={order} title={title} />
     </ConsoleUserLayout>
   );
 };
 
-interface UserOrderPageInterface extends PagePropsInterface, UserOrderConsumerInterface {}
+interface UserOrderPageInterface
+  extends GetConsoleInitialDataPropsInterface,
+    UserOrderConsumerInterface {}
 
-const UserOrderPage: NextPage<UserOrderPageInterface> = ({
-  layoutProps,
-  pageCompany,
-  ...props
-}) => {
+const UserOrderPage: NextPage<UserOrderPageInterface> = ({ layoutProps, ...props }) => {
   return (
     <ConsoleLayout {...layoutProps}>
-      <UserOrderConsumer {...props} currentCompany={pageCompany} />
+      <UserOrderConsumer {...props} />
     </ConsoleLayout>
   );
 };
@@ -367,6 +364,7 @@ export const getServerSideProps = async (
       ...props,
       user: castDbData(user),
       order: castDbData(order),
+      pageCompany: castDbData(props.layoutProps.pageCompany),
     },
   };
 };

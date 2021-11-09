@@ -8,22 +8,21 @@ import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
 import { getPageGroupsSsr } from 'lib/pageUtils';
 import { ObjectId } from 'mongodb';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 const pageTitle = 'Группы страниц';
 
 interface PageGroupsPageInterface
-  extends PagePropsInterface,
+  extends GetAppInitialDataPropsInterface,
     Omit<PageGroupsListInterface, 'basePath' | 'pageTitle'> {
   pageCompany: CompanyInterface;
 }
 
 const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({
-  pageUrls,
+  layoutProps,
   pagesGroups,
   pageCompany,
 }) => {

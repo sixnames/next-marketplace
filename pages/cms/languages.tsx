@@ -21,11 +21,10 @@ import {
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import Head from 'next/head';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 const pageTitle = 'Языки сайта';
 
@@ -168,7 +167,9 @@ const LanguagesContent: React.FC<LanguagesContentInterface> = ({ languages }) =>
   );
 };
 
-interface LanguagesPageInterface extends PagePropsInterface, LanguagesContentInterface {}
+interface LanguagesPageInterface
+  extends GetAppInitialDataPropsInterface,
+    LanguagesContentInterface {}
 
 const LanguagesPage: NextPage<LanguagesPageInterface> = ({ layoutProps, languages }) => {
   return (

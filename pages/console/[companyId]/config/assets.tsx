@@ -23,7 +23,7 @@ const CompanyAssetsConsumer: React.FC<CompanyAssetsConsumerInterface> = ({ pageC
   const router = useRouter();
 
   return (
-    <ConsoleCompanyLayout company={pageCompany}>
+    <ConsoleCompanyLayout pageCompany={pageCompany}>
       <Inner testId={'company-assets-list'}>
         <Formik
           enableReinitialize

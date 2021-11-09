@@ -16,10 +16,10 @@ import { Form, Formik } from 'formik';
 import { createPromoSchema } from 'validation/promoSchema';
 
 export interface CreatePromoModalInterface {
-  currentCompany: CompanyInterface;
+  pageCompany: CompanyInterface;
 }
 
-const CreatePromoModal: React.FC<CreatePromoModalInterface> = ({ currentCompany }) => {
+const CreatePromoModal: React.FC<CreatePromoModalInterface> = ({ pageCompany }) => {
   const { showLoading } = useAppContext();
   const validationSchema = useValidationSchema({
     schema: createPromoSchema,
@@ -28,8 +28,8 @@ const CreatePromoModal: React.FC<CreatePromoModalInterface> = ({ currentCompany 
   const [createPromoMutation] = useCreatePromo();
 
   const initialValues: CreatePromoInputInterface = {
-    companyId: `${currentCompany._id}`,
-    companySlug: currentCompany.slug,
+    companyId: `${pageCompany._id}`,
+    companySlug: pageCompany.slug,
     nameI18n: {
       [DEFAULT_LOCALE]: '',
     },

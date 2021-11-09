@@ -7,22 +7,24 @@ import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getI18nLocaleValue } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
-import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import {
+  castDbData,
+  getConsoleInitialData,
+  GetConsoleInitialDataPropsInterface,
+} from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import ShopRubrics, { ShopRubricsInterface } from 'components/shops/ShopRubrics';
 
 interface CompanyShopProductsInterface
-  extends PagePropsInterface,
+  extends GetConsoleInitialDataPropsInterface,
     Omit<ShopRubricsInterface, 'basePath'> {}
 
 const CompanyShopProducts: NextPage<CompanyShopProductsInterface> = ({
-  pageUrls,
+  layoutProps,
   rubrics,
   shop,
-  pageCompany,
 }) => {
   const companyBasePath = `${ROUTE_CONSOLE}/${shop.companyId}/shops`;
   const breadcrumbs: AppContentWrapperBreadCrumbs = {

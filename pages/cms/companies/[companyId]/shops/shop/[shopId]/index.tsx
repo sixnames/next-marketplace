@@ -5,13 +5,14 @@ import { getDatabase } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { ObjectId } from 'mongodb';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import ShopDetails, { ShopDetailsInterface } from 'components/shops/ShopDetails';
 
-interface CompanyShopInterface extends PagePropsInterface, Omit<ShopDetailsInterface, 'basePath'> {}
+interface CompanyShopInterface
+  extends GetAppInitialDataPropsInterface,
+    Omit<ShopDetailsInterface, 'basePath'> {}
 
 const CompanyShop: NextPage<CompanyShopInterface> = ({ layoutProps, shop }) => {
   const companyBasePath = `${ROUTE_CMS}/companies/${shop.companyId}`;

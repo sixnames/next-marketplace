@@ -26,7 +26,7 @@ const ConfigConsumer: React.FC<ConfigConsumerInterface> = ({
   normalConfigs,
 }) => {
   return (
-    <ConsoleCompanyLayout company={pageCompany}>
+    <ConsoleCompanyLayout pageCompany={pageCompany}>
       <Inner>
         <ConfigsFormTemplate assetConfigs={assetConfigs} normalConfigs={normalConfigs} />
       </Inner>

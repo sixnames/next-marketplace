@@ -19,10 +19,9 @@ import { castOrderStatus } from 'lib/orderUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface OrderPageConsumerInterface {
   order: OrderInterface;
@@ -49,12 +48,12 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
   );
 };
 
-interface OrderPageInterface extends OrderPageConsumerInterface, PagePropsInterface {}
+interface OrderPageInterface extends OrderPageConsumerInterface, GetAppInitialDataPropsInterface {}
 
-const OrderPage: NextPage<OrderPageInterface> = ({ layoutProps, order }) => {
+const OrderPage: NextPage<OrderPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <ConsoleLayout {...layoutProps} title={`Заказ №${order.itemId}`}>
-      <OrderPageConsumer order={order} />
+    <ConsoleLayout {...layoutProps} title={`Заказ №${props.order.itemId}`}>
+      <OrderPageConsumer {...props} />
     </ConsoleLayout>
   );
 };

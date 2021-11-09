@@ -4,11 +4,10 @@ import { ProductInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsProductLayout from 'layout/cms/CmsProductLayout';
 import { getCmsProduct } from 'lib/productUtils';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface ProductDetailsInterface {
   product: ProductInterface;
@@ -41,7 +40,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, companySlu
   );
 };
 
-interface ProductPageInterface extends PagePropsInterface, ProductDetailsInterface {}
+interface ProductPageInterface extends GetAppInitialDataPropsInterface, ProductDetailsInterface {}
 
 const Product: NextPage<ProductPageInterface> = ({ layoutProps, ...props }) => {
   return (

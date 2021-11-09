@@ -18,11 +18,10 @@ import useValidationSchema from 'hooks/useValidationSchema';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import { getFieldStringLocale } from 'lib/i18n';
 import Head from 'next/head';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { createOrderStatusSchema, updateOrderStatusSchema } from 'validation/orderStatusSchema';
 
 const pageTitle = 'Статусы заказа';
@@ -143,15 +142,14 @@ const OrderStatusesConsumer: React.FC<OrderStatusesConsumerInterface> = ({ order
   );
 };
 
-interface OrderStatusesPageInterface extends PagePropsInterface, OrderStatusesConsumerInterface {}
+interface OrderStatusesPageInterface
+  extends GetAppInitialDataPropsInterface,
+    OrderStatusesConsumerInterface {}
 
-const OrderStatusesPage: NextPage<OrderStatusesPageInterface> = ({
-  layoutProps,
-  orderStatuses,
-}) => {
+const OrderStatusesPage: NextPage<OrderStatusesPageInterface> = ({ layoutProps, ...props }) => {
   return (
     <ConsoleLayout {...layoutProps}>
-      <OrderStatusesConsumer orderStatuses={orderStatuses} />
+      <OrderStatusesConsumer {...props} />
     </ConsoleLayout>
   );
 };

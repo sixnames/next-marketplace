@@ -55,7 +55,7 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
       context,
       locale,
     });
-    const userCartId = user ? user.cartId : null;
+    const userCartId = user ? user.me.cartId : null;
 
     // Get cart id from cookies or session user
     const cookies = nookies.get({ req });
@@ -279,7 +279,7 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
       // Update user cartId field
       if (user) {
         await usersCollection.findOneAndUpdate(
-          { _id: user._id },
+          { _id: user.me._id },
           {
             $set: {
               cartId: newCart._id,

@@ -25,9 +25,8 @@ import { ObjectId } from 'mongodb';
 import Head from 'next/head';
 import * as React from 'react';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { PagePropsInterface } from 'pages/_app';
 import { optionsGroupModalSchema } from 'validation/optionsGroupSchema';
 
 interface OptionsGroupConsumerInterface {
@@ -143,12 +142,14 @@ const OptionsGroupConsumer: React.FC<OptionsGroupConsumerInterface> = ({ options
   );
 };
 
-interface OptionsGroupPageInterface extends PagePropsInterface, OptionsGroupConsumerInterface {}
+interface OptionsGroupPageInterface
+  extends GetAppInitialDataPropsInterface,
+    OptionsGroupConsumerInterface {}
 
-const OptionsGroupPage: NextPage<OptionsGroupPageInterface> = ({ layoutProps, optionsGroup }) => {
+const OptionsGroupPage: NextPage<OptionsGroupPageInterface> = ({ layoutProps, ...props }) => {
   return (
     <ConsoleLayout {...layoutProps}>
-      <OptionsGroupConsumer optionsGroup={optionsGroup} />
+      <OptionsGroupConsumer {...props} />
     </ConsoleLayout>
   );
 };

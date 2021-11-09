@@ -6,19 +6,22 @@ import { CompanyInterface } from 'db/uiInterfaces';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getPromoListSsr } from 'lib/promoUtils';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import {
+  castDbData,
+  getConsoleInitialData,
+  GetConsoleInitialDataPropsInterface,
+} from 'lib/ssrUtils';
 
 const pageTitle = 'Акции';
 
-interface PromoListPageInterface extends PagePropsInterface, PromoListInterface {
+interface PromoListPageInterface extends GetConsoleInitialDataPropsInterface, PromoListInterface {
   pageCompany: CompanyInterface;
 }
 
 const PromoListPage: NextPage<PromoListPageInterface> = ({
-  pageUrls,
+  layoutProps,
   promoList,
   pageCompany,
   basePath,
@@ -28,7 +31,7 @@ const PromoListPage: NextPage<PromoListPageInterface> = ({
       <AppContentWrapper>
         <Inner>
           <Title>{pageTitle}</Title>
-          <PromoList promoList={promoList} currentCompany={pageCompany} basePath={basePath} />
+          <PromoList promoList={promoList} pageCompany={pageCompany} basePath={basePath} />
         </Inner>
       </AppContentWrapper>
     </ConsoleLayout>

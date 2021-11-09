@@ -8,14 +8,13 @@ import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
 import { getPagesListSsr } from 'lib/pageUtils';
 import { ObjectId } from 'mongodb';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface PagesListPageInterface
-  extends PagePropsInterface,
+  extends GetAppInitialDataPropsInterface,
     Omit<PagesListInterface, 'basePath' | 'breadcrumbs'> {
   pageCompany: CompanyInterface;
 }

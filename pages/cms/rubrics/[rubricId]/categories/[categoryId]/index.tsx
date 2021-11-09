@@ -30,10 +30,9 @@ import CmsCategoryLayout from 'layout/cms/CmsCategoryLayout';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { updateCategorySchema } from 'validation/categorySchema';
 
 interface CategoryDetailsInterface {
@@ -274,23 +273,12 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
   );
 };
 
-interface CategoryPageInterface extends PagePropsInterface, CategoryDetailsInterface {}
+interface CategoryPageInterface extends GetAppInitialDataPropsInterface, CategoryDetailsInterface {}
 
-const CategoryPage: NextPage<CategoryPageInterface> = ({
-  pageUrls,
-  category,
-  seoBottom,
-  seoTop,
-  companySlug,
-}) => {
+const CategoryPage: NextPage<CategoryPageInterface> = ({ layoutProps, ...props }) => {
   return (
     <ConsoleLayout {...layoutProps}>
-      <CategoryDetails
-        category={category}
-        seoTop={seoTop}
-        companySlug={companySlug}
-        seoBottom={seoBottom}
-      />
+      <CategoryDetails {...props} />
     </ConsoleLayout>
   );
 };

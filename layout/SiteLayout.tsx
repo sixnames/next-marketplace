@@ -8,7 +8,7 @@ import { SiteUserContextProvider } from 'context/userSiteUserContext';
 import { PagesGroupInterface, RubricInterface } from 'db/uiInterfaces';
 import Footer from 'layout/footer/Footer';
 import Header from 'layout/header/Header';
-import Meta, { MetaInterface } from 'layout/Meta';
+import Meta, { MetaInterface, PageUrlsInterface } from 'layout/Meta';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
@@ -24,6 +24,7 @@ export interface SiteLayoutProviderInterface
   description?: string;
   navRubrics: RubricInterface[];
   previewImage?: string;
+  pageUrls: PageUrlsInterface;
 }
 
 interface SiteLayoutConsumerInterface extends SiteLayoutCatalogueCreatedPages, MetaInterface {}

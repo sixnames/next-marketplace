@@ -27,10 +27,13 @@ import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 import { useRouter } from 'next/router';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import {
+  castDbData,
+  getConsoleInitialData,
+  GetConsoleInitialDataPropsInterface,
+} from 'lib/ssrUtils';
 
 interface OrderPageConsumerInterface {
   order: OrderInterface;
@@ -100,12 +103,14 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
   );
 };
 
-interface OrderPageInterface extends PagePropsInterface, OrderPageConsumerInterface {}
+interface OrderPageInterface
+  extends GetConsoleInitialDataPropsInterface,
+    OrderPageConsumerInterface {}
 
-const OrderPage: NextPage<OrderPageInterface> = ({ layoutProps, order, pageCompany }) => {
+const OrderPage: NextPage<OrderPageInterface> = ({ layoutProps, ...props }) => {
   return (
     <ConsoleLayout {...layoutProps}>
-      <OrderPageConsumer order={order} />
+      <OrderPageConsumer {...props} />
     </ConsoleLayout>
   );
 };

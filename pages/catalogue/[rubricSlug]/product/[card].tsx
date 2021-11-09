@@ -4,6 +4,7 @@ import FixedButtons from 'components/button/FixedButtons';
 import Inner from 'components/Inner';
 import { CARD_LAYOUT_HALF_COLUMNS, DEFAULT_LAYOUT } from 'config/constantSelects';
 import { useConfigContext } from 'context/configContext';
+import { useSiteUserContext } from 'context/userSiteUserContext';
 import { InitialCardDataInterface } from 'db/uiInterfaces';
 import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
 import { getCardData } from 'lib/cardUtils';
@@ -38,6 +39,7 @@ interface CardInterface extends SiteLayoutProviderInterface {
 
 const Card: NextPage<CardInterface> = ({ cardData, domainCompany, ...props }) => {
   const { currentCity } = props;
+  const sessionUser = useSiteUserContext();
   const { configs } = useConfigContext();
   if (!cardData) {
     return (
@@ -65,14 +67,14 @@ const Card: NextPage<CardInterface> = ({ cardData, domainCompany, ...props }) =>
         companySlug={domainCompany?.slug}
         companyId={domainCompany ? `${domainCompany._id}` : null}
       />
-      {configs.showAdminUiInCatalogue ? (
+      {sessionUser?.showAdminUiInCatalogue ? (
         <FixedButtons>
           <Inner lowTop lowBottom>
             <Button
               size={'small'}
               onClick={() => {
                 window.open(
-                  `${configs.editLinkBasePath}/rubrics/${cardData.product.rubricId}/products/product/${cardData.product._id}`,
+                  `${sessionUser.editLinkBasePath}/rubrics/${cardData.product.rubricId}/products/product/${cardData.product._id}`,
                   '_blank',
                 );
               }}
@@ -100,7 +102,7 @@ export async function getServerSideProps(
   // console.log(`After initial data `, new Date().getTime() - startTime);
 
   // card data
-  const { useUniqueConstructor, showAdminUiInCatalogue } = props.initialData.configs;
+  const { useUniqueConstructor } = props.initialData.configs;
   const rawCardData = await getCardData({
     locale: `${locale}`,
     city: props.sessionCity,
@@ -108,7 +110,6 @@ export async function getServerSideProps(
     companyId: props.domainCompany?._id,
     companySlug: props.companySlug,
     useUniqueConstructor,
-    showAdminUiInCatalogue,
   });
   const cardData = castDbData(rawCardData);
   // console.log(`After card `, new Date().getTime() - startTime);

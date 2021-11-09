@@ -18,10 +18,13 @@ import AppContentWrapper from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import {
+  castDbData,
+  getConsoleInitialData,
+  GetConsoleInitialDataPropsInterface,
+} from 'lib/ssrUtils';
 
 interface UserCategoriesConsumerInterface {
   userCategories: UserCategoryInterface[];
@@ -127,17 +130,13 @@ const UserCategoriesConsumer: NextPage<UserCategoriesConsumerInterface> = ({
 };
 
 interface UserCategoriesInterface
-  extends PagePropsInterface,
-    Omit<UserCategoriesConsumerInterface, 'companyId'> {}
+  extends GetConsoleInitialDataPropsInterface,
+    UserCategoriesConsumerInterface {}
 
-const UserCategories: NextPage<UserCategoriesInterface> = ({
-  pageUrls,
-  userCategories,
-  pageCompany,
-}) => {
+const UserCategories: NextPage<UserCategoriesInterface> = ({ layoutProps, ...props }) => {
   return (
     <ConsoleLayout {...layoutProps}>
-      <UserCategoriesConsumer userCategories={userCategories} companyId={`${pageCompany?._id}`} />
+      <UserCategoriesConsumer {...props} />
     </ConsoleLayout>
   );
 };
@@ -175,8 +174,8 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      pageCompany: props.layoutProps.pageCompany,
       userCategories: castDbData(userCategories),
+      companyId: `${props.layoutProps.pageCompany._id}`,
     },
   };
 };

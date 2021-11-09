@@ -15,11 +15,10 @@ import { getFieldStringLocale } from 'lib/i18n';
 import { getRoleRulesAst } from 'lib/roleUtils';
 import { ObjectId } from 'mongodb';
 import Head from 'next/head';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ClientNavItemInterface } from 'types/clientTypes';
 
 interface RoleRulesConsumerInterface {
@@ -148,12 +147,14 @@ const RoleRulesConsumer: React.FC<RoleRulesConsumerInterface> = ({ role }) => {
   );
 };
 
-interface RoleRulesPageInterface extends PagePropsInterface, RoleRulesConsumerInterface {}
+interface RoleRulesPageInterface
+  extends GetAppInitialDataPropsInterface,
+    RoleRulesConsumerInterface {}
 
-const RoleRules: NextPage<RoleRulesPageInterface> = ({ layoutProps, role }) => {
+const RoleRules: NextPage<RoleRulesPageInterface> = ({ layoutProps, ...props }) => {
   return (
     <ConsoleLayout {...layoutProps}>
-      <RoleRulesConsumer role={role} />
+      <RoleRulesConsumer {...props} />
     </ConsoleLayout>
   );
 };

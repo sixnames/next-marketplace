@@ -1,7 +1,7 @@
 import WpImage from 'components/WpImage';
 import { ROUTE_CATALOGUE } from 'config/common';
-import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
+import { useSiteUserContext } from 'context/userSiteUserContext';
 import { ProductSnippetInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import Link from 'components/Link/Link';
@@ -20,7 +20,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
   showSnippetRating,
   gridCatalogueColumns,
 }) => {
-  const { configs } = useConfigContext();
+  const sessionUser = useSiteUserContext();
   const { addShoplessProductToCart, addProductToCart } = useSiteContext();
   const { rubricSlug, product } = shopProduct;
   if (!product) {
@@ -67,7 +67,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
       }`}
     >
       {/*edit button for admin*/}
-      {configs.showAdminUiInCatalogue ? (
+      {sessionUser?.showAdminUiInCatalogue ? (
         <div className='absolute top-0 left-0 z-50'>
           <ControlButton
             size={'small'}
@@ -78,7 +78,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
             roundedTopLeft
             onClick={() => {
               window.open(
-                `${configs.editLinkBasePath}/rubrics/${product.rubricId}/products/product/${product._id}`,
+                `${sessionUser.editLinkBasePath}/rubrics/${product.rubricId}/products/product/${product._id}`,
                 '_blank',
               );
             }}

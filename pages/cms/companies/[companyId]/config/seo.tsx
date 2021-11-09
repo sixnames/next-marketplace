@@ -7,13 +7,12 @@ import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getConfigPageData } from 'lib/configsUtils';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
 interface ConfigConsumerInterface extends ConfigPageInterface {
-  pageCompany?: CompanyInterface | null;
+  pageCompany: CompanyInterface;
 }
 
 const ConfigConsumer: React.FC<ConfigConsumerInterface> = ({
@@ -45,13 +44,13 @@ const ConfigConsumer: React.FC<ConfigConsumerInterface> = ({
 };
 
 interface ConfigInterface
-  extends PagePropsInterface,
+  extends GetAppInitialDataPropsInterface,
     ConfigPageInterface,
     ConfigConsumerInterface {}
 
-const Config: NextPage<ConfigInterface> = (props) => {
+const Config: NextPage<ConfigInterface> = ({ layoutProps, ...props }) => {
   return (
-    <ConsoleLayout title={'Настройки сайта'} {...props}>
+    <ConsoleLayout title={'Настройки сайта'} {...layoutProps}>
       <ConfigConsumer {...props} />
     </ConsoleLayout>
   );

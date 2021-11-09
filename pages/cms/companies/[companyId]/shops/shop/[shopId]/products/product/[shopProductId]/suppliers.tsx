@@ -12,10 +12,9 @@ import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import ConsoleShopProductLayout from 'layout/console/ConsoleShopProductLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getConsoleShopProduct } from 'lib/productUtils';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface ProductDetailsInterface extends CompanyProductSuppliersInterface {}
 
@@ -87,7 +86,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
   );
 };
 
-interface ProductPageInterface extends PagePropsInterface, ProductDetailsInterface {}
+interface ProductPageInterface extends GetAppInitialDataPropsInterface, ProductDetailsInterface {}
 
 const Product: NextPage<ProductPageInterface> = ({ layoutProps, ...props }) => {
   return (

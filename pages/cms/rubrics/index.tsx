@@ -23,10 +23,9 @@ import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface RubricsRouteInterface {
   rubrics: RubricInterface[];
@@ -159,12 +158,12 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, companySlug })
   );
 };
 
-interface RubricsInterface extends PagePropsInterface, RubricsRouteInterface {}
+interface RubricsInterface extends GetAppInitialDataPropsInterface, RubricsRouteInterface {}
 
-const Rubrics: NextPage<RubricsInterface> = ({ layoutProps, companySlug, rubrics }) => {
+const Rubrics: NextPage<RubricsInterface> = ({ layoutProps, ...props }) => {
   return (
     <ConsoleLayout {...layoutProps}>
-      <RubricsRoute rubrics={rubrics} companySlug={companySlug} />
+      <RubricsRoute {...props} />
     </ConsoleLayout>
   );
 };

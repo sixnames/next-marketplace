@@ -17,11 +17,10 @@ import AppContentWrapper from 'layout/AppContentWrapper';
 import { getFieldStringLocale } from 'lib/i18n';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface RolesConsumerInterface {
   roles: RoleInterface[];
@@ -141,12 +140,12 @@ const RolesConsumer: React.FC<RolesConsumerInterface> = ({ roles }) => {
   );
 };
 
-interface RolesPageInterface extends PagePropsInterface, RolesConsumerInterface {}
+interface RolesPageInterface extends GetAppInitialDataPropsInterface, RolesConsumerInterface {}
 
-const RolesPage: NextPage<RolesPageInterface> = ({ layoutProps, roles }) => {
+const RolesPage: NextPage<RolesPageInterface> = ({ layoutProps, ...props }) => {
   return (
     <ConsoleLayout {...layoutProps}>
-      <RolesConsumer roles={roles} />
+      <RolesConsumer {...props} />
     </ConsoleLayout>
   );
 };

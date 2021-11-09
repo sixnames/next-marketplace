@@ -21,11 +21,10 @@ import { castOrderStatus } from 'lib/orderUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface UserOrderConsumerInterface {
   user: UserInterface;
@@ -60,7 +59,7 @@ const UserOrdersConsumer: React.FC<UserOrderConsumerInterface> = ({ user, order 
   );
 };
 
-interface UserOrderInterface extends PagePropsInterface, UserOrderConsumerInterface {}
+interface UserOrderInterface extends GetAppInitialDataPropsInterface, UserOrderConsumerInterface {}
 
 const UserOrderPage: NextPage<UserOrderInterface> = ({ layoutProps, ...props }) => {
   return (

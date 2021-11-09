@@ -24,11 +24,10 @@ import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import { getFieldStringLocale } from 'lib/i18n';
 import Head from 'next/head';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 const pageTitle = 'Навигация';
 
@@ -191,12 +190,14 @@ const NavItemsPageConsumer: React.FC<NavItemsPageConsumerInterface> = ({ navItem
   );
 };
 
-interface NavItemsPagePageInterface extends PagePropsInterface, NavItemsPageConsumerInterface {}
+interface NavItemsPagePageInterface
+  extends GetAppInitialDataPropsInterface,
+    NavItemsPageConsumerInterface {}
 
-const NavItemsPage: NextPage<NavItemsPagePageInterface> = ({ layoutProps, navItemGroups }) => {
+const NavItemsPage: NextPage<NavItemsPagePageInterface> = ({ layoutProps, ...props }) => {
   return (
     <ConsoleLayout {...layoutProps}>
-      <NavItemsPageConsumer navItemGroups={navItemGroups} />
+      <NavItemsPageConsumer {...props} />
     </ConsoleLayout>
   );
 };

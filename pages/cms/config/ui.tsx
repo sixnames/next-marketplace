@@ -5,7 +5,7 @@ import { getConfigRubrics } from 'db/dao/configs/getConfigRubrics';
 import ConsoleConfigsLayout, { ConfigPageInterface } from 'layout/console/ConsoleConfigsLayout';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getConfigPageData } from 'lib/configsUtils';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 
@@ -27,8 +27,9 @@ const ConfigConsumer: React.FC<ConfigPageInterface> = ({
   );
 };
 
-const Config: NextPage<ConfigPageInterface> = (props) => {
-  const { layoutProps } = props;
+interface ConfigInterface extends GetAppInitialDataPropsInterface, ConfigPageInterface {}
+
+const Config: NextPage<ConfigInterface> = ({ layoutProps, ...props }) => {
   return (
     <ConsoleLayout title={'Настройки сайта'} {...layoutProps}>
       <ConfigConsumer {...props} />
@@ -38,7 +39,7 @@ const Config: NextPage<ConfigPageInterface> = (props) => {
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<ConfigPageInterface>> => {
+): Promise<GetServerSidePropsResult<ConfigInterface>> => {
   const { props } = await getAppInitialData({ context });
   if (!props) {
     return {

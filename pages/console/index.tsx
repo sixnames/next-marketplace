@@ -3,12 +3,11 @@ import Title from 'components/Title';
 import { ROUTE_CONSOLE, ROUTE_SIGN_IN } from 'config/common';
 import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { getConsoleInitialData } from 'lib/ssrUtils';
+import { getConsoleInitialData, GetConsoleInitialDataPropsInterface } from 'lib/ssrUtils';
 
-const App: NextPage<PagePropsInterface> = ({ sessionUser }) => {
+const App: NextPage<GetConsoleInitialDataPropsInterface> = ({ layoutProps }) => {
   const router = useRouter();
 
   return (
@@ -16,7 +15,7 @@ const App: NextPage<PagePropsInterface> = ({ sessionUser }) => {
       <Title>Панель управления</Title>
       <div className='mb-8 text-lg'>Ваши компании</div>
       <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
-        {(sessionUser?.companies || []).map((company) => {
+        {(layoutProps.sessionUser.me.companies || []).map((company) => {
           return (
             <div
               className='bg-secondary rounded-lg shadow-lg grid grid-cols-4 gap-4 px-4 py-6 cursor-pointer'
@@ -49,7 +48,7 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<any>> => {
   const { props } = await getConsoleInitialData({ context });
-  if (!props?.sessionUser) {
+  if (!props?.layoutProps.sessionUser) {
     return {
       redirect: {
         permanent: false,
@@ -58,7 +57,10 @@ export const getServerSideProps = async (
     };
   }
 
-  if (!props?.sessionUser?.role || noNaN(props?.sessionUser?.companies?.length) < 1) {
+  if (
+    !props?.layoutProps.sessionUser?.me.role ||
+    noNaN(props?.layoutProps.sessionUser?.me.companies?.length) < 1
+  ) {
     return {
       redirect: {
         permanent: false,
@@ -67,8 +69,11 @@ export const getServerSideProps = async (
     };
   }
 
-  if (props?.sessionUser?.companies && noNaN(props.sessionUser.companies.length) === 1) {
-    const company = props?.sessionUser?.companies[0];
+  if (
+    props.layoutProps.sessionUser?.me.companies &&
+    noNaN(props.layoutProps.sessionUser.me.companies.length) === 1
+  ) {
+    const company = props?.layoutProps.sessionUser?.me.companies[0];
     return {
       redirect: {
         destination: `${ROUTE_CONSOLE}/${company?._id}`,

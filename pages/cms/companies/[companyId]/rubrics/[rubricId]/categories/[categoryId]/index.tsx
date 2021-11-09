@@ -22,16 +22,15 @@ import CmsCategoryLayout from 'layout/cms/CmsCategoryLayout';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface CategoryDetailsInterface extends CompanyRubricCategoryDetailsInterface {}
 
 const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
   category,
-  currentCompany,
+  pageCompany,
   seoTop,
   seoBottom,
   routeBasePath,
@@ -44,7 +43,7 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
         href: `${ROUTE_CMS}/companies`,
       },
       {
-        name: `${currentCompany?.name}`,
+        name: `${pageCompany?.name}`,
         href: routeBasePath,
       },
       {
@@ -71,7 +70,7 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
     >
       <CompanyRubricCategoryDetails
         category={category}
-        currentCompany={currentCompany}
+        pageCompany={pageCompany}
         seoTop={seoTop}
         seoBottom={seoBottom}
         routeBasePath={routeBasePath}
@@ -80,7 +79,7 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
   );
 };
 
-interface CategoryPageInterface extends PagePropsInterface, CategoryDetailsInterface {}
+interface CategoryPageInterface extends GetAppInitialDataPropsInterface, CategoryDetailsInterface {}
 
 const CategoryPage: NextPage<CategoryPageInterface> = ({ layoutProps, ...props }) => {
   return (

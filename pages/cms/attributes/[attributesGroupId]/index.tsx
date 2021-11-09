@@ -15,9 +15,8 @@ import { useUpdateAttributesGroupMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import { getFieldStringLocale } from 'lib/i18n';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import Head from 'next/head';
-import { PagePropsInterface } from 'pages/_app';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { Form, Formik } from 'formik';
@@ -128,13 +127,13 @@ const AttributesGroupConsumer: React.FC<AttributesGroupConsumerInterface> = ({
 };
 
 interface AttributesGroupPageInterface
-  extends PagePropsInterface,
+  extends GetAppInitialDataPropsInterface,
     AttributesGroupConsumerInterface {}
 
-const AttributesGroup: NextPage<AttributesGroupPageInterface> = ({ attributesGroup, ...props }) => {
+const AttributesGroup: NextPage<AttributesGroupPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <ConsoleLayout title={pageTitle} {...props}>
-      <AttributesGroupConsumer attributesGroup={attributesGroup} />
+    <ConsoleLayout title={pageTitle} {...layoutProps}>
+      <AttributesGroupConsumer {...props} />
     </ConsoleLayout>
   );
 };

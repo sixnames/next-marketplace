@@ -16,9 +16,8 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { PagePropsInterface } from 'pages/_app';
 import { GetServerSidePropsContext, NextPage } from 'next';
-import { getAppInitialData } from 'lib/ssrUtils';
+import { getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { createCompanyClientSchema } from 'validation/companySchema';
 
 const pageTitle = 'Создание компании';
@@ -122,7 +121,7 @@ const CreateCompanyContent: React.FC = () => {
   );
 };
 
-const CompaniesCreate: NextPage<PagePropsInterface> = ({ layoutProps }) => {
+const CompaniesCreate: NextPage<GetAppInitialDataPropsInterface> = ({ layoutProps }) => {
   return (
     <ConsoleLayout {...layoutProps}>
       <CreateCompanyContent />

@@ -16,11 +16,10 @@ import AppSubNav from 'layout/AppSubNav';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
 import Head from 'next/head';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ClientNavItemInterface } from 'types/clientTypes';
 import { updateRoleSchema } from 'validation/roleSchema';
 
@@ -122,12 +121,14 @@ const RoleDetailsConsumer: React.FC<RoleDetailsConsumerInterface> = ({ role }) =
   );
 };
 
-interface RoleDetailsInterface extends PagePropsInterface, RoleDetailsConsumerInterface {}
+interface RoleDetailsInterface
+  extends GetAppInitialDataPropsInterface,
+    RoleDetailsConsumerInterface {}
 
-const RoleDetails: NextPage<RoleDetailsInterface> = ({ layoutProps, role }) => {
+const RoleDetails: NextPage<RoleDetailsInterface> = ({ layoutProps, ...props }) => {
   return (
     <ConsoleLayout {...layoutProps}>
-      <RoleDetailsConsumer role={role} />
+      <RoleDetailsConsumer {...props} />
     </ConsoleLayout>
   );
 };

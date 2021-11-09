@@ -4,16 +4,15 @@ import Title from 'components/Title';
 import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import { getPageGroupsSsr } from 'lib/pageUtils';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 const pageTitle = 'Группы страниц';
 
 interface PageGroupsPageInterface
-  extends PagePropsInterface,
+  extends GetAppInitialDataPropsInterface,
     Omit<PageGroupsListInterface, 'basePath' | 'pageTitle'> {}
 
 const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({ layoutProps, pagesGroups }) => {

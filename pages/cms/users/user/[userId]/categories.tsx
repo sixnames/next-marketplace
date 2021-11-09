@@ -19,11 +19,10 @@ import CmsUserLayout from 'layout/cms/CmsUserLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
 import { ObjectId } from 'mongodb';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface UserCategoriesConsumerInterface {
   user: UserInterface;
@@ -139,7 +138,9 @@ const UserCategoriesConsumer: React.FC<UserCategoriesConsumerInterface> = ({ use
   );
 };
 
-interface UserCategoriesPageInterface extends PagePropsInterface, UserCategoriesConsumerInterface {}
+interface UserCategoriesPageInterface
+  extends GetAppInitialDataPropsInterface,
+    UserCategoriesConsumerInterface {}
 
 const UserCategoriesPage: NextPage<UserCategoriesPageInterface> = ({ layoutProps, ...props }) => {
   return (

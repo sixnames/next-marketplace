@@ -16,20 +16,23 @@ import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { ObjectId } from 'mongodb';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import {
+  castDbData,
+  getConsoleInitialData,
+  GetConsoleInitialDataPropsInterface,
+} from 'lib/ssrUtils';
 
 interface UserDetailsConsumerInterface {
   user: UserInterface;
-  currentCompany?: CompanyInterface | null;
+  pageCompany: CompanyInterface;
   companies: CompanyInterface[];
 }
 
 const UserDetailsConsumer: React.FC<UserDetailsConsumerInterface> = ({
   user,
-  currentCompany,
+  pageCompany,
   companies,
 }) => {
   const { showModal } = useAppContext();
@@ -40,13 +43,13 @@ const UserDetailsConsumer: React.FC<UserDetailsConsumerInterface> = ({
     config: [
       {
         name: 'Клиенты',
-        href: `${ROUTE_CONSOLE}/${currentCompany?._id}/customers`,
+        href: `${ROUTE_CONSOLE}/${pageCompany?._id}/customers`,
       },
     ],
   };
 
   return (
-    <ConsoleUserLayout companyId={`${currentCompany?._id}`} user={user} breadcrumbs={breadcrumbs}>
+    <ConsoleUserLayout companyId={`${pageCompany?._id}`} user={user} breadcrumbs={breadcrumbs}>
       <Inner>
         <FakeInput label={'Имя'} value={user.name} testId={'name'} />
         <FakeInput label={'Фамилия'} value={user.lastName} testId={'lastName'} />
@@ -63,7 +66,7 @@ const UserDetailsConsumer: React.FC<UserDetailsConsumerInterface> = ({
               variant: SET_USER_CATEGORY_MODAL,
               props: {
                 companies,
-                companyId: `${currentCompany?._id}`,
+                companyId: `${pageCompany?._id}`,
                 hideCompaniesSelect: true,
                 userId: `${user._id}`,
               },
@@ -90,16 +93,14 @@ const UserDetailsConsumer: React.FC<UserDetailsConsumerInterface> = ({
   );
 };
 
-interface UserDetailsPageInterface extends PagePropsInterface, UserDetailsConsumerInterface {}
+interface UserDetailsPageInterface
+  extends GetConsoleInitialDataPropsInterface,
+    UserDetailsConsumerInterface {}
 
-const UserDetailsPage: NextPage<UserDetailsPageInterface> = ({
-  pageUrls,
-  pageCompany,
-  ...props
-}) => {
+const UserDetailsPage: NextPage<UserDetailsPageInterface> = ({ layoutProps, ...props }) => {
   return (
     <ConsoleLayout {...layoutProps}>
-      <UserDetailsConsumer {...props} currentCompany={pageCompany} />
+      <UserDetailsConsumer {...props} />
     </ConsoleLayout>
   );
 };
@@ -286,6 +287,7 @@ export const getServerSideProps = async (
       ...props,
       user: castDbData(user),
       companies: castDbData(companies),
+      pageCompany: castDbData(props.layoutProps.pageCompany),
     },
   };
 };

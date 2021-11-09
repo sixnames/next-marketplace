@@ -4,14 +4,13 @@ import Title from 'components/Title';
 import { ROUTE_CMS } from 'config/common';
 import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import { getPagesListSsr } from 'lib/pageUtils';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface PagesListPageInterface
-  extends PagePropsInterface,
+  extends GetAppInitialDataPropsInterface,
     Omit<PagesListInterface, 'basePath' | 'breadcrumbs'> {}
 
 const PagesListPage: NextPage<PagesListPageInterface> = ({ layoutProps, pagesGroup }) => {

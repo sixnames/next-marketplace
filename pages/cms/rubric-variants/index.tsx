@@ -20,10 +20,9 @@ import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface RubricVariantsConsumerInterface {
   rubricVariants: RubricVariantInterface[];
@@ -136,15 +135,14 @@ const RubricVariantsConsumer: React.FC<RubricVariantsConsumerInterface> = ({ rub
   );
 };
 
-interface RubricVariantsPageInterface extends PagePropsInterface, RubricVariantsConsumerInterface {}
+interface RubricVariantsPageInterface
+  extends GetAppInitialDataPropsInterface,
+    RubricVariantsConsumerInterface {}
 
-const RubricVariantsPage: NextPage<RubricVariantsPageInterface> = ({
-  pageUrls,
-  rubricVariants,
-}) => {
+const RubricVariantsPage: NextPage<RubricVariantsPageInterface> = ({ layoutProps, ...props }) => {
   return (
     <ConsoleLayout {...layoutProps}>
-      <RubricVariantsConsumer rubricVariants={rubricVariants} />
+      <RubricVariantsConsumer {...props} />
     </ConsoleLayout>
   );
 };

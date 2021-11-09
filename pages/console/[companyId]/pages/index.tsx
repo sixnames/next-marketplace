@@ -5,30 +5,29 @@ import { ROUTE_CONSOLE } from 'config/common';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getPageGroupsSsr } from 'lib/pageUtils';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import {
+  castDbData,
+  getConsoleInitialData,
+  GetConsoleInitialDataPropsInterface,
+} from 'lib/ssrUtils';
 
 const pageTitle = 'Группы страниц';
 
 interface PageGroupsPageInterface
-  extends PagePropsInterface,
+  extends GetConsoleInitialDataPropsInterface,
     Omit<PageGroupsListInterface, 'basePath' | 'pageTitle'> {}
 
-const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({
-  pageUrls,
-  pagesGroups,
-  pageCompany,
-}) => {
+const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({ layoutProps, pagesGroups }) => {
   return (
     <ConsoleLayout title={pageTitle} {...layoutProps}>
       <AppContentWrapper>
         <Inner>
           <Title>{pageTitle}</Title>
           <PageGroupsList
-            companySlug={`${pageCompany?.slug}`}
-            basePath={`${ROUTE_CONSOLE}/${pageCompany?._id}/pages`}
+            companySlug={`${layoutProps.pageCompany.slug}`}
+            basePath={`${ROUTE_CONSOLE}/${layoutProps.pageCompany._id}/pages`}
             pagesGroups={pagesGroups}
           />
         </Inner>
@@ -56,7 +55,6 @@ export const getServerSideProps = async (
     props: {
       ...props,
       pagesGroups: castDbData(pagesGroups),
-      pageCompany: props.layoutProps.pageCompany,
     },
   };
 };

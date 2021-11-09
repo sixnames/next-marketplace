@@ -20,10 +20,9 @@ import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface RubricDetailsInterface extends CompanyRubricDetailsInterface {}
 
@@ -31,7 +30,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
   rubric,
   seoTop,
   seoBottom,
-  currentCompany,
+  pageCompany,
   routeBasePath,
 }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -42,7 +41,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
         href: `${ROUTE_CMS}/companies`,
       },
       {
-        name: `${currentCompany?.name}`,
+        name: `${pageCompany?.name}`,
         href: routeBasePath,
       },
       {
@@ -61,7 +60,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
     >
       <CompanyRubricDetails
         rubric={rubric}
-        currentCompany={currentCompany}
+        pageCompany={pageCompany}
         seoBottom={seoBottom}
         seoTop={seoTop}
         routeBasePath={routeBasePath}
@@ -70,7 +69,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
   );
 };
 
-interface RubricPageInterface extends PagePropsInterface, RubricDetailsInterface {}
+interface RubricPageInterface extends GetAppInitialDataPropsInterface, RubricDetailsInterface {}
 
 const RubricPage: NextPage<RubricPageInterface> = ({ layoutProps, ...props }) => {
   return (

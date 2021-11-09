@@ -14,10 +14,13 @@ import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import {
+  castDbData,
+  getConsoleInitialData,
+  GetConsoleInitialDataPropsInterface,
+} from 'lib/ssrUtils';
 
 interface RubricDetailsInterface extends CompanyRubricDetailsInterface {}
 
@@ -25,7 +28,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
   rubric,
   seoTop,
   seoBottom,
-  currentCompany,
+  pageCompany,
   routeBasePath,
 }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -48,7 +51,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
       <CompanyRubricDetails
         routeBasePath={routeBasePath}
         rubric={rubric}
-        currentCompany={currentCompany}
+        pageCompany={pageCompany}
         seoBottom={seoBottom}
         seoTop={seoTop}
       />
@@ -56,7 +59,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
   );
 };
 
-interface RubricPageInterface extends PagePropsInterface, RubricDetailsInterface {}
+interface RubricPageInterface extends GetConsoleInitialDataPropsInterface, RubricDetailsInterface {}
 
 const RubricPage: NextPage<RubricPageInterface> = ({ layoutProps, ...props }) => {
   return (
@@ -191,6 +194,7 @@ export const getServerSideProps = async (
       seoTop: castDbData(seoTop),
       seoBottom: castDbData(seoBottom),
       routeBasePath: `${ROUTE_CONSOLE}/${props.layoutProps.pageCompany._id}`,
+      pageCompany: castDbData(props.layoutProps.pageCompany),
     },
   };
 };

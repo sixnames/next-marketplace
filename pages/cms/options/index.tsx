@@ -23,9 +23,8 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { PagePropsInterface } from 'pages/_app';
 
 interface OptionsGroupsConsumerInterface {
   optionsGroups: OptionsGroupInterface[];
@@ -145,15 +144,14 @@ const OptionsGroupsConsumer: React.FC<OptionsGroupsConsumerInterface> = ({ optio
   );
 };
 
-interface OptionsGroupsPageInterface extends PagePropsInterface, OptionsGroupsConsumerInterface {}
+interface OptionsGroupsPageInterface
+  extends GetAppInitialDataPropsInterface,
+    OptionsGroupsConsumerInterface {}
 
-const OptionsGroupsPage: NextPage<OptionsGroupsPageInterface> = ({
-  layoutProps,
-  optionsGroups,
-}) => {
+const OptionsGroupsPage: NextPage<OptionsGroupsPageInterface> = ({ layoutProps, ...props }) => {
   return (
     <ConsoleLayout {...layoutProps}>
-      <OptionsGroupsConsumer optionsGroups={optionsGroups} />
+      <OptionsGroupsConsumer {...props} />
     </ConsoleLayout>
   );
 };

@@ -33,7 +33,7 @@ interface CategoryDetailsInterface extends CompanyRubricCategoryDetailsInterface
 
 const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
   category,
-  currentCompany,
+  pageCompany,
   seoTop,
   seoBottom,
   routeBasePath,
@@ -65,7 +65,7 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
     >
       <CompanyRubricCategoryDetails
         category={category}
-        currentCompany={currentCompany}
+        pageCompany={pageCompany}
         seoTop={seoTop}
         seoBottom={seoBottom}
         routeBasePath={routeBasePath}
@@ -256,6 +256,7 @@ export const getServerSideProps = async (
       seoTop: castDbData(seoTop),
       seoBottom: castDbData(seoBottom),
       routeBasePath: `${ROUTE_CONSOLE}/${props.layoutProps.pageCompany._id}`,
+      pageCompany: castDbData(props.layoutProps.pageCompany),
     },
   };
 };

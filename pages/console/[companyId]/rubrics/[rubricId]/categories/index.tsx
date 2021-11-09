@@ -10,10 +10,13 @@ import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getTreeFromList, sortByName } from 'lib/optionsUtils';
-import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import {
+  castDbData,
+  getConsoleInitialData,
+  GetConsoleInitialDataPropsInterface,
+} from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
 interface RubricCategoriesConsumerInterface extends CompanyRubricCategoriesListInterface {}
@@ -53,7 +56,7 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
 };
 
 interface RubricCategoriesPageInterface
-  extends PagePropsInterface,
+  extends GetConsoleInitialDataPropsInterface,
     RubricCategoriesConsumerInterface {}
 
 const RubricCategoriesPage: NextPage<RubricCategoriesPageInterface> = ({

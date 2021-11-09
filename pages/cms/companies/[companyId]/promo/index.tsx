@@ -8,20 +8,17 @@ import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
 import { getPromoListSsr } from 'lib/promoUtils';
 import { ObjectId } from 'mongodb';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 const pageTitle = 'Акции';
 
-interface PromoListPageInterface extends PagePropsInterface, PromoListInterface {
-  pageCompany: CompanyInterface;
-}
+interface PromoListPageInterface extends GetAppInitialDataPropsInterface, PromoListInterface {}
 
 const PromoListPage: NextPage<PromoListPageInterface> = ({
-  pageUrls,
+  layoutProps,
   promoList,
   pageCompany,
   basePath,
@@ -44,7 +41,7 @@ const PromoListPage: NextPage<PromoListPageInterface> = ({
     <ConsoleLayout title={pageTitle} {...layoutProps}>
       <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
         <Inner>
-          <PromoList promoList={promoList} currentCompany={pageCompany} basePath={basePath} />
+          <PromoList promoList={promoList} pageCompany={pageCompany} basePath={basePath} />
         </Inner>
       </CmsCompanyLayout>
     </ConsoleLayout>

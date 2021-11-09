@@ -7,8 +7,7 @@ import { useConfigContext } from 'context/configContext';
 import { useSiteUserContext } from 'context/userSiteUserContext';
 import { InitialCardDataInterface } from 'db/uiInterfaces';
 import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
-import { getCardData } from 'lib/cardUtils';
-import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
+import { getSiteInitialData } from 'lib/ssrUtils';
 import { cityIn } from 'lvovich';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import dynamic from 'next/dynamic';
@@ -91,7 +90,7 @@ const Card: NextPage<CardInterface> = ({ cardData, domainCompany, ...props }) =>
 export async function getServerSideProps(
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<CardInterface>> {
-  const { locale, query } = context;
+  /*const { locale, query } = context;
   // console.log(' ');
   // console.log('==================================');
   // const startTime = new Date().getTime();
@@ -124,6 +123,23 @@ export async function getServerSideProps(
     props: {
       ...props,
       cardData,
+    },
+  };*/
+
+  const { props } = await getSiteInitialData({
+    context,
+  });
+
+  if (!props) {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    redirect: {
+      destination: `${props.urlPrefix}${context.query.card}`,
+      permanent: false,
     },
   };
 }

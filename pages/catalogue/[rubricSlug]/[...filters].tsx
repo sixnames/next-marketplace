@@ -1,5 +1,6 @@
 import Catalogue, { CatalogueInterface } from 'components/Catalogue';
-import { getCatalogueServerSideProps } from 'lib/catalogueUtils';
+import { alwaysArray } from 'lib/arrayUtils';
+import { getSiteInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 
@@ -10,7 +11,25 @@ const CataloguePage: NextPage<CatalogueInterface> = (props) => {
 export async function getServerSideProps(
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<CatalogueInterface>> {
-  return getCatalogueServerSideProps(context);
+  const { props } = await getSiteInitialData({
+    context,
+  });
+
+  if (!props) {
+    return {
+      notFound: true,
+    };
+  }
+
+  const filters = alwaysArray(context.query.filters);
+  const filtersPath = filters.join('/');
+  return {
+    redirect: {
+      destination: `${props.urlPrefix}${context.query.rubricSlug}/${filtersPath}`,
+      permanent: false,
+    },
+  };
+  // return getCatalogueServerSideProps(context);
 }
 
 export default CataloguePage;

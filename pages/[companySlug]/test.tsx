@@ -1,6 +1,6 @@
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
-import { DEFAULT_COMPANY_SLUG } from 'config/common';
+import { DEFAULT_COMPANY_SLUG, ISR_FIVE_SECONDS } from 'config/common';
 import { COL_COMPANIES } from 'db/collectionNames';
 import { CompanyModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -74,11 +74,11 @@ export async function getStaticProps(
   }
 
   return {
+    revalidate: ISR_FIVE_SECONDS,
     props: {
       companies: castDbData(companies),
       company: castDbData(company),
     },
-    revalidate: 5,
   };
 }
 

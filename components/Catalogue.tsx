@@ -45,6 +45,7 @@ interface CatalogueConsumerInterface {
   companySlug?: string;
   companyId?: string;
   isSearchResult?: boolean;
+  urlPrefix: string;
 }
 
 const seoTextClassName = 'prose max-w-full md:prose-lg lg:prose-xl';
@@ -54,6 +55,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
   companyId,
   companySlug,
   isSearchResult,
+  urlPrefix,
 }) => {
   const router = useRouter();
   const sessionUser = useSiteUserContext();
@@ -316,14 +318,15 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
 
         <div className='grid lg:grid-cols-7 gap-12'>
           <CatalogueFilter
+            urlPrefix={urlPrefix}
             basePath={state.basePath}
+            clearSlug={state.clearSlug}
+            rubricSlug={state.rubricSlug}
             companyId={companyId}
             filterLayoutVariant={catalogueData.catalogueFilterLayout}
             attributes={catalogueData.attributes}
             selectedAttributes={catalogueData.selectedAttributes}
-            clearSlug={state.clearSlug}
             catalogueCounterString={catalogueCounterString}
-            rubricSlug={state.rubricSlug}
             isFilterVisible={isFilterVisible}
             hideFilterHandler={hideFilterHandler}
             isSearchResult={isSearchResult}
@@ -493,13 +496,14 @@ const Catalogue: React.FC<CatalogueInterface> = ({
   currentCity,
   domainCompany,
   isSearchResult,
+  urlPrefix,
   ...props
 }) => {
   const sessionUser = useSiteUserContext();
   const { configs } = useConfigContext();
   if (!catalogueData) {
     return (
-      <SiteLayout {...props}>
+      <SiteLayout {...props} urlPrefix={urlPrefix}>
         <ErrorBoundaryFallback />
       </SiteLayout>
     );
@@ -511,6 +515,7 @@ const Catalogue: React.FC<CatalogueInterface> = ({
 
   return (
     <SiteLayout
+      urlPrefix={urlPrefix}
       currentCity={currentCity}
       domainCompany={domainCompany}
       title={`${catalogueData.catalogueTitle}${prefix} ${siteName}${cityDescription}`}
@@ -518,6 +523,7 @@ const Catalogue: React.FC<CatalogueInterface> = ({
       {...props}
     >
       <CatalogueConsumer
+        urlPrefix={urlPrefix}
         isSearchResult={isSearchResult}
         catalogueData={catalogueData}
         companySlug={domainCompany?.slug}

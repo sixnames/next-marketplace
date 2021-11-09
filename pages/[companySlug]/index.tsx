@@ -10,7 +10,7 @@ import {
   ROUTE_CATALOGUE,
   ROUTE_DOCS_PAGES,
   CATALOGUE_TOP_FILTERS_LIMIT,
-  ISR_ONE_HOUR,
+  ISR_FIVE_SECONDS,
 } from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import { COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
@@ -659,7 +659,7 @@ export async function getStaticProps(
     };
 
     return {
-      revalidate: ISR_ONE_HOUR,
+      revalidate: ISR_FIVE_SECONDS,
       props: {
         ...props,
         topFilters: castDbData(topFilters),

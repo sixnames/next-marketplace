@@ -88,6 +88,7 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({
   categories,
 }) => {
   const { asPath } = useRouter();
+  const { urlPrefix } = useSiteContext();
   const { name, slug, attributes } = rubric;
   const [isDropdownVisible, setIsDropdownVisible] = React.useState<boolean>(true);
 
@@ -110,7 +111,7 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({
   }, []);
 
   // Get rubric slug from product card path
-  const path = `${ROUTE_CATALOGUE}/${slug}`;
+  const path = `${urlPrefix}${ROUTE_CATALOGUE}/${slug}`;
   const reg = RegExp(`${path}`);
   const isCurrent = reg.test(asPath);
 

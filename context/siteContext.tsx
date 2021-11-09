@@ -41,6 +41,7 @@ interface SiteContextInterface extends SiteContextStateInterface {
   repeatAnOrder: (_id: string) => void;
   clearCart: () => void;
   urlPrefix: string;
+  domainCompany?: CompanyInterface | null;
 }
 
 const SiteContext = React.createContext<SiteContextInterface>({
@@ -322,6 +323,7 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
       repeatAnOrder,
       getShopProductInCartCount,
       urlPrefix,
+      domainCompany,
       ...state,
     };
   }, [
@@ -337,6 +339,7 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
     state,
     updateProductInCart,
     urlPrefix,
+    domainCompany,
   ]);
 
   return <SiteContext.Provider value={initialValue}>{children}</SiteContext.Provider>;

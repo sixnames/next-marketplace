@@ -79,6 +79,7 @@ const Card: NextPage<CardInterface> = ({ cardData, domainCompany, ...props }) =>
 
   return (
     <SiteLayout
+      currentRubricSlug={cardData.product.rubricSlug}
       previewImage={cardData.product.mainImage}
       title={`${cardData.cardTitle}${prefix} ${siteName}${cityDescription}`}
       description={`${cardData.cardTitle} ${cardData.product.description}`}

@@ -1,4 +1,4 @@
-import { DEFAULT_COMPANY_SLUG } from 'config/common';
+import { DEFAULT_COMPANY_SLUG, ROUTE_CATALOGUE } from 'config/common';
 import { COL_COMPANIES, COL_LANGUAGES, COL_PRODUCTS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import { noImageStage } from 'db/dao/constantPipelines';
 import { CompanyModel, LanguageModel, ShopProductModel } from 'db/dbModels';
@@ -118,12 +118,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     const { _id, productSlugs } = template;
 
     // rubric
-    initialSlugs.push(`${urlPrefix}/catalogue/${_id}`);
+    initialSlugs.push(`${urlPrefix}${ROUTE_CATALOGUE}/${_id}`);
 
     // products
     productSlugs.forEach((slug) => {
       console.log(slug);
-      initialSlugs.push(`${urlPrefix}/catalogue/${_id}/product/${slug}`);
+      initialSlugs.push(`${urlPrefix}/${slug}`);
     });
   });
 

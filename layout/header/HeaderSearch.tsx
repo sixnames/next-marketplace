@@ -1,6 +1,7 @@
 import ControlButton from 'components/button/ControlButton';
 import { REQUEST_METHOD_POST, ROUTE_SEARCH_RESULT } from 'config/common';
-import { CompanyInterface, ShopProductInterface } from 'db/uiInterfaces';
+import { useSiteContext } from 'context/siteContext';
+import { ShopProductInterface } from 'db/uiInterfaces';
 import ProductSnippetGridBigImage from 'layout/snippet/ProductSnippetGridBigImage';
 import { useRouter } from 'next/router';
 import {
@@ -64,13 +65,13 @@ const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({
 
 interface HeaderSearchInterface {
   setIsSearchOpen: (value: boolean) => void;
-  company?: CompanyInterface | null;
 }
 
 const minSearchLength = 2;
 
-const HeaderSearch: React.FC<HeaderSearchInterface> = ({ setIsSearchOpen, company }) => {
+const HeaderSearch: React.FC<HeaderSearchInterface> = ({ setIsSearchOpen }) => {
   const router = useRouter();
+  const { domainCompany } = useSiteContext();
   const [loading, setLoading] = React.useState<boolean>(true);
   const [searchResult, setSearchResult] = React.useState<ShopProductInterface[] | null>(null);
   const [topShopProducts, setTopShopProducts] = React.useState<ShopProductInterface[] | null>(null);
@@ -82,8 +83,8 @@ const HeaderSearch: React.FC<HeaderSearchInterface> = ({ setIsSearchOpen, compan
     if (!topShopProducts) {
       setLoading(true);
       const body: HeaderSearchInputInterface = {
-        companySlug: company?.slug,
-        companyId: company ? `${company._id}` : undefined,
+        companySlug: domainCompany?.slug,
+        companyId: domainCompany ? `${domainCompany._id}` : undefined,
       };
 
       fetch('/api/search/header-search', {
@@ -97,15 +98,15 @@ const HeaderSearch: React.FC<HeaderSearchInterface> = ({ setIsSearchOpen, compan
         })
         .catch(console.log);
     }
-  }, [company, topShopProducts]);
+  }, [domainCompany, topShopProducts]);
 
   // get search result
   React.useEffect(() => {
     if (value && value.length > minSearchLength) {
       setLoading(true);
       const body: HeaderSearchInputInterface = {
-        companySlug: company?.slug,
-        companyId: company ? `${company._id}` : undefined,
+        companySlug: domainCompany?.slug,
+        companyId: domainCompany ? `${domainCompany._id}` : undefined,
         search: value,
       };
 
@@ -120,7 +121,7 @@ const HeaderSearch: React.FC<HeaderSearchInterface> = ({ setIsSearchOpen, compan
         })
         .catch(console.log);
     }
-  }, [company, value]);
+  }, [domainCompany, value]);
 
   return (
     <div

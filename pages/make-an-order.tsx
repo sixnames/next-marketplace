@@ -14,7 +14,6 @@ import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
 import Title from 'components/Title';
 import WpImage from 'components/WpImage';
-import { ROUTE_CATALOGUE } from 'config/common';
 import { MAP_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
@@ -40,6 +39,7 @@ interface OrderRouteProductInterface {
 }
 
 const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }) => {
+  const { urlPrefix } = useSiteContext();
   const { showModal } = useAppContext();
   const { isDark } = useThemeContext();
   const { shopProduct, amount, totalPrice } = cartProduct;
@@ -47,7 +47,7 @@ const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }
     return null;
   }
 
-  const { shop, oldPrice, discountedPercent, price, product, itemId, rubricSlug } = shopProduct;
+  const { shop, oldPrice, discountedPercent, price, product, itemId } = shopProduct;
 
   if (!product || !shop) {
     return null;
@@ -74,7 +74,7 @@ const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }
           <Link
             target={'_blank'}
             className='block absolute z-10 inset-0 text-indent-full'
-            href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
+            href={`${urlPrefix}/${slug}`}
           >
             {snippetTitle}
           </Link>
@@ -92,7 +92,7 @@ const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }
         <Link
           target={'_blank'}
           className='block mb-6 text-primary-text hover:no-underline hover:text-primary-text font-medium text-lg lg:text-2xl'
-          href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
+          href={`${urlPrefix}/${slug}`}
         >
           {snippetTitle}
         </Link>

@@ -2,6 +2,7 @@ import Button from 'components/button/Button';
 import ErrorBoundaryFallback from 'components/ErrorBoundaryFallback';
 import FixedButtons from 'components/button/FixedButtons';
 import Inner from 'components/Inner';
+import { ROUTE_CATALOGUE } from 'config/common';
 import { CARD_LAYOUT_HALF_COLUMNS, DEFAULT_LAYOUT } from 'config/constantSelects';
 import { useConfigContext } from 'context/configContext';
 import { useSiteUserContext } from 'context/userSiteUserContext';
@@ -138,7 +139,7 @@ export async function getServerSideProps(
 
   return {
     redirect: {
-      destination: `${props.urlPrefix}${context.query.card}`,
+      destination: `/${props.urlPrefix}${ROUTE_CATALOGUE}/${context.query.rubricSlug}/product/${context.query.card}`,
       permanent: false,
     },
   };

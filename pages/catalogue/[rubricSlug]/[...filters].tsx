@@ -1,4 +1,5 @@
 import Catalogue, { CatalogueInterface } from 'components/Catalogue';
+import { ROUTE_CATALOGUE } from 'config/common';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getSiteInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -25,7 +26,7 @@ export async function getServerSideProps(
   const filtersPath = filters.join('/');
   return {
     redirect: {
-      destination: `${props.urlPrefix}${context.query.rubricSlug}/${filtersPath}`,
+      destination: `/${props.urlPrefix}${ROUTE_CATALOGUE}/${context.query.rubricSlug}/${filtersPath}`,
       permanent: false,
     },
   };

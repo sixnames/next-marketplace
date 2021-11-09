@@ -2,11 +2,17 @@ import { CART_COOKIE_KEY } from 'config/common';
 import {
   COL_CARTS,
   COL_PRODUCTS,
+  COL_RUBRICS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
   COL_USERS,
 } from 'db/collectionNames';
-import { shopProductFieldsPipeline } from 'db/dao/constantPipelines';
+import {
+  brandPipeline,
+  productAttributesPipeline,
+  productCategoriesPipeline,
+  shopProductFieldsPipeline,
+} from 'db/dao/constantPipelines';
 import { getPageSessionUser } from 'db/dao/user/getPageSessionUser';
 import { CartModel, UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -144,6 +150,56 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
                       },
                     },
                   },
+
+                  {
+                    $project: {
+                      descriptionI18n: false,
+                    },
+                  },
+
+                  // get product attributes
+                  ...productAttributesPipeline,
+
+                  // get product brand
+                  ...brandPipeline,
+
+                  // get product categories
+                  ...productCategoriesPipeline(),
+
+                  // get product rubric
+                  {
+                    $lookup: {
+                      from: COL_RUBRICS,
+                      as: 'rubric',
+                      let: {
+                        rubricId: '$rubricId',
+                      },
+                      pipeline: [
+                        {
+                          $match: {
+                            $expr: {
+                              $eq: ['$$rubricId', '$_id'],
+                            },
+                          },
+                        },
+                        {
+                          $project: {
+                            _id: true,
+                            slug: true,
+                            nameI18n: true,
+                            showRubricNameInProductTitle: true,
+                            showCategoryInProductTitle: true,
+                          },
+                        },
+                      ],
+                    },
+                  },
+                  {
+                    $addFields: {
+                      rubric: { $arrayElemAt: ['$rubric', 0] },
+                    },
+                  },
+
                   shopProductPipeline({
                     letStage: { productId: '$_id' },
                     as: 'shopProducts',
@@ -299,6 +355,8 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
           const sortedShopProductsByPrice = product.shopProducts.sort((a, b) => {
             return noNaN(b?.price) - noNaN(a?.price);
           });
+
+          console.log(product);
 
           const minPriceShopProduct =
             sortedShopProductsByPrice[sortedShopProductsByPrice.length - 1];

@@ -16,7 +16,7 @@ import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
 import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
 import Title from 'components/Title';
-import { ROUTE_CATALOGUE, ROUTE_PROFILE } from 'config/common';
+import { ROUTE_PROFILE } from 'config/common';
 import { useNotificationsContext } from 'context/notificationsContext';
 import { useSiteContext } from 'context/siteContext';
 import { CartProductInterface, ShopProductInterface } from 'db/uiInterfaces';
@@ -37,7 +37,6 @@ interface CartProductFrameInterface {
   snippetTitle?: string | null;
   shopProducts?: ShopProductInterface[] | null;
   testId: number | string;
-  rubricSlug: string;
   slug: string;
 }
 
@@ -49,10 +48,9 @@ const CartProductFrame: React.FC<CartProductFrameInterface> = ({
   snippetTitle,
   shopProducts,
   testId,
-  rubricSlug,
   slug,
 }) => {
-  const { deleteProductFromCart } = useSiteContext();
+  const { deleteProductFromCart, urlPrefix } = useSiteContext();
 
   return (
     <div className='grid gap-4'>
@@ -73,7 +71,7 @@ const CartProductFrame: React.FC<CartProductFrameInterface> = ({
             <Link
               target={'_blank'}
               className='block absolute z-10 inset-0 text-indent-full'
-              href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
+              href={`${urlPrefix}/${slug}`}
             >
               {snippetTitle}
             </Link>
@@ -106,23 +104,22 @@ const CartProductFrame: React.FC<CartProductFrameInterface> = ({
 interface CartProductMainDataInterface {
   itemId: string;
   snippetTitle?: string | null;
-  rubricSlug: string;
   slug: string;
 }
 
 const CartProductMainData: React.FC<CartProductMainDataInterface> = ({
   itemId,
   snippetTitle,
-  rubricSlug,
   slug,
 }) => {
+  const { urlPrefix } = useSiteContext();
   return (
     <React.Fragment>
       <div className='text-secondary-text'>{`Артикул: ${itemId}`}</div>
       <Link
         target={'_blank'}
         className='block mb-6 text-primary-text hover:no-underline hover:text-primary-text font-medium text-lg lg:text-2xl'
-        href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
+        href={`${urlPrefix}/${slug}`}
       >
         {snippetTitle}
       </Link>
@@ -142,20 +139,10 @@ const CartShoplessProduct: React.FC<CartProductPropsInterface> = ({ cartProduct,
     return null;
   }
 
-  const {
-    itemId,
-    snippetTitle,
-    shopProducts,
-    cardPrices,
-    shopsCount,
-    mainImage,
-    rubricSlug,
-    slug,
-  } = product;
+  const { itemId, snippetTitle, shopProducts, cardPrices, shopsCount, mainImage, slug } = product;
 
   return (
     <CartProductFrame
-      rubricSlug={rubricSlug}
       slug={slug}
       testId={testId}
       cartProductId={`${_id}`}
@@ -164,12 +151,7 @@ const CartShoplessProduct: React.FC<CartProductPropsInterface> = ({ cartProduct,
       shopProducts={shopProducts}
       isShopsVisible={isShopsVisible}
     >
-      <CartProductMainData
-        rubricSlug={rubricSlug}
-        slug={slug}
-        itemId={itemId}
-        snippetTitle={snippetTitle}
-      />
+      <CartProductMainData slug={slug} itemId={itemId} snippetTitle={snippetTitle} />
 
       <div className='flex flex-wrap gap-6 mb-4 items-center'>
         <div>
@@ -205,8 +187,7 @@ const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId 
     return null;
   }
 
-  const { price, oldPrice, discountedPercent, available, shop, itemId, rubricSlug, product } =
-    shopProduct;
+  const { price, oldPrice, discountedPercent, available, shop, itemId, product } = shopProduct;
 
   if (!shop || !product) {
     return null;
@@ -218,7 +199,6 @@ const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId 
 
   return (
     <CartProductFrame
-      rubricSlug={rubricSlug}
       slug={product.slug}
       testId={testId}
       cartProductId={`${_id}`}
@@ -226,7 +206,6 @@ const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId 
       snippetTitle={product.snippetTitle}
     >
       <CartProductMainData
-        rubricSlug={rubricSlug}
         slug={product.slug}
         itemId={itemId}
         snippetTitle={product.snippetTitle}

@@ -13,6 +13,7 @@ import {
   ISR_FIVE_SECONDS,
 } from 'config/common';
 import { useConfigContext } from 'context/configContext';
+import { useSiteContext } from 'context/siteContext';
 import { COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { noImageStage, shopProductFieldsPipeline } from 'db/dao/constantPipelines';
 import { getDatabase } from 'db/mongodb';
@@ -58,6 +59,7 @@ const HomeRoute: React.FC<HomeRouteInterface> = ({
   mobileTopFilters,
 }) => {
   const [topFiltersVisible, setTopFiltersVisible] = React.useState<boolean>(false);
+  const { urlPrefix } = useSiteContext();
   const { configs } = useConfigContext();
   const configTitle = configs.seoTextTitle;
   const configSeoText = configs.seoText;
@@ -305,7 +307,7 @@ const HomeRoute: React.FC<HomeRouteInterface> = ({
             <div className='hidden lg:flex flex-wrap gap-3'>
               {topFilters.map(({ name, href }) => {
                 return (
-                  <TagLink href={href} key={href}>
+                  <TagLink href={`${urlPrefix}${href}`} key={href}>
                     {name}
                   </TagLink>
                 );

@@ -4,6 +4,7 @@ import Icon from 'components/Icon';
 import Inner from 'components/Inner';
 import TagLink from 'components/Link/TagLink';
 import WpImage from 'components/WpImage';
+import { useSiteContext } from 'context/siteContext';
 import CardSimilarProducts from 'layout/card/CardSimilarProducts';
 import Title from 'components/Title';
 import { ROUTE_CATALOGUE } from 'config/common';
@@ -52,6 +53,7 @@ const CardTitle: React.FC<CardTitleInterface> = ({ cardTitle, showArticle, name,
 };
 
 const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlug, companyId }) => {
+  const { urlPrefix } = useSiteContext();
   const {
     similarProducts,
     showFeaturesSection,
@@ -85,7 +87,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
 
   return (
     <article className='pb-20 pt-8 lg:pt-0' data-cy={`card`}>
-      <Breadcrumbs currentPageName={cardTitle} config={cardBreadcrumbs} />
+      <Breadcrumbs urlPrefix={urlPrefix} currentPageName={cardTitle} config={cardBreadcrumbs} />
 
       <div className='mb-28 relative'>
         <Inner className='relative z-20' lowBottom lowTop>

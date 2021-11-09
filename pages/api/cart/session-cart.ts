@@ -6,13 +6,7 @@ import {
   COL_SHOPS,
   COL_USERS,
 } from 'db/collectionNames';
-import {
-  brandPipeline,
-  productAttributesPipeline,
-  productCategoriesPipeline,
-  productRubricPipeline,
-  shopProductFieldsPipeline,
-} from 'db/dao/constantPipelines';
+import { shopProductFieldsPipeline } from 'db/dao/constantPipelines';
 import { getPageSessionUser } from 'db/dao/user/getPageSessionUser';
 import { CartModel, UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -150,19 +144,6 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
                       },
                     },
                   },
-
-                  // Lookup product rubric
-                  ...productRubricPipeline,
-
-                  // Lookup product attributes
-                  ...productAttributesPipeline,
-
-                  // Lookup product brand
-                  ...brandPipeline,
-
-                  // Lookup product categories
-                  ...productCategoriesPipeline(),
-
                   shopProductPipeline({
                     letStage: { productId: '$_id' },
                     as: 'shopProducts',

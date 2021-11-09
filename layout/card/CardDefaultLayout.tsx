@@ -171,7 +171,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                                   className={isCurrent ? `pointer-events-none` : ``}
                                   key={`${option?.name}`}
                                   isActive={isCurrent}
-                                  href={`${ROUTE_CATALOGUE}/${product.rubricSlug}/product/${productSlug}`}
+                                  href={`${urlPrefix}${ROUTE_CATALOGUE}/${product.rubricSlug}/product/${productSlug}`}
                                 >
                                   {name}
                                 </TagLink>
@@ -197,11 +197,6 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                       const target = e.target as Element;
                       const distId = target.getAttribute('href');
                       const distElement = document.querySelector(`${distId}`);
-                      console.log({
-                        target,
-                        distId,
-                        distElement,
-                      });
                       if (distElement) {
                         window.scrollTo({
                           top: noNaN(distElement.getBoundingClientRect().top),

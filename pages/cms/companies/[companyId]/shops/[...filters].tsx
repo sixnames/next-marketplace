@@ -43,11 +43,11 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface CompanyShopsConsumerInterface extends AppPaginationInterface<ShopInterface> {
-  currentCompany?: CompanyInterface | null;
+  pageCompany: CompanyInterface;
 }
 
 const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
-  currentCompany,
+  pageCompany,
   page,
   totalPages,
   totalDocs,
@@ -131,7 +131,7 @@ const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
                       variables: {
                         input: {
                           shopId: dataItem._id,
-                          companyId: `${currentCompany?._id}`,
+                          companyId: `${pageCompany?._id}`,
                         },
                       },
                     }).catch(() => {
@@ -155,14 +155,14 @@ const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
         href: `${ROUTE_CMS}/companies`,
       },
       {
-        name: `${currentCompany?.name}`,
-        href: `${ROUTE_CMS}/companies/${currentCompany?._id}`,
+        name: `${pageCompany?.name}`,
+        href: `${ROUTE_CMS}/companies/${pageCompany?._id}`,
       },
     ],
   };
 
   return (
-    <CmsCompanyLayout company={currentCompany} breadcrumbs={breadcrumbs}>
+    <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
       <Inner testId={'company-shops-list'}>
         <div className={`text-xl font-medium mb-2`}>{counterString}</div>
         <FormikRouterSearch testId={'shops'} />
@@ -185,7 +185,7 @@ const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
                 showModal<CreateShopModalInterface>({
                   variant: CREATE_SHOP_MODAL,
                   props: {
-                    companyId: `${currentCompany?._id}`,
+                    companyId: `${pageCompany?._id}`,
                   },
                 });
               }}
@@ -211,9 +211,7 @@ const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
 
 interface CompanyShopsPageInterface
   extends GetAppInitialDataPropsInterface,
-    CompanyShopsConsumerInterface {
-  pageCompany?: CompanyInterface | null;
-}
+    CompanyShopsConsumerInterface {}
 
 const CompanyShopsPage: NextPage<CompanyShopsPageInterface> = ({ layoutProps, ...props }) => {
   return (
@@ -454,10 +452,10 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      pageCompany: castDbData(companyResult),
       itemPath,
       clearSlug,
       page,
+      pageCompany: castDbData(companyResult),
       totalPages: noNaN(shopsAggregation.totalPages),
       totalDocs: noNaN(shopsAggregation.totalDocs),
       docs: castDbData(docs),

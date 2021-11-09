@@ -10,7 +10,7 @@ import { ROUTE_CONSOLE } from 'config/common';
 import { getConsoleOrders, GetConsoleOrdersPayloadType } from 'db/dao/order/getConsoleOrders';
 import { OrderInterface } from 'db/uiInterfaces';
 import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
@@ -113,9 +113,9 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ data }) => {
 
 interface OrdersInterface extends PagePropsInterface, OrdersRouteInterface {}
 
-const Orders: NextPage<OrdersInterface> = ({ pageUrls, pageCompany, data }) => {
+const Orders: NextPage<OrdersInterface> = ({ layoutProps, pageCompany, data }) => {
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={pageCompany}>
+    <ConsoleLayout {...layoutProps}>
       <OrdersRoute data={data} />
     </ConsoleLayout>
   );
@@ -125,13 +125,7 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<OrdersInterface>> => {
   const { props } = await getConsoleInitialData({ context });
-  if (!props || !props.sessionUser) {
-    return {
-      notFound: true,
-    };
-  }
-
-  if (!props.pageCompany) {
+  if (!props) {
     return {
       notFound: true,
     };
@@ -147,7 +141,7 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      pageCompany: props.pageCompany,
+      pageCompany: props.layoutProps.pageCompany,
       data: castDbData(data),
     },
   };

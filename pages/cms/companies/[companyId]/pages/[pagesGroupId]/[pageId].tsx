@@ -8,18 +8,19 @@ import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
 import { getPageSsr } from 'lib/pageUtils';
 import { ObjectId } from 'mongodb';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
-export interface PageDetailsPageInterface extends PagePropsInterface, PageDetailsInterface {
+export interface PageDetailsPageInterface
+  extends GetAppInitialDataPropsInterface,
+    PageDetailsInterface {
   pageCompany: CompanyInterface;
 }
 
 const PageDetailsPage: NextPage<PageDetailsPageInterface> = ({
-  pageUrls,
+  layoutProps,
   pageCompany,
   page,
   cities,
@@ -47,13 +48,13 @@ const PageDetailsPage: NextPage<PageDetailsPageInterface> = ({
   };
 
   return (
-    <CmsLayout title={`${page.name}`} pageUrls={pageUrls}>
+    <ConsoleLayout title={`${page.name}`} {...layoutProps}>
       <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
         <Inner>
           <PageDetails page={page} cities={cities} />
         </Inner>
       </CmsCompanyLayout>
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

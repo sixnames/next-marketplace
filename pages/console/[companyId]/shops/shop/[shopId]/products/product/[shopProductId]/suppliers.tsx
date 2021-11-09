@@ -8,7 +8,7 @@ import { COL_SUPPLIERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { SupplierInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import ConsoleShopProductLayout from 'layout/console/ConsoleShopProductLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getConsoleShopProduct } from 'lib/productUtils';
@@ -81,9 +81,9 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
 
 interface ProductPageInterface extends PagePropsInterface, ProductDetailsInterface {}
 
-const Product: NextPage<ProductPageInterface> = ({ pageUrls, pageCompany, ...props }) => {
+const Product: NextPage<ProductPageInterface> = ({ layoutProps, pageCompany, ...props }) => {
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={pageCompany}>
+    <ConsoleLayout {...layoutProps}>
       <ProductDetails {...props} />
     </ConsoleLayout>
   );

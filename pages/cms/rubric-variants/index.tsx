@@ -16,7 +16,7 @@ import {
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppContentWrapper from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -143,9 +143,9 @@ const RubricVariantsPage: NextPage<RubricVariantsPageInterface> = ({
   rubricVariants,
 }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <RubricVariantsConsumer rubricVariants={rubricVariants} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

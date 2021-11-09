@@ -18,7 +18,7 @@ import { getFieldStringLocale } from 'lib/i18n';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import Head from 'next/head';
 import { PagePropsInterface } from 'pages/_app';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { Form, Formik } from 'formik';
 import { attributesGroupModalSchema } from 'validation/attributesGroupSchema';
@@ -133,9 +133,9 @@ interface AttributesGroupPageInterface
 
 const AttributesGroup: NextPage<AttributesGroupPageInterface> = ({ attributesGroup, ...props }) => {
   return (
-    <CmsLayout title={pageTitle} {...props}>
+    <ConsoleLayout title={pageTitle} {...props}>
       <AttributesGroupConsumer attributesGroup={attributesGroup} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

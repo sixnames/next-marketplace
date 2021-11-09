@@ -16,7 +16,7 @@ import { RubricModel, RubricSeoModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { CompanyInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
@@ -72,11 +72,11 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
 
 interface RubricPageInterface extends PagePropsInterface, RubricDetailsInterface {}
 
-const RubricPage: NextPage<RubricPageInterface> = ({ pageUrls, ...props }) => {
+const RubricPage: NextPage<RubricPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <RubricDetails {...props} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

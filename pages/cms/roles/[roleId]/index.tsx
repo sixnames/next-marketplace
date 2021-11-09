@@ -18,7 +18,7 @@ import { ObjectId } from 'mongodb';
 import Head from 'next/head';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ClientNavItemInterface } from 'types/clientTypes';
@@ -124,11 +124,11 @@ const RoleDetailsConsumer: React.FC<RoleDetailsConsumerInterface> = ({ role }) =
 
 interface RoleDetailsInterface extends PagePropsInterface, RoleDetailsConsumerInterface {}
 
-const RoleDetails: NextPage<RoleDetailsInterface> = ({ pageUrls, role }) => {
+const RoleDetails: NextPage<RoleDetailsInterface> = ({ layoutProps, role }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <RoleDetailsConsumer role={role} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

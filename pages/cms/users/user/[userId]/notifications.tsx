@@ -22,7 +22,7 @@ import { phoneToRaw } from 'lib/phoneUtils';
 import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { updateUserSchema } from 'validation/userSchema';
@@ -141,9 +141,9 @@ const UserNotificationsPage: NextPage<UserNotificationsPageInterface> = ({
   ...props
 }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <UserNotificationsConsumer {...props} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

@@ -19,7 +19,7 @@ import { getDatabase } from 'db/mongodb';
 import { CategoryInterface, CompanyInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCategoryLayout from 'layout/cms/CmsCategoryLayout';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
@@ -82,11 +82,11 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
 
 interface CategoryPageInterface extends PagePropsInterface, CategoryDetailsInterface {}
 
-const CategoryPage: NextPage<CategoryPageInterface> = ({ pageUrls, ...props }) => {
+const CategoryPage: NextPage<CategoryPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <CategoryDetails {...props} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

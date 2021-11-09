@@ -28,7 +28,7 @@ import { getTreeFromList } from 'lib/optionsUtils';
 import { ObjectId } from 'mongodb';
 import Head from 'next/head';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { PagePropsInterface } from 'pages/_app';
@@ -268,9 +268,9 @@ const OptionsGroupOptionsPage: NextPage<OptionsGroupOptionsPageInterface> = ({
   optionsGroup,
 }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <OptionsGroupOptionsConsumer optionsGroup={optionsGroup} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

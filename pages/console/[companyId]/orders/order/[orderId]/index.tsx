@@ -19,7 +19,7 @@ import { getDatabase } from 'db/mongodb';
 import { OrderInterface } from 'db/uiInterfaces';
 import { useCancelOrder, useConfirmOrder } from 'hooks/mutations/useOrderMutations';
 import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
 import { castOrderStatus } from 'lib/orderUtils';
@@ -102,9 +102,9 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
 
 interface OrderPageInterface extends PagePropsInterface, OrderPageConsumerInterface {}
 
-const OrderPage: NextPage<OrderPageInterface> = ({ pageUrls, order, pageCompany }) => {
+const OrderPage: NextPage<OrderPageInterface> = ({ layoutProps, order, pageCompany }) => {
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={pageCompany}>
+    <ConsoleLayout {...layoutProps}>
       <OrderPageConsumer order={order} />
     </ConsoleLayout>
   );

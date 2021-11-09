@@ -20,7 +20,7 @@ import { getFieldStringLocale } from 'lib/i18n';
 import Head from 'next/head';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { createOrderStatusSchema, updateOrderStatusSchema } from 'validation/orderStatusSchema';
@@ -145,11 +145,14 @@ const OrderStatusesConsumer: React.FC<OrderStatusesConsumerInterface> = ({ order
 
 interface OrderStatusesPageInterface extends PagePropsInterface, OrderStatusesConsumerInterface {}
 
-const OrderStatusesPage: NextPage<OrderStatusesPageInterface> = ({ pageUrls, orderStatuses }) => {
+const OrderStatusesPage: NextPage<OrderStatusesPageInterface> = ({
+  layoutProps,
+  orderStatuses,
+}) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <OrderStatusesConsumer orderStatuses={orderStatuses} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

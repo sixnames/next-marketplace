@@ -27,7 +27,7 @@ import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCategoryLayout from 'layout/cms/CmsCategoryLayout';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
@@ -284,14 +284,14 @@ const CategoryPage: NextPage<CategoryPageInterface> = ({
   companySlug,
 }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <CategoryDetails
         category={category}
         seoTop={seoTop}
         companySlug={companySlug}
         seoBottom={seoBottom}
       />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

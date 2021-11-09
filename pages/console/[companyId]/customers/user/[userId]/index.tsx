@@ -10,7 +10,7 @@ import { getDatabase } from 'db/mongodb';
 import { CompanyInterface, UserInterface } from 'db/uiInterfaces';
 import { useSetUserCategoryMutation } from 'hooks/mutations/useUserMutations';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import ConsoleUserLayout from 'layout/console/ConsoleUserLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
@@ -98,7 +98,7 @@ const UserDetailsPage: NextPage<UserDetailsPageInterface> = ({
   ...props
 }) => {
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={pageCompany}>
+    <ConsoleLayout {...layoutProps}>
       <UserDetailsConsumer {...props} currentCompany={pageCompany} />
     </ConsoleLayout>
   );

@@ -1194,6 +1194,7 @@ interface GetConsoleInitialDataLayoutProps extends ConsoleNavPropsInterface {
   sessionUser: SessionUserPayloadInterface;
 }
 
+// console props
 export interface GetConsoleInitialDataPropsInterface extends PagePropsInterface {
   layoutProps: GetConsoleInitialDataLayoutProps;
 }
@@ -1291,6 +1292,7 @@ interface GetAppInitialDataLayoutProps extends ConsoleNavPropsInterface {
   sessionUser: SessionUserPayloadInterface;
 }
 
+// cms props
 export interface GetAppInitialDataPropsInterface extends PagePropsInterface {
   layoutProps: GetAppInitialDataLayoutProps;
 }

@@ -3,7 +3,7 @@ import PageGroupsList, { PageGroupsListInterface } from 'components/Pages/PageGr
 import Title from 'components/Title';
 import { ROUTE_CONSOLE } from 'config/common';
 import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getPageGroupsSsr } from 'lib/pageUtils';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
@@ -22,7 +22,7 @@ const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({
   pageCompany,
 }) => {
   return (
-    <ConsoleLayout title={pageTitle} pageUrls={pageUrls} company={pageCompany}>
+    <ConsoleLayout title={pageTitle} {...layoutProps}>
       <AppContentWrapper>
         <Inner>
           <Title>{pageTitle}</Title>
@@ -41,7 +41,7 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<PageGroupsPageInterface>> => {
   const { props } = await getConsoleInitialData({ context });
-  if (!props || !props.pageCompany) {
+  if (!props) {
     return {
       notFound: true,
     };
@@ -49,14 +49,14 @@ export const getServerSideProps = async (
 
   const pagesGroups = await getPageGroupsSsr({
     locale: props.sessionLocale,
-    companySlug: props.pageCompany.slug,
+    companySlug: props.layoutProps.pageCompany.slug,
   });
 
   return {
     props: {
       ...props,
       pagesGroups: castDbData(pagesGroups),
-      pageCompany: props.pageCompany,
+      pageCompany: props.layoutProps.pageCompany,
     },
   };
 };

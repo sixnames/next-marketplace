@@ -8,7 +8,7 @@ import { RubricInterface } from 'db/uiInterfaces';
 import AppContentWrapper from 'layout/AppContentWrapper';
 
 import CompanyRubricsList, { CompanyRubricsListInterface } from 'layout/CompanyRubricsList';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
@@ -40,9 +40,9 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({
 
 interface RubricsInterface extends PagePropsInterface, RubricsRouteInterface {}
 
-const Rubrics: NextPage<RubricsInterface> = ({ pageUrls, ...props }) => {
+const Rubrics: NextPage<RubricsInterface> = ({ layoutProps, ...props }) => {
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={props.pageCompany} title={pageTitle}>
+    <ConsoleLayout {...layoutProps} title={pageTitle}>
       <RubricsRoute {...props} />
     </ConsoleLayout>
   );
@@ -158,7 +158,7 @@ export const getServerSideProps = async (
     props: {
       ...props,
       rubrics: castDbData(rawRubrics),
-      routeBasePath: `${ROUTE_CONSOLE}/${props.pageCompany._id}/rubrics`,
+      routeBasePath: `${ROUTE_CONSOLE}/${props.layoutProps.pageCompany._id}/rubrics`,
     },
   };
 };

@@ -10,17 +10,16 @@ import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
 import { ObjectId } from 'mongodb';
 import { useRouter } from 'next/router';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface CompanyAssetsConsumerInterface {
-  currentCompany?: CompanyInterface | null;
+  pageCompany: CompanyInterface;
 }
 
-const CompanyAssetsConsumer: React.FC<CompanyAssetsConsumerInterface> = ({ currentCompany }) => {
+const CompanyAssetsConsumer: React.FC<CompanyAssetsConsumerInterface> = ({ pageCompany }) => {
   const { showErrorNotification, showLoading, hideLoading } = useMutationCallbacks({});
   const router = useRouter();
 
@@ -32,18 +31,18 @@ const CompanyAssetsConsumer: React.FC<CompanyAssetsConsumerInterface> = ({ curre
         href: `${ROUTE_CMS}/companies`,
       },
       {
-        name: `${currentCompany?.name}`,
-        href: `${ROUTE_CMS}/companies/${currentCompany?._id}`,
+        name: `${pageCompany?.name}`,
+        href: `${ROUTE_CMS}/companies/${pageCompany?._id}`,
       },
     ],
   };
 
   return (
-    <CmsCompanyLayout company={currentCompany} breadcrumbs={breadcrumbs}>
+    <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
       <Inner testId={'company-assets-list'}>
         <Formik
           enableReinitialize
-          initialValues={{ logo: [currentCompany?.logo.url] }}
+          initialValues={{ logo: [pageCompany?.logo.url] }}
           onSubmit={(values) => console.log(values)}
         >
           {({ values: { logo } }) => {
@@ -62,7 +61,7 @@ const CompanyAssetsConsumer: React.FC<CompanyAssetsConsumerInterface> = ({ curre
                       showLoading();
                       const formData = new FormData();
                       formData.append('assets', files[0]);
-                      formData.append('companyId', `${currentCompany?._id}`);
+                      formData.append('companyId', `${pageCompany?._id}`);
 
                       fetch('/api/company/update-company-logo', {
                         method: 'POST',
@@ -101,13 +100,15 @@ const CompanyAssetsConsumer: React.FC<CompanyAssetsConsumerInterface> = ({ curre
   );
 };
 
-interface CompanyAssetsPageInterface extends PagePropsInterface, CompanyAssetsConsumerInterface {}
+interface CompanyAssetsPageInterface
+  extends GetAppInitialDataPropsInterface,
+    CompanyAssetsConsumerInterface {}
 
-const CompanyAssetsPage: NextPage<CompanyAssetsPageInterface> = ({ pageCompany, ...props }) => {
+const CompanyAssetsPage: NextPage<CompanyAssetsPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <CmsLayout {...props}>
-      <CompanyAssetsConsumer currentCompany={pageCompany} />
-    </CmsLayout>
+    <ConsoleLayout {...layoutProps}>
+      <CompanyAssetsConsumer {...props} />
+    </ConsoleLayout>
   );
 };
 

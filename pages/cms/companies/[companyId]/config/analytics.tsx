@@ -5,11 +5,10 @@ import { CompanyInterface } from 'db/uiInterfaces';
 import { ConfigPageInterface } from 'layout/console/ConsoleConfigsLayout';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getConfigPageData } from 'lib/configsUtils';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
 interface ConfigConsumerInterface extends ConfigPageInterface {
@@ -45,15 +44,15 @@ const ConfigConsumer: React.FC<ConfigConsumerInterface> = ({
 };
 
 interface ConfigInterface
-  extends PagePropsInterface,
+  extends GetAppInitialDataPropsInterface,
     ConfigPageInterface,
     ConfigConsumerInterface {}
 
-const Config: NextPage<ConfigInterface> = (props) => {
+const Config: NextPage<ConfigInterface> = ({ layoutProps, ...props }) => {
   return (
-    <CmsLayout title={'Настройки сайта'} {...props}>
+    <ConsoleLayout title={'Настройки сайта'} {...layoutProps}>
       <ConfigConsumer {...props} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

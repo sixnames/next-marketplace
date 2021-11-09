@@ -24,7 +24,7 @@ import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
 import Head from 'next/head';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { PagePropsInterface } from 'pages/_app';
@@ -145,11 +145,11 @@ const OptionsGroupConsumer: React.FC<OptionsGroupConsumerInterface> = ({ options
 
 interface OptionsGroupPageInterface extends PagePropsInterface, OptionsGroupConsumerInterface {}
 
-const OptionsGroupPage: NextPage<OptionsGroupPageInterface> = ({ pageUrls, optionsGroup }) => {
+const OptionsGroupPage: NextPage<OptionsGroupPageInterface> = ({ layoutProps, optionsGroup }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <OptionsGroupConsumer optionsGroup={optionsGroup} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

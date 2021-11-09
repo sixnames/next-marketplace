@@ -10,7 +10,7 @@ import { getDatabase } from 'db/mongodb';
 import { CompanyInterface, RubricInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import CompanyRubricsList, { CompanyRubricsListInterface } from 'layout/CompanyRubricsList';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
@@ -53,11 +53,11 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({
 
 interface RubricsInterface extends PagePropsInterface, RubricsRouteInterface {}
 
-const Rubrics: NextPage<RubricsInterface> = ({ pageUrls, ...props }) => {
+const Rubrics: NextPage<RubricsInterface> = ({ layoutProps, ...props }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <RubricsRoute {...props} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

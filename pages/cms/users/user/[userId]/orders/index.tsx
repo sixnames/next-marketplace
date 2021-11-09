@@ -19,7 +19,7 @@ import { getFullName } from 'lib/nameUtils';
 import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
@@ -97,11 +97,11 @@ const UserOrdersConsumer: React.FC<UserOrdersInterface> = ({ user }) => {
 
 interface ProductPageInterface extends PagePropsInterface, UserOrdersInterface {}
 
-const UserOrdersPage: NextPage<ProductPageInterface> = ({ pageUrls, ...props }) => {
+const UserOrdersPage: NextPage<ProductPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <UserOrdersConsumer {...props} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

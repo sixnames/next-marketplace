@@ -4,7 +4,7 @@ import { COL_COMPANIES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { CompanyInterface, ProductInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import CmsProductLayout from 'layout/cms/CmsProductLayout';
 import { getCmsProduct } from 'lib/productUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
@@ -63,11 +63,11 @@ const ProductConnections: React.FC<ProductConnectionsPropsInterface> = ({
 
 interface ProductPageInterface extends PagePropsInterface, ProductConnectionsPropsInterface {}
 
-const Product: NextPage<ProductPageInterface> = ({ pageUrls, ...props }) => {
+const Product: NextPage<ProductPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <ProductConnections {...props} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

@@ -10,7 +10,7 @@ import { ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { ShopInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getShortName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
@@ -47,7 +47,7 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({
   };
 
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={pageCompany}>
+    <ConsoleLayout {...layoutProps}>
       <ShopOrders breadcrumbs={breadcrumbs} basePath={`${companyBasePath}/shop`} shop={shop} />
     </ConsoleLayout>
   );

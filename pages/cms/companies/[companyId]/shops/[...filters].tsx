@@ -37,11 +37,10 @@ import { getFieldStringLocale, getNumWord } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { ObjectId } from 'mongodb';
 import { useRouter } from 'next/router';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface CompanyShopsConsumerInterface extends AppPaginationInterface<ShopInterface> {
   currentCompany?: CompanyInterface | null;
@@ -210,13 +209,17 @@ const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
   );
 };
 
-interface CompanyShopsPageInterface extends PagePropsInterface, CompanyShopsConsumerInterface {}
+interface CompanyShopsPageInterface
+  extends GetAppInitialDataPropsInterface,
+    CompanyShopsConsumerInterface {
+  pageCompany?: CompanyInterface | null;
+}
 
-const CompanyShopsPage: NextPage<CompanyShopsPageInterface> = ({ pageUrls, ...props }) => {
+const CompanyShopsPage: NextPage<CompanyShopsPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <CompanyShopsConsumer {...props} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

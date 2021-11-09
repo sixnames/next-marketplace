@@ -13,7 +13,7 @@ import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 
 interface ProductDetailsInterface extends CompanyProductDetailsInterface {
   cardContent: ProductCardContentModel;
@@ -67,9 +67,9 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
 
 interface ProductPageInterface extends PagePropsInterface, ProductDetailsInterface {}
 
-const Product: NextPage<ProductPageInterface> = ({ pageUrls, ...props }) => {
+const Product: NextPage<ProductPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={props.pageCompany}>
+    <ConsoleLayout {...layoutProps}>
       <ProductDetails {...props} />
     </ConsoleLayout>
   );
@@ -90,7 +90,7 @@ export const getServerSideProps = async (
   }
 
   // get company
-  const companySlug = props.pageCompany.slug;
+  const companySlug = props.layoutProps.pageCompany.slug;
 
   const payload = await getCmsProduct({
     locale: props.sessionLocale,
@@ -128,7 +128,7 @@ export const getServerSideProps = async (
       ...props,
       product: castDbData(payload.product),
       cardContent: castDbData(cardContent),
-      routeBasePath: `${ROUTE_CONSOLE}/${props.pageCompany._id}`,
+      routeBasePath: `${ROUTE_CONSOLE}/${props.layoutProps.pageCompany._id}`,
     },
   };
 };

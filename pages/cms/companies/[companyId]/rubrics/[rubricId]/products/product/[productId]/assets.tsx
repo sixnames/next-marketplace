@@ -4,24 +4,23 @@ import { COL_COMPANIES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { CompanyInterface, ProductInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import CmsProductLayout from 'layout/cms/CmsProductLayout';
 import { getCmsProduct } from 'lib/productUtils';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
 interface ProductAssetsInterface {
   product: ProductInterface;
-  currentCompany?: CompanyInterface | null;
+  pageCompany: CompanyInterface;
   routeBasePath: string;
 }
 
 const ProductAssets: React.FC<ProductAssetsInterface> = ({
   product,
-  currentCompany,
+  pageCompany,
   routeBasePath,
 }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -32,7 +31,7 @@ const ProductAssets: React.FC<ProductAssetsInterface> = ({
         href: `${ROUTE_CMS}/companies`,
       },
       {
-        name: `${currentCompany?.name}`,
+        name: `${pageCompany?.name}`,
         href: routeBasePath,
       },
       {
@@ -61,13 +60,13 @@ const ProductAssets: React.FC<ProductAssetsInterface> = ({
   );
 };
 
-interface ProductPageInterface extends PagePropsInterface, ProductAssetsInterface {}
+interface ProductPageInterface extends GetAppInitialDataPropsInterface, ProductAssetsInterface {}
 
-const Product: NextPage<ProductPageInterface> = ({ pageUrls, ...props }) => {
+const Product: NextPage<ProductPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <ProductAssets {...props} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

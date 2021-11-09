@@ -19,7 +19,7 @@ import { getFieldStringLocale } from 'lib/i18n';
 import Head from 'next/head';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { createMetricSchema, updateMetricSchema } from 'validation/metricSchema';
@@ -134,11 +134,11 @@ const MetricsConsumer: React.FC<MetricsConsumerInterface> = ({ metrics }) => {
 
 interface MetricsPageInterface extends PagePropsInterface, MetricsConsumerInterface {}
 
-const MetricsPage: NextPage<MetricsPageInterface> = ({ pageUrls, metrics }) => {
+const MetricsPage: NextPage<MetricsPageInterface> = ({ layoutProps, metrics }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <MetricsConsumer metrics={metrics} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

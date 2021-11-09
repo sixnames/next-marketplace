@@ -19,7 +19,7 @@ import { RubricInterface } from 'db/uiInterfaces';
 import { useCreateRubricMutation, useDeleteRubricMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppContentWrapper from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -161,11 +161,11 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, companySlug })
 
 interface RubricsInterface extends PagePropsInterface, RubricsRouteInterface {}
 
-const Rubrics: NextPage<RubricsInterface> = ({ pageUrls, companySlug, rubrics }) => {
+const Rubrics: NextPage<RubricsInterface> = ({ layoutProps, companySlug, rubrics }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <RubricsRoute rubrics={rubrics} companySlug={companySlug} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

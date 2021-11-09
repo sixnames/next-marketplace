@@ -9,7 +9,7 @@ import { getTreeFromList } from 'lib/optionsUtils';
 import { getCmsProduct } from 'lib/productUtils';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
@@ -50,11 +50,11 @@ const ProductCategories: React.FC<ProductCategoriesInterface> = ({ product, cate
 
 interface ProductPageInterface extends PagePropsInterface, ProductCategoriesInterface {}
 
-const Product: NextPage<ProductPageInterface> = ({ pageUrls, product, categoriesTree }) => {
+const Product: NextPage<ProductPageInterface> = ({ layoutProps, product, categoriesTree }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <ProductCategories product={product} categoriesTree={categoriesTree} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

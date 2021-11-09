@@ -7,7 +7,7 @@ import { getDatabase } from 'db/mongodb';
 import { BlogPostInterface, CompanyInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsResult, GetServerSidePropsContext } from 'next';
@@ -57,9 +57,9 @@ const BlogPostsListPage: React.FC<BlogPostsListPageInterface> = ({
   pageCompany,
 }) => {
   return (
-    <CmsLayout pageUrls={pageUrls} title={pageTitle}>
+    <ConsoleLayout {...layoutProps} title={pageTitle}>
       <BlogPostsListConsumer posts={posts} currentCompany={pageCompany} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

@@ -7,7 +7,7 @@ import { getDatabase } from 'db/mongodb';
 import { CategoryInterface, RubricInterface, ShopProductInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getTreeFromList, sortByName } from 'lib/optionsUtils';
 import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
@@ -56,9 +56,12 @@ interface RubricCategoriesPageInterface
   extends PagePropsInterface,
     RubricCategoriesConsumerInterface {}
 
-const RubricCategoriesPage: NextPage<RubricCategoriesPageInterface> = ({ pageUrls, ...props }) => {
+const RubricCategoriesPage: NextPage<RubricCategoriesPageInterface> = ({
+  layoutProps,
+  ...props
+}) => {
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={props.pageCompany}>
+    <ConsoleLayout {...layoutProps}>
       <RubricCategoriesConsumer {...props} />
     </ConsoleLayout>
   );
@@ -82,7 +85,7 @@ export const getServerSideProps = async (
   const locale = props.sessionLocale;
   const rubricId = new ObjectId(`${query.rubricId}`);
   const companyId = new ObjectId(`${query.companyId}`);
-  const routeBasePath = `${ROUTE_CONSOLE}/${props.pageCompany._id}`;
+  const routeBasePath = `${ROUTE_CONSOLE}/${props.layoutProps.pageCompany._id}`;
 
   // get categories config
   const categoriesConfigAggregationResult = await shopProductsCollection
@@ -122,7 +125,7 @@ export const getServerSideProps = async (
     }
     const payload: RubricCategoriesConsumerInterface = {
       routeBasePath,
-      currentCompany: castDbData(props.pageCompany),
+      currentCompany: castDbData(props.layoutProps.pageCompany),
       rubric: {
         ...rubric,
         name: getFieldStringLocale(rubric?.nameI18n, locale),
@@ -210,7 +213,7 @@ export const getServerSideProps = async (
 
   const payload: RubricCategoriesConsumerInterface = {
     routeBasePath,
-    currentCompany: props.pageCompany,
+    currentCompany: props.layoutProps.pageCompany,
     rubric: {
       ...rubric,
       name: getFieldStringLocale(rubric?.nameI18n, locale),

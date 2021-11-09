@@ -19,7 +19,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
@@ -143,11 +143,11 @@ const RolesConsumer: React.FC<RolesConsumerInterface> = ({ roles }) => {
 
 interface RolesPageInterface extends PagePropsInterface, RolesConsumerInterface {}
 
-const RolesPage: NextPage<RolesPageInterface> = ({ pageUrls, roles }) => {
+const RolesPage: NextPage<RolesPageInterface> = ({ layoutProps, roles }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <RolesConsumer roles={roles} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

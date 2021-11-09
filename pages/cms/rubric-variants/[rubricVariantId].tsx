@@ -26,13 +26,12 @@ import {
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import Head from 'next/head';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { updateRubricVariantSchema } from 'validation/rubricVariantSchema';
 
@@ -240,13 +239,18 @@ const RubricVariantConsumer: React.FC<RubricVariantConsumerInterface> = ({ rubri
   );
 };
 
-interface RubricVariantsPageInterface extends PagePropsInterface, RubricVariantConsumerInterface {}
+interface RubricVariantsPageInterface
+  extends GetAppInitialDataPropsInterface,
+    RubricVariantConsumerInterface {}
 
-const RubricVariantPage: NextPage<RubricVariantsPageInterface> = ({ pageUrls, rubricVariant }) => {
+const RubricVariantPage: NextPage<RubricVariantsPageInterface> = ({
+  layoutProps,
+  rubricVariant,
+}) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <RubricVariantConsumer rubricVariant={rubricVariant} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

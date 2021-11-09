@@ -23,7 +23,7 @@ import {
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
@@ -170,14 +170,14 @@ const RubricPage: NextPage<RubricPageInterface> = ({
   seoTop,
 }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <RubricDetails
         rubric={rubric}
         seoBottom={seoBottom}
         seoTop={seoTop}
         companySlug={companySlug}
       />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

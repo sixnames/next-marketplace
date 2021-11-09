@@ -5,7 +5,7 @@ import { getDatabase } from 'db/mongodb';
 import { CompanyInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getPromoSsr } from 'lib/promoUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
@@ -42,11 +42,11 @@ const PromoDetailsPage: React.FC<PromoDetailsPageInterface> = ({
   };
 
   return (
-    <CmsLayout title={`${promo.name}`} pageUrls={pageUrls}>
+    <ConsoleLayout title={`${promo.name}`} {...layoutProps}>
       <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
         <PromoDetails basePath={basePath} currentCompany={pageCompany} promo={promo} />
       </CmsCompanyLayout>
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

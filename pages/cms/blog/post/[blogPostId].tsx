@@ -5,11 +5,10 @@ import { ROUTE_CMS } from 'config/common';
 import { getBlogPost } from 'db/dao/blog/getBlogPost';
 import { BlogAttributeInterface, BlogPostInterface } from 'db/uiInterfaces';
 import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/cms/CmsLayout';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsResult, GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
 interface BlogPostConsumerInterface {
@@ -46,13 +45,15 @@ const BlogPostConsumer: React.FC<BlogPostConsumerInterface> = ({ post, attribute
   );
 };
 
-interface BlogPostPageInterface extends PagePropsInterface, BlogPostConsumerInterface {}
+interface BlogPostPageInterface
+  extends GetAppInitialDataPropsInterface,
+    BlogPostConsumerInterface {}
 
-const BlogPostPage: React.FC<BlogPostPageInterface> = ({ post, pageUrls, attributes }) => {
+const BlogPostPage: React.FC<BlogPostPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <CmsLayout pageUrls={pageUrls} title={pageTitle}>
-      <BlogPostConsumer post={post} attributes={attributes} />
-    </CmsLayout>
+    <ConsoleLayout {...layoutProps} title={pageTitle}>
+      <BlogPostConsumer {...props} />
+    </ConsoleLayout>
   );
 };
 

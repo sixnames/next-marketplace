@@ -21,15 +21,14 @@ import { useDeleteProduct } from 'hooks/mutations/useProductMutations';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import usePageLoadingState from 'hooks/usePageLoadingState';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { getConsoleRubricProducts } from 'lib/consoleProductUtils';
 import { getNumWord } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
 const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
@@ -279,13 +278,15 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
   );
 };
 
-interface RubricProductsPageInterface extends PagePropsInterface, ConsoleRubricProductsInterface {}
+interface RubricProductsPageInterface
+  extends GetAppInitialDataPropsInterface,
+    ConsoleRubricProductsInterface {}
 
-const RubricProducts: NextPage<RubricProductsPageInterface> = ({ pageUrls, ...props }) => {
+const RubricProducts: NextPage<RubricProductsPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <RubricProductsConsumer {...props} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

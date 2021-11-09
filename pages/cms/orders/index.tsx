@@ -15,7 +15,7 @@ import { getConsoleOrders, GetConsoleOrdersPayloadType } from 'db/dao/order/getC
 import { OrderInterface } from 'db/uiInterfaces';
 import { useDeleteOrder } from 'hooks/mutations/useOrderMutations';
 import AppContentWrapper from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { PagePropsInterface } from 'pages/_app';
@@ -151,11 +151,11 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ data }) => {
 
 interface OrdersInterface extends PagePropsInterface, OrdersRouteInterface {}
 
-const Orders: NextPage<OrdersInterface> = ({ pageUrls, data }) => {
+const Orders: NextPage<OrdersInterface> = ({ layoutProps, data }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <OrdersRoute data={data} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

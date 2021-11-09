@@ -6,7 +6,7 @@ import AppContentWrapper from 'layout/AppContentWrapper';
 import { getPageGroupsSsr } from 'lib/pageUtils';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
@@ -16,9 +16,9 @@ interface PageGroupsPageInterface
   extends PagePropsInterface,
     Omit<PageGroupsListInterface, 'basePath' | 'pageTitle'> {}
 
-const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({ pageUrls, pagesGroups }) => {
+const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({ layoutProps, pagesGroups }) => {
   return (
-    <CmsLayout title={pageTitle} pageUrls={pageUrls}>
+    <ConsoleLayout title={pageTitle} {...layoutProps}>
       <AppContentWrapper>
         <Inner>
           <Title>{pageTitle}</Title>
@@ -29,7 +29,7 @@ const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({ pageUrls, pagesGrou
           />
         </Inner>
       </AppContentWrapper>
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

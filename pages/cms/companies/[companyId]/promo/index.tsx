@@ -10,7 +10,7 @@ import { getPromoListSsr } from 'lib/promoUtils';
 import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
@@ -41,13 +41,13 @@ const PromoListPage: NextPage<PromoListPageInterface> = ({
   };
 
   return (
-    <CmsLayout title={pageTitle} pageUrls={pageUrls}>
+    <ConsoleLayout title={pageTitle} {...layoutProps}>
       <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
         <Inner>
           <PromoList promoList={promoList} currentCompany={pageCompany} basePath={basePath} />
         </Inner>
       </CmsCompanyLayout>
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

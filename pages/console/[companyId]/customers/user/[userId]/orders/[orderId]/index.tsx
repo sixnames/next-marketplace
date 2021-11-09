@@ -15,7 +15,7 @@ import { shopProductFieldsPipeline } from 'db/dao/constantPipelines';
 import { getDatabase } from 'db/mongodb';
 import { CompanyInterface, OrderInterface, UserInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import ConsoleUserLayout from 'layout/console/ConsoleUserLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
@@ -69,9 +69,13 @@ const UserOrderConsumer: React.FC<UserOrderConsumerInterface> = ({
 
 interface UserOrderPageInterface extends PagePropsInterface, UserOrderConsumerInterface {}
 
-const UserOrderPage: NextPage<UserOrderPageInterface> = ({ pageUrls, pageCompany, ...props }) => {
+const UserOrderPage: NextPage<UserOrderPageInterface> = ({
+  layoutProps,
+  pageCompany,
+  ...props
+}) => {
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={pageCompany}>
+    <ConsoleLayout {...layoutProps}>
       <UserOrderConsumer {...props} currentCompany={pageCompany} />
     </ConsoleLayout>
   );

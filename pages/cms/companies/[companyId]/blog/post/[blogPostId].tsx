@@ -7,25 +7,24 @@ import { getDatabase } from 'db/mongodb';
 import { BlogAttributeInterface, BlogPostInterface, CompanyInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
-import CmsLayout from 'layout/cms/CmsLayout';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsResult, GetServerSidePropsContext } from 'next';
 import Head from 'next/head';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
 interface BlogPostConsumerInterface {
   post: BlogPostInterface;
   attributes: BlogAttributeInterface[];
-  currentCompany?: CompanyInterface | null;
+  pageCompany: CompanyInterface;
 }
 
 const pageTitle = 'Блог';
 
 const BlogPostConsumer: React.FC<BlogPostConsumerInterface> = ({
   post,
-  currentCompany,
+  pageCompany,
   attributes,
 }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -36,18 +35,18 @@ const BlogPostConsumer: React.FC<BlogPostConsumerInterface> = ({
         href: `${ROUTE_CMS}/companies`,
       },
       {
-        name: `${currentCompany?.name}`,
-        href: `${ROUTE_CMS}/companies/${currentCompany?._id}`,
+        name: `${pageCompany?.name}`,
+        href: `${ROUTE_CMS}/companies/${pageCompany?._id}`,
       },
       {
         name: pageTitle,
-        href: `${ROUTE_CMS}/companies/${currentCompany?._id}${ROUTE_BLOG}`,
+        href: `${ROUTE_CMS}/companies/${pageCompany?._id}${ROUTE_BLOG}`,
       },
     ],
   };
 
   return (
-    <CmsCompanyLayout company={currentCompany} breadcrumbs={breadcrumbs}>
+    <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
       <Head>
         <title>{post.title}</title>
       </Head>
@@ -58,18 +57,15 @@ const BlogPostConsumer: React.FC<BlogPostConsumerInterface> = ({
   );
 };
 
-interface BlogPostPageInterface extends PagePropsInterface, BlogPostConsumerInterface {}
+interface BlogPostPageInterface
+  extends GetAppInitialDataPropsInterface,
+    BlogPostConsumerInterface {}
 
-const BlogPostPage: React.FC<BlogPostPageInterface> = ({
-  post,
-  pageUrls,
-  pageCompany,
-  attributes,
-}) => {
+const BlogPostPage: React.FC<BlogPostPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <CmsLayout pageUrls={pageUrls} title={pageTitle}>
-      <BlogPostConsumer post={post} attributes={attributes} currentCompany={pageCompany} />
-    </CmsLayout>
+    <ConsoleLayout {...layoutProps} title={pageTitle}>
+      <BlogPostConsumer {...props} />
+    </ConsoleLayout>
   );
 };
 

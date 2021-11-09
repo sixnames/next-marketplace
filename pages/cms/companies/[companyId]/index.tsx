@@ -17,7 +17,7 @@ import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { updateCompanyClientSchema } from 'validation/companySchema';
@@ -135,9 +135,9 @@ interface CompanyDetailsPageInterface extends PagePropsInterface, CompanyDetails
 
 const CompanyDetailsPage: NextPage<CompanyDetailsPageInterface> = ({ pageCompany, ...props }) => {
   return (
-    <CmsLayout {...props}>
+    <ConsoleLayout {...props}>
       <CompanyDetailsConsumer currentCompany={pageCompany} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

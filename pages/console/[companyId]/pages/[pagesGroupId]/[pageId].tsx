@@ -4,19 +4,24 @@ import Title from 'components/Title';
 import { ROUTE_CONSOLE } from 'config/common';
 import { CompanyInterface } from 'db/uiInterfaces';
 import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getPageSsr } from 'lib/pageUtils';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import {
+  castDbData,
+  getConsoleInitialData,
+  GetConsoleInitialDataPropsInterface,
+} from 'lib/ssrUtils';
 
-interface PageDetailsPageInterface extends PagePropsInterface, PageDetailsInterface {
+interface PageDetailsPageInterface
+  extends GetConsoleInitialDataPropsInterface,
+    PageDetailsInterface {
   pageCompany: CompanyInterface;
 }
 
 const PageDetailsPage: NextPage<PageDetailsPageInterface> = ({
-  pageUrls,
+  layoutProps,
   page,
   pageCompany,
   cities,
@@ -36,7 +41,7 @@ const PageDetailsPage: NextPage<PageDetailsPageInterface> = ({
   };
 
   return (
-    <ConsoleLayout title={`${page.name}`} pageUrls={pageUrls} company={pageCompany}>
+    <ConsoleLayout title={`${page.name}`} {...layoutProps}>
       <AppContentWrapper breadcrumbs={breadcrumbs}>
         <Inner>
           <Title>{page.name}</Title>
@@ -53,7 +58,7 @@ export const getServerSideProps = async (
   const { query } = context;
   const { pageId } = query;
   const { props } = await getConsoleInitialData({ context });
-  if (!props || !pageId || !props.pageCompany) {
+  if (!props || !pageId) {
     return {
       notFound: true,
     };
@@ -75,7 +80,7 @@ export const getServerSideProps = async (
       ...props,
       page: castDbData(getPageSsrResult.page),
       cities: castDbData(getPageSsrResult.cities),
-      pageCompany: props.pageCompany,
+      pageCompany: props.layoutProps.pageCompany,
     },
   };
 };

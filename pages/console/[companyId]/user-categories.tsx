@@ -15,7 +15,7 @@ import { getDatabase } from 'db/mongodb';
 import { UserCategoryInterface } from 'db/uiInterfaces';
 import { useDeleteUserCategory } from 'hooks/mutations/useUserCategoryMutations';
 import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
@@ -136,7 +136,7 @@ const UserCategories: NextPage<UserCategoriesInterface> = ({
   pageCompany,
 }) => {
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={pageCompany}>
+    <ConsoleLayout {...layoutProps}>
       <UserCategoriesConsumer userCategories={userCategories} companyId={`${pageCompany?._id}`} />
     </ConsoleLayout>
   );
@@ -148,7 +148,7 @@ export const getServerSideProps = async (
   const { props } = await getConsoleInitialData({ context });
   const { db } = await getDatabase();
   const userCategoriesCollection = db.collection<UserCategoryInterface>(COL_USER_CATEGORIES);
-  if (!props || !props.sessionUser || !props.pageCompany) {
+  if (!props) {
     return {
       notFound: true,
     };
@@ -158,7 +158,7 @@ export const getServerSideProps = async (
     .aggregate<UserCategoryInterface>([
       {
         $match: {
-          companyId: new ObjectId(props.pageCompany._id),
+          companyId: new ObjectId(props.layoutProps.pageCompany._id),
         },
       },
     ])
@@ -175,7 +175,7 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      pageCompany: props.pageCompany,
+      pageCompany: props.layoutProps.pageCompany,
       userCategories: castDbData(userCategories),
     },
   };

@@ -6,7 +6,7 @@ import { getBlogPostsList } from 'db/dao/blog/getBlogPostsList';
 import { BlogPostInterface } from 'db/uiInterfaces';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import AppSubNav from 'layout/AppSubNav';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsResult, GetServerSidePropsContext } from 'next';
 import { PagePropsInterface } from 'pages/_app';
@@ -54,9 +54,9 @@ interface BlogPostsListPageInterface extends PagePropsInterface, BlogPostsListCo
 
 const BlogPostsListPage: React.FC<BlogPostsListPageInterface> = ({ posts, pageUrls }) => {
   return (
-    <CmsLayout pageUrls={pageUrls} title={pageTitle}>
+    <ConsoleLayout {...layoutProps} title={pageTitle}>
       <BlogPostsListConsumer posts={posts} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

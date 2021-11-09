@@ -21,7 +21,7 @@ import { getFullName } from 'lib/nameUtils';
 import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
@@ -141,11 +141,11 @@ const UserCategoriesConsumer: React.FC<UserCategoriesConsumerInterface> = ({ use
 
 interface UserCategoriesPageInterface extends PagePropsInterface, UserCategoriesConsumerInterface {}
 
-const UserCategoriesPage: NextPage<UserCategoriesPageInterface> = ({ pageUrls, ...props }) => {
+const UserCategoriesPage: NextPage<UserCategoriesPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <UserCategoriesConsumer {...props} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

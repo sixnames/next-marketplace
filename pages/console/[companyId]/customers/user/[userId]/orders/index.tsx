@@ -14,7 +14,7 @@ import {
 import { getDatabase } from 'db/mongodb';
 import { CompanyInterface, OrderInterface, UserInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import ConsoleUserLayout from 'layout/console/ConsoleUserLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
@@ -102,9 +102,13 @@ const UserOrdersConsumer: React.FC<UserOrdersConsumerInterface> = ({ user, curre
 
 interface UserOrdersPageInterface extends PagePropsInterface, UserOrdersConsumerInterface {}
 
-const UserOrdersPage: NextPage<UserOrdersPageInterface> = ({ pageUrls, pageCompany, ...props }) => {
+const UserOrdersPage: NextPage<UserOrdersPageInterface> = ({
+  layoutProps,
+  pageCompany,
+  ...props
+}) => {
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={pageCompany}>
+    <ConsoleLayout {...layoutProps}>
       <UserOrdersConsumer {...props} currentCompany={pageCompany} />
     </ConsoleLayout>
   );

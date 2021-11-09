@@ -22,7 +22,7 @@ import { noNaN } from 'lib/numbers';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { PagePropsInterface } from 'pages/_app';
@@ -147,11 +147,14 @@ const OptionsGroupsConsumer: React.FC<OptionsGroupsConsumerInterface> = ({ optio
 
 interface OptionsGroupsPageInterface extends PagePropsInterface, OptionsGroupsConsumerInterface {}
 
-const OptionsGroupsPage: NextPage<OptionsGroupsPageInterface> = ({ pageUrls, optionsGroups }) => {
+const OptionsGroupsPage: NextPage<OptionsGroupsPageInterface> = ({
+  layoutProps,
+  optionsGroups,
+}) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <OptionsGroupsConsumer optionsGroups={optionsGroups} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

@@ -11,7 +11,7 @@ import { RubricModel, RubricSeoModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
@@ -58,9 +58,9 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
 
 interface RubricPageInterface extends PagePropsInterface, RubricDetailsInterface {}
 
-const RubricPage: NextPage<RubricPageInterface> = ({ pageUrls, ...props }) => {
+const RubricPage: NextPage<RubricPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={props.pageCompany}>
+    <ConsoleLayout {...layoutProps}>
       <RubricDetails {...props} />
     </ConsoleLayout>
   );
@@ -80,7 +80,7 @@ export const getServerSideProps = async (
       notFound: true,
     };
   }
-  const companySlug = props.pageCompany.slug;
+  const companySlug = props.layoutProps.pageCompany.slug;
 
   const initialRubrics = await rubricsCollection
     .aggregate([
@@ -190,7 +190,7 @@ export const getServerSideProps = async (
       rubric: castDbData(rawRubric),
       seoTop: castDbData(seoTop),
       seoBottom: castDbData(seoBottom),
-      routeBasePath: `${ROUTE_CONSOLE}/${props.pageCompany._id}`,
+      routeBasePath: `${ROUTE_CONSOLE}/${props.layoutProps.pageCompany._id}`,
     },
   };
 };

@@ -30,10 +30,9 @@ import { AttributeInterface, AttributesGroupInterface } from 'db/uiInterfaces';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import { getFieldStringLocale } from 'lib/i18n';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import Head from 'next/head';
-import { PagePropsInterface } from 'pages/_app';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { ClientNavItemInterface } from 'types/clientTypes';
 
@@ -355,13 +354,15 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({ attributesG
   );
 };
 
-interface AttributesPageInterface extends PagePropsInterface, AttributesConsumerInterface {}
+interface AttributesPageInterface
+  extends GetAppInitialDataPropsInterface,
+    AttributesConsumerInterface {}
 
-const Attributes: NextPage<AttributesPageInterface> = ({ attributesGroup, ...props }) => {
+const Attributes: NextPage<AttributesPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <CmsLayout title={pageTitle} {...props}>
-      <AttributesConsumer attributesGroup={attributesGroup} />
-    </CmsLayout>
+    <ConsoleLayout title={pageTitle} {...layoutProps}>
+      <AttributesConsumer {...props} />
+    </ConsoleLayout>
   );
 };
 

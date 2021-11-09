@@ -15,7 +15,7 @@ import { omit } from 'lodash';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { PagePropsInterface } from 'pages/_app';
 import { GetServerSidePropsContext, NextPage } from 'next';
 import { getAppInitialData } from 'lib/ssrUtils';
@@ -122,11 +122,11 @@ const CreateCompanyContent: React.FC = () => {
   );
 };
 
-const CompaniesCreate: NextPage<PagePropsInterface> = ({ pageUrls }) => {
+const CompaniesCreate: NextPage<PagePropsInterface> = ({ layoutProps }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <CreateCompanyContent />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

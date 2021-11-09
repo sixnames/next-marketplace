@@ -15,7 +15,7 @@ import { getFullName } from 'lib/nameUtils';
 import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
@@ -94,11 +94,11 @@ const UserPasswordConsumer: React.FC<UserPasswordInterface> = ({ user }) => {
 
 interface UserPasswordPageInterface extends PagePropsInterface, UserPasswordInterface {}
 
-const UserPasswordPage: NextPage<UserPasswordPageInterface> = ({ pageUrls, ...props }) => {
+const UserPasswordPage: NextPage<UserPasswordPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <UserPasswordConsumer {...props} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

@@ -17,7 +17,7 @@ import {
   ShopProductInterface,
 } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getTreeFromList, sortByName } from 'lib/optionsUtils';
@@ -75,11 +75,14 @@ interface RubricCategoriesPageInterface
   extends PagePropsInterface,
     RubricCategoriesConsumerInterface {}
 
-const RubricCategoriesPage: NextPage<RubricCategoriesPageInterface> = ({ pageUrls, ...props }) => {
+const RubricCategoriesPage: NextPage<RubricCategoriesPageInterface> = ({
+  layoutProps,
+  ...props
+}) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <RubricCategoriesConsumer {...props} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

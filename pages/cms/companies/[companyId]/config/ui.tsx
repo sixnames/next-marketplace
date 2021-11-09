@@ -6,7 +6,7 @@ import { CompanyInterface } from 'db/uiInterfaces';
 import { ConfigPageInterface } from 'layout/console/ConsoleConfigsLayout';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getConfigPageData } from 'lib/configsUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -57,9 +57,9 @@ interface ConfigInterface
 
 const Config: NextPage<ConfigInterface> = (props) => {
   return (
-    <CmsLayout title={'Настройки сайта'} {...props}>
+    <ConsoleLayout title={'Настройки сайта'} {...props}>
       <ConfigConsumer {...props} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

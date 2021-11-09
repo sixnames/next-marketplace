@@ -26,7 +26,7 @@ import { getFieldStringLocale } from 'lib/i18n';
 import Head from 'next/head';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
@@ -193,11 +193,11 @@ const NavItemsPageConsumer: React.FC<NavItemsPageConsumerInterface> = ({ navItem
 
 interface NavItemsPagePageInterface extends PagePropsInterface, NavItemsPageConsumerInterface {}
 
-const NavItemsPage: NextPage<NavItemsPagePageInterface> = ({ pageUrls, navItemGroups }) => {
+const NavItemsPage: NextPage<NavItemsPagePageInterface> = ({ layoutProps, navItemGroups }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <NavItemsPageConsumer navItemGroups={navItemGroups} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

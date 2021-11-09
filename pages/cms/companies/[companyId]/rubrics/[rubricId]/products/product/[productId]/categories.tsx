@@ -15,7 +15,7 @@ import { getCmsProduct } from 'lib/productUtils';
 import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
@@ -71,11 +71,11 @@ const ProductCategories: React.FC<ProductCategoriesInterface> = ({
 
 interface ProductPageInterface extends PagePropsInterface, ProductCategoriesInterface {}
 
-const Product: NextPage<ProductPageInterface> = ({ pageUrls, ...props }) => {
+const Product: NextPage<ProductPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <ProductCategories {...props} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

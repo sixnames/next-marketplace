@@ -2,7 +2,7 @@ import ConfigsFormTemplate from 'components/FormTemplates/ConfigsFormTemplate';
 import Inner from 'components/Inner';
 import { DEFAULT_COMPANY_SLUG, CONFIG_GROUP_CONTACTS } from 'config/common';
 import ConsoleConfigsLayout, { ConfigPageInterface } from 'layout/console/ConsoleConfigsLayout';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getConfigPageData } from 'lib/configsUtils';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -19,11 +19,11 @@ const ConfigConsumer: React.FC<ConfigPageInterface> = ({ assetConfigs, normalCon
 };
 
 const Config: NextPage<ConfigPageInterface> = (props) => {
-  const { pageUrls } = props;
+  const { layoutProps } = props;
   return (
-    <CmsLayout title={'Настройки сайта'} pageUrls={pageUrls}>
+    <ConsoleLayout title={'Настройки сайта'} {...layoutProps}>
       <ConfigConsumer {...props} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

@@ -6,7 +6,7 @@ import { ProductCardContentModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { ShopProductInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import ConsoleShopProductLayout from 'layout/console/ConsoleShopProductLayout';
 import { getConsoleShopProduct } from 'lib/productUtils';
 import { ObjectId } from 'mongodb';
@@ -77,9 +77,9 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct, cardCo
 
 interface ProductPageInterface extends PagePropsInterface, ProductDetailsInterface {}
 
-const Product: NextPage<ProductPageInterface> = ({ pageUrls, pageCompany, ...props }) => {
+const Product: NextPage<ProductPageInterface> = ({ layoutProps, pageCompany, ...props }) => {
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={pageCompany}>
+    <ConsoleLayout {...layoutProps}>
       <ProductDetails {...props} />
     </ConsoleLayout>
   );

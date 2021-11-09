@@ -4,7 +4,7 @@ import Title from 'components/Title';
 import { ROUTE_CONSOLE } from 'config/common';
 import { CompanyInterface } from 'db/uiInterfaces';
 import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getPagesListSsr } from 'lib/pageUtils';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
@@ -17,7 +17,11 @@ interface PagesListPageInterface
   pageCompany: CompanyInterface;
 }
 
-const PagesListPage: NextPage<PagesListPageInterface> = ({ pageUrls, pagesGroup, pageCompany }) => {
+const PagesListPage: NextPage<PagesListPageInterface> = ({
+  layoutProps,
+  pagesGroup,
+  pageCompany,
+}) => {
   const basePath = `${ROUTE_CONSOLE}/${pageCompany._id}/pages`;
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${pagesGroup.name}`,
@@ -30,7 +34,7 @@ const PagesListPage: NextPage<PagesListPageInterface> = ({ pageUrls, pagesGroup,
   };
 
   return (
-    <ConsoleLayout title={`${pagesGroup.name}`} pageUrls={pageUrls} company={pageCompany}>
+    <ConsoleLayout title={`${pagesGroup.name}`} {...layoutProps}>
       <AppContentWrapper breadcrumbs={breadcrumbs}>
         <Inner>
           <Title>{pagesGroup.name}</Title>
@@ -47,7 +51,7 @@ export const getServerSideProps = async (
   const { query } = context;
   const { pagesGroupId } = query;
   const { props } = await getConsoleInitialData({ context });
-  if (!props || !props.pageCompany || !pagesGroupId) {
+  if (!props || !pagesGroupId) {
     return {
       notFound: true,
     };
@@ -67,7 +71,7 @@ export const getServerSideProps = async (
     props: {
       ...props,
       pagesGroup: castDbData(pagesGroup),
-      pageCompany: props.pageCompany,
+      pageCompany: props.layoutProps.pageCompany,
     },
   };
 };

@@ -23,7 +23,7 @@ import { generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
@@ -62,11 +62,11 @@ const UserOrdersConsumer: React.FC<UserOrderConsumerInterface> = ({ user, order 
 
 interface UserOrderInterface extends PagePropsInterface, UserOrderConsumerInterface {}
 
-const UserOrderPage: NextPage<UserOrderInterface> = ({ pageUrls, ...props }) => {
+const UserOrderPage: NextPage<UserOrderInterface> = ({ layoutProps, ...props }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <UserOrdersConsumer {...props} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

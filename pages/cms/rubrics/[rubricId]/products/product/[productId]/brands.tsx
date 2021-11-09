@@ -10,13 +10,12 @@ import {
   ProductInterface,
 } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import CmsProductLayout from 'layout/cms/CmsProductLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getCmsProduct } from 'lib/productUtils';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
 interface ProductBrandsInterface {
@@ -66,13 +65,13 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
   );
 };
 
-interface ProductPageInterface extends PagePropsInterface, ProductBrandsInterface {}
+interface ProductPageInterface extends GetAppInitialDataPropsInterface, ProductBrandsInterface {}
 
-const Product: NextPage<ProductPageInterface> = ({ pageUrls, ...props }) => {
+const Product: NextPage<ProductPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <ProductBrands {...props} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

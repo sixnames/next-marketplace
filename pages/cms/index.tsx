@@ -3,19 +3,19 @@ import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import Inner from 'components/Inner';
 import Title from 'components/Title';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, NextPage } from 'next';
 import { getAppInitialData } from 'lib/ssrUtils';
 
-const Cms: NextPage<PagePropsInterface> = ({ pageUrls }) => {
+const Cms: NextPage<PagePropsInterface> = ({ layoutProps }) => {
   return (
-    <CmsLayout title={'CMS'} pageUrls={pageUrls}>
+    <ConsoleLayout title={'CMS'} {...layoutProps}>
       <AppContentWrapper>
         <Inner>
           <Title>Cms</Title>
         </Inner>
       </AppContentWrapper>
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

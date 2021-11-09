@@ -1,10 +1,10 @@
 import { ROUTE_CMS, DEFAULT_PAGE_FILTER, DEFAULT_COMPANY_SLUG } from 'config/common';
 import { ProductInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import ConsoleLayout, { ConsoleLayoutInterface } from 'layout/cms/ConsoleLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { getAddShopProductSsrData } from 'lib/consoleProductUtils';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 import {
@@ -23,15 +23,14 @@ export type ShopAddProductsListRouteReduced = Omit<
 >;
 
 interface CompanyShopProductsListInterface
-  extends ConsoleLayoutInterface,
+  extends GetAppInitialDataPropsInterface,
     ShopAddProductsListRouteReduced {}
 
 const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = ({
-  pageUrls,
+  layoutProps,
   shop,
   rubricName,
   rubricId,
-  sessionUser,
   ...props
 }) => {
   const [chosen, setChosen] = React.useState<ProductInterface[]>([]);
@@ -87,7 +86,7 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
 
   if (step === 2) {
     return (
-      <ConsoleLayout pageUrls={pageUrls} sessionUser={sessionUser}>
+      <ConsoleLayout {...layoutProps}>
         <ShopAddProductsFinalStep
           breadcrumbs={breadcrumbs}
           rubricName={rubricName}
@@ -105,7 +104,7 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
   }
 
   return (
-    <ConsoleLayout pageUrls={pageUrls} sessionUser={sessionUser}>
+    <ConsoleLayout {...layoutProps}>
       <ShopAddProductsList
         breadcrumbs={breadcrumbs}
         rubricName={rubricName}

@@ -23,7 +23,7 @@ import { noNaN } from 'lib/numbers';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 import Head from 'next/head';
 import { PagePropsInterface } from 'pages/_app';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 
 const pageTitle = `Группы атрибутов`;
@@ -143,9 +143,9 @@ interface AttributesGroupsInterface extends PagePropsInterface, AttributesGroups
 
 const AttributesGroups: NextPage<AttributesGroupsInterface> = ({ attributesGroups, ...props }) => {
   return (
-    <CmsLayout title={pageTitle} {...props}>
+    <ConsoleLayout title={pageTitle} {...props}>
       <AttributesGroupsConsumer attributesGroups={attributesGroups} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

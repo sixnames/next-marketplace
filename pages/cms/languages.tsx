@@ -23,7 +23,7 @@ import AppContentWrapper from 'layout/AppContentWrapper';
 import Head from 'next/head';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
@@ -170,11 +170,11 @@ const LanguagesContent: React.FC<LanguagesContentInterface> = ({ languages }) =>
 
 interface LanguagesPageInterface extends PagePropsInterface, LanguagesContentInterface {}
 
-const LanguagesPage: NextPage<LanguagesPageInterface> = ({ pageUrls, languages }) => {
+const LanguagesPage: NextPage<LanguagesPageInterface> = ({ layoutProps, languages }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <LanguagesContent languages={languages} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

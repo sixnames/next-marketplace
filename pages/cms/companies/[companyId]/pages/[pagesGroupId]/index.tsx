@@ -10,7 +10,7 @@ import { getPagesListSsr } from 'lib/pageUtils';
 import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
@@ -20,7 +20,11 @@ interface PagesListPageInterface
   pageCompany: CompanyInterface;
 }
 
-const PagesListPage: NextPage<PagesListPageInterface> = ({ pageUrls, pageCompany, pagesGroup }) => {
+const PagesListPage: NextPage<PagesListPageInterface> = ({
+  layoutProps,
+  pageCompany,
+  pagesGroup,
+}) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${pagesGroup?.name}`,
     config: [
@@ -40,7 +44,7 @@ const PagesListPage: NextPage<PagesListPageInterface> = ({ pageUrls, pageCompany
   };
 
   return (
-    <CmsLayout title={`${pagesGroup.name}`} pageUrls={pageUrls}>
+    <ConsoleLayout title={`${pagesGroup.name}`} {...layoutProps}>
       <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
         <Inner>
           <PagesList
@@ -49,7 +53,7 @@ const PagesListPage: NextPage<PagesListPageInterface> = ({ pageUrls, pageCompany
           />
         </Inner>
       </CmsCompanyLayout>
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

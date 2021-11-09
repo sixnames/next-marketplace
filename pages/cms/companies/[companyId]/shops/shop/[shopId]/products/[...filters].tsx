@@ -3,24 +3,23 @@ import { COL_COMPANIES } from 'db/collectionNames';
 import { CompanyModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getConsoleShopProducts } from 'lib/consoleProductUtils';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import ShopRubricProducts, {
   ShopRubricProductsInterface,
 } from 'components/shops/ShopRubricProducts';
 
 export interface CompanyShopProductsListInterface
-  extends PagePropsInterface,
+  extends GetAppInitialDataPropsInterface,
     Omit<ShopRubricProductsInterface, 'layoutBasePath'> {}
 
 const CompanyShopProductsList: NextPage<CompanyShopProductsListInterface> = ({
-  pageUrls,
+  layoutProps,
   shop,
   rubricName,
   ...props
@@ -54,7 +53,7 @@ const CompanyShopProductsList: NextPage<CompanyShopProductsListInterface> = ({
   };
 
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <ShopRubricProducts
         breadcrumbs={breadcrumbs}
         layoutBasePath={`${companyBasePath}/shops/shop`}
@@ -62,7 +61,7 @@ const CompanyShopProductsList: NextPage<CompanyShopProductsListInterface> = ({
         rubricName={rubricName}
         {...props}
       />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

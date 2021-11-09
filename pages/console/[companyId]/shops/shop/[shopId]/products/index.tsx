@@ -4,7 +4,7 @@ import { RubricModel, ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { RubricInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getI18nLocaleValue } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
@@ -40,7 +40,7 @@ const CompanyShopProducts: NextPage<CompanyShopProductsInterface> = ({
   };
 
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={pageCompany}>
+    <ConsoleLayout {...layoutProps}>
       <ShopRubrics
         shop={shop}
         rubrics={rubrics}

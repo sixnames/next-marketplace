@@ -10,7 +10,7 @@ import { getPageGroupsSsr } from 'lib/pageUtils';
 import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData } from 'lib/ssrUtils';
 
@@ -42,7 +42,7 @@ const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({
   };
 
   return (
-    <CmsLayout title={pageTitle} pageUrls={pageUrls}>
+    <ConsoleLayout title={pageTitle} {...layoutProps}>
       <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
         <Inner>
           <PageGroupsList
@@ -52,7 +52,7 @@ const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({
           />
         </Inner>
       </CmsCompanyLayout>
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

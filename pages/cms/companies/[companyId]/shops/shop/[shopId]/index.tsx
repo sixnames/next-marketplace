@@ -3,7 +3,7 @@ import { COL_COMPANIES, COL_SHOPS } from 'db/collectionNames';
 import { ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { ObjectId } from 'mongodb';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
@@ -13,7 +13,7 @@ import ShopDetails, { ShopDetailsInterface } from 'components/shops/ShopDetails'
 
 interface CompanyShopInterface extends PagePropsInterface, Omit<ShopDetailsInterface, 'basePath'> {}
 
-const CompanyShop: NextPage<CompanyShopInterface> = ({ pageUrls, shop }) => {
+const CompanyShop: NextPage<CompanyShopInterface> = ({ layoutProps, shop }) => {
   const companyBasePath = `${ROUTE_CMS}/companies/${shop.companyId}`;
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -35,13 +35,13 @@ const CompanyShop: NextPage<CompanyShopInterface> = ({ pageUrls, shop }) => {
   };
 
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <ShopDetails
         basePath={`${companyBasePath}/shops/shop`}
         shop={shop}
         breadcrumbs={breadcrumbs}
       />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

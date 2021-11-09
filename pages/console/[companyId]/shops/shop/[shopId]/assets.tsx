@@ -3,23 +3,22 @@ import { COL_SHOPS } from 'db/collectionNames';
 import { ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
-import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import {
+  castDbData,
+  getConsoleInitialData,
+  GetConsoleInitialDataPropsInterface,
+} from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import ShopAssets, { ShopAssetsInterface } from 'components/shops/ShopAssets';
 
 interface CompanyShopAssetsInterface
-  extends PagePropsInterface,
+  extends GetConsoleInitialDataPropsInterface,
     Omit<ShopAssetsInterface, 'basePath'> {}
 
-const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({
-  pageUrls,
-  pageCompany,
-  shop,
-}) => {
+const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ layoutProps, shop }) => {
   const companyBasePath = `${ROUTE_CONSOLE}/${shop.companyId}/shops`;
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Изображения',
@@ -36,7 +35,7 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({
   };
 
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={pageCompany}>
+    <ConsoleLayout {...layoutProps}>
       <ShopAssets basePath={`${companyBasePath}/shop`} shop={shop} breadcrumbs={breadcrumbs} />
     </ConsoleLayout>
   );

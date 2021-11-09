@@ -26,13 +26,35 @@ const CardDefaultLayout = dynamic(() => import('layout/card/CardDefaultLayout'))
 const CardHalfColumnsLayout = dynamic(() => import('layout/card/CardHalfColumnsLayout'));
 
 const CardConsumer: React.FC<CardLayoutInterface> = (props) => {
-  const layoutVariant = props.cardData.cardLayout || DEFAULT_LAYOUT;
+  const sessionUser = useSiteUserContext();
 
-  if (layoutVariant === CARD_LAYOUT_HALF_COLUMNS) {
-    return <CardHalfColumnsLayout {...props} />;
-  }
+  return (
+    <React.Fragment>
+      {(props.cardData.cardLayout || DEFAULT_LAYOUT) === CARD_LAYOUT_HALF_COLUMNS ? (
+        <CardHalfColumnsLayout {...props} />
+      ) : (
+        <CardDefaultLayout {...props} />
+      )}
 
-  return <CardDefaultLayout {...props} />;
+      {sessionUser?.showAdminUiInCatalogue ? (
+        <FixedButtons>
+          <Inner lowTop lowBottom>
+            <Button
+              size={'small'}
+              onClick={() => {
+                window.open(
+                  `${sessionUser.editLinkBasePath}/rubrics/${props.cardData.product.rubricId}/products/product/${props.cardData.product._id}`,
+                  '_blank',
+                );
+              }}
+            >
+              Редактировать товар
+            </Button>
+          </Inner>
+        </FixedButtons>
+      ) : null}
+    </React.Fragment>
+  );
 };
 
 interface CardInterface extends SiteLayoutProviderInterface {
@@ -41,7 +63,6 @@ interface CardInterface extends SiteLayoutProviderInterface {
 
 const Card: NextPage<CardInterface> = ({ cardData, domainCompany, ...props }) => {
   const { currentCity } = props;
-  const sessionUser = useSiteUserContext();
   const { configs } = useConfigContext();
   if (!cardData) {
     return (
@@ -69,23 +90,6 @@ const Card: NextPage<CardInterface> = ({ cardData, domainCompany, ...props }) =>
         companySlug={domainCompany?.slug}
         companyId={domainCompany ? `${domainCompany._id}` : null}
       />
-      {sessionUser?.showAdminUiInCatalogue ? (
-        <FixedButtons>
-          <Inner lowTop lowBottom>
-            <Button
-              size={'small'}
-              onClick={() => {
-                window.open(
-                  `${sessionUser.editLinkBasePath}/rubrics/${cardData.product.rubricId}/products/product/${cardData.product._id}`,
-                  '_blank',
-                );
-              }}
-            >
-              Редактировать товар
-            </Button>
-          </Inner>
-        </FixedButtons>
-      ) : null}
     </SiteLayout>
   );
 };

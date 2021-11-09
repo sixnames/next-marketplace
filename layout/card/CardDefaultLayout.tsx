@@ -7,7 +7,6 @@ import WpImage from 'components/WpImage';
 import { useSiteContext } from 'context/siteContext';
 import CardSimilarProducts from 'layout/card/CardSimilarProducts';
 import Title from 'components/Title';
-import { ROUTE_CATALOGUE } from 'config/common';
 import useCardData from 'hooks/useCardData';
 import CardControls from 'layout/card/CardControls';
 import CardDynamicContent from 'layout/card/CardDynamicContent';
@@ -171,7 +170,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                                   className={isCurrent ? `pointer-events-none` : ``}
                                   key={`${option?.name}`}
                                   isActive={isCurrent}
-                                  href={`${urlPrefix}${ROUTE_CATALOGUE}/${product.rubricSlug}/product/${productSlug}`}
+                                  href={`${urlPrefix}/${productSlug}`}
                                 >
                                   {name}
                                 </TagLink>

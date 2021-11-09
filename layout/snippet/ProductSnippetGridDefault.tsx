@@ -1,5 +1,4 @@
 import WpImage from 'components/WpImage';
-import { ROUTE_CATALOGUE } from 'config/common';
 import { useSiteContext } from 'context/siteContext';
 import { useSiteUserContext } from 'context/userSiteUserContext';
 import { ProductSnippetInterface } from 'db/uiInterfaces';
@@ -22,7 +21,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
 }) => {
   const sessionUser = useSiteUserContext();
   const { addShoplessProductToCart, addProductToCart, urlPrefix } = useSiteContext();
-  const { rubricSlug, product } = shopProduct;
+  const { product } = shopProduct;
   if (!product) {
     return null;
   }
@@ -100,7 +99,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
             testId={`${testId}-image-grid`}
             target={'_blank'}
             className='block absolute z-10 inset-0 text-indent-full'
-            href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
+            href={`${urlPrefix}/${slug}`}
           >
             {snippetTitle}
           </Link>
@@ -114,7 +113,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
                 testId={`${testId}-name-grid`}
                 target={'_blank'}
                 className='text-lg sm:text-xl font-medium block text-primary-text hover:no-underline hover:text-primary-text'
-                href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
+                href={`${urlPrefix}/${slug}`}
               >
                 {snippetTitle}
               </Link>

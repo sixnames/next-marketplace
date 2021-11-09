@@ -28,10 +28,9 @@ import { getTreeFromList } from 'lib/optionsUtils';
 import { ObjectId } from 'mongodb';
 import Head from 'next/head';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { PagePropsInterface } from 'pages/_app';
 
 interface OptionsGroupOptionsConsumerInterface {
   optionsGroup: OptionsGroupInterface;
@@ -260,17 +259,17 @@ const OptionsGroupOptionsConsumer: React.FC<OptionsGroupOptionsConsumerInterface
 };
 
 interface OptionsGroupOptionsPageInterface
-  extends PagePropsInterface,
+  extends GetAppInitialDataPropsInterface,
     OptionsGroupOptionsConsumerInterface {}
 
 const OptionsGroupOptionsPage: NextPage<OptionsGroupOptionsPageInterface> = ({
-  pageUrls,
-  optionsGroup,
+  layoutProps,
+  ...props
 }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
-      <OptionsGroupOptionsConsumer optionsGroup={optionsGroup} />
-    </CmsLayout>
+    <ConsoleLayout {...layoutProps}>
+      <OptionsGroupOptionsConsumer {...props} />
+    </ConsoleLayout>
   );
 };
 

@@ -19,7 +19,7 @@ import { getDatabase } from 'db/mongodb';
 import { OrderInterface } from 'db/uiInterfaces';
 import { useCancelOrder, useConfirmOrder } from 'hooks/mutations/useOrderMutations';
 import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
 import { castOrderStatus } from 'lib/orderUtils';
@@ -27,10 +27,13 @@ import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 import { useRouter } from 'next/router';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import {
+  castDbData,
+  getConsoleInitialData,
+  GetConsoleInitialDataPropsInterface,
+} from 'lib/ssrUtils';
 
 interface OrderPageConsumerInterface {
   order: OrderInterface;
@@ -100,12 +103,14 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
   );
 };
 
-interface OrderPageInterface extends PagePropsInterface, OrderPageConsumerInterface {}
+interface OrderPageInterface
+  extends GetConsoleInitialDataPropsInterface,
+    OrderPageConsumerInterface {}
 
-const OrderPage: NextPage<OrderPageInterface> = ({ pageUrls, order, currentCompany }) => {
+const OrderPage: NextPage<OrderPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={currentCompany}>
-      <OrderPageConsumer order={order} />
+    <ConsoleLayout {...layoutProps}>
+      <OrderPageConsumer {...props} />
     </ConsoleLayout>
   );
 };

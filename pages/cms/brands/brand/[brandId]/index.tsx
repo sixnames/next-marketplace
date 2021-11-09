@@ -18,11 +18,10 @@ import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { updateBrandSchema } from 'validation/brandSchema';
 
 interface BrandDetailsConsumerInterface {
@@ -167,13 +166,15 @@ const BrandDetailsConsumer: React.FC<BrandDetailsConsumerInterface> = ({ brand }
   );
 };
 
-interface BrandDetailsPageInterface extends PagePropsInterface, BrandDetailsConsumerInterface {}
+interface BrandDetailsPageInterface
+  extends GetAppInitialDataPropsInterface,
+    BrandDetailsConsumerInterface {}
 
-const BrandDetailsPage: NextPage<BrandDetailsPageInterface> = ({ pageUrls, ...props }) => {
+const BrandDetailsPage: NextPage<BrandDetailsPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <BrandDetailsConsumer {...props} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

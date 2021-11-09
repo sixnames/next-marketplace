@@ -8,22 +8,21 @@ import { RubricInterface } from 'db/uiInterfaces';
 import AppContentWrapper from 'layout/AppContentWrapper';
 
 import CompanyRubricsList, { CompanyRubricsListInterface } from 'layout/CompanyRubricsList';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import {
+  castDbData,
+  getConsoleInitialData,
+  GetConsoleInitialDataPropsInterface,
+} from 'lib/ssrUtils';
 
 interface RubricsRouteInterface extends CompanyRubricsListInterface {}
 const pageTitle = 'Рубрикатор';
 
-const RubricsRoute: React.FC<RubricsRouteInterface> = ({
-  rubrics,
-  currentCompany,
-  routeBasePath,
-}) => {
+const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, pageCompany, routeBasePath }) => {
   return (
     <AppContentWrapper>
       <Inner lowBottom>
@@ -31,18 +30,18 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({
       </Inner>
       <CompanyRubricsList
         rubrics={rubrics}
-        currentCompany={currentCompany}
+        pageCompany={pageCompany}
         routeBasePath={routeBasePath}
       />
     </AppContentWrapper>
   );
 };
 
-interface RubricsInterface extends PagePropsInterface, RubricsRouteInterface {}
+interface RubricsInterface extends GetConsoleInitialDataPropsInterface, RubricsRouteInterface {}
 
-const Rubrics: NextPage<RubricsInterface> = ({ pageUrls, ...props }) => {
+const Rubrics: NextPage<RubricsInterface> = ({ layoutProps, ...props }) => {
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={props.currentCompany} title={pageTitle}>
+    <ConsoleLayout {...layoutProps} title={pageTitle}>
       <RubricsRoute {...props} />
     </ConsoleLayout>
   );
@@ -158,7 +157,8 @@ export const getServerSideProps = async (
     props: {
       ...props,
       rubrics: castDbData(rawRubrics),
-      routeBasePath: `${ROUTE_CONSOLE}/${props.currentCompany._id}/rubrics`,
+      routeBasePath: `${ROUTE_CONSOLE}/${props.layoutProps.pageCompany._id}/rubrics`,
+      pageCompany: castDbData(props.layoutProps.pageCompany),
     },
   };
 };

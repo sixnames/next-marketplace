@@ -13,6 +13,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
   rubricSlug,
   attributeLinkStyle,
   hideDropdown,
+  urlPrefix,
 }) => {
   const { options, metric } = attribute;
   const postfix = metric ? ` ${metric.name}` : null;
@@ -34,7 +35,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
               style={attributeLinkStyle}
               testId={`header-nav-dropdown-option`}
               prefetch={false}
-              href={`${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`}
+              href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`}
             >
               {option.image ? (
                 <span className={`flex mb-4 ${isCentered ? 'justify-center' : ''}`}>
@@ -63,7 +64,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
                         style={attributeLinkStyle}
                         testId={`header-nav-dropdown-option`}
                         prefetch={false}
-                        href={`${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${FILTER_SEPARATOR}${childOption.slug}`}
+                        href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${FILTER_SEPARATOR}${childOption.slug}`}
                       >
                         <span className='block text-secondary-text'>
                           {childOption.name}
@@ -89,6 +90,7 @@ const StickyNavDropdownOptionsOnly: React.FC<StickyNavDropdownInterface> = ({
   dropdownStyle,
   rubricSlug,
   hideDropdown,
+  urlPrefix,
 }) => {
   if (!attributes || attributes.length < 1) {
     return null;
@@ -101,6 +103,7 @@ const StickyNavDropdownOptionsOnly: React.FC<StickyNavDropdownInterface> = ({
           {(attributes || []).map((attribute) => {
             return (
               <StickyNavAttribute
+                urlPrefix={urlPrefix}
                 hideDropdown={hideDropdown}
                 key={`${attribute._id}`}
                 attribute={attribute}

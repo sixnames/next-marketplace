@@ -6,6 +6,7 @@ import Icon from 'components/Icon';
 import Inner from 'components/Inner';
 import MenuButtonWithName from 'components/MenuButtonWithName';
 import TextSeoInfo from 'components/TextSeoInfo';
+import { useSiteUserContext } from 'context/userSiteUserContext';
 import { TextUniquenessApiParsedResponseModel } from 'db/dbModels';
 import ProductSnippetGrid from 'layout/snippet/ProductSnippetGrid';
 import ProductSnippetRow from 'layout/snippet/ProductSnippetRow';
@@ -44,6 +45,7 @@ interface CatalogueConsumerInterface {
   companySlug?: string;
   companyId?: string;
   isSearchResult?: boolean;
+  urlPrefix: string;
 }
 
 const seoTextClassName = 'prose max-w-full md:prose-lg lg:prose-xl';
@@ -53,8 +55,10 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
   companyId,
   companySlug,
   isSearchResult,
+  urlPrefix,
 }) => {
   const router = useRouter();
+  const sessionUser = useSiteUserContext();
   const { configs } = useConfigContext();
   const isPageLoading = usePageLoadingState();
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -133,16 +137,12 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
       const filters = alwaysArray(router.query.filters).join('/');
       const attributesCountParam = configs.snippetAttributesCount;
       const optionsCountParam = configs.catalogueFilterVisibleOptionsCount;
-      const showAdminUiInCatalogue = configs.showAdminUiInCatalogue;
       const companyIdParam = companyId ? `&companyId=${companyId}` : '';
       const companySlugParam = companySlug ? `&companySlug=${companySlug}` : '';
-      const showAdminUiInCatalogueParam = showAdminUiInCatalogue
-        ? `&showAdminUiInCatalogue=${true}`
-        : '';
 
       const params = `?page=${
         state.page + 1
-      }&visibleOptionsCount=${optionsCountParam}&snippetVisibleAttributesCount=${attributesCountParam}${companyIdParam}${companySlugParam}${showAdminUiInCatalogueParam}`;
+      }&visibleOptionsCount=${optionsCountParam}&snippetVisibleAttributesCount=${attributesCountParam}${companyIdParam}${companySlugParam}`;
 
       fetch(`/api/catalogue/${router.query.rubricSlug}/${filters}${params}`)
         .then((res) => {
@@ -166,7 +166,6 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
     companyId,
     companySlug,
     configs.catalogueFilterVisibleOptionsCount,
-    configs.showAdminUiInCatalogue,
     configs.snippetAttributesCount,
     router.query.filters,
     router.query.rubricSlug,
@@ -275,7 +274,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
   if (catalogueData.totalProducts < 1) {
     return (
       <div className='mb-12 catalogue'>
-        <Breadcrumbs config={state.breadcrumbs} />
+        <Breadcrumbs config={state.breadcrumbs} urlPrefix={urlPrefix} />
         <Inner lowTop testId={'catalogue'}>
           <Title testId={'catalogue-title'}>{catalogueData.catalogueTitle}</Title>
           <RequestError message={'В данном разделе нет товаров. Загляните пожалуйста позже'} />
@@ -286,7 +285,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
 
   return (
     <div className='mb-12 catalogue'>
-      <Breadcrumbs config={state.breadcrumbs} />
+      <Breadcrumbs config={state.breadcrumbs} urlPrefix={urlPrefix} />
       <Inner lowTop testId={'catalogue'}>
         <Title
           testId={'catalogue-title'}
@@ -298,7 +297,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
         {state.textTop ? (
           <div className={`mb-12`}>
             <div className={seoTextClassName}>{state.textTop}</div>
-            {configs.showAdminUiInCatalogue && state.seoTop ? (
+            {sessionUser?.showAdminUiInCatalogue && state.seoTop ? (
               <div className='space-y-3 mt-6'>
                 {(state.seoTop.locales || []).map(
                   (seoLocale: TextUniquenessApiParsedResponseModel) => {
@@ -319,14 +318,15 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
 
         <div className='grid lg:grid-cols-7 gap-12'>
           <CatalogueFilter
+            urlPrefix={urlPrefix}
             basePath={state.basePath}
+            clearSlug={state.clearSlug}
+            rubricSlug={state.rubricSlug}
             companyId={companyId}
             filterLayoutVariant={catalogueData.catalogueFilterLayout}
             attributes={catalogueData.attributes}
             selectedAttributes={catalogueData.selectedAttributes}
-            clearSlug={state.clearSlug}
             catalogueCounterString={catalogueCounterString}
-            rubricSlug={state.rubricSlug}
             isFilterVisible={isFilterVisible}
             hideFilterHandler={hideFilterHandler}
             isSearchResult={isSearchResult}
@@ -448,7 +448,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
           <div className={`mt-16`}>
             <div className={seoTextClassName}>{state.textBottom}</div>
 
-            {configs.showAdminUiInCatalogue && state.seoBottom ? (
+            {sessionUser?.showAdminUiInCatalogue && state.seoBottom ? (
               <div className='space-y-3 mt-6'>
                 {(state.seoBottom.locales || []).map(
                   (seoLocale: TextUniquenessApiParsedResponseModel) => {
@@ -494,14 +494,16 @@ export interface CatalogueInterface extends SiteLayoutProviderInterface {
 const Catalogue: React.FC<CatalogueInterface> = ({
   catalogueData,
   currentCity,
-  company,
+  domainCompany,
   isSearchResult,
+  urlPrefix,
   ...props
 }) => {
+  const sessionUser = useSiteUserContext();
   const { configs } = useConfigContext();
   if (!catalogueData) {
     return (
-      <SiteLayout {...props}>
+      <SiteLayout {...props} urlPrefix={urlPrefix}>
         <ErrorBoundaryFallback />
       </SiteLayout>
     );
@@ -513,26 +515,28 @@ const Catalogue: React.FC<CatalogueInterface> = ({
 
   return (
     <SiteLayout
+      urlPrefix={urlPrefix}
       currentCity={currentCity}
-      company={company}
+      domainCompany={domainCompany}
       title={`${catalogueData.catalogueTitle}${prefix} ${siteName}${cityDescription}`}
       description={`${catalogueData.catalogueTitle} ${prefix} ${siteName}${cityDescription}`}
       {...props}
     >
       <CatalogueConsumer
+        urlPrefix={urlPrefix}
         isSearchResult={isSearchResult}
         catalogueData={catalogueData}
-        companySlug={company?.slug}
-        companyId={company?._id ? `${company?._id}` : undefined}
+        companySlug={domainCompany?.slug}
+        companyId={domainCompany?._id ? `${domainCompany?._id}` : undefined}
       />
 
-      {configs.showAdminUiInCatalogue ? (
+      {sessionUser?.showAdminUiInCatalogue ? (
         <FixedButtons>
           <Inner lowTop lowBottom>
             <Button
               size={'small'}
               onClick={() => {
-                window.open(`${configs.editLinkBasePath}${catalogueData?.editUrl}`, '_blank');
+                window.open(`${sessionUser?.editLinkBasePath}${catalogueData?.editUrl}`, '_blank');
               }}
             >
               Редактировать

@@ -875,7 +875,6 @@ export interface GetCatalogueDataInterface {
   companySlug?: string;
   companyId?: string | ObjectIdModel | null;
   snippetVisibleAttributesCount: number;
-  showAdminUiInCatalogue: boolean;
   currency: string;
   input: {
     search?: string;
@@ -893,7 +892,6 @@ export const getCatalogueData = async ({
   snippetVisibleAttributesCount,
   currency,
   basePath,
-  showAdminUiInCatalogue,
   ...props
 }: GetCatalogueDataInterface): Promise<CatalogueDataInterface | null> => {
   try {
@@ -2044,12 +2042,11 @@ export async function getCatalogueServerSideProps(
   const rawCatalogueData = await getCatalogueData({
     locale: props.sessionLocale,
     city: props.sessionCity,
-    companySlug: props.company?.slug,
-    companyId: props.company?._id,
+    companySlug: props.domainCompany?.slug,
+    companyId: props.domainCompany?._id,
     currency: props.initialData.currency,
     basePath: `${ROUTE_CATALOGUE}/${rubricSlug}`,
     snippetVisibleAttributesCount: props.initialData.configs.snippetAttributesCount,
-    showAdminUiInCatalogue: props.initialData.configs.showAdminUiInCatalogue,
     input: {
       rubricSlug: `${rubricSlug}`,
       filters: alwaysArray(query.filters),

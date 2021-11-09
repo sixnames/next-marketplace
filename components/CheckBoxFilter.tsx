@@ -25,6 +25,7 @@ interface CheckBoxFilterAttributeInterface {
   attributeIndex: number;
   basePath: string;
   excludedParams?: string[] | null;
+  urlPrefix?: string;
 }
 
 const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
@@ -33,6 +34,7 @@ const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
   attributeIndex,
   basePath,
   excludedParams,
+  urlPrefix,
 }) => {
   const { showModal } = useAppContext();
   const { configs } = useConfigContext();
@@ -80,7 +82,7 @@ const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
     return (
       <div key={`${option._id}`}>
         <Link
-          href={nextSlug}
+          href={`${urlPrefix}${nextSlug}`}
           onClick={onClick}
           testId={testId}
           className='flex items-center gap-2 w-full min-h-[2.5rem] cursor-pointer text-primary-text hover:text-theme hover:no-underline'
@@ -117,7 +119,7 @@ const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
                       attributeSlug: isBrand ? FILTER_BRAND_COLLECTION_KEY : attribute.slug,
                       notShowAsAlphabet: attribute.notShowAsAlphabet,
                       title: isBrand ? 'Линейка бренда' : attribute.name,
-                      basePath,
+                      basePath: `${urlPrefix}${basePath}`,
                       options: option.options,
                       excludedParams,
                     },
@@ -142,7 +144,7 @@ const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
         <div className='flex items-baseline mb-2 justify-between'>
           <span className={`font-medium text-lg`}>{attribute.name}</span>
           {attribute.isSelected && attribute.clearSlug ? (
-            <Link onClick={onClick} href={attribute.clearSlug} className={`ml-4`}>
+            <Link onClick={onClick} href={`${urlPrefix}${attribute.clearSlug}`} className={`ml-4`}>
               Очистить
             </Link>
           ) : null}
@@ -184,6 +186,7 @@ const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
 export interface CheckBoxFilterInterface extends FilterBaseInterface {
   filterListClassName?: string;
   onClick?: () => void | null;
+  urlPrefix?: string;
 }
 
 const CheckBoxFilter: React.FC<CheckBoxFilterInterface> = ({
@@ -194,6 +197,7 @@ const CheckBoxFilter: React.FC<CheckBoxFilterInterface> = ({
   basePath,
   clearSlug,
   excludedParams,
+  urlPrefix = '',
 }) => {
   return (
     <div>
@@ -202,6 +206,7 @@ const CheckBoxFilter: React.FC<CheckBoxFilterInterface> = ({
         onClick={onClick}
         clearSlug={clearSlug}
         selectedAttributes={selectedAttributes}
+        urlPrefix={urlPrefix}
       />
 
       {/*filter*/}
@@ -215,6 +220,7 @@ const CheckBoxFilter: React.FC<CheckBoxFilterInterface> = ({
               attributeIndex={attributeIndex}
               key={`${attribute._id}`}
               excludedParams={excludedParams}
+              urlPrefix={urlPrefix}
             />
           );
         })}

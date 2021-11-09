@@ -3,19 +3,18 @@ import { COL_COMPANIES, COL_SHOPS } from 'db/collectionNames';
 import { ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/cms/CmsLayout';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import ShopAssets, { ShopAssetsInterface } from 'components/shops/ShopAssets';
 
 interface CompanyShopAssetsInterface
-  extends PagePropsInterface,
+  extends GetAppInitialDataPropsInterface,
     Omit<ShopAssetsInterface, 'basePath'> {}
 
-const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ pageUrls, shop }) => {
+const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ layoutProps, shop }) => {
   const companyBasePath = `${ROUTE_CMS}/companies/${shop.companyId}`;
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -41,13 +40,13 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ pageUrls, sho
   };
 
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <ShopAssets
         basePath={`${companyBasePath}/shops/shop`}
         shop={shop}
         breadcrumbs={breadcrumbs}
       />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

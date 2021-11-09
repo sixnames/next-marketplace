@@ -23,13 +23,12 @@ import {
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { castRubricForUI } from 'lib/uiDataUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
 interface RubricAttributesConsumerInterface {
@@ -248,14 +247,17 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
 };
 
 interface RubricAttributesPageInterface
-  extends PagePropsInterface,
+  extends GetAppInitialDataPropsInterface,
     RubricAttributesConsumerInterface {}
 
-const RubricAttributesPage: NextPage<RubricAttributesPageInterface> = ({ pageUrls, rubric }) => {
+const RubricAttributesPage: NextPage<RubricAttributesPageInterface> = ({
+  layoutProps,
+  ...props
+}) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
-      <RubricAttributesConsumer rubric={rubric} />
-    </CmsLayout>
+    <ConsoleLayout {...layoutProps}>
+      <RubricAttributesConsumer {...props} />
+    </ConsoleLayout>
   );
 };
 

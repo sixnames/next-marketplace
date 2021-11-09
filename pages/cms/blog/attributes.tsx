@@ -15,11 +15,10 @@ import { BlogAttributeInterface } from 'db/uiInterfaces';
 import { useDeleteBlogAttribute } from 'hooks/mutations/useBlogMutations';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import AppSubNav from 'layout/AppSubNav';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsResult, GetServerSidePropsContext } from 'next';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { ClientNavItemInterface } from 'types/clientTypes';
 
@@ -145,17 +144,17 @@ const BlogAttributesListConsumer: React.FC<BlogAttributesListConsumerInterface> 
 };
 
 interface BlogAttributesListPageInterface
-  extends PagePropsInterface,
+  extends GetAppInitialDataPropsInterface,
     BlogAttributesListConsumerInterface {}
 
 const BlogAttributesListPage: React.FC<BlogAttributesListPageInterface> = ({
-  attributes,
-  pageUrls,
+  layoutProps,
+  ...props
 }) => {
   return (
-    <CmsLayout pageUrls={pageUrls} title={pageTitle}>
-      <BlogAttributesListConsumer attributes={attributes} />
-    </CmsLayout>
+    <ConsoleLayout {...layoutProps} title={pageTitle}>
+      <BlogAttributesListConsumer {...props} />
+    </ConsoleLayout>
   );
 };
 

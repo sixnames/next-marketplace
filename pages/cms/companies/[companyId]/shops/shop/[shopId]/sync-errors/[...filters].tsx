@@ -5,20 +5,19 @@ import { getPaginatedNotSyncedProducts } from 'db/dao/notSyncedProducts/getPagin
 import { ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { ObjectId } from 'mongodb';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface CompanyShopSyncErrorsInterface
-  extends PagePropsInterface,
+  extends GetAppInitialDataPropsInterface,
     Omit<ShopSyncErrorsInterface, 'basePath'> {}
 
 const CompanyShopSyncErrors: NextPage<CompanyShopSyncErrorsInterface> = ({
-  pageUrls,
+  layoutProps,
   shop,
   notSyncedProducts,
   companySlug,
@@ -48,7 +47,7 @@ const CompanyShopSyncErrors: NextPage<CompanyShopSyncErrorsInterface> = ({
   };
 
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <ShopSyncErrors
         companySlug={companySlug}
         breadcrumbs={breadcrumbs}
@@ -57,7 +56,7 @@ const CompanyShopSyncErrors: NextPage<CompanyShopSyncErrorsInterface> = ({
         basePath={`${companyBasePath}/shops/shop`}
         shop={shop}
       />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

@@ -7,11 +7,10 @@ import { RubricInterface } from 'db/uiInterfaces';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import AppSubNav from 'layout/AppSubNav';
 import Head from 'next/head';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { ClientNavItemInterface } from 'types/clientTypes';
 
-export interface ConfigPageInterface extends PagePropsInterface {
+export interface ConfigPageInterface {
   assetConfigs: ConfigModel[];
   normalConfigs: ConfigModel[];
   rubrics?: RubricInterface[];

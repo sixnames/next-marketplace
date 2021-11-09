@@ -9,11 +9,17 @@ interface AppNavInterface {
   compact: UseCompactReturnInterface;
   navItems: NavItemModel[];
   basePath: string;
-  company?: CompanyInterface;
+  pageCompany?: CompanyInterface | null;
   isMobile: boolean;
 }
 
-const CmsNav: React.FC<AppNavInterface> = ({ compact, isMobile, basePath, company, navItems }) => {
+const CmsNav: React.FC<AppNavInterface> = ({
+  compact,
+  isMobile,
+  basePath,
+  pageCompany,
+  navItems,
+}) => {
   const { pathname } = useRouter();
   const { isCompact, setCompactOff, setCompactOn } = compact;
 
@@ -29,20 +35,20 @@ const CmsNav: React.FC<AppNavInterface> = ({ compact, isMobile, basePath, compan
       }}
     >
       {/*company logo*/}
-      {company ? (
+      {pageCompany ? (
         <div>
-          {company.logo ? (
+          {pageCompany.logo ? (
             <div className='px-[20px] pt-8'>
               <img
                 className='h-[70px] w-full object-contain'
-                src={company.logo.url}
+                src={pageCompany.logo.url}
                 width='100'
                 height='100'
-                alt={company.name}
+                alt={pageCompany.name}
               />
             </div>
           ) : (
-            <div>{company.name}</div>
+            <div>{pageCompany.name}</div>
           )}
         </div>
       ) : null}
@@ -51,7 +57,7 @@ const CmsNav: React.FC<AppNavInterface> = ({ compact, isMobile, basePath, compan
         {navItems.map((item) => {
           return (
             <CmsNavItem
-              companyId={company ? `${company._id}` : undefined}
+              companyId={pageCompany ? `${pageCompany._id}` : undefined}
               basePath={basePath}
               isCompact={isCompact}
               key={`${item._id}`}

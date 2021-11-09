@@ -25,22 +25,25 @@ import { useDeleteShopFromCompanyMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import usePageLoadingState from 'hooks/usePageLoadingState';
 import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { castCatalogueFilters } from 'lib/catalogueUtils';
 import { getFieldStringLocale, getNumWord } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { ObjectId } from 'mongodb';
 import { useRouter } from 'next/router';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import {
+  castDbData,
+  getConsoleInitialData,
+  GetConsoleInitialDataPropsInterface,
+} from 'lib/ssrUtils';
 
 const pageTitle = 'Магазины компании';
 
 interface CompanyShopsPageConsumerInterface extends AppPaginationInterface<ShopInterface> {
-  currentCompany?: CompanyInterface | null;
+  pageCompany: CompanyInterface;
 }
 
 const CompanyShopsPageConsumer: React.FC<CompanyShopsPageConsumerInterface> = ({
@@ -49,7 +52,7 @@ const CompanyShopsPageConsumer: React.FC<CompanyShopsPageConsumerInterface> = ({
   totalDocs,
   itemPath,
   docs,
-  currentCompany,
+  pageCompany,
 }) => {
   const isPageLoading = usePageLoadingState();
   const setPageHandler = useNavigateToPageHandler();
@@ -128,7 +131,7 @@ const CompanyShopsPageConsumer: React.FC<CompanyShopsPageConsumerInterface> = ({
                       variables: {
                         input: {
                           shopId: dataItem._id,
-                          companyId: `${currentCompany?._id}`,
+                          companyId: `${pageCompany?._id}`,
                         },
                       },
                     }).catch(() => {
@@ -169,7 +172,7 @@ const CompanyShopsPageConsumer: React.FC<CompanyShopsPageConsumerInterface> = ({
                 showModal<CreateShopModalInterface>({
                   variant: CREATE_SHOP_MODAL,
                   props: {
-                    companyId: `${currentCompany?._id}`,
+                    companyId: `${pageCompany?._id}`,
                   },
                 });
               }}
@@ -193,14 +196,16 @@ const CompanyShopsPageConsumer: React.FC<CompanyShopsPageConsumerInterface> = ({
   );
 };
 
-interface CompanyShopsPageInterface extends PagePropsInterface, CompanyShopsPageConsumerInterface {}
+interface CompanyShopsPageInterface
+  extends GetConsoleInitialDataPropsInterface,
+    AppPaginationInterface<ShopInterface> {}
 
 const CompanyShopsPage: NextPage<CompanyShopsPageInterface> = (props) => {
-  const { pageUrls, currentCompany } = props;
+  const { layoutProps } = props;
 
   return (
-    <ConsoleLayout title={'Магазины компании'} pageUrls={pageUrls} company={currentCompany}>
-      <CompanyShopsPageConsumer {...props} />
+    <ConsoleLayout title={'Магазины компании'} {...layoutProps}>
+      <CompanyShopsPageConsumer {...props} pageCompany={layoutProps.pageCompany} />
     </ConsoleLayout>
   );
 };
@@ -400,19 +405,12 @@ export const getServerSideProps = async (
     };
   });
 
-  if (!props.currentCompany) {
-    return {
-      notFound: true,
-    };
-  }
-
   return {
     props: {
       ...props,
       itemPath,
       clearSlug,
       page,
-      currentCompany: props.currentCompany,
       totalPages: noNaN(shopsAggregation.totalPages),
       totalDocs: noNaN(shopsAggregation.totalDocs),
       docs: castDbData(docs),

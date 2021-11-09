@@ -7,22 +7,21 @@ import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsProductLayout from 'layout/cms/CmsProductLayout';
 import { getCmsProduct } from 'lib/productUtils';
 import { ObjectId } from 'mongodb';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface ProductDetailsInterface {
   product: ProductInterface;
-  currentCompany?: CompanyInterface | null;
+  pageCompany: CompanyInterface;
   routeBasePath: string;
 }
 
 const ProductDetails: React.FC<ProductDetailsInterface> = ({
   product,
   routeBasePath,
-  currentCompany,
+  pageCompany,
 }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${product.cardTitle}`,
@@ -32,7 +31,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
         href: `${ROUTE_CMS}/companies`,
       },
       {
-        name: `${currentCompany?.name}`,
+        name: `${pageCompany?.name}`,
         href: routeBasePath,
       },
       {
@@ -52,18 +51,18 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
 
   return (
     <CmsProductLayout product={product} basePath={routeBasePath} breadcrumbs={breadcrumbs}>
-      <ConsoleRubricProductDetails product={product} companySlug={`${currentCompany?.slug}`} />
+      <ConsoleRubricProductDetails product={product} companySlug={`${pageCompany?.slug}`} />
     </CmsProductLayout>
   );
 };
 
-interface ProductPageInterface extends PagePropsInterface, ProductDetailsInterface {}
+interface ProductPageInterface extends GetAppInitialDataPropsInterface, ProductDetailsInterface {}
 
-const Product: NextPage<ProductPageInterface> = ({ pageUrls, ...props }) => {
+const Product: NextPage<ProductPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <ProductDetails {...props} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 
@@ -117,7 +116,7 @@ export const getServerSideProps = async (
     props: {
       ...props,
       product: castDbData(payload.product),
-      currentCompany: castDbData(companyResult),
+      pageCompany: castDbData(companyResult),
       routeBasePath: `${ROUTE_CMS}/companies/${companyResult._id}`,
     },
   };

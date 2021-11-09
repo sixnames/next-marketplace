@@ -12,29 +12,27 @@ import { shopProductFieldsPipeline } from 'db/dao/constantPipelines';
 import { getDatabase } from 'db/mongodb';
 import { OrderInterface, ShopInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
 import { castOrderStatus } from 'lib/orderUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
-import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import {
+  castDbData,
+  getConsoleInitialData,
+  GetConsoleInitialDataPropsInterface,
+} from 'lib/ssrUtils';
 import { generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import ShopOrder, { ShopOrderInterface } from 'components/shops/ShopOrder';
 
 interface CompanyShopAssetsInterface
-  extends PagePropsInterface,
+  extends GetConsoleInitialDataPropsInterface,
     Omit<ShopOrderInterface, 'basePath' | 'title'> {}
 
-const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({
-  pageUrls,
-  currentCompany,
-  shop,
-  order,
-}) => {
+const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ layoutProps, shop, order }) => {
   const companyBasePath = `${ROUTE_CONSOLE}/${shop.companyId}/shops`;
   const title = `Заказ №${order.orderId}`;
 
@@ -57,7 +55,7 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({
   };
 
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={currentCompany}>
+    <ConsoleLayout {...layoutProps}>
       <ShopOrder
         title={title}
         order={order}

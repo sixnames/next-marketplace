@@ -17,11 +17,10 @@ import useValidationSchema from 'hooks/useValidationSchema';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import { getFieldStringLocale } from 'lib/i18n';
 import Head from 'next/head';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { createMetricSchema, updateMetricSchema } from 'validation/metricSchema';
 
 const pageTitle = 'Единицы измерения';
@@ -132,13 +131,13 @@ const MetricsConsumer: React.FC<MetricsConsumerInterface> = ({ metrics }) => {
   );
 };
 
-interface MetricsPageInterface extends PagePropsInterface, MetricsConsumerInterface {}
+interface MetricsPageInterface extends GetAppInitialDataPropsInterface, MetricsConsumerInterface {}
 
-const MetricsPage: NextPage<MetricsPageInterface> = ({ pageUrls, metrics }) => {
+const MetricsPage: NextPage<MetricsPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
-      <MetricsConsumer metrics={metrics} />
-    </CmsLayout>
+    <ConsoleLayout {...layoutProps}>
+      <MetricsConsumer {...props} />
+    </ConsoleLayout>
   );
 };
 

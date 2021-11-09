@@ -15,6 +15,7 @@ export interface BreadcrumbsInterface {
   lowTop?: boolean;
   lowBottom?: boolean;
   lowWrapper?: boolean;
+  urlPrefix?: string;
 }
 
 const linkClassName =
@@ -27,6 +28,7 @@ const Breadcrumbs: React.FC<BreadcrumbsInterface> = ({
   lowBottom,
   lowTop,
   lowWrapper,
+  urlPrefix = '',
 }) => {
   const { locale } = useRouter();
 
@@ -40,7 +42,7 @@ const Breadcrumbs: React.FC<BreadcrumbsInterface> = ({
         <ul>
           {noMainPage ? null : (
             <li className='inline mr-1'>
-              <Link className={linkClassName} href={`/`}>
+              <Link className={linkClassName} href={urlPrefix ? urlPrefix : '/'}>
                 <span className='hover:text-theme'>{mainPageName}</span> —
               </Link>
             </li>
@@ -58,7 +60,7 @@ const Breadcrumbs: React.FC<BreadcrumbsInterface> = ({
 
             return (
               <li className='inline mr-1' key={index}>
-                <Link className={linkClassName} href={configItem.href}>
+                <Link className={linkClassName} href={`${urlPrefix}${configItem.href}`}>
                   <span className='hover:text-theme'>{configItem.name}</span> —
                 </Link>
               </li>

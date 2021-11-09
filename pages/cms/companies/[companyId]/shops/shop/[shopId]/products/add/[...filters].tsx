@@ -1,12 +1,11 @@
 import { ROUTE_CMS, DEFAULT_PAGE_FILTER, DEFAULT_COMPANY_SLUG } from 'config/common';
 import { ProductInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { getAddShopProductSsrData } from 'lib/consoleProductUtils';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import {
   ShopAddProductsCreateChosenProduct,
@@ -24,11 +23,11 @@ export type ShopAddProductsListRouteReduced = Omit<
 >;
 
 interface CompanyShopProductsListInterface
-  extends PagePropsInterface,
+  extends GetAppInitialDataPropsInterface,
     ShopAddProductsListRouteReduced {}
 
 const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = ({
-  pageUrls,
+  layoutProps,
   shop,
   rubricName,
   rubricId,
@@ -87,7 +86,7 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
 
   if (step === 2) {
     return (
-      <CmsLayout pageUrls={pageUrls}>
+      <ConsoleLayout {...layoutProps}>
         <ShopAddProductsFinalStep
           breadcrumbs={breadcrumbs}
           rubricName={rubricName}
@@ -100,12 +99,12 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
           shop={shop}
           {...props}
         />
-      </CmsLayout>
+      </ConsoleLayout>
     );
   }
 
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <ShopAddProductsList
         breadcrumbs={breadcrumbs}
         rubricName={rubricName}
@@ -118,7 +117,7 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
         shop={shop}
         {...props}
       />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

@@ -18,19 +18,22 @@ import { getDatabase } from 'db/mongodb';
 import { CategoryInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCategoryLayout from 'layout/cms/CmsCategoryLayout';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import {
+  castDbData,
+  getConsoleInitialData,
+  GetConsoleInitialDataPropsInterface,
+} from 'lib/ssrUtils';
 
 interface CategoryDetailsInterface extends CompanyRubricCategoryDetailsInterface {}
 
 const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
   category,
-  currentCompany,
+  pageCompany,
   seoTop,
   seoBottom,
   routeBasePath,
@@ -62,7 +65,7 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
     >
       <CompanyRubricCategoryDetails
         category={category}
-        currentCompany={currentCompany}
+        pageCompany={pageCompany}
         seoTop={seoTop}
         seoBottom={seoBottom}
         routeBasePath={routeBasePath}
@@ -71,11 +74,13 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
   );
 };
 
-interface CategoryPageInterface extends PagePropsInterface, CategoryDetailsInterface {}
+interface CategoryPageInterface
+  extends GetConsoleInitialDataPropsInterface,
+    CategoryDetailsInterface {}
 
-const CategoryPage: NextPage<CategoryPageInterface> = ({ pageUrls, ...props }) => {
+const CategoryPage: NextPage<CategoryPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={props.currentCompany}>
+    <ConsoleLayout {...layoutProps}>
       <CategoryDetails {...props} />
     </ConsoleLayout>
   );
@@ -96,7 +101,7 @@ export const getServerSideProps = async (
     };
   }
 
-  const companySlug = props.currentCompany.slug;
+  const companySlug = props.layoutProps.pageCompany.slug;
 
   const categoryAggregation = await categoriesCollection
     .aggregate<CategoryInterface>([
@@ -250,7 +255,8 @@ export const getServerSideProps = async (
       category: castDbData(category),
       seoTop: castDbData(seoTop),
       seoBottom: castDbData(seoBottom),
-      routeBasePath: `${ROUTE_CONSOLE}/${props.currentCompany._id}`,
+      routeBasePath: `${ROUTE_CONSOLE}/${props.layoutProps.pageCompany._id}`,
+      pageCompany: castDbData(props.layoutProps.pageCompany),
     },
   };
 };

@@ -4,26 +4,29 @@ import { CONFIG_GROUP_CATALOGUE } from 'config/common';
 import { ConfigModel } from 'db/dbModels';
 import { CompanyInterface } from 'db/uiInterfaces';
 import ConsoleCompanyLayout from 'layout/console/ConsoleCompanyLayout';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getConfigPageData } from 'lib/configsUtils';
-import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import {
+  castDbData,
+  getConsoleInitialData,
+  GetConsoleInitialDataPropsInterface,
+} from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
 interface ConfigConsumerInterface {
-  currentCompany?: CompanyInterface | null;
+  pageCompany: CompanyInterface;
   assetConfigs: ConfigModel[];
   normalConfigs: ConfigModel[];
 }
 
 const ConfigConsumer: React.FC<ConfigConsumerInterface> = ({
-  currentCompany,
+  pageCompany,
   assetConfigs,
   normalConfigs,
 }) => {
   return (
-    <ConsoleCompanyLayout company={currentCompany}>
+    <ConsoleCompanyLayout pageCompany={pageCompany}>
       <Inner>
         <ConfigsFormTemplate assetConfigs={assetConfigs} normalConfigs={normalConfigs} />
       </Inner>
@@ -31,12 +34,14 @@ const ConfigConsumer: React.FC<ConfigConsumerInterface> = ({
   );
 };
 
-interface ConfigPageInterface extends PagePropsInterface, ConfigConsumerInterface {}
+interface ConfigPageInterface
+  extends GetConsoleInitialDataPropsInterface,
+    ConfigConsumerInterface {}
 
 const Config: NextPage<ConfigPageInterface> = (props) => {
-  const { pageUrls, currentCompany } = props;
+  const { layoutProps } = props;
   return (
-    <ConsoleLayout title={'Настройки сайта'} pageUrls={pageUrls} company={currentCompany}>
+    <ConsoleLayout title={'Настройки сайта'} {...layoutProps}>
       <ConfigConsumer {...props} />
     </ConsoleLayout>
   );
@@ -58,7 +63,7 @@ export const getServerSideProps = async (
     group: CONFIG_GROUP_CATALOGUE,
   });
 
-  if (!configsPayload || !props.currentCompany) {
+  if (!configsPayload) {
     return {
       notFound: true,
     };
@@ -69,7 +74,7 @@ export const getServerSideProps = async (
       ...props,
       assetConfigs: castDbData(configsPayload.assetConfigs),
       normalConfigs: castDbData(configsPayload.normalConfigs),
-      currentCompany: props.currentCompany,
+      pageCompany: props.layoutProps.pageCompany,
     },
   };
 };

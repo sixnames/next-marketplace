@@ -2,12 +2,13 @@ import Button from 'components/button/Button';
 import ErrorBoundaryFallback from 'components/ErrorBoundaryFallback';
 import FixedButtons from 'components/button/FixedButtons';
 import Inner from 'components/Inner';
+import { ROUTE_CATALOGUE } from 'config/common';
 import { CARD_LAYOUT_HALF_COLUMNS, DEFAULT_LAYOUT } from 'config/constantSelects';
 import { useConfigContext } from 'context/configContext';
+import { useSiteUserContext } from 'context/userSiteUserContext';
 import { InitialCardDataInterface } from 'db/uiInterfaces';
 import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
-import { getCardData } from 'lib/cardUtils';
-import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
+import { getSiteInitialData } from 'lib/ssrUtils';
 import { cityIn } from 'lvovich';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import dynamic from 'next/dynamic';
@@ -36,8 +37,9 @@ interface CardInterface extends SiteLayoutProviderInterface {
   cardData?: InitialCardDataInterface | null;
 }
 
-const Card: NextPage<CardInterface> = ({ cardData, company, ...props }) => {
+const Card: NextPage<CardInterface> = ({ cardData, domainCompany, ...props }) => {
   const { currentCity } = props;
+  const sessionUser = useSiteUserContext();
   const { configs } = useConfigContext();
   if (!cardData) {
     return (
@@ -57,22 +59,22 @@ const Card: NextPage<CardInterface> = ({ cardData, company, ...props }) => {
       previewImage={cardData.product.mainImage}
       title={`${cardData.cardTitle}${prefix} ${siteName}${cityDescription}`}
       description={`${cardData.cardTitle} ${cardData.product.description}`}
-      company={company}
+      domainCompany={domainCompany}
       {...props}
     >
       <CardConsumer
         cardData={cardData}
-        companySlug={company?.slug}
-        companyId={company ? `${company._id}` : null}
+        companySlug={domainCompany?.slug}
+        companyId={domainCompany ? `${domainCompany._id}` : null}
       />
-      {configs.showAdminUiInCatalogue ? (
+      {sessionUser?.showAdminUiInCatalogue ? (
         <FixedButtons>
           <Inner lowTop lowBottom>
             <Button
               size={'small'}
               onClick={() => {
                 window.open(
-                  `${configs.editLinkBasePath}/rubrics/${cardData.product.rubricId}/products/product/${cardData.product._id}`,
+                  `${sessionUser.editLinkBasePath}/rubrics/${cardData.product.rubricId}/products/product/${cardData.product._id}`,
                   '_blank',
                 );
               }}
@@ -89,7 +91,7 @@ const Card: NextPage<CardInterface> = ({ cardData, company, ...props }) => {
 export async function getServerSideProps(
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<CardInterface>> {
-  const { locale, query } = context;
+  /*const { locale, query } = context;
   // console.log(' ');
   // console.log('==================================');
   // const startTime = new Date().getTime();
@@ -100,15 +102,14 @@ export async function getServerSideProps(
   // console.log(`After initial data `, new Date().getTime() - startTime);
 
   // card data
-  const { useUniqueConstructor, showAdminUiInCatalogue } = props.initialData.configs;
+  const { useUniqueConstructor } = props.initialData.configs;
   const rawCardData = await getCardData({
     locale: `${locale}`,
     city: props.sessionCity,
     slug: `${query.card}`,
-    companyId: props.company?._id,
+    companyId: props.domainCompany?._id,
     companySlug: props.companySlug,
     useUniqueConstructor,
-    showAdminUiInCatalogue,
   });
   const cardData = castDbData(rawCardData);
   // console.log(`After card `, new Date().getTime() - startTime);
@@ -123,6 +124,23 @@ export async function getServerSideProps(
     props: {
       ...props,
       cardData,
+    },
+  };*/
+
+  const { props } = await getSiteInitialData({
+    context,
+  });
+
+  if (!props) {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    redirect: {
+      destination: `/${props.urlPrefix}${ROUTE_CATALOGUE}/${context.query.rubricSlug}/product/${context.query.card}`,
+      permanent: false,
     },
   };
 }

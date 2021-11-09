@@ -12,24 +12,23 @@ import { shopProductFieldsPipeline } from 'db/dao/constantPipelines';
 import { getDatabase } from 'db/mongodb';
 import { OrderInterface, ShopInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
 import { castOrderStatus } from 'lib/orderUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import ShopOrder, { ShopOrderInterface } from 'components/shops/ShopOrder';
 
 interface CompanyShopAssetsInterface
-  extends PagePropsInterface,
+  extends GetAppInitialDataPropsInterface,
     Omit<ShopOrderInterface, 'basePath' | 'title'> {}
 
-const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ pageUrls, shop, order }) => {
+const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ layoutProps, shop, order }) => {
   const companyBasePath = `${ROUTE_CMS}/companies/${shop.companyId}`;
   const title = `Заказ №${order.itemId}`;
 
@@ -60,7 +59,7 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ pageUrls, sho
   };
 
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <ShopOrder
         title={title}
         order={order}
@@ -68,7 +67,7 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ pageUrls, sho
         basePath={`${companyBasePath}/shops/shop`}
         shop={shop}
       />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

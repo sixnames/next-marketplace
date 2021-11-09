@@ -10,22 +10,21 @@ import { ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { ShopInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getShortName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import ShopOrders, { ShopOrdersInterface } from 'components/shops/ShopOrders';
 
 interface CompanyShopAssetsInterface
-  extends PagePropsInterface,
+  extends GetAppInitialDataPropsInterface,
     Omit<ShopOrdersInterface, 'basePath'> {}
 
-const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ pageUrls, shop }) => {
+const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ layoutProps, shop }) => {
   const companyBasePath = `${ROUTE_CMS}/companies/${shop.companyId}`;
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -51,13 +50,13 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ pageUrls, sho
   };
 
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <ShopOrders
         breadcrumbs={breadcrumbs}
         basePath={`${companyBasePath}/shops/shop`}
         shop={shop}
       />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

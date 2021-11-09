@@ -5,22 +5,21 @@ import { getDatabase } from 'db/mongodb';
 import { CompanyInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getPromoSsr } from 'lib/promoUtils';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
-interface PromoDetailsPageInterface extends PagePropsInterface, PromoDetailsInterface {
-  currentCompany: CompanyInterface;
-}
+interface PromoDetailsPageInterface
+  extends GetAppInitialDataPropsInterface,
+    PromoDetailsInterface {}
 
 const PromoDetailsPage: React.FC<PromoDetailsPageInterface> = ({
-  pageUrls,
+  layoutProps,
   promo,
-  currentCompany,
+  pageCompany,
   basePath,
 }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -31,22 +30,22 @@ const PromoDetailsPage: React.FC<PromoDetailsPageInterface> = ({
         href: `${ROUTE_CMS}/companies`,
       },
       {
-        name: currentCompany.name,
-        href: `${ROUTE_CMS}/companies/${currentCompany._id}`,
+        name: pageCompany.name,
+        href: `${ROUTE_CMS}/companies/${pageCompany._id}`,
       },
       {
         name: 'Акции',
-        href: `${ROUTE_CMS}/companies/${currentCompany._id}/promo`,
+        href: `${ROUTE_CMS}/companies/${pageCompany._id}/promo`,
       },
     ],
   };
 
   return (
-    <CmsLayout title={`${promo.name}`} pageUrls={pageUrls}>
-      <CmsCompanyLayout company={currentCompany} breadcrumbs={breadcrumbs}>
-        <PromoDetails basePath={basePath} currentCompany={currentCompany} promo={promo} />
+    <ConsoleLayout title={`${promo.name}`} {...layoutProps}>
+      <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
+        <PromoDetails basePath={basePath} pageCompany={pageCompany} promo={promo} />
       </CmsCompanyLayout>
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 
@@ -86,7 +85,7 @@ export const getServerSideProps = async (
     props: {
       ...props,
       basePath: `${ROUTE_CMS}/companies/${company._id}/promo/details/${promo._id}`,
-      currentCompany: castDbData(company),
+      pageCompany: castDbData(company),
       promo: castDbData(promo),
     },
   };

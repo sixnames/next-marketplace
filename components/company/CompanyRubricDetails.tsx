@@ -16,7 +16,7 @@ export interface CompanyRubricDetailsInterface {
   rubric: RubricInterface;
   seoTop?: RubricSeoModel | null;
   seoBottom?: RubricSeoModel | null;
-  currentCompany?: CompanyInterface | null;
+  pageCompany: CompanyInterface;
   routeBasePath: string;
 }
 
@@ -24,7 +24,7 @@ const CompanyRubricDetails: React.FC<CompanyRubricDetailsInterface> = ({
   rubric,
   seoTop,
   seoBottom,
-  currentCompany,
+  pageCompany,
 }) => {
   const validationSchema = useValidationSchema({
     schema: updateRubricSchema,
@@ -66,7 +66,7 @@ const CompanyRubricDetails: React.FC<CompanyRubricDetailsInterface> = ({
     shortDescriptionI18n,
     textBottomI18n: seoDescriptionBottom?.textI18n || {},
     textTopI18n: seoDescriptionTop?.textI18n || {},
-    companySlug: `${currentCompany?.slug}`,
+    companySlug: `${pageCompany?.slug}`,
     capitalise: capitalise || false,
     showRubricNameInProductTitle: showRubricNameInProductTitle || false,
     showCategoryInProductTitle: showCategoryInProductTitle || false,

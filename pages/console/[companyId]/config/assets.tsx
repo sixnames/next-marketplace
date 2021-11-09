@@ -1,33 +1,33 @@
 import FormikImageUpload from 'components/FormElements/Upload/FormikImageUpload';
 import Inner from 'components/Inner';
-import { COL_COMPANIES } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
 import { CompanyInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import ConsoleCompanyLayout from 'layout/console/ConsoleCompanyLayout';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
-import { ObjectId } from 'mongodb';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { useRouter } from 'next/router';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import {
+  castDbData,
+  getConsoleInitialData,
+  GetConsoleInitialDataPropsInterface,
+} from 'lib/ssrUtils';
 
 interface CompanyAssetsConsumerInterface {
-  currentCompany?: CompanyInterface | null;
+  pageCompany: CompanyInterface;
 }
 
-const CompanyAssetsConsumer: React.FC<CompanyAssetsConsumerInterface> = ({ currentCompany }) => {
+const CompanyAssetsConsumer: React.FC<CompanyAssetsConsumerInterface> = ({ pageCompany }) => {
   const { showErrorNotification, showLoading, hideLoading } = useMutationCallbacks({});
   const router = useRouter();
 
   return (
-    <ConsoleCompanyLayout company={currentCompany}>
+    <ConsoleCompanyLayout pageCompany={pageCompany}>
       <Inner testId={'company-assets-list'}>
         <Formik
           enableReinitialize
-          initialValues={{ logo: [currentCompany?.logo.url] }}
+          initialValues={{ logo: [pageCompany?.logo.url] }}
           onSubmit={(values) => console.log(values)}
         >
           {({ values: { logo } }) => {
@@ -46,7 +46,7 @@ const CompanyAssetsConsumer: React.FC<CompanyAssetsConsumerInterface> = ({ curre
                       showLoading();
                       const formData = new FormData();
                       formData.append('assets', files[0]);
-                      formData.append('companyId', `${currentCompany?._id}`);
+                      formData.append('companyId', `${pageCompany?._id}`);
 
                       fetch('/api/company/update-company-logo', {
                         method: 'POST',
@@ -85,12 +85,14 @@ const CompanyAssetsConsumer: React.FC<CompanyAssetsConsumerInterface> = ({ curre
   );
 };
 
-interface CompanyAssetsPageInterface extends PagePropsInterface, CompanyAssetsConsumerInterface {}
+interface CompanyAssetsPageInterface
+  extends GetConsoleInitialDataPropsInterface,
+    CompanyAssetsConsumerInterface {}
 
-const CompanyAssetsPage: NextPage<CompanyAssetsPageInterface> = ({ currentCompany, ...props }) => {
+const CompanyAssetsPage: NextPage<CompanyAssetsPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <ConsoleLayout {...props} company={currentCompany}>
-      <CompanyAssetsConsumer currentCompany={currentCompany} />
+    <ConsoleLayout {...layoutProps}>
+      <CompanyAssetsConsumer {...props} />
     </ConsoleLayout>
   );
 };
@@ -98,28 +100,8 @@ const CompanyAssetsPage: NextPage<CompanyAssetsPageInterface> = ({ currentCompan
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<CompanyAssetsPageInterface>> => {
-  const { query } = context;
   const { props } = await getConsoleInitialData({ context });
-
-  if (!props || !query.companyId) {
-    return {
-      notFound: true,
-    };
-  }
-
-  const { db } = await getDatabase();
-  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
-  const companyAggregationResult = await companiesCollection
-    .aggregate([
-      {
-        $match: {
-          _id: new ObjectId(`${query.companyId}`),
-        },
-      },
-    ])
-    .toArray();
-  const companyResult = companyAggregationResult[0];
-  if (!companyResult) {
+  if (!props) {
     return {
       notFound: true,
     };
@@ -128,7 +110,7 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      currentCompany: castDbData(companyResult),
+      pageCompany: castDbData(props.layoutProps.pageCompany),
     },
   };
 };

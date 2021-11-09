@@ -21,7 +21,7 @@ import { useConfigContext } from 'context/configContext';
 import { useNotificationsContext } from 'context/notificationsContext';
 import { useSiteContext } from 'context/siteContext';
 import { useThemeContext } from 'context/themeContext';
-import { useUserContext } from 'context/userContext';
+import { useSiteUserContext } from 'context/userSiteUserContext';
 import { CartProductInterface, CompanyInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import useValidationSchema from 'hooks/useValidationSchema';
@@ -158,11 +158,11 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
   const { configs } = useConfigContext();
   const { showErrorNotification } = useNotificationsContext();
   const { loadingCart, cart, makeAnOrder } = useSiteContext();
-  const { me } = useUserContext();
+  const sessionUser = useSiteUserContext();
   const validationSchema = useValidationSchema({
     schema: makeAnOrderSchema,
   });
-  const disabled = !!me;
+  const disabled = !!sessionUser;
 
   if (loadingCart && !cart) {
     return (
@@ -224,10 +224,10 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
           enableReinitialize={true}
           validationSchema={validationSchema}
           initialValues={{
-            name: me ? me.name : '',
-            lastName: me ? me.lastName : '',
-            email: me ? me.email : '',
-            phone: me ? me.phone : '',
+            name: sessionUser ? sessionUser.me.name : '',
+            lastName: sessionUser ? sessionUser.me.lastName : '',
+            email: sessionUser ? sessionUser.me.email : '',
+            phone: sessionUser ? sessionUser.me.phone : '',
             comment: '',
             reservationDate: null,
           }}
@@ -351,7 +351,7 @@ type MakeAnOrderInterface = SiteLayoutProviderInterface;
 const MakeAnOrder: NextPage<MakeAnOrderInterface> = (props) => {
   return (
     <SiteLayout title={'Корзина'} {...props}>
-      <MakeAnOrderRoute company={props.company} />
+      <MakeAnOrderRoute company={props.domainCompany} />
     </SiteLayout>
   );
 };

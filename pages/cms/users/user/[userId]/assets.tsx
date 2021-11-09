@@ -12,11 +12,10 @@ import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
 import { ObjectId } from 'mongodb';
 import { useRouter } from 'next/router';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface UserAssetsInterface {
   user: UserInterface;
@@ -96,13 +95,13 @@ const UserAssetsConsumer: React.FC<UserAssetsInterface> = ({ user }) => {
   );
 };
 
-interface ProductPageInterface extends PagePropsInterface, UserAssetsInterface {}
+interface ProductPageInterface extends GetAppInitialDataPropsInterface, UserAssetsInterface {}
 
-const UserAssetsPage: NextPage<ProductPageInterface> = ({ pageUrls, ...props }) => {
+const UserAssetsPage: NextPage<ProductPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <UserAssetsConsumer {...props} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

@@ -24,10 +24,9 @@ import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
 import Head from 'next/head';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { PagePropsInterface } from 'pages/_app';
 import { optionsGroupModalSchema } from 'validation/optionsGroupSchema';
 
 interface OptionsGroupConsumerInterface {
@@ -143,13 +142,15 @@ const OptionsGroupConsumer: React.FC<OptionsGroupConsumerInterface> = ({ options
   );
 };
 
-interface OptionsGroupPageInterface extends PagePropsInterface, OptionsGroupConsumerInterface {}
+interface OptionsGroupPageInterface
+  extends GetAppInitialDataPropsInterface,
+    OptionsGroupConsumerInterface {}
 
-const OptionsGroupPage: NextPage<OptionsGroupPageInterface> = ({ pageUrls, optionsGroup }) => {
+const OptionsGroupPage: NextPage<OptionsGroupPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
-      <OptionsGroupConsumer optionsGroup={optionsGroup} />
-    </CmsLayout>
+    <ConsoleLayout {...layoutProps}>
+      <OptionsGroupConsumer {...props} />
+    </ConsoleLayout>
   );
 };
 

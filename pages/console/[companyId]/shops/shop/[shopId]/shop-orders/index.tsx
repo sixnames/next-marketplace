@@ -10,26 +10,25 @@ import { ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { ShopInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getShortName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
-import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import {
+  castDbData,
+  getConsoleInitialData,
+  GetConsoleInitialDataPropsInterface,
+} from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import ShopOrders, { ShopOrdersInterface } from 'components/shops/ShopOrders';
 
 interface CompanyShopAssetsInterface
-  extends PagePropsInterface,
+  extends GetConsoleInitialDataPropsInterface,
     Omit<ShopOrdersInterface, 'basePath'> {}
 
-const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({
-  pageUrls,
-  currentCompany,
-  shop,
-}) => {
+const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ layoutProps, shop }) => {
   const companyBasePath = `${ROUTE_CONSOLE}/${shop.companyId}/shops`;
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -47,7 +46,7 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({
   };
 
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={currentCompany}>
+    <ConsoleLayout {...layoutProps}>
       <ShopOrders breadcrumbs={breadcrumbs} basePath={`${companyBasePath}/shop`} shop={shop} />
     </ConsoleLayout>
   );

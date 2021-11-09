@@ -4,15 +4,19 @@ import { CONFIG_GROUP_SEO } from 'config/common';
 import { ConfigModel } from 'db/dbModels';
 import { CompanyInterface } from 'db/uiInterfaces';
 import ConsoleCompanyLayout from 'layout/console/ConsoleCompanyLayout';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getConfigPageData } from 'lib/configsUtils';
-import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import {
+  castDbData,
+  getConsoleInitialData,
+  GetConsoleInitialDataPropsInterface,
+} from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
 interface ConfigConsumerInterface {
-  currentCompany?: CompanyInterface | null;
+  pageCompany: CompanyInterface;
   assetConfigs: ConfigModel[];
   normalConfigs: ConfigModel[];
 }
@@ -20,10 +24,10 @@ interface ConfigConsumerInterface {
 const ConfigConsumer: React.FC<ConfigConsumerInterface> = ({
   assetConfigs,
   normalConfigs,
-  currentCompany,
+  pageCompany,
 }) => {
   return (
-    <ConsoleCompanyLayout company={currentCompany}>
+    <ConsoleCompanyLayout pageCompany={pageCompany}>
       <Inner>
         <ConfigsFormTemplate assetConfigs={assetConfigs} normalConfigs={normalConfigs} />
       </Inner>
@@ -31,10 +35,11 @@ const ConfigConsumer: React.FC<ConfigConsumerInterface> = ({
   );
 };
 
-const Config: NextPage<ConfigPageInterface> = (props) => {
-  const { pageUrls, currentCompany } = props;
+interface ConfigInterface extends ConfigPageInterface, GetConsoleInitialDataPropsInterface {}
+
+const Config: NextPage<ConfigInterface> = ({ layoutProps, ...props }) => {
   return (
-    <ConsoleLayout title={'Настройки сайта'} pageUrls={pageUrls} company={currentCompany}>
+    <ConsoleLayout title={'Настройки сайта'} {...layoutProps}>
       <ConfigConsumer {...props} />
     </ConsoleLayout>
   );
@@ -44,7 +49,7 @@ interface ConfigPageInterface extends PagePropsInterface, ConfigConsumerInterfac
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<ConfigPageInterface>> => {
+): Promise<GetServerSidePropsResult<ConfigInterface>> => {
   const { query } = context;
   const { props } = await getConsoleInitialData({ context });
   if (!props || !query.companyId) {
@@ -58,7 +63,7 @@ export const getServerSideProps = async (
     group: CONFIG_GROUP_SEO,
   });
 
-  if (!configsPayload || !props.currentCompany) {
+  if (!configsPayload) {
     return {
       notFound: true,
     };
@@ -69,7 +74,7 @@ export const getServerSideProps = async (
       ...props,
       assetConfigs: castDbData(configsPayload.assetConfigs),
       normalConfigs: castDbData(configsPayload.normalConfigs),
-      currentCompany: props.currentCompany,
+      pageCompany: props.layoutProps.pageCompany,
     },
   };
 };

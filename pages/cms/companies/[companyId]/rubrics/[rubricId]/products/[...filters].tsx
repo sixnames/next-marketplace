@@ -7,14 +7,13 @@ import { COL_COMPANIES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { CompanyInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/cms/CmsLayout';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { alwaysString } from 'lib/arrayUtils';
 import { getConsoleCompanyRubricProducts } from 'lib/consoleProductUtils';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
 interface RubricProductsConsumerInterface extends CompanyRubricProductsListInterface {}
@@ -58,13 +57,15 @@ const RubricProductsConsumer: React.FC<RubricProductsConsumerInterface> = (props
   );
 };
 
-interface RubricProductsPageInterface extends PagePropsInterface, RubricProductsConsumerInterface {}
+interface RubricProductsPageInterface
+  extends GetAppInitialDataPropsInterface,
+    RubricProductsConsumerInterface {}
 
-const RubricProducts: NextPage<RubricProductsPageInterface> = ({ pageUrls, ...props }) => {
+const RubricProducts: NextPage<RubricProductsPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <RubricProductsConsumer {...props} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 
@@ -123,7 +124,7 @@ export const getServerSideProps = async (
       ...castedPayload,
       itemPath,
       companySlug,
-      currentCompany: castDbData(companyResult),
+      pageCompany: castDbData(companyResult),
       routeBasePath: `${ROUTE_CMS}/companies/${companyResult._id}`,
     },
   };

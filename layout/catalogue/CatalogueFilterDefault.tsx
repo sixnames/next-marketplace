@@ -17,6 +17,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
   onClick,
   attributeIndex,
   basePath,
+  urlPrefix,
 }) => {
   const { showModal } = useAppContext();
   const { configs } = useConfigContext();
@@ -35,7 +36,11 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
       <div className='flex items-baseline justify-between mb-4'>
         <span className='text-lg font-bold'>{name}</span>
         {isSelected ? (
-          <Link href={clearSlug} onClick={onClick} className='font-medium text-theme'>
+          <Link
+            href={`${urlPrefix}${clearSlug}`}
+            onClick={onClick}
+            className='font-medium text-theme'
+          >
             Очистить
           </Link>
         ) : null}
@@ -44,7 +49,15 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
       <div className='flex flex-wrap gap-2'>
         {visibleOptions.map((option, optionIndex) => {
           const testId = `catalogue-option-${attributeIndex}-${optionIndex}`;
-          return <FilterLink onClick={onClick} option={option} key={option.slug} testId={testId} />;
+          return (
+            <FilterLink
+              urlPrefix={urlPrefix}
+              onClick={onClick}
+              option={option}
+              key={option.slug}
+              testId={testId}
+            />
+          );
         })}
       </div>
 
@@ -58,7 +71,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
                 attributeSlug: attribute.slug,
                 notShowAsAlphabet: attribute.notShowAsAlphabet,
                 title: attribute.name,
-                basePath,
+                basePath: `${urlPrefix}${basePath}`,
                 options: attribute.options,
               },
             });
@@ -80,6 +93,7 @@ const CatalogueFilterDefault: React.FC<CatalogueFilterInterface> = ({
   isSearchResult,
   clearSlug,
   basePath,
+  urlPrefix,
 }) => {
   return (
     <React.Fragment>
@@ -87,6 +101,7 @@ const CatalogueFilterDefault: React.FC<CatalogueFilterInterface> = ({
         clearSlug={clearSlug}
         selectedAttributes={selectedAttributes}
         onClick={hideFilterHandler}
+        urlPrefix={urlPrefix}
       />
 
       {attributes.map((attribute, attributeIndex) => {
@@ -100,6 +115,7 @@ const CatalogueFilterDefault: React.FC<CatalogueFilterInterface> = ({
             isSearchResult={isSearchResult}
             attributeIndex={attributeIndex}
             basePath={basePath}
+            urlPrefix={urlPrefix}
           />
         );
       })}

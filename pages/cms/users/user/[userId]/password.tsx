@@ -13,11 +13,10 @@ import CmsUserLayout from 'layout/cms/CmsUserLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
 import { ObjectId } from 'mongodb';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface UserPasswordInterface {
   user: UserInterface;
@@ -92,13 +91,15 @@ const UserPasswordConsumer: React.FC<UserPasswordInterface> = ({ user }) => {
   );
 };
 
-interface UserPasswordPageInterface extends PagePropsInterface, UserPasswordInterface {}
+interface UserPasswordPageInterface
+  extends GetAppInitialDataPropsInterface,
+    UserPasswordInterface {}
 
-const UserPasswordPage: NextPage<UserPasswordPageInterface> = ({ pageUrls, ...props }) => {
+const UserPasswordPage: NextPage<UserPasswordPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <UserPasswordConsumer {...props} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

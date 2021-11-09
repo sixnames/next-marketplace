@@ -17,6 +17,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
   attributeStyle,
   attributeLinkStyle,
   hideDropdown,
+  urlPrefix,
 }) => {
   const { configs } = useConfigContext();
   const { options, name, metric } = attribute;
@@ -45,7 +46,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
                 style={attributeLinkStyle}
                 testId={`header-nav-dropdown-option`}
                 prefetch={false}
-                href={`${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`}
+                href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`}
                 className='flex items-center py-1 text-secondary-text'
               >
                 {option.name}
@@ -60,7 +61,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
             <Link
               onClick={hideDropdown}
               prefetch={false}
-              href={`${ROUTE_CATALOGUE}/${rubricSlug}`}
+              href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}`}
               className='flex items-center py-1 text-secondary-theme'
             >
               Показать все
@@ -78,6 +79,7 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
   attributeStyle,
   attributeLinkStyle,
   hideDropdown,
+  urlPrefix,
 }) => {
   const { configs } = useConfigContext();
   const { categories, name, icon } = category;
@@ -94,7 +96,7 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
           style={attributeLinkStyle}
           testId={`header-nav-dropdown-option`}
           prefetch={false}
-          href={`${ROUTE_CATALOGUE}/${rubricSlug}/${categoryPath}`}
+          href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}/${categoryPath}`}
           className='flex items-center gap-3 leading-snug text-secondary-text text-lg font-medium'
         >
           {icon ? (
@@ -117,7 +119,7 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
                   style={attributeLinkStyle}
                   testId={`header-nav-dropdown-option`}
                   prefetch={false}
-                  href={`${ROUTE_CATALOGUE}/${rubricSlug}/${categoryPath}/${childCategoryPath}`}
+                  href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}/${categoryPath}/${childCategoryPath}`}
                   className='flex items-center py-1 text-secondary-text'
                 >
                   {childCategory.name}
@@ -132,7 +134,7 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
             <Link
               onClick={hideDropdown}
               prefetch={false}
-              href={`${ROUTE_CATALOGUE}/${rubricSlug}/${categoryPath}`}
+              href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}/${categoryPath}`}
               className='flex items-center py-1 text-secondary-theme'
             >
               Показать все
@@ -152,6 +154,7 @@ const StickyNavDropdownWithCategories: React.FC<StickyNavDropdownInterface> = ({
   rubricSlug,
   categories,
   hideDropdown,
+  urlPrefix,
 }) => {
   return (
     <div style={dropdownStyle} data-cy={'header-nav-dropdown'} className={dropdownClassName}>
@@ -168,6 +171,7 @@ const StickyNavDropdownWithCategories: React.FC<StickyNavDropdownInterface> = ({
                     rubricSlug={rubricSlug}
                     attributeStyle={attributeStyle}
                     attributeLinkStyle={attributeLinkStyle}
+                    urlPrefix={urlPrefix}
                   />
                 );
               })}
@@ -183,6 +187,7 @@ const StickyNavDropdownWithCategories: React.FC<StickyNavDropdownInterface> = ({
                   rubricSlug={rubricSlug}
                   attributeStyle={attributeStyle}
                   attributeLinkStyle={attributeLinkStyle}
+                  urlPrefix={urlPrefix}
                 />
               );
             })}

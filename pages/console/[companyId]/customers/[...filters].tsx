@@ -15,7 +15,7 @@ import {
   UserInterface,
 } from 'db/uiInterfaces';
 import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { castCatalogueFilters } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
@@ -24,10 +24,13 @@ import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { ObjectId } from 'mongodb';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import {
+  castDbData,
+  getConsoleInitialData,
+  GetConsoleInitialDataPropsInterface,
+} from 'lib/ssrUtils';
 
 interface UsersConsumerFiltersInterface {
   roles: RoleInterface[];
@@ -107,11 +110,11 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({ docs, page, totalPage
   );
 };
 
-interface UsersPageInterface extends PagePropsInterface, UsersConsumerInterface {}
+interface UsersPageInterface extends GetConsoleInitialDataPropsInterface, UsersConsumerInterface {}
 
-const UsersPage: NextPage<UsersPageInterface> = ({ pageUrls, currentCompany, ...props }) => {
+const UsersPage: NextPage<UsersPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={currentCompany}>
+    <ConsoleLayout {...layoutProps}>
       <UsersConsumer {...props} />
     </ConsoleLayout>
   );

@@ -35,12 +35,11 @@ export async function getServerSideProps(
   const rawCatalogueData = await getCatalogueData({
     locale: props.sessionLocale,
     city: props.sessionCity,
-    companySlug: props.company?.slug,
-    companyId: props.company?._id,
+    companySlug: props.domainCompany?.slug,
+    companyId: props.domainCompany?._id,
     currency: props.initialData.currency,
     basePath: `${ROUTE_SEARCH_RESULT}/${search}`,
     snippetVisibleAttributesCount: props.initialData.configs.snippetAttributesCount,
-    showAdminUiInCatalogue: props.initialData.configs.showAdminUiInCatalogue,
     input: {
       search,
       filters: alwaysArray(filters),

@@ -13,6 +13,12 @@ import { getFullName, getShortName } from 'lib/nameUtils';
 import { getSession } from 'next-auth/client';
 import { NexusContext } from 'types/apiContextTypes';
 
+export interface SessionUserPayloadInterface {
+  me: UserInterface;
+  showAdminUiInCatalogue: boolean;
+  editLinkBasePath: string;
+}
+
 export interface GetPageSessionUserInterface {
   context: NexusContext;
   locale: string;
@@ -21,8 +27,8 @@ export interface GetPageSessionUserInterface {
 export async function getPageSessionUser({
   context,
   locale,
-}: GetPageSessionUserInterface): Promise<UserInterface | null | undefined> {
-  // Get session user
+}: GetPageSessionUserInterface): Promise<SessionUserPayloadInterface | null | undefined> {
+  // get session user
   const session = await getSession(context);
   if (!session?.user?.email) {
     return null;
@@ -173,12 +179,31 @@ export async function getPageSessionUser({
     ])
     .toArray();
   const user = userAggregation[0];
-  const sessionUser: UserInterface | null = user
-    ? {
-        ...user,
-        fullName: getFullName(user),
-        shortName: getShortName(user),
-      }
-    : null;
-  return sessionUser;
+  if (!user) {
+    return null;
+  }
+
+  const sessionUser: UserInterface = {
+    ...user,
+    fullName: getFullName(user),
+    shortName: getShortName(user),
+  };
+
+  // role configs
+  const { role, companies } = sessionUser;
+
+  const showAdminUiInCatalogue = Boolean(role?.showAdminUiInCatalogue);
+
+  const company = (companies || [])[0];
+  const isCompanyStaff = Boolean(role?.isCompanyStaff);
+  let editLinkBasePath = company ? `${ROUTE_CMS}/companies/${company?._id}` : ROUTE_CMS;
+  if (isCompanyStaff) {
+    editLinkBasePath = `${ROUTE_CONSOLE}/${company?._id}`;
+  }
+
+  return {
+    me: sessionUser,
+    editLinkBasePath,
+    showAdminUiInCatalogue,
+  };
 }

@@ -22,10 +22,9 @@ import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
 import Head from 'next/head';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { PagePropsInterface } from 'pages/_app';
 import { Form, Formik } from 'formik';
 
 interface OptionPageConsumerInterface {
@@ -260,13 +259,15 @@ const OptionPageConsumer: React.FC<OptionPageConsumerInterface> = ({ option }) =
   );
 };
 
-interface OptionPageInterface extends PagePropsInterface, OptionPageConsumerInterface {}
+interface OptionPageInterface
+  extends GetAppInitialDataPropsInterface,
+    OptionPageConsumerInterface {}
 
-const OptionPage: NextPage<OptionPageInterface> = ({ pageUrls, option }) => {
+const OptionPage: NextPage<OptionPageInterface> = ({ layoutProps, option }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <OptionPageConsumer option={option} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

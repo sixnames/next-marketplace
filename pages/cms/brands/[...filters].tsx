@@ -24,16 +24,15 @@ import { AppPaginationInterface, BrandInterface } from 'db/uiInterfaces';
 import { useDeleteBrandMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppContentWrapper from 'layout/AppContentWrapper';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { castCatalogueFilters } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 type BrandsConsumerInterface = AppPaginationInterface<BrandInterface>;
 
@@ -152,13 +151,13 @@ const BrandsConsumer: React.FC<BrandsConsumerInterface> = ({
   );
 };
 
-interface BrandsPageInterface extends PagePropsInterface, BrandsConsumerInterface {}
+interface BrandsPageInterface extends GetAppInitialDataPropsInterface, BrandsConsumerInterface {}
 
-const BrandsPage: NextPage<BrandsPageInterface> = ({ pageUrls, ...props }) => {
+const BrandsPage: NextPage<BrandsPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <BrandsConsumer {...props} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

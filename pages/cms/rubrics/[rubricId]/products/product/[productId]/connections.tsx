@@ -2,12 +2,11 @@ import ConsoleRubricProductConnections from 'components/console/ConsoleRubricPro
 import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
 import { ProductInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import CmsProductLayout from 'layout/cms/CmsProductLayout';
 import { getCmsProduct } from 'lib/productUtils';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
 interface ProductConnectionsPropsInterface {
@@ -44,13 +43,15 @@ const ProductConnections: React.FC<ProductConnectionsPropsInterface> = ({ produc
   );
 };
 
-interface ProductPageInterface extends PagePropsInterface, ProductConnectionsPropsInterface {}
+interface ProductPageInterface
+  extends GetAppInitialDataPropsInterface,
+    ProductConnectionsPropsInterface {}
 
-const Product: NextPage<ProductPageInterface> = ({ pageUrls, ...props }) => {
+const Product: NextPage<ProductPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <ProductConnections {...props} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

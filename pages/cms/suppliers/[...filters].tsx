@@ -28,11 +28,10 @@ import { alwaysArray } from 'lib/arrayUtils';
 import { castCatalogueFilters } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import Head from 'next/head';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { createSupplierSchema, updateSupplierSchema } from 'validation/supplierSchema';
 
 type SuppliersConsumerInterface = AppPaginationInterface<SupplierInterface>;
@@ -177,13 +176,15 @@ const SuppliersConsumer: React.FC<SuppliersConsumerInterface> = ({ docs, page, t
   );
 };
 
-interface SuppliersPageInterface extends PagePropsInterface, SuppliersConsumerInterface {}
+interface SuppliersPageInterface
+  extends GetAppInitialDataPropsInterface,
+    SuppliersConsumerInterface {}
 
-const SuppliersPage: NextPage<SuppliersPageInterface> = ({ pageUrls, ...props }) => {
+const SuppliersPage: NextPage<SuppliersPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <SuppliersConsumer {...props} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

@@ -1,10 +1,7 @@
 import { ConfigContextProvider } from 'context/configContext';
 import { LocaleContextProvider } from 'context/localeContext';
 import { ThemeContextProvider } from 'context/themeContext';
-import { UserContextProvider } from 'context/userContext';
-import { CompanyModel } from 'db/dbModels';
-import { CityInterface, CompanyInterface, UserInterface } from 'db/uiInterfaces';
-import { PageUrlsInterface } from 'layout/Meta';
+import { CityInterface, CompanyInterface } from 'db/uiInterfaces';
 import { PageInitialDataPayload } from 'lib/ssrUtils';
 import * as React from 'react';
 import 'styles/globals.css';
@@ -23,13 +20,10 @@ export interface PagePropsInterface {
   sessionCity: string;
   sessionLocale: string;
   initialApolloState?: any;
-  company?: CompanyModel | null;
-  sessionUser?: UserInterface | null;
   currentCity?: CityInterface | null;
-  pageUrls: PageUrlsInterface;
-  currentCompany?: CompanyInterface | null;
-  companySlug: string;
   themeStyle: Record<string, any>;
+  companySlug: string;
+  domainCompany?: CompanyInterface | null;
 }
 
 NProgress.configure({ showSpinner: false });
@@ -69,9 +63,7 @@ function App({ Component, pageProps }: AppProps<PagePropsInterface>) {
                       languagesList={initialData?.languages || []}
                       currency={initialData?.currency || ''}
                     >
-                      <UserContextProvider sessionUser={pageProps.sessionUser}>
-                        <Component {...pageProps} />
-                      </UserContextProvider>
+                      <Component {...pageProps} />
                     </LocaleContextProvider>
                   </ThemeContextProvider>
                 </ConfigContextProvider>

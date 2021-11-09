@@ -1,5 +1,5 @@
 import TextSeoInfo from 'components/TextSeoInfo';
-import { useConfigContext } from 'context/configContext';
+import { useSiteUserContext } from 'context/userSiteUserContext';
 import { TextUniquenessApiParsedResponseModel } from 'db/dbModels';
 import { ProductAttributeInterface, ProductCardDescriptionInterface } from 'db/uiInterfaces';
 import * as React from 'react';
@@ -16,7 +16,7 @@ const CardTextFeatures: React.FC<CardTextFeaturesInterface> = ({
   cardDescription,
   className,
 }) => {
-  const { configs } = useConfigContext();
+  const sessionUser = useSiteUserContext();
   if (textFeatures.length < 1 && !cardDescription) {
     return null;
   }
@@ -30,7 +30,7 @@ const CardTextFeatures: React.FC<CardTextFeaturesInterface> = ({
             <p>{cardDescription.text}</p>
           </div>
 
-          {configs.showAdminUiInCatalogue ? (
+          {sessionUser?.showAdminUiInCatalogue ? (
             <div className='space-y-3 mt-6'>
               {(cardDescription.seo?.locales || []).map(
                 (seoLocale: TextUniquenessApiParsedResponseModel) => {

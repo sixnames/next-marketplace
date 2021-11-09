@@ -15,11 +15,11 @@ import * as React from 'react';
 
 export interface PromoListInterface {
   promoList: PromoInterface[];
-  currentCompany: CompanyInterface;
+  pageCompany: CompanyInterface;
   basePath: string;
 }
 
-const PromoList: React.FC<PromoListInterface> = ({ promoList, basePath, currentCompany }) => {
+const PromoList: React.FC<PromoListInterface> = ({ promoList, basePath, pageCompany }) => {
   const router = useRouter();
   const { showModal } = useAppContext();
   const [deletePromo] = useDeletePromo();
@@ -101,7 +101,7 @@ const PromoList: React.FC<PromoListInterface> = ({ promoList, basePath, currentC
             showModal<CreatePromoModalInterface>({
               variant: CREATE_PROMO_MODAL,
               props: {
-                currentCompany,
+                pageCompany,
               },
             });
           }}

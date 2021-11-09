@@ -1,25 +1,27 @@
 import { ROUTE_CONSOLE } from 'config/common';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { getConsoleShopProducts } from 'lib/consoleProductUtils';
-import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import {
+  castDbData,
+  getConsoleInitialData,
+  GetConsoleInitialDataPropsInterface,
+} from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import ShopRubricProducts, {
   ShopRubricProductsInterface,
 } from 'components/shops/ShopRubricProducts';
 
 interface CompanyShopProductsListInterface
-  extends PagePropsInterface,
+  extends GetConsoleInitialDataPropsInterface,
     Omit<ShopRubricProductsInterface, 'layoutBasePath'> {}
 
 const CompanyShopProductsList: NextPage<CompanyShopProductsListInterface> = ({
-  pageUrls,
+  layoutProps,
   shop,
   rubricName,
-  currentCompany,
   ...props
 }) => {
   const companyBasePath = `${ROUTE_CONSOLE}/${shop.companyId}/shops`;
@@ -42,7 +44,7 @@ const CompanyShopProductsList: NextPage<CompanyShopProductsListInterface> = ({
   };
 
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={currentCompany}>
+    <ConsoleLayout {...layoutProps}>
       <ShopRubricProducts
         rubricName={rubricName}
         breadcrumbs={breadcrumbs}
@@ -75,7 +77,7 @@ export const getServerSideProps = async (
     locale,
     query,
     currency,
-    companySlug: initialProps.props.currentCompany.slug,
+    companySlug: initialProps.props.layoutProps.pageCompany.slug,
   });
 
   if (!payload) {

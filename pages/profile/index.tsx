@@ -20,6 +20,7 @@ import {
   COL_SHOPS,
 } from 'db/collectionNames';
 import { shopProductFieldsPipeline } from 'db/dao/constantPipelines';
+import { getPageSessionUser } from 'db/dao/user/getPageSessionUser';
 import { OrderModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { OrderInterface, OrderProductInterface } from 'db/uiInterfaces';
@@ -268,7 +269,13 @@ export async function getServerSideProps(
     context,
   });
 
-  if (!props.sessionUser) {
+  // Session user
+  const sessionUser = await getPageSessionUser({
+    context,
+    locale: props.sessionLocale,
+  });
+
+  if (!sessionUser) {
     return {
       redirect: {
         permanent: false,
@@ -280,7 +287,7 @@ export async function getServerSideProps(
   const orderAggregation = await ordersCollection
     .aggregate<OrderInterface>([
       {
-        $match: { customerId: new ObjectId(props.sessionUser._id) },
+        $match: { customerId: new ObjectId(sessionUser.me._id) },
       },
       {
         $lookup: {

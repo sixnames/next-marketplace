@@ -28,7 +28,7 @@ import { updatePromoSchema } from 'validation/promoSchema';
 export interface PromoDetailsInterface {
   promo: PromoInterface;
   basePath: string;
-  currentCompany: CompanyInterface;
+  pageCompany: CompanyInterface;
 }
 
 const sectionClassName = 'border-t border-border-300 pt-8 mt-12';

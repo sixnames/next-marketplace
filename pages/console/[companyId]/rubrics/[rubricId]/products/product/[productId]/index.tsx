@@ -9,11 +9,14 @@ import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsProductLayout from 'layout/cms/CmsProductLayout';
 import { getCmsProduct } from 'lib/productUtils';
 import { ObjectId } from 'mongodb';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
+import {
+  castDbData,
+  getConsoleInitialData,
+  GetConsoleInitialDataPropsInterface,
+} from 'lib/ssrUtils';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 
 interface ProductDetailsInterface extends CompanyProductDetailsInterface {
   cardContent: ProductCardContentModel;
@@ -65,11 +68,13 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
   );
 };
 
-interface ProductPageInterface extends PagePropsInterface, ProductDetailsInterface {}
+interface ProductPageInterface
+  extends GetConsoleInitialDataPropsInterface,
+    ProductDetailsInterface {}
 
-const Product: NextPage<ProductPageInterface> = ({ pageUrls, ...props }) => {
+const Product: NextPage<ProductPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={props.currentCompany}>
+    <ConsoleLayout {...layoutProps}>
       <ProductDetails {...props} />
     </ConsoleLayout>
   );
@@ -90,7 +95,7 @@ export const getServerSideProps = async (
   }
 
   // get company
-  const companySlug = props.currentCompany.slug;
+  const companySlug = props.layoutProps.pageCompany.slug;
 
   const payload = await getCmsProduct({
     locale: props.sessionLocale,
@@ -128,7 +133,7 @@ export const getServerSideProps = async (
       ...props,
       product: castDbData(payload.product),
       cardContent: castDbData(cardContent),
-      routeBasePath: `${ROUTE_CONSOLE}/${props.currentCompany._id}`,
+      routeBasePath: `${ROUTE_CONSOLE}/${props.layoutProps.pageCompany._id}`,
     },
   };
 };

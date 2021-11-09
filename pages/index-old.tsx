@@ -10,7 +10,6 @@ import {
   ROUTE_CATALOGUE,
   ROUTE_DOCS_PAGES,
   CATALOGUE_TOP_FILTERS_LIMIT,
-  ISR_ONE_HOUR,
 } from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import { COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
@@ -26,7 +25,6 @@ import {
 } from 'db/uiInterfaces';
 import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
 import ProductSnippetGridBigImage from 'layout/snippet/ProductSnippetGridBigImage';
-import { getIsrSiteInitialData, IsrContextInterface } from 'lib/isrUtils';
 import { getTreeFromList } from 'lib/optionsUtils';
 import { generateSnippetTitle, generateTitle } from 'lib/titleUtils';
 import { getFieldStringLocale } from 'lib/i18n';
@@ -34,10 +32,10 @@ import { noNaN } from 'lib/numbers';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
-import { GetStaticPathsResult, GetStaticPropsResult, NextPage } from 'next';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import Title from 'components/Title';
 import Inner from 'components/Inner';
-import { castDbData } from 'lib/ssrUtils';
+import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
 import ImageGallery, { ReactImageGalleryItem } from 'react-image-gallery';
 
 interface HomeRouteInterface {
@@ -390,23 +388,14 @@ const Home: NextPage<HomeInterface> = ({
   );
 };
 
-export async function getStaticPaths(): Promise<GetStaticPathsResult> {
-  // context: GetStaticPathsContext,
-  const paths: any[] = [];
-  return {
-    paths,
-    fallback: 'blocking',
-  };
-}
-
-export async function getStaticProps(
-  context: IsrContextInterface,
-): Promise<GetStaticPropsResult<HomeInterface>> {
+export async function getServerSideProps(
+  context: GetServerSidePropsContext,
+): Promise<GetServerSidePropsResult<HomeInterface>> {
   try {
     const { db } = await getDatabase();
     const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
     const shopsCollection = db.collection<ShopInterface>(COL_SHOPS);
-    const { props } = await getIsrSiteInitialData({
+    const { props } = await getSiteInitialData({
       context,
     });
 
@@ -659,7 +648,6 @@ export async function getStaticProps(
     };
 
     return {
-      revalidate: ISR_ONE_HOUR,
       props: {
         ...props,
         topFilters: castDbData(topFilters),

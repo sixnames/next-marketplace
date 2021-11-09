@@ -7,25 +7,24 @@ import { getDatabase } from 'db/mongodb';
 import { BlogPostInterface, CompanyInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
-import CmsLayout from 'layout/cms/CmsLayout';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsResult, GetServerSidePropsContext } from 'next';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
 interface BlogPostsListConsumerInterface {
   posts: BlogPostInterface[];
-  currentCompany?: CompanyInterface | null;
+  pageCompany: CompanyInterface;
 }
 
 const pageTitle = 'Блог';
 
 const BlogPostsListConsumer: React.FC<BlogPostsListConsumerInterface> = ({
   posts,
-  currentCompany,
+  pageCompany,
 }) => {
-  const basePath = `${ROUTE_CMS}/companies/${currentCompany?._id}`;
+  const basePath = `${ROUTE_CMS}/companies/${pageCompany?._id}`;
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: pageTitle,
     config: [
@@ -34,32 +33,30 @@ const BlogPostsListConsumer: React.FC<BlogPostsListConsumerInterface> = ({
         href: `${ROUTE_CMS}/companies`,
       },
       {
-        name: `${currentCompany?.name}`,
-        href: `${ROUTE_CMS}/companies/${currentCompany?._id}`,
+        name: `${pageCompany?.name}`,
+        href: `${ROUTE_CMS}/companies/${pageCompany?._id}`,
       },
     ],
   };
 
   return (
-    <CmsCompanyLayout company={currentCompany} breadcrumbs={breadcrumbs}>
+    <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
       <Inner testId={'company-posts-list'}>
-        <BlogPostsList posts={posts} basePath={basePath} companySlug={`${currentCompany?.slug}`} />
+        <BlogPostsList posts={posts} basePath={basePath} companySlug={`${pageCompany?.slug}`} />
       </Inner>
     </CmsCompanyLayout>
   );
 };
 
-interface BlogPostsListPageInterface extends PagePropsInterface, BlogPostsListConsumerInterface {}
+interface BlogPostsListPageInterface
+  extends GetAppInitialDataPropsInterface,
+    BlogPostsListConsumerInterface {}
 
-const BlogPostsListPage: React.FC<BlogPostsListPageInterface> = ({
-  posts,
-  pageUrls,
-  currentCompany,
-}) => {
+const BlogPostsListPage: React.FC<BlogPostsListPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <CmsLayout pageUrls={pageUrls} title={pageTitle}>
-      <BlogPostsListConsumer posts={posts} currentCompany={currentCompany} />
-    </CmsLayout>
+    <ConsoleLayout {...layoutProps} title={pageTitle}>
+      <BlogPostsListConsumer {...props} />
+    </ConsoleLayout>
   );
 };
 
@@ -100,7 +97,7 @@ export const getServerSideProps = async (
     props: {
       ...props,
       posts: castDbData(posts),
-      currentCompany: castDbData(companyResult),
+      pageCompany: castDbData(companyResult),
     },
   };
 };

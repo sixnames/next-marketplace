@@ -18,11 +18,10 @@ import { getShortName } from 'lib/nameUtils';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 const pageTitle = 'Компании';
 
@@ -137,13 +136,15 @@ const CompaniesConsumer: React.FC<CompaniesConsumerInterface> = ({ companies }) 
   );
 };
 
-interface CompaniesPageInterface extends PagePropsInterface, CompaniesConsumerInterface {}
+interface CompaniesPageInterface
+  extends GetAppInitialDataPropsInterface,
+    CompaniesConsumerInterface {}
 
-const CompaniesPage: NextPage<CompaniesPageInterface> = ({ companies, ...props }) => {
+const CompaniesPage: NextPage<CompaniesPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <CmsLayout title={pageTitle} {...props}>
-      <CompaniesConsumer companies={companies} />
-    </CmsLayout>
+    <ConsoleLayout title={pageTitle} {...layoutProps}>
+      <CompaniesConsumer {...props} />
+    </ConsoleLayout>
   );
 };
 

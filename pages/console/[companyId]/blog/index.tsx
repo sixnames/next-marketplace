@@ -5,45 +5,46 @@ import { ROUTE_CONSOLE } from 'config/common';
 import { getBlogPostsList } from 'db/dao/blog/getBlogPostsList';
 import { BlogPostInterface, CompanyInterface } from 'db/uiInterfaces';
 import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
-import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import {
+  castDbData,
+  getConsoleInitialData,
+  GetConsoleInitialDataPropsInterface,
+} from 'lib/ssrUtils';
 import { GetServerSidePropsResult, GetServerSidePropsContext } from 'next';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
 interface BlogPostsListConsumerInterface {
   posts: BlogPostInterface[];
-  currentCompany?: CompanyInterface | null;
+  pageCompany: CompanyInterface;
 }
 
 const pageTitle = 'Блог';
 
 const BlogPostsListConsumer: React.FC<BlogPostsListConsumerInterface> = ({
   posts,
-  currentCompany,
+  pageCompany,
 }) => {
-  const basePath = `${ROUTE_CONSOLE}/${currentCompany?._id}`;
+  const basePath = `${ROUTE_CONSOLE}/${pageCompany?._id}`;
 
   return (
     <AppContentWrapper>
       <Inner testId={'company-posts-list'}>
         <Title>{pageTitle}</Title>
-        <BlogPostsList posts={posts} basePath={basePath} companySlug={`${currentCompany?.slug}`} />
+        <BlogPostsList posts={posts} basePath={basePath} companySlug={`${pageCompany?.slug}`} />
       </Inner>
     </AppContentWrapper>
   );
 };
 
-interface BlogPostsListPageInterface extends PagePropsInterface, BlogPostsListConsumerInterface {}
+interface BlogPostsListPageInterface
+  extends GetConsoleInitialDataPropsInterface,
+    BlogPostsListConsumerInterface {}
 
-const BlogPostsListPage: React.FC<BlogPostsListPageInterface> = ({
-  posts,
-  pageUrls,
-  currentCompany,
-}) => {
+const BlogPostsListPage: React.FC<BlogPostsListPageInterface> = ({ posts, layoutProps }) => {
   return (
-    <ConsoleLayout pageUrls={pageUrls} title={pageTitle} company={currentCompany}>
-      <BlogPostsListConsumer posts={posts} currentCompany={currentCompany} />
+    <ConsoleLayout title={pageTitle} {...layoutProps}>
+      <BlogPostsListConsumer posts={posts} pageCompany={layoutProps.pageCompany} />
     </ConsoleLayout>
   );
 };
@@ -52,7 +53,7 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<BlogPostsListPageInterface>> => {
   const { props } = await getConsoleInitialData({ context });
-  if (!props || !props.currentCompany || !context.query.companyId) {
+  if (!props || !context.query.companyId) {
     return {
       notFound: true,
     };
@@ -60,14 +61,14 @@ export const getServerSideProps = async (
 
   const posts = await getBlogPostsList({
     locale: props.sessionLocale,
-    companySlug: `${props.currentCompany?.slug}`,
+    companySlug: `${props.layoutProps.pageCompany?.slug}`,
   });
 
   return {
     props: {
       ...props,
       posts: castDbData(posts),
-      currentCompany: props.currentCompany,
+      pageCompany: props.layoutProps.pageCompany,
     },
   };
 };

@@ -12,6 +12,7 @@ interface FilterSelectedAttributesInterface {
   selectedAttributes?: CatalogueFilterAttributeInterface[] | null;
   onClick?: () => void | null;
   clearSlug: string;
+  urlPrefix?: string;
 }
 
 function getSelectedOptionName(option: CatalogueFilterAttributeOptionInterface): string {
@@ -37,6 +38,7 @@ const FilterSelectedAttributes: React.FC<FilterSelectedAttributesInterface> = ({
   selectedAttributes,
   onClick,
   clearSlug,
+  urlPrefix,
 }) => {
   const { isDark } = useThemeContext();
   const { configs } = useConfigContext();
@@ -56,7 +58,7 @@ const FilterSelectedAttributes: React.FC<FilterSelectedAttributesInterface> = ({
     <div style={style} className='px-4 py-6 rounded-lg mb-6 shadow-sm'>
       <div className='flex items-baseline mb-3 justify-between'>
         <span className={`font-medium text-lg`}>Выбранные фильтры</span>
-        <Link onClick={onClick} href={clearSlug} className={`ml-4`}>
+        <Link onClick={onClick} href={`${urlPrefix}${clearSlug}`} className={`ml-4`}>
           Очистить
         </Link>
       </div>
@@ -70,7 +72,7 @@ const FilterSelectedAttributes: React.FC<FilterSelectedAttributesInterface> = ({
                   return (
                     <div key={`${option._id}`}>
                       <Link
-                        href={option.nextSlug}
+                        href={`${urlPrefix}${option.nextSlug}`}
                         className='text-secondary-text hover:no-underline flex items-baseline justify-between'
                       >
                         <span className='hover:text-theme'>

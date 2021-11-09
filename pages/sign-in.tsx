@@ -3,6 +3,7 @@ import FormikInput from 'components/FormElements/Input/FormikInput';
 import Inner from 'components/Inner';
 import Title from 'components/Title';
 import { useAppContext } from 'context/appContext';
+import { getPageSessionUser } from 'db/dao/user/getPageSessionUser';
 import useValidationSchema from 'hooks/useValidationSchema';
 import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
 import { getSiteInitialData } from 'lib/ssrUtils';
@@ -111,8 +112,14 @@ export async function getServerSideProps(
     context,
   });
 
+  // Session user
+  const sessionUser = await getPageSessionUser({
+    context,
+    locale: props.sessionLocale,
+  });
+
   // Redirect user to the Home page if already authorized
-  if (props.sessionUser) {
+  if (sessionUser) {
     return {
       redirect: {
         permanent: false,

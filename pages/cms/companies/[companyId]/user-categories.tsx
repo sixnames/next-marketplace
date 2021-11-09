@@ -18,17 +18,16 @@ import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface CompanyDetailsConsumerInterface {
-  currentCompany?: CompanyInterface | null;
+  pageCompany: CompanyInterface;
 }
 
-const CompanyDetailsConsumer: React.FC<CompanyDetailsConsumerInterface> = ({ currentCompany }) => {
+const CompanyDetailsConsumer: React.FC<CompanyDetailsConsumerInterface> = ({ pageCompany }) => {
   const { showModal } = useAppContext();
   const [deleteUserCategory] = useDeleteUserCategory();
 
@@ -69,7 +68,7 @@ const CompanyDetailsConsumer: React.FC<CompanyDetailsConsumerInterface> = ({ cur
                 showModal<UserCategoryModalInterface>({
                   variant: USER_CATEGORY_MODAL,
                   props: {
-                    companyId: `${currentCompany?._id}`,
+                    companyId: `${pageCompany?._id}`,
                     userCategory: dataItem,
                   },
                 });
@@ -84,7 +83,7 @@ const CompanyDetailsConsumer: React.FC<CompanyDetailsConsumerInterface> = ({ cur
                     confirm: () => {
                       deleteUserCategory({
                         _id: `${dataItem._id}`,
-                        companyId: `${currentCompany?._id}`,
+                        companyId: `${pageCompany?._id}`,
                       }).catch(console.log);
                     },
                   },
@@ -105,19 +104,19 @@ const CompanyDetailsConsumer: React.FC<CompanyDetailsConsumerInterface> = ({ cur
         href: `${ROUTE_CMS}/companies`,
       },
       {
-        name: `${currentCompany?.name}`,
-        href: `${ROUTE_CMS}/companies/${currentCompany?._id}`,
+        name: `${pageCompany?.name}`,
+        href: `${ROUTE_CMS}/companies/${pageCompany?._id}`,
       },
     ],
   };
 
   return (
-    <CmsCompanyLayout company={currentCompany} breadcrumbs={breadcrumbs}>
+    <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
       <Inner testId={'company-categories-page'}>
         <Table<UserCategoryInterface>
           testIdKey={'name'}
           columns={columns}
-          data={currentCompany?.categories}
+          data={pageCompany?.categories}
         />
         <FixedButtons>
           <Button
@@ -127,7 +126,7 @@ const CompanyDetailsConsumer: React.FC<CompanyDetailsConsumerInterface> = ({ cur
               showModal<UserCategoryModalInterface>({
                 variant: USER_CATEGORY_MODAL,
                 props: {
-                  companyId: `${currentCompany?._id}`,
+                  companyId: `${pageCompany?._id}`,
                 },
               });
             }}
@@ -140,16 +139,15 @@ const CompanyDetailsConsumer: React.FC<CompanyDetailsConsumerInterface> = ({ cur
   );
 };
 
-interface CompanyDetailsPageInterface extends PagePropsInterface, CompanyDetailsConsumerInterface {}
+interface CompanyDetailsPageInterface
+  extends GetAppInitialDataPropsInterface,
+    CompanyDetailsConsumerInterface {}
 
-const CompanyDetailsPage: NextPage<CompanyDetailsPageInterface> = ({
-  currentCompany,
-  ...props
-}) => {
+const CompanyDetailsPage: NextPage<CompanyDetailsPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <CmsLayout {...props}>
-      <CompanyDetailsConsumer currentCompany={currentCompany} />
-    </CmsLayout>
+    <ConsoleLayout {...layoutProps}>
+      <CompanyDetailsConsumer {...props} />
+    </ConsoleLayout>
   );
 };
 
@@ -212,7 +210,7 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      currentCompany: castDbData(company),
+      pageCompany: castDbData(company),
     },
   };
 };

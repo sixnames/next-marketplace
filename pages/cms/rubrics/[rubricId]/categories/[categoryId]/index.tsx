@@ -27,13 +27,12 @@ import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCategoryLayout from 'layout/cms/CmsCategoryLayout';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { updateCategorySchema } from 'validation/categorySchema';
 
 interface CategoryDetailsInterface {
@@ -274,24 +273,13 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
   );
 };
 
-interface CategoryPageInterface extends PagePropsInterface, CategoryDetailsInterface {}
+interface CategoryPageInterface extends GetAppInitialDataPropsInterface, CategoryDetailsInterface {}
 
-const CategoryPage: NextPage<CategoryPageInterface> = ({
-  pageUrls,
-  category,
-  seoBottom,
-  seoTop,
-  companySlug,
-}) => {
+const CategoryPage: NextPage<CategoryPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
-      <CategoryDetails
-        category={category}
-        seoTop={seoTop}
-        companySlug={companySlug}
-        seoBottom={seoBottom}
-      />
-    </CmsLayout>
+    <ConsoleLayout {...layoutProps}>
+      <CategoryDetails {...props} />
+    </ConsoleLayout>
   );
 };
 

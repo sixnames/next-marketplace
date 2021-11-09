@@ -7,13 +7,16 @@ import { getDatabase } from 'db/mongodb';
 import { CategoryInterface, RubricInterface, ShopProductInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getTreeFromList, sortByName } from 'lib/optionsUtils';
-import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import {
+  castDbData,
+  getConsoleInitialData,
+  GetConsoleInitialDataPropsInterface,
+} from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
 interface RubricCategoriesConsumerInterface extends CompanyRubricCategoriesListInterface {}
@@ -53,12 +56,15 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
 };
 
 interface RubricCategoriesPageInterface
-  extends PagePropsInterface,
+  extends GetConsoleInitialDataPropsInterface,
     RubricCategoriesConsumerInterface {}
 
-const RubricCategoriesPage: NextPage<RubricCategoriesPageInterface> = ({ pageUrls, ...props }) => {
+const RubricCategoriesPage: NextPage<RubricCategoriesPageInterface> = ({
+  layoutProps,
+  ...props
+}) => {
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={props.currentCompany}>
+    <ConsoleLayout {...layoutProps}>
       <RubricCategoriesConsumer {...props} />
     </ConsoleLayout>
   );
@@ -82,7 +88,7 @@ export const getServerSideProps = async (
   const locale = props.sessionLocale;
   const rubricId = new ObjectId(`${query.rubricId}`);
   const companyId = new ObjectId(`${query.companyId}`);
-  const routeBasePath = `${ROUTE_CONSOLE}/${props.currentCompany._id}`;
+  const routeBasePath = `${ROUTE_CONSOLE}/${props.layoutProps.pageCompany._id}`;
 
   // get categories config
   const categoriesConfigAggregationResult = await shopProductsCollection
@@ -122,7 +128,7 @@ export const getServerSideProps = async (
     }
     const payload: RubricCategoriesConsumerInterface = {
       routeBasePath,
-      currentCompany: castDbData(props.currentCompany),
+      currentCompany: castDbData(props.layoutProps.pageCompany),
       rubric: {
         ...rubric,
         name: getFieldStringLocale(rubric?.nameI18n, locale),
@@ -210,7 +216,7 @@ export const getServerSideProps = async (
 
   const payload: RubricCategoriesConsumerInterface = {
     routeBasePath,
-    currentCompany: props.currentCompany,
+    currentCompany: props.layoutProps.pageCompany,
     rubric: {
       ...rubric,
       name: getFieldStringLocale(rubric?.nameI18n, locale),

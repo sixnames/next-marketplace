@@ -5,12 +5,15 @@ import RequestError from 'components/RequestError';
 import { DEFAULT_PAGE_FILTER, ROUTE_CONSOLE } from 'config/common';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { alwaysString } from 'lib/arrayUtils';
 import { getConsoleCompanyRubricProducts } from 'lib/consoleProductUtils';
-import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import {
+  castDbData,
+  getConsoleInitialData,
+  GetConsoleInitialDataPropsInterface,
+} from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
 interface RubricProductsConsumerInterface extends CompanyRubricProductsListInterface {}
@@ -46,11 +49,13 @@ const RubricProductsConsumer: React.FC<RubricProductsConsumerInterface> = (props
   );
 };
 
-interface RubricProductsPageInterface extends PagePropsInterface, RubricProductsConsumerInterface {}
+interface RubricProductsPageInterface
+  extends GetConsoleInitialDataPropsInterface,
+    RubricProductsConsumerInterface {}
 
-const RubricProducts: NextPage<RubricProductsPageInterface> = ({ pageUrls, ...props }) => {
+const RubricProducts: NextPage<RubricProductsPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={props.currentCompany}>
+    <ConsoleLayout {...layoutProps}>
       <RubricProductsConsumer {...props} />
     </ConsoleLayout>
   );
@@ -69,12 +74,13 @@ export const getServerSideProps = async (
   }
 
   // get company
-  const companySlug = props.currentCompany.slug;
+  const pageCompany = props.layoutProps.pageCompany;
+  const companySlug = pageCompany.slug;
 
   const locale = props.sessionLocale;
   const currency = props.initialData.currency;
-  const basePath = `${ROUTE_CONSOLE}/${props.currentCompany._id}/rubrics/${rubricId}/products/${rubricId}/${DEFAULT_PAGE_FILTER}`;
-  const itemPath = `${ROUTE_CONSOLE}/${props.currentCompany._id}/rubrics/${rubricId}/products/product`;
+  const basePath = `${ROUTE_CONSOLE}/${pageCompany._id}/rubrics/${rubricId}/products/${rubricId}/${DEFAULT_PAGE_FILTER}`;
+  const itemPath = `${ROUTE_CONSOLE}/${pageCompany._id}/rubrics/${rubricId}/products/product`;
 
   const payload = await getConsoleCompanyRubricProducts({
     query: context.query,
@@ -82,7 +88,7 @@ export const getServerSideProps = async (
     basePath,
     currency,
     companySlug,
-    companyId: `${props.currentCompany._id}`,
+    companyId: `${pageCompany._id}`,
   });
 
   const castedPayload = castDbData(payload);
@@ -93,7 +99,7 @@ export const getServerSideProps = async (
       ...castedPayload,
       itemPath,
       companySlug,
-      routeBasePath: `${ROUTE_CONSOLE}/${props.currentCompany._id}`,
+      routeBasePath: `${ROUTE_CONSOLE}/${pageCompany._id}`,
     },
   };
 };

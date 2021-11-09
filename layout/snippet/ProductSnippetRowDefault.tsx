@@ -4,8 +4,8 @@ import Link from 'components/Link/Link';
 import RatingStars from 'components/RatingStars';
 import WpImage from 'components/WpImage';
 import { ROUTE_CATALOGUE } from 'config/common';
-import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
+import { useSiteUserContext } from 'context/userSiteUserContext';
 import { ProductSnippetInterface } from 'db/uiInterfaces';
 import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
 import { noNaN } from 'lib/numbers';
@@ -21,8 +21,8 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
   showSnippetArticle,
   showSnippetRating,
 }) => {
-  const { configs } = useConfigContext();
-  const { addShoplessProductToCart, addProductToCart } = useSiteContext();
+  const sessionUser = useSiteUserContext();
+  const { addShoplessProductToCart, addProductToCart, urlPrefix } = useSiteContext();
   const { product } = shopProduct;
   if (!product) {
     return null;
@@ -56,7 +56,7 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
       }`}
     >
       {/*edit button for admin*/}
-      {configs.showAdminUiInCatalogue ? (
+      {sessionUser?.showAdminUiInCatalogue ? (
         <div className='absolute top-0 left-0 z-50'>
           <ControlButton
             size={'small'}
@@ -67,7 +67,7 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
             roundedTopLeft
             onClick={() => {
               window.open(
-                `${configs.editLinkBasePath}/rubrics/${product.rubricId}/products/product/${product._id}`,
+                `${sessionUser.editLinkBasePath}/rubrics/${product.rubricId}/products/product/${product._id}`,
                 '_blank',
               );
             }}
@@ -89,7 +89,7 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
             testId={`${testId}-image-row`}
             target={'_blank'}
             className='block absolute z-10 inset-0 text-indent-full'
-            href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
+            href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
           >
             {snippetTitle}
           </Link>
@@ -117,7 +117,7 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
                 testId={`${testId}-name-row`}
                 target={'_blank'}
                 className='text-2xl font-medium block text-primary-text hover:no-underline hover:text-primary-text'
-                href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
+                href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
               >
                 {snippetTitle}
               </Link>

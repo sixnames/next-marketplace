@@ -8,19 +8,20 @@ import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
 import { getPageSsr } from 'lib/pageUtils';
 import { ObjectId } from 'mongodb';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
-export interface PageDetailsPageInterface extends PagePropsInterface, PageDetailsInterface {
-  currentCompany: CompanyInterface;
+export interface PageDetailsPageInterface
+  extends GetAppInitialDataPropsInterface,
+    PageDetailsInterface {
+  pageCompany: CompanyInterface;
 }
 
 const PageDetailsPage: NextPage<PageDetailsPageInterface> = ({
-  pageUrls,
-  currentCompany,
+  layoutProps,
+  pageCompany,
   page,
   cities,
 }) => {
@@ -32,28 +33,28 @@ const PageDetailsPage: NextPage<PageDetailsPageInterface> = ({
         href: `${ROUTE_CMS}/companies`,
       },
       {
-        name: currentCompany.name,
-        href: `${ROUTE_CMS}/companies/${currentCompany._id}`,
+        name: pageCompany.name,
+        href: `${ROUTE_CMS}/companies/${pageCompany._id}`,
       },
       {
         name: 'Группы страниц',
-        href: `${ROUTE_CMS}/companies/${currentCompany._id}/pages`,
+        href: `${ROUTE_CMS}/companies/${pageCompany._id}/pages`,
       },
       {
         name: `${page.pagesGroup?.name}`,
-        href: `${ROUTE_CMS}/companies/${currentCompany._id}/pages/${page.pagesGroup?._id}`,
+        href: `${ROUTE_CMS}/companies/${pageCompany._id}/pages/${page.pagesGroup?._id}`,
       },
     ],
   };
 
   return (
-    <CmsLayout title={`${page.name}`} pageUrls={pageUrls}>
-      <CmsCompanyLayout company={currentCompany} breadcrumbs={breadcrumbs}>
+    <ConsoleLayout title={`${page.name}`} {...layoutProps}>
+      <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
         <Inner>
           <PageDetails page={page} cities={cities} />
         </Inner>
       </CmsCompanyLayout>
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 
@@ -96,7 +97,7 @@ export const getServerSideProps = async (
       ...props,
       page: castDbData(getPageSsrResult.page),
       cities: castDbData(getPageSsrResult.cities),
-      currentCompany: castDbData(company),
+      pageCompany: castDbData(company),
     },
   };
 };

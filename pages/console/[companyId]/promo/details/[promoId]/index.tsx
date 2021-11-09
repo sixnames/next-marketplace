@@ -2,21 +2,26 @@ import PromoDetails, { PromoDetailsInterface } from 'components/Promo/PromoDetai
 import { ROUTE_CONSOLE } from 'config/common';
 import { CompanyInterface } from 'db/uiInterfaces';
 import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getPromoSsr } from 'lib/promoUtils';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import {
+  castDbData,
+  getConsoleInitialData,
+  GetConsoleInitialDataPropsInterface,
+} from 'lib/ssrUtils';
 
-interface PromoDetailsPageInterface extends PagePropsInterface, PromoDetailsInterface {
-  currentCompany: CompanyInterface;
+interface PromoDetailsPageInterface
+  extends GetConsoleInitialDataPropsInterface,
+    PromoDetailsInterface {
+  pageCompany: CompanyInterface;
 }
 
 const PromoListPage: NextPage<PromoDetailsPageInterface> = ({
-  pageUrls,
+  layoutProps,
   promo,
-  currentCompany,
+  pageCompany,
   basePath,
 }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -24,15 +29,15 @@ const PromoListPage: NextPage<PromoDetailsPageInterface> = ({
     config: [
       {
         name: 'Акции',
-        href: `${ROUTE_CONSOLE}/${currentCompany._id}/promo`,
+        href: `${ROUTE_CONSOLE}/${pageCompany._id}/promo`,
       },
     ],
   };
 
   return (
-    <ConsoleLayout title={`${promo.name}`} pageUrls={pageUrls} company={currentCompany}>
+    <ConsoleLayout title={`${promo.name}`} {...layoutProps}>
       <AppContentWrapper breadcrumbs={breadcrumbs}>
-        <PromoDetails basePath={basePath} currentCompany={currentCompany} promo={promo} />
+        <PromoDetails basePath={basePath} pageCompany={pageCompany} promo={promo} />
       </AppContentWrapper>
     </ConsoleLayout>
   );
@@ -43,7 +48,7 @@ export const getServerSideProps = async (
 ): Promise<GetServerSidePropsResult<PromoDetailsPageInterface>> => {
   const { query } = context;
   const { props } = await getConsoleInitialData({ context });
-  if (!props || !props.currentCompany) {
+  if (!props) {
     return {
       notFound: true,
     };
@@ -62,9 +67,9 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      basePath: `${ROUTE_CONSOLE}/${props.currentCompany._id}/promo/details/${promo._id}`,
+      basePath: `${ROUTE_CONSOLE}/${props.layoutProps.pageCompany._id}/promo/details/${promo._id}`,
       promo: castDbData(promo),
-      currentCompany: props.currentCompany,
+      pageCompany: props.layoutProps.pageCompany,
     },
   };
 };

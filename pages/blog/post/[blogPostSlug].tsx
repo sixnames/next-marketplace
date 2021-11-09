@@ -13,7 +13,7 @@ import {
 import { getConstantTranslation } from 'config/constantTranslations';
 import { useConfigContext } from 'context/configContext';
 import { useLocaleContext } from 'context/localeContext';
-import { useUserContext } from 'context/userContext';
+import { useSiteUserContext } from 'context/userSiteUserContext';
 import {
   COL_BLOG_ATTRIBUTES,
   COL_BLOG_LIKES,
@@ -21,6 +21,7 @@ import {
   COL_OPTIONS,
   COL_USERS,
 } from 'db/collectionNames';
+import { getPageSessionUser } from 'db/dao/user/getPageSessionUser';
 import { getDatabase } from 'db/mongodb';
 import { BlogAttributeInterface, BlogPostInterface, OptionInterface } from 'db/uiInterfaces';
 import { useCreateBlogPostLike } from 'hooks/mutations/useBlogMutations';
@@ -51,7 +52,7 @@ const BlogPostMeta: React.FC<BlogListSnippetMetaInterface> = ({
 }) => {
   const [createBlogPostLike] = useCreateBlogPostLike();
   const { configs } = useConfigContext();
-  const { me } = useUserContext();
+  const sessionUser = useSiteUserContext();
 
   return (
     <div className='flex items center flex-wrap gap-5 text-secondary-text mb-3'>
@@ -65,7 +66,7 @@ const BlogPostMeta: React.FC<BlogListSnippetMetaInterface> = ({
       ) : null}
 
       {/*likes counter*/}
-      <WpTooltip title={me ? '' : 'Вы должны быть авторизованны для данного действия'}>
+      <WpTooltip title={sessionUser?.me ? '' : 'Вы должны быть авторизованны для данного действия'}>
         <div
           className={`flex items-center gap-2 ${
             isLikeAllowed ? 'cursor-pointer transition-all duration-150 hover:text-theme' : ''
@@ -360,7 +361,12 @@ export const getServerSideProps = async (
   }
 
   // update post counter
-  const isStaff = props.sessionUser?.role?.isStaff;
+  // Session user
+  const sessionUser = await getPageSessionUser({
+    context,
+    locale: props.sessionLocale,
+  });
+  const isStaff = sessionUser?.me.role?.isStaff;
   if (!isStaff) {
     await blogPostsCollection.findOneAndUpdate(
       { _id: initialPost._id },
@@ -415,7 +421,7 @@ export const getServerSideProps = async (
   );
 
   const likedBySessionUser = (initialPost.likes || []).some((like) => {
-    return props.sessionUser && like.userId.equals(new ObjectId(props.sessionUser._id));
+    return sessionUser && like.userId.equals(new ObjectId(sessionUser.me._id));
   });
 
   const post: BlogPostInterface = {
@@ -424,7 +430,7 @@ export const getServerSideProps = async (
     description: getFieldStringLocale(initialPost.descriptionI18n, props.sessionLocale),
     attributes,
     options: postOptions,
-    isLikeAllowed: props.sessionUser && !likedBySessionUser,
+    isLikeAllowed: sessionUser && !likedBySessionUser,
     likedBySessionUser,
     author: initialPost.author
       ? {

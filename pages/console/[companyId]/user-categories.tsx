@@ -15,13 +15,16 @@ import { getDatabase } from 'db/mongodb';
 import { UserCategoryInterface } from 'db/uiInterfaces';
 import { useDeleteUserCategory } from 'hooks/mutations/useUserCategoryMutations';
 import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import {
+  castDbData,
+  getConsoleInitialData,
+  GetConsoleInitialDataPropsInterface,
+} from 'lib/ssrUtils';
 
 interface UserCategoriesConsumerInterface {
   userCategories: UserCategoryInterface[];
@@ -127,20 +130,13 @@ const UserCategoriesConsumer: NextPage<UserCategoriesConsumerInterface> = ({
 };
 
 interface UserCategoriesInterface
-  extends PagePropsInterface,
-    Omit<UserCategoriesConsumerInterface, 'companyId'> {}
+  extends GetConsoleInitialDataPropsInterface,
+    UserCategoriesConsumerInterface {}
 
-const UserCategories: NextPage<UserCategoriesInterface> = ({
-  pageUrls,
-  userCategories,
-  currentCompany,
-}) => {
+const UserCategories: NextPage<UserCategoriesInterface> = ({ layoutProps, ...props }) => {
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={currentCompany}>
-      <UserCategoriesConsumer
-        userCategories={userCategories}
-        companyId={`${currentCompany?._id}`}
-      />
+    <ConsoleLayout {...layoutProps}>
+      <UserCategoriesConsumer {...props} />
     </ConsoleLayout>
   );
 };
@@ -151,7 +147,7 @@ export const getServerSideProps = async (
   const { props } = await getConsoleInitialData({ context });
   const { db } = await getDatabase();
   const userCategoriesCollection = db.collection<UserCategoryInterface>(COL_USER_CATEGORIES);
-  if (!props || !props.sessionUser || !props.currentCompany) {
+  if (!props) {
     return {
       notFound: true,
     };
@@ -161,7 +157,7 @@ export const getServerSideProps = async (
     .aggregate<UserCategoryInterface>([
       {
         $match: {
-          companyId: new ObjectId(props.currentCompany._id),
+          companyId: new ObjectId(props.layoutProps.pageCompany._id),
         },
       },
     ])
@@ -178,8 +174,8 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      currentCompany: props.currentCompany,
       userCategories: castDbData(userCategories),
+      companyId: `${props.layoutProps.pageCompany._id}`,
     },
   };
 };

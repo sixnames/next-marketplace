@@ -10,22 +10,17 @@ import { getDatabase } from 'db/mongodb';
 import { CompanyInterface, RubricInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import CompanyRubricsList, { CompanyRubricsListInterface } from 'layout/CompanyRubricsList';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface RubricsRouteInterface extends CompanyRubricsListInterface {}
 
-const RubricsRoute: React.FC<RubricsRouteInterface> = ({
-  rubrics,
-  currentCompany,
-  routeBasePath,
-}) => {
+const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, pageCompany, routeBasePath }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Рубрикатор',
     config: [
@@ -34,30 +29,30 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({
         href: `${ROUTE_CMS}/companies`,
       },
       {
-        name: `${currentCompany?.name}`,
-        href: `${ROUTE_CMS}/companies/${currentCompany?._id}`,
+        name: `${pageCompany?.name}`,
+        href: `${ROUTE_CMS}/companies/${pageCompany?._id}`,
       },
     ],
   };
 
   return (
-    <CmsCompanyLayout company={currentCompany} breadcrumbs={breadcrumbs}>
+    <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
       <CompanyRubricsList
         rubrics={rubrics}
-        currentCompany={currentCompany}
+        pageCompany={pageCompany}
         routeBasePath={routeBasePath}
       />
     </CmsCompanyLayout>
   );
 };
 
-interface RubricsInterface extends PagePropsInterface, RubricsRouteInterface {}
+interface RubricsInterface extends GetAppInitialDataPropsInterface, RubricsRouteInterface {}
 
-const Rubrics: NextPage<RubricsInterface> = ({ pageUrls, ...props }) => {
+const Rubrics: NextPage<RubricsInterface> = ({ layoutProps, ...props }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <RubricsRoute {...props} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 
@@ -190,7 +185,7 @@ export const getServerSideProps = async (
     props: {
       ...props,
       rubrics: castDbData(rawRubrics),
-      currentCompany: castDbData(companyResult),
+      pageCompany: castDbData(companyResult),
       routeBasePath: `${ROUTE_CMS}/companies/${companyResult._id}/rubrics`,
     },
   };

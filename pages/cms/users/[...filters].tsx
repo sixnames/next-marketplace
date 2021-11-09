@@ -30,11 +30,10 @@ import { getFullName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface UsersConsumerFiltersInterface {
   roles: RoleInterface[];
@@ -192,13 +191,13 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
   );
 };
 
-interface UsersPageInterface extends PagePropsInterface, UsersConsumerInterface {}
+interface UsersPageInterface extends GetAppInitialDataPropsInterface, UsersConsumerInterface {}
 
-const UsersPage: NextPage<UsersPageInterface> = ({ pageUrls, ...props }) => {
+const UsersPage: NextPage<UsersPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <UsersConsumer {...props} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

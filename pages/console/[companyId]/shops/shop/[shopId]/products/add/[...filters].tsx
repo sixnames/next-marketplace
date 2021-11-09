@@ -1,12 +1,15 @@
-import { DEFAULT_COMPANY_SLUG, ROUTE_CONSOLE } from 'config/common';
+import { ROUTE_CONSOLE } from 'config/common';
 import { ProductInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { getAddShopProductSsrData } from 'lib/consoleProductUtils';
-import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import {
+  castDbData,
+  getConsoleInitialData,
+  GetConsoleInitialDataPropsInterface,
+} from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import {
   ShopAddProductsCreateChosenProduct,
@@ -24,15 +27,14 @@ type ShopAddProductsListRouteReduced = Omit<
 >;
 
 interface CompanyShopProductsListInterface
-  extends PagePropsInterface,
+  extends GetConsoleInitialDataPropsInterface,
     ShopAddProductsListRouteReduced {}
 
 const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = ({
-  pageUrls,
+  layoutProps,
   shop,
   rubricName,
   rubricId,
-  currentCompany,
   ...props
 }) => {
   const [chosen, setChosen] = React.useState<ProductInterface[]>([]);
@@ -81,7 +83,7 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
 
   if (step === 2) {
     return (
-      <ConsoleLayout pageUrls={pageUrls} company={currentCompany}>
+      <ConsoleLayout {...layoutProps}>
         <ShopAddProductsFinalStep
           breadcrumbs={breadcrumbs}
           rubricName={rubricName}
@@ -99,7 +101,7 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
   }
 
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={currentCompany}>
+    <ConsoleLayout {...layoutProps}>
       <ShopAddProductsList
         breadcrumbs={breadcrumbs}
         rubricName={rubricName}
@@ -138,7 +140,7 @@ export const getServerSideProps = async (
     basePath,
     query,
     currency,
-    companySlug: initialProps.props.currentCompany?.slug || DEFAULT_COMPANY_SLUG,
+    companySlug: initialProps.props.layoutProps.pageCompany.slug,
   });
 
   if (!payload) {

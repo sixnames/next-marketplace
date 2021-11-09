@@ -24,15 +24,14 @@ import { useDeleteManufacturerMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import AppContentWrapper from 'layout/AppContentWrapper';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { castCatalogueFilters } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import Head from 'next/head';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { createManufacturerSchema, updateManufacturerSchema } from 'validation/manufacturerSchema';
 
 type ManufacturersConsumerInterface = AppPaginationInterface<ManufacturerInterface>;
@@ -181,13 +180,15 @@ const ManufacturersConsumer: React.FC<ManufacturersConsumerInterface> = ({
   );
 };
 
-interface ManufacturersPageInterface extends PagePropsInterface, ManufacturersConsumerInterface {}
+interface ManufacturersPageInterface
+  extends GetAppInitialDataPropsInterface,
+    ManufacturersConsumerInterface {}
 
-const ManufacturersPage: NextPage<ManufacturersPageInterface> = ({ pageUrls, ...props }) => {
+const ManufacturersPage: NextPage<ManufacturersPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <ManufacturersConsumer {...props} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

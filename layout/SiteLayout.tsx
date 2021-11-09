@@ -4,10 +4,11 @@ import Spinner from 'components/Spinner';
 import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
 import { SiteContextProvider } from 'context/siteContext';
+import { SiteUserContextProvider } from 'context/userSiteUserContext';
 import { PagesGroupInterface, RubricInterface } from 'db/uiInterfaces';
 import Footer from 'layout/footer/Footer';
 import Header from 'layout/header/Header';
-import Meta, { MetaInterface } from 'layout/Meta';
+import Meta, { MetaInterface, PageUrlsInterface } from 'layout/Meta';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
@@ -23,6 +24,8 @@ export interface SiteLayoutProviderInterface
   description?: string;
   navRubrics: RubricInterface[];
   previewImage?: string;
+  pageUrls: PageUrlsInterface;
+  urlPrefix: string;
 }
 
 interface SiteLayoutConsumerInterface extends SiteLayoutCatalogueCreatedPages, MetaInterface {}
@@ -82,24 +85,32 @@ const SiteLayout: React.FC<SiteLayoutProviderInterface> = ({
   description,
   pageUrls,
   sessionCity,
-  company,
+  domainCompany,
   footerPageGroups,
   headerPageGroups,
+  urlPrefix,
   ...props
 }) => {
   return (
-    <SiteContextProvider navRubrics={navRubrics} sessionCity={sessionCity} company={company}>
-      <SiteLayoutConsumer
-        title={title}
-        description={description}
-        pageUrls={pageUrls}
-        footerPageGroups={footerPageGroups}
-        headerPageGroups={headerPageGroups}
-        {...props}
+    <SiteUserContextProvider>
+      <SiteContextProvider
+        navRubrics={navRubrics}
+        sessionCity={sessionCity}
+        domainCompany={domainCompany}
+        urlPrefix={urlPrefix}
       >
-        {children}
-      </SiteLayoutConsumer>
-    </SiteContextProvider>
+        <SiteLayoutConsumer
+          title={title}
+          description={description}
+          pageUrls={pageUrls}
+          footerPageGroups={footerPageGroups}
+          headerPageGroups={headerPageGroups}
+          {...props}
+        >
+          {children}
+        </SiteLayoutConsumer>
+      </SiteContextProvider>
+    </SiteUserContextProvider>
   );
 };
 

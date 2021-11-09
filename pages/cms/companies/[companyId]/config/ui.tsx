@@ -6,21 +6,20 @@ import { CompanyInterface } from 'db/uiInterfaces';
 import { ConfigPageInterface } from 'layout/console/ConsoleConfigsLayout';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getConfigPageData } from 'lib/configsUtils';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
 interface ConfigConsumerInterface extends ConfigPageInterface {
-  currentCompany?: CompanyInterface | null;
+  pageCompany?: CompanyInterface | null;
 }
 
 const ConfigConsumer: React.FC<ConfigConsumerInterface> = ({
   assetConfigs,
   normalConfigs,
-  currentCompany,
+  pageCompany,
   rubrics,
 }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -31,14 +30,14 @@ const ConfigConsumer: React.FC<ConfigConsumerInterface> = ({
         href: `${ROUTE_CMS}/companies`,
       },
       {
-        name: `${currentCompany?.name}`,
-        href: `${ROUTE_CMS}/companies/${currentCompany?._id}`,
+        name: `${pageCompany?.name}`,
+        href: `${ROUTE_CMS}/companies/${pageCompany?._id}`,
       },
     ],
   };
 
   return (
-    <CmsCompanyLayout company={currentCompany} breadcrumbs={breadcrumbs}>
+    <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
       <Inner testId={'company-config-ui'}>
         <ConfigsFormTemplate
           assetConfigs={assetConfigs}
@@ -51,15 +50,15 @@ const ConfigConsumer: React.FC<ConfigConsumerInterface> = ({
 };
 
 interface ConfigInterface
-  extends PagePropsInterface,
+  extends GetAppInitialDataPropsInterface,
     ConfigPageInterface,
     ConfigConsumerInterface {}
 
-const Config: NextPage<ConfigInterface> = (props) => {
+const Config: NextPage<ConfigInterface> = ({ layoutProps, ...props }) => {
   return (
-    <CmsLayout title={'Настройки сайта'} {...props}>
+    <ConsoleLayout title={'Настройки сайта'} {...layoutProps}>
       <ConfigConsumer {...props} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 
@@ -100,7 +99,7 @@ export const getServerSideProps = async (
       ...props,
       assetConfigs: castDbData(assetConfigs),
       normalConfigs: castDbData(normalConfigs),
-      currentCompany: castDbData(currentCompany),
+      pageCompany: castDbData(currentCompany),
       rubrics: castDbData(rubrics),
     },
   };

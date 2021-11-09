@@ -8,24 +8,23 @@ import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
 import { getPageGroupsSsr } from 'lib/pageUtils';
 import { ObjectId } from 'mongodb';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 const pageTitle = 'Группы страниц';
 
 interface PageGroupsPageInterface
-  extends PagePropsInterface,
+  extends GetAppInitialDataPropsInterface,
     Omit<PageGroupsListInterface, 'basePath' | 'pageTitle'> {
-  currentCompany: CompanyInterface;
+  pageCompany: CompanyInterface;
 }
 
 const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({
-  pageUrls,
+  layoutProps,
   pagesGroups,
-  currentCompany,
+  pageCompany,
 }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Группы страниц',
@@ -35,24 +34,24 @@ const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({
         href: `${ROUTE_CMS}/companies`,
       },
       {
-        name: currentCompany.name,
-        href: `${ROUTE_CMS}/companies/${currentCompany._id}`,
+        name: pageCompany.name,
+        href: `${ROUTE_CMS}/companies/${pageCompany._id}`,
       },
     ],
   };
 
   return (
-    <CmsLayout title={pageTitle} pageUrls={pageUrls}>
-      <CmsCompanyLayout company={currentCompany} breadcrumbs={breadcrumbs}>
+    <ConsoleLayout title={pageTitle} {...layoutProps}>
+      <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
         <Inner>
           <PageGroupsList
-            companySlug={currentCompany.slug}
-            basePath={`${ROUTE_CMS}/companies/${currentCompany._id}/pages`}
+            companySlug={pageCompany.slug}
+            basePath={`${ROUTE_CMS}/companies/${pageCompany._id}/pages`}
             pagesGroups={pagesGroups}
           />
         </Inner>
       </CmsCompanyLayout>
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 
@@ -87,7 +86,7 @@ export const getServerSideProps = async (
     props: {
       ...props,
       pagesGroups: castDbData(pagesGroups),
-      currentCompany: castDbData(company),
+      pageCompany: castDbData(company),
     },
   };
 };

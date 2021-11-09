@@ -15,18 +15,17 @@ import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName, getShortName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { ObjectId } from 'mongodb';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { updateCompanyClientSchema } from 'validation/companySchema';
 
 interface CompanyDetailsConsumerInterface {
-  currentCompany?: CompanyInterface | null;
+  pageCompany: CompanyInterface;
 }
 
-const CompanyDetailsConsumer: React.FC<CompanyDetailsConsumerInterface> = ({ currentCompany }) => {
+const CompanyDetailsConsumer: React.FC<CompanyDetailsConsumerInterface> = ({ pageCompany }) => {
   const { showLoading, onCompleteCallback, onErrorCallback } = useMutationCallbacks({
     reload: true,
   });
@@ -39,7 +38,7 @@ const CompanyDetailsConsumer: React.FC<CompanyDetailsConsumerInterface> = ({ cur
   });
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: `${currentCompany?.name}`,
+    currentPageName: `${pageCompany?.name}`,
     config: [
       {
         name: 'Компании',
@@ -61,15 +60,15 @@ const CompanyDetailsConsumer: React.FC<CompanyDetailsConsumerInterface> = ({ cur
   );
 
   return (
-    <CmsCompanyLayout company={currentCompany} breadcrumbs={breadcrumbs}>
+    <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
       <Inner testId={'company-details'}>
         <Formik
           validationSchema={validationSchema}
           initialValues={{
-            ...currentCompany,
+            ...pageCompany,
             contacts: {
-              emails: currentCompany?.contacts.emails[0] ? currentCompany.contacts.emails : [''],
-              phones: currentCompany?.contacts.phones[0] ? currentCompany.contacts.phones : [''],
+              emails: pageCompany?.contacts.emails[0] ? pageCompany.contacts.emails : [''],
+              phones: pageCompany?.contacts.phones[0] ? pageCompany.contacts.phones : [''],
             },
           }}
           onSubmit={(values) => {
@@ -80,7 +79,7 @@ const CompanyDetailsConsumer: React.FC<CompanyDetailsConsumerInterface> = ({ cur
                 emails: values.contacts.emails,
                 phones: values.contacts.phones.map((phone) => phoneToRaw(phone)),
               },
-              companyId: currentCompany?._id,
+              companyId: pageCompany?._id,
               ownerId: `${values.owner?._id}`,
               staffIds: (values.staff || []).map(({ _id }) => _id),
             });
@@ -98,7 +97,7 @@ const CompanyDetailsConsumer: React.FC<CompanyDetailsConsumerInterface> = ({ cur
                         emails: values.contacts.emails,
                         phones: values.contacts.phones.map((phone) => phoneToRaw(phone)),
                       },
-                      companyId: currentCompany?._id,
+                      companyId: pageCompany?._id,
                       ownerId: user._id,
                       staffIds: (values.staff || []).map(({ _id }) => _id),
                     });
@@ -113,7 +112,7 @@ const CompanyDetailsConsumer: React.FC<CompanyDetailsConsumerInterface> = ({ cur
                         emails: values.contacts.emails,
                         phones: values.contacts.phones.map((phone) => phoneToRaw(phone)),
                       },
-                      companyId: currentCompany?._id,
+                      companyId: pageCompany?._id,
                       ownerId: `${values.owner?._id}`,
                       staffIds: staff.map(({ _id }) => _id),
                     });
@@ -131,16 +130,15 @@ const CompanyDetailsConsumer: React.FC<CompanyDetailsConsumerInterface> = ({ cur
   );
 };
 
-interface CompanyDetailsPageInterface extends PagePropsInterface, CompanyDetailsConsumerInterface {}
+interface CompanyDetailsPageInterface
+  extends GetAppInitialDataPropsInterface,
+    CompanyDetailsConsumerInterface {}
 
-const CompanyDetailsPage: NextPage<CompanyDetailsPageInterface> = ({
-  currentCompany,
-  ...props
-}) => {
+const CompanyDetailsPage: NextPage<CompanyDetailsPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <CmsLayout {...props}>
-      <CompanyDetailsConsumer currentCompany={currentCompany} />
-    </CmsLayout>
+    <ConsoleLayout {...layoutProps}>
+      <CompanyDetailsConsumer {...props} />
+    </ConsoleLayout>
   );
 };
 
@@ -267,7 +265,7 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      currentCompany: castDbData(company),
+      pageCompany: castDbData(company),
     },
   };
 };

@@ -14,11 +14,10 @@ import AppSubNav from 'layout/AppSubNav';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
 import Head from 'next/head';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ClientNavItemInterface } from 'types/clientTypes';
 
 interface RoleNavConsumerInterface {
@@ -135,13 +134,13 @@ const RoleNavConsumer: React.FC<RoleNavConsumerInterface> = ({ role, navItemGrou
   );
 };
 
-interface RoleNavPageInterface extends PagePropsInterface, RoleNavConsumerInterface {}
+interface RoleNavPageInterface extends GetAppInitialDataPropsInterface, RoleNavConsumerInterface {}
 
-const RoleNav: NextPage<RoleNavPageInterface> = ({ pageUrls, role, navItemGroups }) => {
+const RoleNav: NextPage<RoleNavPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
-      <RoleNavConsumer role={role} navItemGroups={navItemGroups} />
-    </CmsLayout>
+    <ConsoleLayout {...layoutProps}>
+      <RoleNavConsumer {...props} />
+    </ConsoleLayout>
   );
 };
 

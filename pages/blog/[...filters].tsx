@@ -28,6 +28,7 @@ import {
   COL_BLOG_POSTS,
   COL_OPTIONS,
 } from 'db/collectionNames';
+import { getPageSessionUser } from 'db/dao/user/getPageSessionUser';
 import { AttributeViewVariantModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -780,7 +781,12 @@ export const getServerSideProps = async (
   });
 
   // update counters
-  if (!props.sessionUser?.role?.isStaff) {
+  // Session user
+  const sessionUser = await getPageSessionUser({
+    context,
+    locale: props.sessionLocale,
+  });
+  if (!sessionUser?.me.role?.isStaff) {
     const counterUpdater = {
       $inc: {
         [`views.${props.companySlug}.${props.sessionCity}`]: VIEWS_COUNTER_STEP,

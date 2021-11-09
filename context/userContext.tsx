@@ -17,22 +17,7 @@ interface UserContextProviderInterface {
 }
 
 const UserContextProvider: React.FC<UserContextProviderInterface> = ({ children, sessionUser }) => {
-  // const [session] = useSession();
   const [user, setUser] = React.useState<UserInterface | null | undefined>(() => sessionUser);
-
-  /*React.useEffect(() => {
-    if (session && !user) {
-      fetch('/api/user/session', {
-        method: REQUEST_METHOD_GET,
-      })
-        .then((res) => res.json())
-        .then((sessionUser) => {
-          if (sessionUser) {
-            setUser(sessionUser);
-          }
-        });
-    }
-  }, [user, session]);*/
 
   const value = React.useMemo(() => {
     return {

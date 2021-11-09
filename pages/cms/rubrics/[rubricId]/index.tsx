@@ -23,14 +23,13 @@ import {
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { updateRubricSchema } from 'validation/rubricSchema';
 
 interface RubricDetailsInterface {
@@ -160,24 +159,13 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
   );
 };
 
-interface RubricPageInterface extends PagePropsInterface, RubricDetailsInterface {}
+interface RubricPageInterface extends GetAppInitialDataPropsInterface, RubricDetailsInterface {}
 
-const RubricPage: NextPage<RubricPageInterface> = ({
-  pageUrls,
-  companySlug,
-  rubric,
-  seoBottom,
-  seoTop,
-}) => {
+const RubricPage: NextPage<RubricPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
-      <RubricDetails
-        rubric={rubric}
-        seoBottom={seoBottom}
-        seoTop={seoTop}
-        companySlug={companySlug}
-      />
-    </CmsLayout>
+    <ConsoleLayout {...layoutProps}>
+      <RubricDetails {...props} />
+    </ConsoleLayout>
   );
 };
 

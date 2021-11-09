@@ -4,15 +4,16 @@ import Title from 'components/Title';
 import { ROUTE_CMS } from 'config/common';
 import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import { getPageSsr } from 'lib/pageUtils';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
-export interface PageDetailsPageInterface extends PagePropsInterface, PageDetailsInterface {}
+export interface PageDetailsPageInterface
+  extends GetAppInitialDataPropsInterface,
+    PageDetailsInterface {}
 
-const PageDetailsPage: NextPage<PageDetailsPageInterface> = ({ pageUrls, page, cities }) => {
+const PageDetailsPage: NextPage<PageDetailsPageInterface> = ({ layoutProps, page, cities }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${page.name}`,
     config: [
@@ -28,14 +29,14 @@ const PageDetailsPage: NextPage<PageDetailsPageInterface> = ({ pageUrls, page, c
   };
 
   return (
-    <CmsLayout title={`${page.name}`} pageUrls={pageUrls}>
+    <ConsoleLayout title={`${page.name}`} {...layoutProps}>
       <AppContentWrapper breadcrumbs={breadcrumbs}>
         <Inner>
           <Title>{page.name}</Title>
           <PageDetails page={page} cities={cities} />
         </Inner>
       </AppContentWrapper>
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

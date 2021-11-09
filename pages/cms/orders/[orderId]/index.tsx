@@ -12,17 +12,16 @@ import { shopProductFieldsPipeline } from 'db/dao/constantPipelines';
 import { getDatabase } from 'db/mongodb';
 import { OrderInterface } from 'db/uiInterfaces';
 import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
 import { castOrderStatus } from 'lib/orderUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface OrderPageConsumerInterface {
   order: OrderInterface;
@@ -49,13 +48,13 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
   );
 };
 
-interface OrderPageInterface extends OrderPageConsumerInterface, PagePropsInterface {}
+interface OrderPageInterface extends OrderPageConsumerInterface, GetAppInitialDataPropsInterface {}
 
-const OrderPage: NextPage<OrderPageInterface> = ({ pageUrls, order }) => {
+const OrderPage: NextPage<OrderPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <CmsLayout pageUrls={pageUrls} title={`Заказ №${order.itemId}`}>
-      <OrderPageConsumer order={order} />
-    </CmsLayout>
+    <ConsoleLayout {...layoutProps} title={`Заказ №${props.order.itemId}`}>
+      <OrderPageConsumer {...props} />
+    </ConsoleLayout>
   );
 };
 

@@ -4,12 +4,11 @@ import Title from 'components/Title';
 import { DEFAULT_COMPANY_SLUG } from 'config/common';
 import { getPaginatedNotSyncedProducts } from 'db/dao/notSyncedProducts/getPaginatedNotSyncedProducts';
 import AppContentWrapper from 'layout/AppContentWrapper';
-import CmsLayout from 'layout/cms/CmsLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { alwaysArray } from 'lib/arrayUtils';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 const pageTitle = 'Ошибки синхронизации';
 
@@ -27,20 +26,22 @@ const CompanyShopSyncErrorsConsumer: React.FC<SyncErrorsListInterface> = ({
   );
 };
 
-interface CompanyShopSyncErrorsInterface extends PagePropsInterface, SyncErrorsListInterface {}
+interface CompanyShopSyncErrorsInterface
+  extends GetAppInitialDataPropsInterface,
+    SyncErrorsListInterface {}
 
 const CompanyShopSyncErrors: NextPage<CompanyShopSyncErrorsInterface> = ({
-  pageUrls,
+  layoutProps,
   notSyncedProducts,
   companySlug,
 }) => {
   return (
-    <CmsLayout pageUrls={pageUrls} title={pageTitle}>
+    <ConsoleLayout {...layoutProps} title={pageTitle}>
       <CompanyShopSyncErrorsConsumer
         notSyncedProducts={notSyncedProducts}
         companySlug={companySlug}
       />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

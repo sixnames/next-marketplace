@@ -1,7 +1,7 @@
 import WpImage from 'components/WpImage';
 import { ROUTE_CATALOGUE } from 'config/common';
-import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
+import { useSiteUserContext } from 'context/userSiteUserContext';
 import { ProductSnippetInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import Link from 'components/Link/Link';
@@ -20,8 +20,8 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
   showSnippetRating,
   gridCatalogueColumns,
 }) => {
-  const { configs } = useConfigContext();
-  const { addShoplessProductToCart, addProductToCart } = useSiteContext();
+  const sessionUser = useSiteUserContext();
+  const { addShoplessProductToCart, addProductToCart, urlPrefix } = useSiteContext();
   const { rubricSlug, product } = shopProduct;
   if (!product) {
     return null;
@@ -67,7 +67,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
       }`}
     >
       {/*edit button for admin*/}
-      {configs.showAdminUiInCatalogue ? (
+      {sessionUser?.showAdminUiInCatalogue ? (
         <div className='absolute top-0 left-0 z-50'>
           <ControlButton
             size={'small'}
@@ -78,7 +78,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
             roundedTopLeft
             onClick={() => {
               window.open(
-                `${configs.editLinkBasePath}/rubrics/${product.rubricId}/products/product/${product._id}`,
+                `${sessionUser.editLinkBasePath}/rubrics/${product.rubricId}/products/product/${product._id}`,
                 '_blank',
               );
             }}
@@ -100,7 +100,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
             testId={`${testId}-image-grid`}
             target={'_blank'}
             className='block absolute z-10 inset-0 text-indent-full'
-            href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
+            href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
           >
             {snippetTitle}
           </Link>
@@ -114,7 +114,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
                 testId={`${testId}-name-grid`}
                 target={'_blank'}
                 className='text-lg sm:text-xl font-medium block text-primary-text hover:no-underline hover:text-primary-text'
-                href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
+                href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
               >
                 {snippetTitle}
               </Link>

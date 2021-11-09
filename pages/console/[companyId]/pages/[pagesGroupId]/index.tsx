@@ -2,27 +2,23 @@ import Inner from 'components/Inner';
 import PagesList, { PagesListInterface } from 'components/Pages/PagesList';
 import Title from 'components/Title';
 import { ROUTE_CONSOLE } from 'config/common';
-import { CompanyInterface } from 'db/uiInterfaces';
 import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getPagesListSsr } from 'lib/pageUtils';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import {
+  castDbData,
+  getConsoleInitialData,
+  GetConsoleInitialDataPropsInterface,
+} from 'lib/ssrUtils';
 
 interface PagesListPageInterface
-  extends PagePropsInterface,
-    Omit<PagesListInterface, 'basePath' | 'breadcrumbs'> {
-  currentCompany: CompanyInterface;
-}
+  extends GetConsoleInitialDataPropsInterface,
+    Omit<PagesListInterface, 'basePath' | 'breadcrumbs'> {}
 
-const PagesListPage: NextPage<PagesListPageInterface> = ({
-  pageUrls,
-  pagesGroup,
-  currentCompany,
-}) => {
-  const basePath = `${ROUTE_CONSOLE}/${currentCompany._id}/pages`;
+const PagesListPage: NextPage<PagesListPageInterface> = ({ layoutProps, pagesGroup }) => {
+  const basePath = `${ROUTE_CONSOLE}/${layoutProps.pageCompany._id}/pages`;
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${pagesGroup.name}`,
     config: [
@@ -34,7 +30,7 @@ const PagesListPage: NextPage<PagesListPageInterface> = ({
   };
 
   return (
-    <ConsoleLayout title={`${pagesGroup.name}`} pageUrls={pageUrls} company={currentCompany}>
+    <ConsoleLayout title={`${pagesGroup.name}`} {...layoutProps}>
       <AppContentWrapper breadcrumbs={breadcrumbs}>
         <Inner>
           <Title>{pagesGroup.name}</Title>
@@ -51,7 +47,7 @@ export const getServerSideProps = async (
   const { query } = context;
   const { pagesGroupId } = query;
   const { props } = await getConsoleInitialData({ context });
-  if (!props || !props.currentCompany || !pagesGroupId) {
+  if (!props || !pagesGroupId) {
     return {
       notFound: true,
     };
@@ -71,7 +67,6 @@ export const getServerSideProps = async (
     props: {
       ...props,
       pagesGroup: castDbData(pagesGroup),
-      currentCompany: props.currentCompany,
     },
   };
 };

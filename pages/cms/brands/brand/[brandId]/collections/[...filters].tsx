@@ -26,16 +26,15 @@ import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
 import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import AppSubNav from 'layout/AppSubNav';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { castCatalogueFilters } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
 import Head from 'next/head';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
-import CmsLayout from 'layout/cms/CmsLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { addCollectionToBrandSchema, updateCollectionInBrandSchema } from 'validation/brandSchema';
 
 type BrandCollectionsAggregationInterface = AppPaginationInterface<BrandCollectionInterface>;
@@ -228,14 +227,17 @@ const BrandCollectionsConsumer: React.FC<BrandCollectionsConsumerInterface> = ({
 };
 
 interface BrandCollectionsPageInterface
-  extends PagePropsInterface,
+  extends GetAppInitialDataPropsInterface,
     BrandCollectionsConsumerInterface {}
 
-const BrandCollectionsPage: NextPage<BrandCollectionsPageInterface> = ({ pageUrls, ...props }) => {
+const BrandCollectionsPage: NextPage<BrandCollectionsPageInterface> = ({
+  layoutProps,
+  ...props
+}) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
+    <ConsoleLayout {...layoutProps}>
       <BrandCollectionsConsumer {...props} />
-    </CmsLayout>
+    </ConsoleLayout>
   );
 };
 

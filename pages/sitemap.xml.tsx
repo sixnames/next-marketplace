@@ -1,3 +1,4 @@
+import { DEFAULT_COMPANY_SLUG } from 'config/common';
 import { COL_COMPANIES, COL_LANGUAGES, COL_PRODUCTS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import { noImageStage } from 'db/dao/constantPipelines';
 import { CompanyModel, LanguageModel, ShopProductModel } from 'db/dbModels';
@@ -53,6 +54,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     const { db } = await getDatabase();
     company = await db.collection<CompanyModel>(COL_COMPANIES).findOne({ domain });
   }
+
+  const urlPrefix = company?.slug || DEFAULT_COMPANY_SLUG;
 
   const companyRubricsMatch = company ? { companyId: company._id } : {};
   const productOptionsAggregation = await shopProductsCollection
@@ -115,12 +118,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     const { _id, productSlugs } = template;
 
     // rubric
-    initialSlugs.push(`catalogue/${_id}`);
+    initialSlugs.push(`${urlPrefix}/catalogue/${_id}`);
 
     // products
     productSlugs.forEach((slug) => {
       console.log(slug);
-      initialSlugs.push(`/catalogue/${_id}/product/${slug}`);
+      initialSlugs.push(`${urlPrefix}/catalogue/${_id}/product/${slug}`);
     });
   });
 

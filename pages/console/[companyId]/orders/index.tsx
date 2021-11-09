@@ -10,13 +10,16 @@ import { ROUTE_CONSOLE } from 'config/common';
 import { getConsoleOrders, GetConsoleOrdersPayloadType } from 'db/dao/order/getConsoleOrders';
 import { OrderInterface } from 'db/uiInterfaces';
 import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import {
+  castDbData,
+  getConsoleInitialData,
+  GetConsoleInitialDataPropsInterface,
+} from 'lib/ssrUtils';
 
 interface OrdersRouteInterface {
   data: GetConsoleOrdersPayloadType;
@@ -111,12 +114,12 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ data }) => {
   );
 };
 
-interface OrdersInterface extends PagePropsInterface, OrdersRouteInterface {}
+interface OrdersInterface extends GetConsoleInitialDataPropsInterface, OrdersRouteInterface {}
 
-const Orders: NextPage<OrdersInterface> = ({ pageUrls, currentCompany, data }) => {
+const Orders: NextPage<OrdersInterface> = ({ layoutProps, ...props }) => {
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={currentCompany}>
-      <OrdersRoute data={data} />
+    <ConsoleLayout {...layoutProps}>
+      <OrdersRoute {...props} />
     </ConsoleLayout>
   );
 };
@@ -125,13 +128,7 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<OrdersInterface>> => {
   const { props } = await getConsoleInitialData({ context });
-  if (!props || !props.sessionUser) {
-    return {
-      notFound: true,
-    };
-  }
-
-  if (!props.currentCompany) {
+  if (!props) {
     return {
       notFound: true,
     };
@@ -147,7 +144,6 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      currentCompany: props.currentCompany,
       data: castDbData(data),
     },
   };

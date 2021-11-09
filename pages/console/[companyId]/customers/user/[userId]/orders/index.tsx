@@ -14,24 +14,27 @@ import {
 import { getDatabase } from 'db/mongodb';
 import { CompanyInterface, OrderInterface, UserInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import ConsoleUserLayout from 'layout/console/ConsoleUserLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { ObjectId } from 'mongodb';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getConsoleInitialData } from 'lib/ssrUtils';
+import {
+  castDbData,
+  getConsoleInitialData,
+  GetConsoleInitialDataPropsInterface,
+} from 'lib/ssrUtils';
 
 interface UserOrdersConsumerInterface {
   user: UserInterface;
-  currentCompany?: CompanyInterface | null;
+  pageCompany: CompanyInterface;
 }
 
-const UserOrdersConsumer: React.FC<UserOrdersConsumerInterface> = ({ user, currentCompany }) => {
-  const basePath = `${ROUTE_CONSOLE}/${currentCompany?._id}/customers`;
+const UserOrdersConsumer: React.FC<UserOrdersConsumerInterface> = ({ user, pageCompany }) => {
+  const basePath = `${ROUTE_CONSOLE}/${pageCompany?._id}/customers`;
 
   const columns: TableColumn<OrderInterface>[] = [
     {
@@ -89,7 +92,7 @@ const UserOrdersConsumer: React.FC<UserOrdersConsumerInterface> = ({ user, curre
   };
 
   return (
-    <ConsoleUserLayout companyId={`${currentCompany?._id}`} user={user} breadcrumbs={breadcrumbs}>
+    <ConsoleUserLayout companyId={`${pageCompany?._id}`} user={user} breadcrumbs={breadcrumbs}>
       <Inner>
         <div className='mb-4 text-secondary-text'>Всего заказов {user.orders?.length}</div>
         <div className='overflow-x-auto'>
@@ -100,16 +103,14 @@ const UserOrdersConsumer: React.FC<UserOrdersConsumerInterface> = ({ user, curre
   );
 };
 
-interface UserOrdersPageInterface extends PagePropsInterface, UserOrdersConsumerInterface {}
+interface UserOrdersPageInterface
+  extends GetConsoleInitialDataPropsInterface,
+    UserOrdersConsumerInterface {}
 
-const UserOrdersPage: NextPage<UserOrdersPageInterface> = ({
-  pageUrls,
-  currentCompany,
-  ...props
-}) => {
+const UserOrdersPage: NextPage<UserOrdersPageInterface> = ({ layoutProps, ...props }) => {
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={currentCompany}>
-      <UserOrdersConsumer {...props} currentCompany={currentCompany} />
+    <ConsoleLayout {...layoutProps}>
+      <UserOrdersConsumer {...props} />
     </ConsoleLayout>
   );
 };
@@ -302,6 +303,7 @@ export const getServerSideProps = async (
     props: {
       ...props,
       user: castDbData(user),
+      pageCompany: castDbData(props.layoutProps.pageCompany),
     },
   };
 };

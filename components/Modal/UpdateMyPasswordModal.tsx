@@ -1,4 +1,5 @@
 import ModalText from 'components/Modal/ModalText';
+import { useSiteUserContext } from 'context/userSiteUserContext';
 import { UpdateMyPasswordInputInterface } from 'db/dao/user/updateMyPassword';
 import * as React from 'react';
 import ModalFrame from 'components/Modal/ModalFrame';
@@ -8,7 +9,6 @@ import { Form, Formik } from 'formik';
 import Button from 'components/button/Button';
 import { useAppContext } from 'context/appContext';
 import useValidationSchema from 'hooks/useValidationSchema';
-import { useUserContext } from 'context/userContext';
 import RequestError from 'components/RequestError';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import { updateMyPasswordSchema } from 'validation/userSchema';
@@ -18,13 +18,13 @@ export interface UpdateMyPasswordModalInterface {
 }
 
 const UpdateMyPasswordModal: React.FC<UpdateMyPasswordModalInterface> = ({ confirm }) => {
-  const { me } = useUserContext();
+  const sessionUser = useSiteUserContext();
   const { hideModal } = useAppContext();
   const validationSchema = useValidationSchema({
     schema: updateMyPasswordSchema,
   });
 
-  if (!me) {
+  if (!sessionUser?.me) {
     return (
       <ModalFrame>
         <RequestError message={'Пользователь не найден'} />

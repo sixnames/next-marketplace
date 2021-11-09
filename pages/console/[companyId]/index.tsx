@@ -1,20 +1,19 @@
 import Inner from 'components/Inner';
 import Title from 'components/Title';
 import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/console/ConsoleLayout';
-import { PagePropsInterface } from 'pages/_app';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { getConsoleInitialData } from 'lib/ssrUtils';
+import { getConsoleInitialData, GetConsoleInitialDataPropsInterface } from 'lib/ssrUtils';
 
-interface OrdersInterface extends PagePropsInterface {}
+interface OrdersInterface extends GetConsoleInitialDataPropsInterface {}
 
-const Orders: NextPage<OrdersInterface> = ({ pageUrls, currentCompany }) => {
+const Orders: NextPage<OrdersInterface> = ({ layoutProps }) => {
   return (
-    <ConsoleLayout pageUrls={pageUrls} company={currentCompany}>
+    <ConsoleLayout {...layoutProps}>
       <AppContentWrapper>
         <Inner>
-          <Title>{currentCompany?.name}</Title>
+          <Title>{layoutProps.pageCompany.name}</Title>
         </Inner>
       </AppContentWrapper>
     </ConsoleLayout>
@@ -34,7 +33,6 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      currentCompany: props.currentCompany,
     },
   };
 };

@@ -7,7 +7,8 @@ import RequestError from 'components/RequestError';
 import Title from 'components/Title';
 import { ROUTE_SIGN_IN } from 'config/common';
 import { CONFIRM_MODAL, UPDATE_MY_PASSWORD_MODAL } from 'config/modalVariants';
-import { useUserContext } from 'context/userContext';
+import { useSiteUserContext } from 'context/userSiteUserContext';
+import { getPageSessionUser } from 'db/dao/user/getPageSessionUser';
 import { UpdateMyProfileInputInterface } from 'db/dao/user/updateMyProfile';
 import { Form, Formik } from 'formik';
 import {
@@ -29,7 +30,7 @@ import { signOut } from 'next-auth/client';
 
 const ProfileDetailsRoute: React.FC = () => {
   const router = useRouter();
-  const { me } = useUserContext();
+  const sessionUser = useSiteUserContext();
   const { showModal, showLoading, showErrorNotification, hideLoading, hideModal } =
     useMutationCallbacks({
       withModal: true,
@@ -40,11 +41,11 @@ const ProfileDetailsRoute: React.FC = () => {
   });
   const [updateMyPasswordMutation] = useUpdateMyPasswordMutation();
 
-  if (!me) {
+  if (!sessionUser?.me) {
     return <RequestError message={'Пользователь не найден'} />;
   }
 
-  const { email, phone, name, lastName, secondName } = me;
+  const { email, phone, name, lastName, secondName } = sessionUser.me;
 
   return (
     <div data-cy={'profile-details'}>
@@ -213,7 +214,14 @@ export async function getServerSideProps(
   const { props } = await getSiteInitialData({
     context,
   });
-  if (!props.sessionUser) {
+
+  // Session user
+  const sessionUser = await getPageSessionUser({
+    context,
+    locale: props.sessionLocale,
+  });
+
+  if (!sessionUser) {
     return {
       redirect: {
         permanent: false,

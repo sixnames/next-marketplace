@@ -17,13 +17,13 @@ export interface CompanyRubricCategoryDetailsInterface {
   category: CategoryInterface;
   seoTop?: RubricSeoModel | null;
   seoBottom?: RubricSeoModel | null;
-  currentCompany?: CompanyInterface | null;
+  pageCompany: CompanyInterface;
   routeBasePath: string;
 }
 
 const CompanyRubricCategoryDetails: React.FC<CompanyRubricCategoryDetailsInterface> = ({
   category,
-  currentCompany,
+  pageCompany,
   seoTop,
   seoBottom,
 }) => {
@@ -58,7 +58,7 @@ const CompanyRubricCategoryDetails: React.FC<CompanyRubricCategoryDetailsInterfa
     textTopI18n: seoDescriptionTop?.textI18n,
     gender: gender ? (`${gender}` as Gender) : null,
     replaceParentNameInCatalogueTitle,
-    companySlug: `${currentCompany?.slug}`,
+    companySlug: `${pageCompany?.slug}`,
     variants:
       variantKeys.length > 0
         ? variants

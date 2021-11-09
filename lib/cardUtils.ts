@@ -110,7 +110,6 @@ export interface GetCardDataInterface {
   companySlug: string;
   companyId?: string | ObjectId | null;
   useUniqueConstructor: boolean;
-  showAdminUiInCatalogue: boolean;
 }
 
 export async function getCardData({
@@ -118,7 +117,6 @@ export async function getCardData({
   city,
   slug,
   companyId,
-  showAdminUiInCatalogue,
   ...props
 }: // companySlug,
 // useUniqueConstructor,
@@ -1044,13 +1042,10 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
     });
 
     // admin data
-    let productSeo = null;
-    if (showAdminUiInCatalogue) {
-      productSeo = await productSeoCollection.findOne({
-        productId: restProduct._id,
-        companySlug,
-      });
-    }
+    const productSeo = await productSeoCollection.findOne({
+      productId: restProduct._id,
+      companySlug,
+    });
 
     return {
       product: {

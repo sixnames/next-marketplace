@@ -23,12 +23,11 @@ import {
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCategoryLayout from 'layout/cms/CmsCategoryLayout';
-import CmsLayout from 'layout/cms/CmsLayout';
-import { castDbData, getAppInitialData } from 'lib/ssrUtils';
+import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { castCategoryForUI } from 'lib/uiDataUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
 interface CategoryAttributesConsumerInterface {
@@ -284,21 +283,17 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
 };
 
 interface CategoryAttributesPageInterface
-  extends PagePropsInterface,
+  extends GetAppInitialDataPropsInterface,
     CategoryAttributesConsumerInterface {}
 
 const CategoryAttributesPage: NextPage<CategoryAttributesPageInterface> = ({
-  pageUrls,
-  category,
-  excludedAttributesGroupsIds,
+  layoutProps,
+  ...props
 }) => {
   return (
-    <CmsLayout pageUrls={pageUrls}>
-      <CategoryAttributesConsumer
-        category={category}
-        excludedAttributesGroupsIds={excludedAttributesGroupsIds}
-      />
-    </CmsLayout>
+    <ConsoleLayout {...layoutProps}>
+      <CategoryAttributesConsumer {...props} />
+    </ConsoleLayout>
   );
 };
 

@@ -4,6 +4,7 @@ import Icon from 'components/Icon';
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
 import WpImage from 'components/WpImage';
+import { useSiteContext } from 'context/siteContext';
 import CardSimilarProducts from 'layout/card/CardSimilarProducts';
 import Title from 'components/Title';
 import { ROUTE_CATALOGUE } from 'config/common';
@@ -32,6 +33,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
   companySlug,
   companyId,
 }) => {
+  const { urlPrefix } = useSiteContext();
   const {
     isSingleImage,
     assets,
@@ -68,7 +70,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
 
   return (
     <article className='pb-20 pt-8 lg:pt-0' data-cy={`card`}>
-      <Breadcrumbs currentPageName={cardTitle} config={cardBreadcrumbs} />
+      <Breadcrumbs urlPrefix={urlPrefix} currentPageName={cardTitle} config={cardBreadcrumbs} />
 
       <div className='mb-28 relative'>
         <Inner lowBottom lowTop>
@@ -235,7 +237,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                                   {isCurrent ? null : (
                                     <Link
                                       className='absolute inset-0 z-30 block text-indent-full overflow-hidden'
-                                      href={`${ROUTE_CATALOGUE}/${product.rubricSlug}/product/${shopProduct?.product?.slug}`}
+                                      href={`${urlPrefix}${ROUTE_CATALOGUE}/${product.rubricSlug}/product/${shopProduct?.product?.slug}`}
                                     >
                                       {name}
                                     </Link>

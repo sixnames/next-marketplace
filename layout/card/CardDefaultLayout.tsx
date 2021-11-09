@@ -4,9 +4,9 @@ import Icon from 'components/Icon';
 import Inner from 'components/Inner';
 import TagLink from 'components/Link/TagLink';
 import WpImage from 'components/WpImage';
+import { useSiteContext } from 'context/siteContext';
 import CardSimilarProducts from 'layout/card/CardSimilarProducts';
 import Title from 'components/Title';
-import { ROUTE_CATALOGUE } from 'config/common';
 import useCardData from 'hooks/useCardData';
 import CardControls from 'layout/card/CardControls';
 import CardDynamicContent from 'layout/card/CardDynamicContent';
@@ -52,6 +52,7 @@ const CardTitle: React.FC<CardTitleInterface> = ({ cardTitle, showArticle, name,
 };
 
 const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlug, companyId }) => {
+  const { urlPrefix } = useSiteContext();
   const {
     similarProducts,
     showFeaturesSection,
@@ -85,7 +86,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
 
   return (
     <article className='pb-20 pt-8 lg:pt-0' data-cy={`card`}>
-      <Breadcrumbs currentPageName={cardTitle} config={cardBreadcrumbs} />
+      <Breadcrumbs urlPrefix={urlPrefix} currentPageName={cardTitle} config={cardBreadcrumbs} />
 
       <div className='mb-28 relative'>
         <Inner className='relative z-20' lowBottom lowTop>
@@ -169,7 +170,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                                   className={isCurrent ? `pointer-events-none` : ``}
                                   key={`${option?.name}`}
                                   isActive={isCurrent}
-                                  href={`${ROUTE_CATALOGUE}/${product.rubricSlug}/product/${productSlug}`}
+                                  href={`${urlPrefix}/${productSlug}`}
                                 >
                                   {name}
                                 </TagLink>
@@ -195,11 +196,6 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                       const target = e.target as Element;
                       const distId = target.getAttribute('href');
                       const distElement = document.querySelector(`${distId}`);
-                      console.log({
-                        target,
-                        distId,
-                        distElement,
-                      });
                       if (distElement) {
                         window.scrollTo({
                           top: noNaN(distElement.getBoundingClientRect().top),

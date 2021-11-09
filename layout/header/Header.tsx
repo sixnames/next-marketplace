@@ -5,14 +5,14 @@ import ThemeTrigger from 'components/ThemeTrigger';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { useLocaleContext } from 'context/localeContext';
 import { useSiteUserContext } from 'context/userSiteUserContext';
-import { CompanyInterface, PagesGroupInterface } from 'db/uiInterfaces';
+import { PagesGroupInterface } from 'db/uiInterfaces';
 import useSignOut from 'hooks/useSignOut';
 import LayoutCard from 'layout/LayoutCard';
 import { noNaN } from 'lib/numbers';
 import { phoneToReadable } from 'lib/phoneUtils';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import StickyNav from 'layout/header/StickyNav';
+import StickyNav, { StickNavInterface } from 'layout/header/StickyNav';
 import Link from 'components/Link/Link';
 import { useThemeContext } from 'context/themeContext';
 import { useConfigContext } from 'context/configContext';
@@ -364,15 +364,14 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
   );
 };
 
-export interface HeaderInterface {
+export interface HeaderInterface extends StickNavInterface {
   headerPageGroups: PagesGroupInterface[];
-  company?: CompanyInterface | null;
 }
 
 const middleSideClassName =
   'inline-flex shrink-0 lg:w-[calc((100%-(var(--logoWidth)+2rem))/2)] min-h-[1rem] gap-2';
 
-const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
+const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug }) => {
   const { isDark } = useThemeContext();
   const { configs } = useConfigContext();
   const { locale } = useLocaleContext();
@@ -572,10 +571,10 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
           </div>
         </Inner>
 
-        {isSearchOpen ? <HeaderSearch setIsSearchOpen={setIsSearchOpen} company={company} /> : null}
+        {isSearchOpen ? <HeaderSearch setIsSearchOpen={setIsSearchOpen} /> : null}
       </header>
 
-      <StickyNav />
+      <StickyNav currentRubricSlug={currentRubricSlug} />
 
       <BurgerDropdown
         headerPageGroups={headerPageGroups}

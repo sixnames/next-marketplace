@@ -8,6 +8,7 @@ import { SiteUserContextProvider } from 'context/userSiteUserContext';
 import { PagesGroupInterface, RubricInterface } from 'db/uiInterfaces';
 import Footer from 'layout/footer/Footer';
 import Header from 'layout/header/Header';
+import { StickNavInterface } from 'layout/header/StickyNav';
 import Meta, { MetaInterface, PageUrlsInterface } from 'layout/Meta';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
@@ -17,18 +18,10 @@ export interface SiteLayoutCatalogueCreatedPages {
   headerPageGroups: PagesGroupInterface[];
 }
 
-export interface SiteLayoutProviderInterface
-  extends PagePropsInterface,
-    SiteLayoutCatalogueCreatedPages {
-  title?: string;
-  description?: string;
-  navRubrics: RubricInterface[];
-  previewImage?: string;
-  pageUrls: PageUrlsInterface;
-  urlPrefix: string;
-}
-
-interface SiteLayoutConsumerInterface extends SiteLayoutCatalogueCreatedPages, MetaInterface {}
+interface SiteLayoutConsumerInterface
+  extends SiteLayoutCatalogueCreatedPages,
+    MetaInterface,
+    StickNavInterface {}
 
 const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
   children,
@@ -40,6 +33,7 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
   previewImage,
   siteName,
   foundationYear,
+  currentRubricSlug,
 }) => {
   const { isLoading, isModal } = useAppContext();
   const { configs } = useConfigContext();
@@ -62,7 +56,7 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
         foundationYear={foundationYear}
       />
 
-      <Header headerPageGroups={headerPageGroups} />
+      <Header headerPageGroups={headerPageGroups} currentRubricSlug={currentRubricSlug} />
 
       <div className='flex flex-col flex-grow'>
         <main className='flex-grow'>
@@ -78,16 +72,23 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
   );
 };
 
+export interface SiteLayoutProviderInterface
+  extends PagePropsInterface,
+    StickNavInterface,
+    SiteLayoutCatalogueCreatedPages {
+  title?: string;
+  description?: string;
+  navRubrics: RubricInterface[];
+  previewImage?: string;
+  pageUrls: PageUrlsInterface;
+  urlPrefix: string;
+}
+
 const SiteLayout: React.FC<SiteLayoutProviderInterface> = ({
   children,
   navRubrics,
-  title,
-  description,
-  pageUrls,
   sessionCity,
   domainCompany,
-  footerPageGroups,
-  headerPageGroups,
   urlPrefix,
   ...props
 }) => {
@@ -99,16 +100,7 @@ const SiteLayout: React.FC<SiteLayoutProviderInterface> = ({
         domainCompany={domainCompany}
         urlPrefix={urlPrefix}
       >
-        <SiteLayoutConsumer
-          title={title}
-          description={description}
-          pageUrls={pageUrls}
-          footerPageGroups={footerPageGroups}
-          headerPageGroups={headerPageGroups}
-          {...props}
-        >
-          {children}
-        </SiteLayoutConsumer>
+        <SiteLayoutConsumer {...props}>{children}</SiteLayoutConsumer>
       </SiteContextProvider>
     </SiteUserContextProvider>
   );

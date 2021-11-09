@@ -7,7 +7,6 @@ import WpImage from 'components/WpImage';
 import { useSiteContext } from 'context/siteContext';
 import CardSimilarProducts from 'layout/card/CardSimilarProducts';
 import Title from 'components/Title';
-import { ROUTE_CATALOGUE } from 'config/common';
 import useCardData from 'hooks/useCardData';
 import CardControls from 'layout/card/CardControls';
 import CardDynamicContent from 'layout/card/CardDynamicContent';
@@ -237,7 +236,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                                   {isCurrent ? null : (
                                     <Link
                                       className='absolute inset-0 z-30 block text-indent-full overflow-hidden'
-                                      href={`${urlPrefix}${ROUTE_CATALOGUE}/${product.rubricSlug}/product/${shopProduct?.product?.slug}`}
+                                      href={`${urlPrefix}/${shopProduct?.product?.slug}`}
                                     >
                                       {name}
                                     </Link>

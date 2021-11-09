@@ -3,7 +3,6 @@ import ControlButton from 'components/button/ControlButton';
 import Link from 'components/Link/Link';
 import RatingStars from 'components/RatingStars';
 import WpImage from 'components/WpImage';
-import { ROUTE_CATALOGUE } from 'config/common';
 import { useSiteContext } from 'context/siteContext';
 import { useSiteUserContext } from 'context/userSiteUserContext';
 import { ProductSnippetInterface } from 'db/uiInterfaces';
@@ -35,7 +34,6 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
     connections,
     shopsCount,
     mainImage,
-    rubricSlug,
     shopProductsIds,
     snippetTitle,
     name,
@@ -93,7 +91,7 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
             testId={`${testId}-image-row`}
             target={'_blank'}
             className='block absolute z-10 inset-0 text-indent-full'
-            href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
+            href={`${urlPrefix}/${slug}`}
           >
             {snippetTitle}
           </Link>
@@ -120,7 +118,7 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
             testId={`${testId}-name-row`}
             target={'_blank'}
             className='block text-2xl font-medium text-primary-text hover:no-underline hover:text-primary-text'
-            href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
+            href={`${urlPrefix}/${slug}`}
           >
             {snippetTitle}
           </Link>

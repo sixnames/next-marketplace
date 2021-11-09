@@ -80,6 +80,7 @@ interface StickyNavItemInterface extends StylesInterface {
   rubric: RubricInterface;
   linkStyle: React.CSSProperties;
   categories: CategoryInterface[];
+  currentRubricSlug?: string;
 }
 
 const StickyNavItem: React.FC<StickyNavItemInterface> = ({
@@ -89,6 +90,7 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({
   attributeLinkStyle,
   dropdownStyle,
   categories,
+  currentRubricSlug,
 }) => {
   const { asPath } = useRouter();
   const { urlPrefix } = useSiteContext();
@@ -116,7 +118,7 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({
   // Get rubric slug from product card path
   const path = `${urlPrefix}${ROUTE_CATALOGUE}/${slug}`;
   const reg = RegExp(`${path}`);
-  const isCurrent = reg.test(asPath);
+  const isCurrent = reg.test(asPath) || slug === currentRubricSlug;
 
   return (
     <li
@@ -153,7 +155,11 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({
   );
 };
 
-const StickyNav: React.FC = () => {
+export interface StickNavInterface {
+  currentRubricSlug?: string;
+}
+
+const StickyNav: React.FC<StickNavInterface> = ({ currentRubricSlug }) => {
   const { navRubrics } = useSiteContext();
   const { isDark } = useThemeContext();
   const { configs } = useConfigContext();
@@ -215,6 +221,7 @@ const StickyNav: React.FC = () => {
           {navRubrics.map((rubric) => {
             return (
               <StickyNavItem
+                currentRubricSlug={currentRubricSlug}
                 categories={rubric.categories || []}
                 linkStyle={linkStyle}
                 attributeLinkStyle={attributeLinkStyle}

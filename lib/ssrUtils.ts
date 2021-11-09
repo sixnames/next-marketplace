@@ -1016,15 +1016,15 @@ export const getPageInitialData = async ({
   };
 };
 
+export interface NavPropsInterface {
+  pageUrls: PageUrlsInterface;
+}
+
 interface GetPageInitialStateInterface {
   context: GetServerSidePropsContext;
 }
 
-interface ConsoleNavPropsInterface {
-  pageUrls: PageUrlsInterface;
-}
-
-interface GetPageInitialStatePayloadInterface extends PagePropsInterface, ConsoleNavPropsInterface {
+interface GetPageInitialStatePayloadInterface extends PagePropsInterface, NavPropsInterface {
   db: Db;
   path: string;
   host: string;
@@ -1191,7 +1191,7 @@ interface GetConsoleInitialDataInterface {
   context: GetServerSidePropsContext;
 }
 
-interface GetConsoleInitialDataLayoutProps extends ConsoleNavPropsInterface {
+interface GetConsoleInitialDataLayoutProps extends NavPropsInterface {
   pageCompany: CompanyInterface;
   sessionUser: SessionUserPayloadInterface;
 }
@@ -1290,7 +1290,7 @@ interface GetAppInitialDataInterface {
   context: GetServerSidePropsContext;
 }
 
-interface GetAppInitialDataLayoutProps extends ConsoleNavPropsInterface {
+interface GetAppInitialDataLayoutProps extends NavPropsInterface {
   sessionUser: SessionUserPayloadInterface;
 }
 
@@ -1378,7 +1378,7 @@ interface GetCatalogueCreatedPagesInterface {
   sessionCity: string;
 }
 
-async function getCatalogueCreatedPages({
+export async function getCatalogueCreatedPages({
   companySlug,
   sessionCity,
   sessionLocale,
@@ -1475,7 +1475,7 @@ export interface GetSiteInitialDataInterface {
 
 export interface SiteInitialDataPropsInterface
   extends PagePropsInterface,
-    ConsoleNavPropsInterface,
+    NavPropsInterface,
     Omit<SiteLayoutProviderInterface, 'description' | 'title'> {}
 
 export interface SiteInitialDataPayloadInterface {

@@ -25,6 +25,7 @@ export interface SiteLayoutProviderInterface
   navRubrics: RubricInterface[];
   previewImage?: string;
   pageUrls: PageUrlsInterface;
+  urlPrefix: string;
 }
 
 interface SiteLayoutConsumerInterface extends SiteLayoutCatalogueCreatedPages, MetaInterface {}
@@ -87,6 +88,7 @@ const SiteLayout: React.FC<SiteLayoutProviderInterface> = ({
   domainCompany,
   footerPageGroups,
   headerPageGroups,
+  urlPrefix,
   ...props
 }) => {
   return (
@@ -94,7 +96,8 @@ const SiteLayout: React.FC<SiteLayoutProviderInterface> = ({
       <SiteContextProvider
         navRubrics={navRubrics}
         sessionCity={sessionCity}
-        company={domainCompany}
+        domainCompany={domainCompany}
+        urlPrefix={urlPrefix}
       >
         <SiteLayoutConsumer
           title={title}

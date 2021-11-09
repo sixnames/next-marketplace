@@ -40,6 +40,7 @@ interface SiteContextInterface extends SiteContextStateInterface {
   makeAnOrder: (input: MakeAnOrderInputInterface) => void;
   repeatAnOrder: (_id: string) => void;
   clearCart: () => void;
+  urlPrefix: string;
 }
 
 const SiteContext = React.createContext<SiteContextInterface>({
@@ -55,18 +56,21 @@ const SiteContext = React.createContext<SiteContextInterface>({
   makeAnOrder: () => undefined,
   repeatAnOrder: () => undefined,
   clearCart: () => undefined,
+  urlPrefix: '',
 });
 
 interface SiteContextProviderInterface {
   navRubrics: RubricInterface[];
   sessionCity: string;
-  company?: CompanyInterface | null;
+  domainCompany?: CompanyInterface | null;
+  urlPrefix: string;
 }
 
 const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
   children,
   navRubrics,
-  company,
+  domainCompany,
+  urlPrefix,
 }) => {
   const router = useRouter();
   const { showModal, showLoading, hideLoading } = useAppContext();
@@ -84,7 +88,7 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
           loadingCart: true,
         };
       });
-      fetch(`/api/cart/session-cart?${company ? `companyId=${company._id}` : ''}`)
+      fetch(`/api/cart/session-cart?${domainCompany ? `companyId=${domainCompany._id}` : ''}`)
         .then((res) => res.json())
         .then((data) => {
           setState((prevState) => {
@@ -110,7 +114,7 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
           });
         });
     },
-    [company, hideLoading],
+    [domainCompany, hideLoading],
   );
 
   React.useEffect(() => {
@@ -317,6 +321,7 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
       makeAnOrder,
       repeatAnOrder,
       getShopProductInCartCount,
+      urlPrefix,
       ...state,
     };
   }, [
@@ -331,6 +336,7 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
     repeatAnOrder,
     state,
     updateProductInCart,
+    urlPrefix,
   ]);
 
   return <SiteContext.Provider value={initialValue}>{children}</SiteContext.Provider>;

@@ -1029,6 +1029,7 @@ interface GetPageInitialStatePayloadInterface extends PagePropsInterface, Consol
   path: string;
   host: string;
   domain: string | null;
+  urlPrefix: string;
 }
 
 export async function getPageInitialState({
@@ -1063,7 +1064,7 @@ export async function getPageInitialState({
     domainCompany = await companiesCollection.findOne({ domain });
   }
   // For development
-  // company = await companiesCollection.findOne({ slug: 'company_a' });
+  // domainCompany = await companiesCollection.findOne({ slug: 'company_a' });
 
   // Page initial data
   const rawInitialData = await getPageInitialData({
@@ -1125,6 +1126,7 @@ export async function getPageInitialState({
     domain,
     initialData,
     themeStyle,
+    urlPrefix: `/${domainCompany?.slug || DEFAULT_COMPANY_SLUG}`,
     domainCompany: castDbData(domainCompany),
     companySlug: domainCompany ? domainCompany.slug : DEFAULT_COMPANY_SLUG,
     sessionCity,
@@ -1495,6 +1497,7 @@ export async function getSiteInitialData({
     domainCompany,
     companySlug,
     themeStyle,
+    urlPrefix,
   } = await getPageInitialState({ context });
 
   // initial data
@@ -1528,6 +1531,7 @@ export async function getSiteInitialData({
       sessionLocale,
       domainCompany,
       pageUrls,
+      urlPrefix,
     },
   };
 }

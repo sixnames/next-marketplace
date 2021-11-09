@@ -2,15 +2,17 @@ import Button from 'components/button/Button';
 import ErrorBoundaryFallback from 'components/ErrorBoundaryFallback';
 import FixedButtons from 'components/button/FixedButtons';
 import Inner from 'components/Inner';
+import { ISR_FIVE_SECONDS } from 'config/common';
 import { CARD_LAYOUT_HALF_COLUMNS, DEFAULT_LAYOUT } from 'config/constantSelects';
 import { useConfigContext } from 'context/configContext';
 import { useSiteUserContext } from 'context/userSiteUserContext';
 import { InitialCardDataInterface } from 'db/uiInterfaces';
 import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
 import { getCardData } from 'lib/cardUtils';
-import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
+import { getIsrSiteInitialData, IsrContextInterface } from 'lib/isrUtils';
+import { castDbData } from 'lib/ssrUtils';
 import { cityIn } from 'lvovich';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import { GetStaticPathsResult, GetStaticPropsResult, NextPage } from 'next';
 import dynamic from 'next/dynamic';
 import * as React from 'react';
 
@@ -88,31 +90,33 @@ const Card: NextPage<CardInterface> = ({ cardData, domainCompany, ...props }) =>
   );
 };
 
-export async function getServerSideProps(
-  context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<CardInterface>> {
-  const { locale, query } = context;
-  // console.log(' ');
-  // console.log('==================================');
-  // const startTime = new Date().getTime();
+export async function getStaticPaths(): Promise<GetStaticPathsResult> {
+  const paths: any[] = [];
+  return {
+    paths,
+    fallback: 'blocking',
+  };
+}
 
-  const { props } = await getSiteInitialData({
+export async function getStaticProps(
+  context: IsrContextInterface,
+): Promise<GetStaticPropsResult<CardInterface>> {
+  const { locale, params } = context;
+  const { props } = await getIsrSiteInitialData({
     context,
   });
-  // console.log(`After initial data `, new Date().getTime() - startTime);
 
   // card data
   const { useUniqueConstructor } = props.initialData.configs;
   const rawCardData = await getCardData({
     locale: `${locale}`,
     city: props.sessionCity,
-    slug: `${query.card}`,
+    slug: `${params?.card}`,
     companyId: props.domainCompany?._id,
     companySlug: props.companySlug,
     useUniqueConstructor,
   });
   const cardData = castDbData(rawCardData);
-  // console.log(`After card `, new Date().getTime() - startTime);
 
   if (!cardData) {
     return {
@@ -121,6 +125,7 @@ export async function getServerSideProps(
   }
 
   return {
+    revalidate: ISR_FIVE_SECONDS,
     props: {
       ...props,
       cardData,

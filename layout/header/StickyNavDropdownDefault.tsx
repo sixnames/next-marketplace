@@ -16,6 +16,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
   attributeStyle,
   attributeLinkStyle,
   hideDropdown,
+  urlPrefix,
 }) => {
   const { configs } = useConfigContext();
   const { options, name, metric } = attribute;
@@ -44,7 +45,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
                 style={attributeLinkStyle}
                 testId={`header-nav-dropdown-option`}
                 prefetch={false}
-                href={`${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`}
+                href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`}
                 className='flex items-center py-1 text-secondary-text'
               >
                 {option.name}
@@ -59,7 +60,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
             <Link
               onClick={hideDropdown}
               prefetch={false}
-              href={`${ROUTE_CATALOGUE}/${rubricSlug}`}
+              href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}`}
               className='flex items-center min-h-[var(--minLinkHeight)] text-secondary-theme'
             >
               Показать все
@@ -78,6 +79,7 @@ const StickyNavDropdownDefault: React.FC<StickyNavDropdownInterface> = ({
   dropdownStyle,
   rubricSlug,
   hideDropdown,
+  urlPrefix,
 }) => {
   if (!attributes || attributes.length < 1) {
     return null;
@@ -90,6 +92,7 @@ const StickyNavDropdownDefault: React.FC<StickyNavDropdownInterface> = ({
           {(attributes || []).map((attribute) => {
             return (
               <StickyNavAttribute
+                urlPrefix={urlPrefix}
                 hideDropdown={hideDropdown}
                 key={`${attribute._id}`}
                 attribute={attribute}

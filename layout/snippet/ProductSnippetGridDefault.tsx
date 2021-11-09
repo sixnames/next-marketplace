@@ -21,7 +21,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
   gridCatalogueColumns,
 }) => {
   const sessionUser = useSiteUserContext();
-  const { addShoplessProductToCart, addProductToCart } = useSiteContext();
+  const { addShoplessProductToCart, addProductToCart, urlPrefix } = useSiteContext();
   const { rubricSlug, product } = shopProduct;
   if (!product) {
     return null;
@@ -100,7 +100,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
             testId={`${testId}-image-grid`}
             target={'_blank'}
             className='block absolute z-10 inset-0 text-indent-full'
-            href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
+            href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
           >
             {snippetTitle}
           </Link>
@@ -114,7 +114,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
                 testId={`${testId}-name-grid`}
                 target={'_blank'}
                 className='text-lg sm:text-xl font-medium block text-primary-text hover:no-underline hover:text-primary-text'
-                href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
+                href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
               >
                 {snippetTitle}
               </Link>

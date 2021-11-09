@@ -21,6 +21,7 @@ import { getDomain, getSubdomain } from 'tldts';
 
 type ParamsInterface = {
   companySlug: string;
+  [key: string]: any;
 };
 export type IsrContextInterface = GetStaticPropsContext<ParamsInterface>;
 

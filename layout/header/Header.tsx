@@ -193,7 +193,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
   const { locale } = useLocaleContext();
   const { configs } = useConfigContext();
   const { query, asPath } = useRouter();
-  const { navRubrics } = useSiteContext();
+  const { navRubrics, urlPrefix } = useSiteContext();
   const { rubricSlug } = query;
   if (!isBurgerDropdownOpen) {
     return null;
@@ -225,7 +225,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
               <li className='relative' key={rubric.slug}>
                 <Link
                   prefetch={false}
-                  href={`${ROUTE_CATALOGUE}/${rubric.slug}`}
+                  href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubric.slug}`}
                   onClick={hideBurgerDropdown}
                   testId={`main-rubric-${rubric.name}`}
                   className={`flex items-center justify-between min-h-[var(--minLinkHeight)] text-xl font-medium flex-grow ${
@@ -248,7 +248,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                               return (
                                 <li key={`${category._id}`}>
                                   <Link
-                                    href={`${ROUTE_CATALOGUE}/${rubricSlug}/${FILTER_CATEGORY_KEY}${FILTER_SEPARATOR}${category.slug}`}
+                                    href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}/${FILTER_CATEGORY_KEY}${FILTER_SEPARATOR}${category.slug}`}
                                     onClick={hideBurgerDropdown}
                                     className={`flex items-center h-10 ${
                                       isCurrent ? 'text-theme' : 'text-primary-text'
@@ -275,7 +275,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                                 return (
                                   <li key={`${option._id}`}>
                                     <Link
-                                      href={`${ROUTE_CATALOGUE}/${rubric.slug}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`}
+                                      href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubric.slug}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`}
                                       onClick={hideBurgerDropdown}
                                       className={`flex items-center h-10 ${
                                         isCurrent ? 'text-theme' : 'text-primary-text'
@@ -376,10 +376,11 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
   const { isDark } = useThemeContext();
   const { configs } = useConfigContext();
   const { locale } = useLocaleContext();
+  const { logoSlug } = useThemeContext();
+  const { urlPrefix } = useSiteContext();
   const [isBurgerDropdownOpen, setIsBurgerDropdownOpen] = React.useState<boolean>(false);
   const [isSearchOpen, setIsSearchOpen] = React.useState<boolean>(false);
   const headerRef = React.useRef<HTMLElement | null>(null);
-  const { logoSlug } = useThemeContext();
 
   const siteLogoSrc = get(configs, logoSlug) || IMAGE_FALLBACK;
   const configLogoWidth = configs.siteLogoWidth || '10rem';
@@ -516,7 +517,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, company }) => {
             </div>
 
             <Link
-              href={`/`}
+              href={urlPrefix}
               className='flex items-center flex-shrink-0 w-[var(--logoMobileWidth)] md:w-[var(--logoWidth)] max-h-16 lg:max-h-24'
               aria-label={'Главная страница'}
             >

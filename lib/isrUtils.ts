@@ -68,12 +68,9 @@ export async function getPageInitialState({
   const sessionCity = currentCity?.slug || DEFAULT_CITY;
 
   // Domain company
-  let domainCompany: CompanyInterface | null | undefined = null;
-  if (domain && process.env.DEFAULT_DOMAIN && domain !== process.env.DEFAULT_DOMAIN) {
-    domainCompany = await companiesCollection.findOne({ slug: `${params?.companySlug}` });
-  }
+  const domainCompany = await companiesCollection.findOne({ slug: `${params?.companySlug}` });
   // For development
-  // domainCompany = await companiesCollection.findOne({ slug: 'company_a' });
+  // const domainCompany = await companiesCollection.findOne({ slug: `${params?.companySlug}` });
 
   // Page initial data
   const rawInitialData = await getPageInitialData({

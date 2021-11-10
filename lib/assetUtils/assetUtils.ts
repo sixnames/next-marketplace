@@ -119,42 +119,52 @@ export async function storeUploads({
 }
 
 export const deleteUpload = async (filePath: string): Promise<boolean> => {
-  const minFilesCount = 2;
-  if (filePath === IMAGE_FALLBACK || filePath === IMAGE_FALLBACK_BOTTLE) {
-    return true;
-  }
-  const pathParts = filePath.split('/');
-  const pathWithoutFile = pathParts.slice(0, pathParts.length - 1);
-  const dirPath = pathWithoutFile.join('/');
-  const deleteDirPath = path.join(process.cwd(), dirPath);
-  const dirFilesList = fs.readdirSync(deleteDirPath);
+  try {
+    const minFilesCount = 2;
+    if (filePath === IMAGE_FALLBACK || filePath === IMAGE_FALLBACK_BOTTLE) {
+      return true;
+    }
+    const pathParts = filePath.split('/');
+    const pathWithoutFile = pathParts.slice(0, pathParts.length - 1);
+    const dirPath = pathWithoutFile.join('/');
+    const deleteDirPath = path.join(process.cwd(), dirPath);
+    const dirFilesList = fs.readdirSync(deleteDirPath);
 
-  // remove file and parent directory
-  // if there is one file in directory
-  if (dirFilesList.length < minFilesCount) {
+    // remove file and parent directory
+    // if there is one file in directory
+    if (dirFilesList.length < minFilesCount) {
+      return new Promise((resolve) => {
+        rimraf(deleteDirPath, (e: any) => {
+          if (e) {
+            resolve(false);
+          } else {
+            resolve(true);
+          }
+        });
+      });
+    }
+
+    // remove file
     return new Promise((resolve) => {
-      rimraf(deleteDirPath, (e: any) => {
+      const fileFinalPath = path.join(process.cwd(), filePath);
+      const exists = fs.existsSync(fileFinalPath);
+      if (!exists) {
+        resolve(true);
+        return;
+      }
+      fs.unlink(fileFinalPath, (e) => {
         if (e) {
+          console.log('deleteUpload util error ', e);
           resolve(false);
         } else {
           resolve(true);
         }
       });
     });
+  } catch (e) {
+    console.log('deleteUpload util catch error ', e);
+    return true;
   }
-
-  // remove file
-  return new Promise((resolve) => {
-    const fileFinalPath = path.join(process.cwd(), filePath);
-    fs.unlink(fileFinalPath, (e) => {
-      if (e) {
-        console.log(e);
-        resolve(false);
-      } else {
-        resolve(true);
-      }
-    });
-  });
 };
 
 export interface ReorderAssetsInterface {

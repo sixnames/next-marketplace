@@ -940,6 +940,7 @@ export const getCatalogueData = async ({
       products: [],
       catalogueTitle: 'Товары не найдены',
       catalogueFilterLayout: DEFAULT_LAYOUT,
+      totalPages: 0,
       totalProducts: 0,
       attributes: [],
       selectedAttributes: [],
@@ -1970,6 +1971,8 @@ export const getCatalogueData = async ({
     );
 
     // console.log(`Catalogue data >>>>>>>>>>>>>>>> `, new Date().getTime() - timeStart);
+    const totalPages = Math.ceil(totalProducts / limit);
+
     return {
       // rubric
       _id: rubric._id,
@@ -1991,6 +1994,7 @@ export const getCatalogueData = async ({
       gridCatalogueColumns,
 
       // filter
+      totalPages,
       totalProducts: noNaN(totalProducts),
       attributes: castedAttributes,
       selectedAttributes: finalSelectedAttributes,

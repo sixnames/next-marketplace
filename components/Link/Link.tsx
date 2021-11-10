@@ -11,7 +11,7 @@ export interface LinkInterface
   testId?: string;
   exact?: boolean;
   isTab?: boolean;
-  onClick?: () => void;
+  onClick?: React.MouseEventHandler<HTMLAnchorElement>;
   href: string;
   ariaLabel?: string;
 }
@@ -52,7 +52,7 @@ const Link: React.FC<LinkInterface> = ({
   }
 
   return (
-    <NextLink href={href} replace={replace} prefetch={prefetch} shallow={shallow}>
+    <NextLink href={href} replace={replace} prefetch={prefetch || false} shallow={shallow}>
       <a
         aria-label={ariaLabel}
         onClick={onClick}

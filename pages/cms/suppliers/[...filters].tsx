@@ -5,7 +5,7 @@ import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearc
 import Inner from 'components/Inner';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { SupplierModalInterface } from 'components/Modal/SupplierModal';
-import Pager, { useNavigateToPageHandler } from 'components/Pager';
+import Pager from 'components/Pager';
 import Table, { TableColumn } from 'components/Table';
 import Title from 'components/Title';
 import {
@@ -39,7 +39,6 @@ type SuppliersConsumerInterface = AppPaginationInterface<SupplierInterface>;
 const pageTitle = 'Поставщики';
 
 const SuppliersConsumer: React.FC<SuppliersConsumerInterface> = ({ docs, page, totalPages }) => {
-  const setPageHandler = useNavigateToPageHandler();
   const { onCompleteCallback, onErrorCallback, showModal, showLoading } = useMutationCallbacks({
     reload: true,
   });
@@ -146,13 +145,7 @@ const SuppliersConsumer: React.FC<SuppliersConsumerInterface> = ({ docs, page, t
             />
           </div>
 
-          <Pager
-            page={page}
-            totalPages={totalPages}
-            setPage={(newPage) => {
-              setPageHandler(newPage);
-            }}
-          />
+          <Pager page={page} totalPages={totalPages} />
 
           <FixedButtons>
             <Button

@@ -6,7 +6,7 @@ import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { CreateShopModalInterface } from 'components/Modal/CreateShopModal';
-import Pager, { useNavigateToPageHandler } from 'components/Pager';
+import Pager from 'components/Pager';
 import Spinner from 'components/Spinner';
 import Table, { TableColumn } from 'components/Table';
 import TableRowImage from 'components/TableRowImage';
@@ -55,7 +55,7 @@ const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
   docs,
 }) => {
   const isPageLoading = usePageLoadingState();
-  const setPageHandler = useNavigateToPageHandler();
+
   const router = useRouter();
   const { showModal, showLoading, onCompleteCallback, onErrorCallback, showErrorNotification } =
     useMutationCallbacks({
@@ -197,13 +197,7 @@ const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
           </FixedButtons>
         </div>
 
-        <Pager
-          page={page}
-          totalPages={totalPages}
-          setPage={(newPage) => {
-            setPageHandler(newPage);
-          }}
-        />
+        <Pager page={page} totalPages={totalPages} />
       </Inner>
     </CmsCompanyLayout>
   );

@@ -5,7 +5,7 @@ import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearc
 import Inner from 'components/Inner';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { ManufacturerModalInterface } from 'components/Modal/ManufacturerModal';
-import Pager, { useNavigateToPageHandler } from 'components/Pager';
+import Pager from 'components/Pager';
 import Table, { TableColumn } from 'components/Table';
 import Title from 'components/Title';
 import {
@@ -43,7 +43,6 @@ const ManufacturersConsumer: React.FC<ManufacturersConsumerInterface> = ({
   page,
   totalPages,
 }) => {
-  const setPageHandler = useNavigateToPageHandler();
   const { onCompleteCallback, onErrorCallback, showModal, showLoading } = useMutationCallbacks({
     reload: true,
   });
@@ -150,13 +149,7 @@ const ManufacturersConsumer: React.FC<ManufacturersConsumerInterface> = ({
             />
           </div>
 
-          <Pager
-            page={page}
-            totalPages={totalPages}
-            setPage={(newPage) => {
-              setPageHandler(newPage);
-            }}
-          />
+          <Pager page={page} totalPages={totalPages} />
 
           <FixedButtons>
             <Button

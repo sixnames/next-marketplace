@@ -3,7 +3,7 @@ import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
 import LinkEmail from 'components/Link/LinkEmail';
 import LinkPhone from 'components/Link/LinkPhone';
-import Pager, { useNavigateToPageHandler } from 'components/Pager';
+import Pager from 'components/Pager';
 import Table, { TableColumn } from 'components/Table';
 import Title from 'components/Title';
 import { ROUTE_CONSOLE } from 'config/common';
@@ -26,7 +26,6 @@ interface OrdersRouteInterface {
 }
 
 const OrdersRoute: React.FC<OrdersRouteInterface> = ({ data }) => {
-  const setPageHandler = useNavigateToPageHandler();
   const router = useRouter();
 
   const columns: TableColumn<OrderInterface>[] = [
@@ -108,7 +107,7 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ data }) => {
             }}
           />
         </div>
-        <Pager page={data.page} setPage={setPageHandler} totalPages={data.totalPages} />
+        <Pager page={data.page} totalPages={data.totalPages} />
       </Inner>
     </AppContentWrapper>
   );

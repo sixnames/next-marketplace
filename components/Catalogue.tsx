@@ -392,7 +392,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
 
         {state.textBottom ? (
           <section className={`mt-16`}>
-            <h2 className='text-2xl font-bold mb-4'>{`${catalogueData.catalogueTitle} ${subHeadText}`}</h2>
+            <Title size={'small'}>{`${catalogueData.catalogueTitle} ${subHeadText}`}</Title>
             <div className={seoTextClassName}>{state.textBottom}</div>
 
             {sessionUser?.showAdminUiInCatalogue && state.seoBottom ? (

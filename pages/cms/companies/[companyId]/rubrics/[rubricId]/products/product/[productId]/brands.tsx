@@ -73,7 +73,12 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
   };
 
   return (
-    <CmsProductLayout product={product} breadcrumbs={breadcrumbs} basePath={routeBasePath}>
+    <CmsProductLayout
+      companySlug={pageCompany.slug}
+      product={product}
+      breadcrumbs={breadcrumbs}
+      basePath={routeBasePath}
+    >
       <ConsoleRubricProductBrands
         product={product}
         brand={brand}

@@ -18,7 +18,7 @@ import {
   shopProductFieldsPipeline,
   shopProductSupplierProductsPipeline,
 } from 'db/dao/constantPipelines';
-import { Maybe, ObjectIdModel } from 'db/dbModels';
+import { Maybe, ObjectIdModel, TranslationModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
   BarcodeDoublesInterface,
@@ -36,6 +36,7 @@ import { getFieldStringLocale } from 'lib/i18n';
 import { getTreeFromList } from 'lib/optionsUtils';
 import { generateCardTitle, generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
+import trim from 'trim';
 
 interface GetCmsProductInterface {
   productId: string;
@@ -681,4 +682,23 @@ export async function checkShopProductBarcodeIntersects({
   }
 
   return barcodeDoubles;
+}
+
+interface TrimProductNameInterface {
+  originalName?: string | null;
+  nameI18n?: TranslationModel | null;
+}
+export function trimProductName({ originalName, nameI18n }: TrimProductNameInterface) {
+  const translation = nameI18n || {};
+  return {
+    originalName: originalName ? trim(originalName) : '',
+    nameI18n: Object.keys(translation).reduce((acc: TranslationModel, key) => {
+      const value = translation[key];
+      if (!value) {
+        return acc;
+      }
+      acc[key] = trim(value);
+      return acc;
+    }, {}),
+  };
 }

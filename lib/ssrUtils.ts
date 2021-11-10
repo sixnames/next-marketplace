@@ -15,8 +15,6 @@ import {
   FILTER_SEPARATOR,
   CONFIG_GROUP_PROJECT,
   COOKIE_CURRENCY,
-  IMAGE_FALLBACK,
-  IMAGE_FALLBACK_BOTTLE,
 } from 'config/common';
 import {
   COL_ATTRIBUTES,
@@ -33,6 +31,7 @@ import {
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
+import { noImageStage } from 'db/dao/constantPipelines';
 import { getPageSessionUser, SessionUserPayloadInterface } from 'db/dao/user/getPageSessionUser';
 import {
   AttributeModel,
@@ -179,19 +178,7 @@ export const getCatalogueNavRubrics = async ({
         $match: {
           ...companyRubricsMatch,
           citySlug: city,
-          $or: [
-            {
-              mainImage: {
-                $ne: IMAGE_FALLBACK,
-              },
-            },
-            {
-              mainImage: null,
-            },
-            {
-              mainImage: IMAGE_FALLBACK_BOTTLE,
-            },
-          ],
+          ...noImageStage,
         },
       },
       {

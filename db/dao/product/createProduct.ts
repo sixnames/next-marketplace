@@ -20,7 +20,7 @@ import { DaoPropsInterface } from 'db/uiInterfaces';
 import { saveAlgoliaObjects } from 'lib/algoliaUtils';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getNextItemId } from 'lib/itemIdUtils';
-import { checkBarcodeIntersects } from 'lib/productUtils';
+import { checkBarcodeIntersects, trimProductName } from 'lib/productUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { checkProductDescriptionUniqueness } from 'lib/textUniquenessUtils';
 import { ObjectId } from 'mongodb';
@@ -112,12 +112,18 @@ export async function createProduct({
       // create product
       const itemId = await getNextItemId(COL_PRODUCTS);
       const productId = new ObjectId();
+      const { originalName, nameI18n } = trimProductName({
+        nameI18n: values.nameI18n,
+        originalName: values.originalName,
+      });
       const createdProductResult = await productsCollection.insertOne({
         ...values,
         _id: productId,
         itemId,
         mainImage: IMAGE_FALLBACK,
         slug: itemId,
+        nameI18n,
+        originalName,
         rubricId: rubric._id,
         rubricSlug: rubric.slug,
         active: false,

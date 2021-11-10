@@ -16,7 +16,7 @@ import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import { getShortName } from 'lib/nameUtils';
 import Head from 'next/head';
-import Link from 'next/link';
+import Link from 'components/Link/Link';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
@@ -66,9 +66,7 @@ const CompaniesConsumer: React.FC<CompaniesConsumerInterface> = ({ companies }) 
       accessor: 'itemId',
       headTitle: 'ID',
       render: ({ cellData, dataItem }) => (
-        <Link href={`${ROUTE_CMS}/companies/${dataItem._id}`}>
-          <a>{cellData}</a>
-        </Link>
+        <Link href={`${ROUTE_CMS}/companies/${dataItem._id}`}>{cellData}</Link>
       ),
     },
     {

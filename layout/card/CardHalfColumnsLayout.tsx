@@ -128,7 +128,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                           target={'_blank'}
                           href={brand.mainUrl}
                           className='block absolute z-10 inset-0 text-indent-full overflow-hidden'
-                          rel='noreferrer'
+                          rel={'noreferrer nofollow'}
                         >
                           {brand.name}
                         </a>
@@ -306,7 +306,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                               className='text-primary-text'
                               target={'_blank'}
                               href={brand.mainUrl}
-                              rel='noreferrer'
+                              rel={'noreferrer nofollow'}
                             >
                               {brand.mainUrl}
                             </a>
@@ -342,7 +342,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                               className='text-primary-text'
                               target={'_blank'}
                               href={manufacturer.mainUrl}
-                              rel='noreferrer'
+                              rel={'noreferrer nofollow'}
                             >
                               {manufacturer.mainUrl}
                             </a>
@@ -382,6 +382,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
 
           {/*text features*/}
           <CardTextFeatures
+            cardTitle={cardTitle}
             textFeatures={textFeatures}
             cardDescription={cardDescription}
             className='mb-28'

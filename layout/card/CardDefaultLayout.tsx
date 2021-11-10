@@ -295,6 +295,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
 
               {/*text features*/}
               <CardTextFeatures
+                cardTitle={cardTitle}
                 cardDescription={cardDescription}
                 textFeatures={textFeatures}
                 className='md:col-span-5'
@@ -324,7 +325,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                               className='text-primary-text'
                               target={'_blank'}
                               href={brand.mainUrl}
-                              rel='noreferrer'
+                              rel={'noreferrer nofollow'}
                             >
                               {brand.mainUrl}
                             </a>
@@ -360,7 +361,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                               className='text-primary-text'
                               target={'_blank'}
                               href={manufacturer.mainUrl}
-                              rel='noreferrer'
+                              rel={'noreferrer nofollow'}
                             >
                               {manufacturer.mainUrl}
                             </a>

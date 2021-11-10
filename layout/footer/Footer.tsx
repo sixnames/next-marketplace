@@ -175,7 +175,7 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
 
         <div className='text-center text-sm text-secondary-text'>
           {'Powered by '}
-          <a href={'https://supercharger.site'} target={'_blank'} rel='noreferrer'>
+          <a href={'https://supercharger.site'} target={'_blank'} rel={'noreferrer nofollow'}>
             Supercharger
           </a>
         </div>

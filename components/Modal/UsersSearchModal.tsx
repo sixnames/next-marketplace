@@ -1,10 +1,10 @@
+import Link from 'components/Link/Link';
 import LinkEmail from 'components/Link/LinkEmail';
 import LinkPhone from 'components/Link/LinkPhone';
 import Pager from 'components/Pager';
 import { DEFAULT_PAGE, REQUEST_METHOD_POST, ROUTE_CMS } from 'config/common';
 import { UsersPaginationPayloadModel } from 'db/dbModels';
 import { UserInterface } from 'db/uiInterfaces';
-import Link from 'next/link';
 import * as React from 'react';
 import Spinner from 'components/Spinner';
 import RequestError from 'components/RequestError';
@@ -62,9 +62,7 @@ const UsersSearchModal: React.FC<UsersSearchModalInterface> = ({
       accessor: 'itemId',
       headTitle: 'ID',
       render: ({ cellData, dataItem }) => (
-        <Link href={`${ROUTE_CMS}/users/user/${dataItem._id}`}>
-          <a>{cellData}</a>
-        </Link>
+        <Link href={`${ROUTE_CMS}/users/user/${dataItem._id}`}>{cellData}</Link>
       ),
     },
     {

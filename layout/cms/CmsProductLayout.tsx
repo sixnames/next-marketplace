@@ -1,6 +1,7 @@
+import Button from 'components/button/Button';
 import Inner from 'components/Inner';
 import Title from 'components/Title';
-import { ROUTE_CMS } from 'config/common';
+import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
 import { ProductInterface } from 'db/uiInterfaces';
 import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import AppSubNav from 'layout/AppSubNav';
@@ -19,6 +20,7 @@ interface CmsProductLayoutInterface {
   hideBrandPath?: boolean;
   hideAssetsPath?: boolean;
   hideCardConstructor?: boolean;
+  companySlug?: string;
 }
 
 const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({
@@ -32,6 +34,7 @@ const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({
   hideCardConstructor,
   children,
   basePath,
+  companySlug,
 }) => {
   const { query } = useRouter();
   const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
@@ -102,6 +105,7 @@ const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({
     hideAssetsPath,
     hideAttributesPath,
     hideBrandPath,
+    hideCardConstructor,
     hideCategoriesPath,
     hideConnectionsPath,
     product._id,
@@ -117,6 +121,17 @@ const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({
         <Title subtitle={`Арт. ${product.itemId}`} testId={`${product.originalName}-product-title`}>
           {product.cardTitle}
         </Title>
+        <div className='mb-4'>
+          <Button
+            onClick={() => {
+              window.open(`/${companySlug || DEFAULT_COMPANY_SLUG}/${product.slug}`, '_blank');
+            }}
+            theme={'secondary'}
+            size={'small'}
+          >
+            Карточка товара
+          </Button>
+        </div>
       </Inner>
       <AppSubNav navConfig={navConfig} />
       {children}

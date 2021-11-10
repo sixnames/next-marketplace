@@ -12,6 +12,7 @@ import {
   FILTER_BRAND_KEY,
   FILTER_BRAND_COLLECTION_KEY,
   SORT_DESC,
+  GENDER_PLURAL,
 } from 'config/common';
 import { DEFAULT_LAYOUT } from 'config/constantSelects';
 import { getConstantTranslation } from 'config/constantTranslations';
@@ -873,7 +874,13 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
     const attributesBreadcrumbs: ProductCardBreadcrumbModel[] = [];
 
     // category breadcrumbs
-    const breadcrumbCategories = cardCategories.reduce(
+    const cardCategoriesTree = getTreeFromList({
+      list: categories,
+      childrenFieldName: 'categories',
+      locale,
+      gender: GENDER_PLURAL,
+    });
+    const breadcrumbCategories = cardCategoriesTree.reduce(
       (acc: ProductCardBreadcrumbModel[], category) => {
         const categoryList = castCategoriesForBreadcrumbs({
           category,
@@ -934,7 +941,7 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
       const metricValue = attribute.metric
         ? ` ${getFieldStringLocale(attribute.metric.nameI18n, locale)}`
         : '';
-      const variant = get(firstSelectedOption, `variants.${restProduct.gender}.${locale}`);
+      const variant = get(firstSelectedOption, `variants.${GENDER_PLURAL}.${locale}`);
       const name = getFieldStringLocale(firstSelectedOption.nameI18n, locale);
       let optionValue = name;
       if (variant) {

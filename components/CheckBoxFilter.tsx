@@ -169,7 +169,7 @@ const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
                 notShowAsAlphabet: attribute.notShowAsAlphabet,
                 optionVariant: attribute.slug === FILTER_CATEGORY_KEY ? 'radio' : 'checkbox',
                 title: attribute.name,
-                basePath,
+                basePath: `${urlPrefix}${basePath}`,
                 options: attribute.options,
                 excludedParams,
               },

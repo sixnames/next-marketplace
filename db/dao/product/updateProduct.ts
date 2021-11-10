@@ -10,7 +10,7 @@ import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
 import { saveAlgoliaObjects } from 'lib/algoliaUtils';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { checkBarcodeIntersects } from 'lib/productUtils';
+import { checkBarcodeIntersects, trimProductName } from 'lib/productUtils';
 import {
   getOperationPermission,
   getRequestParams,
@@ -127,6 +127,10 @@ export async function updateProduct({
       });
 
       // update product
+      const { originalName, nameI18n } = trimProductName({
+        nameI18n: values.nameI18n,
+        originalName: values.originalName,
+      });
       const updatedProductResult = await productsCollection.findOneAndUpdate(
         {
           _id: product._id,
@@ -134,7 +138,8 @@ export async function updateProduct({
         {
           $set: {
             ...values,
-            originalName: values.originalName || '',
+            nameI18n,
+            originalName,
             updatedAt: new Date(),
           },
         },

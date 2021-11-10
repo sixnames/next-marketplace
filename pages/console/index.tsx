@@ -5,9 +5,9 @@ import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { getConsoleInitialData, GetConsoleInitialDataPropsInterface } from 'lib/ssrUtils';
+import { GetConsoleMainPageDataPropsInterface, getConsoleMainPageData } from 'lib/ssrUtils';
 
-const App: NextPage<GetConsoleInitialDataPropsInterface> = ({ layoutProps }) => {
+const App: NextPage<GetConsoleMainPageDataPropsInterface> = ({ layoutProps }) => {
   const router = useRouter();
 
   return (
@@ -46,8 +46,8 @@ const App: NextPage<GetConsoleInitialDataPropsInterface> = ({ layoutProps }) => 
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<any>> => {
-  const { props } = await getConsoleInitialData({ context });
+): Promise<GetServerSidePropsResult<GetConsoleMainPageDataPropsInterface>> => {
+  const { props } = await getConsoleMainPageData({ context });
   if (!props?.layoutProps.sessionUser) {
     return {
       redirect: {

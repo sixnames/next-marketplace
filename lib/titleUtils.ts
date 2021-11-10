@@ -20,6 +20,7 @@ import {
 } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { get } from 'lodash';
+import trim from 'trim';
 
 interface TitleOptionInterface
   extends Pick<OptionInterface, 'nameI18n' | 'variants'>,
@@ -247,7 +248,7 @@ export function generateTitle({
   // cast title parts to string
   const beginOfTitleString = filteredBeginOfTitleArray.join(', ');
   const endOfTitleString = filteredEndOfTitleArray.join(', ');
-  const titleString = `${beginOfTitleString} ${finalKeyword} ${endOfTitleString}`;
+  const titleString = trim(`${beginOfTitleString} ${finalKeyword} ${endOfTitleString}`);
   const titleWordsArray = titleString.split(' ');
   const firstWord = titleWordsArray[0];
 

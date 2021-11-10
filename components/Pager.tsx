@@ -6,7 +6,7 @@ import Icon from 'components/Icon';
 import { usePagination } from '@material-ui/lab/Pagination';
 
 const minimalPagesCount = 2;
-const siblingCount = 5;
+const siblingCount = 7;
 const buttonClassName =
   'flex items-center justify-center w-10 h-10 text-primary-text hover:text-theme hover:no-underline';
 const iconClassName = 'w-4 h-4';

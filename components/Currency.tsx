@@ -27,20 +27,22 @@ const Currency: React.FC<CurrencyInterface> = ({
   }
 
   return (
-    <span className={`inline-flex whitespace-nowrap items-baseline ${className ? className : ''}`}>
+    <span
+      className={`inline-flex whitespace-nowrap items-baseline gap-1 ${className ? className : ''}`}
+    >
       <NumberFormat
         value={finalValue}
         thousandSeparator={true}
         displayType={'text'}
         renderText={(value: string) => {
           return (
-            <div
+            <span
               data-cy={testId}
               data-price-value={value}
-              className={`mr-[0.35rem] ${valueClassName ? valueClassName : ''}`}
+              className={`${valueClassName ? valueClassName : ''}`}
             >
               {value.replace(/,/g, ' ')}
-            </div>
+            </span>
           );
         }}
       />

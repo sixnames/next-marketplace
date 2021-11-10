@@ -455,15 +455,15 @@ const Catalogue: React.FC<CatalogueInterface> = ({
   const siteName = configs.siteName;
   const prefixConfig = configs.catalogueMetaPrefix;
   const prefix = prefixConfig ? ` ${prefixConfig}` : '';
-  const cityDescription = currentCity ? ` в ${cityIn(`${currentCity.name}`)}` : '';
+  const cityDescription = currentCity ? `в ${cityIn(`${currentCity.name}`)}` : '';
 
   return (
     <SiteLayout
       urlPrefix={urlPrefix}
       currentCity={currentCity}
       domainCompany={domainCompany}
-      title={`${catalogueData.catalogueTitle}${prefix} ${siteName}${cityDescription}`}
-      description={`${catalogueData.catalogueTitle} ${prefix} ${siteName}${cityDescription}`}
+      title={`${catalogueData.catalogueTitle}${prefix} ${cityDescription} ${siteName}`}
+      description={`${catalogueData.catalogueTitle} ${prefix} ${cityDescription} ${siteName}`}
       {...props}
     >
       <CatalogueConsumer

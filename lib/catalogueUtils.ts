@@ -707,7 +707,7 @@ export function castCatalogueFilters({
     minPrice && maxPrice
       ? {
           price: {
-            $gt: minPrice,
+            $gte: minPrice,
             $lte: maxPrice,
           },
         }
@@ -1972,7 +1972,6 @@ export const getCatalogueData = async ({
 
     // console.log(`Catalogue data >>>>>>>>>>>>>>>> `, new Date().getTime() - timeStart);
     const totalPages = Math.ceil(totalProducts / limit);
-
     return {
       // rubric
       _id: rubric._id,

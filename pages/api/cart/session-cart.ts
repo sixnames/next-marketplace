@@ -282,8 +282,6 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
       : [];
     let cart = cartAggregation[0];
 
-    // console.log(cart);
-
     // If cart not exist
     if (!cartId || !cart) {
       const newCartResult = await cartsCollection.insertOne({
@@ -355,8 +353,6 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
           const sortedShopProductsByPrice = product.shopProducts.sort((a, b) => {
             return noNaN(b?.price) - noNaN(a?.price);
           });
-
-          console.log(product);
 
           const minPriceShopProduct =
             sortedShopProductsByPrice[sortedShopProductsByPrice.length - 1];
@@ -460,8 +456,6 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
       },
       [],
     );
-
-    // console.log(JSON.stringify(cartProducts, null, 2));
 
     res.statusCode = 200;
     res.setHeader('Content-Type', 'application/json');

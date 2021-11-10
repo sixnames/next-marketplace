@@ -295,6 +295,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
 
               {/*text features*/}
               <CardTextFeatures
+                cardTitle={cardTitle}
                 cardDescription={cardDescription}
                 textFeatures={textFeatures}
                 className='md:col-span-5'

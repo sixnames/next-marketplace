@@ -8,6 +8,7 @@ interface CardTextFeaturesInterface {
   textFeatures: ProductAttributeInterface[];
   className?: string;
   cardDescription?: ProductCardDescriptionInterface | null;
+  cardTitle: string;
 }
 
 const CardTextFeatures: React.FC<CardTextFeaturesInterface> = ({
@@ -15,6 +16,7 @@ const CardTextFeatures: React.FC<CardTextFeaturesInterface> = ({
   children,
   cardDescription,
   className,
+  cardTitle,
 }) => {
   const sessionUser = useSiteUserContext();
   if (textFeatures.length < 1 && !cardDescription) {
@@ -25,7 +27,7 @@ const CardTextFeatures: React.FC<CardTextFeaturesInterface> = ({
     <div className={className}>
       {cardDescription && cardDescription.text ? (
         <section className='mb-8'>
-          <h2 className='text-2xl mb-4 font-medium'>Описание</h2>
+          <h2 className='text-2xl mb-4 font-medium'>{`Описание ${cardTitle}`}</h2>
           <div className='prose max-w-full'>
             <p>{cardDescription.text}</p>
           </div>

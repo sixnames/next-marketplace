@@ -382,6 +382,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
 
           {/*text features*/}
           <CardTextFeatures
+            cardTitle={cardTitle}
             textFeatures={textFeatures}
             cardDescription={cardDescription}
             className='mb-28'

@@ -100,11 +100,11 @@
     height: auto;
     padding: 0;
     margin: 0;
-    overflow: visible;
+    overflow: auto;
     clip: auto;
     white-space: normal;
     opacity: 1;
-    transition: opacity 0.1s linear;
+    transition: all 0s 0.5s linear, opacity 0.15s 0.5s linear;
   }
 
   /* Snippets */

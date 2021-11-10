@@ -13,9 +13,6 @@ import { useSiteContext } from 'context/siteContext';
 import { useRouter } from 'next/router';
 import Link from 'components/Link/Link';
 
-export const dropdownClassName =
-  'wp-nav-dropdown-hidden group-hover:wp-nav-dropdown-visible bg-secondary shadow-lg';
-
 interface AttributeStylesInterface {
   attributeLinkStyle: React.CSSProperties;
   attributeStyle: React.CSSProperties;
@@ -65,15 +62,24 @@ const StickyNavDropdown: React.FC<StickyNavDropdownGlobalInterface> = ({
   catalogueNavLayout,
   ...props
 }) => {
+  let dropDownLayout = <StickyNavDropdownDefault {...props} />;
   if (catalogueNavLayout === NAV_DROPDOWN_LAYOUT_OPTIONS_ONLY) {
-    return <StickyNavDropdownOptionsOnly {...props} />;
+    dropDownLayout = <StickyNavDropdownOptionsOnly {...props} />;
   }
 
   if (catalogueNavLayout === NAV_DROPDOWN_LAYOUT_WITH_CATEGORIES) {
-    return <StickyNavDropdownWithCategories {...props} />;
+    dropDownLayout = <StickyNavDropdownWithCategories {...props} />;
   }
 
-  return <StickyNavDropdownDefault {...props} />;
+  return (
+    <div
+      style={props.dropdownStyle}
+      data-cy={'header-nav-dropdown'}
+      className='wp-nav-dropdown-hidden group-hover:wp-nav-dropdown-visible bg-secondary shadow-lg'
+    >
+      <Inner>{dropDownLayout}</Inner>
+    </div>
+  );
 };
 
 interface StickyNavItemInterface extends StylesInterface {
@@ -97,20 +103,6 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({
   const { name, slug, attributes } = rubric;
   const [isDropdownVisible, setIsDropdownVisible] = React.useState<boolean>(true);
 
-  React.useEffect(() => {
-    if (!isDropdownVisible) {
-      const timeout = setTimeout(() => {
-        setIsDropdownVisible(true);
-      }, 1500);
-
-      return () => {
-        clearTimeout(timeout);
-      };
-    }
-
-    return;
-  }, [isDropdownVisible]);
-
   const hideDropdown = React.useCallback(() => {
     setIsDropdownVisible(false);
   }, []);
@@ -124,6 +116,7 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({
     <li
       className='group px-4 first:pl-0 last:pr-0'
       data-cy={`main-rubric-list-item-${rubric.slug}`}
+      onMouseLeave={() => setIsDropdownVisible(true)}
     >
       <Link
         href={path}

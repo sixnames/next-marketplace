@@ -1,12 +1,7 @@
-import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
 import { FILTER_SEPARATOR, ROUTE_CATALOGUE } from 'config/common';
 import { useConfigContext } from 'context/configContext';
-import {
-  dropdownClassName,
-  StickyNavAttributeInterface,
-  StickyNavDropdownInterface,
-} from 'layout/header/StickyNav';
+import { StickyNavAttributeInterface, StickyNavDropdownInterface } from 'layout/header/StickyNav';
 import { noNaN } from 'lib/numbers';
 import * as React from 'react';
 
@@ -76,7 +71,6 @@ const StickyNavDropdownDefault: React.FC<StickyNavDropdownInterface> = ({
   attributes,
   attributeStyle,
   attributeLinkStyle,
-  dropdownStyle,
   rubricSlug,
   hideDropdown,
   urlPrefix,
@@ -86,24 +80,20 @@ const StickyNavDropdownDefault: React.FC<StickyNavDropdownInterface> = ({
   }
 
   return (
-    <div style={dropdownStyle} data-cy={'header-nav-dropdown'} className={dropdownClassName}>
-      <Inner>
-        <div className='grid gap-4 grid-cols-5'>
-          {(attributes || []).map((attribute) => {
-            return (
-              <StickyNavAttribute
-                urlPrefix={urlPrefix}
-                hideDropdown={hideDropdown}
-                key={`${attribute._id}`}
-                attribute={attribute}
-                rubricSlug={rubricSlug}
-                attributeStyle={attributeStyle}
-                attributeLinkStyle={attributeLinkStyle}
-              />
-            );
-          })}
-        </div>
-      </Inner>
+    <div className='grid gap-4 grid-cols-5'>
+      {(attributes || []).map((attribute) => {
+        return (
+          <StickyNavAttribute
+            urlPrefix={urlPrefix}
+            hideDropdown={hideDropdown}
+            key={`${attribute._id}`}
+            attribute={attribute}
+            rubricSlug={rubricSlug}
+            attributeStyle={attributeStyle}
+            attributeLinkStyle={attributeLinkStyle}
+          />
+        );
+      })}
     </div>
   );
 };

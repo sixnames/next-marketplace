@@ -136,7 +136,7 @@ export function generateTitle({
   const endOfTitle: string[] = [];
 
   // set initial variables
-  let finalKeyword = initialKeyword;
+  let finalKeyword = initialKeyword || fallbackTitle;
   let finalGender = defaultGender;
 
   // set final gender
@@ -237,35 +237,29 @@ export function generateTitle({
     }
   });
 
-  // cast title parts to string
-  const titleFinalArray = [
-    finalPrefix,
-    ...beginOfTitle,
-    ...beforeKeyword,
-    finalKeyword,
-    ...afterKeyword,
-    ...endOfTitle,
-  ];
+  // get parts
+  const beginOfTitleArray = [finalPrefix, ...beginOfTitle, ...beforeKeyword];
+  const filteredBeginOfTitleArray = beginOfTitleArray.filter((word) => word);
 
-  const filteredArray = titleFinalArray.filter((word) => word);
-  const firstWord = filteredArray[0];
+  const endOfTitleArray = [...afterKeyword, ...endOfTitle];
+  const filteredEndOfTitleArray = endOfTitleArray.filter((word) => word);
+
+  // cast title parts to string
+  const beginOfTitleString = filteredBeginOfTitleArray.join(', ');
+  const endOfTitleString = filteredEndOfTitleArray.join(', ');
+  const titleString = `${beginOfTitleString} ${finalKeyword} ${endOfTitleString}`;
+  const titleWordsArray = titleString.split(' ');
+  const firstWord = titleWordsArray[0];
 
   // return fallback if no title parts
   if (!firstWord) {
     return fallbackTitle;
   }
 
-  const firstWordArr = firstWord.split(' ');
-  const mainWord = firstWordArr[0];
-
-  // return fallback if no title parts
-  if (!mainWord) {
-    return fallbackTitle;
-  }
-
-  const firstWordOtherWords = firstWordArr.slice(1);
-  const otherWords = filteredArray.slice(1);
-  return [capitalize(mainWord), ...firstWordOtherWords, ...otherWords].join(' ');
+  const capitalizedFirstWord = capitalize(firstWord);
+  const otherWords = titleWordsArray.slice(1);
+  const otherWordsString = otherWords.join(' ');
+  return `${capitalizedFirstWord} ${otherWordsString}`;
 }
 
 interface GenerateProductTitlePrefixInterface {

@@ -1,9 +1,7 @@
-import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
 import { FILTER_CATEGORY_KEY, FILTER_SEPARATOR, ROUTE_CATALOGUE } from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import {
-  dropdownClassName,
   StickyNavAttributeInterface,
   StickyNavCategoryInterface,
   StickyNavDropdownInterface,
@@ -150,50 +148,45 @@ const StickyNavDropdownWithCategories: React.FC<StickyNavDropdownInterface> = ({
   attributes,
   attributeStyle,
   attributeLinkStyle,
-  dropdownStyle,
   rubricSlug,
   categories,
   hideDropdown,
   urlPrefix,
 }) => {
   return (
-    <div style={dropdownStyle} data-cy={'header-nav-dropdown'} className={dropdownClassName}>
-      <Inner>
-        <div className='grid grid-cols-6'>
-          <div className='col-span-4 border-r border-border-300 pr-8'>
-            <div className='grid gap-x-4 gap-y-8 grid-cols-4 '>
-              {(categories || []).map((category) => {
-                return (
-                  <StickyNavCategory
-                    hideDropdown={hideDropdown}
-                    key={`${category._id}`}
-                    category={category}
-                    rubricSlug={rubricSlug}
-                    attributeStyle={attributeStyle}
-                    attributeLinkStyle={attributeLinkStyle}
-                    urlPrefix={urlPrefix}
-                  />
-                );
-              })}
-            </div>
-          </div>
-          <div className='grid gap-x-4 gap-y-8 grid-cols-2 pl-8 col-span-2 self-start'>
-            {(attributes || []).map((attribute) => {
-              return (
-                <StickyNavAttribute
-                  hideDropdown={hideDropdown}
-                  key={`${attribute._id}`}
-                  attribute={attribute}
-                  rubricSlug={rubricSlug}
-                  attributeStyle={attributeStyle}
-                  attributeLinkStyle={attributeLinkStyle}
-                  urlPrefix={urlPrefix}
-                />
-              );
-            })}
-          </div>
+    <div className='grid grid-cols-6'>
+      <div className='col-span-4 border-r border-border-300 pr-8'>
+        <div className='grid gap-x-4 gap-y-8 grid-cols-4 '>
+          {(categories || []).map((category) => {
+            return (
+              <StickyNavCategory
+                hideDropdown={hideDropdown}
+                key={`${category._id}`}
+                category={category}
+                rubricSlug={rubricSlug}
+                attributeStyle={attributeStyle}
+                attributeLinkStyle={attributeLinkStyle}
+                urlPrefix={urlPrefix}
+              />
+            );
+          })}
         </div>
-      </Inner>
+      </div>
+      <div className='grid gap-x-4 gap-y-8 grid-cols-2 pl-8 col-span-2 self-start'>
+        {(attributes || []).map((attribute) => {
+          return (
+            <StickyNavAttribute
+              hideDropdown={hideDropdown}
+              key={`${attribute._id}`}
+              attribute={attribute}
+              rubricSlug={rubricSlug}
+              attributeStyle={attributeStyle}
+              attributeLinkStyle={attributeLinkStyle}
+              urlPrefix={urlPrefix}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 };

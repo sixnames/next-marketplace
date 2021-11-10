@@ -1,8 +1,8 @@
+import Link from 'components/Link/Link';
 import LinkEmail from 'components/Link/LinkEmail';
 import LinkPhone from 'components/Link/LinkPhone';
 import { ROUTE_CMS } from 'config/common';
 import { UserInterface } from 'db/uiInterfaces';
-import Link from 'next/link';
 import * as React from 'react';
 import { UpdateCompanyInput } from 'generated/apolloComponents';
 import { useAppContext } from 'context/appContext';
@@ -66,11 +66,7 @@ const CompanyMainFields: React.FC<CompanyMainFieldsInterface> = ({
         if (inConsole) {
           return cellData;
         }
-        return (
-          <Link href={`${ROUTE_CMS}/users/user/${dataItem._id}`}>
-            <a>{cellData}</a>
-          </Link>
-        );
+        return <Link href={`${ROUTE_CMS}/users/user/${dataItem._id}`}>{cellData}</Link>;
       },
     },
     {

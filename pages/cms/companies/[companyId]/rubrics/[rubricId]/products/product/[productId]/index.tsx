@@ -50,7 +50,12 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
   };
 
   return (
-    <CmsProductLayout product={product} basePath={routeBasePath} breadcrumbs={breadcrumbs}>
+    <CmsProductLayout
+      companySlug={pageCompany.slug}
+      product={product}
+      basePath={routeBasePath}
+      breadcrumbs={breadcrumbs}
+    >
       <ConsoleRubricProductDetails product={product} companySlug={`${pageCompany?.slug}`} />
     </CmsProductLayout>
   );

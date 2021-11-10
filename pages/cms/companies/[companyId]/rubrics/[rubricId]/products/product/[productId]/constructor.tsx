@@ -57,7 +57,12 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({
   };
 
   return (
-    <CmsProductLayout product={product} breadcrumbs={breadcrumbs} basePath={routeBasePath}>
+    <CmsProductLayout
+      companySlug={pageCompany.slug}
+      product={product}
+      breadcrumbs={breadcrumbs}
+      basePath={routeBasePath}
+    >
       <ConsoleRubricProductConstructor product={product} cardContent={cardContent} />
     </CmsProductLayout>
   );

@@ -1556,6 +1556,23 @@ export const getCatalogueData = async ({
       return fallbackPayload;
     }
 
+    // get selected categories
+    const selectedCategorySlugs = categoryFilters.map((slug) => {
+      const slugParts = slug.split(FILTER_SEPARATOR);
+      return `${slugParts[1]}`;
+    });
+    const selectedCategories: CategoryInterface[] = (categories || []).filter((category) => {
+      return selectedCategorySlugs.includes(category.slug);
+    });
+    const selectedCategoriesTree = getTreeFromList({
+      list: selectedCategories,
+      childrenFieldName: 'categories',
+      locale,
+    });
+
+    // get page gender
+    const pageGender = selectedCategoriesTree[0]?.gender || rubric.gender;
+
     // get filter attributes
     // price attribute
     const priceAttribute = getPriceAttribute(currency);
@@ -1632,7 +1649,7 @@ export const getCatalogueData = async ({
       filters: input.filters,
       productsPrices: prices,
       basePath,
-      rubricGender: search ? GENDER_HE : rubric.gender,
+      rubricGender: search ? GENDER_HE : pageGender,
       brands,
       // visibleAttributesCount,
     });
@@ -1868,19 +1885,6 @@ export const getCatalogueData = async ({
     }
 
     // get seo text
-    const selectedCategorySlugs = categoryFilters.map((slug) => {
-      const slugParts = slug.split(FILTER_SEPARATOR);
-      return `${slugParts[1]}`;
-    });
-    const selectedCategories: CategoryInterface[] = (categories || []).filter((category) => {
-      return selectedCategorySlugs.includes(category.slug);
-    });
-    const selectedCategoriesTree = getTreeFromList({
-      list: selectedCategories,
-      childrenFieldName: 'categories',
-      locale,
-    });
-
     // rubric seo text as default
     let editUrl = `/rubrics/${rubric._id}`;
     let textTop: string | null | undefined;

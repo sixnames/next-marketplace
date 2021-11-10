@@ -31,7 +31,7 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
     ? showSnippetButtonsOnHover
       ? 'transition-all bg-secondary lg:bg-transparent lg:hover:bg-secondary lg:hover:shadow-md'
       : 'bg-secondary dark:shadow-md'
-    : 'transition-all hover:shadow-md border border-transparent hover:border-border-200';
+    : 'transition-all border border-border-200 hover:shadow-md border lg:border-transparent lg:hover:border-border-200';
 
   const columnsClassName =
     // 2
@@ -81,7 +81,7 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
             ? 'lg:group-hover:bg-none lg:group-hover:shadow-none lg:bg-secondary lg:dark:shadow-md'
             : showSnippetBackground
             ? ''
-            : 'border border-border-200 group-hover:border-transparent'
+            : 'lg:border lg:border-border-200 group-hover:border-transparent'
         }`}
       >
         <div className='px-4 pt-6'>

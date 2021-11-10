@@ -244,14 +244,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
       <Inner lowTop testId={'catalogue'}>
         <Title
           testId={'catalogue-title'}
-          subtitle={
-            <div>
-              <div className='mb-2'>
-                <h2>{`${catalogueData.catalogueTitle} ${subHeadText}`}</h2>
-              </div>
-              <div className='lg:hidden'>{catalogueCounterString}</div>
-            </div>
-          }
+          subtitle={<span className='lg:hidden'>{catalogueCounterString}</span>}
         >
           {catalogueData.catalogueTitle}
         </Title>
@@ -398,7 +391,8 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
         </div>
 
         {state.textBottom ? (
-          <div className={`mt-16`}>
+          <section className={`mt-16`}>
+            <h2 className='text-2xl font-bold mb-4'>{`${catalogueData.catalogueTitle} ${subHeadText}`}</h2>
             <div className={seoTextClassName}>{state.textBottom}</div>
 
             {sessionUser?.showAdminUiInCatalogue && state.seoBottom ? (
@@ -417,7 +411,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
                 )}
               </div>
             ) : null}
-          </div>
+          </section>
         ) : null}
       </Inner>
 

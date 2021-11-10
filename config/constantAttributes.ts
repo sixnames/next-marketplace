@@ -354,7 +354,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         nameI18n: {
           ru: 'До 500',
         },
-        slug: `1_500`,
+        slug: `1_499`,
       },
       {
         _id: new ObjectId(),
@@ -362,7 +362,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         nameI18n: {
           ru: '500 – 1 000',
         },
-        slug: `500_1000`,
+        slug: `500_999`,
       },
       {
         _id: new ObjectId(),
@@ -370,7 +370,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         nameI18n: {
           ru: '1 000 – 1 500',
         },
-        slug: `1000_1500`,
+        slug: `1000_1499`,
       },
       {
         _id: new ObjectId(),
@@ -378,7 +378,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         nameI18n: {
           ru: '1 500 – 3 000',
         },
-        slug: `1500_3000`,
+        slug: `1500_2999`,
       },
       {
         _id: new ObjectId(),
@@ -386,7 +386,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         nameI18n: {
           ru: '3 000 – 5 000',
         },
-        slug: `3000_5000`,
+        slug: `3000_4999`,
       },
       {
         _id: new ObjectId(),
@@ -394,7 +394,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         nameI18n: {
           ru: '5 000 – 15 000',
         },
-        slug: `5000_15000`,
+        slug: `5000_14999`,
       },
       {
         _id: new ObjectId(),
@@ -402,7 +402,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         nameI18n: {
           ru: '15 000 – 30 000',
         },
-        slug: `15000_30000`,
+        slug: `15000_29999`,
       },
       {
         _id: new ObjectId(),
@@ -410,7 +410,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         nameI18n: {
           ru: '30 000 – 50 000',
         },
-        slug: `30000_50000`,
+        slug: `30000_49999`,
       },
       {
         _id: new ObjectId(),
@@ -418,7 +418,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         nameI18n: {
           ru: '50 000 – 100 000',
         },
-        slug: `50000_100000`,
+        slug: `50000_99999`,
       },
       {
         _id: new ObjectId(),
@@ -426,7 +426,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         nameI18n: {
           ru: '100 000 – 150 000',
         },
-        slug: `100000_150000`,
+        slug: `100000_149999`,
       },
       {
         _id: new ObjectId(),
@@ -434,7 +434,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         nameI18n: {
           ru: '150 000 – 200 000',
         },
-        slug: `150000_200000`,
+        slug: `150000_199999`,
       },
       {
         _id: new ObjectId(),
@@ -442,7 +442,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         nameI18n: {
           ru: '200 000 – 250 000',
         },
-        slug: `200000_250000`,
+        slug: `200000_249999`,
       },
       {
         _id: new ObjectId(),
@@ -450,7 +450,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         nameI18n: {
           ru: '250 000 – 500 000',
         },
-        slug: `250000_500000`,
+        slug: `250000_499999`,
       },
       {
         _id: new ObjectId(),
@@ -458,7 +458,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         nameI18n: {
           ru: '500 000 – 1 000 000',
         },
-        slug: `500000_1000000`,
+        slug: `500000_999999`,
       },
       {
         _id: new ObjectId(),
@@ -466,7 +466,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         nameI18n: {
           ru: '1 000 000 – 1 500 000',
         },
-        slug: `1000000_1500000`,
+        slug: `1000000_1499999`,
       },
       {
         _id: new ObjectId(),
@@ -474,7 +474,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         nameI18n: {
           ru: '1 500 000 – 3 000 000',
         },
-        slug: `1500000_3000000`,
+        slug: `1500000_2999999`,
       },
       {
         _id: new ObjectId(),
@@ -482,7 +482,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         nameI18n: {
           ru: '3 000 000 – 3 500 000',
         },
-        slug: `3000000_3500000`,
+        slug: `3000000_2499999`,
       },
       {
         _id: new ObjectId(),
@@ -490,7 +490,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         nameI18n: {
           ru: '3 500 000 – 4 000 000',
         },
-        slug: `3500000_4000000`,
+        slug: `3500000_3999999`,
       },
       {
         _id: new ObjectId(),
@@ -498,7 +498,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         nameI18n: {
           ru: '4 000 000 – 4 500 000',
         },
-        slug: `4000000_4500000`,
+        slug: `4000000_4499999`,
       },
       {
         _id: new ObjectId(),
@@ -506,7 +506,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         nameI18n: {
           ru: '4 500 000 – 5 000 000',
         },
-        slug: `4500000_5000000`,
+        slug: `4500000_4999999`,
       },
       {
         _id: new ObjectId(),
@@ -514,7 +514,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         nameI18n: {
           ru: '5 000 000 – 10 000 000',
         },
-        slug: `5000000_10000000`,
+        slug: `5000000_9999999999`,
       },
     ],
   };

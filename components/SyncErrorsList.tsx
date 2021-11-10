@@ -3,7 +3,7 @@ import ContentItemControls from 'components/button/ContentItemControls';
 import Currency from 'components/Currency';
 import { CreateProductWithSyncErrorModalInterface } from 'components/Modal/CreateProductWithSyncErrorModal';
 import { ProductSearchModalInterface } from 'components/Modal/ProductSearchModal';
-import Pager, { useNavigateToPageHandler } from 'components/Pager';
+import Pager from 'components/Pager';
 import Table, { TableColumn } from 'components/Table';
 import { CREATE_PRODUCT_WITH_SYNC_ERROR_MODAL, PRODUCT_SEARCH_MODAL } from 'config/modalVariants';
 import { AppPaginationInterface, NotSyncedProductInterface } from 'db/uiInterfaces';
@@ -25,7 +25,6 @@ const SyncErrorsList: React.FC<SyncErrorsListInterface> = ({
   showControls = true,
   companySlug,
 }) => {
-  const setPage = useNavigateToPageHandler();
   const { showModal } = useMutationCallbacks({
     reload: true,
   });
@@ -137,7 +136,7 @@ const SyncErrorsList: React.FC<SyncErrorsListInterface> = ({
       <div className='overflow-x-auto overflow-y-hidden'>
         <Table<NotSyncedProductInterface> testIdKey={'name'} columns={columns} data={docs} />
       </div>
-      <Pager page={page} setPage={setPage} totalPages={totalPages} />
+      <Pager page={page} totalPages={totalPages} />
     </div>
   );
 };

@@ -7,7 +7,7 @@ import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
-import Pager, { useNavigateToPageHandler } from 'components/Pager';
+import Pager from 'components/Pager';
 import Table, { TableColumn } from 'components/Table';
 import TableRowImage from 'components/TableRowImage';
 import { ROUTE_CMS } from 'config/common';
@@ -78,7 +78,6 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
 }) => {
   useReloadListener();
   const { me } = useUserContext();
-  const setPageHandler = useNavigateToPageHandler();
 
   const columns: TableColumn<ProductInterface>[] = [
     {
@@ -235,13 +234,7 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
               </Button>
             </FixedButtons>
 
-            <Pager
-              page={page}
-              totalPages={totalPages}
-              setPage={(newPage) => {
-                setPageHandler(newPage);
-              }}
-            />
+            <Pager page={page} totalPages={totalPages} />
           </div>
         </div>
       </Inner>

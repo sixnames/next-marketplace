@@ -5,6 +5,7 @@ import FixedButtons from 'components/button/FixedButtons';
 import Icon from 'components/Icon';
 import Inner from 'components/Inner';
 import MenuButtonWithName from 'components/MenuButtonWithName';
+import Pager from 'components/Pager';
 import TextSeoInfo from 'components/TextSeoInfo';
 import { useSiteUserContext } from 'context/userSiteUserContext';
 import { TextUniquenessApiParsedResponseModel } from 'db/dbModels';
@@ -30,14 +31,12 @@ import { CatalogueDataInterface } from 'db/uiInterfaces';
 import { useUpdateCatalogueCountersMutation } from 'generated/apolloComponents';
 import usePageLoadingState from 'hooks/usePageLoadingState';
 import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
-import { alwaysArray } from 'lib/arrayUtils';
 import { getCatalogueFilterNextPath, getCatalogueFilterValueByKey } from 'lib/catalogueHelpers';
 import { getNumWord } from 'lib/i18n';
 import { debounce } from 'lodash';
 import { cityIn } from 'lvovich';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import InfiniteScroll from 'react-infinite-scroll-component';
 import CatalogueFilter from 'layout/catalogue/CatalogueFilter';
 
 interface CatalogueConsumerInterface {
@@ -59,9 +58,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
 }) => {
   const router = useRouter();
   const sessionUser = useSiteUserContext();
-  const { configs } = useConfigContext();
   const isPageLoading = usePageLoadingState();
-  const [loading, setLoading] = React.useState<boolean>(false);
   const { showErrorNotification } = useNotificationsContext();
   const [isUpButtonVisible, setIsUpButtonVisible] = React.useState<boolean>(false);
   const [isFilterVisible, setIsFilterVisible] = React.useState<boolean>(false);
@@ -129,50 +126,6 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
       console.log(e);
     });
   }, [catalogueData, companySlug, router.query.rubricSlug, updateCatalogueCountersMutation]);
-
-  // fetch more products handler
-  const fetchMoreHandler = React.useCallback(() => {
-    if (state.products.length < state.totalProducts) {
-      setLoading(true);
-      const filters = alwaysArray(router.query.filters).join('/');
-      const attributesCountParam = configs.snippetAttributesCount;
-      const optionsCountParam = configs.catalogueFilterVisibleOptionsCount;
-      const companyIdParam = companyId ? `&companyId=${companyId}` : '';
-      const companySlugParam = companySlug ? `&companySlug=${companySlug}` : '';
-
-      const params = `?page=${
-        state.page + 1
-      }&visibleOptionsCount=${optionsCountParam}&snippetVisibleAttributesCount=${attributesCountParam}${companyIdParam}${companySlugParam}`;
-
-      fetch(`/api/catalogue/${router.query.rubricSlug}/${filters}${params}`)
-        .then((res) => {
-          return res.json();
-        })
-        .then((data) => {
-          setState((prevState) => {
-            return {
-              ...data,
-              products: [...prevState.products, ...(data?.products || [])],
-            };
-          });
-          setLoading(false);
-        })
-        .catch((e) => {
-          setLoading(false);
-          console.log(e);
-        });
-    }
-  }, [
-    companyId,
-    companySlug,
-    configs.catalogueFilterVisibleOptionsCount,
-    configs.snippetAttributesCount,
-    router.query.filters,
-    router.query.rubricSlug,
-    state.page,
-    state.products.length,
-    state.totalProducts,
-  ]);
 
   const showFilterHandler = React.useCallback(() => {
     setIsFilterVisible(true);
@@ -388,57 +341,48 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
               </div>
 
               {/*Products*/}
-              <div className='relative'>
+              <div className='relative pt-8 flex flex-wrap gap-[1.5rem]'>
                 {isPageLoading ? (
                   <div className='absolute inset-0 z-50 w-full h-full'>
                     <Spinner className='absolute inset-0 w-full h-[50vh]' isNested isTransparent />
                   </div>
                 ) : null}
 
-                <div id={'catalogue-products'}>
-                  <InfiniteScroll
-                    scrollThreshold={0.2}
-                    scrollableTarget={'#catalogue-products'}
-                    className='catalogue__list pt-8 flex flex-wrap gap-[1.5rem]'
-                    next={fetchMoreHandler}
-                    hasMore={state.products.length < state.totalProducts}
-                    dataLength={state.products.length}
-                    loader={<span />}
-                  >
-                    {state.products.map((product, index) => {
-                      if (isRowView) {
-                        return (
-                          <ProductSnippetRow
-                            layout={state.rowSnippetLayout}
-                            showSnippetConnections={state.showSnippetConnections}
-                            showSnippetBackground={state.showSnippetBackground}
-                            showSnippetArticle={state.showSnippetArticle}
-                            showSnippetButtonsOnHover={state.showSnippetButtonsOnHover}
-                            gridCatalogueColumns={state.gridCatalogueColumns}
-                            shopProduct={product}
-                            key={`${product._id}`}
-                            className={'flex-grow-0'}
-                            testId={`catalogue-item-${index}`}
-                          />
-                        );
-                      }
+                {state.products.map((product, index) => {
+                  if (isRowView) {
+                    return (
+                      <ProductSnippetRow
+                        layout={state.rowSnippetLayout}
+                        showSnippetConnections={state.showSnippetConnections}
+                        showSnippetBackground={state.showSnippetBackground}
+                        showSnippetArticle={state.showSnippetArticle}
+                        showSnippetButtonsOnHover={state.showSnippetButtonsOnHover}
+                        gridCatalogueColumns={state.gridCatalogueColumns}
+                        shopProduct={product}
+                        key={`${product._id}`}
+                        className={'flex-grow-0'}
+                        testId={`catalogue-item-${index}`}
+                      />
+                    );
+                  }
 
-                      return (
-                        <ProductSnippetGrid
-                          layout={state.gridSnippetLayout}
-                          showSnippetBackground={state.showSnippetBackground}
-                          showSnippetArticle={state.showSnippetArticle}
-                          showSnippetButtonsOnHover={state.showSnippetButtonsOnHover}
-                          gridCatalogueColumns={state.gridCatalogueColumns}
-                          shopProduct={product}
-                          key={`${product._id}`}
-                          testId={`catalogue-item-${index}`}
-                        />
-                      );
-                    })}
-                  </InfiniteScroll>
+                  return (
+                    <ProductSnippetGrid
+                      layout={state.gridSnippetLayout}
+                      showSnippetBackground={state.showSnippetBackground}
+                      showSnippetArticle={state.showSnippetArticle}
+                      showSnippetButtonsOnHover={state.showSnippetButtonsOnHover}
+                      gridCatalogueColumns={state.gridCatalogueColumns}
+                      shopProduct={product}
+                      key={`${product._id}`}
+                      testId={`catalogue-item-${index}`}
+                    />
+                  );
+                })}
+
+                <div className='w-full'>
+                  <Pager page={state.page} totalPages={state.totalPages} />
                 </div>
-                {loading ? <Spinner isNested isTransparent /> : null}
               </div>
             </div>
           </div>

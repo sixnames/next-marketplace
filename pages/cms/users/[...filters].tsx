@@ -7,7 +7,7 @@ import Link from 'components/Link/Link';
 import LinkPhone from 'components/Link/LinkPhone';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { CreateUserModalInterface } from 'components/Modal/CreateUserModal';
-import Pager, { useNavigateToPageHandler } from 'components/Pager';
+import Pager from 'components/Pager';
 import Table, { TableColumn } from 'components/Table';
 import Title from 'components/Title';
 import { DEFAULT_PAGE, ROUTE_CMS, SORT_DESC } from 'config/common';
@@ -53,7 +53,7 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
   filters: { roles },
 }) => {
   const router = useRouter();
-  const setPageHandler = useNavigateToPageHandler();
+
   const { showModal, showLoading } = useMutationCallbacks({
     reload: true,
   });
@@ -161,13 +161,7 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
             />
           </div>
 
-          <Pager
-            page={page}
-            totalPages={totalPages}
-            setPage={(newPage) => {
-              setPageHandler(newPage);
-            }}
-          />
+          <Pager page={page} totalPages={totalPages} />
 
           <FixedButtons>
             <Button

@@ -88,7 +88,7 @@ const ShopOrders: React.FC<ShopOrdersInterface> = ({ shop, basePath, breadcrumbs
               }}
             />
           </div>
-          <Pager page={1} setPage={() => undefined} totalPages={0} />
+          <Pager page={1} totalPages={0} />
         </div>
       </Inner>
     </ConsoleShopLayout>

@@ -40,6 +40,7 @@ import * as React from 'react';
 import CatalogueFilter from 'layout/catalogue/CatalogueFilter';
 
 interface CatalogueConsumerInterface {
+  subHeadText: string;
   catalogueData: CatalogueDataInterface;
   companySlug?: string;
   companyId?: string;
@@ -55,6 +56,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
   companySlug,
   isSearchResult,
   urlPrefix,
+  subHeadText,
 }) => {
   const router = useRouter();
   const sessionUser = useSiteUserContext();
@@ -242,7 +244,14 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
       <Inner lowTop testId={'catalogue'}>
         <Title
           testId={'catalogue-title'}
-          subtitle={<span className='lg:hidden'>{catalogueCounterString}</span>}
+          subtitle={
+            <div>
+              <div className='mb-2'>
+                <h2>{`${catalogueData.catalogueTitle} ${subHeadText}`}</h2>
+              </div>
+              <div className='lg:hidden'>{catalogueCounterString}</div>
+            </div>
+          }
         >
           {catalogueData.catalogueTitle}
         </Title>
@@ -455,18 +464,20 @@ const Catalogue: React.FC<CatalogueInterface> = ({
   const siteName = configs.siteName;
   const prefixConfig = configs.catalogueMetaPrefix;
   const prefix = prefixConfig ? ` ${prefixConfig}` : '';
-  const cityDescription = currentCity ? ` в ${cityIn(`${currentCity.name}`)}` : '';
+  const cityDescription = currentCity ? `в ${cityIn(`${currentCity.name}`)}` : '';
+  const subHeadText = `${prefix} ${cityDescription} ${siteName}`;
 
   return (
     <SiteLayout
       urlPrefix={urlPrefix}
       currentCity={currentCity}
       domainCompany={domainCompany}
-      title={`${catalogueData.catalogueTitle}${prefix} ${siteName}${cityDescription}`}
-      description={`${catalogueData.catalogueTitle} ${prefix} ${siteName}${cityDescription}`}
+      title={`${catalogueData.catalogueTitle}${subHeadText}`}
+      description={`${catalogueData.catalogueTitle}${subHeadText}`}
       {...props}
     >
       <CatalogueConsumer
+        subHeadText={subHeadText}
         urlPrefix={urlPrefix}
         isSearchResult={isSearchResult}
         catalogueData={catalogueData}

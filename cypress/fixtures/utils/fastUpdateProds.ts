@@ -1,6 +1,7 @@
 import { dbsConfig, getProdDb } from './getProdDb';
-import { COL_SHOP_PRODUCTS } from '../../../db/collectionNames';
-import { ShopProductModel } from '../../../db/dbModels';
+import { COL_PRODUCTS } from '../../../db/collectionNames';
+import { ProductModel, TranslationModel } from '../../../db/dbModels';
+import trim from 'trim';
 
 require('dotenv').config();
 
@@ -27,6 +28,25 @@ require('dotenv').config();
   return `${updatedCounter.value.counter}`;
 }*/
 
+interface TrimProductNameInterface {
+  originalName?: string | null;
+  nameI18n?: TranslationModel | null;
+}
+function trimProductName({ originalName, nameI18n }: TrimProductNameInterface) {
+  const translation = nameI18n || {};
+  return {
+    originalName: originalName ? trim(originalName) : '',
+    nameI18n: Object.keys(translation).reduce((acc: TranslationModel, key) => {
+      const value = translation[key];
+      if (!value) {
+        return acc;
+      }
+      acc[key] = trim(value);
+      return acc;
+    }, {}),
+  };
+}
+
 async function updateProds() {
   for await (const dbConfig of dbsConfig) {
     console.log(' ');
@@ -34,16 +54,27 @@ async function updateProds() {
     console.log(' ');
     console.log(`Updating ${dbConfig.dbName} db`);
     const { db, client } = await getProdDb(dbConfig);
-    const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+    const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
 
-    await shopProductsCollection.updateMany(
-      {},
-      {
-        $unset: {
-          selectedAttributesIds: '',
+    const products = await productsCollection.find({}).toArray();
+
+    for await (const product of products) {
+      const { nameI18n, originalName } = trimProductName({
+        originalName: product.originalName,
+        nameI18n: product.nameI18n,
+      });
+      await productsCollection.findOneAndUpdate(
+        {
+          _id: product._id,
         },
-      },
-    );
+        {
+          $set: {
+            originalName,
+            nameI18n,
+          },
+        },
+      );
+    }
 
     // disconnect form db
     await client.close();

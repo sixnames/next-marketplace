@@ -15,8 +15,6 @@ import {
   FILTER_SEPARATOR,
   CONFIG_GROUP_PROJECT,
   COOKIE_CURRENCY,
-  IMAGE_FALLBACK,
-  IMAGE_FALLBACK_BOTTLE,
 } from 'config/common';
 import {
   COL_ATTRIBUTES,
@@ -33,6 +31,7 @@ import {
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
+import { noImageStage } from 'db/dao/constantPipelines';
 import { getPageSessionUser, SessionUserPayloadInterface } from 'db/dao/user/getPageSessionUser';
 import {
   AttributeModel,
@@ -179,19 +178,7 @@ export const getCatalogueNavRubrics = async ({
         $match: {
           ...companyRubricsMatch,
           citySlug: city,
-          $or: [
-            {
-              mainImage: {
-                $ne: IMAGE_FALLBACK,
-              },
-            },
-            {
-              mainImage: null,
-            },
-            {
-              mainImage: IMAGE_FALLBACK_BOTTLE,
-            },
-          ],
+          ...noImageStage,
         },
       },
       {
@@ -1251,6 +1238,7 @@ export async function getConsoleInitialData({
 
   // Get current company
   const companies = sessionUser?.me.companies || [];
+  console.log(companies);
   if (companies.length < 1) {
     return {
       notFound: true,
@@ -1274,6 +1262,91 @@ export async function getConsoleInitialData({
       layoutProps: {
         sessionUser: castDbData(sessionUser),
         pageCompany: castDbData(pageCompany),
+        pageUrls,
+      },
+      companySlug,
+      initialData,
+      currentCity,
+      sessionCity,
+      themeStyle,
+      sessionLocale,
+    },
+  };
+}
+
+interface GetConsoleMainPageDataInterface {
+  context: GetServerSidePropsContext;
+}
+
+interface GetConsoleMainPageDataLayoutProps extends NavPropsInterface {
+  sessionUser: SessionUserPayloadInterface;
+}
+
+// console main page props
+export interface GetConsoleMainPageDataPropsInterface extends PagePropsInterface {
+  layoutProps: GetConsoleMainPageDataLayoutProps;
+}
+
+interface GetConsoleMainPageDataPayloadInterface {
+  props?: GetConsoleMainPageDataPropsInterface;
+  redirect?: Redirect;
+  notFound?: true;
+}
+
+export async function getConsoleMainPageData({
+  context,
+}: GetConsoleMainPageDataInterface): Promise<GetConsoleMainPageDataPayloadInterface> {
+  const {
+    pageUrls,
+    currentCity,
+    sessionCity,
+    sessionLocale,
+    initialData,
+    companySlug,
+    themeStyle,
+  } = await getPageInitialState({ context });
+
+  // Session user
+  const sessionUser = await getPageSessionUser({
+    context,
+    locale: sessionLocale,
+  });
+
+  // Check if user authenticated
+  if (!sessionUser) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: ROUTE_SIGN_IN,
+      },
+    };
+  }
+
+  // Check if page is allowed
+  const isAllowed = checkPagePermission({
+    allowedAppNavItems: sessionUser?.me.role?.allowedAppNavigation,
+    url: context.resolvedUrl,
+    isCms: false,
+  });
+
+  if (!isAllowed || !sessionUser?.me.role || !sessionUser?.me.role.isCompanyStaff) {
+    return {
+      notFound: true,
+    };
+  }
+
+  // Get current company
+  const companies = sessionUser?.me.companies || [];
+  if (companies.length < 1) {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: {
+      layoutProps: {
+        sessionUser: castDbData(sessionUser),
         pageUrls,
       },
       companySlug,

@@ -492,6 +492,7 @@ export interface CatalogueDataInterface {
   showSnippetButtonsOnHover: boolean;
   gridCatalogueColumns: number;
   products: ShopProductInterface[];
+  totalPages: number;
   totalProducts: number;
   catalogueTitle: string;
   breadcrumbs: CatalogueBreadcrumbModel[];

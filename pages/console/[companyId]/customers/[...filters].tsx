@@ -2,7 +2,7 @@ import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearc
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
 import LinkPhone from 'components/Link/LinkPhone';
-import Pager, { useNavigateToPageHandler } from 'components/Pager';
+import Pager from 'components/Pager';
 import Table, { TableColumn } from 'components/Table';
 import Title from 'components/Title';
 import { DEFAULT_PAGE, ROUTE_CONSOLE, SORT_DESC } from 'config/common';
@@ -44,7 +44,6 @@ const pageTitle = 'Клиенты';
 
 const UsersConsumer: React.FC<UsersConsumerInterface> = ({ docs, page, totalPages, itemPath }) => {
   const router = useRouter();
-  const setPageHandler = useNavigateToPageHandler();
 
   const columns: TableColumn<UserInterface>[] = [
     {
@@ -97,13 +96,7 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({ docs, page, totalPage
             />
           </div>
 
-          <Pager
-            page={page}
-            totalPages={totalPages}
-            setPage={(newPage) => {
-              setPageHandler(newPage);
-            }}
-          />
+          <Pager page={page} totalPages={totalPages} />
         </div>
       </Inner>
     </AppContentWrapper>

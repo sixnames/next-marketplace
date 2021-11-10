@@ -7,7 +7,7 @@ import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { CreateNewProductModalInterface } from 'components/Modal/CreateNewProductModal';
-import Pager, { useNavigateToPageHandler } from 'components/Pager';
+import Pager from 'components/Pager';
 import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
 import Table, { TableColumn } from 'components/Table';
@@ -44,7 +44,6 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
   basePath,
   companySlug,
 }) => {
-  const setPageHandler = useNavigateToPageHandler();
   const isPageLoading = usePageLoadingState();
   const { showModal } = useMutationCallbacks({
     withModal: true,
@@ -246,13 +245,7 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
               {isPageLoading ? <Spinner isNestedAbsolute /> : null}
             </div>
 
-            <Pager
-              page={page}
-              totalPages={totalPages}
-              setPage={(newPage) => {
-                setPageHandler(newPage);
-              }}
-            />
+            <Pager page={page} totalPages={totalPages} />
 
             <FixedButtons>
               <Button

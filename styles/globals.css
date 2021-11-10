@@ -205,20 +205,6 @@
     clip: rect(0 0 0 0);
   }
 
-  /* Catalogue */
-  .catalogue .catalogue__list[class*='infinite-scroll-component'] {
-    overflow: unset !important;
-  }
-
-  /*.catalogue__filter-scroll {
-    -ms-overflow-style: none;  !* Internet Explorer 10+ *!
-    scrollbar-width: none;  !* Firefox *!
-  }
-
-  .catalogue__filter-scroll::-webkit-scrollbar {
-    display: none;  !* Safari and Chrome *!
-  }*/
-
   .tag-link__icon > svg {
     width: 2rem;
     height: 2rem;

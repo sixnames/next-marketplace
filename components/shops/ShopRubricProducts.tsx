@@ -8,7 +8,7 @@ import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearc
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import Pager, { useNavigateToPageHandler } from 'components/Pager';
+import Pager from 'components/Pager';
 import Percent from 'components/Percent';
 import Table, { TableColumn } from 'components/Table';
 import TableRowImage from 'components/TableRowImage';
@@ -112,7 +112,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
 }) => {
   const { me } = useUserContext();
   const router = useRouter();
-  const setPageHandler = useNavigateToPageHandler();
+
   const { showModal, onErrorCallback, onCompleteCallback, showLoading, showErrorNotification } =
     useMutationCallbacks({ withModal: true, reload: true });
 
@@ -372,13 +372,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
               }}
             </Formik>
 
-            <Pager
-              page={page}
-              totalPages={totalPages}
-              setPage={(newPage) => {
-                setPageHandler(newPage);
-              }}
-            />
+            <Pager page={page} totalPages={totalPages} />
           </div>
         </div>
       </Inner>

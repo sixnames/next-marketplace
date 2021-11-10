@@ -3,7 +3,7 @@ import ContentItemControls from 'components/button/ContentItemControls';
 import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
-import Pager, { useNavigateToPageHandler } from 'components/Pager';
+import Pager from 'components/Pager';
 import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
 import Table, { TableColumn } from 'components/Table';
@@ -38,7 +38,6 @@ const CompanyRubricProductsList: React.FC<CompanyRubricProductsListInterface> = 
   itemPath,
   basePath,
 }) => {
-  const setPageHandler = useNavigateToPageHandler();
   const isPageLoading = usePageLoadingState();
 
   const columns: TableColumn<ProductInterface>[] = [
@@ -173,13 +172,7 @@ const CompanyRubricProductsList: React.FC<CompanyRubricProductsListInterface> = 
             {isPageLoading ? <Spinner isNestedAbsolute /> : null}
           </div>
 
-          <Pager
-            page={page}
-            totalPages={totalPages}
-            setPage={(newPage) => {
-              setPageHandler(newPage);
-            }}
-          />
+          <Pager page={page} totalPages={totalPages} />
         </div>
       </div>
     </Inner>

@@ -5,7 +5,7 @@ import Link from 'components/Link/Link';
 import LinkEmail from 'components/Link/LinkEmail';
 import LinkPhone from 'components/Link/LinkPhone';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import Pager, { useNavigateToPageHandler } from 'components/Pager';
+import Pager from 'components/Pager';
 import Table, { TableColumn } from 'components/Table';
 import Title from 'components/Title';
 import { ROUTE_CMS } from 'config/common';
@@ -29,7 +29,7 @@ interface OrdersRouteInterface {
 const OrdersRoute: React.FC<OrdersRouteInterface> = ({ data }) => {
   const { showModal } = useAppContext();
   const router = useRouter();
-  const setPageHandler = useNavigateToPageHandler();
+
   const [deleteOrder] = useDeleteOrder();
 
   const columns: TableColumn<OrderInterface>[] = [
@@ -142,7 +142,7 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ data }) => {
             }}
           />
         </div>
-        <Pager page={data.page} setPage={setPageHandler} totalPages={data.totalPages} />
+        <Pager page={data.page} totalPages={data.totalPages} />
       </Inner>
     </AppContentWrapper>
   );

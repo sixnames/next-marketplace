@@ -48,14 +48,16 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
       return (
         <div data-cy={`${name}`} data-url={categoryUrl}>
           {image ? (
-            <div className='relative pb-[100%] w-[80px]'>
-              <WpImage
-                url={image}
-                alt={`${name}`}
-                title={`${name}`}
-                width={80}
-                className='absolute inset-0 w-full h-full object-contain'
-              />
+            <div className='w-[80px] mb-4'>
+              <div className='relative pb-[100%] w-full'>
+                <WpImage
+                  url={image}
+                  alt={`${name}`}
+                  title={`${name}`}
+                  width={80}
+                  className='absolute inset-0 w-full h-full object-contain'
+                />
+              </div>
             </div>
           ) : null}
 

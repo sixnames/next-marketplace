@@ -448,6 +448,21 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
           circle
         />
       ) : null}
+
+      {sessionUser?.showAdminUiInCatalogue ? (
+        <FixedButtons>
+          <Inner lowTop lowBottom>
+            <Button
+              size={'small'}
+              onClick={() => {
+                window.open(`${sessionUser?.editLinkBasePath}${catalogueData?.editUrl}`, '_blank');
+              }}
+            >
+              Редактировать
+            </Button>
+          </Inner>
+        </FixedButtons>
+      ) : null}
     </div>
   );
 };
@@ -465,7 +480,6 @@ const Catalogue: React.FC<CatalogueInterface> = ({
   urlPrefix,
   ...props
 }) => {
-  const sessionUser = useSiteUserContext();
   const { configs } = useConfigContext();
   if (!catalogueData) {
     return (
@@ -497,21 +511,6 @@ const Catalogue: React.FC<CatalogueInterface> = ({
         companySlug={domainCompany?.slug}
         companyId={domainCompany?._id ? `${domainCompany?._id}` : undefined}
       />
-
-      {sessionUser?.showAdminUiInCatalogue ? (
-        <FixedButtons>
-          <Inner lowTop lowBottom>
-            <Button
-              size={'small'}
-              onClick={() => {
-                window.open(`${sessionUser?.editLinkBasePath}${catalogueData?.editUrl}`, '_blank');
-              }}
-            >
-              Редактировать
-            </Button>
-          </Inner>
-        </FixedButtons>
-      ) : null}
     </SiteLayout>
   );
 };

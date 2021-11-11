@@ -52,30 +52,32 @@ const CatalogueFilter: React.FC<CatalogueFilterProviderInterface> = (props) => {
         isFilterVisible ? 'block' : 'hidden lg:block'
       }`}
     >
-      <div className='catalogue__filter-scroll absolute inset-0 h-full lg:sticky overflow-x-hidden overflow-y-auto lg:h-[calc(100vh-80px)] lg:top-20 relative w-full px-inner-block-horizontal-padding py-inner-block-vertical-padding lg:p-0'>
-        <div className='hidden lg:block text-secondary-text h-[var(--catalogueVieButtonSize)] flex items-center mb-8'>
-          {catalogueCounterString}
-        </div>
-
-        {/* Mobile title */}
-        <div className='lg:hidden flex items-center justify-end min-h-[2rem] mb-4 text-lg font-medium'>
-          <div className='truncate text-center w-[calc(100%-(var(--formInputHeightSmall)*2))]'>
-            Фильтр
+      <div className='absolute inset-0 h-full lg:sticky overflow-x-hidden overflow-y-auto lg:h-[calc(100vh-80px)] lg:top-20 relative w-full px-inner-block-horizontal-padding py-inner-block-vertical-padding lg:p-0'>
+        <div className='lg:pr-[15px]'>
+          <div className='hidden lg:block text-secondary-text h-[var(--catalogueVieButtonSize)] flex items-center mb-8'>
+            {catalogueCounterString}
           </div>
-          <div
-            className='text-secondary-text flex items-center justify-center w-[var(--formInputHeightSmall)] h-[var(--formInputHeightSmall)]'
-            onClick={hideFilterHandler}
-          >
-            <Icon className='w-4 h-4' name={'cross'} />
-          </div>
-        </div>
 
-        <div className='pb-16'>
-          {layoutVariant === CATALOGUE_FILTER_LAYOUT_CHECKBOX_TREE ? (
-            <CatalogueFilterCheckboxTree {...props} />
-          ) : (
-            <CatalogueFilterDefault {...props} />
-          )}
+          {/* Mobile title */}
+          <div className='lg:hidden flex items-center justify-end min-h-[2rem] mb-4 text-lg font-medium'>
+            <div className='truncate text-center w-[calc(100%-(var(--formInputHeightSmall)*2))]'>
+              Фильтр
+            </div>
+            <div
+              className='text-secondary-text flex items-center justify-center w-[var(--formInputHeightSmall)] h-[var(--formInputHeightSmall)]'
+              onClick={hideFilterHandler}
+            >
+              <Icon className='w-4 h-4' name={'cross'} />
+            </div>
+          </div>
+
+          <div className='pb-16'>
+            {layoutVariant === CATALOGUE_FILTER_LAYOUT_CHECKBOX_TREE ? (
+              <CatalogueFilterCheckboxTree {...props} />
+            ) : (
+              <CatalogueFilterDefault {...props} />
+            )}
+          </div>
         </div>
       </div>
     </div>

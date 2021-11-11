@@ -271,7 +271,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
           </div>
         ) : null}
 
-        <div className='grid lg:grid-cols-7 gap-12'>
+        <div className='grid lg:grid-cols-7 gap-8'>
           <CatalogueFilter
             urlPrefix={urlPrefix}
             basePath={state.basePath}

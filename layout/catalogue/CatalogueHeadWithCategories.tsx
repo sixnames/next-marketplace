@@ -46,12 +46,12 @@ const CatalogueHeadWithCategories: React.FC<CatalogueHeadDefaultInterface> = ({
                   key={`${_id}`}
                 >
                   {icon ? (
-                    <div
-                      className='catalogue__head-icon'
+                    <span
+                      className='block catalogue__head-icon'
                       dangerouslySetInnerHTML={{ __html: icon?.icon }}
                     />
                   ) : null}
-                  <span>{name}</span>
+                  <span className='block text-center'>{name}</span>
                 </Link>
               );
             })}

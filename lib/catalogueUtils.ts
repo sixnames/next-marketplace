@@ -89,6 +89,26 @@ import { castProductConnectionForUI } from 'lib/uiDataUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 
+interface GetSelectedCategoryLeaf {
+  acc: ObjectIdModel[];
+  selectedCategoriesTree: CategoryInterface[];
+}
+function getSelectedCategoryLeaf({
+  acc,
+  selectedCategoriesTree,
+}: GetSelectedCategoryLeaf): ObjectIdModel[] {
+  return selectedCategoriesTree.reduce((innerAcc: ObjectIdModel[], category) => {
+    if (category.categories && category.categories.length > 0) {
+      const nestedIds = getSelectedCategoryLeaf({
+        acc: [],
+        selectedCategoriesTree: category.categories,
+      });
+      return [...innerAcc, ...nestedIds];
+    }
+    return [...innerAcc, category._id];
+  }, acc);
+}
+
 export interface CastCatalogueParamToObjectPayloadInterface {
   slug: string;
   value: string;
@@ -1933,13 +1953,42 @@ export const getCatalogueData = async ({
       gender: pageGender,
       locale,
     });
-    const headCategories = (categoriesTree || []).map((category) => {
-      return {
-        ...category,
-        categories: [],
-        name: getFieldStringLocale(category.nameI18n, locale),
-      };
+    const selectedCategoryLeafIds = getSelectedCategoryLeaf({
+      acc: [],
+      selectedCategoriesTree,
     });
+    const headCategories: CategoryInterface[] = [];
+    selectedCategoryLeafIds.forEach((parentId) => {
+      const parent = (categories || []).find(({ _id }) => {
+        return _id.equals(parentId);
+      });
+      if (parent) {
+        const parentName = getFieldStringLocale(parent.nameI18n, locale);
+        const categoryTreeList = getTreeFromList<CategoryInterface>({
+          list: categories,
+          childrenFieldName: 'categories',
+          gender: pageGender,
+          parentId,
+          locale,
+        });
+        categoryTreeList.forEach((childCategory) => {
+          headCategories.push({
+            ...childCategory,
+            name: `${parentName} ${childCategory.name?.toLowerCase()}`,
+            categories: [],
+          });
+        });
+      }
+    });
+    if (selectedCategoryLeafIds.length < 1) {
+      (categoriesTree || []).forEach((category) => {
+        headCategories.push({
+          ...category,
+          categories: [],
+          name: getFieldStringLocale(category.nameI18n, locale),
+        });
+      });
+    }
 
     // console.log(`Catalogue data >>>>>>>>>>>>>>>> `, new Date().getTime() - timeStart);
     return {

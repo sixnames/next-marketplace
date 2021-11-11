@@ -115,7 +115,7 @@ export function getConstantOptions(options: ConstantOptionsType, locale: string)
     };
   });
 }
-
+//
 // supplier price variant
 export const SUPPLIER_PRICE_VARIANT_OPTIONS: ConstantOptionsType = [
   {

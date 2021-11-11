@@ -36,6 +36,7 @@ const rubricVariants: RubricVariantModel[] = [
     showSnippetButtonsOnHover: false,
     showSnippetRating: true,
     gridCatalogueColumns: 2,
+    showCategoriesInFilter: true,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Алкоголь',
     },
@@ -63,7 +64,7 @@ const rubricVariants: RubricVariantModel[] = [
     showCardImagesSlider: true,
     showCatalogueFilterBrands: true,
     showCategoriesInNav: true,
-    showCategoriesInFilter: true,
+    showCategoriesInFilter: false,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Вода',
     },

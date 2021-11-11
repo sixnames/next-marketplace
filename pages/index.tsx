@@ -23,7 +23,7 @@ export async function getServerSideProps(
     return {
       redirect: {
         destination: props.urlPrefix,
-        permanent: false,
+        permanent: true,
       },
     };
   } catch (e) {

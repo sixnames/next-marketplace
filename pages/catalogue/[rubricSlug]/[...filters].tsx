@@ -27,7 +27,7 @@ export async function getServerSideProps(
   return {
     redirect: {
       destination: `/${props.urlPrefix}${ROUTE_CATALOGUE}/${context.query.rubricSlug}/${filtersPath}`,
-      permanent: false,
+      permanent: true,
     },
   };
   // return getCatalogueServerSideProps(context);

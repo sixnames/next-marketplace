@@ -15,6 +15,7 @@ import {
   COL_BRANDS,
   COL_CATEGORIES,
   COL_CATEGORY_DESCRIPTIONS,
+  COL_ICONS,
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCTS,
   COL_RUBRIC_DESCRIPTIONS,
@@ -87,6 +88,26 @@ import { generateSnippetTitle, generateTitle } from 'lib/titleUtils';
 import { castProductConnectionForUI } from 'lib/uiDataUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+
+interface GetSelectedCategoryLeaf {
+  acc: ObjectIdModel[];
+  selectedCategoriesTree: CategoryInterface[];
+}
+function getSelectedCategoryLeaf({
+  acc,
+  selectedCategoriesTree,
+}: GetSelectedCategoryLeaf): ObjectIdModel[] {
+  return selectedCategoriesTree.reduce((innerAcc: ObjectIdModel[], category) => {
+    if (category.categories && category.categories.length > 0) {
+      const nestedIds = getSelectedCategoryLeaf({
+        acc: [],
+        selectedCategoriesTree: category.categories,
+      });
+      return [...innerAcc, ...nestedIds];
+    }
+    return [...innerAcc, category._id];
+  }, acc);
+}
 
 export interface CastCatalogueParamToObjectPayloadInterface {
   slug: string;
@@ -940,6 +961,7 @@ export const getCatalogueData = async ({
       products: [],
       catalogueTitle: 'Товары не найдены',
       catalogueFilterLayout: DEFAULT_LAYOUT,
+      catalogueHeadLayout: DEFAULT_LAYOUT,
       totalPages: 0,
       totalProducts: 0,
       attributes: [],
@@ -1114,91 +1136,6 @@ export const getCatalogueData = async ({
                         ],
                       },
                     },
-
-                    // get product connections
-                    /*{
-                      $lookup: {
-                        from: COL_PRODUCT_CONNECTIONS,
-                        as: 'connections',
-                        let: {
-                          productId: '$_id',
-                        },
-                        pipeline: [
-                          {
-                            $match: {
-                              _id: null,
-                              $expr: {
-                                $in: ['$$productId', '$productsIds'],
-                              },
-                            },
-                          },
-                          {
-                            $lookup: {
-                              from: COL_ATTRIBUTES,
-                              as: 'attribute',
-                              let: { attributeId: '$attributeId' },
-                              pipeline: [
-                                {
-                                  $match: {
-                                    $expr: {
-                                      $eq: ['$$attributeId', '$_id'],
-                                    },
-                                  },
-                                },
-                              ],
-                            },
-                          },
-                          {
-                            $addFields: {
-                              attribute: {
-                                $arrayElemAt: ['$attribute', 0],
-                              },
-                            },
-                          },
-                          {
-                            $lookup: {
-                              from: COL_PRODUCT_CONNECTION_ITEMS,
-                              as: 'connectionProducts',
-                              let: {
-                                connectionId: '$_id',
-                              },
-                              pipeline: [
-                                {
-                                  $match: {
-                                    $expr: {
-                                      $eq: ['$connectionId', '$$connectionId'],
-                                    },
-                                  },
-                                },
-                                {
-                                  $lookup: {
-                                    from: COL_OPTIONS,
-                                    as: 'option',
-                                    let: { optionId: '$optionId' },
-                                    pipeline: [
-                                      {
-                                        $match: {
-                                          $expr: {
-                                            $eq: ['$$optionId', '$_id'],
-                                          },
-                                        },
-                                      },
-                                    ],
-                                  },
-                                },
-                                {
-                                  $addFields: {
-                                    option: {
-                                      $arrayElemAt: ['$option', 0],
-                                    },
-                                  },
-                                },
-                              ],
-                            },
-                          },
-                        ],
-                      },
-                    },*/
                     {
                       $project: {
                         descriptionI18n: false,
@@ -1273,6 +1210,34 @@ export const getCatalogueData = async ({
                     },
                     {
                       $sort: defaultSortStage,
+                    },
+
+                    // get category icon
+                    {
+                      $lookup: {
+                        from: COL_ICONS,
+                        as: 'icon',
+                        let: {
+                          documentId: '$_id',
+                        },
+                        pipeline: [
+                          {
+                            $match: {
+                              collectionName: COL_CATEGORIES,
+                              $expr: {
+                                $eq: ['$documentId', '$$documentId'],
+                              },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      $addFields: {
+                        icon: {
+                          $arrayElemAt: ['$icon', 0],
+                        },
+                      },
                     },
                   ],
                 },
@@ -1934,6 +1899,10 @@ export const getCatalogueData = async ({
       ? DEFAULT_LAYOUT
       : rubric.variant?.catalogueFilterLayout || DEFAULT_LAYOUT;
 
+    const catalogueHeadLayout = search
+      ? DEFAULT_LAYOUT
+      : rubric.variant?.catalogueHeadLayout || DEFAULT_LAYOUT;
+
     const gridSnippetLayout = search
       ? GRID_SNIPPET_LAYOUT_BIG_IMAGE
       : rubric.variant?.gridSnippetLayout || DEFAULT_LAYOUT;
@@ -1974,8 +1943,54 @@ export const getCatalogueData = async ({
       [],
     );
 
-    // console.log(`Catalogue data >>>>>>>>>>>>>>>> `, new Date().getTime() - timeStart);
+    // count total pages
     const totalPages = Math.ceil(totalProducts / limit);
+
+    // get head categories
+    const categoriesTree = getTreeFromList({
+      list: categories,
+      childrenFieldName: 'categories',
+      gender: pageGender,
+      locale,
+    });
+    const selectedCategoryLeafIds = getSelectedCategoryLeaf({
+      acc: [],
+      selectedCategoriesTree,
+    });
+    const headCategories: CategoryInterface[] = [];
+    selectedCategoryLeafIds.forEach((parentId) => {
+      const parent = (categories || []).find(({ _id }) => {
+        return _id.equals(parentId);
+      });
+      if (parent) {
+        const parentName = getFieldStringLocale(parent.nameI18n, locale);
+        const categoryTreeList = getTreeFromList<CategoryInterface>({
+          list: categories,
+          childrenFieldName: 'categories',
+          gender: pageGender,
+          parentId,
+          locale,
+        });
+        categoryTreeList.forEach((childCategory) => {
+          headCategories.push({
+            ...childCategory,
+            name: `${parentName} ${childCategory.name?.toLowerCase()}`,
+            categories: [],
+          });
+        });
+      }
+    });
+    if (selectedCategoryLeafIds.length < 1) {
+      (categoriesTree || []).forEach((category) => {
+        headCategories.push({
+          ...category,
+          categories: [],
+          name: getFieldStringLocale(category.nameI18n, locale),
+        });
+      });
+    }
+
+    // console.log(`Catalogue data >>>>>>>>>>>>>>>> `, new Date().getTime() - timeStart);
     return {
       // rubric
       _id: rubric._id,
@@ -1988,6 +2003,7 @@ export const getCatalogueData = async ({
 
       // configs
       catalogueFilterLayout,
+      catalogueHeadLayout,
       gridSnippetLayout,
       rowSnippetLayout,
       showSnippetConnections,
@@ -1997,6 +2013,7 @@ export const getCatalogueData = async ({
       gridCatalogueColumns,
 
       // filter
+      headCategories,
       totalPages,
       totalProducts: noNaN(totalProducts),
       attributes: castedAttributes,

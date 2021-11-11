@@ -484,6 +484,7 @@ export interface CatalogueDataInterface {
   rubricSlug: string;
   editUrl: string;
   catalogueFilterLayout: string;
+  catalogueHeadLayout: string;
   gridSnippetLayout: string;
   rowSnippetLayout: string;
   showSnippetConnections: boolean;
@@ -495,6 +496,7 @@ export interface CatalogueDataInterface {
   totalPages: number;
   totalProducts: number;
   catalogueTitle: string;
+  headCategories?: CategoryInterface[] | null;
   breadcrumbs: CatalogueBreadcrumbModel[];
   attributes: CatalogueFilterAttributeInterface[];
   selectedAttributes: CatalogueFilterAttributeInterface[];

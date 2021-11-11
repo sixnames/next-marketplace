@@ -7,8 +7,13 @@ import Inner from 'components/Inner';
 import MenuButtonWithName from 'components/MenuButtonWithName';
 import Pager from 'components/Pager';
 import TextSeoInfo from 'components/TextSeoInfo';
+import { CATALOGUE_HEAD_LAYOUT_WITH_CATEGORIES } from 'config/constantSelects';
 import { useSiteUserContext } from 'context/userSiteUserContext';
-import { TextUniquenessApiParsedResponseModel } from 'db/dbModels';
+import {
+  CatalogueBreadcrumbModel,
+  RubricSeoModel,
+  TextUniquenessApiParsedResponseModel,
+} from 'db/dbModels';
 import ProductSnippetGrid from 'layout/snippet/ProductSnippetGrid';
 import ProductSnippetRow from 'layout/snippet/ProductSnippetRow';
 import HeadlessMenuButton from 'components/HeadlessMenuButton';
@@ -27,7 +32,7 @@ import {
 } from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import { useNotificationsContext } from 'context/notificationsContext';
-import { CatalogueDataInterface } from 'db/uiInterfaces';
+import { CatalogueDataInterface, CategoryInterface } from 'db/uiInterfaces';
 import { useUpdateCatalogueCountersMutation } from 'generated/apolloComponents';
 import usePageLoadingState from 'hooks/usePageLoadingState';
 import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
@@ -35,9 +40,27 @@ import { getCatalogueFilterNextPath, getCatalogueFilterValueByKey } from 'lib/ca
 import { getNumWord } from 'lib/i18n';
 import { debounce } from 'lodash';
 import { cityIn } from 'lvovich';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import CatalogueFilter from 'layout/catalogue/CatalogueFilter';
+
+const seoTextClassName = 'prose max-w-full md:prose-lg lg:prose-xl';
+
+export interface CatalogueHeadDefaultInterface {
+  catalogueCounterString: string;
+  breadcrumbs: CatalogueBreadcrumbModel[];
+  textTop?: string | null;
+  seoTop?: RubricSeoModel | null;
+  catalogueTitle: string;
+  seoTextClassName: string;
+  headCategories?: CategoryInterface[] | null;
+}
+
+const CatalogueHeadDefault = dynamic(() => import('layout/catalogue/CatalogueHeadDefault'));
+const CatalogueHeadWithCategories = dynamic(
+  () => import('layout/catalogue/CatalogueHeadWithCategories'),
+);
 
 interface CatalogueConsumerInterface {
   subHeadText: string;
@@ -47,8 +70,6 @@ interface CatalogueConsumerInterface {
   isSearchResult?: boolean;
   urlPrefix: string;
 }
-
-const seoTextClassName = 'prose max-w-full md:prose-lg lg:prose-xl';
 
 const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
   catalogueData,
@@ -238,39 +259,37 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
     );
   }
 
+  let catalogueHead;
+  if (state.catalogueHeadLayout === CATALOGUE_HEAD_LAYOUT_WITH_CATEGORIES) {
+    catalogueHead = (
+      <CatalogueHeadWithCategories
+        headCategories={state.headCategories}
+        breadcrumbs={state.breadcrumbs}
+        textTop={state.textTop}
+        seoTextClassName={seoTextClassName}
+        catalogueCounterString={catalogueCounterString}
+        catalogueTitle={state.catalogueTitle}
+        seoTop={state.seoTop}
+      />
+    );
+  } else {
+    catalogueHead = (
+      <CatalogueHeadDefault
+        breadcrumbs={state.breadcrumbs}
+        textTop={state.textTop}
+        seoTextClassName={seoTextClassName}
+        catalogueCounterString={catalogueCounterString}
+        catalogueTitle={state.catalogueTitle}
+        seoTop={state.seoTop}
+      />
+    );
+  }
+
   return (
     <div className='mb-12 catalogue'>
-      <Breadcrumbs config={state.breadcrumbs} urlPrefix={urlPrefix} />
+      {catalogueHead}
+
       <Inner lowTop testId={'catalogue'}>
-        <Title
-          testId={'catalogue-title'}
-          subtitle={<span className='lg:hidden'>{catalogueCounterString}</span>}
-        >
-          {catalogueData.catalogueTitle}
-        </Title>
-
-        {state.textTop ? (
-          <div className={`mb-12`}>
-            <div className={seoTextClassName}>{state.textTop}</div>
-            {sessionUser?.showAdminUiInCatalogue && state.seoTop ? (
-              <div className='space-y-3 mt-6'>
-                {(state.seoTop.locales || []).map(
-                  (seoLocale: TextUniquenessApiParsedResponseModel) => {
-                    return (
-                      <TextSeoInfo
-                        showLocaleName
-                        listClassName='flex gap-3 flex-wrap'
-                        key={seoLocale.locale}
-                        seoLocale={seoLocale}
-                      />
-                    );
-                  },
-                )}
-              </div>
-            ) : null}
-          </div>
-        ) : null}
-
         <div className='grid lg:grid-cols-7 gap-8'>
           <CatalogueFilter
             urlPrefix={urlPrefix}

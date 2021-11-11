@@ -940,6 +940,7 @@ export const getCatalogueData = async ({
       products: [],
       catalogueTitle: 'Товары не найдены',
       catalogueFilterLayout: DEFAULT_LAYOUT,
+      catalogueHeadLayout: DEFAULT_LAYOUT,
       totalPages: 0,
       totalProducts: 0,
       attributes: [],
@@ -1934,6 +1935,10 @@ export const getCatalogueData = async ({
       ? DEFAULT_LAYOUT
       : rubric.variant?.catalogueFilterLayout || DEFAULT_LAYOUT;
 
+    const catalogueHeadLayout = search
+      ? DEFAULT_LAYOUT
+      : rubric.variant?.catalogueHeadLayout || DEFAULT_LAYOUT;
+
     const gridSnippetLayout = search
       ? GRID_SNIPPET_LAYOUT_BIG_IMAGE
       : rubric.variant?.gridSnippetLayout || DEFAULT_LAYOUT;
@@ -1988,6 +1993,7 @@ export const getCatalogueData = async ({
 
       // configs
       catalogueFilterLayout,
+      catalogueHeadLayout,
       gridSnippetLayout,
       rowSnippetLayout,
       showSnippetConnections,

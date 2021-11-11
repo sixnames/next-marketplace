@@ -9,6 +9,7 @@ interface TitlePropsInterface {
   testId?: string;
   low?: boolean;
   size?: 'normal' | 'small' | 'big';
+  centered?: boolean;
 }
 
 const Title: React.FC<TitlePropsInterface> = ({
@@ -20,6 +21,7 @@ const Title: React.FC<TitlePropsInterface> = ({
   testId,
   low,
   size = 'normal',
+  centered,
 }) => {
   const TagName = tag;
   let fontSizeClassName = 'text-3xl lg:text-4xl';
@@ -34,7 +36,11 @@ const Title: React.FC<TitlePropsInterface> = ({
 
   return (
     <div className={`flex-shrink-0 ${low ? '' : 'mb-[1.25rem]'} ${className ? className : ''}`}>
-      <div className={`flex flex-wrap items-baseline ${textClassName ? textClassName : ''}`}>
+      <div
+        className={`flex flex-wrap items-baseline ${centered ? 'justify-center' : ''} ${
+          textClassName ? textClassName : ''
+        }`}
+      >
         <TagName data-cy={testId} className={`font-bold ${fontSizeClassName}`}>
           {children}
         </TagName>

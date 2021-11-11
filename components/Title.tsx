@@ -41,7 +41,10 @@ const Title: React.FC<TitlePropsInterface> = ({
           textClassName ? textClassName : ''
         }`}
       >
-        <TagName data-cy={testId} className={`font-bold ${fontSizeClassName}`}>
+        <TagName
+          data-cy={testId}
+          className={`font-bold ${centered ? 'text-center' : ''} ${fontSizeClassName}`}
+        >
           {children}
         </TagName>
       </div>

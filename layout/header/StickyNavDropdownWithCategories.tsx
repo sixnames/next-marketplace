@@ -80,7 +80,7 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
   urlPrefix,
 }) => {
   const { configs } = useConfigContext();
-  const { categories, name, icon } = category;
+  const { categories, name } = category;
   const categoryPath = `${FILTER_CATEGORY_KEY}${FILTER_SEPARATOR}${category.slug}`;
   const stickyNavVisibleSubCategoriesCount = configs.stickyNavVisibleSubCategoriesCount;
   const showOptionsMoreLink =
@@ -97,12 +97,6 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
           href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}/${categoryPath}`}
           className='flex items-center gap-3 leading-snug text-secondary-text text-lg font-medium'
         >
-          {icon ? (
-            <span
-              className='flex-shrink-0 header-dropdown-category-icon'
-              dangerouslySetInnerHTML={{ __html: icon.icon }}
-            />
-          ) : null}
           <span>{name}</span>
         </Link>
       </div>

@@ -210,6 +210,12 @@
     height: 2rem;
   }
 
+  /* Catalogue */
+  .catalogue__head-icon > svg {
+    width: 2rem;
+    height: 2rem;
+  }
+
   /* Grid Snippet */
   .grid-snippet {
     width: 100%;

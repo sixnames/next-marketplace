@@ -15,6 +15,7 @@ import {
   COL_BRANDS,
   COL_CATEGORIES,
   COL_CATEGORY_DESCRIPTIONS,
+  COL_ICONS,
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCTS,
   COL_RUBRIC_DESCRIPTIONS,
@@ -1115,91 +1116,6 @@ export const getCatalogueData = async ({
                         ],
                       },
                     },
-
-                    // get product connections
-                    /*{
-                      $lookup: {
-                        from: COL_PRODUCT_CONNECTIONS,
-                        as: 'connections',
-                        let: {
-                          productId: '$_id',
-                        },
-                        pipeline: [
-                          {
-                            $match: {
-                              _id: null,
-                              $expr: {
-                                $in: ['$$productId', '$productsIds'],
-                              },
-                            },
-                          },
-                          {
-                            $lookup: {
-                              from: COL_ATTRIBUTES,
-                              as: 'attribute',
-                              let: { attributeId: '$attributeId' },
-                              pipeline: [
-                                {
-                                  $match: {
-                                    $expr: {
-                                      $eq: ['$$attributeId', '$_id'],
-                                    },
-                                  },
-                                },
-                              ],
-                            },
-                          },
-                          {
-                            $addFields: {
-                              attribute: {
-                                $arrayElemAt: ['$attribute', 0],
-                              },
-                            },
-                          },
-                          {
-                            $lookup: {
-                              from: COL_PRODUCT_CONNECTION_ITEMS,
-                              as: 'connectionProducts',
-                              let: {
-                                connectionId: '$_id',
-                              },
-                              pipeline: [
-                                {
-                                  $match: {
-                                    $expr: {
-                                      $eq: ['$connectionId', '$$connectionId'],
-                                    },
-                                  },
-                                },
-                                {
-                                  $lookup: {
-                                    from: COL_OPTIONS,
-                                    as: 'option',
-                                    let: { optionId: '$optionId' },
-                                    pipeline: [
-                                      {
-                                        $match: {
-                                          $expr: {
-                                            $eq: ['$$optionId', '$_id'],
-                                          },
-                                        },
-                                      },
-                                    ],
-                                  },
-                                },
-                                {
-                                  $addFields: {
-                                    option: {
-                                      $arrayElemAt: ['$option', 0],
-                                    },
-                                  },
-                                },
-                              ],
-                            },
-                          },
-                        ],
-                      },
-                    },*/
                     {
                       $project: {
                         descriptionI18n: false,
@@ -1274,6 +1190,34 @@ export const getCatalogueData = async ({
                     },
                     {
                       $sort: defaultSortStage,
+                    },
+
+                    // get category icon
+                    {
+                      $lookup: {
+                        from: COL_ICONS,
+                        as: 'icon',
+                        let: {
+                          documentId: '$_id',
+                        },
+                        pipeline: [
+                          {
+                            $match: {
+                              collectionName: COL_CATEGORIES,
+                              $expr: {
+                                $eq: ['$documentId', '$$documentId'],
+                              },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      $addFields: {
+                        icon: {
+                          $arrayElemAt: ['$icon', 0],
+                        },
+                      },
                     },
                   ],
                 },
@@ -1979,8 +1923,25 @@ export const getCatalogueData = async ({
       [],
     );
 
-    // console.log(`Catalogue data >>>>>>>>>>>>>>>> `, new Date().getTime() - timeStart);
+    // count total pages
     const totalPages = Math.ceil(totalProducts / limit);
+
+    // get head categories
+    const categoriesTree = getTreeFromList({
+      list: categories,
+      childrenFieldName: 'categories',
+      gender: pageGender,
+      locale,
+    });
+    const headCategories = (categoriesTree || []).map((category) => {
+      return {
+        ...category,
+        categories: [],
+        name: getFieldStringLocale(category.nameI18n, locale),
+      };
+    });
+
+    // console.log(`Catalogue data >>>>>>>>>>>>>>>> `, new Date().getTime() - timeStart);
     return {
       // rubric
       _id: rubric._id,
@@ -2003,6 +1964,7 @@ export const getCatalogueData = async ({
       gridCatalogueColumns,
 
       // filter
+      headCategories,
       totalPages,
       totalProducts: noNaN(totalProducts),
       attributes: castedAttributes,

@@ -14,6 +14,7 @@ import {
   NAV_DROPDOWN_LAYOUT_OPTIONS,
   ROW_SNIPPET_LAYOUT_OPTIONS,
   CATALOGUE_FILTER_LAYOUT_OPTIONS,
+  CATALOGUE_HEAD_LAYOUT_OPTIONS,
 } from 'config/constantSelects';
 import { COL_RUBRIC_VARIANTS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
@@ -81,6 +82,7 @@ const RubricVariantConsumer: React.FC<RubricVariantConsumerInterface> = ({ rubri
             gridSnippetLayout: rubricVariant.gridSnippetLayout || DEFAULT_LAYOUT,
             rowSnippetLayout: rubricVariant.rowSnippetLayout || DEFAULT_LAYOUT,
             catalogueFilterLayout: rubricVariant.catalogueFilterLayout || DEFAULT_LAYOUT,
+            catalogueHeadLayout: rubricVariant.catalogueHeadLayout || DEFAULT_LAYOUT,
             catalogueNavLayout: rubricVariant.catalogueNavLayout || DEFAULT_LAYOUT,
             showSnippetConnections: rubricVariant.showSnippetConnections || false,
             showSnippetBackground: rubricVariant.showSnippetBackground || false,
@@ -223,6 +225,12 @@ const RubricVariantConsumer: React.FC<RubricVariantConsumerInterface> = ({ rubri
                   name={'catalogueFilterLayout'}
                   label={'Дизайн фильтра каталога'}
                   options={CATALOGUE_FILTER_LAYOUT_OPTIONS}
+                />
+
+                <FormikLayoutSelect
+                  name={'catalogueHeadLayout'}
+                  label={'Дизайн шапки каталога'}
+                  options={CATALOGUE_HEAD_LAYOUT_OPTIONS}
                 />
 
                 <FixedButtons>

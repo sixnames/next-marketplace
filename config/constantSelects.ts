@@ -94,6 +94,19 @@ export const CATALOGUE_FILTER_LAYOUT_OPTIONS: LayoutOptionsType = [
   },
 ];
 
+// catalogue head layout
+export const CATALOGUE_HEAD_LAYOUT_WITH_CATEGORIES = 'with-categories';
+export const CATALOGUE_HEAD_LAYOUT_OPTIONS: LayoutOptionsType = [
+  {
+    _id: DEFAULT_LAYOUT,
+    asset: `/layout/catalogue-head/${DEFAULT_LAYOUT}.png`,
+  },
+  {
+    _id: CATALOGUE_HEAD_LAYOUT_WITH_CATEGORIES,
+    asset: `/layout/catalogue-head/${CATALOGUE_HEAD_LAYOUT_WITH_CATEGORIES}.png`,
+  },
+];
+
 export function getConstantOptions(options: ConstantOptionsType, locale: string) {
   return options.map((option) => {
     return {

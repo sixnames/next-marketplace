@@ -16,6 +16,7 @@ export interface BreadcrumbsInterface {
   lowBottom?: boolean;
   lowWrapper?: boolean;
   urlPrefix?: string;
+  centered?: boolean;
 }
 
 const linkClassName =
@@ -29,6 +30,7 @@ const Breadcrumbs: React.FC<BreadcrumbsInterface> = ({
   lowTop,
   lowWrapper,
   urlPrefix = '',
+  centered,
 }) => {
   const { locale } = useRouter();
 
@@ -39,7 +41,7 @@ const Breadcrumbs: React.FC<BreadcrumbsInterface> = ({
   return (
     <div className={lowWrapper ? '' : 'mb-2 lg:mb-10'}>
       <Inner lowBottom={lowBottom} lowTop={lowTop}>
-        <ul>
+        <ul className={centered ? 'text-center' : ''}>
           {noMainPage ? null : (
             <li className='inline mr-1'>
               <Link className={linkClassName} href={urlPrefix ? urlPrefix : '/'}>

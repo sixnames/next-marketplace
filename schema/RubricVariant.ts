@@ -29,6 +29,7 @@ export const RubricVariant = objectType({
     t.string('gridSnippetLayout');
     t.string('rowSnippetLayout');
     t.string('catalogueFilterLayout');
+    t.string('catalogueHeadLayout');
     t.string('catalogueNavLayout');
 
     // booleans
@@ -148,6 +149,7 @@ export const UpdateRubricVariantInput = inputObjectType({
     t.string('gridSnippetLayout');
     t.string('rowSnippetLayout');
     t.string('catalogueFilterLayout');
+    t.string('catalogueHeadLayout');
     t.string('catalogueNavLayout');
 
     // booleans

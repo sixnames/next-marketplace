@@ -718,6 +718,7 @@ export interface RubricVariantModel {
   gridSnippetLayout?: string | null;
   rowSnippetLayout?: string | null;
   catalogueFilterLayout?: string | null;
+  catalogueHeadLayout?: string | null;
   catalogueNavLayout?: string | null;
 
   // booleans

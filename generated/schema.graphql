@@ -2062,6 +2062,7 @@ type RubricVariant {
   _id: ObjectId!
   cardLayout: String
   catalogueFilterLayout: String
+  catalogueHeadLayout: String
   catalogueNavLayout: String
   companySlug: String!
   gridCatalogueColumns: Int
@@ -2529,6 +2530,7 @@ input UpdateRubricVariantInput {
   cardBrandsLabelI18n: JSONObject
   cardLayout: String
   catalogueFilterLayout: String
+  catalogueHeadLayout: String
   catalogueNavLayout: String
   gridCatalogueColumns: Int
   gridSnippetLayout: String

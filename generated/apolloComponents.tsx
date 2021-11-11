@@ -2327,6 +2327,7 @@ export type RubricVariant = {
   gridSnippetLayout?: Maybe<Scalars['String']>;
   rowSnippetLayout?: Maybe<Scalars['String']>;
   catalogueFilterLayout?: Maybe<Scalars['String']>;
+  catalogueHeadLayout?: Maybe<Scalars['String']>;
   catalogueNavLayout?: Maybe<Scalars['String']>;
   showSnippetConnections?: Maybe<Scalars['Boolean']>;
   showSnippetBackground?: Maybe<Scalars['Boolean']>;
@@ -2800,6 +2801,7 @@ export type UpdateRubricVariantInput = {
   gridSnippetLayout?: Maybe<Scalars['String']>;
   rowSnippetLayout?: Maybe<Scalars['String']>;
   catalogueFilterLayout?: Maybe<Scalars['String']>;
+  catalogueHeadLayout?: Maybe<Scalars['String']>;
   catalogueNavLayout?: Maybe<Scalars['String']>;
   showSnippetConnections?: Maybe<Scalars['Boolean']>;
   showSnippetBackground?: Maybe<Scalars['Boolean']>;

@@ -11,6 +11,8 @@ import { TextUniquenessApiParsedResponseModel } from 'db/dbModels';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 
+const minCategiriesCount = 1;
+
 const CatalogueHeadWithCategories: React.FC<CatalogueHeadDefaultInterface> = ({
   catalogueCounterString,
   seoTextClassName,
@@ -25,8 +27,8 @@ const CatalogueHeadWithCategories: React.FC<CatalogueHeadDefaultInterface> = ({
   const sessionUser = useSiteUserContext();
 
   return (
-    <div className='bg-secondary pb-8 mb-8'>
-      <Breadcrumbs lowBottom centered config={breadcrumbs} urlPrefix={urlPrefix} />
+    <div className='mb-16'>
+      <Breadcrumbs lowBottom config={breadcrumbs} urlPrefix={urlPrefix} />
       <Inner lowBottom lowTop>
         <Title
           centered
@@ -36,7 +38,7 @@ const CatalogueHeadWithCategories: React.FC<CatalogueHeadDefaultInterface> = ({
           {catalogueTitle}
         </Title>
 
-        {headCategories && headCategories.length > 0 ? (
+        {headCategories && headCategories.length > minCategiriesCount ? (
           <div className='flex flex-wrap justify-center gap-8 mt-8 mb-8'>
             {headCategories.map(({ _id, icon, name, slug }) => {
               return (
@@ -47,7 +49,7 @@ const CatalogueHeadWithCategories: React.FC<CatalogueHeadDefaultInterface> = ({
                 >
                   {icon ? (
                     <span
-                      className='block catalogue__head-icon'
+                      className='block catalogue__head-icon text-theme'
                       dangerouslySetInnerHTML={{ __html: icon?.icon }}
                     />
                   ) : null}

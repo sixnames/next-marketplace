@@ -256,6 +256,7 @@ const products = rubrics.reduce((acc: ProductModel[], rubric) => {
         `${CATEGORY_SLUG_PREFIX}7`,
         `${CATEGORY_SLUG_PREFIX}8`,
         `${CATEGORY_SLUG_PREFIX}9`,
+        `${CATEGORY_SLUG_PREFIX}10`,
       ];
       categoriesSlugs.forEach((categorySlug) => {
         selectedOptionsSlugs.push(categorySlug);

@@ -25,6 +25,20 @@ const categories: CategoryModel[] = [
     ...DEFAULT_COUNTERS_OBJECT,
   },
   {
+    _id: getObjectId('category Односолодовый B'),
+    parentId: getObjectId('category Односолодовый'),
+    parentTreeIds: [getObjectId('category Односолодовый'), getObjectId('category Односолодовый B')],
+    rubricId: getObjectId('rubric Виски'),
+    slug: `${CATEGORY_SLUG_PREFIX}10`,
+    rubricSlug: 'viski',
+    variants: {},
+    nameI18n: {
+      ru: 'Односолодовый B',
+    },
+    attributesGroupIds: [],
+    ...DEFAULT_COUNTERS_OBJECT,
+  },
+  {
     _id: getObjectId('category Односолодовый A'),
     parentId: getObjectId('category Односолодовый'),
     parentTreeIds: [getObjectId('category Односолодовый'), getObjectId('category Односолодовый A')],

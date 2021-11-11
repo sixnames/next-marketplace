@@ -1545,7 +1545,7 @@ export const getCatalogueData = async ({
     // category attribute
     let categoryAttribute: AttributeInterface[] = [];
     const showCategoriesInFilter = search ? true : Boolean(rubric.variant?.showCategoriesInFilter);
-    if (categories && categories.length > 0 && showCategoriesInFilter) {
+    if (categories && categories.length > 0) {
       categoryAttribute = [
         getCategoryFilterAttribute({
           locale,
@@ -1764,8 +1764,6 @@ export const getCatalogueData = async ({
         [],
       );
 
-      // console.log(listFeatures.length);
-
       products.push({
         ...shopProduct,
         product: {
@@ -1925,24 +1923,6 @@ export const getCatalogueData = async ({
       ? CATALOGUE_GRID_DEFAULT_COLUMNS_COUNT
       : rubric.variant?.gridCatalogueColumns || CATALOGUE_GRID_DEFAULT_COLUMNS_COUNT;
 
-    const finalSelectedAttributes = selectedAttributes.reduce(
-      (acc: CatalogueFilterAttributeInterface[], attribute) => {
-        const { slug, options } = attribute;
-        if (!showCategoriesInFilter && slug === FILTER_CATEGORY_KEY) {
-          return acc;
-        }
-
-        return [
-          ...acc,
-          {
-            ...attribute,
-            options,
-          },
-        ];
-      },
-      [],
-    );
-
     // count total pages
     const totalPages = Math.ceil(totalProducts / limit);
 
@@ -1959,26 +1939,20 @@ export const getCatalogueData = async ({
     });
     const headCategories: CategoryInterface[] = [];
     selectedCategoryLeafIds.forEach((parentId) => {
-      const parent = (categories || []).find(({ _id }) => {
-        return _id.equals(parentId);
+      const categoryTreeList = getTreeFromList<CategoryInterface>({
+        list: categories,
+        childrenFieldName: 'categories',
+        gender: pageGender,
+        parentId,
+        locale,
       });
-      if (parent) {
-        const parentName = getFieldStringLocale(parent.nameI18n, locale);
-        const categoryTreeList = getTreeFromList<CategoryInterface>({
-          list: categories,
-          childrenFieldName: 'categories',
-          gender: pageGender,
-          parentId,
-          locale,
+      categoryTreeList.forEach((childCategory) => {
+        headCategories.push({
+          ...childCategory,
+          name: childCategory.name,
+          categories: [],
         });
-        categoryTreeList.forEach((childCategory) => {
-          headCategories.push({
-            ...childCategory,
-            name: `${parentName} ${childCategory.name?.toLowerCase()}`,
-            categories: [],
-          });
-        });
-      }
+      });
     });
     if (selectedCategoryLeafIds.length < 1) {
       (categoriesTree || []).forEach((category) => {
@@ -1989,6 +1963,18 @@ export const getCatalogueData = async ({
         });
       });
     }
+
+    const finalFilterAttributes = showCategoriesInFilter
+      ? castedAttributes
+      : castedAttributes.filter(({ slug }) => {
+          return slug !== FILTER_CATEGORY_KEY;
+        });
+
+    const finalSelectedAttributes = showCategoriesInFilter
+      ? selectedAttributes
+      : selectedAttributes.filter(({ slug }) => {
+          return slug !== FILTER_CATEGORY_KEY;
+        });
 
     // console.log(`Catalogue data >>>>>>>>>>>>>>>> `, new Date().getTime() - timeStart);
     return {
@@ -2016,7 +2002,7 @@ export const getCatalogueData = async ({
       headCategories,
       totalPages,
       totalProducts: noNaN(totalProducts),
-      attributes: castedAttributes,
+      attributes: finalFilterAttributes,
       selectedAttributes: finalSelectedAttributes,
       page,
       basePath,

@@ -800,6 +800,7 @@ export interface NexusGenInputs {
     cardBrandsLabelI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     cardLayout?: string | null; // String
     catalogueFilterLayout?: string | null; // String
+    catalogueHeadLayout?: string | null; // String
     catalogueNavLayout?: string | null; // String
     gridCatalogueColumns?: number | null; // Int
     gridSnippetLayout?: string | null; // String
@@ -1882,6 +1883,7 @@ export interface NexusGenFieldTypes {
     _id: NexusGenScalars['ObjectId']; // ObjectId!
     cardLayout: string | null; // String
     catalogueFilterLayout: string | null; // String
+    catalogueHeadLayout: string | null; // String
     catalogueNavLayout: string | null; // String
     companySlug: string; // String!
     gridCatalogueColumns: number | null; // Int
@@ -2930,6 +2932,7 @@ export interface NexusGenFieldTypeNames {
     _id: 'ObjectId';
     cardLayout: 'String';
     catalogueFilterLayout: 'String';
+    catalogueHeadLayout: 'String';
     catalogueNavLayout: 'String';
     companySlug: 'String';
     gridCatalogueColumns: 'Int';

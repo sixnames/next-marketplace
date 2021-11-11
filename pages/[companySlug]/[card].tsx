@@ -74,7 +74,7 @@ const Card: NextPage<CardInterface> = ({ cardData, domainCompany, ...props }) =>
 
   const siteName = configs.siteName;
   const prefixConfig = configs.catalogueMetaPrefix;
-  const prefix = prefixConfig ? `${prefixConfig}` : '';
+  const prefix = prefixConfig ? ` ${prefixConfig}` : '';
   const cityDescription = currentCity ? `в ${cityIn(`${currentCity.name}`)}` : '';
 
   return (

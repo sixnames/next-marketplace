@@ -140,7 +140,7 @@ export async function getServerSideProps(
   return {
     redirect: {
       destination: `/${props.urlPrefix}${ROUTE_CATALOGUE}/${context.query.rubricSlug}/product/${context.query.card}`,
-      permanent: false,
+      permanent: true,
     },
   };
 }

@@ -54,14 +54,16 @@ interface GetSharpImageInterface {
   width?: number;
   quality?: number;
   showWatermark: boolean;
+  watermarkPath: string;
 }
 
 export async function getSharpImage({
   filePath,
   format = 'webp',
   width,
-  showWatermark,
   quality,
+  showWatermark,
+  watermarkPath,
 }: GetSharpImageInterface) {
   try {
     const defaultImageQuality = 40;
@@ -101,10 +103,11 @@ export async function getSharpImage({
 
     // add watermark if needed
     if (showWatermark) {
-      const watermarkDist = path.join(process.cwd(), 'public/watermark.png');
+      const watermarkDist = path.join(process.cwd(), watermarkPath);
+      const watermarkBuffer = await sharp(watermarkDist).resize(80).toBuffer();
       transform.composite([
         {
-          input: watermarkDist,
+          input: watermarkBuffer,
           tile: true,
           blend: 'atop',
         },

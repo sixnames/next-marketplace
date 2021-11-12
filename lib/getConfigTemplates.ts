@@ -924,6 +924,24 @@ export function getConfigTemplates({
       _id: new ObjectId(),
       companySlug,
       group: 'seo',
+      variant: CONFIG_VARIANT_ASSET,
+      slug: 'watermark',
+      name: 'Watermark в формате PNG 80x80',
+      description: '',
+      multi: false,
+      acceptedFormats: ['image/png'],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: assetsPath
+            ? [`${ASSETS_DIST}${assetsPath}/watermark/watermark.png`]
+            : [],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'seo',
       variant: CONFIG_VARIANT_STRING,
       slug: 'pageDefaultTitle',
       name: 'Дефолтный title страницы',

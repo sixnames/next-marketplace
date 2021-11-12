@@ -1,3 +1,4 @@
+import { useAppContext } from 'context/appContext';
 import * as React from 'react';
 
 interface WpImageInterface {
@@ -21,24 +22,26 @@ const WpImage: React.FC<WpImageInterface> = ({
   loading = 'lazy',
   quality,
 }) => {
+  const { companySlug } = useAppContext();
   const qualityParam = quality ? `&quality=${quality}` : '';
+  const companySlugParam = `&companySlug=${companySlug}`;
   return (
     <picture>
       <source
         type={`image/${format}`}
-        srcSet={`${url}?format=${format}&width=${width}${qualityParam} 1x, ${url}?format=${format}&width=${
+        srcSet={`${url}?format=${format}&width=${width}${qualityParam}${companySlugParam} 1x, ${url}?format=${format}&width=${
           width * 2
-        }${qualityParam} 2x`}
+        }${qualityParam}${companySlugParam} 2x`}
       />
       <source
         type={'image/png'}
-        srcSet={`${url}?format=png&width=${width}${qualityParam} 1x, ${url}?format=png&width=${
+        srcSet={`${url}?format=png&width=${width}${qualityParam}${companySlugParam} 1x, ${url}?format=png&width=${
           width * 2
         }${qualityParam} 2x`}
       />
       <img
         className={className}
-        src={`${url}?format=png&width=${width}${qualityParam}`}
+        src={`${url}?format=png&width=${width}${qualityParam}${companySlugParam}`}
         alt={alt}
         title={title}
         width={width}

@@ -2,9 +2,10 @@ import * as React from 'react';
 
 interface LinkEmailInterface {
   value?: string | null;
+  className?: string;
 }
 
-const LinkEmail: React.FC<LinkEmailInterface> = ({ value }) => {
+const LinkEmail: React.FC<LinkEmailInterface> = ({ value, className }) => {
   if (!value) {
     return <div className='whitespace-nowrap'>Не указан</div>;
   }
@@ -12,7 +13,10 @@ const LinkEmail: React.FC<LinkEmailInterface> = ({ value }) => {
   return (
     <div className='whitespace-nowrap'>
       <a
-        className='text-primary-text no-underline cursor-default hover:cursor-default hover:no-underline'
+        className={
+          className ||
+          'text-primary-text no-underline cursor-default hover:cursor-default hover:no-underline'
+        }
         href={`mailto:${value}`}
       >
         {value}

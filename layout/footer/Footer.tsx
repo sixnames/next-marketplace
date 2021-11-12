@@ -1,6 +1,8 @@
 import Button from 'components/button/Button';
 import FakeInput from 'components/FormElements/Input/FakeInput';
 import Link from 'components/Link/Link';
+import LinkEmail from 'components/Link/LinkEmail';
+import LinkPhone from 'components/Link/LinkPhone';
 import Socials from 'components/Socials';
 import { ROUTE_BLOG_WITH_PAGE, ROUTE_CONTACTS, ROUTE_DOCS_PAGES } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
@@ -141,14 +143,11 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
               <div>
                 {(contactEmail || []).map((email) => {
                   return (
-                    <div key={email}>
-                      <a
-                        className='text-secondary-text hover:text-theme hover:no-underline lg:text-right'
-                        href={`mailTo:${email}`}
-                      >
-                        {email}
-                      </a>
-                    </div>
+                    <LinkEmail
+                      key={email}
+                      value={email}
+                      className='text-secondary-text hover:text-theme hover:no-underline lg:text-right'
+                    />
                   );
                 })}
               </div>
@@ -159,14 +158,14 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
             <div className='space-y-1'>
               {(phonesList || []).map((phone) => {
                 return (
-                  <div key={phone}>
-                    <a
-                      className='text-secondary-text hover:text-theme hover:no-underline'
-                      href={`tel:${phone}`}
-                    >
-                      {phoneToReadable(phone)}
-                    </a>
-                  </div>
+                  <LinkPhone
+                    key={phone}
+                    className='text-secondary-text hover:text-theme hover:no-underline'
+                    value={{
+                      raw: phone,
+                      readable: phoneToReadable(phone),
+                    }}
+                  />
                 );
               })}
             </div>

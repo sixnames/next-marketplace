@@ -488,6 +488,7 @@ const Catalogue: React.FC<CatalogueInterface> = ({
       </SiteLayout>
     );
   }
+  const pageText = catalogueData.page > 1 ? ` Страница ${catalogueData.page}` : '';
   const siteName = configs.siteName;
   const prefixConfig = configs.catalogueMetaPrefix;
   const prefix = prefixConfig ? ` ${prefixConfig}` : '';
@@ -499,8 +500,8 @@ const Catalogue: React.FC<CatalogueInterface> = ({
       urlPrefix={urlPrefix}
       currentCity={currentCity}
       domainCompany={domainCompany}
-      title={`${catalogueData.catalogueTitle}${subHeadText}`}
-      description={`${catalogueData.catalogueTitle}${subHeadText}`}
+      title={`${catalogueData.catalogueTitle}${subHeadText}.${pageText}`}
+      description={`${catalogueData.catalogueTitle}${subHeadText}.${pageText}`}
       {...props}
     >
       <CatalogueConsumer

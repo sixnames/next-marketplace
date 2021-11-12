@@ -1,6 +1,10 @@
 import {
   ASSETS_DIST,
+  ASSETS_DIST_BLOG,
+  ASSETS_DIST_BLOG_CONTENT,
+  ASSETS_DIST_PAGES,
   ASSETS_DIST_PRODUCTS,
+  ASSETS_DIST_SEO,
   IMAGE_FALLBACK,
   IMAGE_FALLBACK_BOTTLE,
 } from 'config/common';
@@ -10,22 +14,59 @@ import { alwaysArray } from 'lib/arrayUtils';
 import mkdirp from 'mkdirp';
 import extName from 'ext-name';
 import rimraf from 'rimraf';
-import sharp, { AvailableFormatInfo, FormatEnum } from 'sharp';
+import sharp, {
+  AvailableFormatInfo,
+  AvifOptions,
+  FormatEnum,
+  GifOptions,
+  HeifOptions,
+  JpegOptions,
+  OutputOptions,
+  PngOptions,
+  TiffOptions,
+  WebpOptions,
+} from 'sharp';
 import fs from 'fs';
 import path from 'path';
 import { promisify } from 'util';
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
 
+export function checkIfWatermarkNeeded(filePath: string): boolean {
+  const watermarkDirectories = [
+    ASSETS_DIST_PRODUCTS,
+    ASSETS_DIST_BLOG,
+    ASSETS_DIST_BLOG_CONTENT,
+    ASSETS_DIST_PAGES,
+    ASSETS_DIST_SEO,
+  ];
+  const pathArr = filePath.split('/');
+  const showWatermark = pathArr.some((pathPart) => {
+    return watermarkDirectories.includes(pathPart);
+  });
+
+  return showWatermark;
+}
+
 interface GetSharpImageInterface {
   filePath: string;
   format?: keyof FormatEnum | AvailableFormatInfo;
   width?: number;
+  quality?: number;
+  showWatermark: boolean;
+  watermarkPath: string;
 }
 
-export async function getSharpImage({ filePath, format = 'webp', width }: GetSharpImageInterface) {
+export async function getSharpImage({
+  filePath,
+  format = 'webp',
+  width,
+  quality,
+  showWatermark,
+  watermarkPath,
+}: GetSharpImageInterface) {
   try {
-    const watermarkDirectories = [ASSETS_DIST_PRODUCTS];
+    const defaultImageQuality = 40;
     const dist = path.join(process.cwd(), filePath);
 
     const exists = fs.existsSync(dist);
@@ -34,20 +75,36 @@ export async function getSharpImage({ filePath, format = 'webp', width }: GetSha
     }
 
     let transform = sharp(dist);
-    if (format) {
-      transform = transform.toFormat(format);
-    }
 
+    // set image size
     if (width) {
       transform = transform.resize(width);
     }
-    const pathArr = filePath.split('/');
-    const showWatermark = pathArr.some((pathPart) => {
-      return watermarkDirectories.includes(pathPart);
-    });
+
+    // set format and quality
+    if (format) {
+      let options:
+        | undefined
+        | OutputOptions
+        | JpegOptions
+        | PngOptions
+        | WebpOptions
+        | AvifOptions
+        | HeifOptions
+        | GifOptions
+        | TiffOptions = undefined;
+      if (showWatermark || quality) {
+        options = {
+          quality: quality || defaultImageQuality,
+        };
+      }
+      transform = transform.toFormat(format, options);
+    }
+
+    // add watermark if needed
     if (showWatermark) {
-      const watermarkDist = path.join(process.cwd(), 'public/watermark.png');
-      const watermarkBuffer = await sharp(watermarkDist).toBuffer();
+      const watermarkDist = path.join(process.cwd(), watermarkPath);
+      const watermarkBuffer = await sharp(watermarkDist).resize(80).toBuffer();
       transform.composite([
         {
           input: watermarkBuffer,

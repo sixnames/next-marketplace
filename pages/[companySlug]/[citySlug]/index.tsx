@@ -393,7 +393,6 @@ const Home: NextPage<HomeInterface> = ({
 };
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
-  // context: GetStaticPathsContext,
   const paths: any[] = [];
   return {
     paths,

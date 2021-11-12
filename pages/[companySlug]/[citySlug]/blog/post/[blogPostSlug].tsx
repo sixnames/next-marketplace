@@ -4,15 +4,11 @@ import Icon from 'components/Icon';
 import Inner from 'components/Inner';
 import PageEditor from 'components/PageEditor';
 import WpTooltip from 'components/WpTooltip';
-import {
-  FILTER_SEPARATOR,
-  ROUTE_BLOG_WITH_PAGE,
-  SORT_DESC,
-  VIEWS_COUNTER_STEP,
-} from 'config/common';
+import { FILTER_SEPARATOR, ROUTE_BLOG_WITH_PAGE, SORT_DESC } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { useConfigContext } from 'context/configContext';
 import { useLocaleContext } from 'context/localeContext';
+import { useSiteContext } from 'context/siteContext';
 import { useSiteUserContext } from 'context/userSiteUserContext';
 import {
   COL_BLOG_ATTRIBUTES,
@@ -21,18 +17,17 @@ import {
   COL_OPTIONS,
   COL_USERS,
 } from 'db/collectionNames';
-import { getPageSessionUser } from 'db/dao/user/getPageSessionUser';
 import { getDatabase } from 'db/mongodb';
 import { BlogAttributeInterface, BlogPostInterface, OptionInterface } from 'db/uiInterfaces';
 import { useCreateBlogPostLike } from 'hooks/mutations/useBlogMutations';
 import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getIsrSiteInitialData, IsrContextInterface } from 'lib/isrUtils';
 import { getFullName } from 'lib/nameUtils';
 import { noNaN } from 'lib/numbers';
-import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
-import { ObjectId } from 'mongodb';
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import { BlogListSnippetTags } from 'pages/blog/[...filters]';
+import { castDbData } from 'lib/ssrUtils';
+import { GetStaticPathsResult, GetStaticPropsResult } from 'next';
+import { BlogListSnippetTags } from 'pages/[companySlug]/[citySlug]/blog/[...filters]';
 import * as React from 'react';
 
 interface BlogListSnippetMetaInterface {
@@ -91,10 +86,24 @@ interface BlogPostPageConsumerInterface {
 
 const BlogPostPageConsumer: React.FC<BlogPostPageConsumerInterface> = ({ post }) => {
   const { locale } = useLocaleContext();
+  const { urlPrefix } = useSiteContext();
+  const sessionUser = useSiteUserContext();
   const blogLinkName = getConstantTranslation(`nav.blog.${locale}`);
+  const [isLikeAllowed, setIsLikeAllowed] = React.useState<boolean>(false);
+
+  React.useCallback(() => {
+    const likedBySessionUser = (post.likes || []).some((like) => {
+      return sessionUser && like.userId === sessionUser.me._id;
+    });
+    const isLikeAllowed = Boolean(sessionUser && !likedBySessionUser);
+
+    setIsLikeAllowed(isLikeAllowed);
+  }, [post.likes, sessionUser]);
+
   return (
     <div className='mb-12'>
       <Breadcrumbs
+        urlPrefix={urlPrefix}
         currentPageName={`${post.title}`}
         config={[
           {
@@ -110,7 +119,7 @@ const BlogPostPageConsumer: React.FC<BlogPostPageConsumerInterface> = ({ post })
             createdAt={post.createdAt}
             likesCount={post.likesCount}
             viewsCount={post.views}
-            isLikeAllowed={post.isLikeAllowed}
+            isLikeAllowed={isLikeAllowed}
           />
         </div>
         <div className='mb-8'>
@@ -138,16 +147,23 @@ const BlogPostPage: React.FC<BlogPostPageInterface> = ({ post, ...props }) => {
   );
 };
 
-export const getServerSideProps = async (
-  context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<BlogPostPageInterface>> => {
-  const { query } = context;
-  const { blogPostSlug } = query;
-  const { props } = await getSiteInitialData({
+export async function getStaticPaths(): Promise<GetStaticPathsResult> {
+  const paths: any[] = [];
+  return {
+    paths,
+    fallback: 'blocking',
+  };
+}
+
+export const getStaticProps = async (
+  context: IsrContextInterface,
+): Promise<GetStaticPropsResult<BlogPostPageInterface>> => {
+  const { params } = context;
+  const { props } = await getIsrSiteInitialData({
     context,
   });
 
-  if (!props || !props.initialData.configs.showBlog || !blogPostSlug) {
+  if (!props || !props.initialData.configs.showBlog || !params?.blogPostSlug) {
     return {
       notFound: true,
     };
@@ -168,7 +184,7 @@ export const getServerSideProps = async (
       {
         $match: {
           companySlug: props.companySlug,
-          slug: blogPostSlug,
+          slug: params.blogPostSlug,
         },
       },
 
@@ -362,7 +378,8 @@ export const getServerSideProps = async (
 
   // update post counter
   // Session user
-  const sessionUser = await getPageSessionUser({
+  // TODO update blog counter api route
+  /*const sessionUser = await getPageSessionUser({
     context,
     locale: props.sessionLocale,
   });
@@ -376,7 +393,7 @@ export const getServerSideProps = async (
         },
       },
     );
-  }
+  }*/
 
   const postOptions: OptionInterface[] = [];
 
@@ -420,18 +437,12 @@ export const getServerSideProps = async (
     [],
   );
 
-  const likedBySessionUser = (initialPost.likes || []).some((like) => {
-    return sessionUser && like.userId.equals(new ObjectId(sessionUser.me._id));
-  });
-
   const post: BlogPostInterface = {
     ...initialPost,
     title: getFieldStringLocale(initialPost.titleI18n, props.sessionLocale),
     description: getFieldStringLocale(initialPost.descriptionI18n, props.sessionLocale),
     attributes,
     options: postOptions,
-    isLikeAllowed: sessionUser && !likedBySessionUser,
-    likedBySessionUser,
     author: initialPost.author
       ? {
           ...initialPost.author,

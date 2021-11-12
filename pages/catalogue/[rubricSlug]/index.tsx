@@ -22,7 +22,7 @@ export async function getServerSideProps(
 
   return {
     redirect: {
-      destination: `/${props.urlPrefix}${ROUTE_CATALOGUE}/${context.query.rubricSlug}`,
+      destination: `${props.urlPrefix}${ROUTE_CATALOGUE}/${context.query.rubricSlug}`,
       permanent: true,
     },
   };

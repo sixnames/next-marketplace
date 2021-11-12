@@ -15,20 +15,19 @@ import {
   ROUTE_BLOG_POST,
   ROUTE_BLOG_WITH_PAGE,
   SORT_DESC,
-  VIEWS_COUNTER_STEP,
   ROUTE_BLOG,
   IMAGE_FALLBACK,
 } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { useConfigContext } from 'context/configContext';
 import { useLocaleContext } from 'context/localeContext';
+import { useSiteContext } from 'context/siteContext';
 import {
   COL_BLOG_ATTRIBUTES,
   COL_BLOG_LIKES,
   COL_BLOG_POSTS,
   COL_OPTIONS,
 } from 'db/collectionNames';
-import { getPageSessionUser } from 'db/dao/user/getPageSessionUser';
 import { AttributeViewVariantModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -42,10 +41,11 @@ import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { castCatalogueFilters, castCatalogueParamToObject } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getIsrSiteInitialData, IsrContextInterface } from 'lib/isrUtils';
 import { noNaN } from 'lib/numbers';
-import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
+import { castDbData } from 'lib/ssrUtils';
 import Head from 'next/head';
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import { GetStaticPathsResult, GetStaticPropsResult } from 'next';
 import * as React from 'react';
 
 interface BlogListSnippetMetaInterface {
@@ -98,6 +98,7 @@ export const BlogListSnippetTags: React.FC<BlogListSnippetTagsInterface> = ({
   attributes,
   theme,
 }) => {
+  const { urlPrefix } = useSiteContext();
   if (!attributes) {
     return null;
   }
@@ -113,7 +114,7 @@ export const BlogListSnippetTags: React.FC<BlogListSnippetTagsInterface> = ({
               return (
                 <TagLink
                   size={'small'}
-                  href={`${ROUTE_BLOG}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`}
+                  href={`${urlPrefix}${ROUTE_BLOG}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`}
                   theme={theme}
                   key={`${option._id}`}
                 >
@@ -136,6 +137,7 @@ interface BlogListSnippetInterface {
 }
 
 const BlogListSnippet: React.FC<BlogListSnippetInterface> = ({ post, showViews }) => {
+  const { urlPrefix } = useSiteContext();
   return (
     <div className={`${snippetClassName} flex flex-col`}>
       {/*image*/}
@@ -149,7 +151,7 @@ const BlogListSnippet: React.FC<BlogListSnippetInterface> = ({ post, showViews }
         <Link
           testId={`${post.title}-image-link`}
           className='block absolute z-20 inset-0 text-indent-full'
-          href={`${ROUTE_BLOG_POST}/${post.slug}`}
+          href={`${urlPrefix}${ROUTE_BLOG_POST}/${post.slug}`}
         >
           {post.title}
         </Link>
@@ -188,6 +190,7 @@ const BlogListSnippet: React.FC<BlogListSnippetInterface> = ({ post, showViews }
 };
 
 const BlogListMainSnippet: React.FC<BlogListSnippetInterface> = ({ post, showViews }) => {
+  const { urlPrefix } = useSiteContext();
   return (
     <div className={`${snippetClassName} min-h-[300px] sm:col-span-2`}>
       <img
@@ -222,7 +225,7 @@ const BlogListMainSnippet: React.FC<BlogListSnippetInterface> = ({ post, showVie
       <Link
         testId={`${post.title}-image-link`}
         className='block absolute z-20 inset-0 text-indent-full'
-        href={`${ROUTE_BLOG_POST}/${post.slug}`}
+        href={`${urlPrefix}${ROUTE_BLOG_POST}/${post.slug}`}
       >
         {post.title}
       </Link>
@@ -231,6 +234,8 @@ const BlogListMainSnippet: React.FC<BlogListSnippetInterface> = ({ post, showVie
 };
 
 const BlogListTopSnippet: React.FC<BlogListSnippetInterface> = ({ post, showViews }) => {
+  const { urlPrefix } = useSiteContext();
+
   return (
     <div className='py-4'>
       {/*title*/}
@@ -238,7 +243,7 @@ const BlogListTopSnippet: React.FC<BlogListSnippetInterface> = ({ post, showView
         <Link
           testId={`${post.title}-title-link`}
           className='block text-primary-text hover:no-underline'
-          href={`${ROUTE_BLOG_POST}/${post.slug}`}
+          href={`${urlPrefix}${ROUTE_BLOG_POST}/${post.slug}`}
         >
           {post.title}
         </Link>
@@ -266,6 +271,7 @@ const BlogFilterAttribute: React.FC<BlogFilterAttributeInterface> = ({
   attribute,
   attributeIndex,
 }) => {
+  const { urlPrefix } = useSiteContext();
   const { name, clearSlug, options, isSelected } = attribute;
 
   return (
@@ -273,7 +279,7 @@ const BlogFilterAttribute: React.FC<BlogFilterAttributeInterface> = ({
       <div className='flex items-baseline justify-between mb-4'>
         <span className='text-lg font-bold'>{name}</span>
         {isSelected ? (
-          <Link href={clearSlug} className='font-medium text-theme'>
+          <Link href={`${urlPrefix}${clearSlug}`} className='font-medium text-theme'>
             Очистить
           </Link>
         ) : null}
@@ -282,7 +288,15 @@ const BlogFilterAttribute: React.FC<BlogFilterAttributeInterface> = ({
       <div className='flex flex-wrap gap-2'>
         {options.map((option, optionIndex) => {
           const testId = `catalogue-option-${attributeIndex}-${optionIndex}`;
-          return <FilterLink size={'small'} option={option} key={option.slug} testId={testId} />;
+          return (
+            <FilterLink
+              urlPrefix={urlPrefix}
+              size={'small'}
+              option={option}
+              key={option.slug}
+              testId={testId}
+            />
+          );
         })}
       </div>
     </div>
@@ -417,10 +431,18 @@ const BlogListPage: React.FC<BlogListPageInterface> = ({
   );
 };
 
-export const getServerSideProps = async (
-  context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<BlogListPageInterface>> => {
-  const { props } = await getSiteInitialData({
+export async function getStaticPaths(): Promise<GetStaticPathsResult> {
+  const paths: any[] = [];
+  return {
+    paths,
+    fallback: 'blocking',
+  };
+}
+
+export const getStaticProps = async (
+  context: IsrContextInterface,
+): Promise<GetStaticPropsResult<BlogListPageInterface>> => {
+  const { props } = await getIsrSiteInitialData({
     context,
   });
 
@@ -430,7 +452,7 @@ export const getServerSideProps = async (
     };
   }
 
-  const filters = alwaysArray(context.query.filters);
+  const filters = alwaysArray(context.params?.filters);
 
   // Cast selected filters
   const { realFilterOptions, noFiltersSelected } = castCatalogueFilters({
@@ -441,8 +463,6 @@ export const getServerSideProps = async (
 
   const { db } = await getDatabase();
   const blogPostsCollection = db.collection<BlogPostInterface>(COL_BLOG_POSTS);
-  const optionsCollection = db.collection<OptionInterface>(COL_OPTIONS);
-  const blogAttributesCollection = db.collection<BlogAttributeInterface>(COL_BLOG_ATTRIBUTES);
   const basePath = ROUTE_BLOG_WITH_PAGE;
 
   const viewsStage = {
@@ -782,7 +802,8 @@ export const getServerSideProps = async (
 
   // update counters
   // Session user
-  const sessionUser = await getPageSessionUser({
+  // TODO update blog attribute counters api route
+  /*const sessionUser = await getPageSessionUser({
     context,
     locale: props.sessionLocale,
   });
@@ -816,7 +837,7 @@ export const getServerSideProps = async (
         counterUpdater,
       );
     }
-  }
+  }*/
 
   const topPostsLimit = 5;
   const topPosts = [...posts]

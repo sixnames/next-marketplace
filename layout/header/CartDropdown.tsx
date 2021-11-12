@@ -32,7 +32,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
   const router = useRouter();
   const { configs } = useConfigContext();
   const { showErrorNotification } = useNotificationsContext();
-  const { deleteProductFromCart, updateProductInCart, clearCart } = useSiteContext();
+  const { deleteProductFromCart, updateProductInCart, clearCart, urlPrefix } = useSiteContext();
   const { productsCount, cartProducts, formattedTotalPrice } = cart;
   const minAmount = 1;
 
@@ -214,7 +214,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
           testId={'cart-dropdown-continue'}
           className='lg:w-full'
           onClick={() => {
-            router.push(`/cart`).catch(() => {
+            router.push(`${urlPrefix}/cart`).catch(() => {
               showErrorNotification();
             });
           }}

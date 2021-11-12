@@ -46,6 +46,7 @@ interface HeaderProfileLinkInterface {
 }
 
 const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => {
+  const { urlPrefix } = useSiteContext();
   const signOut = useSignOut();
   const sessionUser = useSiteUserContext();
 
@@ -76,7 +77,7 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
                       <Link
                         testId={`${testId}-user-dropdown-profile-link`}
                         className='flex items-center min-h-[3rem] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme hover:no-underline cursor-pointer no-underline'
-                        href={ROUTE_PROFILE}
+                        href={`${urlPrefix}${ROUTE_PROFILE}`}
                       >
                         <span>Личный кабинет</span>
                       </Link>
@@ -130,7 +131,7 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
     <Link
       ariaLabel={'Войти'}
       testId={`${testId}-sign-in-link`}
-      href={ROUTE_SIGN_IN}
+      href={`${urlPrefix}${ROUTE_SIGN_IN}`}
       className={`${middleLinkClassName} pr-2 pl-2`}
     >
       <span className={`relative`}>
@@ -319,7 +320,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                     return (
                       <li className='' key={`${page._id}`}>
                         <Link
-                          href={`${ROUTE_DOCS_PAGES}/${page.slug}`}
+                          href={`${urlPrefix}${ROUTE_DOCS_PAGES}/${page.slug}`}
                           onClick={hideBurgerDropdown}
                           className={`flex items-center h-10 text-secondary-text`}
                         >
@@ -333,7 +334,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                     <li className=''>
                       <div className=''>
                         <Link
-                          href={ROUTE_CONTACTS}
+                          href={`${urlPrefix}${ROUTE_CONTACTS}`}
                           onClick={hideBurgerDropdown}
                           className={`flex items-center h-10 text-secondary-text`}
                         >
@@ -351,7 +352,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
             <div className='relative mb-8'>
               <Link
                 target={'_blank'}
-                href={ROUTE_BLOG_WITH_PAGE}
+                href={`${urlPrefix}${ROUTE_BLOG_WITH_PAGE}`}
                 onClick={hideBurgerDropdown}
                 className={`flex items-center justify-between text-lg mb-3 font-medium flex-grow text-primary-text`}
               >
@@ -453,7 +454,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
                             <Link
                               target={'_blank'}
                               className='block py-1.5 px-3 text-primary-text hover:no-underline hover:text-theme'
-                              href={`${ROUTE_DOCS_PAGES}/${slug}`}
+                              href={`${urlPrefix}${ROUTE_DOCS_PAGES}/${slug}`}
                             >
                               {name}
                             </Link>
@@ -466,7 +467,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
                           <Link
                             target={'_blank'}
                             className='block py-1.5 px-3 text-primary-text hover:no-underline hover:text-theme'
-                            href={ROUTE_CONTACTS}
+                            href={`${urlPrefix}${ROUTE_CONTACTS}`}
                           >
                             {contactsLinkName}
                           </Link>
@@ -481,7 +482,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
                   target={'_blank'}
                   className='flex items-center h-[30px] text-secondary-text hover:no-underline hover:text-theme'
                   style={topTextColorStyle}
-                  href={ROUTE_BLOG_WITH_PAGE}
+                  href={`${urlPrefix}${ROUTE_BLOG_WITH_PAGE}`}
                 >
                   {blogLinkName}
                 </Link>

@@ -19,11 +19,10 @@ export async function getServerSideProps(
   const filtersPath = filters.join('/');
   return {
     redirect: {
-      destination: `/${props.urlPrefix}${ROUTE_CATALOGUE}/${context.query.rubricSlug}/${filtersPath}`,
+      destination: `${props.urlPrefix}${ROUTE_CATALOGUE}/${context.query.rubricSlug}/${filtersPath}`,
       permanent: true,
     },
   };
-  // return getCatalogueServerSideProps(context);
 }
 
 export default CataloguePage;

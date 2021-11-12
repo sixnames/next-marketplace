@@ -1,7 +1,13 @@
 import { DEFAULT_COMPANY_SLUG, ROUTE_CATALOGUE } from 'config/common';
-import { COL_COMPANIES, COL_LANGUAGES, COL_PRODUCTS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
+import {
+  COL_CITIES,
+  COL_COMPANIES,
+  COL_LANGUAGES,
+  COL_PRODUCTS,
+  COL_SHOP_PRODUCTS,
+} from 'db/collectionNames';
 import { noImageStage } from 'db/dao/constantPipelines';
-import { CompanyModel, LanguageModel, ShopProductModel } from 'db/dbModels';
+import { CityModel, CompanyModel, LanguageModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { GetServerSidePropsContext } from 'next';
 import * as React from 'react';
@@ -45,107 +51,111 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { db } = await getDatabase();
   const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+  const citiesCollection = db.collection<CityModel>(COL_CITIES);
   const host = `${context.req.headers.host}`;
   const domain = getDomain(host, { validHosts: ['localhost'] });
 
   // Session company
   let company: CompanyModel | null | undefined = null;
   if (domain && process.env.DEFAULT_DOMAIN && domain !== process.env.DEFAULT_DOMAIN) {
-    const { db } = await getDatabase();
     company = await db.collection<CompanyModel>(COL_COMPANIES).findOne({ domain });
   }
 
-  const urlPrefix = company?.slug || DEFAULT_COMPANY_SLUG;
+  const cities = await citiesCollection.find({}).toArray();
 
-  const companyRubricsMatch = company ? { companyId: company._id } : {};
-  const productOptionsAggregation = await shopProductsCollection
-    .aggregate<SlugsAggregationInterface>([
-      {
-        $match: {
-          ...companyRubricsMatch,
-          ...noImageStage,
-        },
-      },
-      {
-        $group: {
-          _id: '$rubricSlug',
-          productIds: {
-            $addToSet: '$productId',
+  for await (const city of cities) {
+    const companySlug = company?.slug || DEFAULT_COMPANY_SLUG;
+    const urlPrefix = `${companySlug}/${city.slug}`;
+
+    const companyRubricsMatch = company ? { companyId: company._id } : {};
+    const productOptionsAggregation = await shopProductsCollection
+      .aggregate<SlugsAggregationInterface>([
+        {
+          $match: {
+            ...companyRubricsMatch,
+            ...noImageStage,
           },
         },
-      },
-      {
-        $lookup: {
-          from: COL_PRODUCTS,
-          as: 'products',
-          let: {
-            productIds: '$productIds',
+        {
+          $group: {
+            _id: '$rubricSlug',
+            productIds: {
+              $addToSet: '$productId',
+            },
           },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $in: ['$_id', '$$productIds'],
+        },
+        {
+          $lookup: {
+            from: COL_PRODUCTS,
+            as: 'products',
+            let: {
+              productIds: '$productIds',
+            },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $in: ['$_id', '$$productIds'],
+                  },
                 },
               },
-            },
-            {
-              $project: {
-                slug: true,
+              {
+                $project: {
+                  slug: true,
+                },
               },
-            },
-          ],
-        },
-      },
-      {
-        $unwind: {
-          path: '$products',
-          preserveNullAndEmptyArrays: true,
-        },
-      },
-      {
-        $group: {
-          _id: '$_id',
-          productSlugs: {
-            $addToSet: '$products.slug',
+            ],
           },
         },
-      },
-    ])
-    .toArray();
+        {
+          $unwind: {
+            path: '$products',
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $group: {
+            _id: '$_id',
+            productSlugs: {
+              $addToSet: '$products.slug',
+            },
+          },
+        },
+      ])
+      .toArray();
 
-  productOptionsAggregation.forEach((template) => {
-    const { _id, productSlugs } = template;
+    productOptionsAggregation.forEach((template) => {
+      const { _id, productSlugs } = template;
 
-    // rubric
-    initialSlugs.push(`${urlPrefix}${ROUTE_CATALOGUE}/${_id}`);
+      // rubric
+      initialSlugs.push(`${urlPrefix}${ROUTE_CATALOGUE}/${_id}`);
 
-    // products
-    productSlugs.forEach((slug) => {
-      console.log(slug);
-      initialSlugs.push(`${urlPrefix}/${slug}`);
-    });
-  });
-
-  // Get site languages
-  const languages = await languagesCollection.find({}).toArray();
-  const locales = languages.map(({ slug }) => slug);
-
-  // Get slugs with locales
-  if (locales.length > 1) {
-    locales.forEach((locale) => {
-      initialSlugs.forEach((slug) => {
-        if (locale === `${defaultLocale}`) {
-          slugsWithLocales.push(slug);
-        } else {
-          slugsWithLocales.push(`${locale}/${slug}`);
-        }
+      // products
+      productSlugs.forEach((slug) => {
+        initialSlugs.push(`${urlPrefix}/${slug}`);
       });
     });
-  } else {
-    initialSlugs.forEach((slug) => {
-      slugsWithLocales.push(slug);
-    });
+
+    // Get site languages
+    const languages = await languagesCollection.find({}).toArray();
+    const locales = languages.map(({ slug }) => slug);
+
+    // Get slugs with locales
+    if (locales.length > 1) {
+      locales.forEach((locale) => {
+        initialSlugs.forEach((slug) => {
+          if (locale === `${defaultLocale}`) {
+            slugsWithLocales.push(slug);
+          } else {
+            slugsWithLocales.push(`${locale}/${slug}`);
+          }
+        });
+      });
+    } else {
+      initialSlugs.forEach((slug) => {
+        slugsWithLocales.push(slug);
+      });
+    }
   }
 
   res.setHeader('Content-Type', 'text/xml');

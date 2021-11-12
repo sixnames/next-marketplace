@@ -7,9 +7,10 @@ import { getDatabase } from 'db/mongodb';
 import { PageInterface } from 'db/uiInterfaces';
 import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getIsrSiteInitialData, IsrContextInterface } from 'lib/isrUtils';
 import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
+import { GetStaticPathsResult, GetStaticPropsResult, NextPage } from 'next';
+import { castDbData } from 'lib/ssrUtils';
 
 interface CreatedPageConsumerInterface {
   page: PageInterface;
@@ -41,16 +42,23 @@ const CreatedPage: NextPage<CreatedPageInterface> = ({ page, ...props }) => {
   );
 };
 
-export async function getServerSideProps(
-  context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<CreatedPageInterface>> {
-  const { query } = context;
-  const { pageSlug } = query;
-  const { props } = await getSiteInitialData({
+export async function getStaticPaths(): Promise<GetStaticPathsResult> {
+  const paths: any[] = [];
+  return {
+    paths,
+    fallback: 'blocking',
+  };
+}
+
+export async function getStaticProps(
+  context: IsrContextInterface,
+): Promise<GetStaticPropsResult<CreatedPageInterface>> {
+  const { params } = context;
+  const { props } = await getIsrSiteInitialData({
     context,
   });
 
-  if (!props || !pageSlug) {
+  if (!props || !params?.pageSlug) {
     return {
       notFound: true,
     };
@@ -59,7 +67,7 @@ export async function getServerSideProps(
   const { db } = await getDatabase();
   const pagesCollection = db.collection<PageInterface>(COL_PAGES);
   const initialPage = await pagesCollection.findOne({
-    slug: `${pageSlug}`,
+    slug: `${params?.pageSlug}`,
     citySlug: props.sessionCity,
     companySlug: props.companySlug,
     state: PAGE_STATE_PUBLISHED,

@@ -3,9 +3,11 @@ import { FormattedPhone } from 'generated/apolloComponents';
 
 interface PhoneLinkInterface {
   value?: FormattedPhone | null;
+  className?: string;
+  style?: React.CSSProperties;
 }
 
-const LinkPhone: React.FC<PhoneLinkInterface> = ({ value }) => {
+const LinkPhone: React.FC<PhoneLinkInterface> = ({ value, style, className }) => {
   if (!value) {
     return <div className='whitespace-nowrap'>Не указан</div>;
   }
@@ -13,7 +15,11 @@ const LinkPhone: React.FC<PhoneLinkInterface> = ({ value }) => {
   return (
     <div className='whitespace-nowrap'>
       <a
-        className='text-primary-text no-underline cursor-default hover:cursor-default hover:no-underline'
+        style={style}
+        className={
+          className ||
+          'text-primary-text no-underline cursor-default hover:cursor-default hover:no-underline'
+        }
         href={`tel:${value.raw}`}
       >
         {value.readable}

@@ -4,14 +4,15 @@ import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
 import TextSeoInfo from 'components/TextSeoInfo';
 import Title from 'components/Title';
-import { FILTER_CATEGORY_KEY, FILTER_SEPARATOR } from 'config/common';
+import { FILTER_CATEGORY_KEY, FILTER_SEPARATOR, ROUTE_CATALOGUE } from 'config/common';
 import { useSiteContext } from 'context/siteContext';
 import { useSiteUserContext } from 'context/userSiteUserContext';
 import { TextUniquenessApiParsedResponseModel } from 'db/dbModels';
+import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 
-const minCategiriesCount = 1;
+const minCategoriesCount = 1;
 
 const CatalogueHeadWithCategories: React.FC<CatalogueHeadDefaultInterface> = ({
   catalogueCounterString,
@@ -22,7 +23,7 @@ const CatalogueHeadWithCategories: React.FC<CatalogueHeadDefaultInterface> = ({
   breadcrumbs,
   headCategories,
 }) => {
-  const router = useRouter();
+  const { query } = useRouter();
   const { urlPrefix } = useSiteContext();
   const sessionUser = useSiteUserContext();
 
@@ -38,13 +39,35 @@ const CatalogueHeadWithCategories: React.FC<CatalogueHeadDefaultInterface> = ({
           {catalogueTitle}
         </Title>
 
-        {headCategories && headCategories.length > minCategiriesCount ? (
+        {headCategories && headCategories.length > minCategoriesCount ? (
           <div className='flex flex-wrap justify-center gap-8 mt-8 mb-8'>
             {headCategories.map(({ _id, icon, name, slug }) => {
+              const companySlug = alwaysString(query.companySlug);
+              const rubricSlug = alwaysString(query.rubricSlug);
+              const categoryFilter = `${FILTER_CATEGORY_KEY}${FILTER_SEPARATOR}${slug}`;
+
+              const otherCategoryFiltersArray = alwaysArray(query.filters).reduce(
+                (acc: string[], filter) => {
+                  const filterParts = alwaysString(filter).split(FILTER_SEPARATOR);
+                  if (filterParts[0] === FILTER_CATEGORY_KEY) {
+                    return [...acc, filter];
+                  }
+                  return acc;
+                },
+                [],
+              );
+
+              const otherCategoryFilters =
+                otherCategoryFiltersArray.length > 0
+                  ? `/${otherCategoryFiltersArray.join('/')}`
+                  : '';
+
+              const href = `/${companySlug}${ROUTE_CATALOGUE}/${rubricSlug}${otherCategoryFilters}/${categoryFilter}/`;
+
               return (
                 <Link
                   className='flex flex-col text-secondary-text items-center gap-2 max-w-[160px] hover:no-underline hover:text-theme'
-                  href={`${router.asPath}/${FILTER_CATEGORY_KEY}${FILTER_SEPARATOR}${slug}`}
+                  href={href}
                   key={`${_id}`}
                 >
                   {icon ? (

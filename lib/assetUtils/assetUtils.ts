@@ -1,4 +1,9 @@
-import { ASSETS_DIST, IMAGE_FALLBACK, IMAGE_FALLBACK_BOTTLE } from 'config/common';
+import {
+  ASSETS_DIST,
+  ASSETS_DIST_PRODUCTS,
+  IMAGE_FALLBACK,
+  IMAGE_FALLBACK_BOTTLE,
+} from 'config/common';
 import Formidable from 'formidable';
 import { AssetModel } from 'db/dbModels';
 import { alwaysArray } from 'lib/arrayUtils';
@@ -20,6 +25,7 @@ interface GetSharpImageInterface {
 
 export async function getSharpImage({ filePath, format = 'webp', width }: GetSharpImageInterface) {
   try {
+    const watermarkDirectories = [ASSETS_DIST_PRODUCTS];
     const dist = path.join(process.cwd(), filePath);
 
     const exists = fs.existsSync(dist);
@@ -34,6 +40,21 @@ export async function getSharpImage({ filePath, format = 'webp', width }: GetSha
 
     if (width) {
       transform = transform.resize(width);
+    }
+    const pathArr = filePath.split('/');
+    const showWatermark = pathArr.some((pathPart) => {
+      return watermarkDirectories.includes(pathPart);
+    });
+    if (showWatermark) {
+      const watermarkDist = path.join(process.cwd(), 'public/watermark.png');
+      const watermarkBuffer = await sharp(watermarkDist).toBuffer();
+      transform.composite([
+        {
+          input: watermarkBuffer,
+          tile: true,
+          blend: 'atop',
+        },
+      ]);
     }
 
     return transform.toBuffer();

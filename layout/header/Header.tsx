@@ -1,6 +1,7 @@
 import { Disclosure, Popover } from '@headlessui/react';
 import ButtonCross from 'components/button/ButtonCross';
 import LanguageTrigger from 'components/LanguageTrigger';
+import LinkPhone from 'components/Link/LinkPhone';
 import ThemeTrigger from 'components/ThemeTrigger';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { useLocaleContext } from 'context/localeContext';
@@ -489,13 +490,14 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
 
             <div className='flex gap-6 items-center'>
               {callbackPhone ? (
-                <a
-                  className='text-secondary-text'
-                  href={`tel:${callbackPhone}`}
+                <LinkPhone
                   style={topTextColorStyle}
-                >
-                  {phoneToReadable(callbackPhone)}
-                </a>
+                  className='text-secondary-text'
+                  value={{
+                    raw: callbackPhone,
+                    readable: phoneToReadable(callbackPhone),
+                  }}
+                />
               ) : null}
 
               <ThemeTrigger style={topTextColorStyle} />

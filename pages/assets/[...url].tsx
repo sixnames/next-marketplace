@@ -1,4 +1,4 @@
-import { ASSETS_DIST, ONE_WEEK } from 'config/common';
+import { ASSETS_DIST, IMAGE_FALLBACK, ONE_WEEK } from 'config/common';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { getSharpImage } from 'lib/assetUtils/assetUtils';
 import { noNaN } from 'lib/numbers';
@@ -41,6 +41,28 @@ export async function getServerSideProps(
     initialFileFormat === 'ico'
   ) {
     const dist = path.join(process.cwd(), filePath);
+    const exists = fs.existsSync(dist);
+    if (!exists) {
+      const file = await getSharpImage({
+        filePath: IMAGE_FALLBACK,
+        format: 'webp',
+        width: noNaN(widthString),
+      });
+
+      if (!file) {
+        return {
+          props: {},
+          notFound: true,
+        };
+      }
+
+      res.write(file);
+      res.end();
+      return {
+        props: {},
+      };
+    }
+
     const contentType = initialFileFormat === 'ico' ? 'image/ico' : 'image/svg+xml';
     const stat = fs.statSync(dist);
     res.setHeader('Content-Type', contentType);
@@ -61,7 +83,20 @@ export async function getServerSideProps(
     width: noNaN(widthString),
   });
 
-  if (file) {
+  if (!file) {
+    const file = await getSharpImage({
+      filePath: IMAGE_FALLBACK,
+      format,
+      width: noNaN(widthString),
+    });
+
+    if (!file) {
+      return {
+        props: {},
+        notFound: true,
+      };
+    }
+
     res.write(file);
     res.end();
     return {
@@ -69,9 +104,10 @@ export async function getServerSideProps(
     };
   }
 
+  res.write(file);
+  res.end();
   return {
     props: {},
-    notFound: true,
   };
 }
 

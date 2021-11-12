@@ -1,3 +1,4 @@
+import LinkPhone from 'components/Link/LinkPhone';
 import WpImage from 'components/WpImage';
 import WpMap from 'components/WpMap';
 import { useThemeContext } from 'context/themeContext';
@@ -49,14 +50,11 @@ const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
                   <div className='whitespace-nowrap flex flex-wrap gap-2 mb-3'>
                     {(contacts.formattedPhones || []).map((phone) => {
                       return (
-                        <div key={phone.raw}>
-                          <a
-                            className='text-secondary-text hover:text-theme hover:no-underline'
-                            href={`tel:${phone.raw}`}
-                          >
-                            {phone.readable}
-                          </a>
-                        </div>
+                        <LinkPhone
+                          key={phone.raw}
+                          className='text-secondary-text hover:text-theme hover:no-underline'
+                          value={phone}
+                        />
                       );
                     })}
                   </div>

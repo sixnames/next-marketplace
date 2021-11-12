@@ -88,10 +88,10 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
 
   return (
     <div className='flex flex-col'>
-      <div style={attributeStyle} className='flex items-center pb-1 font-medium'>
+      <div className='flex items-center pb-1 font-medium'>
         <Link
           onClick={hideDropdown}
-          style={attributeLinkStyle}
+          style={attributeStyle}
           testId={`header-nav-dropdown-option`}
           prefetch={false}
           href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}/${categoryPath}`}

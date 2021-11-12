@@ -115,9 +115,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             },
             {
               $set: {
-                available: noNaN(existingSyncError.available),
-                price: noNaN(existingSyncError.price),
-                name: existingSyncError.name,
+                available: noNaN(bodyItem.available),
+                price: noNaN(bodyItem.price),
+                name: bodyItem.name,
               },
             },
           );
@@ -143,7 +143,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         {
           $addToSet: {
             barcode: {
-              $each: bodyItem.barcode,
+              $each: barcode,
             },
           },
         },
@@ -154,7 +154,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           shopId: shop._id,
           productId: product._id,
           barcode: {
-            $in: bodyItem.barcode,
+            $in: barcode,
           },
         })
         .toArray();
@@ -163,7 +163,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           // update existing shop product
           const { discountedPercent, oldPrice, oldPriceUpdater } = getUpdatedShopProductPrices({
             shopProduct: oldShopProduct,
-            newPrice: noNaN(bodyItem.price),
+            newPrice: noNaN(price),
           });
           await shopProductsCollection.findOneAndUpdate(
             {
@@ -171,15 +171,15 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             },
             {
               $set: {
-                available: noNaN(bodyItem.available),
-                price: noNaN(bodyItem.price),
+                available: noNaN(available),
+                price: noNaN(price),
                 oldPrice,
                 discountedPercent,
                 updatedAt: new Date(),
               },
               $addToSet: {
                 barcode: {
-                  $each: bodyItem.barcode,
+                  $each: barcode,
                 },
               },
               ...oldPriceUpdater,

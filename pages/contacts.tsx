@@ -1,4 +1,6 @@
 import Inner from 'components/Inner';
+import LinkEmail from 'components/Link/LinkEmail';
+import LinkPhone from 'components/Link/LinkPhone';
 import PageEditor from 'components/PageEditor';
 import Socials from 'components/Socials';
 import Title from 'components/Title';
@@ -71,13 +73,14 @@ const ContactsRoute: React.FC = () => {
               <div className='mb-1 text-secondary-text'>Контактный телефон</div>
               {phone.map((phoneItem) => {
                 return (
-                  <a
+                  <LinkPhone
                     key={phoneItem}
                     className='block text-primary-text hover:text-theme hover:no-underline'
-                    href={`tel:${phoneItem}`}
-                  >
-                    {phoneToReadable(phoneItem)}
-                  </a>
+                    value={{
+                      raw: phoneItem,
+                      readable: phoneToReadable(phoneItem),
+                    }}
+                  />
                 );
               })}
             </div>
@@ -85,13 +88,11 @@ const ContactsRoute: React.FC = () => {
               <div className='mb-1 text-secondary-text'>Email</div>
               {contactEmail.map((email) => {
                 return (
-                  <a
+                  <LinkEmail
                     key={email}
+                    value={email}
                     className='block text-primary-text hover:text-theme hover:no-underline'
-                    href={`mailTo:${email}`}
-                  >
-                    {email}
-                  </a>
+                  />
                 );
               })}
             </div>

@@ -1,4 +1,9 @@
-import { DEFAULT_LOCALE, FILTER_SEPARATOR, VIEWS_COUNTER_STEP } from 'config/common';
+import {
+  DEFAULT_LOCALE,
+  FILTER_PAGE_KEY,
+  FILTER_SEPARATOR,
+  VIEWS_COUNTER_STEP,
+} from 'config/common';
 import { COL_BLOG_ATTRIBUTES, COL_OPTIONS } from 'db/collectionNames';
 import { getPageSessionUser } from 'db/dao/user/getPageSessionUser';
 import { BlogAttributeModel, BlogAttributePayloadModel, OptionModel } from 'db/dbModels';
@@ -43,6 +48,10 @@ export async function updateBlogAttributeCounters({
       const filterParts = filter.split(FILTER_SEPARATOR);
       const attributeSlug = filterParts[0];
       const optionSlug = filterParts[1];
+
+      if (attributeSlug === FILTER_PAGE_KEY) {
+        return;
+      }
 
       if (attributeSlug) {
         selectedAttributesSlugs.push(attributeSlug);

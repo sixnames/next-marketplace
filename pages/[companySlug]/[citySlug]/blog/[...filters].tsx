@@ -17,8 +17,10 @@ import {
   SORT_DESC,
   ROUTE_BLOG,
   IMAGE_FALLBACK,
+  REQUEST_METHOD_POST,
 } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
+import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
 import { useLocaleContext } from 'context/localeContext';
 import { useSiteContext } from 'context/siteContext';
@@ -28,6 +30,7 @@ import {
   COL_BLOG_POSTS,
   COL_OPTIONS,
 } from 'db/collectionNames';
+import { UpdateBlogAttributeCountersInputInterface } from 'db/dao/blog/updateBlogAttributeCounters';
 import { AttributeViewVariantModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -46,6 +49,7 @@ import { noNaN } from 'lib/numbers';
 import { castDbData } from 'lib/ssrUtils';
 import Head from 'next/head';
 import { GetStaticPathsResult, GetStaticPropsResult } from 'next';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 
 interface BlogListSnippetMetaInterface {
@@ -340,10 +344,24 @@ const BlogListPageConsumer: React.FC<BlogListPageConsumerInterface> = ({
   meta,
   // isFilterVisible,
 }) => {
+  const { query } = useRouter();
+  const { sessionCity, companySlug } = useAppContext();
   const { locale } = useLocaleContext();
   const { configs } = useConfigContext();
   const blogLinkName = getConstantTranslation(`nav.blog.${locale}`);
   const metaTitle = `${blogLinkName} ${configs.siteName} на темы ${meta}`;
+
+  React.useEffect(() => {
+    const input: UpdateBlogAttributeCountersInputInterface = {
+      filters: alwaysArray(query.filters),
+      sessionCity,
+      companySlug,
+    };
+    fetch(`/api/blog/update-attribute-counters`, {
+      body: JSON.stringify(input),
+      method: REQUEST_METHOD_POST,
+    }).catch(console.log);
+  }, [companySlug, query.filters, sessionCity]);
 
   return (
     <React.Fragment>

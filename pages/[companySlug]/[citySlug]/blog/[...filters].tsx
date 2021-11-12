@@ -734,8 +734,6 @@ export const getStaticProps = async (
   }, []);
 
   // filter
-  const selectedOptionsSlugs: string[] = [];
-  const selectedAttributesSlugs: string[] = [];
   const blogFilter: CatalogueFilterAttributeInterface[] = blogAttributes.map((attribute) => {
     const attributeOptions = blogOptions.filter((option) => {
       return option.optionsGroupId.equals(attribute.optionsGroupId);
@@ -746,10 +744,6 @@ export const getStaticProps = async (
         const optionSlug = `${attribute.slug}${FILTER_SEPARATOR}${option.slug}`;
         const isSelected = realFilterOptions.includes(optionSlug);
         const optionName = `${option.name}`;
-
-        if (isSelected) {
-          selectedOptionsSlugs.push(option.slug);
-        }
 
         const optionNextSlug = isSelected
           ? [...realFilterOptions]
@@ -776,10 +770,6 @@ export const getStaticProps = async (
       return filterItemArr[0] === attribute.slug;
     });
 
-    if (isSelected) {
-      selectedAttributesSlugs.push(attribute.slug);
-    }
-
     const otherSelectedValues = realFilterOptions.filter((param) => {
       const castedParam = castCatalogueParamToObject(param);
       return castedParam.slug !== attribute.slug;
@@ -800,45 +790,6 @@ export const getStaticProps = async (
     return filterAttribute;
   });
 
-  // update counters
-  // Session user
-  // TODO update blog attribute counters api route
-  /*const sessionUser = await getPageSessionUser({
-    context,
-    locale: props.sessionLocale,
-  });
-  if (!sessionUser?.me.role?.isStaff) {
-    const counterUpdater = {
-      $inc: {
-        [`views.${props.companySlug}.${props.sessionCity}`]: VIEWS_COUNTER_STEP,
-      },
-    };
-
-    // options
-    if (selectedOptionsSlugs.length > 0) {
-      await optionsCollection.updateMany(
-        {
-          slug: {
-            $in: selectedOptionsSlugs,
-          },
-        },
-        counterUpdater,
-      );
-    }
-
-    // attributes
-    if (selectedAttributesSlugs.length > 0) {
-      await blogAttributesCollection.updateMany(
-        {
-          slug: {
-            $in: selectedAttributesSlugs,
-          },
-        },
-        counterUpdater,
-      );
-    }
-  }*/
-
   const topPostsLimit = 5;
   const topPosts = [...posts]
     .sort((a, b) => {
@@ -852,7 +803,6 @@ export const getStaticProps = async (
       posts: castDbData(posts),
       topPosts: castDbData(topPosts),
       blogFilter: castDbData(blogFilter),
-      // isFilterVisible: blogFilter.length > 0,
       meta: metaList.join(', '),
     },
   };

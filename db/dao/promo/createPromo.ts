@@ -56,7 +56,7 @@ export async function createPromo({
         message: await getApiMessage('promo.create.error'),
       };
     }
-    // check input
+    // check input dates
     if (!input.startAt || !input.endAt) {
       return {
         success: false,

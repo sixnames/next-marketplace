@@ -1,10 +1,6 @@
 import {
   ASSETS_DIST,
-  ASSETS_DIST_BLOG,
-  ASSETS_DIST_BLOG_CONTENT,
-  ASSETS_DIST_PAGES,
   ASSETS_DIST_PRODUCTS,
-  ASSETS_DIST_SEO,
   IMAGE_FALLBACK,
   IMAGE_FALLBACK_BOTTLE,
 } from 'config/common';
@@ -35,10 +31,10 @@ const writeFile = promisify(fs.writeFile);
 export function checkIfWatermarkNeeded(filePath: string): boolean {
   const watermarkDirectories = [
     ASSETS_DIST_PRODUCTS,
-    ASSETS_DIST_BLOG,
-    ASSETS_DIST_BLOG_CONTENT,
-    ASSETS_DIST_PAGES,
-    ASSETS_DIST_SEO,
+    // ASSETS_DIST_BLOG,
+    // ASSETS_DIST_BLOG_CONTENT,
+    // ASSETS_DIST_PAGES,
+    // ASSETS_DIST_SEO,
   ];
   const pathArr = filePath.split('/');
   const showWatermark = pathArr.some((pathPart) => {

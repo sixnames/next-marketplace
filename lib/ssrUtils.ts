@@ -1113,7 +1113,7 @@ export async function getPageInitialState({
     domain,
     initialData,
     themeStyle,
-    urlPrefix: `/${domainCompany?.slug || DEFAULT_COMPANY_SLUG}`,
+    urlPrefix: `/${domainCompany?.slug || DEFAULT_COMPANY_SLUG}/${sessionCity}`,
     domainCompany: castDbData(domainCompany),
     companySlug: domainCompany ? domainCompany.slug : DEFAULT_COMPANY_SLUG,
     sessionCity,

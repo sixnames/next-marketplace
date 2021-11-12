@@ -4,6 +4,7 @@ import { CityModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { CompanyInterface } from 'db/uiInterfaces';
 import { SiteLayoutProviderInterface } from 'layout/SiteLayout';
+import { alwaysString } from 'lib/arrayUtils';
 import { getI18nLocaleValue } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import {
@@ -54,11 +55,12 @@ export async function getPageInitialState({
   const subdomain = getSubdomain(host, { validHosts: ['localhost'] });
   const domain = getDomain(host, { validHosts: ['localhost'] });
   const sessionLocale = locale || DEFAULT_LOCALE;
+  const citySlug = alwaysString(params?.citySlug);
 
   // Session city
   let currentCity: CityModel | null | undefined;
   if (subdomain) {
-    const initialCity = await citiesCollection.findOne({ slug: subdomain });
+    const initialCity = await citiesCollection.findOne({ slug: citySlug });
     currentCity = castDbData(initialCity);
   }
   if (!currentCity) {
@@ -132,7 +134,7 @@ export async function getPageInitialState({
     domain,
     initialData,
     themeStyle,
-    urlPrefix: `/${domainCompany?.slug || DEFAULT_COMPANY_SLUG}`,
+    urlPrefix: `/${domainCompany?.slug || DEFAULT_COMPANY_SLUG}/${sessionCity}`,
     domainCompany: castDbData(domainCompany),
     companySlug: domainCompany ? domainCompany.slug : DEFAULT_COMPANY_SLUG,
     sessionCity,

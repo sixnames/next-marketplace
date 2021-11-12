@@ -1,6 +1,6 @@
 import { ASSETS_DIST, IMAGE_FALLBACK, ONE_WEEK } from 'config/common';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
-import { getSharpImage } from 'lib/assetUtils/assetUtils';
+import { checkIfWatermarkNeeded, getSharpImage } from 'lib/assetUtils/assetUtils';
 import { noNaN } from 'lib/numbers';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import path from 'path';
@@ -28,10 +28,14 @@ export async function getServerSideProps(
   const fileName = alwaysString(urlArray[urlArray.length - 1]);
   const initialFileFormatArray = fileName.split('.');
   const initialFileFormat = alwaysString(initialFileFormatArray[initialFileFormatArray.length - 1]);
+  const dist = path.join(process.cwd(), filePath);
 
   // set the content-type of the response
   res.setHeader('Content-Type', `image/${format}`);
   res.setHeader('Cache-Control', `public, max-age=${ONE_WEEK}`);
+
+  // check if watermark needed
+  const showWatermark = checkIfWatermarkNeeded(dist);
 
   // send ico and svg files
   if (
@@ -40,13 +44,13 @@ export async function getServerSideProps(
     initialFileFormat === 'svg' ||
     initialFileFormat === 'ico'
   ) {
-    const dist = path.join(process.cwd(), filePath);
     const exists = fs.existsSync(dist);
     if (!exists) {
       const file = await getSharpImage({
         filePath: IMAGE_FALLBACK,
         format: 'webp',
         width: noNaN(widthString),
+        showWatermark: false,
       });
 
       if (!file) {
@@ -81,6 +85,7 @@ export async function getServerSideProps(
     filePath,
     format,
     width: noNaN(widthString),
+    showWatermark,
   });
 
   if (!file) {
@@ -88,6 +93,7 @@ export async function getServerSideProps(
       filePath: IMAGE_FALLBACK,
       format,
       width: noNaN(widthString),
+      showWatermark: false,
     });
 
     if (!file) {

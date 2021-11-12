@@ -92,13 +92,17 @@ export async function getConfigPageData({
 
 interface CastConfigsInterface {
   configs: ConfigModel[];
-  city: string;
+  citySlug: string;
   locale: string;
 }
 
-export function castConfigs({ configs, city, locale }: CastConfigsInterface): ConfigInterface[] {
+export function castConfigs({
+  configs,
+  citySlug,
+  locale,
+}: CastConfigsInterface): ConfigInterface[] {
   return configs.map((config) => {
-    const value = getCityFieldLocaleString({ cityField: config.cities, city, locale });
+    const value = getCityFieldLocaleString({ cityField: config.cities, citySlug, locale });
     const singleValue = (value || [])[0];
     return {
       ...config,

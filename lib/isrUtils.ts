@@ -18,10 +18,11 @@ import { Db } from 'mongodb';
 import { GetStaticPropsContext } from 'next';
 // import nookies from 'nookies';
 import { PagePropsInterface } from 'pages/_app';
-import { getDomain, getSubdomain } from 'tldts';
+import { getDomain } from 'tldts';
 
 type ParamsInterface = {
   companySlug: string;
+  citySlug: string;
   [key: string]: any;
 };
 export type IsrContextInterface = GetStaticPropsContext<ParamsInterface>;
@@ -52,14 +53,13 @@ export async function getPageInitialState({
 
   const path = `${resolvedUrl}`;
   const host = ``;
-  const subdomain = getSubdomain(host, { validHosts: ['localhost'] });
   const domain = getDomain(host, { validHosts: ['localhost'] });
   const sessionLocale = locale || DEFAULT_LOCALE;
   const citySlug = alwaysString(params?.citySlug);
 
   // Session city
   let currentCity: CityModel | null | undefined;
-  if (subdomain) {
+  if (citySlug) {
     const initialCity = await citiesCollection.findOne({ slug: citySlug });
     currentCity = castDbData(initialCity);
   }
@@ -72,12 +72,12 @@ export async function getPageInitialState({
   // Domain company
   const domainCompany = await companiesCollection.findOne({ slug: `${params?.companySlug}` });
   // For development
-  // const domainCompany = await companiesCollection.findOne({ slug: `${params?.companySlug}` });
+  // const domainCompany = await companiesCollection.findOne({ slug: `company_a` });
 
   // Page initial data
   const rawInitialData = await getPageInitialData({
     locale: sessionLocale,
-    city: sessionCity,
+    citySlug: sessionCity,
     companySlug: domainCompany?.slug,
   });
   const initialData = castDbData(rawInitialData);

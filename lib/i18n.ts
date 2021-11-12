@@ -57,16 +57,16 @@ export function getCityFieldData<T>(cityField: Record<string, T>, city: string):
 
 interface GetCityFieldLocaleStringInterface {
   cityField: Record<string, Record<string, any>>;
-  city: string;
+  citySlug: string;
   locale: string;
 }
 
 export function getCityFieldLocaleString({
   cityField,
-  city,
+  citySlug,
   locale,
 }: GetCityFieldLocaleStringInterface): any {
-  const cityData = getCityFieldData(cityField, city);
+  const cityData = getCityFieldData(cityField, citySlug);
   if (!cityData) {
     throw Error('getCityLocale error');
   }

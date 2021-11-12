@@ -1855,41 +1855,43 @@ export const getCatalogueData = async ({
     let seoTop: RubricSeoModel | null | undefined;
     let seoBottom: RubricSeoModel | null | undefined;
 
-    // category seo text if selected
-    const categorySeoTexts = await setCategorySeoText({
-      categories: selectedCategoriesTree,
-      companySlug,
-      locale,
-      rubricId: rubric._id.toHexString(),
-    });
-
-    if (categorySeoTexts) {
-      editUrl = categorySeoTexts.editUrl;
-      textTop = categorySeoTexts.textTop;
-      textBottom = categorySeoTexts.textBottom;
-      seoTop = categorySeoTexts.seoTop;
-      seoBottom = categorySeoTexts.seoBottom;
-    } else {
-      textTop = getFieldStringLocale(rubric.seoDescriptionTop?.textI18n, locale);
-      textBottom = getFieldStringLocale(rubric.seoDescriptionBottom?.textI18n, locale);
-      seoTop = await rubricSeoCollection.findOne({
-        rubricId: rubric._id,
-        position: CATALOGUE_SEO_TEXT_POSITION_TOP,
-        categoryId: null,
+    if (!search) {
+      // category seo text if selected
+      const categorySeoTexts = await setCategorySeoText({
+        categories: selectedCategoriesTree,
         companySlug,
+        locale,
+        rubricId: rubric._id.toHexString(),
       });
-      seoBottom = await rubricSeoCollection.findOne({
-        rubricId: rubric._id,
-        position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
-        categoryId: null,
-        companySlug,
-      });
-    }
 
-    // remove seo text if selected more then one category
-    if (selectedCategoriesTree.length > 1) {
-      textTop = null;
-      textBottom = null;
+      if (categorySeoTexts) {
+        editUrl = categorySeoTexts.editUrl;
+        textTop = categorySeoTexts.textTop;
+        textBottom = categorySeoTexts.textBottom;
+        seoTop = categorySeoTexts.seoTop;
+        seoBottom = categorySeoTexts.seoBottom;
+      } else {
+        textTop = getFieldStringLocale(rubric.seoDescriptionTop?.textI18n, locale);
+        textBottom = getFieldStringLocale(rubric.seoDescriptionBottom?.textI18n, locale);
+        seoTop = await rubricSeoCollection.findOne({
+          rubricId: rubric._id,
+          position: CATALOGUE_SEO_TEXT_POSITION_TOP,
+          categoryId: null,
+          companySlug,
+        });
+        seoBottom = await rubricSeoCollection.findOne({
+          rubricId: rubric._id,
+          position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+          categoryId: null,
+          companySlug,
+        });
+      }
+
+      // remove seo text if selected more then one category
+      if (selectedCategoriesTree.length > 1) {
+        textTop = null;
+        textBottom = null;
+      }
     }
 
     // get layout configs

@@ -54,6 +54,7 @@ import {
 } from 'db/uiInterfaces';
 import { PageUrlsInterface } from 'layout/Meta';
 import { SiteLayoutCatalogueCreatedPages, SiteLayoutProviderInterface } from 'layout/SiteLayout';
+import { alwaysString } from 'lib/arrayUtils';
 import {
   castConfigs,
   getConfigBooleanValue,
@@ -68,7 +69,7 @@ import { castAttributeForUI } from 'lib/uiDataUtils';
 import { Db, ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, Redirect } from 'next';
 import { PagePropsInterface } from 'pages/_app';
-import { getSubdomain, getDomain } from 'tldts';
+import { getDomain } from 'tldts';
 import nookies from 'nookies';
 
 export interface GetCatalogueNavRubricsInterface {
@@ -547,7 +548,7 @@ export const getCatalogueNavRubrics = async ({
 
 export interface GetPageInitialDataCommonInterface {
   locale: string;
-  city: string;
+  citySlug: string;
   companySlug?: string;
 }
 
@@ -557,7 +558,7 @@ export interface GetSsrConfigsInterface extends GetPageInitialDataCommonInterfac
 
 export const getSsrConfigs = async ({
   locale,
-  city,
+  citySlug,
   companySlug,
   db,
 }: GetSsrConfigsInterface): Promise<SsrConfigsInterface> => {
@@ -594,7 +595,7 @@ export const getSsrConfigs = async ({
   const configs = castConfigs({
     configs: initialConfigs,
     locale,
-    city,
+    citySlug,
   });
 
   // get configs
@@ -939,13 +940,13 @@ export interface PageInitialDataPayload {
 
 export interface GetPageInitialDataInterface extends GetPageInitialDataCommonInterface {
   locale: string;
-  city: string;
+  citySlug: string;
   companySlug?: string;
 }
 
 export const getPageInitialData = async ({
   locale,
-  city,
+  citySlug,
   companySlug,
 }: GetPageInitialDataInterface): Promise<PageInitialDataPayload> => {
   // console.log(' ');
@@ -956,7 +957,7 @@ export const getPageInitialData = async ({
   // configs
   const configs = await getSsrConfigs({
     db,
-    city,
+    citySlug,
     locale,
     companySlug,
   });
@@ -989,7 +990,7 @@ export const getPageInitialData = async ({
 
   // currency
   let currency = DEFAULT_CURRENCY;
-  const sessionCity = initialCities.find(({ slug }) => slug === city);
+  const sessionCity = initialCities.find(({ slug }) => slug === citySlug);
   if (sessionCity) {
     currency = sessionCity.currency || DEFAULT_CURRENCY;
   }
@@ -1022,21 +1023,21 @@ interface GetPageInitialStatePayloadInterface extends PagePropsInterface, NavPro
 export async function getPageInitialState({
   context,
 }: GetPageInitialStateInterface): Promise<GetPageInitialStatePayloadInterface> {
-  const { locale, resolvedUrl } = context;
+  const { locale, resolvedUrl, query } = context;
   const { db } = await getDatabase();
   const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
   const citiesCollection = db.collection<CityModel>(COL_CITIES);
 
   const path = `${resolvedUrl}`;
   const host = `${context.req.headers.host}`;
-  const subdomain = getSubdomain(host, { validHosts: ['localhost'] });
   const domain = getDomain(host, { validHosts: ['localhost'] });
   const sessionLocale = locale || DEFAULT_LOCALE;
 
   // Session city
   let currentCity: CityModel | null | undefined;
-  if (subdomain) {
-    const initialCity = await citiesCollection.findOne({ slug: subdomain });
+  const queryCitySlug = alwaysString(query.citySlug);
+  if (queryCitySlug) {
+    const initialCity = await citiesCollection.findOne({ slug: queryCitySlug });
     currentCity = castDbData(initialCity);
   }
   if (!currentCity) {
@@ -1056,7 +1057,7 @@ export async function getPageInitialState({
   // Page initial data
   const rawInitialData = await getPageInitialData({
     locale: sessionLocale,
-    city: sessionCity,
+    citySlug: sessionCity,
     companySlug: domainCompany?.slug,
   });
   const initialData = castDbData(rawInitialData);

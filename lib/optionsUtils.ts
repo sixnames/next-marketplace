@@ -37,13 +37,14 @@ export function getTreeFromList<T extends TreeItemInterface>({
   gender,
   log,
 }: GetTreeFromListInterface<T>): T[] {
-  const parentsList = (list || []).filter((listItem) => {
+  const realList = list || [];
+  const parentsList = realList.filter((listItem) => {
     return parentId ? listItem.parentId?.equals(parentId) : !listItem.parentId;
   });
 
   return parentsList.map((parent) => {
     const children = getTreeFromList({
-      list: list,
+      list: realList,
       locale,
       parentId: parent._id,
       childrenFieldName,

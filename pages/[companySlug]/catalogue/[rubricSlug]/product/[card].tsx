@@ -1,10 +1,8 @@
-import { ROUTE_CATALOGUE } from 'config/common';
-import { alwaysArray } from 'lib/arrayUtils';
 import { getSiteInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 
-const CataloguePage: NextPage = () => {
+const CardPage: NextPage = () => {
   return <div />;
 };
 
@@ -15,14 +13,12 @@ export async function getServerSideProps(
     context,
   });
 
-  const filters = alwaysArray(context.query.filters);
-  const filtersPath = filters.join('/');
   return {
     redirect: {
-      destination: `${props.urlPrefix}${ROUTE_CATALOGUE}/${context.query.rubricSlug}/${filtersPath}`,
+      destination: `${props.urlPrefix}${context.query?.card}`,
       permanent: true,
     },
   };
 }
 
-export default CataloguePage;
+export default CardPage;

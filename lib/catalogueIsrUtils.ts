@@ -50,6 +50,15 @@ export async function getCatalogueIsrProps(
     return notFoundResponse;
   }
 
+  if (rawCatalogueData.redirect) {
+    return {
+      redirect: {
+        permanent: true,
+        destination: `${props.urlPrefix}${rawCatalogueData.basePath}/${rawCatalogueData.redirect}`,
+      },
+    };
+  }
+
   return {
     revalidate: ISR_FIVE_SECONDS,
     props: {

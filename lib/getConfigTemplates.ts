@@ -569,7 +569,7 @@ export function getConfigTemplates({
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: ['false'],
+          [DEFAULT_LOCALE]: ['true'],
         },
       },
     },

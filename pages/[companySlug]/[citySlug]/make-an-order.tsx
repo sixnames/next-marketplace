@@ -17,7 +17,6 @@ import WpImage from 'components/WpImage';
 import { MAP_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
-import { useNotificationsContext } from 'context/notificationsContext';
 import { useSiteContext } from 'context/siteContext';
 import { useThemeContext } from 'context/themeContext';
 import { useSiteUserContext } from 'context/userSiteUserContext';
@@ -156,8 +155,7 @@ interface MakeAnOrderRouteInterface {
 const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
   const router = useRouter();
   const { configs } = useConfigContext();
-  const { showErrorNotification } = useNotificationsContext();
-  const { loadingCart, cart, makeAnOrder } = useSiteContext();
+  const { loadingCart, cart, makeAnOrder, urlPrefix } = useSiteContext();
   const sessionUser = useSiteUserContext();
   const validationSchema = useValidationSchema({
     schema: makeAnOrderSchema,
@@ -201,9 +199,7 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
             <Button
               theme={'secondary'}
               onClick={() => {
-                router.push(`/`).catch(() => {
-                  showErrorNotification();
-                });
+                router.push(urlPrefix).catch(console.log);
               }}
             >
               В каталог

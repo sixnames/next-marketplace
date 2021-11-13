@@ -340,6 +340,7 @@ export const ASSETS_DIST_COMPANIES = 'companies';
 export const ASSETS_DIST_SHOPS_LOGOS = 'shop-logos';
 export const ASSETS_DIST_SHOPS = 'shops';
 export const ASSETS_DIST_CONFIGS = 'configs';
+export const ASSETS_DIST_CONFIGS_WATERMARK = 'watermark';
 export const ASSETS_DIST_PAGES = 'pages';
 export const ASSETS_DIST_SEO = 'seo';
 export const ASSETS_DIST_TEMPLATES = 'templates';

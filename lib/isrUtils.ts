@@ -4,6 +4,7 @@ import { CityModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { CompanyInterface } from 'db/uiInterfaces';
 import { SiteLayoutProviderInterface } from 'layout/SiteLayout';
+import { alwaysString } from 'lib/arrayUtils';
 import { getI18nLocaleValue } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import {
@@ -17,10 +18,11 @@ import { Db } from 'mongodb';
 import { GetStaticPropsContext } from 'next';
 // import nookies from 'nookies';
 import { PagePropsInterface } from 'pages/_app';
-import { getDomain, getSubdomain } from 'tldts';
+import { getDomain } from 'tldts';
 
 type ParamsInterface = {
   companySlug: string;
+  citySlug: string;
   [key: string]: any;
 };
 export type IsrContextInterface = GetStaticPropsContext<ParamsInterface>;
@@ -51,14 +53,14 @@ export async function getPageInitialState({
 
   const path = `${resolvedUrl}`;
   const host = ``;
-  const subdomain = getSubdomain(host, { validHosts: ['localhost'] });
   const domain = getDomain(host, { validHosts: ['localhost'] });
   const sessionLocale = locale || DEFAULT_LOCALE;
+  const citySlug = alwaysString(params?.citySlug);
 
   // Session city
   let currentCity: CityModel | null | undefined;
-  if (subdomain) {
-    const initialCity = await citiesCollection.findOne({ slug: subdomain });
+  if (citySlug) {
+    const initialCity = await citiesCollection.findOne({ slug: citySlug });
     currentCity = castDbData(initialCity);
   }
   if (!currentCity) {
@@ -70,12 +72,12 @@ export async function getPageInitialState({
   // Domain company
   const domainCompany = await companiesCollection.findOne({ slug: `${params?.companySlug}` });
   // For development
-  // const domainCompany = await companiesCollection.findOne({ slug: `${params?.companySlug}` });
+  // const domainCompany = await companiesCollection.findOne({ slug: `company_a` });
 
   // Page initial data
   const rawInitialData = await getPageInitialData({
     locale: sessionLocale,
-    city: sessionCity,
+    citySlug: sessionCity,
     companySlug: domainCompany?.slug,
   });
   const initialData = castDbData(rawInitialData);
@@ -132,7 +134,7 @@ export async function getPageInitialState({
     domain,
     initialData,
     themeStyle,
-    urlPrefix: `/${domainCompany?.slug || DEFAULT_COMPANY_SLUG}`,
+    urlPrefix: `/${domainCompany?.slug || DEFAULT_COMPANY_SLUG}/${sessionCity}`,
     domainCompany: castDbData(domainCompany),
     companySlug: domainCompany ? domainCompany.slug : DEFAULT_COMPANY_SLUG,
     sessionCity,

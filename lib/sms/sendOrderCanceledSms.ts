@@ -17,7 +17,7 @@ export async function sendOrderCanceledSms({
   orderItemId,
   customer,
   companySiteSlug,
-  city,
+  citySlug,
   companyId,
   orderObjectId,
 }: SendOrderCanceledSmsInterface) {
@@ -39,7 +39,7 @@ export async function sendOrderCanceledSms({
       text,
       numbers: [customer.phone],
       locale,
-      city,
+      citySlug,
       companySiteSlug,
     });
   }
@@ -69,7 +69,7 @@ export async function sendOrderCanceledSms({
         text: text(url),
         numbers,
         locale,
-        city,
+        citySlug,
         companySiteSlug,
       });
     }
@@ -92,7 +92,7 @@ export async function sendOrderCanceledSms({
       text: text(url),
       numbers,
       locale,
-      city,
+      citySlug,
       companySiteSlug: DEFAULT_COMPANY_SLUG,
     });
   }

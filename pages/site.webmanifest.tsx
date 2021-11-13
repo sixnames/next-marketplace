@@ -1,12 +1,11 @@
 import { DEFAULT_COMPANY_SLUG, DEFAULT_CITY, DEFAULT_LOCALE, SORT_ASC } from 'config/common';
-import { COL_CITIES, COL_COMPANIES, COL_CONFIGS } from 'db/collectionNames';
-import { CityModel, CompanyModel, ConfigModel } from 'db/dbModels';
+import { COL_COMPANIES, COL_CONFIGS } from 'db/collectionNames';
+import { CompanyModel, ConfigModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { getCityFieldLocaleString } from 'lib/i18n';
-import { castDbData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext } from 'next';
 import * as React from 'react';
-import { getDomain, getSubdomain } from 'tldts';
+import { getDomain } from 'tldts';
 
 const SiteWebmanifest: React.FC = () => {
   return <div />;
@@ -16,7 +15,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { db } = await getDatabase();
   const { locale, res } = context;
   const host = `${context.req.headers.host}`;
-  const subdomain = getSubdomain(host, { validHosts: ['localhost'] });
   const domain = getDomain(host, { validHosts: ['localhost'] });
   const sessionLocale = locale || DEFAULT_LOCALE;
 
@@ -28,19 +26,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
   const companySlug = company ? company.slug : DEFAULT_COMPANY_SLUG;
 
-  // Session city
-  let currentCity: CityModel | null | undefined;
-  const citiesCollection = db.collection<CityModel>(COL_CITIES);
-  if (subdomain) {
-    const initialCity = await citiesCollection.findOne({ slug: subdomain });
-    currentCity = castDbData(initialCity);
-  }
-  if (!currentCity) {
-    const initialCity = await citiesCollection.findOne({ slug: DEFAULT_CITY });
-    currentCity = currentCity = castDbData(initialCity);
-  }
-  const sessionCity = currentCity?.slug || DEFAULT_CITY;
-
   // configs
   const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
   const initialConfigs = await configsCollection
@@ -51,7 +36,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       ...config,
       singleValue: getCityFieldLocaleString({
         cityField: config.cities,
-        city: sessionCity,
+        citySlug: DEFAULT_CITY,
         locale: sessionLocale,
       })[0],
     };

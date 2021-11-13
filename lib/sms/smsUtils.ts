@@ -9,7 +9,7 @@ export interface SmsSenderInterface {
   text: string;
   numbers: string[];
   companySiteSlug: string;
-  city: string;
+  citySlug: string;
   locale: string;
 }
 
@@ -17,7 +17,7 @@ export async function smsSender({
   text,
   numbers,
   companySiteSlug,
-  city,
+  citySlug,
   locale,
 }: SmsSenderInterface) {
   try {
@@ -35,7 +35,7 @@ export async function smsSender({
     const configs = castConfigs({
       configs: smsApiConfigs,
       locale,
-      city,
+      citySlug,
     });
     const apiKey = getConfigStringValue({
       configs,

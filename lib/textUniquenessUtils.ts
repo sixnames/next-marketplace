@@ -48,7 +48,7 @@ export async function checkTextUniqueness({
       .toArray();
     const configs = castConfigs({
       configs: initialConfigs,
-      city: DEFAULT_CITY,
+      citySlug: DEFAULT_CITY,
       locale: DEFAULT_LOCALE,
     });
     const uniqueTextApiKey = getConfigStringValue({

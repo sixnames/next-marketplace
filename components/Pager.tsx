@@ -1,5 +1,7 @@
+import Button from 'components/button/Button';
 import Link from 'components/Link/Link';
 import { FILTER_SEPARATOR, FILTER_PAGE_KEY } from 'config/common';
+import { alwaysString } from 'lib/arrayUtils';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import Icon from 'components/Icon';
@@ -15,10 +17,39 @@ interface PagerInterface {
   page: number;
   totalPages: number;
   setPage?: (page: number) => void;
+  className?: string;
+  showMoreHandler?: (nextPath: string, page: number) => void;
+  urlPrefix?: string;
+  isLoading?: boolean;
 }
 
-const Pager: React.FC<PagerInterface> = ({ page, totalPages, setPage }) => {
-  const { asPath, query } = useRouter();
+function getNextPageParam(page: number): string {
+  if (page === 1) {
+    return '';
+  }
+  return `${FILTER_PAGE_KEY}${FILTER_SEPARATOR}${page}`;
+}
+
+function getNextPath(prevUrlArray: string[], page: number, search?: string | string[]): string {
+  const pageParam = getNextPageParam(page);
+  const searchString = alwaysString(search);
+  const nextUrlArray = [...prevUrlArray, pageParam].join('/');
+  const nextUrl = `/${nextUrlArray}${
+    searchString && searchString.length > 0 ? `?search=${searchString}` : ''
+  }`;
+  return nextUrl;
+}
+
+const Pager: React.FC<PagerInterface> = ({
+  page,
+  showMoreHandler,
+  totalPages,
+  setPage,
+  className,
+  urlPrefix = '',
+  isLoading,
+}) => {
+  const { query, asPath } = useRouter();
   const { items } = usePagination({
     siblingCount,
     count: totalPages,
@@ -30,68 +61,104 @@ const Pager: React.FC<PagerInterface> = ({ page, totalPages, setPage }) => {
   }
 
   const prevUrlArray = asPath.split('/').filter((param) => {
-    if (!param) {
+    const urlPrefixArray = urlPrefix?.split('/').filter((param) => param);
+
+    if (!param || urlPrefixArray.includes(param)) {
       return false;
     }
+
     const paramParts = param.split(FILTER_SEPARATOR);
     return paramParts[0] !== FILTER_PAGE_KEY;
   });
 
   return (
-    <div className='pt-6 pb-16 flex flex-wrap justify-center items-center'>
-      {items.map(({ page, type, selected, disabled }, index) => {
-        let children;
-        const arrowClassName = `${disabled ? 'pointer-events-none opacity-50' : ''}`;
-        const selectedClassName = `${selected ? ' pointer-events-none font-bold text-theme' : ''}`;
-        const pageParam = `${FILTER_PAGE_KEY}${FILTER_SEPARATOR}${page}`;
-        const nextUrlArray = [...prevUrlArray, pageParam].join('/');
-        const nextUrl = `/${nextUrlArray}${
-          query.search && query.search.length > 0 ? `?search=${query.search}` : '/'
-        }`;
+    <div className={`${className ? className : 'pt-6 pb-16'}`}>
+      <div className={`flex flex-wrap justify-center items-center`}>
+        {items.map(({ page, type, selected, disabled }, index) => {
+          let children;
+          const arrowClassName = `${disabled ? 'pointer-events-none opacity-50' : ''}`;
+          const selectedClassName = `${
+            selected ? ' pointer-events-none font-bold text-theme' : ''
+          }`;
+          const initialNextUrl = getNextPath(prevUrlArray, page, query.search);
+          const nextUrl = `${urlPrefix}${initialNextUrl}`;
 
-        const onClick = (e: any) => {
-          if (setPage) {
-            e.preventDefault();
-            setPage(page);
+          const onClick = (e: any) => {
+            if (setPage) {
+              e.preventDefault();
+              setPage(page);
+            }
+          };
+
+          if (type === 'start-ellipsis' || type === 'end-ellipsis') {
+            children = '…';
+          } else if (type === 'page') {
+            children = (
+              <Link
+                onClick={onClick}
+                className={`${buttonClassName} ${selectedClassName}`}
+                href={nextUrl}
+              >
+                {page}
+              </Link>
+            );
+          } else if (type === 'previous') {
+            if (disabled) {
+              children = (
+                <span className={`${buttonClassName} ${arrowClassName}`}>
+                  <Icon className={iconClassName} name={'chevron-left'} />
+                </span>
+              );
+            } else {
+              children = (
+                <Link
+                  onClick={onClick}
+                  className={`${buttonClassName} ${arrowClassName}`}
+                  href={nextUrl}
+                >
+                  <Icon className={iconClassName} name={'chevron-left'} />
+                </Link>
+              );
+            }
+          } else {
+            if (disabled) {
+              children = (
+                <span className={`${buttonClassName} ${arrowClassName}`}>
+                  <Icon className={iconClassName} name={'chevron-right'} />
+                </span>
+              );
+            } else {
+              children = (
+                <Link
+                  onClick={onClick}
+                  className={`${buttonClassName} ${arrowClassName}`}
+                  href={nextUrl}
+                >
+                  <Icon className={iconClassName} name={'chevron-right'} />
+                </Link>
+              );
+            }
           }
-        };
 
-        if (type === 'start-ellipsis' || type === 'end-ellipsis') {
-          children = '…';
-        } else if (type === 'page') {
-          children = (
-            <Link
-              onClick={onClick}
-              className={`${buttonClassName} ${selectedClassName}`}
-              href={nextUrl}
-            >
-              {page}
-            </Link>
-          );
-        } else if (type === 'previous') {
-          children = (
-            <Link
-              onClick={onClick}
-              className={`${buttonClassName} ${arrowClassName}`}
-              href={nextUrl}
-            >
-              <Icon className={iconClassName} name={'chevron-left'} />
-            </Link>
-          );
-        } else {
-          children = (
-            <Link
-              onClick={onClick}
-              className={`${buttonClassName} ${arrowClassName}`}
-              href={nextUrl}
-            >
-              <Icon className={iconClassName} name={'chevron-right'} />
-            </Link>
-          );
-        }
+          return <div key={index}>{children}</div>;
+        })}
+      </div>
 
-        return <div key={index}>{children}</div>;
-      })}
+      {showMoreHandler && totalPages > page ? (
+        <div className='flex justify-center mt-6'>
+          <Button
+            isLoading={isLoading}
+            size={'small'}
+            onClick={() => {
+              const nextPage = page + 1;
+              const nextUrl = getNextPath(prevUrlArray, nextPage, query.search);
+              showMoreHandler(nextUrl, nextPage);
+            }}
+          >
+            Показать ещё
+          </Button>
+        </div>
+      ) : null}
     </div>
   );
 };

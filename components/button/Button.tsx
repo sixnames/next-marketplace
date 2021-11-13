@@ -1,3 +1,4 @@
+import Spinner from 'components/Spinner';
 import * as React from 'react';
 import Icon from 'components/Icon';
 import WpTooltip from 'components/WpTooltip';
@@ -18,6 +19,7 @@ export interface ButtonPropsInterface {
   testId?: string;
   short?: boolean;
   ariaLabel?: string;
+  isLoading?: boolean;
 }
 
 const Button: React.FC<ButtonPropsInterface> = ({
@@ -33,6 +35,7 @@ const Button: React.FC<ButtonPropsInterface> = ({
   testId,
   short,
   ariaLabel,
+  isLoading,
   ...props
 }) => {
   const themeClass =
@@ -58,7 +61,7 @@ const Button: React.FC<ButtonPropsInterface> = ({
   const buttonClass = `z-[5] flex items-center justify-center border-1 border-theme font-medium uppercase text-center text-sm transition-all duration-100 cursor-pointer disabled:opacity-50 disabled:pointer-events-none shadow-md hover:shadow-xl ${sizeClass} ${themeClass} ${circleClass} ${additionalClass}`;
 
   return (
-    <React.Fragment>
+    <div className='relative'>
       <WpTooltip title={!disabled ? title : null}>
         <button
           aria-label={ariaLabel}
@@ -80,7 +83,8 @@ const Button: React.FC<ButtonPropsInterface> = ({
           {children}
         </button>
       </WpTooltip>
-    </React.Fragment>
+      {isLoading ? <Spinner isNestedAbsolute isTransparent /> : null}
+    </div>
   );
 };
 

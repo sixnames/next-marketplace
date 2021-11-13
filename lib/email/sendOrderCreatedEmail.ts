@@ -18,7 +18,7 @@ export const sendOrderCreatedEmail = async ({
   orderItemId,
   companyId,
   companySiteSlug,
-  city,
+  citySlug,
   locale,
   orderObjectId,
 }: SendOrderCreatedEmailInterface) => {
@@ -53,7 +53,7 @@ export const sendOrderCreatedEmail = async ({
     await sendEmail({
       text,
       to: customer.email,
-      city,
+      citySlug,
       locale,
       companySiteSlug,
       subject,
@@ -95,7 +95,7 @@ export const sendOrderCreatedEmail = async ({
       await sendEmail({
         text,
         to: emails,
-        city,
+        citySlug,
         locale,
         companySiteSlug,
         subject,
@@ -120,7 +120,7 @@ export const sendOrderCreatedEmail = async ({
     await sendEmail({
       text,
       to: emails,
-      city,
+      citySlug,
       locale,
       companySiteSlug: DEFAULT_COMPANY_SLUG,
       subject,

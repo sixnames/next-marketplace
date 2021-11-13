@@ -10,7 +10,7 @@ import RequestError from 'components/RequestError';
 import Title from 'components/Title';
 import WpImage from 'components/WpImage';
 import WpTooltip from 'components/WpTooltip';
-import { IMAGE_FALLBACK, ROUTE_CATALOGUE, ROUTE_SIGN_IN } from 'config/common';
+import { IMAGE_FALLBACK, ROUTE_SIGN_IN } from 'config/common';
 import { useSiteContext } from 'context/siteContext';
 import {
   COL_ORDER_PRODUCTS,
@@ -46,11 +46,11 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({
   orderIndex,
   testId,
 }) => {
+  const { urlPrefix } = useSiteContext();
   const { addProductToCart, getShopProductInCartCount } = useSiteContext();
   const { originalName, product, shopProduct, itemId, price, amount, totalPrice, productId } =
     orderProduct;
-  const rubricSlug = `${shopProduct?.rubricSlug}`;
-  const slug = `${shopProduct?.product?.slug}`;
+  const slug = `${product?.slug}`;
 
   const addToCartAmount = 1;
   const inCartCount = getShopProductInCartCount(`${orderProduct.shopProductId}`);
@@ -76,7 +76,7 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({
         <Link
           target={'_blank'}
           className='block absolute z-10 inset-0 text-indent-full'
-          href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
+          href={`${urlPrefix}/${slug}`}
         >
           {product?.snippetTitle}
         </Link>
@@ -90,7 +90,7 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({
             <Link
               target={'_blank'}
               className='block text-primary-text hover:no-underline hover:text-primary-text'
-              href={`${ROUTE_CATALOGUE}/${rubricSlug}/product/${slug}`}
+              href={`${urlPrefix}/${slug}`}
             >
               {product?.snippetTitle}
             </Link>
@@ -279,7 +279,7 @@ export async function getServerSideProps(
     return {
       redirect: {
         permanent: false,
-        destination: ROUTE_SIGN_IN,
+        destination: `${props.urlPrefix}${ROUTE_SIGN_IN}`,
       },
     };
   }

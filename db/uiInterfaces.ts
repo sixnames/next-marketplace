@@ -86,8 +86,6 @@ export interface BlogPostInterface extends Omit<BlogPostModel, 'views'> {
   options?: OptionInterface[] | null;
   likes?: BlogLikeInterface[] | null;
   likesCount?: number | null;
-  likedBySessionUser?: boolean;
-  isLikeAllowed?: boolean | null;
 }
 
 export interface BlogLikeInterface extends BlogLikeModel {
@@ -477,6 +475,7 @@ export interface UserInterface extends UserModel {
 
 export interface CatalogueDataInterface {
   _id: ObjectIdModel;
+  redirect?: string | null;
   basePath: string;
   clearSlug: string;
   filters: string[];

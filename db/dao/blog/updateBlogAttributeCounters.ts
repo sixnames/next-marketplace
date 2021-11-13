@@ -1,16 +1,10 @@
-import {
-  DEFAULT_LOCALE,
-  FILTER_PAGE_KEY,
-  FILTER_SEPARATOR,
-  VIEWS_COUNTER_STEP,
-} from 'config/common';
+import { FILTER_PAGE_KEY, FILTER_SEPARATOR, VIEWS_COUNTER_STEP } from 'config/common';
 import { COL_BLOG_ATTRIBUTES, COL_OPTIONS } from 'db/collectionNames';
-import { getPageSessionUser } from 'db/dao/user/getPageSessionUser';
 import { BlogAttributeModel, BlogAttributePayloadModel, OptionModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getRequestParams } from 'lib/sessionHelpers';
+import { getRequestParams, getSessionRole } from 'lib/sessionHelpers';
 
 export interface UpdateBlogAttributeCountersInputInterface {
   filters: string[];
@@ -24,6 +18,14 @@ export async function updateBlogAttributeCounters({
 }: DaoPropsInterface<UpdateBlogAttributeCountersInputInterface>): Promise<BlogAttributePayloadModel> {
   try {
     const { getApiMessage } = await getRequestParams(context);
+    const { role } = await getSessionRole(context);
+
+    if (role?.isStaff) {
+      return {
+        success: true,
+        message: await getApiMessage('blogAttributes.update.success'),
+      };
+    }
 
     if (!input) {
       return {
@@ -35,11 +37,6 @@ export async function updateBlogAttributeCounters({
     const { db } = await getDatabase();
     const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
     const blogAttributesCollection = db.collection<BlogAttributeModel>(COL_BLOG_ATTRIBUTES);
-
-    const sessionUser = await getPageSessionUser({
-      context,
-      locale: DEFAULT_LOCALE,
-    });
 
     const { companySlug, sessionCity, filters } = input;
     const selectedAttributesSlugs: string[] = [];
@@ -62,36 +59,34 @@ export async function updateBlogAttributeCounters({
       }
     });
 
-    if (!sessionUser?.me.role?.isStaff) {
-      const counterUpdater = {
-        $inc: {
-          [`views.${companySlug}.${sessionCity}`]: VIEWS_COUNTER_STEP,
+    const counterUpdater = {
+      $inc: {
+        [`views.${companySlug}.${sessionCity}`]: VIEWS_COUNTER_STEP,
+      },
+    };
+
+    // options
+    if (selectedOptionsSlugs.length > 0) {
+      await optionsCollection.updateMany(
+        {
+          slug: {
+            $in: selectedOptionsSlugs,
+          },
         },
-      };
+        counterUpdater,
+      );
+    }
 
-      // options
-      if (selectedOptionsSlugs.length > 0) {
-        await optionsCollection.updateMany(
-          {
-            slug: {
-              $in: selectedOptionsSlugs,
-            },
+    // attributes
+    if (selectedAttributesSlugs.length > 0) {
+      await blogAttributesCollection.updateMany(
+        {
+          slug: {
+            $in: selectedAttributesSlugs,
           },
-          counterUpdater,
-        );
-      }
-
-      // attributes
-      if (selectedAttributesSlugs.length > 0) {
-        await blogAttributesCollection.updateMany(
-          {
-            slug: {
-              $in: selectedAttributesSlugs,
-            },
-          },
-          counterUpdater,
-        );
-      }
+        },
+        counterUpdater,
+      );
     }
 
     return {

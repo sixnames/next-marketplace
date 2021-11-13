@@ -4,8 +4,14 @@ import Icon from 'components/Icon';
 import Inner from 'components/Inner';
 import PageEditor from 'components/PageEditor';
 import WpTooltip from 'components/WpTooltip';
-import { FILTER_SEPARATOR, ROUTE_BLOG_WITH_PAGE, SORT_DESC } from 'config/common';
+import {
+  FILTER_SEPARATOR,
+  REQUEST_METHOD_POST,
+  ROUTE_BLOG_WITH_PAGE,
+  SORT_DESC,
+} from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
+import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
 import { useLocaleContext } from 'context/localeContext';
 import { useSiteContext } from 'context/siteContext';
@@ -17,6 +23,7 @@ import {
   COL_OPTIONS,
   COL_USERS,
 } from 'db/collectionNames';
+import { UpdateBlogPostCountersInputInterface } from 'db/dao/blog/updateBlogPostCounters';
 import { getDatabase } from 'db/mongodb';
 import { BlogAttributeInterface, BlogPostInterface, OptionInterface } from 'db/uiInterfaces';
 import { useCreateBlogPostLike } from 'hooks/mutations/useBlogMutations';
@@ -85,6 +92,7 @@ interface BlogPostPageConsumerInterface {
 }
 
 const BlogPostPageConsumer: React.FC<BlogPostPageConsumerInterface> = ({ post }) => {
+  const { sessionCity, companySlug } = useAppContext();
   const { locale } = useLocaleContext();
   const { urlPrefix } = useSiteContext();
   const sessionUser = useSiteUserContext();
@@ -99,6 +107,18 @@ const BlogPostPageConsumer: React.FC<BlogPostPageConsumerInterface> = ({ post })
 
     setIsLikeAllowed(isLikeAllowed);
   }, [post.likes, sessionUser]);
+
+  React.useEffect(() => {
+    const input: UpdateBlogPostCountersInputInterface = {
+      blogPostId: `${post._id}`,
+      sessionCity,
+      companySlug,
+    };
+    fetch(`/api/blog/update-post-counters`, {
+      body: JSON.stringify(input),
+      method: REQUEST_METHOD_POST,
+    }).catch(console.log);
+  }, [companySlug, post._id, sessionCity]);
 
   return (
     <div className='mb-12'>
@@ -385,14 +405,7 @@ export const getStaticProps = async (
   });
   const isStaff = sessionUser?.me.role?.isStaff;
   if (!isStaff) {
-    await blogPostsCollection.findOneAndUpdate(
-      { _id: initialPost._id },
-      {
-        $inc: {
-          [`views.${props.companySlug}.${props.sessionCity}`]: VIEWS_COUNTER_STEP,
-        },
-      },
-    );
+  
   }*/
 
   const postOptions: OptionInterface[] = [];

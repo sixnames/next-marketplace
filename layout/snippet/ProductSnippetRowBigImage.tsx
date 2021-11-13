@@ -15,7 +15,6 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
   testId,
   className,
   showSnippetBackground = true,
-  showSnippetButtonsOnHover = false,
   showSnippetConnections = false,
   showSnippetArticle,
   showSnippetRating,
@@ -209,11 +208,8 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
         )}
 
         {/*controls*/}
-        <div
-          className={`flex gap-2 justify-between ${
-            showSnippetButtonsOnHover ? 'lg:opacity-0 group-hover:opacity-100 transition-all' : ''
-          }`}
-        >
+        {/*showSnippetButtonsOnHover ? 'lg:opacity-0 group-hover:opacity-100 transition-all' : ''*/}
+        <div className={`flex gap-2 justify-between`}>
           <Button
             disabled={isShopless}
             theme={'gray'}

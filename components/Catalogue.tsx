@@ -83,20 +83,35 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
   const sessionUser = useSiteUserContext();
   const isPageLoading = usePageLoadingState();
   const { showErrorNotification } = useNotificationsContext();
-  const [isUpButtonVisible, setIsUpButtonVisible] = React.useState<boolean>(false);
-  const [isFilterVisible, setIsFilterVisible] = React.useState<boolean>(false);
   const [catalogueView, setCatalogueVie] = React.useState<string>(CATALOGUE_VIEW_GRID);
   const [state, setState] = React.useState<CatalogueDataInterface>(() => {
     return catalogueData;
   });
 
-  // hide filter on page leave
+  // set page initial state
   React.useEffect(() => {
+    setState(catalogueData);
+  }, [catalogueData]);
+
+  // filter visibility
+  const [isFilterVisible, setIsFilterVisible] = React.useState<boolean>(false);
+  React.useEffect(() => {
+    // hide filter on page leave
     return () => {
       setIsFilterVisible(false);
     };
   }, []);
 
+  const showFilterHandler = React.useCallback(() => {
+    setIsFilterVisible(true);
+  }, []);
+
+  const hideFilterHandler = React.useCallback(() => {
+    setIsFilterVisible(false);
+  }, []);
+
+  // up button visibility
+  const [isUpButtonVisible, setIsUpButtonVisible] = React.useState<boolean>(false);
   React.useEffect(() => {
     function scrollHandler() {
       if (window.scrollY > 1000) {
@@ -116,6 +131,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
     };
   }, []);
 
+  // catalogue snippets view style
   React.useEffect(() => {
     const storageValue = window.localStorage.getItem(CATALOGUE_VIEW_STORAGE_KEY);
     setCatalogueVie(storageValue || CATALOGUE_VIEW_GRID);
@@ -129,10 +145,6 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
   const isRowView = React.useMemo(() => {
     return catalogueView === CATALOGUE_VIEW_ROW;
   }, [catalogueView]);
-
-  React.useEffect(() => {
-    setState(catalogueData);
-  }, [catalogueData]);
 
   // update catalogue counters
   const [updateCatalogueCountersMutation] = useUpdateCatalogueCountersMutation();
@@ -149,14 +161,6 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
       console.log(e);
     });
   }, [catalogueData, companySlug, router.query.rubricSlug, updateCatalogueCountersMutation]);
-
-  const showFilterHandler = React.useCallback(() => {
-    setIsFilterVisible(true);
-  }, []);
-
-  const hideFilterHandler = React.useCallback(() => {
-    setIsFilterVisible(false);
-  }, []);
 
   const catalogueCounterString = React.useMemo(() => {
     const catalogueCounterPostfix = getNumWord(catalogueData.totalProducts, [

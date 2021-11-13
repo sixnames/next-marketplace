@@ -1,11 +1,11 @@
 import { ROUTE_CATALOGUE } from 'config/common';
+import { alwaysArray } from 'lib/arrayUtils';
 import { getCatalogueData } from 'lib/catalogueUtils';
 import { noNaN } from 'lib/numbers';
 import { getRequestParams } from 'lib/sessionHelpers';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-export interface CatalogueQueryInterface {
-  filters: string[];
+export interface CatalogueApiInputInterface {
   rubricSlug: string;
   companySlug?: string;
   companyId?: string;
@@ -17,10 +17,9 @@ async function catalogueData(req: NextApiRequest, res: NextApiResponse) {
   try {
     const { locale, city, currency } = await getRequestParams({ req, res });
     const { query } = req;
-    const anyQuery = query as unknown;
-
-    const { filters, companySlug, companyId, page, snippetVisibleAttributesCount } =
-      anyQuery as CatalogueQueryInterface;
+    const input = JSON.parse(req.body) as CatalogueApiInputInterface;
+    const filters = alwaysArray(query.filters);
+    const { companySlug, companyId, page, snippetVisibleAttributesCount } = input;
     const [rubricSlug, ...restFilters] = filters;
 
     const rawCatalogueData = await getCatalogueData({

@@ -11,7 +11,7 @@ export interface SendEmailInterface {
   text: string;
   to: string | string[];
   companySiteSlug: string;
-  city: string;
+  citySlug: string;
   locale: string;
 }
 
@@ -21,7 +21,7 @@ export const sendEmail = async ({
   text,
   to,
   companySiteSlug,
-  city,
+  citySlug,
   locale,
 }: SendEmailInterface) => {
   try {
@@ -40,7 +40,7 @@ export const sendEmail = async ({
     const configs = castConfigs({
       configs: emailApiConfigs,
       locale,
-      city,
+      citySlug,
     });
     const emailApiHost = getConfigStringValue({
       configs,

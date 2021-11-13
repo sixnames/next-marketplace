@@ -1,6 +1,10 @@
+import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG } from 'config/common';
+
+const profileUrl = `/${DEFAULT_COMPANY_SLUG}/${DEFAULT_CITY}/profile/details`;
+
 describe('Profile details', () => {
   beforeEach(() => {
-    cy.testAuth(`/profile/details`);
+    cy.testAuth(profileUrl);
   });
 
   it('Should update profile', () => {
@@ -30,7 +34,7 @@ describe('Profile details', () => {
     cy.getByCy(`main-page`).should('exist');
 
     // Profile should be updated
-    cy.visit(`/profile/details`);
+    cy.visit(profileUrl);
     cy.getByCy('name').should('have.value', newName);
     cy.getByCy('lastName').should('have.value', newLastName);
     cy.getByCy('secondName').should('have.value', newSecondName);

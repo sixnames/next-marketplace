@@ -10,9 +10,9 @@ import { getDatabase } from 'db/mongodb';
 import { OptionInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
+import { get } from 'lodash';
 import { ObjectId } from 'mongodb';
 import trim from 'trim';
-import { get } from 'lodash';
 
 interface TreeItemInterface extends Record<any, any> {
   parentId?: ObjectIdModel | null;
@@ -37,13 +37,14 @@ export function getTreeFromList<T extends TreeItemInterface>({
   gender,
   log,
 }: GetTreeFromListInterface<T>): T[] {
-  const parentsList = (list || []).filter((listItem) => {
+  const realList = list || [];
+  const parentsList = realList.filter((listItem) => {
     return parentId ? listItem.parentId?.equals(parentId) : !listItem.parentId;
   });
 
   return parentsList.map((parent) => {
     const children = getTreeFromList({
-      list: list,
+      list: realList,
       locale,
       parentId: parent._id,
       childrenFieldName,
@@ -272,20 +273,6 @@ export function sortByName(list: any[], fieldName = 'name'): any[] {
     const nameA = `${get(a, fieldName)}`.toUpperCase();
     const nameB = `${get(b, fieldName)}`.toUpperCase();
 
-    if (nameA < nameB) {
-      return -1;
-    }
-    if (nameA > nameB) {
-      return 1;
-    }
-    return 0;
-  });
-}
-
-export function sortStringArray(list: string[]): any[] {
-  return [...list].sort((a, b) => {
-    const nameA = `${a}`.toUpperCase();
-    const nameB = `${b}`.toUpperCase();
     if (nameA < nameB) {
       return -1;
     }

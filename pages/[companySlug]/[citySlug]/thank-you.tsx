@@ -2,7 +2,7 @@ import Button from 'components/button/Button';
 import Inner from 'components/Inner';
 import Title from 'components/Title';
 import { ROUTE_PROFILE } from 'config/common';
-import { useNotificationsContext } from 'context/notificationsContext';
+import { useSiteContext } from 'context/siteContext';
 import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -10,7 +10,7 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import { getSiteInitialData } from 'lib/ssrUtils';
 
 const ThankYouRoute: React.FC = () => {
-  const { showErrorNotification } = useNotificationsContext();
+  const { urlPrefix } = useSiteContext();
   const router = useRouter();
 
   return (
@@ -28,18 +28,14 @@ const ThankYouRoute: React.FC = () => {
           <Button
             theme={'secondary'}
             onClick={() => {
-              router.push(`/`).catch(() => {
-                showErrorNotification();
-              });
+              router.push(urlPrefix).catch(console.log);
             }}
           >
             Продолжить покупки
           </Button>
           <Button
             onClick={() => {
-              router.push(ROUTE_PROFILE).catch(() => {
-                showErrorNotification();
-              });
+              router.push(`${urlPrefix}${ROUTE_PROFILE}`).catch(console.log);
             }}
             theme={'secondary'}
           >

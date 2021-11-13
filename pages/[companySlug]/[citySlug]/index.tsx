@@ -10,8 +10,10 @@ import {
   ROUTE_CATALOGUE,
   ROUTE_DOCS_PAGES,
   CATALOGUE_TOP_FILTERS_LIMIT,
+  ISR_FIVE_SECONDS,
 } from 'config/common';
 import { useConfigContext } from 'context/configContext';
+import { useSiteContext } from 'context/siteContext';
 import { COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { noImageStage, shopProductFieldsPipeline } from 'db/dao/constantPipelines';
 import { getDatabase } from 'db/mongodb';
@@ -25,6 +27,7 @@ import {
 } from 'db/uiInterfaces';
 import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
 import ProductSnippetGridBigImage from 'layout/snippet/ProductSnippetGridBigImage';
+import { getIsrSiteInitialData, IsrContextInterface } from 'lib/isrUtils';
 import { getTreeFromList } from 'lib/optionsUtils';
 import { generateSnippetTitle, generateTitle } from 'lib/titleUtils';
 import { getFieldStringLocale } from 'lib/i18n';
@@ -32,10 +35,10 @@ import { noNaN } from 'lib/numbers';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import { GetStaticPathsResult, GetStaticPropsResult, NextPage } from 'next';
 import Title from 'components/Title';
 import Inner from 'components/Inner';
-import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
+import { castDbData } from 'lib/ssrUtils';
 import ImageGallery, { ReactImageGalleryItem } from 'react-image-gallery';
 
 interface HomeRouteInterface {
@@ -56,6 +59,7 @@ const HomeRoute: React.FC<HomeRouteInterface> = ({
   mobileTopFilters,
 }) => {
   const [topFiltersVisible, setTopFiltersVisible] = React.useState<boolean>(false);
+  const { urlPrefix } = useSiteContext();
   const { configs } = useConfigContext();
   const configTitle = configs.seoTextTitle;
   const configSeoText = configs.seoText;
@@ -303,7 +307,7 @@ const HomeRoute: React.FC<HomeRouteInterface> = ({
             <div className='hidden lg:flex flex-wrap gap-3'>
               {topFilters.map(({ name, href }) => {
                 return (
-                  <TagLink href={href} key={href}>
+                  <TagLink href={`${urlPrefix}${href}`} key={href}>
                     {name}
                   </TagLink>
                 );
@@ -388,14 +392,22 @@ const Home: NextPage<HomeInterface> = ({
   );
 };
 
-export async function getServerSideProps(
-  context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<HomeInterface>> {
+export async function getStaticPaths(): Promise<GetStaticPathsResult> {
+  const paths: any[] = [];
+  return {
+    paths,
+    fallback: 'blocking',
+  };
+}
+
+export async function getStaticProps(
+  context: IsrContextInterface,
+): Promise<GetStaticPropsResult<HomeInterface>> {
   try {
     const { db } = await getDatabase();
     const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
     const shopsCollection = db.collection<ShopInterface>(COL_SHOPS);
-    const { props } = await getSiteInitialData({
+    const { props } = await getIsrSiteInitialData({
       context,
     });
 
@@ -648,6 +660,7 @@ export async function getServerSideProps(
     };
 
     return {
+      revalidate: ISR_FIVE_SECONDS,
       props: {
         ...props,
         topFilters: castDbData(topFilters),

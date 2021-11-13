@@ -1,17 +1,6 @@
-import {
-  ASSETS_DIST,
-  DEFAULT_CITY,
-  DEFAULT_COMPANY_SLUG,
-  DEFAULT_LOCALE,
-  IMAGE_FALLBACK,
-  ONE_WEEK,
-} from 'config/common';
-import { COL_CONFIGS } from 'db/collectionNames';
-import { ConfigModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { ASSETS_DIST, DEFAULT_COMPANY_SLUG, IMAGE_FALLBACK, ONE_WEEK } from 'config/common';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { checkIfWatermarkNeeded, getSharpImage } from 'lib/assetUtils/assetUtils';
-import { castConfigs, getConfigStringValue } from 'lib/configsUtils';
 import { noNaN } from 'lib/numbers';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import path from 'path';
@@ -27,8 +16,6 @@ export async function getServerSideProps(
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<any>> {
   const { res, query } = context;
-  const { db } = await getDatabase();
-  const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
 
   // extract query parameters
   const widthString = (query.width as string) || undefined;
@@ -53,29 +40,7 @@ export async function getServerSideProps(
   res.setHeader('Cache-Control', `public, max-age=${ONE_WEEK}`);
 
   // check if watermark needed
-  let watermarkPath: string = '';
   const showWatermark = checkIfWatermarkNeeded(dist);
-  if (showWatermark) {
-    const slug = 'watermark';
-    const initialConfigs = await configsCollection
-      .find({
-        companySlug,
-        slug,
-      })
-      .toArray();
-    const configs = castConfigs({
-      configs: initialConfigs,
-      city: DEFAULT_CITY,
-      locale: DEFAULT_LOCALE,
-    });
-    const configValue = getConfigStringValue({
-      configs,
-      slug,
-    });
-    watermarkPath = configValue || 'public/watermark.png';
-  }
-
-  // get watermark config
 
   // send ico and svg files
   if (
@@ -91,7 +56,7 @@ export async function getServerSideProps(
         format: 'webp',
         width: noNaN(widthString),
         showWatermark: false,
-        watermarkPath,
+        companySlug,
         quality,
       });
 
@@ -128,7 +93,7 @@ export async function getServerSideProps(
     format,
     width: noNaN(widthString),
     showWatermark,
-    watermarkPath,
+    companySlug,
     quality,
   });
 
@@ -138,7 +103,7 @@ export async function getServerSideProps(
       format,
       width: noNaN(widthString),
       showWatermark: false,
-      watermarkPath,
+      companySlug,
       quality,
     });
 

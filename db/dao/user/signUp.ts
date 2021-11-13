@@ -96,7 +96,7 @@ export async function signUp({
       userName: createdUser.name,
       password: input.password,
       companySiteSlug: companySlug,
-      city,
+      citySlug: city,
       locale,
     });
 

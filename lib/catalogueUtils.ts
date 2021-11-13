@@ -81,8 +81,9 @@ import { getAlgoliaProductsSearch } from 'lib/algoliaUtils';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
-import { getTreeFromList, sortByName, sortStringArray } from 'lib/optionsUtils';
+import { getTreeFromList, sortByName } from 'lib/optionsUtils';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
+import { sortStringArray } from 'lib/stringUtils';
 import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
 import { generateSnippetTitle, generateTitle } from 'lib/titleUtils';
 import { castProductConnectionForUI } from 'lib/uiDataUtils';
@@ -172,6 +173,7 @@ export interface GetCatalogueAttributesPayloadInterface {
   selectedFilters: AttributeInterface[];
   castedAttributes: CatalogueFilterAttributeInterface[];
   selectedAttributes: CatalogueFilterAttributeInterface[];
+  selectedFilterSlugs: string[];
 }
 
 interface CastOptionInterface {
@@ -202,6 +204,7 @@ export async function getCatalogueAttributes({
   rubricGender,
   brands,
 }: GetCatalogueAttributesInterface): Promise<GetCatalogueAttributesPayloadInterface> {
+  const selectedFilterSlugs: string[] = [];
   const selectedFilters: AttributeInterface[] = [];
   const castedAttributes: CatalogueFilterAttributeInterface[] = [];
   const selectedAttributes: CatalogueFilterAttributeInterface[] = [];
@@ -264,11 +267,15 @@ export async function getCatalogueAttributes({
   }
 
   function checkIfOptionSelected(option: OptionInterface, attributeSlug: string): boolean {
+    const isBrand = attributeSlug === FILTER_BRAND_KEY;
     const castedSlug = `${attributeSlug}${FILTER_SEPARATOR}${option.slug}`;
     let isSelected = realFilter.includes(castedSlug);
     if (option.options && option.options.length > 0) {
       const childBooleans = option.options.map((childOption) => {
-        return checkIfOptionSelected(childOption, attributeSlug);
+        return checkIfOptionSelected(
+          childOption,
+          isBrand ? FILTER_BRAND_COLLECTION_KEY : attributeSlug,
+        );
       });
       const isChildSelected = childBooleans.some((bool) => bool);
       if (isChildSelected) {
@@ -382,13 +389,15 @@ export async function getCatalogueAttributes({
       }
     }
 
-    const optionNextSlug = isSelected
-      ? [...realFilter]
-          .filter((pathArg) => {
-            return pathArg !== castedSlug;
-          })
-          .join('/')
-      : [...realFilter, castedSlug].join('/');
+    let optionNextSlug = [...realFilter, castedSlug].join('/');
+    if (isSelected) {
+      optionNextSlug = [...realFilter]
+        .filter((pathArg) => {
+          return pathArg !== castedSlug;
+        })
+        .join('/');
+      selectedFilterSlugs.push(`${attribute.slug}${FILTER_SEPARATOR}${option.slug}`);
+    }
 
     const castedOption: CatalogueFilterAttributeOptionInterface = {
       _id: option._id,
@@ -502,6 +511,7 @@ export async function getCatalogueAttributes({
 
   return {
     selectedFilters,
+    selectedFilterSlugs,
     castedAttributes: visibleAttributesCount
       ? castedAttributes.slice(0, visibleAttributesCount)
       : castedAttributes,
@@ -953,6 +963,7 @@ export const getCatalogueData = async ({
     // fallback
     const fallbackPayload: CatalogueDataInterface = {
       _id: new ObjectId(),
+      redirect: null,
       clearSlug: basePath,
       filters: input.filters,
       editUrl: '',
@@ -1529,6 +1540,7 @@ export const getCatalogueData = async ({
     const selectedCategories: CategoryInterface[] = (categories || []).filter((category) => {
       return selectedCategorySlugs.includes(category.slug);
     });
+
     const selectedCategoriesTree = getTreeFromList({
       list: selectedCategories,
       childrenFieldName: 'categories',
@@ -1602,22 +1614,23 @@ export const getCatalogueData = async ({
       : [];
 
     // cast catalogue attributes
-    const { selectedFilters, castedAttributes, selectedAttributes } = await getCatalogueAttributes({
-      attributes: [
-        ...rubricsAsFilters,
-        ...categoryAttribute,
-        priceAttribute,
-        ...brandAttribute,
-        ...rubricAttributes,
-      ],
-      locale,
-      filters: input.filters,
-      productsPrices: prices,
-      basePath,
-      rubricGender: search ? GENDER_HE : pageGender,
-      brands,
-      // visibleAttributesCount,
-    });
+    const { selectedFilters, castedAttributes, selectedAttributes, selectedFilterSlugs } =
+      await getCatalogueAttributes({
+        attributes: [
+          ...rubricsAsFilters,
+          ...categoryAttribute,
+          priceAttribute,
+          ...brandAttribute,
+          ...rubricAttributes,
+        ],
+        locale,
+        filters: input.filters,
+        productsPrices: prices,
+        basePath,
+        rubricGender: search ? GENDER_HE : pageGender,
+        brands,
+        // visibleAttributesCount,
+      });
 
     // cast catalogue products
     const products: ShopProductInterface[] = [];
@@ -1855,41 +1868,43 @@ export const getCatalogueData = async ({
     let seoTop: RubricSeoModel | null | undefined;
     let seoBottom: RubricSeoModel | null | undefined;
 
-    // category seo text if selected
-    const categorySeoTexts = await setCategorySeoText({
-      categories: selectedCategoriesTree,
-      companySlug,
-      locale,
-      rubricId: rubric._id.toHexString(),
-    });
-
-    if (categorySeoTexts) {
-      editUrl = categorySeoTexts.editUrl;
-      textTop = categorySeoTexts.textTop;
-      textBottom = categorySeoTexts.textBottom;
-      seoTop = categorySeoTexts.seoTop;
-      seoBottom = categorySeoTexts.seoBottom;
-    } else {
-      textTop = getFieldStringLocale(rubric.seoDescriptionTop?.textI18n, locale);
-      textBottom = getFieldStringLocale(rubric.seoDescriptionBottom?.textI18n, locale);
-      seoTop = await rubricSeoCollection.findOne({
-        rubricId: rubric._id,
-        position: CATALOGUE_SEO_TEXT_POSITION_TOP,
-        categoryId: null,
+    if (!search) {
+      // category seo text if selected
+      const categorySeoTexts = await setCategorySeoText({
+        categories: selectedCategoriesTree,
         companySlug,
+        locale,
+        rubricId: rubric._id.toHexString(),
       });
-      seoBottom = await rubricSeoCollection.findOne({
-        rubricId: rubric._id,
-        position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
-        categoryId: null,
-        companySlug,
-      });
-    }
 
-    // remove seo text if selected more then one category
-    if (selectedCategoriesTree.length > 1) {
-      textTop = null;
-      textBottom = null;
+      if (categorySeoTexts) {
+        editUrl = categorySeoTexts.editUrl;
+        textTop = categorySeoTexts.textTop;
+        textBottom = categorySeoTexts.textBottom;
+        seoTop = categorySeoTexts.seoTop;
+        seoBottom = categorySeoTexts.seoBottom;
+      } else {
+        textTop = getFieldStringLocale(rubric.seoDescriptionTop?.textI18n, locale);
+        textBottom = getFieldStringLocale(rubric.seoDescriptionBottom?.textI18n, locale);
+        seoTop = await rubricSeoCollection.findOne({
+          rubricId: rubric._id,
+          position: CATALOGUE_SEO_TEXT_POSITION_TOP,
+          categoryId: null,
+          companySlug,
+        });
+        seoBottom = await rubricSeoCollection.findOne({
+          rubricId: rubric._id,
+          position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+          categoryId: null,
+          companySlug,
+        });
+      }
+
+      // remove seo text if selected more then one category
+      if (selectedCategoriesTree.length > 1) {
+        textTop = null;
+        textBottom = null;
+      }
     }
 
     // get layout configs
@@ -1976,10 +1991,25 @@ export const getCatalogueData = async ({
           return slug !== FILTER_CATEGORY_KEY;
         });
 
+    let redirect = null;
+    const isRedirect = selectedFilterSlugs.some((selectedSlug) => {
+      return (
+        input.filters.length > 0 &&
+        !input.filters.some((filter) => {
+          return filter === selectedSlug;
+        })
+      );
+    });
+    if (isRedirect) {
+      const sortedRedirectArray = sortStringArray(selectedFilterSlugs);
+      redirect = `/${sortedRedirectArray.join('/')}`;
+    }
+
     // console.log(`Catalogue data >>>>>>>>>>>>>>>> `, new Date().getTime() - timeStart);
     return {
       // rubric
       _id: rubric._id,
+      redirect,
       rubricName,
       rubricSlug: rubric.slug,
       editUrl,
@@ -2070,6 +2100,15 @@ export async function getCatalogueServerSideProps(
 
   if (rawCatalogueData.products.length < 1) {
     return notFoundResponse;
+  }
+
+  if (rawCatalogueData.redirect) {
+    return {
+      redirect: {
+        permanent: true,
+        destination: `${props.urlPrefix}${rawCatalogueData.basePath}/${rawCatalogueData.redirect}`,
+      },
+    };
   }
 
   // console.log('Catalogue getServerSideProps total time ', new Date().getTime() - timeStart);

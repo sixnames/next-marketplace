@@ -9,12 +9,12 @@ export const sendPasswordUpdatedEmail = async ({
   to,
   userName,
   companySiteSlug,
-  city,
+  citySlug,
   locale,
 }: SendPasswordUpdatedEmailInterface) => {
   await sendEmail({
     to,
-    city,
+    citySlug,
     locale,
     companySiteSlug,
     text: `Здравствуйте ${userName}! Ваш пароль обновлён.`,

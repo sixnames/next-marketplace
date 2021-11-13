@@ -175,7 +175,7 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
     onSuccess: (payload) => {
       if (payload.success) {
         refetchCartHandler();
-        router.push(ROUTE_THANK_YOU).catch(console.log);
+        router.push(`${urlPrefix}${ROUTE_THANK_YOU}`).catch(console.log);
         return;
       }
       hideLoading();

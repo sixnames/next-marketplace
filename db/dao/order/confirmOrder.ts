@@ -203,7 +203,7 @@ export async function confirmOrder({
           orderItemId: order.orderId,
           companyId: order.companyId,
           companySiteSlug: order.companySiteSlug,
-          city,
+          citySlug: city,
           locale,
         };
         await sendOrderConfirmedEmail(notificationConfig);

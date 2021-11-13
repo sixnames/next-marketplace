@@ -29,6 +29,7 @@ import {
   SORT_BY_KEY,
   SORT_DESC_STR,
   SORT_DIR_KEY,
+  REQUEST_METHOD_POST,
 } from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import { useNotificationsContext } from 'context/notificationsContext';
@@ -42,6 +43,7 @@ import { debounce } from 'lodash';
 import { cityIn } from 'lvovich';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
+import { CatalogueApiInputInterface } from 'pages/api/catalogue/[...filters]';
 import * as React from 'react';
 import CatalogueFilter from 'layout/catalogue/CatalogueFilter';
 
@@ -79,24 +81,74 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
   urlPrefix,
   subHeadText,
 }) => {
+  const { configs } = useConfigContext();
   const router = useRouter();
   const sessionUser = useSiteUserContext();
   const isPageLoading = usePageLoadingState();
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const { showErrorNotification } = useNotificationsContext();
-  const [isUpButtonVisible, setIsUpButtonVisible] = React.useState<boolean>(false);
-  const [isFilterVisible, setIsFilterVisible] = React.useState<boolean>(false);
   const [catalogueView, setCatalogueVie] = React.useState<string>(CATALOGUE_VIEW_GRID);
   const [state, setState] = React.useState<CatalogueDataInterface>(() => {
     return catalogueData;
   });
 
-  // hide filter on page leave
+  // set page initial state
   React.useEffect(() => {
+    setState(catalogueData);
+  }, [catalogueData]);
+
+  // get more handler
+  const showMoreHandler = React.useCallback(
+    (nextUrl) => {
+      const input: CatalogueApiInputInterface = {
+        companyId,
+        companySlug,
+        snippetVisibleAttributesCount: configs.snippetAttributesCount,
+      };
+
+      setIsLoading(true);
+      fetch(`/api/catalogue${nextUrl}`, {
+        method: REQUEST_METHOD_POST,
+        body: JSON.stringify(input),
+      })
+        .then<CatalogueDataInterface | null>((response) => response.json())
+        .then((json) => {
+          if (json) {
+            const { products, page } = json;
+            setState((prevState) => {
+              return {
+                ...prevState,
+                products: [...prevState.products, ...products],
+                page,
+              };
+            });
+            setIsLoading(false);
+          }
+        })
+        .catch(console.log);
+    },
+    [companyId, companySlug, configs.snippetAttributesCount],
+  );
+
+  // filter visibility
+  const [isFilterVisible, setIsFilterVisible] = React.useState<boolean>(false);
+  React.useEffect(() => {
+    // hide filter on page leave
     return () => {
       setIsFilterVisible(false);
     };
   }, []);
 
+  const showFilterHandler = React.useCallback(() => {
+    setIsFilterVisible(true);
+  }, []);
+
+  const hideFilterHandler = React.useCallback(() => {
+    setIsFilterVisible(false);
+  }, []);
+
+  // up button visibility
+  const [isUpButtonVisible, setIsUpButtonVisible] = React.useState<boolean>(false);
   React.useEffect(() => {
     function scrollHandler() {
       if (window.scrollY > 1000) {
@@ -116,6 +168,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
     };
   }, []);
 
+  // catalogue snippets view style
   React.useEffect(() => {
     const storageValue = window.localStorage.getItem(CATALOGUE_VIEW_STORAGE_KEY);
     setCatalogueVie(storageValue || CATALOGUE_VIEW_GRID);
@@ -129,10 +182,6 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
   const isRowView = React.useMemo(() => {
     return catalogueView === CATALOGUE_VIEW_ROW;
   }, [catalogueView]);
-
-  React.useEffect(() => {
-    setState(catalogueData);
-  }, [catalogueData]);
 
   // update catalogue counters
   const [updateCatalogueCountersMutation] = useUpdateCatalogueCountersMutation();
@@ -149,14 +198,6 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
       console.log(e);
     });
   }, [catalogueData, companySlug, router.query.rubricSlug, updateCatalogueCountersMutation]);
-
-  const showFilterHandler = React.useCallback(() => {
-    setIsFilterVisible(true);
-  }, []);
-
-  const hideFilterHandler = React.useCallback(() => {
-    setIsFilterVisible(false);
-  }, []);
 
   const catalogueCounterString = React.useMemo(() => {
     const catalogueCounterPostfix = getNumWord(catalogueData.totalProducts, [
@@ -402,7 +443,13 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
                 })}
 
                 <div className='w-full'>
-                  <Pager page={state.page} totalPages={state.totalPages} />
+                  <Pager
+                    urlPrefix={urlPrefix}
+                    showMoreHandler={showMoreHandler}
+                    page={state.page}
+                    totalPages={state.totalPages}
+                    isLoading={isLoading}
+                  />
                 </div>
               </div>
             </div>

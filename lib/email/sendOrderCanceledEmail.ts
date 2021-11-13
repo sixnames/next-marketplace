@@ -17,7 +17,7 @@ export const sendOrderCanceledEmail = async ({
   customer,
   orderItemId,
   companyId,
-  city,
+  citySlug,
   locale,
   companySiteSlug,
   orderObjectId,
@@ -49,7 +49,7 @@ export const sendOrderCanceledEmail = async ({
     await sendEmail({
       text,
       to: customer.email,
-      city,
+      citySlug,
       locale,
       companySiteSlug,
       subject,
@@ -90,7 +90,7 @@ export const sendOrderCanceledEmail = async ({
       await sendEmail({
         text,
         to: emails,
-        city,
+        citySlug,
         locale,
         companySiteSlug,
         subject,
@@ -115,7 +115,7 @@ export const sendOrderCanceledEmail = async ({
     await sendEmail({
       text,
       to: emails,
-      city,
+      citySlug,
       locale,
       companySiteSlug: DEFAULT_COMPANY_SLUG,
       subject,

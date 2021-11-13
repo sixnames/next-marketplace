@@ -18,7 +18,7 @@ export const sendOrderProductCanceledEmail = async ({
   companyId,
   companySiteSlug,
   productOriginalName,
-  city,
+  citySlug,
   locale,
 }: SendOrderProductCanceledEmailInterface) => {
   const { db } = await getDatabase();
@@ -45,7 +45,7 @@ export const sendOrderProductCanceledEmail = async ({
     await sendEmail({
       text,
       to: customer.email,
-      city,
+      citySlug,
       locale,
       companySiteSlug,
       subject,
@@ -79,7 +79,7 @@ export const sendOrderProductCanceledEmail = async ({
       await sendEmail({
         text,
         to: emails,
-        city,
+        citySlug,
         locale,
         companySiteSlug,
         subject,
@@ -99,7 +99,7 @@ export const sendOrderProductCanceledEmail = async ({
     await sendEmail({
       text,
       to: emails,
-      city,
+      citySlug,
       locale,
       companySiteSlug: DEFAULT_COMPANY_SLUG,
       subject,

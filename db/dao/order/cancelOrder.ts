@@ -167,7 +167,7 @@ export async function cancelOrder({
           companyId: order.companyId,
           companySiteSlug: order.companySiteSlug,
           orderObjectId: order._id,
-          city,
+          citySlug: city,
           locale,
         };
         await sendOrderCanceledEmail(notificationConfig);

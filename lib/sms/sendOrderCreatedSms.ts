@@ -18,7 +18,7 @@ export async function sendOrderCreatedSms({
   customer,
   companySiteSlug,
   orderObjectId,
-  city,
+  citySlug,
   companyId,
 }: SendOrderCreatedSmsInterface) {
   const { db } = await getDatabase();
@@ -39,7 +39,7 @@ export async function sendOrderCreatedSms({
       text,
       numbers: [customer.phone],
       locale,
-      city,
+      citySlug,
       companySiteSlug,
     });
   }
@@ -69,7 +69,7 @@ export async function sendOrderCreatedSms({
         text: text(url),
         numbers,
         locale,
-        city,
+        citySlug,
         companySiteSlug,
       });
     }
@@ -92,7 +92,7 @@ export async function sendOrderCreatedSms({
       text: text(url),
       numbers,
       locale,
-      city,
+      citySlug,
       companySiteSlug: DEFAULT_COMPANY_SLUG,
     });
   }

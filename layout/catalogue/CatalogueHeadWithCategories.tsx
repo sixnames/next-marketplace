@@ -9,6 +9,7 @@ import { useSiteContext } from 'context/siteContext';
 import { useSiteUserContext } from 'context/userSiteUserContext';
 import { TextUniquenessApiParsedResponseModel } from 'db/dbModels';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
+import { sortStringArray } from 'lib/stringUtils';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 
@@ -57,12 +58,10 @@ const CatalogueHeadWithCategories: React.FC<CatalogueHeadDefaultInterface> = ({
                 [],
               );
 
-              const otherCategoryFilters =
-                otherCategoryFiltersArray.length > 0
-                  ? `/${otherCategoryFiltersArray.join('/')}`
-                  : '';
+              const newPathArray = sortStringArray([...otherCategoryFiltersArray, categoryFilter]);
+              const newPathString = newPathArray.join('/');
 
-              const href = `/${companySlug}${ROUTE_CATALOGUE}/${rubricSlug}${otherCategoryFilters}/${categoryFilter}/`;
+              const href = `/${companySlug}${ROUTE_CATALOGUE}/${rubricSlug}/${newPathString}`;
 
               return (
                 <Link

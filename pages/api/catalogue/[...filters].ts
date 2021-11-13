@@ -1,27 +1,24 @@
-import { ROUTE_CATALOGUE } from 'config/common';
+import { CATALOGUE_SNIPPET_VISIBLE_ATTRIBUTES, ROUTE_CATALOGUE } from 'config/common';
+import { alwaysArray } from 'lib/arrayUtils';
 import { getCatalogueData } from 'lib/catalogueUtils';
 import { noNaN } from 'lib/numbers';
 import { getRequestParams } from 'lib/sessionHelpers';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-export interface CatalogueQueryInterface {
-  filters: string[];
-  rubricSlug: string;
+export interface CatalogueApiInputInterface {
   companySlug?: string;
   companyId?: string;
-  page: number;
-  snippetVisibleAttributesCount: string;
+  snippetVisibleAttributesCount?: number | null;
 }
 
 async function catalogueData(req: NextApiRequest, res: NextApiResponse) {
   try {
     const { locale, city, currency } = await getRequestParams({ req, res });
     const { query } = req;
-    const anyQuery = query as unknown;
-
-    const { filters, companySlug, companyId, page, snippetVisibleAttributesCount } =
-      anyQuery as CatalogueQueryInterface;
-    const [rubricSlug, ...restFilters] = filters;
+    const input = JSON.parse(req.body) as CatalogueApiInputInterface;
+    const { companySlug, companyId, snippetVisibleAttributesCount } = input;
+    const filtersArray = alwaysArray(query.filters).slice(1);
+    const [rubricSlug, ...filters] = filtersArray;
 
     const rawCatalogueData = await getCatalogueData({
       locale,
@@ -30,11 +27,12 @@ async function catalogueData(req: NextApiRequest, res: NextApiResponse) {
       currency,
       city,
       basePath: `${ROUTE_CATALOGUE}/${rubricSlug}`,
-      snippetVisibleAttributesCount: noNaN(snippetVisibleAttributesCount) || 5,
+      snippetVisibleAttributesCount:
+        noNaN(snippetVisibleAttributesCount) || noNaN(CATALOGUE_SNIPPET_VISIBLE_ATTRIBUTES),
       input: {
         rubricSlug,
-        page: noNaN(page),
-        filters: restFilters,
+        page: noNaN(1),
+        filters,
       },
     });
     if (!rawCatalogueData) {

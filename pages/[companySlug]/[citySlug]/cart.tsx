@@ -288,7 +288,7 @@ const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId 
 const CartRoute: React.FC = () => {
   const { showErrorNotification } = useNotificationsContext();
   const router = useRouter();
-  const { cart, loadingCart } = useSiteContext();
+  const { cart, loadingCart, urlPrefix } = useSiteContext();
   const { configs } = useConfigContext();
 
   if (loadingCart && !cart) {
@@ -328,7 +328,7 @@ const CartRoute: React.FC = () => {
             <Button
               theme={'secondary'}
               onClick={() => {
-                router.push(`/`).catch(() => {
+                router.push(urlPrefix).catch(() => {
                   showErrorNotification();
                 });
               }}
@@ -337,9 +337,7 @@ const CartRoute: React.FC = () => {
             </Button>
             <Button
               onClick={() => {
-                router.push(ROUTE_PROFILE).catch(() => {
-                  showErrorNotification();
-                });
+                router.push(`${urlPrefix}${ROUTE_PROFILE}`).catch(console.log);
               }}
               theme={'secondary'}
             >
@@ -377,7 +375,7 @@ const CartRoute: React.FC = () => {
               cart={cart}
               buttonText={configs.buyButtonText}
               onConfirmHandler={() => {
-                router.push(`/make-an-order`).catch(() => {
+                router.push(`${urlPrefix}/make-an-order`).catch(() => {
                   showErrorNotification();
                 });
               }}

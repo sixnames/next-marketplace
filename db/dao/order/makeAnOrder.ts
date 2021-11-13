@@ -180,7 +180,7 @@ export async function makeAnOrder({
           userName: createdUser.name,
           password: newPassword,
           companySiteSlug: companySlug,
-          city,
+          citySlug: city,
           locale,
         });
       }
@@ -395,7 +395,7 @@ export async function makeAnOrder({
           companyId: order.companyId,
           companySiteSlug: order.companySiteSlug,
           orderObjectId: order._id,
-          city,
+          citySlug: city,
           locale,
         };
         await sendOrderCreatedEmail(notificationConfig);

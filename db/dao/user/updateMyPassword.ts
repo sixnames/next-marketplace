@@ -81,7 +81,7 @@ export async function updateMyPassword({
       to: updatedUser.email,
       userName: updatedUser.name,
       companySiteSlug: companySlug,
-      city,
+      citySlug: city,
       locale,
     });
 

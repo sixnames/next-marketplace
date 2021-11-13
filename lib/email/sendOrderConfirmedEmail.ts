@@ -16,7 +16,7 @@ export const sendOrderConfirmedEmail = async ({
   orderItemId,
   companyId,
   companySiteSlug,
-  city,
+  citySlug,
   locale,
 }: SendOrderConfirmedEmailInterface) => {
   const { db } = await getDatabase();
@@ -43,7 +43,7 @@ export const sendOrderConfirmedEmail = async ({
     await sendEmail({
       text,
       to: customer.email,
-      city,
+      citySlug,
       locale,
       companySiteSlug,
       subject,
@@ -77,7 +77,7 @@ export const sendOrderConfirmedEmail = async ({
       await sendEmail({
         text,
         to: emails,
-        city,
+        citySlug,
         locale,
         companySiteSlug,
         subject,
@@ -97,7 +97,7 @@ export const sendOrderConfirmedEmail = async ({
     await sendEmail({
       text,
       to: emails,
-      city,
+      citySlug,
       locale,
       companySiteSlug: DEFAULT_COMPANY_SLUG,
       subject,

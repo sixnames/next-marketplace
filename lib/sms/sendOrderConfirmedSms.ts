@@ -15,7 +15,7 @@ export async function sendOrderConfirmedSms({
   orderItemId,
   companySiteSlug,
   customer,
-  city,
+  citySlug,
   companyId,
 }: SendOrderConfirmedSmsInterface) {
   const { db } = await getDatabase();
@@ -36,7 +36,7 @@ export async function sendOrderConfirmedSms({
       text,
       numbers: [customer.phone],
       locale,
-      city,
+      citySlug,
       companySiteSlug,
     });
   }
@@ -59,7 +59,7 @@ export async function sendOrderConfirmedSms({
         text,
         numbers,
         locale,
-        city,
+        citySlug,
         companySiteSlug,
       });
     }
@@ -77,7 +77,7 @@ export async function sendOrderConfirmedSms({
       text,
       numbers,
       locale,
-      city,
+      citySlug,
       companySiteSlug: DEFAULT_COMPANY_SLUG,
     });
   }

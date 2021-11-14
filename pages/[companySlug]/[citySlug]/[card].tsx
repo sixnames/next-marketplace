@@ -6,7 +6,7 @@ import { ISR_FIVE_SECONDS } from 'config/common';
 import { CARD_LAYOUT_HALF_COLUMNS, DEFAULT_LAYOUT } from 'config/constantSelects';
 import { useConfigContext } from 'context/configContext';
 import { useSiteUserContext } from 'context/userSiteUserContext';
-import { InitialCardDataInterface } from 'db/uiInterfaces';
+import { CardLayoutInterface, InitialCardDataInterface } from 'db/uiInterfaces';
 import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
 import { getCardData } from 'lib/cardUtils';
 import { getIsrSiteInitialData, IsrContextInterface } from 'lib/isrUtils';
@@ -15,12 +15,6 @@ import { cityIn } from 'lvovich';
 import { GetStaticPathsResult, GetStaticPropsResult, NextPage } from 'next';
 import dynamic from 'next/dynamic';
 import * as React from 'react';
-
-export interface CardLayoutInterface {
-  cardData: InitialCardDataInterface;
-  companySlug?: string;
-  companyId?: string | null;
-}
 
 const CardDefaultLayout = dynamic(() => import('layout/card/CardDefaultLayout'));
 const CardHalfColumnsLayout = dynamic(() => import('layout/card/CardHalfColumnsLayout'));

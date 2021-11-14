@@ -1,7 +1,16 @@
+import { CATEGORY_SLUG_PREFIX_SEPARATOR, CATEGORY_SLUG_PREFIX_WORD } from '../../../config/common';
 import { dbsConfig, getProdDb } from './getProdDb';
-import { COL_PRODUCTS } from '../../../db/collectionNames';
-import { ProductModel, TranslationModel } from '../../../db/dbModels';
-import trim from 'trim';
+import {
+  COL_PRODUCT_ATTRIBUTES,
+  COL_PRODUCTS,
+  COL_SHOP_PRODUCTS,
+} from '../../../db/collectionNames';
+import {
+  ObjectIdModel,
+  ProductAttributeModel,
+  ProductModel,
+  ShopProductModel,
+} from '../../../db/dbModels';
 
 require('dotenv').config();
 
@@ -28,23 +37,9 @@ require('dotenv').config();
   return `${updatedCounter.value.counter}`;
 }*/
 
-interface TrimProductNameInterface {
-  originalName?: string | null;
-  nameI18n?: TranslationModel | null;
-}
-function trimProductName({ originalName, nameI18n }: TrimProductNameInterface) {
-  const translation = nameI18n || {};
-  return {
-    originalName: originalName ? trim(originalName) : '',
-    nameI18n: Object.keys(translation).reduce((acc: TranslationModel, key) => {
-      const value = translation[key];
-      if (!value) {
-        return acc;
-      }
-      acc[key] = trim(value);
-      return acc;
-    }, {}),
-  };
+interface ProductAttributesAggregation {
+  _id: ObjectIdModel;
+  productAttributes: ProductAttributeModel[];
 }
 
 async function updateProds() {
@@ -55,25 +50,77 @@ async function updateProds() {
     console.log(`Updating ${dbConfig.dbName} db`);
     const { db, client } = await getProdDb(dbConfig);
     const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+    const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+    const productAttributesCollection =
+      db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
 
-    const products = await productsCollection.find({}).toArray();
-
-    for await (const product of products) {
-      const { nameI18n, originalName } = trimProductName({
-        originalName: product.originalName,
-        nameI18n: product.nameI18n,
-      });
-      await productsCollection.findOneAndUpdate(
+    const productAttributeGroups = await productAttributesCollection
+      .aggregate<ProductAttributesAggregation>([
         {
-          _id: product._id,
-        },
-        {
-          $set: {
-            originalName,
-            nameI18n,
+          $group: {
+            _id: '$productId',
+            productAttributes: {
+              $addToSet: '$$ROOT',
+            },
           },
         },
-      );
+      ])
+      .toArray();
+    console.log('attributes length ', productAttributeGroups.length);
+
+    for await (const productAttributeGroup of productAttributeGroups) {
+      const { productAttributes, _id } = productAttributeGroup;
+
+      console.log('productAttributes length ', productAttributes.length);
+
+      const product = await productsCollection.findOne({ _id });
+
+      if (product) {
+        const categorySelectedSlugs = product.selectedOptionsSlugs.filter((slug) => {
+          const slugParts = slug.split(CATEGORY_SLUG_PREFIX_SEPARATOR);
+          return slugParts[0] === CATEGORY_SLUG_PREFIX_WORD;
+        });
+        const selectedOptionsSlugs: string[] = [...categorySelectedSlugs];
+
+        // get category slugs
+        const titleCategoriesSlugs = product.titleCategoriesSlugs || [];
+        titleCategoriesSlugs.forEach((categorySlug) => {
+          const exist = selectedOptionsSlugs.some((slug) => categorySlug === slug);
+          if (!exist) {
+            selectedOptionsSlugs.push(categorySlug);
+          }
+        });
+
+        for await (const productAttribute of productAttributes) {
+          productAttribute.selectedOptionsSlugs.forEach((slug) => {
+            selectedOptionsSlugs.push(slug);
+          });
+        }
+
+        // update product
+        await productsCollection.findOneAndUpdate(
+          {
+            _id,
+          },
+          {
+            $set: {
+              selectedOptionsSlugs,
+            },
+          },
+        );
+
+        // update shop products
+        await shopProductsCollection.updateMany(
+          {
+            productId: _id,
+          },
+          {
+            $set: {
+              selectedOptionsSlugs,
+            },
+          },
+        );
+      }
     }
 
     // disconnect form db

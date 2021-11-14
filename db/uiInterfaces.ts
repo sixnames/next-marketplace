@@ -824,3 +824,9 @@ export interface ConsoleRubricProductsInterface
 
 export interface CompanyShopProductsPageInterface
   extends Omit<ShopRubricProductsInterface, 'layoutBasePath' | 'breadcrumbs' | 'itemPath'> {}
+
+export interface CardLayoutInterface {
+  cardData: InitialCardDataInterface;
+  companySlug?: string;
+  companyId?: string | null;
+}

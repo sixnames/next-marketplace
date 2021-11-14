@@ -104,6 +104,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
         companyId,
         companySlug,
         snippetVisibleAttributesCount: configs.snippetAttributesCount,
+        visibleCategoriesInNavDropdown: configs.visibleCategoriesInNavDropdown,
       };
 
       setIsLoading(true);
@@ -127,7 +128,12 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
         })
         .catch(console.log);
     },
-    [companyId, companySlug, configs.snippetAttributesCount],
+    [
+      companyId,
+      companySlug,
+      configs.snippetAttributesCount,
+      configs.visibleCategoriesInNavDropdown,
+    ],
   );
 
   // filter visibility

@@ -502,8 +502,6 @@ export interface CatalogueDataInterface {
   page: number;
   textTop?: string | null;
   textBottom?: string | null;
-  seoTop?: RubricSeoModel | null;
-  seoBottom?: RubricSeoModel | null;
 }
 
 export interface CatalogueProductOptionInterface {

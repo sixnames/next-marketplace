@@ -501,14 +501,11 @@ input CreateBrandInput {
 }
 
 input CreateCategoryInput {
-  companySlug: String!
   gender: Gender
   nameI18n: JSONObject!
   parentId: ObjectId
   replaceParentNameInCatalogueTitle: Boolean
   rubricId: ObjectId!
-  textBottomI18n: JSONObject
-  textTopI18n: JSONObject
   variants: JSONObject!
 }
 
@@ -586,7 +583,6 @@ input CreateRoleInput {
 
 input CreateRubricInput {
   capitalise: Boolean
-  companySlug: String!
   defaultTitleI18n: JSONObject!
   descriptionI18n: JSONObject!
   gender: Gender!
@@ -598,8 +594,6 @@ input CreateRubricInput {
   showBrandInNav: Boolean
   showCategoryInProductTitle: Boolean
   showRubricNameInProductTitle: Boolean
-  textBottomI18n: JSONObject
-  textTopI18n: JSONObject
   variantId: ObjectId!
 }
 

@@ -272,14 +272,11 @@ export interface NexusGenInputs {
   };
   CreateCategoryInput: {
     // input type
-    companySlug: string; // String!
     gender?: NexusGenEnums['Gender'] | null; // Gender
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     parentId?: NexusGenScalars['ObjectId'] | null; // ObjectId
     replaceParentNameInCatalogueTitle?: boolean | null; // Boolean
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
-    textBottomI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
-    textTopI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     variants: NexusGenScalars['JSONObject']; // JSONObject!
   };
   CreateCompanyInput: {
@@ -357,7 +354,6 @@ export interface NexusGenInputs {
   CreateRubricInput: {
     // input type
     capitalise?: boolean | null; // Boolean
-    companySlug: string; // String!
     defaultTitleI18n: NexusGenScalars['JSONObject']; // JSONObject!
     descriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
     gender: NexusGenEnums['Gender']; // Gender!
@@ -369,8 +365,6 @@ export interface NexusGenInputs {
     showBrandInNav?: boolean | null; // Boolean
     showCategoryInProductTitle?: boolean | null; // Boolean
     showRubricNameInProductTitle?: boolean | null; // Boolean
-    textBottomI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
-    textTopI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     variantId: NexusGenScalars['ObjectId']; // ObjectId!
   };
   CreateRubricVariantInput: {

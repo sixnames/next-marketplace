@@ -771,7 +771,8 @@ export interface RubricDescriptionModel {
   rubricSlug: string;
   position: 'top' | 'bottom';
   rubricId: ObjectIdModel;
-  textI18n: TranslationModel;
+  content: JSONObjectModel;
+  assetKeys: string[];
 }
 
 export interface CategoryModel extends CountersModel {
@@ -795,7 +796,8 @@ export interface CategoryDescriptionModel {
   categoryId: ObjectIdModel;
   categorySlug: string;
   position: 'top' | 'bottom';
-  textI18n: TranslationModel;
+  content: JSONObjectModel;
+  assetKeys: string[];
 }
 
 export interface RubricSeoModel {

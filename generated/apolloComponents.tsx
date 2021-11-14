@@ -544,10 +544,7 @@ export type CreateBrandInput = {
 };
 
 export type CreateCategoryInput = {
-  companySlug: Scalars['String'];
   nameI18n: Scalars['JSONObject'];
-  textTopI18n?: Maybe<Scalars['JSONObject']>;
-  textBottomI18n?: Maybe<Scalars['JSONObject']>;
   parentId?: Maybe<Scalars['ObjectId']>;
   rubricId: Scalars['ObjectId'];
   variants: Scalars['JSONObject'];
@@ -628,7 +625,6 @@ export type CreateRoleInput = {
 };
 
 export type CreateRubricInput = {
-  companySlug: Scalars['String'];
   nameI18n: Scalars['JSONObject'];
   capitalise?: Maybe<Scalars['Boolean']>;
   showRubricNameInProductTitle?: Maybe<Scalars['Boolean']>;
@@ -637,8 +633,6 @@ export type CreateRubricInput = {
   showBrandInFilter?: Maybe<Scalars['Boolean']>;
   descriptionI18n: Scalars['JSONObject'];
   shortDescriptionI18n: Scalars['JSONObject'];
-  textTopI18n?: Maybe<Scalars['JSONObject']>;
-  textBottomI18n?: Maybe<Scalars['JSONObject']>;
   variantId: Scalars['ObjectId'];
   defaultTitleI18n: Scalars['JSONObject'];
   prefixI18n?: Maybe<Scalars['JSONObject']>;

@@ -63,10 +63,7 @@ export const CategoryPayload = objectType({
 export const CreateCategoryInput = inputObjectType({
   name: 'CreateCategoryInput',
   definition(t) {
-    t.nonNull.string('companySlug');
     t.nonNull.json('nameI18n');
-    t.json('textTopI18n');
-    t.json('textBottomI18n');
     t.objectId('parentId');
     t.nonNull.objectId('rubricId');
     t.nonNull.json('variants');
@@ -167,8 +164,6 @@ export const CategoryMutations = extendType({
           const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
           const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-          const categoryDescriptionsCollection =
-            db.collection<CategoryDescriptionModel>(COL_CATEGORY_DESCRIPTIONS);
           const { input } = args;
 
           // Check rubric availability
@@ -215,11 +210,10 @@ export const CategoryMutations = extendType({
           }
 
           // Create category
-          const { companySlug, textBottomI18n, textTopI18n, ...values } = input;
           const slug = await getNextItemId(COL_CATEGORIES);
           const createdCategoryId = new ObjectId();
           const createdCategoryResult = await categoriesCollection.insertOne({
-            ...values,
+            ...input,
             parentTreeIds: [...parentTreeIds, createdCategoryId],
             slug: `${CATEGORY_SLUG_PREFIX}${slug}`,
             attributesGroupIds: [],
@@ -242,26 +236,6 @@ export const CategoryMutations = extendType({
               success: false,
               message: await getApiMessage('categories.create.error'),
             };
-          }
-
-          // create seo texts
-          if (textTopI18n) {
-            await categoryDescriptionsCollection.insertOne({
-              companySlug,
-              position: 'top',
-              categorySlug: slug,
-              categoryId: createdCategory._id,
-              textI18n: textTopI18n,
-            });
-          }
-          if (textBottomI18n) {
-            await categoryDescriptionsCollection.insertOne({
-              companySlug,
-              position: 'bottom',
-              categorySlug: slug,
-              categoryId: createdCategory._id,
-              textI18n: textBottomI18n,
-            });
           }
 
           // update company configs with new category
@@ -437,6 +411,66 @@ export const CategoryMutations = extendType({
               success: false,
               message: await getApiMessage('categories.update.error'),
             };
+          }
+
+          // update seo text
+          if (textTopI18n) {
+            const topText = await categoryDescriptionsCollection.findOne({
+              companySlug,
+              position: 'top',
+              categoryId: updatedCategory._id,
+            });
+
+            if (!topText) {
+              await categoryDescriptionsCollection.insertOne({
+                companySlug,
+                position: 'top',
+                categoryId: updatedCategory._id,
+                categorySlug: updatedCategory.slug,
+                content: textTopI18n || {},
+                assetKeys: [],
+              });
+            } else {
+              await categoryDescriptionsCollection.findOneAndUpdate(
+                {
+                  _id: topText._id,
+                },
+                {
+                  $set: {
+                    content: textTopI18n || {},
+                  },
+                },
+              );
+            }
+          }
+          if (textBottomI18n) {
+            const topBottom = await categoryDescriptionsCollection.findOne({
+              companySlug,
+              position: 'bottom',
+              categoryId: updatedCategory._id,
+            });
+
+            if (!topBottom) {
+              await categoryDescriptionsCollection.insertOne({
+                companySlug,
+                position: 'bottom',
+                categoryId: updatedCategory._id,
+                categorySlug: updatedCategory.slug,
+                content: textBottomI18n || {},
+                assetKeys: [],
+              });
+            } else {
+              await categoryDescriptionsCollection.findOneAndUpdate(
+                {
+                  _id: topBottom._id,
+                },
+                {
+                  $set: {
+                    content: textBottomI18n || {},
+                  },
+                },
+              );
+            }
           }
 
           // update seo text

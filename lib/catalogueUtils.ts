@@ -61,6 +61,7 @@ import {
   CATALOGUE_SEO_TEXT_POSITION_TOP,
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   IMAGE_FALLBACK,
+  ZERO_PAGE_FILTER,
 } from 'config/common';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -2014,8 +2015,12 @@ export const getCatalogueData = async ({
         })
       );
     });
-    if (isRedirect) {
-      const sortedRedirectArray = sortStringArray(selectedFilterSlugs);
+    const isPageRedirect = input.filters.includes(ZERO_PAGE_FILTER);
+    if (isRedirect || isPageRedirect) {
+      const filteredRedirectArray = selectedFilterSlugs.filter((filter) => {
+        return filter !== ZERO_PAGE_FILTER;
+      });
+      const sortedRedirectArray = sortStringArray(filteredRedirectArray);
       redirect = `/${sortedRedirectArray.join('/')}`;
     }
 

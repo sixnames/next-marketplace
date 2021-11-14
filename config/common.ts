@@ -263,6 +263,8 @@ export const SORT_BY_ID_DIRECTION = SORT_DESC;
 export const SORT_BY_CREATED_AT = 'createdAt';
 export const SORT_BY_ID = '_id';
 export const DEFAULT_PAGE = 1;
+export const ZERO_PAGE = 0;
+export const ZERO_PAGE_FILTER = `${FILTER_PAGE_KEY}${FILTER_SEPARATOR}${ZERO_PAGE}`;
 export const DEFAULT_PAGE_FILTER = `${FILTER_PAGE_KEY}${FILTER_SEPARATOR}${DEFAULT_PAGE}`;
 
 // ORDER LOG VARIANTS

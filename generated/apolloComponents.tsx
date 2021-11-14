@@ -354,8 +354,6 @@ export type Category = {
   _id: Scalars['ObjectId'];
   slug: Scalars['String'];
   nameI18n: Scalars['JSONObject'];
-  textTopI18n?: Maybe<Scalars['JSONObject']>;
-  textBottomI18n?: Maybe<Scalars['JSONObject']>;
   image?: Maybe<Scalars['String']>;
   rubricId: Scalars['ObjectId'];
   parentId?: Maybe<Scalars['ObjectId']>;
@@ -2567,8 +2565,8 @@ export type UpdateCategoryInput = {
   companySlug: Scalars['String'];
   categoryId: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
-  textTopI18n?: Maybe<Scalars['JSONObject']>;
-  textBottomI18n?: Maybe<Scalars['JSONObject']>;
+  textTop?: Maybe<Scalars['JSONObject']>;
+  textBottom?: Maybe<Scalars['JSONObject']>;
   rubricId: Scalars['ObjectId'];
   variants: Scalars['JSONObject'];
   replaceParentNameInCatalogueTitle?: Maybe<Scalars['Boolean']>;
@@ -2778,8 +2776,8 @@ export type UpdateRubricInput = {
   nameI18n: Scalars['JSONObject'];
   descriptionI18n: Scalars['JSONObject'];
   shortDescriptionI18n: Scalars['JSONObject'];
-  textTopI18n?: Maybe<Scalars['JSONObject']>;
-  textBottomI18n?: Maybe<Scalars['JSONObject']>;
+  textTop?: Maybe<Scalars['JSONObject']>;
+  textBottom?: Maybe<Scalars['JSONObject']>;
   variantId: Scalars['ObjectId'];
   active: Scalars['Boolean'];
   defaultTitleI18n: Scalars['JSONObject'];

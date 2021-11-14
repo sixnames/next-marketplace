@@ -320,8 +320,6 @@ type Category {
   replaceParentNameInCatalogueTitle: Boolean
   rubricId: ObjectId!
   slug: String!
-  textBottomI18n: JSONObject
-  textTopI18n: JSONObject
   views: JSONObject!
 }
 
@@ -2302,8 +2300,8 @@ input UpdateCategoryInput {
   nameI18n: JSONObject!
   replaceParentNameInCatalogueTitle: Boolean
   rubricId: ObjectId!
-  textBottomI18n: JSONObject
-  textTopI18n: JSONObject
+  textBottom: JSONObject
+  textTop: JSONObject
   variants: JSONObject!
 }
 
@@ -2515,8 +2513,8 @@ input UpdateRubricInput {
   showBrandInNav: Boolean
   showCategoryInProductTitle: Boolean
   showRubricNameInProductTitle: Boolean
-  textBottomI18n: JSONObject
-  textTopI18n: JSONObject
+  textBottom: JSONObject
+  textTop: JSONObject
   variantId: ObjectId!
 }
 

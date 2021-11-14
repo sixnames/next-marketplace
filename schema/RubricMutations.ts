@@ -79,8 +79,8 @@ export const UpdateRubricInput = inputObjectType({
     t.nonNull.json('nameI18n');
     t.nonNull.json('descriptionI18n');
     t.nonNull.json('shortDescriptionI18n');
-    t.json('textTopI18n');
-    t.json('textBottomI18n');
+    t.json('textTop');
+    t.json('textBottom');
     t.nonNull.objectId('variantId');
     t.nonNull.boolean('active');
     t.nonNull.json('defaultTitleI18n');
@@ -241,7 +241,7 @@ export const RubricMutations = extendType({
           const rubricDescriptionsCollection =
             db.collection<RubricDescriptionModel>(COL_RUBRIC_DESCRIPTIONS);
           const { input } = args;
-          const { rubricId, companySlug, textTopI18n, textBottomI18n, ...values } = input;
+          const { rubricId, companySlug, textTop, textBottom, ...values } = input;
 
           // Check rubric availability
           const rubric = await rubricsCollection.findOne({ _id: rubricId });
@@ -289,7 +289,7 @@ export const RubricMutations = extendType({
           }
 
           // update seo text
-          if (textTopI18n) {
+          if (textTop) {
             const topText = await rubricDescriptionsCollection.findOne({
               companySlug,
               position: 'top',
@@ -302,7 +302,7 @@ export const RubricMutations = extendType({
                 position: 'top',
                 rubricSlug: updatedRubric.slug,
                 rubricId: updatedRubric._id,
-                content: textTopI18n || {},
+                content: textTop || {},
                 assetKeys: [],
               });
             } else {
@@ -312,13 +312,13 @@ export const RubricMutations = extendType({
                 },
                 {
                   $set: {
-                    content: textTopI18n || {},
+                    content: textTop || {},
                   },
                 },
               );
             }
           }
-          if (textBottomI18n) {
+          if (textBottom) {
             const topBottom = await rubricDescriptionsCollection.findOne({
               companySlug,
               position: 'bottom',
@@ -331,7 +331,7 @@ export const RubricMutations = extendType({
                 position: 'bottom',
                 rubricSlug: updatedRubric.slug,
                 rubricId: updatedRubric._id,
-                content: textBottomI18n || {},
+                content: textBottom || {},
                 assetKeys: [],
               });
             } else {
@@ -341,7 +341,7 @@ export const RubricMutations = extendType({
                 },
                 {
                   $set: {
-                    content: textBottomI18n || {},
+                    content: textBottom || {},
                   },
                 },
               );

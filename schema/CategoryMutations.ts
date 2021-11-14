@@ -80,8 +80,8 @@ export const UpdateCategoryInput = inputObjectType({
     t.nonNull.string('companySlug');
     t.nonNull.objectId('categoryId');
     t.nonNull.json('nameI18n');
-    t.json('textTopI18n');
-    t.json('textBottomI18n');
+    t.json('textTop');
+    t.json('textBottom');
     t.nonNull.objectId('rubricId');
     t.nonNull.json('variants');
     t.boolean('replaceParentNameInCatalogueTitle');
@@ -347,8 +347,7 @@ export const CategoryMutations = extendType({
           const categoryDescriptionsCollection =
             db.collection<CategoryDescriptionModel>(COL_CATEGORY_DESCRIPTIONS);
           const { input } = args;
-          const { categoryId, rubricId, companySlug, textTopI18n, textBottomI18n, ...values } =
-            input;
+          const { categoryId, rubricId, companySlug, textTop, textBottom, ...values } = input;
 
           // Check rubric availability
           const rubric = await rubricsCollection.findOne({
@@ -414,7 +413,7 @@ export const CategoryMutations = extendType({
           }
 
           // update seo text
-          if (textTopI18n) {
+          if (textTop) {
             const topText = await categoryDescriptionsCollection.findOne({
               companySlug,
               position: 'top',
@@ -427,7 +426,7 @@ export const CategoryMutations = extendType({
                 position: 'top',
                 categoryId: updatedCategory._id,
                 categorySlug: updatedCategory.slug,
-                content: textTopI18n || {},
+                content: textTop || {},
                 assetKeys: [],
               });
             } else {
@@ -437,13 +436,13 @@ export const CategoryMutations = extendType({
                 },
                 {
                   $set: {
-                    content: textTopI18n || {},
+                    content: textTop || {},
                   },
                 },
               );
             }
           }
-          if (textBottomI18n) {
+          if (textBottom) {
             const topBottom = await categoryDescriptionsCollection.findOne({
               companySlug,
               position: 'bottom',
@@ -456,7 +455,7 @@ export const CategoryMutations = extendType({
                 position: 'bottom',
                 categoryId: updatedCategory._id,
                 categorySlug: updatedCategory.slug,
-                content: textBottomI18n || {},
+                content: textBottom || {},
                 assetKeys: [],
               });
             } else {
@@ -466,7 +465,7 @@ export const CategoryMutations = extendType({
                 },
                 {
                   $set: {
-                    content: textBottomI18n || {},
+                    content: textBottom || {},
                   },
                 },
               );
@@ -474,7 +473,7 @@ export const CategoryMutations = extendType({
           }
 
           // update seo text
-          if (textTopI18n) {
+          if (textTop) {
             await categoryDescriptionsCollection.findOneAndUpdate(
               {
                 companySlug,
@@ -487,7 +486,7 @@ export const CategoryMutations = extendType({
                   position: 'top',
                   categoryId: updatedCategory._id,
                   categorySlug: updatedCategory.slug,
-                  textI18n: textTopI18n || {},
+                  textI18n: textTop || {},
                 },
               },
               {
@@ -495,7 +494,7 @@ export const CategoryMutations = extendType({
               },
             );
           }
-          if (textBottomI18n) {
+          if (textBottom) {
             await categoryDescriptionsCollection.findOneAndUpdate(
               {
                 companySlug,
@@ -508,7 +507,7 @@ export const CategoryMutations = extendType({
                   position: 'bottom',
                   categoryId: updatedCategory._id,
                   categorySlug: updatedCategory.slug,
-                  textI18n: textBottomI18n || {},
+                  textI18n: textBottom || {},
                 },
               },
               {

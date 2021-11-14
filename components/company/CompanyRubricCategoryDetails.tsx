@@ -1,31 +1,111 @@
+import Accordion from 'components/Accordion';
 import Button from 'components/button/Button';
 import FixedButtons from 'components/button/FixedButtons';
-import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
+import InputLine from 'components/FormElements/Input/InputLine';
 import Inner from 'components/Inner';
-import TextSeoInfo from 'components/TextSeoInfo';
-import { GENDER_ENUMS } from 'config/common';
-import { OptionVariantsModel, RubricSeoModel } from 'db/dbModels';
+import PageEditor from 'components/PageEditor';
+import { DEFAULT_CITY, GENDER_ENUMS, REQUEST_METHOD_POST } from 'config/common';
+import { useConfigContext } from 'context/configContext';
+import { CategoryDescriptionModel, OptionVariantsModel } from 'db/dbModels';
 import { CategoryInterface, CompanyInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import { Gender, UpdateCategoryInput, useUpdateCategoryMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
+import { getConstructorDefaultValue } from 'lib/constructorUtils';
+import { get } from 'lodash';
 import * as React from 'react';
 import { updateCategorySchema } from 'validation/categorySchema';
 
 export interface CompanyRubricCategoryDetailsInterface {
   category: CategoryInterface;
-  seoTop?: RubricSeoModel | null;
-  seoBottom?: RubricSeoModel | null;
   pageCompany: CompanyInterface;
+  seoDescriptionTop: CategoryDescriptionModel;
+  seoDescriptionBottom: CategoryDescriptionModel;
   routeBasePath: string;
 }
+
+const assetsApiRout = '/api/category/add-description-asset';
+
+interface CategoryDescriptionConstructorInterface {
+  position: string;
+  name: string;
+  values: UpdateCategoryInput;
+  setFieldValue: (field: string, value: any, shouldValidate?: boolean | undefined) => void;
+  label: string;
+  categoryId: string;
+  pageCompanySlug: string;
+}
+
+const CategoryDescriptionConstructor: React.FC<CategoryDescriptionConstructorInterface> = ({
+  label,
+  setFieldValue,
+  values,
+  name,
+  position,
+  categoryId,
+  pageCompanySlug,
+}) => {
+  const { cities } = useConfigContext();
+
+  return (
+    <InputLine labelTag={'div'} label={label}>
+      {cities.map((city) => {
+        const fieldName = `${name}.${city.slug}`;
+        const fieldValue = get(values, fieldName);
+        const constructorValue = getConstructorDefaultValue(fieldValue);
+
+        return (
+          <Accordion
+            isOpen={city.slug === DEFAULT_CITY}
+            testId={city.slug}
+            title={`${city.name}`}
+            key={city.slug}
+          >
+            <div className='ml-8 pt-[var(--lineGap-200)]'>
+              <PageEditor
+                value={constructorValue}
+                setValue={(value) => {
+                  setFieldValue(fieldName, JSON.stringify(value));
+                }}
+                imageUpload={async (file) => {
+                  try {
+                    const formData = new FormData();
+                    formData.append('assets', file);
+                    formData.append('position', position);
+                    formData.append('categoryId', `${categoryId}`);
+                    formData.append('companySlug', `${pageCompanySlug}`);
+
+                    const responseFetch = await fetch(assetsApiRout, {
+                      method: REQUEST_METHOD_POST,
+                      body: formData,
+                    });
+                    const responseJson = await responseFetch.json();
+
+                    return {
+                      url: responseJson.url,
+                    };
+                  } catch (e) {
+                    console.log(e);
+                    return {
+                      url: '',
+                    };
+                  }
+                }}
+              />
+            </div>
+          </Accordion>
+        );
+      })}
+    </InputLine>
+  );
+};
 
 const CompanyRubricCategoryDetails: React.FC<CompanyRubricCategoryDetailsInterface> = ({
   category,
   pageCompany,
-  seoTop,
-  seoBottom,
+  seoDescriptionTop,
+  seoDescriptionBottom,
 }) => {
   const validationSchema = useValidationSchema({
     schema: updateCategorySchema,
@@ -44,8 +124,6 @@ const CompanyRubricCategoryDetails: React.FC<CompanyRubricCategoryDetailsInterfa
     rubricId,
     gender,
     variants,
-    seoDescriptionTop,
-    seoDescriptionBottom,
     replaceParentNameInCatalogueTitle,
   } = category;
   const variantKeys = Object.keys(variants);
@@ -54,8 +132,8 @@ const CompanyRubricCategoryDetails: React.FC<CompanyRubricCategoryDetailsInterfa
     categoryId: _id,
     rubricId,
     nameI18n,
-    textBottomI18n: seoDescriptionBottom?.textI18n,
-    textTopI18n: seoDescriptionTop?.textI18n,
+    textTop: seoDescriptionTop.content,
+    textBottom: seoDescriptionBottom.content,
     gender: gender ? (`${gender}` as Gender) : null,
     replaceParentNameInCatalogueTitle,
     companySlug: `${pageCompany?.slug}`,
@@ -83,63 +161,27 @@ const CompanyRubricCategoryDetails: React.FC<CompanyRubricCategoryDetailsInterfa
           });
         }}
       >
-        {() => {
+        {({ values, setFieldValue }) => {
           return (
             <Form>
-              <FormikTranslationsInput
-                variant={'textarea'}
-                className='h-[30rem]'
+              <CategoryDescriptionConstructor
                 label={'SEO текст вверху каталога'}
-                name={'textTopI18n'}
-                testId={'textTopI18n'}
-                additionalUi={(currentLocale) => {
-                  if (!seoTop) {
-                    return null;
-                  }
-                  const seoLocale = seoTop.locales.find(({ locale }) => {
-                    return locale === currentLocale;
-                  });
-
-                  if (!seoLocale) {
-                    return <div className='mb-4 font-medium'>Текст проверяется</div>;
-                  }
-
-                  return (
-                    <TextSeoInfo
-                      seoLocale={seoLocale}
-                      className='mb-4 mt-4'
-                      listClassName='flex gap-3 flex-wrap'
-                    />
-                  );
-                }}
+                name={'textTop'}
+                categoryId={`${category._id}`}
+                pageCompanySlug={pageCompany.slug}
+                position={'top'}
+                setFieldValue={setFieldValue}
+                values={values}
               />
 
-              <FormikTranslationsInput
-                variant={'textarea'}
-                className='h-[30rem]'
+              <CategoryDescriptionConstructor
                 label={'SEO текст внизу каталога'}
-                name={'textBottomI18n'}
-                testId={'textBottomI18n'}
-                additionalUi={(currentLocale) => {
-                  if (!seoBottom) {
-                    return null;
-                  }
-                  const seoLocale = seoBottom.locales.find(({ locale }) => {
-                    return locale === currentLocale;
-                  });
-
-                  if (!seoLocale) {
-                    return <div className='mb-4 font-medium'>Текст проверяется</div>;
-                  }
-
-                  return (
-                    <TextSeoInfo
-                      seoLocale={seoLocale}
-                      className='mb-4 mt-4'
-                      listClassName='flex gap-3 flex-wrap'
-                    />
-                  );
-                }}
+                name={'textBottom'}
+                categoryId={`${category._id}`}
+                pageCompanySlug={pageCompany.slug}
+                position={'bottom'}
+                setFieldValue={setFieldValue}
+                values={values}
               />
 
               <FixedButtons>

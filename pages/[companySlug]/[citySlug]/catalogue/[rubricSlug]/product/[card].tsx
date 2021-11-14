@@ -15,7 +15,7 @@ export async function getServerSideProps(
 
   return {
     redirect: {
-      destination: `${props.urlPrefix}${context.query?.card}`,
+      destination: `${props.urlPrefix}/${context.query?.card}`,
       permanent: true,
     },
   };

@@ -18,6 +18,7 @@ import {
   ROUTE_BLOG,
   IMAGE_FALLBACK,
   REQUEST_METHOD_POST,
+  ISR_FIVE_SECONDS,
 } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { useAppContext } from 'context/appContext';
@@ -816,6 +817,7 @@ export const getStaticProps = async (
     .slice(0, topPostsLimit);
 
   return {
+    revalidate: ISR_FIVE_SECONDS,
     props: {
       ...props,
       posts: castDbData(posts),

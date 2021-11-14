@@ -108,7 +108,9 @@ export async function getSharpImage({
         watermarkDist = path.join(process.cwd(), '/public/watermark.png');
       }
 
-      const watermarkBuffer = await sharp(watermarkDist).resize(80).toBuffer();
+      const watermarkDefaultSize = 40;
+      const watermarkSize = width ? width / 10 : watermarkDefaultSize;
+      const watermarkBuffer = await sharp(watermarkDist).resize(watermarkSize).toBuffer();
       transform.composite([
         {
           input: watermarkBuffer,

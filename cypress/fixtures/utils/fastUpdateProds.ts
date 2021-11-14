@@ -1,16 +1,7 @@
 import { CATEGORY_SLUG_PREFIX_SEPARATOR, CATEGORY_SLUG_PREFIX_WORD } from '../../../config/common';
 import { dbsConfig, getProdDb } from './getProdDb';
-import {
-  COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCTS,
-  COL_SHOP_PRODUCTS,
-} from '../../../db/collectionNames';
-import {
-  ObjectIdModel,
-  ProductAttributeModel,
-  ProductModel,
-  ShopProductModel,
-} from '../../../db/dbModels';
+import { COL_CATEGORIES, COL_PRODUCTS, COL_SHOP_PRODUCTS } from '../../../db/collectionNames';
+import { CategoryModel, ObjectIdModel, ProductModel, ShopProductModel } from '../../../db/dbModels';
 
 require('dotenv').config();
 
@@ -37,11 +28,6 @@ require('dotenv').config();
   return `${updatedCounter.value.counter}`;
 }*/
 
-interface ProductAttributesAggregation {
-  _id: ObjectIdModel;
-  productAttributes: ProductAttributeModel[];
-}
-
 async function updateProds() {
   for await (const dbConfig of dbsConfig) {
     console.log(' ');
@@ -50,77 +36,62 @@ async function updateProds() {
     console.log(`Updating ${dbConfig.dbName} db`);
     const { db, client } = await getProdDb(dbConfig);
     const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+    const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
     const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-    const productAttributesCollection =
-      db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
 
-    const productAttributeGroups = await productAttributesCollection
-      .aggregate<ProductAttributesAggregation>([
+    const products = await productsCollection.find({}).toArray();
+    const categories = await categoriesCollection.find({}).toArray();
+
+    for await (const product of products) {
+      const selectedOptionsSlugs = [...product.selectedOptionsSlugs];
+      const categorySelectedSlugs = selectedOptionsSlugs.filter((slug) => {
+        const slugParts = slug.split(CATEGORY_SLUG_PREFIX_SEPARATOR);
+        return slugParts[0] === CATEGORY_SLUG_PREFIX_WORD;
+      });
+
+      const productCategories = categories.filter(({ slug }) => {
+        return categorySelectedSlugs.includes(slug);
+      });
+
+      const categoryIds = productCategories.reduce((acc: ObjectIdModel[], { parentTreeIds }) => {
+        return [...acc, ...parentTreeIds];
+      }, []);
+
+      const newCategories = categories.filter(({ _id }) => {
+        return categoryIds.some((categoryId) => categoryId.equals(_id));
+      });
+
+      newCategories.forEach(({ slug, nameI18n }) => {
+        const exist = selectedOptionsSlugs.includes(slug);
+        if (!exist) {
+          console.log('not found ', nameI18n.ru, ' ', product._id.toHexString());
+          selectedOptionsSlugs.push(slug);
+        }
+      });
+
+      // update product
+      await productsCollection.findOneAndUpdate(
         {
-          $group: {
-            _id: '$productId',
-            productAttributes: {
-              $addToSet: '$$ROOT',
-            },
+          _id: product._id,
+        },
+        {
+          $set: {
+            selectedOptionsSlugs,
           },
         },
-      ])
-      .toArray();
-    console.log('attributes length ', productAttributeGroups.length);
+      );
 
-    for await (const productAttributeGroup of productAttributeGroups) {
-      const { productAttributes, _id } = productAttributeGroup;
-
-      console.log('productAttributes length ', productAttributes.length);
-
-      const product = await productsCollection.findOne({ _id });
-
-      if (product) {
-        const categorySelectedSlugs = product.selectedOptionsSlugs.filter((slug) => {
-          const slugParts = slug.split(CATEGORY_SLUG_PREFIX_SEPARATOR);
-          return slugParts[0] === CATEGORY_SLUG_PREFIX_WORD;
-        });
-        const selectedOptionsSlugs: string[] = [...categorySelectedSlugs];
-
-        // get category slugs
-        const titleCategoriesSlugs = product.titleCategoriesSlugs || [];
-        titleCategoriesSlugs.forEach((categorySlug) => {
-          const exist = selectedOptionsSlugs.some((slug) => categorySlug === slug);
-          if (!exist) {
-            selectedOptionsSlugs.push(categorySlug);
-          }
-        });
-
-        for await (const productAttribute of productAttributes) {
-          productAttribute.selectedOptionsSlugs.forEach((slug) => {
-            selectedOptionsSlugs.push(slug);
-          });
-        }
-
-        // update product
-        await productsCollection.findOneAndUpdate(
-          {
-            _id,
+      // update shop products
+      await shopProductsCollection.updateMany(
+        {
+          productId: product._id,
+        },
+        {
+          $set: {
+            selectedOptionsSlugs,
           },
-          {
-            $set: {
-              selectedOptionsSlugs,
-            },
-          },
-        );
-
-        // update shop products
-        await shopProductsCollection.updateMany(
-          {
-            productId: _id,
-          },
-          {
-            $set: {
-              selectedOptionsSlugs,
-            },
-          },
-        );
-      }
+        },
+      );
     }
 
     // disconnect form db

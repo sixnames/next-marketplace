@@ -1239,7 +1239,6 @@ export async function getConsoleInitialData({
 
   // Get current company
   const companies = sessionUser?.me.companies || [];
-  console.log(companies);
   if (companies.length < 1) {
     return {
       notFound: true,

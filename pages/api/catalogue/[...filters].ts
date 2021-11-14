@@ -9,6 +9,7 @@ export interface CatalogueApiInputInterface {
   companySlug?: string;
   companyId?: string;
   snippetVisibleAttributesCount?: number | null;
+  visibleCategoriesInNavDropdown: string[];
 }
 
 async function catalogueData(req: NextApiRequest, res: NextApiResponse) {
@@ -16,7 +17,12 @@ async function catalogueData(req: NextApiRequest, res: NextApiResponse) {
     const { locale, city, currency } = await getRequestParams({ req, res });
     const { query } = req;
     const input = JSON.parse(req.body) as CatalogueApiInputInterface;
-    const { companySlug, companyId, snippetVisibleAttributesCount } = input;
+    const {
+      companySlug,
+      companyId,
+      snippetVisibleAttributesCount,
+      visibleCategoriesInNavDropdown,
+    } = input;
     const filtersArray = alwaysArray(query.filters).slice(1);
     const [rubricSlug, ...filters] = filtersArray;
 
@@ -29,6 +35,7 @@ async function catalogueData(req: NextApiRequest, res: NextApiResponse) {
       basePath: `${ROUTE_CATALOGUE}/${rubricSlug}`,
       snippetVisibleAttributesCount:
         noNaN(snippetVisibleAttributesCount) || noNaN(CATALOGUE_SNIPPET_VISIBLE_ATTRIBUTES),
+      visibleCategoriesInNavDropdown,
       input: {
         rubricSlug,
         page: noNaN(1),

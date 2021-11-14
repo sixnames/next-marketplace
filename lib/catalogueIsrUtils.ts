@@ -35,6 +35,7 @@ export async function getCatalogueIsrProps(
     currency: props.initialData.currency,
     basePath: `${ROUTE_CATALOGUE}/${rubricSlug}`,
     snippetVisibleAttributesCount: props.initialData.configs.snippetAttributesCount,
+    visibleCategoriesInNavDropdown: props.initialData.configs.visibleCategoriesInNavDropdown,
     input: {
       rubricSlug: `${rubricSlug}`,
       filters: alwaysArray(context.params?.filters),

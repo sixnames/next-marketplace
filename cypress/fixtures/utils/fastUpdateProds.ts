@@ -1,20 +1,12 @@
-import {
-  CATEGORY_SLUG_PREFIX_SEPARATOR,
-  CATEGORY_SLUG_PREFIX_WORD,
-  FILTER_SEPARATOR,
-} from '../../../config/common';
+import { CATEGORY_SLUG_PREFIX_SEPARATOR, CATEGORY_SLUG_PREFIX_WORD } from '../../../config/common';
 import { dbsConfig, getProdDb } from './getProdDb';
 import {
-  COL_ATTRIBUTES,
-  COL_OPTIONS,
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCTS,
   COL_SHOP_PRODUCTS,
 } from '../../../db/collectionNames';
 import {
-  AttributeModel,
   ObjectIdModel,
-  OptionModel,
   ProductAttributeModel,
   ProductModel,
   ShopProductModel,
@@ -59,107 +51,75 @@ async function updateProds() {
     const { db, client } = await getProdDb(dbConfig);
     const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
     const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-    const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
-    const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
     const productAttributesCollection =
       db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
 
-    const variants = ['select', 'multipleSelect'] as any;
-    const attributes = await attributesCollection
-      .find({
-        variant: {
-          $in: variants,
+    const productAttributeGroups = await productAttributesCollection
+      .aggregate<ProductAttributesAggregation>([
+        {
+          $group: {
+            _id: '$productId',
+            productAttributes: {
+              $addToSet: '$$ROOT',
+            },
+          },
         },
-      })
+      ])
       .toArray();
-    console.log('attributes length ', attributes.length);
-    for await (const attribute of attributes) {
-      if (attribute.optionsGroupId) {
-        const options = await optionsCollection
-          .find({ optionsGroupId: attribute.optionsGroupId })
-          .toArray();
+    console.log('attributes length ', productAttributeGroups.length);
 
-        const productAttributeGroups = await productAttributesCollection
-          .aggregate<ProductAttributesAggregation>([
-            {
-              $match: {
-                attributeId: attribute._id,
-              },
-            },
-            {
-              $group: {
-                _id: '$productId',
-                productAttributes: {
-                  $addToSet: '$$ROOT',
-                },
-              },
-            },
-          ])
-          .toArray();
+    for await (const productAttributeGroup of productAttributeGroups) {
+      const { productAttributes, _id } = productAttributeGroup;
 
-        for await (const productAttributeGroup of productAttributeGroups) {
-          const { productAttributes, _id } = productAttributeGroup;
+      console.log('productAttributes length ', productAttributes.length);
 
-          const product = await productsCollection.findOne({ _id });
+      const product = await productsCollection.findOne({ _id });
 
-          if (product) {
-            const categorySelectedSlugs = product.selectedOptionsSlugs.filter((slug) => {
-              const slugParts = slug.split(CATEGORY_SLUG_PREFIX_SEPARATOR);
-              return slugParts[0] === CATEGORY_SLUG_PREFIX_WORD;
-            });
-            const selectedOptionsSlugs: string[] = [...categorySelectedSlugs];
-            // update product attributes
-            for await (const productAttribute of productAttributes) {
-              const innerSelectedOptionsSlugs: string[] = [];
-              const selectedOptions = options.filter(({ _id }) => {
-                return productAttribute.selectedOptionsIds.some((optionId) => {
-                  return optionId.equals(_id);
-                });
-              });
+      if (product) {
+        const categorySelectedSlugs = product.selectedOptionsSlugs.filter((slug) => {
+          const slugParts = slug.split(CATEGORY_SLUG_PREFIX_SEPARATOR);
+          return slugParts[0] === CATEGORY_SLUG_PREFIX_WORD;
+        });
+        const selectedOptionsSlugs: string[] = [...categorySelectedSlugs];
 
-              selectedOptions.forEach(({ slug }) => {
-                const selectedSlug = `${attribute.slug}${FILTER_SEPARATOR}${slug}`;
-                innerSelectedOptionsSlugs.push(selectedSlug);
-                selectedOptionsSlugs.push(selectedSlug);
-              });
-
-              await productAttributesCollection.findOneAndUpdate(
-                {
-                  _id: productAttribute._id,
-                },
-                {
-                  $set: {
-                    selectedOptionsSlugs: innerSelectedOptionsSlugs,
-                  },
-                },
-              );
-            }
-
-            // update product
-            await productsCollection.findOneAndUpdate(
-              {
-                _id,
-              },
-              {
-                $set: {
-                  selectedOptionsSlugs,
-                },
-              },
-            );
-
-            // update shop products
-            await shopProductsCollection.updateMany(
-              {
-                productId: _id,
-              },
-              {
-                $set: {
-                  selectedOptionsSlugs,
-                },
-              },
-            );
+        // get category slugs
+        const titleCategoriesSlugs = product.titleCategoriesSlugs || [];
+        titleCategoriesSlugs.forEach((categorySlug) => {
+          const exist = selectedOptionsSlugs.some((slug) => categorySlug === slug);
+          if (!exist) {
+            selectedOptionsSlugs.push(categorySlug);
           }
+        });
+
+        for await (const productAttribute of productAttributes) {
+          productAttribute.selectedOptionsSlugs.forEach((slug) => {
+            selectedOptionsSlugs.push(slug);
+          });
         }
+
+        // update product
+        await productsCollection.findOneAndUpdate(
+          {
+            _id,
+          },
+          {
+            $set: {
+              selectedOptionsSlugs,
+            },
+          },
+        );
+
+        // update shop products
+        await shopProductsCollection.updateMany(
+          {
+            productId: _id,
+          },
+          {
+            $set: {
+              selectedOptionsSlugs,
+            },
+          },
+        );
       }
     }
 

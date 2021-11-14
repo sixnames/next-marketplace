@@ -423,7 +423,7 @@ const BlogListPageConsumer: React.FC<BlogListPageConsumerInterface> = ({
               </div>
             </div>
           ) : (
-            <div className='font-medium text-lg'>Мы пока готовым для Вас интересные стати :)</div>
+            <div className='font-medium text-lg'>Мы пока готовим для Вас интересные статьи :)</div>
           )}
         </Inner>
       </div>

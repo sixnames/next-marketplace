@@ -101,7 +101,7 @@ export async function getSharpImage({
 
     // add watermark if needed
     if (showWatermark) {
-      const watermarkPath = `${ASSETS_DIST}${ASSETS_DIST_CONFIGS}/${companySlug}/${ASSETS_DIST_CONFIGS_WATERMARK}/${ASSETS_DIST_CONFIGS_WATERMARK}.png`;
+      const watermarkPath = `${ASSETS_DIST}/${ASSETS_DIST_CONFIGS}/${companySlug}/${ASSETS_DIST_CONFIGS_WATERMARK}/${ASSETS_DIST_CONFIGS_WATERMARK}.png`;
       let watermarkDist = path.join(process.cwd(), watermarkPath);
       const exists = fs.existsSync(watermarkDist);
       if (!exists) {
@@ -182,8 +182,9 @@ export async function storeUploads({
         });
       } else {
         // Save file to the FS
-        const fileFullName = `${fileName}.${format}`;
-        let transform = sharp(buffer).toFormat(format);
+        const finalFormat = isWatermark ? 'png' : format;
+        const fileFullName = `${fileName}.${finalFormat}`;
+        let transform = sharp(buffer).toFormat(finalFormat);
         if (width) {
           transform = transform.resize(width);
         }

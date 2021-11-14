@@ -61,6 +61,7 @@ import {
   CATALOGUE_SEO_TEXT_POSITION_TOP,
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   IMAGE_FALLBACK,
+  ZERO_PAGE_FILTER,
 } from 'config/common';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -907,6 +908,7 @@ export interface GetCatalogueDataInterface {
   companyId?: string | ObjectIdModel | null;
   snippetVisibleAttributesCount: number;
   currency: string;
+  visibleCategoriesInNavDropdown: string[];
   input: {
     search?: string;
     rubricSlug?: string;
@@ -923,6 +925,7 @@ export const getCatalogueData = async ({
   snippetVisibleAttributesCount,
   currency,
   basePath,
+  visibleCategoriesInNavDropdown,
   ...props
 }: GetCatalogueDataInterface): Promise<CatalogueDataInterface | null> => {
   try {
@@ -1942,8 +1945,20 @@ export const getCatalogueData = async ({
     const totalPages = Math.ceil(totalProducts / limit);
 
     // get head categories
+    let visibleHeadCategoryIds: ObjectIdModel[] = [];
+    visibleCategoriesInNavDropdown.forEach((configString) => {
+      const configParts = configString.split(FILTER_SEPARATOR);
+      const rubricId = configParts[0] ? new ObjectId(`${configParts[0]}`) : null;
+      const categoryId = configParts[1] ? new ObjectId(`${configParts[1]}`) : null;
+      if (rubricId && categoryId && rubricId.equals(rubric._id)) {
+        visibleHeadCategoryIds.push(categoryId);
+      }
+    });
+    const visibleCategories = (categories || []).filter(({ _id }) => {
+      return visibleHeadCategoryIds.some((visibleId) => visibleId.equals(_id));
+    });
     const categoriesTree = getTreeFromList({
-      list: categories,
+      list: visibleCategories,
       childrenFieldName: 'categories',
       gender: pageGender,
       locale,
@@ -1955,7 +1970,7 @@ export const getCatalogueData = async ({
     const headCategories: CategoryInterface[] = [];
     selectedCategoryLeafIds.forEach((parentId) => {
       const categoryTreeList = getTreeFromList<CategoryInterface>({
-        list: categories,
+        list: visibleCategories,
         childrenFieldName: 'categories',
         gender: pageGender,
         parentId,
@@ -2000,8 +2015,12 @@ export const getCatalogueData = async ({
         })
       );
     });
-    if (isRedirect) {
-      const sortedRedirectArray = sortStringArray(selectedFilterSlugs);
+    const isPageRedirect = input.filters.includes(ZERO_PAGE_FILTER);
+    if (isRedirect || isPageRedirect) {
+      const filteredRedirectArray = selectedFilterSlugs.filter((filter) => {
+        return filter !== ZERO_PAGE_FILTER;
+      });
+      const sortedRedirectArray = sortStringArray(filteredRedirectArray);
       redirect = `/${sortedRedirectArray.join('/')}`;
     }
 
@@ -2087,6 +2106,7 @@ export async function getCatalogueServerSideProps(
     currency: props.initialData.currency,
     basePath: `${ROUTE_CATALOGUE}/${rubricSlug}`,
     snippetVisibleAttributesCount: props.initialData.configs.snippetAttributesCount,
+    visibleCategoriesInNavDropdown: props.initialData.configs.visibleCategoriesInNavDropdown,
     input: {
       rubricSlug: `${rubricSlug}`,
       filters: alwaysArray(query.filters),

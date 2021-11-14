@@ -1,6 +1,5 @@
 import { getNextItemId } from 'lib/itemIdUtils';
 import { deleteDocumentsTree, getParentTreeIds } from 'lib/optionsUtils';
-import { checkCategorySeoTextUniqueness } from 'lib/textUniquenessUtils';
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
@@ -13,6 +12,8 @@ import {
   RubricModel,
   ObjectIdModel,
   CategoryDescriptionModel,
+  CompanyModel,
+  ConfigModel,
 } from 'db/dbModels';
 import {
   getOperationPermission,
@@ -28,10 +29,20 @@ import {
   COL_CATEGORIES,
   COL_SHOP_PRODUCTS,
   COL_CATEGORY_DESCRIPTIONS,
+  COL_COMPANIES,
+  COL_CONFIGS,
 } from 'db/collectionNames';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
-import { CATEGORY_SLUG_PREFIX, DEFAULT_COUNTERS_OBJECT } from 'config/common';
+import {
+  CATEGORY_SLUG_PREFIX,
+  CONFIG_VARIANT_CATEGORIES_TREE,
+  DEFAULT_CITY,
+  DEFAULT_COMPANY_SLUG,
+  DEFAULT_COUNTERS_OBJECT,
+  DEFAULT_LOCALE,
+  FILTER_SEPARATOR,
+} from 'config/common';
 import {
   addAttributesGroupToCategorySchema,
   createCategorySchema,
@@ -153,6 +164,8 @@ export const CategoryMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
           const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
+          const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
+          const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const categoryDescriptionsCollection =
             db.collection<CategoryDescriptionModel>(COL_CATEGORY_DESCRIPTIONS);
@@ -230,12 +243,6 @@ export const CategoryMutations = extendType({
               message: await getApiMessage('categories.create.error'),
             };
           }
-          await checkCategorySeoTextUniqueness({
-            category: createdCategory,
-            textTopI18n: input.textTopI18n,
-            textBottomI18n: input.textBottomI18n,
-            companySlug,
-          });
 
           // create seo texts
           if (textTopI18n) {
@@ -255,6 +262,63 @@ export const CategoryMutations = extendType({
               categoryId: createdCategory._id,
               textI18n: textBottomI18n,
             });
+          }
+
+          // update company configs with new category
+          const companies = await companiesCollection
+            .find(
+              {},
+              {
+                projection: {
+                  slug: true,
+                },
+              },
+            )
+            .toArray();
+          const companySlugs = companies.reduce(
+            (acc: string[], { slug }) => {
+              return [...acc, slug];
+            },
+            [DEFAULT_COMPANY_SLUG],
+          );
+          for await (const companySlug of companySlugs) {
+            const configSlug = 'visibleCategoriesInNavDropdown';
+            const configValue = `${rubric._id}${FILTER_SEPARATOR}${createdCategory._id}`;
+
+            const config = await configsCollection.findOne({
+              slug: configSlug,
+              companySlug,
+            });
+
+            if (!config) {
+              const newConfig = {
+                companySlug,
+                group: 'ui',
+                variant: CONFIG_VARIANT_CATEGORIES_TREE,
+                slug: configSlug,
+                name: 'Видимые категории в выпадающем меню и шапке каталога',
+                multi: false,
+                acceptedFormats: [],
+                cities: {
+                  [DEFAULT_CITY]: {
+                    [DEFAULT_LOCALE]: [configValue],
+                  },
+                },
+              };
+              await configsCollection.insertOne(newConfig);
+              continue;
+            }
+
+            await configsCollection.findOneAndUpdate(
+              {
+                _id: config._id,
+              },
+              {
+                $push: {
+                  [`cities.${DEFAULT_CITY}.${DEFAULT_LOCALE}`]: configValue,
+                },
+              },
+            );
           }
 
           return {
@@ -374,14 +438,6 @@ export const CategoryMutations = extendType({
               message: await getApiMessage('categories.update.error'),
             };
           }
-
-          // check text uniqueness
-          await checkCategorySeoTextUniqueness({
-            category,
-            textTopI18n,
-            textBottomI18n,
-            companySlug,
-          });
 
           // update seo text
           if (textTopI18n) {

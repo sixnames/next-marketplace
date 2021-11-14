@@ -1,4 +1,3 @@
-import { checkRubricSeoTextUniqueness } from 'lib/textUniquenessUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   AttributeModel,
@@ -196,14 +195,6 @@ export const RubricMutations = extendType({
             };
           }
 
-          // check text uniqueness
-          await checkRubricSeoTextUniqueness({
-            rubric: createdRubric,
-            textTopI18n: textTopI18n,
-            textBottomI18n: textBottomI18n,
-            companySlug,
-          });
-
           // create seo texts
           if (textTopI18n) {
             await rubricDescriptionsCollection.insertOne({
@@ -322,14 +313,6 @@ export const RubricMutations = extendType({
               message: await getApiMessage('rubrics.update.error'),
             };
           }
-
-          // check text uniqueness
-          await checkRubricSeoTextUniqueness({
-            rubric,
-            textTopI18n: textTopI18n,
-            textBottomI18n: textBottomI18n,
-            companySlug,
-          });
 
           // update seo text
           if (textTopI18n) {

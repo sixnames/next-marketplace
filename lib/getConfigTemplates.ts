@@ -594,7 +594,7 @@ export function getConfigTemplates({
       group: 'ui',
       variant: CONFIG_VARIANT_CATEGORIES_TREE,
       slug: 'visibleCategoriesInNavDropdown',
-      name: 'Видимые категории в выпадающем меню',
+      name: 'Видимые категории в выпадающем меню и шапке каталога',
       multi: false,
       acceptedFormats: [],
       cities: {

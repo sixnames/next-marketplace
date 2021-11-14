@@ -2,12 +2,10 @@ import Breadcrumbs from 'components/Breadcrumbs';
 import { CatalogueHeadDefaultInterface } from 'components/Catalogue';
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
-import TextSeoInfo from 'components/TextSeoInfo';
+import PageEditor from 'components/PageEditor';
 import Title from 'components/Title';
 import { FILTER_CATEGORY_KEY, FILTER_SEPARATOR, ROUTE_CATALOGUE } from 'config/common';
 import { useSiteContext } from 'context/siteContext';
-import { useSiteUserContext } from 'context/userSiteUserContext';
-import { TextUniquenessApiParsedResponseModel } from 'db/dbModels';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { sortStringArray } from 'lib/stringUtils';
 import { useRouter } from 'next/router';
@@ -18,7 +16,6 @@ const minCategoriesCount = 1;
 const CatalogueHeadWithCategories: React.FC<CatalogueHeadDefaultInterface> = ({
   catalogueCounterString,
   seoTextClassName,
-  seoTop,
   catalogueTitle,
   textTop,
   breadcrumbs,
@@ -26,7 +23,6 @@ const CatalogueHeadWithCategories: React.FC<CatalogueHeadDefaultInterface> = ({
 }) => {
   const { query } = useRouter();
   const { urlPrefix } = useSiteContext();
-  const sessionUser = useSiteUserContext();
 
   return (
     <div className='mb-16'>
@@ -83,22 +79,8 @@ const CatalogueHeadWithCategories: React.FC<CatalogueHeadDefaultInterface> = ({
         ) : null}
 
         {textTop ? (
-          <div>
-            <div className={`${seoTextClassName} text-center`}>{textTop}</div>
-            {sessionUser?.showAdminUiInCatalogue && seoTop ? (
-              <div className='space-y-3 mt-6'>
-                {(seoTop.locales || []).map((seoLocale: TextUniquenessApiParsedResponseModel) => {
-                  return (
-                    <TextSeoInfo
-                      showLocaleName
-                      listClassName='flex gap-3 flex-wrap'
-                      key={seoLocale.locale}
-                      seoLocale={seoLocale}
-                    />
-                  );
-                })}
-              </div>
-            ) : null}
+          <div className={seoTextClassName ? seoTextClassName : ''}>
+            <PageEditor value={JSON.parse(textTop)} readOnly />
           </div>
         ) : null}
       </Inner>

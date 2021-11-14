@@ -5,15 +5,11 @@ import FixedButtons from 'components/button/FixedButtons';
 import Icon from 'components/Icon';
 import Inner from 'components/Inner';
 import MenuButtonWithName from 'components/MenuButtonWithName';
+import PageEditor from 'components/PageEditor';
 import Pager from 'components/Pager';
-import TextSeoInfo from 'components/TextSeoInfo';
 import { CATALOGUE_HEAD_LAYOUT_WITH_CATEGORIES } from 'config/constantSelects';
 import { useSiteUserContext } from 'context/userSiteUserContext';
-import {
-  CatalogueBreadcrumbModel,
-  RubricSeoModel,
-  TextUniquenessApiParsedResponseModel,
-} from 'db/dbModels';
+import { CatalogueBreadcrumbModel } from 'db/dbModels';
 import ProductSnippetGrid from 'layout/snippet/ProductSnippetGrid';
 import ProductSnippetRow from 'layout/snippet/ProductSnippetRow';
 import HeadlessMenuButton from 'components/HeadlessMenuButton';
@@ -53,7 +49,6 @@ export interface CatalogueHeadDefaultInterface {
   catalogueCounterString: string;
   breadcrumbs: CatalogueBreadcrumbModel[];
   textTop?: string | null;
-  seoTop?: RubricSeoModel | null;
   catalogueTitle: string;
   seoTextClassName: string;
   headCategories?: CategoryInterface[] | null;
@@ -79,7 +74,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
   companySlug,
   isSearchResult,
   urlPrefix,
-  subHeadText,
+  // subHeadText,
 }) => {
   const { configs } = useConfigContext();
   const router = useRouter();
@@ -316,7 +311,6 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
         seoTextClassName={seoTextClassName}
         catalogueCounterString={catalogueCounterString}
         catalogueTitle={state.catalogueTitle}
-        seoTop={state.seoTop}
       />
     );
   } else {
@@ -327,7 +321,6 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
         seoTextClassName={seoTextClassName}
         catalogueCounterString={catalogueCounterString}
         catalogueTitle={state.catalogueTitle}
-        seoTop={state.seoTop}
       />
     );
   }
@@ -463,27 +456,10 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
         </div>
 
         {state.textBottom ? (
-          <section className={`mt-16`}>
-            <Title size={'small'}>{`${catalogueData.catalogueTitle} ${subHeadText}`}</Title>
-            <div className={seoTextClassName}>{state.textBottom}</div>
-
-            {sessionUser?.showAdminUiInCatalogue && state.seoBottom ? (
-              <div className='space-y-3 mt-6'>
-                {(state.seoBottom.locales || []).map(
-                  (seoLocale: TextUniquenessApiParsedResponseModel) => {
-                    return (
-                      <TextSeoInfo
-                        showLocaleName
-                        listClassName='flex gap-3 flex-wrap'
-                        key={seoLocale.locale}
-                        seoLocale={seoLocale}
-                      />
-                    );
-                  },
-                )}
-              </div>
-            ) : null}
-          </section>
+          <div className='mb-16'>
+            {/*<Title size={'small'}>{`${catalogueData.catalogueTitle} ${subHeadText}`}</Title>*/}
+            <PageEditor value={JSON.parse(state.textBottom)} readOnly />
+          </div>
         ) : null}
       </Inner>
 

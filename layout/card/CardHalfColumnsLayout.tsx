@@ -5,6 +5,7 @@ import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
 import WpImage from 'components/WpImage';
 import { useSiteContext } from 'context/siteContext';
+import { CardLayoutInterface } from 'db/uiInterfaces';
 import CardSimilarProducts from 'layout/card/CardSimilarProducts';
 import Title from 'components/Title';
 import useCardData from 'hooks/useCardData';
@@ -18,7 +19,6 @@ import CardTagFeatures from 'layout/card/CardTagFeatures';
 import CardTextFeatures from 'layout/card/CardTextFeatures';
 import { noNaN } from 'lib/numbers';
 import dynamic from 'next/dynamic';
-import { CardLayoutInterface } from 'pages/catalogue/[rubricSlug]/product/[card]';
 import * as React from 'react';
 
 const CardImageSlider = dynamic(() => import('layout/card/CardImageSlider'));

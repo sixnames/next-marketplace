@@ -411,6 +411,17 @@ export async function getStaticProps(
       context,
     });
 
+    // redirect to product
+    const isCitySlug = noNaN(context.params?.citySlug) === 0;
+    if (!isCitySlug) {
+      return {
+        redirect: {
+          destination: `${props.urlPrefix}/${context.params?.citySlug}`,
+          permanent: true,
+        },
+      };
+    }
+
     if (!props) {
       return {
         notFound: true,

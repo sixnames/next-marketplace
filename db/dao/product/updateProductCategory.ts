@@ -104,9 +104,6 @@ export async function updateProductCategory({
           selectedOptionsSlugs: {
             $each: categoryParentTreeSlugs,
           },
-          titleCategoriesSlugs: {
-            $each: categoryParentTreeSlugs,
-          },
         },
       };
       if (selected) {

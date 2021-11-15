@@ -1,7 +1,7 @@
 import Button from 'components/button/Button';
 import Inner from 'components/Inner';
 import Title from 'components/Title';
-import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
+import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
 import { ProductInterface } from 'db/uiInterfaces';
 import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import AppSubNav from 'layout/AppSubNav';
@@ -124,7 +124,10 @@ const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({
         <div className='mb-4'>
           <Button
             onClick={() => {
-              window.open(`/${companySlug || DEFAULT_COMPANY_SLUG}/${product.slug}`, '_blank');
+              window.open(
+                `/${companySlug || DEFAULT_COMPANY_SLUG}/${DEFAULT_CITY}/${product.slug}`,
+                '_blank',
+              );
             }}
             theme={'secondary'}
             size={'small'}

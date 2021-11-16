@@ -27,7 +27,7 @@ const RubricProductsConsumer: React.FC<RubricProductsConsumerInterface> = (props
         href: `${ROUTE_CMS}/companies`,
       },
       {
-        name: `${props.currentCompany?.name}`,
+        name: `${props.pageCompany.name}`,
         href: props.routeBasePath,
       },
       {

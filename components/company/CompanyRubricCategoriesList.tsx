@@ -7,7 +7,7 @@ import * as React from 'react';
 
 export interface CompanyRubricCategoriesListInterface {
   rubric: RubricInterface;
-  currentCompany?: CompanyInterface | null;
+  pageCompany: CompanyInterface;
   routeBasePath: string;
 }
 

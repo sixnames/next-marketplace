@@ -92,6 +92,7 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
       fetch(`/api/cart/session-cart?${domainCompany ? `companyId=${domainCompany._id}` : ''}`)
         .then((res) => res.json())
         .then((data) => {
+          console.log(data.sessionCart);
           setState((prevState) => {
             return {
               ...prevState,

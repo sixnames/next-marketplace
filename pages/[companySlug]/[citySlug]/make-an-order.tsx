@@ -51,7 +51,7 @@ const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }
   if (!product || !shop) {
     return null;
   }
-  const { mainImage, snippetTitle, slug } = product;
+  const { mainImage, snippetTitle, slug, name } = product;
   const lightThemeMarker = shop.mapMarker?.lightTheme;
   const darkThemeMarker = shop.mapMarker?.darkTheme;
   const marker = (isDark ? darkThemeMarker : lightThemeMarker) || '/marker.svg';
@@ -87,14 +87,18 @@ const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }
 
       {/*main data*/}
       <div className='sm:col-span-6'>
-        <div className='text-secondary-text'>{`Артикул: ${itemId}`}</div>
-        <Link
-          target={'_blank'}
-          className='block mb-6 text-primary-text hover:no-underline hover:text-primary-text font-medium text-lg lg:text-2xl'
-          href={`${urlPrefix}/${slug}`}
-        >
-          {snippetTitle}
-        </Link>
+        <div className='text-secondary-text mb-3'>{`Артикул: ${itemId}`}</div>
+        <div className='mb-6'>
+          <Link
+            target={'_blank'}
+            className='block text-primary-text hover:no-underline hover:text-primary-text font-medium text-lg lg:text-2xl'
+            href={`${urlPrefix}/${slug}`}
+          >
+            {snippetTitle}
+          </Link>
+
+          {name ? <div className='text-secondary-text mt-1'>{name}</div> : null}
+        </div>
 
         {/*price*/}
         <div className='mb-6'>

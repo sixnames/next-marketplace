@@ -105,24 +105,29 @@ interface CartProductMainDataInterface {
   itemId: string;
   snippetTitle?: string | null;
   slug: string;
+  name?: string | null;
 }
 
 const CartProductMainData: React.FC<CartProductMainDataInterface> = ({
   itemId,
   snippetTitle,
   slug,
+  name,
 }) => {
   const { urlPrefix } = useSiteContext();
   return (
     <React.Fragment>
-      <div className='text-secondary-text'>{`Артикул: ${itemId}`}</div>
-      <Link
-        target={'_blank'}
-        className='block mb-6 text-primary-text hover:no-underline hover:text-primary-text font-medium text-lg lg:text-2xl'
-        href={`${urlPrefix}/${slug}`}
-      >
-        {snippetTitle}
-      </Link>
+      <div className='text-secondary-text mb-3'>{`Артикул: ${itemId}`}</div>
+      <div className='mb-6'>
+        <Link
+          target={'_blank'}
+          className='block text-primary-text hover:no-underline hover:text-primary-text font-medium text-lg lg:text-2xl'
+          href={`${urlPrefix}/${slug}`}
+        >
+          {snippetTitle}
+        </Link>
+        {name ? <div className='text-secondary-text mt-1'>{name}</div> : null}
+      </div>
     </React.Fragment>
   );
 };
@@ -151,7 +156,12 @@ const CartShoplessProduct: React.FC<CartProductPropsInterface> = ({ cartProduct,
       shopProducts={shopProducts}
       isShopsVisible={isShopsVisible}
     >
-      <CartProductMainData slug={slug} itemId={itemId} snippetTitle={snippetTitle} />
+      <CartProductMainData
+        name={product.name}
+        slug={slug}
+        itemId={itemId}
+        snippetTitle={snippetTitle}
+      />
 
       <div className='flex flex-wrap gap-6 mb-4 items-center'>
         <div>
@@ -206,6 +216,7 @@ const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId 
       snippetTitle={product.snippetTitle}
     >
       <CartProductMainData
+        name={product.name}
         slug={product.slug}
         itemId={itemId}
         snippetTitle={product.snippetTitle}

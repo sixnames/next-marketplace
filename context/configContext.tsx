@@ -98,8 +98,7 @@ const ConfigContextProvider: React.FC<ConfigContextInterface> = ({
 };
 
 function useConfigContext() {
-  const context = React.useContext(ConfigContext);
-
+  const context = React.useContext<ConfigContextInterface>(ConfigContext);
   if (!context) {
     throw new Error('useConfigContext must be used within a ConfigContextProvider');
   }

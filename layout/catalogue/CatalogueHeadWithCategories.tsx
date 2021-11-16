@@ -15,7 +15,6 @@ const minCategoriesCount = 1;
 
 const CatalogueHeadWithCategories: React.FC<CatalogueHeadDefaultInterface> = ({
   catalogueCounterString,
-  seoTextClassName,
   catalogueTitle,
   textTop,
   breadcrumbs,
@@ -79,7 +78,7 @@ const CatalogueHeadWithCategories: React.FC<CatalogueHeadDefaultInterface> = ({
         ) : null}
 
         {textTop ? (
-          <div className={seoTextClassName ? seoTextClassName : ''}>
+          <div>
             <PageEditor value={JSON.parse(textTop)} readOnly />
           </div>
         ) : null}

@@ -8,7 +8,6 @@ import * as React from 'react';
 
 const CatalogueHeadDefault: React.FC<CatalogueHeadDefaultInterface> = ({
   catalogueCounterString,
-  seoTextClassName,
   catalogueTitle,
   textTop,
   breadcrumbs,
@@ -27,7 +26,7 @@ const CatalogueHeadDefault: React.FC<CatalogueHeadDefaultInterface> = ({
         </Title>
 
         {textTop ? (
-          <div className={seoTextClassName ? seoTextClassName : ''}>
+          <div>
             <PageEditor value={JSON.parse(textTop)} readOnly />
           </div>
         ) : null}

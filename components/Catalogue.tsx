@@ -43,14 +43,11 @@ import { CatalogueApiInputInterface } from 'pages/api/catalogue/[...filters]';
 import * as React from 'react';
 import CatalogueFilter from 'layout/catalogue/CatalogueFilter';
 
-const seoTextClassName = 'prose max-w-full md:prose-lg lg:prose-xl';
-
 export interface CatalogueHeadDefaultInterface {
   catalogueCounterString: string;
   breadcrumbs: CatalogueBreadcrumbModel[];
   textTop?: string | null;
   catalogueTitle: string;
-  seoTextClassName: string;
   headCategories?: CategoryInterface[] | null;
 }
 
@@ -308,7 +305,6 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
         headCategories={state.headCategories}
         breadcrumbs={state.breadcrumbs}
         textTop={state.textTop}
-        seoTextClassName={seoTextClassName}
         catalogueCounterString={catalogueCounterString}
         catalogueTitle={state.catalogueTitle}
       />
@@ -318,7 +314,6 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
       <CatalogueHeadDefault
         breadcrumbs={state.breadcrumbs}
         textTop={state.textTop}
-        seoTextClassName={seoTextClassName}
         catalogueCounterString={catalogueCounterString}
         catalogueTitle={state.catalogueTitle}
       />

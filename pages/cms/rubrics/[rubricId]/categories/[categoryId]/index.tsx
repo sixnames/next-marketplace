@@ -411,8 +411,8 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      seoDescriptionBottom,
-      seoDescriptionTop,
+      seoDescriptionBottom: castDbData(seoDescriptionBottom),
+      seoDescriptionTop: castDbData(seoDescriptionTop),
       category: castDbData(category),
       companySlug,
     },

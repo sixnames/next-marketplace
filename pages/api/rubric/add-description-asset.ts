@@ -60,7 +60,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const assets = await storeUploads({
     files,
     dist: ASSETS_DIST_RUBRIC_DESCRIPTIONS,
-    dirName: `${rubric.slug}`,
+    dirName: rubric._id.toHexString(),
   });
   if (!assets) {
     res.status(500).send({

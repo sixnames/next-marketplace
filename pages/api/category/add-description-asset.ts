@@ -60,7 +60,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const assets = await storeUploads({
     files,
     dist: ASSETS_DIST_CATEGORY_DESCRIPTIONS,
-    dirName: `${category.slug}`,
+    dirName: category._id.toHexString(),
   });
   if (!assets) {
     res.status(500).send({

@@ -215,8 +215,8 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      seoDescriptionBottom,
-      seoDescriptionTop,
+      seoDescriptionBottom: castDbData(seoDescriptionBottom),
+      seoDescriptionTop: castDbData(seoDescriptionTop),
       category: castDbData(category),
       pageCompany: castDbData(companyResult),
       routeBasePath: `${ROUTE_CMS}/companies/${companyResult._id}`,

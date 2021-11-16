@@ -1,7 +1,9 @@
+import { deleteUpload } from 'lib/assetUtils/assetUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   AttributeModel,
   AttributesGroupModel,
+  CategoryModel,
   ProductAttributeModel,
   ProductModel,
   RubricDescriptionModel,
@@ -18,6 +20,7 @@ import { getDatabase } from 'db/mongodb';
 import {
   COL_ATTRIBUTES,
   COL_ATTRIBUTES_GROUPS,
+  COL_CATEGORIES,
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCTS,
   COL_RUBRIC_DESCRIPTIONS,
@@ -379,6 +382,9 @@ export const RubricMutations = extendType({
         const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
         const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+        const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
+        const rubricDescriptionsCollection =
+          db.collection<RubricDescriptionModel>(COL_RUBRIC_DESCRIPTIONS);
 
         const session = client.startSession();
 
@@ -431,6 +437,26 @@ export const RubricMutations = extendType({
               await session.abortTransaction();
               return;
             }
+
+            // Delete categories
+            await categoriesCollection.deleteMany({
+              rubricId: rubric._id,
+            });
+
+            // Delete descriptions
+            const descriptions = await rubricDescriptionsCollection
+              .find({
+                rubricId: rubric._id,
+              })
+              .toArray();
+            for await (const description of descriptions) {
+              for await (const filePath of description.assetKeys) {
+                await deleteUpload(filePath);
+              }
+            }
+            await rubricDescriptionsCollection.deleteMany({
+              rubricId: rubric._id,
+            });
 
             // Delete rubric
             const removedRubricsResult = await rubricsCollection.deleteOne({

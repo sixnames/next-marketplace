@@ -258,8 +258,7 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
                   label={'SEO текст вверху каталога'}
                   name={'textTop'}
                   categoryId={`${category._id}`}
-                  pageCompanySlug={DEFAULT_COMPANY_SLUG}
-                  position={'top'}
+                  descriptionId={`${seoDescriptionTop._id}`}
                   setFieldValue={setFieldValue}
                   values={values}
                 />
@@ -268,8 +267,7 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
                   label={'SEO текст внизу каталога'}
                   name={'textBottom'}
                   categoryId={`${category._id}`}
-                  pageCompanySlug={DEFAULT_COMPANY_SLUG}
-                  position={'bottom'}
+                  descriptionId={`${seoDescriptionBottom._id}`}
                   setFieldValue={setFieldValue}
                   values={values}
                 />
@@ -403,6 +401,12 @@ export const getServerSideProps = async (
     categorySlug: category.slug,
     position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   });
+
+  if (!seoDescriptionBottom || !seoDescriptionTop) {
+    return {
+      notFound: true,
+    };
+  }
 
   return {
     props: {

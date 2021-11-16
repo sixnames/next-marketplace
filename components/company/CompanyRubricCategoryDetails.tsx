@@ -18,13 +18,12 @@ import * as React from 'react';
 import { updateCategorySchema } from 'validation/categorySchema';
 
 interface CategoryDescriptionConstructorInterface {
-  position: 'top' | 'bottom';
   name: string;
   values: UpdateCategoryInput;
   setFieldValue: (field: string, value: any, shouldValidate?: boolean | undefined) => void;
   label: string;
   categoryId: string;
-  pageCompanySlug: string;
+  descriptionId: string;
 }
 
 export const CategoryDescriptionConstructor: React.FC<CategoryDescriptionConstructorInterface> = ({
@@ -32,9 +31,8 @@ export const CategoryDescriptionConstructor: React.FC<CategoryDescriptionConstru
   setFieldValue,
   values,
   name,
-  position,
   categoryId,
-  pageCompanySlug,
+  descriptionId,
 }) => {
   const { cities } = useConfigContext();
 
@@ -62,9 +60,8 @@ export const CategoryDescriptionConstructor: React.FC<CategoryDescriptionConstru
                   try {
                     const formData = new FormData();
                     formData.append('assets', file);
-                    formData.append('position', position);
                     formData.append('categoryId', `${categoryId}`);
-                    formData.append('companySlug', `${pageCompanySlug}`);
+                    formData.append('descriptionId', `${descriptionId}`);
 
                     const responseFetch = await fetch('/api/category/add-description-asset', {
                       method: REQUEST_METHOD_POST,
@@ -166,8 +163,7 @@ const CompanyRubricCategoryDetails: React.FC<CompanyRubricCategoryDetailsInterfa
                 label={'SEO текст вверху каталога'}
                 name={'textTop'}
                 categoryId={`${category._id}`}
-                pageCompanySlug={pageCompany.slug}
-                position={'top'}
+                descriptionId={`${seoDescriptionTop._id}`}
                 setFieldValue={setFieldValue}
                 values={values}
               />
@@ -176,8 +172,7 @@ const CompanyRubricCategoryDetails: React.FC<CompanyRubricCategoryDetailsInterfa
                 label={'SEO текст внизу каталога'}
                 name={'textBottom'}
                 categoryId={`${category._id}`}
-                pageCompanySlug={pageCompany.slug}
-                position={'bottom'}
+                descriptionId={`${seoDescriptionBottom._id}`}
                 setFieldValue={setFieldValue}
                 values={values}
               />

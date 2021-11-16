@@ -186,6 +186,12 @@ export const getServerSideProps = async (
     companySlug,
   });
 
+  if (!seoDescriptionBottom || !seoDescriptionTop) {
+    return {
+      notFound: true,
+    };
+  }
+
   return {
     props: {
       ...props,

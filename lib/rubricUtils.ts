@@ -2,7 +2,6 @@ import { DEFAULT_CITY, PAGE_EDITOR_DEFAULT_VALUE_STRING } from 'config/common';
 import { COL_CATEGORY_DESCRIPTIONS, COL_RUBRIC_DESCRIPTIONS } from 'db/collectionNames';
 import { CategoryDescriptionModel, ObjectIdModel, RubricDescriptionModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { ObjectId } from 'mongodb';
 
 interface getRubricSeoTextInterface {
   companySlug: string;
@@ -16,7 +15,7 @@ export async function getRubricSeoText({
   position,
   rubricId,
   rubricSlug,
-}: getRubricSeoTextInterface): Promise<RubricDescriptionModel> {
+}: getRubricSeoTextInterface): Promise<RubricDescriptionModel | null> {
   const { db } = await getDatabase();
   const rubricDescriptionsCollection =
     db.collection<RubricDescriptionModel>(COL_RUBRIC_DESCRIPTIONS);
@@ -27,8 +26,7 @@ export async function getRubricSeoText({
   });
 
   if (!description) {
-    const newDescription: RubricDescriptionModel = {
-      _id: new ObjectId(),
+    const newDescriptionResult = await rubricDescriptionsCollection.insertOne({
       companySlug,
       rubricId,
       position,
@@ -37,7 +35,13 @@ export async function getRubricSeoText({
       content: {
         [DEFAULT_CITY]: PAGE_EDITOR_DEFAULT_VALUE_STRING,
       },
-    };
+    });
+    if (!newDescriptionResult.acknowledged) {
+      return null;
+    }
+    const newDescription = await rubricDescriptionsCollection.findOne({
+      _id: newDescriptionResult.insertedId,
+    });
     return newDescription;
   }
 
@@ -56,7 +60,7 @@ export async function getCategorySeoText({
   position,
   categoryId,
   categorySlug,
-}: getCategorySeoTextInterface): Promise<CategoryDescriptionModel> {
+}: getCategorySeoTextInterface): Promise<CategoryDescriptionModel | null> {
   const { db } = await getDatabase();
   const rubricDescriptionsCollection =
     db.collection<CategoryDescriptionModel>(COL_CATEGORY_DESCRIPTIONS);
@@ -67,8 +71,7 @@ export async function getCategorySeoText({
   });
 
   if (!description) {
-    const newDescription: CategoryDescriptionModel = {
-      _id: new ObjectId(),
+    const newDescriptionResult = await rubricDescriptionsCollection.insertOne({
       companySlug,
       position,
       assetKeys: [],
@@ -77,7 +80,13 @@ export async function getCategorySeoText({
       content: {
         [DEFAULT_CITY]: PAGE_EDITOR_DEFAULT_VALUE_STRING,
       },
-    };
+    });
+    if (!newDescriptionResult.acknowledged) {
+      return null;
+    }
+    const newDescription = await rubricDescriptionsCollection.findOne({
+      _id: newDescriptionResult.insertedId,
+    });
     return newDescription;
   }
 

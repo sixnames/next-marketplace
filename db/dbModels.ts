@@ -765,11 +765,13 @@ export interface RubricModel extends CountersModel {
   image?: string;
 }
 
+export type DescriptionPositionType = 'top' | 'bottom';
+
 export interface RubricDescriptionModel {
   _id: ObjectIdModel;
   companySlug: string;
   rubricSlug: string;
-  position: 'top' | 'bottom';
+  position: DescriptionPositionType;
   rubricId: ObjectIdModel;
   content: JSONObjectModel;
   assetKeys: string[];
@@ -795,7 +797,7 @@ export interface CategoryDescriptionModel {
   companySlug: string;
   categoryId: ObjectIdModel;
   categorySlug: string;
-  position: 'top' | 'bottom';
+  position: DescriptionPositionType;
   content: JSONObjectModel;
   assetKeys: string[];
 }
@@ -804,7 +806,7 @@ export interface RubricSeoModel {
   _id: ObjectIdModel;
   companySlug: string;
   rubricId: ObjectIdModel;
-  position: 'top' | 'bottom';
+  position: DescriptionPositionType;
   categoryId?: ObjectIdModel | null;
   locales: TextUniquenessApiParsedResponseModel[];
 }

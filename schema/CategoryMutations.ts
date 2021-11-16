@@ -1,3 +1,4 @@
+import { deleteUpload } from 'lib/assetUtils/assetUtils';
 import { getNextItemId } from 'lib/itemIdUtils';
 import { deleteDocumentsTree, getParentTreeIds } from 'lib/optionsUtils';
 import { ObjectId } from 'mongodb';
@@ -5,10 +6,8 @@ import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   AttributesGroupModel,
   ProductAttributeModel,
-  ProductModel,
   CategoryModel,
   CategoryPayloadModel,
-  ShopProductModel,
   RubricModel,
   ObjectIdModel,
   CategoryDescriptionModel,
@@ -24,10 +23,8 @@ import { getDatabase } from 'db/mongodb';
 import {
   COL_ATTRIBUTES_GROUPS,
   COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCTS,
   COL_RUBRICS,
   COL_CATEGORIES,
-  COL_SHOP_PRODUCTS,
   COL_CATEGORY_DESCRIPTIONS,
   COL_COMPANIES,
   COL_CONFIGS,
@@ -545,8 +542,8 @@ export const CategoryMutations = extendType({
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
         const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
-        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-        const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+        const categoryDescriptionsCollection =
+          db.collection<CategoryDescriptionModel>(COL_CATEGORY_DESCRIPTIONS);
 
         const session = client.startSession();
 
@@ -584,21 +581,20 @@ export const CategoryMutations = extendType({
               return;
             }
 
-            // Delete category products
-            const removedShopProductsResult = await shopProductsCollection.deleteMany({
-              categoryId: _id,
-            });
-            const removedProductsResult = await productsCollection.deleteMany({
-              categoryId: _id,
-            });
-            if (!removedProductsResult.acknowledged || !removedShopProductsResult.acknowledged) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage('categories.deleteProduct.error'),
-              };
-              await session.abortTransaction();
-              return;
+            // Delete descriptions
+            const descriptions = await categoryDescriptionsCollection
+              .find({
+                categoryId: category._id,
+              })
+              .toArray();
+            for await (const description of descriptions) {
+              for await (const filePath of description.assetKeys) {
+                await deleteUpload(filePath);
+              }
             }
+            await categoryDescriptionsCollection.deleteMany({
+              categoryId: category._id,
+            });
 
             // Delete category
             const removedCategoriesResult = await deleteDocumentsTree({

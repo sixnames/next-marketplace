@@ -152,6 +152,12 @@ export const getServerSideProps = async (
     position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   });
 
+  if (!seoDescriptionBottom || !seoDescriptionTop) {
+    return {
+      notFound: true,
+    };
+  }
+
   return {
     props: {
       ...props,

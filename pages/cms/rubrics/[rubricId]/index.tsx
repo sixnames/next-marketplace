@@ -144,23 +144,21 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
                 />
 
                 <RubricDescriptionConstructor
-                  position={'top'}
                   name={'textTop'}
                   values={values}
                   setFieldValue={setFieldValue}
                   label={'SEO текст вверху каталога'}
                   rubricId={`${rubric._id}`}
-                  pageCompanySlug={DEFAULT_COMPANY_SLUG}
+                  descriptionId={`${seoDescriptionTop._id}`}
                 />
 
                 <RubricDescriptionConstructor
-                  position={'bottom'}
                   name={'textBottom'}
                   values={values}
                   setFieldValue={setFieldValue}
                   label={'SEO текст внизу каталога'}
                   rubricId={`${rubric._id}`}
-                  pageCompanySlug={DEFAULT_COMPANY_SLUG}
+                  descriptionId={`${seoDescriptionBottom._id}`}
                 />
 
                 <FixedButtons>
@@ -246,6 +244,12 @@ export const getServerSideProps = async (
     companySlug,
     position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   });
+
+  if (!seoDescriptionBottom || !seoDescriptionTop) {
+    return {
+      notFound: true,
+    };
+  }
 
   return {
     props: {

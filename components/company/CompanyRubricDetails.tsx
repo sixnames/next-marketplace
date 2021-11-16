@@ -18,13 +18,12 @@ import * as React from 'react';
 import { updateRubricSchema } from 'validation/rubricSchema';
 
 interface RubricDescriptionConstructorInterface {
-  position: 'top' | 'bottom';
   name: string;
   values: UpdateRubricInput;
   setFieldValue: (field: string, value: any, shouldValidate?: boolean | undefined) => void;
   label: string;
   rubricId: string;
-  pageCompanySlug: string;
+  descriptionId: string;
 }
 
 export const RubricDescriptionConstructor: React.FC<RubricDescriptionConstructorInterface> = ({
@@ -32,9 +31,8 @@ export const RubricDescriptionConstructor: React.FC<RubricDescriptionConstructor
   setFieldValue,
   values,
   name,
-  position,
   rubricId,
-  pageCompanySlug,
+  descriptionId,
 }) => {
   const { cities } = useConfigContext();
 
@@ -62,11 +60,10 @@ export const RubricDescriptionConstructor: React.FC<RubricDescriptionConstructor
                   try {
                     const formData = new FormData();
                     formData.append('assets', file);
-                    formData.append('position', position);
                     formData.append('rubricId', `${rubricId}`);
-                    formData.append('companySlug', `${pageCompanySlug}`);
+                    formData.append('descriptionId', `${descriptionId}`);
 
-                    const responseFetch = await fetch('/api/category/add-description-asset', {
+                    const responseFetch = await fetch('/api/rubric/add-description-asset', {
                       method: REQUEST_METHOD_POST,
                       body: formData,
                     });
@@ -175,23 +172,21 @@ const CompanyRubricDetails: React.FC<CompanyRubricDetailsInterface> = ({
           return (
             <Form>
               <RubricDescriptionConstructor
-                position={'top'}
                 name={'textTop'}
                 values={values}
                 setFieldValue={setFieldValue}
                 label={'SEO текст вверху каталога'}
                 rubricId={`${rubric._id}`}
-                pageCompanySlug={pageCompany.slug}
+                descriptionId={`${seoDescriptionTop._id}`}
               />
 
               <RubricDescriptionConstructor
-                position={'bottom'}
                 name={'textBottom'}
                 values={values}
                 setFieldValue={setFieldValue}
                 label={'SEO текст внизу каталога'}
                 rubricId={`${rubric._id}`}
-                pageCompanySlug={pageCompany.slug}
+                descriptionId={`${seoDescriptionBottom._id}`}
               />
 
               <FixedButtons>

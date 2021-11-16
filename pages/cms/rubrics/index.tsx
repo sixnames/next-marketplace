@@ -29,10 +29,9 @@ import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from '
 
 interface RubricsRouteInterface {
   rubrics: RubricInterface[];
-  companySlug: string;
 }
 
-const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, companySlug }) => {
+const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics }) => {
   const router = useRouter();
   const { onCompleteCallback, onErrorCallback, showModal, showLoading } = useMutationCallbacks({
     withModal: true,
@@ -141,7 +140,6 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, companySlug })
               showModal<CreateRubricModalInterface>({
                 variant: CREATE_RUBRIC_MODAL,
                 props: {
-                  companySlug,
                   confirm: (values) => {
                     showLoading();
                     return createRubricMutation({ variables: { input: values } });

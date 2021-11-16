@@ -19,19 +19,19 @@ declare namespace Cypress {
      * @example cy.dataCy('greeting')
      */
     getByCy(testId: string): Chainable<Element>;
-    visitBlank(testId: string): Chainable<Element>;
-    visitLinkHref(testId: string): Chainable<Element>;
+    visitBlank(testId: string): void;
+    visitLinkHref(testId: string): void;
     shouldSuccess(log?: string): void;
     shouldError(log?: string): void;
     shouldNotError(): void;
     getBySelector(selector: string): Chainable<Element>;
-    selectOptionByTestId(select: string, testId: string): Chainable<Element>;
-    selectNthOption(select: string, nth: number): Chainable<Element>;
+    selectOptionByTestId(select: string, testId: string): void;
+    selectNthOption(select: string, nth: number): void;
     createTestData(): void;
     closeNotification(): void;
     attachFile(path: string, options?: AttachFileOptionsInterface): Chainable<Element>;
-    testAuth(redirect?: string, email?: string, password?: string): Chainable<Element>;
-    signOut(redirect?: string): Chainable<Element>;
-    makeAnOrder(props: MakeAnOrderInterface): Chainable<Element>;
+    testAuth(redirect?: string, email?: string, password?: string): void;
+    signOut(redirect?: string): void;
+    makeAnOrder(props: MakeAnOrderInterface): void;
   }
 }

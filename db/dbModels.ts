@@ -765,13 +765,16 @@ export interface RubricModel extends CountersModel {
   image?: string;
 }
 
+export type DescriptionPositionType = 'top' | 'bottom';
+
 export interface RubricDescriptionModel {
   _id: ObjectIdModel;
   companySlug: string;
   rubricSlug: string;
-  position: 'top' | 'bottom';
+  position: DescriptionPositionType;
   rubricId: ObjectIdModel;
-  textI18n: TranslationModel;
+  content: JSONObjectModel;
+  assetKeys: string[];
 }
 
 export interface CategoryModel extends CountersModel {
@@ -794,15 +797,16 @@ export interface CategoryDescriptionModel {
   companySlug: string;
   categoryId: ObjectIdModel;
   categorySlug: string;
-  position: 'top' | 'bottom';
-  textI18n: TranslationModel;
+  position: DescriptionPositionType;
+  content: JSONObjectModel;
+  assetKeys: string[];
 }
 
 export interface RubricSeoModel {
   _id: ObjectIdModel;
   companySlug: string;
   rubricId: ObjectIdModel;
-  position: 'top' | 'bottom';
+  position: DescriptionPositionType;
   categoryId?: ObjectIdModel | null;
   locales: TextUniquenessApiParsedResponseModel[];
 }

@@ -22,7 +22,7 @@ import { noNaN } from 'lib/numbers';
 import * as React from 'react';
 
 export interface CompanyRubricProductsListInterface extends ConsoleRubricProductsInterface {
-  currentCompany?: CompanyInterface | null;
+  pageCompany: CompanyInterface;
   routeBasePath: string;
 }
 

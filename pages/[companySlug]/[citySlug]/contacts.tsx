@@ -13,6 +13,7 @@ import { noNaN } from 'lib/numbers';
 import { phoneToReadable } from 'lib/phoneUtils';
 import { getSiteInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, NextPage } from 'next';
+import Head from 'next/head';
 import * as React from 'react';
 
 const ContactsRoute: React.FC = () => {
@@ -47,6 +48,10 @@ const ContactsRoute: React.FC = () => {
 
   return (
     <Inner>
+      <Head>
+        <title>Контакты {configSiteName}</title>
+      </Head>
+
       <div className='pt-10'>
         <div
           className={`mb-16 ${

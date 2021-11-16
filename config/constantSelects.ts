@@ -121,14 +121,14 @@ export const SUPPLIER_PRICE_VARIANT_OPTIONS: ConstantOptionsType = [
   {
     _id: SUPPLIER_PRICE_VARIANT_DISCOUNT,
     nameI18n: {
-      [DEFAULT_LOCALE]: 'Диллерская скидка',
+      [DEFAULT_LOCALE]: 'Дилерская скидка',
       [SECONDARY_LOCALE]: 'Dealer discount',
     },
   },
   {
     _id: SUPPLIER_PRICE_VARIANT_CHARGE,
     nameI18n: {
-      [DEFAULT_LOCALE]: 'Диллерская наценка',
+      [DEFAULT_LOCALE]: 'Дилерская наценка',
       [SECONDARY_LOCALE]: 'Dealer charge',
     },
   },

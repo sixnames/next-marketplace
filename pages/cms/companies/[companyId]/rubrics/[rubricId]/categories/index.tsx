@@ -29,7 +29,7 @@ import * as React from 'react';
 interface RubricCategoriesConsumerInterface extends CompanyRubricCategoriesListInterface {}
 const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
   rubric,
-  currentCompany,
+  pageCompany,
   routeBasePath,
 }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -40,7 +40,7 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
         href: `${ROUTE_CMS}/companies`,
       },
       {
-        name: `${currentCompany?.name}`,
+        name: `${pageCompany.name}`,
         href: routeBasePath,
       },
       {
@@ -64,7 +64,7 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
       <CompanyRubricCategoriesList
         rubric={rubric}
         routeBasePath={routeBasePath}
-        currentCompany={currentCompany}
+        pageCompany={pageCompany}
       />
     </CmsRubricLayout>
   );
@@ -159,7 +159,7 @@ export const getServerSideProps = async (
     }
     const payload: RubricCategoriesConsumerInterface = {
       routeBasePath,
-      currentCompany: castDbData(companyResult),
+      pageCompany: castDbData(companyResult),
       rubric: {
         ...rubric,
         name: getFieldStringLocale(rubric?.nameI18n, locale),
@@ -247,7 +247,7 @@ export const getServerSideProps = async (
 
   const payload: RubricCategoriesConsumerInterface = {
     routeBasePath,
-    currentCompany: companyResult,
+    pageCompany: companyResult,
     rubric: {
       ...rubric,
       name: getFieldStringLocale(rubric?.nameI18n, locale),

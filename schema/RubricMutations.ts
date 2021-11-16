@@ -1,8 +1,9 @@
-import { checkRubricSeoTextUniqueness } from 'lib/textUniquenessUtils';
+import { deleteUpload } from 'lib/assetUtils/assetUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   AttributeModel,
   AttributesGroupModel,
+  CategoryModel,
   ProductAttributeModel,
   ProductModel,
   RubricDescriptionModel,
@@ -19,6 +20,7 @@ import { getDatabase } from 'db/mongodb';
 import {
   COL_ATTRIBUTES,
   COL_ATTRIBUTES_GROUPS,
+  COL_CATEGORIES,
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCTS,
   COL_RUBRIC_DESCRIPTIONS,
@@ -49,7 +51,6 @@ export const RubricPayload = objectType({
 export const CreateRubricInput = inputObjectType({
   name: 'CreateRubricInput',
   definition(t) {
-    t.nonNull.string('companySlug');
     t.nonNull.json('nameI18n');
     t.boolean('capitalise');
     t.boolean('showRubricNameInProductTitle');
@@ -58,8 +59,6 @@ export const CreateRubricInput = inputObjectType({
     t.boolean('showBrandInFilter');
     t.nonNull.json('descriptionI18n');
     t.nonNull.json('shortDescriptionI18n');
-    t.json('textTopI18n');
-    t.json('textBottomI18n');
     t.nonNull.objectId('variantId');
     t.nonNull.json('defaultTitleI18n');
     t.json('prefixI18n');
@@ -83,8 +82,8 @@ export const UpdateRubricInput = inputObjectType({
     t.nonNull.json('nameI18n');
     t.nonNull.json('descriptionI18n');
     t.nonNull.json('shortDescriptionI18n');
-    t.json('textTopI18n');
-    t.json('textBottomI18n');
+    t.json('textTop');
+    t.json('textBottom');
     t.nonNull.objectId('variantId');
     t.nonNull.boolean('active');
     t.nonNull.json('defaultTitleI18n');
@@ -158,15 +157,12 @@ export const RubricMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-          const rubricDescriptionsCollection =
-            db.collection<RubricDescriptionModel>(COL_RUBRIC_DESCRIPTIONS);
           const { input } = args;
-          const { companySlug, textTopI18n, textBottomI18n, ...values } = input;
 
           // Check if rubric already exist
           const exist = await findDocumentByI18nField<RubricModel>({
             collectionName: COL_RUBRICS,
-            fieldArg: values.nameI18n,
+            fieldArg: input.nameI18n,
             fieldName: 'nameI18n',
           });
           if (exist) {
@@ -177,9 +173,9 @@ export const RubricMutations = extendType({
           }
 
           // Create rubric
-          const slug = generateDefaultLangSlug(values.nameI18n);
+          const slug = generateDefaultLangSlug(input.nameI18n);
           const createdRubricResult = await rubricsCollection.insertOne({
-            ...values,
+            ...input,
             slug,
             active: true,
             attributesGroupIds: [],
@@ -194,34 +190,6 @@ export const RubricMutations = extendType({
               success: false,
               message: await getApiMessage('rubrics.create.error'),
             };
-          }
-
-          // check text uniqueness
-          await checkRubricSeoTextUniqueness({
-            rubric: createdRubric,
-            textTopI18n: textTopI18n,
-            textBottomI18n: textBottomI18n,
-            companySlug,
-          });
-
-          // create seo texts
-          if (textTopI18n) {
-            await rubricDescriptionsCollection.insertOne({
-              companySlug,
-              position: 'top',
-              rubricSlug: slug,
-              rubricId: createdRubric._id,
-              textI18n: textTopI18n,
-            });
-          }
-          if (textBottomI18n) {
-            await rubricDescriptionsCollection.insertOne({
-              companySlug,
-              position: 'bottom',
-              rubricSlug: slug,
-              rubricId: createdRubric._id,
-              textI18n: textBottomI18n,
-            });
           }
 
           return {
@@ -276,7 +244,7 @@ export const RubricMutations = extendType({
           const rubricDescriptionsCollection =
             db.collection<RubricDescriptionModel>(COL_RUBRIC_DESCRIPTIONS);
           const { input } = args;
-          const { rubricId, companySlug, textTopI18n, textBottomI18n, ...values } = input;
+          const { rubricId, companySlug, textTop, textBottom, ...values } = input;
 
           // Check rubric availability
           const rubric = await rubricsCollection.findOne({ _id: rubricId });
@@ -323,56 +291,64 @@ export const RubricMutations = extendType({
             };
           }
 
-          // check text uniqueness
-          await checkRubricSeoTextUniqueness({
-            rubric,
-            textTopI18n: textTopI18n,
-            textBottomI18n: textBottomI18n,
-            companySlug,
-          });
-
           // update seo text
-          if (textTopI18n) {
-            await rubricDescriptionsCollection.findOneAndUpdate(
-              {
+          if (textTop) {
+            const topText = await rubricDescriptionsCollection.findOne({
+              companySlug,
+              position: 'top',
+              rubricId: updatedRubric._id,
+            });
+
+            if (!topText) {
+              await rubricDescriptionsCollection.insertOne({
                 companySlug,
                 position: 'top',
+                rubricSlug: updatedRubric.slug,
                 rubricId: updatedRubric._id,
-              },
-              {
-                $set: {
-                  companySlug,
-                  position: 'top',
-                  rubricSlug: updatedRubric.slug,
-                  rubricId: updatedRubric._id,
-                  textI18n: textTopI18n || {},
+                content: textTop || {},
+                assetKeys: [],
+              });
+            } else {
+              await rubricDescriptionsCollection.findOneAndUpdate(
+                {
+                  _id: topText._id,
                 },
-              },
-              {
-                upsert: true,
-              },
-            );
+                {
+                  $set: {
+                    content: textTop || {},
+                  },
+                },
+              );
+            }
           }
-          if (textBottomI18n) {
-            await rubricDescriptionsCollection.findOneAndUpdate(
-              {
+          if (textBottom) {
+            const topBottom = await rubricDescriptionsCollection.findOne({
+              companySlug,
+              position: 'bottom',
+              rubricId: updatedRubric._id,
+            });
+
+            if (!topBottom) {
+              await rubricDescriptionsCollection.insertOne({
                 companySlug,
                 position: 'bottom',
+                rubricSlug: updatedRubric.slug,
                 rubricId: updatedRubric._id,
-              },
-              {
-                $set: {
-                  companySlug,
-                  position: 'bottom',
-                  rubricSlug: updatedRubric.slug,
-                  rubricId: updatedRubric._id,
-                  textI18n: textBottomI18n || {},
+                content: textBottom || {},
+                assetKeys: [],
+              });
+            } else {
+              await rubricDescriptionsCollection.findOneAndUpdate(
+                {
+                  _id: topBottom._id,
                 },
-              },
-              {
-                upsert: true,
-              },
-            );
+                {
+                  $set: {
+                    content: textBottom || {},
+                  },
+                },
+              );
+            }
           }
 
           return {
@@ -406,6 +382,9 @@ export const RubricMutations = extendType({
         const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
         const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+        const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
+        const rubricDescriptionsCollection =
+          db.collection<RubricDescriptionModel>(COL_RUBRIC_DESCRIPTIONS);
 
         const session = client.startSession();
 
@@ -458,6 +437,26 @@ export const RubricMutations = extendType({
               await session.abortTransaction();
               return;
             }
+
+            // Delete categories
+            await categoriesCollection.deleteMany({
+              rubricId: rubric._id,
+            });
+
+            // Delete descriptions
+            const descriptions = await rubricDescriptionsCollection
+              .find({
+                rubricId: rubric._id,
+              })
+              .toArray();
+            for await (const description of descriptions) {
+              for await (const filePath of description.assetKeys) {
+                await deleteUpload(filePath);
+              }
+            }
+            await rubricDescriptionsCollection.deleteMany({
+              rubricId: rubric._id,
+            });
 
             // Delete rubric
             const removedRubricsResult = await rubricsCollection.deleteOne({

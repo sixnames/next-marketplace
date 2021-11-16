@@ -15,14 +15,9 @@ import { createCategorySchema } from 'validation/categorySchema';
 export interface CreateCategoryModalInterface {
   parentId?: string | null;
   rubricId: string;
-  companySlug: string;
 }
 
-const CreateCategoryModal: React.FC<CreateCategoryModalInterface> = ({
-  parentId,
-  companySlug,
-  rubricId,
-}) => {
+const CreateCategoryModal: React.FC<CreateCategoryModalInterface> = ({ parentId, rubricId }) => {
   const { onCompleteCallback, onErrorCallback, showLoading, hideModal } = useMutationCallbacks({
     withModal: true,
     reload: true,
@@ -45,7 +40,6 @@ const CreateCategoryModal: React.FC<CreateCategoryModalInterface> = ({
         validationSchema={validationSchema}
         initialValues={{
           rubricId,
-          companySlug,
           nameI18n: {},
           replaceParentNameInCatalogueTitle: false,
           variants: GENDER_ENUMS.reduce((acc: OptionVariantsModel, gender) => {

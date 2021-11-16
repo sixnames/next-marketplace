@@ -1,7 +1,24 @@
-import { CATEGORY_SLUG_PREFIX_SEPARATOR, CATEGORY_SLUG_PREFIX_WORD } from '../../../config/common';
+import {
+  CATEGORY_SLUG_PREFIX_SEPARATOR,
+  CATEGORY_SLUG_PREFIX_WORD,
+  FILTER_SEPARATOR,
+} from '../../../config/common';
 import { dbsConfig, getProdDb } from './getProdDb';
-import { COL_CATEGORIES, COL_PRODUCTS, COL_SHOP_PRODUCTS } from '../../../db/collectionNames';
-import { CategoryModel, ObjectIdModel, ProductModel, ShopProductModel } from '../../../db/dbModels';
+import {
+  COL_ATTRIBUTES,
+  COL_OPTIONS,
+  COL_PRODUCT_ATTRIBUTES,
+  COL_PRODUCTS,
+  COL_SHOP_PRODUCTS,
+} from '../../../db/collectionNames';
+import {
+  AttributeModel,
+  ObjectIdModel,
+  OptionModel,
+  ProductAttributeModel,
+  ProductModel,
+  ShopProductModel,
+} from '../../../db/dbModels';
 
 require('dotenv').config();
 
@@ -28,6 +45,11 @@ require('dotenv').config();
   return `${updatedCounter.value.counter}`;
 }*/
 
+interface ProductAttributesAggregation {
+  _id: ObjectIdModel;
+  productAttributes: ProductAttributeModel[];
+}
+
 async function updateProds() {
   for await (const dbConfig of dbsConfig) {
     console.log(' ');
@@ -36,62 +58,122 @@ async function updateProds() {
     console.log(`Updating ${dbConfig.dbName} db`);
     const { db, client } = await getProdDb(dbConfig);
     const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-    const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
     const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+    const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
+    const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
+    const productAttributesCollection =
+      db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
 
-    const products = await productsCollection.find({}).toArray();
-    const categories = await categoriesCollection.find({}).toArray();
+    const variants = ['select', 'multipleSelect'] as any;
+    const attributes = await attributesCollection
+      .find({
+        variant: {
+          $in: variants,
+        },
+      })
+      .toArray();
+    console.log('attributes length ', attributes.length);
+    let attributesCount = 0;
 
-    for await (const product of products) {
-      const selectedOptionsSlugs = [...product.selectedOptionsSlugs];
-      const categorySelectedSlugs = selectedOptionsSlugs.filter((slug) => {
-        const slugParts = slug.split(CATEGORY_SLUG_PREFIX_SEPARATOR);
-        return slugParts[0] === CATEGORY_SLUG_PREFIX_WORD;
-      });
+    for await (const attribute of attributes) {
+      const start = new Date().getTime();
+      attributesCount = attributesCount + 1;
 
-      const productCategories = categories.filter(({ slug }) => {
-        return categorySelectedSlugs.includes(slug);
-      });
+      if (attribute.optionsGroupId) {
+        const options = await optionsCollection
+          .find({ optionsGroupId: attribute.optionsGroupId })
+          .toArray();
 
-      const categoryIds = productCategories.reduce((acc: ObjectIdModel[], { parentTreeIds }) => {
-        return [...acc, ...parentTreeIds];
-      }, []);
+        const productAttributeGroups = await productAttributesCollection
+          .aggregate<ProductAttributesAggregation>(
+            [
+              {
+                $match: {
+                  attributeId: attribute._id,
+                },
+              },
+              {
+                $group: {
+                  _id: '$productId',
+                  productAttributes: {
+                    $addToSet: '$$ROOT',
+                  },
+                },
+              },
+            ],
+            {
+              allowDiskUse: true,
+            },
+          )
+          .toArray();
 
-      const newCategories = categories.filter(({ _id }) => {
-        return categoryIds.some((categoryId) => categoryId.equals(_id));
-      });
+        for await (const productAttributeGroup of productAttributeGroups) {
+          const { productAttributes, _id } = productAttributeGroup;
 
-      newCategories.forEach(({ slug, nameI18n }) => {
-        const exist = selectedOptionsSlugs.includes(slug);
-        if (!exist) {
-          console.log('not found ', nameI18n.ru, ' ', product._id.toHexString());
-          selectedOptionsSlugs.push(slug);
+          const product = await productsCollection.findOne({ _id });
+
+          if (product) {
+            const categorySelectedSlugs = product.selectedOptionsSlugs.filter((slug) => {
+              const slugParts = slug.split(CATEGORY_SLUG_PREFIX_SEPARATOR);
+              return slugParts[0] === CATEGORY_SLUG_PREFIX_WORD;
+            });
+            const selectedOptionsSlugs: string[] = [...categorySelectedSlugs];
+
+            // update product attributes
+            for await (const productAttribute of productAttributes) {
+              const innerSelectedOptionsSlugs: string[] = [];
+              const selectedOptions = options.filter(({ _id }) => {
+                return productAttribute.selectedOptionsIds.some((optionId) => {
+                  return optionId.equals(_id);
+                });
+              });
+
+              selectedOptions.forEach(({ slug }) => {
+                const selectedSlug = `${attribute.slug}${FILTER_SEPARATOR}${slug}`;
+                innerSelectedOptionsSlugs.push(selectedSlug);
+                selectedOptionsSlugs.push(selectedSlug);
+              });
+
+              await productAttributesCollection.findOneAndUpdate(
+                {
+                  _id: productAttribute._id,
+                },
+                {
+                  $set: {
+                    selectedOptionsSlugs: innerSelectedOptionsSlugs,
+                  },
+                },
+              );
+            }
+
+            const updater = {
+              $addToSet: {
+                selectedOptionsSlugs: {
+                  $each: selectedOptionsSlugs,
+                },
+              },
+            };
+
+            // update product
+            await productsCollection.findOneAndUpdate(
+              {
+                _id,
+              },
+              updater,
+            );
+
+            // update shop products
+            await shopProductsCollection.updateMany(
+              {
+                productId: _id,
+              },
+              updater,
+            );
+          }
         }
-      });
-
-      // update product
-      await productsCollection.findOneAndUpdate(
-        {
-          _id: product._id,
-        },
-        {
-          $set: {
-            selectedOptionsSlugs,
-          },
-        },
-      );
-
-      // update shop products
-      await shopProductsCollection.updateMany(
-        {
-          productId: product._id,
-        },
-        {
-          $set: {
-            selectedOptionsSlugs,
-          },
-        },
-      );
+      }
+      const end = new Date().getTime() - start;
+      console.log(attributesCount, ' time ', Math.round(Math.round(end / 1000) / 60), 'min');
     }
 
     // disconnect form db

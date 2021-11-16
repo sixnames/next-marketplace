@@ -7,7 +7,7 @@ import * as React from 'react';
 
 export interface CompanyRubricCategoriesListInterface {
   rubric: RubricInterface;
-  currentCompany?: CompanyInterface | null;
+  pageCompany: CompanyInterface;
   routeBasePath: string;
 }
 
@@ -22,8 +22,8 @@ const CompanyRubricCategoriesList: React.FC<CompanyRubricCategoriesListInterface
       return (
         <div>
           {image ? (
-            <div>
-              <div className='relative pb-[100%] w-[80px]'>
+            <div className='w-[60px] h-[60px] mb-4'>
+              <div className='relative pb-[100%] w-full'>
                 <WpImage
                   url={image}
                   alt={`${name}`}

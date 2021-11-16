@@ -1,5 +1,5 @@
 import addZero from 'add-zero';
-import { DEFAULT_CITY, ID_COUNTER_DIGITS } from '../../../../config/common';
+import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, ID_COUNTER_DIGITS } from '../../../../config/common';
 import { ShopProductModel } from '../../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 import products from '../products/products';
@@ -10,22 +10,28 @@ import rubrics from '../rubrics/rubrics';
 const maxProductsCountForShop = 50;
 const shopProducts: ShopProductModel[] = [];
 
-shops.forEach((shop) => {
-  if (shop.itemId === '000003') {
-    return;
-  }
-  rubrics.forEach((rubric) => {
-    const rubricProducts = products.filter(({ rubricSlug }) => rubricSlug === rubric.slug);
+rubrics.forEach((rubric) => {
+  const rubricProducts = products.filter(({ rubricSlug }) => rubricSlug === rubric.slug);
+  const isWhiskey = rubric.slug === 'viski';
 
-    for (let i = 0; i < maxProductsCountForShop; i = i + 1) {
-      const product = rubricProducts[i];
-      const productId = product._id;
+  for (let i = 0; i < maxProductsCountForShop; i = i + 1) {
+    const product = rubricProducts[i];
+    const productId = product._id;
 
-      const withConnection = productConnectionItems.some((connectionItem) => {
-        return connectionItem.productId.equals(productId);
-      });
+    const withConnection = productConnectionItems.some((connectionItem) => {
+      return connectionItem.productId.equals(productId);
+    });
 
+    shops.forEach((shop) => {
       if (product) {
+        if (shop.slug === 'shop_c') {
+          return;
+        }
+
+        if (isWhiskey && shop.slug !== 'shop_a') {
+          return;
+        }
+
         const available = 5;
         const withDiscount = i % 2 === 0;
         const price = Math.round(Math.random() * 1000) * 100;
@@ -65,19 +71,19 @@ shops.forEach((shop) => {
           createdAt: new Date(),
           updatedAt: new Date(),
           views: {
-            default: {
+            [DEFAULT_COMPANY_SLUG]: {
               msk: withConnection ? i : 1,
             },
           },
           priorities: {
-            default: {
+            [DEFAULT_COMPANY_SLUG]: {
               msk: withConnection ? i : 1,
             },
           },
         });
       }
-    }
-  });
+    });
+  }
 });
 
 // @ts-ignore

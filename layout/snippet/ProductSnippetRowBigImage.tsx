@@ -81,7 +81,7 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
                 url={mainImage}
                 alt={`${snippetTitle}`}
                 title={`${snippetTitle}`}
-                width={260}
+                width={100}
                 className='absolute inset-0 w-full h-full object-contain'
               />
             </div>

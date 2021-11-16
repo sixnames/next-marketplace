@@ -1094,6 +1094,7 @@ export const getCatalogueData = async ({
                   as: 'product',
                   let: {
                     productId: '$_id',
+                    shopProductsIds: '$shopProductsIds',
                   },
                   pipeline: [
                     {
@@ -1101,6 +1102,11 @@ export const getCatalogueData = async ({
                         $expr: {
                           $eq: ['$$productId', '$_id'],
                         },
+                      },
+                    },
+                    {
+                      $addFields: {
+                        shopProductsIds: '$$shopProductsIds',
                       },
                     },
 

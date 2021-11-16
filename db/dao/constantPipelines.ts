@@ -1034,6 +1034,7 @@ export const shopProductFieldsPipeline = (idFieldName: string) => {
         as: 'product',
         let: {
           productId: idFieldName,
+          shopProductsIds: '$shopProductsIds',
         },
         pipeline: [
           {
@@ -1046,6 +1047,11 @@ export const shopProductFieldsPipeline = (idFieldName: string) => {
           {
             $project: {
               descriptionI18n: false,
+            },
+          },
+          {
+            $addFields: {
+              shopProductsIds: '$$shopProductsIds',
             },
           },
 

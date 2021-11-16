@@ -172,7 +172,7 @@ const HomeRoute: React.FC<HomeRouteInterface> = ({
         {sliderItems.length > 0 ? (
           <div className='sm:mb-20 mb-14'>
             <ImageGallery
-              showBullets
+              showBullets={sliderItems.length > 1}
               autoPlay
               slideInterval={autoplaySpeed}
               showFullscreenButton={false}

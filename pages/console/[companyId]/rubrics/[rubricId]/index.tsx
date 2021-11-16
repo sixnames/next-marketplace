@@ -6,13 +6,15 @@ import {
   CATALOGUE_SEO_TEXT_POSITION_TOP,
   ROUTE_CONSOLE,
 } from 'config/common';
-import { COL_RUBRIC_DESCRIPTIONS, COL_RUBRIC_SEO, COL_RUBRICS } from 'db/collectionNames';
-import { RubricModel, RubricSeoModel } from 'db/dbModels';
+import { COL_RUBRICS } from 'db/collectionNames';
+import { RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
+import { RubricInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getRubricSeoText } from 'lib/rubricUtils';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -26,8 +28,8 @@ interface RubricDetailsInterface extends CompanyRubricDetailsInterface {}
 
 const RubricDetails: React.FC<RubricDetailsInterface> = ({
   rubric,
-  seoTop,
-  seoBottom,
+  seoDescriptionBottom,
+  seoDescriptionTop,
   pageCompany,
   routeBasePath,
 }) => {
@@ -52,8 +54,8 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
         routeBasePath={routeBasePath}
         rubric={rubric}
         pageCompany={pageCompany}
-        seoBottom={seoBottom}
-        seoTop={seoTop}
+        seoDescriptionTop={seoDescriptionTop}
+        seoDescriptionBottom={seoDescriptionBottom}
       />
     </CmsRubricLayout>
   );
@@ -75,7 +77,6 @@ export const getServerSideProps = async (
   const { query } = context;
   const { db } = await getDatabase();
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-  const rubricSeoCollection = db.collection<RubricSeoModel>(COL_RUBRIC_SEO);
 
   const { props } = await getConsoleInitialData({ context });
   if (!props || !query.rubricId) {
@@ -86,71 +87,12 @@ export const getServerSideProps = async (
   const companySlug = props.layoutProps.pageCompany.slug;
 
   const initialRubrics = await rubricsCollection
-    .aggregate([
+    .aggregate<RubricInterface>([
       {
         $match: {
           _id: new ObjectId(`${query.rubricId}`),
         },
       },
-
-      // get top seo text
-      {
-        $lookup: {
-          from: COL_RUBRIC_DESCRIPTIONS,
-          as: 'seoDescriptionTop',
-          let: {
-            rubricId: '$_id',
-          },
-          pipeline: [
-            {
-              $match: {
-                position: CATALOGUE_SEO_TEXT_POSITION_TOP,
-                companySlug,
-                $expr: {
-                  $eq: ['$$rubricId', '$rubricId'],
-                },
-              },
-            },
-          ],
-        },
-      },
-      {
-        $addFields: {
-          seoDescriptionTop: {
-            $arrayElemAt: ['$seoDescriptionTop', 0],
-          },
-        },
-      },
-
-      // get bottom seo text
-      {
-        $lookup: {
-          from: COL_RUBRIC_DESCRIPTIONS,
-          as: 'seoDescriptionBottom',
-          let: {
-            rubricId: '$_id',
-          },
-          pipeline: [
-            {
-              $match: {
-                position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
-                companySlug,
-                $expr: {
-                  $eq: ['$$rubricId', '$rubricId'],
-                },
-              },
-            },
-          ],
-        },
-      },
-      {
-        $addFields: {
-          seoDescriptionBottom: {
-            $arrayElemAt: ['$seoDescriptionBottom', 0],
-          },
-        },
-      },
-
       {
         $project: {
           attributes: false,
@@ -167,32 +109,38 @@ export const getServerSideProps = async (
     };
   }
 
-  const seoTop = await rubricSeoCollection.findOne({
-    rubricId: initialRubric._id,
-    position: CATALOGUE_SEO_TEXT_POSITION_TOP,
-    categoryId: null,
-    companySlug,
-  });
-
-  const seoBottom = await rubricSeoCollection.findOne({
-    rubricId: initialRubric._id,
-    position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
-    categoryId: null,
-    companySlug,
-  });
-
   const { sessionLocale } = props;
-  const rawRubric = {
+  const rubric = {
     ...initialRubric,
     name: getFieldStringLocale(initialRubric.nameI18n, sessionLocale),
   };
 
+  const seoDescriptionTop = await getRubricSeoText({
+    rubricSlug: rubric.slug,
+    rubricId: rubric._id,
+    companySlug,
+    position: CATALOGUE_SEO_TEXT_POSITION_TOP,
+  });
+
+  const seoDescriptionBottom = await getRubricSeoText({
+    rubricSlug: rubric.slug,
+    rubricId: rubric._id,
+    companySlug,
+    position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+  });
+
+  if (!seoDescriptionBottom || !seoDescriptionTop) {
+    return {
+      notFound: true,
+    };
+  }
+
   return {
     props: {
       ...props,
-      rubric: castDbData(rawRubric),
-      seoTop: castDbData(seoTop),
-      seoBottom: castDbData(seoBottom),
+      seoDescriptionBottom: castDbData(seoDescriptionBottom),
+      seoDescriptionTop: castDbData(seoDescriptionTop),
+      rubric: castDbData(rubric),
       routeBasePath: `${ROUTE_CONSOLE}/${props.layoutProps.pageCompany._id}`,
       pageCompany: castDbData(props.layoutProps.pageCompany),
     },

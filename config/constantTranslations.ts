@@ -112,11 +112,11 @@ export const constantTranslations = {
   suppliers: {
     priceVariant: {
       [SUPPLIER_PRICE_VARIANT_DISCOUNT]: {
-        [DEFAULT_LOCALE]: 'Диллерская скидка',
+        [DEFAULT_LOCALE]: 'Дилерская скидка',
         [SECONDARY_LOCALE]: 'Dealer discount',
       },
       [SUPPLIER_PRICE_VARIANT_CHARGE]: {
-        [DEFAULT_LOCALE]: 'Диллерская наценка',
+        [DEFAULT_LOCALE]: 'Дилерская наценка',
         [SECONDARY_LOCALE]: 'Dealer charge',
       },
     },

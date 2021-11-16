@@ -1,7 +1,7 @@
 import Breadcrumbs from 'components/Breadcrumbs';
 import Inner from 'components/Inner';
 import PageEditor from 'components/PageEditor';
-import { PAGE_STATE_PUBLISHED } from 'config/common';
+import { ISR_FIVE_SECONDS, PAGE_STATE_PUBLISHED } from 'config/common';
 import { COL_PAGES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { PageInterface } from 'db/uiInterfaces';
@@ -86,6 +86,7 @@ export async function getStaticProps(
   };
 
   return {
+    revalidate: ISR_FIVE_SECONDS,
     props: {
       ...props,
       page: castDbData(page),

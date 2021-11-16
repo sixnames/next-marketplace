@@ -24,6 +24,7 @@ export interface GetConfigTemplatesInterface {
   siteName?: string;
   phone?: string[];
   email?: string[];
+  visibleCategoriesInNavDropdown?: string[];
   companySlug: string;
   foundationYear?: string;
   address?: string;
@@ -37,6 +38,7 @@ export function getConfigTemplates({
   companySlug,
   foundationYear = `${new Date().getFullYear()}`,
   address,
+  visibleCategoriesInNavDropdown,
 }: GetConfigTemplatesInterface): ConfigModel[] {
   return [
     // Site globals
@@ -594,12 +596,12 @@ export function getConfigTemplates({
       group: 'ui',
       variant: CONFIG_VARIANT_CATEGORIES_TREE,
       slug: 'visibleCategoriesInNavDropdown',
-      name: 'Видимые категории в выпадающем меню',
+      name: 'Видимые категории в выпадающем меню и шапке каталога',
       multi: false,
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: [],
+          [DEFAULT_LOCALE]: visibleCategoriesInNavDropdown || [],
         },
       },
     },

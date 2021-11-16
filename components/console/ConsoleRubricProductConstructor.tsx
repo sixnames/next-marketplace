@@ -2,7 +2,7 @@ import Accordion from 'components/Accordion';
 import Button from 'components/button/Button';
 import Inner from 'components/Inner';
 import PageEditor from 'components/PageEditor';
-import { DEFAULT_CITY } from 'config/common';
+import { DEFAULT_CITY, REQUEST_METHOD_POST } from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import { ProductCardContentModel } from 'db/dbModels';
 import { ProductInterface } from 'db/uiInterfaces';
@@ -81,7 +81,7 @@ const ConsoleRubricProductConstructor: React.FC<ConsoleRubricProductConstructorI
                             const responseFetch = await fetch(
                               '/api/product/add-card-content-asset',
                               {
-                                method: 'POST',
+                                method: REQUEST_METHOD_POST,
                                 body: formData,
                               },
                             );

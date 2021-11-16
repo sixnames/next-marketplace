@@ -6,6 +6,7 @@ import PageEditor from 'components/PageEditor';
 import WpTooltip from 'components/WpTooltip';
 import {
   FILTER_SEPARATOR,
+  ISR_FIVE_SECONDS,
   REQUEST_METHOD_POST,
   ROUTE_BLOG_WITH_PAGE,
   SORT_DESC,
@@ -465,6 +466,7 @@ export const getStaticProps = async (
   };
 
   return {
+    revalidate: ISR_FIVE_SECONDS,
     props: {
       ...props,
       post: castDbData(post),

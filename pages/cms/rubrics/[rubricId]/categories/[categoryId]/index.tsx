@@ -1,5 +1,6 @@
 import Button from 'components/button/Button';
 import FixedButtons from 'components/button/FixedButtons';
+import { CategoryDescriptionConstructor } from 'components/company/CompanyRubricCategoryDetails';
 import WpIconUpload from 'components/FormElements/Upload/WpIconUpload';
 import WpImageUpload from 'components/FormElements/Upload/WpImageUpload';
 import CategoryMainFields from 'components/FormTemplates/CategoryMainFields';
@@ -11,14 +12,8 @@ import {
   GENDER_ENUMS,
   ROUTE_CMS,
 } from 'config/common';
-import {
-  COL_CATEGORIES,
-  COL_CATEGORY_DESCRIPTIONS,
-  COL_ICONS,
-  COL_RUBRIC_SEO,
-  COL_RUBRICS,
-} from 'db/collectionNames';
-import { OptionVariantsModel, RubricSeoModel } from 'db/dbModels';
+import { COL_CATEGORIES, COL_ICONS, COL_RUBRICS } from 'db/collectionNames';
+import { CategoryDescriptionModel, OptionVariantsModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { CategoryInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
@@ -29,6 +24,7 @@ import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCategoryLayout from 'layout/cms/CmsCategoryLayout';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getCategorySeoText } from 'lib/rubricUtils';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -37,16 +33,17 @@ import { updateCategorySchema } from 'validation/categorySchema';
 
 interface CategoryDetailsInterface {
   category: CategoryInterface;
-  seoTop?: RubricSeoModel | null;
-  seoBottom?: RubricSeoModel | null;
+  seoDescriptionTop: CategoryDescriptionModel;
+  seoDescriptionBottom: CategoryDescriptionModel;
   companySlug: string;
 }
 
 const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
   category,
   companySlug,
-  seoTop,
-  seoBottom,
+
+  seoDescriptionBottom,
+  seoDescriptionTop,
 }) => {
   const validationSchema = useValidationSchema({
     schema: updateCategorySchema,
@@ -74,8 +71,6 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
     gender,
     image,
     variants,
-    seoDescriptionTop,
-    seoDescriptionBottom,
     replaceParentNameInCatalogueTitle,
   } = category;
   const variantKeys = Object.keys(variants);
@@ -84,8 +79,8 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
     categoryId: _id,
     rubricId,
     nameI18n,
-    textBottomI18n: seoDescriptionBottom?.textI18n,
-    textTopI18n: seoDescriptionTop?.textI18n,
+    textBottom: seoDescriptionBottom.content,
+    textTop: seoDescriptionTop.content,
     gender: gender ? (`${gender}` as Gender) : null,
     replaceParentNameInCatalogueTitle,
     companySlug,
@@ -254,10 +249,28 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
             });
           }}
         >
-          {() => {
+          {({ values, setFieldValue }) => {
             return (
               <Form>
-                <CategoryMainFields seoTop={seoTop} seoBottom={seoBottom} />
+                <CategoryMainFields />
+
+                <CategoryDescriptionConstructor
+                  label={'SEO текст вверху каталога'}
+                  name={'textTop'}
+                  categoryId={`${category._id}`}
+                  descriptionId={`${seoDescriptionTop._id}`}
+                  setFieldValue={setFieldValue}
+                  values={values}
+                />
+
+                <CategoryDescriptionConstructor
+                  label={'SEO текст внизу каталога'}
+                  name={'textBottom'}
+                  categoryId={`${category._id}`}
+                  descriptionId={`${seoDescriptionBottom._id}`}
+                  setFieldValue={setFieldValue}
+                  values={values}
+                />
 
                 <FixedButtons>
                   <Button type={'submit'} testId={'category-submit'} size={'small'}>
@@ -289,7 +302,6 @@ export const getServerSideProps = async (
   const { query } = context;
   const { db } = await getDatabase();
   const categoriesCollection = db.collection<CategoryInterface>(COL_CATEGORIES);
-  const rubricSeoCollection = db.collection<RubricSeoModel>(COL_RUBRIC_SEO);
 
   const { props } = await getAppInitialData({ context });
   if (!props || !query.categoryId) {
@@ -345,64 +357,6 @@ export const getServerSideProps = async (
         },
       },
 
-      // get top seo text
-      {
-        $lookup: {
-          from: COL_CATEGORY_DESCRIPTIONS,
-          as: 'seoDescriptionTop',
-          let: {
-            categoryId: '$_id',
-          },
-          pipeline: [
-            {
-              $match: {
-                position: CATALOGUE_SEO_TEXT_POSITION_TOP,
-                companySlug,
-                $expr: {
-                  $eq: ['$$categoryId', '$categoryId'],
-                },
-              },
-            },
-          ],
-        },
-      },
-      {
-        $addFields: {
-          seoDescriptionTop: {
-            $arrayElemAt: ['$seoDescriptionTop', 0],
-          },
-        },
-      },
-
-      // get bottom seo text
-      {
-        $lookup: {
-          from: COL_CATEGORY_DESCRIPTIONS,
-          as: 'seoDescriptionBottom',
-          let: {
-            categoryId: '$_id',
-          },
-          pipeline: [
-            {
-              $match: {
-                position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
-                companySlug,
-                $expr: {
-                  $eq: ['$$categoryId', '$categoryId'],
-                },
-              },
-            },
-          ],
-        },
-      },
-      {
-        $addFields: {
-          seoDescriptionBottom: {
-            $arrayElemAt: ['$seoDescriptionBottom', 0],
-          },
-        },
-      },
-
       {
         $addFields: {
           icon: {
@@ -434,25 +388,33 @@ export const getServerSideProps = async (
       : null,
   };
 
-  const seoTop = await rubricSeoCollection.findOne({
-    categoryId: category._id,
-    position: CATALOGUE_SEO_TEXT_POSITION_TOP,
+  const seoDescriptionTop = await getCategorySeoText({
     companySlug,
+    categoryId: category._id,
+    categorySlug: category.slug,
+    position: CATALOGUE_SEO_TEXT_POSITION_TOP,
   });
 
-  const seoBottom = await rubricSeoCollection.findOne({
-    categoryId: category._id,
-    position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+  const seoDescriptionBottom = await getCategorySeoText({
     companySlug,
+    categoryId: category._id,
+    categorySlug: category.slug,
+    position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   });
+
+  if (!seoDescriptionBottom || !seoDescriptionTop) {
+    return {
+      notFound: true,
+    };
+  }
 
   return {
     props: {
       ...props,
+      seoDescriptionBottom: castDbData(seoDescriptionBottom),
+      seoDescriptionTop: castDbData(seoDescriptionTop),
       category: castDbData(category),
-      seoTop: castDbData(seoTop),
-      seoBottom: castDbData(seoBottom),
-      companySlug: DEFAULT_COMPANY_SLUG,
+      companySlug,
     },
   };
 };

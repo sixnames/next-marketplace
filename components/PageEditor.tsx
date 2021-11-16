@@ -106,6 +106,10 @@ const PageEditor: React.FC<PageEditorInterface> = ({ value, readOnly, imageUploa
     });
   }, [languagesList]);
 
+  if (readOnly && value && JSON.stringify(value) === JSON.stringify(PAGE_EDITOR_DEFAULT_VALUE)) {
+    return null;
+  }
+
   return (
     <Editor
       cellSpacing={30}

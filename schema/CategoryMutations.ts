@@ -1,18 +1,18 @@
+import { deleteUpload } from 'lib/assetUtils/assetUtils';
 import { getNextItemId } from 'lib/itemIdUtils';
 import { deleteDocumentsTree, getParentTreeIds } from 'lib/optionsUtils';
-import { checkCategorySeoTextUniqueness } from 'lib/textUniquenessUtils';
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   AttributesGroupModel,
   ProductAttributeModel,
-  ProductModel,
   CategoryModel,
   CategoryPayloadModel,
-  ShopProductModel,
   RubricModel,
   ObjectIdModel,
   CategoryDescriptionModel,
+  CompanyModel,
+  ConfigModel,
 } from 'db/dbModels';
 import {
   getOperationPermission,
@@ -23,15 +23,23 @@ import { getDatabase } from 'db/mongodb';
 import {
   COL_ATTRIBUTES_GROUPS,
   COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCTS,
   COL_RUBRICS,
   COL_CATEGORIES,
-  COL_SHOP_PRODUCTS,
   COL_CATEGORY_DESCRIPTIONS,
+  COL_COMPANIES,
+  COL_CONFIGS,
 } from 'db/collectionNames';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
-import { CATEGORY_SLUG_PREFIX, DEFAULT_COUNTERS_OBJECT } from 'config/common';
+import {
+  CATEGORY_SLUG_PREFIX,
+  CONFIG_VARIANT_CATEGORIES_TREE,
+  DEFAULT_CITY,
+  DEFAULT_COMPANY_SLUG,
+  DEFAULT_COUNTERS_OBJECT,
+  DEFAULT_LOCALE,
+  FILTER_SEPARATOR,
+} from 'config/common';
 import {
   addAttributesGroupToCategorySchema,
   createCategorySchema,
@@ -52,10 +60,7 @@ export const CategoryPayload = objectType({
 export const CreateCategoryInput = inputObjectType({
   name: 'CreateCategoryInput',
   definition(t) {
-    t.nonNull.string('companySlug');
     t.nonNull.json('nameI18n');
-    t.json('textTopI18n');
-    t.json('textBottomI18n');
     t.objectId('parentId');
     t.nonNull.objectId('rubricId');
     t.nonNull.json('variants');
@@ -72,8 +77,8 @@ export const UpdateCategoryInput = inputObjectType({
     t.nonNull.string('companySlug');
     t.nonNull.objectId('categoryId');
     t.nonNull.json('nameI18n');
-    t.json('textTopI18n');
-    t.json('textBottomI18n');
+    t.json('textTop');
+    t.json('textBottom');
     t.nonNull.objectId('rubricId');
     t.nonNull.json('variants');
     t.boolean('replaceParentNameInCatalogueTitle');
@@ -153,9 +158,9 @@ export const CategoryMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
           const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
+          const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
+          const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-          const categoryDescriptionsCollection =
-            db.collection<CategoryDescriptionModel>(COL_CATEGORY_DESCRIPTIONS);
           const { input } = args;
 
           // Check rubric availability
@@ -202,11 +207,10 @@ export const CategoryMutations = extendType({
           }
 
           // Create category
-          const { companySlug, textBottomI18n, textTopI18n, ...values } = input;
           const slug = await getNextItemId(COL_CATEGORIES);
           const createdCategoryId = new ObjectId();
           const createdCategoryResult = await categoriesCollection.insertOne({
-            ...values,
+            ...input,
             parentTreeIds: [...parentTreeIds, createdCategoryId],
             slug: `${CATEGORY_SLUG_PREFIX}${slug}`,
             attributesGroupIds: [],
@@ -230,31 +234,62 @@ export const CategoryMutations = extendType({
               message: await getApiMessage('categories.create.error'),
             };
           }
-          await checkCategorySeoTextUniqueness({
-            category: createdCategory,
-            textTopI18n: input.textTopI18n,
-            textBottomI18n: input.textBottomI18n,
-            companySlug,
-          });
 
-          // create seo texts
-          if (textTopI18n) {
-            await categoryDescriptionsCollection.insertOne({
+          // update company configs with new category
+          const companies = await companiesCollection
+            .find(
+              {},
+              {
+                projection: {
+                  slug: true,
+                },
+              },
+            )
+            .toArray();
+          const companySlugs = companies.reduce(
+            (acc: string[], { slug }) => {
+              return [...acc, slug];
+            },
+            [DEFAULT_COMPANY_SLUG],
+          );
+          for await (const companySlug of companySlugs) {
+            const configSlug = 'visibleCategoriesInNavDropdown';
+            const configValue = `${rubric._id}${FILTER_SEPARATOR}${createdCategory._id}`;
+
+            const config = await configsCollection.findOne({
+              slug: configSlug,
               companySlug,
-              position: 'top',
-              categorySlug: slug,
-              categoryId: createdCategory._id,
-              textI18n: textTopI18n,
             });
-          }
-          if (textBottomI18n) {
-            await categoryDescriptionsCollection.insertOne({
-              companySlug,
-              position: 'bottom',
-              categorySlug: slug,
-              categoryId: createdCategory._id,
-              textI18n: textBottomI18n,
-            });
+
+            if (!config) {
+              const newConfig = {
+                companySlug,
+                group: 'ui',
+                variant: CONFIG_VARIANT_CATEGORIES_TREE,
+                slug: configSlug,
+                name: 'Видимые категории в выпадающем меню и шапке каталога',
+                multi: false,
+                acceptedFormats: [],
+                cities: {
+                  [DEFAULT_CITY]: {
+                    [DEFAULT_LOCALE]: [configValue],
+                  },
+                },
+              };
+              await configsCollection.insertOne(newConfig);
+              continue;
+            }
+
+            await configsCollection.findOneAndUpdate(
+              {
+                _id: config._id,
+              },
+              {
+                $push: {
+                  [`cities.${DEFAULT_CITY}.${DEFAULT_LOCALE}`]: configValue,
+                },
+              },
+            );
           }
 
           return {
@@ -309,8 +344,7 @@ export const CategoryMutations = extendType({
           const categoryDescriptionsCollection =
             db.collection<CategoryDescriptionModel>(COL_CATEGORY_DESCRIPTIONS);
           const { input } = args;
-          const { categoryId, rubricId, companySlug, textTopI18n, textBottomI18n, ...values } =
-            input;
+          const { categoryId, rubricId, companySlug, textTop, textBottom, ...values } = input;
 
           // Check rubric availability
           const rubric = await rubricsCollection.findOne({
@@ -375,16 +409,68 @@ export const CategoryMutations = extendType({
             };
           }
 
-          // check text uniqueness
-          await checkCategorySeoTextUniqueness({
-            category,
-            textTopI18n,
-            textBottomI18n,
-            companySlug,
-          });
+          // update seo text
+          if (textTop) {
+            const topText = await categoryDescriptionsCollection.findOne({
+              companySlug,
+              position: 'top',
+              categoryId: updatedCategory._id,
+            });
+
+            if (!topText) {
+              await categoryDescriptionsCollection.insertOne({
+                companySlug,
+                position: 'top',
+                categoryId: updatedCategory._id,
+                categorySlug: updatedCategory.slug,
+                content: textTop || {},
+                assetKeys: [],
+              });
+            } else {
+              await categoryDescriptionsCollection.findOneAndUpdate(
+                {
+                  _id: topText._id,
+                },
+                {
+                  $set: {
+                    content: textTop || {},
+                  },
+                },
+              );
+            }
+          }
+          if (textBottom) {
+            const topBottom = await categoryDescriptionsCollection.findOne({
+              companySlug,
+              position: 'bottom',
+              categoryId: updatedCategory._id,
+            });
+
+            if (!topBottom) {
+              await categoryDescriptionsCollection.insertOne({
+                companySlug,
+                position: 'bottom',
+                categoryId: updatedCategory._id,
+                categorySlug: updatedCategory.slug,
+                content: textBottom || {},
+                assetKeys: [],
+              });
+            } else {
+              await categoryDescriptionsCollection.findOneAndUpdate(
+                {
+                  _id: topBottom._id,
+                },
+                {
+                  $set: {
+                    content: textBottom || {},
+                  },
+                },
+              );
+            }
+          }
 
           // update seo text
-          if (textTopI18n) {
+          if (textTop) {
             await categoryDescriptionsCollection.findOneAndUpdate(
               {
                 companySlug,
@@ -397,7 +483,7 @@ export const CategoryMutations = extendType({
                   position: 'top',
                   categoryId: updatedCategory._id,
                   categorySlug: updatedCategory.slug,
-                  textI18n: textTopI18n || {},
+                  textI18n: textTop || {},
                 },
               },
               {
@@ -405,7 +491,7 @@ export const CategoryMutations = extendType({
               },
             );
           }
-          if (textBottomI18n) {
+          if (textBottom) {
             await categoryDescriptionsCollection.findOneAndUpdate(
               {
                 companySlug,
@@ -418,7 +504,7 @@ export const CategoryMutations = extendType({
                   position: 'bottom',
                   categoryId: updatedCategory._id,
                   categorySlug: updatedCategory.slug,
-                  textI18n: textBottomI18n || {},
+                  textI18n: textBottom || {},
                 },
               },
               {
@@ -456,8 +542,8 @@ export const CategoryMutations = extendType({
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
         const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
-        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-        const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+        const categoryDescriptionsCollection =
+          db.collection<CategoryDescriptionModel>(COL_CATEGORY_DESCRIPTIONS);
 
         const session = client.startSession();
 
@@ -495,21 +581,20 @@ export const CategoryMutations = extendType({
               return;
             }
 
-            // Delete category products
-            const removedShopProductsResult = await shopProductsCollection.deleteMany({
-              categoryId: _id,
-            });
-            const removedProductsResult = await productsCollection.deleteMany({
-              categoryId: _id,
-            });
-            if (!removedProductsResult.acknowledged || !removedShopProductsResult.acknowledged) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage('categories.deleteProduct.error'),
-              };
-              await session.abortTransaction();
-              return;
+            // Delete descriptions
+            const descriptions = await categoryDescriptionsCollection
+              .find({
+                categoryId: category._id,
+              })
+              .toArray();
+            for await (const description of descriptions) {
+              for await (const filePath of description.assetKeys) {
+                await deleteUpload(filePath);
+              }
             }
+            await categoryDescriptionsCollection.deleteMany({
+              categoryId: category._id,
+            });
 
             // Delete category
             const removedCategoriesResult = await deleteDocumentsTree({

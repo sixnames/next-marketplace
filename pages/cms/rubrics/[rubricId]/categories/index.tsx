@@ -5,7 +5,7 @@ import Inner from 'components/Inner';
 import { CreateCategoryModalInterface } from 'components/Modal/CreateCategoryModal';
 import RequestError from 'components/RequestError';
 import WpImage from 'components/WpImage';
-import { DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE, ROUTE_CMS, SORT_ASC } from 'config/common';
+import { DEFAULT_LOCALE, ROUTE_CMS, SORT_ASC } from 'config/common';
 import { CONFIRM_MODAL, CREATE_CATEGORY_MODAL } from 'config/modalVariants';
 import { COL_CATEGORIES, COL_ICONS, COL_RUBRICS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
@@ -24,13 +24,9 @@ import * as React from 'react';
 
 interface RubricCategoriesConsumerInterface {
   rubric: RubricInterface;
-  companySlug: string;
 }
 
-const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
-  rubric,
-  companySlug,
-}) => {
+const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({ rubric }) => {
   const { showModal, onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
     withModal: true,
     reload: true,
@@ -80,7 +76,6 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
                   showModal<CreateCategoryModalInterface>({
                     variant: CREATE_CATEGORY_MODAL,
                     props: {
-                      companySlug,
                       parentId: `${category._id}`,
                       rubricId: `${rubric._id}`,
                     },
@@ -123,7 +118,7 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
         </div>
       );
     },
-    [companySlug, deleteCategoryMutation, rubric._id, showLoading, showModal],
+    [deleteCategoryMutation, rubric._id, showLoading, showModal],
   );
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -169,7 +164,6 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
                 showModal<CreateCategoryModalInterface>({
                   variant: CREATE_CATEGORY_MODAL,
                   props: {
-                    companySlug,
                     rubricId: `${rubric._id}`,
                   },
                 });
@@ -284,7 +278,6 @@ export const getServerSideProps = async (
   const sortedCategories = sortByName(categories);
 
   const payload: RubricCategoriesConsumerInterface = {
-    companySlug: DEFAULT_COMPANY_SLUG,
     rubric: {
       ...rubric,
       name: getFieldStringLocale(rubric?.nameI18n, locale),

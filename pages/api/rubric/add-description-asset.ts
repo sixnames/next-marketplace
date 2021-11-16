@@ -1,6 +1,6 @@
-import { ASSETS_DIST_PRODUCT_CARD_CONTENT } from 'config/common';
-import { COL_PRODUCT_CARD_CONTENTS, COL_PRODUCTS } from 'db/collectionNames';
-import { ProductCardContentModel, ProductModel } from 'db/dbModels';
+import { ASSETS_DIST_RUBRIC_DESCRIPTIONS } from 'config/common';
+import { COL_RUBRIC_DESCRIPTIONS, COL_RUBRICS } from 'db/collectionNames';
+import { RubricDescriptionModel, RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { storeUploads } from 'lib/assetUtils/assetUtils';
 import { parseRestApiFormData } from 'lib/restApi';
@@ -24,34 +24,34 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (!formData || !formData.files || !formData.fields) {
     res.status(500).send({
       success: false,
-      message: await getApiMessage('products.update.error'),
+      message: await getApiMessage('rubrics.update.error'),
     });
     return;
   }
 
   const { fields, files } = formData;
-  const { productId, productCardContentId } = fields;
-  if (!productId || !productCardContentId) {
+  const { rubricId, descriptionId } = fields;
+  if (!rubricId || !descriptionId) {
     res.status(500).send({
       success: false,
-      message: await getApiMessage('products.update.notFound'),
+      message: await getApiMessage('rubrics.update.notFound'),
     });
     return;
   }
 
   // get page
   const { db } = await getDatabase();
-  const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-  const productCardContentsCollection =
-    db.collection<ProductCardContentModel>(COL_PRODUCT_CARD_CONTENTS);
+  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+  const rubricDescriptionsCollection =
+    db.collection<RubricDescriptionModel>(COL_RUBRIC_DESCRIPTIONS);
 
-  const product = await productsCollection.findOne({
-    _id: new ObjectId(`${productId}`),
+  const rubric = await rubricsCollection.findOne({
+    _id: new ObjectId(`${rubricId}`),
   });
-  if (!product) {
+  if (!rubric) {
     res.status(500).send({
       success: false,
-      message: await getApiMessage('products.update.notFound'),
+      message: await getApiMessage('rubrics.update.notFound'),
     });
     return;
   }
@@ -59,22 +59,22 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   // upload asset
   const assets = await storeUploads({
     files,
-    dist: ASSETS_DIST_PRODUCT_CARD_CONTENT,
-    dirName: `${product.itemId}`,
+    dist: ASSETS_DIST_RUBRIC_DESCRIPTIONS,
+    dirName: rubric._id.toHexString(),
   });
   if (!assets) {
     res.status(500).send({
       success: false,
-      message: await getApiMessage('products.update.error'),
+      message: await getApiMessage('rubrics.update.error'),
     });
     return;
   }
   const asset = assets[0];
 
-  // update assets
-  const updatedProductCardContentResult = await productCardContentsCollection.findOneAndUpdate(
+  // update description assets
+  const updatedDescriptionResult = await rubricDescriptionsCollection.findOneAndUpdate(
     {
-      _id: new ObjectId(`${productCardContentId}`),
+      _id: new ObjectId(`${descriptionId}`),
     },
     {
       $addToSet: {
@@ -82,15 +82,16 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       },
     },
     {
+      upsert: true,
       returnDocument: 'after',
     },
   );
-  const updatedProductCardContent = updatedProductCardContentResult.value;
-  if (!updatedProductCardContentResult.ok || !updatedProductCardContent) {
+  const updatedDescription = updatedDescriptionResult.value;
+  if (!updatedDescriptionResult.ok || !updatedDescription) {
     if (!assets) {
       res.status(500).send({
         success: false,
-        message: await getApiMessage('products.update.error'),
+        message: await getApiMessage('rubrics.update.error'),
       });
       return;
     }
@@ -98,7 +99,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   res.status(200).send({
     success: true,
-    message: await getApiMessage('products.update.success'),
+    message: await getApiMessage('rubrics.update.success'),
     url: asset.url,
   });
 };

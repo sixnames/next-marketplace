@@ -688,6 +688,7 @@ export interface SsrConfigsInterface {
   yaVerification: string;
   yaMetrica: string;
   googleAnalytics: string;
+  isOneShopCompany: boolean;
 
   // Site ui
   siteLogo: string;

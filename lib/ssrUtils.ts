@@ -30,6 +30,7 @@ import {
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
+  COL_SHOPS,
 } from 'db/collectionNames';
 import { noImageStage } from 'db/dao/constantPipelines';
 import { getPageSessionUser, SessionUserPayloadInterface } from 'db/dao/user/getPageSessionUser';
@@ -41,6 +42,7 @@ import {
   LanguageModel,
   ObjectIdModel,
   RubricModel,
+  ShopModel,
   ShopProductModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -563,6 +565,13 @@ export const getSsrConfigs = async ({
   db,
 }: GetSsrConfigsInterface): Promise<SsrConfigsInterface> => {
   const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+  const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
+  const companyShopsCount = await shopsCollection.countDocuments({
+    companySlug,
+    citySlug,
+  });
+  const minimalShopsCount = 2;
+  const isOneShopCompany = companyShopsCount < minimalShopsCount;
 
   const projectConfigs = await configsCollection
     .aggregate<ConfigModel>([
@@ -862,6 +871,7 @@ export const getSsrConfigs = async ({
   });
 
   return {
+    isOneShopCompany,
     showReservationDate,
     mapMarkerDarkTheme,
     mapMarkerLightTheme,

@@ -841,6 +841,7 @@ export interface ShopModel extends BaseModel, TimestampModel {
   contacts: ContactsModel;
   address: AddressModel;
   companyId: ObjectIdModel;
+  companySlug: string;
   mainImage: string;
   token?: string | null;
   rating?: number | null;

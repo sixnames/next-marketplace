@@ -10,6 +10,7 @@ interface ConfigContextInterface {
 const ConfigContext = React.createContext<ConfigContextInterface>({
   cities: [],
   configs: {
+    isOneShopCompany: true,
     siteName: '',
     siteFoundationYear: 0,
     yaVerification: '',

@@ -32,7 +32,7 @@ import { CATALOGUE_DEFAULT_RUBRIC_SLUG, ROUTE_CATALOGUE } from '../../config/com
 
 Cypress.Commands.add('getByCy', (testId) => {
   cy.wait(600);
-  cy.get(`[data-cy="${testId}"]`);
+  return cy.get(`[data-cy="${testId}"]`) as any;
 });
 
 Cypress.Commands.add('visitBlank', (testId) => {
@@ -69,7 +69,7 @@ Cypress.Commands.add('shouldNotError', () => {
 
 Cypress.Commands.add('getBySelector', (selector) => {
   cy.wait(300);
-  cy.get(selector);
+  return cy.get(selector) as any;
 });
 
 Cypress.Commands.add('selectNthOption', (select, nth) => {

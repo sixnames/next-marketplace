@@ -17,18 +17,8 @@ import { get } from 'lodash';
 import * as React from 'react';
 import { updateCategorySchema } from 'validation/categorySchema';
 
-export interface CompanyRubricCategoryDetailsInterface {
-  category: CategoryInterface;
-  pageCompany: CompanyInterface;
-  seoDescriptionTop: CategoryDescriptionModel;
-  seoDescriptionBottom: CategoryDescriptionModel;
-  routeBasePath: string;
-}
-
-const assetsApiRout = '/api/category/add-description-asset';
-
 interface CategoryDescriptionConstructorInterface {
-  position: string;
+  position: 'top' | 'bottom';
   name: string;
   values: UpdateCategoryInput;
   setFieldValue: (field: string, value: any, shouldValidate?: boolean | undefined) => void;
@@ -37,7 +27,7 @@ interface CategoryDescriptionConstructorInterface {
   pageCompanySlug: string;
 }
 
-const CategoryDescriptionConstructor: React.FC<CategoryDescriptionConstructorInterface> = ({
+export const CategoryDescriptionConstructor: React.FC<CategoryDescriptionConstructorInterface> = ({
   label,
   setFieldValue,
   values,
@@ -76,7 +66,7 @@ const CategoryDescriptionConstructor: React.FC<CategoryDescriptionConstructorInt
                     formData.append('categoryId', `${categoryId}`);
                     formData.append('companySlug', `${pageCompanySlug}`);
 
-                    const responseFetch = await fetch(assetsApiRout, {
+                    const responseFetch = await fetch('/api/category/add-description-asset', {
                       method: REQUEST_METHOD_POST,
                       body: formData,
                     });
@@ -100,6 +90,14 @@ const CategoryDescriptionConstructor: React.FC<CategoryDescriptionConstructorInt
     </InputLine>
   );
 };
+
+export interface CompanyRubricCategoryDetailsInterface {
+  category: CategoryInterface;
+  pageCompany: CompanyInterface;
+  seoDescriptionTop: CategoryDescriptionModel;
+  seoDescriptionBottom: CategoryDescriptionModel;
+  routeBasePath: string;
+}
 
 const CompanyRubricCategoryDetails: React.FC<CompanyRubricCategoryDetailsInterface> = ({
   category,

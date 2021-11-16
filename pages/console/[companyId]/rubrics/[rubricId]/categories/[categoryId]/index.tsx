@@ -6,20 +6,14 @@ import {
   CATALOGUE_SEO_TEXT_POSITION_TOP,
   ROUTE_CONSOLE,
 } from 'config/common';
-import {
-  COL_CATEGORIES,
-  COL_CATEGORY_DESCRIPTIONS,
-  COL_ICONS,
-  COL_RUBRIC_SEO,
-  COL_RUBRICS,
-} from 'db/collectionNames';
-import { RubricSeoModel } from 'db/dbModels';
+import { COL_CATEGORIES, COL_ICONS, COL_RUBRICS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { CategoryInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCategoryLayout from 'layout/cms/CmsCategoryLayout';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getCategorySeoText } from 'lib/rubricUtils';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -34,8 +28,8 @@ interface CategoryDetailsInterface extends CompanyRubricCategoryDetailsInterface
 const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
   category,
   pageCompany,
-  seoTop,
-  seoBottom,
+  seoDescriptionBottom,
+  seoDescriptionTop,
   routeBasePath,
 }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -66,9 +60,9 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
       <CompanyRubricCategoryDetails
         category={category}
         pageCompany={pageCompany}
-        seoTop={seoTop}
-        seoBottom={seoBottom}
         routeBasePath={routeBasePath}
+        seoDescriptionTop={seoDescriptionTop}
+        seoDescriptionBottom={seoDescriptionBottom}
       />
     </CmsCategoryLayout>
   );
@@ -92,7 +86,6 @@ export const getServerSideProps = async (
   const { query } = context;
   const { db } = await getDatabase();
   const categoriesCollection = db.collection<CategoryInterface>(COL_CATEGORIES);
-  const rubricSeoCollection = db.collection<RubricSeoModel>(COL_RUBRIC_SEO);
 
   const { props } = await getConsoleInitialData({ context });
   if (!props || !query.categoryId) {
@@ -148,64 +141,6 @@ export const getServerSideProps = async (
         },
       },
 
-      // get top seo text
-      {
-        $lookup: {
-          from: COL_CATEGORY_DESCRIPTIONS,
-          as: 'seoDescriptionTop',
-          let: {
-            categoryId: '$_id',
-          },
-          pipeline: [
-            {
-              $match: {
-                position: CATALOGUE_SEO_TEXT_POSITION_TOP,
-                companySlug,
-                $expr: {
-                  $eq: ['$$categoryId', '$categoryId'],
-                },
-              },
-            },
-          ],
-        },
-      },
-      {
-        $addFields: {
-          seoDescriptionTop: {
-            $arrayElemAt: ['$seoDescriptionTop', 0],
-          },
-        },
-      },
-
-      // get bottom seo text
-      {
-        $lookup: {
-          from: COL_CATEGORY_DESCRIPTIONS,
-          as: 'seoDescriptionBottom',
-          let: {
-            categoryId: '$_id',
-          },
-          pipeline: [
-            {
-              $match: {
-                position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
-                companySlug,
-                $expr: {
-                  $eq: ['$$categoryId', '$categoryId'],
-                },
-              },
-            },
-          ],
-        },
-      },
-      {
-        $addFields: {
-          seoDescriptionBottom: {
-            $arrayElemAt: ['$seoDescriptionBottom', 0],
-          },
-        },
-      },
-
       {
         $addFields: {
           icon: {
@@ -237,24 +172,26 @@ export const getServerSideProps = async (
       : null,
   };
 
-  const seoTop = await rubricSeoCollection.findOne({
-    categoryId: category._id,
+  const seoDescriptionTop = await getCategorySeoText({
     position: CATALOGUE_SEO_TEXT_POSITION_TOP,
+    categorySlug: category.slug,
+    categoryId: category._id,
     companySlug,
   });
 
-  const seoBottom = await rubricSeoCollection.findOne({
-    categoryId: category._id,
+  const seoDescriptionBottom = await getCategorySeoText({
     position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+    categorySlug: category.slug,
+    categoryId: category._id,
     companySlug,
   });
 
   return {
     props: {
       ...props,
+      seoDescriptionBottom,
+      seoDescriptionTop,
       category: castDbData(category),
-      seoTop: castDbData(seoTop),
-      seoBottom: castDbData(seoBottom),
       routeBasePath: `${ROUTE_CONSOLE}/${props.layoutProps.pageCompany._id}`,
       pageCompany: castDbData(props.layoutProps.pageCompany),
     },

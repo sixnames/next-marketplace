@@ -647,13 +647,6 @@ export const getSsrConfigs = async ({
   const isOneShopCompany =
     companySlug === DEFAULT_COMPANY_SLUG ? false : companyShopsCount < minimalShopsCount;
 
-  console.log({
-    isOneShopCompany,
-    companySlug,
-    companyShopsCount,
-    minimalShopsCount,
-  });
-
   const projectConfigs = await configsCollection
     .aggregate<ConfigModel>([
       {

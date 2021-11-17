@@ -475,6 +475,7 @@ export interface UserInterface extends UserModel {
 
 export interface CatalogueDataInterface {
   _id: ObjectIdModel;
+  isSearch: boolean;
   redirect?: string | null;
   basePath: string;
   clearSlug: string;

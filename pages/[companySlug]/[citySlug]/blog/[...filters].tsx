@@ -285,7 +285,7 @@ const BlogFilterAttribute: React.FC<BlogFilterAttributeInterface> = ({
         <span className='text-lg font-bold'>{name}</span>
         {isSelected ? (
           <Link href={`${urlPrefix}${clearSlug}`} className='font-medium text-theme'>
-            Очистить
+            Сбросить
           </Link>
         ) : null}
       </div>

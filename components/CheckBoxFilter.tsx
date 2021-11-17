@@ -145,7 +145,7 @@ const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
           <span className={`font-medium text-lg`}>{attribute.name}</span>
           {attribute.isSelected && attribute.clearSlug ? (
             <Link onClick={onClick} href={`${urlPrefix}${attribute.clearSlug}`} className={`ml-4`}>
-              Очистить
+              Сбросить
             </Link>
           ) : null}
         </div>

@@ -11,7 +11,7 @@ const AppContentFilter: React.FC<AppContentFilterInterface> = (props) => {
       title={'Фильтр'}
       titleRight={
         props.selectedAttributes.length > 0 ? (
-          <Link href={props.clearSlug}>Очистить фильтр</Link>
+          <Link href={props.clearSlug}>Сбросить фильтр</Link>
         ) : null
       }
     >

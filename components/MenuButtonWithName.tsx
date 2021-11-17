@@ -34,7 +34,7 @@ const MenuButtonWithName: React.FC<MenuButtonWithNameInterface> = ({
         buttonText={({ internalButtonText, isOpen }) => {
           return (
             <span
-              className={`uppercase flex items-center ${buttonClassName ? buttonClassName : ''}`}
+              className={`flex items-center ${buttonClassName ? buttonClassName : ''}`}
               style={style}
             >
               {iconPosition === 'left' ? (

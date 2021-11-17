@@ -656,12 +656,6 @@ html {
   font-size: 15px;
 }
 
-@media only screen and (max-width: 768px) {
-  html {
-    font-size: 14px;
-  }
-}
-
 body {
   min-width: 320px;
   font-family: var(--font);

@@ -344,7 +344,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
           <div className='lg:col-span-5'>
             <div>
               {/*Mobile controls*/}
-              <div className='grid grid-cols-2 gap-10 grid lg:hidden'>
+              <div className='grid grid-cols-2 gap-6 grid lg:hidden'>
                 <Button theme={'secondary'} className='w-full' onClick={showFilterHandler} short>
                   Фильтр
                 </Button>

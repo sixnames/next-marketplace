@@ -139,7 +139,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                     />
                   </div>
                 ) : (
-                  <div className='relative w-full md:h-[500px] lg:h-[600px]'>
+                  <div className='relative w-full h-[320px] md:h-[500px] lg:h-[600px]'>
                     <WpImage
                       url={`${product.mainImage}`}
                       alt={cardTitle}

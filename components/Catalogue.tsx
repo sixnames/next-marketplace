@@ -345,7 +345,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
             <div>
               {/*Mobile controls*/}
               <div className='grid grid-cols-2 gap-10 grid lg:hidden'>
-                <Button theme={'secondary'} onClick={showFilterHandler} short>
+                <Button theme={'secondary'} className='w-full' onClick={showFilterHandler} short>
                   Фильтр
                 </Button>
                 <HeadlessMenuButton
@@ -451,8 +451,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
         </div>
 
         {state.textBottom ? (
-          <div className='mb-16'>
-            {/*<Title size={'small'}>{`${catalogueData.catalogueTitle} ${subHeadText}`}</Title>*/}
+          <div className='mb-16 border-t border-border-100 pt-2 mt-8'>
             <PageEditor value={JSON.parse(state.textBottom)} readOnly />
           </div>
         ) : null}

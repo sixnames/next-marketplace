@@ -5,7 +5,7 @@ import {
   SORT_DESC,
 } from 'config/common';
 import { COL_SHOP_PRODUCTS } from 'db/collectionNames';
-import { noImageStage, shopProductFieldsPipeline } from 'db/dao/constantPipelines';
+import { ignoreNoImageStage, shopProductFieldsPipeline } from 'db/dao/constantPipelines';
 import { ObjectIdModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { ShopProductInterface } from 'db/uiInterfaces';
@@ -77,7 +77,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       ...searchStage,
       ...companyMatch,
       citySlug: city,
-      ...noImageStage,
+      ...ignoreNoImageStage,
     };
 
     const shopProductsAggregation = await shopProductsCollection

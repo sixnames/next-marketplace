@@ -54,6 +54,7 @@ function App({ Component, pageProps }: AppProps<PagePropsInterface>) {
             >
               <NotificationsProvider>
                 <ConfigContextProvider
+                  domainCompany={pageProps.domainCompany}
                   currentCity={currentCity}
                   configs={initialData?.configs || []}
                   cities={initialData?.cities || []}

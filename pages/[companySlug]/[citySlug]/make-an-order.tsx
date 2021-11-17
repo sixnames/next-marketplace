@@ -18,10 +18,10 @@ import { MAP_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
-import { useThemeContext } from 'context/themeContext';
 import { useSiteUserContext } from 'context/userSiteUserContext';
 import { CartProductInterface, CompanyInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
+import { useShopMarker } from 'hooks/useShopMarker';
 import useValidationSchema from 'hooks/useValidationSchema';
 import LayoutCard from 'layout/LayoutCard';
 import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
@@ -38,9 +38,10 @@ interface OrderRouteProductInterface {
 }
 
 const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }) => {
+  const marker = useShopMarker(cartProduct.shopProduct?.shop);
+  const { configs } = useConfigContext();
   const { urlPrefix } = useSiteContext();
   const { showModal } = useAppContext();
-  const { isDark } = useThemeContext();
   const { shopProduct, amount, totalPrice } = cartProduct;
   if (!shopProduct) {
     return null;
@@ -51,10 +52,7 @@ const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }
   if (!product || !shop) {
     return null;
   }
-  const { mainImage, snippetTitle, slug } = product;
-  const lightThemeMarker = shop.mapMarker?.lightTheme;
-  const darkThemeMarker = shop.mapMarker?.darkTheme;
-  const marker = (isDark ? darkThemeMarker : lightThemeMarker) || '/marker.svg';
+  const { mainImage, snippetTitle, slug, name } = product;
 
   return (
     <LayoutCard className='grid px-6 py-8 gap-6 sm:grid-cols-8 relative' testId='order-product'>
@@ -87,14 +85,18 @@ const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }
 
       {/*main data*/}
       <div className='sm:col-span-6'>
-        <div className='text-secondary-text'>{`Артикул: ${itemId}`}</div>
-        <Link
-          target={'_blank'}
-          className='block mb-6 text-primary-text hover:no-underline hover:text-primary-text font-medium text-lg lg:text-2xl'
-          href={`${urlPrefix}/${slug}`}
-        >
-          {snippetTitle}
-        </Link>
+        <div className='text-secondary-text mb-3'>{`Артикул: ${itemId}`}</div>
+        <div className='mb-6'>
+          <Link
+            target={'_blank'}
+            className='block text-primary-text hover:no-underline hover:text-primary-text font-medium text-lg lg:text-2xl'
+            href={`${urlPrefix}/${slug}`}
+          >
+            {snippetTitle}
+          </Link>
+
+          {name ? <div className='text-secondary-text mt-1'>{name}</div> : null}
+        </div>
 
         {/*price*/}
         <div className='mb-6'>
@@ -115,34 +117,36 @@ const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }
         </div>
 
         {/*shop info*/}
-        <div className=''>
-          <div className='mb-2'>
-            Магазин: <span className='font-medium text-lg'>{shop.name}</span>
+        {configs.isOneShopCompany ? null : (
+          <div className=''>
+            <div className='mb-2'>
+              Магазин: <span className='font-medium text-lg'>{shop.name}</span>
+            </div>
+            <div>{shop.address.formattedAddress}</div>
+            <div
+              className='text-theme cursor-pointer'
+              onClick={() => {
+                showModal<MapModalInterface>({
+                  variant: MAP_MODAL,
+                  props: {
+                    title: shop.name,
+                    testId: `shop-map-modal`,
+                    markers: [
+                      {
+                        _id: shop._id,
+                        icon: marker,
+                        name: shop.name,
+                        address: shop.address,
+                      },
+                    ],
+                  },
+                });
+              }}
+            >
+              Смотреть на карте
+            </div>
           </div>
-          <div>{shop.address.formattedAddress}</div>
-          <div
-            className='text-theme cursor-pointer'
-            onClick={() => {
-              showModal<MapModalInterface>({
-                variant: MAP_MODAL,
-                props: {
-                  title: shop.name,
-                  testId: `shop-map-modal`,
-                  markers: [
-                    {
-                      _id: shop._id,
-                      icon: marker,
-                      name: shop.name,
-                      address: shop.address,
-                    },
-                  ],
-                },
-              });
-            }}
-          >
-            Смотреть на карте
-          </div>
-        </div>
+        )}
       </div>
     </LayoutCard>
   );

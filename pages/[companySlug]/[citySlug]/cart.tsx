@@ -11,7 +11,7 @@ import WpImage from 'components/WpImage';
 import { MAP_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
-import { useThemeContext } from 'context/themeContext';
+import { useShopMarker } from 'hooks/useShopMarker';
 import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
 import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
@@ -105,24 +105,29 @@ interface CartProductMainDataInterface {
   itemId: string;
   snippetTitle?: string | null;
   slug: string;
+  name?: string | null;
 }
 
 const CartProductMainData: React.FC<CartProductMainDataInterface> = ({
   itemId,
   snippetTitle,
   slug,
+  name,
 }) => {
   const { urlPrefix } = useSiteContext();
   return (
     <React.Fragment>
-      <div className='text-secondary-text'>{`Артикул: ${itemId}`}</div>
-      <Link
-        target={'_blank'}
-        className='block mb-6 text-primary-text hover:no-underline hover:text-primary-text font-medium text-lg lg:text-2xl'
-        href={`${urlPrefix}/${slug}`}
-      >
-        {snippetTitle}
-      </Link>
+      <div className='text-secondary-text mb-3'>{`Артикул: ${itemId}`}</div>
+      <div className='mb-6'>
+        <Link
+          target={'_blank'}
+          className='block text-primary-text hover:no-underline hover:text-primary-text font-medium text-lg lg:text-2xl'
+          href={`${urlPrefix}/${slug}`}
+        >
+          {snippetTitle}
+        </Link>
+        {name ? <div className='text-secondary-text mt-1'>{name}</div> : null}
+      </div>
     </React.Fragment>
   );
 };
@@ -151,7 +156,12 @@ const CartShoplessProduct: React.FC<CartProductPropsInterface> = ({ cartProduct,
       shopProducts={shopProducts}
       isShopsVisible={isShopsVisible}
     >
-      <CartProductMainData slug={slug} itemId={itemId} snippetTitle={snippetTitle} />
+      <CartProductMainData
+        name={product.name}
+        slug={slug}
+        itemId={itemId}
+        snippetTitle={snippetTitle}
+      />
 
       <div className='flex flex-wrap gap-6 mb-4 items-center'>
         <div>
@@ -177,8 +187,9 @@ const CartShoplessProduct: React.FC<CartProductPropsInterface> = ({ cartProduct,
 };
 
 const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId }) => {
+  const marker = useShopMarker(cartProduct.shopProduct?.shop);
+  const { configs } = useConfigContext();
   const { showModal } = useAppContext();
-  const { isDark } = useThemeContext();
   const { updateProductInCart } = useSiteContext();
   const { shopProduct, amount, _id } = cartProduct;
   const minAmount = 1;
@@ -193,10 +204,6 @@ const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId 
     return null;
   }
 
-  const lightThemeMarker = shop.mapMarker?.lightTheme;
-  const darkThemeMarker = shop.mapMarker?.darkTheme;
-  const marker = (isDark ? darkThemeMarker : lightThemeMarker) || '/marker.svg';
-
   return (
     <CartProductFrame
       slug={product.slug}
@@ -206,6 +213,7 @@ const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId 
       snippetTitle={product.snippetTitle}
     >
       <CartProductMainData
+        name={product.name}
         slug={product.slug}
         itemId={itemId}
         snippetTitle={product.snippetTitle}
@@ -253,34 +261,36 @@ const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId 
       </div>
 
       {/*shop info*/}
-      <div className=''>
-        <div className='mb-2'>
-          Магазин: <span className='font-medium text-lg'>{shop.name}</span>
+      {configs.isOneShopCompany ? null : (
+        <div className=''>
+          <div className='mb-2'>
+            Магазин: <span className='font-medium text-lg'>{shop.name}</span>
+          </div>
+          <div>{shop.address.formattedAddress}</div>
+          <div
+            className='text-theme cursor-pointer'
+            onClick={() => {
+              showModal<MapModalInterface>({
+                variant: MAP_MODAL,
+                props: {
+                  title: shop.name,
+                  testId: `shop-map-modal`,
+                  markers: [
+                    {
+                      _id: shop._id,
+                      icon: marker,
+                      name: shop.name,
+                      address: shop.address,
+                    },
+                  ],
+                },
+              });
+            }}
+          >
+            Смотреть на карте
+          </div>
         </div>
-        <div>{shop.address.formattedAddress}</div>
-        <div
-          className='text-theme cursor-pointer'
-          onClick={() => {
-            showModal<MapModalInterface>({
-              variant: MAP_MODAL,
-              props: {
-                title: shop.name,
-                testId: `shop-map-modal`,
-                markers: [
-                  {
-                    _id: shop._id,
-                    icon: marker,
-                    name: shop.name,
-                    address: shop.address,
-                  },
-                ],
-              },
-            });
-          }}
-        >
-          Смотреть на карте
-        </div>
-      </div>
+      )}
     </CartProductFrame>
   );
 };

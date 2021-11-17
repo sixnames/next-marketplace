@@ -2,11 +2,15 @@ import { Disclosure, Popover } from '@headlessui/react';
 import ButtonCross from 'components/button/ButtonCross';
 import LanguageTrigger from 'components/LanguageTrigger';
 import LinkPhone from 'components/Link/LinkPhone';
+import { MapModalInterface } from 'components/Modal/MapModal';
 import ThemeTrigger from 'components/ThemeTrigger';
 import { getConstantTranslation } from 'config/constantTranslations';
+import { MAP_MODAL } from 'config/modalVariants';
+import { useAppContext } from 'context/appContext';
 import { useLocaleContext } from 'context/localeContext';
 import { useSiteUserContext } from 'context/userSiteUserContext';
 import { PagesGroupInterface } from 'db/uiInterfaces';
+import { useShopMarker } from 'hooks/useShopMarker';
 import useSignOut from 'hooks/useSignOut';
 import LayoutCard from 'layout/LayoutCard';
 import { noNaN } from 'lib/numbers';
@@ -192,11 +196,13 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
   hideBurgerDropdown,
   headerPageGroups,
 }) => {
+  const { showModal } = useAppContext();
   const { locale } = useLocaleContext();
-  const { configs } = useConfigContext();
+  const { configs, domainCompany } = useConfigContext();
   const { query, asPath } = useRouter();
   const { navRubrics, urlPrefix } = useSiteContext();
   const { rubricSlug } = query;
+  const marker = useShopMarker(domainCompany?.mainShop);
   if (!isBurgerDropdownOpen) {
     return null;
   }
@@ -206,7 +212,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
   const contactsLinkName = getConstantTranslation(`nav.contacts.${locale}`);
 
   return (
-    <div className='fixed inset-0 bg-primary z-[140] w-full pt-4 pb-8 overflow-y-auto'>
+    <div className='fixed inset-0 bg-primary z-[140] w-full pt-4 pb-8 overflow-y-auto min-w-[320px]'>
       <Inner className='pb-24'>
         <div className='flex items-center justify-between mb-8'>
           <ButtonCross onClick={hideBurgerDropdown} />
@@ -305,7 +311,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
           })}
         </ul>
 
-        <div className='pb-20'>
+        <div className='pb-8'>
           {headerPageGroups.map(({ name, _id, pages }, index) => {
             return (
               <div className='relative mb-8' key={`${_id}`}>
@@ -361,6 +367,32 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
             </div>
           ) : null}
         </div>
+
+        {configs.isOneShopCompany && domainCompany && domainCompany.mainShop ? (
+          <div
+            className='text-theme cursor-pointer flex items-center'
+            onClick={() => {
+              hideBurgerDropdown();
+              showModal<MapModalInterface>({
+                variant: MAP_MODAL,
+                props: {
+                  title: `${domainCompany.mainShop?.name}`,
+                  testId: `shop-map-modal`,
+                  markers: [
+                    {
+                      _id: domainCompany.mainShop?._id,
+                      icon: marker,
+                      name: `${domainCompany.mainShop?.name}`,
+                      address: domainCompany.mainShop?.address,
+                    },
+                  ],
+                },
+              });
+            }}
+          >
+            <div>{domainCompany.mainShop.address.formattedAddress}</div>
+          </div>
+        ) : null}
       </Inner>
     </div>
   );
@@ -375,13 +407,15 @@ const middleSideClassName =
 
 const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug }) => {
   const { isDark } = useThemeContext();
-  const { configs } = useConfigContext();
+  const { showModal } = useAppContext();
+  const { configs, domainCompany } = useConfigContext();
   const { locale } = useLocaleContext();
   const { logoSlug } = useThemeContext();
   const { urlPrefix } = useSiteContext();
   const [isBurgerDropdownOpen, setIsBurgerDropdownOpen] = React.useState<boolean>(false);
   const [isSearchOpen, setIsSearchOpen] = React.useState<boolean>(false);
   const headerRef = React.useRef<HTMLElement | null>(null);
+  const marker = useShopMarker(domainCompany?.mainShop);
 
   const siteLogoSrc = get(configs, logoSlug) || IMAGE_FALLBACK;
   const configLogoWidth = configs.siteLogoWidth || '10rem';
@@ -510,6 +544,30 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
         <Inner lowTop lowBottom className='relative'>
           <div className='flex justify-between py-6 lg:justify-between lg:py-4'>
             <div className={`${middleSideClassName} justify-start hidden lg:inline-flex`}>
+              {configs.isOneShopCompany && domainCompany && domainCompany.mainShop ? (
+                <div
+                  className='text-theme cursor-pointer flex items-center'
+                  onClick={() => {
+                    showModal<MapModalInterface>({
+                      variant: MAP_MODAL,
+                      props: {
+                        title: `${domainCompany.mainShop?.name}`,
+                        testId: `shop-map-modal`,
+                        markers: [
+                          {
+                            _id: domainCompany.mainShop?._id,
+                            icon: marker,
+                            name: `${domainCompany.mainShop?.name}`,
+                            address: domainCompany.mainShop?.address,
+                          },
+                        ],
+                      },
+                    });
+                  }}
+                >
+                  <div>{domainCompany.mainShop.address.formattedAddress}</div>
+                </div>
+              ) : null}
               {/*<div className={`${middleLinkClassName}`}>
                 <div className={`relative mr-3`}>
                   <Icon name={'marker'} className='w-5 h-5' />

@@ -6,6 +6,7 @@ import WpImage from 'components/WpImage';
 import { useSiteContext } from 'context/siteContext';
 import { useSiteUserContext } from 'context/userSiteUserContext';
 import { ProductSnippetInterface } from 'db/uiInterfaces';
+import ProductSnippetAvailability from 'layout/snippet/ProductSnippetAvailability';
 import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
 import { noNaN } from 'lib/numbers';
 import * as React from 'react';
@@ -39,7 +40,6 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
     itemId,
   } = product;
 
-  const shopsCounterPostfix = noNaN(shopsCount) > 1 ? 'магазинах' : 'магазине';
   const isShopless = noNaN(shopsCount) < 1;
 
   const bgClassName = showSnippetBackground
@@ -81,7 +81,7 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
                 url={mainImage}
                 alt={`${snippetTitle}`}
                 title={`${snippetTitle}`}
-                width={260}
+                width={100}
                 className='absolute inset-0 w-full h-full object-contain'
               />
             </div>
@@ -199,11 +199,7 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
             <ProductSnippetPrice shopsCount={shopsCount} value={cardPrices?.min} />
 
             {/*availability*/}
-            <div>
-              {noNaN(shopsCount) > 0
-                ? `В наличии в ${shopsCount} ${shopsCounterPostfix}`
-                : 'Нет в наличии'}
-            </div>
+            <ProductSnippetAvailability shopsCount={shopsCount} />
           </div>
         )}
 

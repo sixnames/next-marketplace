@@ -110,11 +110,6 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
               },
             },
           },
-          {
-            $project: {
-              shops: false,
-            },
-          },
         ],
       },
     });
@@ -382,6 +377,7 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
             ...product,
             snippetTitle,
             shopProducts: sortedShopProductsByPrice,
+            name: getFieldStringLocale(product.nameI18n, locale),
             cardPrices: {
               _id: new ObjectId(),
               min: `${minPriceShopProduct?.price}`,
@@ -419,6 +415,7 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
                 ...shopProduct,
                 product: {
                   ...shopProduct.product,
+                  name: getFieldStringLocale(shopProduct.product.nameI18n, locale),
                   snippetTitle: shopProductSnippetTitle,
                 },
                 shop: shopProduct.shop

@@ -47,6 +47,15 @@ export async function getCatalogueIsrProps(
     return notFoundResponse;
   }
 
+  if (!rawCatalogueData.isSearch && rawCatalogueData.products.length < 1) {
+    return {
+      redirect: {
+        permanent: true,
+        destination: `${props.urlPrefix}${rawCatalogueData.basePath}`,
+      },
+    };
+  }
+
   if (rawCatalogueData.products.length < 1) {
     return notFoundResponse;
   }

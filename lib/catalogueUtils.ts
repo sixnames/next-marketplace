@@ -18,12 +18,15 @@ import {
   COL_ICONS,
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCTS,
-  COL_RUBRIC_DESCRIPTIONS,
-  COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
-import { filterAttributesPipeline, noImageStage } from 'db/dao/constantPipelines';
+import {
+  catalogueRubricFieldsPipeline,
+  filterAttributesPipeline,
+  ignoreNoImageStage,
+  noImageStage,
+} from 'db/dao/constantPipelines';
 import {
   CatalogueBreadcrumbModel,
   CategoryDescriptionModel,
@@ -58,7 +61,6 @@ import {
   FILTER_NO_PHOTO_KEY,
   CATALOGUE_SEO_TEXT_POSITION_TOP,
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
-  IMAGE_FALLBACK,
   ZERO_PAGE_FILTER,
 } from 'config/common';
 import { getDatabase } from 'db/mongodb';
@@ -74,6 +76,7 @@ import {
   OptionInterface,
   ProductAttributeInterface,
   ProductConnectionInterface,
+  RubricInterface,
   ShopProductInterface,
 } from 'db/uiInterfaces';
 import { getAlgoliaProductsSearch } from 'lib/algoliaUtils';
@@ -716,9 +719,7 @@ export function castCatalogueFilters({
 
       if (filterAttributeSlug === FILTER_COMMON_KEY) {
         if (filterOptionSlug === FILTER_NO_PHOTO_KEY) {
-          photoStage = {
-            mainImage: IMAGE_FALLBACK,
-          };
+          photoStage = noImageStage;
         }
         return;
       }
@@ -908,6 +909,7 @@ export const getCatalogueData = async ({
     // const timeStart = new Date().getTime();
     const { db } = await getDatabase();
     const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+    const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
 
     // args
     const { rubricSlug, search } = input;
@@ -939,6 +941,7 @@ export const getCatalogueData = async ({
     // fallback
     const fallbackPayload: CatalogueDataInterface = {
       _id: new ObjectId(),
+      isSearch: false,
       redirect: null,
       clearSlug: basePath,
       filters: input.filters,
@@ -994,7 +997,10 @@ export const getCatalogueData = async ({
       };
     }
     if (search && searchIds.length < 1) {
-      return fallbackPayload;
+      return {
+        ...fallbackPayload,
+        isSearch: true,
+      };
     }
 
     // initial match
@@ -1008,7 +1014,7 @@ export const getCatalogueData = async ({
       ...brandCollectionStage,
       ...optionsStage,
       ...pricesStage,
-      ...noImageStage,
+      ...ignoreNoImageStage,
     };
 
     // aggregate catalogue initial data
@@ -1094,6 +1100,7 @@ export const getCatalogueData = async ({
                   as: 'product',
                   let: {
                     productId: '$_id',
+                    shopProductsIds: '$shopProductsIds',
                   },
                   pipeline: [
                     {
@@ -1101,6 +1108,11 @@ export const getCatalogueData = async ({
                         $expr: {
                           $eq: ['$$productId', '$_id'],
                         },
+                      },
+                    },
+                    {
+                      $addFields: {
+                        shopProductsIds: '$$shopProductsIds',
                       },
                     },
 
@@ -1372,85 +1384,7 @@ export const getCatalogueData = async ({
                         priorities: false,
                       },
                     },
-
-                    // get rubric top seo text
-                    {
-                      $lookup: {
-                        from: COL_RUBRIC_DESCRIPTIONS,
-                        as: 'seoDescriptionTop',
-                        pipeline: [
-                          {
-                            $match: {
-                              position: CATALOGUE_SEO_TEXT_POSITION_TOP,
-                              companySlug,
-                              $expr: {
-                                $eq: ['$$rubricId', '$rubricId'],
-                              },
-                            },
-                          },
-                        ],
-                      },
-                    },
-                    {
-                      $addFields: {
-                        seoDescriptionTop: {
-                          $arrayElemAt: ['$seoDescriptionTop', 0],
-                        },
-                      },
-                    },
-
-                    // get rubric bottom seo text
-                    {
-                      $lookup: {
-                        from: COL_RUBRIC_DESCRIPTIONS,
-                        as: 'seoDescriptionBottom',
-                        pipeline: [
-                          {
-                            $match: {
-                              position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
-                              companySlug,
-                              $expr: {
-                                $eq: ['$$rubricId', '$rubricId'],
-                              },
-                            },
-                          },
-                        ],
-                      },
-                    },
-                    {
-                      $addFields: {
-                        seoDescriptionBottom: {
-                          $arrayElemAt: ['$seoDescriptionBottom', 0],
-                        },
-                      },
-                    },
-
-                    // get rubric variant
-                    {
-                      $lookup: {
-                        from: COL_RUBRIC_VARIANTS,
-                        as: 'variant',
-                        let: {
-                          variantId: '$variantId',
-                        },
-                        pipeline: [
-                          {
-                            $match: {
-                              $expr: {
-                                $eq: ['$$variantId', '$_id'],
-                              },
-                            },
-                          },
-                        ],
-                      },
-                    },
-                    {
-                      $addFields: {
-                        variant: {
-                          $arrayElemAt: ['$variant', 0],
-                        },
-                      },
-                    },
+                    ...catalogueRubricFieldsPipeline(companySlug),
                   ],
                 },
               },
@@ -1496,11 +1430,21 @@ export const getCatalogueData = async ({
     }
     // console.log('aggregation ', new Date().getTime() - timeStart);
 
-    const { docs, totalProducts, attributes, rubrics, brands, categories, prices } =
-      productDataAggregation;
+    const { docs, totalProducts, attributes, brands, categories, prices } = productDataAggregation;
 
+    // get rubric
+    let rubrics = productDataAggregation.rubrics;
     if (rubrics.length < 1) {
-      return fallbackPayload;
+      rubrics = await rubricsCollection
+        .aggregate<RubricInterface>([
+          {
+            $match: {
+              slug: rubricSlug,
+            },
+          },
+          ...catalogueRubricFieldsPipeline(companySlug),
+        ])
+        .toArray();
     }
 
     const rubric = rubrics[0];
@@ -1989,6 +1933,7 @@ export const getCatalogueData = async ({
       rubricName,
       rubricSlug: rubric.slug,
       editUrl,
+      isSearch: Boolean(search),
 
       // products
       products,

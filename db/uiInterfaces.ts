@@ -178,6 +178,7 @@ export interface CompanyInterface extends CompanyModel {
   customers?: UserInterface[] | null;
   orders?: OrderInterface[] | null;
   categories?: UserCategoryInterface[] | null;
+  mainShop?: ShopInterface | null;
 }
 
 export interface MessageBaseInterface {
@@ -475,6 +476,7 @@ export interface UserInterface extends UserModel {
 
 export interface CatalogueDataInterface {
   _id: ObjectIdModel;
+  isSearch: boolean;
   redirect?: string | null;
   basePath: string;
   clearSlug: string;
@@ -688,6 +690,7 @@ export interface SsrConfigsInterface {
   yaVerification: string;
   yaMetrica: string;
   googleAnalytics: string;
+  isOneShopCompany: boolean;
 
   // Site ui
   siteLogo: string;

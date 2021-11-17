@@ -95,10 +95,12 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
                       oldPrice={shopProduct.oldPrice}
                       discountedPercent={shopProduct.discountedPercent}
                     />
-                    <div className='mb-[var(--textLineGap)]'>
-                      <span className='text-secondary-text'>магазин: </span>
-                      <span className='font-medium'>{shopProduct?.shop?.name}</span>
-                    </div>
+                    {configs.isOneShopCompany ? null : (
+                      <div className='mb-[var(--textLineGap)]'>
+                        <span className='text-secondary-text'>магазин: </span>
+                        <span className='font-medium'>{shopProduct?.shop?.name}</span>
+                      </div>
+                    )}
 
                     <div className='flex items-center justify-between mt-4'>
                       <SpinnerInput

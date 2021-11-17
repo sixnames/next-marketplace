@@ -187,6 +187,7 @@ const CartShoplessProduct: React.FC<CartProductPropsInterface> = ({ cartProduct,
 };
 
 const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId }) => {
+  const { configs } = useConfigContext();
   const { showModal } = useAppContext();
   const { isDark } = useThemeContext();
   const { updateProductInCart } = useSiteContext();
@@ -264,34 +265,36 @@ const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId 
       </div>
 
       {/*shop info*/}
-      <div className=''>
-        <div className='mb-2'>
-          Магазин: <span className='font-medium text-lg'>{shop.name}</span>
+      {configs.isOneShopCompany ? null : (
+        <div className=''>
+          <div className='mb-2'>
+            Магазин: <span className='font-medium text-lg'>{shop.name}</span>
+          </div>
+          <div>{shop.address.formattedAddress}</div>
+          <div
+            className='text-theme cursor-pointer'
+            onClick={() => {
+              showModal<MapModalInterface>({
+                variant: MAP_MODAL,
+                props: {
+                  title: shop.name,
+                  testId: `shop-map-modal`,
+                  markers: [
+                    {
+                      _id: shop._id,
+                      icon: marker,
+                      name: shop.name,
+                      address: shop.address,
+                    },
+                  ],
+                },
+              });
+            }}
+          >
+            Смотреть на карте
+          </div>
         </div>
-        <div>{shop.address.formattedAddress}</div>
-        <div
-          className='text-theme cursor-pointer'
-          onClick={() => {
-            showModal<MapModalInterface>({
-              variant: MAP_MODAL,
-              props: {
-                title: shop.name,
-                testId: `shop-map-modal`,
-                markers: [
-                  {
-                    _id: shop._id,
-                    icon: marker,
-                    name: shop.name,
-                    address: shop.address,
-                  },
-                ],
-              },
-            });
-          }}
-        >
-          Смотреть на карте
-        </div>
-      </div>
+      )}
     </CartProductFrame>
   );
 };

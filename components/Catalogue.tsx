@@ -451,7 +451,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
         </div>
 
         {state.textBottom ? (
-          <div className='mb-16'>
+          <div className='mb-16 border-t border-border-100 pt-2 mt-8'>
             <PageEditor value={JSON.parse(state.textBottom)} readOnly />
           </div>
         ) : null}

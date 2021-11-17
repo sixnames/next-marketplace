@@ -22,7 +22,7 @@ describe('Cart', () => {
     cy.getByCy(`cart-modal-close`).click();
     cy.visit(`${ROUTE_CATALOGUE}/${CATALOGUE_DEFAULT_RUBRIC_SLUG}`);
     cy.getByCy('catalogue').should('exist');
-    cy.get(`[data-cy=catalogue-item-6-name-grid]`).invoke('removeAttr', 'target').click();
+    cy.get(`[data-cy=catalogue-item-1-name-grid]`).invoke('removeAttr', 'target').click();
     cy.getByCy(`card`).should('exist');
     cy.getByCy(`card-connection`).first().click();
     cy.wait(1500);

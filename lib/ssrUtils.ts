@@ -644,7 +644,15 @@ export const getSsrConfigs = async ({
     citySlug,
   });
   const minimalShopsCount = 2;
-  const isOneShopCompany = companyShopsCount < minimalShopsCount;
+  const isOneShopCompany =
+    companySlug === DEFAULT_COMPANY_SLUG ? false : companyShopsCount < minimalShopsCount;
+
+  console.log({
+    isOneShopCompany,
+    companySlug,
+    companyShopsCount,
+    minimalShopsCount,
+  });
 
   const projectConfigs = await configsCollection
     .aggregate<ConfigModel>([
@@ -1130,7 +1138,7 @@ export async function getPageInitialState({
   const rawInitialData = await getPageInitialData({
     locale: sessionLocale,
     citySlug: sessionCity,
-    companySlug: domainCompany?.slug,
+    companySlug: domainCompany ? domainCompany.slug : DEFAULT_COMPANY_SLUG,
   });
   const initialData = castDbData(rawInitialData);
 

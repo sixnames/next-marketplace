@@ -6,6 +6,7 @@ import WpImage from 'components/WpImage';
 import { useSiteContext } from 'context/siteContext';
 import { useSiteUserContext } from 'context/userSiteUserContext';
 import { ProductSnippetInterface } from 'db/uiInterfaces';
+import ProductSnippetAvailability from 'layout/snippet/ProductSnippetAvailability';
 import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
 import { noNaN } from 'lib/numbers';
 import * as React from 'react';
@@ -40,7 +41,6 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
     name,
   } = product;
 
-  const shopsCounterPostfix = noNaN(shopsCount) > 1 ? 'магазинах' : 'магазине';
   const isShopless = noNaN(shopsCount) < 1;
 
   const bgClassName = showSnippetBackground
@@ -215,11 +215,7 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
           <div className='flex flex-col col-span-7 md:col-span-2'>
             <div className='mt-auto'>
               {/*availability*/}
-              <div className='mb-3'>
-                {noNaN(shopsCount) > 0
-                  ? `В наличии в ${shopsCount} ${shopsCounterPostfix}`
-                  : 'Нет в наличии'}
-              </div>
+              <ProductSnippetAvailability shopsCount={shopsCount} className='mb-3' />
 
               <div
                 className={`flex gap-2 ${

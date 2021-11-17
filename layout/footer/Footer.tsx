@@ -3,11 +3,15 @@ import FakeInput from 'components/FormElements/Input/FakeInput';
 import Link from 'components/Link/Link';
 import LinkEmail from 'components/Link/LinkEmail';
 import LinkPhone from 'components/Link/LinkPhone';
+import { MapModalInterface } from 'components/Modal/MapModal';
 import Socials from 'components/Socials';
 import { ROUTE_BLOG_WITH_PAGE, ROUTE_CONTACTS, ROUTE_DOCS_PAGES } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
+import { MAP_MODAL } from 'config/modalVariants';
+import { useAppContext } from 'context/appContext';
 import { useLocaleContext } from 'context/localeContext';
 import { PagesGroupInterface } from 'db/uiInterfaces';
+import { useShopMarker } from 'hooks/useShopMarker';
 import { phoneToReadable } from 'lib/phoneUtils';
 import * as React from 'react';
 import { useConfigContext } from 'context/configContext';
@@ -18,8 +22,11 @@ export interface FooterInterface {
 }
 
 const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
-  const { configs } = useConfigContext();
+  const { showModal } = useAppContext();
+  const { configs, domainCompany } = useConfigContext();
   const { locale } = useLocaleContext();
+  const marker = useShopMarker(domainCompany?.mainShop);
+
   const configSiteName = configs.siteName;
   const configFoundationYear = configs.siteFoundationYear;
   const contactEmail = configs.contactEmail;
@@ -79,6 +86,31 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
                   twitterLink={twitterLink}
                   telegramLink={telegramLink}
                 />
+              </div>
+            ) : null}
+
+            {configs.isOneShopCompany && domainCompany && domainCompany.mainShop ? (
+              <div
+                className='text-theme cursor-pointer flex items-center mt-8'
+                onClick={() => {
+                  showModal<MapModalInterface>({
+                    variant: MAP_MODAL,
+                    props: {
+                      title: `${domainCompany.mainShop?.name}`,
+                      testId: `shop-map-modal`,
+                      markers: [
+                        {
+                          _id: domainCompany.mainShop?._id,
+                          icon: marker,
+                          name: `${domainCompany.mainShop?.name}`,
+                          address: domainCompany.mainShop?.address,
+                        },
+                      ],
+                    },
+                  });
+                }}
+              >
+                <div>{domainCompany.mainShop.address.formattedAddress}</div>
               </div>
             ) : null}
           </div>

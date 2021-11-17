@@ -797,6 +797,7 @@ export const CompanyMutations = extendType({
               assets: [],
               mainImage: IMAGE_FALLBACK,
               companyId: companyId,
+              companySlug: company.slug,
               rating: 0,
               createdAt: new Date(),
               updatedAt: new Date(),

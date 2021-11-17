@@ -6,6 +6,8 @@ import {
   CMS_FILTER_BRANDS_LIMIT,
   IMAGE_FALLBACK,
   IMAGE_FALLBACK_BOTTLE,
+  CATALOGUE_SEO_TEXT_POSITION_TOP,
+  CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
 } from 'config/common';
 import {
   COL_ATTRIBUTES,
@@ -19,13 +21,14 @@ import {
   COL_PRODUCT_CONNECTIONS,
   COL_PRODUCT_SEO,
   COL_PRODUCTS,
+  COL_RUBRIC_DESCRIPTIONS,
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
   COL_SUPPLIER_PRODUCTS,
   COL_SUPPLIERS,
 } from 'db/collectionNames';
 
-export const noImageStage = {
+export const ignoreNoImageStage = {
   $and: [
     {
       mainImage: {
@@ -38,6 +41,12 @@ export const noImageStage = {
       },
     },
   ],
+};
+
+export const noImageStage = {
+  mainImage: {
+    $in: [IMAGE_FALLBACK, IMAGE_FALLBACK_BOTTLE],
+  },
 };
 
 interface GetCatalogueRubricPipelineInterface {
@@ -1034,6 +1043,7 @@ export const shopProductFieldsPipeline = (idFieldName: string) => {
         as: 'product',
         let: {
           productId: idFieldName,
+          shopProductsIds: '$shopProductsIds',
         },
         pipeline: [
           {
@@ -1046,6 +1056,11 @@ export const shopProductFieldsPipeline = (idFieldName: string) => {
           {
             $project: {
               descriptionI18n: false,
+            },
+          },
+          {
+            $addFields: {
+              shopProductsIds: '$$shopProductsIds',
             },
           },
 
@@ -1097,6 +1112,95 @@ export const shopProductFieldsPipeline = (idFieldName: string) => {
     {
       $addFields: {
         product: { $arrayElemAt: ['$product', 0] },
+      },
+    },
+  ];
+};
+
+export const catalogueRubricFieldsPipeline = (companySlug: string) => {
+  return [
+    // get rubric top seo text
+    {
+      $lookup: {
+        from: COL_RUBRIC_DESCRIPTIONS,
+        as: 'seoDescriptionTop',
+        let: {
+          rubricId: '$_id',
+        },
+        pipeline: [
+          {
+            $match: {
+              position: CATALOGUE_SEO_TEXT_POSITION_TOP,
+              companySlug,
+              $expr: {
+                $eq: ['$$rubricId', '$rubricId'],
+              },
+            },
+          },
+        ],
+      },
+    },
+    {
+      $addFields: {
+        seoDescriptionTop: {
+          $arrayElemAt: ['$seoDescriptionTop', 0],
+        },
+      },
+    },
+
+    // get rubric bottom seo text
+    {
+      $lookup: {
+        from: COL_RUBRIC_DESCRIPTIONS,
+        as: 'seoDescriptionBottom',
+        let: {
+          rubricId: '$_id',
+        },
+        pipeline: [
+          {
+            $match: {
+              position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+              companySlug,
+              $expr: {
+                $eq: ['$$rubricId', '$rubricId'],
+              },
+            },
+          },
+        ],
+      },
+    },
+    {
+      $addFields: {
+        seoDescriptionBottom: {
+          $arrayElemAt: ['$seoDescriptionBottom', 0],
+        },
+      },
+    },
+
+    // get rubric variant
+    {
+      $lookup: {
+        from: COL_RUBRIC_VARIANTS,
+        as: 'variant',
+        let: {
+          variantId: '$variantId',
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $eq: ['$$variantId', '$_id'],
+              },
+            },
+          },
+        ],
+      },
+    },
+    {
+      $addFields: {
+        variant: {
+          $arrayElemAt: ['$variant', 0],
+        },
       },
     },
   ];

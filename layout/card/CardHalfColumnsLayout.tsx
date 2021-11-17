@@ -4,6 +4,7 @@ import Icon from 'components/Icon';
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
 import WpImage from 'components/WpImage';
+import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
 import { CardLayoutInterface } from 'db/uiInterfaces';
 import CardSimilarProducts from 'layout/card/CardSimilarProducts';
@@ -32,6 +33,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
   companySlug,
   companyId,
 }) => {
+  const { configs } = useConfigContext();
   const { urlPrefix } = useSiteContext();
   const {
     isSingleImage,
@@ -141,32 +143,34 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                     <CardPrices cardPrices={cardPrices} shopsCount={shopsCount} />
 
                     {/*availability*/}
-                    <a
-                      href={`#card-shops`}
-                      className='flex items-center'
-                      onClick={(e) => {
-                        e.preventDefault();
-                        const target = e.target as Element;
-                        const distId = target.getAttribute('href');
-                        const distElement = document.querySelector(`${distId}`);
-                        if (distElement) {
-                          window.scrollTo({
-                            top: noNaN(distElement.getBoundingClientRect().top),
-                            left: 0,
-                            behavior: 'smooth',
-                          });
-                        }
-                      }}
-                    >
-                      {isShopless ? (
-                        'Нет в наличии'
-                      ) : (
-                        <React.Fragment>
-                          В наличии в {shopsCount} {shopsCounterPostfix}. Посмотреть
-                          <Icon name={'eye'} className='w-5 h-5 ml-2' />
-                        </React.Fragment>
-                      )}
-                    </a>
+                    {configs.isOneShopCompany ? null : (
+                      <a
+                        href={`#card-shops`}
+                        className='flex items-center'
+                        onClick={(e) => {
+                          e.preventDefault();
+                          const target = e.target as Element;
+                          const distId = target.getAttribute('href');
+                          const distElement = document.querySelector(`${distId}`);
+                          if (distElement) {
+                            window.scrollTo({
+                              top: noNaN(distElement.getBoundingClientRect().top),
+                              left: 0,
+                              behavior: 'smooth',
+                            });
+                          }
+                        }}
+                      >
+                        {isShopless ? (
+                          'Нет в наличии'
+                        ) : (
+                          <React.Fragment>
+                            В наличии в {shopsCount} {shopsCounterPostfix}. Посмотреть
+                            <Icon name={'eye'} className='w-5 h-5 ml-2' />
+                          </React.Fragment>
+                        )}
+                      </a>
+                    )}
                   </div>
 
                   <div className='flex items-center justify-between flex-wrap gap-6'>
@@ -392,7 +396,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
           <CardDynamicContent cardContent={cardContent} />
 
           {/*shops*/}
-          <CardShopsList cardShops={cardShops} />
+          {configs.isOneShopCompany ? null : <CardShopsList cardShops={cardShops} />}
 
           {/*similar products*/}
           <CardSimilarProducts similarProducts={similarProducts} />

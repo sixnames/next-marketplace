@@ -15,7 +15,7 @@ import {
 import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
 import { COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
-import { noImageStage, shopProductFieldsPipeline } from 'db/dao/constantPipelines';
+import { ignoreNoImageStage, shopProductFieldsPipeline } from 'db/dao/constantPipelines';
 import { getDatabase } from 'db/mongodb';
 import {
   MobileTopFilters,
@@ -172,7 +172,7 @@ const HomeRoute: React.FC<HomeRouteInterface> = ({
         {sliderItems.length > 0 ? (
           <div className='sm:mb-20 mb-14'>
             <ImageGallery
-              showBullets
+              showBullets={sliderItems.length > 1}
               autoPlay
               slideInterval={autoplaySpeed}
               showFullscreenButton={false}
@@ -445,7 +445,7 @@ export async function getStaticProps(
           $match: {
             ...companyRubricsMatch,
             citySlug: sessionCity,
-            ...noImageStage,
+            ...ignoreNoImageStage,
           },
         },
         {

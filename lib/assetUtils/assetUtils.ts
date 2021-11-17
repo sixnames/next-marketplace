@@ -76,7 +76,7 @@ export async function getSharpImage({
 
     // set image size
     if (width) {
-      transform = transform.resize(width);
+      transform = transform.resize(Math.round(width));
     }
 
     // set format and quality
@@ -109,7 +109,7 @@ export async function getSharpImage({
       }
 
       const watermarkDefaultSize = 40;
-      const watermarkSize = width ? width / 10 : watermarkDefaultSize;
+      const watermarkSize = Math.round(width ? width / 10 : watermarkDefaultSize);
       const watermarkBuffer = await sharp(watermarkDist).resize(watermarkSize).toBuffer();
       transform.composite([
         {

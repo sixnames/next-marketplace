@@ -27,20 +27,32 @@ const CardImageSlider = dynamic(() => import('layout/card/CardImageSlider'));
 interface CardTitleInterface {
   productId: any;
   itemId: string;
-  tag?: keyof JSX.IntrinsicElements;
+  isMobile?: boolean;
   showArticle: boolean;
   cardTitle: string;
   name?: string | null;
 }
 
-const CardTitle: React.FC<CardTitleInterface> = ({ cardTitle, showArticle, name, itemId }) => {
+const CardTitle: React.FC<CardTitleInterface> = ({
+  cardTitle,
+  showArticle,
+  name,
+  itemId,
+  isMobile,
+}) => {
   return (
     <div className='mb-6'>
-      <Title className='mb-1' low>
+      <Title className='mb-1' tag={isMobile ? 'div' : 'h1'} low>
         {cardTitle}
       </Title>
 
-      {name ? <div className='text-secondary-text mb-2'>{name}</div> : null}
+      {name ? (
+        isMobile ? (
+          <div className='text-secondary-text mb-2'>{name}</div>
+        ) : (
+          <h2 className='text-secondary-text mb-2'>{name}</h2>
+        )
+      ) : null}
 
       <div className='flex justify-between items-center'>
         {showArticle ? <div className='text-secondary-text text-sm'>Арт: {itemId}</div> : null}
@@ -97,6 +109,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
             {/*mobile title*/}
             <div className='relative z-20 lg:hidden pt-8 pr-inner-block-horizontal-padding'>
               <CardTitle
+                isMobile
                 showArticle={showArticle}
                 productId={product._id}
                 itemId={product.itemId}
@@ -141,7 +154,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
               {/*main data*/}
               <div className='flex flex-col md:col-span-2 md:order-3 lg:col-span-7'>
                 {/*desktop title*/}
-                <div className='hidden lg:block'>
+                <div className='visually-hidden lg:visually-visible'>
                   <CardTitle
                     cardTitle={cardTitle}
                     showArticle={showArticle}

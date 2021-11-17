@@ -1,10 +1,23 @@
-import { CityInterface, SsrConfigsInterface } from 'db/uiInterfaces';
+import {
+  COOKIE_CITY,
+  COOKIE_COMPANY_SLUG,
+  COOKIE_CURRENCY,
+  COOKIE_LOCALE,
+  DEFAULT_CITY,
+  DEFAULT_COMPANY_SLUG,
+  DEFAULT_CURRENCY,
+  DEFAULT_LOCALE,
+} from 'config/common';
+import { CityInterface, CompanyInterface, SsrConfigsInterface } from 'db/uiInterfaces';
+import { useRouter } from 'next/router';
 import * as React from 'react';
+import { setCookie, destroyCookie } from 'nookies';
 
 interface ConfigContextInterface {
   configs: SsrConfigsInterface;
   cities: CityInterface[];
   currentCity?: CityInterface | null;
+  domainCompany?: CompanyInterface | null;
 }
 
 const ConfigContext = React.createContext<ConfigContextInterface>({
@@ -85,14 +98,45 @@ const ConfigContextProvider: React.FC<ConfigContextInterface> = ({
   cities = [],
   currentCity,
   children,
+  domainCompany,
 }) => {
+  const { locale } = useRouter();
+
+  // set session cookies
+  React.useEffect(() => {
+    const cookieOptions = {
+      path: '/',
+    };
+
+    // set company slug as a cookie
+    const domainCompanySlug = domainCompany?.slug || DEFAULT_COMPANY_SLUG;
+    destroyCookie(null, COOKIE_COMPANY_SLUG);
+    setCookie(null, COOKIE_COMPANY_SLUG, domainCompanySlug, cookieOptions);
+
+    // set locale as a cookie
+    const sessionLocale = locale || DEFAULT_LOCALE;
+    destroyCookie(null, COOKIE_LOCALE);
+    setCookie(null, COOKIE_LOCALE, sessionLocale, cookieOptions);
+
+    // set city slug as a cookie
+    const sessionCity = currentCity?.slug || DEFAULT_CITY;
+    destroyCookie(null, COOKIE_CITY);
+    setCookie(null, COOKIE_CITY, sessionCity, cookieOptions);
+
+    // set currency as a cookie
+    const sessionCurrency = currentCity?.currency || DEFAULT_CURRENCY;
+    destroyCookie(null, COOKIE_CURRENCY);
+    setCookie(null, COOKIE_CURRENCY, sessionCurrency, cookieOptions);
+  }, [currentCity, domainCompany, locale]);
+
   const initialValue = React.useMemo(() => {
     return {
       configs,
       cities,
       currentCity,
+      domainCompany,
     };
-  }, [currentCity, configs, cities]);
+  }, [currentCity, configs, cities, domainCompany]);
 
   return <ConfigContext.Provider value={initialValue}>{children}</ConfigContext.Provider>;
 };

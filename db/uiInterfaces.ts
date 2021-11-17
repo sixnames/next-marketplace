@@ -178,6 +178,7 @@ export interface CompanyInterface extends CompanyModel {
   customers?: UserInterface[] | null;
   orders?: OrderInterface[] | null;
   categories?: UserCategoryInterface[] | null;
+  mainShop?: ShopInterface | null;
 }
 
 export interface MessageBaseInterface {

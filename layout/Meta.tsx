@@ -3,17 +3,10 @@ import Head from 'next/head';
 import { useConfigContext } from 'context/configContext';
 import parse from 'html-react-parser';
 
-export interface PageUrlsInterface {
-  canonicalUrl: string;
-  siteUrl: string;
-  domain: string;
-}
-
 export interface MetaInterface {
   title?: string;
   description?: string;
   previewImage?: string;
-  pageUrls: PageUrlsInterface;
   siteName?: string;
   foundationYear?: string;
 }
@@ -23,9 +16,9 @@ const Meta: React.FC<MetaInterface> = ({
   description,
   siteName,
   foundationYear,
-  pageUrls,
   previewImage,
 }) => {
+  const [canonicalUrl, setCanonicalUrl] = React.useState<string>('');
   const { configs } = useConfigContext();
 
   const configTitle = configs.pageDefaultTitle;
@@ -47,6 +40,10 @@ const Meta: React.FC<MetaInterface> = ({
   const appleTouchIcon = configs.appleTouchIcon;
   const faviconIco = configs.faviconIco;
   const iconSvg = configs.iconSvg;
+
+  React.useEffect(() => {
+    setCanonicalUrl(window.location.href);
+  }, []);
 
   // Metrics
   //<!-- Yandex.Metrika counter --> <!-- /Yandex.Metrika counter -->
@@ -78,7 +75,7 @@ const Meta: React.FC<MetaInterface> = ({
         <meta property='og:title' content={`${pageTitle}`} />
         <meta property='og:type' content='website' />
         <meta property='og:image' content={`${pagePreviewImage}?format=png`} />
-        <meta property='og:url' content={pageUrls.canonicalUrl} />
+        <meta property='og:url' content={canonicalUrl} />
         <meta property='og:description' content={pageDescription} />
 
         <meta name='twitter:title' content={`${pageTitle}`} />

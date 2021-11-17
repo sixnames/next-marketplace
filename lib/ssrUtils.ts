@@ -1,8 +1,5 @@
 import {
   DEFAULT_COMPANY_SLUG,
-  COOKIE_CITY,
-  COOKIE_COMPANY_SLUG,
-  COOKIE_LOCALE,
   DEFAULT_CITY,
   DEFAULT_CURRENCY,
   DEFAULT_LOCALE,
@@ -14,7 +11,6 @@ import {
   PAGE_STATE_PUBLISHED,
   FILTER_SEPARATOR,
   CONFIG_GROUP_PROJECT,
-  COOKIE_CURRENCY,
 } from 'config/common';
 import {
   COL_ATTRIBUTES,
@@ -54,7 +50,6 @@ import {
   RubricInterface,
   SsrConfigsInterface,
 } from 'db/uiInterfaces';
-import { PageUrlsInterface } from 'layout/Meta';
 import { SiteLayoutCatalogueCreatedPages, SiteLayoutProviderInterface } from 'layout/SiteLayout';
 import { alwaysString } from 'lib/arrayUtils';
 import {
@@ -67,12 +62,90 @@ import {
 import { getFieldStringLocale, getI18nLocaleValue } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { getTreeFromList } from 'lib/optionsUtils';
+import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { castAttributeForUI } from 'lib/uiDataUtils';
 import { Db, ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, Redirect } from 'next';
 import { PagePropsInterface } from 'pages/_app';
 import { getDomain } from 'tldts';
-import nookies from 'nookies';
+
+export async function getSsrDomainCompany(
+  match: Record<any, any>,
+): Promise<CompanyInterface | null> {
+  const { db } = await getDatabase();
+  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
+  const domainCompanyAggregation = await companiesCollection
+    .aggregate<CompanyInterface>([
+      {
+        $match: match,
+      },
+
+      // get main shop
+      {
+        $lookup: {
+          from: COL_SHOPS,
+          as: 'mainShop',
+          let: { companyId: '$_id' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ['$$companyId', '$companyId'],
+                },
+              },
+            },
+            {
+              $project: {
+                assets: false,
+              },
+            },
+          ],
+        },
+      },
+      {
+        $addFields: {
+          mainShop: {
+            $arrayElemAt: ['$mainShop', 0],
+          },
+        },
+      },
+    ])
+    .toArray();
+  const domainCompany = domainCompanyAggregation[0]
+    ? {
+        ...domainCompanyAggregation[0],
+        mainShop: domainCompanyAggregation[0].mainShop
+          ? {
+              ...domainCompanyAggregation[0].mainShop,
+              address: {
+                ...domainCompanyAggregation[0].mainShop.address,
+                formattedCoordinates: {
+                  lat: domainCompanyAggregation[0].mainShop.address.point.coordinates[1],
+                  lng: domainCompanyAggregation[0].mainShop.address.point.coordinates[0],
+                },
+              },
+              contacts: {
+                ...domainCompanyAggregation[0].mainShop.contacts,
+                formattedPhones: domainCompanyAggregation[0].mainShop.contacts.phones.map(
+                  (phone) => {
+                    return {
+                      raw: phoneToRaw(phone),
+                      readable: phoneToReadable(phone),
+                    };
+                  },
+                ),
+              },
+            }
+          : null,
+      }
+    : null;
+
+  if (!domainCompany?.domain) {
+    return null;
+  }
+
+  return domainCompany;
+}
 
 export interface GetCatalogueNavRubricsInterface {
   locale: string;
@@ -1014,16 +1087,11 @@ export const getPageInitialData = async ({
   };
 };
 
-export interface NavPropsInterface {
-  pageUrls: PageUrlsInterface;
-}
-
 interface GetPageInitialStateInterface {
   context: GetServerSidePropsContext;
 }
 
-interface GetPageInitialStatePayloadInterface extends PagePropsInterface, NavPropsInterface {
-  db: Db;
+interface GetPageInitialStatePayloadInterface extends PagePropsInterface {
   path: string;
   host: string;
   domain: string | null;
@@ -1035,7 +1103,6 @@ export async function getPageInitialState({
 }: GetPageInitialStateInterface): Promise<GetPageInitialStatePayloadInterface> {
   const { locale, resolvedUrl, query } = context;
   const { db } = await getDatabase();
-  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
   const citiesCollection = db.collection<CityModel>(COL_CITIES);
 
   const path = `${resolvedUrl}`;
@@ -1057,12 +1124,7 @@ export async function getPageInitialState({
   const sessionCity = currentCity?.slug || DEFAULT_CITY;
 
   // Domain company
-  let domainCompany: CompanyInterface | null | undefined = null;
-  if (domain && process.env.DEFAULT_DOMAIN && domain !== process.env.DEFAULT_DOMAIN) {
-    domainCompany = await companiesCollection.findOne({ domain });
-  }
-  // For development
-  // domainCompany = await companiesCollection.findOne({ slug: 'company_a' });
+  const domainCompany = await getSsrDomainCompany({ domain });
 
   // Page initial data
   const rawInitialData = await getPageInitialData({
@@ -1071,34 +1133,6 @@ export async function getPageInitialState({
     companySlug: domainCompany?.slug,
   });
   const initialData = castDbData(rawInitialData);
-
-  // Set company slug as a cookie
-  nookies.set(context, COOKIE_COMPANY_SLUG, domainCompany?.slug || DEFAULT_COMPANY_SLUG, {
-    httpOnly: true,
-    path: '/',
-    sameSite: 'strict',
-  });
-
-  // Set sessionLocale as a cookie
-  nookies.set(context, COOKIE_LOCALE, sessionLocale, {
-    httpOnly: true,
-    path: '/',
-    sameSite: 'strict',
-  });
-
-  // Set sessionCity as a cookie
-  nookies.set(context, COOKIE_CITY, sessionCity, {
-    httpOnly: true,
-    path: '/',
-    sameSite: 'strict',
-  });
-
-  // Set currency as a cookie
-  nookies.set(context, COOKIE_CURRENCY, rawInitialData.currency, {
-    httpOnly: true,
-    path: '/',
-    sameSite: 'strict',
-  });
 
   // Site theme accent color
   const themeColor = rawInitialData.configs.siteThemeColor;
@@ -1118,7 +1152,6 @@ export async function getPageInitialState({
   };
 
   return {
-    db,
     path,
     host,
     domain,
@@ -1135,11 +1168,6 @@ export async function getPageInitialState({
           name: getI18nLocaleValue(currentCity.nameI18n, sessionLocale),
         }
       : null,
-    pageUrls: {
-      canonicalUrl: `https://${host}${path}`,
-      siteUrl: `https://${host}`,
-      domain: `${domain}`,
-    },
   };
 }
 
@@ -1189,7 +1217,7 @@ interface GetConsoleInitialDataInterface {
   context: GetServerSidePropsContext;
 }
 
-interface GetConsoleInitialDataLayoutProps extends NavPropsInterface {
+interface GetConsoleInitialDataLayoutProps {
   pageCompany: CompanyInterface;
   sessionUser: SessionUserPayloadInterface;
 }
@@ -1208,15 +1236,8 @@ interface GetConsoleInitialDataPayloadInterface {
 export async function getConsoleInitialData({
   context,
 }: GetConsoleInitialDataInterface): Promise<GetConsoleInitialDataPayloadInterface> {
-  const {
-    pageUrls,
-    currentCity,
-    sessionCity,
-    sessionLocale,
-    initialData,
-    companySlug,
-    themeStyle,
-  } = await getPageInitialState({ context });
+  const { currentCity, sessionCity, sessionLocale, initialData, companySlug, themeStyle } =
+    await getPageInitialState({ context });
 
   // Session user
   const sessionUser = await getPageSessionUser({
@@ -1272,7 +1293,6 @@ export async function getConsoleInitialData({
       layoutProps: {
         sessionUser: castDbData(sessionUser),
         pageCompany: castDbData(pageCompany),
-        pageUrls,
       },
       companySlug,
       initialData,
@@ -1288,7 +1308,7 @@ interface GetConsoleMainPageDataInterface {
   context: GetServerSidePropsContext;
 }
 
-interface GetConsoleMainPageDataLayoutProps extends NavPropsInterface {
+interface GetConsoleMainPageDataLayoutProps {
   sessionUser: SessionUserPayloadInterface;
 }
 
@@ -1306,15 +1326,8 @@ interface GetConsoleMainPageDataPayloadInterface {
 export async function getConsoleMainPageData({
   context,
 }: GetConsoleMainPageDataInterface): Promise<GetConsoleMainPageDataPayloadInterface> {
-  const {
-    pageUrls,
-    currentCity,
-    sessionCity,
-    sessionLocale,
-    initialData,
-    companySlug,
-    themeStyle,
-  } = await getPageInitialState({ context });
+  const { currentCity, sessionCity, sessionLocale, initialData, companySlug, themeStyle } =
+    await getPageInitialState({ context });
 
   // Session user
   const sessionUser = await getPageSessionUser({
@@ -1357,7 +1370,6 @@ export async function getConsoleMainPageData({
     props: {
       layoutProps: {
         sessionUser: castDbData(sessionUser),
-        pageUrls,
       },
       companySlug,
       initialData,
@@ -1373,7 +1385,7 @@ interface GetAppInitialDataInterface {
   context: GetServerSidePropsContext;
 }
 
-interface GetAppInitialDataLayoutProps extends NavPropsInterface {
+interface GetAppInitialDataLayoutProps {
   sessionUser: SessionUserPayloadInterface;
 }
 
@@ -1391,15 +1403,8 @@ interface GetAppInitialDataPayloadInterface {
 export async function getAppInitialData({
   context,
 }: GetAppInitialDataInterface): Promise<GetAppInitialDataPayloadInterface> {
-  const {
-    pageUrls,
-    currentCity,
-    sessionCity,
-    sessionLocale,
-    initialData,
-    companySlug,
-    themeStyle,
-  } = await getPageInitialState({ context });
+  const { currentCity, sessionCity, sessionLocale, initialData, companySlug, themeStyle } =
+    await getPageInitialState({ context });
 
   // Session user
   const sessionUser = await getPageSessionUser({
@@ -1439,7 +1444,6 @@ export async function getAppInitialData({
     props: {
       layoutProps: {
         sessionUser: castDbData(sessionUser),
-        pageUrls,
       },
       themeStyle,
       companySlug,
@@ -1558,7 +1562,6 @@ export interface GetSiteInitialDataInterface {
 
 export interface SiteInitialDataPropsInterface
   extends PagePropsInterface,
-    NavPropsInterface,
     Omit<SiteLayoutProviderInterface, 'description' | 'title'> {}
 
 export interface SiteInitialDataPayloadInterface {
@@ -1572,7 +1575,6 @@ export async function getSiteInitialData({
   // console.log('=================== getSiteInitialData =======================');
   // const timeStart = new Date().getTime();
   const {
-    pageUrls,
     currentCity,
     sessionCity,
     sessionLocale,
@@ -1613,7 +1615,6 @@ export async function getSiteInitialData({
       sessionCity,
       sessionLocale,
       domainCompany,
-      pageUrls,
       urlPrefix,
     },
   };

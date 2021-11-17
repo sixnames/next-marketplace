@@ -110,11 +110,6 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
               },
             },
           },
-          {
-            $project: {
-              shops: false,
-            },
-          },
         ],
       },
     });

@@ -9,7 +9,7 @@ import { PagesGroupInterface, RubricInterface } from 'db/uiInterfaces';
 import Footer from 'layout/footer/Footer';
 import Header from 'layout/header/Header';
 import { StickNavInterface } from 'layout/header/StickyNav';
-import Meta, { MetaInterface, PageUrlsInterface } from 'layout/Meta';
+import Meta, { MetaInterface } from 'layout/Meta';
 import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 
@@ -27,7 +27,6 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
   children,
   title,
   description,
-  pageUrls,
   footerPageGroups,
   headerPageGroups,
   previewImage,
@@ -50,7 +49,6 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
       <Meta
         title={title}
         description={description}
-        pageUrls={pageUrls}
         previewImage={previewImage}
         siteName={siteName}
         foundationYear={foundationYear}
@@ -80,7 +78,6 @@ export interface SiteLayoutProviderInterface
   description?: string;
   navRubrics: RubricInterface[];
   previewImage?: string;
-  pageUrls: PageUrlsInterface;
   urlPrefix: string;
 }
 

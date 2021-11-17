@@ -13,6 +13,16 @@ const cities: CityModel[] = [
       en: 'Moscow',
     },
   },
+  {
+    _id: getObjectId('spbCity'),
+    slug: 'spb',
+    currency: DEFAULT_CURRENCY,
+    countryId: getObjectId('defaultCountry'),
+    nameI18n: {
+      ru: 'СПБ',
+      en: 'SPB',
+    },
+  },
 ];
 
 // @ts-ignore

@@ -1523,6 +1523,8 @@ export const getConsoleShopProducts = async ({
       ...photoStage,
     };
 
+    console.log(productsInitialMatch);
+
     const shopProductsAggregationResult = await shopProductsCollection
       .aggregate<ShopProductsAggregationInterface>([
         // match products

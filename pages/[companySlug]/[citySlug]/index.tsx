@@ -15,7 +15,7 @@ import {
 import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
 import { COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
-import { noImageStage, shopProductFieldsPipeline } from 'db/dao/constantPipelines';
+import { ignoreNoImageStage, shopProductFieldsPipeline } from 'db/dao/constantPipelines';
 import { getDatabase } from 'db/mongodb';
 import {
   MobileTopFilters,
@@ -445,7 +445,7 @@ export async function getStaticProps(
           $match: {
             ...companyRubricsMatch,
             citySlug: sessionCity,
-            ...noImageStage,
+            ...ignoreNoImageStage,
           },
         },
         {

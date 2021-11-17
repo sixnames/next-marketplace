@@ -1,6 +1,6 @@
 import { SORT_DESC } from 'config/common';
 import { COL_PRODUCTS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
-import { noImageStage, shopProductFieldsPipeline } from 'db/dao/constantPipelines';
+import { ignoreNoImageStage, shopProductFieldsPipeline } from 'db/dao/constantPipelines';
 import { ProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { ShopProductInterface } from 'db/uiInterfaces';
@@ -137,7 +137,7 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
                       { $lte: ['$price', '$$maxFilterPrice'] },
                     ],
                   },
-                  ...noImageStage,
+                  ...ignoreNoImageStage,
                 },
               },
               {

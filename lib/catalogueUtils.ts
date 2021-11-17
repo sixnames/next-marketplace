@@ -24,6 +24,7 @@ import {
 import {
   catalogueRubricFieldsPipeline,
   filterAttributesPipeline,
+  ignoreNoImageStage,
   noImageStage,
 } from 'db/dao/constantPipelines';
 import {
@@ -60,7 +61,6 @@ import {
   FILTER_NO_PHOTO_KEY,
   CATALOGUE_SEO_TEXT_POSITION_TOP,
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
-  IMAGE_FALLBACK,
   ZERO_PAGE_FILTER,
 } from 'config/common';
 import { getDatabase } from 'db/mongodb';
@@ -719,9 +719,7 @@ export function castCatalogueFilters({
 
       if (filterAttributeSlug === FILTER_COMMON_KEY) {
         if (filterOptionSlug === FILTER_NO_PHOTO_KEY) {
-          photoStage = {
-            mainImage: IMAGE_FALLBACK,
-          };
+          photoStage = noImageStage;
         }
         return;
       }
@@ -1016,7 +1014,7 @@ export const getCatalogueData = async ({
       ...brandCollectionStage,
       ...optionsStage,
       ...pricesStage,
-      ...noImageStage,
+      ...ignoreNoImageStage,
     };
 
     // aggregate catalogue initial data

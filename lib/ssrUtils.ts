@@ -28,7 +28,7 @@ import {
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
 } from 'db/collectionNames';
-import { noImageStage } from 'db/dao/constantPipelines';
+import { ignoreNoImageStage } from 'db/dao/constantPipelines';
 import { getPageSessionUser, SessionUserPayloadInterface } from 'db/dao/user/getPageSessionUser';
 import {
   AttributeModel,
@@ -254,7 +254,7 @@ export const getCatalogueNavRubrics = async ({
         $match: {
           ...companyRubricsMatch,
           citySlug: city,
-          ...noImageStage,
+          ...ignoreNoImageStage,
         },
       },
       {

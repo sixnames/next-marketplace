@@ -6,7 +6,7 @@ import {
   COL_PRODUCTS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
-import { noImageStage } from 'db/dao/constantPipelines';
+import { ignoreNoImageStage } from 'db/dao/constantPipelines';
 import { CityModel, CompanyModel, LanguageModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { GetServerSidePropsContext } from 'next';
@@ -73,7 +73,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         {
           $match: {
             ...companyRubricsMatch,
-            ...noImageStage,
+            ...ignoreNoImageStage,
           },
         },
         {

@@ -28,7 +28,7 @@ import {
   COL_SUPPLIERS,
 } from 'db/collectionNames';
 
-export const noImageStage = {
+export const ignoreNoImageStage = {
   $and: [
     {
       mainImage: {
@@ -41,6 +41,12 @@ export const noImageStage = {
       },
     },
   ],
+};
+
+export const noImageStage = {
+  mainImage: {
+    $in: [IMAGE_FALLBACK, IMAGE_FALLBACK_BOTTLE],
+  },
 };
 
 interface GetCatalogueRubricPipelineInterface {

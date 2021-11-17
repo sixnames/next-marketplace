@@ -11,7 +11,7 @@ import WpImage from 'components/WpImage';
 import { MAP_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
-import { useThemeContext } from 'context/themeContext';
+import { useShopMarker } from 'hooks/useShopMarker';
 import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
 import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
@@ -187,9 +187,9 @@ const CartShoplessProduct: React.FC<CartProductPropsInterface> = ({ cartProduct,
 };
 
 const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId }) => {
+  const marker = useShopMarker(cartProduct.shopProduct?.shop);
   const { configs } = useConfigContext();
   const { showModal } = useAppContext();
-  const { isDark } = useThemeContext();
   const { updateProductInCart } = useSiteContext();
   const { shopProduct, amount, _id } = cartProduct;
   const minAmount = 1;
@@ -203,10 +203,6 @@ const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId 
   if (!shop || !product) {
     return null;
   }
-
-  const lightThemeMarker = shop.mapMarker?.lightTheme;
-  const darkThemeMarker = shop.mapMarker?.darkTheme;
-  const marker = (isDark ? darkThemeMarker : lightThemeMarker) || '/marker.svg';
 
   return (
     <CartProductFrame

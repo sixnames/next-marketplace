@@ -12,13 +12,12 @@ import { SessionUserPayloadInterface } from 'db/dao/user/getPageSessionUser';
 import { CompanyInterface } from 'db/uiInterfaces';
 import useCompact from 'hooks/useCompact';
 import CmsNav from 'layout/cms/CmsNav';
-import Meta, { PageUrlsInterface } from 'layout/Meta';
+import Meta from 'layout/Meta';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 
 interface ConsoleLayoutConsumerInterface {
   title?: string;
-  pageUrls: PageUrlsInterface;
   pageCompany?: CompanyInterface | null;
 }
 
@@ -28,7 +27,6 @@ const wideContentClass = 'lg:pl-[60px]';
 const ConsoleLayoutConsumer: React.FC<ConsoleLayoutConsumerInterface> = ({
   title,
   pageCompany,
-  pageUrls,
   children,
 }) => {
   const { isMobile } = useAppContext();
@@ -52,7 +50,7 @@ const ConsoleLayoutConsumer: React.FC<ConsoleLayoutConsumerInterface> = ({
 
   return (
     <div className={`min-h-full-height text-primary-text bg-primary`}>
-      <Meta title={title} pageUrls={pageUrls} />
+      <Meta title={title} />
       <div dangerouslySetInnerHTML={{ __html: `${yaMetrica}${googleAnalytics}` }} />
 
       {/*top bar*/}

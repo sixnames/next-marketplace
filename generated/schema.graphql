@@ -274,7 +274,8 @@ type BrandsPaginationPayload implements PaginationPayload {
 
 type Cart {
   _id: ObjectId!
-  cartProducts: [CartProduct!]!
+  cartBookingProducts: [CartProduct!]!
+  cartDeliveryProducts: [CartProduct!]!
 }
 
 type CartPayload {
@@ -2125,7 +2126,6 @@ type ShopProduct implements Timestamp {
   citySlug: String!
   createdAt: Date!
   discountedPercent: Int
-  inCartCount: Int!
   oldPrice: Int
   oldPrices: [ShopProductOldPrice!]!
   price: Int!

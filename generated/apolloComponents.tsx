@@ -311,7 +311,8 @@ export type BrandsPaginationPayload = PaginationPayload & {
 export type Cart = {
   __typename?: 'Cart';
   _id: Scalars['ObjectId'];
-  cartProducts: Array<CartProduct>;
+  cartDeliveryProducts: Array<CartProduct>;
+  cartBookingProducts: Array<CartProduct>;
 };
 
 export type CartPayload = {
@@ -2401,7 +2402,6 @@ export type ShopProduct = Timestamp & {
   discountedPercent?: Maybe<Scalars['Int']>;
   product: Product;
   shop: Shop;
-  inCartCount: Scalars['Int'];
 };
 
 export type ShopProductOldPrice = Timestamp & {

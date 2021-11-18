@@ -16,7 +16,7 @@ import {
   SupplierModel,
   SupplierProductModel,
 } from 'db/dbModels';
-import { getOperationPermission, getRequestParams, getSessionCart } from 'lib/sessionHelpers';
+import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 
 export const ShopProductOldPrice = objectType({
@@ -71,23 +71,6 @@ export const ShopProduct = objectType({
           throw Error('Shop not found in ShopProduct');
         }
         return shop;
-      },
-    });
-
-    // ShopProduct inCartCount field resolver
-    t.nonNull.field('inCartCount', {
-      type: 'Int',
-      resolve: async (source, _args, context): Promise<number> => {
-        const cart = await getSessionCart(context);
-        const cartProduct = cart.cartProducts.find((cartProduct) => {
-          return cartProduct?.shopProductId && cartProduct.shopProductId.equals(source._id);
-        });
-
-        if (!cartProduct) {
-          return 0;
-        }
-
-        return cartProduct.amount;
       },
     });
   },

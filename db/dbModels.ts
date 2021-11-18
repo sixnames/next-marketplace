@@ -320,11 +320,13 @@ export interface CartProductModel {
   shopProductId?: ObjectIdModel | null;
   productId: ObjectIdModel;
   amount: number;
+  allowDelivery: boolean;
 }
 
 export interface CartModel extends TimestampModel {
   _id: ObjectIdModel;
-  cartProducts: CartProductModel[];
+  cartDeliveryProducts: CartProductModel[];
+  cartBookingProducts: CartProductModel[];
 }
 
 export interface CompanyModel extends BaseModel, TimestampModel {

@@ -61,9 +61,6 @@ export interface MakeAnOrderInputInterface {
   reservationDate?: string | null;
   comment?: string;
   companySlug?: string;
-}
-
-interface MakeAnOrderConfigInterface extends DaoPropsInterface<MakeAnOrderInputInterface> {
   allowDelivery: boolean;
   cartProductsFieldName: 'cartDeliveryProducts' | 'cartBookingProducts';
 }
@@ -71,9 +68,7 @@ interface MakeAnOrderConfigInterface extends DaoPropsInterface<MakeAnOrderInputI
 export async function makeAnOrder({
   context,
   input,
-  allowDelivery,
-  cartProductsFieldName,
-}: MakeAnOrderConfigInterface): Promise<MakeAnOrderPayloadModel> {
+}: DaoPropsInterface<MakeAnOrderInputInterface>): Promise<MakeAnOrderPayloadModel> {
   const { getApiMessage, companySlug, city, locale } = await getRequestParams(context);
   const { db, client } = await getDatabase();
   const rolesCollection = db.collection<RoleModel>(COL_ROLES);
@@ -110,6 +105,8 @@ export async function makeAnOrder({
         schema: makeAnOrderSchema,
       });
       await validationSchema.validate(input);
+
+      const { cartProductsFieldName, allowDelivery } = input;
 
       const sessionUser = await getSessionUser(context);
       const cart = await getSessionCart(context);

@@ -1,6 +1,6 @@
 import { ROUTE_CMS } from 'config/common';
 
-describe('Product products', () => {
+describe('Product attributes', () => {
   beforeEach(() => {
     cy.testAuth(`${ROUTE_CMS}/rubrics`);
   });

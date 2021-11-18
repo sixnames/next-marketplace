@@ -54,8 +54,6 @@ export async function getPageInitialState({
   const sessionCity = currentCity?.slug || DEFAULT_CITY;
 
   // Domain company
-
-  // For development
   const domainCompany = await getSsrDomainCompany({
     slug: `${params?.companySlug}`,
   });

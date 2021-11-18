@@ -77,6 +77,13 @@ const optionsGroups: OptionsGroupModel[] = [
     },
     variant: OPTIONS_GROUP_VARIANT_TEXT as OptionsGroupVariantModel,
   },
+  {
+    _id: getObjectId('optionsGroup Газ'),
+    nameI18n: {
+      ru: 'Газ',
+    },
+    variant: OPTIONS_GROUP_VARIANT_TEXT as OptionsGroupVariantModel,
+  },
 ];
 
 // @ts-ignore

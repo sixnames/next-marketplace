@@ -84,10 +84,23 @@ export const useUpdateProduct = () => {
 };
 
 // delete
-export const useDeleteProduct = () => {
+interface UseDeleteProductInterface {
+  reload?: boolean;
+  redirectUrl?: string;
+}
+
+export const useDeleteProduct = (props?: UseDeleteProductInterface) => {
+  const router = useRouter();
+
   return useMutationHandler<ProductPayloadModel, DeleteProductInputInterface>({
     path: basePath,
     method: REQUEST_METHOD_DELETE,
+    reload: props?.reload,
+    onSuccess: () => {
+      if (props?.redirectUrl) {
+        router.push(props.redirectUrl).catch(console.log);
+      }
+    },
   });
 };
 

@@ -78,7 +78,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
           {/*title*/}
           <div className='mb-8'>
             <Title low>{cardTitle}</Title>
-            {name ? <div className='text-secondary-text mt-3'>{name}</div> : null}
+            {name ? <h2 className='text-secondary-text mt-3'>{name}</h2> : null}
             <div className='flex items-center gap-4 mt-4'>
               {/*article*/}
               {showArticle ? (

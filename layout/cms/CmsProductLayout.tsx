@@ -1,8 +1,12 @@
 import Button from 'components/button/Button';
 import Inner from 'components/Inner';
+import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import Title from 'components/Title';
 import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
+import { CONFIRM_MODAL } from 'config/modalVariants';
+import { useAppContext } from 'context/appContext';
 import { ProductInterface } from 'db/uiInterfaces';
+import { useDeleteProduct } from 'hooks/mutations/useProductMutations';
 import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import AppSubNav from 'layout/AppSubNav';
 import Head from 'next/head';
@@ -37,6 +41,12 @@ const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({
   companySlug,
 }) => {
   const { query } = useRouter();
+  const { showModal } = useAppContext();
+  const [deleteProductFromRubricMutation] = useDeleteProduct({
+    reload: false,
+    redirectUrl: `${basePath || ROUTE_CMS}/rubrics/${query.rubricId}/products/${query.rubricId}`,
+  });
+
   const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
     return [
       {
@@ -121,18 +131,39 @@ const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({
         <Title subtitle={`Арт. ${product.itemId}`} testId={`${product.originalName}-product-title`}>
           {product.cardTitle}
         </Title>
-        <div className='mb-4'>
+        <div className='mb-4 flex gap-4'>
           <Button
+            frameClassName='w-auto'
+            size={'small'}
             onClick={() => {
               window.open(
                 `/${companySlug || DEFAULT_COMPANY_SLUG}/${DEFAULT_CITY}/${product.slug}`,
                 '_blank',
               );
             }}
-            theme={'secondary'}
-            size={'small'}
           >
             Карточка товара
+          </Button>
+          <Button
+            frameClassName='w-auto'
+            theme={'secondary'}
+            size={'small'}
+            onClick={() => {
+              showModal<ConfirmModalInterface>({
+                variant: CONFIRM_MODAL,
+                props: {
+                  testId: 'delete-product-modal',
+                  message: `Вы уверенны, что хотите удалить товар ${product.cardTitle}?`,
+                  confirm: () => {
+                    deleteProductFromRubricMutation({
+                      productId: `${product._id}`,
+                    }).catch((e) => console.log(e));
+                  },
+                },
+              });
+            }}
+          >
+            Удалить товар
           </Button>
         </div>
       </Inner>

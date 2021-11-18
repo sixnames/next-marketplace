@@ -18,11 +18,11 @@ const CardPrices: React.FC<CardPricesInterface> = ({ cardPrices, shopsCount }) =
   }
 
   return (
-    <div className='flex items-baseline'>
+    <div className='sm:inline-flex items-baseline'>
       {isMultiplePrice ? (
         <React.Fragment>
           <div className='mr-2'>Цена от</div>
-          <div className='flex items-baseline text-3xl sm:text-4xl'>
+          <div className='flex items-baseline text-2xl sm:text-3xl md:text-4xl'>
             <Currency value={cardPrices?.min} />
             <div className='text-lg mx-2'>до</div>
             <Currency value={cardPrices?.max} />
@@ -31,7 +31,7 @@ const CardPrices: React.FC<CardPricesInterface> = ({ cardPrices, shopsCount }) =
       ) : (
         <React.Fragment>
           <div className='mr-2'>Цена</div>
-          <div className='flex items-baseline text-3xl sm:text-4xl'>
+          <div className='flex items-baseline text-2xl sm:text-3xl md:text-4xl'>
             <Currency value={cardPrices?.min} />
           </div>
         </React.Fragment>

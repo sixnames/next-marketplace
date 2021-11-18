@@ -53,8 +53,11 @@ const CartProductFrame: React.FC<CartProductFrameInterface> = ({
   const { deleteProductFromCart, urlPrefix } = useSiteContext();
 
   return (
-    <div className='grid gap-4'>
-      <LayoutCard className='grid px-6 py-8 gap-6 sm:grid-cols-8 relative' testId={'cart-product'}>
+    <div className='space-y-4'>
+      <LayoutCard
+        className='grid px-6 py-8 gap-6 sm:grid-cols-8 relative min-h-[311px]'
+        testId={'cart-product'}
+      >
         {/*image*/}
         <div className='flex flex-col gap-4 items-center justify-center sm:col-span-2'>
           <div className='relative flex justify-center flex-shrink-0 w-full max-w-[180px]'>
@@ -79,7 +82,7 @@ const CartProductFrame: React.FC<CartProductFrameInterface> = ({
         </div>
 
         {/*main data*/}
-        <div className='sm:col-span-6'>{children}</div>
+        <div className='sm:col-span-6 flex flex-col'>{children}</div>
 
         {/*remove button*/}
         <ButtonCross
@@ -165,6 +168,7 @@ const CartShoplessProduct: React.FC<CartProductPropsInterface> = ({ cartProduct,
 
       <div className='flex flex-wrap gap-6 mb-4 items-center'>
         <div>
+          <div className='text-secondary-text'>Цена за ед.</div>
           <ProductSnippetPrice shopsCount={shopsCount} value={cardPrices?.min} />
         </div>
 
@@ -219,7 +223,7 @@ const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId 
         snippetTitle={product.snippetTitle}
       />
 
-      <div className='flex flex-wrap gap-6 mb-4'>
+      <div className='flex flex-wrap gap-6 mt-auto'>
         {/*amount input*/}
         <div>
           <SpinnerInput
@@ -245,6 +249,7 @@ const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId 
 
         <div>
           {/*shop product price*/}
+          <div className='text-secondary-text'>Цена за ед.</div>
           <ProductShopPrices
             price={price}
             oldPrice={oldPrice}
@@ -262,7 +267,7 @@ const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId 
 
       {/*shop info*/}
       {configs.isOneShopCompany ? null : (
-        <div className=''>
+        <div className='mt-4'>
           <div className='mb-2'>
             Магазин: <span className='font-medium text-lg'>{shop.name}</span>
           </div>
@@ -336,6 +341,7 @@ const CartRoute: React.FC = () => {
           <Title>Корзина пуста</Title>
           <div className='flex gap-4 flex-wrap'>
             <Button
+              frameClassName='w-auto'
               theme={'secondary'}
               onClick={() => {
                 router.push(urlPrefix).catch(() => {
@@ -346,10 +352,11 @@ const CartRoute: React.FC = () => {
               Продолжить покупки
             </Button>
             <Button
+              frameClassName='w-auto'
+              theme={'secondary'}
               onClick={() => {
                 router.push(`${urlPrefix}${ROUTE_PROFILE}`).catch(console.log);
               }}
-              theme={'secondary'}
             >
               Мои заказы
             </Button>

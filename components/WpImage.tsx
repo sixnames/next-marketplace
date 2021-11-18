@@ -28,12 +28,30 @@ const WpImage: React.FC<WpImageInterface> = ({
   return (
     <picture>
       <source
+        media='(max-width: 320px)'
+        srcSet={`${url}?format=${format}&width=${
+          width / 2
+        }${qualityParam}${companySlugParam} 1x, ${url}?format=${format}&width=${width}${qualityParam}${companySlugParam} 2x`}
+      />
+
+      <source
+        media='(max-width: 768px)'
+        srcSet={`${url}?format=${format}&width=${
+          width / 1.5
+        }${qualityParam}${companySlugParam} 1x, ${url}?format=${format}&width=${
+          (width / 1.5) * 2
+        }${qualityParam}${companySlugParam} 2x`}
+      />
+
+      <source
+        media='(min-width: 769px)'
         type={`image/${format}`}
         srcSet={`${url}?format=${format}&width=${width}${qualityParam}${companySlugParam} 1x, ${url}?format=${format}&width=${
           width * 2
         }${qualityParam}${companySlugParam} 2x`}
       />
       <source
+        media='(min-width: 769px)'
         type={'image/png'}
         srcSet={`${url}?format=png&width=${width}${qualityParam}${companySlugParam} 1x, ${url}?format=png&width=${
           width * 2

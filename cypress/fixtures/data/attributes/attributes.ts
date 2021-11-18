@@ -276,6 +276,21 @@ const attributes: AttributeModel[] = [
     attributesGroupId: getObjectId('attributesGroup Характеристики вина'),
     ...booleans,
   },
+  {
+    _id: getObjectId(`attribute Газ`),
+    slug: '000015',
+    nameI18n: {
+      ru: 'Газ',
+    },
+    variant: ATTRIBUTE_VARIANT_SELECT as AttributeVariantModel,
+    viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST as AttributeViewVariantModel,
+    optionsGroupId: getObjectId('optionsGroup Газ'),
+    positioningInTitle: {
+      ru: ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD as AttributePositionInTitleModel,
+    },
+    attributesGroupId: getObjectId('attributesGroup Характеристики воды'),
+    ...booleans,
+  },
 ];
 
 // @ts-ignore

@@ -100,6 +100,7 @@ const OrderRouteProduct: React.FC<OrderRouteProductInterface> = ({ cartProduct }
 
         {/*price*/}
         <div className='mb-6'>
+          <div className='text-secondary-text'>Цена за ед.</div>
           <div className='flex items-baseline gap-2 md:gap-3 mb-3'>
             <ProductShopPrices
               className=''
@@ -332,7 +333,7 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
                     <CartAside
                       cart={cart}
                       buttonText={configs.buyButtonText}
-                      backLinkHref={`/cart`}
+                      backLinkHref={`${urlPrefix}/cart`}
                       buttonType={'submit'}
                     />
                   </div>

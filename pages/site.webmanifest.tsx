@@ -56,12 +56,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         {
             "src": "${android192}",
             "sizes": "192x192",
-            "type": "image/png"
+            "type": "image/webp"
         },
         {
             "src": "${android512}",
             "sizes": "512x512",
-            "type": "image/png"
+            "type": "image/webp"
         }
     ],
     "theme_color": "#ffffff",

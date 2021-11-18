@@ -27,6 +27,7 @@ export async function getCatalogueIsrProps(
   }
 
   // catalogue
+  const filters = alwaysArray(context.params?.filters);
   const rawCatalogueData = await getCatalogueData({
     locale: props.sessionLocale,
     city: props.sessionCity,
@@ -38,7 +39,7 @@ export async function getCatalogueIsrProps(
     visibleCategoriesInNavDropdown: props.initialData.configs.visibleCategoriesInNavDropdown,
     input: {
       rubricSlug: `${rubricSlug}`,
-      filters: alwaysArray(context.params?.filters),
+      filters,
       page: 1,
     },
   });
@@ -47,7 +48,7 @@ export async function getCatalogueIsrProps(
     return notFoundResponse;
   }
 
-  if (!rawCatalogueData.isSearch && rawCatalogueData.products.length < 1) {
+  if (!rawCatalogueData.isSearch && rawCatalogueData.products.length < 1 && filters.length > 0) {
     return {
       redirect: {
         permanent: true,

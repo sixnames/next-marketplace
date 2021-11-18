@@ -390,7 +390,10 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
               });
             }}
           >
-            <div>{domainCompany.mainShop.address.formattedAddress}</div>
+            <div>
+              <div className='text-secondary-text'>Наш адрес</div>
+              <div>{domainCompany.mainShop.address.formattedAddress}</div>
+            </div>
           </div>
         ) : null}
       </Inner>
@@ -565,7 +568,10 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
                     });
                   }}
                 >
-                  <div>{domainCompany.mainShop.address.formattedAddress}</div>
+                  <div>
+                    <div className='text-secondary-text'>Наш адрес</div>
+                    <div>{domainCompany.mainShop.address.formattedAddress}</div>
+                  </div>
                 </div>
               ) : null}
               {/*<div className={`${middleLinkClassName}`}>

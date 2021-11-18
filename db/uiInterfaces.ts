@@ -154,7 +154,8 @@ export interface CartInterface extends CartModel {
   productsCount?: number;
   formattedTotalPrice?: string;
   isWithShopless?: boolean;
-  cartProducts: CartProductInterface[];
+  cartDeliveryProducts: CartProductInterface[];
+  cartBookingProducts: CartProductInterface[];
 }
 
 export interface PromoInterface extends PromoModel {

@@ -70,6 +70,13 @@ const attributesGroups: AttributesGroupModel[] = [
     },
     attributesIds: getObjectIds([`attribute Тип вина`]),
   },
+  {
+    _id: getObjectId('attributesGroup Характеристики воды'),
+    nameI18n: {
+      ru: 'Характеристики воды',
+    },
+    attributesIds: getObjectIds([`attribute Газ`]),
+  },
 ];
 
 // @ts-ignore

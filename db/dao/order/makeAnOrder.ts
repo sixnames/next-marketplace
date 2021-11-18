@@ -63,10 +63,17 @@ export interface MakeAnOrderInputInterface {
   companySlug?: string;
 }
 
+interface MakeAnOrderConfigInterface extends DaoPropsInterface<MakeAnOrderInputInterface> {
+  allowDelivery: boolean;
+  cartProductsFieldName: 'cartDeliveryProducts' | 'cartBookingProducts';
+}
+
 export async function makeAnOrder({
   context,
   input,
-}: DaoPropsInterface<MakeAnOrderInputInterface>): Promise<MakeAnOrderPayloadModel> {
+  allowDelivery,
+  cartProductsFieldName,
+}: MakeAnOrderConfigInterface): Promise<MakeAnOrderPayloadModel> {
   const { getApiMessage, companySlug, city, locale } = await getRequestParams(context);
   const { db, client } = await getDatabase();
   const rolesCollection = db.collection<RoleModel>(COL_ROLES);
@@ -107,8 +114,10 @@ export async function makeAnOrder({
       const sessionUser = await getSessionUser(context);
       const cart = await getSessionCart(context);
 
+      const cartProducts = cart[cartProductsFieldName];
+
       // Check if cart is empty
-      if (cart.cartProducts.length < 1) {
+      if (cartProducts.length < 1) {
         payload = {
           success: false,
           message: await getApiMessage('orders.makeAnOrder.empty'),
@@ -211,7 +220,7 @@ export async function makeAnOrder({
 
       // Cast cart products to order products
       const castedOrderProducts: OrderProductModel[] = [];
-      for await (const cartProduct of cart.cartProducts) {
+      for await (const cartProduct of cartProducts) {
         const { amount, shopProductId } = cartProduct;
 
         // get shop product
@@ -270,6 +279,7 @@ export async function makeAnOrder({
             companyId,
             companyItemId: company.itemId,
             reservationDate: input.reservationDate ? new Date(input.reservationDate) : null,
+            allowDelivery,
             createdAt: new Date(),
             updatedAt: new Date(),
           };
@@ -297,13 +307,14 @@ export async function makeAnOrder({
           companyId: company._id,
           orderId: existingOrder._id,
           barcode: shopProduct.barcode,
+          allowDelivery,
           createdAt: new Date(),
           updatedAt: new Date(),
         });
       }
 
       // Return error if not all products are casted
-      if (castedOrderProducts.length !== cart.cartProducts.length) {
+      if (castedOrderProducts.length !== cartProducts.length) {
         payload = {
           success: false,
           message: await getApiMessage('orders.makeAnOrder.productsNotFound'),

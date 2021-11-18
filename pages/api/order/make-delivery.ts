@@ -8,8 +8,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const payload = await makeAnOrder({
       context: { req, res },
       input: JSON.parse(req.body),
-      cartProductsFieldName: 'cartBookingProducts',
-      allowDelivery: false,
+      cartProductsFieldName: 'cartDeliveryProducts',
+      allowDelivery: true,
     });
     sendApiRouteResponse({
       payload,

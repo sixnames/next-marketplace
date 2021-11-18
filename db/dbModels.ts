@@ -524,6 +524,7 @@ export interface OrderProductModel extends TimestampModel {
   companyId: ObjectIdModel;
   orderId: ObjectIdModel;
   statusId: ObjectIdModel;
+  allowDelivery: boolean;
   barcode?: string[] | null;
   isCanceled?: boolean | null;
 }
@@ -573,6 +574,7 @@ export interface OrderModel extends TimestampModel, BaseModel {
   shopItemId: string;
   companyId: ObjectIdModel;
   companyItemId: string;
+  allowDelivery: boolean;
   reservationDate?: DateModel | null;
   isCanceled?: boolean;
   requests?: OrderRequestModel[] | null;

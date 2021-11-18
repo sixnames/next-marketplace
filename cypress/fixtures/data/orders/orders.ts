@@ -17,6 +17,7 @@ const orders: OrderModel[] = [
     companySiteSlug: 'default',
     comment: 'Order comment',
     statusId: getObjectId(`orderStatus new`),
+    allowDelivery: false,
     reservationDate: new Date(),
     updatedAt: new Date('2021-07-11T09:47:09.087Z'),
     createdAt: new Date('2021-07-11T09:47:09.087Z'),

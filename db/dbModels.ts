@@ -734,6 +734,7 @@ export interface RubricVariantModel {
   showCatalogueFilterBrands?: boolean | null;
   showCategoriesInFilter?: boolean | null;
   showCategoriesInNav?: boolean | null;
+  allowDelivery?: boolean | null;
 
   // numbers
   gridCatalogueColumns?: number | null;

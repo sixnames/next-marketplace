@@ -791,6 +791,7 @@ export interface NexusGenInputs {
   };
   UpdateRubricVariantInput: {
     // input type
+    allowDelivery?: boolean | null; // Boolean
     cardBrandsLabelI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     cardLayout?: string | null; // String
     catalogueFilterLayout?: string | null; // String
@@ -1873,6 +1874,7 @@ export interface NexusGenFieldTypes {
   RubricVariant: {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
+    allowDelivery: boolean | null; // Boolean
     cardLayout: string | null; // String
     catalogueFilterLayout: string | null; // String
     catalogueHeadLayout: string | null; // String
@@ -2920,6 +2922,7 @@ export interface NexusGenFieldTypeNames {
   RubricVariant: {
     // field return type name
     _id: 'ObjectId';
+    allowDelivery: 'Boolean';
     cardLayout: 'String';
     catalogueFilterLayout: 'String';
     catalogueHeadLayout: 'String';

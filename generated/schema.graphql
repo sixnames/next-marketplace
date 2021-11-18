@@ -2052,6 +2052,7 @@ input RubricProductsCountersInput {
 
 type RubricVariant {
   _id: ObjectId!
+  allowDelivery: Boolean
   cardLayout: String
   catalogueFilterLayout: String
   catalogueHeadLayout: String
@@ -2519,6 +2520,7 @@ input UpdateRubricInput {
 }
 
 input UpdateRubricVariantInput {
+  allowDelivery: Boolean
   cardBrandsLabelI18n: JSONObject
   cardLayout: String
   catalogueFilterLayout: String

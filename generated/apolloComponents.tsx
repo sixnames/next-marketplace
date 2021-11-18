@@ -2332,6 +2332,7 @@ export type RubricVariant = {
   showCatalogueFilterBrands?: Maybe<Scalars['Boolean']>;
   showCategoriesInFilter?: Maybe<Scalars['Boolean']>;
   showCategoriesInNav?: Maybe<Scalars['Boolean']>;
+  allowDelivery?: Maybe<Scalars['Boolean']>;
   gridCatalogueColumns?: Maybe<Scalars['Int']>;
   name: Scalars['String'];
 };
@@ -2807,6 +2808,7 @@ export type UpdateRubricVariantInput = {
   showCatalogueFilterBrands?: Maybe<Scalars['Boolean']>;
   showCategoriesInFilter?: Maybe<Scalars['Boolean']>;
   showCategoriesInNav?: Maybe<Scalars['Boolean']>;
+  allowDelivery?: Maybe<Scalars['Boolean']>;
   gridCatalogueColumns?: Maybe<Scalars['Int']>;
   cardBrandsLabelI18n?: Maybe<Scalars['JSONObject']>;
 };

@@ -44,6 +44,7 @@ export const RubricVariant = objectType({
     t.boolean('showCatalogueFilterBrands');
     t.boolean('showCategoriesInFilter');
     t.boolean('showCategoriesInNav');
+    t.boolean('allowDelivery');
 
     // numbers
     t.int('gridCatalogueColumns');
@@ -165,6 +166,7 @@ export const UpdateRubricVariantInput = inputObjectType({
     t.boolean('showCatalogueFilterBrands');
     t.boolean('showCategoriesInFilter');
     t.boolean('showCategoriesInNav');
+    t.boolean('allowDelivery');
 
     // numbers
     t.int('gridCatalogueColumns');

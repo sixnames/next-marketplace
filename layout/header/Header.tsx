@@ -1,5 +1,6 @@
 import { Disclosure, Popover } from '@headlessui/react';
 import ButtonCross from 'components/button/ButtonCross';
+import CityTrigger from 'components/CityTrigger';
 import LanguageTrigger from 'components/LanguageTrigger';
 import LinkPhone from 'components/Link/LinkPhone';
 import { MapModalInterface } from 'components/Modal/MapModal';
@@ -219,6 +220,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
           <div className='flex items-center gap-5'>
             <ThemeTrigger />
             <LanguageTrigger />
+            <CityTrigger />
           </div>
         </div>
 
@@ -390,7 +392,10 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
               });
             }}
           >
-            <div>{domainCompany.mainShop.address.formattedAddress}</div>
+            <div>
+              <div className='text-secondary-text'>Наш адрес</div>
+              <div>{domainCompany.mainShop.address.formattedAddress}</div>
+            </div>
           </div>
         ) : null}
       </Inner>
@@ -537,6 +542,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
 
               <ThemeTrigger style={topTextColorStyle} />
               <LanguageTrigger style={topTextColorStyle} />
+              <CityTrigger style={topTextColorStyle} />
             </div>
           </Inner>
         </div>
@@ -565,7 +571,10 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
                     });
                   }}
                 >
-                  <div>{domainCompany.mainShop.address.formattedAddress}</div>
+                  <div>
+                    <div className='text-secondary-text'>Наш адрес</div>
+                    <div>{domainCompany.mainShop.address.formattedAddress}</div>
+                  </div>
                 </div>
               ) : null}
               {/*<div className={`${middleLinkClassName}`}>

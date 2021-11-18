@@ -51,7 +51,7 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
 
   return (
     <div
-      className={`group rounded-md relative text-center flex flex-grow flex-col grid-snippet ${bgClassName} ${
+      className={`relative z-10 hover:z-20 group rounded-md relative text-center flex flex-grow flex-col grid-snippet ${bgClassName} ${
         className ? className : columnsClassName
       }`}
     >
@@ -122,45 +122,51 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
         {/*price*/}
         <div className='flex flex-col items-center justify-center px-4 mb-4 mt-auto'>
           <ProductSnippetPrice size={'medium'} shopsCount={shopsCount} value={cardPrices?.min} />
-
-          {/*art*/}
-          {showSnippetArticle ? (
-            <div className='text-secondary-text mb-2 opacity-0 group-hover:opacity-100 transition-opacity text-sm'>
-              Артикул: {itemId}
-            </div>
-          ) : null}
         </div>
       </div>
 
       {/*controls*/}
       <div
-        className={`flex items-center justify-between ${
-          showSnippetButtonsOnHover ? 'lg:opacity-0 group-hover:opacity-100 transition-all' : ''
-        }`}
+        className={
+          showSnippetButtonsOnHover
+            ? `lg:absolute lg:top-[calc(100%-2px)] w-full left-0 lg:h-0 lg:overflow-hidden group-hover:h-auto lg:opacity-0 group-hover:opacity-100 transition-all lg:border-l lg:border-r lg:border-b lg:border-border-200 rounded-bl-md rounded-br-md group-hover:shadow-md ${
+                showSnippetBackground ? 'bg-secondary' : 'bg-primary'
+              }`
+            : ''
+        }
       >
-        <ControlButton
-          icon={'cart'}
-          theme={showSnippetBackground ? 'accent' : undefined}
-          roundedTopRight
-          ariaLabel={'Добавить в корзину'}
-          testId={`${testId}-add-to-cart-grid`}
-          onClick={() => {
-            if (shopProductsIds && shopProductsIds.length < 2) {
-              addProductToCart({
-                amount: 1,
-                productId: product._id,
-                shopProductId: `${shopProductsIds[0]}`,
-              });
-            } else {
-              addShoplessProductToCart({
-                amount: 1,
-                productId: product._id,
-              });
-            }
-          }}
-        />
-        <ControlButton icon={'compare'} ariaLabel={'Добавить в сравнение'} />
-        <ControlButton icon={'heart'} ariaLabel={'Добавить в избранное'} />
+        {/*art*/}
+        {showSnippetArticle ? (
+          <div className='text-secondary-text mb-2 text-center lg:opacity-0 group-hover:opacity-100 transition-opacity text-sm'>
+            Артикул: {itemId}
+          </div>
+        ) : null}
+
+        <div className='flex items-center justify-between'>
+          <ControlButton
+            icon={'cart'}
+            theme={showSnippetBackground ? 'accent' : undefined}
+            roundedTopRight
+            ariaLabel={'Добавить в корзину'}
+            testId={`${testId}-add-to-cart-grid`}
+            onClick={() => {
+              if (shopProductsIds && shopProductsIds.length < 2) {
+                addProductToCart({
+                  amount: 1,
+                  productId: product._id,
+                  shopProductId: `${shopProductsIds[0]}`,
+                });
+              } else {
+                addShoplessProductToCart({
+                  amount: 1,
+                  productId: product._id,
+                });
+              }
+            }}
+          />
+          <ControlButton icon={'compare'} ariaLabel={'Добавить в сравнение'} />
+          <ControlButton icon={'heart'} ariaLabel={'Добавить в избранное'} />
+        </div>
       </div>
     </div>
   );

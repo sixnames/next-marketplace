@@ -1,5 +1,8 @@
 import * as React from 'react';
-import HeadlessMenuButton, { MenuButtonInterface } from 'components/HeadlessMenuButton';
+import HeadlessMenuButton, {
+  HeadlessMenuItemInterface,
+  MenuButtonInterface,
+} from 'components/HeadlessMenuButton';
 import Icon from 'components/Icon';
 import { IconType } from 'types/iconTypes';
 
@@ -9,6 +12,7 @@ export interface MenuButtonWithNameInterface extends Omit<MenuButtonInterface, '
   isOpenIcon?: IconType;
   isClosedIcon?: IconType;
   style?: React.CSSProperties;
+  showNameAsButtonText?: boolean;
 }
 
 const iconClassName = 'w-3 h-3';
@@ -23,6 +27,7 @@ const MenuButtonWithName: React.FC<MenuButtonWithNameInterface> = ({
   isClosedIcon = 'chevron-down',
   buttonClassName,
   style,
+  showNameAsButtonText,
   ...props
 }) => {
   return (
@@ -32,9 +37,21 @@ const MenuButtonWithName: React.FC<MenuButtonWithNameInterface> = ({
         className={className}
         initialValue={initialValue}
         buttonText={({ internalButtonText, isOpen }) => {
+          let buttonText = internalButtonText;
+          if (showNameAsButtonText) {
+            const allNavItems = config.reduce((acc: HeadlessMenuItemInterface[], group) => {
+              return [...acc, ...group.children];
+            }, []);
+            const currentNavItem = allNavItems.find(({ _id }) => {
+              return _id === internalButtonText;
+            });
+
+            buttonText = `${currentNavItem?.name}`;
+          }
+
           return (
             <span
-              className={`uppercase flex items-center ${buttonClassName ? buttonClassName : ''}`}
+              className={`flex items-center ${buttonClassName ? buttonClassName : ''}`}
               style={style}
             >
               {iconPosition === 'left' ? (
@@ -43,7 +60,9 @@ const MenuButtonWithName: React.FC<MenuButtonWithNameInterface> = ({
                   name={isOpen ? isOpenIcon : isClosedIcon}
                 />
               ) : null}
-              {internalButtonText}
+
+              <div>{buttonText}</div>
+
               {iconPosition === 'right' ? (
                 <Icon
                   className={`${iconClassName} ml-2`}

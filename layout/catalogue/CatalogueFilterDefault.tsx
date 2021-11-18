@@ -41,7 +41,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
             onClick={onClick}
             className='font-medium text-theme'
           >
-            Очистить
+            Сбросить
           </Link>
         ) : null}
       </div>

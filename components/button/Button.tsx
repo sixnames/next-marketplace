@@ -9,6 +9,7 @@ export interface ButtonPropsInterface {
   theme?: ButtonTheme;
   size?: SizeType;
   className?: string;
+  frameClassName?: string;
   children?: any;
   type?: ButtonType;
   disabled?: boolean;
@@ -36,6 +37,7 @@ const Button: React.FC<ButtonPropsInterface> = ({
   short,
   ariaLabel,
   isLoading,
+  frameClassName,
   ...props
 }) => {
   const themeClass =
@@ -61,7 +63,7 @@ const Button: React.FC<ButtonPropsInterface> = ({
   const buttonClass = `z-[5] flex items-center justify-center border-1 border-theme font-medium uppercase text-center text-sm transition-all duration-100 cursor-pointer disabled:opacity-50 disabled:pointer-events-none shadow-md hover:shadow-xl ${sizeClass} ${themeClass} ${circleClass} ${additionalClass}`;
 
   return (
-    <div className='relative w-full'>
+    <div className={`relative ${frameClassName ? frameClassName : 'w-full'}`}>
       <WpTooltip title={!disabled ? title : null}>
         <button
           aria-label={ariaLabel}

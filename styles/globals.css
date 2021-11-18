@@ -78,6 +78,20 @@
     box-shadow: 0 0 0 transparent;
   }
 
+  .visually-visible {
+    position: unset;
+    display: unset;
+    width: unset;
+    height: unset;
+    padding: unset;
+    margin: unset;
+    overflow: unset;
+    clip: unset;
+    white-space: unset;
+    outline: unset;
+    box-shadow: unset;
+  }
+
   .wp-nav-dropdown-hidden {
     position: absolute;
     width: 1px;
@@ -654,12 +668,6 @@
 
 html {
   font-size: 15px;
-}
-
-@media only screen and (max-width: 768px) {
-  html {
-    font-size: 14px;
-  }
 }
 
 body {

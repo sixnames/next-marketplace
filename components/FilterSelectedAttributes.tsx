@@ -59,7 +59,7 @@ const FilterSelectedAttributes: React.FC<FilterSelectedAttributesInterface> = ({
       <div className='flex items-baseline mb-3 justify-between'>
         <span className={`font-medium text-lg`}>Выбранные фильтры</span>
         <Link onClick={onClick} href={`${urlPrefix}${clearSlug}`} className={`ml-4`}>
-          Очистить
+          Сбросить
         </Link>
       </div>
       <div className='space-y-5'>

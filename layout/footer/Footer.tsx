@@ -110,7 +110,10 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
                   });
                 }}
               >
-                <div>{domainCompany.mainShop.address.formattedAddress}</div>
+                <div>
+                  <div className='text-secondary-text'>Наш адрес</div>
+                  <div>{domainCompany.mainShop.address.formattedAddress}</div>
+                </div>
               </div>
             ) : null}
           </div>

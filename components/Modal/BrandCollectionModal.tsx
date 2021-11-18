@@ -42,11 +42,11 @@ const BrandCollectionModal: React.FC<BrandCollectionModalInterface> = ({
     nameI18n: brandCollection?.nameI18n || {},
     descriptionI18n: brandCollection?.descriptionI18n || {},
     brandCollectionId: brandCollection?._id,
-    showAsBreadcrumb: brandCollection?.showAsBreadcrumb || false,
-    showAsCatalogueBreadcrumb: brandCollection?.showAsCatalogueBreadcrumb || false,
-    showInCardTitle: brandCollection?.showInCardTitle || false,
-    showInSnippetTitle: brandCollection?.showInSnippetTitle || false,
-    showInCatalogueTitle: brandCollection?.showInCatalogueTitle || false,
+    showAsBreadcrumb: brandCollection?.showAsBreadcrumb || true,
+    showAsCatalogueBreadcrumb: brandCollection?.showAsCatalogueBreadcrumb || true,
+    showInCardTitle: brandCollection?.showInCardTitle || true,
+    showInSnippetTitle: brandCollection?.showInSnippetTitle || true,
+    showInCatalogueTitle: brandCollection?.showInCatalogueTitle || true,
     brandId,
   };
 

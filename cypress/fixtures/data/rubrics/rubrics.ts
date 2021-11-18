@@ -76,7 +76,7 @@ const rubrics: RubricModel[] = [
       ru: '',
     },
     gender: GENDER_IT as GenderModel,
-    variantId: getObjectId('rubricVariant water'),
+    variantId: getObjectId('rubricVariant whiskey'),
     filterVisibleAttributeIds: attributes.reduce((acc: ObjectIdModel[], attribute) => {
       const exist =
         attribute.attributesGroupId.equals(getObjectId('attributesGroup Общие характеристики')) ||
@@ -126,6 +126,42 @@ const rubrics: RubricModel[] = [
       'attributesGroup Общие характеристики',
       'attributesGroup Характеристики вина',
     ]),
+    ...booleans,
+    ...DEFAULT_COUNTERS_OBJECT,
+  },
+  {
+    _id: getObjectId('rubric Вода'),
+    slug: 'voda',
+    nameI18n: {
+      ru: 'Вода',
+    },
+    descriptionI18n: {
+      ru: 'Вода',
+    },
+    shortDescriptionI18n: {
+      ru: 'Вода',
+    },
+    defaultTitleI18n: {
+      ru: 'Вода',
+    },
+    keywordI18n: {
+      ru: 'Вода',
+    },
+    prefixI18n: {
+      ru: '',
+    },
+    gender: GENDER_IT as GenderModel,
+    variantId: getObjectId('rubricVariant water'),
+    filterVisibleAttributeIds: attributes.reduce((acc: ObjectIdModel[], attribute) => {
+      const exist =
+        attribute.attributesGroupId.equals(getObjectId('attributesGroup Общие характеристики')) ||
+        attribute.attributesGroupId.equals(getObjectId('Характеристики воды'));
+      if (exist) {
+        return [...acc, attribute._id];
+      }
+      return acc;
+    }, []),
+    attributesGroupIds: [],
     ...booleans,
     ...DEFAULT_COUNTERS_OBJECT,
   },

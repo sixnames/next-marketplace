@@ -613,6 +613,7 @@ interface ProductMainFieldsInterface {
   manufacturerSlug?: string | null;
   selectedOptionsSlugs: string[];
   barcode?: string[] | null;
+  allowDelivery: boolean;
 }
 
 export interface ProductModel extends ProductMainFieldsInterface, BaseModel, TimestampModel {

@@ -2,6 +2,7 @@ import { DEFAULT_COUNTERS_OBJECT, IMAGE_FALLBACK } from 'config/common';
 import {
   COL_NOT_SYNCED_PRODUCTS,
   COL_PRODUCTS,
+  COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
@@ -11,6 +12,7 @@ import {
   ProductModel,
   ProductPayloadModel,
   RubricModel,
+  RubricVariantModel,
   ShopModel,
   ShopProductModel,
 } from 'db/dbModels';
@@ -41,6 +43,7 @@ export async function createProductWithSyncError({
   const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
   const notSyncedProductsCollection = db.collection<ShopModel>(COL_NOT_SYNCED_PRODUCTS);
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+  const rubricVariantsCollection = db.collection<RubricVariantModel>(COL_RUBRIC_VARIANTS);
 
   const session = client.startSession();
 
@@ -101,6 +104,17 @@ export async function createProductWithSyncError({
         return;
       }
 
+      // get rubric variant
+      const rubricVariant = await rubricVariantsCollection.findOne({ _id: rubric.variantId });
+      if (!rubricVariant) {
+        mutationPayload = {
+          success: false,
+          message: await getApiMessage(`products.create.error`),
+        };
+        await session.abortTransaction();
+        return;
+      }
+
       // check shop availability
       const shopObjectId = new ObjectId(shopId);
       const shop = await shopsCollection.findOne({ _id: shopObjectId });
@@ -145,6 +159,7 @@ export async function createProductWithSyncError({
         rubricId: rubric._id,
         rubricSlug: rubric.slug,
         active: false,
+        allowDelivery: Boolean(rubricVariant.allowDelivery),
         selectedOptionsSlugs: [],
         selectedAttributesIds: [],
         titleCategoriesSlugs: [],
@@ -215,6 +230,7 @@ export async function createProductWithSyncError({
         oldPrices: [],
         rubricId: createdProduct.rubricId,
         rubricSlug: createdProduct.rubricSlug,
+        allowDelivery: createdProduct.allowDelivery,
         companyId: shop.companyId,
         brandSlug: createdProduct.brandSlug,
         mainImage: createdProduct.mainImage,

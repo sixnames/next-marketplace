@@ -7,7 +7,6 @@ import {
   FILTER_BRAND_COLLECTION_KEY,
   FILTER_BRAND_KEY,
   FILTER_CATEGORY_KEY,
-  FILTER_PRICE_KEY,
 } from 'config/common';
 import { CATALOGUE_ADDITIONAL_OPTIONS_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
@@ -40,7 +39,7 @@ const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
   const { configs } = useConfigContext();
   const maxVisibleOptions =
     configs.catalogueFilterVisibleOptionsCount || CATALOGUE_FILTER_VISIBLE_OPTIONS;
-  const isPrice = attribute.slug === FILTER_PRICE_KEY;
+  // const isPrice = attribute.slug === FILTER_PRICE_KEY;
   const isBrand = attribute.slug === FILTER_BRAND_KEY;
 
   if (!attribute.options || attribute.options.length < 1) {
@@ -58,14 +57,14 @@ const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
     }
     const hiddenOptions = options.slice(maxVisibleOptions);
 
-    if (isPrice) {
+    /*if (isPrice) {
       return {
         maxVisibleOptions,
         visibleOptions: options,
         hiddenOptions: [],
         hasMoreOptions: false,
       };
-    }
+    }*/
 
     return {
       maxVisibleOptions,

@@ -38,10 +38,7 @@ interface SiteContextInterface extends SiteContextStateInterface {
   addShopToCartProduct: (input: AddShopToCartProductInput) => void;
   updateProductInCart: (input: UpdateProductInCartInput) => void;
   deleteProductFromCart: (input: DeleteProductFromCartInput) => void;
-  getShopProductInCartCount: (
-    shopProductId: string,
-    cartProductsFieldName: CartProductsFieldNameType,
-  ) => number;
+  getShopProductInCartCount: (shopProductId: string, allowDelivery: boolean) => number;
   makeAnOrder: (input: MakeAnOrderInputInterface) => void;
   repeatAnOrder: (_id: string) => void;
   clearCart: () => void;
@@ -303,7 +300,10 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
   );
 
   const getShopProductInCartCount = React.useCallback(
-    (shopProductId: string, cartProductsFieldName: CartProductsFieldNameType) => {
+    (shopProductId: string, allowDelivery: boolean) => {
+      const cartProductsFieldName: CartProductsFieldNameType = allowDelivery
+        ? 'cartDeliveryProducts'
+        : 'cartBookingProducts';
       const cartProducts = get(state.cart, cartProductsFieldName);
       const currentProduct = (cartProducts || []).find((cartProduct) => {
         return `${cartProduct.shopProductId}` === shopProductId;

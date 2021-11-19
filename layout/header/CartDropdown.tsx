@@ -33,7 +33,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
   const { configs } = useConfigContext();
   const { showErrorNotification } = useNotificationsContext();
   const { deleteProductFromCart, updateProductInCart, clearCart, urlPrefix } = useSiteContext();
-  const { productsCount, cartProducts, formattedTotalPrice } = cart;
+  const { productsCount, cartDeliveryProducts, cartBookingProducts, totalPrice } = cart;
   const minAmount = 1;
 
   return (
@@ -56,7 +56,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
       </div>
       <div className='max-h-[30rem] overflow-y-auto'>
         <div className='pt-[var(--framePadding)]'>
-          {cartProducts.map((cartProduct, index) => {
+          {[...cartDeliveryProducts, ...cartBookingProducts].map((cartProduct, index) => {
             const { product, shopProduct, _id, amount } = cartProduct;
 
             if (shopProduct) {
@@ -209,7 +209,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
         <div className='flex items-center justify-between mb-[var(--framePadding)]'>
           <div className='text-2xl text-secondary-text'>Итого</div>
           <div className='text-2xl text-primary-text font-medium'>
-            <Currency value={formattedTotalPrice} />
+            <Currency value={totalPrice} />
           </div>
         </div>
         <Button

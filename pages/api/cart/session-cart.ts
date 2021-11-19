@@ -289,6 +289,33 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
                 },
               },
             },
+          ])
+          .toArray();
+        cartProductCopy.shopProduct = shopProductAggregation[0];
+      }
+
+      if (productId) {
+        const productAggregation = await productsCollection
+          .aggregate<ProductInterface>([
+            {
+              $match: {
+                _id: productId,
+              },
+            },
+            {
+              $project: {
+                descriptionI18n: false,
+              },
+            },
+
+            // get product attributes
+            ...productAttributesPipeline,
+
+            // get product brand
+            ...brandPipeline,
+
+            // get product categories
+            ...productCategoriesPipeline(),
 
             // get product rubric
             {
@@ -391,33 +418,6 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
             },
           ])
           .toArray();
-        cartProductCopy.shopProduct = shopProductAggregation[0];
-      }
-
-      if (productId) {
-        const productAggregation = await productsCollection
-          .aggregate<ProductInterface>([
-            {
-              $match: {
-                _id: productId,
-              },
-            },
-            {
-              $project: {
-                descriptionI18n: false,
-              },
-            },
-
-            // get product attributes
-            ...productAttributesPipeline,
-
-            // get product brand
-            ...brandPipeline,
-
-            // get product categories
-            ...productCategoriesPipeline(),
-          ])
-          .toArray();
         cartProductCopy.product = productAggregation[0];
       }
 
@@ -425,6 +425,7 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
     };
 
     // final cart
+    const start = new Date().getTime();
     const cartDeliveryProducts: CartProductInterface[] = [];
     for await (const cartProduct of cart.cartDeliveryProducts) {
       const aggregatedCartProduct = await aggregateCartProduct(cartProduct);
@@ -440,6 +441,7 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
         cartDeliveryProducts.push(castCartProducts(aggregatedCartProduct));
       }
     }
+    console.log('cart products', new Date().getTime() - start);
 
     const isWithShopless =
       cartBookingProducts.some(({ shopProductId }) => !shopProductId) ||

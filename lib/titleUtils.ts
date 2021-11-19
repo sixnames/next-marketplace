@@ -101,6 +101,7 @@ interface GenerateTitleInterface {
   capitaliseKeyWord?: boolean | null;
   categories?: CategoryInterface[] | null;
   log?: boolean;
+  page?: number;
 }
 
 export function generateTitle({
@@ -116,9 +117,12 @@ export function generateTitle({
   attributeVisibilityFieldName,
   attributeNameVisibilityFieldName,
   categories,
+  page,
 }: GenerateTitleInterface): string {
   // get title attributes separator
   const titleSeparator = getConstantTranslation(`catalogueTitleSeparator.${locale}`);
+  const pageName = getConstantTranslation(`pagination.page.${locale}`);
+  const pagePostfix = page && page > 1 ? `. ${pageName} - ${page}` : '';
 
   // get initial keyword
   const initialKeyword = !defaultKeyword
@@ -259,8 +263,8 @@ export function generateTitle({
 
   const capitalizedFirstWord = capitalize(firstWord);
   const otherWords = titleWordsArray.slice(1);
-  const otherWordsString = otherWords.join(' ');
-  return `${capitalizedFirstWord} ${otherWordsString}`;
+  const otherWordsString = otherWords.length > 0 ? ` ${otherWords.join(' ')}` : '';
+  return `${capitalizedFirstWord}${otherWordsString}${pagePostfix}`;
 }
 
 interface GenerateProductTitlePrefixInterface {

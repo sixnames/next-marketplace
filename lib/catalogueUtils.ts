@@ -1728,6 +1728,7 @@ export const getCatalogueData = async ({
           categories,
           locale,
           currency,
+          page,
         });
 
     const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';

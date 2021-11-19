@@ -239,6 +239,12 @@ export const constantTranslations = {
       },
     },
   },
+  pagination: {
+    page: {
+      [DEFAULT_LOCALE]: 'Страница',
+      [SECONDARY_LOCALE]: 'Page',
+    },
+  },
 };
 
 interface GetBooleanTranslationInterface {

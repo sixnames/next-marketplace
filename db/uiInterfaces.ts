@@ -152,7 +152,6 @@ export interface CartProductInterface extends CartProductModel {
 export interface CartInterface extends CartModel {
   totalPrice?: number;
   productsCount?: number;
-  formattedTotalPrice?: string;
   isWithShopless?: boolean;
   cartDeliveryProducts: CartProductInterface[];
   cartBookingProducts: CartProductInterface[];

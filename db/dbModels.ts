@@ -323,6 +323,8 @@ export interface CartProductModel {
   allowDelivery: boolean;
 }
 
+export type CartProductsFieldNameType = 'cartDeliveryProducts' | 'cartBookingProducts';
+
 export interface CartModel extends TimestampModel {
   _id: ObjectIdModel;
   cartDeliveryProducts: CartProductModel[];

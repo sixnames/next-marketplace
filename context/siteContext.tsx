@@ -4,6 +4,7 @@ import { CART_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { useNotificationsContext } from 'context/notificationsContext';
 import { MakeAnOrderInputInterface, MakeAnOrderPayloadModel } from 'db/dao/order/makeAnOrder';
+import { CartProductsFieldNameType } from 'db/dbModels';
 import { CartInterface, CompanyInterface, RubricInterface } from 'db/uiInterfaces';
 import {
   AddProductToCartInput,
@@ -23,6 +24,7 @@ import { useMutation } from 'hooks/mutations/useFetch';
 import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';
 import * as React from 'react';
+import { get } from 'lodash';
 
 interface SiteContextStateInterface {
   loadingCart: boolean;
@@ -36,7 +38,10 @@ interface SiteContextInterface extends SiteContextStateInterface {
   addShopToCartProduct: (input: AddShopToCartProductInput) => void;
   updateProductInCart: (input: UpdateProductInCartInput) => void;
   deleteProductFromCart: (input: DeleteProductFromCartInput) => void;
-  getShopProductInCartCount: (shopProductId: string) => number;
+  getShopProductInCartCount: (
+    shopProductId: string,
+    cartProductsFieldName: CartProductsFieldNameType,
+  ) => number;
   makeAnOrder: (input: MakeAnOrderInputInterface) => void;
   repeatAnOrder: (_id: string) => void;
   clearCart: () => void;
@@ -298,8 +303,9 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
   );
 
   const getShopProductInCartCount = React.useCallback(
-    (shopProductId: string) => {
-      const currentProduct = state.cart?.cartProducts.find((cartProduct) => {
+    (shopProductId: string, cartProductsFieldName: CartProductsFieldNameType) => {
+      const cartProducts = get(state.cart, cartProductsFieldName);
+      const currentProduct = (cartProducts || []).find((cartProduct) => {
         return `${cartProduct.shopProductId}` === shopProductId;
       });
       if (!currentProduct) {

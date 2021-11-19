@@ -425,7 +425,7 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
     };
 
     // final cart
-    const start = new Date().getTime();
+    // const start = new Date().getTime();
     const cartDeliveryProducts: CartProductInterface[] = [];
     for await (const cartProduct of cart.cartDeliveryProducts) {
       const aggregatedCartProduct = await aggregateCartProduct(cartProduct);
@@ -441,7 +441,7 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
         cartDeliveryProducts.push(castCartProducts(aggregatedCartProduct));
       }
     }
-    console.log('cart products', new Date().getTime() - start);
+    // console.log('cart products', new Date().getTime() - start);
 
     const isWithShopless =
       cartBookingProducts.some(({ shopProductId }) => !shopProductId) ||

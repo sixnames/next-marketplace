@@ -229,7 +229,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
             const { name, attributes, variant, categories } = rubric;
 
             // Get rubric slug from product card path
-            const isCurrent = rubric.slug === rubricSlug || rubricSlug === rubric.slug;
+            const isCurrent = rubric.slug === rubricSlug;
 
             return (
               <li className='relative' key={rubric.slug}>
@@ -258,7 +258,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                               return (
                                 <li key={`${category._id}`}>
                                   <Link
-                                    href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}/${FILTER_CATEGORY_KEY}${FILTER_SEPARATOR}${category.slug}`}
+                                    href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubric.slug}/${FILTER_CATEGORY_KEY}${FILTER_SEPARATOR}${category.slug}`}
                                     onClick={hideBurgerDropdown}
                                     className={`flex items-center h-10 ${
                                       isCurrent ? 'text-theme' : 'text-primary-text'

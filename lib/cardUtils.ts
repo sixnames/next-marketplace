@@ -37,7 +37,7 @@ import {
   COL_PRODUCT_CARD_DESCRIPTIONS,
   COL_ICONS,
 } from 'db/collectionNames';
-import { productCategoriesPipeline } from 'db/dao/constantPipelines';
+import { ignoreNoImageStage, productCategoriesPipeline } from 'db/dao/constantPipelines';
 import {
   CatalogueBreadcrumbModel,
   ObjectIdModel,
@@ -334,6 +334,7 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
                               $expr: {
                                 $eq: ['$$productId', '$productId'],
                               },
+                              ...ignoreNoImageStage,
                             },
                           },
                           {
@@ -690,20 +691,32 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
     (connections || []).forEach(({ attribute, ...connection }) => {
       const connectionProducts = (connection.connectionProducts || []).reduce(
         (acc: ProductConnectionItemInterface[], connectionProduct) => {
-          if (!connectionProduct.shopProduct) {
+          if (
+            !connectionProduct.shopProduct ||
+            !connectionProduct.shopProduct.product ||
+            !connectionProduct.option
+          ) {
             return acc;
+          }
+
+          const gender = connectionProduct.shopProduct.product.gender;
+          let optionName = getFieldStringLocale(connectionProduct.option.nameI18n, locale);
+          const optionVariant = connectionProduct.option.variants[gender];
+          if (optionVariant) {
+            const variantName = getFieldStringLocale(optionVariant, locale);
+            if (variantName) {
+              optionName = variantName;
+            }
           }
 
           return [
             ...acc,
             {
               ...connectionProduct,
-              option: connectionProduct.option
-                ? {
-                    ...connectionProduct.option,
-                    name: getFieldStringLocale(connectionProduct.option?.nameI18n, locale),
-                  }
-                : null,
+              option: {
+                ...connectionProduct.option,
+                name: optionName,
+              },
             },
           ];
         },

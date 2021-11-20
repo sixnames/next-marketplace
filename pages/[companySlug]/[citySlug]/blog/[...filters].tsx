@@ -373,7 +373,7 @@ const BlogListPageConsumer: React.FC<BlogListPageConsumerInterface> = ({
       <div className='mb-12'>
         <Breadcrumbs currentPageName={blogLinkName} />
         <Inner lowTop>
-          <Title>{blogLinkName}</Title>
+          <Title>{`${blogLinkName}${configs.siteName ? ` ${configs.siteName}` : ''}`}</Title>
 
           {posts.length > 0 ? (
             <div className={`grid lg:grid-cols-4 gap-6`}>

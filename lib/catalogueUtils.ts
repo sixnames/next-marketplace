@@ -1911,18 +1911,14 @@ export const getCatalogueData = async ({
         });
 
     let redirect = null;
-    const isRedirect = selectedFilterSlugs.some((selectedSlug) => {
-      return (
-        input.filters.length > 0 &&
-        !input.filters.some((filter) => {
-          return filter === selectedSlug;
-        })
-      );
+    const lostFilters = input.filters.filter((filter) => {
+      return !selectedFilterSlugs.some((slug) => slug === filter);
     });
+    const isRedirect = lostFilters.length > 0;
     const isPageRedirect = input.filters.includes(ZERO_PAGE_FILTER);
     if (isRedirect || isPageRedirect) {
       const filteredRedirectArray = selectedFilterSlugs.filter((filter) => {
-        return filter !== ZERO_PAGE_FILTER;
+        return filter !== ZERO_PAGE_FILTER && !lostFilters.includes(filter);
       });
       const sortedRedirectArray = sortStringArray(filteredRedirectArray);
       redirect = `/${sortedRedirectArray.join('/')}`;

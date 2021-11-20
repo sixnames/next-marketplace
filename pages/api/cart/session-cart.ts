@@ -438,7 +438,7 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
     for await (const cartProduct of cart.cartBookingProducts) {
       const aggregatedCartProduct = await aggregateCartProduct(cartProduct);
       if (aggregatedCartProduct) {
-        cartDeliveryProducts.push(castCartProducts(aggregatedCartProduct));
+        cartBookingProducts.push(castCartProducts(aggregatedCartProduct));
       }
     }
     // console.log('cart products', new Date().getTime() - start);

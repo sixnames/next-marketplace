@@ -7,6 +7,7 @@ import CartShopsList from 'components/CartShopsList';
 import FormikDatePicker from 'components/FormElements/Input/FormikDatePicker';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import SpinnerInput from 'components/FormElements/SpinnerInput/SpinnerInput';
+import FormikTextarea from 'components/FormElements/Textarea/FormikTextarea';
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
 import { MapModalInterface } from 'components/Modal/MapModal';
@@ -612,6 +613,7 @@ const CartPageConsumer: React.FC<CartPageConsumerInterface> = ({ domainCompany }
                           disabled={disabled}
                           isRequired
                         />
+
                         <FormikInput
                           testId={'order-form-email'}
                           name={'email'}
@@ -629,6 +631,8 @@ const CartPageConsumer: React.FC<CartPageConsumerInterface> = ({ domainCompany }
                             testId={'reservationDate'}
                           />
                         ) : null}
+
+                        <FormikTextarea name={'comment'} label={'Комментарий к заказу'} />
                       </div>
                     </div>
                   </div>

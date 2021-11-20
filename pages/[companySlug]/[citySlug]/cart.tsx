@@ -6,6 +6,7 @@ import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
 import Title from 'components/Title';
 import { ROUTE_PROFILE } from 'config/common';
+import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
 import { Form, Formik } from 'formik';
 import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
@@ -18,6 +19,7 @@ const CartPageConsumer: React.FC = () => {
   const router = useRouter();
   const [tabIndex, setTabIndex] = React.useState<number>(0);
   const { cart, loadingCart, urlPrefix } = useSiteContext();
+  const { configs } = useConfigContext();
 
   if (loadingCart && !cart) {
     return (
@@ -153,12 +155,14 @@ const CartPageConsumer: React.FC = () => {
                   <div className='md:col-span-3 lg:col-span-5'>
                     {tabIndex === 0 ? (
                       <CartAside
+                        buyButtonText={'Оформить заказ'}
                         productsCount={cartDeliveryProducts.length}
                         totalPrice={totalDeliveryPrice}
                         isWithShopless={isWithShoplessDelivery}
                       />
                     ) : (
                       <CartAside
+                        buyButtonText={configs.buyButtonText}
                         productsCount={cartBookingProducts.length}
                         totalPrice={totalBookingPrice}
                         isWithShopless={isWithShoplessBooking}

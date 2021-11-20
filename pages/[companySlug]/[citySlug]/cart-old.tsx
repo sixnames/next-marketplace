@@ -26,7 +26,6 @@ import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import CartAside from 'components/CartAside';
 import { getSiteInitialData } from 'lib/ssrUtils';
 import CartShopsList from 'components/CartShopsList';
 
@@ -304,7 +303,6 @@ const CartRoute: React.FC = () => {
   const { showErrorNotification } = useNotificationsContext();
   const router = useRouter();
   const { cart, loadingCart, urlPrefix } = useSiteContext();
-  const { configs } = useConfigContext();
 
   if (loadingCart && !cart) {
     return (
@@ -388,17 +386,7 @@ const CartRoute: React.FC = () => {
             })}
           </div>
 
-          <div className='md:col-span-3 lg:col-span-5'>
-            <CartAside
-              cart={cart}
-              buttonText={configs.buyButtonText}
-              onConfirmHandler={() => {
-                router.push(`${urlPrefix}/make-an-order`).catch(() => {
-                  showErrorNotification();
-                });
-              }}
-            />
-          </div>
+          <div className='md:col-span-3 lg:col-span-5'></div>
         </div>
       </Inner>
     </div>

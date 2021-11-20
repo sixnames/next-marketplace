@@ -1,4 +1,3 @@
-import { useConfigContext } from 'context/configContext';
 import * as React from 'react';
 import Currency from 'components/Currency';
 import Button from 'components/button/Button';
@@ -8,11 +7,15 @@ interface CartAsideInterface {
   productsCount: number;
   isWithShopless?: boolean;
   totalPrice?: number;
+  buyButtonText: string;
 }
 
-const CartAside: React.FC<CartAsideInterface> = ({ totalPrice, isWithShopless, productsCount }) => {
-  const { configs } = useConfigContext();
-
+const CartAside: React.FC<CartAsideInterface> = ({
+  totalPrice,
+  buyButtonText,
+  isWithShopless,
+  productsCount,
+}) => {
   return (
     <LayoutCard className='sticky top-16 lef-0 mb-4 overflow-hidden' testId={'cart-aside'}>
       <div className='p-6 grid gap-5'>
@@ -47,12 +50,12 @@ const CartAside: React.FC<CartAsideInterface> = ({ totalPrice, isWithShopless, p
           disabled={isWithShopless}
           className='w-full'
         >
-          {configs.buyButtonText}
+          {buyButtonText}
         </Button>
 
         {isWithShopless ? (
           <div className='mt-5 text-red-500 font-medium' data-cy={`cart-aside-warning`}>
-            Для оформления заказа необходимо выбрать магазины у всех товаров в корзине.
+            Для оформления заказа необходимо выбрать магазины у всех товаров.
           </div>
         ) : null}
       </div>

@@ -115,7 +115,7 @@ export function getConstantOptions(options: ConstantOptionsType, locale: string)
     };
   });
 }
-//
+
 // supplier price variant
 export const SUPPLIER_PRICE_VARIANT_OPTIONS: ConstantOptionsType = [
   {
@@ -130,6 +130,24 @@ export const SUPPLIER_PRICE_VARIANT_OPTIONS: ConstantOptionsType = [
     nameI18n: {
       [DEFAULT_LOCALE]: 'Дилерская наценка',
       [SECONDARY_LOCALE]: 'Dealer charge',
+    },
+  },
+];
+
+// delivery variant
+export const DELIVERY_VARIANT_OPTIONS: ConstantOptionsType = [
+  {
+    _id: SUPPLIER_PRICE_VARIANT_DISCOUNT,
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'Самовывоз из магазина',
+      [SECONDARY_LOCALE]: 'Pickup from the store',
+    },
+  },
+  {
+    _id: SUPPLIER_PRICE_VARIANT_CHARGE,
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'Курьером',
+      [SECONDARY_LOCALE]: 'By courier',
     },
   },
 ];

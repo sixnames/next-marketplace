@@ -471,7 +471,7 @@ const CartPageConsumer: React.FC<CartPageConsumerInterface> = ({ domainCompany }
               <Form>
                 <div className='grid md:grid-cols-8 lg:grid-cols-16 gap-6'>
                   <div className='md:col-span-5 lg:col-span-11' data-cy={'cart-products'}>
-                    <div className='mb-10'>
+                    <div className='mb-20'>
                       {/*tabs*/}
                       <div className='flex flex-wrap gap-6'>
                         {cartDeliveryProducts.length > 0 ? (
@@ -583,7 +583,7 @@ const CartPageConsumer: React.FC<CartPageConsumerInterface> = ({ domainCompany }
                       ) : null}
                     </div>
 
-                    <div className='relative z-20'>
+                    <div className='relative z-20 mb-12'>
                       <div className='flex items-center gap-4 mb-8 text-lg font-medium'>
                         <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
                           2
@@ -636,6 +636,30 @@ const CartPageConsumer: React.FC<CartPageConsumerInterface> = ({ domainCompany }
 
                         <FormikTextarea name={'comment'} label={'Комментарий к заказу'} />
                       </div>
+                    </div>
+
+                    {/* delivery */}
+                    <div className='relative z-20 mb-12'>
+                      <div className='flex items-center gap-4 mb-8 text-lg font-medium'>
+                        <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
+                          3
+                        </div>
+                        <div>Способ доставки</div>
+                      </div>
+
+                      <div></div>
+                    </div>
+
+                    {/* payment */}
+                    <div className='relative z-20 mb-12'>
+                      <div className='flex items-center gap-4 mb-8 text-lg font-medium'>
+                        <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
+                          4
+                        </div>
+                        <div>Способ оплаты</div>
+                      </div>
+
+                      <div></div>
                     </div>
                   </div>
 

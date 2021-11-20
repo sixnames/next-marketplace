@@ -4,7 +4,8 @@ import { getObjectId } from 'mongo-seeding';
 const carts: CartModel[] = [
   {
     _id: getObjectId('defaultCart'),
-    cartProducts: [],
+    cartBookingProducts: [],
+    cartDeliveryProducts: [],
     updatedAt: new Date(),
     createdAt: new Date(),
   },

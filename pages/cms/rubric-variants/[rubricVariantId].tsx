@@ -95,6 +95,7 @@ const RubricVariantConsumer: React.FC<RubricVariantConsumerInterface> = ({ rubri
             showCatalogueFilterBrands: rubricVariant.showCatalogueFilterBrands || false,
             showCategoriesInFilter: rubricVariant.showCategoriesInFilter || false,
             showCategoriesInNav: rubricVariant.showCategoriesInNav || false,
+            allowDelivery: rubricVariant.allowDelivery || false,
             showCardBrands: rubricVariant.showCardBrands || false,
             cardBrandsLabelI18n: rubricVariant.cardBrandsLabelI18n || {},
             gridCatalogueColumns: rubricVariant.gridCatalogueColumns || 3,
@@ -178,6 +179,8 @@ const RubricVariantConsumer: React.FC<RubricVariantConsumerInterface> = ({ rubri
                   label={'Показывать категории в навигации каталога'}
                   name={'showCategoriesInNav'}
                 />
+
+                <FormikCheckboxLine label={'Разрешить доставку товара'} name={'allowDelivery'} />
 
                 {/*strings*/}
                 <FormikTranslationsInput

@@ -1627,10 +1627,10 @@
   resolved "https://registry.yarnpkg.com/@react-google-maps/marker-clusterer/-/marker-clusterer-2.2.0.tgz#a1d635ce9a5b55f1e48fddc6acafc0e1128a6476"
   integrity sha512-QaQAfY/FdaSwPmm0JnW9AW+t0ocfUYmuso9WmeIMwTRCqcqNxc4GFe5uT0LDLmsYt/wxAeYoGWVaD8sd/Vquig==
 
-"@react-page/editor@^4.0.1":
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/@react-page/editor/-/editor-4.0.1.tgz#bb87e3e01771f6c8e5f9638a469b183f3bf9f980"
-  integrity sha512-KPH2zxCZtSBY1jSsBYATYH+uogGzOE3ZKtR0meOCA248+5elitwun7SrfXRSJI4eDD7vs2ESFu+NxuMPgL7yOA==
+"@react-page/editor@^4.3.0":
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/@react-page/editor/-/editor-4.3.0.tgz#f2a5e210d2569e3735621549242fff9eacbc2652"
+  integrity sha512-X78g875DekNVQeng5ErvHg0tSmx6Sn/ETAeSusmyhDqvIT7pRv5pKcT1uZrYWC+NJBb15alL8bizDMrOyRdbRQ==
   dependencies:
     "@loadable/component" "^5.15.0"
     "@welldone-software/why-did-you-render" "^6.0.5"
@@ -1656,35 +1656,35 @@
     uniforms-bridge-json-schema "^2.6.0 || ^3.0.0"
     uniforms-material "^2.6.0 || ^3.0.0"
 
-"@react-page/plugins-divider@^4.0.1":
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/@react-page/plugins-divider/-/plugins-divider-4.0.1.tgz#325f2df9b34b1297a043817570ea4c6ba2ffdb03"
-  integrity sha512-XtFnbOecJqXbo6j124auyQQWK8oUafSfGJ6H7p3FQldIbnv0dAfm6TPfw4EjG8gS6IY2k7725ppL5KwUnHcl+g==
+"@react-page/plugins-divider@^4.3.0":
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/@react-page/plugins-divider/-/plugins-divider-4.3.0.tgz#d84ef56bb32b5ec261633f3e4a2c0f7e5410e658"
+  integrity sha512-R/djAVwIoPf0Vwz8lMlL9qkmSx15118sJC+5UJFKvRL/AUt32u90pCFjgZ5OqFFhk3GjYduBcOiE1FzQWCO0Gg==
   dependencies:
     "@material-ui/icons" "^4.2.1"
-    "@react-page/editor" "^4.0.1"
+    "@react-page/editor" "^4.3.0"
 
-"@react-page/plugins-html5-video@^4.0.1":
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/@react-page/plugins-html5-video/-/plugins-html5-video-4.0.1.tgz#e0090885f32c7d4178058382b3982fdd6703930f"
-  integrity sha512-Ip2BCw7u/5aqH8buw6PcpL0R3g3rm9YXLOoXPkpXAGAk8zA96y0bCSAMgh1T2/I2wQtjdqR784dZq6NTaWDH0A==
+"@react-page/plugins-html5-video@^4.3.0":
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/@react-page/plugins-html5-video/-/plugins-html5-video-4.3.0.tgz#3c329d5912cefe493ce09d5c1ea4aaf79721fb32"
+  integrity sha512-qPRZrYXzDCpaGMpkpAR1MGM+tqNe1elPYzw0zjMT/rhj6lGhZCHr327KTzuEH8ApfK35vZZI9KeHz3Bja23WrA==
   dependencies:
-    "@react-page/editor" "^4.0.1"
+    "@react-page/editor" "^4.3.0"
 
-"@react-page/plugins-image@^4.0.1":
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/@react-page/plugins-image/-/plugins-image-4.0.1.tgz#16c7d357d82a3a17a237eeb3cd893fadab610255"
-  integrity sha512-E4zQGYIEsS8U3HNdMdYeb5BU/ULyH+SFdsJG0+LEe8QOtcHv6o6TpJ85QDE5KjkjmxYEzbsgnBlMhWOx+4wqcQ==
+"@react-page/plugins-image@^4.3.0":
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/@react-page/plugins-image/-/plugins-image-4.3.0.tgz#5af7b292b3d3561f59ee97aab8f8d8647ab95881"
+  integrity sha512-SRcUuHu0xEhaal96N5Utt2uP0p9rRJcdFD+MG8pSrXiuXvShvvN178gN8LxvfQlXZ3VuaLsth5vgHVmfkhy6Cg==
   dependencies:
-    "@react-page/editor" "^4.0.1"
+    "@react-page/editor" "^4.3.0"
 
-"@react-page/plugins-slate@^4.0.1":
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/@react-page/plugins-slate/-/plugins-slate-4.0.1.tgz#4278bd1c2c9714cbe85c021eb693d1ca6c2ec5de"
-  integrity sha512-yVLXD9KQlZJbhMZD+yhhHTtJ49+NJfbVROXLz593V6lE8nU31WVfhMAmMeMscSQ3haTXlHebGhvQ1mjCMxHueg==
+"@react-page/plugins-slate@^4.3.0":
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/@react-page/plugins-slate/-/plugins-slate-4.3.0.tgz#e9a5c95e46aad9da4bb5f18491e1455a74082752"
+  integrity sha512-O7g5Vo1fX935HYvvRQVktv31FU+SBsYKxLq/Vwa/TfdW7H2H72cmwEGmyqV2x39h7ULNWpEdf0PmKS2rcVP6MA==
   dependencies:
     "@emotion/is-prop-valid" "^0.8.8"
-    "@react-page/editor" "^4.0.1"
+    "@react-page/editor" "^4.3.0"
     "@react-page/slate-react-presentation" "^0.1.1"
     cssstyle "^2.3.0"
     deep-rename-keys "^0.2.1"
@@ -1699,24 +1699,24 @@
     redux-undo "^1.0.0"
     slate "^0.66.5"
     slate-hyperscript "^0.66.0"
-    slate-react "^0.66.6"
+    slate-react "^0.65.3"
     xmldom "^0.5.0"
 
-"@react-page/plugins-spacer@^4.0.1":
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/@react-page/plugins-spacer/-/plugins-spacer-4.0.1.tgz#9807e355cd4f0698906c88b82d2cb80673e5f541"
-  integrity sha512-yxNaiG9U4E7xkfjpK1TXnE4aVAWnw8B2KZT4mDX0I+d8Wn265fDHg426feVeR8RhYwlcqj7bHHk55xmf9b1PEQ==
+"@react-page/plugins-spacer@^4.3.0":
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/@react-page/plugins-spacer/-/plugins-spacer-4.3.0.tgz#22904ed709aacf5757d7aa814586e2517b18cfbe"
+  integrity sha512-slQa3d5hT7Rbdjmg5Cnxt9phuVnKvLG1Zml1eDRq4+P4QzBxodIeVoBsu2MU0u1vpeZVUwtdA/FOdx+mx1ldtQ==
   dependencies:
-    "@react-page/editor" "^4.0.1"
+    "@react-page/editor" "^4.3.0"
     classnames "2.2.6"
     react-resizable "^1.11.0"
 
-"@react-page/plugins-video@^4.0.1":
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/@react-page/plugins-video/-/plugins-video-4.0.1.tgz#8c01ed90243b3e839ef65ee638a6a02f4a863ced"
-  integrity sha512-eCSeN10qPHlXnmpwxrWodNYL7lRVYgxSsitYZ0M+M34dL8oz5AfCQyKzsCSn+4yzLX56BwhH6xTDymz16E0mvA==
+"@react-page/plugins-video@^4.3.0":
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/@react-page/plugins-video/-/plugins-video-4.3.0.tgz#cafeb3e249910c7c7a21b39e9c9e9c43e498f815"
+  integrity sha512-+ecsrcmleFKoT2t52nH6WC1anD50ec+ZooDLlW/cZJYkfZ/hxajLsmzQRaBw/y4V3/kdOXChQy1kdQiRDk3cpw==
   dependencies:
-    "@react-page/editor" "^4.0.1"
+    "@react-page/editor" "^4.3.0"
     react-player "^1.13.0"
 
 "@react-page/slate-react-presentation@^0.1.1":
@@ -6664,6 +6664,11 @@ is-plain-obj@^1.0.0:
   resolved "https://registry.yarnpkg.com/is-plain-obj/-/is-plain-obj-1.1.0.tgz#71a50c8429dfca773c92a390a4a03b39fcd51d3e"
   integrity sha1-caUMhCnfync8kqOQpKA7OfzVHT4=
 
+is-plain-object@^3.0.0:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/is-plain-object/-/is-plain-object-3.0.1.tgz#662d92d24c0aa4302407b0d45d21f2251c85f85b"
+  integrity sha512-Xnpx182SBMrr/aBik8y+GuR4U1L9FqMSojwDQwPMmxyC6bvEqly9UBCxhauBF5vNh2gwWJNX6oDV7O+OM4z34g==
+
 is-plain-object@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/is-plain-object/-/is-plain-object-5.0.0.tgz#4427f50ab3429e9025ea7d52e9043a9ef4159344"
@@ -9791,16 +9796,16 @@ slate-hyperscript@^0.66.0:
   dependencies:
     is-plain-object "^5.0.0"
 
-slate-react@^0.66.6:
-  version "0.66.7"
-  resolved "https://registry.yarnpkg.com/slate-react/-/slate-react-0.66.7.tgz#033823dac8612e040094e7b8d942de6639b2e7de"
-  integrity sha512-M0MGCnANdjRZCKGY9cvqHBR/WJ+/4SMIvBvEx4UJ5ycx9uNkDVPdpsyvwDKOpmsJuzZ1DH+34YrpxT7RnQyp1Q==
+slate-react@^0.65.3:
+  version "0.65.3"
+  resolved "https://registry.yarnpkg.com/slate-react/-/slate-react-0.65.3.tgz#f652e4780b4304189a8a8ecc8feca723f31173a3"
+  integrity sha512-lyiZD7Rrt0LInvK4xhIemnCEx/N7jt+e/eHlsFor+rif/K0RT9wSPXWajTI9RglbvN9XHTEuB2BFx2cQLKiomw==
   dependencies:
     "@types/is-hotkey" "^0.1.1"
     "@types/lodash" "^4.14.149"
     direction "^1.0.3"
     is-hotkey "^0.1.6"
-    is-plain-object "^5.0.0"
+    is-plain-object "^3.0.0"
     lodash "^4.17.4"
     scroll-into-view-if-needed "^2.2.20"
     tiny-invariant "1.0.6"

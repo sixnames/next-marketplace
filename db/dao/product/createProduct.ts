@@ -3,6 +3,7 @@ import {
   COL_PRODUCT_ASSETS,
   COL_PRODUCT_CARD_DESCRIPTIONS,
   COL_PRODUCTS,
+  COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
 } from 'db/collectionNames';
 import {
@@ -13,6 +14,7 @@ import {
   ProductModel,
   ProductPayloadModel,
   RubricModel,
+  RubricVariantModel,
   TranslationModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -46,6 +48,7 @@ export async function createProduct({
   const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
   const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+  const rubricVariantCollection = db.collection<RubricVariantModel>(COL_RUBRIC_VARIANTS);
   const productsCardDescriptionsCollection = db.collection<ProductCardDescriptionModel>(
     COL_PRODUCT_CARD_DESCRIPTIONS,
   );
@@ -93,6 +96,19 @@ export async function createProduct({
         return;
       }
 
+      // get rubric variant
+      const rubricVariant = await rubricVariantCollection.findOne({
+        _id: rubric.variantId,
+      });
+      if (!rubricVariant) {
+        mutationPayload = {
+          success: false,
+          message: await getApiMessage(`products.create.error`),
+        };
+        await session.abortTransaction();
+        return;
+      }
+
       // check barcode intersects
       const barcodeDoubles = await checkBarcodeIntersects({
         locale,
@@ -126,6 +142,7 @@ export async function createProduct({
         originalName,
         rubricId: rubric._id,
         rubricSlug: rubric.slug,
+        allowDelivery: Boolean(rubricVariant.allowDelivery),
         active: false,
         titleCategoriesSlugs: [],
         selectedOptionsSlugs: [],

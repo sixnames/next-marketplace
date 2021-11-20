@@ -6,9 +6,20 @@ import {
   getRequestParams,
   getResolverValidationSchema,
 } from 'lib/sessionHelpers';
-import { RubricModel, RubricVariantModel, RubricVariantPayloadModel } from 'db/dbModels';
+import {
+  ProductModel,
+  RubricModel,
+  RubricVariantModel,
+  RubricVariantPayloadModel,
+  ShopProductModel,
+} from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { COL_RUBRIC_VARIANTS, COL_RUBRICS } from 'db/collectionNames';
+import {
+  COL_PRODUCTS,
+  COL_RUBRIC_VARIANTS,
+  COL_RUBRICS,
+  COL_SHOP_PRODUCTS,
+} from 'db/collectionNames';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
 import {
@@ -44,6 +55,7 @@ export const RubricVariant = objectType({
     t.boolean('showCatalogueFilterBrands');
     t.boolean('showCategoriesInFilter');
     t.boolean('showCategoriesInNav');
+    t.boolean('allowDelivery');
 
     // numbers
     t.int('gridCatalogueColumns');
@@ -165,6 +177,7 @@ export const UpdateRubricVariantInput = inputObjectType({
     t.boolean('showCatalogueFilterBrands');
     t.boolean('showCategoriesInFilter');
     t.boolean('showCategoriesInNav');
+    t.boolean('allowDelivery');
 
     // numbers
     t.int('gridCatalogueColumns');
@@ -266,76 +279,136 @@ export const RubricVariantMutations = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<RubricVariantPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const rubricVariantsCollection = db.collection<RubricVariantModel>(COL_RUBRIC_VARIANTS);
+        const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+        const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+
+        const session = client.startSession();
+        let mutationPayload: RubricVariantPayloadModel = {
+          success: false,
+          message: await getApiMessage('rubricVariants.update.error'),
+        };
+
         try {
-          // Permission
-          const { allow, message } = await getOperationPermission({
-            context,
-            slug: 'updateRubricVariant',
-          });
-          if (!allow) {
-            return {
-              success: false,
-              message,
-            };
-          }
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'updateRubricVariant',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Validate
-          const validationSchema = await getResolverValidationSchema({
-            context,
-            schema: updateRubricVariantSchema,
-          });
-          await validationSchema.validate(args.input);
+            // Validate
+            const validationSchema = await getResolverValidationSchema({
+              context,
+              schema: updateRubricVariantSchema,
+            });
+            await validationSchema.validate(args.input);
 
-          const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const rubricVariantsCollection = db.collection<RubricVariantModel>(COL_RUBRIC_VARIANTS);
-          const { input } = args;
-          const { rubricVariantId, ...values } = input;
+            const { input } = args;
+            const { rubricVariantId, ...values } = input;
 
-          // Check if rubric variant already exist
-          const exist = await findDocumentByI18nField<RubricVariantModel>({
-            collectionName: COL_RUBRIC_VARIANTS,
-            fieldName: 'nameI18n',
-            fieldArg: input.nameI18n,
-            additionalQuery: { _id: { $ne: rubricVariantId } },
-          });
-          if (exist) {
-            return {
-              success: false,
-              message: await getApiMessage('rubricVariants.update.duplicate'),
-            };
-          }
+            // Check if rubric variant already exist
+            const exist = await findDocumentByI18nField<RubricVariantModel>({
+              collectionName: COL_RUBRIC_VARIANTS,
+              fieldName: 'nameI18n',
+              fieldArg: input.nameI18n,
+              additionalQuery: { _id: { $ne: rubricVariantId } },
+            });
+            if (exist) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('rubricVariants.update.duplicate'),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          // Update rubric variant
-          const updatedRubricVariantResult = await rubricVariantsCollection.findOneAndUpdate(
-            { _id: rubricVariantId },
-            {
-              $set: {
-                ...values,
+            // check availability
+            const rubricVariant = await rubricVariantsCollection.findOne({
+              _id: rubricVariantId,
+            });
+            if (!rubricVariant) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('rubricVariants.update.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // update products and shop products deliver permission
+            if (rubricVariant.allowDelivery !== values.allowDelivery) {
+              const rubrics = await rubricsCollection
+                .find({
+                  variantId: rubricVariant._id,
+                })
+                .toArray();
+              const rubricIds = rubrics.map(({ _id }) => _id);
+
+              const query = {
+                rubricId: {
+                  $in: rubricIds,
+                },
+              };
+
+              const updater = {
+                $set: {
+                  allowDelivery: Boolean(values.allowDelivery),
+                },
+              };
+
+              await productsCollection.updateMany(query, updater);
+              await shopProductsCollection.updateMany(query, updater);
+            }
+
+            // Update rubric variant
+            const updatedRubricVariantResult = await rubricVariantsCollection.findOneAndUpdate(
+              { _id: rubricVariantId },
+              {
+                $set: {
+                  ...values,
+                },
               },
-            },
-            {
-              returnDocument: 'after',
-            },
-          );
-          const updatedRubricVariant = updatedRubricVariantResult.value;
-          if (!updatedRubricVariantResult.ok || !updatedRubricVariant) {
-            return {
-              success: false,
-              message: await getApiMessage('rubricVariants.update.error'),
-            };
-          }
+              {
+                returnDocument: 'after',
+              },
+            );
+            const updatedRubricVariant = updatedRubricVariantResult.value;
+            if (!updatedRubricVariantResult.ok || !updatedRubricVariant) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('rubricVariants.update.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
-          return {
-            success: true,
-            message: await getApiMessage('rubricVariants.update.success'),
-            payload: updatedRubricVariant,
-          };
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('rubricVariants.update.success'),
+              payload: updatedRubricVariant,
+            };
+          });
+
+          return mutationPayload;
         } catch (e) {
           return {
             success: false,
             message: getResolverErrorMessage(e),
           };
+        } finally {
+          await session.endSession();
         }
       },
     });

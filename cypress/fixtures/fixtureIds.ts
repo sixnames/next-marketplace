@@ -9,8 +9,10 @@ export const fixtureIds = {
   shopC: '6905de65e5567a92a5dff7a7',
 
   // rubrics
+  rubricWineSlug: 'vino',
   rubricWine: '7e2498e646ba5939eda457c7',
   rubricChampagne: '63c19173a47d7857c77cb696',
+  rubricWaterSlug: 'voda',
 
   // products
   wineProductA: 'fe57c5fa310ae737a372ae95',

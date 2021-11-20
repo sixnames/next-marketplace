@@ -184,7 +184,8 @@ export const getSessionCart = async (context: NexusContext): Promise<CartModel> 
   // If cart not exist
   if (!cartId || !cart) {
     const newCartResult = await cartsCollection.insertOne({
-      cartProducts: [],
+      cartDeliveryProducts: [],
+      cartBookingProducts: [],
       createdAt: new Date(),
       updatedAt: new Date(),
     });

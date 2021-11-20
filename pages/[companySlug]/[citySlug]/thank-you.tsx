@@ -24,8 +24,10 @@ const ThankYouRoute: React.FC = () => {
             вам дисконтную карту, по которой вы сможете получать скидки на все последующие заказы
           </p>
         </div>
+
         <div className='flex gap-4 flex-wrap'>
           <Button
+            frameClassName={'w-auto'}
             theme={'secondary'}
             onClick={() => {
               router.push(urlPrefix).catch(console.log);
@@ -34,6 +36,7 @@ const ThankYouRoute: React.FC = () => {
             Продолжить покупки
           </Button>
           <Button
+            frameClassName={'w-auto'}
             onClick={() => {
               router.push(`${urlPrefix}${ROUTE_PROFILE}`).catch(console.log);
             }}

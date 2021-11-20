@@ -274,7 +274,8 @@ type BrandsPaginationPayload implements PaginationPayload {
 
 type Cart {
   _id: ObjectId!
-  cartProducts: [CartProduct!]!
+  cartBookingProducts: [CartProduct!]!
+  cartDeliveryProducts: [CartProduct!]!
 }
 
 type CartPayload {
@@ -2052,6 +2053,7 @@ input RubricProductsCountersInput {
 
 type RubricVariant {
   _id: ObjectId!
+  allowDelivery: Boolean
   cardLayout: String
   catalogueFilterLayout: String
   catalogueHeadLayout: String
@@ -2124,7 +2126,6 @@ type ShopProduct implements Timestamp {
   citySlug: String!
   createdAt: Date!
   discountedPercent: Int
-  inCartCount: Int!
   oldPrice: Int
   oldPrices: [ShopProductOldPrice!]!
   price: Int!
@@ -2519,6 +2520,7 @@ input UpdateRubricInput {
 }
 
 input UpdateRubricVariantInput {
+  allowDelivery: Boolean
   cardBrandsLabelI18n: JSONObject
   cardLayout: String
   catalogueFilterLayout: String

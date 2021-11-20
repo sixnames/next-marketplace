@@ -70,6 +70,7 @@ const ContentItemControls: React.FC<ContentItemControlsInterface> = ({
           theme={theme}
           testId={`${testId}-create`}
           disabled={disabled || isCreateDisabled}
+          frameClassName='w-auto'
         />
       ) : null}
 
@@ -83,6 +84,7 @@ const ContentItemControls: React.FC<ContentItemControlsInterface> = ({
           theme={theme}
           testId={`${testId}-move`}
           disabled={disabled || isMoveDisabled}
+          frameClassName='w-auto'
         />
       ) : null}
 
@@ -96,6 +98,7 @@ const ContentItemControls: React.FC<ContentItemControlsInterface> = ({
           theme={theme}
           testId={`${testId}-add-asset`}
           disabled={disabled || isAddAssetDisabled}
+          frameClassName='w-auto'
         />
       ) : null}
 
@@ -109,6 +112,7 @@ const ContentItemControls: React.FC<ContentItemControlsInterface> = ({
           theme={theme}
           testId={`${testId}-update`}
           disabled={disabled || isUpdateDisabled}
+          frameClassName='w-auto'
         />
       ) : null}
 
@@ -122,6 +126,7 @@ const ContentItemControls: React.FC<ContentItemControlsInterface> = ({
           theme={theme}
           testId={`${testId}-copy`}
           disabled={disabled || isCopyDisabled}
+          frameClassName='w-auto'
         />
       ) : null}
       {deleteHandler ? (
@@ -134,6 +139,7 @@ const ContentItemControls: React.FC<ContentItemControlsInterface> = ({
           theme={theme}
           testId={`${testId}-delete`}
           disabled={disabled || isDeleteDisabled}
+          frameClassName='w-auto'
         />
       ) : null}
     </div>

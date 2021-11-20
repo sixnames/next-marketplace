@@ -10,6 +10,7 @@ import { getConstantTranslation } from 'config/constantTranslations';
 import { MAP_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { useLocaleContext } from 'context/localeContext';
+import { useSiteContext } from 'context/siteContext';
 import { PagesGroupInterface } from 'db/uiInterfaces';
 import { useShopMarker } from 'hooks/useShopMarker';
 import { phoneToReadable } from 'lib/phoneUtils';
@@ -26,6 +27,7 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
   const { configs, domainCompany } = useConfigContext();
   const { locale } = useLocaleContext();
   const marker = useShopMarker(domainCompany?.mainShop);
+  const { urlPrefix } = useSiteContext();
 
   const configSiteName = configs.siteName;
   const configFoundationYear = configs.siteFoundationYear;
@@ -130,7 +132,7 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
                           <Link
                             target={'_blank'}
                             className='block pt-1.5 pb-1.5 text-secondary-text hover:no-underline hover:text-theme'
-                            href={`${ROUTE_DOCS_PAGES}/${slug}`}
+                            href={`${urlPrefix}${ROUTE_DOCS_PAGES}/${slug}`}
                           >
                             {name}
                           </Link>
@@ -143,7 +145,7 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
                         <Link
                           target={'_blank'}
                           className='block pt-1.5 pb-1.5 text-secondary-text hover:no-underline hover:text-theme'
-                          href={ROUTE_BLOG_WITH_PAGE}
+                          href={`${urlPrefix}${ROUTE_BLOG_WITH_PAGE}`}
                         >
                           {blogLinkName}
                         </Link>
@@ -155,7 +157,7 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
                         <Link
                           target={'_blank'}
                           className='block pt-1.5 pb-1.5 text-secondary-text hover:no-underline hover:text-theme'
-                          href={ROUTE_CONTACTS}
+                          href={`${urlPrefix}${ROUTE_CONTACTS}`}
                         >
                           {contactsLinkName}
                         </Link>

@@ -461,7 +461,6 @@ export const ROUTE_CONTACTS = `/contacts`;
 export const ROUTE_BLOG = `/blog`;
 export const ROUTE_BLOG_POST = `${ROUTE_BLOG}/post`;
 export const ROUTE_BLOG_WITH_PAGE = `${ROUTE_BLOG}/${FILTER_PAGE_KEY}${FILTER_SEPARATOR}${DEFAULT_PAGE}`;
-export const CATALOGUE_DEFAULT_RUBRIC_SLUG = 'vino';
 export const ROUTE_CATALOGUE = `/catalogue`;
 export const ROUTE_THANK_YOU = `/thank-you`;
 export const CMS_ORDERS_NAV_ITEM_SLUG = `${ROUTE_CMS_NAV_GROUP}-orders`;

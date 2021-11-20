@@ -44,8 +44,9 @@ const CardShop: React.FC<CardShopInterface> = ({ shop, testId }) => {
     return null;
   }
 
-  const { oldPrice, price, discountedPercent, available, productId } = cardShopProduct;
-  const inCartCount = getShopProductInCartCount(`${cardShopProduct._id}`);
+  const { oldPrice, price, discountedPercent, available, productId, allowDelivery } =
+    cardShopProduct;
+  const inCartCount = getShopProductInCartCount(`${cardShopProduct._id}`, allowDelivery);
 
   const disabled = amount + noNaN(inCartCount) > available;
 

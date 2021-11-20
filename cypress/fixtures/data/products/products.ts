@@ -11,6 +11,7 @@ import { ObjectIdModel, OptionModel, ProductModel } from '../../../../db/dbModel
 import { getObjectId } from 'mongo-seeding';
 const addZero = require('add-zero');
 import rubrics from '../rubrics/rubrics';
+import rubricVariants from '../rubricVariants/rubricVariants';
 import options from '../options/options';
 import attributes from '../attributes/attributes';
 import manufacturers from '../manufacturers/manufacturers';
@@ -47,6 +48,13 @@ const products = rubrics.reduce((acc: ProductModel[], rubric) => {
   const attributesGroupIds = rubric.attributesGroupIds;
   const rubricSlug = rubric.slug;
   const isForCategory = rubric.nameI18n.ru === 'Виски';
+  const rubricVariant = rubricVariants.find(({ _id }) => {
+    return _id.equals(rubric.variantId);
+  });
+
+  if (!rubricVariant) {
+    return acc;
+  }
 
   const rubricCategories = categories.filter(({ rubricId }) => {
     return rubricId.equals(rubric._id);
@@ -286,6 +294,7 @@ const products = rubrics.reduce((acc: ProductModel[], rubric) => {
       brandSlug: brand?.itemId,
       brandCollectionSlug: brandCollection?.itemId,
       manufacturerSlug: manufacturer?.itemId,
+      allowDelivery: Boolean(rubricVariant.allowDelivery),
       createdAt: new Date(),
       updatedAt: new Date(),
     });

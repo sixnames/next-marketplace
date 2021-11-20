@@ -414,24 +414,62 @@ const CartPageConsumer: React.FC<CartPageConsumerInterface> = ({ domainCompany }
     );
   }
 
+  const initialValues: MakeOrderFormInterface = {
+    ...cart,
+    name: sessionUser ? sessionUser.me.name : '',
+    lastName: sessionUser ? sessionUser.me.lastName : '',
+    email: sessionUser ? sessionUser.me.email : '',
+    phone: sessionUser ? sessionUser.me.phone : '',
+    comment: '',
+    reservationDate: null,
+  };
+
   return (
     <div className='mb-12'>
       <Breadcrumbs currentPageName={'Корзина'} />
 
       <Inner lowTop testId={'cart'}>
-        <Formik<MakeOrderFormInterface>
-          enableReinitialize={true}
-          initialValues={{
-            ...cart,
-            name: sessionUser ? sessionUser.me.name : '',
-            lastName: sessionUser ? sessionUser.me.lastName : '',
-            email: sessionUser ? sessionUser.me.email : '',
-            phone: sessionUser ? sessionUser.me.phone : '',
-            comment: '',
-            reservationDate: null,
-          }}
-          onSubmit={(values) => {
-            if (tabIndex === 0) {
+        {/*tabs*/}
+        <div className='flex flex-wrap gap-6'>
+          {cartDeliveryProducts.length > 0 ? (
+            <div
+              data-cy={'cart-products-tab-trigger-0'}
+              className={`transition-all cursor-pointer ${
+                tabIndex === 0 ? 'text-theme' : 'text-secondary-text'
+              }`}
+              onClick={() => {
+                setTabIndex(0);
+              }}
+            >
+              <Title tag={'div'} size={'small'}>
+                Корзина {cartDeliveryProducts.length} шт.
+              </Title>
+            </div>
+          ) : null}
+
+          {cartBookingProducts.length > 0 ? (
+            <div
+              data-cy={'cart-products-tab-trigger-1'}
+              className={`transition-all cursor-pointer ${
+                tabIndex === 1 ? 'text-theme' : 'text-secondary-text'
+              }`}
+              onClick={() => {
+                setTabIndex(1);
+              }}
+            >
+              <Title tag={'div'} size={'small'}>
+                Бронирование {cartBookingProducts.length} шт.
+              </Title>
+            </div>
+          ) : null}
+        </div>
+
+        {/* delivery form */}
+        {cartDeliveryProducts.length > 0 && tabIndex === 0 ? (
+          <Formik<MakeOrderFormInterface>
+            enableReinitialize={true}
+            initialValues={initialValues}
+            onSubmit={(values) => {
               makeAnOrder({
                 name: values.name,
                 lastName: values.lastName,
@@ -443,80 +481,25 @@ const CartPageConsumer: React.FC<CartPageConsumerInterface> = ({ domainCompany }
                 allowDelivery: true,
                 cartProductsFieldName: 'cartDeliveryProducts',
               });
-              return;
-            }
+            }}
+          >
+            {({ values }) => {
+              const { cartDeliveryProducts, totalDeliveryPrice } = values;
 
-            makeAnOrder({
-              name: values.name,
-              lastName: values.lastName,
-              email: values.email,
-              reservationDate: values.reservationDate,
-              comment: values.comment,
-              phone: phoneToRaw(values.phone),
-              companySlug: domainCompany?.slug,
-              allowDelivery: false,
-              cartProductsFieldName: 'cartBookingProducts',
-            });
-          }}
-        >
-          {({ values }) => {
-            const {
-              cartDeliveryProducts,
-              cartBookingProducts,
-              totalDeliveryPrice,
-              totalBookingPrice,
-            } = values;
+              return (
+                <Form>
+                  <div className='flex items-center gap-4 text-lg font-medium mb-6'>
+                    <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
+                      1
+                    </div>
+                    <div>Товары</div>
+                  </div>
 
-            return (
-              <Form>
-                <div className='grid md:grid-cols-8 lg:grid-cols-16 gap-6'>
-                  <div className='md:col-span-5 lg:col-span-11' data-cy={'cart-products'}>
-                    <div className='mb-20'>
-                      {/*tabs*/}
-                      <div className='flex flex-wrap gap-6'>
-                        {cartDeliveryProducts.length > 0 ? (
-                          <div
-                            data-cy={'cart-products-tab-trigger-0'}
-                            className={`transition-all cursor-pointer ${
-                              tabIndex === 0 ? 'text-theme' : 'text-secondary-text'
-                            }`}
-                            onClick={() => {
-                              setTabIndex(0);
-                            }}
-                          >
-                            <Title tag={'div'} size={'small'}>
-                              Корзина {cartDeliveryProducts.length} шт.
-                            </Title>
-                          </div>
-                        ) : null}
-
-                        {cartBookingProducts.length > 0 ? (
-                          <div
-                            data-cy={'cart-products-tab-trigger-1'}
-                            className={`transition-all cursor-pointer ${
-                              tabIndex === 1 ? 'text-theme' : 'text-secondary-text'
-                            }`}
-                            onClick={() => {
-                              setTabIndex(1);
-                            }}
-                          >
-                            <Title tag={'div'} size={'small'}>
-                              Бронирование {cartBookingProducts.length} шт.
-                            </Title>
-                          </div>
-                        ) : null}
-                      </div>
-
-                      {/*cart products*/}
-                      {cartDeliveryProducts.length > 0 && tabIndex === 0 ? (
+                  <div className='grid md:grid-cols-8 lg:grid-cols-16 gap-6'>
+                    <div className='md:col-span-5 lg:col-span-11' data-cy={'cart-products'}>
+                      <div className='mb-20'>
+                        {/*cart products*/}
                         <div className='grid gap-6' data-cy={'delivery-products'}>
-                          <div className='flex items-center gap-4 text-lg font-medium'>
-                            <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
-                              1
-                            </div>
-                            <div>Товары</div>
-                          </div>
-
                           {cartDeliveryProducts.map((cartProduct, index) => {
                             const { _id, shopProduct } = cartProduct;
 
@@ -540,18 +523,131 @@ const CartPageConsumer: React.FC<CartPageConsumerInterface> = ({ domainCompany }
                             );
                           })}
                         </div>
-                      ) : null}
+                      </div>
 
-                      {/*booking products*/}
-                      {cartBookingProducts.length > 0 && tabIndex === 1 ? (
-                        <div className='grid gap-6' data-cy={'booking-products'}>
-                          <div className='flex items-center gap-4 text-lg font-medium'>
-                            <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
-                              1
-                            </div>
-                            <div>Товары</div>
+                      <div className='relative z-20 mb-12'>
+                        <div className='flex items-center gap-4 mb-8 text-lg font-medium'>
+                          <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
+                            2
                           </div>
+                          <div>Личные данные</div>
+                        </div>
 
+                        <div className='lg:grid grid-cols-2 gap-x-6'>
+                          <FormikInput
+                            testId={'order-form-name'}
+                            name={'name'}
+                            label={'Имя'}
+                            disabled={disabled}
+                            isRequired
+                          />
+
+                          <FormikInput
+                            disabled={disabled}
+                            name={'lastName'}
+                            label={'Фамилия'}
+                            testId={'lastName'}
+                          />
+
+                          <FormikInput
+                            testId={'order-form-phone'}
+                            name={'phone'}
+                            type={'tel'}
+                            label={'Телефон'}
+                            disabled={disabled}
+                            isRequired
+                          />
+
+                          <FormikInput
+                            testId={'order-form-email'}
+                            name={'email'}
+                            type={'email'}
+                            label={'E-mail'}
+                            disabled={disabled}
+                            isRequired
+                          />
+
+                          <FormikTextarea name={'comment'} label={'Комментарий к заказу'} />
+                        </div>
+                      </div>
+
+                      {/* delivery */}
+                      <div className='relative z-20 mb-12'>
+                        <div className='flex items-center gap-4 mb-8 text-lg font-medium'>
+                          <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
+                            3
+                          </div>
+                          <div>Способ доставки</div>
+                        </div>
+
+                        <div></div>
+                      </div>
+
+                      {/* payment */}
+                      <div className='relative z-20 mb-12'>
+                        <div className='flex items-center gap-4 mb-8 text-lg font-medium'>
+                          <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
+                            4
+                          </div>
+                          <div>Способ оплаты</div>
+                        </div>
+
+                        <div></div>
+                      </div>
+                    </div>
+
+                    {/*cart aside*/}
+                    <div className='md:col-span-3 lg:col-span-5'>
+                      <CartAside
+                        buyButtonText={'Оформить заказ'}
+                        productsCount={cartDeliveryProducts.length}
+                        totalPrice={totalDeliveryPrice}
+                        isWithShopless={isWithShoplessDelivery}
+                      />
+                    </div>
+                  </div>
+                </Form>
+              );
+            }}
+          </Formik>
+        ) : null}
+
+        {/* booking form */}
+        {cartBookingProducts.length > 0 && tabIndex === 1 ? (
+          <Formik<MakeOrderFormInterface>
+            enableReinitialize={true}
+            initialValues={initialValues}
+            onSubmit={(values) => {
+              makeAnOrder({
+                name: values.name,
+                lastName: values.lastName,
+                email: values.email,
+                reservationDate: values.reservationDate,
+                comment: values.comment,
+                phone: phoneToRaw(values.phone),
+                companySlug: domainCompany?.slug,
+                allowDelivery: false,
+                cartProductsFieldName: 'cartBookingProducts',
+              });
+            }}
+          >
+            {({ values }) => {
+              const { cartBookingProducts, totalBookingPrice } = values;
+
+              return (
+                <Form>
+                  <div className='flex items-center gap-4 text-lg font-medium mb-6'>
+                    <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
+                      1
+                    </div>
+                    <div>Товары</div>
+                  </div>
+
+                  <div className='grid md:grid-cols-8 lg:grid-cols-16 gap-6'>
+                    <div className='md:col-span-5 lg:col-span-11' data-cy={'cart-products'}>
+                      <div className='mb-20'>
+                        {/*cart products*/}
+                        <div className='grid gap-6' data-cy={'booking-products'}>
                           {cartBookingProducts.map((cartProduct, index) => {
                             const { _id, shopProduct } = cartProduct;
 
@@ -580,99 +676,90 @@ const CartPageConsumer: React.FC<CartPageConsumerInterface> = ({ domainCompany }
                             message={'Текущая цена на сайте может отличаться от цены на кассе'}
                           />
                         </div>
-                      ) : null}
-                    </div>
-
-                    <div className='relative z-20 mb-12'>
-                      <div className='flex items-center gap-4 mb-8 text-lg font-medium'>
-                        <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
-                          2
-                        </div>
-                        <div>Личные данные</div>
                       </div>
 
-                      <div className='lg:grid grid-cols-2 gap-x-6'>
-                        <FormikInput
-                          testId={'order-form-name'}
-                          name={'name'}
-                          label={'Имя'}
-                          disabled={disabled}
-                          isRequired
-                        />
+                      <div className='relative z-20 mb-12'>
+                        <div className='flex items-center gap-4 mb-8 text-lg font-medium'>
+                          <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
+                            2
+                          </div>
+                          <div>Личные данные</div>
+                        </div>
 
-                        <FormikInput
-                          disabled={disabled}
-                          name={'lastName'}
-                          label={'Фамилия'}
-                          testId={'lastName'}
-                        />
-
-                        <FormikInput
-                          testId={'order-form-phone'}
-                          name={'phone'}
-                          type={'tel'}
-                          label={'Телефон'}
-                          disabled={disabled}
-                          isRequired
-                        />
-
-                        <FormikInput
-                          testId={'order-form-email'}
-                          name={'email'}
-                          type={'email'}
-                          label={'E-mail'}
-                          disabled={disabled}
-                          isRequired
-                        />
-
-                        {configs.showReservationDate && tabIndex === 1 ? (
-                          <FormikDatePicker
+                        <div className='lg:grid grid-cols-2 gap-x-6'>
+                          <FormikInput
+                            testId={'order-form-name'}
+                            name={'name'}
+                            label={'Имя'}
+                            disabled={disabled}
                             isRequired
-                            label={'Дата брони'}
-                            name={'reservationDate'}
-                            testId={'reservationDate'}
                           />
-                        ) : null}
 
-                        <FormikTextarea name={'comment'} label={'Комментарий к заказу'} />
-                      </div>
-                    </div>
+                          <FormikInput
+                            disabled={disabled}
+                            name={'lastName'}
+                            label={'Фамилия'}
+                            testId={'lastName'}
+                          />
 
-                    {/* delivery */}
-                    <div className='relative z-20 mb-12'>
-                      <div className='flex items-center gap-4 mb-8 text-lg font-medium'>
-                        <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
-                          3
+                          <FormikInput
+                            testId={'order-form-phone'}
+                            name={'phone'}
+                            type={'tel'}
+                            label={'Телефон'}
+                            disabled={disabled}
+                            isRequired
+                          />
+
+                          <FormikInput
+                            testId={'order-form-email'}
+                            name={'email'}
+                            type={'email'}
+                            label={'E-mail'}
+                            disabled={disabled}
+                            isRequired
+                          />
+
+                          {configs.showReservationDate ? (
+                            <FormikDatePicker
+                              isRequired
+                              label={'Дата брони'}
+                              name={'reservationDate'}
+                              testId={'reservationDate'}
+                            />
+                          ) : null}
+
+                          <FormikTextarea name={'comment'} label={'Комментарий к заказу'} />
                         </div>
-                        <div>Способ доставки</div>
                       </div>
 
-                      <div></div>
-                    </div>
-
-                    {/* payment */}
-                    <div className='relative z-20 mb-12'>
-                      <div className='flex items-center gap-4 mb-8 text-lg font-medium'>
-                        <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
-                          4
+                      {/* delivery */}
+                      <div className='relative z-20 mb-12'>
+                        <div className='flex items-center gap-4 mb-8 text-lg font-medium'>
+                          <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
+                            3
+                          </div>
+                          <div>Способ доставки</div>
                         </div>
-                        <div>Способ оплаты</div>
+
+                        <div></div>
                       </div>
 
-                      <div></div>
-                    </div>
-                  </div>
+                      {/* payment */}
+                      <div className='relative z-20 mb-12'>
+                        <div className='flex items-center gap-4 mb-8 text-lg font-medium'>
+                          <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
+                            4
+                          </div>
+                          <div>Способ оплаты</div>
+                        </div>
 
-                  {/*cart aside*/}
-                  <div className='md:col-span-3 lg:col-span-5'>
-                    {tabIndex === 0 ? (
-                      <CartAside
-                        buyButtonText={'Оформить заказ'}
-                        productsCount={cartDeliveryProducts.length}
-                        totalPrice={totalDeliveryPrice}
-                        isWithShopless={isWithShoplessDelivery}
-                      />
-                    ) : (
+                        <div></div>
+                      </div>
+                    </div>
+
+                    {/*cart aside*/}
+                    <div className='md:col-span-3 lg:col-span-5'>
                       <CartAside
                         isBooking
                         buyButtonText={configs.buyButtonText}
@@ -680,13 +767,13 @@ const CartPageConsumer: React.FC<CartPageConsumerInterface> = ({ domainCompany }
                         totalPrice={totalBookingPrice}
                         isWithShopless={isWithShoplessBooking}
                       />
-                    )}
+                    </div>
                   </div>
-                </div>
-              </Form>
-            );
-          }}
-        </Formik>
+                </Form>
+              );
+            }}
+          </Formik>
+        ) : null}
       </Inner>
     </div>
   );

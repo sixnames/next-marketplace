@@ -625,7 +625,7 @@ const CartPageConsumer: React.FC<CartPageConsumerInterface> = ({ domainCompany }
                           isRequired
                         />
 
-                        {configs.showReservationDate ? (
+                        {configs.showReservationDate && tabIndex === 1 ? (
                           <FormikDatePicker
                             isRequired
                             label={'Дата брони'}

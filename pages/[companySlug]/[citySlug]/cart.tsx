@@ -476,6 +476,7 @@ const CartPageConsumer: React.FC<CartPageConsumerInterface> = ({ domainCompany }
                       <div className='flex flex-wrap gap-6'>
                         {cartDeliveryProducts.length > 0 ? (
                           <div
+                            data-cy={'cart-products-tab-trigger-0'}
                             className={`transition-all cursor-pointer ${
                               tabIndex === 0 ? 'text-theme' : 'text-secondary-text'
                             }`}
@@ -491,6 +492,7 @@ const CartPageConsumer: React.FC<CartPageConsumerInterface> = ({ domainCompany }
 
                         {cartBookingProducts.length > 0 ? (
                           <div
+                            data-cy={'cart-products-tab-trigger-1'}
                             className={`transition-all cursor-pointer ${
                               tabIndex === 1 ? 'text-theme' : 'text-secondary-text'
                             }`}
@@ -507,7 +509,7 @@ const CartPageConsumer: React.FC<CartPageConsumerInterface> = ({ domainCompany }
 
                       {/*cart products*/}
                       {cartDeliveryProducts.length > 0 && tabIndex === 0 ? (
-                        <div className='grid gap-6'>
+                        <div className='grid gap-6' data-cy={'delivery-products'}>
                           <div className='flex items-center gap-4 text-lg font-medium'>
                             <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
                               1
@@ -542,7 +544,7 @@ const CartPageConsumer: React.FC<CartPageConsumerInterface> = ({ domainCompany }
 
                       {/*booking products*/}
                       {cartBookingProducts.length > 0 && tabIndex === 1 ? (
-                        <div className='grid gap-6'>
+                        <div className='grid gap-6' data-cy={'booking-products'}>
                           <div className='flex items-center gap-4 text-lg font-medium'>
                             <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
                               1

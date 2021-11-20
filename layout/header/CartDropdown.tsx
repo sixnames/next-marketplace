@@ -221,7 +221,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
             });
           }}
         >
-          {configs.buyButtonText}
+          Перейти в корзину
         </Button>
       </div>
     </div>

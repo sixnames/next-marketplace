@@ -161,7 +161,10 @@ const rubrics: RubricModel[] = [
       }
       return acc;
     }, []),
-    attributesGroupIds: [],
+    attributesGroupIds: getObjectIds([
+      'attributesGroup Общие характеристики',
+      'attributesGroup Характеристики воды',
+    ]),
     ...booleans,
     ...DEFAULT_COUNTERS_OBJECT,
   },

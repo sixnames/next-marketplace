@@ -146,15 +146,19 @@ export interface CartProductInterface extends CartProductModel {
   product?: ProductInterface | null;
   shopProduct?: ShopProductInterface | null;
   isShopless?: boolean;
-  totalPrice?: string;
+  totalPrice?: number;
 }
 
 export interface CartInterface extends CartModel {
   totalPrice?: number;
+  totalBookingPrice?: number;
+  totalDeliveryPrice?: number;
   productsCount?: number;
-  formattedTotalPrice?: string;
   isWithShopless?: boolean;
-  cartProducts: CartProductInterface[];
+  isWithShoplessBooking?: boolean;
+  isWithShoplessDelivery?: boolean;
+  cartDeliveryProducts: CartProductInterface[];
+  cartBookingProducts: CartProductInterface[];
 }
 
 export interface PromoInterface extends PromoModel {

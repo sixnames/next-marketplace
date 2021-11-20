@@ -208,6 +208,7 @@ export async function updateProductWithSyncError({
         companyId: shop.companyId,
         brandSlug: product.brandSlug,
         mainImage: product.mainImage,
+        allowDelivery: product.allowDelivery,
         brandCollectionSlug: product.brandCollectionSlug,
         manufacturerSlug: product.manufacturerSlug,
         selectedOptionsSlugs: product.selectedOptionsSlugs,

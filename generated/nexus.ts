@@ -791,6 +791,7 @@ export interface NexusGenInputs {
   };
   UpdateRubricVariantInput: {
     // input type
+    allowDelivery?: boolean | null; // Boolean
     cardBrandsLabelI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     cardLayout?: string | null; // String
     catalogueFilterLayout?: string | null; // String
@@ -1140,7 +1141,8 @@ export interface NexusGenFieldTypes {
   Cart: {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
-    cartProducts: NexusGenRootTypes['CartProduct'][]; // [CartProduct!]!
+    cartBookingProducts: NexusGenRootTypes['CartProduct'][]; // [CartProduct!]!
+    cartDeliveryProducts: NexusGenRootTypes['CartProduct'][]; // [CartProduct!]!
   };
   CartPayload: {
     // field return type
@@ -1873,6 +1875,7 @@ export interface NexusGenFieldTypes {
   RubricVariant: {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
+    allowDelivery: boolean | null; // Boolean
     cardLayout: string | null; // String
     catalogueFilterLayout: string | null; // String
     catalogueHeadLayout: string | null; // String
@@ -1942,7 +1945,6 @@ export interface NexusGenFieldTypes {
     citySlug: string; // String!
     createdAt: NexusGenScalars['Date']; // Date!
     discountedPercent: number | null; // Int
-    inCartCount: number; // Int!
     oldPrice: number | null; // Int
     oldPrices: NexusGenRootTypes['ShopProductOldPrice'][]; // [ShopProductOldPrice!]!
     price: number; // Int!
@@ -2187,7 +2189,8 @@ export interface NexusGenFieldTypeNames {
   Cart: {
     // field return type name
     _id: 'ObjectId';
-    cartProducts: 'CartProduct';
+    cartBookingProducts: 'CartProduct';
+    cartDeliveryProducts: 'CartProduct';
   };
   CartPayload: {
     // field return type name
@@ -2920,6 +2923,7 @@ export interface NexusGenFieldTypeNames {
   RubricVariant: {
     // field return type name
     _id: 'ObjectId';
+    allowDelivery: 'Boolean';
     cardLayout: 'String';
     catalogueFilterLayout: 'String';
     catalogueHeadLayout: 'String';
@@ -2989,7 +2993,6 @@ export interface NexusGenFieldTypeNames {
     citySlug: 'String';
     createdAt: 'Date';
     discountedPercent: 'Int';
-    inCartCount: 'Int';
     oldPrice: 'Int';
     oldPrices: 'ShopProductOldPrice';
     price: 'Int';

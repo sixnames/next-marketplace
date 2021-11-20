@@ -1,4 +1,4 @@
-import { CATALOGUE_DEFAULT_RUBRIC_SLUG } from 'config/common';
+import { fixtureIds } from 'cypress/fixtures/fixtureIds';
 
 describe('Catalogue filter', () => {
   beforeEach(() => {
@@ -21,7 +21,7 @@ describe('Catalogue filter', () => {
     cy.getByCy('search-dropdown').should('not.exist');
 
     // Should navigate to the rubric
-    cy.getByCy(`main-rubric-${CATALOGUE_DEFAULT_RUBRIC_SLUG}`).click();
+    cy.getByCy(`main-rubric-${fixtureIds.rubricWineSlug}`).click();
     cy.getByCy('catalogue').should('exist');
     cy.getByCy('catalogue-title').contains('Вино');
 

@@ -53,7 +53,10 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({
   const slug = `${product?.slug}`;
 
   const addToCartAmount = 1;
-  const inCartCount = getShopProductInCartCount(`${orderProduct.shopProductId}`);
+  const inCartCount = getShopProductInCartCount(
+    `${orderProduct.shopProductId}`,
+    Boolean(product?.allowDelivery),
+  );
   const productNotExist = !shopProduct;
   const isCartButtonDisabled =
     productNotExist || addToCartAmount + inCartCount > noNaN(shopProduct?.available);

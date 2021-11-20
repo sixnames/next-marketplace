@@ -16,7 +16,12 @@ import {
 import { getPageSessionUser } from 'db/dao/user/getPageSessionUser';
 import { CartModel, UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { CartInterface, CartProductInterface, ShopProductInterface } from 'db/uiInterfaces';
+import {
+  CartInterface,
+  CartProductInterface,
+  ProductInterface,
+  ShopProductInterface,
+} from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { getTreeFromList } from 'lib/optionsUtils';
@@ -31,18 +36,14 @@ export interface CartQueryInterface {
   companyId?: string;
 }
 
-interface ShopProductPipelineInterface {
-  letStage: Record<string, any>;
-  expr: string[];
-  as: string;
-}
-
 async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
   try {
     const { db } = await getDatabase();
     const context = { req, res };
     const { locale, city } = await getRequestParams(context);
     const cartsCollection = db.collection<CartModel>(COL_CARTS);
+    const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
+    const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
     const usersCollection = db.collection<UserModel>(COL_USERS);
     const { query } = req;
     const anyQuery = query as unknown;
@@ -62,225 +63,18 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
     const cartId = userCartId || cookies[CART_COOKIE_KEY];
 
     const companyIdStage = companyId ? { companyId: new ObjectId(companyId) } : {};
-    const shopProductPipeline = ({ letStage, expr, as }: ShopProductPipelineInterface) => ({
-      $lookup: {
-        from: COL_SHOP_PRODUCTS,
-        as,
-        let: letStage,
-        pipeline: [
-          {
-            $match: {
-              $expr: {
-                $eq: expr,
-              },
-              citySlug: city,
-              ...companyIdStage,
-            },
-          },
 
-          // get shop product fields
-          ...shopProductFieldsPipeline('$productId'),
-
-          // Lookup product shop
-          {
-            $lookup: {
-              from: COL_SHOPS,
-              as: 'shop',
-              let: { shopId: '$shopId' },
-              pipeline: [
-                {
-                  $match: {
-                    $expr: {
-                      $eq: ['$$shopId', '$_id'],
-                    },
-                  },
-                },
-                {
-                  $project: {
-                    assets: false,
-                  },
-                },
-              ],
-            },
-          },
-          {
-            $addFields: {
-              shop: {
-                $arrayElemAt: ['$shop', 0],
-              },
-            },
-          },
-        ],
-      },
-    });
-
-    // Find exiting cart
-    const cartAggregation = cartId
-      ? await cartsCollection
-          .aggregate<CartInterface>([
-            {
-              $match: { _id: new ObjectId(cartId) },
-            },
-            {
-              $unwind: {
-                path: '$cartProducts',
-                preserveNullAndEmptyArrays: true,
-              },
-            },
-            shopProductPipeline({
-              letStage: { shopProductId: '$cartProducts.shopProductId' },
-              as: 'cartProducts.shopProducts',
-              expr: ['$$shopProductId', '$_id'],
-            }),
-            {
-              $lookup: {
-                from: COL_PRODUCTS,
-                as: 'cartProducts.products',
-                let: { productId: '$cartProducts.productId' },
-                pipeline: [
-                  {
-                    $match: {
-                      $expr: {
-                        $eq: ['$$productId', '$_id'],
-                      },
-                    },
-                  },
-
-                  {
-                    $project: {
-                      descriptionI18n: false,
-                    },
-                  },
-
-                  // get product attributes
-                  ...productAttributesPipeline,
-
-                  // get product brand
-                  ...brandPipeline,
-
-                  // get product categories
-                  ...productCategoriesPipeline(),
-
-                  // get product rubric
-                  {
-                    $lookup: {
-                      from: COL_RUBRICS,
-                      as: 'rubric',
-                      let: {
-                        rubricId: '$rubricId',
-                      },
-                      pipeline: [
-                        {
-                          $match: {
-                            $expr: {
-                              $eq: ['$$rubricId', '$_id'],
-                            },
-                          },
-                        },
-                        {
-                          $project: {
-                            _id: true,
-                            slug: true,
-                            nameI18n: true,
-                            showRubricNameInProductTitle: true,
-                            showCategoryInProductTitle: true,
-                          },
-                        },
-                      ],
-                    },
-                  },
-                  {
-                    $addFields: {
-                      rubric: { $arrayElemAt: ['$rubric', 0] },
-                    },
-                  },
-
-                  shopProductPipeline({
-                    letStage: { productId: '$_id' },
-                    as: 'shopProducts',
-                    expr: ['$$productId', '$productId'],
-                  }),
-                  {
-                    $addFields: {
-                      cardPrices: {
-                        min: {
-                          $min: '$shopProducts.price',
-                        },
-                        max: {
-                          $max: '$shopProducts.price',
-                        },
-                      },
-                      shopsCount: { $size: '$shopProducts' },
-                    },
-                  },
-                ],
-              },
-            },
-            {
-              $addFields: {
-                'cartProducts.shopProduct': {
-                  $arrayElemAt: ['$cartProducts.shopProducts', 0],
-                },
-                'cartProducts.product': {
-                  $arrayElemAt: ['$cartProducts.products', 0],
-                },
-              },
-            },
-            {
-              $addFields: {
-                'cartProducts.totalPrice': {
-                  $sum: {
-                    $multiply: ['$cartProducts.shopProduct.price', '$cartProducts.amount'],
-                  },
-                },
-              },
-            },
-            {
-              $project: {
-                'cartProducts.shopProducts': false,
-                'cartProducts.products': false,
-              },
-            },
-            {
-              $group: {
-                _id: '$_id',
-                cartProducts: {
-                  $push: '$cartProducts',
-                },
-                totalPrice: {
-                  $sum: '$cartProducts.totalPrice',
-                },
-              },
-            },
-            {
-              $addFields: {
-                cartProducts: {
-                  $filter: {
-                    input: '$cartProducts',
-                    as: 'cartProduct',
-                    cond: {
-                      $ifNull: ['$$cartProduct._id', false],
-                    },
-                  },
-                },
-              },
-            },
-            {
-              $addFields: {
-                productsCount: {
-                  $size: '$cartProducts',
-                },
-              },
-            },
-          ])
-          .toArray()
-      : [];
-    let cart = cartAggregation[0];
+    let cart = cartId
+      ? await cartsCollection.findOne<CartModel>({
+          _id: new ObjectId(cartId),
+        })
+      : null;
 
     // If cart not exist
     if (!cartId || !cart) {
       const newCartResult = await cartsCollection.insertOne({
-        cartProducts: [],
+        cartBookingProducts: [],
+        cartDeliveryProducts: [],
         createdAt: new Date(),
         updatedAt: new Date(),
       });
@@ -332,136 +126,353 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
       cart = newCart;
     }
 
-    // Total price
-    const sessionCart: CartInterface = {
-      ...cart,
-      productsCount: cart.cartProducts.length,
-      isWithShopless: cart.cartProducts.some(({ shopProductId }) => !shopProductId),
-      formattedTotalPrice: `${cart.totalPrice}`,
-    };
+    // Cast cart products
+    let totalPrice = 0;
+    const castCartProducts = (initialCartProduct: CartProductInterface): CartProductInterface => {
+      let product = initialCartProduct.product;
+      if (product && product.shopProducts && product.shopProducts.length > 0) {
+        const sortedShopProductsByPrice = product.shopProducts.sort((a, b) => {
+          return noNaN(b?.price) - noNaN(a?.price);
+        });
 
-    // Group cart products by shop and filter out shop products with different barcodes
-    const cartProducts = sessionCart.cartProducts.reduce(
-      (acc: CartProductInterface[], initialCartProduct) => {
-        let product = initialCartProduct.product;
-        if (product && product.shopProducts && product.shopProducts.length > 0) {
-          const sortedShopProductsByPrice = product.shopProducts.sort((a, b) => {
-            return noNaN(b?.price) - noNaN(a?.price);
-          });
+        const minPriceShopProduct = sortedShopProductsByPrice[sortedShopProductsByPrice.length - 1];
+        const maxPriceShopProduct = sortedShopProductsByPrice[0];
 
-          const minPriceShopProduct =
-            sortedShopProductsByPrice[sortedShopProductsByPrice.length - 1];
-          const maxPriceShopProduct = sortedShopProductsByPrice[0];
-
-          // title
-          const categories = getTreeFromList({
-            list: product.categories,
-            childrenFieldName: 'categories',
-            locale,
-          });
-
-          const snippetTitle = generateSnippetTitle({
-            locale,
-            brand: product.brand,
-            rubricName: getFieldStringLocale(product.rubric?.nameI18n, locale),
-            showRubricNameInProductTitle: product.rubric?.showRubricNameInProductTitle,
-            showCategoryInProductTitle: product.rubric?.showCategoryInProductTitle,
-            attributes: product.attributes,
-            titleCategoriesSlugs: product.titleCategoriesSlugs,
-            originalName: product.originalName,
-            defaultGender: product.gender,
-            categories,
-          });
-
-          product = {
-            ...product,
-            snippetTitle,
-            shopProducts: sortedShopProductsByPrice,
-            name: getFieldStringLocale(product.nameI18n, locale),
-            cardPrices: {
-              _id: new ObjectId(),
-              min: `${minPriceShopProduct?.price}`,
-              max: `${maxPriceShopProduct?.price}`,
-            },
-          };
-        }
-
-        const shopProduct = initialCartProduct.shopProduct;
-        const shopProductCategories = getTreeFromList({
-          list: shopProduct?.product?.categories,
+        // title
+        const categories = getTreeFromList({
+          list: product.categories,
           childrenFieldName: 'categories',
           locale,
         });
 
-        const shopProductSnippetTitle = shopProduct
-          ? generateSnippetTitle({
-              locale,
-              brand: shopProduct?.product?.brand,
-              rubricName: getFieldStringLocale(shopProduct?.product?.rubric?.nameI18n, locale),
-              showRubricNameInProductTitle:
-                shopProduct?.product?.rubric?.showRubricNameInProductTitle,
-              showCategoryInProductTitle: shopProduct?.product?.rubric?.showCategoryInProductTitle,
-              attributes: shopProduct?.product?.attributes,
-              titleCategoriesSlugs: shopProduct?.product?.titleCategoriesSlugs,
-              originalName: `${shopProduct?.product?.originalName}`,
-              defaultGender: `${shopProduct?.product?.gender}`,
-              categories: shopProductCategories,
-            })
+        const snippetTitle = generateSnippetTitle({
+          locale,
+          brand: product.brand,
+          rubricName: getFieldStringLocale(product.rubric?.nameI18n, locale),
+          showRubricNameInProductTitle: product.rubric?.showRubricNameInProductTitle,
+          showCategoryInProductTitle: product.rubric?.showCategoryInProductTitle,
+          attributes: product.attributes,
+          titleCategoriesSlugs: product.titleCategoriesSlugs,
+          originalName: product.originalName,
+          defaultGender: product.gender,
+          categories,
+        });
+
+        product = {
+          ...product,
+          snippetTitle,
+          shopProducts: sortedShopProductsByPrice,
+          name: getFieldStringLocale(product.nameI18n, locale),
+          cardPrices: {
+            _id: new ObjectId(),
+            min: `${minPriceShopProduct?.price}`,
+            max: `${maxPriceShopProduct?.price}`,
+          },
+        };
+      }
+
+      const shopProduct = initialCartProduct.shopProduct;
+      const shopProductCategories = getTreeFromList({
+        list: shopProduct?.product?.categories,
+        childrenFieldName: 'categories',
+        locale,
+      });
+
+      const shopProductSnippetTitle = shopProduct
+        ? generateSnippetTitle({
+            locale,
+            brand: shopProduct?.product?.brand,
+            rubricName: getFieldStringLocale(shopProduct?.product?.rubric?.nameI18n, locale),
+            showRubricNameInProductTitle:
+              shopProduct?.product?.rubric?.showRubricNameInProductTitle,
+            showCategoryInProductTitle: shopProduct?.product?.rubric?.showCategoryInProductTitle,
+            attributes: shopProduct?.product?.attributes,
+            titleCategoriesSlugs: shopProduct?.product?.titleCategoriesSlugs,
+            originalName: `${shopProduct?.product?.originalName}`,
+            defaultGender: `${shopProduct?.product?.gender}`,
+            categories: shopProductCategories,
+          })
+        : null;
+
+      const finalShopProduct: ShopProductInterface | null =
+        shopProduct && shopProduct.product
+          ? {
+              ...shopProduct,
+              product: {
+                ...shopProduct.product,
+                name: getFieldStringLocale(shopProduct.product.nameI18n, locale),
+                snippetTitle: shopProductSnippetTitle,
+              },
+              shop: shopProduct.shop
+                ? {
+                    ...shopProduct.shop,
+                    address: {
+                      ...shopProduct.shop.address,
+                      formattedCoordinates: {
+                        lat: shopProduct.shop.address.point.coordinates[1],
+                        lng: shopProduct.shop.address.point.coordinates[0],
+                      },
+                    },
+                    contacts: {
+                      ...shopProduct.shop.contacts,
+                      formattedPhones: shopProduct.shop.contacts.phones.map((phone) => {
+                        return {
+                          raw: phoneToRaw(phone),
+                          readable: phoneToReadable(phone),
+                        };
+                      }),
+                    },
+                  }
+                : null,
+            }
           : null;
 
-        const finalShopProduct: ShopProductInterface | null =
-          shopProduct && shopProduct.product
-            ? {
-                ...shopProduct,
-                product: {
-                  ...shopProduct.product,
-                  name: getFieldStringLocale(shopProduct.product.nameI18n, locale),
-                  snippetTitle: shopProductSnippetTitle,
-                },
-                shop: shopProduct.shop
-                  ? {
-                      ...shopProduct.shop,
-                      address: {
-                        ...shopProduct.shop.address,
-                        formattedCoordinates: {
-                          lat: shopProduct.shop.address.point.coordinates[1],
-                          lng: shopProduct.shop.address.point.coordinates[0],
-                        },
-                      },
-                      contacts: {
-                        ...shopProduct.shop.contacts,
-                        formattedPhones: shopProduct.shop.contacts.phones.map((phone) => {
-                          return {
-                            raw: phoneToRaw(phone),
-                            readable: phoneToReadable(phone),
-                          };
-                        }),
-                      },
-                    }
-                  : null,
-              }
-            : null;
+      let cartProductTotalPrice = 0;
+      if (finalShopProduct) {
+        cartProductTotalPrice = finalShopProduct.price * initialCartProduct.amount;
+        totalPrice = totalPrice + cartProductTotalPrice;
+      }
+      return {
+        ...initialCartProduct,
+        product,
+        shopProduct: finalShopProduct,
+        totalPrice: cartProductTotalPrice,
+      };
+    };
 
-        return [
-          ...acc,
-          {
-            ...initialCartProduct,
-            product,
-            shopProduct: finalShopProduct,
-          },
-        ];
-      },
-      [],
-    );
+    const aggregateCartProduct = async (
+      cartProduct: CartProductInterface,
+    ): Promise<CartProductInterface | null> => {
+      const cartProductCopy = { ...cartProduct };
+      const { shopProductId, productId } = cartProductCopy;
+      if (!shopProductId && !productId) {
+        return null;
+      }
+
+      if (shopProductId) {
+        const shopProductAggregation = await shopProductsCollection
+          .aggregate<ShopProductInterface>([
+            {
+              $match: {
+                _id: shopProductId,
+                citySlug: city,
+                ...companyIdStage,
+              },
+            },
+
+            // get shop product fields
+            ...shopProductFieldsPipeline('$productId'),
+
+            // Lookup product shop
+            {
+              $lookup: {
+                from: COL_SHOPS,
+                as: 'shop',
+                let: { shopId: '$shopId' },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $eq: ['$$shopId', '$_id'],
+                      },
+                    },
+                  },
+                  {
+                    $project: {
+                      assets: false,
+                    },
+                  },
+                ],
+              },
+            },
+            {
+              $addFields: {
+                shop: {
+                  $arrayElemAt: ['$shop', 0],
+                },
+              },
+            },
+          ])
+          .toArray();
+        cartProductCopy.shopProduct = shopProductAggregation[0];
+      }
+
+      if (productId) {
+        const productAggregation = await productsCollection
+          .aggregate<ProductInterface>([
+            {
+              $match: {
+                _id: productId,
+              },
+            },
+            {
+              $project: {
+                descriptionI18n: false,
+              },
+            },
+
+            // get product attributes
+            ...productAttributesPipeline,
+
+            // get product brand
+            ...brandPipeline,
+
+            // get product categories
+            ...productCategoriesPipeline(),
+
+            // get product rubric
+            {
+              $lookup: {
+                from: COL_RUBRICS,
+                as: 'rubric',
+                let: {
+                  rubricId: '$rubricId',
+                },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $eq: ['$$rubricId', '$_id'],
+                      },
+                    },
+                  },
+                  {
+                    $project: {
+                      _id: true,
+                      slug: true,
+                      nameI18n: true,
+                      showRubricNameInProductTitle: true,
+                      showCategoryInProductTitle: true,
+                    },
+                  },
+                ],
+              },
+            },
+            {
+              $addFields: {
+                rubric: { $arrayElemAt: ['$rubric', 0] },
+              },
+            },
+
+            // get shop products
+            {
+              $lookup: {
+                from: COL_SHOP_PRODUCTS,
+                as: 'shopProducts',
+                let: { productId: '$_id' },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $eq: ['$$productId', '$productId'],
+                      },
+                      citySlug: city,
+                      ...companyIdStage,
+                    },
+                  },
+
+                  // get shop product fields
+                  ...shopProductFieldsPipeline('$productId'),
+
+                  // Lookup product shop
+                  {
+                    $lookup: {
+                      from: COL_SHOPS,
+                      as: 'shop',
+                      let: { shopId: '$shopId' },
+                      pipeline: [
+                        {
+                          $match: {
+                            $expr: {
+                              $eq: ['$$shopId', '$_id'],
+                            },
+                          },
+                        },
+                        {
+                          $project: {
+                            assets: false,
+                          },
+                        },
+                      ],
+                    },
+                  },
+                  {
+                    $addFields: {
+                      shop: {
+                        $arrayElemAt: ['$shop', 0],
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+            {
+              $addFields: {
+                cardPrices: {
+                  min: {
+                    $min: '$shopProducts.price',
+                  },
+                  max: {
+                    $max: '$shopProducts.price',
+                  },
+                },
+                shopsCount: { $size: '$shopProducts' },
+              },
+            },
+          ])
+          .toArray();
+        cartProductCopy.product = productAggregation[0];
+      }
+
+      return cartProductCopy;
+    };
+
+    // final cart
+    // const start = new Date().getTime();
+    let totalDeliveryPrice = 0;
+    const cartDeliveryProducts: CartProductInterface[] = [];
+    for await (const cartProduct of cart.cartDeliveryProducts) {
+      const aggregatedCartProduct = await aggregateCartProduct(cartProduct);
+      if (aggregatedCartProduct) {
+        const castedCartProduct = castCartProducts(aggregatedCartProduct);
+        totalDeliveryPrice = totalDeliveryPrice + noNaN(castedCartProduct.totalPrice);
+        cartDeliveryProducts.push(castedCartProduct);
+      }
+    }
+
+    let totalBookingPrice = 0;
+    const cartBookingProducts: CartProductInterface[] = [];
+    for await (const cartProduct of cart.cartBookingProducts) {
+      const aggregatedCartProduct = await aggregateCartProduct(cartProduct);
+      if (aggregatedCartProduct) {
+        const castedCartProduct = castCartProducts(aggregatedCartProduct);
+        totalBookingPrice = totalBookingPrice + noNaN(castedCartProduct.totalPrice);
+        cartBookingProducts.push(castedCartProduct);
+      }
+    }
+    // console.log('cart products', new Date().getTime() - start);
+
+    const isWithShoplessBooking = cartBookingProducts.some(({ shopProductId }) => !shopProductId);
+    const isWithShoplessDelivery = cartDeliveryProducts.some(({ shopProductId }) => !shopProductId);
+    const isWithShopless = isWithShoplessBooking || isWithShoplessDelivery;
+    const sessionCart: CartInterface = {
+      ...cart,
+      productsCount: cartBookingProducts.length + cartDeliveryProducts.length,
+      cartBookingProducts,
+      cartDeliveryProducts,
+      isWithShopless,
+      isWithShoplessBooking,
+      isWithShoplessDelivery,
+      totalDeliveryPrice,
+      totalBookingPrice,
+      totalPrice,
+    };
 
     res.statusCode = 200;
     res.setHeader('Content-Type', 'application/json');
     res.end(
       JSON.stringify({
-        sessionCart: {
-          ...sessionCart,
-          cartProducts,
-        },
+        sessionCart,
       }),
     );
   } catch (e) {

@@ -320,11 +320,15 @@ export interface CartProductModel {
   shopProductId?: ObjectIdModel | null;
   productId: ObjectIdModel;
   amount: number;
+  allowDelivery: boolean;
 }
+
+export type CartProductsFieldNameType = 'cartDeliveryProducts' | 'cartBookingProducts';
 
 export interface CartModel extends TimestampModel {
   _id: ObjectIdModel;
-  cartProducts: CartProductModel[];
+  cartDeliveryProducts: CartProductModel[];
+  cartBookingProducts: CartProductModel[];
 }
 
 export interface CompanyModel extends BaseModel, TimestampModel {
@@ -522,6 +526,7 @@ export interface OrderProductModel extends TimestampModel {
   companyId: ObjectIdModel;
   orderId: ObjectIdModel;
   statusId: ObjectIdModel;
+  allowDelivery: boolean;
   barcode?: string[] | null;
   isCanceled?: boolean | null;
 }
@@ -571,6 +576,7 @@ export interface OrderModel extends TimestampModel, BaseModel {
   shopItemId: string;
   companyId: ObjectIdModel;
   companyItemId: string;
+  allowDelivery: boolean;
   reservationDate?: DateModel | null;
   isCanceled?: boolean;
   requests?: OrderRequestModel[] | null;
@@ -613,6 +619,7 @@ interface ProductMainFieldsInterface {
   manufacturerSlug?: string | null;
   selectedOptionsSlugs: string[];
   barcode?: string[] | null;
+  allowDelivery: boolean;
 }
 
 export interface ProductModel extends ProductMainFieldsInterface, BaseModel, TimestampModel {
@@ -734,6 +741,7 @@ export interface RubricVariantModel {
   showCatalogueFilterBrands?: boolean | null;
   showCategoriesInFilter?: boolean | null;
   showCategoriesInNav?: boolean | null;
+  allowDelivery?: boolean | null;
 
   // numbers
   gridCatalogueColumns?: number | null;

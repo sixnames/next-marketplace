@@ -6,6 +6,7 @@ import {
   CartProductModel,
   OrderModel,
   ProductModel,
+  ShopProductModel,
 } from 'db/dbModels';
 import { getRequestParams, getResolverValidationSchema, getSessionCart } from 'lib/sessionHelpers';
 import { getDatabase } from 'db/mongodb';
@@ -40,7 +41,10 @@ export const Cart = objectType({
   name: 'Cart',
   definition(t) {
     t.nonNull.objectId('_id');
-    t.nonNull.list.nonNull.field('cartProducts', {
+    t.nonNull.list.nonNull.field('cartDeliveryProducts', {
+      type: 'CartProduct',
+    });
+    t.nonNull.list.nonNull.field('cartBookingProducts', {
       type: 'CartProduct',
     });
   },
@@ -130,11 +134,29 @@ export const CartMutations = extendType({
           const cart = await getSessionCart(context);
           const { db } = await getDatabase();
           const cartsCollection = db.collection<CartModel>(COL_CARTS);
+          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const { input } = args;
           const { shopProductId, amount, productId } = input;
 
+          // get product
+          const product = await productsCollection.findOne({
+            _id: productId,
+          });
+          if (!product) {
+            return {
+              success: false,
+              message: await getApiMessage('carts.addProduct.error'),
+            };
+          }
+          const cartProductsFieldName = product.allowDelivery
+            ? 'cartDeliveryProducts'
+            : 'cartBookingProducts';
+          const cartProducts = product.allowDelivery
+            ? cart.cartDeliveryProducts
+            : cart.cartBookingProducts;
+
           // Set shop product to shopless cart product if shopless exist
-          const existingShoplessProduct = cart.cartProducts.find((cartProduct) => {
+          const existingShoplessProduct = cartProducts.find((cartProduct) => {
             return cartProduct.productId.equals(productId) && !cartProduct.shopProductId;
           });
           if (existingShoplessProduct) {
@@ -142,8 +164,8 @@ export const CartMutations = extendType({
               { _id: cart._id },
               {
                 $set: {
-                  'cartProducts.$[product].amount': amount,
-                  'cartProducts.$[product].shopProductId': shopProductId,
+                  [`${cartProductsFieldName}.$[product].amount`]: amount,
+                  [`${cartProductsFieldName}.$[product].shopProductId`]: shopProductId,
                   updatedAt: new Date(),
                 },
               },
@@ -168,7 +190,7 @@ export const CartMutations = extendType({
           }
 
           // Increase product amount if product already exist in cart
-          const existingShopProduct = cart.cartProducts.find((cartProduct) => {
+          const existingShopProduct = cartProducts.find((cartProduct) => {
             return cartProduct.shopProductId && cartProduct.shopProductId.equals(shopProductId);
           });
           if (existingShopProduct) {
@@ -176,7 +198,7 @@ export const CartMutations = extendType({
               { _id: cart._id },
               {
                 $inc: {
-                  'cartProducts.$[product].amount': amount,
+                  [`${cartProductsFieldName}.$[product].amount`]: amount,
                 },
                 $set: {
                   updatedAt: new Date(),
@@ -207,11 +229,12 @@ export const CartMutations = extendType({
             { _id: cart._id },
             {
               $push: {
-                cartProducts: {
+                [cartProductsFieldName]: {
                   _id: new ObjectId(),
                   amount,
                   shopProductId,
                   productId,
+                  allowDelivery: product.allowDelivery,
                 },
               },
               $set: {
@@ -269,11 +292,29 @@ export const CartMutations = extendType({
           const cart = await getSessionCart(context);
           const { db } = await getDatabase();
           const cartsCollection = db.collection<CartModel>(COL_CARTS);
+          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const { input } = args;
           const { productId, amount } = input;
 
+          // get product
+          const product = await productsCollection.findOne({
+            _id: productId,
+          });
+          if (!product) {
+            return {
+              success: false,
+              message: await getApiMessage('carts.addProduct.error'),
+            };
+          }
+          const cartProductsFieldName = product.allowDelivery
+            ? 'cartDeliveryProducts'
+            : 'cartBookingProducts';
+          const cartProducts = product.allowDelivery
+            ? cart.cartDeliveryProducts
+            : cart.cartBookingProducts;
+
           // Success if product already exist in cart
-          const productExist = cart.cartProducts.find((cartProduct) => {
+          const productExist = cartProducts.find((cartProduct) => {
             return cartProduct.productId.equals(productId);
           });
           if (productExist) {
@@ -288,10 +329,11 @@ export const CartMutations = extendType({
             { _id: cart._id },
             {
               $push: {
-                cartProducts: {
+                [cartProductsFieldName]: {
                   _id: new ObjectId(),
                   amount,
                   productId,
+                  allowDelivery: product.allowDelivery,
                 },
               },
               $set: {
@@ -348,20 +390,35 @@ export const CartMutations = extendType({
           const cart = await getSessionCart(context);
           const { db } = await getDatabase();
           const cartsCollection = db.collection<CartModel>(COL_CARTS);
+          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
           const { input } = args;
           const { shopProductId, cartProductId } = input;
+
+          // get shop product
+          const shopProduct = await shopProductsCollection.findOne({
+            _id: shopProductId,
+          });
+          if (!shopProduct) {
+            return {
+              success: false,
+              message: await getApiMessage('carts.updateProduct.error'),
+            };
+          }
+          const cartProductsFieldName = shopProduct.allowDelivery
+            ? 'cartDeliveryProducts'
+            : 'cartBookingProducts';
 
           const updatedCartResult = await cartsCollection.findOneAndUpdate(
             { _id: cart._id },
             {
               $set: {
-                'cartProducts.$[cartProduct].shopProductId': shopProductId,
-                'cartProducts.$[cartProduct].productId': null,
+                [`${cartProductsFieldName}.$[product].productId`]: null,
+                [`${cartProductsFieldName}.$[product].shopProductId`]: shopProductId,
                 updatedAt: new Date(),
               },
             },
             {
-              arrayFilters: [{ 'cartProduct._id': { $eq: cartProductId } }],
+              arrayFilters: [{ 'product._id': { $eq: cartProductId } }],
               returnDocument: 'after',
             },
           );
@@ -414,16 +471,30 @@ export const CartMutations = extendType({
           const { input } = args;
           const { cartProductId, amount } = input;
 
+          // get cart product
+          let cartProductsFieldName = 'cartBookingProducts';
+          let cartProduct = cart.cartBookingProducts.find(({ _id }) => _id.equals(cartProductId));
+          if (!cartProduct) {
+            cartProductsFieldName = 'cartDeliveryProducts';
+            cartProduct = cart.cartDeliveryProducts.find(({ _id }) => _id.equals(cartProductId));
+          }
+          if (!cartProduct) {
+            return {
+              success: false,
+              message: await getApiMessage('carts.updateProduct.error'),
+            };
+          }
+
           const updatedCartResult = await cartsCollection.findOneAndUpdate(
             { _id: cart._id },
             {
               $set: {
-                'cartProducts.$[cartProduct].amount': amount,
+                [`${cartProductsFieldName}.$[product].amount`]: amount,
                 updatedAt: new Date(),
               },
             },
             {
-              arrayFilters: [{ 'cartProduct._id': { $eq: cartProductId } }],
+              arrayFilters: [{ 'product._id': { $eq: cartProductId } }],
               returnDocument: 'after',
             },
           );
@@ -476,11 +547,25 @@ export const CartMutations = extendType({
           const { input } = args;
           const { cartProductId } = input;
 
+          // get cart product
+          let cartProductsFieldName = 'cartBookingProducts';
+          let cartProduct = cart.cartBookingProducts.find(({ _id }) => _id.equals(cartProductId));
+          if (!cartProduct) {
+            cartProductsFieldName = 'cartDeliveryProducts';
+            cartProduct = cart.cartDeliveryProducts.find(({ _id }) => _id.equals(cartProductId));
+          }
+          if (!cartProduct) {
+            return {
+              success: false,
+              message: await getApiMessage('carts.updateProduct.error'),
+            };
+          }
+
           const updatedCartResult = await cartsCollection.findOneAndUpdate(
             { _id: cart._id },
             {
               $pull: {
-                cartProducts: {
+                [cartProductsFieldName]: {
                   _id: { $eq: cartProductId },
                 },
               },
@@ -529,7 +614,8 @@ export const CartMutations = extendType({
             { _id: cart._id },
             {
               $set: {
-                cartProducts: [],
+                cartDeliveryProducts: [],
+                cartBookingProducts: [],
                 updatedAt: new Date(),
               },
             },
@@ -635,7 +721,8 @@ export const CartMutations = extendType({
           }
 
           // Cast order products for cart
-          const cartNewProducts: CartProductModel[] = [];
+          const cartDeliveryProducts: CartProductModel[] = [];
+          const cartBookingProducts: CartProductModel[] = [];
           for await (const orderProduct of order.products || []) {
             const { amount, shopProduct, shopProductId, productId } = orderProduct;
             if (!shopProduct) {
@@ -655,7 +742,11 @@ export const CartMutations = extendType({
               break;
             }
 
-            const cartProduct = cart.cartProducts.find((cartProduct) => {
+            const cartProducts = shopProduct.allowDelivery
+              ? cart.cartDeliveryProducts
+              : cart.cartBookingProducts;
+
+            const cartProduct = cartProducts.find((cartProduct) => {
               const byShopProduct = cartProduct.shopProductId
                 ? cartProduct.shopProductId.equals(shopProductId)
                 : false;
@@ -673,20 +764,36 @@ export const CartMutations = extendType({
               finalAmount = shopProduct.available;
             }
 
-            cartNewProducts.push({
+            const newCartProduct: CartProductModel = {
               _id: cartProduct ? cartProduct._id : new ObjectId(),
               amount: finalAmount,
               shopProductId,
               productId,
-            });
+              allowDelivery: shopProduct.allowDelivery,
+            };
+
+            if (shopProduct.allowDelivery) {
+              cartDeliveryProducts.push(newCartProduct);
+            } else {
+              cartBookingProducts.push(newCartProduct);
+            }
           }
 
-          cart.cartProducts.forEach((cartProduct) => {
-            const exist = cartNewProducts.some(({ _id }) => {
+          cart.cartDeliveryProducts.forEach((cartProduct) => {
+            const exist = cartDeliveryProducts.some(({ _id }) => {
               return _id.equals(cartProduct._id);
             });
             if (!exist) {
-              cartNewProducts.push(cartProduct);
+              cartDeliveryProducts.push(cartProduct);
+            }
+          });
+
+          cart.cartBookingProducts.forEach((cartProduct) => {
+            const exist = cartBookingProducts.some(({ _id }) => {
+              return _id.equals(cartProduct._id);
+            });
+            if (!exist) {
+              cartBookingProducts.push(cartProduct);
             }
           });
 
@@ -695,7 +802,8 @@ export const CartMutations = extendType({
             { _id: cart._id },
             {
               $set: {
-                cartProducts: cartNewProducts,
+                cartDeliveryProducts,
+                cartBookingProducts,
                 updatedAt: new Date(),
               },
             },

@@ -1518,9 +1518,11 @@ export const getCatalogueData = async ({
     const rubricAttributes = inCategory
       ? initialAttributes
       : initialAttributes.filter(({ _id, slug }) => {
-          return (rubric?.filterVisibleAttributeIds || []).some((attributeId) => {
-            return attributeId.equals(_id) || realFilterAttributes.includes(slug);
+          const selected = realFilterAttributes.includes(slug);
+          const visibleInRubric = (rubric?.filterVisibleAttributeIds || []).some((attributeId) => {
+            return attributeId.equals(_id);
           });
+          return selected || visibleInRubric;
         });
 
     // rubrics as attribute
@@ -1728,6 +1730,7 @@ export const getCatalogueData = async ({
           categories,
           locale,
           currency,
+          page,
         });
 
     const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';

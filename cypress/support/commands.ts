@@ -1,8 +1,9 @@
 import 'cypress-file-upload';
 import 'cypress-localstorage-commands';
+import { fixtureIds } from 'cypress/fixtures/fixtureIds';
 
 // noinspection ES6PreferShortImport
-import { CATALOGUE_DEFAULT_RUBRIC_SLUG, ROUTE_CATALOGUE } from '../../config/common';
+import { ROUTE_CATALOGUE } from '../../config/common';
 
 // ***********************************************
 // This example commands.js shows you how to
@@ -132,7 +133,7 @@ Cypress.Commands.add('signOut', (redirect = '/') => {
 });
 
 Cypress.Commands.add('makeAnOrder', ({ callback, orderFields }: Cypress.MakeAnOrderInterface) => {
-  const catalogueRoute = `${ROUTE_CATALOGUE}/${CATALOGUE_DEFAULT_RUBRIC_SLUG}`;
+  const catalogueRoute = `${ROUTE_CATALOGUE}/${fixtureIds.rubricWineSlug}`;
   cy.visit(catalogueRoute);
 
   // Should navigate to cart

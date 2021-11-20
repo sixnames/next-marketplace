@@ -311,7 +311,8 @@ export type BrandsPaginationPayload = PaginationPayload & {
 export type Cart = {
   __typename?: 'Cart';
   _id: Scalars['ObjectId'];
-  cartProducts: Array<CartProduct>;
+  cartDeliveryProducts: Array<CartProduct>;
+  cartBookingProducts: Array<CartProduct>;
 };
 
 export type CartPayload = {
@@ -2332,6 +2333,7 @@ export type RubricVariant = {
   showCatalogueFilterBrands?: Maybe<Scalars['Boolean']>;
   showCategoriesInFilter?: Maybe<Scalars['Boolean']>;
   showCategoriesInNav?: Maybe<Scalars['Boolean']>;
+  allowDelivery?: Maybe<Scalars['Boolean']>;
   gridCatalogueColumns?: Maybe<Scalars['Int']>;
   name: Scalars['String'];
 };
@@ -2400,7 +2402,6 @@ export type ShopProduct = Timestamp & {
   discountedPercent?: Maybe<Scalars['Int']>;
   product: Product;
   shop: Shop;
-  inCartCount: Scalars['Int'];
 };
 
 export type ShopProductOldPrice = Timestamp & {
@@ -2807,6 +2808,7 @@ export type UpdateRubricVariantInput = {
   showCatalogueFilterBrands?: Maybe<Scalars['Boolean']>;
   showCategoriesInFilter?: Maybe<Scalars['Boolean']>;
   showCategoriesInNav?: Maybe<Scalars['Boolean']>;
+  allowDelivery?: Maybe<Scalars['Boolean']>;
   gridCatalogueColumns?: Maybe<Scalars['Int']>;
   cardBrandsLabelI18n?: Maybe<Scalars['JSONObject']>;
 };

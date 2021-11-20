@@ -2,33 +2,45 @@ import Breadcrumbs from 'components/Breadcrumbs';
 import Button from 'components/button/Button';
 import ButtonCross from 'components/button/ButtonCross';
 import ControlButton from 'components/button/ControlButton';
+import CartAside from 'components/CartAside';
+import CartShopsList from 'components/CartShopsList';
+import FormikDatePicker from 'components/FormElements/Input/FormikDatePicker';
+import FormikInput from 'components/FormElements/Input/FormikInput';
 import SpinnerInput from 'components/FormElements/SpinnerInput/SpinnerInput';
+import FormikTextarea from 'components/FormElements/Textarea/FormikTextarea';
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
 import { MapModalInterface } from 'components/Modal/MapModal';
+import Notification from 'components/Notification';
 import ProductShopPrices from 'components/ProductShopPrices';
-import WpImage from 'components/WpImage';
-import { MAP_MODAL } from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
-import { useConfigContext } from 'context/configContext';
-import { useShopMarker } from 'hooks/useShopMarker';
-import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
 import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
 import Title from 'components/Title';
+import WpImage from 'components/WpImage';
 import { ROUTE_PROFILE } from 'config/common';
-import { useNotificationsContext } from 'context/notificationsContext';
+import { MAP_MODAL } from 'config/modalVariants';
+import { useAppContext } from 'context/appContext';
+import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
-import { CartProductInterface, ShopProductInterface } from 'db/uiInterfaces';
+import { useSiteUserContext } from 'context/userSiteUserContext';
+import { MakeAnOrderInputInterface } from 'db/dao/order/makeAnOrder';
+import {
+  CartInterface,
+  CartProductInterface,
+  CompanyInterface,
+  ShopProductInterface,
+} from 'db/uiInterfaces';
+import { Form, Formik, useFormikContext } from 'formik';
+import { useShopMarker } from 'hooks/useShopMarker';
 import LayoutCard from 'layout/LayoutCard';
 import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
+import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
 import { noNaN } from 'lib/numbers';
+import { phoneToRaw } from 'lib/phoneUtils';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import CartAside from 'components/CartAside';
 import { getSiteInitialData } from 'lib/ssrUtils';
-import CartShopsList from 'components/CartShopsList';
 
 interface CartProductFrameInterface {
   cartProductId: string;
@@ -190,7 +202,16 @@ const CartShoplessProduct: React.FC<CartProductPropsInterface> = ({ cartProduct,
   );
 };
 
-const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId }) => {
+interface CartProductPropsWithAmountInterface extends CartProductPropsInterface {
+  fieldName: string;
+}
+
+const CartProduct: React.FC<CartProductPropsWithAmountInterface> = ({
+  cartProduct,
+  fieldName,
+  testId,
+}) => {
+  const { setFieldValue } = useFormikContext();
   const marker = useShopMarker(cartProduct.shopProduct?.shop);
   const { configs } = useConfigContext();
   const { showModal } = useAppContext();
@@ -238,6 +259,7 @@ const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId 
             onChange={(e) => {
               const amount = noNaN(e.target.value);
               if (amount >= minAmount && amount <= noNaN(available)) {
+                setFieldValue(fieldName, amount);
                 updateProductInCart({
                   amount,
                   cartProductId: _id,
@@ -300,11 +322,34 @@ const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId 
   );
 };
 
-const CartRoute: React.FC = () => {
-  const { showErrorNotification } = useNotificationsContext();
+interface MakeOrderFormInterface
+  extends CartInterface,
+    Omit<MakeAnOrderInputInterface, 'allowDelivery' | 'cartProductsFieldName'> {}
+
+interface CartPageConsumerInterface {
+  domainCompany?: CompanyInterface | null;
+}
+
+const CartPageConsumer: React.FC<CartPageConsumerInterface> = ({ domainCompany }) => {
   const router = useRouter();
-  const { cart, loadingCart, urlPrefix } = useSiteContext();
+  const { cart, loadingCart, urlPrefix, makeAnOrder } = useSiteContext();
+  const [rendered, setRendered] = React.useState<boolean>(false);
+  const [tabIndex, setTabIndex] = React.useState<number>(0);
+  const sessionUser = useSiteUserContext();
   const { configs } = useConfigContext();
+  const disabled = !!sessionUser;
+
+  React.useEffect(() => {
+    if (cart && !rendered) {
+      if (cart.cartDeliveryProducts.length > 0) {
+        setTabIndex(0);
+        setRendered(true);
+        return;
+      }
+      setTabIndex(1);
+      setRendered(true);
+    }
+  }, [cart, rendered]);
 
   if (loadingCart && !cart) {
     return (
@@ -324,15 +369,20 @@ const CartRoute: React.FC = () => {
         <Breadcrumbs currentPageName={'Корзина'} />
 
         <Inner lowTop testId={'cart'}>
-          <RequestError />
+          <RequestError message={'Загружаю корзину'} />
         </Inner>
       </div>
     );
   }
 
-  const { productsCount, cartProducts } = cart;
+  const {
+    cartBookingProducts,
+    cartDeliveryProducts,
+    isWithShoplessBooking,
+    isWithShoplessDelivery,
+  } = cart;
 
-  if (cartProducts.length < 1) {
+  if (cartBookingProducts.length < 1 && cartDeliveryProducts.length < 1) {
     return (
       <div>
         <Breadcrumbs currentPageName={'Корзина'} />
@@ -344,9 +394,7 @@ const CartRoute: React.FC = () => {
               frameClassName='w-auto'
               theme={'secondary'}
               onClick={() => {
-                router.push(urlPrefix).catch(() => {
-                  showErrorNotification();
-                });
+                router.push(urlPrefix).catch(console.log);
               }}
             >
               Продолжить покупки
@@ -371,45 +419,261 @@ const CartRoute: React.FC = () => {
       <Breadcrumbs currentPageName={'Корзина'} />
 
       <Inner lowTop testId={'cart'}>
-        <Title>В корзине товаров {productsCount} шт.</Title>
-        <div className='grid md:grid-cols-8 lg:grid-cols-16 gap-6'>
-          <div className='md:col-span-5 lg:col-span-11 grid gap-6' data-cy={'cart-products'}>
-            {cartProducts.map((cartProduct, index) => {
-              const { _id, shopProduct } = cartProduct;
+        <Formik<MakeOrderFormInterface>
+          enableReinitialize={true}
+          initialValues={{
+            ...cart,
+            name: sessionUser ? sessionUser.me.name : '',
+            lastName: sessionUser ? sessionUser.me.lastName : '',
+            email: sessionUser ? sessionUser.me.email : '',
+            phone: sessionUser ? sessionUser.me.phone : '',
+            comment: '',
+            reservationDate: null,
+          }}
+          onSubmit={(values) => {
+            if (tabIndex === 0) {
+              makeAnOrder({
+                name: values.name,
+                lastName: values.lastName,
+                email: values.email,
+                reservationDate: values.reservationDate,
+                comment: values.comment,
+                phone: phoneToRaw(values.phone),
+                companySlug: domainCompany?.slug,
+                allowDelivery: true,
+                cartProductsFieldName: 'cartDeliveryProducts',
+              });
+              return;
+            }
 
-              if (!shopProduct) {
-                return (
-                  <CartShoplessProduct testId={index} cartProduct={cartProduct} key={`${_id}`} />
-                );
-              }
+            makeAnOrder({
+              name: values.name,
+              lastName: values.lastName,
+              email: values.email,
+              reservationDate: values.reservationDate,
+              comment: values.comment,
+              phone: phoneToRaw(values.phone),
+              companySlug: domainCompany?.slug,
+              allowDelivery: false,
+              cartProductsFieldName: 'cartBookingProducts',
+            });
+          }}
+        >
+          {({ values }) => {
+            const {
+              cartDeliveryProducts,
+              cartBookingProducts,
+              totalDeliveryPrice,
+              totalBookingPrice,
+            } = values;
 
-              return <CartProduct testId={index} cartProduct={cartProduct} key={`${_id}`} />;
-            })}
-          </div>
+            return (
+              <Form>
+                <div className='grid md:grid-cols-8 lg:grid-cols-16 gap-6'>
+                  <div className='md:col-span-5 lg:col-span-11' data-cy={'cart-products'}>
+                    <div className='mb-10'>
+                      {/*tabs*/}
+                      <div className='flex flex-wrap gap-6'>
+                        {cartDeliveryProducts.length > 0 ? (
+                          <div
+                            data-cy={'cart-products-tab-trigger-0'}
+                            className={`transition-all cursor-pointer ${
+                              tabIndex === 0 ? 'text-theme' : 'text-secondary-text'
+                            }`}
+                            onClick={() => {
+                              setTabIndex(0);
+                            }}
+                          >
+                            <Title tag={'div'} size={'small'}>
+                              Корзина {cartDeliveryProducts.length} шт.
+                            </Title>
+                          </div>
+                        ) : null}
 
-          <div className='md:col-span-3 lg:col-span-5'>
-            <CartAside
-              cart={cart}
-              buttonText={configs.buyButtonText}
-              onConfirmHandler={() => {
-                router.push(`${urlPrefix}/make-an-order`).catch(() => {
-                  showErrorNotification();
-                });
-              }}
-            />
-          </div>
-        </div>
+                        {cartBookingProducts.length > 0 ? (
+                          <div
+                            data-cy={'cart-products-tab-trigger-1'}
+                            className={`transition-all cursor-pointer ${
+                              tabIndex === 1 ? 'text-theme' : 'text-secondary-text'
+                            }`}
+                            onClick={() => {
+                              setTabIndex(1);
+                            }}
+                          >
+                            <Title tag={'div'} size={'small'}>
+                              Бронирование {cartBookingProducts.length} шт.
+                            </Title>
+                          </div>
+                        ) : null}
+                      </div>
+
+                      {/*cart products*/}
+                      {cartDeliveryProducts.length > 0 && tabIndex === 0 ? (
+                        <div className='grid gap-6' data-cy={'delivery-products'}>
+                          <div className='flex items-center gap-4 text-lg font-medium'>
+                            <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
+                              1
+                            </div>
+                            <div>Товары</div>
+                          </div>
+
+                          {cartDeliveryProducts.map((cartProduct, index) => {
+                            const { _id, shopProduct } = cartProduct;
+
+                            if (!shopProduct) {
+                              return (
+                                <CartShoplessProduct
+                                  testId={index}
+                                  cartProduct={cartProduct}
+                                  key={`${_id}`}
+                                />
+                              );
+                            }
+
+                            return (
+                              <CartProduct
+                                fieldName={`cartDeliveryProducts[${index}].amount`}
+                                testId={index}
+                                cartProduct={cartProduct}
+                                key={`${_id}`}
+                              />
+                            );
+                          })}
+                        </div>
+                      ) : null}
+
+                      {/*booking products*/}
+                      {cartBookingProducts.length > 0 && tabIndex === 1 ? (
+                        <div className='grid gap-6' data-cy={'booking-products'}>
+                          <div className='flex items-center gap-4 text-lg font-medium'>
+                            <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
+                              1
+                            </div>
+                            <div>Товары</div>
+                          </div>
+
+                          {cartBookingProducts.map((cartProduct, index) => {
+                            const { _id, shopProduct } = cartProduct;
+
+                            if (!shopProduct) {
+                              return (
+                                <CartShoplessProduct
+                                  testId={index}
+                                  cartProduct={cartProduct}
+                                  key={`${_id}`}
+                                />
+                              );
+                            }
+
+                            return (
+                              <CartProduct
+                                fieldName={`cartBookingProducts[${index}].amount`}
+                                testId={index}
+                                cartProduct={cartProduct}
+                                key={`${_id}`}
+                              />
+                            );
+                          })}
+
+                          <Notification
+                            variant={'success'}
+                            message={'Текущая цена на сайте может отличаться от цены на кассе'}
+                          />
+                        </div>
+                      ) : null}
+                    </div>
+
+                    <div className='relative z-20'>
+                      <div className='flex items-center gap-4 mb-8 text-lg font-medium'>
+                        <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
+                          2
+                        </div>
+                        <div>Личные данные</div>
+                      </div>
+
+                      <div className='lg:grid grid-cols-2 gap-x-6'>
+                        <FormikInput
+                          testId={'order-form-name'}
+                          name={'name'}
+                          label={'Имя'}
+                          disabled={disabled}
+                          isRequired
+                        />
+
+                        <FormikInput
+                          disabled={disabled}
+                          name={'lastName'}
+                          label={'Фамилия'}
+                          testId={'lastName'}
+                        />
+
+                        <FormikInput
+                          testId={'order-form-phone'}
+                          name={'phone'}
+                          type={'tel'}
+                          label={'Телефон'}
+                          disabled={disabled}
+                          isRequired
+                        />
+
+                        <FormikInput
+                          testId={'order-form-email'}
+                          name={'email'}
+                          type={'email'}
+                          label={'E-mail'}
+                          disabled={disabled}
+                          isRequired
+                        />
+
+                        {configs.showReservationDate ? (
+                          <FormikDatePicker
+                            isRequired
+                            label={'Дата брони'}
+                            name={'reservationDate'}
+                            testId={'reservationDate'}
+                          />
+                        ) : null}
+
+                        <FormikTextarea name={'comment'} label={'Комментарий к заказу'} />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/*cart aside*/}
+                  <div className='md:col-span-3 lg:col-span-5'>
+                    {tabIndex === 0 ? (
+                      <CartAside
+                        buyButtonText={'Оформить заказ'}
+                        productsCount={cartDeliveryProducts.length}
+                        totalPrice={totalDeliveryPrice}
+                        isWithShopless={isWithShoplessDelivery}
+                      />
+                    ) : (
+                      <CartAside
+                        isBooking
+                        buyButtonText={configs.buyButtonText}
+                        productsCount={cartBookingProducts.length}
+                        totalPrice={totalBookingPrice}
+                        isWithShopless={isWithShoplessBooking}
+                      />
+                    )}
+                  </div>
+                </div>
+              </Form>
+            );
+          }}
+        </Formik>
       </Inner>
     </div>
   );
 };
 
-type CartPageInterface = SiteLayoutProviderInterface;
+interface CartPageInterface extends SiteLayoutProviderInterface, CartPageConsumerInterface {}
 
 const CartPage: NextPage<CartPageInterface> = (props) => {
   return (
     <SiteLayout title={'Корзина'} {...props}>
-      <CartRoute />
+      <CartPageConsumer domainCompany={props.domainCompany} />
     </SiteLayout>
   );
 };

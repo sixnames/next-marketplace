@@ -191,8 +191,8 @@ const MakeAnOrderRoute: React.FC<MakeAnOrderRouteInterface> = ({ company }) => {
     );
   }
 
-  const { productsCount, cartProducts } = cart;
-
+  const { productsCount, cartBookingProducts, cartDeliveryProducts } = cart;
+  const cartProducts = [...cartBookingProducts, ...cartDeliveryProducts];
   if (cartProducts.length < 1) {
     return (
       <div>

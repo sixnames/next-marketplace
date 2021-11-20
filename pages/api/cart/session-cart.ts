@@ -434,8 +434,9 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
     for await (const cartProduct of cart.cartDeliveryProducts) {
       const aggregatedCartProduct = await aggregateCartProduct(cartProduct);
       if (aggregatedCartProduct) {
-        totalDeliveryPrice = totalDeliveryPrice + noNaN(aggregatedCartProduct.totalPrice);
-        cartDeliveryProducts.push(castCartProducts(aggregatedCartProduct));
+        const castedCartProduct = castCartProducts(aggregatedCartProduct);
+        totalDeliveryPrice = totalDeliveryPrice + noNaN(castedCartProduct.totalPrice);
+        cartDeliveryProducts.push(castedCartProduct);
       }
     }
 
@@ -444,8 +445,9 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
     for await (const cartProduct of cart.cartBookingProducts) {
       const aggregatedCartProduct = await aggregateCartProduct(cartProduct);
       if (aggregatedCartProduct) {
-        totalBookingPrice = totalBookingPrice + noNaN(aggregatedCartProduct.totalPrice);
-        cartBookingProducts.push(castCartProducts(aggregatedCartProduct));
+        const castedCartProduct = castCartProducts(aggregatedCartProduct);
+        totalBookingPrice = totalBookingPrice + noNaN(castedCartProduct.totalPrice);
+        cartBookingProducts.push(castedCartProduct);
       }
     }
     // console.log('cart products', new Date().getTime() - start);

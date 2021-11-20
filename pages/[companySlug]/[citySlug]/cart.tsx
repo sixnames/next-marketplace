@@ -18,8 +18,8 @@ import { MAP_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
-import { CartProductInterface, ShopProductInterface } from 'db/uiInterfaces';
-import { Form, Formik } from 'formik';
+import { CartInterface, CartProductInterface, ShopProductInterface } from 'db/uiInterfaces';
+import { Form, Formik, useFormikContext } from 'formik';
 import { useShopMarker } from 'hooks/useShopMarker';
 import LayoutCard from 'layout/LayoutCard';
 import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
@@ -190,7 +190,16 @@ const CartShoplessProduct: React.FC<CartProductPropsInterface> = ({ cartProduct,
   );
 };
 
-const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId }) => {
+interface CartProductPropsWithAmountInterface extends CartProductPropsInterface {
+  fieldName: string;
+}
+
+const CartProduct: React.FC<CartProductPropsWithAmountInterface> = ({
+  cartProduct,
+  fieldName,
+  testId,
+}) => {
+  const { setFieldValue } = useFormikContext();
   const marker = useShopMarker(cartProduct.shopProduct?.shop);
   const { configs } = useConfigContext();
   const { showModal } = useAppContext();
@@ -238,6 +247,7 @@ const CartProduct: React.FC<CartProductPropsInterface> = ({ cartProduct, testId 
             onChange={(e) => {
               const amount = noNaN(e.target.value);
               if (amount >= minAmount && amount <= noNaN(available)) {
+                setFieldValue(fieldName, amount);
                 updateProductInCart({
                   amount,
                   cartProductId: _id,
@@ -346,8 +356,6 @@ const CartPageConsumer: React.FC = () => {
   const {
     cartBookingProducts,
     cartDeliveryProducts,
-    totalBookingPrice,
-    totalDeliveryPrice,
     isWithShoplessBooking,
     isWithShoplessDelivery,
   } = cart;
@@ -389,13 +397,21 @@ const CartPageConsumer: React.FC = () => {
       <Breadcrumbs currentPageName={'Корзина'} />
 
       <Inner lowTop testId={'cart'}>
-        <Formik
+        <Formik<CartInterface>
+          enableReinitialize={true}
           initialValues={cart}
           onSubmit={(values) => {
             console.log(values);
           }}
         >
-          {() => {
+          {({ values }) => {
+            const {
+              cartDeliveryProducts,
+              cartBookingProducts,
+              totalDeliveryPrice,
+              totalBookingPrice,
+            } = values;
+
             return (
               <Form>
                 <div className='grid md:grid-cols-8 lg:grid-cols-16 gap-6'>
@@ -452,6 +468,7 @@ const CartPageConsumer: React.FC = () => {
 
                             return (
                               <CartProduct
+                                fieldName={`cartDeliveryProducts[${index}].amount`}
                                 testId={index}
                                 cartProduct={cartProduct}
                                 key={`${_id}`}
@@ -479,6 +496,7 @@ const CartPageConsumer: React.FC = () => {
 
                             return (
                               <CartProduct
+                                fieldName={`cartBookingProducts[${index}].amount`}
                                 testId={index}
                                 cartProduct={cartProduct}
                                 key={`${_id}`}

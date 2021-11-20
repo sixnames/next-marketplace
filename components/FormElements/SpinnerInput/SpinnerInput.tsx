@@ -67,6 +67,7 @@ const SpinnerInput: React.FC<SpinnerInterface> = ({
   return (
     <div className={`relative ${frameClassName ? frameClassName : ''}`}>
       <button
+        type={'button'}
         aria-label={'Уменьшить количество'}
         data-cy={minusTestId}
         disabled={disabled}
@@ -104,6 +105,7 @@ const SpinnerInput: React.FC<SpinnerInterface> = ({
         {...props}
       />
       <button
+        type={'button'}
         aria-label={'Увеличить количество'}
         data-cy={plusTestId}
         disabled={disabled}

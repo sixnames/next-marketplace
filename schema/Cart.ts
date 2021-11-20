@@ -390,7 +390,7 @@ export const CartMutations = extendType({
           const cart = await getSessionCart(context);
           const { db } = await getDatabase();
           const cartsCollection = db.collection<CartModel>(COL_CARTS);
-          const shopProductsCollection = db.collection<ShopProductModel>(COL_PRODUCTS);
+          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
           const { input } = args;
           const { shopProductId, cartProductId } = input;
 

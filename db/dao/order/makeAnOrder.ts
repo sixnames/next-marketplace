@@ -377,7 +377,7 @@ export async function makeAnOrder({
         { _id: cart._id },
         {
           $set: {
-            cartProducts: [],
+            [cartProductsFieldName]: [],
             updatedAt: new Date(),
           },
         },

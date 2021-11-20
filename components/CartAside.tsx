@@ -1,3 +1,4 @@
+import { useConfigContext } from 'context/configContext';
 import * as React from 'react';
 import Currency from 'components/Currency';
 import Button from 'components/button/Button';
@@ -8,6 +9,7 @@ interface CartAsideInterface {
   isWithShopless?: boolean;
   totalPrice?: number;
   buyButtonText: string;
+  isBooking?: boolean;
 }
 
 const CartAside: React.FC<CartAsideInterface> = ({
@@ -15,7 +17,9 @@ const CartAside: React.FC<CartAsideInterface> = ({
   buyButtonText,
   isWithShopless,
   productsCount,
+  isBooking,
 }) => {
+  const { configs } = useConfigContext();
   return (
     <LayoutCard className='sticky top-16 lef-0 mb-4 overflow-hidden' testId={'cart-aside'}>
       <div className='p-6 grid gap-5'>
@@ -56,6 +60,13 @@ const CartAside: React.FC<CartAsideInterface> = ({
         {isWithShopless ? (
           <div className='mt-5 text-red-500 font-medium' data-cy={`cart-aside-warning`}>
             Для оформления заказа необходимо выбрать магазины у всех товаров.
+          </div>
+        ) : null}
+
+        {isBooking ? (
+          <div className='mt-5 font-medium' data-cy={`cart-aside-warning`}>
+            {configs.siteName} не продаёт и не доставляет алкогольную продукцию. Вы можете
+            забронировать инетересующий товар и забрать его в магазинах партнёров.
           </div>
         ) : null}
       </div>

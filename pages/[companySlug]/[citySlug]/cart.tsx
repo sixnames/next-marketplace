@@ -4,10 +4,13 @@ import ButtonCross from 'components/button/ButtonCross';
 import ControlButton from 'components/button/ControlButton';
 import CartAside from 'components/CartAside';
 import CartShopsList from 'components/CartShopsList';
+import FormikDatePicker from 'components/FormElements/Input/FormikDatePicker';
+import FormikInput from 'components/FormElements/Input/FormikInput';
 import SpinnerInput from 'components/FormElements/SpinnerInput/SpinnerInput';
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
 import { MapModalInterface } from 'components/Modal/MapModal';
+import Notification from 'components/Notification';
 import ProductShopPrices from 'components/ProductShopPrices';
 import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
@@ -18,13 +21,21 @@ import { MAP_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
-import { CartInterface, CartProductInterface, ShopProductInterface } from 'db/uiInterfaces';
+import { useSiteUserContext } from 'context/userSiteUserContext';
+import { MakeAnOrderInputInterface } from 'db/dao/order/makeAnOrder';
+import {
+  CartInterface,
+  CartProductInterface,
+  CompanyInterface,
+  ShopProductInterface,
+} from 'db/uiInterfaces';
 import { Form, Formik, useFormikContext } from 'formik';
 import { useShopMarker } from 'hooks/useShopMarker';
 import LayoutCard from 'layout/LayoutCard';
 import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
 import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
 import { noNaN } from 'lib/numbers';
+import { phoneToRaw } from 'lib/phoneUtils';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -310,12 +321,22 @@ const CartProduct: React.FC<CartProductPropsWithAmountInterface> = ({
   );
 };
 
-const CartPageConsumer: React.FC = () => {
+interface MakeOrderFormInterface
+  extends CartInterface,
+    Omit<MakeAnOrderInputInterface, 'allowDelivery' | 'cartProductsFieldName'> {}
+
+interface CartPageConsumerInterface {
+  domainCompany?: CompanyInterface | null;
+}
+
+const CartPageConsumer: React.FC<CartPageConsumerInterface> = ({ domainCompany }) => {
   const router = useRouter();
-  const { cart, loadingCart, urlPrefix } = useSiteContext();
+  const { cart, loadingCart, urlPrefix, makeAnOrder } = useSiteContext();
   const [rendered, setRendered] = React.useState<boolean>(false);
   const [tabIndex, setTabIndex] = React.useState<number>(0);
+  const sessionUser = useSiteUserContext();
   const { configs } = useConfigContext();
+  const disabled = !!sessionUser;
 
   React.useEffect(() => {
     if (cart && !rendered) {
@@ -397,11 +418,44 @@ const CartPageConsumer: React.FC = () => {
       <Breadcrumbs currentPageName={'Корзина'} />
 
       <Inner lowTop testId={'cart'}>
-        <Formik<CartInterface>
+        <Formik<MakeOrderFormInterface>
           enableReinitialize={true}
-          initialValues={cart}
+          initialValues={{
+            ...cart,
+            name: sessionUser ? sessionUser.me.name : '',
+            lastName: sessionUser ? sessionUser.me.lastName : '',
+            email: sessionUser ? sessionUser.me.email : '',
+            phone: sessionUser ? sessionUser.me.phone : '',
+            comment: '',
+            reservationDate: null,
+          }}
           onSubmit={(values) => {
-            console.log(values);
+            if (tabIndex === 0) {
+              makeAnOrder({
+                name: values.name,
+                lastName: values.lastName,
+                email: values.email,
+                reservationDate: values.reservationDate,
+                comment: values.comment,
+                phone: phoneToRaw(values.phone),
+                companySlug: domainCompany?.slug,
+                allowDelivery: true,
+                cartProductsFieldName: 'cartDeliveryProducts',
+              });
+              return;
+            }
+
+            makeAnOrder({
+              name: values.name,
+              lastName: values.lastName,
+              email: values.email,
+              reservationDate: values.reservationDate,
+              comment: values.comment,
+              phone: phoneToRaw(values.phone),
+              companySlug: domainCompany?.slug,
+              allowDelivery: false,
+              cartProductsFieldName: 'cartBookingProducts',
+            });
           }}
         >
           {({ values }) => {
@@ -416,7 +470,7 @@ const CartPageConsumer: React.FC = () => {
               <Form>
                 <div className='grid md:grid-cols-8 lg:grid-cols-16 gap-6'>
                   <div className='md:col-span-5 lg:col-span-11' data-cy={'cart-products'}>
-                    <div>
+                    <div className='mb-10'>
                       {/*tabs*/}
                       <div className='flex flex-wrap gap-6'>
                         {cartDeliveryProducts.length > 0 ? (
@@ -453,6 +507,13 @@ const CartPageConsumer: React.FC = () => {
                       {/*cart products*/}
                       {cartDeliveryProducts.length > 0 && tabIndex === 0 ? (
                         <div className='grid gap-6'>
+                          <div className='flex items-center gap-4 text-lg font-medium'>
+                            <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
+                              1
+                            </div>
+                            <div>Товары</div>
+                          </div>
+
                           {cartDeliveryProducts.map((cartProduct, index) => {
                             const { _id, shopProduct } = cartProduct;
 
@@ -481,6 +542,13 @@ const CartPageConsumer: React.FC = () => {
                       {/*booking products*/}
                       {cartBookingProducts.length > 0 && tabIndex === 1 ? (
                         <div className='grid gap-6'>
+                          <div className='flex items-center gap-4 text-lg font-medium'>
+                            <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
+                              1
+                            </div>
+                            <div>Товары</div>
+                          </div>
+
                           {cartBookingProducts.map((cartProduct, index) => {
                             const { _id, shopProduct } = cartProduct;
 
@@ -503,8 +571,65 @@ const CartPageConsumer: React.FC = () => {
                               />
                             );
                           })}
+
+                          <Notification
+                            variant={'success'}
+                            message={'Текущая цена на сайте может отличаться от цены на кассе'}
+                          />
                         </div>
                       ) : null}
+                    </div>
+
+                    <div className='relative z-20'>
+                      <div className='flex items-center gap-4 mb-8 text-lg font-medium'>
+                        <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
+                          2
+                        </div>
+                        <div>Личные данные</div>
+                      </div>
+
+                      <div className='lg:grid grid-cols-2 gap-x-6'>
+                        <FormikInput
+                          testId={'order-form-name'}
+                          name={'name'}
+                          label={'Имя'}
+                          disabled={disabled}
+                          isRequired
+                        />
+
+                        <FormikInput
+                          disabled={disabled}
+                          name={'lastName'}
+                          label={'Фамилия'}
+                          testId={'lastName'}
+                        />
+
+                        <FormikInput
+                          testId={'order-form-phone'}
+                          name={'phone'}
+                          type={'tel'}
+                          label={'Телефон'}
+                          disabled={disabled}
+                          isRequired
+                        />
+                        <FormikInput
+                          testId={'order-form-email'}
+                          name={'email'}
+                          type={'email'}
+                          label={'E-mail'}
+                          disabled={disabled}
+                          isRequired
+                        />
+
+                        {configs.showReservationDate ? (
+                          <FormikDatePicker
+                            isRequired
+                            label={'Дата брони'}
+                            name={'reservationDate'}
+                            testId={'reservationDate'}
+                          />
+                        ) : null}
+                      </div>
                     </div>
                   </div>
 
@@ -519,6 +644,7 @@ const CartPageConsumer: React.FC = () => {
                       />
                     ) : (
                       <CartAside
+                        isBooking
                         buyButtonText={configs.buyButtonText}
                         productsCount={cartBookingProducts.length}
                         totalPrice={totalBookingPrice}
@@ -536,12 +662,12 @@ const CartPageConsumer: React.FC = () => {
   );
 };
 
-type CartPageInterface = SiteLayoutProviderInterface;
+interface CartPageInterface extends SiteLayoutProviderInterface, CartPageConsumerInterface {}
 
 const CartPage: NextPage<CartPageInterface> = (props) => {
   return (
     <SiteLayout title={'Корзина'} {...props}>
-      <CartPageConsumer />
+      <CartPageConsumer domainCompany={props.domainCompany} />
     </SiteLayout>
   );
 };

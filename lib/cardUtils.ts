@@ -37,7 +37,7 @@ import {
   COL_PRODUCT_CARD_DESCRIPTIONS,
   COL_ICONS,
 } from 'db/collectionNames';
-import { productCategoriesPipeline } from 'db/dao/constantPipelines';
+import { ignoreNoImageStage, productCategoriesPipeline } from 'db/dao/constantPipelines';
 import {
   CatalogueBreadcrumbModel,
   ObjectIdModel,
@@ -334,6 +334,7 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
                               $expr: {
                                 $eq: ['$$productId', '$productId'],
                               },
+                              ...ignoreNoImageStage,
                             },
                           },
                           {

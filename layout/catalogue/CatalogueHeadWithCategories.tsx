@@ -24,7 +24,7 @@ const CatalogueHeadWithCategories: React.FC<CatalogueHeadDefaultInterface> = ({
   const { urlPrefix } = useSiteContext();
 
   return (
-    <div className='mb-16'>
+    <div className='mb-16 border-b border-border-100'>
       <Breadcrumbs lowBottom config={breadcrumbs} urlPrefix={urlPrefix} />
       <Inner lowBottom lowTop>
         <Title

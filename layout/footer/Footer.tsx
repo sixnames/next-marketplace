@@ -170,7 +170,7 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
           </div>
 
           <div className='lg:col-span-2'>
-            <div className='grid gap-x-6 gap-y-2 sm:grid-cols-2'>
+            <div className='grid gap-x-6 gap-y-2 sm:grid-cols-2 border-t border-border-300 pt-8 sm:border-0 sm:pt-0'>
               <div>
                 <small className='text-secondary-text text-[1em]'>
                   {configSiteName} © {configFoundationYear || new Date().getFullYear()}

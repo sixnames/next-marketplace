@@ -313,7 +313,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
           })}
         </ul>
 
-        <div className='pb-8'>
+        <div className='pb-4'>
           {headerPageGroups.map(({ name, _id, pages }, index) => {
             return (
               <div className='relative mb-8' key={`${_id}`}>
@@ -372,7 +372,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
 
         {configs.isOneShopCompany && domainCompany && domainCompany.mainShop ? (
           <div
-            className='text-theme cursor-pointer flex items-center'
+            className='text-theme cursor-pointer flex items-center border-t border-border-100 pt-6'
             onClick={() => {
               hideBurgerDropdown();
               showModal<MapModalInterface>({

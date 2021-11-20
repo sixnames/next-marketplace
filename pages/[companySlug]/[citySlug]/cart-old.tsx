@@ -330,7 +330,8 @@ const CartRoute: React.FC = () => {
     );
   }
 
-  const { productsCount, cartProducts } = cart;
+  const { productsCount, cartDeliveryProducts, cartBookingProducts } = cart;
+  const cartProducts = [...cartDeliveryProducts, ...cartBookingProducts];
 
   if (cartProducts.length < 1) {
     return (

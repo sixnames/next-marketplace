@@ -227,13 +227,16 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
             }
           : null;
 
+      let cartProductTotalPrice = 0;
       if (finalShopProduct) {
-        totalPrice = totalPrice + finalShopProduct.price * initialCartProduct.amount;
+        cartProductTotalPrice = finalShopProduct.price * initialCartProduct.amount;
+        totalPrice = totalPrice + cartProductTotalPrice;
       }
       return {
         ...initialCartProduct,
         product,
         shopProduct: finalShopProduct,
+        totalPrice: cartProductTotalPrice,
       };
     };
 
@@ -426,33 +429,40 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
 
     // final cart
     // const start = new Date().getTime();
+    let totalDeliveryPrice = 0;
     const cartDeliveryProducts: CartProductInterface[] = [];
     for await (const cartProduct of cart.cartDeliveryProducts) {
       const aggregatedCartProduct = await aggregateCartProduct(cartProduct);
       if (aggregatedCartProduct) {
+        totalDeliveryPrice = totalDeliveryPrice + noNaN(aggregatedCartProduct.totalPrice);
         cartDeliveryProducts.push(castCartProducts(aggregatedCartProduct));
       }
     }
 
+    let totalBookingPrice = 0;
     const cartBookingProducts: CartProductInterface[] = [];
     for await (const cartProduct of cart.cartBookingProducts) {
       const aggregatedCartProduct = await aggregateCartProduct(cartProduct);
       if (aggregatedCartProduct) {
+        totalBookingPrice = totalBookingPrice + noNaN(aggregatedCartProduct.totalPrice);
         cartBookingProducts.push(castCartProducts(aggregatedCartProduct));
       }
     }
     // console.log('cart products', new Date().getTime() - start);
 
-    const isWithShopless =
-      cartBookingProducts.some(({ shopProductId }) => !shopProductId) ||
-      cartDeliveryProducts.some(({ shopProductId }) => !shopProductId);
-
+    const isWithShoplessBooking = cartBookingProducts.some(({ shopProductId }) => !shopProductId);
+    const isWithShoplessDelivery = cartDeliveryProducts.some(({ shopProductId }) => !shopProductId);
+    const isWithShopless = isWithShoplessBooking || isWithShoplessDelivery;
     const sessionCart: CartInterface = {
       ...cart,
       productsCount: cartBookingProducts.length + cartDeliveryProducts.length,
       cartBookingProducts,
       cartDeliveryProducts,
       isWithShopless,
+      isWithShoplessBooking,
+      isWithShoplessDelivery,
+      totalDeliveryPrice,
+      totalBookingPrice,
       totalPrice,
     };
 

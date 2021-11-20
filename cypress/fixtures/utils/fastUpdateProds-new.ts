@@ -1,5 +1,11 @@
 import { dbsConfig, getProdDb } from './getProdDb';
-import { COL_CARTS } from '../../../db/collectionNames';
+import {
+  COL_CARTS,
+  COL_ORDER_PRODUCTS,
+  COL_ORDERS,
+  COL_PRODUCTS,
+  COL_SHOP_PRODUCTS,
+} from '../../../db/collectionNames';
 
 require('dotenv').config();
 
@@ -35,6 +41,12 @@ async function updateProds() {
     const { db, client } = await getProdDb(dbConfig);
 
     await db.collection(COL_CARTS).deleteMany({});
+
+    const updater = { $set: { allowDelivery: false } };
+    await db.collection(COL_PRODUCTS).updateMany({}, updater);
+    await db.collection(COL_SHOP_PRODUCTS).updateMany({}, updater);
+    await db.collection(COL_ORDERS).updateMany({}, updater);
+    await db.collection(COL_ORDER_PRODUCTS).updateMany({}, updater);
 
     // disconnect form db
     await client.close();

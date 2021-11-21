@@ -583,14 +583,6 @@ export const getConsoleRubricProducts = async ({
       );
 
       // product attributes
-      const optionSlugs = product.selectedOptionsSlugs.reduce((acc: string[], selectedSlug) => {
-        const slugParts = selectedSlug.split(FILTER_SEPARATOR);
-        const optionSlug = slugParts[1];
-        if (!optionSlug) {
-          return acc;
-        }
-        return [...acc, optionSlug];
-      }, []);
       const productAttributes = (product.attributes || []).reduce(
         (acc: ProductAttributeInterface[], attribute) => {
           const existingAttribute = (attributes || []).find(({ _id }) => {
@@ -599,6 +591,16 @@ export const getConsoleRubricProducts = async ({
           if (!existingAttribute) {
             return acc;
           }
+
+          const optionSlugs = product.selectedOptionsSlugs.reduce((acc: string[], selectedSlug) => {
+            const slugParts = selectedSlug.split(FILTER_SEPARATOR);
+            const attributeSlug = slugParts[0];
+            const optionSlug = slugParts[1];
+            if (!optionSlug || attributeSlug !== existingAttribute.slug) {
+              return acc;
+            }
+            return [...acc, optionSlug];
+          }, []);
 
           const options = (existingAttribute.options || []).filter(({ slug }) => {
             return optionSlugs.includes(slug);
@@ -1264,14 +1266,6 @@ export const getConsoleCompanyRubricProducts = async ({
       );
 
       // product attributes
-      const optionSlugs = product.selectedOptionsSlugs.reduce((acc: string[], selectedSlug) => {
-        const slugParts = selectedSlug.split(FILTER_SEPARATOR);
-        const optionSlug = slugParts[1];
-        if (!optionSlug) {
-          return acc;
-        }
-        return [...acc, optionSlug];
-      }, []);
       const productAttributes = (product.attributes || []).reduce(
         (acc: ProductAttributeInterface[], attribute) => {
           const existingAttribute = (attributes || []).find(({ _id }) => {
@@ -1280,6 +1274,16 @@ export const getConsoleCompanyRubricProducts = async ({
           if (!existingAttribute) {
             return acc;
           }
+
+          const optionSlugs = product.selectedOptionsSlugs.reduce((acc: string[], selectedSlug) => {
+            const slugParts = selectedSlug.split(FILTER_SEPARATOR);
+            const attributeSlug = slugParts[0];
+            const optionSlug = slugParts[1];
+            if (!optionSlug || attributeSlug !== existingAttribute.slug) {
+              return acc;
+            }
+            return [...acc, optionSlug];
+          }, []);
 
           const options = (existingAttribute.options || []).filter(({ slug }) => {
             return optionSlugs.includes(slug);
@@ -1902,15 +1906,6 @@ export const getConsoleShopProducts = async ({
       }
 
       // product attributes
-      const optionSlugs = shopProduct.selectedOptionsSlugs.reduce((acc: string[], selectedSlug) => {
-        const slugParts = selectedSlug.split(FILTER_SEPARATOR);
-        const optionSlug = slugParts[1];
-        if (!optionSlug) {
-          return acc;
-        }
-        return [...acc, optionSlug];
-      }, []);
-
       const productAttributes = (product.attributes || []).reduce(
         (acc: ProductAttributeInterface[], productAttribute) => {
           const existingAttribute = (attributes || []).find(({ _id }) => {
@@ -1919,6 +1914,16 @@ export const getConsoleShopProducts = async ({
           if (!existingAttribute) {
             return acc;
           }
+
+          const optionSlugs = product.selectedOptionsSlugs.reduce((acc: string[], selectedSlug) => {
+            const slugParts = selectedSlug.split(FILTER_SEPARATOR);
+            const attributeSlug = slugParts[0];
+            const optionSlug = slugParts[1];
+            if (!optionSlug || attributeSlug !== existingAttribute.slug) {
+              return acc;
+            }
+            return [...acc, optionSlug];
+          }, []);
 
           const options = (existingAttribute.options || []).filter(({ slug }) => {
             return optionSlugs.includes(slug);

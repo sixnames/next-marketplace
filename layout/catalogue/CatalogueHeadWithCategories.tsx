@@ -60,7 +60,7 @@ const CatalogueHeadWithCategories: React.FC<CatalogueHeadDefaultInterface> = ({
 
               return (
                 <Link
-                  className='flex flex-col text-secondary-text items-center gap-2 max-w-[160px] hover:no-underline hover:text-theme'
+                  className='flex flex-col text-secondary-text items-center gap-2 max-w-[120px] min-w-[120px] md:max-w-[160px] md:min-w-[160px] hover:no-underline hover:text-theme'
                   href={href}
                   key={`${_id}`}
                 >
@@ -70,7 +70,7 @@ const CatalogueHeadWithCategories: React.FC<CatalogueHeadDefaultInterface> = ({
                       dangerouslySetInnerHTML={{ __html: icon?.icon }}
                     />
                   ) : null}
-                  <span className='block text-center'>{name}</span>
+                  <span className='block text-center text-xs md:text-sm lg:text-base'>{name}</span>
                 </Link>
               );
             })}

@@ -4,6 +4,7 @@ import ButtonCross from 'components/button/ButtonCross';
 import ControlButton from 'components/button/ControlButton';
 import CartAside from 'components/CartAside';
 import CartShopsList from 'components/CartShopsList';
+import FakeInput from 'components/FormElements/Input/FakeInput';
 import FormikDatePicker from 'components/FormElements/Input/FormikDatePicker';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
@@ -751,8 +752,15 @@ const CartPageConsumer: React.FC<CartPageConsumerInterface> = ({ domainCompany }
                               options={DELIVERY_VARIANT_OPTIONS}
                               disabled
                             />
+                            <Notification
+                              variant={'success'}
+                              message={
+                                'Для полученя забронированного товара необходим документ подтверждающий личность.'
+                              }
+                            />
                           </div>
-                          <div>Выбор оплаты</div>
+
+                          <FakeInput label={'Оплата'} value={'Оплата при получении'} />
                         </div>
                       </div>
                     </div>

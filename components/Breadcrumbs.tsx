@@ -39,7 +39,7 @@ const Breadcrumbs: React.FC<BreadcrumbsInterface> = ({
   }, [locale]);
 
   return (
-    <div className={lowWrapper ? '' : 'mb-2 lg:mb-8'}>
+    <div className={lowWrapper ? '' : 'mb-4 lg:mb-8'}>
       <Inner lowBottom={lowBottom} lowTop={lowTop}>
         <ul className={centered ? 'text-center' : ''}>
           {noMainPage ? null : (

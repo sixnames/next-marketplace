@@ -122,7 +122,7 @@ export function generateTitle({
   // get title attributes separator
   const titleSeparator = getConstantTranslation(`catalogueTitleSeparator.${locale}`);
   const pageName = getConstantTranslation(`pagination.page.${locale}`);
-  const pagePostfix = page && page > 1 ? `. ${pageName} - ${page}` : '';
+  const pagePostfix = page && page > 1 ? ` ${pageName} - ${page}` : '';
 
   // get initial keyword
   const initialKeyword = !defaultKeyword

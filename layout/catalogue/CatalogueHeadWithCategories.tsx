@@ -24,7 +24,7 @@ const CatalogueHeadWithCategories: React.FC<CatalogueHeadDefaultInterface> = ({
   const { urlPrefix } = useSiteContext();
 
   return (
-    <div className='mb-16 border-b border-border-100'>
+    <div className='mb-8 lg:mb-16 border-b border-border-100'>
       <Breadcrumbs lowBottom config={breadcrumbs} urlPrefix={urlPrefix} />
       <Inner lowBottom lowTop>
         <Title
@@ -36,7 +36,7 @@ const CatalogueHeadWithCategories: React.FC<CatalogueHeadDefaultInterface> = ({
         </Title>
 
         {headCategories && headCategories.length > minCategoriesCount ? (
-          <div className='flex flex-wrap justify-center gap-8 mt-8 mb-8'>
+          <div className='flex flex-wrap justify-between md:justify-center md:gap-x-4 gap-y-8 mt-8 mb-8'>
             {headCategories.map(({ _id, icon, name, slug }) => {
               const companySlug = alwaysString(query.companySlug);
               const rubricSlug = alwaysString(query.rubricSlug);
@@ -60,7 +60,7 @@ const CatalogueHeadWithCategories: React.FC<CatalogueHeadDefaultInterface> = ({
 
               return (
                 <Link
-                  className='flex flex-col text-secondary-text items-center gap-2 max-w-[120px] min-w-[120px] md:max-w-[160px] md:min-w-[160px] hover:no-underline hover:text-theme'
+                  className='flex flex-col text-secondary-text items-center gap-2 max-w-[140px] min-w-[140px] md:max-w-[160px] md:min-w-[160px] hover:no-underline hover:text-theme'
                   href={href}
                   key={`${_id}`}
                 >
@@ -70,7 +70,7 @@ const CatalogueHeadWithCategories: React.FC<CatalogueHeadDefaultInterface> = ({
                       dangerouslySetInnerHTML={{ __html: icon?.icon }}
                     />
                   ) : null}
-                  <span className='block text-center text-xs md:text-sm lg:text-base'>{name}</span>
+                  <span className='block text-center text-sm md:text-base'>{name}</span>
                 </Link>
               );
             })}

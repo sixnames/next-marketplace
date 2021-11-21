@@ -548,7 +548,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
         </div>
 
         <Inner lowTop lowBottom className='relative'>
-          <div className='flex justify-between py-6 lg:justify-between lg:py-4'>
+          <div className='flex justify-between py-3 lg:py-6 lg:justify-between lg:py-4'>
             <div className={`${middleSideClassName} justify-start hidden lg:inline-flex`}>
               {configs.isOneShopCompany && domainCompany && domainCompany.mainShop ? (
                 <div

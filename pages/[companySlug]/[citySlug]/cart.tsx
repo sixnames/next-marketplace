@@ -107,7 +107,7 @@ const CartPageConsumer: React.FC = () => {
         </div>
 
         {configs.isOneShopCompany && domainCompany?.mainShop ? (
-          <OneShopCompanyCart cart={cart} tabIndex={tabIndex} />
+          <OneShopCompanyCart cart={cart} tabIndex={tabIndex} domainCompany={domainCompany} />
         ) : (
           <div>cart</div>
         )}

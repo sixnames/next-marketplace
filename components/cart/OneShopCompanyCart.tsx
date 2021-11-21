@@ -11,7 +11,7 @@ import { DELIVERY_VARIANT_OPTIONS, PAYMENT_VARIANT_OPTIONS } from 'config/consta
 import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
 import { useSiteUserContext } from 'context/userSiteUserContext';
-import { CartInterface } from 'db/uiInterfaces';
+import { CartInterface, CompanyInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import { phoneToRaw } from 'lib/phoneUtils';
 import { MakeOrderFormInterface } from 'pages/[companySlug]/[citySlug]/cart';
@@ -20,11 +20,16 @@ import * as React from 'react';
 interface OneShopCompanyCartInterface {
   cart: CartInterface;
   tabIndex: number;
+  domainCompany: CompanyInterface;
 }
 
-const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({ cart, tabIndex }) => {
+const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
+  cart,
+  domainCompany,
+  tabIndex,
+}) => {
   const { makeAnOrder } = useSiteContext();
-  const { configs, domainCompany } = useConfigContext();
+  const { configs } = useConfigContext();
   const sessionUser = useSiteUserContext();
   const disabled = !!sessionUser;
 
@@ -62,7 +67,7 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({ cart, tabIn
               reservationDate: values.reservationDate,
               comment: values.comment,
               phone: phoneToRaw(values.phone),
-              companySlug: domainCompany?.slug,
+              companySlug: domainCompany.slug,
               deliveryVariant: values.deliveryVariant,
               paymentVariant: values.paymentVariant,
               allowDelivery: true,
@@ -218,7 +223,7 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({ cart, tabIn
               reservationDate: values.reservationDate,
               comment: values.comment,
               phone: phoneToRaw(values.phone),
-              companySlug: domainCompany?.slug,
+              companySlug: domainCompany.slug,
               deliveryVariant: ORDER_DELIVERY_VARIANT_PICKUP,
               paymentVariant: ORDER_PAYMENT_VARIANT_RECEIPT,
               allowDelivery: false,

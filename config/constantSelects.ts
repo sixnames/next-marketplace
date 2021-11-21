@@ -3,6 +3,7 @@ import {
   DEFAULT_LOCALE,
   ORDER_DELIVERY_VARIANT_COURIER,
   ORDER_DELIVERY_VARIANT_PICKUP,
+  ORDER_PAYMENT_VARIANT_RECEIPT,
   SECONDARY_LOCALE,
   SUPPLIER_PRICE_VARIANT_CHARGE,
   SUPPLIER_PRICE_VARIANT_DISCOUNT,
@@ -150,6 +151,17 @@ export const DELIVERY_VARIANT_OPTIONS: ConstantOptionsType = [
     nameI18n: {
       [DEFAULT_LOCALE]: 'Курьером',
       [SECONDARY_LOCALE]: 'By courier',
+    },
+  },
+];
+
+// payment variant
+export const PAYMENT_VARIANT_OPTIONS: ConstantOptionsType = [
+  {
+    _id: ORDER_PAYMENT_VARIANT_RECEIPT,
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'При получении',
+      [SECONDARY_LOCALE]: 'Upon receipt',
     },
   },
 ];

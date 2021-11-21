@@ -568,6 +568,10 @@ export enum OrderDeliveryVariantModel {
   courier = 'courier',
 }
 
+export enum OrderPaymentVariantModel {
+  receipt = 'receipt',
+}
+
 export interface OrderModel extends TimestampModel, BaseModel {
   orderId: string;
   statusId: ObjectIdModel;
@@ -582,7 +586,8 @@ export interface OrderModel extends TimestampModel, BaseModel {
   companyId: ObjectIdModel;
   companyItemId: string;
   allowDelivery: boolean;
-  deliverVariant: OrderDeliveryVariantModel;
+  deliveryVariant: OrderDeliveryVariantModel;
+  paymentVariant: OrderPaymentVariantModel;
   reservationDate?: DateModel | null;
   isCanceled?: boolean;
   requests?: OrderRequestModel[] | null;

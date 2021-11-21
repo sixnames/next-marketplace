@@ -8,6 +8,7 @@ import {
   GenderModel,
   OrderDeliveryVariantModel,
   OrderLogVariantModel,
+  OrderPaymentVariantModel,
   OrderRequestStateModel,
   OrderRequestVariantModel,
   PageStateModel,
@@ -294,6 +295,9 @@ export const ORDER_REQUEST_STATE_CANCELED = 'canceled' as OrderRequestStateModel
 // ORDER DELIVERY VARIANTS
 export const ORDER_DELIVERY_VARIANT_PICKUP = 'pickup' as OrderDeliveryVariantModel;
 export const ORDER_DELIVERY_VARIANT_COURIER = 'courier' as OrderDeliveryVariantModel;
+
+// ORDER PAYMENT VARIANTS
+export const ORDER_PAYMENT_VARIANT_RECEIPT = 'receipt' as OrderPaymentVariantModel;
 
 // LANGUAGES
 export const ISO_LANGUAGES = [

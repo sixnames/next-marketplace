@@ -19,8 +19,12 @@ import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
 import Title from 'components/Title';
 import WpImage from 'components/WpImage';
-import { ORDER_DELIVERY_VARIANT_PICKUP, ROUTE_PROFILE } from 'config/common';
-import { DELIVERY_VARIANT_OPTIONS } from 'config/constantSelects';
+import {
+  ORDER_DELIVERY_VARIANT_PICKUP,
+  ORDER_PAYMENT_VARIANT_RECEIPT,
+  ROUTE_PROFILE,
+} from 'config/common';
+import { DELIVERY_VARIANT_OPTIONS, PAYMENT_VARIANT_OPTIONS } from 'config/constantSelects';
 import { MAP_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
@@ -425,7 +429,8 @@ const CartPageConsumer: React.FC<CartPageConsumerInterface> = ({ domainCompany }
     phone: sessionUser ? sessionUser.me.phone : '',
     comment: '',
     reservationDate: null,
-    deliverVariant: ORDER_DELIVERY_VARIANT_PICKUP,
+    deliveryVariant: ORDER_DELIVERY_VARIANT_PICKUP,
+    paymentVariant: ORDER_PAYMENT_VARIANT_RECEIPT,
   };
 
   return (
@@ -482,7 +487,8 @@ const CartPageConsumer: React.FC<CartPageConsumerInterface> = ({ domainCompany }
                 comment: values.comment,
                 phone: phoneToRaw(values.phone),
                 companySlug: domainCompany?.slug,
-                deliverVariant: values.deliverVariant,
+                deliveryVariant: values.deliveryVariant,
+                paymentVariant: values.paymentVariant,
                 allowDelivery: true,
                 cartProductsFieldName: 'cartDeliveryProducts',
               });
@@ -592,7 +598,13 @@ const CartPageConsumer: React.FC<CartPageConsumerInterface> = ({ domainCompany }
                             options={DELIVERY_VARIANT_OPTIONS}
                             isRequired
                           />
-                          <div>Выбор оплаты</div>
+
+                          <FormikSelect
+                            label={'Оплата'}
+                            name={'paymentVariant'}
+                            options={PAYMENT_VARIANT_OPTIONS}
+                            isRequired
+                          />
                         </div>
                       </div>
                     </div>
@@ -627,7 +639,8 @@ const CartPageConsumer: React.FC<CartPageConsumerInterface> = ({ domainCompany }
                 comment: values.comment,
                 phone: phoneToRaw(values.phone),
                 companySlug: domainCompany?.slug,
-                deliverVariant: ORDER_DELIVERY_VARIANT_PICKUP,
+                deliveryVariant: ORDER_DELIVERY_VARIANT_PICKUP,
+                paymentVariant: ORDER_PAYMENT_VARIANT_RECEIPT,
                 allowDelivery: false,
                 cartProductsFieldName: 'cartBookingProducts',
               });

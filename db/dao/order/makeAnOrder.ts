@@ -21,6 +21,7 @@ import {
   OrderDeliveryVariantModel,
   OrderLogModel,
   OrderModel,
+  OrderPaymentVariantModel,
   OrderProductModel,
   OrderStatusModel,
   ProductModel,
@@ -63,7 +64,8 @@ export interface MakeAnOrderInputInterface {
   comment?: string;
   companySlug?: string;
   allowDelivery: boolean;
-  deliverVariant: OrderDeliveryVariantModel;
+  deliveryVariant: OrderDeliveryVariantModel;
+  paymentVariant: OrderPaymentVariantModel;
   cartProductsFieldName: 'cartDeliveryProducts' | 'cartBookingProducts';
 }
 
@@ -277,9 +279,10 @@ export async function makeAnOrder({
             shopItemId: shop.itemId,
             companyId,
             companyItemId: company.itemId,
-            reservationDate: input.reservationDate ? new Date(input.reservationDate) : null,
-            deliverVariant: input.deliverVariant,
             allowDelivery,
+            reservationDate: input.reservationDate ? new Date(input.reservationDate) : null,
+            deliveryVariant: input.deliveryVariant,
+            paymentVariant: input.paymentVariant,
             createdAt: new Date(),
             updatedAt: new Date(),
           };

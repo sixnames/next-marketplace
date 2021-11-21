@@ -241,8 +241,8 @@ export const constantTranslations = {
   },
   pagination: {
     page: {
-      [DEFAULT_LOCALE]: 'Страница',
-      [SECONDARY_LOCALE]: 'Page',
+      [DEFAULT_LOCALE]: 'страница',
+      [SECONDARY_LOCALE]: 'page',
     },
   },
 };

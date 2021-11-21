@@ -6,6 +6,7 @@ import CartAside from 'components/CartAside';
 import CartShopsList from 'components/CartShopsList';
 import FormikDatePicker from 'components/FormElements/Input/FormikDatePicker';
 import FormikInput from 'components/FormElements/Input/FormikInput';
+import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import SpinnerInput from 'components/FormElements/SpinnerInput/SpinnerInput';
 import FormikTextarea from 'components/FormElements/Textarea/FormikTextarea';
 import Inner from 'components/Inner';
@@ -18,6 +19,7 @@ import Spinner from 'components/Spinner';
 import Title from 'components/Title';
 import WpImage from 'components/WpImage';
 import { ROUTE_PROFILE } from 'config/common';
+import { DELIVERY_VARIANT_OPTIONS } from 'config/constantSelects';
 import { MAP_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
@@ -430,7 +432,7 @@ const CartPageConsumer: React.FC<CartPageConsumerInterface> = ({ domainCompany }
 
       <Inner lowTop testId={'cart'}>
         {/*tabs*/}
-        <div className='flex flex-wrap gap-6'>
+        <div className='flex flex-wrap gap-x-6 gap-y-4 mb-8'>
           {cartDeliveryProducts.length > 0 ? (
             <div
               data-cy={'cart-products-tab-trigger-0'}
@@ -441,7 +443,7 @@ const CartPageConsumer: React.FC<CartPageConsumerInterface> = ({ domainCompany }
                 setTabIndex(0);
               }}
             >
-              <Title tag={'div'} size={'small'}>
+              <Title tag={'div'} size={'small'} low>
                 Корзина {cartDeliveryProducts.length} шт.
               </Title>
             </div>
@@ -457,7 +459,7 @@ const CartPageConsumer: React.FC<CartPageConsumerInterface> = ({ domainCompany }
                 setTabIndex(1);
               }}
             >
-              <Title tag={'div'} size={'small'}>
+              <Title tag={'div'} size={'small'} low>
                 Бронирование {cartBookingProducts.length} шт.
               </Title>
             </div>
@@ -571,28 +573,23 @@ const CartPageConsumer: React.FC<CartPageConsumerInterface> = ({ domainCompany }
                         </div>
                       </div>
 
-                      {/* delivery */}
+                      {/* delivery and payment */}
                       <div className='relative z-20 mb-12'>
                         <div className='flex items-center gap-4 mb-8 text-lg font-medium'>
                           <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
                             3
                           </div>
-                          <div>Способ доставки</div>
+                          <div>Доставка и оплата</div>
                         </div>
 
-                        <div></div>
-                      </div>
-
-                      {/* payment */}
-                      <div className='relative z-20 mb-12'>
-                        <div className='flex items-center gap-4 mb-8 text-lg font-medium'>
-                          <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
-                            4
-                          </div>
-                          <div>Способ оплаты</div>
+                        <div className='lg:grid grid-cols-2 gap-x-6'>
+                          <FormikSelect
+                            name={'deliveryVariant'}
+                            options={DELIVERY_VARIANT_OPTIONS}
+                            isRequired
+                          />
+                          <div>Выбор оплаты</div>
                         </div>
-
-                        <div></div>
                       </div>
                     </div>
 
@@ -733,28 +730,23 @@ const CartPageConsumer: React.FC<CartPageConsumerInterface> = ({ domainCompany }
                         </div>
                       </div>
 
-                      {/* delivery */}
+                      {/* delivery and payment */}
                       <div className='relative z-20 mb-12'>
                         <div className='flex items-center gap-4 mb-8 text-lg font-medium'>
                           <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
                             3
                           </div>
-                          <div>Способ доставки</div>
+                          <div>Доставка и оплата</div>
                         </div>
 
-                        <div></div>
-                      </div>
-
-                      {/* payment */}
-                      <div className='relative z-20 mb-12'>
-                        <div className='flex items-center gap-4 mb-8 text-lg font-medium'>
-                          <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
-                            4
-                          </div>
-                          <div>Способ оплаты</div>
+                        <div className='lg:grid grid-cols-2 gap-x-6'>
+                          <FormikSelect
+                            name={'deliveryVariant'}
+                            options={DELIVERY_VARIANT_OPTIONS}
+                            isRequired
+                          />
+                          <div>Выбор оплаты</div>
                         </div>
-
-                        <div></div>
                       </div>
                     </div>
 

@@ -1,6 +1,9 @@
 import { getFieldStringLocale } from '../lib/i18n';
 import {
   DEFAULT_LOCALE,
+  ORDER_DELIVERY_VARIANT_COURIER,
+  ORDER_DELIVERY_VARIANT_PICKUP,
+  ORDER_PAYMENT_VARIANT_RECEIPT,
   SECONDARY_LOCALE,
   SUPPLIER_PRICE_VARIANT_CHARGE,
   SUPPLIER_PRICE_VARIANT_DISCOUNT,
@@ -115,7 +118,7 @@ export function getConstantOptions(options: ConstantOptionsType, locale: string)
     };
   });
 }
-//
+
 // supplier price variant
 export const SUPPLIER_PRICE_VARIANT_OPTIONS: ConstantOptionsType = [
   {
@@ -130,6 +133,35 @@ export const SUPPLIER_PRICE_VARIANT_OPTIONS: ConstantOptionsType = [
     nameI18n: {
       [DEFAULT_LOCALE]: 'Дилерская наценка',
       [SECONDARY_LOCALE]: 'Dealer charge',
+    },
+  },
+];
+
+// delivery variant
+export const DELIVERY_VARIANT_OPTIONS: ConstantOptionsType = [
+  {
+    _id: ORDER_DELIVERY_VARIANT_PICKUP,
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'Самовывоз из магазина',
+      [SECONDARY_LOCALE]: 'Pickup from the store',
+    },
+  },
+  {
+    _id: ORDER_DELIVERY_VARIANT_COURIER,
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'Курьером',
+      [SECONDARY_LOCALE]: 'By courier',
+    },
+  },
+];
+
+// payment variant
+export const PAYMENT_VARIANT_OPTIONS: ConstantOptionsType = [
+  {
+    _id: ORDER_PAYMENT_VARIANT_RECEIPT,
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'При получении',
+      [SECONDARY_LOCALE]: 'Upon receipt',
     },
   },
 ];

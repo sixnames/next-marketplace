@@ -1,6 +1,7 @@
 import FormikAddressInput from 'components/FormElements/Input/FormikAddressInput';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikMultiLineInput from 'components/FormElements/Input/FormikMultiLineInput';
+import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import Notification from 'components/Notification';
 import { useConfigContext } from 'context/configContext';
@@ -64,6 +65,13 @@ const ShopMainFields: React.FC = () => {
           message={`Попробуйте дописать название города в поисковик адреса,если нет нужного результата.`}
         />
       </div>
+
+      <FormikTranslationsInput
+        name={'priceWarningI18n'}
+        label={
+          'Текст предупреждения в корзине о несоответсвии цены на сайте и в физическом магазине'
+        }
+      />
     </React.Fragment>
   );
 };

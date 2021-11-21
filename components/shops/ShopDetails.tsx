@@ -44,6 +44,7 @@ const ShopDetails: React.FC<ShopDetailsInterface> = ({ shop, basePath, breadcrum
     shopId: shop._id,
     citySlug: shop.citySlug,
     license: shop.license,
+    priceWarningI18n: shop.priceWarningI18n || {},
     contacts: {
       emails: shop.contacts.emails[0] ? shop.contacts.emails : [''],
       phones: shop.contacts.phones[0] ? shop.contacts.phones : [''],
@@ -89,6 +90,7 @@ const ShopDetails: React.FC<ShopDetailsInterface> = ({ shop, basePath, breadcrum
                     name: values.name,
                     shopId: values.shopId,
                     license: values.license,
+                    priceWarningI18n: values.priceWarningI18n,
                     contacts: {
                       emails: values.contacts.emails,
                       phones: values.contacts.phones.map((phone) => {

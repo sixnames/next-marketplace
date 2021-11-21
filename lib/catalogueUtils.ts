@@ -593,7 +593,7 @@ export function castOptionsForBreadcrumbs({
 interface CastCatalogueFiltersPayloadInterface {
   minPrice?: number | null;
   maxPrice?: number | null;
-  realFilterOptions: string[];
+  realFilters: string[];
   realFilterAttributes: string[];
   categoryFilters: string[];
   brandFilters: string[];
@@ -628,7 +628,7 @@ export function castCatalogueFilters({
   initialPage,
   initialLimit,
 }: CastCatalogueFiltersInterface): CastCatalogueFiltersPayloadInterface {
-  const realFilterOptions: string[] = [];
+  const realFilters: string[] = [];
   const realFilterAttributes: string[] = [];
   const categoryFilters: string[] = [];
   const brandFilters: string[] = [];
@@ -696,7 +696,7 @@ export function castCatalogueFilters({
       }
 
       if (filterAttributeSlug === FILTER_CATEGORY_KEY) {
-        realFilterOptions.push(filterOptionSlug);
+        realFilters.push(filterOptionSlug);
         categoryFilters.push(filterOption);
         return;
       }
@@ -725,11 +725,11 @@ export function castCatalogueFilters({
       }
 
       realFilterAttributes.push(filterAttributeSlug);
-      realFilterOptions.push(filterOption);
+      realFilters.push(filterOption);
     }
   });
 
-  const noFiltersSelected = realFilterOptions.length < 1;
+  const noFiltersSelected = realFilters.length < 1;
   const castedSortDir = sortDir === SORT_DESC_STR ? SORT_DESC : SORT_ASC;
   const skip = page ? (page - 1) * limit : 0;
   const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
@@ -748,7 +748,7 @@ export function castCatalogueFilters({
     ? {}
     : {
         selectedOptionsSlugs: {
-          $all: realFilterOptions,
+          $all: realFilters,
         },
       };
 
@@ -790,7 +790,7 @@ export function castCatalogueFilters({
     clearSlug: sortPathname,
     minPrice,
     maxPrice,
-    realFilterOptions,
+    realFilters,
     realFilterAttributes,
     categoryFilters,
     brandFilters,
@@ -932,6 +932,7 @@ export const getCatalogueData = async ({
       optionsStage,
       pricesStage,
       realFilterAttributes,
+      realFilters,
     } = castCatalogueFilters({
       filters: input.filters,
       initialPage: input.page,
@@ -1572,15 +1573,6 @@ export const getCatalogueData = async ({
       };
 
       // product attributes
-      const optionSlugs = shopProduct.selectedOptionsSlugs.reduce((acc: string[], selectedSlug) => {
-        const slugParts = selectedSlug.split(FILTER_SEPARATOR);
-        const optionSlug = slugParts[1];
-        if (!optionSlug) {
-          return acc;
-        }
-        return [...acc, optionSlug];
-      }, []);
-
       const productAttributes = (product.attributes || []).reduce(
         (acc: ProductAttributeInterface[], attribute) => {
           const existingAttribute = (attributes || []).find(({ _id }) => {
@@ -1589,6 +1581,19 @@ export const getCatalogueData = async ({
           if (!existingAttribute) {
             return acc;
           }
+
+          const optionSlugs = shopProduct.selectedOptionsSlugs.reduce(
+            (acc: string[], selectedSlug) => {
+              const slugParts = selectedSlug.split(FILTER_SEPARATOR);
+              const attributeSlug = slugParts[0];
+              const optionSlug = slugParts[1];
+              if (!optionSlug || attributeSlug !== existingAttribute.slug) {
+                return acc;
+              }
+              return [...acc, optionSlug];
+            },
+            [],
+          );
 
           const options = (existingAttribute.options || []).filter(({ slug }) => {
             return optionSlugs.includes(slug);
@@ -1911,7 +1916,7 @@ export const getCatalogueData = async ({
         });
 
     let redirect = null;
-    const lostFilters = input.filters.filter((filter) => {
+    const lostFilters = realFilters.filter((filter) => {
       return !selectedFilterSlugs.some((slug) => slug === filter);
     });
     const isRedirect = lostFilters.length > 0;

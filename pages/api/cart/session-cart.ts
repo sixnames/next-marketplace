@@ -206,6 +206,7 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
               shop: shopProduct.shop
                 ? {
                     ...shopProduct.shop,
+                    priceWarning: getFieldStringLocale(shopProduct.shop.priceWarningI18n, locale),
                     address: {
                       ...shopProduct.shop.address,
                       formattedCoordinates: {

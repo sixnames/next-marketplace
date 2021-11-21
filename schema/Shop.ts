@@ -279,6 +279,7 @@ export const UpdateShopInCompanyInput = inputObjectType({
     t.nonNull.string('name');
     t.nonNull.string('citySlug');
     t.string('license');
+    t.json('priceWarningI18n');
     t.nonNull.field('contacts', {
       type: 'ContactsInput',
     });

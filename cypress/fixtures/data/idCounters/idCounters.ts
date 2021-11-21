@@ -1,5 +1,6 @@
 import {
   COL_ATTRIBUTES,
+  COL_BLOG_POSTS,
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_CATEGORIES,
@@ -71,6 +72,10 @@ const idCounters: IdCounterModel[] = [
   },
   {
     collection: COL_ATTRIBUTES,
+    counter: 999999,
+  },
+  {
+    collection: COL_BLOG_POSTS,
     counter: 999999,
   },
 ];

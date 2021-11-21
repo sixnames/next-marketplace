@@ -563,6 +563,15 @@ export interface OrderRequestModel extends TimestampModel {
   canceledById?: ObjectIdModel | null;
 }
 
+export enum OrderDeliveryVariantModel {
+  pickup = 'pickup',
+  courier = 'courier',
+}
+
+export enum OrderPaymentVariantModel {
+  receipt = 'receipt',
+}
+
 export interface OrderModel extends TimestampModel, BaseModel {
   orderId: string;
   statusId: ObjectIdModel;
@@ -577,6 +586,8 @@ export interface OrderModel extends TimestampModel, BaseModel {
   companyId: ObjectIdModel;
   companyItemId: string;
   allowDelivery: boolean;
+  deliveryVariant: OrderDeliveryVariantModel;
+  paymentVariant: OrderPaymentVariantModel;
   reservationDate?: DateModel | null;
   isCanceled?: boolean;
   requests?: OrderRequestModel[] | null;
@@ -855,6 +866,7 @@ export interface ShopModel extends BaseModel, TimestampModel {
   rating?: number | null;
   mapMarker?: MapMarkerModel | null;
   license?: string | null;
+  priceWarningI18n?: TranslationModel | null;
 }
 
 export interface NotSyncedProductModel {

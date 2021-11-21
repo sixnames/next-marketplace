@@ -474,7 +474,7 @@ export const getStaticProps = async (
   const filters = alwaysArray(context.params?.filters);
 
   // Cast selected filters
-  const { realFilterOptions, noFiltersSelected } = castCatalogueFilters({
+  const { realFilters, noFiltersSelected } = castCatalogueFilters({
     filters,
     initialPage: DEFAULT_PAGE,
     initialLimit: CATALOGUE_PRODUCTS_LIMIT,
@@ -495,7 +495,7 @@ export const getStaticProps = async (
     ? {}
     : {
         selectedOptionsSlugs: {
-          $all: realFilterOptions,
+          $all: realFilters,
         },
       };
 
@@ -761,16 +761,16 @@ export const getStaticProps = async (
     const castedOptions: CatalogueFilterAttributeOptionInterface[] = attributeOptions.map(
       (option) => {
         const optionSlug = `${attribute.slug}${FILTER_SEPARATOR}${option.slug}`;
-        const isSelected = realFilterOptions.includes(optionSlug);
+        const isSelected = realFilters.includes(optionSlug);
         const optionName = `${option.name}`;
 
         const optionNextSlug = isSelected
-          ? [...realFilterOptions]
+          ? [...realFilters]
               .filter((pathArg) => {
                 return pathArg !== optionSlug;
               })
               .join('/')
-          : [...realFilterOptions, optionSlug].join('/');
+          : [...realFilters, optionSlug].join('/');
 
         const castedOption: CatalogueFilterAttributeOptionInterface = {
           _id: option._id,
@@ -784,12 +784,12 @@ export const getStaticProps = async (
       },
     );
 
-    const isSelected = realFilterOptions.some((param) => {
+    const isSelected = realFilters.some((param) => {
       const filterItemArr = param.split(FILTER_SEPARATOR);
       return filterItemArr[0] === attribute.slug;
     });
 
-    const otherSelectedValues = realFilterOptions.filter((param) => {
+    const otherSelectedValues = realFilters.filter((param) => {
       const castedParam = castCatalogueParamToObject(param);
       return castedParam.slug !== attribute.slug;
     });

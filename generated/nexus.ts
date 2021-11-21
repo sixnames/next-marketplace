@@ -828,6 +828,7 @@ export interface NexusGenInputs {
     contacts: NexusGenInputs['ContactsInput']; // ContactsInput!
     license?: string | null; // String
     name: string; // String!
+    priceWarningI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     shopId: NexusGenScalars['ObjectId']; // ObjectId!
   };
   UpdateShopProductSupplierInput: {

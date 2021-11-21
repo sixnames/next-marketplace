@@ -604,12 +604,12 @@ const CartPageConsumer: React.FC<CartPageConsumerInterface> = ({ domainCompany }
                           <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
                             3
                           </div>
-                          <div>Доставка и оплата</div>
+                          <div>Способ получения и оплата</div>
                         </div>
 
                         <div className='lg:grid grid-cols-2 gap-x-6'>
                           <FormikSelect
-                            label={'Доставка'}
+                            label={'Способ получения'}
                             name={'deliveryVariant'}
                             options={DELIVERY_VARIANT_OPTIONS}
                             isRequired
@@ -770,13 +770,13 @@ const CartPageConsumer: React.FC<CartPageConsumerInterface> = ({ domainCompany }
                           <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
                             3
                           </div>
-                          <div>Доставка и оплата</div>
+                          <div>Способ получения и оплата</div>
                         </div>
 
                         <div className='lg:grid grid-cols-2 gap-x-6'>
                           <div>
                             <FormikSelect
-                              label={'Доставка'}
+                              label={'Способ получения'}
                               name={'deliveryVariant'}
                               options={DELIVERY_VARIANT_OPTIONS}
                               disabled

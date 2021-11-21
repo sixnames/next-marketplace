@@ -156,7 +156,7 @@ const RubricVariantConsumer: React.FC<RubricVariantConsumerInterface> = ({ rubri
                 />
 
                 <FormikCheckboxLine
-                  label={'Показывать фото товра в виде слайдера в карточке товара'}
+                  label={'Показывать фото товара в виде слайдера в карточке товара'}
                   name={'showCardImagesSlider'}
                 />
 

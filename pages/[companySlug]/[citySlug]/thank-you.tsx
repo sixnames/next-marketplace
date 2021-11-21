@@ -16,7 +16,7 @@ const ThankYouRoute: React.FC = () => {
   return (
     <div className='mb-20' data-cy={'thank-you'}>
       <Inner>
-        <Title>Спасибо за заказ!</Title>
+        <Title>Спасибо за Ваш заказ!</Title>
 
         <div className='prose mb-6'>
           <p>

@@ -8,12 +8,12 @@ import { BlogPostModel, BlogPostPayloadModel, TranslationModel } from 'db/dbMode
 import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
 import { getDatabase } from 'db/mongodb';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { getNextNumberItemId } from 'lib/itemIdUtils';
 import {
   getApiResolverValidationSchema,
   getOperationPermission,
   getRequestParams,
 } from 'lib/sessionHelpers';
-import { generateDefaultLangSlug } from 'lib/slugUtils';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { createBlogPostSchema } from 'validation/blogSchema';
 
@@ -77,7 +77,7 @@ export async function createBlogPost(req: NextApiRequest, res: NextApiResponse) 
     }
 
     // create
-    const slug = generateDefaultLangSlug(args.titleI18n);
+    const slug = await getNextNumberItemId(COL_BLOG_POSTS);
     const createdBlogPostResult = await blogPostsCollection.insertOne({
       ...args,
       slug,

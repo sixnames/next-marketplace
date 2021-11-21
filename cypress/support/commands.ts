@@ -99,7 +99,12 @@ Cypress.Commands.add('closeNotification', () => {
 });
 
 Cypress.Commands.add('createTestData', () => {
-  cy.exec(`yarn seed-test-db`);
+  cy.log('Seeding test data');
+  cy.exec(`yarn seed-test-db`).then((result) => {
+    const error = result.stderr || '';
+    expect(error).includes('DeprecationWarning');
+    cy.log('Test data success');
+  });
 });
 
 Cypress.Commands.add(
@@ -137,7 +142,7 @@ Cypress.Commands.add('makeAnOrder', ({ callback, orderFields }: Cypress.MakeAnOr
   cy.visit(catalogueRoute);
 
   // Should navigate to cart
-  cy.get(`[data-cy=catalogue-item-0-name-grid]`).invoke('removeAttr', 'target').click();
+  cy.visitLinkHref('catalogue-item-0-name-grid');
 
   // Add product #1
   cy.getByCy(`card`).should('exist');
@@ -148,13 +153,9 @@ Cypress.Commands.add('makeAnOrder', ({ callback, orderFields }: Cypress.MakeAnOr
   cy.getByCy(`card-shops-1-1-add-to-cart`).click();
   cy.getByCy(`cart-modal-continue`).click();
 
-  // Should navigate to cart
-  cy.wait(1500);
-  cy.getByCy(`cart-aside-confirm`).click();
-
   // Should navigate to order form
   cy.wait(1500);
-  cy.getByCy(`order-form`).should('exist');
+  cy.getByCy(`cart`).should('exist');
 
   // Should fill all order fields
   if (orderFields) {

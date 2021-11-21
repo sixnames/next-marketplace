@@ -590,7 +590,11 @@ const CartPageConsumer: React.FC<CartPageConsumerInterface> = ({ domainCompany }
                             isRequired
                           />
 
-                          <FormikTextarea name={'comment'} label={'Комментарий к заказу'} />
+                          <FormikTextarea
+                            testId={'order-form-comment'}
+                            name={'comment'}
+                            label={'Комментарий к заказу'}
+                          />
                         </div>
                       </div>
 
@@ -752,7 +756,11 @@ const CartPageConsumer: React.FC<CartPageConsumerInterface> = ({ domainCompany }
                             />
                           ) : null}
 
-                          <FormikTextarea name={'comment'} label={'Комментарий к заказу'} />
+                          <FormikTextarea
+                            testId={'order-form-comment'}
+                            name={'comment'}
+                            label={'Комментарий к заказу'}
+                          />
                         </div>
                       </div>
 

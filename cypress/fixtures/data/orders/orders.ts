@@ -1,3 +1,7 @@
+import {
+  ORDER_DELIVERY_VARIANT_PICKUP,
+  ORDER_PAYMENT_VARIANT_RECEIPT,
+} from '../../../../config/common';
 import { OrderModel } from '../../../../db/dbModels';
 import { getObjectId, getObjectIds } from 'mongo-seeding';
 
@@ -19,6 +23,8 @@ const orders: OrderModel[] = [
     statusId: getObjectId(`orderStatus new`),
     allowDelivery: false,
     reservationDate: new Date(),
+    deliveryVariant: ORDER_DELIVERY_VARIANT_PICKUP,
+    paymentVariant: ORDER_PAYMENT_VARIANT_RECEIPT,
     updatedAt: new Date('2021-07-11T09:47:09.087Z'),
     createdAt: new Date('2021-07-11T09:47:09.087Z'),
   },

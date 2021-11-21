@@ -2824,6 +2824,7 @@ export type UpdateShopInput = {
   name: Scalars['String'];
   citySlug: Scalars['String'];
   license?: Maybe<Scalars['String']>;
+  priceWarningI18n?: Maybe<Scalars['JSONObject']>;
   contacts: ContactsInput;
   address: AddressInput;
 };

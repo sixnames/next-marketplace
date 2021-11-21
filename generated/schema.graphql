@@ -2557,6 +2557,7 @@ input UpdateShopInput {
   contacts: ContactsInput!
   license: String
   name: String!
+  priceWarningI18n: JSONObject
   shopId: ObjectId!
 }
 

@@ -2,6 +2,7 @@ import {
   ASSETS_DIST_SHOPS,
   ASSETS_DIST_SHOPS_LOGOS,
   DEFAULT_CITY,
+  DEFAULT_LOCALE,
   GEO_POINT_TYPE,
 } from '../../../../config/common';
 import { ShopModel } from '../../../../db/dbModels';
@@ -20,6 +21,9 @@ const shops: ShopModel[] = [
     companySlug: 'company_a',
     companyId: getObjectId('company Company A'),
     license: 'Shop A license 098324knlkajdf98798',
+    priceWarningI18n: {
+      [DEFAULT_LOCALE]: 'Текущая цена на сайте может отличаться от цены на кассе Shop A',
+    },
     logo: {
       index: 0,
       url: `/assets/${ASSETS_DIST_SHOPS_LOGOS}/000001/000001-0.webp`,
@@ -57,6 +61,9 @@ const shops: ShopModel[] = [
     name: 'Shop B',
     citySlug: DEFAULT_CITY,
     license: 'Shop B license 098324knlkajdf98798',
+    priceWarningI18n: {
+      [DEFAULT_LOCALE]: 'Текущая цена на сайте может отличаться от цены на кассе Shop B',
+    },
     logo: {
       index: 0,
       url: `/assets/${ASSETS_DIST_SHOPS_LOGOS}/000002/000002-0.webp`,
@@ -93,6 +100,9 @@ const shops: ShopModel[] = [
     name: 'Shop C',
     citySlug: DEFAULT_CITY,
     license: 'Shop C license 098324knlkajdf98798',
+    priceWarningI18n: {
+      [DEFAULT_LOCALE]: 'Текущая цена на сайте может отличаться от цены на кассе Shop C',
+    },
     logo: {
       index: 0,
       url: `/assets/${ASSETS_DIST_SHOPS_LOGOS}/000003/000003-0.webp`,

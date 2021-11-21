@@ -405,6 +405,7 @@ export interface ShopInterface extends ShopModel {
   company?: CompanyInterface | null;
   shopProducts?: ShopProductInterface[] | null;
   cardShopProduct?: ShopProductInterface | null;
+  priceWarning: string | null;
 }
 
 export interface NotSyncedProductInterface extends NotSyncedProductModel {

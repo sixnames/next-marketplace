@@ -866,6 +866,7 @@ export interface ShopModel extends BaseModel, TimestampModel {
   rating?: number | null;
   mapMarker?: MapMarkerModel | null;
   license?: string | null;
+  priceWarningI18n?: TranslationModel | null;
 }
 
 export interface NotSyncedProductModel {

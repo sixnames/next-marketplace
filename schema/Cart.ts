@@ -157,7 +157,11 @@ export const CartMutations = extendType({
 
           // Set shop product to shopless cart product if shopless exist
           const existingShoplessProduct = cartProducts.find((cartProduct) => {
-            return cartProduct.productId.equals(productId) && !cartProduct.shopProductId;
+            return (
+              cartProduct.productId &&
+              cartProduct.productId.equals(productId) &&
+              !cartProduct.shopProductId
+            );
           });
           if (existingShoplessProduct) {
             const updatedCartResult = await cartsCollection.findOneAndUpdate(
@@ -315,7 +319,7 @@ export const CartMutations = extendType({
 
           // Success if product already exist in cart
           const productExist = cartProducts.find((cartProduct) => {
-            return cartProduct.productId.equals(productId);
+            return cartProduct.productId && cartProduct.productId.equals(productId);
           });
           if (productExist) {
             return {
@@ -358,6 +362,7 @@ export const CartMutations = extendType({
             message: await getApiMessage('carts.addProduct.success'),
           };
         } catch (e) {
+          console.log(e);
           return {
             success: false,
             message: getResolverErrorMessage(e),

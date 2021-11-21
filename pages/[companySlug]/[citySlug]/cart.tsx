@@ -211,12 +211,14 @@ const CartShoplessProduct: React.FC<CartProductPropsInterface> = ({ cartProduct,
 
 interface CartProductPropsWithAmountInterface extends CartProductPropsInterface {
   fieldName: string;
+  showPriceWarning?: boolean;
 }
 
 const CartProduct: React.FC<CartProductPropsWithAmountInterface> = ({
   cartProduct,
   fieldName,
   testId,
+  showPriceWarning,
 }) => {
   const { setFieldValue } = useFormikContext();
   const marker = useShopMarker(cartProduct.shopProduct?.shop);
@@ -323,6 +325,16 @@ const CartProduct: React.FC<CartProductPropsWithAmountInterface> = ({
           >
             Смотреть на карте
           </div>
+
+          {showPriceWarning && shop.priceWarning ? (
+            <div className='mt-4'>
+              <Notification
+                className='dark:bg-primary'
+                variant={'success'}
+                message={shop.priceWarning}
+              />
+            </div>
+          ) : null}
         </div>
       )}
     </CartProductFrame>
@@ -678,6 +690,7 @@ const CartPageConsumer: React.FC<CartPageConsumerInterface> = ({ domainCompany }
 
                             return (
                               <CartProduct
+                                showPriceWarning
                                 fieldName={`cartBookingProducts[${index}].amount`}
                                 testId={index}
                                 cartProduct={cartProduct}
@@ -685,11 +698,6 @@ const CartPageConsumer: React.FC<CartPageConsumerInterface> = ({ domainCompany }
                               />
                             );
                           })}
-
-                          <Notification
-                            variant={'success'}
-                            message={'Текущая цена на сайте может отличаться от цены на кассе'}
-                          />
                         </div>
                       </div>
 

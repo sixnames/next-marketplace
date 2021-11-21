@@ -1,6 +1,8 @@
 import { getFieldStringLocale } from '../lib/i18n';
 import {
   DEFAULT_LOCALE,
+  ORDER_DELIVERY_VARIANT_COURIER,
+  ORDER_DELIVERY_VARIANT_PICKUP,
   SECONDARY_LOCALE,
   SUPPLIER_PRICE_VARIANT_CHARGE,
   SUPPLIER_PRICE_VARIANT_DISCOUNT,
@@ -137,14 +139,14 @@ export const SUPPLIER_PRICE_VARIANT_OPTIONS: ConstantOptionsType = [
 // delivery variant
 export const DELIVERY_VARIANT_OPTIONS: ConstantOptionsType = [
   {
-    _id: SUPPLIER_PRICE_VARIANT_DISCOUNT,
+    _id: ORDER_DELIVERY_VARIANT_PICKUP,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Самовывоз из магазина',
       [SECONDARY_LOCALE]: 'Pickup from the store',
     },
   },
   {
-    _id: SUPPLIER_PRICE_VARIANT_CHARGE,
+    _id: ORDER_DELIVERY_VARIANT_COURIER,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Курьером',
       [SECONDARY_LOCALE]: 'By courier',

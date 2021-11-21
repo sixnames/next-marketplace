@@ -563,6 +563,11 @@ export interface OrderRequestModel extends TimestampModel {
   canceledById?: ObjectIdModel | null;
 }
 
+export enum OrderDeliveryVariantModel {
+  pickup = 'pickup',
+  courier = 'courier',
+}
+
 export interface OrderModel extends TimestampModel, BaseModel {
   orderId: string;
   statusId: ObjectIdModel;
@@ -577,6 +582,7 @@ export interface OrderModel extends TimestampModel, BaseModel {
   companyId: ObjectIdModel;
   companyItemId: string;
   allowDelivery: boolean;
+  deliverVariant: OrderDeliveryVariantModel;
   reservationDate?: DateModel | null;
   isCanceled?: boolean;
   requests?: OrderRequestModel[] | null;

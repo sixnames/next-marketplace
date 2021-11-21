@@ -18,7 +18,7 @@ import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
 import Title from 'components/Title';
 import WpImage from 'components/WpImage';
-import { ROUTE_PROFILE } from 'config/common';
+import { ORDER_DELIVERY_VARIANT_PICKUP, ROUTE_PROFILE } from 'config/common';
 import { DELIVERY_VARIANT_OPTIONS } from 'config/constantSelects';
 import { MAP_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
@@ -424,6 +424,7 @@ const CartPageConsumer: React.FC<CartPageConsumerInterface> = ({ domainCompany }
     phone: sessionUser ? sessionUser.me.phone : '',
     comment: '',
     reservationDate: null,
+    deliverVariant: ORDER_DELIVERY_VARIANT_PICKUP,
   };
 
   return (
@@ -480,6 +481,7 @@ const CartPageConsumer: React.FC<CartPageConsumerInterface> = ({ domainCompany }
                 comment: values.comment,
                 phone: phoneToRaw(values.phone),
                 companySlug: domainCompany?.slug,
+                deliverVariant: values.deliverVariant,
                 allowDelivery: true,
                 cartProductsFieldName: 'cartDeliveryProducts',
               });
@@ -584,6 +586,7 @@ const CartPageConsumer: React.FC<CartPageConsumerInterface> = ({ domainCompany }
 
                         <div className='lg:grid grid-cols-2 gap-x-6'>
                           <FormikSelect
+                            label={'Доставка'}
                             name={'deliveryVariant'}
                             options={DELIVERY_VARIANT_OPTIONS}
                             isRequired
@@ -623,6 +626,7 @@ const CartPageConsumer: React.FC<CartPageConsumerInterface> = ({ domainCompany }
                 comment: values.comment,
                 phone: phoneToRaw(values.phone),
                 companySlug: domainCompany?.slug,
+                deliverVariant: ORDER_DELIVERY_VARIANT_PICKUP,
                 allowDelivery: false,
                 cartProductsFieldName: 'cartBookingProducts',
               });
@@ -740,11 +744,14 @@ const CartPageConsumer: React.FC<CartPageConsumerInterface> = ({ domainCompany }
                         </div>
 
                         <div className='lg:grid grid-cols-2 gap-x-6'>
-                          <FormikSelect
-                            name={'deliveryVariant'}
-                            options={DELIVERY_VARIANT_OPTIONS}
-                            isRequired
-                          />
+                          <div>
+                            <FormikSelect
+                              label={'Доставка'}
+                              name={'deliveryVariant'}
+                              options={DELIVERY_VARIANT_OPTIONS}
+                              disabled
+                            />
+                          </div>
                           <div>Выбор оплаты</div>
                         </div>
                       </div>

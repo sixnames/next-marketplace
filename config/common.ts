@@ -6,6 +6,7 @@ import {
   AttributeViewVariantModel,
   ConfigVariantModel,
   GenderModel,
+  OrderDeliveryVariantModel,
   OrderLogVariantModel,
   OrderRequestStateModel,
   OrderRequestVariantModel,
@@ -285,20 +286,14 @@ export const ORDER_LOG_VARIANT_ENUMS: OrderLogVariantModel[] = [
 // ORDER REQUEST VARIANTS
 export const ORDER_REQUEST_VARIANT_CANCELATION = 'cancelation' as OrderRequestVariantModel;
 
-export const ORDER_REQUEST_VARIANT_ENUMS: OrderRequestVariantModel[] = [
-  ORDER_REQUEST_VARIANT_CANCELATION,
-];
-
 // ORDER REQUEST STATE
 export const ORDER_REQUEST_STATE_NEW = 'new' as OrderRequestStateModel;
 export const ORDER_REQUEST_STATE_CONFIRMED = 'confirmed' as OrderRequestStateModel;
 export const ORDER_REQUEST_STATE_CANCELED = 'canceled' as OrderRequestStateModel;
 
-export const ORDER_REQUEST_STATE_ENUMS: OrderRequestStateModel[] = [
-  ORDER_REQUEST_STATE_NEW,
-  ORDER_REQUEST_STATE_CONFIRMED,
-  ORDER_REQUEST_STATE_CANCELED,
-];
+// ORDER DELIVERY VARIANTS
+export const ORDER_DELIVERY_VARIANT_PICKUP = 'pickup' as OrderDeliveryVariantModel;
+export const ORDER_DELIVERY_VARIANT_COURIER = 'courier' as OrderDeliveryVariantModel;
 
 // LANGUAGES
 export const ISO_LANGUAGES = [

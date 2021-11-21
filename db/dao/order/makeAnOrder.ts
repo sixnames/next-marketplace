@@ -18,6 +18,7 @@ import {
   CartModel,
   CompanyModel,
   OrderCustomerModel,
+  OrderDeliveryVariantModel,
   OrderLogModel,
   OrderModel,
   OrderProductModel,
@@ -62,6 +63,7 @@ export interface MakeAnOrderInputInterface {
   comment?: string;
   companySlug?: string;
   allowDelivery: boolean;
+  deliverVariant: OrderDeliveryVariantModel;
   cartProductsFieldName: 'cartDeliveryProducts' | 'cartBookingProducts';
 }
 
@@ -276,6 +278,7 @@ export async function makeAnOrder({
             companyId,
             companyItemId: company.itemId,
             reservationDate: input.reservationDate ? new Date(input.reservationDate) : null,
+            deliverVariant: input.deliverVariant,
             allowDelivery,
             createdAt: new Date(),
             updatedAt: new Date(),

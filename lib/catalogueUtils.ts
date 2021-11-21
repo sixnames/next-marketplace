@@ -594,6 +594,7 @@ interface CastCatalogueFiltersPayloadInterface {
   minPrice?: number | null;
   maxPrice?: number | null;
   realFilters: string[];
+  allUrlParams: string[];
   realFilterAttributes: string[];
   categoryFilters: string[];
   brandFilters: string[];
@@ -628,6 +629,7 @@ export function castCatalogueFilters({
   initialPage,
   initialLimit,
 }: CastCatalogueFiltersInterface): CastCatalogueFiltersPayloadInterface {
+  const allUrlParams: string[] = [];
   const realFilters: string[] = [];
   const realFilterAttributes: string[] = [];
   const categoryFilters: string[] = [];
@@ -662,6 +664,7 @@ export function castCatalogueFilters({
     const filterOptionSlug = splittedOption[1];
     if (filterAttributeSlug) {
       if (filterAttributeSlug === FILTER_RUBRIC_KEY) {
+        allUrlParams.push(filterOption);
         rubricFilters.push(filterOptionSlug);
         return;
       }
@@ -672,11 +675,13 @@ export function castCatalogueFilters({
       }
 
       if (filterAttributeSlug === CATALOGUE_FILTER_LIMIT) {
+        allUrlParams.push(filterOption);
         limit = noNaN(filterOptionSlug) || defaultLimit;
         return;
       }
 
       if (filterAttributeSlug === FILTER_PRICE_KEY) {
+        allUrlParams.push(filterOption);
         const prices = filterOptionSlug.split('_');
         minPrice = prices[0] ? noNaN(prices[0]) : null;
         maxPrice = prices[1] ? noNaN(prices[1]) : null;
@@ -684,24 +689,28 @@ export function castCatalogueFilters({
       }
 
       if (filterAttributeSlug === SORT_BY_KEY) {
+        allUrlParams.push(filterOption);
         sortFilterOptions.push(filterOption);
         sortBy = filterOptionSlug;
         return;
       }
 
       if (filterAttributeSlug === SORT_DIR_KEY) {
+        allUrlParams.push(filterOption);
         sortFilterOptions.push(filterOption);
         sortDir = filterOptionSlug;
         return;
       }
 
       if (filterAttributeSlug === FILTER_CATEGORY_KEY) {
+        allUrlParams.push(filterOption);
         realFilters.push(filterOptionSlug);
         categoryFilters.push(filterOption);
         return;
       }
 
       if (filterAttributeSlug === FILTER_BRAND_KEY) {
+        allUrlParams.push(filterOption);
         const slugParts = filterOption.split(FILTER_SEPARATOR);
         if (slugParts[1]) {
           brandFilters.push(slugParts[1]);
@@ -710,6 +719,7 @@ export function castCatalogueFilters({
       }
 
       if (filterAttributeSlug === FILTER_BRAND_COLLECTION_KEY) {
+        allUrlParams.push(filterOption);
         const slugParts = filterOption.split(FILTER_SEPARATOR);
         if (slugParts[1]) {
           brandCollectionFilters.push(slugParts[1]);
@@ -718,12 +728,14 @@ export function castCatalogueFilters({
       }
 
       if (filterAttributeSlug === FILTER_COMMON_KEY) {
+        allUrlParams.push(filterOption);
         if (filterOptionSlug === FILTER_NO_PHOTO_KEY) {
           photoStage = noImageStage;
         }
         return;
       }
 
+      allUrlParams.push(filterOption);
       realFilterAttributes.push(filterAttributeSlug);
       realFilters.push(filterOption);
     }
@@ -786,6 +798,7 @@ export function castCatalogueFilters({
   }
 
   return {
+    allUrlParams,
     rubricFilters: rubricFilters.length > 0 ? rubricFilters : null,
     clearSlug: sortPathname,
     minPrice,
@@ -932,7 +945,7 @@ export const getCatalogueData = async ({
       optionsStage,
       pricesStage,
       realFilterAttributes,
-      realFilters,
+      allUrlParams,
     } = castCatalogueFilters({
       filters: input.filters,
       initialPage: input.page,
@@ -1916,7 +1929,7 @@ export const getCatalogueData = async ({
         });
 
     let redirect = null;
-    const lostFilters = realFilters.filter((filter) => {
+    const lostFilters = allUrlParams.filter((filter) => {
       return !selectedFilterSlugs.some((slug) => slug === filter);
     });
     const isRedirect = lostFilters.length > 0;

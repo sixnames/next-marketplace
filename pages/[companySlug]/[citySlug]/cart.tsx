@@ -1,4 +1,5 @@
 import Breadcrumbs from 'components/Breadcrumbs';
+import DefaultCart from 'components/cart/DefaultCart';
 import EmptyCart from 'components/cart/EmptyCart';
 import OneShopCompanyCart from 'components/cart/OneShopCompanyCart';
 import Inner from 'components/Inner';
@@ -14,6 +15,8 @@ import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { getSiteInitialData } from 'lib/ssrUtils';
 
+export type CartTabIndexType = 0 | 1;
+
 export interface MakeOrderFormInterface
   extends CartInterface,
     Omit<MakeAnOrderInputInterface, 'allowDelivery' | 'cartProductsFieldName'> {}
@@ -21,7 +24,7 @@ export interface MakeOrderFormInterface
 const CartPageConsumer: React.FC = () => {
   const { cart, loadingCart } = useSiteContext();
   const [rendered, setRendered] = React.useState<boolean>(false);
-  const [tabIndex, setTabIndex] = React.useState<0 | 1>(0);
+  const [tabIndex, setTabIndex] = React.useState<CartTabIndexType>(0);
   const { configs, domainCompany } = useConfigContext();
 
   React.useEffect(() => {
@@ -109,7 +112,7 @@ const CartPageConsumer: React.FC = () => {
         {configs.isOneShopCompany && domainCompany?.mainShop ? (
           <OneShopCompanyCart cart={cart} tabIndex={tabIndex} domainCompany={domainCompany} />
         ) : (
-          <div>cart</div>
+          <DefaultCart cart={cart} tabIndex={tabIndex} />
         )}
       </Inner>
     </div>

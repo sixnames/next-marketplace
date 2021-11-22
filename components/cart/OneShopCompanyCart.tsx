@@ -15,12 +15,12 @@ import { useSiteUserContext } from 'context/userSiteUserContext';
 import { CartInterface, CompanyInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import { phoneToRaw } from 'lib/phoneUtils';
-import { MakeOrderFormInterface } from 'pages/[companySlug]/[citySlug]/cart';
+import { CartTabIndexType, MakeOrderFormInterface } from 'pages/[companySlug]/[citySlug]/cart';
 import * as React from 'react';
 
 interface OneShopCompanyCartInterface {
   cart: CartInterface;
-  tabIndex: number;
+  tabIndex: CartTabIndexType;
   domainCompany: CompanyInterface;
 }
 

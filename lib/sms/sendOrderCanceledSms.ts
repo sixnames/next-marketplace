@@ -27,11 +27,13 @@ export async function sendOrderCanceledSms({
   const company = await companiesCollection.findOne({
     _id: companyId,
   });
+  const domain = company?.domain;
 
   // customer
   if (customer && customer.notifications?.canceledOrder?.sms) {
     const url = getOrderLink({
       orderObjectId,
+      domain,
     });
     const text = `Здравствуйте ${customer.name}! Заказ № ${orderItemId} отменён. ${url}`;
 
@@ -63,6 +65,7 @@ export async function sendOrderCanceledSms({
       variant: 'companyManager',
       orderObjectId,
       companyId,
+      domain,
     });
     if (numbers.length > 0) {
       await smsSender({

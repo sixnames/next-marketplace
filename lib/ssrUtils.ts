@@ -1127,7 +1127,7 @@ export async function getPageInitialState({
   // Domain company
   // const domainCompany = await getSsrDomainCompany({ domain });
   // domain company for development
-  const domainCompany = await getSsrDomainCompany({ slug: `${query.companySlug}` });
+  const domainCompany = await getSsrDomainCompany({ slug: `company_a` });
 
   // Page initial data
   const rawInitialData = await getPageInitialData({

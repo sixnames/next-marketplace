@@ -1,4 +1,4 @@
-import { CartProduct, CartShoplessProduct } from 'components/cart/CartProduct';
+import { CartProduct } from 'components/cart/CartProduct';
 import CartAside from 'components/CartAside';
 import FakeInput from 'components/FormElements/Input/FakeInput';
 import FormikDatePicker from 'components/FormElements/Input/FormikDatePicker';
@@ -93,24 +93,12 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
                       {/*cart products*/}
                       <div className='grid gap-6' data-cy={'delivery-products'}>
                         {cartDeliveryProducts.map((cartProduct, index) => {
-                          const { _id, shopProduct } = cartProduct;
-
-                          if (!shopProduct) {
-                            return (
-                              <CartShoplessProduct
-                                testId={index}
-                                cartProduct={cartProduct}
-                                key={`${_id}`}
-                              />
-                            );
-                          }
-
                           return (
                             <CartProduct
                               fieldName={`cartDeliveryProducts[${index}].amount`}
                               testId={index}
                               cartProduct={cartProduct}
-                              key={`${_id}`}
+                              key={`${cartProduct._id}`}
                             />
                           );
                         })}
@@ -249,25 +237,13 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
                       {/*cart products*/}
                       <div className='grid gap-6' data-cy={'booking-products'}>
                         {cartBookingProducts.map((cartProduct, index) => {
-                          const { _id, shopProduct } = cartProduct;
-
-                          if (!shopProduct) {
-                            return (
-                              <CartShoplessProduct
-                                testId={index}
-                                cartProduct={cartProduct}
-                                key={`${_id}`}
-                              />
-                            );
-                          }
-
                           return (
                             <CartProduct
                               showPriceWarning
                               fieldName={`cartBookingProducts[${index}].amount`}
                               testId={index}
                               cartProduct={cartProduct}
-                              key={`${_id}`}
+                              key={`${cartProduct._id}`}
                             />
                           );
                         })}

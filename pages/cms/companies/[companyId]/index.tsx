@@ -54,7 +54,7 @@ const CompanyDetailsConsumer: React.FC<CompanyDetailsConsumerInterface> = ({ pag
         variables: {
           input,
         },
-      }).catch((e) => console.log(e));
+      }).catch(console.log);
     },
     [showLoading, updateCompanyMutation],
   );

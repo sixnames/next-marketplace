@@ -453,12 +453,12 @@ enum ConfigVariant {
 type Contacts {
   emails: [EmailAddress!]!
   formattedPhones: [FormattedPhone!]!
-  phones: [PhoneNumber!]!
+  phones: [String!]!
 }
 
 input ContactsInput {
   emails: [EmailAddress!]!
-  phones: [PhoneNumber!]!
+  phones: [String!]!
 }
 
 type Coordinates {
@@ -1414,7 +1414,7 @@ type OrderCustomer {
   itemId: Int!
   lastName: String
   name: String!
-  phone: PhoneNumber!
+  phone: String!
   secondName: String
   shortName: String!
   user: User
@@ -2600,7 +2600,7 @@ type User implements Base & Timestamp {
   itemId: String!
   lastName: String
   name: String!
-  phone: PhoneNumber!
+  phone: String!
   role: Role!
   roleId: ObjectId!
   secondName: String

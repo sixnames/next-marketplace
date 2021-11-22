@@ -16,7 +16,7 @@ export const User = objectType({
     t.string('lastName');
     t.string('secondName');
     t.nonNull.email('email');
-    t.nonNull.phone('phone');
+    t.nonNull.string('phone');
     t.nonNull.objectId('roleId');
 
     // User fullName field resolver

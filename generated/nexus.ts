@@ -248,7 +248,7 @@ export interface NexusGenInputs {
   ContactsInput: {
     // input type
     emails: NexusGenScalars['EmailAddress'][]; // [EmailAddress!]!
-    phones: NexusGenScalars['PhoneNumber'][]; // [PhoneNumber!]!
+    phones: string[]; // [String!]!
   };
   CoordinatesInput: {
     // input type
@@ -1265,7 +1265,7 @@ export interface NexusGenFieldTypes {
     // field return type
     emails: NexusGenScalars['EmailAddress'][]; // [EmailAddress!]!
     formattedPhones: NexusGenRootTypes['FormattedPhone'][]; // [FormattedPhone!]!
-    phones: NexusGenScalars['PhoneNumber'][]; // [PhoneNumber!]!
+    phones: string[]; // [String!]!
   };
   Coordinates: {
     // field return type
@@ -1551,7 +1551,7 @@ export interface NexusGenFieldTypes {
     itemId: number; // Int!
     lastName: string | null; // String
     name: string; // String!
-    phone: NexusGenScalars['PhoneNumber']; // PhoneNumber!
+    phone: string; // String!
     secondName: string | null; // String
     shortName: string; // String!
     user: NexusGenRootTypes['User'] | null; // User
@@ -2039,7 +2039,7 @@ export interface NexusGenFieldTypes {
     itemId: string; // String!
     lastName: string | null; // String
     name: string; // String!
-    phone: NexusGenScalars['PhoneNumber']; // PhoneNumber!
+    phone: string; // String!
     role: NexusGenRootTypes['Role']; // Role!
     roleId: NexusGenScalars['ObjectId']; // ObjectId!
     secondName: string | null; // String
@@ -2313,7 +2313,7 @@ export interface NexusGenFieldTypeNames {
     // field return type name
     emails: 'EmailAddress';
     formattedPhones: 'FormattedPhone';
-    phones: 'PhoneNumber';
+    phones: 'String';
   };
   Coordinates: {
     // field return type name
@@ -2599,7 +2599,7 @@ export interface NexusGenFieldTypeNames {
     itemId: 'Int';
     lastName: 'String';
     name: 'String';
-    phone: 'PhoneNumber';
+    phone: 'String';
     secondName: 'String';
     shortName: 'String';
     user: 'User';
@@ -3087,7 +3087,7 @@ export interface NexusGenFieldTypeNames {
     itemId: 'String';
     lastName: 'String';
     name: 'String';
-    phone: 'PhoneNumber';
+    phone: 'String';
     role: 'Role';
     roleId: 'ObjectId';
     secondName: 'String';

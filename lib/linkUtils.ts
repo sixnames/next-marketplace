@@ -5,13 +5,14 @@ interface GetOrderLinkInterface {
   variant?: 'companyManager' | 'siteAdmin';
   companyId?: ObjectIdModel;
   orderObjectId?: ObjectIdModel;
+  domain?: string | null;
 }
 
 export function getOrderLink(props?: GetOrderLinkInterface) {
   const { variant, companyId, orderObjectId } = props || {};
   const protocol = 'https://';
-  const domain = process.env.DEFAULT_DOMAIN;
   let path = ROUTE_PROFILE;
+  const domain = props?.domain || `${process.env.DEFAULT_DOMAIN}`;
 
   if (variant === 'companyManager' && companyId && orderObjectId) {
     path = `${ROUTE_CONSOLE}/orders/order/${orderObjectId.toHexString()}`;

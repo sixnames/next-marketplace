@@ -55,6 +55,12 @@ export interface MakeAnOrderPayloadModel {
   message: string;
 }
 
+export interface MakeAnOrderShopConfigInterface {
+  _id: string;
+  deliveryVariant: OrderDeliveryVariantModel;
+  paymentVariant: OrderPaymentVariantModel;
+}
+
 export interface MakeAnOrderInputInterface {
   name: string;
   lastName?: string | null;
@@ -64,8 +70,7 @@ export interface MakeAnOrderInputInterface {
   comment?: string;
   companySlug?: string;
   allowDelivery: boolean;
-  deliveryVariant: OrderDeliveryVariantModel;
-  paymentVariant: OrderPaymentVariantModel;
+  shopConfigs: MakeAnOrderShopConfigInterface[];
   cartProductsFieldName: 'cartDeliveryProducts' | 'cartBookingProducts';
 }
 
@@ -262,6 +267,13 @@ export async function makeAnOrder({
 
         if (!existingOrder) {
           const companySiteSlug = input.companySlug || DEFAULT_COMPANY_SLUG;
+          const shopConfig = input.shopConfigs.find(({ _id }) => {
+            return new ObjectId(_id).equals(shop._id);
+          });
+
+          if (!shopConfig) {
+            break;
+          }
 
           // create new order
           existingOrder = {
@@ -281,8 +293,8 @@ export async function makeAnOrder({
             companyItemId: company.itemId,
             allowDelivery,
             reservationDate: input.reservationDate ? new Date(input.reservationDate) : null,
-            deliveryVariant: input.deliveryVariant,
-            paymentVariant: input.paymentVariant,
+            deliveryVariant: shopConfig.deliveryVariant,
+            paymentVariant: shopConfig.paymentVariant,
             createdAt: new Date(),
             updatedAt: new Date(),
           };

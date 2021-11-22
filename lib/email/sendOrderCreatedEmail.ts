@@ -28,11 +28,13 @@ export const sendOrderCreatedEmail = async ({
   const company = await companiesCollection.findOne({
     _id: companyId,
   });
+  const domain = company?.domain;
 
   // customer
   if (customer && customer.notifications?.newOrder?.email) {
     const url = getOrderLink({
       orderObjectId,
+      domain,
     });
     const text = `
         Здравствуйте ${customer.name}!
@@ -89,6 +91,7 @@ export const sendOrderCreatedEmail = async ({
       variant: 'companyManager',
       orderObjectId,
       companyId,
+      domain,
     });
 
     if (emails.length > 0) {

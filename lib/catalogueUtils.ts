@@ -524,24 +524,25 @@ export async function getCatalogueAttributes({
 interface CastOptionsForBreadcrumbsInterface {
   option: CatalogueFilterAttributeOptionInterface;
   attribute: CatalogueFilterAttributeInterface;
-  rubricSlug: string;
   isBrand: boolean;
   currentBrand?: BrandInterface | null;
   brands?: BrandInterface[] | null;
   acc: CatalogueBreadcrumbModel[];
+  hrefAcc: string;
 }
 
-export function castOptionsForBreadcrumbs({
+function castOptionsForBreadcrumbs({
   option,
   attribute,
-  rubricSlug,
   currentBrand,
   isBrand,
   brands,
   acc,
+  hrefAcc,
 }: CastOptionsForBreadcrumbsInterface): CatalogueBreadcrumbModel[] {
   const optionSlug = `${attribute.slug}${FILTER_SEPARATOR}${option.slug}`;
   const newAcc = [...acc];
+  const href = `${hrefAcc}/${optionSlug}`;
   const brand = isBrand
     ? (brands || []).find(({ itemId }) => {
         return itemId === option.slug;
@@ -568,7 +569,7 @@ export function castOptionsForBreadcrumbs({
     newAcc.push({
       _id: option._id,
       name: `${option.name}`,
-      href: `${ROUTE_CATALOGUE}/${rubricSlug}/${optionSlug}`,
+      href,
     });
   }
 
@@ -580,11 +581,11 @@ export function castOptionsForBreadcrumbs({
     const castedOptionAcc = castOptionsForBreadcrumbs({
       option: childOption,
       attribute,
-      rubricSlug,
       brands,
       isBrand,
       currentBrand: brand,
       acc: [],
+      hrefAcc: href,
     });
     return [...innerAcc, ...castedOptionAcc];
   }, newAcc);
@@ -1775,7 +1776,7 @@ export const getCatalogueData = async ({
             isBrand,
             brands,
             attribute: selectedAttribute,
-            rubricSlug,
+            hrefAcc: `${ROUTE_CATALOGUE}/${rubricSlug}`,
             acc: [],
           });
           return [...acc, ...tree];

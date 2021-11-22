@@ -36,7 +36,7 @@ export const Contacts = objectType({
   name: 'Contacts',
   definition(t) {
     t.nonNull.list.nonNull.email('emails');
-    t.nonNull.list.nonNull.phone('phones');
+    t.nonNull.list.nonNull.string('phones');
     t.nonNull.list.nonNull.field('formattedPhones', {
       type: 'FormattedPhone',
       resolve: (source) => {
@@ -61,7 +61,7 @@ export const ContactsInput = inputObjectType({
   name: 'ContactsInput',
   definition(t) {
     t.nonNull.list.nonNull.email('emails');
-    t.nonNull.list.nonNull.phone('phones');
+    t.nonNull.list.nonNull.string('phones');
   },
 });
 

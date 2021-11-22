@@ -15,7 +15,7 @@ export const OrderCustomer = objectType({
     t.string('lastName');
     t.string('secondName');
     t.nonNull.email('email');
-    t.nonNull.phone('phone');
+    t.nonNull.string('phone');
 
     // OrderCustomer user field resolver
     t.field('user', {

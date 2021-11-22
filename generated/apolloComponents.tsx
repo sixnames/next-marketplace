@@ -492,13 +492,13 @@ export enum ConfigVariant {
 export type Contacts = {
   __typename?: 'Contacts';
   emails: Array<Scalars['EmailAddress']>;
-  phones: Array<Scalars['PhoneNumber']>;
+  phones: Array<Scalars['String']>;
   formattedPhones: Array<FormattedPhone>;
 };
 
 export type ContactsInput = {
   emails: Array<Scalars['EmailAddress']>;
-  phones: Array<Scalars['PhoneNumber']>;
+  phones: Array<Scalars['String']>;
 };
 
 export type Coordinates = {
@@ -1645,7 +1645,7 @@ export type OrderCustomer = {
   lastName?: Maybe<Scalars['String']>;
   secondName?: Maybe<Scalars['String']>;
   email: Scalars['EmailAddress'];
-  phone: Scalars['PhoneNumber'];
+  phone: Scalars['String'];
   user?: Maybe<User>;
   fullName: Scalars['String'];
   shortName: Scalars['String'];
@@ -2869,7 +2869,7 @@ export type User = Base & Timestamp & {
   lastName?: Maybe<Scalars['String']>;
   secondName?: Maybe<Scalars['String']>;
   email: Scalars['EmailAddress'];
-  phone: Scalars['PhoneNumber'];
+  phone: Scalars['String'];
   roleId: Scalars['ObjectId'];
   fullName: Scalars['String'];
   shortName: Scalars['String'];

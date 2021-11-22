@@ -43,10 +43,12 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({ orderProduct }) 
 
   return (
     <div
-      className={`flex mb-4 py-8 bg-secondary rounded-lg pr-6 ${isCanceled ? 'opacity-60' : ''}`}
+      className={`flex flex-col sm:flex-row mb-4 py-8 px-4 bg-secondary rounded-lg gap-4 ${
+        isCanceled ? 'opacity-60' : ''
+      }`}
     >
       {/*image*/}
-      <div className='flex items-center justify-center px-2 w-28 lg:w-32'>
+      <div className='flex items-center justify-center px-2 w-full sm:w-28 lg:w-32'>
         <div className='relative flex justify-center flex-shrink-0 w-[120px]'>
           <div className='relative pb-[100%] w-full'>
             <WpImage
@@ -79,6 +81,7 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({ orderProduct }) 
               <div className='mt-4 flex gap-4'>
                 {/*save button*/}
                 <Button
+                  frameClassName='w-auto'
                   disabled={!touched}
                   title={'Сохранить товар'}
                   size={'small'}
@@ -101,6 +104,7 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({ orderProduct }) 
 
                 {/*delete button*/}
                 <Button
+                  frameClassName='w-auto'
                   title={'Отменить товар'}
                   size={'small'}
                   icon={'trash'}
@@ -184,7 +188,7 @@ interface CmsOrderDetailsInterface {
   title: string;
 }
 
-const CmsOrderDetails: React.FC<CmsOrderDetailsInterface> = ({ order, title }) => {
+const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({ order, title }) => {
   const { createdAt, totalPrice, status, products, shop, customer, comment } = order;
 
   return (
@@ -240,17 +244,17 @@ const CmsOrderDetails: React.FC<CmsOrderDetailsInterface> = ({ order, title }) =
             {/*comment*/}
             {comment && comment.length > 0 ? (
               <div className='mb-6'>
-                <div className='text-secondary-text mb-3'>Комментарий заказчика:</div>
+                <div className='text-secondary-text mb-2'>Комментарий заказчика:</div>
                 <div className='prose'>{comment}</div>
               </div>
             ) : null}
 
             {/*shop info*/}
             <div className='mb-6'>
-              <div className='text-secondary-text mb-3'>Магазин:</div>
+              <div className='text-secondary-text mb-2'>Магазин:</div>
 
               {shop ? (
-                <div className='space-y-2'>
+                <div className='space-y-1'>
                   <span className='text-primary-text font-medium'>{shop.name}</span>
                   <div className='text-secondary-text'>{shop.address.formattedAddress}</div>
                 </div>
@@ -270,4 +274,4 @@ const CmsOrderDetails: React.FC<CmsOrderDetailsInterface> = ({ order, title }) =
   );
 };
 
-export default CmsOrderDetails;
+export default ConsoleOrderDetails;

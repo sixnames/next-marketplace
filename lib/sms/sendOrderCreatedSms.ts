@@ -27,11 +27,13 @@ export async function sendOrderCreatedSms({
   const company = await companiesCollection.findOne({
     _id: companyId,
   });
+  const domain = company?.domain;
 
   // customer
   if (customer && customer.notifications?.newOrder?.sms) {
     const url = getOrderLink({
       orderObjectId,
+      domain,
     });
     const text = `Здравствуйте ${customer.name}! Спасибо за заказ! Номер вашего заказа ${orderItemId} ${url}`;
 
@@ -63,6 +65,7 @@ export async function sendOrderCreatedSms({
       variant: 'companyManager',
       orderObjectId,
       companyId,
+      domain,
     });
     if (numbers.length > 0) {
       await smsSender({

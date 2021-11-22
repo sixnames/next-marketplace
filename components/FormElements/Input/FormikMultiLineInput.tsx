@@ -79,6 +79,7 @@ const FormikMultiLineInput: React.FC<FormikMultiLineInputInterface> = ({
               <div className='flex h-input-height w-[40px] items-center justify-end'>
                 {isFirst ? (
                   <Button
+                    frameClassName='w-auto'
                     onClick={addFieldHandler}
                     size={'small'}
                     theme={'gray'}
@@ -88,6 +89,7 @@ const FormikMultiLineInput: React.FC<FormikMultiLineInputInterface> = ({
                   />
                 ) : (
                   <Button
+                    frameClassName='w-auto'
                     size={'small'}
                     theme={'gray'}
                     icon={'cross'}

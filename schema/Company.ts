@@ -546,6 +546,7 @@ export const CompanyMutations = extendType({
             payload: updatedCompany,
           };
         } catch (e) {
+          console.log(e);
           return {
             success: false,
             message: getResolverErrorMessage(e),

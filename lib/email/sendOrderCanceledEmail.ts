@@ -29,11 +29,13 @@ export const sendOrderCanceledEmail = async ({
     _id: companyId,
   });
   const subject = 'Заказ отменён.';
+  const domain = company?.domain;
 
   // customer
   if (customer && customer.notifications?.canceledOrder?.email) {
     const url = getOrderLink({
       orderObjectId,
+      domain,
     });
     const text = `
         Здравствуйте ${customer.name}!
@@ -84,6 +86,7 @@ export const sendOrderCanceledEmail = async ({
       variant: 'companyManager',
       orderObjectId,
       companyId,
+      domain,
     });
 
     if (emails.length > 0) {

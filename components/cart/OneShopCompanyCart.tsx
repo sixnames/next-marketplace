@@ -232,6 +232,16 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
 
             return (
               <Form>
+                {domainCompany.mainShop?.priceWarning ? (
+                  <div className='mt-4'>
+                    <Notification
+                      className='dark:bg-primary'
+                      variant={'success'}
+                      message={domainCompany.mainShop.priceWarning}
+                    />
+                  </div>
+                ) : null}
+
                 <div className='flex items-center gap-4 text-lg font-medium mb-6'>
                   <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
                     1
@@ -247,7 +257,6 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
                         {cartBookingProducts.map((cartProduct, index) => {
                           return (
                             <CartProduct
-                              showPriceWarning
                               fieldName={`cartBookingProducts[${index}].amount`}
                               testId={index}
                               cartProduct={cartProduct}

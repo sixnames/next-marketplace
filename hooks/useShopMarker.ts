@@ -1,7 +1,11 @@
 import { useThemeContext } from 'context/themeContext';
 import { ShopInterface } from 'db/uiInterfaces';
 
-export function useShopMarker(shop: ShopInterface | null | undefined) {
+interface UseShopMarkerShopInterface extends Omit<ShopInterface, '_id'> {
+  _id: any;
+}
+
+export function useShopMarker(shop: UseShopMarkerShopInterface | null | undefined) {
   const { isDark } = useThemeContext();
   const lightThemeMarker = shop?.mapMarker?.lightTheme;
   const darkThemeMarker = shop?.mapMarker?.darkTheme;

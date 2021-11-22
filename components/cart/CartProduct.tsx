@@ -4,17 +4,11 @@ import ControlButton from 'components/button/ControlButton';
 import CartShopsList from 'components/CartShopsList';
 import SpinnerInput from 'components/FormElements/SpinnerInput/SpinnerInput';
 import Link from 'components/Link/Link';
-import { MapModalInterface } from 'components/Modal/MapModal';
-import Notification from 'components/Notification';
 import ProductShopPrices from 'components/ProductShopPrices';
 import WpImage from 'components/WpImage';
-import { MAP_MODAL } from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
-import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
 import { CartProductInterface, ShopProductInterface } from 'db/uiInterfaces';
 import { useFormikContext } from 'formik';
-import { useShopMarker } from 'hooks/useShopMarker';
 import LayoutCard from 'layout/LayoutCard';
 import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
 import { noNaN } from 'lib/numbers';
@@ -28,6 +22,7 @@ interface CartProductFrameInterface {
   shopProducts?: ShopProductInterface[] | null;
   testId: number | string;
   slug: string;
+  defaultView?: boolean;
 }
 
 const CartProductFrame: React.FC<CartProductFrameInterface> = ({
@@ -39,12 +34,14 @@ const CartProductFrame: React.FC<CartProductFrameInterface> = ({
   shopProducts,
   testId,
   slug,
+  defaultView,
 }) => {
   const { deleteProductFromCart, urlPrefix } = useSiteContext();
 
   return (
     <div className='space-y-4'>
       <LayoutCard
+        defaultView={defaultView}
         className='grid px-6 py-8 gap-6 sm:grid-cols-8 relative min-h-[311px]'
         testId={'cart-product'}
       >
@@ -185,19 +182,16 @@ export const CartShoplessProduct: React.FC<CartProductPropsInterface> = ({
 
 interface CartProductPropsWithAmountInterface extends CartProductPropsInterface {
   fieldName: string;
-  showPriceWarning?: boolean;
+  defaultView?: boolean;
 }
 
 export const CartProduct: React.FC<CartProductPropsWithAmountInterface> = ({
   cartProduct,
   fieldName,
   testId,
-  showPriceWarning,
+  defaultView,
 }) => {
   const { setFieldValue } = useFormikContext();
-  const marker = useShopMarker(cartProduct.shopProduct?.shop);
-  const { configs } = useConfigContext();
-  const { showModal } = useAppContext();
   const { updateProductInCart } = useSiteContext();
   const { shopProduct, amount, _id } = cartProduct;
   const minAmount = 1;
@@ -214,6 +208,7 @@ export const CartProduct: React.FC<CartProductPropsWithAmountInterface> = ({
 
   return (
     <CartProductFrame
+      defaultView={defaultView}
       slug={product.slug}
       testId={testId}
       cartProductId={`${_id}`}
@@ -269,48 +264,6 @@ export const CartProduct: React.FC<CartProductPropsWithAmountInterface> = ({
           <ControlButton iconSize={'mid'} icon={'heart'} />
         </div>
       </div>
-
-      {/*shop info*/}
-      {configs.isOneShopCompany ? null : (
-        <div className='mt-4'>
-          <div className='mb-2'>
-            Магазин: <span className='font-medium text-lg'>{shop.name}</span>
-          </div>
-          <div>{shop.address.formattedAddress}</div>
-          <div
-            className='text-theme cursor-pointer'
-            onClick={() => {
-              showModal<MapModalInterface>({
-                variant: MAP_MODAL,
-                props: {
-                  title: shop.name,
-                  testId: `shop-map-modal`,
-                  markers: [
-                    {
-                      _id: shop._id,
-                      icon: marker,
-                      name: shop.name,
-                      address: shop.address,
-                    },
-                  ],
-                },
-              });
-            }}
-          >
-            Смотреть на карте
-          </div>
-
-          {showPriceWarning && shop.priceWarning ? (
-            <div className='mt-4'>
-              <Notification
-                className='dark:bg-primary'
-                variant={'success'}
-                message={shop.priceWarning}
-              />
-            </div>
-          ) : null}
-        </div>
-      )}
     </CartProductFrame>
   );
 };

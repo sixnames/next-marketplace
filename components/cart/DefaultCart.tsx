@@ -133,7 +133,7 @@ const DefaultCartShop: React.FC<DefaultCartShopUIInterface> = ({
               defaultView
               fieldName={`shopConfigs[${index}].cartProducts[${cartProductIndex}].amount`}
               cartProduct={cartProduct}
-              testId={cartProductIndex}
+              testId={`${index}${cartProductIndex}`}
               key={`${cartProduct._id}`}
             />
           );

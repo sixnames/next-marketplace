@@ -1140,7 +1140,7 @@ export async function getPageInitialState({
   // Site theme accent color
   const themeColor = rawInitialData.configs.siteThemeColor;
   const fallbackColor = `219, 83, 96`;
-  const themeRGB = themeColor ? themeColor.split(',').map((num) => noNaN(num)) : fallbackColor;
+  const themeRGB = `${themeColor}`.split(',').map((num) => noNaN(num));
   const toShort = themeRGB.length < 3;
   const finalThemeColor = toShort ? fallbackColor : themeColor;
 

@@ -6,6 +6,7 @@ import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import FormikTextarea from 'components/FormElements/Textarea/FormikTextarea';
 import Notification from 'components/Notification';
+import RequestError from 'components/RequestError';
 import { ORDER_DELIVERY_VARIANT_PICKUP, ORDER_PAYMENT_VARIANT_RECEIPT } from 'config/common';
 import { DELIVERY_VARIANT_OPTIONS, PAYMENT_VARIANT_OPTIONS } from 'config/constantSelects';
 import { useConfigContext } from 'context/configContext';
@@ -33,6 +34,10 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
   const sessionUser = useSiteUserContext();
   const disabled = !!sessionUser;
 
+  if (!domainCompany.mainShop) {
+    return <RequestError message={'Ошибака загрузки данных магазина'} />;
+  }
+
   const {
     cartBookingProducts,
     cartDeliveryProducts,
@@ -48,8 +53,13 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
     phone: sessionUser ? sessionUser.me.phone : '',
     comment: '',
     reservationDate: null,
-    deliveryVariant: ORDER_DELIVERY_VARIANT_PICKUP,
-    paymentVariant: ORDER_PAYMENT_VARIANT_RECEIPT,
+    shopConfigs: [
+      {
+        _id: `${domainCompany.mainShop._id}`,
+        deliveryVariant: ORDER_DELIVERY_VARIANT_PICKUP,
+        paymentVariant: ORDER_PAYMENT_VARIANT_RECEIPT,
+      },
+    ],
   };
 
   return (
@@ -68,8 +78,7 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
               comment: values.comment,
               phone: phoneToRaw(values.phone),
               companySlug: domainCompany.slug,
-              deliveryVariant: values.deliveryVariant,
-              paymentVariant: values.paymentVariant,
+              shopConfigs: values.shopConfigs,
               allowDelivery: true,
               cartProductsFieldName: 'cartDeliveryProducts',
             });
@@ -167,14 +176,14 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
                       <div className='lg:grid grid-cols-2 gap-x-6'>
                         <FormikSelect
                           label={'Способ получения'}
-                          name={'deliveryVariant'}
+                          name={'shopConfigs[0].deliveryVariant'}
                           options={DELIVERY_VARIANT_OPTIONS}
                           isRequired
                         />
 
                         <FormikSelect
                           label={'Оплата'}
-                          name={'paymentVariant'}
+                          name={'shopConfigs[0].paymentVariant'}
                           options={PAYMENT_VARIANT_OPTIONS}
                           isRequired
                         />
@@ -212,8 +221,7 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
               comment: values.comment,
               phone: phoneToRaw(values.phone),
               companySlug: domainCompany.slug,
-              deliveryVariant: ORDER_DELIVERY_VARIANT_PICKUP,
-              paymentVariant: ORDER_PAYMENT_VARIANT_RECEIPT,
+              shopConfigs: values.shopConfigs,
               allowDelivery: false,
               cartProductsFieldName: 'cartBookingProducts',
             });
@@ -322,7 +330,7 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
                         <div>
                           <FormikSelect
                             label={'Способ получения'}
-                            name={'deliveryVariant'}
+                            name={'shopConfigs[0].deliveryVariant'}
                             options={DELIVERY_VARIANT_OPTIONS}
                             disabled
                           />

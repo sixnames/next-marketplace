@@ -1026,7 +1026,7 @@ export interface PromoCodeModel {
   active: boolean;
   promoId: ObjectIdModel;
   promoterId?: ObjectIdModel;
-  paybackPercent: number;
+  paybackPercent?: number;
   createdAt: Date;
   updatedAt: Date;
 }

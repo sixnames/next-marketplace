@@ -26,13 +26,14 @@ import {
   SORT_DESC_STR,
   SORT_DIR_KEY,
   REQUEST_METHOD_POST,
+  ROUTE_CATALOGUE,
 } from 'config/common';
 import { useConfigContext } from 'context/configContext';
-import { useNotificationsContext } from 'context/notificationsContext';
 import { CatalogueDataInterface, CategoryInterface } from 'db/uiInterfaces';
 import { useUpdateCatalogueCountersMutation } from 'generated/apolloComponents';
 import usePageLoadingState from 'hooks/usePageLoadingState';
 import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
+import { alwaysArray } from 'lib/arrayUtils';
 import { getCatalogueFilterNextPath, getCatalogueFilterValueByKey } from 'lib/catalogueHelpers';
 import { getNumWord } from 'lib/i18n';
 import { debounce } from 'lodash';
@@ -78,7 +79,6 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
   const sessionUser = useSiteUserContext();
   const isPageLoading = usePageLoadingState();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const { showErrorNotification } = useNotificationsContext();
   const [catalogueView, setCatalogueVie] = React.useState<string>(CATALOGUE_VIEW_GRID);
   const [state, setState] = React.useState<CatalogueDataInterface>(() => {
     return catalogueData;
@@ -221,14 +221,13 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
               return sortBy === 'priority';
             },
             onSelect: () => {
+              const filters = alwaysArray(router.query.filters);
               const options = getCatalogueFilterNextPath({
-                asPath: router.asPath,
+                filters,
                 excludedKeys: FILTER_SORT_KEYS,
               });
-              const nextPath = `${options}/${SORT_BY_KEY}-priority`;
-              router.push(nextPath).catch(() => {
-                showErrorNotification();
-              });
+              const nextPath = `${urlPrefix}${ROUTE_CATALOGUE}/${router.query.rubricSlug}/${options}/${SORT_BY_KEY}-priority`;
+              router.push(nextPath).catch(console.log);
             },
           },
           {
@@ -246,14 +245,13 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
               return sortBy === 'price' && sortDir === SORT_ASC_STR;
             },
             onSelect: () => {
+              const filters = alwaysArray(router.query.filters);
               const options = getCatalogueFilterNextPath({
-                asPath: router.asPath,
+                filters,
                 excludedKeys: FILTER_SORT_KEYS,
               });
-              const nextPath = `${options}/${SORT_BY_KEY}-price/${SORT_DIR_KEY}-${SORT_ASC_STR}`;
-              router.push(nextPath).catch(() => {
-                showErrorNotification();
-              });
+              const nextPath = `${urlPrefix}${ROUTE_CATALOGUE}/${router.query.rubricSlug}/${options}/${SORT_BY_KEY}-price/${SORT_DIR_KEY}-${SORT_ASC_STR}`;
+              router.push(nextPath).catch(console.log);
             },
           },
           {
@@ -271,20 +269,20 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
               return sortBy === 'price' && sortDir === SORT_DESC_STR;
             },
             onSelect: () => {
+              const filters = alwaysArray(router.query.filters);
               const options = getCatalogueFilterNextPath({
-                asPath: router.asPath,
+                filters,
                 excludedKeys: FILTER_SORT_KEYS,
               });
-              const nextPath = `${options}/${SORT_BY_KEY}-price/${SORT_DIR_KEY}-${SORT_DESC_STR}`;
-              router.push(nextPath).catch(() => {
-                showErrorNotification();
-              });
+              const nextPath = `${urlPrefix}${ROUTE_CATALOGUE}/${router.query.rubricSlug}/${options}/${SORT_BY_KEY}-price/${SORT_DIR_KEY}-${SORT_DESC_STR}`;
+              console.log(nextPath);
+              router.push(nextPath).catch(console.log);
             },
           },
         ],
       },
     ];
-  }, [router, showErrorNotification]);
+  }, [router, urlPrefix]);
 
   if (catalogueData.totalProducts < 1) {
     return (

@@ -17,6 +17,7 @@ import {
   TranslationModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
+import { castCatalogueFilters } from 'lib/catalogueUtils';
 import { castConfigs, getConfigStringValue } from 'lib/configsUtils';
 import { get } from 'lodash';
 import fetch from 'node-fetch';
@@ -200,4 +201,27 @@ export async function checkCategorySeoTextUniqueness({
   } catch (e) {
     console.log(e);
   }
+}
+
+interface GetCatalogueSeoTextParamsInterface {
+  filters: string[];
+}
+
+export function getCatalogueSeoTextParams({ filters }: GetCatalogueSeoTextParamsInterface) {
+  const { brandFilters, brandCollectionFilters, categoryCastedFilters, priceFilters, ...rest } =
+    castCatalogueFilters({
+      filters,
+    });
+
+  const attributeFilters = rest.realFilters.filter((slug) => {
+    return !categoryCastedFilters.includes(slug);
+  });
+
+  return {
+    priceFilters,
+    brandFilters,
+    brandCollectionFilters,
+    categoryCastedFilters,
+    attributeFilters,
+  };
 }

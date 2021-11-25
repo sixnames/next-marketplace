@@ -79,7 +79,7 @@ export async function getCatalogueIsrProps(
     return {
       redirect: {
         permanent: true,
-        destination: `${props.urlPrefix}${rawCatalogueData.basePath}/${rawCatalogueData.redirect}`,
+        destination: `${props.urlPrefix}${rawCatalogueData.basePath}${rawCatalogueData.redirect}`,
       },
     };
   }

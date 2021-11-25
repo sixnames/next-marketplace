@@ -84,6 +84,7 @@ import { noNaN } from 'lib/numbers';
 import { getTreeFromList, sortByName } from 'lib/optionsUtils';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
 import { sortStringArray } from 'lib/stringUtils';
+import { getCatalogueSeoTextParams } from 'lib/textUniquenessUtils';
 import { generateSnippetTitle, generateTitle } from 'lib/titleUtils';
 import { castProductConnectionForUI } from 'lib/uiDataUtils';
 import { ObjectId } from 'mongodb';
@@ -594,6 +595,8 @@ interface CastCatalogueFiltersPayloadInterface {
   allUrlParams: string[];
   realFilterAttributes: string[];
   categoryFilters: string[];
+  categoryCastedFilters: string[];
+  priceFilters: string[];
   brandFilters: string[];
   brandCollectionFilters: string[];
   inCategory: boolean;
@@ -627,6 +630,8 @@ export function castCatalogueFilters({
   initialLimit,
 }: CastCatalogueFiltersInterface): CastCatalogueFiltersPayloadInterface {
   const allUrlParams: string[] = [];
+  const categoryCastedFilters: string[] = [];
+  const priceFilters: string[] = [];
   const realFilters: string[] = [];
   const realFilterAttributes: string[] = [];
   const categoryFilters: string[] = [];
@@ -679,6 +684,7 @@ export function castCatalogueFilters({
 
       if (filterAttributeSlug === FILTER_PRICE_KEY) {
         allUrlParams.push(filterOption);
+        priceFilters.push(filterOption);
         const prices = filterOptionSlug.split('_');
         minPrice = prices[0] ? noNaN(prices[0]) : null;
         maxPrice = prices[1] ? noNaN(prices[1]) : null;
@@ -703,6 +709,7 @@ export function castCatalogueFilters({
         allUrlParams.push(filterOption);
         realFilters.push(filterOptionSlug);
         categoryFilters.push(filterOption);
+        categoryCastedFilters.push(filterOptionSlug);
         return;
       }
 
@@ -803,6 +810,8 @@ export function castCatalogueFilters({
     realFilters,
     realFilterAttributes,
     categoryFilters,
+    categoryCastedFilters,
+    priceFilters,
     brandFilters,
     brandCollectionFilters,
     inCategory: categoryFilters.length > 0,
@@ -1804,6 +1813,10 @@ export const getCatalogueData = async ({
     let textTop: string | null | undefined;
     let textBottom: string | null | undefined;
 
+    // getCatalogueSeoTextParams({ filters: input.filters });
+    const seoParams = getCatalogueSeoTextParams({ filters: input.filters });
+    console.log('seoParams >>>>>>>>>>>>', seoParams);
+
     if (!search) {
       // category seo text if selected
       const categorySeoTexts = await setCategorySeoText({
@@ -1927,6 +1940,16 @@ export const getCatalogueData = async ({
 
     let redirect = null;
     const lostFilters = allUrlParams.filter((filter) => {
+      const splittedOption = filter.split(FILTER_SEPARATOR);
+      const filterAttributeSlug = splittedOption[0];
+      if (
+        filterAttributeSlug === FILTER_PAGE_KEY ||
+        filterAttributeSlug === CATALOGUE_FILTER_LIMIT ||
+        filterAttributeSlug === SORT_BY_KEY ||
+        filterAttributeSlug === SORT_DIR_KEY
+      ) {
+        return false;
+      }
       return !selectedFilterSlugs.some((slug) => slug === filter);
     });
     const isRedirect = lostFilters.length > 0;
@@ -1938,7 +1961,6 @@ export const getCatalogueData = async ({
       const sortedRedirectArray = sortStringArray(filteredRedirectArray);
       redirect = `/${sortedRedirectArray.join('/')}`;
     }
-
     // console.log(`Catalogue data >>>>>>>>>>>>>>>> `, new Date().getTime() - timeStart);
     return {
       // rubric

@@ -6,10 +6,26 @@ import {
   DEFAULT_LOCALE,
   LOCALES,
   REQUEST_METHOD_POST,
+  SORT_DESC,
 } from 'config/common';
-import { COL_COMPANIES, COL_CONFIGS } from 'db/collectionNames';
+import { getPriceAttribute } from 'config/constantAttributes';
 import {
+  COL_ATTRIBUTES,
+  COL_BRAND_COLLECTIONS,
+  COL_BRANDS,
+  COL_CATEGORIES,
+  COL_CITIES,
+  COL_COMPANIES,
+  COL_CONFIGS,
+  COL_OPTIONS,
+  COL_RUBRICS,
+} from 'db/collectionNames';
+import {
+  AttributeModel,
+  BrandCollectionModel,
+  BrandModel,
   CategoryModel,
+  CityModel,
   CompanyModel,
   ConfigModel,
   ProductModel,
@@ -17,9 +33,11 @@ import {
   TranslationModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
+import { AttributeInterface } from 'db/uiInterfaces';
 import { castCatalogueFilters } from 'lib/catalogueUtils';
 import { castConfigs, getConfigStringValue } from 'lib/configsUtils';
-import { get } from 'lodash';
+import { castCatalogueFilter } from 'lib/optionsUtils';
+import { get, sortBy } from 'lodash';
 import fetch from 'node-fetch';
 import qs from 'qs';
 
@@ -205,23 +223,218 @@ export async function checkCategorySeoTextUniqueness({
 
 interface GetCatalogueSeoTextParamsInterface {
   filters: string[];
+  rubricSlug: string;
+  citySlug: string;
+  companySlug: string;
 }
 
-export function getCatalogueSeoTextParams({ filters }: GetCatalogueSeoTextParamsInterface) {
-  const { brandFilters, brandCollectionFilters, categoryCastedFilters, priceFilters, ...rest } =
-    castCatalogueFilters({
+interface GetCatalogueSeoTextParamsAttributeConfigInterface {
+  attributeSlug: string;
+  optionSlugs: string[];
+}
+
+export async function getCatalogueSeoTextParams({
+  filters,
+  companySlug,
+  citySlug,
+  rubricSlug,
+}: GetCatalogueSeoTextParamsInterface): Promise<string | null> {
+  try {
+    const { db } = await getDatabase();
+    const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+    const citiesCollection = db.collection<CityModel>(COL_CITIES);
+    const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
+    const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
+    const brandCollectionsCollection = db.collection<BrandCollectionModel>(COL_BRAND_COLLECTIONS);
+    const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
+    const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
+    const {
+      brandFilters,
+      brandCollectionFilters,
+      categoryCastedFilters,
+      priceFilters,
+      realFilters,
+    } = castCatalogueFilters({
       filters,
     });
 
-  const attributeFilters = rest.realFilters.filter((slug) => {
-    return !categoryCastedFilters.includes(slug);
-  });
+    const queryOptions = {
+      sort: {
+        _id: SORT_DESC,
+      },
+    };
 
-  return {
-    priceFilters,
-    brandFilters,
-    brandCollectionFilters,
-    categoryCastedFilters,
-    attributeFilters,
-  };
+    // get rubric
+    const rubric = await rubricsCollection.findOne({ slug: rubricSlug });
+    if (!rubric) {
+      console.log('getCatalogueSeoTextParams Rubric not found');
+      return null;
+    }
+    const rubricId = rubric._id.toHexString();
+
+    // get company
+    let companyId = DEFAULT_COMPANY_SLUG;
+    const company = await companiesCollection.findOne({ slug: rubricSlug });
+    if (company) {
+      companyId = company._id.toHexString();
+    }
+    if (companySlug !== DEFAULT_COMPANY_SLUG && !company) {
+      console.log('getCatalogueSeoTextParams Company not found');
+      return null;
+    }
+
+    // get city
+    const city = await citiesCollection.findOne({ slug: citySlug });
+    if (!city) {
+      console.log('getCatalogueSeoTextParams City not found');
+      return null;
+    }
+    const cityId = city._id.toHexString();
+
+    // get categories
+    const categories = await categoriesCollection
+      .find(
+        {
+          slug: {
+            $in: categoryCastedFilters,
+          },
+        },
+        queryOptions,
+      )
+      .toArray();
+    const categoryIds = categories.reduce((acc: string, { _id }) => {
+      return `${acc}${_id.toHexString()}`;
+    }, '');
+
+    // get brands
+    const brands = await brandsCollection
+      .find(
+        {
+          itemId: {
+            $in: brandFilters,
+          },
+        },
+        queryOptions,
+      )
+      .toArray();
+    const brandIds = brands.reduce((acc: string, { _id }) => {
+      return `${acc}${_id.toHexString()}`;
+    }, '');
+
+    // get brand collections
+    const brandCollections = await brandCollectionsCollection
+      .find(
+        {
+          itemId: {
+            $in: brandCollectionFilters,
+          },
+        },
+        queryOptions,
+      )
+      .toArray();
+    const brandCollectionIds = brandCollections.reduce((acc: string, { _id }) => {
+      return `${acc}${_id.toHexString()}`;
+    }, '');
+
+    // get prices
+    const priceSlugs = priceFilters.map((filter) => {
+      const { optionSlug } = castCatalogueFilter(filter);
+      return optionSlug;
+    });
+    const priceAttribute = getPriceAttribute(city.currency);
+    const priceOptions = (priceAttribute.options || []).filter(({ slug }) => {
+      return priceSlugs.includes(slug);
+    });
+    const priceIds = priceOptions.reduce((acc: string, { _id }) => {
+      return `${acc}${_id.toHexString()}`;
+    }, '');
+
+    // get attributes
+    const attributeConfigs = realFilters.reduce(
+      (acc: GetCatalogueSeoTextParamsAttributeConfigInterface[], filter) => {
+        if (categoryCastedFilters.includes(filter)) {
+          return acc;
+        }
+
+        const newAcc = [...acc];
+        const { attributeSlug, optionSlug } = castCatalogueFilter(filter);
+        const existingAttributeConfigIndex = newAcc.findIndex((config) => {
+          return attributeSlug === config.attributeSlug;
+        });
+        if (existingAttributeConfigIndex > -1) {
+          newAcc[existingAttributeConfigIndex].optionSlugs.push(optionSlug);
+          return newAcc;
+        }
+
+        return [
+          ...acc,
+          {
+            attributeSlug: attributeSlug,
+            optionSlugs: [optionSlug],
+          },
+        ];
+      },
+      [],
+    );
+    const sortedAttributeConfigs = sortBy(attributeConfigs, ['attributeSlug']);
+    const attributes: AttributeInterface[] = [];
+    for await (const attributeConfig of sortedAttributeConfigs) {
+      const attributeAggregation = await attributesCollection
+        .aggregate<AttributeInterface>([
+          {
+            $match: {
+              slug: attributeConfig.attributeSlug,
+            },
+          },
+          // get attribute options
+          {
+            $lookup: {
+              from: COL_OPTIONS,
+              as: 'options',
+              let: {
+                optionsGroupId: '$optionsGroupId',
+              },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $and: [
+                        {
+                          $eq: ['$$optionsGroupId', '$optionsGroupId'],
+                        },
+                        {
+                          $in: ['$slug', attributeConfig.optionSlugs],
+                        },
+                      ],
+                    },
+                  },
+                },
+                {
+                  $sort: {
+                    _id: SORT_DESC,
+                  },
+                },
+              ],
+            },
+          },
+        ])
+        .toArray();
+      const attribute = attributeAggregation[0];
+      if (!attribute) {
+        continue;
+      }
+      attributes.push(attribute);
+    }
+    const attributeIds = attributes.reduce((acc: string, attribute) => {
+      const attributeId = (attribute.options || []).reduce((innerAcc: string, { _id }) => {
+        return `${innerAcc}${attribute._id.toHexString()}${_id.toHexString()}`;
+      }, '');
+      return `${acc}${attributeId}`;
+    }, '');
+
+    return `${companyId}${cityId}${rubricId}${categoryIds}${brandIds}${brandCollectionIds}${attributeIds}${priceIds}`;
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
 }

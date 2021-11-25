@@ -1,4 +1,4 @@
-import { ALL_ALPHABETS, GENDER_ENUMS, GENDER_HE } from 'config/common';
+import { ALL_ALPHABETS, FILTER_SEPARATOR, GENDER_ENUMS, GENDER_HE } from 'config/common';
 import {
   AlphabetListModelType,
   GenderModel,
@@ -313,5 +313,19 @@ export function trimOptionNames(props: TrimOptionNamesInterface): TrimOptionName
   return {
     nameI18n: trimTranslationField(props.nameI18n),
     variants,
+  };
+}
+
+interface CastCatalogueFilterPayloadInterface {
+  attributeSlug: string;
+  optionSlug: string;
+}
+
+export function castCatalogueFilter(filter: string): CastCatalogueFilterPayloadInterface {
+  const splittedOption = filter.split(FILTER_SEPARATOR);
+
+  return {
+    attributeSlug: `${splittedOption[0]}`,
+    optionSlug: splittedOption[1],
   };
 }

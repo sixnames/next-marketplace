@@ -1813,9 +1813,14 @@ export const getCatalogueData = async ({
     let textTop: string | null | undefined;
     let textBottom: string | null | undefined;
 
-    // getCatalogueSeoTextParams({ filters: input.filters });
-    const seoParams = getCatalogueSeoTextParams({ filters: input.filters });
-    console.log('seoParams >>>>>>>>>>>>', seoParams);
+    const seoParam = await getCatalogueSeoTextParams({
+      rubricSlug: rubric.slug,
+      citySlug: city,
+      companySlug: companySlug,
+      filters: input.filters,
+    });
+    console.log('seoParam >>>>>>>>>>>>');
+    console.log(JSON.stringify(seoParam, null, 2));
 
     if (!search) {
       // category seo text if selected

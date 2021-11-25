@@ -1,4 +1,4 @@
-import CmsOrderDetails from 'components/order/CmsOrderDetails';
+import ConsoleOrderDetails from 'components/order/ConsoleOrderDetails';
 import { OrderInterface } from 'db/uiInterfaces';
 import ConsoleShopLayout, { AppShopLayoutInterface } from 'layout/console/ConsoleShopLayout';
 import * as React from 'react';
@@ -17,7 +17,7 @@ const ShopOrders: React.FC<ShopOrderInterface> = ({
 }) => {
   return (
     <ConsoleShopLayout shop={shop} basePath={basePath} breadcrumbs={breadcrumbs}>
-      <CmsOrderDetails order={order} title={title} />
+      <ConsoleOrderDetails order={order} title={title} />
     </ConsoleShopLayout>
   );
 };

@@ -41,6 +41,7 @@
     "@react-page/plugins-video": "^4.3.0",
     "@tailwindcss/aspect-ratio": "^0.3.0",
     "@tailwindcss/typography": "0.4.1",
+    "add": "^2.0.6",
     "add-zero": "^1.0.0",
     "algoliasearch": "^4.9.1",
     "apollo-link-context": "^1.0.20",
@@ -51,6 +52,7 @@
     "classnames": "^2.3.1",
     "cookies": "^0.8.0",
     "cyrillic-to-translit-js": "^3.1.0",
+    "deep-object-diff": "^1.1.0",
     "ext-name": "^5.0.0",
     "file-type": "^16.5.3",
     "formidable": "^1.2.2",
@@ -90,6 +92,7 @@
     "trim": "^1.0.1",
     "uniqid": "^5.4.0",
     "use-debounce": "^6.0.0",
+    "yarn": "^1.22.17",
     "yup": "^0.32.9"
   },
   "devDependencies": {

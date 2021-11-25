@@ -5,6 +5,7 @@ import Title from 'components/Title';
 import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
 import { CONFIRM_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
+import { useConfigContext } from 'context/configContext';
 import { ProductInterface } from 'db/uiInterfaces';
 import { useDeleteProduct } from 'hooks/mutations/useProductMutations';
 import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
@@ -41,6 +42,7 @@ const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({
   companySlug,
 }) => {
   const { query } = useRouter();
+  const { domainCompany } = useConfigContext();
   const { showModal } = useAppContext();
   const [deleteProductFromRubricMutation] = useDeleteProduct({
     reload: false,
@@ -137,7 +139,9 @@ const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({
             size={'small'}
             onClick={() => {
               window.open(
-                `/${companySlug || DEFAULT_COMPANY_SLUG}/${DEFAULT_CITY}/${product.slug}`,
+                `/${companySlug || domainCompany?.slug || DEFAULT_COMPANY_SLUG}/${DEFAULT_CITY}/${
+                  product.slug
+                }`,
                 '_blank',
               );
             }}

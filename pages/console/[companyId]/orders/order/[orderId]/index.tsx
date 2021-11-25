@@ -1,5 +1,5 @@
 import Button from 'components/button/Button';
-import CmsOrderDetails from 'components/order/CmsOrderDetails';
+import ConsoleOrderDetails from 'components/order/ConsoleOrderDetails';
 import FixedButtons from 'components/button/FixedButtons';
 import Inner from 'components/Inner';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
@@ -60,7 +60,7 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
   return (
     <AppContentWrapper breadcrumbs={breadcrumbs}>
       <div className='relative'>
-        <CmsOrderDetails order={order} title={title} />
+        <ConsoleOrderDetails order={order} title={title} />
         <Inner>
           <FixedButtons>
             {order.status?.isNew ? (

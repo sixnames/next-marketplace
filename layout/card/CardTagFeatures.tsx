@@ -32,12 +32,10 @@ const CardTagFeatures: React.FC<CardTagFeaturesInterface> = ({
             <div className='text-2xl mb-4 font-medium'>{`${attribute.name}:`}</div>
             <ul className='flex flex-wrap gap-4'>
               {(attribute.options || []).map((option) => {
-                const name = `${option?.name} ${
-                  attribute?.metric ? ` ${attribute.metric.name}` : ''
-                }`;
+                const name = `${option?.name}`;
 
                 return (
-                  <li key={`${option?.name}`}>
+                  <li key={name}>
                     <TagLink
                       href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`}
                       testId={`card-tag-option-${name}`}

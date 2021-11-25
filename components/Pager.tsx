@@ -112,6 +112,7 @@ const Pager: React.FC<PagerInterface> = ({
             } else {
               children = (
                 <Link
+                  ariaLabel={'Go to previous page'}
                   onClick={onClick}
                   className={`${buttonClassName} ${arrowClassName}`}
                   href={nextUrl}
@@ -130,6 +131,7 @@ const Pager: React.FC<PagerInterface> = ({
             } else {
               children = (
                 <Link
+                  ariaLabel={'Go to next page'}
                   onClick={onClick}
                   className={`${buttonClassName} ${arrowClassName}`}
                   href={nextUrl}

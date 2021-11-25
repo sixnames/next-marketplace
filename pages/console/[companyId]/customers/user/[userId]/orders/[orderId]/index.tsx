@@ -1,4 +1,4 @@
-import CmsOrderDetails from 'components/order/CmsOrderDetails';
+import ConsoleOrderDetails from 'components/order/ConsoleOrderDetails';
 import { ROUTE_CONSOLE } from 'config/common';
 import {
   COL_ORDER_CUSTOMERS,
@@ -61,7 +61,7 @@ const UserOrderConsumer: React.FC<UserOrderConsumerInterface> = ({ user, order, 
 
   return (
     <ConsoleUserLayout companyId={`${pageCompany?._id}`} user={user} breadcrumbs={breadcrumbs}>
-      <CmsOrderDetails order={order} title={title} />
+      <ConsoleOrderDetails order={order} title={title} />
     </ConsoleUserLayout>
   );
 };

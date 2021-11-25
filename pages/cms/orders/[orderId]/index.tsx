@@ -1,4 +1,4 @@
-import CmsOrderDetails from 'components/order/CmsOrderDetails';
+import ConsoleOrderDetails from 'components/order/ConsoleOrderDetails';
 import { ROUTE_CMS } from 'config/common';
 import {
   COL_ORDER_CUSTOMERS,
@@ -43,7 +43,7 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
 
   return (
     <AppContentWrapper breadcrumbs={breadcrumbs}>
-      <CmsOrderDetails order={order} title={title} />
+      <ConsoleOrderDetails order={order} title={title} />
     </AppContentWrapper>
   );
 };

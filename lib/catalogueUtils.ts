@@ -1,4 +1,3 @@
-import { CatalogueInterface } from 'components/Catalogue';
 import {
   getRubricFilterAttribute,
   getBrandFilterAttribute,
@@ -80,17 +79,14 @@ import {
   ShopProductInterface,
 } from 'db/uiInterfaces';
 import { getAlgoliaProductsSearch } from 'lib/algoliaUtils';
-import { alwaysArray } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { getTreeFromList, sortByName } from 'lib/optionsUtils';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
 import { sortStringArray } from 'lib/stringUtils';
-import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
 import { generateSnippetTitle, generateTitle } from 'lib/titleUtils';
 import { castProductConnectionForUI } from 'lib/uiDataUtils';
 import { ObjectId } from 'mongodb';
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 
 interface GetSelectedCategoryLeaf {
   acc: ObjectIdModel[];
@@ -1989,72 +1985,3 @@ export const getCatalogueData = async ({
     return null;
   }
 };
-
-export async function getCatalogueServerSideProps(
-  context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<CatalogueInterface>> {
-  // console.log(' ');
-  // console.log('=================== Catalogue getServerSideProps =======================');
-  // const timeStart = new Date().getTime();
-
-  const { query } = context;
-  const { props } = await getSiteInitialData({
-    context,
-  });
-  const { rubricSlug } = query;
-
-  const notFoundResponse = {
-    props: {
-      ...props,
-      route: '',
-    },
-    notFound: true,
-  };
-
-  if (!rubricSlug) {
-    return notFoundResponse;
-  }
-
-  // catalogue
-  const rawCatalogueData = await getCatalogueData({
-    locale: props.sessionLocale,
-    city: props.sessionCity,
-    companySlug: props.domainCompany?.slug,
-    companyId: props.domainCompany?._id,
-    currency: props.initialData.currency,
-    basePath: `${ROUTE_CATALOGUE}/${rubricSlug}`,
-    snippetVisibleAttributesCount: props.initialData.configs.snippetAttributesCount,
-    visibleCategoriesInNavDropdown: props.initialData.configs.visibleCategoriesInNavDropdown,
-    input: {
-      rubricSlug: `${rubricSlug}`,
-      filters: alwaysArray(query.filters),
-      page: 1,
-    },
-  });
-
-  if (!rawCatalogueData) {
-    return notFoundResponse;
-  }
-
-  if (rawCatalogueData.products.length < 1) {
-    return notFoundResponse;
-  }
-
-  if (rawCatalogueData.redirect) {
-    return {
-      redirect: {
-        permanent: true,
-        destination: `${props.urlPrefix}${rawCatalogueData.basePath}/${rawCatalogueData.redirect}`,
-      },
-    };
-  }
-
-  // console.log('Catalogue getServerSideProps total time ', new Date().getTime() - timeStart);
-
-  return {
-    props: {
-      ...props,
-      catalogueData: castDbData(rawCatalogueData),
-    },
-  };
-}

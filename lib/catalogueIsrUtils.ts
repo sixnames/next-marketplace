@@ -4,6 +4,7 @@ import { alwaysArray } from 'lib/arrayUtils';
 import { getCatalogueData } from 'lib/catalogueUtils';
 import { getIsrSiteInitialData } from 'lib/isrUtils';
 import { castDbData } from 'lib/ssrUtils';
+import { sortStringArray } from 'lib/stringUtils';
 import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
 
 export async function getCatalogueIsrProps(
@@ -26,8 +27,21 @@ export async function getCatalogueIsrProps(
     return notFoundResponse;
   }
 
-  // catalogue
+  // redirect to the sorted url path
   const filters = alwaysArray(context.params?.filters);
+  const sortedFilters = sortStringArray(filters);
+  const filtersPath = filters.join('/');
+  const sortedFiltersPath = sortedFilters.join('/');
+  if (filtersPath !== sortedFiltersPath) {
+    return {
+      redirect: {
+        permanent: true,
+        destination: `${props.urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}/${sortedFiltersPath}`,
+      },
+    };
+  }
+
+  // catalogue
   const rawCatalogueData = await getCatalogueData({
     locale: props.sessionLocale,
     city: props.sessionCity,

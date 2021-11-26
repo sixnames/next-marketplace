@@ -31,6 +31,7 @@ import {
   PromoModel,
   PromoProductModel,
   SupplierProductModel,
+  SeoContentModel,
 } from '../../../db/dbModels';
 import {
   COL_ATTRIBUTES,
@@ -59,6 +60,7 @@ import {
   COL_PROMO,
   COL_PROMO_PRODUCTS,
   COL_RUBRICS,
+  COL_SEO_CONTENTS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
   COL_SUPPLIER_PRODUCTS,
@@ -161,6 +163,11 @@ export async function updateIndexes(db: Db) {
   if (!cartIndexExist) {
     await cartsCollection.createIndex({ updatedAt: 1 }, { expireAfterSeconds: ONE_WEEK });
   }
+
+  // Carts
+  await createCollectionIfNotExist(COL_SEO_CONTENTS);
+  const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
+  await seoContentsCollection.createIndex({ slug: 1, position: 1 });
 
   // Users
   await createCollectionIfNotExist(COL_USERS);

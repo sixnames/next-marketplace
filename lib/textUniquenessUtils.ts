@@ -40,19 +40,19 @@ import fetch from 'node-fetch';
 import qs from 'qs';
 import { getTextContents, Value } from '@react-page/editor';
 
-interface CheckConstructorTextUniquenessInterface {
+interface CheckSeoTextUniquenessInterface {
   text?: string | null;
   oldText?: string | null;
   companySlug: string;
   seoContentId: ObjectIdModel;
 }
 
-export async function checkConstructorTextUniqueness({
+export async function checkSeoTextUniqueness({
   text,
   oldText,
   companySlug,
   seoContentId,
-}: CheckConstructorTextUniquenessInterface) {
+}: CheckSeoTextUniquenessInterface) {
   try {
     const { db } = await getDatabase();
 

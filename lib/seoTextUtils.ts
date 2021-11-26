@@ -3,12 +3,11 @@ import {
   FILTER_SEPARATOR,
   PAGE_EDITOR_DEFAULT_VALUE_STRING,
   ROUTE_CATALOGUE,
-  SORT_ASC,
 } from 'config/common';
-import { COL_CATEGORIES, COL_CITIES, COL_SEO_CONTENTS } from 'db/collectionNames';
+import { COL_CATEGORIES, COL_SEO_CONTENTS } from 'db/collectionNames';
+import { getCitiesList } from 'db/dao/cities/getCitiesList';
 import {
   CategoryModel,
-  CityModel,
   DescriptionPositionType,
   ObjectIdModel,
   SeoContentModel,
@@ -17,21 +16,6 @@ import { getDatabase } from 'db/mongodb';
 import { SeoContentCitiesInterface } from 'db/uiInterfaces';
 import { sortStringArray } from 'lib/stringUtils';
 import { getCatalogueSeoTextSlug, getProductSeoTextSlug } from 'lib/textUniquenessUtils';
-
-async function getCitiesList(): Promise<CityModel[]> {
-  const { db } = await getDatabase();
-  return db
-    .collection<CityModel>(COL_CITIES)
-    .find(
-      {},
-      {
-        sort: {
-          _id: SORT_ASC,
-        },
-      },
-    )
-    .toArray();
-}
 
 // rubric
 interface GetRubricSeoTextInterface {

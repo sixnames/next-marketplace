@@ -37,6 +37,7 @@ import {
   deleteAttributesGroupFromRubricSchema,
   updateRubricSchema,
 } from 'validation/rubricSchema';
+// import { getTextContents, Value } from '@react-page/editor';
 
 export const RubricPayload = objectType({
   name: 'RubricPayload',
@@ -271,7 +272,7 @@ export const RubricMutations = extendType({
             };
           }
 
-          // Create rubric
+          // update rubric
           const updatedRubricResult = await rubricsCollection.findOneAndUpdate(
             { _id: rubricId },
             {
@@ -298,6 +299,13 @@ export const RubricMutations = extendType({
               position: 'top',
               rubricId: updatedRubric._id,
             });
+            /*const raw = JSON.parse(textTop.msk);
+            const contents = getTextContents(raw as Value, {
+              lang: 'ru',
+              cellPlugins: reactPageCellPlugins(),
+            });
+
+            console.log(contents.join(' '));*/
 
             if (!topText) {
               await rubricDescriptionsCollection.insertOne({
@@ -357,6 +365,7 @@ export const RubricMutations = extendType({
             payload: updatedRubric,
           };
         } catch (e) {
+          console.log(e);
           return {
             success: false,
             message: getResolverErrorMessage(e),

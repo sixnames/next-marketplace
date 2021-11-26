@@ -821,6 +821,15 @@ export interface CategoryDescriptionModel {
   assetKeys: string[];
 }
 
+export interface FilterDescriptionModel {
+  _id: ObjectIdModel;
+  slug: string;
+  url: string;
+  position: DescriptionPositionType;
+  content: JSONObjectModel;
+  assetKeys: string[];
+}
+
 export interface RubricSeoModel {
   _id: ObjectIdModel;
   companySlug: string;

@@ -201,7 +201,7 @@ export interface CountersItemModel {
 
 export interface CountersModel {
   views: CountersItemModel;
-  priorities: CountersItemModel;
+  priorities?: CountersItemModel;
 }
 export interface AttributeCountersItemModel {
   [key: string]: any;
@@ -675,14 +675,14 @@ export interface ProductAssetsModel {
   locales: TextUniquenessApiParsedResponseModel[];
 }*/
 
-export interface ProductCardContentModel {
+/*export interface ProductCardContentModel {
   _id: ObjectIdModel;
   companySlug: string;
   productSlug: string;
   productId: ObjectIdModel;
   content: JSONObjectModel;
   assetKeys: string[];
-}
+}*/
 
 export interface ProductCardPricesModel {
   _id: ObjectIdModel;
@@ -1145,7 +1145,6 @@ export type OrderProductPayloadModel = PayloadType<OrderProductModel>;
 export type OrderStatusPayloadModel = PayloadType<OrderStatusModel>;
 export type PagePayloadModel = PayloadType<PageModel>;
 export type PagesGroupPayloadModel = PayloadType<PagesGroupModel>;
-export type ProductCardContentPayloadModel = PayloadType<ProductCardContentModel>;
 export type PromoPayloadModel = PayloadType<PromoModel>;
 export type RolePayloadModel = PayloadType<RoleModel>;
 export type RoleRulePayloadModel = PayloadType<RoleRuleModel>;

@@ -193,11 +193,6 @@ export const DEFAULT_PRIORITY = 1;
 export const VIEWS_COUNTER_STEP = 1;
 export const DEFAULT_COMPANY_SLUG = '0';
 export const DEFAULT_COUNTERS_OBJECT = {
-  priorities: {
-    [DEFAULT_COMPANY_SLUG]: {
-      [DEFAULT_CITY]: DEFAULT_PRIORITY,
-    },
-  },
   views: {
     [DEFAULT_COMPANY_SLUG]: {
       [DEFAULT_CITY]: DEFAULT_PRIORITY,

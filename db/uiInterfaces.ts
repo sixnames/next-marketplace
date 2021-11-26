@@ -40,7 +40,6 @@ import {
   ProductAssetsModel,
   ProductAttributeModel,
   ProductCardBreadcrumbModel,
-  ProductCardContentModel,
   ProductCardPricesModel,
   ProductConnectionItemModel,
   ProductConnectionModel,
@@ -239,10 +238,6 @@ export interface ProductCategoryInterface extends CategoryInterface {
   categories: ProductCategoryInterface[];
 }
 
-export interface ProductCardContentInterface extends ProductCardContentModel {
-  value?: string | null;
-}
-
 export interface ProductAttributesGroupInterface extends AttributesGroupModel {
   _id: ObjectIdModel;
   name?: string | null;
@@ -282,13 +277,12 @@ export interface ProductInterface extends ProductModel {
   multipleSelectAttributesAST?: ProductAttributeInterface[] | null;
   selectAttributesAST?: ProductAttributeInterface[] | null;
   shopProductsIds?: ObjectIdModel[] | null;
-  cardContent?: ProductCardContentInterface | null;
   attributesCount?: number | null;
   totalAttributesCount?: number | null;
   categories?: CategoryInterface[] | null;
   snippetTitle?: string | null;
   cardTitle?: string | null;
-  cardDescription?: SeoContentModel | null;
+  cardContent?: SeoContentModel | null;
   shops?: ShopInterface[] | null;
 }
 
@@ -662,7 +656,7 @@ export interface InitialCardDataInterface {
   cardShops: ShopInterface[];
   cardBreadcrumbs: ProductCardBreadcrumbModel[];
   shopsCount: number;
-  cardContent: ProductCardContentInterface | null;
+  cardContent: SeoContentModel | null;
   cardLayout: string;
   rubric: RubricInterface;
   cardPrices: ProductCardPricesModel;

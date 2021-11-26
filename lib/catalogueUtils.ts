@@ -16,12 +16,12 @@ import {
   COL_ICONS,
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCTS,
+  COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
   COL_SEO_CONTENTS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
 import {
-  catalogueRubricFieldsPipeline,
   filterAttributesPipeline,
   ignoreNoImageStage,
   noImageStage,
@@ -1343,7 +1343,31 @@ export const getCatalogueData = async ({
                         priorities: false,
                       },
                     },
-                    ...catalogueRubricFieldsPipeline(companySlug),
+                    {
+                      $lookup: {
+                        from: COL_RUBRIC_VARIANTS,
+                        as: 'variant',
+                        let: {
+                          variantId: '$variantId',
+                        },
+                        pipeline: [
+                          {
+                            $match: {
+                              $expr: {
+                                $eq: ['$$variantId', '$_id'],
+                              },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      $addFields: {
+                        variant: {
+                          $arrayElemAt: ['$variant', 0],
+                        },
+                      },
+                    },
                   ],
                 },
               },
@@ -1401,7 +1425,31 @@ export const getCatalogueData = async ({
               slug: rubricSlug,
             },
           },
-          ...catalogueRubricFieldsPipeline(companySlug),
+          {
+            $lookup: {
+              from: COL_RUBRIC_VARIANTS,
+              as: 'variant',
+              let: {
+                variantId: '$variantId',
+              },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $eq: ['$$variantId', '$_id'],
+                    },
+                  },
+                },
+              ],
+            },
+          },
+          {
+            $addFields: {
+              variant: {
+                $arrayElemAt: ['$variant', 0],
+              },
+            },
+          },
         ])
         .toArray();
     }

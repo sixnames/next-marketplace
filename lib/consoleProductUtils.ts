@@ -26,7 +26,6 @@ import {
 } from 'db/collectionNames';
 import {
   filterAttributesPipeline,
-  productSeoPipeline,
   shopProductSupplierProductsPipeline,
 } from 'db/dao/constantPipelines';
 import { ObjectIdModel } from 'db/dbModels';
@@ -223,9 +222,6 @@ export const getConsoleRubricProducts = async ({
                   ],
                 },
               },
-
-              // get product seo info
-              ...productSeoPipeline(companySlug),
 
               // count shop products
               {
@@ -935,9 +931,6 @@ export const getConsoleCompanyRubricProducts = async ({
                   ],
                 },
               },
-
-              // get product seo info
-              ...productSeoPipeline(companySlug),
             ],
 
             // prices facet
@@ -1567,9 +1560,6 @@ export const getConsoleShopProducts = async ({
                         },
                       },
                     },
-
-                    // get product seo info
-                    ...productSeoPipeline(companySlug),
                   ],
                 },
               },

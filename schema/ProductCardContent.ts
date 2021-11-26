@@ -1,40 +1,17 @@
-import { COL_PRODUCT_CARD_CONTENTS } from 'db/collectionNames';
-import { ProductCardContentModel, ProductCardContentPayloadModel } from 'db/dbModels';
+import { COL_SEO_CONTENTS } from 'db/collectionNames';
+import { ProductPayloadModel, SeoContentModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-
-export const ProductCardContent = objectType({
-  name: 'ProductCardContent',
-  definition(t) {
-    t.nonNull.objectId('_id');
-    t.nonNull.objectId('productId');
-    t.nonNull.string('productSlug');
-    t.nonNull.json('content');
-    t.nonNull.list.nonNull.string('assetKeys');
-  },
-});
-
-export const ProductCardContentPayload = objectType({
-  name: 'ProductCardContentPayload',
-  definition(t) {
-    t.implements('Payload');
-    t.field('payload', {
-      type: 'ProductCardContent',
-    });
-  },
-});
+import { arg, extendType, inputObjectType, nonNull } from 'nexus';
 
 export const UpdateProductCardContentInput = inputObjectType({
   name: 'UpdateProductCardContentInput',
   definition(t) {
     t.nonNull.objectId('_id');
-    t.nonNull.objectId('productId');
-    t.nonNull.string('productSlug');
-    t.nonNull.string('companySlug');
-    t.nonNull.json('content');
-    t.nonNull.list.nonNull.string('assetKeys');
+    t.nonNull.string('slug');
+    t.nonNull.string('url');
+    t.nonNull.string('content');
   },
 });
 
@@ -43,7 +20,7 @@ export const ProductCardContentMutations = extendType({
   definition(t) {
     // Should update / create product card content
     t.nonNull.field('updateProductCardContent', {
-      type: 'ProductCardContentPayload',
+      type: 'ProductPayload',
       description: 'Should update / create product card content',
       args: {
         input: nonNull(
@@ -52,12 +29,11 @@ export const ProductCardContentMutations = extendType({
           }),
         ),
       },
-      resolve: async (_root, args, context): Promise<ProductCardContentPayloadModel> => {
+      resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
         try {
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
-          const productCardContentsCollection =
-            db.collection<ProductCardContentModel>(COL_PRODUCT_CARD_CONTENTS);
+          const productCardContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
 
           // Permission
           const { allow, message } = await getOperationPermission({
@@ -97,7 +73,6 @@ export const ProductCardContentMutations = extendType({
           return {
             success: true,
             message: await getApiMessage('products.update.success'),
-            payload: updatedProductCardContent,
           };
         } catch (e) {
           console.log(e);

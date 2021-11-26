@@ -1,7 +1,6 @@
 import { IMAGE_FALLBACK } from 'config/common';
 import {
   COL_PRODUCT_ASSETS,
-  COL_PRODUCT_CARD_DESCRIPTIONS,
   COL_PRODUCTS,
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
@@ -10,7 +9,6 @@ import {
   GenderModel,
   Maybe,
   ProductAssetsModel,
-  ProductCardDescriptionModel,
   ProductModel,
   ProductPayloadModel,
   RubricModel,
@@ -49,9 +47,6 @@ export async function createProduct({
   const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
   const rubricVariantCollection = db.collection<RubricVariantModel>(COL_RUBRIC_VARIANTS);
-  const productsCardDescriptionsCollection = db.collection<ProductCardDescriptionModel>(
-    COL_PRODUCT_CARD_DESCRIPTIONS,
-  );
 
   const session = client.startSession();
 
@@ -174,22 +169,6 @@ export async function createProduct({
         ],
       });
       if (!createdAssetsResult.acknowledged) {
-        mutationPayload = {
-          success: false,
-          message: await getApiMessage(`products.create.error`),
-        };
-        await session.abortTransaction();
-        return;
-      }
-
-      // create card description
-      const createdCardDescription = await productsCardDescriptionsCollection.insertOne({
-        productSlug: itemId,
-        productId,
-        textI18n: cardDescriptionI18n || {},
-        companySlug,
-      });
-      if (!createdCardDescription.acknowledged) {
         mutationPayload = {
           success: false,
           message: await getApiMessage(`products.create.error`),

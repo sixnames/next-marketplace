@@ -1,11 +1,6 @@
-import { COL_PRODUCT_CARD_DESCRIPTIONS, COL_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
+import { COL_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
 import { CreateProductInputInterface } from 'db/dao/product/createProduct';
-import {
-  ProductCardDescriptionModel,
-  ProductModel,
-  ProductPayloadModel,
-  RubricModel,
-} from 'db/dbModels';
+import { ProductModel, ProductPayloadModel, RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
 import { saveAlgoliaObjects } from 'lib/algoliaUtils';
@@ -16,7 +11,6 @@ import {
   getRequestParams,
   getResolverValidationSchema,
 } from 'lib/sessionHelpers';
-import { checkProductDescriptionUniqueness } from 'lib/textUniquenessUtils';
 import { ObjectId } from 'mongodb';
 import { updateProductSchema } from 'validation/productSchema';
 
@@ -32,9 +26,6 @@ export async function updateProduct({
   const { db, client } = await getDatabase();
   const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-  const productsCardDescriptionsCollection = db.collection<ProductCardDescriptionModel>(
-    COL_PRODUCT_CARD_DESCRIPTIONS,
-  );
 
   const session = client.startSession();
 
@@ -72,7 +63,7 @@ export async function updateProduct({
       });
       await validationSchema.validate(input);
 
-      const { productId, companySlug, cardDescriptionI18n, rubricId, ...values } = input;
+      const { productId, rubricId, ...values } = input;
 
       // check product availability
       const productObjectId = new ObjectId(productId);
@@ -115,7 +106,7 @@ export async function updateProduct({
       }
 
       // check description uniqueness
-      const cardDescription = await productsCardDescriptionsCollection.findOne({
+      /*const cardDescription = await productsCardDescriptionsCollection.findOne({
         productId: product._id,
         companySlug,
       });
@@ -124,7 +115,7 @@ export async function updateProduct({
         cardDescriptionI18n,
         oldCardDescriptionI18n: cardDescription?.textI18n,
         companySlug,
-      });
+      });*/
 
       // update product
       const { originalName, nameI18n } = trimProductName({
@@ -149,7 +140,7 @@ export async function updateProduct({
       );
 
       // Update card description
-      const createdCardDescription = await productsCardDescriptionsCollection.findOneAndUpdate(
+      /*const createdCardDescription = await productsCardDescriptionsCollection.findOneAndUpdate(
         {
           productId: product._id,
           companySlug,
@@ -170,7 +161,7 @@ export async function updateProduct({
         };
         await session.abortTransaction();
         return;
-      }
+      }*/
 
       const updatedProduct = updatedProductResult.value;
       if (!updatedProductResult.ok || !updatedProduct) {

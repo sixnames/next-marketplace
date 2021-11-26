@@ -988,7 +988,7 @@ export type Mutation = {
   /** Should delete order status */
   deleteOrderStatus: OrderStatusPayload;
   /** Should update / create product card content */
-  updateProductCardContent: ProductCardContentPayload;
+  updateProductCardContent: ProductPayload;
   /** Should update product brand */
   updateProductBrand: ProductPayload;
   /** Should update product brand collection */
@@ -1804,22 +1804,6 @@ export type ProductAttribute = {
 export type ProductAttributesAstInput = {
   productId?: Maybe<Scalars['ObjectId']>;
   rubricId: Scalars['ObjectId'];
-};
-
-export type ProductCardContent = {
-  __typename?: 'ProductCardContent';
-  _id: Scalars['ObjectId'];
-  productId: Scalars['ObjectId'];
-  productSlug: Scalars['String'];
-  content: Scalars['JSONObject'];
-  assetKeys: Array<Scalars['String']>;
-};
-
-export type ProductCardContentPayload = Payload & {
-  __typename?: 'ProductCardContentPayload';
-  success: Scalars['Boolean'];
-  message: Scalars['String'];
-  payload?: Maybe<ProductCardContent>;
 };
 
 export type ProductCardPrices = {
@@ -2696,11 +2680,9 @@ export type UpdateProductBrandInput = {
 
 export type UpdateProductCardContentInput = {
   _id: Scalars['ObjectId'];
-  productId: Scalars['ObjectId'];
-  productSlug: Scalars['String'];
-  companySlug: Scalars['String'];
-  content: Scalars['JSONObject'];
-  assetKeys: Array<Scalars['String']>;
+  slug: Scalars['String'];
+  url: Scalars['String'];
+  content: Scalars['String'];
 };
 
 export type UpdateProductInCartInput = {
@@ -3928,8 +3910,8 @@ export type UpdateProductCardContentMutationVariables = Exact<{
 export type UpdateProductCardContentMutation = (
   { __typename?: 'Mutation' }
   & { updateProductCardContent: (
-    { __typename?: 'ProductCardContentPayload' }
-    & Pick<ProductCardContentPayload, 'success' | 'message'>
+    { __typename?: 'ProductPayload' }
+    & Pick<ProductPayload, 'success' | 'message'>
   ) }
 );
 

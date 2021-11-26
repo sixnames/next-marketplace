@@ -1,7 +1,6 @@
 import {
   COL_PRODUCT_ASSETS,
   COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCT_CARD_CONTENTS,
   COL_PRODUCT_CONNECTION_ITEMS,
   COL_PRODUCTS,
   COL_RUBRICS,
@@ -10,7 +9,6 @@ import {
 import {
   ProductAssetsModel,
   ProductAttributeModel,
-  ProductCardContentModel,
   ProductConnectionItemModel,
   ProductModel,
   ProductPayloadModel,
@@ -40,8 +38,6 @@ export async function deleteProduct({
   const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
   const productAttributesCollection = db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-  const productCardContentsCollection =
-    db.collection<ProductCardContentModel>(COL_PRODUCT_CARD_CONTENTS);
   const productConnectionItemsCollection = db.collection<ProductConnectionItemModel>(
     COL_PRODUCT_CONNECTION_ITEMS,
   );
@@ -174,7 +170,7 @@ export async function deleteProduct({
       }
 
       // delete product card content assets from cloud
-      const productCardContents = await productCardContentsCollection
+      /*const productCardContents = await productCardContentsCollection
         .find({
           productId: product._id,
         })
@@ -183,10 +179,10 @@ export async function deleteProduct({
         for await (const filePath of productCardContent.assetKeys) {
           await deleteUpload(filePath);
         }
-      }
+      }*/
 
       // delete product card content
-      const removedProductCardContents = await productCardContentsCollection.deleteMany({
+      /*const removedProductCardContents = await productCardContentsCollection.deleteMany({
         productId: product._id,
       });
       if (!removedProductCardContents.acknowledged) {
@@ -196,7 +192,7 @@ export async function deleteProduct({
         };
         await session.abortTransaction();
         return;
-      }
+      }*/
 
       // delete product connections
       const removedProductConnectionsResult = await productConnectionItemsCollection.deleteMany({

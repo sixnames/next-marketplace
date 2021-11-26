@@ -1247,7 +1247,7 @@ type Mutation {
   """
   Should update / create product card content
   """
-  updateProductCardContent(input: UpdateProductCardContentInput!): ProductCardContentPayload!
+  updateProductCardContent(input: UpdateProductCardContentInput!): ProductPayload!
 
   """
   Should update cart product amount
@@ -1582,20 +1582,6 @@ type ProductAttribute {
 input ProductAttributesASTInput {
   productId: ObjectId
   rubricId: ObjectId!
-}
-
-type ProductCardContent {
-  _id: ObjectId!
-  assetKeys: [String!]!
-  content: JSONObject!
-  productId: ObjectId!
-  productSlug: String!
-}
-
-type ProductCardContentPayload implements Payload {
-  message: String!
-  payload: ProductCardContent
-  success: Boolean!
 }
 
 type ProductCardPrices {
@@ -2428,11 +2414,9 @@ input UpdateProductBrandInput {
 
 input UpdateProductCardContentInput {
   _id: ObjectId!
-  assetKeys: [String!]!
-  companySlug: String!
-  content: JSONObject!
-  productId: ObjectId!
-  productSlug: String!
+  content: String!
+  slug: String!
+  url: String!
 }
 
 input UpdateProductInCartInput {

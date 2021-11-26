@@ -1,4 +1,3 @@
-import { deleteUpload } from 'lib/assetUtils/assetUtils';
 import { getNextItemId } from 'lib/itemIdUtils';
 import { deleteDocumentsTree, getParentTreeIds } from 'lib/optionsUtils';
 import { ObjectId } from 'mongodb';
@@ -10,7 +9,6 @@ import {
   CategoryPayloadModel,
   RubricModel,
   ObjectIdModel,
-  CategoryDescriptionModel,
   CompanyModel,
   ConfigModel,
 } from 'db/dbModels';
@@ -25,7 +23,6 @@ import {
   COL_PRODUCT_ATTRIBUTES,
   COL_RUBRICS,
   COL_CATEGORIES,
-  COL_CATEGORY_DESCRIPTIONS,
   COL_COMPANIES,
   COL_CONFIGS,
 } from 'db/collectionNames';
@@ -341,10 +338,8 @@ export const CategoryMutations = extendType({
           const { db } = await getDatabase();
           const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-          const categoryDescriptionsCollection =
-            db.collection<CategoryDescriptionModel>(COL_CATEGORY_DESCRIPTIONS);
           const { input } = args;
-          const { categoryId, rubricId, companySlug, textTop, textBottom, ...values } = input;
+          const { categoryId, rubricId, ...values } = input;
 
           // Check rubric availability
           const rubric = await rubricsCollection.findOne({
@@ -410,7 +405,7 @@ export const CategoryMutations = extendType({
           }
 
           // update seo text
-          if (textTop) {
+          /*if (textTop) {
             const topText = await categoryDescriptionsCollection.findOne({
               companySlug,
               position: 'top',
@@ -511,7 +506,7 @@ export const CategoryMutations = extendType({
                 upsert: true,
               },
             );
-          }
+          }*/
 
           return {
             success: true,
@@ -542,8 +537,6 @@ export const CategoryMutations = extendType({
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
         const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
-        const categoryDescriptionsCollection =
-          db.collection<CategoryDescriptionModel>(COL_CATEGORY_DESCRIPTIONS);
 
         const session = client.startSession();
 
@@ -582,7 +575,7 @@ export const CategoryMutations = extendType({
             }
 
             // Delete descriptions
-            const descriptions = await categoryDescriptionsCollection
+            /*const descriptions = await categoryDescriptionsCollection
               .find({
                 categoryId: category._id,
               })
@@ -594,7 +587,7 @@ export const CategoryMutations = extendType({
             }
             await categoryDescriptionsCollection.deleteMany({
               categoryId: category._id,
-            });
+            });*/
 
             // Delete category
             const removedCategoriesResult = await deleteDocumentsTree({

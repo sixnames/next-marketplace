@@ -4,7 +4,7 @@ import Inner from 'components/Inner';
 import PageEditor from 'components/PageEditor';
 import { DEFAULT_CITY } from 'config/common';
 import { useConfigContext } from 'context/configContext';
-import { ProductCardContentModel } from 'db/dbModels';
+import { SeoContentModel } from 'db/dbModels';
 import { CompanyInterface, ProductInterface, RubricInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import {
@@ -19,7 +19,7 @@ import * as React from 'react';
 export interface CompanyProductConstructorInterface {
   product: ProductInterface;
   rubric: RubricInterface;
-  cardContent: ProductCardContentModel;
+  cardContent: SeoContentModel;
   currentCompany?: CompanyInterface | null;
   routeBasePath: string;
 }

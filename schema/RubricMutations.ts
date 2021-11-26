@@ -1,4 +1,3 @@
-import { deleteUpload } from 'lib/assetUtils/assetUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   AttributeModel,
@@ -6,7 +5,6 @@ import {
   CategoryModel,
   ProductAttributeModel,
   ProductModel,
-  RubricDescriptionModel,
   RubricModel,
   RubricPayloadModel,
   ShopProductModel,
@@ -23,7 +21,6 @@ import {
   COL_CATEGORIES,
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCTS,
-  COL_RUBRIC_DESCRIPTIONS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
@@ -241,10 +238,8 @@ export const RubricMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-          const rubricDescriptionsCollection =
-            db.collection<RubricDescriptionModel>(COL_RUBRIC_DESCRIPTIONS);
           const { input } = args;
-          const { rubricId, companySlug, textTop, textBottom, ...values } = input;
+          const { rubricId, ...values } = input;
 
           // Check rubric availability
           const rubric = await rubricsCollection.findOne({ _id: rubricId });
@@ -292,7 +287,7 @@ export const RubricMutations = extendType({
           }
 
           // update seo text
-          if (textTop) {
+          /*if (textTop) {
             const topText = await rubricDescriptionsCollection.findOne({
               companySlug,
               position: 'top',
@@ -349,7 +344,7 @@ export const RubricMutations = extendType({
                 },
               );
             }
-          }
+          }*/
 
           return {
             success: true,
@@ -384,8 +379,6 @@ export const RubricMutations = extendType({
         const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
         const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
-        const rubricDescriptionsCollection =
-          db.collection<RubricDescriptionModel>(COL_RUBRIC_DESCRIPTIONS);
 
         const session = client.startSession();
 
@@ -445,7 +438,7 @@ export const RubricMutations = extendType({
             });
 
             // Delete descriptions
-            const descriptions = await rubricDescriptionsCollection
+            /*const descriptions = await rubricDescriptionsCollection
               .find({
                 rubricId: rubric._id,
               })
@@ -457,7 +450,7 @@ export const RubricMutations = extendType({
             }
             await rubricDescriptionsCollection.deleteMany({
               rubricId: rubric._id,
-            });
+            });*/
 
             // Delete rubric
             const removedRubricsResult = await rubricsCollection.deleteOne({

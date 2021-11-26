@@ -1,94 +1,138 @@
-import { DEFAULT_CITY, PAGE_EDITOR_DEFAULT_VALUE_STRING } from 'config/common';
-import { COL_CATEGORY_DESCRIPTIONS, COL_RUBRIC_DESCRIPTIONS } from 'db/collectionNames';
-import { CategoryDescriptionModel, ObjectIdModel, RubricDescriptionModel } from 'db/dbModels';
+import {
+  FILTER_CATEGORY_KEY,
+  FILTER_SEPARATOR,
+  PAGE_EDITOR_DEFAULT_VALUE_STRING,
+  ROUTE_CATALOGUE,
+} from 'config/common';
+import { COL_CATEGORIES, COL_SEO_CONTENTS } from 'db/collectionNames';
+import {
+  CategoryModel,
+  DescriptionPositionType,
+  ObjectIdModel,
+  SeoContentModel,
+} from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
+import { sortStringArray } from 'lib/stringUtils';
+import { getCatalogueSeoTextSlug } from 'lib/textUniquenessUtils';
 
 interface getRubricSeoTextInterface {
   companySlug: string;
-  position: 'top' | 'bottom';
-  rubricId: ObjectIdModel;
+  position: DescriptionPositionType;
   rubricSlug: string;
+  citySlug: string;
 }
 
 export async function getRubricSeoText({
   companySlug,
   position,
-  rubricId,
   rubricSlug,
-}: getRubricSeoTextInterface): Promise<RubricDescriptionModel | null> {
+  citySlug,
+}: getRubricSeoTextInterface): Promise<SeoContentModel | null> {
   const { db } = await getDatabase();
-  const rubricDescriptionsCollection =
-    db.collection<RubricDescriptionModel>(COL_RUBRIC_DESCRIPTIONS);
-  const description = await rubricDescriptionsCollection.findOne({
-    position,
-    rubricId,
-    companySlug,
-  });
 
-  if (!description) {
-    const newDescriptionResult = await rubricDescriptionsCollection.insertOne({
-      companySlug,
-      rubricId,
-      position,
-      assetKeys: [],
-      rubricSlug,
-      content: {
-        [DEFAULT_CITY]: PAGE_EDITOR_DEFAULT_VALUE_STRING,
-      },
-    });
-    if (!newDescriptionResult.acknowledged) {
-      return null;
-    }
-    const newDescription = await rubricDescriptionsCollection.findOne({
-      _id: newDescriptionResult.insertedId,
-    });
-    return newDescription;
+  const seoTextSlug = await getCatalogueSeoTextSlug({
+    filters: [],
+    companySlug,
+    rubricSlug,
+    citySlug,
+  });
+  if (!seoTextSlug) {
+    return null;
   }
 
-  return description;
+  const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
+  const seoText = await seoContentsCollection.findOne({
+    slug: seoTextSlug,
+    position,
+  });
+
+  const url = `/${companySlug}/${citySlug}${ROUTE_CATALOGUE}/${rubricSlug}`;
+  if (!seoText) {
+    const newSeoTextResult = await seoContentsCollection.insertOne({
+      url,
+      slug: seoTextSlug,
+      content: PAGE_EDITOR_DEFAULT_VALUE_STRING,
+      position,
+    });
+    if (!newSeoTextResult.acknowledged) {
+      return null;
+    }
+    const newSeoText = await seoContentsCollection.findOne({
+      _id: newSeoTextResult.insertedId,
+    });
+    return newSeoText;
+  }
+
+  return seoText;
 }
 
 interface getCategorySeoTextInterface {
   companySlug: string;
-  position: 'top' | 'bottom';
+  citySlug: string;
+  position: DescriptionPositionType;
   categoryId: ObjectIdModel;
-  categorySlug: string;
 }
 
 export async function getCategorySeoText({
   companySlug,
   position,
   categoryId,
-  categorySlug,
-}: getCategorySeoTextInterface): Promise<CategoryDescriptionModel | null> {
+  citySlug,
+}: getCategorySeoTextInterface): Promise<SeoContentModel | null> {
   const { db } = await getDatabase();
-  const rubricDescriptionsCollection =
-    db.collection<CategoryDescriptionModel>(COL_CATEGORY_DESCRIPTIONS);
-  const description = await rubricDescriptionsCollection.findOne({
-    position,
-    categoryId,
-    companySlug,
+  const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
+  const category = await categoriesCollection.findOne({
+    _id: categoryId,
   });
-
-  if (!description) {
-    const newDescriptionResult = await rubricDescriptionsCollection.insertOne({
-      companySlug,
-      position,
-      assetKeys: [],
-      categoryId,
-      categorySlug,
-      content: {
-        [DEFAULT_CITY]: PAGE_EDITOR_DEFAULT_VALUE_STRING,
+  if (!category) {
+    return null;
+  }
+  const categoriesTree = await categoriesCollection
+    .find({
+      _id: {
+        $in: category.parentTreeIds,
       },
-    });
-    if (!newDescriptionResult.acknowledged) {
-      return null;
-    }
-    const newDescription = await rubricDescriptionsCollection.findOne({
-      _id: newDescriptionResult.insertedId,
-    });
-    return newDescription;
+    })
+    .toArray();
+  const filters = categoriesTree.map(({ slug }) => {
+    return `${FILTER_CATEGORY_KEY}${FILTER_SEPARATOR}${slug}`;
+  });
+  const sortedFilters = sortStringArray(filters);
+  const url = `/${companySlug}/${citySlug}${ROUTE_CATALOGUE}/${
+    category.rubricSlug
+  }/${sortedFilters.join('/')}`;
+
+  const seoTextSlug = await getCatalogueSeoTextSlug({
+    filters,
+    companySlug,
+    rubricSlug: category.rubricSlug,
+    citySlug,
+  });
+  if (!seoTextSlug) {
+    return null;
   }
 
-  return description;
+  const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
+  const seoText = await seoContentsCollection.findOne({
+    slug: seoTextSlug,
+    position,
+  });
+
+  if (!seoText) {
+    const newSeoTextResult = await seoContentsCollection.insertOne({
+      url,
+      slug: seoTextSlug,
+      content: PAGE_EDITOR_DEFAULT_VALUE_STRING,
+      position,
+    });
+    if (!newSeoTextResult.acknowledged) {
+      return null;
+    }
+    const newSeoText = await seoContentsCollection.findOne({
+      _id: newSeoTextResult.insertedId,
+    });
+    return newSeoText;
+  }
+
+  return seoText;
 }

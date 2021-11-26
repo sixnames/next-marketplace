@@ -28,110 +28,37 @@ import {
   CompanyModel,
   ConfigModel,
   ObjectIdModel,
-  ProductModel,
   RubricModel,
-  TranslationModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { AttributeInterface } from 'db/uiInterfaces';
 import { castCatalogueFilters } from 'lib/catalogueUtils';
 import { castConfigs, getConfigStringValue } from 'lib/configsUtils';
 import { castCatalogueFilter } from 'lib/optionsUtils';
-import { get, sortBy } from 'lodash';
+import { sortBy } from 'lodash';
 import fetch from 'node-fetch';
 import qs from 'qs';
 import { getTextContents, Value } from '@react-page/editor';
 
-interface CheckTextUniquenessInterface {
-  textI18n?: TranslationModel | null;
-  oldTextI18n?: TranslationModel | null;
-  callback: (locale: string) => string;
-  companySlug: string;
-}
-
-export async function checkTextUniqueness({
-  textI18n,
-  oldTextI18n,
-  callback,
-  companySlug,
-}: CheckTextUniquenessInterface) {
-  try {
-    const { db } = await getDatabase();
-    const configSlug = 'textUniquenessApiKey';
-    const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
-    const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
-    const initialConfigs = await configsCollection
-      .find({
-        slug: configSlug,
-        companySlug,
-      })
-      .toArray();
-    const configs = castConfigs({
-      configs: initialConfigs,
-      citySlug: DEFAULT_CITY,
-      locale: DEFAULT_LOCALE,
-    });
-    const uniqueTextApiKey = getConfigStringValue({
-      configs,
-      slug: configSlug,
-    });
-    const uniqueTextApiUrl = process.env.UNIQUE_TEXT_API_URL;
-
-    // get excluded domain
-    let domain = process.env.DEFAULT_DOMAIN;
-    if (companySlug !== DEFAULT_COMPANY_SLUG) {
-      const company = await companiesCollection.findOne({
-        slug: companySlug,
-      });
-      domain = company?.domain || process.env.DEFAULT_DOMAIN;
-    }
-
-    if (uniqueTextApiUrl && uniqueTextApiKey && domain) {
-      for await (const locale of LOCALES) {
-        const text = get(textI18n, locale);
-        const oldText = get(oldTextI18n, locale);
-
-        if (text && text !== oldText) {
-          const body = {
-            userkey: uniqueTextApiKey,
-            exceptdomain: domain,
-            callback: `https://${domain}${callback(locale)}`,
-            text,
-          };
-
-          await fetch(uniqueTextApiUrl, {
-            method: REQUEST_METHOD_POST,
-            body: qs.stringify(body),
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-            },
-          });
-        }
-      }
-    }
-  } catch (e) {
-    console.log(e);
-  }
-}
-
 interface CheckConstructorTextUniquenessInterface {
   text?: string | null;
   oldText?: string | null;
-  callback: (locale: string) => string;
   companySlug: string;
+  seoContentId: ObjectIdModel;
 }
 
 export async function checkConstructorTextUniqueness({
   text,
   oldText,
-  callback,
   companySlug,
+  seoContentId,
 }: CheckConstructorTextUniquenessInterface) {
   try {
     const { db } = await getDatabase();
+
+    // get uniqueness api key and url
     const configSlug = 'textUniquenessApiKey';
     const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
-    const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
     const initialConfigs = await configsCollection
       .find({
         slug: configSlug,
@@ -149,16 +76,17 @@ export async function checkConstructorTextUniqueness({
     });
     const uniqueTextApiUrl = process.env.UNIQUE_TEXT_API_URL;
 
-    // get excluded domain
+    // get domain
     let domain = process.env.DEFAULT_DOMAIN;
     if (companySlug !== DEFAULT_COMPANY_SLUG) {
+      const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
       const company = await companiesCollection.findOne({
         slug: companySlug,
       });
       domain = company?.domain || process.env.DEFAULT_DOMAIN;
     }
 
-    if (uniqueTextApiUrl && uniqueTextApiKey && domain && text) {
+    if (uniqueTextApiUrl && uniqueTextApiKey && text) {
       for await (const locale of LOCALES) {
         const rawText = JSON.parse(text);
         const textContents = getTextContents(rawText as Value, {
@@ -178,7 +106,7 @@ export async function checkConstructorTextUniqueness({
           const body = {
             userkey: uniqueTextApiKey,
             exceptdomain: domain,
-            callback: `https://${domain}${callback(locale)}`,
+            callback: `https://${domain}/api/seo-text/uniqueness/${seoContentId}/${locale}`,
             text,
           };
 
@@ -192,34 +120,6 @@ export async function checkConstructorTextUniqueness({
         }
       }
     }
-  } catch (e) {
-    console.log(e);
-  }
-}
-
-// Product
-interface CheckProductDescriptionUniquenessInterface {
-  cardDescriptionI18n?: TranslationModel | null;
-  oldCardDescriptionI18n?: TranslationModel | null;
-  product: ProductModel;
-  companySlug: string;
-}
-
-export async function checkProductDescriptionUniqueness({
-  product,
-  cardDescriptionI18n,
-  oldCardDescriptionI18n,
-  companySlug,
-}: CheckProductDescriptionUniquenessInterface) {
-  try {
-    await checkTextUniqueness({
-      companySlug,
-      textI18n: cardDescriptionI18n,
-      oldTextI18n: oldCardDescriptionI18n,
-      callback: (locale) => {
-        return `/api/product/uniqueness/${product._id.toHexString()}/${locale}/${companySlug}`;
-      },
-    });
   } catch (e) {
     console.log(e);
   }

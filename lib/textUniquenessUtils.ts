@@ -1,3 +1,4 @@
+import { reactPageCellPlugins } from 'components/PageEditor';
 import {
   DEFAULT_CITY,
   DEFAULT_COMPANY_SLUG,
@@ -38,6 +39,7 @@ import { castCatalogueFilter } from 'lib/optionsUtils';
 import { get, sortBy } from 'lodash';
 import fetch from 'node-fetch';
 import qs from 'qs';
+import { getTextContents, Value } from '@react-page/editor';
 
 interface CheckTextUniquenessInterface {
   textI18n?: TranslationModel | null;
@@ -89,6 +91,89 @@ export async function checkTextUniqueness({
         const oldText = get(oldTextI18n, locale);
 
         if (text && text !== oldText) {
+          const body = {
+            userkey: uniqueTextApiKey,
+            exceptdomain: domain,
+            callback: `https://${domain}${callback(locale)}`,
+            text,
+          };
+
+          await fetch(uniqueTextApiUrl, {
+            method: REQUEST_METHOD_POST,
+            body: qs.stringify(body),
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+          });
+        }
+      }
+    }
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+interface CheckConstructorTextUniquenessInterface {
+  text?: string | null;
+  oldText?: string | null;
+  callback: (locale: string) => string;
+  companySlug: string;
+}
+
+export async function checkConstructorTextUniqueness({
+  text,
+  oldText,
+  callback,
+  companySlug,
+}: CheckConstructorTextUniquenessInterface) {
+  try {
+    const { db } = await getDatabase();
+    const configSlug = 'textUniquenessApiKey';
+    const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+    const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
+    const initialConfigs = await configsCollection
+      .find({
+        slug: configSlug,
+        companySlug,
+      })
+      .toArray();
+    const configs = castConfigs({
+      configs: initialConfigs,
+      citySlug: DEFAULT_CITY,
+      locale: DEFAULT_LOCALE,
+    });
+    const uniqueTextApiKey = getConfigStringValue({
+      configs,
+      slug: configSlug,
+    });
+    const uniqueTextApiUrl = process.env.UNIQUE_TEXT_API_URL;
+
+    // get excluded domain
+    let domain = process.env.DEFAULT_DOMAIN;
+    if (companySlug !== DEFAULT_COMPANY_SLUG) {
+      const company = await companiesCollection.findOne({
+        slug: companySlug,
+      });
+      domain = company?.domain || process.env.DEFAULT_DOMAIN;
+    }
+
+    if (uniqueTextApiUrl && uniqueTextApiKey && domain && text) {
+      for await (const locale of LOCALES) {
+        const rawText = JSON.parse(text);
+        const textContents = getTextContents(rawText as Value, {
+          lang: locale,
+          cellPlugins: reactPageCellPlugins(),
+        }).join(' ');
+
+        const rawOldText = oldText ? JSON.parse(oldText) : null;
+        const oldTextContents = rawOldText
+          ? getTextContents(rawOldText as Value, {
+              lang: locale,
+              cellPlugins: reactPageCellPlugins(),
+            }).join(' ')
+          : null;
+
+        if (textContents !== oldTextContents) {
           const body = {
             userkey: uniqueTextApiKey,
             exceptdomain: domain,

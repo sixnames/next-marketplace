@@ -37,7 +37,6 @@ import {
   deleteAttributesGroupFromRubricSchema,
   updateRubricSchema,
 } from 'validation/rubricSchema';
-// import { getTextContents, Value } from '@react-page/editor';
 
 export const RubricPayload = objectType({
   name: 'RubricPayload',
@@ -299,11 +298,7 @@ export const RubricMutations = extendType({
               position: 'top',
               rubricId: updatedRubric._id,
             });
-            /*const raw = JSON.parse(textTop.msk);
-            const contents = getTextContents(raw as Value, {
-              lang: 'ru',
-              cellPlugins: reactPageCellPlugins(),
-            });
+            /*
 
             console.log(contents.join(' '));*/
 

@@ -2,7 +2,6 @@ import { SUPPLIER_PRICE_VARIANT_CHARGE } from 'config/common';
 import {
   COL_COMPANIES,
   COL_PRODUCT_ASSETS,
-  COL_PRODUCT_CARD_DESCRIPTIONS,
   COL_PRODUCTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
@@ -14,7 +13,6 @@ import {
   productCategoriesPipeline,
   productConnectionsSimplePipeline,
   productRubricPipeline,
-  productSeoPipeline,
   shopProductFieldsPipeline,
   shopProductSupplierProductsPipeline,
 } from 'db/dao/constantPipelines';
@@ -41,7 +39,6 @@ import trim from 'trim';
 interface GetCmsProductInterface {
   productId: string;
   locale: string;
-  companySlug: string;
 }
 
 interface GetCmsProductPayloadInterface {
@@ -52,7 +49,6 @@ interface GetCmsProductPayloadInterface {
 export async function getCmsProduct({
   productId,
   locale,
-  companySlug,
 }: GetCmsProductInterface): Promise<GetCmsProductPayloadInterface | null> {
   const { db } = await getDatabase();
   const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
@@ -61,34 +57,6 @@ export async function getCmsProduct({
       {
         $match: {
           _id: new ObjectId(productId),
-        },
-      },
-
-      // get seo text
-      {
-        $lookup: {
-          from: COL_PRODUCT_CARD_DESCRIPTIONS,
-          as: 'cardDescription',
-          let: {
-            productId: '$_id',
-          },
-          pipeline: [
-            {
-              $match: {
-                companySlug,
-                $expr: {
-                  $eq: ['$$productId', '$productId'],
-                },
-              },
-            },
-          ],
-        },
-      },
-      {
-        $addFields: {
-          cardDescription: {
-            $arrayElemAt: ['$cardDescription', 0],
-          },
         },
       },
 
@@ -123,9 +91,6 @@ export async function getCmsProduct({
 
       // get product connections
       ...productConnectionsSimplePipeline,
-
-      // get product seo info
-      ...productSeoPipeline(companySlug),
     ])
     .toArray();
   const initialProduct = productAggregation[0];
@@ -133,7 +98,7 @@ export async function getCmsProduct({
     return null;
   }
 
-  const { rubric, seo, cardDescription, ...restProduct } = initialProduct;
+  const { rubric, ...restProduct } = initialProduct;
   if (!rubric) {
     return null;
   }
@@ -233,12 +198,6 @@ export async function getCmsProduct({
 
   const product: ProductInterface = {
     ...initialProduct,
-    cardDescription: cardDescription
-      ? {
-          ...cardDescription,
-          seo,
-        }
-      : null,
     rubric: castedRubric,
     cardTitle,
     snippetTitle,

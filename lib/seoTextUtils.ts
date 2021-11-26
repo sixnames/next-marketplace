@@ -16,7 +16,7 @@ import {
 import { getDatabase } from 'db/mongodb';
 import { SeoContentCitiesInterface } from 'db/uiInterfaces';
 import { sortStringArray } from 'lib/stringUtils';
-import { getCatalogueSeoTextSlug } from 'lib/textUniquenessUtils';
+import { getCatalogueSeoTextSlug, getProductSeoTextSlug } from 'lib/textUniquenessUtils';
 
 async function getCitiesList(): Promise<CityModel[]> {
   const { db } = await getDatabase();
@@ -202,3 +202,78 @@ export async function getCategoryAllSeoTexts({
 }
 
 // product
+interface GetProductSeoTextInterface {
+  companySlug: string;
+  citySlug: string;
+  position: DescriptionPositionType;
+  productId: ObjectIdModel;
+  productSlug: string;
+}
+
+export async function getProductSeoText({
+  companySlug,
+  position,
+  productId,
+  citySlug,
+  productSlug,
+}: GetProductSeoTextInterface): Promise<SeoContentModel | null> {
+  const { db } = await getDatabase();
+  const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
+
+  const seoTextSlug = await getProductSeoTextSlug({
+    companySlug,
+    productId,
+    citySlug,
+  });
+  if (!seoTextSlug) {
+    return null;
+  }
+
+  const seoText = await seoContentsCollection.findOne({
+    slug: seoTextSlug,
+    position,
+  });
+
+  if (!seoText) {
+    const url = `/${companySlug}/${citySlug}/${productSlug}`;
+    const newSeoTextResult = await seoContentsCollection.insertOne({
+      url,
+      slug: seoTextSlug,
+      content: PAGE_EDITOR_DEFAULT_VALUE_STRING,
+      position,
+    });
+    if (!newSeoTextResult.acknowledged) {
+      return null;
+    }
+    const newSeoText = await seoContentsCollection.findOne({
+      _id: newSeoTextResult.insertedId,
+    });
+    return newSeoText;
+  }
+
+  return seoText;
+}
+
+interface GetProductAllSeoTextsInterface extends Omit<GetProductSeoTextInterface, 'citySlug'> {}
+export async function getProductAllSeoTexts({
+  companySlug,
+  position,
+  productId,
+  productSlug,
+}: GetProductAllSeoTextsInterface): Promise<SeoContentCitiesInterface> {
+  const cities = await getCitiesList();
+  let payload: SeoContentCitiesInterface = {};
+  for await (const city of cities) {
+    const seoText = await getProductSeoText({
+      companySlug,
+      position,
+      productId,
+      productSlug,
+      citySlug: city.slug,
+    });
+    if (seoText) {
+      payload[city.slug] = seoText;
+    }
+  }
+  return payload;
+}

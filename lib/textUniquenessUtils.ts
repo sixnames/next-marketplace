@@ -27,6 +27,7 @@ import {
   CityModel,
   CompanyModel,
   ConfigModel,
+  ObjectIdModel,
   ProductModel,
   RubricModel,
   TranslationModel,
@@ -224,24 +225,24 @@ export async function checkProductDescriptionUniqueness({
   }
 }
 
-interface GetCatalogueSeoTextParamsInterface {
+interface GetCatalogueSeoTextSlugInterface {
   filters: string[];
   rubricSlug: string;
   citySlug: string;
   companySlug: string;
 }
 
-interface GetCatalogueSeoTextParamsAttributeConfigInterface {
+interface GetCatalogueSeoTextSlugAttributeConfigInterface {
   attributeSlug: string;
   optionSlugs: string[];
 }
 
-export async function getCatalogueSeoTextParams({
+export async function getCatalogueSeoTextSlug({
   filters,
   companySlug,
   citySlug,
   rubricSlug,
-}: GetCatalogueSeoTextParamsInterface): Promise<string | null> {
+}: GetCatalogueSeoTextSlugInterface): Promise<string | null> {
   try {
     const { db } = await getDatabase();
     const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
@@ -270,26 +271,27 @@ export async function getCatalogueSeoTextParams({
     // get rubric
     const rubric = await rubricsCollection.findOne({ slug: rubricSlug });
     if (!rubric) {
-      console.log('getCatalogueSeoTextParams Rubric not found');
+      console.log('getCatalogueSeoTextSlug Rubric not found');
       return null;
     }
     const rubricId = rubric._id.toHexString();
 
     // get company
     let companyId = DEFAULT_COMPANY_SLUG;
-    const company = await companiesCollection.findOne({ slug: rubricSlug });
-    if (company) {
+    if (companySlug !== DEFAULT_COMPANY_SLUG) {
+      const company = await companiesCollection.findOne({ slug: companySlug });
+      if (!company) {
+        console.log('getCatalogueSeoTextSlug Company not found');
+        return null;
+      }
+
       companyId = company._id.toHexString();
-    }
-    if (companySlug !== DEFAULT_COMPANY_SLUG && !company) {
-      console.log('getCatalogueSeoTextParams Company not found');
-      return null;
     }
 
     // get city
     const city = await citiesCollection.findOne({ slug: citySlug });
     if (!city) {
-      console.log('getCatalogueSeoTextParams City not found');
+      console.log('getCatalogueSeoTextSlug City not found');
       return null;
     }
     const cityId = city._id.toHexString();
@@ -354,7 +356,7 @@ export async function getCatalogueSeoTextParams({
 
     // get attributes
     const attributeConfigs = realFilters.reduce(
-      (acc: GetCatalogueSeoTextParamsAttributeConfigInterface[], filter) => {
+      (acc: GetCatalogueSeoTextSlugAttributeConfigInterface[], filter) => {
         if (categoryCastedFilters.includes(filter)) {
           return acc;
         }
@@ -436,6 +438,49 @@ export async function getCatalogueSeoTextParams({
     }, '');
 
     return `${companyId}${cityId}${rubricId}${categoryIds}${brandIds}${brandCollectionIds}${attributeIds}${priceIds}`;
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
+}
+
+interface GetProductSeoTextSlugInterface {
+  productId: ObjectIdModel;
+  citySlug: string;
+  companySlug: string;
+}
+
+export async function getProductSeoTextSlug({
+  companySlug,
+  citySlug,
+  productId,
+}: GetProductSeoTextSlugInterface): Promise<string | null> {
+  try {
+    const { db } = await getDatabase();
+    const citiesCollection = db.collection<CityModel>(COL_CITIES);
+    const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
+
+    // get company
+    let companyId = DEFAULT_COMPANY_SLUG;
+    if (companySlug !== DEFAULT_COMPANY_SLUG) {
+      const company = await companiesCollection.findOne({ slug: companySlug });
+      if (!company) {
+        console.log('getProductSeoTextSlug Company not found');
+        return null;
+      }
+
+      companyId = company._id.toHexString();
+    }
+
+    // get city
+    const city = await citiesCollection.findOne({ slug: citySlug });
+    if (!city) {
+      console.log('getProductSeoTextSlug City not found');
+      return null;
+    }
+    const cityId = city._id.toHexString();
+
+    return `${companyId}${cityId}${productId.toHexString()}`;
   } catch (e) {
     console.log(e);
     return null;

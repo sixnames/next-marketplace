@@ -298,9 +298,6 @@ export const RubricMutations = extendType({
               position: 'top',
               rubricId: updatedRubric._id,
             });
-            /*
-
-            console.log(contents.join(' '));*/
 
             if (!topText) {
               await rubricDescriptionsCollection.insertOne({

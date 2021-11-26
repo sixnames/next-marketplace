@@ -84,7 +84,7 @@ import { noNaN } from 'lib/numbers';
 import { getTreeFromList, sortByName } from 'lib/optionsUtils';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
 import { sortStringArray } from 'lib/stringUtils';
-import { getCatalogueSeoTextParams } from 'lib/textUniquenessUtils';
+import { getCatalogueSeoTextSlug } from 'lib/textUniquenessUtils';
 import { generateSnippetTitle, generateTitle } from 'lib/titleUtils';
 import { castProductConnectionForUI } from 'lib/uiDataUtils';
 import { ObjectId } from 'mongodb';
@@ -1813,7 +1813,7 @@ export const getCatalogueData = async ({
     let textTop: string | null | undefined;
     let textBottom: string | null | undefined;
 
-    const seoParam = await getCatalogueSeoTextParams({
+    const seoParam = await getCatalogueSeoTextSlug({
       rubricSlug: rubric.slug,
       citySlug: city,
       companySlug: companySlug,

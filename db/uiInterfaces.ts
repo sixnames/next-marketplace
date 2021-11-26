@@ -13,7 +13,6 @@ import {
   CartModel,
   CartProductModel,
   CatalogueBreadcrumbModel,
-  CategoryDescriptionModel,
   CategoryModel,
   CityModel,
   CompanyModel,
@@ -42,19 +41,16 @@ import {
   ProductAttributeModel,
   ProductCardBreadcrumbModel,
   ProductCardContentModel,
-  ProductCardDescriptionModel,
   ProductCardPricesModel,
   ProductConnectionItemModel,
   ProductConnectionModel,
   ProductModel,
-  ProductSeoModel,
   PromoModel,
   RoleModel,
   RoleRuleModel,
-  RubricDescriptionModel,
   RubricModel,
-  RubricSeoModel,
   RubricVariantModel,
+  SeoContentModel,
   ShopModel,
   ShopProductModel,
   SupplierModel,
@@ -257,11 +253,6 @@ export interface ProductAttributesGroupInterface extends AttributesGroupModel {
   selectAttributesAST?: ProductAttributeInterface[] | null;
 }
 
-export interface ProductCardDescriptionInterface extends ProductCardDescriptionModel {
-  text?: string | null;
-  seo?: ProductSeoModel | null;
-}
-
 export interface ProductInterface extends ProductModel {
   name?: string | null;
   description?: string | null;
@@ -297,9 +288,8 @@ export interface ProductInterface extends ProductModel {
   categories?: CategoryInterface[] | null;
   snippetTitle?: string | null;
   cardTitle?: string | null;
-  cardDescription?: ProductCardDescriptionInterface | null;
+  cardDescription?: SeoContentModel | null;
   shops?: ShopInterface[] | null;
-  seo?: ProductSeoModel | null;
 }
 
 export interface BarcodeDoublesInterface {
@@ -343,13 +333,8 @@ export interface RubricInterface extends RubricModel {
   categories?: CategoryInterface[] | null;
   textTop?: string | null;
   textBottom?: string | null;
-  seoDescriptionTop?: RubricDescriptionInterface | null;
-  seoDescriptionBottom?: RubricDescriptionInterface | null;
-}
-
-export interface RubricDescriptionInterface extends RubricDescriptionModel {
-  text?: string | null;
-  seo?: RubricSeoModel | null;
+  seoDescriptionTop?: SeoContentModel | null;
+  seoDescriptionBottom?: SeoContentModel | null;
 }
 
 export interface CategoryInterface extends CategoryModel {
@@ -366,13 +351,8 @@ export interface CategoryInterface extends CategoryModel {
   textTop?: string | null;
   textBottom?: string | null;
   childrenCount?: number | null;
-  seoDescriptionTop?: CategoryDescriptionInterface | null;
-  seoDescriptionBottom?: CategoryDescriptionInterface | null;
-}
-
-export interface CategoryDescriptionInterface extends CategoryDescriptionModel {
-  text?: string | null;
-  seo?: RubricSeoModel | null;
+  seoDescriptionTop?: SeoContentModel | null;
+  seoDescriptionBottom?: SeoContentModel | null;
 }
 
 export interface SupplierProductInterface extends SupplierProductModel {

@@ -660,20 +660,20 @@ export interface ProductAssetsModel {
   assets: AssetModel[];
 }
 
-export interface ProductCardDescriptionModel {
+/*export interface ProductCardDescriptionModel {
   _id: ObjectIdModel;
   companySlug: string;
   productSlug: string;
   productId: ObjectIdModel;
   textI18n: TranslationModel;
-}
+}*/
 
-export interface ProductSeoModel {
+/*export interface ProductSeoModel {
   _id: ObjectIdModel;
   productId: ObjectIdModel;
   companySlug: string;
   locales: TextUniquenessApiParsedResponseModel[];
-}
+}*/
 
 export interface ProductCardContentModel {
   _id: ObjectIdModel;
@@ -786,7 +786,7 @@ export interface RubricModel extends CountersModel {
 
 export type DescriptionPositionType = 'top' | 'bottom';
 
-export interface RubricDescriptionModel {
+/*export interface RubricDescriptionModel {
   _id: ObjectIdModel;
   companySlug: string;
   rubricSlug: string;
@@ -794,7 +794,7 @@ export interface RubricDescriptionModel {
   rubricId: ObjectIdModel;
   content: JSONObjectModel;
   assetKeys: string[];
-}
+}*/
 
 export interface CategoryModel extends CountersModel {
   _id: ObjectIdModel;
@@ -811,7 +811,7 @@ export interface CategoryModel extends CountersModel {
   replaceParentNameInCatalogueTitle?: boolean | null;
 }
 
-export interface CategoryDescriptionModel {
+/*export interface CategoryDescriptionModel {
   _id: ObjectIdModel;
   companySlug: string;
   categoryId: ObjectIdModel;
@@ -819,7 +819,7 @@ export interface CategoryDescriptionModel {
   position: DescriptionPositionType;
   content: JSONObjectModel;
   assetKeys: string[];
-}
+}*/
 
 export interface SeoContentModel {
   _id: ObjectIdModel;
@@ -827,18 +827,17 @@ export interface SeoContentModel {
   url: string;
   position: DescriptionPositionType;
   content: string;
-  assetKeys: string[];
   seoLocales: TextUniquenessApiParsedResponseModel[];
 }
 
-export interface RubricSeoModel {
+/*export interface RubricSeoModel {
   _id: ObjectIdModel;
   companySlug: string;
   rubricId: ObjectIdModel;
   position: DescriptionPositionType;
   categoryId?: ObjectIdModel | null;
   locales: TextUniquenessApiParsedResponseModel[];
-}
+}*/
 
 export interface ShopProductModel
   extends ProductMainFieldsInterface,

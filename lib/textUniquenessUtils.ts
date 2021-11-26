@@ -18,7 +18,9 @@ import {
   COL_CONFIGS,
   COL_OPTIONS,
   COL_RUBRICS,
+  COL_SEO_CONTENTS,
 } from 'db/collectionNames';
+import { getCitiesList } from 'db/dao/cities/getCitiesList';
 import {
   AttributeModel,
   BrandCollectionModel,
@@ -29,9 +31,10 @@ import {
   ConfigModel,
   ObjectIdModel,
   RubricModel,
+  SeoContentModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { AttributeInterface } from 'db/uiInterfaces';
+import { AttributeInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
 import { castCatalogueFilters } from 'lib/catalogueUtils';
 import { castConfigs, getConfigStringValue } from 'lib/configsUtils';
 import { castCatalogueFilter } from 'lib/optionsUtils';
@@ -122,6 +125,36 @@ export async function checkSeoTextUniqueness({
     }
   } catch (e) {
     console.log(e);
+  }
+}
+
+interface CheckCitiesSeoTextUniquenessInterface {
+  seoTextsList: SeoContentCitiesInterface;
+  companySlug: string;
+}
+
+export async function checkCitiesSeoTextUniqueness({
+  seoTextsList,
+  companySlug,
+}: CheckCitiesSeoTextUniquenessInterface) {
+  const { db } = await getDatabase();
+  const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
+
+  const cities = await getCitiesList();
+  for await (const city of cities) {
+    const seoContent = seoTextsList[city.slug];
+
+    if (seoContent) {
+      const oldSeoContent = await seoContentsCollection.findOne({
+        _id: seoContent._id,
+      });
+      await checkSeoTextUniqueness({
+        companySlug,
+        seoContentId: seoContent._id,
+        text: seoContent.content,
+        oldText: oldSeoContent?.content,
+      });
+    }
   }
 }
 

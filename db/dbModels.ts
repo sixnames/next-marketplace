@@ -821,13 +821,14 @@ export interface CategoryDescriptionModel {
   assetKeys: string[];
 }
 
-export interface FilterDescriptionModel {
+export interface SeoContentModel {
   _id: ObjectIdModel;
   slug: string;
   url: string;
   position: DescriptionPositionType;
-  content: JSONObjectModel;
+  content: string;
   assetKeys: string[];
+  seoLocales: TextUniquenessApiParsedResponseModel[];
 }
 
 export interface RubricSeoModel {

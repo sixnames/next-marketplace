@@ -1,6 +1,4 @@
 import {
-  CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
-  CATALOGUE_SEO_TEXT_POSITION_TOP,
   DEFAULT_CITY,
   DEFAULT_COMPANY_SLUG,
   DEFAULT_LOCALE,
@@ -134,86 +132,6 @@ export async function checkProductDescriptionUniqueness({
       oldTextI18n: oldCardDescriptionI18n,
       callback: (locale) => {
         return `/api/product/uniqueness/${product._id.toHexString()}/${locale}/${companySlug}`;
-      },
-    });
-  } catch (e) {
-    console.log(e);
-  }
-}
-
-// Rubric
-interface CheckRubricSeoTextUniquenessInterface {
-  textTopI18n?: TranslationModel | null;
-  textBottomI18n?: TranslationModel | null;
-  oldTextTopI18n?: TranslationModel | null;
-  oldTextBottomI18n?: TranslationModel | null;
-  rubric: RubricModel;
-  companySlug: string;
-}
-
-export async function checkRubricSeoTextUniqueness({
-  rubric,
-  textTopI18n,
-  textBottomI18n,
-  oldTextTopI18n,
-  oldTextBottomI18n,
-  companySlug,
-}: CheckRubricSeoTextUniquenessInterface) {
-  try {
-    await checkTextUniqueness({
-      companySlug,
-      textI18n: textTopI18n,
-      oldTextI18n: oldTextTopI18n,
-      callback: (locale) => {
-        return `/api/rubric/uniqueness/${rubric._id.toHexString()}/${locale}/${CATALOGUE_SEO_TEXT_POSITION_TOP}/${companySlug}`;
-      },
-    });
-    await checkTextUniqueness({
-      companySlug,
-      textI18n: textBottomI18n,
-      oldTextI18n: oldTextBottomI18n,
-      callback: (locale) => {
-        return `/api/rubric/uniqueness/${rubric._id.toHexString()}/${locale}/${CATALOGUE_SEO_TEXT_POSITION_BOTTOM}/${companySlug}`;
-      },
-    });
-  } catch (e) {
-    console.log(e);
-  }
-}
-
-// Category
-interface CheckCategorySeoTextUniquenessInterface {
-  textTopI18n?: TranslationModel | null;
-  textBottomI18n?: TranslationModel | null;
-  oldTextTopI18n?: TranslationModel | null;
-  oldTextBottomI18n?: TranslationModel | null;
-  category: CategoryModel;
-  companySlug: string;
-}
-
-export async function checkCategorySeoTextUniqueness({
-  category,
-  textTopI18n,
-  textBottomI18n,
-  oldTextTopI18n,
-  oldTextBottomI18n,
-  companySlug,
-}: CheckCategorySeoTextUniquenessInterface) {
-  try {
-    await checkTextUniqueness({
-      companySlug,
-      textI18n: textTopI18n,
-      oldTextI18n: oldTextTopI18n,
-      callback: (locale) => {
-        return `/api/category/uniqueness/${category._id.toHexString()}/${locale}/${CATALOGUE_SEO_TEXT_POSITION_TOP}/${companySlug}`;
-      },
-    });
-    await checkTextUniqueness({
-      companySlug,
-      textI18n: textBottomI18n,
-      oldTextI18n: oldTextBottomI18n,
-      callback: (locale) => {
-        return `/api/category/uniqueness/${category._id.toHexString()}/${locale}/${CATALOGUE_SEO_TEXT_POSITION_BOTTOM}/${companySlug}`;
       },
     });
   } catch (e) {

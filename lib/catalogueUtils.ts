@@ -13,11 +13,11 @@ import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_CATEGORIES,
-  COL_CATEGORY_DESCRIPTIONS,
   COL_ICONS,
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCTS,
   COL_RUBRICS,
+  COL_SEO_CONTENTS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
 import {
@@ -28,8 +28,8 @@ import {
 } from 'db/dao/constantPipelines';
 import {
   CatalogueBreadcrumbModel,
-  CategoryDescriptionModel,
   ObjectIdModel,
+  SeoContentModel,
   ShopProductModel,
 } from 'db/dbModels';
 import {
@@ -832,68 +832,6 @@ export function castCatalogueFilters({
   };
 }
 
-interface SetCategorySeoTextInterface {
-  categories: CategoryInterface[];
-  citySlug: string;
-  companySlug: string;
-  rubricId: string;
-}
-
-interface SetCategorySeoTextPayloadInterface {
-  editUrl: string;
-  textTop: string | null | undefined;
-  textBottom: string | null | undefined;
-}
-
-async function setCategorySeoText({
-  categories,
-  companySlug,
-  citySlug,
-  rubricId,
-}: SetCategorySeoTextInterface): Promise<SetCategorySeoTextPayloadInterface | null> {
-  const { db } = await getDatabase();
-  const categoryDescriptionsCollection =
-    db.collection<CategoryDescriptionModel>(COL_CATEGORY_DESCRIPTIONS);
-
-  let editUrl = ``;
-  let textTop: string | null | undefined;
-  let textBottom: string | null | undefined;
-  const currentCategory = categories[0];
-  if (categories.length > 0 && categories.length < 2 && currentCategory) {
-    if (currentCategory.categories && currentCategory.categories.length > 0) {
-      return setCategorySeoText({
-        categories: currentCategory.categories,
-        citySlug,
-        companySlug,
-        rubricId,
-      });
-    }
-
-    editUrl = `/rubrics/${rubricId}/categories/${categories[0]._id}`;
-    const textTopDoc = await categoryDescriptionsCollection.findOne({
-      categoryId: currentCategory._id,
-      companySlug,
-      position: CATALOGUE_SEO_TEXT_POSITION_TOP,
-    });
-    textTop = textTopDoc?.content[citySlug];
-
-    const textBottomDoc = await categoryDescriptionsCollection.findOne({
-      categoryId: currentCategory._id,
-      companySlug,
-      position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
-    });
-    textBottom = textBottomDoc?.content[citySlug];
-
-    return {
-      editUrl,
-      textTop,
-      textBottom,
-    };
-  } else {
-    return null;
-  }
-}
-
 export interface GetCatalogueDataInterface {
   locale: string;
   city: string;
@@ -929,6 +867,7 @@ export const getCatalogueData = async ({
     const { db } = await getDatabase();
     const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
     const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
+    const seoTextsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
 
     // args
     const { rubricSlug, search } = input;
@@ -1813,38 +1752,25 @@ export const getCatalogueData = async ({
     let textTop: string | null | undefined;
     let textBottom: string | null | undefined;
 
-    const seoParam = await getCatalogueSeoTextSlug({
+    const seoTextSlug = await getCatalogueSeoTextSlug({
       rubricSlug: rubric.slug,
       citySlug: city,
       companySlug: companySlug,
       filters: input.filters,
     });
-    console.log('seoParam >>>>>>>>>>>>');
-    console.log(JSON.stringify(seoParam, null, 2));
 
-    if (!search) {
-      // category seo text if selected
-      const categorySeoTexts = await setCategorySeoText({
-        categories: selectedCategoriesTree,
-        companySlug,
-        citySlug: city,
-        rubricId: rubric._id.toHexString(),
+    if (!search && seoTextSlug) {
+      const seoTextTop = await seoTextsCollection.findOne({
+        slug: seoTextSlug,
+        position: CATALOGUE_SEO_TEXT_POSITION_TOP,
       });
+      textTop = seoTextTop?.content;
 
-      if (categorySeoTexts) {
-        editUrl = categorySeoTexts.editUrl;
-        textTop = categorySeoTexts.textTop;
-        textBottom = categorySeoTexts.textBottom;
-      } else {
-        textTop = rubric.seoDescriptionTop?.content[city];
-        textBottom = rubric.seoDescriptionBottom?.content[city];
-      }
-
-      // remove seo text if selected more then one category
-      if (selectedCategoriesTree.length > 1) {
-        textTop = null;
-        textBottom = null;
-      }
+      const seoTextBottom = await seoTextsCollection.findOne({
+        slug: seoTextSlug,
+        position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+      });
+      textBottom = seoTextBottom?.content;
     }
 
     // get layout configs

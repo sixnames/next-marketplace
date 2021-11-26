@@ -10,7 +10,7 @@ export const config = {
 };
 
 interface FieldsInterface {
-  _id: string;
+  seoTextId: string;
 }
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
@@ -31,7 +31,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const assets = await storeUploads({
     files,
     dist: ASSETS_DIST_SEO_TEXTS,
-    dirName: fields._id,
+    dirName: fields.seoTextId,
   });
   if (!assets) {
     res.status(500).send({

@@ -118,6 +118,7 @@ export const getServerSideProps = async (
 
   const seoDescriptionTop = await getRubricSeoText({
     rubricSlug: rubric.slug,
+    rubricId: rubric._id,
     companySlug,
     position: CATALOGUE_SEO_TEXT_POSITION_TOP,
     citySlug: DEFAULT_CITY,
@@ -125,6 +126,7 @@ export const getServerSideProps = async (
 
   const seoDescriptionBottom = await getRubricSeoText({
     rubricSlug: rubric.slug,
+    rubricId: rubric._id,
     companySlug,
     position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
     citySlug: DEFAULT_CITY,

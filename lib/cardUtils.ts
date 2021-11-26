@@ -59,7 +59,7 @@ import {
   castProductAttributeForUi,
   getProductCurrentViewCastedAttributes,
 } from 'lib/productAttributesUtils';
-import { getProductSeoTextSlug } from 'lib/textUniquenessUtils';
+import { getProductSeoTextSlug } from 'lib/seoTextUtils';
 import { generateCardTitle } from 'lib/titleUtils';
 import { get } from 'lodash';
 import { ObjectId } from 'mongodb';

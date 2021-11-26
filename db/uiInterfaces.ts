@@ -810,3 +810,7 @@ export interface CardLayoutInterface {
   companySlug?: string;
   companyId?: string | null;
 }
+
+export interface SeoContentCitiesInterface {
+  [key: string]: SeoContentModel;
+}

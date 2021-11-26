@@ -3,19 +3,38 @@ import {
   FILTER_SEPARATOR,
   PAGE_EDITOR_DEFAULT_VALUE_STRING,
   ROUTE_CATALOGUE,
+  SORT_ASC,
 } from 'config/common';
-import { COL_CATEGORIES, COL_SEO_CONTENTS } from 'db/collectionNames';
+import { COL_CATEGORIES, COL_CITIES, COL_SEO_CONTENTS } from 'db/collectionNames';
 import {
   CategoryModel,
+  CityModel,
   DescriptionPositionType,
   ObjectIdModel,
   SeoContentModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
+import { SeoContentCitiesInterface } from 'db/uiInterfaces';
 import { sortStringArray } from 'lib/stringUtils';
 import { getCatalogueSeoTextSlug } from 'lib/textUniquenessUtils';
 
-interface getRubricSeoTextInterface {
+async function getCitiesList(): Promise<CityModel[]> {
+  const { db } = await getDatabase();
+  return db
+    .collection<CityModel>(COL_CITIES)
+    .find(
+      {},
+      {
+        sort: {
+          _id: SORT_ASC,
+        },
+      },
+    )
+    .toArray();
+}
+
+// rubric
+interface GetRubricSeoTextInterface {
   companySlug: string;
   position: DescriptionPositionType;
   rubricSlug: string;
@@ -27,7 +46,7 @@ export async function getRubricSeoText({
   position,
   rubricSlug,
   citySlug,
-}: getRubricSeoTextInterface): Promise<SeoContentModel | null> {
+}: GetRubricSeoTextInterface): Promise<SeoContentModel | null> {
   const { db } = await getDatabase();
 
   const seoTextSlug = await getCatalogueSeoTextSlug({
@@ -66,7 +85,30 @@ export async function getRubricSeoText({
   return seoText;
 }
 
-interface getCategorySeoTextInterface {
+interface GetRubricAllSeoTextsInterface extends Omit<GetRubricSeoTextInterface, 'citySlug'> {}
+export async function getRubricAllSeoTexts({
+  companySlug,
+  position,
+  rubricSlug,
+}: GetRubricAllSeoTextsInterface): Promise<SeoContentCitiesInterface> {
+  const cities = await getCitiesList();
+  let payload: SeoContentCitiesInterface = {};
+  for await (const city of cities) {
+    const seoText = await getRubricSeoText({
+      companySlug,
+      position,
+      rubricSlug,
+      citySlug: city.slug,
+    });
+    if (seoText) {
+      payload[city.slug] = seoText;
+    }
+  }
+  return payload;
+}
+
+// category
+interface GetCategorySeoTextInterface {
   companySlug: string;
   citySlug: string;
   position: DescriptionPositionType;
@@ -78,7 +120,7 @@ export async function getCategorySeoText({
   position,
   categoryId,
   citySlug,
-}: getCategorySeoTextInterface): Promise<SeoContentModel | null> {
+}: GetCategorySeoTextInterface): Promise<SeoContentModel | null> {
   const { db } = await getDatabase();
   const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
   const category = await categoriesCollection.findOne({
@@ -136,3 +178,27 @@ export async function getCategorySeoText({
 
   return seoText;
 }
+
+interface GetCategoryAllSeoTextsInterface extends Omit<GetCategorySeoTextInterface, 'citySlug'> {}
+export async function getCategoryAllSeoTexts({
+  companySlug,
+  position,
+  categoryId,
+}: GetCategoryAllSeoTextsInterface): Promise<SeoContentCitiesInterface> {
+  const cities = await getCitiesList();
+  let payload: SeoContentCitiesInterface = {};
+  for await (const city of cities) {
+    const seoText = await getCategorySeoText({
+      companySlug,
+      position,
+      categoryId,
+      citySlug: city.slug,
+    });
+    if (seoText) {
+      payload[city.slug] = seoText;
+    }
+  }
+  return payload;
+}
+
+// product

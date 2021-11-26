@@ -1,6 +1,6 @@
 import Accordion from 'components/Accordion';
 import PageEditor from 'components/PageEditor';
-import { REQUEST_METHOD_POST } from 'config/common';
+import { DEFAULT_CITY, REQUEST_METHOD_POST } from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import { useFormikContext } from 'formik';
 import * as React from 'react';
@@ -23,7 +23,7 @@ const SeoTextEditor: React.FC<SeoTextEditorInterface> = ({ filedName }) => {
 
         return (
           <div key={city.slug}>
-            <Accordion title={`${city.name}`}>
+            <Accordion title={`${city.name}`} isOpen={city.slug === DEFAULT_CITY}>
               <PageEditor
                 value={value}
                 setValue={(value) => {

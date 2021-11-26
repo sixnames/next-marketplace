@@ -1,7 +1,6 @@
-import { ASSETS_DIST_SEO } from 'config/common';
+import { ASSETS_DIST_SEO_TEXTS } from 'config/common';
 import { storeUploads } from 'lib/assetUtils/assetUtils';
 import { parseRestApiFormData } from 'lib/restApi';
-import { getRequestParams } from 'lib/sessionHelpers';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export const config = {
@@ -10,41 +9,34 @@ export const config = {
   },
 };
 
+interface FieldsInterface {
+  _id: string;
+}
+
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const formData = await parseRestApiFormData(req);
-  const { getApiMessage } = await getRequestParams({
-    req,
-    res,
-  });
 
   if (!formData || !formData.files || !formData.fields) {
     res.status(500).send({
       success: false,
-      message: await getApiMessage('configs.update.error'),
+      message: 'No fields or no files provided',
     });
     return;
   }
 
-  const { fields, files } = formData;
-  const { companySlug } = fields;
-  if (!companySlug) {
-    res.status(500).send({
-      success: false,
-      message: await getApiMessage('configs.update.error'),
-    });
-    return;
-  }
+  const { files } = formData;
+  const fields = formData.fields as unknown as FieldsInterface;
 
   // upload asset
   const assets = await storeUploads({
     files,
-    dist: ASSETS_DIST_SEO,
-    dirName: `${companySlug}`,
+    dist: ASSETS_DIST_SEO_TEXTS,
+    dirName: fields._id,
   });
   if (!assets) {
     res.status(500).send({
       success: false,
-      message: await getApiMessage('configs.update.error'),
+      message: 'Store uploads error',
     });
     return;
   }
@@ -52,7 +44,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   res.status(200).send({
     success: true,
-    message: await getApiMessage('configs.update.success'),
+    message: 'success',
     url: asset.url,
   });
 };

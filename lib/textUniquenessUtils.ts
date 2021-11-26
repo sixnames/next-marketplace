@@ -3,6 +3,8 @@ import {
   DEFAULT_CITY,
   DEFAULT_COMPANY_SLUG,
   DEFAULT_LOCALE,
+  FILTER_CATEGORY_KEY,
+  FILTER_SEPARATOR,
   LOCALES,
   REQUEST_METHOD_POST,
   ROUTE_CATALOGUE,
@@ -39,6 +41,7 @@ import { AttributeInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
 import { castCatalogueFilters } from 'lib/catalogueUtils';
 import { castConfigs, getConfigStringValue } from 'lib/configsUtils';
 import { castCatalogueFilter } from 'lib/optionsUtils';
+import { sortStringArray } from 'lib/stringUtils';
 import { sortBy } from 'lodash';
 import fetch from 'node-fetch';
 import qs from 'qs';
@@ -475,6 +478,85 @@ export async function getRubricSeoTextSlug({
     return {
       seoTextSlug: `${companyId}${cityId}${rubricId.toHexString()}`,
       url: `/${companySlug}/${citySlug}${ROUTE_CATALOGUE}/${rubricSlug}`,
+    };
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
+}
+
+// category
+interface GetCategorySeoTextSlugInterface {
+  categoryId: ObjectIdModel;
+  citySlug: string;
+  companySlug: string;
+}
+
+export async function getCategorySeoTextSlug({
+  companySlug,
+  citySlug,
+  categoryId,
+}: GetCategorySeoTextSlugInterface): Promise<GetDocumentSeoTextSlugPayloadInterface | null> {
+  try {
+    const { db } = await getDatabase();
+    const citiesCollection = db.collection<CityModel>(COL_CITIES);
+    const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
+    const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
+
+    const category = await categoriesCollection.findOne({
+      _id: categoryId,
+    });
+    if (!category) {
+      return null;
+    }
+    const categoriesTree = await categoriesCollection
+      .find({
+        _id: {
+          $in: category.parentTreeIds,
+        },
+      })
+      .toArray();
+    const filters = categoriesTree.map(({ slug }) => {
+      return `${FILTER_CATEGORY_KEY}${FILTER_SEPARATOR}${slug}`;
+    });
+    const sortedFilters = sortStringArray(filters);
+
+    const categoryIds = filters.reduce((acc: string, filter) => {
+      const { optionSlug } = castCatalogueFilter(filter);
+      const slugCategory = categoriesTree.find(({ slug }) => {
+        return slug === optionSlug;
+      });
+      if (slugCategory) {
+        return `${acc}${slugCategory._id.toHexString()}`;
+      }
+      return acc;
+    });
+
+    // get company
+    let companyId = DEFAULT_COMPANY_SLUG;
+    if (companySlug !== DEFAULT_COMPANY_SLUG) {
+      const company = await companiesCollection.findOne({ slug: companySlug });
+      if (!company) {
+        console.log('getProductSeoTextSlug Company not found');
+        return null;
+      }
+
+      companyId = company._id.toHexString();
+    }
+
+    // get city
+    const city = await citiesCollection.findOne({ slug: citySlug });
+    if (!city) {
+      console.log('getProductSeoTextSlug City not found');
+      return null;
+    }
+    const cityId = city._id.toHexString();
+
+    return {
+      seoTextSlug: `${companyId}${cityId}${category.rubricId.toHexString()}${categoryIds}`,
+      url: `/${companySlug}/${citySlug}${ROUTE_CATALOGUE}/${
+        category.rubricSlug
+      }/${sortedFilters.join('/')}`,
     };
   } catch (e) {
     console.log(e);

@@ -1,22 +1,11 @@
-import {
-  FILTER_CATEGORY_KEY,
-  FILTER_SEPARATOR,
-  PAGE_EDITOR_DEFAULT_VALUE_STRING,
-  ROUTE_CATALOGUE,
-} from 'config/common';
-import { COL_CATEGORIES, COL_SEO_CONTENTS } from 'db/collectionNames';
+import { PAGE_EDITOR_DEFAULT_VALUE_STRING } from 'config/common';
+import { COL_SEO_CONTENTS } from 'db/collectionNames';
 import { getCitiesList } from 'db/dao/cities/getCitiesList';
-import {
-  CategoryModel,
-  DescriptionPositionType,
-  ObjectIdModel,
-  SeoContentModel,
-} from 'db/dbModels';
+import { DescriptionPositionType, ObjectIdModel, SeoContentModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { SeoContentCitiesInterface } from 'db/uiInterfaces';
-import { sortStringArray } from 'lib/stringUtils';
 import {
-  getCatalogueSeoTextSlug,
+  getCategorySeoTextSlug,
   getProductSeoTextSlug,
   getRubricSeoTextSlug,
 } from 'lib/textUniquenessUtils';
@@ -113,48 +102,25 @@ export async function getCategorySeoText({
   citySlug,
 }: GetCategorySeoTextInterface): Promise<SeoContentModel | null> {
   const { db } = await getDatabase();
-  const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
-  const category = await categoriesCollection.findOne({
-    _id: categoryId,
-  });
-  if (!category) {
-    return null;
-  }
-  const categoriesTree = await categoriesCollection
-    .find({
-      _id: {
-        $in: category.parentTreeIds,
-      },
-    })
-    .toArray();
-  const filters = categoriesTree.map(({ slug }) => {
-    return `${FILTER_CATEGORY_KEY}${FILTER_SEPARATOR}${slug}`;
-  });
-  const sortedFilters = sortStringArray(filters);
-  const url = `/${companySlug}/${citySlug}${ROUTE_CATALOGUE}/${
-    category.rubricSlug
-  }/${sortedFilters.join('/')}`;
-
-  const seoTextSlug = await getCatalogueSeoTextSlug({
-    filters,
+  const seoTextSlugPayload = await getCategorySeoTextSlug({
+    categoryId,
     companySlug,
-    rubricSlug: category.rubricSlug,
     citySlug,
   });
-  if (!seoTextSlug) {
+  if (!seoTextSlugPayload) {
     return null;
   }
 
   const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
   const seoText = await seoContentsCollection.findOne({
-    slug: seoTextSlug,
+    slug: seoTextSlugPayload.seoTextSlug,
     position,
   });
 
   if (!seoText) {
     const newSeoTextResult = await seoContentsCollection.insertOne({
-      url,
-      slug: seoTextSlug,
+      url: seoTextSlugPayload.url,
+      slug: seoTextSlugPayload.seoTextSlug,
       content: PAGE_EDITOR_DEFAULT_VALUE_STRING,
       position,
     });

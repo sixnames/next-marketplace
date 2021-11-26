@@ -15,13 +15,18 @@ import {
 import { getDatabase } from 'db/mongodb';
 import { SeoContentCitiesInterface } from 'db/uiInterfaces';
 import { sortStringArray } from 'lib/stringUtils';
-import { getCatalogueSeoTextSlug, getProductSeoTextSlug } from 'lib/textUniquenessUtils';
+import {
+  getCatalogueSeoTextSlug,
+  getProductSeoTextSlug,
+  getRubricSeoTextSlug,
+} from 'lib/textUniquenessUtils';
 
 // rubric
 interface GetRubricSeoTextInterface {
   companySlug: string;
   position: DescriptionPositionType;
   rubricSlug: string;
+  rubricId: ObjectIdModel;
   citySlug: string;
 }
 
@@ -29,31 +34,31 @@ export async function getRubricSeoText({
   companySlug,
   position,
   rubricSlug,
+  rubricId,
   citySlug,
 }: GetRubricSeoTextInterface): Promise<SeoContentModel | null> {
   const { db } = await getDatabase();
 
-  const seoTextSlug = await getCatalogueSeoTextSlug({
-    filters: [],
+  const seoTextSlugPayload = await getRubricSeoTextSlug({
+    rubricId,
     companySlug,
     rubricSlug,
     citySlug,
   });
-  if (!seoTextSlug) {
+  if (!seoTextSlugPayload) {
     return null;
   }
 
   const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
   const seoText = await seoContentsCollection.findOne({
-    slug: seoTextSlug,
+    slug: seoTextSlugPayload.seoTextSlug,
     position,
   });
 
-  const url = `/${companySlug}/${citySlug}${ROUTE_CATALOGUE}/${rubricSlug}`;
   if (!seoText) {
     const newSeoTextResult = await seoContentsCollection.insertOne({
-      url,
-      slug: seoTextSlug,
+      url: seoTextSlugPayload.url,
+      slug: seoTextSlugPayload.seoTextSlug,
       content: PAGE_EDITOR_DEFAULT_VALUE_STRING,
       position,
     });
@@ -74,6 +79,7 @@ export async function getRubricAllSeoTexts({
   companySlug,
   position,
   rubricSlug,
+  rubricId,
 }: GetRubricAllSeoTextsInterface): Promise<SeoContentCitiesInterface> {
   const cities = await getCitiesList();
   let payload: SeoContentCitiesInterface = {};
@@ -82,6 +88,7 @@ export async function getRubricAllSeoTexts({
       companySlug,
       position,
       rubricSlug,
+      rubricId,
       citySlug: city.slug,
     });
     if (seoText) {
@@ -204,25 +211,25 @@ export async function getProductSeoText({
   const { db } = await getDatabase();
   const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
 
-  const seoTextSlug = await getProductSeoTextSlug({
+  const seoTextSlugPayload = await getProductSeoTextSlug({
     companySlug,
     productId,
     citySlug,
+    productSlug,
   });
-  if (!seoTextSlug) {
+  if (!seoTextSlugPayload) {
     return null;
   }
 
   const seoText = await seoContentsCollection.findOne({
-    slug: seoTextSlug,
+    slug: seoTextSlugPayload.seoTextSlug,
     position,
   });
 
   if (!seoText) {
-    const url = `/${companySlug}/${citySlug}/${productSlug}`;
     const newSeoTextResult = await seoContentsCollection.insertOne({
-      url,
-      slug: seoTextSlug,
+      url: seoTextSlugPayload.url,
+      slug: seoTextSlugPayload.seoTextSlug,
       content: PAGE_EDITOR_DEFAULT_VALUE_STRING,
       position,
     });

@@ -805,14 +805,15 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
     // console.log(`cardShopProducts `, new Date().getTime() - startTime);
 
     // card content
-    const seoTextSlug = getProductSeoTextSlug({
+    const seoTextSlugPayload = await getProductSeoTextSlug({
       productId: product._id,
+      productSlug: product.slug,
       citySlug: city,
       companySlug,
     });
-    const cardContent = seoTextSlug
+    const cardContent = seoTextSlugPayload
       ? await seoContentsCollection.findOne({
-          slug: seoTextSlug,
+          slug: seoTextSlugPayload.seoTextSlug,
         })
       : null;
 

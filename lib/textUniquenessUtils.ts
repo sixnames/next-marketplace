@@ -5,6 +5,7 @@ import {
   DEFAULT_LOCALE,
   LOCALES,
   REQUEST_METHOD_POST,
+  ROUTE_CATALOGUE,
   SORT_DESC,
 } from 'config/common';
 import { getPriceAttribute } from 'config/constantAttributes';
@@ -377,8 +378,16 @@ export async function getCatalogueSeoTextSlug({
   }
 }
 
+// document seo text slugs
+interface GetDocumentSeoTextSlugPayloadInterface {
+  seoTextSlug: string;
+  url: string;
+}
+
+// product
 interface GetProductSeoTextSlugInterface {
   productId: ObjectIdModel;
+  productSlug: string;
   citySlug: string;
   companySlug: string;
 }
@@ -387,7 +396,8 @@ export async function getProductSeoTextSlug({
   companySlug,
   citySlug,
   productId,
-}: GetProductSeoTextSlugInterface): Promise<string | null> {
+  productSlug,
+}: GetProductSeoTextSlugInterface): Promise<GetDocumentSeoTextSlugPayloadInterface | null> {
   try {
     const { db } = await getDatabase();
     const citiesCollection = db.collection<CityModel>(COL_CITIES);
@@ -413,7 +423,59 @@ export async function getProductSeoTextSlug({
     }
     const cityId = city._id.toHexString();
 
-    return `${companyId}${cityId}${productId.toHexString()}`;
+    return {
+      seoTextSlug: `${companyId}${cityId}${productId.toHexString()}`,
+      url: `/${companySlug}/${citySlug}/${productSlug}`,
+    };
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
+}
+
+// rubric
+interface GetRubricSeoTextSlugInterface {
+  rubricId: ObjectIdModel;
+  rubricSlug: string;
+  citySlug: string;
+  companySlug: string;
+}
+
+export async function getRubricSeoTextSlug({
+  companySlug,
+  citySlug,
+  rubricId,
+  rubricSlug,
+}: GetRubricSeoTextSlugInterface): Promise<GetDocumentSeoTextSlugPayloadInterface | null> {
+  try {
+    const { db } = await getDatabase();
+    const citiesCollection = db.collection<CityModel>(COL_CITIES);
+    const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
+
+    // get company
+    let companyId = DEFAULT_COMPANY_SLUG;
+    if (companySlug !== DEFAULT_COMPANY_SLUG) {
+      const company = await companiesCollection.findOne({ slug: companySlug });
+      if (!company) {
+        console.log('getProductSeoTextSlug Company not found');
+        return null;
+      }
+
+      companyId = company._id.toHexString();
+    }
+
+    // get city
+    const city = await citiesCollection.findOne({ slug: citySlug });
+    if (!city) {
+      console.log('getProductSeoTextSlug City not found');
+      return null;
+    }
+    const cityId = city._id.toHexString();
+
+    return {
+      seoTextSlug: `${companyId}${cityId}${rubricId.toHexString()}`,
+      url: `/${companySlug}/${citySlug}${ROUTE_CATALOGUE}/${rubricSlug}`,
+    };
   } catch (e) {
     console.log(e);
     return null;

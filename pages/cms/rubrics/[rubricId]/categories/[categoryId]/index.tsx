@@ -8,12 +8,13 @@ import Inner from 'components/Inner';
 import {
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   CATALOGUE_SEO_TEXT_POSITION_TOP,
+  DEFAULT_CITY,
   DEFAULT_COMPANY_SLUG,
   GENDER_ENUMS,
   ROUTE_CMS,
 } from 'config/common';
 import { COL_CATEGORIES, COL_ICONS, COL_RUBRICS } from 'db/collectionNames';
-import { CategoryDescriptionModel, OptionVariantsModel } from 'db/dbModels';
+import { OptionVariantsModel, SeoContentModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { CategoryInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
@@ -24,7 +25,7 @@ import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCategoryLayout from 'layout/cms/CmsCategoryLayout';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getCategorySeoText } from 'lib/rubricUtils';
+import { getCategorySeoText } from 'lib/seoTextUtils';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -33,15 +34,14 @@ import { updateCategorySchema } from 'validation/categorySchema';
 
 interface CategoryDetailsInterface {
   category: CategoryInterface;
-  seoDescriptionTop: CategoryDescriptionModel;
-  seoDescriptionBottom: CategoryDescriptionModel;
+  seoDescriptionTop: SeoContentModel;
+  seoDescriptionBottom: SeoContentModel;
   companySlug: string;
 }
 
 const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
   category,
   companySlug,
-
   seoDescriptionBottom,
   seoDescriptionTop,
 }) => {
@@ -391,15 +391,15 @@ export const getServerSideProps = async (
   const seoDescriptionTop = await getCategorySeoText({
     companySlug,
     categoryId: category._id,
-    categorySlug: category.slug,
     position: CATALOGUE_SEO_TEXT_POSITION_TOP,
+    citySlug: DEFAULT_CITY,
   });
 
   const seoDescriptionBottom = await getCategorySeoText({
     companySlug,
     categoryId: category._id,
-    categorySlug: category.slug,
     position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+    citySlug: DEFAULT_CITY,
   });
 
   if (!seoDescriptionBottom || !seoDescriptionTop) {

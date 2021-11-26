@@ -20,7 +20,6 @@ interface ConsoleRubricProductDetailsInterface {
 
 const ConsoleRubricProductDetails: React.FC<ConsoleRubricProductDetailsInterface> = ({
   product,
-  companySlug,
 }) => {
   const validationSchema = useValidationSchema({
     schema: updateProductSchema,
@@ -30,16 +29,7 @@ const ConsoleRubricProductDetails: React.FC<ConsoleRubricProductDetailsInterface
   });
   const [updateProductMutation] = useUpdateProduct();
 
-  const {
-    nameI18n,
-    originalName,
-    descriptionI18n,
-    active,
-    mainImage,
-    barcode,
-    gender,
-    cardDescription,
-  } = product;
+  const { nameI18n, originalName, descriptionI18n, active, mainImage, barcode, gender } = product;
 
   const initialValues: ProductFormValuesInterface = {
     productId: `${product._id}`,
@@ -49,8 +39,6 @@ const ConsoleRubricProductDetails: React.FC<ConsoleRubricProductDetailsInterface
     active,
     barcode: barcode || [],
     gender: gender as any,
-    cardDescriptionI18n: cardDescription?.textI18n || {},
-    companySlug,
   };
 
   return (
@@ -86,7 +74,7 @@ const ConsoleRubricProductDetails: React.FC<ConsoleRubricProductDetailsInterface
 
               {/*<FormikCheckboxLine label={'Активен'} name={'active'} testId={'active'} />*/}
 
-              <ProductMainFields seo={cardDescription?.seo} />
+              <ProductMainFields />
 
               <FixedButtons>
                 <Button testId={'submit-product'} type={'submit'}>

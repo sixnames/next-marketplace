@@ -8,11 +8,12 @@ import Spinner from 'components/Spinner';
 import {
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   CATALOGUE_SEO_TEXT_POSITION_TOP,
+  DEFAULT_CITY,
   DEFAULT_COMPANY_SLUG,
   ROUTE_CMS,
 } from 'config/common';
 import { COL_RUBRICS } from 'db/collectionNames';
-import { RubricDescriptionModel, RubricModel } from 'db/dbModels';
+import { RubricModel, SeoContentModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { RubricInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
@@ -27,7 +28,7 @@ import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getRubricSeoText } from 'lib/rubricUtils';
+import { getRubricSeoText } from 'lib/seoTextUtils';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -36,8 +37,8 @@ import { updateRubricSchema } from 'validation/rubricSchema';
 
 interface RubricDetailsInterface {
   rubric: RubricInterface;
-  seoDescriptionTop: RubricDescriptionModel;
-  seoDescriptionBottom: RubricDescriptionModel;
+  seoDescriptionTop: SeoContentModel;
+  seoDescriptionBottom: SeoContentModel;
   companySlug: string;
 }
 
@@ -233,16 +234,16 @@ export const getServerSideProps = async (
 
   const seoDescriptionTop = await getRubricSeoText({
     rubricSlug: rubric.slug,
-    rubricId: rubric._id,
     companySlug,
     position: CATALOGUE_SEO_TEXT_POSITION_TOP,
+    citySlug: DEFAULT_CITY,
   });
 
   const seoDescriptionBottom = await getRubricSeoText({
     rubricSlug: rubric.slug,
-    rubricId: rubric._id,
     companySlug,
     position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+    citySlug: DEFAULT_CITY,
   });
 
   if (!seoDescriptionBottom || !seoDescriptionTop) {

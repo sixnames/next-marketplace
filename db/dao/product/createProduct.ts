@@ -22,17 +22,14 @@ import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getNextItemId } from 'lib/itemIdUtils';
 import { checkBarcodeIntersects, trimProductName } from 'lib/productUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { checkProductDescriptionUniqueness } from 'lib/textUniquenessUtils';
 import { ObjectId } from 'mongodb';
 
 export interface CreateProductInputInterface {
-  companySlug: string;
   active: boolean;
   barcode: string[];
   originalName: string;
   nameI18n: Maybe<TranslationModel>;
   descriptionI18n: Maybe<TranslationModel>;
-  cardDescriptionI18n: Maybe<TranslationModel>;
   rubricId: string;
   gender: GenderModel;
 }
@@ -77,7 +74,7 @@ export async function createProduct({
         return;
       }
 
-      const { rubricId, cardDescriptionI18n, companySlug, ...values } = input;
+      const { rubricId, ...values } = input;
       const rubricObjectId = new ObjectId(rubricId);
 
       // get selected rubric
@@ -202,11 +199,11 @@ export async function createProduct({
       }
 
       // check description uniqueness
-      await checkProductDescriptionUniqueness({
+      /*await checkProductDescriptionUniqueness({
         product: createdProduct,
         cardDescriptionI18n: cardDescriptionI18n,
         companySlug,
-      });
+      });*/
 
       mutationPayload = {
         success: true,

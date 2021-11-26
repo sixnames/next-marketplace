@@ -42,7 +42,6 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
   totalPages,
   itemPath,
   basePath,
-  companySlug,
 }) => {
   const isPageLoading = usePageLoadingState();
   const { showModal } = useMutationCallbacks({
@@ -148,7 +147,6 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
                 showModal<CreateNewProductModalInterface>({
                   variant: CREATE_NEW_PRODUCT_MODAL,
                   props: {
-                    companySlug,
                     rubricId: `${rubric?._id}`,
                     product: dataItem,
                   },
@@ -255,7 +253,6 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
                   showModal<CreateNewProductModalInterface>({
                     variant: CREATE_NEW_PRODUCT_MODAL,
                     props: {
-                      companySlug,
                       rubricId: `${rubric._id}`,
                     },
                   });

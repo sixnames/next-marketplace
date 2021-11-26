@@ -1,65 +1,43 @@
 import Accordion from 'components/Accordion';
 import Button from 'components/button/Button';
 import Inner from 'components/Inner';
-import PageEditor from 'components/PageEditor';
 import { DEFAULT_CITY } from 'config/common';
 import { useConfigContext } from 'context/configContext';
-import { SeoContentModel } from 'db/dbModels';
 import { CompanyInterface, ProductInterface, RubricInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
-import {
-  UpdateProductCardContentInput,
-  useUpdateProductCardContentMutation,
-} from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import { getConstructorDefaultValue } from 'lib/constructorUtils';
-import { get } from 'lodash';
 import * as React from 'react';
 
 export interface CompanyProductConstructorInterface {
   product: ProductInterface;
   rubric: RubricInterface;
-  cardContent: SeoContentModel;
   currentCompany?: CompanyInterface | null;
   routeBasePath: string;
 }
 
-const CompanyProductConstructor: React.FC<CompanyProductConstructorInterface> = ({
-  product,
-  cardContent,
-}) => {
+const CompanyProductConstructor: React.FC<CompanyProductConstructorInterface> = ({ product }) => {
   const { cities } = useConfigContext();
-  const { onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
-    reload: true,
-  });
-  const [updateProductCardContentMutation] = useUpdateProductCardContentMutation({
-    onCompleted: (data) => onCompleteCallback(data.updateProductCardContent),
-    onError: onErrorCallback,
-  });
 
-  const initialValues: UpdateProductCardContentInput = cardContent;
+  const initialValues = {};
 
   return (
     <Inner testId={'product-card-constructor'}>
-      <Formik<UpdateProductCardContentInput>
+      <Formik
         initialValues={initialValues}
         onSubmit={(values) => {
-          showLoading();
+          console.log(values);
+          /*showLoading();
           updateProductCardContentMutation({
             variables: {
               input: values,
             },
-          }).catch(console.log);
+          }).catch(console.log);*/
         }}
       >
-        {({ values, setFieldValue }) => {
+        {() => {
           return (
             <Form>
               {cities.map(({ name, slug }) => {
                 const cityTestId = `${product.slug}-${slug}`;
-                const fieldName = `content.${slug}`;
-                const fieldValue = get(values, fieldName);
-                const constructorValue = getConstructorDefaultValue(fieldValue);
 
                 return (
                   <Accordion
@@ -68,40 +46,7 @@ const CompanyProductConstructor: React.FC<CompanyProductConstructorInterface> = 
                     title={`${name}`}
                     key={slug}
                   >
-                    <div className='ml-8 pt-[var(--lineGap-200)]'>
-                      <PageEditor
-                        value={constructorValue}
-                        setValue={(value) => {
-                          setFieldValue(fieldName, JSON.stringify(value));
-                        }}
-                        imageUpload={async (file) => {
-                          try {
-                            const formData = new FormData();
-                            formData.append('assets', file);
-                            formData.append('productId', `${product._id}`);
-                            formData.append('productCardContentId', `${cardContent._id}`);
-
-                            const responseFetch = await fetch(
-                              '/api/product/add-card-content-asset',
-                              {
-                                method: 'POST',
-                                body: formData,
-                              },
-                            );
-                            const responseJson = await responseFetch.json();
-
-                            return {
-                              url: responseJson.url,
-                            };
-                          } catch (e) {
-                            console.log(e);
-                            return {
-                              url: '',
-                            };
-                          }
-                        }}
-                      />
-                    </div>
+                    <div className='ml-8 pt-[var(--lineGap-200)]'>{slug}</div>
                   </Accordion>
                 );
               })}

@@ -1,14 +1,10 @@
 import CompanyProductDetails, {
   CompanyProductDetailsInterface,
 } from 'components/company/CompanyProductDetails';
-import { DEFAULT_CITY, PAGE_EDITOR_DEFAULT_VALUE_STRING, ROUTE_CONSOLE } from 'config/common';
-import { COL_PRODUCT_CARD_CONTENTS } from 'db/collectionNames';
-import { ProductCardContentModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { ROUTE_CONSOLE } from 'config/common';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsProductLayout from 'layout/cms/CmsProductLayout';
 import { getCmsProduct } from 'lib/productUtils';
-import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import {
@@ -18,16 +14,9 @@ import {
 } from 'lib/ssrUtils';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 
-interface ProductDetailsInterface extends CompanyProductDetailsInterface {
-  cardContent: ProductCardContentModel;
-}
+interface ProductDetailsInterface extends CompanyProductDetailsInterface {}
 
-const ProductDetails: React.FC<ProductDetailsInterface> = ({
-  product,
-  routeBasePath,
-  currentCompany,
-  cardContent,
-}) => {
+const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, routeBasePath }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${product.cardTitle}`,
     config: [
@@ -58,12 +47,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
       basePath={routeBasePath}
       breadcrumbs={breadcrumbs}
     >
-      <CompanyProductDetails
-        routeBasePath={routeBasePath}
-        product={product}
-        currentCompany={currentCompany}
-        cardContent={cardContent}
-      />
+      <CompanyProductDetails routeBasePath={routeBasePath} product={product} />
     </CmsProductLayout>
   );
 };
@@ -83,7 +67,6 @@ const Product: NextPage<ProductPageInterface> = ({ layoutProps, ...props }) => {
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<ProductPageInterface>> => {
-  const { db } = await getDatabase();
   const { query } = context;
   const { productId, rubricId } = query;
   const { props } = await getConsoleInitialData({ context });
@@ -94,13 +77,9 @@ export const getServerSideProps = async (
     };
   }
 
-  // get company
-  const companySlug = props.layoutProps.pageCompany.slug;
-
   const payload = await getCmsProduct({
     locale: props.sessionLocale,
     productId: `${productId}`,
-    companySlug,
   });
 
   if (!payload) {
@@ -109,30 +88,10 @@ export const getServerSideProps = async (
     };
   }
 
-  const productCardContentsCollection =
-    db.collection<ProductCardContentModel>(COL_PRODUCT_CARD_CONTENTS);
-  let cardContent = await productCardContentsCollection.findOne({
-    productId: payload.product._id,
-    companySlug,
-  });
-  if (!cardContent) {
-    cardContent = {
-      _id: new ObjectId(),
-      productId: payload.product._id,
-      productSlug: payload.product.slug,
-      companySlug,
-      assetKeys: [],
-      content: {
-        [DEFAULT_CITY]: PAGE_EDITOR_DEFAULT_VALUE_STRING,
-      },
-    };
-  }
-
   return {
     props: {
       ...props,
       product: castDbData(payload.product),
-      cardContent: castDbData(cardContent),
       routeBasePath: `${ROUTE_CONSOLE}/${props.layoutProps.pageCompany._id}`,
     },
   };

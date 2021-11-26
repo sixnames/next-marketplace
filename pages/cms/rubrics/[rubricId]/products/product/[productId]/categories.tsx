@@ -1,5 +1,5 @@
 import ConsoleRubricProductCategories from 'components/console/ConsoleRubricProductCategories';
-import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
+import { ROUTE_CMS } from 'config/common';
 import { COL_CATEGORIES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { CategoryInterface, ProductCategoryInterface, ProductInterface } from 'db/uiInterfaces';
@@ -76,7 +76,6 @@ export const getServerSideProps = async (
   const payload = await getCmsProduct({
     locale: props.sessionLocale,
     productId: `${productId}`,
-    companySlug: DEFAULT_COMPANY_SLUG,
   });
 
   if (!payload) {

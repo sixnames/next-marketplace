@@ -27,7 +27,6 @@ export interface CreateProductWithSyncErrorModalInterface {
 
 const CreateProductWithSyncErrorModal: React.FC<CreateProductWithSyncErrorModalInterface> = ({
   notSyncedProduct,
-  companySlug,
 }) => {
   const { data, error, loading } = useGetAllRubricsQuery({
     fetchPolicy: 'network-only',
@@ -66,7 +65,6 @@ const CreateProductWithSyncErrorModal: React.FC<CreateProductWithSyncErrorModalI
   const { getAllRubrics } = data;
 
   const initialValues: InitialValuesInterface = {
-    companySlug,
     active: true,
     nameI18n: {
       [DEFAULT_LOCALE]: notSyncedProduct.name,
@@ -75,7 +73,6 @@ const CreateProductWithSyncErrorModal: React.FC<CreateProductWithSyncErrorModalI
     descriptionI18n: {
       [DEFAULT_LOCALE]: '',
     },
-    cardDescriptionI18n: {},
     barcode: notSyncedProduct.barcode || [],
     rubricId: undefined,
     gender: GENDER_IT as any,

@@ -6,7 +6,7 @@ import Inner from 'components/Inner';
 import PageEditor from 'components/PageEditor';
 import { DEFAULT_CITY, GENDER_ENUMS, REQUEST_METHOD_POST } from 'config/common';
 import { useConfigContext } from 'context/configContext';
-import { CategoryDescriptionModel, OptionVariantsModel } from 'db/dbModels';
+import { OptionVariantsModel, SeoContentModel } from 'db/dbModels';
 import { CategoryInterface, CompanyInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import { Gender, UpdateCategoryInput, useUpdateCategoryMutation } from 'generated/apolloComponents';
@@ -91,8 +91,8 @@ export const CategoryDescriptionConstructor: React.FC<CategoryDescriptionConstru
 export interface CompanyRubricCategoryDetailsInterface {
   category: CategoryInterface;
   pageCompany: CompanyInterface;
-  seoDescriptionTop: CategoryDescriptionModel;
-  seoDescriptionBottom: CategoryDescriptionModel;
+  seoDescriptionTop: SeoContentModel;
+  seoDescriptionBottom: SeoContentModel;
   routeBasePath: string;
 }
 

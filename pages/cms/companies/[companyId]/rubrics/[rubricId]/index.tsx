@@ -4,6 +4,7 @@ import CompanyRubricDetails, {
 import {
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   CATALOGUE_SEO_TEXT_POSITION_TOP,
+  DEFAULT_CITY,
   ROUTE_CMS,
 } from 'config/common';
 import { COL_COMPANIES, COL_RUBRICS } from 'db/collectionNames';
@@ -14,7 +15,7 @@ import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getRubricSeoText } from 'lib/rubricUtils';
+import { getRubricSeoText } from 'lib/seoTextUtils';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -139,17 +140,17 @@ export const getServerSideProps = async (
   };
 
   const seoDescriptionTop = await getRubricSeoText({
-    rubricId: rubric._id,
     rubricSlug: rubric.slug,
     companySlug,
     position: CATALOGUE_SEO_TEXT_POSITION_TOP,
+    citySlug: DEFAULT_CITY,
   });
 
   const seoDescriptionBottom = await getRubricSeoText({
-    rubricId: rubric._id,
     rubricSlug: rubric.slug,
     companySlug,
     position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+    citySlug: DEFAULT_CITY,
   });
 
   if (!seoDescriptionBottom || !seoDescriptionTop) {

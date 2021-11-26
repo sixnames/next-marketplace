@@ -6,7 +6,7 @@ import Inner from 'components/Inner';
 import PageEditor from 'components/PageEditor';
 import { DEFAULT_CITY, REQUEST_METHOD_POST } from 'config/common';
 import { useConfigContext } from 'context/configContext';
-import { RubricDescriptionModel } from 'db/dbModels';
+import { SeoContentModel } from 'db/dbModels';
 import { CompanyInterface, RubricInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import { UpdateRubricInput, useUpdateRubricMutation } from 'generated/apolloComponents';
@@ -92,8 +92,8 @@ export interface CompanyRubricDetailsInterface {
   rubric: RubricInterface;
   pageCompany: CompanyInterface;
   routeBasePath: string;
-  seoDescriptionTop: RubricDescriptionModel;
-  seoDescriptionBottom: RubricDescriptionModel;
+  seoDescriptionTop: SeoContentModel;
+  seoDescriptionBottom: SeoContentModel;
 }
 
 const CompanyRubricDetails: React.FC<CompanyRubricDetailsInterface> = ({

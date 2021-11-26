@@ -1,18 +1,9 @@
 import ConsoleRubricProductConstructor from 'components/console/ConsoleRubricProductConstructor';
-import {
-  DEFAULT_CITY,
-  DEFAULT_COMPANY_SLUG,
-  PAGE_EDITOR_DEFAULT_VALUE_STRING,
-  ROUTE_CMS,
-} from 'config/common';
-import { COL_PRODUCT_CARD_CONTENTS } from 'db/collectionNames';
-import { ProductCardContentModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { ROUTE_CMS } from 'config/common';
 import { ProductInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsProductLayout from 'layout/cms/CmsProductLayout';
 import { getCmsProduct } from 'lib/productUtils';
-import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -20,10 +11,9 @@ import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from '
 
 interface ProductAttributesInterface {
   product: ProductInterface;
-  cardContent: ProductCardContentModel;
 }
 
-const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product, cardContent }) => {
+const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Контент карточки',
     config: [
@@ -48,7 +38,7 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product, card
 
   return (
     <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
-      <ConsoleRubricProductConstructor product={product} cardContent={cardContent} />
+      <ConsoleRubricProductConstructor product={product} />
     </CmsProductLayout>
   );
 };
@@ -70,9 +60,6 @@ export const getServerSideProps = async (
 ): Promise<GetServerSidePropsResult<ProductPageInterface>> => {
   const { query } = context;
   const { productId, rubricId } = query;
-  const { db } = await getDatabase();
-  const productCardContentsCollection =
-    db.collection<ProductCardContentModel>(COL_PRODUCT_CARD_CONTENTS);
   const { props } = await getAppInitialData({ context });
   if (!props || !productId || !rubricId) {
     return {
@@ -83,7 +70,6 @@ export const getServerSideProps = async (
   const payload = await getCmsProduct({
     locale: props.sessionLocale,
     productId: `${productId}`,
-    companySlug: DEFAULT_COMPANY_SLUG,
   });
 
   if (!payload) {
@@ -94,29 +80,10 @@ export const getServerSideProps = async (
 
   const { product } = payload;
 
-  let cardContent = await productCardContentsCollection.findOne({
-    productId: product._id,
-    companySlug: DEFAULT_COMPANY_SLUG,
-  });
-
-  if (!cardContent) {
-    cardContent = {
-      _id: new ObjectId(),
-      productId: product._id,
-      productSlug: product.slug,
-      companySlug: DEFAULT_COMPANY_SLUG,
-      assetKeys: [],
-      content: {
-        [DEFAULT_CITY]: PAGE_EDITOR_DEFAULT_VALUE_STRING,
-      },
-    };
-  }
-
   return {
     props: {
       ...props,
       product: castDbData(product),
-      cardContent: castDbData(cardContent),
     },
   };
 };

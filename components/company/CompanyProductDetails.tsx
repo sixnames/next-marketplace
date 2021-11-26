@@ -1,16 +1,12 @@
 import Accordion from 'components/Accordion';
 import Button from 'components/button/Button';
-import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import InputLine from 'components/FormElements/Input/InputLine';
 import { ProductFormValuesInterface } from 'components/FormTemplates/ProductMainFields';
 import Inner from 'components/Inner';
-import PageEditor from 'components/PageEditor';
-import TextSeoInfo from 'components/TextSeoInfo';
 import WpImage from 'components/WpImage';
 import { DEFAULT_CITY } from 'config/common';
 import { useConfigContext } from 'context/configContext';
-import { ProductCardContentModel } from 'db/dbModels';
-import { CompanyInterface, ProductInterface } from 'db/uiInterfaces';
+import { ProductInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import {
   UpdateProductCardContentInput,
@@ -19,24 +15,15 @@ import {
 import { useUpdateProduct } from 'hooks/mutations/useProductMutations';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
-import { getConstructorDefaultValue } from 'lib/constructorUtils';
-import { get } from 'lodash';
 import * as React from 'react';
 import { updateProductSchema } from 'validation/productSchema';
 
 export interface CompanyProductDetailsInterface {
   product: ProductInterface;
-  currentCompany?: CompanyInterface | null;
   routeBasePath: string;
-  cardContent: ProductCardContentModel;
 }
 
-const CompanyProductDetails: React.FC<CompanyProductDetailsInterface> = ({
-  product,
-  currentCompany,
-  children,
-  cardContent,
-}) => {
+const CompanyProductDetails: React.FC<CompanyProductDetailsInterface> = ({ product, children }) => {
   const { cities } = useConfigContext();
   const validationSchema = useValidationSchema({
     schema: updateProductSchema,
@@ -51,16 +38,7 @@ const CompanyProductDetails: React.FC<CompanyProductDetailsInterface> = ({
     onError: onErrorCallback,
   });
 
-  const {
-    nameI18n,
-    originalName,
-    descriptionI18n,
-    active,
-    mainImage,
-    barcode,
-    gender,
-    cardDescription,
-  } = product;
+  const { nameI18n, originalName, descriptionI18n, active, mainImage, barcode, gender } = product;
 
   const initialValues: ProductFormValuesInterface = {
     productId: `${product._id}`,
@@ -70,11 +48,7 @@ const CompanyProductDetails: React.FC<CompanyProductDetailsInterface> = ({
     active,
     barcode: barcode || [],
     gender: gender as any,
-    cardDescriptionI18n: cardDescription?.textI18n || {},
-    companySlug: `${currentCompany?.slug}`,
   };
-
-  const cardContentInitialValues: UpdateProductCardContentInput = cardContent;
 
   return (
     <Inner testId={'product-details'}>
@@ -108,34 +82,6 @@ const CompanyProductDetails: React.FC<CompanyProductDetailsInterface> = ({
         {() => {
           return (
             <Form noValidate>
-              <FormikTranslationsInput
-                variant={'textarea'}
-                className='h-[30rem]'
-                label={'Описание карточки товара'}
-                name={'cardDescriptionI18n'}
-                testId={'cardDescriptionI18n'}
-                additionalUi={(currentLocale) => {
-                  if (!cardDescription?.seo) {
-                    return null;
-                  }
-                  const seoLocale = cardDescription.seo.locales.find(({ locale }) => {
-                    return locale === currentLocale;
-                  });
-
-                  if (!seoLocale) {
-                    return <div className='mb-4 font-medium'>Текст проверяется</div>;
-                  }
-
-                  return (
-                    <TextSeoInfo
-                      seoLocale={seoLocale}
-                      className='mb-4 mt-4'
-                      listClassName='flex gap-3 flex-wrap'
-                    />
-                  );
-                }}
-              />
-
               <Button testId={'submit-product'} type={'submit'} size={'small'}>
                 Сохранить
               </Button>
@@ -147,7 +93,7 @@ const CompanyProductDetails: React.FC<CompanyProductDetailsInterface> = ({
       <div className='mt-16'>
         <InputLine labelTag={'div'} label={'Контет карточки товара'}>
           <Formik<UpdateProductCardContentInput>
-            initialValues={cardContentInitialValues}
+            initialValues={{} as any}
             onSubmit={(values) => {
               showLoading();
               updateProductCardContentMutation({
@@ -157,14 +103,11 @@ const CompanyProductDetails: React.FC<CompanyProductDetailsInterface> = ({
               }).catch(console.log);
             }}
           >
-            {({ values, setFieldValue }) => {
+            {() => {
               return (
                 <Form>
                   {cities.map(({ name, slug }) => {
                     const cityTestId = `${product.slug}-${slug}`;
-                    const fieldName = `content.${slug}`;
-                    const fieldValue = get(values, fieldName);
-                    const constructorValue = getConstructorDefaultValue(fieldValue);
 
                     return (
                       <Accordion
@@ -173,40 +116,7 @@ const CompanyProductDetails: React.FC<CompanyProductDetailsInterface> = ({
                         title={`${name}`}
                         key={slug}
                       >
-                        <div className='ml-8 pt-[var(--lineGap-200)]'>
-                          <PageEditor
-                            value={constructorValue}
-                            setValue={(value) => {
-                              setFieldValue(fieldName, JSON.stringify(value));
-                            }}
-                            imageUpload={async (file) => {
-                              try {
-                                const formData = new FormData();
-                                formData.append('assets', file);
-                                formData.append('productId', `${product._id}`);
-                                formData.append('productCardContentId', `${cardContent._id}`);
-
-                                const responseFetch = await fetch(
-                                  '/api/product/add-card-content-asset',
-                                  {
-                                    method: 'POST',
-                                    body: formData,
-                                  },
-                                );
-                                const responseJson = await responseFetch.json();
-
-                                return {
-                                  url: responseJson.url,
-                                };
-                              } catch (e) {
-                                console.log(e);
-                                return {
-                                  url: '',
-                                };
-                              }
-                            }}
-                          />
-                        </div>
+                        <div className='ml-8 pt-[var(--lineGap-200)]'>{slug}</div>
                       </Accordion>
                     );
                   })}

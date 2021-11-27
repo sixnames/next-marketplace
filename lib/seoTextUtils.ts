@@ -135,36 +135,6 @@ export async function checkSeoTextUniqueness({
   }
 }
 
-interface CheckCitiesSeoTextUniquenessInterface {
-  seoTextsList: SeoContentCitiesInterface;
-  companySlug: string;
-}
-
-export async function checkCitiesSeoTextUniqueness({
-  seoTextsList,
-  companySlug,
-}: CheckCitiesSeoTextUniquenessInterface) {
-  const { db } = await getDatabase();
-  const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
-
-  const cities = await getCitiesList();
-  for await (const city of cities) {
-    const seoContent = seoTextsList[city.slug];
-
-    if (seoContent) {
-      const oldSeoContent = await seoContentsCollection.findOne({
-        _id: new ObjectId(seoContent._id),
-      });
-      await checkSeoTextUniqueness({
-        companySlug,
-        seoContentId: new ObjectId(seoContent._id),
-        text: seoContent.content,
-        oldText: oldSeoContent?.content,
-      });
-    }
-  }
-}
-
 interface UpdateCitiesSeoTextInterface {
   seoTextsList: SeoContentCitiesInterface;
   companySlug: string;

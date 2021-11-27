@@ -1,5 +1,5 @@
 import ConsoleRubricProductBrands from 'components/console/ConsoleRubricProductBrands';
-import { ROUTE_CMS } from 'config/common';
+import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
 import { COL_BRAND_COLLECTIONS, COL_BRANDS, COL_MANUFACTURERS } from 'db/collectionNames';
 import { BrandCollectionModel, BrandModel, ManufacturerModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -94,6 +94,7 @@ export const getServerSideProps = async (
   const payload = await getCmsProduct({
     locale: props.sessionLocale,
     productId: `${productId}`,
+    companySlug: DEFAULT_COMPANY_SLUG,
   });
 
   if (!payload) {

@@ -2,9 +2,13 @@ import CompanyProductDetails, {
   CompanyProductDetailsInterface,
 } from 'components/company/CompanyProductDetails';
 import { ROUTE_CONSOLE } from 'config/common';
+import { COL_COMPANIES } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
+import { CompanyInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsProductLayout from 'layout/cms/CmsProductLayout';
 import { getCmsProduct } from 'lib/productUtils';
+import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import {
@@ -16,7 +20,12 @@ import ConsoleLayout from 'layout/cms/ConsoleLayout';
 
 interface ProductDetailsInterface extends CompanyProductDetailsInterface {}
 
-const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, routeBasePath }) => {
+const ProductDetails: React.FC<ProductDetailsInterface> = ({
+  product,
+  routeBasePath,
+  companySlug,
+  cardContent,
+}) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${product.cardTitle}`,
     config: [
@@ -47,7 +56,12 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, routeBaseP
       basePath={routeBasePath}
       breadcrumbs={breadcrumbs}
     >
-      <CompanyProductDetails routeBasePath={routeBasePath} product={product} />
+      <CompanyProductDetails
+        routeBasePath={routeBasePath}
+        product={product}
+        companySlug={companySlug}
+        cardContent={cardContent}
+      />
     </CmsProductLayout>
   );
 };
@@ -68,10 +82,21 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<ProductPageInterface>> => {
   const { query } = context;
-  const { productId, rubricId } = query;
+  const { productId, rubricId, companyId } = query;
+  const { db } = await getDatabase();
+  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
   const { props } = await getConsoleInitialData({ context });
 
-  if (!props || !productId || !rubricId || !query.companyId) {
+  if (!props || !productId || !rubricId || !companyId) {
+    return {
+      notFound: true,
+    };
+  }
+
+  const companyResult = await companiesCollection.findOne({
+    _id: new ObjectId(`${companyId}`),
+  });
+  if (!companyResult) {
     return {
       notFound: true,
     };
@@ -80,6 +105,7 @@ export const getServerSideProps = async (
   const payload = await getCmsProduct({
     locale: props.sessionLocale,
     productId: `${productId}`,
+    companySlug: companyResult.slug,
   });
 
   if (!payload) {
@@ -92,6 +118,8 @@ export const getServerSideProps = async (
     props: {
       ...props,
       product: castDbData(payload.product),
+      cardContent: castDbData(payload.cardContent),
+      companySlug: companyResult.slug,
       routeBasePath: `${ROUTE_CONSOLE}/${props.layoutProps.pageCompany._id}`,
     },
   };

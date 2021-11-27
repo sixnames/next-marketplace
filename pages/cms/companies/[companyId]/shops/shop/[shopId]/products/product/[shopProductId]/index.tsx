@@ -1,27 +1,31 @@
 import CompanyProductDetails from 'components/company/CompanyProductDetails';
 import RequestError from 'components/RequestError';
 import { ROUTE_CMS } from 'config/common';
-import { ShopProductInterface } from 'db/uiInterfaces';
+import { COL_COMPANIES } from 'db/collectionNames';
+import { getDatabase } from 'db/mongodb';
+import { CompanyInterface, ShopProductInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import ConsoleShopProductLayout from 'layout/console/ConsoleShopProductLayout';
 import { getConsoleShopProduct } from 'lib/productUtils';
+import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
 interface ProductDetailsInterface {
   shopProduct: ShopProductInterface;
+  companySlug: string;
 }
 
-const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct }) => {
+const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct, companySlug }) => {
   const { product, shop, company } = shopProduct;
   if (!product || !shop || !company) {
     return <RequestError />;
   }
 
-  const { rubric, snippetTitle } = product;
-  if (!rubric) {
+  const { rubric, snippetTitle, cardContentCities } = product;
+  if (!rubric || !cardContentCities) {
     return <RequestError />;
   }
 
@@ -63,7 +67,12 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct }) => {
       shopProduct={shopProduct}
       basePath={`${companyBasePath}/shops/shop/${shopProduct.shopId}/products/product`}
     >
-      <CompanyProductDetails routeBasePath={''} product={product} />
+      <CompanyProductDetails
+        routeBasePath={''}
+        product={product}
+        cardContent={cardContentCities}
+        companySlug={companySlug}
+      />
     </ConsoleShopProductLayout>
   );
 };
@@ -83,8 +92,19 @@ export const getServerSideProps = async (
 ): Promise<GetServerSidePropsResult<ProductPageInterface>> => {
   const { query } = context;
   const { shopProductId, companyId, shopId } = query;
+  const { db } = await getDatabase();
+  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
   const { props } = await getAppInitialData({ context });
   if (!props || !shopProductId || !companyId || !shopId) {
+    return {
+      notFound: true,
+    };
+  }
+
+  const companyResult = await companiesCollection.findOne({
+    _id: new ObjectId(`${companyId}`),
+  });
+  if (!companyResult) {
     return {
       notFound: true,
     };
@@ -93,6 +113,7 @@ export const getServerSideProps = async (
   const shopProductResult = await getConsoleShopProduct({
     shopProductId,
     locale: props.sessionLocale,
+    companySlug: companyResult.slug,
   });
   if (!shopProductResult) {
     return {

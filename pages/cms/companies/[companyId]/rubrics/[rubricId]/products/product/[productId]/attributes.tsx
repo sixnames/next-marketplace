@@ -130,6 +130,7 @@ export const getServerSideProps = async (
   const payload = await getCmsProduct({
     locale: props.sessionLocale,
     productId: `${productId}`,
+    companySlug: companyResult.slug,
   });
 
   if (!payload) {

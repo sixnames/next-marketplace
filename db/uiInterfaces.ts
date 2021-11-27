@@ -283,6 +283,7 @@ export interface ProductInterface extends ProductModel {
   snippetTitle?: string | null;
   cardTitle?: string | null;
   cardContent?: SeoContentModel | null;
+  cardContentCities?: SeoContentCitiesInterface | null;
   shops?: ShopInterface[] | null;
 }
 

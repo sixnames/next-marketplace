@@ -2,7 +2,7 @@ import ConsoleRubricProductConstructor from 'components/console/ConsoleRubricPro
 import { ROUTE_CMS } from 'config/common';
 import { COL_COMPANIES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { CompanyInterface, ProductInterface } from 'db/uiInterfaces';
+import { CompanyInterface, ProductInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsProductLayout from 'layout/cms/CmsProductLayout';
 import { getCmsProduct } from 'lib/productUtils';
@@ -15,6 +15,7 @@ import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from '
 interface ProductAttributesInterface {
   product: ProductInterface;
   pageCompany: CompanyInterface;
+  cardContent: SeoContentCitiesInterface;
   routeBasePath: string;
 }
 
@@ -22,6 +23,7 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({
   product,
   pageCompany,
   routeBasePath,
+  cardContent,
 }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Контент карточки',
@@ -60,7 +62,11 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({
       breadcrumbs={breadcrumbs}
       basePath={routeBasePath}
     >
-      <ConsoleRubricProductConstructor product={product} />
+      <ConsoleRubricProductConstructor
+        product={product}
+        companySlug={pageCompany.slug}
+        cardContent={cardContent}
+      />
     </CmsProductLayout>
   );
 };
@@ -112,6 +118,7 @@ export const getServerSideProps = async (
   const payload = await getCmsProduct({
     locale: props.sessionLocale,
     productId: `${productId}`,
+    companySlug: companyResult.slug,
   });
 
   if (!payload) {
@@ -120,12 +127,13 @@ export const getServerSideProps = async (
     };
   }
 
-  const { product } = payload;
+  const { product, cardContent } = payload;
 
   return {
     props: {
       ...props,
       product: castDbData(product),
+      cardContent: castDbData(cardContent),
       pageCompany: castDbData(companyResult),
       routeBasePath: `${ROUTE_CMS}/companies/${companyResult._id}`,
     },

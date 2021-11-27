@@ -99,6 +99,7 @@ export const getServerSideProps = async (
   const shopProduct = await getConsoleShopProduct({
     shopProductId,
     locale: props.sessionLocale,
+    companySlug: props.layoutProps.pageCompany.slug,
   });
   if (!shopProduct || !shopProduct.product) {
     return {

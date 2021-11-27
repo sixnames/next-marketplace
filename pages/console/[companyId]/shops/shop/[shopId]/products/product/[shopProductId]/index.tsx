@@ -16,16 +16,17 @@ import {
 
 interface ProductDetailsInterface {
   shopProduct: ShopProductInterface;
+  companySlug: string;
 }
 
-const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct }) => {
+const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct, companySlug }) => {
   const { product, shop, company } = shopProduct;
   if (!product || !shop || !company) {
     return <RequestError />;
   }
 
-  const { rubric, snippetTitle } = product;
-  if (!rubric) {
+  const { rubric, snippetTitle, cardContentCities } = product;
+  if (!rubric || !cardContentCities) {
     return <RequestError />;
   }
 
@@ -58,7 +59,12 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct }) => {
       basePath={`${companyBasePath}/shop/${shopProduct.shopId}/products/product`}
       breadcrumbs={breadcrumbs}
     >
-      <CompanyProductDetails routeBasePath={''} product={product} />
+      <CompanyProductDetails
+        routeBasePath={''}
+        product={product}
+        cardContent={cardContentCities}
+        companySlug={companySlug}
+      />
     </ConsoleShopProductLayout>
   );
 };
@@ -90,6 +96,7 @@ export const getServerSideProps = async (
   const shopProductResult = await getConsoleShopProduct({
     shopProductId,
     locale: props.sessionLocale,
+    companySlug: props.layoutProps.pageCompany.slug,
   });
   if (!shopProductResult) {
     return {

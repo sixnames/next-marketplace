@@ -296,8 +296,15 @@ export async function getCatalogueSeoTextSlug({
         queryOptions,
       )
       .toArray();
-    const categoryIds = categories.reduce((acc: string, { _id }) => {
-      return `${acc}${_id.toHexString()}`;
+    const sortedCategoryCastedFilters = sortStringArray(categoryCastedFilters);
+    const categoryIds = sortedCategoryCastedFilters.reduce((acc: string, filter) => {
+      const slugCategory = categories.find(({ slug }) => {
+        return slug === filter;
+      });
+      if (slugCategory) {
+        return `${acc}${slugCategory._id.toHexString()}`;
+      }
+      return acc;
     }, '');
 
     // get brands
@@ -311,7 +318,7 @@ export async function getCatalogueSeoTextSlug({
         queryOptions,
       )
       .toArray();
-    const brandIds = brands.reduce((acc: string, { _id }) => {
+    const brandIds = sortBy(brands, ['itemId']).reduce((acc: string, { _id }) => {
       return `${acc}${_id.toHexString()}`;
     }, '');
 
@@ -326,9 +333,12 @@ export async function getCatalogueSeoTextSlug({
         queryOptions,
       )
       .toArray();
-    const brandCollectionIds = brandCollections.reduce((acc: string, { _id }) => {
-      return `${acc}${_id.toHexString()}`;
-    }, '');
+    const brandCollectionIds = sortBy(brandCollections, ['itemId']).reduce(
+      (acc: string, { _id }) => {
+        return `${acc}${_id.toHexString()}`;
+      },
+      '',
+    );
 
     // get prices
     const priceSlugs = priceFilters.map((filter) => {
@@ -339,7 +349,7 @@ export async function getCatalogueSeoTextSlug({
     const priceOptions = (priceAttribute.options || []).filter(({ slug }) => {
       return priceSlugs.includes(slug);
     });
-    const priceIds = priceOptions.reduce((acc: string, { _id }) => {
+    const priceIds = sortBy(priceOptions, ['slug']).reduce((acc: string, { _id }) => {
       return `${acc}${_id.toHexString()}`;
     }, '');
 
@@ -419,10 +429,13 @@ export async function getCatalogueSeoTextSlug({
       }
       attributes.push(attribute);
     }
-    const attributeIds = attributes.reduce((acc: string, attribute) => {
-      const attributeId = (attribute.options || []).reduce((innerAcc: string, { _id }) => {
-        return `${innerAcc}${attribute._id.toHexString()}${_id.toHexString()}`;
-      }, '');
+    const attributeIds = sortBy(attributes, ['slug']).reduce((acc: string, attribute) => {
+      const attributeId = sortBy(attribute.options || [], 'slug').reduce(
+        (innerAcc: string, { _id }) => {
+          return `${innerAcc}${attribute._id.toHexString()}${_id.toHexString()}`;
+        },
+        '',
+      );
       return `${acc}${attributeId}`;
     }, '');
 
@@ -554,7 +567,6 @@ export async function getCategorySeoTextSlug({
     const citiesCollection = db.collection<CityModel>(COL_CITIES);
     const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
     const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
-
     const category = await categoriesCollection.findOne({
       _id: categoryId,
     });
@@ -572,8 +584,7 @@ export async function getCategorySeoTextSlug({
       return `${FILTER_CATEGORY_KEY}${FILTER_SEPARATOR}${slug}`;
     });
     const sortedFilters = sortStringArray(filters);
-
-    const categoryIds = filters.reduce((acc: string, filter) => {
+    const categoryIds = sortedFilters.reduce((acc: string, filter) => {
       const { optionSlug } = castCatalogueFilter(filter);
       const slugCategory = categoriesTree.find(({ slug }) => {
         return slug === optionSlug;

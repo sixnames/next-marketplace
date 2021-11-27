@@ -7,8 +7,7 @@ import SeoTextEditor from 'components/SeoTextEditor';
 import Spinner from 'components/Spinner';
 import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
 import { getConsoleRubricDetails } from 'db/dao/rubric/getConsoleRubricDetails';
-import { SeoContentModel } from 'db/dbModels';
-import { RubricInterface } from 'db/uiInterfaces';
+import { RubricInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import {
   UpdateRubricInput,
@@ -27,8 +26,8 @@ import { updateRubricSchema } from 'validation/rubricSchema';
 
 interface RubricDetailsInterface {
   rubric: RubricInterface;
-  seoDescriptionTop: SeoContentModel;
-  seoDescriptionBottom: SeoContentModel;
+  seoDescriptionTop: SeoContentCitiesInterface;
+  seoDescriptionBottom: SeoContentCitiesInterface;
   companySlug: string;
 }
 
@@ -85,8 +84,8 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
     nameI18n,
     descriptionI18n,
     shortDescriptionI18n,
-    textBottom: seoDescriptionBottom.content,
-    textTop: seoDescriptionTop.content,
+    textBottom: seoDescriptionBottom,
+    textTop: seoDescriptionTop,
     companySlug,
     capitalise: capitalise || false,
     showRubricNameInProductTitle: showRubricNameInProductTitle || false,

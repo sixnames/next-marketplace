@@ -1,7 +1,7 @@
 import Accordion from 'components/Accordion';
 import InputLine from 'components/FormElements/Input/InputLine';
 import PageEditor from 'components/PageEditor';
-import { DEFAULT_CITY, REQUEST_METHOD_POST } from 'config/common';
+import { DEFAULT_CITY, PAGE_EDITOR_DEFAULT_VALUE_STRING, REQUEST_METHOD_POST } from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import { useFormikContext } from 'formik';
 import * as React from 'react';
@@ -20,7 +20,7 @@ const SeoTextEditor: React.FC<SeoTextEditorInterface> = ({ filedName, label }) =
     <InputLine labelTag={'div'} label={label}>
       {cities.map((city) => {
         const cityFieldName = `${filedName}.${city.slug}.content`;
-        const value = get(values, cityFieldName);
+        const value = get(values, cityFieldName) || PAGE_EDITOR_DEFAULT_VALUE_STRING;
         const _id = get(values, `${filedName}.${city.slug}._id`);
 
         return (
@@ -28,9 +28,9 @@ const SeoTextEditor: React.FC<SeoTextEditorInterface> = ({ filedName, label }) =
             <Accordion title={`${city.name}`} isOpen={city.slug === DEFAULT_CITY}>
               <div className='ml-8 pt-[var(--lineGap-200)]'>
                 <PageEditor
-                  value={value}
+                  value={JSON.parse(value)}
                   setValue={(value) => {
-                    setFieldValue(cityFieldName, value);
+                    setFieldValue(cityFieldName, JSON.stringify(value));
                   }}
                   imageUpload={async (file) => {
                     try {
@@ -38,7 +38,7 @@ const SeoTextEditor: React.FC<SeoTextEditorInterface> = ({ filedName, label }) =
                       formData.append('seoTextId', _id);
                       formData.append('assets', file);
 
-                      const responseFetch = await fetch('/api/seo-texts/add-asset', {
+                      const responseFetch = await fetch('/api/seo-text/add-asset', {
                         method: REQUEST_METHOD_POST,
                         body: formData,
                       });

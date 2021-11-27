@@ -46,6 +46,7 @@ import { castConfigs, getConfigStringValue } from 'lib/configsUtils';
 import { castCatalogueFilter } from 'lib/optionsUtils';
 import { sortStringArray } from 'lib/stringUtils';
 import { sortBy } from 'lodash';
+import { ObjectId } from 'mongodb';
 import fetch from 'node-fetch';
 import qs from 'qs';
 
@@ -152,11 +153,11 @@ export async function checkCitiesSeoTextUniqueness({
 
     if (seoContent) {
       const oldSeoContent = await seoContentsCollection.findOne({
-        _id: seoContent._id,
+        _id: new ObjectId(seoContent._id),
       });
       await checkSeoTextUniqueness({
         companySlug,
-        seoContentId: seoContent._id,
+        seoContentId: new ObjectId(seoContent._id),
         text: seoContent.content,
         oldText: oldSeoContent?.content,
       });
@@ -182,13 +183,13 @@ export async function updateCitiesSeoText({
 
     if (seoContent) {
       const oldSeoContent = await seoContentsCollection.findOne({
-        _id: seoContent._id,
+        _id: new ObjectId(seoContent._id),
       });
 
       // check uniqueness
       await checkSeoTextUniqueness({
         companySlug,
-        seoContentId: seoContent._id,
+        seoContentId: new ObjectId(seoContent._id),
         text: seoContent.content,
         oldText: oldSeoContent?.content,
       });
@@ -203,7 +204,7 @@ export async function updateCitiesSeoText({
       const { _id, ...values } = seoContent;
       await seoContentsCollection.findOneAndUpdate(
         {
-          _id,
+          _id: new ObjectId(_id),
         },
         {
           $set: values,

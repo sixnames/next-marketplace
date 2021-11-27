@@ -1,20 +1,16 @@
-import {
-  CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
-  CATALOGUE_SEO_TEXT_POSITION_TOP,
-  DEFAULT_CITY,
-} from 'config/common';
+import { CATALOGUE_SEO_TEXT_POSITION_BOTTOM, CATALOGUE_SEO_TEXT_POSITION_TOP } from 'config/common';
 import { COL_RUBRICS } from 'db/collectionNames';
-import { RubricModel, SeoContentModel } from 'db/dbModels';
+import { RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { RubricInterface } from 'db/uiInterfaces';
+import { RubricInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getRubricSeoText } from 'lib/seoTextUtils';
+import { getRubricAllSeoTexts } from 'lib/seoTextUtils';
 import { ObjectId } from 'mongodb';
 
 interface GetConsoleRubricDetailsPayloadInterface {
   rubric: RubricInterface;
-  seoDescriptionTop: SeoContentModel;
-  seoDescriptionBottom: SeoContentModel;
+  seoDescriptionTop: SeoContentCitiesInterface;
+  seoDescriptionBottom: SeoContentCitiesInterface;
 }
 
 interface GetConsoleRubricDetailsInterface {
@@ -57,19 +53,17 @@ export async function getConsoleRubricDetails({
     name: getFieldStringLocale(initialRubric.nameI18n, locale),
   };
 
-  const seoDescriptionTop = await getRubricSeoText({
+  const seoDescriptionTop = await getRubricAllSeoTexts({
     rubricSlug: rubric.slug,
     rubricId: rubric._id,
     position: CATALOGUE_SEO_TEXT_POSITION_TOP,
-    citySlug: DEFAULT_CITY,
     companySlug,
   });
 
-  const seoDescriptionBottom = await getRubricSeoText({
+  const seoDescriptionBottom = await getRubricAllSeoTexts({
     rubricSlug: rubric.slug,
     rubricId: rubric._id,
     position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
-    citySlug: DEFAULT_CITY,
     companySlug,
   });
 

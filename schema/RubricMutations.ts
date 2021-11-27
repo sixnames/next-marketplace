@@ -1,3 +1,4 @@
+import { updateCitiesSeoText } from 'lib/seoTextUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   AttributeModel,
@@ -239,7 +240,7 @@ export const RubricMutations = extendType({
           const { db } = await getDatabase();
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const { input } = args;
-          const { rubricId, ...values } = input;
+          const { rubricId, textTop, textBottom, companySlug, ...values } = input;
 
           // Check rubric availability
           const rubric = await rubricsCollection.findOne({ _id: rubricId });
@@ -287,64 +288,18 @@ export const RubricMutations = extendType({
           }
 
           // update seo text
-          /*if (textTop) {
-            const topText = await rubricDescriptionsCollection.findOne({
+          if (textTop) {
+            await updateCitiesSeoText({
+              seoTextsList: textTop,
               companySlug,
-              position: 'top',
-              rubricId: updatedRubric._id,
             });
-
-            if (!topText) {
-              await rubricDescriptionsCollection.insertOne({
-                companySlug,
-                position: 'top',
-                rubricSlug: updatedRubric.slug,
-                rubricId: updatedRubric._id,
-                content: textTop || {},
-                assetKeys: [],
-              });
-            } else {
-              await rubricDescriptionsCollection.findOneAndUpdate(
-                {
-                  _id: topText._id,
-                },
-                {
-                  $set: {
-                    content: textTop || {},
-                  },
-                },
-              );
-            }
           }
           if (textBottom) {
-            const topBottom = await rubricDescriptionsCollection.findOne({
+            await updateCitiesSeoText({
+              seoTextsList: textBottom,
               companySlug,
-              position: 'bottom',
-              rubricId: updatedRubric._id,
             });
-
-            if (!topBottom) {
-              await rubricDescriptionsCollection.insertOne({
-                companySlug,
-                position: 'bottom',
-                rubricSlug: updatedRubric.slug,
-                rubricId: updatedRubric._id,
-                content: textBottom || {},
-                assetKeys: [],
-              });
-            } else {
-              await rubricDescriptionsCollection.findOneAndUpdate(
-                {
-                  _id: topBottom._id,
-                },
-                {
-                  $set: {
-                    content: textBottom || {},
-                  },
-                },
-              );
-            }
-          }*/
+          }
 
           return {
             success: true,

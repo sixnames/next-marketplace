@@ -164,6 +164,55 @@ export async function checkCitiesSeoTextUniqueness({
   }
 }
 
+interface UpdateCitiesSeoTextInterface {
+  seoTextsList: SeoContentCitiesInterface;
+  companySlug: string;
+}
+
+export async function updateCitiesSeoText({
+  seoTextsList,
+  companySlug,
+}: UpdateCitiesSeoTextInterface) {
+  const { db } = await getDatabase();
+  const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
+
+  const cities = await getCitiesList();
+  for await (const city of cities) {
+    const seoContent = seoTextsList[city.slug];
+
+    if (seoContent) {
+      const oldSeoContent = await seoContentsCollection.findOne({
+        _id: seoContent._id,
+      });
+
+      // check uniqueness
+      await checkSeoTextUniqueness({
+        companySlug,
+        seoContentId: seoContent._id,
+        text: seoContent.content,
+        oldText: oldSeoContent?.content,
+      });
+
+      // create if not exist
+      if (!oldSeoContent) {
+        await seoContentsCollection.insertOne(seoContent);
+        continue;
+      }
+
+      // update existing
+      const { _id, ...values } = seoContent;
+      await seoContentsCollection.findOneAndUpdate(
+        {
+          _id,
+        },
+        {
+          $set: values,
+        },
+      );
+    }
+  }
+}
+
 interface GetCatalogueSeoTextSlugInterface {
   filters: string[];
   rubricSlug: string;

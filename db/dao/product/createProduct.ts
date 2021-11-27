@@ -198,13 +198,6 @@ export async function createProduct({
         return;
       }
 
-      // check description uniqueness
-      /*await checkProductDescriptionUniqueness({
-        product: createdProduct,
-        cardDescriptionI18n: cardDescriptionI18n,
-        companySlug,
-      });*/
-
       mutationPayload = {
         success: true,
         message: await getApiMessage('products.create.success'),

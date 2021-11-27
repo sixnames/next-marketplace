@@ -2413,10 +2413,8 @@ input UpdateProductBrandInput {
 }
 
 input UpdateProductCardContentInput {
-  _id: ObjectId!
-  content: String!
-  slug: String!
-  url: String!
+  companySlug: String!
+  content: JSONObject!
 }
 
 input UpdateProductInCartInput {

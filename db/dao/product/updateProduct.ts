@@ -139,30 +139,6 @@ export async function updateProduct({
         },
       );
 
-      // Update card description
-      /*const createdCardDescription = await productsCardDescriptionsCollection.findOneAndUpdate(
-        {
-          productId: product._id,
-          companySlug,
-        },
-        {
-          $set: {
-            textI18n: cardDescriptionI18n || {},
-          },
-        },
-        {
-          upsert: true,
-        },
-      );
-      if (!createdCardDescription.ok) {
-        mutationPayload = {
-          success: false,
-          message: await getApiMessage(`products.create.error`),
-        };
-        await session.abortTransaction();
-        return;
-      }*/
-
       const updatedProduct = updatedProductResult.value;
       if (!updatedProductResult.ok || !updatedProduct) {
         mutationPayload = {

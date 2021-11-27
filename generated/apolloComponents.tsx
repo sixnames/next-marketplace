@@ -2679,10 +2679,8 @@ export type UpdateProductBrandInput = {
 };
 
 export type UpdateProductCardContentInput = {
-  _id: Scalars['ObjectId'];
-  slug: Scalars['String'];
-  url: Scalars['String'];
-  content: Scalars['String'];
+  content: Scalars['JSONObject'];
+  companySlug: Scalars['String'];
 };
 
 export type UpdateProductInCartInput = {

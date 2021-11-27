@@ -1,17 +1,14 @@
-import { COL_SEO_CONTENTS } from 'db/collectionNames';
-import { ProductPayloadModel, SeoContentModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { ProductPayloadModel } from 'db/dbModels';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { updateCitiesSeoText } from 'lib/seoTextUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { arg, extendType, inputObjectType, nonNull } from 'nexus';
 
 export const UpdateProductCardContentInput = inputObjectType({
   name: 'UpdateProductCardContentInput',
   definition(t) {
-    t.nonNull.objectId('_id');
-    t.nonNull.string('slug');
-    t.nonNull.string('url');
-    t.nonNull.string('content');
+    t.nonNull.json('content');
+    t.nonNull.string('companySlug');
   },
 });
 
@@ -32,8 +29,6 @@ export const ProductCardContentMutations = extendType({
       resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
         try {
           const { getApiMessage } = await getRequestParams(context);
-          const { db } = await getDatabase();
-          const productCardContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
 
           // Permission
           const { allow, message } = await getOperationPermission({
@@ -48,27 +43,11 @@ export const ProductCardContentMutations = extendType({
           }
 
           const { input } = args;
-          const { _id, ...values } = input;
-          const updatedProductCardContentResult =
-            await productCardContentsCollection.findOneAndUpdate(
-              {
-                _id,
-              },
-              {
-                $set: values,
-              },
-              {
-                returnDocument: 'after',
-                upsert: true,
-              },
-            );
-          const updatedProductCardContent = updatedProductCardContentResult.value;
-          if (!updatedProductCardContentResult.ok || !updatedProductCardContent) {
-            return {
-              success: false,
-              message: await getApiMessage('products.update.error'),
-            };
-          }
+          const { content, companySlug } = input;
+          await updateCitiesSeoText({
+            seoTextsList: content,
+            companySlug,
+          });
 
           return {
             success: true,

@@ -698,10 +698,8 @@ export interface NexusGenInputs {
   };
   UpdateProductCardContentInput: {
     // input type
-    _id: NexusGenScalars['ObjectId']; // ObjectId!
-    content: string; // String!
-    slug: string; // String!
-    url: string; // String!
+    companySlug: string; // String!
+    content: NexusGenScalars['JSONObject']; // JSONObject!
   };
   UpdateProductInCartInput: {
     // input type

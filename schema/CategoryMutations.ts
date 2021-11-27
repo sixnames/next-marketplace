@@ -1,5 +1,6 @@
 import { getNextItemId } from 'lib/itemIdUtils';
 import { deleteDocumentsTree, getParentTreeIds } from 'lib/optionsUtils';
+import { updateCitiesSeoText } from 'lib/seoTextUtils';
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
@@ -339,7 +340,7 @@ export const CategoryMutations = extendType({
           const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const { input } = args;
-          const { categoryId, rubricId, ...values } = input;
+          const { categoryId, rubricId, textBottom, textTop, companySlug, ...values } = input;
 
           // Check rubric availability
           const rubric = await rubricsCollection.findOne({
@@ -405,108 +406,18 @@ export const CategoryMutations = extendType({
           }
 
           // update seo text
-          /*if (textTop) {
-            const topText = await categoryDescriptionsCollection.findOne({
-              companySlug,
-              position: 'top',
-              categoryId: updatedCategory._id,
-            });
-
-            if (!topText) {
-              await categoryDescriptionsCollection.insertOne({
-                companySlug,
-                position: 'top',
-                categoryId: updatedCategory._id,
-                categorySlug: updatedCategory.slug,
-                content: textTop || {},
-                assetKeys: [],
-              });
-            } else {
-              await categoryDescriptionsCollection.findOneAndUpdate(
-                {
-                  _id: topText._id,
-                },
-                {
-                  $set: {
-                    content: textTop || {},
-                  },
-                },
-              );
-            }
-          }
-          if (textBottom) {
-            const topBottom = await categoryDescriptionsCollection.findOne({
-              companySlug,
-              position: 'bottom',
-              categoryId: updatedCategory._id,
-            });
-
-            if (!topBottom) {
-              await categoryDescriptionsCollection.insertOne({
-                companySlug,
-                position: 'bottom',
-                categoryId: updatedCategory._id,
-                categorySlug: updatedCategory.slug,
-                content: textBottom || {},
-                assetKeys: [],
-              });
-            } else {
-              await categoryDescriptionsCollection.findOneAndUpdate(
-                {
-                  _id: topBottom._id,
-                },
-                {
-                  $set: {
-                    content: textBottom || {},
-                  },
-                },
-              );
-            }
-          }
-
-          // update seo text
           if (textTop) {
-            await categoryDescriptionsCollection.findOneAndUpdate(
-              {
-                companySlug,
-                position: 'top',
-                categoryId: updatedCategory._id,
-              },
-              {
-                $set: {
-                  companySlug,
-                  position: 'top',
-                  categoryId: updatedCategory._id,
-                  categorySlug: updatedCategory.slug,
-                  textI18n: textTop || {},
-                },
-              },
-              {
-                upsert: true,
-              },
-            );
+            await updateCitiesSeoText({
+              seoTextsList: textTop,
+              companySlug,
+            });
           }
           if (textBottom) {
-            await categoryDescriptionsCollection.findOneAndUpdate(
-              {
-                companySlug,
-                position: 'bottom',
-                categoryId: updatedCategory._id,
-              },
-              {
-                $set: {
-                  companySlug,
-                  position: 'bottom',
-                  categoryId: updatedCategory._id,
-                  categorySlug: updatedCategory.slug,
-                  textI18n: textBottom || {},
-                },
-              },
-              {
-                upsert: true,
-              },
-            );
-          }*/
+            await updateCitiesSeoText({
+              seoTextsList: textBottom,
+              companySlug,
+            });
+          }
 
           return {
             success: true,

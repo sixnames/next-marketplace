@@ -47,7 +47,6 @@ export const DATE_FORMAT_FULL = `${DATE_FORMAT_DATE} ${DATE_FORMAT_TIME}`;
 
 // Cookies / Local storage
 export const CART_COOKIE_KEY = 'cart';
-export const THEME_COOKIE_KEY = 'theme';
 export const ADULT_KEY = 'adult';
 export const ADULT_TRUE = 'true';
 export const ADULT_FALSE = 'false';
@@ -59,7 +58,6 @@ export const COOKIE_CURRENCY = 'currency';
 // THEME
 export const THEME_DARK = 'dark';
 export const THEME_LIGHT = 'light';
-export const THEME_NOT_ALL = 'not all';
 
 // I18n
 export const DEFAULT_LOCALE = process.env.DEFAULT_LOCALE || 'ru';
@@ -72,12 +70,8 @@ export const COMPANY_SLUG_COOKIE_KEY = 'companySlug';
 export const LOCALE_HEADER = 'content-language';
 
 // Cities and countries
-export const DEFAULT_COUNTRY = 'Россия';
-export const SECONDARY_COUNTRY = 'USA';
 export const DEFAULT_CITY = process.env.DEFAULT_CITY || 'msk';
-export const SECONDARY_CITY = 'ny';
 export const DEFAULT_CURRENCY = 'р.';
-export const SECONDARY_CURRENCY = '$';
 
 // GENDER
 export const GENDER_SHE = 'she' as GenderModel;
@@ -93,8 +87,6 @@ export const GEO_POINT_TYPE = 'Point';
 // Roles
 export const ROLE_SLUG_GUEST = 'guest';
 export const ROLE_SLUG_ADMIN = 'admin';
-export const ROLE_SLUG_COMPANY_OWNER = 'companyOwner';
-export const ROLE_SLUG_COMPANY_MANAGER = 'companyManager';
 
 // Configs
 export const CONFIG_VARIANT_STRING = 'string' as ConfigVariantModel;
@@ -421,7 +413,6 @@ export const HEADER_SEARCH_PRODUCTS_LIMIT = 5;
 // PAGES
 export const PAGE_STATE_DRAFT = 'draft' as PageStateModel;
 export const PAGE_STATE_PUBLISHED = 'published' as PageStateModel;
-export const PAGE_STATE_ENUMS = [PAGE_STATE_DRAFT, PAGE_STATE_PUBLISHED];
 export const PAGE_STATE_OPTIONS = [
   {
     _id: PAGE_STATE_DRAFT,

@@ -3,8 +3,8 @@ import FixedButtons from 'components/button/FixedButtons';
 import Inner from 'components/Inner';
 import SeoTextEditor from 'components/SeoTextEditor';
 import { GENDER_ENUMS } from 'config/common';
-import { OptionVariantsModel, SeoContentModel } from 'db/dbModels';
-import { CategoryInterface, CompanyInterface } from 'db/uiInterfaces';
+import { OptionVariantsModel } from 'db/dbModels';
+import { CategoryInterface, CompanyInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import { Gender, UpdateCategoryInput, useUpdateCategoryMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
@@ -15,8 +15,8 @@ import { updateCategorySchema } from 'validation/categorySchema';
 export interface CompanyRubricCategoryDetailsInterface {
   category: CategoryInterface;
   pageCompany: CompanyInterface;
-  seoDescriptionTop: SeoContentModel;
-  seoDescriptionBottom: SeoContentModel;
+  seoDescriptionTop: SeoContentCitiesInterface;
+  seoDescriptionBottom: SeoContentCitiesInterface;
   routeBasePath: string;
 }
 

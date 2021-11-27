@@ -2,8 +2,7 @@ import Button from 'components/button/Button';
 import FixedButtons from 'components/button/FixedButtons';
 import Inner from 'components/Inner';
 import SeoTextEditor from 'components/SeoTextEditor';
-import { SeoContentModel } from 'db/dbModels';
-import { CompanyInterface, RubricInterface } from 'db/uiInterfaces';
+import { CompanyInterface, RubricInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import { UpdateRubricInput, useUpdateRubricMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
@@ -15,8 +14,8 @@ export interface CompanyRubricDetailsInterface {
   rubric: RubricInterface;
   pageCompany: CompanyInterface;
   routeBasePath: string;
-  seoDescriptionTop: SeoContentModel;
-  seoDescriptionBottom: SeoContentModel;
+  seoDescriptionTop: SeoContentCitiesInterface;
+  seoDescriptionBottom: SeoContentCitiesInterface;
 }
 
 const CompanyRubricDetails: React.FC<CompanyRubricDetailsInterface> = ({
@@ -61,8 +60,8 @@ const CompanyRubricDetails: React.FC<CompanyRubricDetailsInterface> = ({
     nameI18n,
     descriptionI18n,
     shortDescriptionI18n,
-    textBottom: seoDescriptionBottom.content || {},
-    textTop: seoDescriptionTop.content || {},
+    textBottom: seoDescriptionBottom || {},
+    textTop: seoDescriptionTop || {},
     companySlug: `${pageCompany?.slug}`,
     capitalise: capitalise || false,
     showRubricNameInProductTitle: showRubricNameInProductTitle || false,

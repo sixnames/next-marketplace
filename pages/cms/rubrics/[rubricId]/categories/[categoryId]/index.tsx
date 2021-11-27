@@ -1,22 +1,14 @@
 import Button from 'components/button/Button';
 import FixedButtons from 'components/button/FixedButtons';
-import { CategoryDescriptionConstructor } from 'components/company/CompanyRubricCategoryDetails';
 import WpIconUpload from 'components/FormElements/Upload/WpIconUpload';
 import WpImageUpload from 'components/FormElements/Upload/WpImageUpload';
 import CategoryMainFields from 'components/FormTemplates/CategoryMainFields';
 import Inner from 'components/Inner';
-import {
-  CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
-  CATALOGUE_SEO_TEXT_POSITION_TOP,
-  DEFAULT_CITY,
-  DEFAULT_COMPANY_SLUG,
-  GENDER_ENUMS,
-  ROUTE_CMS,
-} from 'config/common';
-import { COL_CATEGORIES, COL_ICONS, COL_RUBRICS } from 'db/collectionNames';
-import { OptionVariantsModel, SeoContentModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { CategoryInterface } from 'db/uiInterfaces';
+import SeoTextEditor from 'components/SeoTextEditor';
+import { DEFAULT_COMPANY_SLUG, GENDER_ENUMS, ROUTE_CMS } from 'config/common';
+import { getConsoleCategoryDetails } from 'db/dao/category/getConsoleCategoryDetails';
+import { OptionVariantsModel } from 'db/dbModels';
+import { CategoryInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import { Gender, UpdateCategoryInput, useUpdateCategoryMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
@@ -24,9 +16,6 @@ import useValidationSchema from 'hooks/useValidationSchema';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCategoryLayout from 'layout/cms/CmsCategoryLayout';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { getFieldStringLocale } from 'lib/i18n';
-import { getCategorySeoText } from 'lib/seoTextUtils';
-import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
@@ -34,8 +23,8 @@ import { updateCategorySchema } from 'validation/categorySchema';
 
 interface CategoryDetailsInterface {
   category: CategoryInterface;
-  seoDescriptionTop: SeoContentModel;
-  seoDescriptionBottom: SeoContentModel;
+  seoDescriptionTop: SeoContentCitiesInterface;
+  seoDescriptionBottom: SeoContentCitiesInterface;
   companySlug: string;
 }
 
@@ -79,8 +68,8 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
     categoryId: _id,
     rubricId,
     nameI18n,
-    textBottom: seoDescriptionBottom.content,
-    textTop: seoDescriptionTop.content,
+    textBottom: seoDescriptionBottom,
+    textTop: seoDescriptionTop,
     gender: gender ? (`${gender}` as Gender) : null,
     replaceParentNameInCatalogueTitle,
     companySlug,
@@ -249,28 +238,13 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
             });
           }}
         >
-          {({ values, setFieldValue }) => {
+          {() => {
             return (
               <Form>
                 <CategoryMainFields />
 
-                <CategoryDescriptionConstructor
-                  label={'SEO текст вверху каталога'}
-                  name={'textTop'}
-                  categoryId={`${category._id}`}
-                  descriptionId={`${seoDescriptionTop._id}`}
-                  setFieldValue={setFieldValue}
-                  values={values}
-                />
-
-                <CategoryDescriptionConstructor
-                  label={'SEO текст внизу каталога'}
-                  name={'textBottom'}
-                  categoryId={`${category._id}`}
-                  descriptionId={`${seoDescriptionBottom._id}`}
-                  setFieldValue={setFieldValue}
-                  values={values}
-                />
+                <SeoTextEditor label={'SEO текст вверху каталога'} filedName={'textTop'} />
+                <SeoTextEditor label={'SEO текст внизу каталога'} filedName={'textBottom'} />
 
                 <FixedButtons>
                   <Button type={'submit'} testId={'category-submit'} size={'small'}>
@@ -300,109 +274,21 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<CategoryPageInterface>> => {
   const { query } = context;
-  const { db } = await getDatabase();
-  const categoriesCollection = db.collection<CategoryInterface>(COL_CATEGORIES);
-
   const { props } = await getAppInitialData({ context });
   if (!props || !query.categoryId) {
     return {
       notFound: true,
     };
   }
-
   const companySlug = DEFAULT_COMPANY_SLUG;
 
-  const categoryAggregation = await categoriesCollection
-    .aggregate<CategoryInterface>([
-      {
-        $match: {
-          _id: new ObjectId(`${query.categoryId}`),
-        },
-      },
-      {
-        $lookup: {
-          from: COL_RUBRICS,
-          as: 'rubric',
-          let: {
-            rubricId: '$rubricId',
-          },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $eq: ['$_id', '$$rubricId'],
-                },
-              },
-            },
-          ],
-        },
-      },
-      {
-        $lookup: {
-          from: COL_ICONS,
-          as: 'icon',
-          let: {
-            documentId: '$_id',
-          },
-          pipeline: [
-            {
-              $match: {
-                collectionName: COL_CATEGORIES,
-                $expr: {
-                  $eq: ['$documentId', '$$documentId'],
-                },
-              },
-            },
-          ],
-        },
-      },
-
-      {
-        $addFields: {
-          icon: {
-            $arrayElemAt: ['$icon', 0],
-          },
-          rubric: {
-            $arrayElemAt: ['$rubric', 0],
-          },
-        },
-      },
-    ])
-    .toArray();
-  const initialCategory = categoryAggregation[0];
-  if (!initialCategory) {
-    return {
-      notFound: true,
-    };
-  }
-
-  const { sessionLocale } = props;
-  const category: CategoryInterface = {
-    ...initialCategory,
-    name: getFieldStringLocale(initialCategory.nameI18n, sessionLocale),
-    rubric: initialCategory.rubric
-      ? {
-          ...initialCategory.rubric,
-          name: getFieldStringLocale(initialCategory.rubric.nameI18n, sessionLocale),
-        }
-      : null,
-  };
-
-  const seoDescriptionTop = await getCategorySeoText({
+  const payload = await getConsoleCategoryDetails({
+    categoryId: `${query.categoryId}`,
+    locale: props.sessionLocale,
     companySlug,
-    categoryId: category._id,
-    position: CATALOGUE_SEO_TEXT_POSITION_TOP,
-    citySlug: DEFAULT_CITY,
   });
 
-  const seoDescriptionBottom = await getCategorySeoText({
-    companySlug,
-    categoryId: category._id,
-    position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
-    citySlug: DEFAULT_CITY,
-  });
-
-  if (!seoDescriptionBottom || !seoDescriptionTop) {
+  if (!payload) {
     return {
       notFound: true,
     };
@@ -411,9 +297,9 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      seoDescriptionBottom: castDbData(seoDescriptionBottom),
-      seoDescriptionTop: castDbData(seoDescriptionTop),
-      category: castDbData(category),
+      seoDescriptionBottom: castDbData(payload.seoDescriptionBottom),
+      seoDescriptionTop: castDbData(payload.seoDescriptionTop),
+      category: castDbData(payload.category),
       companySlug,
     },
   };

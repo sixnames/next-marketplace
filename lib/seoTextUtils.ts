@@ -582,7 +582,7 @@ export async function getCategorySeoTextSlug({
         return `${acc}${slugCategory._id.toHexString()}`;
       }
       return acc;
-    });
+    }, '');
 
     // get company
     let companyId = DEFAULT_COMPANY_SLUG;

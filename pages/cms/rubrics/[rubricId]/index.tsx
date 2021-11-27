@@ -1,20 +1,13 @@
 import Button from 'components/button/Button';
 import FixedButtons from 'components/button/FixedButtons';
-import { RubricDescriptionConstructor } from 'components/company/CompanyRubricDetails';
 import RubricMainFields from 'components/FormTemplates/RubricMainFields';
 import Inner from 'components/Inner';
 import RequestError from 'components/RequestError';
+import SeoTextEditor from 'components/SeoTextEditor';
 import Spinner from 'components/Spinner';
-import {
-  CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
-  CATALOGUE_SEO_TEXT_POSITION_TOP,
-  DEFAULT_CITY,
-  DEFAULT_COMPANY_SLUG,
-  ROUTE_CMS,
-} from 'config/common';
-import { COL_RUBRICS } from 'db/collectionNames';
-import { RubricModel, SeoContentModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
+import { getConsoleRubricDetails } from 'db/dao/rubric/getConsoleRubricDetails';
+import { SeoContentModel } from 'db/dbModels';
 import { RubricInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import {
@@ -27,9 +20,6 @@ import useValidationSchema from 'hooks/useValidationSchema';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
-import { getFieldStringLocale } from 'lib/i18n';
-import { getRubricSeoText } from 'lib/seoTextUtils';
-import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
@@ -136,31 +126,15 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
             });
           }}
         >
-          {({ values, setFieldValue }) => {
+          {() => {
             return (
               <Form>
                 <RubricMainFields
                   rubricVariants={data.getAllRubricVariants}
                   genderOptions={data.getGenderOptions}
                 />
-
-                <RubricDescriptionConstructor
-                  name={'textTop'}
-                  values={values}
-                  setFieldValue={setFieldValue}
-                  label={'SEO текст вверху каталога'}
-                  rubricId={`${rubric._id}`}
-                  descriptionId={`${seoDescriptionTop._id}`}
-                />
-
-                <RubricDescriptionConstructor
-                  name={'textBottom'}
-                  values={values}
-                  setFieldValue={setFieldValue}
-                  label={'SEO текст внизу каталога'}
-                  rubricId={`${rubric._id}`}
-                  descriptionId={`${seoDescriptionBottom._id}`}
-                />
+                <SeoTextEditor label={'SEO текст вверху каталога'} filedName={'textTop'} />
+                <SeoTextEditor label={'SEO текст внизу каталога'} filedName={'textBottom'} />
 
                 <FixedButtons>
                   <Button type={'submit'} testId={'rubric-submit'}>
@@ -190,9 +164,6 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<RubricPageInterface>> => {
   const { query } = context;
-  const { db } = await getDatabase();
-  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-
   const { props } = await getAppInitialData({ context });
   if (!props || !query.rubricId) {
     return {
@@ -200,55 +171,12 @@ export const getServerSideProps = async (
     };
   }
 
-  const companySlug = DEFAULT_COMPANY_SLUG;
-
-  const initialRubrics = await rubricsCollection
-    .aggregate<RubricInterface>([
-      {
-        $match: {
-          _id: new ObjectId(`${query.rubricId}`),
-        },
-      },
-
-      {
-        $project: {
-          attributes: false,
-          priorities: false,
-          views: false,
-        },
-      },
-    ])
-    .toArray();
-  const initialRubric = initialRubrics[0];
-  if (!initialRubric) {
-    return {
-      notFound: true,
-    };
-  }
-
-  const { sessionLocale } = props;
-  const rubric = {
-    ...initialRubric,
-    name: getFieldStringLocale(initialRubric.nameI18n, sessionLocale),
-  };
-
-  const seoDescriptionTop = await getRubricSeoText({
-    rubricSlug: rubric.slug,
-    rubricId: rubric._id,
-    companySlug,
-    position: CATALOGUE_SEO_TEXT_POSITION_TOP,
-    citySlug: DEFAULT_CITY,
+  const payload = await getConsoleRubricDetails({
+    locale: props.sessionLocale,
+    rubricId: `${query.rubricId}`,
+    companySlug: DEFAULT_COMPANY_SLUG,
   });
-
-  const seoDescriptionBottom = await getRubricSeoText({
-    rubricSlug: rubric.slug,
-    rubricId: rubric._id,
-    companySlug,
-    position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
-    citySlug: DEFAULT_CITY,
-  });
-
-  if (!seoDescriptionBottom || !seoDescriptionTop) {
+  if (!payload) {
     return {
       notFound: true,
     };
@@ -257,9 +185,9 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      seoDescriptionBottom: castDbData(seoDescriptionBottom),
-      seoDescriptionTop: castDbData(seoDescriptionTop),
-      rubric: castDbData(rubric),
+      seoDescriptionBottom: castDbData(payload.seoDescriptionBottom),
+      seoDescriptionTop: castDbData(payload.seoDescriptionTop),
+      rubric: castDbData(payload.rubric),
       companySlug: DEFAULT_COMPANY_SLUG,
     },
   };

@@ -1,4 +1,5 @@
 import Accordion from 'components/Accordion';
+import InputLine from 'components/FormElements/Input/InputLine';
 import PageEditor from 'components/PageEditor';
 import { DEFAULT_CITY, REQUEST_METHOD_POST } from 'config/common';
 import { useConfigContext } from 'context/configContext';
@@ -8,14 +9,15 @@ import { get } from 'lodash';
 
 interface SeoTextEditorInterface {
   filedName: string;
+  label: string;
 }
 
-const SeoTextEditor: React.FC<SeoTextEditorInterface> = ({ filedName }) => {
+const SeoTextEditor: React.FC<SeoTextEditorInterface> = ({ filedName, label }) => {
   const { cities } = useConfigContext();
   const { values, setFieldValue } = useFormikContext();
 
   return (
-    <React.Fragment>
+    <InputLine labelTag={'div'} label={label}>
       {cities.map((city) => {
         const cityFieldName = `${filedName}.${city.slug}.content`;
         const value = get(values, cityFieldName);
@@ -24,45 +26,47 @@ const SeoTextEditor: React.FC<SeoTextEditorInterface> = ({ filedName }) => {
         return (
           <div key={city.slug}>
             <Accordion title={`${city.name}`} isOpen={city.slug === DEFAULT_CITY}>
-              <PageEditor
-                value={value}
-                setValue={(value) => {
-                  setFieldValue(cityFieldName, value);
-                }}
-                imageUpload={async (file) => {
-                  try {
-                    const formData = new FormData();
-                    formData.append('seoTextId', _id);
-                    formData.append('assets', file);
+              <div className='ml-8 pt-[var(--lineGap-200)]'>
+                <PageEditor
+                  value={value}
+                  setValue={(value) => {
+                    setFieldValue(cityFieldName, value);
+                  }}
+                  imageUpload={async (file) => {
+                    try {
+                      const formData = new FormData();
+                      formData.append('seoTextId', _id);
+                      formData.append('assets', file);
 
-                    const responseFetch = await fetch('/api/seo-texts/add-asset', {
-                      method: REQUEST_METHOD_POST,
-                      body: formData,
-                    });
-                    const responseJson = await responseFetch.json();
+                      const responseFetch = await fetch('/api/seo-texts/add-asset', {
+                        method: REQUEST_METHOD_POST,
+                        body: formData,
+                      });
+                      const responseJson = await responseFetch.json();
 
-                    if (!responseJson.url) {
+                      if (!responseJson.url) {
+                        return {
+                          url: '',
+                        };
+                      }
+
+                      return {
+                        url: responseJson.url,
+                      };
+                    } catch (e) {
+                      console.log(e);
                       return {
                         url: '',
                       };
                     }
-
-                    return {
-                      url: responseJson.url,
-                    };
-                  } catch (e) {
-                    console.log(e);
-                    return {
-                      url: '',
-                    };
-                  }
-                }}
-              />
+                  }}
+                />
+              </div>
             </Accordion>
           </div>
         );
       })}
-    </React.Fragment>
+    </InputLine>
   );
 };
 

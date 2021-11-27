@@ -1,53 +1,41 @@
-import Accordion from 'components/Accordion';
 import Button from 'components/button/Button';
 import Inner from 'components/Inner';
-import { DEFAULT_CITY } from 'config/common';
-import { useConfigContext } from 'context/configContext';
-import { ProductInterface } from 'db/uiInterfaces';
+import SeoTextEditor from 'components/SeoTextEditor';
+import { UpdateProductCardContentInputInterface } from 'db/dao/product/updateProductCardContent';
+import { ProductInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
+import { useUpdateProductCardContent } from 'hooks/mutations/useProductMutations';
 import * as React from 'react';
 
-interface ConsoleRubricProductConstructorInterface {
+export interface ConsoleRubricProductConstructorInterface {
   product: ProductInterface;
+  cardContent: SeoContentCitiesInterface;
+  companySlug: string;
 }
 
 const ConsoleRubricProductConstructor: React.FC<ConsoleRubricProductConstructorInterface> = ({
-  product,
+  cardContent,
+  companySlug,
 }) => {
-  const { cities } = useConfigContext();
-  const initialValues = {};
+  const initialValues = {
+    cardContent,
+    companySlug,
+  };
+  const [updateProductCardContentMutation] = useUpdateProductCardContent();
 
   return (
     <Inner testId={'product-card-constructor'}>
-      <Formik
+      <Formik<UpdateProductCardContentInputInterface>
         initialValues={initialValues}
         onSubmit={(values) => {
-          console.log(values);
-          /*showLoading();
-          updateProductCardContentMutation({
-            variables: {
-              input: values,
-            },
-          }).catch(console.log);*/
+          updateProductCardContentMutation(values).catch(console.log);
         }}
       >
         {() => {
           return (
             <Form>
-              {cities.map(({ name, slug }) => {
-                const cityTestId = `${product.slug}-${slug}`;
+              <SeoTextEditor filedName={'cardContent'} />
 
-                return (
-                  <Accordion
-                    isOpen={slug === DEFAULT_CITY}
-                    testId={cityTestId}
-                    title={`${name}`}
-                    key={slug}
-                  >
-                    <div className='ml-8 pt-[var(--lineGap-200)]'>{slug}</div>
-                  </Accordion>
-                );
-              })}
               <div className='flex mb-12 mt-4'>
                 <Button
                   theme={'secondary'}

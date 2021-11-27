@@ -9,7 +9,7 @@ import { get } from 'lodash';
 
 interface SeoTextEditorInterface {
   filedName: string;
-  label: string;
+  label?: string | null;
 }
 
 const SeoTextEditor: React.FC<SeoTextEditorInterface> = ({ filedName, label }) => {

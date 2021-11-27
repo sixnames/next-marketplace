@@ -779,14 +779,12 @@ export async function getCategoryAllSeoTexts({
 interface GetProductSeoTextInterface {
   companySlug: string;
   citySlug: string;
-  position: DescriptionPositionType;
   productId: ObjectIdModel;
   productSlug: string;
 }
 
 export async function getProductSeoText({
   companySlug,
-  position,
   productId,
   citySlug,
   productSlug,
@@ -806,7 +804,6 @@ export async function getProductSeoText({
 
   const seoText = await seoContentsCollection.findOne({
     slug: seoTextSlugPayload.seoTextSlug,
-    position,
   });
 
   if (!seoText) {
@@ -814,7 +811,6 @@ export async function getProductSeoText({
       url: seoTextSlugPayload.url,
       slug: seoTextSlugPayload.seoTextSlug,
       content: PAGE_EDITOR_DEFAULT_VALUE_STRING,
-      position,
     });
     if (!newSeoTextResult.acknowledged) {
       return null;
@@ -831,7 +827,6 @@ export async function getProductSeoText({
 interface GetProductAllSeoTextsInterface extends Omit<GetProductSeoTextInterface, 'citySlug'> {}
 export async function getProductAllSeoTexts({
   companySlug,
-  position,
   productId,
   productSlug,
 }: GetProductAllSeoTextsInterface): Promise<SeoContentCitiesInterface> {
@@ -840,7 +835,6 @@ export async function getProductAllSeoTexts({
   for await (const city of cities) {
     const seoText = await getProductSeoText({
       companySlug,
-      position,
       productId,
       productSlug,
       citySlug: city.slug,

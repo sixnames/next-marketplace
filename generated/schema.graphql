@@ -1245,11 +1245,6 @@ type Mutation {
   updateProductBrandCollection(input: UpdateProductBrandCollectionInput!): ProductPayload!
 
   """
-  Should update / create product card content
-  """
-  updateProductCardContent(input: UpdateProductCardContentInput!): ProductPayload!
-
-  """
   Should update cart product amount
   """
   updateProductInCart(input: UpdateProductInCartInput!): CartPayload!
@@ -2410,11 +2405,6 @@ input UpdateProductBrandCollectionInput {
 input UpdateProductBrandInput {
   brandSlug: String
   productId: ObjectId!
-}
-
-input UpdateProductCardContentInput {
-  companySlug: String!
-  content: JSONObject!
 }
 
 input UpdateProductInCartInput {

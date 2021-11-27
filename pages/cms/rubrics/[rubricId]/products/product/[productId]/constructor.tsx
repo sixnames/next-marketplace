@@ -1,6 +1,7 @@
-import ConsoleRubricProductConstructor from 'components/console/ConsoleRubricProductConstructor';
-import { ROUTE_CMS } from 'config/common';
-import { ProductInterface } from 'db/uiInterfaces';
+import ConsoleRubricProductConstructor, {
+  ConsoleRubricProductConstructorInterface,
+} from 'components/console/ConsoleRubricProductConstructor';
+import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsProductLayout from 'layout/cms/CmsProductLayout';
 import { getCmsProduct } from 'lib/productUtils';
@@ -9,11 +10,13 @@ import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
-interface ProductAttributesInterface {
-  product: ProductInterface;
-}
+interface ProductAttributesInterface extends ConsoleRubricProductConstructorInterface {}
 
-const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) => {
+const ProductAttributes: React.FC<ProductAttributesInterface> = ({
+  product,
+  cardContent,
+  companySlug,
+}) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Контент карточки',
     config: [
@@ -38,7 +41,11 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
 
   return (
     <CmsProductLayout product={product} breadcrumbs={breadcrumbs}>
-      <ConsoleRubricProductConstructor product={product} />
+      <ConsoleRubricProductConstructor
+        product={product}
+        cardContent={cardContent}
+        companySlug={companySlug}
+      />
     </CmsProductLayout>
   );
 };
@@ -67,9 +74,12 @@ export const getServerSideProps = async (
     };
   }
 
+  const companySlug = DEFAULT_COMPANY_SLUG;
+
   const payload = await getCmsProduct({
     locale: props.sessionLocale,
     productId: `${productId}`,
+    companySlug,
   });
 
   if (!payload) {
@@ -78,12 +88,14 @@ export const getServerSideProps = async (
     };
   }
 
-  const { product } = payload;
+  const { product, cardContent } = payload;
 
   return {
     props: {
       ...props,
       product: castDbData(product),
+      cardContent: castDbData(cardContent),
+      companySlug,
     },
   };
 };

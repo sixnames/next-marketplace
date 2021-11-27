@@ -26,29 +26,34 @@ import {
   ProductConnectionItemInterface,
   ProductInterface,
   RubricInterface,
+  SeoContentCitiesInterface,
   ShopProductBarcodeDoublesInterface,
   ShopProductInterface,
   SupplierProductInterface,
 } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getTreeFromList } from 'lib/optionsUtils';
+import { getProductAllSeoTexts } from 'lib/seoTextUtils';
 import { generateCardTitle, generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 import trim from 'trim';
 
 interface GetCmsProductInterface {
   productId: string;
+  companySlug: string;
   locale: string;
 }
 
 interface GetCmsProductPayloadInterface {
   product: ProductInterface;
   categoriesList: CategoryInterface[];
+  cardContent: SeoContentCitiesInterface;
 }
 
 export async function getCmsProduct({
   productId,
   locale,
+  companySlug,
 }: GetCmsProductInterface): Promise<GetCmsProductPayloadInterface | null> {
   const { db } = await getDatabase();
   const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
@@ -205,9 +210,20 @@ export async function getCmsProduct({
     attributes,
   };
 
+  // card content
+  const cardContent = await getProductAllSeoTexts({
+    productSlug: product.slug,
+    productId: product._id,
+    companySlug,
+  });
+  if (!cardContent) {
+    return null;
+  }
+
   return {
     product,
     categoriesList: initialProduct.categories || [],
+    cardContent,
   };
 }
 

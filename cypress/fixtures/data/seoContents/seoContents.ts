@@ -50,6 +50,7 @@ const rubricDescriptions: SeoContentModel[] = [
     url: '/0/msk/catalogue/viski',
     seoLocales,
     companySlug: DEFAULT_COMPANY_SLUG,
+    rubricSlug: 'viski',
     content: getConstructorContentFromText(
       'Rubric top Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias, doloribus laborum maxime non nulla pariatur repellendus tenetur vel. Alias doloremque dolores earum ipsa magnam maxime nemo quos repellendus suscipit veritatis.',
     ),
@@ -60,6 +61,7 @@ const rubricDescriptions: SeoContentModel[] = [
     url: '/0/msk/catalogue/viski',
     seoLocales,
     companySlug: DEFAULT_COMPANY_SLUG,
+    rubricSlug: 'viski',
     content: getConstructorContentFromText(
       'Rubric bottom Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias, doloribus laborum maxime non nulla pariatur repellendus tenetur vel. Alias doloremque dolores earum ipsa magnam maxime nemo quos repellendus suscipit veritatis.',
     ),
@@ -72,6 +74,7 @@ const rubricDescriptions: SeoContentModel[] = [
     url: '/0/msk/catalogue/viski/category-cat_1',
     seoLocales,
     companySlug: DEFAULT_COMPANY_SLUG,
+    rubricSlug: 'viski',
     content: getConstructorContentFromText(
       'Category top Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias, doloribus laborum maxime non nulla pariatur repellendus tenetur vel. Alias doloremque dolores earum ipsa magnam maxime nemo quos repellendus suscipit veritatis.',
     ),
@@ -82,6 +85,7 @@ const rubricDescriptions: SeoContentModel[] = [
     url: '/0/msk/catalogue/viski/category-cat_1',
     seoLocales,
     companySlug: DEFAULT_COMPANY_SLUG,
+    rubricSlug: 'viski',
     content: getConstructorContentFromText(
       'Category bottom Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias, doloribus laborum maxime non nulla pariatur repellendus tenetur vel. Alias doloremque dolores earum ipsa magnam maxime nemo quos repellendus suscipit veritatis.',
     ),

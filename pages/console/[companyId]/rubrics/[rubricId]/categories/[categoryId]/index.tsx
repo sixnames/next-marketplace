@@ -176,12 +176,14 @@ export const getServerSideProps = async (
     position: CATALOGUE_SEO_TEXT_POSITION_TOP,
     categoryId: category._id,
     companySlug,
+    rubricSlug: category.rubricSlug,
   });
 
   const seoDescriptionBottom = await getCategoryAllSeoTexts({
     position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
     categoryId: category._id,
     companySlug,
+    rubricSlug: category.rubricSlug,
   });
 
   if (!seoDescriptionBottom || !seoDescriptionTop) {

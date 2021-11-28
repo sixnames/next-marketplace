@@ -214,6 +214,7 @@ export async function getCmsProduct({
   const cardContent = await getProductAllSeoTexts({
     productSlug: product.slug,
     productId: product._id,
+    rubricSlug: product.rubricSlug,
     companySlug,
   });
   if (!cardContent) {

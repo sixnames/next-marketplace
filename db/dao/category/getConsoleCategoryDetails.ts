@@ -100,12 +100,14 @@ export async function getConsoleCategoryDetails({
 
   const seoDescriptionTop = await getCategoryAllSeoTexts({
     companySlug,
+    rubricSlug: category.rubricSlug,
     categoryId: category._id,
     position: CATALOGUE_SEO_TEXT_POSITION_TOP,
   });
 
   const seoDescriptionBottom = await getCategoryAllSeoTexts({
     companySlug,
+    rubricSlug: category.rubricSlug,
     categoryId: category._id,
     position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   });

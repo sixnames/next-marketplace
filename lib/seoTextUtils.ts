@@ -477,27 +477,25 @@ export async function getCatalogueAllSeoTexts(
     slug: seoTextBottomSlug,
   });
 
-  let editUrl = `/rubrics/${rubricId}`;
+  const baseEditUrl = `/rubrics/${rubricId}`;
+  let editUrl = baseEditUrl;
   let textTopEditUrl = editUrl;
   let textBottomEditUrl = editUrl;
 
-  if (noFiltersSelected && categoryLeaves.length === 1) {
+  if (categoryLeaves.length === 1) {
     const category = categoryLeaves[0];
-    editUrl = `/rubrics/${rubricId}/categories/${category._id}`;
-    textTopEditUrl = editUrl;
-    textBottomEditUrl = editUrl;
+    editUrl = `${baseEditUrl}/categories/${category._id}`;
+
+    if (noFiltersSelected) {
+      textTopEditUrl = editUrl;
+      textBottomEditUrl = editUrl;
+    }
   }
 
   if (!noFiltersSelected) {
-    textTopEditUrl = `${editUrl}/seo-texts/text/${seoTextTopSlug}`;
-    textBottomEditUrl = `${editUrl}/seo-texts/text/${seoTextBottomSlug}`;
+    textTopEditUrl = `${baseEditUrl}/seo-texts/text/${seoTextTopSlug}`;
+    textBottomEditUrl = `${baseEditUrl}/seo-texts/text/${seoTextBottomSlug}`;
   }
-
-  console.log({
-    editUrl,
-    textTopEditUrl,
-    textBottomEditUrl,
-  });
 
   return {
     editUrl,
@@ -734,6 +732,7 @@ export async function getRubricSeoText({
       url: seoTextSlugPayload.url,
       slug: seoTextSlugPayload.seoTextSlug,
       content: PAGE_EDITOR_DEFAULT_VALUE_STRING,
+      rubricSlug,
       companySlug,
     });
     if (!newSeoTextResult.acknowledged) {
@@ -778,6 +777,7 @@ interface GetCategorySeoTextInterface {
   citySlug: string;
   position: DescriptionPositionType;
   categoryId: ObjectIdModel;
+  rubricSlug: string;
 }
 
 export async function getCategorySeoText({
@@ -785,6 +785,7 @@ export async function getCategorySeoText({
   position,
   categoryId,
   citySlug,
+  rubricSlug,
 }: GetCategorySeoTextInterface): Promise<SeoContentModel | null> {
   const { db } = await getDatabase();
   const seoTextSlugPayload = await getCategorySeoTextSlug({
@@ -807,6 +808,7 @@ export async function getCategorySeoText({
       url: seoTextSlugPayload.url,
       slug: seoTextSlugPayload.seoTextSlug,
       content: PAGE_EDITOR_DEFAULT_VALUE_STRING,
+      rubricSlug,
       companySlug,
     });
     if (!newSeoTextResult.acknowledged) {
@@ -826,6 +828,7 @@ export async function getCategoryAllSeoTexts({
   companySlug,
   position,
   categoryId,
+  rubricSlug,
 }: GetCategoryAllSeoTextsInterface): Promise<SeoContentCitiesInterface> {
   const cities = await getCitiesList();
   let payload: SeoContentCitiesInterface = {};
@@ -834,6 +837,7 @@ export async function getCategoryAllSeoTexts({
       companySlug,
       position,
       categoryId,
+      rubricSlug,
       citySlug: city.slug,
     });
     if (seoText) {
@@ -849,6 +853,7 @@ interface GetProductSeoTextInterface {
   citySlug: string;
   productId: ObjectIdModel;
   productSlug: string;
+  rubricSlug: string;
 }
 
 export async function getProductSeoText({
@@ -856,6 +861,7 @@ export async function getProductSeoText({
   productId,
   citySlug,
   productSlug,
+  rubricSlug,
 }: GetProductSeoTextInterface): Promise<SeoContentModel | null> {
   const { db } = await getDatabase();
   const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
@@ -880,6 +886,7 @@ export async function getProductSeoText({
       slug: seoTextSlugPayload.seoTextSlug,
       content: PAGE_EDITOR_DEFAULT_VALUE_STRING,
       companySlug,
+      rubricSlug,
     });
     if (!newSeoTextResult.acknowledged) {
       return null;
@@ -898,6 +905,7 @@ export async function getProductAllSeoTexts({
   companySlug,
   productId,
   productSlug,
+  rubricSlug,
 }: GetProductAllSeoTextsInterface): Promise<SeoContentCitiesInterface> {
   const cities = await getCitiesList();
   let payload: SeoContentCitiesInterface = {};
@@ -907,6 +915,7 @@ export async function getProductAllSeoTexts({
       productId,
       productSlug,
       citySlug: city.slug,
+      rubricSlug,
     });
     if (seoText) {
       payload[city.slug] = seoText;

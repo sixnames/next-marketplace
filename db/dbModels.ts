@@ -834,6 +834,7 @@ export interface SeoContentModel {
   _id: ObjectIdModel;
   slug: string;
   companySlug: string;
+  rubricSlug: string;
   url: string;
   content: string;
   seoLocales?: TextUniquenessApiParsedResponseModel[] | null;

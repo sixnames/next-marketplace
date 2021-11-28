@@ -1,53 +1,49 @@
-import ConsoleSeoContentsList, {
-  ConsoleSeoContentsListInterface,
-} from 'components/console/ConsoleSeoContentsList';
+import ConsoleSeoContentDetails, {
+  ConsoleSeoContentDetailsInterface,
+} from 'components/console/ConsoleSeoContentDetails';
 import Inner from 'components/Inner';
-import { DEFAULT_COMPANY_SLUG, PAGE_EDITOR_DEFAULT_VALUE_STRING, ROUTE_CMS } from 'config/common';
-import { COL_SEO_CONTENTS } from 'db/collectionNames';
+import { ROUTE_CMS, ROUTE_CONSOLE } from 'config/common';
 import { getConsoleRubricDetails } from 'db/dao/rubric/getConsoleRubricDetails';
-import { SeoContentModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
 import { RubricInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
+import { alwaysString } from 'lib/arrayUtils';
+import { getSeoContentBySlug } from 'lib/seoContentUtils';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { castDbData, GetAppInitialDataPropsInterface, getConsoleInitialData } from 'lib/ssrUtils';
 
-interface RubricDetailsInterface extends ConsoleSeoContentsListInterface {
+interface RubricDetailsInterface extends ConsoleSeoContentDetailsInterface {
   rubric: RubricInterface;
   companySlug: string;
-  seoContents: SeoContentModel[];
+  routeBasePath: string;
 }
 
-const RubricDetails: React.FC<RubricDetailsInterface> = ({
-  rubric,
-  seoContents,
-  routeBasePath,
-}) => {
+const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, seoContent, routeBasePath }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `SEO тексты`,
     config: [
       {
         name: 'Рубрикатор',
-        href: `${routeBasePath}/rubrics`,
+        href: `${ROUTE_CMS}/rubrics`,
       },
       {
         name: `${rubric.name}`,
-        href: `${routeBasePath}/rubrics/${rubric._id}`,
+        href: `${ROUTE_CMS}/rubrics/${rubric._id}`,
       },
     ],
   };
 
   return (
-    <CmsRubricLayout rubric={rubric} breadcrumbs={breadcrumbs}>
+    <CmsRubricLayout
+      hideAttributesPath
+      basePath={routeBasePath}
+      rubric={rubric}
+      breadcrumbs={breadcrumbs}
+    >
       <Inner>
-        <ConsoleSeoContentsList
-          seoContents={seoContents}
-          routeBasePath={routeBasePath}
-          rubricId={`${rubric._id}`}
-        />
+        <ConsoleSeoContentDetails seoContent={seoContent} />
       </Inner>
     </CmsRubricLayout>
   );
@@ -67,15 +63,16 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<RubricPageInterface>> => {
   const { query } = context;
-  const { db } = await getDatabase();
-  const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
-  const { props } = await getAppInitialData({ context });
+  const { props } = await getConsoleInitialData({ context });
   if (!props || !query.rubricId) {
     return {
       notFound: true,
     };
   }
-  const companySlug = DEFAULT_COMPANY_SLUG;
+
+  const url = alwaysString(query.url);
+  const seoContentSlug = alwaysString(query.seoContentSlug);
+  const companySlug = props.layoutProps.pageCompany.slug;
 
   const payload = await getConsoleRubricDetails({
     locale: props.sessionLocale,
@@ -88,23 +85,24 @@ export const getServerSideProps = async (
     };
   }
 
-  const seoContents = await seoContentsCollection
-    .find({
-      companySlug,
-      rubricSlug: payload.rubric.slug,
-      content: {
-        $ne: PAGE_EDITOR_DEFAULT_VALUE_STRING,
-      },
-    })
-    .toArray();
+  const seoContent = await getSeoContentBySlug({
+    url,
+    seoContentSlug,
+    companySlug,
+    rubricSlug: payload.rubric.slug,
+  });
+  if (!seoContent) {
+    return {
+      notFound: true,
+    };
+  }
 
   return {
     props: {
       ...props,
       rubric: castDbData(payload.rubric),
-      seoContents: castDbData(seoContents),
-      routeBasePath: ROUTE_CMS,
-      rubricId: `${payload.rubric._id}`,
+      seoContent: castDbData(seoContent),
+      routeBasePath: `${ROUTE_CONSOLE}/${props.layoutProps.pageCompany._id}`,
       companySlug,
     },
   };

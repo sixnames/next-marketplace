@@ -6,12 +6,14 @@ import * as React from 'react';
 
 export interface ConsoleSeoContentsListInterface {
   seoContents: SeoContentModel[];
-  basePath: string;
+  routeBasePath: string;
+  rubricId: string;
 }
 
 const ConsoleSeoContentsList: React.FC<ConsoleSeoContentsListInterface> = ({
   seoContents,
-  basePath,
+  routeBasePath,
+  rubricId,
 }) => {
   const columns: TableColumn<SeoContentModel>[] = [
     {
@@ -33,7 +35,10 @@ const ConsoleSeoContentsList: React.FC<ConsoleSeoContentsListInterface> = ({
               testId={dataItem.slug}
               updateTitle={'Редактировать текст'}
               updateHandler={() => {
-                window.open(`${basePath}/seo-content/${dataItem.slug}`, '_blank');
+                window.open(
+                  `${routeBasePath}/rubrics/${rubricId}/seo-content/${dataItem.slug}`,
+                  '_blank',
+                );
               }}
             />
           </div>
@@ -48,7 +53,10 @@ const ConsoleSeoContentsList: React.FC<ConsoleSeoContentsListInterface> = ({
         columns={columns}
         data={seoContents}
         onRowDoubleClick={(dataItem) => {
-          window.open(`${basePath}/seo-content/${dataItem.slug}`, '_blank');
+          window.open(
+            `${routeBasePath}/rubrics/${rubricId}/seo-content/${dataItem.slug}`,
+            '_blank',
+          );
         }}
       />
     </div>

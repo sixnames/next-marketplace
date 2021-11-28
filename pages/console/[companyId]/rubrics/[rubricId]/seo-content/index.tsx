@@ -2,7 +2,7 @@ import ConsoleSeoContentsList, {
   ConsoleSeoContentsListInterface,
 } from 'components/console/ConsoleSeoContentsList';
 import Inner from 'components/Inner';
-import { DEFAULT_COMPANY_SLUG, PAGE_EDITOR_DEFAULT_VALUE_STRING, ROUTE_CMS } from 'config/common';
+import { PAGE_EDITOR_DEFAULT_VALUE_STRING, ROUTE_CONSOLE } from 'config/common';
 import { COL_SEO_CONTENTS } from 'db/collectionNames';
 import { getConsoleRubricDetails } from 'db/dao/rubric/getConsoleRubricDetails';
 import { SeoContentModel } from 'db/dbModels';
@@ -13,7 +13,7 @@ import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { castDbData, GetAppInitialDataPropsInterface, getConsoleInitialData } from 'lib/ssrUtils';
 
 interface RubricDetailsInterface extends ConsoleSeoContentsListInterface {
   rubric: RubricInterface;
@@ -41,7 +41,12 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
   };
 
   return (
-    <CmsRubricLayout rubric={rubric} breadcrumbs={breadcrumbs}>
+    <CmsRubricLayout
+      hideAttributesPath
+      basePath={routeBasePath}
+      rubric={rubric}
+      breadcrumbs={breadcrumbs}
+    >
       <Inner>
         <ConsoleSeoContentsList
           seoContents={seoContents}
@@ -69,13 +74,13 @@ export const getServerSideProps = async (
   const { query } = context;
   const { db } = await getDatabase();
   const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
-  const { props } = await getAppInitialData({ context });
+  const { props } = await getConsoleInitialData({ context });
   if (!props || !query.rubricId) {
     return {
       notFound: true,
     };
   }
-  const companySlug = DEFAULT_COMPANY_SLUG;
+  const companySlug = props.layoutProps.pageCompany.slug;
 
   const payload = await getConsoleRubricDetails({
     locale: props.sessionLocale,
@@ -103,7 +108,7 @@ export const getServerSideProps = async (
       ...props,
       rubric: castDbData(payload.rubric),
       seoContents: castDbData(seoContents),
-      routeBasePath: ROUTE_CMS,
+      routeBasePath: `${ROUTE_CONSOLE}/${props.layoutProps.pageCompany._id}`,
       rubricId: `${payload.rubric._id}`,
       companySlug,
     },

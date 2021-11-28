@@ -22,17 +22,21 @@ interface RubricDetailsInterface extends ConsoleSeoContentsListInterface {
   seoContents: SeoContentModel[];
 }
 
-const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, seoContents, basePath }) => {
+const RubricDetails: React.FC<RubricDetailsInterface> = ({
+  rubric,
+  seoContents,
+  routeBasePath,
+}) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `SEO тексты`,
     config: [
       {
         name: 'Рубрикатор',
-        href: `${ROUTE_CMS}/rubrics`,
+        href: `${routeBasePath}/rubrics`,
       },
       {
         name: `${rubric.name}`,
-        href: basePath,
+        href: `${routeBasePath}/rubrics/${rubric._id}`,
       },
     ],
   };
@@ -40,7 +44,11 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, seoContents, 
   return (
     <CmsRubricLayout rubric={rubric} breadcrumbs={breadcrumbs}>
       <Inner>
-        <ConsoleSeoContentsList seoContents={seoContents} basePath={basePath} />
+        <ConsoleSeoContentsList
+          seoContents={seoContents}
+          routeBasePath={routeBasePath}
+          rubricId={`${rubric._id}`}
+        />
       </Inner>
     </CmsRubricLayout>
   );
@@ -73,7 +81,7 @@ export const getServerSideProps = async (
   // get company
   const companyId = new ObjectId(`${query.companyId}`);
   const companyAggregationResult = await companiesCollection
-    .aggregate([
+    .aggregate<CompanyInterface>([
       {
         $match: {
           _id: companyId,
@@ -115,7 +123,8 @@ export const getServerSideProps = async (
       ...props,
       rubric: castDbData(payload.rubric),
       seoContents: castDbData(seoContents),
-      basePath: `${ROUTE_CMS}/rubrics/${payload.rubric._id}`,
+      routeBasePath: `${ROUTE_CMS}/companies/${companyResult._id}`,
+      rubricId: `${payload.rubric._id}`,
       companySlug,
     },
   };

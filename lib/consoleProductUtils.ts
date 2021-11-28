@@ -47,7 +47,7 @@ import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { castCatalogueFilters, getCatalogueAttributes } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
-import { getTreeFromList } from 'lib/optionsUtils';
+import { getTreeFromList } from 'lib/optionUtils';
 import {
   countProductAttributes,
   getCategoryAllAttributes,

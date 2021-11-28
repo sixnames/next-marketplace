@@ -28,7 +28,7 @@ import {
 import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
 import ProductSnippetGridBigImage from 'layout/snippet/ProductSnippetGridBigImage';
 import { getIsrSiteInitialData, IsrContextInterface } from 'lib/isrUtils';
-import { getTreeFromList } from 'lib/optionsUtils';
+import { getTreeFromList } from 'lib/optionUtils';
 import { generateSnippetTitle, generateTitle } from 'lib/titleUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';

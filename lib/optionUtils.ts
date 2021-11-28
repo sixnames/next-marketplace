@@ -8,6 +8,7 @@ import {
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { OptionInterface } from 'db/uiInterfaces';
+import { alwaysArray } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { get } from 'lodash';
@@ -71,6 +72,29 @@ export function getTreeFromList<T extends TreeItemInterface>({
       childrenCount: children.length,
     };
   });
+}
+
+interface GetTreeLeavesInterface<T> {
+  childrenFieldName: string;
+  list?: T[] | null;
+}
+export function getTreeLeaves<T extends TreeItemInterface>({
+  list,
+  childrenFieldName,
+}: GetTreeLeavesInterface<T>): T[] {
+  const leaves: T[] = [];
+
+  function iter(listItem: T) {
+    const children = alwaysArray(listItem[childrenFieldName]);
+    if (children.length > 0) {
+      children.forEach(iter);
+    } else {
+      leaves.push(listItem);
+    }
+  }
+  (list || []).forEach(iter);
+
+  return leaves;
 }
 
 export interface GetStringValueFromOptionsList {

@@ -53,7 +53,7 @@ import {
 } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
-import { getTreeFromList, sortByName } from 'lib/optionsUtils';
+import { getTreeFromList, sortByName } from 'lib/optionUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import {
   castProductAttributeForUi,

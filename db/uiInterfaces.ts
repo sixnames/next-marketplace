@@ -483,7 +483,9 @@ export interface CatalogueDataInterface {
   selectedAttributes: CatalogueFilterAttributeInterface[];
   page: number;
   textTop?: string | null;
+  textTopEditUrl: string;
   textBottom?: string | null;
+  textBottomEditUrl: string;
 }
 
 export interface CatalogueProductOptionInterface {

@@ -32,7 +32,7 @@ import {
   SupplierProductInterface,
 } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getTreeFromList } from 'lib/optionsUtils';
+import { getTreeFromList } from 'lib/optionUtils';
 import { getProductAllSeoTexts } from 'lib/seoTextUtils';
 import { generateCardTitle, generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';

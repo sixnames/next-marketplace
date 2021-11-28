@@ -9,7 +9,7 @@ import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getTreeFromList, sortByName } from 'lib/optionsUtils';
+import { getTreeFromList, sortByName } from 'lib/optionUtils';
 import {
   castDbData,
   getConsoleInitialData,

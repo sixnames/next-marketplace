@@ -16,7 +16,7 @@ import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getTreeFromList, sortByName } from 'lib/optionsUtils';
+import { getTreeFromList, sortByName } from 'lib/optionUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';

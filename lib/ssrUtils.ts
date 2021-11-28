@@ -61,7 +61,7 @@ import {
 } from 'lib/configsUtils';
 import { getFieldStringLocale, getI18nLocaleValue } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
-import { getTreeFromList } from 'lib/optionsUtils';
+import { getTreeFromList } from 'lib/optionUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { castAttributeForUI } from 'lib/uiDataUtils';
 import { Db, ObjectId } from 'mongodb';

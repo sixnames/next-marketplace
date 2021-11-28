@@ -73,7 +73,7 @@ import {
 import { getAlgoliaProductsSearch } from 'lib/algoliaUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
-import { getTreeFromList, sortByName } from 'lib/optionsUtils';
+import { getTreeFromList, sortByName } from 'lib/optionUtils';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
 import { getCatalogueAllSeoTexts } from 'lib/seoTextUtils';
 import { sortStringArray } from 'lib/stringUtils';
@@ -629,6 +629,7 @@ export function castCatalogueFilters({
   const categoryFilters: string[] = [];
   const brandFilters: string[] = [];
   const brandCollectionFilters: string[] = [];
+  const noCategoryFilters: string[] = [];
   let sortBy: string | null = null;
   let sortDir: string | null = null;
 
@@ -677,6 +678,7 @@ export function castCatalogueFilters({
       if (filterAttributeSlug === FILTER_PRICE_KEY) {
         allUrlParams.push(filterOption);
         priceFilters.push(filterOption);
+        noCategoryFilters.push(filterOption);
         const prices = filterOptionSlug.split('_');
         minPrice = prices[0] ? noNaN(prices[0]) : null;
         maxPrice = prices[1] ? noNaN(prices[1]) : null;
@@ -707,6 +709,7 @@ export function castCatalogueFilters({
 
       if (filterAttributeSlug === FILTER_BRAND_KEY) {
         allUrlParams.push(filterOption);
+        noCategoryFilters.push(filterOption);
         const slugParts = filterOption.split(FILTER_SEPARATOR);
         if (slugParts[1]) {
           brandFilters.push(slugParts[1]);
@@ -716,6 +719,7 @@ export function castCatalogueFilters({
 
       if (filterAttributeSlug === FILTER_BRAND_COLLECTION_KEY) {
         allUrlParams.push(filterOption);
+        noCategoryFilters.push(filterOption);
         const slugParts = filterOption.split(FILTER_SEPARATOR);
         if (slugParts[1]) {
           brandCollectionFilters.push(slugParts[1]);
@@ -731,13 +735,14 @@ export function castCatalogueFilters({
         return;
       }
 
+      noCategoryFilters.push(filterOption);
       allUrlParams.push(filterOption);
       realFilterAttributes.push(filterAttributeSlug);
       realFilters.push(filterOption);
     }
   });
 
-  const noFiltersSelected = realFilters.length < 1;
+  const noFiltersSelected = noCategoryFilters.length < 1;
   const castedSortDir = sortDir === SORT_DESC_STR ? SORT_DESC : SORT_ASC;
   const skip = page ? (page - 1) * limit : 0;
   const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
@@ -898,6 +903,8 @@ export const getCatalogueData = async ({
       editUrl: '',
       rubricName: '',
       rubricSlug: '',
+      textTopEditUrl: '',
+      textBottomEditUrl: '',
       products: [],
       catalogueTitle: 'Товары не найдены',
       catalogueFilterLayout: DEFAULT_LAYOUT,
@@ -1786,20 +1793,28 @@ export const getCatalogueData = async ({
     }
 
     // get seo texts
-    let editUrl = `/rubrics/${rubric._id}`;
+    let editUrl = '';
+    let textTopEditUrl = '';
+    let textBottomEditUrl = '';
     let textTop: string | null | undefined;
     let textBottom: string | null | undefined;
 
     if (!search) {
-      const { seoTextTop, seoTextBottom } = await getCatalogueAllSeoTexts({
+      const seoTextParams = await getCatalogueAllSeoTexts({
         rubricSlug: rubric.slug,
         citySlug: city,
         companySlug: companySlug,
         filters: input.filters,
       });
 
-      textTop = seoTextTop?.content;
-      textBottom = seoTextBottom?.content;
+      if (seoTextParams) {
+        const { seoTextTop, seoTextBottom } = seoTextParams;
+        textTop = seoTextTop?.content;
+        textBottom = seoTextBottom?.content;
+        textTopEditUrl = seoTextParams.textTopEditUrl;
+        textBottomEditUrl = seoTextParams.textBottomEditUrl;
+        editUrl = seoTextParams.editUrl;
+      }
     }
 
     // get layout configs
@@ -1958,7 +1973,9 @@ export const getCatalogueData = async ({
 
       //seo
       textTop,
+      textTopEditUrl,
       textBottom,
+      textBottomEditUrl,
       catalogueTitle,
       breadcrumbs,
     };

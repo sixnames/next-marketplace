@@ -42,10 +42,10 @@ import {
   SeoContentModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { AttributeInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
+import { AttributeInterface, CategoryInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
 import { castCatalogueFilters } from 'lib/catalogueUtils';
 import { castConfigs, getConfigStringValue } from 'lib/configsUtils';
-import { castCatalogueFilter } from 'lib/optionsUtils';
+import { castCatalogueFilter, getTreeFromList, getTreeLeaves } from 'lib/optionUtils';
 import { sortStringArray } from 'lib/stringUtils';
 import { sortBy } from 'lodash';
 import { ObjectId } from 'mongodb';
@@ -193,6 +193,14 @@ interface GetCatalogueSeoTextSlugInterface {
   companySlug: string;
 }
 
+interface GetCatalogueSeoTextSlugPayloadInterface {
+  seoTextSlug: string;
+  categoryLeaves: CategoryInterface[];
+  noFiltersSelected: boolean;
+  inCategory: boolean;
+  rubricId: string;
+}
+
 interface GetCatalogueSeoTextSlugAttributeConfigInterface {
   attributeSlug: string;
   optionSlugs: string[];
@@ -203,7 +211,7 @@ export async function getCatalogueSeoTextSlug({
   companySlug,
   citySlug,
   rubricSlug,
-}: GetCatalogueSeoTextSlugInterface): Promise<string | null> {
+}: GetCatalogueSeoTextSlugInterface): Promise<GetCatalogueSeoTextSlugPayloadInterface | null> {
   try {
     const { db } = await getDatabase();
     const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
@@ -219,6 +227,8 @@ export async function getCatalogueSeoTextSlug({
       categoryCastedFilters,
       priceFilters,
       realFilters,
+      noFiltersSelected,
+      inCategory,
     } = castCatalogueFilters({
       filters,
     });
@@ -278,6 +288,15 @@ export async function getCatalogueSeoTextSlug({
       }
       return acc;
     }, '');
+    const childrenFieldName = 'categories';
+    const categoriesTree = getTreeFromList({
+      list: categories,
+      childrenFieldName,
+    });
+    const categoryLeaves = getTreeLeaves({
+      list: categoriesTree,
+      childrenFieldName,
+    });
 
     // get brands
     const brands = await brandsCollection
@@ -411,7 +430,13 @@ export async function getCatalogueSeoTextSlug({
       return `${acc}${attributeId}`;
     }, '');
 
-    return `${companyId}${cityId}${rubricId}${categoryIds}${brandIds}${brandCollectionIds}${attributeIds}${priceIds}`;
+    return {
+      rubricId,
+      inCategory,
+      noFiltersSelected,
+      categoryLeaves,
+      seoTextSlug: `${companyId}${cityId}${rubricId}${categoryIds}${brandIds}${brandCollectionIds}${attributeIds}${priceIds}`,
+    };
   } catch (e) {
     console.log(e);
     return null;
@@ -421,31 +446,67 @@ export async function getCatalogueSeoTextSlug({
 interface GetCatalogueAllSeoTextsInterface extends GetCatalogueSeoTextSlugInterface {}
 interface GetCatalogueAllSeoTextsPayloadInterface {
   seoTextTop?: SeoContentModel | null;
+  seoTextTopSlug: string;
   seoTextBottom?: SeoContentModel | null;
+  seoTextBottomSlug: string;
+  editUrl: string;
+  textTopEditUrl: string;
+  textBottomEditUrl: string;
 }
 
 export async function getCatalogueAllSeoTexts(
   props: GetCatalogueAllSeoTextsInterface,
-): Promise<GetCatalogueAllSeoTextsPayloadInterface> {
+): Promise<GetCatalogueAllSeoTextsPayloadInterface | null> {
   const { db } = await getDatabase();
   const seoTextsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
-  const seoTextSlug = await getCatalogueSeoTextSlug(props);
+  const payload = await getCatalogueSeoTextSlug(props);
 
-  const seoTextTop = seoTextSlug
-    ? await seoTextsCollection.findOne({
-        slug: `${seoTextSlug}${CATALOGUE_SEO_TEXT_POSITION_TOP}`,
-      })
-    : null;
+  if (!payload) {
+    return null;
+  }
 
-  const seoTextBottom = seoTextSlug
-    ? await seoTextsCollection.findOne({
-        slug: `${seoTextSlug}${CATALOGUE_SEO_TEXT_POSITION_BOTTOM}`,
-      })
-    : null;
+  const { noFiltersSelected, rubricId, seoTextSlug, categoryLeaves } = payload;
+
+  const seoTextTopSlug = `${seoTextSlug}${CATALOGUE_SEO_TEXT_POSITION_TOP}`;
+  const seoTextTop = await seoTextsCollection.findOne({
+    slug: seoTextTopSlug,
+  });
+
+  const seoTextBottomSlug = `${seoTextSlug}${CATALOGUE_SEO_TEXT_POSITION_BOTTOM}`;
+  const seoTextBottom = await seoTextsCollection.findOne({
+    slug: seoTextBottomSlug,
+  });
+
+  let editUrl = `/rubrics/${rubricId}`;
+  let textTopEditUrl = editUrl;
+  let textBottomEditUrl = editUrl;
+
+  if (noFiltersSelected && categoryLeaves.length === 1) {
+    const category = categoryLeaves[0];
+    editUrl = `/rubrics/${rubricId}/categories/${category._id}`;
+    textTopEditUrl = editUrl;
+    textBottomEditUrl = editUrl;
+  }
+
+  if (!noFiltersSelected) {
+    textTopEditUrl = `${editUrl}/seo-texts/text/${seoTextTopSlug}`;
+    textBottomEditUrl = `${editUrl}/seo-texts/text/${seoTextBottomSlug}`;
+  }
+
+  console.log({
+    editUrl,
+    textTopEditUrl,
+    textBottomEditUrl,
+  });
 
   return {
+    editUrl,
+    textTopEditUrl,
+    textBottomEditUrl,
     seoTextTop,
+    seoTextTopSlug,
     seoTextBottom,
+    seoTextBottomSlug,
   };
 }
 

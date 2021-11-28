@@ -1,5 +1,5 @@
 import { getNextItemId } from 'lib/itemIdUtils';
-import { deleteDocumentsTree, getParentTreeIds } from 'lib/optionsUtils';
+import { deleteDocumentsTree, getParentTreeIds } from 'lib/optionUtils';
 import { updateCitiesSeoText } from 'lib/seoTextUtils';
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';

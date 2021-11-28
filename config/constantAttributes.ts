@@ -22,7 +22,7 @@ import {
   RubricInterface,
 } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getTreeFromList } from 'lib/optionsUtils';
+import { getTreeFromList } from 'lib/optionUtils';
 import { getObjectId } from 'mongo-seeding';
 import { ObjectId } from 'mongodb';
 

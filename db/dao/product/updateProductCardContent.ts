@@ -1,7 +1,7 @@
 import { ProductPayloadModel } from 'db/dbModels';
 import { DaoPropsInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { updateCitiesSeoText } from 'lib/seoTextUtils';
+import { updateCitiesSeoContent } from 'lib/seoContentUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 
 export interface UpdateProductCardContentInputInterface {
@@ -36,8 +36,8 @@ export async function updateProductCardContent({
     }
 
     const { cardContent, companySlug } = input;
-    await updateCitiesSeoText({
-      seoTextsList: cardContent,
+    await updateCitiesSeoContent({
+      seoContentsList: cardContent,
       companySlug,
     });
 

@@ -75,7 +75,7 @@ import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { getTreeFromList, sortByName } from 'lib/optionUtils';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
-import { getCatalogueAllSeoTexts } from 'lib/seoTextUtils';
+import { getCatalogueAllSeoContents } from 'lib/seoContentUtils';
 import { sortStringArray } from 'lib/stringUtils';
 import { generateSnippetTitle, generateTitle } from 'lib/titleUtils';
 import { castProductConnectionForUI } from 'lib/uiDataUtils';
@@ -1800,20 +1800,20 @@ export const getCatalogueData = async ({
     let textBottom: string | null | undefined;
 
     if (!search) {
-      const seoTextParams = await getCatalogueAllSeoTexts({
+      const seoContentParams = await getCatalogueAllSeoContents({
         rubricSlug: rubric.slug,
         citySlug: city,
         companySlug: companySlug,
         filters: input.filters,
       });
 
-      if (seoTextParams) {
-        const { seoTextTop, seoTextBottom } = seoTextParams;
-        textTop = seoTextTop?.content;
-        textBottom = seoTextBottom?.content;
-        textTopEditUrl = seoTextParams.textTopEditUrl;
-        textBottomEditUrl = seoTextParams.textBottomEditUrl;
-        editUrl = seoTextParams.editUrl;
+      if (seoContentParams) {
+        const { seoContentTop, seoContentBottom } = seoContentParams;
+        textTop = seoContentTop?.content;
+        textBottom = seoContentBottom?.content;
+        textTopEditUrl = seoContentParams.textTopEditUrl;
+        textBottomEditUrl = seoContentParams.textBottomEditUrl;
+        editUrl = seoContentParams.editUrl;
       }
     }
 

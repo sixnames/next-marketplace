@@ -3,7 +3,7 @@ import { COL_CATEGORIES, COL_ICONS, COL_RUBRICS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { CategoryInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getCategoryAllSeoTexts } from 'lib/seoTextUtils';
+import { getCategoryAllSeoContents } from 'lib/seoContentUtils';
 import { ObjectId } from 'mongodb';
 
 interface GetConsoleCategoryDetailsPayloadInterface {
@@ -98,14 +98,14 @@ export async function getConsoleCategoryDetails({
       : null,
   };
 
-  const seoDescriptionTop = await getCategoryAllSeoTexts({
+  const seoDescriptionTop = await getCategoryAllSeoContents({
     companySlug,
     rubricSlug: category.rubricSlug,
     categoryId: category._id,
     position: CATALOGUE_SEO_TEXT_POSITION_TOP,
   });
 
-  const seoDescriptionBottom = await getCategoryAllSeoTexts({
+  const seoDescriptionBottom = await getCategoryAllSeoContents({
     companySlug,
     rubricSlug: category.rubricSlug,
     categoryId: category._id,

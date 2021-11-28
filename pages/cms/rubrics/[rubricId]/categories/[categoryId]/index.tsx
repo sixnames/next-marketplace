@@ -4,7 +4,7 @@ import WpIconUpload from 'components/FormElements/Upload/WpIconUpload';
 import WpImageUpload from 'components/FormElements/Upload/WpImageUpload';
 import CategoryMainFields from 'components/FormTemplates/CategoryMainFields';
 import Inner from 'components/Inner';
-import SeoTextEditor from 'components/SeoTextEditor';
+import SeoContentEditor from 'components/SeoContentEditor';
 import { DEFAULT_COMPANY_SLUG, GENDER_ENUMS, ROUTE_CMS } from 'config/common';
 import { getConsoleCategoryDetails } from 'db/dao/category/getConsoleCategoryDetails';
 import { OptionVariantsModel } from 'db/dbModels';
@@ -243,8 +243,8 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
               <Form>
                 <CategoryMainFields />
 
-                <SeoTextEditor label={'SEO текст вверху каталога'} filedName={'textTop'} />
-                <SeoTextEditor label={'SEO текст внизу каталога'} filedName={'textBottom'} />
+                <SeoContentEditor label={'SEO текст вверху каталога'} filedName={'textTop'} />
+                <SeoContentEditor label={'SEO текст внизу каталога'} filedName={'textBottom'} />
 
                 <FixedButtons>
                   <Button type={'submit'} testId={'category-submit'} size={'small'}>

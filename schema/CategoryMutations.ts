@@ -1,6 +1,6 @@
 import { getNextItemId } from 'lib/itemIdUtils';
 import { deleteDocumentsTree, getParentTreeIds } from 'lib/optionUtils';
-import { updateCitiesSeoText } from 'lib/seoTextUtils';
+import { updateCitiesSeoContent } from 'lib/seoContentUtils';
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
@@ -407,14 +407,14 @@ export const CategoryMutations = extendType({
 
           // update seo text
           if (textTop) {
-            await updateCitiesSeoText({
-              seoTextsList: textTop,
+            await updateCitiesSeoContent({
+              seoContentsList: textTop,
               companySlug,
             });
           }
           if (textBottom) {
-            await updateCitiesSeoText({
-              seoTextsList: textBottom,
+            await updateCitiesSeoContent({
+              seoContentsList: textBottom,
               companySlug,
             });
           }

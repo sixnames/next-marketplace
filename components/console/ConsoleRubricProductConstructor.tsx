@@ -1,6 +1,6 @@
 import Button from 'components/button/Button';
 import Inner from 'components/Inner';
-import SeoTextEditor from 'components/SeoTextEditor';
+import SeoContentEditor from 'components/SeoContentEditor';
 import { UpdateProductCardContentInputInterface } from 'db/dao/product/updateProductCardContent';
 import { ProductInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
@@ -34,7 +34,7 @@ const ConsoleRubricProductConstructor: React.FC<ConsoleRubricProductConstructorI
         {() => {
           return (
             <Form>
-              <SeoTextEditor filedName={'cardContent'} />
+              <SeoContentEditor filedName={'cardContent'} />
 
               <div className='flex mb-12 mt-4'>
                 <Button

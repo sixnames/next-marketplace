@@ -1,4 +1,4 @@
-import { updateCitiesSeoText } from 'lib/seoTextUtils';
+import { updateCitiesSeoContent } from 'lib/seoContentUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
   AttributeModel,
@@ -289,14 +289,14 @@ export const RubricMutations = extendType({
 
           // update seo text
           if (textTop) {
-            await updateCitiesSeoText({
-              seoTextsList: textTop,
+            await updateCitiesSeoContent({
+              seoContentsList: textTop,
               companySlug,
             });
           }
           if (textBottom) {
-            await updateCitiesSeoText({
-              seoTextsList: textBottom,
+            await updateCitiesSeoContent({
+              seoContentsList: textBottom,
               companySlug,
             });
           }

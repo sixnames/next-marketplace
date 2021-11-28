@@ -3,7 +3,7 @@ import FixedButtons from 'components/button/FixedButtons';
 import RubricMainFields from 'components/FormTemplates/RubricMainFields';
 import Inner from 'components/Inner';
 import RequestError from 'components/RequestError';
-import SeoTextEditor from 'components/SeoTextEditor';
+import SeoContentEditor from 'components/SeoContentEditor';
 import Spinner from 'components/Spinner';
 import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
 import { getConsoleRubricDetails } from 'db/dao/rubric/getConsoleRubricDetails';
@@ -132,8 +132,8 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
                   rubricVariants={data.getAllRubricVariants}
                   genderOptions={data.getGenderOptions}
                 />
-                <SeoTextEditor label={'SEO текст вверху каталога'} filedName={'textTop'} />
-                <SeoTextEditor label={'SEO текст внизу каталога'} filedName={'textBottom'} />
+                <SeoContentEditor label={'SEO текст вверху каталога'} filedName={'textTop'} />
+                <SeoContentEditor label={'SEO текст внизу каталога'} filedName={'textBottom'} />
 
                 <FixedButtons>
                   <Button type={'submit'} testId={'rubric-submit'}>

@@ -4,7 +4,7 @@ import { RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { RubricInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getRubricAllSeoTexts } from 'lib/seoTextUtils';
+import { getRubricAllSeoContents } from 'lib/seoContentUtils';
 import { ObjectId } from 'mongodb';
 
 interface GetConsoleRubricDetailsPayloadInterface {
@@ -53,14 +53,14 @@ export async function getConsoleRubricDetails({
     name: getFieldStringLocale(initialRubric.nameI18n, locale),
   };
 
-  const seoDescriptionTop = await getRubricAllSeoTexts({
+  const seoDescriptionTop = await getRubricAllSeoContents({
     rubricSlug: rubric.slug,
     rubricId: rubric._id,
     position: CATALOGUE_SEO_TEXT_POSITION_TOP,
     companySlug,
   });
 
-  const seoDescriptionBottom = await getRubricAllSeoTexts({
+  const seoDescriptionBottom = await getRubricAllSeoContents({
     rubricSlug: rubric.slug,
     rubricId: rubric._id,
     position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,

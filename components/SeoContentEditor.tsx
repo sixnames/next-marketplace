@@ -7,14 +7,14 @@ import { useFormikContext } from 'formik';
 import * as React from 'react';
 import { get } from 'lodash';
 
-interface SingleSeoTextEditorInterface {
+interface SingleSeoContentEditorInterface {
   filedName: string;
-  seoTextId: string;
+  seoContentId: string;
 }
 
-export const SingleSeoTextEditor: React.FC<SingleSeoTextEditorInterface> = ({
+export const SingleSeoContentEditor: React.FC<SingleSeoContentEditorInterface> = ({
   filedName,
-  seoTextId,
+  seoContentId,
 }) => {
   const { setFieldValue, values } = useFormikContext();
   const value = get(values, filedName) || PAGE_EDITOR_DEFAULT_VALUE_STRING;
@@ -28,10 +28,10 @@ export const SingleSeoTextEditor: React.FC<SingleSeoTextEditorInterface> = ({
       imageUpload={async (file) => {
         try {
           const formData = new FormData();
-          formData.append('seoTextId', seoTextId);
+          formData.append('seoContentId', seoContentId);
           formData.append('assets', file);
 
-          const responseFetch = await fetch('/api/seo-text/add-asset', {
+          const responseFetch = await fetch('/api/seo-content/add-asset', {
             method: REQUEST_METHOD_POST,
             body: formData,
           });
@@ -57,12 +57,12 @@ export const SingleSeoTextEditor: React.FC<SingleSeoTextEditorInterface> = ({
   );
 };
 
-interface SeoTextEditorInterface {
+interface SeoContentEditorInterface {
   filedName: string;
   label?: string | null;
 }
 
-const SeoTextEditor: React.FC<SeoTextEditorInterface> = ({ filedName, label }) => {
+const SeoContentEditor: React.FC<SeoContentEditorInterface> = ({ filedName, label }) => {
   const { cities } = useConfigContext();
   const { values } = useFormikContext();
 
@@ -76,7 +76,7 @@ const SeoTextEditor: React.FC<SeoTextEditorInterface> = ({ filedName, label }) =
           <div key={city.slug}>
             <Accordion title={`${city.name}`} isOpen={city.slug === DEFAULT_CITY}>
               <div className='ml-8 pt-[var(--lineGap-200)]'>
-                <SingleSeoTextEditor filedName={cityFieldName} seoTextId={_id} />
+                <SingleSeoContentEditor filedName={cityFieldName} seoContentId={_id} />
               </div>
             </Accordion>
           </div>
@@ -86,4 +86,4 @@ const SeoTextEditor: React.FC<SeoTextEditorInterface> = ({ filedName, label }) =
   );
 };
 
-export default SeoTextEditor;
+export default SeoContentEditor;

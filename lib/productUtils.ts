@@ -33,7 +33,7 @@ import {
 } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getTreeFromList } from 'lib/optionUtils';
-import { getProductAllSeoTexts } from 'lib/seoTextUtils';
+import { getProductAllSeoContents } from 'lib/seoContentUtils';
 import { generateCardTitle, generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 import trim from 'trim';
@@ -211,7 +211,7 @@ export async function getCmsProduct({
   };
 
   // card content
-  const cardContent = await getProductAllSeoTexts({
+  const cardContent = await getProductAllSeoContents({
     productSlug: product.slug,
     productId: product._id,
     rubricSlug: product.rubricSlug,

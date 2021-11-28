@@ -57,7 +57,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, seoContents }
               updateTitle={'Редактировать текст'}
               updateHandler={() => {
                 window.open(
-                  `${ROUTE_CMS}/rubrics/${rubric._id}/seo-texts/${dataItem.slug}`,
+                  `${ROUTE_CMS}/rubrics/${rubric._id}/seo-content/${dataItem.slug}`,
                   '_blank',
                 );
               }}
@@ -70,14 +70,14 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, seoContents }
 
   return (
     <CmsRubricLayout rubric={rubric} breadcrumbs={breadcrumbs}>
-      <Inner testId={'rubric-seo-texts-list'}>
+      <Inner testId={'rubric-seo-content-list'}>
         <div className='overflow-x-auto overflow-y-hidden'>
           <Table<SeoContentModel>
             columns={columns}
             data={seoContents}
             onRowDoubleClick={(dataItem) => {
               window.open(
-                `${ROUTE_CMS}/rubrics/${rubric._id}/seo-texts/${dataItem.slug}`,
+                `${ROUTE_CMS}/rubrics/${rubric._id}/seo-content/${dataItem.slug}`,
                 '_blank',
               );
             }}

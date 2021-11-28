@@ -14,7 +14,7 @@ import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getRubricAllSeoTexts } from 'lib/seoTextUtils';
+import { getRubricAllSeoContents } from 'lib/seoContentUtils';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -138,14 +138,14 @@ export const getServerSideProps = async (
     name: getFieldStringLocale(initialRubric.nameI18n, sessionLocale),
   };
 
-  const seoDescriptionTop = await getRubricAllSeoTexts({
+  const seoDescriptionTop = await getRubricAllSeoContents({
     rubricSlug: rubric.slug,
     rubricId: rubric._id,
     companySlug,
     position: CATALOGUE_SEO_TEXT_POSITION_TOP,
   });
 
-  const seoDescriptionBottom = await getRubricAllSeoTexts({
+  const seoDescriptionBottom = await getRubricAllSeoContents({
     rubricSlug: rubric.slug,
     rubricId: rubric._id,
     companySlug,

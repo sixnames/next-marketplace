@@ -59,7 +59,7 @@ import {
   castProductAttributeForUi,
   getProductCurrentViewCastedAttributes,
 } from 'lib/productAttributesUtils';
-import { getProductSeoTextSlug } from 'lib/seoTextUtils';
+import { getProductSeoContentSlug } from 'lib/seoContentUtils';
 import { generateCardTitle } from 'lib/titleUtils';
 import { get } from 'lodash';
 import { ObjectId } from 'mongodb';
@@ -805,15 +805,15 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
     // console.log(`cardShopProducts `, new Date().getTime() - startTime);
 
     // card content
-    const seoTextSlugPayload = await getProductSeoTextSlug({
+    const seoContentSlugPayload = await getProductSeoContentSlug({
       productId: product._id,
       productSlug: product.slug,
       citySlug: city,
       companySlug,
     });
-    const cardContent = seoTextSlugPayload
+    const cardContent = seoContentSlugPayload
       ? await seoContentsCollection.findOne({
-          slug: seoTextSlugPayload.seoTextSlug,
+          slug: seoContentSlugPayload.seoContentSlug,
         })
       : null;
 

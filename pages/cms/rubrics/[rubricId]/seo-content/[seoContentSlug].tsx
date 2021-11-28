@@ -1,6 +1,6 @@
 import Button from 'components/button/Button';
 import Inner from 'components/Inner';
-import { SingleSeoTextEditor } from 'components/SeoTextEditor';
+import { SingleSeoContentEditor } from 'components/SeoContentEditor';
 import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
 import { getConsoleRubricDetails } from 'db/dao/rubric/getConsoleRubricDetails';
 import { SeoContentModel } from 'db/dbModels';
@@ -10,7 +10,7 @@ import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
 import { alwaysString } from 'lib/arrayUtils';
-import { getSeoTextBySlug } from 'lib/seoTextUtils';
+import { getSeoContentBySlug } from 'lib/seoContentUtils';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
@@ -19,10 +19,10 @@ import { Form, Formik } from 'formik';
 interface RubricDetailsInterface {
   rubric: RubricInterface;
   companySlug: string;
-  seoText: SeoContentModel;
+  seoContent: SeoContentModel;
 }
 
-const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, seoText }) => {
+const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, seoContent }) => {
   const [updateSeoContentMutation] = useUpdateSeoContent();
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `SEO тексты`,
@@ -40,12 +40,12 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, seoText }) =>
 
   return (
     <CmsRubricLayout rubric={rubric} breadcrumbs={breadcrumbs}>
-      <Inner testId={'rubric-seo-text-details'}>
+      <Inner testId={'rubric-seo-content-details'}>
         <Formik<SeoContentModel>
-          initialValues={seoText}
+          initialValues={seoContent}
           onSubmit={(values) => {
             updateSeoContentMutation({
-              seoContentId: `${seoText._id}`,
+              seoContentId: `${seoContent._id}`,
               content: values.content,
             }).catch(console.log);
           }}
@@ -53,8 +53,8 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, seoText }) =>
           {() => {
             return (
               <Form>
-                <SingleSeoTextEditor filedName={'content'} seoTextId={`${seoText._id}`} />
-                <Button type={'submit'} testId={'rubric-seo-text-submit'}>
+                <SingleSeoContentEditor filedName={'content'} seoContentId={`${seoContent._id}`} />
+                <Button type={'submit'} testId={'rubric-seo-content-submit'}>
                   Сохранить
                 </Button>
               </Form>
@@ -88,7 +88,7 @@ export const getServerSideProps = async (
   }
 
   const url = alwaysString(query.url);
-  const seoTextSlug = alwaysString(query.seoTextSlug);
+  const seoContentSlug = alwaysString(query.seoContentSlug);
   const companySlug = DEFAULT_COMPANY_SLUG;
 
   const payload = await getConsoleRubricDetails({
@@ -102,13 +102,13 @@ export const getServerSideProps = async (
     };
   }
 
-  const seoText = await getSeoTextBySlug({
+  const seoContent = await getSeoContentBySlug({
     url,
-    seoTextSlug,
+    seoContentSlug,
     companySlug,
     rubricSlug: payload.rubric.slug,
   });
-  if (!seoText) {
+  if (!seoContent) {
     return {
       notFound: true,
     };
@@ -118,7 +118,7 @@ export const getServerSideProps = async (
     props: {
       ...props,
       rubric: castDbData(payload.rubric),
-      seoText: castDbData(seoText),
+      seoContent: castDbData(seoContent),
       companySlug,
     },
   };

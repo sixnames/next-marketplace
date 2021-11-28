@@ -6,7 +6,7 @@ import { useMutationHandler } from 'hooks/mutations/useFetch';
 
 export const useUpdateSeoContent = () => {
   return useMutationHandler<ProductPayloadModel, UpdateSeoContentInputInterface>({
-    path: '/api/seo-text',
+    path: '/api/seo-content',
     method: REQUEST_METHOD_PATCH,
   });
 };

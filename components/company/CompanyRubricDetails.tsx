@@ -1,7 +1,7 @@
 import Button from 'components/button/Button';
 import FixedButtons from 'components/button/FixedButtons';
 import Inner from 'components/Inner';
-import SeoTextEditor from 'components/SeoTextEditor';
+import SeoContentEditor from 'components/SeoContentEditor';
 import { CompanyInterface, RubricInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import { UpdateRubricInput, useUpdateRubricMutation } from 'generated/apolloComponents';
@@ -93,8 +93,8 @@ const CompanyRubricDetails: React.FC<CompanyRubricDetailsInterface> = ({
         {() => {
           return (
             <Form>
-              <SeoTextEditor label={'SEO текст вверху каталога'} filedName={'textTop'} />
-              <SeoTextEditor label={'SEO текст внизу каталога'} filedName={'textBottom'} />
+              <SeoContentEditor label={'SEO текст вверху каталога'} filedName={'textTop'} />
+              <SeoContentEditor label={'SEO текст внизу каталога'} filedName={'textBottom'} />
 
               <FixedButtons>
                 <Button type={'submit'} testId={'rubric-submit'}>

@@ -1,7 +1,7 @@
 import Button from 'components/button/Button';
 import FixedButtons from 'components/button/FixedButtons';
 import Inner from 'components/Inner';
-import SeoTextEditor from 'components/SeoTextEditor';
+import SeoContentEditor from 'components/SeoContentEditor';
 import { GENDER_ENUMS } from 'config/common';
 import { OptionVariantsModel } from 'db/dbModels';
 import { CategoryInterface, CompanyInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
@@ -83,8 +83,8 @@ const CompanyRubricCategoryDetails: React.FC<CompanyRubricCategoryDetailsInterfa
         {() => {
           return (
             <Form>
-              <SeoTextEditor label={'SEO текст вверху каталога'} filedName={'textTop'} />
-              <SeoTextEditor label={'SEO текст внизу каталога'} filedName={'textBottom'} />
+              <SeoContentEditor label={'SEO текст вверху каталога'} filedName={'textTop'} />
+              <SeoContentEditor label={'SEO текст внизу каталога'} filedName={'textBottom'} />
 
               <FixedButtons>
                 <Button type={'submit'} testId={'category-submit'} size={'small'}>

@@ -28,7 +28,7 @@ export async function updateSeoContent({
     }
 
     const { content, seoContentId } = input;
-    const updatedSeoTextResult = await seoContentsCollection.findOneAndUpdate(
+    const updatedSeoContentResult = await seoContentsCollection.findOneAndUpdate(
       {
         _id: new ObjectId(seoContentId),
       },
@@ -38,7 +38,7 @@ export async function updateSeoContent({
         },
       },
     );
-    if (!updatedSeoTextResult.ok) {
+    if (!updatedSeoContentResult.ok) {
       return {
         success: false,
         message: await getApiMessage('seoContent.update.error'),

@@ -52,19 +52,19 @@ import { ObjectId } from 'mongodb';
 import fetch from 'node-fetch';
 import qs from 'qs';
 
-interface CheckSeoTextUniquenessInterface {
+interface CheckSeoContentUniquenessInterface {
   text?: string | null;
   oldText?: string | null;
   companySlug: string;
   seoContentId: ObjectIdModel;
 }
 
-export async function checkSeoTextUniqueness({
+export async function checkSeoContentUniqueness({
   text,
   oldText,
   companySlug,
   seoContentId,
-}: CheckSeoTextUniquenessInterface) {
+}: CheckSeoContentUniquenessInterface) {
   try {
     const { db } = await getDatabase();
 
@@ -118,7 +118,7 @@ export async function checkSeoTextUniqueness({
           const body = {
             userkey: uniqueTextApiKey,
             exceptdomain: domain,
-            callback: `https://${domain}/api/seo-text/uniqueness/${seoContentId}/${locale}`,
+            callback: `https://${domain}/api/seo-content/uniqueness/${seoContentId}/${locale}`,
             text,
           };
 
@@ -137,21 +137,21 @@ export async function checkSeoTextUniqueness({
   }
 }
 
-interface UpdateCitiesSeoTextInterface {
-  seoTextsList: SeoContentCitiesInterface;
+interface UpdateCitiesSeoContentInterface {
+  seoContentsList: SeoContentCitiesInterface;
   companySlug: string;
 }
 
-export async function updateCitiesSeoText({
-  seoTextsList,
+export async function updateCitiesSeoContent({
+  seoContentsList,
   companySlug,
-}: UpdateCitiesSeoTextInterface) {
+}: UpdateCitiesSeoContentInterface) {
   const { db } = await getDatabase();
   const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
 
   const cities = await getCitiesList();
   for await (const city of cities) {
-    const seoContent = seoTextsList[city.slug];
+    const seoContent = seoContentsList[city.slug];
 
     if (seoContent) {
       const oldSeoContent = await seoContentsCollection.findOne({
@@ -159,7 +159,7 @@ export async function updateCitiesSeoText({
       });
 
       // check uniqueness
-      await checkSeoTextUniqueness({
+      await checkSeoContentUniqueness({
         companySlug,
         seoContentId: new ObjectId(seoContent._id),
         text: seoContent.content,
@@ -186,32 +186,32 @@ export async function updateCitiesSeoText({
   }
 }
 
-interface GetCatalogueSeoTextSlugInterface {
+interface GetCatalogueSeoContentSlugInterface {
   filters: string[];
   rubricSlug: string;
   citySlug: string;
   companySlug: string;
 }
 
-interface GetCatalogueSeoTextSlugPayloadInterface {
-  seoTextSlug: string;
+interface GetCatalogueSeoContentSlugPayloadInterface {
+  seoContentSlug: string;
   categoryLeaves: CategoryInterface[];
   noFiltersSelected: boolean;
   inCategory: boolean;
   rubricId: string;
 }
 
-interface GetCatalogueSeoTextSlugAttributeConfigInterface {
+interface GetCatalogueSeoContentSlugAttributeConfigInterface {
   attributeSlug: string;
   optionSlugs: string[];
 }
 
-export async function getCatalogueSeoTextSlug({
+export async function getCatalogueSeoContentSlug({
   filters,
   companySlug,
   citySlug,
   rubricSlug,
-}: GetCatalogueSeoTextSlugInterface): Promise<GetCatalogueSeoTextSlugPayloadInterface | null> {
+}: GetCatalogueSeoContentSlugInterface): Promise<GetCatalogueSeoContentSlugPayloadInterface | null> {
   try {
     const { db } = await getDatabase();
     const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
@@ -242,7 +242,7 @@ export async function getCatalogueSeoTextSlug({
     // get rubric
     const rubric = await rubricsCollection.findOne({ slug: rubricSlug });
     if (!rubric) {
-      console.log('getCatalogueSeoTextSlug Rubric not found');
+      console.log('getCatalogueSeoContentSlug Rubric not found');
       return null;
     }
     const rubricId = rubric._id.toHexString();
@@ -252,7 +252,7 @@ export async function getCatalogueSeoTextSlug({
     if (companySlug !== DEFAULT_COMPANY_SLUG) {
       const company = await companiesCollection.findOne({ slug: companySlug });
       if (!company) {
-        console.log('getCatalogueSeoTextSlug Company not found');
+        console.log('getCatalogueSeoContentSlug Company not found');
         return null;
       }
 
@@ -262,7 +262,7 @@ export async function getCatalogueSeoTextSlug({
     // get city
     const city = await citiesCollection.findOne({ slug: citySlug });
     if (!city) {
-      console.log('getCatalogueSeoTextSlug City not found');
+      console.log('getCatalogueSeoContentSlug City not found');
       return null;
     }
     const cityId = city._id.toHexString();
@@ -346,7 +346,7 @@ export async function getCatalogueSeoTextSlug({
 
     // get attributes
     const attributeConfigs = realFilters.reduce(
-      (acc: GetCatalogueSeoTextSlugAttributeConfigInterface[], filter) => {
+      (acc: GetCatalogueSeoContentSlugAttributeConfigInterface[], filter) => {
         if (categoryCastedFilters.includes(filter)) {
           return acc;
         }
@@ -435,7 +435,7 @@ export async function getCatalogueSeoTextSlug({
       inCategory,
       noFiltersSelected,
       categoryLeaves,
-      seoTextSlug: `${companyId}${cityId}${rubricId}${categoryIds}${brandIds}${brandCollectionIds}${attributeIds}${priceIds}`,
+      seoContentSlug: `${companyId}${cityId}${rubricId}${categoryIds}${brandIds}${brandCollectionIds}${attributeIds}${priceIds}`,
     };
   } catch (e) {
     console.log(e);
@@ -443,38 +443,38 @@ export async function getCatalogueSeoTextSlug({
   }
 }
 
-interface GetCatalogueAllSeoTextsInterface extends GetCatalogueSeoTextSlugInterface {}
-interface GetCatalogueAllSeoTextsPayloadInterface {
-  seoTextTop?: SeoContentModel | null;
-  seoTextTopSlug: string;
-  seoTextBottom?: SeoContentModel | null;
-  seoTextBottomSlug: string;
+interface GetCatalogueAllSeoContentsInterface extends GetCatalogueSeoContentSlugInterface {}
+interface GetCatalogueAllSeoContentsPayloadInterface {
+  seoContentTop?: SeoContentModel | null;
+  seoContentTopSlug: string;
+  seoContentBottom?: SeoContentModel | null;
+  seoContentBottomSlug: string;
   editUrl: string;
   textTopEditUrl: string;
   textBottomEditUrl: string;
 }
 
-export async function getCatalogueAllSeoTexts(
-  props: GetCatalogueAllSeoTextsInterface,
-): Promise<GetCatalogueAllSeoTextsPayloadInterface | null> {
+export async function getCatalogueAllSeoContents(
+  props: GetCatalogueAllSeoContentsInterface,
+): Promise<GetCatalogueAllSeoContentsPayloadInterface | null> {
   const { db } = await getDatabase();
-  const seoTextsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
-  const payload = await getCatalogueSeoTextSlug(props);
+  const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
+  const payload = await getCatalogueSeoContentSlug(props);
 
   if (!payload) {
     return null;
   }
 
-  const { noFiltersSelected, rubricId, seoTextSlug, categoryLeaves } = payload;
+  const { noFiltersSelected, rubricId, seoContentSlug, categoryLeaves } = payload;
 
-  const seoTextTopSlug = `${seoTextSlug}${CATALOGUE_SEO_TEXT_POSITION_TOP}`;
-  const seoTextTop = await seoTextsCollection.findOne({
-    slug: seoTextTopSlug,
+  const seoContentTopSlug = `${seoContentSlug}${CATALOGUE_SEO_TEXT_POSITION_TOP}`;
+  const seoContentTop = await seoContentsCollection.findOne({
+    slug: seoContentTopSlug,
   });
 
-  const seoTextBottomSlug = `${seoTextSlug}${CATALOGUE_SEO_TEXT_POSITION_BOTTOM}`;
-  const seoTextBottom = await seoTextsCollection.findOne({
-    slug: seoTextBottomSlug,
+  const seoContentBottomSlug = `${seoContentSlug}${CATALOGUE_SEO_TEXT_POSITION_BOTTOM}`;
+  const seoContentBottom = await seoContentsCollection.findOne({
+    slug: seoContentBottomSlug,
   });
 
   const baseEditUrl = `/rubrics/${rubricId}`;
@@ -493,41 +493,41 @@ export async function getCatalogueAllSeoTexts(
   }
 
   if (!noFiltersSelected) {
-    textTopEditUrl = `${baseEditUrl}/seo-texts/text/${seoTextTopSlug}`;
-    textBottomEditUrl = `${baseEditUrl}/seo-texts/text/${seoTextBottomSlug}`;
+    textTopEditUrl = `${baseEditUrl}/seo-content/text/${seoContentTopSlug}`;
+    textBottomEditUrl = `${baseEditUrl}/seo-content/text/${seoContentBottomSlug}`;
   }
 
   return {
     editUrl,
     textTopEditUrl,
     textBottomEditUrl,
-    seoTextTop,
-    seoTextTopSlug,
-    seoTextBottom,
-    seoTextBottomSlug,
+    seoContentTop,
+    seoContentTopSlug,
+    seoContentBottom,
+    seoContentBottomSlug,
   };
 }
 
 // document seo text slugs
-interface GetDocumentSeoTextSlugPayloadInterface {
-  seoTextSlug: string;
+interface GetDocumentSeoContentSlugPayloadInterface {
+  seoContentSlug: string;
   url: string;
 }
 
 // product
-interface GetProductSeoTextSlugInterface {
+interface GetProductSeoContentSlugInterface {
   productId: ObjectIdModel;
   productSlug: string;
   citySlug: string;
   companySlug: string;
 }
 
-export async function getProductSeoTextSlug({
+export async function getProductSeoContentSlug({
   companySlug,
   citySlug,
   productId,
   productSlug,
-}: GetProductSeoTextSlugInterface): Promise<GetDocumentSeoTextSlugPayloadInterface | null> {
+}: GetProductSeoContentSlugInterface): Promise<GetDocumentSeoContentSlugPayloadInterface | null> {
   try {
     const { db } = await getDatabase();
     const citiesCollection = db.collection<CityModel>(COL_CITIES);
@@ -538,7 +538,7 @@ export async function getProductSeoTextSlug({
     if (companySlug !== DEFAULT_COMPANY_SLUG) {
       const company = await companiesCollection.findOne({ slug: companySlug });
       if (!company) {
-        console.log('getProductSeoTextSlug Company not found');
+        console.log('getProductSeoContentSlug Company not found');
         return null;
       }
 
@@ -548,13 +548,13 @@ export async function getProductSeoTextSlug({
     // get city
     const city = await citiesCollection.findOne({ slug: citySlug });
     if (!city) {
-      console.log('getProductSeoTextSlug City not found');
+      console.log('getProductSeoContentSlug City not found');
       return null;
     }
     const cityId = city._id.toHexString();
 
     return {
-      seoTextSlug: `${companyId}${cityId}${productId.toHexString()}`,
+      seoContentSlug: `${companyId}${cityId}${productId.toHexString()}`,
       url: `/${companySlug}/${citySlug}/${productSlug}`,
     };
   } catch (e) {
@@ -564,7 +564,7 @@ export async function getProductSeoTextSlug({
 }
 
 // rubric
-interface GetRubricSeoTextSlugInterface {
+interface GetRubricSeoContentSlugInterface {
   rubricId: ObjectIdModel;
   rubricSlug: string;
   citySlug: string;
@@ -572,13 +572,13 @@ interface GetRubricSeoTextSlugInterface {
   position: DescriptionPositionType;
 }
 
-export async function getRubricSeoTextSlug({
+export async function getRubricSeoContentSlug({
   companySlug,
   citySlug,
   rubricId,
   rubricSlug,
   position,
-}: GetRubricSeoTextSlugInterface): Promise<GetDocumentSeoTextSlugPayloadInterface | null> {
+}: GetRubricSeoContentSlugInterface): Promise<GetDocumentSeoContentSlugPayloadInterface | null> {
   try {
     const { db } = await getDatabase();
     const citiesCollection = db.collection<CityModel>(COL_CITIES);
@@ -589,7 +589,7 @@ export async function getRubricSeoTextSlug({
     if (companySlug !== DEFAULT_COMPANY_SLUG) {
       const company = await companiesCollection.findOne({ slug: companySlug });
       if (!company) {
-        console.log('getProductSeoTextSlug Company not found');
+        console.log('getProductSeoContentSlug Company not found');
         return null;
       }
 
@@ -599,13 +599,13 @@ export async function getRubricSeoTextSlug({
     // get city
     const city = await citiesCollection.findOne({ slug: citySlug });
     if (!city) {
-      console.log('getProductSeoTextSlug City not found');
+      console.log('getProductSeoContentSlug City not found');
       return null;
     }
     const cityId = city._id.toHexString();
 
     return {
-      seoTextSlug: `${companyId}${cityId}${rubricId.toHexString()}${position}`,
+      seoContentSlug: `${companyId}${cityId}${rubricId.toHexString()}${position}`,
       url: `/${companySlug}/${citySlug}${ROUTE_CATALOGUE}/${rubricSlug}`,
     };
   } catch (e) {
@@ -615,19 +615,19 @@ export async function getRubricSeoTextSlug({
 }
 
 // category
-interface GetCategorySeoTextSlugInterface {
+interface GetCategorySeoContentSlugInterface {
   categoryId: ObjectIdModel;
   citySlug: string;
   companySlug: string;
   position: DescriptionPositionType;
 }
 
-export async function getCategorySeoTextSlug({
+export async function getCategorySeoContentSlug({
   companySlug,
   citySlug,
   categoryId,
   position,
-}: GetCategorySeoTextSlugInterface): Promise<GetDocumentSeoTextSlugPayloadInterface | null> {
+}: GetCategorySeoContentSlugInterface): Promise<GetDocumentSeoContentSlugPayloadInterface | null> {
   try {
     const { db } = await getDatabase();
     const citiesCollection = db.collection<CityModel>(COL_CITIES);
@@ -666,7 +666,7 @@ export async function getCategorySeoTextSlug({
     if (companySlug !== DEFAULT_COMPANY_SLUG) {
       const company = await companiesCollection.findOne({ slug: companySlug });
       if (!company) {
-        console.log('getCategorySeoTextSlug Company not found');
+        console.log('getCategorySeoContentSlug Company not found');
         return null;
       }
 
@@ -676,13 +676,13 @@ export async function getCategorySeoTextSlug({
     // get city
     const city = await citiesCollection.findOne({ slug: citySlug });
     if (!city) {
-      console.log('getCategorySeoTextSlug City not found');
+      console.log('getCategorySeoContentSlug City not found');
       return null;
     }
     const cityId = city._id.toHexString();
 
     return {
-      seoTextSlug: `${companyId}${cityId}${category.rubricId.toHexString()}${categoryIds}${position}`,
+      seoContentSlug: `${companyId}${cityId}${category.rubricId.toHexString()}${categoryIds}${position}`,
       url: `/${companySlug}/${citySlug}${ROUTE_CATALOGUE}/${
         category.rubricSlug
       }/${sortedFilters.join('/')}`,
@@ -694,7 +694,7 @@ export async function getCategorySeoTextSlug({
 }
 
 // rubric
-interface GetRubricSeoTextInterface {
+interface GetRubricSeoContentInterface {
   companySlug: string;
   position: DescriptionPositionType;
   rubricSlug: string;
@@ -702,77 +702,77 @@ interface GetRubricSeoTextInterface {
   citySlug: string;
 }
 
-export async function getRubricSeoText({
+export async function getRubricSeoContent({
   companySlug,
   position,
   rubricSlug,
   rubricId,
   citySlug,
-}: GetRubricSeoTextInterface): Promise<SeoContentModel | null> {
+}: GetRubricSeoContentInterface): Promise<SeoContentModel | null> {
   const { db } = await getDatabase();
 
-  const seoTextSlugPayload = await getRubricSeoTextSlug({
+  const seoContentSlugPayload = await getRubricSeoContentSlug({
     rubricId,
     companySlug,
     rubricSlug,
     citySlug,
     position,
   });
-  if (!seoTextSlugPayload) {
+  if (!seoContentSlugPayload) {
     return null;
   }
 
   const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
-  const seoText = await seoContentsCollection.findOne({
-    slug: seoTextSlugPayload.seoTextSlug,
+  const seoContent = await seoContentsCollection.findOne({
+    slug: seoContentSlugPayload.seoContentSlug,
   });
 
-  if (!seoText) {
-    const newSeoTextResult = await seoContentsCollection.insertOne({
-      url: seoTextSlugPayload.url,
-      slug: seoTextSlugPayload.seoTextSlug,
+  if (!seoContent) {
+    const newSeoContentResult = await seoContentsCollection.insertOne({
+      url: seoContentSlugPayload.url,
+      slug: seoContentSlugPayload.seoContentSlug,
       content: PAGE_EDITOR_DEFAULT_VALUE_STRING,
       rubricSlug,
       companySlug,
     });
-    if (!newSeoTextResult.acknowledged) {
+    if (!newSeoContentResult.acknowledged) {
       return null;
     }
-    const newSeoText = await seoContentsCollection.findOne({
-      _id: newSeoTextResult.insertedId,
+    const newSeoContent = await seoContentsCollection.findOne({
+      _id: newSeoContentResult.insertedId,
     });
-    return newSeoText;
+    return newSeoContent;
   }
 
-  return seoText;
+  return seoContent;
 }
 
-interface GetRubricAllSeoTextsInterface extends Omit<GetRubricSeoTextInterface, 'citySlug'> {}
-export async function getRubricAllSeoTexts({
+interface GetRubricAllSeoContentsInterface extends Omit<GetRubricSeoContentInterface, 'citySlug'> {}
+export async function getRubricAllSeoContents({
   companySlug,
   position,
   rubricSlug,
   rubricId,
-}: GetRubricAllSeoTextsInterface): Promise<SeoContentCitiesInterface> {
+}: GetRubricAllSeoContentsInterface): Promise<SeoContentCitiesInterface> {
   const cities = await getCitiesList();
   let payload: SeoContentCitiesInterface = {};
   for await (const city of cities) {
-    const seoText = await getRubricSeoText({
+    const seoContent = await getRubricSeoContent({
       companySlug,
       position,
       rubricSlug,
       rubricId,
       citySlug: city.slug,
     });
-    if (seoText) {
-      payload[city.slug] = seoText;
+    if (seoContent) {
+      payload[city.slug] = seoContent;
     }
   }
   return payload;
 }
 
 // category
-interface GetCategorySeoTextInterface {
+interface GetCategorySeoContentInterface {
   companySlug: string;
   citySlug: string;
   position: DescriptionPositionType;
@@ -780,75 +780,76 @@ interface GetCategorySeoTextInterface {
   rubricSlug: string;
 }
 
-export async function getCategorySeoText({
+export async function getCategorySeoContent({
   companySlug,
   position,
   categoryId,
   citySlug,
   rubricSlug,
-}: GetCategorySeoTextInterface): Promise<SeoContentModel | null> {
+}: GetCategorySeoContentInterface): Promise<SeoContentModel | null> {
   const { db } = await getDatabase();
-  const seoTextSlugPayload = await getCategorySeoTextSlug({
+  const seoContentSlugPayload = await getCategorySeoContentSlug({
     categoryId,
     companySlug,
     citySlug,
     position,
   });
-  if (!seoTextSlugPayload) {
+  if (!seoContentSlugPayload) {
     return null;
   }
 
   const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
-  const seoText = await seoContentsCollection.findOne({
-    slug: seoTextSlugPayload.seoTextSlug,
+  const seoContent = await seoContentsCollection.findOne({
+    slug: seoContentSlugPayload.seoContentSlug,
   });
 
-  if (!seoText) {
-    const newSeoTextResult = await seoContentsCollection.insertOne({
-      url: seoTextSlugPayload.url,
-      slug: seoTextSlugPayload.seoTextSlug,
+  if (!seoContent) {
+    const newSeoContentResult = await seoContentsCollection.insertOne({
+      url: seoContentSlugPayload.url,
+      slug: seoContentSlugPayload.seoContentSlug,
       content: PAGE_EDITOR_DEFAULT_VALUE_STRING,
       rubricSlug,
       companySlug,
     });
-    if (!newSeoTextResult.acknowledged) {
+    if (!newSeoContentResult.acknowledged) {
       return null;
     }
-    const newSeoText = await seoContentsCollection.findOne({
-      _id: newSeoTextResult.insertedId,
+    const newSeoContent = await seoContentsCollection.findOne({
+      _id: newSeoContentResult.insertedId,
     });
-    return newSeoText;
+    return newSeoContent;
   }
 
-  return seoText;
+  return seoContent;
 }
 
-interface GetCategoryAllSeoTextsInterface extends Omit<GetCategorySeoTextInterface, 'citySlug'> {}
-export async function getCategoryAllSeoTexts({
+interface GetCategoryAllSeoContentsInterface
+  extends Omit<GetCategorySeoContentInterface, 'citySlug'> {}
+export async function getCategoryAllSeoContents({
   companySlug,
   position,
   categoryId,
   rubricSlug,
-}: GetCategoryAllSeoTextsInterface): Promise<SeoContentCitiesInterface> {
+}: GetCategoryAllSeoContentsInterface): Promise<SeoContentCitiesInterface> {
   const cities = await getCitiesList();
   let payload: SeoContentCitiesInterface = {};
   for await (const city of cities) {
-    const seoText = await getCategorySeoText({
+    const seoContent = await getCategorySeoContent({
       companySlug,
       position,
       categoryId,
       rubricSlug,
       citySlug: city.slug,
     });
-    if (seoText) {
-      payload[city.slug] = seoText;
+    if (seoContent) {
+      payload[city.slug] = seoContent;
     }
   }
   return payload;
 }
 
 // product
-interface GetProductSeoTextInterface {
+interface GetProductSeoContentInterface {
   companySlug: string;
   citySlug: string;
   productId: ObjectIdModel;
@@ -856,95 +857,96 @@ interface GetProductSeoTextInterface {
   rubricSlug: string;
 }
 
-export async function getProductSeoText({
+export async function getProductSeoContent({
   companySlug,
   productId,
   citySlug,
   productSlug,
   rubricSlug,
-}: GetProductSeoTextInterface): Promise<SeoContentModel | null> {
+}: GetProductSeoContentInterface): Promise<SeoContentModel | null> {
   const { db } = await getDatabase();
   const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
 
-  const seoTextSlugPayload = await getProductSeoTextSlug({
+  const seoContentSlugPayload = await getProductSeoContentSlug({
     companySlug,
     productId,
     citySlug,
     productSlug,
   });
-  if (!seoTextSlugPayload) {
+  if (!seoContentSlugPayload) {
     return null;
   }
 
-  const seoText = await seoContentsCollection.findOne({
-    slug: seoTextSlugPayload.seoTextSlug,
+  const seoContent = await seoContentsCollection.findOne({
+    slug: seoContentSlugPayload.seoContentSlug,
   });
 
-  if (!seoText) {
-    const newSeoTextResult = await seoContentsCollection.insertOne({
-      url: seoTextSlugPayload.url,
-      slug: seoTextSlugPayload.seoTextSlug,
+  if (!seoContent) {
+    const newSeoContentResult = await seoContentsCollection.insertOne({
+      url: seoContentSlugPayload.url,
+      slug: seoContentSlugPayload.seoContentSlug,
       content: PAGE_EDITOR_DEFAULT_VALUE_STRING,
       companySlug,
       rubricSlug,
     });
-    if (!newSeoTextResult.acknowledged) {
+    if (!newSeoContentResult.acknowledged) {
       return null;
     }
-    const newSeoText = await seoContentsCollection.findOne({
-      _id: newSeoTextResult.insertedId,
+    const newSeoContent = await seoContentsCollection.findOne({
+      _id: newSeoContentResult.insertedId,
     });
-    return newSeoText;
+    return newSeoContent;
   }
 
-  return seoText;
+  return seoContent;
 }
 
-interface GetProductAllSeoTextsInterface extends Omit<GetProductSeoTextInterface, 'citySlug'> {}
-export async function getProductAllSeoTexts({
+interface GetProductAllSeoContentsInterface
+  extends Omit<GetProductSeoContentInterface, 'citySlug'> {}
+export async function getProductAllSeoContents({
   companySlug,
   productId,
   productSlug,
   rubricSlug,
-}: GetProductAllSeoTextsInterface): Promise<SeoContentCitiesInterface> {
+}: GetProductAllSeoContentsInterface): Promise<SeoContentCitiesInterface> {
   const cities = await getCitiesList();
   let payload: SeoContentCitiesInterface = {};
   for await (const city of cities) {
-    const seoText = await getProductSeoText({
+    const seoContent = await getProductSeoContent({
       companySlug,
       productId,
       productSlug,
       citySlug: city.slug,
       rubricSlug,
     });
-    if (seoText) {
-      payload[city.slug] = seoText;
+    if (seoContent) {
+      payload[city.slug] = seoContent;
     }
   }
   return payload;
 }
 
-interface GetSeoTextBySlugInterface {
-  seoTextSlug: string;
+interface GetSeoContentBySlugInterface {
+  seoContentSlug: string;
   companySlug: string;
   rubricSlug: string;
   url: string;
 }
-export async function getSeoTextBySlug({
-  seoTextSlug,
+export async function getSeoContentBySlug({
+  seoContentSlug,
   companySlug,
   rubricSlug,
   url,
-}: GetSeoTextBySlugInterface): Promise<SeoContentModel | null> {
+}: GetSeoContentBySlugInterface): Promise<SeoContentModel | null> {
   const { db } = await getDatabase();
   const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
-  let seoText = await seoContentsCollection.findOne({
-    slug: seoTextSlug,
+  let seoContent = await seoContentsCollection.findOne({
+    slug: seoContentSlug,
   });
 
-  if (!seoText) {
-    const createdSeoTextResult = await seoContentsCollection.insertOne({
-      slug: seoTextSlug,
+  if (!seoContent) {
+    const createdSeoContentResult = await seoContentsCollection.insertOne({
+      slug: seoContentSlug,
       content: PAGE_EDITOR_DEFAULT_VALUE_STRING,
       seoLocales: [],
       companySlug,
@@ -952,10 +954,10 @@ export async function getSeoTextBySlug({
       url,
     });
 
-    seoText = await seoContentsCollection.findOne({
-      _id: createdSeoTextResult.insertedId,
+    seoContent = await seoContentsCollection.findOne({
+      _id: createdSeoContentResult.insertedId,
     });
   }
 
-  return seoText;
+  return seoContent;
 }

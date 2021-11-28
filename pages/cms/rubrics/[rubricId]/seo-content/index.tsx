@@ -1,7 +1,7 @@
-import ContentItemControls from 'components/button/ContentItemControls';
+import ConsoleSeoContentsList, {
+  ConsoleSeoContentsListInterface,
+} from 'components/console/ConsoleSeoContentsList';
 import Inner from 'components/Inner';
-import Link from 'components/Link/Link';
-import Table, { TableColumn } from 'components/Table';
 import { DEFAULT_COMPANY_SLUG, PAGE_EDITOR_DEFAULT_VALUE_STRING, ROUTE_CMS } from 'config/common';
 import { COL_SEO_CONTENTS } from 'db/collectionNames';
 import { getConsoleRubricDetails } from 'db/dao/rubric/getConsoleRubricDetails';
@@ -15,13 +15,13 @@ import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
-interface RubricDetailsInterface {
+interface RubricDetailsInterface extends ConsoleSeoContentsListInterface {
   rubric: RubricInterface;
   companySlug: string;
   seoContents: SeoContentModel[];
 }
 
-const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, seoContents }) => {
+const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, seoContents, basePath }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `SEO тексты`,
     config: [
@@ -31,58 +31,15 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, seoContents }
       },
       {
         name: `${rubric.name}`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}`,
+        href: basePath,
       },
     ],
   };
 
-  const columns: TableColumn<SeoContentModel>[] = [
-    {
-      accessor: 'url',
-      headTitle: 'Ссылка',
-      render: ({ cellData }) => {
-        return (
-          <Link target={'_blank'} href={cellData}>
-            {cellData}
-          </Link>
-        );
-      },
-    },
-    {
-      render: ({ dataItem }) => {
-        return (
-          <div className='flex justify-end'>
-            <ContentItemControls
-              testId={dataItem.slug}
-              updateTitle={'Редактировать текст'}
-              updateHandler={() => {
-                window.open(
-                  `${ROUTE_CMS}/rubrics/${rubric._id}/seo-content/${dataItem.slug}`,
-                  '_blank',
-                );
-              }}
-            />
-          </div>
-        );
-      },
-    },
-  ];
-
   return (
     <CmsRubricLayout rubric={rubric} breadcrumbs={breadcrumbs}>
-      <Inner testId={'rubric-seo-content-list'}>
-        <div className='overflow-x-auto overflow-y-hidden'>
-          <Table<SeoContentModel>
-            columns={columns}
-            data={seoContents}
-            onRowDoubleClick={(dataItem) => {
-              window.open(
-                `${ROUTE_CMS}/rubrics/${rubric._id}/seo-content/${dataItem.slug}`,
-                '_blank',
-              );
-            }}
-          />
-        </div>
+      <Inner>
+        <ConsoleSeoContentsList seoContents={seoContents} basePath={basePath} />
       </Inner>
     </CmsRubricLayout>
   );
@@ -138,6 +95,7 @@ export const getServerSideProps = async (
       ...props,
       rubric: castDbData(payload.rubric),
       seoContents: castDbData(seoContents),
+      basePath: `${ROUTE_CMS}/rubrics/${payload.rubric._id}`,
       companySlug,
     },
   };

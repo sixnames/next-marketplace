@@ -1,25 +1,28 @@
-import ConsoleSeoContentDetails, {
-  ConsoleSeoContentDetailsInterface,
-} from 'components/console/ConsoleSeoContentDetails';
+import ConsoleSeoContentsList, {
+  ConsoleSeoContentsListInterface,
+} from 'components/console/ConsoleSeoContentsList';
 import Inner from 'components/Inner';
-import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
+import { PAGE_EDITOR_DEFAULT_VALUE_STRING, ROUTE_CMS } from 'config/common';
+import { COL_COMPANIES, COL_SEO_CONTENTS } from 'db/collectionNames';
 import { getConsoleRubricDetails } from 'db/dao/rubric/getConsoleRubricDetails';
-import { RubricInterface } from 'db/uiInterfaces';
+import { SeoContentModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { CompanyInterface, RubricInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
-import { alwaysString } from 'lib/arrayUtils';
-import { getSeoContentBySlug } from 'lib/seoContentUtils';
+import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
-interface RubricDetailsInterface extends ConsoleSeoContentDetailsInterface {
+interface RubricDetailsInterface extends ConsoleSeoContentsListInterface {
   rubric: RubricInterface;
   companySlug: string;
+  seoContents: SeoContentModel[];
 }
 
-const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, seoContent }) => {
+const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, seoContents, basePath }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `SEO тексты`,
     config: [
@@ -29,7 +32,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, seoContent })
       },
       {
         name: `${rubric.name}`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}`,
+        href: basePath,
       },
     ],
   };
@@ -37,7 +40,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, seoContent })
   return (
     <CmsRubricLayout rubric={rubric} breadcrumbs={breadcrumbs}>
       <Inner>
-        <ConsoleSeoContentDetails seoContent={seoContent} />
+        <ConsoleSeoContentsList seoContents={seoContents} basePath={basePath} />
       </Inner>
     </CmsRubricLayout>
   );
@@ -57,16 +60,34 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<RubricPageInterface>> => {
   const { query } = context;
+  const { db } = await getDatabase();
+  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
+  const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
   const { props } = await getAppInitialData({ context });
-  if (!props || !query.rubricId) {
+  if (!props || !query.rubricId || !query.companyId) {
     return {
       notFound: true,
     };
   }
 
-  const url = alwaysString(query.url);
-  const seoContentSlug = alwaysString(query.seoContentSlug);
-  const companySlug = DEFAULT_COMPANY_SLUG;
+  // get company
+  const companyId = new ObjectId(`${query.companyId}`);
+  const companyAggregationResult = await companiesCollection
+    .aggregate([
+      {
+        $match: {
+          _id: companyId,
+        },
+      },
+    ])
+    .toArray();
+  const companyResult = companyAggregationResult[0];
+  if (!companyResult) {
+    return {
+      notFound: true,
+    };
+  }
+  const companySlug = companyResult.slug;
 
   const payload = await getConsoleRubricDetails({
     locale: props.sessionLocale,
@@ -79,23 +100,22 @@ export const getServerSideProps = async (
     };
   }
 
-  const seoContent = await getSeoContentBySlug({
-    url,
-    seoContentSlug,
-    companySlug,
-    rubricSlug: payload.rubric.slug,
-  });
-  if (!seoContent) {
-    return {
-      notFound: true,
-    };
-  }
+  const seoContents = await seoContentsCollection
+    .find({
+      companySlug,
+      rubricSlug: payload.rubric.slug,
+      content: {
+        $ne: PAGE_EDITOR_DEFAULT_VALUE_STRING,
+      },
+    })
+    .toArray();
 
   return {
     props: {
       ...props,
       rubric: castDbData(payload.rubric),
-      seoContent: castDbData(seoContent),
+      seoContents: castDbData(seoContents),
+      basePath: `${ROUTE_CMS}/rubrics/${payload.rubric._id}`,
       companySlug,
     },
   };

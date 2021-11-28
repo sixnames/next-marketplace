@@ -2,14 +2,17 @@ import ConsoleSeoContentDetails, {
   ConsoleSeoContentDetailsInterface,
 } from 'components/console/ConsoleSeoContentDetails';
 import Inner from 'components/Inner';
-import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
+import { ROUTE_CMS } from 'config/common';
+import { COL_COMPANIES } from 'db/collectionNames';
 import { getConsoleRubricDetails } from 'db/dao/rubric/getConsoleRubricDetails';
-import { RubricInterface } from 'db/uiInterfaces';
+import { getDatabase } from 'db/mongodb';
+import { CompanyInterface, RubricInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
 import { alwaysString } from 'lib/arrayUtils';
 import { getSeoContentBySlug } from 'lib/seoContentUtils';
+import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
@@ -58,7 +61,9 @@ export const getServerSideProps = async (
 ): Promise<GetServerSidePropsResult<RubricPageInterface>> => {
   const { query } = context;
   const { props } = await getAppInitialData({ context });
-  if (!props || !query.rubricId) {
+  const { db } = await getDatabase();
+  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
+  if (!props || !query.rubricId || !query.companyId) {
     return {
       notFound: true,
     };
@@ -66,7 +71,25 @@ export const getServerSideProps = async (
 
   const url = alwaysString(query.url);
   const seoContentSlug = alwaysString(query.seoContentSlug);
-  const companySlug = DEFAULT_COMPANY_SLUG;
+
+  // get company
+  const companyId = new ObjectId(`${query.companyId}`);
+  const companyAggregationResult = await companiesCollection
+    .aggregate([
+      {
+        $match: {
+          _id: companyId,
+        },
+      },
+    ])
+    .toArray();
+  const companyResult = companyAggregationResult[0];
+  if (!companyResult) {
+    return {
+      notFound: true,
+    };
+  }
+  const companySlug = companyResult.slug;
 
   const payload = await getConsoleRubricDetails({
     locale: props.sessionLocale,

@@ -1,26 +1,37 @@
+import Button from 'components/button/Button';
 import Inner from 'components/Inner';
+import { SingleSeoTextEditor } from 'components/SeoTextEditor';
 import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
 import { getConsoleRubricDetails } from 'db/dao/rubric/getConsoleRubricDetails';
+import { SeoContentModel } from 'db/dbModels';
 import { RubricInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
+import { alwaysString } from 'lib/arrayUtils';
+import { getSeoTextBySlug } from 'lib/seoTextUtils';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { Form, Formik } from 'formik';
 
 interface RubricDetailsInterface {
   rubric: RubricInterface;
   companySlug: string;
+  seoText: SeoContentModel;
 }
 
-const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric }) => {
+const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, seoText }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: `${rubric.name}`,
+    currentPageName: `SEO тексты`,
     config: [
       {
         name: 'Рубрикатор',
         href: `${ROUTE_CMS}/rubrics`,
+      },
+      {
+        name: `${rubric.name}`,
+        href: `${ROUTE_CMS}/rubrics/${rubric._id}`,
       },
     ],
   };
@@ -28,9 +39,23 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric }) => {
   return (
     <CmsRubricLayout rubric={rubric} breadcrumbs={breadcrumbs}>
       <Inner testId={'rubric-seo-text-details'}>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ea magnam qui reiciendis? Adipisci
-        asperiores ea iure nulla obcaecati possimus quasi repellendus reprehenderit sint vel, velit
-        voluptatum. Laborum nesciunt omnis quisquam.
+        <Formik
+          initialValues={seoText}
+          onSubmit={(values) => {
+            console.log(values);
+          }}
+        >
+          {() => {
+            return (
+              <Form>
+                <SingleSeoTextEditor filedName={'content'} seoTextId={`${seoText._id}`} />
+                <Button type={'submit'} testId={'rubric-seo-text-submit'}>
+                  Сохранить
+                </Button>
+              </Form>
+            );
+          }}
+        </Formik>
       </Inner>
     </CmsRubricLayout>
   );
@@ -57,12 +82,28 @@ export const getServerSideProps = async (
     };
   }
 
+  const url = alwaysString(query.url);
+  const seoTextSlug = alwaysString(query.seoTextSlug);
+  const companySlug = DEFAULT_COMPANY_SLUG;
+
   const payload = await getConsoleRubricDetails({
     locale: props.sessionLocale,
     rubricId: `${query.rubricId}`,
-    companySlug: DEFAULT_COMPANY_SLUG,
+    companySlug,
   });
   if (!payload) {
+    return {
+      notFound: true,
+    };
+  }
+
+  const seoText = await getSeoTextBySlug({
+    url,
+    seoTextSlug,
+    companySlug,
+    rubricSlug: payload.rubric.slug,
+  });
+  if (!seoText) {
     return {
       notFound: true,
     };
@@ -72,7 +113,8 @@ export const getServerSideProps = async (
     props: {
       ...props,
       rubric: castDbData(payload.rubric),
-      companySlug: DEFAULT_COMPANY_SLUG,
+      seoText: castDbData(seoText),
+      companySlug,
     },
   };
 };

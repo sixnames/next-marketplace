@@ -923,3 +923,39 @@ export async function getProductAllSeoTexts({
   }
   return payload;
 }
+
+interface GetSeoTextBySlugInterface {
+  seoTextSlug: string;
+  companySlug: string;
+  rubricSlug: string;
+  url: string;
+}
+export async function getSeoTextBySlug({
+  seoTextSlug,
+  companySlug,
+  rubricSlug,
+  url,
+}: GetSeoTextBySlugInterface): Promise<SeoContentModel | null> {
+  const { db } = await getDatabase();
+  const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
+  let seoText = await seoContentsCollection.findOne({
+    slug: seoTextSlug,
+  });
+
+  if (!seoText) {
+    const createdSeoTextResult = await seoContentsCollection.insertOne({
+      slug: seoTextSlug,
+      content: PAGE_EDITOR_DEFAULT_VALUE_STRING,
+      seoLocales: [],
+      companySlug,
+      rubricSlug,
+      url,
+    });
+
+    seoText = await seoContentsCollection.findOne({
+      _id: createdSeoTextResult.insertedId,
+    });
+  }
+
+  return seoText;
+}

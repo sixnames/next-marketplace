@@ -51,7 +51,6 @@ const CmsRubricLayout: React.FC<CmsRubricLayoutInterface> = ({
         name: 'SEO тексты',
         testId: 'seo-texts',
         path: `${basePath || ROUTE_CMS}/rubrics/${rubric._id}/seo-texts`,
-        exact: true,
       },
     ];
   }, [basePath, hideAttributesPath, rubric._id]);

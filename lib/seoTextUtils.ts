@@ -477,6 +477,7 @@ interface GetRubricSeoTextSlugInterface {
   rubricSlug: string;
   citySlug: string;
   companySlug: string;
+  position: DescriptionPositionType;
 }
 
 export async function getRubricSeoTextSlug({
@@ -484,6 +485,7 @@ export async function getRubricSeoTextSlug({
   citySlug,
   rubricId,
   rubricSlug,
+  position,
 }: GetRubricSeoTextSlugInterface): Promise<GetDocumentSeoTextSlugPayloadInterface | null> {
   try {
     const { db } = await getDatabase();
@@ -511,7 +513,7 @@ export async function getRubricSeoTextSlug({
     const cityId = city._id.toHexString();
 
     return {
-      seoTextSlug: `${companyId}${cityId}${rubricId.toHexString()}`,
+      seoTextSlug: `${companyId}${cityId}${rubricId.toHexString()}${position}`,
       url: `/${companySlug}/${citySlug}${ROUTE_CATALOGUE}/${rubricSlug}`,
     };
   } catch (e) {
@@ -525,12 +527,14 @@ interface GetCategorySeoTextSlugInterface {
   categoryId: ObjectIdModel;
   citySlug: string;
   companySlug: string;
+  position: DescriptionPositionType;
 }
 
 export async function getCategorySeoTextSlug({
   companySlug,
   citySlug,
   categoryId,
+  position,
 }: GetCategorySeoTextSlugInterface): Promise<GetDocumentSeoTextSlugPayloadInterface | null> {
   try {
     const { db } = await getDatabase();
@@ -570,7 +574,7 @@ export async function getCategorySeoTextSlug({
     if (companySlug !== DEFAULT_COMPANY_SLUG) {
       const company = await companiesCollection.findOne({ slug: companySlug });
       if (!company) {
-        console.log('getProductSeoTextSlug Company not found');
+        console.log('getCategorySeoTextSlug Company not found');
         return null;
       }
 
@@ -580,13 +584,13 @@ export async function getCategorySeoTextSlug({
     // get city
     const city = await citiesCollection.findOne({ slug: citySlug });
     if (!city) {
-      console.log('getProductSeoTextSlug City not found');
+      console.log('getCategorySeoTextSlug City not found');
       return null;
     }
     const cityId = city._id.toHexString();
 
     return {
-      seoTextSlug: `${companyId}${cityId}${category.rubricId.toHexString()}${categoryIds}`,
+      seoTextSlug: `${companyId}${cityId}${category.rubricId.toHexString()}${categoryIds}${position}`,
       url: `/${companySlug}/${citySlug}${ROUTE_CATALOGUE}/${
         category.rubricSlug
       }/${sortedFilters.join('/')}`,
@@ -620,6 +624,7 @@ export async function getRubricSeoText({
     companySlug,
     rubricSlug,
     citySlug,
+    position,
   });
   if (!seoTextSlugPayload) {
     return null;
@@ -628,7 +633,6 @@ export async function getRubricSeoText({
   const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
   const seoText = await seoContentsCollection.findOne({
     slug: seoTextSlugPayload.seoTextSlug,
-    position,
   });
 
   if (!seoText) {
@@ -636,7 +640,7 @@ export async function getRubricSeoText({
       url: seoTextSlugPayload.url,
       slug: seoTextSlugPayload.seoTextSlug,
       content: PAGE_EDITOR_DEFAULT_VALUE_STRING,
-      position,
+      companySlug,
     });
     if (!newSeoTextResult.acknowledged) {
       return null;
@@ -693,6 +697,7 @@ export async function getCategorySeoText({
     categoryId,
     companySlug,
     citySlug,
+    position,
   });
   if (!seoTextSlugPayload) {
     return null;
@@ -701,7 +706,6 @@ export async function getCategorySeoText({
   const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
   const seoText = await seoContentsCollection.findOne({
     slug: seoTextSlugPayload.seoTextSlug,
-    position,
   });
 
   if (!seoText) {
@@ -709,7 +713,7 @@ export async function getCategorySeoText({
       url: seoTextSlugPayload.url,
       slug: seoTextSlugPayload.seoTextSlug,
       content: PAGE_EDITOR_DEFAULT_VALUE_STRING,
-      position,
+      companySlug,
     });
     if (!newSeoTextResult.acknowledged) {
       return null;
@@ -781,6 +785,7 @@ export async function getProductSeoText({
       url: seoTextSlugPayload.url,
       slug: seoTextSlugPayload.seoTextSlug,
       content: PAGE_EDITOR_DEFAULT_VALUE_STRING,
+      companySlug,
     });
     if (!newSeoTextResult.acknowledged) {
       return null;

@@ -833,9 +833,9 @@ export interface CategoryModel extends CountersModel {
 export interface SeoContentModel {
   _id: ObjectIdModel;
   slug: string;
+  companySlug: string;
   url: string;
   content: string;
-  position?: DescriptionPositionType | null;
   seoLocales?: TextUniquenessApiParsedResponseModel[] | null;
 }
 

@@ -682,5 +682,9 @@ export type MessageSlug =
   | 'validation.promo.cashbackPercent'
   | 'validation.promo.datesError'
 
+  // Seo content ----------
+  | 'seoContent.update.error'
+  | 'seoContent.update.success'
+
   // Fallback for empty key
   | 'none';

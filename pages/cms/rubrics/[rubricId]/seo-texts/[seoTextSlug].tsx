@@ -5,6 +5,7 @@ import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
 import { getConsoleRubricDetails } from 'db/dao/rubric/getConsoleRubricDetails';
 import { SeoContentModel } from 'db/dbModels';
 import { RubricInterface } from 'db/uiInterfaces';
+import { useUpdateSeoContent } from 'hooks/mutations/useSeoContentMutations';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
@@ -22,6 +23,7 @@ interface RubricDetailsInterface {
 }
 
 const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, seoText }) => {
+  const [updateSeoContentMutation] = useUpdateSeoContent();
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `SEO тексты`,
     config: [
@@ -39,10 +41,13 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, seoText }) =>
   return (
     <CmsRubricLayout rubric={rubric} breadcrumbs={breadcrumbs}>
       <Inner testId={'rubric-seo-text-details'}>
-        <Formik
+        <Formik<SeoContentModel>
           initialValues={seoText}
           onSubmit={(values) => {
-            console.log(values);
+            updateSeoContentMutation({
+              seoContentId: `${seoText._id}`,
+              content: values.content,
+            }).catch(console.log);
           }}
         >
           {() => {

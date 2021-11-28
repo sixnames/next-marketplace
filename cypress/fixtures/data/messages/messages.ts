@@ -34,6 +34,7 @@ import { blogAttributeMessages } from '../../apiMessages/blogAttributeMessages';
 import { blogPostsMessages } from '../../apiMessages/blogPostsMessages';
 import { userCategoryMessages } from '../../apiMessages/userCategoryMessages';
 import { promoMessages } from '../../apiMessages/promoMessages';
+import { seoContentMessages } from '../../apiMessages/seoContentMessages';
 
 interface GenerateMessagesForGroupInterface {
   initialMessages: MessageBaseInterface[];
@@ -187,6 +188,10 @@ const config: GenerateMessagesForGroupInterface[] = [
   {
     initialMessages: promoMessages,
     groupName: 'Акции',
+  },
+  {
+    initialMessages: seoContentMessages,
+    groupName: 'SEO контент',
   },
 ];
 

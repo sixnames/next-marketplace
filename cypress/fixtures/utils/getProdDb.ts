@@ -164,7 +164,7 @@ export async function updateIndexes(db: Db) {
   await createCollectionIfNotExist(COL_SEO_CONTENTS);
   const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
   await seoContentsCollection.createIndex({ slug: 1 }, { unique: true });
-  await seoContentsCollection.createIndex({ companySlug: 1, rubricSlug: 1 });
+  await seoContentsCollection.createIndex({ companySlug: 1, rubricSlug: 1, content: 1 });
 
   // Users
   await createCollectionIfNotExist(COL_USERS);

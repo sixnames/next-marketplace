@@ -1,6 +1,12 @@
+import ContentItemControls from 'components/button/ContentItemControls';
 import Inner from 'components/Inner';
-import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
+import Link from 'components/Link/Link';
+import Table, { TableColumn } from 'components/Table';
+import { DEFAULT_COMPANY_SLUG, PAGE_EDITOR_DEFAULT_VALUE_STRING, ROUTE_CMS } from 'config/common';
+import { COL_SEO_CONTENTS } from 'db/collectionNames';
 import { getConsoleRubricDetails } from 'db/dao/rubric/getConsoleRubricDetails';
+import { SeoContentModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
 import { RubricInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
@@ -12,9 +18,10 @@ import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from '
 interface RubricDetailsInterface {
   rubric: RubricInterface;
   companySlug: string;
+  seoContents: SeoContentModel[];
 }
 
-const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric }) => {
+const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, seoContents }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `SEO тексты`,
     config: [
@@ -29,12 +36,53 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric }) => {
     ],
   };
 
+  const columns: TableColumn<SeoContentModel>[] = [
+    {
+      accessor: 'url',
+      headTitle: 'Ссылка',
+      render: ({ cellData }) => {
+        return (
+          <Link target={'_blank'} href={cellData}>
+            {cellData}
+          </Link>
+        );
+      },
+    },
+    {
+      render: ({ dataItem }) => {
+        return (
+          <div className='flex justify-end'>
+            <ContentItemControls
+              testId={dataItem.slug}
+              updateTitle={'Редактировать текст'}
+              updateHandler={() => {
+                window.open(
+                  `${ROUTE_CMS}/rubrics/${rubric._id}/seo-texts/${dataItem.slug}`,
+                  '_blank',
+                );
+              }}
+            />
+          </div>
+        );
+      },
+    },
+  ];
+
   return (
     <CmsRubricLayout rubric={rubric} breadcrumbs={breadcrumbs}>
       <Inner testId={'rubric-seo-texts-list'}>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ea magnam qui reiciendis? Adipisci
-        asperiores ea iure nulla obcaecati possimus quasi repellendus reprehenderit sint vel, velit
-        voluptatum. Laborum nesciunt omnis quisquam.
+        <div className='overflow-x-auto overflow-y-hidden'>
+          <Table<SeoContentModel>
+            columns={columns}
+            data={seoContents}
+            onRowDoubleClick={(dataItem) => {
+              window.open(
+                `${ROUTE_CMS}/rubrics/${rubric._id}/seo-texts/${dataItem.slug}`,
+                '_blank',
+              );
+            }}
+          />
+        </div>
       </Inner>
     </CmsRubricLayout>
   );
@@ -54,6 +102,8 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<RubricPageInterface>> => {
   const { query } = context;
+  const { db } = await getDatabase();
+  const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
   const { props } = await getAppInitialData({ context });
   if (!props || !query.rubricId) {
     return {
@@ -73,10 +123,21 @@ export const getServerSideProps = async (
     };
   }
 
+  const seoContents = await seoContentsCollection
+    .find({
+      companySlug,
+      rubricSlug: payload.rubric.slug,
+      content: {
+        $ne: PAGE_EDITOR_DEFAULT_VALUE_STRING,
+      },
+    })
+    .toArray();
+
   return {
     props: {
       ...props,
       rubric: castDbData(payload.rubric),
+      seoContents: castDbData(seoContents),
       companySlug,
     },
   };

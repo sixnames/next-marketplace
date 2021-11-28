@@ -388,7 +388,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
           <CardTextFeatures cardTitle={cardTitle} textFeatures={textFeatures} className='mb-28' />
 
           {/*dynamic content*/}
-          <CardDynamicContent cardContent={cardContent} />
+          <CardDynamicContent cardContent={cardContent} product={cardData.product} />
 
           {/*shops*/}
           {configs.isOneShopCompany ? null : <CardShopsList cardShops={cardShops} />}

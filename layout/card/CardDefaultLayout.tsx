@@ -393,7 +393,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
         ) : null}
 
         {/*dynamic content*/}
-        <CardDynamicContent cardContent={cardContent} />
+        <CardDynamicContent cardContent={cardContent} product={cardData.product} />
 
         {/*shops*/}
         {configs.isOneShopCompany ? null : <CardShopsList cardShops={cardShops} />}

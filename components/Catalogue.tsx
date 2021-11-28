@@ -50,6 +50,7 @@ export interface CatalogueHeadDefaultInterface {
   textTop?: string | null;
   catalogueTitle: string;
   headCategories?: CategoryInterface[] | null;
+  textTopEditUrl: string;
 }
 
 const CatalogueHeadDefault = dynamic(() => import('layout/catalogue/CatalogueHeadDefault'));
@@ -305,6 +306,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
         textTop={state.textTop}
         catalogueCounterString={catalogueCounterString}
         catalogueTitle={state.catalogueTitle}
+        textTopEditUrl={state.textTopEditUrl}
       />
     );
   } else {
@@ -314,6 +316,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
         textTop={state.textTop}
         catalogueCounterString={catalogueCounterString}
         catalogueTitle={state.catalogueTitle}
+        textTopEditUrl={state.textTopEditUrl}
       />
     );
   }
@@ -452,6 +455,22 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
           <div className='mb-16 border-t border-border-100 pt-2 mt-8'>
             <PageEditor value={JSON.parse(state.textBottom)} readOnly />
           </div>
+        ) : null}
+
+        {sessionUser?.showAdminUiInCatalogue ? (
+          <FixedButtons>
+            <Button
+              size={'small'}
+              onClick={() => {
+                window.open(
+                  `${sessionUser?.editLinkBasePath}${state.textBottomEditUrl}?url=${router.asPath}`,
+                  '_blank',
+                );
+              }}
+            >
+              Редактировать SEO текст
+            </Button>
+          </FixedButtons>
         ) : null}
       </Inner>
 

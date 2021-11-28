@@ -1,4 +1,6 @@
 import Breadcrumbs from 'components/Breadcrumbs';
+import Button from 'components/button/Button';
+import FixedButtons from 'components/button/FixedButtons';
 import { CatalogueHeadDefaultInterface } from 'components/Catalogue';
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
@@ -6,6 +8,7 @@ import PageEditor from 'components/PageEditor';
 import Title from 'components/Title';
 import { FILTER_CATEGORY_KEY, FILTER_SEPARATOR, ROUTE_CATALOGUE } from 'config/common';
 import { useSiteContext } from 'context/siteContext';
+import { useSiteUserContext } from 'context/userSiteUserContext';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { sortStringArray } from 'lib/stringUtils';
 import { useRouter } from 'next/router';
@@ -19,10 +22,12 @@ const CatalogueHeadWithCategories: React.FC<CatalogueHeadDefaultInterface> = ({
   textTop,
   breadcrumbs,
   headCategories,
+  textTopEditUrl,
 }) => {
-  const { query } = useRouter();
+  const router = useRouter();
   const { urlPrefix } = useSiteContext();
-
+  const sessionUser = useSiteUserContext();
+  const { query, asPath } = router;
   return (
     <div className='mb-8 lg:mb-16 border-b border-border-100'>
       <Breadcrumbs lowBottom config={breadcrumbs} urlPrefix={urlPrefix} />
@@ -81,6 +86,22 @@ const CatalogueHeadWithCategories: React.FC<CatalogueHeadDefaultInterface> = ({
           <div>
             <PageEditor value={JSON.parse(textTop)} readOnly />
           </div>
+        ) : null}
+
+        {sessionUser?.showAdminUiInCatalogue ? (
+          <FixedButtons>
+            <Button
+              size={'small'}
+              onClick={() => {
+                window.open(
+                  `${sessionUser?.editLinkBasePath}${textTopEditUrl}?url=${asPath}`,
+                  '_blank',
+                );
+              }}
+            >
+              Редактировать SEO текст
+            </Button>
+          </FixedButtons>
         ) : null}
       </Inner>
     </div>

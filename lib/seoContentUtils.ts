@@ -493,8 +493,8 @@ export async function getCatalogueAllSeoContents(
   }
 
   if (!noFiltersSelected) {
-    textTopEditUrl = `${baseEditUrl}/seo-content/text/${seoContentTopSlug}`;
-    textBottomEditUrl = `${baseEditUrl}/seo-content/text/${seoContentBottomSlug}`;
+    textTopEditUrl = `${baseEditUrl}/seo-content/${seoContentTopSlug}`;
+    textBottomEditUrl = `${baseEditUrl}/seo-content/${seoContentBottomSlug}`;
   }
 
   return {

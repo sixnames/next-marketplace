@@ -1,6 +1,8 @@
 import { getTextContents, Value } from '@react-page/editor';
 import { reactPageCellPlugins } from 'components/PageEditor';
 import {
+  CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+  CATALOGUE_SEO_TEXT_POSITION_TOP,
   DEFAULT_CITY,
   DEFAULT_COMPANY_SLUG,
   DEFAULT_LOCALE,
@@ -414,6 +416,37 @@ export async function getCatalogueSeoTextSlug({
     console.log(e);
     return null;
   }
+}
+
+interface GetCatalogueAllSeoTextsInterface extends GetCatalogueSeoTextSlugInterface {}
+interface GetCatalogueAllSeoTextsPayloadInterface {
+  seoTextTop?: SeoContentModel | null;
+  seoTextBottom?: SeoContentModel | null;
+}
+
+export async function getCatalogueAllSeoTexts(
+  props: GetCatalogueAllSeoTextsInterface,
+): Promise<GetCatalogueAllSeoTextsPayloadInterface> {
+  const { db } = await getDatabase();
+  const seoTextsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
+  const seoTextSlug = await getCatalogueSeoTextSlug(props);
+
+  const seoTextTop = seoTextSlug
+    ? await seoTextsCollection.findOne({
+        slug: `${seoTextSlug}${CATALOGUE_SEO_TEXT_POSITION_TOP}`,
+      })
+    : null;
+
+  const seoTextBottom = seoTextSlug
+    ? await seoTextsCollection.findOne({
+        slug: `${seoTextSlug}${CATALOGUE_SEO_TEXT_POSITION_BOTTOM}`,
+      })
+    : null;
+
+  return {
+    seoTextTop,
+    seoTextBottom,
+  };
 }
 
 // document seo text slugs

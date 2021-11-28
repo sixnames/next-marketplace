@@ -18,7 +18,6 @@ import {
   COL_PRODUCTS,
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
-  COL_SEO_CONTENTS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
 import {
@@ -26,12 +25,7 @@ import {
   ignoreNoImageStage,
   noImageStage,
 } from 'db/dao/constantPipelines';
-import {
-  CatalogueBreadcrumbModel,
-  ObjectIdModel,
-  SeoContentModel,
-  ShopProductModel,
-} from 'db/dbModels';
+import { CatalogueBreadcrumbModel, ObjectIdModel, ShopProductModel } from 'db/dbModels';
 import {
   ATTRIBUTE_VIEW_VARIANT_LIST,
   CATALOGUE_FILTER_LIMIT,
@@ -58,8 +52,6 @@ import {
   CATALOGUE_GRID_DEFAULT_COLUMNS_COUNT,
   FILTER_COMMON_KEY,
   FILTER_NO_PHOTO_KEY,
-  CATALOGUE_SEO_TEXT_POSITION_TOP,
-  CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   ZERO_PAGE_FILTER,
 } from 'config/common';
 import { getDatabase } from 'db/mongodb';
@@ -83,7 +75,7 @@ import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { getTreeFromList, sortByName } from 'lib/optionsUtils';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
-import { getCatalogueSeoTextSlug } from 'lib/seoTextUtils';
+import { getCatalogueAllSeoTexts } from 'lib/seoTextUtils';
 import { sortStringArray } from 'lib/stringUtils';
 import { generateSnippetTitle, generateTitle } from 'lib/titleUtils';
 import { castProductConnectionForUI } from 'lib/uiDataUtils';
@@ -867,7 +859,6 @@ export const getCatalogueData = async ({
     const { db } = await getDatabase();
     const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
     const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
-    const seoTextsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
 
     // args
     const { rubricSlug, search } = input;
@@ -1794,30 +1785,20 @@ export const getCatalogueData = async ({
       clearSlug = basePath;
     }
 
-    // get seo text
-    // rubric seo text as default
+    // get seo texts
     let editUrl = `/rubrics/${rubric._id}`;
     let textTop: string | null | undefined;
     let textBottom: string | null | undefined;
 
-    const seoTextSlug = await getCatalogueSeoTextSlug({
-      rubricSlug: rubric.slug,
-      citySlug: city,
-      companySlug: companySlug,
-      filters: input.filters,
-    });
-
-    if (!search && seoTextSlug) {
-      const seoTextTop = await seoTextsCollection.findOne({
-        slug: seoTextSlug,
-        position: CATALOGUE_SEO_TEXT_POSITION_TOP,
+    if (!search) {
+      const { seoTextTop, seoTextBottom } = await getCatalogueAllSeoTexts({
+        rubricSlug: rubric.slug,
+        citySlug: city,
+        companySlug: companySlug,
+        filters: input.filters,
       });
+
       textTop = seoTextTop?.content;
-
-      const seoTextBottom = await seoTextsCollection.findOne({
-        slug: seoTextSlug,
-        position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
-      });
       textBottom = seoTextBottom?.content;
     }
 

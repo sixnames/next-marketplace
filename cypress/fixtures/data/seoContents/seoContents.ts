@@ -92,6 +92,17 @@ const rubricDescriptions: SeoContentModel[] = [
   },
 
   // products
+  {
+    _id: getObjectId('seo 5'),
+    url: '/0/msk/000081',
+    slug: '0d23dbe34c76d2f658a4c05fdb977fadafdb3044026f6bf72',
+    content: getConstructorContentFromText(
+      'Card content Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias, doloribus laborum maxime non nulla pariatur repellendus tenetur vel. Alias doloremque dolores earum ipsa magnam maxime nemo quos repellendus suscipit veritatis.',
+    ),
+    companySlug: DEFAULT_COMPANY_SLUG,
+    rubricSlug: 'viski',
+    seoLocales,
+  },
 ];
 
 // @ts-ignore

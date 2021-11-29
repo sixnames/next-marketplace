@@ -1,5 +1,6 @@
 import Button from 'components/button/Button';
 import PageEditor from 'components/PageEditor';
+import SeoTextLocalesInfoList from 'components/SeoTextLocalesInfoList';
 import { PAGE_EDITOR_DEFAULT_VALUE_STRING } from 'config/common';
 import { useSiteUserContext } from 'context/userSiteUserContext';
 import { SeoContentModel } from 'db/dbModels';
@@ -25,7 +26,7 @@ const CardDynamicContent: React.FC<CardDynamicContentInterface> = ({
     cardContent.content === PAGE_EDITOR_DEFAULT_VALUE_STRING
   ) {
     return sessionUser?.showAdminUiInCatalogue ? (
-      <div className='mt-6'>
+      <div className='mt-6 mb-8'>
         <Button
           size={'small'}
           onClick={() => {
@@ -44,8 +45,16 @@ const CardDynamicContent: React.FC<CardDynamicContentInterface> = ({
   return (
     <div className={`mb-28 ${className ? className : ''}`}>
       <PageEditor value={JSON.parse(cardContent.content)} readOnly />
+
       {sessionUser?.showAdminUiInCatalogue ? (
-        <div className='mt-6'>
+        <div className='mt-6 mb-8'>
+          <div className='mb-8'>
+            <SeoTextLocalesInfoList
+              seoLocales={cardContent.seoLocales}
+              listClassName='flex gap-4 flex-wrap'
+            />
+          </div>
+
           <Button
             size={'small'}
             onClick={() => {

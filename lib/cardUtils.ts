@@ -31,15 +31,9 @@ import {
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
   COL_ICONS,
-  COL_SEO_CONTENTS,
 } from 'db/collectionNames';
 import { ignoreNoImageStage, productCategoriesPipeline } from 'db/dao/constantPipelines';
-import {
-  CatalogueBreadcrumbModel,
-  ObjectIdModel,
-  ProductCardBreadcrumbModel,
-  SeoContentModel,
-} from 'db/dbModels';
+import { CatalogueBreadcrumbModel, ObjectIdModel, ProductCardBreadcrumbModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
   CategoryInterface,
@@ -59,7 +53,7 @@ import {
   castProductAttributeForUi,
   getProductCurrentViewCastedAttributes,
 } from 'lib/productAttributesUtils';
-import { getProductSeoContentSlug } from 'lib/seoContentUtils';
+import { getProductSeoContent } from 'lib/seoContentUtils';
 import { generateCardTitle } from 'lib/titleUtils';
 import { get } from 'lodash';
 import { ObjectId } from 'mongodb';
@@ -122,7 +116,6 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
     // const startTime = new Date().getTime();
     const { db } = await getDatabase();
     const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
-    const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
     const companyMatch = companyId ? { companyId: new ObjectId(companyId) } : {};
     const companySlug = props.companySlug;
     const shopProductsMatch = {
@@ -804,18 +797,14 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
     };
     // console.log(`cardShopProducts `, new Date().getTime() - startTime);
 
-    // card content
-    const seoContentSlugPayload = await getProductSeoContentSlug({
+    // card seo content
+    const cardContent = await getProductSeoContent({
+      companySlug,
+      citySlug: city,
       productId: product._id,
       productSlug: product.slug,
-      citySlug: city,
-      companySlug,
+      rubricSlug: product.rubricSlug,
     });
-    const cardContent = seoContentSlugPayload
-      ? await seoContentsCollection.findOne({
-          slug: seoContentSlugPayload.seoContentSlug,
-        })
-      : null;
 
     const cardCategories = getTreeFromList({
       list: categories,

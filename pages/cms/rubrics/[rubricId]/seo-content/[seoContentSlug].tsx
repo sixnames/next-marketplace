@@ -85,6 +85,7 @@ export const getServerSideProps = async (
     companySlug,
     rubricSlug: payload.rubric.slug,
   });
+
   if (!seoContent) {
     return {
       notFound: true,

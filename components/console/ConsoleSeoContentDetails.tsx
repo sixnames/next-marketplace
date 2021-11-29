@@ -26,7 +26,7 @@ const ConsoleSeoContentDetails: React.FC<ConsoleSeoContentDetailsInterface> = ({
         {() => {
           return (
             <Form>
-              <SingleSeoContentEditor filedName={'content'} seoContentId={`${seoContent._id}`} />
+              <SingleSeoContentEditor filedName={''} seoContentId={`${seoContent._id}`} />
               <Button type={'submit'} testId={'rubric-seo-content-submit'}>
                 Сохранить
               </Button>

@@ -209,6 +209,7 @@ export const CategoryMutations = extendType({
           const createdCategoryId = new ObjectId();
           const createdCategoryResult = await categoriesCollection.insertOne({
             ...input,
+            _id: createdCategoryId,
             parentTreeIds: [...parentTreeIds, createdCategoryId],
             slug: `${CATEGORY_SLUG_PREFIX}${slug}`,
             attributesGroupIds: [],

@@ -1125,9 +1125,10 @@ export async function getPageInitialState({
   const sessionCity = currentCity?.slug || DEFAULT_CITY;
 
   // Domain company
-  const domainCompany = await getSsrDomainCompany({ domain });
+  // const domainCompany = await getSsrDomainCompany({ domain });
   // domain company for development
   // const domainCompany = await getSsrDomainCompany({ slug: `company_a` });
+  const domainCompany = await getSsrDomainCompany({ slug: `5` });
 
   // Page initial data
   const rawInitialData = await getPageInitialData({

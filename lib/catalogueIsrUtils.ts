@@ -33,6 +33,7 @@ export async function getCatalogueIsrProps(
   const filtersPath = filters.join('/');
   const sortedFiltersPath = sortedFilters.join('/');
   if (filtersPath !== sortedFiltersPath) {
+    console.log('filtersPath !== sortedFiltersPath');
     return {
       redirect: {
         permanent: true,
@@ -59,6 +60,7 @@ export async function getCatalogueIsrProps(
   });
 
   if (!rawCatalogueData) {
+    console.log('!rawCatalogueData');
     return {
       redirect: {
         permanent: true,
@@ -68,6 +70,9 @@ export async function getCatalogueIsrProps(
   }
 
   if (!rawCatalogueData.isSearch && rawCatalogueData.products.length < 1 && filters.length > 0) {
+    console.log(
+      '!rawCatalogueData.isSearch && rawCatalogueData.products.length < 1 && filters.length > 0',
+    );
     return {
       redirect: {
         permanent: true,

@@ -762,13 +762,14 @@ export function castCatalogueFilters({
         }
       : {};
 
-  const optionsStage = noFiltersSelected
-    ? {}
-    : {
-        selectedOptionsSlugs: {
-          $all: realFilters,
-        },
-      };
+  const optionsStage =
+    realFilters.length > 0
+      ? {
+          selectedOptionsSlugs: {
+            $all: realFilters,
+          },
+        }
+      : {};
 
   const brandStage =
     brandFilters.length > 0
@@ -978,6 +979,8 @@ export const getCatalogueData = async ({
       ...pricesStage,
       ...ignoreNoImageStage,
     };
+
+    console.log(JSON.stringify(productsInitialMatch, null, 2));
 
     // aggregate catalogue initial data
     const productDataAggregationResult = await shopProductsCollection

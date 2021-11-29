@@ -646,6 +646,12 @@ export async function getCategorySeoContentSlug({
         },
       })
       .toArray();
+    const existInTree = categoriesTree.find(({ _id }) => {
+      return _id.equals(category._id);
+    });
+    if (!existInTree) {
+      categoriesTree.push(category);
+    }
     const filters = categoriesTree.map(({ slug }) => {
       return `${FILTER_CATEGORY_KEY}${FILTER_SEPARATOR}${slug}`;
     });

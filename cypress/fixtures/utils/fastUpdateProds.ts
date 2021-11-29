@@ -198,6 +198,12 @@ async function getCategorySeoContentSlug({
         },
       })
       .toArray();
+    const existInTree = categoriesTree.find(({ _id }) => {
+      return _id.equals(category._id);
+    });
+    if (!existInTree) {
+      categoriesTree.push(category);
+    }
     const filters = categoriesTree.map(({ slug }) => {
       return `${FILTER_CATEGORY_KEY}${FILTER_SEPARATOR}${slug}`;
     });
@@ -332,6 +338,9 @@ async function updateProds() {
       CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
     ];
 
+    // delete all
+    await seoContentsCollection.deleteMany({});
+
     for await (const companySlug of companySlugs) {
       console.log(companySlug, '>>>>>>');
 
@@ -339,7 +348,7 @@ async function updateProds() {
       for await (const position of positions) {
         for await (const category of categories) {
           const description = await categoryDescriptionsCollection.findOne({
-            productId: category._id,
+            categoryId: category._id,
             companySlug,
             position,
           });
@@ -385,7 +394,7 @@ async function updateProds() {
       for await (const position of positions) {
         for await (const rubric of rubrics) {
           const description = await rubricDescriptionsCollection.findOne({
-            productId: rubric._id,
+            rubricId: rubric._id,
             companySlug,
             position,
           });

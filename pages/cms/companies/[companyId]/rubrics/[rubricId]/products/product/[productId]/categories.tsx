@@ -10,7 +10,7 @@ import {
 } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsProductLayout from 'layout/cms/CmsProductLayout';
-import { getTreeFromList } from 'lib/optionsUtils';
+import { getTreeFromList } from 'lib/optionUtils';
 import { getCmsProduct } from 'lib/productUtils';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
@@ -117,12 +117,11 @@ export const getServerSideProps = async (
       notFound: true,
     };
   }
-  const companySlug = companyResult.slug;
 
   const payload = await getCmsProduct({
     locale: props.sessionLocale,
     productId: `${productId}`,
-    companySlug,
+    companySlug: companyResult.slug,
   });
 
   if (!payload) {

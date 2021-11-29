@@ -3,7 +3,7 @@ import { COL_OPTIONS } from 'db/collectionNames';
 import { OptionAlphabetListModel, OptionModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { OptionInterface } from 'db/uiInterfaces';
-import { getAlphabetList, getTreeFromList } from 'lib/optionsUtils';
+import { getAlphabetList, getTreeFromList } from 'lib/optionUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import { getRequestParams } from 'lib/sessionHelpers';
 

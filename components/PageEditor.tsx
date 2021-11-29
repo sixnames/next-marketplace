@@ -54,7 +54,7 @@ const customSlatePlugin = pluginFactories.createComponentPlugin<{
 });
 
 // text formatting
-const defaultSlate = slate((def) => ({
+export const defaultSlate = slate((def) => ({
   ...def,
   plugins: {
     // this will pull in all predefined plugins
@@ -67,7 +67,7 @@ const defaultSlate = slate((def) => ({
   },
 }));
 
-const cellPlugins = (imageUpload?: ImageUploadType): CellPlugin[] => [
+export const reactPageCellPlugins = (imageUpload?: ImageUploadType): CellPlugin[] => [
   divider,
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
@@ -116,7 +116,7 @@ const PageEditor: React.FC<PageEditorInterface> = ({ value, readOnly, imageUploa
       allowMoveInEditMode
       allowResizeInEditMode
       readOnly={readOnly}
-      cellPlugins={cellPlugins(imageUpload)}
+      cellPlugins={reactPageCellPlugins(imageUpload)}
       value={value || PAGE_EDITOR_DEFAULT_VALUE}
       onChange={setValue}
       languages={languages}

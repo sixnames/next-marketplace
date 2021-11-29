@@ -47,8 +47,13 @@ const CmsRubricLayout: React.FC<CmsRubricLayoutInterface> = ({
         path: `${basePath || ROUTE_CMS}/rubrics/${rubric._id}`,
         exact: true,
       },
+      {
+        name: 'SEO тексты',
+        testId: 'seo-content',
+        path: `${basePath || ROUTE_CMS}/rubrics/${rubric._id}/seo-content`,
+      },
     ];
-  }, [basePath, rubric._id]);
+  }, [basePath, hideAttributesPath, rubric._id]);
 
   return (
     <AppContentWrapper breadcrumbs={breadcrumbs}>

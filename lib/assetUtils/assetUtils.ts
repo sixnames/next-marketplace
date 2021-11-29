@@ -255,6 +255,25 @@ export const deleteUpload = async (filePath: string): Promise<boolean> => {
   }
 };
 
+export const deleteAssetsDirectory = async (dirPath: string): Promise<boolean> => {
+  try {
+    const deleteDirPath = path.join(process.cwd(), dirPath);
+
+    return new Promise((resolve) => {
+      rimraf(deleteDirPath, (e: any) => {
+        if (e) {
+          resolve(false);
+        } else {
+          resolve(true);
+        }
+      });
+    });
+  } catch (e) {
+    console.log('deleteUpload util catch error ', e);
+    return true;
+  }
+};
+
 export interface ReorderAssetsInterface {
   initialAssets: AssetModel[];
   assetNewIndex: number;

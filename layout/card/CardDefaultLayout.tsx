@@ -96,7 +96,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
     companyId,
   });
 
-  const { brand, brandCollection, manufacturer, name, cardDescription } = product;
+  const { brand, brandCollection, manufacturer, name } = product;
 
   return (
     <article className='pb-20 pt-8 lg:pt-0' data-cy={`card`}>
@@ -313,7 +313,6 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
               {/*text features*/}
               <CardTextFeatures
                 cardTitle={cardTitle}
-                cardDescription={cardDescription}
                 textFeatures={textFeatures}
                 className='md:col-span-5'
               >
@@ -394,7 +393,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
         ) : null}
 
         {/*dynamic content*/}
-        <CardDynamicContent cardContent={cardContent} />
+        <CardDynamicContent cardContent={cardContent} product={cardData.product} />
 
         {/*shops*/}
         {configs.isOneShopCompany ? null : <CardShopsList cardShops={cardShops} />}

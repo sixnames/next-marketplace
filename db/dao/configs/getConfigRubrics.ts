@@ -3,7 +3,7 @@ import { COL_CATEGORIES, COL_RUBRICS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { RubricInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getTreeFromList } from 'lib/optionsUtils';
+import { getTreeFromList } from 'lib/optionUtils';
 
 export async function getConfigRubrics(locale: string) {
   const { db } = await getDatabase();

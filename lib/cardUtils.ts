@@ -5,8 +5,6 @@ import {
   ATTRIBUTE_VIEW_VARIANT_TAG,
   ATTRIBUTE_VIEW_VARIANT_TEXT,
   FILTER_SEPARATOR,
-  DEFAULT_CITY,
-  PAGE_EDITOR_DEFAULT_VALUE_STRING,
   ROUTE_CATALOGUE,
   FILTER_CATEGORY_KEY,
   FILTER_BRAND_KEY,
@@ -20,7 +18,6 @@ import {
   COL_BRANDS,
   COL_MANUFACTURERS,
   COL_PRODUCT_ASSETS,
-  COL_PRODUCT_CARD_CONTENTS,
   COL_PRODUCTS,
   COL_BRAND_COLLECTIONS,
   COL_PRODUCT_CONNECTIONS,
@@ -33,24 +30,16 @@ import {
   COL_ATTRIBUTES_GROUPS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
-  COL_PRODUCT_SEO,
-  COL_PRODUCT_CARD_DESCRIPTIONS,
   COL_ICONS,
 } from 'db/collectionNames';
 import { ignoreNoImageStage, productCategoriesPipeline } from 'db/dao/constantPipelines';
-import {
-  CatalogueBreadcrumbModel,
-  ObjectIdModel,
-  ProductCardBreadcrumbModel,
-  ProductSeoModel,
-} from 'db/dbModels';
+import { CatalogueBreadcrumbModel, ObjectIdModel, ProductCardBreadcrumbModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
   CategoryInterface,
   InitialCardDataInterface,
   ProductAttributeInterface,
   ProductAttributesGroupInterface,
-  ProductCardContentInterface,
   ProductConnectionInterface,
   ProductConnectionItemInterface,
   ProductInterface,
@@ -58,12 +47,13 @@ import {
 } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
-import { getTreeFromList, sortByName } from 'lib/optionsUtils';
+import { getTreeFromList, sortByName } from 'lib/optionUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import {
   castProductAttributeForUi,
   getProductCurrentViewCastedAttributes,
 } from 'lib/productAttributesUtils';
+import { getProductSeoContent } from 'lib/seoContentUtils';
 import { generateCardTitle } from 'lib/titleUtils';
 import { get } from 'lodash';
 import { ObjectId } from 'mongodb';
@@ -126,7 +116,6 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
     // const startTime = new Date().getTime();
     const { db } = await getDatabase();
     const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
-    const productSeoCollection = db.collection<ProductSeoModel>(COL_PRODUCT_SEO);
     const companyMatch = companyId ? { companyId: new ObjectId(companyId) } : {};
     const companySlug = props.companySlug;
     const shopProductsMatch = {
@@ -190,27 +179,6 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
           },
         },
 
-        // Get product card content
-        {
-          $lookup: {
-            from: COL_PRODUCT_CARD_CONTENTS,
-            as: 'cardContent',
-            let: {
-              productId: '$_id',
-            },
-            pipeline: [
-              {
-                $match: {
-                  companySlug,
-                  $expr: {
-                    $eq: ['$$productId', '$productId'],
-                  },
-                },
-              },
-            ],
-          },
-        },
-
         // get product assets
         {
           $lookup: {
@@ -218,34 +186,6 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
             as: 'assets',
             localField: '_id',
             foreignField: 'productId',
-          },
-        },
-
-        // get seo text
-        {
-          $lookup: {
-            from: COL_PRODUCT_CARD_DESCRIPTIONS,
-            as: 'cardDescription',
-            let: {
-              productId: '$_id',
-            },
-            pipeline: [
-              {
-                $match: {
-                  companySlug,
-                  $expr: {
-                    $eq: ['$$productId', '$productId'],
-                  },
-                },
-              },
-            ],
-          },
-        },
-        {
-          $addFields: {
-            cardDescription: {
-              $arrayElemAt: ['$cardDescription', 0],
-            },
           },
         },
 
@@ -656,7 +596,6 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
             brandCollection: { $arrayElemAt: ['$brandCollection', 0] },
             manufacturer: { $arrayElemAt: ['$manufacturer', 0] },
             assets: { $arrayElemAt: ['$assets', 0] },
-            cardContent: { $arrayElemAt: ['$cardContent', 0] },
           },
         },
       ])
@@ -672,7 +611,6 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
 
     const {
       rubric,
-      cardContent,
       assets,
       connections,
       attributesGroups,
@@ -681,7 +619,6 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
       manufacturer,
       categories,
       shops,
-      cardDescription,
       ...restProduct
     } = product;
 
@@ -860,21 +797,14 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
     };
     // console.log(`cardShopProducts `, new Date().getTime() - startTime);
 
-    // card content
-    let castedCardContent: ProductCardContentInterface | null = null;
-    if (cardContent) {
-      let contentCityValue = cardContent.content[city];
-      if (!contentCityValue) {
-        contentCityValue = cardContent.content[DEFAULT_CITY];
-      }
-      if (contentCityValue === PAGE_EDITOR_DEFAULT_VALUE_STRING) {
-        contentCityValue = null;
-      }
-      castedCardContent = {
-        ...cardContent,
-        value: contentCityValue,
-      };
-    }
+    // card seo content
+    const cardContent = await getProductSeoContent({
+      companySlug,
+      citySlug: city,
+      productId: product._id,
+      productSlug: product.slug,
+      rubricSlug: product.rubricSlug,
+    });
 
     const cardCategories = getTreeFromList({
       list: categories,
@@ -1061,24 +991,11 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
       categories: cardCategories,
     });
 
-    // admin data
-    const productSeo = await productSeoCollection.findOne({
-      productId: restProduct._id,
-      companySlug,
-    });
-
     return {
       product: {
         ...restProduct,
         name,
         shopProductIds,
-        cardDescription: cardDescription
-          ? {
-              ...cardDescription,
-              text: getFieldStringLocale(cardDescription.textI18n, locale),
-              seo: productSeo,
-            }
-          : null,
         description: description || cardTitle,
         brand: brand
           ? {
@@ -1118,7 +1035,7 @@ GetCardDataInterface): Promise<InitialCardDataInterface | null> {
       cardBreadcrumbs,
       shopsCount,
       isShopless,
-      cardContent: castedCardContent,
+      cardContent,
       shopsCounterPostfix,
       attributesGroups: sortByName(cardAttributesGroups),
       assets: cardAssets,

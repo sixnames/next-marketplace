@@ -28,7 +28,7 @@ import {
 import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
 import ProductSnippetGridBigImage from 'layout/snippet/ProductSnippetGridBigImage';
 import { getIsrSiteInitialData, IsrContextInterface } from 'lib/isrUtils';
-import { getTreeFromList } from 'lib/optionsUtils';
+import { getTreeFromList } from 'lib/optionUtils';
 import { generateSnippetTitle, generateTitle } from 'lib/titleUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
@@ -62,7 +62,7 @@ const HomeRoute: React.FC<HomeRouteInterface> = ({
   const { urlPrefix } = useSiteContext();
   const { configs } = useConfigContext();
   const configTitle = configs.seoTextTitle;
-  const configSeoText = configs.seoText;
+  const configSeoContent = configs.seoText;
   const autoplaySpeed = configs.mainBannerAutoplaySpeed;
   const sectionClassName = `mb-14 sm:mb-28`;
 
@@ -187,8 +187,8 @@ const HomeRoute: React.FC<HomeRouteInterface> = ({
         {configTitle ? (
           <div className='mb-14 sm:mb-20'>
             <Title textClassName='max-w-[1440px]'>{configTitle}</Title>
-            {configSeoText && configSeoText.length > 0 ? (
-              <PageEditor value={JSON.parse(configSeoText)} readOnly />
+            {configSeoContent && configSeoContent.length > 0 ? (
+              <PageEditor value={JSON.parse(configSeoContent)} readOnly />
             ) : null}
           </div>
         ) : null}

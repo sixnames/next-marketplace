@@ -1,98 +1,22 @@
-import Accordion from 'components/Accordion';
 import Button from 'components/button/Button';
 import FixedButtons from 'components/button/FixedButtons';
-import InputLine from 'components/FormElements/Input/InputLine';
 import Inner from 'components/Inner';
-import PageEditor from 'components/PageEditor';
-import { DEFAULT_CITY, GENDER_ENUMS, REQUEST_METHOD_POST } from 'config/common';
-import { useConfigContext } from 'context/configContext';
-import { CategoryDescriptionModel, OptionVariantsModel } from 'db/dbModels';
-import { CategoryInterface, CompanyInterface } from 'db/uiInterfaces';
+import SeoContentEditor from 'components/SeoContentEditor';
+import { GENDER_ENUMS } from 'config/common';
+import { OptionVariantsModel } from 'db/dbModels';
+import { CategoryInterface, CompanyInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import { Gender, UpdateCategoryInput, useUpdateCategoryMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
-import { getConstructorDefaultValue } from 'lib/constructorUtils';
-import { get } from 'lodash';
 import * as React from 'react';
 import { updateCategorySchema } from 'validation/categorySchema';
-
-interface CategoryDescriptionConstructorInterface {
-  name: string;
-  values: UpdateCategoryInput;
-  setFieldValue: (field: string, value: any, shouldValidate?: boolean | undefined) => void;
-  label: string;
-  categoryId: string;
-  descriptionId: string;
-}
-
-export const CategoryDescriptionConstructor: React.FC<CategoryDescriptionConstructorInterface> = ({
-  label,
-  setFieldValue,
-  values,
-  name,
-  categoryId,
-  descriptionId,
-}) => {
-  const { cities } = useConfigContext();
-
-  return (
-    <InputLine labelTag={'div'} label={label}>
-      {cities.map((city) => {
-        const fieldName = `${name}.${city.slug}`;
-        const fieldValue = get(values, fieldName);
-        const constructorValue = getConstructorDefaultValue(fieldValue);
-
-        return (
-          <Accordion
-            isOpen={city.slug === DEFAULT_CITY}
-            testId={city.slug}
-            title={`${city.name}`}
-            key={city.slug}
-          >
-            <div className='ml-8 pt-[var(--lineGap-200)]'>
-              <PageEditor
-                value={constructorValue}
-                setValue={(value) => {
-                  setFieldValue(fieldName, JSON.stringify(value));
-                }}
-                imageUpload={async (file) => {
-                  try {
-                    const formData = new FormData();
-                    formData.append('assets', file);
-                    formData.append('categoryId', `${categoryId}`);
-                    formData.append('descriptionId', `${descriptionId}`);
-
-                    const responseFetch = await fetch('/api/category/add-description-asset', {
-                      method: REQUEST_METHOD_POST,
-                      body: formData,
-                    });
-                    const responseJson = await responseFetch.json();
-
-                    return {
-                      url: responseJson.url,
-                    };
-                  } catch (e) {
-                    console.log(e);
-                    return {
-                      url: '',
-                    };
-                  }
-                }}
-              />
-            </div>
-          </Accordion>
-        );
-      })}
-    </InputLine>
-  );
-};
 
 export interface CompanyRubricCategoryDetailsInterface {
   category: CategoryInterface;
   pageCompany: CompanyInterface;
-  seoDescriptionTop: CategoryDescriptionModel;
-  seoDescriptionBottom: CategoryDescriptionModel;
+  seoDescriptionTop: SeoContentCitiesInterface;
+  seoDescriptionBottom: SeoContentCitiesInterface;
   routeBasePath: string;
 }
 
@@ -127,8 +51,8 @@ const CompanyRubricCategoryDetails: React.FC<CompanyRubricCategoryDetailsInterfa
     categoryId: _id,
     rubricId,
     nameI18n,
-    textTop: seoDescriptionTop.content,
-    textBottom: seoDescriptionBottom.content,
+    textTop: seoDescriptionTop,
+    textBottom: seoDescriptionBottom,
     gender: gender ? (`${gender}` as Gender) : null,
     replaceParentNameInCatalogueTitle,
     companySlug: `${pageCompany?.slug}`,
@@ -156,26 +80,11 @@ const CompanyRubricCategoryDetails: React.FC<CompanyRubricCategoryDetailsInterfa
           });
         }}
       >
-        {({ values, setFieldValue }) => {
+        {() => {
           return (
             <Form>
-              <CategoryDescriptionConstructor
-                label={'SEO текст вверху каталога'}
-                name={'textTop'}
-                categoryId={`${category._id}`}
-                descriptionId={`${seoDescriptionTop._id}`}
-                setFieldValue={setFieldValue}
-                values={values}
-              />
-
-              <CategoryDescriptionConstructor
-                label={'SEO текст внизу каталога'}
-                name={'textBottom'}
-                categoryId={`${category._id}`}
-                descriptionId={`${seoDescriptionBottom._id}`}
-                setFieldValue={setFieldValue}
-                values={values}
-              />
+              <SeoContentEditor label={'SEO текст вверху каталога'} filedName={'textTop'} />
+              <SeoContentEditor label={'SEO текст внизу каталога'} filedName={'textBottom'} />
 
               <FixedButtons>
                 <Button type={'submit'} testId={'category-submit'} size={'small'}>

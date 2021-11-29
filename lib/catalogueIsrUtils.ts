@@ -59,7 +59,12 @@ export async function getCatalogueIsrProps(
   });
 
   if (!rawCatalogueData) {
-    return notFoundResponse;
+    return {
+      redirect: {
+        permanent: true,
+        destination: `${props.urlPrefix}`,
+      },
+    };
   }
 
   if (!rawCatalogueData.isSearch && rawCatalogueData.products.length < 1 && filters.length > 0) {
@@ -79,7 +84,7 @@ export async function getCatalogueIsrProps(
     return {
       redirect: {
         permanent: true,
-        destination: `${props.urlPrefix}${rawCatalogueData.basePath}/${rawCatalogueData.redirect}`,
+        destination: `${props.urlPrefix}${rawCatalogueData.basePath}${rawCatalogueData.redirect}`,
       },
     };
   }

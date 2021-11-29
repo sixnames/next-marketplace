@@ -13,7 +13,7 @@ import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCategoryLayout from 'layout/cms/CmsCategoryLayout';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getCategorySeoText } from 'lib/rubricUtils';
+import { getCategoryAllSeoContents } from 'lib/seoContentUtils';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -172,18 +172,18 @@ export const getServerSideProps = async (
       : null,
   };
 
-  const seoDescriptionTop = await getCategorySeoText({
+  const seoDescriptionTop = await getCategoryAllSeoContents({
     position: CATALOGUE_SEO_TEXT_POSITION_TOP,
-    categorySlug: category.slug,
     categoryId: category._id,
     companySlug,
+    rubricSlug: category.rubricSlug,
   });
 
-  const seoDescriptionBottom = await getCategorySeoText({
+  const seoDescriptionBottom = await getCategoryAllSeoContents({
     position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
-    categorySlug: category.slug,
     categoryId: category._id,
     companySlug,
+    rubricSlug: category.rubricSlug,
   });
 
   if (!seoDescriptionBottom || !seoDescriptionTop) {

@@ -7,9 +7,10 @@ import Inner from 'components/Inner';
 import MenuButtonWithName from 'components/MenuButtonWithName';
 import PageEditor from 'components/PageEditor';
 import Pager from 'components/Pager';
+import SeoTextLocalesInfoList from 'components/SeoTextLocalesInfoList';
 import { CATALOGUE_HEAD_LAYOUT_WITH_CATEGORIES } from 'config/constantSelects';
 import { useSiteUserContext } from 'context/userSiteUserContext';
-import { CatalogueBreadcrumbModel } from 'db/dbModels';
+import { CatalogueBreadcrumbModel, SeoContentModel } from 'db/dbModels';
 import ProductSnippetGrid from 'layout/snippet/ProductSnippetGrid';
 import ProductSnippetRow from 'layout/snippet/ProductSnippetRow';
 import HeadlessMenuButton from 'components/HeadlessMenuButton';
@@ -26,13 +27,14 @@ import {
   SORT_DESC_STR,
   SORT_DIR_KEY,
   REQUEST_METHOD_POST,
+  ROUTE_CATALOGUE,
 } from 'config/common';
 import { useConfigContext } from 'context/configContext';
-import { useNotificationsContext } from 'context/notificationsContext';
 import { CatalogueDataInterface, CategoryInterface } from 'db/uiInterfaces';
 import { useUpdateCatalogueCountersMutation } from 'generated/apolloComponents';
 import usePageLoadingState from 'hooks/usePageLoadingState';
 import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
+import { alwaysArray } from 'lib/arrayUtils';
 import { getCatalogueFilterNextPath, getCatalogueFilterValueByKey } from 'lib/catalogueHelpers';
 import { getNumWord } from 'lib/i18n';
 import { debounce } from 'lodash';
@@ -46,9 +48,10 @@ import CatalogueFilter from 'layout/catalogue/CatalogueFilter';
 export interface CatalogueHeadDefaultInterface {
   catalogueCounterString: string;
   breadcrumbs: CatalogueBreadcrumbModel[];
-  textTop?: string | null;
+  textTop?: SeoContentModel | null;
   catalogueTitle: string;
   headCategories?: CategoryInterface[] | null;
+  textTopEditUrl: string;
 }
 
 const CatalogueHeadDefault = dynamic(() => import('layout/catalogue/CatalogueHeadDefault'));
@@ -78,7 +81,6 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
   const sessionUser = useSiteUserContext();
   const isPageLoading = usePageLoadingState();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const { showErrorNotification } = useNotificationsContext();
   const [catalogueView, setCatalogueVie] = React.useState<string>(CATALOGUE_VIEW_GRID);
   const [state, setState] = React.useState<CatalogueDataInterface>(() => {
     return catalogueData;
@@ -221,14 +223,13 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
               return sortBy === 'priority';
             },
             onSelect: () => {
+              const filters = alwaysArray(router.query.filters);
               const options = getCatalogueFilterNextPath({
-                asPath: router.asPath,
+                filters,
                 excludedKeys: FILTER_SORT_KEYS,
               });
-              const nextPath = `${options}/${SORT_BY_KEY}-priority`;
-              router.push(nextPath).catch(() => {
-                showErrorNotification();
-              });
+              const nextPath = `${urlPrefix}${ROUTE_CATALOGUE}/${router.query.rubricSlug}/${options}/${SORT_BY_KEY}-priority`;
+              router.push(nextPath).catch(console.log);
             },
           },
           {
@@ -246,14 +247,13 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
               return sortBy === 'price' && sortDir === SORT_ASC_STR;
             },
             onSelect: () => {
+              const filters = alwaysArray(router.query.filters);
               const options = getCatalogueFilterNextPath({
-                asPath: router.asPath,
+                filters,
                 excludedKeys: FILTER_SORT_KEYS,
               });
-              const nextPath = `${options}/${SORT_BY_KEY}-price/${SORT_DIR_KEY}-${SORT_ASC_STR}`;
-              router.push(nextPath).catch(() => {
-                showErrorNotification();
-              });
+              const nextPath = `${urlPrefix}${ROUTE_CATALOGUE}/${router.query.rubricSlug}/${options}/${SORT_BY_KEY}-price/${SORT_DIR_KEY}-${SORT_ASC_STR}`;
+              router.push(nextPath).catch(console.log);
             },
           },
           {
@@ -271,20 +271,20 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
               return sortBy === 'price' && sortDir === SORT_DESC_STR;
             },
             onSelect: () => {
+              const filters = alwaysArray(router.query.filters);
               const options = getCatalogueFilterNextPath({
-                asPath: router.asPath,
+                filters,
                 excludedKeys: FILTER_SORT_KEYS,
               });
-              const nextPath = `${options}/${SORT_BY_KEY}-price/${SORT_DIR_KEY}-${SORT_DESC_STR}`;
-              router.push(nextPath).catch(() => {
-                showErrorNotification();
-              });
+              const nextPath = `${urlPrefix}${ROUTE_CATALOGUE}/${router.query.rubricSlug}/${options}/${SORT_BY_KEY}-price/${SORT_DIR_KEY}-${SORT_DESC_STR}`;
+              console.log(nextPath);
+              router.push(nextPath).catch(console.log);
             },
           },
         ],
       },
     ];
-  }, [router, showErrorNotification]);
+  }, [router, urlPrefix]);
 
   if (catalogueData.totalProducts < 1) {
     return (
@@ -307,6 +307,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
         textTop={state.textTop}
         catalogueCounterString={catalogueCounterString}
         catalogueTitle={state.catalogueTitle}
+        textTopEditUrl={state.textTopEditUrl}
       />
     );
   } else {
@@ -316,6 +317,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
         textTop={state.textTop}
         catalogueCounterString={catalogueCounterString}
         catalogueTitle={state.catalogueTitle}
+        textTopEditUrl={state.textTopEditUrl}
       />
     );
   }
@@ -452,7 +454,30 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
 
         {state.textBottom ? (
           <div className='mb-16 border-t border-border-100 pt-2 mt-8'>
-            <PageEditor value={JSON.parse(state.textBottom)} readOnly />
+            <PageEditor value={JSON.parse(state.textBottom.content)} readOnly />
+          </div>
+        ) : null}
+
+        {sessionUser?.showAdminUiInCatalogue ? (
+          <div>
+            <div className='mb-8'>
+              <SeoTextLocalesInfoList
+                seoLocales={state.textBottom?.seoLocales}
+                listClassName='flex gap-4 flex-wrap'
+              />
+            </div>
+
+            <Button
+              size={'small'}
+              onClick={() => {
+                window.open(
+                  `${sessionUser?.editLinkBasePath}${state.textBottomEditUrl}?url=${router.asPath}`,
+                  '_blank',
+                );
+              }}
+            >
+              Редактировать SEO текст
+            </Button>
           </div>
         ) : null}
       </Inner>

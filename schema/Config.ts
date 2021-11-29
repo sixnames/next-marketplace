@@ -1,6 +1,6 @@
 import { CategoryInterface } from 'db/uiInterfaces';
 import { alwaysArray } from 'lib/arrayUtils';
-import { getTreeFromList } from 'lib/optionsUtils';
+import { getTreeFromList } from 'lib/optionUtils';
 import { phoneToRaw } from 'lib/phoneUtils';
 import { arg, enumType, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {

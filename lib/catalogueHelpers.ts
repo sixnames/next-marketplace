@@ -1,15 +1,17 @@
 interface GetCatalogueFilterNextPathInterface {
-  asPath: string;
+  filters: string[];
   excludedKeys: string[];
 }
 
 export const getCatalogueFilterNextPath = ({
-  asPath,
+  filters,
   excludedKeys,
 }: GetCatalogueFilterNextPathInterface): string => {
-  return asPath
-    .split('/')
+  return filters
     .filter((option) => {
+      if (!option || option.length < 1) {
+        return false;
+      }
       const optionArray = option.split('-');
       return !excludedKeys.includes(optionArray[0]);
     })

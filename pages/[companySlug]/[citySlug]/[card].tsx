@@ -115,11 +115,13 @@ export async function getStaticProps(
     companySlug: props.companySlug,
     useUniqueConstructor,
   });
-  const cardData = castDbData(rawCardData);
 
-  if (!cardData) {
+  if (!rawCardData) {
     return {
-      notFound: true,
+      redirect: {
+        permanent: true,
+        destination: `${props.urlPrefix}`,
+      },
     };
   }
 
@@ -127,7 +129,7 @@ export async function getStaticProps(
     revalidate: ISR_FIVE_SECONDS,
     props: {
       ...props,
-      cardData,
+      cardData: castDbData(rawCardData),
     },
   };
 }

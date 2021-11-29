@@ -1,5 +1,5 @@
 import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
-import { getAlphabetList } from 'lib/optionsUtils';
+import { getAlphabetList } from 'lib/optionUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType, stringArg } from 'nexus';
 import {
   getOperationPermission,

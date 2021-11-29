@@ -8,7 +8,7 @@ import {
   RubricInterface,
 } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
-import { sortByName } from 'lib/optionsUtils';
+import { sortByName } from 'lib/optionUtils';
 
 interface CastProductConnectionForUI {
   connection: ProductConnectionInterface;

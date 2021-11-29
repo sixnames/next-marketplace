@@ -1,15 +1,9 @@
 import { IMAGE_FALLBACK } from 'config/common';
-import {
-  COL_PRODUCT_ASSETS,
-  COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCT_CARD_CONTENTS,
-  COL_PRODUCTS,
-} from 'db/collectionNames';
+import { COL_PRODUCT_ASSETS, COL_PRODUCT_ATTRIBUTES, COL_PRODUCTS } from 'db/collectionNames';
 import { CreateProductInputInterface } from 'db/dao/product/createProduct';
 import {
   ProductAssetsModel,
   ProductAttributeModel,
-  ProductCardContentModel,
   ProductModel,
   ProductPayloadModel,
 } from 'db/dbModels';
@@ -37,8 +31,6 @@ export async function copyProduct({
   const { getApiMessage } = await getRequestParams(context);
   const { db, client } = await getDatabase();
   const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-  const productCardContentsCollection =
-    db.collection<ProductCardContentModel>(COL_PRODUCT_CARD_CONTENTS);
   const productAttributesCollection = db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
   const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
 
@@ -165,37 +157,6 @@ export async function copyProduct({
           createdProductAttributes,
         );
         if (!newAttributesResult.acknowledged) {
-          mutationPayload = {
-            success: false,
-            message: await getApiMessage(`products.create.error`),
-          };
-          await session.abortTransaction();
-          return;
-        }
-      }
-
-      // get source product card contents
-      const sourceCardContents = await productCardContentsCollection
-        .find({
-          productId: sourceProduct._id,
-        })
-        .toArray();
-
-      // create product card contents
-      const createdProductCardContents: ProductCardContentModel[] = [];
-      for await (const productCardContent of sourceCardContents) {
-        createdProductCardContents.push({
-          ...productCardContent,
-          _id: new ObjectId(),
-          productId: createdProduct._id,
-          productSlug: createdProduct.slug,
-        });
-      }
-      if (createdProductCardContents.length > 0) {
-        const newCardContentsResult = await productCardContentsCollection.insertMany(
-          createdProductCardContents,
-        );
-        if (!newCardContentsResult.acknowledged) {
           mutationPayload = {
             success: false,
             message: await getApiMessage(`products.create.error`),

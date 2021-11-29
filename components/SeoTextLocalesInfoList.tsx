@@ -1,16 +1,18 @@
 import Percent from 'components/Percent';
+import { useConfigContext } from 'context/configContext';
 import { TextUniquenessApiParsedResponseModel } from 'db/dbModels';
+import { SeoContentCitiesInterface } from 'db/uiInterfaces';
 import { noNaN } from 'lib/numbers';
 import * as React from 'react';
 
-interface TextSeoInfoInterface {
+interface SeoTextLocaleInfoInterface {
   seoLocale?: TextUniquenessApiParsedResponseModel;
   showLocaleName?: boolean;
   className?: string;
   listClassName?: string;
 }
 
-const TextSeoInfo: React.FC<TextSeoInfoInterface> = ({
+export const SeoTextLocale: React.FC<SeoTextLocaleInfoInterface> = ({
   seoLocale,
   listClassName,
   className,
@@ -103,4 +105,81 @@ const TextSeoInfo: React.FC<TextSeoInfoInterface> = ({
   );
 };
 
-export default TextSeoInfo;
+interface SeoTextLocalesInfoListInterface
+  extends Omit<SeoTextLocaleInfoInterface, 'seoLocale' | 'showLocaleName'> {
+  seoLocales?: TextUniquenessApiParsedResponseModel[] | null;
+}
+
+const SeoTextLocalesInfoList: React.FC<SeoTextLocalesInfoListInterface> = ({
+  seoLocales,
+  listClassName,
+  className,
+}) => {
+  if (!seoLocales || seoLocales.length < 1) {
+    return null;
+  }
+
+  return (
+    <div className='grid gap-6'>
+      {seoLocales.map((seoLocale) => {
+        return (
+          <div key={seoLocale.locale}>
+            <SeoTextLocale
+              seoLocale={seoLocale}
+              listClassName={listClassName}
+              className={className}
+              showLocaleName
+            />
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+interface SeoContentCitiesInfoInterface
+  extends Omit<SeoTextLocalesInfoListInterface, 'seoLocales'> {
+  seoContentCities?: SeoContentCitiesInterface | null;
+}
+
+export const SeoTextCitiesInfoList: React.FC<SeoContentCitiesInfoInterface> = ({
+  seoContentCities,
+  listClassName,
+  className,
+}) => {
+  const { cities } = useConfigContext();
+  if (!seoContentCities) {
+    return null;
+  }
+
+  return (
+    <div className='grid gap-6'>
+      {Object.keys(seoContentCities).map((citySlug) => {
+        const citySeoContent = seoContentCities[citySlug];
+        const city = cities.find(({ slug }) => citySlug === slug);
+        if (
+          !citySeoContent ||
+          !city ||
+          !citySeoContent.seoLocales ||
+          citySeoContent.seoLocales.length < 1
+        ) {
+          return null;
+        }
+
+        return (
+          <div key={citySlug}>
+            <div className='font-medium mb-2'>{city.name}</div>
+
+            <SeoTextLocalesInfoList
+              seoLocales={citySeoContent.seoLocales}
+              listClassName={listClassName}
+              className={className}
+            />
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+export default SeoTextLocalesInfoList;

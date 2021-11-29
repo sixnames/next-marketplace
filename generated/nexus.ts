@@ -696,15 +696,6 @@ export interface NexusGenInputs {
     brandSlug?: string | null; // String
     productId: NexusGenScalars['ObjectId']; // ObjectId!
   };
-  UpdateProductCardContentInput: {
-    // input type
-    _id: NexusGenScalars['ObjectId']; // ObjectId!
-    assetKeys: string[]; // [String!]!
-    companySlug: string; // String!
-    content: NexusGenScalars['JSONObject']; // JSONObject!
-    productId: NexusGenScalars['ObjectId']; // ObjectId!
-    productSlug: string; // String!
-  };
   UpdateProductInCartInput: {
     // input type
     amount: number; // Int!
@@ -954,8 +945,6 @@ export interface NexusGenObjects {
   Product: dbModels.ProductModel;
   ProductAssets: dbModels.ProductAssetsModel;
   ProductAttribute: dbModels.ProductAttributeModel;
-  ProductCardContent: dbModels.ProductCardContentModel;
-  ProductCardContentPayload: dbModels.ProductCardContentPayloadModel;
   ProductCardPrices: dbModels.ProductCardPricesModel;
   ProductConnection: dbModels.ProductConnectionModel;
   ProductConnectionItem: dbModels.ProductConnectionItemModel;
@@ -1466,7 +1455,6 @@ export interface NexusGenFieldTypes {
     updateOrderStatus: NexusGenRootTypes['OrderStatusPayload']; // OrderStatusPayload!
     updateProductBrand: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateProductBrandCollection: NexusGenRootTypes['ProductPayload']; // ProductPayload!
-    updateProductCardContent: NexusGenRootTypes['ProductCardContentPayload']; // ProductCardContentPayload!
     updateProductInCart: NexusGenRootTypes['CartPayload']; // CartPayload!
     updateProductManufacturer: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateProductNumberAttribute: NexusGenRootTypes['ProductPayload']; // ProductPayload!
@@ -1658,20 +1646,6 @@ export interface NexusGenFieldTypes {
     selectedOptionsSlugs: string[]; // [String!]!
     text: string; // String!
     textI18n: NexusGenScalars['JSONObject'] | null; // JSONObject
-  };
-  ProductCardContent: {
-    // field return type
-    _id: NexusGenScalars['ObjectId']; // ObjectId!
-    assetKeys: string[]; // [String!]!
-    content: NexusGenScalars['JSONObject']; // JSONObject!
-    productId: NexusGenScalars['ObjectId']; // ObjectId!
-    productSlug: string; // String!
-  };
-  ProductCardContentPayload: {
-    // field return type
-    message: string; // String!
-    payload: NexusGenRootTypes['ProductCardContent'] | null; // ProductCardContent
-    success: boolean; // Boolean!
   };
   ProductCardPrices: {
     // field return type
@@ -2514,7 +2488,6 @@ export interface NexusGenFieldTypeNames {
     updateOrderStatus: 'OrderStatusPayload';
     updateProductBrand: 'ProductPayload';
     updateProductBrandCollection: 'ProductPayload';
-    updateProductCardContent: 'ProductCardContentPayload';
     updateProductInCart: 'CartPayload';
     updateProductManufacturer: 'ProductPayload';
     updateProductNumberAttribute: 'ProductPayload';
@@ -2706,20 +2679,6 @@ export interface NexusGenFieldTypeNames {
     selectedOptionsSlugs: 'String';
     text: 'String';
     textI18n: 'JSONObject';
-  };
-  ProductCardContent: {
-    // field return type name
-    _id: 'ObjectId';
-    assetKeys: 'String';
-    content: 'JSONObject';
-    productId: 'ObjectId';
-    productSlug: 'String';
-  };
-  ProductCardContentPayload: {
-    // field return type name
-    message: 'String';
-    payload: 'ProductCardContent';
-    success: 'Boolean';
   };
   ProductCardPrices: {
     // field return type name
@@ -3473,10 +3432,6 @@ export interface NexusGenArgTypes {
       // args
       input: NexusGenInputs['UpdateProductBrandCollectionInput']; // UpdateProductBrandCollectionInput!
     };
-    updateProductCardContent: {
-      // args
-      input: NexusGenInputs['UpdateProductCardContentInput']; // UpdateProductCardContentInput!
-    };
     updateProductInCart: {
       // args
       input: NexusGenInputs['UpdateProductInCartInput']; // UpdateProductInCartInput!
@@ -3745,7 +3700,6 @@ export interface NexusGenAbstractTypeMembers {
     | 'NavItemPayload'
     | 'OptionsGroupPayload'
     | 'OrderStatusPayload'
-    | 'ProductCardContentPayload'
     | 'ProductPayload'
     | 'RolePayload'
     | 'RoleRulePayload'
@@ -3804,7 +3758,6 @@ export interface NexusGenTypeInterfaces {
   OrderStatus: 'Timestamp';
   OrderStatusPayload: 'Payload';
   Product: 'Base' | 'Timestamp';
-  ProductCardContentPayload: 'Payload';
   ProductPayload: 'Payload';
   Role: 'Timestamp';
   RolePayload: 'Payload';

@@ -17,7 +17,7 @@ import {
   RubricInterface,
 } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getStringValueFromOptionsList, sortByName } from 'lib/optionsUtils';
+import { getStringValueFromOptionsList, sortByName } from 'lib/optionUtils';
 import { ObjectId } from 'mongodb';
 
 export async function getRubricAllAttributes(

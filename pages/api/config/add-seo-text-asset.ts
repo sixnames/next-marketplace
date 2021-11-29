@@ -25,8 +25,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
-  console.log(formData);
-
   const { fields, files } = formData;
   const { companySlug } = fields;
   if (!companySlug) {

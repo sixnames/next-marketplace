@@ -26,7 +26,6 @@ import {
 } from 'db/collectionNames';
 import {
   filterAttributesPipeline,
-  productSeoPipeline,
   shopProductSupplierProductsPipeline,
 } from 'db/dao/constantPipelines';
 import { ObjectIdModel } from 'db/dbModels';
@@ -48,13 +47,14 @@ import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { castCatalogueFilters, getCatalogueAttributes } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
-import { getTreeFromList } from 'lib/optionsUtils';
+import { getTreeFromList } from 'lib/optionUtils';
 import {
   countProductAttributes,
   getCategoryAllAttributes,
   getRubricAllAttributes,
 } from 'lib/productAttributesUtils';
 import { castSupplierProductsList } from 'lib/productUtils';
+import { getProductAllSeoContents } from 'lib/seoContentUtils';
 import { generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 import { ShopAddProductsListRouteReduced } from 'pages/cms/companies/[companyId]/shops/shop/[shopId]/products/add/[...filters]';
@@ -223,9 +223,6 @@ export const getConsoleRubricProducts = async ({
                   ],
                 },
               },
-
-              // get product seo info
-              ...productSeoPipeline(companySlug),
 
               // count shop products
               {
@@ -667,10 +664,19 @@ export const getConsoleRubricProducts = async ({
         defaultGender: product.gender,
       });
 
+      // seo content
+      const cardContentCities = await getProductAllSeoContents({
+        companySlug,
+        productId: product._id,
+        productSlug: product.slug,
+        rubricSlug: product.rubricSlug,
+      });
+
       const castedProduct: ProductInterface = {
         ...product,
         cardPrices,
         snippetTitle,
+        cardContentCities,
         name: getFieldStringLocale(product.nameI18n, locale),
         attributesCount: countProductAttributes(productAttributes),
         totalAttributesCount: allRubricAttributes.length + productCategoryAttributes.length,
@@ -935,9 +941,6 @@ export const getConsoleCompanyRubricProducts = async ({
                   ],
                 },
               },
-
-              // get product seo info
-              ...productSeoPipeline(companySlug),
             ],
 
             // prices facet
@@ -1567,9 +1570,6 @@ export const getConsoleShopProducts = async ({
                         },
                       },
                     },
-
-                    // get product seo info
-                    ...productSeoPipeline(companySlug),
                   ],
                 },
               },

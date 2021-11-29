@@ -4,14 +4,15 @@ import CompanyProductSuppliers, {
 import { SelectOptionInterface } from 'components/FormElements/Select/Select';
 import RequestError from 'components/RequestError';
 import { ROUTE_CMS, ROUTE_CONSOLE, SORT_ASC } from 'config/common';
-import { COL_SUPPLIERS } from 'db/collectionNames';
+import { COL_COMPANIES, COL_SUPPLIERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { SupplierInterface } from 'db/uiInterfaces';
+import { CompanyInterface, SupplierInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import ConsoleShopProductLayout from 'layout/console/ConsoleShopProductLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getConsoleShopProduct } from 'lib/productUtils';
+import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import {
@@ -102,7 +103,17 @@ export const getServerSideProps = async (
   const { props } = await getConsoleInitialData({ context });
   const { db } = await getDatabase();
   const suppliersCollection = db.collection<SupplierInterface>(COL_SUPPLIERS);
+  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
   if (!props || !shopProductId || !companyId || !shopId) {
+    return {
+      notFound: true,
+    };
+  }
+
+  const companyResult = await companiesCollection.findOne({
+    _id: new ObjectId(`${companyId}`),
+  });
+  if (!companyResult) {
     return {
       notFound: true,
     };
@@ -112,6 +123,7 @@ export const getServerSideProps = async (
   const shopProduct = await getConsoleShopProduct({
     shopProductId,
     locale,
+    companySlug: companyResult.slug,
   });
   if (!shopProduct) {
     return {

@@ -1,7 +1,7 @@
 import { COL_BRAND_COLLECTIONS } from 'db/collectionNames';
 import { BrandCollectionModel, BrandCollectionsAlphabetListModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { getAlphabetList } from 'lib/optionsUtils';
+import { getAlphabetList } from 'lib/optionUtils';
 import { arg, extendType, inputObjectType, objectType } from 'nexus';
 import { getRequestParams } from 'lib/sessionHelpers';
 

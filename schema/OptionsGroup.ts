@@ -1,6 +1,6 @@
 import { getFieldStringLocale } from 'lib/i18n';
 import { getNextNumberItemId } from 'lib/itemIdUtils';
-import { deleteDocumentsTree, trimOptionNames } from 'lib/optionsUtils';
+import { deleteDocumentsTree, trimOptionNames } from 'lib/optionUtils';
 import { arg, enumType, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
 import {
   getOperationPermission,

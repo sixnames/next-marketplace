@@ -15,14 +15,9 @@ import ProductMainFields, {
 export interface CreateNewProductModalInterface {
   rubricId: string;
   product?: ProductInterface | null;
-  companySlug: string;
 }
 
-const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({
-  rubricId,
-  companySlug,
-  product,
-}) => {
+const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({ rubricId, product }) => {
   const { hideModal } = useMutationCallbacks({
     withModal: true,
   });
@@ -35,10 +30,8 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({
     nameI18n: product?.nameI18n || {},
     originalName: product?.originalName || '',
     descriptionI18n: product?.descriptionI18n || {},
-    cardDescriptionI18n: {},
     barcode: [],
     gender: GENDER_IT as any,
-    companySlug,
   };
 
   return (

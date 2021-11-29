@@ -2,7 +2,6 @@ import { SUPPLIER_PRICE_VARIANT_CHARGE } from 'config/common';
 import {
   COL_COMPANIES,
   COL_PRODUCT_ASSETS,
-  COL_PRODUCT_CARD_DESCRIPTIONS,
   COL_PRODUCTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
@@ -14,7 +13,6 @@ import {
   productCategoriesPipeline,
   productConnectionsSimplePipeline,
   productRubricPipeline,
-  productSeoPipeline,
   shopProductFieldsPipeline,
   shopProductSupplierProductsPipeline,
 } from 'db/dao/constantPipelines';
@@ -28,25 +26,28 @@ import {
   ProductConnectionItemInterface,
   ProductInterface,
   RubricInterface,
+  SeoContentCitiesInterface,
   ShopProductBarcodeDoublesInterface,
   ShopProductInterface,
   SupplierProductInterface,
 } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getTreeFromList } from 'lib/optionsUtils';
+import { getTreeFromList } from 'lib/optionUtils';
+import { getProductAllSeoContents } from 'lib/seoContentUtils';
 import { generateCardTitle, generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 import trim from 'trim';
 
 interface GetCmsProductInterface {
   productId: string;
-  locale: string;
   companySlug: string;
+  locale: string;
 }
 
 interface GetCmsProductPayloadInterface {
   product: ProductInterface;
   categoriesList: CategoryInterface[];
+  cardContent: SeoContentCitiesInterface;
 }
 
 export async function getCmsProduct({
@@ -61,34 +62,6 @@ export async function getCmsProduct({
       {
         $match: {
           _id: new ObjectId(productId),
-        },
-      },
-
-      // get seo text
-      {
-        $lookup: {
-          from: COL_PRODUCT_CARD_DESCRIPTIONS,
-          as: 'cardDescription',
-          let: {
-            productId: '$_id',
-          },
-          pipeline: [
-            {
-              $match: {
-                companySlug,
-                $expr: {
-                  $eq: ['$$productId', '$productId'],
-                },
-              },
-            },
-          ],
-        },
-      },
-      {
-        $addFields: {
-          cardDescription: {
-            $arrayElemAt: ['$cardDescription', 0],
-          },
         },
       },
 
@@ -123,9 +96,6 @@ export async function getCmsProduct({
 
       // get product connections
       ...productConnectionsSimplePipeline,
-
-      // get product seo info
-      ...productSeoPipeline(companySlug),
     ])
     .toArray();
   const initialProduct = productAggregation[0];
@@ -133,7 +103,7 @@ export async function getCmsProduct({
     return null;
   }
 
-  const { rubric, seo, cardDescription, ...restProduct } = initialProduct;
+  const { rubric, ...restProduct } = initialProduct;
   if (!rubric) {
     return null;
   }
@@ -233,12 +203,6 @@ export async function getCmsProduct({
 
   const product: ProductInterface = {
     ...initialProduct,
-    cardDescription: cardDescription
-      ? {
-          ...cardDescription,
-          seo,
-        }
-      : null,
     rubric: castedRubric,
     cardTitle,
     snippetTitle,
@@ -246,9 +210,21 @@ export async function getCmsProduct({
     attributes,
   };
 
+  // card content
+  const cardContent = await getProductAllSeoContents({
+    productSlug: product.slug,
+    productId: product._id,
+    rubricSlug: product.rubricSlug,
+    companySlug,
+  });
+  if (!cardContent) {
+    return null;
+  }
+
   return {
     product,
     categoriesList: initialProduct.categories || [],
+    cardContent,
   };
 }
 
@@ -287,134 +263,16 @@ export function castSupplierProductsList({
   }, []);
 }
 
-interface CastProductInterface {
-  product?: ProductInterface | null;
-  locale: string;
-}
-
-export function castProduct({ product, locale }: CastProductInterface): ProductInterface | null {
-  if (!product) {
-    return null;
-  }
-
-  const { rubric } = product;
-  if (!rubric) {
-    return null;
-  }
-
-  // attributes
-  const productAttributes = (product.attributes || []).reduce(
-    (acc: ProductAttributeInterface[], productAttribute) => {
-      const { attribute } = productAttribute;
-      if (!attribute) {
-        return acc;
-      }
-
-      const resultProductAttribute: ProductAttributeInterface = {
-        ...productAttribute,
-        attribute: {
-          ...attribute,
-          name: getFieldStringLocale(attribute.nameI18n, locale),
-          metric: attribute.metric
-            ? {
-                ...attribute.metric,
-                name: getFieldStringLocale(attribute.metric.nameI18n, locale),
-              }
-            : null,
-          options: getTreeFromList({
-            list: attribute.options,
-            childrenFieldName: 'options',
-            locale,
-          }),
-        },
-      };
-      return [...acc, resultProductAttribute];
-    },
-    [],
-  );
-
-  // categories
-  const productCategories = getTreeFromList({
-    list: product.categories,
-    childrenFieldName: 'categories',
-    locale,
-  });
-
-  // brand
-  const productBrand = product.brand
-    ? {
-        ...product.brand,
-        collections: (product.brand.collections || []).filter(({ itemId }) => {
-          return itemId === product.brandCollectionSlug;
-        }),
-      }
-    : null;
-
-  // snippet title
-  const snippetTitle = generateSnippetTitle({
-    locale,
-    brand: productBrand,
-    rubricName: getFieldStringLocale(rubric.nameI18n, locale),
-    showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
-    showCategoryInProductTitle: rubric.showCategoryInProductTitle,
-    attributes: productAttributes,
-    categories: productCategories,
-    titleCategoriesSlugs: product.titleCategoriesSlugs,
-    originalName: product.originalName,
-    defaultGender: product.gender,
-  });
-
-  const payload: ProductInterface = {
-    ...product,
-    name: getFieldStringLocale(product.nameI18n, locale),
-    snippetTitle,
-    rubric: {
-      ...rubric,
-      name: getFieldStringLocale(rubric.nameI18n, locale),
-    },
-  };
-
-  return payload;
-}
-
-interface CastShopProductInterface {
-  shopProduct: ShopProductInterface;
-  locale: string;
-}
-
-export function castShopProduct({
-  shopProduct,
-  locale,
-}: CastShopProductInterface): ShopProductInterface | null {
-  const { product } = shopProduct;
-  const castedProduct = castProduct({ product, locale });
-  if (!product) {
-    return null;
-  }
-  const { rubric } = product;
-  if (!rubric) {
-    return null;
-  }
-
-  const payload: ShopProductInterface = {
-    ...shopProduct,
-    supplierProducts: castSupplierProductsList({
-      supplierProducts: shopProduct.supplierProducts,
-      locale,
-    }),
-    product: castedProduct,
-  };
-  return payload;
-}
-
 interface GetConsoleShopProductInterface {
   shopProductId: string | string[];
   locale: string;
+  companySlug: string;
 }
 
 export async function getConsoleShopProduct({
   shopProductId,
   locale,
+  companySlug,
 }: GetConsoleShopProductInterface): Promise<ShopProductInterface | null> {
   const { db } = await getDatabase();
   const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
@@ -427,9 +285,6 @@ export async function getConsoleShopProduct({
           _id: new ObjectId(`${shopProductId}`),
         },
       },
-
-      // get shop product fields
-      ...shopProductFieldsPipeline('$productId'),
 
       // get supplier products
       ...shopProductSupplierProductsPipeline,
@@ -474,10 +329,27 @@ export async function getConsoleShopProduct({
     return null;
   }
 
-  const shopProduct = castShopProduct({
-    shopProduct: shopProductResult,
+  const productPayload = await getCmsProduct({
+    companySlug,
     locale,
+    productId: shopProductResult.productId.toHexString(),
   });
+  if (!productPayload) {
+    return null;
+  }
+  const { cardContent, product } = productPayload;
+
+  const shopProduct: ShopProductInterface = {
+    ...shopProductResult,
+    supplierProducts: castSupplierProductsList({
+      supplierProducts: shopProductResult.supplierProducts,
+      locale,
+    }),
+    product: {
+      ...product,
+      cardContentCities: cardContent,
+    },
+  };
   if (!shopProduct || !shopProduct.product) {
     return null;
   }

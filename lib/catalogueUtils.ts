@@ -13,23 +13,22 @@ import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_CATEGORIES,
-  COL_CATEGORY_DESCRIPTIONS,
   COL_ICONS,
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCTS,
+  COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
 import {
-  catalogueRubricFieldsPipeline,
   filterAttributesPipeline,
   ignoreNoImageStage,
   noImageStage,
 } from 'db/dao/constantPipelines';
 import {
   CatalogueBreadcrumbModel,
-  CategoryDescriptionModel,
   ObjectIdModel,
+  SeoContentModel,
   ShopProductModel,
 } from 'db/dbModels';
 import {
@@ -58,8 +57,6 @@ import {
   CATALOGUE_GRID_DEFAULT_COLUMNS_COUNT,
   FILTER_COMMON_KEY,
   FILTER_NO_PHOTO_KEY,
-  CATALOGUE_SEO_TEXT_POSITION_TOP,
-  CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   ZERO_PAGE_FILTER,
 } from 'config/common';
 import { getDatabase } from 'db/mongodb';
@@ -81,8 +78,9 @@ import {
 import { getAlgoliaProductsSearch } from 'lib/algoliaUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
-import { getTreeFromList, sortByName } from 'lib/optionsUtils';
+import { getTreeFromList, sortByName } from 'lib/optionUtils';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
+import { getCatalogueAllSeoContents } from 'lib/seoContentUtils';
 import { sortStringArray } from 'lib/stringUtils';
 import { generateSnippetTitle, generateTitle } from 'lib/titleUtils';
 import { castProductConnectionForUI } from 'lib/uiDataUtils';
@@ -594,6 +592,8 @@ interface CastCatalogueFiltersPayloadInterface {
   allUrlParams: string[];
   realFilterAttributes: string[];
   categoryFilters: string[];
+  categoryCastedFilters: string[];
+  priceFilters: string[];
   brandFilters: string[];
   brandCollectionFilters: string[];
   inCategory: boolean;
@@ -627,11 +627,14 @@ export function castCatalogueFilters({
   initialLimit,
 }: CastCatalogueFiltersInterface): CastCatalogueFiltersPayloadInterface {
   const allUrlParams: string[] = [];
+  const categoryCastedFilters: string[] = [];
+  const priceFilters: string[] = [];
   const realFilters: string[] = [];
   const realFilterAttributes: string[] = [];
   const categoryFilters: string[] = [];
   const brandFilters: string[] = [];
   const brandCollectionFilters: string[] = [];
+  const noCategoryFilters: string[] = [];
   let sortBy: string | null = null;
   let sortDir: string | null = null;
 
@@ -679,6 +682,8 @@ export function castCatalogueFilters({
 
       if (filterAttributeSlug === FILTER_PRICE_KEY) {
         allUrlParams.push(filterOption);
+        priceFilters.push(filterOption);
+        noCategoryFilters.push(filterOption);
         const prices = filterOptionSlug.split('_');
         minPrice = prices[0] ? noNaN(prices[0]) : null;
         maxPrice = prices[1] ? noNaN(prices[1]) : null;
@@ -703,11 +708,13 @@ export function castCatalogueFilters({
         allUrlParams.push(filterOption);
         realFilters.push(filterOptionSlug);
         categoryFilters.push(filterOption);
+        categoryCastedFilters.push(filterOptionSlug);
         return;
       }
 
       if (filterAttributeSlug === FILTER_BRAND_KEY) {
         allUrlParams.push(filterOption);
+        noCategoryFilters.push(filterOption);
         const slugParts = filterOption.split(FILTER_SEPARATOR);
         if (slugParts[1]) {
           brandFilters.push(slugParts[1]);
@@ -717,6 +724,7 @@ export function castCatalogueFilters({
 
       if (filterAttributeSlug === FILTER_BRAND_COLLECTION_KEY) {
         allUrlParams.push(filterOption);
+        noCategoryFilters.push(filterOption);
         const slugParts = filterOption.split(FILTER_SEPARATOR);
         if (slugParts[1]) {
           brandCollectionFilters.push(slugParts[1]);
@@ -732,13 +740,14 @@ export function castCatalogueFilters({
         return;
       }
 
+      noCategoryFilters.push(filterOption);
       allUrlParams.push(filterOption);
       realFilterAttributes.push(filterAttributeSlug);
       realFilters.push(filterOption);
     }
   });
 
-  const noFiltersSelected = realFilters.length < 1;
+  const noFiltersSelected = noCategoryFilters.length < 1;
   const castedSortDir = sortDir === SORT_DESC_STR ? SORT_DESC : SORT_ASC;
   const skip = page ? (page - 1) * limit : 0;
   const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
@@ -803,6 +812,8 @@ export function castCatalogueFilters({
     realFilters,
     realFilterAttributes,
     categoryFilters,
+    categoryCastedFilters,
+    priceFilters,
     brandFilters,
     brandCollectionFilters,
     inCategory: categoryFilters.length > 0,
@@ -821,68 +832,6 @@ export function castCatalogueFilters({
     defaultSortStage,
     photoStage,
   };
-}
-
-interface SetCategorySeoTextInterface {
-  categories: CategoryInterface[];
-  citySlug: string;
-  companySlug: string;
-  rubricId: string;
-}
-
-interface SetCategorySeoTextPayloadInterface {
-  editUrl: string;
-  textTop: string | null | undefined;
-  textBottom: string | null | undefined;
-}
-
-async function setCategorySeoText({
-  categories,
-  companySlug,
-  citySlug,
-  rubricId,
-}: SetCategorySeoTextInterface): Promise<SetCategorySeoTextPayloadInterface | null> {
-  const { db } = await getDatabase();
-  const categoryDescriptionsCollection =
-    db.collection<CategoryDescriptionModel>(COL_CATEGORY_DESCRIPTIONS);
-
-  let editUrl = ``;
-  let textTop: string | null | undefined;
-  let textBottom: string | null | undefined;
-  const currentCategory = categories[0];
-  if (categories.length > 0 && categories.length < 2 && currentCategory) {
-    if (currentCategory.categories && currentCategory.categories.length > 0) {
-      return setCategorySeoText({
-        categories: currentCategory.categories,
-        citySlug,
-        companySlug,
-        rubricId,
-      });
-    }
-
-    editUrl = `/rubrics/${rubricId}/categories/${categories[0]._id}`;
-    const textTopDoc = await categoryDescriptionsCollection.findOne({
-      categoryId: currentCategory._id,
-      companySlug,
-      position: CATALOGUE_SEO_TEXT_POSITION_TOP,
-    });
-    textTop = textTopDoc?.content[citySlug];
-
-    const textBottomDoc = await categoryDescriptionsCollection.findOne({
-      categoryId: currentCategory._id,
-      companySlug,
-      position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
-    });
-    textBottom = textBottomDoc?.content[citySlug];
-
-    return {
-      editUrl,
-      textTop,
-      textBottom,
-    };
-  } else {
-    return null;
-  }
 }
 
 export interface GetCatalogueDataInterface {
@@ -959,6 +908,8 @@ export const getCatalogueData = async ({
       editUrl: '',
       rubricName: '',
       rubricSlug: '',
+      textTopEditUrl: '',
+      textBottomEditUrl: '',
       products: [],
       catalogueTitle: 'Товары не найдены',
       catalogueFilterLayout: DEFAULT_LAYOUT,
@@ -1395,7 +1346,31 @@ export const getCatalogueData = async ({
                         priorities: false,
                       },
                     },
-                    ...catalogueRubricFieldsPipeline(companySlug),
+                    {
+                      $lookup: {
+                        from: COL_RUBRIC_VARIANTS,
+                        as: 'variant',
+                        let: {
+                          variantId: '$variantId',
+                        },
+                        pipeline: [
+                          {
+                            $match: {
+                              $expr: {
+                                $eq: ['$$variantId', '$_id'],
+                              },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      $addFields: {
+                        variant: {
+                          $arrayElemAt: ['$variant', 0],
+                        },
+                      },
+                    },
                   ],
                 },
               },
@@ -1453,7 +1428,31 @@ export const getCatalogueData = async ({
               slug: rubricSlug,
             },
           },
-          ...catalogueRubricFieldsPipeline(companySlug),
+          {
+            $lookup: {
+              from: COL_RUBRIC_VARIANTS,
+              as: 'variant',
+              let: {
+                variantId: '$variantId',
+              },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $eq: ['$$variantId', '$_id'],
+                    },
+                  },
+                },
+              ],
+            },
+          },
+          {
+            $addFields: {
+              variant: {
+                $arrayElemAt: ['$variant', 0],
+              },
+            },
+          },
         ])
         .toArray();
     }
@@ -1798,34 +1797,28 @@ export const getCatalogueData = async ({
       clearSlug = basePath;
     }
 
-    // get seo text
-    // rubric seo text as default
-    let editUrl = `/rubrics/${rubric._id}`;
-    let textTop: string | null | undefined;
-    let textBottom: string | null | undefined;
+    // get seo texts
+    let editUrl = '';
+    let textTopEditUrl = '';
+    let textBottomEditUrl = '';
+    let textTop: SeoContentModel | null | undefined;
+    let textBottom: SeoContentModel | null | undefined;
 
     if (!search) {
-      // category seo text if selected
-      const categorySeoTexts = await setCategorySeoText({
-        categories: selectedCategoriesTree,
-        companySlug,
+      const seoContentParams = await getCatalogueAllSeoContents({
+        rubricSlug: rubric.slug,
         citySlug: city,
-        rubricId: rubric._id.toHexString(),
+        companySlug: companySlug,
+        filters: input.filters,
       });
 
-      if (categorySeoTexts) {
-        editUrl = categorySeoTexts.editUrl;
-        textTop = categorySeoTexts.textTop;
-        textBottom = categorySeoTexts.textBottom;
-      } else {
-        textTop = rubric.seoDescriptionTop?.content[city];
-        textBottom = rubric.seoDescriptionBottom?.content[city];
-      }
-
-      // remove seo text if selected more then one category
-      if (selectedCategoriesTree.length > 1) {
-        textTop = null;
-        textBottom = null;
+      if (seoContentParams) {
+        const { seoContentTop, seoContentBottom } = seoContentParams;
+        textTop = seoContentTop;
+        textBottom = seoContentBottom;
+        textTopEditUrl = seoContentParams.textTopEditUrl;
+        textBottomEditUrl = seoContentParams.textBottomEditUrl;
+        editUrl = seoContentParams.editUrl;
       }
     }
 
@@ -1927,6 +1920,16 @@ export const getCatalogueData = async ({
 
     let redirect = null;
     const lostFilters = allUrlParams.filter((filter) => {
+      const splittedOption = filter.split(FILTER_SEPARATOR);
+      const filterAttributeSlug = splittedOption[0];
+      if (
+        filterAttributeSlug === FILTER_PAGE_KEY ||
+        filterAttributeSlug === CATALOGUE_FILTER_LIMIT ||
+        filterAttributeSlug === SORT_BY_KEY ||
+        filterAttributeSlug === SORT_DIR_KEY
+      ) {
+        return false;
+      }
       return !selectedFilterSlugs.some((slug) => slug === filter);
     });
     const isRedirect = lostFilters.length > 0;
@@ -1938,7 +1941,6 @@ export const getCatalogueData = async ({
       const sortedRedirectArray = sortStringArray(filteredRedirectArray);
       redirect = `/${sortedRedirectArray.join('/')}`;
     }
-
     // console.log(`Catalogue data >>>>>>>>>>>>>>>> `, new Date().getTime() - timeStart);
     return {
       // rubric
@@ -1976,7 +1978,9 @@ export const getCatalogueData = async ({
 
       //seo
       textTop,
+      textTopEditUrl,
       textBottom,
+      textBottomEditUrl,
       catalogueTitle,
       breadcrumbs,
     };

@@ -1,15 +1,11 @@
 import CompanyProductConstructor from 'components/company/CompanyProductConstructor';
 import RequestError from 'components/RequestError';
-import { DEFAULT_CITY, PAGE_EDITOR_DEFAULT_VALUE_STRING, ROUTE_CONSOLE } from 'config/common';
-import { COL_PRODUCT_CARD_CONTENTS } from 'db/collectionNames';
-import { ProductCardContentModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { ROUTE_CONSOLE } from 'config/common';
 import { ShopProductInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import ConsoleShopProductLayout from 'layout/console/ConsoleShopProductLayout';
 import { getConsoleShopProduct } from 'lib/productUtils';
-import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import {
@@ -20,10 +16,9 @@ import {
 
 interface ProductDetailsInterface {
   shopProduct: ShopProductInterface;
-  cardContent: ProductCardContentModel;
 }
 
-const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct, cardContent }) => {
+const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct }) => {
   const { product, shop, company } = shopProduct;
   if (!product || !shop || !company) {
     return <RequestError />;
@@ -71,7 +66,6 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct, cardCo
         routeBasePath={''}
         product={product}
         rubric={rubric}
-        cardContent={cardContent}
         currentCompany={company}
       />
     </ConsoleShopProductLayout>
@@ -94,9 +88,6 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<ProductPageInterface>> => {
   const { query } = context;
-  const { db } = await getDatabase();
-  const productCardContentsCollection =
-    db.collection<ProductCardContentModel>(COL_PRODUCT_CARD_CONTENTS);
   const { shopProductId, companyId, shopId } = query;
   const { props } = await getConsoleInitialData({ context });
   if (!props || !shopProductId || !companyId || !shopId) {
@@ -108,6 +99,7 @@ export const getServerSideProps = async (
   const shopProduct = await getConsoleShopProduct({
     shopProductId,
     locale: props.sessionLocale,
+    companySlug: props.layoutProps.pageCompany.slug,
   });
   if (!shopProduct || !shopProduct.product) {
     return {
@@ -115,29 +107,10 @@ export const getServerSideProps = async (
     };
   }
 
-  const companySlug = `${shopProduct.company?.slug}`;
-  let cardContent = await productCardContentsCollection.findOne({
-    productId: shopProduct.product._id,
-    companySlug,
-  });
-  if (!cardContent) {
-    cardContent = {
-      _id: new ObjectId(),
-      productId: shopProduct.product._id,
-      productSlug: shopProduct.product.slug,
-      companySlug,
-      assetKeys: [],
-      content: {
-        [DEFAULT_CITY]: PAGE_EDITOR_DEFAULT_VALUE_STRING,
-      },
-    };
-  }
-
   return {
     props: {
       ...props,
       shopProduct: castDbData(shopProduct),
-      cardContent: castDbData(cardContent),
     },
   };
 };

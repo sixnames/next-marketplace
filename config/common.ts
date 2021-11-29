@@ -47,7 +47,6 @@ export const DATE_FORMAT_FULL = `${DATE_FORMAT_DATE} ${DATE_FORMAT_TIME}`;
 
 // Cookies / Local storage
 export const CART_COOKIE_KEY = 'cart';
-export const THEME_COOKIE_KEY = 'theme';
 export const ADULT_KEY = 'adult';
 export const ADULT_TRUE = 'true';
 export const ADULT_FALSE = 'false';
@@ -59,7 +58,6 @@ export const COOKIE_CURRENCY = 'currency';
 // THEME
 export const THEME_DARK = 'dark';
 export const THEME_LIGHT = 'light';
-export const THEME_NOT_ALL = 'not all';
 
 // I18n
 export const DEFAULT_LOCALE = process.env.DEFAULT_LOCALE || 'ru';
@@ -72,12 +70,8 @@ export const COMPANY_SLUG_COOKIE_KEY = 'companySlug';
 export const LOCALE_HEADER = 'content-language';
 
 // Cities and countries
-export const DEFAULT_COUNTRY = 'Россия';
-export const SECONDARY_COUNTRY = 'USA';
 export const DEFAULT_CITY = process.env.DEFAULT_CITY || 'msk';
-export const SECONDARY_CITY = 'ny';
 export const DEFAULT_CURRENCY = 'р.';
-export const SECONDARY_CURRENCY = '$';
 
 // GENDER
 export const GENDER_SHE = 'she' as GenderModel;
@@ -93,8 +87,6 @@ export const GEO_POINT_TYPE = 'Point';
 // Roles
 export const ROLE_SLUG_GUEST = 'guest';
 export const ROLE_SLUG_ADMIN = 'admin';
-export const ROLE_SLUG_COMPANY_OWNER = 'companyOwner';
-export const ROLE_SLUG_COMPANY_MANAGER = 'companyManager';
 
 // Configs
 export const CONFIG_VARIANT_STRING = 'string' as ConfigVariantModel;
@@ -193,11 +185,6 @@ export const DEFAULT_PRIORITY = 1;
 export const VIEWS_COUNTER_STEP = 1;
 export const DEFAULT_COMPANY_SLUG = '0';
 export const DEFAULT_COUNTERS_OBJECT = {
-  priorities: {
-    [DEFAULT_COMPANY_SLUG]: {
-      [DEFAULT_CITY]: DEFAULT_PRIORITY,
-    },
-  },
   views: {
     [DEFAULT_COMPANY_SLUG]: {
       [DEFAULT_CITY]: DEFAULT_PRIORITY,
@@ -227,7 +214,7 @@ export const CATALOGUE_NAV_VISIBLE_OPTIONS = '5';
 export const CATALOGUE_FILTER_VISIBLE_OPTIONS = 5;
 export const CATALOGUE_FILTER_LIMIT = 'limit';
 export const CATALOGUE_SNIPPET_VISIBLE_ATTRIBUTES = '5';
-export const CATALOGUE_PRODUCTS_LIMIT = 32;
+export const CATALOGUE_PRODUCTS_LIMIT = 36;
 export const FILTER_SEPARATOR = '-';
 export const SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY = 'price';
 export const SORT_BY_KEY = 'sortBy';
@@ -336,17 +323,15 @@ export const ASSETS_DIST_BLOG = 'blog';
 export const ASSETS_DIST_BLOG_CONTENT = 'blog-content';
 export const ASSETS_DIST_BRANDS = 'brands';
 export const ASSETS_DIST_CATEGORIES = 'categories';
-export const ASSETS_DIST_CATEGORY_DESCRIPTIONS = 'category-descriptions';
 export const ASSETS_DIST_COMPANIES = 'companies';
 export const ASSETS_DIST_CONFIGS = 'configs';
 export const ASSETS_DIST_CONFIGS_WATERMARK = 'watermark';
 export const ASSETS_DIST_OPTIONS = 'options';
 export const ASSETS_DIST_PAGES = 'pages';
 export const ASSETS_DIST_PRODUCTS = 'products';
-export const ASSETS_DIST_PRODUCT_CARD_CONTENT = 'card-content';
 export const ASSETS_DIST_PROMO = 'promo';
-export const ASSETS_DIST_RUBRIC_DESCRIPTIONS = 'rubric-descriptions';
 export const ASSETS_DIST_SEO = 'seo';
+export const ASSETS_DIST_SEO_TEXTS = 'seo-content';
 export const ASSETS_DIST_SHOPS = 'shops';
 export const ASSETS_DIST_SHOPS_LOGOS = 'shop-logos';
 export const ASSETS_DIST_TEMPLATES = 'templates';
@@ -428,7 +413,6 @@ export const HEADER_SEARCH_PRODUCTS_LIMIT = 5;
 // PAGES
 export const PAGE_STATE_DRAFT = 'draft' as PageStateModel;
 export const PAGE_STATE_PUBLISHED = 'published' as PageStateModel;
-export const PAGE_STATE_ENUMS = [PAGE_STATE_DRAFT, PAGE_STATE_PUBLISHED];
 export const PAGE_STATE_OPTIONS = [
   {
     _id: PAGE_STATE_DRAFT,

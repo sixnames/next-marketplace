@@ -201,7 +201,7 @@ export interface CountersItemModel {
 
 export interface CountersModel {
   views: CountersItemModel;
-  priorities: CountersItemModel;
+  priorities?: CountersItemModel;
 }
 export interface AttributeCountersItemModel {
   [key: string]: any;
@@ -660,30 +660,6 @@ export interface ProductAssetsModel {
   assets: AssetModel[];
 }
 
-export interface ProductCardDescriptionModel {
-  _id: ObjectIdModel;
-  companySlug: string;
-  productSlug: string;
-  productId: ObjectIdModel;
-  textI18n: TranslationModel;
-}
-
-export interface ProductSeoModel {
-  _id: ObjectIdModel;
-  productId: ObjectIdModel;
-  companySlug: string;
-  locales: TextUniquenessApiParsedResponseModel[];
-}
-
-export interface ProductCardContentModel {
-  _id: ObjectIdModel;
-  companySlug: string;
-  productSlug: string;
-  productId: ObjectIdModel;
-  content: JSONObjectModel;
-  assetKeys: string[];
-}
-
 export interface ProductCardPricesModel {
   _id: ObjectIdModel;
   min: string;
@@ -786,16 +762,6 @@ export interface RubricModel extends CountersModel {
 
 export type DescriptionPositionType = 'top' | 'bottom';
 
-export interface RubricDescriptionModel {
-  _id: ObjectIdModel;
-  companySlug: string;
-  rubricSlug: string;
-  position: DescriptionPositionType;
-  rubricId: ObjectIdModel;
-  content: JSONObjectModel;
-  assetKeys: string[];
-}
-
 export interface CategoryModel extends CountersModel {
   _id: ObjectIdModel;
   slug: string;
@@ -811,23 +777,14 @@ export interface CategoryModel extends CountersModel {
   replaceParentNameInCatalogueTitle?: boolean | null;
 }
 
-export interface CategoryDescriptionModel {
+export interface SeoContentModel {
   _id: ObjectIdModel;
+  slug: string;
   companySlug: string;
-  categoryId: ObjectIdModel;
-  categorySlug: string;
-  position: DescriptionPositionType;
-  content: JSONObjectModel;
-  assetKeys: string[];
-}
-
-export interface RubricSeoModel {
-  _id: ObjectIdModel;
-  companySlug: string;
-  rubricId: ObjectIdModel;
-  position: DescriptionPositionType;
-  categoryId?: ObjectIdModel | null;
-  locales: TextUniquenessApiParsedResponseModel[];
+  rubricSlug: string;
+  url: string;
+  content: string;
+  seoLocales?: TextUniquenessApiParsedResponseModel[] | null;
 }
 
 export interface ShopProductModel
@@ -1136,7 +1093,6 @@ export type OrderProductPayloadModel = PayloadType<OrderProductModel>;
 export type OrderStatusPayloadModel = PayloadType<OrderStatusModel>;
 export type PagePayloadModel = PayloadType<PageModel>;
 export type PagesGroupPayloadModel = PayloadType<PagesGroupModel>;
-export type ProductCardContentPayloadModel = PayloadType<ProductCardContentModel>;
 export type PromoPayloadModel = PayloadType<PromoModel>;
 export type RolePayloadModel = PayloadType<RoleModel>;
 export type RoleRulePayloadModel = PayloadType<RoleRuleModel>;
@@ -1146,6 +1102,7 @@ export type ShopPayloadModel = PayloadType<ShopModel>;
 export type SupplierPayloadModel = PayloadType<SupplierModel>;
 export type UserCategoryPayloadModel = PayloadType<UserCategoryModel>;
 export type UserPayloadModel = PayloadType<UserModel>;
+export type SeoContentPayloadModel = PayloadType<SeoContentModel>;
 
 export interface ProductPayloadModel extends PayloadType<ProductModel> {
   barcodeDoubles?: BarcodeDoublesInterface[] | null;

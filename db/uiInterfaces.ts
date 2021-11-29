@@ -13,7 +13,6 @@ import {
   CartModel,
   CartProductModel,
   CatalogueBreadcrumbModel,
-  CategoryDescriptionModel,
   CategoryModel,
   CityModel,
   CompanyModel,
@@ -41,20 +40,16 @@ import {
   ProductAssetsModel,
   ProductAttributeModel,
   ProductCardBreadcrumbModel,
-  ProductCardContentModel,
-  ProductCardDescriptionModel,
   ProductCardPricesModel,
   ProductConnectionItemModel,
   ProductConnectionModel,
   ProductModel,
-  ProductSeoModel,
   PromoModel,
   RoleModel,
   RoleRuleModel,
-  RubricDescriptionModel,
   RubricModel,
-  RubricSeoModel,
   RubricVariantModel,
+  SeoContentModel,
   ShopModel,
   ShopProductModel,
   SupplierModel,
@@ -243,10 +238,6 @@ export interface ProductCategoryInterface extends CategoryInterface {
   categories: ProductCategoryInterface[];
 }
 
-export interface ProductCardContentInterface extends ProductCardContentModel {
-  value?: string | null;
-}
-
 export interface ProductAttributesGroupInterface extends AttributesGroupModel {
   _id: ObjectIdModel;
   name?: string | null;
@@ -255,11 +246,6 @@ export interface ProductAttributesGroupInterface extends AttributesGroupModel {
   numberAttributesAST?: ProductAttributeInterface[] | null;
   multipleSelectAttributesAST?: ProductAttributeInterface[] | null;
   selectAttributesAST?: ProductAttributeInterface[] | null;
-}
-
-export interface ProductCardDescriptionInterface extends ProductCardDescriptionModel {
-  text?: string | null;
-  seo?: ProductSeoModel | null;
 }
 
 export interface ProductInterface extends ProductModel {
@@ -291,15 +277,14 @@ export interface ProductInterface extends ProductModel {
   multipleSelectAttributesAST?: ProductAttributeInterface[] | null;
   selectAttributesAST?: ProductAttributeInterface[] | null;
   shopProductsIds?: ObjectIdModel[] | null;
-  cardContent?: ProductCardContentInterface | null;
   attributesCount?: number | null;
   totalAttributesCount?: number | null;
   categories?: CategoryInterface[] | null;
   snippetTitle?: string | null;
   cardTitle?: string | null;
-  cardDescription?: ProductCardDescriptionInterface | null;
+  cardContent?: SeoContentModel | null;
+  cardContentCities?: SeoContentCitiesInterface | null;
   shops?: ShopInterface[] | null;
-  seo?: ProductSeoModel | null;
 }
 
 export interface BarcodeDoublesInterface {
@@ -343,13 +328,8 @@ export interface RubricInterface extends RubricModel {
   categories?: CategoryInterface[] | null;
   textTop?: string | null;
   textBottom?: string | null;
-  seoDescriptionTop?: RubricDescriptionInterface | null;
-  seoDescriptionBottom?: RubricDescriptionInterface | null;
-}
-
-export interface RubricDescriptionInterface extends RubricDescriptionModel {
-  text?: string | null;
-  seo?: RubricSeoModel | null;
+  seoDescriptionTop?: SeoContentModel | null;
+  seoDescriptionBottom?: SeoContentModel | null;
 }
 
 export interface CategoryInterface extends CategoryModel {
@@ -366,13 +346,8 @@ export interface CategoryInterface extends CategoryModel {
   textTop?: string | null;
   textBottom?: string | null;
   childrenCount?: number | null;
-  seoDescriptionTop?: CategoryDescriptionInterface | null;
-  seoDescriptionBottom?: CategoryDescriptionInterface | null;
-}
-
-export interface CategoryDescriptionInterface extends CategoryDescriptionModel {
-  text?: string | null;
-  seo?: RubricSeoModel | null;
+  seoDescriptionTop?: SeoContentModel | null;
+  seoDescriptionBottom?: SeoContentModel | null;
 }
 
 export interface SupplierProductInterface extends SupplierProductModel {
@@ -507,8 +482,10 @@ export interface CatalogueDataInterface {
   attributes: CatalogueFilterAttributeInterface[];
   selectedAttributes: CatalogueFilterAttributeInterface[];
   page: number;
-  textTop?: string | null;
-  textBottom?: string | null;
+  textTop?: SeoContentModel | null;
+  textTopEditUrl: string;
+  textBottom?: SeoContentModel | null;
+  textBottomEditUrl: string;
 }
 
 export interface CatalogueProductOptionInterface {
@@ -682,7 +659,7 @@ export interface InitialCardDataInterface {
   cardShops: ShopInterface[];
   cardBreadcrumbs: ProductCardBreadcrumbModel[];
   shopsCount: number;
-  cardContent: ProductCardContentInterface | null;
+  cardContent: SeoContentModel | null;
   cardLayout: string;
   rubric: RubricInterface;
   cardPrices: ProductCardPricesModel;
@@ -835,4 +812,8 @@ export interface CardLayoutInterface {
   cardData: InitialCardDataInterface;
   companySlug?: string;
   companyId?: string | null;
+}
+
+export interface SeoContentCitiesInterface {
+  [key: string]: SeoContentModel;
 }

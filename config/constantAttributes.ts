@@ -22,7 +22,8 @@ import {
   RubricInterface,
 } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getTreeFromList } from 'lib/optionsUtils';
+import { getTreeFromList } from 'lib/optionUtils';
+import { getObjectId } from 'mongo-seeding';
 import { ObjectId } from 'mongodb';
 
 export const getCommonOptionFields = (
@@ -314,7 +315,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
   const commonOptionFields = getCommonOptionFields(optionsGroupId);
 
   return {
-    _id: new ObjectId(),
+    _id: getObjectId('price'),
     attributesGroupId: new ObjectId(),
     optionsGroupId,
     nameI18n: {
@@ -349,7 +350,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
     capitalise: false,
     options: [
       {
-        _id: new ObjectId(),
+        _id: getObjectId('1_499'),
         ...commonOptionFields,
         nameI18n: {
           ru: 'До 500',
@@ -357,7 +358,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         slug: `1_499`,
       },
       {
-        _id: new ObjectId(),
+        _id: getObjectId('500_999'),
         ...commonOptionFields,
         nameI18n: {
           ru: '500 – 1 000',
@@ -365,7 +366,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         slug: `500_999`,
       },
       {
-        _id: new ObjectId(),
+        _id: getObjectId('1000_1499'),
         ...commonOptionFields,
         nameI18n: {
           ru: '1 000 – 1 500',
@@ -373,7 +374,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         slug: `1000_1499`,
       },
       {
-        _id: new ObjectId(),
+        _id: getObjectId('1500_2999'),
         ...commonOptionFields,
         nameI18n: {
           ru: '1 500 – 3 000',
@@ -381,7 +382,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         slug: `1500_2999`,
       },
       {
-        _id: new ObjectId(),
+        _id: getObjectId('3000_4999'),
         ...commonOptionFields,
         nameI18n: {
           ru: '3 000 – 5 000',
@@ -389,7 +390,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         slug: `3000_4999`,
       },
       {
-        _id: new ObjectId(),
+        _id: getObjectId('5000_14999'),
         ...commonOptionFields,
         nameI18n: {
           ru: '5 000 – 15 000',
@@ -397,7 +398,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         slug: `5000_14999`,
       },
       {
-        _id: new ObjectId(),
+        _id: getObjectId('15000_29999'),
         ...commonOptionFields,
         nameI18n: {
           ru: '15 000 – 30 000',
@@ -405,7 +406,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         slug: `15000_29999`,
       },
       {
-        _id: new ObjectId(),
+        _id: getObjectId('30000_49999'),
         ...commonOptionFields,
         nameI18n: {
           ru: '30 000 – 50 000',
@@ -413,7 +414,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         slug: `30000_49999`,
       },
       {
-        _id: new ObjectId(),
+        _id: getObjectId('50000_99999'),
         ...commonOptionFields,
         nameI18n: {
           ru: '50 000 – 100 000',
@@ -421,7 +422,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         slug: `50000_99999`,
       },
       {
-        _id: new ObjectId(),
+        _id: getObjectId('100000_149999'),
         ...commonOptionFields,
         nameI18n: {
           ru: '100 000 – 150 000',
@@ -429,7 +430,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         slug: `100000_149999`,
       },
       {
-        _id: new ObjectId(),
+        _id: getObjectId('150000_199999'),
         ...commonOptionFields,
         nameI18n: {
           ru: '150 000 – 200 000',
@@ -437,7 +438,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         slug: `150000_199999`,
       },
       {
-        _id: new ObjectId(),
+        _id: getObjectId('200000_249999'),
         ...commonOptionFields,
         nameI18n: {
           ru: '200 000 – 250 000',
@@ -445,7 +446,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         slug: `200000_249999`,
       },
       {
-        _id: new ObjectId(),
+        _id: getObjectId('250000_499999'),
         ...commonOptionFields,
         nameI18n: {
           ru: '250 000 – 500 000',
@@ -453,7 +454,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         slug: `250000_499999`,
       },
       {
-        _id: new ObjectId(),
+        _id: getObjectId('500000_999999'),
         ...commonOptionFields,
         nameI18n: {
           ru: '500 000 – 1 000 000',
@@ -461,7 +462,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         slug: `500000_999999`,
       },
       {
-        _id: new ObjectId(),
+        _id: getObjectId('1000000_1499999'),
         ...commonOptionFields,
         nameI18n: {
           ru: '1 000 000 – 1 500 000',
@@ -469,7 +470,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         slug: `1000000_1499999`,
       },
       {
-        _id: new ObjectId(),
+        _id: getObjectId('1500000_2999999'),
         ...commonOptionFields,
         nameI18n: {
           ru: '1 500 000 – 3 000 000',
@@ -477,7 +478,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         slug: `1500000_2999999`,
       },
       {
-        _id: new ObjectId(),
+        _id: getObjectId('3000000_2499999'),
         ...commonOptionFields,
         nameI18n: {
           ru: '3 000 000 – 3 500 000',
@@ -485,7 +486,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         slug: `3000000_2499999`,
       },
       {
-        _id: new ObjectId(),
+        _id: getObjectId('3500000_3999999'),
         ...commonOptionFields,
         nameI18n: {
           ru: '3 500 000 – 4 000 000',
@@ -493,7 +494,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         slug: `3500000_3999999`,
       },
       {
-        _id: new ObjectId(),
+        _id: getObjectId('4000000_4499999'),
         ...commonOptionFields,
         nameI18n: {
           ru: '4 000 000 – 4 500 000',
@@ -501,7 +502,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         slug: `4000000_4499999`,
       },
       {
-        _id: new ObjectId(),
+        _id: getObjectId('4500000_4999999'),
         ...commonOptionFields,
         nameI18n: {
           ru: '4 500 000 – 5 000 000',
@@ -509,7 +510,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
         slug: `4500000_4999999`,
       },
       {
-        _id: new ObjectId(),
+        _id: getObjectId('5000000_9999999999'),
         ...commonOptionFields,
         nameI18n: {
           ru: '5 000 000 – 10 000 000',

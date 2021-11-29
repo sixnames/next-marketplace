@@ -1,25 +1,73 @@
+import Button from 'components/button/Button';
 import PageEditor from 'components/PageEditor';
+import SeoTextLocalesInfoList from 'components/SeoTextLocalesInfoList';
 import { PAGE_EDITOR_DEFAULT_VALUE_STRING } from 'config/common';
-import { ProductCardContentInterface } from 'db/uiInterfaces';
+import { useSiteUserContext } from 'context/userSiteUserContext';
+import { SeoContentModel } from 'db/dbModels';
+import { ProductInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 
 interface CardDynamicContentInterface {
-  cardContent?: ProductCardContentInterface | null | undefined;
+  cardContent?: SeoContentModel | null | undefined;
   className?: string;
+  product: ProductInterface;
 }
 
-const CardDynamicContent: React.FC<CardDynamicContentInterface> = ({ cardContent, className }) => {
+const CardDynamicContent: React.FC<CardDynamicContentInterface> = ({
+  cardContent,
+  product,
+  className,
+}) => {
+  const sessionUser = useSiteUserContext();
+
   if (
     !cardContent ||
-    !cardContent.value ||
-    cardContent.value === PAGE_EDITOR_DEFAULT_VALUE_STRING
+    !cardContent.content ||
+    cardContent.content === PAGE_EDITOR_DEFAULT_VALUE_STRING
   ) {
-    return null;
+    return sessionUser?.showAdminUiInCatalogue ? (
+      <div className='mt-6 mb-8'>
+        <Button
+          size={'small'}
+          onClick={() => {
+            window.open(
+              `${sessionUser.editLinkBasePath}/rubrics/${product.rubricId}/products/product/${product._id}/constructor`,
+              '_blank',
+            );
+          }}
+        >
+          Редактировать SEO текст
+        </Button>
+      </div>
+    ) : null;
   }
 
   return (
     <div className={`mb-28 ${className ? className : ''}`}>
-      <PageEditor value={JSON.parse(cardContent.value)} readOnly />
+      <PageEditor value={JSON.parse(cardContent.content)} readOnly />
+
+      {sessionUser?.showAdminUiInCatalogue ? (
+        <div className='mt-6 mb-8'>
+          <div className='mb-8'>
+            <SeoTextLocalesInfoList
+              seoLocales={cardContent.seoLocales}
+              listClassName='flex gap-4 flex-wrap'
+            />
+          </div>
+
+          <Button
+            size={'small'}
+            onClick={() => {
+              window.open(
+                `${sessionUser.editLinkBasePath}/rubrics/${product.rubricId}/products/product/${product._id}/constructor`,
+                '_blank',
+              );
+            }}
+          >
+            Редактировать SEO текст
+          </Button>
+        </div>
+      ) : null}
     </div>
   );
 };

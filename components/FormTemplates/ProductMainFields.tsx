@@ -5,11 +5,9 @@ import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
-import TextSeoInfo from 'components/TextSeoInfo';
 import { CONFIRM_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { CreateProductInputInterface } from 'db/dao/product/createProduct';
-import { ProductSeoModel } from 'db/dbModels';
 import { useFormikContext } from 'formik';
 import * as React from 'react';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
@@ -22,11 +20,7 @@ export interface ProductFormValuesInterface extends ProductFormValuesBaseType {
   productId?: string;
 }
 
-interface ProductMainFieldsInterface {
-  seo?: ProductSeoModel | null;
-}
-
-const ProductMainFields: React.FC<ProductMainFieldsInterface> = ({ seo }) => {
+const ProductMainFields: React.FC = () => {
   const { setFieldValue, values } = useFormikContext<ProductFormValuesInterface>();
   const { showModal } = useAppContext();
   const { data, loading, error } = useGetGenderOptionsQuery();
@@ -97,34 +91,6 @@ const ProductMainFields: React.FC<ProductMainFieldsInterface> = ({ seo }) => {
         name={'descriptionI18n'}
         testId={'descriptionI18n'}
         showInlineError
-      />
-
-      <FormikTranslationsInput
-        variant={'textarea'}
-        className='h-[30rem]'
-        label={'Описание карточки товара'}
-        name={'cardDescriptionI18n'}
-        testId={'cardDescriptionI18n'}
-        additionalUi={(currentLocale) => {
-          if (!seo) {
-            return null;
-          }
-          const seoLocale = seo.locales.find(({ locale }) => {
-            return locale === currentLocale;
-          });
-
-          if (!seoLocale) {
-            return <div className='mb-4 font-medium'>Текст проверяется</div>;
-          }
-
-          return (
-            <TextSeoInfo
-              seoLocale={seoLocale}
-              className='mb-4 mt-4'
-              listClassName='flex gap-3 flex-wrap'
-            />
-          );
-        }}
       />
     </React.Fragment>
   );

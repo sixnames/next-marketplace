@@ -1,6 +1,6 @@
-import { deleteUpload } from 'lib/assetUtils/assetUtils';
 import { getNextItemId } from 'lib/itemIdUtils';
-import { deleteDocumentsTree, getParentTreeIds } from 'lib/optionsUtils';
+import { deleteDocumentsTree, getParentTreeIds } from 'lib/optionUtils';
+import { updateCitiesSeoContent } from 'lib/seoContentUtils';
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
@@ -10,7 +10,6 @@ import {
   CategoryPayloadModel,
   RubricModel,
   ObjectIdModel,
-  CategoryDescriptionModel,
   CompanyModel,
   ConfigModel,
 } from 'db/dbModels';
@@ -25,7 +24,6 @@ import {
   COL_PRODUCT_ATTRIBUTES,
   COL_RUBRICS,
   COL_CATEGORIES,
-  COL_CATEGORY_DESCRIPTIONS,
   COL_COMPANIES,
   COL_CONFIGS,
 } from 'db/collectionNames';
@@ -341,10 +339,8 @@ export const CategoryMutations = extendType({
           const { db } = await getDatabase();
           const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-          const categoryDescriptionsCollection =
-            db.collection<CategoryDescriptionModel>(COL_CATEGORY_DESCRIPTIONS);
           const { input } = args;
-          const { categoryId, rubricId, companySlug, textTop, textBottom, ...values } = input;
+          const { categoryId, rubricId, textBottom, textTop, companySlug, ...values } = input;
 
           // Check rubric availability
           const rubric = await rubricsCollection.findOne({
@@ -411,106 +407,16 @@ export const CategoryMutations = extendType({
 
           // update seo text
           if (textTop) {
-            const topText = await categoryDescriptionsCollection.findOne({
+            await updateCitiesSeoContent({
+              seoContentsList: textTop,
               companySlug,
-              position: 'top',
-              categoryId: updatedCategory._id,
             });
-
-            if (!topText) {
-              await categoryDescriptionsCollection.insertOne({
-                companySlug,
-                position: 'top',
-                categoryId: updatedCategory._id,
-                categorySlug: updatedCategory.slug,
-                content: textTop || {},
-                assetKeys: [],
-              });
-            } else {
-              await categoryDescriptionsCollection.findOneAndUpdate(
-                {
-                  _id: topText._id,
-                },
-                {
-                  $set: {
-                    content: textTop || {},
-                  },
-                },
-              );
-            }
           }
           if (textBottom) {
-            const topBottom = await categoryDescriptionsCollection.findOne({
+            await updateCitiesSeoContent({
+              seoContentsList: textBottom,
               companySlug,
-              position: 'bottom',
-              categoryId: updatedCategory._id,
             });
-
-            if (!topBottom) {
-              await categoryDescriptionsCollection.insertOne({
-                companySlug,
-                position: 'bottom',
-                categoryId: updatedCategory._id,
-                categorySlug: updatedCategory.slug,
-                content: textBottom || {},
-                assetKeys: [],
-              });
-            } else {
-              await categoryDescriptionsCollection.findOneAndUpdate(
-                {
-                  _id: topBottom._id,
-                },
-                {
-                  $set: {
-                    content: textBottom || {},
-                  },
-                },
-              );
-            }
-          }
-
-          // update seo text
-          if (textTop) {
-            await categoryDescriptionsCollection.findOneAndUpdate(
-              {
-                companySlug,
-                position: 'top',
-                categoryId: updatedCategory._id,
-              },
-              {
-                $set: {
-                  companySlug,
-                  position: 'top',
-                  categoryId: updatedCategory._id,
-                  categorySlug: updatedCategory.slug,
-                  textI18n: textTop || {},
-                },
-              },
-              {
-                upsert: true,
-              },
-            );
-          }
-          if (textBottom) {
-            await categoryDescriptionsCollection.findOneAndUpdate(
-              {
-                companySlug,
-                position: 'bottom',
-                categoryId: updatedCategory._id,
-              },
-              {
-                $set: {
-                  companySlug,
-                  position: 'bottom',
-                  categoryId: updatedCategory._id,
-                  categorySlug: updatedCategory.slug,
-                  textI18n: textBottom || {},
-                },
-              },
-              {
-                upsert: true,
-              },
-            );
           }
 
           return {
@@ -542,8 +448,6 @@ export const CategoryMutations = extendType({
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
         const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
-        const categoryDescriptionsCollection =
-          db.collection<CategoryDescriptionModel>(COL_CATEGORY_DESCRIPTIONS);
 
         const session = client.startSession();
 
@@ -582,7 +486,7 @@ export const CategoryMutations = extendType({
             }
 
             // Delete descriptions
-            const descriptions = await categoryDescriptionsCollection
+            /*const descriptions = await categoryDescriptionsCollection
               .find({
                 categoryId: category._id,
               })
@@ -594,7 +498,7 @@ export const CategoryMutations = extendType({
             }
             await categoryDescriptionsCollection.deleteMany({
               categoryId: category._id,
-            });
+            });*/
 
             // Delete category
             const removedCategoriesResult = await deleteDocumentsTree({

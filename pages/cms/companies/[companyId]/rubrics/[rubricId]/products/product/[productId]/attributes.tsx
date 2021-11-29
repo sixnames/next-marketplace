@@ -20,7 +20,7 @@ import {
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsProductLayout from 'layout/cms/CmsProductLayout';
 import { getFieldStringLocale } from 'lib/i18n';
-import { sortByName } from 'lib/optionsUtils';
+import { sortByName } from 'lib/optionUtils';
 import { getAttributeReadableValue } from 'lib/productAttributesUtils';
 import { getCmsProduct } from 'lib/productUtils';
 import { ObjectId } from 'mongodb';
@@ -126,12 +126,11 @@ export const getServerSideProps = async (
       notFound: true,
     };
   }
-  const companySlug = companyResult.slug;
 
   const payload = await getCmsProduct({
     locale: props.sessionLocale,
     productId: `${productId}`,
-    companySlug,
+    companySlug: companyResult.slug,
   });
 
   if (!payload) {

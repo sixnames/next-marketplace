@@ -1,7 +1,6 @@
 import { IMAGE_FALLBACK } from 'config/common';
 import {
   COL_PRODUCT_ASSETS,
-  COL_PRODUCT_CARD_DESCRIPTIONS,
   COL_PRODUCTS,
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
@@ -10,7 +9,6 @@ import {
   GenderModel,
   Maybe,
   ProductAssetsModel,
-  ProductCardDescriptionModel,
   ProductModel,
   ProductPayloadModel,
   RubricModel,
@@ -24,17 +22,14 @@ import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getNextItemId } from 'lib/itemIdUtils';
 import { checkBarcodeIntersects, trimProductName } from 'lib/productUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { checkProductDescriptionUniqueness } from 'lib/textUniquenessUtils';
 import { ObjectId } from 'mongodb';
 
 export interface CreateProductInputInterface {
-  companySlug: string;
   active: boolean;
   barcode: string[];
   originalName: string;
   nameI18n: Maybe<TranslationModel>;
   descriptionI18n: Maybe<TranslationModel>;
-  cardDescriptionI18n: Maybe<TranslationModel>;
   rubricId: string;
   gender: GenderModel;
 }
@@ -49,9 +44,6 @@ export async function createProduct({
   const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
   const rubricVariantCollection = db.collection<RubricVariantModel>(COL_RUBRIC_VARIANTS);
-  const productsCardDescriptionsCollection = db.collection<ProductCardDescriptionModel>(
-    COL_PRODUCT_CARD_DESCRIPTIONS,
-  );
 
   const session = client.startSession();
 
@@ -82,7 +74,7 @@ export async function createProduct({
         return;
       }
 
-      const { rubricId, cardDescriptionI18n, companySlug, ...values } = input;
+      const { rubricId, ...values } = input;
       const rubricObjectId = new ObjectId(rubricId);
 
       // get selected rubric
@@ -182,22 +174,6 @@ export async function createProduct({
         return;
       }
 
-      // create card description
-      const createdCardDescription = await productsCardDescriptionsCollection.insertOne({
-        productSlug: itemId,
-        productId,
-        textI18n: cardDescriptionI18n || {},
-        companySlug,
-      });
-      if (!createdCardDescription.acknowledged) {
-        mutationPayload = {
-          success: false,
-          message: await getApiMessage(`products.create.error`),
-        };
-        await session.abortTransaction();
-        return;
-      }
-
       // create algolia object
       const algoliaResult = await saveAlgoliaObjects({
         indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
@@ -221,13 +197,6 @@ export async function createProduct({
         await session.abortTransaction();
         return;
       }
-
-      // check description uniqueness
-      await checkProductDescriptionUniqueness({
-        product: createdProduct,
-        cardDescriptionI18n: cardDescriptionI18n,
-        companySlug,
-      });
 
       mutationPayload = {
         success: true,

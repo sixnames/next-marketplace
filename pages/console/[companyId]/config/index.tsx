@@ -12,7 +12,7 @@ import ConsoleCompanyLayout from 'layout/console/ConsoleCompanyLayout';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName, getShortName } from 'lib/nameUtils';
-import { phoneToRaw } from 'lib/phoneUtils';
+import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -203,6 +203,10 @@ export const getServerSideProps = async (
               name: getFieldStringLocale(user.role.nameI18n, props.sessionLocale),
             }
           : null,
+        formattedPhone: {
+          raw: phoneToRaw(user.phone),
+          readable: phoneToReadable(user.phone),
+        },
       };
     }),
     owner: companyResult.owner
@@ -210,6 +214,16 @@ export const getServerSideProps = async (
           ...companyResult.owner,
           shortName: getShortName(companyResult.owner),
           fullName: getFullName(companyResult.owner),
+          role: companyResult.owner.role
+            ? {
+                ...companyResult.owner.role,
+                name: getFieldStringLocale(companyResult.owner.role.nameI18n, props.sessionLocale),
+              }
+            : null,
+          formattedPhone: {
+            raw: phoneToRaw(companyResult.owner.phone),
+            readable: phoneToReadable(companyResult.owner.phone),
+          },
         }
       : null,
   };

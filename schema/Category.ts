@@ -1,7 +1,7 @@
 import { COL_CATEGORIES } from 'db/collectionNames';
 import { CategoriesAlphabetListModel, CategoryModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { getAlphabetList } from 'lib/optionsUtils';
+import { getAlphabetList } from 'lib/optionUtils';
 import { getRequestParams } from 'lib/sessionHelpers';
 import { arg, extendType, inputObjectType, objectType } from 'nexus';
 

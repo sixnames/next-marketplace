@@ -15,6 +15,7 @@ import { DeleteProductInputInterface } from 'db/dao/product/deleteProduct';
 import { DeleteProductAssetInputInterface } from 'db/dao/product/deleteProductAsset';
 import { UpdateProductInputInterface } from 'db/dao/product/updateProduct';
 import { UpdateProductAssetIndexInputInterface } from 'db/dao/product/updateProductAssetIndex';
+import { UpdateProductCardContentInputInterface } from 'db/dao/product/updateProductCardContent';
 import { UpdateProductCategoryInputInterface } from 'db/dao/product/updateProductCategory';
 import { UpdateProductWithSyncErrorInputInterface } from 'db/dao/product/updateProductWithSyncError';
 import { ProductPayloadModel } from 'db/dbModels';
@@ -207,6 +208,14 @@ export const useUpdateProductCategory = () => {
 export const useUpdateProductCategoryVisibility = () => {
   return useMutationHandler<ProductPayloadModel, UpdateProductCategoryInputInterface>({
     path: `${basePath}/category/visibility`,
+    method: REQUEST_METHOD_PATCH,
+  });
+};
+
+// update card content
+export const useUpdateProductCardContent = () => {
+  return useMutationHandler<ProductPayloadModel, UpdateProductCardContentInputInterface>({
+    path: `${basePath}/card-content`,
     method: REQUEST_METHOD_PATCH,
   });
 };

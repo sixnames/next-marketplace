@@ -258,6 +258,16 @@ export const getServerSideProps = async (
           ...companyResult.owner,
           shortName: getShortName(companyResult.owner),
           fullName: getFullName(companyResult.owner),
+          role: companyResult.owner.role
+            ? {
+                ...companyResult.owner.role,
+                name: getFieldStringLocale(companyResult.owner.role.nameI18n, props.sessionLocale),
+              }
+            : null,
+          formattedPhone: {
+            raw: phoneToRaw(companyResult.owner.phone),
+            readable: phoneToReadable(companyResult.owner.phone),
+          },
         }
       : null,
   };

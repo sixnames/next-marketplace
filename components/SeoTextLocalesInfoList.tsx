@@ -1,5 +1,7 @@
 import Percent from 'components/Percent';
+import { useConfigContext } from 'context/configContext';
 import { TextUniquenessApiParsedResponseModel } from 'db/dbModels';
+import { SeoContentCitiesInterface } from 'db/uiInterfaces';
 import { noNaN } from 'lib/numbers';
 import * as React from 'react';
 
@@ -108,7 +110,7 @@ interface SeoTextLocalesInfoListInterface
   seoLocales?: TextUniquenessApiParsedResponseModel[] | null;
 }
 
-export const SeoTextLocalesInfoList: React.FC<SeoTextLocalesInfoListInterface> = ({
+const SeoTextLocalesInfoList: React.FC<SeoTextLocalesInfoListInterface> = ({
   seoLocales,
   listClassName,
   className,
@@ -127,6 +129,51 @@ export const SeoTextLocalesInfoList: React.FC<SeoTextLocalesInfoListInterface> =
               listClassName={listClassName}
               className={className}
               showLocaleName
+            />
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+interface SeoContentCitiesInfoInterface
+  extends Omit<SeoTextLocalesInfoListInterface, 'seoLocales'> {
+  seoContentCities?: SeoContentCitiesInterface | null;
+}
+
+export const SeoTextCitiesInfoList: React.FC<SeoContentCitiesInfoInterface> = ({
+  seoContentCities,
+  listClassName,
+  className,
+}) => {
+  const { cities } = useConfigContext();
+  if (!seoContentCities) {
+    return null;
+  }
+
+  return (
+    <div className='grid gap-6'>
+      {Object.keys(seoContentCities).map((citySlug) => {
+        const citySeoContent = seoContentCities[citySlug];
+        const city = cities.find(({ slug }) => citySlug === slug);
+        if (
+          !citySeoContent ||
+          !city ||
+          !citySeoContent.seoLocales ||
+          citySeoContent.seoLocales.length < 1
+        ) {
+          return null;
+        }
+
+        return (
+          <div key={citySlug}>
+            <div className='font-medium mb-2'>{city.name}</div>
+
+            <SeoTextLocalesInfoList
+              seoLocales={citySeoContent.seoLocales}
+              listClassName={listClassName}
+              className={className}
             />
           </div>
         );

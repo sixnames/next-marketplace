@@ -5,11 +5,10 @@ import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
 import Pager from 'components/Pager';
 import RequestError from 'components/RequestError';
+import { SeoTextCitiesInfoList } from 'components/SeoTextLocalesInfoList';
 import Spinner from 'components/Spinner';
 import Table, { TableColumn } from 'components/Table';
 import TableRowImage from 'components/TableRowImage';
-import TextSeoInfo from 'components/SeoTextLocalesInfoList';
-import { TextUniquenessApiParsedResponseModel } from 'db/dbModels';
 import {
   CompanyInterface,
   ConsoleRubricProductsInterface,
@@ -93,16 +92,10 @@ const CompanyRubricProductsList: React.FC<CompanyRubricProductsListInterface> = 
       },
     },
     {
-      accessor: 'seo',
+      accessor: 'cardContentCities',
       headTitle: 'Уникальность текста',
       render: ({ cellData }) => {
-        return (
-          <div className='space-y-3'>
-            {(cellData?.locales || []).map((seoLocale: TextUniquenessApiParsedResponseModel) => {
-              return <TextSeoInfo showLocaleName key={seoLocale.locale} seoLocale={seoLocale} />;
-            })}
-          </div>
-        );
+        return <SeoTextCitiesInfoList seoContentCities={cellData} />;
       },
     },
     {

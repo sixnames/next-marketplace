@@ -12,10 +12,9 @@ import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
 import Table, { TableColumn } from 'components/Table';
 import TableRowImage from 'components/TableRowImage';
-import TextSeoInfo from 'components/SeoTextLocalesInfoList';
+import { SeoTextCitiesInfoList } from 'components/SeoTextLocalesInfoList';
 import { ROUTE_CMS, DEFAULT_PAGE_FILTER, DEFAULT_COMPANY_SLUG } from 'config/common';
 import { CONFIRM_MODAL, CREATE_NEW_PRODUCT_MODAL } from 'config/modalVariants';
-import { TextUniquenessApiParsedResponseModel } from 'db/dbModels';
 import { ConsoleRubricProductsInterface, ProductInterface } from 'db/uiInterfaces';
 import { useDeleteProduct } from 'hooks/mutations/useProductMutations';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
@@ -124,16 +123,10 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
       },
     },
     {
-      accessor: 'seo',
+      accessor: 'cardContentCities',
       headTitle: 'Уникальность текста',
       render: ({ cellData }) => {
-        return (
-          <div className='space-y-3'>
-            {(cellData?.locales || []).map((seoLocale: TextUniquenessApiParsedResponseModel) => {
-              return <TextSeoInfo showLocaleName key={seoLocale.locale} seoLocale={seoLocale} />;
-            })}
-          </div>
-        );
+        return <SeoTextCitiesInfoList seoContentCities={cellData} />;
       },
     },
     {

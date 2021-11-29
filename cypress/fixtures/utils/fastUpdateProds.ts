@@ -1,9 +1,8 @@
-import { getConstructorContentFromText, sortStringArray } from '../../../lib/stringUtils';
+import { sortStringArray } from '../../../lib/stringUtils';
 import { Db } from 'mongodb';
 import {
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   CATALOGUE_SEO_TEXT_POSITION_TOP,
-  DEFAULT_CITY,
   DEFAULT_COMPANY_SLUG,
   FILTER_CATEGORY_KEY,
   FILTER_SEPARATOR,
@@ -17,7 +16,6 @@ import {
   COL_CITIES,
   COL_COMPANIES,
   COL_ID_COUNTERS,
-  COL_PRODUCTS,
   COL_RUBRICS,
   COL_SEO_CONTENTS,
 } from '../../../db/collectionNames';
@@ -29,27 +27,9 @@ import {
   IdCounterModel,
   JSONObjectModel,
   ObjectIdModel,
-  ProductModel,
   RubricModel,
   SeoContentModel,
-  TextUniquenessApiParsedResponseModel,
-  TranslationModel,
 } from '../../../db/dbModels';
-
-export interface ProductCardDescriptionModel {
-  _id: ObjectIdModel;
-  companySlug: string;
-  productSlug: string;
-  productId: ObjectIdModel;
-  textI18n: TranslationModel;
-}
-
-export interface ProductSeoModel {
-  _id: ObjectIdModel;
-  productId: ObjectIdModel;
-  companySlug: string;
-  locales: TextUniquenessApiParsedResponseModel[];
-}
 
 export interface RubricDescriptionModel {
   _id: ObjectIdModel;
@@ -114,56 +94,6 @@ function castCatalogueFilter(filter: string): CastCatalogueFilterPayloadInterfac
 interface GetDocumentSeoContentSlugPayloadInterface {
   seoContentSlug: string;
   url: string;
-}
-
-// product
-interface GetProductSeoContentSlugInterface {
-  productId: ObjectIdModel;
-  productSlug: string;
-  citySlug: string;
-  companySlug: string;
-  db: Db;
-}
-
-async function getProductSeoContentSlug({
-  companySlug,
-  citySlug,
-  productId,
-  productSlug,
-  db,
-}: GetProductSeoContentSlugInterface): Promise<GetDocumentSeoContentSlugPayloadInterface | null> {
-  try {
-    const citiesCollection = db.collection<CityModel>(COL_CITIES);
-    const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
-
-    // get company
-    let companyId = DEFAULT_COMPANY_SLUG;
-    if (companySlug !== DEFAULT_COMPANY_SLUG) {
-      const company = await companiesCollection.findOne({ slug: companySlug });
-      if (!company) {
-        console.log('getProductSeoContentSlug Company not found');
-        return null;
-      }
-
-      companyId = company._id.toHexString();
-    }
-
-    // get city
-    const city = await citiesCollection.findOne({ slug: citySlug });
-    if (!city) {
-      console.log('getProductSeoContentSlug City not found');
-      return null;
-    }
-    const cityId = city._id.toHexString();
-
-    return {
-      seoContentSlug: `${companyId}${cityId}${productId.toHexString()}`,
-      url: `/${companySlug}/${citySlug}/${productSlug}`,
-    };
-  } catch (e) {
-    console.log(e);
-    return null;
-  }
 }
 
 interface GetCategorySeoContentSlugInterface {
@@ -307,26 +237,19 @@ async function updateProds() {
     const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
     const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
     const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
-    const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
 
     // old collections
-    const productCardDescriptionsCollection =
-      db.collection<ProductCardDescriptionModel>('productCardDescriptions');
-    const productSeoCollection = db.collection<ProductSeoModel>('productSeo');
-
     const rubricDescriptionsCollection =
       db.collection<RubricDescriptionModel>('rubricDescriptions');
     const categoryDescriptionsCollection =
       db.collection<CategoryDescriptionModel>('categoryDescriptions');
 
-    const products = await productsCollection.find({}).toArray();
     const categories = await categoriesCollection.find({}).toArray();
     const rubrics = await rubricsCollection.find({}).toArray();
     const companies = await companiesCollection.find({}).toArray();
 
     const initialCompanySlugs = companies.map(({ slug }) => slug);
     const companySlugs = [...initialCompanySlugs, DEFAULT_COMPANY_SLUG];
-    const citySlug = DEFAULT_CITY;
     const positions: DescriptionPositionType[] = [
       CATALOGUE_SEO_TEXT_POSITION_TOP,
       CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
@@ -339,7 +262,7 @@ async function updateProds() {
       for await (const position of positions) {
         for await (const category of categories) {
           const description = await categoryDescriptionsCollection.findOne({
-            productId: category._id,
+            categoryId: category._id,
             companySlug,
             position,
           });
@@ -367,16 +290,32 @@ async function updateProds() {
               continue;
             }
 
-            // insert seo content
-            const seoContent = {
+            const seoContent = await seoContentsCollection.findOne({
               slug: seoSlugPayload.seoContentSlug,
-              url: seoSlugPayload.url,
-              content,
-              seoLocales: [],
-              rubricSlug: category.rubricSlug,
-              companySlug,
-            };
-            await seoContentsCollection.insertOne(seoContent);
+            });
+            if (!seoContent) {
+              // insert seo content
+              const seoContent = {
+                slug: seoSlugPayload.seoContentSlug,
+                url: seoSlugPayload.url,
+                content,
+                seoLocales: [],
+                rubricSlug: category.rubricSlug,
+                companySlug,
+              };
+              await seoContentsCollection.insertOne(seoContent);
+              continue;
+            }
+            await seoContentsCollection.findOneAndUpdate(
+              {
+                slug: seoSlugPayload.seoContentSlug,
+              },
+              {
+                $set: {
+                  content,
+                },
+              },
+            );
           }
         }
       }
@@ -385,7 +324,7 @@ async function updateProds() {
       for await (const position of positions) {
         for await (const rubric of rubrics) {
           const description = await rubricDescriptionsCollection.findOne({
-            productId: rubric._id,
+            rubricId: rubric._id,
             companySlug,
             position,
           });
@@ -414,57 +353,33 @@ async function updateProds() {
               continue;
             }
 
-            // insert seo content
-            const seoContent = {
+            const seoContent = await seoContentsCollection.findOne({
               slug: seoSlugPayload.seoContentSlug,
-              url: seoSlugPayload.url,
-              content,
-              seoLocales: [],
-              rubricSlug: rubric.slug,
-              companySlug,
-            };
-            await seoContentsCollection.insertOne(seoContent);
+            });
+            if (!seoContent) {
+              // insert seo content
+              const seoContent = {
+                slug: seoSlugPayload.seoContentSlug,
+                url: seoSlugPayload.url,
+                content,
+                seoLocales: [],
+                rubricSlug: rubric.slug,
+                companySlug,
+              };
+              await seoContentsCollection.insertOne(seoContent);
+              continue;
+            }
+            await seoContentsCollection.findOneAndUpdate(
+              {
+                slug: seoSlugPayload.seoContentSlug,
+              },
+              {
+                $set: {
+                  content,
+                },
+              },
+            );
           }
-        }
-      }
-
-      console.log('>> Products <<', products.length);
-      for await (const product of products) {
-        const seoSlugPayload = await getProductSeoContentSlug({
-          db,
-          companySlug,
-          citySlug,
-          productId: product._id,
-          productSlug: product.slug,
-        });
-        if (seoSlugPayload) {
-          const productSeo = await productSeoCollection.findOne({
-            productId: product._id,
-            companySlug,
-          });
-          const cardDescription = await productCardDescriptionsCollection.findOne({
-            productId: product._id,
-            companySlug,
-          });
-          if (!cardDescription || !cardDescription.textI18n.ru) {
-            continue;
-          }
-
-          const seoLocales = productSeo?.locales || [];
-          const initialText = cardDescription.textI18n.ru;
-          const text = initialText.replace(/['"{}\n“]+/g, '');
-          const content = getConstructorContentFromText(text);
-
-          // insert seo content
-          const seoContent = {
-            slug: seoSlugPayload.seoContentSlug,
-            url: seoSlugPayload.url,
-            content,
-            seoLocales,
-            rubricSlug: product.rubricSlug,
-            companySlug,
-          };
-          await seoContentsCollection.insertOne(seoContent);
         }
       }
     }

@@ -1,10 +1,10 @@
 import Breadcrumbs from 'components/Breadcrumbs';
 import Button from 'components/button/Button';
-import FixedButtons from 'components/button/FixedButtons';
 import { CatalogueHeadDefaultInterface } from 'components/Catalogue';
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
 import PageEditor from 'components/PageEditor';
+import SeoTextLocalesInfoList from 'components/SeoTextLocalesInfoList';
 import Title from 'components/Title';
 import { FILTER_CATEGORY_KEY, FILTER_SEPARATOR, ROUTE_CATALOGUE } from 'config/common';
 import { useSiteContext } from 'context/siteContext';
@@ -84,12 +84,19 @@ const CatalogueHeadWithCategories: React.FC<CatalogueHeadDefaultInterface> = ({
 
         {textTop ? (
           <div>
-            <PageEditor value={JSON.parse(textTop)} readOnly />
+            <PageEditor value={JSON.parse(textTop.content)} readOnly />
           </div>
         ) : null}
 
         {sessionUser?.showAdminUiInCatalogue ? (
-          <FixedButtons>
+          <div className='mb-8'>
+            <div className='mb-8'>
+              <SeoTextLocalesInfoList
+                seoLocales={textTop?.seoLocales}
+                listClassName='flex gap-4 flex-wrap'
+              />
+            </div>
+
             <Button
               size={'small'}
               onClick={() => {
@@ -101,7 +108,7 @@ const CatalogueHeadWithCategories: React.FC<CatalogueHeadDefaultInterface> = ({
             >
               Редактировать SEO текст
             </Button>
-          </FixedButtons>
+          </div>
         ) : null}
       </Inner>
     </div>

@@ -7,9 +7,10 @@ import Inner from 'components/Inner';
 import MenuButtonWithName from 'components/MenuButtonWithName';
 import PageEditor from 'components/PageEditor';
 import Pager from 'components/Pager';
+import SeoTextLocalesInfoList from 'components/SeoTextLocalesInfoList';
 import { CATALOGUE_HEAD_LAYOUT_WITH_CATEGORIES } from 'config/constantSelects';
 import { useSiteUserContext } from 'context/userSiteUserContext';
-import { CatalogueBreadcrumbModel } from 'db/dbModels';
+import { CatalogueBreadcrumbModel, SeoContentModel } from 'db/dbModels';
 import ProductSnippetGrid from 'layout/snippet/ProductSnippetGrid';
 import ProductSnippetRow from 'layout/snippet/ProductSnippetRow';
 import HeadlessMenuButton from 'components/HeadlessMenuButton';
@@ -47,7 +48,7 @@ import CatalogueFilter from 'layout/catalogue/CatalogueFilter';
 export interface CatalogueHeadDefaultInterface {
   catalogueCounterString: string;
   breadcrumbs: CatalogueBreadcrumbModel[];
-  textTop?: string | null;
+  textTop?: SeoContentModel | null;
   catalogueTitle: string;
   headCategories?: CategoryInterface[] | null;
   textTopEditUrl: string;
@@ -453,12 +454,19 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
 
         {state.textBottom ? (
           <div className='mb-16 border-t border-border-100 pt-2 mt-8'>
-            <PageEditor value={JSON.parse(state.textBottom)} readOnly />
+            <PageEditor value={JSON.parse(state.textBottom.content)} readOnly />
           </div>
         ) : null}
 
         {sessionUser?.showAdminUiInCatalogue ? (
-          <FixedButtons>
+          <div>
+            <div className='mb-8'>
+              <SeoTextLocalesInfoList
+                seoLocales={state.textBottom?.seoLocales}
+                listClassName='flex gap-4 flex-wrap'
+              />
+            </div>
+
             <Button
               size={'small'}
               onClick={() => {
@@ -470,7 +478,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
             >
               Редактировать SEO текст
             </Button>
-          </FixedButtons>
+          </div>
         ) : null}
       </Inner>
 

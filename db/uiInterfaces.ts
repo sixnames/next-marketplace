@@ -482,9 +482,9 @@ export interface CatalogueDataInterface {
   attributes: CatalogueFilterAttributeInterface[];
   selectedAttributes: CatalogueFilterAttributeInterface[];
   page: number;
-  textTop?: string | null;
+  textTop?: SeoContentModel | null;
   textTopEditUrl: string;
-  textBottom?: string | null;
+  textBottom?: SeoContentModel | null;
   textBottomEditUrl: string;
 }
 

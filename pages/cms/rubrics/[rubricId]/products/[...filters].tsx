@@ -12,7 +12,7 @@ import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
 import Table, { TableColumn } from 'components/Table';
 import TableRowImage from 'components/TableRowImage';
-import TextSeoInfo from 'components/TextSeoInfo';
+import TextSeoInfo from 'components/SeoTextLocalesInfoList';
 import { ROUTE_CMS, DEFAULT_PAGE_FILTER, DEFAULT_COMPANY_SLUG } from 'config/common';
 import { CONFIRM_MODAL, CREATE_NEW_PRODUCT_MODAL } from 'config/modalVariants';
 import { TextUniquenessApiParsedResponseModel } from 'db/dbModels';

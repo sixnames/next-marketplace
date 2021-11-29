@@ -3,14 +3,14 @@ import { TextUniquenessApiParsedResponseModel } from 'db/dbModels';
 import { noNaN } from 'lib/numbers';
 import * as React from 'react';
 
-interface TextSeoInfoInterface {
+interface SeoTextLocaleInfoInterface {
   seoLocale?: TextUniquenessApiParsedResponseModel;
   showLocaleName?: boolean;
   className?: string;
   listClassName?: string;
 }
 
-const TextSeoInfo: React.FC<TextSeoInfoInterface> = ({
+export const SeoTextLocale: React.FC<SeoTextLocaleInfoInterface> = ({
   seoLocale,
   listClassName,
   className,
@@ -103,4 +103,36 @@ const TextSeoInfo: React.FC<TextSeoInfoInterface> = ({
   );
 };
 
-export default TextSeoInfo;
+interface SeoTextLocalesInfoListInterface
+  extends Omit<SeoTextLocaleInfoInterface, 'seoLocale' | 'showLocaleName'> {
+  seoLocales?: TextUniquenessApiParsedResponseModel[] | null;
+}
+
+export const SeoTextLocalesInfoList: React.FC<SeoTextLocalesInfoListInterface> = ({
+  seoLocales,
+  listClassName,
+  className,
+}) => {
+  if (!seoLocales || seoLocales.length < 1) {
+    return null;
+  }
+
+  return (
+    <div className='grid gap-6'>
+      {seoLocales.map((seoLocale) => {
+        return (
+          <div key={seoLocale.locale}>
+            <SeoTextLocale
+              seoLocale={seoLocale}
+              listClassName={listClassName}
+              className={className}
+              showLocaleName
+            />
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+export default SeoTextLocalesInfoList;

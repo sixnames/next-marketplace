@@ -25,7 +25,12 @@ import {
   ignoreNoImageStage,
   noImageStage,
 } from 'db/dao/constantPipelines';
-import { CatalogueBreadcrumbModel, ObjectIdModel, ShopProductModel } from 'db/dbModels';
+import {
+  CatalogueBreadcrumbModel,
+  ObjectIdModel,
+  SeoContentModel,
+  ShopProductModel,
+} from 'db/dbModels';
 import {
   ATTRIBUTE_VIEW_VARIANT_LIST,
   CATALOGUE_FILTER_LIMIT,
@@ -1796,8 +1801,8 @@ export const getCatalogueData = async ({
     let editUrl = '';
     let textTopEditUrl = '';
     let textBottomEditUrl = '';
-    let textTop: string | null | undefined;
-    let textBottom: string | null | undefined;
+    let textTop: SeoContentModel | null | undefined;
+    let textBottom: SeoContentModel | null | undefined;
 
     if (!search) {
       const seoContentParams = await getCatalogueAllSeoContents({
@@ -1809,8 +1814,8 @@ export const getCatalogueData = async ({
 
       if (seoContentParams) {
         const { seoContentTop, seoContentBottom } = seoContentParams;
-        textTop = seoContentTop?.content;
-        textBottom = seoContentBottom?.content;
+        textTop = seoContentTop;
+        textBottom = seoContentBottom;
         textTopEditUrl = seoContentParams.textTopEditUrl;
         textBottomEditUrl = seoContentParams.textBottomEditUrl;
         editUrl = seoContentParams.editUrl;

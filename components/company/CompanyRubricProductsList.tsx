@@ -8,7 +8,7 @@ import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
 import Table, { TableColumn } from 'components/Table';
 import TableRowImage from 'components/TableRowImage';
-import TextSeoInfo from 'components/TextSeoInfo';
+import TextSeoInfo from 'components/SeoTextLocalesInfoList';
 import { TextUniquenessApiParsedResponseModel } from 'db/dbModels';
 import {
   CompanyInterface,

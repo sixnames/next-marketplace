@@ -95,10 +95,10 @@ export async function getProdDb({ uri, dbName }: GetProdDd) {
 }
 
 export const dbsConfig: GetProdDd[] = [
-  {
+  /*{
     uri: `${process.env.WP_DB_URI}`,
     dbName: `${process.env.WP_DB_NAME}`,
-  },
+  },*/
   {
     uri: `${process.env.SC_DB_URI}`,
     dbName: `${process.env.SC_DB_NAME}`,

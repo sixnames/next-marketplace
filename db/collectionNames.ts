@@ -1,8 +1,3 @@
-// export const COL_PRODUCT_SEO = 'productSeo';
-// export const COL_PRODUCT_CARD_DESCRIPTIONS = 'productCardDescriptions';
-// export const COL_PRODUCT_CARD_CONTENTS = 'productCardContents';
-// export const COL_RUBRIC_DESCRIPTIONS = 'rubricDescriptions';
-// export const COL_CATEGORY_DESCRIPTIONS = 'categoryDescriptions';
 export const COL_ATTRIBUTES = 'attributes';
 export const COL_ATTRIBUTES_GROUPS = 'attributesGroups';
 export const COL_BLOG_ATTRIBUTES = 'blogAttributes';

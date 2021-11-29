@@ -18,59 +18,6 @@ export type PhoneNumberModel = string;
 export type URLModel = string;
 export type Maybe<T> = T | undefined | null;
 
-/*export interface ProductCardDescriptionModel {
-  _id: ObjectIdModel;
-  companySlug: string;
-  productSlug: string;
-  productId: ObjectIdModel;
-  textI18n: TranslationModel;
-}
-
-export interface ProductSeoModel {
-  _id: ObjectIdModel;
-  productId: ObjectIdModel;
-  companySlug: string;
-  locales: TextUniquenessApiParsedResponseModel[];
-}
-
-export interface ProductCardContentModel {
-  _id: ObjectIdModel;
-  companySlug: string;
-  productSlug: string;
-  productId: ObjectIdModel;
-  content: JSONObjectModel;
-  assetKeys: string[];
-}
-
-export interface RubricDescriptionModel {
-  _id: ObjectIdModel;
-  companySlug: string;
-  rubricSlug: string;
-  position: DescriptionPositionType;
-  rubricId: ObjectIdModel;
-  content: JSONObjectModel;
-  assetKeys: string[];
-}
-
-export interface CategoryDescriptionModel {
-  _id: ObjectIdModel;
-  companySlug: string;
-  categoryId: ObjectIdModel;
-  categorySlug: string;
-  position: DescriptionPositionType;
-  content: JSONObjectModel;
-  assetKeys: string[];
-}
-
-export interface RubricSeoModel {
-  _id: ObjectIdModel;
-  companySlug: string;
-  rubricId: ObjectIdModel;
-  position: DescriptionPositionType;
-  categoryId?: ObjectIdModel | null;
-  locales: TextUniquenessApiParsedResponseModel[];
-}*/
-
 // Gender enum
 export enum GenderModel {
   she = 'she',

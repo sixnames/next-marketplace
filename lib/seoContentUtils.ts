@@ -589,7 +589,7 @@ export async function getRubricSeoContentSlug({
     if (companySlug !== DEFAULT_COMPANY_SLUG) {
       const company = await companiesCollection.findOne({ slug: companySlug });
       if (!company) {
-        console.log('getProductSeoContentSlug Company not found');
+        console.log('getRubricSeoContentSlug Company not found');
         return null;
       }
 
@@ -599,7 +599,7 @@ export async function getRubricSeoContentSlug({
     // get city
     const city = await citiesCollection.findOne({ slug: citySlug });
     if (!city) {
-      console.log('getProductSeoContentSlug City not found');
+      console.log('getRubricSeoContentSlug City not found');
       return null;
     }
     const cityId = city._id.toHexString();

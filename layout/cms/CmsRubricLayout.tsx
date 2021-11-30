@@ -5,6 +5,7 @@ import { RubricInterface } from 'db/uiInterfaces';
 import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import AppSubNav from 'layout/AppSubNav';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import { ClientNavItemInterface } from 'types/clientTypes';
 
@@ -22,6 +23,8 @@ const CmsRubricLayout: React.FC<CmsRubricLayoutInterface> = ({
   children,
   hideAttributesPath,
 }) => {
+  const { query } = useRouter();
+
   const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
     return [
       {
@@ -55,13 +58,15 @@ const CmsRubricLayout: React.FC<CmsRubricLayoutInterface> = ({
     ];
   }, [basePath, hideAttributesPath, rubric._id]);
 
+  const title = query.title || rubric.name;
+
   return (
     <AppContentWrapper breadcrumbs={breadcrumbs}>
       <Head>
-        <title>{rubric.name}</title>
+        <title>{title}</title>
       </Head>
       <Inner lowBottom>
-        <Title>{rubric.name}</Title>
+        <Title>{title}</Title>
       </Inner>
       <AppSubNav navConfig={navConfig} />
       {children}

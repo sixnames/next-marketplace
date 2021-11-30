@@ -20,25 +20,31 @@ import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from '
 interface RubricDetailsInterface extends ConsoleSeoContentDetailsInterface {
   rubric: RubricInterface;
   companySlug: string;
+  routeBasePath: string;
 }
 
-const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, seoContent, companySlug }) => {
+const RubricDetails: React.FC<RubricDetailsInterface> = ({
+  rubric,
+  seoContent,
+  routeBasePath,
+  companySlug,
+}) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `SEO тексты`,
     config: [
       {
         name: 'Рубрикатор',
-        href: `${ROUTE_CMS}/rubrics`,
+        href: `${routeBasePath}/rubrics`,
       },
       {
         name: `${rubric.name}`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}`,
+        href: `${routeBasePath}/rubrics/${rubric._id}`,
       },
     ],
   };
 
   return (
-    <CmsRubricLayout rubric={rubric} breadcrumbs={breadcrumbs}>
+    <CmsRubricLayout rubric={rubric} breadcrumbs={breadcrumbs} basePath={routeBasePath}>
       <Inner>
         <ConsoleSeoContentDetails seoContent={seoContent} companySlug={companySlug} />
       </Inner>
@@ -119,6 +125,7 @@ export const getServerSideProps = async (
       ...props,
       rubric: castDbData(payload.rubric),
       seoContent: castDbData(seoContent),
+      routeBasePath: `${ROUTE_CMS}/companies/${companyResult._id}`,
       companySlug,
     },
   };

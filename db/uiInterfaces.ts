@@ -727,6 +727,7 @@ export interface SsrConfigsInterface {
   /// Catalogue
   mainBannerAutoplaySpeed: number;
   showCardArticle: boolean;
+  catalogueProductsCount: number;
   stickyNavVisibleCategoriesCount: number;
   stickyNavVisibleSubCategoriesCount: number;
   stickyNavVisibleAttributesCount: number;
@@ -736,6 +737,7 @@ export interface SsrConfigsInterface {
   snippetAttributesCount: number;
   cardListFeaturesCount: number;
   catalogueMetaPrefix: string;
+  cartBookingButtonDescription: string;
   cardMetaPrefix: string;
 
   // Project

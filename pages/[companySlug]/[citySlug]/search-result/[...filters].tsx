@@ -41,6 +41,7 @@ export async function getServerSideProps(
     basePath: `${ROUTE_SEARCH_RESULT}/${search}`,
     snippetVisibleAttributesCount: props.initialData.configs.snippetAttributesCount,
     visibleCategoriesInNavDropdown: props.initialData.configs.visibleCategoriesInNavDropdown,
+    limit: props.initialData.configs.catalogueProductsCount,
     input: {
       search,
       filters: alwaysArray(filters),

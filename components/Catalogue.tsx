@@ -99,6 +99,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
         companySlug,
         snippetVisibleAttributesCount: configs.snippetAttributesCount,
         visibleCategoriesInNavDropdown: configs.visibleCategoriesInNavDropdown,
+        limit: configs.catalogueProductsCount,
       };
 
       setIsLoading(true);

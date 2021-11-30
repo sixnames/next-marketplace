@@ -843,6 +843,7 @@ export interface GetCatalogueDataInterface {
   companyId?: string | ObjectIdModel | null;
   snippetVisibleAttributesCount: number;
   currency: string;
+  limit: number;
   visibleCategoriesInNavDropdown: string[];
   input: {
     search?: string;
@@ -896,7 +897,7 @@ export const getCatalogueData = async ({
     } = castCatalogueFilters({
       filters: input.filters,
       initialPage: input.page,
-      initialLimit: CATALOGUE_PRODUCTS_LIMIT,
+      initialLimit: props.limit,
     });
 
     // fallback
@@ -979,8 +980,6 @@ export const getCatalogueData = async ({
       ...pricesStage,
       ...ignoreNoImageStage,
     };
-
-    console.log(JSON.stringify(productsInitialMatch, null, 2));
 
     // aggregate catalogue initial data
     const productDataAggregationResult = await shopProductsCollection

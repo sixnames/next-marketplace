@@ -1,4 +1,8 @@
-import { CATALOGUE_SNIPPET_VISIBLE_ATTRIBUTES, ROUTE_CATALOGUE } from 'config/common';
+import {
+  CATALOGUE_PRODUCTS_LIMIT,
+  CATALOGUE_SNIPPET_VISIBLE_ATTRIBUTES,
+  ROUTE_CATALOGUE,
+} from 'config/common';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getCatalogueData } from 'lib/catalogueUtils';
 import { noNaN } from 'lib/numbers';
@@ -10,6 +14,7 @@ export interface CatalogueApiInputInterface {
   companyId?: string;
   snippetVisibleAttributesCount?: number | null;
   visibleCategoriesInNavDropdown: string[];
+  limit: number;
 }
 
 async function catalogueData(req: NextApiRequest, res: NextApiResponse) {
@@ -22,6 +27,7 @@ async function catalogueData(req: NextApiRequest, res: NextApiResponse) {
       companyId,
       snippetVisibleAttributesCount,
       visibleCategoriesInNavDropdown,
+      limit,
     } = input;
     const filtersArray = alwaysArray(query.filters).slice(1);
     const [rubricSlug, ...filters] = filtersArray;
@@ -36,6 +42,7 @@ async function catalogueData(req: NextApiRequest, res: NextApiResponse) {
       snippetVisibleAttributesCount:
         noNaN(snippetVisibleAttributesCount) || noNaN(CATALOGUE_SNIPPET_VISIBLE_ATTRIBUTES),
       visibleCategoriesInNavDropdown,
+      limit: noNaN(limit) || CATALOGUE_PRODUCTS_LIMIT,
       input: {
         rubricSlug,
         page: noNaN(1),

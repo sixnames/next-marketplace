@@ -54,10 +54,9 @@ const CartAside: React.FC<CartAsideInterface> = ({
           </div>
         ) : null}
 
-        {isBooking ? (
+        {isBooking && configs.cartBookingButtonDescription ? (
           <div className='font-medium' data-cy={`cart-aside-warning`}>
-            {configs.siteName} не продаёт и не доставляет алкогольную продукцию. Вы можете
-            забронировать инетересующий товар и забрать его в магазинах партнёров.
+            {configs.cartBookingButtonDescription}
           </div>
         ) : null}
       </div>

@@ -1,5 +1,5 @@
 import ConsoleOrderDetails from 'components/order/ConsoleOrderDetails';
-import { ROUTE_CMS } from 'config/common';
+import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
 import {
   COL_ORDER_CUSTOMERS,
   COL_ORDER_PRODUCTS,
@@ -43,7 +43,7 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
 
   return (
     <AppContentWrapper breadcrumbs={breadcrumbs}>
-      <ConsoleOrderDetails order={order} title={title} />
+      <ConsoleOrderDetails order={order} title={title} pageCompanySlug={DEFAULT_COMPANY_SLUG} />
     </AppContentWrapper>
   );
 };

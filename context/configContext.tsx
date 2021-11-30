@@ -1,4 +1,5 @@
 import {
+  CATALOGUE_PRODUCTS_LIMIT,
   COOKIE_CITY,
   COOKIE_COMPANY_SLUG,
   COOKIE_CURRENCY,
@@ -90,6 +91,8 @@ const ConfigContext = React.createContext<ConfigContextInterface>({
     showReservationDate: false,
     buyButtonText: '',
     visibleCategoriesInNavDropdown: [],
+    cartBookingButtonDescription: '',
+    catalogueProductsCount: CATALOGUE_PRODUCTS_LIMIT,
   },
 });
 

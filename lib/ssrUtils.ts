@@ -11,6 +11,7 @@ import {
   PAGE_STATE_PUBLISHED,
   FILTER_SEPARATOR,
   CONFIG_GROUP_PROJECT,
+  CATALOGUE_PRODUCTS_LIMIT,
 } from 'config/common';
 import {
   COL_ATTRIBUTES,
@@ -943,9 +944,20 @@ export const getSsrConfigs = async ({
     configs,
     slug: 'visibleCategoriesInNavDropdown',
   });
+  const cartBookingButtonDescription = getConfigStringValue({
+    configs,
+    slug: 'cartBookingButtonDescription',
+  });
+  const catalogueProductsCount =
+    getConfigNumberValue({
+      configs,
+      slug: 'catalogueProductsCount',
+    }) || CATALOGUE_PRODUCTS_LIMIT;
 
   return {
     isOneShopCompany,
+    cartBookingButtonDescription,
+    catalogueProductsCount,
     showReservationDate,
     mapMarkerDarkTheme,
     mapMarkerLightTheme,

@@ -3,7 +3,7 @@ import ConsoleOrderDetails from 'components/order/ConsoleOrderDetails';
 import FixedButtons from 'components/button/FixedButtons';
 import Inner from 'components/Inner';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import { ROUTE_CONSOLE } from 'config/common';
+import { DEFAULT_COMPANY_SLUG, ROUTE_CONSOLE } from 'config/common';
 import { CONFIRM_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import {
@@ -16,7 +16,7 @@ import {
 } from 'db/collectionNames';
 import { shopProductFieldsPipeline } from 'db/dao/constantPipelines';
 import { getDatabase } from 'db/mongodb';
-import { OrderInterface } from 'db/uiInterfaces';
+import { CompanyInterface, OrderInterface } from 'db/uiInterfaces';
 import { useCancelOrder, useConfirmOrder } from 'hooks/mutations/useOrderMutations';
 import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
@@ -37,9 +37,10 @@ import {
 
 interface OrderPageConsumerInterface {
   order: OrderInterface;
+  pageCompany: CompanyInterface;
 }
 
-const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
+const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order, pageCompany }) => {
   const { query } = useRouter();
   const title = `Заказ № ${order.orderId}`;
   const { showModal } = useAppContext();
@@ -57,10 +58,13 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
     ],
   };
 
+  const pageCompanySlug =
+    pageCompany && pageCompany.domain ? pageCompany.slug : DEFAULT_COMPANY_SLUG;
+
   return (
     <AppContentWrapper breadcrumbs={breadcrumbs}>
       <div className='relative'>
-        <ConsoleOrderDetails order={order} title={title} />
+        <ConsoleOrderDetails order={order} title={title} pageCompanySlug={pageCompanySlug} />
         <Inner>
           <FixedButtons>
             {order.status?.isNew ? (
@@ -305,6 +309,7 @@ export const getServerSideProps = async (
     props: {
       ...props,
       order: castDbData(order),
+      pageCompany: castDbData(props.layoutProps.pageCompany),
     },
   };
 };

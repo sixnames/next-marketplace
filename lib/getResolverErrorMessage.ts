@@ -3,7 +3,8 @@ function getResolverErrorMessage(args: any) {
 
   // If mongo error
   if (name && message) {
-    return `${name}: ${message}`;
+    const errorName = name === 'ValidationError' ? '' : `${name}: `;
+    return `${errorName}${message}`;
   }
 
   if (!errors) {

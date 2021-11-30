@@ -1,4 +1,4 @@
-import { ROUTE_CONSOLE } from 'config/common';
+import { DEFAULT_COMPANY_SLUG, ROUTE_CONSOLE } from 'config/common';
 import {
   COL_COMPANIES,
   COL_ORDER_CUSTOMERS,
@@ -32,7 +32,12 @@ interface CompanyShopAssetsInterface
   extends GetConsoleInitialDataPropsInterface,
     Omit<ShopOrderInterface, 'basePath' | 'title'> {}
 
-const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ layoutProps, shop, order }) => {
+const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({
+  layoutProps,
+  pageCompanySlug,
+  shop,
+  order,
+}) => {
   const companyBasePath = `${ROUTE_CONSOLE}/${shop.companyId}/shops`;
   const title = `Заказ №${order.orderId}`;
 
@@ -57,6 +62,7 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ layoutProps, 
   return (
     <ConsoleLayout {...layoutProps}>
       <ShopOrder
+        pageCompanySlug={pageCompanySlug}
         title={title}
         order={order}
         breadcrumbs={breadcrumbs}
@@ -285,11 +291,15 @@ export const getServerSideProps = async (
       : null,
   };
 
+  const pageCompanySlug =
+    shop.company && shop.company.domain ? shop.company.slug : DEFAULT_COMPANY_SLUG;
+
   return {
     props: {
       ...initialProps.props,
       shop: castDbData(shop),
       order: castDbData(order),
+      pageCompanySlug,
     },
   };
 };

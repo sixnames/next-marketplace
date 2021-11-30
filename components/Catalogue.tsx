@@ -1,7 +1,6 @@
 import Breadcrumbs from 'components/Breadcrumbs';
 import Button from 'components/button/Button';
 import ErrorBoundaryFallback from 'components/ErrorBoundaryFallback';
-import FixedButtons from 'components/button/FixedButtons';
 import Icon from 'components/Icon';
 import Inner from 'components/Inner';
 import MenuButtonWithName from 'components/MenuButtonWithName';
@@ -99,6 +98,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
         companySlug,
         snippetVisibleAttributesCount: configs.snippetAttributesCount,
         visibleCategoriesInNavDropdown: configs.visibleCategoriesInNavDropdown,
+        limit: configs.catalogueProductsCount,
       };
 
       setIsLoading(true);
@@ -125,6 +125,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
     [
       companyId,
       companySlug,
+      configs.catalogueProductsCount,
       configs.snippetAttributesCount,
       configs.visibleCategoriesInNavDropdown,
     ],
@@ -497,7 +498,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
         />
       ) : null}
 
-      {sessionUser?.showAdminUiInCatalogue ? (
+      {/*{sessionUser?.showAdminUiInCatalogue ? (
         <FixedButtons>
           <Inner lowTop lowBottom>
             <Button
@@ -510,7 +511,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
             </Button>
           </Inner>
         </FixedButtons>
-      ) : null}
+      ) : null}*/}
     </div>
   );
 };

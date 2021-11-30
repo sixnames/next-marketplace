@@ -287,6 +287,7 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
                           label={'Имя'}
                           disabled={disabled}
                           isRequired
+                          showInlineError
                         />
 
                         <FormikInput
@@ -303,6 +304,7 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
                           label={'Телефон'}
                           disabled={disabled}
                           isRequired
+                          showInlineError
                         />
 
                         <FormikInput
@@ -312,6 +314,7 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
                           label={'E-mail'}
                           disabled={disabled}
                           isRequired
+                          showInlineError
                         />
 
                         <FormikTextarea

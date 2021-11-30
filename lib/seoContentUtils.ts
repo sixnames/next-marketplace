@@ -8,7 +8,6 @@ import {
   DEFAULT_LOCALE,
   FILTER_CATEGORY_KEY,
   FILTER_SEPARATOR,
-  LOCALES,
   PAGE_EDITOR_DEFAULT_VALUE_STRING,
   REQUEST_METHOD_POST,
   ROUTE_CATALOGUE,
@@ -23,6 +22,7 @@ import {
   COL_CITIES,
   COL_COMPANIES,
   COL_CONFIGS,
+  COL_LANGUAGES,
   COL_OPTIONS,
   COL_RUBRICS,
   COL_SEO_CONTENTS,
@@ -37,6 +37,7 @@ import {
   CompanyModel,
   ConfigModel,
   DescriptionPositionType,
+  LanguageModel,
   ObjectIdModel,
   RubricModel,
   SeoContentModel,
@@ -70,6 +71,7 @@ export async function checkSeoContentUniqueness({
 
     // get uniqueness api key and url
     const configSlug = 'textUniquenessApiKey';
+    const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
     const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
     const initialConfigs = await configsCollection
       .find({
@@ -98,13 +100,27 @@ export async function checkSeoContentUniqueness({
       domain = company?.domain || process.env.DEFAULT_DOMAIN;
     }
 
+    const languages = await languagesCollection.find({}).toArray();
+    const locales = languages.map(({ slug }) => slug);
+
     if (uniqueTextApiUrl && uniqueTextApiKey && text) {
-      for await (const locale of LOCALES) {
+      for await (const locale of locales) {
+        const isDefaultLocale = locale === DEFAULT_LOCALE;
         const rawText = JSON.parse(text);
         const textContents = getTextContents(rawText as Value, {
           lang: locale,
           cellPlugins: reactPageCellPlugins(),
         }).join(' ');
+
+        if (!isDefaultLocale) {
+          const defaultLocaleTextContents = getTextContents(rawText as Value, {
+            lang: DEFAULT_LOCALE,
+            cellPlugins: reactPageCellPlugins(),
+          }).join(' ');
+          if (defaultLocaleTextContents === textContents) {
+            continue;
+          }
+        }
 
         const rawOldText = oldText ? JSON.parse(oldText) : null;
         const oldTextContents = rawOldText

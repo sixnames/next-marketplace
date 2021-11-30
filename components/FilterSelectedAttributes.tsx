@@ -1,7 +1,5 @@
 import Icon from 'components/Icon';
 import Link from 'components/Link/Link';
-import { useConfigContext } from 'context/configContext';
-import { useThemeContext } from 'context/themeContext';
 import {
   CatalogueFilterAttributeInterface,
   CatalogueFilterAttributeOptionInterface,
@@ -40,22 +38,12 @@ const FilterSelectedAttributes: React.FC<FilterSelectedAttributesInterface> = ({
   clearSlug,
   urlPrefix,
 }) => {
-  const { isDark } = useThemeContext();
-  const { configs } = useConfigContext();
-  const style = React.useMemo<React.CSSProperties>(() => {
-    return {
-      backgroundColor:
-        (isDark ? configs.siteNavBarBgDarkTheme : configs.siteNavBarBgLightTheme) ||
-        'var(--secondaryBackground)',
-    };
-  }, [configs.siteNavBarBgDarkTheme, configs.siteNavBarBgLightTheme, isDark]);
-
   if (!selectedAttributes || selectedAttributes.length < 1) {
     return null;
   }
 
   return (
-    <div style={style} className='px-4 py-6 rounded-lg mb-6 shadow-sm'>
+    <div className='px-4 py-6 rounded-lg mb-6 shadow-sm border-2 border-theme'>
       <div className='flex items-baseline mb-3 justify-between'>
         <span className={`font-medium text-lg`}>Выбранные фильтры</span>
         <Link onClick={onClick} href={`${urlPrefix}${clearSlug}`} className={`ml-4`}>

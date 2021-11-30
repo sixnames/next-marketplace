@@ -96,7 +96,6 @@ const CatalogueAdditionalOptionsModal: React.FC<CatalogueAdditionalOptionsModalI
           },
         );
         const nextParams = nextParamsList.join('/');
-        console.log(`${basePath}/${nextParams}`);
         router.push(`${basePath}/${nextParams}`).catch((e) => {
           console.log(e);
         });

@@ -6,7 +6,13 @@ import Link from 'components/Link/Link';
 import PageEditor from 'components/PageEditor';
 import SeoTextLocalesInfoList from 'components/SeoTextLocalesInfoList';
 import Title from 'components/Title';
-import { FILTER_CATEGORY_KEY, FILTER_SEPARATOR, ROUTE_CATALOGUE } from 'config/common';
+import {
+  DEFAULT_CITY,
+  FILTER_CATEGORY_KEY,
+  FILTER_SEPARATOR,
+  ROUTE_CATALOGUE,
+} from 'config/common';
+import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
 import { useSiteUserContext } from 'context/userSiteUserContext';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
@@ -27,6 +33,7 @@ const CatalogueHeadWithCategories: React.FC<CatalogueHeadDefaultInterface> = ({
   const router = useRouter();
   const { urlPrefix } = useSiteContext();
   const sessionUser = useSiteUserContext();
+  const { currentCity } = useConfigContext();
   const { query, asPath } = router;
   return (
     <div className='mb-8 lg:mb-16 border-b border-border-100'>
@@ -61,7 +68,9 @@ const CatalogueHeadWithCategories: React.FC<CatalogueHeadDefaultInterface> = ({
               const newPathArray = sortStringArray([...otherCategoryFiltersArray, categoryFilter]);
               const newPathString = newPathArray.join('/');
 
-              const href = `/${companySlug}${ROUTE_CATALOGUE}/${rubricSlug}/${newPathString}`;
+              const href = `/${companySlug}/${
+                currentCity?.slug || DEFAULT_CITY
+              }${ROUTE_CATALOGUE}/${rubricSlug}/${newPathString}`;
 
               return (
                 <Link

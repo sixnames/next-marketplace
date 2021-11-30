@@ -125,6 +125,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
     [
       companyId,
       companySlug,
+      configs.catalogueProductsCount,
       configs.snippetAttributesCount,
       configs.visibleCategoriesInNavDropdown,
     ],

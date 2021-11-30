@@ -2,7 +2,7 @@ import ConsoleSeoContentDetails, {
   ConsoleSeoContentDetailsInterface,
 } from 'components/console/ConsoleSeoContentDetails';
 import Inner from 'components/Inner';
-import { ROUTE_CMS, ROUTE_CONSOLE } from 'config/common';
+import { ROUTE_CONSOLE } from 'config/common';
 import { getConsoleRubricDetails } from 'db/dao/rubric/getConsoleRubricDetails';
 import { RubricInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
@@ -31,11 +31,11 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
     config: [
       {
         name: 'Рубрикатор',
-        href: `${ROUTE_CMS}/rubrics`,
+        href: `${routeBasePath}/rubrics`,
       },
       {
         name: `${rubric.name}`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}`,
+        href: `${routeBasePath}/rubrics/${rubric._id}`,
       },
     ],
   };

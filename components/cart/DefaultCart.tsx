@@ -58,9 +58,8 @@ const DefaultCartShop: React.FC<DefaultCartShopUIInterface> = ({
         <div className='mb-2'>
           Магазин: <span className='font-medium text-lg'>{shop.name}</span>
         </div>
-        <div>{shop.address.formattedAddress}</div>
         <div
-          className='text-theme cursor-pointer'
+          className='cursor-pointer hover:text-theme transition-all'
           onClick={() => {
             showModal<MapModalInterface>({
               variant: MAP_MODAL,
@@ -79,7 +78,8 @@ const DefaultCartShop: React.FC<DefaultCartShopUIInterface> = ({
             });
           }}
         >
-          Смотреть на карте
+          {shop.address.formattedAddress}
+          <div className='text-theme'>Показать на карте</div>
         </div>
 
         {allowDelivery ? (

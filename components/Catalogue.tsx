@@ -47,16 +47,79 @@ import CatalogueFilter from 'layout/catalogue/CatalogueFilter';
 export interface CatalogueHeadDefaultInterface {
   catalogueCounterString: string;
   breadcrumbs: CatalogueBreadcrumbModel[];
-  textTop?: SeoContentModel | null;
   catalogueTitle: string;
   headCategories?: CategoryInterface[] | null;
-  textTopEditUrl: string;
 }
 
 const CatalogueHeadDefault = dynamic(() => import('layout/catalogue/CatalogueHeadDefault'));
 const CatalogueHeadWithCategories = dynamic(
   () => import('layout/catalogue/CatalogueHeadWithCategories'),
 );
+
+interface CatalogueHeadInterface extends CatalogueHeadDefaultInterface {
+  catalogueHeadLayout: string;
+  textTop?: SeoContentModel | null;
+  textTopEditUrl: string;
+}
+
+const CatalogueHead: React.FC<CatalogueHeadInterface> = ({
+  catalogueHeadLayout,
+  textTopEditUrl,
+  textTop,
+  ...props
+}) => {
+  const router = useRouter();
+  const sessionUser = useSiteUserContext();
+  const { asPath } = router;
+
+  let catalogueHead;
+  if (catalogueHeadLayout === CATALOGUE_HEAD_LAYOUT_WITH_CATEGORIES) {
+    catalogueHead = <CatalogueHeadWithCategories {...props} />;
+  } else {
+    catalogueHead = <CatalogueHeadDefault {...props} />;
+  }
+
+  return (
+    <React.Fragment>
+      {catalogueHead}
+
+      <Inner lowTop>
+        {textTop ? (
+          <div>
+            <PageEditor value={JSON.parse(textTop.content)} readOnly />
+          </div>
+        ) : null}
+
+        {sessionUser?.showAdminUiInCatalogue ? (
+          <div className='mb-8'>
+            <div className='mb-8'>
+              <SeoTextLocalesInfoList
+                seoLocales={textTop?.seoLocales}
+                listClassName='flex gap-4 flex-wrap'
+              />
+            </div>
+
+            <Button
+              size={'small'}
+              onClick={() => {
+                window.open(
+                  `${
+                    sessionUser?.editLinkBasePath
+                  }${textTopEditUrl}?url=${asPath}&title=${encodeURIComponent(
+                    props.catalogueTitle,
+                  )}`,
+                  '_blank',
+                );
+              }}
+            >
+              Редактировать SEO текст
+            </Button>
+          </div>
+        ) : null}
+      </Inner>
+    </React.Fragment>
+  );
+};
 
 interface CatalogueConsumerInterface {
   subHeadText: string;
@@ -299,33 +362,17 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
     );
   }
 
-  let catalogueHead;
-  if (state.catalogueHeadLayout === CATALOGUE_HEAD_LAYOUT_WITH_CATEGORIES) {
-    catalogueHead = (
-      <CatalogueHeadWithCategories
-        headCategories={state.headCategories}
-        breadcrumbs={state.breadcrumbs}
-        textTop={state.textTop}
-        catalogueCounterString={catalogueCounterString}
-        catalogueTitle={state.catalogueTitle}
-        textTopEditUrl={state.textTopEditUrl}
-      />
-    );
-  } else {
-    catalogueHead = (
-      <CatalogueHeadDefault
-        breadcrumbs={state.breadcrumbs}
-        textTop={state.textTop}
-        catalogueCounterString={catalogueCounterString}
-        catalogueTitle={state.catalogueTitle}
-        textTopEditUrl={state.textTopEditUrl}
-      />
-    );
-  }
-
   return (
     <div className='mb-12 catalogue'>
-      {catalogueHead}
+      <CatalogueHead
+        catalogueHeadLayout={state.catalogueHeadLayout}
+        breadcrumbs={state.breadcrumbs}
+        textTop={state.textTop}
+        catalogueCounterString={catalogueCounterString}
+        catalogueTitle={state.catalogueTitle}
+        textTopEditUrl={state.textTopEditUrl}
+        headCategories={state.headCategories}
+      />
 
       <Inner lowTop testId={'catalogue'}>
         <div className='grid lg:grid-cols-7 gap-8'>

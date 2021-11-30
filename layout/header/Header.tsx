@@ -441,6 +441,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
   const bgColorDarkTheme = configs.headerTopBarBgDarkTheme;
   const textColorLightTheme = configs.headerTopBarTextLightTheme;
   const textColorDarkTheme = configs.headerTopBarTextDarkTheme;
+  const isOneShopCompany = configs.isOneShopCompany;
   const showBlog = configs.showBlog;
   const textColor =
     (isDark ? textColorDarkTheme : textColorLightTheme) || 'var(--textSecondaryColor)';
@@ -529,7 +530,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
             </div>
 
             <div className='flex gap-6 items-center'>
-              {callbackPhone ? (
+              {callbackPhone && !isOneShopCompany ? (
                 <LinkPhone
                   style={topTextColorStyle}
                   className='text-secondary-text'
@@ -550,9 +551,9 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
         <Inner lowTop lowBottom className='relative'>
           <div className='flex justify-between py-3 lg:py-6 lg:justify-between lg:py-4'>
             <div className={`${middleSideClassName} justify-start hidden lg:inline-flex`}>
-              {configs.isOneShopCompany && domainCompany && domainCompany.mainShop ? (
+              {isOneShopCompany && domainCompany && domainCompany.mainShop ? (
                 <div
-                  className='text-theme cursor-pointer flex items-center'
+                  className='flex items-center'
                   onClick={() => {
                     showModal<MapModalInterface>({
                       variant: MAP_MODAL,
@@ -573,7 +574,19 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
                 >
                   <div>
                     <div className='text-secondary-text'>Наш адрес</div>
-                    <div>{domainCompany.mainShop.address.formattedAddress}</div>
+                    <div className='cursor-pointer hover:text-theme transition-all'>
+                      {domainCompany.mainShop.address.formattedAddress}
+                    </div>
+                    <div className='mt-1'>
+                      <LinkPhone
+                        style={topTextColorStyle}
+                        className='text-secondary-text'
+                        value={{
+                          raw: callbackPhone,
+                          readable: phoneToReadable(callbackPhone),
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
               ) : null}

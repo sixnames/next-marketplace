@@ -4,6 +4,7 @@ import { MAP_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { useSiteContext } from 'context/siteContext';
 import { ShopProductInterface } from 'db/uiInterfaces';
+import { useShopMarker } from 'hooks/useShopMarker';
 import LayoutCard from 'layout/LayoutCard';
 import * as React from 'react';
 import Button from 'components/button/Button';
@@ -20,6 +21,7 @@ interface CartShopInterface {
 const CartShop: React.FC<CartShopInterface> = ({ shopProduct, testId, cartProductId }) => {
   const { showModal } = useAppContext();
   const { addShopToCartProduct } = useSiteContext();
+  const marker = useShopMarker(shopProduct.shop);
   const { shop, oldPrice, price, discountedPercent, available } = shopProduct;
   if (!shop) {
     return null;
@@ -30,7 +32,6 @@ const CartShop: React.FC<CartShopInterface> = ({ shopProduct, testId, cartProduc
     name,
     address,
     contacts: { formattedPhones },
-    logo,
     license,
   } = shop;
 
@@ -54,7 +55,7 @@ const CartShop: React.FC<CartShopInterface> = ({ shopProduct, testId, cartProduc
           </div>
 
           <div
-            className='cursor-pointer hover:text-theme'
+            className='cursor-pointer hover:text-theme transition-all'
             onClick={() => {
               showModal<MapModalInterface>({
                 variant: MAP_MODAL,
@@ -64,9 +65,9 @@ const CartShop: React.FC<CartShopInterface> = ({ shopProduct, testId, cartProduc
                   markers: [
                     {
                       _id: shop._id,
-                      icon: logo.url,
-                      name,
-                      address,
+                      icon: marker,
+                      name: shop.name,
+                      address: shop.address,
                     },
                   ],
                 },
@@ -74,6 +75,7 @@ const CartShop: React.FC<CartShopInterface> = ({ shopProduct, testId, cartProduc
             }}
           >
             {address.formattedAddress}
+            <div className='text-theme'>Показать на карте</div>
           </div>
 
           {(formattedPhones || []).map((phone, index) => {

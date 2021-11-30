@@ -93,7 +93,7 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
 
             {configs.isOneShopCompany && domainCompany && domainCompany.mainShop ? (
               <div
-                className='text-theme cursor-pointer flex items-center mt-8'
+                className='flex items-center mt-8'
                 onClick={() => {
                   showModal<MapModalInterface>({
                     variant: MAP_MODAL,
@@ -114,7 +114,9 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
               >
                 <div>
                   <div className='text-secondary-text'>Наш адрес</div>
-                  <div>{domainCompany.mainShop.address.formattedAddress}</div>
+                  <div className='cursor-pointer hover:text-theme transition-all'>
+                    {domainCompany.mainShop.address.formattedAddress}
+                  </div>
                 </div>
               </div>
             ) : null}

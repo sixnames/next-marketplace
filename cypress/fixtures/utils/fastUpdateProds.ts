@@ -1,8 +1,8 @@
 import { Db } from 'mongodb';
 import { ID_COUNTER_STEP } from '../../../config/common';
 import { dbsConfig, getProdDb } from './getProdDb';
-import { COL_CATEGORIES, COL_ID_COUNTERS } from '../../../db/collectionNames';
-import { CategoryModel, IdCounterModel } from '../../../db/dbModels';
+import { COL_ID_COUNTERS, COL_PRODUCTS } from '../../../db/collectionNames';
+import { IdCounterModel, ProductModel } from '../../../db/dbModels';
 require('dotenv').config();
 
 export async function getFastNextNumberItemId(collectionName: string, db: Db): Promise<string> {
@@ -35,10 +35,10 @@ async function updateProds() {
     console.log(' ');
     console.log(`Updating ${dbConfig.dbName} db`);
     const { db, client } = await getProdDb(dbConfig);
-    const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
+    const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
 
-    const categories = await categoriesCollection.find({}).toArray();
-    console.log(categories);
+    const products = await productsCollection.aggregate<ProductModel>([]).toArray();
+    console.log('products', products.length);
 
     // disconnect form db
     await client.close();

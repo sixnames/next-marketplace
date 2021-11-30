@@ -438,7 +438,7 @@ export async function makeAnOrder({
     // send success
     return payload;
   } catch (e) {
-    console.log(e);
+    console.log('makeAnOrder error', e);
     return {
       success: false,
       message: getResolverErrorMessage(e),

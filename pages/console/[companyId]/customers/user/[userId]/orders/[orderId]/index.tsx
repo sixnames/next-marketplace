@@ -1,5 +1,5 @@
 import ConsoleOrderDetails from 'components/order/ConsoleOrderDetails';
-import { ROUTE_CONSOLE } from 'config/common';
+import { DEFAULT_COMPANY_SLUG, ROUTE_CONSOLE } from 'config/common';
 import {
   COL_ORDER_CUSTOMERS,
   COL_ORDER_PRODUCTS,
@@ -59,9 +59,12 @@ const UserOrderConsumer: React.FC<UserOrderConsumerInterface> = ({ user, order, 
     ],
   };
 
+  const pageCompanySlug =
+    pageCompany && pageCompany.domain ? pageCompany.slug : DEFAULT_COMPANY_SLUG;
+
   return (
     <ConsoleUserLayout companyId={`${pageCompany?._id}`} user={user} breadcrumbs={breadcrumbs}>
-      <ConsoleOrderDetails order={order} title={title} />
+      <ConsoleOrderDetails order={order} title={title} pageCompanySlug={pageCompanySlug} />
     </ConsoleUserLayout>
   );
 };

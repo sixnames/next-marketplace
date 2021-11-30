@@ -843,6 +843,7 @@ export interface GetCatalogueDataInterface {
   companyId?: string | ObjectIdModel | null;
   snippetVisibleAttributesCount: number;
   currency: string;
+  limit: number;
   visibleCategoriesInNavDropdown: string[];
   input: {
     search?: string;
@@ -896,7 +897,7 @@ export const getCatalogueData = async ({
     } = castCatalogueFilters({
       filters: input.filters,
       initialPage: input.page,
-      initialLimit: CATALOGUE_PRODUCTS_LIMIT,
+      initialLimit: props.limit,
     });
 
     // fallback
@@ -979,8 +980,6 @@ export const getCatalogueData = async ({
       ...pricesStage,
       ...ignoreNoImageStage,
     };
-
-    console.log(JSON.stringify(productsInitialMatch, null, 2));
 
     // aggregate catalogue initial data
     const productDataAggregationResult = await shopProductsCollection
@@ -1787,15 +1786,12 @@ export const getCatalogueData = async ({
     });
 
     // get clearSlug
-    let clearSlug = basePath;
-    if (showCategoriesInFilter) {
-      const clearPath = [...categoryFilters, sortPathname]
-        .filter((pathPart) => {
-          return pathPart;
-        })
-        .join('/');
-      clearSlug = `${basePath}/${clearPath}`;
-    }
+    const clearPath = [...categoryFilters, sortPathname]
+      .filter((pathPart) => {
+        return pathPart;
+      })
+      .join('/');
+    let clearSlug = `${basePath}/${clearPath}`;
     if (search) {
       clearSlug = basePath;
     }

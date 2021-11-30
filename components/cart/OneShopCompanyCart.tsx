@@ -129,6 +129,7 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
                           label={'Имя'}
                           disabled={disabled}
                           isRequired
+                          showInlineError
                         />
 
                         <FormikInput
@@ -145,6 +146,7 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
                           label={'Телефон'}
                           disabled={disabled}
                           isRequired
+                          showInlineError
                         />
 
                         <FormikInput
@@ -154,6 +156,7 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
                           label={'E-mail'}
                           disabled={disabled}
                           isRequired
+                          showInlineError
                         />
 
                         <FormikTextarea

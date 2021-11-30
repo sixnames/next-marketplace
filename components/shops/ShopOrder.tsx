@@ -5,6 +5,7 @@ import * as React from 'react';
 
 export interface ShopOrderInterface extends AppShopLayoutInterface {
   order: OrderInterface;
+  pageCompanySlug: string;
   title: string;
 }
 
@@ -14,10 +15,11 @@ const ShopOrders: React.FC<ShopOrderInterface> = ({
   title,
   breadcrumbs,
   order,
+  pageCompanySlug,
 }) => {
   return (
     <ConsoleShopLayout shop={shop} basePath={basePath} breadcrumbs={breadcrumbs}>
-      <ConsoleOrderDetails order={order} title={title} />
+      <ConsoleOrderDetails order={order} title={title} pageCompanySlug={pageCompanySlug} />
     </ConsoleShopLayout>
   );
 };

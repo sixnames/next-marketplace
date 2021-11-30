@@ -253,7 +253,7 @@ export function generateTitle({
   const beginOfTitleString = filteredBeginOfTitleArray.join(', ');
   const endOfTitleString = filteredEndOfTitleArray.join(', ');
   const titleString = trim(`${beginOfTitleString} ${finalKeyword} ${endOfTitleString}`);
-  const titleWordsArray = titleString.split(' ');
+  const titleWordsArray = titleString.split(' ').filter((word) => word);
   const firstWord = titleWordsArray[0];
 
   // return fallback if no title parts

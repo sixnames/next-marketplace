@@ -1028,6 +1028,22 @@ export function getConfigTemplates({
       companySlug,
       group: 'catalogue',
       variant: CONFIG_VARIANT_NUMBER,
+      slug: 'catalogueProductsCount',
+      name: 'Количество товаров в каталоге.',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: ['36'],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'catalogue',
+      variant: CONFIG_VARIANT_NUMBER,
       slug: 'stickyNavVisibleCategoriesCount',
       name: 'Количество видимых категорий в выпадающем меню шапки сайта.',
       description: '',
@@ -1164,6 +1180,22 @@ export function getConfigTemplates({
       cities: {
         [DEFAULT_CITY]: {
           [DEFAULT_LOCALE]: ['купить'],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'catalogue',
+      variant: CONFIG_VARIANT_STRING,
+      slug: 'cartBookingButtonDescription',
+      name: 'Текст описания под кнопкой брони в корзине каталога',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [''],
         },
       },
     },

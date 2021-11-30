@@ -135,6 +135,7 @@ export const CartMutations = extendType({
           const { db } = await getDatabase();
           const cartsCollection = db.collection<CartModel>(COL_CARTS);
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
           const { input } = args;
           const { shopProductId, amount, productId } = input;
 
@@ -197,14 +198,30 @@ export const CartMutations = extendType({
           const existingShopProduct = cartProducts.find((cartProduct) => {
             return cartProduct.shopProductId && cartProduct.shopProductId.equals(shopProductId);
           });
-          if (existingShopProduct) {
+          if (existingShopProduct && existingShopProduct.shopProductId) {
+            const shopProduct = await shopProductsCollection.findOne({
+              _id: existingShopProduct.shopProductId,
+            });
+            if (!shopProduct) {
+              return {
+                success: false,
+                message: await getApiMessage('carts.addProduct.error'),
+              };
+            }
+
+            const newAmount = existingShopProduct.amount + amount;
+            if (shopProduct.available < newAmount) {
+              return {
+                success: true,
+                message: await getApiMessage('carts.addProduct.success'),
+              };
+            }
+
             const updatedCartResult = await cartsCollection.findOneAndUpdate(
               { _id: cart._id },
               {
-                $inc: {
-                  [`${cartProductsFieldName}.$[product].amount`]: amount,
-                },
                 $set: {
+                  [`${cartProductsFieldName}.$[product].amount`]: newAmount,
                   updatedAt: new Date(),
                 },
               },

@@ -1,14 +1,15 @@
 import Button from 'components/button/Button';
 import Currency from 'components/Currency';
-import FormattedDate from 'components/FormattedDate';
+import FormattedDateTime from 'components/FormattedDateTime';
 import SpinnerInput from 'components/FormElements/SpinnerInput/SpinnerInput';
 import Inner from 'components/Inner';
+import Link from 'components/Link/Link';
 import LinkEmail from 'components/Link/LinkEmail';
 import LinkPhone from 'components/Link/LinkPhone';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import Title from 'components/Title';
 import WpImage from 'components/WpImage';
-import { IMAGE_FALLBACK } from 'config/common';
+import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, IMAGE_FALLBACK } from 'config/common';
 import { CONFIRM_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { useNotificationsContext } from 'context/notificationsContext';
@@ -19,9 +20,15 @@ import * as React from 'react';
 
 interface OrderProductProductInterface {
   orderProduct: OrderProductInterface;
+  citySlug: string;
+  companySlug: string;
 }
 
-const OrderProduct: React.FC<OrderProductProductInterface> = ({ orderProduct }) => {
+const OrderProduct: React.FC<OrderProductProductInterface> = ({
+  orderProduct,
+  citySlug,
+  companySlug,
+}) => {
   const [amount, setAmount] = React.useState<number>(orderProduct.amount);
   const [touched, setTouched] = React.useState<boolean>(false);
 
@@ -66,7 +73,17 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({ orderProduct }) 
         <div className='grid gap-4 lg:flex lg:items-baseline lg:justify-between'>
           <div>
             <div className='text-secondary-text mb-3 text-sm'>{`Артикул: ${itemId}`}</div>
-            <div className='text-lg font-bold flex-grow mb-2'>{product?.snippetTitle}</div>
+            <div className='text-lg font-bold flex-grow mb-2'>
+              {product ? (
+                <Link
+                  href={`/${companySlug}/${citySlug}/${product.slug}`}
+                  className='block text-primary-text hover:text-theme hover:no-underline'
+                  target={'_blank'}
+                >
+                  {product.snippetTitle}
+                </Link>
+              ) : null}
+            </div>
             <div>
               {shopProduct ? (
                 <div>
@@ -185,10 +202,15 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({ orderProduct }) 
 
 interface CmsOrderDetailsInterface {
   order: OrderInterface;
+  pageCompanySlug: string;
   title: string;
 }
 
-const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({ order, title }) => {
+const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
+  order,
+  pageCompanySlug,
+  title,
+}) => {
   const { createdAt, totalPrice, status, products, shop, customer, comment } = order;
 
   return (
@@ -197,7 +219,7 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({ order, title 
         <div>
           <Title low>{title}</Title>
           <div className='text-secondary-text'>
-            от <FormattedDate value={createdAt} />
+            от <FormattedDateTime value={createdAt} />
           </div>
         </div>
       </div>
@@ -205,7 +227,14 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({ order, title 
       <div className='md:grid grid-cols-9 gap-8'>
         <div className='col-span-6'>
           {products?.map((orderProduct) => {
-            return <OrderProduct orderProduct={orderProduct} key={`${orderProduct._id}`} />;
+            return (
+              <OrderProduct
+                citySlug={shop?.citySlug || DEFAULT_CITY}
+                companySlug={pageCompanySlug || DEFAULT_COMPANY_SLUG}
+                orderProduct={orderProduct}
+                key={`${orderProduct._id}`}
+              />
+            );
           })}
         </div>
 

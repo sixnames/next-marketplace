@@ -131,9 +131,37 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
     const castCartProducts = (initialCartProduct: CartProductInterface): CartProductInterface => {
       let product = initialCartProduct.product;
       if (product && product.shopProducts && product.shopProducts.length > 0) {
-        const sortedShopProductsByPrice = product.shopProducts.sort((a, b) => {
-          return noNaN(b?.price) - noNaN(a?.price);
-        });
+        const sortedShopProductsByPrice = product.shopProducts
+          .map((shopProduct) => {
+            return {
+              ...shopProduct,
+              shop: shopProduct.shop
+                ? {
+                    ...shopProduct.shop,
+                    priceWarning: getFieldStringLocale(shopProduct.shop.priceWarningI18n, locale),
+                    address: {
+                      ...shopProduct.shop.address,
+                      formattedCoordinates: {
+                        lat: shopProduct.shop.address.point.coordinates[1],
+                        lng: shopProduct.shop.address.point.coordinates[0],
+                      },
+                    },
+                    contacts: {
+                      ...shopProduct.shop.contacts,
+                      formattedPhones: shopProduct.shop.contacts.phones.map((phone) => {
+                        return {
+                          raw: phoneToRaw(phone),
+                          readable: phoneToReadable(phone),
+                        };
+                      }),
+                    },
+                  }
+                : null,
+            };
+          })
+          .sort((a, b) => {
+            return noNaN(b?.price) - noNaN(a?.price);
+          });
 
         const minPriceShopProduct = sortedShopProductsByPrice[sortedShopProductsByPrice.length - 1];
         const maxPriceShopProduct = sortedShopProductsByPrice[0];

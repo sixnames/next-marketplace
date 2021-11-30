@@ -486,21 +486,6 @@ export const CategoryMutations = extendType({
               return;
             }
 
-            // Delete descriptions
-            /*const descriptions = await categoryDescriptionsCollection
-              .find({
-                categoryId: category._id,
-              })
-              .toArray();
-            for await (const description of descriptions) {
-              for await (const filePath of description.assetKeys) {
-                await deleteUpload(filePath);
-              }
-            }
-            await categoryDescriptionsCollection.deleteMany({
-              categoryId: category._id,
-            });*/
-
             // Delete category
             const removedCategoriesResult = await deleteDocumentsTree({
               _id,

@@ -3,12 +3,14 @@ import { SeoContentModel, SeoContentPayloadModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { checkSeoContentUniqueness } from 'lib/seoContentUtils';
 import { getRequestParams } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
 
 export interface UpdateSeoContentInputInterface {
   seoContentId: string;
   content: string;
+  companySlug: string;
 }
 
 export async function updateSeoContent({
@@ -27,7 +29,21 @@ export async function updateSeoContent({
       };
     }
 
-    const { content, seoContentId } = input;
+    const { content, companySlug } = input;
+    const seoContentId = new ObjectId(input.seoContentId);
+    const oldSeoContent = await seoContentsCollection.findOne({
+      _id: seoContentId,
+    });
+
+    // check uniqueness
+    await checkSeoContentUniqueness({
+      companySlug,
+      seoContentId: new ObjectId(seoContentId),
+      text: content,
+      oldText: oldSeoContent?.content,
+    });
+
+    // update
     const updatedSeoContentResult = await seoContentsCollection.findOneAndUpdate(
       {
         _id: new ObjectId(seoContentId),

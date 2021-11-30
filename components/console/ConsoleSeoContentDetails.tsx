@@ -7,9 +7,13 @@ import * as React from 'react';
 
 export interface ConsoleSeoContentDetailsInterface {
   seoContent: SeoContentModel;
+  companySlug: string;
 }
 
-const ConsoleSeoContentDetails: React.FC<ConsoleSeoContentDetailsInterface> = ({ seoContent }) => {
+const ConsoleSeoContentDetails: React.FC<ConsoleSeoContentDetailsInterface> = ({
+  seoContent,
+  companySlug,
+}) => {
   const [updateSeoContentMutation] = useUpdateSeoContent();
 
   return (
@@ -18,6 +22,7 @@ const ConsoleSeoContentDetails: React.FC<ConsoleSeoContentDetailsInterface> = ({
         initialValues={seoContent}
         onSubmit={(values) => {
           updateSeoContentMutation({
+            companySlug,
             seoContentId: `${seoContent._id}`,
             content: values.content,
           }).catch(console.log);

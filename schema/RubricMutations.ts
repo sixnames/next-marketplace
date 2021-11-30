@@ -392,21 +392,6 @@ export const RubricMutations = extendType({
               rubricId: rubric._id,
             });
 
-            // Delete descriptions
-            /*const descriptions = await rubricDescriptionsCollection
-              .find({
-                rubricId: rubric._id,
-              })
-              .toArray();
-            for await (const description of descriptions) {
-              for await (const filePath of description.assetKeys) {
-                await deleteUpload(filePath);
-              }
-            }
-            await rubricDescriptionsCollection.deleteMany({
-              rubricId: rubric._id,
-            });*/
-
             // Delete rubric
             const removedRubricsResult = await rubricsCollection.deleteOne({
               _id,

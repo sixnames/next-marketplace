@@ -1,3 +1,4 @@
+import { useConfigContext } from 'context/configContext';
 import { noNaN } from 'lib/numbers';
 import * as React from 'react';
 
@@ -12,9 +13,10 @@ const ProductSnippetAvailability: React.FC<ProductSnippetAvailabilityInterface> 
   shopsCount,
   className,
 }) => {
+  const { configs } = useConfigContext();
   const shopsCounterPostfix = noNaN(shopsCount) >= minimalShopsCount ? 'магазинах' : 'магазине';
 
-  if (noNaN(shopsCount) < minimalShopsCount) {
+  if (configs.isOneShopCompany) {
     return null;
   }
 

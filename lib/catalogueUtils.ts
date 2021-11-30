@@ -1786,15 +1786,12 @@ export const getCatalogueData = async ({
     });
 
     // get clearSlug
-    let clearSlug = basePath;
-    if (showCategoriesInFilter) {
-      const clearPath = [...categoryFilters, sortPathname]
-        .filter((pathPart) => {
-          return pathPart;
-        })
-        .join('/');
-      clearSlug = `${basePath}/${clearPath}`;
-    }
+    const clearPath = [...categoryFilters, sortPathname]
+      .filter((pathPart) => {
+        return pathPart;
+      })
+      .join('/');
+    let clearSlug = `${basePath}/${clearPath}`;
     if (search) {
       clearSlug = basePath;
     }

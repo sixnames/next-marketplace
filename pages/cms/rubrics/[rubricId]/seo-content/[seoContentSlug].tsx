@@ -19,7 +19,7 @@ interface RubricDetailsInterface extends ConsoleSeoContentDetailsInterface {
   companySlug: string;
 }
 
-const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, seoContent }) => {
+const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, seoContent, companySlug }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `SEO тексты`,
     config: [
@@ -37,7 +37,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, seoContent })
   return (
     <CmsRubricLayout rubric={rubric} breadcrumbs={breadcrumbs}>
       <Inner>
-        <ConsoleSeoContentDetails seoContent={seoContent} />
+        <ConsoleSeoContentDetails seoContent={seoContent} companySlug={companySlug} />
       </Inner>
     </CmsRubricLayout>
   );

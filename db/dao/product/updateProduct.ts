@@ -105,18 +105,6 @@ export async function updateProduct({
         return;
       }
 
-      // check description uniqueness
-      /*const cardDescription = await productsCardDescriptionsCollection.findOne({
-        productId: product._id,
-        companySlug,
-      });
-      await checkProductDescriptionUniqueness({
-        product,
-        cardDescriptionI18n,
-        oldCardDescriptionI18n: cardDescription?.textI18n,
-        companySlug,
-      });*/
-
       // update product
       const { originalName, nameI18n } = trimProductName({
         nameI18n: values.nameI18n,

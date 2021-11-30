@@ -223,6 +223,18 @@ export const CartProduct: React.FC<CartProductPropsWithAmountInterface> = ({
       />
 
       <div className='flex flex-wrap gap-6 mt-auto'>
+        <div>
+          {/*shop product price*/}
+          <div className='text-secondary-text'>Цена за ед.</div>
+          <ProductShopPrices
+            price={price}
+            oldPrice={oldPrice}
+            discountedPercent={discountedPercent}
+          />
+          {/*available*/}
+          <div className='text-secondary-text'>{`В наличии ${available} шт`}</div>
+        </div>
+
         {/*amount input*/}
         <div>
           <SpinnerInput
@@ -247,19 +259,7 @@ export const CartProduct: React.FC<CartProductPropsWithAmountInterface> = ({
           />
         </div>
 
-        <div>
-          {/*shop product price*/}
-          <div className='text-secondary-text'>Цена за ед.</div>
-          <ProductShopPrices
-            price={price}
-            oldPrice={oldPrice}
-            discountedPercent={discountedPercent}
-          />
-          {/*available*/}
-          <div className='text-secondary-text'>{`В наличии ${available} шт`}</div>
-        </div>
-
-        <div className='flex justify-center items-center gap-4'>
+        <div className='flex justify-center self-start items-center gap-4'>
           <ControlButton iconSize={'mid'} icon={'compare'} />
           <ControlButton iconSize={'mid'} icon={'heart'} />
         </div>

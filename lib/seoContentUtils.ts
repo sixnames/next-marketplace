@@ -119,7 +119,7 @@ export async function checkSeoContentUniqueness({
             userkey: uniqueTextApiKey,
             exceptdomain: domain,
             callback: `https://${domain}/api/seo-content/uniqueness/${seoContentId}/${locale}`,
-            text,
+            text: textContents,
           };
 
           await fetch(uniqueTextApiUrl, {

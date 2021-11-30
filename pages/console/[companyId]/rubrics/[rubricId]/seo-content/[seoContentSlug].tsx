@@ -20,7 +20,12 @@ interface RubricDetailsInterface extends ConsoleSeoContentDetailsInterface {
   routeBasePath: string;
 }
 
-const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, seoContent, routeBasePath }) => {
+const RubricDetails: React.FC<RubricDetailsInterface> = ({
+  rubric,
+  seoContent,
+  routeBasePath,
+  companySlug,
+}) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `SEO тексты`,
     config: [
@@ -43,7 +48,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({ rubric, seoContent, r
       breadcrumbs={breadcrumbs}
     >
       <Inner>
-        <ConsoleSeoContentDetails seoContent={seoContent} />
+        <ConsoleSeoContentDetails seoContent={seoContent} companySlug={companySlug} />
       </Inner>
     </CmsRubricLayout>
   );

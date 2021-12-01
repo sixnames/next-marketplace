@@ -12,16 +12,18 @@ const StyledTooltip = withStyles(() => ({
   },
 }))(Tooltip);
 
-interface TooltipInterface extends TooltipProps {}
+interface TooltipInterface extends TooltipProps {
+  className?: string;
+}
 
-const WpTooltip: React.FC<TooltipInterface> = ({ children, title, ...props }) => {
+const WpTooltip: React.FC<TooltipInterface> = ({ children, className, title, ...props }) => {
   if (!title) {
     return <React.Fragment>{children}</React.Fragment>;
   }
 
   return (
     <StyledTooltip title={title} enterDelay={150} {...props}>
-      <div>{children}</div>
+      <div className={className}>{children}</div>
     </StyledTooltip>
   );
 };

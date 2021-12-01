@@ -1568,7 +1568,6 @@ export const getCatalogueData = async ({
     // cast catalogue products
     const products: ShopProductInterface[] = [];
     docs.forEach((shopProduct) => {
-      console.log(shopProduct.views);
       const product = shopProduct.product;
       if (!product) {
         return;

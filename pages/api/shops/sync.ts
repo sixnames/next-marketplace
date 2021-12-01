@@ -59,8 +59,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const notSyncedProductsCollection =
       db.collection<NotSyncedProductModel>(COL_NOT_SYNCED_PRODUCTS);
 
-    // TODO check in blacklist
-
     // get shop
     const shop = await shopsCollection.findOne({ token });
 
@@ -72,8 +70,32 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       return;
     }
 
+    // get blacklist
+    const blacklist = await blacklistProducts
+      .find({
+        shopId: shop._id,
+      })
+      .toArray();
+    const blacklistBarcodeList = blacklist.reduce((acc: string[], { products }) => {
+      const barcode = products.reduce((innerAcc: string[], product) => {
+        return [...innerAcc, ...product.barcode];
+      }, []);
+      return [...acc, ...barcode];
+    }, []);
+
+    // filter body items with blacklist
+    const allowedBody = body.filter(({ barcode }) => {
+      if (!barcode || barcode.length < 1) {
+        return false;
+      }
+      const inBlackList = barcode.some((barcodeItem) => {
+        return blacklistBarcodeList.includes(barcodeItem);
+      });
+      return !inBlackList;
+    });
+
     // get products
-    const barcodeList = body.reduce((acc: string[], { barcode }) => {
+    const barcodeList = allowedBody.reduce((acc: string[], { barcode }) => {
       if (!barcode || barcode.length < 1) {
         return acc;
       }
@@ -88,7 +110,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       .toArray();
 
     const shopProducts: ShopProductModel[] = [];
-    for await (const bodyItem of body) {
+    for await (const bodyItem of allowedBody) {
       if (!bodyItem.barcode || bodyItem.barcode.length < 1) {
         continue;
       }

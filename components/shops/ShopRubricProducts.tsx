@@ -352,12 +352,18 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
                     </div>
                     <FixedButtons>
                       {withProducts ? (
-                        <Button testId={'save-shop-products'} type={'submit'} size={'small'}>
+                        <Button
+                          frameClassName='w-auto'
+                          testId={'save-shop-products'}
+                          type={'submit'}
+                          size={'small'}
+                        >
                           Сохранить
                         </Button>
                       ) : null}
 
                       <Button
+                        frameClassName='w-auto'
                         onClick={() => {
                           router.push(addProductsPath).catch((e) => console.log(e));
                         }}

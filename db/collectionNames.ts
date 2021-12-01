@@ -1,5 +1,6 @@
 export const COL_ATTRIBUTES = 'attributes';
 export const COL_ATTRIBUTES_GROUPS = 'attributesGroups';
+export const COL_BLACKLIST_PRODUCTS = 'blackListProducts';
 export const COL_BLOG_ATTRIBUTES = 'blogAttributes';
 export const COL_BLOG_LIKES = 'blogLikes';
 export const COL_BLOG_POSTS = 'blogPosts';

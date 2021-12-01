@@ -11,10 +11,16 @@ export interface GetOrdersParamsInterface extends SyncParamsInterface {
 }
 
 export interface SyncProductInterface {
+  id?: string | null;
   barcode?: string[] | null;
   available?: number;
   price?: number;
   name: string;
+}
+
+export interface SyncBlackListProductInterface {
+  id?: string | null;
+  products: SyncProductInterface[];
 }
 
 export interface SyncResponseInterface {
@@ -53,6 +59,10 @@ export interface SyncOrderInterface extends TimestampModel {
 
 export interface SyncOrderResponseInterface extends SyncResponseInterface {
   orders: SyncOrderInterface[];
+}
+
+export interface SyncBlacklistResponseInterface extends SyncResponseInterface {
+  blacklist: SyncBlackListProductInterface[];
 }
 
 export interface SyncOrderStatusInterface {

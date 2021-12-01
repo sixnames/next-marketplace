@@ -579,8 +579,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
                     </div>
                     <div className='mt-1'>
                       <LinkPhone
-                        style={topTextColorStyle}
-                        className='text-secondary-text'
+                        className='text-primary-text'
                         value={{
                           raw: callbackPhone,
                           readable: phoneToReadable(callbackPhone),

@@ -109,7 +109,7 @@ const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
 
             {hasMoreOptions ? (
               <div
-                className='uppercase cursor-pointer hover:text-theme mt-2 mb-4'
+                className='uppercase cursor-pointer text-theme mt-2 mb-4'
                 onClick={() => {
                   showModal<CatalogueAdditionalOptionsModalInterface>({
                     variant: CATALOGUE_ADDITIONAL_OPTIONS_MODAL,

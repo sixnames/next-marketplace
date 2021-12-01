@@ -245,6 +245,7 @@ export async function getCatalogueSeoContentSlug({
       realFilters,
       noFiltersSelected,
       inCategory,
+      page,
     } = castCatalogueFilters({
       filters,
     });
@@ -446,12 +447,17 @@ export async function getCatalogueSeoContentSlug({
       return `${acc}${attributeId}`;
     }, '');
 
+    let pageId = '';
+    if (page && page > 1) {
+      pageId = `${page}`;
+    }
+
     return {
       rubricId,
       inCategory,
       noFiltersSelected,
       categoryLeaves,
-      seoContentSlug: `${companyId}${cityId}${rubricId}${categoryIds}${brandIds}${brandCollectionIds}${attributeIds}${priceIds}`,
+      seoContentSlug: `${companyId}${cityId}${rubricId}${categoryIds}${brandIds}${brandCollectionIds}${attributeIds}${priceIds}${pageId}`,
     };
   } catch (e) {
     console.log(e);

@@ -11,6 +11,7 @@ export interface GetOrdersParamsInterface extends SyncParamsInterface {
 }
 
 export interface SyncProductInterface {
+  _id?: string | null;
   barcode?: string[] | null;
   available?: number;
   price?: number;

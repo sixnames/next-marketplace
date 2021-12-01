@@ -1,15 +1,19 @@
-import { COL_PRODUCTS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
-import { ProductModel, ShopModel } from 'db/dbModels';
+import { DEFAULT_LOCALE } from 'config/common';
+import { COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
+import { shopProductFieldsPipeline } from 'db/dao/constantPipelines';
+import { ObjectIdModel, ProductModel, ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { SyncParamsInterface, SyncProductInterface } from 'db/syncInterfaces';
 import { ShopProductInterface } from 'db/uiInterfaces';
+import { getFieldStringLocale } from 'lib/i18n';
+import { generateSnippetTitle } from 'lib/titleUtils';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-interface SyncProductAggregationInterface extends SyncProductInterface {
+interface SyncProductAggregationInterface extends Omit<SyncProductInterface, '_id'> {
+  _id: ObjectIdModel;
   product: ProductModel;
 }
 
-// TODO messages
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== 'GET') {
     res.status(405).send({
@@ -61,47 +65,34 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           shopId: shop._id,
         },
       },
-      {
-        $group: {
-          _id: '$productId',
-          barcode: {
-            $addToSet: '$barcode',
-          },
-          price: {
-            $first: '$price',
-          },
-          available: {
-            $first: '$available',
-          },
-        },
-      },
-      {
-        $lookup: {
-          from: COL_PRODUCTS,
-          as: 'product',
-          localField: '_id',
-          foreignField: '_id',
-        },
-      },
-      {
-        $addFields: {
-          product: {
-            $arrayElemAt: ['$product', 0],
-          },
-        },
-      },
+      ...shopProductFieldsPipeline('$productId'),
     ])
     .toArray();
 
+  const locale = DEFAULT_LOCALE;
   const shopProducts: SyncProductInterface[] = [];
   initialShopProducts.forEach((shopProduct) => {
-    const { barcode, available, price, product } = shopProduct;
+    const { barcode, available, price, product, _id } = shopProduct;
     if (barcode && barcode.length > 0 && product) {
+      const snippetTitle = generateSnippetTitle({
+        locale,
+        brand: product.brand,
+        rubricName: getFieldStringLocale(product.rubric?.nameI18n, locale),
+        showRubricNameInProductTitle: product.rubric?.showRubricNameInProductTitle,
+        showCategoryInProductTitle: product.rubric?.showCategoryInProductTitle,
+        attributes: product.attributes || [],
+        categories: product.categories,
+        titleCategoriesSlugs: product.titleCategoriesSlugs,
+        originalName: `${product.originalName}`,
+        defaultGender: `${product.gender}`,
+      });
+
       shopProducts.push({
+        _id: _id.toHexString(),
         barcode,
         available,
         price,
-        name: product.originalName,
+        name: snippetTitle,
       });
     }
   });

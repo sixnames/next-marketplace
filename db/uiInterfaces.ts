@@ -741,7 +741,6 @@ export interface SsrConfigsInterface {
   cardMetaPrefix: string;
 
   // Project
-  useUniqueConstructor: boolean;
   showReservationDate: boolean;
   buyButtonText: string;
 }

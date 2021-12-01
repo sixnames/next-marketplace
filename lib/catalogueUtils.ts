@@ -797,7 +797,6 @@ export function castCatalogueFilters({
   if (sortBy === SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY) {
     sortStage = {
       minPrice: castedSortDir,
-      priorities: SORT_DESC,
       views: SORT_DESC,
       available: SORT_DESC,
       _id: SORT_DESC,
@@ -1569,6 +1568,7 @@ export const getCatalogueData = async ({
     // cast catalogue products
     const products: ShopProductInterface[] = [];
     docs.forEach((shopProduct) => {
+      console.log(shopProduct.views);
       const product = shopProduct.product;
       if (!product) {
         return;

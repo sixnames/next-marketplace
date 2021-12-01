@@ -198,7 +198,6 @@ export const SORT_ASC_STR = 'ASC';
 export const SORT_DESC = -1 as SortDirectionModel;
 export const SORT_DESC_STR = 'DESC';
 export const DEFAULT_SORT_STAGE = {
-  priorities: SORT_DESC,
   views: SORT_DESC,
   _id: SORT_DESC,
 };

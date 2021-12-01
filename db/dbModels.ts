@@ -1203,3 +1203,17 @@ export interface TextUniquenessApiParsedResponseModel {
   spellCheck?: TextUniquenessApiSpellCheckModel[] | null;
   seoCheck?: TextUniquenessApiSeoCheckModel | null;
 }
+
+export interface BlackListProductItemModel {
+  barcode: string[];
+  available: number;
+  price: number;
+  name: string;
+}
+
+export interface BlackListProductModel {
+  _id: ObjectIdModel;
+  shopProductId: ObjectIdModel;
+  shopId: ObjectIdModel;
+  products: BlackListProductItemModel[];
+}

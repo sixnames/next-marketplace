@@ -1,11 +1,18 @@
-import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
+import { DEFAULT_COUNTERS_OBJECT, REQUEST_METHOD_POST } from 'config/common';
 import {
+  COL_BLACKLIST_PRODUCTS,
   COL_NOT_SYNCED_PRODUCTS,
   COL_PRODUCTS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
 } from 'db/collectionNames';
-import { NotSyncedProductModel, ProductModel, ShopModel, ShopProductModel } from 'db/dbModels';
+import {
+  BlackListProductModel,
+  NotSyncedProductModel,
+  ProductModel,
+  ShopModel,
+  ShopProductModel,
+} from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { SyncProductInterface, SyncParamsInterface } from 'db/syncInterfaces';
 import { getNextItemId } from 'lib/itemIdUtils';
@@ -14,10 +21,9 @@ import { getUpdatedShopProductPrices } from 'lib/shopUtils';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-// TODO messages
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    if (req.method !== 'POST') {
+    if (req.method !== REQUEST_METHOD_POST) {
       res.status(405).send({
         success: false,
         message: 'wrong method',
@@ -48,9 +54,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const { db } = await getDatabase();
     const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
     const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+    const blacklistProducts = db.collection<BlackListProductModel>(COL_BLACKLIST_PRODUCTS);
     const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
     const notSyncedProductsCollection =
       db.collection<NotSyncedProductModel>(COL_NOT_SYNCED_PRODUCTS);
+
+    // TODO check in blacklist
 
     // get shop
     const shop = await shopsCollection.findOne({ token });
@@ -81,15 +90,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const shopProducts: ShopProductModel[] = [];
     for await (const bodyItem of body) {
       if (!bodyItem.barcode || bodyItem.barcode.length < 1) {
-        /*notSyncedProducts.push({
-          _id: new ObjectId(),
-          name: `${bodyItem?.name}`,
-          price: noNaN(bodyItem?.price),
-          available: noNaN(bodyItem?.available),
-          barcode: '',
-          shopId: shop._id,
-          createdAt: new Date(),
-        });*/
         continue;
       }
 

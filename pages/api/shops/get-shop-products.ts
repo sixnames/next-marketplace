@@ -88,7 +88,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       });
 
       shopProducts.push({
-        _id: _id.toHexString(),
+        id: _id.toHexString(),
         barcode,
         available,
         price,

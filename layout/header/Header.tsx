@@ -541,9 +541,9 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
                 />
               ) : null}
 
-              <ThemeTrigger style={topTextColorStyle} />
               <LanguageTrigger style={topTextColorStyle} />
               <CityTrigger style={topTextColorStyle} />
+              <ThemeTrigger style={topTextColorStyle} />
             </div>
           </Inner>
         </div>
@@ -573,18 +573,26 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
                   }}
                 >
                   <div>
-                    <div className='text-secondary-text'>Наш адрес</div>
-                    <div className='cursor-pointer hover:text-theme transition-all'>
-                      {domainCompany.mainShop.address.formattedAddress}
+                    <div className='flex items-center gap-4 cursor-pointer hover:text-theme transition-all'>
+                      <div className='text-theme'>
+                        <Icon name={'marker'} className='w-6 h-6' />
+                      </div>
+                      <div>{domainCompany.mainShop.address.formattedAddress}</div>
                     </div>
-                    <div className='mt-1'>
-                      <LinkPhone
-                        className='text-primary-text'
-                        value={{
-                          raw: callbackPhone,
-                          readable: phoneToReadable(callbackPhone),
-                        }}
-                      />
+
+                    <div className='flex items-center gap-4 mt-4'>
+                      <div className='text-theme'>
+                        <Icon name={'phone'} className='w-6 h-6' />
+                      </div>
+                      <div>
+                        <LinkPhone
+                          className='text-primary-text'
+                          value={{
+                            raw: callbackPhone,
+                            readable: phoneToReadable(callbackPhone),
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>

@@ -30,9 +30,11 @@ import {
   PromoProductModel,
   SupplierProductModel,
   SeoContentModel,
+  BlackListProductModel,
 } from '../../../db/dbModels';
 import {
   COL_ATTRIBUTES,
+  COL_BLACKLIST_PRODUCTS,
   COL_BLOG_ATTRIBUTES,
   COL_BLOG_POSTS,
   COL_BRAND_COLLECTIONS,
@@ -160,11 +162,17 @@ export async function updateIndexes(db: Db) {
     await cartsCollection.createIndex({ updatedAt: 1 }, { expireAfterSeconds: ONE_WEEK });
   }
 
-  // Carts
+  // Seo contents
   await createCollectionIfNotExist(COL_SEO_CONTENTS);
   const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
   await seoContentsCollection.createIndex({ slug: 1 }, { unique: true });
   await seoContentsCollection.createIndex({ companySlug: 1, rubricSlug: 1, content: 1 });
+
+  // blacklist
+  await createCollectionIfNotExist(COL_BLACKLIST_PRODUCTS);
+  const blacklistProductsCollection = db.collection<BlackListProductModel>(COL_BLACKLIST_PRODUCTS);
+  await blacklistProductsCollection.createIndex({ shopId: 1 });
+  await blacklistProductsCollection.createIndex({ shopProductId: 1 });
 
   // Users
   await createCollectionIfNotExist(COL_USERS);

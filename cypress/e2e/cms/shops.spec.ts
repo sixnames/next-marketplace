@@ -1,4 +1,5 @@
 import { DEFAULT_CITY, ROUTE_CMS } from 'config/common';
+import { fixtureIds } from 'cypress/fixtures/fixtureIds';
 import { MOCK_ADDRESS_A, MOCK_ADDRESS_B } from 'tests/mocks';
 
 describe('Companies list', () => {
@@ -103,6 +104,15 @@ describe('Companies list', () => {
 
     // add assets
     cy.getByCy('assets').attachFile('test-shop-asset-0.png', { subjectType: 'drag-n-drop' });
+  });
+
+  it('Should generate shop token', () => {
+    cy.visit(`${ROUTE_CMS}/companies/${fixtureIds.companyB}/shops/shop/${fixtureIds.shopB}`);
+    cy.wait(1500);
+    cy.getByCy('shop-details-page').should('exist');
+    cy.getByCy('generate-api-token').click();
+    cy.wait(1500);
+    cy.getByCy('generated-token').should('exist');
   });
 
   it('Should CRUD shop products', () => {

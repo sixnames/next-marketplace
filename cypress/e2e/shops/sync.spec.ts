@@ -1,6 +1,13 @@
-import { ROUTE_CMS } from 'config/common';
+import {
+  REQUEST_METHOD_GET,
+  REQUEST_METHOD_PATCH,
+  REQUEST_METHOD_POST,
+  ROUTE_CMS,
+} from 'config/common';
 import { fixtureIds } from 'cypress/fixtures/fixtureIds';
 import {
+  SyncBlackListProductInterface,
+  SyncBlacklistResponseInterface,
   SyncOrderResponseInterface,
   SyncOrderStatusesResponseInterface,
   SyncProductInterface,
@@ -84,6 +91,41 @@ const updateBody: SyncProductInterface[] = [
   },
 ];
 
+const updateBlacklistBody: SyncBlackListProductInterface[] = [
+  {
+    id: 'ba96a6c9e43a1ae56dc1e604',
+    products: [
+      {
+        barcode: ['000002'],
+        price: 100,
+        available: 9,
+        name: 'blacklist product 2',
+      },
+      {
+        barcode: ['0000029999'],
+        price: 90,
+        available: 1,
+        name: 'blacklist product 2',
+      },
+    ],
+  },
+];
+
+const blacklistedSyncBody: SyncProductInterface[] = [
+  {
+    barcode: ['000002', '0000029999'],
+    available: 10,
+    price: 1890,
+    name: 'blacklist product 2',
+  },
+  {
+    barcode: ['000001', '0000019999'],
+    available: 10,
+    price: 999,
+    name: 'blacklist product 1',
+  },
+];
+
 const errorCallback = (res: any) => {
   const body = res.body as SyncResponseInterface;
   expect(body.success).equals(false);
@@ -94,12 +136,56 @@ describe('Sync', () => {
     cy.testAuth(`/`);
   });
 
+  it('Should sync shop blacklist', () => {
+    // should return shop blacklist
+    cy.request({
+      method: REQUEST_METHOD_GET,
+      url: `/api/shops/blacklist?${validRequestParamsA}`,
+    }).then((res) => {
+      const { success, blacklist } = res.body as SyncBlacklistResponseInterface;
+      expect(success).equals(true);
+      expect(blacklist).to.have.length(1);
+      expect(blacklist[0].products).to.have.length(2);
+    });
+
+    // should update shop blacklist
+    cy.request({
+      method: REQUEST_METHOD_POST,
+      url: `/api/shops/blacklist?${validRequestParamsA}`,
+      body: JSON.stringify(updateBlacklistBody),
+    }).then((res) => {
+      const { success } = res.body as SyncResponseInterface;
+      expect(success).equals(true);
+    });
+
+    // should return updated shop blacklist
+    cy.request({
+      method: REQUEST_METHOD_GET,
+      url: `/api/shops/blacklist?${validRequestParamsA}`,
+    }).then((res) => {
+      const { success, blacklist } = res.body as SyncBlacklistResponseInterface;
+      expect(success).equals(true);
+      expect(blacklist).to.have.length(2);
+    });
+
+    // should success
+    cy.request({
+      method: REQUEST_METHOD_POST,
+      url: `/api/shops/sync?${validRequestParamsA}`,
+      body: JSON.stringify(blacklistedSyncBody),
+    }).then((res) => {
+      const body = res.body as SyncResponseInterface;
+      expect(body.success).equals(true);
+      expect(body.message).equals('all products are blacklisted');
+    });
+  });
+
   it('Should sync shop orders with site', () => {
     const currentDate = new Date('2021-07-10T09:47:09.087Z').toISOString();
 
     // Should return order statuses list
     cy.request({
-      method: 'GET',
+      method: REQUEST_METHOD_GET,
       url: `/api/shops/get-order-statuses?${validRequestParamsC}`,
       body: JSON.stringify(updateBody),
     }).then((res) => {
@@ -110,7 +196,7 @@ describe('Sync', () => {
 
     // should return shop new orders
     cy.request({
-      method: 'GET',
+      method: REQUEST_METHOD_GET,
       url: `/api/shops/get-orders?${validRequestParamsA}&fromDate=${currentDate}`,
     }).then((res) => {
       const { success, orders } = res.body as SyncOrderResponseInterface;
@@ -130,7 +216,7 @@ describe('Sync', () => {
       };
 
       cy.request({
-        method: 'PATCH',
+        method: REQUEST_METHOD_PATCH,
         url: `/api/shops/update-order-product?${validRequestParamsA}`,
         body: JSON.stringify([updateProduct]),
       }).then((res) => {
@@ -140,18 +226,9 @@ describe('Sync', () => {
     });
   });
 
-  it('Should generate shop token', () => {
-    cy.visit(`${ROUTE_CMS}/companies/${fixtureIds.companyB}/shops/shop/${fixtureIds.shopB}`);
-    cy.wait(1500);
-    cy.getByCy('shop-details-page').should('exist');
-    cy.getByCy('generate-api-token').click();
-    cy.wait(1500);
-    cy.getByCy('generated-token').should('exist');
-  });
-
   it('Should create product with sync error', () => {
     cy.request({
-      method: 'POST',
+      method: REQUEST_METHOD_POST,
       url: `/api/shops/sync?${validRequestParamsC}`,
       body: JSON.stringify(initialBody),
     }).then((res) => {
@@ -176,7 +253,7 @@ describe('Sync', () => {
 
   it('Should update product with sync error', () => {
     cy.request({
-      method: 'POST',
+      method: REQUEST_METHOD_POST,
       url: `/api/shops/sync?${validRequestParamsC}`,
       body: JSON.stringify(initialBody),
     }).then((res) => {
@@ -200,7 +277,7 @@ describe('Sync', () => {
   it('Should sync shop products with site catalogue', () => {
     // should error on no parameters
     cy.request({
-      method: 'POST',
+      method: REQUEST_METHOD_POST,
       url: `/api/shops/sync?apiVersion=0.0.1&systemVersion=8.2`,
       body: JSON.stringify(initialBody),
       failOnStatusCode: false,
@@ -208,7 +285,7 @@ describe('Sync', () => {
 
     // should error on no request body
     cy.request({
-      method: 'POST',
+      method: REQUEST_METHOD_POST,
       url: `/api/shops/sync?${validRequestParamsC}`,
       body: JSON.stringify([]),
       failOnStatusCode: false,
@@ -223,7 +300,7 @@ describe('Sync', () => {
 
     // should success
     cy.request({
-      method: 'POST',
+      method: REQUEST_METHOD_POST,
       url: `/api/shops/sync?${validRequestParamsC}`,
       body: JSON.stringify(initialBody),
     }).then((res) => {
@@ -241,7 +318,7 @@ describe('Sync', () => {
 
     // should update existing shop products and creat new ones
     cy.request({
-      method: 'POST',
+      method: REQUEST_METHOD_POST,
       url: `/api/shops/sync?${validRequestParamsC}`,
       body: JSON.stringify(secondarySyncBody),
     }).then((res) => {
@@ -269,7 +346,7 @@ describe('Sync', () => {
 
     // should update synced products
     cy.request({
-      method: 'POST',
+      method: REQUEST_METHOD_POST,
       url: `/api/shops/sync?${validRequestParamsC}`,
       body: JSON.stringify(updateBody),
       failOnStatusCode: false,
@@ -304,7 +381,7 @@ describe('Sync', () => {
 
     // should return shop products list
     cy.request({
-      method: 'GET',
+      method: REQUEST_METHOD_GET,
       url: `/api/shops/get-shop-products?${validRequestParamsC}`,
     }).then((res) => {
       const body = res.body as SyncShopProductsResponseInterface;

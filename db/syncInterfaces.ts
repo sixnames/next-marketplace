@@ -61,6 +61,10 @@ export interface SyncOrderResponseInterface extends SyncResponseInterface {
   orders: SyncOrderInterface[];
 }
 
+export interface SyncBlacklistResponseInterface extends SyncResponseInterface {
+  blacklist: SyncBlackListProductInterface[];
+}
+
 export interface SyncOrderStatusInterface {
   _id: string;
   name: string;

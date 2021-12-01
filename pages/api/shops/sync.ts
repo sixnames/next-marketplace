@@ -93,6 +93,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       });
       return !inBlackList;
     });
+    if (allowedBody.length < 1) {
+      res.status(200).send({
+        success: true,
+        message: 'all products are blacklisted',
+      });
+      return;
+    }
 
     // get products
     const barcodeList = allowedBody.reduce((acc: string[], { barcode }) => {

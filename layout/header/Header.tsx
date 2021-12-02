@@ -573,20 +573,20 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
                   }}
                 >
                   <div>
-                    <div className='flex items-center gap-4 cursor-pointer hover:text-theme transition-all'>
+                    <div className='flex items-center gap-3 cursor-pointer hover:text-theme transition-all'>
                       <div className='text-theme'>
-                        <Icon name={'marker'} className='w-6 h-6' />
+                        <Icon name={'marker'} className='w-5 h-5' />
                       </div>
                       <div>{domainCompany.mainShop.address.formattedAddress}</div>
                     </div>
 
-                    <div className='flex items-center gap-4 mt-4'>
+                    <div className='flex items-center gap-3 mt-4'>
                       <div className='text-theme'>
-                        <Icon name={'phone'} className='w-6 h-6' />
+                        <Icon name={'phone'} className='w-5 h-5' />
                       </div>
                       <div>
                         <LinkPhone
-                          className='text-primary-text'
+                          className='text-primary-text hover:text-theme transition-all'
                           value={{
                             raw: phoneToRaw(callbackPhone),
                             readable: phoneToReadable(callbackPhone),

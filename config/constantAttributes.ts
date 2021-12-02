@@ -180,6 +180,7 @@ export function getBrandFilterAttribute({
     showNameInCardTitle: false,
     showNameInSelectedAttributes: false,
     showNameInSnippetTitle: false,
+    showAsLinkInFilter: true,
     positioningInTitle: {
       [DEFAULT_LOCALE]: ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD,
       [SECONDARY_LOCALE]: ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD,
@@ -350,6 +351,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
     showNameInSnippetTitle: false,
     showInCard: false,
     capitalise: false,
+    showAsLinkInFilter: true,
     options: [
       {
         _id: getObjectId('1_499'),

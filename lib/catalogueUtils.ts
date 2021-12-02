@@ -1912,6 +1912,11 @@ export const getCatalogueData = async ({
       : castedAttributes.filter(({ slug }) => {
           return slug !== FILTER_CATEGORY_KEY;
         });
+    const finalSortedFilterAttributes = finalFilterAttributes.sort((a, b) => {
+      const aCounter = a.showAsAccordionInFilter ? 1 : 0;
+      const bCounter = b.showAsAccordionInFilter ? 1 : 0;
+      return aCounter - bCounter;
+    });
 
     const finalSelectedAttributes = showCategoriesInFilter
       ? selectedAttributes
@@ -1970,7 +1975,7 @@ export const getCatalogueData = async ({
       headCategories,
       totalPages,
       totalProducts: noNaN(totalProducts),
-      attributes: finalFilterAttributes,
+      attributes: finalSortedFilterAttributes,
       selectedAttributes: finalSelectedAttributes,
       page,
       basePath,

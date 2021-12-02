@@ -78,7 +78,7 @@ const CheckBoxFilterAttributeOptions: React.FC<CheckBoxFilterAttributeInterface>
             href={`${urlPrefix}${nextSlug}`}
             onClick={onClick}
             testId={testId}
-            className='flex items-center gap-2 w-full min-h-[2.5rem] cursor-pointer text-primary-text hover:text-theme hover:no-underline'
+            className='flex items-start gap-2 w-full min-h-[1.5rem] mb-4 cursor-pointer text-primary-text hover:text-theme hover:no-underline'
           >
             <span className='relative text-theme w-[18px] h-[18px] border border-border-300 rounded border-1 bg-secondary overflow-hidden text-theme flex-shrink-0'>
               {isSelected ? (
@@ -96,7 +96,7 @@ const CheckBoxFilterAttributeOptions: React.FC<CheckBoxFilterAttributeInterface>
         ) : (
           <div
             data-cy={testId}
-            className='flex transition-all items-center gap-2 w-full min-h-[2.5rem] cursor-pointer text-primary-text hover:text-theme hover:no-underline'
+            className='flex items-start gap-2 w-full min-h-[1.5rem] mb-4 cursor-pointer text-primary-text hover:text-theme hover:no-underline transition-all'
             onClick={() => {
               router
                 .push(`${urlPrefix}${nextSlug}`)

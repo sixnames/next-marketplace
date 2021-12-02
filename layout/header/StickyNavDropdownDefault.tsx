@@ -55,7 +55,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
         {showOptionsMoreLink ? (
           <li>
             <div
-              className='flex items-center min-h-[var(--minLinkHeight)] text-secondary-theme'
+              className='flex items-center min-h-[var(--minLinkHeight)] text-theme'
               onClick={() => {
                 router
                   .push(`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}`)

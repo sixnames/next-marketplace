@@ -19,7 +19,7 @@ import { FilterBaseInterface } from 'layout/catalogue/CatalogueFilter';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 
-function getFilterOptions(
+export function getFilterOptions(
   maxVisibleOptions: number,
   options?: CatalogueFilterAttributeOptionInterface[] | null,
 ) {
@@ -215,7 +215,7 @@ const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
           titleRight={
             attribute.isSelected && attribute.clearSlug ? (
               <div
-                className='ml-4 text-theme cursor-pointer hover:underline'
+                className='ml-4 text-theme font-normal cursor-pointer hover:underline'
                 onClick={() => {
                   router
                     .push(`${urlPrefix}${attribute.clearSlug}`)

@@ -1,6 +1,8 @@
+import Accordion from 'components/Accordion';
+import { getFilterOptions } from 'components/CheckBoxFilter';
 import FilterSelectedAttributes from 'components/FilterSelectedAttributes';
 import { CatalogueAdditionalOptionsModalInterface } from 'components/Modal/CatalogueAdditionalOptionsModal';
-import { CATALOGUE_FILTER_VISIBLE_OPTIONS, FILTER_PRICE_KEY } from 'config/common';
+import { CATALOGUE_FILTER_VISIBLE_OPTIONS } from 'config/common';
 import { CATALOGUE_ADDITIONAL_OPTIONS_MODAL } from 'config/modalVariants';
 import {
   CatalogueFilterAttributePropsInterface,
@@ -12,49 +14,21 @@ import FilterLink from 'components/Link/FilterLink';
 import { useConfigContext } from 'context/configContext';
 import { useAppContext } from 'context/appContext';
 
-const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface> = ({
+const CatalogueFilterAttributeOptions: React.FC<CatalogueFilterAttributePropsInterface> = ({
   attribute,
   onClick,
   attributeIndex,
   basePath,
   urlPrefix,
 }) => {
-  const router = useRouter();
-  const { showModal } = useAppContext();
   const { configs } = useConfigContext();
+  const { showModal } = useAppContext();
   const maxVisibleOptions =
     configs.catalogueFilterVisibleOptionsCount || CATALOGUE_FILTER_VISIBLE_OPTIONS;
-
-  const { name, clearSlug, options, isSelected, slug } = attribute;
-  const isPrice = slug === FILTER_PRICE_KEY;
-
-  const visibleOptions = isPrice ? options : options.slice(0, maxVisibleOptions);
-  const hiddenOptions = isPrice ? [] : options.slice(maxVisibleOptions);
-  const hasMoreOptions = hiddenOptions.length > 0;
+  const { visibleOptions, hasMoreOptions } = getFilterOptions(maxVisibleOptions, attribute.options);
 
   return (
-    <div className='mb-12'>
-      <div className='flex items-baseline justify-between mb-4'>
-        <span className='text-lg font-bold'>{name}</span>
-        {isSelected ? (
-          <div
-            className='ml-4 font-medium text-theme cursor-pointer hover:underline'
-            onClick={() => {
-              router
-                .push(`${urlPrefix}${clearSlug}`)
-                .then(() => {
-                  if (onClick) {
-                    onClick();
-                  }
-                })
-                .catch(console.log);
-            }}
-          >
-            Сбросить
-          </div>
-        ) : null}
-      </div>
-
+    <div>
       <div className='flex flex-wrap gap-2'>
         {visibleOptions.map((option, optionIndex) => {
           const testId = `catalogue-option-${attributeIndex}-${optionIndex}`;
@@ -90,6 +64,93 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
           Показать еще
         </div>
       ) : null}
+    </div>
+  );
+};
+
+const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface> = ({
+  attribute,
+  onClick,
+  attributeIndex,
+  basePath,
+  urlPrefix,
+  rubricSlug,
+}) => {
+  const router = useRouter();
+  const { clearSlug, isSelected } = attribute;
+
+  if (attribute.showAsAccordionInFilter) {
+    return (
+      <div className='mb-12'>
+        <Accordion
+          noTitleStyle
+          titleClassName='font-medium text-lg mb-2'
+          isOpen={attribute.isSelected}
+          title={attribute.name}
+          titleRight={
+            attribute.isSelected && attribute.clearSlug ? (
+              <div
+                className='ml-4 font-normal text-theme cursor-pointer hover:underline'
+                onClick={() => {
+                  router
+                    .push(`${urlPrefix}${attribute.clearSlug}`)
+                    .then(() => {
+                      if (onClick) {
+                        onClick();
+                      }
+                    })
+                    .catch(console.log);
+                }}
+              >
+                Сбросить
+              </div>
+            ) : null
+          }
+        >
+          <CatalogueFilterAttributeOptions
+            onClick={onClick}
+            attributeIndex={attributeIndex}
+            attribute={attribute}
+            basePath={basePath}
+            urlPrefix={urlPrefix}
+            rubricSlug={rubricSlug}
+          />
+        </Accordion>
+      </div>
+    );
+  }
+
+  return (
+    <div className='mb-12'>
+      <div className='flex items-baseline justify-between mb-4'>
+        <span className='text-lg font-bold'>{attribute.name}</span>
+        {isSelected ? (
+          <div
+            className='ml-4 font-medium text-theme cursor-pointer hover:underline'
+            onClick={() => {
+              router
+                .push(`${urlPrefix}${clearSlug}`)
+                .then(() => {
+                  if (onClick) {
+                    onClick();
+                  }
+                })
+                .catch(console.log);
+            }}
+          >
+            Сбросить
+          </div>
+        ) : null}
+      </div>
+
+      <CatalogueFilterAttributeOptions
+        onClick={onClick}
+        attributeIndex={attributeIndex}
+        attribute={attribute}
+        basePath={basePath}
+        urlPrefix={urlPrefix}
+        rubricSlug={rubricSlug}
+      />
     </div>
   );
 };

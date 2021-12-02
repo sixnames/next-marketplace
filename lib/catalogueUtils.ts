@@ -479,6 +479,8 @@ export async function getCatalogueAttributes({
       viewVariant: attribute.viewVariant,
       notShowAsAlphabet: attribute.notShowAsAlphabet || false,
       showAsCatalogueBreadcrumb: attribute.showAsCatalogueBreadcrumb,
+      showAsLinkInFilter: Boolean(attribute.showAsLinkInFilter),
+      showAsAccordionInFilter: Boolean(attribute.showAsAccordionInFilter),
     };
 
     if (isSelected) {
@@ -797,7 +799,6 @@ export function castCatalogueFilters({
   if (sortBy === SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY) {
     sortStage = {
       minPrice: castedSortDir,
-      priorities: SORT_DESC,
       views: SORT_DESC,
       available: SORT_DESC,
       _id: SORT_DESC,
@@ -1506,6 +1507,7 @@ export const getCatalogueData = async ({
         getBrandFilterAttribute({
           locale,
           brands: brands,
+          showBrandAsAlphabet: Boolean(rubric?.showBrandAsAlphabet),
         }),
       ];
     }

@@ -904,10 +904,6 @@ export const getSsrConfigs = async ({
     configs,
     slug: 'twitter',
   });
-  const useUniqueConstructor = getConfigBooleanValue({
-    configs,
-    slug: 'useUniqueConstructor',
-  });
   const vkontakte = getConfigStringValue({
     configs,
     slug: 'vkontakte',
@@ -1018,7 +1014,6 @@ export const getSsrConfigs = async ({
     stickyNavVisibleOptionsCount,
     telegram,
     twitter,
-    useUniqueConstructor,
     vkontakte,
     yaMetrica,
     yaVerification,

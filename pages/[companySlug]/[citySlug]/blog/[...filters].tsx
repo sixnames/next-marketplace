@@ -805,6 +805,8 @@ export const getStaticProps = async (
       notShowAsAlphabet: true,
       childrenCount: attributeOptions.length,
       viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST as AttributeViewVariantModel,
+      showAsLinkInFilter: false,
+      showAsAccordionInFilter: false,
     };
     return filterAttribute;
   });

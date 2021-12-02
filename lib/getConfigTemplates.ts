@@ -1238,22 +1238,6 @@ export function getConfigTemplates({
       companySlug,
       group: 'project',
       variant: CONFIG_VARIANT_BOOLEAN,
-      slug: 'useUniqueConstructor',
-      name: 'Использовать уникальный конструктор в карточке товара для каждой компании',
-      description: '',
-      multi: false,
-      acceptedFormats: [],
-      cities: {
-        [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: ['false'],
-        },
-      },
-    },
-    {
-      _id: new ObjectId(),
-      companySlug,
-      group: 'project',
-      variant: CONFIG_VARIANT_BOOLEAN,
       slug: 'showReservationDate',
       name: 'Использовать в заказах дату брони',
       description: '',

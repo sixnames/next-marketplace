@@ -1,7 +1,8 @@
 import WpImage from 'components/WpImage';
 import { useSiteContext } from 'context/siteContext';
-import { useSiteUserContext } from 'context/userSiteUserContext';
 import { ProductSnippetInterface } from 'db/uiInterfaces';
+import ProductSnippetEditButton from 'layout/snippet/ProductSnippetEditButton';
+import ProductSnippetInCartIcon from 'layout/snippet/ProductSnippetInCartIcon';
 import * as React from 'react';
 import Link from 'components/Link/Link';
 import RatingStars from 'components/RatingStars';
@@ -18,8 +19,8 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
   showSnippetArticle,
   showSnippetRating,
   gridCatalogueColumns,
+  imageLoading,
 }) => {
-  const sessionUser = useSiteUserContext();
   const { addShoplessProductToCart, addProductToCart, urlPrefix } = useSiteContext();
   const { product } = shopProduct;
   if (!product) {
@@ -66,29 +67,16 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
       }`}
     >
       {/*edit button for admin*/}
-      {sessionUser?.showAdminUiInCatalogue ? (
-        <div className='absolute top-0 left-0 z-50'>
-          <ControlButton
-            size={'small'}
-            iconSize={'small'}
-            icon={'pencil'}
-            theme={'accent'}
-            ariaLabel={'edit'}
-            roundedTopLeft
-            onClick={() => {
-              window.open(
-                `${sessionUser.editLinkBasePath}/rubrics/${product.rubricId}/products/product/${product._id}`,
-                '_blank',
-              );
-            }}
-          />
-        </div>
-      ) : null}
+      <ProductSnippetEditButton product={product} />
+
+      {/*in cart indicator*/}
+      <ProductSnippetInCartIcon productId={product._id} shopProductId={shopProduct._id} />
 
       <div className='grid grid-cols-12 flex-grow'>
         {/*image*/}
         <div className='relative flex items-center justify-center flex-grow pt-4 pl-4 pr-4 col-span-3 dark:snippet-image'>
           <WpImage
+            loading={imageLoading}
             url={mainImage}
             alt={`${snippetTitle}`}
             title={`${snippetTitle}`}

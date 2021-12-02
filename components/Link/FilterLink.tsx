@@ -1,4 +1,5 @@
 import { CatalogueFilterAttributeOptionInterface } from 'db/uiInterfaces';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import TagLink, { TagLinkInterface } from './TagLink';
 import Icon from 'components/Icon';
@@ -10,6 +11,7 @@ interface FilterLinkInterface extends Omit<TagLinkInterface, 'href' | 'as'> {
   disabled?: boolean;
   postfix?: string | null;
   urlPrefix?: string;
+  showAsLink?: boolean;
 }
 
 const FilterLink: React.FC<FilterLinkInterface> = ({
@@ -22,20 +24,31 @@ const FilterLink: React.FC<FilterLinkInterface> = ({
   onClick,
   size,
   urlPrefix,
+  showAsLink,
   ...props
 }) => {
+  const router = useRouter();
   const { name, nextSlug, isSelected } = option;
-
+  const href = `${urlPrefix}${nextSlug}`;
   return (
     <TagLink
       size={size}
-      href={`${urlPrefix}${nextSlug}`}
+      href={showAsLink ? href : undefined}
       isActive={isSelected}
       prefetch={false}
-      onClick={onClick}
-      className={`${disabled ? 'cursor-default pointer-events-none opacity-50' : ''} ${
-        className ? className : ''
-      }`}
+      onClick={() => {
+        if (onClick) {
+          onClick();
+        }
+        if (!showAsLink) {
+          router.push(href).catch(console.log);
+        }
+      }}
+      className={`${
+        disabled
+          ? 'cursor-default pointer-events-none opacity-50'
+          : 'cursor-pointer hover:text-theme transition-all'
+      } ${className ? className : ''}`}
       {...props}
     >
       <span>

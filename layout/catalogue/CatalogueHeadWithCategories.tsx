@@ -29,7 +29,7 @@ const CatalogueHeadWithCategories: React.FC<CatalogueHeadDefaultInterface> = ({
   const { currentCity } = useConfigContext();
   const { query } = router;
   return (
-    <div className='mb-8 lg:mb-16 border-b border-border-100'>
+    <div className='mb-8 border-b border-border-100'>
       <Breadcrumbs lowBottom config={breadcrumbs} urlPrefix={urlPrefix} />
       <Inner lowBottom lowTop>
         <Title

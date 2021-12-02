@@ -15,7 +15,7 @@ import { useShopMarker } from 'hooks/useShopMarker';
 import useSignOut from 'hooks/useSignOut';
 import LayoutCard from 'layout/LayoutCard';
 import { noNaN } from 'lib/numbers';
-import { phoneToReadable } from 'lib/phoneUtils';
+import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import StickyNav, { StickNavInterface } from 'layout/header/StickyNav';
@@ -419,7 +419,6 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
   const { urlPrefix } = useSiteContext();
   const [isBurgerDropdownOpen, setIsBurgerDropdownOpen] = React.useState<boolean>(false);
   const [isSearchOpen, setIsSearchOpen] = React.useState<boolean>(false);
-  const headerRef = React.useRef<HTMLElement | null>(null);
   const marker = useShopMarker(domainCompany?.mainShop);
 
   const siteLogoSrc = get(configs, logoSlug) || IMAGE_FALLBACK;
@@ -462,14 +461,13 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
   return (
     <React.Fragment>
       <header
+        className='sticky lg:relative top-0 z-[130] bg-primary shadow-md lg:shadow-none'
         style={
           {
             '--logoWidth': configLogoWidth,
             '--logoMobileWidth': configLogoMobileWidth,
           } as React.CSSProperties
         }
-        className='sticky lg:relative top-0 z-[130] bg-primary shadow-md lg:shadow-none'
-        ref={headerRef}
       >
         {/*top bar*/}
         <div className='relative z-[10] bg-secondary' style={topBarBgStyle}>
@@ -491,26 +489,28 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
                       {(pages || []).map(({ name, slug, _id }) => {
                         return (
                           <li className='' key={`${_id}`}>
-                            <Link
-                              target={'_blank'}
+                            <div
                               className='block py-1.5 px-3 text-primary-text hover:no-underline hover:text-theme'
-                              href={`${urlPrefix}${ROUTE_DOCS_PAGES}/${slug}`}
+                              onClick={() => {
+                                window.open(`${urlPrefix}${ROUTE_DOCS_PAGES}/${slug}`, '_blank');
+                              }}
                             >
                               {name}
-                            </Link>
+                            </div>
                           </li>
                         );
                       })}
 
                       {index === 0 ? (
                         <li className=''>
-                          <Link
-                            target={'_blank'}
+                          <div
                             className='block py-1.5 px-3 text-primary-text hover:no-underline hover:text-theme'
-                            href={`${urlPrefix}${ROUTE_CONTACTS}`}
+                            onClick={() => {
+                              window.open(`${urlPrefix}${ROUTE_CONTACTS}`, '_blank');
+                            }}
                           >
                             {contactsLinkName}
-                          </Link>
+                          </div>
                         </li>
                       ) : null}
                     </ul>
@@ -535,15 +535,15 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
                   style={topTextColorStyle}
                   className='text-secondary-text'
                   value={{
-                    raw: callbackPhone,
+                    raw: phoneToRaw(callbackPhone),
                     readable: phoneToReadable(callbackPhone),
                   }}
                 />
               ) : null}
 
-              <ThemeTrigger style={topTextColorStyle} />
               <LanguageTrigger style={topTextColorStyle} />
               <CityTrigger style={topTextColorStyle} />
+              <ThemeTrigger style={topTextColorStyle} />
             </div>
           </Inner>
         </div>
@@ -573,18 +573,26 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
                   }}
                 >
                   <div>
-                    <div className='text-secondary-text'>Наш адрес</div>
-                    <div className='cursor-pointer hover:text-theme transition-all'>
-                      {domainCompany.mainShop.address.formattedAddress}
+                    <div className='flex items-center gap-4 cursor-pointer hover:text-theme transition-all'>
+                      <div className='text-theme'>
+                        <Icon name={'marker'} className='w-6 h-6' />
+                      </div>
+                      <div>{domainCompany.mainShop.address.formattedAddress}</div>
                     </div>
-                    <div className='mt-1'>
-                      <LinkPhone
-                        className='text-primary-text'
-                        value={{
-                          raw: callbackPhone,
-                          readable: phoneToReadable(callbackPhone),
-                        }}
-                      />
+
+                    <div className='flex items-center gap-4 mt-4'>
+                      <div className='text-theme'>
+                        <Icon name={'phone'} className='w-6 h-6' />
+                      </div>
+                      <div>
+                        <LinkPhone
+                          className='text-primary-text'
+                          value={{
+                            raw: phoneToRaw(callbackPhone),
+                            readable: phoneToReadable(callbackPhone),
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>

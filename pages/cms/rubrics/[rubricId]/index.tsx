@@ -75,6 +75,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
     defaultTitleI18n,
     prefixI18n,
     keywordI18n,
+    showBrandAsAlphabet,
     gender,
   } = rubric;
 
@@ -92,6 +93,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
     showCategoryInProductTitle: showCategoryInProductTitle || false,
     showBrandInNav: showBrandInNav || false,
     showBrandInFilter: showBrandInFilter || false,
+    showBrandAsAlphabet: showBrandAsAlphabet || false,
     defaultTitleI18n,
     prefixI18n,
     keywordI18n,

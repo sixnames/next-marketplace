@@ -250,6 +250,10 @@ export interface AttributeModel extends AttributeCountersModel {
   showNameInSelectedAttributes?: boolean | null;
   showNameInCardTitle?: boolean | null;
   showNameInSnippetTitle?: boolean | null;
+
+  // catalogue ui
+  showAsLinkInFilter?: boolean | null;
+  showAsAccordionInFilter?: boolean | null;
 }
 
 export interface AttributesGroupModel {
@@ -756,6 +760,7 @@ export interface RubricModel extends CountersModel {
   showCategoryInProductTitle?: boolean | null;
   showBrandInNav?: boolean | null;
   showBrandInFilter?: boolean | null;
+  showBrandAsAlphabet?: boolean | null;
   icon?: string;
   image?: string;
 }

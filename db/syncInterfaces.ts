@@ -1,8 +1,8 @@
 import { EmailAddressModel, PhoneNumberModel, TimestampModel } from 'db/dbModels';
 
 export interface SyncParamsInterface {
-  apiVersion?: string;
-  systemVersion?: string;
+  // apiVersion?: string;
+  // systemVersion?: string;
   token?: string;
 }
 

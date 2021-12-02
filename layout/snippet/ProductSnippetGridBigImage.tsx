@@ -2,8 +2,9 @@ import ControlButton from 'components/button/ControlButton';
 import Link from 'components/Link/Link';
 import WpImage from 'components/WpImage';
 import { useSiteContext } from 'context/siteContext';
-import { useSiteUserContext } from 'context/userSiteUserContext';
 import { ProductSnippetInterface } from 'db/uiInterfaces';
+import ProductSnippetEditButton from 'layout/snippet/ProductSnippetEditButton';
+import ProductSnippetInCartIcon from 'layout/snippet/ProductSnippetInCartIcon';
 import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
 import * as React from 'react';
 
@@ -15,8 +16,8 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
   showSnippetButtonsOnHover = false,
   showSnippetArticle,
   gridCatalogueColumns = 3,
+  imageLoading,
 }) => {
-  const sessionUser = useSiteUserContext();
   const { addShoplessProductToCart, addProductToCart, urlPrefix } = useSiteContext();
   const { product } = shopProduct;
 
@@ -56,24 +57,10 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
       }`}
     >
       {/*edit button for admin*/}
-      {sessionUser?.showAdminUiInCatalogue ? (
-        <div className='absolute top-0 left-0 z-50'>
-          <ControlButton
-            size={'small'}
-            iconSize={'small'}
-            icon={'pencil'}
-            theme={'accent'}
-            ariaLabel={'edit'}
-            roundedTopLeft
-            onClick={() => {
-              window.open(
-                `${sessionUser.editLinkBasePath}/rubrics/${product.rubricId}/products/product/${product._id}`,
-                '_blank',
-              );
-            }}
-          />
-        </div>
-      ) : null}
+      <ProductSnippetEditButton product={product} />
+
+      {/*in cart indicator*/}
+      <ProductSnippetInCartIcon productId={product._id} shopProductId={shopProduct._id} />
 
       <div
         className={`rounded-md h-full flex flex-col ${
@@ -88,6 +75,7 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
           <div className='relative flex justify-center dark:snippet-image mb-4'>
             <div className='relative pb-[90%] w-[90%]'>
               <WpImage
+                loading={imageLoading}
                 url={mainImage}
                 alt={`${snippetTitle}`}
                 title={`${snippetTitle}`}

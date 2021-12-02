@@ -538,6 +538,8 @@ export interface CatalogueFilterAttributeInterface {
   childrenCount: number;
   viewVariant: AttributeViewVariantModel;
   showAsCatalogueBreadcrumb?: boolean | null;
+  showAsLinkInFilter: boolean;
+  showAsAccordionInFilter: boolean;
 }
 
 export interface OrderStatusInterface extends OrderStatusModel {
@@ -623,6 +625,7 @@ export interface ProductSnippetConfigInterface {
 
   // numbers
   gridCatalogueColumns?: number | 'full' | null;
+  imageLoading?: 'lazy' | 'eager';
 }
 
 export interface ProductSnippetInterface extends ProductSnippetConfigInterface {
@@ -741,7 +744,6 @@ export interface SsrConfigsInterface {
   cardMetaPrefix: string;
 
   // Project
-  useUniqueConstructor: boolean;
   showReservationDate: boolean;
   buyButtonText: string;
 }

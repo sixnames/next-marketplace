@@ -1,9 +1,9 @@
 import Icon from 'components/Icon';
-import Link from 'components/Link/Link';
 import {
   CatalogueFilterAttributeInterface,
   CatalogueFilterAttributeOptionInterface,
 } from 'db/uiInterfaces';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 
 interface FilterSelectedAttributesInterface {
@@ -38,6 +38,7 @@ const FilterSelectedAttributes: React.FC<FilterSelectedAttributesInterface> = ({
   clearSlug,
   urlPrefix,
 }) => {
+  const router = useRouter();
   if (!selectedAttributes || selectedAttributes.length < 1) {
     return null;
   }
@@ -46,9 +47,18 @@ const FilterSelectedAttributes: React.FC<FilterSelectedAttributesInterface> = ({
     <div className='px-4 py-6 rounded-lg mb-6 shadow-sm border-2 border-theme'>
       <div className='flex items-baseline mb-3 justify-between'>
         <span className={`font-medium text-lg`}>Выбранные фильтры</span>
-        <Link onClick={onClick} href={`${urlPrefix}${clearSlug}`} className={`ml-4`}>
+        <div
+          className='ml-4 text-theme cursor-pointer hover:underline'
+          onClick={() => {
+            router.push(`${urlPrefix}${clearSlug}`).then(() => {
+              if (onClick) {
+                onClick();
+              }
+            });
+          }}
+        >
           Сбросить
-        </Link>
+        </div>
       </div>
       <div className='space-y-5'>
         {selectedAttributes.map((attribute) => {
@@ -59,9 +69,15 @@ const FilterSelectedAttributes: React.FC<FilterSelectedAttributesInterface> = ({
                 {attribute.options.map((option) => {
                   return (
                     <div key={`${option._id}`}>
-                      <Link
-                        href={`${urlPrefix}${option.nextSlug}`}
-                        className='text-secondary-text hover:no-underline flex items-baseline justify-between'
+                      <div
+                        className='text-secondary-text hover:no-underline hover:text-theme transition-all cursor-pointer flex items-baseline justify-between'
+                        onClick={() => {
+                          router.push(`${urlPrefix}${option.nextSlug}`).then(() => {
+                            if (onClick) {
+                              onClick();
+                            }
+                          });
+                        }}
                       >
                         <span className='hover:text-theme'>
                           <Icon name={'cross'} className='w-[0.75rem] h-[0.75rem]' />
@@ -69,7 +85,7 @@ const FilterSelectedAttributes: React.FC<FilterSelectedAttributesInterface> = ({
                         <span className='block w-[calc(100%-1.25rem)]'>
                           {getSelectedOptionName(option)}
                         </span>
-                      </Link>
+                      </div>
                     </div>
                   );
                 })}

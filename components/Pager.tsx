@@ -77,9 +77,6 @@ const Pager: React.FC<PagerInterface> = ({
         {items.map(({ page, type, selected, disabled }, index) => {
           let children;
           const arrowClassName = `${disabled ? 'pointer-events-none opacity-50' : ''}`;
-          const selectedClassName = `${
-            selected ? ' pointer-events-none font-bold text-theme' : ''
-          }`;
           const initialNextUrl = getNextPath(prevUrlArray, page, query.search);
           const nextUrl = `${urlPrefix}${initialNextUrl}`;
 
@@ -96,7 +93,11 @@ const Pager: React.FC<PagerInterface> = ({
             children = (
               <Link
                 onClick={onClick}
-                className={`${buttonClassName} ${selectedClassName}`}
+                className={`flex items-center justify-center w-10 h-10 hover:no-underline ${
+                  selected
+                    ? ' pointer-events-none font-bold text-theme'
+                    : 'text-primary-text hover:text-theme'
+                }`}
                 href={nextUrl}
               >
                 {page}

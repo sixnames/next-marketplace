@@ -7,6 +7,7 @@ import {
   StickyNavDropdownInterface,
 } from 'layout/header/StickyNav';
 import { noNaN } from 'lib/numbers';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 
 const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
@@ -17,6 +18,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
   hideDropdown,
   urlPrefix,
 }) => {
+  const router = useRouter();
   const { configs } = useConfigContext();
   const { options, name, metric } = attribute;
   const postfix = metric ? ` ${metric.name}` : null;
@@ -56,14 +58,21 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
 
         {showOptionsMoreLink ? (
           <li>
-            <Link
-              onClick={hideDropdown}
-              prefetch={false}
-              href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}`}
+            <div
               className='flex items-center py-1 text-secondary-theme'
+              onClick={() => {
+                router
+                  .push(`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}`)
+                  .then(() => {
+                    if (hideDropdown) {
+                      hideDropdown();
+                    }
+                  })
+                  .catch(console.log);
+              }}
             >
               Показать все
-            </Link>
+            </div>
           </li>
         ) : null}
       </ul>
@@ -79,6 +88,7 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
   hideDropdown,
   urlPrefix,
 }) => {
+  const router = useRouter();
   const { configs } = useConfigContext();
   const { categories, name } = category;
   const categoryPath = `${FILTER_CATEGORY_KEY}${FILTER_SEPARATOR}${category.slug}`;
@@ -123,14 +133,21 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
         })}
         {showOptionsMoreLink ? (
           <li>
-            <Link
-              onClick={hideDropdown}
-              prefetch={false}
-              href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}/${categoryPath}`}
+            <div
               className='flex items-center py-1 text-secondary-theme'
+              onClick={() => {
+                router
+                  .push(`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}/${categoryPath}`)
+                  .then(() => {
+                    if (hideDropdown) {
+                      hideDropdown();
+                    }
+                  })
+                  .catch(console.log);
+              }}
             >
               Показать все
-            </Link>
+            </div>
           </li>
         ) : null}
       </ul>

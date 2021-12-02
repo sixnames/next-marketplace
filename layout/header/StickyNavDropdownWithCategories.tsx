@@ -59,7 +59,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
         {showOptionsMoreLink ? (
           <li>
             <div
-              className='flex items-center py-1 text-theme'
+              className='flex items-center py-1 text-theme cursor-pointer hover:underline'
               onClick={() => {
                 router
                   .push(`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}`)
@@ -134,7 +134,7 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
         {showOptionsMoreLink ? (
           <li>
             <div
-              className='flex items-center py-1 text-theme'
+              className='flex items-center py-1 text-theme cursor-pointer hover:underline'
               onClick={() => {
                 router
                   .push(`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}/${categoryPath}`)

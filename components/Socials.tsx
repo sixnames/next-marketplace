@@ -13,15 +13,15 @@ const SocialLink: React.FC<SocialLinkInterface> = ({ href, icon }) => {
   }
 
   return (
-    <a
-      href={href}
-      target={'_blank'}
-      rel={'noreferrer nofollow'}
+    <div
       aria-label={icon}
       className='flex flex-shrink-0 w-8 h-8 items-center justify-center rounded-full bg-primary mr-4 hover:opacity-80'
+      onClick={() => {
+        window.open(href, '_blank');
+      }}
     >
       <Icon className='w-4 h-4' name={icon} />
-    </a>
+    </div>
   );
 };
 

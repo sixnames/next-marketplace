@@ -213,9 +213,14 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
 
         <div className='text-center text-sm text-secondary-text'>
           {'Powered by '}
-          <a href={'https://supercharger.site'} target={'_blank'} rel={'noreferrer nofollow'}>
+          <span
+            className='text-theme hover:underline cursor-pointer'
+            onClick={() => {
+              window.open('https://supercharger.site', '_blank');
+            }}
+          >
             Supercharger
-          </a>
+          </span>
         </div>
       </Inner>
     </footer>

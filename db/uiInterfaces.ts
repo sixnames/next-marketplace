@@ -538,6 +538,8 @@ export interface CatalogueFilterAttributeInterface {
   childrenCount: number;
   viewVariant: AttributeViewVariantModel;
   showAsCatalogueBreadcrumb?: boolean | null;
+  showAsLinkInFilter: boolean;
+  showAsAccordionInFilter: boolean;
 }
 
 export interface OrderStatusInterface extends OrderStatusModel {

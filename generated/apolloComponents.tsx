@@ -50,6 +50,8 @@ export type AddAttributeToGroupInput = {
   showNameInCardTitle?: Maybe<Scalars['Boolean']>;
   showNameInSnippetTitle?: Maybe<Scalars['Boolean']>;
   showNameInSelectedAttributes?: Maybe<Scalars['Boolean']>;
+  showAsLinkInFilter?: Maybe<Scalars['Boolean']>;
+  showAsAccordionInFilter?: Maybe<Scalars['Boolean']>;
 };
 
 export type AddAttributesGroupToCategoryInput = {
@@ -2516,6 +2518,8 @@ export type UpdateAttributeInGroupInput = {
   showNameInCardTitle?: Maybe<Scalars['Boolean']>;
   showNameInSnippetTitle?: Maybe<Scalars['Boolean']>;
   showNameInSelectedAttributes?: Maybe<Scalars['Boolean']>;
+  showAsLinkInFilter?: Maybe<Scalars['Boolean']>;
+  showAsAccordionInFilter?: Maybe<Scalars['Boolean']>;
 };
 
 export type UpdateAttributeInRubricInput = {

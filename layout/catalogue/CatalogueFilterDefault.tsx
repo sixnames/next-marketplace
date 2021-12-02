@@ -6,9 +6,9 @@ import {
   CatalogueFilterAttributePropsInterface,
   CatalogueFilterInterface,
 } from 'layout/catalogue/CatalogueFilter';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import FilterLink from 'components/Link/FilterLink';
-import Link from 'components/Link/Link';
 import { useConfigContext } from 'context/configContext';
 import { useAppContext } from 'context/appContext';
 
@@ -19,6 +19,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
   basePath,
   urlPrefix,
 }) => {
+  const router = useRouter();
   const { showModal } = useAppContext();
   const { configs } = useConfigContext();
   const maxVisibleOptions =
@@ -36,13 +37,21 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
       <div className='flex items-baseline justify-between mb-4'>
         <span className='text-lg font-bold'>{name}</span>
         {isSelected ? (
-          <Link
-            href={`${urlPrefix}${clearSlug}`}
-            onClick={onClick}
-            className='font-medium text-theme'
+          <div
+            className='ml-4 font-medium text-theme cursor-pointer hover:underline'
+            onClick={() => {
+              router
+                .push(`${urlPrefix}${clearSlug}`)
+                .then(() => {
+                  if (onClick) {
+                    onClick();
+                  }
+                })
+                .catch(console.log);
+            }}
           >
             Сбросить
-          </Link>
+          </div>
         ) : null}
       </div>
 
@@ -51,6 +60,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
           const testId = `catalogue-option-${attributeIndex}-${optionIndex}`;
           return (
             <FilterLink
+              showAsLink={attribute.showAsLinkInFilter}
               urlPrefix={urlPrefix}
               onClick={onClick}
               option={option}

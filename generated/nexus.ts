@@ -114,8 +114,10 @@ export interface NexusGenInputs {
     optionsGroupId?: NexusGenScalars['ObjectId'] | null; // ObjectId
     positioningInCardTitle?: NexusGenScalars['JSONObject'] | null; // JSONObject
     positioningInTitle?: NexusGenScalars['JSONObject'] | null; // JSONObject
+    showAsAccordionInFilter?: boolean | null; // Boolean
     showAsBreadcrumb: boolean; // Boolean!
     showAsCatalogueBreadcrumb: boolean; // Boolean!
+    showAsLinkInFilter?: boolean | null; // Boolean
     showInCard: boolean; // Boolean!
     showInCardTitle: boolean; // Boolean!
     showInCatalogueFilter: boolean; // Boolean!
@@ -527,8 +529,10 @@ export interface NexusGenInputs {
     optionsGroupId?: NexusGenScalars['ObjectId'] | null; // ObjectId
     positioningInCardTitle?: NexusGenScalars['JSONObject'] | null; // JSONObject
     positioningInTitle?: NexusGenScalars['JSONObject'] | null; // JSONObject
+    showAsAccordionInFilter?: boolean | null; // Boolean
     showAsBreadcrumb: boolean; // Boolean!
     showAsCatalogueBreadcrumb: boolean; // Boolean!
+    showAsLinkInFilter?: boolean | null; // Boolean
     showInCard: boolean; // Boolean!
     showInCardTitle: boolean; // Boolean!
     showInCatalogueFilter: boolean; // Boolean!

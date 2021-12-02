@@ -10,8 +10,10 @@ input AddAttributeToGroupInput {
   optionsGroupId: ObjectId
   positioningInCardTitle: JSONObject
   positioningInTitle: JSONObject
+  showAsAccordionInFilter: Boolean
   showAsBreadcrumb: Boolean!
   showAsCatalogueBreadcrumb: Boolean!
+  showAsLinkInFilter: Boolean
   showInCard: Boolean!
   showInCardTitle: Boolean!
   showInCatalogueFilter: Boolean!
@@ -2237,8 +2239,10 @@ input UpdateAttributeInGroupInput {
   optionsGroupId: ObjectId
   positioningInCardTitle: JSONObject
   positioningInTitle: JSONObject
+  showAsAccordionInFilter: Boolean
   showAsBreadcrumb: Boolean!
   showAsCatalogueBreadcrumb: Boolean!
+  showAsLinkInFilter: Boolean
   showInCard: Boolean!
   showInCardTitle: Boolean!
   showInCatalogueFilter: Boolean!

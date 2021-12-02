@@ -479,6 +479,8 @@ export async function getCatalogueAttributes({
       viewVariant: attribute.viewVariant,
       notShowAsAlphabet: attribute.notShowAsAlphabet || false,
       showAsCatalogueBreadcrumb: attribute.showAsCatalogueBreadcrumb,
+      showAsLinkInFilter: Boolean(attribute.showAsLinkInFilter),
+      showAsAccordionInFilter: Boolean(attribute.showAsAccordionInFilter),
     };
 
     if (isSelected) {

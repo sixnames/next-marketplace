@@ -625,6 +625,7 @@ export interface ProductSnippetConfigInterface {
 
   // numbers
   gridCatalogueColumns?: number | 'full' | null;
+  imageLoading?: 'lazy' | 'eager';
 }
 
 export interface ProductSnippetInterface extends ProductSnippetConfigInterface {

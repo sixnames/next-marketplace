@@ -20,6 +20,7 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
   showSnippetConnections = false,
   showSnippetArticle,
   showSnippetRating,
+  imageLoading,
 }) => {
   const { addShoplessProductToCart, addProductToCart, urlPrefix } = useSiteContext();
   const { product } = shopProduct;
@@ -64,6 +65,7 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
           <div className='flex p-3 justify-center'>
             <div className='relative pb-[100%] w-full'>
               <WpImage
+                loading={imageLoading}
                 url={mainImage}
                 alt={`${snippetTitle}`}
                 title={`${snippetTitle}`}

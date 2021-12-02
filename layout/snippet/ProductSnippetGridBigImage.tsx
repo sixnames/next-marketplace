@@ -16,6 +16,7 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
   showSnippetButtonsOnHover = false,
   showSnippetArticle,
   gridCatalogueColumns = 3,
+  imageLoading,
 }) => {
   const { addShoplessProductToCart, addProductToCart, urlPrefix } = useSiteContext();
   const { product } = shopProduct;
@@ -74,6 +75,7 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
           <div className='relative flex justify-center dark:snippet-image mb-4'>
             <div className='relative pb-[90%] w-[90%]'>
               <WpImage
+                loading={imageLoading}
                 url={mainImage}
                 alt={`${snippetTitle}`}
                 title={`${snippetTitle}`}

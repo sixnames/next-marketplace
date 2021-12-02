@@ -21,6 +21,7 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
   showSnippetConnections = false,
   showSnippetArticle,
   showSnippetRating,
+  imageLoading,
 }) => {
   const { addShoplessProductToCart, addProductToCart, urlPrefix } = useSiteContext();
   const { product } = shopProduct;
@@ -63,6 +64,7 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
         {/*image*/}
         <div className='relative flex-grow pb-5 pt-5'>
           <WpImage
+            loading={imageLoading}
             url={mainImage}
             alt={`${snippetTitle}`}
             title={`${snippetTitle}`}

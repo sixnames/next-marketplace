@@ -44,6 +44,8 @@ import { CatalogueApiInputInterface } from 'pages/api/catalogue/[...filters]';
 import * as React from 'react';
 import CatalogueFilter from 'layout/catalogue/CatalogueFilter';
 
+const lazyLoadingImagesLimit = 5;
+
 export interface CatalogueHeadDefaultInterface {
   catalogueCounterString: string;
   breadcrumbs: CatalogueBreadcrumbModel[];
@@ -455,9 +457,12 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
                 ) : null}
 
                 {state.products.map((product, index) => {
+                  const imageLoading = index > lazyLoadingImagesLimit ? 'lazy' : 'eager';
+
                   if (isRowView) {
                     return (
                       <ProductSnippetRow
+                        imageLoading={imageLoading}
                         layout={state.rowSnippetLayout}
                         showSnippetConnections={state.showSnippetConnections}
                         showSnippetBackground={state.showSnippetBackground}
@@ -474,6 +479,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
 
                   return (
                     <ProductSnippetGrid
+                      imageLoading={imageLoading}
                       layout={state.gridSnippetLayout}
                       showSnippetBackground={state.showSnippetBackground}
                       showSnippetArticle={state.showSnippetArticle}

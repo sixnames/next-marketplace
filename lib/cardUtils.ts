@@ -100,7 +100,6 @@ export interface GetCardDataInterface {
   slug: string;
   companySlug: string;
   companyId?: string | ObjectId | null;
-  useUniqueConstructor: boolean;
 }
 
 export async function getCardData({
@@ -109,9 +108,7 @@ export async function getCardData({
   slug,
   companyId,
   ...props
-}: // companySlug,
-// useUniqueConstructor,
-GetCardDataInterface): Promise<InitialCardDataInterface | null> {
+}: GetCardDataInterface): Promise<InitialCardDataInterface | null> {
   try {
     // const startTime = new Date().getTime();
     const { db } = await getDatabase();

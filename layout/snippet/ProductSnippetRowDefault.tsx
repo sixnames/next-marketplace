@@ -4,9 +4,10 @@ import Link from 'components/Link/Link';
 import RatingStars from 'components/RatingStars';
 import WpImage from 'components/WpImage';
 import { useSiteContext } from 'context/siteContext';
-import { useSiteUserContext } from 'context/userSiteUserContext';
 import { ProductSnippetInterface } from 'db/uiInterfaces';
 import ProductSnippetAvailability from 'layout/snippet/ProductSnippetAvailability';
+import ProductSnippetEditButton from 'layout/snippet/ProductSnippetEditButton';
+import ProductSnippetInCartIcon from 'layout/snippet/ProductSnippetInCartIcon';
 import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
 import { noNaN } from 'lib/numbers';
 import * as React from 'react';
@@ -20,8 +21,8 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
   showSnippetConnections = false,
   showSnippetArticle,
   showSnippetRating,
+  imageLoading,
 }) => {
-  const sessionUser = useSiteUserContext();
   const { addShoplessProductToCart, addProductToCart, urlPrefix } = useSiteContext();
   const { product } = shopProduct;
   if (!product) {
@@ -54,29 +55,16 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
       }`}
     >
       {/*edit button for admin*/}
-      {sessionUser?.showAdminUiInCatalogue ? (
-        <div className='absolute top-0 left-0 z-50'>
-          <ControlButton
-            size={'small'}
-            iconSize={'small'}
-            icon={'pencil'}
-            theme={'accent'}
-            ariaLabel={'edit'}
-            roundedTopLeft
-            onClick={() => {
-              window.open(
-                `${sessionUser.editLinkBasePath}/rubrics/${product.rubricId}/products/product/${product._id}`,
-                '_blank',
-              );
-            }}
-          />
-        </div>
-      ) : null}
+      <ProductSnippetEditButton product={product} />
+
+      {/*in cart indicator*/}
+      <ProductSnippetInCartIcon productId={product._id} shopProductId={shopProduct._id} />
 
       <div className='relative flex flex-col col-span-3 md:col-span-2 items-center justify-center flex-grow pt-4 pl-5 pr-5 dark:snippet-image'>
         {/*image*/}
         <div className='relative flex-grow pb-5 pt-5'>
           <WpImage
+            loading={imageLoading}
             url={mainImage}
             alt={`${snippetTitle}`}
             title={`${snippetTitle}`}

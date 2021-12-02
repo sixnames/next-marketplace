@@ -3,6 +3,7 @@ import { FILTER_SEPARATOR, ROUTE_CATALOGUE } from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import { StickyNavAttributeInterface, StickyNavDropdownInterface } from 'layout/header/StickyNav';
 import { noNaN } from 'lib/numbers';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 
 const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
@@ -13,6 +14,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
   hideDropdown,
   urlPrefix,
 }) => {
+  const router = useRouter();
   const { configs } = useConfigContext();
   const { options, name, metric } = attribute;
   const postfix = metric ? ` ${metric.name}` : null;
@@ -52,14 +54,21 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
 
         {showOptionsMoreLink ? (
           <li>
-            <Link
-              onClick={hideDropdown}
-              prefetch={false}
-              href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}`}
+            <div
               className='flex items-center min-h-[var(--minLinkHeight)] text-secondary-theme'
+              onClick={() => {
+                router
+                  .push(`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}`)
+                  .then(() => {
+                    if (hideDropdown) {
+                      hideDropdown();
+                    }
+                  })
+                  .catch(console.log);
+              }}
             >
               Показать все
-            </Link>
+            </div>
           </li>
         ) : null}
       </ul>

@@ -16,8 +16,8 @@ import {
   SyncUpdateOrderProductInterface,
 } from 'db/syncInterfaces';
 
-const validRequestParamsA = 'token=000001&apiVersion=0.0.1&systemVersion=8.2';
-const validRequestParamsC = 'token=000003&apiVersion=0.0.1&systemVersion=8.2';
+const validRequestParamsA = 'token=000001';
+const validRequestParamsC = 'token=000003';
 
 const errorBarcode = '9999999999999999';
 const errorBarcodeB = '9999999999999999B';
@@ -278,7 +278,7 @@ describe('Sync', () => {
     // should error on no parameters
     cy.request({
       method: REQUEST_METHOD_POST,
-      url: `/api/shops/sync?apiVersion=0.0.1&systemVersion=8.2`,
+      url: `/api/shops/sync`,
       body: JSON.stringify(initialBody),
       failOnStatusCode: false,
     }).then(errorCallback);

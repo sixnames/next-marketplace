@@ -195,6 +195,10 @@ export const AddAttributeToGroupInput = inputObjectType({
     t.boolean('showNameInCardTitle');
     t.boolean('showNameInSnippetTitle');
     t.boolean('showNameInSelectedAttributes');
+
+    // catalogue ui
+    t.boolean('showAsLinkInFilter');
+    t.boolean('showAsAccordionInFilter');
   },
 });
 
@@ -241,6 +245,10 @@ export const UpdateAttributeInGroupInput = inputObjectType({
     t.boolean('showNameInCardTitle');
     t.boolean('showNameInSnippetTitle');
     t.boolean('showNameInSelectedAttributes');
+
+    // catalogue ui
+    t.boolean('showAsLinkInFilter');
+    t.boolean('showAsAccordionInFilter');
   },
 });
 

@@ -10,7 +10,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const query = req.query as unknown as SyncParamsInterface | undefined | null;
-    if (!query?.apiVersion || !query?.systemVersion || !query?.token) {
+    if (!query?.token) {
       res.status(400).send({
         success: false,
         message: 'no query params provided',

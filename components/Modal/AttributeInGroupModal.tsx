@@ -96,6 +96,8 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
         showInCatalogueTitle: attribute.showInCatalogueTitle || false,
         showInSnippetTitle: attribute.showInSnippetTitle || false,
         showNameInCardTitle: attribute.showNameInCardTitle || false,
+        showAsLinkInFilter: attribute.showAsLinkInFilter || false,
+        showAsAccordionInFilter: attribute.showAsAccordionInFilter || false,
       }
     : {
         nameI18n: {},
@@ -267,6 +269,16 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
               <FormikCheckboxLine
                 label={'Показывать в навигации сайта'}
                 name={'showInCatalogueNav'}
+              />
+
+              <FormikCheckboxLine
+                label={'Показывать опции атрибута в виде ссылки в фильтре'}
+                name={'showAsLinkInFilter'}
+              />
+
+              <FormikCheckboxLine
+                label={'Показывать атрибут в виде аккордеона в фильтре'}
+                name={'showAsAccordionInFilter'}
               />
 
               <FormikCheckboxLine label={'Показывать в карточке товара'} name={'showInCard'} />

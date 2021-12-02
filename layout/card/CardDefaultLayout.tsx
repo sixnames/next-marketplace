@@ -4,6 +4,12 @@ import Icon from 'components/Icon';
 import Inner from 'components/Inner';
 import TagLink from 'components/Link/TagLink';
 import WpImage from 'components/WpImage';
+import {
+  FILTER_BRAND_COLLECTION_KEY,
+  FILTER_BRAND_KEY,
+  FILTER_SEPARATOR,
+  ROUTE_CATALOGUE,
+} from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
 import { CardLayoutInterface } from 'db/uiInterfaces';
@@ -20,6 +26,7 @@ import CardTagFeatures from 'layout/card/CardTagFeatures';
 import CardTextFeatures from 'layout/card/CardTextFeatures';
 import { noNaN } from 'lib/numbers';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 
 const CardImageSlider = dynamic(() => import('layout/card/CardImageSlider'));
@@ -65,6 +72,7 @@ const CardTitle: React.FC<CardTitleInterface> = ({
 };
 
 const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlug, companyId }) => {
+  const router = useRouter();
   const { configs } = useConfigContext();
   const { urlPrefix } = useSiteContext();
   const {
@@ -327,7 +335,18 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                           <div className='text-secondary-text mb-1 font-bold sm:half-column'>
                             Бренд
                           </div>
-                          <div className='sm:text-right sm:half-column'>{brand.name}</div>
+                          <div
+                            className='sm:text-right sm:half-column cursor-pointer hover:text-theme'
+                            onClick={() => {
+                              router
+                                .push(
+                                  `${urlPrefix}${ROUTE_CATALOGUE}/${product.rubricSlug}/${FILTER_BRAND_KEY}${FILTER_SEPARATOR}${brand.itemId}`,
+                                )
+                                .catch(console.log);
+                            }}
+                          >
+                            {brand.name}
+                          </div>
                         </li>
                       ) : null}
 
@@ -349,12 +368,23 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                         </li>
                       ) : null}
 
-                      {brandCollection ? (
+                      {brandCollection && brand ? (
                         <li className='sm:flex justify-between'>
                           <div className='text-secondary-text mb-1 font-bold sm:half-column'>
                             Линейка бренда
                           </div>
-                          <div className='sm:text-right sm:half-column'>{brandCollection.name}</div>
+                          <div
+                            className='sm:text-right sm:half-column cursor-pointer hover:text-theme'
+                            onClick={() => {
+                              router
+                                .push(
+                                  `${urlPrefix}${ROUTE_CATALOGUE}/${product.rubricSlug}/${FILTER_BRAND_KEY}${FILTER_SEPARATOR}${brand.itemId}/${FILTER_BRAND_COLLECTION_KEY}${FILTER_SEPARATOR}${brandCollection.itemId}`,
+                                )
+                                .catch(console.log);
+                            }}
+                          >
+                            {brandCollection.name}
+                          </div>
                         </li>
                       ) : null}
 

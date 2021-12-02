@@ -32,6 +32,8 @@ const booleans = {
   showAsCatalogueBreadcrumb: true,
   notShowAsAlphabet: false,
   capitalise: false,
+  showAsLinkInFilter: true,
+  showAsAccordionInFilter: false,
   positioningInCardTitle: {
     [DEFAULT_LOCALE]: ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD as any,
   },
@@ -133,6 +135,8 @@ const attributes: AttributeModel[] = [
     },
     attributesGroupId: getObjectId('attributesGroup Общие характеристики'),
     ...booleans,
+    showAsLinkInFilter: false,
+    showAsAccordionInFilter: true,
   },
   {
     _id: getObjectId(`attribute Объем`),

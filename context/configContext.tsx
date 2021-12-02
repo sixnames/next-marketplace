@@ -87,7 +87,6 @@ const ConfigContext = React.createContext<ConfigContextInterface>({
     cardMetaPrefix: '',
     mapMarkerDarkTheme: '',
     mapMarkerLightTheme: '',
-    useUniqueConstructor: false,
     showReservationDate: false,
     buyButtonText: '',
     visibleCategoriesInNavDropdown: [],

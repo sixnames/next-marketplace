@@ -42,6 +42,7 @@ export const iconTypesList = [
   'moon',
   'move',
   'payment',
+  'phone',
   'pencil',
   'percent',
   'picture',

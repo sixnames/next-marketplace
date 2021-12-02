@@ -36,6 +36,11 @@ const RubricMainFields: React.FC<RubricMainFieldsInterface> = ({
         name={'showBrandInFilter'}
       />
 
+      <FormikCheckboxLine
+        label={'Показывать бренд в фильтре в виде алфавита'}
+        name={'showBrandAsAlphabet'}
+      />
+
       <FormikTranslationsInput
         label={'Название'}
         name={'nameI18n'}

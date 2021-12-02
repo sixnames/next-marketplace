@@ -106,14 +106,12 @@ export async function getStaticProps(
   });
 
   // card data
-  const { useUniqueConstructor } = props.initialData.configs;
   const rawCardData = await getCardData({
     locale: `${locale}`,
     city: props.sessionCity,
     slug: `${params?.card}`,
     companyId: props.domainCompany?._id,
     companySlug: props.companySlug,
-    useUniqueConstructor,
   });
 
   if (!rawCardData) {

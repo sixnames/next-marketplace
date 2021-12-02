@@ -1,3 +1,4 @@
+import { DEFAULT_CITY } from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
 import { InitialCardDataInterface, ProductAttributeInterface } from 'db/uiInterfaces';
@@ -33,7 +34,7 @@ const useCardData = ({
   const shopsCounterPostfix = noNaN(cardData.shopsCount) > 1 ? 'магазинах' : 'магазине';
   const isShopless = noNaN(cardData.shopsCount) < 1;
   const { addShoplessProductToCart, addProductToCart } = useSiteContext();
-  const { configs } = useConfigContext();
+  const { configs, currentCity } = useConfigContext();
 
   // visible list features slice
   const visibleListFeaturesCount = React.useMemo(() => {
@@ -54,6 +55,7 @@ const useCardData = ({
   useUpdateCardCounter({
     companySlug,
     shopProductIds: alwaysArray(cardData.product.shopProductIds),
+    citySlug: currentCity?.slug || DEFAULT_CITY,
   });
 
   return {

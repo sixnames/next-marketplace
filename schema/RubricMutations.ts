@@ -55,6 +55,7 @@ export const CreateRubricInput = inputObjectType({
     t.boolean('showCategoryInProductTitle');
     t.boolean('showBrandInNav');
     t.boolean('showBrandInFilter');
+    t.boolean('showBrandAsAlphabet');
     t.nonNull.json('descriptionI18n');
     t.nonNull.json('shortDescriptionI18n');
     t.nonNull.objectId('variantId');
@@ -77,6 +78,7 @@ export const UpdateRubricInput = inputObjectType({
     t.boolean('showCategoryInProductTitle');
     t.boolean('showBrandInNav');
     t.boolean('showBrandInFilter');
+    t.boolean('showBrandAsAlphabet');
     t.nonNull.json('nameI18n');
     t.nonNull.json('descriptionI18n');
     t.nonNull.json('shortDescriptionI18n');

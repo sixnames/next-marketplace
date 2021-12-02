@@ -16,7 +16,6 @@ import { OrderInterface } from 'db/uiInterfaces';
 import { alwaysArray } from 'lib/arrayUtils';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-// TODO messages
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== 'GET') {
     res.status(405).send({
@@ -36,8 +35,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
-  const { apiVersion, systemVersion, token, fromDate } = query;
-  if (!apiVersion || !systemVersion || !token || !fromDate) {
+  const { token, fromDate } = query;
+  if (!token || !fromDate) {
     res.status(400).send({
       success: false,
       message: 'no query params provided',

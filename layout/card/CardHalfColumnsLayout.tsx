@@ -4,6 +4,12 @@ import Icon from 'components/Icon';
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
 import WpImage from 'components/WpImage';
+import {
+  FILTER_BRAND_COLLECTION_KEY,
+  FILTER_BRAND_KEY,
+  FILTER_SEPARATOR,
+  ROUTE_CATALOGUE,
+} from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
 import { CardLayoutInterface } from 'db/uiInterfaces';
@@ -20,6 +26,7 @@ import CardTagFeatures from 'layout/card/CardTagFeatures';
 import CardTextFeatures from 'layout/card/CardTextFeatures';
 import { noNaN } from 'lib/numbers';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 
 const CardImageSlider = dynamic(() => import('layout/card/CardImageSlider'));
@@ -33,6 +40,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
   companySlug,
   companyId,
 }) => {
+  const router = useRouter();
   const { configs } = useConfigContext();
   const { urlPrefix } = useSiteContext();
   const {
@@ -116,7 +124,12 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                 <div className={`rounded-xl bg-secondary px-6 py-8 ${dataSectionClassName}`}>
                   {/*brand preview*/}
                   {brand && brand.logo ? (
-                    <div className='flex items-center mb-6 gap-4 relative'>
+                    <div
+                      className='flex items-center mb-6 gap-4 relative cursor-pointer'
+                      onClick={() => {
+                        window.open(`${brand.mainUrl}`, '_blank');
+                      }}
+                    >
                       <WpImage
                         className='object-contain w-[70px] h-[70px]'
                         url={brand.logo}
@@ -125,16 +138,6 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                         width={70}
                       />
                       <div>{brand.name}</div>
-                      {brand.mainUrl ? (
-                        <a
-                          target={'_blank'}
-                          href={brand.mainUrl}
-                          className='block absolute z-10 inset-0 text-indent-full overflow-hidden'
-                          rel={'noreferrer nofollow'}
-                        >
-                          {brand.name}
-                        </a>
-                      ) : null}
                     </div>
                   ) : null}
 
@@ -296,7 +299,18 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                           <div className='text-secondary-text mb-1 font-bold sm:half-column'>
                             Бренд
                           </div>
-                          <div className='sm:text-right sm:half-column'>{brand.name}</div>
+                          <div
+                            className='sm:text-right sm:half-column cursor-pointer hover:text-theme'
+                            onClick={() => {
+                              router
+                                .push(
+                                  `${urlPrefix}${ROUTE_CATALOGUE}/${product.rubricSlug}/${FILTER_BRAND_KEY}${FILTER_SEPARATOR}${brand.itemId}`,
+                                )
+                                .catch(console.log);
+                            }}
+                          >
+                            {brand.name}
+                          </div>
                         </li>
                       ) : null}
 
@@ -306,24 +320,35 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                             Сайт бренда
                           </div>
                           <div className='sm:text-right sm:half-column'>
-                            <a
-                              className='text-primary-text'
-                              target={'_blank'}
-                              href={brand.mainUrl}
-                              rel={'noreferrer nofollow'}
+                            <div
+                              className='text-primary-text cursor-pointer hover:underline'
+                              onClick={() => {
+                                window.open(`${brand.mainUrl}`, '_blank');
+                              }}
                             >
                               {brand.mainUrl}
-                            </a>
+                            </div>
                           </div>
                         </li>
                       ) : null}
 
-                      {brandCollection ? (
+                      {brandCollection && brand ? (
                         <li className='sm:flex justify-between'>
                           <div className='text-secondary-text mb-1 font-bold sm:half-column'>
                             Линейка бренда
                           </div>
-                          <div className='sm:text-right sm:half-column'>{brandCollection.name}</div>
+                          <div
+                            className='sm:text-right sm:half-column cursor-pointer hover:text-theme'
+                            onClick={() => {
+                              router
+                                .push(
+                                  `${urlPrefix}${ROUTE_CATALOGUE}/${product.rubricSlug}/${FILTER_BRAND_KEY}${FILTER_SEPARATOR}${brand.itemId}/${FILTER_BRAND_COLLECTION_KEY}${FILTER_SEPARATOR}${brandCollection.itemId}`,
+                                )
+                                .catch(console.log);
+                            }}
+                          >
+                            {brandCollection.name}
+                          </div>
                         </li>
                       ) : null}
 
@@ -342,14 +367,14 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                             Сайт производителя
                           </div>
                           <div className='sm:text-right sm:half-column'>
-                            <a
-                              className='text-primary-text'
-                              target={'_blank'}
-                              href={manufacturer.mainUrl}
-                              rel={'noreferrer nofollow'}
+                            <div
+                              className='text-primary-text cursor-pointer hover:underline'
+                              onClick={() => {
+                                window.open(`${manufacturer.mainUrl}`, '_blank');
+                              }}
                             >
                               {manufacturer.mainUrl}
-                            </a>
+                            </div>
                           </div>
                         </li>
                       ) : null}

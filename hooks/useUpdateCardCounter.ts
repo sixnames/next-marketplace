@@ -6,6 +6,7 @@ import * as React from 'react';
 const useUpdateCardCounter = ({
   shopProductIds,
   companySlug = DEFAULT_COMPANY_SLUG,
+  citySlug,
 }: UpdateProductCounterInputInterface) => {
   React.useEffect(() => {
     fetch(`/api/product/counter`, {
@@ -13,6 +14,7 @@ const useUpdateCardCounter = ({
       body: JSON.stringify({
         shopProductIds,
         companySlug,
+        citySlug,
       }),
     }).catch((e) => {
       console.log(e);

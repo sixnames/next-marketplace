@@ -1,3 +1,4 @@
+import Accordion from 'components/Accordion';
 import FilterSelectedAttributes from 'components/FilterSelectedAttributes';
 import Icon from 'components/Icon';
 import Link from 'components/Link/Link';
@@ -15,7 +16,30 @@ import {
   CatalogueFilterAttributeOptionInterface,
 } from 'db/uiInterfaces';
 import { FilterBaseInterface } from 'layout/catalogue/CatalogueFilter';
+import { useRouter } from 'next/router';
 import * as React from 'react';
+
+export function getFilterOptions(
+  maxVisibleOptions: number,
+  options?: CatalogueFilterAttributeOptionInterface[] | null,
+) {
+  if (!options) {
+    return {
+      maxVisibleOptions,
+      visibleOptions: [],
+      hiddenOptions: [],
+      hasMoreOptions: false,
+    };
+  }
+  const hiddenOptions = options.slice(maxVisibleOptions);
+
+  return {
+    maxVisibleOptions,
+    visibleOptions: options.slice(0, maxVisibleOptions),
+    hiddenOptions,
+    hasMoreOptions: hiddenOptions.length > 0,
+  };
+}
 
 interface CheckBoxFilterAttributeInterface {
   attribute: CatalogueFilterAttributeInterface;
@@ -26,7 +50,7 @@ interface CheckBoxFilterAttributeInterface {
   urlPrefix?: string;
 }
 
-const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
+const CheckBoxFilterAttributeOptions: React.FC<CheckBoxFilterAttributeInterface> = ({
   attribute,
   onClick,
   attributeIndex,
@@ -34,70 +58,70 @@ const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
   excludedParams,
   urlPrefix,
 }) => {
+  const router = useRouter();
   const { showModal } = useAppContext();
+  const isBrand = attribute.slug === FILTER_BRAND_KEY;
   const { configs } = useConfigContext();
   const maxVisibleOptions =
     configs.catalogueFilterVisibleOptionsCount || CATALOGUE_FILTER_VISIBLE_OPTIONS;
-  // const isPrice = attribute.slug === FILTER_PRICE_KEY;
-  const isBrand = attribute.slug === FILTER_BRAND_KEY;
 
-  if (!attribute.options || attribute.options.length < 1) {
-    return null;
-  }
-
-  function getFilterOptions(options?: CatalogueFilterAttributeOptionInterface[] | null) {
-    if (!options) {
-      return {
-        maxVisibleOptions,
-        visibleOptions: [],
-        hiddenOptions: [],
-        hasMoreOptions: false,
-      };
-    }
-    const hiddenOptions = options.slice(maxVisibleOptions);
-
-    /*if (isPrice) {
-      return {
-        maxVisibleOptions,
-        visibleOptions: options,
-        hiddenOptions: [],
-        hasMoreOptions: false,
-      };
-    }*/
-
-    return {
-      maxVisibleOptions,
-      visibleOptions: options.slice(0, maxVisibleOptions),
-      hiddenOptions,
-      hasMoreOptions: hiddenOptions.length > 0,
-    };
-  }
+  const { visibleOptions, hasMoreOptions } = getFilterOptions(maxVisibleOptions, attribute.options);
 
   function renderOption(option: CatalogueFilterAttributeOptionInterface, testId: string) {
-    const { visibleOptions, hasMoreOptions } = getFilterOptions(option.options);
+    const { visibleOptions, hasMoreOptions } = getFilterOptions(maxVisibleOptions, option.options);
     const { nextSlug, isSelected, name } = option;
 
     return (
       <div key={`${option._id}`}>
-        <Link
-          href={`${urlPrefix}${nextSlug}`}
-          onClick={onClick}
-          testId={testId}
-          className='flex items-center gap-2 w-full min-h-[2.5rem] cursor-pointer text-primary-text hover:text-theme hover:no-underline'
-        >
-          <span className='relative text-theme w-[18px] h-[18px] border border-border-300 rounded border-1 bg-secondary overflow-hidden text-theme flex-shrink-0'>
-            {isSelected ? (
-              <Icon
-                className='absolute w-[14px] h-[14px] top-[1px] left-[1px] z-10'
-                name={'check'}
-              />
-            ) : null}
-          </span>
+        {attribute.showAsLinkInFilter ? (
+          <Link
+            href={`${urlPrefix}${nextSlug}`}
+            onClick={onClick}
+            testId={testId}
+            className='flex items-center gap-2 w-full min-h-[2.5rem] cursor-pointer text-primary-text hover:text-theme hover:no-underline'
+          >
+            <span className='relative text-theme w-[18px] h-[18px] border border-border-300 rounded border-1 bg-secondary overflow-hidden text-theme flex-shrink-0'>
+              {isSelected ? (
+                <Icon
+                  className='absolute w-[14px] h-[14px] top-[1px] left-[1px] z-10'
+                  name={'check'}
+                />
+              ) : null}
+            </span>
 
-          <span className=''>
-            <span>{name}</span>
-          </span>
-        </Link>
+            <span className=''>
+              <span>{name}</span>
+            </span>
+          </Link>
+        ) : (
+          <div
+            data-cy={testId}
+            className='flex transition-all items-center gap-2 w-full min-h-[2.5rem] cursor-pointer text-primary-text hover:text-theme hover:no-underline'
+            onClick={() => {
+              router
+                .push(`${urlPrefix}${nextSlug}`)
+                .then(() => {
+                  if (onClick) {
+                    onClick();
+                  }
+                })
+                .catch(console.log);
+            }}
+          >
+            <span className='relative text-theme w-[18px] h-[18px] border border-border-300 rounded border-1 bg-secondary overflow-hidden text-theme flex-shrink-0'>
+              {isSelected ? (
+                <Icon
+                  className='absolute w-[14px] h-[14px] top-[1px] left-[1px] z-10'
+                  name={'check'}
+                />
+              ) : null}
+            </span>
+
+            <span className=''>
+              <span>{name}</span>
+            </span>
+          </div>
+        )}
 
         {isSelected && visibleOptions.length > 0 ? (
           <div className='pl-5'>
@@ -109,7 +133,7 @@ const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
 
             {hasMoreOptions ? (
               <div
-                className='uppercase cursor-pointer hover:text-theme mt-2 mb-4'
+                className='uppercase cursor-pointer text-theme mt-2 mb-4'
                 onClick={() => {
                   showModal<CatalogueAdditionalOptionsModalInterface>({
                     variant: CATALOGUE_ADDITIONAL_OPTIONS_MODAL,
@@ -133,23 +157,8 @@ const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
     );
   }
 
-  // render attribute
-  const { visibleOptions, hasMoreOptions } = getFilterOptions(attribute.options);
   return (
-    <div className={`mb-8`}>
-      {/*attribute name*/}
-      {attribute.name ? (
-        <div className='flex items-baseline mb-2 justify-between'>
-          <span className={`font-medium text-lg`}>{attribute.name}</span>
-          {attribute.isSelected && attribute.clearSlug ? (
-            <Link onClick={onClick} href={`${urlPrefix}${attribute.clearSlug}`} className={`ml-4`}>
-              Сбросить
-            </Link>
-          ) : null}
-        </div>
-      ) : null}
-
-      {/*options*/}
+    <div>
       <div>
         {visibleOptions.map((option, optionIndex) => {
           return renderOption(option, `${attributeIndex}-${optionIndex}`);
@@ -165,7 +174,6 @@ const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
               props: {
                 attributeSlug: attribute.slug,
                 notShowAsAlphabet: attribute.notShowAsAlphabet,
-                // optionVariant: attribute.slug === FILTER_CATEGORY_KEY ? 'radio' : 'checkbox',
                 optionVariant: 'radio',
                 title: attribute.name,
                 basePath: `${urlPrefix}${basePath}`,
@@ -178,6 +186,101 @@ const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
           Показать еще
         </div>
       ) : null}
+    </div>
+  );
+};
+
+const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
+  attribute,
+  onClick,
+  attributeIndex,
+  basePath,
+  excludedParams,
+  urlPrefix,
+}) => {
+  const router = useRouter();
+
+  if (!attribute.options || attribute.options.length < 1) {
+    return null;
+  }
+
+  if (attribute.showAsAccordionInFilter) {
+    return (
+      <div className='mb-8'>
+        <Accordion
+          noTitleStyle
+          titleClassName='font-medium text-lg mb-2'
+          isOpen={attribute.isSelected}
+          title={attribute.name}
+          titleRight={
+            attribute.isSelected && attribute.clearSlug ? (
+              <div
+                className='ml-4 text-theme font-normal cursor-pointer hover:underline'
+                onClick={() => {
+                  router
+                    .push(`${urlPrefix}${attribute.clearSlug}`)
+                    .then(() => {
+                      if (onClick) {
+                        onClick();
+                      }
+                    })
+                    .catch(console.log);
+                }}
+              >
+                Сбросить
+              </div>
+            ) : null
+          }
+        >
+          {/*options*/}
+          <CheckBoxFilterAttributeOptions
+            basePath={basePath}
+            attribute={attribute}
+            attributeIndex={attributeIndex}
+            excludedParams={excludedParams}
+            onClick={onClick}
+            urlPrefix={urlPrefix}
+          />
+        </Accordion>
+      </div>
+    );
+  }
+
+  return (
+    <div className={`mb-8`}>
+      {/*attribute name*/}
+      {attribute.name ? (
+        <div className='flex items-baseline mb-2 justify-between'>
+          <span className={`font-medium text-lg`}>{attribute.name}</span>
+          {attribute.isSelected && attribute.clearSlug ? (
+            <div
+              className='ml-4 text-theme cursor-pointer hover:underline'
+              onClick={() => {
+                router
+                  .push(`${urlPrefix}${attribute.clearSlug}`)
+                  .then(() => {
+                    if (onClick) {
+                      onClick();
+                    }
+                  })
+                  .catch(console.log);
+              }}
+            >
+              Сбросить
+            </div>
+          ) : null}
+        </div>
+      ) : null}
+
+      {/*options*/}
+      <CheckBoxFilterAttributeOptions
+        basePath={basePath}
+        attribute={attribute}
+        attributeIndex={attributeIndex}
+        excludedParams={excludedParams}
+        onClick={onClick}
+        urlPrefix={urlPrefix}
+      />
     </div>
   );
 };

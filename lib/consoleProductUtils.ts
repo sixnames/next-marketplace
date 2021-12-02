@@ -530,6 +530,7 @@ export const getConsoleRubricProducts = async ({
         getBrandFilterAttribute({
           locale,
           brands,
+          showBrandAsAlphabet: Boolean(rubric?.showBrandAsAlphabet),
         }),
       ];
     }
@@ -1219,6 +1220,7 @@ export const getConsoleCompanyRubricProducts = async ({
         getBrandFilterAttribute({
           locale,
           brands,
+          showBrandAsAlphabet: Boolean(rubric?.showBrandAsAlphabet),
         }),
       ];
     }
@@ -1862,6 +1864,7 @@ export const getConsoleShopProducts = async ({
         getBrandFilterAttribute({
           locale,
           brands,
+          showBrandAsAlphabet: Boolean(rubric?.showBrandAsAlphabet),
         }),
       ];
     }

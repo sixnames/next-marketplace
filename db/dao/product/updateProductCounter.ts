@@ -4,12 +4,13 @@ import { Maybe, ProductPayloadModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getRequestParams, getSessionRole } from 'lib/sessionHelpers';
+import { getSessionRole } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
 
 export interface UpdateProductCounterInputInterface {
   shopProductIds: string[];
   companySlug: Maybe<string>;
+  citySlug: string;
 }
 
 export async function updateProductCounter({
@@ -20,7 +21,6 @@ export async function updateProductCounter({
     const { db } = await getDatabase();
     const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
     const { role } = await getSessionRole(context);
-    const { city } = await getRequestParams(context);
 
     // check input
     if (!input) {
@@ -30,7 +30,7 @@ export async function updateProductCounter({
       };
     }
 
-    const { shopProductIds } = input;
+    const { shopProductIds, citySlug } = input;
     const shopProductObjectIds = shopProductIds.map((_id) => new ObjectId(_id));
 
     if (!role.isStaff && shopProductObjectIds.length > 0) {
@@ -41,7 +41,7 @@ export async function updateProductCounter({
         },
         {
           $inc: {
-            [`views.${companySlug}.${city}`]: VIEWS_COUNTER_STEP,
+            [`views.${companySlug}.${citySlug}`]: VIEWS_COUNTER_STEP,
           },
         },
       );
@@ -51,6 +51,7 @@ export async function updateProductCounter({
           message: 'update error',
         };
       }
+
       return {
         success: true,
         message: 'success',

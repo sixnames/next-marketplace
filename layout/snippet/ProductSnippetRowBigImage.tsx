@@ -4,9 +4,10 @@ import Link from 'components/Link/Link';
 import RatingStars from 'components/RatingStars';
 import WpImage from 'components/WpImage';
 import { useSiteContext } from 'context/siteContext';
-import { useSiteUserContext } from 'context/userSiteUserContext';
 import { ProductSnippetInterface } from 'db/uiInterfaces';
 import ProductSnippetAvailability from 'layout/snippet/ProductSnippetAvailability';
+import ProductSnippetEditButton from 'layout/snippet/ProductSnippetEditButton';
+import ProductSnippetInCartIcon from 'layout/snippet/ProductSnippetInCartIcon';
 import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
 import { noNaN } from 'lib/numbers';
 import * as React from 'react';
@@ -19,8 +20,8 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
   showSnippetConnections = false,
   showSnippetArticle,
   showSnippetRating,
+  imageLoading,
 }) => {
-  const sessionUser = useSiteUserContext();
   const { addShoplessProductToCart, addProductToCart, urlPrefix } = useSiteContext();
   const { product } = shopProduct;
   if (!product) {
@@ -53,24 +54,10 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
       }`}
     >
       {/*edit button for admin*/}
-      {sessionUser?.showAdminUiInCatalogue ? (
-        <div className='absolute top-0 left-0 z-50'>
-          <ControlButton
-            size={'small'}
-            iconSize={'small'}
-            icon={'pencil'}
-            theme={'accent'}
-            ariaLabel={'edit'}
-            roundedTopLeft
-            onClick={() => {
-              window.open(
-                `${sessionUser.editLinkBasePath}/rubrics/${product.rubricId}/products/product/${product._id}`,
-                '_blank',
-              );
-            }}
-          />
-        </div>
-      ) : null}
+      <ProductSnippetEditButton product={product} />
+
+      {/*in cart indicator*/}
+      <ProductSnippetInCartIcon productId={product._id} shopProductId={shopProduct._id} />
 
       <div className='md:col-span-4'>
         {/*image*/}
@@ -78,6 +65,7 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
           <div className='flex p-3 justify-center'>
             <div className='relative pb-[100%] w-full'>
               <WpImage
+                loading={imageLoading}
                 url={mainImage}
                 alt={`${snippetTitle}`}
                 title={`${snippetTitle}`}

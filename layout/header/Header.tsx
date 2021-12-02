@@ -15,7 +15,7 @@ import { useShopMarker } from 'hooks/useShopMarker';
 import useSignOut from 'hooks/useSignOut';
 import LayoutCard from 'layout/LayoutCard';
 import { noNaN } from 'lib/numbers';
-import { phoneToReadable } from 'lib/phoneUtils';
+import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import StickyNav, { StickNavInterface } from 'layout/header/StickyNav';
@@ -535,7 +535,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
                   style={topTextColorStyle}
                   className='text-secondary-text'
                   value={{
-                    raw: callbackPhone,
+                    raw: phoneToRaw(callbackPhone),
                     readable: phoneToReadable(callbackPhone),
                   }}
                 />
@@ -588,7 +588,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
                         <LinkPhone
                           className='text-primary-text'
                           value={{
-                            raw: callbackPhone,
+                            raw: phoneToRaw(callbackPhone),
                             readable: phoneToReadable(callbackPhone),
                           }}
                         />

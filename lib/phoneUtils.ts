@@ -8,8 +8,8 @@ export const phoneToRaw = (phone?: string | null) => {
   if (!phone) {
     return '';
   }
-  const countryCode = phone.charAt(0);
   const cleanPhone = getCleanPhone(phone);
+  const countryCode = cleanPhone.charAt(0);
 
   return `${countryCode === worldWideCountryConde ? '' : '+'}${cleanPhone}`;
 };

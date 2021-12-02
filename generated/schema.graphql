@@ -589,6 +589,7 @@ input CreateRubricInput {
   nameI18n: JSONObject!
   prefixI18n: JSONObject
   shortDescriptionI18n: JSONObject!
+  showBrandAsAlphabet: Boolean
   showBrandInFilter: Boolean
   showBrandInNav: Boolean
   showCategoryInProductTitle: Boolean
@@ -2482,6 +2483,7 @@ input UpdateRubricInput {
   prefixI18n: JSONObject
   rubricId: ObjectId!
   shortDescriptionI18n: JSONObject!
+  showBrandAsAlphabet: Boolean
   showBrandInFilter: Boolean
   showBrandInNav: Boolean
   showCategoryInProductTitle: Boolean

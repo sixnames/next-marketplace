@@ -53,6 +53,7 @@ const CreateRubricModal: React.FC<CreateRubricModalInterface> = ({ confirm }) =>
           showCategoryInProductTitle: false,
           showBrandInNav: false,
           showBrandInFilter: false,
+          showBrandAsAlphabet: false,
           defaultTitleI18n: {},
           prefixI18n: {},
           keywordI18n: {},

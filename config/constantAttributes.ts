@@ -112,11 +112,13 @@ export function getCategoryFilterAttribute({
 interface GetBrandFilterAttributeInterface {
   brands?: BrandInterface[] | null;
   locale: string;
+  showBrandAsAlphabet: boolean;
 }
 
 export function getBrandFilterAttribute({
   brands,
   locale,
+  showBrandAsAlphabet,
 }: GetBrandFilterAttributeInterface): AttributeInterface {
   const optionsGroupId = new ObjectId();
   const commonOptionFields = getCommonOptionFields(optionsGroupId);
@@ -169,7 +171,7 @@ export function getBrandFilterAttribute({
     showInCard: true,
     showAsCatalogueBreadcrumb: true,
     capitalise: true,
-    notShowAsAlphabet: true,
+    notShowAsAlphabet: !showBrandAsAlphabet,
     showInSnippet: false,
     showInCardTitle: true,
     showInCatalogueTitle: true,

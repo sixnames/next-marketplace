@@ -756,6 +756,7 @@ export interface RubricModel extends CountersModel {
   showCategoryInProductTitle?: boolean | null;
   showBrandInNav?: boolean | null;
   showBrandInFilter?: boolean | null;
+  showBrandAsAlphabet?: boolean | null;
   icon?: string;
   image?: string;
 }

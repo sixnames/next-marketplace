@@ -1505,6 +1505,7 @@ export const getCatalogueData = async ({
         getBrandFilterAttribute({
           locale,
           brands: brands,
+          showBrandAsAlphabet: Boolean(rubric?.showBrandAsAlphabet),
         }),
       ];
     }

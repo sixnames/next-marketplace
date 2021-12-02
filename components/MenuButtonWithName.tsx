@@ -50,7 +50,7 @@ const MenuButtonWithName: React.FC<MenuButtonWithNameInterface> = ({
           }
 
           return (
-            <span
+            <div
               className={`flex items-center ${buttonClassName ? buttonClassName : ''}`}
               style={style}
             >
@@ -69,7 +69,7 @@ const MenuButtonWithName: React.FC<MenuButtonWithNameInterface> = ({
                   name={isOpen ? isOpenIcon : isClosedIcon}
                 />
               ) : null}
-            </span>
+            </div>
           );
         }}
         {...props}

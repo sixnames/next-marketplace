@@ -27,8 +27,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
-  const { apiVersion, systemVersion, token } = query;
-  if (!apiVersion || !systemVersion || !token) {
+  const { token } = query;
+  if (!token) {
     res.status(400).send({
       success: false,
       message: 'no query params provided',

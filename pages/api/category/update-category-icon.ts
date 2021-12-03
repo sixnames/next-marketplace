@@ -108,7 +108,20 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   const icon = buffer.toString();
   const optimizedIcon = await optimize(icon, {
-    plugins: ['removeDimensions', 'cleanupIDs', 'prefixIds'],
+    plugins: [
+      'removeDimensions',
+      'cleanupIDs',
+      {
+        name: 'prefixIds',
+        // @ts-ignore
+        params: {
+          prefix: () => {
+            const date = new Date().getTime();
+            return `ico-${date}`;
+          },
+        },
+      },
+    ],
   });
   const categoryId = new ObjectId(`${formData.fields.categoryId}`);
 

@@ -401,6 +401,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
                   Фильтр
                 </Button>
                 <HeadlessMenuButton
+                  buttonAs={'div'}
                   config={sortConfig}
                   menuPosition={'left'}
                   buttonClassName='w-full'

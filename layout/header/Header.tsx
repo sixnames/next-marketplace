@@ -582,7 +582,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
                       <div>{domainCompany.mainShop.address.formattedAddress}</div>
                     </div>
 
-                    <div className='flex items-center gap-3 mt-4'>
+                    <div className='flex items-center gap-3 mt-2'>
                       <div className='text-theme'>
                         <Icon name={'phone'} className='w-5 h-5' />
                       </div>

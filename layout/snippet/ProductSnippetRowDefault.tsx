@@ -1,13 +1,12 @@
-import Button from 'components/button/Button';
 import ControlButton from 'components/button/ControlButton';
 import Link from 'components/Link/Link';
 import RatingStars from 'components/RatingStars';
 import WpImage from 'components/WpImage';
 import { useSiteContext } from 'context/siteContext';
 import { ProductSnippetInterface } from 'db/uiInterfaces';
+import ProductAddToCartButton from 'layout/snippet/ProductAddToCartButton';
 import ProductSnippetAvailability from 'layout/snippet/ProductSnippetAvailability';
 import ProductSnippetEditButton from 'layout/snippet/ProductSnippetEditButton';
-import ProductSnippetInCartIcon from 'layout/snippet/ProductSnippetInCartIcon';
 import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
 import { noNaN } from 'lib/numbers';
 import * as React from 'react';
@@ -23,7 +22,7 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
   showSnippetRating,
   imageLoading,
 }) => {
-  const { addShoplessProductToCart, addProductToCart, urlPrefix } = useSiteContext();
+  const { urlPrefix } = useSiteContext();
   const { product } = shopProduct;
   if (!product) {
     return null;
@@ -56,9 +55,6 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
     >
       {/*edit button for admin*/}
       <ProductSnippetEditButton product={product} />
-
-      {/*in cart indicator*/}
-      <ProductSnippetInCartIcon productId={product._id} shopProductId={shopProduct._id} />
 
       <div className='relative flex flex-col col-span-3 md:col-span-2 items-center justify-center flex-grow pt-4 pl-5 pr-5 dark:snippet-image'>
         {/*image*/}
@@ -212,30 +208,12 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
                     : ''
                 }`}
               >
-                <Button
-                  className='w-full'
+                <ProductAddToCartButton
                   disabled={isShopless}
-                  theme={'gray'}
-                  short
+                  productId={product._id}
+                  shopProductsIds={shopProductsIds}
                   testId={`${testId}-add-to-cart-row`}
-                  ariaLabel={'Добавить в корзину'}
-                  onClick={() => {
-                    if (shopProductsIds && shopProductsIds.length < 2) {
-                      addProductToCart({
-                        amount: 1,
-                        productId: product._id,
-                        shopProductId: `${shopProductsIds[0]}`,
-                      });
-                    } else {
-                      addShoplessProductToCart({
-                        amount: 1,
-                        productId: product._id,
-                      });
-                    }
-                  }}
-                >
-                  В корзину
-                </Button>
+                />
 
                 <div className='flex md:hidden items-center justify-end'>
                   <ControlButton icon={'compare'} ariaLabel={'Добавить в сравнение'} />

@@ -3,8 +3,8 @@ import Link from 'components/Link/Link';
 import WpImage from 'components/WpImage';
 import { useSiteContext } from 'context/siteContext';
 import { ProductSnippetInterface } from 'db/uiInterfaces';
+import ProductAddToCartButton from 'layout/snippet/ProductAddToCartButton';
 import ProductSnippetEditButton from 'layout/snippet/ProductSnippetEditButton';
-import ProductSnippetInCartIcon from 'layout/snippet/ProductSnippetInCartIcon';
 import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
 import * as React from 'react';
 
@@ -18,7 +18,7 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
   gridCatalogueColumns = 3,
   imageLoading,
 }) => {
-  const { addShoplessProductToCart, addProductToCart, urlPrefix } = useSiteContext();
+  const { urlPrefix } = useSiteContext();
   const { product } = shopProduct;
 
   if (!product) {
@@ -84,9 +84,6 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
       {/*edit button for admin*/}
       <ProductSnippetEditButton product={product} />
 
-      {/*in cart indicator*/}
-      <ProductSnippetInCartIcon productId={product._id} shopProductId={shopProduct._id} />
-
       <div className={`rounded-md h-full flex flex-col ${secondaryFrameClassName}`}>
         <div className='px-4 pt-6'>
           <div className='relative flex justify-center dark:snippet-image mb-4'>
@@ -147,30 +144,20 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
           <div className='text-secondary-text mb-2 text-center text-sm'>Артикул: {itemId}</div>
         ) : null}
 
-        <div className='flex items-center justify-between'>
-          <ControlButton
-            icon={'cart'}
-            theme={showSnippetBackground ? 'accent' : undefined}
-            roundedTopRight
-            ariaLabel={'Добавить в корзину'}
+        <div className='flex items-center justify-between pl-4 py-2'>
+          <ProductAddToCartButton
+            className='w-full'
+            frameClassName={'w-[50%]'}
+            productId={product._id}
+            shopProductsIds={shopProductsIds}
             testId={`${testId}-add-to-cart-grid`}
-            onClick={() => {
-              if (shopProductsIds && shopProductsIds.length < 2) {
-                addProductToCart({
-                  amount: 1,
-                  productId: product._id,
-                  shopProductId: `${shopProductsIds[0]}`,
-                });
-              } else {
-                addShoplessProductToCart({
-                  amount: 1,
-                  productId: product._id,
-                });
-              }
-            }}
+            size={'small'}
+            short
           />
-          <ControlButton icon={'compare'} ariaLabel={'Добавить в сравнение'} />
-          <ControlButton icon={'heart'} ariaLabel={'Добавить в избранное'} />
+          <div className='flex items-center'>
+            <ControlButton icon={'compare'} ariaLabel={'Добавить в сравнение'} />
+            <ControlButton icon={'heart'} ariaLabel={'Добавить в избранное'} />
+          </div>
         </div>
       </div>
     </div>

@@ -1,8 +1,9 @@
 import { Db } from 'mongodb';
 import { ID_COUNTER_STEP } from '../../../config/common';
 import { dbsConfig, getProdDb } from './getProdDb';
-import { COL_ID_COUNTERS, COL_PRODUCTS } from '../../../db/collectionNames';
-import { IdCounterModel, ProductModel } from '../../../db/dbModels';
+import { COL_ICONS, COL_ID_COUNTERS } from '../../../db/collectionNames';
+import { IconModel, IdCounterModel } from '../../../db/dbModels';
+import { optimize } from 'svgo';
 require('dotenv').config();
 
 export async function getFastNextNumberItemId(collectionName: string, db: Db): Promise<string> {
@@ -35,10 +36,26 @@ async function updateProds() {
     console.log(' ');
     console.log(`Updating ${dbConfig.dbName} db`);
     const { db, client } = await getProdDb(dbConfig);
-    const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+    const iconsCollection = db.collection<IconModel>(COL_ICONS);
 
-    const products = await productsCollection.aggregate<ProductModel>([]).toArray();
-    console.log('products', products.length);
+    const icons = await iconsCollection.find({}).toArray();
+    for await (const icon of icons) {
+      const optimizedIcon = await optimize(icon.icon, {
+        plugins: ['removeDimensions', 'cleanupIDs', 'prefixIds'],
+      });
+      if (optimizedIcon) {
+        await iconsCollection.findOneAndUpdate(
+          {
+            _id: icon._id,
+          },
+          {
+            $set: {
+              icon: optimizedIcon.data,
+            },
+          },
+        );
+      }
+    }
 
     // disconnect form db
     await client.close();

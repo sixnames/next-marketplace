@@ -358,14 +358,15 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
 
           {showBlog ? (
             <div className='relative mb-8'>
-              <Link
-                target={'_blank'}
-                href={`${urlPrefix}${ROUTE_BLOG_WITH_PAGE}`}
-                onClick={hideBurgerDropdown}
+              <div
                 className={`flex items-center justify-between text-lg mb-3 font-medium flex-grow text-primary-text`}
+                onClick={() => {
+                  hideBurgerDropdown();
+                  window.open(`${urlPrefix}${ROUTE_BLOG_WITH_PAGE}`, '_blank');
+                }}
               >
                 {blogLinkName}
-              </Link>
+              </div>
             </div>
           ) : null}
         </div>
@@ -518,14 +519,15 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
                 );
               })}
               {showBlog ? (
-                <Link
-                  target={'_blank'}
+                <div
                   className='flex items-center h-[30px] text-secondary-text hover:no-underline hover:text-theme'
                   style={topTextColorStyle}
-                  href={`${urlPrefix}${ROUTE_BLOG_WITH_PAGE}`}
+                  onClick={() => {
+                    window.open(`${urlPrefix}${ROUTE_BLOG_WITH_PAGE}`, '_blank');
+                  }}
                 >
                   {blogLinkName}
-                </Link>
+                </div>
               ) : null}
             </div>
 

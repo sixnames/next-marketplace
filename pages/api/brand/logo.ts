@@ -1,4 +1,4 @@
-import { ASSETS_DIST_BRANDS } from 'config/common';
+import { ASSETS_DIST_BRANDS, REQUEST_METHOD_DELETE } from 'config/common';
 import { COL_BRANDS } from 'db/collectionNames';
 import { BrandModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -21,17 +21,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const formData = await parseRestApiFormData(req);
   const { locale } = req.cookies;
 
-  if (!formData || !formData.files || !formData.fields || !formData.fields.brandId) {
-    res.status(500).send({
-      success: false,
-      message: await getApiMessageValue({
-        slug: 'optionsGroups.updateOption.error',
-        locale,
-      }),
-    });
-    return;
-  }
-
   // Permission
   const { allow, message } = await getOperationPermission({
     context: {
@@ -48,10 +37,74 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
+  // get brand
+  if (!formData || !formData.fields.brandId) {
+    res.status(500).send({
+      success: false,
+      message: await getApiMessageValue({
+        slug: 'brands.update.error',
+        locale,
+      }),
+    });
+    return;
+  }
+
   const brand = await brandsCollection.findOne({
     _id: new ObjectId(`${formData.fields.brandId}`),
   });
   if (!brand) {
+    res.status(500).send({
+      success: false,
+      message: await getApiMessageValue({
+        slug: 'brands.update.error',
+        locale,
+      }),
+    });
+    return;
+  }
+
+  // delete
+  if (req.method === REQUEST_METHOD_DELETE) {
+    // remove old image
+    if (brand.logo) {
+      await deleteUpload(brand.logo);
+    }
+
+    const updatedBrandResult = await brandsCollection.findOneAndUpdate(
+      { _id: brand._id },
+      {
+        $unset: {
+          logo: '',
+        },
+      },
+      {
+        returnDocument: 'after',
+      },
+    );
+    const updatedBrand = updatedBrandResult.value;
+    if (!updatedBrandResult.ok || !updatedBrand) {
+      res.status(500).send({
+        success: false,
+        message: await getApiMessageValue({
+          slug: 'brands.update.error',
+          locale,
+        }),
+      });
+      return;
+    }
+
+    res.status(200).send({
+      success: true,
+      message: await getApiMessageValue({
+        slug: 'brands.update.success',
+        locale,
+      }),
+    });
+    return;
+  }
+
+  // update
+  if (!formData.files || !formData.fields) {
     res.status(500).send({
       success: false,
       message: await getApiMessageValue({

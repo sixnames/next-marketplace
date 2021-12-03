@@ -25,12 +25,7 @@ import {
   ignoreNoImageStage,
   noImageStage,
 } from 'db/dao/constantPipelines';
-import {
-  CatalogueBreadcrumbModel,
-  ObjectIdModel,
-  SeoContentModel,
-  ShopProductModel,
-} from 'db/dbModels';
+import { CatalogueBreadcrumbModel, ObjectIdModel, ShopProductModel } from 'db/dbModels';
 import {
   ATTRIBUTE_VIEW_VARIANT_LIST,
   CATALOGUE_FILTER_LIMIT,
@@ -73,6 +68,7 @@ import {
   ProductAttributeInterface,
   ProductConnectionInterface,
   RubricInterface,
+  SeoContentInterface,
   ShopProductInterface,
 } from 'db/uiInterfaces';
 import { getAlgoliaProductsSearch } from 'lib/algoliaUtils';
@@ -1802,8 +1798,8 @@ export const getCatalogueData = async ({
     let editUrl = '';
     let textTopEditUrl = '';
     let textBottomEditUrl = '';
-    let textTop: SeoContentModel | null | undefined;
-    let textBottom: SeoContentModel | null | undefined;
+    let textTop: SeoContentInterface | null | undefined;
+    let textBottom: SeoContentInterface | null | undefined;
 
     if (!search) {
       const seoContentParams = await getCatalogueAllSeoContents({
@@ -1811,6 +1807,7 @@ export const getCatalogueData = async ({
         citySlug: city,
         companySlug: companySlug,
         filters: input.filters,
+        locale,
       });
 
       if (seoContentParams) {
@@ -1987,7 +1984,7 @@ export const getCatalogueData = async ({
       textTopEditUrl,
       textBottom,
       textBottomEditUrl,
-      catalogueTitle,
+      catalogueTitle: textTop && textTop.title ? textTop.title : catalogueTitle,
       breadcrumbs,
     };
   } catch (e) {

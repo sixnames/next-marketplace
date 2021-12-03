@@ -66,6 +66,9 @@ export async function createBlogPost(req: NextApiRequest, res: NextApiResponse) 
       collectionName: COL_BLOG_POSTS,
       fieldName: 'titleI18n',
       fieldArg: args.titleI18n,
+      additionalQuery: {
+        companySlug: args.companySlug,
+      },
     });
     if (exist) {
       payload = {

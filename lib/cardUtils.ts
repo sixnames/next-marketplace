@@ -801,6 +801,7 @@ export async function getCardData({
       productId: product._id,
       productSlug: product.slug,
       rubricSlug: product.rubricSlug,
+      locale,
     });
 
     const cardCategories = getTreeFromList({

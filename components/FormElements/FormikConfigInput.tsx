@@ -84,7 +84,7 @@ const ConfigInput: React.FC<ConfigInputInterface> = ({ name, multi, variant, tes
   } as React.CSSProperties;
 
   const inputWithStyles = {
-    width: 'calc(100% - 40px)',
+    width: 'calc(100% - 50px)',
   } as React.CSSProperties;
 
   return (
@@ -95,21 +95,22 @@ const ConfigInput: React.FC<ConfigInputInterface> = ({ name, multi, variant, tes
         const fieldTestId = `${testId}-${index}`;
 
         return (
-          <div className='flex items-center justify-center' key={index}>
+          <div key={index}>
             {variant === 'boolean' ? (
               <React.Fragment>
                 <FormikCheckboxLine label={'Показывать'} name={fieldName} testId={fieldTestId} />
               </React.Fragment>
             ) : (
-              <React.Fragment>
+              <div className={`flex items-center justify-center ${multi ? 'mb-8' : ''}`}>
                 <div style={multi ? inputWithStyles : inputFullWithStyles}>
                   <FormikInput name={fieldName} testId={fieldTestId} type={type} low />
                 </div>
 
                 {multi ? (
-                  <div className='flex items-center justify-end flex-shrink-0 w-[40px]'>
+                  <div className='flex items-center justify-center flex-shrink-0 w-[50px]'>
                     {isFirst ? (
                       <Button
+                        frameClassName={'w-auto'}
                         onClick={addFieldHandler}
                         size={'small'}
                         theme={'secondary'}
@@ -125,7 +126,7 @@ const ConfigInput: React.FC<ConfigInputInterface> = ({ name, multi, variant, tes
                     )}
                   </div>
                 ) : null}
-              </React.Fragment>
+              </div>
             )}
           </div>
         );

@@ -211,6 +211,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
   const showBlog = configs.showBlog;
   const blogLinkName = getConstantTranslation(`nav.blog.${locale}`);
   const contactsLinkName = getConstantTranslation(`nav.contacts.${locale}`);
+  const callbackPhone = configs.phone[0];
 
   return (
     <div className='fixed inset-0 bg-primary z-[140] w-full pt-4 pb-8 overflow-y-auto min-w-[320px]'>
@@ -358,43 +359,63 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
 
           {showBlog ? (
             <div className='relative mb-8'>
-              <Link
-                target={'_blank'}
-                href={`${urlPrefix}${ROUTE_BLOG_WITH_PAGE}`}
-                onClick={hideBurgerDropdown}
+              <div
                 className={`flex items-center justify-between text-lg mb-3 font-medium flex-grow text-primary-text`}
+                onClick={() => {
+                  hideBurgerDropdown();
+                  window.open(`${urlPrefix}${ROUTE_BLOG_WITH_PAGE}`, '_blank');
+                }}
               >
                 {blogLinkName}
-              </Link>
+              </div>
             </div>
           ) : null}
         </div>
 
         {configs.isOneShopCompany && domainCompany && domainCompany.mainShop ? (
-          <div
-            className='text-theme cursor-pointer flex items-center border-t border-border-100 pt-6'
-            onClick={() => {
-              hideBurgerDropdown();
-              showModal<MapModalInterface>({
-                variant: MAP_MODAL,
-                props: {
-                  title: `${domainCompany.mainShop?.name}`,
-                  testId: `shop-map-modal`,
-                  markers: [
-                    {
-                      _id: domainCompany.mainShop?._id,
-                      icon: marker,
-                      name: `${domainCompany.mainShop?.name}`,
-                      address: domainCompany.mainShop?.address,
-                    },
-                  ],
-                },
-              });
-            }}
-          >
+          <div className='flex items-center'>
             <div>
-              <div className='text-secondary-text'>Наш адрес</div>
-              <div>{domainCompany.mainShop.address.formattedAddress}</div>
+              <div
+                className='flex items-center gap-3 cursor-pointer hover:text-theme transition-all'
+                onClick={() => {
+                  hideBurgerDropdown();
+                  showModal<MapModalInterface>({
+                    variant: MAP_MODAL,
+                    props: {
+                      title: `${domainCompany.mainShop?.name}`,
+                      testId: `shop-map-modal`,
+                      markers: [
+                        {
+                          _id: domainCompany.mainShop?._id,
+                          icon: marker,
+                          name: `${domainCompany.mainShop?.name}`,
+                          address: domainCompany.mainShop?.address,
+                        },
+                      ],
+                    },
+                  });
+                }}
+              >
+                <div className='text-theme'>
+                  <Icon name={'marker'} className='w-5 h-5' />
+                </div>
+                <div>{domainCompany.mainShop.address.formattedAddress}</div>
+              </div>
+
+              <div className='flex items-center gap-3 mt-4'>
+                <div className='text-theme'>
+                  <Icon name={'phone'} className='w-5 h-5' />
+                </div>
+                <div>
+                  <LinkPhone
+                    className='text-primary-text hover:text-theme transition-all'
+                    value={{
+                      raw: phoneToRaw(callbackPhone),
+                      readable: phoneToReadable(callbackPhone),
+                    }}
+                  />
+                </div>
+              </div>
             </div>
           </div>
         ) : null}
@@ -518,14 +539,15 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
                 );
               })}
               {showBlog ? (
-                <Link
-                  target={'_blank'}
-                  className='flex items-center h-[30px] text-secondary-text hover:no-underline hover:text-theme'
+                <div
+                  className='flex items-center h-[30px] text-secondary-text hover:no-underline hover:text-theme cursor-pointer'
                   style={topTextColorStyle}
-                  href={`${urlPrefix}${ROUTE_BLOG_WITH_PAGE}`}
+                  onClick={() => {
+                    window.open(`${urlPrefix}${ROUTE_BLOG_WITH_PAGE}`, '_blank');
+                  }}
                 >
                   {blogLinkName}
-                </Link>
+                </div>
               ) : null}
             </div>
 
@@ -552,35 +574,35 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
           <div className='flex justify-between py-3 lg:py-6 lg:justify-between lg:py-4'>
             <div className={`${middleSideClassName} justify-start hidden lg:inline-flex`}>
               {isOneShopCompany && domainCompany && domainCompany.mainShop ? (
-                <div
-                  className='flex items-center'
-                  onClick={() => {
-                    showModal<MapModalInterface>({
-                      variant: MAP_MODAL,
-                      props: {
-                        title: `${domainCompany.mainShop?.name}`,
-                        testId: `shop-map-modal`,
-                        markers: [
-                          {
-                            _id: domainCompany.mainShop?._id,
-                            icon: marker,
-                            name: `${domainCompany.mainShop?.name}`,
-                            address: domainCompany.mainShop?.address,
-                          },
-                        ],
-                      },
-                    });
-                  }}
-                >
+                <div className='flex items-center'>
                   <div>
-                    <div className='flex items-center gap-3 cursor-pointer hover:text-theme transition-all'>
+                    <div
+                      onClick={() => {
+                        showModal<MapModalInterface>({
+                          variant: MAP_MODAL,
+                          props: {
+                            title: `${domainCompany.mainShop?.name}`,
+                            testId: `shop-map-modal`,
+                            markers: [
+                              {
+                                _id: domainCompany.mainShop?._id,
+                                icon: marker,
+                                name: `${domainCompany.mainShop?.name}`,
+                                address: domainCompany.mainShop?.address,
+                              },
+                            ],
+                          },
+                        });
+                      }}
+                      className='flex items-center gap-3 cursor-pointer hover:text-theme transition-all'
+                    >
                       <div className='text-theme'>
                         <Icon name={'marker'} className='w-5 h-5' />
                       </div>
                       <div>{domainCompany.mainShop.address.formattedAddress}</div>
                     </div>
 
-                    <div className='flex items-center gap-3 mt-4'>
+                    <div className='flex items-center gap-3 mt-2'>
                       <div className='text-theme'>
                         <Icon name={'phone'} className='w-5 h-5' />
                       </div>

@@ -482,9 +482,9 @@ export interface CatalogueDataInterface {
   attributes: CatalogueFilterAttributeInterface[];
   selectedAttributes: CatalogueFilterAttributeInterface[];
   page: number;
-  textTop?: SeoContentModel | null;
+  textTop?: SeoContentInterface | null;
   textTopEditUrl: string;
-  textBottom?: SeoContentModel | null;
+  textBottom?: SeoContentInterface | null;
   textBottomEditUrl: string;
 }
 
@@ -742,6 +742,7 @@ export interface SsrConfigsInterface {
   catalogueMetaPrefix: string;
   cartBookingButtonDescription: string;
   cardMetaPrefix: string;
+  robotsTxt: string[];
 
   // Project
   showReservationDate: boolean;
@@ -818,6 +819,12 @@ export interface CardLayoutInterface {
   companyId?: string | null;
 }
 
+export interface SeoContentInterface extends SeoContentModel {
+  title?: string | null;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+}
+
 export interface SeoContentCitiesInterface {
-  [key: string]: SeoContentModel;
+  [key: string]: SeoContentInterface;
 }

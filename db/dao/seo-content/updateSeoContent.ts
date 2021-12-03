@@ -1,5 +1,5 @@
 import { COL_SEO_CONTENTS } from 'db/collectionNames';
-import { SeoContentModel, SeoContentPayloadModel } from 'db/dbModels';
+import { SeoContentModel, SeoContentPayloadModel, TranslationModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
@@ -11,6 +11,9 @@ export interface UpdateSeoContentInputInterface {
   seoContentId: string;
   content: string;
   companySlug: string;
+  titleI18n?: TranslationModel | null;
+  metaTitleI18n?: TranslationModel | null;
+  metaDescriptionI18n?: TranslationModel | null;
 }
 
 export async function updateSeoContent({
@@ -29,7 +32,7 @@ export async function updateSeoContent({
       };
     }
 
-    const { content, companySlug } = input;
+    const { content, titleI18n, metaDescriptionI18n, metaTitleI18n, companySlug } = input;
     const seoContentId = new ObjectId(input.seoContentId);
     const oldSeoContent = await seoContentsCollection.findOne({
       _id: seoContentId,
@@ -51,6 +54,9 @@ export async function updateSeoContent({
       {
         $set: {
           content,
+          titleI18n,
+          metaDescriptionI18n,
+          metaTitleI18n,
         },
       },
     );

@@ -395,27 +395,29 @@ const BlogListPageConsumer: React.FC<BlogListPageConsumerInterface> = ({
                 })}
               </div>
 
-              <div className='relative col-span-3 lg:col-span-1 flex items-end'>
-                <div className='sticky bottom-12'>
-                  <BlogFilter blogFilter={blogFilter} />
+              <div className='relative col-span-3 lg:col-span-1'>
+                <div className='absolute inset-0 h-full w-full relative lg:sticky lg:top-20 overflow-x-hidden overflow-y-auto lg:h-[calc(100vh-80px)]'>
+                  <div className='pb-8'>
+                    <BlogFilter blogFilter={blogFilter} />
 
-                  {/*top posts*/}
-                  <div className='border border-border-100 rounded-md py-6 px-4'>
-                    <div className='text-lg font-bold mb-4'>Самые читаемые</div>
+                    {/*top posts*/}
+                    <div className='border border-border-100 rounded-md py-6 px-4'>
+                      <div className='text-lg font-bold mb-4'>Самые читаемые</div>
 
-                    {topPosts.length > 0 ? (
-                      <div className='divide-y-2 divide-border-100'>
-                        {topPosts.map((post) => {
-                          return (
-                            <BlogListTopSnippet
-                              showViews={configs.showBlogPostViews}
-                              post={post}
-                              key={`${post._id}`}
-                            />
-                          );
-                        })}
-                      </div>
-                    ) : null}
+                      {topPosts.length > 0 ? (
+                        <div className='divide-y-2 divide-border-100'>
+                          {topPosts.map((post) => {
+                            return (
+                              <BlogListTopSnippet
+                                showViews={configs.showBlogPostViews}
+                                post={post}
+                                key={`${post._id}`}
+                              />
+                            );
+                          })}
+                        </div>
+                      ) : null}
+                    </div>
                   </div>
                 </div>
               </div>

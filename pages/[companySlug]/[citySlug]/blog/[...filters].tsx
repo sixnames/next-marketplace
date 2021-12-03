@@ -23,7 +23,6 @@ import {
 import { getConstantTranslation } from 'config/constantTranslations';
 import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
-import { useLocaleContext } from 'context/localeContext';
 import { useSiteContext } from 'context/siteContext';
 import {
   COL_BLOG_ATTRIBUTES,
@@ -337,22 +336,18 @@ const BlogFilter: React.FC<BlogFilterInterface> = ({ blogFilter }) => {
 interface BlogListPageConsumerInterface extends BlogFilterInterface {
   posts: BlogPostInterface[];
   topPosts: BlogPostInterface[];
-  meta: string;
+  blogTitle: string;
 }
 
 const BlogListPageConsumer: React.FC<BlogListPageConsumerInterface> = ({
   posts,
   topPosts,
   blogFilter,
-  meta,
-  // isFilterVisible,
+  blogTitle,
 }) => {
   const { query } = useRouter();
   const { sessionCity, companySlug } = useAppContext();
-  const { locale } = useLocaleContext();
   const { configs } = useConfigContext();
-  const blogLinkName = getConstantTranslation(`nav.blog.${locale}`);
-  const metaTitle = `${blogLinkName} ${configs.siteName} на темы ${meta}`;
 
   React.useEffect(() => {
     const input: UpdateBlogAttributeCountersInputInterface = {
@@ -369,13 +364,13 @@ const BlogListPageConsumer: React.FC<BlogListPageConsumerInterface> = ({
   return (
     <React.Fragment>
       <Head>
-        <title>{metaTitle}</title>
-        <meta name={'description'} content={metaTitle} />
+        <title>{blogTitle}</title>
+        <meta name={'description'} content={blogTitle} />
       </Head>
       <div className='mb-12'>
-        <Breadcrumbs currentPageName={blogLinkName} />
+        <Breadcrumbs currentPageName={blogTitle} />
         <Inner lowTop>
-          <Title>{`${blogLinkName}${configs.siteName ? ` ${configs.siteName}` : ''}`}</Title>
+          <Title>{blogTitle}</Title>
 
           {posts.length > 0 ? (
             <div className={`grid lg:grid-cols-4 gap-6`}>
@@ -440,14 +435,19 @@ interface BlogListPageInterface
 
 const BlogListPage: React.FC<BlogListPageInterface> = ({
   posts,
-  meta,
   blogFilter,
   topPosts,
+  blogTitle,
   ...props
 }) => {
   return (
     <SiteLayout {...props}>
-      <BlogListPageConsumer topPosts={topPosts} blogFilter={blogFilter} posts={posts} meta={meta} />
+      <BlogListPageConsumer
+        topPosts={topPosts}
+        blogFilter={blogFilter}
+        posts={posts}
+        blogTitle={blogTitle}
+      />
     </SiteLayout>
   );
 };
@@ -473,6 +473,7 @@ export const getStaticProps = async (
     };
   }
 
+  const locale = props.sessionLocale;
   const filters = alwaysArray(context.params?.filters);
 
   // Cast selected filters
@@ -683,7 +684,7 @@ export const getStaticProps = async (
     // cast attributes
     const attributes = (post.attributes || []).reduce(
       (acc: BlogAttributeInterface[], attribute) => {
-        const attributeName = getFieldStringLocale(attribute.nameI18n, props.sessionLocale);
+        const attributeName = getFieldStringLocale(attribute.nameI18n, locale);
         if (!attributeName) {
           return acc;
         }
@@ -691,7 +692,7 @@ export const getStaticProps = async (
         // cast options
         const options = (attribute.options || []).reduce(
           (optionsAcc: OptionInterface[], option) => {
-            const name = getFieldStringLocale(option.nameI18n, props.sessionLocale);
+            const name = getFieldStringLocale(option.nameI18n, locale);
             if (!name) {
               return optionsAcc;
             }
@@ -742,17 +743,12 @@ export const getStaticProps = async (
 
     return {
       ...post,
-      title: getFieldStringLocale(post.titleI18n, props.sessionLocale),
-      description: getFieldStringLocale(post.descriptionI18n, props.sessionLocale),
+      title: getFieldStringLocale(post.titleI18n, locale),
+      description: getFieldStringLocale(post.descriptionI18n, locale),
       attributes,
       options: postOptions,
     };
   });
-
-  // meta
-  const metaList = blogOptions.reduce((acc: string[], { name }) => {
-    return [...acc, `${name}`];
-  }, []);
 
   // filter
   const blogFilter: CatalogueFilterAttributeInterface[] = blogAttributes.map((attribute) => {
@@ -820,6 +816,21 @@ export const getStaticProps = async (
     })
     .slice(0, topPostsLimit);
 
+  const blogListName = getConstantTranslation(`nav.blog.${locale}`);
+  const keyword = `${blogListName} ${props.initialData.configs.siteName}`;
+  const selectedOptions = blogFilter
+    .reduce((acc: CatalogueFilterAttributeOptionInterface[], attribute) => {
+      const { isSelected, options } = attribute;
+      if (!isSelected) {
+        return acc;
+      }
+      const selectedOptions = options.filter(({ isSelected }) => isSelected);
+      return [...acc, ...selectedOptions];
+    }, [])
+    .map(({ name }) => name.toLocaleLowerCase(locale));
+  const titleFilterPrefix =
+    selectedOptions.length > 0 ? ` на тему ${selectedOptions.join(', ')}` : '';
+
   return {
     revalidate: ISR_FIVE_SECONDS,
     props: {
@@ -827,7 +838,7 @@ export const getStaticProps = async (
       posts: castDbData(posts),
       topPosts: castDbData(topPosts),
       blogFilter: castDbData(blogFilter),
-      meta: metaList.join(', '),
+      blogTitle: `${keyword}${titleFilterPrefix}`,
     },
   };
 };

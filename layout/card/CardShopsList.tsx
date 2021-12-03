@@ -114,10 +114,6 @@ const CardShop: React.FC<CardShopInterface> = ({ shop, testId }) => {
             />
             <div className=''>В наличии {` ${available} `}шт.</div>
 
-            {noNaN(inCartCount) > 0 ? (
-              <div className=''>В корзине {` ${inCartCount} `}шт.</div>
-            ) : null}
-
             <div className='mt-4'>
               <a href='#'>Узнать больше</a>
             </div>
@@ -153,7 +149,7 @@ const CardShop: React.FC<CardShopInterface> = ({ shop, testId }) => {
                   });
                 }}
               >
-                В корзину
+                {noNaN(inCartCount) > 0 ? `В корзине ${inCartCount}` : 'В корзину'}
               </Button>
             </div>
           </div>

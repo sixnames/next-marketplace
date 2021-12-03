@@ -402,10 +402,10 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
                 </Button>
                 <HeadlessMenuButton
                   config={sortConfig}
-                  buttonAs={'div'}
                   menuPosition={'left'}
+                  buttonClassName='w-full'
                   buttonText={() => (
-                    <Button className='w-full' theme={'secondary'} short>
+                    <Button frameClassName='w-auto' className='w-full' theme={'secondary'} short>
                       Сортировать
                     </Button>
                   )}

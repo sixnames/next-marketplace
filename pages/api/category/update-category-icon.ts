@@ -1,3 +1,4 @@
+import { REQUEST_METHOD_DELETE } from 'config/common';
 import { COL_CATEGORIES, COL_ICONS } from 'db/collectionNames';
 import { CategoryModel, IconModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -8,6 +9,7 @@ import { getOperationPermission } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 import fs from 'fs';
+import { optimize } from 'svgo';
 
 export const config = {
   api: {
@@ -39,7 +41,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   // delete icon
-  if (req.method === 'DELETE') {
+  if (req.method === REQUEST_METHOD_DELETE) {
     if (!formData || !formData.fields || !formData.fields.categoryId) {
       res.status(500).send({
         success: false,
@@ -105,12 +107,15 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const buffer = fs.readFileSync(path);
 
   const icon = buffer.toString();
+  const optimizedIcon = await optimize(icon, {
+    plugins: ['removeDimensions', 'cleanupIDs', 'prefixIds'],
+  });
   const categoryId = new ObjectId(`${formData.fields.categoryId}`);
 
   const category = await categoriesCollection.findOne({
     _id: categoryId,
   });
-  if (!category) {
+  if (!category || !optimizedIcon) {
     res.status(500).send({
       success: false,
       message: await getApiMessageValue({
@@ -130,7 +135,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       $set: {
         documentId: categoryId,
         collectionName: COL_CATEGORIES,
-        icon,
+        icon: optimizedIcon.data,
       },
     },
     {

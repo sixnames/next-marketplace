@@ -33,6 +33,8 @@ const MenuButtonWithName: React.FC<MenuButtonWithNameInterface> = ({
   return (
     <div className={`text-primary ${frameClassName ? frameClassName : ''}`}>
       <HeadlessMenuButton
+        buttonAs={'div'}
+        itemAs={'div'}
         config={config}
         className={className}
         initialValue={initialValue}
@@ -50,7 +52,7 @@ const MenuButtonWithName: React.FC<MenuButtonWithNameInterface> = ({
           }
 
           return (
-            <div
+            <span
               className={`flex items-center ${buttonClassName ? buttonClassName : ''}`}
               style={style}
             >
@@ -61,7 +63,7 @@ const MenuButtonWithName: React.FC<MenuButtonWithNameInterface> = ({
                 />
               ) : null}
 
-              <div>{buttonText}</div>
+              <span>{buttonText}</span>
 
               {iconPosition === 'right' ? (
                 <Icon
@@ -69,7 +71,7 @@ const MenuButtonWithName: React.FC<MenuButtonWithNameInterface> = ({
                   name={isOpen ? isOpenIcon : isClosedIcon}
                 />
               ) : null}
-            </div>
+            </span>
           );
         }}
         {...props}

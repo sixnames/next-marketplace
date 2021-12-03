@@ -35,6 +35,7 @@ export interface MenuButtonInterface {
   config: HeadlessMenuGroupInterface[];
   initialValue?: string;
   buttonAs?: any;
+  itemAs?: any;
   testId?: string;
   menuPosition?: 'right' | 'left';
 }
@@ -48,6 +49,7 @@ const HeadlessMenuButton: React.FC<MenuButtonInterface> = ({
   buttonAs,
   testId,
   menuPosition = 'right',
+  itemAs,
 }) => {
   const [internalButtonText, setInternalButtonText] = React.useState<string | null>(() => {
     return `${config[0]?.children[0]?._id}`;
@@ -85,7 +87,7 @@ const HeadlessMenuButton: React.FC<MenuButtonInterface> = ({
               <Menu.Button
                 as={buttonAs}
                 data-cy={testId}
-                className={`focus:outline-none focus-visible:ring-2 focus-visible:ring-theme rounded-lg focus-visible:ring-opacity-75 ${
+                className={`cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-theme rounded-lg focus-visible:ring-opacity-75 ${
                   buttonClassName ? buttonClassName : ''
                 }`}
               >
@@ -94,7 +96,7 @@ const HeadlessMenuButton: React.FC<MenuButtonInterface> = ({
               <Menu.Items
                 className={`absolute ${
                   menuPosition === 'right' ? 'right-0' : 'left-0'
-                } min-w-[200px] max-h-[300px] overflow-x-hidden overflow-y-auto mt-2 origin-top-right bg-secondary rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none`}
+                } cursor-pointer min-w-[200px] max-h-[300px] overflow-x-hidden overflow-y-auto mt-2 origin-top-right bg-secondary rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none`}
               >
                 {config.map((group, groupIndex) => {
                   return (
@@ -117,21 +119,25 @@ const HeadlessMenuButton: React.FC<MenuButtonInterface> = ({
 
                         return (
                           <div key={_id} className='whitespace-nowrap'>
-                            <Menu.Item>
-                              {() => (
-                                <button
-                                  onClick={() => {
-                                    onSelect(menuItem);
-                                  }}
-                                  data-cy={testId || name}
-                                  className={`${
-                                    isSelected ? 'text-theme' : 'text-primary-text hover:text-theme'
-                                  } group flex gap-4 rounded-md items-center w-full px-4 py-2`}
-                                >
-                                  {icon ? <Icon name={icon} className='w-4 h-4' /> : null}
-                                  {name}
-                                </button>
-                              )}
+                            <Menu.Item as={itemAs}>
+                              {() => {
+                                return (
+                                  <span
+                                    data-cy={testId || name}
+                                    onClick={() => {
+                                      onSelect(menuItem);
+                                    }}
+                                    className={`${
+                                      isSelected
+                                        ? 'text-theme'
+                                        : 'text-primary-text hover:text-theme'
+                                    } cursor-pointer group flex gap-4 rounded-md items-center w-full px-4 py-2`}
+                                  >
+                                    {icon ? <Icon name={icon} className='w-4 h-4' /> : null}
+                                    {name}
+                                  </span>
+                                );
+                              }}
                             </Menu.Item>
                           </div>
                         );

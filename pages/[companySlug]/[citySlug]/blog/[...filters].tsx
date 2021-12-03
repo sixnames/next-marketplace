@@ -6,6 +6,7 @@ import FilterLink from 'components/Link/FilterLink';
 import Link from 'components/Link/Link';
 import TagLink from 'components/Link/TagLink';
 import Title from 'components/Title';
+import WpImage from 'components/WpImage';
 import {
   ATTRIBUTE_VIEW_VARIANT_LIST,
   FILTER_SEPARATOR,
@@ -16,7 +17,6 @@ import {
   ROUTE_BLOG_WITH_PAGE,
   SORT_DESC,
   ROUTE_BLOG,
-  IMAGE_FALLBACK,
   REQUEST_METHOD_POST,
   ISR_FIVE_SECONDS,
 } from 'config/common';
@@ -147,11 +147,12 @@ const BlogListSnippet: React.FC<BlogListSnippetInterface> = ({ post, showViews }
     <div className={`${snippetClassName} flex flex-col`}>
       {/*image*/}
       <div className='relative flex-shrink-0 overflow-hidden h-[200px] group-hover:opacity-50 transition-opacity duration-150'>
-        <img
+        <WpImage
           className='absolute h-full w-full inset-0 object-cover'
-          src={post.previewImage || IMAGE_FALLBACK}
+          url={`${post.previewImage}`}
           alt={`${post.title}`}
           title={`${post.title}`}
+          width={295}
         />
         <Link
           testId={`${post.title}-image-link`}
@@ -198,11 +199,12 @@ const BlogListMainSnippet: React.FC<BlogListSnippetInterface> = ({ post, showVie
   const { urlPrefix } = useSiteContext();
   return (
     <div className={`${snippetClassName} min-h-[300px] sm:col-span-2`}>
-      <img
+      <WpImage
         className='absolute h-full w-full inset-0 object-cover'
-        src={post.previewImage || IMAGE_FALLBACK}
+        url={`${post.previewImage}`}
         alt={`${post.title}`}
         title={`${post.title}`}
+        width={600}
       />
 
       <div className='absolute inset-0 w-full h-full flex flex-col justify-end z-10'>

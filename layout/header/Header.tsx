@@ -520,7 +520,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
               })}
               {showBlog ? (
                 <div
-                  className='flex items-center h-[30px] text-secondary-text hover:no-underline hover:text-theme'
+                  className='flex items-center h-[30px] text-secondary-text hover:no-underline hover:text-theme cursor-pointer'
                   style={topTextColorStyle}
                   onClick={() => {
                     window.open(`${urlPrefix}${ROUTE_BLOG_WITH_PAGE}`, '_blank');

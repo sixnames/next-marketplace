@@ -131,7 +131,7 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
                       return (
                         <li className='' key={`${_id}`}>
                           <div
-                            className='block pt-1.5 pb-1.5 text-secondary-text hover:no-underline hover:text-theme'
+                            className='block pt-1.5 pb-1.5 text-secondary-text hover:no-underline hover:text-theme cursor-pointer'
                             onClick={() => {
                               window.open(`${urlPrefix}${ROUTE_DOCS_PAGES}/${slug}`, '_blank');
                             }}
@@ -145,7 +145,7 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
                     {index === 0 && showBlog ? (
                       <li className=''>
                         <div
-                          className='block pt-1.5 pb-1.5 text-secondary-text hover:no-underline hover:text-theme'
+                          className='block pt-1.5 pb-1.5 text-secondary-text hover:no-underline hover:text-theme cursor-pointer'
                           onClick={() => {
                             window.open(`${urlPrefix}${ROUTE_BLOG_WITH_PAGE}`, '_blank');
                           }}
@@ -158,7 +158,7 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
                     {index === 0 ? (
                       <li className=''>
                         <div
-                          className='block pt-1.5 pb-1.5 text-secondary-text hover:no-underline hover:text-theme'
+                          className='block pt-1.5 pb-1.5 text-secondary-text hover:no-underline hover:text-theme cursor-pointer'
                           onClick={() => {
                             window.open(`${urlPrefix}${ROUTE_CONTACTS}`, '_blank');
                           }}

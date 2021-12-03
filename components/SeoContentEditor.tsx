@@ -11,11 +11,13 @@ import { get } from 'lodash';
 interface SingleSeoContentEditorInterface {
   filedName: string;
   seoContentId: string;
+  label?: string;
 }
 
 export const SingleSeoContentEditor: React.FC<SingleSeoContentEditorInterface> = ({
   filedName,
   seoContentId,
+  label,
 }) => {
   const { setFieldValue, values } = useFormikContext();
   const contentFieldName = filedName ? `${filedName}.content` : 'content';
@@ -24,7 +26,7 @@ export const SingleSeoContentEditor: React.FC<SingleSeoContentEditorInterface> =
   const seoLocales = get(values, seoLocalesFieldName) || [];
 
   return (
-    <div>
+    <InputLine labelTag={'div'} label={label}>
       {seoLocales.length > 0 ? (
         <div className='mb-8'>
           <SeoTextLocalesInfoList seoLocales={seoLocales} listClassName='flex gap-4 flex-wrap' />
@@ -65,7 +67,7 @@ export const SingleSeoContentEditor: React.FC<SingleSeoContentEditorInterface> =
           }
         }}
       />
-    </div>
+    </InputLine>
   );
 };
 

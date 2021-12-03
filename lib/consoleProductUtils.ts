@@ -671,6 +671,7 @@ export const getConsoleRubricProducts = async ({
         productId: product._id,
         productSlug: product.slug,
         rubricSlug: product.rubricSlug,
+        locale,
       });
 
       const castedProduct: ProductInterface = {

@@ -58,6 +58,7 @@ export async function getConsoleRubricDetails({
     rubricId: rubric._id,
     position: CATALOGUE_SEO_TEXT_POSITION_TOP,
     companySlug,
+    locale,
   });
 
   const seoDescriptionBottom = await getRubricAllSeoContents({
@@ -65,6 +66,7 @@ export async function getConsoleRubricDetails({
     rubricId: rubric._id,
     position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
     companySlug,
+    locale,
   });
 
   if (!seoDescriptionBottom || !seoDescriptionTop) {

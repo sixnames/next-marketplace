@@ -985,7 +985,7 @@ export function getConfigTemplates({
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: ['test', 'test 2', 'test 3'],
+          [DEFAULT_LOCALE]: [''],
         },
       },
     },

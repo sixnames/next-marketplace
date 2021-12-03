@@ -789,6 +789,9 @@ export interface SeoContentModel {
   rubricSlug: string;
   url: string;
   content: string;
+  titleI18n?: TranslationModel | null;
+  metaTitleI18n?: TranslationModel | null;
+  metaDescriptionI18n?: TranslationModel | null;
   seoLocales?: TextUniquenessApiParsedResponseModel[] | null;
 }
 

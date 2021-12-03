@@ -3,8 +3,13 @@ import {
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   CATALOGUE_SEO_TEXT_POSITION_TOP,
   DEFAULT_COMPANY_SLUG,
+  DEFAULT_LOCALE,
 } from '../../../../config/common';
-import { SeoContentModel, TextUniquenessApiParsedResponseModel } from '../../../../db/dbModels';
+import {
+  SeoContentModel,
+  TextUniquenessApiParsedResponseModel,
+  TranslationModel,
+} from '../../../../db/dbModels';
 import { getConstructorContentFromText } from '../../../../lib/stringUtils';
 
 const seoLocales: TextUniquenessApiParsedResponseModel[] = [
@@ -42,13 +47,22 @@ const seoLocales: TextUniquenessApiParsedResponseModel[] = [
   },
 ];
 
-const rubricDescriptions: SeoContentModel[] = [
+const seoContents: SeoContentModel[] = [
   // rubric
   {
     _id: getObjectId('seo 1'),
     slug: `0d23dbe34c76d2f658a4c05fdd90394a05243ac71290513ee${CATALOGUE_SEO_TEXT_POSITION_TOP}`,
     url: '/0/msk/catalogue/viski',
     seoLocales,
+    titleI18n: {
+      [DEFAULT_LOCALE]: 'Кастомный заголовок Виски',
+    },
+    metaTitleI18n: {
+      [DEFAULT_LOCALE]: 'Кастомный мета заголовок Виски',
+    },
+    metaDescriptionI18n: {
+      [DEFAULT_LOCALE]: 'Кастомное мета описание Виски',
+    },
     companySlug: DEFAULT_COMPANY_SLUG,
     rubricSlug: 'viski',
     content: getConstructorContentFromText(
@@ -106,4 +120,4 @@ const rubricDescriptions: SeoContentModel[] = [
 ];
 
 // @ts-ignore
-export = rubricDescriptions;
+export = seoContents;

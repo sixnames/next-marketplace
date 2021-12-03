@@ -85,7 +85,7 @@ const CatalogueHead: React.FC<CatalogueHeadInterface> = ({
     <React.Fragment>
       {catalogueHead}
 
-      <Inner lowTop>
+      <Inner lowTop lowBottom>
         {textTop ? (
           <div>
             <PageEditor value={JSON.parse(textTop.content)} readOnly />
@@ -114,7 +114,7 @@ const CatalogueHead: React.FC<CatalogueHeadInterface> = ({
                 );
               }}
             >
-              Редактировать SEO текст
+              Редактировать SEO блок
             </Button>
           </div>
         ) : null}
@@ -377,7 +377,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
       />
 
       <Inner lowTop testId={'catalogue'}>
-        <div className='grid lg:grid-cols-7 gap-8'>
+        <div className='grid lg:grid-cols-7 gap-8 mt-8'>
           <CatalogueFilter
             urlPrefix={urlPrefix}
             basePath={state.basePath}
@@ -530,7 +530,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
                 );
               }}
             >
-              Редактировать SEO текст
+              Редактировать SEO блок
             </Button>
           </div>
         ) : null}
@@ -597,13 +597,22 @@ const Catalogue: React.FC<CatalogueInterface> = ({
   const cityDescription = currentCity ? `в ${cityIn(`${currentCity.name}`)}` : '';
   const subHeadText = `${prefix} ${cityDescription} ${siteName}`;
 
+  const title =
+    catalogueData.textTop && catalogueData.textTop.metaTitle
+      ? catalogueData.textTop.metaTitle
+      : `${catalogueData.catalogueTitle}${subHeadText}.${pageText}`;
+  const description =
+    catalogueData.textTop && catalogueData.textTop.metaDescription
+      ? catalogueData.textTop.metaDescription
+      : `${catalogueData.catalogueTitle}${subHeadText}.${pageText}`;
+
   return (
     <SiteLayout
       urlPrefix={urlPrefix}
       currentCity={currentCity}
       domainCompany={domainCompany}
-      title={`${catalogueData.catalogueTitle}${subHeadText}.${pageText}`}
-      description={`${catalogueData.catalogueTitle}${subHeadText}.${pageText}`}
+      title={title}
+      description={description}
       {...props}
     >
       <CatalogueConsumer

@@ -6,6 +6,7 @@ import FilterLink from 'components/Link/FilterLink';
 import Link from 'components/Link/Link';
 import TagLink from 'components/Link/TagLink';
 import Title from 'components/Title';
+import WpImage from 'components/WpImage';
 import {
   ATTRIBUTE_VIEW_VARIANT_LIST,
   FILTER_SEPARATOR,
@@ -16,14 +17,12 @@ import {
   ROUTE_BLOG_WITH_PAGE,
   SORT_DESC,
   ROUTE_BLOG,
-  IMAGE_FALLBACK,
   REQUEST_METHOD_POST,
   ISR_FIVE_SECONDS,
 } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
-import { useLocaleContext } from 'context/localeContext';
 import { useSiteContext } from 'context/siteContext';
 import {
   COL_BLOG_ATTRIBUTES,
@@ -147,11 +146,12 @@ const BlogListSnippet: React.FC<BlogListSnippetInterface> = ({ post, showViews }
     <div className={`${snippetClassName} flex flex-col`}>
       {/*image*/}
       <div className='relative flex-shrink-0 overflow-hidden h-[200px] group-hover:opacity-50 transition-opacity duration-150'>
-        <img
+        <WpImage
           className='absolute h-full w-full inset-0 object-cover'
-          src={post.previewImage || IMAGE_FALLBACK}
+          url={`${post.previewImage}`}
           alt={`${post.title}`}
           title={`${post.title}`}
+          width={295}
         />
         <Link
           testId={`${post.title}-image-link`}
@@ -198,11 +198,12 @@ const BlogListMainSnippet: React.FC<BlogListSnippetInterface> = ({ post, showVie
   const { urlPrefix } = useSiteContext();
   return (
     <div className={`${snippetClassName} min-h-[300px] sm:col-span-2`}>
-      <img
+      <WpImage
         className='absolute h-full w-full inset-0 object-cover'
-        src={post.previewImage || IMAGE_FALLBACK}
+        url={`${post.previewImage}`}
         alt={`${post.title}`}
         title={`${post.title}`}
+        width={600}
       />
 
       <div className='absolute inset-0 w-full h-full flex flex-col justify-end z-10'>
@@ -335,22 +336,18 @@ const BlogFilter: React.FC<BlogFilterInterface> = ({ blogFilter }) => {
 interface BlogListPageConsumerInterface extends BlogFilterInterface {
   posts: BlogPostInterface[];
   topPosts: BlogPostInterface[];
-  meta: string;
+  blogTitle: string;
 }
 
 const BlogListPageConsumer: React.FC<BlogListPageConsumerInterface> = ({
   posts,
   topPosts,
   blogFilter,
-  meta,
-  // isFilterVisible,
+  blogTitle,
 }) => {
   const { query } = useRouter();
   const { sessionCity, companySlug } = useAppContext();
-  const { locale } = useLocaleContext();
   const { configs } = useConfigContext();
-  const blogLinkName = getConstantTranslation(`nav.blog.${locale}`);
-  const metaTitle = `${blogLinkName} ${configs.siteName} на темы ${meta}`;
 
   React.useEffect(() => {
     const input: UpdateBlogAttributeCountersInputInterface = {
@@ -367,13 +364,13 @@ const BlogListPageConsumer: React.FC<BlogListPageConsumerInterface> = ({
   return (
     <React.Fragment>
       <Head>
-        <title>{metaTitle}</title>
-        <meta name={'description'} content={metaTitle} />
+        <title>{blogTitle}</title>
+        <meta name={'description'} content={blogTitle} />
       </Head>
       <div className='mb-12'>
-        <Breadcrumbs currentPageName={blogLinkName} />
+        <Breadcrumbs currentPageName={blogTitle} />
         <Inner lowTop>
-          <Title>{`${blogLinkName}${configs.siteName ? ` ${configs.siteName}` : ''}`}</Title>
+          <Title>{blogTitle}</Title>
 
           {posts.length > 0 ? (
             <div className={`grid lg:grid-cols-4 gap-6`}>
@@ -398,27 +395,29 @@ const BlogListPageConsumer: React.FC<BlogListPageConsumerInterface> = ({
                 })}
               </div>
 
-              <div className='relative col-span-3 lg:col-span-1 flex items-end'>
-                <div className='sticky bottom-12'>
-                  <BlogFilter blogFilter={blogFilter} />
+              <div className='relative col-span-3 lg:col-span-1'>
+                <div className='absolute inset-0 h-full w-full relative lg:sticky lg:top-20 overflow-x-hidden overflow-y-auto lg:h-[calc(100vh-80px)]'>
+                  <div className='pb-8'>
+                    <BlogFilter blogFilter={blogFilter} />
 
-                  {/*top posts*/}
-                  <div className='border border-border-100 rounded-md py-6 px-4'>
-                    <div className='text-lg font-bold mb-4'>Самые читаемые</div>
+                    {/*top posts*/}
+                    <div className='border border-border-100 rounded-md py-6 px-4'>
+                      <div className='text-lg font-bold mb-4'>Самые читаемые</div>
 
-                    {topPosts.length > 0 ? (
-                      <div className='divide-y-2 divide-border-100'>
-                        {topPosts.map((post) => {
-                          return (
-                            <BlogListTopSnippet
-                              showViews={configs.showBlogPostViews}
-                              post={post}
-                              key={`${post._id}`}
-                            />
-                          );
-                        })}
-                      </div>
-                    ) : null}
+                      {topPosts.length > 0 ? (
+                        <div className='divide-y-2 divide-border-100'>
+                          {topPosts.map((post) => {
+                            return (
+                              <BlogListTopSnippet
+                                showViews={configs.showBlogPostViews}
+                                post={post}
+                                key={`${post._id}`}
+                              />
+                            );
+                          })}
+                        </div>
+                      ) : null}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -438,14 +437,19 @@ interface BlogListPageInterface
 
 const BlogListPage: React.FC<BlogListPageInterface> = ({
   posts,
-  meta,
   blogFilter,
   topPosts,
+  blogTitle,
   ...props
 }) => {
   return (
     <SiteLayout {...props}>
-      <BlogListPageConsumer topPosts={topPosts} blogFilter={blogFilter} posts={posts} meta={meta} />
+      <BlogListPageConsumer
+        topPosts={topPosts}
+        blogFilter={blogFilter}
+        posts={posts}
+        blogTitle={blogTitle}
+      />
     </SiteLayout>
   );
 };
@@ -471,6 +475,7 @@ export const getStaticProps = async (
     };
   }
 
+  const locale = props.sessionLocale;
   const filters = alwaysArray(context.params?.filters);
 
   // Cast selected filters
@@ -681,7 +686,7 @@ export const getStaticProps = async (
     // cast attributes
     const attributes = (post.attributes || []).reduce(
       (acc: BlogAttributeInterface[], attribute) => {
-        const attributeName = getFieldStringLocale(attribute.nameI18n, props.sessionLocale);
+        const attributeName = getFieldStringLocale(attribute.nameI18n, locale);
         if (!attributeName) {
           return acc;
         }
@@ -689,7 +694,7 @@ export const getStaticProps = async (
         // cast options
         const options = (attribute.options || []).reduce(
           (optionsAcc: OptionInterface[], option) => {
-            const name = getFieldStringLocale(option.nameI18n, props.sessionLocale);
+            const name = getFieldStringLocale(option.nameI18n, locale);
             if (!name) {
               return optionsAcc;
             }
@@ -740,17 +745,12 @@ export const getStaticProps = async (
 
     return {
       ...post,
-      title: getFieldStringLocale(post.titleI18n, props.sessionLocale),
-      description: getFieldStringLocale(post.descriptionI18n, props.sessionLocale),
+      title: getFieldStringLocale(post.titleI18n, locale),
+      description: getFieldStringLocale(post.descriptionI18n, locale),
       attributes,
       options: postOptions,
     };
   });
-
-  // meta
-  const metaList = blogOptions.reduce((acc: string[], { name }) => {
-    return [...acc, `${name}`];
-  }, []);
 
   // filter
   const blogFilter: CatalogueFilterAttributeInterface[] = blogAttributes.map((attribute) => {
@@ -818,6 +818,21 @@ export const getStaticProps = async (
     })
     .slice(0, topPostsLimit);
 
+  const blogListName = getConstantTranslation(`nav.blog.${locale}`);
+  const keyword = `${blogListName} ${props.initialData.configs.siteName}`;
+  const selectedOptions = blogFilter
+    .reduce((acc: CatalogueFilterAttributeOptionInterface[], attribute) => {
+      const { isSelected, options } = attribute;
+      if (!isSelected) {
+        return acc;
+      }
+      const selectedOptions = options.filter(({ isSelected }) => isSelected);
+      return [...acc, ...selectedOptions];
+    }, [])
+    .map(({ name }) => name.toLocaleLowerCase(locale));
+  const titleFilterPrefix =
+    selectedOptions.length > 0 ? ` на тему ${selectedOptions.join(', ')}` : '';
+
   return {
     revalidate: ISR_FIVE_SECONDS,
     props: {
@@ -825,7 +840,7 @@ export const getStaticProps = async (
       posts: castDbData(posts),
       topPosts: castDbData(topPosts),
       blogFilter: castDbData(blogFilter),
-      meta: metaList.join(', '),
+      blogTitle: `${keyword}${titleFilterPrefix}`,
     },
   };
 };

@@ -54,6 +54,7 @@ const ConfigContext = React.createContext<ConfigContextInterface>({
     showBlogPostViews: false,
     contactEmail: [],
     phone: [],
+    robotsTxt: [],
     facebook: '',
     instagram: '',
     vkontakte: '',

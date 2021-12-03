@@ -1,4 +1,5 @@
 import Button from 'components/button/Button';
+import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import { SingleSeoContentEditor } from 'components/SeoContentEditor';
 import { SeoContentModel } from 'db/dbModels';
 import { Form, Formik } from 'formik';
@@ -25,13 +26,38 @@ const ConsoleSeoContentDetails: React.FC<ConsoleSeoContentDetailsInterface> = ({
             companySlug,
             seoContentId: `${seoContent._id}`,
             content: values.content,
+            metaTitleI18n: values.metaTitleI18n,
+            metaDescriptionI18n: values.metaDescriptionI18n,
+            titleI18n: values.titleI18n,
           }).catch(console.log);
         }}
       >
         {() => {
           return (
             <Form>
-              <SingleSeoContentEditor filedName={''} seoContentId={`${seoContent._id}`} />
+              <FormikTranslationsInput
+                label={'Заголовок'}
+                name={'titleI18n'}
+                testId={'titleI18n'}
+              />
+
+              <FormikTranslationsInput
+                label={'Мета-тег title'}
+                name={'metaTitleI18n'}
+                testId={'metaTitleI18n'}
+              />
+
+              <FormikTranslationsInput
+                label={'Мета-тег description'}
+                name={'metaDescriptionI18n'}
+                testId={'metaDescriptionI18n'}
+              />
+
+              <SingleSeoContentEditor
+                label={'SEO блок'}
+                filedName={''}
+                seoContentId={`${seoContent._id}`}
+              />
               <Button type={'submit'} testId={'rubric-seo-content-submit'}>
                 Сохранить
               </Button>

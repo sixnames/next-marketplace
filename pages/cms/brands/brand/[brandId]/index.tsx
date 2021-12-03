@@ -4,7 +4,7 @@ import WpImageUpload from 'components/FormElements/Upload/WpImageUpload';
 import BrandMainFields from 'components/FormTemplates/BrandMainFields';
 import Inner from 'components/Inner';
 import Title from 'components/Title';
-import { ROUTE_CMS } from 'config/common';
+import { REQUEST_METHOD_DELETE, REQUEST_METHOD_POST, ROUTE_CMS } from 'config/common';
 import { COL_BRANDS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import { BrandInterface } from 'db/uiInterfaces';
@@ -97,6 +97,31 @@ const BrandDetailsConsumer: React.FC<BrandDetailsConsumerInterface> = ({ brand }
           width={'10rem'}
           height={'10rem'}
           previewUrl={brand.logo}
+          removeImageHandler={() => {
+            showLoading();
+            const formData = new FormData();
+            formData.append('brandId', `${brand._id}`);
+
+            fetch('/api/brand/logo', {
+              method: REQUEST_METHOD_DELETE,
+              body: formData,
+            })
+              .then((res) => {
+                return res.json();
+              })
+              .then((json) => {
+                if (json.success) {
+                  router.reload();
+                  return;
+                }
+                hideLoading();
+                showErrorNotification({ title: json.message });
+              })
+              .catch(() => {
+                hideLoading();
+                showErrorNotification({ title: 'error' });
+              });
+          }}
           uploadImageHandler={(files) => {
             if (files) {
               showLoading();
@@ -104,8 +129,8 @@ const BrandDetailsConsumer: React.FC<BrandDetailsConsumerInterface> = ({ brand }
               formData.append('assets', files[0]);
               formData.append('brandId', `${brand._id}`);
 
-              fetch('/api/brand/add-brand-logo', {
-                method: 'POST',
+              fetch('/api/brand/logo', {
+                method: REQUEST_METHOD_POST,
                 body: formData,
               })
                 .then((res) => {

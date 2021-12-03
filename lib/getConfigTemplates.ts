@@ -978,6 +978,22 @@ export function getConfigTemplates({
       companySlug,
       group: 'seo',
       variant: CONFIG_VARIANT_STRING,
+      slug: 'robotsTxt',
+      name: 'Дополнительные настройки robots.txt',
+      description: 'Кажды новый инпут создаёт новую строку в файле robots.txt',
+      multi: true,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [''],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'seo',
+      variant: CONFIG_VARIANT_STRING,
       slug: 'seoTextTitle',
       name: 'Заголовок для SEO-текста на главной странице сайта.',
       description: '',

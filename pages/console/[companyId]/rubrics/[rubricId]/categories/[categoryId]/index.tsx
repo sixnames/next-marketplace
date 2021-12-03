@@ -177,6 +177,7 @@ export const getServerSideProps = async (
     categoryId: category._id,
     companySlug,
     rubricSlug: category.rubricSlug,
+    locale: sessionLocale,
   });
 
   const seoDescriptionBottom = await getCategoryAllSeoContents({
@@ -184,6 +185,7 @@ export const getServerSideProps = async (
     categoryId: category._id,
     companySlug,
     rubricSlug: category.rubricSlug,
+    locale: sessionLocale,
   });
 
   if (!seoDescriptionBottom || !seoDescriptionTop) {

@@ -103,6 +103,7 @@ export async function getConsoleCategoryDetails({
     rubricSlug: category.rubricSlug,
     categoryId: category._id,
     position: CATALOGUE_SEO_TEXT_POSITION_TOP,
+    locale,
   });
 
   const seoDescriptionBottom = await getCategoryAllSeoContents({
@@ -110,6 +111,7 @@ export async function getConsoleCategoryDetails({
     rubricSlug: category.rubricSlug,
     categoryId: category._id,
     position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+    locale,
   });
 
   if (!seoDescriptionBottom || !seoDescriptionTop) {

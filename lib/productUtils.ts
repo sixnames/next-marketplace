@@ -216,6 +216,7 @@ export async function getCmsProduct({
     productId: product._id,
     rubricSlug: product.rubricSlug,
     companySlug,
+    locale,
   });
   if (!cardContent) {
     return null;

@@ -43,15 +43,39 @@ import {
   SeoContentModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { AttributeInterface, CategoryInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
+import {
+  AttributeInterface,
+  CategoryInterface,
+  SeoContentCitiesInterface,
+  SeoContentInterface,
+} from 'db/uiInterfaces';
 import { castCatalogueFilters } from 'lib/catalogueUtils';
 import { castConfigs, getConfigStringValue } from 'lib/configsUtils';
+import { getFieldStringLocale } from 'lib/i18n';
 import { castCatalogueFilter, getTreeFromList, getTreeLeaves } from 'lib/optionUtils';
 import { sortStringArray } from 'lib/stringUtils';
 import { sortBy } from 'lodash';
 import { ObjectId } from 'mongodb';
 import fetch from 'node-fetch';
 import qs from 'qs';
+
+export function castSeoContent(
+  seoContent?: SeoContentInterface | null,
+  locale?: string | null,
+): SeoContentInterface | null {
+  if (!seoContent) {
+    return null;
+  }
+
+  const currentLocale = locale || DEFAULT_LOCALE;
+
+  return {
+    ...seoContent,
+    title: getFieldStringLocale(seoContent.titleI18n, currentLocale),
+    metaDescription: getFieldStringLocale(seoContent.metaDescriptionI18n, currentLocale),
+    metaTitle: getFieldStringLocale(seoContent.metaTitleI18n, currentLocale),
+  };
+}
 
 interface CheckSeoContentUniquenessInterface {
   text?: string | null;
@@ -465,11 +489,13 @@ export async function getCatalogueSeoContentSlug({
   }
 }
 
-interface GetCatalogueAllSeoContentsInterface extends GetCatalogueSeoContentSlugInterface {}
+interface GetCatalogueAllSeoContentsInterface extends GetCatalogueSeoContentSlugInterface {
+  locale: string;
+}
 interface GetCatalogueAllSeoContentsPayloadInterface {
-  seoContentTop?: SeoContentModel | null;
+  seoContentTop?: SeoContentInterface | null;
   seoContentTopSlug: string;
-  seoContentBottom?: SeoContentModel | null;
+  seoContentBottom?: SeoContentInterface | null;
   seoContentBottomSlug: string;
   editUrl: string;
   textTopEditUrl: string;
@@ -523,9 +549,9 @@ export async function getCatalogueAllSeoContents(
     editUrl,
     textTopEditUrl,
     textBottomEditUrl,
-    seoContentTop,
+    seoContentTop: castSeoContent(seoContentTop, props.locale),
     seoContentTopSlug,
-    seoContentBottom,
+    seoContentBottom: castSeoContent(seoContentBottom, props.locale),
     seoContentBottomSlug,
   };
 }
@@ -728,6 +754,7 @@ interface GetRubricSeoContentInterface {
   rubricSlug: string;
   rubricId: ObjectIdModel;
   citySlug: string;
+  locale: string;
 }
 
 export async function getRubricSeoContent({
@@ -736,7 +763,8 @@ export async function getRubricSeoContent({
   rubricSlug,
   rubricId,
   citySlug,
-}: GetRubricSeoContentInterface): Promise<SeoContentModel | null> {
+  locale,
+}: GetRubricSeoContentInterface): Promise<SeoContentInterface | null> {
   const { db } = await getDatabase();
 
   const seoContentSlugPayload = await getRubricSeoContentSlug({
@@ -772,7 +800,7 @@ export async function getRubricSeoContent({
     return newSeoContent;
   }
 
-  return seoContent;
+  return castSeoContent(seoContent, locale);
 }
 
 interface GetRubricAllSeoContentsInterface extends Omit<GetRubricSeoContentInterface, 'citySlug'> {}
@@ -781,6 +809,7 @@ export async function getRubricAllSeoContents({
   position,
   rubricSlug,
   rubricId,
+  locale,
 }: GetRubricAllSeoContentsInterface): Promise<SeoContentCitiesInterface> {
   const cities = await getCitiesList();
   let payload: SeoContentCitiesInterface = {};
@@ -791,6 +820,7 @@ export async function getRubricAllSeoContents({
       rubricSlug,
       rubricId,
       citySlug: city.slug,
+      locale,
     });
     if (seoContent) {
       payload[city.slug] = seoContent;
@@ -806,6 +836,7 @@ interface GetCategorySeoContentInterface {
   position: DescriptionPositionType;
   categoryId: ObjectIdModel;
   rubricSlug: string;
+  locale: string;
 }
 
 export async function getCategorySeoContent({
@@ -814,7 +845,8 @@ export async function getCategorySeoContent({
   categoryId,
   citySlug,
   rubricSlug,
-}: GetCategorySeoContentInterface): Promise<SeoContentModel | null> {
+  locale,
+}: GetCategorySeoContentInterface): Promise<SeoContentInterface | null> {
   const { db } = await getDatabase();
   const seoContentSlugPayload = await getCategorySeoContentSlug({
     categoryId,
@@ -848,7 +880,7 @@ export async function getCategorySeoContent({
     return newSeoContent;
   }
 
-  return seoContent;
+  return castSeoContent(seoContent, locale);
 }
 
 interface GetCategoryAllSeoContentsInterface
@@ -858,6 +890,7 @@ export async function getCategoryAllSeoContents({
   position,
   categoryId,
   rubricSlug,
+  locale,
 }: GetCategoryAllSeoContentsInterface): Promise<SeoContentCitiesInterface> {
   const cities = await getCitiesList();
   let payload: SeoContentCitiesInterface = {};
@@ -867,6 +900,7 @@ export async function getCategoryAllSeoContents({
       position,
       categoryId,
       rubricSlug,
+      locale,
       citySlug: city.slug,
     });
     if (seoContent) {
@@ -883,6 +917,7 @@ interface GetProductSeoContentInterface {
   productId: ObjectIdModel;
   productSlug: string;
   rubricSlug: string;
+  locale: string;
 }
 
 export async function getProductSeoContent({
@@ -891,7 +926,8 @@ export async function getProductSeoContent({
   citySlug,
   productSlug,
   rubricSlug,
-}: GetProductSeoContentInterface): Promise<SeoContentModel | null> {
+  locale,
+}: GetProductSeoContentInterface): Promise<SeoContentInterface | null> {
   const { db } = await getDatabase();
   const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
 
@@ -926,7 +962,7 @@ export async function getProductSeoContent({
     return newSeoContent;
   }
 
-  return seoContent;
+  return castSeoContent(seoContent, locale);
 }
 
 interface GetProductAllSeoContentsInterface
@@ -936,6 +972,7 @@ export async function getProductAllSeoContents({
   productId,
   productSlug,
   rubricSlug,
+  locale,
 }: GetProductAllSeoContentsInterface): Promise<SeoContentCitiesInterface> {
   const cities = await getCitiesList();
   let payload: SeoContentCitiesInterface = {};
@@ -946,6 +983,7 @@ export async function getProductAllSeoContents({
       productSlug,
       citySlug: city.slug,
       rubricSlug,
+      locale,
     });
     if (seoContent) {
       payload[city.slug] = seoContent;
@@ -965,7 +1003,7 @@ export async function getSeoContentBySlug({
   companySlug,
   rubricSlug,
   url,
-}: GetSeoContentBySlugInterface): Promise<SeoContentModel | null> {
+}: GetSeoContentBySlugInterface): Promise<SeoContentInterface | null> {
   const { db } = await getDatabase();
   const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
   let seoContent = await seoContentsCollection.findOne({

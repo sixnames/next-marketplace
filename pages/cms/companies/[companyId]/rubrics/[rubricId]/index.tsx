@@ -143,6 +143,7 @@ export const getServerSideProps = async (
     rubricId: rubric._id,
     companySlug,
     position: CATALOGUE_SEO_TEXT_POSITION_TOP,
+    locale: props.sessionLocale,
   });
 
   const seoDescriptionBottom = await getRubricAllSeoContents({
@@ -150,6 +151,7 @@ export const getServerSideProps = async (
     rubricId: rubric._id,
     companySlug,
     position: CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+    locale: props.sessionLocale,
   });
 
   if (!seoDescriptionBottom || !seoDescriptionTop) {

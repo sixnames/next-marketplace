@@ -1,6 +1,5 @@
 import Button from 'components/button/Button';
 import FakeInput from 'components/FormElements/Input/FakeInput';
-import Link from 'components/Link/Link';
 import LinkEmail from 'components/Link/LinkEmail';
 import LinkPhone from 'components/Link/LinkPhone';
 import { MapModalInterface } from 'components/Modal/MapModal';
@@ -131,38 +130,41 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
                     {(pages || []).map(({ name, slug, _id }) => {
                       return (
                         <li className='' key={`${_id}`}>
-                          <Link
-                            target={'_blank'}
-                            className='block pt-1.5 pb-1.5 text-secondary-text hover:no-underline hover:text-theme'
-                            href={`${urlPrefix}${ROUTE_DOCS_PAGES}/${slug}`}
+                          <div
+                            className='block pt-1.5 pb-1.5 text-secondary-text hover:no-underline hover:text-theme cursor-pointer'
+                            onClick={() => {
+                              window.open(`${urlPrefix}${ROUTE_DOCS_PAGES}/${slug}`, '_blank');
+                            }}
                           >
                             {name}
-                          </Link>
+                          </div>
                         </li>
                       );
                     })}
 
                     {index === 0 && showBlog ? (
                       <li className=''>
-                        <Link
-                          target={'_blank'}
-                          className='block pt-1.5 pb-1.5 text-secondary-text hover:no-underline hover:text-theme'
-                          href={`${urlPrefix}${ROUTE_BLOG_WITH_PAGE}`}
+                        <div
+                          className='block pt-1.5 pb-1.5 text-secondary-text hover:no-underline hover:text-theme cursor-pointer'
+                          onClick={() => {
+                            window.open(`${urlPrefix}${ROUTE_BLOG_WITH_PAGE}`, '_blank');
+                          }}
                         >
                           {blogLinkName}
-                        </Link>
+                        </div>
                       </li>
                     ) : null}
 
                     {index === 0 ? (
                       <li className=''>
-                        <Link
-                          target={'_blank'}
-                          className='block pt-1.5 pb-1.5 text-secondary-text hover:no-underline hover:text-theme'
-                          href={`${urlPrefix}${ROUTE_CONTACTS}`}
+                        <div
+                          className='block pt-1.5 pb-1.5 text-secondary-text hover:no-underline hover:text-theme cursor-pointer'
+                          onClick={() => {
+                            window.open(`${urlPrefix}${ROUTE_CONTACTS}`, '_blank');
+                          }}
                         >
                           {contactsLinkName}
-                        </Link>
+                        </div>
                       </li>
                     ) : null}
                   </ul>

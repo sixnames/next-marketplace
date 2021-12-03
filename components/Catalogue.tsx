@@ -85,7 +85,7 @@ const CatalogueHead: React.FC<CatalogueHeadInterface> = ({
     <React.Fragment>
       {catalogueHead}
 
-      <Inner lowTop>
+      <Inner lowTop lowBottom>
         {textTop ? (
           <div>
             <PageEditor value={JSON.parse(textTop.content)} readOnly />
@@ -377,7 +377,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
       />
 
       <Inner lowTop testId={'catalogue'}>
-        <div className='grid lg:grid-cols-7 gap-8'>
+        <div className='grid lg:grid-cols-7 gap-8 mt-8'>
           <CatalogueFilter
             urlPrefix={urlPrefix}
             basePath={state.basePath}

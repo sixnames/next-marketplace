@@ -1,5 +1,4 @@
 import Breadcrumbs from 'components/Breadcrumbs';
-import Button from 'components/button/Button';
 import Icon from 'components/Icon';
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
@@ -24,6 +23,7 @@ import CardRatingFeatures from 'layout/card/CardRatingFeatures';
 import CardShopsList from 'layout/card/CardShopsList';
 import CardTagFeatures from 'layout/card/CardTagFeatures';
 import CardTextFeatures from 'layout/card/CardTextFeatures';
+import ProductAddToCartButton from 'layout/snippet/ProductAddToCartButton';
 import { noNaN } from 'lib/numbers';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
@@ -55,8 +55,6 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
     iconFeatures,
     shopsCounterPostfix,
     isShopless,
-    addShoplessProductToCart,
-    addProductToCart,
     showArticle,
     connections,
     product,
@@ -178,26 +176,12 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
 
                   <div className='flex items-center justify-between flex-wrap gap-6'>
                     {/*cart button*/}
-                    <Button
-                      onClick={() => {
-                        if (cardShops && cardShops.length < 2) {
-                          addProductToCart({
-                            amount: 1,
-                            productId: product._id,
-                            shopProductId: `${cardShops[0].cardShopProduct?._id}`,
-                          });
-                        } else {
-                          addShoplessProductToCart({
-                            amount: 1,
-                            productId: product._id,
-                          });
-                        }
-                      }}
+                    <ProductAddToCartButton
+                      disabled={isShopless}
+                      productId={product._id}
+                      shopProductsIds={[`${cardShops[0].cardShopProduct?._id}`]}
                       testId={`card-add-to-cart`}
-                      className='w-full sm:half-column'
-                    >
-                      В корзину
-                    </Button>
+                    />
 
                     {/*controls*/}
                     <CardControls />

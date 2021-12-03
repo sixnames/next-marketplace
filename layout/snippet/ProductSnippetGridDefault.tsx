@@ -1,8 +1,8 @@
 import WpImage from 'components/WpImage';
 import { useSiteContext } from 'context/siteContext';
 import { ProductSnippetInterface } from 'db/uiInterfaces';
+import ProductAddToCartButton from 'layout/snippet/ProductAddToCartButton';
 import ProductSnippetEditButton from 'layout/snippet/ProductSnippetEditButton';
-import ProductSnippetInCartIcon from 'layout/snippet/ProductSnippetInCartIcon';
 import * as React from 'react';
 import Link from 'components/Link/Link';
 import RatingStars from 'components/RatingStars';
@@ -21,7 +21,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
   gridCatalogueColumns,
   imageLoading,
 }) => {
-  const { addShoplessProductToCart, addProductToCart, urlPrefix } = useSiteContext();
+  const { urlPrefix } = useSiteContext();
   const { product } = shopProduct;
   if (!product) {
     return null;
@@ -31,16 +31,14 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
     slug,
     cardPrices,
     listFeatures,
-    ratingFeatures,
     shopsCount,
     mainImage,
     shopProductsIds,
     itemId,
     name,
   } = product;
-  const firstRatingFeature = ratingFeatures ? ratingFeatures[0] : null;
 
-  const bgClassName = showSnippetBackground
+  const mainFrameClassName = showSnippetBackground
     ? 'bg-secondary dark:shadow-md'
     : 'transition-all border-border-200 border hover:shadow-md';
 
@@ -62,17 +60,14 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
 
   return (
     <div
-      className={`group rounded-md flex flex-col relative gap-4 grid-snippet ${bgClassName} ${
+      className={`group rounded-md flex flex-col relative gap-4 grid-snippet ${mainFrameClassName} ${
         className ? className : columnsClassName
       }`}
     >
       {/*edit button for admin*/}
       <ProductSnippetEditButton product={product} />
 
-      {/*in cart indicator*/}
-      <ProductSnippetInCartIcon productId={product._id} shopProductId={shopProduct._id} />
-
-      <div className='grid grid-cols-12 flex-grow'>
+      <div className='md:grid px-4 md:px-0 grid-cols-12 flex-grow'>
         {/*image*/}
         <div className='relative flex items-center justify-center flex-grow pt-4 pl-4 pr-4 col-span-3 dark:snippet-image'>
           <WpImage
@@ -137,9 +132,9 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
         </div>
       </div>
 
-      <div className='grid grid-cols-12'>
+      <div className='md:grid px-4 md:px-0 grid-cols-12'>
         {/*rating*/}
-        <div className='col-span-3 flex flex-col h-control-button-height'>
+        <div className='col-span-3 flex flex-col md:h-control-button-height'>
           {showSnippetRating ? (
             <div className='flex items-center justify-center h-control-button-height'>
               <RatingStars size={'small'} rating={4.9} />
@@ -147,51 +142,25 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
           ) : null}
         </div>
 
-        <div className='col-span-9 flex flex-col h-control-button-height'>
-          <div className='flex items-end justify-between h-control-button-height'>
-            {/*rating features*/}
-            <div className='flex flex-wrap items-center h-control-button-height'>
-              {firstRatingFeature ? (
-                <div
-                  key={`${firstRatingFeature.attributeId}`}
-                  className='text-secondary-text text-sm uppercase whitespace-nowrap mr-3 mt-1 mb-1'
-                >
-                  {`${firstRatingFeature.attribute?.name} ${firstRatingFeature.readableValue}`}
-                </div>
-              ) : null}
-            </div>
-
-            {/*controls*/}
-            <div
-              className={`flex items-center justify-end ${
-                showSnippetButtonsOnHover
-                  ? 'lg:opacity-0 group-hover:opacity-100 transition-all'
-                  : ''
-              }`}
-            >
+        {/*controls*/}
+        <div className='col-span-9 flex flex-col'>
+          <div
+            className={`flex items-center justify-between pb-2  ${
+              showSnippetButtonsOnHover ? 'lg:opacity-0 group-hover:opacity-100 transition-all' : ''
+            }`}
+          >
+            <ProductAddToCartButton
+              className='w-full'
+              frameClassName={'w-[50%]'}
+              productId={product._id}
+              shopProductsIds={shopProductsIds}
+              testId={`${testId}-add-to-cart-grid`}
+              size={'small'}
+              short
+            />
+            <div className='flex items-center'>
               <ControlButton icon={'compare'} ariaLabel={'Добавить в сравнение'} />
               <ControlButton icon={'heart'} ariaLabel={'Добавить в избранное'} />
-              <ControlButton
-                ariaLabel={'Добавить в корзину'}
-                testId={`${testId}-add-to-cart-grid`}
-                theme={showSnippetBackground ? 'accent' : undefined}
-                icon={'cart'}
-                roundedTopLeft
-                onClick={() => {
-                  if (shopProductsIds && shopProductsIds.length < 2) {
-                    addProductToCart({
-                      amount: 1,
-                      productId: product._id,
-                      shopProductId: `${shopProductsIds[0]}`,
-                    });
-                  } else {
-                    addShoplessProductToCart({
-                      amount: 1,
-                      productId: product._id,
-                    });
-                  }
-                }}
-              />
             </div>
           </div>
         </div>

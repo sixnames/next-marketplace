@@ -726,6 +726,10 @@ export const getSsrConfigs = async ({
     configs,
     slug: 'contactEmail',
   });
+  const robotsTxt = getConfigListValue({
+    configs,
+    slug: 'robotsTxt',
+  });
   const contactsContent = getConfigStringValue({
     configs,
     slug: 'contactsContent',
@@ -952,6 +956,7 @@ export const getSsrConfigs = async ({
 
   return {
     isOneShopCompany,
+    robotsTxt,
     cartBookingButtonDescription,
     catalogueProductsCount,
     showReservationDate,

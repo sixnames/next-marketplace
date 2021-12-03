@@ -742,6 +742,7 @@ export interface SsrConfigsInterface {
   catalogueMetaPrefix: string;
   cartBookingButtonDescription: string;
   cardMetaPrefix: string;
+  robotsTxt: string[];
 
   // Project
   showReservationDate: boolean;

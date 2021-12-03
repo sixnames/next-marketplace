@@ -41,7 +41,22 @@ async function updateProds() {
     const icons = await iconsCollection.find({}).toArray();
     for await (const icon of icons) {
       const optimizedIcon = await optimize(icon.icon, {
-        plugins: ['removeDimensions', 'cleanupIDs', 'prefixIds'],
+        plugins: [
+          'removeDimensions',
+          'cleanupIDs',
+          {
+            name: 'prefixIds',
+            // @ts-ignore
+            params: {
+              prefix: () => {
+                const random = Math.random();
+                const date = new Date().getTime();
+                const prefix = Math.ceil(date / random);
+                return `${prefix}`;
+              },
+            },
+          },
+        ],
       });
       if (optimizedIcon) {
         await iconsCollection.findOneAndUpdate(

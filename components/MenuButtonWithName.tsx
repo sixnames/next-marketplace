@@ -33,8 +33,6 @@ const MenuButtonWithName: React.FC<MenuButtonWithNameInterface> = ({
   return (
     <div className={`text-primary ${frameClassName ? frameClassName : ''}`}>
       <HeadlessMenuButton
-        buttonAs={'div'}
-        itemAs={'div'}
         config={config}
         className={className}
         initialValue={initialValue}

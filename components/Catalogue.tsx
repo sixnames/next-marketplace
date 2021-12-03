@@ -114,7 +114,7 @@ const CatalogueHead: React.FC<CatalogueHeadInterface> = ({
                 );
               }}
             >
-              Редактировать SEO текст
+              Редактировать SEO блок
             </Button>
           </div>
         ) : null}
@@ -530,7 +530,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
                 );
               }}
             >
-              Редактировать SEO текст
+              Редактировать SEO блок
             </Button>
           </div>
         ) : null}

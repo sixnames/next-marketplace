@@ -36,7 +36,7 @@ const CardDynamicContent: React.FC<CardDynamicContentInterface> = ({
             );
           }}
         >
-          Редактировать SEO текст
+          Редактировать SEO блок
         </Button>
       </div>
     ) : null;
@@ -64,7 +64,7 @@ const CardDynamicContent: React.FC<CardDynamicContentInterface> = ({
               );
             }}
           >
-            Редактировать SEO текст
+            Редактировать SEO блок
           </Button>
         </div>
       ) : null}

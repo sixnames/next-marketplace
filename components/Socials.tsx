@@ -14,7 +14,6 @@ const SocialLink: React.FC<SocialLinkInterface> = ({ href, icon }) => {
 
   return (
     <div
-      aria-label={icon}
       className='flex flex-shrink-0 w-8 h-8 items-center justify-center rounded-full bg-primary mr-4 hover:opacity-80 text-theme'
       onClick={() => {
         window.open(href, '_blank');

@@ -408,9 +408,18 @@ export async function getStaticProps(
     const { db } = await getDatabase();
     const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
     const shopsCollection = db.collection<ShopInterface>(COL_SHOPS);
-    const { props } = await getIsrSiteInitialData({
+    const { props, redirect } = await getIsrSiteInitialData({
       context,
     });
+
+    if (redirect) {
+      return {
+        redirect: {
+          destination: redirect,
+          permanent: true,
+        },
+      };
+    }
 
     // redirect to product
     const isCitySlug = noNaN(context.params?.citySlug) === 0;

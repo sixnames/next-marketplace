@@ -20,6 +20,7 @@ const ProductAddToCartButton: React.FC<ProductAddToCartButtonInterface> = ({
   return (
     <Button
       {...props}
+      theme={inCart.isInCart ? 'gray' : 'primary'}
       ariaLabel={'Добавить в корзину'}
       frameClassName={frameClassName || 'w-auto'}
       onClick={() => {
@@ -37,7 +38,7 @@ const ProductAddToCartButton: React.FC<ProductAddToCartButtonInterface> = ({
         }
       }}
     >
-      {inCart.isInCart ? `В корзине ${inCart.inCartCount}` : 'В корзину'}
+      {inCart.isInCart ? `В корзине ${inCart.inCartCount} шт.` : 'В корзину'}
     </Button>
   );
 };

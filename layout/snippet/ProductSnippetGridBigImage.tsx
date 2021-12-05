@@ -147,7 +147,7 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
         <div className='flex items-center justify-between pl-4 py-2'>
           <ProductAddToCartButton
             className='w-full'
-            frameClassName={'w-[50%]'}
+            frameClassName={'w-auto'}
             productId={product._id}
             shopProductsIds={shopProductsIds}
             testId={`${testId}-add-to-cart-grid`}

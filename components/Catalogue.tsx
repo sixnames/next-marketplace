@@ -406,9 +406,9 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
                   menuPosition={'left'}
                   buttonClassName='w-full'
                   buttonText={() => (
-                    <Button frameClassName='w-auto' className='w-full' theme={'secondary'} short>
+                    <span className='z-[5] flex items-center justify-center border-1 border-theme font-medium uppercase text-center text-sm transition-all duration-100 cursor-pointer disabled:opacity-50 disabled:pointer-events-none shadow-md hover:shadow-xl h-[var(--formInputHeight)] text-theme bg-secondary-button-background hover:ring-2 hover:ring-theme pl-4 pr-4 rounded-md w-full'>
                       Сортировать
-                    </Button>
+                    </span>
                   )}
                 />
               </div>

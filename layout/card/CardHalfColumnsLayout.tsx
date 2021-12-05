@@ -123,7 +123,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                   {/*brand preview*/}
                   {brand && brand.logo ? (
                     <div
-                      className='flex items-center mb-6 gap-3 relative cursor-pointer'
+                      className='flex items-center mb-6 gap-3 relative cursor-pointer group'
                       onClick={() => {
                         window.open(`${brand.mainUrl}`, '_blank');
                       }}
@@ -135,7 +135,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                         title={`О бренде ${brand.name}`}
                         width={70}
                       />
-                      <div>О бренде</div>
+                      <div className='group-hover:underline'>О бренде</div>
                     </div>
                   ) : null}
 

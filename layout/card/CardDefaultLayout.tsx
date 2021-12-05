@@ -387,14 +387,14 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                             Сайт производителя
                           </div>
                           <div className='sm:text-right sm:half-column'>
-                            <a
-                              className='text-primary-text'
-                              target={'_blank'}
-                              href={manufacturer.mainUrl}
-                              rel={'noreferrer nofollow'}
+                            <div
+                              className='text-primary-text cursor-pointer hover:underline'
+                              onClick={() => {
+                                window.open(`${manufacturer.mainUrl}`, '_blank');
+                              }}
                             >
                               {manufacturer.mainUrl}
-                            </a>
+                            </div>
                           </div>
                         </li>
                       ) : null}

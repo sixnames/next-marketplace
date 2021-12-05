@@ -245,6 +245,10 @@
   }
 
   @media only screen and (min-width: 768px) {
+    .grid-snippet-2 {
+      width: calc(50% - 0.75rem);
+    }
+
     .grid-snippet-5,
     .grid-snippet-4,
     .grid-snippet-3 {

@@ -16,6 +16,7 @@ import { phoneToReadable } from 'lib/phoneUtils';
 import * as React from 'react';
 import { useConfigContext } from 'context/configContext';
 import Inner from 'components/Inner';
+import Link from 'components/Link/Link';
 
 export interface FooterInterface {
   footerPageGroups: PagesGroupInterface[];
@@ -130,41 +131,38 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
                     {(pages || []).map(({ name, slug, _id }) => {
                       return (
                         <li className='' key={`${_id}`}>
-                          <div
+                          <Link
+                            href={`${urlPrefix}${ROUTE_DOCS_PAGES}/${slug}`}
+                            target={'_blank'}
                             className='block pt-1.5 pb-1.5 text-secondary-text hover:no-underline hover:text-theme cursor-pointer'
-                            onClick={() => {
-                              window.open(`${urlPrefix}${ROUTE_DOCS_PAGES}/${slug}`, '_blank');
-                            }}
                           >
                             {name}
-                          </div>
+                          </Link>
                         </li>
                       );
                     })}
 
                     {index === 0 && showBlog ? (
                       <li className=''>
-                        <div
+                        <Link
+                          href={`${urlPrefix}${ROUTE_BLOG_WITH_PAGE}`}
+                          target={'_blank'}
                           className='block pt-1.5 pb-1.5 text-secondary-text hover:no-underline hover:text-theme cursor-pointer'
-                          onClick={() => {
-                            window.open(`${urlPrefix}${ROUTE_BLOG_WITH_PAGE}`, '_blank');
-                          }}
                         >
                           {blogLinkName}
-                        </div>
+                        </Link>
                       </li>
                     ) : null}
 
                     {index === 0 ? (
                       <li className=''>
-                        <div
+                        <Link
+                          href={`${urlPrefix}${ROUTE_CONTACTS}`}
+                          target={'_blank'}
                           className='block pt-1.5 pb-1.5 text-secondary-text hover:no-underline hover:text-theme cursor-pointer'
-                          onClick={() => {
-                            window.open(`${urlPrefix}${ROUTE_CONTACTS}`, '_blank');
-                          }}
                         >
                           {contactsLinkName}
-                        </div>
+                        </Link>
                       </li>
                     ) : null}
                   </ul>

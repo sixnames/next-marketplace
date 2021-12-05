@@ -30,6 +30,8 @@ interface GetPageInitialStateInterface {
 
 interface GetPageInitialStatePayloadInterface extends PagePropsInterface {
   urlPrefix: string;
+  cityNotFound: boolean;
+  companyNotFound: boolean;
 }
 
 export async function getPageInitialState({
@@ -40,11 +42,17 @@ export async function getPageInitialState({
   const citiesCollection = db.collection<CityModel>(COL_CITIES);
   const sessionLocale = locale || DEFAULT_LOCALE;
   const citySlug = alwaysString(params?.citySlug);
+  const companySlug = alwaysString(params?.companySlug);
+  let cityNotFound = false;
+  let companyNotFound = false;
 
   // Session city
   let currentCity: CityModel | null | undefined;
   if (citySlug) {
     const initialCity = await citiesCollection.findOne({ slug: citySlug });
+    if (citySlug !== DEFAULT_CITY && !initialCity) {
+      cityNotFound = true;
+    }
     currentCity = castDbData(initialCity);
   }
   if (!currentCity) {
@@ -55,8 +63,11 @@ export async function getPageInitialState({
 
   // Domain company
   const domainCompany = await getSsrDomainCompany({
-    slug: `${params?.companySlug}`,
+    slug: companySlug,
   });
+  if (companySlug !== DEFAULT_COMPANY_SLUG && !domainCompany) {
+    companyNotFound = true;
+  }
 
   // Page initial data
   const rawInitialData = await getPageInitialData({
@@ -85,6 +96,8 @@ export async function getPageInitialState({
 
   return {
     initialData,
+    cityNotFound,
+    companyNotFound,
     themeStyle,
     urlPrefix: `/${domainCompany?.slug || DEFAULT_COMPANY_SLUG}/${sessionCity}`,
     domainCompany: domainCompany ? castDbData(domainCompany) : null,
@@ -110,6 +123,7 @@ export interface SiteInitialDataPropsInterface
 
 export interface SiteInitialDataPayloadInterface {
   props: SiteInitialDataPropsInterface;
+  redirect?: string | null;
 }
 
 export async function getIsrSiteInitialData({
@@ -124,6 +138,8 @@ export async function getIsrSiteInitialData({
     companySlug,
     themeStyle,
     urlPrefix,
+    cityNotFound,
+    companyNotFound,
   } = await getPageInitialState({ context });
 
   // initial data
@@ -143,7 +159,13 @@ export async function getIsrSiteInitialData({
     companySlug,
   });
 
+  let redirect = null;
+  if (cityNotFound && companyNotFound) {
+    redirect = `/${DEFAULT_COMPANY_SLUG}/${DEFAULT_CITY}`;
+  }
+
   return {
+    redirect,
     props: {
       ...catalogueCreatedPages,
       themeStyle,

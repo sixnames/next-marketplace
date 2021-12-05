@@ -210,6 +210,7 @@ const HomeRoute: React.FC<HomeRouteInterface> = ({
                       className='flex-grow'
                       showSnippetBackground
                       shopProduct={product}
+                      showSnippetArticle
                     />
                   </div>
                 );

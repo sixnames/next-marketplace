@@ -89,7 +89,7 @@ const CardShop: React.FC<CardShopInterface> = ({ shop, testId }) => {
               });
             }}
           >
-            {address.formattedAddress}
+            {address.readableAddress}
           </div>
 
           {(formattedPhones || []).map((phone, index) => {

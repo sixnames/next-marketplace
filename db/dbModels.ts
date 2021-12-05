@@ -86,9 +86,19 @@ export interface CoordinatesModel {
   lng: number;
 }
 
+export interface AddressComponentModel {
+  // types as Array<AddressType | GeocodingAddressComponentType>
+  types: string[];
+  longName: string;
+  shortName: string;
+}
+
 export interface AddressModel {
+  addressComponents: AddressComponentModel[];
+  readableAddress: string;
   formattedAddress: string;
   point: PointGeoJSONModel;
+  mapCoordinates: CoordinatesModel;
 }
 
 export interface ContactsModel {

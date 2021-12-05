@@ -1,4 +1,5 @@
 import { DEFAULT_COUNTERS_OBJECT, GEO_POINT_TYPE } from 'config/common';
+import { getReadableAddress } from 'lib/addressUtils';
 import { deleteUpload, getMainImage, reorderAssets } from 'lib/assetUtils/assetUtils';
 import { getNextItemId } from 'lib/itemIdUtils';
 import { arg, extendType, inputObjectType, list, nonNull, objectType, stringArg } from 'nexus';
@@ -374,7 +375,13 @@ export const ShopMutations = extendType({
                 ...values,
                 updatedAt: new Date(),
                 address: {
+                  readableAddress: getReadableAddress(values.address.addressComponents),
+                  addressComponents: values.address.addressComponents,
                   formattedAddress: values.address.formattedAddress,
+                  mapCoordinates: {
+                    lat: values.address.point.lat,
+                    lng: values.address.point.lng,
+                  },
                   point: {
                     type: GEO_POINT_TYPE,
                     coordinates: [values.address.point.lng, values.address.point.lat],

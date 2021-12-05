@@ -52,19 +52,19 @@ describe('Cart', () => {
     cy.getByCy(`cart-product`).should('have.length', 4);
 
     // Should delete product form cart
-    cy.getByCy(`cart-product-01-remove-from-cart`).click();
+    cy.getByCy(`cart-product-00-remove-from-cart`).click();
     cy.getByCy(`cart-product`).should('have.length', 3);
 
     // Should add shop to the shopless cart product
-    cy.getByCy(`cart-product-1-show-shops`).click();
+    cy.getByCy(`cart-product-0-show-shops`).click();
     cy.getByCy(`cart-shops-list`).should('exist');
     cy.getByCy(`cart-shops-0-add-to-cart`).click();
     cy.getByCy(`cart-shops-list`).should('not.exist');
-    cy.getByCy(`cart-product-2-show-shops`).should('not.exist');
+    cy.getByCy(`cart-product-0-show-shops`).should('not.exist');
 
     // Should update product amount
     cy.getByCy(`cart-product-00-plus`).click();
-    cy.getByCy(`cart-product-00-amount`).should('have.value', '3');
+    cy.getByCy(`cart-product-00-amount`).should('have.value', '2');
 
     // Should have cart dropdown
     cy.visit(`${ROUTE_CATALOGUE}/${fixtureIds.rubricWineSlug}`);
@@ -74,7 +74,7 @@ describe('Cart', () => {
 
     // Should update product amount in dropdown
     cy.getByCy(`cart-dropdown-product-0-minus`).click();
-    cy.getByCy(`cart-dropdown-product-0-amount`).should('have.value', '2');
+    cy.getByCy(`cart-dropdown-product-0-amount`).should('have.value', '1');
 
     // Should delete cart product form cart dropdown
     cy.getByCy(`cart-dropdown-product-0-remove-from-cart`).click();

@@ -78,7 +78,7 @@ const DefaultCartShop: React.FC<DefaultCartShopUIInterface> = ({
             });
           }}
         >
-          {shop.address.formattedAddress}
+          {shop.address.readableAddress}
           <div className='text-theme'>Показать на карте</div>
         </div>
 

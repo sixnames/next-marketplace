@@ -50,6 +50,7 @@ const ShopDetails: React.FC<ShopDetailsInterface> = ({ shop, basePath, breadcrum
       phones: shop.contacts.phones[0] ? shop.contacts.phones : [''],
     },
     address: {
+      addressComponents: shop.address.addressComponents,
       formattedAddress: shop.address.formattedAddress,
       point: {
         lat: shop.address.point.coordinates[1],

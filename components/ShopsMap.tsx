@@ -32,7 +32,7 @@ const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
               <LayoutCard
                 key={`${_id}`}
                 className='grid grid-cols-3 min-w-[310px] lg:min-w-0 overflow-hidden'
-                onClick={() => panTo(address.formattedCoordinates)}
+                onClick={() => panTo(address.mapCoordinates)}
               >
                 <div className='col-span-1 relative shops-map-snippet'>
                   <WpImage
@@ -46,7 +46,7 @@ const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
 
                 <div className='col-span-2 py-[var(--lineGap-75)] px-[var(--lineGap-100)] lg:py-[var(--lineGap-100)] lg:px-[var(--lineGap-150)]'>
                   <div className='font-bold mb-3'>{name}</div>
-                  <div className='mb-3'>{address.formattedAddress}</div>
+                  <div className='mb-3'>{address.readableAddress}</div>
                   <div className='whitespace-nowrap flex flex-wrap gap-2 mb-3'>
                     {(contacts.formattedPhones || []).map((phone) => {
                       return (

@@ -35,6 +35,7 @@ import {
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
+import { getReadableAddress } from 'lib/addressUtils';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getConstructorDefaultValue } from 'lib/constructorUtils';
 import { GeocodeResultInterface } from 'lib/geocode';
@@ -278,6 +279,13 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
             lat: parsedValue.point.coordinates[1],
             lng: parsedValue.point.coordinates[0],
           },
+          addressComponents: parsedValue.addressComponents.map((component) => {
+            return {
+              shortName: component.shortName,
+              longName: component.longName,
+              types: component.types,
+            };
+          }),
         };
         localesAcc[localeKey] = [geocodeResult];
         return localesAcc;
@@ -335,10 +343,22 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
                       const initialValue = value as GeocodeResultInterface;
                       const finalValue: AddressModel = {
                         formattedAddress: initialValue.formattedAddress,
+                        readableAddress: getReadableAddress(initialValue.addressComponents),
+                        mapCoordinates: {
+                          lat: initialValue.point.lat,
+                          lng: initialValue.point.lng,
+                        },
                         point: {
                           type: GEO_POINT_TYPE,
                           coordinates: [initialValue.point.lng, initialValue.point.lat],
                         },
+                        addressComponents: initialValue.addressComponents.map((component) => {
+                          return {
+                            shortName: component.shortName,
+                            longName: component.longName,
+                            types: component.types,
+                          };
+                        }),
                       };
                       return JSON.stringify(finalValue);
                     }

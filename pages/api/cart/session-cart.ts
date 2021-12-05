@@ -139,13 +139,6 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
                 ? {
                     ...shopProduct.shop,
                     priceWarning: getFieldStringLocale(shopProduct.shop.priceWarningI18n, locale),
-                    address: {
-                      ...shopProduct.shop.address,
-                      formattedCoordinates: {
-                        lat: shopProduct.shop.address.point.coordinates[1],
-                        lng: shopProduct.shop.address.point.coordinates[0],
-                      },
-                    },
                     contacts: {
                       ...shopProduct.shop.contacts,
                       formattedPhones: shopProduct.shop.contacts.phones.map((phone) => {
@@ -235,13 +228,6 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
                 ? {
                     ...shopProduct.shop,
                     priceWarning: getFieldStringLocale(shopProduct.shop.priceWarningI18n, locale),
-                    address: {
-                      ...shopProduct.shop.address,
-                      formattedCoordinates: {
-                        lat: shopProduct.shop.address.point.coordinates[1],
-                        lng: shopProduct.shop.address.point.coordinates[0],
-                      },
-                    },
                     contacts: {
                       ...shopProduct.shop.contacts,
                       formattedPhones: shopProduct.shop.contacts.phones.map((phone) => {

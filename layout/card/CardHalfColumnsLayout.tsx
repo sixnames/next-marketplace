@@ -123,7 +123,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                   {/*brand preview*/}
                   {brand && brand.logo ? (
                     <div
-                      className='flex items-center mb-6 gap-4 relative cursor-pointer'
+                      className='flex items-center mb-6 gap-3 relative cursor-pointer'
                       onClick={() => {
                         window.open(`${brand.mainUrl}`, '_blank');
                       }}
@@ -131,11 +131,11 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                       <WpImage
                         className='object-contain w-[70px] h-[70px]'
                         url={brand.logo}
-                        alt={`${brand.name}`}
-                        title={`${brand.name}`}
+                        alt={`О бренде ${brand.name}`}
+                        title={`О бренде ${brand.name}`}
                         width={70}
                       />
-                      <div>{brand.name}</div>
+                      <div>О бренде</div>
                     </div>
                   ) : null}
 

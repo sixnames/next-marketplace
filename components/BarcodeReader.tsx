@@ -22,15 +22,15 @@ const BarcodeReader: React.FC<BarcodeReaderInterface> = ({ isVisible, setValue }
 
   React.useEffect(() => {
     function resizeHandler() {
-      if (window.matchMedia(`(max-width: ${640}px)`).matches) {
-        setVideoSize({
-          width: 328,
-          height: 200,
-        });
-      } else {
+      if (window.matchMedia(`(min-width: ${640}px)`).matches) {
         setVideoSize({
           width: 500,
           height: 500,
+        });
+      } else {
+        setVideoSize({
+          width: 328,
+          height: 200,
         });
       }
     }

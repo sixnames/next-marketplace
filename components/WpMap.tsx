@@ -4,7 +4,7 @@ import Spinner from 'components/Spinner';
 import { darkMapStyles, lightMapStyles } from 'config/mapsConfig';
 import { useConfigContext } from 'context/configContext';
 import { useThemeContext } from 'context/themeContext';
-import { AddressInterface } from 'db/uiInterfaces';
+import { AddressModel } from 'db/dbModels';
 import * as React from 'react';
 
 /*const fallbackMarker = {
@@ -31,7 +31,7 @@ const mapContainerStyle = {
 interface WpMapMarkerInterface {
   _id: any;
   icon?: string | null;
-  address?: AddressInterface;
+  address?: AddressModel;
   name: string;
 }
 
@@ -73,8 +73,8 @@ const WpMap: React.FC<WpMapInterface> = ({
         // Fit all markers in map window
         const bounds = new window.google.maps.LatLngBounds();
         (markers || []).forEach(({ address }) => {
-          if (address && address.formattedCoordinates) {
-            bounds.extend(address.formattedCoordinates);
+          if (address) {
+            bounds.extend(address.mapCoordinates);
           }
         });
 
@@ -84,8 +84,8 @@ const WpMap: React.FC<WpMapInterface> = ({
       if (markers && markers.length === 1) {
         const marker = markers[0];
         map.setCenter({
-          lat: marker.address?.formattedCoordinates?.lat,
-          lng: marker.address?.formattedCoordinates?.lng,
+          lat: marker.address?.mapCoordinates.lat,
+          lng: marker.address?.mapCoordinates.lng,
         });
       }
     },
@@ -126,7 +126,7 @@ const WpMap: React.FC<WpMapInterface> = ({
           return (
             <Marker
               key={`${_id}`}
-              position={address.formattedCoordinates}
+              position={address.mapCoordinates}
               icon={
                 icon
                   ? {
@@ -152,14 +152,14 @@ const WpMap: React.FC<WpMapInterface> = ({
             />
           );
         })}
-        {selected && selected.address && selected.address.formattedCoordinates ? (
+        {selected && selected.address && selected.address.mapCoordinates ? (
           <InfoWindow
-            position={selected.address.formattedCoordinates}
+            position={selected.address.mapCoordinates}
             onCloseClick={() => setSelected(null)}
           >
             <div className='pb-2'>
               <div className='mb-3 font-bold text-xl text-black'>{selected.name}</div>
-              <div className='text-[1rem] text-black'>{selected.address?.formattedAddress}</div>
+              <div className='text-[1rem] text-black'>{selected.address?.readableAddress}</div>
             </div>
           </InfoWindow>
         ) : null}

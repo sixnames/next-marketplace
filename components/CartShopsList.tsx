@@ -74,7 +74,7 @@ const CartShop: React.FC<CartShopInterface> = ({ shopProduct, testId, cartProduc
               });
             }}
           >
-            {address.formattedAddress}
+            {address.readableAddress}
             <div className='text-theme'>Показать на карте</div>
           </div>
 

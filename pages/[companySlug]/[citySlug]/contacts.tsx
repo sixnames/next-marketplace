@@ -9,7 +9,6 @@ import { useConfigContext } from 'context/configContext';
 import { useThemeContext } from 'context/themeContext';
 import { AddressModel } from 'db/dbModels';
 import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
-import { noNaN } from 'lib/numbers';
 import { phoneToReadable } from 'lib/phoneUtils';
 import { getSiteInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, NextPage } from 'next';
@@ -61,7 +60,7 @@ const ContactsRoute: React.FC = () => {
           <div>
             <Title>Контакты {configSiteName}</Title>
 
-            {actualAddress && actualAddress.formattedAddress ? (
+            {actualAddress && actualAddress.readableAddress ? (
               <div className='mb-8 font-medium not-italic'>
                 <div className='mb-1 text-secondary-text'>Наш адрес</div>
                 <a
@@ -70,7 +69,7 @@ const ContactsRoute: React.FC = () => {
                   rel={'nofollow noreferrer'}
                   href={`https://www.google.com/maps/place/${actualAddress.point.coordinates[1]},${actualAddress.point.coordinates[0]}`}
                 >
-                  {actualAddress.formattedAddress}
+                  {actualAddress.readableAddress}
                 </a>
               </div>
             ) : null}
@@ -124,14 +123,10 @@ const ContactsRoute: React.FC = () => {
                 markers={[
                   {
                     _id: 'address',
-                    name: actualAddress.formattedAddress,
+                    name: actualAddress.readableAddress,
                     icon: marker,
                     address: {
                       ...actualAddress,
-                      formattedCoordinates: {
-                        lng: noNaN(actualAddress.point.coordinates[0]),
-                        lat: noNaN(actualAddress.point.coordinates[1]),
-                      },
                     },
                   },
                 ]}

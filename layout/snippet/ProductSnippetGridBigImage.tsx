@@ -108,7 +108,7 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
           </div>
 
           {/*name*/}
-          <div className='mb-4'>
+          <div className='mb-2'>
             <Link
               testId={`${testId}-name-grid`}
               target={'_blank'}
@@ -122,7 +122,7 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
         </div>
 
         {/*price*/}
-        <div className='flex flex-col items-center justify-center px-4 mb-4 mt-auto'>
+        <div className='flex flex-col items-center justify-center px-4 mb-2 mt-auto'>
           <ProductSnippetPrice size={'medium'} shopsCount={shopsCount} value={cardPrices?.min} />
         </div>
       </div>
@@ -144,7 +144,7 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
           <div className='text-secondary-text mb-2 text-center text-sm'>Артикул: {itemId}</div>
         ) : null}
 
-        <div className='flex items-center justify-between pl-4 py-2'>
+        <div className='flex flex-wrap items-center justify-between gap-y-2 pl-4 py-2'>
           <ProductAddToCartButton
             className='w-full'
             frameClassName={'w-auto'}

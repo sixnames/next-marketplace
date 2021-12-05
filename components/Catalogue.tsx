@@ -396,7 +396,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
           <div className='lg:col-span-5'>
             <div>
               {/*Mobile controls*/}
-              <div className='grid grid-cols-2 gap-6 grid lg:hidden'>
+              <div className='grid grid-cols-2 gap-4 md:gap-6 grid lg:hidden'>
                 <Button theme={'secondary'} className='w-full' onClick={showFilterHandler} short>
                   Фильтр
                 </Button>
@@ -450,7 +450,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
               </div>
 
               {/*Products*/}
-              <div className='relative pt-8 flex flex-wrap gap-[1.5rem]'>
+              <div className='relative pt-8 flex flex-wrap gap-4 md:gap-[1.5rem]'>
                 {isPageLoading ? (
                   <div className='absolute inset-0 z-50 w-full h-full'>
                     <Spinner className='absolute inset-0 w-full h-[50vh]' isNested isTransparent />

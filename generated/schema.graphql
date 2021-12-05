@@ -112,12 +112,27 @@ input AddShoplessProductToCartInput {
 }
 
 type Address {
+  addressComponents: [AddressComponent!]!
   formattedAddress: String!
   formattedCoordinates: Coordinates!
   point: PointGeoJSON!
+  readableAddress: String!
+}
+
+type AddressComponent {
+  longName: String!
+  shortName: String!
+  types: [String!]!
+}
+
+input AddressComponentInput {
+  longName: String!
+  shortName: String!
+  types: [String!]!
 }
 
 input AddressInput {
+  addressComponents: [AddressComponentInput!]!
   formattedAddress: String!
   point: CoordinatesInput!
 }

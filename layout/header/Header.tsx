@@ -399,7 +399,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                 <div className='text-theme'>
                   <Icon name={'marker'} className='w-5 h-5' />
                 </div>
-                <div>{domainCompany.mainShop.address.formattedAddress}</div>
+                <div>{domainCompany.mainShop.address.readableAddress}</div>
               </div>
 
               <div className='flex items-center gap-3 mt-4'>
@@ -599,7 +599,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
                       <div className='text-theme'>
                         <Icon name={'marker'} className='w-5 h-5' />
                       </div>
-                      <div>{domainCompany.mainShop.address.formattedAddress}</div>
+                      <div>{domainCompany.mainShop.address.readableAddress}</div>
                     </div>
 
                     <div className='flex items-center gap-3 mt-2'>

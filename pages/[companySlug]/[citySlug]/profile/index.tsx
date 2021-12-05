@@ -202,7 +202,7 @@ const ProfileOrder: React.FC<ProfileOrderInterface> = ({ order, orderIndex }) =>
                         {firstProduct.shop.name}
                       </span>
                     </div>
-                    <div className='text-sm'>{firstProduct.shop.address.formattedAddress}</div>
+                    <div className='text-sm'>{firstProduct.shop.address.readableAddress}</div>
                   </div>
                 ) : (
                   <div className='text-theme font-medium'>Магазин не найден</div>

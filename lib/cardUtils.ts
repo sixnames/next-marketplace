@@ -763,13 +763,6 @@ export async function getCardData({
         ...acc,
         {
           ...shop,
-          address: {
-            ...shop.address,
-            formattedCoordinates: {
-              lat: shop.address.point.coordinates[1],
-              lng: shop.address.point.coordinates[0],
-            },
-          },
           contacts: {
             ...shop.contacts,
             formattedPhones: shop.contacts.phones.map((phone) => {

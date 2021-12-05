@@ -118,13 +118,6 @@ export async function getSsrDomainCompany(
         mainShop: domainCompanyAggregation[0].mainShop
           ? {
               ...domainCompanyAggregation[0].mainShop,
-              address: {
-                ...domainCompanyAggregation[0].mainShop.address,
-                formattedCoordinates: {
-                  lat: domainCompanyAggregation[0].mainShop.address.point.coordinates[1],
-                  lng: domainCompanyAggregation[0].mainShop.address.point.coordinates[0],
-                },
-              },
               contacts: {
                 ...domainCompanyAggregation[0].mainShop.contacts,
                 formattedPhones: domainCompanyAggregation[0].mainShop.contacts.phones.map(

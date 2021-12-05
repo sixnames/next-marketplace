@@ -139,11 +139,27 @@ export type AddShoplessProductToCartInput = {
 export type Address = {
   __typename?: 'Address';
   formattedAddress: Scalars['String'];
+  readableAddress: Scalars['String'];
   point: PointGeoJson;
+  addressComponents: Array<AddressComponent>;
   formattedCoordinates: Coordinates;
 };
 
+export type AddressComponent = {
+  __typename?: 'AddressComponent';
+  types: Array<Scalars['String']>;
+  longName: Scalars['String'];
+  shortName: Scalars['String'];
+};
+
+export type AddressComponentInput = {
+  types: Array<Scalars['String']>;
+  longName: Scalars['String'];
+  shortName: Scalars['String'];
+};
+
 export type AddressInput = {
+  addressComponents: Array<AddressComponentInput>;
   formattedAddress: Scalars['String'];
   point: CoordinatesInput;
 };

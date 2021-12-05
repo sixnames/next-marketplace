@@ -1,3 +1,4 @@
+import { AddressComponentModel } from 'db/dbModels';
 import fetch from 'node-fetch';
 import { ReverseGeocodeResponseData } from '@googlemaps/google-maps-services-js/dist/geocode/reversegeocode';
 
@@ -29,6 +30,7 @@ interface GeocodeInterface {
 }
 
 export interface GeocodeResultInterface {
+  addressComponents: AddressComponentModel[];
   formattedAddress: string;
   point: {
     lat: number;
@@ -46,13 +48,20 @@ export const geocode = async ({
   const url = `https://maps.googleapis.com/maps/api/geocode/json?${address}&${settings}&${apiKey}`;
   const res = await fetch(url);
   const json = (await res.json()) as ReverseGeocodeResponseData;
-  return json.results.map(({ formatted_address, geometry }) => {
+  return json.results.map(({ formatted_address, geometry, address_components }) => {
     return {
       formattedAddress: formatted_address,
       point: {
         lat: geometry.location.lat,
         lng: geometry.location.lng,
       },
+      addressComponents: address_components.map((component) => {
+        return {
+          shortName: component.short_name,
+          longName: component.long_name,
+          types: component.types,
+        };
+      }),
     };
   });
 };

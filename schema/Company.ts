@@ -1,4 +1,5 @@
 import { GEO_POINT_TYPE, IMAGE_FALLBACK } from 'config/common';
+import { getReadableAddress } from 'lib/addressUtils';
 import { deleteUpload } from 'lib/assetUtils/assetUtils';
 import { updateCompanyDomain } from 'lib/companyUtils';
 import { getConfigTemplates } from 'lib/getConfigTemplates';
@@ -803,7 +804,13 @@ export const CompanyMutations = extendType({
               createdAt: new Date(),
               updatedAt: new Date(),
               address: {
+                readableAddress: getReadableAddress(values.address.addressComponents),
+                addressComponents: values.address.addressComponents,
                 formattedAddress: values.address.formattedAddress,
+                mapCoordinates: {
+                  lat: values.address.point.lat,
+                  lng: values.address.point.lng,
+                },
                 point: {
                   type: GEO_POINT_TYPE,
                   coordinates: [values.address.point.lng, values.address.point.lat],

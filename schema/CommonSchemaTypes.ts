@@ -94,12 +94,25 @@ export const PointGeoJSON = objectType({
   },
 });
 
+export const AddressComponent = objectType({
+  name: 'AddressComponent',
+  definition(t) {
+    t.nonNull.list.nonNull.string('types');
+    t.nonNull.string('longName');
+    t.nonNull.string('shortName');
+  },
+});
+
 export const Address = objectType({
   name: 'Address',
   definition(t) {
     t.nonNull.string('formattedAddress');
+    t.nonNull.string('readableAddress');
     t.nonNull.field('point', {
       type: 'PointGeoJSON',
+    });
+    t.nonNull.list.nonNull.field('addressComponents', {
+      type: 'AddressComponent',
     });
     t.nonNull.field('formattedCoordinates', {
       type: 'Coordinates',
@@ -122,9 +135,21 @@ export const CoordinatesInput = inputObjectType({
   },
 });
 
+export const AddressComponentInput = inputObjectType({
+  name: 'AddressComponentInput',
+  definition(t) {
+    t.nonNull.list.nonNull.string('types');
+    t.nonNull.string('longName');
+    t.nonNull.string('shortName');
+  },
+});
+
 export const AddressInput = inputObjectType({
   name: 'AddressInput',
   definition(t) {
+    t.nonNull.list.nonNull.field('addressComponents', {
+      type: 'AddressComponentInput',
+    });
     t.nonNull.string('formattedAddress');
     t.nonNull.field('point', {
       type: 'CoordinatesInput',

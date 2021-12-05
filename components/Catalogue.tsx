@@ -396,7 +396,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
           <div className='lg:col-span-5'>
             <div>
               {/*Mobile controls*/}
-              <div className='grid grid-cols-2 gap-6 grid lg:hidden'>
+              <div className='grid grid-cols-2 gap-4 md:gap-6 grid lg:hidden'>
                 <Button theme={'secondary'} className='w-full' onClick={showFilterHandler} short>
                   Фильтр
                 </Button>
@@ -406,9 +406,9 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
                   menuPosition={'left'}
                   buttonClassName='w-full'
                   buttonText={() => (
-                    <Button frameClassName='w-auto' className='w-full' theme={'secondary'} short>
+                    <span className='z-[5] flex items-center justify-center border-1 border-theme font-medium uppercase text-center text-sm transition-all duration-100 cursor-pointer disabled:opacity-50 disabled:pointer-events-none shadow-md hover:shadow-xl h-[var(--formInputHeight)] text-theme bg-secondary-button-background hover:ring-2 hover:ring-theme pl-4 pr-4 rounded-md w-full'>
                       Сортировать
-                    </Button>
+                    </span>
                   )}
                 />
               </div>
@@ -450,7 +450,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
               </div>
 
               {/*Products*/}
-              <div className='relative pt-8 flex flex-wrap gap-[1.5rem]'>
+              <div className='relative pt-8 flex flex-wrap gap-4 md:gap-[1.5rem]'>
                 {isPageLoading ? (
                   <div className='absolute inset-0 z-50 w-full h-full'>
                     <Spinner className='absolute inset-0 w-full h-[50vh]' isNested isTransparent />

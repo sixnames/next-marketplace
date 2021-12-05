@@ -1,3 +1,4 @@
+import { ADDRESS_COMPONENTS } from '../../../../tests/mocks';
 import {
   ASSETS_DIST_SHOPS,
   ASSETS_DIST_SHOPS_LOGOS,
@@ -44,7 +45,13 @@ const shops: ShopModel[] = [
       phones: ['+75556667788'],
     },
     address: {
+      addressComponents: ADDRESS_COMPONENTS,
       formattedAddress: 'Ходынский бульвар, 20а, Москва, Россия, 125252',
+      readableAddress: 'Ходынский бульвар, 20а, Москва',
+      mapCoordinates: {
+        lat: 55.790804890785395,
+        lng: 37.5228921272735,
+      },
       point: {
         type: GEO_POINT_TYPE,
         coordinates: [37.5228921272735, 55.790804890785395],
@@ -80,7 +87,13 @@ const shops: ShopModel[] = [
       phones: ['+76667778899'],
     },
     address: {
+      addressComponents: ADDRESS_COMPONENTS,
       formattedAddress: 'улица Пятницкая, 27а, Москва, Russia',
+      readableAddress: 'Хулица Пятницкая, 27а, Москва',
+      mapCoordinates: {
+        lat: 55.74116803925581,
+        lng: 37.62867021460195,
+      },
       point: {
         type: GEO_POINT_TYPE,
         coordinates: [37.62867021460195, 55.74116803925581],
@@ -119,7 +132,13 @@ const shops: ShopModel[] = [
       phones: ['+76665554433'],
     },
     address: {
+      addressComponents: ADDRESS_COMPONENTS,
       formattedAddress: 'Ходынский б-р, 20а, Москва, Russia, 125252',
+      readableAddress: 'Ходынский б-р, 20а, Москва',
+      mapCoordinates: {
+        lat: 55.79065483867902,
+        lng: 37.522890631943376,
+      },
       point: {
         type: GEO_POINT_TYPE,
         coordinates: [37.522890631943376, 55.79065483867902],
@@ -155,7 +174,13 @@ const shops: ShopModel[] = [
       phones: ['+76665554444'],
     },
     address: {
+      addressComponents: ADDRESS_COMPONENTS,
       formattedAddress: 'Ходынский б-р, 20а, Москва, Russia, 125252',
+      readableAddress: 'Ходынский б-р, 20а, Москва',
+      mapCoordinates: {
+        lat: 55.79065483867902,
+        lng: 37.522890631943376,
+      },
       point: {
         type: GEO_POINT_TYPE,
         coordinates: [37.522890631943376, 55.79065483867902],

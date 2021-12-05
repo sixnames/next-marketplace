@@ -210,6 +210,7 @@ const HomeRoute: React.FC<HomeRouteInterface> = ({
                       className='flex-grow'
                       showSnippetBackground
                       shopProduct={product}
+                      showSnippetArticle
                     />
                   </div>
                 );
@@ -575,13 +576,6 @@ export async function getStaticProps(
     const topShops = shopsAggregation.map((shop) => {
       return {
         ...shop,
-        address: {
-          ...shop.address,
-          formattedCoordinates: {
-            lat: shop.address.point.coordinates[1],
-            lng: shop.address.point.coordinates[0],
-          },
-        },
         contacts: {
           ...shop.contacts,
           formattedPhones: shop.contacts.phones.map((phone) => {

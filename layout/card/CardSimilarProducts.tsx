@@ -25,6 +25,7 @@ const CardSimilarProducts: React.FC<CardSimilarProductsInterface> = ({ similarPr
                 noAttributes
                 noSecondaryName
                 showSnippetBackground
+                showSnippetArticle
                 shopProduct={product}
               />
             </div>

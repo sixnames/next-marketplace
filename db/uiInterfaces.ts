@@ -1,6 +1,5 @@
 import { ShopRubricProductsInterface } from 'components/shops/ShopRubricProducts';
 import {
-  AddressModel,
   AssetModel,
   AttributeModel,
   AttributesGroupModel,
@@ -18,7 +17,6 @@ import {
   CompanyModel,
   ConfigModel,
   ContactsModel,
-  CoordinatesModel,
   FormattedPhoneModel,
   IconModel,
   ManufacturerModel,
@@ -86,10 +84,6 @@ export interface BlogPostInterface extends Omit<BlogPostModel, 'views'> {
 export interface BlogLikeInterface extends BlogLikeModel {
   blogPost?: BlogPostInterface | null;
   user?: UserInterface | null;
-}
-
-export interface AddressInterface extends AddressModel {
-  formattedCoordinates?: CoordinatesModel;
 }
 
 export interface ContactsInterface extends ContactsModel {
@@ -375,7 +369,6 @@ export interface ShopInterface extends ShopModel {
   productsCount?: number | null;
   city?: CityInterface | null;
   contacts: ContactsInterface;
-  address: AddressInterface;
   orders?: OrderInterface[];
   company?: CompanyInterface | null;
   shopProducts?: ShopProductInterface[] | null;

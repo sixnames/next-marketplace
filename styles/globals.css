@@ -240,11 +240,15 @@
     .grid-snippet-4,
     .grid-snippet-3,
     .grid-snippet-2 {
-      width: calc(50% - 0.75rem);
+      width: calc(50% - 0.5rem);
     }
   }
 
   @media only screen and (min-width: 768px) {
+    .grid-snippet-2 {
+      width: calc(50% - 0.75rem);
+    }
+
     .grid-snippet-5,
     .grid-snippet-4,
     .grid-snippet-3 {
@@ -531,18 +535,18 @@
   --logoWidth: 7rem;
   --innerBlockMaxWidth: 1296px;
   --innerBlockVerticalPadding: 1.5rem;
-  --innerBlockHorizontalPadding: 1.5rem;
+  --innerBlockHorizontalPadding: 1rem;
   --fullHeight: 100vh;
   --smallButtonHeight: 2rem;
 
-  --formInputHeight: 3.5rem;
+  --formInputHeight: 3rem;
   --formInputHeightBig: 4rem;
   --formInputHeightSmall: 2.5rem;
   --formInputHeightSmaller: 2rem;
 
   --formLineHeight: 2rem;
 
-  --buttonMinWidth: 12rem;
+  --buttonMinWidth: 10rem;
   --buttonMinWidthSmall: 9rem;
 
   --controlButtonHeight: var(--formInputHeight);
@@ -641,22 +645,21 @@
   --outerRatingColor: var(--wp-light-gray-200);
 }
 
-@media only screen and (max-width: 1180px) {
+@media only screen and (min-width: 1180px) {
   :root {
-    --buttonMinWidth: 10rem;
+    --buttonMinWidth: 12rem;
   }
 }
 
-@media only screen and (max-width: 1024px) {
+@media only screen and (min-width: 1024px) {
   :root {
-    --formInputHeight: 3rem;
-    --minLinkHeight: 3rem;
+    --formInputHeight: 3.5rem;
   }
 }
 
-@media only screen and (max-width: 768px) {
+@media only screen and (min-width: 768px) {
   :root {
-    --innerBlockHorizontalPadding: 1.25rem;
+    --innerBlockHorizontalPadding: 1.5rem;
   }
 }
 

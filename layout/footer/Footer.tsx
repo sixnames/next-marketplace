@@ -114,7 +114,7 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
                 <div>
                   <div className='text-secondary-text'>Наш адрес</div>
                   <div className='cursor-pointer hover:text-theme transition-all'>
-                    {domainCompany.mainShop.address.formattedAddress}
+                    {domainCompany.mainShop.address.readableAddress}
                   </div>
                 </div>
               </div>

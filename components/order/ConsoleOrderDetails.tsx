@@ -285,7 +285,7 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
               {shop ? (
                 <div className='space-y-1'>
                   <span className='text-primary-text font-medium'>{shop.name}</span>
-                  <div className='text-secondary-text'>{shop.address.formattedAddress}</div>
+                  <div className='text-secondary-text'>{shop.address.readableAddress}</div>
                 </div>
               ) : (
                 <div className='text-red-500 font-medium'>Магазин не найден</div>

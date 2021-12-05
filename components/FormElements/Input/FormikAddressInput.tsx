@@ -41,15 +41,24 @@ const FormikAddressInputConsumer: React.FC<FormikAddressInputConsumerInterface> 
         const url = `https://maps.googleapis.com/maps/api/geocode/json?${address}&${settings}&${apiKey}`;
         const res = await fetch(url);
         const json: ReverseGeocodePayload = await res.json();
-        const results = json.results.map(({ formatted_address, geometry }) => {
-          return {
-            formattedAddress: formatted_address,
-            point: {
-              lat: geometry.location.lat,
-              lng: geometry.location.lng,
-            },
-          };
-        });
+        const results: GeocodeResultInterface[] = json.results.map(
+          ({ formatted_address, geometry, address_components }) => {
+            return {
+              formattedAddress: formatted_address,
+              point: {
+                lat: geometry.location.lat,
+                lng: geometry.location.lng,
+              },
+              addressComponents: address_components.map((component) => {
+                return {
+                  shortName: component.short_name,
+                  longName: component.long_name,
+                  types: component.types,
+                };
+              }),
+            };
+          },
+        );
         setLoading(false);
         setResults(results);
       } catch (e) {

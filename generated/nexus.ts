@@ -214,8 +214,15 @@ export interface NexusGenInputs {
     amount: number; // Int!
     productId: NexusGenScalars['ObjectId']; // ObjectId!
   };
+  AddressComponentInput: {
+    // input type
+    longName: string; // String!
+    shortName: string; // String!
+    types: string[]; // [String!]!
+  };
   AddressInput: {
     // input type
+    addressComponents: NexusGenInputs['AddressComponentInput'][]; // [AddressComponentInput!]!
     formattedAddress: string; // String!
     point: NexusGenInputs['CoordinatesInput']; // CoordinatesInput!
   };
@@ -888,6 +895,7 @@ export interface NexusGenScalars {
 
 export interface NexusGenObjects {
   Address: dbModels.AddressModel;
+  AddressComponent: dbModels.AddressComponentModel;
   Asset: dbModels.AssetModel;
   Attribute: dbModels.AttributeModel;
   AttributesGroup: dbModels.AttributesGroupModel;
@@ -1029,9 +1037,17 @@ export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars & NexusGenEnu
 export interface NexusGenFieldTypes {
   Address: {
     // field return type
+    addressComponents: NexusGenRootTypes['AddressComponent'][]; // [AddressComponent!]!
     formattedAddress: string; // String!
     formattedCoordinates: NexusGenRootTypes['Coordinates']; // Coordinates!
     point: NexusGenRootTypes['PointGeoJSON']; // PointGeoJSON!
+    readableAddress: string; // String!
+  };
+  AddressComponent: {
+    // field return type
+    longName: string; // String!
+    shortName: string; // String!
+    types: string[]; // [String!]!
   };
   Asset: {
     // field return type
@@ -2062,9 +2078,17 @@ export interface NexusGenFieldTypes {
 export interface NexusGenFieldTypeNames {
   Address: {
     // field return type name
+    addressComponents: 'AddressComponent';
     formattedAddress: 'String';
     formattedCoordinates: 'Coordinates';
     point: 'PointGeoJSON';
+    readableAddress: 'String';
+  };
+  AddressComponent: {
+    // field return type name
+    longName: 'String';
+    shortName: 'String';
+    types: 'String';
   };
   Asset: {
     // field return type name

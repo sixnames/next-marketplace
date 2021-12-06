@@ -9,6 +9,7 @@ import Link from 'components/Link/Link';
 import LinkEmail from 'components/Link/LinkEmail';
 import LinkPhone from 'components/Link/LinkPhone';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
+import ProductsListSuppliersList from 'components/shops/ProductsListSuppliersList';
 import Title from 'components/Title';
 import WpImage from 'components/WpImage';
 import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, IMAGE_FALLBACK } from 'config/common';
@@ -57,6 +58,7 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
   } = orderProduct;
   const productImageSrc = shopProduct ? `${product?.mainImage}` : IMAGE_FALLBACK;
   const minAmount = 1;
+  const supplierProducts = shopProduct?.supplierProducts || [];
 
   const [cancelOrderProductMutation] = useCancelOrderProduct();
   const [updateOrderProductMutation] = useUpdateOrderProduct();
@@ -166,16 +168,22 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
               ) : null}
             </div>
 
-            <div className='mt-2'>
-              {shopProduct ? (
-                <div>
-                  Доступно:
-                  {` ${shopProduct.available} шт.`}
-                </div>
-              ) : (
-                <div className='text-red-500 font-medium'>Товар магазина не найден</div>
-              )}
-            </div>
+            {/*availability*/}
+            {shopProduct ? (
+              <div className='mt-2'>
+                <div>Доступно:{` ${shopProduct.available} шт.`}</div>
+              </div>
+            ) : (
+              <div className='text-red-500 font-medium mt-2'>Товар магазина не найден</div>
+            )}
+
+            {/*suppliers*/}
+            {supplierProducts.length > 0 ? (
+              <div className='mt-6'>
+                <div className='font-medium text-lg mb-2'>Поставщики</div>
+                <ProductsListSuppliersList supplierProducts={supplierProducts} />
+              </div>
+            ) : null}
           </div>
 
           <div className='flex flex-col gap-4'>
@@ -189,13 +197,6 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
                   testId={`cart-dropdown-product-${orderProduct.originalName}-amount`}
                   plusTestId={`cart-dropdown-product-${orderProduct.originalName}-plus`}
                   minusTestId={`cart-dropdown-product-${orderProduct.originalName}-minus`}
-                  // size={'small'}
-                  /*onChange={(e) => {
-                    const amount = noNaN(e.target.value);
-                    if (amount >= minAmount && amount <= noNaN(shopProduct?.available)) {
-                      setAmount(noNaN(e.target.value));
-                    }
-                  }}*/
                 />
               </InputLine>
             </div>

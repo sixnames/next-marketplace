@@ -1,9 +1,11 @@
+import Button from 'components/button/Button';
 import { CartProduct, CartShoplessProduct } from 'components/cart/CartProduct';
 import CartAside from 'components/CartAside';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import FormikTextarea from 'components/FormElements/Textarea/FormikTextarea';
 import { MapModalInterface } from 'components/Modal/MapModal';
+import { OrderDeliveryAddressModalInterface } from 'components/Modal/OrderDeliveryAddressModal';
 import Notification from 'components/Notification';
 import {
   DEFAULT_COMPANY_SLUG,
@@ -11,7 +13,7 @@ import {
   ORDER_PAYMENT_VARIANT_RECEIPT,
 } from 'config/common';
 import { DELIVERY_VARIANT_OPTIONS, PAYMENT_VARIANT_OPTIONS } from 'config/constantSelects';
-import { MAP_MODAL } from 'config/modalVariants';
+import { MAP_MODAL, ORDER_DELIVERY_ADDRESS_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
@@ -83,13 +85,30 @@ const DefaultCartShop: React.FC<DefaultCartShopUIInterface> = ({
 
         {allowDelivery ? (
           <div className='lg:grid grid-cols-2 gap-x-6 mt-6'>
-            <FormikSelect
-              low
-              label={'Способ получения'}
-              name={'shopConfigs[0].deliveryVariant'}
-              options={DELIVERY_VARIANT_OPTIONS}
-              isRequired
-            />
+            <div>
+              <FormikSelect
+                low
+                label={'Способ получения'}
+                name={'shopConfigs[0].deliveryVariant'}
+                options={DELIVERY_VARIANT_OPTIONS}
+                isRequired
+              />
+              <div className='mt-4'>
+                <Button
+                  size={'small'}
+                  onClick={() => {
+                    showModal<OrderDeliveryAddressModalInterface>({
+                      variant: ORDER_DELIVERY_ADDRESS_MODAL,
+                      props: {
+                        confirm: () => {},
+                      },
+                    });
+                  }}
+                >
+                  Указать адрес
+                </Button>
+              </div>
+            </div>
 
             <FormikSelect
               low

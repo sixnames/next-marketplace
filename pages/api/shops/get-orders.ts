@@ -1,3 +1,4 @@
+import { ORDER_DELIVERY_VARIANT_COURIER } from 'config/common';
 import {
   COL_ORDER_CUSTOMERS,
   COL_ORDER_PRODUCTS,
@@ -91,6 +92,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       {
         $match: {
           shopId: shop._id,
+          deliveryVariant: {
+            $ne: ORDER_DELIVERY_VARIANT_COURIER,
+          },
           updatedAt: {
             $gte: updatedAt,
           },

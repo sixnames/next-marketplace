@@ -1,6 +1,5 @@
 import { CartProduct } from 'components/cart/CartProduct';
 import CartAside from 'components/CartAside';
-import FakeInput from 'components/FormElements/Input/FakeInput';
 import FormikDatePicker from 'components/FormElements/Input/FormikDatePicker';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
@@ -326,35 +325,6 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
                           name={'comment'}
                           label={'Комментарий к заказу'}
                         />
-                      </div>
-                    </div>
-
-                    {/* delivery and payment */}
-                    <div className='relative z-20 mb-12'>
-                      <div className='flex items-center gap-4 mb-8 text-lg font-medium'>
-                        <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
-                          3
-                        </div>
-                        <div>Способ получения и оплата</div>
-                      </div>
-
-                      <div className='lg:grid grid-cols-2 gap-x-6'>
-                        <div>
-                          <FormikSelect
-                            label={'Способ получения'}
-                            name={'shopConfigs[0].deliveryVariant'}
-                            options={DELIVERY_VARIANT_OPTIONS}
-                            disabled
-                          />
-                          <Notification
-                            variant={'success'}
-                            message={
-                              'Для полученя забронированного товара необходим документ подтверждающий личность.'
-                            }
-                          />
-                        </div>
-
-                        <FakeInput label={'Оплата'} value={'Оплата при получении'} />
                       </div>
                     </div>
                   </div>

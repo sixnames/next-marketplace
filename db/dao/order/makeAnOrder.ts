@@ -1,5 +1,11 @@
 import { hash } from 'bcryptjs';
-import { DEFAULT_COMPANY_SLUG, ORDER_LOG_VARIANT_STATUS, ROLE_SLUG_GUEST } from 'config/common';
+import {
+  DEFAULT_COMPANY_SLUG,
+  ORDER_DELIVERY_VARIANT_PICKUP,
+  ORDER_LOG_VARIANT_STATUS,
+  ORDER_PAYMENT_VARIANT_RECEIPT,
+  ROLE_SLUG_GUEST,
+} from 'config/common';
 import {
   COL_CARTS,
   COL_COMPANIES,
@@ -293,8 +299,12 @@ export async function makeAnOrder({
             companyItemId: company.itemId,
             allowDelivery,
             reservationDate: input.reservationDate ? new Date(input.reservationDate) : null,
-            deliveryVariant: shopConfig.deliveryVariant,
-            paymentVariant: shopConfig.paymentVariant,
+            deliveryVariant: allowDelivery
+              ? shopConfig.deliveryVariant
+              : ORDER_DELIVERY_VARIANT_PICKUP,
+            paymentVariant: allowDelivery
+              ? shopConfig.paymentVariant
+              : ORDER_PAYMENT_VARIANT_RECEIPT,
             createdAt: new Date(),
             updatedAt: new Date(),
           };

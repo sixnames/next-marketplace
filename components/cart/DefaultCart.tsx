@@ -1,6 +1,5 @@
 import { CartProduct, CartShoplessProduct } from 'components/cart/CartProduct';
 import CartAside from 'components/CartAside';
-import FakeInput from 'components/FormElements/Input/FakeInput';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import FormikTextarea from 'components/FormElements/Textarea/FormikTextarea';
@@ -100,19 +99,7 @@ const DefaultCartShop: React.FC<DefaultCartShopUIInterface> = ({
               isRequired
             />
           </div>
-        ) : (
-          <div className='lg:grid grid-cols-2 gap-x-6 mt-6'>
-            <FormikSelect
-              low
-              label={'Способ получения'}
-              name={'shopConfigs[0].deliveryVariant'}
-              options={DELIVERY_VARIANT_OPTIONS}
-              disabled
-            />
-
-            <FakeInput low label={'Оплата'} value={'Оплата при получении'} />
-          </div>
-        )}
+        ) : null}
 
         {showPriceWarning && shop.priceWarning ? (
           <div className='mt-6'>

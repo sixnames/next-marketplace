@@ -107,6 +107,7 @@ export type RoleRuleSlugType =
   // Order
   | 'deleteOrder'
   | 'updateOrder'
+  | 'updateOrderProductDiscount'
   | 'confirmOrder'
   | 'cancelOrder'
   | 'createOrder'
@@ -715,6 +716,14 @@ const baseRoleRules: RoleRuleBaseExtended[] = [
     descriptionI18n: {},
     nameI18n: {
       ru: 'Обновление заказа',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateOrderProductDiscount',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Изменение дополнительной скидки товара заказа',
     },
   },
   {

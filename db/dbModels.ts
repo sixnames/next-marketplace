@@ -529,6 +529,8 @@ export interface OrderProductModel extends TimestampModel {
   itemId: string;
   price: number;
   amount: number;
+  finalPrice: number;
+  customDiscount?: number | null;
   totalPrice: number;
   slug: string;
   originalName: string;

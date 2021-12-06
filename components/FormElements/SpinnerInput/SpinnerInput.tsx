@@ -3,7 +3,15 @@ import Icon from 'components/Icon';
 import { InputTheme, OnOffType } from 'types/clientTypes';
 import { noNaN } from 'lib/numbers';
 
-export interface SpinnerInterface {
+export interface SpinnerChangeEventInterface {
+  target: {
+    id?: string;
+    name?: string;
+    value: string;
+  };
+}
+
+export interface SpinnerPropsInterface {
   name: string;
   className?: string;
   frameClassName?: string;
@@ -20,16 +28,10 @@ export interface SpinnerInterface {
   readOnly?: boolean;
   size?: 'small' | 'normal';
   theme?: InputTheme;
-  onChange?: (e: {
-    target: {
-      id?: string;
-      name?: string;
-      value: string;
-    };
-  }) => void;
+  onChange?: (e: SpinnerChangeEventInterface) => void;
 }
 
-const SpinnerInput: React.FC<SpinnerInterface> = ({
+const SpinnerInput: React.FC<SpinnerPropsInterface> = ({
   name,
   className,
   value,

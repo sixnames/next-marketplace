@@ -119,6 +119,32 @@ export function getConstantOptions(options: ConstantOptionsType, locale: string)
   });
 }
 
+interface GetConstantOptionNameInterface {
+  options: ConstantOptionsType;
+  locale: string;
+  value: string;
+}
+
+export function getConstantOptionName({
+  locale,
+  options,
+  value,
+}: GetConstantOptionNameInterface): string {
+  const option = options.find(({ _id }) => _id === value);
+  if (!option) {
+    return 'option not found';
+  }
+  let name = getFieldStringLocale(option.nameI18n, locale);
+  if (!name) {
+    name = getFieldStringLocale(option.nameI18n, DEFAULT_LOCALE);
+  }
+  if (!name) {
+    return 'option translation not found';
+  }
+
+  return name;
+}
+
 // supplier price variant
 export const SUPPLIER_PRICE_VARIANT_OPTIONS: ConstantOptionsType = [
   {

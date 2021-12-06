@@ -305,13 +305,15 @@ export async function makeAnOrder({
           existingOrder.shopProductIds.push(shopProduct._id);
         }
 
+        const totalPrice = price * amount;
         castedOrderProducts.push({
           _id: new ObjectId(),
           statusId: initialStatus._id,
           itemId,
           price,
           amount,
-          totalPrice: price * amount,
+          totalPrice,
+          finalPrice: price,
           slug: product.slug,
           originalName: product.originalName,
           nameI18n: product.nameI18n,
@@ -328,7 +330,7 @@ export async function makeAnOrder({
         });
       }
 
-      // Return error if not all products are casted
+      // Return error if not all products are transformed for order
       if (castedOrderProducts.length !== cartProducts.length) {
         payload = {
           success: false,

@@ -15,12 +15,15 @@ import {
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { noNaN } from 'lib/numbers';
+import { countDiscountedPrice } from 'lib/priceUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
 
 export interface UpdateOrderProductInputInterface {
   orderProductId: string;
   amount: number;
+  customDiscount?: number | null;
 }
 
 export async function updateOrderProduct({
@@ -125,6 +128,28 @@ export async function updateOrderProduct({
       await orderLogsCollection.insertOne(orderLog);
 
       // Update order products
+      const customDiscount = noNaN(input.customDiscount);
+      if (customDiscount !== orderProduct.customDiscount) {
+        // Permission
+        const { allow, message } = await getOperationPermission({
+          context,
+          slug: 'updateOrderProductDiscount',
+        });
+        if (!allow) {
+          mutationPayload = {
+            success: false,
+            message,
+          };
+          await session.abortTransaction();
+          return;
+        }
+      }
+
+      const { discountedPrice, finalDiscount } = countDiscountedPrice({
+        price: orderProduct.price,
+        discount: customDiscount,
+      });
+
       const updatedOrderProductsResult = await orderProductsCollection.findOneAndUpdate(
         {
           _id: orderProduct._id,
@@ -132,7 +157,9 @@ export async function updateOrderProduct({
         {
           $set: {
             amount: input.amount,
-            totalPrice: input.amount * orderProduct.price,
+            finalPrice: discountedPrice,
+            totalPrice: input.amount * discountedPrice,
+            customDiscount: finalDiscount,
           },
         },
         {

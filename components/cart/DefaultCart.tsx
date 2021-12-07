@@ -1,13 +1,13 @@
 import Button from 'components/button/Button';
 import { CartProduct, CartShoplessProduct } from 'components/cart/CartProduct';
 import CartAside from 'components/CartAside';
-import FormattedDateTime from 'components/FormattedDateTime';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import FormikTextarea from 'components/FormElements/Textarea/FormikTextarea';
 import { MapModalInterface } from 'components/Modal/MapModal';
 import { OrderDeliveryAddressModalInterface } from 'components/Modal/OrderDeliveryAddressModal';
 import Notification from 'components/Notification';
+import OrderDeliveryInfo from 'components/order/OrderDeliveryInfo';
 import {
   DEFAULT_COMPANY_SLUG,
   ORDER_DELIVERY_VARIANT_COURIER,
@@ -51,60 +51,11 @@ export const CartAddressPicker: React.FC<CartAddressPickerInterface> = ({ index 
 
   return (
     <div className='mt-4'>
-      {deliveryInfo && deliveryInfo.address ? (
-        <div className='mb-4 space-y-4'>
-          <div className='flex gap-4'>
-            <div>Адрес:</div>
-            <div>{deliveryInfo.address.readableAddress}</div>
-          </div>
-
-          <div className='flex gap-4'>
-            <div>Подъезд:</div>
-            <div>{deliveryInfo.entrance || 'Не назначен'}</div>
-          </div>
-
-          <div className='flex gap-4'>
-            <div>Домофон:</div>
-            <div>{deliveryInfo.intercom || 'Не назначен'}</div>
-          </div>
-
-          <div className='flex gap-4'>
-            <div>Этаж:</div>
-            <div>{deliveryInfo.floor || 'Не назначен'}</div>
-          </div>
-
-          <div className='flex gap-4'>
-            <div>Квартира / офис:</div>
-            <div>{deliveryInfo.apartment || 'Не назначена'}</div>
-          </div>
-
-          <div className='flex gap-4'>
-            <div>Желаемая дата и время доставки:</div>
-            <div>
-              {deliveryInfo.desiredDeliveryDate ? (
-                <FormattedDateTime value={deliveryInfo.desiredDeliveryDate} />
-              ) : (
-                'Не назначена'
-              )}
-            </div>
-          </div>
-
-          <div className='flex gap-4'>
-            <div>Имя и фамилия:</div>
-            <div>{deliveryInfo.recipientName || 'Не назначен'}</div>
-          </div>
-
-          <div className='flex gap-4'>
-            <div>Телефон:</div>
-            <div>{deliveryInfo.recipientPhone || 'Не назначен'}</div>
-          </div>
-
-          <div className='flex gap-4'>
-            <div>Комментарий курьеру:</div>
-            <div>{deliveryInfo.commentForCourier || 'Не назначен'}</div>
-          </div>
-        </div>
-      ) : null}
+      <OrderDeliveryInfo
+        itemClassName={'flex gap-4'}
+        deliveryInfo={deliveryInfo}
+        className={'mb-4'}
+      />
 
       <Button
         size={'small'}

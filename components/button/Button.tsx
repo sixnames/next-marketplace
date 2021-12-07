@@ -60,7 +60,7 @@ const Button: React.FC<ButtonPropsInterface> = ({
     ? `rounded-full ${isSmall ? 'w-[var(--smallButtonHeight)]' : 'w-[var(--formInputHeight)]'}`
     : childrenClass;
   const additionalClass = className ? className : '';
-  const buttonClass = `z-[5] flex items-center justify-center border-1 border-theme font-medium uppercase text-center text-sm transition-all duration-100 cursor-pointer disabled:opacity-50 disabled:pointer-events-none shadow-md hover:shadow-xl ${sizeClass} ${themeClass} ${circleClass} ${additionalClass}`;
+  const buttonClass = `z-[5] flex items-center pt-[3px] justify-center border-1 border-theme font-medium uppercase text-center text-sm transition-all duration-100 cursor-pointer disabled:opacity-50 disabled:pointer-events-none shadow-md hover:shadow-xl ${sizeClass} ${themeClass} ${circleClass} ${additionalClass}`;
 
   return (
     <div className={`relative ${frameClassName ? frameClassName : 'w-full'}`}>

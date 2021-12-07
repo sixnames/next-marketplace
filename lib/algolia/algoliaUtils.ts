@@ -1,9 +1,5 @@
 import algoliasearch from 'algoliasearch';
 import { SearchClient, SearchIndex } from 'algoliasearch/dist/algoliasearch';
-import { HITS_PER_PAGE } from 'config/common';
-import { ObjectIdModel } from 'db/dbModels';
-import { ProductInterface, ShopProductInterface } from 'db/uiInterfaces';
-import { ObjectId } from 'mongodb';
 
 interface GetAlgoliaClientPayloadInterface {
   algoliaClient: SearchClient;
@@ -64,42 +60,5 @@ export const deleteAlgoliaObjects = async ({
   } catch (e) {
     console.log(e);
     return false;
-  }
-};
-
-interface GetAlgoliaProductsSearch {
-  search: string;
-  excludedProductsIds?: ObjectIdModel[] | null;
-}
-
-export const getAlgoliaProductsSearch = async ({
-  search,
-  excludedProductsIds,
-}: GetAlgoliaProductsSearch): Promise<ObjectId[]> => {
-  const { algoliaIndex } = getAlgoliaClient(`${process.env.ALG_INDEX_PRODUCTS}`);
-  const searchIds: ObjectId[] = [];
-  try {
-    const { hits } = await algoliaIndex.search<ProductInterface | ShopProductInterface>(
-      `${search}`,
-      {
-        hitsPerPage: HITS_PER_PAGE,
-        // optionalWords: `${search}`.split(' ').slice(1),
-      },
-    );
-    hits.forEach((hit) => {
-      const hitId = new ObjectId(hit._id);
-      const exist = (excludedProductsIds || []).some((_id) => {
-        return _id.equals(hitId);
-      });
-
-      if (!exist) {
-        searchIds.push(hitId);
-      }
-    });
-
-    return searchIds;
-  } catch (e) {
-    console.log(e);
-    return searchIds;
   }
 };

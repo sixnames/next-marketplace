@@ -9,7 +9,7 @@ import { ignoreNoImageStage, shopProductFieldsPipeline } from 'db/dao/constantPi
 import { ObjectIdModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { ShopProductInterface } from 'db/uiInterfaces';
-import { getAlgoliaProductsSearch } from 'lib/algolia/algoliaUtils';
+import { getAlgoliaProductsSearch } from 'lib/algolia/product';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { getTreeFromList } from 'lib/optionUtils';

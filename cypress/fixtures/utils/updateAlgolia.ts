@@ -5,6 +5,8 @@ import { ProductModel } from '../../../db/dbModels';
 require('dotenv').config();
 
 async function updateProds() {
+  // TODO index name in dbConfig
+  // TODO updateAlgoliaProduct function
   for await (const dbConfig of dbsConfig) {
     console.log(' ');
     console.log('>>>>>>>>>>>>>>>>>>>>>>>>');

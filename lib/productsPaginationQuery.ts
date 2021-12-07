@@ -13,7 +13,7 @@ import {
 } from 'config/common';
 import { getDatabase } from 'db/mongodb';
 import { ProductsPaginationAggregationInterface } from 'db/uiInterfaces';
-import { getAlgoliaProductsSearch } from 'lib/algolia/algoliaUtils';
+import { getAlgoliaProductsSearch } from 'lib/algolia/product';
 import { noNaN } from 'lib/numbers';
 import { AggregateOptions, ObjectId } from 'mongodb';
 

@@ -175,7 +175,7 @@ export const DELIVERY_VARIANT_OPTIONS: ConstantOptionsType = [
   {
     _id: ORDER_DELIVERY_VARIANT_COURIER,
     nameI18n: {
-      [DEFAULT_LOCALE]: 'Курьером',
+      [DEFAULT_LOCALE]: 'Доставка курьером',
       [SECONDARY_LOCALE]: 'By courier',
     },
   },

@@ -24,6 +24,7 @@ import {
   CartModel,
   CompanyModel,
   OrderCustomerModel,
+  OrderDeliveryInfoModel,
   OrderDeliveryVariantModel,
   OrderLogModel,
   OrderModel,
@@ -65,6 +66,7 @@ export interface MakeAnOrderShopConfigInterface {
   _id: string;
   deliveryVariant: OrderDeliveryVariantModel;
   paymentVariant: OrderPaymentVariantModel;
+  deliveryInfo?: OrderDeliveryInfoModel | null;
 }
 
 export interface MakeAnOrderInputInterface {
@@ -305,6 +307,15 @@ export async function makeAnOrder({
             paymentVariant: allowDelivery
               ? shopConfig.paymentVariant
               : ORDER_PAYMENT_VARIANT_RECEIPT,
+            deliveryInfo:
+              allowDelivery && shopConfig.deliveryInfo
+                ? {
+                    ...shopConfig.deliveryInfo,
+                    recipientPhone: shopConfig.deliveryInfo.recipientPhone
+                      ? phoneToRaw(shopConfig.deliveryInfo.recipientPhone)
+                      : null,
+                  }
+                : null,
             createdAt: new Date(),
             updatedAt: new Date(),
           };

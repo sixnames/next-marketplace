@@ -1,16 +1,21 @@
 import { GoogleMap, Marker, useLoadScript } from '@react-google-maps/api';
+import Button from 'components/button/Button';
 import ControlButton from 'components/button/ControlButton';
 import FormikAddressInput from 'components/FormElements/Input/FormikAddressInput';
+import FormikDatePicker from 'components/FormElements/Input/FormikDatePicker';
+import FormikInput from 'components/FormElements/Input/FormikInput';
+import FormikTextarea from 'components/FormElements/Textarea/FormikTextarea';
 import Inner from 'components/Inner';
 import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
 import Title from 'components/Title';
-import { MAP_DEFAULT_CENTER } from 'config/common';
+import { DATE_FORMAT_FULL, GEO_POINT_TYPE, MAP_DEFAULT_CENTER } from 'config/common';
 import { useAppContext } from 'context/appContext';
 import { useLocaleContext } from 'context/localeContext';
-import { CoordinatesModel } from 'db/dbModels';
+import { AddressModel, CoordinatesModel, OrderDeliveryInfoModel } from 'db/dbModels';
 import { Form, Formik } from 'formik';
-import { ReverseGeocodePayload } from 'lib/geocode';
+import { getReadableAddress } from 'lib/addressUtils';
+import { GeocodeResultInterface, ReverseGeocodePayload } from 'lib/geocode';
 import fetch from 'node-fetch';
 import * as React from 'react';
 
@@ -19,11 +24,19 @@ const mapContainerStyle = {
   height: '100%',
 };
 
-export interface OrderDeliveryAddressModalInterface {
-  confirm: (values: any) => void;
+interface OrderDeliveryAddressModalValuesInterface extends Omit<OrderDeliveryInfoModel, 'address'> {
+  address: GeocodeResultInterface | null;
 }
 
-const OrderDeliveryAddressModal: React.FC<OrderDeliveryAddressModalInterface> = ({ confirm }) => {
+export interface OrderDeliveryAddressModalInterface {
+  confirm: (values: OrderDeliveryInfoModel) => void;
+  deliveryInfo?: OrderDeliveryInfoModel | null;
+}
+
+const OrderDeliveryAddressModal: React.FC<OrderDeliveryAddressModalInterface> = ({
+  confirm,
+  deliveryInfo,
+}) => {
   const { locale } = useLocaleContext();
   const { hideModal, ipInfo } = useAppContext();
   const [marker, setMarker] = React.useState<CoordinatesModel | null>(null);
@@ -64,12 +77,47 @@ const OrderDeliveryAddressModal: React.FC<OrderDeliveryAddressModalInterface> = 
   }
 
   return (
-    <Formik
+    <Formik<OrderDeliveryAddressModalValuesInterface>
       initialValues={{
-        address: null,
+        address: deliveryInfo?.address
+          ? {
+              formattedAddress: deliveryInfo.address.formattedAddress,
+              addressComponents: deliveryInfo.address.addressComponents,
+              point: deliveryInfo.address.mapCoordinates,
+            }
+          : null,
+        entrance: deliveryInfo?.entrance,
+        intercom: deliveryInfo?.intercom,
+        floor: deliveryInfo?.floor,
+        apartment: deliveryInfo?.apartment,
+        commentForCourier: deliveryInfo?.commentForCourier,
+        recipientName: deliveryInfo?.recipientName,
+        recipientPhone: deliveryInfo?.recipientPhone,
+        desiredDeliveryDate: deliveryInfo?.desiredDeliveryDate,
       }}
-      onSubmit={(values) => {
-        confirm(values);
+      onSubmit={(values, { setFieldError }) => {
+        if (!values.address) {
+          setFieldError('address', 'Укажите адрес');
+          return;
+        }
+        const { point, addressComponents, formattedAddress } = values.address;
+        const selectedAddress: AddressModel = {
+          formattedAddress,
+          addressComponents,
+          readableAddress: getReadableAddress(addressComponents),
+          mapCoordinates: {
+            lat: point.lat,
+            lng: point.lng,
+          },
+          point: {
+            type: GEO_POINT_TYPE,
+            coordinates: [point.lng, point.lat],
+          },
+        };
+        confirm({
+          ...values,
+          address: selectedAddress,
+        });
       }}
     >
       {({ setFieldValue }) => {
@@ -89,17 +137,52 @@ const OrderDeliveryAddressModal: React.FC<OrderDeliveryAddressModalInterface> = 
 
               <div className='relative z-10 flex-grow grid grid-cols-6'>
                 <div className='relative z-20 col-span-2 bg-primary wp-shadow-200'>
-                  <Inner wide>
-                    <FormikAddressInput
-                      name={'address'}
-                      label={'Поиск по адресу'}
-                      onAddressSelect={(result) => {
-                        setCenter(result.point);
-                        setZoom(19);
-                        setMarker(result.point);
-                      }}
-                    />
-                  </Inner>
+                  <div className='absolute inset-0 overflow-x-hidden overflow-y-auto'>
+                    <Inner wide>
+                      {/*address fields*/}
+                      <div className='mb-16'>
+                        <div className='font-medium text-xl lg:text-2xl mb-4'>Адрес доставки</div>
+                        <FormikAddressInput
+                          name={'address'}
+                          label={'Адрес'}
+                          isRequired
+                          showInlineError
+                          onAddressSelect={(result) => {
+                            setCenter(result.point);
+                            setZoom(19);
+                            setMarker(result.point);
+                          }}
+                        />
+
+                        <div className='grid grid-cols-2 gap-x-6'>
+                          <FormikInput name={'entrance'} label={'Подъезд'} type={'number'} />
+                          <FormikInput name={'intercom'} label={'Домофон'} />
+                          <FormikInput name={'floor'} label={'Этаж'} type={'number'} />
+                          <FormikInput name={'apartment'} label={'Квартира / офис'} />
+                        </div>
+
+                        <FormikDatePicker
+                          showTimeSelect
+                          dateFormat={DATE_FORMAT_FULL}
+                          label={'Желаемая дата и время доставки'}
+                          name={'desiredDeliveryDate'}
+                          testId={'desiredDeliveryDate'}
+                        />
+
+                        <FormikTextarea name={'commentForCourier'} label={'Комментарий курьеру'} />
+                      </div>
+
+                      {/*recipient fields*/}
+                      <div className='mb-16'>
+                        <div className='font-medium text-xl lg:text-2xl mb-4'>
+                          Данные получателя
+                        </div>
+                        <FormikInput name={'recipientName'} label={'Имя и фамилия'} />
+                        <FormikInput name={'recipientPhone'} type={'tel'} label={'Телефон'} />
+                        <Button type={'submit'}>Сохранить</Button>
+                      </div>
+                    </Inner>
+                  </div>
                 </div>
                 <div className='relative z-10 col-span-4'>
                   <GoogleMap
@@ -130,7 +213,7 @@ const OrderDeliveryAddressModal: React.FC<OrderDeliveryAddressModalInterface> = 
                             if (geocodeResult) {
                               const { formatted_address, geometry, address_components } =
                                 geocodeResult;
-                              const selectedAddress = {
+                              const selectedAddress: GeocodeResultInterface = {
                                 formattedAddress: formatted_address,
                                 point: {
                                   lat: geometry.location.lat,

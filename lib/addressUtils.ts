@@ -14,17 +14,39 @@ export function getReadableAddress(addressComponents: AddressComponentModel[]): 
 
     const streetNumberType = 'street_number' as AddressType | GeocodingAddressComponentType;
     const streetType = 'route' as AddressType | GeocodingAddressComponentType;
-    const cityType = 'administrative_area_level_2' as AddressType | GeocodingAddressComponentType;
+    const excludedTypes = [
+      'administrative_area_level_1',
+      'administrative_area_level_3',
+      'sublocality_level_1',
+      'sublocality',
+      'country',
+    ] as Array<AddressType | GeocodingAddressComponentType>;
+    const cityTypes = ['administrative_area_level_2', 'locality', 'political'] as Array<
+      AddressType | GeocodingAddressComponentType
+    >;
+
+    const excluded = types.some((type) => {
+      return excludedTypes.includes(type);
+    });
+
+    if (excluded) {
+      return;
+    }
 
     if (types.includes(streetNumberType)) {
       streetNumber = shortName;
+      return;
     }
 
     if (types.includes(streetType)) {
       street = shortName;
+      return;
     }
 
-    if (types.includes(cityType)) {
+    const isCity = types.some((type) => {
+      return cityTypes.includes(type);
+    });
+    if (isCity) {
       city = shortName;
     }
   });

@@ -1,6 +1,7 @@
 import Button from 'components/button/Button';
 import { CartProduct, CartShoplessProduct } from 'components/cart/CartProduct';
 import CartAside from 'components/CartAside';
+import FormattedDateTime from 'components/FormattedDateTime';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import FormikTextarea from 'components/FormElements/Textarea/FormikTextarea';
@@ -9,6 +10,7 @@ import { OrderDeliveryAddressModalInterface } from 'components/Modal/OrderDelive
 import Notification from 'components/Notification';
 import {
   DEFAULT_COMPANY_SLUG,
+  ORDER_DELIVERY_VARIANT_COURIER,
   ORDER_DELIVERY_VARIANT_PICKUP,
   ORDER_PAYMENT_VARIANT_RECEIPT,
 } from 'config/common';
@@ -19,13 +21,15 @@ import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
 import { useSiteUserContext } from 'context/siteUserContext';
 import { MakeAnOrderShopConfigInterface } from 'db/dao/order/makeAnOrder';
+import { OrderDeliveryInfoModel } from 'db/dbModels';
 import { CartInterface, CartProductInterface, ShopInterface } from 'db/uiInterfaces';
-import { Form, Formik } from 'formik';
+import { Form, Formik, useFormikContext } from 'formik';
 import { useShopMarker } from 'hooks/useShopMarker';
 import LayoutCard from 'layout/LayoutCard';
 import { phoneToRaw } from 'lib/phoneUtils';
 import { CartTabIndexType, MakeOrderFormInterface } from 'pages/[companySlug]/[citySlug]/cart';
 import * as React from 'react';
+import { get } from 'lodash';
 
 interface DefaultCartShopInterface
   extends MakeAnOrderShopConfigInterface,
@@ -49,8 +53,15 @@ const DefaultCartShop: React.FC<DefaultCartShopUIInterface> = ({
   index,
   allowDelivery,
 }) => {
+  const { values, setFieldValue } = useFormikContext();
   const marker = useShopMarker(shop);
-  const { showModal } = useAppContext();
+  const { showModal, hideModal } = useAppContext();
+  const deliveryVariantFieldName = `shopConfigs[${index}].deliveryVariant`;
+  const deliveryVariant = get(values, deliveryVariantFieldName);
+  const deliveryInfo = get(
+    values,
+    `shopConfigs[${index}].deliveryInfo`,
+  ) as OrderDeliveryInfoModel | null;
 
   return (
     <LayoutCard key={`${shop._id}`}>
@@ -84,39 +95,103 @@ const DefaultCartShop: React.FC<DefaultCartShopUIInterface> = ({
         </div>
 
         {allowDelivery ? (
-          <div className='lg:grid grid-cols-2 gap-x-6 mt-6'>
-            <div>
+          <div>
+            <div className='grid lg:grid-cols-2 gap-6 mt-6'>
               <FormikSelect
                 low
                 label={'Способ получения'}
-                name={'shopConfigs[0].deliveryVariant'}
+                name={deliveryVariantFieldName}
                 options={DELIVERY_VARIANT_OPTIONS}
                 isRequired
+                showInlineError
               />
+
+              <FormikSelect
+                low
+                label={'Оплата'}
+                name={`shopConfigs[${index}].paymentVariant`}
+                options={PAYMENT_VARIANT_OPTIONS}
+                isRequired
+              />
+            </div>
+
+            {deliveryVariant === ORDER_DELIVERY_VARIANT_COURIER ? (
               <div className='mt-4'>
+                {deliveryInfo && deliveryInfo.address ? (
+                  <div className='mb-4 space-y-4'>
+                    <div className='flex gap-4'>
+                      <div>Адрес:</div>
+                      <div>{deliveryInfo.address.readableAddress}</div>
+                    </div>
+
+                    <div className='flex gap-4'>
+                      <div>Подъезд:</div>
+                      <div>{deliveryInfo.entrance || 'Не назначен'}</div>
+                    </div>
+
+                    <div className='flex gap-4'>
+                      <div>Домофон:</div>
+                      <div>{deliveryInfo.intercom || 'Не назначен'}</div>
+                    </div>
+
+                    <div className='flex gap-4'>
+                      <div>Этаж:</div>
+                      <div>{deliveryInfo.floor || 'Не назначен'}</div>
+                    </div>
+
+                    <div className='flex gap-4'>
+                      <div>Квартира / офис:</div>
+                      <div>{deliveryInfo.apartment || 'Не назначена'}</div>
+                    </div>
+
+                    <div className='flex gap-4'>
+                      <div>Желаемая дата и время доставки:</div>
+                      <div>
+                        {deliveryInfo.desiredDeliveryDate ? (
+                          <FormattedDateTime value={deliveryInfo.desiredDeliveryDate} />
+                        ) : (
+                          'Не назначена'
+                        )}
+                      </div>
+                    </div>
+
+                    <div className='flex gap-4'>
+                      <div>Имя и фамилия:</div>
+                      <div>{deliveryInfo.recipientName || 'Не назначен'}</div>
+                    </div>
+
+                    <div className='flex gap-4'>
+                      <div>Телефон:</div>
+                      <div>{deliveryInfo.recipientPhone || 'Не назначен'}</div>
+                    </div>
+
+                    <div className='flex gap-4'>
+                      <div>Комментарий курьеру:</div>
+                      <div>{deliveryInfo.commentForCourier || 'Не назначен'}</div>
+                    </div>
+                  </div>
+                ) : null}
+
                 <Button
                   size={'small'}
+                  theme={deliveryInfo ? 'gray' : 'primary'}
                   onClick={() => {
                     showModal<OrderDeliveryAddressModalInterface>({
                       variant: ORDER_DELIVERY_ADDRESS_MODAL,
                       props: {
-                        confirm: () => {},
+                        deliveryInfo,
+                        confirm: (values) => {
+                          setFieldValue(`shopConfigs[${index}].deliveryInfo`, values);
+                          hideModal();
+                        },
                       },
                     });
                   }}
                 >
-                  Указать адрес
+                  {deliveryInfo ? 'Изменить адрес' : 'Указать адрес'}
                 </Button>
               </div>
-            </div>
-
-            <FormikSelect
-              low
-              label={'Оплата'}
-              name={'shopConfigs[0].paymentVariant'}
-              options={PAYMENT_VARIANT_OPTIONS}
-              isRequired
-            />
+            ) : null}
           </div>
         ) : null}
 

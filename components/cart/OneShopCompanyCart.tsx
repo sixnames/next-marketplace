@@ -1,9 +1,8 @@
 import { CartProduct } from 'components/cart/CartProduct';
-import { CartAddressPicker } from 'components/cart/DefaultCart';
+import { CartDeliveryFields } from 'components/cart/DefaultCart';
 import CartAside from 'components/CartAside';
 import FormikDatePicker from 'components/FormElements/Input/FormikDatePicker';
 import FormikInput from 'components/FormElements/Input/FormikInput';
-import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import FormikTextarea from 'components/FormElements/Textarea/FormikTextarea';
 import Notification from 'components/Notification';
 import RequestError from 'components/RequestError';
@@ -12,7 +11,6 @@ import {
   ORDER_DELIVERY_VARIANT_PICKUP,
   ORDER_PAYMENT_VARIANT_RECEIPT,
 } from 'config/common';
-import { DELIVERY_VARIANT_OPTIONS, PAYMENT_VARIANT_OPTIONS } from 'config/constantSelects';
 import { useConfigContext } from 'context/configContext';
 import { useNotificationsContext } from 'context/notificationsContext';
 import { useSiteContext } from 'context/siteContext';
@@ -68,7 +66,10 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
     shopConfigs: [
       {
         _id: `${domainCompany.mainShop._id}`,
-        deliveryVariant: ORDER_DELIVERY_VARIANT_PICKUP,
+        deliveryVariant:
+          cartDeliveryProducts.length > 0 && tabIndex === 0
+            ? ORDER_DELIVERY_VARIANT_COURIER
+            : ORDER_DELIVERY_VARIANT_PICKUP,
         paymentVariant: ORDER_PAYMENT_VARIANT_RECEIPT,
       },
     ],
@@ -134,6 +135,7 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
                         {cartDeliveryProducts.map((cartProduct, index) => {
                           return (
                             <CartProduct
+                              shopIndex={0}
                               fieldName={`cartDeliveryProducts[${index}].amount`}
                               testId={index}
                               cartProduct={cartProduct}
@@ -206,23 +208,7 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
                         <div>Способ получения и оплата</div>
                       </div>
 
-                      <div className='lg:grid grid-cols-2 gap-x-6'>
-                        <FormikSelect
-                          label={'Способ получения'}
-                          name={'shopConfigs[0].deliveryVariant'}
-                          options={DELIVERY_VARIANT_OPTIONS}
-                          isRequired
-                        />
-
-                        <FormikSelect
-                          label={'Оплата'}
-                          name={'shopConfigs[0].paymentVariant'}
-                          options={PAYMENT_VARIANT_OPTIONS}
-                          isRequired
-                        />
-                      </div>
-
-                      <CartAddressPicker index={0} />
+                      <CartDeliveryFields index={0} />
                     </div>
                   </div>
 
@@ -293,6 +279,7 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
                         {cartBookingProducts.map((cartProduct, index) => {
                           return (
                             <CartProduct
+                              shopIndex={0}
                               fieldName={`cartBookingProducts[${index}].amount`}
                               testId={index}
                               cartProduct={cartProduct}

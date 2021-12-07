@@ -11,7 +11,6 @@ import OrderDeliveryInfo from 'components/order/OrderDeliveryInfo';
 import {
   DEFAULT_COMPANY_SLUG,
   ORDER_DELIVERY_VARIANT_COURIER,
-  ORDER_DELIVERY_VARIANT_PICKUP,
   ORDER_PAYMENT_VARIANT_RECEIPT,
 } from 'config/common';
 import { DELIVERY_VARIANT_OPTIONS, PAYMENT_VARIANT_OPTIONS } from 'config/constantSelects';
@@ -34,11 +33,11 @@ import * as React from 'react';
 import { get } from 'lodash';
 import { makeAnOrderSchema } from 'validation/orderSchema';
 
-interface CartAddressPickerInterface {
+interface CartDeliveryFieldsInterface {
   index: number;
 }
 
-export const CartAddressPicker: React.FC<CartAddressPickerInterface> = ({ index }) => {
+export const CartDeliveryFields: React.FC<CartDeliveryFieldsInterface> = ({ index }) => {
   const { showModal, hideModal } = useAppContext();
   const { values, setFieldValue } = useFormikContext();
   const deliveryVariantFieldName = `shopConfigs[${index}].deliveryVariant`;
@@ -48,36 +47,55 @@ export const CartAddressPicker: React.FC<CartAddressPickerInterface> = ({ index 
     `shopConfigs[${index}].deliveryInfo`,
   ) as OrderDeliveryInfoModel | null;
 
-  if (deliveryVariant !== ORDER_DELIVERY_VARIANT_COURIER) {
-    return null;
-  }
-
   return (
-    <div className='mt-4'>
-      <OrderDeliveryInfo
-        itemClassName={'flex gap-4'}
-        deliveryInfo={deliveryInfo}
-        className={'mb-4'}
-      />
+    <div>
+      <div className='grid lg:grid-cols-2 gap-6 mt-6'>
+        <FormikSelect
+          low
+          label={'Способ получения'}
+          name={`shopConfigs[${index}].deliveryVariant`}
+          options={DELIVERY_VARIANT_OPTIONS}
+          isRequired
+          showInlineError
+        />
 
-      <Button
-        size={'small'}
-        theme={deliveryInfo ? 'gray' : 'primary'}
-        onClick={() => {
-          showModal<OrderDeliveryAddressModalInterface>({
-            variant: ORDER_DELIVERY_ADDRESS_MODAL,
-            props: {
-              deliveryInfo,
-              confirm: (values) => {
-                setFieldValue(`shopConfigs[${index}].deliveryInfo`, values);
-                hideModal();
-              },
-            },
-          });
-        }}
-      >
-        {deliveryInfo ? 'Изменить адрес' : 'Указать адрес'}
-      </Button>
+        <FormikSelect
+          low
+          label={'Оплата'}
+          name={`shopConfigs[${index}].paymentVariant`}
+          options={PAYMENT_VARIANT_OPTIONS}
+          isRequired
+        />
+      </div>
+
+      {deliveryVariant === ORDER_DELIVERY_VARIANT_COURIER ? (
+        <div className='mt-4'>
+          <OrderDeliveryInfo
+            itemClassName={'flex gap-4'}
+            deliveryInfo={deliveryInfo}
+            className={'mb-4'}
+          />
+
+          <Button
+            size={'small'}
+            theme={deliveryInfo ? 'gray' : 'primary'}
+            onClick={() => {
+              showModal<OrderDeliveryAddressModalInterface>({
+                variant: ORDER_DELIVERY_ADDRESS_MODAL,
+                props: {
+                  deliveryInfo,
+                  confirm: (values) => {
+                    setFieldValue(`shopConfigs[${index}].deliveryInfo`, values);
+                    hideModal();
+                  },
+                },
+              });
+            }}
+          >
+            {deliveryInfo ? 'Изменить адрес' : 'Указать адрес'}
+          </Button>
+        </div>
+      ) : null}
     </div>
   );
 };
@@ -138,30 +156,7 @@ const DefaultCartShop: React.FC<DefaultCartShopUIInterface> = ({
           <div className='text-theme'>Показать на карте</div>
         </div>
 
-        {allowDelivery ? (
-          <div>
-            <div className='grid lg:grid-cols-2 gap-6 mt-6'>
-              <FormikSelect
-                low
-                label={'Способ получения'}
-                name={`shopConfigs[${index}].deliveryVariant`}
-                options={DELIVERY_VARIANT_OPTIONS}
-                isRequired
-                showInlineError
-              />
-
-              <FormikSelect
-                low
-                label={'Оплата'}
-                name={`shopConfigs[${index}].paymentVariant`}
-                options={PAYMENT_VARIANT_OPTIONS}
-                isRequired
-              />
-            </div>
-
-            <CartAddressPicker index={index} />
-          </div>
-        ) : null}
+        {allowDelivery ? <CartDeliveryFields index={index} /> : null}
 
         {showPriceWarning && shop.priceWarning ? (
           <div className='mt-6'>
@@ -180,6 +175,7 @@ const DefaultCartShop: React.FC<DefaultCartShopUIInterface> = ({
           return (
             <CartProduct
               defaultView
+              shopIndex={index}
               fieldName={`shopConfigs[${index}].cartProducts[${cartProductIndex}].amount`}
               cartProduct={cartProduct}
               testId={`${index}${cartProductIndex}`}
@@ -244,7 +240,7 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
         ...shop,
         _id: `${shop._id}`,
         cartProducts: [cartProduct],
-        deliveryVariant: ORDER_DELIVERY_VARIANT_PICKUP,
+        deliveryVariant: ORDER_DELIVERY_VARIANT_COURIER,
         paymentVariant: ORDER_PAYMENT_VARIANT_RECEIPT,
       };
       shopConfigs.push(newShopConfig);

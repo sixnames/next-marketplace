@@ -1,5 +1,5 @@
 import ControlButton from 'components/button/ControlButton';
-import { useSiteUserContext } from 'context/userSiteUserContext';
+import { useSiteUserContext } from 'context/siteUserContext';
 import { ProductInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 

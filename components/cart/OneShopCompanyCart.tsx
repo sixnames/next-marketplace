@@ -1,17 +1,23 @@
 import { CartProduct } from 'components/cart/CartProduct';
+import { CartAddressPicker } from 'components/cart/DefaultCart';
 import CartAside from 'components/CartAside';
-import FakeInput from 'components/FormElements/Input/FakeInput';
 import FormikDatePicker from 'components/FormElements/Input/FormikDatePicker';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import FormikTextarea from 'components/FormElements/Textarea/FormikTextarea';
 import Notification from 'components/Notification';
 import RequestError from 'components/RequestError';
-import { ORDER_DELIVERY_VARIANT_PICKUP, ORDER_PAYMENT_VARIANT_RECEIPT } from 'config/common';
+import {
+  ORDER_DELIVERY_VARIANT_COURIER,
+  ORDER_DELIVERY_VARIANT_PICKUP,
+  ORDER_PAYMENT_VARIANT_RECEIPT,
+} from 'config/common';
 import { DELIVERY_VARIANT_OPTIONS, PAYMENT_VARIANT_OPTIONS } from 'config/constantSelects';
 import { useConfigContext } from 'context/configContext';
+import { useNotificationsContext } from 'context/notificationsContext';
 import { useSiteContext } from 'context/siteContext';
-import { useSiteUserContext } from 'context/userSiteUserContext';
+import { useSiteUserContext } from 'context/siteUserContext';
+import { MakeAnOrderShopConfigInterface } from 'db/dao/order/makeAnOrder';
 import { CartInterface, CompanyInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import { phoneToRaw } from 'lib/phoneUtils';
@@ -30,6 +36,7 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
   tabIndex,
 }) => {
   const { makeAnOrder } = useSiteContext();
+  const { showErrorNotification } = useNotificationsContext();
   const { configs } = useConfigContext();
   const sessionUser = useSiteUserContext();
   const disabled = !!sessionUser;
@@ -70,6 +77,23 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
           enableReinitialize={true}
           initialValues={initialValues}
           onSubmit={(values) => {
+            const noAddressShopConfigs = values.shopConfigs.reduce(
+              (acc: MakeAnOrderShopConfigInterface[], shopConfig) => {
+                if (shopConfig.deliveryVariant !== ORDER_DELIVERY_VARIANT_COURIER) {
+                  return acc;
+                }
+                if (!shopConfig.deliveryInfo || !shopConfig.deliveryInfo.address) {
+                  return [...acc, shopConfig];
+                }
+                return acc;
+              },
+              [],
+            );
+            if (noAddressShopConfigs.length > 0) {
+              showErrorNotification({ title: 'Не у всех магазинов указан адрес доставки' });
+              return;
+            }
+
             makeAnOrder({
               name: values.name,
               lastName: values.lastName,
@@ -191,6 +215,8 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
                           isRequired
                         />
                       </div>
+
+                      <CartAddressPicker index={0} />
                     </div>
                   </div>
 
@@ -326,35 +352,6 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
                           name={'comment'}
                           label={'Комментарий к заказу'}
                         />
-                      </div>
-                    </div>
-
-                    {/* delivery and payment */}
-                    <div className='relative z-20 mb-12'>
-                      <div className='flex items-center gap-4 mb-8 text-lg font-medium'>
-                        <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
-                          3
-                        </div>
-                        <div>Способ получения и оплата</div>
-                      </div>
-
-                      <div className='lg:grid grid-cols-2 gap-x-6'>
-                        <div>
-                          <FormikSelect
-                            label={'Способ получения'}
-                            name={'shopConfigs[0].deliveryVariant'}
-                            options={DELIVERY_VARIANT_OPTIONS}
-                            disabled
-                          />
-                          <Notification
-                            variant={'success'}
-                            message={
-                              'Для полученя забронированного товара необходим документ подтверждающий личность.'
-                            }
-                          />
-                        </div>
-
-                        <FakeInput label={'Оплата'} value={'Оплата при получении'} />
                       </div>
                     </div>
                   </div>

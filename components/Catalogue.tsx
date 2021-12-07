@@ -8,7 +8,7 @@ import PageEditor from 'components/PageEditor';
 import Pager from 'components/Pager';
 import SeoTextLocalesInfoList from 'components/SeoTextLocalesInfoList';
 import { CATALOGUE_HEAD_LAYOUT_WITH_CATEGORIES } from 'config/constantSelects';
-import { useSiteUserContext } from 'context/userSiteUserContext';
+import { useSiteUserContext } from 'context/siteUserContext';
 import { CatalogueBreadcrumbModel, SeoContentModel } from 'db/dbModels';
 import ProductSnippetGrid from 'layout/snippet/ProductSnippetGrid';
 import ProductSnippetRow from 'layout/snippet/ProductSnippetRow';

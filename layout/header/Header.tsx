@@ -9,7 +9,7 @@ import { getConstantTranslation } from 'config/constantTranslations';
 import { MAP_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { useLocaleContext } from 'context/localeContext';
-import { useSiteUserContext } from 'context/userSiteUserContext';
+import { useSiteUserContext } from 'context/siteUserContext';
 import { PagesGroupInterface } from 'db/uiInterfaces';
 import { useShopMarker } from 'hooks/useShopMarker';
 import useSignOut from 'hooks/useSignOut';

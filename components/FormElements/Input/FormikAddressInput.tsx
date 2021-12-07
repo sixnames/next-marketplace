@@ -14,6 +14,7 @@ interface FormikAddressInputConsumerInterface extends AddressInputType {
   setFieldValue: (field: string, value: any, shouldValidate?: boolean | undefined) => void;
   fieldValue?: GeocodeResultInterface | null;
   showInlineError?: boolean;
+  onAddressSelect?: (result: GeocodeResultInterface) => void;
   error?: any;
 }
 
@@ -23,6 +24,7 @@ const FormikAddressInputConsumer: React.FC<FormikAddressInputConsumerInterface> 
   name,
   fieldValue,
   disabled,
+  onAddressSelect,
   ...props
 }) => {
   const { locale } = useLocaleContext();
@@ -121,7 +123,12 @@ const FormikAddressInputConsumer: React.FC<FormikAddressInputConsumerInterface> 
                 return (
                   <div
                     data-cy={`address-result-${index}`}
-                    onClick={() => setFieldValue(name, result)}
+                    onClick={() => {
+                      if (onAddressSelect) {
+                        onAddressSelect(result);
+                      }
+                      setFieldValue(name, result);
+                    }}
                     className='px-4 py-2 min-h-[2rem] flex items-center cursor-pointer transition-all duration-200 hover:text-theme'
                     key={`${formattedAddress}-${index}`}
                   >
@@ -139,6 +146,7 @@ const FormikAddressInputConsumer: React.FC<FormikAddressInputConsumerInterface> 
 export interface FormikAddressInputInterface extends AddressInputType {
   frameClass?: string;
   showInlineError?: boolean;
+  onAddressSelect?: (result: GeocodeResultInterface) => void;
 }
 
 const FormikAddressInput: React.FC<FormikAddressInputInterface> = ({

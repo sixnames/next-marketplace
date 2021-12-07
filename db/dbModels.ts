@@ -588,6 +588,18 @@ export enum OrderPaymentVariantModel {
   receipt = 'receipt',
 }
 
+export interface OrderDeliveryInfoModel {
+  address?: AddressModel | null;
+  entrance?: number | null;
+  intercom?: string | null;
+  floor?: number | null;
+  apartment?: string | null;
+  commentForCourier?: string | null;
+  recipientName?: string | null;
+  recipientPhone?: string | null;
+  desiredDeliveryDate?: DateModel | null;
+}
+
 export interface OrderModel extends TimestampModel, BaseModel {
   orderId: string;
   statusId: ObjectIdModel;
@@ -605,6 +617,7 @@ export interface OrderModel extends TimestampModel, BaseModel {
   deliveryVariant: OrderDeliveryVariantModel;
   paymentVariant: OrderPaymentVariantModel;
   reservationDate?: DateModel | null;
+  deliveryInfo?: OrderDeliveryInfoModel | null;
   isCanceled?: boolean;
   requests?: OrderRequestModel[] | null;
   promoId?: ObjectIdModel;

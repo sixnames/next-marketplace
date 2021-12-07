@@ -9,6 +9,7 @@ import Link from 'components/Link/Link';
 import LinkEmail from 'components/Link/LinkEmail';
 import LinkPhone from 'components/Link/LinkPhone';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
+import OrderDeliveryInfo from 'components/order/OrderDeliveryInfo';
 import ProductsListSuppliersList from 'components/shops/ProductsListSuppliersList';
 import Title from 'components/Title';
 import WpImage from 'components/WpImage';
@@ -258,6 +259,7 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
     comment,
     deliveryVariant,
     paymentVariant,
+    deliveryInfo,
   } = order;
 
   const deliveryName = getConstantOptionName({
@@ -320,6 +322,15 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
                       <div className='text-secondary-text'>Доставка</div>
                       <div className='font-medium'>{deliveryName}</div>
                     </div>
+
+                    {/*delivery info*/}
+                    <OrderDeliveryInfo
+                      className={'mb-6'}
+                      labelClassName={'text-secondary-text mb-2'}
+                      itemClassName={'flex gap-2 justify-between'}
+                      valueClassName={'text-right'}
+                      deliveryInfo={deliveryInfo}
+                    />
 
                     {/*payment*/}
                     <div className='flex items-baseline justify-between mb-6'>

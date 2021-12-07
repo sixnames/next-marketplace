@@ -1,4 +1,5 @@
 import { CartProduct } from 'components/cart/CartProduct';
+import { CartAddressPicker } from 'components/cart/DefaultCart';
 import CartAside from 'components/CartAside';
 import FormikDatePicker from 'components/FormElements/Input/FormikDatePicker';
 import FormikInput from 'components/FormElements/Input/FormikInput';
@@ -190,6 +191,8 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
                           isRequired
                         />
                       </div>
+
+                      <CartAddressPicker index={0} />
                     </div>
                   </div>
 

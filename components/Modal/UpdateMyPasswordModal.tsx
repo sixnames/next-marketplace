@@ -1,5 +1,5 @@
 import ModalText from 'components/Modal/ModalText';
-import { useSiteUserContext } from 'context/userSiteUserContext';
+import { useSiteUserContext } from 'context/siteUserContext';
 import { UpdateMyPasswordInputInterface } from 'db/dao/user/updateMyPassword';
 import * as React from 'react';
 import ModalFrame from 'components/Modal/ModalFrame';

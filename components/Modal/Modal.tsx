@@ -52,6 +52,7 @@ import {
   SET_USER_CATEGORY_MODAL,
   CREATE_PROMO_MODAL,
   SHOP_PRODUCT_SUPPLIER_MODAL,
+  ORDER_DELIVERY_ADDRESS_MODAL,
 } from 'config/modalVariants';
 
 const AdultModal = dynamic(() => import('components/Modal/AdultModal'));
@@ -111,6 +112,9 @@ const OrderStatusModal = dynamic(() => import('components/Modal/OrderStatusModal
 const UserCategoryModal = dynamic(() => import('components/Modal/UserCategoryModal'));
 const SetUserCategoryModal = dynamic(() => import('components/Modal/SetUserCategoryModal'));
 const CreatePromoModal = dynamic(() => import('components/Modal/CreatePromoModal'));
+const OrderDeliveryAddressModal = dynamic(
+  () => import('components/Modal/OrderDeliveryAddressModal'),
+);
 
 interface ModalInterface {
   modalType: string;
@@ -229,6 +233,10 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
           {modalType === CREATE_PROMO_MODAL && <CreatePromoModal {...modalProps} />}
 
           {modalType === BARCODE_INTERSECTS_MODAL && <BarcodeIntersectsModal {...modalProps} />}
+
+          {modalType === ORDER_DELIVERY_ADDRESS_MODAL && (
+            <OrderDeliveryAddressModal {...modalProps} />
+          )}
 
           {modalType === SHOP_PRODUCT_BARCODE_INTERSECTS_MODAL && (
             <ShopProductBarcodeIntersectsModal {...modalProps} />

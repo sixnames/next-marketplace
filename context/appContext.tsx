@@ -4,6 +4,7 @@ import { SsrConfigsInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import Router from 'next/router';
 import { debounce } from 'lodash';
+import { IpInfoInterface } from 'types/clientTypes';
 
 interface ContextState {
   isModal: {
@@ -15,6 +16,7 @@ interface ContextState {
   isLoading: boolean;
   sessionCity: string;
   companySlug: string;
+  ipInfo?: IpInfoInterface | null;
 }
 
 type AppContextType = {
@@ -64,6 +66,21 @@ const AppContextProvider: React.FC<AppContextProviderInterface> = ({
     sessionCity: sessionCity || DEFAULT_CITY,
     companySlug: companySlug || DEFAULT_COMPANY_SLUG,
   }));
+
+  React.useEffect(() => {
+    if (!state.ipInfo) {
+      fetch('https://api.ipregistry.co/?key=tryout')
+        .then<IpInfoInterface>((response) => response.json())
+        .then((ipInfo) => {
+          setState((prevState) => {
+            return {
+              ...prevState,
+              ipInfo,
+            };
+          });
+        });
+    }
+  }, [state.ipInfo]);
 
   React.useEffect(() => {
     const inStorage = window.localStorage.getItem(ADULT_KEY);

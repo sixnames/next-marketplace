@@ -1,30 +1,84 @@
+import Button from 'components/button/Button';
 import { CartProduct, CartShoplessProduct } from 'components/cart/CartProduct';
 import CartAside from 'components/CartAside';
-import FakeInput from 'components/FormElements/Input/FakeInput';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import FormikTextarea from 'components/FormElements/Textarea/FormikTextarea';
 import { MapModalInterface } from 'components/Modal/MapModal';
+import { OrderDeliveryAddressModalInterface } from 'components/Modal/OrderDeliveryAddressModal';
 import Notification from 'components/Notification';
+import OrderDeliveryInfo from 'components/order/OrderDeliveryInfo';
 import {
   DEFAULT_COMPANY_SLUG,
+  ORDER_DELIVERY_VARIANT_COURIER,
   ORDER_DELIVERY_VARIANT_PICKUP,
   ORDER_PAYMENT_VARIANT_RECEIPT,
 } from 'config/common';
 import { DELIVERY_VARIANT_OPTIONS, PAYMENT_VARIANT_OPTIONS } from 'config/constantSelects';
-import { MAP_MODAL } from 'config/modalVariants';
+import { MAP_MODAL, ORDER_DELIVERY_ADDRESS_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
+import { useNotificationsContext } from 'context/notificationsContext';
 import { useSiteContext } from 'context/siteContext';
-import { useSiteUserContext } from 'context/userSiteUserContext';
+import { useSiteUserContext } from 'context/siteUserContext';
 import { MakeAnOrderShopConfigInterface } from 'db/dao/order/makeAnOrder';
+import { OrderDeliveryInfoModel } from 'db/dbModels';
 import { CartInterface, CartProductInterface, ShopInterface } from 'db/uiInterfaces';
-import { Form, Formik } from 'formik';
+import { Form, Formik, useFormikContext } from 'formik';
 import { useShopMarker } from 'hooks/useShopMarker';
 import LayoutCard from 'layout/LayoutCard';
 import { phoneToRaw } from 'lib/phoneUtils';
 import { CartTabIndexType, MakeOrderFormInterface } from 'pages/[companySlug]/[citySlug]/cart';
 import * as React from 'react';
+import { get } from 'lodash';
+
+interface CartAddressPickerInterface {
+  index: number;
+}
+
+export const CartAddressPicker: React.FC<CartAddressPickerInterface> = ({ index }) => {
+  const { showModal, hideModal } = useAppContext();
+  const { values, setFieldValue } = useFormikContext();
+  const deliveryVariantFieldName = `shopConfigs[${index}].deliveryVariant`;
+  const deliveryVariant = get(values, deliveryVariantFieldName);
+  const deliveryInfo = get(
+    values,
+    `shopConfigs[${index}].deliveryInfo`,
+  ) as OrderDeliveryInfoModel | null;
+
+  if (deliveryVariant !== ORDER_DELIVERY_VARIANT_COURIER) {
+    return null;
+  }
+
+  return (
+    <div className='mt-4'>
+      <OrderDeliveryInfo
+        itemClassName={'flex gap-4'}
+        deliveryInfo={deliveryInfo}
+        className={'mb-4'}
+      />
+
+      <Button
+        size={'small'}
+        theme={deliveryInfo ? 'gray' : 'primary'}
+        onClick={() => {
+          showModal<OrderDeliveryAddressModalInterface>({
+            variant: ORDER_DELIVERY_ADDRESS_MODAL,
+            props: {
+              deliveryInfo,
+              confirm: (values) => {
+                setFieldValue(`shopConfigs[${index}].deliveryInfo`, values);
+                hideModal();
+              },
+            },
+          });
+        }}
+      >
+        {deliveryInfo ? 'Изменить адрес' : 'Указать адрес'}
+      </Button>
+    </div>
+  );
+};
 
 interface DefaultCartShopInterface
   extends MakeAnOrderShopConfigInterface,
@@ -83,36 +137,29 @@ const DefaultCartShop: React.FC<DefaultCartShopUIInterface> = ({
         </div>
 
         {allowDelivery ? (
-          <div className='lg:grid grid-cols-2 gap-x-6 mt-6'>
-            <FormikSelect
-              low
-              label={'Способ получения'}
-              name={'shopConfigs[0].deliveryVariant'}
-              options={DELIVERY_VARIANT_OPTIONS}
-              isRequired
-            />
+          <div>
+            <div className='grid lg:grid-cols-2 gap-6 mt-6'>
+              <FormikSelect
+                low
+                label={'Способ получения'}
+                name={`shopConfigs[${index}].deliveryVariant`}
+                options={DELIVERY_VARIANT_OPTIONS}
+                isRequired
+                showInlineError
+              />
 
-            <FormikSelect
-              low
-              label={'Оплата'}
-              name={'shopConfigs[0].paymentVariant'}
-              options={PAYMENT_VARIANT_OPTIONS}
-              isRequired
-            />
-          </div>
-        ) : (
-          <div className='lg:grid grid-cols-2 gap-x-6 mt-6'>
-            <FormikSelect
-              low
-              label={'Способ получения'}
-              name={'shopConfigs[0].deliveryVariant'}
-              options={DELIVERY_VARIANT_OPTIONS}
-              disabled
-            />
+              <FormikSelect
+                low
+                label={'Оплата'}
+                name={`shopConfigs[${index}].paymentVariant`}
+                options={PAYMENT_VARIANT_OPTIONS}
+                isRequired
+              />
+            </div>
 
-            <FakeInput low label={'Оплата'} value={'Оплата при получении'} />
+            <CartAddressPicker index={index} />
           </div>
-        )}
+        ) : null}
 
         {showPriceWarning && shop.priceWarning ? (
           <div className='mt-6'>
@@ -150,6 +197,7 @@ interface DefaultCartInterface {
 
 const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
   const { makeAnOrder } = useSiteContext();
+  const { showErrorNotification } = useNotificationsContext();
   const { configs, domainCompany } = useConfigContext();
   const sessionUser = useSiteUserContext();
   const disabled = !!sessionUser;
@@ -218,6 +266,23 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
           enableReinitialize={true}
           initialValues={initialValues}
           onSubmit={(values) => {
+            const noAddressShopConfigs = values.shopConfigs.reduce(
+              (acc: MakeAnOrderShopConfigInterface[], shopConfig) => {
+                if (shopConfig.deliveryVariant !== ORDER_DELIVERY_VARIANT_COURIER) {
+                  return acc;
+                }
+                if (!shopConfig.deliveryInfo || !shopConfig.deliveryInfo.address) {
+                  return [...acc, shopConfig];
+                }
+                return acc;
+              },
+              [],
+            );
+            if (noAddressShopConfigs.length > 0) {
+              showErrorNotification({ title: 'Не у всех магазинов указан адрес доставки' });
+              return;
+            }
+
             makeAnOrder({
               name: values.name,
               lastName: values.lastName,

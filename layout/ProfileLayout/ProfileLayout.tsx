@@ -12,7 +12,7 @@ import {
   ROUTE_PROFILE_VIEWED,
 } from 'config/common';
 import { useSiteContext } from 'context/siteContext';
-import { useSiteUserContext } from 'context/userSiteUserContext';
+import { useSiteUserContext } from 'context/siteUserContext';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import Breadcrumbs from 'components/Breadcrumbs';

@@ -7,16 +7,16 @@ export type ReverseGeocodePayload = ReverseGeocodeResponseData;
 interface ReverseGeocodeInterface {
   lat: number;
   lng: number;
-  language: string;
+  locale: string;
 }
 
 export const reverseGeocode = async ({
   lat,
   lng,
-  language,
+  locale,
 }: ReverseGeocodeInterface): Promise<ReverseGeocodePayload> => {
   const coordinates = `latlng=${lat},${lng}`;
-  const settings = `language=${language}&location_type=ROOFTOP&result_type=street_address`;
+  const settings = `language=${locale}&location_type=ROOFTOP&result_type=street_address`;
   const apiKey = `key=${process.env.NEXT_GOOGLE_MAPS_API_KEY}`;
   const url = `https://maps.googleapis.com/maps/api/geocode/json?${coordinates}&${settings}&${apiKey}`;
   const res = await fetch(url);
@@ -26,7 +26,7 @@ export const reverseGeocode = async ({
 
 interface GeocodeInterface {
   value: string;
-  language: string;
+  locale: string;
 }
 
 export interface GeocodeResultInterface {
@@ -40,10 +40,10 @@ export interface GeocodeResultInterface {
 
 export const geocode = async ({
   value,
-  language,
+  locale,
 }: GeocodeInterface): Promise<GeocodeResultInterface[]> => {
   const address = `address=${value}`;
-  const settings = `language=${language}&location_type=ROOFTOP&result_type=street_address`;
+  const settings = `language=${locale}&location_type=ROOFTOP&result_type=street_address`;
   const apiKey = `key=${process.env.NEXT_GOOGLE_MAPS_API_KEY}`;
   const url = `https://maps.googleapis.com/maps/api/geocode/json?${address}&${settings}&${apiKey}`;
   const res = await fetch(url);

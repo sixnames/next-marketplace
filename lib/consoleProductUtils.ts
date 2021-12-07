@@ -146,7 +146,6 @@ export const getConsoleRubricProducts = async ({
     let searchIds: ObjectIdModel[] = [];
     if (search) {
       searchIds = await getAlgoliaProductsSearch({
-        indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
         search,
         excludedProductsIds,
       });
@@ -798,7 +797,6 @@ export const getConsoleCompanyRubricProducts = async ({
     let searchIds: ObjectIdModel[] = [];
     if (search) {
       searchIds = await getAlgoliaProductsSearch({
-        indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
         search,
         excludedProductsIds,
       });
@@ -1507,7 +1505,6 @@ export const getConsoleShopProducts = async ({
     let searchIds: ObjectIdModel[] = [];
     if (search) {
       searchIds = await getAlgoliaProductsSearch({
-        indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
         search,
         excludedProductsIds,
       });

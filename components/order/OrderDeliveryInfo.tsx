@@ -8,6 +8,7 @@ interface OrderDeliveryInfoInterface {
   itemClassName?: string;
   labelClassName?: string;
   valueClassName?: string;
+  titleClassName?: string;
 }
 
 const OrderDeliveryInfo: React.FC<OrderDeliveryInfoInterface> = ({
@@ -16,6 +17,7 @@ const OrderDeliveryInfo: React.FC<OrderDeliveryInfoInterface> = ({
   className,
   itemClassName,
   valueClassName,
+  titleClassName,
 }) => {
   if (!deliveryInfo || !deliveryInfo.address) {
     return null;
@@ -23,56 +25,70 @@ const OrderDeliveryInfo: React.FC<OrderDeliveryInfoInterface> = ({
 
   return (
     <div className={`space-y-4 ${className ? className : ''}`}>
+      <div className={titleClassName || 'font-medium text-lg lg:text-xl'}>Адрес доставки</div>
+
       <div className={itemClassName}>
         <div className={labelClassName}>Адрес:</div>
         <div className={valueClassName}>{deliveryInfo.address.readableAddress}</div>
       </div>
 
-      <div className={itemClassName}>
-        <div className={labelClassName}>Подъезд:</div>
-        <div className={valueClassName}>{deliveryInfo.entrance || 'Не назначен'}</div>
-      </div>
-
-      <div className={itemClassName}>
-        <div className={labelClassName}>Домофон:</div>
-        <div className={valueClassName}>{deliveryInfo.intercom || 'Не назначен'}</div>
-      </div>
-
-      <div className={itemClassName}>
-        <div className={labelClassName}>Этаж:</div>
-        <div className={valueClassName}>{deliveryInfo.floor || 'Не назначен'}</div>
-      </div>
-
-      <div className={itemClassName}>
-        <div className={labelClassName}>Квартира / офис:</div>
-        <div className={valueClassName}>{deliveryInfo.apartment || 'Не назначена'}</div>
-      </div>
-
-      <div className={itemClassName}>
-        <div className={labelClassName}>Желаемая дата и время доставки:</div>
-        <div className={valueClassName}>
-          {deliveryInfo.desiredDeliveryDate ? (
-            <FormattedDateTime value={deliveryInfo.desiredDeliveryDate} />
-          ) : (
-            'Не назначена'
-          )}
+      {deliveryInfo.entrance ? (
+        <div className={itemClassName}>
+          <div className={labelClassName}>Подъезд:</div>
+          <div className={valueClassName}>{deliveryInfo.entrance}</div>
         </div>
-      </div>
+      ) : null}
 
-      <div className={itemClassName}>
-        <div className={labelClassName}>Имя и фамилия:</div>
-        <div className={valueClassName}>{deliveryInfo.recipientName || 'Не назначен'}</div>
-      </div>
+      {deliveryInfo.intercom ? (
+        <div className={itemClassName}>
+          <div className={labelClassName}>Домофон:</div>
+          <div className={valueClassName}>{deliveryInfo.intercom}</div>
+        </div>
+      ) : null}
 
-      <div className={itemClassName}>
-        <div className={labelClassName}>Телефон:</div>
-        <div className={valueClassName}>{deliveryInfo.recipientPhone || 'Не назначен'}</div>
-      </div>
+      {deliveryInfo.floor ? (
+        <div className={itemClassName}>
+          <div className={labelClassName}>Этаж:</div>
+          <div className={valueClassName}>{deliveryInfo.floor}</div>
+        </div>
+      ) : null}
 
-      <div className={itemClassName}>
-        <div className={labelClassName}>Комментарий курьеру:</div>
-        <div className={valueClassName}>{deliveryInfo.commentForCourier || 'Не назначен'}</div>
-      </div>
+      {deliveryInfo.apartment ? (
+        <div className={itemClassName}>
+          <div className={labelClassName}>Квартира / офис:</div>
+          <div className={valueClassName}>{deliveryInfo.apartment}</div>
+        </div>
+      ) : null}
+
+      {deliveryInfo.desiredDeliveryDate ? (
+        <div className={itemClassName}>
+          <div className={labelClassName}>Желаемая дата и время доставки:</div>
+          <div className={valueClassName}>
+            <FormattedDateTime value={deliveryInfo.desiredDeliveryDate} />
+          </div>
+        </div>
+      ) : null}
+
+      {deliveryInfo.recipientName ? (
+        <div className={itemClassName}>
+          <div className={labelClassName}>Имя и фамилия:</div>
+          <div className={valueClassName}>{deliveryInfo.recipientName}</div>
+        </div>
+      ) : null}
+
+      {deliveryInfo.recipientPhone ? (
+        <div className={itemClassName}>
+          <div className={labelClassName}>Телефон:</div>
+          <div className={valueClassName}>{deliveryInfo.recipientPhone}</div>
+        </div>
+      ) : null}
+
+      {deliveryInfo.commentForCourier ? (
+        <div className={itemClassName}>
+          <div className={labelClassName}>Комментарий курьеру:</div>
+          <div className={valueClassName}>{deliveryInfo.commentForCourier}</div>
+        </div>
+      ) : null}
     </div>
   );
 };

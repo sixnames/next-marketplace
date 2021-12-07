@@ -9,7 +9,6 @@ import { useAppContext } from 'context/appContext';
 import { Form, Formik } from 'formik';
 import * as React from 'react';
 
-// TODO get center of session city
 // Moscow center
 const defaultMapCenter = {
   lat: 55.751957,
@@ -26,7 +25,7 @@ export interface OrderDeliveryAddressModalInterface {
 }
 
 const OrderDeliveryAddressModal: React.FC<OrderDeliveryAddressModalInterface> = ({ confirm }) => {
-  const { hideModal } = useAppContext();
+  const { hideModal, ipInfo } = useAppContext();
   const mapRef = React.useRef<any>(null);
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: `${process.env.NEXT_GOOGLE_MAPS_API_KEY}`,
@@ -38,16 +37,7 @@ const OrderDeliveryAddressModal: React.FC<OrderDeliveryAddressModalInterface> = 
     [mapRef],
   );
 
-  React.useEffect(() => {
-    fetch('https://api.ipregistry.co/?key=tryout')
-      .then(function (response) {
-        return response.json();
-      })
-      .then(function (payload) {
-        console.log(payload);
-        console.log(payload.location.country.name + ', ' + payload.location.city);
-      });
-  }, []);
+  console.log(ipInfo);
 
   if (loadError) {
     return <RequestError message={'Ошибка загрузки карты'} />;
@@ -71,7 +61,7 @@ const OrderDeliveryAddressModal: React.FC<OrderDeliveryAddressModalInterface> = 
       }}
     >
       {({ values }) => {
-        console.log(values.address);
+        console.log('values.address', values.address);
         return (
           <Form>
             <div className='fixed inset-0 bg-primary flex flex-col'>
@@ -98,7 +88,14 @@ const OrderDeliveryAddressModal: React.FC<OrderDeliveryAddressModalInterface> = 
                     mapContainerStyle={mapContainerStyle}
                     mapContainerClassName='absolute inset-0 block w-full h-full'
                     zoom={12}
-                    center={defaultMapCenter}
+                    center={
+                      ipInfo
+                        ? {
+                            lat: ipInfo.location.latitude,
+                            lng: ipInfo.location.longitude,
+                          }
+                        : defaultMapCenter
+                    }
                   />
                 </div>
               </div>

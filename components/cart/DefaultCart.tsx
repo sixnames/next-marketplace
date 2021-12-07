@@ -17,7 +17,7 @@ import { MAP_MODAL, ORDER_DELIVERY_ADDRESS_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
-import { useSiteUserContext } from 'context/userSiteUserContext';
+import { useSiteUserContext } from 'context/siteUserContext';
 import { MakeAnOrderShopConfigInterface } from 'db/dao/order/makeAnOrder';
 import { CartInterface, CartProductInterface, ShopInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';

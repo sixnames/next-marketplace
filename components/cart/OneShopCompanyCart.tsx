@@ -10,7 +10,7 @@ import { ORDER_DELIVERY_VARIANT_PICKUP, ORDER_PAYMENT_VARIANT_RECEIPT } from 'co
 import { DELIVERY_VARIANT_OPTIONS, PAYMENT_VARIANT_OPTIONS } from 'config/constantSelects';
 import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
-import { useSiteUserContext } from 'context/userSiteUserContext';
+import { useSiteUserContext } from 'context/siteUserContext';
 import { CartInterface, CompanyInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import { phoneToRaw } from 'lib/phoneUtils';

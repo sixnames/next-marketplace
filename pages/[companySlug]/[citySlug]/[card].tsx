@@ -5,7 +5,7 @@ import Inner from 'components/Inner';
 import { ISR_FIVE_SECONDS } from 'config/common';
 import { CARD_LAYOUT_HALF_COLUMNS, DEFAULT_LAYOUT } from 'config/constantSelects';
 import { useConfigContext } from 'context/configContext';
-import { useSiteUserContext } from 'context/userSiteUserContext';
+import { useSiteUserContext } from 'context/siteUserContext';
 import { CardLayoutInterface, InitialCardDataInterface } from 'db/uiInterfaces';
 import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
 import { getCardData } from 'lib/cardUtils';

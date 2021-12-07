@@ -8,7 +8,7 @@ import Title from 'components/Title';
 import { ROUTE_SIGN_IN } from 'config/common';
 import { CONFIRM_MODAL, UPDATE_MY_PASSWORD_MODAL } from 'config/modalVariants';
 import { useSiteContext } from 'context/siteContext';
-import { useSiteUserContext } from 'context/userSiteUserContext';
+import { useSiteUserContext } from 'context/siteUserContext';
 import { getPageSessionUser } from 'db/dao/user/getPageSessionUser';
 import { UpdateMyProfileInputInterface } from 'db/dao/user/updateMyProfile';
 import { Form, Formik } from 'formik';

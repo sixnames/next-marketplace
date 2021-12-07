@@ -4,7 +4,7 @@ import Spinner from 'components/Spinner';
 import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
 import { SiteContextProvider } from 'context/siteContext';
-import { SiteUserContextProvider } from 'context/userSiteUserContext';
+import { SiteUserContextProvider } from 'context/siteUserContext';
 import { PagesGroupInterface, RubricInterface } from 'db/uiInterfaces';
 import Footer from 'layout/footer/Footer';
 import Header from 'layout/header/Header';

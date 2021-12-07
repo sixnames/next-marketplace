@@ -20,9 +20,11 @@ import { useSiteUserContext } from 'context/siteUserContext';
 import { MakeAnOrderShopConfigInterface } from 'db/dao/order/makeAnOrder';
 import { CartInterface, CompanyInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
+import useValidationSchema from 'hooks/useValidationSchema';
 import { phoneToRaw } from 'lib/phoneUtils';
 import { CartTabIndexType, MakeOrderFormInterface } from 'pages/[companySlug]/[citySlug]/cart';
 import * as React from 'react';
+import { makeAnOrderSchema } from 'validation/orderSchema';
 
 interface OneShopCompanyCartInterface {
   cart: CartInterface;
@@ -40,6 +42,9 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
   const { configs } = useConfigContext();
   const sessionUser = useSiteUserContext();
   const disabled = !!sessionUser;
+  const validationSchema = useValidationSchema({
+    schema: makeAnOrderSchema,
+  });
 
   if (!domainCompany.mainShop) {
     return <RequestError message={'Ошибака загрузки данных магазина'} />;
@@ -74,6 +79,7 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
       {/* delivery form */}
       {cartDeliveryProducts.length > 0 && tabIndex === 0 ? (
         <Formik<MakeOrderFormInterface>
+          validationSchema={validationSchema}
           enableReinitialize={true}
           initialValues={initialValues}
           onSubmit={(values) => {
@@ -239,6 +245,7 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
       {/* booking form */}
       {cartBookingProducts.length > 0 && tabIndex === 1 ? (
         <Formik<MakeOrderFormInterface>
+          validationSchema={validationSchema}
           enableReinitialize={true}
           initialValues={initialValues}
           onSubmit={(values) => {
@@ -311,6 +318,7 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
                           label={'Имя'}
                           disabled={disabled}
                           isRequired
+                          showInlineError
                         />
 
                         <FormikInput
@@ -327,6 +335,7 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
                           label={'Телефон'}
                           disabled={disabled}
                           isRequired
+                          showInlineError
                         />
 
                         <FormikInput
@@ -336,6 +345,7 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
                           label={'E-mail'}
                           disabled={disabled}
                           isRequired
+                          showInlineError
                         />
 
                         {configs.showReservationDate ? (

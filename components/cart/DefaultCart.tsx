@@ -26,11 +26,13 @@ import { OrderDeliveryInfoModel } from 'db/dbModels';
 import { CartInterface, CartProductInterface, ShopInterface } from 'db/uiInterfaces';
 import { Form, Formik, useFormikContext } from 'formik';
 import { useShopMarker } from 'hooks/useShopMarker';
+import useValidationSchema from 'hooks/useValidationSchema';
 import LayoutCard from 'layout/LayoutCard';
 import { phoneToRaw } from 'lib/phoneUtils';
 import { CartTabIndexType, MakeOrderFormInterface } from 'pages/[companySlug]/[citySlug]/cart';
 import * as React from 'react';
 import { get } from 'lodash';
+import { makeAnOrderSchema } from 'validation/orderSchema';
 
 interface CartAddressPickerInterface {
   index: number;
@@ -201,6 +203,9 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
   const { configs, domainCompany } = useConfigContext();
   const sessionUser = useSiteUserContext();
   const disabled = !!sessionUser;
+  const validationSchema = useValidationSchema({
+    schema: makeAnOrderSchema,
+  });
 
   const initialValues = React.useMemo<DefaultCartInitialValuesInterface>(() => {
     const cartProductsFieldName = tabIndex === 0 ? 'cartDeliveryProducts' : 'cartBookingProducts';
@@ -263,6 +268,7 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
       {/* delivery form */}
       {cart.cartDeliveryProducts.length > 0 && tabIndex === 0 ? (
         <Formik<DefaultCartInitialValuesInterface>
+          validationSchema={validationSchema}
           enableReinitialize={true}
           initialValues={initialValues}
           onSubmit={(values) => {
@@ -410,6 +416,7 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
       {/* booking form */}
       {cart.cartBookingProducts.length > 0 && tabIndex === 1 ? (
         <Formik<DefaultCartInitialValuesInterface>
+          validationSchema={validationSchema}
           enableReinitialize={true}
           initialValues={initialValues}
           onSubmit={(values) => {
@@ -483,6 +490,7 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
                           label={'Имя'}
                           disabled={disabled}
                           isRequired
+                          showInlineError
                         />
 
                         <FormikInput
@@ -499,6 +507,7 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
                           label={'Телефон'}
                           disabled={disabled}
                           isRequired
+                          showInlineError
                         />
 
                         <FormikInput
@@ -508,6 +517,7 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
                           label={'E-mail'}
                           disabled={disabled}
                           isRequired
+                          showInlineError
                         />
 
                         <FormikTextarea

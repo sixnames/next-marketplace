@@ -40,7 +40,7 @@ export const commonMessages: MessageBaseInterface[] = [
   {
     slug: 'validation.email',
     messageI18n: {
-      [DEFAULT_LOCALE]: `Не валидный формат Email адреса.`,
+      [DEFAULT_LOCALE]: `Невалидный формат Email адреса.`,
       [SECONDARY_LOCALE]: `Invalid Email format.`,
     },
   },
@@ -54,7 +54,7 @@ export const commonMessages: MessageBaseInterface[] = [
   {
     slug: 'validation.phone',
     messageI18n: {
-      [DEFAULT_LOCALE]: `Не валидный формат телефона.`,
+      [DEFAULT_LOCALE]: `Невалидный формат телефона.`,
       [SECONDARY_LOCALE]: `Invalid Phone format.`,
     },
   },
@@ -124,7 +124,7 @@ export const commonMessages: MessageBaseInterface[] = [
   {
     slug: 'validation.domain',
     messageI18n: {
-      [DEFAULT_LOCALE]: `Не валидный формат доменного имени`,
+      [DEFAULT_LOCALE]: `Невалидный формат доменного имени`,
       [SECONDARY_LOCALE]: `Invalid domain name`,
     },
   },

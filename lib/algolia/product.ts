@@ -1,12 +1,17 @@
 import { HITS_PER_PAGE } from 'config/common';
-import { COL_LANGUAGES, COL_PRODUCT_ASSETS, COL_PRODUCTS } from 'db/collectionNames';
+import {
+  COL_LANGUAGES,
+  COL_PRODUCT_ASSETS,
+  COL_PRODUCTS,
+  COL_SHOP_PRODUCTS,
+} from 'db/collectionNames';
 import {
   brandPipeline,
   productAttributesPipeline,
   productCategoriesPipeline,
   productRubricPipeline,
 } from 'db/dao/constantPipelines';
-import { ObjectIdModel, TranslationModel } from 'db/dbModels';
+import { ObjectIdModel, ShopProductModel, TranslationModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { ProductInterface, ShopProductInterface } from 'db/uiInterfaces';
 import { getAlgoliaClient, saveAlgoliaObjects } from 'lib/algolia/algoliaUtils';
@@ -22,11 +27,13 @@ interface AlgoliaProductInterface {
   snippetTitleI18n: TranslationModel;
   barcode?: string[] | null;
   slug: string;
+  shopProductItemIds: string[];
 }
 
 export async function updateAlgoliaProduct(productId: ObjectIdModel) {
   const { db } = await getDatabase();
   const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
+  const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
   const languagesCollection = db.collection<ProductInterface>(COL_LANGUAGES);
   const languages = await languagesCollection.find({}).toArray();
   const locales = languages.map(({ slug }) => slug);
@@ -79,6 +86,22 @@ export async function updateAlgoliaProduct(productId: ObjectIdModel) {
     return false;
   }
 
+  const shopProducts = await shopProductsCollection
+    .aggregate([
+      {
+        $match: {
+          productId: initialProduct._id,
+        },
+      },
+      {
+        $project: {
+          _id: false,
+          itemId: true,
+        },
+      },
+    ])
+    .toArray();
+
   let algoliaProduct: AlgoliaProductInterface = {
     _id: initialProduct._id.toHexString(),
     slug: initialProduct.slug,
@@ -86,6 +109,7 @@ export async function updateAlgoliaProduct(productId: ObjectIdModel) {
     barcode: initialProduct.barcode,
     cardTitleI18n: {},
     snippetTitleI18n: {},
+    shopProductItemIds: shopProducts.map(({ itemId }) => itemId),
   };
 
   for await (const locale of locales) {

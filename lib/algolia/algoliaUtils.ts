@@ -1,18 +1,9 @@
 import algoliasearch from 'algoliasearch';
 import { SearchClient, SearchIndex } from 'algoliasearch/dist/algoliasearch';
 import { HITS_PER_PAGE } from 'config/common';
-import { ObjectIdModel, ProductModel } from 'db/dbModels';
+import { ObjectIdModel } from 'db/dbModels';
 import { ProductInterface, ShopProductInterface } from 'db/uiInterfaces';
 import { ObjectId } from 'mongodb';
-
-export interface AlgoliaProductInterface
-  extends Pick<
-    ProductModel,
-    'nameI18n' | 'originalName' | 'itemId' | 'barcode' | 'descriptionI18n'
-  > {
-  _id: string;
-  objectID: string;
-}
 
 interface GetAlgoliaClientPayloadInterface {
   algoliaClient: SearchClient;

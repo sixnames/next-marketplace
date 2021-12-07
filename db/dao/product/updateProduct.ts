@@ -3,7 +3,7 @@ import { CreateProductInputInterface } from 'db/dao/product/createProduct';
 import { ProductModel, ProductPayloadModel, RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
-import { saveAlgoliaObjects } from 'lib/algoliaUtils';
+import { updateAlgoliaProduct } from 'lib/algolia/product';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { checkBarcodeIntersects, trimProductName } from 'lib/productUtils';
 import {
@@ -137,29 +137,8 @@ export async function updateProduct({
         return;
       }
 
-      // Update algolia product object
-      const algoliaProductResult = await saveAlgoliaObjects({
-        indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
-        objects: [
-          {
-            _id: updatedProduct._id.toHexString(),
-            objectID: updatedProduct._id.toHexString(),
-            itemId: updatedProduct.itemId,
-            originalName: updatedProduct.originalName,
-            nameI18n: updatedProduct.nameI18n,
-            descriptionI18n: updatedProduct.descriptionI18n,
-            barcode: updatedProduct.barcode,
-          },
-        ],
-      });
-      if (!algoliaProductResult) {
-        mutationPayload = {
-          success: false,
-          message: await getApiMessage(`products.update.error`),
-        };
-        await session.abortTransaction();
-        return;
-      }
+      // update algolia product object
+      await updateAlgoliaProduct(updatedProduct._id);
 
       mutationPayload = {
         success: true,

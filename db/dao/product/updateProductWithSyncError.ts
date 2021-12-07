@@ -8,7 +8,7 @@ import {
 import { ProductModel, ProductPayloadModel, ShopModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
-import { saveAlgoliaObjects } from 'lib/algoliaUtils';
+import { updateAlgoliaProduct } from 'lib/algolia/product';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getNextItemId } from 'lib/itemIdUtils';
 import { checkBarcodeIntersects } from 'lib/productUtils';
@@ -152,29 +152,8 @@ export async function updateProductWithSyncError({
         return;
       }
 
-      // Update product algolia object
-      const productAlgoliaResult = await saveAlgoliaObjects({
-        indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
-        objects: [
-          {
-            _id: updatedProduct._id.toHexString(),
-            objectID: updatedProduct._id.toHexString(),
-            itemId: updatedProduct.itemId,
-            originalName: updatedProduct.originalName,
-            nameI18n: updatedProduct.nameI18n,
-            descriptionI18n: updatedProduct.descriptionI18n,
-            barcode: updatedProduct.barcode,
-          },
-        ],
-      });
-      if (!productAlgoliaResult) {
-        mutationPayload = {
-          success: false,
-          message: await getApiMessage(`products.create.error`),
-        };
-        await session.abortTransaction();
-        return;
-      }
+      // update algolia product object
+      await updateAlgoliaProduct(updatedProduct._id);
 
       // Delete sync errors
       const removedNotSyncedProductsResult = await notSyncedProductsCollection.deleteMany({

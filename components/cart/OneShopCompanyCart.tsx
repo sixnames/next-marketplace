@@ -90,7 +90,7 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
               [],
             );
             if (noAddressShopConfigs.length > 0) {
-              showErrorNotification({ message: 'Не у всех магазинов указан адрес доставки' });
+              showErrorNotification({ title: 'Не у всех магазинов указан адрес доставки' });
               return;
             }
 

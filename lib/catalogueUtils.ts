@@ -429,15 +429,11 @@ export async function getCatalogueAttributes({
         const splittedOption = optionSlug.split(FILTER_SEPARATOR);
         const filterOptionValue = splittedOption[1];
         const prices = filterOptionValue.split('_');
-        const minPrice = prices[0] ? noNaN(prices[0]) : null;
-        const maxPrice = prices[1] ? noNaN(prices[1]) : null;
-
-        if (!minPrice || !maxPrice) {
-          continue;
-        }
+        const minPrice = prices[0];
+        const maxPrice = prices[1];
 
         const optionProduct = productsPrices.find(({ _id }) => {
-          return noNaN(_id) >= minPrice && noNaN(_id) <= maxPrice;
+          return noNaN(_id) >= noNaN(minPrice) && noNaN(_id) <= noNaN(maxPrice);
         });
 
         if (optionProduct) {

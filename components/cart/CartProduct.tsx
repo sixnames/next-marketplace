@@ -2,16 +2,18 @@ import Button from 'components/button/Button';
 import ButtonCross from 'components/button/ButtonCross';
 import ControlButton from 'components/button/ControlButton';
 import CartShopsList from 'components/CartShopsList';
-import SpinnerInput from 'components/FormElements/SpinnerInput/SpinnerInput';
+import FormikSpinnerInput from 'components/FormElements/SpinnerInput/FormikSpinnerInput';
 import Link from 'components/Link/Link';
 import ProductShopPrices from 'components/ProductShopPrices';
 import WpImage from 'components/WpImage';
+import { ORDER_DELIVERY_VARIANT_COURIER } from 'config/common';
 import { useSiteContext } from 'context/siteContext';
 import { CartProductInterface, ShopProductInterface } from 'db/uiInterfaces';
 import { useFormikContext } from 'formik';
 import LayoutCard from 'layout/LayoutCard';
 import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
 import { noNaN } from 'lib/numbers';
+import { get } from 'lodash';
 import * as React from 'react';
 
 interface CartProductFrameInterface {
@@ -183,6 +185,7 @@ export const CartShoplessProduct: React.FC<CartProductPropsInterface> = ({
 interface CartProductPropsWithAmountInterface extends CartProductPropsInterface {
   fieldName: string;
   defaultView?: boolean;
+  shopIndex: number;
 }
 
 export const CartProduct: React.FC<CartProductPropsWithAmountInterface> = ({
@@ -190,12 +193,14 @@ export const CartProduct: React.FC<CartProductPropsWithAmountInterface> = ({
   fieldName,
   testId,
   defaultView,
+  shopIndex,
 }) => {
-  const { setFieldValue } = useFormikContext();
+  const { values } = useFormikContext();
   const { updateProductInCart } = useSiteContext();
-  const { shopProduct, amount, _id } = cartProduct;
+  const { shopProduct, _id } = cartProduct;
   const minAmount = 1;
-
+  const deliveryVariant = get(values, `shopConfigs[${shopIndex}].deliveryVariant`);
+  const isCourierDelivery = deliveryVariant === ORDER_DELIVERY_VARIANT_COURIER;
   if (!shopProduct) {
     return null;
   }
@@ -232,29 +237,26 @@ export const CartProduct: React.FC<CartProductPropsWithAmountInterface> = ({
             discountedPercent={discountedPercent}
           />
           {/*available*/}
-          <div className='text-secondary-text'>{`В наличии ${available} шт`}</div>
+          {isCourierDelivery ? null : (
+            <div className='text-secondary-text'>{`В наличии ${available} шт`}</div>
+          )}
         </div>
 
         {/*amount input*/}
         <div>
-          <SpinnerInput
-            name={'amount'}
-            value={amount}
+          <FormikSpinnerInput
+            name={fieldName}
             min={minAmount}
-            max={noNaN(available)}
+            max={isCourierDelivery ? undefined : noNaN(available)}
             testId={`cart-product-${testId}-amount`}
             plusTestId={`cart-product-${testId}-plus`}
             minusTestId={`cart-product-${testId}-minus`}
             frameClassName='w-[var(--buttonMinWidth)]'
             onChange={(e) => {
-              const amount = noNaN(e.target.value);
-              if (amount >= minAmount && amount <= noNaN(available)) {
-                setFieldValue(fieldName, amount);
-                updateProductInCart({
-                  amount,
-                  cartProductId: _id,
-                });
-              }
+              updateProductInCart({
+                amount: noNaN(e.target.value),
+                cartProductId: _id,
+              });
             }}
           />
         </div>

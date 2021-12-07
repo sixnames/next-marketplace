@@ -1,9 +1,8 @@
 import { CartProduct } from 'components/cart/CartProduct';
-import { CartAddressPicker } from 'components/cart/DefaultCart';
+import { CartDeliveryFields } from 'components/cart/DefaultCart';
 import CartAside from 'components/CartAside';
 import FormikDatePicker from 'components/FormElements/Input/FormikDatePicker';
 import FormikInput from 'components/FormElements/Input/FormikInput';
-import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import FormikTextarea from 'components/FormElements/Textarea/FormikTextarea';
 import Notification from 'components/Notification';
 import RequestError from 'components/RequestError';
@@ -12,7 +11,6 @@ import {
   ORDER_DELIVERY_VARIANT_PICKUP,
   ORDER_PAYMENT_VARIANT_RECEIPT,
 } from 'config/common';
-import { DELIVERY_VARIANT_OPTIONS, PAYMENT_VARIANT_OPTIONS } from 'config/constantSelects';
 import { useConfigContext } from 'context/configContext';
 import { useNotificationsContext } from 'context/notificationsContext';
 import { useSiteContext } from 'context/siteContext';
@@ -20,9 +18,11 @@ import { useSiteUserContext } from 'context/siteUserContext';
 import { MakeAnOrderShopConfigInterface } from 'db/dao/order/makeAnOrder';
 import { CartInterface, CompanyInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
+import useValidationSchema from 'hooks/useValidationSchema';
 import { phoneToRaw } from 'lib/phoneUtils';
 import { CartTabIndexType, MakeOrderFormInterface } from 'pages/[companySlug]/[citySlug]/cart';
 import * as React from 'react';
+import { makeAnOrderSchema } from 'validation/orderSchema';
 
 interface OneShopCompanyCartInterface {
   cart: CartInterface;
@@ -40,6 +40,9 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
   const { configs } = useConfigContext();
   const sessionUser = useSiteUserContext();
   const disabled = !!sessionUser;
+  const validationSchema = useValidationSchema({
+    schema: makeAnOrderSchema,
+  });
 
   if (!domainCompany.mainShop) {
     return <RequestError message={'Ошибака загрузки данных магазина'} />;
@@ -63,7 +66,10 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
     shopConfigs: [
       {
         _id: `${domainCompany.mainShop._id}`,
-        deliveryVariant: ORDER_DELIVERY_VARIANT_PICKUP,
+        deliveryVariant:
+          cartDeliveryProducts.length > 0 && tabIndex === 0
+            ? ORDER_DELIVERY_VARIANT_COURIER
+            : ORDER_DELIVERY_VARIANT_PICKUP,
         paymentVariant: ORDER_PAYMENT_VARIANT_RECEIPT,
       },
     ],
@@ -74,6 +80,7 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
       {/* delivery form */}
       {cartDeliveryProducts.length > 0 && tabIndex === 0 ? (
         <Formik<MakeOrderFormInterface>
+          validationSchema={validationSchema}
           enableReinitialize={true}
           initialValues={initialValues}
           onSubmit={(values) => {
@@ -128,6 +135,7 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
                         {cartDeliveryProducts.map((cartProduct, index) => {
                           return (
                             <CartProduct
+                              shopIndex={0}
                               fieldName={`cartDeliveryProducts[${index}].amount`}
                               testId={index}
                               cartProduct={cartProduct}
@@ -200,23 +208,7 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
                         <div>Способ получения и оплата</div>
                       </div>
 
-                      <div className='lg:grid grid-cols-2 gap-x-6'>
-                        <FormikSelect
-                          label={'Способ получения'}
-                          name={'shopConfigs[0].deliveryVariant'}
-                          options={DELIVERY_VARIANT_OPTIONS}
-                          isRequired
-                        />
-
-                        <FormikSelect
-                          label={'Оплата'}
-                          name={'shopConfigs[0].paymentVariant'}
-                          options={PAYMENT_VARIANT_OPTIONS}
-                          isRequired
-                        />
-                      </div>
-
-                      <CartAddressPicker index={0} />
+                      <CartDeliveryFields index={0} />
                     </div>
                   </div>
 
@@ -239,6 +231,7 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
       {/* booking form */}
       {cartBookingProducts.length > 0 && tabIndex === 1 ? (
         <Formik<MakeOrderFormInterface>
+          validationSchema={validationSchema}
           enableReinitialize={true}
           initialValues={initialValues}
           onSubmit={(values) => {
@@ -286,6 +279,7 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
                         {cartBookingProducts.map((cartProduct, index) => {
                           return (
                             <CartProduct
+                              shopIndex={0}
                               fieldName={`cartBookingProducts[${index}].amount`}
                               testId={index}
                               cartProduct={cartProduct}
@@ -311,6 +305,7 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
                           label={'Имя'}
                           disabled={disabled}
                           isRequired
+                          showInlineError
                         />
 
                         <FormikInput
@@ -327,6 +322,7 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
                           label={'Телефон'}
                           disabled={disabled}
                           isRequired
+                          showInlineError
                         />
 
                         <FormikInput
@@ -336,6 +332,7 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
                           label={'E-mail'}
                           disabled={disabled}
                           isRequired
+                          showInlineError
                         />
 
                         {configs.showReservationDate ? (

@@ -354,12 +354,12 @@ export function getPriceAttribute(currency: string): AttributeInterface {
     showAsLinkInFilter: true,
     options: [
       {
-        _id: getObjectId('1_499'),
+        _id: getObjectId('0_499'),
         ...commonOptionFields,
         nameI18n: {
           ru: 'До 500',
         },
-        slug: `1_499`,
+        slug: `0_499`,
       },
       {
         _id: getObjectId('500_999'),

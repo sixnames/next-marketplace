@@ -480,6 +480,7 @@
   --wp-light-gray-200: #E8E9EA;
   --wp-light-gray-300-RGB: 242, 243, 243;
   --wp-light-gray-300: rgb(var(--wp-light-gray-300-RGB));
+  --wp-light-gray-400: rgb(203, 205, 212);
 
   /*Main styles*/
   --primaryBackground-RGB: var(--wp-white-RGB);
@@ -502,7 +503,7 @@
   --border-300: rgba(28, 29, 29, 0.15);
 
   --buttonShadow: 0px 5px 15px rgba(0, 0, 0, 0);
-  --secondaryButtonBackground: var(--wp-light-gray-300);
+  --secondaryButtonBackground: var(--wp-light-gray-400);
 
   --borderRadius: 0.5rem;
   --borderRadiusBig: 1.5rem;
@@ -630,7 +631,7 @@
   --border-300: rgba(255, 255, 255, 0.1);
 
   --buttonShadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
-  --secondaryButtonBackground: var(--wp-dark-gray-200);
+  --secondaryButtonBackground: var(--wp-dark-gray-400);
 
   --wp-shadow-100: 0 0 15px rgba(9, 9, 9, 0.35);
   --wp-shadow-top-100: 0 -15px 20px rgba(9, 9, 9, 0.35);

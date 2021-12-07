@@ -32,7 +32,6 @@ import {
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCTS,
   COL_RUBRICS,
-  COL_SHOP_PRODUCTS,
 } from '../../../db/collectionNames';
 import {
   GenderModel,
@@ -40,7 +39,6 @@ import {
   ObjectIdModel,
   OptionVariantsModel,
   ProductModel,
-  ShopProductModel,
   TranslationModel,
 } from '../../../db/dbModels';
 import algoliasearch from 'algoliasearch';
@@ -583,7 +581,6 @@ interface AlgoliaProductInterface {
   snippetTitleI18n: TranslationModel;
   barcode?: string[] | null;
   slug: string;
-  shopProductItemIds: string[];
 }
 
 export async function fastUpdateAlgoliaProduct(
@@ -592,7 +589,6 @@ export async function fastUpdateAlgoliaProduct(
   db: Db,
 ) {
   const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
-  const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
   const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
   const languages = await languagesCollection.find({}).toArray();
   const locales = languages.map(({ slug }) => slug);
@@ -829,22 +825,6 @@ export async function fastUpdateAlgoliaProduct(
     return false;
   }
 
-  const shopProducts = await shopProductsCollection
-    .aggregate([
-      {
-        $match: {
-          productId: initialProduct._id,
-        },
-      },
-      {
-        $project: {
-          _id: false,
-          itemId: true,
-        },
-      },
-    ])
-    .toArray();
-
   let algoliaProduct: AlgoliaProductInterface = {
     _id: initialProduct._id.toHexString(),
     slug: initialProduct.slug,
@@ -852,7 +832,6 @@ export async function fastUpdateAlgoliaProduct(
     barcode: initialProduct.barcode,
     cardTitleI18n: {},
     snippetTitleI18n: {},
-    shopProductItemIds: shopProducts.map(({ itemId }) => itemId),
   };
 
   for await (const locale of locales) {

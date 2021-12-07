@@ -12,10 +12,8 @@ import {
   ORDER_PAYMENT_VARIANT_RECEIPT,
 } from 'config/common';
 import { useConfigContext } from 'context/configContext';
-import { useNotificationsContext } from 'context/notificationsContext';
 import { useSiteContext } from 'context/siteContext';
 import { useSiteUserContext } from 'context/siteUserContext';
-import { MakeAnOrderShopConfigInterface } from 'db/dao/order/makeAnOrder';
 import { CartInterface, CompanyInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import useValidationSchema from 'hooks/useValidationSchema';
@@ -36,7 +34,6 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
   tabIndex,
 }) => {
   const { makeAnOrder } = useSiteContext();
-  const { showErrorNotification } = useNotificationsContext();
   const { configs } = useConfigContext();
   const sessionUser = useSiteUserContext();
   const disabled = !!sessionUser;
@@ -83,21 +80,23 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
           validationSchema={validationSchema}
           enableReinitialize={true}
           initialValues={initialValues}
-          onSubmit={(values) => {
+          onSubmit={(values, { setFieldError }) => {
             const noAddressShopConfigs = values.shopConfigs.reduce(
-              (acc: MakeAnOrderShopConfigInterface[], shopConfig) => {
+              (acc: number[], shopConfig, index) => {
                 if (shopConfig.deliveryVariant !== ORDER_DELIVERY_VARIANT_COURIER) {
                   return acc;
                 }
                 if (!shopConfig.deliveryInfo || !shopConfig.deliveryInfo.address) {
-                  return [...acc, shopConfig];
+                  return [...acc, index];
                 }
                 return acc;
               },
               [],
             );
             if (noAddressShopConfigs.length > 0) {
-              showErrorNotification({ title: 'Не у всех магазинов указан адрес доставки' });
+              noAddressShopConfigs.forEach((index) => {
+                setFieldError(`shopConfigs[${index}]`, 'Укажите адрес доставки');
+              });
               return;
             }
 

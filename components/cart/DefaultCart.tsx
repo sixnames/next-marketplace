@@ -17,7 +17,6 @@ import { DELIVERY_VARIANT_OPTIONS, PAYMENT_VARIANT_OPTIONS } from 'config/consta
 import { MAP_MODAL, ORDER_DELIVERY_ADDRESS_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
-import { useNotificationsContext } from 'context/notificationsContext';
 import { useSiteContext } from 'context/siteContext';
 import { useSiteUserContext } from 'context/siteUserContext';
 import { MakeAnOrderShopConfigInterface } from 'db/dao/order/makeAnOrder';
@@ -35,17 +34,19 @@ import { makeAnOrderSchema } from 'validation/orderSchema';
 
 interface CartDeliveryFieldsInterface {
   index: number;
+  inShop?: boolean;
 }
 
-export const CartDeliveryFields: React.FC<CartDeliveryFieldsInterface> = ({ index }) => {
+export const CartDeliveryFields: React.FC<CartDeliveryFieldsInterface> = ({ index, inShop }) => {
   const { showModal, hideModal } = useAppContext();
-  const { values, setFieldValue } = useFormikContext();
+  const { values, setFieldValue, setFieldError, errors } = useFormikContext();
   const deliveryVariantFieldName = `shopConfigs[${index}].deliveryVariant`;
   const deliveryVariant = get(values, deliveryVariantFieldName);
   const deliveryInfo = get(
     values,
     `shopConfigs[${index}].deliveryInfo`,
   ) as OrderDeliveryInfoModel | null;
+  const shopAddressError = get(errors, `shopConfigs[${index}]`);
 
   return (
     <div>
@@ -68,6 +69,16 @@ export const CartDeliveryFields: React.FC<CartDeliveryFieldsInterface> = ({ inde
         />
       </div>
 
+      {shopAddressError ? (
+        <div className='mt-6'>
+          <Notification
+            className={inShop ? 'dark:bg-primary' : ''}
+            variant={'error'}
+            message={shopAddressError}
+          />
+        </div>
+      ) : null}
+
       {deliveryVariant === ORDER_DELIVERY_VARIANT_COURIER ? (
         <div className='mt-4'>
           <OrderDeliveryInfo
@@ -86,6 +97,7 @@ export const CartDeliveryFields: React.FC<CartDeliveryFieldsInterface> = ({ inde
                   deliveryInfo,
                   confirm: (values) => {
                     setFieldValue(`shopConfigs[${index}].deliveryInfo`, values);
+                    setFieldError(`shopConfigs[${index}]`, undefined);
                     hideModal();
                   },
                 },
@@ -156,7 +168,7 @@ const DefaultCartShop: React.FC<DefaultCartShopUIInterface> = ({
           <div className='text-theme'>Показать на карте</div>
         </div>
 
-        {allowDelivery ? <CartDeliveryFields index={index} /> : null}
+        {allowDelivery ? <CartDeliveryFields inShop index={index} /> : null}
 
         {showPriceWarning && shop.priceWarning ? (
           <div className='mt-6'>
@@ -195,7 +207,6 @@ interface DefaultCartInterface {
 
 const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
   const { makeAnOrder } = useSiteContext();
-  const { showErrorNotification } = useNotificationsContext();
   const { configs, domainCompany } = useConfigContext();
   const sessionUser = useSiteUserContext();
   const disabled = !!sessionUser;
@@ -267,21 +278,23 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
           validationSchema={validationSchema}
           enableReinitialize={true}
           initialValues={initialValues}
-          onSubmit={(values) => {
+          onSubmit={(values, { setFieldError }) => {
             const noAddressShopConfigs = values.shopConfigs.reduce(
-              (acc: MakeAnOrderShopConfigInterface[], shopConfig) => {
+              (acc: number[], shopConfig, index) => {
                 if (shopConfig.deliveryVariant !== ORDER_DELIVERY_VARIANT_COURIER) {
                   return acc;
                 }
                 if (!shopConfig.deliveryInfo || !shopConfig.deliveryInfo.address) {
-                  return [...acc, shopConfig];
+                  return [...acc, index];
                 }
                 return acc;
               },
               [],
             );
             if (noAddressShopConfigs.length > 0) {
-              showErrorNotification({ title: 'Не у всех магазинов указан адрес доставки' });
+              noAddressShopConfigs.forEach((index) => {
+                setFieldError(`shopConfigs[${index}]`, 'Укажите адрес доставки');
+              });
               return;
             }
 

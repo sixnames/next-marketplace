@@ -329,6 +329,7 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
                       labelClassName={'text-secondary-text mb-2'}
                       itemClassName={'flex gap-2 justify-between'}
                       valueClassName={'text-right'}
+                      titleClassName={'font-medium lg:text-lg'}
                       deliveryInfo={deliveryInfo}
                     />
 

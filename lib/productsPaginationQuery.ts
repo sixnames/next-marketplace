@@ -189,7 +189,6 @@ export async function productsPaginationQuery({
     let searchIds: ObjectId[] = [];
     if (search) {
       searchIds = await getAlgoliaProductsSearch({
-        indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
         search: `${search}`,
         excludedProductsIds,
       });

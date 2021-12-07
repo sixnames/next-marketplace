@@ -51,7 +51,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     let searchIds: ObjectIdModel[] = [];
     if (search) {
       searchIds = await getAlgoliaProductsSearch({
-        indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
         search,
       });
       searchStage = {

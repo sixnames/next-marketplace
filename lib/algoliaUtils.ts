@@ -77,17 +77,15 @@ export const deleteAlgoliaObjects = async ({
 };
 
 interface GetAlgoliaProductsSearch {
-  indexName: string;
   search: string;
   excludedProductsIds?: ObjectIdModel[] | null;
 }
 
 export const getAlgoliaProductsSearch = async ({
-  indexName,
   search,
   excludedProductsIds,
 }: GetAlgoliaProductsSearch): Promise<ObjectId[]> => {
-  const { algoliaIndex } = getAlgoliaClient(indexName);
+  const { algoliaIndex } = getAlgoliaClient(`${process.env.ALG_INDEX_PRODUCTS}`);
   const searchIds: ObjectId[] = [];
   try {
     const { hits } = await algoliaIndex.search<ProductInterface | ShopProductInterface>(

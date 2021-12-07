@@ -18,6 +18,7 @@ import { DELIVERY_VARIANT_OPTIONS, PAYMENT_VARIANT_OPTIONS } from 'config/consta
 import { MAP_MODAL, ORDER_DELIVERY_ADDRESS_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
+import { useNotificationsContext } from 'context/notificationsContext';
 import { useSiteContext } from 'context/siteContext';
 import { useSiteUserContext } from 'context/siteUserContext';
 import { MakeAnOrderShopConfigInterface } from 'db/dao/order/makeAnOrder';
@@ -196,6 +197,7 @@ interface DefaultCartInterface {
 
 const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
   const { makeAnOrder } = useSiteContext();
+  const { showErrorNotification } = useNotificationsContext();
   const { configs, domainCompany } = useConfigContext();
   const sessionUser = useSiteUserContext();
   const disabled = !!sessionUser;
@@ -264,6 +266,23 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
           enableReinitialize={true}
           initialValues={initialValues}
           onSubmit={(values) => {
+            const noAddressShopConfigs = values.shopConfigs.reduce(
+              (acc: MakeAnOrderShopConfigInterface[], shopConfig) => {
+                if (shopConfig.deliveryVariant !== ORDER_DELIVERY_VARIANT_COURIER) {
+                  return acc;
+                }
+                if (!shopConfig.deliveryInfo || !shopConfig.deliveryInfo.address) {
+                  return [...acc, shopConfig];
+                }
+                return acc;
+              },
+              [],
+            );
+            if (noAddressShopConfigs.length > 0) {
+              showErrorNotification({ message: 'Не у всех магазинов указан адрес доставки' });
+              return;
+            }
+
             makeAnOrder({
               name: values.name,
               lastName: values.lastName,

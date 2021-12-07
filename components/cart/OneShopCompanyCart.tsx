@@ -7,11 +7,17 @@ import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import FormikTextarea from 'components/FormElements/Textarea/FormikTextarea';
 import Notification from 'components/Notification';
 import RequestError from 'components/RequestError';
-import { ORDER_DELIVERY_VARIANT_PICKUP, ORDER_PAYMENT_VARIANT_RECEIPT } from 'config/common';
+import {
+  ORDER_DELIVERY_VARIANT_COURIER,
+  ORDER_DELIVERY_VARIANT_PICKUP,
+  ORDER_PAYMENT_VARIANT_RECEIPT,
+} from 'config/common';
 import { DELIVERY_VARIANT_OPTIONS, PAYMENT_VARIANT_OPTIONS } from 'config/constantSelects';
 import { useConfigContext } from 'context/configContext';
+import { useNotificationsContext } from 'context/notificationsContext';
 import { useSiteContext } from 'context/siteContext';
 import { useSiteUserContext } from 'context/siteUserContext';
+import { MakeAnOrderShopConfigInterface } from 'db/dao/order/makeAnOrder';
 import { CartInterface, CompanyInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import { phoneToRaw } from 'lib/phoneUtils';
@@ -30,6 +36,7 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
   tabIndex,
 }) => {
   const { makeAnOrder } = useSiteContext();
+  const { showErrorNotification } = useNotificationsContext();
   const { configs } = useConfigContext();
   const sessionUser = useSiteUserContext();
   const disabled = !!sessionUser;
@@ -70,6 +77,23 @@ const OneShopCompanyCart: React.FC<OneShopCompanyCartInterface> = ({
           enableReinitialize={true}
           initialValues={initialValues}
           onSubmit={(values) => {
+            const noAddressShopConfigs = values.shopConfigs.reduce(
+              (acc: MakeAnOrderShopConfigInterface[], shopConfig) => {
+                if (shopConfig.deliveryVariant !== ORDER_DELIVERY_VARIANT_COURIER) {
+                  return acc;
+                }
+                if (!shopConfig.deliveryInfo || !shopConfig.deliveryInfo.address) {
+                  return [...acc, shopConfig];
+                }
+                return acc;
+              },
+              [],
+            );
+            if (noAddressShopConfigs.length > 0) {
+              showErrorNotification({ message: 'Не у всех магазинов указан адрес доставки' });
+              return;
+            }
+
             makeAnOrder({
               name: values.name,
               lastName: values.lastName,

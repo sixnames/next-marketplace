@@ -285,6 +285,13 @@ export const ORDER_DELIVERY_VARIANT_COURIER = 'courier' as OrderDeliveryVariantM
 // ORDER PAYMENT VARIANTS
 export const ORDER_PAYMENT_VARIANT_RECEIPT = 'receipt' as OrderPaymentVariantModel;
 
+// MAP
+// Moscow
+export const MAP_DEFAULT_CENTER = {
+  lat: 55.751957,
+  lng: 37.617575,
+};
+
 // LANGUAGES
 export const ISO_LANGUAGES = [
   {

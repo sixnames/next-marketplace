@@ -1,6 +1,7 @@
 import { GoogleMap, InfoWindow, Marker, useLoadScript } from '@react-google-maps/api';
 import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
+import { MAP_DEFAULT_CENTER } from 'config/common';
 import { darkMapStyles, lightMapStyles } from 'config/mapsConfig';
 import { useConfigContext } from 'context/configContext';
 import { useThemeContext } from 'context/themeContext';
@@ -16,19 +17,12 @@ import * as React from 'react';
   scale: 1,
 };*/
 
-// TODO get center of session city
-// Moscow center
-const defaultMapCenter = {
-  lat: 55.751957,
-  lng: 37.617575,
-};
-
 const mapContainerStyle = {
   width: '100%',
   height: '100%',
 };
 
-interface WpMapMarkerInterface {
+export interface WpMapMarkerInterface {
   _id: any;
   icon?: string | null;
   address?: AddressModel;
@@ -54,7 +48,7 @@ const WpMap: React.FC<WpMapInterface> = ({
   testId,
   markers,
   onMarkerClick,
-  center = defaultMapCenter,
+  center = MAP_DEFAULT_CENTER,
   className,
 }) => {
   const { configs } = useConfigContext();

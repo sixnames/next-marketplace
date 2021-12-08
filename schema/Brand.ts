@@ -857,6 +857,11 @@ export const BrandMutations = extendType({
               return;
             }
 
+            // update product algolia indexes
+            await updateAlgoliaProducts({
+              brandCollectionSlug: updatedBrandCollection.itemId,
+            });
+
             mutationPayload = {
               success: true,
               message: await getApiMessage('brandCollections.update.success'),

@@ -8,6 +8,7 @@ import { getConsoleOrder } from 'lib/orderUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { castDbData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
+import { get } from 'lodash';
 
 export interface UpdateOrderInterface {
   order: OrderInterface;
@@ -76,7 +77,7 @@ export async function updateOrder({
         return;
       }
 
-      // get diff for log
+      // get diff
       const prevOrderState = castDbData(prevOrder.order);
       const diff = detailedDiff(prevOrderState, order) as OrderLogDiffModel;
       console.log(JSON.stringify(diff, null, 2));
@@ -97,6 +98,23 @@ export async function updateOrder({
         createdAt: new Date(),
       };
       await orderLogsCollection.insertOne(orderLog);
+
+      // get updated products
+      let updatedProducts = get(diff, 'updated.products') || {};
+      const addedProducts = get(diff, 'added.products') || {};
+      for (const index in addedProducts) {
+        const prevUpdatedProductState = updatedProducts[index] || {};
+        const prevAddedProductState = addedProducts[index] || {};
+        updatedProducts[index] = {
+          ...prevUpdatedProductState,
+          ...prevAddedProductState,
+        };
+      }
+
+      console.log({
+        updatedProducts,
+        addedProducts,
+      });
 
       // success
       const nextOrderState = await getConsoleOrder({

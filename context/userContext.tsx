@@ -17,7 +17,7 @@ interface UserContextProviderInterface {
 const UserContextProvider: React.FC<UserContextProviderInterface> = ({ children, sessionUser }) => {
   const value = React.useMemo(() => {
     return {
-      sessionUser: sessionUser,
+      sessionUser,
     };
   }, [sessionUser]);
 

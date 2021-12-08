@@ -4,6 +4,7 @@ import Currency from 'components/Currency';
 import FormattedDateTime from 'components/FormattedDateTime';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import InputLine from 'components/FormElements/Input/InputLine';
+import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import FormikSpinnerInput from 'components/FormElements/SpinnerInput/FormikSpinnerInput';
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
@@ -24,6 +25,7 @@ import { CONFIRM_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { useLocaleContext } from 'context/localeContext';
 import { useNotificationsContext } from 'context/notificationsContext';
+import { useUserContext } from 'context/userContext';
 import { OrderInterface, OrderProductInterface, OrderStatusInterface } from 'db/uiInterfaces';
 import { Form, Formik, useFormikContext } from 'formik';
 import {
@@ -255,7 +257,9 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
   order,
   pageCompanySlug,
   title,
+  orderStatuses,
 }) => {
+  const { sessionUser } = useUserContext();
   const { locale } = useLocaleContext();
   const {
     createdAt,
@@ -323,16 +327,29 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
                 <div className='relative col-span-3'>
                   <div className='sticky bg-secondary rounded-lg py-8 px-6'>
                     {/*status*/}
-                    <div className='flex items-baseline justify-between mb-6'>
-                      <div className='text-secondary-text'>Статус</div>
-                      {status ? (
-                        <div className='font-medium' style={status ? { color: status.color } : {}}>
-                          {status.name}
-                        </div>
-                      ) : (
-                        <div className='text-red-500 font-medium'>Статус не найден</div>
-                      )}
-                    </div>
+                    {sessionUser?.role?.isStaff ? (
+                      <FormikSelect
+                        useIdField
+                        label={'Статус'}
+                        name={'statusId'}
+                        options={orderStatuses}
+                        testId={'statusId'}
+                      />
+                    ) : (
+                      <div className='flex items-baseline justify-between mb-6'>
+                        <div className='text-secondary-text'>Статус</div>
+                        {status ? (
+                          <div
+                            className='font-medium'
+                            style={status ? { color: status.color } : {}}
+                          >
+                            {status.name}
+                          </div>
+                        ) : (
+                          <div className='text-red-500 font-medium'>Статус не найден</div>
+                        )}
+                      </div>
+                    )}
 
                     {/*delivery*/}
                     <div className='flex items-baseline justify-between mb-6'>

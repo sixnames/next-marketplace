@@ -13,6 +13,7 @@ module.exports = {
     NEXTAUTH_KEY: process.env.NEXTAUTH_KEY,
     DEFAULT_LOCALE: process.env.DEFAULT_LOCALE,
     DEFAULT_CITY: process.env.DEFAULT_CITY,
+    IP_REGISTRY: process.env.IP_REGISTRY,
   },
   async headers() {
     return [

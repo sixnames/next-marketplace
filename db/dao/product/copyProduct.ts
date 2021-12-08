@@ -9,7 +9,7 @@ import {
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
-import { updateAlgoliaProduct } from 'lib/algolia/product';
+import { updateAlgoliaProducts } from 'lib/algolia/product';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getNextItemId } from 'lib/itemIdUtils';
 import {
@@ -167,7 +167,9 @@ export async function copyProduct({
       }
 
       // create algolia object
-      await updateAlgoliaProduct(createdAssetsResult.insertedId);
+      await updateAlgoliaProducts({
+        _id: createdAssetsResult.insertedId,
+      });
 
       mutationPayload = {
         success: true,

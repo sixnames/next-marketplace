@@ -1,4 +1,5 @@
 import { DEFAULT_LOCALE, SORT_ASC } from 'config/common';
+import { updateAlgoliaProducts } from 'lib/algolia/product';
 import { getNextNumberItemId } from 'lib/itemIdUtils';
 import { arg, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
 import {
@@ -831,6 +832,11 @@ export const attributesGroupMutations = extendType({
               await session.abortTransaction();
               return;
             }
+
+            // update product algolia indexes
+            await updateAlgoliaProducts({
+              selectedAttributesIds: updatedAttribute._id,
+            });
 
             mutationPayload = {
               success: true,

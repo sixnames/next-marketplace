@@ -8,12 +8,17 @@ import {
 } from 'db/dao/constantPipelines';
 import { ObjectIdModel, TranslationModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { ProductInterface, ShopProductInterface } from 'db/uiInterfaces';
+import { ProductInterface } from 'db/uiInterfaces';
 import { getAlgoliaClient, saveAlgoliaObjects } from 'lib/algolia/algoliaUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getTreeFromList } from 'lib/optionUtils';
 import { generateCardTitle, generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
+
+export function getAlgoliaProductsIndex() {
+  const { algoliaIndex } = getAlgoliaClient(`${process.env.ALG_INDEX_PRODUCTS}`);
+  return algoliaIndex;
+}
 
 interface AlgoliaProductInterface {
   _id: string;
@@ -24,19 +29,17 @@ interface AlgoliaProductInterface {
   slug: string;
 }
 
-export async function updateAlgoliaProduct(productId: ObjectIdModel) {
+export async function updateAlgoliaProducts(match: Record<any, any>) {
   const { db } = await getDatabase();
   const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
   const languagesCollection = db.collection<ProductInterface>(COL_LANGUAGES);
   const languages = await languagesCollection.find({}).toArray();
   const locales = languages.map(({ slug }) => slug);
 
-  const productAggregation = await productsCollection
+  const products = await productsCollection
     .aggregate<ProductInterface>([
       {
-        $match: {
-          _id: new ObjectId(productId),
-        },
+        $match: match,
       },
 
       // get product assets
@@ -69,58 +72,62 @@ export async function updateAlgoliaProduct(productId: ObjectIdModel) {
       ...productCategoriesPipeline(),
     ])
     .toArray();
-  const initialProduct = productAggregation[0];
-  if (!initialProduct) {
-    return false;
+
+  const algoliaProducts: AlgoliaProductInterface[] = [];
+
+  for await (const initialProduct of products) {
+    const { rubric, ...restProduct } = initialProduct;
+    if (!rubric) {
+      return false;
+    }
+
+    let algoliaProduct: AlgoliaProductInterface = {
+      _id: initialProduct._id.toHexString(),
+      slug: initialProduct.slug,
+      objectID: initialProduct._id.toHexString(),
+      barcode: initialProduct.barcode,
+      cardTitleI18n: {},
+      snippetTitleI18n: {},
+    };
+
+    for await (const locale of locales) {
+      const categories = getTreeFromList({
+        list: initialProduct.categories,
+        childrenFieldName: 'categories',
+        locale,
+      });
+
+      // title
+      const titleProps = {
+        locale,
+        brand: initialProduct.brand,
+        rubricName: getFieldStringLocale(rubric.nameI18n, locale),
+        showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
+        showCategoryInProductTitle: rubric.showCategoryInProductTitle,
+        attributes: initialProduct.attributes,
+        titleCategoriesSlugs: restProduct.titleCategoriesSlugs,
+        originalName: restProduct.originalName,
+        defaultGender: restProduct.gender,
+        categories,
+      };
+      const cardTitle = generateCardTitle(titleProps);
+      algoliaProduct.cardTitleI18n[locale] = cardTitle;
+      const snippetTitle = generateSnippetTitle(titleProps);
+      algoliaProduct.snippetTitleI18n[locale] = snippetTitle;
+    }
+    algoliaProducts.push(algoliaProduct);
   }
 
-  const { rubric, ...restProduct } = initialProduct;
-  if (!rubric) {
-    return false;
-  }
-
-  let algoliaProduct: AlgoliaProductInterface = {
-    _id: initialProduct._id.toHexString(),
-    slug: initialProduct.slug,
-    objectID: initialProduct._id.toHexString(),
-    barcode: initialProduct.barcode,
-    cardTitleI18n: {},
-    snippetTitleI18n: {},
-  };
-
-  for await (const locale of locales) {
-    const categories = getTreeFromList({
-      list: initialProduct.categories,
-      childrenFieldName: 'categories',
-      locale,
+  if (algoliaProducts.length > 0) {
+    const algoliaProductResult = await saveAlgoliaObjects({
+      indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
+      objects: algoliaProducts,
     });
 
-    // title
-    const titleProps = {
-      locale,
-      brand: initialProduct.brand,
-      rubricName: getFieldStringLocale(rubric.nameI18n, locale),
-      showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
-      showCategoryInProductTitle: rubric.showCategoryInProductTitle,
-      attributes: initialProduct.attributes,
-      titleCategoriesSlugs: restProduct.titleCategoriesSlugs,
-      originalName: restProduct.originalName,
-      defaultGender: restProduct.gender,
-      categories,
-    };
-    const cardTitle = generateCardTitle(titleProps);
-    algoliaProduct.cardTitleI18n[locale] = cardTitle;
-    const snippetTitle = generateSnippetTitle(titleProps);
-    algoliaProduct.snippetTitleI18n[locale] = snippetTitle;
-  }
-
-  const algoliaProductResult = await saveAlgoliaObjects({
-    indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
-    objects: [algoliaProduct],
-  });
-  if (!algoliaProductResult) {
-    console.log('algolia error');
-    return false;
+    if (!algoliaProductResult) {
+      console.log('updateAlgoliaProducts algolia error');
+      return false;
+    }
   }
 
   return true;
@@ -131,20 +138,22 @@ interface GetAlgoliaProductsSearch {
   excludedProductsIds?: ObjectIdModel[] | null;
 }
 
-export const getAlgoliaProductsSearch = async ({
+export async function getAlgoliaProductsSearch({
   search,
   excludedProductsIds,
-}: GetAlgoliaProductsSearch): Promise<ObjectId[]> => {
-  const { algoliaIndex } = getAlgoliaClient(`${process.env.ALG_INDEX_PRODUCTS}`);
+}: GetAlgoliaProductsSearch): Promise<ObjectId[]> {
+  const algoliaIndex = getAlgoliaProductsIndex();
   const searchIds: ObjectId[] = [];
   try {
-    const { hits } = await algoliaIndex.search<ProductInterface | ShopProductInterface>(
-      `${search}`,
-      {
-        hitsPerPage: HITS_PER_PAGE,
-        // optionalWords: `${search}`.split(' ').slice(1),
-      },
-    );
+    if (!search) {
+      return searchIds;
+    }
+
+    const { hits } = await algoliaIndex.search<AlgoliaProductInterface>(search, {
+      hitsPerPage: HITS_PER_PAGE,
+      // optionalWords: `${search}`.split(' ').slice(1),
+    });
+
     hits.forEach((hit) => {
       const hitId = new ObjectId(hit._id);
       const exist = (excludedProductsIds || []).some((_id) => {
@@ -161,4 +170,4 @@ export const getAlgoliaProductsSearch = async ({
     console.log(e);
     return searchIds;
   }
-};
+}

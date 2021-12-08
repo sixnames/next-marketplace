@@ -29,18 +29,24 @@ interface AlgoliaProductInterface {
   slug: string;
 }
 
-export async function updateAlgoliaProducts(match: Record<any, any>) {
+export async function updateAlgoliaProducts(match?: Record<any, any>) {
   const { db } = await getDatabase();
   const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
   const languagesCollection = db.collection<ProductInterface>(COL_LANGUAGES);
   const languages = await languagesCollection.find({}).toArray();
   const locales = languages.map(({ slug }) => slug);
 
+  const aggregationMatch = match
+    ? [
+        {
+          $match: match,
+        },
+      ]
+    : [];
+
   const products = await productsCollection
     .aggregate<ProductInterface>([
-      {
-        $match: match,
-      },
+      ...aggregationMatch,
 
       // get product assets
       {
@@ -142,11 +148,19 @@ export async function getAlgoliaProductsSearch({
   search,
   excludedProductsIds,
 }: GetAlgoliaProductsSearch): Promise<ObjectId[]> {
+  const { db } = await getDatabase();
+  const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
   const algoliaIndex = getAlgoliaProductsIndex();
   const searchIds: ObjectId[] = [];
   try {
     if (!search) {
       return searchIds;
+    }
+    const productBySlug = await productsCollection.findOne({
+      slug: search,
+    });
+    if (productBySlug) {
+      return [productBySlug._id];
     }
 
     const { hits } = await algoliaIndex.search<AlgoliaProductInterface>(search, {

@@ -42,7 +42,7 @@ import {
   ShopProductInterface,
   ShopProductsAggregationInterface,
 } from 'db/uiInterfaces';
-import { getAlgoliaProductsSearch } from 'lib/algolia/product';
+import { getAlgoliaProductsSearch } from 'lib/algolia/productAlgoliaUtils';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { castCatalogueFilters, getCatalogueAttributes } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';

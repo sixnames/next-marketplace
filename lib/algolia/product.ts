@@ -8,7 +8,7 @@ import {
 } from 'db/dao/constantPipelines';
 import { ObjectIdModel, TranslationModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { ProductInterface, ShopProductInterface } from 'db/uiInterfaces';
+import { ProductInterface } from 'db/uiInterfaces';
 import { getAlgoliaClient, saveAlgoliaObjects } from 'lib/algolia/algoliaUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getTreeFromList } from 'lib/optionUtils';
@@ -126,25 +126,32 @@ export async function updateAlgoliaProduct(productId: ObjectIdModel) {
   return true;
 }
 
+export function getAlgoliaProductsIndex() {
+  const { algoliaIndex } = getAlgoliaClient(`${process.env.ALG_INDEX_PRODUCTS}`);
+  return algoliaIndex;
+}
+
 interface GetAlgoliaProductsSearch {
   search: string;
   excludedProductsIds?: ObjectIdModel[] | null;
 }
 
-export const getAlgoliaProductsSearch = async ({
+export async function getAlgoliaProductsSearch({
   search,
   excludedProductsIds,
-}: GetAlgoliaProductsSearch): Promise<ObjectId[]> => {
-  const { algoliaIndex } = getAlgoliaClient(`${process.env.ALG_INDEX_PRODUCTS}`);
+}: GetAlgoliaProductsSearch): Promise<ObjectId[]> {
+  const algoliaIndex = getAlgoliaProductsIndex();
   const searchIds: ObjectId[] = [];
   try {
-    const { hits } = await algoliaIndex.search<ProductInterface | ShopProductInterface>(
-      `${search}`,
-      {
-        hitsPerPage: HITS_PER_PAGE,
-        // optionalWords: `${search}`.split(' ').slice(1),
-      },
-    );
+    if (!search) {
+      return searchIds;
+    }
+
+    const { hits } = await algoliaIndex.search<AlgoliaProductInterface>(search, {
+      hitsPerPage: HITS_PER_PAGE,
+      // optionalWords: `${search}`.split(' ').slice(1),
+    });
+
     hits.forEach((hit) => {
       const hitId = new ObjectId(hit._id);
       const exist = (excludedProductsIds || []).some((_id) => {
@@ -161,4 +168,4 @@ export const getAlgoliaProductsSearch = async ({
     console.log(e);
     return searchIds;
   }
-};
+}

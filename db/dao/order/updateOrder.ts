@@ -83,7 +83,7 @@ export async function updateOrder({
       // get diff
       const prevOrderState = castDbData(prevOrder.order);
       const diff = detailedDiff(prevOrderState, order) as OrderLogDiffModel;
-      console.log(JSON.stringify(diff, null, 2));
+      // console.log(JSON.stringify(diff, null, 2));
 
       // create order log
       const orderLog: OrderLogModel = {

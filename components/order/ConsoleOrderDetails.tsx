@@ -430,7 +430,9 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
               </div>
 
               <FixedButtons>
-                <Button type={'submit'}>Сохранить</Button>
+                <Button frameClassName={'w-auto'} type={'submit'}>
+                  Сохранить
+                </Button>
               </FixedButtons>
             </Form>
           );

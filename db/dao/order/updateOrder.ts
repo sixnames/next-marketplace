@@ -50,12 +50,12 @@ export async function updateOrder({
         await session.abortTransaction();
         return;
       }
-      const prevOrderState = castDbData(prevOrder);
+      const prevOrderState = castDbData(prevOrder.order);
       const diff = detailedDiff(prevOrderState, order);
       console.log('');
       console.log('>>>>>>>>>>>>>>>>');
       console.log('');
-      console.log(diff);
+      console.log(JSON.stringify(diff, null, 2));
 
       // success
       const nextOrderState = await getConsoleOrder({
@@ -65,7 +65,7 @@ export async function updateOrder({
       payload = {
         success: true,
         message: await getApiMessage('orders.updateOrder.success'),
-        payload: nextOrderState,
+        payload: nextOrderState?.order,
       };
     });
 

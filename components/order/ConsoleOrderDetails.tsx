@@ -24,7 +24,7 @@ import { CONFIRM_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { useLocaleContext } from 'context/localeContext';
 import { useNotificationsContext } from 'context/notificationsContext';
-import { OrderInterface, OrderProductInterface } from 'db/uiInterfaces';
+import { OrderInterface, OrderProductInterface, OrderStatusInterface } from 'db/uiInterfaces';
 import { Form, Formik, useFormikContext } from 'formik';
 import {
   useCancelOrderProduct,
@@ -242,8 +242,11 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
   );
 };
 
-interface CmsOrderDetailsInterface {
+export interface CmsOrderDetailsBaseInterface {
   order: OrderInterface;
+  orderStatuses: OrderStatusInterface[];
+}
+interface CmsOrderDetailsInterface extends CmsOrderDetailsBaseInterface {
   pageCompanySlug: string;
   title: string;
 }

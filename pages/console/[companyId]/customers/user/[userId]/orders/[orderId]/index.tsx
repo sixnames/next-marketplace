@@ -1,27 +1,17 @@
-import ConsoleOrderDetails from 'components/order/ConsoleOrderDetails';
+import ConsoleOrderDetails, {
+  CmsOrderDetailsBaseInterface,
+} from 'components/order/ConsoleOrderDetails';
 import { DEFAULT_COMPANY_SLUG, ROUTE_CONSOLE } from 'config/common';
-import {
-  COL_ORDER_CUSTOMERS,
-  COL_ORDER_PRODUCTS,
-  COL_ORDER_STATUSES,
-  COL_ORDERS,
-  COL_ROLES,
-  COL_SHOP_PRODUCTS,
-  COL_SHOPS,
-  COL_USER_CATEGORIES,
-  COL_USERS,
-} from 'db/collectionNames';
-import { shopProductFieldsPipeline } from 'db/dao/constantPipelines';
+import { COL_ROLES, COL_USER_CATEGORIES, COL_USERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { CompanyInterface, OrderInterface, UserInterface } from 'db/uiInterfaces';
+import { CompanyInterface, UserInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import ConsoleUserLayout from 'layout/console/ConsoleUserLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
-import { castOrderStatus } from 'lib/orderUtils';
+import { getConsoleOrder } from 'lib/orderUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
-import { generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -31,13 +21,17 @@ import {
   GetConsoleInitialDataPropsInterface,
 } from 'lib/ssrUtils';
 
-interface UserOrderConsumerInterface {
+interface UserOrderConsumerInterface extends CmsOrderDetailsBaseInterface {
   user: UserInterface;
-  order: OrderInterface;
   pageCompany: CompanyInterface;
 }
 
-const UserOrderConsumer: React.FC<UserOrderConsumerInterface> = ({ user, order, pageCompany }) => {
+const UserOrderConsumer: React.FC<UserOrderConsumerInterface> = ({
+  user,
+  order,
+  orderStatuses,
+  pageCompany,
+}) => {
   const basePath = `${ROUTE_CONSOLE}/${pageCompany?._id}/customers`;
   const title = `Заказ №${order.orderId}`;
 
@@ -64,7 +58,12 @@ const UserOrderConsumer: React.FC<UserOrderConsumerInterface> = ({ user, order, 
 
   return (
     <ConsoleUserLayout companyId={`${pageCompany?._id}`} user={user} breadcrumbs={breadcrumbs}>
-      <ConsoleOrderDetails order={order} title={title} pageCompanySlug={pageCompanySlug} />
+      <ConsoleOrderDetails
+        order={order}
+        orderStatuses={orderStatuses}
+        title={title}
+        pageCompanySlug={pageCompanySlug}
+      />
     </ConsoleUserLayout>
   );
 };
@@ -87,14 +86,9 @@ export const getServerSideProps = async (
   const { query } = context;
   const { db } = await getDatabase();
   const usersCollection = db.collection<UserInterface>(COL_USERS);
-  const ordersCollection = db.collection<OrderInterface>(COL_ORDERS);
-
-  const { props } = await getConsoleInitialData({ context });
-
   const companyId = new ObjectId(`${query.companyId}`);
-  const orderId = new ObjectId(`${query.orderId}`);
-
   const userId = new ObjectId(`${query.userId}`);
+  const { props } = await getConsoleInitialData({ context });
   if (!props) {
     return {
       notFound: true,
@@ -195,178 +189,23 @@ export const getServerSideProps = async (
   };
 
   // get order
-  // get order
-  const orderAggregationResult = await ordersCollection
-    .aggregate<OrderInterface>([
-      {
-        $match: {
-          _id: orderId,
-        },
-      },
-      {
-        $lookup: {
-          from: COL_ORDER_STATUSES,
-          as: 'status',
-          localField: 'statusId',
-          foreignField: '_id',
-        },
-      },
-      {
-        $lookup: {
-          from: COL_ORDER_CUSTOMERS,
-          as: 'customer',
-          localField: '_id',
-          foreignField: 'orderId',
-        },
-      },
-      {
-        $lookup: {
-          from: COL_SHOPS,
-          as: 'shop',
-          let: { shopId: '$shopId' },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $eq: ['$$shopId', '$_id'],
-                },
-              },
-            },
-          ],
-        },
-      },
-      {
-        $addFields: {
-          status: {
-            $arrayElemAt: ['$status', 0],
-          },
-          customer: {
-            $arrayElemAt: ['$customer', 0],
-          },
-          shop: {
-            $arrayElemAt: ['$shop', 0],
-          },
-        },
-      },
-      {
-        $lookup: {
-          from: COL_ORDER_PRODUCTS,
-          as: 'products',
-          let: { orderId: '$_id' },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $eq: ['$$orderId', '$orderId'],
-                },
-              },
-            },
-            {
-              $lookup: {
-                from: COL_SHOP_PRODUCTS,
-                as: 'shopProduct',
-                let: { shopProductId: '$shopProductId' },
-                pipeline: [
-                  {
-                    $match: {
-                      $expr: {
-                        $eq: ['$$shopProductId', '$_id'],
-                      },
-                    },
-                  },
-                ],
-              },
-            },
-            ...shopProductFieldsPipeline('$productId'),
-            {
-              $lookup: {
-                from: COL_ORDER_STATUSES,
-                as: 'status',
-                localField: 'statusId',
-                foreignField: '_id',
-              },
-            },
-            {
-              $addFields: {
-                status: {
-                  $arrayElemAt: ['$status', 0],
-                },
-                shopProduct: {
-                  $arrayElemAt: ['$shopProduct', 0],
-                },
-              },
-            },
-          ],
-        },
-      },
-    ])
-    .toArray();
-  const initialOrder = orderAggregationResult[0];
-
-  if (!initialOrder) {
+  const locale = props.sessionLocale;
+  const payload = await getConsoleOrder({
+    locale,
+    orderId: `${query.orderId}`,
+  });
+  if (!payload) {
     return {
       notFound: true,
     };
   }
 
-  const locale = props.sessionLocale;
-  const order: OrderInterface = {
-    ...initialOrder,
-    totalPrice: initialOrder.products?.reduce((acc: number, { totalPrice }) => {
-      return acc + totalPrice;
-    }, 0),
-    status: initialOrder.status
-      ? {
-          ...initialOrder.status,
-          name: getFieldStringLocale(initialOrder.status.nameI18n, locale),
-        }
-      : null,
-    products: initialOrder.products?.map((orderProduct) => {
-      // title
-      const snippetTitle = generateSnippetTitle({
-        locale,
-        brand: orderProduct.product?.brand,
-        rubricName: getFieldStringLocale(orderProduct.product?.rubric?.nameI18n, locale),
-        showRubricNameInProductTitle: orderProduct.product?.rubric?.showRubricNameInProductTitle,
-        showCategoryInProductTitle: orderProduct.product?.rubric?.showCategoryInProductTitle,
-        attributes: orderProduct.product?.attributes || [],
-        categories: orderProduct.product?.categories,
-        titleCategoriesSlugs: orderProduct.product?.titleCategoriesSlugs,
-        originalName: `${orderProduct.product?.originalName}`,
-        defaultGender: `${orderProduct.product?.gender}`,
-      });
-
-      return {
-        ...orderProduct,
-        status: castOrderStatus({
-          initialStatus: orderProduct.status,
-          locale: props.sessionLocale,
-        }),
-        product: orderProduct.product
-          ? {
-              ...orderProduct.product,
-              snippetTitle,
-            }
-          : null,
-      };
-    }),
-    customer: initialOrder.customer
-      ? {
-          ...initialOrder.customer,
-          fullName: getFullName(initialOrder.customer),
-          formattedPhone: {
-            raw: phoneToRaw(initialOrder.customer.phone),
-            readable: phoneToReadable(initialOrder.customer.phone),
-          },
-        }
-      : null,
-  };
-
   return {
     props: {
       ...props,
       user: castDbData(user),
-      order: castDbData(order),
+      order: castDbData(payload.order),
+      orderStatuses: castDbData(payload.orderStatuses),
       pageCompany: castDbData(props.layoutProps.pageCompany),
     },
   };

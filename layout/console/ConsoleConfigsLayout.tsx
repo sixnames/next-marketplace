@@ -26,7 +26,7 @@ const ConsoleConfigsLayout: React.FC<AppConfigsLayoutInterface> = ({
   isCms,
   companyId,
 }) => {
-  const { me } = useUserContext();
+  const { sessionUser } = useUserContext();
 
   const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
     return [
@@ -77,10 +77,10 @@ const ConsoleConfigsLayout: React.FC<AppConfigsLayoutInterface> = ({
         testId: 'admin',
         path: `${ROUTE_CMS}/config/project`,
         exact: true,
-        hidden: !me?.role?.isStaff,
+        hidden: !sessionUser?.role?.isStaff,
       },
     ];
-  }, [isCms, companyId, me]);
+  }, [isCms, companyId, sessionUser]);
 
   return (
     <AppContentWrapper>

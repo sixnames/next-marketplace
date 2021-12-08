@@ -1,3 +1,4 @@
+import { updateAlgoliaProducts } from 'lib/algolia/product';
 import { getNextItemId } from 'lib/itemIdUtils';
 import { deleteDocumentsTree, getParentTreeIds } from 'lib/optionUtils';
 import { updateCitiesSeoContent } from 'lib/seoContentUtils';
@@ -419,6 +420,11 @@ export const CategoryMutations = extendType({
               companySlug,
             });
           }
+
+          // update product algolia indexes
+          await updateAlgoliaProducts({
+            selectedOptionsSlugs: updatedCategory.slug,
+          });
 
           return {
             success: true,

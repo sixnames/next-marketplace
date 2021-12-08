@@ -68,8 +68,8 @@ const AppContextProvider: React.FC<AppContextProviderInterface> = ({
   }));
 
   React.useEffect(() => {
-    if (!state.ipInfo) {
-      fetch('https://api.ipregistry.co/?key=tryout')
+    if (!state.ipInfo && process.env.IP_REGISTRY) {
+      fetch(`https://api.ipregistry.co/?key=${process.env.IP_REGISTRY}`)
         .then<IpInfoInterface>((response) => response.json())
         .then((ipInfo) => {
           setState((prevState) => {

@@ -71,7 +71,7 @@ import {
   SeoContentInterface,
   ShopProductInterface,
 } from 'db/uiInterfaces';
-import { getAlgoliaProductsSearch } from 'lib/algolia/product';
+import { getAlgoliaProductsSearch } from 'lib/algolia/productAlgoliaUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { getTreeFromList, sortByName } from 'lib/optionUtils';

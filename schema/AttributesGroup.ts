@@ -1,5 +1,5 @@
 import { DEFAULT_LOCALE, SORT_ASC } from 'config/common';
-import { updateAlgoliaProducts } from 'lib/algolia/product';
+import { updateAlgoliaProducts } from 'lib/algolia/productAlgoliaUtils';
 import { getNextNumberItemId } from 'lib/itemIdUtils';
 import { arg, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
 import {

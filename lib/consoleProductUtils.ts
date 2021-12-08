@@ -1,5 +1,4 @@
 import {
-  ATTRIBUTE_VIEW_VARIANT_LIST,
   DEFAULT_CURRENCY,
   FILTER_SEPARATOR,
   GENDER_HE,
@@ -42,7 +41,7 @@ import {
   ShopProductInterface,
   ShopProductsAggregationInterface,
 } from 'db/uiInterfaces';
-import { getAlgoliaProductsSearch } from 'lib/algolia/product';
+import { getAlgoliaProductsSearch } from 'lib/algolia/productAlgoliaUtils';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { castCatalogueFilters, getCatalogueAttributes } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
@@ -907,6 +906,23 @@ export const getConsoleCompanyRubricProducts = async ({
                         },
                       },
                     },
+
+                    // get product attributes
+                    {
+                      $lookup: {
+                        from: COL_PRODUCT_ATTRIBUTES,
+                        as: 'attributes',
+                        pipeline: [
+                          {
+                            $match: {
+                              $expr: {
+                                $eq: ['$$productId', '$productId'],
+                              },
+                            },
+                          },
+                        ],
+                      },
+                    },
                   ],
                 },
               },
@@ -918,27 +934,6 @@ export const getConsoleCompanyRubricProducts = async ({
               {
                 $replaceRoot: {
                   newRoot: '$product',
-                },
-              },
-
-              // get product attributes
-              {
-                $lookup: {
-                  from: COL_PRODUCT_ATTRIBUTES,
-                  as: 'attributes',
-                  let: {
-                    productId: '$_id',
-                  },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $eq: ['$$productId', '$productId'],
-                        },
-                        viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
-                      },
-                    },
-                  ],
                 },
               },
             ],
@@ -1509,7 +1504,7 @@ export const getConsoleShopProducts = async ({
         excludedProductsIds,
       });
       searchStage = {
-        _id: {
+        productId: {
           $in: searchIds,
         },
       };
@@ -1568,6 +1563,23 @@ export const getConsoleShopProducts = async ({
                         $expr: {
                           $eq: ['$$productId', '$_id'],
                         },
+                      },
+                    },
+
+                    // get product attributes
+                    {
+                      $lookup: {
+                        from: COL_PRODUCT_ATTRIBUTES,
+                        as: 'attributes',
+                        pipeline: [
+                          {
+                            $match: {
+                              $expr: {
+                                $eq: ['$$productId', '$productId'],
+                              },
+                            },
+                          },
+                        ],
                       },
                     },
                   ],

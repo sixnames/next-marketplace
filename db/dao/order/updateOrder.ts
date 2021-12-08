@@ -1,9 +1,10 @@
-import { COL_ORDER_LOGS } from 'db/collectionNames';
-import { OrderLogDiffModel, OrderLogModel } from 'db/dbModels';
+import { COL_ORDER_LOGS, COL_ORDER_PRODUCTS, COL_ORDERS } from 'db/collectionNames';
+import { OrderLogDiffModel, OrderLogModel, OrderModel, OrderProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface, OrderInterface, OrderInterfacePayloadModel } from 'db/uiInterfaces';
 import { detailedDiff } from 'deep-object-diff';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { noNaN } from 'lib/numbers';
 import { getConsoleOrder } from 'lib/orderUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { castDbData } from 'lib/ssrUtils';
@@ -21,7 +22,8 @@ export async function updateOrder({
   const { getApiMessage, locale } = await getRequestParams(context);
   const { db, client } = await getDatabase();
   const orderLogsCollection = db.collection<OrderLogModel>(COL_ORDER_LOGS);
-  // const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
+  const orderProductsCollection = db.collection<OrderProductModel>(COL_ORDER_PRODUCTS);
+  const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
   // console.log(ordersCollection);
 
   const session = client.startSession();
@@ -99,7 +101,7 @@ export async function updateOrder({
       };
       await orderLogsCollection.insertOne(orderLog);
 
-      // get updated products
+      // update order products
       let updatedProducts = get(diff, 'updated.products') || {};
       const addedProducts = get(diff, 'added.products') || {};
       for (const index in addedProducts) {
@@ -110,11 +112,26 @@ export async function updateOrder({
           ...prevAddedProductState,
         };
       }
+      for await (const index of Object.keys(updatedProducts)) {
+        const orderProduct = (order.products || [])[noNaN(index)];
+        const updater = updatedProducts[index];
+        if (orderProduct) {
+          await orderProductsCollection.findOneAndUpdate(
+            {
+              _id: new ObjectId(orderProduct._id),
+            },
+            {
+              $set: updater,
+            },
+          );
+        }
+      }
 
-      console.log({
-        updatedProducts,
-        addedProducts,
-      });
+      // update order status
+      const updatedOrderStatusId = get(diff, 'updated.statusId');
+      if (updatedOrderStatusId) {
+        console.log('');
+      }
 
       // success
       const nextOrderState = await getConsoleOrder({

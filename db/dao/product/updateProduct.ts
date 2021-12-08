@@ -3,7 +3,7 @@ import { CreateProductInputInterface } from 'db/dao/product/createProduct';
 import { ProductModel, ProductPayloadModel, RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
-import { updateAlgoliaProduct } from 'lib/algolia/product';
+import { updateAlgoliaProducts } from 'lib/algolia/product';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { checkBarcodeIntersects, trimProductName } from 'lib/productUtils';
 import {
@@ -138,7 +138,9 @@ export async function updateProduct({
       }
 
       // update algolia product object
-      await updateAlgoliaProduct(updatedProduct._id);
+      await updateAlgoliaProducts({
+        _id: updatedProduct._id,
+      });
 
       mutationPayload = {
         success: true,

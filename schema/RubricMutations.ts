@@ -1,3 +1,4 @@
+import { updateAlgoliaProducts } from 'lib/algolia/product';
 import { updateCitiesSeoContent } from 'lib/seoContentUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
@@ -302,6 +303,11 @@ export const RubricMutations = extendType({
               companySlug,
             });
           }
+
+          // update product algolia indexes
+          await updateAlgoliaProducts({
+            rubricId: updatedRubric._id,
+          });
 
           return {
             success: true,

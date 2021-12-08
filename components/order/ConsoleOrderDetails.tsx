@@ -1,4 +1,5 @@
 import Button from 'components/button/Button';
+import FixedButtons from 'components/button/FixedButtons';
 import Currency from 'components/Currency';
 import FormattedDateTime from 'components/FormattedDateTime';
 import FormikInput from 'components/FormElements/Input/FormikInput';
@@ -25,7 +26,11 @@ import { useLocaleContext } from 'context/localeContext';
 import { useNotificationsContext } from 'context/notificationsContext';
 import { OrderInterface, OrderProductInterface } from 'db/uiInterfaces';
 import { Form, Formik, useFormikContext } from 'formik';
-import { useCancelOrderProduct, useUpdateOrderProduct } from 'hooks/mutations/useOrderMutations';
+import {
+  useCancelOrderProduct,
+  useUpdateOrder,
+  useUpdateOrderProduct,
+} from 'hooks/mutations/useOrderMutations';
 import { noNaN } from 'lib/numbers';
 import { get } from 'lodash';
 import * as React from 'react';
@@ -262,6 +267,8 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
     deliveryInfo,
   } = order;
 
+  const [updateOrderMutation] = useUpdateOrder();
+
   const deliveryName = getConstantOptionName({
     options: DELIVERY_VARIANT_OPTIONS,
     value: deliveryVariant,
@@ -284,7 +291,14 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
         </div>
       </div>
 
-      <Formik initialValues={order} onSubmit={() => {}}>
+      <Formik<OrderInterface>
+        initialValues={order}
+        onSubmit={(values) => {
+          updateOrderMutation({
+            order: values,
+          }).catch(console.log);
+        }}
+      >
         {() => {
           return (
             <Form>
@@ -390,6 +404,10 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
                   </div>
                 </div>
               </div>
+
+              <FixedButtons>
+                <Button type={'submit'}>Сохранить</Button>
+              </FixedButtons>
             </Form>
           );
         }}

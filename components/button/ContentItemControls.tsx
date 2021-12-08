@@ -57,7 +57,7 @@ const ContentItemControls: React.FC<ContentItemControlsInterface> = ({
 }) => {
   return (
     <div
-      className={`flex items-center gap-2 ${className ? className : ''}`}
+      className={`flex items-center gap-3 ${className ? className : ''}`}
       style={{ justifyContent }}
     >
       {createHandler ? (

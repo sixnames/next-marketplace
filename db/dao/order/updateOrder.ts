@@ -1,5 +1,5 @@
-import { COL_ORDER_LOGS, COL_ORDERS } from 'db/collectionNames';
-import { OrderLogDiffModel, OrderLogModel, OrderModel } from 'db/dbModels';
+import { COL_ORDER_LOGS } from 'db/collectionNames';
+import { OrderLogDiffModel, OrderLogModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface, OrderInterface, OrderInterfacePayloadModel } from 'db/uiInterfaces';
 import { detailedDiff } from 'deep-object-diff';
@@ -20,8 +20,8 @@ export async function updateOrder({
   const { getApiMessage, locale } = await getRequestParams(context);
   const { db, client } = await getDatabase();
   const orderLogsCollection = db.collection<OrderLogModel>(COL_ORDER_LOGS);
-  const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
-  console.log(ordersCollection);
+  // const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
+  // console.log(ordersCollection);
 
   const session = client.startSession();
 
@@ -75,11 +75,10 @@ export async function updateOrder({
         await session.abortTransaction();
         return;
       }
+
+      // get diff for log
       const prevOrderState = castDbData(prevOrder.order);
       const diff = detailedDiff(prevOrderState, order) as OrderLogDiffModel;
-      console.log('');
-      console.log('>>>>>>>>>>>>>>>>');
-      console.log('');
       console.log(JSON.stringify(diff, null, 2));
 
       // create order log

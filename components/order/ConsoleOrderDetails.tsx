@@ -42,6 +42,7 @@ interface OrderProductProductInterface {
   orderProduct: OrderProductInterface;
   citySlug: string;
   companySlug: string;
+  showAdminUi: boolean;
 }
 
 const OrderProduct: React.FC<OrderProductProductInterface> = ({
@@ -49,6 +50,7 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
   citySlug,
   companySlug,
   orderProductIndex,
+  showAdminUi,
 }) => {
   const { values } = useFormikContext<OrderInterface>();
   const { showModal } = useAppContext();
@@ -91,7 +93,7 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
           </div>
         </div>
 
-        {!isCanceled ? (
+        {!isCanceled && !showAdminUi ? (
           <div className='mt-4 flex gap-4'>
             {/*save button*/}
             <Button
@@ -261,6 +263,7 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
 }) => {
   const { sessionUser } = useUserContext();
   const { locale } = useLocaleContext();
+  const showAdminUi = sessionUser?.role?.isStaff;
   const {
     createdAt,
     totalPrice,
@@ -314,6 +317,7 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
                   {products?.map((orderProduct, orderProductIndex) => {
                     return (
                       <OrderProduct
+                        showAdminUi={Boolean(showAdminUi)}
                         orderProductIndex={orderProductIndex}
                         citySlug={shop?.citySlug || DEFAULT_CITY}
                         companySlug={pageCompanySlug || DEFAULT_COMPANY_SLUG}
@@ -327,7 +331,7 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
                 <div className='relative col-span-3'>
                   <div className='sticky bg-secondary rounded-lg py-8 px-6'>
                     {/*status*/}
-                    {sessionUser?.role?.isStaff ? (
+                    {showAdminUi ? (
                       <FormikSelect
                         useIdField
                         label={'Статус'}

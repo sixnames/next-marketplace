@@ -96,7 +96,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
             href={`${layoutBasePath}/${shop._id}/products/product/${dataItem._id}`}
             target={'_blank'}
           >
-            {dataItem.itemId}
+            {dataItem.product?.itemId}
           </Link>
         );
       },

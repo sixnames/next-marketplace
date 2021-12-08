@@ -8,7 +8,7 @@ import {
 import { ProductModel, ProductPayloadModel, ShopModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
-import { updateAlgoliaProduct } from 'lib/algolia/product';
+import { updateAlgoliaProducts } from 'lib/algolia/product';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getNextItemId } from 'lib/itemIdUtils';
 import { checkBarcodeIntersects } from 'lib/productUtils';
@@ -153,7 +153,9 @@ export async function updateProductWithSyncError({
       }
 
       // update algolia product object
-      await updateAlgoliaProduct(updatedProduct._id);
+      await updateAlgoliaProducts({
+        _id: updatedProduct._id,
+      });
 
       // Delete sync errors
       const removedNotSyncedProductsResult = await notSyncedProductsCollection.deleteMany({

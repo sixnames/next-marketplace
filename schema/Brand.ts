@@ -1,4 +1,5 @@
 import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
+import { updateAlgoliaProducts } from 'lib/algolia/product';
 import { getAlphabetList } from 'lib/optionUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType, stringArg } from 'nexus';
 import {
@@ -477,13 +478,17 @@ export const BrandMutations = extendType({
               returnDocument: 'after',
             },
           );
-
           if (!updatedBrandResult.ok || !updatedBrandResult.value) {
             return {
               success: false,
               message: await getApiMessage('brands.update.error'),
             };
           }
+
+          // update product algolia indexes
+          await updateAlgoliaProducts({
+            brandSlug: updatedBrandResult.value.itemId,
+          });
 
           return {
             success: true,
@@ -851,6 +856,11 @@ export const BrandMutations = extendType({
               await session.abortTransaction();
               return;
             }
+
+            // update product algolia indexes
+            await updateAlgoliaProducts({
+              brandCollectionSlug: updatedBrandCollection.itemId,
+            });
 
             mutationPayload = {
               success: true,

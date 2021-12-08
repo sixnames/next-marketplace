@@ -1,5 +1,5 @@
 import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
-import { updateAlgoliaProducts } from 'lib/algolia/product';
+import { updateAlgoliaProducts } from 'lib/algolia/productAlgoliaUtils';
 import { getAlphabetList } from 'lib/optionUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType, stringArg } from 'nexus';
 import {

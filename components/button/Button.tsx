@@ -44,7 +44,7 @@ const Button: React.FC<ButtonPropsInterface> = ({
     theme === 'primary'
       ? 'text-wp-white bg-theme'
       : theme === 'secondary'
-      ? 'text-theme bg-secondary-button-background hover:ring-2 hover:ring-theme'
+      ? 'text-theme bg-secondary ring-2 ring-theme'
       : theme === 'secondary-b'
       ? 'text-theme bg-secondary-b-button-background hover:ring-2 hover:ring-theme'
       : 'text-wp-mid-gray-100 bg-wp-light-gray-200 dark:text-wp-light-gray-200 dark:bg-wp-dark-gray-100 hover:border-2 hover:border-theme';
@@ -60,7 +60,7 @@ const Button: React.FC<ButtonPropsInterface> = ({
     ? `rounded-full ${isSmall ? 'w-[var(--smallButtonHeight)]' : 'w-[var(--formInputHeight)]'}`
     : childrenClass;
   const additionalClass = className ? className : '';
-  const buttonClass = `z-[5] flex items-center pt-[3px] justify-center border-1 border-theme font-medium uppercase text-center text-sm transition-all duration-100 cursor-pointer disabled:opacity-50 disabled:pointer-events-none shadow-md hover:shadow-xl ${sizeClass} ${themeClass} ${circleClass} ${additionalClass}`;
+  const buttonClass = `z-[5] flex items-center justify-center border-1 border-theme font-medium uppercase text-center text-sm transition-all duration-100 cursor-pointer disabled:opacity-50 disabled:pointer-events-none shadow-md hover:shadow-xl ${sizeClass} ${themeClass} ${circleClass} ${additionalClass}`;
 
   return (
     <div className={`relative ${frameClassName ? frameClassName : 'w-full'}`}>

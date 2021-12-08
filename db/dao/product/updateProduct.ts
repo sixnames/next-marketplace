@@ -3,7 +3,7 @@ import { CreateProductInputInterface } from 'db/dao/product/createProduct';
 import { ProductModel, ProductPayloadModel, RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
-import { updateAlgoliaProducts } from 'lib/algolia/product';
+import { updateAlgoliaProducts } from 'lib/algolia/productAlgoliaUtils';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { checkBarcodeIntersects, trimProductName } from 'lib/productUtils';
 import {

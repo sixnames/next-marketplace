@@ -1,4 +1,4 @@
-import { updateAlgoliaProducts } from 'lib/algolia/product';
+import { updateAlgoliaProducts } from 'lib/algolia/productAlgoliaUtils';
 import { updateCitiesSeoContent } from 'lib/seoContentUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {

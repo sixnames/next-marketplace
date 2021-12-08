@@ -1,4 +1,4 @@
-import { updateAlgoliaProducts } from 'lib/algolia/product';
+import { updateAlgoliaProducts } from 'lib/algolia/productAlgoliaUtils';
 import { getNextItemId } from 'lib/itemIdUtils';
 import { deleteDocumentsTree, getParentTreeIds } from 'lib/optionUtils';
 import { updateCitiesSeoContent } from 'lib/seoContentUtils';

@@ -1,3 +1,4 @@
+import { updateAlgoliaProducts } from 'lib/algolia/product';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getNextNumberItemId } from 'lib/itemIdUtils';
 import { deleteDocumentsTree, trimOptionNames } from 'lib/optionUtils';
@@ -698,6 +699,8 @@ export const OptionsGroupMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
           const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
+          const productAttributesCollection =
+            db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
           const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
           const { input } = args;
           const { optionsGroupId, optionId, parentId, ...values } = input;
@@ -759,6 +762,28 @@ export const OptionsGroupMutations = extendType({
               message: await getApiMessage('optionsGroups.updateOption.error'),
             };
           }
+
+          // update product algolia indexes
+          const productAttributes = await productAttributesCollection
+            .aggregate<ProductAttributeModel>([
+              {
+                $match: {
+                  selectedOptionsIds: updatedOption._id,
+                },
+              },
+              {
+                $project: {
+                  productId: true,
+                },
+              },
+            ])
+            .toArray();
+          const productIds = productAttributes.map(({ productId }) => productId);
+          await updateAlgoliaProducts({
+            _id: {
+              $in: productIds,
+            },
+          });
 
           return {
             success: true,

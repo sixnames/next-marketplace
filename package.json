@@ -17,6 +17,7 @@
     "ci": "server-test 3000",
     "build-and-test": "yarn build && yarn ci",
     "seed-stage-db": "ts-node --skip-project tests/seedStageDb.ts",
+    "update-algolia": "ts-node --skip-project cypress/fixtures/utils/updateAlgolia.ts",
     "fast-update-prods": "ts-node --skip-project cypress/fixtures/utils/fastUpdateProds.ts",
     "update-prods": "ts-node --skip-project cypress/fixtures/utils/updateProds.ts",
     "seed-new-db": "ts-node --skip-project cypress/fixtures/utils/seedNewDb.ts",

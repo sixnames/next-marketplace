@@ -17,7 +17,7 @@ import {
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
-import { deleteAlgoliaObjects } from 'lib/algoliaUtils';
+import { deleteAlgoliaObjects } from 'lib/algolia/algoliaUtils';
 import { deleteUpload } from 'lib/assetUtils/assetUtils';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';

@@ -64,6 +64,7 @@ export async function updateOrder({
       }
 
       const { order } = input;
+      const orderid = new ObjectId(order._id);
 
       // get prev order state
       const prevOrder = await getConsoleOrder({
@@ -130,7 +131,16 @@ export async function updateOrder({
       // update order status
       const updatedOrderStatusId = get(diff, 'updated.statusId');
       if (updatedOrderStatusId) {
-        console.log('');
+        await ordersCollection.findOneAndUpdate(
+          {
+            _id: orderid,
+          },
+          {
+            $set: {
+              statusId: new ObjectId(updatedOrderStatusId),
+            },
+          },
+        );
       }
 
       // success

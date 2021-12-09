@@ -7,7 +7,11 @@ import SeoContentEditor from 'components/SeoContentEditor';
 import Spinner from 'components/Spinner';
 import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
 import { getConsoleRubricDetails } from 'db/dao/rubric/getConsoleRubricDetails';
-import { RubricInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
+import {
+  AppContentWrapperBreadCrumbs,
+  RubricInterface,
+  SeoContentCitiesInterface,
+} from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import {
   UpdateRubricInput,
@@ -16,7 +20,6 @@ import {
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
 import * as React from 'react';

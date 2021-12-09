@@ -20,11 +20,16 @@ import {
 import { BRAND_COLLECTION_MODAL, CONFIRM_MODAL } from 'config/modalVariants';
 import { COL_BRAND_COLLECTIONS, COL_BRANDS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { AppPaginationInterface, BrandCollectionInterface, BrandInterface } from 'db/uiInterfaces';
+import {
+  AppContentWrapperBreadCrumbs,
+  AppPaginationInterface,
+  BrandCollectionInterface,
+  BrandInterface,
+} from 'db/uiInterfaces';
 import { useDeleteCollectionFromBrandMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
-import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import AppContentWrapper from 'layout/AppContentWrapper';
 import AppSubNav from 'layout/AppSubNav';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { alwaysArray } from 'lib/arrayUtils';

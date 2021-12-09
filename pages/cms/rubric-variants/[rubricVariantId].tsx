@@ -18,7 +18,7 @@ import {
 } from 'config/constantSelects';
 import { COL_RUBRIC_VARIANTS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { RubricVariantInterface } from 'db/uiInterfaces';
+import { AppContentWrapperBreadCrumbs, RubricVariantInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import {
   UpdateRubricVariantInput,
@@ -26,7 +26,7 @@ import {
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
-import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import AppContentWrapper from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';

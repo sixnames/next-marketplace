@@ -1,18 +1,16 @@
 import { FILTER_SEPARATOR, FILTER_PAGE_KEY, ROUTE_CMS } from 'config/common';
 import { COL_COMPANIES } from 'db/collectionNames';
+import { getConsoleShopProducts } from 'db/dao/product/getConsoleShopProducts';
 import { CompanyModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import { AppContentWrapperBreadCrumbs, ShopRubricProductsInterface } from 'db/uiInterfaces';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { alwaysArray } from 'lib/arrayUtils';
-import { getConsoleShopProducts } from 'lib/consoleProductUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
-import ShopRubricProducts, {
-  ShopRubricProductsInterface,
-} from 'components/shops/ShopRubricProducts';
+import ShopRubricProducts from 'components/shops/ShopRubricProducts';
 
 export interface CompanyShopProductsListInterface
   extends GetAppInitialDataPropsInterface,

@@ -1,8 +1,8 @@
 import Inner from 'components/Inner';
 import Title from 'components/Title';
 import { ROUTE_CONSOLE } from 'config/common';
-import { CompanyInterface } from 'db/uiInterfaces';
-import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
+import AppContentWrapper from 'layout/AppContentWrapper';
 import AppSubNav from 'layout/AppSubNav';
 import Head from 'next/head';
 import * as React from 'react';

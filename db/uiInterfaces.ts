@@ -1,4 +1,5 @@
-import { ShopRubricProductsInterface } from 'components/shops/ShopRubricProducts';
+import { LinkProps } from 'next/link';
+import * as React from 'react';
 import {
   AssetModel,
   AttributeModel,
@@ -812,6 +813,60 @@ export interface ConsoleRubricProductsInterface
   extends AppPaginationWithFiltersInterface<ProductInterface> {
   rubric?: RubricInterface | null;
   companySlug: string;
+}
+
+export interface LinkInterface
+  extends Omit<LinkProps, 'as' | 'href'>,
+    React.PropsWithChildren<any> {
+  className?: string;
+  activeClassName?: string;
+  testId?: string;
+  exact?: boolean;
+  isTab?: boolean;
+  onClick?: React.MouseEventHandler<HTMLAnchorElement>;
+  href: string;
+  ariaLabel?: string;
+}
+
+export interface BreadcrumbsItemInterface extends LinkInterface {
+  name: string;
+}
+
+export type AppContentWrapperBreadCrumbs = Omit<
+  BreadcrumbsInterface,
+  'noMainPage' | 'lowWrapper' | 'lowBottom'
+>;
+
+export interface BreadcrumbsInterface {
+  currentPageName?: string;
+  config?: BreadcrumbsItemInterface[];
+  noMainPage?: boolean;
+  lowTop?: boolean;
+  lowBottom?: boolean;
+  lowWrapper?: boolean;
+  urlPrefix?: string;
+  centered?: boolean;
+}
+
+export interface ConsoleShopLayoutInterface {
+  shop: ShopInterface;
+  basePath: string;
+  breadcrumbs?: AppContentWrapperBreadCrumbs;
+}
+
+export interface ShopRubricProductsInterface
+  extends AppPaginationInterface<ShopProductInterface>,
+    ConsoleShopLayoutInterface {
+  shop: ShopInterface;
+  attributes: CatalogueFilterAttributeInterface[];
+  selectedAttributes: CatalogueFilterAttributeInterface[];
+  clearSlug: string;
+  rubricName: string;
+  rubricId: string;
+  rubricSlug: string;
+  layoutBasePath: string;
+  basePath: string;
+  currency: string;
 }
 
 export interface CompanyShopProductsPageInterface

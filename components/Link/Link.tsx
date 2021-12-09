@@ -1,20 +1,8 @@
+import { LinkInterface } from 'db/uiInterfaces';
 import * as React from 'react';
-import NextLink, { LinkProps } from 'next/link';
+import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import qs from 'qs';
-
-export interface LinkInterface
-  extends Omit<LinkProps, 'as' | 'href'>,
-    React.PropsWithChildren<any> {
-  className?: string;
-  activeClassName?: string;
-  testId?: string;
-  exact?: boolean;
-  isTab?: boolean;
-  onClick?: React.MouseEventHandler<HTMLAnchorElement>;
-  href: string;
-  ariaLabel?: string;
-}
 
 const Link: React.FC<LinkInterface> = ({
   className = '',

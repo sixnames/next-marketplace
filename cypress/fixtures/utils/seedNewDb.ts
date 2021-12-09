@@ -35,6 +35,7 @@ const config = {
 const dbConfig: GetProdDd = {
   uri: `${protocol}://${username}:${password}@${host}:${port}`,
   dbName,
+  algoliaProductsIndexName: '',
 };
 
 async function seedNewDb() {

@@ -1,7 +1,7 @@
 import PromoDetails, { PromoDetailsInterface } from 'components/Promo/PromoDetails';
 import { ROUTE_CONSOLE } from 'config/common';
-import { CompanyInterface } from 'db/uiInterfaces';
-import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
+import AppContentWrapper from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getPromoSsr } from 'lib/promoUtils';
 import * as React from 'react';

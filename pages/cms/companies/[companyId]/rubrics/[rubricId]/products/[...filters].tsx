@@ -4,13 +4,12 @@ import CompanyRubricProductsList, {
 import RequestError from 'components/RequestError';
 import { ROUTE_CMS, DEFAULT_PAGE_FILTER } from 'config/common';
 import { COL_COMPANIES } from 'db/collectionNames';
+import { getConsoleCompanyRubricProducts } from 'db/dao/product/getConsoleCompanyRubricProducts';
 import { getDatabase } from 'db/mongodb';
-import { CompanyInterface } from 'db/uiInterfaces';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { alwaysString } from 'lib/arrayUtils';
-import { getConsoleCompanyRubricProducts } from 'lib/consoleProductUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';

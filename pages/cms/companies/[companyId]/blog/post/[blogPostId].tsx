@@ -4,8 +4,12 @@ import { ROUTE_BLOG, ROUTE_CMS } from 'config/common';
 import { COL_COMPANIES } from 'db/collectionNames';
 import { getBlogPost } from 'db/dao/blog/getBlogPost';
 import { getDatabase } from 'db/mongodb';
-import { BlogAttributeInterface, BlogPostInterface, CompanyInterface } from 'db/uiInterfaces';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import {
+  AppContentWrapperBreadCrumbs,
+  BlogAttributeInterface,
+  BlogPostInterface,
+  CompanyInterface,
+} from 'db/uiInterfaces';
 import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';

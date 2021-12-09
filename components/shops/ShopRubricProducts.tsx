@@ -15,10 +15,8 @@ import { CONFIRM_MODAL } from 'config/modalVariants';
 import { useUserContext } from 'context/userContext';
 import { ShopProductModel } from 'db/dbModels';
 import {
-  AppPaginationInterface,
-  CatalogueFilterAttributeInterface,
-  ShopInterface,
   ShopProductInterface,
+  ShopRubricProductsInterface,
   SupplierProductInterface,
 } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
@@ -26,28 +24,13 @@ import { useDeleteProductFromShopMutation } from 'generated/apolloComponents';
 import { useUpdateManyShopProducts } from 'hooks/mutations/useShopProductMutations';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
-import ConsoleShopLayout, { AppShopLayoutInterface } from 'layout/console/ConsoleShopLayout';
+import ConsoleShopLayout from 'layout/console/ConsoleShopLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getNumWord } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { updateManyShopProductsSchema } from 'validation/shopSchema';
-
-export interface ShopRubricProductsInterface
-  extends AppPaginationInterface<ShopProductInterface>,
-    AppShopLayoutInterface {
-  shop: ShopInterface;
-  attributes: CatalogueFilterAttributeInterface[];
-  selectedAttributes: CatalogueFilterAttributeInterface[];
-  clearSlug: string;
-  rubricName: string;
-  rubricId: string;
-  rubricSlug: string;
-  layoutBasePath: string;
-  basePath: string;
-  currency: string;
-}
 
 const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
   shop,

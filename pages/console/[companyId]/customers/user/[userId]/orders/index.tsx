@@ -12,8 +12,12 @@ import {
   COL_USERS,
 } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { CompanyInterface, OrderInterface, UserInterface } from 'db/uiInterfaces';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import {
+  AppContentWrapperBreadCrumbs,
+  CompanyInterface,
+  OrderInterface,
+  UserInterface,
+} from 'db/uiInterfaces';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import ConsoleUserLayout from 'layout/console/ConsoleUserLayout';
 import { getFieldStringLocale } from 'lib/i18n';

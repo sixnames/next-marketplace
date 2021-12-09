@@ -15,13 +15,16 @@ import { COL_CATEGORIES, COL_ATTRIBUTES, COL_RUBRICS } from 'db/collectionNames'
 import { rubricAttributeGroupsPipeline } from 'db/dao/constantPipelines';
 import { ObjectIdModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { CategoryInterface, AttributeInterface } from 'db/uiInterfaces';
+import {
+  CategoryInterface,
+  AttributeInterface,
+  AppContentWrapperBreadCrumbs,
+} from 'db/uiInterfaces';
 import {
   useAddAttributesGroupToCategoryMutation,
   useDeleteAttributesGroupFromCategoryMutation,
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCategoryLayout from 'layout/cms/CmsCategoryLayout';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';

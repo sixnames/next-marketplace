@@ -213,6 +213,7 @@ export async function createProductWithSyncError({
         rubricSlug: createdProduct.rubricSlug,
         allowDelivery: createdProduct.allowDelivery,
         companyId: shop.companyId,
+        companySlug: shop.companySlug,
         brandSlug: createdProduct.brandSlug,
         mainImage: createdProduct.mainImage,
         brandCollectionSlug: createdProduct.brandCollectionSlug,

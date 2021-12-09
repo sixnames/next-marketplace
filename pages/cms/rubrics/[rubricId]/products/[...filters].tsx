@@ -15,15 +15,18 @@ import TableRowImage from 'components/TableRowImage';
 import { SeoTextCitiesInfoList } from 'components/SeoTextLocalesInfoList';
 import { ROUTE_CMS, DEFAULT_PAGE_FILTER, DEFAULT_COMPANY_SLUG } from 'config/common';
 import { CONFIRM_MODAL, CREATE_NEW_PRODUCT_MODAL } from 'config/modalVariants';
-import { ConsoleRubricProductsInterface, ProductInterface } from 'db/uiInterfaces';
+import { getConsoleRubricProducts } from 'db/dao/product/getConsoleRubricProducts';
+import {
+  AppContentWrapperBreadCrumbs,
+  ConsoleRubricProductsInterface,
+  ProductInterface,
+} from 'db/uiInterfaces';
 import { useDeleteProduct } from 'hooks/mutations/useProductMutations';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import usePageLoadingState from 'hooks/usePageLoadingState';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
-import { getConsoleRubricProducts } from 'lib/consoleProductUtils';
 import { getNumWord } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';

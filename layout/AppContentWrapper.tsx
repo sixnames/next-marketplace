@@ -1,10 +1,6 @@
-import Breadcrumbs, { BreadcrumbsInterface } from 'components/Breadcrumbs';
+import Breadcrumbs from 'components/Breadcrumbs';
+import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
 import * as React from 'react';
-
-export type AppContentWrapperBreadCrumbs = Omit<
-  BreadcrumbsInterface,
-  'noMainPage' | 'lowWrapper' | 'lowBottom'
->;
 
 interface AppContentWrapperInterface {
   testId?: string | number;

@@ -4,8 +4,12 @@ import CompanyRubricCategoriesList, {
 import { ROUTE_CONSOLE } from 'config/common';
 import { COL_CATEGORIES, COL_ICONS, COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { CategoryInterface, RubricInterface, ShopProductInterface } from 'db/uiInterfaces';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import {
+  AppContentWrapperBreadCrumbs,
+  CategoryInterface,
+  RubricInterface,
+  ShopProductInterface,
+} from 'db/uiInterfaces';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from 'lib/i18n';

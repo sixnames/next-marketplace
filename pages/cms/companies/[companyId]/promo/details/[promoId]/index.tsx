@@ -2,8 +2,7 @@ import PromoDetails, { PromoDetailsInterface } from 'components/Promo/PromoDetai
 import { ROUTE_CMS } from 'config/common';
 import { COL_COMPANIES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { CompanyInterface } from 'db/uiInterfaces';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import ConsolePromoLayout from 'layout/console/ConsolePromoLayout';
 import { getPromoSsr } from 'lib/promoUtils';

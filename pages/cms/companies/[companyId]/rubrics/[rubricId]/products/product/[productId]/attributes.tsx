@@ -16,8 +16,8 @@ import {
   AttributesGroupInterface,
   ProductAttributesGroupInterface,
   CompanyInterface,
+  AppContentWrapperBreadCrumbs,
 } from 'db/uiInterfaces';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsProductLayout from 'layout/cms/CmsProductLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { sortByName } from 'lib/optionUtils';

@@ -28,7 +28,7 @@ const CardSimpleGallery: React.FC<CardSimpleGalleryInterface> = ({
               url={mainImage}
               alt={alt}
               title={title}
-              width={480}
+              width={550}
               className='absolute inset-0 w-full h-full object-contain'
             />
           </div>
@@ -49,7 +49,7 @@ const CardSimpleGallery: React.FC<CardSimpleGalleryInterface> = ({
                     url={url}
                     alt={`${alt} photo ${index}`}
                     title={`${title} photo ${index}`}
-                    width={480}
+                    width={550}
                     className='absolute inset-0 w-full h-full object-contain'
                   />
                 </div>

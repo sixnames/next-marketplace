@@ -102,6 +102,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                   assets={assets}
                   className={`mb-8 lg:mb-0 ${stickyClassName}`}
                   slideTitle={cardTitle}
+                  imageWidth={550}
                 />
               ) : (
                 <CardSimpleGallery

@@ -1,4 +1,4 @@
-import { ORDER_LOG_VARIANT_CANCEL, ORDER_LOG_VARIANT_CANCEL_PRODUCT } from 'config/common';
+import { DEFAULT_DIFF } from 'config/common';
 import {
   COL_ORDER_LOGS,
   COL_ORDER_PRODUCTS,
@@ -120,10 +120,14 @@ export async function cancelOrderProduct({
         _id: new ObjectId(),
         orderId: order._id,
         userId: user._id,
-        prevStatusId: order.statusId,
-        statusId: orderCancelStatus._id,
-        productId: orderProduct._id,
-        variant: ORDER_LOG_VARIANT_CANCEL_PRODUCT,
+        diff: DEFAULT_DIFF,
+        logUser: {
+          name: user.name,
+          lastName: user.lastName,
+          secondName: user.secondName,
+          email: user.email,
+          phone: user.phone,
+        },
         createdAt: new Date(),
       };
       await orderLogsCollection.insertOne(orderLog);
@@ -187,9 +191,14 @@ export async function cancelOrderProduct({
           _id: new ObjectId(),
           orderId: order._id,
           userId: user._id,
-          prevStatusId: order.statusId,
-          statusId: orderCancelStatus._id,
-          variant: ORDER_LOG_VARIANT_CANCEL,
+          diff: DEFAULT_DIFF,
+          logUser: {
+            name: user.name,
+            lastName: user.lastName,
+            secondName: user.secondName,
+            email: user.email,
+            phone: user.phone,
+          },
           createdAt: new Date(),
         };
         await orderLogsCollection.insertOne(orderLog);

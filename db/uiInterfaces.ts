@@ -35,6 +35,7 @@ import {
   OrderStatusModel,
   PageModel,
   PagesGroupModel,
+  PayloadType,
   ProductAssetsModel,
   ProductAttributeModel,
   ProductCardBreadcrumbModel,
@@ -821,3 +822,5 @@ export interface SeoContentInterface extends SeoContentModel {
 export interface SeoContentCitiesInterface {
   [key: string]: SeoContentInterface;
 }
+
+export type OrderInterfacePayloadModel = PayloadType<OrderInterface>;

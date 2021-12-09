@@ -1,12 +1,14 @@
 import Button from 'components/button/Button';
-import ConsoleOrderDetails from 'components/order/ConsoleOrderDetails';
+import ConsoleOrderDetails, {
+  CmsOrderDetailsBaseInterface,
+} from 'components/order/ConsoleOrderDetails';
 import FixedButtons from 'components/button/FixedButtons';
 import Inner from 'components/Inner';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { DEFAULT_COMPANY_SLUG, ROUTE_CONSOLE } from 'config/common';
 import { CONFIRM_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
-import { CompanyInterface, OrderInterface } from 'db/uiInterfaces';
+import { CompanyInterface } from 'db/uiInterfaces';
 import { useCancelOrder, useConfirmOrder } from 'hooks/mutations/useOrderMutations';
 import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
@@ -20,12 +22,15 @@ import {
   GetConsoleInitialDataPropsInterface,
 } from 'lib/ssrUtils';
 
-interface OrderPageConsumerInterface {
-  order: OrderInterface;
+interface OrderPageConsumerInterface extends CmsOrderDetailsBaseInterface {
   pageCompany: CompanyInterface;
 }
 
-const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order, pageCompany }) => {
+const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({
+  order,
+  orderStatuses,
+  pageCompany,
+}) => {
   const { query } = useRouter();
   const title = `Заказ № ${order.orderId}`;
   const { showModal } = useAppContext();
@@ -49,7 +54,12 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order, pageCo
   return (
     <AppContentWrapper breadcrumbs={breadcrumbs}>
       <div className='relative'>
-        <ConsoleOrderDetails order={order} title={title} pageCompanySlug={pageCompanySlug} />
+        <ConsoleOrderDetails
+          orderStatuses={orderStatuses}
+          order={order}
+          title={title}
+          pageCompanySlug={pageCompanySlug}
+        />
         <Inner>
           <FixedButtons>
             {order.status?.isNew ? (
@@ -116,11 +126,11 @@ export const getServerSideProps = async (
   }
 
   const locale = props.sessionLocale;
-  const order = await getConsoleOrder({
+  const payload = await getConsoleOrder({
     locale,
     orderId: `${query.orderId}`,
   });
-  if (!order) {
+  if (!payload) {
     return {
       notFound: true,
     };
@@ -129,7 +139,8 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      order: castDbData(order),
+      order: castDbData(payload.order),
+      orderStatuses: castDbData(payload.orderStatuses),
       pageCompany: castDbData(props.layoutProps.pageCompany),
     },
   };

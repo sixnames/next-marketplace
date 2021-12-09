@@ -66,7 +66,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
   basePath,
   currency,
 }) => {
-  const { me } = useUserContext();
+  const { sessionUser } = useUserContext();
   const router = useRouter();
 
   const { showModal, onErrorCallback, onCompleteCallback, showLoading, showErrorNotification } =
@@ -297,7 +297,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
                         data={docs}
                         testIdKey={'_id'}
                         onRowDoubleClick={(dataItem) => {
-                          if (me?.role?.isStaff) {
+                          if (sessionUser?.role?.isStaff) {
                             window.open(
                               `${layoutBasePath}/${shop._id}/products/product/${dataItem._id}`,
                               '_blank',

@@ -1,4 +1,4 @@
-import { ORDER_LOG_VARIANT_UPDATE_PRODUCT } from 'config/common';
+import { DEFAULT_DIFF } from 'config/common';
 import {
   COL_ORDER_LOGS,
   COL_ORDER_PRODUCTS,
@@ -52,7 +52,7 @@ export async function updateOrderProduct({
         return;
       }
 
-      // Permission
+      // permission
       const { allow, message, user } = await getOperationPermission({
         context,
         slug: 'updateOrder',
@@ -119,10 +119,14 @@ export async function updateOrderProduct({
         _id: new ObjectId(),
         orderId: order._id,
         userId: user._id,
-        prevStatusId: order.statusId,
-        statusId: order.statusId,
-        productId: orderProduct._id,
-        variant: ORDER_LOG_VARIANT_UPDATE_PRODUCT,
+        diff: DEFAULT_DIFF,
+        logUser: {
+          name: user.name,
+          lastName: user.lastName,
+          secondName: user.secondName,
+          email: user.email,
+          phone: user.phone,
+        },
         createdAt: new Date(),
       };
       await orderLogsCollection.insertOne(orderLog);

@@ -1434,26 +1434,6 @@ type OrderCustomer {
   userId: ObjectId!
 }
 
-type OrderLog implements Timestamp {
-  _id: ObjectId!
-  createdAt: Date!
-  updatedAt: Date!
-  user: User
-  userId: ObjectId!
-  variant: OrderLogVariant!
-}
-
-"""
-Order log variant enum.
-"""
-enum OrderLogVariant {
-  cancel
-  cancelProduct
-  confirm
-  status
-  updateProduct
-}
-
 type OrderProduct {
   _id: ObjectId!
   amount: Int!

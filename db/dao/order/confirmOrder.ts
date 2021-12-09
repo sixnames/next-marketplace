@@ -1,4 +1,4 @@
-import { ORDER_LOG_VARIANT_CONFIRM, SORT_ASC } from 'config/common';
+import { DEFAULT_DIFF, SORT_ASC } from 'config/common';
 import {
   COL_ORDER_LOGS,
   COL_ORDER_PRODUCTS,
@@ -129,9 +129,14 @@ export async function confirmOrder({
         _id: new ObjectId(),
         orderId: order._id,
         userId: user._id,
-        prevStatusId: order.statusId,
-        statusId: orderNextStatus._id,
-        variant: ORDER_LOG_VARIANT_CONFIRM,
+        diff: DEFAULT_DIFF,
+        logUser: {
+          name: user.name,
+          lastName: user.lastName,
+          secondName: user.secondName,
+          email: user.email,
+          phone: user.phone,
+        },
         createdAt: new Date(),
       };
       await orderLogsCollection.insertOne(orderLog);

@@ -1,8 +1,8 @@
 import { hash } from 'bcryptjs';
 import {
   DEFAULT_COMPANY_SLUG,
+  DEFAULT_DIFF,
   ORDER_DELIVERY_VARIANT_PICKUP,
-  ORDER_LOG_VARIANT_STATUS,
   ORDER_PAYMENT_VARIANT_RECEIPT,
   ROLE_SLUG_GUEST,
 } from 'config/common';
@@ -395,8 +395,14 @@ export async function makeAnOrder({
           _id: new ObjectId(),
           orderId: order._id,
           userId: user._id,
-          statusId: initialStatus._id,
-          variant: ORDER_LOG_VARIANT_STATUS,
+          diff: DEFAULT_DIFF,
+          logUser: {
+            name: user.name,
+            lastName: user.lastName,
+            secondName: user.secondName,
+            email: user.email,
+            phone: user.phone,
+          },
           createdAt: new Date(),
         };
         await orderLogsCollection.insertOne(orderLog);

@@ -40,7 +40,7 @@ describe('Promo', () => {
     // should update created promo
     cy.getByCy(`${newPromoName}-update`).click();
     cy.wait(1500);
-    cy.getByCy(`promo-details`).should('exist');
+    cy.getByCy(`promo-details-page`).should('exist');
     cy.getByCy(`name-${DEFAULT_LOCALE}`).clear().type(updatedPromoName);
     cy.getByCy(`description-${DEFAULT_LOCALE}`).clear().type(updatedPromoName);
     cy.getByCy(`discountPercent`).clear().type(updatedPromoDiscount);

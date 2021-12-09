@@ -44,6 +44,7 @@ import {
   ProductConnectionModel,
   ProductModel,
   PromoModel,
+  PromoProductModel,
   RoleModel,
   RoleRuleModel,
   RubricModel,
@@ -364,6 +365,7 @@ export interface ShopProductInterface extends ShopProductModel {
   similarProducts?: ShopProductInterface[] | null;
   suppliers?: SupplierInterface[] | null;
   supplierProducts?: SupplierProductInterface[] | null;
+  promoProducts?: PromoProductInterface[] | null;
 }
 
 export interface ShopInterface extends ShopModel {
@@ -376,6 +378,8 @@ export interface ShopInterface extends ShopModel {
   cardShopProduct?: ShopProductInterface | null;
   priceWarning: string | null;
 }
+
+export interface PromoProductInterface extends PromoProductModel {}
 
 export interface NotSyncedProductInterface extends NotSyncedProductModel {
   shop?: ShopInterface | null;

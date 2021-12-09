@@ -1,8 +1,7 @@
-import PromoDetails, { PromoDetailsInterface } from 'components/Promo/PromoDetails';
 import { ROUTE_CMS } from 'config/common';
 import { COL_COMPANIES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { CompanyInterface } from 'db/uiInterfaces';
+import { CompanyInterface, PromoInterface, ShopProductInterface } from 'db/uiInterfaces';
 import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import ConsolePromoLayout from 'layout/console/ConsolePromoLayout';
@@ -12,18 +11,30 @@ import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
 
+export interface ConsolePromoProductsInterface {
+  promo: PromoInterface;
+  basePath: string;
+  pageCompany: CompanyInterface;
+  shopProducts: ShopProductInterface[];
+}
+
+const ConsolePromoProducts: React.FC<ConsolePromoProductsInterface> = () => {
+  return <div />;
+};
+
 interface PromoDetailsPageInterface
   extends GetAppInitialDataPropsInterface,
-    PromoDetailsInterface {}
+    ConsolePromoProductsInterface {}
 
 const PromoDetailsPage: React.FC<PromoDetailsPageInterface> = ({
   layoutProps,
   promo,
   pageCompany,
   basePath,
+  shopProducts,
 }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: `${promo.name}`,
+    currentPageName: `Товары`,
     config: [
       {
         name: 'Компании',
@@ -37,13 +48,22 @@ const PromoDetailsPage: React.FC<PromoDetailsPageInterface> = ({
         name: 'Акции',
         href: `${ROUTE_CMS}/companies/${pageCompany._id}/promo`,
       },
+      {
+        name: `${promo.name}`,
+        href: `${ROUTE_CMS}/companies/${pageCompany._id}/promo/details/${promo._id}`,
+      },
     ],
   };
 
   return (
     <ConsoleLayout title={`${promo.name}`} {...layoutProps}>
       <ConsolePromoLayout basePath={basePath} promo={promo} breadcrumbs={breadcrumbs}>
-        <PromoDetails basePath={basePath} pageCompany={pageCompany} promo={promo} />
+        <ConsolePromoProducts
+          basePath={basePath}
+          pageCompany={pageCompany}
+          shopProducts={shopProducts}
+          promo={promo}
+        />
       </ConsolePromoLayout>
     </ConsoleLayout>
   );
@@ -87,6 +107,7 @@ export const getServerSideProps = async (
       basePath: `${ROUTE_CMS}/companies/${company._id}/promo/details/${promo._id}`,
       pageCompany: castDbData(company),
       promo: castDbData(promo),
+      shopProducts: [],
     },
   };
 };

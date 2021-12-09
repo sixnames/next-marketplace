@@ -1,13 +1,15 @@
 import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'config/common';
+import { AddPromoProductsInputInterface } from 'db/dao/promo/addPromoProducts';
 import { CreatePromoInputInterface } from 'db/dao/promo/createPromo';
 import { DeletePromoInputInterface } from 'db/dao/promo/deletePromo';
+import { DeletePromoProductsInputInterface } from 'db/dao/promo/deletePromoProducts';
 import { UpdatePromoInputInterface } from 'db/dao/promo/updatePromo';
 import { PromoPayloadModel } from 'db/dbModels';
 import { useMutationHandler } from 'hooks/mutations/useFetch';
 
 const basePath = '/api/promo';
 
-// page
+// promo
 // create
 export const useCreatePromo = () => {
   return useMutationHandler<PromoPayloadModel, CreatePromoInputInterface>({
@@ -27,6 +29,23 @@ export const useUpdatePromo = () => {
 // delete
 export const useDeletePromo = () => {
   return useMutationHandler<PromoPayloadModel, DeletePromoInputInterface>({
+    path: basePath,
+    method: REQUEST_METHOD_DELETE,
+  });
+};
+
+// promo products
+// add
+export const useAddPromoProducts = () => {
+  return useMutationHandler<PromoPayloadModel, AddPromoProductsInputInterface>({
+    path: basePath,
+    method: REQUEST_METHOD_POST,
+  });
+};
+
+// delete
+export const useDeletePromoProducts = () => {
+  return useMutationHandler<PromoPayloadModel, DeletePromoProductsInputInterface>({
     path: basePath,
     method: REQUEST_METHOD_DELETE,
   });

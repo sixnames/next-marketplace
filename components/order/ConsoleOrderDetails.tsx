@@ -93,34 +93,39 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
           </div>
         </div>
 
-        {!isCanceled && !showAdminUi ? (
+        {!isCanceled ? (
           <div className='mt-4 flex gap-4'>
             {/*save button*/}
-            <Button
-              frameClassName='w-auto'
-              title={'Сохранить товар'}
-              size={'small'}
-              icon={'save'}
-              circle
-              theme={'secondary-b'}
-              onClick={() => {
-                const amount = get(values, `products[${orderProductIndex}].amount`);
-                const customDiscount = get(values, `products[${orderProductIndex}].customDiscount`);
-                if (amount < minAmount) {
-                  showErrorNotification({
-                    title: `Количество не может быть ниже ${minAmount}`,
-                  });
-                } else {
-                  updateOrderProductMutation({
-                    orderProductId: `${orderProduct._id}`,
-                    amount: noNaN(amount),
-                    customDiscount: noNaN(customDiscount),
-                  }).catch(console.log);
-                }
-              }}
-            />
+            {showAdminUi ? null : (
+              <Button
+                frameClassName='w-auto'
+                title={'Сохранить товар'}
+                size={'small'}
+                icon={'save'}
+                circle
+                theme={'secondary-b'}
+                onClick={() => {
+                  const amount = get(values, `products[${orderProductIndex}].amount`);
+                  const customDiscount = get(
+                    values,
+                    `products[${orderProductIndex}].customDiscount`,
+                  );
+                  if (amount < minAmount) {
+                    showErrorNotification({
+                      title: `Количество не может быть ниже ${minAmount}`,
+                    });
+                  } else {
+                    updateOrderProductMutation({
+                      orderProductId: `${orderProduct._id}`,
+                      amount: noNaN(amount),
+                      customDiscount: noNaN(customDiscount),
+                    }).catch(console.log);
+                  }
+                }}
+              />
+            )}
 
-            {/*delete button*/}
+            {/*cancel button*/}
             <Button
               frameClassName='w-auto'
               title={'Отменить товар'}

@@ -14,9 +14,10 @@ import { useDeleteCategoryMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
+import { sortObjectsByField } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getTreeFromList, sortByName } from 'lib/optionUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import { getTreeFromList } from 'lib/treeUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
@@ -274,7 +275,7 @@ export const getServerSideProps = async (
     childrenFieldName: 'categories',
   });
 
-  const sortedCategories = sortByName(categories);
+  const sortedCategories = sortObjectsByField(categories);
 
   const payload: RubricCategoriesConsumerInterface = {
     rubric: {

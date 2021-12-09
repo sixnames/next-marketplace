@@ -1,3 +1,5 @@
+import { FILTER_SEPARATOR } from 'config/common';
+
 interface GetCatalogueFilterNextPathInterface {
   filters: string[];
   excludedKeys: string[];
@@ -18,6 +20,20 @@ export const getCatalogueFilterNextPath = ({
     .join('/');
 };
 
+interface CastCatalogueFilterPayloadInterface {
+  attributeSlug: string;
+  optionSlug: string;
+}
+
+export function castCatalogueFilter(filter: string): CastCatalogueFilterPayloadInterface {
+  const splittedOption = filter.split(FILTER_SEPARATOR);
+
+  return {
+    attributeSlug: `${splittedOption[0]}`,
+    optionSlug: splittedOption[1],
+  };
+}
+
 interface GetCatalogueFilterValueByKeyInterface {
   asPath: string;
   slug: string;
@@ -28,19 +44,15 @@ export const getCatalogueFilterValueByKey = ({
   slug,
 }: GetCatalogueFilterValueByKeyInterface): string | null => {
   const pathOptions = asPath.split('/');
-  const optionsObjects = pathOptions.map((option) => {
-    const optionObject = option.split('-');
-    return {
-      slug: optionObject[0],
-      value: optionObject[1],
-    };
+  const optionsObjects = pathOptions.map((param) => {
+    return castCatalogueFilter(param);
   });
   const currentOption = optionsObjects.find((option) => {
-    return option.slug === slug;
+    return option.attributeSlug === slug;
   });
 
   if (!currentOption) {
     return null;
   }
-  return currentOption.value;
+  return currentOption.optionSlug;
 };

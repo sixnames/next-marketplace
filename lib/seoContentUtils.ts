@@ -49,11 +49,12 @@ import {
   SeoContentCitiesInterface,
   SeoContentInterface,
 } from 'db/uiInterfaces';
+import { castCatalogueFilter } from 'lib/catalogueHelpers';
 import { castCatalogueFilters } from 'lib/catalogueUtils';
 import { castConfigs, getConfigStringValue } from 'lib/configsUtils';
 import { getFieldStringLocale } from 'lib/i18n';
-import { castCatalogueFilter, getTreeFromList, getTreeLeaves } from 'lib/optionUtils';
 import { sortStringArray } from 'lib/stringUtils';
+import { getTreeFromList, getTreeLeaves } from 'lib/treeUtils';
 import { sortBy } from 'lodash';
 import { ObjectId } from 'mongodb';
 import fetch from 'node-fetch';

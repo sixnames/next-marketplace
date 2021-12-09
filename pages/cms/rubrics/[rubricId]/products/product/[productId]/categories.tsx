@@ -9,8 +9,8 @@ import {
   ProductInterface,
 } from 'db/uiInterfaces';
 import CmsProductLayout from 'layout/cms/CmsProductLayout';
-import { getTreeFromList } from 'lib/optionUtils';
 import { getCmsProduct } from 'lib/productUtils';
+import { getTreeFromList } from 'lib/treeUtils';
 import * as React from 'react';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';

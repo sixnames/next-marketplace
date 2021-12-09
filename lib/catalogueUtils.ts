@@ -25,6 +25,7 @@ import {
   ignoreNoImageStage,
   noImageStage,
 } from 'db/dao/constantPipelines';
+import { castProductForUI } from 'db/dao/product/castProductForUI';
 import { CatalogueBreadcrumbModel, ObjectIdModel, ShopProductModel } from 'db/dbModels';
 import {
   ATTRIBUTE_VIEW_VARIANT_LIST,
@@ -70,14 +71,14 @@ import {
   ShopProductInterface,
 } from 'db/uiInterfaces';
 import { getAlgoliaProductsSearch } from 'lib/algolia/productAlgoliaUtils';
+import { sortObjectsByField } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
-import { getTreeFromList, sortByName } from 'lib/optionUtils';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
 import { getCatalogueAllSeoContents } from 'lib/seoContentUtils';
 import { sortStringArray } from 'lib/stringUtils';
 import { generateTitle } from 'lib/titleUtils';
-import { castProductForUI } from 'lib/uiDataUtils';
+import { getTreeFromList } from 'lib/treeUtils';
 import { ObjectId } from 'mongodb';
 
 interface GetSelectedCategoryLeaf {
@@ -1591,7 +1592,7 @@ export const getCatalogueData = async ({
         locale,
         gender: product.gender,
       });
-      const listFeatures = sortByName(
+      const listFeatures = sortObjectsByField(
         initialListFeatures
           .filter(({ attribute }) => {
             return attribute?.showInSnippet;

@@ -21,6 +21,7 @@ import {
   filterAttributesPipeline,
   shopProductSupplierProductsPipeline,
 } from 'db/dao/constantPipelines';
+import { castProductForUI } from 'db/dao/product/castProductForUI';
 import { ObjectIdModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -34,9 +35,8 @@ import { getAlgoliaProductsSearch } from 'lib/algolia/productAlgoliaUtils';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { castCatalogueFilters, getCatalogueAttributes } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getTreeFromList } from 'lib/optionUtils';
 import { castSupplierProductsList } from 'lib/productUtils';
-import { castProductForUI } from 'lib/uiDataUtils';
+import { getTreeFromList } from 'lib/treeUtils';
 import { ObjectId } from 'mongodb';
 import { ParsedUrlQuery } from 'querystring';
 

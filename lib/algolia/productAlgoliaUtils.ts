@@ -11,8 +11,8 @@ import { getDatabase } from 'db/mongodb';
 import { ProductInterface } from 'db/uiInterfaces';
 import { getAlgoliaClient, saveAlgoliaObjects } from 'lib/algolia/algoliaUtils';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getTreeFromList } from 'lib/optionUtils';
 import { generateCardTitle, generateSnippetTitle } from 'lib/titleUtils';
+import { getTreeFromList } from 'lib/treeUtils';
 import { ObjectId } from 'mongodb';
 import addZero from 'add-zero';
 

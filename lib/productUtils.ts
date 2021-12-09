@@ -32,9 +32,9 @@ import {
   SupplierProductInterface,
 } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getTreeFromList } from 'lib/optionUtils';
 import { getProductAllSeoContents } from 'lib/seoContentUtils';
 import { generateCardTitle, generateSnippetTitle } from 'lib/titleUtils';
+import { getTreeFromList } from 'lib/treeUtils';
 import { ObjectId } from 'mongodb';
 import trim from 'trim';
 

@@ -15,6 +15,7 @@ import {
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
 import { filterAttributesPipeline } from 'db/dao/constantPipelines';
+import { castProductForUI } from 'db/dao/product/castProductForUI';
 import { ObjectIdModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -30,13 +31,12 @@ import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { castCatalogueFilters, getCatalogueAttributes } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
-import { getTreeFromList } from 'lib/optionUtils';
 import {
   countProductAttributes,
   getCategoryAllAttributes,
   getRubricAllAttributes,
 } from 'lib/productAttributesUtils';
-import { castProductForUI } from 'lib/uiDataUtils';
+import { getTreeFromList } from 'lib/treeUtils';
 import { ObjectId } from 'mongodb';
 import { ParsedUrlQuery } from 'querystring';
 

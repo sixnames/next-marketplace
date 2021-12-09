@@ -24,10 +24,10 @@ import {
 } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
-import { getTreeFromList } from 'lib/optionUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { getRequestParams } from 'lib/sessionHelpers';
 import { generateSnippetTitle } from 'lib/titleUtils';
+import { getTreeFromList } from 'lib/treeUtils';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 import nookies from 'nookies';

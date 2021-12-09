@@ -12,13 +12,14 @@ import {
 } from 'db/uiInterfaces';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import { sortObjectsByField } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getTreeFromList, sortByName } from 'lib/optionUtils';
 import {
   castDbData,
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
 } from 'lib/ssrUtils';
+import { getTreeFromList } from 'lib/treeUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
@@ -216,7 +217,7 @@ export const getServerSideProps = async (
     childrenFieldName: 'categories',
   });
 
-  const sortedCategories = sortByName(categories);
+  const sortedCategories = sortObjectsByField(categories);
 
   const payload: RubricCategoriesConsumerInterface = {
     routeBasePath,

@@ -45,9 +45,9 @@ import {
   ProductInterface,
   ShopInterface,
 } from 'db/uiInterfaces';
+import { sortObjectsByField } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
-import { getTreeFromList, sortByName } from 'lib/optionUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import {
   castProductAttributeForUi,
@@ -55,6 +55,7 @@ import {
 } from 'lib/productAttributesUtils';
 import { getProductSeoContent } from 'lib/seoContentUtils';
 import { generateCardTitle } from 'lib/titleUtils';
+import { getTreeFromList } from 'lib/treeUtils';
 import { get } from 'lodash';
 import { ObjectId } from 'mongodb';
 
@@ -942,7 +943,7 @@ export async function getCardData({
             {
               ...attributesGroup,
               name: getFieldStringLocale(attributesGroup.nameI18n, locale),
-              attributes: sortByName(groupAttributes),
+              attributes: sortObjectsByField(groupAttributes),
             },
           ];
         }
@@ -1028,7 +1029,7 @@ export async function getCardData({
       isShopless,
       cardContent,
       shopsCounterPostfix,
-      attributesGroups: sortByName(cardAttributesGroups),
+      attributesGroups: sortObjectsByField(cardAttributesGroups),
       assets: cardAssets,
       showArticle,
       isSingleImage,

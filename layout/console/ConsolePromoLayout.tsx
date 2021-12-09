@@ -1,5 +1,6 @@
 import Inner from 'components/Inner';
 import Title from 'components/Title';
+import { DEFAULT_PAGE_FILTER } from 'config/common';
 import { PromoInterface } from 'db/uiInterfaces';
 import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import AppSubNav from 'layout/AppSubNav';
@@ -30,7 +31,7 @@ const ConsolePromoLayout: React.FC<ConsolePromoLayoutInterface> = ({
       {
         name: 'Товары',
         testId: 'promo-products',
-        path: `${basePath}/products`,
+        path: `${basePath}/products/${DEFAULT_PAGE_FILTER}`,
       },
     ];
   }, [basePath]);

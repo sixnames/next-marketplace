@@ -379,7 +379,13 @@ export interface ShopInterface extends ShopModel {
   priceWarning: string | null;
 }
 
-export interface PromoProductInterface extends PromoProductModel {}
+export interface PromoProductInterface extends PromoProductModel {
+  promo?: PromoInterface | null;
+  shop?: ShopInterface | null;
+  shopProduct?: ShopProductInterface | null;
+  product?: ProductInterface | null;
+  company?: CompanyInterface | null;
+}
 
 export interface NotSyncedProductInterface extends NotSyncedProductModel {
   shop?: ShopInterface | null;

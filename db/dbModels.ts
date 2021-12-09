@@ -951,15 +951,7 @@ export interface UserCashbackLogModel extends TimestampModel {
 
 export interface UserPaybackLogModel extends UserCashbackLogModel {}
 
-// Promo
-export interface PromoModel extends TimestampModel {
-  _id: ObjectIdModel;
-  slug: string;
-  companyId: ObjectIdModel;
-  companySlug: string;
-  nameI18n: TranslationModel;
-  descriptionI18n: TranslationModel;
-
+export interface PromoBaseInterface {
   // discount
   discountPercent: number;
   addCategoryDiscount: boolean;
@@ -970,6 +962,20 @@ export interface PromoModel extends TimestampModel {
   addCategoryCashback: boolean;
   useBiggestCashback: boolean;
   allowPayFromCashback: boolean;
+
+  // dates
+  startAt: DateModel;
+  endAt: DateModel;
+}
+
+// Promo
+export interface PromoModel extends TimestampModel, PromoBaseInterface {
+  _id: ObjectIdModel;
+  slug: string;
+  companyId: ObjectIdModel;
+  companySlug: string;
+  nameI18n: TranslationModel;
+  descriptionI18n: TranslationModel;
 
   // ui configs
   showAsPromoPage: boolean;
@@ -996,13 +1002,9 @@ export interface PromoModel extends TimestampModel {
   secondaryBannerTextAlign: string;
   secondaryBannerTextPadding: number;
   secondaryBannerTextMaxWidth: number;
-
-  // dates
-  startAt: DateModel;
-  endAt: DateModel;
 }
 
-export interface PromoProductModel {
+export interface PromoProductModel extends PromoBaseInterface {
   _id: ObjectIdModel;
   promoId: ObjectIdModel;
   shopId: ObjectIdModel;
@@ -1010,10 +1012,6 @@ export interface PromoProductModel {
   companySlug: string;
   shopProductId: ObjectIdModel;
   productId: ObjectIdModel;
-
-  // dates
-  startAt: DateModel;
-  endAt: DateModel;
 }
 
 export interface PromoCodeModel {

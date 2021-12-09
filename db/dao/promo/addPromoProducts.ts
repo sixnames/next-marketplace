@@ -107,8 +107,15 @@ export async function addPromoProducts({
         productId: shopProduct.productId,
         shopId: shopProduct.shopId,
         promoId,
-        startAt: promo.startAt,
-        endAt: promo.endAt,
+        discountPercent: promo.discountPercent,
+        addCategoryDiscount: promo.addCategoryDiscount,
+        useBiggestDiscount: promo.useBiggestDiscount,
+        cashbackPercent: promo.cashbackPercent,
+        addCategoryCashback: promo.addCategoryCashback,
+        useBiggestCashback: promo.useBiggestCashback,
+        allowPayFromCashback: promo.allowPayFromCashback,
+        startAt: new Date(promo.startAt),
+        endAt: new Date(promo.endAt),
       };
       promoProducts.push(promoProduct);
     });

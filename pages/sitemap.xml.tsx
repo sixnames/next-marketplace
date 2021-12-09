@@ -1,14 +1,30 @@
-import { DEFAULT_COMPANY_SLUG, ROUTE_CATALOGUE } from 'config/common';
 import {
+  DEFAULT_COMPANY_SLUG,
+  PAGE_STATE_PUBLISHED,
+  ROUTE_BLOG_POST,
+  ROUTE_BLOG_WITH_PAGE,
+  ROUTE_CATALOGUE,
+} from 'config/common';
+import {
+  COL_BLOG_POSTS,
   COL_CITIES,
   COL_COMPANIES,
+  COL_CONFIGS,
   COL_LANGUAGES,
   COL_PRODUCTS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
 import { ignoreNoImageStage } from 'db/dao/constantPipelines';
-import { CityModel, CompanyModel, LanguageModel, ShopProductModel } from 'db/dbModels';
+import {
+  BlogPostModel,
+  CityModel,
+  CompanyModel,
+  ConfigModel,
+  LanguageModel,
+  ShopProductModel,
+} from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
+import { castConfigs, getConfigBooleanValue } from 'lib/configsUtils';
 import { GetServerSidePropsContext } from 'next';
 import * as React from 'react';
 import { getDomain } from 'tldts';
@@ -52,19 +68,31 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
   const citiesCollection = db.collection<CityModel>(COL_CITIES);
+  const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+  const blogPostsCollection = db.collection<BlogPostModel>(COL_BLOG_POSTS);
   const host = `${context.req.headers.host}`;
   const domain = getDomain(host, { validHosts: ['localhost'] });
+
+  // Get site languages
+  const languages = await languagesCollection.find({}).toArray();
+  const locales = languages.map(({ slug }) => slug);
 
   // Session company
   let company: CompanyModel | null | undefined = null;
   if (domain && process.env.DEFAULT_DOMAIN && domain !== process.env.DEFAULT_DOMAIN) {
     company = await db.collection<CompanyModel>(COL_COMPANIES).findOne({ domain });
   }
-
+  const companySlug = company?.slug || DEFAULT_COMPANY_SLUG;
   const cities = await citiesCollection.find({}).toArray();
 
+  // blog config
+  const initialConfigs = await configsCollection
+    .find({
+      companySlug,
+    })
+    .toArray();
+
   for await (const city of cities) {
-    const companySlug = company?.slug || DEFAULT_COMPANY_SLUG;
     const urlPrefix = `${companySlug}/${city.slug}`;
 
     const companyRubricsMatch = company ? { companyId: company._id } : {};
@@ -136,13 +164,49 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       });
     });
 
-    // Get site languages
-    const languages = await languagesCollection.find({}).toArray();
-    const locales = languages.map(({ slug }) => slug);
+    const blogPosts = await blogPostsCollection
+      .aggregate([
+        {
+          $match: {
+            companySlug,
+            state: PAGE_STATE_PUBLISHED,
+          },
+        },
+        {
+          $project: {
+            slug: true,
+          },
+        },
+      ])
+      .toArray();
 
     // Get slugs with locales
     if (locales.length > 1) {
       locales.forEach((locale) => {
+        // configs
+        const configs = castConfigs({
+          configs: initialConfigs,
+          citySlug: city.slug,
+          locale,
+        });
+        const showBlog = getConfigBooleanValue({ configs, slug: 'showBlog' });
+        if (showBlog && blogPosts.length > 0) {
+          const blogBasePath = `${urlPrefix}${ROUTE_BLOG_WITH_PAGE}`;
+          if (locale === `${defaultLocale}`) {
+            slugsWithLocales.push(blogBasePath);
+          } else {
+            slugsWithLocales.push(`${locale}/${blogBasePath}`);
+          }
+
+          blogPosts.forEach(({ slug }) => {
+            if (locale === `${defaultLocale}`) {
+              slugsWithLocales.push(`${urlPrefix}${ROUTE_BLOG_POST}/${slug}`);
+            } else {
+              slugsWithLocales.push(`${locale}/${urlPrefix}${ROUTE_BLOG_POST}/${slug}`);
+            }
+          });
+        }
+
         initialSlugs.forEach((slug) => {
           if (locale === `${defaultLocale}`) {
             slugsWithLocales.push(slug);

@@ -44,6 +44,38 @@ export const promoMessages: MessageBaseInterface[] = [
       [SECONDARY_LOCALE]: `Promo removed.`,
     },
   },
+
+  // promo product
+  {
+    slug: 'promoProduct.create.error',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Ошибка добавлени товара акции.`,
+      [SECONDARY_LOCALE]: `Promo product creation error.`,
+    },
+  },
+  {
+    slug: 'promoProduct.create.success',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Товар акции добавлен.`,
+      [SECONDARY_LOCALE]: `Promo product added.`,
+    },
+  },
+  {
+    slug: 'promoProduct.delete.error',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Ошибка удаления товара акции.`,
+      [SECONDARY_LOCALE]: `Promo product delete error.`,
+    },
+  },
+  {
+    slug: 'promoProduct.delete.success',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Товар акции удалён.`,
+      [SECONDARY_LOCALE]: `Promo product removed.`,
+    },
+  },
+
+  // validation
   {
     slug: 'validation.promo.id',
     messageI18n: {

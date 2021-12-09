@@ -6,7 +6,7 @@ import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
 
-export interface AddPromoProductInputInterface {
+export interface AddPromoProductsInputInterface {
   promoId: string;
   rubricId: string;
   companyId: string;
@@ -14,10 +14,10 @@ export interface AddPromoProductInputInterface {
   shopProductIds: string[];
 }
 
-export async function addPromoProduct({
+export async function addPromoProducts({
   input,
   context,
-}: DaoPropsInterface<AddPromoProductInputInterface>) {
+}: DaoPropsInterface<AddPromoProductsInputInterface>) {
   try {
     const { db } = await getDatabase();
     const { getApiMessage } = await getRequestParams(context);

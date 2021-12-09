@@ -838,6 +838,7 @@ export interface ShopProductModel
   productId: ObjectIdModel;
   shopId: ObjectIdModel;
   companyId: ObjectIdModel;
+  companySlug: string;
   mainImage: string;
   useCategoryDiscount?: boolean | null;
   useCategoryCashback?: boolean | null;
@@ -1006,6 +1007,7 @@ export interface PromoProductModel {
   promoId: ObjectIdModel;
   shopId: ObjectIdModel;
   companyId: ObjectIdModel;
+  companySlug: string;
   shopProductId: ObjectIdModel;
   productId: ObjectIdModel;
 

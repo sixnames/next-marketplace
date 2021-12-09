@@ -7,7 +7,6 @@ import {
   ConfigVariantModel,
   GenderModel,
   OrderDeliveryVariantModel,
-  OrderLogVariantModel,
   OrderPaymentVariantModel,
   OrderRequestStateModel,
   OrderRequestVariantModel,
@@ -254,21 +253,6 @@ export const DEFAULT_PAGE = 1;
 export const ZERO_PAGE = 0;
 export const ZERO_PAGE_FILTER = `${FILTER_PAGE_KEY}${FILTER_SEPARATOR}${ZERO_PAGE}`;
 export const DEFAULT_PAGE_FILTER = `${FILTER_PAGE_KEY}${FILTER_SEPARATOR}${DEFAULT_PAGE}`;
-
-// ORDER LOG VARIANTS
-export const ORDER_LOG_VARIANT_STATUS = 'status' as OrderLogVariantModel;
-export const ORDER_LOG_VARIANT_CONFIRM = 'confirm' as OrderLogVariantModel;
-export const ORDER_LOG_VARIANT_CANCEL = 'cancel' as OrderLogVariantModel;
-export const ORDER_LOG_VARIANT_CANCEL_PRODUCT = 'cancelProduct' as OrderLogVariantModel;
-export const ORDER_LOG_VARIANT_UPDATE_PRODUCT = 'updateProduct' as OrderLogVariantModel;
-
-export const ORDER_LOG_VARIANT_ENUMS: OrderLogVariantModel[] = [
-  ORDER_LOG_VARIANT_STATUS,
-  ORDER_LOG_VARIANT_CONFIRM,
-  ORDER_LOG_VARIANT_CANCEL,
-  ORDER_LOG_VARIANT_CANCEL_PRODUCT,
-  ORDER_LOG_VARIANT_UPDATE_PRODUCT,
-];
 
 // ORDER REQUEST VARIANTS
 export const ORDER_REQUEST_VARIANT_CANCELATION = 'cancelation' as OrderRequestVariantModel;
@@ -550,3 +534,9 @@ export const NUMBERS_LIST = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
 export const ALL_ALPHABETS = [...ALPHABET_RU, ...ALPHABET_EN, ...NUMBERS_LIST];
 
 export const EMPTY_OBJECT_AS_STRING = '{}';
+
+export const DEFAULT_DIFF = {
+  added: {},
+  deleted: {},
+  updated: {},
+};

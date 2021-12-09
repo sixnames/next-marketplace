@@ -1,6 +1,7 @@
-import ConsoleOrderDetails from 'components/order/ConsoleOrderDetails';
+import ConsoleOrderDetails, {
+  CmsOrderDetailsBaseInterface,
+} from 'components/order/ConsoleOrderDetails';
 import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
-import { OrderInterface } from 'db/uiInterfaces';
 import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { getConsoleOrder } from 'lib/orderUtils';
@@ -8,11 +9,9 @@ import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 
-interface OrderPageConsumerInterface {
-  order: OrderInterface;
-}
+interface OrderPageConsumerInterface extends CmsOrderDetailsBaseInterface {}
 
-const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
+const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order, orderStatuses }) => {
   const { itemId } = order;
   const title = `Заказ №${itemId}`;
 
@@ -28,7 +27,12 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order }) => {
 
   return (
     <AppContentWrapper breadcrumbs={breadcrumbs}>
-      <ConsoleOrderDetails order={order} title={title} pageCompanySlug={DEFAULT_COMPANY_SLUG} />
+      <ConsoleOrderDetails
+        order={order}
+        title={title}
+        orderStatuses={orderStatuses}
+        pageCompanySlug={DEFAULT_COMPANY_SLUG}
+      />
     </AppContentWrapper>
   );
 };
@@ -55,11 +59,11 @@ export const getServerSideProps = async (
   }
 
   const locale = props.sessionLocale;
-  const order = await getConsoleOrder({
+  const payload = await getConsoleOrder({
     locale,
     orderId: `${query.orderId}`,
   });
-  if (!order) {
+  if (!payload) {
     return {
       notFound: true,
     };
@@ -68,7 +72,8 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      order: castDbData(order),
+      order: castDbData(payload.order),
+      orderStatuses: castDbData(payload.orderStatuses),
     },
   };
 };

@@ -874,7 +874,6 @@ export interface NexusGenEnums {
   ConfigVariant: dbModels.ConfigVariantModel;
   Gender: dbModels.GenderModel;
   OptionsGroupVariant: dbModels.OptionsGroupVariantModel;
-  OrderLogVariant: dbModels.OrderLogVariantModel;
   SortDirection: dbModels.SortDirectionModel;
   SupplierPriceVariant: dbModels.SupplierPriceVariantModel;
 }
@@ -951,7 +950,6 @@ export interface NexusGenObjects {
   OptionsGroupPayload: dbModels.OptionsGroupPayloadModel;
   Order: dbModels.OrderModel;
   OrderCustomer: dbModels.OrderCustomerModel;
-  OrderLog: dbModels.OrderLogModel;
   OrderProduct: dbModels.OrderProductModel;
   OrderStatus: dbModels.OrderStatusModel;
   OrderStatusPayload: dbModels.OrderStatusPayloadModel;
@@ -1566,15 +1564,6 @@ export interface NexusGenFieldTypes {
     shortName: string; // String!
     user: NexusGenRootTypes['User'] | null; // User
     userId: NexusGenScalars['ObjectId']; // ObjectId!
-  };
-  OrderLog: {
-    // field return type
-    _id: NexusGenScalars['ObjectId']; // ObjectId!
-    createdAt: NexusGenScalars['Date']; // Date!
-    updatedAt: NexusGenScalars['Date']; // Date!
-    user: NexusGenRootTypes['User'] | null; // User
-    userId: NexusGenScalars['ObjectId']; // ObjectId!
-    variant: NexusGenEnums['OrderLogVariant']; // OrderLogVariant!
   };
   OrderProduct: {
     // field return type
@@ -2607,15 +2596,6 @@ export interface NexusGenFieldTypeNames {
     shortName: 'String';
     user: 'User';
     userId: 'ObjectId';
-  };
-  OrderLog: {
-    // field return type name
-    _id: 'ObjectId';
-    createdAt: 'Date';
-    updatedAt: 'Date';
-    user: 'User';
-    userId: 'ObjectId';
-    variant: 'OrderLogVariant';
   };
   OrderProduct: {
     // field return type name
@@ -3744,7 +3724,6 @@ export interface NexusGenAbstractTypeMembers {
     | 'Company'
     | 'Manufacturer'
     | 'Order'
-    | 'OrderLog'
     | 'OrderStatus'
     | 'Product'
     | 'Role'
@@ -3784,7 +3763,6 @@ export interface NexusGenTypeInterfaces {
   OptionsAlphabetList: 'AlphabetList';
   OptionsGroupPayload: 'Payload';
   Order: 'Base' | 'Timestamp';
-  OrderLog: 'Timestamp';
   OrderStatus: 'Timestamp';
   OrderStatusPayload: 'Payload';
   Product: 'Base' | 'Timestamp';

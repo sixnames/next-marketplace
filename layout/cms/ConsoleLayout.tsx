@@ -33,15 +33,15 @@ const ConsoleLayoutConsumer: React.FC<ConsoleLayoutConsumerInterface> = ({
   const compact = useCompact(isMobile);
   const router = useRouter();
   const { isLoading, isModal } = useAppContext();
-  const { me } = useUserContext();
+  const { sessionUser } = useUserContext();
   const { isCompact, toggleCompactHandler } = compact;
   const { configs } = useConfigContext();
 
-  if (!me) {
+  if (!sessionUser) {
     return <Spinner />;
   }
 
-  const navItems = pageCompany ? me.role?.appNavigation : me.role?.cmsNavigation;
+  const navItems = pageCompany ? sessionUser.role?.appNavigation : sessionUser.role?.cmsNavigation;
   const basePath = pageCompany ? `${ROUTE_CONSOLE}/${pageCompany._id}` : '';
 
   // Metrics
@@ -57,7 +57,7 @@ const ConsoleLayoutConsumer: React.FC<ConsoleLayoutConsumerInterface> = ({
       <div className='fixed top-0 z-30 inset-x-0 flex items-center justify-between h-[60px] shadow-md bg-[#2B3039]'>
         <div className='flex items-center text-white gap-2 pl-[5px]'>
           <ControlButton icon={'burger'} className='text-white' onClick={toggleCompactHandler} />
-          <div className='font-medium'>{me.shortName}</div>
+          <div className='font-medium'>{sessionUser.shortName}</div>
         </div>
 
         <div className='flex items-center text-white gap-1 pr-[5px]'>

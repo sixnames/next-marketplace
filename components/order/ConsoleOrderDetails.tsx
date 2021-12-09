@@ -1,8 +1,10 @@
 import Button from 'components/button/Button';
+import FixedButtons from 'components/button/FixedButtons';
 import Currency from 'components/Currency';
 import FormattedDateTime from 'components/FormattedDateTime';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import InputLine from 'components/FormElements/Input/InputLine';
+import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import FormikSpinnerInput from 'components/FormElements/SpinnerInput/FormikSpinnerInput';
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
@@ -23,9 +25,14 @@ import { CONFIRM_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { useLocaleContext } from 'context/localeContext';
 import { useNotificationsContext } from 'context/notificationsContext';
-import { OrderInterface, OrderProductInterface } from 'db/uiInterfaces';
+import { useUserContext } from 'context/userContext';
+import { OrderInterface, OrderProductInterface, OrderStatusInterface } from 'db/uiInterfaces';
 import { Form, Formik, useFormikContext } from 'formik';
-import { useCancelOrderProduct, useUpdateOrderProduct } from 'hooks/mutations/useOrderMutations';
+import {
+  useCancelOrderProduct,
+  useUpdateOrder,
+  useUpdateOrderProduct,
+} from 'hooks/mutations/useOrderMutations';
 import { noNaN } from 'lib/numbers';
 import { get } from 'lodash';
 import * as React from 'react';
@@ -35,6 +42,7 @@ interface OrderProductProductInterface {
   orderProduct: OrderProductInterface;
   citySlug: string;
   companySlug: string;
+  showAdminUi: boolean;
 }
 
 const OrderProduct: React.FC<OrderProductProductInterface> = ({
@@ -42,6 +50,7 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
   citySlug,
   companySlug,
   orderProductIndex,
+  showAdminUi,
 }) => {
   const { values } = useFormikContext<OrderInterface>();
   const { showModal } = useAppContext();
@@ -87,31 +96,36 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
         {!isCanceled ? (
           <div className='mt-4 flex gap-4'>
             {/*save button*/}
-            <Button
-              frameClassName='w-auto'
-              title={'Сохранить товар'}
-              size={'small'}
-              icon={'save'}
-              circle
-              theme={'secondary-b'}
-              onClick={() => {
-                const amount = get(values, `products[${orderProductIndex}].amount`);
-                const customDiscount = get(values, `products[${orderProductIndex}].customDiscount`);
-                if (amount < minAmount) {
-                  showErrorNotification({
-                    title: `Количество не может быть ниже ${minAmount}`,
-                  });
-                } else {
-                  updateOrderProductMutation({
-                    orderProductId: `${orderProduct._id}`,
-                    amount: noNaN(amount),
-                    customDiscount: noNaN(customDiscount),
-                  }).catch(console.log);
-                }
-              }}
-            />
+            {showAdminUi ? null : (
+              <Button
+                frameClassName='w-auto'
+                title={'Сохранить товар'}
+                size={'small'}
+                icon={'save'}
+                circle
+                theme={'secondary-b'}
+                onClick={() => {
+                  const amount = get(values, `products[${orderProductIndex}].amount`);
+                  const customDiscount = get(
+                    values,
+                    `products[${orderProductIndex}].customDiscount`,
+                  );
+                  if (amount < minAmount) {
+                    showErrorNotification({
+                      title: `Количество не может быть ниже ${minAmount}`,
+                    });
+                  } else {
+                    updateOrderProductMutation({
+                      orderProductId: `${orderProduct._id}`,
+                      amount: noNaN(amount),
+                      customDiscount: noNaN(customDiscount),
+                    }).catch(console.log);
+                  }
+                }}
+              />
+            )}
 
-            {/*delete button*/}
+            {/*cancel button*/}
             <Button
               frameClassName='w-auto'
               title={'Отменить товар'}
@@ -237,8 +251,11 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
   );
 };
 
-interface CmsOrderDetailsInterface {
+export interface CmsOrderDetailsBaseInterface {
   order: OrderInterface;
+  orderStatuses: OrderStatusInterface[];
+}
+interface CmsOrderDetailsInterface extends CmsOrderDetailsBaseInterface {
   pageCompanySlug: string;
   title: string;
 }
@@ -247,8 +264,11 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
   order,
   pageCompanySlug,
   title,
+  orderStatuses,
 }) => {
+  const { sessionUser } = useUserContext();
   const { locale } = useLocaleContext();
+  const showAdminUi = sessionUser?.role?.isStaff;
   const {
     createdAt,
     totalPrice,
@@ -261,6 +281,8 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
     paymentVariant,
     deliveryInfo,
   } = order;
+
+  const [updateOrderMutation] = useUpdateOrder();
 
   const deliveryName = getConstantOptionName({
     options: DELIVERY_VARIANT_OPTIONS,
@@ -284,7 +306,14 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
         </div>
       </div>
 
-      <Formik initialValues={order} onSubmit={() => {}}>
+      <Formik<OrderInterface>
+        initialValues={order}
+        onSubmit={(values) => {
+          updateOrderMutation({
+            order: values,
+          }).catch(console.log);
+        }}
+      >
         {() => {
           return (
             <Form>
@@ -293,6 +322,7 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
                   {products?.map((orderProduct, orderProductIndex) => {
                     return (
                       <OrderProduct
+                        showAdminUi={Boolean(showAdminUi)}
                         orderProductIndex={orderProductIndex}
                         citySlug={shop?.citySlug || DEFAULT_CITY}
                         companySlug={pageCompanySlug || DEFAULT_COMPANY_SLUG}
@@ -306,16 +336,29 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
                 <div className='relative col-span-3'>
                   <div className='sticky bg-secondary rounded-lg py-8 px-6'>
                     {/*status*/}
-                    <div className='flex items-baseline justify-between mb-6'>
-                      <div className='text-secondary-text'>Статус</div>
-                      {status ? (
-                        <div className='font-medium' style={status ? { color: status.color } : {}}>
-                          {status.name}
-                        </div>
-                      ) : (
-                        <div className='text-red-500 font-medium'>Статус не найден</div>
-                      )}
-                    </div>
+                    {showAdminUi ? (
+                      <FormikSelect
+                        useIdField
+                        label={'Статус'}
+                        name={'statusId'}
+                        options={orderStatuses}
+                        testId={'statusId'}
+                      />
+                    ) : (
+                      <div className='flex items-baseline justify-between mb-6'>
+                        <div className='text-secondary-text'>Статус</div>
+                        {status ? (
+                          <div
+                            className='font-medium'
+                            style={status ? { color: status.color } : {}}
+                          >
+                            {status.name}
+                          </div>
+                        ) : (
+                          <div className='text-red-500 font-medium'>Статус не найден</div>
+                        )}
+                      </div>
+                    )}
 
                     {/*delivery*/}
                     <div className='flex items-baseline justify-between mb-6'>
@@ -390,6 +433,12 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
                   </div>
                 </div>
               </div>
+
+              <FixedButtons>
+                <Button frameClassName={'w-auto'} type={'submit'}>
+                  Сохранить
+                </Button>
+              </FixedButtons>
             </Form>
           );
         }}

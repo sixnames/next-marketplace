@@ -2,11 +2,28 @@ import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH } from 'config/common';
 import { CancelOrderInputInterface } from 'db/dao/order/cancelOrder';
 import { CancelOrderProductInputInterface } from 'db/dao/order/cancelOrderProduct';
 import { DeleteOrderInputInterface } from 'db/dao/order/deleteOrder';
+import { UpdateOrderInterface } from 'db/dao/order/updateOrder';
 import { UpdateOrderProductInputInterface } from 'db/dao/order/updateOrderProduct';
+import { OrderInterfacePayloadModel } from 'db/uiInterfaces';
 import * as React from 'react';
 import { ConfirmOrderInputInterface } from 'db/dao/order/confirmOrder';
 import { OrderPayloadModel } from 'db/dbModels';
-import { useMutation, UseMutationConsumerPayload } from 'hooks/mutations/useFetch';
+import {
+  useMutation,
+  UseMutationConsumerPayload,
+  useMutationHandler,
+} from 'hooks/mutations/useFetch';
+
+const basePath = '/api/order';
+
+// update order
+export const useUpdateOrder = () => {
+  return useMutationHandler<OrderInterfacePayloadModel, UpdateOrderInterface>({
+    path: basePath,
+    method: REQUEST_METHOD_PATCH,
+    reload: false,
+  });
+};
 
 // confirm order
 export const useConfirmOrder = (): UseMutationConsumerPayload<
@@ -14,7 +31,7 @@ export const useConfirmOrder = (): UseMutationConsumerPayload<
   ConfirmOrderInputInterface
 > => {
   const [handle, payload] = useMutation<OrderPayloadModel>({
-    input: '/api/order/confirm',
+    input: `${basePath}/confirm`,
     reload: true,
   });
 
@@ -38,7 +55,7 @@ export const useCancelOrder = (): UseMutationConsumerPayload<
   CancelOrderInputInterface
 > => {
   const [handle, payload] = useMutation<OrderPayloadModel>({
-    input: '/api/order/cancel',
+    input: `${basePath}/cancel`,
     reload: true,
   });
 
@@ -62,7 +79,7 @@ export const useCancelOrderProduct = (): UseMutationConsumerPayload<
   CancelOrderProductInputInterface
 > => {
   const [handle, payload] = useMutation<OrderPayloadModel>({
-    input: '/api/order/product',
+    input: `${basePath}/product`,
     reload: true,
   });
 
@@ -86,7 +103,7 @@ export const useUpdateOrderProduct = (): UseMutationConsumerPayload<
   UpdateOrderProductInputInterface
 > => {
   const [handle, payload] = useMutation<OrderPayloadModel>({
-    input: '/api/order/product',
+    input: `${basePath}/product`,
     reload: true,
   });
 
@@ -105,25 +122,10 @@ export const useUpdateOrderProduct = (): UseMutationConsumerPayload<
 };
 
 // delete order
-export const useDeleteOrder = (): UseMutationConsumerPayload<
-  OrderPayloadModel,
-  DeleteOrderInputInterface
-> => {
-  const [handle, payload] = useMutation<OrderPayloadModel>({
-    input: '/api/order/delete',
-    reload: true,
+export const useDeleteOrder = () => {
+  return useMutationHandler<OrderPayloadModel, DeleteOrderInputInterface>({
+    path: basePath,
+    method: REQUEST_METHOD_DELETE,
+    reload: false,
   });
-
-  const handler = React.useCallback(
-    async (args: DeleteOrderInputInterface) => {
-      const payload = await handle({
-        method: REQUEST_METHOD_DELETE,
-        body: JSON.stringify(args),
-      });
-      return payload;
-    },
-    [handle],
-  );
-
-  return [handler, payload];
 };

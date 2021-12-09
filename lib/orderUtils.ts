@@ -1,3 +1,4 @@
+import { SORT_ASC } from 'config/common';
 import {
   COL_ORDER_CUSTOMERS,
   COL_ORDER_PRODUCTS,
@@ -43,15 +44,38 @@ interface GetConsoleOrderInterface {
   locale: string;
 }
 
+interface GetConsoleOrderPayloadInterface {
+  order: OrderInterface;
+  orderStatuses: OrderStatusInterface[];
+}
+
 export async function getConsoleOrder({
   orderId,
   locale,
-}: GetConsoleOrderInterface): Promise<OrderInterface | null> {
+}: GetConsoleOrderInterface): Promise<GetConsoleOrderPayloadInterface | null> {
   const { db } = await getDatabase();
   const ordersCollection = db.collection<OrderInterface>(COL_ORDERS);
+  const orderStatusesCollection = db.collection<OrderStatusInterface>(COL_ORDER_STATUSES);
   if (!orderId) {
     return null;
   }
+
+  // get order statuses
+  const orderStatusesAggregation = await orderStatusesCollection
+    .aggregate<OrderStatusInterface>([
+      {
+        $sort: {
+          index: SORT_ASC,
+        },
+      },
+    ])
+    .toArray();
+  const orderStatuses = orderStatusesAggregation.map((status) => {
+    return {
+      ...status,
+      name: getFieldStringLocale(status.nameI18n, locale),
+    };
+  });
 
   const orderAggregationResult = await ordersCollection
     .aggregate<OrderInterface>([
@@ -161,6 +185,11 @@ export async function getConsoleOrder({
                 },
               },
             },
+            {
+              $sort: {
+                _id: SORT_ASC,
+              },
+            },
           ],
         },
       },
@@ -232,5 +261,8 @@ export async function getConsoleOrder({
       : null,
   };
 
-  return order;
+  return {
+    order,
+    orderStatuses,
+  };
 }

@@ -22,7 +22,6 @@ export * from './Option';
 export * from './OptionsGroup';
 export * from './Order';
 export * from './OrderCustomer';
-export * from './OrderLog';
 export * from './OrderProduct';
 export * from './OrderStatus';
 export * from './Product';

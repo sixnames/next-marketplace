@@ -3,13 +3,11 @@ import * as React from 'react';
 // import { useSession } from 'next-auth/client';
 
 interface UserContextInterface {
-  me?: UserInterface | null;
-  setUser: (user: UserInterface) => void;
+  sessionUser?: UserInterface | null;
 }
 
 const UserContext = React.createContext<UserContextInterface>({
-  me: null,
-  setUser: () => undefined,
+  sessionUser: null,
 });
 
 interface UserContextProviderInterface {
@@ -17,14 +15,11 @@ interface UserContextProviderInterface {
 }
 
 const UserContextProvider: React.FC<UserContextProviderInterface> = ({ children, sessionUser }) => {
-  const [user, setUser] = React.useState<UserInterface | null | undefined>(() => sessionUser);
-
   const value = React.useMemo(() => {
     return {
-      me: user,
-      setUser,
+      sessionUser,
     };
-  }, [user]);
+  }, [sessionUser]);
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };

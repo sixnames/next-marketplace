@@ -77,7 +77,7 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
   rubricId,
 }) => {
   useReloadListener();
-  const { me } = useUserContext();
+  const { sessionUser } = useUserContext();
 
   const columns: TableColumn<ProductInterface>[] = [
     {
@@ -106,7 +106,7 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
     {
       headTitle: 'Арт',
       render: ({ dataItem }) => {
-        return me?.role?.isStaff ? (
+        return sessionUser?.role?.isStaff ? (
           <Link
             href={`${ROUTE_CMS}/rubrics/${dataItem.rubricId}/products/product/${dataItem._id}`}
             target={'_blank'}
@@ -156,7 +156,7 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
       },
     },
     {
-      isHidden: !me?.role?.isStaff,
+      isHidden: !sessionUser?.role?.isStaff,
       render: ({ dataItem }) => {
         return (
           <div className='flex justify-end'>
@@ -164,7 +164,7 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
               testId={`${dataItem.name}`}
               updateTitle={'Редактировать товар'}
               updateHandler={() => {
-                if (me?.role?.isStaff) {
+                if (sessionUser?.role?.isStaff) {
                   window.open(
                     `${ROUTE_CMS}/rubrics/${dataItem.rubricId}/products/product/${dataItem._id}`,
                     '_blank',
@@ -214,7 +214,7 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
                 data={docs}
                 testIdKey={'_id'}
                 onRowDoubleClick={(dataItem) => {
-                  if (me?.role?.isStaff) {
+                  if (sessionUser?.role?.isStaff) {
                     window.open(
                       `${ROUTE_CMS}/rubrics/${dataItem.rubricId}/products/product/${dataItem._id}`,
                       '_blank',

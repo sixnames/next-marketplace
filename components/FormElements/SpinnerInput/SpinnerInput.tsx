@@ -7,7 +7,7 @@ export interface SpinnerChangeEventInterface {
   target: {
     id?: string;
     name?: string;
-    value: string;
+    value: number;
   };
 }
 
@@ -78,8 +78,8 @@ const SpinnerInput: React.FC<SpinnerPropsInterface> = ({
           if (onChange && (min ? min <= currentValue : true)) {
             onChange({
               target: {
-                name: `${name}`,
-                value: `${currentValue - counterStep}`,
+                name,
+                value: currentValue - counterStep,
               },
             });
           }
@@ -98,7 +98,12 @@ const SpinnerInput: React.FC<SpinnerPropsInterface> = ({
           const isMinAllowed = min ? min <= noNaN(e.target.value) : true;
           const isMaxAllowed = max ? noNaN(e.target.value) <= max : true;
           if (onChange && isMinAllowed && isMaxAllowed) {
-            onChange(e);
+            onChange({
+              target: {
+                name,
+                value: noNaN(e.target.value),
+              },
+            });
           }
         }}
         min={min}
@@ -116,8 +121,8 @@ const SpinnerInput: React.FC<SpinnerPropsInterface> = ({
           if (onChange && (max ? currentValue + counterStep <= max : true)) {
             onChange({
               target: {
-                name: `${name}`,
-                value: `${currentValue + counterStep}`,
+                name,
+                value: currentValue + counterStep,
               },
             });
           }

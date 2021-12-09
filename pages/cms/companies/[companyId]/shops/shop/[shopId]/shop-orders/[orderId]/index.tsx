@@ -20,6 +20,7 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({
   pageCompanySlug,
   shop,
   order,
+  orderStatuses,
 }) => {
   const companyBasePath = `${ROUTE_CMS}/companies/${shop.companyId}`;
   const title = `Заказ №${order.itemId}`;
@@ -56,6 +57,7 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({
         pageCompanySlug={pageCompanySlug}
         title={title}
         order={order}
+        orderStatuses={orderStatuses}
         breadcrumbs={breadcrumbs}
         basePath={`${companyBasePath}/shops/shop`}
         shop={shop}
@@ -113,11 +115,11 @@ export const getServerSideProps = async (
   }
 
   const locale = initialProps.props.sessionLocale;
-  const order = await getConsoleOrder({
+  const payload = await getConsoleOrder({
     locale,
     orderId: `${query.orderId}`,
   });
-  if (!order) {
+  if (!payload) {
     return {
       notFound: true,
     };
@@ -130,7 +132,8 @@ export const getServerSideProps = async (
     props: {
       ...initialProps.props,
       shop: castDbData(shop),
-      order: castDbData(order),
+      order: castDbData(payload.order),
+      orderStatuses: castDbData(payload.orderStatuses),
       pageCompanySlug,
     },
   };

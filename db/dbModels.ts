@@ -504,24 +504,27 @@ export interface OrderStatusModel extends TimestampModel {
   isCanceled: boolean;
 }
 
-// Order log variant
-export enum OrderLogVariantModel {
-  status = 'status',
-  confirm = 'confirm',
-  cancel = 'cancel',
-  cancelProduct = 'cancelProduct',
-  updateProduct = 'updateProduct',
+export interface OrderLogDiffModel {
+  added: Record<string, any>;
+  deleted: Record<string, any>;
+  updated: Record<string, any>;
+}
+
+export interface OrderLogUserModel {
+  name: string;
+  lastName?: string | null;
+  secondName?: string | null;
+  email: EmailAddressModel;
+  phone: PhoneNumberModel;
 }
 
 export interface OrderLogModel {
   _id: ObjectIdModel;
-  variant: OrderLogVariantModel;
   userId: ObjectIdModel;
+  logUser: OrderLogUserModel;
   orderId: ObjectIdModel;
-  productId?: ObjectIdModel;
-  prevStatusId?: ObjectIdModel | null;
-  statusId: ObjectIdModel;
   createdAt: DateModel;
+  diff: OrderLogDiffModel;
 }
 
 export interface OrderProductModel extends TimestampModel {

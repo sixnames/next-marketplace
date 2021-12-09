@@ -283,6 +283,7 @@ export async function updateIndexes(db: Db) {
   await promoProductsCollection.createIndex({ shopId: 1 });
   await promoProductsCollection.createIndex({ companyId: 1 });
   await promoProductsCollection.createIndex({ shopProductId: 1 });
+  await promoProductsCollection.createIndex({ productId: 1 });
 
   // Rubrics
   await createCollectionIfNotExist(COL_RUBRICS);

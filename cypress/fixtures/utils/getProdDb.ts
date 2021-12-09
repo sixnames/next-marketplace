@@ -347,6 +347,52 @@ export async function updateIndexes(db: Db) {
     citySlug: 1,
   });
 
+  // console
+  await shopProductsCollection.createIndex({
+    rubricId: 1,
+    productId: 1,
+    brandSlug: 1,
+    brandCollectionSlug: 1,
+    selectedOptionsSlugs: 1,
+    price: 1,
+    companyId: 1,
+    mainImage: 1,
+    _id: 1,
+  });
+  await shopProductsCollection.createIndex({
+    rubricSlug: 1,
+    productId: 1,
+    brandSlug: 1,
+    brandCollectionSlug: 1,
+    selectedOptionsSlugs: 1,
+    price: 1,
+    companyId: 1,
+    mainImage: 1,
+    _id: 1,
+  });
+  await shopProductsCollection.createIndex({
+    shopId: 1,
+    rubricId: 1,
+    productId: 1,
+    brandSlug: 1,
+    brandCollectionSlug: 1,
+    selectedOptionsSlugs: 1,
+    price: 1,
+    mainImage: 1,
+    _id: 1,
+  });
+  await shopProductsCollection.createIndex({
+    shopId: 1,
+    rubricSlug: 1,
+    productId: 1,
+    brandSlug: 1,
+    brandCollectionSlug: 1,
+    selectedOptionsSlugs: 1,
+    price: 1,
+    mainImage: 1,
+    _id: 1,
+  });
+
   // catalogue
   // views / priorities sort in main catalogue
   await shopProductsCollection.createIndex({

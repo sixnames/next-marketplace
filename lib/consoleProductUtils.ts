@@ -821,15 +821,15 @@ export const getConsoleCompanyRubricProducts = async ({
 
     // initial match
     const productsInitialMatch = {
-      companyId: new ObjectId(companyId),
-      ...searchStage,
-      ...excludedIdsStage,
       ...rubricStage,
+      ...searchStage,
       ...brandStage,
       ...brandCollectionStage,
       ...optionsStage,
       ...pricesStage,
+      companyId: new ObjectId(companyId),
       ...photoStage,
+      ...excludedIdsStage,
     };
 
     const productDataAggregationResult = await shopProductsCollection
@@ -1517,11 +1517,11 @@ export const getConsoleShopProducts = async ({
     const productsInitialMatch = {
       shopId: shop._id,
       ...rubricStage,
+      ...searchStage,
       ...brandStage,
       ...brandCollectionStage,
       ...optionsStage,
       ...pricesStage,
-      ...searchStage,
       ...photoStage,
     };
 

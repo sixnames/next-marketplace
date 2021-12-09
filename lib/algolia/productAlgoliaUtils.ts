@@ -1,4 +1,4 @@
-import { HITS_PER_PAGE } from 'config/common';
+import { HITS_PER_PAGE, ID_COUNTER_DIGITS } from 'config/common';
 import { COL_LANGUAGES, COL_PRODUCT_ASSETS, COL_PRODUCTS } from 'db/collectionNames';
 import {
   brandPipeline,
@@ -14,6 +14,7 @@ import { getFieldStringLocale } from 'lib/i18n';
 import { getTreeFromList } from 'lib/optionUtils';
 import { generateCardTitle, generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
+import addZero from 'add-zero';
 
 export function getAlgoliaProductsIndex() {
   const { algoliaIndex } = getAlgoliaClient(`${process.env.ALG_INDEX_PRODUCTS}`);
@@ -157,7 +158,7 @@ export async function getAlgoliaProductsSearch({
       return searchIds;
     }
     const productBySlug = await productsCollection.findOne({
-      slug: search,
+      slug: addZero(search, ID_COUNTER_DIGITS),
     });
     if (productBySlug) {
       return [productBySlug._id];

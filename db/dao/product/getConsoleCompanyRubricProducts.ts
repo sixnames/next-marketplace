@@ -145,13 +145,13 @@ export const getConsoleCompanyRubricProducts = async ({
     // initial match
     const productsInitialMatch = {
       ...rubricStage,
-      ...searchStage,
       ...brandStage,
       ...brandCollectionStage,
       ...optionsStage,
       ...pricesStage,
       companyId: new ObjectId(companyId),
       ...photoStage,
+      ...searchStage,
       ...excludedIdsStage,
     };
 

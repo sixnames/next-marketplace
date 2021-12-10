@@ -1,11 +1,7 @@
 import Pager from 'components/Pager';
+import { ONE_MINUTE } from 'config/common';
+import { ProductInterface, RubricInterface } from 'db/uiInterfaces';
 import * as React from 'react';
-import {
-  RubricProductFragment,
-  useGetAllRubricsQuery,
-  useGetNonRubricProductsQuery,
-  useGetRubricProductsQuery,
-} from 'generated/apolloComponents';
 import Spinner from 'components/Spinner';
 import RequestError from 'components/RequestError';
 import ModalFrame from 'components/Modal/ModalFrame';
@@ -14,9 +10,10 @@ import FormikIndividualSearch from 'components/FormElements/Search/FormikIndivid
 import RubricsList from 'components/RubricsList';
 import useProductsListColumns, { ProductColumnsInterface } from 'hooks/useProductsListColumns';
 import Table from 'components/Table';
+import useSWR from 'swr';
 
 interface ProductsListInterface extends ProductColumnsInterface {
-  rubricSlug: string;
+  rubricSlug?: string | null;
   excludedProductsIds?: string[];
   attributesIds?: string[] | null;
   excludedOptionsSlugs?: string[] | null;
@@ -37,7 +34,7 @@ const ProductsList: React.FC<ProductsListInterface> = ({
     ...props,
   });
 
-  const { data, loading, error } = useGetRubricProductsQuery({
+  const { data, loading } = useGetRubricProductsQuery({
     fetchPolicy: 'network-only',
     variables: {
       rubricSlug,
@@ -51,7 +48,7 @@ const ProductsList: React.FC<ProductsListInterface> = ({
     },
   });
 
-  if (!data && !loading && !error) {
+  if (!data && !loading) {
     return (
       <ModalFrame>
         <ModalTitle>Ошибка загрузки данных</ModalTitle>
@@ -61,10 +58,6 @@ const ProductsList: React.FC<ProductsListInterface> = ({
 
   if (loading) {
     return <Spinner isNested isTransparent />;
-  }
-
-  if (error || !data || !data.getRubricBySlug) {
-    return <RequestError />;
   }
 
   const {
@@ -74,7 +67,7 @@ const ProductsList: React.FC<ProductsListInterface> = ({
   return (
     <div>
       <div className='overflow-x-auto'>
-        <Table<RubricProductFragment>
+        <Table<ProductInterface>
           data={products.docs}
           columns={columns}
           emptyMessage={'Список пуст'}
@@ -82,77 +75,6 @@ const ProductsList: React.FC<ProductsListInterface> = ({
         />
       </div>
       <Pager page={page} setPage={setPage} totalPages={products.totalPages} />
-    </div>
-  );
-};
-
-interface ProductsSearchListInterface extends ProductColumnsInterface {
-  excludedProductsIds?: string[];
-  attributesIds?: string[] | null;
-  excludedOptionsSlugs?: string[] | null;
-  search: string;
-  viewRubricSlug?: string;
-}
-
-const ProductsSearchList: React.FC<ProductsSearchListInterface> = ({
-  search,
-  excludedProductsIds,
-  attributesIds,
-  excludedOptionsSlugs,
-  viewRubricSlug,
-  ...props
-}) => {
-  const [page, setPage] = React.useState<number>(1);
-
-  const columns = useProductsListColumns({
-    createTitle: 'Добавить товар в рубрику',
-    ...props,
-  });
-
-  const { data, loading, error } = useGetNonRubricProductsQuery({
-    fetchPolicy: 'network-only',
-    variables: {
-      input: {
-        page,
-        search,
-        excludedProductsIds,
-        attributesIds,
-        excludedOptionsSlugs,
-      },
-    },
-  });
-
-  if (!data && !loading && !error) {
-    return (
-      <ModalFrame>
-        <ModalTitle>Ошибка загрузки данных</ModalTitle>
-      </ModalFrame>
-    );
-  }
-
-  if (loading) {
-    return <Spinner isNested isTransparent />;
-  }
-
-  if (error || !data || !data.getProductsList) {
-    return <RequestError />;
-  }
-
-  const {
-    getProductsList: { docs, totalPages },
-  } = data;
-
-  return (
-    <div>
-      <div className='overflow-x-auto'>
-        <Table<RubricProductFragment>
-          data={docs}
-          columns={columns}
-          emptyMessage={`По запросу "${search}" товаров не найдено`}
-          tableTestId={'product-search-list'}
-        />
-      </div>
-      <Pager page={page} setPage={setPage} totalPages={totalPages} />
     </div>
   );
 };
@@ -176,11 +98,11 @@ const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
   ...props
 }) => {
   const [search, setSearch] = React.useState<string | null>(null);
-  const { data, error, loading } = useGetAllRubricsQuery({
-    fetchPolicy: 'network-only',
+  const { data, error } = useSWR<RubricInterface[]>('/api/rubrics', {
+    refreshInterval: ONE_MINUTE,
   });
 
-  if (rubricSlug) {
+  if (rubricSlug || search) {
     return (
       <ModalFrame testId={testId} size={'wide'}>
         <FormikIndividualSearch
@@ -191,7 +113,7 @@ const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
 
         <ProductsList
           search={search}
-          rubricSlug={rubricSlug}
+          rubricSlug={search ? null : rubricSlug}
           excludedProductsIds={excludedProductsIds}
           attributesIds={attributesIds}
           excludedOptionsSlugs={excludedOptionsSlugs}
@@ -201,7 +123,7 @@ const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
     );
   }
 
-  if (!data && !loading && !error) {
+  if (!data && error) {
     return (
       <ModalFrame>
         <ModalTitle>Ошибка загрузки рубрик</ModalTitle>
@@ -209,7 +131,7 @@ const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
     );
   }
 
-  if (loading) {
+  if (!data && !error) {
     return (
       <ModalFrame>
         <Spinner isNested isTransparent />
@@ -217,15 +139,13 @@ const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
     );
   }
 
-  if (error || !data || !data.getAllRubrics) {
+  if (!data) {
     return (
       <ModalFrame>
         <RequestError />
       </ModalFrame>
     );
   }
-
-  const { getAllRubrics } = data;
 
   return (
     <ModalFrame testId={testId} size={'wide'}>
@@ -238,32 +158,20 @@ const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
         onReset={() => setSearch(null)}
       />
 
-      {search ? (
-        <ProductsSearchList
-          search={search}
-          excludedProductsIds={excludedProductsIds}
-          attributesIds={attributesIds}
-          excludedOptionsSlugs={excludedOptionsSlugs}
-          {...props}
-        />
-      ) : (
-        <React.Fragment>
-          <RubricsList
-            low
-            rubrics={getAllRubrics}
-            render={({ slug }) => {
-              return (
-                <ProductsList
-                  rubricSlug={slug}
-                  excludedProductsIds={excludedProductsIds}
-                  attributesIds={attributesIds}
-                  {...props}
-                />
-              );
-            }}
-          />
-        </React.Fragment>
-      )}
+      <RubricsList
+        low
+        rubrics={data}
+        render={({ slug }) => {
+          return (
+            <ProductsList
+              rubricSlug={slug}
+              excludedProductsIds={excludedProductsIds}
+              attributesIds={attributesIds}
+              {...props}
+            />
+          );
+        }}
+      />
     </ModalFrame>
   );
 };

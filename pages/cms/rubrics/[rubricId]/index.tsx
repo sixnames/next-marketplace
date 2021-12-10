@@ -6,7 +6,7 @@ import RequestError from 'components/RequestError';
 import SeoContentEditor from 'components/SeoContentEditor';
 import Spinner from 'components/Spinner';
 import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
-import { getConsoleRubricDetails } from 'db/dao/rubric/getConsoleRubricDetails';
+import { getConsoleRubricDetails } from 'db/dao/rubrics/getConsoleRubricDetails';
 import {
   AppContentWrapperBreadCrumbs,
   RubricInterface,

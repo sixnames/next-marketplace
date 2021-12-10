@@ -815,6 +815,11 @@ export interface ConsoleRubricProductsInterface
   companySlug: string;
 }
 
+export interface GetConsoleRubricPromoProductsPayloadInterface
+  extends AppPaginationWithFiltersInterface<ShopProductInterface> {
+  rubric?: RubricInterface | null;
+}
+
 export interface LinkInterface
   extends Omit<LinkProps, 'as' | 'href'>,
     React.PropsWithChildren<any> {

@@ -71,7 +71,7 @@ import {
   ShopProductInterface,
 } from 'db/uiInterfaces';
 import { getAlgoliaProductsSearch } from 'lib/algolia/productAlgoliaUtils';
-import { sortObjectsByField } from 'lib/arrayUtils';
+import { alwaysString, sortObjectsByField } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
@@ -578,7 +578,7 @@ function castOptionsForBreadcrumbs({
   }, newAcc);
 }
 
-interface CastCatalogueFiltersPayloadInterface {
+interface CastUrlFiltersPayloadInterface {
   minPrice?: number | null;
   maxPrice?: number | null;
   realFilters: string[];
@@ -606,19 +606,28 @@ interface CastCatalogueFiltersPayloadInterface {
   sortStage: Record<any, any>;
   defaultSortStage: Record<any, any>;
   photoStage: Record<any, any>;
+  searchStage: Record<any, any>;
+  searchIds: ObjectIdModel[];
+  noSearchResults: boolean;
 }
 
-interface CastCatalogueFiltersInterface {
+interface CastUrlFiltersInterface {
   filters: string[];
   initialLimit?: number;
   initialPage?: number;
+  search?: string | string[] | null;
+  excludedSearchIds?: ObjectIdModel[] | null;
+  searchFieldName: string;
 }
 
-export function castCatalogueFilters({
+export async function castUrlFilters({
   filters,
   initialPage,
   initialLimit,
-}: CastCatalogueFiltersInterface): CastCatalogueFiltersPayloadInterface {
+  excludedSearchIds,
+  searchFieldName,
+  ...props
+}: CastUrlFiltersInterface): Promise<CastUrlFiltersPayloadInterface> {
   const allUrlParams: string[] = [];
   const categoryCastedFilters: string[] = [];
   const priceFilters: string[] = [];
@@ -796,7 +805,27 @@ export function castCatalogueFilters({
     };
   }
 
+  // search stage
+  let searchStage = {};
+  let searchIds: ObjectIdModel[] = [];
+  const search = alwaysString(props.search);
+
+  if (search) {
+    searchIds = await getAlgoliaProductsSearch({
+      search,
+      excludedProductsIds: excludedSearchIds,
+    });
+    searchStage = {
+      [searchFieldName]: {
+        $in: searchIds,
+      },
+    };
+  }
+
   return {
+    searchStage,
+    searchIds,
+    noSearchResults: search.length > 0 && searchIds.length < 1,
     allUrlParams,
     rubricFilters: rubricFilters.length > 0 ? rubricFilters : null,
     clearSlug: sortPathname,
@@ -886,10 +915,14 @@ export const getCatalogueData = async ({
       pricesStage,
       realFilterAttributes,
       allUrlParams,
-    } = castCatalogueFilters({
+      searchStage,
+      noSearchResults,
+    } = await castUrlFilters({
+      search,
       filters: input.filters,
       initialPage: input.page,
       initialLimit: props.limit,
+      searchFieldName: 'productId',
     });
 
     // fallback
@@ -938,20 +971,7 @@ export const getCatalogueData = async ({
       };
     }
 
-    // search stage
-    let searchStage = {};
-    let searchIds: ObjectIdModel[] = [];
-    if (search) {
-      searchIds = await getAlgoliaProductsSearch({
-        search,
-      });
-      searchStage = {
-        productId: {
-          $in: searchIds,
-        },
-      };
-    }
-    if (search && searchIds.length < 1) {
+    if (noSearchResults) {
       return {
         ...fallbackPayload,
         isSearch: true,

@@ -50,7 +50,7 @@ import {
   SeoContentInterface,
 } from 'db/uiInterfaces';
 import { castCatalogueFilter } from 'lib/catalogueHelpers';
-import { castCatalogueFilters } from 'lib/catalogueUtils';
+import { castUrlFilters } from 'lib/catalogueUtils';
 import { castConfigs, getConfigStringValue } from 'lib/configsUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { sortStringArray } from 'lib/stringUtils';
@@ -271,8 +271,9 @@ export async function getCatalogueSeoContentSlug({
       noFiltersSelected,
       inCategory,
       page,
-    } = castCatalogueFilters({
+    } = await castUrlFilters({
       filters,
+      searchFieldName: '_id',
     });
 
     const queryOptions = {

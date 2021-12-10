@@ -33,7 +33,7 @@ import AppContentWrapper from 'layout/AppContentWrapper';
 import AppSubNav from 'layout/AppSubNav';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { alwaysArray } from 'lib/arrayUtils';
-import { castCatalogueFilters } from 'lib/catalogueUtils';
+import { castUrlFilters } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
 import Head from 'next/head';
@@ -273,9 +273,10 @@ export const getServerSideProps = async (
   };
 
   // Cast filters
-  const { page, skip, limit, clearSlug } = castCatalogueFilters({
+  const { page, skip, limit, clearSlug } = await castUrlFilters({
     filters: alwaysArray(filters),
     initialLimit: CMS_BRANDS_LIMIT,
+    searchFieldName: '_id',
   });
   const itemPath = ``;
 

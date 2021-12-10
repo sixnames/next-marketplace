@@ -3,7 +3,7 @@ import ConsoleSeoContentDetails, {
 } from 'components/console/ConsoleSeoContentDetails';
 import Inner from 'components/Inner';
 import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
-import { getConsoleRubricDetails } from 'db/dao/rubric/getConsoleRubricDetails';
+import { getConsoleRubricDetails } from 'db/dao/rubrics/getConsoleRubricDetails';
 import { AppContentWrapperBreadCrumbs, RubricInterface } from 'db/uiInterfaces';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';

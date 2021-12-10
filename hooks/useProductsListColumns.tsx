@@ -1,15 +1,15 @@
 import Link from 'components/Link/Link';
+import { ProductInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import ContentItemControls, {
   ContentItemControlsInterface,
 } from 'components/button/ContentItemControls';
 import TableRowImage from 'components/TableRowImage';
-import { RubricProductFragment } from 'generated/apolloComponents';
 import { TableColumn } from 'components/Table';
 import { ROUTE_CMS } from 'config/common';
 
-export type ProductColumnsItemHandler = (product: RubricProductFragment) => void;
-export type ProductColumnsHandlerPermission = (product: RubricProductFragment) => boolean;
+export type ProductColumnsItemHandler = (product: ProductInterface) => void;
+export type ProductColumnsHandlerPermission = (product: ProductInterface) => boolean;
 
 export interface ProductColumnsInterface
   extends Omit<
@@ -40,7 +40,7 @@ const useProductsListColumns = ({
   isCreateDisabled,
   isUpdateDisabled,
   isDeleteDisabled,
-}: ProductColumnsInterface): TableColumn<RubricProductFragment>[] => {
+}: ProductColumnsInterface): TableColumn<ProductInterface>[] => {
   return React.useMemo(() => {
     return [
       {
@@ -69,14 +69,9 @@ const useProductsListColumns = ({
         },
       },
       {
-        accessor: 'originalName',
+        accessor: 'snippetTitle',
         headTitle: 'Название',
         render: ({ cellData }) => cellData,
-      },
-      {
-        accessor: 'active',
-        headTitle: 'Активен',
-        render: ({ cellData }) => (cellData ? 'Да' : 'Нет'),
       },
       {
         render: ({ dataItem }) => {

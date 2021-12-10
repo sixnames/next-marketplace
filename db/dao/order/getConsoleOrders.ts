@@ -8,7 +8,7 @@ import {
   OrderInterface,
 } from 'db/uiInterfaces';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
-import { castCatalogueFilters } from 'lib/catalogueUtils';
+import { castUrlFilters } from 'lib/catalogueUtils';
 import { getShortName } from 'lib/nameUtils';
 import { castOrderStatus } from 'lib/orderUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
@@ -35,9 +35,10 @@ export async function getConsoleOrders({
     const { query } = context;
     const { companyId } = query;
 
-    const { page, skip, limit, clearSlug } = castCatalogueFilters({
+    const { page, skip, limit, clearSlug } = await castUrlFilters({
       filters: alwaysArray(query.filters),
       initialLimit: PAGINATION_DEFAULT_LIMIT,
+      searchFieldName: '_id',
     });
 
     const matchByCompany = companyId

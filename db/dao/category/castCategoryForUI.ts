@@ -1,5 +1,5 @@
 import { castAttributesGroupForUI } from 'db/dao/attributes/castAttributesGroupForUI';
-import { castRubricForUI } from 'db/dao/rubric/castRubricForUI';
+import { castRubricForUI } from 'db/dao/rubrics/castRubricForUI';
 import { CategoryInterface } from 'db/uiInterfaces';
 import { sortObjectsByField } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';

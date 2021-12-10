@@ -6,11 +6,9 @@ import {
   SORT_BY_ID,
   SORT_DESC,
 } from 'config/common';
-import { ProductModel, ProductsPaginationPayloadModel, ShopProductModel } from 'db/dbModels';
+import { ProductModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { COL_PRODUCTS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
-import { getRequestParams } from 'lib/sessionHelpers';
-import { productsPaginationQuery } from 'lib/productsPaginationQuery';
 
 export const ProductsPaginationPayload = objectType({
   name: 'ProductsPaginationPayload',
@@ -170,25 +168,6 @@ export const ProductQueries = extendType({
           console.log(e);
           return [];
         }
-      },
-    });
-
-    // Should return paginated products
-    t.nonNull.field('getProductsList', {
-      type: 'ProductsPaginationPayload',
-      description: 'Should paginated products',
-      args: {
-        input: arg({
-          type: 'ProductsPaginationInput',
-        }),
-      },
-      resolve: async (_root, args, context): Promise<ProductsPaginationPayloadModel> => {
-        const { city } = await getRequestParams(context);
-        const paginationResult = await productsPaginationQuery({
-          input: args.input,
-          city,
-        });
-        return paginationResult;
       },
     });
   },

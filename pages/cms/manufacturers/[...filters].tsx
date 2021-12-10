@@ -26,7 +26,7 @@ import useValidationSchema from 'hooks/useValidationSchema';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { alwaysArray } from 'lib/arrayUtils';
-import { castCatalogueFilters } from 'lib/catalogueUtils';
+import { castUrlFilters } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import Head from 'next/head';
 import * as React from 'react';
@@ -200,16 +200,10 @@ export const getServerSideProps = async (
   const locale = props.sessionLocale;
 
   // Cast filters
-  const {
-    // realFilterOptions,
-    // noFiltersSelected,
-    page,
-    skip,
-    limit,
-    clearSlug,
-  } = castCatalogueFilters({
+  const { page, skip, limit, clearSlug } = await castUrlFilters({
     filters: alwaysArray(filters),
     initialLimit: CMS_BRANDS_LIMIT,
+    searchFieldName: '_id',
   });
   const itemPath = ``;
 

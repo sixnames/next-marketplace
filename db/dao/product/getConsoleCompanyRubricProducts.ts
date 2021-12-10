@@ -26,9 +26,8 @@ import {
   RubricInterface,
   ShopProductInterface,
 } from 'db/uiInterfaces';
-import { getAlgoliaProductsSearch } from 'lib/algolia/productAlgoliaUtils';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
-import { castCatalogueFilters, getCatalogueAttributes } from 'lib/catalogueUtils';
+import { castUrlFilters, getCatalogueAttributes } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import {
@@ -105,10 +104,15 @@ export const getConsoleCompanyRubricProducts = async ({
       optionsStage,
       pricesStage,
       photoStage,
-    } = castCatalogueFilters({
+      searchStage,
+      noSearchResults,
+    } = await castUrlFilters({
       filters,
       initialPage: props.page,
       initialLimit: PAGINATION_DEFAULT_LIMIT,
+      searchFieldName: 'productId',
+      search: query.search,
+      excludedSearchIds: excludedProductsIds,
     });
 
     // rubric stage
@@ -124,20 +128,7 @@ export const getConsoleCompanyRubricProducts = async ({
     }
 
     // search stage
-    let searchStage = {};
-    let searchIds: ObjectIdModel[] = [];
-    if (search) {
-      searchIds = await getAlgoliaProductsSearch({
-        search,
-        excludedProductsIds,
-      });
-      searchStage = {
-        productId: {
-          $in: searchIds,
-        },
-      };
-    }
-    if (search && searchIds.length < 1) {
+    if (noSearchResults) {
       return fallbackPayload;
     }
 

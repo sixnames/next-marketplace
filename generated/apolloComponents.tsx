@@ -759,10 +759,6 @@ export enum Gender {
   Singular = 'singular'
 }
 
-export type GetAllRubricsInput = {
-  excludedRubricsIds?: Maybe<Array<Scalars['ObjectId']>>;
-};
-
 export type GetProductShopsInput = {
   productId: Scalars['ObjectId'];
   sortBy?: Maybe<Scalars['String']>;
@@ -1664,25 +1660,6 @@ export type OrderCustomer = {
   formattedPhone: FormattedPhone;
 };
 
-export type OrderLog = Timestamp & {
-  __typename?: 'OrderLog';
-  createdAt: Scalars['Date'];
-  updatedAt: Scalars['Date'];
-  _id: Scalars['ObjectId'];
-  variant: OrderLogVariant;
-  userId: Scalars['ObjectId'];
-  user?: Maybe<User>;
-};
-
-/** Order log variant enum. */
-export enum OrderLogVariant {
-  Status = 'status',
-  Confirm = 'confirm',
-  Cancel = 'cancel',
-  CancelProduct = 'cancelProduct',
-  UpdateProduct = 'updateProduct'
-}
-
 export type OrderProduct = {
   __typename?: 'OrderProduct';
   _id: Scalars['ObjectId'];
@@ -1941,18 +1918,10 @@ export type Query = {
   getProductBySlug?: Maybe<Product>;
   /** Should return shops products list for product card */
   getProductShops: Array<ShopProduct>;
-  /** Should paginated products */
-  getProductsList: ProductsPaginationPayload;
   /** Should return role by give id */
   getRole?: Maybe<Role>;
   /** Should return all roles list */
   getAllRoles: Array<Role>;
-  /** Should return rubric by given id */
-  getRubric: Rubric;
-  /** Should return rubric by given slug */
-  getRubricBySlug: Rubric;
-  /** Should return rubrics tree */
-  getAllRubrics: Array<Rubric>;
   /** Should return rubric variant by given id */
   getRubricVariant: RubricVariant;
   /** Should return rubric variants list */
@@ -2105,28 +2074,8 @@ export type QueryGetProductShopsArgs = {
 };
 
 
-export type QueryGetProductsListArgs = {
-  input?: Maybe<ProductsPaginationInput>;
-};
-
-
 export type QueryGetRoleArgs = {
   _id: Scalars['ObjectId'];
-};
-
-
-export type QueryGetRubricArgs = {
-  _id: Scalars['ObjectId'];
-};
-
-
-export type QueryGetRubricBySlugArgs = {
-  slug: Scalars['String'];
-};
-
-
-export type QueryGetAllRubricsArgs = {
-  input?: Maybe<GetAllRubricsInput>;
 };
 
 
@@ -2245,12 +2194,6 @@ export type Rubric = {
   description: Scalars['String'];
   shortDescription: Scalars['String'];
   variant: RubricVariant;
-  products: ProductsPaginationPayload;
-};
-
-
-export type RubricProductsArgs = {
-  input?: Maybe<ProductsPaginationInput>;
 };
 
 export type RubricAttribute = {
@@ -2867,70 +2810,6 @@ export type User = Base & Timestamp & {
   role: Role;
 };
 
-export type RubricInListFragment = (
-  { __typename?: 'Rubric' }
-  & Pick<Rubric, '_id' | 'nameI18n' | 'slug' | 'name'>
-  & { variant: (
-    { __typename?: 'RubricVariant' }
-    & Pick<RubricVariant, '_id' | 'name'>
-  ) }
-);
-
-export type RubricProductFragment = (
-  { __typename?: 'Product' }
-  & Pick<Product, '_id' | 'itemId' | 'nameI18n' | 'originalName' | 'slug' | 'mainImage' | 'active' | 'rubricId'>
-);
-
-export type RubricProductsPaginationFragment = (
-  { __typename?: 'ProductsPaginationPayload' }
-  & Pick<ProductsPaginationPayload, 'totalDocs' | 'page' | 'totalPages' | 'totalActiveDocs'>
-  & { docs: Array<(
-    { __typename?: 'Product' }
-    & RubricProductFragment
-  )> }
-);
-
-export type GetAllRubricsQueryVariables = Exact<{
-  input?: Maybe<GetAllRubricsInput>;
-}>;
-
-
-export type GetAllRubricsQuery = (
-  { __typename?: 'Query' }
-  & { getAllRubrics: Array<(
-    { __typename?: 'Rubric' }
-    & RubricInListFragment
-  )> }
-);
-
-export type GetRubricQueryVariables = Exact<{
-  _id: Scalars['ObjectId'];
-}>;
-
-
-export type GetRubricQuery = (
-  { __typename?: 'Query' }
-  & { getRubric: (
-    { __typename?: 'Rubric' }
-    & Pick<Rubric, 'active' | 'variantId' | 'descriptionI18n' | 'shortDescriptionI18n' | 'defaultTitleI18n' | 'prefixI18n' | 'keywordI18n' | 'gender'>
-    & RubricInListFragment
-  ) }
-);
-
-export type GetRubricBySlugQueryVariables = Exact<{
-  slug: Scalars['String'];
-}>;
-
-
-export type GetRubricBySlugQuery = (
-  { __typename?: 'Query' }
-  & { getRubricBySlug: (
-    { __typename?: 'Rubric' }
-    & Pick<Rubric, 'active' | 'variantId' | 'descriptionI18n' | 'shortDescriptionI18n' | 'defaultTitleI18n' | 'prefixI18n' | 'keywordI18n' | 'gender'>
-    & RubricInListFragment
-  ) }
-);
-
 export type CreateRubricMutationVariables = Exact<{
   input: CreateRubricInput;
 }>;
@@ -2967,75 +2846,6 @@ export type DeleteRubricMutation = (
   & { deleteRubric: (
     { __typename?: 'RubricPayload' }
     & Pick<RubricPayload, 'success' | 'message'>
-  ) }
-);
-
-export type GetRubricProductsQueryVariables = Exact<{
-  rubricSlug: Scalars['String'];
-  productsInput?: Maybe<ProductsPaginationInput>;
-}>;
-
-
-export type GetRubricProductsQuery = (
-  { __typename?: 'Query' }
-  & { getRubricBySlug: (
-    { __typename?: 'Rubric' }
-    & Pick<Rubric, '_id' | 'name'>
-    & { products: (
-      { __typename?: 'ProductsPaginationPayload' }
-      & RubricProductsPaginationFragment
-    ) }
-  ) }
-);
-
-export type GetNonRubricProductsQueryVariables = Exact<{
-  input: ProductsPaginationInput;
-}>;
-
-
-export type GetNonRubricProductsQuery = (
-  { __typename?: 'Query' }
-  & { getProductsList: (
-    { __typename?: 'ProductsPaginationPayload' }
-    & RubricProductsPaginationFragment
-  ) }
-);
-
-export type GetAllProductsQueryVariables = Exact<{
-  input: ProductsPaginationInput;
-}>;
-
-
-export type GetAllProductsQuery = (
-  { __typename?: 'Query' }
-  & { getProductsList: (
-    { __typename?: 'ProductsPaginationPayload' }
-    & RubricProductsPaginationFragment
-  ) }
-);
-
-export type RubricAttributeFragment = (
-  { __typename?: 'RubricAttribute' }
-  & Pick<RubricAttribute, '_id' | 'name' | 'variant' | 'optionsGroupId' | 'showInCatalogueFilter' | 'showInCatalogueNav'>
-  & { metric?: Maybe<(
-    { __typename?: 'Metric' }
-    & Pick<Metric, '_id' | 'name'>
-  )>, optionsGroup?: Maybe<(
-    { __typename?: 'OptionsGroup' }
-    & Pick<OptionsGroup, '_id' | 'name'>
-  )> }
-);
-
-export type GetRubricAttributesQueryVariables = Exact<{
-  rubricId: Scalars['ObjectId'];
-}>;
-
-
-export type GetRubricAttributesQuery = (
-  { __typename?: 'Query' }
-  & { getRubric: (
-    { __typename?: 'Rubric' }
-    & Pick<Rubric, '_id' | 'name' | 'slug'>
   ) }
 );
 
@@ -4680,59 +4490,6 @@ export type GetAllOptionsGroupsQuery = (
   )> }
 );
 
-export const RubricInListFragmentDoc = gql`
-    fragment RubricInList on Rubric {
-  _id
-  nameI18n
-  slug
-  name
-  variant {
-    _id
-    name
-  }
-}
-    `;
-export const RubricProductFragmentDoc = gql`
-    fragment RubricProduct on Product {
-  _id
-  itemId
-  nameI18n
-  originalName
-  slug
-  mainImage
-  active
-  rubricId
-}
-    `;
-export const RubricProductsPaginationFragmentDoc = gql`
-    fragment RubricProductsPagination on ProductsPaginationPayload {
-  totalDocs
-  page
-  totalPages
-  totalActiveDocs
-  docs {
-    ...RubricProduct
-  }
-}
-    ${RubricProductFragmentDoc}`;
-export const RubricAttributeFragmentDoc = gql`
-    fragment RubricAttribute on RubricAttribute {
-  _id
-  name
-  variant
-  metric {
-    _id
-    name
-  }
-  optionsGroupId
-  optionsGroup {
-    _id
-    name
-  }
-  showInCatalogueFilter
-  showInCatalogueNav
-}
-    `;
 export const CartPayloadFragmentDoc = gql`
     fragment CartPayload on CartPayload {
   success
@@ -4869,127 +4626,6 @@ export const SelectOptionFragmentDoc = gql`
   icon
 }
     `;
-export const GetAllRubricsDocument = gql`
-    query GetAllRubrics($input: GetAllRubricsInput) {
-  getAllRubrics(input: $input) {
-    ...RubricInList
-  }
-}
-    ${RubricInListFragmentDoc}`;
-
-/**
- * __useGetAllRubricsQuery__
- *
- * To run a query within a React component, call `useGetAllRubricsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetAllRubricsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetAllRubricsQuery({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useGetAllRubricsQuery(baseOptions?: Apollo.QueryHookOptions<GetAllRubricsQuery, GetAllRubricsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetAllRubricsQuery, GetAllRubricsQueryVariables>(GetAllRubricsDocument, options);
-      }
-export function useGetAllRubricsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllRubricsQuery, GetAllRubricsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetAllRubricsQuery, GetAllRubricsQueryVariables>(GetAllRubricsDocument, options);
-        }
-export type GetAllRubricsQueryHookResult = ReturnType<typeof useGetAllRubricsQuery>;
-export type GetAllRubricsLazyQueryHookResult = ReturnType<typeof useGetAllRubricsLazyQuery>;
-export type GetAllRubricsQueryResult = Apollo.QueryResult<GetAllRubricsQuery, GetAllRubricsQueryVariables>;
-export const GetRubricDocument = gql`
-    query GetRubric($_id: ObjectId!) {
-  getRubric(_id: $_id) {
-    ...RubricInList
-    active
-    variantId
-    descriptionI18n
-    shortDescriptionI18n
-    defaultTitleI18n
-    prefixI18n
-    keywordI18n
-    gender
-  }
-}
-    ${RubricInListFragmentDoc}`;
-
-/**
- * __useGetRubricQuery__
- *
- * To run a query within a React component, call `useGetRubricQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetRubricQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetRubricQuery({
- *   variables: {
- *      _id: // value for '_id'
- *   },
- * });
- */
-export function useGetRubricQuery(baseOptions: Apollo.QueryHookOptions<GetRubricQuery, GetRubricQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetRubricQuery, GetRubricQueryVariables>(GetRubricDocument, options);
-      }
-export function useGetRubricLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRubricQuery, GetRubricQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetRubricQuery, GetRubricQueryVariables>(GetRubricDocument, options);
-        }
-export type GetRubricQueryHookResult = ReturnType<typeof useGetRubricQuery>;
-export type GetRubricLazyQueryHookResult = ReturnType<typeof useGetRubricLazyQuery>;
-export type GetRubricQueryResult = Apollo.QueryResult<GetRubricQuery, GetRubricQueryVariables>;
-export const GetRubricBySlugDocument = gql`
-    query GetRubricBySlug($slug: String!) {
-  getRubricBySlug(slug: $slug) {
-    ...RubricInList
-    active
-    variantId
-    descriptionI18n
-    shortDescriptionI18n
-    defaultTitleI18n
-    prefixI18n
-    keywordI18n
-    gender
-  }
-}
-    ${RubricInListFragmentDoc}`;
-
-/**
- * __useGetRubricBySlugQuery__
- *
- * To run a query within a React component, call `useGetRubricBySlugQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetRubricBySlugQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetRubricBySlugQuery({
- *   variables: {
- *      slug: // value for 'slug'
- *   },
- * });
- */
-export function useGetRubricBySlugQuery(baseOptions: Apollo.QueryHookOptions<GetRubricBySlugQuery, GetRubricBySlugQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetRubricBySlugQuery, GetRubricBySlugQueryVariables>(GetRubricBySlugDocument, options);
-      }
-export function useGetRubricBySlugLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRubricBySlugQuery, GetRubricBySlugQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetRubricBySlugQuery, GetRubricBySlugQueryVariables>(GetRubricBySlugDocument, options);
-        }
-export type GetRubricBySlugQueryHookResult = ReturnType<typeof useGetRubricBySlugQuery>;
-export type GetRubricBySlugLazyQueryHookResult = ReturnType<typeof useGetRubricBySlugLazyQuery>;
-export type GetRubricBySlugQueryResult = Apollo.QueryResult<GetRubricBySlugQuery, GetRubricBySlugQueryVariables>;
 export const CreateRubricDocument = gql`
     mutation CreateRubric($input: CreateRubricInput!) {
   createRubric(input: $input) {
@@ -5092,153 +4728,6 @@ export function useDeleteRubricMutation(baseOptions?: Apollo.MutationHookOptions
 export type DeleteRubricMutationHookResult = ReturnType<typeof useDeleteRubricMutation>;
 export type DeleteRubricMutationResult = Apollo.MutationResult<DeleteRubricMutation>;
 export type DeleteRubricMutationOptions = Apollo.BaseMutationOptions<DeleteRubricMutation, DeleteRubricMutationVariables>;
-export const GetRubricProductsDocument = gql`
-    query GetRubricProducts($rubricSlug: String!, $productsInput: ProductsPaginationInput) {
-  getRubricBySlug(slug: $rubricSlug) {
-    _id
-    name
-    products(input: $productsInput) {
-      ...RubricProductsPagination
-    }
-  }
-}
-    ${RubricProductsPaginationFragmentDoc}`;
-
-/**
- * __useGetRubricProductsQuery__
- *
- * To run a query within a React component, call `useGetRubricProductsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetRubricProductsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetRubricProductsQuery({
- *   variables: {
- *      rubricSlug: // value for 'rubricSlug'
- *      productsInput: // value for 'productsInput'
- *   },
- * });
- */
-export function useGetRubricProductsQuery(baseOptions: Apollo.QueryHookOptions<GetRubricProductsQuery, GetRubricProductsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetRubricProductsQuery, GetRubricProductsQueryVariables>(GetRubricProductsDocument, options);
-      }
-export function useGetRubricProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRubricProductsQuery, GetRubricProductsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetRubricProductsQuery, GetRubricProductsQueryVariables>(GetRubricProductsDocument, options);
-        }
-export type GetRubricProductsQueryHookResult = ReturnType<typeof useGetRubricProductsQuery>;
-export type GetRubricProductsLazyQueryHookResult = ReturnType<typeof useGetRubricProductsLazyQuery>;
-export type GetRubricProductsQueryResult = Apollo.QueryResult<GetRubricProductsQuery, GetRubricProductsQueryVariables>;
-export const GetNonRubricProductsDocument = gql`
-    query GetNonRubricProducts($input: ProductsPaginationInput!) {
-  getProductsList(input: $input) {
-    ...RubricProductsPagination
-  }
-}
-    ${RubricProductsPaginationFragmentDoc}`;
-
-/**
- * __useGetNonRubricProductsQuery__
- *
- * To run a query within a React component, call `useGetNonRubricProductsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetNonRubricProductsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetNonRubricProductsQuery({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useGetNonRubricProductsQuery(baseOptions: Apollo.QueryHookOptions<GetNonRubricProductsQuery, GetNonRubricProductsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetNonRubricProductsQuery, GetNonRubricProductsQueryVariables>(GetNonRubricProductsDocument, options);
-      }
-export function useGetNonRubricProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetNonRubricProductsQuery, GetNonRubricProductsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetNonRubricProductsQuery, GetNonRubricProductsQueryVariables>(GetNonRubricProductsDocument, options);
-        }
-export type GetNonRubricProductsQueryHookResult = ReturnType<typeof useGetNonRubricProductsQuery>;
-export type GetNonRubricProductsLazyQueryHookResult = ReturnType<typeof useGetNonRubricProductsLazyQuery>;
-export type GetNonRubricProductsQueryResult = Apollo.QueryResult<GetNonRubricProductsQuery, GetNonRubricProductsQueryVariables>;
-export const GetAllProductsDocument = gql`
-    query GetAllProducts($input: ProductsPaginationInput!) {
-  getProductsList(input: $input) {
-    ...RubricProductsPagination
-  }
-}
-    ${RubricProductsPaginationFragmentDoc}`;
-
-/**
- * __useGetAllProductsQuery__
- *
- * To run a query within a React component, call `useGetAllProductsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetAllProductsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetAllProductsQuery({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useGetAllProductsQuery(baseOptions: Apollo.QueryHookOptions<GetAllProductsQuery, GetAllProductsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetAllProductsQuery, GetAllProductsQueryVariables>(GetAllProductsDocument, options);
-      }
-export function useGetAllProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllProductsQuery, GetAllProductsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetAllProductsQuery, GetAllProductsQueryVariables>(GetAllProductsDocument, options);
-        }
-export type GetAllProductsQueryHookResult = ReturnType<typeof useGetAllProductsQuery>;
-export type GetAllProductsLazyQueryHookResult = ReturnType<typeof useGetAllProductsLazyQuery>;
-export type GetAllProductsQueryResult = Apollo.QueryResult<GetAllProductsQuery, GetAllProductsQueryVariables>;
-export const GetRubricAttributesDocument = gql`
-    query GetRubricAttributes($rubricId: ObjectId!) {
-  getRubric(_id: $rubricId) {
-    _id
-    name
-    slug
-  }
-}
-    `;
-
-/**
- * __useGetRubricAttributesQuery__
- *
- * To run a query within a React component, call `useGetRubricAttributesQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetRubricAttributesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetRubricAttributesQuery({
- *   variables: {
- *      rubricId: // value for 'rubricId'
- *   },
- * });
- */
-export function useGetRubricAttributesQuery(baseOptions: Apollo.QueryHookOptions<GetRubricAttributesQuery, GetRubricAttributesQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetRubricAttributesQuery, GetRubricAttributesQueryVariables>(GetRubricAttributesDocument, options);
-      }
-export function useGetRubricAttributesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRubricAttributesQuery, GetRubricAttributesQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetRubricAttributesQuery, GetRubricAttributesQueryVariables>(GetRubricAttributesDocument, options);
-        }
-export type GetRubricAttributesQueryHookResult = ReturnType<typeof useGetRubricAttributesQuery>;
-export type GetRubricAttributesLazyQueryHookResult = ReturnType<typeof useGetRubricAttributesLazyQuery>;
-export type GetRubricAttributesQueryResult = Apollo.QueryResult<GetRubricAttributesQuery, GetRubricAttributesQueryVariables>;
 export const UpdateAttributeInRubricDocument = gql`
     mutation UpdateAttributeInRubric($input: UpdateAttributeInRubricInput!) {
   updateAttributeInRubric(input: $input) {

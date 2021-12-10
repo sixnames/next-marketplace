@@ -2,8 +2,7 @@ import { COL_PROMO, COL_PROMO_PRODUCTS, COL_SHOP_PRODUCTS } from 'db/collectionN
 import { ObjectIdModel, PromoModel, PromoProductModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
-import { getAlgoliaProductsSearch } from 'lib/algolia/productAlgoliaUtils';
-import { castCatalogueFilters } from 'lib/catalogueUtils';
+import { castUrlFilters } from 'lib/catalogueUtils';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
@@ -72,26 +71,22 @@ export async function deletePromoProducts({
 
     // get all rubric shop products
     if (input.all) {
-      const { search, filters } = input;
       // cast selected filters
-      const { brandStage, brandCollectionStage, optionsStage, pricesStage } = castCatalogueFilters({
-        filters,
+      const {
+        brandStage,
+        brandCollectionStage,
+        optionsStage,
+        pricesStage,
+        noSearchResults,
+        searchStage,
+      } = await castUrlFilters({
+        filters: input.filters,
+        search: input.search,
+        searchFieldName: 'productId',
       });
 
       // search stage
-      let searchStage = {};
-      let searchIds: ObjectIdModel[] = [];
-      if (search) {
-        searchIds = await getAlgoliaProductsSearch({
-          search,
-        });
-        searchStage = {
-          productId: {
-            $in: searchIds,
-          },
-        };
-      }
-      if (search && searchIds.length < 1) {
+      if (noSearchResults) {
         return {
           success: false,
           message: await getApiMessage('promoProduct.create.error'),

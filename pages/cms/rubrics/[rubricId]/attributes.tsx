@@ -13,7 +13,7 @@ import { ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL, CONFIRM_MODAL } from 'config/moda
 import { useLocaleContext } from 'context/localeContext';
 import { COL_CATEGORIES, COL_RUBRICS } from 'db/collectionNames';
 import { rubricAttributeGroupsPipeline } from 'db/dao/constantPipelines';
-import { castRubricForUI } from 'db/dao/rubric/castRubricForUI';
+import { castRubricForUI } from 'db/dao/rubrics/castRubricForUI';
 import { RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {

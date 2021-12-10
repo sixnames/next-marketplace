@@ -4,7 +4,7 @@ import ConsoleSeoContentDetails, {
 import Inner from 'components/Inner';
 import { ROUTE_CMS } from 'config/common';
 import { COL_COMPANIES } from 'db/collectionNames';
-import { getConsoleRubricDetails } from 'db/dao/rubric/getConsoleRubricDetails';
+import { getConsoleRubricDetails } from 'db/dao/rubrics/getConsoleRubricDetails';
 import { getDatabase } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, CompanyInterface, RubricInterface } from 'db/uiInterfaces';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';

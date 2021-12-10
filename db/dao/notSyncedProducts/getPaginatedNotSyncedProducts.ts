@@ -7,7 +7,7 @@ import {
   NotSyncedProductInterface,
   ShopInterface,
 } from 'db/uiInterfaces';
-import { castCatalogueFilters } from 'lib/catalogueUtils';
+import { castUrlFilters } from 'lib/catalogueUtils';
 import { ObjectId } from 'mongodb';
 
 interface GetPaginatedNotSyncedProductsInterface {
@@ -25,9 +25,10 @@ export async function getPaginatedNotSyncedProducts({
   const { db } = await getDatabase();
   const shopsCollection = db.collection<ShopInterface>(COL_SHOPS);
 
-  const { page, skip, limit, clearSlug } = castCatalogueFilters({
+  const { page, skip, limit, clearSlug } = await castUrlFilters({
     filters: filters,
     initialLimit: PAGINATION_DEFAULT_LIMIT,
+    searchFieldName: '_id',
   });
 
   let shopStage: any[] = [];

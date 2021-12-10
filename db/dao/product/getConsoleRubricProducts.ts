@@ -46,7 +46,10 @@ export interface GetConsoleRubricProductsInputInterface {
   query: ParsedUrlQuery;
   page?: number;
   excludedProductsIds?: ObjectIdModel[] | null;
+  attributesIds?: ObjectIdModel[] | null;
+  excludedOptionsSlugs?: string[] | null;
   companySlug: string;
+  byRubricSlug?: boolean;
 }
 
 export const getConsoleRubricProducts = async ({
@@ -54,8 +57,11 @@ export const getConsoleRubricProducts = async ({
   basePath,
   query,
   currency,
-  excludedProductsIds,
   companySlug,
+  excludedProductsIds,
+  byRubricSlug,
+  attributesIds,
+  excludedOptionsSlugs,
   ...props
 }: GetConsoleRubricProductsInputInterface): Promise<ConsoleRubricProductsInterface> => {
   let fallbackPayload: ConsoleRubricProductsInterface = {
@@ -74,13 +80,21 @@ export const getConsoleRubricProducts = async ({
     const { db } = await getDatabase();
     const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
     const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
-    const [rubricId, ...filters] = alwaysArray(query.filters);
+    const [rubricIdentifier, ...filters] = alwaysArray(query.filters);
     const search = alwaysString(query.search);
 
     // get rubric
-    const rubric = await rubricsCollection.findOne({
-      _id: new ObjectId(rubricId),
-    });
+    if (!rubricIdentifier) {
+      return fallbackPayload;
+    }
+    const rubricQuery = byRubricSlug
+      ? {
+          slug: rubricIdentifier,
+        }
+      : {
+          _id: new ObjectId(rubricIdentifier),
+        };
+    const rubric = await rubricsCollection.findOne(rubricQuery);
     if (!rubric) {
       return fallbackPayload;
     }
@@ -110,12 +124,12 @@ export const getConsoleRubricProducts = async ({
       initialLimit: PAGINATION_DEFAULT_LIMIT,
       search: query.search,
       searchFieldName: '_id',
-      excludedSearchIds: excludedProductsIds,
+      excludedSearchIds: (excludedProductsIds || []).map((_id) => new ObjectId(_id)),
     });
 
     // rubric stage
     let rubricStage: Record<any, any> = {
-      rubricId: new ObjectId(rubricId),
+      rubricId: rubric._id,
     };
     if (rubricFilters && rubricFilters.length > 0) {
       rubricStage = {
@@ -140,6 +154,80 @@ export const getConsoleRubricProducts = async ({
           }
         : {};
 
+    // attribute ids stage
+    const attributesObjectIds = (attributesIds || []).map((_id) => new ObjectId(_id));
+    const attributeIdsStage =
+      attributesObjectIds.length > 0
+        ? [
+            {
+              $unwind: {
+                path: '$selectedAttributesIds',
+                preserveNullAndEmptyArrays: true,
+              },
+            },
+            {
+              $match: {
+                selectedAttributesIds: { $in: attributesObjectIds },
+              },
+            },
+            {
+              $group: {
+                _id: '$_id',
+                doc: { $first: '$$ROOT' },
+                selectedAttributesIds: {
+                  $push: '$selectedAttributesIds',
+                },
+              },
+            },
+            {
+              $addFields: {
+                'doc.selectedAttributesIds': '$selectedAttributesIds',
+              },
+            },
+            {
+              $replaceRoot: {
+                newRoot: '$doc',
+              },
+            },
+          ]
+        : [];
+
+    // excluded options stage
+    const excludedOptionsStage = excludedOptionsSlugs
+      ? [
+          {
+            $unwind: {
+              path: '$selectedOptionsSlugs',
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
+            $match: {
+              selectedOptionsSlugs: { $nin: excludedOptionsSlugs },
+            },
+          },
+          {
+            $group: {
+              _id: '$_id',
+              doc: { $first: '$$ROOT' },
+              selectedOptionsSlugs: {
+                $push: '$selectedOptionsSlugs',
+              },
+            },
+          },
+          {
+            $addFields: {
+              'doc.selectedOptionsSlugs': '$selectedOptionsSlugs',
+            },
+          },
+          {
+            $replaceRoot: {
+              newRoot: '$doc',
+            },
+          },
+        ]
+      : [];
+
     // initial match
     const productsInitialMatch = {
       ...searchStage,
@@ -158,6 +246,8 @@ export const getConsoleRubricProducts = async ({
         {
           $match: productsInitialMatch,
         },
+        ...attributeIdsStage,
+        ...excludedOptionsStage,
         {
           $facet: {
             // docs facet

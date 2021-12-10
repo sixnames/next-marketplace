@@ -11,6 +11,7 @@ import {
   COL_CATEGORIES,
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCTS,
+  COL_PROMO_PRODUCTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
@@ -141,7 +142,6 @@ export async function getConsolePromoProducts({
       ...optionsStage,
       ...pricesStage,
       companyId: new ObjectId(companyId),
-      promoId: new ObjectId(promoId),
       ...photoStage,
       ...searchStage,
       ...excludedIdsStage,
@@ -169,6 +169,34 @@ export async function getConsolePromoProducts({
               },
               {
                 $limit: limit,
+              },
+
+              // get promo products
+              {
+                $lookup: {
+                  from: COL_PROMO_PRODUCTS,
+                  as: 'promoProducts',
+                  let: {
+                    shopProductId: '$_id',
+                  },
+                  pipeline: [
+                    {
+                      $match: {
+                        promoId: new ObjectId(promoId),
+                        $expr: {
+                          $eq: ['$$shopProductId', '$shopProductId'],
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                $addFields: {
+                  promoProductsCount: {
+                    $size: '$promoProducts',
+                  },
+                },
               },
 
               // get shop product fields

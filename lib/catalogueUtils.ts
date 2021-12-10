@@ -664,6 +664,10 @@ export async function castUrlFilters({
     const splittedOption = filterOption.split(FILTER_SEPARATOR);
     const filterAttributeSlug = splittedOption[0];
     const filterOptionSlug = splittedOption[1];
+    if (!filterOptionSlug) {
+      return;
+    }
+
     if (filterAttributeSlug) {
       if (filterAttributeSlug === FILTER_RUBRIC_KEY) {
         allUrlParams.push(filterOption);

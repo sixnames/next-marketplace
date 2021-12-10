@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb';
 import { ONE_WEEK } from '../../../../config/common';
 import { PromoProductModel } from '../../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
@@ -11,8 +12,8 @@ const promoProducts: PromoProductModel[] = [
     shopId: getObjectId('shop Shop A'),
     companyId: getObjectId('company Company A'),
     companySlug: 'company_a',
-    shopProductId: getObjectId('f7a28552e11e528e2cd0a8ca'),
-    productId: getObjectId('63fc012952c3c3741cee5616'),
+    shopProductId: new ObjectId('f7a28552e11e528e2cd0a8ca'),
+    productId: new ObjectId('63fc012952c3c3741cee5616'),
     rubricSlug: 'viski',
     rubricId: getObjectId('rubric Виски'),
 

@@ -30,7 +30,7 @@ const ConsolePromoLayout: React.FC<ConsolePromoLayoutInterface> = ({
       {
         name: 'Товары',
         testId: 'promo-products',
-        path: `${basePath}/products`,
+        path: `${basePath}/rubrics`,
       },
     ];
   }, [basePath]);

@@ -367,6 +367,7 @@ export interface ShopProductInterface extends ShopProductModel {
   suppliers?: SupplierInterface[] | null;
   supplierProducts?: SupplierProductInterface[] | null;
   promoProducts?: PromoProductInterface[] | null;
+  promoProductsCount?: number | null;
 }
 
 export interface ShopInterface extends ShopModel {

@@ -1,45 +1,32 @@
-import { ROUTE_CMS } from 'config/common';
+import ConsolePromoProducts, {
+  ConsolePromoProductsInterface,
+} from 'components/console/ConsolePromoProducts';
+import { DEFAULT_CURRENCY, ROUTE_CMS } from 'config/common';
 import { COL_COMPANIES, COL_RUBRICS } from 'db/collectionNames';
+import { getConsolePromoProducts } from 'db/dao/promo/getConsolePromoProducts';
 import { castRubricForUI } from 'db/dao/rubrics/castRubricForUI';
 import { RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import {
-  AppContentWrapperBreadCrumbs,
-  CompanyInterface,
-  PromoInterface,
-  RubricInterface,
-  ShopProductInterface,
-} from 'db/uiInterfaces';
+import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import ConsolePromoLayout from 'layout/console/ConsolePromoLayout';
+import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { getPromoSsr } from 'lib/promoUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
 
-export interface ConsolePromoProductsInterface {
-  rubric: RubricInterface;
-  promo: PromoInterface;
-  basePath: string;
-  pageCompany: CompanyInterface;
-  shopProducts: ShopProductInterface[];
-}
-
-const ConsolePromoProducts: React.FC<ConsolePromoProductsInterface> = () => {
-  return <div />;
-};
-
-interface PromoDetailsPageInterface
+interface PromoProductsPageInterface
   extends GetAppInitialDataPropsInterface,
     ConsolePromoProductsInterface {}
 
-const PromoDetailsPage: React.FC<PromoDetailsPageInterface> = ({
+const PromoProductsPage: React.FC<PromoProductsPageInterface> = ({
   layoutProps,
   promo,
   pageCompany,
   basePath,
-  shopProducts,
+  promoProducts,
   rubric,
 }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -73,10 +60,10 @@ const PromoDetailsPage: React.FC<PromoDetailsPageInterface> = ({
       <ConsolePromoLayout basePath={basePath} promo={promo} breadcrumbs={breadcrumbs}>
         <ConsolePromoProducts
           basePath={basePath}
-          pageCompany={pageCompany}
-          shopProducts={shopProducts}
-          promo={promo}
           rubric={rubric}
+          promo={promo}
+          pageCompany={pageCompany}
+          promoProducts={promoProducts}
         />
       </ConsolePromoLayout>
     </ConsoleLayout>
@@ -85,7 +72,7 @@ const PromoDetailsPage: React.FC<PromoDetailsPageInterface> = ({
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<PromoDetailsPageInterface>> => {
+): Promise<GetServerSidePropsResult<PromoProductsPageInterface>> => {
   const { query } = context;
   const { props } = await getAppInitialData({ context });
   if (!props || !query.companyId || !query.promoId) {
@@ -109,8 +96,9 @@ export const getServerSideProps = async (
   }
 
   // get promo
+  const locale = props.sessionLocale;
   const promo = await getPromoSsr({
-    locale: props.sessionLocale,
+    locale,
     promoId: `${query.promoId}`,
   });
   if (!promo) {
@@ -130,16 +118,29 @@ export const getServerSideProps = async (
   }
   const rubric = castRubricForUI({ rubric: initialRubric, locale: props.sessionLocale });
 
+  const basePath = `${ROUTE_CMS}/companies/${company._id}/promo/details/${promo._id}`;
+  const promoProducts = await getConsolePromoProducts({
+    search: alwaysString(query.search),
+    filters: alwaysArray(query.filters),
+    rubricSlug: initialRubric.slug,
+    promoId: promo._id,
+    locale,
+    currency: props.currentCity?.currency || DEFAULT_CURRENCY,
+    companyId: company._id,
+    basePath: `${basePath}/rubrics/${rubric._id}/products/${rubric._id}`,
+    excludedShopProductIds: [],
+  });
+
   return {
     props: {
       ...props,
-      basePath: `${ROUTE_CMS}/companies/${company._id}/promo/details/${promo._id}`,
+      basePath,
       pageCompany: castDbData(company),
       promo: castDbData(promo),
       rubric: castDbData(rubric),
-      shopProducts: [],
+      promoProducts: castDbData(promoProducts),
     },
   };
 };
 
-export default PromoDetailsPage;
+export default PromoProductsPage;

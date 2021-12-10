@@ -136,6 +136,8 @@ export async function addPromoProducts({
         companySlug: shopProduct.companySlug,
         productId: shopProduct.productId,
         shopId: shopProduct.shopId,
+        rubricSlug: shopProduct.rubricSlug,
+        rubricId: shopProduct.rubricId,
         promoId,
         discountPercent: promo.discountPercent,
         addCategoryDiscount: promo.addCategoryDiscount,

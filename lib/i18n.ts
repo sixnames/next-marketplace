@@ -1,4 +1,4 @@
-import { TranslationModel } from 'db/dbModels';
+import { TranslationModel } from '../db/dbModels';
 import trim from 'trim';
 import { DEFAULT_CITY, DEFAULT_LOCALE, SECONDARY_LOCALE } from '../config/common';
 

@@ -1007,6 +1007,8 @@ export interface PromoModel extends TimestampModel, PromoBaseInterface {
 
 export interface PromoProductModel extends PromoBaseInterface {
   _id: ObjectIdModel;
+  rubricSlug: string;
+  rubricId: ObjectIdModel;
   promoId: ObjectIdModel;
   shopId: ObjectIdModel;
   shopProductId: ObjectIdModel;

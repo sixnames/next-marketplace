@@ -1,10 +1,13 @@
 import { ROUTE_CMS } from 'config/common';
-import { COL_COMPANIES } from 'db/collectionNames';
+import { COL_COMPANIES, COL_RUBRICS } from 'db/collectionNames';
+import { castRubricForUI } from 'db/dao/rubrics/castRubricForUI';
+import { RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   CompanyInterface,
   PromoInterface,
+  RubricInterface,
   ShopProductInterface,
 } from 'db/uiInterfaces';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
@@ -16,6 +19,7 @@ import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
 
 export interface ConsolePromoProductsInterface {
+  rubric: RubricInterface;
   promo: PromoInterface;
   basePath: string;
   pageCompany: CompanyInterface;
@@ -36,9 +40,10 @@ const PromoDetailsPage: React.FC<PromoDetailsPageInterface> = ({
   pageCompany,
   basePath,
   shopProducts,
+  rubric,
 }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: `Товары`,
+    currentPageName: `${rubric.name}`,
     config: [
       {
         name: 'Компании',
@@ -56,6 +61,10 @@ const PromoDetailsPage: React.FC<PromoDetailsPageInterface> = ({
         name: `${promo.name}`,
         href: `${ROUTE_CMS}/companies/${pageCompany._id}/promo/details/${promo._id}`,
       },
+      {
+        name: `Товары`,
+        href: `${ROUTE_CMS}/companies/${pageCompany._id}/promo/details/${promo._id}/products`,
+      },
     ],
   };
 
@@ -67,6 +76,7 @@ const PromoDetailsPage: React.FC<PromoDetailsPageInterface> = ({
           pageCompany={pageCompany}
           shopProducts={shopProducts}
           promo={promo}
+          rubric={rubric}
         />
       </ConsolePromoLayout>
     </ConsoleLayout>
@@ -86,6 +96,9 @@ export const getServerSideProps = async (
 
   const { db } = await getDatabase();
   const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
+  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+
+  // get company
   const company = await companiesCollection.findOne({
     _id: new ObjectId(`${query.companyId}`),
   });
@@ -95,6 +108,7 @@ export const getServerSideProps = async (
     };
   }
 
+  // get promo
   const promo = await getPromoSsr({
     locale: props.sessionLocale,
     promoId: `${query.promoId}`,
@@ -105,12 +119,24 @@ export const getServerSideProps = async (
     };
   }
 
+  // get rubric
+  const initialRubric = await rubricsCollection.findOne({
+    _id: new ObjectId(`${query.rubricId}`),
+  });
+  if (!initialRubric) {
+    return {
+      notFound: true,
+    };
+  }
+  const rubric = castRubricForUI({ rubric: initialRubric, locale: props.sessionLocale });
+
   return {
     props: {
       ...props,
       basePath: `${ROUTE_CMS}/companies/${company._id}/promo/details/${promo._id}`,
       pageCompany: castDbData(company),
       promo: castDbData(promo),
+      rubric: castDbData(rubric),
       shopProducts: [],
     },
   };

@@ -6,6 +6,5 @@
   "defaultCommandTimeout": 15000,
   "pageLoadTimeout": 100000,
   "requestTimeout": 10000,
-  "video": false,
-  "scrollBehavior": "nearest"
+  "video": false
 }

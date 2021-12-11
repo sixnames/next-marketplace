@@ -104,34 +104,6 @@ declare global {
 }
 
 export interface NexusGenInputs {
-  AddAttributeToGroupInput: {
-    // input type
-    attributesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
-    capitalise?: boolean | null; // Boolean
-    metricId?: NexusGenScalars['ObjectId'] | null; // ObjectId
-    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    notShowAsAlphabet?: boolean | null; // Boolean
-    optionsGroupId?: NexusGenScalars['ObjectId'] | null; // ObjectId
-    positioningInCardTitle?: NexusGenScalars['JSONObject'] | null; // JSONObject
-    positioningInTitle?: NexusGenScalars['JSONObject'] | null; // JSONObject
-    showAsAccordionInFilter?: boolean | null; // Boolean
-    showAsBreadcrumb: boolean; // Boolean!
-    showAsCatalogueBreadcrumb: boolean; // Boolean!
-    showAsLinkInFilter?: boolean | null; // Boolean
-    showInCard: boolean; // Boolean!
-    showInCardTitle: boolean; // Boolean!
-    showInCatalogueFilter: boolean; // Boolean!
-    showInCatalogueNav: boolean; // Boolean!
-    showInCatalogueTitle: boolean; // Boolean!
-    showInSnippet: boolean; // Boolean!
-    showInSnippetTitle: boolean; // Boolean!
-    showNameInCardTitle?: boolean | null; // Boolean
-    showNameInSelectedAttributes?: boolean | null; // Boolean
-    showNameInSnippetTitle?: boolean | null; // Boolean
-    showNameInTitle?: boolean | null; // Boolean
-    variant: NexusGenEnums['AttributeVariant']; // AttributeVariant!
-    viewVariant: NexusGenEnums['AttributeViewVariant']; // AttributeViewVariant!
-  };
   AddAttributesGroupToCategoryInput: {
     // input type
     attributesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -388,11 +360,6 @@ export interface NexusGenInputs {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     url?: NexusGenScalars['URL'][] | null; // [URL!]
   };
-  DeleteAttributeFromGroupInput: {
-    // input type
-    attributeId: NexusGenScalars['ObjectId']; // ObjectId!
-    attributesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
-  };
   DeleteAttributesGroupFromCategoryInput: {
     // input type
     attributesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -458,11 +425,6 @@ export interface NexusGenInputs {
     // input type
     slugs?: string[] | null; // [String!]
   };
-  MoveAttributeInput: {
-    // input type
-    attributeId: NexusGenScalars['ObjectId']; // ObjectId!
-    attributesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
-  };
   MoveOptionInput: {
     // input type
     optionId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -520,35 +482,6 @@ export interface NexusGenInputs {
     // input type
     attributeId: NexusGenScalars['ObjectId']; // ObjectId!
     categoryId: NexusGenScalars['ObjectId']; // ObjectId!
-  };
-  UpdateAttributeInGroupInput: {
-    // input type
-    attributeId: NexusGenScalars['ObjectId']; // ObjectId!
-    attributesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
-    capitalise?: boolean | null; // Boolean
-    metricId?: NexusGenScalars['ObjectId'] | null; // ObjectId
-    nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
-    notShowAsAlphabet?: boolean | null; // Boolean
-    optionsGroupId?: NexusGenScalars['ObjectId'] | null; // ObjectId
-    positioningInCardTitle?: NexusGenScalars['JSONObject'] | null; // JSONObject
-    positioningInTitle?: NexusGenScalars['JSONObject'] | null; // JSONObject
-    showAsAccordionInFilter?: boolean | null; // Boolean
-    showAsBreadcrumb: boolean; // Boolean!
-    showAsCatalogueBreadcrumb: boolean; // Boolean!
-    showAsLinkInFilter?: boolean | null; // Boolean
-    showInCard: boolean; // Boolean!
-    showInCardTitle: boolean; // Boolean!
-    showInCatalogueFilter: boolean; // Boolean!
-    showInCatalogueNav: boolean; // Boolean!
-    showInCatalogueTitle: boolean; // Boolean!
-    showInSnippet: boolean; // Boolean!
-    showInSnippetTitle: boolean; // Boolean!
-    showNameInCardTitle?: boolean | null; // Boolean
-    showNameInSelectedAttributes?: boolean | null; // Boolean
-    showNameInSnippetTitle?: boolean | null; // Boolean
-    showNameInTitle?: boolean | null; // Boolean
-    variant: NexusGenEnums['AttributeVariant']; // AttributeVariant!
-    viewVariant: NexusGenEnums['AttributeViewVariant']; // AttributeViewVariant!
   };
   UpdateAttributeInRubricInput: {
     // input type
@@ -1387,7 +1320,6 @@ export interface NexusGenFieldTypes {
   };
   Mutation: {
     // field return type
-    addAttributeToGroup: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
     addAttributesGroupToCategory: NexusGenRootTypes['CategoryPayload']; // CategoryPayload!
     addAttributesGroupToRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
     addCityToCountry: NexusGenRootTypes['CountryPayload']; // CountryPayload!
@@ -1418,7 +1350,6 @@ export interface NexusGenFieldTypes {
     createRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
     createRubricVariant: NexusGenRootTypes['RubricVariantPayload']; // RubricVariantPayload!
     createSupplier: NexusGenRootTypes['SupplierPayload']; // SupplierPayload!
-    deleteAttributeFromGroup: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
     deleteAttributesGroup: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
     deleteAttributesGroupFromCategory: NexusGenRootTypes['CategoryPayload']; // CategoryPayload!
     deleteAttributesGroupFromRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
@@ -1447,10 +1378,8 @@ export interface NexusGenFieldTypes {
     deleteShopProductSupplier: NexusGenRootTypes['ShopProductPayload']; // ShopProductPayload!
     deleteSupplier: NexusGenRootTypes['SupplierPayload']; // SupplierPayload!
     generateShopToken: NexusGenRootTypes['ShopPayload']; // ShopPayload!
-    moveAttribute: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
     moveOption: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
     repeatOrder: NexusGenRootTypes['CartPayload']; // CartPayload!
-    updateAttributeInGroup: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
     updateAttributeInRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
     updateAttributesGroup: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
     updateBrand: NexusGenRootTypes['BrandPayload']; // BrandPayload!
@@ -2414,7 +2343,6 @@ export interface NexusGenFieldTypeNames {
   };
   Mutation: {
     // field return type name
-    addAttributeToGroup: 'AttributesGroupPayload';
     addAttributesGroupToCategory: 'CategoryPayload';
     addAttributesGroupToRubric: 'RubricPayload';
     addCityToCountry: 'CountryPayload';
@@ -2445,7 +2373,6 @@ export interface NexusGenFieldTypeNames {
     createRubric: 'RubricPayload';
     createRubricVariant: 'RubricVariantPayload';
     createSupplier: 'SupplierPayload';
-    deleteAttributeFromGroup: 'AttributesGroupPayload';
     deleteAttributesGroup: 'AttributesGroupPayload';
     deleteAttributesGroupFromCategory: 'CategoryPayload';
     deleteAttributesGroupFromRubric: 'RubricPayload';
@@ -2474,10 +2401,8 @@ export interface NexusGenFieldTypeNames {
     deleteShopProductSupplier: 'ShopProductPayload';
     deleteSupplier: 'SupplierPayload';
     generateShopToken: 'ShopPayload';
-    moveAttribute: 'AttributesGroupPayload';
     moveOption: 'OptionsGroupPayload';
     repeatOrder: 'CartPayload';
-    updateAttributeInGroup: 'AttributesGroupPayload';
     updateAttributeInRubric: 'RubricPayload';
     updateAttributesGroup: 'AttributesGroupPayload';
     updateBrand: 'BrandPayload';
@@ -3096,10 +3021,6 @@ export interface NexusGenArgTypes {
     };
   };
   Mutation: {
-    addAttributeToGroup: {
-      // args
-      input: NexusGenInputs['AddAttributeToGroupInput']; // AddAttributeToGroupInput!
-    };
     addAttributesGroupToCategory: {
       // args
       input: NexusGenInputs['AddAttributesGroupToCategoryInput']; // AddAttributesGroupToCategoryInput!
@@ -3216,10 +3137,6 @@ export interface NexusGenArgTypes {
       // args
       input: NexusGenInputs['CreateSupplierInput']; // CreateSupplierInput!
     };
-    deleteAttributeFromGroup: {
-      // args
-      input: NexusGenInputs['DeleteAttributeFromGroupInput']; // DeleteAttributeFromGroupInput!
-    };
     deleteAttributesGroup: {
       // args
       _id: NexusGenScalars['ObjectId']; // ObjectId!
@@ -3332,10 +3249,6 @@ export interface NexusGenArgTypes {
       // args
       _id: NexusGenScalars['ObjectId']; // ObjectId!
     };
-    moveAttribute: {
-      // args
-      input: NexusGenInputs['MoveAttributeInput']; // MoveAttributeInput!
-    };
     moveOption: {
       // args
       input: NexusGenInputs['MoveOptionInput']; // MoveOptionInput!
@@ -3343,10 +3256,6 @@ export interface NexusGenArgTypes {
     repeatOrder: {
       // args
       input: NexusGenInputs['RepeatOrderInput']; // RepeatOrderInput!
-    };
-    updateAttributeInGroup: {
-      // args
-      input: NexusGenInputs['UpdateAttributeInGroupInput']; // UpdateAttributeInGroupInput!
     };
     updateAttributeInRubric: {
       // args

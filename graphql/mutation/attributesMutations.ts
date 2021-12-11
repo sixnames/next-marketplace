@@ -27,42 +27,6 @@ export const DELETE_ATTRIBUTES_GROUP_MUTATION = gql`
   }
 `;
 
-export const ADD_ATTRIBUTE_TO_GROUP_MUTATION = gql`
-  mutation AddAttributeToGroup($input: AddAttributeToGroupInput!) {
-    addAttributeToGroup(input: $input) {
-      success
-      message
-    }
-  }
-`;
-
-export const UPDATE_ATTRIBUTE_IN_GROUP_MUTATION = gql`
-  mutation UpdateAttributeInGroup($input: UpdateAttributeInGroupInput!) {
-    updateAttributeInGroup(input: $input) {
-      success
-      message
-    }
-  }
-`;
-
-export const MOVE_ATTRIBUTE_MUTATION = gql`
-  mutation MoveAttribute($input: MoveAttributeInput!) {
-    moveAttribute(input: $input) {
-      success
-      message
-    }
-  }
-`;
-
-export const DELETE_ATTRIBUTE_FROM_GROUP_MUTATION = gql`
-  mutation DeleteAttributeFromGroup($input: DeleteAttributeFromGroupInput!) {
-    deleteAttributeFromGroup(input: $input) {
-      success
-      message
-    }
-  }
-`;
-
 export const ADD_ATTRIBUTES_GROUP_TO_RUBRIC = gql`
   mutation AddAttributesGroupToRubric($input: AddAttributesGroupToRubricInput!) {
     addAttributesGroupToRubric(input: $input) {

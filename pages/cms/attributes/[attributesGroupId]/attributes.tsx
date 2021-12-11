@@ -12,11 +12,11 @@ import {
   MOVE_ATTRIBUTE_MODAL,
 } from 'config/modalVariants';
 import { useLocaleContext } from 'context/localeContext';
+import { useDeleteAttributeFromGroupMutation } from 'generated/apolloComponents';
 import {
-  useAddAttributeToGroupMutation,
-  useDeleteAttributeFromGroupMutation,
-} from 'generated/apolloComponents';
-import { useUpdateAttribute } from 'hooks/mutations/useAttributeMutations';
+  useCreateAttributeMutation,
+  useUpdateAttributeMutation,
+} from 'hooks/mutations/useAttributeMutations';
 import AppSubNav from 'layout/AppSubNav';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
@@ -57,12 +57,8 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({ attributesG
     onError: onErrorCallback,
   });
 
-  const [updateAttributeMutation] = useUpdateAttribute();
-
-  const [addAttributeToGroupMutation] = useAddAttributeToGroupMutation({
-    onCompleted: (data) => onCompleteCallback(data.addAttributeToGroup),
-    onError: onErrorCallback,
-  });
+  const [updateAttributeMutation] = useUpdateAttributeMutation();
+  const [createAttributeMutation] = useCreateAttributeMutation();
 
   function updateAttributeHandler(attribute: AttributeInterface) {
     showModal<AddAttributeToGroupModalInterface>({
@@ -326,16 +322,9 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({ attributesG
                   attributesGroupId: `${attributesGroup._id}`,
                   confirm: (input) => {
                     showLoading();
-                    // @ts-ignore
-                    return addAttributeToGroupMutation({
-                      variables: {
-                        // @ts-ignore
-                        input: {
-                          attributesGroupId: `${attributesGroup._id}`,
-                          ...input,
-                          // TODO
-                        },
-                      },
+                    return createAttributeMutation({
+                      attributesGroupId: `${attributesGroup._id}`,
+                      ...input,
                     });
                   },
                 },

@@ -1,10 +1,25 @@
-import { REQUEST_METHOD_PATCH } from 'config/common';
+import { REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'config/common';
+import { createAttribute } from 'db/dao/attributes/createAttribute';
 import { updateAttribute } from 'db/dao/attributes/updateAttribute';
 import { updateAlgoliaProducts } from 'lib/algolia/productAlgoliaUtils';
 import { sendApiRouteResponse } from 'lib/sessionHelpers';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
+  // create
+  if (req.method === REQUEST_METHOD_POST) {
+    const payload = await createAttribute({
+      context: { req, res },
+      input: JSON.parse(req.body),
+    });
+
+    sendApiRouteResponse({
+      payload,
+      res,
+    });
+    return;
+  }
+
   // update
   if (req.method === REQUEST_METHOD_PATCH) {
     const payload = await updateAttribute({

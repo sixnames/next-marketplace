@@ -1,5 +1,4 @@
 import { DEFAULT_LOCALE, SORT_ASC } from 'config/common';
-import { getNextNumberItemId } from 'lib/itemIdUtils';
 import { arg, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
 import {
   getOperationPermission,
@@ -10,7 +9,6 @@ import {
   AttributeModel,
   AttributesGroupModel,
   AttributesGroupPayloadModel,
-  MetricModel,
   ProductAttributeModel,
   ProductConnectionModel,
 } from 'db/dbModels';
@@ -18,14 +16,12 @@ import { getDatabase } from 'db/mongodb';
 import {
   COL_ATTRIBUTES,
   COL_ATTRIBUTES_GROUPS,
-  COL_METRICS,
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCT_CONNECTIONS,
 } from 'db/collectionNames';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
 import {
-  addAttributeToGroupSchema,
   createAttributesGroupSchema,
   deleteAttributeFromGroupSchema,
   updateAttributesGroupSchema,
@@ -149,55 +145,6 @@ export const MoveAttributeInput = inputObjectType({
   definition(t) {
     t.nonNull.objectId('attributesGroupId');
     t.nonNull.objectId('attributeId');
-  },
-});
-
-export const AddAttributeToGroupInput = inputObjectType({
-  name: 'AddAttributeToGroupInput',
-  definition(t) {
-    t.nonNull.objectId('attributesGroupId');
-    t.nonNull.json('nameI18n');
-    t.objectId('optionsGroupId');
-    t.objectId('metricId');
-    t.boolean('capitalise');
-
-    // variants
-    t.nonNull.field('variant', {
-      type: 'AttributeVariant',
-    });
-    t.nonNull.field('viewVariant', {
-      type: 'AttributeViewVariant',
-    });
-
-    // positioning in title
-    t.json('positioningInTitle');
-    t.json('positioningInCardTitle');
-
-    // breadcrumbs
-    t.nonNull.boolean('showAsBreadcrumb');
-    t.nonNull.boolean('showAsCatalogueBreadcrumb');
-
-    // options modal
-    t.boolean('notShowAsAlphabet');
-
-    // card / snippet / catalogue visibility
-    t.nonNull.boolean('showInSnippet');
-    t.nonNull.boolean('showInCard');
-    t.nonNull.boolean('showInCatalogueFilter');
-    t.nonNull.boolean('showInCatalogueNav');
-    t.nonNull.boolean('showInCatalogueTitle');
-    t.nonNull.boolean('showInCardTitle');
-    t.nonNull.boolean('showInSnippetTitle');
-
-    // name visibility
-    t.boolean('showNameInTitle');
-    t.boolean('showNameInCardTitle');
-    t.boolean('showNameInSnippetTitle');
-    t.boolean('showNameInSelectedAttributes');
-
-    // catalogue ui
-    t.boolean('showAsLinkInFilter');
-    t.boolean('showAsAccordionInFilter');
   },
 });
 
@@ -485,160 +432,6 @@ export const attributesGroupMutations = extendType({
             mutationPayload = {
               success: true,
               message: await getApiMessage('attributesGroups.delete.success'),
-            };
-          });
-
-          return mutationPayload;
-        } catch (e) {
-          console.log(e);
-          return {
-            success: false,
-            message: getResolverErrorMessage(e),
-          };
-        } finally {
-          await session.endSession();
-        }
-      },
-    });
-
-    // Should create attribute and add it to the attributes group
-    t.nonNull.field('addAttributeToGroup', {
-      type: 'AttributesGroupPayload',
-      description: 'Should create attribute and add it to the attributes group',
-      args: {
-        input: nonNull(
-          arg({
-            type: 'AddAttributeToGroupInput',
-          }),
-        ),
-      },
-      resolve: async (_root, args, context): Promise<AttributesGroupPayloadModel> => {
-        const { getApiMessage } = await getRequestParams(context);
-        const { db, client } = await getDatabase();
-        const attributesGroupCollection =
-          db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
-        const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-        const metricsCollection = db.collection<MetricModel>(COL_METRICS);
-
-        const session = client.startSession();
-
-        let mutationPayload: AttributesGroupPayloadModel = {
-          success: false,
-          message: await getApiMessage('attributesGroups.addAttribute.success'),
-        };
-
-        try {
-          await session.withTransaction(async () => {
-            // Permission
-            const { allow, message } = await getOperationPermission({
-              context,
-              slug: 'createAttribute',
-            });
-            if (!allow) {
-              mutationPayload = {
-                success: false,
-                message,
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Validate
-            const validationSchema = await getResolverValidationSchema({
-              context,
-              schema: addAttributeToGroupSchema,
-            });
-            await validationSchema.validate(args.input);
-
-            const {
-              input: { attributesGroupId, metricId, ...values },
-            } = args;
-
-            // Check if attributes group exist
-            const attributesGroup = await attributesGroupCollection.findOne({
-              _id: attributesGroupId,
-            });
-            if (!attributesGroup) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`attributesGroups.addAttribute.groupError`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Check if attribute already exist in the group
-            const exist = await findDocumentByI18nField({
-              fieldArg: values.nameI18n,
-              collectionName: COL_ATTRIBUTES,
-              fieldName: 'nameI18n',
-              additionalQuery: {
-                _id: { $in: attributesGroup.attributesIds },
-              },
-            });
-            if (exist) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`attributesGroups.addAttribute.duplicate`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Get metric
-            let metric = null;
-            if (metricId) {
-              metric = await metricsCollection.findOne({ _id: metricId });
-            }
-
-            // Create attribute
-            const slug = await getNextNumberItemId(COL_ATTRIBUTES);
-            const createdAttributeResult = await attributesCollection.insertOne({
-              ...values,
-              slug,
-              metric,
-              showAsBreadcrumb: false,
-              showInCard: true,
-              attributesGroupId,
-            });
-            if (!createdAttributeResult.acknowledged) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`attributesGroups.addAttribute.attributeError`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Add attribute _id to the attributes group
-            const updatedGroupResult = await attributesGroupCollection.findOneAndUpdate(
-              { _id: attributesGroup._id },
-              {
-                $push: {
-                  attributesIds: createdAttributeResult.insertedId,
-                },
-              },
-              {
-                returnDocument: 'after',
-              },
-            );
-            const updatedGroup = updatedGroupResult.value;
-            if (!updatedGroupResult.ok || !updatedGroup) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`attributesGroups.addAttribute.groupError`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Add new attribute to the rubrics
-            // Add new attribute to the categories
-
-            mutationPayload = {
-              success: true,
-              message: await getApiMessage('attributesGroups.addAttribute.success'),
-              payload: updatedGroup,
             };
           });
 

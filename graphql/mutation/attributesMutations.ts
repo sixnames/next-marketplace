@@ -27,15 +27,6 @@ export const DELETE_ATTRIBUTES_GROUP_MUTATION = gql`
   }
 `;
 
-export const ADD_ATTRIBUTE_TO_GROUP_MUTATION = gql`
-  mutation AddAttributeToGroup($input: AddAttributeToGroupInput!) {
-    addAttributeToGroup(input: $input) {
-      success
-      message
-    }
-  }
-`;
-
 export const MOVE_ATTRIBUTE_MUTATION = gql`
   mutation MoveAttribute($input: MoveAttributeInput!) {
     moveAttribute(input: $input) {

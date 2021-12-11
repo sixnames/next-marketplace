@@ -1,14 +1,11 @@
 import { COL_ATTRIBUTES, COL_ATTRIBUTES_GROUPS, COL_METRICS } from 'db/collectionNames';
+import { CreateAttributeInputInterface } from 'db/dao/attributes/createAttribute';
 import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
 import {
   AttributeModel,
   AttributePayloadModel,
-  AttributePositioningInTitleModel,
   AttributesGroupModel,
-  AttributeVariantModel,
-  AttributeViewVariantModel,
   MetricModel,
-  TranslationModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
@@ -21,47 +18,8 @@ import {
 import { ObjectId } from 'mongodb';
 import { updateAttributeInGroupSchema } from 'validation/attributesGroupSchema';
 
-export interface UpdateAttributeInputInterface {
-  attributesGroupId: string;
+export interface UpdateAttributeInputInterface extends CreateAttributeInputInterface {
   attributeId: string;
-  nameI18n: TranslationModel;
-  optionsGroupId?: string | null;
-  metricId?: string | null;
-  capitalise?: boolean | null;
-
-  // variants
-  variant: AttributeVariantModel;
-  viewVariant: AttributeViewVariantModel;
-
-  // positioning in title
-  positioningInTitle?: AttributePositioningInTitleModel | null;
-  positioningInCardTitle?: AttributePositioningInTitleModel | null;
-
-  // breadcrumbs
-  showAsBreadcrumb: boolean;
-  showAsCatalogueBreadcrumb?: boolean | null;
-
-  // options modal
-  notShowAsAlphabet?: boolean | null;
-
-  // card / snippet visibility
-  showInSnippet?: boolean | null;
-  showInCard: boolean;
-  showInCatalogueFilter: boolean;
-  showInCatalogueNav: boolean;
-  showInCatalogueTitle: boolean;
-  showInCardTitle: boolean;
-  showInSnippetTitle: boolean;
-
-  // name visibility
-  showNameInTitle?: boolean | null;
-  showNameInSelectedAttributes?: boolean | null;
-  showNameInCardTitle?: boolean | null;
-  showNameInSnippetTitle?: boolean | null;
-
-  // catalogue ui
-  showAsLinkInFilter?: boolean | null;
-  showAsAccordionInFilter?: boolean | null;
 }
 
 export async function updateAttribute({
@@ -113,7 +71,8 @@ export async function updateAttribute({
       const { attributesGroupId, attributeId, optionsGroupId, metricId, ...values } = input;
       const attributesGroupObjectId = new ObjectId(attributesGroupId);
       const attributeObjectId = new ObjectId(attributeId);
-      const metricObjectId = metricId ? new ObjectId(attributeId) : null;
+      const metricObjectId = metricId ? new ObjectId(metricId) : null;
+      const optionsGroupObjectId = optionsGroupId ? new ObjectId(optionsGroupId) : null;
 
       // Check attributes group availability
       const group = await attributesGroupCollection.findOne({
@@ -161,8 +120,8 @@ export async function updateAttribute({
 
       // Get metric
       let metric = null;
-      if (input.metricId) {
-        metric = await metricsCollection.findOne({ _id: new ObjectId(input.metricId) });
+      if (metricObjectId) {
+        metric = await metricsCollection.findOne({ _id: new ObjectId(metricObjectId) });
       }
 
       // Update attribute
@@ -171,8 +130,7 @@ export async function updateAttribute({
         {
           $set: {
             ...values,
-            optionsGroupId: optionsGroupId ? new ObjectId(optionsGroupId) : null,
-            metricId: metricObjectId,
+            optionsGroupId: optionsGroupObjectId,
             metric,
           },
         },

@@ -26,34 +26,6 @@ export type Scalars = {
   URL: any;
 };
 
-export type AddAttributeToGroupInput = {
-  attributesGroupId: Scalars['ObjectId'];
-  nameI18n: Scalars['JSONObject'];
-  optionsGroupId?: Maybe<Scalars['ObjectId']>;
-  metricId?: Maybe<Scalars['ObjectId']>;
-  capitalise?: Maybe<Scalars['Boolean']>;
-  variant: AttributeVariant;
-  viewVariant: AttributeViewVariant;
-  positioningInTitle?: Maybe<Scalars['JSONObject']>;
-  positioningInCardTitle?: Maybe<Scalars['JSONObject']>;
-  showAsBreadcrumb: Scalars['Boolean'];
-  showAsCatalogueBreadcrumb: Scalars['Boolean'];
-  notShowAsAlphabet?: Maybe<Scalars['Boolean']>;
-  showInSnippet: Scalars['Boolean'];
-  showInCard: Scalars['Boolean'];
-  showInCatalogueFilter: Scalars['Boolean'];
-  showInCatalogueNav: Scalars['Boolean'];
-  showInCatalogueTitle: Scalars['Boolean'];
-  showInCardTitle: Scalars['Boolean'];
-  showInSnippetTitle: Scalars['Boolean'];
-  showNameInTitle?: Maybe<Scalars['Boolean']>;
-  showNameInCardTitle?: Maybe<Scalars['Boolean']>;
-  showNameInSnippetTitle?: Maybe<Scalars['Boolean']>;
-  showNameInSelectedAttributes?: Maybe<Scalars['Boolean']>;
-  showAsLinkInFilter?: Maybe<Scalars['Boolean']>;
-  showAsAccordionInFilter?: Maybe<Scalars['Boolean']>;
-};
-
 export type AddAttributesGroupToCategoryInput = {
   categoryId: Scalars['ObjectId'];
   attributesGroupId: Scalars['ObjectId'];
@@ -880,8 +852,6 @@ export type Mutation = {
   updateAttributesGroup: AttributesGroupPayload;
   /** Should delete attributes group */
   deleteAttributesGroup: AttributesGroupPayload;
-  /** Should create attribute and add it to the attributes group */
-  addAttributeToGroup: AttributesGroupPayload;
   /** Should delete attribute from the attributes group */
   deleteAttributeFromGroup: AttributesGroupPayload;
   /** Should move attribute to another attributes group */
@@ -1085,11 +1055,6 @@ export type MutationUpdateAttributesGroupArgs = {
 
 export type MutationDeleteAttributesGroupArgs = {
   _id: Scalars['ObjectId'];
-};
-
-
-export type MutationAddAttributeToGroupArgs = {
-  input: AddAttributeToGroupInput;
 };
 
 
@@ -2860,19 +2825,6 @@ export type DeleteAttributesGroupMutationVariables = Exact<{
 export type DeleteAttributesGroupMutation = (
   { __typename?: 'Mutation' }
   & { deleteAttributesGroup: (
-    { __typename?: 'AttributesGroupPayload' }
-    & Pick<AttributesGroupPayload, 'success' | 'message'>
-  ) }
-);
-
-export type AddAttributeToGroupMutationVariables = Exact<{
-  input: AddAttributeToGroupInput;
-}>;
-
-
-export type AddAttributeToGroupMutation = (
-  { __typename?: 'Mutation' }
-  & { addAttributeToGroup: (
     { __typename?: 'AttributesGroupPayload' }
     & Pick<AttributesGroupPayload, 'success' | 'message'>
   ) }
@@ -4815,40 +4767,6 @@ export function useDeleteAttributesGroupMutation(baseOptions?: Apollo.MutationHo
 export type DeleteAttributesGroupMutationHookResult = ReturnType<typeof useDeleteAttributesGroupMutation>;
 export type DeleteAttributesGroupMutationResult = Apollo.MutationResult<DeleteAttributesGroupMutation>;
 export type DeleteAttributesGroupMutationOptions = Apollo.BaseMutationOptions<DeleteAttributesGroupMutation, DeleteAttributesGroupMutationVariables>;
-export const AddAttributeToGroupDocument = gql`
-    mutation AddAttributeToGroup($input: AddAttributeToGroupInput!) {
-  addAttributeToGroup(input: $input) {
-    success
-    message
-  }
-}
-    `;
-export type AddAttributeToGroupMutationFn = Apollo.MutationFunction<AddAttributeToGroupMutation, AddAttributeToGroupMutationVariables>;
-
-/**
- * __useAddAttributeToGroupMutation__
- *
- * To run a mutation, you first call `useAddAttributeToGroupMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAddAttributeToGroupMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [addAttributeToGroupMutation, { data, loading, error }] = useAddAttributeToGroupMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useAddAttributeToGroupMutation(baseOptions?: Apollo.MutationHookOptions<AddAttributeToGroupMutation, AddAttributeToGroupMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AddAttributeToGroupMutation, AddAttributeToGroupMutationVariables>(AddAttributeToGroupDocument, options);
-      }
-export type AddAttributeToGroupMutationHookResult = ReturnType<typeof useAddAttributeToGroupMutation>;
-export type AddAttributeToGroupMutationResult = Apollo.MutationResult<AddAttributeToGroupMutation>;
-export type AddAttributeToGroupMutationOptions = Apollo.BaseMutationOptions<AddAttributeToGroupMutation, AddAttributeToGroupMutationVariables>;
 export const MoveAttributeDocument = gql`
     mutation MoveAttribute($input: MoveAttributeInput!) {
   moveAttribute(input: $input) {

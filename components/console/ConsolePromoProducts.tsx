@@ -1,11 +1,12 @@
+import CheckBox from 'components/FormElements/Checkbox/Checkbox';
 import AppContentFilter from 'components/AppContentFilter';
-import ContentItemControls from 'components/button/ContentItemControls';
 import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
 import Inner from 'components/Inner';
 import Pager from 'components/Pager';
 import Spinner from 'components/Spinner';
 import Table, { TableColumn } from 'components/Table';
 import TableRowImage from 'components/TableRowImage';
+import { useAppContext } from 'context/appContext';
 import {
   CompanyInterface,
   GetConsoleRubricPromoProductsPayloadInterface,
@@ -13,8 +14,11 @@ import {
   RubricInterface,
   ShopProductInterface,
 } from 'db/uiInterfaces';
+import { useAddPromoProducts, useDeletePromoProducts } from 'hooks/mutations/usePromoMutations';
 import usePageLoadingState from 'hooks/usePageLoadingState';
 import { alwaysArray } from 'lib/arrayUtils';
+import { noNaN } from 'lib/numbers';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 
 export interface ConsolePromoProductsInterface {
@@ -29,10 +33,30 @@ const ConsolePromoProducts: React.FC<ConsolePromoProductsInterface> = ({
   promoProducts,
   rubric,
   basePath,
-  // promo,
-  // pageCompany,
+  promo,
+  pageCompany,
 }) => {
+  const { query } = useRouter();
+  const { showLoading } = useAppContext();
+  const [shopProductIds, setShopProductIds] = React.useState<string[]>([]);
   const isPageLoading = usePageLoadingState();
+
+  console.log(query.filters);
+  const [deletePromoProductsMutation] = useDeletePromoProducts();
+  const [addPromoProductsMutation] = useAddPromoProducts();
+
+  React.useEffect(() => {
+    const shopProductIds = promoProducts.docs.reduce(
+      (acc: string[], { promoProductsCount, _id }) => {
+        if (noNaN(promoProductsCount) > 0) {
+          return [...acc, `${_id}`];
+        }
+        return acc;
+      },
+      [],
+    );
+    setShopProductIds(shopProductIds);
+  }, [promoProducts.docs]);
 
   const columns: TableColumn<ShopProductInterface>[] = [
     {
@@ -80,11 +104,40 @@ const ConsolePromoProducts: React.FC<ConsolePromoProductsInterface> = ({
       },
     },
     {
-      render: ({ cellIndex }) => {
+      accessor: '_id',
+      headTitle: 'Участвует в акции',
+      render: ({ cellData, rowIndex, dataItem }) => {
+        const checked = shopProductIds.includes(cellData);
         return (
-          <div className='flex justify-end'>
-            <ContentItemControls testId={`${cellIndex}`} />
-          </div>
+          <CheckBox
+            onChange={() => {
+              showLoading();
+
+              if (checked) {
+                deletePromoProductsMutation({
+                  filters: [],
+                  all: false,
+                  shopProductId: cellData,
+                  companyId: `${pageCompany._id}`,
+                  promoId: `${promo._id}`,
+                  rubricId: `${dataItem.rubricId}`,
+                }).catch(console.log);
+              } else {
+                addPromoProductsMutation({
+                  filters: [],
+                  all: false,
+                  shopProductIds: [cellData],
+                  companyId: `${pageCompany._id}`,
+                  promoId: `${promo._id}`,
+                  rubricId: `${dataItem.rubricId}`,
+                }).catch(console.log);
+              }
+            }}
+            name={'checked'}
+            testId={`shop-product-${rowIndex}`}
+            value={checked}
+            checked={checked}
+          />
         );
       },
     },

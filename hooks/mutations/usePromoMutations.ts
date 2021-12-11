@@ -38,7 +38,7 @@ export const useDeletePromo = () => {
 // add
 export const useAddPromoProducts = () => {
   return useMutationHandler<PromoPayloadModel, AddPromoProductsInputInterface>({
-    path: basePath,
+    path: `${basePath}/products`,
     method: REQUEST_METHOD_POST,
   });
 };
@@ -46,7 +46,7 @@ export const useAddPromoProducts = () => {
 // delete
 export const useDeletePromoProducts = () => {
   return useMutationHandler<PromoPayloadModel, DeletePromoProductsInputInterface>({
-    path: basePath,
+    path: `${basePath}/products`,
     method: REQUEST_METHOD_DELETE,
   });
 };

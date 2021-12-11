@@ -198,6 +198,12 @@ export async function getConsolePromoProducts({
                   },
                 },
               },
+              {
+                $sort: {
+                  promoProductsCount: SORT_DESC,
+                  _id: SORT_DESC,
+                },
+              },
 
               // get shop product fields
               {

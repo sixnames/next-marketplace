@@ -1,7 +1,7 @@
 import ConsolePromoProducts, {
   ConsolePromoProductsInterface,
 } from 'components/console/ConsolePromoProducts';
-import { DEFAULT_CURRENCY, ROUTE_CMS } from 'config/common';
+import { DEFAULT_CURRENCY, DEFAULT_PAGE_FILTER, ROUTE_CMS } from 'config/common';
 import { COL_COMPANIES, COL_RUBRICS } from 'db/collectionNames';
 import { getConsolePromoProducts } from 'db/dao/promo/getConsolePromoProducts';
 import { castRubricForUI } from 'db/dao/rubrics/castRubricForUI';
@@ -127,7 +127,7 @@ export const getServerSideProps = async (
     locale,
     currency: props.currentCity?.currency || DEFAULT_CURRENCY,
     companyId: company._id,
-    basePath: `${basePath}/rubrics/${rubric._id}/products/${rubric._id}`,
+    basePath: `${basePath}/rubrics/${rubric._id}/products/${DEFAULT_PAGE_FILTER}`,
     excludedShopProductIds: [],
   });
 

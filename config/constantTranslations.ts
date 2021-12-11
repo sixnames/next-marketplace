@@ -264,6 +264,9 @@ export const getBooleanTranslation = ({
   if (typeof value === 'string') {
     finalValue = value;
   }
+  if (typeof value === 'number') {
+    finalValue = value > 0 ? 'true' : 'false';
+  }
 
   return getConstantTranslation(`boolean.${finalValue}.${locale}`);
 };

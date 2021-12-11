@@ -16,11 +16,11 @@ import {
   AttributesGroupInterface,
   ProductAttributesGroupInterface,
   CompanyInterface,
+  AppContentWrapperBreadCrumbs,
 } from 'db/uiInterfaces';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsProductLayout from 'layout/cms/CmsProductLayout';
+import { sortObjectsByField } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
-import { sortByName } from 'lib/optionUtils';
 import { getAttributeReadableValue } from 'lib/productAttributesUtils';
 import { getCmsProduct } from 'lib/productUtils';
 import { ObjectId } from 'mongodb';
@@ -246,10 +246,10 @@ export const getServerSideProps = async (
       ...group,
       name: getFieldStringLocale(group.nameI18n),
       attributes: [],
-      stringAttributesAST: sortByName(stringAttributesAST),
-      numberAttributesAST: sortByName(numberAttributesAST),
-      multipleSelectAttributesAST: sortByName(multipleSelectAttributesAST),
-      selectAttributesAST: sortByName(selectAttributesAST),
+      stringAttributesAST: sortObjectsByField(stringAttributesAST),
+      numberAttributesAST: sortObjectsByField(numberAttributesAST),
+      multipleSelectAttributesAST: sortObjectsByField(multipleSelectAttributesAST),
+      selectAttributesAST: sortObjectsByField(selectAttributesAST),
     };
 
     productAttributesGroups.push(productAttributesGroup);
@@ -257,7 +257,7 @@ export const getServerSideProps = async (
 
   const finalProduct: ProductInterface = {
     ...restProduct,
-    attributesGroups: sortByName(productAttributesGroups),
+    attributesGroups: sortObjectsByField(productAttributesGroups),
   };
 
   return {

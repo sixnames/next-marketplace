@@ -3,11 +3,11 @@ import CompanyRubricProductsList, {
 } from 'components/company/CompanyRubricProductsList';
 import RequestError from 'components/RequestError';
 import { DEFAULT_PAGE_FILTER, ROUTE_CONSOLE } from 'config/common';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import { getConsoleCompanyRubricProducts } from 'db/dao/product/getConsoleCompanyRubricProducts';
+import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { alwaysString } from 'lib/arrayUtils';
-import { getConsoleCompanyRubricProducts } from 'lib/consoleProductUtils';
 import {
   castDbData,
   getConsoleInitialData,

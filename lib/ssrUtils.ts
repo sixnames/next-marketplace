@@ -29,6 +29,7 @@ import {
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
 } from 'db/collectionNames';
+import { castAttributeForUI } from 'db/dao/attributes/castAttributesGroupForUI';
 import { ignoreNoImageStage } from 'db/dao/constantPipelines';
 import { getPageSessionUser, SessionUserPayloadInterface } from 'db/dao/user/getPageSessionUser';
 import {
@@ -62,9 +63,8 @@ import {
 } from 'lib/configsUtils';
 import { getFieldStringLocale, getI18nLocaleValue } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
-import { getTreeFromList } from 'lib/optionUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
-import { castAttributeForUI } from 'lib/uiDataUtils';
+import { getTreeFromList } from 'lib/treeUtils';
 import { Db, ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, Redirect } from 'next';
 import { PagePropsInterface } from 'pages/_app';

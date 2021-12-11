@@ -2,18 +2,19 @@ import AssetsManager from 'components/AssetsManager';
 import FormikImageUpload from 'components/FormElements/Upload/FormikImageUpload';
 import WpDropZone from 'components/FormElements/Upload/WpDropZone';
 import Inner from 'components/Inner';
+import { ConsoleShopLayoutInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import {
   useDeleteShopAssetMutation,
   useUpdateShopAssetIndexMutation,
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import ConsoleShopLayout, { AppShopLayoutInterface } from 'layout/console/ConsoleShopLayout';
+import ConsoleShopLayout from 'layout/console/ConsoleShopLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 
-export type ShopAssetsInterface = AppShopLayoutInterface;
+export type ShopAssetsInterface = ConsoleShopLayoutInterface;
 
 const ShopAssets: React.FC<ShopAssetsInterface> = ({ shop, basePath, breadcrumbs }) => {
   const router = useRouter();

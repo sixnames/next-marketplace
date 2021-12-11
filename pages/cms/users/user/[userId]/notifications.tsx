@@ -8,12 +8,15 @@ import { COL_ROLES, COL_USERS } from 'db/collectionNames';
 import { UpdateUserInputInterface } from 'db/dao/user/updateUser';
 import { NotificationConfigModel, UserNotificationsModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { NotificationConfigInterface, UserInterface } from 'db/uiInterfaces';
+import {
+  AppContentWrapperBreadCrumbs,
+  NotificationConfigInterface,
+  UserInterface,
+} from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import { useUpdateUserMutation } from 'hooks/mutations/useUserMutations';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsUserLayout from 'layout/cms/CmsUserLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getUserNotifications } from 'lib/getUserNotificationsTemplate';

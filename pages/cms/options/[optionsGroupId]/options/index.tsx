@@ -13,7 +13,11 @@ import { getConstantTranslation } from 'config/constantTranslations';
 import { CONFIRM_MODAL, MOVE_OPTION_MODAL, OPTION_IN_GROUP_MODAL } from 'config/modalVariants';
 import { COL_ICONS, COL_OPTIONS, COL_OPTIONS_GROUPS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { OptionInterface, OptionsGroupInterface } from 'db/uiInterfaces';
+import {
+  AppContentWrapperBreadCrumbs,
+  OptionInterface,
+  OptionsGroupInterface,
+} from 'db/uiInterfaces';
 import {
   Gender,
   OptionsGroupVariant,
@@ -21,10 +25,10 @@ import {
   useDeleteOptionFromGroupMutation,
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import AppContentWrapper from 'layout/AppContentWrapper';
 import AppSubNav from 'layout/AppSubNav';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getTreeFromList } from 'lib/optionUtils';
+import { getTreeFromList } from 'lib/treeUtils';
 import { ObjectId } from 'mongodb';
 import Head from 'next/head';
 import * as React from 'react';

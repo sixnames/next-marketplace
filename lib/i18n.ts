@@ -1,9 +1,11 @@
+import { TranslationModel } from '../db/dbModels';
+import trim from 'trim';
 import { DEFAULT_CITY, DEFAULT_LOCALE, SECONDARY_LOCALE } from '../config/common';
 
 export function getI18nLocaleValue<T>(i18nField: Record<string, T>, locale: string): T {
   let translation: T = i18nField[locale];
 
-  // Get fallback language if chosen not found
+  // Get fallback language if chosen has not found
   if (!translation) {
     translation = i18nField[SECONDARY_LOCALE];
   }
@@ -26,11 +28,6 @@ export function getFieldStringLocale(
 
   let translation = getI18nLocaleValue<string>(i18nField, locale);
 
-  // Get fallback language if chosen not found
-  /*if (!translation) {
-    translation = i18nField[SECONDARY_LOCALE];
-  }*/
-
   // Get default language if fallback not found
   if (!translation) {
     translation = i18nField[DEFAULT_LOCALE];
@@ -47,7 +44,7 @@ export function getFieldStringLocale(
 export function getCityFieldData<T>(cityField: Record<string, T>, city: string): T {
   let fieldData: T = cityField[city];
 
-  // Get default city data if chosen not found
+  // Get default city data if chosen has not found
   if (!fieldData) {
     fieldData = cityField[DEFAULT_CITY];
   }
@@ -94,4 +91,15 @@ export function getNumWord(value: number | undefined, words: string[]): string {
     return words[0];
   }
   return words[2];
+}
+
+export function trimTranslationField(fieldII18n: TranslationModel) {
+  return Object.keys(fieldII18n).reduce((acc: TranslationModel, key) => {
+    const value = fieldII18n[key];
+    if (!value) {
+      return acc;
+    }
+    acc[key] = trim(value);
+    return acc;
+  }, {});
 }

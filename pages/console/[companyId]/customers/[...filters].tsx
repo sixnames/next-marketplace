@@ -17,7 +17,7 @@ import {
 import AppContentWrapper from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { alwaysArray } from 'lib/arrayUtils';
-import { castCatalogueFilters } from 'lib/catalogueUtils';
+import { castUrlFilters } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
@@ -137,15 +137,9 @@ export const getServerSideProps = async (
   const companyId = new ObjectId(`${query.companyId}`);
 
   // Cast filters
-  const {
-    // realFilterOptions,
-    // noFiltersSelected,
-    page,
-    skip,
-    limit,
-    clearSlug,
-  } = castCatalogueFilters({
+  const { page, skip, limit, clearSlug } = await castUrlFilters({
     filters: alwaysArray(filters),
+    searchFieldName: '_id',
   });
   const itemPath = `${ROUTE_CONSOLE}/${companyId}/customers/user`;
 

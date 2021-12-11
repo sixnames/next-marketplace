@@ -9,7 +9,7 @@ import { GENDER_ENUMS, ROUTE_CMS } from 'config/common';
 import { COL_ICONS, COL_OPTIONS, COL_OPTIONS_GROUPS } from 'db/collectionNames';
 import { OptionVariantsModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { OptionInterface } from 'db/uiInterfaces';
+import { AppContentWrapperBreadCrumbs, OptionInterface } from 'db/uiInterfaces';
 import {
   Gender,
   OptionsGroupVariant,
@@ -17,7 +17,7 @@ import {
   useUpdateOptionInGroupMutation,
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import AppContentWrapper from 'layout/AppContentWrapper';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
 import Head from 'next/head';

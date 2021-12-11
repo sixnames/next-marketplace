@@ -1,11 +1,8 @@
 import Pager from 'components/Pager';
+import { DEFAULT_PAGE } from 'config/common';
+import { GetRubricProductsListInputInterface } from 'db/dao/product/getRubricProductsList';
+import { ConsoleRubricProductsInterface, ProductInterface, RubricInterface } from 'db/uiInterfaces';
 import * as React from 'react';
-import {
-  RubricProductFragment,
-  useGetAllRubricsQuery,
-  useGetNonRubricProductsQuery,
-  useGetRubricProductsQuery,
-} from 'generated/apolloComponents';
 import Spinner from 'components/Spinner';
 import RequestError from 'components/RequestError';
 import ModalFrame from 'components/Modal/ModalFrame';
@@ -14,6 +11,8 @@ import FormikIndividualSearch from 'components/FormElements/Search/FormikIndivid
 import RubricsList from 'components/RubricsList';
 import useProductsListColumns, { ProductColumnsInterface } from 'hooks/useProductsListColumns';
 import Table from 'components/Table';
+import useSWR from 'swr';
+import qs from 'qs';
 
 interface ProductsListInterface extends ProductColumnsInterface {
   rubricSlug: string;
@@ -31,128 +30,47 @@ const ProductsList: React.FC<ProductsListInterface> = ({
   search,
   ...props
 }) => {
-  const [page, setPage] = React.useState<number>(1);
+  const [page, setPage] = React.useState<number>(DEFAULT_PAGE);
   const columns = useProductsListColumns({
     createTitle: 'Добавить товар в рубрику',
     ...props,
   });
 
-  const { data, loading, error } = useGetRubricProductsQuery({
-    fetchPolicy: 'network-only',
-    variables: {
+  const params = React.useMemo<string>(() => {
+    const queryParams: Omit<GetRubricProductsListInputInterface, 'currency' | 'locale'> = {
+      page,
       rubricSlug,
-      productsInput: {
-        search,
-        excludedProductsIds,
-        attributesIds,
-        excludedOptionsSlugs,
-        page,
-      },
-    },
-  });
+      attributesIds,
+      excludedOptionsSlugs,
+      excludedProductsIds,
+      search,
+    };
+    return qs.stringify(queryParams);
+  }, [attributesIds, excludedOptionsSlugs, excludedProductsIds, page, rubricSlug, search]);
 
-  if (!data && !loading && !error) {
-    return (
-      <ModalFrame>
-        <ModalTitle>Ошибка загрузки данных</ModalTitle>
-      </ModalFrame>
-    );
+  const { data, error } = useSWR<ConsoleRubricProductsInterface>(
+    `/api/product/search-modal?${params}`,
+  );
+
+  if (error) {
+    return <RequestError message={'Ошибка загрузки товаров'} />;
   }
 
-  if (loading) {
+  if (!data && !error) {
     return <Spinner isNested isTransparent />;
   }
-
-  if (error || !data || !data.getRubricBySlug) {
-    return <RequestError />;
-  }
-
-  const {
-    getRubricBySlug: { products },
-  } = data;
 
   return (
     <div>
       <div className='overflow-x-auto'>
-        <Table<RubricProductFragment>
-          data={products.docs}
+        <Table<ProductInterface>
+          data={data?.docs}
           columns={columns}
           emptyMessage={'Список пуст'}
           tableTestId={'product-search-list'}
         />
       </div>
-      <Pager page={page} setPage={setPage} totalPages={products.totalPages} />
-    </div>
-  );
-};
-
-interface ProductsSearchListInterface extends ProductColumnsInterface {
-  excludedProductsIds?: string[];
-  attributesIds?: string[] | null;
-  excludedOptionsSlugs?: string[] | null;
-  search: string;
-  viewRubricSlug?: string;
-}
-
-const ProductsSearchList: React.FC<ProductsSearchListInterface> = ({
-  search,
-  excludedProductsIds,
-  attributesIds,
-  excludedOptionsSlugs,
-  viewRubricSlug,
-  ...props
-}) => {
-  const [page, setPage] = React.useState<number>(1);
-
-  const columns = useProductsListColumns({
-    createTitle: 'Добавить товар в рубрику',
-    ...props,
-  });
-
-  const { data, loading, error } = useGetNonRubricProductsQuery({
-    fetchPolicy: 'network-only',
-    variables: {
-      input: {
-        page,
-        search,
-        excludedProductsIds,
-        attributesIds,
-        excludedOptionsSlugs,
-      },
-    },
-  });
-
-  if (!data && !loading && !error) {
-    return (
-      <ModalFrame>
-        <ModalTitle>Ошибка загрузки данных</ModalTitle>
-      </ModalFrame>
-    );
-  }
-
-  if (loading) {
-    return <Spinner isNested isTransparent />;
-  }
-
-  if (error || !data || !data.getProductsList) {
-    return <RequestError />;
-  }
-
-  const {
-    getProductsList: { docs, totalPages },
-  } = data;
-
-  return (
-    <div>
-      <div className='overflow-x-auto'>
-        <Table<RubricProductFragment>
-          data={docs}
-          columns={columns}
-          emptyMessage={`По запросу "${search}" товаров не найдено`}
-          tableTestId={'product-search-list'}
-        />
-      </div>
-      <Pager page={page} setPage={setPage} totalPages={totalPages} />
+      <Pager page={page} setPage={setPage} totalPages={data?.totalPages} />
     </div>
   );
 };
@@ -168,19 +86,14 @@ export interface ProductSearchModalInterface extends ProductColumnsInterface {
 
 const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
   testId,
-  excludedProductsIds,
-  excludedOptionsSlugs,
-  attributesIds,
   rubricSlug,
   subtitle,
   ...props
 }) => {
   const [search, setSearch] = React.useState<string | null>(null);
-  const { data, error, loading } = useGetAllRubricsQuery({
-    fetchPolicy: 'network-only',
-  });
+  const { data, error } = useSWR<RubricInterface[]>('/api/rubrics');
 
-  if (rubricSlug) {
+  if (rubricSlug || (search && rubricSlug)) {
     return (
       <ModalFrame testId={testId} size={'wide'}>
         <FormikIndividualSearch
@@ -189,43 +102,34 @@ const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
           onReset={() => setSearch(null)}
         />
 
-        <ProductsList
-          search={search}
-          rubricSlug={rubricSlug}
-          excludedProductsIds={excludedProductsIds}
-          attributesIds={attributesIds}
-          excludedOptionsSlugs={excludedOptionsSlugs}
-          {...props}
-        />
+        <ProductsList search={search} rubricSlug={rubricSlug} {...props} />
       </ModalFrame>
     );
   }
 
-  if (!data && !loading && !error) {
+  if (!data && error) {
     return (
-      <ModalFrame>
+      <ModalFrame size={'wide'}>
         <ModalTitle>Ошибка загрузки рубрик</ModalTitle>
       </ModalFrame>
     );
   }
 
-  if (loading) {
+  if (!data && !error) {
     return (
-      <ModalFrame>
+      <ModalFrame size={'wide'}>
         <Spinner isNested isTransparent />
       </ModalFrame>
     );
   }
 
-  if (error || !data || !data.getAllRubrics) {
+  if (!data) {
     return (
-      <ModalFrame>
+      <ModalFrame size={'wide'}>
         <RequestError />
       </ModalFrame>
     );
   }
-
-  const { getAllRubrics } = data;
 
   return (
     <ModalFrame testId={testId} size={'wide'}>
@@ -238,32 +142,14 @@ const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
         onReset={() => setSearch(null)}
       />
 
-      {search ? (
-        <ProductsSearchList
-          search={search}
-          excludedProductsIds={excludedProductsIds}
-          attributesIds={attributesIds}
-          excludedOptionsSlugs={excludedOptionsSlugs}
-          {...props}
-        />
-      ) : (
-        <React.Fragment>
-          <RubricsList
-            low
-            rubrics={getAllRubrics}
-            render={({ slug }) => {
-              return (
-                <ProductsList
-                  rubricSlug={slug}
-                  excludedProductsIds={excludedProductsIds}
-                  attributesIds={attributesIds}
-                  {...props}
-                />
-              );
-            }}
-          />
-        </React.Fragment>
-      )}
+      <RubricsList
+        low
+        openAll={Boolean(search)}
+        rubrics={data}
+        render={({ slug }) => {
+          return <ProductsList rubricSlug={slug} search={search} {...props} />;
+        }}
+      />
     </ModalFrame>
   );
 };

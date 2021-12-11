@@ -121,27 +121,6 @@ export async function updatePromo({
         return;
       }
 
-      // update product dates
-      const updatedPromoProductsResult = await promoProductsCollection.updateMany(
-        {
-          promoId,
-        },
-        {
-          $set: {
-            startAt: new Date(input.startAt),
-            endAt: new Date(input.endAt),
-          },
-        },
-      );
-      if (!updatedPromoProductsResult.acknowledged) {
-        mutationPayload = {
-          success: false,
-          message: await getApiMessage('promo.update.error'),
-        };
-        await session.abortTransaction();
-        return;
-      }
-
       // update
       const updatedPromoResult = await promoCollection.findOneAndUpdate(
         { _id: promoId },
@@ -159,6 +138,34 @@ export async function updatePromo({
       );
       const updatedPromo = updatedPromoResult.value;
       if (!updatedPromoResult.ok || !updatedPromo) {
+        mutationPayload = {
+          success: false,
+          message: await getApiMessage('promo.update.error'),
+        };
+        await session.abortTransaction();
+        return;
+      }
+
+      // update product dates
+      const updatedPromoProductsResult = await promoProductsCollection.updateMany(
+        {
+          promoId,
+        },
+        {
+          $set: {
+            discountPercent: updatedPromo.discountPercent,
+            addCategoryDiscount: updatedPromo.addCategoryDiscount,
+            useBiggestDiscount: updatedPromo.useBiggestDiscount,
+            cashbackPercent: updatedPromo.cashbackPercent,
+            addCategoryCashback: updatedPromo.addCategoryCashback,
+            useBiggestCashback: updatedPromo.useBiggestCashback,
+            allowPayFromCashback: updatedPromo.allowPayFromCashback,
+            startAt: new Date(updatedPromo.startAt),
+            endAt: new Date(updatedPromo.endAt),
+          },
+        },
+      );
+      if (!updatedPromoProductsResult.acknowledged) {
         mutationPayload = {
           success: false,
           message: await getApiMessage('promo.update.error'),

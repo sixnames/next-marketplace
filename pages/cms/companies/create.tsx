@@ -5,11 +5,12 @@ import CompanyMainFields, {
 import Inner from 'components/Inner';
 import Title from 'components/Title';
 import { ROUTE_CMS } from 'config/common';
+import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import { useCreateCompanyMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
-import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import AppContentWrapper from 'layout/AppContentWrapper';
 import { phoneToRaw } from 'lib/phoneUtils';
 import { omit } from 'lodash';
 import Head from 'next/head';

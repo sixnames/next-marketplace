@@ -1,8 +1,8 @@
 import Inner from 'components/Inner';
 import Title from 'components/Title';
 import { ROUTE_CMS } from 'config/common';
-import { RubricInterface } from 'db/uiInterfaces';
-import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import { AppContentWrapperBreadCrumbs, RubricInterface } from 'db/uiInterfaces';
+import AppContentWrapper from 'layout/AppContentWrapper';
 import AppSubNav from 'layout/AppSubNav';
 import Head from 'next/head';
 import { useRouter } from 'next/router';

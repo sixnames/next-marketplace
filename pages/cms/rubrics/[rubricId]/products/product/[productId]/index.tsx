@@ -1,7 +1,6 @@
 import ConsoleRubricProductDetails from 'components/console/ConsoleRubricProductDetails';
 import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
-import { ProductInterface } from 'db/uiInterfaces';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import { AppContentWrapperBreadCrumbs, ProductInterface } from 'db/uiInterfaces';
 import CmsProductLayout from 'layout/cms/CmsProductLayout';
 import { getCmsProduct } from 'lib/productUtils';
 import * as React from 'react';

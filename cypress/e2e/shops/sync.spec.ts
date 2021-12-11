@@ -269,7 +269,7 @@ describe('Sync', () => {
     cy.getByCy('product-search-input').type('000200');
     cy.getByCy('product-search-submit').click();
     cy.wait(1500);
-    cy.getByCy('VINO 000208-create').click();
+    cy.getByCy('VINO 000200-create').click();
     cy.wait(1500);
     cy.getByCy(`${errorBarcode}-create`).should('not.exist');
   });

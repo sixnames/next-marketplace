@@ -3,8 +3,7 @@ import PageGroupsList, { PageGroupsListInterface } from 'components/Pages/PageGr
 import { ROUTE_CMS } from 'config/common';
 import { COL_COMPANIES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { CompanyInterface } from 'db/uiInterfaces';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
 import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
 import { getPageGroupsSsr } from 'lib/pageUtils';
 import { ObjectId } from 'mongodb';

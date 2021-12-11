@@ -26,9 +26,13 @@ import Inner from 'components/Inner';
 import Title from 'components/Title';
 import { COL_ATTRIBUTES, COL_ATTRIBUTES_GROUPS, COL_OPTIONS_GROUPS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { AttributeInterface, AttributesGroupInterface } from 'db/uiInterfaces';
+import {
+  AppContentWrapperBreadCrumbs,
+  AttributeInterface,
+  AttributesGroupInterface,
+} from 'db/uiInterfaces';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import AppContentWrapper from 'layout/AppContentWrapper';
 import { getFieldStringLocale } from 'lib/i18n';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import Head from 'next/head';

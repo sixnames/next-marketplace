@@ -3,6 +3,9 @@
   "integrationFolder": "cypress/e2e",
   "viewportWidth": 1440,
   "viewportHeight": 1000,
-  "defaultCommandTimeout": 8000,
-  "video": false
+  "defaultCommandTimeout": 15000,
+  "pageLoadTimeout": 100000,
+  "requestTimeout": 10000,
+  "video": false,
+  "scrollBehavior": "nearest"
 }

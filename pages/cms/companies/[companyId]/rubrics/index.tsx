@@ -5,14 +5,13 @@ import {
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
+import { castRubricForUI } from 'db/dao/rubrics/castRubricForUI';
 import { RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { CompanyInterface, RubricInterface } from 'db/uiInterfaces';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import { AppContentWrapperBreadCrumbs, CompanyInterface, RubricInterface } from 'db/uiInterfaces';
 import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import CompanyRubricsList, { CompanyRubricsListInterface } from 'layout/CompanyRubricsList';
-import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -167,18 +166,8 @@ export const getServerSideProps = async (
     ])
     .toArray();
 
-  const { sessionLocale } = props;
-  const rawRubrics = initialRubrics.map(({ nameI18n, ...rubric }) => {
-    return {
-      ...rubric,
-      name: getFieldStringLocale(nameI18n, sessionLocale),
-      variant: rubric.variant
-        ? {
-            ...rubric.variant,
-            name: getFieldStringLocale(rubric.variant.nameI18n, sessionLocale),
-          }
-        : null,
-    };
+  const rawRubrics = initialRubrics.map((rubric) => {
+    return castRubricForUI({ rubric, locale: props.sessionLocale });
   });
 
   return {

@@ -4,11 +4,10 @@ import ConsoleSeoContentsList, {
 import Inner from 'components/Inner';
 import { PAGE_EDITOR_DEFAULT_VALUE_STRING, ROUTE_CMS } from 'config/common';
 import { COL_COMPANIES, COL_SEO_CONTENTS } from 'db/collectionNames';
-import { getConsoleRubricDetails } from 'db/dao/rubric/getConsoleRubricDetails';
+import { getConsoleRubricDetails } from 'db/dao/rubrics/getConsoleRubricDetails';
 import { SeoContentModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { CompanyInterface, RubricInterface } from 'db/uiInterfaces';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import { AppContentWrapperBreadCrumbs, CompanyInterface, RubricInterface } from 'db/uiInterfaces';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
 import { ObjectId } from 'mongodb';

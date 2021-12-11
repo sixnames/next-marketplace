@@ -11,8 +11,9 @@ import { getDatabase } from 'db/mongodb';
 import { ProductInterface } from 'db/uiInterfaces';
 import { getAlgoliaClient, saveAlgoliaObjects } from 'lib/algolia/algoliaUtils';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getTreeFromList } from 'lib/optionUtils';
+import { noNaN } from 'lib/numbers';
 import { generateCardTitle, generateSnippetTitle } from 'lib/titleUtils';
+import { getTreeFromList } from 'lib/treeUtils';
 import { ObjectId } from 'mongodb';
 import addZero from 'add-zero';
 
@@ -157,11 +158,13 @@ export async function getAlgoliaProductsSearch({
     if (!search) {
       return searchIds;
     }
-    const productBySlug = await productsCollection.findOne({
-      slug: addZero(search, ID_COUNTER_DIGITS),
-    });
-    if (productBySlug) {
-      return [productBySlug._id];
+    if (noNaN(search) > 0) {
+      const productBySlug = await productsCollection.findOne({
+        slug: addZero(search, ID_COUNTER_DIGITS),
+      });
+      if (productBySlug) {
+        return [productBySlug._id];
+      }
     }
 
     const { hits } = await algoliaIndex.search<AlgoliaProductInterface>(search, {
@@ -182,7 +185,7 @@ export async function getAlgoliaProductsSearch({
 
     return searchIds;
   } catch (e) {
-    console.log(e);
+    console.log('getAlgoliaProductsSearch error ', e);
     return searchIds;
   }
 }

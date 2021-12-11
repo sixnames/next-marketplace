@@ -2,6 +2,7 @@ import Button from 'components/button/Button';
 import Link from 'components/Link/Link';
 import { FILTER_SEPARATOR, FILTER_PAGE_KEY } from 'config/common';
 import { alwaysString } from 'lib/arrayUtils';
+import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import Icon from 'components/Icon';
@@ -15,7 +16,7 @@ const iconClassName = 'w-4 h-4';
 
 interface PagerInterface {
   page: number;
-  totalPages: number;
+  totalPages?: number;
   setPage?: (page: number) => void;
   className?: string;
   showMoreHandler?: (nextPath: string, page: number) => void;
@@ -56,7 +57,7 @@ const Pager: React.FC<PagerInterface> = ({
     page,
   });
 
-  if (totalPages < minimalPagesCount) {
+  if (noNaN(totalPages) < minimalPagesCount) {
     return null;
   }
 
@@ -147,7 +148,7 @@ const Pager: React.FC<PagerInterface> = ({
         })}
       </div>
 
-      {showMoreHandler && totalPages > page ? (
+      {showMoreHandler && noNaN(totalPages) > page ? (
         <div className='flex justify-center mt-6'>
           <Button
             isLoading={isLoading}

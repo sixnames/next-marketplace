@@ -1,8 +1,8 @@
 import { Db } from 'mongodb';
 import { ID_COUNTER_STEP } from '../../../config/common';
 import { dbsConfig, getProdDb } from './getProdDb';
-import { COL_ID_COUNTERS, COL_ORDER_PRODUCTS } from '../../../db/collectionNames';
-import { IdCounterModel, OrderProductModel } from '../../../db/dbModels';
+import { COL_COMPANIES, COL_ID_COUNTERS, COL_SHOP_PRODUCTS } from '../../../db/collectionNames';
+import { CompanyModel, IdCounterModel, ShopProductModel } from '../../../db/dbModels';
 require('dotenv').config();
 
 export async function getFastNextNumberItemId(collectionName: string, db: Db): Promise<string> {
@@ -35,17 +35,18 @@ async function updateProds() {
     console.log(' ');
     console.log(`Updating ${dbConfig.dbName} db`);
     const { db, client } = await getProdDb(dbConfig);
-    const orderProductsCollection = db.collection<OrderProductModel>(COL_ORDER_PRODUCTS);
+    const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
+    const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
 
-    // orderProducts
-    const orderProducts = await orderProductsCollection.find({}).toArray();
-    for await (const orderProduct of orderProducts) {
-      await orderProductsCollection.findOneAndUpdate(
-        { _id: orderProduct._id },
+    const companies = await companiesCollection.find({}).toArray();
+    for await (const company of companies) {
+      await shopProductsCollection.updateMany(
+        {
+          companyId: company._id,
+        },
         {
           $set: {
-            finalPrice: orderProduct.price,
-            customDiscount: 0,
+            companySlug: company.slug,
           },
         },
       );

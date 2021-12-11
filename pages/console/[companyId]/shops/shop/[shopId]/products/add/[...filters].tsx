@@ -1,9 +1,8 @@
 import { ROUTE_CONSOLE } from 'config/common';
-import { ProductInterface } from 'db/uiInterfaces';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import { getAddShopProductSsrData } from 'db/dao/product/getAddShopProductSsrData';
+import { AppContentWrapperBreadCrumbs, ProductInterface } from 'db/uiInterfaces';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
-import { getAddShopProductSsrData } from 'lib/consoleProductUtils';
 import {
   castDbData,
   getConsoleInitialData,

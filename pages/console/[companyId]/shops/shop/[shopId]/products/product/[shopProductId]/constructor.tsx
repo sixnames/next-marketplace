@@ -1,8 +1,7 @@
 import CompanyProductConstructor from 'components/company/CompanyProductConstructor';
 import RequestError from 'components/RequestError';
 import { ROUTE_CONSOLE } from 'config/common';
-import { ShopProductInterface } from 'db/uiInterfaces';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import { AppContentWrapperBreadCrumbs, ShopProductInterface } from 'db/uiInterfaces';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import ConsoleShopProductLayout from 'layout/console/ConsoleShopProductLayout';
 import { getConsoleShopProduct } from 'lib/productUtils';

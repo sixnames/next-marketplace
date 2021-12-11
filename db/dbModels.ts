@@ -133,15 +133,6 @@ export interface IconModel {
   icon: string;
 }
 
-export interface ProductsPaginationInputModel extends PaginationInputModel {
-  rubricId?: ObjectIdModel | null;
-  attributesIds?: ObjectIdModel[] | null;
-  excludedOptionsSlugs?: string[] | null;
-  excludedRubricsIds?: ObjectIdModel[] | null;
-  excludedProductsIds?: ObjectIdModel[] | null;
-  isWithoutRubrics?: boolean | null;
-}
-
 export interface PaginationPayloadModel {
   sortBy: string;
   sortDir: SortDirectionModel;
@@ -838,6 +829,7 @@ export interface ShopProductModel
   productId: ObjectIdModel;
   shopId: ObjectIdModel;
   companyId: ObjectIdModel;
+  companySlug: string;
   mainImage: string;
   useCategoryDiscount?: boolean | null;
   useCategoryCashback?: boolean | null;
@@ -943,21 +935,16 @@ export interface UserCashbackLogModel extends TimestampModel {
   creatorId?: ObjectIdModel;
   companyId: ObjectIdModel;
   variant: 'add' | 'subtract';
-  descriptionI18n?: any;
+  descriptionI18n?: TranslationModel;
   value: number; // - / +
   currency: string;
 }
 
 export interface UserPaybackLogModel extends UserCashbackLogModel {}
 
-// Promo
-export interface PromoModel extends TimestampModel {
-  _id: ObjectIdModel;
-  slug: string;
+export interface PromoBaseInterface {
   companyId: ObjectIdModel;
   companySlug: string;
-  nameI18n: TranslationModel;
-  descriptionI18n: TranslationModel;
 
   // discount
   discountPercent: number;
@@ -969,6 +956,18 @@ export interface PromoModel extends TimestampModel {
   addCategoryCashback: boolean;
   useBiggestCashback: boolean;
   allowPayFromCashback: boolean;
+
+  // dates
+  startAt: DateModel;
+  endAt: DateModel;
+}
+
+// Promo
+export interface PromoModel extends TimestampModel, PromoBaseInterface {
+  _id: ObjectIdModel;
+  slug: string;
+  nameI18n: TranslationModel;
+  descriptionI18n: TranslationModel;
 
   // ui configs
   showAsPromoPage: boolean;
@@ -995,26 +994,19 @@ export interface PromoModel extends TimestampModel {
   secondaryBannerTextAlign: string;
   secondaryBannerTextPadding: number;
   secondaryBannerTextMaxWidth: number;
-
-  // dates
-  startAt: DateModel;
-  endAt: DateModel;
 }
 
-export interface PromoProductModel {
+export interface PromoProductModel extends PromoBaseInterface {
   _id: ObjectIdModel;
+  rubricSlug: string;
+  rubricId: ObjectIdModel;
   promoId: ObjectIdModel;
   shopId: ObjectIdModel;
-  companyId: ObjectIdModel;
   shopProductId: ObjectIdModel;
   productId: ObjectIdModel;
-
-  // dates
-  startAt: DateModel;
-  endAt: DateModel;
 }
 
-export interface PromoCodeModel {
+export interface PromoCodeModel extends PromoBaseInterface {
   _id: ObjectIdModel;
   code: string;
   active: boolean;

@@ -12,20 +12,23 @@ import { getConstantTranslation } from 'config/constantTranslations';
 import { ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL, CONFIRM_MODAL } from 'config/modalVariants';
 import { useLocaleContext } from 'context/localeContext';
 import { COL_CATEGORIES, COL_ATTRIBUTES, COL_RUBRICS } from 'db/collectionNames';
+import { castCategoryForUI } from 'db/dao/category/castCategoryForUI';
 import { rubricAttributeGroupsPipeline } from 'db/dao/constantPipelines';
 import { ObjectIdModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { CategoryInterface, AttributeInterface } from 'db/uiInterfaces';
+import {
+  CategoryInterface,
+  AttributeInterface,
+  AppContentWrapperBreadCrumbs,
+} from 'db/uiInterfaces';
 import {
   useAddAttributesGroupToCategoryMutation,
   useDeleteAttributesGroupFromCategoryMutation,
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCategoryLayout from 'layout/cms/CmsCategoryLayout';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import { castCategoryForUI } from 'lib/uiDataUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';

@@ -3,9 +3,8 @@ import ConsoleSeoContentDetails, {
 } from 'components/console/ConsoleSeoContentDetails';
 import Inner from 'components/Inner';
 import { ROUTE_CONSOLE } from 'config/common';
-import { getConsoleRubricDetails } from 'db/dao/rubric/getConsoleRubricDetails';
-import { RubricInterface } from 'db/uiInterfaces';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import { getConsoleRubricDetails } from 'db/dao/rubrics/getConsoleRubricDetails';
+import { AppContentWrapperBreadCrumbs, RubricInterface } from 'db/uiInterfaces';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
 import { alwaysString } from 'lib/arrayUtils';

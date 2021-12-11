@@ -4,7 +4,7 @@ import { COL_SHOPS } from 'db/collectionNames';
 import { getPaginatedNotSyncedProducts } from 'db/dao/notSyncedProducts/getPaginatedNotSyncedProducts';
 import { ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { ObjectId } from 'mongodb';

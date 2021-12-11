@@ -3,8 +3,8 @@ import { CategoryModel, ProductModel, ProductPayloadModel, ShopProductModel } fr
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getParentTreeSlugs } from 'lib/optionUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
+import { getParentTreeSlugs } from 'lib/treeUtils';
 import { ObjectId } from 'mongodb';
 
 export interface UpdateProductCategoryInputInterface {

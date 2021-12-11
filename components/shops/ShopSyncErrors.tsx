@@ -1,9 +1,12 @@
 import Inner from 'components/Inner';
 import SyncErrorsList, { SyncErrorsListInterface } from 'components/SyncErrorsList';
-import ConsoleShopLayout, { AppShopLayoutInterface } from 'layout/console/ConsoleShopLayout';
+import { ConsoleShopLayoutInterface } from 'db/uiInterfaces';
+import ConsoleShopLayout from 'layout/console/ConsoleShopLayout';
 import * as React from 'react';
 
-export interface ShopSyncErrorsInterface extends AppShopLayoutInterface, SyncErrorsListInterface {}
+export interface ShopSyncErrorsInterface
+  extends ConsoleShopLayoutInterface,
+    SyncErrorsListInterface {}
 
 const ShopSyncErrors: React.FC<ShopSyncErrorsInterface> = ({
   shop,

@@ -1,23 +1,9 @@
 import { getConstantTranslation } from 'config/constantTranslations';
+import { BreadcrumbsInterface } from 'db/uiInterfaces';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import Inner from 'components/Inner';
-import Link, { LinkInterface } from 'components/Link/Link';
-
-export interface BreadcrumbsItemInterface extends LinkInterface {
-  name: string;
-}
-
-export interface BreadcrumbsInterface {
-  currentPageName?: string;
-  config?: BreadcrumbsItemInterface[];
-  noMainPage?: boolean;
-  lowTop?: boolean;
-  lowBottom?: boolean;
-  lowWrapper?: boolean;
-  urlPrefix?: string;
-  centered?: boolean;
-}
+import Link from 'components/Link/Link';
 
 const linkClassName =
   'text-primary-text hover:text-primary-text hover:no-underline whitespace-nowrap';

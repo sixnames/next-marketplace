@@ -1,8 +1,9 @@
 import { ROUTE_CONSOLE } from 'config/common';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import { getConsoleShopProducts } from 'db/dao/product/getConsoleShopProducts';
+import { AppContentWrapperBreadCrumbs, ShopRubricProductsInterface } from 'db/uiInterfaces';
+
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
-import { getConsoleShopProducts } from 'lib/consoleProductUtils';
 import {
   castDbData,
   getConsoleInitialData,
@@ -10,9 +11,7 @@ import {
 } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
-import ShopRubricProducts, {
-  ShopRubricProductsInterface,
-} from 'components/shops/ShopRubricProducts';
+import ShopRubricProducts from 'components/shops/ShopRubricProducts';
 
 interface CompanyShopProductsListInterface
   extends GetConsoleInitialDataPropsInterface,

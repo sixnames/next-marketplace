@@ -150,7 +150,7 @@ const ConsolePromoProducts: React.FC<ConsolePromoProductsInterface> = ({
             <Button
               size={'small'}
               frameClassName={'w-auto'}
-              testId={'add-all-rubric-products'}
+              testId={'add-filtered-rubric-products'}
               onClick={() => {
                 addPromoProductsMutation({
                   filters,
@@ -163,6 +163,27 @@ const ConsolePromoProducts: React.FC<ConsolePromoProductsInterface> = ({
               }}
             >
               Добавить товары по выбранному фильтру
+            </Button>
+          ) : null}
+
+          {search.length > 0 ? (
+            <Button
+              size={'small'}
+              frameClassName={'w-auto'}
+              testId={'add-search-rubric-products'}
+              onClick={() => {
+                addPromoProductsMutation({
+                  filters,
+                  all: true,
+                  shopProductIds: [],
+                  companyId: `${pageCompany._id}`,
+                  promoId: `${promo._id}`,
+                  rubricId: `${rubric._id}`,
+                  search,
+                }).catch(console.log);
+              }}
+            >
+              Добавить результат поиска
             </Button>
           ) : null}
 
@@ -186,33 +207,12 @@ const ConsolePromoProducts: React.FC<ConsolePromoProductsInterface> = ({
             </Button>
           )}
 
-          {search.length > 0 ? (
-            <Button
-              size={'small'}
-              frameClassName={'w-auto'}
-              testId={'add-all-rubric-products'}
-              onClick={() => {
-                addPromoProductsMutation({
-                  filters,
-                  all: true,
-                  shopProductIds: [],
-                  companyId: `${pageCompany._id}`,
-                  promoId: `${promo._id}`,
-                  rubricId: `${rubric._id}`,
-                  search,
-                }).catch(console.log);
-              }}
-            >
-              Добавить результат поиска
-            </Button>
-          ) : null}
-
           {promoProducts.selectedShopProductIds.length > 0 ? (
             <Button
               theme={'secondary'}
               size={'small'}
               frameClassName={'w-auto'}
-              testId={'add-all-rubric-products'}
+              testId={'delete-all-rubric-products'}
               onClick={() => {
                 deletePromoProductsMutation({
                   filters: [],

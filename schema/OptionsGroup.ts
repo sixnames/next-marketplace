@@ -1,7 +1,8 @@
 import { updateAlgoliaProducts } from 'lib/algolia/productAlgoliaUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getNextNumberItemId } from 'lib/itemIdUtils';
-import { deleteDocumentsTree, trimOptionNames } from 'lib/optionUtils';
+import { trimOptionNames } from 'lib/optionUtils';
+import { deleteDocumentsTree } from 'lib/treeUtils';
 import { arg, enumType, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
 import {
   getOperationPermission,

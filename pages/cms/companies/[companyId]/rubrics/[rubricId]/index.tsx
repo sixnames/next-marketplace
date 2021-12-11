@@ -9,8 +9,7 @@ import {
 import { COL_COMPANIES, COL_RUBRICS } from 'db/collectionNames';
 import { RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { CompanyInterface, RubricInterface } from 'db/uiInterfaces';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import { AppContentWrapperBreadCrumbs, CompanyInterface, RubricInterface } from 'db/uiInterfaces';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
 import { getFieldStringLocale } from 'lib/i18n';

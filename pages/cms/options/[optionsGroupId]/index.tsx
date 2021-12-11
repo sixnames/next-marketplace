@@ -9,7 +9,7 @@ import { ROUTE_CMS } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { COL_OPTIONS_GROUPS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { OptionsGroupInterface } from 'db/uiInterfaces';
+import { AppContentWrapperBreadCrumbs, OptionsGroupInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import {
   OptionsGroupVariant,
@@ -18,7 +18,7 @@ import {
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
-import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import AppContentWrapper from 'layout/AppContentWrapper';
 import AppSubNav from 'layout/AppSubNav';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';

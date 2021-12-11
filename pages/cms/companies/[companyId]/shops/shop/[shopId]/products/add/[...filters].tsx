@@ -1,9 +1,8 @@
 import { ROUTE_CMS, DEFAULT_PAGE_FILTER, DEFAULT_COMPANY_SLUG } from 'config/common';
-import { ProductInterface } from 'db/uiInterfaces';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import { getAddShopProductSsrData } from 'db/dao/product/getAddShopProductSsrData';
+import { AppContentWrapperBreadCrumbs, ProductInterface } from 'db/uiInterfaces';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
-import { getAddShopProductSsrData } from 'lib/consoleProductUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';

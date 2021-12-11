@@ -1,12 +1,12 @@
 import ContentItemControls from 'components/button/ContentItemControls';
 import Inner from 'components/Inner';
 import Table, { TableColumn } from 'components/Table';
-import { RubricInterface } from 'db/uiInterfaces';
-import ConsoleShopLayout, { AppShopLayoutInterface } from 'layout/console/ConsoleShopLayout';
+import { ConsoleShopLayoutInterface, RubricInterface } from 'db/uiInterfaces';
+import ConsoleShopLayout from 'layout/console/ConsoleShopLayout';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 
-export interface ShopRubricsInterface extends AppShopLayoutInterface {
+export interface ShopRubricsInterface extends ConsoleShopLayoutInterface {
   rubrics: RubricInterface[];
 }
 

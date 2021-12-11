@@ -4,8 +4,7 @@ import CompanyProductDetails, {
 import { ROUTE_CONSOLE } from 'config/common';
 import { COL_COMPANIES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { CompanyInterface } from 'db/uiInterfaces';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
 import CmsProductLayout from 'layout/cms/CmsProductLayout';
 import { getCmsProduct } from 'lib/productUtils';
 import { ObjectId } from 'mongodb';

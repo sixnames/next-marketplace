@@ -1,7 +1,7 @@
 import { updateAlgoliaProducts } from 'lib/algolia/productAlgoliaUtils';
 import { getNextItemId } from 'lib/itemIdUtils';
-import { deleteDocumentsTree, getParentTreeIds } from 'lib/optionUtils';
 import { updateCitiesSeoContent } from 'lib/seoContentUtils';
+import { deleteDocumentsTree, getParentTreeIds } from 'lib/treeUtils';
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {

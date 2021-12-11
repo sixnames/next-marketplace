@@ -13,20 +13,24 @@ import { ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL, CONFIRM_MODAL } from 'config/moda
 import { useLocaleContext } from 'context/localeContext';
 import { COL_CATEGORIES, COL_RUBRICS } from 'db/collectionNames';
 import { rubricAttributeGroupsPipeline } from 'db/dao/constantPipelines';
+import { castRubricForUI } from 'db/dao/rubrics/castRubricForUI';
 import { RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import { AttributeInterface, CategoryInterface, RubricInterface } from 'db/uiInterfaces';
+import {
+  AppContentWrapperBreadCrumbs,
+  AttributeInterface,
+  CategoryInterface,
+  RubricInterface,
+} from 'db/uiInterfaces';
 import {
   useAddAttributesGroupToRubricMutation,
   useDeleteAttributesGroupFromRubricMutation,
   useUpdateAttributeInRubricMutation,
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import { castRubricForUI } from 'lib/uiDataUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';

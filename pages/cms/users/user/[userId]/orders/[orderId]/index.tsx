@@ -4,8 +4,7 @@ import ConsoleOrderDetails, {
 import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
 import { COL_ROLES, COL_USERS } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { UserInterface } from 'db/uiInterfaces';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import { AppContentWrapperBreadCrumbs, UserInterface } from 'db/uiInterfaces';
 import CmsUserLayout from 'layout/cms/CmsUserLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';

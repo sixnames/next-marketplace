@@ -25,6 +25,7 @@ import {
   ignoreNoImageStage,
   noImageStage,
 } from 'db/dao/constantPipelines';
+import { castProductForUI } from 'db/dao/product/castProductForUI';
 import { CatalogueBreadcrumbModel, ObjectIdModel, ShopProductModel } from 'db/dbModels';
 import {
   ATTRIBUTE_VIEW_VARIANT_LIST,
@@ -65,21 +66,19 @@ import {
   CatalogueProductsAggregationInterface,
   CategoryInterface,
   OptionInterface,
-  ProductAttributeInterface,
-  ProductConnectionInterface,
   RubricInterface,
   SeoContentInterface,
   ShopProductInterface,
 } from 'db/uiInterfaces';
 import { getAlgoliaProductsSearch } from 'lib/algolia/productAlgoliaUtils';
+import { alwaysString, sortObjectsByField } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
-import { getTreeFromList, sortByName } from 'lib/optionUtils';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
 import { getCatalogueAllSeoContents } from 'lib/seoContentUtils';
 import { sortStringArray } from 'lib/stringUtils';
-import { generateSnippetTitle, generateTitle } from 'lib/titleUtils';
-import { castProductConnectionForUI } from 'lib/uiDataUtils';
+import { generateTitle } from 'lib/titleUtils';
+import { getTreeFromList } from 'lib/treeUtils';
 import { ObjectId } from 'mongodb';
 
 interface GetSelectedCategoryLeaf {
@@ -579,7 +578,7 @@ function castOptionsForBreadcrumbs({
   }, newAcc);
 }
 
-interface CastCatalogueFiltersPayloadInterface {
+interface CastUrlFiltersPayloadInterface {
   minPrice?: number | null;
   maxPrice?: number | null;
   realFilters: string[];
@@ -607,19 +606,28 @@ interface CastCatalogueFiltersPayloadInterface {
   sortStage: Record<any, any>;
   defaultSortStage: Record<any, any>;
   photoStage: Record<any, any>;
+  searchStage: Record<any, any>;
+  searchIds: ObjectIdModel[];
+  noSearchResults: boolean;
 }
 
-interface CastCatalogueFiltersInterface {
+interface CastUrlFiltersInterface {
   filters: string[];
   initialLimit?: number;
   initialPage?: number;
+  search?: string | string[] | null;
+  excludedSearchIds?: ObjectIdModel[] | null;
+  searchFieldName: string;
 }
 
-export function castCatalogueFilters({
+export async function castUrlFilters({
   filters,
   initialPage,
   initialLimit,
-}: CastCatalogueFiltersInterface): CastCatalogueFiltersPayloadInterface {
+  excludedSearchIds,
+  searchFieldName,
+  ...props
+}: CastUrlFiltersInterface): Promise<CastUrlFiltersPayloadInterface> {
   const allUrlParams: string[] = [];
   const categoryCastedFilters: string[] = [];
   const priceFilters: string[] = [];
@@ -656,6 +664,10 @@ export function castCatalogueFilters({
     const splittedOption = filterOption.split(FILTER_SEPARATOR);
     const filterAttributeSlug = splittedOption[0];
     const filterOptionSlug = splittedOption[1];
+    if (!filterOptionSlug) {
+      return;
+    }
+
     if (filterAttributeSlug) {
       if (filterAttributeSlug === FILTER_RUBRIC_KEY) {
         allUrlParams.push(filterOption);
@@ -797,7 +809,27 @@ export function castCatalogueFilters({
     };
   }
 
+  // search stage
+  let searchStage = {};
+  let searchIds: ObjectIdModel[] = [];
+  const search = alwaysString(props.search);
+
+  if (search) {
+    searchIds = await getAlgoliaProductsSearch({
+      search,
+      excludedProductsIds: excludedSearchIds,
+    });
+    searchStage = {
+      [searchFieldName]: {
+        $in: searchIds,
+      },
+    };
+  }
+
   return {
+    searchStage,
+    searchIds,
+    noSearchResults: search.length > 0 && searchIds.length < 1,
     allUrlParams,
     rubricFilters: rubricFilters.length > 0 ? rubricFilters : null,
     clearSlug: sortPathname,
@@ -887,10 +919,14 @@ export const getCatalogueData = async ({
       pricesStage,
       realFilterAttributes,
       allUrlParams,
-    } = castCatalogueFilters({
+      searchStage,
+      noSearchResults,
+    } = await castUrlFilters({
+      search,
       filters: input.filters,
       initialPage: input.page,
       initialLimit: props.limit,
+      searchFieldName: 'productId',
     });
 
     // fallback
@@ -939,20 +975,7 @@ export const getCatalogueData = async ({
       };
     }
 
-    // search stage
-    let searchStage = {};
-    let searchIds: ObjectIdModel[] = [];
-    if (search) {
-      searchIds = await getAlgoliaProductsSearch({
-        search,
-      });
-      searchStage = {
-        productId: {
-          $in: searchIds,
-        },
-      };
-    }
-    if (search && searchIds.length < 1) {
+    if (noSearchResults) {
       return {
         ...fallbackPayload,
         isSearch: true,
@@ -1567,6 +1590,16 @@ export const getCatalogueData = async ({
         return;
       }
 
+      const castedProduct = castProductForUI({
+        product,
+        attributes,
+        brands,
+        categories,
+        rubric,
+        locale,
+        getSnippetTitle: true,
+      });
+
       // product prices
       const minPrice = noNaN(shopProduct.cardPrices?.min);
       const maxPrice = noNaN(shopProduct.cardPrices?.max);
@@ -1576,102 +1609,14 @@ export const getCatalogueData = async ({
         max: `${maxPrice}`,
       };
 
-      // product attributes
-      const productAttributes = (product.attributes || []).reduce(
-        (acc: ProductAttributeInterface[], attribute) => {
-          const existingAttribute = (attributes || []).find(({ _id }) => {
-            return _id.equals(attribute.attributeId);
-          });
-          if (!existingAttribute) {
-            return acc;
-          }
-
-          const optionSlugs = shopProduct.selectedOptionsSlugs.reduce(
-            (acc: string[], selectedSlug) => {
-              const slugParts = selectedSlug.split(FILTER_SEPARATOR);
-              const attributeSlug = slugParts[0];
-              const optionSlug = slugParts[1];
-              if (!optionSlug || attributeSlug !== existingAttribute.slug) {
-                return acc;
-              }
-              return [...acc, optionSlug];
-            },
-            [],
-          );
-
-          const options = (existingAttribute.options || []).filter(({ slug }) => {
-            return optionSlugs.includes(slug);
-          });
-
-          const productAttribute: ProductAttributeInterface = {
-            ...attribute,
-            attribute: {
-              ...existingAttribute,
-              name: getFieldStringLocale(existingAttribute.nameI18n, locale),
-              metric: existingAttribute.metric
-                ? {
-                    ...existingAttribute.metric,
-                    name: getFieldStringLocale(existingAttribute.metric.nameI18n, locale),
-                  }
-                : null,
-              options: getTreeFromList({
-                list: options,
-                childrenFieldName: 'options',
-                locale,
-              }),
-            },
-          };
-          return [...acc, productAttribute];
-        },
-        [],
-      );
-
-      // product categories
-      const initialProductCategories = (categories || []).filter(({ slug }) => {
-        return shopProduct.selectedOptionsSlugs.includes(slug);
-      });
-      const productCategories = getTreeFromList({
-        list: initialProductCategories,
-        childrenFieldName: 'categories',
-        locale,
-      });
-
-      // product brand
-      const productBrand = product.brandSlug
-        ? (brands || []).find(({ itemId }) => {
-            return itemId === product.brandSlug;
-          })
-        : null;
-
-      // snippet title
-      const snippetTitle = generateSnippetTitle({
-        locale,
-        brand: productBrand
-          ? {
-              ...productBrand,
-              collections: (productBrand.collections || []).filter((collection) => {
-                return collection.itemId === product.brandCollectionSlug;
-              }),
-            }
-          : null,
-        rubricName: getFieldStringLocale(rubric.nameI18n, locale),
-        showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
-        showCategoryInProductTitle: rubric.showCategoryInProductTitle,
-        attributes: productAttributes,
-        categories: productCategories,
-        titleCategoriesSlugs: product.titleCategoriesSlugs,
-        originalName: product.originalName,
-        defaultGender: product.gender,
-      });
-
       // list features
       const initialListFeatures = getProductCurrentViewCastedAttributes({
-        attributes: productAttributes,
+        attributes: castedProduct.attributes || [],
         viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
         locale,
         gender: product.gender,
       });
-      const listFeatures = sortByName(
+      const listFeatures = sortObjectsByField(
         initialListFeatures
           .filter(({ attribute }) => {
             return attribute?.showInSnippet;
@@ -1682,7 +1627,7 @@ export const getCatalogueData = async ({
 
       // rating features
       const initialRatingFeatures = getProductCurrentViewCastedAttributes({
-        attributes: productAttributes,
+        attributes: castedProduct.attributes || [],
         viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
         locale,
         gender: product.gender,
@@ -1691,34 +1636,15 @@ export const getCatalogueData = async ({
         return attribute?.showInSnippet;
       });
 
-      // connections
-      const connections = (product.connections || []).reduce(
-        (acc: ProductConnectionInterface[], connection) => {
-          const castedConnection = castProductConnectionForUI({
-            connection,
-            locale,
-          });
-
-          if (!castedConnection) {
-            return acc;
-          }
-
-          return [...acc, castedConnection];
-        },
-        [],
-      );
-
       products.push({
         ...shopProduct,
         product: {
-          ...product,
+          ...castedProduct,
           shopsCount: shopProduct.shopsCount,
+          attributes: [],
           listFeatures,
           ratingFeatures,
-          name: getFieldStringLocale(product.nameI18n, locale),
           cardPrices,
-          connections,
-          snippetTitle,
         },
       });
     });

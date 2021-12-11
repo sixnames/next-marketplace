@@ -2,7 +2,7 @@ import ConsoleRubricProductConstructor, {
   ConsoleRubricProductConstructorInterface,
 } from 'components/console/ConsoleRubricProductConstructor';
 import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
 import CmsProductLayout from 'layout/cms/CmsProductLayout';
 import { getCmsProduct } from 'lib/productUtils';
 import * as React from 'react';

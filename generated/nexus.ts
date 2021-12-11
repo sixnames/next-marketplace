@@ -448,10 +448,6 @@ export interface NexusGenInputs {
     companyId: NexusGenScalars['ObjectId']; // ObjectId!
     shopId: NexusGenScalars['ObjectId']; // ObjectId!
   };
-  GetAllRubricsInput: {
-    // input type
-    excludedRubricsIds?: NexusGenScalars['ObjectId'][] | null; // [ObjectId!]
-  };
   GetProductShopsInput: {
     // input type
     productId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -1711,7 +1707,6 @@ export interface NexusGenFieldTypes {
     getAllOptionsGroups: NexusGenRootTypes['OptionsGroup'][]; // [OptionsGroup!]!
     getAllRoles: NexusGenRootTypes['Role'][]; // [Role!]!
     getAllRubricVariants: NexusGenRootTypes['RubricVariant'][]; // [RubricVariant!]!
-    getAllRubrics: NexusGenRootTypes['Rubric'][]; // [Rubric!]!
     getAllShops: NexusGenRootTypes['ShopsPaginationPayload']; // ShopsPaginationPayload!
     getAllSuppliers: NexusGenRootTypes['SuppliersPaginationPayload']; // SuppliersPaginationPayload!
     getAttributePositioningOptions: NexusGenRootTypes['SelectOption'][]; // [SelectOption!]!
@@ -1739,10 +1734,7 @@ export interface NexusGenFieldTypes {
     getProduct: NexusGenRootTypes['Product'] | null; // Product
     getProductBySlug: NexusGenRootTypes['Product'] | null; // Product
     getProductShops: NexusGenRootTypes['ShopProduct'][]; // [ShopProduct!]!
-    getProductsList: NexusGenRootTypes['ProductsPaginationPayload']; // ProductsPaginationPayload!
     getRole: NexusGenRootTypes['Role'] | null; // Role
-    getRubric: NexusGenRootTypes['Rubric']; // Rubric!
-    getRubricBySlug: NexusGenRootTypes['Rubric']; // Rubric!
     getRubricVariant: NexusGenRootTypes['RubricVariant']; // RubricVariant!
     getSessionCities: NexusGenRootTypes['City'][]; // [City!]!
     getShop: NexusGenRootTypes['Shop']; // Shop!
@@ -1806,7 +1798,6 @@ export interface NexusGenFieldTypes {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     prefixI18n: NexusGenScalars['JSONObject'] | null; // JSONObject
     priorities: NexusGenScalars['JSONObject']; // JSONObject!
-    products: NexusGenRootTypes['ProductsPaginationPayload']; // ProductsPaginationPayload!
     shortDescription: string; // String!
     shortDescriptionI18n: NexusGenScalars['JSONObject']; // JSONObject!
     slug: string; // String!
@@ -2743,7 +2734,6 @@ export interface NexusGenFieldTypeNames {
     getAllOptionsGroups: 'OptionsGroup';
     getAllRoles: 'Role';
     getAllRubricVariants: 'RubricVariant';
-    getAllRubrics: 'Rubric';
     getAllShops: 'ShopsPaginationPayload';
     getAllSuppliers: 'SuppliersPaginationPayload';
     getAttributePositioningOptions: 'SelectOption';
@@ -2771,10 +2761,7 @@ export interface NexusGenFieldTypeNames {
     getProduct: 'Product';
     getProductBySlug: 'Product';
     getProductShops: 'ShopProduct';
-    getProductsList: 'ProductsPaginationPayload';
     getRole: 'Role';
-    getRubric: 'Rubric';
-    getRubricBySlug: 'Rubric';
     getRubricVariant: 'RubricVariant';
     getSessionCities: 'City';
     getShop: 'Shop';
@@ -2838,7 +2825,6 @@ export interface NexusGenFieldTypeNames {
     nameI18n: 'JSONObject';
     prefixI18n: 'JSONObject';
     priorities: 'JSONObject';
-    products: 'ProductsPaginationPayload';
     shortDescription: 'String';
     shortDescriptionI18n: 'JSONObject';
     slug: 'String';
@@ -3528,10 +3514,6 @@ export interface NexusGenArgTypes {
       // args
       excludedIds: NexusGenScalars['ObjectId'][] | null; // [ObjectId!]
     };
-    getAllRubrics: {
-      // args
-      input: NexusGenInputs['GetAllRubricsInput'] | null; // GetAllRubricsInput
-    };
     getAllShops: {
       // args
       input?: NexusGenInputs['PaginationInput'] | null; // PaginationInput
@@ -3613,21 +3595,9 @@ export interface NexusGenArgTypes {
       // args
       input: NexusGenInputs['GetProductShopsInput']; // GetProductShopsInput!
     };
-    getProductsList: {
-      // args
-      input?: NexusGenInputs['ProductsPaginationInput'] | null; // ProductsPaginationInput
-    };
     getRole: {
       // args
       _id: NexusGenScalars['ObjectId']; // ObjectId!
-    };
-    getRubric: {
-      // args
-      _id: NexusGenScalars['ObjectId']; // ObjectId!
-    };
-    getRubricBySlug: {
-      // args
-      slug: string; // String!
     };
     getRubricVariant: {
       // args
@@ -3652,12 +3622,6 @@ export interface NexusGenArgTypes {
     getSupplierBySlug: {
       // args
       slug: string; // String!
-    };
-  };
-  Rubric: {
-    products: {
-      // args
-      input?: NexusGenInputs['ProductsPaginationInput'] | null; // ProductsPaginationInput
     };
   };
   Shop: {

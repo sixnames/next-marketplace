@@ -283,6 +283,7 @@ export async function updateIndexes(db: Db) {
   await promoProductsCollection.createIndex({ shopId: 1 });
   await promoProductsCollection.createIndex({ companyId: 1 });
   await promoProductsCollection.createIndex({ shopProductId: 1 });
+  await promoProductsCollection.createIndex({ productId: 1 });
 
   // Rubrics
   await createCollectionIfNotExist(COL_RUBRICS);
@@ -344,6 +345,52 @@ export async function updateIndexes(db: Db) {
   await shopProductsCollection.createIndex({
     companyId: 1,
     citySlug: 1,
+  });
+
+  // console
+  await shopProductsCollection.createIndex({
+    rubricId: 1,
+    productId: 1,
+    brandSlug: 1,
+    brandCollectionSlug: 1,
+    selectedOptionsSlugs: 1,
+    price: 1,
+    companyId: 1,
+    mainImage: 1,
+    _id: 1,
+  });
+  await shopProductsCollection.createIndex({
+    rubricSlug: 1,
+    productId: 1,
+    brandSlug: 1,
+    brandCollectionSlug: 1,
+    selectedOptionsSlugs: 1,
+    price: 1,
+    companyId: 1,
+    mainImage: 1,
+    _id: 1,
+  });
+  await shopProductsCollection.createIndex({
+    shopId: 1,
+    rubricId: 1,
+    productId: 1,
+    brandSlug: 1,
+    brandCollectionSlug: 1,
+    selectedOptionsSlugs: 1,
+    price: 1,
+    mainImage: 1,
+    _id: 1,
+  });
+  await shopProductsCollection.createIndex({
+    shopId: 1,
+    rubricSlug: 1,
+    productId: 1,
+    brandSlug: 1,
+    brandCollectionSlug: 1,
+    selectedOptionsSlugs: 1,
+    price: 1,
+    mainImage: 1,
+    _id: 1,
   });
 
   // catalogue

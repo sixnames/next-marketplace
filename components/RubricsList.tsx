@@ -1,20 +1,16 @@
-import { GetAllRubricsQuery } from 'generated/apolloComponents';
+import { RubricInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import Accordion from 'components/Accordion';
 import RequestError from 'components/RequestError';
 
-interface RubricsTreeRenderInterface {
-  _id: string;
-  slug: string;
-}
-
 interface RubricsTreeInterface {
-  rubrics: GetAllRubricsQuery['getAllRubrics'];
-  render?: (args: RubricsTreeRenderInterface) => any;
+  rubrics: RubricInterface[];
+  render?: (args: RubricInterface) => any;
   isAccordionDisabled?: boolean;
   titleLeft?: (_id: string, testId?: string) => any;
   low?: boolean;
   testIdPrefix?: string;
+  openAll?: boolean;
 }
 
 const RubricsList: React.FC<RubricsTreeInterface> = ({
@@ -24,14 +20,17 @@ const RubricsList: React.FC<RubricsTreeInterface> = ({
   titleLeft,
   low = false,
   testIdPrefix,
+  openAll,
 }) => {
   const finalTestIdPrefix = React.useMemo(() => {
     return testIdPrefix ? `${testIdPrefix}-` : '';
   }, [testIdPrefix]);
 
   const titleLeftContent = React.useCallback(
-    (_id: any, name: string) => {
-      return titleLeft ? titleLeft(_id, `${finalTestIdPrefix}tree-link-${name}`) : null;
+    (rubric: RubricInterface) => {
+      return titleLeft
+        ? titleLeft(`${rubric._id}`, `${finalTestIdPrefix}tree-link-${rubric.name}`)
+        : null;
     },
     [finalTestIdPrefix, titleLeft],
   );
@@ -42,26 +41,20 @@ const RubricsList: React.FC<RubricsTreeInterface> = ({
 
   return (
     <div className={`${low ? 'mb-8' : 'mb-12'}`} data-cy={'rubrics-tree'}>
-      {rubrics.map((item) => {
-        const { _id, name, slug } = item;
+      {rubrics.map((rubric) => {
+        const { _id, name } = rubric;
         return (
-          <Accordion
-            titleLeft={titleLeftContent(_id, name)}
-            disabled={isAccordionDisabled}
-            // disabled={productsCount === 0 || isAccordionDisabled}
-            /*titleRight={
-              <RubricsTreeCounters
-                activeProductsCount={activeProductsCount}
-                totalProductsCount={productsCount}
-                testId={name}
-              />
-            }*/
-            title={name}
-            key={_id}
-            testId={`tree-${name}`}
-          >
-            {render ? render({ _id, slug }) : null}
-          </Accordion>
+          <div key={`${_id}`} className='mb-4'>
+            <Accordion
+              isOpen={openAll}
+              titleLeft={titleLeftContent(rubric)}
+              disabled={isAccordionDisabled}
+              title={`${name}`}
+              testId={`tree-${name}`}
+            >
+              {render ? render(rubric) : null}
+            </Accordion>
+          </div>
         );
       })}
     </div>

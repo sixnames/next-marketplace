@@ -16,8 +16,9 @@ import {
   ProductAttributeInterface,
   RubricInterface,
 } from 'db/uiInterfaces';
+import { sortObjectsByField } from 'lib/arrayUtils';
 import { getFieldStringLocale } from 'lib/i18n';
-import { getStringValueFromOptionsList, sortByName } from 'lib/optionUtils';
+import { getStringValueFromOptionsList } from 'lib/optionUtils';
 import { ObjectId } from 'mongodb';
 
 export async function getRubricAllAttributes(
@@ -269,7 +270,7 @@ export function getProductCurrentViewCastedAttributes({
     [],
   );
 
-  return sortByName(castedAttributes);
+  return sortObjectsByField(castedAttributes);
 }
 
 export function countProductAttributes(attributes?: ProductAttributeInterface[] | null): number {

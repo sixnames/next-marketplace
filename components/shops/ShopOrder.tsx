@@ -1,10 +1,13 @@
 import ConsoleOrderDetails, {
   CmsOrderDetailsBaseInterface,
 } from 'components/order/ConsoleOrderDetails';
-import ConsoleShopLayout, { AppShopLayoutInterface } from 'layout/console/ConsoleShopLayout';
+import { ConsoleShopLayoutInterface } from 'db/uiInterfaces';
+import ConsoleShopLayout from 'layout/console/ConsoleShopLayout';
 import * as React from 'react';
 
-export interface ShopOrderInterface extends AppShopLayoutInterface, CmsOrderDetailsBaseInterface {
+export interface ShopOrderInterface
+  extends ConsoleShopLayoutInterface,
+    CmsOrderDetailsBaseInterface {
   pageCompanySlug: string;
   title: string;
 }

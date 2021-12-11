@@ -20,10 +20,10 @@ import {
 } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
-import { getTreeFromList } from 'lib/optionUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { castDbData } from 'lib/ssrUtils';
 import { generateSnippetTitle, generateTitle } from 'lib/titleUtils';
+import { getTreeFromList } from 'lib/treeUtils';
 import { ObjectId } from 'mongodb';
 
 export interface MainPageInterface {

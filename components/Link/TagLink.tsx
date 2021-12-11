@@ -1,5 +1,6 @@
+import { LinkInterface } from 'db/uiInterfaces';
 import * as React from 'react';
-import Link, { LinkInterface } from './Link';
+import Link from './Link';
 
 export interface TagLinkInterface extends Omit<LinkInterface, 'activeClassName' | 'href'> {
   theme?: 'primary' | 'secondary';

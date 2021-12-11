@@ -105,7 +105,7 @@ const SyncErrorsList: React.FC<SyncErrorsListInterface> = ({
                     ),
                     createHandler: (product) => {
                       updateProductWithSyncErrorMutation({
-                        productId: product._id,
+                        productId: `${product._id}`,
                         available: dataItem.available,
                         barcode: dataItem.barcode || [],
                         price: dataItem.price,

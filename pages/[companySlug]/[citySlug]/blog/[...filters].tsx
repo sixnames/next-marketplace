@@ -42,7 +42,7 @@ import {
 } from 'db/uiInterfaces';
 import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
 import { alwaysArray } from 'lib/arrayUtils';
-import { castCatalogueFilters, castCatalogueParamToObject } from 'lib/catalogueUtils';
+import { castUrlFilters, castCatalogueParamToObject } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getIsrSiteInitialData, IsrContextInterface } from 'lib/isrUtils';
 import { noNaN } from 'lib/numbers';
@@ -479,10 +479,11 @@ export const getStaticProps = async (
   const filters = alwaysArray(context.params?.filters);
 
   // Cast selected filters
-  const { realFilters, noFiltersSelected } = castCatalogueFilters({
+  const { realFilters, noFiltersSelected } = await castUrlFilters({
     filters,
     initialPage: DEFAULT_PAGE,
     initialLimit: CATALOGUE_PRODUCTS_LIMIT,
+    searchFieldName: '_id',
   });
 
   const { db } = await getDatabase();

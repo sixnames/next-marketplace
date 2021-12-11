@@ -2,8 +2,12 @@ import ConsoleRubricProductConstructor from 'components/console/ConsoleRubricPro
 import { ROUTE_CMS } from 'config/common';
 import { COL_COMPANIES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { CompanyInterface, ProductInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import {
+  AppContentWrapperBreadCrumbs,
+  CompanyInterface,
+  ProductInterface,
+  SeoContentCitiesInterface,
+} from 'db/uiInterfaces';
 import CmsProductLayout from 'layout/cms/CmsProductLayout';
 import { getCmsProduct } from 'lib/productUtils';
 import { ObjectId } from 'mongodb';

@@ -4,6 +4,7 @@ import WpImageUpload from 'components/FormElements/Upload/WpImageUpload';
 import ShopMainFields from 'components/FormTemplates/ShopMainFields';
 import Inner from 'components/Inner';
 import { REQUEST_METHOD_DELETE, REQUEST_METHOD_POST } from 'config/common';
+import { ConsoleShopLayoutInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import {
   UpdateShopInput,
@@ -12,13 +13,13 @@ import {
 } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import useValidationSchema from 'hooks/useValidationSchema';
-import ConsoleShopLayout, { AppShopLayoutInterface } from 'layout/console/ConsoleShopLayout';
+import ConsoleShopLayout from 'layout/console/ConsoleShopLayout';
 import { phoneToRaw } from 'lib/phoneUtils';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { updateShopSchema } from 'validation/shopSchema';
 
-export type ShopDetailsInterface = AppShopLayoutInterface;
+export type ShopDetailsInterface = ConsoleShopLayoutInterface;
 
 const ShopDetails: React.FC<ShopDetailsInterface> = ({ shop, basePath, breadcrumbs }) => {
   const router = useRouter();

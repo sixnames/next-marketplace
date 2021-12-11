@@ -13,6 +13,7 @@ import TableRowImage from 'components/TableRowImage';
 import { ROUTE_CMS } from 'config/common';
 import { useUserContext } from 'context/userContext';
 import {
+  AppContentWrapperBreadCrumbs,
   CatalogueFilterAttributeInterface,
   ConsoleRubricProductsInterface,
   ProductInterface,
@@ -26,7 +27,6 @@ import {
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import { useReloadListener } from 'hooks/useReloadListener';
 import useValidationSchema from 'hooks/useValidationSchema';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import ConsoleShopLayout from 'layout/console/ConsoleShopLayout';
 import { alwaysArray } from 'lib/arrayUtils';
 import { getNumWord } from 'lib/i18n';

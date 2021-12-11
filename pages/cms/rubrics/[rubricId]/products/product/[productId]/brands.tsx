@@ -4,12 +4,12 @@ import { COL_BRAND_COLLECTIONS, COL_BRANDS, COL_MANUFACTURERS } from 'db/collect
 import { BrandCollectionModel, BrandModel, ManufacturerModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
+  AppContentWrapperBreadCrumbs,
   BrandCollectionInterface,
   BrandInterface,
   ManufacturerInterface,
   ProductInterface,
 } from 'db/uiInterfaces';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import CmsProductLayout from 'layout/cms/CmsProductLayout';
 import { getFieldStringLocale } from 'lib/i18n';

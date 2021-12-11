@@ -3,15 +3,15 @@ import { ROUTE_CMS } from 'config/common';
 import { COL_CATEGORIES, COL_COMPANIES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import {
+  AppContentWrapperBreadCrumbs,
   CategoryInterface,
   CompanyInterface,
   ProductCategoryInterface,
   ProductInterface,
 } from 'db/uiInterfaces';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsProductLayout from 'layout/cms/CmsProductLayout';
-import { getTreeFromList } from 'lib/optionUtils';
 import { getCmsProduct } from 'lib/productUtils';
+import { getTreeFromList } from 'lib/treeUtils';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';

@@ -27,7 +27,7 @@ import usePageLoadingState from 'hooks/usePageLoadingState';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { alwaysArray } from 'lib/arrayUtils';
-import { castCatalogueFilters } from 'lib/catalogueUtils';
+import { castUrlFilters } from 'lib/catalogueUtils';
 import { getFieldStringLocale, getNumWord } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { ObjectId } from 'mongodb';
@@ -222,8 +222,9 @@ export const getServerSideProps = async (
   const filtersArray = alwaysArray(filters);
 
   // Cast filters
-  const { page, skip, limit, clearSlug } = castCatalogueFilters({
+  const { page, skip, limit, clearSlug } = await castUrlFilters({
     filters: filtersArray,
+    searchFieldName: '_id',
   });
   const itemPath = `${ROUTE_CONSOLE}/${query.companyId}/shops/shop`;
 

@@ -160,6 +160,10 @@ export type RoleRuleSlugType =
   | 'updatePromo'
   | 'deletePromo'
 
+  // Promo product
+  | 'addPromoProduct'
+  | 'deletePromoProduct'
+
   // User
   | 'createUser'
   | 'updateUser'
@@ -1014,6 +1018,24 @@ const baseRoleRules: RoleRuleBaseExtended[] = [
     descriptionI18n: {},
     nameI18n: {
       ru: 'Удаление акции',
+    },
+  },
+
+  // Promo product
+  {
+    allow: false,
+    slug: 'addPromoProduct',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Добавление товара к акции',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deletePromoProduct',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление товара из акции',
     },
   },
 

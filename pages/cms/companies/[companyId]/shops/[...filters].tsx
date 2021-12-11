@@ -21,6 +21,7 @@ import {
 } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
 import {
+  AppContentWrapperBreadCrumbs,
   AppPaginationAggregationInterface,
   AppPaginationInterface,
   CompanyInterface,
@@ -29,10 +30,9 @@ import {
 import { useDeleteShopFromCompanyMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import usePageLoadingState from 'hooks/usePageLoadingState';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
 import { alwaysArray } from 'lib/arrayUtils';
-import { castCatalogueFilters } from 'lib/catalogueUtils';
+import { castUrlFilters } from 'lib/catalogueUtils';
 import { getFieldStringLocale, getNumWord } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { ObjectId } from 'mongodb';
@@ -234,8 +234,9 @@ export const getServerSideProps = async (
   const [companyId, ...restFilter] = alwaysArray(filters);
 
   // Cast filters
-  const { page, skip, limit, clearSlug } = castCatalogueFilters({
+  const { page, skip, limit, clearSlug } = await castUrlFilters({
     filters: restFilter,
+    searchFieldName: '_id',
   });
   const itemPath = `${ROUTE_CMS}/companies/${companyId}/shops/shop`;
 

@@ -2,10 +2,9 @@ import PromoDetails, { PromoDetailsInterface } from 'components/Promo/PromoDetai
 import { ROUTE_CMS } from 'config/common';
 import { COL_COMPANIES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { CompanyInterface } from 'db/uiInterfaces';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
-import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
+import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import ConsolePromoLayout from 'layout/console/ConsolePromoLayout';
 import { getPromoSsr } from 'lib/promoUtils';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
@@ -42,9 +41,9 @@ const PromoDetailsPage: React.FC<PromoDetailsPageInterface> = ({
 
   return (
     <ConsoleLayout title={`${promo.name}`} {...layoutProps}>
-      <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
+      <ConsolePromoLayout basePath={basePath} promo={promo} breadcrumbs={breadcrumbs}>
         <PromoDetails basePath={basePath} pageCompany={pageCompany} promo={promo} />
-      </CmsCompanyLayout>
+      </ConsolePromoLayout>
     </ConsoleLayout>
   );
 };

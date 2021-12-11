@@ -722,10 +722,6 @@ enum Gender {
   singular
 }
 
-input GetAllRubricsInput {
-  excludedRubricsIds: [ObjectId!]
-}
-
 input GetProductShopsInput {
   productId: ObjectId!
   sortBy: String = "price"
@@ -1710,11 +1706,6 @@ type Query {
   getAllRubricVariants: [RubricVariant!]!
 
   """
-  Should return rubrics tree
-  """
-  getAllRubrics(input: GetAllRubricsInput = {}): [Rubric!]!
-
-  """
   Should return shop by given slug
   """
   getAllShops(input: PaginationInput): ShopsPaginationPayload!
@@ -1848,24 +1839,9 @@ type Query {
   getProductShops(input: GetProductShopsInput!): [ShopProduct!]!
 
   """
-  Should paginated products
-  """
-  getProductsList(input: ProductsPaginationInput): ProductsPaginationPayload!
-
-  """
   Should return role by give id
   """
   getRole(_id: ObjectId!): Role
-
-  """
-  Should return rubric by given id
-  """
-  getRubric(_id: ObjectId!): Rubric!
-
-  """
-  Should return rubric by given slug
-  """
-  getRubricBySlug(slug: String!): Rubric!
 
   """
   Should return rubric variant by given id
@@ -1965,7 +1941,6 @@ type Rubric {
   nameI18n: JSONObject!
   prefixI18n: JSONObject
   priorities: JSONObject!
-  products(input: ProductsPaginationInput): ProductsPaginationPayload!
   shortDescription: String!
   shortDescriptionI18n: JSONObject!
   slug: String!

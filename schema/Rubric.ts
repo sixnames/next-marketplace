@@ -1,9 +1,8 @@
-import { arg, inputObjectType, objectType } from 'nexus';
+import { inputObjectType, objectType } from 'nexus';
 import { getRequestParams } from 'lib/sessionHelpers';
-import { ProductsPaginationPayloadModel, RubricVariantModel } from 'db/dbModels';
+import { RubricVariantModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { COL_RUBRIC_VARIANTS } from 'db/collectionNames';
-import { productsPaginationQuery } from 'lib/productsPaginationQuery';
 
 export const RubricProductsCountersInput = inputObjectType({
   name: 'RubricProductsCountersInput',
@@ -80,28 +79,6 @@ export const Rubric = objectType({
         }
 
         return variant;
-      },
-    });
-
-    // Rubric paginated products field resolver
-    t.nonNull.field('products', {
-      type: 'ProductsPaginationPayload',
-      args: {
-        input: arg({
-          type: 'ProductsPaginationInput',
-        }),
-      },
-      resolve: async (source, args, context): Promise<ProductsPaginationPayloadModel> => {
-        const { city } = await getRequestParams(context);
-
-        const paginationResult = await productsPaginationQuery({
-          input: {
-            ...args.input,
-            rubricId: source._id,
-          },
-          city,
-        });
-        return paginationResult;
       },
     });
   },

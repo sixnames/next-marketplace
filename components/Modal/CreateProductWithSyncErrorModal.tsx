@@ -6,15 +6,15 @@ import ModalTitle from 'components/Modal/ModalTitle';
 import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
 import { DEFAULT_LOCALE, GENDER_IT } from 'config/common';
-import { NotSyncedProductInterface } from 'db/uiInterfaces';
+import { NotSyncedProductInterface, RubricInterface } from 'db/uiInterfaces';
 import { useCreateProductWithSyncError } from 'hooks/mutations/useProductMutations';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import * as React from 'react';
-import { useGetAllRubricsQuery } from 'generated/apolloComponents';
 import { Form, Formik } from 'formik';
 import ProductMainFields, {
   ProductFormValuesInterface,
 } from 'components/FormTemplates/ProductMainFields';
+import useSWR from 'swr';
 
 interface InitialValuesInterface extends ProductFormValuesInterface {
   rubricId?: string;
@@ -28,9 +28,7 @@ export interface CreateProductWithSyncErrorModalInterface {
 const CreateProductWithSyncErrorModal: React.FC<CreateProductWithSyncErrorModalInterface> = ({
   notSyncedProduct,
 }) => {
-  const { data, error, loading } = useGetAllRubricsQuery({
-    fetchPolicy: 'network-only',
-  });
+  const { data, error } = useSWR<RubricInterface[]>('/api/rubrics');
 
   const { hideModal, showErrorNotification } = useMutationCallbacks({
     withModal: true,
@@ -38,23 +36,7 @@ const CreateProductWithSyncErrorModal: React.FC<CreateProductWithSyncErrorModalI
 
   const [createProductWithSyncErrorMutation] = useCreateProductWithSyncError();
 
-  if (loading) {
-    return (
-      <ModalFrame>
-        <Spinner isNested isTransparent />
-      </ModalFrame>
-    );
-  }
-
-  if (error || !data || !data.getAllRubrics) {
-    return (
-      <ModalFrame>
-        <RequestError />
-      </ModalFrame>
-    );
-  }
-
-  if (!data && !loading && !error) {
+  if (!data && error) {
     return (
       <ModalFrame>
         <ModalTitle>Ошибка загрузки рубрик</ModalTitle>
@@ -62,7 +44,21 @@ const CreateProductWithSyncErrorModal: React.FC<CreateProductWithSyncErrorModalI
     );
   }
 
-  const { getAllRubrics } = data;
+  if (!data && !error) {
+    return (
+      <ModalFrame>
+        <Spinner isNested isTransparent />
+      </ModalFrame>
+    );
+  }
+
+  if (!data) {
+    return (
+      <ModalFrame>
+        <RequestError />
+      </ModalFrame>
+    );
+  }
 
   const initialValues: InitialValuesInterface = {
     active: true,
@@ -113,7 +109,7 @@ const CreateProductWithSyncErrorModal: React.FC<CreateProductWithSyncErrorModalI
                 testId={'rubricId'}
                 name={'rubricId'}
                 firstOption
-                options={getAllRubrics}
+                options={data}
                 useIdField
                 isRequired
               />

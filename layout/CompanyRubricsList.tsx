@@ -1,6 +1,7 @@
 import ContentItemControls from 'components/button/ContentItemControls';
 import Inner from 'components/Inner';
 import Table, { TableColumn } from 'components/Table';
+import { DEFAULT_PAGE_FILTER } from 'config/common';
 import { CompanyInterface, RubricInterface } from 'db/uiInterfaces';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -36,7 +37,7 @@ const CompanyRubricsList: React.FC<CompanyRubricsListInterface> = ({ rubrics, ro
             updateTitle={'Редактировать рубрику'}
             updateHandler={() => {
               router
-                .push(`${routeBasePath}/${dataItem._id}/products/${dataItem._id}`)
+                .push(`${routeBasePath}/${dataItem._id}/products/${DEFAULT_PAGE_FILTER}`)
                 .catch((e) => console.log(e));
             }}
           />
@@ -55,7 +56,7 @@ const CompanyRubricsList: React.FC<CompanyRubricsListInterface> = ({ rubrics, ro
           emptyMessage={'Список пуст'}
           onRowDoubleClick={(dataItem) => {
             router
-              .push(`${routeBasePath}/${dataItem._id}/products/${dataItem._id}`)
+              .push(`${routeBasePath}/${dataItem._id}/products/${DEFAULT_PAGE_FILTER}`)
               .catch((e) => console.log(e));
           }}
         />

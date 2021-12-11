@@ -3,8 +3,11 @@ import RequestError from 'components/RequestError';
 import { ROUTE_CMS } from 'config/common';
 import { COL_COMPANIES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { CompanyInterface, ShopProductInterface } from 'db/uiInterfaces';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import {
+  AppContentWrapperBreadCrumbs,
+  CompanyInterface,
+  ShopProductInterface,
+} from 'db/uiInterfaces';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import ConsoleShopProductLayout from 'layout/console/ConsoleShopProductLayout';
 import { getConsoleShopProduct } from 'lib/productUtils';

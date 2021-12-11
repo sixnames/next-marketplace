@@ -2,11 +2,15 @@ import ConsoleRubricProductCategories from 'components/console/ConsoleRubricProd
 import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
 import { COL_CATEGORIES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { CategoryInterface, ProductCategoryInterface, ProductInterface } from 'db/uiInterfaces';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import {
+  AppContentWrapperBreadCrumbs,
+  CategoryInterface,
+  ProductCategoryInterface,
+  ProductInterface,
+} from 'db/uiInterfaces';
 import CmsProductLayout from 'layout/cms/CmsProductLayout';
-import { getTreeFromList } from 'lib/optionUtils';
 import { getCmsProduct } from 'lib/productUtils';
+import { getTreeFromList } from 'lib/treeUtils';
 import * as React from 'react';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';

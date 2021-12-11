@@ -5,12 +5,12 @@ import LinkEmail from 'components/Link/LinkEmail';
 import LinkPhone from 'components/Link/LinkPhone';
 import Pager from 'components/Pager';
 import Table, { TableColumn } from 'components/Table';
-import { OrderInterface } from 'db/uiInterfaces';
-import ConsoleShopLayout, { AppShopLayoutInterface } from 'layout/console/ConsoleShopLayout';
+import { ConsoleShopLayoutInterface, OrderInterface } from 'db/uiInterfaces';
+import ConsoleShopLayout from 'layout/console/ConsoleShopLayout';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 
-export type ShopOrdersInterface = AppShopLayoutInterface;
+export type ShopOrdersInterface = ConsoleShopLayoutInterface;
 
 const ShopOrders: React.FC<ShopOrdersInterface> = ({ shop, basePath, breadcrumbs }) => {
   const router = useRouter();

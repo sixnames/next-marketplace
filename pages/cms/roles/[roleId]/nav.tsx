@@ -6,10 +6,15 @@ import { ROUTE_CMS, SORT_ASC, SORT_DESC } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { COL_NAV_ITEMS, COL_ROLES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { NavGroupInterface, RoleInterface, NavItemInterface } from 'db/uiInterfaces';
+import {
+  NavGroupInterface,
+  RoleInterface,
+  NavItemInterface,
+  AppContentWrapperBreadCrumbs,
+} from 'db/uiInterfaces';
 import { useUpdateRoleNavMutation } from 'generated/apolloComponents';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper, { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
+import AppContentWrapper from 'layout/AppContentWrapper';
 import AppSubNav from 'layout/AppSubNav';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';

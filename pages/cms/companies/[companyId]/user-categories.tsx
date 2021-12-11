@@ -12,9 +12,12 @@ import { CONFIRM_MODAL, USER_CATEGORY_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { COL_COMPANIES, COL_USER_CATEGORIES } from 'db/collectionNames';
 import { getDatabase } from 'db/mongodb';
-import { CompanyInterface, UserCategoryInterface } from 'db/uiInterfaces';
+import {
+  AppContentWrapperBreadCrumbs,
+  CompanyInterface,
+  UserCategoryInterface,
+} from 'db/uiInterfaces';
 import { useDeleteUserCategory } from 'hooks/mutations/useUserCategoryMutations';
-import { AppContentWrapperBreadCrumbs } from 'layout/AppContentWrapper';
 import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';

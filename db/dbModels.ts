@@ -133,15 +133,6 @@ export interface IconModel {
   icon: string;
 }
 
-export interface ProductsPaginationInputModel extends PaginationInputModel {
-  rubricId?: ObjectIdModel | null;
-  attributesIds?: ObjectIdModel[] | null;
-  excludedOptionsSlugs?: string[] | null;
-  excludedRubricsIds?: ObjectIdModel[] | null;
-  excludedProductsIds?: ObjectIdModel[] | null;
-  isWithoutRubrics?: boolean | null;
-}
-
 export interface PaginationPayloadModel {
   sortBy: string;
   sortDir: SortDirectionModel;
@@ -944,7 +935,7 @@ export interface UserCashbackLogModel extends TimestampModel {
   creatorId?: ObjectIdModel;
   companyId: ObjectIdModel;
   variant: 'add' | 'subtract';
-  descriptionI18n?: any;
+  descriptionI18n?: TranslationModel;
   value: number; // - / +
   currency: string;
 }
@@ -1015,7 +1006,7 @@ export interface PromoProductModel extends PromoBaseInterface {
   productId: ObjectIdModel;
 }
 
-export interface PromoCodeModel {
+export interface PromoCodeModel extends PromoBaseInterface {
   _id: ObjectIdModel;
   code: string;
   active: boolean;

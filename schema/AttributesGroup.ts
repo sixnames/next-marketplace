@@ -23,7 +23,6 @@ import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
 import {
   createAttributesGroupSchema,
-  deleteAttributeFromGroupSchema,
   updateAttributesGroupSchema,
 } from 'validation/attributesGroupSchema';
 
@@ -142,14 +141,6 @@ export const UpdateAttributesGroupInput = inputObjectType({
 
 export const MoveAttributeInput = inputObjectType({
   name: 'MoveAttributeInput',
-  definition(t) {
-    t.nonNull.objectId('attributesGroupId');
-    t.nonNull.objectId('attributeId');
-  },
-});
-
-export const DeleteAttributeFromGroupInput = inputObjectType({
-  name: 'DeleteAttributeFromGroupInput',
   definition(t) {
     t.nonNull.objectId('attributesGroupId');
     t.nonNull.objectId('attributeId');
@@ -432,141 +423,6 @@ export const attributesGroupMutations = extendType({
             mutationPayload = {
               success: true,
               message: await getApiMessage('attributesGroups.delete.success'),
-            };
-          });
-
-          return mutationPayload;
-        } catch (e) {
-          console.log(e);
-          return {
-            success: false,
-            message: getResolverErrorMessage(e),
-          };
-        } finally {
-          await session.endSession();
-        }
-      },
-    });
-
-    // Should delete attribute from the attributes group
-    t.nonNull.field('deleteAttributeFromGroup', {
-      type: 'AttributesGroupPayload',
-      description: 'Should delete attribute from the attributes group',
-      args: {
-        input: nonNull(
-          arg({
-            type: 'DeleteAttributeFromGroupInput',
-          }),
-        ),
-      },
-      resolve: async (_root, args, context): Promise<AttributesGroupPayloadModel> => {
-        const { getApiMessage } = await getRequestParams(context);
-        const { db, client } = await getDatabase();
-        const productAttributesCollection =
-          db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
-        const attributesGroupCollection =
-          db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
-        const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-
-        const session = client.startSession();
-
-        let mutationPayload: AttributesGroupPayloadModel = {
-          success: false,
-          message: await getApiMessage(`attributesGroups.deleteAttribute.deleteError`),
-        };
-
-        try {
-          await session.withTransaction(async () => {
-            // Permission
-            const { allow, message } = await getOperationPermission({
-              context,
-              slug: 'deleteAttribute',
-            });
-            if (!allow) {
-              mutationPayload = {
-                success: false,
-                message,
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Validate
-            const validationSchema = await getResolverValidationSchema({
-              context,
-              schema: deleteAttributeFromGroupSchema,
-            });
-            await validationSchema.validate(args.input);
-
-            const {
-              input: { attributesGroupId, attributeId },
-            } = args;
-
-            // Check if attributes group exist
-            const attributesGroup = await attributesGroupCollection.findOne({
-              _id: attributesGroupId,
-            });
-            if (!attributesGroup) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`attributesGroups.updateAttribute.groupError`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Delete attribute form products
-            const removedProductAttributes = await productAttributesCollection.deleteMany({
-              attributeId,
-            });
-            if (!removedProductAttributes.acknowledged) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`attributesGroups.deleteAttribute.deleteError`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Remove attribute
-            const removedAttributeResult = await attributesCollection.findOneAndDelete({
-              _id: attributeId,
-            });
-            if (!removedAttributeResult.ok) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`attributesGroups.deleteAttribute.deleteError`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Remove attribute _id from attributes group
-            const updatedGroupResult = await attributesGroupCollection.findOneAndUpdate(
-              { _id: attributesGroup._id },
-              {
-                $pull: {
-                  attributesIds: attributeId,
-                },
-              },
-              {
-                returnDocument: 'after',
-              },
-            );
-            const updatedGroup = updatedGroupResult.value;
-            if (!updatedGroupResult.ok || !updatedGroup) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`attributesGroups.deleteAttribute.deleteError`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            mutationPayload = {
-              success: true,
-              message: await getApiMessage('attributesGroups.deleteAttribute.success'),
-              payload: updatedGroup,
             };
           });
 

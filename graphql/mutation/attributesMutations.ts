@@ -36,15 +36,6 @@ export const MOVE_ATTRIBUTE_MUTATION = gql`
   }
 `;
 
-export const DELETE_ATTRIBUTE_FROM_GROUP_MUTATION = gql`
-  mutation DeleteAttributeFromGroup($input: DeleteAttributeFromGroupInput!) {
-    deleteAttributeFromGroup(input: $input) {
-      success
-      message
-    }
-  }
-`;
-
 export const ADD_ATTRIBUTES_GROUP_TO_RUBRIC = gql`
   mutation AddAttributesGroupToRubric($input: AddAttributesGroupToRubricInput!) {
     addAttributesGroupToRubric(input: $input) {

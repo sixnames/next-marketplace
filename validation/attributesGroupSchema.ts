@@ -127,13 +127,6 @@ export const updateAttributeInGroupSchema = (args: ValidationSchemaArgsInterface
   });
 };
 
-export const deleteAttributeFromGroupSchema = (args: ValidationSchemaArgsInterface) => {
-  return Yup.object({
-    attributesGroupId: attributesGroupIdSchema(args),
-    attributeId: attributeIdSchema(args),
-  });
-};
-
 export const attributeInGroupModalSchema = (args: ValidationSchemaArgsInterface) => {
   return Yup.object({
     ...attributeCommonFieldsSchema(args),

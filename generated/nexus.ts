@@ -360,11 +360,6 @@ export interface NexusGenInputs {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     url?: NexusGenScalars['URL'][] | null; // [URL!]
   };
-  DeleteAttributeFromGroupInput: {
-    // input type
-    attributeId: NexusGenScalars['ObjectId']; // ObjectId!
-    attributesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
-  };
   DeleteAttributesGroupFromCategoryInput: {
     // input type
     attributesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -1360,7 +1355,6 @@ export interface NexusGenFieldTypes {
     createRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
     createRubricVariant: NexusGenRootTypes['RubricVariantPayload']; // RubricVariantPayload!
     createSupplier: NexusGenRootTypes['SupplierPayload']; // SupplierPayload!
-    deleteAttributeFromGroup: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
     deleteAttributesGroup: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
     deleteAttributesGroupFromCategory: NexusGenRootTypes['CategoryPayload']; // CategoryPayload!
     deleteAttributesGroupFromRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
@@ -2385,7 +2379,6 @@ export interface NexusGenFieldTypeNames {
     createRubric: 'RubricPayload';
     createRubricVariant: 'RubricVariantPayload';
     createSupplier: 'SupplierPayload';
-    deleteAttributeFromGroup: 'AttributesGroupPayload';
     deleteAttributesGroup: 'AttributesGroupPayload';
     deleteAttributesGroupFromCategory: 'CategoryPayload';
     deleteAttributesGroupFromRubric: 'RubricPayload';
@@ -3150,10 +3143,6 @@ export interface NexusGenArgTypes {
     createSupplier: {
       // args
       input: NexusGenInputs['CreateSupplierInput']; // CreateSupplierInput!
-    };
-    deleteAttributeFromGroup: {
-      // args
-      input: NexusGenInputs['DeleteAttributeFromGroupInput']; // DeleteAttributeFromGroupInput!
     };
     deleteAttributesGroup: {
       // args

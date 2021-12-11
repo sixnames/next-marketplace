@@ -47,7 +47,7 @@ export async function updateAttribute({
         return;
       }
 
-      // Permission
+      // permission
       const { allow, message } = await getOperationPermission({
         context,
         slug: 'updateAttribute',
@@ -61,7 +61,7 @@ export async function updateAttribute({
         return;
       }
 
-      // Validate
+      // validate
       const validationSchema = await getResolverValidationSchema({
         context,
         schema: updateAttributeInGroupSchema,
@@ -74,7 +74,7 @@ export async function updateAttribute({
       const metricObjectId = metricId ? new ObjectId(metricId) : null;
       const optionsGroupObjectId = optionsGroupId ? new ObjectId(optionsGroupId) : null;
 
-      // Check attributes group availability
+      // check attributes group availability
       const group = await attributesGroupCollection.findOne({
         _id: attributesGroupObjectId,
       });
@@ -87,7 +87,7 @@ export async function updateAttribute({
         return;
       }
 
-      // Check attribute availability
+      // check attribute availability
       const attribute = await attributesCollection.findOne({
         _id: attributeObjectId,
       });
@@ -100,7 +100,7 @@ export async function updateAttribute({
         return;
       }
 
-      // Check if attribute exist
+      // check if attribute exist
       const exist = await findDocumentByI18nField({
         fieldArg: input.nameI18n,
         collectionName: COL_ATTRIBUTES,
@@ -118,13 +118,13 @@ export async function updateAttribute({
         return;
       }
 
-      // Get metric
+      // get metric
       let metric = null;
       if (metricObjectId) {
         metric = await metricsCollection.findOne({ _id: new ObjectId(metricObjectId) });
       }
 
-      // Update attribute
+      // update attribute
       const updatedAttributeResult = await attributesCollection.findOneAndUpdate(
         { _id: attributeObjectId },
         {

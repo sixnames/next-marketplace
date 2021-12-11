@@ -115,7 +115,7 @@ export async function createAttribute({
       const metricObjectId = metricId ? new ObjectId(metricId) : null;
       const optionsGroupObjectId = optionsGroupId ? new ObjectId(optionsGroupId) : null;
 
-      // Check if attributes group exist
+      // check if attributes group exist
       const attributesGroup = await attributesGroupCollection.findOne({
         _id: attributesGroupObjectId,
       });
@@ -128,7 +128,7 @@ export async function createAttribute({
         return;
       }
 
-      // Check if attribute already exist in the group
+      // check if attribute already exist in the group
       const exist = await findDocumentByI18nField({
         fieldArg: values.nameI18n,
         collectionName: COL_ATTRIBUTES,
@@ -146,13 +146,13 @@ export async function createAttribute({
         return;
       }
 
-      // Get metric
+      // get metric
       let metric = null;
       if (metricObjectId) {
         metric = await metricsCollection.findOne({ _id: metricObjectId });
       }
 
-      // Create attribute
+      // create attribute
       const slug = await getNextNumberItemId(COL_ATTRIBUTES);
       const createdAttributeResult = await attributesCollection.insertOne({
         ...values,
@@ -175,7 +175,7 @@ export async function createAttribute({
         return;
       }
 
-      // Add attribute _id to the attributes group
+      // add attribute _id to the attributes group
       const updatedGroupResult = await attributesGroupCollection.findOneAndUpdate(
         { _id: attributesGroup._id },
         {

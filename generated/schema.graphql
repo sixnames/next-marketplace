@@ -613,11 +613,6 @@ Date custom scalar type
 """
 scalar Date
 
-input DeleteAttributeFromGroupInput {
-  attributeId: ObjectId!
-  attributesGroupId: ObjectId!
-}
-
 input DeleteAttributesGroupFromCategoryInput {
   attributesGroupId: ObjectId!
   categoryId: ObjectId!
@@ -957,11 +952,6 @@ type Mutation {
   Should create supplier
   """
   createSupplier(input: CreateSupplierInput!): SupplierPayload!
-
-  """
-  Should delete attribute from the attributes group
-  """
-  deleteAttributeFromGroup(input: DeleteAttributeFromGroupInput!): AttributesGroupPayload!
 
   """
   Should delete attributes group

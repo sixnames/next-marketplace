@@ -12,9 +12,9 @@ import {
   MOVE_ATTRIBUTE_MODAL,
 } from 'config/modalVariants';
 import { useLocaleContext } from 'context/localeContext';
-import { useDeleteAttributeFromGroupMutation } from 'generated/apolloComponents';
 import {
   useCreateAttributeMutation,
+  useDeleteAttributeMutation,
   useUpdateAttributeMutation,
 } from 'hooks/mutations/useAttributeMutations';
 import AppSubNav from 'layout/AppSubNav';
@@ -47,16 +47,12 @@ interface AttributesConsumerInterface {
 
 const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({ attributesGroup }) => {
   const { locale } = useLocaleContext();
-  const { onCompleteCallback, onErrorCallback, showLoading, showModal } = useMutationCallbacks({
+  const { showModal } = useMutationCallbacks({
     reload: true,
     withModal: true,
   });
 
-  const [deleteAttributeFromGroupMutation] = useDeleteAttributeFromGroupMutation({
-    onCompleted: (data) => onCompleteCallback(data.deleteAttributeFromGroup),
-    onError: onErrorCallback,
-  });
-
+  const [deleteAttributeMutation] = useDeleteAttributeMutation();
   const [updateAttributeMutation] = useUpdateAttributeMutation();
   const [createAttributeMutation] = useCreateAttributeMutation();
 
@@ -67,7 +63,6 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({ attributesG
         attribute,
         attributesGroupId: `${attributesGroup._id}`,
         confirm: (input) => {
-          showLoading();
           updateAttributeMutation({
             attributesGroupId: `${attributesGroup._id}`,
             attributeId: `${attribute._id}`,
@@ -272,14 +267,9 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({ attributesG
                   testId: 'delete-attribute-modal',
                   message: `Вы уверенны, что хотите удалить атрибут ${name}?`,
                   confirm: () => {
-                    showLoading();
-                    return deleteAttributeFromGroupMutation({
-                      variables: {
-                        input: {
-                          attributesGroupId: attributesGroup._id,
-                          attributeId: dataItem._id,
-                        },
-                      },
+                    return deleteAttributeMutation({
+                      attributesGroupId: `${attributesGroup._id}`,
+                      attributeId: `${dataItem._id}`,
                     });
                   },
                 },
@@ -321,7 +311,6 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({ attributesG
                 props: {
                   attributesGroupId: `${attributesGroup._id}`,
                   confirm: (input) => {
-                    showLoading();
                     return createAttributeMutation({
                       attributesGroupId: `${attributesGroup._id}`,
                       ...input,

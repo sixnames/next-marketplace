@@ -1,8 +1,8 @@
 import PromoDetails, { PromoDetailsInterface } from 'components/Promo/PromoDetails';
 import { ROUTE_CONSOLE } from 'config/common';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
-import AppContentWrapper from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
+import ConsolePromoLayout from 'layout/console/ConsolePromoLayout';
 import { getPromoSsr } from 'lib/promoUtils';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
@@ -36,9 +36,9 @@ const PromoListPage: NextPage<PromoDetailsPageInterface> = ({
 
   return (
     <ConsoleLayout title={`${promo.name}`} {...layoutProps}>
-      <AppContentWrapper breadcrumbs={breadcrumbs}>
+      <ConsolePromoLayout promo={promo} basePath={basePath} breadcrumbs={breadcrumbs}>
         <PromoDetails basePath={basePath} pageCompany={pageCompany} promo={promo} />
-      </AppContentWrapper>
+      </ConsolePromoLayout>
     </ConsoleLayout>
   );
 };

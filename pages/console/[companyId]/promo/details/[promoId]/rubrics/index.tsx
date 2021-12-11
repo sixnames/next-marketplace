@@ -1,20 +1,18 @@
-import { ROUTE_CMS } from 'config/common';
-import { COL_COMPANIES, COL_PROMO_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
+import { ROUTE_CONSOLE } from 'config/common';
+import { COL_PROMO_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
 import { castRubricForUI } from 'db/dao/rubrics/castRubricForUI';
 import { RubricModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
-import {
-  AppContentWrapperBreadCrumbs,
-  CompanyInterface,
-  PromoInterface,
-  RubricInterface,
-} from 'db/uiInterfaces';
+import { AppContentWrapperBreadCrumbs, PromoInterface, RubricInterface } from 'db/uiInterfaces';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import CompanyRubricsList, { CompanyRubricsListInterface } from 'layout/CompanyRubricsList';
 import ConsolePromoLayout from 'layout/console/ConsolePromoLayout';
 import { getPromoSsr } from 'lib/promoUtils';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import { ObjectId } from 'mongodb';
+import {
+  castDbData,
+  getConsoleInitialData,
+  GetConsoleInitialDataPropsInterface,
+} from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
 
@@ -32,20 +30,12 @@ const ConsolePromoRubrics: React.FC<ConsolePromoRubricsInterface> = ({
     currentPageName: `Товары`,
     config: [
       {
-        name: 'Компании',
-        href: `${ROUTE_CMS}/companies`,
-      },
-      {
-        name: pageCompany.name,
-        href: `${ROUTE_CMS}/companies/${pageCompany._id}`,
-      },
-      {
         name: 'Акции',
-        href: `${ROUTE_CMS}/companies/${pageCompany._id}/promo`,
+        href: `${ROUTE_CONSOLE}/${pageCompany._id}/promo`,
       },
       {
         name: `${promo.name}`,
-        href: `${ROUTE_CMS}/companies/${pageCompany._id}/promo/details/${promo._id}`,
+        href: `${ROUTE_CONSOLE}/${pageCompany._id}/promo/details/${promo._id}`,
       },
     ],
   };
@@ -62,7 +52,7 @@ const ConsolePromoRubrics: React.FC<ConsolePromoRubricsInterface> = ({
 };
 
 interface PromoDetailsPageInterface
-  extends GetAppInitialDataPropsInterface,
+  extends GetConsoleInitialDataPropsInterface,
     ConsolePromoRubricsInterface {}
 
 const PromoDetailsPage: React.FC<PromoDetailsPageInterface> = ({ layoutProps, ...props }) => {
@@ -77,24 +67,15 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<PromoDetailsPageInterface>> => {
   const { query } = context;
-  const { props } = await getAppInitialData({ context });
-  if (!props || !query.companyId || !query.promoId) {
+  const { props } = await getConsoleInitialData({ context });
+  if (!props || !query.promoId) {
     return {
       notFound: true,
     };
   }
 
   const { db } = await getDatabase();
-  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-  const company = await companiesCollection.findOne({
-    _id: new ObjectId(`${query.companyId}`),
-  });
-  if (!company) {
-    return {
-      notFound: true,
-    };
-  }
 
   const promo = await getPromoSsr({
     locale: props.sessionLocale,
@@ -165,8 +146,8 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      routeBasePath: `${ROUTE_CMS}/companies/${company._id}/promo/details/${promo._id}`,
-      pageCompany: castDbData(company),
+      routeBasePath: `${ROUTE_CONSOLE}/${props.layoutProps.pageCompany._id}/promo/details/${promo._id}`,
+      pageCompany: castDbData(props.layoutProps.pageCompany),
       promo: castDbData(promo),
       rubrics: castDbData(rawRubrics),
     },

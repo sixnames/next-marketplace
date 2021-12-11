@@ -1,4 +1,5 @@
 import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
+import { UpdateAttributeInputInterface } from 'db/dao/attributes/updateAttribute';
 import { AttributeInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import ModalFrame from 'components/Modal/ModalFrame';
@@ -8,11 +9,7 @@ import { Form, Formik } from 'formik';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import Spinner from 'components/Spinner';
 import Button from 'components/button/Button';
-import {
-  AddAttributeToGroupInput,
-  UpdateAttributeInGroupInput,
-  useGetNewAttributeOptionsQuery,
-} from 'generated/apolloComponents';
+import { useGetNewAttributeOptionsQuery } from 'generated/apolloComponents';
 import RequestError from 'components/RequestError';
 import { useAppContext } from 'context/appContext';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
@@ -27,9 +24,10 @@ import {
   DEFAULT_LOCALE,
 } from 'config/common';
 
-type AddAttributeToGroupModalValuesType =
-  | Omit<AddAttributeToGroupInput, 'attributesGroupId'>
-  | Omit<UpdateAttributeInGroupInput, 'attributesGroupId' | 'attributeId'>;
+type AddAttributeToGroupModalValuesType = Omit<
+  UpdateAttributeInputInterface,
+  'attributesGroupId' | 'attributeId'
+>;
 
 export interface AddAttributeToGroupModalInterface {
   attribute?: AttributeInterface;
@@ -72,57 +70,32 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
   };
 
   // @ts-ignore
-  const initialValues: AddAttributeToGroupModalValuesType = attribute
-    ? {
-        nameI18n: attribute.nameI18n,
-        variant: attribute.variant,
-        viewVariant: attribute.viewVariant,
-        metricId: attribute.metric?._id,
-        optionsGroupId: attribute.optionsGroupId,
-        positioningInTitle: attribute.positioningInTitle || positioningInTitle,
-        positioningInCardTitle: attribute.positioningInCardTitle || positioningInTitle,
-        capitalise: attribute.capitalise || false,
-        notShowAsAlphabet: attribute.notShowAsAlphabet || false,
-        showAsBreadcrumb: attribute.showAsBreadcrumb || false,
-        showNameInTitle: attribute.showNameInTitle || false,
-        showNameInSelectedAttributes: attribute.showNameInSelectedAttributes || false,
-        showNameInSnippetTitle: attribute.showNameInSnippetTitle || false,
-        showAsCatalogueBreadcrumb: attribute.showAsCatalogueBreadcrumb || false,
-        showInSnippet: attribute.showInSnippet || false,
-        showInCard: attribute.showInCard || false,
-        showInCardTitle: attribute.showInCardTitle || false,
-        showInCatalogueFilter: attribute.showInCatalogueFilter || false,
-        showInCatalogueNav: attribute.showInCatalogueNav || false,
-        showInCatalogueTitle: attribute.showInCatalogueTitle || false,
-        showInSnippetTitle: attribute.showInSnippetTitle || false,
-        showNameInCardTitle: attribute.showNameInCardTitle || false,
-        showAsLinkInFilter: attribute.showAsLinkInFilter || false,
-        showAsAccordionInFilter: attribute.showAsAccordionInFilter || false,
-      }
-    : {
-        nameI18n: {},
-        variant: ATTRIBUTE_VARIANT_SELECT,
-        viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
-        metricId: null,
-        optionsGroupId: null,
-        positioningInTitle,
-        positioningInCardTitle: positioningInTitle,
-        capitalise: false,
-        notShowAsAlphabet: false,
-        showAsBreadcrumb: false,
-        showNameInTitle: false,
-        showNameInSelectedAttributes: false,
-        showNameInSnippetTitle: false,
-        showAsCatalogueBreadcrumb: false,
-        showInSnippet: false,
-        showInCard: false,
-        showInCardTitle: false,
-        showInCatalogueFilter: false,
-        showInCatalogueNav: false,
-        showInCatalogueTitle: false,
-        showInSnippetTitle: false,
-        showNameInCardTitle: false,
-      };
+  const initialValues: AddAttributeToGroupModalValuesType = {
+    nameI18n: attribute?.nameI18n || {},
+    variant: attribute?.variant || ATTRIBUTE_VARIANT_SELECT,
+    viewVariant: attribute?.viewVariant || ATTRIBUTE_VIEW_VARIANT_LIST,
+    metricId: attribute?.metric ? `${attribute.metric._id}` : null,
+    optionsGroupId: attribute?.optionsGroupId ? `${attribute?.optionsGroupId}` : null,
+    positioningInTitle: attribute?.positioningInTitle || positioningInTitle,
+    positioningInCardTitle: attribute?.positioningInCardTitle || positioningInTitle,
+    capitalise: attribute?.capitalise || false,
+    notShowAsAlphabet: attribute?.notShowAsAlphabet || false,
+    showAsBreadcrumb: attribute?.showAsBreadcrumb || false,
+    showNameInTitle: attribute?.showNameInTitle || false,
+    showNameInSelectedAttributes: attribute?.showNameInSelectedAttributes || false,
+    showNameInSnippetTitle: attribute?.showNameInSnippetTitle || false,
+    showAsCatalogueBreadcrumb: attribute?.showAsCatalogueBreadcrumb || false,
+    showInSnippet: attribute?.showInSnippet || false,
+    showInCard: attribute?.showInCard || false,
+    showInCardTitle: attribute?.showInCardTitle || false,
+    showInCatalogueFilter: attribute?.showInCatalogueFilter || false,
+    showInCatalogueNav: attribute?.showInCatalogueNav || false,
+    showInCatalogueTitle: attribute?.showInCatalogueTitle || false,
+    showInSnippetTitle: attribute?.showInSnippetTitle || false,
+    showNameInCardTitle: attribute?.showNameInCardTitle || false,
+    showAsLinkInFilter: attribute?.showAsLinkInFilter || false,
+    showAsAccordionInFilter: attribute?.showAsAccordionInFilter || false,
+  };
 
   return (
     <ModalFrame>

@@ -32,113 +32,118 @@ interface AlgoliaProductInterface {
 }
 
 export async function updateAlgoliaProducts(match?: Record<any, any>) {
-  const { db } = await getDatabase();
-  const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
-  const languagesCollection = db.collection<ProductInterface>(COL_LANGUAGES);
-  const languages = await languagesCollection.find({}).toArray();
-  const locales = languages.map(({ slug }) => slug);
+  try {
+    const { db } = await getDatabase();
+    const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
+    const languagesCollection = db.collection<ProductInterface>(COL_LANGUAGES);
+    const languages = await languagesCollection.find({}).toArray();
+    const locales = languages.map(({ slug }) => slug);
 
-  const aggregationMatch = match
-    ? [
+    const aggregationMatch = match
+      ? [
+          {
+            $match: match,
+          },
+        ]
+      : [];
+
+    const products = await productsCollection
+      .aggregate<ProductInterface>([
+        ...aggregationMatch,
+
+        // get product assets
         {
-          $match: match,
-        },
-      ]
-    : [];
-
-  const products = await productsCollection
-    .aggregate<ProductInterface>([
-      ...aggregationMatch,
-
-      // get product assets
-      {
-        $lookup: {
-          as: 'assets',
-          from: COL_PRODUCT_ASSETS,
-          localField: '_id',
-          foreignField: 'productId',
-        },
-      },
-      {
-        $addFields: {
-          assets: {
-            $arrayElemAt: ['$assets', 0],
+          $lookup: {
+            as: 'assets',
+            from: COL_PRODUCT_ASSETS,
+            localField: '_id',
+            foreignField: 'productId',
           },
         },
-      },
+        {
+          $addFields: {
+            assets: {
+              $arrayElemAt: ['$assets', 0],
+            },
+          },
+        },
 
-      // get product rubric
-      ...productRubricPipeline,
+        // get product rubric
+        ...productRubricPipeline,
 
-      // get product attributes
-      ...productAttributesPipeline,
+        // get product attributes
+        ...productAttributesPipeline,
 
-      // get product brand
-      ...brandPipeline,
+        // get product brand
+        ...brandPipeline,
 
-      // get product categories
-      ...productCategoriesPipeline(),
-    ])
-    .toArray();
+        // get product categories
+        ...productCategoriesPipeline(),
+      ])
+      .toArray();
 
-  const algoliaProducts: AlgoliaProductInterface[] = [];
+    const algoliaProducts: AlgoliaProductInterface[] = [];
+    for await (const initialProduct of products) {
+      const { rubric, ...restProduct } = initialProduct;
+      if (!rubric) {
+        return false;
+      }
 
-  for await (const initialProduct of products) {
-    const { rubric, ...restProduct } = initialProduct;
-    if (!rubric) {
-      return false;
+      let algoliaProduct: AlgoliaProductInterface = {
+        _id: initialProduct._id.toHexString(),
+        slug: initialProduct.slug,
+        objectID: initialProduct._id.toHexString(),
+        barcode: initialProduct.barcode,
+        cardTitleI18n: {},
+        snippetTitleI18n: {},
+      };
+
+      for await (const locale of locales) {
+        const categories = getTreeFromList({
+          list: initialProduct.categories,
+          childrenFieldName: 'categories',
+          locale,
+        });
+
+        // title
+        const titleProps = {
+          locale,
+          brand: initialProduct.brand,
+          rubricName: getFieldStringLocale(rubric.nameI18n, locale),
+          showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
+          showCategoryInProductTitle: rubric.showCategoryInProductTitle,
+          attributes: initialProduct.attributes,
+          titleCategoriesSlugs: restProduct.titleCategoriesSlugs,
+          originalName: restProduct.originalName,
+          defaultGender: restProduct.gender,
+          categories,
+        };
+        const cardTitle = generateCardTitle(titleProps);
+        algoliaProduct.cardTitleI18n[locale] = cardTitle;
+        const snippetTitle = generateSnippetTitle(titleProps);
+        algoliaProduct.snippetTitleI18n[locale] = snippetTitle;
+      }
+
+      algoliaProducts.push(algoliaProduct);
     }
 
-    let algoliaProduct: AlgoliaProductInterface = {
-      _id: initialProduct._id.toHexString(),
-      slug: initialProduct.slug,
-      objectID: initialProduct._id.toHexString(),
-      barcode: initialProduct.barcode,
-      cardTitleI18n: {},
-      snippetTitleI18n: {},
-    };
-
-    for await (const locale of locales) {
-      const categories = getTreeFromList({
-        list: initialProduct.categories,
-        childrenFieldName: 'categories',
-        locale,
+    if (algoliaProducts.length > 0) {
+      const algoliaProductResult = await saveAlgoliaObjects({
+        indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
+        objects: algoliaProducts,
       });
 
-      // title
-      const titleProps = {
-        locale,
-        brand: initialProduct.brand,
-        rubricName: getFieldStringLocale(rubric.nameI18n, locale),
-        showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
-        showCategoryInProductTitle: rubric.showCategoryInProductTitle,
-        attributes: initialProduct.attributes,
-        titleCategoriesSlugs: restProduct.titleCategoriesSlugs,
-        originalName: restProduct.originalName,
-        defaultGender: restProduct.gender,
-        categories,
-      };
-      const cardTitle = generateCardTitle(titleProps);
-      algoliaProduct.cardTitleI18n[locale] = cardTitle;
-      const snippetTitle = generateSnippetTitle(titleProps);
-      algoliaProduct.snippetTitleI18n[locale] = snippetTitle;
+      if (!algoliaProductResult) {
+        console.log('updateAlgoliaProducts algolia error');
+        return false;
+      }
     }
-    algoliaProducts.push(algoliaProduct);
+
+    return true;
+  } catch (e) {
+    console.log('updateAlgoliaProducts error ', e);
+    return false;
   }
-
-  if (algoliaProducts.length > 0) {
-    const algoliaProductResult = await saveAlgoliaObjects({
-      indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
-      objects: algoliaProducts,
-    });
-
-    if (!algoliaProductResult) {
-      console.log('updateAlgoliaProducts algolia error');
-      return false;
-    }
-  }
-
-  return true;
 }
 
 interface GetAlgoliaProductsSearch {

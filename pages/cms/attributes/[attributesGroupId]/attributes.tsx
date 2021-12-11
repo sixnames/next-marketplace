@@ -13,11 +13,10 @@ import {
 } from 'config/modalVariants';
 import { useLocaleContext } from 'context/localeContext';
 import {
-  UpdateAttributeInGroupInput,
   useAddAttributeToGroupMutation,
   useDeleteAttributeFromGroupMutation,
-  useUpdateAttributeInGroupMutation,
 } from 'generated/apolloComponents';
+import { useUpdateAttribute } from 'hooks/mutations/useAttributeMutations';
 import AppSubNav from 'layout/AppSubNav';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
@@ -58,10 +57,7 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({ attributesG
     onError: onErrorCallback,
   });
 
-  const [updateAttributeInGroupMutation] = useUpdateAttributeInGroupMutation({
-    onCompleted: (data) => onCompleteCallback(data.updateAttributeInGroup),
-    onError: onErrorCallback,
-  });
+  const [updateAttributeMutation] = useUpdateAttribute();
 
   const [addAttributeToGroupMutation] = useAddAttributeToGroupMutation({
     onCompleted: (data) => onCompleteCallback(data.addAttributeToGroup),
@@ -74,20 +70,13 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({ attributesG
       props: {
         attribute,
         attributesGroupId: `${attributesGroup._id}`,
-        confirm: (
-          input: Omit<UpdateAttributeInGroupInput, 'attributesGroupId' | 'attributeId'>,
-        ) => {
+        confirm: (input) => {
           showLoading();
-          updateAttributeInGroupMutation({
-            variables: {
-              input: {
-                attributesGroupId: attributesGroup._id,
-                attributeId: attribute._id,
-                ...input,
-                metricId: input.metricId || null,
-              },
-            },
-          }).catch((e) => console.log(e));
+          updateAttributeMutation({
+            attributesGroupId: `${attributesGroup._id}`,
+            attributeId: `${attribute._id}`,
+            ...input,
+          }).catch(console.log);
         },
       },
     });
@@ -337,11 +326,14 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({ attributesG
                   attributesGroupId: `${attributesGroup._id}`,
                   confirm: (input) => {
                     showLoading();
+                    // @ts-ignore
                     return addAttributeToGroupMutation({
                       variables: {
+                        // @ts-ignore
                         input: {
                           attributesGroupId: `${attributesGroup._id}`,
                           ...input,
+                          // TODO
                         },
                       },
                     });

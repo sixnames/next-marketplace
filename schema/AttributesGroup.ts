@@ -1,5 +1,4 @@
 import { DEFAULT_LOCALE, SORT_ASC } from 'config/common';
-import { updateAlgoliaProducts } from 'lib/algolia/productAlgoliaUtils';
 import { getNextNumberItemId } from 'lib/itemIdUtils';
 import { arg, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
 import {
@@ -29,7 +28,6 @@ import {
   addAttributeToGroupSchema,
   createAttributesGroupSchema,
   deleteAttributeFromGroupSchema,
-  updateAttributeInGroupSchema,
   updateAttributesGroupSchema,
 } from 'validation/attributesGroupSchema';
 
@@ -158,56 +156,6 @@ export const AddAttributeToGroupInput = inputObjectType({
   name: 'AddAttributeToGroupInput',
   definition(t) {
     t.nonNull.objectId('attributesGroupId');
-    t.nonNull.json('nameI18n');
-    t.objectId('optionsGroupId');
-    t.objectId('metricId');
-    t.boolean('capitalise');
-
-    // variants
-    t.nonNull.field('variant', {
-      type: 'AttributeVariant',
-    });
-    t.nonNull.field('viewVariant', {
-      type: 'AttributeViewVariant',
-    });
-
-    // positioning in title
-    t.json('positioningInTitle');
-    t.json('positioningInCardTitle');
-
-    // breadcrumbs
-    t.nonNull.boolean('showAsBreadcrumb');
-    t.nonNull.boolean('showAsCatalogueBreadcrumb');
-
-    // options modal
-    t.boolean('notShowAsAlphabet');
-
-    // card / snippet / catalogue visibility
-    t.nonNull.boolean('showInSnippet');
-    t.nonNull.boolean('showInCard');
-    t.nonNull.boolean('showInCatalogueFilter');
-    t.nonNull.boolean('showInCatalogueNav');
-    t.nonNull.boolean('showInCatalogueTitle');
-    t.nonNull.boolean('showInCardTitle');
-    t.nonNull.boolean('showInSnippetTitle');
-
-    // name visibility
-    t.boolean('showNameInTitle');
-    t.boolean('showNameInCardTitle');
-    t.boolean('showNameInSnippetTitle');
-    t.boolean('showNameInSelectedAttributes');
-
-    // catalogue ui
-    t.boolean('showAsLinkInFilter');
-    t.boolean('showAsAccordionInFilter');
-  },
-});
-
-export const UpdateAttributeInGroupInput = inputObjectType({
-  name: 'UpdateAttributeInGroupInput',
-  definition(t) {
-    t.nonNull.objectId('attributesGroupId');
-    t.nonNull.objectId('attributeId');
     t.nonNull.json('nameI18n');
     t.objectId('optionsGroupId');
     t.objectId('metricId');
@@ -697,156 +645,6 @@ export const attributesGroupMutations = extendType({
           return mutationPayload;
         } catch (e) {
           console.log(e);
-          return {
-            success: false,
-            message: getResolverErrorMessage(e),
-          };
-        } finally {
-          await session.endSession();
-        }
-      },
-    });
-
-    // Should update attribute in the attributes group
-    t.nonNull.field('updateAttributeInGroup', {
-      type: 'AttributesGroupPayload',
-      description: 'Should update attribute in the attributes group',
-      args: {
-        input: nonNull(
-          arg({
-            type: 'UpdateAttributeInGroupInput',
-          }),
-        ),
-      },
-      resolve: async (_root, args, context): Promise<AttributesGroupPayloadModel> => {
-        const { getApiMessage } = await getRequestParams(context);
-        const { db, client } = await getDatabase();
-        const attributesGroupCollection =
-          db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
-        const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-        const metricsCollection = db.collection<MetricModel>(COL_METRICS);
-
-        const session = client.startSession();
-
-        let mutationPayload: AttributesGroupPayloadModel = {
-          success: false,
-          message: await getApiMessage(`attributesGroups.updateAttribute.updateError`),
-        };
-
-        try {
-          await session.withTransaction(async () => {
-            // Permission
-            const { allow, message } = await getOperationPermission({
-              context,
-              slug: 'updateAttribute',
-            });
-            if (!allow) {
-              mutationPayload = {
-                success: false,
-                message,
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Validate
-            const validationSchema = await getResolverValidationSchema({
-              context,
-              schema: updateAttributeInGroupSchema,
-            });
-            await validationSchema.validate(args.input);
-
-            const {
-              input: { attributesGroupId, attributeId, metricId, ...values },
-            } = args;
-
-            // Check attributes group availability
-            const group = await attributesGroupCollection.findOne({
-              _id: attributesGroupId,
-            });
-            if (!group) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`attributesGroups.updateAttribute.groupError`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Check attribute availability
-            const attribute = await attributesCollection.findOne({
-              _id: attributeId,
-            });
-            if (!attribute) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`attributesGroups.updateAttribute.groupError`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Check if attribute exist
-            const exist = await findDocumentByI18nField({
-              fieldArg: values.nameI18n,
-              collectionName: COL_ATTRIBUTES,
-              fieldName: 'nameI18n',
-              additionalQuery: {
-                $and: [{ _id: { $in: group.attributesIds } }, { _id: { $ne: attributeId } }],
-              },
-            });
-            if (exist) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`attributesGroups.updateAttribute.duplicate`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Get metric
-            let metric = null;
-            if (metricId) {
-              metric = await metricsCollection.findOne({ _id: metricId });
-            }
-
-            // Update attribute
-            const updatedAttributeResult = await attributesCollection.findOneAndUpdate(
-              { _id: attributeId },
-              {
-                $set: {
-                  ...values,
-                  metric,
-                },
-              },
-              {
-                returnDocument: 'after',
-              },
-            );
-            const updatedAttribute = updatedAttributeResult.value;
-            if (!updatedAttributeResult.ok || !updatedAttribute) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`attributesGroups.updateAttribute.updateError`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // update product algolia indexes
-            await updateAlgoliaProducts({
-              selectedAttributesIds: updatedAttribute._id,
-            });
-
-            mutationPayload = {
-              success: true,
-              message: await getApiMessage('attributesGroups.updateAttribute.success'),
-              payload: group,
-            };
-          });
-
-          return mutationPayload;
-        } catch (e) {
           return {
             success: false,
             message: getResolverErrorMessage(e),

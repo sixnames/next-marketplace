@@ -1154,11 +1154,6 @@ type Mutation {
   repeatOrder(input: RepeatOrderInput!): CartPayload!
 
   """
-  Should update attribute in the attributes group
-  """
-  updateAttributeInGroup(input: UpdateAttributeInGroupInput!): AttributesGroupPayload!
-
-  """
   Should update rubric attribute
   """
   updateAttributeInRubric(input: UpdateAttributeInRubricInput!): RubricPayload!
@@ -2197,35 +2192,6 @@ scalar URL
 input UpdateAttributeInCategoryInput {
   attributeId: ObjectId!
   categoryId: ObjectId!
-}
-
-input UpdateAttributeInGroupInput {
-  attributeId: ObjectId!
-  attributesGroupId: ObjectId!
-  capitalise: Boolean
-  metricId: ObjectId
-  nameI18n: JSONObject!
-  notShowAsAlphabet: Boolean
-  optionsGroupId: ObjectId
-  positioningInCardTitle: JSONObject
-  positioningInTitle: JSONObject
-  showAsAccordionInFilter: Boolean
-  showAsBreadcrumb: Boolean!
-  showAsCatalogueBreadcrumb: Boolean!
-  showAsLinkInFilter: Boolean
-  showInCard: Boolean!
-  showInCardTitle: Boolean!
-  showInCatalogueFilter: Boolean!
-  showInCatalogueNav: Boolean!
-  showInCatalogueTitle: Boolean!
-  showInSnippet: Boolean!
-  showInSnippetTitle: Boolean!
-  showNameInCardTitle: Boolean
-  showNameInSelectedAttributes: Boolean
-  showNameInSnippetTitle: Boolean
-  showNameInTitle: Boolean
-  variant: AttributeVariant!
-  viewVariant: AttributeViewVariant!
 }
 
 input UpdateAttributeInRubricInput {

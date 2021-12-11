@@ -775,6 +775,7 @@ export interface ShopProductsAggregationInterface {
   attributes?: AttributeInterface[] | null;
   categories?: CategoryInterface[];
   brands?: BrandInterface[];
+  allShopProducts?: ShopProductInterface[] | null;
 }
 
 export interface ProductsAggregationInterface {
@@ -819,6 +820,7 @@ export interface ConsoleRubricProductsInterface
 export interface GetConsoleRubricPromoProductsPayloadInterface
   extends AppPaginationWithFiltersInterface<ShopProductInterface> {
   rubric?: RubricInterface | null;
+  selectedShopProductIds: string[];
 }
 
 export interface LinkInterface

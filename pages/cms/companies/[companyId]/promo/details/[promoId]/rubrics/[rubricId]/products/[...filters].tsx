@@ -28,6 +28,8 @@ const PromoProductsPage: React.FC<PromoProductsPageInterface> = ({
   basePath,
   promoProducts,
   rubric,
+  filters,
+  search,
 }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${rubric.name}`,
@@ -60,10 +62,12 @@ const PromoProductsPage: React.FC<PromoProductsPageInterface> = ({
       <ConsolePromoLayout basePath={basePath} promo={promo} breadcrumbs={breadcrumbs}>
         <ConsolePromoProducts
           basePath={basePath}
-          rubric={rubric}
           promo={promo}
+          rubric={rubric}
           pageCompany={pageCompany}
           promoProducts={promoProducts}
+          filters={filters}
+          search={search}
         />
       </ConsolePromoLayout>
     </ConsoleLayout>
@@ -139,6 +143,8 @@ export const getServerSideProps = async (
       promo: castDbData(promo),
       rubric: castDbData(rubric),
       promoProducts: castDbData(promoProducts),
+      filters: alwaysArray(query.filters).filter((filter) => filter !== DEFAULT_PAGE_FILTER),
+      search: alwaysString(query.search),
     },
   };
 };

@@ -1,3 +1,4 @@
+import Button from 'components/button/Button';
 import CheckBox from 'components/FormElements/Checkbox/Checkbox';
 import AppContentFilter from 'components/AppContentFilter';
 import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
@@ -17,8 +18,6 @@ import {
 import { useAddPromoProducts, useDeletePromoProducts } from 'hooks/mutations/usePromoMutations';
 import usePageLoadingState from 'hooks/usePageLoadingState';
 import { alwaysArray } from 'lib/arrayUtils';
-import { noNaN } from 'lib/numbers';
-import { useRouter } from 'next/router';
 import * as React from 'react';
 
 export interface ConsolePromoProductsInterface {
@@ -27,6 +26,8 @@ export interface ConsolePromoProductsInterface {
   basePath: string;
   pageCompany: CompanyInterface;
   promoProducts: GetConsoleRubricPromoProductsPayloadInterface;
+  filters: string[];
+  search: string;
 }
 
 const ConsolePromoProducts: React.FC<ConsolePromoProductsInterface> = ({
@@ -35,28 +36,13 @@ const ConsolePromoProducts: React.FC<ConsolePromoProductsInterface> = ({
   basePath,
   promo,
   pageCompany,
+  filters,
+  search,
 }) => {
-  const { query } = useRouter();
   const { showLoading } = useAppContext();
-  const [shopProductIds, setShopProductIds] = React.useState<string[]>([]);
   const isPageLoading = usePageLoadingState();
-
-  console.log(query.filters);
   const [deletePromoProductsMutation] = useDeletePromoProducts();
   const [addPromoProductsMutation] = useAddPromoProducts();
-
-  React.useEffect(() => {
-    const shopProductIds = promoProducts.docs.reduce(
-      (acc: string[], { promoProductsCount, _id }) => {
-        if (noNaN(promoProductsCount) > 0) {
-          return [...acc, `${_id}`];
-        }
-        return acc;
-      },
-      [],
-    );
-    setShopProductIds(shopProductIds);
-  }, [promoProducts.docs]);
 
   const columns: TableColumn<ShopProductInterface>[] = [
     {
@@ -107,7 +93,7 @@ const ConsolePromoProducts: React.FC<ConsolePromoProductsInterface> = ({
       accessor: '_id',
       headTitle: 'Участвует в акции',
       render: ({ cellData, rowIndex, dataItem }) => {
-        const checked = shopProductIds.includes(cellData);
+        const checked = promoProducts.selectedShopProductIds.includes(cellData);
         return (
           <CheckBox
             onChange={() => {
@@ -147,7 +133,7 @@ const ConsolePromoProducts: React.FC<ConsolePromoProductsInterface> = ({
     <Inner testId={'promo-products-list'}>
       <FormikRouterSearch testId={'promo-products'} />
 
-      <div className={`max-w-full`}>
+      <div className={`relative max-w-full`}>
         <div className={'mb-8'}>
           <AppContentFilter
             basePath={basePath}
@@ -159,7 +145,90 @@ const ConsolePromoProducts: React.FC<ConsolePromoProductsInterface> = ({
           />
         </div>
 
-        <div className={'max-w-full'}>
+        <div className='flex flex-wrap gap-4 mb-6'>
+          {filters.length > 0 ? (
+            <Button
+              size={'small'}
+              frameClassName={'w-auto'}
+              testId={'add-all-rubric-products'}
+              onClick={() => {
+                addPromoProductsMutation({
+                  filters,
+                  all: true,
+                  shopProductIds: [],
+                  companyId: `${pageCompany._id}`,
+                  promoId: `${promo._id}`,
+                  rubricId: `${rubric._id}`,
+                }).catch(console.log);
+              }}
+            >
+              Добавить товары по выбранному фильтру
+            </Button>
+          ) : null}
+
+          {filters.length > 0 || search.length > 0 ? null : (
+            <Button
+              size={'small'}
+              frameClassName={'w-auto'}
+              testId={'add-all-rubric-products'}
+              onClick={() => {
+                addPromoProductsMutation({
+                  filters: [],
+                  all: true,
+                  shopProductIds: [],
+                  companyId: `${pageCompany._id}`,
+                  promoId: `${promo._id}`,
+                  rubricId: `${rubric._id}`,
+                }).catch(console.log);
+              }}
+            >
+              Добавить все товары рубрики
+            </Button>
+          )}
+
+          {search.length > 0 ? (
+            <Button
+              size={'small'}
+              frameClassName={'w-auto'}
+              testId={'add-all-rubric-products'}
+              onClick={() => {
+                addPromoProductsMutation({
+                  filters,
+                  all: true,
+                  shopProductIds: [],
+                  companyId: `${pageCompany._id}`,
+                  promoId: `${promo._id}`,
+                  rubricId: `${rubric._id}`,
+                  search,
+                }).catch(console.log);
+              }}
+            >
+              Добавить результат поиска
+            </Button>
+          ) : null}
+
+          {promoProducts.selectedShopProductIds.length > 0 ? (
+            <Button
+              theme={'secondary'}
+              size={'small'}
+              frameClassName={'w-auto'}
+              testId={'add-all-rubric-products'}
+              onClick={() => {
+                deletePromoProductsMutation({
+                  filters: [],
+                  all: true,
+                  companyId: `${pageCompany._id}`,
+                  promoId: `${promo._id}`,
+                  rubricId: `${rubric._id}`,
+                }).catch(console.log);
+              }}
+            >
+              Удалить все товары рубрики
+            </Button>
+          ) : null}
+        </div>
+
+        <div className={' max-w-full'}>
           <div className={`relative overflow-x-auto overflow-y-hidden`}>
             <Table<ShopProductInterface>
               columns={columns}

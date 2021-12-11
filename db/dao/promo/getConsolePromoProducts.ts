@@ -17,7 +17,7 @@ import {
 } from 'db/collectionNames';
 import {
   filterAttributesPipeline,
-  shopProductSupplierProductsPipeline,
+  // shopProductSupplierProductsPipeline,
 } from 'db/dao/constantPipelines';
 import { castProductForUI } from 'db/dao/product/castProductForUI';
 import { ObjectIdModel } from 'db/dbModels';
@@ -30,6 +30,7 @@ import {
   ShopProductsAggregationInterface,
 } from 'db/uiInterfaces';
 import { castUrlFilters, getCatalogueAttributes } from 'lib/catalogueUtils';
+import { noNaN } from 'lib/numbers';
 import { castSupplierProductsList } from 'lib/productUtils';
 import { getTreeFromList } from 'lib/treeUtils';
 import { ObjectId } from 'mongodb';
@@ -66,6 +67,7 @@ export async function getConsolePromoProducts({
     docs: [],
     attributes: [],
     selectedAttributes: [],
+    selectedShopProductIds: [],
   };
 
   try {
@@ -153,6 +155,33 @@ export async function getConsolePromoProducts({
         {
           $match: productsInitialMatch,
         },
+        // get promo products
+        {
+          $lookup: {
+            from: COL_PROMO_PRODUCTS,
+            as: 'promoProducts',
+            let: {
+              shopProductId: '$_id',
+            },
+            pipeline: [
+              {
+                $match: {
+                  promoId: new ObjectId(promoId),
+                  $expr: {
+                    $eq: ['$$shopProductId', '$shopProductId'],
+                  },
+                },
+              },
+            ],
+          },
+        },
+        {
+          $addFields: {
+            promoProductsCount: {
+              $size: '$promoProducts',
+            },
+          },
+        },
 
         // facets
         {
@@ -169,40 +198,6 @@ export async function getConsolePromoProducts({
               },
               {
                 $limit: limit,
-              },
-
-              // get promo products
-              {
-                $lookup: {
-                  from: COL_PROMO_PRODUCTS,
-                  as: 'promoProducts',
-                  let: {
-                    shopProductId: '$_id',
-                  },
-                  pipeline: [
-                    {
-                      $match: {
-                        promoId: new ObjectId(promoId),
-                        $expr: {
-                          $eq: ['$$shopProductId', '$shopProductId'],
-                        },
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                $addFields: {
-                  promoProductsCount: {
-                    $size: '$promoProducts',
-                  },
-                },
-              },
-              {
-                $sort: {
-                  promoProductsCount: SORT_DESC,
-                  _id: SORT_DESC,
-                },
               },
 
               // get shop product fields
@@ -248,7 +243,17 @@ export async function getConsolePromoProducts({
               },
 
               // get supplier products
-              ...shopProductSupplierProductsPipeline,
+              // ...shopProductSupplierProductsPipeline,
+            ],
+
+            // prices facet
+            allShopProducts: [
+              {
+                $project: {
+                  _id: true,
+                  promoProductsCount: true,
+                },
+              },
             ],
 
             // prices facet
@@ -466,7 +471,7 @@ export async function getConsolePromoProducts({
       return fallbackPayload;
     }
 
-    const { totalDocs, totalPages, attributes, prices, brands, categories } =
+    const { totalDocs, totalPages, attributes, prices, brands, categories, allShopProducts } =
       shopProductsAggregation;
 
     // get filter attributes
@@ -559,10 +564,21 @@ export async function getConsolePromoProducts({
       });
     });
 
+    const selectedShopProductIds = (allShopProducts || []).reduce(
+      (acc: string[], { _id, promoProductsCount }) => {
+        if (noNaN(promoProductsCount) > 0) {
+          return [...acc, _id.toHexString()];
+        }
+        return acc;
+      },
+      [],
+    );
+
     const payload: GetConsoleRubricPromoProductsPayloadInterface = {
       clearSlug: basePath,
       basePath,
       page,
+      selectedShopProductIds,
       totalDocs,
       totalPages,
       attributes: castedAttributes,

@@ -1104,6 +1104,7 @@ export interface ConstructorAssetPayloadModel extends PayloadType<string> {
   payload: string;
 }
 export type AttributesGroupPayloadModel = PayloadType<AttributesGroupModel>;
+export type AttributePayloadModel = PayloadType<AttributeModel>;
 export type BlogAttributePayloadModel = PayloadType<BlogAttributeModel>;
 export type BlogPostPayloadModel = PayloadType<BlogPostModel>;
 export type BrandPayloadModel = PayloadType<BrandModel>;

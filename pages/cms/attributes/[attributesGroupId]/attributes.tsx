@@ -13,11 +13,10 @@ import {
 } from 'config/modalVariants';
 import { useLocaleContext } from 'context/localeContext';
 import {
-  UpdateAttributeInGroupInput,
-  useAddAttributeToGroupMutation,
-  useDeleteAttributeFromGroupMutation,
-  useUpdateAttributeInGroupMutation,
-} from 'generated/apolloComponents';
+  useCreateAttributeMutation,
+  useDeleteAttributeMutation,
+  useUpdateAttributeMutation,
+} from 'hooks/mutations/useAttributeMutations';
 import AppSubNav from 'layout/AppSubNav';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
@@ -48,25 +47,14 @@ interface AttributesConsumerInterface {
 
 const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({ attributesGroup }) => {
   const { locale } = useLocaleContext();
-  const { onCompleteCallback, onErrorCallback, showLoading, showModal } = useMutationCallbacks({
+  const { showModal } = useMutationCallbacks({
     reload: true,
     withModal: true,
   });
 
-  const [deleteAttributeFromGroupMutation] = useDeleteAttributeFromGroupMutation({
-    onCompleted: (data) => onCompleteCallback(data.deleteAttributeFromGroup),
-    onError: onErrorCallback,
-  });
-
-  const [updateAttributeInGroupMutation] = useUpdateAttributeInGroupMutation({
-    onCompleted: (data) => onCompleteCallback(data.updateAttributeInGroup),
-    onError: onErrorCallback,
-  });
-
-  const [addAttributeToGroupMutation] = useAddAttributeToGroupMutation({
-    onCompleted: (data) => onCompleteCallback(data.addAttributeToGroup),
-    onError: onErrorCallback,
-  });
+  const [deleteAttributeMutation] = useDeleteAttributeMutation();
+  const [updateAttributeMutation] = useUpdateAttributeMutation();
+  const [createAttributeMutation] = useCreateAttributeMutation();
 
   function updateAttributeHandler(attribute: AttributeInterface) {
     showModal<AddAttributeToGroupModalInterface>({
@@ -74,20 +62,12 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({ attributesG
       props: {
         attribute,
         attributesGroupId: `${attributesGroup._id}`,
-        confirm: (
-          input: Omit<UpdateAttributeInGroupInput, 'attributesGroupId' | 'attributeId'>,
-        ) => {
-          showLoading();
-          updateAttributeInGroupMutation({
-            variables: {
-              input: {
-                attributesGroupId: attributesGroup._id,
-                attributeId: attribute._id,
-                ...input,
-                metricId: input.metricId || null,
-              },
-            },
-          }).catch((e) => console.log(e));
+        confirm: (input) => {
+          updateAttributeMutation({
+            attributesGroupId: `${attributesGroup._id}`,
+            attributeId: `${attribute._id}`,
+            ...input,
+          }).catch(console.log);
         },
       },
     });
@@ -287,14 +267,9 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({ attributesG
                   testId: 'delete-attribute-modal',
                   message: `Вы уверенны, что хотите удалить атрибут ${name}?`,
                   confirm: () => {
-                    showLoading();
-                    return deleteAttributeFromGroupMutation({
-                      variables: {
-                        input: {
-                          attributesGroupId: attributesGroup._id,
-                          attributeId: dataItem._id,
-                        },
-                      },
+                    return deleteAttributeMutation({
+                      attributesGroupId: `${attributesGroup._id}`,
+                      attributeId: `${dataItem._id}`,
                     });
                   },
                 },
@@ -336,14 +311,9 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({ attributesG
                 props: {
                   attributesGroupId: `${attributesGroup._id}`,
                   confirm: (input) => {
-                    showLoading();
-                    return addAttributeToGroupMutation({
-                      variables: {
-                        input: {
-                          attributesGroupId: `${attributesGroup._id}`,
-                          ...input,
-                        },
-                      },
+                    return createAttributeMutation({
+                      attributesGroupId: `${attributesGroup._id}`,
+                      ...input,
                     });
                   },
                 },

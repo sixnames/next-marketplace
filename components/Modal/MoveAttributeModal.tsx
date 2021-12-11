@@ -1,11 +1,9 @@
+import { useMoveAttributeMutation } from 'hooks/mutations/useAttributeMutations';
 import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import * as React from 'react';
 import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
-import {
-  useGetAttributesGroupsForRubricQuery,
-  useMoveAttributeMutation,
-} from 'generated/apolloComponents';
+import { useGetAttributesGroupsForRubricQuery } from 'generated/apolloComponents';
 import Spinner from 'components/Spinner';
 import RequestError from 'components/RequestError';
 import { Formik, Form } from 'formik';
@@ -22,11 +20,10 @@ const MoveAttributeModal: React.FC<MoveAttributeModalInterface> = ({
   oldAttributesGroupId,
   attributeId,
 }) => {
-  const { onCompleteCallback, onErrorCallback, showLoading, showErrorNotification } =
-    useMutationCallbacks({
-      reload: true,
-      withModal: true,
-    });
+  const { showErrorNotification } = useMutationCallbacks({
+    reload: true,
+    withModal: true,
+  });
 
   const { data, loading, error } = useGetAttributesGroupsForRubricQuery({
     fetchPolicy: 'network-only',
@@ -35,10 +32,7 @@ const MoveAttributeModal: React.FC<MoveAttributeModalInterface> = ({
     },
   });
 
-  const [moveAttributeMutation] = useMoveAttributeMutation({
-    onCompleted: (data) => onCompleteCallback(data.moveAttribute),
-    onError: onErrorCallback,
-  });
+  const [moveAttributeMutation] = useMoveAttributeMutation();
 
   if (loading) {
     return <Spinner />;
@@ -66,14 +60,10 @@ const MoveAttributeModal: React.FC<MoveAttributeModalInterface> = ({
             });
             return;
           }
-          showLoading();
+
           moveAttributeMutation({
-            variables: {
-              input: {
-                attributeId,
-                attributesGroupId: values.attributesGroupId,
-              },
-            },
+            attributeId: `${attributeId}`,
+            attributesGroupId: `${values.attributesGroupId}`,
           }).catch(console.log);
         }}
       >

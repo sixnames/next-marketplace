@@ -792,11 +792,6 @@ type MetricPayload implements Payload {
   success: Boolean!
 }
 
-input MoveAttributeInput {
-  attributeId: ObjectId!
-  attributesGroupId: ObjectId!
-}
-
 input MoveOptionInput {
   optionId: ObjectId!
   optionsGroupId: ObjectId!
@@ -1094,11 +1089,6 @@ type Mutation {
   Should generate shop token
   """
   generateShopToken(_id: ObjectId!): ShopPayload!
-
-  """
-  Should move attribute to another attributes group
-  """
-  moveAttribute(input: MoveAttributeInput!): AttributesGroupPayload!
 
   """
   Should move option to another options group

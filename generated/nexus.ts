@@ -425,11 +425,6 @@ export interface NexusGenInputs {
     // input type
     slugs?: string[] | null; // [String!]
   };
-  MoveAttributeInput: {
-    // input type
-    attributeId: NexusGenScalars['ObjectId']; // ObjectId!
-    attributesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
-  };
   MoveOptionInput: {
     // input type
     optionId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -1383,7 +1378,6 @@ export interface NexusGenFieldTypes {
     deleteShopProductSupplier: NexusGenRootTypes['ShopProductPayload']; // ShopProductPayload!
     deleteSupplier: NexusGenRootTypes['SupplierPayload']; // SupplierPayload!
     generateShopToken: NexusGenRootTypes['ShopPayload']; // ShopPayload!
-    moveAttribute: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
     moveOption: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
     repeatOrder: NexusGenRootTypes['CartPayload']; // CartPayload!
     updateAttributeInRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
@@ -2407,7 +2401,6 @@ export interface NexusGenFieldTypeNames {
     deleteShopProductSupplier: 'ShopProductPayload';
     deleteSupplier: 'SupplierPayload';
     generateShopToken: 'ShopPayload';
-    moveAttribute: 'AttributesGroupPayload';
     moveOption: 'OptionsGroupPayload';
     repeatOrder: 'CartPayload';
     updateAttributeInRubric: 'RubricPayload';
@@ -3255,10 +3248,6 @@ export interface NexusGenArgTypes {
     generateShopToken: {
       // args
       _id: NexusGenScalars['ObjectId']; // ObjectId!
-    };
-    moveAttribute: {
-      // args
-      input: NexusGenInputs['MoveAttributeInput']; // MoveAttributeInput!
     };
     moveOption: {
       // args

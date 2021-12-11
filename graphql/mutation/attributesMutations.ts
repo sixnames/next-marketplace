@@ -27,15 +27,6 @@ export const DELETE_ATTRIBUTES_GROUP_MUTATION = gql`
   }
 `;
 
-export const MOVE_ATTRIBUTE_MUTATION = gql`
-  mutation MoveAttribute($input: MoveAttributeInput!) {
-    moveAttribute(input: $input) {
-      success
-      message
-    }
-  }
-`;
-
 export const ADD_ATTRIBUTES_GROUP_TO_RUBRIC = gql`
   mutation AddAttributesGroupToRubric($input: AddAttributesGroupToRubricInput!) {
     addAttributesGroupToRubric(input: $input) {

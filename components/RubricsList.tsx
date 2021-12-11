@@ -10,6 +10,7 @@ interface RubricsTreeInterface {
   titleLeft?: (_id: string, testId?: string) => any;
   low?: boolean;
   testIdPrefix?: string;
+  openAll?: boolean;
 }
 
 const RubricsList: React.FC<RubricsTreeInterface> = ({
@@ -19,6 +20,7 @@ const RubricsList: React.FC<RubricsTreeInterface> = ({
   titleLeft,
   low = false,
   testIdPrefix,
+  openAll,
 }) => {
   const finalTestIdPrefix = React.useMemo(() => {
     return testIdPrefix ? `${testIdPrefix}-` : '';
@@ -42,15 +44,17 @@ const RubricsList: React.FC<RubricsTreeInterface> = ({
       {rubrics.map((rubric) => {
         const { _id, name } = rubric;
         return (
-          <Accordion
-            titleLeft={titleLeftContent(rubric)}
-            disabled={isAccordionDisabled}
-            title={`${name}`}
-            key={`${_id}`}
-            testId={`tree-${name}`}
-          >
-            {render ? render(rubric) : null}
-          </Accordion>
+          <div key={`${_id}`} className='mb-4'>
+            <Accordion
+              isOpen={openAll}
+              titleLeft={titleLeftContent(rubric)}
+              disabled={isAccordionDisabled}
+              title={`${name}`}
+              testId={`tree-${name}`}
+            >
+              {render ? render(rubric) : null}
+            </Accordion>
+          </div>
         );
       })}
     </div>

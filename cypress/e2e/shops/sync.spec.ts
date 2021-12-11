@@ -251,7 +251,7 @@ describe('Sync', () => {
     cy.getByCy(`${errorBarcode}-create`).should('not.exist');
   });
 
-  it('Should update product with sync error', () => {
+  it.only('Should update product with sync error', () => {
     cy.request({
       method: REQUEST_METHOD_POST,
       url: `/api/shops/sync?${validRequestParamsC}`,

@@ -109,7 +109,7 @@ const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
 
   if (!data && error) {
     return (
-      <ModalFrame>
+      <ModalFrame size={'wide'}>
         <ModalTitle>Ошибка загрузки рубрик</ModalTitle>
       </ModalFrame>
     );
@@ -117,7 +117,7 @@ const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
 
   if (!data && !error) {
     return (
-      <ModalFrame>
+      <ModalFrame size={'wide'}>
         <Spinner isNested isTransparent />
       </ModalFrame>
     );
@@ -125,7 +125,7 @@ const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
 
   if (!data) {
     return (
-      <ModalFrame>
+      <ModalFrame size={'wide'}>
         <RequestError />
       </ModalFrame>
     );
@@ -144,6 +144,7 @@ const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
 
       <RubricsList
         low
+        openAll={Boolean(search)}
         rubrics={data}
         render={({ slug }) => {
           return <ProductsList rubricSlug={slug} search={search} {...props} />;

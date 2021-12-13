@@ -1959,6 +1959,7 @@ type RubricVariant {
   gridSnippetLayout: String
   name: String!
   nameI18n: JSONObject!
+  navCategoryColumns: Int
   rowSnippetLayout: String
   showCardBrands: Boolean
   showCardButtonsBackground: Boolean
@@ -2390,6 +2391,7 @@ input UpdateRubricVariantInput {
   gridCatalogueColumns: Int
   gridSnippetLayout: String
   nameI18n: JSONObject!
+  navCategoryColumns: Int
   rowSnippetLayout: String
   rubricVariantId: ObjectId!
   showCardArticle: Boolean

@@ -99,6 +99,7 @@ const RubricVariantConsumer: React.FC<RubricVariantConsumerInterface> = ({ rubri
             showCardBrands: rubricVariant.showCardBrands || false,
             cardBrandsLabelI18n: rubricVariant.cardBrandsLabelI18n || {},
             gridCatalogueColumns: rubricVariant.gridCatalogueColumns || 3,
+            navCategoryColumns: rubricVariant.navCategoryColumns || 4,
           }}
           onSubmit={(values) => {
             showLoading();
@@ -197,6 +198,14 @@ const RubricVariantConsumer: React.FC<RubricVariantConsumerInterface> = ({ rubri
                   label={'Количество колонок в каталоге'}
                   min={2}
                   max={5}
+                />
+
+                <FormikInput
+                  type={'number'}
+                  name={'navCategoryColumns'}
+                  label={'Количество колонок категорий в выпадающем меню'}
+                  min={2}
+                  max={4}
                 />
 
                 {/*layout*/}

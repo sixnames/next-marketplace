@@ -93,7 +93,7 @@ const ProductSearchModal: React.FC<ProductSearchModalInterface> = ({
   const [search, setSearch] = React.useState<string | null>(null);
   const { data, error } = useSWR<RubricInterface[]>('/api/rubrics');
 
-  if (rubricSlug || (search && rubricSlug)) {
+  if (rubricSlug) {
     return (
       <ModalFrame testId={testId} size={'wide'}>
         <FormikIndividualSearch

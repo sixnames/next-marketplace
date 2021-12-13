@@ -76,8 +76,9 @@ export const getConsoleCompanyRubricProducts = async ({
     const { db } = await getDatabase();
     const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
     const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
-    const [rubricId, ...filters] = alwaysArray(query.filters);
+    const filters = alwaysArray(query.filters);
     const search = alwaysString(query.search);
+    const rubricId = alwaysString(query.rubricId);
 
     // get rubric
     const rubric = await rubricsCollection.findOne({

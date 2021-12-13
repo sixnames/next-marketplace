@@ -730,6 +730,7 @@ export interface SsrConfigsInterface {
   actualAddress: string;
   contactsContent: string;
   seoText: string;
+  seoTextBottom: string;
   mapMarkerDarkTheme: string;
   mapMarkerLightTheme: string;
 

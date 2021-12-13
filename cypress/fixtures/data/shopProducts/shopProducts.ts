@@ -34,7 +34,7 @@ if (isOneShopCompany) {
 
       if (product) {
         const withDiscount = i % 2 === 0;
-        const available = withDiscount ? 5 : 0;
+        const available = i % 3 === 0 ? 5 : 0;
         const price = Math.round(Math.random() * 1000) * 100;
         const oldPrice = price + Math.round(price / 3);
         const pricePercent = oldPrice / 100;
@@ -111,7 +111,7 @@ if (isOneShopCompany) {
           }
 
           const withDiscount = i % 2 === 0;
-          const available = withDiscount ? 5 : 0;
+          const available = i % 3 === 0 ? 5 : 0;
           const price = Math.round(Math.random() * 1000) * 100;
           const oldPrice = price + Math.round(price / 3);
           const pricePercent = oldPrice / 100;

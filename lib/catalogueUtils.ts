@@ -995,8 +995,6 @@ export const getCatalogueData = async ({
       ...ignoreNoImageStage,
     };
 
-    console.log(productsInitialMatch);
-
     // aggregate catalogue initial data
     const productDataAggregationResult = await shopProductsCollection
       .aggregate<CatalogueProductsAggregationInterface>([

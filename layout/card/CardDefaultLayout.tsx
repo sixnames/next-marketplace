@@ -96,6 +96,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
     assets,
     showCardImagesSlider,
     cardTitle,
+    maxAvailable,
   } = useCardData({
     cardData,
     companySlug,
@@ -209,7 +210,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                   <CardPrices cardPrices={cardPrices} shopsCount={shopsCount} />
 
                   {/*availability*/}
-                  {configs.isOneShopCompany ? null : (
+                  {configs.isOneShopCompany || maxAvailable === 0 ? null : (
                     <a
                       href={`#card-shops`}
                       className='flex items-center'
@@ -243,6 +244,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                 <div className='flex flex-wrap gap-4 mb-8'>
                   <div className='flex flex-col xs:flex-row gap-6 max-w-[460px]'>
                     <ProductAddToCartButton
+                      available={maxAvailable}
                       disabled={isShopless}
                       productId={product._id}
                       shopProductsIds={[`${cardShops[0].cardShopProduct?._id}`]}

@@ -788,6 +788,10 @@ export const getSsrConfigs = async ({
     configs,
     slug: 'seoText',
   });
+  const seoTextBottom = getConfigStringValue({
+    configs,
+    slug: 'seoTextBottom',
+  });
   const seoTextTitle = getConfigStringValue({
     configs,
     slug: 'seoTextTitle',
@@ -949,6 +953,7 @@ export const getSsrConfigs = async ({
 
   return {
     isOneShopCompany,
+    seoTextBottom,
     robotsTxt,
     cartBookingButtonDescription,
     catalogueProductsCount,

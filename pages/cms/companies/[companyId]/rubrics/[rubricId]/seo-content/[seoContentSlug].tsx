@@ -43,7 +43,12 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
   };
 
   return (
-    <CmsRubricLayout rubric={rubric} breadcrumbs={breadcrumbs} basePath={routeBasePath}>
+    <CmsRubricLayout
+      hideAttributesPath
+      rubric={rubric}
+      breadcrumbs={breadcrumbs}
+      basePath={routeBasePath}
+    >
       <Inner>
         <ConsoleSeoContentDetails seoContent={seoContent} companySlug={companySlug} />
       </Inner>

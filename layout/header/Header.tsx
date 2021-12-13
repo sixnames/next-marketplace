@@ -200,8 +200,9 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
   const { showModal } = useAppContext();
   const { locale } = useLocaleContext();
   const { configs, domainCompany } = useConfigContext();
-  const { query, asPath } = useRouter();
+  const router = useRouter();
   const { navRubrics, urlPrefix } = useSiteContext();
+  const { query, asPath } = router;
   const { rubricSlug } = query;
   const marker = useShopMarker(domainCompany?.mainShop);
   if (!isBurgerDropdownOpen) {
@@ -212,6 +213,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
   const blogLinkName = getConstantTranslation(`nav.blog.${locale}`);
   const contactsLinkName = getConstantTranslation(`nav.contacts.${locale}`);
   const callbackPhone = configs.phone[0];
+  const visibleOptionsCount = configs.stickyNavVisibleOptionsCount;
 
   return (
     <div className='fixed inset-0 bg-primary z-[140] w-full pt-4 pb-8 overflow-y-auto min-w-[320px]'>
@@ -275,6 +277,8 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                       ) : null}
 
                       {(attributes || []).map((attribute) => {
+                        const showOptionsMoreLink =
+                          noNaN(visibleOptionsCount) === attribute.options?.length;
                         return (
                           <div className='mt-2 mb-10' key={`${attribute._id}`}>
                             <div className='mb-2 text-xl font-medium text-secondary-text'>
@@ -297,6 +301,22 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                                   </li>
                                 );
                               })}
+
+                              {showOptionsMoreLink ? (
+                                <li>
+                                  <div
+                                    className='flex items-center h-10 text-theme font-medium cursor-pointer'
+                                    onClick={() => {
+                                      router
+                                        .push(`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}`)
+                                        .then(hideBurgerDropdown)
+                                        .catch(console.log);
+                                    }}
+                                  >
+                                    Показать все
+                                  </div>
+                                </li>
+                              ) : null}
                             </ul>
                           </div>
                         );

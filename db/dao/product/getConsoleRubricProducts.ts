@@ -116,7 +116,7 @@ export const getConsoleRubricProducts = async ({
       optionsStage,
       pricesStage,
       photoStage,
-      searchStage,
+      searchIds,
       noSearchResults,
     } = await castUrlFilters({
       filters,
@@ -230,7 +230,6 @@ export const getConsoleRubricProducts = async ({
 
     // initial match
     const productsInitialMatch = {
-      ...searchStage,
       ...excludedIdsStage,
       ...rubricStage,
       ...brandStage,
@@ -240,9 +239,23 @@ export const getConsoleRubricProducts = async ({
       ...photoStage,
     };
 
+    const searchStage =
+      searchIds.length > 0
+        ? [
+            {
+              $match: {
+                _id: {
+                  $in: searchIds,
+                },
+              },
+            },
+          ]
+        : [];
+
     const productDataAggregationResult = await productsCollection
       .aggregate<ProductsAggregationInterface>([
         // match products
+        ...searchStage,
         {
           $match: productsInitialMatch,
         },

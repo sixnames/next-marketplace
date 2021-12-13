@@ -1,8 +1,8 @@
 import { Db } from 'mongodb';
-import { ID_COUNTER_STEP } from '../../../config/common';
+import { DEFAULT_COMPANY_SLUG, ID_COUNTER_STEP } from '../../../config/common';
 import { dbsConfig, getProdDb } from './getProdDb';
-import { COL_COMPANIES, COL_ID_COUNTERS, COL_SHOP_PRODUCTS } from '../../../db/collectionNames';
-import { CompanyModel, IdCounterModel, ShopProductModel } from '../../../db/dbModels';
+import { COL_COMPANIES, COL_ID_COUNTERS, COL_SEO_CONTENTS } from '../../../db/collectionNames';
+import { CompanyModel, IdCounterModel, SeoContentModel } from '../../../db/dbModels';
 require('dotenv').config();
 
 export async function getFastNextNumberItemId(collectionName: string, db: Db): Promise<string> {
@@ -36,20 +36,36 @@ async function updateProds() {
     console.log(`Updating ${dbConfig.dbName} db`);
     const { db, client } = await getProdDb(dbConfig);
     const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
-    const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-
-    const companies = await companiesCollection.find({}).toArray();
-    for await (const company of companies) {
-      await shopProductsCollection.updateMany(
-        {
-          companyId: company._id,
-        },
-        {
-          $set: {
-            companySlug: company.slug,
+    const soeContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
+    const slug = '20';
+    const company = await companiesCollection.findOne({
+      slug,
+    });
+    if (company) {
+      const seoContents = await soeContentsCollection.find({ companySlug: company.slug }).toArray();
+      for await (const seo of seoContents) {
+        const newSlug = seo.slug.replace(company._id.toHexString(), DEFAULT_COMPANY_SLUG);
+        const oldSeo = await soeContentsCollection.findOne({
+          slug: newSlug,
+        });
+        if (oldSeo) {
+          await soeContentsCollection.findOneAndDelete({
+            _id: oldSeo._id,
+          });
+        }
+        await soeContentsCollection.findOneAndUpdate(
+          {
+            _id: seo._id,
           },
-        },
-      );
+          {
+            $set: {
+              companySlug: DEFAULT_COMPANY_SLUG,
+              url: seo.url.replace(slug, DEFAULT_COMPANY_SLUG),
+              slug: seo.slug.replace(company._id.toHexString(), DEFAULT_COMPANY_SLUG),
+            },
+          },
+        );
+      }
     }
 
     // disconnect form db

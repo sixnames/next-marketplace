@@ -22,7 +22,7 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
   imageLoading,
 }) => {
   const { urlPrefix } = useSiteContext();
-  const { product } = shopProduct;
+  const { product, available } = shopProduct;
   if (!product) {
     return null;
   }
@@ -190,6 +190,7 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
         {/*controls*/}
         <div className={`flex gap-2 justify-between`}>
           <ProductAddToCartButton
+            available={available}
             disabled={isShopless}
             productId={product._id}
             shopProductsIds={shopProductsIds}

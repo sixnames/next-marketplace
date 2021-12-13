@@ -248,7 +248,7 @@
     width: 100%;
   }
 
-  @media only screen and (min-width: 360px) {
+  @media only screen and (min-width: 480px) {
     .grid-snippet-5,
     .grid-snippet-4,
     .grid-snippet-3,

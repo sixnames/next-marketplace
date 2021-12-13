@@ -59,6 +59,7 @@ export const RubricVariant = objectType({
 
     // numbers
     t.int('gridCatalogueColumns');
+    t.int('navCategoryColumns');
 
     // RubricVariant name translation field resolver
     t.nonNull.field('name', {
@@ -181,6 +182,7 @@ export const UpdateRubricVariantInput = inputObjectType({
 
     // numbers
     t.int('gridCatalogueColumns');
+    t.int('navCategoryColumns');
 
     // strings
     t.json('cardBrandsLabelI18n');

@@ -755,6 +755,7 @@ export interface RubricVariantModel {
 
   // numbers
   gridCatalogueColumns?: number | null;
+  navCategoryColumns?: number | null;
 
   // strings
   cardBrandsLabelI18n?: TranslationModel | null;

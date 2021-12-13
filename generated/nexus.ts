@@ -733,6 +733,7 @@ export interface NexusGenInputs {
     gridCatalogueColumns?: number | null; // Int
     gridSnippetLayout?: string | null; // String
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    navCategoryColumns?: number | null; // Int
     rowSnippetLayout?: string | null; // String
     rubricVariantId: NexusGenScalars['ObjectId']; // ObjectId!
     showCardArticle?: boolean | null; // Boolean
@@ -1791,6 +1792,7 @@ export interface NexusGenFieldTypes {
     gridSnippetLayout: string | null; // String
     name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
+    navCategoryColumns: number | null; // Int
     rowSnippetLayout: string | null; // String
     showCardBrands: boolean | null; // Boolean
     showCardButtonsBackground: boolean | null; // Boolean
@@ -2814,6 +2816,7 @@ export interface NexusGenFieldTypeNames {
     gridSnippetLayout: 'String';
     name: 'String';
     nameI18n: 'JSONObject';
+    navCategoryColumns: 'Int';
     rowSnippetLayout: 'String';
     showCardBrands: 'Boolean';
     showCardButtonsBackground: 'Boolean';

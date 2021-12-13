@@ -39,6 +39,7 @@ interface StylesInterface extends AttributeStylesInterface {
 
 export interface StickyNavDropdownInterface extends StylesInterface {
   attributes: AttributeInterface[] | null | undefined;
+  navCategoryColumns: number;
   rubricSlug: string;
   categories: CategoryInterface[];
   hideDropdown: () => void;
@@ -148,6 +149,7 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({
           dropdownStyle={dropdownStyle}
           rubricSlug={slug}
           attributes={attributes}
+          navCategoryColumns={rubric.variant?.navCategoryColumns || 4}
           catalogueNavLayout={`${rubric.variant?.catalogueNavLayout}`}
           urlPrefix={urlPrefix}
         />

@@ -426,17 +426,16 @@ export async function getCatalogueAttributes({
 
       // If price attribute
       if (slug === FILTER_PRICE_KEY) {
-        const splittedOption = optionSlug.split(FILTER_SEPARATOR);
-        const filterOptionValue = splittedOption[1];
-        const prices = filterOptionValue.split('_');
+        const castedFilter = castCatalogueFilter(optionSlug);
+        const prices = castedFilter.optionSlug.split('_');
         const minPrice = prices[0];
         const maxPrice = prices[1];
 
-        const optionProduct = productsPrices.find(({ _id }) => {
+        const priceItem = productsPrices.find(({ _id }) => {
           return noNaN(_id) >= noNaN(minPrice) && noNaN(_id) <= noNaN(maxPrice);
         });
 
-        if (optionProduct) {
+        if (priceItem) {
           castedOptions.push(finalOption);
         }
       } else {
@@ -692,7 +691,7 @@ export async function castUrlFilters({
         priceFilters.push(filterOption);
         noCategoryFilters.push(filterOption);
         const prices = filterOptionSlug.split('_');
-        minPrice = prices[0] ? noNaN(prices[0]) : null;
+        minPrice = noNaN(prices[0]);
         maxPrice = prices[1] ? noNaN(prices[1]) : null;
         return;
       }
@@ -759,15 +758,14 @@ export async function castUrlFilters({
   const skip = page ? (page - 1) * limit : 0;
   const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
 
-  const pricesStage =
-    minPrice && maxPrice
-      ? {
-          price: {
-            $gte: minPrice,
-            $lte: maxPrice,
-          },
-        }
-      : {};
+  const pricesStage = maxPrice
+    ? {
+        price: {
+          $gte: minPrice,
+          $lte: maxPrice,
+        },
+      }
+    : {};
 
   const optionsStage =
     realFilters.length > 0
@@ -996,6 +994,8 @@ export const getCatalogueData = async ({
       ...pricesStage,
       ...ignoreNoImageStage,
     };
+
+    console.log(productsInitialMatch);
 
     // aggregate catalogue initial data
     const productDataAggregationResult = await shopProductsCollection

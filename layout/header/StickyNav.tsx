@@ -2,6 +2,7 @@ import { ROUTE_CATALOGUE } from 'config/common';
 import {
   NAV_DROPDOWN_LAYOUT_OPTIONS_ONLY,
   NAV_DROPDOWN_LAYOUT_WITH_CATEGORIES,
+  NAV_DROPDOWN_LAYOUT_WITHOUT_SUBCATEGORIES,
 } from 'config/constantSelects';
 import { useConfigContext } from 'context/configContext';
 import { useThemeContext } from 'context/themeContext';
@@ -58,6 +59,10 @@ const StickyNavDropdownWithCategories = dynamic(
   () => import('layout/header/StickyNavDropdownWithCategories'),
 );
 
+const StickyNavDropdownWithoutSubCategories = dynamic(
+  () => import('layout/header/StickyNavDropdownWithoutSubCategories'),
+);
+
 const StickyNavDropdown: React.FC<StickyNavDropdownGlobalInterface> = ({
   catalogueNavLayout,
   ...props
@@ -69,6 +74,9 @@ const StickyNavDropdown: React.FC<StickyNavDropdownGlobalInterface> = ({
 
   if (catalogueNavLayout === NAV_DROPDOWN_LAYOUT_WITH_CATEGORIES) {
     dropDownLayout = <StickyNavDropdownWithCategories {...props} />;
+  }
+  if (catalogueNavLayout === NAV_DROPDOWN_LAYOUT_WITHOUT_SUBCATEGORIES) {
+    dropDownLayout = <StickyNavDropdownWithoutSubCategories {...props} />;
   }
 
   return (

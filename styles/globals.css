@@ -220,8 +220,21 @@
   }
 
   .tag-link__icon > svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .nav-dropdown-icon > svg {
     width: 2rem;
     height: 2rem;
+  }
+
+  .nav-dropdown-icon-link > span {
+    transition: all 0.2s;
+  }
+
+  .nav-dropdown-icon-link:hover > span {
+    color: var(--theme);
   }
 
   /* Catalogue */

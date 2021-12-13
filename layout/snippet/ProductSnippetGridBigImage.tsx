@@ -19,7 +19,7 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
   imageLoading,
 }) => {
   const { urlPrefix } = useSiteContext();
-  const { product } = shopProduct;
+  const { product, available } = shopProduct;
 
   if (!product) {
     return null;
@@ -152,6 +152,7 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
             shopProductsIds={shopProductsIds}
             testId={`${testId}-add-to-cart-grid`}
             size={'small'}
+            available={available}
             short
           />
           <div className='flex items-center'>

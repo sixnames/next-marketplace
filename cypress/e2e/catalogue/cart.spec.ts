@@ -25,8 +25,6 @@ describe('Cart', () => {
     cy.getByCy('catalogue').should('exist');
     cy.visitLinkHref('catalogue-item-1-name-grid');
     cy.getByCy(`card`).should('exist');
-    cy.getByCy(`card-connection`).first().click();
-    cy.wait(1500);
     cy.getByCy(`card-shops-1-0-add-to-cart`).click();
     cy.getByCy(`cart-modal-counter`).should('contain', '2');
 

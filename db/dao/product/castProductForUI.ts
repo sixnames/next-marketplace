@@ -162,6 +162,7 @@ export function castProductForUI({
 
   return {
     ...product,
+    name: getFieldStringLocale(product?.nameI18n, locale),
     connections,
     attributes: productAttributes,
     brand: initialProductBrand,

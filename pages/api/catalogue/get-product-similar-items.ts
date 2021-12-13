@@ -169,9 +169,9 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
               },
               {
                 $sort: {
-                  priorities: SORT_DESC,
-                  views: SORT_DESC,
                   available: SORT_DESC,
+                  views: SORT_DESC,
+                  _id: SORT_DESC,
                 },
               },
               {

@@ -72,6 +72,7 @@ import {
 } from 'db/uiInterfaces';
 import { getAlgoliaProductsSearch } from 'lib/algolia/productAlgoliaUtils';
 import { alwaysString, sortObjectsByField } from 'lib/arrayUtils';
+import { castCatalogueFilter } from 'lib/catalogueHelpers';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
@@ -425,17 +426,16 @@ export async function getCatalogueAttributes({
 
       // If price attribute
       if (slug === FILTER_PRICE_KEY) {
-        const splittedOption = optionSlug.split(FILTER_SEPARATOR);
-        const filterOptionValue = splittedOption[1];
-        const prices = filterOptionValue.split('_');
+        const castedFilter = castCatalogueFilter(optionSlug);
+        const prices = castedFilter.optionSlug.split('_');
         const minPrice = prices[0];
         const maxPrice = prices[1];
 
-        const optionProduct = productsPrices.find(({ _id }) => {
+        const priceItem = productsPrices.find(({ _id }) => {
           return noNaN(_id) >= noNaN(minPrice) && noNaN(_id) <= noNaN(maxPrice);
         });
 
-        if (optionProduct) {
+        if (priceItem) {
           castedOptions.push(finalOption);
         }
       } else {
@@ -691,7 +691,7 @@ export async function castUrlFilters({
         priceFilters.push(filterOption);
         noCategoryFilters.push(filterOption);
         const prices = filterOptionSlug.split('_');
-        minPrice = prices[0] ? noNaN(prices[0]) : null;
+        minPrice = noNaN(prices[0]);
         maxPrice = prices[1] ? noNaN(prices[1]) : null;
         return;
       }
@@ -758,15 +758,14 @@ export async function castUrlFilters({
   const skip = page ? (page - 1) * limit : 0;
   const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
 
-  const pricesStage =
-    minPrice && maxPrice
-      ? {
-          price: {
-            $gte: minPrice,
-            $lte: maxPrice,
-          },
-        }
-      : {};
+  const pricesStage = maxPrice
+    ? {
+        price: {
+          $gte: minPrice,
+          $lte: maxPrice,
+        },
+      }
+    : {};
 
   const optionsStage =
     realFilters.length > 0
@@ -797,14 +796,18 @@ export async function castUrlFilters({
 
   // sort stage
   const defaultSortStage = DEFAULT_SORT_STAGE;
-  let sortStage: Record<any, any> = defaultSortStage;
+  let sortStage: Record<any, any> = {
+    available: SORT_DESC,
+    views: SORT_DESC,
+    _id: SORT_DESC,
+  };
 
   // sort by price
   if (sortBy === SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY) {
     sortStage = {
       minPrice: castedSortDir,
-      views: SORT_DESC,
       available: SORT_DESC,
+      views: SORT_DESC,
       _id: SORT_DESC,
     };
   }
@@ -1843,20 +1846,39 @@ export const getCatalogueData = async ({
         });
 
     let redirect = null;
-    const lostFilters = allUrlParams.filter((filter) => {
-      const splittedOption = filter.split(FILTER_SEPARATOR);
-      const filterAttributeSlug = splittedOption[0];
+    const lostFilters: string[] = [];
+    allUrlParams.forEach((filter) => {
+      const { attributeSlug } = castCatalogueFilter(FILTER_SEPARATOR);
       if (
-        filterAttributeSlug === FILTER_PAGE_KEY ||
-        filterAttributeSlug === CATALOGUE_FILTER_LIMIT ||
-        filterAttributeSlug === SORT_BY_KEY ||
-        filterAttributeSlug === SORT_DIR_KEY
+        attributeSlug === FILTER_PAGE_KEY ||
+        attributeSlug === CATALOGUE_FILTER_LIMIT ||
+        attributeSlug === SORT_BY_KEY ||
+        attributeSlug === SORT_DIR_KEY
       ) {
-        return false;
+        return;
       }
-      return !selectedFilterSlugs.some((slug) => slug === filter);
+      if (!selectedFilterSlugs.some((slug) => slug === filter)) {
+        lostFilters.push(filter);
+      }
     });
-    const isRedirect = lostFilters.length > 0;
+
+    const lostNestedFilters: string[] = [];
+    selectedFilterSlugs.forEach((filter) => {
+      const { attributeSlug } = castCatalogueFilter(FILTER_SEPARATOR);
+      if (
+        attributeSlug === FILTER_PAGE_KEY ||
+        attributeSlug === CATALOGUE_FILTER_LIMIT ||
+        attributeSlug === SORT_BY_KEY ||
+        attributeSlug === SORT_DIR_KEY
+      ) {
+        return;
+      }
+      if (!allUrlParams.some((slug) => slug === filter)) {
+        lostNestedFilters.push(filter);
+      }
+    });
+
+    const isRedirect = lostFilters.length > 0 || lostNestedFilters.length > 0;
     const isPageRedirect = input.filters.includes(ZERO_PAGE_FILTER);
     if (isRedirect || isPageRedirect) {
       const filteredRedirectArray = selectedFilterSlugs.filter((filter) => {

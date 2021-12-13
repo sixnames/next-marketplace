@@ -25,6 +25,7 @@ const ConfigContext = React.createContext<ConfigContextInterface>({
   cities: [],
   configs: {
     isOneShopCompany: true,
+    seoTextBottom: '',
     siteName: '',
     siteFoundationYear: 0,
     yaVerification: '',

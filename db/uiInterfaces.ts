@@ -357,6 +357,8 @@ export interface SupplierProductInterface extends SupplierProductModel {
 
 export interface ShopProductInterface extends ShopProductModel {
   shop?: ShopInterface | null;
+  minAvailable?: number | null;
+  maxAvailable?: number | null;
   company?: CompanyInterface | null;
   product?: ProductInterface | null;
   products?: ProductInterface[] | null;
@@ -672,6 +674,7 @@ export interface InitialCardDataInterface {
   cardLayout: string;
   rubric: RubricInterface;
   cardPrices: ProductCardPricesModel;
+  maxAvailable: number;
 }
 
 export interface SsrConfigsInterface {
@@ -730,6 +733,7 @@ export interface SsrConfigsInterface {
   actualAddress: string;
   contactsContent: string;
   seoText: string;
+  seoTextBottom: string;
   mapMarkerDarkTheme: string;
   mapMarkerLightTheme: string;
 

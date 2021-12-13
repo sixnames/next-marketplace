@@ -23,7 +23,7 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
   imageLoading,
 }) => {
   const { urlPrefix } = useSiteContext();
-  const { product } = shopProduct;
+  const { product, available } = shopProduct;
   if (!product) {
     return null;
   }
@@ -209,6 +209,7 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
                 }`}
               >
                 <ProductAddToCartButton
+                  available={available}
                   disabled={isShopless}
                   productId={product._id}
                   shopProductsIds={shopProductsIds}

@@ -5,7 +5,7 @@ import TagLink from 'components/Link/TagLink';
 import PageEditor from 'components/PageEditor';
 import ShopsMap from 'components/ShopsMap';
 import Title from 'components/Title';
-import { ROUTE_DOCS_PAGES } from 'config/common';
+import { PAGE_EDITOR_DEFAULT_VALUE_STRING, ROUTE_DOCS_PAGES } from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
 import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
@@ -27,6 +27,7 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
   const { configs } = useConfigContext();
   const configTitle = configs.seoTextTitle;
   const configSeoContent = configs.seoText;
+  const configBottomSeoContent = configs.seoTextBottom;
   const autoplaySpeed = configs.mainBannerAutoplaySpeed;
   const sectionClassName = `mb-14 sm:mb-28`;
 
@@ -147,11 +148,13 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
           </div>
         ) : null}
 
-        {/*title*/}
-        {configTitle ? (
+        {/*seo top*/}
+        {configTitle || configSeoContent ? (
           <div className='mb-14 sm:mb-20'>
-            <Title textClassName='max-w-[1440px]'>{configTitle}</Title>
-            {configSeoContent && configSeoContent.length > 0 ? (
+            {configTitle ? <Title textClassName='max-w-[1440px]'>{configTitle}</Title> : null}
+            {configSeoContent &&
+            configSeoContent.length &&
+            configSeoContent !== PAGE_EDITOR_DEFAULT_VALUE_STRING ? (
               <PageEditor value={JSON.parse(configSeoContent)} readOnly />
             ) : null}
           </div>
@@ -326,6 +329,17 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
             </div>
             <ShopsMap shops={topShops} />
           </section>
+        ) : null}
+
+        {/*seo top*/}
+        {configBottomSeoContent ? (
+          <div className='mb-14 sm:mb-20'>
+            {configBottomSeoContent &&
+            configBottomSeoContent.length &&
+            configBottomSeoContent !== PAGE_EDITOR_DEFAULT_VALUE_STRING ? (
+              <PageEditor value={JSON.parse(configBottomSeoContent)} readOnly />
+            ) : null}
+          </div>
         ) : null}
       </Inner>
     </React.Fragment>

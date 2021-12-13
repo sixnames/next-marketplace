@@ -67,6 +67,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
     showCardBrands,
     cardBrandsLabel,
     cardTitle,
+    maxAvailable,
   } = useCardData({
     cardData,
     companySlug,
@@ -145,7 +146,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                     <CardPrices cardPrices={cardPrices} shopsCount={shopsCount} />
 
                     {/*availability*/}
-                    {configs.isOneShopCompany ? null : (
+                    {configs.isOneShopCompany || maxAvailable === 0 ? null : (
                       <a
                         href={`#card-shops`}
                         className='flex items-center'
@@ -178,6 +179,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                   <div className='flex items-center justify-between flex-wrap gap-6'>
                     {/*cart button*/}
                     <ProductAddToCartButton
+                      available={maxAvailable}
                       disabled={isShopless}
                       productId={product._id}
                       shopProductsIds={[`${cardShops[0].cardShopProduct?._id}`]}

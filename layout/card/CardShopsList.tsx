@@ -112,7 +112,11 @@ const CardShop: React.FC<CardShopInterface> = ({ shop, testId }) => {
               discountedPercent={discountedPercent}
               oldPrice={oldPrice}
             />
-            <div className=''>В наличии {` ${available} `}шт.</div>
+            {disabled ? (
+              <div className='text-theme col-span-5'>Нет в наличии</div>
+            ) : (
+              <div className=''>В наличии {` ${available} `}шт.</div>
+            )}
 
             <div className='mt-4'>
               <a href='#'>Узнать больше</a>
@@ -120,38 +124,42 @@ const CardShop: React.FC<CardShopInterface> = ({ shop, testId }) => {
           </div>
 
           <div className='max-w-[340px] grid gap-3 grid-cols-5'>
-            <div className='col-span-3'>
-              <SpinnerInput
-                className=''
-                plusTestId={`card-shops-${testId}-plus`}
-                minusTestId={`card-shops-${testId}-minus`}
-                testId={`card-shops-${slug}-input`}
-                onChange={(e) => {
-                  setAmount(noNaN(e.target.value));
-                }}
-                min={1}
-                max={available}
-                name={'amount'}
-                value={amount}
-              />
-            </div>
-            <div className='col-span-2'>
-              <Button
-                short
-                className='w-full'
-                disabled={disabled}
-                testId={`card-shops-${testId}-add-to-cart`}
-                onClick={() => {
-                  addProductToCart({
-                    amount,
-                    productId,
-                    shopProductId: cardShopProduct._id,
-                  });
-                }}
-              >
-                {noNaN(inCartCount) > 0 ? `В корзине ${inCartCount}` : 'В корзину'}
-              </Button>
-            </div>
+            {disabled ? null : (
+              <React.Fragment>
+                <div className='col-span-3'>
+                  <SpinnerInput
+                    className=''
+                    plusTestId={`card-shops-${testId}-plus`}
+                    minusTestId={`card-shops-${testId}-minus`}
+                    testId={`card-shops-${slug}-input`}
+                    onChange={(e) => {
+                      setAmount(noNaN(e.target.value));
+                    }}
+                    min={1}
+                    max={available}
+                    name={'amount'}
+                    value={amount}
+                  />
+                </div>
+                <div className='col-span-2'>
+                  <Button
+                    short
+                    className='w-full'
+                    disabled={disabled}
+                    testId={`card-shops-${testId}-add-to-cart`}
+                    onClick={() => {
+                      addProductToCart({
+                        amount,
+                        productId,
+                        shopProductId: cardShopProduct._id,
+                      });
+                    }}
+                  >
+                    {noNaN(inCartCount) > 0 ? `В корзине ${inCartCount}` : 'В корзину'}
+                  </Button>
+                </div>
+              </React.Fragment>
+            )}
           </div>
         </div>
       </div>

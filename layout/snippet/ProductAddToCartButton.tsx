@@ -3,12 +3,15 @@ import { useSiteContext } from 'context/siteContext';
 import { useIsInCart, UseIsInCartInterface } from 'hooks/useIsInCart';
 import * as React from 'react';
 
-interface ProductAddToCartButtonInterface extends ButtonPropsInterface, UseIsInCartInterface {}
+interface ProductAddToCartButtonInterface extends ButtonPropsInterface, UseIsInCartInterface {
+  available: number;
+}
 
 const ProductAddToCartButton: React.FC<ProductAddToCartButtonInterface> = ({
   shopProductsIds,
   productId,
   frameClassName,
+  available,
   ...props
 }) => {
   const { addShoplessProductToCart, addProductToCart } = useSiteContext();
@@ -16,6 +19,10 @@ const ProductAddToCartButton: React.FC<ProductAddToCartButtonInterface> = ({
     productId,
     shopProductsIds,
   });
+
+  if (available < 1) {
+    return <div className='text-theme'>Нет в наличии</div>;
+  }
 
   return (
     <Button

@@ -122,11 +122,22 @@ const StickyNavDropdownWithoutSubCategories: React.FC<StickyNavDropdownInterface
   categories,
   hideDropdown,
   urlPrefix,
+  navCategoryColumns,
 }) => {
+  let categoryColumnsClassName = 'grid-cols-4';
+  if (navCategoryColumns === 3) {
+    categoryColumnsClassName = 'grid-cols-3';
+  }
+  if (navCategoryColumns === 2) {
+    categoryColumnsClassName = 'grid-cols-2';
+  }
+  if (navCategoryColumns === 1) {
+    categoryColumnsClassName = 'grid-cols-1';
+  }
   return (
     <div className='grid grid-cols-6'>
       <div className='col-span-4 border-r border-border-300 pr-8'>
-        <div className='grid gap-x-4 gap-y-8 grid-cols-4 '>
+        <div className={`grid gap-x-4 gap-y-8 grid-cols-4 ${categoryColumnsClassName}`}>
           {(categories || []).map((category) => {
             return (
               <StickyNavCategory

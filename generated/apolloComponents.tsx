@@ -2208,6 +2208,7 @@ export type RubricVariant = {
   showCategoriesInNav?: Maybe<Scalars['Boolean']>;
   allowDelivery?: Maybe<Scalars['Boolean']>;
   gridCatalogueColumns?: Maybe<Scalars['Int']>;
+  navCategoryColumns?: Maybe<Scalars['Int']>;
   name: Scalars['String'];
 };
 
@@ -2648,6 +2649,7 @@ export type UpdateRubricVariantInput = {
   showCategoriesInNav?: Maybe<Scalars['Boolean']>;
   allowDelivery?: Maybe<Scalars['Boolean']>;
   gridCatalogueColumns?: Maybe<Scalars['Int']>;
+  navCategoryColumns?: Maybe<Scalars['Int']>;
   cardBrandsLabelI18n?: Maybe<Scalars['JSONObject']>;
 };
 

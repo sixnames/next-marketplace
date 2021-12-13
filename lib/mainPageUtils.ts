@@ -99,7 +99,7 @@ export async function getMainPageData({
       },
       {
         $sort: {
-          priorities: SORT_DESC,
+          available: SORT_DESC,
           views: SORT_DESC,
           _id: SORT_DESC,
         },

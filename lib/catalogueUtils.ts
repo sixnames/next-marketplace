@@ -796,14 +796,18 @@ export async function castUrlFilters({
 
   // sort stage
   const defaultSortStage = DEFAULT_SORT_STAGE;
-  let sortStage: Record<any, any> = defaultSortStage;
+  let sortStage: Record<any, any> = {
+    available: SORT_DESC,
+    views: SORT_DESC,
+    _id: SORT_DESC,
+  };
 
   // sort by price
   if (sortBy === SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY) {
     sortStage = {
       minPrice: castedSortDir,
-      views: SORT_DESC,
       available: SORT_DESC,
+      views: SORT_DESC,
       _id: SORT_DESC,
     };
   }

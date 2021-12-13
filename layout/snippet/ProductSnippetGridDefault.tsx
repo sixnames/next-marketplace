@@ -22,7 +22,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
   imageLoading,
 }) => {
   const { urlPrefix } = useSiteContext();
-  const { product } = shopProduct;
+  const { product, available } = shopProduct;
   if (!product) {
     return null;
   }
@@ -150,6 +150,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
             }`}
           >
             <ProductAddToCartButton
+              available={available}
               className='w-full'
               frameClassName={'w-[50%]'}
               productId={product._id}

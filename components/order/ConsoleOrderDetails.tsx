@@ -15,7 +15,7 @@ import OrderDeliveryInfo from 'components/order/OrderDeliveryInfo';
 import ProductsListSuppliersList from 'components/shops/ProductsListSuppliersList';
 import Title from 'components/Title';
 import WpImage from 'components/WpImage';
-import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, IMAGE_FALLBACK } from 'config/common';
+import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, IMAGE_FALLBACK, ROUTE_CMS } from 'config/common';
 import {
   DELIVERY_VARIANT_OPTIONS,
   getConstantOptionName,
@@ -55,17 +55,8 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
   const { values } = useFormikContext<OrderInterface>();
   const { showModal } = useAppContext();
   const { showErrorNotification } = useNotificationsContext();
-  const {
-    product,
-    originalName,
-    shopProduct,
-    itemId,
-    price,
-    totalPrice,
-    status,
-    finalPrice,
-    isCanceled,
-  } = orderProduct;
+  const { product, originalName, shopProduct, itemId, price, totalPrice, finalPrice, isCanceled } =
+    orderProduct;
   const productImageSrc = shopProduct ? `${product?.mainImage}` : IMAGE_FALLBACK;
   const minAmount = 1;
   const supplierProducts = shopProduct?.supplierProducts || [];
@@ -95,8 +86,23 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
 
         {!isCanceled ? (
           <div className='mt-4 flex gap-4'>
-            {/*save button*/}
-            {showAdminUi ? null : (
+            {/*edit button*/}
+            {showAdminUi ? (
+              <Button
+                frameClassName='w-auto'
+                title={'Редактироват товар'}
+                size={'small'}
+                icon={'pencil'}
+                circle
+                theme={'secondary'}
+                onClick={() => {
+                  window.open(
+                    `${ROUTE_CMS}/rubrics/${product?.rubricId}/products/product/${product?._id}`,
+                    '_blank',
+                  );
+                }}
+              />
+            ) : (
               <Button
                 frameClassName='w-auto'
                 title={'Сохранить товар'}
@@ -153,10 +159,10 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
       </div>
 
       <div className='flex-grow'>
-        <div className='grid gap-4 lg:flex lg:justify-between'>
-          <div>
+        <div className='grid gap-4 lg:grid-cols-7 lg:justify-between'>
+          <div className='lg:col-span-5'>
             {/*status*/}
-            <div className='flex items-baseline gap-2'>
+            {/*<div className='flex items-baseline gap-2'>
               <div className='text-secondary-text'>Статус</div>
               {status ? (
                 <div className='font-medium' style={status ? { color: status.color } : {}}>
@@ -165,7 +171,7 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
               ) : (
                 <div className='text-red-500 font-medium'>Статус не найден</div>
               )}
-            </div>
+            </div>*/}
 
             {/*article*/}
             <div className='text-secondary-text mb-3 text-sm'>{`Артикул: ${itemId}`}</div>
@@ -178,7 +184,7 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
                   className='block text-primary-text hover:text-theme hover:no-underline'
                   target={'_blank'}
                 >
-                  {product.snippetTitle}
+                  {product.cardTitle}
                 </Link>
               ) : null}
             </div>
@@ -201,7 +207,7 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
             ) : null}
           </div>
 
-          <div className='flex flex-col gap-4'>
+          <div className='flex flex-col gap-4 lg:col-span-2'>
             {/*amount*/}
             <div className='text-secondary-text w-full'>
               <InputLine low label={'Количество'} name={`products[${orderProductIndex}].amount`}>
@@ -221,7 +227,7 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
                 low
                 max={100}
                 min={0}
-                label={'Дополнительная скидка'}
+                label={'Доп. скидка %'}
                 name={`products[${orderProductIndex}].customDiscount`}
                 type={'number'}
               />
@@ -269,6 +275,7 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
   const { sessionUser } = useUserContext();
   const { locale } = useLocaleContext();
   const showAdminUi = sessionUser?.role?.isStaff;
+  const [state, setState] = React.useState(order);
   const {
     createdAt,
     totalPrice,
@@ -280,7 +287,8 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
     deliveryVariant,
     paymentVariant,
     deliveryInfo,
-  } = order;
+    companySiteSlug,
+  } = state;
 
   const [updateOrderMutation] = useUpdateOrder();
 
@@ -307,11 +315,17 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
       </div>
 
       <Formik<OrderInterface>
-        initialValues={order}
+        initialValues={state}
         onSubmit={(values) => {
           updateOrderMutation({
             order: values,
-          }).catch(console.log);
+          })
+            .then((value) => {
+              if (value && value.success && value.payload) {
+                setState(value.payload);
+              }
+            })
+            .catch(console.log);
         }}
       >
         {() => {
@@ -325,7 +339,7 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
                         showAdminUi={Boolean(showAdminUi)}
                         orderProductIndex={orderProductIndex}
                         citySlug={shop?.citySlug || DEFAULT_CITY}
-                        companySlug={pageCompanySlug || DEFAULT_COMPANY_SLUG}
+                        companySlug={companySiteSlug || pageCompanySlug || DEFAULT_COMPANY_SLUG}
                         orderProduct={orderProduct}
                         key={`${orderProduct._id}`}
                       />

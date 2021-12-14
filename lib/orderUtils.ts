@@ -18,7 +18,7 @@ import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { castSupplierProductsList } from 'lib/productUtils';
-import { generateSnippetTitle } from 'lib/titleUtils';
+import { generateCardTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 
 interface CastOrderStatusInterface {
@@ -213,7 +213,7 @@ export async function getConsoleOrder({
       : null,
     products: initialOrder.products?.map((orderProduct) => {
       // title
-      const snippetTitle = generateSnippetTitle({
+      const cardTitle = generateCardTitle({
         locale,
         brand: orderProduct.product?.brand,
         rubricName: getFieldStringLocale(orderProduct.product?.rubric?.nameI18n, locale),
@@ -235,7 +235,7 @@ export async function getConsoleOrder({
         product: orderProduct.product
           ? {
               ...orderProduct.product,
-              snippetTitle,
+              cardTitle,
             }
           : null,
         shopProduct: orderProduct.shopProduct

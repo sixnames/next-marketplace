@@ -944,8 +944,6 @@ export interface UserCashbackLogModel extends TimestampModel {
 export interface UserPaybackLogModel extends UserCashbackLogModel {}
 
 export interface GiftCertificateLogModel {
-  _id: ObjectIdModel;
-  giftCertificateId: ObjectIdModel;
   orderId: ObjectIdModel;
   value: number;
 }

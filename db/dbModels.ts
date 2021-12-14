@@ -943,6 +943,25 @@ export interface UserCashbackLogModel extends TimestampModel {
 
 export interface UserPaybackLogModel extends UserCashbackLogModel {}
 
+export interface GiftCertificateLogModel {
+  _id: ObjectIdModel;
+  giftCertificateId: ObjectIdModel;
+  orderId: ObjectIdModel;
+  value: number;
+}
+
+export interface GiftCertificateModel extends TimestampModel {
+  _id: ObjectIdModel;
+  userId?: ObjectIdModel;
+  companyId: ObjectIdModel;
+  companySlug: string;
+  initialValue: number;
+  value: number;
+  nameI18n?: TranslationModel;
+  descriptionI18n?: TranslationModel;
+  log: GiftCertificateLogModel[];
+}
+
 export interface PromoBaseInterface {
   companyId: ObjectIdModel;
   companySlug: string;

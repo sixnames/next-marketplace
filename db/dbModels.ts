@@ -950,7 +950,7 @@ export interface GiftCertificateLogModel {
 
 export interface GiftCertificateModel extends TimestampModel {
   _id: ObjectIdModel;
-  userId?: ObjectIdModel;
+  userId?: ObjectIdModel | null;
   companyId: ObjectIdModel;
   companySlug: string;
   initialValue: number;

@@ -690,8 +690,10 @@ export type MessageSlug =
 
   // Gift certificate ----------
   | 'giftCertificate.create.error'
+  | 'giftCertificate.create.exist'
   | 'giftCertificate.create.success'
   | 'giftCertificate.update.error'
+  | 'giftCertificate.update.exist'
   | 'giftCertificate.update.success'
   | 'giftCertificate.delete.error'
   | 'giftCertificate.delete.success'

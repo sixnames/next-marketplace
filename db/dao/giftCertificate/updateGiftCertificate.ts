@@ -41,6 +41,21 @@ export async function updateGiftCertificate({
       };
     }
 
+    // check if exist
+    const exist = await giftCertificatesCollection.findOne({
+      companyId: new ObjectId(input.companyId),
+      code: input.code,
+      _id: {
+        $ne: new ObjectId(input._id),
+      },
+    });
+    if (exist) {
+      return {
+        success: false,
+        message: await getApiMessage('giftCertificate.update.exist'),
+      };
+    }
+
     // update
     const updatedGiftCertificateResult = await giftCertificatesCollection.findOneAndUpdate(
       {

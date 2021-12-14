@@ -303,6 +303,7 @@ export async function updateIndexes(db: Db) {
   await giftCertificatesCollection.createIndex({ companyId: 1, createdAt: 1 });
   await giftCertificatesCollection.createIndex({ companySlug: 1, userId: 1, createdAt: 1 });
   await giftCertificatesCollection.createIndex({ companySlug: 1, createdAt: 1 });
+  await giftCertificatesCollection.createIndex({ code: 1, companyId: 1 }, { unique: true });
 
   // Promo
   await createCollectionIfNotExist(COL_PROMO);
@@ -318,6 +319,7 @@ export async function updateIndexes(db: Db) {
   await promoCodesCollection.createIndex({ companySlug: 1 });
   await promoCodesCollection.createIndex({ promoId: 1 });
   await promoCodesCollection.createIndex({ promoterId: 1 });
+  await promoCodesCollection.createIndex({ code: 1, companyId: 1 }, { unique: true });
 
   // Promo products
   await createCollectionIfNotExist(COL_PROMO_PRODUCTS);

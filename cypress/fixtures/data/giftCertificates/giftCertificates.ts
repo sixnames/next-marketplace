@@ -8,6 +8,7 @@ const certificates: GiftCertificateModel[] = [
     userId: getObjectId('admin'),
     companyId: getObjectId('company Company A'),
     companySlug: 'company_a',
+    code: 'code-a',
     initialValue: 5000,
     value: 4000,
     descriptionI18n: {

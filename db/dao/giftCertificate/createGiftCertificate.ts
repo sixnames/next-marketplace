@@ -7,6 +7,7 @@ import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
 
 export interface CreateGiftCertificateInputInterface {
+  code: string;
   companyId: string;
   companySlug: string;
   initialValue: number;
@@ -43,9 +44,22 @@ export async function createGiftCertificate({
       };
     }
 
+    // check if exist
+    const exist = await giftCertificatesCollection.findOne({
+      companyId: new ObjectId(input.companyId),
+      code: input.code,
+    });
+    if (exist) {
+      return {
+        success: false,
+        message: await getApiMessage('giftCertificate.create.exist'),
+      };
+    }
+
     // create
     const createdGiftCertificateResult = await giftCertificatesCollection.insertOne({
       log: [],
+      code: input.code,
       nameI18n: input.nameI18n,
       descriptionI18n: input.descriptionI18n,
       initialValue: input.initialValue,

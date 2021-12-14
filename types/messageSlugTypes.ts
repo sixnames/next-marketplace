@@ -688,6 +688,14 @@ export type MessageSlug =
   | 'promoProduct.delete.error'
   | 'promoProduct.delete.success'
 
+  // Gift certificate ----------
+  | 'giftCertificate.create.error'
+  | 'giftCertificate.create.success'
+  | 'giftCertificate.update.error'
+  | 'giftCertificate.update.success'
+  | 'giftCertificate.delete.error'
+  | 'giftCertificate.delete.success'
+
   // Seo content ----------
   | 'seoContent.update.error'
   | 'seoContent.update.success'

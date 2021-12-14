@@ -1,5 +1,5 @@
 import { DEFAULT_PAGE, PAGINATION_DEFAULT_LIMIT, SORT_DESC } from 'config/common';
-import { COL_GIFT_CERTIFICATES } from 'db/collectionNames';
+import { COL_GIFT_CERTIFICATES, COL_USERS } from 'db/collectionNames';
 import { ObjectIdModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -8,6 +8,8 @@ import {
 } from 'db/uiInterfaces';
 import { castUrlFilters } from 'lib/catalogueUtils';
 import { getFieldStringLocale } from 'lib/i18n';
+import { getFullName } from 'lib/nameUtils';
+import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 
 export interface GetConsoleGiftCertificatesInterface {
   companyId: ObjectIdModel;
@@ -49,7 +51,7 @@ export async function getConsoleGiftCertificates({
 
         // facets
         {
-          $facets: {
+          $facet: {
             // docs facet
             docs: [
               {
@@ -62,6 +64,33 @@ export async function getConsoleGiftCertificates({
               },
               {
                 $limit: limit,
+              },
+
+              // get user
+              {
+                $lookup: {
+                  as: 'user',
+                  from: COL_USERS,
+                  let: {
+                    userId: '$userId',
+                  },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $eq: ['$_id', '$$userId'],
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                $addFields: {
+                  user: {
+                    $arrayElemAt: ['$user', 0],
+                  },
+                },
               },
             ],
 
@@ -84,19 +113,16 @@ export async function getConsoleGiftCertificates({
           $addFields: {
             countAllDocs: null,
             totalDocsObject: null,
-            // totalDocs: '$totalDocsObject.totalDocs',
-            totalPagesFloat: {
-              $divide: ['$totalDocsObject.totalDocs', limit],
-            },
+            totalDocs: '$totalDocsObject.totalDocs',
           },
         },
-        /*{
+        {
           $addFields: {
             totalPagesFloat: {
               $divide: ['$totalDocs', limit],
             },
           },
-        },*/
+        },
         {
           $addFields: {
             totalPages: {
@@ -122,10 +148,21 @@ export async function getConsoleGiftCertificates({
           ...giftCertificate,
           name: getFieldStringLocale(giftCertificate.nameI18n, locale),
           description: getFieldStringLocale(giftCertificate.descriptionI18n, locale),
+          user: giftCertificate.user
+            ? {
+                ...giftCertificate.user,
+                fullName: getFullName(giftCertificate.user),
+                formattedPhone: {
+                  raw: phoneToRaw(giftCertificate.user.phone),
+                  readable: phoneToReadable(giftCertificate.user.phone),
+                },
+              }
+            : null,
         };
       }),
     };
   } catch (e) {
+    console.log('getConsoleGiftCertificates error ', e);
     return fallbackPayload;
   }
 }

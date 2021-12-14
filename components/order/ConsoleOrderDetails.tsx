@@ -15,7 +15,7 @@ import OrderDeliveryInfo from 'components/order/OrderDeliveryInfo';
 import ProductsListSuppliersList from 'components/shops/ProductsListSuppliersList';
 import Title from 'components/Title';
 import WpImage from 'components/WpImage';
-import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, IMAGE_FALLBACK } from 'config/common';
+import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, IMAGE_FALLBACK, ROUTE_CMS } from 'config/common';
 import {
   DELIVERY_VARIANT_OPTIONS,
   getConstantOptionName,
@@ -86,8 +86,23 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
 
         {!isCanceled ? (
           <div className='mt-4 flex gap-4'>
-            {/*save button*/}
-            {showAdminUi ? null : (
+            {/*edit button*/}
+            {showAdminUi ? (
+              <Button
+                frameClassName='w-auto'
+                title={'Редактироват товар'}
+                size={'small'}
+                icon={'pencil'}
+                circle
+                theme={'secondary'}
+                onClick={() => {
+                  window.open(
+                    `${ROUTE_CMS}/rubrics/${product?.rubricId}/products/product/${product?._id}`,
+                    '_blank',
+                  );
+                }}
+              />
+            ) : (
               <Button
                 frameClassName='w-auto'
                 title={'Сохранить товар'}

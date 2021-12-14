@@ -144,8 +144,8 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
       </div>
 
       <div className='flex-grow'>
-        <div className='grid gap-4 lg:flex lg:justify-between'>
-          <div>
+        <div className='grid gap-4 lg:grid-cols-7 lg:justify-between'>
+          <div className='lg:col-span-5'>
             {/*status*/}
             {/*<div className='flex items-baseline gap-2'>
               <div className='text-secondary-text'>Статус</div>
@@ -192,7 +192,7 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
             ) : null}
           </div>
 
-          <div className='flex flex-col gap-4'>
+          <div className='flex flex-col gap-4 lg:col-span-2'>
             {/*amount*/}
             <div className='text-secondary-text w-full'>
               <InputLine low label={'Количество'} name={`products[${orderProductIndex}].amount`}>
@@ -212,7 +212,7 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
                 low
                 max={100}
                 min={0}
-                label={'Дополнительная скидка'}
+                label={'Доп. скидка %'}
                 name={`products[${orderProductIndex}].customDiscount`}
                 type={'number'}
               />

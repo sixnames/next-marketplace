@@ -19,6 +19,8 @@ import {
   ConfigModel,
   ContactsModel,
   FormattedPhoneModel,
+  GiftCertificateLogModel,
+  GiftCertificateModel,
   IconModel,
   ManufacturerModel,
   MetricModel,
@@ -515,15 +517,6 @@ export interface CatalogueProductsAggregationInterface {
   brands?: BrandInterface[];
 }
 
-export interface ProductsPaginationAggregationInterface {
-  docs: ProductInterface[];
-  totalDocs?: number | null;
-  totalActiveDocs?: number | null;
-  totalPages: number;
-  hasPrevPage: boolean;
-  hasNextPage: boolean;
-}
-
 export interface CatalogueFilterAttributeOptionInterface {
   _id: ObjectIdModel;
   slug: string;
@@ -622,6 +615,18 @@ export interface PageInterface extends PageModel {
 
 export type PagesGroupTemplateInterface = PagesGroupInterface;
 export type PagesTemplateInterface = PageInterface;
+
+export interface GiftCertificateLogInterface extends GiftCertificateLogModel {
+  order?: OrderInterface | null;
+}
+
+export interface GiftCertificateInterface extends GiftCertificateModel {
+  user?: UserInterface | null;
+  company?: CompanyInterface;
+  name?: string | null;
+  description?: string | null;
+  log: GiftCertificateLogInterface[];
+}
 
 export interface ProductSnippetConfigInterface {
   // booleans
@@ -806,13 +811,14 @@ export interface AppPaginationInterface<Model> {
   totalPages: number;
   page: number;
   itemPath?: string;
-  clearSlug: string;
+  clearSlug?: string;
 }
 
 export interface AppPaginationWithFiltersInterface<Model> extends AppPaginationInterface<Model> {
   attributes: CatalogueFilterAttributeInterface[];
   selectedAttributes: CatalogueFilterAttributeInterface[];
   basePath: string;
+  clearSlug: string;
 }
 
 export interface ConsoleRubricProductsInterface
@@ -826,6 +832,9 @@ export interface GetConsoleRubricPromoProductsPayloadInterface
   rubric?: RubricInterface | null;
   selectedShopProductIds: string[];
 }
+
+export interface GetConsoleGiftCertificatesPayloadInterface
+  extends AppPaginationInterface<GiftCertificateInterface> {}
 
 export interface LinkInterface
   extends Omit<LinkProps, 'as' | 'href'>,

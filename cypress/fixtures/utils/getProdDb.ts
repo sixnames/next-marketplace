@@ -31,6 +31,7 @@ import {
   SupplierProductModel,
   SeoContentModel,
   BlackListProductModel,
+  PromoCodeModel,
 } from '../../../db/dbModels';
 import {
   COL_ATTRIBUTES,
@@ -56,6 +57,7 @@ import {
   COL_PRODUCT_CONNECTIONS,
   COL_PRODUCTS,
   COL_PROMO,
+  COL_PROMO_CODES,
   COL_PROMO_PRODUCTS,
   COL_RUBRICS,
   COL_SEO_CONTENTS,
@@ -275,6 +277,14 @@ export async function updateIndexes(db: Db) {
   await promoCollection.createIndex({ slug: 1 }, { unique: true });
   await promoCollection.createIndex({ shopId: 1 });
   await promoCollection.createIndex({ companyId: 1, shopId: 1 });
+
+  // Promo codes
+  await createCollectionIfNotExist(COL_PROMO_CODES);
+  const promoCodesCollection = db.collection<PromoCodeModel>(COL_PROMO_CODES);
+  await promoCodesCollection.createIndex({ companyId: 1 });
+  await promoCodesCollection.createIndex({ companySlug: 1 });
+  await promoCodesCollection.createIndex({ promoId: 1 });
+  await promoCodesCollection.createIndex({ promoterId: 1 });
 
   // Promo products
   await createCollectionIfNotExist(COL_PROMO_PRODUCTS);

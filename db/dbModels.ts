@@ -1014,8 +1014,6 @@ export interface PromoCodeModel extends PromoBaseInterface {
   promoId: ObjectIdModel;
   promoterId?: ObjectIdModel;
   paybackPercent?: number;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 // Pages

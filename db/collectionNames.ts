@@ -39,6 +39,7 @@ export const COL_PRODUCT_ATTRIBUTES = 'productAttributes';
 export const COL_PRODUCT_CONNECTIONS = 'productConnections';
 export const COL_PRODUCT_CONNECTION_ITEMS = 'productConnectionItems';
 export const COL_PROMO = 'promo';
+export const COL_PROMO_CODES = 'promoCodes';
 export const COL_PROMO_PRODUCTS = 'promoProducts';
 export const COL_ROLES = 'roles';
 export const COL_ROLE_RULES = 'roleRules';

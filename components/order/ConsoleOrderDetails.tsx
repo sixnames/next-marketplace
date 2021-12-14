@@ -55,17 +55,8 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
   const { values } = useFormikContext<OrderInterface>();
   const { showModal } = useAppContext();
   const { showErrorNotification } = useNotificationsContext();
-  const {
-    product,
-    originalName,
-    shopProduct,
-    itemId,
-    price,
-    totalPrice,
-    status,
-    finalPrice,
-    isCanceled,
-  } = orderProduct;
+  const { product, originalName, shopProduct, itemId, price, totalPrice, finalPrice, isCanceled } =
+    orderProduct;
   const productImageSrc = shopProduct ? `${product?.mainImage}` : IMAGE_FALLBACK;
   const minAmount = 1;
   const supplierProducts = shopProduct?.supplierProducts || [];
@@ -156,7 +147,7 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
         <div className='grid gap-4 lg:flex lg:justify-between'>
           <div>
             {/*status*/}
-            <div className='flex items-baseline gap-2'>
+            {/*<div className='flex items-baseline gap-2'>
               <div className='text-secondary-text'>Статус</div>
               {status ? (
                 <div className='font-medium' style={status ? { color: status.color } : {}}>
@@ -165,7 +156,7 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
               ) : (
                 <div className='text-red-500 font-medium'>Статус не найден</div>
               )}
-            </div>
+            </div>*/}
 
             {/*article*/}
             <div className='text-secondary-text mb-3 text-sm'>{`Артикул: ${itemId}`}</div>
@@ -269,6 +260,7 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
   const { sessionUser } = useUserContext();
   const { locale } = useLocaleContext();
   const showAdminUi = sessionUser?.role?.isStaff;
+  const [state, setState] = React.useState(order);
   const {
     createdAt,
     totalPrice,
@@ -280,7 +272,7 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
     deliveryVariant,
     paymentVariant,
     deliveryInfo,
-  } = order;
+  } = state;
 
   const [updateOrderMutation] = useUpdateOrder();
 
@@ -307,11 +299,17 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
       </div>
 
       <Formik<OrderInterface>
-        initialValues={order}
+        initialValues={state}
         onSubmit={(values) => {
           updateOrderMutation({
             order: values,
-          }).catch(console.log);
+          })
+            .then((value) => {
+              if (value && value.success && value.payload) {
+                setState(value.payload);
+              }
+            })
+            .catch(console.log);
         }}
       >
         {() => {

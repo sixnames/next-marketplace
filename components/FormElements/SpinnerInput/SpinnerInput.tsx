@@ -75,11 +75,12 @@ const SpinnerInput: React.FC<SpinnerPropsInterface> = ({
         disabled={disabled}
         className={`${buttonClassName} left-0`}
         onClick={() => {
-          if (onChange && (min ? min <= currentValue : true)) {
+          const newValue = currentValue - counterStep;
+          if (onChange && (min ? min <= newValue : true)) {
             onChange({
               target: {
                 name,
-                value: currentValue - counterStep,
+                value: newValue,
               },
             });
           }

@@ -6,6 +6,7 @@ import { detailedDiff } from 'deep-object-diff';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { noNaN } from 'lib/numbers';
 import { getConsoleOrder } from 'lib/orderUtils';
+import { countDiscountedPrice } from 'lib/priceUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { castDbData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
@@ -64,7 +65,7 @@ export async function updateOrder({
       }
 
       const { order } = input;
-      const orderid = new ObjectId(order._id);
+      const orderId = new ObjectId(order._id);
 
       // get prev order state
       const prevOrder = await getConsoleOrder({
@@ -115,14 +116,22 @@ export async function updateOrder({
       }
       for await (const index of Object.keys(updatedProducts)) {
         const orderProduct = (order.products || [])[noNaN(index)];
-        const updater = updatedProducts[index];
         if (orderProduct) {
+          const { price, customDiscount, amount } = orderProduct;
+          const { discountedPrice } = countDiscountedPrice({
+            price,
+            discount: noNaN(customDiscount),
+          });
           await orderProductsCollection.findOneAndUpdate(
             {
               _id: new ObjectId(orderProduct._id),
             },
             {
-              $set: updater,
+              $set: {
+                amount: amount,
+                finalPrice: discountedPrice,
+                totalPrice: amount * discountedPrice,
+              },
             },
           );
         }
@@ -133,7 +142,7 @@ export async function updateOrder({
       if (updatedOrderStatusId) {
         await ordersCollection.findOneAndUpdate(
           {
-            _id: orderid,
+            _id: orderId,
           },
           {
             $set: {

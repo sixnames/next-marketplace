@@ -169,7 +169,7 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
                   className='block text-primary-text hover:text-theme hover:no-underline'
                   target={'_blank'}
                 >
-                  {product.snippetTitle}
+                  {product.cardTitle}
                 </Link>
               ) : null}
             </div>
@@ -272,6 +272,7 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
     deliveryVariant,
     paymentVariant,
     deliveryInfo,
+    companySiteSlug,
   } = state;
 
   const [updateOrderMutation] = useUpdateOrder();
@@ -323,7 +324,7 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
                         showAdminUi={Boolean(showAdminUi)}
                         orderProductIndex={orderProductIndex}
                         citySlug={shop?.citySlug || DEFAULT_CITY}
-                        companySlug={pageCompanySlug || DEFAULT_COMPANY_SLUG}
+                        companySlug={companySiteSlug || pageCompanySlug || DEFAULT_COMPANY_SLUG}
                         orderProduct={orderProduct}
                         key={`${orderProduct._id}`}
                       />

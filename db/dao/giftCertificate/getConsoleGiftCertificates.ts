@@ -7,15 +7,18 @@ import {
   GiftCertificateInterface,
 } from 'db/uiInterfaces';
 import { castUrlFilters } from 'lib/catalogueUtils';
+import { getFieldStringLocale } from 'lib/i18n';
 
 export interface GetConsoleGiftCertificatesInterface {
   companyId: ObjectIdModel;
-  page: number;
+  filters: string[];
+  locale: string;
 }
 
 export async function getConsoleGiftCertificates({
   companyId,
-  page,
+  filters,
+  locale,
 }: GetConsoleGiftCertificatesInterface): Promise<GetConsoleGiftCertificatesPayloadInterface> {
   let fallbackPayload: GetConsoleGiftCertificatesPayloadInterface = {
     docs: [],
@@ -29,9 +32,9 @@ export async function getConsoleGiftCertificates({
       db.collection<GiftCertificateInterface>(COL_GIFT_CERTIFICATES);
 
     // get pagination configs
-    const { skip, limit } = await castUrlFilters({
-      filters: [],
-      initialPage: page,
+    const { skip, limit, page } = await castUrlFilters({
+      filters,
+      initialPage: DEFAULT_PAGE,
       initialLimit: PAGINATION_DEFAULT_LIMIT,
       searchFieldName: '',
     });
@@ -111,10 +114,16 @@ export async function getConsoleGiftCertificates({
     const { totalDocs, totalPages, docs } = giftCertificatesAggregation;
 
     return {
-      docs,
       totalDocs,
       totalPages,
       page,
+      docs: docs.map((giftCertificate) => {
+        return {
+          ...giftCertificate,
+          name: getFieldStringLocale(giftCertificate.nameI18n, locale),
+          description: getFieldStringLocale(giftCertificate.descriptionI18n, locale),
+        };
+      }),
     };
   } catch (e) {
     return fallbackPayload;

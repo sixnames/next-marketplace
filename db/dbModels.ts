@@ -1149,6 +1149,7 @@ export type SupplierPayloadModel = PayloadType<SupplierModel>;
 export type UserCategoryPayloadModel = PayloadType<UserCategoryModel>;
 export type UserPayloadModel = PayloadType<UserModel>;
 export type SeoContentPayloadModel = PayloadType<SeoContentModel>;
+export type GiftCertificatePayloadModel = PayloadType<GiftCertificateModel>;
 
 export interface ProductPayloadModel extends PayloadType<ProductModel> {
   barcodeDoubles?: BarcodeDoublesInterface[] | null;

@@ -486,14 +486,16 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
 
                   {/*cart aside*/}
                   <div className='md:col-span-3 lg:col-span-5'>
-                    <CartAside
-                      buyButtonText={'Оформить заказ'}
-                      productsCount={cart.cartDeliveryProducts.length}
-                      totalPrice={totalDeliveryPrice}
-                      isWithShopless={cart.isWithShoplessDelivery}
-                      giftCertificateDiscount={giftCertificateDiscount}
-                      promoCodeDiscount={promoCodeDiscount}
-                    />
+                    <div className='sticky top-16 lef-0'>
+                      <CartAside
+                        buyButtonText={'Оформить заказ'}
+                        productsCount={cart.cartDeliveryProducts.length}
+                        totalPrice={totalDeliveryPrice}
+                        isWithShopless={cart.isWithShoplessDelivery}
+                        giftCertificateDiscount={giftCertificateDiscount}
+                        promoCodeDiscount={promoCodeDiscount}
+                      />
+                    </div>
                   </div>
                 </div>
               </Form>
@@ -629,15 +631,17 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
 
                   {/*cart aside*/}
                   <div className='md:col-span-3 lg:col-span-5'>
-                    <CartAside
-                      isBooking
-                      buyButtonText={configs.buyButtonText}
-                      productsCount={cart.cartBookingProducts.length}
-                      totalPrice={totalBookingPrice}
-                      isWithShopless={cart.isWithShoplessBooking}
-                      promoCodeDiscount={promoCodeDiscount}
-                      giftCertificateDiscount={giftCertificateDiscount}
-                    />
+                    <div className='sticky top-16 lef-0'>
+                      <CartAside
+                        isBooking
+                        buyButtonText={configs.buyButtonText}
+                        productsCount={cart.cartBookingProducts.length}
+                        totalPrice={totalBookingPrice}
+                        isWithShopless={cart.isWithShoplessBooking}
+                        promoCodeDiscount={promoCodeDiscount}
+                        giftCertificateDiscount={giftCertificateDiscount}
+                      />
+                    </div>
                   </div>
                 </div>
               </Form>

@@ -55,7 +55,7 @@ const CartAside: React.FC<CartAsideInterface> = ({
 
   const { configs } = useConfigContext();
   return (
-    <LayoutCard className='sticky top-16 lef-0 mb-4 overflow-hidden' testId={'cart-aside'}>
+    <LayoutCard className='mb-4 overflow-hidden' testId={'cart-aside'}>
       <div className='p-6 grid gap-5'>
         <div className='font-bold text-2xl'>Ваш заказ</div>
 

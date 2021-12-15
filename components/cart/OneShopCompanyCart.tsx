@@ -108,7 +108,7 @@ const OneShopCompanyDeliveryCart: React.FC<OneShopCompanyCartFormInterface> = ({
       }}
     >
       {({ values, setFieldValue }) => {
-        const giftCertificateFieldName = `shopConfigs[0].giftCertificate`;
+        const giftCertificateFieldName = `shopConfigs[0].giftCertificateCode`;
         const { cartDeliveryProducts, totalDeliveryPrice, isWithShoplessDelivery } = values;
         const giftCertificateCode = get(values, giftCertificateFieldName);
 
@@ -228,12 +228,17 @@ const OneShopCompanyDeliveryCart: React.FC<OneShopCompanyCartFormInterface> = ({
                         lineContentClass='flex flex-col sm:flex-row gap-4 sm:items-end'
                       >
                         <div className='flex-grow'>
-                          <FormikInput name={giftCertificateFieldName} low />
+                          <FormikInput
+                            name={giftCertificateFieldName}
+                            testId={`gift-certificate-input-${domainCompany.mainShop?.slug}`}
+                            low
+                          />
                         </div>
                         <Button
                           short
                           frameClassName='w-auto'
                           theme={'secondary'}
+                          testId={`gift-certificate-confirm-${domainCompany.mainShop?.slug}`}
                           onClick={() => {
                             checkGiftCertificateMutation({
                               userId: sessionUser ? `${sessionUser.me._id}` : null,
@@ -345,7 +350,7 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
     >
       {({ values, setFieldValue }) => {
         const { cartBookingProducts, totalBookingPrice, isWithShoplessBooking } = values;
-        const giftCertificateFieldName = `shopConfigs[0].giftCertificate`;
+        const giftCertificateFieldName = `shopConfigs[0].giftCertificateCode`;
         const giftCertificateCode = get(values, giftCertificateFieldName);
 
         return (
@@ -472,12 +477,17 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
                         lineContentClass='flex flex-col sm:flex-row gap-4 sm:items-end'
                       >
                         <div className='flex-grow'>
-                          <FormikInput name={giftCertificateFieldName} low />
+                          <FormikInput
+                            name={giftCertificateFieldName}
+                            testId={`gift-certificate-input-${domainCompany.mainShop?.slug}`}
+                            low
+                          />
                         </div>
                         <Button
                           short
                           frameClassName='w-auto'
                           theme={'secondary'}
+                          testId={`gift-certificate-confirm-${domainCompany.mainShop?.slug}`}
                           onClick={() => {
                             checkGiftCertificateMutation({
                               userId: sessionUser ? `${sessionUser.me._id}` : null,

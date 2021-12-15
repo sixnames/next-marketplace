@@ -141,7 +141,7 @@ const DefaultCartShop: React.FC<DefaultCartShopUIInterface> = ({
   const marker = useShopMarker(shop);
   const { showModal } = useAppContext();
   const { values, setFieldValue } = useFormikContext();
-  const giftCertificateFieldName = `shopConfigs[${index}].giftCertificate`;
+  const giftCertificateFieldName = `shopConfigs[${index}].giftCertificateCode`;
   const giftCertificateValueFieldName = `shopConfigs[${index}].giftCertificateDiscount`;
   const giftCertificateCode = get(values, giftCertificateFieldName);
 
@@ -187,12 +187,16 @@ const DefaultCartShop: React.FC<DefaultCartShopUIInterface> = ({
               lineContentClass='flex flex-col sm:flex-row gap-4 sm:items-end'
             >
               <div className='flex-grow'>
-                <FormikInput name={giftCertificateFieldName} low />
+                <FormikInput
+                  testId={`gift-certificate-input-${shop.slug}`}
+                  name={giftCertificateFieldName}
+                  low
+                />
               </div>
               <Button
                 frameClassName='w-auto'
                 theme={'secondary'}
-                testId={`gift-certificate-confirm-${index}`}
+                testId={`gift-certificate-confirm-${shop.slug}`}
                 onClick={() => {
                   checkGiftCertificateMutation({
                     userId: sessionUser ? `${sessionUser.me._id}` : null,

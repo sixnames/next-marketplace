@@ -67,7 +67,7 @@ export interface MakeAnOrderShopConfigInterface {
   deliveryVariant: OrderDeliveryVariantModel;
   paymentVariant: OrderPaymentVariantModel;
   deliveryInfo?: OrderDeliveryInfoModel | null;
-  giftCertificate?: string;
+  giftCertificateCode?: string;
 }
 
 export interface MakeAnOrderInputInterface {
@@ -282,6 +282,11 @@ export async function makeAnOrder({
 
           if (!shopConfig) {
             break;
+          }
+
+          const { giftCertificateCode } = shopConfig;
+          if (giftCertificateCode) {
+            console.log(giftCertificateCode);
           }
 
           // create new order

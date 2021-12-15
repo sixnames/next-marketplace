@@ -3,12 +3,10 @@ import { fixtureIds } from 'cypress/fixtures/fixtureIds';
 
 describe('Order discounts', () => {
   beforeEach(() => {
-    cy.visit(`/`);
+    cy.testAuth(`${ROUTE_CATALOGUE}/${fixtureIds.rubricWineSlug}`);
   });
 
-  it('Should make an order with discounts', () => {
-    cy.visit(`${ROUTE_CATALOGUE}/${fixtureIds.rubricWineSlug}`);
-
+  it('Should make an order with gift certificates', () => {
     // add product #1
     cy.visitLinkHref('catalogue-item-0-name-grid');
     cy.getByCy(`card`).should('exist');
@@ -23,8 +21,27 @@ describe('Order discounts', () => {
     cy.wait(1500);
     cy.getByCy(`cart`).should('exist');
 
-    cy.getByCy(`order-form-name`).clear().type('name');
-    cy.getByCy(`order-form-phone`).clear().type('71233211234');
-    cy.getByCy(`order-form-email`).clear().type('email@mail.com');
+    // should enter gift certificates
+    // shop a
+    cy.getByCy(`gift-certificate-input-${fixtureIds.shopASlug}`).type(
+      fixtureIds.companyAGiftCertificate,
+    );
+    cy.getByCy(`gift-certificate-confirm-${fixtureIds.shopASlug}`).click();
+    cy.getByCy('gift-certificate-check-message').should('exist');
+    cy.getByCy(`close-modal`).click();
+
+    // shop b
+    cy.getByCy(`gift-certificate-input-${fixtureIds.shopBSlug}`).type(
+      fixtureIds.companyBGiftCertificate,
+    );
+    cy.getByCy(`gift-certificate-confirm-${fixtureIds.shopBSlug}`).click();
+    cy.getByCy('gift-certificate-check-message').should('exist');
+    cy.getByCy(`close-modal`).click();
+
+    // add customer comment
+    cy.getByCy(`order-form-comment`).type('comment');
+
+    // should make an order and redirect to the thank-you page
+    cy.getByCy(`cart-aside-confirm`).click();
   });
 });

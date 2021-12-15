@@ -18,9 +18,9 @@ import {
   UserInterface,
 } from 'db/uiInterfaces';
 import {
-  useCreateGiftCertificate,
-  useDeleteGiftCertificate,
-  useUpdateGiftCertificate,
+  useCreateGiftCertificateMutation,
+  useDeleteGiftCertificateMutation,
+  useUpdateGiftCertificateMutation,
 } from 'hooks/mutations/useGiftCertificateMutations';
 import usePageLoadingState from 'hooks/usePageLoadingState';
 import { getNumWord } from 'lib/i18n';
@@ -42,9 +42,9 @@ const ConsoleGiftCertificatesList: React.FC<ConsoleGiftCertificatesListInterface
   const isPageLoading = usePageLoadingState();
   const { showModal } = useAppContext();
 
-  const [createGiftCertificateMutation] = useCreateGiftCertificate();
-  const [updateGiftCertificateMutation] = useUpdateGiftCertificate();
-  const [deleteGiftCertificateMutation] = useDeleteGiftCertificate();
+  const [createGiftCertificateMutation] = useCreateGiftCertificateMutation();
+  const [updateGiftCertificateMutation] = useUpdateGiftCertificateMutation();
+  const [deleteGiftCertificateMutation] = useDeleteGiftCertificateMutation();
 
   const counterString = React.useMemo(() => {
     if (totalDocs < 1) {

@@ -18,7 +18,7 @@ import { useSiteContext } from 'context/siteContext';
 import { useSiteUserContext } from 'context/siteUserContext';
 import { CartInterface, CompanyInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
-import { useCheckGiftCertificate } from 'hooks/mutations/useGiftCertificateMutations';
+import { useCheckGiftCertificateMutation } from 'hooks/mutations/useGiftCertificateMutations';
 import useValidationSchema from 'hooks/useValidationSchema';
 import LayoutCard from 'layout/LayoutCard';
 import { phoneToRaw } from 'lib/phoneUtils';
@@ -45,7 +45,7 @@ const OneShopCompanyDeliveryCart: React.FC<OneShopCompanyCartFormInterface> = ({
     schema: makeAnOrderSchema,
   });
 
-  const [checkGiftCertificateMutation] = useCheckGiftCertificate();
+  const [checkGiftCertificateMutation] = useCheckGiftCertificateMutation();
 
   if (!domainCompany.mainShop) {
     return <RequestError message={'Ошибака загрузки данных магазина'} />;
@@ -300,7 +300,7 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
     schema: makeAnOrderSchema,
   });
 
-  const [checkGiftCertificateMutation] = useCheckGiftCertificate();
+  const [checkGiftCertificateMutation] = useCheckGiftCertificateMutation();
 
   if (!domainCompany.mainShop) {
     return <RequestError message={'Ошибака загрузки данных магазина'} />;

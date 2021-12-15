@@ -1,9 +1,6 @@
 import Button from 'components/button/Button';
 import { CartProduct, CartShoplessProduct } from 'components/cart/CartProduct';
-import CartAside, {
-  useCartAsideDiscounts,
-  UseCartAsideDiscountsMethodsInterface,
-} from 'components/CartAside';
+import CartAside, { UseCartAsideDiscountsValuesInterface } from 'components/CartAside';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import InputLine from 'components/FormElements/Input/InputLine';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
@@ -27,7 +24,7 @@ import { MakeAnOrderShopConfigInterface } from 'db/dao/order/makeAnOrder';
 import { OrderDeliveryInfoModel } from 'db/dbModels';
 import { CartInterface, CartProductInterface, ShopInterface } from 'db/uiInterfaces';
 import { Form, Formik, useFormikContext } from 'formik';
-import { useCheckGiftCertificate } from 'hooks/mutations/useGiftCertificateMutations';
+import { useCheckGiftCertificateMutation } from 'hooks/mutations/useGiftCertificateMutations';
 import { useShopMarker } from 'hooks/useShopMarker';
 import useValidationSchema from 'hooks/useValidationSchema';
 import LayoutCard from 'layout/LayoutCard';
@@ -119,6 +116,7 @@ export const CartDeliveryFields: React.FC<CartDeliveryFieldsInterface> = ({ inde
 
 interface DefaultCartShopInterface
   extends MakeAnOrderShopConfigInterface,
+    UseCartAsideDiscountsValuesInterface,
     Omit<ShopInterface, '_id'> {
   cartProducts: CartProductInterface[];
 }
@@ -127,7 +125,7 @@ interface DefaultCartInitialValuesInterface extends MakeOrderFormInterface {
   shopConfigs: DefaultCartShopInterface[];
 }
 
-interface DefaultCartShopUIInterface extends UseCartAsideDiscountsMethodsInterface {
+interface DefaultCartShopUIInterface {
   shop: DefaultCartShopInterface;
   index: number;
   showPriceWarning?: boolean;
@@ -138,16 +136,16 @@ const DefaultCartShop: React.FC<DefaultCartShopUIInterface> = ({
   showPriceWarning,
   index,
   allowDelivery,
-  setGiftCertificateDiscount,
 }) => {
   const sessionUser = useSiteUserContext();
   const marker = useShopMarker(shop);
   const { showModal } = useAppContext();
   const { values, setFieldValue } = useFormikContext();
   const giftCertificateFieldName = `shopConfigs[${index}].giftCertificate`;
+  const giftCertificateValueFieldName = `shopConfigs[${index}].giftCertificateDiscount`;
   const giftCertificateCode = get(values, giftCertificateFieldName);
 
-  const [checkGiftCertificateMutation] = useCheckGiftCertificate();
+  const [checkGiftCertificateMutation] = useCheckGiftCertificateMutation();
 
   return (
     <LayoutCard key={`${shop._id}`}>
@@ -205,7 +203,7 @@ const DefaultCartShop: React.FC<DefaultCartShopUIInterface> = ({
                         setFieldValue(giftCertificateFieldName, '');
                         return;
                       }
-                      setGiftCertificateDiscount(response.payload.value);
+                      setFieldValue(giftCertificateValueFieldName, response.payload.value);
                     })
                     .catch(console.log);
                 }}
@@ -276,12 +274,6 @@ interface DefaultCartInterface {
 }
 
 const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
-  const {
-    giftCertificateDiscount,
-    setGiftCertificateDiscount,
-    promoCodeDiscount,
-    setPromoCodeDiscount,
-  } = useCartAsideDiscounts();
   const { makeAnOrder } = useSiteContext();
   const { configs, domainCompany } = useConfigContext();
   const sessionUser = useSiteUserContext();
@@ -326,6 +318,8 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
       const newShopConfig: DefaultCartShopInterface = {
         ...shop,
         _id: `${shop._id}`,
+        giftCertificateDiscount: 0,
+        promoCodeDiscount: 0,
         cartProducts: [cartProduct],
         deliveryVariant: ORDER_DELIVERY_VARIANT_COURIER,
         paymentVariant: ORDER_PAYMENT_VARIANT_RECEIPT,
@@ -390,6 +384,15 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
         >
           {({ values }) => {
             const { cartDeliveryProducts, totalDeliveryPrice, shopConfigs } = values;
+            const giftCertificateDiscount = shopConfigs.reduce(
+              (acc: number, { giftCertificateDiscount }) => {
+                return acc + giftCertificateDiscount;
+              },
+              0,
+            );
+            const promoCodeDiscount = shopConfigs.reduce((acc: number, { promoCodeDiscount }) => {
+              return acc + promoCodeDiscount;
+            }, 0);
 
             return (
               <Form>
@@ -422,8 +425,6 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
                               index={index}
                               key={`${shop._id}`}
                               allowDelivery
-                              setGiftCertificateDiscount={setGiftCertificateDiscount}
-                              setPromoCodeDiscount={setPromoCodeDiscount}
                             />
                           );
                         })}
@@ -527,6 +528,15 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
         >
           {({ values }) => {
             const { cartBookingProducts, totalBookingPrice, shopConfigs } = values;
+            const giftCertificateDiscount = shopConfigs.reduce(
+              (acc: number, { giftCertificateDiscount }) => {
+                return acc + giftCertificateDiscount;
+              },
+              0,
+            );
+            const promoCodeDiscount = shopConfigs.reduce((acc: number, { promoCodeDiscount }) => {
+              return acc + promoCodeDiscount;
+            }, 0);
 
             return (
               <Form>
@@ -560,8 +570,6 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
                               key={`${shop._id}`}
                               allowDelivery={false}
                               showPriceWarning
-                              setGiftCertificateDiscount={setGiftCertificateDiscount}
-                              setPromoCodeDiscount={setPromoCodeDiscount}
                             />
                           );
                         })}

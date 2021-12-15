@@ -1,4 +1,7 @@
+import { InfoModalInterface } from 'components/Modal/InfoModal';
 import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'config/common';
+import { INFO_MODAL } from 'config/modalVariants';
+import { useAppContext } from 'context/appContext';
 import { CheckGiftCertificateAvailabilityInputInterface } from 'db/dao/giftCertificate/checkGiftCertificateAvailability';
 import { CreateGiftCertificateInputInterface } from 'db/dao/giftCertificate/createGiftCertificate';
 import { DeleteGiftCertificateInputInterface } from 'db/dao/giftCertificate/deleteGiftCertificate';
@@ -9,7 +12,7 @@ import { useMutationHandler } from 'hooks/mutations/useFetch';
 const basePath = '/api/gift-certificates';
 
 // create
-export const useCreateGiftCertificate = () => {
+export const useCreateGiftCertificateMutation = () => {
   return useMutationHandler<GiftCertificatePayloadModel, CreateGiftCertificateInputInterface>({
     path: basePath,
     method: REQUEST_METHOD_POST,
@@ -17,7 +20,7 @@ export const useCreateGiftCertificate = () => {
 };
 
 // update
-export const useUpdateGiftCertificate = () => {
+export const useUpdateGiftCertificateMutation = () => {
   return useMutationHandler<GiftCertificatePayloadModel, UpdateGiftCertificateInputInterface>({
     path: basePath,
     method: REQUEST_METHOD_PATCH,
@@ -25,7 +28,7 @@ export const useUpdateGiftCertificate = () => {
 };
 
 // delete
-export const useDeleteGiftCertificate = () => {
+export const useDeleteGiftCertificateMutation = () => {
   return useMutationHandler<GiftCertificatePayloadModel, DeleteGiftCertificateInputInterface>({
     path: basePath,
     method: REQUEST_METHOD_DELETE,
@@ -33,7 +36,9 @@ export const useDeleteGiftCertificate = () => {
 };
 
 // check
-export const useCheckGiftCertificate = () => {
+export const useCheckGiftCertificateMutation = () => {
+  const { showModal } = useAppContext();
+  const defaultMessage = 'Что-то пошло не так. Попробуйте ещё раз.';
   return useMutationHandler<
     GiftCertificatePayloadModel,
     CheckGiftCertificateAvailabilityInputInterface
@@ -41,5 +46,40 @@ export const useCheckGiftCertificate = () => {
     path: `${basePath}/check`,
     method: REQUEST_METHOD_PATCH,
     reload: false,
+    showNotification: false,
+    onError: (payload) => {
+      if (!payload) {
+        showModal<InfoModalInterface>({
+          variant: INFO_MODAL,
+          props: {
+            message: defaultMessage,
+          },
+        });
+        return;
+      }
+      showModal<InfoModalInterface>({
+        variant: INFO_MODAL,
+        props: {
+          message: payload.message,
+        },
+      });
+    },
+    onSuccess: (payload) => {
+      if (!payload) {
+        showModal<InfoModalInterface>({
+          variant: INFO_MODAL,
+          props: {
+            message: defaultMessage,
+          },
+        });
+        return;
+      }
+      showModal<InfoModalInterface>({
+        variant: INFO_MODAL,
+        props: {
+          message: payload.message,
+        },
+      });
+    },
   });
 };

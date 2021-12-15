@@ -88,6 +88,7 @@ export interface UseMutationInterface<T> {
   input: RequestInfo;
   onSuccess?: (payload: T) => void;
   onError?: (payload: T) => void;
+  showNotification?: boolean;
   reload?: boolean;
 }
 
@@ -105,6 +106,7 @@ export function useMutation<T extends PayloadModel>({
   onError,
   onSuccess,
   reload,
+  showNotification = true,
 }: UseMutationInterface<T>): UseFetchPayload<T> {
   const { showErrorNotification, showSuccessNotification } = useNotificationsContext();
   const { showLoading, hideLoading } = useAppContext();
@@ -114,18 +116,22 @@ export function useMutation<T extends PayloadModel>({
     onFetchStart: showLoading,
     onError: (payload) => {
       hideLoading();
-      showErrorNotification({
-        title: payload?.message,
-      });
+      if (showNotification) {
+        showErrorNotification({
+          title: payload?.message,
+        });
+      }
       if (onError) {
         onError(payload);
       }
     },
     onSuccess: (payload) => {
       hideLoading();
-      showSuccessNotification({
-        title: payload.message,
-      });
+      if (showNotification) {
+        showSuccessNotification({
+          title: payload.message,
+        });
+      }
       if (onSuccess) {
         onSuccess(payload);
       }
@@ -148,6 +154,7 @@ interface UseMutationHandlerInputInterface<TPayload extends PayloadModel> {
   reload?: boolean;
   onSuccess?: (payload: TPayload) => void;
   onError?: (payload: TPayload) => void;
+  showNotification?: boolean;
 }
 
 export function useMutationHandler<TPayload extends PayloadModel, TArgs>({
@@ -156,12 +163,14 @@ export function useMutationHandler<TPayload extends PayloadModel, TArgs>({
   reload = true,
   onSuccess,
   onError,
+  showNotification,
 }: UseMutationHandlerInputInterface<TPayload>): UseMutationConsumerPayload<TPayload, TArgs> {
   const [handle, payload] = useMutation<TPayload>({
     input: path,
     reload,
     onSuccess,
     onError,
+    showNotification,
   });
 
   const handler = React.useCallback(

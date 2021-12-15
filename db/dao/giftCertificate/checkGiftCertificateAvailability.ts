@@ -45,7 +45,7 @@ export async function checkGiftCertificateAvailability({
     if (!input.userId) {
       if (giftCertificate.userId) {
         return {
-          success: false,
+          success: true,
           notAuth: true,
           message: await getApiMessage('giftCertificate.check.notAuth'),
         };

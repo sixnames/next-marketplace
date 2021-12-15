@@ -6,7 +6,7 @@ import { UpdateGiftCertificateInputInterface } from 'db/dao/giftCertificate/upda
 import { GiftCertificatePayloadModel } from 'db/dbModels';
 import { useMutationHandler } from 'hooks/mutations/useFetch';
 
-const basePath = '/api/product';
+const basePath = '/api/gift-certificates';
 
 // create
 export const useCreateGiftCertificate = () => {

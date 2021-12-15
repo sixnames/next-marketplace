@@ -1,4 +1,7 @@
 import Button from 'components/button/Button';
+import FormikCodeInput from 'components/FormElements/Input/FormikCodeInput';
+import FormikInput from 'components/FormElements/Input/FormikInput';
+import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import ModalButtons from 'components/Modal/ModalButtons';
 import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
@@ -9,7 +12,7 @@ import { Form, Formik } from 'formik';
 
 export interface GiftCertificateModalInterface {
   pageCompany: CompanyInterface;
-  giftCertificate: GiftCertificateInterface;
+  giftCertificate?: GiftCertificateInterface | null;
   confirm: (values: CreateGiftCertificateInputInterface) => void;
 }
 
@@ -19,7 +22,7 @@ const GiftCertificateModal: React.FC<GiftCertificateModalInterface> = ({
   confirm,
 }) => {
   const initialValues: CreateGiftCertificateInputInterface = {
-    code: giftCertificate.code || '',
+    code: giftCertificate?.code || '',
     initialValue: giftCertificate?.initialValue || 0,
     descriptionI18n: giftCertificate?.descriptionI18n || {},
     nameI18n: giftCertificate?.nameI18n || {},
@@ -29,7 +32,7 @@ const GiftCertificateModal: React.FC<GiftCertificateModalInterface> = ({
 
   return (
     <ModalFrame testId={'create-promo-modal'}>
-      <ModalTitle>Создание страницы</ModalTitle>
+      <ModalTitle>{giftCertificate ? 'Обновление' : 'Создание'} подарочного сертификата</ModalTitle>
 
       <Formik
         initialValues={initialValues}
@@ -40,9 +43,28 @@ const GiftCertificateModal: React.FC<GiftCertificateModalInterface> = ({
         {() => {
           return (
             <Form>
+              <FormikCodeInput name={'code'} isRequired showInlineError />
+
+              <FormikInput
+                label={'Сумма'}
+                type={'number'}
+                testId={'initialValue'}
+                name={'initialValue'}
+                isRequired
+                showInlineError
+              />
+
+              <FormikTranslationsInput label={'Название'} testId={'nameI18n'} name={'nameI18n'} />
+
+              <FormikTranslationsInput
+                label={'Описание'}
+                testId={'descriptionI18n'}
+                name={'descriptionI18n'}
+              />
+
               <ModalButtons>
                 <Button type={'submit'} testId={'submit-promo'}>
-                  Создать
+                  {giftCertificate ? 'Обновить' : 'Создать'}
                 </Button>
               </ModalButtons>
             </Form>

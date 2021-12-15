@@ -53,6 +53,7 @@ import {
   CREATE_PROMO_MODAL,
   SHOP_PRODUCT_SUPPLIER_MODAL,
   ORDER_DELIVERY_ADDRESS_MODAL,
+  GIFT_CERTIFICATE_MODAL,
 } from 'config/modalVariants';
 
 const AdultModal = dynamic(() => import('components/Modal/AdultModal'));
@@ -112,6 +113,7 @@ const OrderStatusModal = dynamic(() => import('components/Modal/OrderStatusModal
 const UserCategoryModal = dynamic(() => import('components/Modal/UserCategoryModal'));
 const SetUserCategoryModal = dynamic(() => import('components/Modal/SetUserCategoryModal'));
 const CreatePromoModal = dynamic(() => import('components/Modal/CreatePromoModal'));
+const GiftCertificateModal = dynamic(() => import('components/Modal/GiftCertificateModal'));
 const OrderDeliveryAddressModal = dynamic(
   () => import('components/Modal/OrderDeliveryAddressModal'),
 );
@@ -225,6 +227,8 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
           {modalType === USER_CATEGORY_MODAL && <UserCategoryModal {...modalProps} />}
 
           {modalType === SET_USER_CATEGORY_MODAL && <SetUserCategoryModal {...modalProps} />}
+
+          {modalType === GIFT_CERTIFICATE_MODAL && <GiftCertificateModal {...modalProps} />}
 
           {modalType === CATALOGUE_ADDITIONAL_OPTIONS_MODAL && (
             <CatalogueAdditionalOptionsModal {...modalProps} />

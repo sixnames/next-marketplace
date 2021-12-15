@@ -25,7 +25,7 @@ export async function createGiftCertificate({
     const giftCertificatesCollection = db.collection<GiftCertificateModel>(COL_GIFT_CERTIFICATES);
 
     // check input
-    if (!input) {
+    if (!input || !input.code) {
       return {
         success: false,
         message: await getApiMessage('giftCertificate.create.error'),

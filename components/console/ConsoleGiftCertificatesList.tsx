@@ -2,7 +2,6 @@ import Button from 'components/button/Button';
 import ContentItemControls from 'components/button/ContentItemControls';
 import FixedButtons from 'components/button/FixedButtons';
 import Currency from 'components/Currency';
-import Inner from 'components/Inner';
 import LinkEmail from 'components/Link/LinkEmail';
 import LinkPhone from 'components/Link/LinkPhone';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
@@ -10,11 +9,9 @@ import { GiftCertificateModalInterface } from 'components/Modal/GiftCertificateM
 import Pager from 'components/Pager';
 import Spinner from 'components/Spinner';
 import Table, { TableColumn } from 'components/Table';
-import { ROUTE_CMS } from 'config/common';
 import { CONFIRM_MODAL, GIFT_CERTIFICATE_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import {
-  AppContentWrapperBreadCrumbs,
   CompanyInterface,
   GetConsoleGiftCertificatesPayloadInterface,
   GiftCertificateInterface,
@@ -26,7 +23,6 @@ import {
   useUpdateGiftCertificate,
 } from 'hooks/mutations/useGiftCertificateMutations';
 import usePageLoadingState from 'hooks/usePageLoadingState';
-import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
 import { getNumWord } from 'lib/i18n';
 import * as React from 'react';
 
@@ -143,73 +139,57 @@ const ConsoleGiftCertificatesList: React.FC<ConsoleGiftCertificatesListInterface
     },
   ];
 
-  const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: 'Подарочные сертификаты',
-    config: [
-      {
-        name: 'Компании',
-        href: `${ROUTE_CMS}/companies`,
-      },
-      {
-        name: `${pageCompany?.name}`,
-        href: `${ROUTE_CMS}/companies/${pageCompany?._id}`,
-      },
-    ],
-  };
-
   return (
-    <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
-      <Inner testId={'company-shops-list'} className='relative'>
-        <div className={`text-xl font-medium mb-2`}>{counterString}</div>
+    <div data-cy={'company-shops-list'} className='relative'>
+      <div className={`text-xl font-medium mb-2`}>{counterString}</div>
 
-        <div className={`relative overflow-x-auto overflow-y-hidden`}>
-          <Table<GiftCertificateInterface>
-            columns={columns}
-            data={docs}
-            testIdKey={'_id'}
-            onRowDoubleClick={(dataItem) => {
-              showModal<GiftCertificateModalInterface>({
-                variant: GIFT_CERTIFICATE_MODAL,
-                props: {
-                  giftCertificate: dataItem,
-                  pageCompany,
-                  confirm: (values) => {
-                    updateGiftCertificateMutation({
-                      ...values,
-                      _id: `${dataItem._id}`,
-                    }).catch(console.log);
-                  },
+      <div className={`relative overflow-x-auto overflow-y-hidden`}>
+        <Table<GiftCertificateInterface>
+          columns={columns}
+          data={docs}
+          testIdKey={'_id'}
+          onRowDoubleClick={(dataItem) => {
+            showModal<GiftCertificateModalInterface>({
+              variant: GIFT_CERTIFICATE_MODAL,
+              props: {
+                giftCertificate: dataItem,
+                pageCompany,
+                confirm: (values) => {
+                  updateGiftCertificateMutation({
+                    ...values,
+                    _id: `${dataItem._id}`,
+                  }).catch(console.log);
                 },
-              });
-            }}
-          />
+              },
+            });
+          }}
+        />
 
-          {isPageLoading ? <Spinner isNestedAbsolute isTransparent /> : null}
-        </div>
+        {isPageLoading ? <Spinner isNestedAbsolute isTransparent /> : null}
+      </div>
 
-        <Pager page={page} totalPages={totalPages} />
+      <Pager page={page} totalPages={totalPages} />
 
-        <FixedButtons>
-          <Button
-            testId={'create-gift-certificate'}
-            size={'small'}
-            onClick={() => {
-              showModal<GiftCertificateModalInterface>({
-                variant: GIFT_CERTIFICATE_MODAL,
-                props: {
-                  pageCompany,
-                  confirm: (values) => {
-                    createGiftCertificateMutation(values).catch(console.log);
-                  },
+      <FixedButtons>
+        <Button
+          testId={'create-gift-certificate'}
+          size={'small'}
+          onClick={() => {
+            showModal<GiftCertificateModalInterface>({
+              variant: GIFT_CERTIFICATE_MODAL,
+              props: {
+                pageCompany,
+                confirm: (values) => {
+                  createGiftCertificateMutation(values).catch(console.log);
                 },
-              });
-            }}
-          >
-            Создать подарочный сертификат
-          </Button>
-        </FixedButtons>
-      </Inner>
-    </CmsCompanyLayout>
+              },
+            });
+          }}
+        >
+          Создать подарочный сертификат
+        </Button>
+      </FixedButtons>
+    </div>
   );
 };
 

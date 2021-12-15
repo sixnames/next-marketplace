@@ -54,9 +54,11 @@ import {
   SHOP_PRODUCT_SUPPLIER_MODAL,
   ORDER_DELIVERY_ADDRESS_MODAL,
   GIFT_CERTIFICATE_MODAL,
+  INFO_MODAL,
 } from 'config/modalVariants';
 
 const AdultModal = dynamic(() => import('components/Modal/AdultModal'));
+const InfoModal = dynamic(() => import('components/Modal/InfoModal'));
 const BarcodeIntersectsModal = dynamic(() => import('components/Modal/BarcodeIntersectsModal'));
 const ShopProductBarcodeIntersectsModal = dynamic(
   () => import('components/Modal/ShopProductBarcodeIntersectsModal'),
@@ -129,6 +131,8 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
       <div className='relative flex items-center justify-center z-20 w-full min-h-full p-inner-block-horizontal-padding bg-gray-700 bg-opacity-50'>
         <React.Suspense fallback={<Spinner />}>
           {modalType === ADULT_MODAL && <AdultModal {...modalProps} />}
+
+          {modalType === INFO_MODAL && <InfoModal {...modalProps} />}
 
           {modalType === CONFIRM_MODAL && <ConfirmModal {...modalProps} />}
 

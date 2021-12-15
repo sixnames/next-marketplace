@@ -46,13 +46,15 @@ export async function checkGiftCertificateAvailability({
       if (giftCertificate.userId) {
         return {
           success: false,
-          message: await getApiMessage('giftCertificate.check.notFound'),
+          notAuth: true,
+          message: await getApiMessage('giftCertificate.check.notAuth'),
         };
       }
 
       return {
         success: true,
         message: await getApiMessage('giftCertificate.check.success'),
+        payload: giftCertificate,
       };
     }
 

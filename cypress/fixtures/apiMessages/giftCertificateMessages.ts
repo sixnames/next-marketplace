@@ -68,8 +68,15 @@ export const giftCertificateMessages: MessageBaseInterface[] = [
   {
     slug: 'giftCertificate.check.notFound',
     messageI18n: {
-      [DEFAULT_LOCALE]: `Подарочного сертификат не найден.`,
+      [DEFAULT_LOCALE]: `Подарочный сертификат не найден.`,
       [SECONDARY_LOCALE]: `Gift certificate not found.`,
+    },
+  },
+  {
+    slug: 'giftCertificate.check.notAuth',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Подарочный сертификат принадлежит зарегестрированному пользователь. Пожалуйста авторизуйтесь если вы являетесь этим пользователем.`,
+      [SECONDARY_LOCALE]: `Gift certificate is belongs to registered user. Sign in please for certificate use.`,
     },
   },
   {

@@ -26,6 +26,23 @@ const certificates: GiftCertificateModel[] = [
     createdAt: new Date(),
     updatedAt: new Date(),
   },
+  {
+    _id: getObjectId(`gift certificate b`),
+    companyId: getObjectId('company Company A'),
+    companySlug: 'company_a',
+    code: 'no-user',
+    initialValue: 5000,
+    value: 5000,
+    descriptionI18n: {
+      [DEFAULT_LOCALE]: 'Описание gift certificate b',
+    },
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'gift certificate b',
+    },
+    log: [],
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
 ];
 
 // @ts-ignore

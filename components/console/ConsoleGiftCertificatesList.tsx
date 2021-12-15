@@ -20,7 +20,11 @@ import {
   GiftCertificateInterface,
   UserInterface,
 } from 'db/uiInterfaces';
-import { useCreateGiftCertificate } from 'hooks/mutations/useGiftCertificateMutations';
+import {
+  useCreateGiftCertificate,
+  useDeleteGiftCertificate,
+  useUpdateGiftCertificate,
+} from 'hooks/mutations/useGiftCertificateMutations';
 import usePageLoadingState from 'hooks/usePageLoadingState';
 import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
 import { getNumWord } from 'lib/i18n';
@@ -43,6 +47,8 @@ const ConsoleGiftCertificatesList: React.FC<ConsoleGiftCertificatesListInterface
   const { showModal } = useAppContext();
 
   const [createGiftCertificateMutation] = useCreateGiftCertificate();
+  const [updateGiftCertificateMutation] = useUpdateGiftCertificate();
+  const [deleteGiftCertificateMutation] = useDeleteGiftCertificate();
 
   const counterString = React.useMemo(() => {
     if (totalDocs < 1) {
@@ -102,7 +108,19 @@ const ConsoleGiftCertificatesList: React.FC<ConsoleGiftCertificatesListInterface
             justifyContent={'flex-end'}
             updateTitle={'Редактировать магазин'}
             updateHandler={() => {
-              console.log('update');
+              showModal<GiftCertificateModalInterface>({
+                variant: GIFT_CERTIFICATE_MODAL,
+                props: {
+                  giftCertificate: dataItem,
+                  pageCompany,
+                  confirm: (values) => {
+                    updateGiftCertificateMutation({
+                      ...values,
+                      _id: `${dataItem._id}`,
+                    }).catch(console.log);
+                  },
+                },
+              });
             }}
             deleteTitle={'Удалить магазин'}
             deleteHandler={() => {
@@ -112,7 +130,9 @@ const ConsoleGiftCertificatesList: React.FC<ConsoleGiftCertificatesListInterface
                   testId: 'delete-shop-modal',
                   message: `Вы уверенны, что хотите удалить подарочный сертификат ${dataItem.code}?`,
                   confirm: () => {
-                    console.log('delete');
+                    deleteGiftCertificateMutation({
+                      _id: `${dataItem._id}`,
+                    }).catch(console.log);
                   },
                 },
               });
@@ -148,7 +168,19 @@ const ConsoleGiftCertificatesList: React.FC<ConsoleGiftCertificatesListInterface
             data={docs}
             testIdKey={'_id'}
             onRowDoubleClick={(dataItem) => {
-              console.log('update', dataItem);
+              showModal<GiftCertificateModalInterface>({
+                variant: GIFT_CERTIFICATE_MODAL,
+                props: {
+                  giftCertificate: dataItem,
+                  pageCompany,
+                  confirm: (values) => {
+                    updateGiftCertificateMutation({
+                      ...values,
+                      _id: `${dataItem._id}`,
+                    }).catch(console.log);
+                  },
+                },
+              });
             }}
           />
 

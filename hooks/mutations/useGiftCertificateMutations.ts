@@ -52,6 +52,7 @@ export const useCheckGiftCertificateMutation = () => {
         showModal<InfoModalInterface>({
           variant: INFO_MODAL,
           props: {
+            testId: 'gift-certificate-check-error',
             message: defaultMessage,
           },
         });
@@ -60,6 +61,7 @@ export const useCheckGiftCertificateMutation = () => {
       showModal<InfoModalInterface>({
         variant: INFO_MODAL,
         props: {
+          testId: 'gift-certificate-check-message',
           message: payload.message,
         },
       });
@@ -69,6 +71,7 @@ export const useCheckGiftCertificateMutation = () => {
         showModal<InfoModalInterface>({
           variant: INFO_MODAL,
           props: {
+            testId: 'gift-certificate-check-error',
             message: defaultMessage,
           },
         });
@@ -77,6 +80,7 @@ export const useCheckGiftCertificateMutation = () => {
       showModal<InfoModalInterface>({
         variant: INFO_MODAL,
         props: {
+          testId: 'gift-certificate-check-message',
           message: payload.message,
         },
       });

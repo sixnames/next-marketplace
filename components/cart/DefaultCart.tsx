@@ -192,6 +192,7 @@ const DefaultCartShop: React.FC<DefaultCartShopUIInterface> = ({
               <Button
                 frameClassName='w-auto'
                 theme={'secondary'}
+                testId={`gift-certificate-confirm-${index}`}
                 onClick={() => {
                   checkGiftCertificateMutation({
                     userId: sessionUser ? `${sessionUser.me._id}` : null,

@@ -6,11 +6,12 @@ import * as React from 'react';
 export interface InfoModalInterface {
   title?: string;
   message?: string;
+  testId: string;
 }
 
-const InfoModal: React.FC<InfoModalInterface> = ({ title, message }) => {
+const InfoModal: React.FC<InfoModalInterface> = ({ title, message, testId }) => {
   return (
-    <ModalFrame>
+    <ModalFrame testId={testId}>
       {title ? <ModalTitle>{title}</ModalTitle> : null}
       {message ? (
         <ModalText>

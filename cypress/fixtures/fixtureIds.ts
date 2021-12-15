@@ -7,6 +7,9 @@ export const fixtureIds = {
   shopA: 'bbc3ef381b3ace0baedc8459',
   shopB: '7eaef2134e8f5f1f5af22a37',
   shopC: '6905de65e5567a92a5dff7a7',
+  shopASlug: 'shop_a',
+  shopBSlug: 'shop_b',
+  shopCSlug: 'shop_c',
 
   // rubrics
   rubricWineSlug: 'vino',

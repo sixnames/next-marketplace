@@ -7,7 +7,8 @@ import { getRequestParams } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
 
 export interface CheckGiftCertificateAvailabilityInputInterface {
-  giftCertificateId: string;
+  code: string;
+  companyId: string;
   userId?: string | null;
 }
 
@@ -24,18 +25,19 @@ export async function checkGiftCertificateAvailability({
     if (!input) {
       return {
         success: false,
-        message: await getApiMessage('giftCertificate.update.error'),
+        message: await getApiMessage('giftCertificate.check.error'),
       };
     }
 
     // get certificate
     const giftCertificate = await giftCertificatesCollection.findOne({
-      _id: new ObjectId(input.giftCertificateId),
+      companyId: new ObjectId(input.companyId),
+      code: input.code,
     });
     if (!giftCertificate) {
       return {
         success: false,
-        message: await getApiMessage('giftCertificate.update.error'),
+        message: await getApiMessage('giftCertificate.check.notFound'),
       };
     }
 
@@ -44,13 +46,13 @@ export async function checkGiftCertificateAvailability({
       if (giftCertificate.userId) {
         return {
           success: false,
-          message: await getApiMessage('giftCertificate.update.error'),
+          message: await getApiMessage('giftCertificate.check.notFound'),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage('giftCertificate.update.success'),
+        message: await getApiMessage('giftCertificate.check.success'),
       };
     }
 
@@ -77,13 +79,14 @@ export async function checkGiftCertificateAvailability({
       if (!updatedGiftCertificateResult.ok || !updatedGiftCertificate) {
         return {
           success: false,
-          message: await getApiMessage('giftCertificate.update.error'),
+          message: await getApiMessage('giftCertificate.check.error'),
         };
       }
 
       return {
         success: true,
-        message: await getApiMessage('giftCertificate.update.success'),
+        message: await getApiMessage('giftCertificate.check.success'),
+        payload: updatedGiftCertificate,
       };
     }
 
@@ -91,13 +94,14 @@ export async function checkGiftCertificateAvailability({
     if (!giftCertificate.userId.equals(userId)) {
       return {
         success: false,
-        message: await getApiMessage('giftCertificate.update.error'),
+        message: await getApiMessage('giftCertificate.check.notFound'),
       };
     }
 
     return {
       success: true,
-      message: await getApiMessage('giftCertificate.update.success'),
+      message: await getApiMessage('giftCertificate.check.success'),
+      payload: giftCertificate,
     };
   } catch (e) {
     console.log('checkGiftCertificateAvailability error ', e);

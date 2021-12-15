@@ -42,11 +42,11 @@ const FormikCodeInput: React.FC<FormikCodeInputPropsInterface> = ({
             </div>
 
             <Button
+              frameClassName='w-auto'
+              theme={'secondary'}
               onClick={() => {
                 setFieldValue(name, uniqid.time());
               }}
-              frameClassName='w-auto'
-              theme={'secondary'}
             >
               Сгенерировать
             </Button>

@@ -67,6 +67,7 @@ export interface MakeAnOrderShopConfigInterface {
   deliveryVariant: OrderDeliveryVariantModel;
   paymentVariant: OrderPaymentVariantModel;
   deliveryInfo?: OrderDeliveryInfoModel | null;
+  giftCertificate?: string;
 }
 
 export interface MakeAnOrderInputInterface {

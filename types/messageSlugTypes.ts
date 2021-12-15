@@ -697,6 +697,9 @@ export type MessageSlug =
   | 'giftCertificate.update.success'
   | 'giftCertificate.delete.error'
   | 'giftCertificate.delete.success'
+  | 'giftCertificate.check.error'
+  | 'giftCertificate.check.notFound'
+  | 'giftCertificate.check.success'
 
   // Seo content ----------
   | 'seoContent.update.error'

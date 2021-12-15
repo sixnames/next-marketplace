@@ -1,7 +1,11 @@
 import Button from 'components/button/Button';
 import { CartProduct, CartShoplessProduct } from 'components/cart/CartProduct';
-import CartAside from 'components/CartAside';
+import CartAside, {
+  useCartAsideDiscounts,
+  UseCartAsideDiscountsMethodsInterface,
+} from 'components/CartAside';
 import FormikInput from 'components/FormElements/Input/FormikInput';
+import InputLine from 'components/FormElements/Input/InputLine';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import FormikTextarea from 'components/FormElements/Textarea/FormikTextarea';
 import { MapModalInterface } from 'components/Modal/MapModal';
@@ -23,6 +27,7 @@ import { MakeAnOrderShopConfigInterface } from 'db/dao/order/makeAnOrder';
 import { OrderDeliveryInfoModel } from 'db/dbModels';
 import { CartInterface, CartProductInterface, ShopInterface } from 'db/uiInterfaces';
 import { Form, Formik, useFormikContext } from 'formik';
+import { useCheckGiftCertificate } from 'hooks/mutations/useGiftCertificateMutations';
 import { useShopMarker } from 'hooks/useShopMarker';
 import useValidationSchema from 'hooks/useValidationSchema';
 import LayoutCard from 'layout/LayoutCard';
@@ -122,7 +127,7 @@ interface DefaultCartInitialValuesInterface extends MakeOrderFormInterface {
   shopConfigs: DefaultCartShopInterface[];
 }
 
-interface DefaultCartShopUIInterface {
+interface DefaultCartShopUIInterface extends UseCartAsideDiscountsMethodsInterface {
   shop: DefaultCartShopInterface;
   index: number;
   showPriceWarning?: boolean;
@@ -133,9 +138,16 @@ const DefaultCartShop: React.FC<DefaultCartShopUIInterface> = ({
   showPriceWarning,
   index,
   allowDelivery,
+  setGiftCertificateDiscount,
 }) => {
+  const sessionUser = useSiteUserContext();
   const marker = useShopMarker(shop);
   const { showModal } = useAppContext();
+  const { values, setFieldValue } = useFormikContext();
+  const giftCertificateFieldName = `shopConfigs[${index}].giftCertificate`;
+  const giftCertificateCode = get(values, giftCertificateFieldName);
+
+  const [checkGiftCertificateMutation] = useCheckGiftCertificate();
 
   return (
     <LayoutCard key={`${shop._id}`}>
@@ -166,6 +178,64 @@ const DefaultCartShop: React.FC<DefaultCartShopUIInterface> = ({
         >
           {shop.address.readableAddress}
           <div className='text-theme'>Показать на карте</div>
+        </div>
+
+        <div className='grid lg:grid-cols-2 gap-4 mt-6'>
+          <div>
+            <InputLine
+              low
+              labelTag={'div'}
+              label={'Подарочный сертификат'}
+              lineContentClass='flex flex-col sm:flex-row gap-4 sm:items-end'
+            >
+              <div className='flex-grow'>
+                <FormikInput name={giftCertificateFieldName} low />
+              </div>
+              <Button
+                frameClassName='w-auto'
+                theme={'secondary'}
+                onClick={() => {
+                  checkGiftCertificateMutation({
+                    userId: sessionUser ? `${sessionUser.me._id}` : null,
+                    code: giftCertificateCode,
+                    companyId: `${shop.companyId}`,
+                  })
+                    .then((response) => {
+                      if (!response || !response.success || !response.payload) {
+                        setFieldValue(giftCertificateFieldName, '');
+                        return;
+                      }
+                      setGiftCertificateDiscount(response.payload.value);
+                    })
+                    .catch(console.log);
+                }}
+              >
+                Применить
+              </Button>
+            </InputLine>
+          </div>
+
+          <div>
+            <InputLine
+              low
+              labelTag={'div'}
+              label={'Промокод'}
+              lineContentClass='flex flex-col sm:flex-row gap-4 sm:items-end'
+            >
+              <div className='flex-grow'>
+                <FormikInput name={`shopConfigs[${index}].promoCode`} low />
+              </div>
+              <Button
+                frameClassName='w-auto'
+                theme={'secondary'}
+                onClick={() => {
+                  console.log('Применить');
+                }}
+              >
+                Применить
+              </Button>
+            </InputLine>
+          </div>
         </div>
 
         {allowDelivery ? <CartDeliveryFields inShop index={index} /> : null}
@@ -206,6 +276,12 @@ interface DefaultCartInterface {
 }
 
 const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
+  const {
+    giftCertificateDiscount,
+    setGiftCertificateDiscount,
+    promoCodeDiscount,
+    setPromoCodeDiscount,
+  } = useCartAsideDiscounts();
   const { makeAnOrder } = useSiteContext();
   const { configs, domainCompany } = useConfigContext();
   const sessionUser = useSiteUserContext();
@@ -346,6 +422,8 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
                               index={index}
                               key={`${shop._id}`}
                               allowDelivery
+                              setGiftCertificateDiscount={setGiftCertificateDiscount}
+                              setPromoCodeDiscount={setPromoCodeDiscount}
                             />
                           );
                         })}
@@ -413,6 +491,8 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
                       productsCount={cart.cartDeliveryProducts.length}
                       totalPrice={totalDeliveryPrice}
                       isWithShopless={cart.isWithShoplessDelivery}
+                      giftCertificateDiscount={giftCertificateDiscount}
+                      promoCodeDiscount={promoCodeDiscount}
                     />
                   </div>
                 </div>
@@ -478,6 +558,8 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
                               key={`${shop._id}`}
                               allowDelivery={false}
                               showPriceWarning
+                              setGiftCertificateDiscount={setGiftCertificateDiscount}
+                              setPromoCodeDiscount={setPromoCodeDiscount}
                             />
                           );
                         })}
@@ -553,6 +635,8 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
                       productsCount={cart.cartBookingProducts.length}
                       totalPrice={totalBookingPrice}
                       isWithShopless={cart.isWithShoplessBooking}
+                      promoCodeDiscount={promoCodeDiscount}
+                      giftCertificateDiscount={giftCertificateDiscount}
                     />
                   </div>
                 </div>

@@ -40,5 +40,6 @@ export const useCheckGiftCertificate = () => {
   >({
     path: `${basePath}/check`,
     method: REQUEST_METHOD_PATCH,
+    reload: false,
   });
 };

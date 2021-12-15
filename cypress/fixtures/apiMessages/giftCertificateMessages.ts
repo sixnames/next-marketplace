@@ -58,4 +58,25 @@ export const giftCertificateMessages: MessageBaseInterface[] = [
       [SECONDARY_LOCALE]: `Gift certificate removed.`,
     },
   },
+  {
+    slug: 'giftCertificate.check.error',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Ошибка применения подарочного сертификата.`,
+      [SECONDARY_LOCALE]: `Gift certificate error.`,
+    },
+  },
+  {
+    slug: 'giftCertificate.check.notFound',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Подарочного сертификат не найден.`,
+      [SECONDARY_LOCALE]: `Gift certificate not found.`,
+    },
+  },
+  {
+    slug: 'giftCertificate.check.success',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Подарочный сертификат применён.`,
+      [SECONDARY_LOCALE]: `Gift certificate added.`,
+    },
+  },
 ];

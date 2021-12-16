@@ -110,15 +110,7 @@ const ConfigInput: React.FC<ConfigInputInterface> = ({ name, multi, variant, tes
                 {multi ? (
                   <div className='flex items-center justify-center flex-shrink-0 w-[50px]'>
                     {isFirst ? (
-                      <Button
-                        frameClassName={'w-auto'}
-                        onClick={addFieldHandler}
-                        size={'small'}
-                        theme={'secondary'}
-                        icon={'plus'}
-                        testId={`${fieldTestId}-add`}
-                        circle
-                      />
+                      <div />
                     ) : (
                       <ButtonCross
                         testId={`${fieldTestId}-remove`}
@@ -132,6 +124,18 @@ const ConfigInput: React.FC<ConfigInputInterface> = ({ name, multi, variant, tes
           </div>
         );
       })}
+
+      {multi ? (
+        <Button
+          frameClassName={'w-auto'}
+          onClick={addFieldHandler}
+          size={'small'}
+          theme={'gray'}
+          testId={`${name}-add`}
+        >
+          Добавить
+        </Button>
+      ) : null}
     </div>
   );
 };

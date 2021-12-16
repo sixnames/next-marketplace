@@ -20,7 +20,7 @@ import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
 import { useSiteUserContext } from 'context/siteUserContext';
-import { MakeAnOrderShopConfigInterface } from 'db/dao/order/makeAnOrder';
+import { MakeAnOrderShopConfigInterface } from 'db/dao/orders/makeAnOrder';
 import { OrderDeliveryInfoModel } from 'db/dbModels';
 import { CartInterface, CartProductInterface, ShopInterface } from 'db/uiInterfaces';
 import { Form, Formik, useFormikContext } from 'formik';

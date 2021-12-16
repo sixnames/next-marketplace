@@ -1,5 +1,6 @@
 import { PAGINATION_DEFAULT_LIMIT, SORT_DESC } from 'config/common';
 import { COL_ORDER_CUSTOMERS, COL_ORDER_STATUSES, COL_ORDERS, COL_SHOPS } from 'db/collectionNames';
+import { castOrderStatus } from 'db/dao/orders/getConsoleOrder';
 import { OrderModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
@@ -10,7 +11,6 @@ import {
 import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { castUrlFilters } from 'lib/catalogueUtils';
 import { getShortName } from 'lib/nameUtils';
-import { castOrderStatus } from 'lib/orderUtils';
 import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { getRequestParams } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';

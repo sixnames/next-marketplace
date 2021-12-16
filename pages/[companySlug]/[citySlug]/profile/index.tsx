@@ -13,6 +13,7 @@ import WpTooltip from 'components/WpTooltip';
 import { IMAGE_FALLBACK, ROUTE_SIGN_IN } from 'config/common';
 import { useSiteContext } from 'context/siteContext';
 import {
+  COL_GIFT_CERTIFICATES,
   COL_ORDER_PRODUCTS,
   COL_ORDER_STATUSES,
   COL_ORDERS,
@@ -20,6 +21,7 @@ import {
   COL_SHOPS,
 } from 'db/collectionNames';
 import { shopProductFieldsPipeline } from 'db/dao/constantPipelines';
+import { castOrderStatus } from 'db/dao/orders/getConsoleOrder';
 import { getPageSessionUser } from 'db/dao/user/getPageSessionUser';
 import { OrderModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -28,7 +30,6 @@ import ProfileLayout from 'layout/ProfileLayout/ProfileLayout';
 import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
-import { castOrderStatus } from 'lib/orderUtils';
 import { generateSnippetTitle } from 'lib/titleUtils';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
@@ -142,7 +143,16 @@ interface ProfileOrderInterface {
 }
 
 const ProfileOrder: React.FC<ProfileOrderInterface> = ({ order, orderIndex }) => {
-  const { itemId, createdAt, totalPrice, status, products, orderId } = order;
+  const {
+    itemId,
+    createdAt,
+    discountedPrice,
+    status,
+    products,
+    orderId,
+    giftCertificate,
+    giftCertificateChargedValue,
+  } = order;
   const { repeatAnOrder } = useSiteContext();
   const firstProduct = (products || [])[0];
 
@@ -165,7 +175,7 @@ const ProfileOrder: React.FC<ProfileOrderInterface> = ({ order, orderIndex }) =>
                 от <FormattedDate value={createdAt} />
               </div>
               <div>
-                <Currency className='text-2xl' value={totalPrice} />
+                <Currency className='text-2xl' value={discountedPrice} />
               </div>
               <div className='font-medium' style={status ? { color: status.color } : {}}>
                 {status?.name}
@@ -208,6 +218,19 @@ const ProfileOrder: React.FC<ProfileOrderInterface> = ({ order, orderIndex }) =>
                   <div className='text-theme font-medium'>Магазин не найден</div>
                 )}
               </div>
+
+              {/*discount info*/}
+              {giftCertificate ? (
+                <div className='mt-4 pl-20 lg:pl-28 pr-6'>
+                  <div className='text-secondary-text mb-1'>Применён подарочный сертификат</div>
+                  <div>
+                    {giftCertificate.name ? `${giftCertificate.name}: ` : 'С кодом: '}
+                    {giftCertificate.code}
+                    {' на сумму '}
+                    <Currency value={giftCertificateChargedValue} />
+                  </div>
+                </div>
+              ) : null}
 
               {(products || []).map((orderProduct, index) => {
                 return (
@@ -300,8 +323,20 @@ export async function getServerSideProps(
           foreignField: '_id',
         },
       },
+
+      {
+        $lookup: {
+          from: COL_GIFT_CERTIFICATES,
+          as: 'giftCertificate',
+          localField: 'giftCertificateId',
+          foreignField: '_id',
+        },
+      },
       {
         $addFields: {
+          giftCertificate: {
+            $arrayElemAt: ['$giftCertificate', 0],
+          },
           status: {
             $arrayElemAt: ['$status', 0],
           },
@@ -384,16 +419,6 @@ export async function getServerSideProps(
   const orders = orderAggregation.map((order) => {
     return {
       ...order,
-      totalPrice: order.products?.reduce((acc: number, { totalPrice, status }) => {
-        const productStatus = castOrderStatus({
-          initialStatus: status,
-          locale,
-        });
-        if (productStatus && productStatus.isCanceled) {
-          return acc;
-        }
-        return acc + totalPrice;
-      }, 0),
       products: order.products?.reduce((acc: OrderProductInterface[], orderProduct) => {
         const productStatus = castOrderStatus({
           initialStatus: orderProduct.status,
@@ -435,6 +460,13 @@ export async function getServerSideProps(
         initialStatus: order.status,
         locale,
       }),
+      giftCertificate: order.giftCertificate
+        ? {
+            ...order.giftCertificate,
+            name: getFieldStringLocale(order.giftCertificate.nameI18n, locale),
+            description: getFieldStringLocale(order.giftCertificate.descriptionI18n, locale),
+          }
+        : null,
     };
   });
 

@@ -1,4 +1,5 @@
 import { COL_ORDER_LOGS, COL_ORDER_PRODUCTS, COL_ORDERS } from 'db/collectionNames';
+import { getConsoleOrder } from 'db/dao/orders/getConsoleOrder';
 import {
   ObjectIdModel,
   OrderLogDiffModel,
@@ -11,7 +12,6 @@ import { DaoPropsInterface, OrderInterface, OrderInterfacePayloadModel } from 'd
 import { detailedDiff } from 'deep-object-diff';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { noNaN } from 'lib/numbers';
-import { getConsoleOrder } from 'lib/orderUtils';
 import { countDiscountedPrice, getOrderDiscountedPrice } from 'lib/priceUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { castDbData } from 'lib/ssrUtils';

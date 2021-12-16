@@ -8,7 +8,7 @@ import Spinner from 'components/Spinner';
 import Title from 'components/Title';
 import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
-import { MakeAnOrderInputInterface } from 'db/dao/order/makeAnOrder';
+import { MakeAnOrderInputInterface } from 'db/dao/orders/makeAnOrder';
 import { CartInterface } from 'db/uiInterfaces';
 import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
 import * as React from 'react';

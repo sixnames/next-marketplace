@@ -1,6 +1,6 @@
 import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH } from 'config/common';
-import { deleteOrder } from 'db/dao/order/deleteOrder';
-import { updateOrder } from 'db/dao/order/updateOrder';
+import { deleteOrder } from 'db/dao/orders/deleteOrder';
+import { updateOrder } from 'db/dao/orders/updateOrder';
 import { sendApiRouteResponse, sendApiRouteWrongMethod } from 'lib/sessionHelpers';
 import { NextApiRequest, NextApiResponse } from 'next';
 

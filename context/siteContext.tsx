@@ -3,7 +3,7 @@ import { REQUEST_METHOD_POST, ROUTE_THANK_YOU } from 'config/common';
 import { CART_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { useNotificationsContext } from 'context/notificationsContext';
-import { MakeAnOrderInputInterface, MakeAnOrderPayloadModel } from 'db/dao/order/makeAnOrder';
+import { MakeAnOrderInputInterface, MakeAnOrderPayloadModel } from 'db/dao/orders/makeAnOrder';
 import { CartProductsFieldNameType } from 'db/dbModels';
 import { CartInterface, CompanyInterface, RubricInterface } from 'db/uiInterfaces';
 import {

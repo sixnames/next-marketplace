@@ -9,7 +9,7 @@ import Pager from 'components/Pager';
 import Table, { TableColumn } from 'components/Table';
 import Title from 'components/Title';
 import { ROUTE_CMS, ROUTE_CONSOLE } from 'config/common';
-import { getConsoleOrders, GetConsoleOrdersPayloadType } from 'db/dao/order/getConsoleOrders';
+import { getConsoleOrders, GetConsoleOrdersPayloadType } from 'db/dao/orders/getConsoleOrders';
 import { OrderInterface } from 'db/uiInterfaces';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';

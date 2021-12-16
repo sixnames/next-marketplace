@@ -2,7 +2,7 @@ import { ONE_MINUTE } from 'config/common';
 import {
   GetNewOrdersCounterInputInterface,
   GetNewOrdersCounterPayload,
-} from 'db/dao/order/getNewOrdersCounter';
+} from 'db/dao/orders/getNewOrdersCounter';
 import { noNaN } from 'lib/numbers';
 import { stringifyApiParams } from 'lib/qsUtils';
 import * as React from 'react';

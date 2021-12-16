@@ -1,13 +1,3 @@
-/*
-* Order total price
-* totalPrice: order.products?.reduce((acc: number, { totalPrice, status }) => {
-          if (status && status.isCanceled) {
-            return acc;
-          }
-          return acc + totalPrice;
-        }, 0),
-* */
-
 import { noNaN } from 'lib/numbers';
 
 interface GetOrderDiscountedPriceInterface {

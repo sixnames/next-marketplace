@@ -1,9 +1,53 @@
+import { noNaN } from '../../../lib/numbers';
 import { Db } from 'mongodb';
-import { DEFAULT_COMPANY_SLUG, ID_COUNTER_STEP } from '../../../config/common';
+import { ID_COUNTER_STEP } from '../../../config/common';
 import { dbsConfig, getProdDb } from './getProdDb';
-import { COL_COMPANIES, COL_ID_COUNTERS, COL_SEO_CONTENTS } from '../../../db/collectionNames';
-import { CompanyModel, IdCounterModel, SeoContentModel } from '../../../db/dbModels';
+import { COL_ID_COUNTERS, COL_ORDER_PRODUCTS, COL_ORDERS } from '../../../db/collectionNames';
+import { IdCounterModel, OrderModel, OrderProductModel } from '../../../db/dbModels';
 require('dotenv').config();
+
+interface GetOrderDiscountedPriceInterface {
+  giftCertificateDiscount?: number | null;
+  promoCodeDiscount?: number | null;
+  totalPrice: number;
+}
+
+interface GetOrderDiscountedPricePayloadInterface {
+  giftCertificateNewValue: number;
+  giftCertificateChargedValue: number;
+  discountedPrice: number;
+  isDiscounted: boolean;
+  discount: number;
+}
+
+function getOrderDiscountedPrice({
+  totalPrice,
+  ...props
+}: GetOrderDiscountedPriceInterface): GetOrderDiscountedPricePayloadInterface {
+  const giftCertificateDiscount = noNaN(props.giftCertificateDiscount);
+  const promoCodeDiscount = noNaN(props.promoCodeDiscount);
+
+  const discount = giftCertificateDiscount + promoCodeDiscount;
+  const isDiscounted = discount > 0;
+
+  const rawDiscountedPrice = noNaN(totalPrice) - discount;
+  const discountedPrice = rawDiscountedPrice < 0 ? 0 : rawDiscountedPrice;
+
+  const giftCertificateRawNewValue = giftCertificateDiscount - totalPrice;
+  const giftCertificateNewValue = giftCertificateRawNewValue < 0 ? 0 : giftCertificateRawNewValue;
+  const giftCertificateChargedValue =
+    giftCertificateNewValue === 0
+      ? giftCertificateDiscount
+      : giftCertificateDiscount - giftCertificateNewValue;
+
+  return {
+    giftCertificateNewValue,
+    giftCertificateChargedValue,
+    discountedPrice,
+    isDiscounted,
+    discount,
+  };
+}
 
 export async function getFastNextNumberItemId(collectionName: string, db: Db): Promise<string> {
   const idCountersCollection = db.collection<IdCounterModel>(COL_ID_COUNTERS);
@@ -35,37 +79,32 @@ async function updateProds() {
     console.log(' ');
     console.log(`Updating ${dbConfig.dbName} db`);
     const { db, client } = await getProdDb(dbConfig);
-    const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
-    const soeContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
-    const slug = '20';
-    const company = await companiesCollection.findOne({
-      slug,
-    });
-    if (company) {
-      const seoContents = await soeContentsCollection.find({ companySlug: company.slug }).toArray();
-      for await (const seo of seoContents) {
-        const newSlug = seo.slug.replace(company._id.toHexString(), DEFAULT_COMPANY_SLUG);
-        const oldSeo = await soeContentsCollection.findOne({
-          slug: newSlug,
-        });
-        if (oldSeo) {
-          await soeContentsCollection.findOneAndDelete({
-            _id: oldSeo._id,
-          });
+    const orderProductsCollection = db.collection<OrderProductModel>(COL_ORDER_PRODUCTS);
+    const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
+
+    const orders = await ordersCollection.find({}).toArray();
+    for await (const order of orders) {
+      const updatedOrderProducts = await orderProductsCollection
+        .find({
+          orderId: order._id,
+        })
+        .toArray();
+
+      const totalPrice = updatedOrderProducts.reduce((acc: number, { isCanceled, totalPrice }) => {
+        if (isCanceled) {
+          return acc;
         }
-        await soeContentsCollection.findOneAndUpdate(
-          {
-            _id: seo._id,
-          },
-          {
-            $set: {
-              companySlug: DEFAULT_COMPANY_SLUG,
-              url: seo.url.replace(slug, DEFAULT_COMPANY_SLUG),
-              slug: seo.slug.replace(company._id.toHexString(), DEFAULT_COMPANY_SLUG),
-            },
-          },
-        );
-      }
+        return acc + totalPrice;
+      }, 0);
+      const { discountedPrice } = getOrderDiscountedPrice({
+        totalPrice,
+        giftCertificateDiscount: noNaN(order.giftCertificateChargedValue),
+      });
+
+      console.log({
+        discountedPrice,
+        totalPrice,
+      });
     }
 
     // disconnect form db

@@ -388,6 +388,7 @@ export async function makeAnOrder({
                 }
               : null,
           giftCertificateId: giftCertificate?._id,
+          giftCertificateChargedValue,
           createdAt: new Date(),
           updatedAt: new Date(),
         };

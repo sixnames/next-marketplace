@@ -618,6 +618,7 @@ export interface OrderModel extends TimestampModel, BaseModel {
   requests?: OrderRequestModel[] | null;
   promoId?: ObjectIdModel;
   giftCertificateId?: ObjectIdModel | null;
+  giftCertificateChargedValue?: number | null;
 }
 
 export interface ProductConnectionItemModel {

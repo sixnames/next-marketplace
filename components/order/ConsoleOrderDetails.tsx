@@ -290,6 +290,7 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
     deliveryInfo,
     companySiteSlug,
     giftCertificate,
+    giftCertificateChargedValue,
   } = state;
 
   const [updateOrderMutation] = useUpdateOrder();
@@ -468,6 +469,8 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
                         <div>
                           {giftCertificate.name ? `${giftCertificate.name}: ` : 'С кодом: '}
                           {giftCertificate.code}
+                          {' на сумму '}
+                          <Currency value={giftCertificateChargedValue} />
                         </div>
                       </div>
                     ) : null}

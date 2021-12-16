@@ -202,9 +202,6 @@ export async function getConsoleOrder({
 
   const order: OrderInterface = {
     ...initialOrder,
-    totalPrice: initialOrder.products?.reduce((acc: number, { totalPrice }) => {
-      return acc + totalPrice;
-    }, 0),
     status: initialOrder.status
       ? {
           ...initialOrder.status,

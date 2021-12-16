@@ -588,6 +588,7 @@ export interface OrderInterface extends OrderModel {
   productsCount?: number | null;
   formattedTotalPrice?: string | null;
   requests?: OrderRequestModelInterface[] | null;
+  giftCertificate?: GiftCertificateInterface | null;
 }
 
 export interface TopFilterInterface {

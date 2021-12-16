@@ -170,16 +170,6 @@ export async function getConsoleOrders({
     ordersAggregation.docs.forEach((order) => {
       docs.push({
         ...order,
-        totalPrice: order.products?.reduce((acc: number, { totalPrice, status }) => {
-          const productStatus = castOrderStatus({
-            initialStatus: status,
-            locale: locale,
-          });
-          if (productStatus && productStatus.isCanceled) {
-            return acc;
-          }
-          return acc + totalPrice;
-        }, 0),
         status: castOrderStatus({
           initialStatus: order.status,
           locale: locale,

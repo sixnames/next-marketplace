@@ -25,7 +25,6 @@ export async function updateOrder({
   const orderLogsCollection = db.collection<OrderLogModel>(COL_ORDER_LOGS);
   const orderProductsCollection = db.collection<OrderProductModel>(COL_ORDER_PRODUCTS);
   const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
-  // console.log(ordersCollection);
 
   const session = client.startSession();
 

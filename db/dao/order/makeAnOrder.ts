@@ -9,6 +9,7 @@ import {
 import {
   COL_CARTS,
   COL_COMPANIES,
+  COL_GIFT_CERTIFICATES,
   COL_ORDER_CUSTOMERS,
   COL_ORDER_LOGS,
   COL_ORDER_PRODUCTS,
@@ -20,9 +21,11 @@ import {
   COL_USERS,
 } from 'db/collectionNames';
 import { getSessionCart } from 'db/dao/cart/getSessionCart';
+import { checkGiftCertificateAvailability } from 'db/dao/giftCertificate/checkGiftCertificateAvailability';
 import {
   CartModel,
   CompanyModel,
+  GiftCertificateModel,
   OrderCustomerModel,
   OrderDeliveryInfoModel,
   OrderDeliveryVariantModel,
@@ -44,7 +47,9 @@ import { getNextItemId, getOrderNextItemId } from 'lib/itemIdUtils';
 import { getUserInitialNotificationsConf } from 'lib/getUserNotificationsTemplate';
 import { sendOrderCreatedEmail } from 'lib/email/sendOrderCreatedEmail';
 import { sendSignUpEmail } from 'lib/email/sendSignUpEmail';
+import { noNaN } from 'lib/numbers';
 import { phoneToRaw } from 'lib/phoneUtils';
+import { getOrderDiscountedPrice } from 'lib/priceUtils';
 import { getRequestParams, getResolverValidationSchema, getSessionUser } from 'lib/sessionHelpers';
 import { sendOrderCreatedSms } from 'lib/sms/sendOrderCreatedSms';
 import { ObjectId } from 'mongodb';
@@ -94,6 +99,7 @@ export async function makeAnOrder({
   const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
   const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
   const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+  const giftCertificatesCollection = db.collection<GiftCertificateModel>(COL_GIFT_CERTIFICATES);
 
   const session = client.startSession();
 
@@ -249,12 +255,6 @@ export async function makeAnOrder({
           break;
         }
 
-        // get gift certificate
-        const { giftCertificateCode } = shopConfig;
-        if (giftCertificateCode) {
-          console.log(giftCertificateCode);
-        }
-
         const cartShopProducts = cartProducts.filter(({ shopProduct }) => {
           return shopProduct && shopProduct.shopId.equals(shopId);
         });
@@ -305,9 +305,51 @@ export async function makeAnOrder({
           castedOrderProducts.push(orderProduct);
         }
 
+        // get gift certificate
+        const { giftCertificateCode } = shopConfig;
+        let giftCertificate: GiftCertificateModel | null = null;
+        if (giftCertificateCode) {
+          const giftCertificatePayload = await checkGiftCertificateAvailability({
+            context,
+            input: {
+              companyId: company._id.toHexString(),
+              userId: user._id.toHexString(),
+              code: giftCertificateCode,
+            },
+          });
+          if (giftCertificatePayload.payload) {
+            giftCertificate = giftCertificatePayload.payload;
+          }
+        }
+
         const totalPrice = castedOrderProducts.reduce((acc: number, { totalPrice }) => {
           return acc + totalPrice;
         }, 0);
+        const { discountedPrice, giftCertificateNewValue, giftCertificateChargedValue } =
+          getOrderDiscountedPrice({
+            totalPrice,
+            giftCertificateDiscount: noNaN(giftCertificate?.value),
+          });
+
+        // update gift certificate
+        if (giftCertificate) {
+          await giftCertificatesCollection.findOneAndUpdate(
+            {
+              _id: giftCertificate._id,
+            },
+            {
+              $set: {
+                value: giftCertificateNewValue,
+              },
+              $push: {
+                log: {
+                  orderId,
+                  value: giftCertificateChargedValue,
+                },
+              },
+            },
+          );
+        }
 
         const order: OrderModel = {
           _id: orderId,
@@ -317,8 +359,8 @@ export async function makeAnOrder({
           statusId: initialStatus._id,
           customerId: user._id,
           companySiteSlug,
-          discountedPrice: totalPrice,
           totalPrice: totalPrice,
+          discountedPrice,
           comment: input.comment,
           productIds: castedOrderProducts.map(({ productId }) => {
             return productId;
@@ -345,6 +387,7 @@ export async function makeAnOrder({
                     : null,
                 }
               : null,
+          giftCertificateId: giftCertificate?._id,
           createdAt: new Date(),
           updatedAt: new Date(),
         };

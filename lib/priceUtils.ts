@@ -1,3 +1,58 @@
+/*
+* Order total price
+* totalPrice: order.products?.reduce((acc: number, { totalPrice, status }) => {
+          if (status && status.isCanceled) {
+            return acc;
+          }
+          return acc + totalPrice;
+        }, 0),
+* */
+
+import { noNaN } from 'lib/numbers';
+
+interface GetOrderDiscountedPriceInterface {
+  giftCertificateDiscount?: number | null;
+  promoCodeDiscount?: number | null;
+  totalPrice: number;
+}
+
+interface GetOrderDiscountedPricePayloadInterface {
+  giftCertificateNewValue: number;
+  giftCertificateChargedValue: number;
+  discountedPrice: number;
+  isDiscounted: boolean;
+  discount: number;
+}
+
+export function getOrderDiscountedPrice({
+  totalPrice,
+  ...props
+}: GetOrderDiscountedPriceInterface): GetOrderDiscountedPricePayloadInterface {
+  const giftCertificateDiscount = noNaN(props.giftCertificateDiscount);
+  const promoCodeDiscount = noNaN(props.promoCodeDiscount);
+
+  const discount = giftCertificateDiscount + promoCodeDiscount;
+  const isDiscounted = discount > 0;
+
+  const rawDiscountedPrice = noNaN(totalPrice) - discount;
+  const discountedPrice = rawDiscountedPrice < 0 ? 0 : rawDiscountedPrice;
+
+  const giftCertificateRawNewValue = giftCertificateDiscount - totalPrice;
+  const giftCertificateNewValue = giftCertificateRawNewValue < 0 ? 0 : giftCertificateRawNewValue;
+  const giftCertificateChargedValue =
+    giftCertificateNewValue === 0
+      ? giftCertificateDiscount
+      : giftCertificateDiscount - giftCertificateNewValue;
+
+  return {
+    giftCertificateNewValue,
+    giftCertificateChargedValue,
+    discountedPrice,
+    isDiscounted,
+    discount,
+  };
+}
+
 interface CountDiscountedPriceInterface {
   price: number;
   discount: number;

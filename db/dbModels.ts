@@ -617,6 +617,7 @@ export interface OrderModel extends TimestampModel, BaseModel {
   isCanceled?: boolean;
   requests?: OrderRequestModel[] | null;
   promoId?: ObjectIdModel;
+  giftCertificateId?: ObjectIdModel | null;
 }
 
 export interface ProductConnectionItemModel {

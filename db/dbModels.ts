@@ -603,6 +603,8 @@ export interface OrderModel extends TimestampModel, BaseModel {
   companySiteItemId: string;
   productIds: ObjectIdModel[];
   shopProductIds: ObjectIdModel[];
+  totalPrice: number;
+  discountedPrice: number;
   shopId: ObjectIdModel;
   shopItemId: string;
   companyId: ObjectIdModel;

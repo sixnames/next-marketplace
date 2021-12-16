@@ -586,7 +586,6 @@ export interface OrderInterface extends OrderModel {
   shop?: ShopInterface | null;
   status?: OrderStatusInterface | null;
   productsCount?: number | null;
-  totalPrice?: number | null;
   formattedTotalPrice?: string | null;
   requests?: OrderRequestModelInterface[] | null;
 }

@@ -1,4 +1,5 @@
 import ContentItemControls from 'components/button/ContentItemControls';
+import Currency from 'components/Currency';
 import FormattedDateTime from 'components/FormattedDateTime';
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
@@ -90,6 +91,20 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ data }) => {
       },
     },
     {
+      accessor: 'totalPrice',
+      headTitle: 'Сумма',
+      render: ({ cellData }) => {
+        return <Currency value={cellData} />;
+      },
+    },
+    {
+      accessor: 'discountedPrice',
+      headTitle: 'Со скидкой',
+      render: ({ cellData }) => {
+        return <Currency value={cellData} />;
+      },
+    },
+    {
       render: ({ dataItem }) => {
         return (
           <div className='flex justify-end'>
@@ -97,9 +112,7 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ data }) => {
               testId={dataItem.itemId}
               updateTitle={'Детали заказа'}
               updateHandler={() => {
-                router.push(`${ROUTE_CMS}/orders/${dataItem._id}`).catch((e) => {
-                  console.log(e);
-                });
+                router.push(`${ROUTE_CMS}/orders/${dataItem._id}`).catch(console.log);
               }}
               deleteTitle={'Удалить заказ'}
               deleteHandler={() => {

@@ -1,4 +1,4 @@
-import { GENDER_HE, PAGINATION_DEFAULT_LIMIT, SORT_DESC } from 'config/common';
+import { DEFAULT_PAGE, GENDER_HE, PAGINATION_DEFAULT_LIMIT, SORT_DESC } from 'config/common';
 import {
   getBrandFilterAttribute,
   getCategoryFilterAttribute,
@@ -61,7 +61,7 @@ export async function getConsolePromoProducts({
   let fallbackPayload: GetConsoleRubricPromoProductsPayloadInterface = {
     clearSlug: basePath,
     basePath,
-    page: 1,
+    page: DEFAULT_PAGE,
     totalDocs: 0,
     totalPages: 0,
     docs: [],

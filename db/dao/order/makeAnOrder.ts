@@ -9,6 +9,7 @@ import {
 import {
   COL_CARTS,
   COL_COMPANIES,
+  COL_GIFT_CERTIFICATES,
   COL_ORDER_CUSTOMERS,
   COL_ORDER_LOGS,
   COL_ORDER_PRODUCTS,
@@ -16,13 +17,15 @@ import {
   COL_ORDERS,
   COL_PRODUCTS,
   COL_ROLES,
-  COL_SHOP_PRODUCTS,
   COL_SHOPS,
   COL_USERS,
 } from 'db/collectionNames';
+import { getSessionCart } from 'db/dao/cart/getSessionCart';
+import { checkGiftCertificateAvailability } from 'db/dao/giftCertificate/checkGiftCertificateAvailability';
 import {
   CartModel,
   CompanyModel,
+  GiftCertificateModel,
   OrderCustomerModel,
   OrderDeliveryInfoModel,
   OrderDeliveryVariantModel,
@@ -34,7 +37,6 @@ import {
   ProductModel,
   RoleModel,
   ShopModel,
-  ShopProductModel,
   UserModel,
 } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
@@ -45,13 +47,10 @@ import { getNextItemId, getOrderNextItemId } from 'lib/itemIdUtils';
 import { getUserInitialNotificationsConf } from 'lib/getUserNotificationsTemplate';
 import { sendOrderCreatedEmail } from 'lib/email/sendOrderCreatedEmail';
 import { sendSignUpEmail } from 'lib/email/sendSignUpEmail';
+import { noNaN } from 'lib/numbers';
 import { phoneToRaw } from 'lib/phoneUtils';
-import {
-  getRequestParams,
-  getResolverValidationSchema,
-  getSessionCart,
-  getSessionUser,
-} from 'lib/sessionHelpers';
+import { getOrderDiscountedPrice } from 'lib/priceUtils';
+import { getRequestParams, getResolverValidationSchema, getSessionUser } from 'lib/sessionHelpers';
 import { sendOrderCreatedSms } from 'lib/sms/sendOrderCreatedSms';
 import { ObjectId } from 'mongodb';
 import { makeAnOrderSchema } from 'validation/orderSchema';
@@ -67,6 +66,7 @@ export interface MakeAnOrderShopConfigInterface {
   deliveryVariant: OrderDeliveryVariantModel;
   paymentVariant: OrderPaymentVariantModel;
   deliveryInfo?: OrderDeliveryInfoModel | null;
+  giftCertificateCode?: string;
 }
 
 export interface MakeAnOrderInputInterface {
@@ -98,8 +98,8 @@ export async function makeAnOrder({
   const orderStatusesCollection = db.collection<OrderStatusModel>(COL_ORDER_STATUSES);
   const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
   const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
-  const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
   const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+  const giftCertificatesCollection = db.collection<GiftCertificateModel>(COL_GIFT_CERTIFICATES);
 
   const session = client.startSession();
 
@@ -115,8 +115,9 @@ export async function makeAnOrder({
         await session.abortTransaction();
         return;
       }
+      const companySiteSlug = input.companySlug || DEFAULT_COMPANY_SLUG;
 
-      // Validate
+      // validate
       const validationSchema = await getResolverValidationSchema({
         context,
         schema: makeAnOrderSchema,
@@ -126,11 +127,19 @@ export async function makeAnOrder({
       const { cartProductsFieldName, allowDelivery } = input;
 
       const sessionUser = await getSessionUser(context);
-      const cart = await getSessionCart(context);
+      const cart = await getSessionCart({ context });
+      if (!cart) {
+        payload = {
+          success: false,
+          message: await getApiMessage('orders.makeAnOrder.empty'),
+        };
+        await session.abortTransaction();
+        return;
+      }
 
       const cartProducts = cart[cartProductsFieldName];
 
-      // Check if cart is empty
+      // check if cart is empty
       if (cartProducts.length < 1) {
         payload = {
           success: false,
@@ -141,7 +150,7 @@ export async function makeAnOrder({
       }
 
       let user = sessionUser;
-      // Check if user already exist
+      // check if user already exist
       const existingUser = await usersCollection.findOne({
         $or: [{ email: input.email }, { phone: input.phone }],
       });
@@ -149,7 +158,7 @@ export async function makeAnOrder({
         user = existingUser;
       }
 
-      // Create new user if not authenticated
+      // create new user if not authenticated
       if (!user) {
         const guestRole = await rolesCollection.findOne({ slug: ROLE_SLUG_GUEST });
 
@@ -162,14 +171,14 @@ export async function makeAnOrder({
           return;
         }
 
-        // Create password for user
+        // create password for user
         const newPassword = generator.generate({
           length: 10,
           numbers: true,
         });
         const password = await hash(newPassword, 10);
 
-        // Create user
+        // create user
         const itemId = await getNextItemId(COL_USERS);
         const createdUserResult = await usersCollection.insertOne({
           name: input.name,
@@ -197,7 +206,7 @@ export async function makeAnOrder({
         }
         user = createdUser;
 
-        // Send user creation email confirmation
+        // send user creation email confirmation
         await sendSignUpEmail({
           to: createdUser.email,
           userName: createdUser.name,
@@ -216,7 +225,7 @@ export async function makeAnOrder({
         return;
       }
 
-      // Get order initial status
+      // get order initial status
       const initialStatus = await orderStatusesCollection.findOne({
         isNew: true,
       });
@@ -232,148 +241,172 @@ export async function makeAnOrder({
       // create orders for all shops in cart
       const ordersInCart: OrderModel[] = [];
 
-      // Cast cart products to order products
-      const castedOrderProducts: OrderProductModel[] = [];
-      for await (const cartProduct of cartProducts) {
-        const { amount, shopProductId } = cartProduct;
-
-        // get shop product
-        if (!shopProductId) {
-          break;
-        }
-        const shopProduct = await shopProductsCollection.findOne({
-          _id: shopProductId,
-        });
-        if (!shopProduct) {
-          break;
-        }
-        const { price, itemId, shopId, companyId } = shopProduct;
-
+      for await (const shopConfig of input.shopConfigs) {
         // check shop availability
+        const shopId = new ObjectId(shopConfig._id);
         const shop = await shopsCollection.findOne({ _id: shopId });
         if (!shop) {
           break;
         }
 
         // check shop company availability
-        const company = await companiesCollection.findOne({ _id: companyId });
+        const company = await companiesCollection.findOne({ _id: shop.companyId });
         if (!company) {
           break;
         }
 
-        // check product availability
-        const product = await productsCollection.findOne({
-          _id: shopProduct.productId,
-        });
-        if (!product) {
-          break;
-        }
-
-        let existingOrder = ordersInCart.find((order) => {
-          return order.shopId.equals(shopProduct.shopId);
+        const cartShopProducts = cartProducts.filter(({ shopProduct }) => {
+          return shopProduct && shopProduct.shopId.equals(shopId);
         });
 
-        if (!existingOrder) {
-          const companySiteSlug = input.companySlug || DEFAULT_COMPANY_SLUG;
-          const shopConfig = input.shopConfigs.find(({ _id }) => {
-            return new ObjectId(_id).equals(shop._id);
+        // get order _id
+        const orderId = new ObjectId();
+
+        // cast cart products to order products
+        const castedOrderProducts: OrderProductModel[] = [];
+        for await (const cartProduct of cartShopProducts) {
+          const { shopProduct, amount } = cartProduct;
+          if (!shopProduct) {
+            return;
+          }
+          const { price, itemId } = shopProduct;
+
+          // check product availability
+          const product = await productsCollection.findOne({
+            _id: shopProduct.productId,
           });
-
-          if (!shopConfig) {
+          if (!product) {
             break;
           }
 
-          // create new order
-          existingOrder = {
+          const totalPrice = price * amount;
+          const orderProduct: OrderProductModel = {
             _id: new ObjectId(),
-            orderId: uniqid.time(),
-            companySiteItemId: await getOrderNextItemId(companySiteSlug),
-            itemId: await getNextItemId(COL_ORDERS),
             statusId: initialStatus._id,
+            itemId,
+            price,
+            amount,
+            totalPrice,
+            finalPrice: price,
+            slug: product.slug,
+            originalName: product.originalName,
+            nameI18n: product.nameI18n,
             customerId: user._id,
-            companySiteSlug,
-            comment: input.comment,
-            productIds: [product._id],
-            shopProductIds: [shopProduct._id],
-            shopId,
-            shopItemId: shop.itemId,
-            companyId,
-            companyItemId: company.itemId,
+            productId: product._id,
+            shopProductId: shopProduct._id,
+            shopId: shop._id,
+            companyId: company._id,
+            orderId,
+            barcode: shopProduct.barcode,
             allowDelivery,
-            reservationDate: input.reservationDate ? new Date(input.reservationDate) : null,
-            deliveryVariant: allowDelivery
-              ? shopConfig.deliveryVariant
-              : ORDER_DELIVERY_VARIANT_PICKUP,
-            paymentVariant: allowDelivery
-              ? shopConfig.paymentVariant
-              : ORDER_PAYMENT_VARIANT_RECEIPT,
-            deliveryInfo:
-              allowDelivery && shopConfig.deliveryInfo
-                ? {
-                    ...shopConfig.deliveryInfo,
-                    recipientPhone: shopConfig.deliveryInfo.recipientPhone
-                      ? phoneToRaw(shopConfig.deliveryInfo.recipientPhone)
-                      : null,
-                  }
-                : null,
             createdAt: new Date(),
             updatedAt: new Date(),
           };
-          ordersInCart.push(existingOrder);
-        } else {
-          // add product ids to the created order
-          existingOrder.productIds.push(product._id);
-          existingOrder.shopProductIds.push(shopProduct._id);
+          castedOrderProducts.push(orderProduct);
         }
 
-        const totalPrice = price * amount;
-        castedOrderProducts.push({
-          _id: new ObjectId(),
+        // get gift certificate
+        const { giftCertificateCode } = shopConfig;
+        let giftCertificate: GiftCertificateModel | null = null;
+        if (giftCertificateCode) {
+          const giftCertificatePayload = await checkGiftCertificateAvailability({
+            context,
+            input: {
+              companyId: company._id.toHexString(),
+              userId: user._id.toHexString(),
+              code: giftCertificateCode,
+            },
+          });
+          if (giftCertificatePayload.payload) {
+            giftCertificate = giftCertificatePayload.payload;
+          }
+        }
+
+        const totalPrice = castedOrderProducts.reduce((acc: number, { totalPrice }) => {
+          return acc + totalPrice;
+        }, 0);
+        const { discountedPrice, giftCertificateNewValue, giftCertificateChargedValue } =
+          getOrderDiscountedPrice({
+            totalPrice,
+            giftCertificateDiscount: noNaN(giftCertificate?.value),
+          });
+
+        // update gift certificate
+        if (giftCertificate) {
+          await giftCertificatesCollection.findOneAndUpdate(
+            {
+              _id: giftCertificate._id,
+            },
+            {
+              $set: {
+                value: giftCertificateNewValue,
+              },
+              $push: {
+                log: {
+                  orderId,
+                  value: giftCertificateChargedValue,
+                },
+              },
+            },
+          );
+        }
+
+        const order: OrderModel = {
+          _id: orderId,
+          orderId: uniqid.time(),
+          companySiteItemId: await getOrderNextItemId(companySiteSlug),
+          itemId: await getNextItemId(COL_ORDERS),
           statusId: initialStatus._id,
-          itemId,
-          price,
-          amount,
-          totalPrice,
-          finalPrice: price,
-          slug: product.slug,
-          originalName: product.originalName,
-          nameI18n: product.nameI18n,
           customerId: user._id,
-          productId: product._id,
-          shopProductId: shopProduct._id,
-          shopId: shop._id,
+          companySiteSlug,
+          totalPrice: totalPrice,
+          discountedPrice,
+          comment: input.comment,
+          productIds: castedOrderProducts.map(({ productId }) => {
+            return productId;
+          }),
+          shopProductIds: castedOrderProducts.map(({ shopProductId }) => {
+            return shopProductId;
+          }),
+          shopId,
+          shopItemId: shop.itemId,
           companyId: company._id,
-          orderId: existingOrder._id,
-          barcode: shopProduct.barcode,
+          companyItemId: company.itemId,
           allowDelivery,
+          reservationDate: input.reservationDate ? new Date(input.reservationDate) : null,
+          deliveryVariant: allowDelivery
+            ? shopConfig.deliveryVariant
+            : ORDER_DELIVERY_VARIANT_PICKUP,
+          paymentVariant: allowDelivery ? shopConfig.paymentVariant : ORDER_PAYMENT_VARIANT_RECEIPT,
+          deliveryInfo:
+            allowDelivery && shopConfig.deliveryInfo
+              ? {
+                  ...shopConfig.deliveryInfo,
+                  recipientPhone: shopConfig.deliveryInfo.recipientPhone
+                    ? phoneToRaw(shopConfig.deliveryInfo.recipientPhone)
+                    : null,
+                }
+              : null,
+          giftCertificateId: giftCertificate?._id,
+          giftCertificateChargedValue,
           createdAt: new Date(),
           updatedAt: new Date(),
-        });
-      }
-
-      // Return error if not all products are transformed for order
-      if (castedOrderProducts.length !== cartProducts.length) {
-        payload = {
-          success: false,
-          message: await getApiMessage('orders.makeAnOrder.productsNotFound'),
         };
-        await session.abortTransaction();
-        return;
-      }
-      const createdOrderProductsResult = await orderProductsCollection.insertMany(
-        castedOrderProducts,
-      );
-      if (!createdOrderProductsResult.acknowledged) {
-        payload = {
-          success: false,
-          message: await getApiMessage('orders.makeAnOrder.error'),
-        };
-        await session.abortTransaction();
-        return;
-      }
+        ordersInCart.push(order);
 
-      // Create order customer and order log for each order in cart
-      for await (const order of ordersInCart) {
+        // send order notifications
+        const notificationConfig = {
+          customer: user,
+          orderItemId: order.orderId,
+          companyId: order.companyId,
+          companySiteSlug: order.companySiteSlug,
+          orderObjectId: order._id,
+          citySlug: city,
+          locale,
+        };
+        await sendOrderCreatedEmail(notificationConfig);
+        await sendOrderCreatedSms(notificationConfig);
+
         // create order customer
         const customer: OrderCustomerModel = {
           _id: new ObjectId(),
@@ -406,6 +439,9 @@ export async function makeAnOrder({
           createdAt: new Date(),
         };
         await orderLogsCollection.insertOne(orderLog);
+
+        // create order products
+        await orderProductsCollection.insertMany(castedOrderProducts);
       }
 
       // Insert orders
@@ -440,21 +476,6 @@ export async function makeAnOrder({
         };
         await session.abortTransaction();
         return;
-      }
-
-      // send order notifications
-      for await (const order of ordersInCart) {
-        const notificationConfig = {
-          customer: user,
-          orderItemId: order.orderId,
-          companyId: order.companyId,
-          companySiteSlug: order.companySiteSlug,
-          orderObjectId: order._id,
-          citySlug: city,
-          locale,
-        };
-        await sendOrderCreatedEmail(notificationConfig);
-        await sendOrderCreatedSms(notificationConfig);
       }
 
       // success

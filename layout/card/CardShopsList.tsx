@@ -17,10 +17,9 @@ import * as React from 'react';
 
 interface CardShopInterface {
   shop: ShopInterface;
-  testId: string | number;
 }
 
-const CardShop: React.FC<CardShopInterface> = ({ shop, testId }) => {
+const CardShop: React.FC<CardShopInterface> = ({ shop }) => {
   const { addProductToCart, getShopProductInCartCount } = useSiteContext();
   const { showModal } = useAppContext();
   const [amount, setAmount] = React.useState<number>(1);
@@ -129,8 +128,8 @@ const CardShop: React.FC<CardShopInterface> = ({ shop, testId }) => {
                 <div className='col-span-3'>
                   <SpinnerInput
                     className=''
-                    plusTestId={`card-shops-${testId}-plus`}
-                    minusTestId={`card-shops-${testId}-minus`}
+                    plusTestId={`card-shops-${slug}-plus`}
+                    minusTestId={`card-shops-${slug}-minus`}
                     testId={`card-shops-${slug}-input`}
                     onChange={(e) => {
                       setAmount(noNaN(e.target.value));
@@ -146,7 +145,7 @@ const CardShop: React.FC<CardShopInterface> = ({ shop, testId }) => {
                     short
                     className='w-full'
                     disabled={disabled}
-                    testId={`card-shops-${testId}-add-to-cart`}
+                    testId={`card-shops-${slug}-add-to-cart`}
                     onClick={() => {
                       addProductToCart({
                         amount,
@@ -196,8 +195,8 @@ const CardShopsList: React.FC<CardShopsListInterface> = ({ cardShops }) => {
           </div>
         ) : (
           <div className='grid gap-8' data-cy={`card-shops-list`}>
-            {cardShops.map((shop, index) => {
-              return <CardShop testId={`1-${index}`} key={`${shop._id}`} shop={shop} />;
+            {cardShops.map((shop) => {
+              return <CardShop key={`${shop._id}`} shop={shop} />;
             })}
           </div>
         )}

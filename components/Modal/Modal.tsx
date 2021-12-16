@@ -53,9 +53,12 @@ import {
   CREATE_PROMO_MODAL,
   SHOP_PRODUCT_SUPPLIER_MODAL,
   ORDER_DELIVERY_ADDRESS_MODAL,
+  GIFT_CERTIFICATE_MODAL,
+  INFO_MODAL,
 } from 'config/modalVariants';
 
 const AdultModal = dynamic(() => import('components/Modal/AdultModal'));
+const InfoModal = dynamic(() => import('components/Modal/InfoModal'));
 const BarcodeIntersectsModal = dynamic(() => import('components/Modal/BarcodeIntersectsModal'));
 const ShopProductBarcodeIntersectsModal = dynamic(
   () => import('components/Modal/ShopProductBarcodeIntersectsModal'),
@@ -112,6 +115,7 @@ const OrderStatusModal = dynamic(() => import('components/Modal/OrderStatusModal
 const UserCategoryModal = dynamic(() => import('components/Modal/UserCategoryModal'));
 const SetUserCategoryModal = dynamic(() => import('components/Modal/SetUserCategoryModal'));
 const CreatePromoModal = dynamic(() => import('components/Modal/CreatePromoModal'));
+const GiftCertificateModal = dynamic(() => import('components/Modal/GiftCertificateModal'));
 const OrderDeliveryAddressModal = dynamic(
   () => import('components/Modal/OrderDeliveryAddressModal'),
 );
@@ -127,6 +131,8 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
       <div className='relative flex items-center justify-center z-20 w-full min-h-full p-inner-block-horizontal-padding bg-gray-700 bg-opacity-50'>
         <React.Suspense fallback={<Spinner />}>
           {modalType === ADULT_MODAL && <AdultModal {...modalProps} />}
+
+          {modalType === INFO_MODAL && <InfoModal {...modalProps} />}
 
           {modalType === CONFIRM_MODAL && <ConfirmModal {...modalProps} />}
 
@@ -225,6 +231,8 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
           {modalType === USER_CATEGORY_MODAL && <UserCategoryModal {...modalProps} />}
 
           {modalType === SET_USER_CATEGORY_MODAL && <SetUserCategoryModal {...modalProps} />}
+
+          {modalType === GIFT_CERTIFICATE_MODAL && <GiftCertificateModal {...modalProps} />}
 
           {modalType === CATALOGUE_ADDITIONAL_OPTIONS_MODAL && (
             <CatalogueAdditionalOptionsModal {...modalProps} />

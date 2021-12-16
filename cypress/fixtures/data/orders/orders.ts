@@ -22,6 +22,8 @@ const orders: OrderModel[] = [
     comment: 'Order comment',
     statusId: getObjectId(`orderStatus new`),
     allowDelivery: false,
+    totalPrice: 0,
+    discountedPrice: 0,
     reservationDate: new Date(),
     deliveryVariant: ORDER_DELIVERY_VARIANT_PICKUP,
     paymentVariant: ORDER_PAYMENT_VARIANT_RECEIPT,

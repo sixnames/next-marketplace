@@ -1,7 +1,8 @@
 import Button from 'components/button/Button';
 import { CartProduct, CartShoplessProduct } from 'components/cart/CartProduct';
-import CartAside from 'components/CartAside';
+import CartAside, { UseCartAsideDiscountsValuesInterface } from 'components/CartAside';
 import FormikInput from 'components/FormElements/Input/FormikInput';
+import InputLine from 'components/FormElements/Input/InputLine';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import FormikTextarea from 'components/FormElements/Textarea/FormikTextarea';
 import { MapModalInterface } from 'components/Modal/MapModal';
@@ -23,6 +24,7 @@ import { MakeAnOrderShopConfigInterface } from 'db/dao/order/makeAnOrder';
 import { OrderDeliveryInfoModel } from 'db/dbModels';
 import { CartInterface, CartProductInterface, ShopInterface } from 'db/uiInterfaces';
 import { Form, Formik, useFormikContext } from 'formik';
+import { useCheckGiftCertificateMutation } from 'hooks/mutations/useGiftCertificateMutations';
 import { useShopMarker } from 'hooks/useShopMarker';
 import useValidationSchema from 'hooks/useValidationSchema';
 import LayoutCard from 'layout/LayoutCard';
@@ -114,6 +116,7 @@ export const CartDeliveryFields: React.FC<CartDeliveryFieldsInterface> = ({ inde
 
 interface DefaultCartShopInterface
   extends MakeAnOrderShopConfigInterface,
+    UseCartAsideDiscountsValuesInterface,
     Omit<ShopInterface, '_id'> {
   cartProducts: CartProductInterface[];
 }
@@ -134,8 +137,15 @@ const DefaultCartShop: React.FC<DefaultCartShopUIInterface> = ({
   index,
   allowDelivery,
 }) => {
+  const sessionUser = useSiteUserContext();
   const marker = useShopMarker(shop);
   const { showModal } = useAppContext();
+  const { values, setFieldValue } = useFormikContext();
+  const giftCertificateFieldName = `shopConfigs[${index}].giftCertificateCode`;
+  const giftCertificateValueFieldName = `shopConfigs[${index}].giftCertificateDiscount`;
+  const giftCertificateCode = get(values, giftCertificateFieldName);
+
+  const [checkGiftCertificateMutation] = useCheckGiftCertificateMutation();
 
   return (
     <LayoutCard key={`${shop._id}`}>
@@ -166,6 +176,69 @@ const DefaultCartShop: React.FC<DefaultCartShopUIInterface> = ({
         >
           {shop.address.readableAddress}
           <div className='text-theme'>Показать на карте</div>
+        </div>
+
+        <div className='grid lg:grid-cols-2 gap-4 mt-6'>
+          <div>
+            <InputLine
+              low
+              labelTag={'div'}
+              label={'Подарочный сертификат'}
+              lineContentClass='flex flex-col sm:flex-row gap-4 sm:items-end'
+            >
+              <div className='flex-grow'>
+                <FormikInput
+                  testId={`gift-certificate-input-${shop.slug}`}
+                  name={giftCertificateFieldName}
+                  low
+                />
+              </div>
+              <Button
+                frameClassName='w-auto'
+                theme={'secondary'}
+                testId={`gift-certificate-confirm-${shop.slug}`}
+                onClick={() => {
+                  checkGiftCertificateMutation({
+                    userId: sessionUser ? `${sessionUser.me._id}` : null,
+                    code: giftCertificateCode,
+                    companyId: `${shop.companyId}`,
+                  })
+                    .then((response) => {
+                      if (!response || !response.success || !response.payload) {
+                        setFieldValue(giftCertificateFieldName, '');
+                        return;
+                      }
+                      setFieldValue(giftCertificateValueFieldName, response.payload.value);
+                    })
+                    .catch(console.log);
+                }}
+              >
+                Применить
+              </Button>
+            </InputLine>
+          </div>
+
+          <div>
+            <InputLine
+              low
+              labelTag={'div'}
+              label={'Промокод'}
+              lineContentClass='flex flex-col sm:flex-row gap-4 sm:items-end'
+            >
+              <div className='flex-grow'>
+                <FormikInput name={`shopConfigs[${index}].promoCode`} low />
+              </div>
+              <Button
+                frameClassName='w-auto'
+                theme={'secondary'}
+                onClick={() => {
+                  console.log('Применить');
+                }}
+              >
+                Применить
+              </Button>
+            </InputLine>
+          </div>
         </div>
 
         {allowDelivery ? <CartDeliveryFields inShop index={index} /> : null}
@@ -250,6 +323,8 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
       const newShopConfig: DefaultCartShopInterface = {
         ...shop,
         _id: `${shop._id}`,
+        giftCertificateDiscount: 0,
+        promoCodeDiscount: 0,
         cartProducts: [cartProduct],
         deliveryVariant: ORDER_DELIVERY_VARIANT_COURIER,
         paymentVariant: ORDER_PAYMENT_VARIANT_RECEIPT,
@@ -314,6 +389,15 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
         >
           {({ values }) => {
             const { cartDeliveryProducts, totalDeliveryPrice, shopConfigs } = values;
+            const giftCertificateDiscount = shopConfigs.reduce(
+              (acc: number, { giftCertificateDiscount }) => {
+                return acc + giftCertificateDiscount;
+              },
+              0,
+            );
+            const promoCodeDiscount = shopConfigs.reduce((acc: number, { promoCodeDiscount }) => {
+              return acc + promoCodeDiscount;
+            }, 0);
 
             return (
               <Form>
@@ -408,12 +492,16 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
 
                   {/*cart aside*/}
                   <div className='md:col-span-3 lg:col-span-5'>
-                    <CartAside
-                      buyButtonText={'Оформить заказ'}
-                      productsCount={cart.cartDeliveryProducts.length}
-                      totalPrice={totalDeliveryPrice}
-                      isWithShopless={cart.isWithShoplessDelivery}
-                    />
+                    <div className='sticky top-16 lef-0'>
+                      <CartAside
+                        buyButtonText={'Оформить заказ'}
+                        productsCount={cart.cartDeliveryProducts.length}
+                        totalPrice={totalDeliveryPrice}
+                        isWithShopless={cart.isWithShoplessDelivery}
+                        giftCertificateDiscount={giftCertificateDiscount}
+                        promoCodeDiscount={promoCodeDiscount}
+                      />
+                    </div>
                   </div>
                 </div>
               </Form>
@@ -445,6 +533,15 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
         >
           {({ values }) => {
             const { cartBookingProducts, totalBookingPrice, shopConfigs } = values;
+            const giftCertificateDiscount = shopConfigs.reduce(
+              (acc: number, { giftCertificateDiscount }) => {
+                return acc + giftCertificateDiscount;
+              },
+              0,
+            );
+            const promoCodeDiscount = shopConfigs.reduce((acc: number, { promoCodeDiscount }) => {
+              return acc + promoCodeDiscount;
+            }, 0);
 
             return (
               <Form>
@@ -547,13 +644,17 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
 
                   {/*cart aside*/}
                   <div className='md:col-span-3 lg:col-span-5'>
-                    <CartAside
-                      isBooking
-                      buyButtonText={configs.buyButtonText}
-                      productsCount={cart.cartBookingProducts.length}
-                      totalPrice={totalBookingPrice}
-                      isWithShopless={cart.isWithShoplessBooking}
-                    />
+                    <div className='sticky top-16 lef-0'>
+                      <CartAside
+                        isBooking
+                        buyButtonText={configs.buyButtonText}
+                        productsCount={cart.cartBookingProducts.length}
+                        totalPrice={totalBookingPrice}
+                        isWithShopless={cart.isWithShoplessBooking}
+                        promoCodeDiscount={promoCodeDiscount}
+                        giftCertificateDiscount={giftCertificateDiscount}
+                      />
+                    </div>
                   </div>
                 </div>
               </Form>

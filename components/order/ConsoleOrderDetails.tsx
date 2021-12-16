@@ -279,6 +279,7 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
   const {
     createdAt,
     totalPrice,
+    discountedPrice,
     status,
     products,
     shop,
@@ -288,6 +289,8 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
     paymentVariant,
     deliveryInfo,
     companySiteSlug,
+    giftCertificate,
+    giftCertificateChargedValue,
   } = state;
 
   const [updateOrderMutation] = useUpdateOrder();
@@ -444,6 +447,33 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
                         value={totalPrice}
                       />
                     </div>
+
+                    {totalPrice > discountedPrice ? (
+                      <div>
+                        <div className='flex flex-wrap gap-2 items-baseline'>
+                          <div className='text-secondary-text'>Со скидкой:</div>
+                          <Currency
+                            className='text-2xl'
+                            valueClassName='font-medium'
+                            value={discountedPrice}
+                          />
+                        </div>
+                      </div>
+                    ) : null}
+
+                    {giftCertificate ? (
+                      <div className='mt-4'>
+                        <div className='text-secondary-text mb-1'>
+                          Применён подарочный сертификат
+                        </div>
+                        <div>
+                          {giftCertificate.name ? `${giftCertificate.name}: ` : 'С кодом: '}
+                          {giftCertificate.code}
+                          {' на сумму '}
+                          <Currency value={giftCertificateChargedValue} />
+                        </div>
+                      </div>
+                    ) : null}
                   </div>
                 </div>
               </div>

@@ -1,10 +1,4 @@
-import { RoleRuleSlugType } from 'lib/roleUtils';
-import { NextApiRequest, NextApiResponse } from 'next';
-import { getSession } from 'next-auth/client';
-import { CartModel, RoleModel, RoleRuleModel, UserModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
 import {
-  CART_COOKIE_KEY,
   CITY_COOKIE_KEY,
   COMPANY_SLUG_COOKIE_KEY,
   COOKIE_CURRENCY,
@@ -17,15 +11,19 @@ import {
   ROLE_SLUG_GUEST,
   SECONDARY_LOCALE,
 } from 'config/common';
+import { COL_ROLE_RULES, COL_ROLES, COL_USERS } from 'db/collectionNames';
+import { RoleModel, RoleRuleModel, UserModel } from 'db/dbModels';
+import { getDatabase } from 'db/mongodb';
+import { getApiMessageValue, getValidationMessages } from 'lib/apiMessageUtils';
+import { getCityFieldData, getI18nLocaleValue } from 'lib/i18n';
+import { RoleRuleSlugType } from 'lib/roleUtils';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { getSession } from 'next-auth/client';
 import nookies from 'nookies';
 import { NexusContext } from 'types/apiContextTypes';
-import { COL_CARTS, COL_ROLE_RULES, COL_ROLES, COL_USERS } from 'db/collectionNames';
-import { getCityFieldData, getI18nLocaleValue } from 'lib/i18n';
 import { MessageSlug } from 'types/messageSlugTypes';
-import { getApiMessageValue, getValidationMessages } from 'lib/apiMessageUtils';
-import { ObjectId } from 'mongodb';
-import { ObjectSchema, ArraySchema } from 'yup';
 import { ValidationSchemaArgsInterface } from 'types/validataionTypes';
+import { ArraySchema, ObjectSchema } from 'yup';
 
 export const getSessionUser = async (context: NexusContext): Promise<UserModel | null> => {
   // Get session user
@@ -164,66 +162,6 @@ export const getOperationPermission = async ({
     message: '',
     user,
   };
-};
-
-export const getSessionCart = async (context: NexusContext): Promise<CartModel> => {
-  // Get session user
-  const user = await getSessionUser(context);
-  const userCartId = user ? user.cartId : null;
-  const { db } = await getDatabase();
-  const cartsCollection = db.collection<CartModel>(COL_CARTS);
-  const usersCollection = db.collection<UserModel>(COL_USERS);
-
-  // Get cart id from cookies or session user
-  const cookies = nookies.get(context);
-  const cartId = userCartId || cookies[CART_COOKIE_KEY];
-
-  // Find exiting cart
-  const cart = cartId ? await cartsCollection.findOne({ _id: new ObjectId(cartId) }) : null;
-
-  // If cart not exist
-  if (!cartId || !cart) {
-    const newCartResult = await cartsCollection.insertOne({
-      cartDeliveryProducts: [],
-      cartBookingProducts: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
-    const newCart = await cartsCollection.findOne({
-      _id: newCartResult.insertedId,
-    });
-    if (!newCartResult.acknowledged || !newCart) {
-      throw Error('Cart creation error');
-    }
-
-    // Set cart _id to cookies
-    nookies.set(context, CART_COOKIE_KEY, newCartResult.insertedId.toHexString(), {
-      httpOnly: true,
-      path: '/',
-      sameSite: 'strict',
-    });
-
-    // Update user cartId field
-    if (user) {
-      await usersCollection.findOneAndUpdate(
-        { _id: user._id },
-        {
-          $set: {
-            cartId: newCartResult.insertedId,
-          },
-        },
-        { returnDocument: 'after' },
-      );
-
-      if (!newCartResult) {
-        throw Error('User cart creation error');
-      }
-    }
-
-    return newCart;
-  }
-
-  return cart;
 };
 
 // Resolver validation

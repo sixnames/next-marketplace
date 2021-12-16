@@ -1,5 +1,6 @@
 import { SORT_ASC } from 'config/common';
 import {
+  COL_GIFT_CERTIFICATES,
   COL_ORDER_CUSTOMERS,
   COL_ORDER_PRODUCTS,
   COL_ORDER_STATUSES,
@@ -102,6 +103,14 @@ export async function getConsoleOrder({
       },
       {
         $lookup: {
+          from: COL_GIFT_CERTIFICATES,
+          as: 'giftCertificate',
+          localField: 'giftCertificateId',
+          foreignField: '_id',
+        },
+      },
+      {
+        $lookup: {
           from: COL_SHOPS,
           as: 'shop',
           let: { shopId: '$shopId' },
@@ -126,6 +135,9 @@ export async function getConsoleOrder({
           },
           shop: {
             $arrayElemAt: ['$shop', 0],
+          },
+          giftCertificate: {
+            $arrayElemAt: ['$giftCertificate', 0],
           },
         },
       },
@@ -254,6 +266,13 @@ export async function getConsoleOrder({
             raw: phoneToRaw(initialOrder.customer.phone),
             readable: phoneToReadable(initialOrder.customer.phone),
           },
+        }
+      : null,
+    giftCertificate: initialOrder.giftCertificate
+      ? {
+          ...initialOrder.giftCertificate,
+          name: getFieldStringLocale(initialOrder.giftCertificate.nameI18n, locale),
+          description: getFieldStringLocale(initialOrder.giftCertificate.descriptionI18n, locale),
         }
       : null,
   };

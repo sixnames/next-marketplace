@@ -1,3 +1,5 @@
+import ContentItemControls from 'components/button/ContentItemControls';
+import Currency from 'components/Currency';
 import FormattedDateTime from 'components/FormattedDateTime';
 import Inner from 'components/Inner';
 import Link from 'components/Link/Link';
@@ -6,7 +8,7 @@ import LinkPhone from 'components/Link/LinkPhone';
 import Pager from 'components/Pager';
 import Table, { TableColumn } from 'components/Table';
 import Title from 'components/Title';
-import { ROUTE_CONSOLE } from 'config/common';
+import { ROUTE_CMS, ROUTE_CONSOLE } from 'config/common';
 import { getConsoleOrders, GetConsoleOrdersPayloadType } from 'db/dao/order/getConsoleOrders';
 import { OrderInterface } from 'db/uiInterfaces';
 import AppContentWrapper from 'layout/AppContentWrapper';
@@ -81,6 +83,37 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ data }) => {
       headTitle: 'Email',
       render: ({ cellData }) => {
         return <LinkEmail value={cellData} />;
+      },
+    },
+    {
+      accessor: 'totalPrice',
+      headTitle: 'Сумма',
+      render: ({ cellData }) => {
+        return <Currency value={cellData} />;
+      },
+    },
+    {
+      accessor: 'discountedPrice',
+      headTitle: 'Со скидкой',
+      render: ({ cellData }) => {
+        return <Currency value={cellData} />;
+      },
+    },
+    {
+      render: ({ dataItem }) => {
+        return (
+          <div className='flex justify-end'>
+            <ContentItemControls
+              testId={dataItem.itemId}
+              updateTitle={'Детали заказа'}
+              updateHandler={() => {
+                router.push(`${ROUTE_CMS}/orders/${dataItem._id}`).catch((e) => {
+                  console.log(e);
+                });
+              }}
+            />
+          </div>
+        );
       },
     },
   ];

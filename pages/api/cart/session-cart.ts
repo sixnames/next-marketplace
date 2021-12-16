@@ -28,7 +28,7 @@ async function sessionCartData(req: NextApiRequest, res: NextApiResponse) {
       });
     }
 
-    res.status(200).send(sessionCart);
+    res.status(200).send({ sessionCart });
   } catch (e) {
     console.log(e);
     res.status(500).send({

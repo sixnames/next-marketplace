@@ -125,9 +125,13 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                   {/*brand preview*/}
                   {brand && brand.logo ? (
                     <div
-                      className='flex items-center mb-6 gap-3 relative cursor-pointer group'
+                      className={`flex items-center mb-6 gap-3 relative ${
+                        brand.mainUrl ? 'cursor-pointer group' : ''
+                      }`}
                       onClick={() => {
-                        window.open(`${brand.mainUrl}`, '_blank');
+                        if (brand.mainUrl) {
+                          window.open(`${brand.mainUrl}`, '_blank');
+                        }
                       }}
                     >
                       <WpImage

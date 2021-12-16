@@ -44,6 +44,11 @@ const CmsCompanyLayout: React.FC<CmsCompanyLayoutInterface> = ({
         path: `${ROUTE_CMS}/companies/${company?._id}/promo`,
       },
       {
+        name: 'Подарочные сертификаты',
+        testId: 'gift-certificates',
+        path: `${ROUTE_CMS}/companies/${company?._id}/gift-certificates/${company?._id}`,
+      },
+      {
         name: 'Рубрикатор',
         testId: 'company-rubrics',
         path: `${ROUTE_CMS}/companies/${company?._id}/rubrics`,

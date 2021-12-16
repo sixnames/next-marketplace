@@ -160,6 +160,11 @@ export type RoleRuleSlugType =
   | 'updatePromo'
   | 'deletePromo'
 
+  // Gift certificate
+  | 'createGiftCertificate'
+  | 'updateGiftCertificate'
+  | 'deleteGiftCertificate'
+
   // Promo product
   | 'addPromoProduct'
   | 'deletePromoProduct'
@@ -1018,6 +1023,32 @@ const baseRoleRules: RoleRuleBaseExtended[] = [
     descriptionI18n: {},
     nameI18n: {
       ru: 'Удаление акции',
+    },
+  },
+
+  // Gift certificate
+  {
+    allow: false,
+    slug: 'createGiftCertificate',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Создание подарочного сертификата',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateGiftCertificate',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление подарочного сертификата',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deleteGiftCertificate',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление подарочного сертификата',
     },
   },
 

@@ -200,6 +200,12 @@ const messagesGroups: MessagesGroupModel[] = [
       ru: 'SEO контент',
     },
   },
+  {
+    _id: getObjectId('messagesGroups Подарочный сертификат'),
+    nameI18n: {
+      ru: 'Подарочный сертификат',
+    },
+  },
 ];
 
 export = messagesGroups;

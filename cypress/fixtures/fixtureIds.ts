@@ -3,10 +3,18 @@ export const fixtureIds = {
   companyA: '8864ca67d728c964cc83186a',
   companyB: 'df129750c1931a2cee0eb789',
 
+  // gift certificates
+  companyAGiftCertificate: 'code-a',
+  companyAGiftCertificateNoUser: 'no-user',
+  companyBGiftCertificate: 'code-b',
+
   // shops
   shopA: 'bbc3ef381b3ace0baedc8459',
   shopB: '7eaef2134e8f5f1f5af22a37',
   shopC: '6905de65e5567a92a5dff7a7',
+  shopASlug: 'shop_a',
+  shopBSlug: 'shop_b',
+  shopCSlug: 'shop_c',
 
   // rubrics
   rubricWineSlug: 'vino',

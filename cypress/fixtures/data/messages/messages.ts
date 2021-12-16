@@ -35,6 +35,7 @@ import { blogPostsMessages } from '../../apiMessages/blogPostsMessages';
 import { userCategoryMessages } from '../../apiMessages/userCategoryMessages';
 import { promoMessages } from '../../apiMessages/promoMessages';
 import { seoContentMessages } from '../../apiMessages/seoContentMessages';
+import { giftCertificateMessages } from '../../apiMessages/giftCertificateMessages';
 
 interface GenerateMessagesForGroupInterface {
   initialMessages: MessageBaseInterface[];
@@ -192,6 +193,10 @@ const config: GenerateMessagesForGroupInterface[] = [
   {
     initialMessages: seoContentMessages,
     groupName: 'SEO контент',
+  },
+  {
+    initialMessages: giftCertificateMessages,
+    groupName: 'Подарочный сертификат',
   },
 ];
 

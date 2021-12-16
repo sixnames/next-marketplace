@@ -32,6 +32,9 @@ import {
   SeoContentModel,
   BlackListProductModel,
   PromoCodeModel,
+  GiftCertificateModel,
+  UserPaybackLogModel,
+  UserCashbackLogModel,
 } from '../../../db/dbModels';
 import {
   COL_ATTRIBUTES,
@@ -45,6 +48,7 @@ import {
   COL_CITIES,
   COL_COMPANIES,
   COL_CONFIGS,
+  COL_GIFT_CERTIFICATES,
   COL_MANUFACTURERS,
   COL_OPTIONS,
   COL_ORDER_CUSTOMERS,
@@ -65,7 +69,9 @@ import {
   COL_SHOPS,
   COL_SUPPLIER_PRODUCTS,
   COL_SUPPLIERS,
+  COL_USER_CASHBACK_LOGS,
   COL_USER_CATEGORIES,
+  COL_USER_PAYBACK_LOGS,
   COL_USERS,
 } from '../../../db/collectionNames';
 import { Db, MongoClient } from 'mongodb';
@@ -271,6 +277,34 @@ export async function updateIndexes(db: Db) {
   const blogAttributesCollection = db.collection<BlogAttributeModel>(COL_BLOG_ATTRIBUTES);
   await blogAttributesCollection.createIndex({ slug: 1 }, { unique: true });
 
+  // User Cashback Log
+  await createCollectionIfNotExist(COL_USER_PAYBACK_LOGS);
+  const userCashbackLogsCollection = db.collection<UserCashbackLogModel>(COL_USER_CASHBACK_LOGS);
+  await userCashbackLogsCollection.createIndex({ userId: 1, createdAt: 1 });
+  await userCashbackLogsCollection.createIndex({ companyId: 1, userId: 1, createdAt: 1 });
+  await userCashbackLogsCollection.createIndex({ companyId: 1, createdAt: 1 });
+  await userCashbackLogsCollection.createIndex({ orderId: 1, createdAt: 1 });
+  await userCashbackLogsCollection.createIndex({ creatorId: 1, createdAt: 1 });
+
+  // User Payback Log
+  await createCollectionIfNotExist(COL_USER_PAYBACK_LOGS);
+  const userPaybackLogsCollection = db.collection<UserPaybackLogModel>(COL_USER_PAYBACK_LOGS);
+  await userPaybackLogsCollection.createIndex({ userId: 1, createdAt: 1 });
+  await userPaybackLogsCollection.createIndex({ companyId: 1, userId: 1, createdAt: 1 });
+  await userPaybackLogsCollection.createIndex({ companyId: 1, createdAt: 1 });
+  await userPaybackLogsCollection.createIndex({ orderId: 1, createdAt: 1 });
+  await userPaybackLogsCollection.createIndex({ creatorId: 1, createdAt: 1 });
+
+  // Gift Certificate
+  await createCollectionIfNotExist(COL_GIFT_CERTIFICATES);
+  const giftCertificatesCollection = db.collection<GiftCertificateModel>(COL_GIFT_CERTIFICATES);
+  await giftCertificatesCollection.createIndex({ userId: 1, createdAt: 1 });
+  await giftCertificatesCollection.createIndex({ companyId: 1, userId: 1, createdAt: 1 });
+  await giftCertificatesCollection.createIndex({ companyId: 1, createdAt: 1 });
+  await giftCertificatesCollection.createIndex({ companySlug: 1, userId: 1, createdAt: 1 });
+  await giftCertificatesCollection.createIndex({ companySlug: 1, createdAt: 1 });
+  await giftCertificatesCollection.createIndex({ code: 1, companyId: 1 }, { unique: true });
+
   // Promo
   await createCollectionIfNotExist(COL_PROMO);
   const promoCollection = db.collection<PromoModel>(COL_PROMO);
@@ -285,6 +319,7 @@ export async function updateIndexes(db: Db) {
   await promoCodesCollection.createIndex({ companySlug: 1 });
   await promoCodesCollection.createIndex({ promoId: 1 });
   await promoCodesCollection.createIndex({ promoterId: 1 });
+  await promoCodesCollection.createIndex({ code: 1, companyId: 1 }, { unique: true });
 
   // Promo products
   await createCollectionIfNotExist(COL_PROMO_PRODUCTS);

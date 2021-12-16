@@ -229,9 +229,6 @@ export const getServerSideProps = async (
     orders: (userResult.orders || []).map((order) => {
       return {
         ...order,
-        totalPrice: order.products?.reduce((acc: number, { totalPrice }) => {
-          return acc + totalPrice;
-        }, 0),
         status: order.status
           ? {
               ...order.status,

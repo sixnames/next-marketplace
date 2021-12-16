@@ -12,11 +12,11 @@ describe('Cart', () => {
 
     // Add product #1
     cy.getByCy(`card`).should('exist');
-    cy.getByCy(`card-shops-1-0-add-to-cart`).click();
+    cy.getByCy(`card-shops-${fixtureIds.shopASlug}-add-to-cart`).click();
 
     // Add same product
     cy.getByCy(`cart-modal-close`).click();
-    cy.getByCy(`card-shops-1-0-add-to-cart`).click();
+    cy.getByCy(`card-shops-${fixtureIds.shopASlug}-add-to-cart`).click();
     cy.getByCy(`cart-modal-counter`).should('contain', '1');
 
     // Add second product
@@ -25,7 +25,7 @@ describe('Cart', () => {
     cy.getByCy('catalogue').should('exist');
     cy.visitLinkHref('catalogue-item-1-name-grid');
     cy.getByCy(`card`).should('exist');
-    cy.getByCy(`card-shops-1-0-add-to-cart`).click();
+    cy.getByCy(`card-shops-${fixtureIds.shopASlug}-add-to-cart`).click();
     cy.getByCy(`cart-modal-counter`).should('contain', '2');
 
     // Add shopless product from catalogue

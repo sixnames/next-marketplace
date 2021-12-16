@@ -603,6 +603,8 @@ export interface OrderModel extends TimestampModel, BaseModel {
   companySiteItemId: string;
   productIds: ObjectIdModel[];
   shopProductIds: ObjectIdModel[];
+  totalPrice: number;
+  discountedPrice: number;
   shopId: ObjectIdModel;
   shopItemId: string;
   companyId: ObjectIdModel;
@@ -615,6 +617,8 @@ export interface OrderModel extends TimestampModel, BaseModel {
   isCanceled?: boolean;
   requests?: OrderRequestModel[] | null;
   promoId?: ObjectIdModel;
+  giftCertificateId?: ObjectIdModel | null;
+  giftCertificateChargedValue?: number | null;
 }
 
 export interface ProductConnectionItemModel {
@@ -943,6 +947,24 @@ export interface UserCashbackLogModel extends TimestampModel {
 
 export interface UserPaybackLogModel extends UserCashbackLogModel {}
 
+export interface GiftCertificateLogModel {
+  orderId: ObjectIdModel;
+  value: number;
+}
+
+export interface GiftCertificateModel extends TimestampModel {
+  _id: ObjectIdModel;
+  code: string;
+  userId?: ObjectIdModel | null;
+  companyId: ObjectIdModel;
+  companySlug: string;
+  initialValue: number;
+  value: number;
+  nameI18n?: TranslationModel;
+  descriptionI18n?: TranslationModel;
+  log: GiftCertificateLogModel[];
+}
+
 export interface PromoBaseInterface {
   companyId: ObjectIdModel;
   companySlug: string;
@@ -1132,6 +1154,10 @@ export type SupplierPayloadModel = PayloadType<SupplierModel>;
 export type UserCategoryPayloadModel = PayloadType<UserCategoryModel>;
 export type UserPayloadModel = PayloadType<UserModel>;
 export type SeoContentPayloadModel = PayloadType<SeoContentModel>;
+
+export interface GiftCertificatePayloadModel extends PayloadType<GiftCertificateModel> {
+  notAuth?: boolean;
+}
 
 export interface ProductPayloadModel extends PayloadType<ProductModel> {
   barcodeDoubles?: BarcodeDoublesInterface[] | null;

@@ -1,12 +1,18 @@
 import { COL_ORDER_LOGS, COL_ORDER_PRODUCTS, COL_ORDERS } from 'db/collectionNames';
-import { OrderLogDiffModel, OrderLogModel, OrderModel, OrderProductModel } from 'db/dbModels';
+import {
+  ObjectIdModel,
+  OrderLogDiffModel,
+  OrderLogModel,
+  OrderModel,
+  OrderProductModel,
+} from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface, OrderInterface, OrderInterfacePayloadModel } from 'db/uiInterfaces';
 import { detailedDiff } from 'deep-object-diff';
 import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { noNaN } from 'lib/numbers';
 import { getConsoleOrder } from 'lib/orderUtils';
-import { countDiscountedPrice } from 'lib/priceUtils';
+import { countDiscountedPrice, getOrderDiscountedPrice } from 'lib/priceUtils';
 import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { castDbData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
@@ -25,7 +31,6 @@ export async function updateOrder({
   const orderLogsCollection = db.collection<OrderLogModel>(COL_ORDER_LOGS);
   const orderProductsCollection = db.collection<OrderProductModel>(COL_ORDER_PRODUCTS);
   const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
-  // console.log(ordersCollection);
 
   const session = client.startSession();
 
@@ -114,6 +119,8 @@ export async function updateOrder({
           ...prevAddedProductState,
         };
       }
+
+      const updatedOrderProductIds: ObjectIdModel[] = [];
       for await (const index of Object.keys(updatedProducts)) {
         const orderProduct = (order.products || [])[noNaN(index)];
         if (orderProduct) {
@@ -122,7 +129,7 @@ export async function updateOrder({
             price,
             discount: noNaN(customDiscount),
           });
-          await orderProductsCollection.findOneAndUpdate(
+          const updatedShopProductResult = await orderProductsCollection.findOneAndUpdate(
             {
               _id: new ObjectId(orderProduct._id),
             },
@@ -134,7 +141,44 @@ export async function updateOrder({
               },
             },
           );
+          if (updatedShopProductResult.value) {
+            updatedOrderProductIds.push(updatedShopProductResult.value._id);
+          }
         }
+      }
+
+      // update order total price
+      if (updatedOrderProductIds.length > 0) {
+        const updatedOrderProducts = await orderProductsCollection
+          .find({
+            orderId: prevOrder.order._id,
+          })
+          .toArray();
+        const totalPrice = updatedOrderProducts.reduce(
+          (acc: number, { isCanceled, totalPrice }) => {
+            if (isCanceled) {
+              return acc;
+            }
+            return acc + totalPrice;
+          },
+          0,
+        );
+        const { discountedPrice } = getOrderDiscountedPrice({
+          totalPrice,
+          giftCertificateDiscount: noNaN(prevOrder.order.giftCertificateChargedValue),
+        });
+
+        await ordersCollection.findOneAndUpdate(
+          {
+            _id: orderId,
+          },
+          {
+            $set: {
+              totalPrice,
+              discountedPrice,
+            },
+          },
+        );
       }
 
       // update order status

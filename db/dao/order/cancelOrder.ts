@@ -53,7 +53,7 @@ export async function cancelOrder({
         return;
       }
 
-      // Permission
+      // permission
       const { allow, message, user } = await getOperationPermission({
         context,
         slug: 'cancelOrder',
@@ -76,7 +76,7 @@ export async function cancelOrder({
         return;
       }
 
-      // Get order
+      // get order
       const order = await ordersCollection.findOne({
         _id: new ObjectId(input.orderId),
       });
@@ -89,7 +89,7 @@ export async function cancelOrder({
         return;
       }
 
-      // Get order cancel status
+      // get order cancel status
       const orderCancelStatus = await orderStatusesCollection.findOne({
         isCanceled: true,
       });
@@ -102,7 +102,7 @@ export async function cancelOrder({
         return;
       }
 
-      // Create order log
+      // create order log
       const orderLog: OrderLogModel = {
         _id: new ObjectId(),
         orderId: order._id,
@@ -119,7 +119,7 @@ export async function cancelOrder({
       };
       await orderLogsCollection.insertOne(orderLog);
 
-      // Update order
+      // update order
       const updatedOrderResult = await ordersCollection.findOneAndUpdate(
         {
           _id: order._id,
@@ -140,7 +140,7 @@ export async function cancelOrder({
         return;
       }
 
-      // Update order products
+      // update order products
       const updatedOrderProductsResult = await orderProductsCollection.updateMany(
         {
           orderId: order._id,

@@ -115,6 +115,18 @@ const navItems: NavItemModel[] = [
     navGroup: ROUTE_CONSOLE_NAV_GROUP,
   },
   {
+    _id: getObjectId(`${navItemsDefaultSlug} gift-certificates`),
+    nameI18n: {
+      ru: 'Подарочные сертификаты',
+      en: 'Gift certificates',
+    },
+    index: 9,
+    icon: 'filter',
+    slug: 'gift-certificates',
+    path: `/gift-certificates`,
+    navGroup: ROUTE_CONSOLE_NAV_GROUP,
+  },
+  {
     _id: getObjectId(`${navItemsDefaultSlug} console-config`),
     slug: 'console-config',
     nameI18n: {

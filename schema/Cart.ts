@@ -1,3 +1,4 @@
+import { getSessionCart } from 'db/dao/cart/getSessionCart';
 import { OrderInterface } from 'db/uiInterfaces';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import {
@@ -8,7 +9,7 @@ import {
   ProductModel,
   ShopProductModel,
 } from 'db/dbModels';
-import { getRequestParams, getResolverValidationSchema, getSessionCart } from 'lib/sessionHelpers';
+import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
 import { getDatabase } from 'db/mongodb';
 import {
   COL_CARTS,
@@ -131,13 +132,19 @@ export const CartMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const cart = await getSessionCart(context);
+          const cart = await getSessionCart({ context });
           const { db } = await getDatabase();
           const cartsCollection = db.collection<CartModel>(COL_CARTS);
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
           const { input } = args;
           const { shopProductId, amount, productId } = input;
+          if (!cart) {
+            return {
+              success: false,
+              message: await getApiMessage('carts.addProduct.error'),
+            };
+          }
 
           // get product
           const product = await productsCollection.findOne({
@@ -310,12 +317,18 @@ export const CartMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const cart = await getSessionCart(context);
+          const cart = await getSessionCart({ context });
           const { db } = await getDatabase();
           const cartsCollection = db.collection<CartModel>(COL_CARTS);
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
           const { input } = args;
           const { productId, amount } = input;
+          if (!cart) {
+            return {
+              success: false,
+              message: await getApiMessage('carts.addProduct.error'),
+            };
+          }
 
           // get product
           const product = await productsCollection.findOne({
@@ -409,12 +422,18 @@ export const CartMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const cart = await getSessionCart(context);
+          const cart = await getSessionCart({ context });
           const { db } = await getDatabase();
           const cartsCollection = db.collection<CartModel>(COL_CARTS);
           const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
           const { input } = args;
           const { shopProductId, cartProductId } = input;
+          if (!cart) {
+            return {
+              success: false,
+              message: await getApiMessage('carts.updateProduct.error'),
+            };
+          }
 
           // get shop product
           const shopProduct = await shopProductsCollection.findOne({
@@ -487,11 +506,17 @@ export const CartMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const cart = await getSessionCart(context);
+          const cart = await getSessionCart({ context });
           const { db } = await getDatabase();
           const cartsCollection = db.collection<CartModel>(COL_CARTS);
           const { input } = args;
           const { cartProductId, amount } = input;
+          if (!cart) {
+            return {
+              success: false,
+              message: await getApiMessage('carts.updateProduct.error'),
+            };
+          }
 
           // get cart product
           let cartProductsFieldName = 'cartBookingProducts';
@@ -563,11 +588,17 @@ export const CartMutations = extendType({
           await validationSchema.validate(args.input);
 
           const { getApiMessage } = await getRequestParams(context);
-          const cart = await getSessionCart(context);
+          const cart = await getSessionCart({ context });
           const { db } = await getDatabase();
           const cartsCollection = db.collection<CartModel>(COL_CARTS);
           const { input } = args;
           const { cartProductId } = input;
+          if (!cart) {
+            return {
+              success: false,
+              message: await getApiMessage('carts.updateProduct.error'),
+            };
+          }
 
           // get cart product
           let cartProductsFieldName = 'cartBookingProducts';
@@ -628,9 +659,15 @@ export const CartMutations = extendType({
       resolve: async (_root, _args, context): Promise<CartPayloadModel> => {
         try {
           const { getApiMessage } = await getRequestParams(context);
-          const cart = await getSessionCart(context);
+          const cart = await getSessionCart({ context });
           const { db } = await getDatabase();
           const cartsCollection = db.collection<CartModel>(COL_CARTS);
+          if (!cart) {
+            return {
+              success: false,
+              message: await getApiMessage('carts.clear.error'),
+            };
+          }
 
           const updatedCartResult = await cartsCollection.findOneAndUpdate(
             { _id: cart._id },
@@ -681,11 +718,17 @@ export const CartMutations = extendType({
       resolve: async (_root, args, context): Promise<CartPayloadModel> => {
         try {
           const { getApiMessage } = await getRequestParams(context);
-          const cart = await getSessionCart(context);
+          const cart = await getSessionCart({ context });
           const { db } = await getDatabase();
           const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
           const cartsCollection = db.collection<CartModel>(COL_CARTS);
           const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          if (!cart) {
+            return {
+              success: false,
+              message: await getApiMessage('carts.repeatOrder.error'),
+            };
+          }
 
           // Check if order exists
           const orderAggregation = await ordersCollection

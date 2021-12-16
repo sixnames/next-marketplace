@@ -141,35 +141,33 @@ Cypress.Commands.add('makeAnOrder', ({ callback, orderFields }: Cypress.MakeAnOr
   const catalogueRoute = `${ROUTE_CATALOGUE}/${fixtureIds.rubricWineSlug}`;
   cy.visit(catalogueRoute);
 
-  // Should navigate to cart
+  // add product #1
   cy.visitLinkHref('catalogue-item-0-name-grid');
-
-  // Add product #1
   cy.getByCy(`card`).should('exist');
-  cy.getByCy(`card-shops-1-0-add-to-cart`).click();
+  cy.getByCy(`card-shops-${fixtureIds.shopASlug}-add-to-cart`).click();
 
-  // Add product #2
+  // add product #2
   cy.getByCy(`cart-modal-close`).click();
-  cy.getByCy(`card-shops-1-1-add-to-cart`).click();
+  cy.getByCy(`card-shops-${fixtureIds.shopBSlug}-add-to-cart`).click();
   cy.getByCy(`cart-modal-continue`).click();
 
-  // Should navigate to order form
+  // should navigate to cart
   cy.wait(1500);
   cy.getByCy(`cart`).should('exist');
 
-  // Should fill all order fields
+  // should fill all order fields
   if (orderFields) {
     cy.getByCy(`order-form-name`).clear().type(orderFields.customerName);
     cy.getByCy(`order-form-phone`).clear().type(orderFields.customerPhone);
     cy.getByCy(`order-form-email`).clear().type(orderFields.customerEmail);
   }
-  // Should choose reservation date
+  // should choose reservation date
   // cy.clock(1624449303350);
   // cy.get('#reservationDate').click();
   // cy.get('.react-datepicker__day--024').click();
   cy.getByCy(`order-form-comment`).type('comment');
 
-  // Should make an order and redirect to the Thank you page
+  // should make an order and redirect to the thank-you page
   cy.getByCy(`cart-aside-confirm`).click();
   cy.wait(1500);
 

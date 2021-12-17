@@ -93,8 +93,16 @@ const CompanyRubricDetails: React.FC<CompanyRubricDetailsInterface> = ({
         {() => {
           return (
             <Form>
-              <SeoContentEditor label={'SEO текст вверху каталога'} filedName={'textTop'} />
-              <SeoContentEditor label={'SEO текст внизу каталога'} filedName={'textBottom'} />
+              <SeoContentEditor
+                label={'SEO текст вверху каталога'}
+                filedName={'textTop'}
+                hideIndexCheckbox
+              />
+              <SeoContentEditor
+                label={'SEO текст внизу каталога'}
+                filedName={'textBottom'}
+                hideIndexCheckbox
+              />
 
               <FixedButtons>
                 <Button type={'submit'} testId={'rubric-submit'}>

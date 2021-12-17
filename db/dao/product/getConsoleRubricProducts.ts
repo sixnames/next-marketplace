@@ -59,9 +59,9 @@ export const getConsoleRubricProducts = async ({
   currency,
   companySlug,
   excludedProductsIds,
-  byRubricSlug,
   attributesIds,
   excludedOptionsSlugs,
+  byRubricSlug,
   ...props
 }: GetConsoleRubricProductsInputInterface): Promise<ConsoleRubricProductsInterface> => {
   let fallbackPayload: ConsoleRubricProductsInterface = {
@@ -80,19 +80,18 @@ export const getConsoleRubricProducts = async ({
     const { db } = await getDatabase();
     const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
     const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
-    const [rubricIdentifier, ...filters] = alwaysArray(query.filters);
+    const filters = alwaysArray(query.filters);
     const search = alwaysString(query.search);
+    const rubricId = alwaysString(query.rubricId);
+    const rubricSlug = alwaysString(query.rubricSlug);
 
     // get rubric
-    if (!rubricIdentifier) {
-      return fallbackPayload;
-    }
     const rubricQuery = byRubricSlug
       ? {
-          slug: rubricIdentifier,
+          slug: rubricSlug,
         }
       : {
-          _id: new ObjectId(rubricIdentifier),
+          _id: new ObjectId(rubricId),
         };
     const rubric = await rubricsCollection.findOne(rubricQuery);
     if (!rubric) {
@@ -120,9 +119,9 @@ export const getConsoleRubricProducts = async ({
       noSearchResults,
     } = await castUrlFilters({
       filters,
+      search,
       initialPage: props.page,
       initialLimit: PAGINATION_DEFAULT_LIMIT,
-      search: query.search,
       searchFieldName: '_id',
       excludedSearchIds: (excludedProductsIds || []).map((_id) => new ObjectId(_id)),
     });

@@ -8,9 +8,6 @@ export function alwaysArray(value: any) {
 }
 
 export function alwaysString(value: any): string {
-  if (!value) {
-    return '';
-  }
   return value ? `${value}` : '';
 }
 

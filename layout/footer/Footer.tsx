@@ -211,7 +211,7 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
           </div>
         </div>
 
-        <div className='text-center text-sm text-secondary-text'>
+        {/*<div className='text-center text-sm text-secondary-text'>
           {'Powered by '}
           <span
             className='text-theme hover:underline cursor-pointer'
@@ -221,7 +221,7 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
           >
             Supercharger
           </span>
-        </div>
+        </div>*/}
       </Inner>
     </footer>
   );

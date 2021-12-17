@@ -7,15 +7,8 @@ import { castDbData } from 'lib/ssrUtils';
 import { sortStringArray } from 'lib/stringUtils';
 import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
 
-type GetCatalogueIsrPropsUrlParamsInterface = {
-  companySlug: string;
-  citySlug: string;
-  rubricSlug: string;
-  filters?: string[];
-};
-
 export async function getCatalogueIsrProps(
-  context: GetStaticPropsContext<GetCatalogueIsrPropsUrlParamsInterface>,
+  context: GetStaticPropsContext<any>,
 ): Promise<GetStaticPropsResult<CatalogueInterface>> {
   const { props } = await getIsrSiteInitialData({
     context,

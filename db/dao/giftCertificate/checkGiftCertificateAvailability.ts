@@ -1,4 +1,5 @@
 import { COL_GIFT_CERTIFICATES } from 'db/collectionNames';
+import { updateCartGiftCertificate } from 'db/dao/cart/updateCartGiftCertificate';
 import { GiftCertificateModel, GiftCertificatePayloadModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { DaoPropsInterface } from 'db/uiInterfaces';
@@ -10,6 +11,7 @@ export interface CheckGiftCertificateAvailabilityInputInterface {
   code: string;
   companyId: string;
   userId?: string | null;
+  cartId?: string | null;
 }
 
 export async function checkGiftCertificateAvailability({
@@ -51,6 +53,12 @@ export async function checkGiftCertificateAvailability({
         };
       }
 
+      if (input.cartId) {
+        await updateCartGiftCertificate({
+          cartId: new ObjectId(input.cartId),
+          giftCertificateId: giftCertificate._id,
+        });
+      }
       return {
         success: true,
         message: await getApiMessage('giftCertificate.check.success'),
@@ -85,6 +93,12 @@ export async function checkGiftCertificateAvailability({
         };
       }
 
+      if (input.cartId) {
+        await updateCartGiftCertificate({
+          cartId: new ObjectId(input.cartId),
+          giftCertificateId: giftCertificate._id,
+        });
+      }
       return {
         success: true,
         message: await getApiMessage('giftCertificate.check.success'),
@@ -100,6 +114,12 @@ export async function checkGiftCertificateAvailability({
       };
     }
 
+    if (input.cartId) {
+      await updateCartGiftCertificate({
+        cartId: new ObjectId(input.cartId),
+        giftCertificateId: giftCertificate._id,
+      });
+    }
     return {
       success: true,
       message: await getApiMessage('giftCertificate.check.success'),

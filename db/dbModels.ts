@@ -332,6 +332,7 @@ export type CartProductsFieldNameType = 'cartDeliveryProducts' | 'cartBookingPro
 
 export interface CartModel extends TimestampModel {
   _id: ObjectIdModel;
+  giftCertificateIds?: ObjectIdModel[] | null;
   cartDeliveryProducts: CartProductModel[];
   cartBookingProducts: CartProductModel[];
 }

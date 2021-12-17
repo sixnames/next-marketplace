@@ -1,3 +1,5 @@
+import { useSiteContext } from 'context/siteContext';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import Head from 'next/head';
 import { useConfigContext } from 'context/configContext';
@@ -9,6 +11,7 @@ export interface MetaInterface {
   previewImage?: string;
   siteName?: string;
   foundationYear?: string;
+  showForIndex: boolean;
 }
 
 const Meta: React.FC<MetaInterface> = ({
@@ -17,9 +20,13 @@ const Meta: React.FC<MetaInterface> = ({
   siteName,
   foundationYear,
   previewImage,
+  showForIndex,
 }) => {
+  const router = useRouter();
   const [canonicalUrl, setCanonicalUrl] = React.useState<string>('');
+  const [showCanonical, setShowCanonical] = React.useState<boolean>(false);
   const { configs } = useConfigContext();
+  const { urlPrefix } = useSiteContext();
 
   const configTitle = configs.pageDefaultTitle;
   const pageTitle = title || configTitle;
@@ -36,28 +43,36 @@ const Meta: React.FC<MetaInterface> = ({
   const configFoundationYear = configs.siteFoundationYear;
   const pageFoundationYear = foundationYear || configFoundationYear;
 
+  const useNoIndexConfig = configs.useNoIndexRules;
+  const noIndex = !showForIndex && useNoIndexConfig;
+
   // Icons
   const appleTouchIcon = configs.appleTouchIcon;
   const faviconIco = configs.faviconIco;
   const iconSvg = configs.iconSvg;
 
   React.useEffect(() => {
-    setCanonicalUrl(window.location.href);
-  }, []);
+    const href = window.location.href;
+    if (router.asPath === urlPrefix) {
+      setCanonicalUrl(href.replace(urlPrefix, ''));
+      setShowCanonical(true);
+      return;
+    }
+
+    setCanonicalUrl(href);
+    setShowCanonical(false);
+  }, [urlPrefix, router]);
 
   // Metrics
-  //<!-- Yandex.Metrika counter --> <!-- /Yandex.Metrika counter -->
-  //<!-- Global site tag (gtag.js) - Google Analytics -->
   const yaVerification = configs.yaVerification;
-  // const yaMetrica = getSiteConfigSingleValue('yaMetrica') || '';
-  // const googleAnalytics = getSiteConfigSingleValue('googleAnalytics') || '';
-  // const metricsCodeAsString = `${yaVerification}${yaMetrica}${googleAnalytics}`;
 
   return (
     <React.Fragment>
       <Head>
-        {'<!-- Yandex.Metrika counter --> <!-- /Yandex.Metrika counter -->'}
         <title>{pageTitle}</title>
+        {noIndex ? <meta name='robots' content='noindex, nofollow' /> : null}
+        {showCanonical ? <link rel='canonical' href={canonicalUrl} /> : null}
+
         <meta name={'color-scheme'} content={'light dark'} />
         <meta
           name='viewport'

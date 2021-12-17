@@ -474,6 +474,7 @@ export async function getServerSideProps(
     props: {
       ...props,
       orders: castDbData(orders),
+      showForIndex: false,
     },
   };
 }

@@ -119,7 +119,7 @@ export interface GetSiteInitialDataInterface {
 
 export interface SiteInitialDataPropsInterface
   extends PagePropsInterface,
-    Omit<SiteLayoutProviderInterface, 'description' | 'title'> {}
+    Omit<SiteLayoutProviderInterface, 'description' | 'title' | 'showForIndex'> {}
 
 export interface SiteInitialDataPayloadInterface {
   props: SiteInitialDataPropsInterface;

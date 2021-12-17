@@ -19,6 +19,7 @@ export async function getCatalogueIsrProps(
     props: {
       ...props,
       route: '',
+      showForIndex: false,
     },
     notFound: true,
   };
@@ -42,13 +43,15 @@ export async function getCatalogueIsrProps(
   }
 
   // catalogue
+  const basePath = `${ROUTE_CATALOGUE}/${rubricSlug}`;
+  const rootPath = `${props.urlPrefix}${basePath}`;
   const rawCatalogueData = await getCatalogueData({
     locale: props.sessionLocale,
     city: props.sessionCity,
     companySlug: props.domainCompany?.slug,
     companyId: props.domainCompany?._id,
     currency: props.initialData.currency,
-    basePath: `${ROUTE_CATALOGUE}/${rubricSlug}`,
+    basePath,
     snippetVisibleAttributesCount: props.initialData.configs.snippetAttributesCount,
     visibleCategoriesInNavDropdown: props.initialData.configs.visibleCategoriesInNavDropdown,
     limit: props.initialData.configs.catalogueProductsCount,
@@ -90,11 +93,16 @@ export async function getCatalogueIsrProps(
     };
   }
 
+  console.log(rootPath);
+
   return {
     revalidate: ISR_FIVE_SECONDS,
     props: {
       ...props,
       catalogueData: castDbData(rawCatalogueData),
+
+      // TODO
+      showForIndex: true,
     },
   };
 }

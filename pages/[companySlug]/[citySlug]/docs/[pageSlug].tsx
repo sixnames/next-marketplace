@@ -90,6 +90,7 @@ export async function getStaticProps(
     props: {
       ...props,
       page: castDbData(page),
+      showForIndex: false,
     },
   };
 }

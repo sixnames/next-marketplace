@@ -23,6 +23,7 @@ export async function getServerSideProps(
     props: {
       ...props,
       route: '',
+      showForIndex: false,
     },
     notFound: true,
   };
@@ -57,6 +58,7 @@ export async function getServerSideProps(
     props: {
       ...props,
       catalogueData: castDbData(rawCatalogueData),
+      showForIndex: false,
     },
   };
 }

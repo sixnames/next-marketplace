@@ -1,5 +1,6 @@
 import {
   DEFAULT_COMPANY_SLUG,
+  DEFAULT_LOCALE,
   PAGE_STATE_PUBLISHED,
   ROUTE_BLOG_POST,
   ROUTE_BLOG_WITH_PAGE,
@@ -10,19 +11,11 @@ import {
   COL_CITIES,
   COL_COMPANIES,
   COL_CONFIGS,
-  COL_LANGUAGES,
   COL_PRODUCTS,
   COL_SHOP_PRODUCTS,
 } from 'db/collectionNames';
 import { ignoreNoImageStage } from 'db/dao/constantPipelines';
-import {
-  BlogPostModel,
-  CityModel,
-  CompanyModel,
-  ConfigModel,
-  LanguageModel,
-  ShopProductModel,
-} from 'db/dbModels';
+import { BlogPostModel, CityModel, CompanyModel, ConfigModel, ShopProductModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { castConfigs, getConfigBooleanValue } from 'lib/configsUtils';
 import { GetServerSidePropsContext } from 'next';
@@ -61,11 +54,10 @@ interface SlugsAggregationInterface {
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const { res, req, defaultLocale } = context;
+  const { res, req } = context;
   const slugsWithLocales: string[] = [];
   const initialSlugs: string[] = [];
   const { db } = await getDatabase();
-  const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
   const citiesCollection = db.collection<CityModel>(COL_CITIES);
   const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
@@ -74,8 +66,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const domain = getDomain(host, { validHosts: ['localhost'] });
 
   // Get site languages
-  const languages = await languagesCollection.find({}).toArray();
-  const locales = languages.map(({ slug }) => slug);
 
   // Session company
   let company: CompanyModel | null | undefined = null;
@@ -180,46 +170,28 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       ])
       .toArray();
 
-    // Get slugs with locales
-    if (locales.length > 1) {
-      locales.forEach((locale) => {
-        // configs
-        const configs = castConfigs({
-          configs: initialConfigs,
-          citySlug: city.slug,
-          locale,
-        });
-        const showBlog = getConfigBooleanValue({ configs, slug: 'showBlog' });
-        if (showBlog && blogPosts.length > 0) {
-          const blogBasePath = `${urlPrefix}${ROUTE_BLOG_WITH_PAGE}`;
-          if (locale === `${defaultLocale}`) {
-            slugsWithLocales.push(blogBasePath);
-          } else {
-            slugsWithLocales.push(`${locale}/${blogBasePath}`);
-          }
+    // configs
+    const configs = castConfigs({
+      configs: initialConfigs,
+      citySlug: city.slug,
+      locale: DEFAULT_LOCALE,
+    });
 
-          blogPosts.forEach(({ slug }) => {
-            if (locale === `${defaultLocale}`) {
-              slugsWithLocales.push(`${urlPrefix}${ROUTE_BLOG_POST}/${slug}`);
-            } else {
-              slugsWithLocales.push(`${locale}/${urlPrefix}${ROUTE_BLOG_POST}/${slug}`);
-            }
-          });
-        }
+    // get blog slugs
+    const showBlog = getConfigBooleanValue({ configs, slug: 'showBlog' });
+    if (showBlog && blogPosts.length > 0) {
+      const blogBasePath = `${urlPrefix}${ROUTE_BLOG_WITH_PAGE}`;
+      slugsWithLocales.push(blogBasePath);
 
-        initialSlugs.forEach((slug) => {
-          if (locale === `${defaultLocale}`) {
-            slugsWithLocales.push(slug);
-          } else {
-            slugsWithLocales.push(`${locale}/${slug}`);
-          }
-        });
-      });
-    } else {
-      initialSlugs.forEach((slug) => {
-        slugsWithLocales.push(slug);
+      blogPosts.forEach(({ slug }) => {
+        slugsWithLocales.push(`${urlPrefix}${ROUTE_BLOG_POST}/${slug}`);
       });
     }
+
+    // get catalogue slugs
+    initialSlugs.forEach((slug) => {
+      slugsWithLocales.push(slug);
+    });
   }
 
   res.setHeader('Content-Type', 'text/xml');

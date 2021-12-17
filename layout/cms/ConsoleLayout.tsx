@@ -50,7 +50,7 @@ const ConsoleLayoutConsumer: React.FC<ConsoleLayoutConsumerInterface> = ({
 
   return (
     <div className={`min-h-full-height text-primary-text bg-primary`}>
-      <Meta title={title} />
+      <Meta title={title} showForIndex={false} />
       <div dangerouslySetInnerHTML={{ __html: `${yaMetrica}${googleAnalytics}` }} />
 
       {/*top bar*/}

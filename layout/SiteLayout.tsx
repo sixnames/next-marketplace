@@ -33,6 +33,7 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
   siteName,
   foundationYear,
   currentRubricSlug,
+  showForIndex,
 }) => {
   const { isLoading, isModal } = useAppContext();
   const { configs } = useConfigContext();
@@ -52,6 +53,7 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
         previewImage={previewImage}
         siteName={siteName}
         foundationYear={foundationYear}
+        showForIndex={showForIndex}
       />
 
       <Header headerPageGroups={headerPageGroups} currentRubricSlug={currentRubricSlug} />
@@ -79,6 +81,7 @@ export interface SiteLayoutProviderInterface
   navRubrics: RubricInterface[];
   previewImage?: string;
   urlPrefix: string;
+  showForIndex: boolean;
 }
 
 const SiteLayout: React.FC<SiteLayoutProviderInterface> = ({

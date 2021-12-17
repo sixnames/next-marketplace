@@ -842,6 +842,7 @@ export const getStaticProps = async (
       topPosts: castDbData(topPosts),
       blogFilter: castDbData(blogFilter),
       blogTitle: `${keyword}${titleFilterPrefix}`,
+      showForIndex: false,
     },
   };
 };

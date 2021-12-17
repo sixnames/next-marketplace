@@ -532,17 +532,7 @@ export async function getCatalogueAllSeoContents(
   let textTopEditUrl = editUrl;
   let textBottomEditUrl = editUrl;
 
-  if (categoryLeaves.length === 1) {
-    const category = categoryLeaves[0];
-    editUrl = `${baseEditUrl}/categories/${category._id}`;
-
-    if (noFiltersSelected) {
-      textTopEditUrl = editUrl;
-      textBottomEditUrl = editUrl;
-    }
-  }
-
-  if (!noFiltersSelected) {
+  if (!noFiltersSelected || categoryLeaves.length > 0) {
     textTopEditUrl = `${baseEditUrl}/seo-content/${seoContentTopSlug}`;
     textBottomEditUrl = `${baseEditUrl}/seo-content/${seoContentBottomSlug}`;
   }

@@ -77,6 +77,7 @@ export async function getStaticProps(
       props: {
         ...props,
         ...mainPageData,
+        showForIndex: true,
       },
     };
   } catch (e) {

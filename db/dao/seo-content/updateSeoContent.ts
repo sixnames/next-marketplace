@@ -11,6 +11,7 @@ export interface UpdateSeoContentInputInterface {
   seoContentId: string;
   content: string;
   companySlug: string;
+  showForIndex?: boolean | null;
   titleI18n?: TranslationModel | null;
   metaTitleI18n?: TranslationModel | null;
   metaDescriptionI18n?: TranslationModel | null;
@@ -32,7 +33,8 @@ export async function updateSeoContent({
       };
     }
 
-    const { content, titleI18n, metaDescriptionI18n, metaTitleI18n, companySlug } = input;
+    const { content, titleI18n, metaDescriptionI18n, metaTitleI18n, companySlug, showForIndex } =
+      input;
     const seoContentId = new ObjectId(input.seoContentId);
     const oldSeoContent = await seoContentsCollection.findOne({
       _id: seoContentId,
@@ -57,6 +59,7 @@ export async function updateSeoContent({
           titleI18n,
           metaDescriptionI18n,
           metaTitleI18n,
+          showForIndex,
         },
       },
     );

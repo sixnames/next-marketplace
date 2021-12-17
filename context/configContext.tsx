@@ -53,6 +53,7 @@ const ConfigContext = React.createContext<ConfigContextInterface>({
     showAdultModal: false,
     showBlog: false,
     showBlogPostViews: false,
+    useNoIndexRules: false,
     contactEmail: [],
     phone: [],
     robotsTxt: [],

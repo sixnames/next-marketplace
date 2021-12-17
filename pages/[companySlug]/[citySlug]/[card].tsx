@@ -128,6 +128,7 @@ export async function getStaticProps(
     props: {
       ...props,
       cardData: castDbData(rawCardData),
+      showForIndex: true,
     },
   };
 }

@@ -762,6 +762,7 @@ export interface SsrConfigsInterface {
 
   // Project
   showReservationDate: boolean;
+  useNoIndexRules: boolean;
   buyButtonText: string;
 }
 

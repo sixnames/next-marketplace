@@ -7,8 +7,15 @@ import { castDbData } from 'lib/ssrUtils';
 import { sortStringArray } from 'lib/stringUtils';
 import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
 
+type GetCatalogueIsrPropsUrlParamsInterface = {
+  companySlug: string;
+  citySlug: string;
+  rubricSlug: string;
+  filters?: string[];
+};
+
 export async function getCatalogueIsrProps(
-  context: GetStaticPropsContext<any>,
+  context: GetStaticPropsContext<GetCatalogueIsrPropsUrlParamsInterface>,
 ): Promise<GetStaticPropsResult<CatalogueInterface>> {
   const { props } = await getIsrSiteInitialData({
     context,
@@ -19,6 +26,7 @@ export async function getCatalogueIsrProps(
     props: {
       ...props,
       route: '',
+      showForIndex: false,
     },
     notFound: true,
   };
@@ -42,13 +50,17 @@ export async function getCatalogueIsrProps(
   }
 
   // catalogue
+  const basePath = `${ROUTE_CATALOGUE}/${rubricSlug}`;
+  const rootPath = `${props.urlPrefix}${basePath}/`;
+  const asPath = `${props.urlPrefix}${basePath}/${sortedFiltersPath}`;
+
   const rawCatalogueData = await getCatalogueData({
     locale: props.sessionLocale,
     city: props.sessionCity,
     companySlug: props.domainCompany?.slug,
     companyId: props.domainCompany?._id,
     currency: props.initialData.currency,
-    basePath: `${ROUTE_CATALOGUE}/${rubricSlug}`,
+    basePath,
     snippetVisibleAttributesCount: props.initialData.configs.snippetAttributesCount,
     visibleCategoriesInNavDropdown: props.initialData.configs.visibleCategoriesInNavDropdown,
     limit: props.initialData.configs.catalogueProductsCount,
@@ -90,11 +102,13 @@ export async function getCatalogueIsrProps(
     };
   }
 
+  const showForIndex = rootPath === asPath ? true : rawCatalogueData.textTop?.showForIndex;
   return {
     revalidate: ISR_FIVE_SECONDS,
     props: {
       ...props,
       catalogueData: castDbData(rawCatalogueData),
+      showForIndex: Boolean(showForIndex),
     },
   };
 }

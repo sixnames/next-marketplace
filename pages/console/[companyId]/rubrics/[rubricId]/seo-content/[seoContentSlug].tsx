@@ -2,7 +2,7 @@ import ConsoleSeoContentDetails, {
   ConsoleSeoContentDetailsInterface,
 } from 'components/console/ConsoleSeoContentDetails';
 import Inner from 'components/Inner';
-import { ROUTE_CONSOLE } from 'config/common';
+import { CATALOGUE_SEO_TEXT_POSITION_TOP, ROUTE_CONSOLE } from 'config/common';
 import { getConsoleRubricDetails } from 'db/dao/rubrics/getConsoleRubricDetails';
 import { AppContentWrapperBreadCrumbs, RubricInterface } from 'db/uiInterfaces';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
@@ -24,6 +24,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
   seoContent,
   routeBasePath,
   companySlug,
+  showSeoFields,
 }) => {
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `SEO тексты`,
@@ -47,7 +48,11 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
       breadcrumbs={breadcrumbs}
     >
       <Inner>
-        <ConsoleSeoContentDetails seoContent={seoContent} companySlug={companySlug} />
+        <ConsoleSeoContentDetails
+          seoContent={seoContent}
+          companySlug={companySlug}
+          showSeoFields={showSeoFields}
+        />
       </Inner>
     </CmsRubricLayout>
   );
@@ -107,6 +112,7 @@ export const getServerSideProps = async (
       rubric: castDbData(payload.rubric),
       seoContent: castDbData(seoContent),
       routeBasePath: `${ROUTE_CONSOLE}/${props.layoutProps.pageCompany._id}`,
+      showSeoFields: seoContentSlug.indexOf(CATALOGUE_SEO_TEXT_POSITION_TOP) > -1,
       companySlug,
     },
   };

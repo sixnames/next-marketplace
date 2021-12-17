@@ -1,14 +1,14 @@
-import MainPage, { MainPagePropsInterface } from 'components/MainPage';
-import { getMainPageData } from 'lib/mainPageUtils';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { getSiteInitialData } from 'lib/ssrUtils';
 
-const Page: NextPage<MainPagePropsInterface> = (props) => <MainPage {...props} />;
+const Home: NextPage = () => {
+  return <div />;
+};
 
 export async function getServerSideProps(
   context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<MainPagePropsInterface>> {
+): Promise<GetServerSidePropsResult<any>> {
   try {
     const { props } = await getSiteInitialData({
       context,
@@ -20,32 +20,10 @@ export async function getServerSideProps(
       };
     }
 
-    const {
-      companySlug,
-      sessionCity,
-      sessionLocale,
-      initialData,
-      domainCompany,
-      footerPageGroups,
-      headerPageGroups,
-      navRubrics,
-    } = props;
-
-    const mainPageData = await getMainPageData({
-      companySlug,
-      domainCompany,
-      footerPageGroups,
-      headerPageGroups,
-      sessionCity,
-      sessionLocale,
-      currency: initialData.currency,
-      navRubrics,
-    });
-
     return {
-      props: {
-        ...props,
-        ...mainPageData,
+      redirect: {
+        destination: props.urlPrefix,
+        permanent: true,
       },
     };
   } catch (e) {
@@ -56,4 +34,4 @@ export async function getServerSideProps(
   }
 }
 
-export default Page;
+export default Home;

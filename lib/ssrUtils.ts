@@ -937,6 +937,10 @@ export const getSsrConfigs = async ({
     configs,
     slug: 'showReservationDate',
   });
+  const useNoIndexRules = getConfigBooleanValue({
+    configs,
+    slug: 'useNoIndexRules',
+  });
   const visibleCategoriesInNavDropdown = getConfigListValue({
     configs,
     slug: 'visibleCategoriesInNavDropdown',
@@ -953,6 +957,7 @@ export const getSsrConfigs = async ({
 
   return {
     isOneShopCompany,
+    useNoIndexRules,
     seoTextBottom,
     robotsTxt,
     cartBookingButtonDescription,
@@ -1576,7 +1581,7 @@ export interface GetSiteInitialDataInterface {
 
 export interface SiteInitialDataPropsInterface
   extends PagePropsInterface,
-    Omit<SiteLayoutProviderInterface, 'description' | 'title'> {}
+    Omit<SiteLayoutProviderInterface, 'description' | 'title' | 'showForIndex'> {}
 
 export interface SiteInitialDataPayloadInterface {
   props: SiteInitialDataPropsInterface;

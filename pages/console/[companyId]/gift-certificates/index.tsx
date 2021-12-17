@@ -65,7 +65,7 @@ export const getServerSideProps = async (
       ...props,
       ...payload,
       pageCompany: castDbData(company),
-      routeBasePath: `${ROUTE_CONSOLE}/${company._id}`,
+      userRouteBasePath: `${ROUTE_CONSOLE}/${company._id}/customers/user`,
     },
   };
 };

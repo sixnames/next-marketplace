@@ -100,7 +100,7 @@ const FormikMultiLineInput: React.FC<FormikMultiLineInputInterface> = ({
           onClick={addFieldHandler}
           size={'small'}
           theme={'gray'}
-          testId={`${name}-add`}
+          testId={`${testId}-add`}
         >
           Добавить
         </Button>

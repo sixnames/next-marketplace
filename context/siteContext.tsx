@@ -3,8 +3,10 @@ import { REQUEST_METHOD_POST, ROUTE_THANK_YOU } from 'config/common';
 import { CART_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { useNotificationsContext } from 'context/notificationsContext';
-import { MakeAnOrderInputInterface, MakeAnOrderPayloadModel } from 'db/dao/order/makeAnOrder';
-import { CartProductsFieldNameType } from 'db/dbModels';
+import { useSiteUserContext } from 'context/siteUserContext';
+import { CheckGiftCertificateAvailabilityInputInterface } from 'db/dao/giftCertificate/checkGiftCertificateAvailability';
+import { MakeAnOrderInputInterface, MakeAnOrderPayloadModel } from 'db/dao/orders/makeAnOrder';
+import { CartProductsFieldNameType, GiftCertificateModel } from 'db/dbModels';
 import { CartInterface, CompanyInterface, RubricInterface } from 'db/uiInterfaces';
 import {
   AddProductToCartInput,
@@ -21,6 +23,7 @@ import {
   useUpdateProductInCartMutation,
 } from 'generated/apolloComponents';
 import { useMutation } from 'hooks/mutations/useFetch';
+import { useCheckGiftCertificateMutation } from 'hooks/mutations/useGiftCertificateMutations';
 import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -31,6 +34,13 @@ interface SiteContextStateInterface {
   cart?: CartInterface | null;
 }
 
+interface CheckGiftCertificateInputInterface
+  extends Omit<CheckGiftCertificateAvailabilityInputInterface, 'userId'> {
+  cartId: string;
+  onError: () => void;
+  onSuccess: (giftCertificate: GiftCertificateModel) => void;
+}
+
 interface SiteContextInterface extends SiteContextStateInterface {
   navRubrics: RubricInterface[];
   addProductToCart: (input: AddProductToCartInput) => void;
@@ -38,6 +48,7 @@ interface SiteContextInterface extends SiteContextStateInterface {
   addShopToCartProduct: (input: AddShopToCartProductInput) => void;
   updateProductInCart: (input: UpdateProductInCartInput) => void;
   deleteProductFromCart: (input: DeleteProductFromCartInput) => void;
+  checkGiftCertificate: (input: CheckGiftCertificateInputInterface) => void;
   getShopProductInCartCount: (shopProductId: string, allowDelivery: boolean) => number;
   makeAnOrder: (input: MakeAnOrderInputInterface) => void;
   repeatAnOrder: (_id: string) => void;
@@ -59,6 +70,7 @@ const SiteContext = React.createContext<SiteContextInterface>({
   makeAnOrder: () => undefined,
   repeatAnOrder: () => undefined,
   clearCart: () => undefined,
+  checkGiftCertificate: () => undefined,
   urlPrefix: '',
 });
 
@@ -75,6 +87,7 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
   domainCompany,
   urlPrefix,
 }) => {
+  const sessionUser = useSiteUserContext();
   const router = useRouter();
   const { showModal, showLoading, hideLoading } = useAppContext();
   const { showErrorNotification, showSuccessNotification } = useNotificationsContext();
@@ -197,6 +210,29 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
       });
     },
   });
+
+  const [checkGiftCertificateMutation] = useCheckGiftCertificateMutation();
+
+  const checkGiftCertificate = React.useCallback(
+    (input: CheckGiftCertificateInputInterface) => {
+      checkGiftCertificateMutation({
+        userId: sessionUser ? `${sessionUser.me._id}` : null,
+        code: input.code,
+        companyId: input.companyId,
+        cartId: input.cartId,
+      })
+        .then((response) => {
+          if (!response || !response.success || !response.payload) {
+            input.onError();
+            return;
+          }
+          input.onSuccess(response.payload);
+          refetchCartHandler();
+        })
+        .catch(console.log);
+    },
+    [checkGiftCertificateMutation, refetchCartHandler, sessionUser],
+  );
 
   const addProductToCart = React.useCallback(
     (input: AddProductToCartInput) => {
@@ -328,24 +364,26 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
       makeAnOrder,
       repeatAnOrder,
       getShopProductInCartCount,
+      checkGiftCertificate,
       urlPrefix,
       domainCompany,
       ...state,
     };
   }, [
-    addProductToCart,
-    addShopToCartProduct,
-    addShoplessProductToCart,
-    clearCart,
-    deleteProductFromCart,
-    getShopProductInCartCount,
-    makeAnOrder,
     navRubrics,
-    repeatAnOrder,
-    state,
+    addProductToCart,
+    addShoplessProductToCart,
+    addShopToCartProduct,
     updateProductInCart,
+    deleteProductFromCart,
+    clearCart,
+    makeAnOrder,
+    repeatAnOrder,
+    getShopProductInCartCount,
+    checkGiftCertificate,
     urlPrefix,
     domainCompany,
+    state,
   ]);
 
   return <SiteContext.Provider value={initialValue}>{children}</SiteContext.Provider>;

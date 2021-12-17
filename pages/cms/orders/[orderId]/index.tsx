@@ -2,10 +2,10 @@ import ConsoleOrderDetails, {
   CmsOrderDetailsBaseInterface,
 } from 'components/order/ConsoleOrderDetails';
 import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
+import { getConsoleOrder } from 'db/dao/orders/getConsoleOrder';
 import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { getConsoleOrder } from 'lib/orderUtils';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';

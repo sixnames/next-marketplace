@@ -1,6 +1,7 @@
 import { CART_COOKIE_KEY } from 'config/common';
 import {
   COL_CARTS,
+  COL_GIFT_CERTIFICATES,
   COL_PRODUCTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
@@ -14,11 +15,12 @@ import {
   shopProductFieldsPipeline,
 } from 'db/dao/constantPipelines';
 import { getPageSessionUser } from 'db/dao/user/getPageSessionUser';
-import { CartModel, UserModel } from 'db/dbModels';
+import { CartModel, GiftCertificateModel, UserModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import {
   CartInterface,
   CartProductInterface,
+  GiftCertificateInterface,
   ProductInterface,
   ShopProductInterface,
 } from 'db/uiInterfaces';
@@ -49,6 +51,7 @@ export const getSessionCart = async ({
     const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
     const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
     const usersCollection = db.collection<UserModel>(COL_USERS);
+    const giftCertificatesCollection = db.collection<GiftCertificateModel>(COL_GIFT_CERTIFICATES);
 
     // get user
     const user = await getPageSessionUser({
@@ -443,6 +446,18 @@ export const getSessionCart = async ({
         cartBookingProducts.push(castedCartProduct);
       }
     }
+
+    // get gift certificates
+    let giftCertificates: GiftCertificateInterface[] = [];
+    if (cart?.giftCertificateIds && cart?.giftCertificateIds.length > 0) {
+      giftCertificates = await giftCertificatesCollection
+        .find({
+          _id: {
+            $in: cart.giftCertificateIds,
+          },
+        })
+        .toArray();
+    }
     // console.log('cart products', new Date().getTime() - start);
 
     const isWithShoplessBooking = cartBookingProducts.some(({ shopProductId }) => !shopProductId);
@@ -451,6 +466,7 @@ export const getSessionCart = async ({
     const sessionCart: CartInterface = {
       ...cart,
       productsCount: cartBookingProducts.length + cartDeliveryProducts.length,
+      giftCertificates,
       cartBookingProducts,
       cartDeliveryProducts,
       isWithShopless,

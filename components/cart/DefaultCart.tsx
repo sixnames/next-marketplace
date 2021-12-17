@@ -20,14 +20,14 @@ import { useAppContext } from 'context/appContext';
 import { useConfigContext } from 'context/configContext';
 import { useSiteContext } from 'context/siteContext';
 import { useSiteUserContext } from 'context/siteUserContext';
-import { MakeAnOrderShopConfigInterface } from 'db/dao/order/makeAnOrder';
+import { MakeAnOrderShopConfigInterface } from 'db/dao/orders/makeAnOrder';
 import { OrderDeliveryInfoModel } from 'db/dbModels';
 import { CartInterface, CartProductInterface, ShopInterface } from 'db/uiInterfaces';
 import { Form, Formik, useFormikContext } from 'formik';
-import { useCheckGiftCertificateMutation } from 'hooks/mutations/useGiftCertificateMutations';
 import { useShopMarker } from 'hooks/useShopMarker';
 import useValidationSchema from 'hooks/useValidationSchema';
 import LayoutCard from 'layout/LayoutCard';
+import { noNaN } from 'lib/numbers';
 import { phoneToRaw } from 'lib/phoneUtils';
 import { CartTabIndexType, MakeOrderFormInterface } from 'pages/[companySlug]/[citySlug]/cart';
 import * as React from 'react';
@@ -130,22 +130,22 @@ interface DefaultCartShopUIInterface {
   index: number;
   showPriceWarning?: boolean;
   allowDelivery: boolean;
+  cartId: string;
 }
 const DefaultCartShop: React.FC<DefaultCartShopUIInterface> = ({
   shop,
   showPriceWarning,
   index,
   allowDelivery,
+  cartId,
 }) => {
-  const sessionUser = useSiteUserContext();
   const marker = useShopMarker(shop);
   const { showModal } = useAppContext();
   const { values, setFieldValue } = useFormikContext();
+  const { checkGiftCertificate } = useSiteContext();
   const giftCertificateFieldName = `shopConfigs[${index}].giftCertificateCode`;
   const giftCertificateValueFieldName = `shopConfigs[${index}].giftCertificateDiscount`;
   const giftCertificateCode = get(values, giftCertificateFieldName);
-
-  const [checkGiftCertificateMutation] = useCheckGiftCertificateMutation();
 
   return (
     <LayoutCard key={`${shop._id}`}>
@@ -198,19 +198,15 @@ const DefaultCartShop: React.FC<DefaultCartShopUIInterface> = ({
                 theme={'secondary'}
                 testId={`gift-certificate-confirm-${shop.slug}`}
                 onClick={() => {
-                  checkGiftCertificateMutation({
-                    userId: sessionUser ? `${sessionUser.me._id}` : null,
+                  checkGiftCertificate({
                     code: giftCertificateCode,
                     companyId: `${shop.companyId}`,
-                  })
-                    .then((response) => {
-                      if (!response || !response.success || !response.payload) {
-                        setFieldValue(giftCertificateFieldName, '');
-                        return;
-                      }
-                      setFieldValue(giftCertificateValueFieldName, response.payload.value);
-                    })
-                    .catch(console.log);
+                    cartId,
+                    onError: () => setFieldValue(giftCertificateFieldName, ''),
+                    onSuccess: (giftCertificate) => {
+                      setFieldValue(giftCertificateValueFieldName, giftCertificate.value);
+                    },
+                  });
                 }}
               >
                 Применить
@@ -319,11 +315,16 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
         return;
       }
 
+      const giftCertificate = (cart.giftCertificates || []).find(({ companyId }) => {
+        return companyId === shop.companyId;
+      });
+
       // add new shop config
       const newShopConfig: DefaultCartShopInterface = {
         ...shop,
         _id: `${shop._id}`,
-        giftCertificateDiscount: 0,
+        giftCertificateDiscount: giftCertificate?.value || 0,
+        giftCertificateCode: giftCertificate?.code || '',
         promoCodeDiscount: 0,
         cartProducts: [cartProduct],
         deliveryVariant: ORDER_DELIVERY_VARIANT_COURIER,
@@ -391,12 +392,12 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
             const { cartDeliveryProducts, totalDeliveryPrice, shopConfigs } = values;
             const giftCertificateDiscount = shopConfigs.reduce(
               (acc: number, { giftCertificateDiscount }) => {
-                return acc + giftCertificateDiscount;
+                return acc + noNaN(giftCertificateDiscount);
               },
               0,
             );
             const promoCodeDiscount = shopConfigs.reduce((acc: number, { promoCodeDiscount }) => {
-              return acc + promoCodeDiscount;
+              return acc + noNaN(promoCodeDiscount);
             }, 0);
 
             return (
@@ -429,6 +430,7 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
                               shop={shop}
                               index={index}
                               key={`${shop._id}`}
+                              cartId={`${cart._id}`}
                               allowDelivery
                             />
                           );
@@ -535,12 +537,12 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
             const { cartBookingProducts, totalBookingPrice, shopConfigs } = values;
             const giftCertificateDiscount = shopConfigs.reduce(
               (acc: number, { giftCertificateDiscount }) => {
-                return acc + giftCertificateDiscount;
+                return acc + noNaN(giftCertificateDiscount);
               },
               0,
             );
             const promoCodeDiscount = shopConfigs.reduce((acc: number, { promoCodeDiscount }) => {
-              return acc + promoCodeDiscount;
+              return acc + noNaN(promoCodeDiscount);
             }, 0);
 
             return (
@@ -574,6 +576,7 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
                               index={index}
                               key={`${shop._id}`}
                               allowDelivery={false}
+                              cartId={`${cart._id}`}
                               showPriceWarning
                             />
                           );

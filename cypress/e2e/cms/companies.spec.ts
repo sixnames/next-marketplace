@@ -22,7 +22,7 @@ describe('Companies list', () => {
 
     // company emails
     cy.getByCy(`email-0`).type(newCompanyEmailA);
-    cy.getByCy(`email-0-add`).click();
+    cy.getByCy(`email-add`).click();
     cy.getByCy(`email-1`).type(newCompanyEmailB);
     cy.getByCy(`email-1-remove`).click();
     cy.getByCy(`remove-field-confirm`).click();
@@ -30,7 +30,7 @@ describe('Companies list', () => {
 
     // company phones
     cy.getByCy(`phone-0`).type(newCompanyPhoneA);
-    cy.getByCy(`phone-0-add`).click();
+    cy.getByCy(`phone-add`).click();
     cy.getByCy(`phone-1`).type(newCompanyPhoneB);
 
     // owner
@@ -134,25 +134,5 @@ describe('Companies list', () => {
     cy.getByCy('siteFoundationYear-msk-ru-0').clear().type('1999');
     cy.getByCy('siteFoundationYear-submit').click();
     cy.wait(1500);
-
-    cy.getByCy(`company-analytics`).click();
-    cy.wait(1500);
-    cy.getByCy('company-config-analytics').should('exist');
-
-    cy.getByCy(`company-ui`).click();
-    cy.wait(1500);
-    cy.getByCy('company-config-ui').should('exist');
-
-    cy.getByCy(`company-contacts`).click();
-    cy.wait(1500);
-    cy.getByCy('company-config-contacts').should('exist');
-
-    cy.getByCy(`company-seo`).click();
-    cy.wait(1500);
-    cy.getByCy('company-config-seo').should('exist');
-
-    cy.getByCy(`company-catalogue`).click();
-    cy.wait(1500);
-    cy.getByCy('company-config-catalogue').should('exist');
   });
 });

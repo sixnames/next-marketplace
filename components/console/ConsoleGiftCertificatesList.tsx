@@ -2,8 +2,6 @@ import Button from 'components/button/Button';
 import ContentItemControls from 'components/button/ContentItemControls';
 import FixedButtons from 'components/button/FixedButtons';
 import Currency from 'components/Currency';
-import LinkEmail from 'components/Link/LinkEmail';
-import LinkPhone from 'components/Link/LinkPhone';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { GiftCertificateModalInterface } from 'components/Modal/GiftCertificateModal';
 import Pager from 'components/Pager';
@@ -29,7 +27,7 @@ import * as React from 'react';
 export interface ConsoleGiftCertificatesListInterface
   extends GetConsoleGiftCertificatesPayloadInterface {
   pageCompany: CompanyInterface;
-  routeBasePath: string;
+  userRouteBasePath: string;
 }
 
 const ConsoleGiftCertificatesList: React.FC<ConsoleGiftCertificatesListInterface> = ({
@@ -38,6 +36,7 @@ const ConsoleGiftCertificatesList: React.FC<ConsoleGiftCertificatesListInterface
   totalPages,
   totalDocs,
   docs,
+  userRouteBasePath,
 }) => {
   const isPageLoading = usePageLoadingState();
   const { showModal } = useAppContext();
@@ -86,12 +85,15 @@ const ConsoleGiftCertificatesList: React.FC<ConsoleGiftCertificatesListInterface
           return <div>Не назначен</div>;
         }
         return (
-          <div>
+          <div
+            onClick={() => {
+              window.open(`${userRouteBasePath}/${user._id}`);
+            }}
+            className='cursor-pointer hover:text-theme'
+          >
             <div>{user.fullName}</div>
-            <div>
-              <LinkEmail value={user.email} />
-            </div>
-            <LinkPhone value={user.formattedPhone} />
+            <div>{user.email}</div>
+            <div>{user.formattedPhone?.readable}</div>
           </div>
         );
       },

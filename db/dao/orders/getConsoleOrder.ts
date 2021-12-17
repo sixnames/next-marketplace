@@ -26,6 +26,7 @@ interface CastOrderStatusInterface {
   locale?: string;
   initialStatus?: OrderStatusInterface | null;
 }
+
 export function castOrderStatus({
   locale,
   initialStatus,

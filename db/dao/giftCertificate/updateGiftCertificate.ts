@@ -64,6 +64,7 @@ export async function updateGiftCertificate({
       {
         $set: {
           log: [],
+          code: input.code,
           nameI18n: input.nameI18n,
           descriptionI18n: input.descriptionI18n,
           initialValue: input.initialValue,

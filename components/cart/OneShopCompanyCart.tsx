@@ -1,7 +1,7 @@
 import Button from 'components/button/Button';
 import { CartProduct } from 'components/cart/CartProduct';
 import { CartDeliveryFields } from 'components/cart/DefaultCart';
-import CartAside, { useCartAsideDiscounts } from 'components/CartAside';
+import CartAside from 'components/CartAside';
 import FormikDatePicker from 'components/FormElements/Input/FormikDatePicker';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import InputLine from 'components/FormElements/Input/InputLine';
@@ -18,9 +18,9 @@ import { useSiteContext } from 'context/siteContext';
 import { useSiteUserContext } from 'context/siteUserContext';
 import { CartInterface, CompanyInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
-import { useCheckGiftCertificateMutation } from 'hooks/mutations/useGiftCertificateMutations';
 import useValidationSchema from 'hooks/useValidationSchema';
 import LayoutCard from 'layout/LayoutCard';
+import { noNaN } from 'lib/numbers';
 import { phoneToRaw } from 'lib/phoneUtils';
 import { get } from 'lodash';
 import { CartTabIndexType, MakeOrderFormInterface } from 'pages/[companySlug]/[citySlug]/cart';
@@ -36,20 +36,20 @@ const OneShopCompanyDeliveryCart: React.FC<OneShopCompanyCartFormInterface> = ({
   domainCompany,
   cart,
 }) => {
-  const { giftCertificateDiscount, setGiftCertificateDiscount, promoCodeDiscount } =
-    useCartAsideDiscounts();
-  const { makeAnOrder } = useSiteContext();
+  const { makeAnOrder, checkGiftCertificate } = useSiteContext();
   const sessionUser = useSiteUserContext();
   const disabled = !!sessionUser;
   const validationSchema = useValidationSchema({
     schema: makeAnOrderSchema,
   });
 
-  const [checkGiftCertificateMutation] = useCheckGiftCertificateMutation();
-
   if (!domainCompany.mainShop) {
     return <RequestError message={'Ошибака загрузки данных магазина'} />;
   }
+
+  const giftCertificate = (cart.giftCertificates || []).find(({ companyId }) => {
+    return `${companyId}` === `${domainCompany.mainShop?.companyId}`;
+  });
 
   const initialValues: MakeOrderFormInterface = {
     ...cart,
@@ -62,6 +62,8 @@ const OneShopCompanyDeliveryCart: React.FC<OneShopCompanyCartFormInterface> = ({
     shopConfigs: [
       {
         _id: `${domainCompany.mainShop._id}`,
+        giftCertificateDiscount: giftCertificate?.value || 0,
+        giftCertificateCode: giftCertificate?.code || '',
         deliveryVariant: ORDER_DELIVERY_VARIANT_COURIER,
         paymentVariant: ORDER_PAYMENT_VARIANT_RECEIPT,
       },
@@ -109,8 +111,19 @@ const OneShopCompanyDeliveryCart: React.FC<OneShopCompanyCartFormInterface> = ({
     >
       {({ values, setFieldValue }) => {
         const giftCertificateFieldName = `shopConfigs[0].giftCertificateCode`;
-        const { cartDeliveryProducts, totalDeliveryPrice, isWithShoplessDelivery } = values;
+        const giftCertificateValueFieldName = `shopConfigs[0].giftCertificateDiscount`;
+        const { cartDeliveryProducts, totalDeliveryPrice, isWithShoplessDelivery, shopConfigs } =
+          values;
         const giftCertificateCode = get(values, giftCertificateFieldName);
+        const giftCertificateDiscount = shopConfigs.reduce(
+          (acc: number, { giftCertificateDiscount }) => {
+            return acc + noNaN(giftCertificateDiscount);
+          },
+          0,
+        );
+        const promoCodeDiscount = shopConfigs.reduce((acc: number, { promoCodeDiscount }) => {
+          return acc + noNaN(promoCodeDiscount);
+        }, 0);
 
         return (
           <Form>
@@ -240,19 +253,15 @@ const OneShopCompanyDeliveryCart: React.FC<OneShopCompanyCartFormInterface> = ({
                           theme={'secondary'}
                           testId={`gift-certificate-confirm-${domainCompany.mainShop?.slug}`}
                           onClick={() => {
-                            checkGiftCertificateMutation({
-                              userId: sessionUser ? `${sessionUser.me._id}` : null,
+                            checkGiftCertificate({
                               code: giftCertificateCode,
                               companyId: `${domainCompany._id}`,
-                            })
-                              .then((response) => {
-                                if (!response || !response.success || !response.payload) {
-                                  setFieldValue(giftCertificateFieldName, '');
-                                  return;
-                                }
-                                setGiftCertificateDiscount(response.payload.value);
-                              })
-                              .catch(console.log);
+                              cartId: `${cart._id}`,
+                              onError: () => setFieldValue(giftCertificateFieldName, ''),
+                              onSuccess: (giftCertificate) => {
+                                setFieldValue(giftCertificateValueFieldName, giftCertificate.value);
+                              },
+                            });
                           }}
                         >
                           Применить
@@ -295,9 +304,7 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
   domainCompany,
   cart,
 }) => {
-  const { giftCertificateDiscount, setGiftCertificateDiscount, promoCodeDiscount } =
-    useCartAsideDiscounts();
-  const { makeAnOrder } = useSiteContext();
+  const { makeAnOrder, checkGiftCertificate } = useSiteContext();
   const sessionUser = useSiteUserContext();
   const { configs } = useConfigContext();
   const disabled = !!sessionUser;
@@ -305,11 +312,13 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
     schema: makeAnOrderSchema,
   });
 
-  const [checkGiftCertificateMutation] = useCheckGiftCertificateMutation();
-
   if (!domainCompany.mainShop) {
     return <RequestError message={'Ошибака загрузки данных магазина'} />;
   }
+
+  const giftCertificate = (cart.giftCertificates || []).find(({ companyId }) => {
+    return `${companyId}` === `${domainCompany.mainShop?.companyId}`;
+  });
 
   const initialValues: MakeOrderFormInterface = {
     ...cart,
@@ -322,6 +331,8 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
     shopConfigs: [
       {
         _id: `${domainCompany.mainShop._id}`,
+        giftCertificateDiscount: giftCertificate?.value || 0,
+        giftCertificateCode: giftCertificate?.code || '',
         deliveryVariant: ORDER_DELIVERY_VARIANT_PICKUP,
         paymentVariant: ORDER_PAYMENT_VARIANT_RECEIPT,
       },
@@ -349,9 +360,20 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
       }}
     >
       {({ values, setFieldValue }) => {
-        const { cartBookingProducts, totalBookingPrice, isWithShoplessBooking } = values;
+        const { cartBookingProducts, totalBookingPrice, isWithShoplessBooking, shopConfigs } =
+          values;
         const giftCertificateFieldName = `shopConfigs[0].giftCertificateCode`;
+        const giftCertificateValueFieldName = `shopConfigs[0].giftCertificateDiscount`;
         const giftCertificateCode = get(values, giftCertificateFieldName);
+        const giftCertificateDiscount = shopConfigs.reduce(
+          (acc: number, { giftCertificateDiscount }) => {
+            return acc + noNaN(giftCertificateDiscount);
+          },
+          0,
+        );
+        const promoCodeDiscount = shopConfigs.reduce((acc: number, { promoCodeDiscount }) => {
+          return acc + noNaN(promoCodeDiscount);
+        }, 0);
 
         return (
           <Form>
@@ -489,19 +511,15 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
                           theme={'secondary'}
                           testId={`gift-certificate-confirm-${domainCompany.mainShop?.slug}`}
                           onClick={() => {
-                            checkGiftCertificateMutation({
-                              userId: sessionUser ? `${sessionUser.me._id}` : null,
+                            checkGiftCertificate({
                               code: giftCertificateCode,
                               companyId: `${domainCompany._id}`,
-                            })
-                              .then((response) => {
-                                if (!response || !response.success || !response.payload) {
-                                  setFieldValue(giftCertificateFieldName, '');
-                                  return;
-                                }
-                                setGiftCertificateDiscount(response.payload.value);
-                              })
-                              .catch(console.log);
+                              cartId: `${cart._id}`,
+                              onError: () => setFieldValue(giftCertificateFieldName, ''),
+                              onSuccess: (giftCertificate) => {
+                                setFieldValue(giftCertificateValueFieldName, giftCertificate.value);
+                              },
+                            });
                           }}
                         >
                           Применить

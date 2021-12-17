@@ -28,7 +28,6 @@ const CartAside: React.FC<CartAsideInterface> = ({
   ...props
 }) => {
   const discount = noNaN(giftCertificateDiscount) + noNaN(promoCodeDiscount);
-  const isDiscounted = discount > 0;
   const discountedPrice = noNaN(props.totalPrice) - discount;
   const totalPrice = discountedPrice < 0 ? 0 : discountedPrice;
 
@@ -40,7 +39,10 @@ const CartAside: React.FC<CartAsideInterface> = ({
 
         <div className='flex items-baseline justify-between gap-2'>
           <div className='text-secondary-text'>Товары</div>
-          <div className='font-medium text-lg'>{`${productsCount} шт.`}</div>
+          <div className='font-medium text-lg'>
+            {`${productsCount} шт. - `}
+            <Currency testId={'cart-aside-total'} value={props.totalPrice} />
+          </div>
         </div>
 
         {noNaN(giftCertificateDiscount) > 0 ? (
@@ -52,19 +54,10 @@ const CartAside: React.FC<CartAsideInterface> = ({
 
         <div className='flex justify-between items-baseline'>
           <div className='text-lg text-secondary-text'>Итого</div>
-          <div className={isDiscounted ? 'text-xl font-medium' : 'text-2xl font-bold'}>
-            <Currency testId={'cart-aside-total'} value={props.totalPrice} />
+          <div className='text-2xl font-bold'>
+            <Currency testId={'cart-aside-total'} value={totalPrice} />
           </div>
         </div>
-
-        {isDiscounted ? (
-          <div className='flex justify-between items-baseline'>
-            <div className='text-lg text-secondary-text'>Со скидкой</div>
-            <div className='text-2xl font-bold'>
-              <Currency testId={'cart-aside-total'} value={totalPrice} />
-            </div>
-          </div>
-        ) : null}
 
         <Button
           type={'submit'}

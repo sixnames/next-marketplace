@@ -12,6 +12,7 @@ export interface MetaInterface {
   siteName?: string;
   foundationYear?: string;
   showForIndex: boolean;
+  noIndexFollow?: boolean;
 }
 
 const Meta: React.FC<MetaInterface> = ({
@@ -21,6 +22,7 @@ const Meta: React.FC<MetaInterface> = ({
   foundationYear,
   previewImage,
   showForIndex,
+  noIndexFollow,
 }) => {
   const router = useRouter();
   const [canonicalUrl, setCanonicalUrl] = React.useState<string>('');
@@ -69,17 +71,26 @@ const Meta: React.FC<MetaInterface> = ({
   return (
     <React.Fragment>
       <Head>
-        <title>{pageTitle}</title>
-        {noIndex ? <meta name='robots' content='noindex, nofollow' /> : null}
-        {showCanonical ? <link rel='canonical' href={canonicalUrl} /> : null}
-
+        {/*theme*/}
         <meta name={'color-scheme'} content={'light dark'} />
+        <meta name='theme-color' content='#ffffff' />
         <meta
           name='viewport'
           content={`minimum-scale=1, height=device-height, width=device-width, initial-scale=1.0`}
         />
+
+        {/*seo index*/}
+        {noIndex && !noIndexFollow ? <meta name='robots' content='noindex, nofollow' /> : null}
+        {noIndexFollow ? <meta name='robots' content='noindex, follow' /> : null}
+
+        {/*canonical*/}
+        {showCanonical ? <link rel='canonical' href={canonicalUrl} /> : null}
+
+        {/*title & description*/}
+        <title>{pageTitle}</title>
         <meta name={'description'} content={pageDescription} />
 
+        {/*app info*/}
         <meta name='author' content={pageSiteName} />
         <meta
           name='copyright'
@@ -87,6 +98,7 @@ const Meta: React.FC<MetaInterface> = ({
         />
         <meta name='application-name' content='Personal Website' />
 
+        {/*socials*/}
         <meta property='og:title' content={`${pageTitle}`} />
         <meta property='og:type' content='website' />
         <meta property='og:image' content={`${pagePreviewImage}?format=png`} />
@@ -103,9 +115,7 @@ const Meta: React.FC<MetaInterface> = ({
         <link rel={'apple-touch-icon'} href={`${appleTouchIcon}?format=png`} />
         <link rel={'manifest'} href={'/site.webmanifest'} />
 
-        <meta name='theme-color' content='#ffffff' />
-
-        {/*Fonts*/}
+        {/*fonts*/}
         <link
           rel={'preload'}
           href={'/fonts/Gilroy-Regular.woff2'}

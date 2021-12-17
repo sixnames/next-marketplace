@@ -21,7 +21,9 @@ export interface SiteLayoutCatalogueCreatedPages {
 interface SiteLayoutConsumerInterface
   extends SiteLayoutCatalogueCreatedPages,
     MetaInterface,
-    StickNavInterface {}
+    StickNavInterface {
+  noIndexFollow: boolean;
+}
 
 const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
   children,
@@ -34,6 +36,7 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
   foundationYear,
   currentRubricSlug,
   showForIndex,
+  noIndexFollow,
 }) => {
   const { isLoading, isModal } = useAppContext();
   const { configs } = useConfigContext();
@@ -54,6 +57,7 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
         siteName={siteName}
         foundationYear={foundationYear}
         showForIndex={showForIndex}
+        noIndexFollow={noIndexFollow}
       />
 
       <Header headerPageGroups={headerPageGroups} currentRubricSlug={currentRubricSlug} />
@@ -82,6 +86,7 @@ export interface SiteLayoutProviderInterface
   previewImage?: string;
   urlPrefix: string;
   showForIndex: boolean;
+  noIndexFollow?: boolean;
 }
 
 const SiteLayout: React.FC<SiteLayoutProviderInterface> = ({
@@ -90,6 +95,7 @@ const SiteLayout: React.FC<SiteLayoutProviderInterface> = ({
   sessionCity,
   domainCompany,
   urlPrefix,
+  noIndexFollow,
   ...props
 }) => {
   return (
@@ -100,7 +106,9 @@ const SiteLayout: React.FC<SiteLayoutProviderInterface> = ({
         domainCompany={domainCompany}
         urlPrefix={urlPrefix}
       >
-        <SiteLayoutConsumer {...props}>{children}</SiteLayoutConsumer>
+        <SiteLayoutConsumer {...props} noIndexFollow={Boolean(noIndexFollow)}>
+          {children}
+        </SiteLayoutConsumer>
       </SiteContextProvider>
     </SiteUserContextProvider>
   );

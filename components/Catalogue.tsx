@@ -609,6 +609,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
 export interface CatalogueInterface extends SiteLayoutProviderInterface {
   catalogueData?: CatalogueDataInterface | null;
   isSearchResult?: boolean;
+  noIndexFollow: boolean;
 }
 
 const Catalogue: React.FC<CatalogueInterface> = ({

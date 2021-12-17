@@ -78,15 +78,7 @@ const FormikMultiLineInput: React.FC<FormikMultiLineInputInterface> = ({
 
               <div className='flex h-input-height w-[40px] items-center justify-end'>
                 {isFirst ? (
-                  <Button
-                    frameClassName='w-auto'
-                    onClick={addFieldHandler}
-                    size={'small'}
-                    theme={'gray'}
-                    icon={'plus'}
-                    testId={`${fieldTestId}-add`}
-                    circle
-                  />
+                  <div />
                 ) : (
                   <Button
                     frameClassName='w-auto'
@@ -102,6 +94,16 @@ const FormikMultiLineInput: React.FC<FormikMultiLineInputInterface> = ({
             </div>
           );
         })}
+
+        <Button
+          frameClassName={'w-auto'}
+          onClick={addFieldHandler}
+          size={'small'}
+          theme={'gray'}
+          testId={`${testId}-add`}
+        >
+          Добавить
+        </Button>
 
         {removeIndex > NEGATIVE_INDEX ? (
           <div className='absolute inset-0 gap-4 flex flex-col items-center justify-center w-full h-full z-20 rounded-md backdrop-blur-md'>

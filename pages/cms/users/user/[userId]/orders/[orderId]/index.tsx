@@ -3,12 +3,12 @@ import ConsoleOrderDetails, {
 } from 'components/order/ConsoleOrderDetails';
 import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
 import { COL_ROLES, COL_USERS } from 'db/collectionNames';
+import { getConsoleOrder } from 'db/dao/orders/getConsoleOrder';
 import { getDatabase } from 'db/mongodb';
 import { AppContentWrapperBreadCrumbs, UserInterface } from 'db/uiInterfaces';
 import CmsUserLayout from 'layout/cms/CmsUserLayout';
 import { getFieldStringLocale } from 'lib/i18n';
 import { getFullName } from 'lib/nameUtils';
-import { getConsoleOrder } from 'lib/orderUtils';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';

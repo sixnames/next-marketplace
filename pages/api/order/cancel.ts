@@ -1,5 +1,5 @@
 import { REQUEST_METHOD_PATCH } from 'config/common';
-import { cancelOrder } from 'db/dao/order/cancelOrder';
+import { cancelOrder } from 'db/dao/orders/cancelOrder';
 import { sendApiRouteResponse, sendApiRouteWrongMethod } from 'lib/sessionHelpers';
 import { NextApiRequest, NextApiResponse } from 'next';
 

@@ -153,6 +153,7 @@ export interface CartInterface extends CartModel {
   isWithShoplessDelivery?: boolean;
   cartDeliveryProducts: CartProductInterface[];
   cartBookingProducts: CartProductInterface[];
+  giftCertificates?: GiftCertificateInterface[] | null;
 }
 
 export interface PromoInterface extends PromoModel {

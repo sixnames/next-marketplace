@@ -1,5 +1,5 @@
 import { REQUEST_METHOD_PATCH } from 'config/common';
-import { confirmOrder } from 'db/dao/order/confirmOrder';
+import { confirmOrder } from 'db/dao/orders/confirmOrder';
 import { sendApiRouteResponse, sendApiRouteWrongMethod } from 'lib/sessionHelpers';
 import { NextApiRequest, NextApiResponse } from 'next';
 

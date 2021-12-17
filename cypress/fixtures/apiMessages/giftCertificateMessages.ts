@@ -75,8 +75,8 @@ export const giftCertificateMessages: MessageBaseInterface[] = [
   {
     slug: 'giftCertificate.check.notAuth',
     messageI18n: {
-      [DEFAULT_LOCALE]: `Подарочный сертификат принадлежит зарегестрированному пользователь. Пожалуйста авторизуйтесь если вы являетесь этим пользователем.`,
-      [SECONDARY_LOCALE]: `Gift certificate is belongs to registered user. Sign in please for certificate use.`,
+      [DEFAULT_LOCALE]: `Подарочный сертификат принадлежит зарегистрированному пользователю. Пожалуйста авторизуйтесь если вы являетесь этим пользователем.`,
+      [SECONDARY_LOCALE]: `Gift certificate belongs to registered user. Sign in please for certificate use.`,
     },
   },
   {

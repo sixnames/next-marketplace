@@ -12,7 +12,7 @@ import Title from 'components/Title';
 import { ROUTE_CMS } from 'config/common';
 import { CONFIRM_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
-import { getConsoleOrders, GetConsoleOrdersPayloadType } from 'db/dao/order/getConsoleOrders';
+import { getConsoleOrders, GetConsoleOrdersPayloadType } from 'db/dao/orders/getConsoleOrders';
 import { OrderInterface } from 'db/uiInterfaces';
 import { useDeleteOrder } from 'hooks/mutations/useOrderMutations';
 import AppContentWrapper from 'layout/AppContentWrapper';

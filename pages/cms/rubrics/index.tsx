@@ -5,7 +5,7 @@ import Inner from 'components/Inner';
 import { CreateRubricModalInterface } from 'components/Modal/CreateRubricModal';
 import Table, { TableColumn } from 'components/Table';
 import Title from 'components/Title';
-import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
+import { DEFAULT_COMPANY_SLUG, DEFAULT_PAGE_FILTER, ROUTE_CMS } from 'config/common';
 import { CONFIRM_MODAL, CREATE_RUBRIC_MODAL } from 'config/modalVariants';
 import {
   COL_PRODUCTS,
@@ -82,7 +82,7 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics }) => {
             updateTitle={'Редактировать рубрику'}
             updateHandler={() => {
               router
-                .push(`${ROUTE_CMS}/rubrics/${dataItem._id}/products/${dataItem._id}`)
+                .push(`${ROUTE_CMS}/rubrics/${dataItem._id}/products/${DEFAULT_PAGE_FILTER}`)
                 .catch((e) => console.log(e));
             }}
             deleteTitle={'Удалить рубрику'}
@@ -125,7 +125,7 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics }) => {
             emptyMessage={'Список пуст'}
             onRowDoubleClick={(rubric) => {
               router
-                .push(`${ROUTE_CMS}/rubrics/${rubric._id}/products/${rubric._id}`)
+                .push(`${ROUTE_CMS}/rubrics/${rubric._id}/products/${DEFAULT_PAGE_FILTER}`)
                 .catch((e) => console.log(e));
             }}
           />

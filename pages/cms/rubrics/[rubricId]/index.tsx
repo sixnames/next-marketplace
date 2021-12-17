@@ -137,8 +137,16 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
                   rubricVariants={data.getAllRubricVariants}
                   genderOptions={data.getGenderOptions}
                 />
-                <SeoContentEditor label={'SEO текст вверху каталога'} filedName={'textTop'} />
-                <SeoContentEditor label={'SEO текст внизу каталога'} filedName={'textBottom'} />
+                <SeoContentEditor
+                  label={'SEO текст вверху каталога'}
+                  filedName={'textTop'}
+                  hideIndexCheckbox
+                />
+                <SeoContentEditor
+                  label={'SEO текст внизу каталога'}
+                  filedName={'textBottom'}
+                  hideIndexCheckbox
+                />
 
                 <FixedButtons>
                   <Button type={'submit'} testId={'rubric-submit'}>

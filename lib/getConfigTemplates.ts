@@ -1281,5 +1281,21 @@ export function getConfigTemplates({
         },
       },
     },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'project',
+      variant: CONFIG_VARIANT_BOOLEAN,
+      slug: 'useNoIndexRules',
+      name: 'Применять правило индекчирования из верхнего СЕО блока каталога',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [''],
+        },
+      },
+    },
   ];
 }

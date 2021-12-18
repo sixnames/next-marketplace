@@ -31,6 +31,7 @@ import {
   REQUEST_METHOD_POST,
   ROUTE_CATALOGUE,
   DEFAULT_COMPANY_SLUG,
+  FILTER_SEPARATOR,
 } from 'config/common';
 import { useConfigContext } from 'context/configContext';
 import { CatalogueDataInterface, CategoryInterface } from 'db/uiInterfaces';
@@ -329,7 +330,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
                 filters,
                 excludedKeys: FILTER_SORT_KEYS,
               });
-              const nextPath = `${urlPrefix}${ROUTE_CATALOGUE}/${router.query.rubricSlug}/${options}/${SORT_BY_KEY}-priority`;
+              const nextPath = `${urlPrefix}${ROUTE_CATALOGUE}/${router.query.rubricSlug}${options}/${SORT_BY_KEY}${FILTER_SEPARATOR}priority`;
               router.push(nextPath).catch(console.log);
             },
           },
@@ -353,7 +354,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
                 filters,
                 excludedKeys: FILTER_SORT_KEYS,
               });
-              const nextPath = `${urlPrefix}${ROUTE_CATALOGUE}/${router.query.rubricSlug}/${options}/${SORT_BY_KEY}-price/${SORT_DIR_KEY}-${SORT_ASC_STR}`;
+              const nextPath = `${urlPrefix}${ROUTE_CATALOGUE}/${router.query.rubricSlug}${options}/${SORT_BY_KEY}-price/${SORT_DIR_KEY}${FILTER_SEPARATOR}${SORT_ASC_STR}`;
               router.push(nextPath).catch(console.log);
             },
           },
@@ -377,8 +378,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
                 filters,
                 excludedKeys: FILTER_SORT_KEYS,
               });
-              const nextPath = `${urlPrefix}${ROUTE_CATALOGUE}/${router.query.rubricSlug}/${options}/${SORT_BY_KEY}-price/${SORT_DIR_KEY}-${SORT_DESC_STR}`;
-              console.log(nextPath);
+              const nextPath = `${urlPrefix}${ROUTE_CATALOGUE}/${router.query.rubricSlug}${options}/${SORT_BY_KEY}-price/${SORT_DIR_KEY}${FILTER_SEPARATOR}${SORT_DESC_STR}`;
               router.push(nextPath).catch(console.log);
             },
           },

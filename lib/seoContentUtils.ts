@@ -49,7 +49,6 @@ import {
   SeoContentCitiesInterface,
   SeoContentInterface,
 } from 'db/uiInterfaces';
-import { castCatalogueFilter } from 'lib/catalogueHelpers';
 import { castUrlFilters } from 'lib/catalogueUtils';
 import { castConfigs, getConfigStringValue } from 'lib/configsUtils';
 import { getFieldStringLocale } from 'lib/i18n';
@@ -376,7 +375,8 @@ export async function getCatalogueSeoContentSlug({
 
     // get prices
     const priceSlugs = priceFilters.map((filter) => {
-      const { optionSlug } = castCatalogueFilter(filter);
+      const splittedOption = filter.split(FILTER_SEPARATOR);
+      const optionSlug = splittedOption[1];
       return optionSlug;
     });
     const priceAttribute = getPriceAttribute(city.currency);
@@ -395,7 +395,9 @@ export async function getCatalogueSeoContentSlug({
         }
 
         const newAcc = [...acc];
-        const { attributeSlug, optionSlug } = castCatalogueFilter(filter);
+        const splittedOption = filter.split(FILTER_SEPARATOR);
+        const attributeSlug = splittedOption[0];
+        const optionSlug = splittedOption[1];
         const existingAttributeConfigIndex = newAcc.findIndex((config) => {
           return attributeSlug === config.attributeSlug;
         });
@@ -697,7 +699,8 @@ export async function getCategorySeoContentSlug({
     });
     const sortedFilters = sortStringArray(filters);
     const categoryIds = sortedFilters.reduce((acc: string, filter) => {
-      const { optionSlug } = castCatalogueFilter(filter);
+      const splittedOption = filter.split(FILTER_SEPARATOR);
+      const optionSlug = splittedOption[1];
       const slugCategory = categoriesTree.find(({ slug }) => {
         return slug === optionSlug;
       });

@@ -72,7 +72,6 @@ import {
 } from 'db/uiInterfaces';
 import { getAlgoliaProductsSearch } from 'lib/algolia/productAlgoliaUtils';
 import { alwaysString, sortObjectsByField } from 'lib/arrayUtils';
-import { castCatalogueFilter } from 'lib/catalogueHelpers';
 import { getFieldStringLocale } from 'lib/i18n';
 import { noNaN } from 'lib/numbers';
 import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
@@ -426,8 +425,8 @@ export async function getCatalogueAttributes({
 
       // If price attribute
       if (slug === FILTER_PRICE_KEY) {
-        const castedFilter = castCatalogueFilter(optionSlug);
-        const prices = castedFilter.optionSlug.split('_');
+        const splittedOption = optionSlug.split(FILTER_SEPARATOR);
+        const prices = `${splittedOption[0]}`.split('_');
         const minPrice = prices[0];
         const maxPrice = prices[1];
 
@@ -797,7 +796,6 @@ export async function castUrlFilters({
   // sort stage
   const defaultSortStage = DEFAULT_SORT_STAGE;
   let sortStage: Record<any, any> = {
-    available: SORT_DESC,
     views: SORT_DESC,
     _id: SORT_DESC,
   };
@@ -806,7 +804,6 @@ export async function castUrlFilters({
   if (sortBy === SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY) {
     sortStage = {
       minPrice: castedSortDir,
-      available: SORT_DESC,
       views: SORT_DESC,
       _id: SORT_DESC,
     };
@@ -1027,7 +1024,7 @@ export const getCatalogueData = async ({
             mainImage: { $first: '$mainImage' },
             brandCollectionSlug: { $first: '$brandCollectionSlug' },
             views: { $max: `$views.${companySlug}.${city}` },
-            priorities: { $max: `$priorities.${companySlug}.${city}` },
+            // priorities: { $max: `$priorities.${companySlug}.${city}` },
             minPrice: {
               $min: '$price',
             },
@@ -1048,6 +1045,19 @@ export const getCatalogueData = async ({
             },
           },
         },
+        {
+          $addFields: {
+            sortIndex: {
+              $cond: {
+                if: {
+                  $gt: ['$available', 0],
+                },
+                then: 1,
+                else: 0,
+              },
+            },
+          },
+        },
 
         // catalogue data facets
         {
@@ -1055,7 +1065,10 @@ export const getCatalogueData = async ({
             // docs facet
             docs: [
               {
-                $sort: sortStage,
+                $sort: {
+                  sortIndex: SORT_DESC,
+                  ...sortStage,
+                },
               },
               {
                 $skip: skip,
@@ -1848,7 +1861,8 @@ export const getCatalogueData = async ({
     let redirect = null;
     const lostFilters: string[] = [];
     allUrlParams.forEach((filter) => {
-      const { attributeSlug } = castCatalogueFilter(FILTER_SEPARATOR);
+      const splittedOption = filter.split(FILTER_SEPARATOR);
+      const attributeSlug = splittedOption[0];
       if (
         attributeSlug === FILTER_PAGE_KEY ||
         attributeSlug === CATALOGUE_FILTER_LIMIT ||
@@ -1864,7 +1878,8 @@ export const getCatalogueData = async ({
 
     const lostNestedFilters: string[] = [];
     selectedFilterSlugs.forEach((filter) => {
-      const { attributeSlug } = castCatalogueFilter(FILTER_SEPARATOR);
+      const splittedOption = filter.split(FILTER_SEPARATOR);
+      const attributeSlug = splittedOption[0];
       if (
         attributeSlug === FILTER_PAGE_KEY ||
         attributeSlug === CATALOGUE_FILTER_LIMIT ||

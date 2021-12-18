@@ -1,3 +1,4 @@
+import { FILTER_SEPARATOR } from 'config/common';
 import { castProductConnectionForUI } from 'db/dao/product/castProductConnectionForUI';
 import {
   AttributeInterface,
@@ -8,7 +9,6 @@ import {
   ProductInterface,
   RubricInterface,
 } from 'db/uiInterfaces';
-import { castCatalogueFilter } from 'lib/catalogueHelpers';
 import { getFieldStringLocale } from 'lib/i18n';
 import { generateCardTitle, generateSnippetTitle } from 'lib/titleUtils';
 import { getTreeFromList } from 'lib/treeUtils';
@@ -47,7 +47,9 @@ export function castProductForUI({
       }
 
       const optionSlugs = product.selectedOptionsSlugs.reduce((acc: string[], selectedSlug) => {
-        const { attributeSlug, optionSlug } = castCatalogueFilter(selectedSlug);
+        const splittedOption = selectedSlug.split(FILTER_SEPARATOR);
+        const attributeSlug = splittedOption[0];
+        const optionSlug = splittedOption[1];
         if (!optionSlug || attributeSlug !== existingAttribute.slug) {
           return acc;
         }

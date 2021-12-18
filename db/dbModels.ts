@@ -1,12 +1,5 @@
 import { GEO_POINT_TYPE } from 'config/common';
-import {
-  BarcodeDoublesInterface,
-  BrandInterface,
-  CategoryInterface,
-  ProductAttributeInterface,
-  RubricInterface,
-  ShopProductBarcodeDoublesInterface,
-} from 'db/uiInterfaces';
+import { BarcodeDoublesInterface, ShopProductBarcodeDoublesInterface } from 'db/uiInterfaces';
 import { ObjectId } from 'mongodb';
 import { IconType } from 'types/iconTypes';
 
@@ -651,10 +644,10 @@ export interface ProductAttributeModel {
 }
 
 interface ProductMainFieldsInterface {
-  brandSlug?: string | null;
-  brandCollectionSlug?: string | null;
   rubricId: ObjectIdModel;
   rubricSlug: string;
+  brandSlug?: string | null;
+  brandCollectionSlug?: string | null;
   manufacturerSlug?: string | null;
   selectedOptionsSlugs: string[];
   barcode?: string[] | null;
@@ -668,17 +661,31 @@ export interface ProductModel extends ProductMainFieldsInterface, BaseModel, Tim
   nameI18n?: TranslationModel | null;
   descriptionI18n?: TranslationModel | null;
   mainImage: string;
+  gender: GenderModel;
   titleCategoriesSlugs: string[];
   selectedAttributesIds: ObjectId[];
-  gender: GenderModel;
+}
 
-  // types for aggregation
-  shopsCount?: number | null;
-  cardPrices?: ProductCardPricesModel | null;
-  attributes?: ProductAttributeInterface[] | null;
-  categories?: CategoryInterface[] | null;
-  rubric?: RubricInterface | null;
-  brand?: BrandInterface | null;
+export interface ProductSummaryModel extends BaseModel, TimestampModel {
+  slug: string;
+  active: boolean;
+  originalName: string;
+  snippetTitle: string;
+  cardTitle: string;
+  nameI18n?: TranslationModel | null;
+  descriptionI18n?: TranslationModel | null;
+  mainImage: string;
+  assets: string[];
+  gender: GenderModel;
+  barcode?: string[] | null;
+  allowDelivery: boolean;
+  rubricId: ObjectIdModel;
+  rubricSlug: string;
+  attributes: ProductAttributeModel[];
+  attributesCount: number;
+  totalAttributesCount: number;
+  shopsCount: number;
+  cardPrices: ProductCardPricesModel;
 }
 
 export interface ProductAssetsModel {
@@ -689,7 +696,6 @@ export interface ProductAssetsModel {
 }
 
 export interface ProductCardPricesModel {
-  _id: ObjectIdModel;
   min: string;
   max: string;
 }
@@ -1192,18 +1198,6 @@ export type SuppliersPaginationPayloadModel = PaginationPayloadType<SupplierMode
 export type ShopProductsPaginationPayloadModel = PaginationPayloadType<ShopProductModel>;
 export type ShopsPaginationPayloadModel = PaginationPayloadType<ShopModel>;
 export type UsersPaginationPayloadModel = PayloadType<PaginationPayloadType<UserModel>>;
-export interface ProductsPaginationPayloadModel {
-  sortBy: string;
-  sortDir: SortDirectionModel;
-  totalDocs: number;
-  totalActiveDocs: number;
-  limit: number;
-  page: number;
-  totalPages: number;
-  hasPrevPage: boolean;
-  hasNextPage: boolean;
-  docs: ProductModel[];
-}
 
 // SEO
 export interface TextUniquenessApiResponseInterface {

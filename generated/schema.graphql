@@ -689,12 +689,6 @@ enum Gender {
   singular
 }
 
-input GetProductShopsInput {
-  productId: ObjectId!
-  sortBy: String = "price"
-  sortDir: SortDirection = DESC
-}
-
 """
 The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -1454,36 +1448,20 @@ type PointGeoJSON {
 type Product implements Base & Timestamp {
   _id: ObjectId!
   active: Boolean!
-  assets: ProductAssets
-  attributes: [ProductAttribute!]!
   available: Boolean
   barcode: String
-  brand: Brand
-  brandCollection: BrandCollection
   brandCollectionSlug: String
   brandSlug: String
-  cardPrices: ProductCardPrices!
-  connections: [ProductConnection!]!
   createdAt: Date!
-  description: String
   descriptionI18n: JSONObject
   itemId: String!
   mainImage: String!
-  manufacturer: Manufacturer
   manufacturerSlug: String
   nameI18n: JSONObject
   originalName: String!
-  rubric: Rubric!
   rubricId: ObjectId!
   rubricSlug: String!
-
-  """
-  Returns all shop products that product connected to
-  """
-  shopProducts: [ShopProduct!]!
-  shopsCount: Int!
   slug: String!
-  snippetTitle: String!
   supplierSlug: String
   updatedAt: Date!
 }
@@ -1510,13 +1488,7 @@ type ProductAttribute {
   textI18n: JSONObject
 }
 
-input ProductAttributesASTInput {
-  productId: ObjectId
-  rubricId: ObjectId!
-}
-
 type ProductCardPrices {
-  _id: ObjectId!
   max: String!
   min: String!
 }
@@ -1538,58 +1510,6 @@ type ProductPayload implements Payload {
   message: String!
   payload: Product
   success: Boolean!
-}
-
-input ProductsPaginationInput {
-  """
-  Filter by current attributes
-  """
-  attributesIds: [ObjectId!]
-
-  """
-  Filter by excluded selected options slugs
-  """
-  excludedOptionsSlugs: [String!]
-
-  """
-  Exclude current products
-  """
-  excludedProductsIds: [ObjectId!]
-
-  """
-  Exclude products in current rubrics
-  """
-  excludedRubricsIds: [ObjectId!]
-
-  """
-  Returns products not added to any rubric.
-  """
-  isWithoutRubrics: Boolean
-  limit: Int = 50
-  maxPrice: Int
-  minPrice: Int
-  page: Int = 1
-
-  """
-  Filter by current rubrics
-  """
-  rubricId: ObjectId
-  search: String
-  sortBy: String = "_id"
-  sortDir: SortDirection = DESC
-}
-
-type ProductsPaginationPayload {
-  docs: [Product!]!
-  hasNextPage: Boolean!
-  hasPrevPage: Boolean!
-  limit: Int!
-  page: Int!
-  sortBy: String!
-  sortDir: SortDirection!
-  totalActiveDocs: Int!
-  totalDocs: Int!
-  totalPages: Int!
 }
 
 type Query {
@@ -1764,21 +1684,6 @@ type Query {
   Should return options groups variants options
   """
   getOptionsGroupVariantsOptions: [SelectOption!]!
-
-  """
-  Should return product by given id
-  """
-  getProduct(_id: ObjectId!): Product
-
-  """
-  Should return product by given slug
-  """
-  getProductBySlug(slug: String!): Product
-
-  """
-  Should return shops products list for product card
-  """
-  getProductShops(input: GetProductShopsInput!): [ShopProduct!]!
 
   """
   Should return role by give id

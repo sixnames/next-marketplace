@@ -726,12 +726,6 @@ export enum Gender {
   Singular = 'singular'
 }
 
-export type GetProductShopsInput = {
-  productId: Scalars['ObjectId'];
-  sortBy?: Maybe<Scalars['String']>;
-  sortDir?: Maybe<SortDirection>;
-};
-
 
 export type Language = {
   __typename?: 'Language';
@@ -1688,19 +1682,6 @@ export type Product = Base & Timestamp & {
   rubricSlug: Scalars['String'];
   available?: Maybe<Scalars['Boolean']>;
   mainImage: Scalars['String'];
-  snippetTitle: Scalars['String'];
-  assets?: Maybe<ProductAssets>;
-  attributes: Array<ProductAttribute>;
-  connections: Array<ProductConnection>;
-  description?: Maybe<Scalars['String']>;
-  cardPrices: ProductCardPrices;
-  shopsCount: Scalars['Int'];
-  rubric: Rubric;
-  brand?: Maybe<Brand>;
-  brandCollection?: Maybe<BrandCollection>;
-  manufacturer?: Maybe<Manufacturer>;
-  /** Returns all shop products that product connected to */
-  shopProducts: Array<ShopProduct>;
 };
 
 export type ProductAssets = {
@@ -1724,14 +1705,8 @@ export type ProductAttribute = {
   attribute: Attribute;
 };
 
-export type ProductAttributesAstInput = {
-  productId?: Maybe<Scalars['ObjectId']>;
-  rubricId: Scalars['ObjectId'];
-};
-
 export type ProductCardPrices = {
   __typename?: 'ProductCardPrices';
-  _id: Scalars['ObjectId'];
   min: Scalars['String'];
   max: Scalars['String'];
 };
@@ -1756,42 +1731,6 @@ export type ProductPayload = Payload & {
   success: Scalars['Boolean'];
   message: Scalars['String'];
   payload?: Maybe<Product>;
-};
-
-export type ProductsPaginationInput = {
-  search?: Maybe<Scalars['String']>;
-  minPrice?: Maybe<Scalars['Int']>;
-  maxPrice?: Maybe<Scalars['Int']>;
-  sortBy?: Maybe<Scalars['String']>;
-  sortDir?: Maybe<SortDirection>;
-  page?: Maybe<Scalars['Int']>;
-  limit?: Maybe<Scalars['Int']>;
-  /** Filter by current rubrics */
-  rubricId?: Maybe<Scalars['ObjectId']>;
-  /** Filter by current attributes */
-  attributesIds?: Maybe<Array<Scalars['ObjectId']>>;
-  /** Filter by excluded selected options slugs */
-  excludedOptionsSlugs?: Maybe<Array<Scalars['String']>>;
-  /** Exclude products in current rubrics */
-  excludedRubricsIds?: Maybe<Array<Scalars['ObjectId']>>;
-  /** Exclude current products */
-  excludedProductsIds?: Maybe<Array<Scalars['ObjectId']>>;
-  /** Returns products not added to any rubric. */
-  isWithoutRubrics?: Maybe<Scalars['Boolean']>;
-};
-
-export type ProductsPaginationPayload = {
-  __typename?: 'ProductsPaginationPayload';
-  sortBy: Scalars['String'];
-  sortDir: SortDirection;
-  totalDocs: Scalars['Int'];
-  totalActiveDocs: Scalars['Int'];
-  page: Scalars['Int'];
-  limit: Scalars['Int'];
-  totalPages: Scalars['Int'];
-  hasPrevPage: Scalars['Boolean'];
-  hasNextPage: Scalars['Boolean'];
-  docs: Array<Product>;
 };
 
 export type Query = {
@@ -1846,12 +1785,6 @@ export type Query = {
   getOptionsGroup: OptionsGroup;
   /** Should return options groups list */
   getAllOptionsGroups: Array<OptionsGroup>;
-  /** Should return product by given id */
-  getProduct?: Maybe<Product>;
-  /** Should return product by given slug */
-  getProductBySlug?: Maybe<Product>;
-  /** Should return shops products list for product card */
-  getProductShops: Array<ShopProduct>;
   /** Should return role by give id */
   getRole?: Maybe<Role>;
   /** Should return all roles list */
@@ -1990,21 +1923,6 @@ export type QueryGetOptionsGroupArgs = {
 
 export type QueryGetAllOptionsGroupsArgs = {
   excludedIds?: Maybe<Array<Scalars['ObjectId']>>;
-};
-
-
-export type QueryGetProductArgs = {
-  _id: Scalars['ObjectId'];
-};
-
-
-export type QueryGetProductBySlugArgs = {
-  slug: Scalars['String'];
-};
-
-
-export type QueryGetProductShopsArgs = {
-  input: GetProductShopsInput;
 };
 
 

@@ -20,6 +20,7 @@ export async function getCatalogueIsrProps(
       ...props,
       route: '',
       showForIndex: false,
+      noIndexFollow: false,
     },
     notFound: true,
   };
@@ -95,13 +96,18 @@ export async function getCatalogueIsrProps(
     };
   }
 
-  const showForIndex = rootPath === asPath ? true : rawCatalogueData.textTop?.showForIndex;
+  /*seo*/
+  const noIndexFollow = rawCatalogueData.page > 1;
+  const showForIndex =
+    rootPath === asPath && !noIndexFollow ? true : Boolean(rawCatalogueData.textTop?.showForIndex);
+
   return {
     revalidate: ISR_FIVE_SECONDS,
     props: {
       ...props,
       catalogueData: castDbData(rawCatalogueData),
-      showForIndex: Boolean(showForIndex),
+      showForIndex: showForIndex,
+      noIndexFollow,
     },
   };
 }

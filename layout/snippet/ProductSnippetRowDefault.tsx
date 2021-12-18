@@ -199,7 +199,11 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
           <div className='flex flex-col col-span-7 md:col-span-2'>
             <div className='mt-auto'>
               {/*availability*/}
-              <ProductSnippetAvailability shopsCount={shopsCount} className='mb-3' />
+              <ProductSnippetAvailability
+                available={available}
+                shopsCount={shopsCount}
+                className='mb-3'
+              />
 
               <div
                 className={`flex gap-2 ${

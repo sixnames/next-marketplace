@@ -24,6 +24,7 @@ export async function getServerSideProps(
       ...props,
       route: '',
       showForIndex: false,
+      noIndexFollow: false,
     },
     notFound: true,
   };
@@ -59,6 +60,7 @@ export async function getServerSideProps(
       ...props,
       catalogueData: castDbData(rawCatalogueData),
       showForIndex: false,
+      noIndexFollow: false,
     },
   };
 }

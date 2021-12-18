@@ -14,7 +14,7 @@ export async function getServerSideProps(
       context,
     });
 
-    if (!props) {
+    if (!props || props.companyNotFound) {
       return {
         notFound: true,
       };

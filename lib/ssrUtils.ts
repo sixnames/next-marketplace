@@ -1112,6 +1112,7 @@ interface GetPageInitialStatePayloadInterface extends PagePropsInterface {
   host: string;
   domain: string | null;
   urlPrefix: string;
+  companyNotFound: boolean;
 }
 
 export async function getPageInitialState({
@@ -1144,6 +1145,10 @@ export async function getPageInitialState({
   /// domain company for development
   // const domainCompany = await getSsrDomainCompany({ slug: `company_a` });
   // const domainCompany = await getSsrDomainCompany({ slug: `5` });
+  let companyNotFound = false;
+  if (!domainCompany) {
+    companyNotFound = true;
+  }
 
   // Page initial data
   const rawInitialData = await getPageInitialData({
@@ -1181,6 +1186,7 @@ export async function getPageInitialState({
     companySlug: domainCompany ? domainCompany.slug : DEFAULT_COMPANY_SLUG,
     sessionCity,
     sessionLocale,
+    companyNotFound,
     currentCity: currentCity
       ? {
           ...currentCity,
@@ -1581,7 +1587,9 @@ export interface GetSiteInitialDataInterface {
 
 export interface SiteInitialDataPropsInterface
   extends PagePropsInterface,
-    Omit<SiteLayoutProviderInterface, 'description' | 'title' | 'showForIndex'> {}
+    Omit<SiteLayoutProviderInterface, 'description' | 'title' | 'showForIndex'> {
+  companyNotFound: boolean;
+}
 
 export interface SiteInitialDataPayloadInterface {
   props: SiteInitialDataPropsInterface;
@@ -1602,6 +1610,7 @@ export async function getSiteInitialData({
     companySlug,
     themeStyle,
     urlPrefix,
+    companyNotFound,
   } = await getPageInitialState({ context });
 
   // initial data
@@ -1635,6 +1644,7 @@ export async function getSiteInitialData({
       sessionLocale,
       domainCompany,
       urlPrefix,
+      companyNotFound,
     },
   };
 }

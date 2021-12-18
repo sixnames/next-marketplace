@@ -46,6 +46,7 @@ import {
   ProductConnectionItemModel,
   ProductConnectionModel,
   ProductModel,
+  ProductSummaryModel,
   PromoModel,
   PromoProductModel,
   RoleModel,
@@ -249,9 +250,9 @@ export interface ProductAttributesGroupInterface extends AttributesGroupModel {
 }
 
 export interface ProductInterface extends ProductModel {
+  available?: boolean | null;
   name?: string | null;
   description?: string | null;
-  available?: boolean | null;
   assets?: ProductAssetsModel | null;
   brand?: BrandInterface | null;
   brandCollection?: BrandCollectionInterface | null;
@@ -285,6 +286,39 @@ export interface ProductInterface extends ProductModel {
   cardContent?: SeoContentModel | null;
   cardContentCities?: SeoContentCitiesInterface | null;
   shops?: ShopInterface[] | null;
+  shopsCount?: number | null;
+  cardPrices?: ProductCardPricesModel | null;
+  summary?: ProductSummaryInterface | null;
+}
+
+export interface ProductSummaryInterface extends ProductSummaryModel {
+  shopProductIds?: string[] | null;
+
+  // ui
+  name?: string | null;
+  description?: string | null;
+  cardContent?: SeoContentModel | null;
+  cardContentCities?: SeoContentCitiesInterface | null;
+  connections?: ProductConnectionInterface[] | null;
+  shopProducts?: ShopProductInterface[] | null;
+  shops?: ShopInterface[] | null;
+  breadcrumbs?: ProductCardBreadcrumbModel[] | null;
+
+  // parents
+  rubric?: RubricInterface | null;
+  categories?: CategoryInterface[] | null;
+  brand?: BrandInterface | null;
+  brandCollection?: BrandCollectionInterface | null;
+  manufacturer?: ManufacturerInterface | null;
+
+  // attributes
+  attributes: ProductAttributeInterface[];
+  attributesGroups?: ProductAttributesGroupInterface[] | null;
+  listAttributes?: ProductAttributeInterface[] | null;
+  textAttributes?: ProductAttributeInterface[] | null;
+  tagAttributes?: ProductAttributeInterface[] | null;
+  iconAttributes?: ProductAttributeInterface[] | null;
+  ratingAttributes?: ProductAttributeInterface[] | null;
 }
 
 export interface BarcodeDoublesInterface {

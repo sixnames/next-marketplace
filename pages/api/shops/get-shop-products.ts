@@ -1,17 +1,17 @@
 import { DEFAULT_LOCALE } from 'config/common';
 import { COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
 import { shopProductFieldsPipeline } from 'db/dao/constantPipelines';
-import { ObjectIdModel, ProductModel, ShopModel } from 'db/dbModels';
+import { ObjectIdModel, ShopModel } from 'db/dbModels';
 import { getDatabase } from 'db/mongodb';
 import { SyncParamsInterface, SyncProductInterface } from 'db/syncInterfaces';
-import { ShopProductInterface } from 'db/uiInterfaces';
+import { ProductInterface, ShopProductInterface } from 'db/uiInterfaces';
 import { getFieldStringLocale } from 'lib/i18n';
 import { generateSnippetTitle } from 'lib/titleUtils';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 interface SyncProductAggregationInterface extends Omit<SyncProductInterface, '_id'> {
   _id: ObjectIdModel;
-  product: ProductModel;
+  product: ProductInterface;
 }
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {

@@ -27,7 +27,6 @@ export * from './OrderStatus';
 export * from './Product';
 export * from './ProductAttribute';
 export * from './ProductConnection';
-export * from './ProductQueries';
 export * from './Role';
 export * from './RoleMutations';
 export * from './RoleQueries';

@@ -1,6 +1,6 @@
 import Inner from 'components/Inner';
 import Title from 'components/Title';
-import { ROUTE_CMS } from 'config/common';
+import { DEFAULT_PAGE_FILTER, ROUTE_CMS } from 'config/common';
 import { AppContentWrapperBreadCrumbs, RubricInterface } from 'db/uiInterfaces';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import AppSubNav from 'layout/AppSubNav';
@@ -30,7 +30,7 @@ const CmsRubricLayout: React.FC<CmsRubricLayoutInterface> = ({
       {
         name: 'Товары',
         testId: 'products',
-        path: `${basePath || ROUTE_CMS}/rubrics/${rubric._id}/products/${rubric._id}`,
+        path: `${basePath || ROUTE_CMS}/rubrics/${rubric._id}/products/${DEFAULT_PAGE_FILTER}`,
       },
       {
         name: 'Атрибуты',

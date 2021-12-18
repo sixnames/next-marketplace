@@ -183,7 +183,7 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
             <ProductSnippetPrice shopsCount={shopsCount} value={cardPrices?.min} />
 
             {/*availability*/}
-            <ProductSnippetAvailability shopsCount={shopsCount} />
+            <ProductSnippetAvailability available={available} shopsCount={shopsCount} />
           </div>
         )}
 

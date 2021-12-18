@@ -39,7 +39,7 @@ export async function getRubricProductsList({
       byRubricSlug: true,
       query: {
         search: alwaysString(search),
-        filters: [rubricSlug],
+        rubricSlug,
       },
     });
 

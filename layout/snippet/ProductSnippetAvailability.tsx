@@ -5,6 +5,7 @@ import * as React from 'react';
 interface ProductSnippetAvailabilityInterface {
   shopsCount?: number | null;
   className?: string;
+  available: number;
 }
 
 const minimalShopsCount = 2;
@@ -12,11 +13,12 @@ const minimalShopsCount = 2;
 const ProductSnippetAvailability: React.FC<ProductSnippetAvailabilityInterface> = ({
   shopsCount,
   className,
+  available,
 }) => {
   const { configs } = useConfigContext();
   const shopsCounterPostfix = noNaN(shopsCount) >= minimalShopsCount ? 'магазинах' : 'магазине';
 
-  if (configs.isOneShopCompany) {
+  if (configs.isOneShopCompany || available < 1) {
     return null;
   }
 

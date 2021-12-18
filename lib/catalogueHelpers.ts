@@ -9,7 +9,10 @@ export const getCatalogueFilterNextPath = ({
   filters,
   excludedKeys,
 }: GetCatalogueFilterNextPathInterface): string => {
-  return filters
+  if (filters.length < 1) {
+    return '';
+  }
+  return `/${filters
     .filter((option) => {
       if (!option || option.length < 1) {
         return false;
@@ -17,22 +20,8 @@ export const getCatalogueFilterNextPath = ({
       const optionArray = option.split('-');
       return !excludedKeys.includes(optionArray[0]);
     })
-    .join('/');
+    .join('/')}`;
 };
-
-interface CastCatalogueFilterPayloadInterface {
-  attributeSlug: string;
-  optionSlug: string;
-}
-
-export function castCatalogueFilter(filter: string): CastCatalogueFilterPayloadInterface {
-  const splittedOption = filter.split(FILTER_SEPARATOR);
-
-  return {
-    attributeSlug: `${splittedOption[0]}`,
-    optionSlug: splittedOption[1],
-  };
-}
 
 interface GetCatalogueFilterValueByKeyInterface {
   asPath: string;
@@ -45,7 +34,13 @@ export const getCatalogueFilterValueByKey = ({
 }: GetCatalogueFilterValueByKeyInterface): string | null => {
   const pathOptions = asPath.split('/');
   const optionsObjects = pathOptions.map((param) => {
-    return castCatalogueFilter(param);
+    const splittedOption = param.split(FILTER_SEPARATOR);
+    const attributeSlug = splittedOption[0];
+    const optionSlug = splittedOption[1];
+    return {
+      attributeSlug,
+      optionSlug,
+    };
   });
   const currentOption = optionsObjects.find((option) => {
     return option.attributeSlug === slug;

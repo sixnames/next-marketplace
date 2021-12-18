@@ -3,7 +3,7 @@ import { TranslationModel } from 'db/dbModels';
 import { getFieldStringLocale } from 'lib/i18n';
 import * as React from 'react';
 import InputLine, { InputLinePropsInterface } from '../Input/InputLine';
-import Icon from 'components/Icon';
+import WpIcon from 'components/WpIcon';
 import { InputTheme, OnOffType } from 'types/clientTypes';
 
 export interface SelectOptionInterface {
@@ -142,7 +142,7 @@ const Select: React.FC<SelectInterface> = ({
             );
           })}
         </select>
-        <Icon
+        <WpIcon
           className='absolute top-half right-5 w-3 h-3 transform translate-y-[-5px]'
           name={'chevron-down'}
         />

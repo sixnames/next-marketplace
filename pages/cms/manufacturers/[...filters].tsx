@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FixedButtons from 'components/button/FixedButtons';
 import ContentItemControls from 'components/button/ContentItemControls';
 import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
@@ -6,7 +6,7 @@ import Inner from 'components/Inner';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { ManufacturerModalInterface } from 'components/Modal/ManufacturerModal';
 import Pager from 'components/Pager';
-import Table, { TableColumn } from 'components/Table';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import Title from 'components/Title';
 import {
   ISO_LANGUAGES,
@@ -71,7 +71,7 @@ const ManufacturersConsumer: React.FC<ManufacturersConsumerInterface> = ({
     [showModal, updateValidationSchema],
   );
 
-  const columns: TableColumn<ManufacturerInterface>[] = [
+  const columns: WpTableColumn<ManufacturerInterface>[] = [
     {
       headTitle: 'ID',
       accessor: 'itemId',
@@ -139,7 +139,7 @@ const ManufacturersConsumer: React.FC<ManufacturersConsumerInterface> = ({
           <FormikRouterSearch testId={'brands'} />
 
           <div className='overflew-x-auto overflew-y-hidden'>
-            <Table<ManufacturerInterface>
+            <WpTable<ManufacturerInterface>
               columns={columns}
               data={docs}
               testIdKey={'name'}
@@ -152,7 +152,7 @@ const ManufacturersConsumer: React.FC<ManufacturersConsumerInterface> = ({
           <Pager page={page} totalPages={totalPages} />
 
           <FixedButtons>
-            <Button
+            <WpButton
               testId={'create-manufacturer'}
               size={'small'}
               onClick={() => {
@@ -165,7 +165,7 @@ const ManufacturersConsumer: React.FC<ManufacturersConsumerInterface> = ({
               }}
             >
               Добавить производителя
-            </Button>
+            </WpButton>
           </FixedButtons>
         </div>
       </Inner>

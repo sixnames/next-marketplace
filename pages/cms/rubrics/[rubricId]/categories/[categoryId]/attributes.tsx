@@ -1,12 +1,12 @@
 import Accordion from 'components/Accordion';
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FixedButtons from 'components/button/FixedButtons';
 import ContentItemControls from 'components/button/ContentItemControls';
 import CheckBox from 'components/FormElements/Checkbox/Checkbox';
 import Inner from 'components/Inner';
-import Link from 'components/Link/Link';
+import WpLink from 'components/Link/WpLink';
 import { AddAttributesGroupToRubricModalInterface } from 'components/Modal/AddAttributesGroupToRubricModal';
-import Table, { TableColumn } from 'components/Table';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import { ROUTE_CMS } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL, CONFIRM_MODAL } from 'config/modalVariants';
@@ -58,7 +58,7 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
     onError: onErrorCallback,
   });
 
-  const columns = (columnCategory?: CategoryInterface): TableColumn<AttributeInterface>[] => [
+  const columns = (columnCategory?: CategoryInterface): WpTableColumn<AttributeInterface>[] => [
     {
       accessor: 'name',
       headTitle: 'Название',
@@ -96,11 +96,11 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
       render: () => {
         if (columnCategory && columnCategory._id !== category._id) {
           return (
-            <Link
+            <WpLink
               href={`${ROUTE_CMS}/rubrics/${columnCategory.rubric?._id}/categories/${columnCategory._id}/attributes`}
             >
               {columnCategory.name}
-            </Link>
+            </WpLink>
           );
         }
         if (!columnCategory) {
@@ -172,7 +172,7 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
                 }
               >
                 <div className={`overflow-x-auto mt-4`}>
-                  <Table<AttributeInterface>
+                  <WpTable<AttributeInterface>
                     data={attributes}
                     columns={columns(category)}
                     emptyMessage={'Список атрибутов пуст'}
@@ -205,7 +205,7 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
                       }
                     >
                       <div className={`overflow-x-auto mt-4`}>
-                        <Table<AttributeInterface>
+                        <WpTable<AttributeInterface>
                           data={attributes}
                           columns={columns(parent)}
                           emptyMessage={'Список атрибутов пуст'}
@@ -239,7 +239,7 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
                 }
               >
                 <div className={`overflow-x-auto mt-4`}>
-                  <Table<AttributeInterface>
+                  <WpTable<AttributeInterface>
                     data={attributes}
                     columns={columns()}
                     emptyMessage={'Список атрибутов пуст'}
@@ -252,7 +252,7 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
         })}
 
         <FixedButtons>
-          <Button
+          <WpButton
             size={'small'}
             testId={'add-attributes-group'}
             onClick={() => {
@@ -278,7 +278,7 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
             }}
           >
             Добавить группу атрибутов
-          </Button>
+          </WpButton>
         </FixedButtons>
       </Inner>
     </CmsCategoryLayout>

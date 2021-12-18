@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import InputLine from 'components/FormElements/Input/InputLine';
 import * as React from 'react';
 import Input, { InputPropsInterface } from './Input';
@@ -41,7 +41,7 @@ const FormikCodeInput: React.FC<FormikCodeInputPropsInterface> = ({
               />
             </div>
 
-            <Button
+            <WpButton
               frameClassName='w-auto'
               theme={'secondary'}
               onClick={() => {
@@ -49,7 +49,7 @@ const FormikCodeInput: React.FC<FormikCodeInputPropsInterface> = ({
               }}
             >
               Сгенерировать
-            </Button>
+            </WpButton>
           </InputLine>
         );
       }}

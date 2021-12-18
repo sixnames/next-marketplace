@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import CompanyMainFields from 'components/FormTemplates/CompanyMainFields';
 import Inner from 'components/Inner';
 import { ROUTE_CMS } from 'config/common';
@@ -117,9 +117,9 @@ const CompanyDetailsConsumer: React.FC<CompanyDetailsConsumerInterface> = ({ pag
                     });
                   }}
                 />
-                <Button type={'submit'} testId={'company-submit'}>
+                <WpButton type={'submit'} testId={'company-submit'}>
                   Сохранить
-                </Button>
+                </WpButton>
               </Form>
             );
           }}

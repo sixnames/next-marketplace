@@ -1,10 +1,10 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import ContentItemControls from 'components/button/ContentItemControls';
 import FixedButtons from 'components/button/FixedButtons';
 import Inner from 'components/Inner';
 import { BlogAttributeModalInterface } from 'components/Modal/BlogAttributeModal';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import Table, { TableColumn } from 'components/Table';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import Title from 'components/Title';
 import { DEFAULT_LOCALE, ROUTE_CMS, SORT_ASC } from 'config/common';
 import { BLOG_ATTRIBUTE_MODAL, CONFIRM_MODAL } from 'config/modalVariants';
@@ -51,7 +51,7 @@ const BlogAttributesListConsumer: React.FC<BlogAttributesListConsumerInterface> 
     ];
   }, []);
 
-  const columns: TableColumn<BlogAttributeInterface>[] = [
+  const columns: WpTableColumn<BlogAttributeInterface>[] = [
     {
       accessor: 'name',
       headTitle: 'Заголовок',
@@ -109,7 +109,7 @@ const BlogAttributesListConsumer: React.FC<BlogAttributesListConsumerInterface> 
       <Inner>
         <div className='relative'>
           <div className='overflow-x-auto'>
-            <Table<BlogAttributeInterface>
+            <WpTable<BlogAttributeInterface>
               testIdKey={'name'}
               columns={columns}
               data={attributes}
@@ -125,7 +125,7 @@ const BlogAttributesListConsumer: React.FC<BlogAttributesListConsumerInterface> 
           </div>
 
           <FixedButtons>
-            <Button
+            <WpButton
               testId={`create-blog-attribute`}
               size={'small'}
               onClick={() => {
@@ -135,7 +135,7 @@ const BlogAttributesListConsumer: React.FC<BlogAttributesListConsumerInterface> 
               }}
             >
               Создать атрибут блога
-            </Button>
+            </WpButton>
           </FixedButtons>
         </div>
       </Inner>

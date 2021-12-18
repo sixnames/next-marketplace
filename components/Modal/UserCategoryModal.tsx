@@ -10,7 +10,7 @@ import * as React from 'react';
 import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
 import ModalButtons from 'components/Modal/ModalButtons';
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import { Formik, Form } from 'formik';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { createUserCategorySchema } from 'validation/userCategorySchema';
@@ -118,9 +118,9 @@ const UserCategoryModal: React.FC<UserCategoryModalInterface> = ({ userCategory,
               />
 
               <ModalButtons>
-                <Button testId={'submit-user-category'} type={'submit'}>
+                <WpButton testId={'submit-user-category'} type={'submit'}>
                   {userCategory ? 'Обновить' : 'Создать'}
-                </Button>
+                </WpButton>
               </ModalButtons>
             </Form>
           );

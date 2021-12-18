@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FixedButtons from 'components/button/FixedButtons';
 import ContentItemControls from 'components/button/ContentItemControls';
 import Inner from 'components/Inner';
@@ -229,7 +229,7 @@ const OptionsGroupOptionsConsumer: React.FC<OptionsGroupOptionsConsumerInterface
           )}
 
           <FixedButtons>
-            <Button
+            <WpButton
               testId={'create-top-level-option'}
               size={'small'}
               onClick={() => {
@@ -254,7 +254,7 @@ const OptionsGroupOptionsConsumer: React.FC<OptionsGroupOptionsConsumerInterface
               }}
             >
               Добавить родительскую опцию
-            </Button>
+            </WpButton>
           </FixedButtons>
         </div>
       </Inner>

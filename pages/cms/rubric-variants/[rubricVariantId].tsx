@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FixedButtons from 'components/button/FixedButtons';
 import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
 import FormikInput from 'components/FormElements/Input/FormikInput';
@@ -246,9 +246,9 @@ const RubricVariantConsumer: React.FC<RubricVariantConsumerInterface> = ({ rubri
                 />
 
                 <FixedButtons>
-                  <Button size={'small'} type={'submit'} testId={'rubric-variant-submit'}>
+                  <WpButton size={'small'} type={'submit'} testId={'rubric-variant-submit'}>
                     Сохранить
-                  </Button>
+                  </WpButton>
                 </FixedButtons>
               </Form>
             );

@@ -1,9 +1,9 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FixedButtons from 'components/button/FixedButtons';
 import ContentItemControls from 'components/button/ContentItemControls';
 import Inner from 'components/Inner';
 import { OptionsGroupModalInterface } from 'components/Modal/OptionsGroupModal';
-import Table, { TableColumn } from 'components/Table';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import Title from 'components/Title';
 import { DEFAULT_LOCALE, ROUTE_CMS, SORT_ASC } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
@@ -49,7 +49,7 @@ const OptionsGroupsConsumer: React.FC<OptionsGroupsConsumerInterface> = ({ optio
     onError: onErrorCallback,
   });
 
-  const columns: TableColumn<OptionsGroupInterface>[] = [
+  const columns: WpTableColumn<OptionsGroupInterface>[] = [
     {
       accessor: 'name',
       headTitle: 'Название',
@@ -110,7 +110,7 @@ const OptionsGroupsConsumer: React.FC<OptionsGroupsConsumerInterface> = ({ optio
 
         <div className='relative'>
           <div className='overflow-x-auto overflow-y-hidden'>
-            <Table<OptionsGroupInterface>
+            <WpTable<OptionsGroupInterface>
               testIdKey={'name'}
               columns={columns}
               data={optionsGroups}
@@ -120,7 +120,7 @@ const OptionsGroupsConsumer: React.FC<OptionsGroupsConsumerInterface> = ({ optio
             />
           </div>
           <FixedButtons>
-            <Button
+            <WpButton
               size={'small'}
               testId='create-options-group'
               onClick={() => {
@@ -136,7 +136,7 @@ const OptionsGroupsConsumer: React.FC<OptionsGroupsConsumerInterface> = ({ optio
               }}
             >
               Добавить группу опций
-            </Button>
+            </WpButton>
           </FixedButtons>
         </div>
       </Inner>

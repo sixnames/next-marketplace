@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FixedButtons from 'components/button/FixedButtons';
 import ProductMainFields, {
   ProductFormValuesInterface,
@@ -77,9 +77,9 @@ const ConsoleRubricProductDetails: React.FC<ConsoleRubricProductDetailsInterface
               <ProductMainFields />
 
               <FixedButtons>
-                <Button testId={'submit-product'} type={'submit'}>
+                <WpButton testId={'submit-product'} type={'submit'}>
                   Сохранить
-                </Button>
+                </WpButton>
               </FixedButtons>
             </Form>
           );

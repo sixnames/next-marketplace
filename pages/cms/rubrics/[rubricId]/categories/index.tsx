@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import ContentItemControls from 'components/button/ContentItemControls';
 import FixedButtons from 'components/button/FixedButtons';
 import Inner from 'components/Inner';
@@ -157,7 +157,7 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
           )}
 
           <FixedButtons>
-            <Button
+            <WpButton
               testId={'create-category'}
               size={'small'}
               onClick={() => {
@@ -170,7 +170,7 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
               }}
             >
               Создать категорию
-            </Button>
+            </WpButton>
           </FixedButtons>
         </div>
       </Inner>

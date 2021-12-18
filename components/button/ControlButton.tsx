@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Icon from 'components/Icon';
+import WpIcon from 'components/WpIcon';
 import WpTooltip from 'components/WpTooltip';
 import { noNaN } from 'lib/numbers';
 import { ButtonType } from 'types/clientTypes';
@@ -87,7 +87,7 @@ const ControlButton: React.FC<ControlButtonInterface> = ({
           type={type}
           className={buttonClass}
         >
-          <Icon
+          <WpIcon
             style={{
               top: noNaN(iconPositionTop),
               left: noNaN(iconPositionLeft),

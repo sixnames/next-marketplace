@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FixedButtons from 'components/button/FixedButtons';
 import ContentItemControls from 'components/button/ContentItemControls';
 import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
@@ -6,7 +6,7 @@ import Inner from 'components/Inner';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { SupplierModalInterface } from 'components/Modal/SupplierModal';
 import Pager from 'components/Pager';
-import Table, { TableColumn } from 'components/Table';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import Title from 'components/Title';
 import {
   ISO_LANGUAGES,
@@ -67,7 +67,7 @@ const SuppliersConsumer: React.FC<SuppliersConsumerInterface> = ({ docs, page, t
     [showModal, updateValidationSchema],
   );
 
-  const columns: TableColumn<SupplierInterface>[] = [
+  const columns: WpTableColumn<SupplierInterface>[] = [
     {
       headTitle: 'ID',
       accessor: 'itemId',
@@ -135,7 +135,7 @@ const SuppliersConsumer: React.FC<SuppliersConsumerInterface> = ({ docs, page, t
           <FormikRouterSearch testId={'brands'} />
 
           <div className='overflew-x-auto overflew-y-hidden'>
-            <Table<SupplierInterface>
+            <WpTable<SupplierInterface>
               columns={columns}
               data={docs}
               testIdKey={'name'}
@@ -148,7 +148,7 @@ const SuppliersConsumer: React.FC<SuppliersConsumerInterface> = ({ docs, page, t
           <Pager page={page} totalPages={totalPages} />
 
           <FixedButtons>
-            <Button
+            <WpButton
               testId={'create-supplier'}
               size={'small'}
               onClick={() => {
@@ -161,7 +161,7 @@ const SuppliersConsumer: React.FC<SuppliersConsumerInterface> = ({ docs, page, t
               }}
             >
               Добавить поставщика
-            </Button>
+            </WpButton>
           </FixedButtons>
         </div>
       </Inner>

@@ -1,10 +1,10 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FixedButtons from 'components/button/FixedButtons';
 import ContentItemControls from 'components/button/ContentItemControls';
 import Inner from 'components/Inner';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { LanguageModalInterface, UpdateLanguageModalInput } from 'components/Modal/LanguageModal';
-import Table, { TableColumn } from 'components/Table';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import Title from 'components/Title';
 import { SORT_DESC } from 'config/common';
 import { CONFIRM_MODAL, LANGUAGE_MODAL } from 'config/modalVariants';
@@ -54,7 +54,7 @@ const LanguagesContent: React.FC<LanguagesContentInterface> = ({ languages }) =>
     onError: onErrorCallback,
   });
 
-  const columns: TableColumn<LanguageModel>[] = [
+  const columns: WpTableColumn<LanguageModel>[] = [
     {
       accessor: 'name',
       headTitle: 'Название',
@@ -131,7 +131,7 @@ const LanguagesContent: React.FC<LanguagesContentInterface> = ({ languages }) =>
       <Inner data-cy={'languages-list'}>
         <Title>{pageTitle}</Title>
         <div className='overflow-x-auto overflow-y-hidden'>
-          <Table<LanguageModel>
+          <WpTable<LanguageModel>
             columns={columns}
             data={languages}
             testIdKey={'name'}
@@ -139,7 +139,7 @@ const LanguagesContent: React.FC<LanguagesContentInterface> = ({ languages }) =>
           />
         </div>
         <FixedButtons>
-          <Button
+          <WpButton
             size={'small'}
             testId={`language-create`}
             onClick={() => {
@@ -160,7 +160,7 @@ const LanguagesContent: React.FC<LanguagesContentInterface> = ({ languages }) =>
             }}
           >
             Создать язык
-          </Button>
+          </WpButton>
         </FixedButtons>
       </Inner>
     </AppContentWrapper>

@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FixedButtons from 'components/button/FixedButtons';
 import Inner from 'components/Inner';
 import SeoContentEditor from 'components/SeoContentEditor';
@@ -105,9 +105,9 @@ const CompanyRubricDetails: React.FC<CompanyRubricDetailsInterface> = ({
               />
 
               <FixedButtons>
-                <Button type={'submit'} testId={'rubric-submit'}>
+                <WpButton type={'submit'} testId={'rubric-submit'}>
                   Сохранить
-                </Button>
+                </WpButton>
               </FixedButtons>
             </Form>
           );

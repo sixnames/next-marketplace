@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import ConsoleRubricProductConstructor, {
   ConsoleRubricProductConstructorInterface,
 } from 'components/console/ConsoleRubricProductConstructor';
@@ -70,9 +70,9 @@ const CompanyProductDetails: React.FC<CompanyProductDetailsInterface> = ({
         {() => {
           return (
             <Form noValidate>
-              <Button testId={'submit-product'} type={'submit'} size={'small'}>
+              <WpButton testId={'submit-product'} type={'submit'} size={'small'}>
                 Сохранить
-              </Button>
+              </WpButton>
             </Form>
           );
         }}

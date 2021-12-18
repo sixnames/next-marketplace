@@ -10,7 +10,7 @@ import ModalTitle from 'components/Modal/ModalTitle';
 import FormikIndividualSearch from 'components/FormElements/Search/FormikIndividualSearch';
 import RubricsList from 'components/RubricsList';
 import useProductsListColumns, { ProductColumnsInterface } from 'hooks/useProductsListColumns';
-import Table from 'components/Table';
+import WpTable from 'components/WpTable';
 import useSWR from 'swr';
 import qs from 'qs';
 
@@ -63,7 +63,7 @@ const ProductsList: React.FC<ProductsListInterface> = ({
   return (
     <div>
       <div className='overflow-x-auto'>
-        <Table<ProductInterface>
+        <WpTable<ProductInterface>
           data={data?.docs}
           columns={columns}
           emptyMessage={'Список пуст'}

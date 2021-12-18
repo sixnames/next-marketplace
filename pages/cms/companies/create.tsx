@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import CompanyMainFields, {
   CompanyFormMainValuesInterface,
 } from 'components/FormTemplates/CompanyMainFields';
@@ -110,9 +110,9 @@ const CreateCompanyContent: React.FC = () => {
             return (
               <Form>
                 <CompanyMainFields />
-                <Button type={'submit'} testId={'company-submit'}>
+                <WpButton type={'submit'} testId={'company-submit'}>
                   Создать компанию
-                </Button>
+                </WpButton>
               </Form>
             );
           }}

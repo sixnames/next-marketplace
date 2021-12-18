@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import { debounce } from 'lodash';
 import * as React from 'react';
 import BarcodeScannerComponent from 'react-qr-barcode-scanner';
@@ -69,17 +69,17 @@ const BarcodeReader: React.FC<BarcodeReaderInterface> = ({ isVisible, setValue }
 
       {code ? (
         <div className='flex flex-col sm:flex-row gap-6 mt-6'>
-          <Button
+          <WpButton
             onClick={() => {
               setValue(code);
               setCode('');
             }}
           >
             Применить код {code}
-          </Button>
-          <Button theme={'secondary'} onClick={() => setCode('')}>
+          </WpButton>
+          <WpButton theme={'secondary'} onClick={() => setCode('')}>
             Сбросить
-          </Button>
+          </WpButton>
         </div>
       ) : null}
     </div>

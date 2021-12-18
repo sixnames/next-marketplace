@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FixedButtons from 'components/button/FixedButtons';
 import Currency from 'components/Currency';
 import FormattedDateTime from 'components/FormattedDateTime';
@@ -7,7 +7,7 @@ import InputLine from 'components/FormElements/Input/InputLine';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import FormikSpinnerInput from 'components/FormElements/SpinnerInput/FormikSpinnerInput';
 import Inner from 'components/Inner';
-import Link from 'components/Link/Link';
+import WpLink from 'components/Link/WpLink';
 import LinkEmail from 'components/Link/LinkEmail';
 import LinkPhone from 'components/Link/LinkPhone';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
@@ -88,7 +88,7 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
           <div className='mt-4 flex gap-4'>
             {/*edit button*/}
             {showAdminUi ? (
-              <Button
+              <WpButton
                 frameClassName='w-auto'
                 title={'Редактироват товар'}
                 size={'small'}
@@ -103,7 +103,7 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
                 }}
               />
             ) : (
-              <Button
+              <WpButton
                 frameClassName='w-auto'
                 title={'Сохранить товар'}
                 size={'small'}
@@ -132,7 +132,7 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
             )}
 
             {/*cancel button*/}
-            <Button
+            <WpButton
               frameClassName='w-auto'
               title={'Отменить товар'}
               size={'small'}
@@ -179,13 +179,13 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
             {/*name*/}
             <div className='text-lg font-bold flex-grow mb-2'>
               {product ? (
-                <Link
+                <WpLink
                   href={`/${companySlug}/${citySlug}/${product.slug}`}
                   className='block text-primary-text hover:text-theme hover:no-underline'
                   target={'_blank'}
                 >
                   {product.cardTitle}
-                </Link>
+                </WpLink>
               ) : null}
             </div>
 
@@ -479,9 +479,9 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
               </div>
 
               <FixedButtons>
-                <Button frameClassName={'w-auto'} type={'submit'}>
+                <WpButton frameClassName={'w-auto'} type={'submit'}>
                   Сохранить
-                </Button>
+                </WpButton>
               </FixedButtons>
             </Form>
           );

@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import Inner from 'components/Inner';
@@ -130,9 +130,9 @@ const OptionsGroupConsumer: React.FC<OptionsGroupConsumerInterface> = ({ options
                   options={data.getOptionsGroupVariantsOptions}
                 />
 
-                <Button type={'submit'} testId={'options-group-submit'}>
+                <WpButton type={'submit'} testId={'options-group-submit'}>
                   Сохранить
-                </Button>
+                </WpButton>
               </Form>
             );
           }}

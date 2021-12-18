@@ -8,7 +8,7 @@ import ModalTitle from 'components/Modal/ModalTitle';
 import { Form, Formik } from 'formik';
 import useValidationSchema from 'hooks/useValidationSchema';
 import FormikInput from 'components/FormElements/Input/FormikInput';
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import { shopProductInModalSchema } from 'validation/shopSchema';
 
 interface ModalShopProductInterface extends Partial<Omit<ShopProductInterface, 'product'>> {
@@ -85,9 +85,9 @@ const ShopProductModal: React.FC<ShopProductModalInterface> = ({ shopProduct, ti
                   showInlineError
                 />
 
-                <Button testId={'shop-submit'} type={'submit'}>
+                <WpButton testId={'shop-submit'} type={'submit'}>
                   Сохранить
-                </Button>
+                </WpButton>
               </Form>
             );
           }}

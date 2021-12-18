@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FakeInput from 'components/FormElements/Input/FakeInput';
 import LinkEmail from 'components/Link/LinkEmail';
 import LinkPhone from 'components/Link/LinkPhone';
@@ -16,7 +16,7 @@ import { phoneToReadable } from 'lib/phoneUtils';
 import * as React from 'react';
 import { useConfigContext } from 'context/configContext';
 import Inner from 'components/Inner';
-import Link from 'components/Link/Link';
+import WpLink from 'components/Link/WpLink';
 
 export interface FooterInterface {
   footerPageGroups: PagesGroupInterface[];
@@ -66,7 +66,7 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
                 <FakeInput value={'Введите Ваш E-mail'} low theme={'secondary'} />
               </div>
               <div className='flex-shrink-0 w-form-input-height ml-4'>
-                <Button
+                <WpButton
                   className='w-full'
                   icon={'arrow-right'}
                   theme={'secondary-b'}
@@ -131,38 +131,38 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
                     {(pages || []).map(({ name, slug, _id }) => {
                       return (
                         <li className='' key={`${_id}`}>
-                          <Link
+                          <WpLink
                             href={`${urlPrefix}${ROUTE_DOCS_PAGES}/${slug}`}
                             target={'_blank'}
                             className='block pt-1.5 pb-1.5 text-secondary-text hover:no-underline hover:text-theme cursor-pointer'
                           >
                             {name}
-                          </Link>
+                          </WpLink>
                         </li>
                       );
                     })}
 
                     {index === 0 && showBlog ? (
                       <li className=''>
-                        <Link
+                        <WpLink
                           href={`${urlPrefix}${ROUTE_BLOG_WITH_PAGE}`}
                           target={'_blank'}
                           className='block pt-1.5 pb-1.5 text-secondary-text hover:no-underline hover:text-theme cursor-pointer'
                         >
                           {blogLinkName}
-                        </Link>
+                        </WpLink>
                       </li>
                     ) : null}
 
                     {index === 0 ? (
                       <li className=''>
-                        <Link
+                        <WpLink
                           href={`${urlPrefix}${ROUTE_CONTACTS}`}
                           target={'_blank'}
                           className='block pt-1.5 pb-1.5 text-secondary-text hover:no-underline hover:text-theme cursor-pointer'
                         >
                           {contactsLinkName}
-                        </Link>
+                        </WpLink>
                       </li>
                     ) : null}
                   </ul>

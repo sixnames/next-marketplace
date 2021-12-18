@@ -1,9 +1,9 @@
 import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
 import Inner from 'components/Inner';
-import Link from 'components/Link/Link';
+import WpLink from 'components/Link/WpLink';
 import LinkPhone from 'components/Link/LinkPhone';
 import Pager from 'components/Pager';
-import Table, { TableColumn } from 'components/Table';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import Title from 'components/Title';
 import { DEFAULT_PAGE, ROUTE_CONSOLE, SORT_DESC } from 'config/common';
 import { COL_ORDERS, COL_USER_CATEGORIES, COL_USERS } from 'db/collectionNames';
@@ -45,12 +45,12 @@ const pageTitle = 'Клиенты';
 const UsersConsumer: React.FC<UsersConsumerInterface> = ({ docs, page, totalPages, itemPath }) => {
   const router = useRouter();
 
-  const columns: TableColumn<UserInterface>[] = [
+  const columns: WpTableColumn<UserInterface>[] = [
     {
       headTitle: 'ID',
       accessor: 'itemId',
       render: ({ cellData, dataItem }) => {
-        return <Link href={`${itemPath}/${dataItem._id}`}>{cellData}</Link>;
+        return <WpLink href={`${itemPath}/${dataItem._id}`}>{cellData}</WpLink>;
       },
     },
     {
@@ -86,7 +86,7 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({ docs, page, totalPage
           <FormikRouterSearch testId={'users'} />
 
           <div className='overflew-x-auto overflew-y-hidden'>
-            <Table<UserInterface>
+            <WpTable<UserInterface>
               columns={columns}
               data={docs}
               testIdKey={'name'}

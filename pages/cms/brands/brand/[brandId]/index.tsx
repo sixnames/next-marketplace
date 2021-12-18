@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FixedButtons from 'components/button/FixedButtons';
 import WpImageUpload from 'components/FormElements/Upload/WpImageUpload';
 import BrandMainFields from 'components/FormTemplates/BrandMainFields';
@@ -178,9 +178,9 @@ const BrandDetailsConsumer: React.FC<BrandDetailsConsumerInterface> = ({ brand }
                 <BrandMainFields />
 
                 <FixedButtons>
-                  <Button size={'small'} testId={'submit-brand'} type={'submit'}>
+                  <WpButton size={'small'} testId={'submit-brand'} type={'submit'}>
                     Сохранить
-                  </Button>
+                  </WpButton>
                 </FixedButtons>
               </Form>
             );

@@ -1,5 +1,5 @@
 import ArrowTrigger from 'components/ArrowTrigger';
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import SpinnerInput from 'components/FormElements/SpinnerInput/SpinnerInput';
 import LinkPhone from 'components/Link/LinkPhone';
 import { MapModalInterface } from 'components/Modal/MapModal';
@@ -141,7 +141,7 @@ const CardShop: React.FC<CardShopInterface> = ({ shop }) => {
                   />
                 </div>
                 <div className='col-span-2'>
-                  <Button
+                  <WpButton
                     short
                     className='w-full'
                     disabled={disabled}
@@ -155,7 +155,7 @@ const CardShop: React.FC<CardShopInterface> = ({ shop }) => {
                     }}
                   >
                     {noNaN(inCartCount) > 0 ? `В корзине ${inCartCount}` : 'В корзину'}
-                  </Button>
+                  </WpButton>
                 </div>
               </React.Fragment>
             )}

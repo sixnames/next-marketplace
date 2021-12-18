@@ -1,11 +1,11 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import ContentItemControls from 'components/button/ContentItemControls';
 import FixedButtons from 'components/button/FixedButtons';
 import FormattedDateTime from 'components/FormattedDateTime';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { CreatePromoModalInterface } from 'components/Modal/CreatePromoModal';
 import Percent from 'components/Percent';
-import Table, { TableColumn } from 'components/Table';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import { CONFIRM_MODAL, CREATE_PROMO_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import { CompanyInterface, PromoInterface } from 'db/uiInterfaces';
@@ -24,7 +24,7 @@ const PromoList: React.FC<PromoListInterface> = ({ promoList, basePath, pageComp
   const { showModal } = useAppContext();
   const [deletePromo] = useDeletePromo();
 
-  const columns: TableColumn<PromoInterface>[] = [
+  const columns: WpTableColumn<PromoInterface>[] = [
     {
       accessor: 'name',
       headTitle: 'Название',
@@ -85,7 +85,7 @@ const PromoList: React.FC<PromoListInterface> = ({ promoList, basePath, pageComp
   return (
     <div className='relative' data-cy={'promo-list'}>
       <div className='overflow-y-hidden overflow-x-auto'>
-        <Table<PromoInterface>
+        <WpTable<PromoInterface>
           testIdKey={'name'}
           columns={columns}
           data={promoList}
@@ -95,7 +95,7 @@ const PromoList: React.FC<PromoListInterface> = ({ promoList, basePath, pageComp
         />
       </div>
       <FixedButtons>
-        <Button
+        <WpButton
           testId={'create-promo'}
           onClick={() => {
             showModal<CreatePromoModalInterface>({
@@ -107,7 +107,7 @@ const PromoList: React.FC<PromoListInterface> = ({ promoList, basePath, pageComp
           }}
         >
           Создать акцию
-        </Button>
+        </WpButton>
       </FixedButtons>
     </div>
   );

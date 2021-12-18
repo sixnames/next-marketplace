@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import ShopMainFields from 'components/FormTemplates/ShopMainFields';
 import { phoneToRaw } from 'lib/phoneUtils';
 import * as React from 'react';
@@ -82,9 +82,9 @@ const CreateShopModal: React.FC<CreateShopModalInterface> = ({ companyId }) => {
             <Form>
               <ShopMainFields />
 
-              <Button type={'submit'} testId={'shop-submit'}>
+              <WpButton type={'submit'} testId={'shop-submit'}>
                 Создать
-              </Button>
+              </WpButton>
             </Form>
           );
         }}

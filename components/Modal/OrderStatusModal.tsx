@@ -14,7 +14,7 @@ import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
 import ModalButtons from 'components/Modal/ModalButtons';
 import { Form, Formik } from 'formik';
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 
 export interface OrderStatusModalInterface {
   orderStatus?: OrderStatusInterface;
@@ -130,9 +130,9 @@ const OrderStatusModal: React.FC<OrderStatusModalInterface> = ({
               <FormikCheckboxLine label={'Отменён'} name={'isCanceled'} />
 
               <ModalButtons>
-                <Button type={'submit'} testId={'submit-order-status'}>
+                <WpButton type={'submit'} testId={'submit-order-status'}>
                   {orderStatus ? 'Обновить' : 'Создать'}
-                </Button>
+                </WpButton>
               </ModalButtons>
             </Form>
           );

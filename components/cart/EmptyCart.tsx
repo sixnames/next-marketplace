@@ -1,5 +1,5 @@
 import Breadcrumbs from 'components/Breadcrumbs';
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import Inner from 'components/Inner';
 import Title from 'components/Title';
 import { ROUTE_PROFILE } from 'config/common';
@@ -17,7 +17,7 @@ const EmptyCart: React.FC = () => {
       <Inner lowTop testId={'cart'}>
         <Title>Корзина пуста</Title>
         <div className='flex gap-4 flex-wrap'>
-          <Button
+          <WpButton
             frameClassName='w-auto'
             theme={'secondary'}
             onClick={() => {
@@ -25,8 +25,8 @@ const EmptyCart: React.FC = () => {
             }}
           >
             Продолжить покупки
-          </Button>
-          <Button
+          </WpButton>
+          <WpButton
             frameClassName='w-auto'
             theme={'secondary'}
             onClick={() => {
@@ -34,7 +34,7 @@ const EmptyCart: React.FC = () => {
             }}
           >
             Мои заказы
-          </Button>
+          </WpButton>
         </div>
       </Inner>
     </div>

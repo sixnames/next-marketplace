@@ -9,7 +9,7 @@ import ButtonCross from 'components/button/ButtonCross';
 import ControlButton from 'components/button/ControlButton';
 import SpinnerInput from 'components/FormElements/SpinnerInput/SpinnerInput';
 import Currency from 'components/Currency';
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import { useRouter } from 'next/router';
 import { useNotificationsContext } from 'context/notificationsContext';
 import { noNaN } from 'lib/numbers';
@@ -212,7 +212,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
             <Currency value={totalPrice} />
           </div>
         </div>
-        <Button
+        <WpButton
           testId={'cart-dropdown-continue'}
           className='lg:w-full'
           onClick={() => {
@@ -222,7 +222,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
           }}
         >
           Перейти в корзину
-        </Button>
+        </WpButton>
       </div>
     </div>
   );

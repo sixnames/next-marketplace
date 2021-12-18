@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import ConsoleOrderDetails, {
   CmsOrderDetailsBaseInterface,
 } from 'components/order/ConsoleOrderDetails';
@@ -63,7 +63,7 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({
         <Inner>
           <FixedButtons>
             {order.status?.isNew ? (
-              <Button
+              <WpButton
                 onClick={() => {
                   confirmOrderMutation({
                     orderId: `${order._id}`,
@@ -71,11 +71,11 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({
                 }}
               >
                 Подтвердить заказ
-              </Button>
+              </WpButton>
             ) : null}
 
             {!order.status?.isCanceled && !order.status?.isDone ? (
-              <Button
+              <WpButton
                 theme={'secondary'}
                 onClick={() => {
                   showModal<ConfirmModalInterface>({
@@ -93,7 +93,7 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({
                 }}
               >
                 Отменить заказ
-              </Button>
+              </WpButton>
             ) : null}
           </FixedButtons>
         </Inner>

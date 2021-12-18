@@ -1,7 +1,7 @@
 import Breadcrumbs from 'components/Breadcrumbs';
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import ErrorBoundaryFallback from 'components/ErrorBoundaryFallback';
-import Icon from 'components/Icon';
+import WpIcon from 'components/WpIcon';
 import Inner from 'components/Inner';
 import MenuButtonWithName from 'components/MenuButtonWithName';
 import PageEditor from 'components/PageEditor';
@@ -110,7 +110,7 @@ const CatalogueHead: React.FC<CatalogueHeadInterface> = ({
             </div>
 
             <div className='flex flex-wrap gap-6 items-center'>
-              <Button
+              <WpButton
                 frameClassName='w-auto'
                 size={'small'}
                 onClick={() => {
@@ -125,7 +125,7 @@ const CatalogueHead: React.FC<CatalogueHeadInterface> = ({
                 }}
               >
                 Редактировать SEO блок
-              </Button>
+              </WpButton>
 
               {showIndexCheckBox && textTop ? (
                 <SeoContentNoIndexTrigger seoContent={textTop} />
@@ -412,9 +412,9 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
             <div>
               {/*Mobile controls*/}
               <div className='grid grid-cols-2 gap-4 md:gap-6 grid lg:hidden'>
-                <Button theme={'secondary'} className='w-full' onClick={showFilterHandler} short>
+                <WpButton theme={'secondary'} className='w-full' onClick={showFilterHandler} short>
                   Фильтр
-                </Button>
+                </WpButton>
                 <HeadlessMenuButton
                   buttonAs={'div'}
                   config={sortConfig}
@@ -443,7 +443,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
                     }`}
                     onClick={() => setIsRowViewHandler(CATALOGUE_VIEW_GRID)}
                   >
-                    <Icon
+                    <WpIcon
                       className='w-[var(--catalogueVieButtonSize)] h-[var(--catalogueVieButtonSize)]'
                       name={'grid'}
                     />
@@ -456,7 +456,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
                     }`}
                     onClick={() => setIsRowViewHandler(CATALOGUE_VIEW_ROW)}
                   >
-                    <Icon
+                    <WpIcon
                       className='w-[var(--catalogueVieButtonSize)] h-[var(--catalogueVieButtonSize)]'
                       name={'rows'}
                     />
@@ -537,7 +537,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
               />
             </div>
 
-            <Button
+            <WpButton
               size={'small'}
               onClick={() => {
                 window.open(
@@ -547,13 +547,13 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
               }}
             >
               Редактировать SEO блок
-            </Button>
+            </WpButton>
           </div>
         ) : null}
       </Inner>
 
       {isUpButtonVisible ? (
-        <Button
+        <WpButton
           onClick={() => {
             window.scrollTo({
               left: 0,

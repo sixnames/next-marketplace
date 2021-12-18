@@ -1,6 +1,6 @@
 import ButtonCross from 'components/button/ButtonCross';
 import InputLine, { InputLinePropsInterface } from 'components/FormElements/Input/InputLine';
-import Icon from 'components/Icon';
+import WpIcon from 'components/WpIcon';
 import {
   DATE_FORMAT_DATE,
   DEFAULT_LOCALE,
@@ -95,7 +95,7 @@ const DatePickerInput: React.FC<DatePickerInputInterface> = ({
       error={error}
     >
       {icon ? (
-        <Icon
+        <WpIcon
           name={icon}
           className='absolute top-half left-input-padding-horizontal z-20 w-input-icon-size h-input-icon-size transform -translate-y-1/2'
         />

@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import ModalFrame from 'components/Modal/ModalFrame';
 import ModalText from 'components/Modal/ModalText';
 import ModalTitle from 'components/Modal/ModalTitle';
@@ -18,14 +18,14 @@ const AdultModal: React.FC = () => {
           предназначены только для личного использования.
         </p>
       </ModalText>
-      <Button
+      <WpButton
         onClick={() => {
           window.localStorage.setItem(ADULT_KEY, ADULT_TRUE);
           hideModal();
         }}
       >
         Мне исполнилось 18 лет
-      </Button>
+      </WpButton>
     </ModalFrame>
   );
 };

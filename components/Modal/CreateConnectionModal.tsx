@@ -7,7 +7,7 @@ import { CreateProductConnectionInput } from 'generated/apolloComponents';
 import { Form, Formik } from 'formik';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import useValidationSchema from 'hooks/useValidationSchema';
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import { SelectOptionInterface } from 'components/FormElements/Select/Select';
 import { createProductConnectionModalSchema } from 'validation/productSchema';
 import { ATTRIBUTE_VARIANT_SELECT } from 'config/common';
@@ -96,9 +96,9 @@ const CreateConnectionModal: React.FC<CreateConnectionModalInterface> = ({ produ
                 isRequired
               />
 
-              <Button type={'submit'} testId={'create-connection-submit'}>
+              <WpButton type={'submit'} testId={'create-connection-submit'}>
                 Создать
-              </Button>
+              </WpButton>
             </Form>
           );
         }}

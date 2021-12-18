@@ -2,12 +2,12 @@ import AppContentFilter from 'components/AppContentFilter';
 import ContentItemControls from 'components/button/ContentItemControls';
 import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
 import Inner from 'components/Inner';
-import Link from 'components/Link/Link';
+import WpLink from 'components/Link/WpLink';
 import Pager from 'components/Pager';
 import RequestError from 'components/RequestError';
 import { SeoTextCitiesInfoList } from 'components/SeoTextLocalesInfoList';
 import Spinner from 'components/Spinner';
-import Table, { TableColumn } from 'components/Table';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import TableRowImage from 'components/TableRowImage';
 import {
   CompanyInterface,
@@ -39,18 +39,18 @@ const CompanyRubricProductsList: React.FC<CompanyRubricProductsListInterface> = 
 }) => {
   const isPageLoading = usePageLoadingState();
 
-  const columns: TableColumn<ProductInterface>[] = [
+  const columns: WpTableColumn<ProductInterface>[] = [
     {
       headTitle: 'Арт',
       render: ({ dataItem, rowIndex }) => {
         return (
-          <Link
+          <WpLink
             testId={`product-link-${rowIndex}`}
             href={`${itemPath}/${dataItem._id}`}
             target={'_blank'}
           >
             {dataItem.itemId}
-          </Link>
+          </WpLink>
         );
       },
     },
@@ -153,7 +153,7 @@ const CompanyRubricProductsList: React.FC<CompanyRubricProductsListInterface> = 
 
         <div className={'max-w-full'}>
           <div className={`relative overflow-x-auto overflow-y-hidden`}>
-            <Table<ProductInterface>
+            <WpTable<ProductInterface>
               onRowDoubleClick={(dataItem) => {
                 window.open(`${itemPath}/${dataItem._id}`, '_blank');
               }}

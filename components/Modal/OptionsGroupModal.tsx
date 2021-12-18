@@ -4,7 +4,7 @@ import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
 import ModalButtons from 'components/Modal/ModalButtons';
 import { Form, Formik } from 'formik';
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import { useAppContext } from 'context/appContext';
 import {
   CreateOptionsGroupInput,
@@ -83,13 +83,13 @@ const OptionsGroupModal: React.FC<OptionsGroupModalInterface> = ({ confirm }) =>
               />
 
               <ModalButtons>
-                <Button type={'submit'} testId={'options-group-submit'}>
+                <WpButton type={'submit'} testId={'options-group-submit'}>
                   Создать
-                </Button>
+                </WpButton>
 
-                <Button theme={'secondary'} onClick={hideModal} testId={'options-group-decline'}>
+                <WpButton theme={'secondary'} onClick={hideModal} testId={'options-group-decline'}>
                   Отмена
-                </Button>
+                </WpButton>
               </ModalButtons>
             </Form>
           );

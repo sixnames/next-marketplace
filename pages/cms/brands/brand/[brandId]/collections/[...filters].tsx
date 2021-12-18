@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import ContentItemControls from 'components/button/ContentItemControls';
 import FixedButtons from 'components/button/FixedButtons';
 import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
@@ -6,7 +6,7 @@ import Inner from 'components/Inner';
 import { BrandCollectionModalInterface } from 'components/Modal/BrandCollectionModal';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import Pager from 'components/Pager';
-import Table, { TableColumn } from 'components/Table';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import Title from 'components/Title';
 import {
   ISO_LANGUAGES,
@@ -111,7 +111,7 @@ const BrandCollectionsConsumer: React.FC<BrandCollectionsConsumerInterface> = ({
     ];
   }, [brand._id]);
 
-  const columns: TableColumn<BrandCollectionInterface>[] = [
+  const columns: WpTableColumn<BrandCollectionInterface>[] = [
     {
       headTitle: 'ID',
       accessor: 'itemId',
@@ -189,7 +189,7 @@ const BrandCollectionsConsumer: React.FC<BrandCollectionsConsumerInterface> = ({
           <FormikRouterSearch testId={'brands'} />
 
           <div className='overflew-x-auto overflew-y-hidden'>
-            <Table<BrandCollectionInterface>
+            <WpTable<BrandCollectionInterface>
               columns={columns}
               data={docs}
               testIdKey={'name'}
@@ -202,7 +202,7 @@ const BrandCollectionsConsumer: React.FC<BrandCollectionsConsumerInterface> = ({
           <Pager page={page} totalPages={totalPages} />
 
           <FixedButtons>
-            <Button
+            <WpButton
               testId={'create-brand-collection'}
               size={'small'}
               onClick={() => {
@@ -216,7 +216,7 @@ const BrandCollectionsConsumer: React.FC<BrandCollectionsConsumerInterface> = ({
               }}
             >
               Добавить коллекцию бренда
-            </Button>
+            </WpButton>
           </FixedButtons>
         </div>
       </Inner>

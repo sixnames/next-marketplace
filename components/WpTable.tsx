@@ -9,7 +9,7 @@ export interface RenderArgs<T> {
   rowIndex: number;
 }
 
-export interface TableColumn<T> {
+export interface WpTableColumn<T> {
   accessor?: string;
   cellStyle?: React.CSSProperties;
   colSpan?: number;
@@ -20,9 +20,9 @@ export interface TableColumn<T> {
   hide?: (args: RenderArgs<T>) => boolean;
 }
 
-type TableInterface<T> = {
+type WpTableInterface<T> = {
   data?: T[] | null;
-  columns: TableColumn<T>[];
+  columns: WpTableColumn<T>[];
   footerData?: any[];
   footerColumns?: any[];
   sortHandler?: (sortBy: string) => void;
@@ -37,7 +37,7 @@ type TableInterface<T> = {
 const cellClassName = 'z-10 align-middle h-8 py-2 px-4 text-left border border-gray-500';
 const rowClassName = 'transition transition-duration-150';
 
-const Table = <T extends Record<string, any>>({
+const WpTable = <T extends Record<string, any>>({
   data,
   footerData = [],
   columns = [],
@@ -49,7 +49,7 @@ const Table = <T extends Record<string, any>>({
   emptyMessage = 'Список пуст',
   testIdKey = '',
   tableTestId,
-}: TableInterface<T>) => {
+}: WpTableInterface<T>) => {
   const tHead = columns.map(({ headTitle, sortBy, cellStyle, isHidden }) => ({
     headTitle: headTitle,
     sortBy,
@@ -58,7 +58,7 @@ const Table = <T extends Record<string, any>>({
   }));
 
   const renderColumns = React.useCallback(
-    (columns: TableColumn<T>[], data: T[]) => {
+    (columns: WpTableColumn<T>[], data: T[]) => {
       return data.map((dataItem, rowIndex: number) => {
         const { hidden, _id, isWarning = false } = dataItem;
         const testId = get(dataItem, testIdKey);
@@ -156,4 +156,4 @@ const Table = <T extends Record<string, any>>({
   );
 };
 
-export default Table;
+export default WpTable;

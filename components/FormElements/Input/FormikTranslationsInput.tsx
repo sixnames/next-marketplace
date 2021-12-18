@@ -6,7 +6,7 @@ import { get } from 'lodash';
 import { useLocaleContext } from 'context/localeContext';
 import Accordion from 'components/Accordion';
 import InputLine from './InputLine';
-import Icon from 'components/Icon';
+import WpIcon from 'components/WpIcon';
 import WpTooltip from 'components/WpTooltip';
 import { TranslationModel } from 'db/dbModels';
 
@@ -116,7 +116,7 @@ const FormikTranslationsInput: React.FC<FormikTranslationsInputInterface> = ({
               titleRight={
                 <WpTooltip title={accordionIconTooltip}>
                   <div className={accordionIconClass}>
-                    <Icon className='w-4 h-4' name={accordionIcon} />
+                    <WpIcon className='w-4 h-4' name={accordionIcon} />
                   </div>
                 </WpTooltip>
               }

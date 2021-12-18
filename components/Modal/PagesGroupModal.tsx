@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
@@ -110,12 +110,12 @@ const PagesGroupModal: React.FC<PagesGroupModalInterface> = ({
               />
 
               <ModalButtons>
-                <Button type={'submit'} testId={'submit-pages-group'}>
+                <WpButton type={'submit'} testId={'submit-pages-group'}>
                   {pagesGroup ? 'Сохранить' : 'Создать'}
-                </Button>
-                <Button theme={'secondary'} onClick={hideModal}>
+                </WpButton>
+                <WpButton theme={'secondary'} onClick={hideModal}>
                   Закрыть
-                </Button>
+                </WpButton>
               </ModalButtons>
             </Form>
           );

@@ -1,9 +1,9 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FixedButtons from 'components/button/FixedButtons';
 import ContentItemControls from 'components/button/ContentItemControls';
 import Inner from 'components/Inner';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import Table, { TableColumn } from 'components/Table';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import TableRowImage from 'components/TableRowImage';
 import Title from 'components/Title';
 import { ROUTE_CMS, SORT_DESC } from 'config/common';
@@ -16,7 +16,7 @@ import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import AppContentWrapper from 'layout/AppContentWrapper';
 import { getShortName } from 'lib/nameUtils';
 import Head from 'next/head';
-import Link from 'components/Link/Link';
+import WpLink from 'components/Link/WpLink';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import ConsoleLayout from 'layout/cms/ConsoleLayout';
@@ -61,12 +61,12 @@ const CompaniesConsumer: React.FC<CompaniesConsumerInterface> = ({ companies }) 
     });
   }
 
-  const columns: TableColumn<CompanyInterface>[] = [
+  const columns: WpTableColumn<CompanyInterface>[] = [
     {
       accessor: 'itemId',
       headTitle: 'ID',
       render: ({ cellData, dataItem }) => (
-        <Link href={`${ROUTE_CMS}/companies/${dataItem._id}`}>{cellData}</Link>
+        <WpLink href={`${ROUTE_CMS}/companies/${dataItem._id}`}>{cellData}</WpLink>
       ),
     },
     {
@@ -114,10 +114,10 @@ const CompaniesConsumer: React.FC<CompaniesConsumerInterface> = ({ companies }) 
       <Inner>
         <Title>{pageTitle}</Title>
         <div className='overflow-x-auto'>
-          <Table<CompanyInterface> columns={columns} data={companies} testIdKey={'slug'} />
+          <WpTable<CompanyInterface> columns={columns} data={companies} testIdKey={'slug'} />
         </div>
         <FixedButtons>
-          <Button
+          <WpButton
             size={'small'}
             testId={'create-company'}
             onClick={() => {
@@ -127,7 +127,7 @@ const CompaniesConsumer: React.FC<CompaniesConsumerInterface> = ({ companies }) 
             }}
           >
             Создать компанию
-          </Button>
+          </WpButton>
         </FixedButtons>
       </Inner>
     </AppContentWrapper>

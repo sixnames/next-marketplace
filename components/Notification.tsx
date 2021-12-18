@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Icon from 'components/Icon';
+import WpIcon from 'components/WpIcon';
 import ButtonCross from 'components/button/ButtonCross';
 import { IconType } from 'types/iconTypes';
 import { NotificationVariant } from 'types/clientTypes';
@@ -41,7 +41,7 @@ const Notification: React.FC<NotificationInterface> = ({
       }`}
       data-cy={testId}
     >
-      <Icon
+      <WpIcon
         name={icon}
         className='w-4 h-4 mt-[1px] mr-[10px] flex-shrink-0'
         style={{ fill: variantColor }}

@@ -1,14 +1,14 @@
 import AppContentFilter from 'components/AppContentFilter';
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FixedButtons from 'components/button/FixedButtons';
 import ContentItemControls from 'components/button/ContentItemControls';
 import Checkbox from 'components/FormElements/Checkbox/Checkbox';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
 import Inner from 'components/Inner';
-import Link from 'components/Link/Link';
+import WpLink from 'components/Link/WpLink';
 import Pager from 'components/Pager';
-import Table, { TableColumn } from 'components/Table';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import TableRowImage from 'components/TableRowImage';
 import { ROUTE_CMS } from 'config/common';
 import { useUserContext } from 'context/userContext';
@@ -79,7 +79,7 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
   useReloadListener();
   const { sessionUser } = useUserContext();
 
-  const columns: TableColumn<ProductInterface>[] = [
+  const columns: WpTableColumn<ProductInterface>[] = [
     {
       render: ({ dataItem, rowIndex }) => {
         const isSelected = chosen.find(({ _id }) => {
@@ -107,12 +107,12 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
       headTitle: 'Арт',
       render: ({ dataItem }) => {
         return sessionUser?.role?.isStaff ? (
-          <Link
+          <WpLink
             href={`${ROUTE_CMS}/rubrics/${dataItem.rubricId}/products/product/${dataItem._id}`}
             target={'_blank'}
           >
             {dataItem.itemId}
-          </Link>
+          </WpLink>
         ) : (
           dataItem.itemId
         );
@@ -209,7 +209,7 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
 
           <div className={'max-w-full'}>
             <div className={`overflow-x-auto`}>
-              <Table<ProductInterface>
+              <WpTable<ProductInterface>
                 columns={columns}
                 data={docs}
                 testIdKey={'_id'}
@@ -224,14 +224,14 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
               />
             </div>
             <FixedButtons>
-              <Button
+              <WpButton
                 disabled={chosen.length < 1}
                 onClick={() => setStepHandler(2)}
                 testId={'next-step'}
                 size={'small'}
               >
                 Далее
-              </Button>
+              </WpButton>
             </FixedButtons>
 
             <Pager page={page} totalPages={totalPages} />
@@ -268,7 +268,7 @@ export const ShopAddProductsFinalStep: React.FC<ShopAddProductsListInterface> = 
   });
   const validationSchema = useValidationSchema({ schema: addManyProductsToShopSchema });
 
-  const columns: TableColumn<ProductInterface>[] = [
+  const columns: WpTableColumn<ProductInterface>[] = [
     {
       render: ({ dataItem }) => {
         const isSelected = chosen.find(({ _id }) => {
@@ -417,26 +417,30 @@ export const ShopAddProductsFinalStep: React.FC<ShopAddProductsListInterface> = 
                 return (
                   <Form>
                     <div className={`overflow-x-auto`}>
-                      <Table<ProductInterface> columns={columns} data={chosen} testIdKey={'_id'} />
+                      <WpTable<ProductInterface>
+                        columns={columns}
+                        data={chosen}
+                        testIdKey={'_id'}
+                      />
                     </div>
                     <FixedButtons>
-                      <Button
+                      <WpButton
                         disabled={chosen.length < 1}
                         testId={'save-shop-products'}
                         type={'submit'}
                         size={'small'}
                       >
                         Сохранить
-                      </Button>
+                      </WpButton>
 
-                      <Button
+                      <WpButton
                         onClick={() => setStepHandler(1)}
                         testId={'back-bottom'}
                         size={'small'}
                         theme={'secondary'}
                       >
                         Назад
-                      </Button>
+                      </WpButton>
                     </FixedButtons>
                   </Form>
                 );

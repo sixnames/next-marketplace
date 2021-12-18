@@ -4,7 +4,7 @@ import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
 import ModalButtons from 'components/Modal/ModalButtons';
 import { Form, Formik } from 'formik';
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import { useAppContext } from 'context/appContext';
 import { CreateRubricVariantInput, UpdateRubricVariantInput } from 'generated/apolloComponents';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
@@ -48,13 +48,13 @@ const RubricVariantModal: React.FC<RubricVariantModalInterface> = ({ nameI18n, c
               />
 
               <ModalButtons>
-                <Button type={'submit'} testId={'rubric-variant-submit'}>
+                <WpButton type={'submit'} testId={'rubric-variant-submit'}>
                   {nameI18n ? 'Изменить' : 'Создать'}
-                </Button>
+                </WpButton>
 
-                <Button theme={'secondary'} onClick={hideModal} testId={'options-group-decline'}>
+                <WpButton theme={'secondary'} onClick={hideModal} testId={'options-group-decline'}>
                   Отмена
-                </Button>
+                </WpButton>
               </ModalButtons>
             </Form>
           );

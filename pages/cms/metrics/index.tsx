@@ -1,10 +1,10 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FixedButtons from 'components/button/FixedButtons';
 import ContentItemControls from 'components/button/ContentItemControls';
 import Inner from 'components/Inner';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { MetricModalInterface } from 'components/Modal/MetricModal';
-import Table, { TableColumn } from 'components/Table';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import Title from 'components/Title';
 import { DEFAULT_LOCALE, SORT_ASC } from 'config/common';
 import { CONFIRM_MODAL, METRIC_MODAL } from 'config/modalVariants';
@@ -48,7 +48,7 @@ const MetricsConsumer: React.FC<MetricsConsumerInterface> = ({ metrics }) => {
     schema: updateMetricSchema,
   });
 
-  const columns: TableColumn<MetricInterface>[] = [
+  const columns: WpTableColumn<MetricInterface>[] = [
     {
       accessor: 'name',
       headTitle: 'Название',
@@ -103,7 +103,7 @@ const MetricsConsumer: React.FC<MetricsConsumerInterface> = ({ metrics }) => {
       <Inner testId={'metrics-list'}>
         <Title>{pageTitle}</Title>
         <div className='overflow-x-auto overflow-y-hidden'>
-          <Table<MetricInterface>
+          <WpTable<MetricInterface>
             columns={columns}
             data={metrics}
             testIdKey={'name'}
@@ -111,7 +111,7 @@ const MetricsConsumer: React.FC<MetricsConsumerInterface> = ({ metrics }) => {
           />
         </div>
         <FixedButtons>
-          <Button
+          <WpButton
             size={'small'}
             testId={`create-metric`}
             onClick={() => {
@@ -124,7 +124,7 @@ const MetricsConsumer: React.FC<MetricsConsumerInterface> = ({ metrics }) => {
             }}
           >
             Создать метрику
-          </Button>
+          </WpButton>
         </FixedButtons>
       </Inner>
     </AppContentWrapper>

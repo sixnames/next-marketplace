@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import UserMainFields from 'components/FormTemplates/UserMainFields';
 import ModalButtons from 'components/Modal/ModalButtons';
 import ModalFrame from 'components/Modal/ModalFrame';
@@ -55,12 +55,12 @@ const CreateUserModal: React.FC<CreateUserModalInterface> = ({ roles }) => {
               <UserMainFields roles={roles} />
 
               <ModalButtons>
-                <Button type={'submit'} testId={'submit-user'}>
+                <WpButton type={'submit'} testId={'submit-user'}>
                   Создать
-                </Button>
-                <Button theme={'secondary'} onClick={hideModal}>
+                </WpButton>
+                <WpButton theme={'secondary'} onClick={hideModal}>
                   Закрыть
-                </Button>
+                </WpButton>
               </ModalButtons>
             </Form>
           );

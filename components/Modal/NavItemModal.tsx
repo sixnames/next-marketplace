@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FormikIconSelect from 'components/FormElements/FormikIconSelect';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
@@ -76,10 +76,10 @@ const NavItemModal = <TArgs extends Record<any, any>>({
               />
 
               <ModalButtons>
-                <Button testId={'nav-item-submit'} type={'submit'}>
+                <WpButton testId={'nav-item-submit'} type={'submit'}>
                   {buttonLabel}
-                </Button>
-                <Button theme={'secondary'}>Отмена</Button>
+                </WpButton>
+                <WpButton theme={'secondary'}>Отмена</WpButton>
               </ModalButtons>
             </Form>
           );

@@ -3,7 +3,7 @@ import { BreadcrumbsInterface } from 'db/uiInterfaces';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import Inner from 'components/Inner';
-import Link from 'components/Link/Link';
+import WpLink from 'components/Link/WpLink';
 
 const linkClassName =
   'text-primary-text hover:text-primary-text hover:no-underline whitespace-nowrap';
@@ -30,9 +30,9 @@ const Breadcrumbs: React.FC<BreadcrumbsInterface> = ({
         <ul className={centered ? 'text-center' : ''}>
           {noMainPage ? null : (
             <li className='inline mr-1'>
-              <Link className={linkClassName} href={urlPrefix ? urlPrefix : '/'}>
+              <WpLink className={linkClassName} href={urlPrefix ? urlPrefix : '/'}>
                 <span className='hover:text-theme'>{mainPageName}</span> —
-              </Link>
+              </WpLink>
             </li>
           )}
           {(config || []).map((configItem, index) => {
@@ -48,9 +48,9 @@ const Breadcrumbs: React.FC<BreadcrumbsInterface> = ({
 
             return (
               <li className='inline mr-1' key={index}>
-                <Link className={linkClassName} href={`${urlPrefix}${configItem.href}`}>
+                <WpLink className={linkClassName} href={`${urlPrefix}${configItem.href}`}>
                   <span className='hover:text-theme'>{configItem.name}</span> —
-                </Link>
+                </WpLink>
               </li>
             );
           })}

@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import { CartProduct, CartShoplessProduct } from 'components/cart/CartProduct';
 import CartAside, { UseCartAsideDiscountsValuesInterface } from 'components/CartAside';
 import FormikInput from 'components/FormElements/Input/FormikInput';
@@ -89,7 +89,7 @@ export const CartDeliveryFields: React.FC<CartDeliveryFieldsInterface> = ({ inde
             className={'mb-4'}
           />
 
-          <Button
+          <WpButton
             size={'small'}
             theme={deliveryInfo ? 'gray' : 'primary'}
             onClick={() => {
@@ -107,7 +107,7 @@ export const CartDeliveryFields: React.FC<CartDeliveryFieldsInterface> = ({ inde
             }}
           >
             {deliveryInfo ? 'Изменить адрес' : 'Указать адрес'}
-          </Button>
+          </WpButton>
         </div>
       ) : null}
     </div>
@@ -193,7 +193,7 @@ const DefaultCartShop: React.FC<DefaultCartShopUIInterface> = ({
                   low
                 />
               </div>
-              <Button
+              <WpButton
                 frameClassName='w-auto'
                 theme={'secondary'}
                 testId={`gift-certificate-confirm-${shop.slug}`}
@@ -210,7 +210,7 @@ const DefaultCartShop: React.FC<DefaultCartShopUIInterface> = ({
                 }}
               >
                 Применить
-              </Button>
+              </WpButton>
             </InputLine>
           </div>
 
@@ -224,7 +224,7 @@ const DefaultCartShop: React.FC<DefaultCartShopUIInterface> = ({
               <div className='flex-grow'>
                 <FormikInput name={`shopConfigs[${index}].promoCode`} low />
               </div>
-              <Button
+              <WpButton
                 frameClassName='w-auto'
                 theme={'secondary'}
                 onClick={() => {
@@ -232,7 +232,7 @@ const DefaultCartShop: React.FC<DefaultCartShopUIInterface> = ({
                 }}
               >
                 Применить
-              </Button>
+              </WpButton>
             </InputLine>
           </div>
         </div>

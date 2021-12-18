@@ -3,7 +3,7 @@ import ContentItemControls from 'components/button/ContentItemControls';
 import { AddAttributeToGroupModalInterface } from 'components/Modal/AttributeInGroupModal';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { MoveAttributeModalInterface } from 'components/Modal/MoveAttributeModal';
-import Table, { TableColumn } from 'components/Table';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import { DEFAULT_LOCALE, ROUTE_CMS, SORT_ASC } from 'config/common';
 import { getBooleanTranslation, getConstantTranslation } from 'config/constantTranslations';
 import {
@@ -20,7 +20,7 @@ import {
 import AppSubNav from 'layout/AppSubNav';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import Inner from 'components/Inner';
 import Title from 'components/Title';
 import { COL_ATTRIBUTES, COL_ATTRIBUTES_GROUPS, COL_OPTIONS_GROUPS } from 'db/collectionNames';
@@ -104,7 +104,7 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({ attributesG
     ];
   }, [attributesGroup._id]);
 
-  const columns: TableColumn<AttributeInterface>[] = [
+  const columns: WpTableColumn<AttributeInterface>[] = [
     {
       accessor: 'name',
       headTitle: 'Название',
@@ -293,7 +293,7 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({ attributesG
 
       <Inner>
         <div className='overflow-x-auto'>
-          <Table<AttributeInterface>
+          <WpTable<AttributeInterface>
             testIdKey={'name'}
             columns={columns}
             data={attributesGroup.attributes || []}
@@ -302,7 +302,7 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({ attributesG
         </div>
 
         <FixedButtons>
-          <Button
+          <WpButton
             testId={`create-attribute`}
             size={'small'}
             onClick={() => {
@@ -321,7 +321,7 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({ attributesG
             }}
           >
             Добавить атрибут
-          </Button>
+          </WpButton>
         </FixedButtons>
       </Inner>
     </AppContentWrapper>

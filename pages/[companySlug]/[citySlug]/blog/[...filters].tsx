@@ -1,9 +1,9 @@
 import Breadcrumbs from 'components/Breadcrumbs';
 import FormattedDate from 'components/FormattedDate';
-import Icon from 'components/Icon';
+import WpIcon from 'components/WpIcon';
 import Inner from 'components/Inner';
 import FilterLink from 'components/Link/FilterLink';
-import Link from 'components/Link/Link';
+import WpLink from 'components/Link/WpLink';
 import TagLink from 'components/Link/TagLink';
 import Title from 'components/Title';
 import WpImage from 'components/WpImage';
@@ -77,7 +77,7 @@ const BlogListSnippetMeta: React.FC<BlogListSnippetMetaInterface> = ({
       {/*views counter*/}
       {showViews ? (
         <div className='flex items-center gap-2'>
-          <Icon className='w-5 h-5' name={'eye'} />
+          <WpIcon className='w-5 h-5' name={'eye'} />
           <div>{viewsCount}</div>
         </div>
       ) : null}
@@ -85,7 +85,7 @@ const BlogListSnippetMeta: React.FC<BlogListSnippetMetaInterface> = ({
       {/*likes counter*/}
       {likesCount ? (
         <div className='flex items-center gap-2'>
-          <Icon className='w-4 h-4' name={'like'} />
+          <WpIcon className='w-4 h-4' name={'like'} />
           <div>{likesCount}</div>
         </div>
       ) : null}
@@ -153,25 +153,25 @@ const BlogListSnippet: React.FC<BlogListSnippetInterface> = ({ post, showViews }
           title={`${post.title}`}
           width={295}
         />
-        <Link
+        <WpLink
           testId={`${post.title}-image-link`}
           className='block absolute z-20 inset-0 text-indent-full'
           href={`${urlPrefix}${ROUTE_BLOG_POST}/${post.slug}`}
         >
           {post.title}
-        </Link>
+        </WpLink>
       </div>
 
       <div className='px-4 py-6 flex flex-col flex-grow-1 h-full'>
         {/*title*/}
         <div className='font-medium text-lg mb-3'>
-          <Link
+          <WpLink
             testId={`${post.title}-title-link`}
             className='block text-primary-text hover:no-underline'
             href={`${ROUTE_BLOG_POST}/${post.slug}`}
           >
             {post.title}
-          </Link>
+          </WpLink>
         </div>
 
         {/*meta*/}
@@ -228,13 +228,13 @@ const BlogListMainSnippet: React.FC<BlogListSnippetInterface> = ({ post, showVie
         </div>
       </div>
 
-      <Link
+      <WpLink
         testId={`${post.title}-image-link`}
         className='block absolute z-20 inset-0 text-indent-full'
         href={`${urlPrefix}${ROUTE_BLOG_POST}/${post.slug}`}
       >
         {post.title}
-      </Link>
+      </WpLink>
     </div>
   );
 };
@@ -246,13 +246,13 @@ const BlogListTopSnippet: React.FC<BlogListSnippetInterface> = ({ post, showView
     <div className='py-4'>
       {/*title*/}
       <div className='font-medium text-lg mb-3'>
-        <Link
+        <WpLink
           testId={`${post.title}-title-link`}
           className='block text-primary-text hover:no-underline'
           href={`${urlPrefix}${ROUTE_BLOG_POST}/${post.slug}`}
         >
           {post.title}
-        </Link>
+        </WpLink>
       </div>
 
       <div className='mt-3'>
@@ -285,9 +285,9 @@ const BlogFilterAttribute: React.FC<BlogFilterAttributeInterface> = ({
       <div className='flex items-baseline justify-between mb-4'>
         <span className='text-lg font-bold'>{name}</span>
         {isSelected ? (
-          <Link href={`${urlPrefix}${clearSlug}`} className='font-medium text-theme'>
+          <WpLink href={`${urlPrefix}${clearSlug}`} className='font-medium text-theme'>
             Сбросить
-          </Link>
+          </WpLink>
         ) : null}
       </div>
 

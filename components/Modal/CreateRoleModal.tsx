@@ -8,7 +8,7 @@ import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
 import ModalButtons from 'components/Modal/ModalButtons';
 import { Form, Formik } from 'formik';
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 
 export interface CreateRoleModalInterface {
   confirm: (values: CreateRoleInput) => void;
@@ -43,13 +43,13 @@ const CreateRoleModal: React.FC<CreateRoleModalInterface> = ({ confirm }) => {
               <RoleMainFields />
 
               <ModalButtons>
-                <Button type={'submit'} testId={'role-submit'}>
+                <WpButton type={'submit'} testId={'role-submit'}>
                   Создать
-                </Button>
+                </WpButton>
 
-                <Button theme={'secondary'} onClick={hideModal} testId={'role-decline'}>
+                <WpButton theme={'secondary'} onClick={hideModal} testId={'role-decline'}>
                   Отмена
-                </Button>
+                </WpButton>
               </ModalButtons>
             </Form>
           );

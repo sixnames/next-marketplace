@@ -1,5 +1,5 @@
 import Inner from 'components/Inner';
-import Link from 'components/Link/Link';
+import WpLink from 'components/Link/WpLink';
 import Title from 'components/Title';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
@@ -11,7 +11,7 @@ const ErrorPage: NextPage = () => {
     <Inner className='mt-8'>
       <Title>404 Страница не найдена</Title>
       <div className='flex'>
-        <Link href={`/`}>На главную</Link>
+        <WpLink href={`/`}>На главную</WpLink>
         <div className='ml-4 cursor-pointer' onClick={() => router.back()}>
           Назад
         </div>

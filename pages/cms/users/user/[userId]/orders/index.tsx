@@ -1,7 +1,7 @@
 import FormattedDateTime from 'components/FormattedDateTime';
 import Inner from 'components/Inner';
-import Link from 'components/Link/Link';
-import Table, { TableColumn } from 'components/Table';
+import WpLink from 'components/Link/WpLink';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import { ROUTE_CMS, SORT_DESC } from 'config/common';
 import {
   COL_ORDER_STATUSES,
@@ -26,17 +26,17 @@ interface UserOrdersInterface {
 }
 
 const UserOrdersConsumer: React.FC<UserOrdersInterface> = ({ user }) => {
-  const columns: TableColumn<OrderInterface>[] = [
+  const columns: WpTableColumn<OrderInterface>[] = [
     {
       accessor: 'itemId',
       headTitle: 'ID',
       render: ({ cellData, dataItem }) => (
-        <Link
+        <WpLink
           testId={`order-${dataItem.itemId}-link`}
           href={`${ROUTE_CMS}/users/user/${user._id}/orders/${dataItem._id}`}
         >
           {cellData}
-        </Link>
+        </WpLink>
       ),
     },
     {
@@ -86,7 +86,7 @@ const UserOrdersConsumer: React.FC<UserOrdersInterface> = ({ user }) => {
       <Inner testId={'user-orders-page'}>
         <div className='mb-4 text-secondary-text'>Всего заказов {user.orders?.length}</div>
         <div className='overflow-x-auto'>
-          <Table<OrderInterface> columns={columns} data={user.orders} testIdKey={'itemId'} />
+          <WpTable<OrderInterface> columns={columns} data={user.orders} testIdKey={'itemId'} />
         </div>
       </Inner>
     </CmsUserLayout>

@@ -8,7 +8,7 @@ import ModalButtons from 'components/Modal/ModalButtons';
 import { Form, Formik } from 'formik';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import Spinner from 'components/Spinner';
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import { useGetNewAttributeOptionsQuery } from 'generated/apolloComponents';
 import RequestError from 'components/RequestError';
 import { useAppContext } from 'context/appContext';
@@ -274,13 +274,13 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
               />
 
               <ModalButtons>
-                <Button type={'submit'} testId={'attribute-submit'}>
+                <WpButton type={'submit'} testId={'attribute-submit'}>
                   {attribute ? 'Сохранить' : 'Создать'}
-                </Button>
+                </WpButton>
 
-                <Button theme={'secondary'} onClick={hideModal} testId={'attribute-decline'}>
+                <WpButton theme={'secondary'} onClick={hideModal} testId={'attribute-decline'}>
                   Отмена
-                </Button>
+                </WpButton>
               </ModalButtons>
             </Form>
           );

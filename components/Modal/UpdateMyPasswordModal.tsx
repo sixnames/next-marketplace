@@ -6,7 +6,7 @@ import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
 import ModalButtons from 'components/Modal/ModalButtons';
 import { Form, Formik } from 'formik';
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import { useAppContext } from 'context/appContext';
 import useValidationSchema from 'hooks/useValidationSchema';
 import RequestError from 'components/RequestError';
@@ -83,13 +83,13 @@ const UpdateMyPasswordModal: React.FC<UpdateMyPasswordModalInterface> = ({ confi
               />
 
               <ModalButtons>
-                <Button type={'submit'} testId={'password-submit'}>
+                <WpButton type={'submit'} testId={'password-submit'}>
                   Изменить
-                </Button>
+                </WpButton>
 
-                <Button theme={'secondary'} onClick={hideModal} testId={'password-decline'}>
+                <WpButton theme={'secondary'} onClick={hideModal} testId={'password-decline'}>
                   Отмена
-                </Button>
+                </WpButton>
               </ModalButtons>
             </Form>
           );

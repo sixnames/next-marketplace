@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FixedButtons from 'components/button/FixedButtons';
 import FakeInput from 'components/FormElements/Input/FakeInput';
 import FormikInput from 'components/FormElements/Input/FormikInput';
@@ -225,9 +225,9 @@ const BlogPostsDetails: React.FC<BlogPostsDetailsInterface> = ({ post, attribute
               </div>
 
               <FixedButtons>
-                <Button testId={`submit-blog-post`} size={'small'} type={'submit'}>
+                <WpButton testId={`submit-blog-post`} size={'small'} type={'submit'}>
                   Сохранить
-                </Button>
+                </WpButton>
               </FixedButtons>
             </Form>
           );

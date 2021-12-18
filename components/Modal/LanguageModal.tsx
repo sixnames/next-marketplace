@@ -3,7 +3,7 @@ import * as React from 'react';
 import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
 import ModalButtons from 'components/Modal/ModalButtons';
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import {
   CreateLanguageInput,
   UpdateLanguageInput,
@@ -91,9 +91,9 @@ const LanguageModal: React.FC<LanguageModalInterface> = ({ confirm, testId, lang
               />
 
               <ModalButtons>
-                <Button testId={'language-submit'} type={'submit'}>
+                <WpButton testId={'language-submit'} type={'submit'}>
                   {language ? 'Редактировать ' : 'Создать '}
-                </Button>
+                </WpButton>
               </ModalButtons>
             </Form>
           );

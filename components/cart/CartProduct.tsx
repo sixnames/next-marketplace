@@ -1,9 +1,9 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import ButtonCross from 'components/button/ButtonCross';
 import ControlButton from 'components/button/ControlButton';
 import CartShopsList from 'components/CartShopsList';
 import FormikSpinnerInput from 'components/FormElements/SpinnerInput/FormikSpinnerInput';
-import Link from 'components/Link/Link';
+import WpLink from 'components/Link/WpLink';
 import ProductShopPrices from 'components/ProductShopPrices';
 import WpImage from 'components/WpImage';
 import { ORDER_DELIVERY_VARIANT_COURIER } from 'config/common';
@@ -60,13 +60,13 @@ const CartProductFrame: React.FC<CartProductFrameInterface> = ({
               />
             </div>
 
-            <Link
+            <WpLink
               target={'_blank'}
               className='block absolute z-10 inset-0 text-indent-full'
               href={`${urlPrefix}/${slug}`}
             >
               {snippetTitle}
-            </Link>
+            </WpLink>
           </div>
         </div>
 
@@ -111,13 +111,13 @@ const CartProductMainData: React.FC<CartProductMainDataInterface> = ({
     <React.Fragment>
       <div className='text-secondary-text mb-3'>{`Артикул: ${itemId}`}</div>
       <div className='mb-6'>
-        <Link
+        <WpLink
           target={'_blank'}
           className='block text-primary-text hover:no-underline hover:text-primary-text font-medium text-lg lg:text-2xl'
           href={`${urlPrefix}/${slug}`}
         >
           {snippetTitle}
-        </Link>
+        </WpLink>
         {name ? <div className='text-secondary-text mt-1'>{name}</div> : null}
       </div>
     </React.Fragment>
@@ -170,14 +170,14 @@ export const CartShoplessProduct: React.FC<CartProductPropsInterface> = ({
         </div>
       </div>
 
-      <Button
+      <WpButton
         onClick={() => {
           setIsShopsVisible(true);
         }}
         testId={`cart-product-${testId}-show-shops`}
       >
         Выбрать магазин
-      </Button>
+      </WpButton>
     </CartProductFrame>
   );
 };

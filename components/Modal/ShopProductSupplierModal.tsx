@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import { SelectOptionInterface } from 'components/FormElements/Select/Select';
@@ -138,9 +138,9 @@ const ShopProductSupplierModal: React.FC<ShopProductSupplierModalInterface> = ({
                 showInlineError
               />
 
-              <Button type={'submit'} testId={'submit-supplier-product'}>
+              <WpButton type={'submit'} testId={'submit-supplier-product'}>
                 {supplierProduct ? 'Обновить' : 'Добавить'}
-              </Button>
+              </WpButton>
             </Form>
           );
         }}

@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FixedButtons from 'components/button/FixedButtons';
 import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
 import InputLine from 'components/FormElements/Input/InputLine';
@@ -121,9 +121,9 @@ const UserNotificationsConsumer: React.FC<UseNotificationsConsumerInterface> = (
                   );
                 })}
                 <FixedButtons>
-                  <Button size={'small'} testId={'submit-user'} type={'submit'}>
+                  <WpButton size={'small'} testId={'submit-user'} type={'submit'}>
                     Сохранить
-                  </Button>
+                  </WpButton>
                 </FixedButtons>
               </Form>
             );

@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import PageEditor from 'components/PageEditor';
 import SeoTextLocalesInfoList from 'components/SeoTextLocalesInfoList';
 import { PAGE_EDITOR_DEFAULT_VALUE_STRING } from 'config/common';
@@ -27,7 +27,7 @@ const CardDynamicContent: React.FC<CardDynamicContentInterface> = ({
   ) {
     return sessionUser?.showAdminUiInCatalogue ? (
       <div className='mt-6 mb-8'>
-        <Button
+        <WpButton
           size={'small'}
           onClick={() => {
             window.open(
@@ -37,7 +37,7 @@ const CardDynamicContent: React.FC<CardDynamicContentInterface> = ({
           }}
         >
           Редактировать SEO блок
-        </Button>
+        </WpButton>
       </div>
     ) : null;
   }
@@ -55,7 +55,7 @@ const CardDynamicContent: React.FC<CardDynamicContentInterface> = ({
             />
           </div>
 
-          <Button
+          <WpButton
             size={'small'}
             onClick={() => {
               window.open(
@@ -65,7 +65,7 @@ const CardDynamicContent: React.FC<CardDynamicContentInterface> = ({
             }}
           >
             Редактировать SEO блок
-          </Button>
+          </WpButton>
         </div>
       ) : null}
     </div>

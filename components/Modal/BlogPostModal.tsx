@@ -5,7 +5,7 @@ import * as React from 'react';
 import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
 import ModalButtons from 'components/Modal/ModalButtons';
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import { Formik, Form } from 'formik';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { createBlogPostSchema } from 'validation/blogSchema';
@@ -62,9 +62,9 @@ const BlogPostModal: React.FC<BlogPostModalInterface> = ({ companySlug, basePath
               />
 
               <ModalButtons>
-                <Button testId={'blog-post-submit'} type={'submit'}>
+                <WpButton testId={'blog-post-submit'} type={'submit'}>
                   Создать
-                </Button>
+                </WpButton>
               </ModalButtons>
             </Form>
           );

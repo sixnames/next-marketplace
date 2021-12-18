@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import Inner from 'components/Inner';
 import Title from 'components/Title';
 import { ROUTE_CMS } from 'config/common';
@@ -52,7 +52,7 @@ const ConsoleShopProductLayout: React.FC<ConsoleShopProductLayoutInterface> = ({
               <div>Арт. {shopProduct.product?.itemId}</div>
               {showEditButton ? (
                 <div className='mt-4'>
-                  <Button
+                  <WpButton
                     size={'small'}
                     onClick={() => {
                       window.open(
@@ -62,7 +62,7 @@ const ConsoleShopProductLayout: React.FC<ConsoleShopProductLayoutInterface> = ({
                     }}
                   >
                     Редактировать товар
-                  </Button>
+                  </WpButton>
                 </div>
               ) : null}
             </div>

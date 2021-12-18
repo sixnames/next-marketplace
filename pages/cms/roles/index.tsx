@@ -1,10 +1,10 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FixedButtons from 'components/button/FixedButtons';
 import ContentItemControls from 'components/button/ContentItemControls';
 import Inner from 'components/Inner';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { CreateRoleModalInterface } from 'components/Modal/CreateRoleModal';
-import Table, { TableColumn } from 'components/Table';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import Title from 'components/Title';
 import { ROUTE_CMS, SORT_DESC } from 'config/common';
 import { CONFIRM_MODAL, CREATE_ROLE_MODAL } from 'config/modalVariants';
@@ -45,7 +45,7 @@ const RolesConsumer: React.FC<RolesConsumerInterface> = ({ roles }) => {
     onError: onErrorCallback,
   });
 
-  const columns: TableColumn<RoleInterface>[] = [
+  const columns: WpTableColumn<RoleInterface>[] = [
     {
       headTitle: 'Название',
       accessor: 'name',
@@ -103,7 +103,7 @@ const RolesConsumer: React.FC<RolesConsumerInterface> = ({ roles }) => {
         <Title>{pageTitle}</Title>
         <div className='relative'>
           <div className='overflew-x-auto overflew-y-hidden'>
-            <Table<RoleInterface>
+            <WpTable<RoleInterface>
               columns={columns}
               data={roles}
               testIdKey={'name'}
@@ -113,7 +113,7 @@ const RolesConsumer: React.FC<RolesConsumerInterface> = ({ roles }) => {
             />
           </div>
           <FixedButtons>
-            <Button
+            <WpButton
               size={'small'}
               onClick={() => {
                 showModal<CreateRoleModalInterface>({
@@ -132,7 +132,7 @@ const RolesConsumer: React.FC<RolesConsumerInterface> = ({ roles }) => {
               testId={'create-role'}
             >
               Добавить роль
-            </Button>
+            </WpButton>
           </FixedButtons>
         </div>
       </Inner>

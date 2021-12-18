@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FormikMultiLineInput from 'components/FormElements/Input/FormikMultiLineInput';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import { ManufacturerInterface } from 'db/uiInterfaces';
@@ -112,9 +112,9 @@ const ManufacturerModal: React.FC<ManufacturerModalInterface> = ({
                 showInlineError
               />
 
-              <Button type={'submit'} testId={'submit-manufacturer'}>
+              <WpButton type={'submit'} testId={'submit-manufacturer'}>
                 {manufacturer ? 'Сохранить' : 'Создать'}
-              </Button>
+              </WpButton>
             </Form>
           );
         }}

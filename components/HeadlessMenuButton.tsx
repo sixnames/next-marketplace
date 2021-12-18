@@ -1,6 +1,6 @@
 import { Menu } from '@headlessui/react';
 import { CounterStickerInterface } from 'components/CounterSticker';
-import Icon from 'components/Icon';
+import WpIcon from 'components/WpIcon';
 import * as React from 'react';
 import { IconType } from 'types/iconTypes';
 
@@ -133,7 +133,7 @@ const HeadlessMenuButton: React.FC<MenuButtonInterface> = ({
                                         : 'text-primary-text hover:text-theme'
                                     } cursor-pointer group flex gap-4 rounded-md items-center w-full px-4 py-2`}
                                   >
-                                    {icon ? <Icon name={icon} className='w-4 h-4' /> : null}
+                                    {icon ? <WpIcon name={icon} className='w-4 h-4' /> : null}
                                     {name}
                                   </span>
                                 );

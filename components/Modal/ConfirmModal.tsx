@@ -3,7 +3,7 @@ import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
 import ModalText from 'components/Modal/ModalText';
 import ModalButtons from 'components/Modal/ModalButtons';
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import { useAppContext } from 'context/appContext';
 
 export interface ConfirmModalInterface {
@@ -31,12 +31,12 @@ const ConfirmModal: React.FC<ConfirmModalInterface> = ({ confirm, message, testI
       </ModalText>
 
       <ModalButtons>
-        <Button onClick={hideModal} testId={'decline'}>
+        <WpButton onClick={hideModal} testId={'decline'}>
           Нет
-        </Button>
-        <Button theme={'secondary'} onClick={onConfirmHandler} testId={'confirm'}>
+        </WpButton>
+        <WpButton theme={'secondary'} onClick={onConfirmHandler} testId={'confirm'}>
           Да
-        </Button>
+        </WpButton>
       </ModalButtons>
     </ModalFrame>
   );

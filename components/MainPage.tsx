@@ -1,6 +1,6 @@
 import HorizontalScroll from 'components/HorizontalScroll';
 import Inner from 'components/Inner';
-import Link from 'components/Link/Link';
+import WpLink from 'components/Link/WpLink';
 import TagLink from 'components/Link/TagLink';
 import PageEditor from 'components/PageEditor';
 import ShopsMap from 'components/ShopsMap';
@@ -60,7 +60,7 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
           renderItem(): React.ReactNode {
             return (
               <div key={mainBanner.url} className='overflow-hidden rounded-xl'>
-                <Link
+                <WpLink
                   target={'_blank'}
                   href={`${ROUTE_DOCS_PAGES}/${slug}`}
                   className={`relative block ${mainBannerMobile ? '' : 'h-[400px] md:h-auto'}`}
@@ -120,7 +120,7 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
                       ) : null}
                     </span>
                   </span>
-                </Link>
+                </WpLink>
               </div>
             );
           },
@@ -215,7 +215,7 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
                       className='flex min-w-[80vw] sm:min-w-[21rem] w-[80vw] sm:w-[21rem] overflow-hidden rounded-lg'
                       key={`${secondaryBanner.url}`}
                     >
-                      <Link
+                      <WpLink
                         className='relative block'
                         target={'_blank'}
                         href={`${ROUTE_DOCS_PAGES}/${slug}`}
@@ -255,7 +255,7 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
                             {name}
                           </span>
                         </span>
-                      </Link>
+                      </WpLink>
                     </div>
                   );
                 },

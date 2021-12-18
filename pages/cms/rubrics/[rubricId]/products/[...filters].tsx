@@ -1,16 +1,16 @@
 import AppContentFilter from 'components/AppContentFilter';
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FixedButtons from 'components/button/FixedButtons';
 import ContentItemControls from 'components/button/ContentItemControls';
 import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
 import Inner from 'components/Inner';
-import Link from 'components/Link/Link';
+import WpLink from 'components/Link/WpLink';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { CreateNewProductModalInterface } from 'components/Modal/CreateNewProductModal';
 import Pager from 'components/Pager';
 import RequestError from 'components/RequestError';
 import Spinner from 'components/Spinner';
-import Table, { TableColumn } from 'components/Table';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import TableRowImage from 'components/TableRowImage';
 import { SeoTextCitiesInfoList } from 'components/SeoTextLocalesInfoList';
 import { ROUTE_CMS, DEFAULT_PAGE_FILTER, DEFAULT_COMPANY_SLUG } from 'config/common';
@@ -53,18 +53,18 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
 
   const [deleteProductFromRubricMutation] = useDeleteProduct();
 
-  const columns: TableColumn<ProductInterface>[] = [
+  const columns: WpTableColumn<ProductInterface>[] = [
     {
       headTitle: 'Арт',
       render: ({ dataItem, rowIndex }) => {
         return (
-          <Link
+          <WpLink
             testId={`product-link-${rowIndex}`}
             target={'_blank'}
             href={`${itemPath}/${dataItem._id}`}
           >
             {dataItem.itemId}
-          </Link>
+          </WpLink>
         );
       },
     },
@@ -227,7 +227,7 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
 
           <div className={'max-w-full'}>
             <div className={`relative overflow-x-auto overflow-y-hidden`}>
-              <Table<ProductInterface>
+              <WpTable<ProductInterface>
                 onRowDoubleClick={(dataItem) => {
                   window.open(`${itemPath}/${dataItem._id}`, '_blank');
                 }}
@@ -242,7 +242,7 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
             <Pager page={page} totalPages={totalPages} />
 
             <FixedButtons>
-              <Button
+              <WpButton
                 testId={'create-rubric-product'}
                 size={'small'}
                 onClick={() => {
@@ -255,7 +255,7 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
                 }}
               >
                 Создать товар
-              </Button>
+              </WpButton>
             </FixedButtons>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import Inner from 'components/Inner';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import Title from 'components/Title';
@@ -134,7 +134,7 @@ const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({
           {product.cardTitle}
         </Title>
         <div className='mb-4 flex gap-4'>
-          <Button
+          <WpButton
             frameClassName='w-auto'
             size={'small'}
             onClick={() => {
@@ -147,8 +147,8 @@ const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({
             }}
           >
             Карточка товара
-          </Button>
-          <Button
+          </WpButton>
+          <WpButton
             frameClassName='w-auto'
             theme={'secondary'}
             size={'small'}
@@ -168,7 +168,7 @@ const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({
             }}
           >
             Удалить товар
-          </Button>
+          </WpButton>
         </div>
       </Inner>
       <AppSubNav navConfig={navConfig} />

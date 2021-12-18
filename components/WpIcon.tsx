@@ -7,7 +7,7 @@ interface IconPropsInterface {
   style?: React.CSSProperties;
 }
 
-const Icon: React.FC<IconPropsInterface> = ({ name, className, style = {} }) => {
+const WpIcon: React.FC<IconPropsInterface> = ({ name, className, style = {} }) => {
   return (
     <svg className={`icon-${name} ${className ? className : ''}`} style={style}>
       <use
@@ -18,4 +18,4 @@ const Icon: React.FC<IconPropsInterface> = ({ name, className, style = {} }) => 
   );
 };
 
-export default Icon;
+export default WpIcon;

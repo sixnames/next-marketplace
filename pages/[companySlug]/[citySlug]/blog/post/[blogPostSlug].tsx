@@ -1,6 +1,6 @@
 import Breadcrumbs from 'components/Breadcrumbs';
 import FormattedDate from 'components/FormattedDate';
-import Icon from 'components/Icon';
+import WpIcon from 'components/WpIcon';
 import Inner from 'components/Inner';
 import PageEditor from 'components/PageEditor';
 import WpTooltip from 'components/WpTooltip';
@@ -63,7 +63,7 @@ const BlogPostMeta: React.FC<BlogListSnippetMetaInterface> = ({
       {/*views counter*/}
       {configs.showBlogPostViews ? (
         <div className='flex items-center gap-2'>
-          <Icon className='w-5 h-5' name={'eye'} />
+          <WpIcon className='w-5 h-5' name={'eye'} />
           <div>{viewsCount}</div>
         </div>
       ) : null}
@@ -80,7 +80,7 @@ const BlogPostMeta: React.FC<BlogListSnippetMetaInterface> = ({
             }
           }}
         >
-          <Icon className='w-4 h-4' name={'like'} />
+          <WpIcon className='w-4 h-4' name={'like'} />
           <div>{noNaN(likesCount)}</div>
         </div>
       </WpTooltip>

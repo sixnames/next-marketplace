@@ -1,6 +1,6 @@
 import Spinner from 'components/Spinner';
 import * as React from 'react';
-import Icon from 'components/Icon';
+import WpIcon from 'components/WpIcon';
 import WpTooltip from 'components/WpTooltip';
 import { ButtonTheme, ButtonType, SizeType } from 'types/clientTypes';
 import { IconType } from 'types/iconTypes';
@@ -23,7 +23,7 @@ export interface ButtonPropsInterface {
   isLoading?: boolean;
 }
 
-const Button: React.FC<ButtonPropsInterface> = ({
+const WpButton: React.FC<ButtonPropsInterface> = ({
   theme = 'primary',
   size = 'normal',
   title = '',
@@ -74,7 +74,7 @@ const Button: React.FC<ButtonPropsInterface> = ({
           {...props}
         >
           {icon && (
-            <Icon
+            <WpIcon
               name={icon}
               className={`relative flex-shrink-0 ${
                 isSmall ? 'w-[0.875rem] h-[0.875rem]' : 'w-[1.25rem] h-[1.25rem] top-[1px]'
@@ -90,4 +90,4 @@ const Button: React.FC<ButtonPropsInterface> = ({
   );
 };
 
-export default Button;
+export default WpButton;

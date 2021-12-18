@@ -12,7 +12,7 @@ import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
 import ModalButtons from 'components/Modal/ModalButtons';
 import { Form, Formik } from 'formik';
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 
 export interface MetricModalInterface {
   metric?: MetricInterface;
@@ -82,9 +82,9 @@ const MetricModal: React.FC<MetricModalInterface> = ({ metric, validationSchema 
               />
 
               <ModalButtons>
-                <Button type={'submit'} testId={'submit-metric'}>
+                <WpButton type={'submit'} testId={'submit-metric'}>
                   {metric ? 'Обновить' : 'Создать'}
-                </Button>
+                </WpButton>
               </ModalButtons>
             </Form>
           );

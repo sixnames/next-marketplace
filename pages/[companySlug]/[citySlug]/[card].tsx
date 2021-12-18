@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import ErrorBoundaryFallback from 'components/ErrorBoundaryFallback';
 import FixedButtons from 'components/button/FixedButtons';
 import Inner from 'components/Inner';
@@ -33,7 +33,7 @@ const CardConsumer: React.FC<CardLayoutInterface> = (props) => {
       {sessionUser?.showAdminUiInCatalogue ? (
         <FixedButtons>
           <Inner lowTop lowBottom>
-            <Button
+            <WpButton
               size={'small'}
               onClick={() => {
                 window.open(
@@ -43,7 +43,7 @@ const CardConsumer: React.FC<CardLayoutInterface> = (props) => {
               }}
             >
               Редактировать товар
-            </Button>
+            </WpButton>
           </Inner>
         </FixedButtons>
       ) : null}

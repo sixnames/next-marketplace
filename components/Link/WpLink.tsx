@@ -4,7 +4,7 @@ import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import qs from 'qs';
 
-const Link: React.FC<LinkInterface> = ({
+const WpLink: React.FC<LinkInterface> = ({
   className = '',
   activeClassName = '',
   href,
@@ -54,4 +54,4 @@ const Link: React.FC<LinkInterface> = ({
   );
 };
 
-export default Link;
+export default WpLink;

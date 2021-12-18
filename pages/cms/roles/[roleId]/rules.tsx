@@ -1,7 +1,7 @@
 import Checkbox from 'components/FormElements/Checkbox/Checkbox';
 import FormikIndividualSearch from 'components/FormElements/Search/FormikIndividualSearch';
 import Inner from 'components/Inner';
-import Table, { TableColumn } from 'components/Table';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import Title from 'components/Title';
 import { ROUTE_CMS } from 'config/common';
 import { COL_ROLES } from 'db/collectionNames';
@@ -63,7 +63,7 @@ const RoleRulesConsumer: React.FC<RoleRulesConsumerInterface> = ({ role }) => {
     ];
   }, [role._id]);
 
-  const columns: TableColumn<RoleRuleInterface>[] = [
+  const columns: WpTableColumn<RoleRuleInterface>[] = [
     {
       headTitle: 'Действие',
       accessor: 'name',
@@ -140,7 +140,7 @@ const RoleRulesConsumer: React.FC<RoleRulesConsumerInterface> = ({ role }) => {
         />
 
         <div className='overflow-x-auto overflow-y-hidden'>
-          <Table<RoleRuleInterface> columns={columns} data={rules} />
+          <WpTable<RoleRuleInterface> columns={columns} data={rules} />
         </div>
       </Inner>
     </AppContentWrapper>

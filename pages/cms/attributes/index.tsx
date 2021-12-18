@@ -1,11 +1,11 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FixedButtons from 'components/button/FixedButtons';
 import ContentItemControls from 'components/button/ContentItemControls';
 import Inner from 'components/Inner';
 import { AttributesGroupModalInterface } from 'components/Modal/AttributesGroupModal';
-import Table, { TableColumn } from 'components/Table';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import Title from 'components/Title';
 import { DEFAULT_LOCALE, ROUTE_CMS, SORT_ASC } from 'config/common';
 import { ATTRIBUTES_GROUP_MODAL, CONFIRM_MODAL } from 'config/modalVariants';
@@ -50,7 +50,7 @@ const AttributesGroupsConsumer: React.FC<AttributesGroupsConsumerInterface> = ({
     onError: onErrorCallback,
   });
 
-  const columns: TableColumn<AttributesGroupInterface>[] = [
+  const columns: WpTableColumn<AttributesGroupInterface>[] = [
     {
       accessor: 'name',
       headTitle: 'Название',
@@ -105,7 +105,7 @@ const AttributesGroupsConsumer: React.FC<AttributesGroupsConsumerInterface> = ({
       <Inner>
         <Title>{pageTitle}</Title>
         <div className='overflow-x-auto'>
-          <Table<AttributesGroupInterface>
+          <WpTable<AttributesGroupInterface>
             columns={columns}
             data={attributesGroups}
             testIdKey={'name'}
@@ -115,7 +115,7 @@ const AttributesGroupsConsumer: React.FC<AttributesGroupsConsumerInterface> = ({
           />
         </div>
         <FixedButtons>
-          <Button
+          <WpButton
             testId={'create-attributes-group'}
             size={'small'}
             onClick={() => {
@@ -131,7 +131,7 @@ const AttributesGroupsConsumer: React.FC<AttributesGroupsConsumerInterface> = ({
             }}
           >
             Добавить группу атрибутов
-          </Button>
+          </WpButton>
         </FixedButtons>
       </Inner>
     </AppContentWrapper>

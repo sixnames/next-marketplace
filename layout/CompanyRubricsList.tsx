@@ -1,6 +1,6 @@
 import ContentItemControls from 'components/button/ContentItemControls';
 import Inner from 'components/Inner';
-import Table, { TableColumn } from 'components/Table';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import { DEFAULT_PAGE_FILTER } from 'config/common';
 import { CompanyInterface, RubricInterface } from 'db/uiInterfaces';
 import { useRouter } from 'next/router';
@@ -15,7 +15,7 @@ export interface CompanyRubricsListInterface {
 const CompanyRubricsList: React.FC<CompanyRubricsListInterface> = ({ rubrics, routeBasePath }) => {
   const router = useRouter();
 
-  const columns: TableColumn<RubricInterface>[] = [
+  const columns: WpTableColumn<RubricInterface>[] = [
     {
       accessor: 'name',
       headTitle: 'Название',
@@ -49,7 +49,7 @@ const CompanyRubricsList: React.FC<CompanyRubricsListInterface> = ({ rubrics, ro
   return (
     <Inner testId={'company-rubrics-list'}>
       <div className='overflow-x-auto'>
-        <Table<RubricInterface>
+        <WpTable<RubricInterface>
           columns={columns}
           data={rubrics}
           testIdKey={'name'}

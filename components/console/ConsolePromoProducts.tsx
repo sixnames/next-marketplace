@@ -1,11 +1,11 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import CheckBox from 'components/FormElements/Checkbox/Checkbox';
 import AppContentFilter from 'components/AppContentFilter';
 import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
 import Inner from 'components/Inner';
 import Pager from 'components/Pager';
 import Spinner from 'components/Spinner';
-import Table, { TableColumn } from 'components/Table';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import TableRowImage from 'components/TableRowImage';
 import { useAppContext } from 'context/appContext';
 import {
@@ -44,7 +44,7 @@ const ConsolePromoProducts: React.FC<ConsolePromoProductsInterface> = ({
   const [deletePromoProductsMutation] = useDeletePromoProducts();
   const [addPromoProductsMutation] = useAddPromoProducts();
 
-  const columns: TableColumn<ShopProductInterface>[] = [
+  const columns: WpTableColumn<ShopProductInterface>[] = [
     {
       accessor: 'product.slug',
       headTitle: 'Арт',
@@ -147,7 +147,7 @@ const ConsolePromoProducts: React.FC<ConsolePromoProductsInterface> = ({
 
         <div className='flex flex-wrap gap-4 mb-6'>
           {filters.length > 0 ? (
-            <Button
+            <WpButton
               size={'small'}
               frameClassName={'w-auto'}
               testId={'add-filtered-rubric-products'}
@@ -163,11 +163,11 @@ const ConsolePromoProducts: React.FC<ConsolePromoProductsInterface> = ({
               }}
             >
               Добавить товары по выбранному фильтру
-            </Button>
+            </WpButton>
           ) : null}
 
           {search.length > 0 ? (
-            <Button
+            <WpButton
               size={'small'}
               frameClassName={'w-auto'}
               testId={'add-search-rubric-products'}
@@ -184,11 +184,11 @@ const ConsolePromoProducts: React.FC<ConsolePromoProductsInterface> = ({
               }}
             >
               Добавить результат поиска
-            </Button>
+            </WpButton>
           ) : null}
 
           {filters.length > 0 || search.length > 0 ? null : (
-            <Button
+            <WpButton
               size={'small'}
               frameClassName={'w-auto'}
               testId={'add-all-rubric-products'}
@@ -204,11 +204,11 @@ const ConsolePromoProducts: React.FC<ConsolePromoProductsInterface> = ({
               }}
             >
               Добавить все товары рубрики
-            </Button>
+            </WpButton>
           )}
 
           {promoProducts.selectedShopProductIds.length > 0 ? (
-            <Button
+            <WpButton
               theme={'secondary'}
               size={'small'}
               frameClassName={'w-auto'}
@@ -224,13 +224,13 @@ const ConsolePromoProducts: React.FC<ConsolePromoProductsInterface> = ({
               }}
             >
               Удалить все товары рубрики
-            </Button>
+            </WpButton>
           ) : null}
         </div>
 
         <div className={' max-w-full'}>
           <div className={`relative overflow-x-auto overflow-y-hidden`}>
-            <Table<ShopProductInterface>
+            <WpTable<ShopProductInterface>
               columns={columns}
               data={promoProducts.docs}
               testIdKey={'_id'}

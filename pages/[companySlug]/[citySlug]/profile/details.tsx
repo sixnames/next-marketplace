@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import StringButton from 'components/StringButton';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
@@ -148,9 +148,9 @@ const ProfileDetailsRoute: React.FC = () => {
               </fieldset>
 
               <RowWithGap>
-                <Button type={'submit'} testId={'submit-my-profile'}>
+                <WpButton type={'submit'} testId={'submit-my-profile'}>
                   Сохранить
-                </Button>
+                </WpButton>
               </RowWithGap>
 
               <RowWithGap>

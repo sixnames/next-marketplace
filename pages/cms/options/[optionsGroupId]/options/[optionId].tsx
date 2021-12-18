@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FixedButtons from 'components/button/FixedButtons';
 import WpIconUpload from 'components/FormElements/Upload/WpIconUpload';
 import WpImageUpload from 'components/FormElements/Upload/WpImageUpload';
@@ -245,9 +245,9 @@ const OptionPageConsumer: React.FC<OptionPageConsumerInterface> = ({ option }) =
                   />
 
                   <FixedButtons>
-                    <Button type={'submit'} testId={'option-submit'} size={'small'}>
+                    <WpButton type={'submit'} testId={'option-submit'} size={'small'}>
                       Сохранить
-                    </Button>
+                    </WpButton>
                   </FixedButtons>
                 </Form>
               );

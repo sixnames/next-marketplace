@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Icon from 'components/Icon';
+import WpIcon from 'components/WpIcon';
 import InputLine, { InputLinePropsInterface } from '../Input/InputLine';
 import ButtonCross from 'components/button/ButtonCross';
 import { useDropzone } from 'react-dropzone';
@@ -93,7 +93,7 @@ const WpIconUpload: React.FC<WpIconUploadInterface> = ({
               ) : null}
             </React.Fragment>
           ) : (
-            <Icon name={'image'} className='absolute top-[10%] left-[10%] w-[80%] h-[80%]' />
+            <WpIcon name={'image'} className='absolute top-[10%] left-[10%] w-[80%] h-[80%]' />
           )}
         </div>
       </WpTooltip>

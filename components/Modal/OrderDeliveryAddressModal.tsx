@@ -1,5 +1,5 @@
 import { GoogleMap, Marker, useLoadScript } from '@react-google-maps/api';
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import ControlButton from 'components/button/ControlButton';
 import FormikAddressInput from 'components/FormElements/Input/FormikAddressInput';
 import FormikDatePicker from 'components/FormElements/Input/FormikDatePicker';
@@ -183,7 +183,7 @@ const OrderDeliveryAddressModal: React.FC<OrderDeliveryAddressModalInterface> = 
                         </div>
                         <FormikInput name={'recipientName'} label={'Имя и фамилия'} />
                         <FormikInput name={'recipientPhone'} type={'tel'} label={'Телефон'} />
-                        <Button type={'submit'}>Сохранить</Button>
+                        <WpButton type={'submit'}>Сохранить</WpButton>
                       </div>
                     </Inner>
                   </div>

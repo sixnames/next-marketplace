@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import ContentItemControls from 'components/button/ContentItemControls';
 import FixedButtons from 'components/button/FixedButtons';
 import Currency from 'components/Currency';
@@ -6,7 +6,7 @@ import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { GiftCertificateModalInterface } from 'components/Modal/GiftCertificateModal';
 import Pager from 'components/Pager';
 import Spinner from 'components/Spinner';
-import Table, { TableColumn } from 'components/Table';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import { CONFIRM_MODAL, GIFT_CERTIFICATE_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
 import {
@@ -55,7 +55,7 @@ const ConsoleGiftCertificatesList: React.FC<ConsoleGiftCertificatesListInterface
     return `${counterPrefix} ${totalDocs} ${counterPostfix}`;
   }, [totalDocs]);
 
-  const columns: TableColumn<GiftCertificateInterface>[] = [
+  const columns: WpTableColumn<GiftCertificateInterface>[] = [
     {
       accessor: 'code',
       headTitle: 'Код',
@@ -146,7 +146,7 @@ const ConsoleGiftCertificatesList: React.FC<ConsoleGiftCertificatesListInterface
       <div className={`text-xl font-medium mb-2`}>{counterString}</div>
 
       <div className={`relative overflow-x-auto overflow-y-hidden`}>
-        <Table<GiftCertificateInterface>
+        <WpTable<GiftCertificateInterface>
           columns={columns}
           data={docs}
           testIdKey={'_id'}
@@ -173,7 +173,7 @@ const ConsoleGiftCertificatesList: React.FC<ConsoleGiftCertificatesListInterface
       <Pager page={page} totalPages={totalPages} />
 
       <FixedButtons>
-        <Button
+        <WpButton
           testId={'create-gift-certificate'}
           size={'small'}
           onClick={() => {
@@ -189,7 +189,7 @@ const ConsoleGiftCertificatesList: React.FC<ConsoleGiftCertificatesListInterface
           }}
         >
           Создать подарочный сертификат
-        </Button>
+        </WpButton>
       </FixedButtons>
     </div>
   );

@@ -1,4 +1,4 @@
-import Icon from 'components/Icon';
+import WpIcon from 'components/WpIcon';
 import { CATALOGUE_FILTER_LAYOUT_CHECKBOX_TREE, DEFAULT_LAYOUT } from 'config/constantSelects';
 import { CatalogueFilterAttributeInterface } from 'db/uiInterfaces';
 import dynamic from 'next/dynamic';
@@ -67,7 +67,7 @@ const CatalogueFilter: React.FC<CatalogueFilterProviderInterface> = (props) => {
               className='text-secondary-text flex items-center justify-center w-[var(--formInputHeightSmall)] h-[var(--formInputHeightSmall)]'
               onClick={hideFilterHandler}
             >
-              <Icon className='w-4 h-4' name={'cross'} />
+              <WpIcon className='w-4 h-4' name={'cross'} />
             </div>
           </div>
 

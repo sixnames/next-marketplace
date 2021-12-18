@@ -3,7 +3,7 @@ import HeadlessMenuButton, {
   HeadlessMenuGroupInterface,
   HeadlessMenuItemInterface,
 } from 'components/HeadlessMenuButton';
-import Icon from 'components/Icon';
+import WpIcon from 'components/WpIcon';
 import { SelectOptionFragment, useIconsOptionsQuery } from 'generated/apolloComponents';
 import * as React from 'react';
 import { Field, FieldProps } from 'formik';
@@ -122,9 +122,9 @@ const FormikIconSelect: React.FC<FormikSelectInterface> = ({
               buttonText={() => {
                 return (
                   <span className={selectClassName}>
-                    <Icon name={field.value} className='w-4 h-4' />
+                    <WpIcon name={field.value} className='w-4 h-4' />
                     {field.value}
-                    <Icon
+                    <WpIcon
                       className='absolute top-half right-5 w-3 h-3 transform translate-y-[-5px]'
                       name={'chevron-down'}
                     />

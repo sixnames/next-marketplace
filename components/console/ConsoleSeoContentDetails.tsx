@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import { SingleSeoContentEditor } from 'components/SeoContentEditor';
@@ -76,9 +76,9 @@ const ConsoleSeoContentDetails: React.FC<ConsoleSeoContentDetailsInterface> = ({
                 filedName={''}
                 seoContentId={`${seoContent._id}`}
               />
-              <Button type={'submit'} testId={'rubric-seo-content-submit'}>
+              <WpButton type={'submit'} testId={'rubric-seo-content-submit'}>
                 Сохранить
-              </Button>
+              </WpButton>
             </Form>
           );
         }}

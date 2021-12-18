@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FakeInput from 'components/FormElements/Input/FakeInput';
 import WpImageUpload from 'components/FormElements/Upload/WpImageUpload';
 import ShopMainFields from 'components/FormTemplates/ShopMainFields';
@@ -234,9 +234,9 @@ const ShopDetails: React.FC<ShopDetailsInterface> = ({ shop, basePath, breadcrum
                     }}
                   />
 
-                  <Button type={'submit'} testId={'shop-submit'}>
+                  <WpButton type={'submit'} testId={'shop-submit'}>
                     Сохранить
-                  </Button>
+                  </WpButton>
                 </Form>
               );
             }}
@@ -250,7 +250,7 @@ const ShopDetails: React.FC<ShopDetailsInterface> = ({ shop, basePath, breadcrum
             label={'API токен'}
           />
           {!shop.token ? (
-            <Button
+            <WpButton
               onClick={() => {
                 showLoading();
                 generateShopTokenMutation({
@@ -262,7 +262,7 @@ const ShopDetails: React.FC<ShopDetailsInterface> = ({ shop, basePath, breadcrum
               testId={'generate-api-token'}
             >
               Сгенерировать токен
-            </Button>
+            </WpButton>
           ) : null}
         </div>
       </Inner>

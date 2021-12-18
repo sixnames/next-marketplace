@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FixedButtons from 'components/button/FixedButtons';
 import RoleMainFields from 'components/FormTemplates/RoleMainFields';
 import Inner from 'components/Inner';
@@ -108,9 +108,9 @@ const RoleDetailsConsumer: React.FC<RoleDetailsConsumerInterface> = ({ role }) =
                 <RoleMainFields />
 
                 <FixedButtons>
-                  <Button size={'small'} type={'submit'} testId={'role-submit'}>
+                  <WpButton size={'small'} type={'submit'} testId={'role-submit'}>
                     Сохранить
-                  </Button>
+                  </WpButton>
                 </FixedButtons>
               </Form>
             );

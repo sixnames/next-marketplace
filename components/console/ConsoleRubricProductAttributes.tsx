@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FixedButtons from 'components/button/FixedButtons';
 import FakeInput from 'components/FormElements/Input/FakeInput';
 import FormikInput from 'components/FormElements/Input/FormikInput';
@@ -249,9 +249,9 @@ const ConsoleRubricProductAttributes: React.FC<ConsoleRubricProductAttributesInt
                           </div>
 
                           <FixedButtons>
-                            <Button testId={'submit-number-attributes'} type={'submit'}>
+                            <WpButton testId={'submit-number-attributes'} type={'submit'}>
                               Сохранить
-                            </Button>
+                            </WpButton>
                           </FixedButtons>
                         </div>
                       </div>
@@ -305,9 +305,9 @@ const ConsoleRubricProductAttributes: React.FC<ConsoleRubricProductAttributesInt
                           })}
 
                           <FixedButtons>
-                            <Button testId={'submit-text-attributes'} type={'submit'}>
+                            <WpButton testId={'submit-text-attributes'} type={'submit'}>
                               Сохранить
-                            </Button>
+                            </WpButton>
                           </FixedButtons>
                         </div>
                       </div>

@@ -3,8 +3,8 @@ import ControlButton from 'components/button/ControlButton';
 import ControlButtonChevron from 'components/button/ControlButtonChevron';
 import Currency from 'components/Currency';
 import FormattedDate from 'components/FormattedDate';
-import Icon from 'components/Icon';
-import Link from 'components/Link/Link';
+import WpIcon from 'components/WpIcon';
+import WpLink from 'components/Link/WpLink';
 import ProductShopPrices from 'components/ProductShopPrices';
 import RequestError from 'components/RequestError';
 import Title from 'components/Title';
@@ -77,13 +77,13 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({
           />
         </div>
 
-        <Link
+        <WpLink
           target={'_blank'}
           className='block absolute z-10 inset-0 text-indent-full'
           href={`${urlPrefix}/${slug}`}
         >
           {product?.snippetTitle}
-        </Link>
+        </WpLink>
       </div>
 
       <div className='flex-grow'>
@@ -91,19 +91,19 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({
 
         <div className='grid gap-4 lg:flex lg:items-baseline lg:justify-between'>
           <div className='text-lg font-bold flex-grow'>
-            <Link
+            <WpLink
               target={'_blank'}
               className='block text-primary-text hover:no-underline hover:text-primary-text'
               href={`${urlPrefix}/${slug}`}
             >
               {product?.snippetTitle}
-            </Link>
+            </WpLink>
           </div>
 
           <div>
             <div className='flex items-baseline ml-auto flex-grow-0'>
               <ProductShopPrices className='text-lg font-bold' price={price} size={'small'} />
-              <Icon name={'cross'} className='w-2 h-2 mx-4' />
+              <WpIcon name={'cross'} className='w-2 h-2 mx-4' />
               <div className='font-medium'>{amount}</div>
             </div>
             <div className='flex gap-2 lg:justify-end text-secondary-text'>

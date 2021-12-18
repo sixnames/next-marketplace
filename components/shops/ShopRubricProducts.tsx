@@ -1,15 +1,15 @@
 import AppContentFilter from 'components/AppContentFilter';
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FixedButtons from 'components/button/FixedButtons';
 import ContentItemControls from 'components/button/ContentItemControls';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
 import Inner from 'components/Inner';
-import Link from 'components/Link/Link';
+import WpLink from 'components/Link/WpLink';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import Pager from 'components/Pager';
 import ProductsListSuppliersList from 'components/shops/ProductsListSuppliersList';
-import Table, { TableColumn } from 'components/Table';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import TableRowImage from 'components/TableRowImage';
 import { CONFIRM_MODAL } from 'config/modalVariants';
 import { useUserContext } from 'context/userContext';
@@ -69,18 +69,18 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
     onError: onErrorCallback,
   });
 
-  const columns: TableColumn<ShopProductInterface>[] = [
+  const columns: WpTableColumn<ShopProductInterface>[] = [
     {
       accessor: 'itemId',
       headTitle: 'Арт',
       render: ({ dataItem }) => {
         return (
-          <Link
+          <WpLink
             href={`${layoutBasePath}/${shop._id}/products/product/${dataItem._id}`}
             target={'_blank'}
           >
             {dataItem.product?.itemId}
-          </Link>
+          </WpLink>
         );
       },
     },
@@ -275,7 +275,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
                 return (
                   <Form>
                     <div className={`overflow-x-auto`}>
-                      <Table<ShopProductInterface>
+                      <WpTable<ShopProductInterface>
                         columns={columns}
                         data={docs}
                         testIdKey={'_id'}
@@ -291,17 +291,17 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
                     </div>
                     <FixedButtons>
                       {withProducts ? (
-                        <Button
+                        <WpButton
                           frameClassName='w-auto'
                           testId={'save-shop-products'}
                           type={'submit'}
                           size={'small'}
                         >
                           Сохранить
-                        </Button>
+                        </WpButton>
                       ) : null}
 
-                      <Button
+                      <WpButton
                         frameClassName='w-auto'
                         onClick={() => {
                           router.push(addProductsPath).catch((e) => console.log(e));
@@ -310,7 +310,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
                         size={'small'}
                       >
                         Добавить товары
-                      </Button>
+                      </WpButton>
                     </FixedButtons>
                   </Form>
                 );

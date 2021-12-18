@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import Inner from 'components/Inner';
 import Title from 'components/Title';
 import { ROUTE_PROFILE } from 'config/common';
@@ -26,7 +26,7 @@ const ThankYouRoute: React.FC = () => {
         </div>
 
         <div className='flex gap-4 flex-wrap'>
-          <Button
+          <WpButton
             frameClassName={'w-auto'}
             theme={'secondary'}
             onClick={() => {
@@ -34,8 +34,8 @@ const ThankYouRoute: React.FC = () => {
             }}
           >
             Продолжить покупки
-          </Button>
-          <Button
+          </WpButton>
+          <WpButton
             frameClassName={'w-auto'}
             onClick={() => {
               router.push(`${urlPrefix}${ROUTE_PROFILE}`).catch(console.log);
@@ -43,7 +43,7 @@ const ThankYouRoute: React.FC = () => {
             theme={'secondary'}
           >
             Мои заказы
-          </Button>
+          </WpButton>
         </div>
       </Inner>
     </div>

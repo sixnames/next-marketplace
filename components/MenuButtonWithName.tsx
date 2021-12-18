@@ -3,7 +3,7 @@ import HeadlessMenuButton, {
   HeadlessMenuItemInterface,
   MenuButtonInterface,
 } from 'components/HeadlessMenuButton';
-import Icon from 'components/Icon';
+import WpIcon from 'components/WpIcon';
 import { IconType } from 'types/iconTypes';
 
 export interface MenuButtonWithNameInterface extends Omit<MenuButtonInterface, 'buttonText'> {
@@ -55,7 +55,7 @@ const MenuButtonWithName: React.FC<MenuButtonWithNameInterface> = ({
               style={style}
             >
               {iconPosition === 'left' ? (
-                <Icon
+                <WpIcon
                   className={`${iconClassName} mr-2`}
                   name={isOpen ? isOpenIcon : isClosedIcon}
                 />
@@ -64,7 +64,7 @@ const MenuButtonWithName: React.FC<MenuButtonWithNameInterface> = ({
               <span>{buttonText}</span>
 
               {iconPosition === 'right' ? (
-                <Icon
+                <WpIcon
                   className={`${iconClassName} ml-2`}
                   name={isOpen ? isOpenIcon : isClosedIcon}
                 />

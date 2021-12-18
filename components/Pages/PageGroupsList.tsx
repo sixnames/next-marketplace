@@ -1,10 +1,10 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import ContentItemControls from 'components/button/ContentItemControls';
 import FixedButtons from 'components/button/FixedButtons';
-import Link from 'components/Link/Link';
+import WpLink from 'components/Link/WpLink';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { PagesGroupModalInterface } from 'components/Modal/PagesGroupModal';
-import Table, { TableColumn } from 'components/Table';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import { CONFIRM_MODAL, PAGES_GROUP_MODAL } from 'config/modalVariants';
 import {
   CompanyInterface,
@@ -47,19 +47,19 @@ const PageGroupsList: React.FC<PageGroupsListInterface> = ({
 
   const [deletePagesGroupMutation] = useDeletePagesGroup();
 
-  const columns: TableColumn<PagesGroupInterface | PagesGroupTemplateInterface>[] = [
+  const columns: WpTableColumn<PagesGroupInterface | PagesGroupTemplateInterface>[] = [
     {
       accessor: 'name',
       headTitle: 'Название',
       render: ({ cellData, dataItem }) => {
         return (
-          <Link
+          <WpLink
             testId={`${cellData}-link`}
             className='text-primary-text hover:no-underline hover:text-link-text'
             href={`${basePath}/${dataItem._id}`}
           >
             {cellData}
-          </Link>
+          </WpLink>
         );
       },
     },
@@ -113,7 +113,7 @@ const PageGroupsList: React.FC<PageGroupsListInterface> = ({
   return (
     <div className='relative' data-cy={'page-groups-list'}>
       <div className='overflow-x-auto overflow-y-hidden'>
-        <Table<PagesGroupInterface | PagesGroupTemplateInterface>
+        <WpTable<PagesGroupInterface | PagesGroupTemplateInterface>
           testIdKey={'name'}
           columns={columns}
           data={pagesGroups}
@@ -124,7 +124,7 @@ const PageGroupsList: React.FC<PageGroupsListInterface> = ({
       </div>
 
       <FixedButtons>
-        <Button
+        <WpButton
           testId={'create-pages-group'}
           size={'small'}
           onClick={() => {
@@ -139,7 +139,7 @@ const PageGroupsList: React.FC<PageGroupsListInterface> = ({
           }}
         >
           Добавить группу страниц
-        </Button>
+        </WpButton>
       </FixedButtons>
     </div>
   );

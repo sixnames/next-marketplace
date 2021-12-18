@@ -1,11 +1,11 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import ColorPreview from 'components/ColorPreview';
 import FixedButtons from 'components/button/FixedButtons';
 import ContentItemControls from 'components/button/ContentItemControls';
 import Inner from 'components/Inner';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { OrderStatusModalInterface } from 'components/Modal/OrderStatusModal';
-import Table, { TableColumn } from 'components/Table';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import Title from 'components/Title';
 import { SORT_ASC } from 'config/common';
 import { CONFIRM_MODAL, ORDER_STATUS_MODAL } from 'config/modalVariants';
@@ -49,7 +49,7 @@ const OrderStatusesConsumer: React.FC<OrderStatusesConsumerInterface> = ({ order
     schema: updateOrderStatusSchema,
   });
 
-  const columns: TableColumn<OrderStatusInterface>[] = [
+  const columns: WpTableColumn<OrderStatusInterface>[] = [
     {
       accessor: 'color',
       headTitle: 'Цвет',
@@ -114,7 +114,7 @@ const OrderStatusesConsumer: React.FC<OrderStatusesConsumerInterface> = ({ order
       <Inner testId={'order-statuses-list'}>
         <Title>{pageTitle}</Title>
         <div className='overflow-x-auto overflow-y-hidden'>
-          <Table<OrderStatusInterface>
+          <WpTable<OrderStatusInterface>
             columns={columns}
             data={orderStatuses}
             testIdKey={'name'}
@@ -122,7 +122,7 @@ const OrderStatusesConsumer: React.FC<OrderStatusesConsumerInterface> = ({ order
           />
         </div>
         <FixedButtons>
-          <Button
+          <WpButton
             size={'small'}
             testId={`create-order-status`}
             onClick={() => {
@@ -135,7 +135,7 @@ const OrderStatusesConsumer: React.FC<OrderStatusesConsumerInterface> = ({ order
             }}
           >
             Создать статус заказа
-          </Button>
+          </WpButton>
         </FixedButtons>
       </Inner>
     </AppContentWrapper>

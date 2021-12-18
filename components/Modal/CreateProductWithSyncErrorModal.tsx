@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import ModalButtons from 'components/Modal/ModalButtons';
 import ModalFrame from 'components/Modal/ModalFrame';
@@ -117,12 +117,12 @@ const CreateProductWithSyncErrorModal: React.FC<CreateProductWithSyncErrorModalI
               <ProductMainFields />
 
               <ModalButtons>
-                <Button type={'submit'} testId={'submit-new-product'}>
+                <WpButton type={'submit'} testId={'submit-new-product'}>
                   Создать
-                </Button>
-                <Button theme={'secondary'} onClick={hideModal} testId={'product-decline'}>
+                </WpButton>
+                <WpButton theme={'secondary'} onClick={hideModal} testId={'product-decline'}>
                   Отмена
-                </Button>
+                </WpButton>
               </ModalButtons>
             </Form>
           );

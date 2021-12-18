@@ -1,12 +1,12 @@
 import CheckBox from 'components/FormElements/Checkbox/Checkbox';
 import Accordion from 'components/Accordion';
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FixedButtons from 'components/button/FixedButtons';
 import ContentItemControls from 'components/button/ContentItemControls';
 import Inner from 'components/Inner';
-import Link from 'components/Link/Link';
+import WpLink from 'components/Link/WpLink';
 import { AddAttributesGroupToRubricModalInterface } from 'components/Modal/AddAttributesGroupToRubricModal';
-import Table, { TableColumn } from 'components/Table';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import { ROUTE_CMS } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL, CONFIRM_MODAL } from 'config/modalVariants';
@@ -61,7 +61,7 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
     onError: onErrorCallback,
   });
 
-  const columns = (category?: CategoryInterface): TableColumn<AttributeInterface>[] => [
+  const columns = (category?: CategoryInterface): WpTableColumn<AttributeInterface>[] => [
     {
       accessor: 'name',
       headTitle: 'Название',
@@ -106,11 +106,11 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
       render: () => {
         if (category) {
           return (
-            <Link
+            <WpLink
               href={`${ROUTE_CMS}/rubrics/${rubric?._id}/categories/${category._id}/attributes`}
             >
               {category.name}
-            </Link>
+            </WpLink>
           );
         }
         return null;
@@ -170,7 +170,7 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
                 }
               >
                 <div className={`overflow-x-auto mt-4`}>
-                  <Table<AttributeInterface>
+                  <WpTable<AttributeInterface>
                     data={attributes}
                     columns={columns()}
                     emptyMessage={'Список атрибутов пуст'}
@@ -202,7 +202,7 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
                       }
                     >
                       <div className={`overflow-x-auto mt-4`}>
-                        <Table<AttributeInterface>
+                        <WpTable<AttributeInterface>
                           data={attributes}
                           columns={columns(category)}
                           emptyMessage={'Список атрибутов пуст'}
@@ -218,7 +218,7 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
         })}
 
         <FixedButtons>
-          <Button
+          <WpButton
             size={'small'}
             testId={'add-attributes-group'}
             onClick={() => {
@@ -243,7 +243,7 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
             }}
           >
             Добавить группу атрибутов
-          </Button>
+          </WpButton>
         </FixedButtons>
       </Inner>
     </CmsRubricLayout>

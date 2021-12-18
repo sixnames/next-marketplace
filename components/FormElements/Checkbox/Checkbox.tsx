@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Icon from 'components/Icon';
+import WpIcon from 'components/WpIcon';
 import { FormikHandlers } from 'formik/dist/types';
 
 export interface CheckboxInterface {
@@ -41,7 +41,7 @@ const Checkbox: React.FC<CheckboxInterface> = ({
         data-cy={`${testId}-checkbox`}
       />
       {checked ? (
-        <Icon className='absolute w-[14px] h-[14px] top-[1px] left-[1px] z-10' name={'check'} />
+        <WpIcon className='absolute w-[14px] h-[14px] top-[1px] left-[1px] z-10' name={'check'} />
       ) : null}
     </label>
   );

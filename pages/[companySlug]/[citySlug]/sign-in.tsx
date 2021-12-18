@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import Inner from 'components/Inner';
 import Title from 'components/Title';
@@ -77,13 +77,13 @@ const SignInRoute: React.FC = () => {
                 testId={'sign-in-password'}
               />
 
-              <Button
+              <WpButton
                 // disabled={errors.email || errors.password}
                 type={'submit'}
                 testId={'sign-in-submit'}
               >
                 Войти
-              </Button>
+              </WpButton>
               {isError ? (
                 <div className='mt-6 font-medium text-red-500'>
                   Пожалуйста проверьте правильность введённых данных

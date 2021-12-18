@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FormikCodeInput from 'components/FormElements/Input/FormikCodeInput';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
@@ -63,9 +63,9 @@ const GiftCertificateModal: React.FC<GiftCertificateModalInterface> = ({
               />
 
               <ModalButtons>
-                <Button type={'submit'} testId={'submit-promo'}>
+                <WpButton type={'submit'} testId={'submit-promo'}>
                   {giftCertificate ? 'Обновить' : 'Создать'}
-                </Button>
+                </WpButton>
               </ModalButtons>
             </Form>
           );

@@ -1,9 +1,9 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FixedButtons from 'components/button/FixedButtons';
 import ContentItemControls from 'components/button/ContentItemControls';
 import Inner from 'components/Inner';
 import { CreateRubricModalInterface } from 'components/Modal/CreateRubricModal';
-import Table, { TableColumn } from 'components/Table';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import Title from 'components/Title';
 import { DEFAULT_COMPANY_SLUG, DEFAULT_PAGE_FILTER, ROUTE_CMS } from 'config/common';
 import { CONFIRM_MODAL, CREATE_RUBRIC_MODAL } from 'config/modalVariants';
@@ -48,7 +48,7 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics }) => {
     onError: onErrorCallback,
   });
 
-  const columns: TableColumn<RubricInterface>[] = [
+  const columns: WpTableColumn<RubricInterface>[] = [
     {
       accessor: 'name',
       headTitle: 'Название',
@@ -118,7 +118,7 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics }) => {
         <Title>Рубрикатор</Title>
 
         <div className='overflow-x-auto'>
-          <Table<RubricInterface>
+          <WpTable<RubricInterface>
             columns={columns}
             data={rubrics}
             testIdKey={'name'}
@@ -132,7 +132,7 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics }) => {
         </div>
 
         <FixedButtons>
-          <Button
+          <WpButton
             testId={'create-rubric'}
             size={'small'}
             className={'mt-6 sm:mt-0'}
@@ -149,7 +149,7 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics }) => {
             }}
           >
             Создать рубрику
-          </Button>
+          </WpButton>
         </FixedButtons>
       </Inner>
     </AppContentWrapper>

@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import { BrandCollectionInterface } from 'db/uiInterfaces';
@@ -131,9 +131,9 @@ const BrandCollectionModal: React.FC<BrandCollectionModalInterface> = ({
                 name={'showInSnippetTitle'}
               />
 
-              <Button type={'submit'} testId={'submit-brand-collection'}>
+              <WpButton type={'submit'} testId={'submit-brand-collection'}>
                 {brandCollection ? 'Сохранить' : 'Создать'}
-              </Button>
+              </WpButton>
             </Form>
           );
         }}

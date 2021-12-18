@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Icon from 'components/Icon';
+import WpIcon from 'components/WpIcon';
 import { useThemeContext } from 'context/themeContext';
 
 interface ThemeTriggerInterface {
@@ -19,9 +19,9 @@ const ThemeTrigger: React.FC<ThemeTriggerInterface> = ({ className, style, stati
       onClick={toggleTheme}
     >
       {isDark ? (
-        <Icon name={'sun'} className={`w-[16px] h-[16px]`} />
+        <WpIcon name={'sun'} className={`w-[16px] h-[16px]`} />
       ) : (
-        <Icon name={'moon'} className={`w-[18px] h-[18px]`} />
+        <WpIcon name={'moon'} className={`w-[18px] h-[18px]`} />
       )}
     </div>
   );

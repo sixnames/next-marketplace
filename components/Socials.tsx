@@ -1,4 +1,4 @@
-import Icon from 'components/Icon';
+import WpIcon from 'components/WpIcon';
 import * as React from 'react';
 import { IconType } from 'types/iconTypes';
 
@@ -19,7 +19,7 @@ const SocialLink: React.FC<SocialLinkInterface> = ({ href, icon }) => {
         window.open(href, '_blank');
       }}
     >
-      <Icon className='w-4 h-4' name={icon} />
+      <WpIcon className='w-4 h-4' name={icon} />
     </div>
   );
 };

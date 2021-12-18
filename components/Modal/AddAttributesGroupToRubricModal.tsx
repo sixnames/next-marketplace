@@ -10,7 +10,7 @@ import RequestError from 'components/RequestError';
 import { Formik, Form } from 'formik';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import ModalButtons from 'components/Modal/ModalButtons';
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { addAttributesGroupToRubricSchema } from 'validation/rubricSchema';
 
@@ -74,9 +74,9 @@ const AddAttributesGroupToRubricModal: React.FC<AddAttributesGroupToRubricModalI
               />
 
               <ModalButtons>
-                <Button type={'submit'} testId={'attributes-group-submit'}>
+                <WpButton type={'submit'} testId={'attributes-group-submit'}>
                   Добавить
-                </Button>
+                </WpButton>
               </ModalButtons>
             </Form>
           );

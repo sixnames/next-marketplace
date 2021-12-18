@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
@@ -112,12 +112,12 @@ const CreatePageModal: React.FC<CreatePageModalInterface> = ({ pagesGroupId, isT
               />
 
               <ModalButtons>
-                <Button type={'submit'} testId={'submit-page'}>
+                <WpButton type={'submit'} testId={'submit-page'}>
                   Создать
-                </Button>
-                <Button theme={'secondary'} onClick={hideModal}>
+                </WpButton>
+                <WpButton theme={'secondary'} onClick={hideModal}>
                   Закрыть
-                </Button>
+                </WpButton>
               </ModalButtons>
             </Form>
           );

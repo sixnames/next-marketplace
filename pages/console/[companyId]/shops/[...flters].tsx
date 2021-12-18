@@ -1,14 +1,14 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import ContentItemControls from 'components/button/ContentItemControls';
 import FixedButtons from 'components/button/FixedButtons';
 import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
 import Inner from 'components/Inner';
-import Link from 'components/Link/Link';
+import WpLink from 'components/Link/WpLink';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { CreateShopModalInterface } from 'components/Modal/CreateShopModal';
 import Pager from 'components/Pager';
 import Spinner from 'components/Spinner';
-import Table, { TableColumn } from 'components/Table';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import TableRowImage from 'components/TableRowImage';
 import Title from 'components/Title';
 import { DEFAULT_PAGE, ROUTE_CONSOLE, SORT_DESC } from 'config/common';
@@ -78,12 +78,12 @@ const CompanyShopsPageConsumer: React.FC<CompanyShopsPageConsumerInterface> = ({
     return `${counterPrefix} ${totalDocs} ${counterPostfix}`;
   }, [totalDocs]);
 
-  const columns: TableColumn<ShopInterface>[] = [
+  const columns: WpTableColumn<ShopInterface>[] = [
     {
       accessor: 'itemId',
       headTitle: 'ID',
       render: ({ cellData, dataItem }) => (
-        <Link href={`${itemPath}/${dataItem._id}`}>{cellData}</Link>
+        <WpLink href={`${itemPath}/${dataItem._id}`}>{cellData}</WpLink>
       ),
     },
     {
@@ -155,7 +155,7 @@ const CompanyShopsPageConsumer: React.FC<CompanyShopsPageConsumerInterface> = ({
         <FormikRouterSearch testId={'shops'} />
 
         <div className={`relative overflow-x-auto overflow-y-hidden`}>
-          <Table<ShopInterface>
+          <WpTable<ShopInterface>
             columns={columns}
             data={docs}
             testIdKey={'name'}
@@ -167,7 +167,7 @@ const CompanyShopsPageConsumer: React.FC<CompanyShopsPageConsumerInterface> = ({
           {isPageLoading ? <Spinner isNestedAbsolute isTransparent /> : null}
 
           <FixedButtons>
-            <Button
+            <WpButton
               onClick={() => {
                 showModal<CreateShopModalInterface>({
                   variant: CREATE_SHOP_MODAL,
@@ -180,7 +180,7 @@ const CompanyShopsPageConsumer: React.FC<CompanyShopsPageConsumerInterface> = ({
               size={'small'}
             >
               Добавить магазин
-            </Button>
+            </WpButton>
           </FixedButtons>
         </div>
 

@@ -1,10 +1,10 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import ContentItemControls from 'components/button/ContentItemControls';
 import FixedButtons from 'components/button/FixedButtons';
-import Link from 'components/Link/Link';
+import WpLink from 'components/Link/WpLink';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { CreatePageModalInterface } from 'components/Modal/CreatePageModal';
-import Table, { TableColumn } from 'components/Table';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import { PAGE_STATE_DRAFT } from 'config/common';
 import { CONFIRM_MODAL, CREATE_PAGE_MODAL } from 'config/modalVariants';
 import {
@@ -32,19 +32,19 @@ const PagesList: React.FC<PagesListInterface> = ({ pagesGroup, isTemplate, baseP
 
   const [deletePageMutation] = useDeletePage();
 
-  const columns: TableColumn<PageInterface | PagesTemplateInterface>[] = [
+  const columns: WpTableColumn<PageInterface | PagesTemplateInterface>[] = [
     {
       accessor: 'name',
       headTitle: 'Название',
       render: ({ cellData, dataItem }) => {
         return (
-          <Link
+          <WpLink
             testId={`${cellData}-link`}
             className='text-primary-text hover:no-underline hover:text-link-text'
             href={`${basePath}/${pagesGroup._id}/${dataItem._id}`}
           >
             {cellData}
-          </Link>
+          </WpLink>
         );
       },
     },
@@ -100,7 +100,7 @@ const PagesList: React.FC<PagesListInterface> = ({ pagesGroup, isTemplate, baseP
   return (
     <div className='relative' data-cy={'pages-list'}>
       <div className='overflow-x-auto overflow-y-hidden'>
-        <Table<PageInterface | PagesTemplateInterface>
+        <WpTable<PageInterface | PagesTemplateInterface>
           testIdKey={'name'}
           columns={columns}
           data={pagesGroup.pages || []}
@@ -111,7 +111,7 @@ const PagesList: React.FC<PagesListInterface> = ({ pagesGroup, isTemplate, baseP
       </div>
 
       <FixedButtons>
-        <Button
+        <WpButton
           testId={'create-page'}
           size={'small'}
           onClick={() => {
@@ -125,7 +125,7 @@ const PagesList: React.FC<PagesListInterface> = ({ pagesGroup, isTemplate, baseP
           }}
         >
           Добавить страницу
-        </Button>
+        </WpButton>
       </FixedButtons>
     </div>
   );

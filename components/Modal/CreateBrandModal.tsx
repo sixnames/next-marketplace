@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import BrandMainFields from 'components/FormTemplates/BrandMainFields';
 import * as React from 'react';
 import ModalFrame from 'components/Modal/ModalFrame';
@@ -62,9 +62,9 @@ const CreateBrandModal: React.FC = () => {
             <Form>
               <BrandMainFields />
 
-              <Button type={'submit'} testId={'submit-brand'}>
+              <WpButton type={'submit'} testId={'submit-brand'}>
                 Создать
-              </Button>
+              </WpButton>
             </Form>
           );
         }}

@@ -1,6 +1,6 @@
 import Checkbox from 'components/FormElements/Checkbox/Checkbox';
 import Inner from 'components/Inner';
-import Table, { TableColumn } from 'components/Table';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import Title from 'components/Title';
 import { ROUTE_CMS, SORT_ASC, SORT_DESC } from 'config/common';
 import { getConstantTranslation } from 'config/constantTranslations';
@@ -63,7 +63,7 @@ const RoleNavConsumer: React.FC<RoleNavConsumerInterface> = ({ role, navItemGrou
     ];
   }, [role._id]);
 
-  const columns: TableColumn<NavItemInterface>[] = [
+  const columns: WpTableColumn<NavItemInterface>[] = [
     {
       headTitle: 'Название',
       accessor: 'name',
@@ -129,7 +129,7 @@ const RoleNavConsumer: React.FC<RoleNavConsumerInterface> = ({ role, navItemGrou
             <div key={navGroup._id} className='mb-8'>
               <div className='mb-4 font-medium text-lg'>{navGroup.name}</div>
               <div className='overflow-x-auto overflow-y-hidden'>
-                <Table<NavItemInterface> columns={columns} data={navGroup.children || []} />
+                <WpTable<NavItemInterface> columns={columns} data={navGroup.children || []} />
               </div>
             </div>
           );

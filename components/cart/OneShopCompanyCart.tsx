@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import { CartProduct } from 'components/cart/CartProduct';
 import { CartDeliveryFields } from 'components/cart/DefaultCart';
 import CartAside from 'components/CartAside';
@@ -247,7 +247,7 @@ const OneShopCompanyDeliveryCart: React.FC<OneShopCompanyCartFormInterface> = ({
                             low
                           />
                         </div>
-                        <Button
+                        <WpButton
                           short
                           frameClassName='w-auto'
                           theme={'secondary'}
@@ -265,7 +265,7 @@ const OneShopCompanyDeliveryCart: React.FC<OneShopCompanyCartFormInterface> = ({
                           }}
                         >
                           Применить
-                        </Button>
+                        </WpButton>
                       </InputLine>
 
                       <InputLine
@@ -277,7 +277,7 @@ const OneShopCompanyDeliveryCart: React.FC<OneShopCompanyCartFormInterface> = ({
                         <div className='flex-grow'>
                           <FormikInput name={`shopConfigs[0].promoCode`} low />
                         </div>
-                        <Button
+                        <WpButton
                           short
                           frameClassName='w-auto'
                           theme={'secondary'}
@@ -286,7 +286,7 @@ const OneShopCompanyDeliveryCart: React.FC<OneShopCompanyCartFormInterface> = ({
                           }}
                         >
                           Применить
-                        </Button>
+                        </WpButton>
                       </InputLine>
                     </div>
                   </LayoutCard>
@@ -505,7 +505,7 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
                             low
                           />
                         </div>
-                        <Button
+                        <WpButton
                           short
                           frameClassName='w-auto'
                           theme={'secondary'}
@@ -523,7 +523,7 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
                           }}
                         >
                           Применить
-                        </Button>
+                        </WpButton>
                       </InputLine>
 
                       <InputLine
@@ -535,7 +535,7 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
                         <div className='flex-grow'>
                           <FormikInput name={`shopConfigs[0].promoCode`} low />
                         </div>
-                        <Button
+                        <WpButton
                           short
                           frameClassName='w-auto'
                           theme={'secondary'}
@@ -544,7 +544,7 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
                           }}
                         >
                           Применить
-                        </Button>
+                        </WpButton>
                       </InputLine>
                     </div>
                   </LayoutCard>

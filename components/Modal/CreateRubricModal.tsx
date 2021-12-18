@@ -6,7 +6,7 @@ import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
 import ModalButtons from 'components/Modal/ModalButtons';
 import { Form, Formik } from 'formik';
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import {
   CreateRubricInput,
   Gender,
@@ -72,12 +72,12 @@ const CreateRubricModal: React.FC<CreateRubricModalInterface> = ({ confirm }) =>
               />
 
               <ModalButtons>
-                <Button type={'submit'} testId={'rubric-submit'}>
+                <WpButton type={'submit'} testId={'rubric-submit'}>
                   Создать
-                </Button>
-                <Button theme={'secondary'} onClick={hideModal}>
+                </WpButton>
+                <WpButton theme={'secondary'} onClick={hideModal}>
                   Закрыть
-                </Button>
+                </WpButton>
               </ModalButtons>
             </Form>
           );

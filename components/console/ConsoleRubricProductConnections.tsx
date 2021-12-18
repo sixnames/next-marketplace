@@ -1,13 +1,13 @@
 import Accordion from 'components/Accordion';
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import ContentItemControls from 'components/button/ContentItemControls';
 import FixedButtons from 'components/button/FixedButtons';
 import Inner from 'components/Inner';
-import Link from 'components/Link/Link';
+import WpLink from 'components/Link/WpLink';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { CreateConnectionModalInterface } from 'components/Modal/CreateConnectionModal';
 import { ProductSearchModalInterface } from 'components/Modal/ProductSearchModal';
-import Table, { TableColumn } from 'components/Table';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import TableRowImage from 'components/TableRowImage';
 import { FILTER_SEPARATOR, ROUTE_CMS } from 'config/common';
 import { CONFIRM_MODAL, CREATE_CONNECTION_MODAL, PRODUCT_SEARCH_MODAL } from 'config/modalVariants';
@@ -102,18 +102,18 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
 
   const { connectionProducts } = connection;
 
-  const columns: TableColumn<ProductConnectionItemInterface>[] = [
+  const columns: WpTableColumn<ProductConnectionItemInterface>[] = [
     {
       headTitle: 'Арт',
       render: ({ dataItem, rowIndex }) => {
         return (
-          <Link
+          <WpLink
             target={'_blank'}
             testId={`product-link-${rowIndex}`}
             href={`${ROUTE_CMS}/rubrics/${dataItem.product?.rubricId}/products/product/${dataItem.product?._id}`}
           >
             {dataItem.product?.itemId}
-          </Link>
+          </WpLink>
         );
       },
     },
@@ -201,7 +201,7 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
       titleRight={<ProductConnectionControls connection={connection} product={product} />}
     >
       <div className='mt-4'>
-        <Table<ProductConnectionItemInterface>
+        <WpTable<ProductConnectionItemInterface>
           columns={columns}
           data={connectionProducts}
           tableTestId={`${connection.attribute.name}-connection-list`}
@@ -250,7 +250,7 @@ const ConsoleRubricProductConnections: React.FC<ConsoleRubricProductConnectionsI
       </div>
 
       <FixedButtons>
-        <Button
+        <WpButton
           size={'small'}
           testId={`create-connection`}
           onClick={() =>
@@ -271,7 +271,7 @@ const ConsoleRubricProductConnections: React.FC<ConsoleRubricProductConnectionsI
           }
         >
           Создать связь
-        </Button>
+        </WpButton>
       </FixedButtons>
     </Inner>
   );

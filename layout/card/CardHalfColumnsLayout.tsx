@@ -1,7 +1,7 @@
 import Breadcrumbs from 'components/Breadcrumbs';
-import Icon from 'components/Icon';
+import WpIcon from 'components/WpIcon';
 import Inner from 'components/Inner';
-import Link from 'components/Link/Link';
+import WpLink from 'components/Link/WpLink';
 import WpImage from 'components/WpImage';
 import {
   FILTER_BRAND_COLLECTION_KEY,
@@ -173,7 +173,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                         ) : (
                           <React.Fragment>
                             В наличии в {shopsCount} {shopsCounterPostfix}. Посмотреть
-                            <Icon name={'eye'} className='w-5 h-5 ml-2' />
+                            <WpIcon name={'eye'} className='w-5 h-5 ml-2' />
                           </React.Fragment>
                         )}
                       </a>
@@ -232,12 +232,12 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                                   </div>
                                   <div className='mt-3 text-sm'>{name}</div>
                                   {isCurrent ? null : (
-                                    <Link
+                                    <WpLink
                                       className='absolute inset-0 z-30 block text-indent-full overflow-hidden'
                                       href={`${urlPrefix}/${shopProduct?.product?.slug}`}
                                     >
                                       {name}
-                                    </Link>
+                                    </WpLink>
                                   )}
                                 </div>
                               );

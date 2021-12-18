@@ -6,7 +6,7 @@ import * as React from 'react';
 import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
 import ModalButtons from 'components/Modal/ModalButtons';
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import { Formik, Form } from 'formik';
 
 export interface SetUserCategoryModalInterface {
@@ -71,13 +71,13 @@ const SetUserCategoryModal: React.FC<SetUserCategoryModalInterface> = ({
               />
 
               <ModalButtons>
-                <Button
+                <WpButton
                   testId={'submit-user-category'}
                   disabled={!values.companyId || !values.categoryId}
                   type={'submit'}
                 >
                   Сохранить
-                </Button>
+                </WpButton>
               </ModalButtons>
             </Form>
           );

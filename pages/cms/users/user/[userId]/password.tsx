@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import Inner from 'components/Inner';
 import { ROUTE_CMS } from 'config/common';
@@ -78,9 +78,9 @@ const UserPasswordConsumer: React.FC<UserPasswordInterface> = ({ user }) => {
                   type={'password'}
                   label={'Повторите пароль'}
                 />
-                <Button testId={'submit-password'} size={'small'} type={'submit'}>
+                <WpButton testId={'submit-password'} size={'small'} type={'submit'}>
                   Сохранить
-                </Button>
+                </WpButton>
               </Form>
             );
           }}

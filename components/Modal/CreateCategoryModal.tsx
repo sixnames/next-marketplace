@@ -7,7 +7,7 @@ import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
 import ModalButtons from 'components/Modal/ModalButtons';
 import { Form, Formik } from 'formik';
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import { CreateCategoryInput, useCreateCategoryMutation } from 'generated/apolloComponents';
 import useValidationSchema from 'hooks/useValidationSchema';
 import { createCategorySchema } from 'validation/categorySchema';
@@ -66,12 +66,12 @@ const CreateCategoryModal: React.FC<CreateCategoryModalInterface> = ({ parentId,
               <CategoryMainFields />
 
               <ModalButtons>
-                <Button type={'submit'} testId={'category-submit'}>
+                <WpButton type={'submit'} testId={'category-submit'}>
                   Создать
-                </Button>
-                <Button theme={'secondary'} onClick={hideModal}>
+                </WpButton>
+                <WpButton theme={'secondary'} onClick={hideModal}>
                   Закрыть
-                </Button>
+                </WpButton>
               </ModalButtons>
             </Form>
           );

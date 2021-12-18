@@ -7,7 +7,7 @@ import { ShopProductInterface } from 'db/uiInterfaces';
 import { useShopMarker } from 'hooks/useShopMarker';
 import LayoutCard from 'layout/LayoutCard';
 import * as React from 'react';
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import RatingStars from 'components/RatingStars';
 import LinkPhone from 'components/Link/LinkPhone';
 import ProductShopPrices from 'components/ProductShopPrices';
@@ -105,7 +105,7 @@ const CartShop: React.FC<CartShopInterface> = ({ shopProduct, testId, cartProduc
             </div>
           </div>
 
-          <Button
+          <WpButton
             testId={`cart-shops-${testId}-add-to-cart`}
             onClick={() => {
               addShopToCartProduct({
@@ -115,7 +115,7 @@ const CartShop: React.FC<CartShopInterface> = ({ shopProduct, testId, cartProduc
             }}
           >
             Выбрать
-          </Button>
+          </WpButton>
         </div>
       </div>
     </LayoutCard>

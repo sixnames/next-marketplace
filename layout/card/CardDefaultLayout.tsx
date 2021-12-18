@@ -1,5 +1,5 @@
 import Breadcrumbs from 'components/Breadcrumbs';
-import Icon from 'components/Icon';
+import WpIcon from 'components/WpIcon';
 import Inner from 'components/Inner';
 import TagLink from 'components/Link/TagLink';
 import WpImage from 'components/WpImage';
@@ -233,7 +233,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                       ) : (
                         <React.Fragment>
                           В наличии в {shopsCount} {shopsCounterPostfix}. Посмотреть
-                          <Icon name={'eye'} className='w-5 h-5 ml-2' />
+                          <WpIcon name={'eye'} className='w-5 h-5 ml-2' />
                         </React.Fragment>
                       )}
                     </a>

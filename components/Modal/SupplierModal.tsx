@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FormikMultiLineInput from 'components/FormElements/Input/FormikMultiLineInput';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import { SupplierInterface } from 'db/uiInterfaces';
@@ -109,9 +109,9 @@ const SupplierModal: React.FC<SupplierModalInterface> = ({ validationSchema, sup
                 showInlineError
               />
 
-              <Button type={'submit'} testId={'submit-supplier'}>
+              <WpButton type={'submit'} testId={'submit-supplier'}>
                 {supplier ? 'Сохранить' : 'Создать'}
-              </Button>
+              </WpButton>
             </Form>
           );
         }}

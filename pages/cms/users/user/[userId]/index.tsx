@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FixedButtons from 'components/button/FixedButtons';
 import UserMainFields from 'components/FormTemplates/UserMainFields';
 import Inner from 'components/Inner';
@@ -78,9 +78,9 @@ const UserDetailsConsumer: React.FC<UserDetailsConsumerInterface> = ({ user, rol
                 <UserMainFields roles={roles} />
 
                 <FixedButtons>
-                  <Button size={'small'} testId={'submit-user'} type={'submit'}>
+                  <WpButton size={'small'} testId={'submit-user'} type={'submit'}>
                     Сохранить
-                  </Button>
+                  </WpButton>
                 </FixedButtons>
               </Form>
             );

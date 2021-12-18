@@ -1,7 +1,7 @@
-import Link from 'components/Link/Link';
+import WpLink from 'components/Link/WpLink';
 import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
-import Table, { TableColumn } from 'components/Table';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import TableRowImage from 'components/TableRowImage';
 import Title from 'components/Title';
 import { ROUTE_CMS } from 'config/common';
@@ -19,18 +19,18 @@ const BarcodeIntersectsModalConsumer: React.FC<BarcodeIntersectsModalConsumerInt
 }) => {
   const { barcode, products } = barcodeDouble;
 
-  const columns: TableColumn<ProductInterface>[] = [
+  const columns: WpTableColumn<ProductInterface>[] = [
     {
       headTitle: 'Арт',
       render: ({ dataItem, rowIndex }) => {
         return (
-          <Link
+          <WpLink
             testId={`product-link-${rowIndex}`}
             href={`${ROUTE_CMS}/rubrics/${dataItem.rubricId}/products/product/${dataItem._id}`}
             target={'_blank'}
           >
             {dataItem.itemId}
-          </Link>
+          </WpLink>
         );
       },
     },
@@ -96,7 +96,7 @@ const BarcodeIntersectsModalConsumer: React.FC<BarcodeIntersectsModalConsumerInt
       <div className={`text-xl font-medium mb-2`}>{catalogueCounterString}</div>
 
       <div className={`overflow-x-auto overflow-y-hidden`}>
-        <Table<ProductInterface>
+        <WpTable<ProductInterface>
           onRowDoubleClick={(dataItem) => {
             window.open(
               `${ROUTE_CMS}/rubrics/${dataItem.rubricId}/products/product/${dataItem._id}`,

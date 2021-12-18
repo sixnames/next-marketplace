@@ -1,5 +1,5 @@
 import Accordion from 'components/Accordion';
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import Inner from 'components/Inner';
 import { DEFAULT_CITY } from 'config/common';
 import { useConfigContext } from 'context/configContext';
@@ -51,9 +51,9 @@ const CompanyProductConstructor: React.FC<CompanyProductConstructorInterface> = 
                 );
               })}
               <div className='flex mb-12 mt-4'>
-                <Button size={'small'} type={'submit'} testId={`card-content-submit`}>
+                <WpButton size={'small'} type={'submit'} testId={`card-content-submit`}>
                   Сохранить
-                </Button>
+                </WpButton>
               </div>
             </Form>
           );

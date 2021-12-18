@@ -1,6 +1,6 @@
 import ContentItemControls from 'components/button/ContentItemControls';
 import Inner from 'components/Inner';
-import Table, { TableColumn } from 'components/Table';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import { ConsoleShopLayoutInterface, RubricInterface } from 'db/uiInterfaces';
 import ConsoleShopLayout from 'layout/console/ConsoleShopLayout';
 import { useRouter } from 'next/router';
@@ -13,7 +13,7 @@ export interface ShopRubricsInterface extends ConsoleShopLayoutInterface {
 const ShopRubrics: React.FC<ShopRubricsInterface> = ({ shop, breadcrumbs, rubrics, basePath }) => {
   const router = useRouter();
 
-  const columns: TableColumn<RubricInterface>[] = [
+  const columns: WpTableColumn<RubricInterface>[] = [
     {
       accessor: 'name',
       headTitle: 'Название',
@@ -47,7 +47,7 @@ const ShopRubrics: React.FC<ShopRubricsInterface> = ({ shop, breadcrumbs, rubric
   return (
     <ConsoleShopLayout shop={shop} basePath={basePath} breadcrumbs={breadcrumbs}>
       <Inner testId={'shop-rubrics-list'}>
-        <Table<RubricInterface>
+        <WpTable<RubricInterface>
           columns={columns}
           data={rubrics}
           testIdKey={'name'}

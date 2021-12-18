@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Icon from 'components/Icon';
+import WpIcon from 'components/WpIcon';
 
 export interface AccordionInterface {
   titleClassName?: string;
@@ -69,7 +69,7 @@ const Accordion: React.FC<AccordionInterface> = ({
 
           {lastInTree || disabled ? null : (
             <div className={`relative ml-2`}>
-              <Icon
+              <WpIcon
                 className={`w-4 h-4 fill-theme transition transition-duration-150 ${
                   open ? 'transform rotate-180' : ''
                 }`}

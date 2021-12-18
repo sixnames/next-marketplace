@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import ModalButtons from 'components/Modal/ModalButtons';
 import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
@@ -67,12 +67,12 @@ const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({ rubri
               <ProductMainFields />
 
               <ModalButtons>
-                <Button type={'submit'} testId={'submit-new-product'}>
+                <WpButton type={'submit'} testId={'submit-new-product'}>
                   Создать
-                </Button>
-                <Button theme={'secondary'} onClick={hideModal} testId={'product-decline'}>
+                </WpButton>
+                <WpButton theme={'secondary'} onClick={hideModal} testId={'product-decline'}>
                   Отмена
-                </Button>
+                </WpButton>
               </ModalButtons>
             </Form>
           );

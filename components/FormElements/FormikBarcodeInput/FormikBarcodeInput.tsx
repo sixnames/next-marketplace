@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import Input, { InputPropsInterface } from 'components/FormElements/Input/Input';
 import InputLine from 'components/FormElements/Input/InputLine';
 import dynamic from 'next/dynamic';
@@ -71,7 +71,7 @@ const FormikBarcodeInput: React.FC<FormikBarcodeInputPropsInterface> = ({
                   notValid={notValid}
                 />
               </div>
-              <Button
+              <WpButton
                 onClick={() => {
                   setIsVisible((prevState) => !prevState);
                 }}

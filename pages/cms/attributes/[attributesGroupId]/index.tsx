@@ -5,7 +5,7 @@ import useValidationSchema from 'hooks/useValidationSchema';
 import AppSubNav from 'layout/AppSubNav';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import Inner from 'components/Inner';
 import Title from 'components/Title';
 import { COL_ATTRIBUTES_GROUPS } from 'db/collectionNames';
@@ -113,9 +113,9 @@ const AttributesGroupConsumer: React.FC<AttributesGroupConsumerInterface> = ({
                   isRequired
                 />
                 <FixedButtons>
-                  <Button type={'submit'} testId={'attributes-group-submit'}>
+                  <WpButton type={'submit'} testId={'attributes-group-submit'}>
                     Сохранить
-                  </Button>
+                  </WpButton>
                 </FixedButtons>
               </Form>
             );

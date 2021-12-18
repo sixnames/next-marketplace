@@ -1,14 +1,14 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FixedButtons from 'components/button/FixedButtons';
 import ContentItemControls from 'components/button/ContentItemControls';
 import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
 import Inner from 'components/Inner';
-import Link from 'components/Link/Link';
+import WpLink from 'components/Link/WpLink';
 import LinkPhone from 'components/Link/LinkPhone';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { CreateUserModalInterface } from 'components/Modal/CreateUserModal';
 import Pager from 'components/Pager';
-import Table, { TableColumn } from 'components/Table';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import Title from 'components/Title';
 import { DEFAULT_PAGE, ROUTE_CMS, SORT_DESC } from 'config/common';
 import { CONFIRM_MODAL, CREATE_USER_MODAL } from 'config/modalVariants';
@@ -60,12 +60,12 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
 
   const [deleteUserMutation] = useDeleteUserMutation();
 
-  const columns: TableColumn<UserInterface>[] = [
+  const columns: WpTableColumn<UserInterface>[] = [
     {
       headTitle: 'ID',
       accessor: 'itemId',
       render: ({ cellData, dataItem }) => {
-        return <Link href={`${itemPath}/${dataItem._id}`}>{cellData}</Link>;
+        return <WpLink href={`${itemPath}/${dataItem._id}`}>{cellData}</WpLink>;
       },
     },
     {
@@ -151,7 +151,7 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
           <FormikRouterSearch testId={'users'} />
 
           <div className='overflew-x-auto overflew-y-hidden'>
-            <Table<UserInterface>
+            <WpTable<UserInterface>
               columns={columns}
               data={docs}
               testIdKey={'name'}
@@ -164,7 +164,7 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
           <Pager page={page} totalPages={totalPages} />
 
           <FixedButtons>
-            <Button
+            <WpButton
               testId={'create-user'}
               size={'small'}
               onClick={() => {
@@ -177,7 +177,7 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
               }}
             >
               Добавить пользователя
-            </Button>
+            </WpButton>
           </FixedButtons>
         </div>
       </Inner>

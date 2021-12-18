@@ -1,7 +1,7 @@
 import Breadcrumbs from 'components/Breadcrumbs';
 import { CatalogueHeadDefaultInterface } from 'components/Catalogue';
 import Inner from 'components/Inner';
-import Link from 'components/Link/Link';
+import WpLink from 'components/Link/WpLink';
 import Title from 'components/Title';
 import {
   DEFAULT_CITY,
@@ -66,7 +66,7 @@ const CatalogueHeadWithCategories: React.FC<CatalogueHeadDefaultInterface> = ({
               }${ROUTE_CATALOGUE}/${rubricSlug}/${newPathString}`;
 
               return (
-                <Link
+                <WpLink
                   className='flex flex-col text-secondary-text items-center gap-2 max-w-[140px] min-w-[140px] md:max-w-[160px] md:min-w-[160px] hover:no-underline hover:text-theme'
                   href={href}
                   key={`${_id}`}
@@ -78,7 +78,7 @@ const CatalogueHeadWithCategories: React.FC<CatalogueHeadDefaultInterface> = ({
                     />
                   ) : null}
                   <span className='block text-center text-sm md:text-base'>{name}</span>
-                </Link>
+                </WpLink>
               );
             })}
           </div>

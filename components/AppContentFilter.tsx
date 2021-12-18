@@ -1,6 +1,6 @@
 import Accordion from 'components/Accordion';
 import CheckBoxFilter, { CheckBoxFilterInterface } from 'components/CheckBoxFilter';
-import Link from 'components/Link/Link';
+import WpLink from 'components/Link/WpLink';
 import * as React from 'react';
 
 interface AppContentFilterInterface extends Omit<CheckBoxFilterInterface, 'filterListClassName'> {}
@@ -11,7 +11,7 @@ const AppContentFilter: React.FC<AppContentFilterInterface> = (props) => {
       title={'Фильтр'}
       titleRight={
         props.selectedAttributes.length > 0 ? (
-          <Link href={props.clearSlug}>Сбросить фильтр</Link>
+          <WpLink href={props.clearSlug}>Сбросить фильтр</WpLink>
         ) : null
       }
     >

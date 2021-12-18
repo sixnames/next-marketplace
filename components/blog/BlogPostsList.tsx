@@ -1,10 +1,10 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import ContentItemControls from 'components/button/ContentItemControls';
 import FixedButtons from 'components/button/FixedButtons';
 import FormattedDateTime from 'components/FormattedDateTime';
 import { BlogPostModalInterface } from 'components/Modal/BlogPostModal';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import Table, { TableColumn } from 'components/Table';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import { PAGE_STATE_DRAFT, ROUTE_BLOG } from 'config/common';
 import { BLOG_POST_MODAL, CONFIRM_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
@@ -24,7 +24,7 @@ const BlogPostsList: React.FC<BlogPostsListInterface> = ({ posts, companySlug, b
   const { showModal } = useAppContext();
   const [deleteBlogPost] = useDeleteBlogPost();
 
-  const columns: TableColumn<BlogPostInterface>[] = [
+  const columns: WpTableColumn<BlogPostInterface>[] = [
     {
       accessor: 'title',
       headTitle: 'Заголовок',
@@ -90,7 +90,7 @@ const BlogPostsList: React.FC<BlogPostsListInterface> = ({ posts, companySlug, b
   return (
     <div className='relative'>
       <div className='overflow-x-auto'>
-        <Table<BlogPostInterface>
+        <WpTable<BlogPostInterface>
           testIdKey={'title'}
           columns={columns}
           data={posts}
@@ -101,7 +101,7 @@ const BlogPostsList: React.FC<BlogPostsListInterface> = ({ posts, companySlug, b
       </div>
 
       <FixedButtons>
-        <Button
+        <WpButton
           testId={`create-blog-post`}
           size={'small'}
           onClick={() => {
@@ -115,7 +115,7 @@ const BlogPostsList: React.FC<BlogPostsListInterface> = ({ posts, companySlug, b
           }}
         >
           Создать блог-пост
-        </Button>
+        </WpButton>
       </FixedButtons>
     </div>
   );

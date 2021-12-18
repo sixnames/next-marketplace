@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import Inner from 'components/Inner';
 import SeoContentEditor from 'components/SeoContentEditor';
 import { UpdateProductCardContentInputInterface } from 'db/dao/product/updateProductCardContent';
@@ -37,14 +37,14 @@ const ConsoleRubricProductConstructor: React.FC<ConsoleRubricProductConstructorI
               <SeoContentEditor filedName={'cardContent'} />
 
               <div className='flex mb-12 mt-4'>
-                <Button
+                <WpButton
                   theme={'secondary'}
                   size={'small'}
                   type={'submit'}
                   testId={`card-content-submit`}
                 >
                   Сохранить
-                </Button>
+                </WpButton>
               </div>
             </Form>
           );

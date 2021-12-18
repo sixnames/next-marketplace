@@ -1,4 +1,4 @@
-import Button, { ButtonPropsInterface } from 'components/button/Button';
+import WpButton, { ButtonPropsInterface } from 'components/button/WpButton';
 import { useSiteContext } from 'context/siteContext';
 import { useIsInCart, UseIsInCartInterface } from 'hooks/useIsInCart';
 import * as React from 'react';
@@ -25,7 +25,7 @@ const ProductAddToCartButton: React.FC<ProductAddToCartButtonInterface> = ({
   }
 
   return (
-    <Button
+    <WpButton
       {...props}
       theme={inCart.isInCart ? 'secondary' : 'primary'}
       ariaLabel={'Добавить в корзину'}
@@ -46,7 +46,7 @@ const ProductAddToCartButton: React.FC<ProductAddToCartButtonInterface> = ({
       }}
     >
       {inCart.isInCart ? `В корзине ${inCart.inCartCount} шт.` : 'В корзину'}
-    </Button>
+    </WpButton>
   );
 };
 

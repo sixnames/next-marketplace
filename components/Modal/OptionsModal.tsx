@@ -1,7 +1,7 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FixedButtons from 'components/button/FixedButtons';
 import FormikIndividualSearch from 'components/FormElements/Search/FormikIndividualSearch';
-import Icon from 'components/Icon';
+import WpIcon from 'components/WpIcon';
 import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
 import RequestError from 'components/RequestError';
@@ -67,7 +67,7 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
   const isCheckbox = React.useMemo(() => optionVariant === 'checkbox', [optionVariant]);
   const inputIcon = React.useMemo(() => {
     return isCheckbox ? (
-      <Icon className='absolute w-[10px] h-[10px] top-[2px] left-[2px]' name={'check'} />
+      <WpIcon className='absolute w-[10px] h-[10px] top-[2px] left-[2px]' name={'check'} />
     ) : (
       <div className='absolute w-[10px] h-[10px] top-[2px] left-[2px] rounded-full bg-theme' />
     );
@@ -245,9 +245,9 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
 
       {selectedOptions.length > 0 ? (
         <FixedButtons>
-          <Button testId={`options-submit`} onClick={() => onSubmit(selectedOptions)}>
+          <WpButton testId={`options-submit`} onClick={() => onSubmit(selectedOptions)}>
             {buttonText}
-          </Button>
+          </WpButton>
         </FixedButtons>
       ) : null}
     </ModalFrame>

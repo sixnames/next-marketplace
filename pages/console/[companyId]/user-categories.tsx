@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import ContentItemControls from 'components/button/ContentItemControls';
 import Currency from 'components/Currency';
 import FixedButtons from 'components/button/FixedButtons';
@@ -6,7 +6,7 @@ import Inner from 'components/Inner';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { UserCategoryModalInterface } from 'components/Modal/UserCategoryModal';
 import Percent from 'components/Percent';
-import Table, { TableColumn } from 'components/Table';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import Title from 'components/Title';
 import { CONFIRM_MODAL, USER_CATEGORY_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
@@ -38,7 +38,7 @@ const UserCategoriesConsumer: NextPage<UserCategoriesConsumerInterface> = ({
   const { showModal } = useAppContext();
   const [deleteUserCategory] = useDeleteUserCategory();
 
-  const columns: TableColumn<UserCategoryInterface>[] = [
+  const columns: WpTableColumn<UserCategoryInterface>[] = [
     {
       headTitle: 'Название',
       accessor: 'name',
@@ -107,9 +107,13 @@ const UserCategoriesConsumer: NextPage<UserCategoriesConsumerInterface> = ({
     <AppContentWrapper>
       <Inner testId={'user-categories-list'}>
         <Title>Категории клиентов</Title>
-        <Table<UserCategoryInterface> testIdKey={'name'} columns={columns} data={userCategories} />
+        <WpTable<UserCategoryInterface>
+          testIdKey={'name'}
+          columns={columns}
+          data={userCategories}
+        />
         <FixedButtons>
-          <Button
+          <WpButton
             testId={'create-user-category'}
             size={'small'}
             onClick={() => {
@@ -122,7 +126,7 @@ const UserCategoriesConsumer: NextPage<UserCategoriesConsumerInterface> = ({
             }}
           >
             Создать категорию клиента
-          </Button>
+          </WpButton>
         </FixedButtons>
       </Inner>
     </AppContentWrapper>

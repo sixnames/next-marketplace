@@ -6,7 +6,7 @@ import ModalFrame from 'components/Modal/ModalFrame';
 import ModalTitle from 'components/Modal/ModalTitle';
 import ModalText from 'components/Modal/ModalText';
 import ModalButtons from 'components/Modal/ModalButtons';
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import { useAppContext } from 'context/appContext';
 import { useRouter } from 'next/router';
 import { useNotificationsContext } from 'context/notificationsContext';
@@ -59,10 +59,10 @@ const CartModal: React.FC<CartModalInterface> = ({ title = 'Товар был д
         </p>
       </ModalText>
       <ModalButtons>
-        <Button theme={'secondary'} onClick={hideModal} testId={`cart-modal-close`}>
+        <WpButton theme={'secondary'} onClick={hideModal} testId={`cart-modal-close`}>
           продолжить покупки
-        </Button>
-        <Button
+        </WpButton>
+        <WpButton
           onClick={() => {
             hideModal();
             router.push(`${urlPrefix}/cart`).catch(() => {
@@ -72,7 +72,7 @@ const CartModal: React.FC<CartModalInterface> = ({ title = 'Товар был д
           testId={`cart-modal-continue`}
         >
           перейти в корзину
-        </Button>
+        </WpButton>
       </ModalButtons>
     </ModalFrame>
   );

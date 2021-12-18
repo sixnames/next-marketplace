@@ -1,4 +1,4 @@
-import Icon from 'components/Icon';
+import WpIcon from 'components/WpIcon';
 import {
   CatalogueFilterAttributeInterface,
   CatalogueFilterAttributeOptionInterface,
@@ -80,7 +80,7 @@ const FilterSelectedAttributes: React.FC<FilterSelectedAttributesInterface> = ({
                         }}
                       >
                         <span className='hover:text-theme'>
-                          <Icon name={'cross'} className='w-[0.75rem] h-[0.75rem]' />
+                          <WpIcon name={'cross'} className='w-[0.75rem] h-[0.75rem]' />
                         </span>
                         <span className='block w-[calc(100%-1.25rem)]'>
                           {getSelectedOptionName(option)}

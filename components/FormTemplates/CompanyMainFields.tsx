@@ -1,4 +1,4 @@
-import Link from 'components/Link/Link';
+import WpLink from 'components/Link/WpLink';
 import LinkEmail from 'components/Link/LinkEmail';
 import LinkPhone from 'components/Link/LinkPhone';
 import { ROUTE_CMS } from 'config/common';
@@ -16,8 +16,8 @@ import FormikInput from '../../components/FormElements/Input/FormikInput';
 import FormikMultiLineInput from '../../components/FormElements/Input/FormikMultiLineInput';
 import FakeInput from '../../components/FormElements/Input/FakeInput';
 import InputLine from '../../components/FormElements/Input/InputLine';
-import Button from 'components/button/Button';
-import Table, { TableColumn } from 'components/Table';
+import WpButton from 'components/button/WpButton';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 
 export interface CompanyFormMainValuesInterface extends Omit<UpdateCompanyInput, 'companyId'> {
   owner: UserInterface | null;
@@ -58,7 +58,7 @@ const CompanyMainFields: React.FC<CompanyMainFieldsInterface> = ({
 
   const { owner, staff } = values;
 
-  const columns: TableColumn<UserInterface>[] = [
+  const columns: WpTableColumn<UserInterface>[] = [
     {
       accessor: 'itemId',
       headTitle: 'ID',
@@ -66,7 +66,7 @@ const CompanyMainFields: React.FC<CompanyMainFieldsInterface> = ({
         if (inConsole) {
           return cellData;
         }
-        return <Link href={`${ROUTE_CMS}/users/user/${dataItem._id}`}>{cellData}</Link>;
+        return <WpLink href={`${ROUTE_CMS}/users/user/${dataItem._id}`}>{cellData}</WpLink>;
       },
     },
     {
@@ -157,7 +157,7 @@ const CompanyMainFields: React.FC<CompanyMainFieldsInterface> = ({
 
       {inConsole ? null : (
         <InputLine labelTag={'div'}>
-          <Button
+          <WpButton
             theme={'secondary'}
             size={'small'}
             testId={'add-owner'}
@@ -176,12 +176,12 @@ const CompanyMainFields: React.FC<CompanyMainFieldsInterface> = ({
             }
           >
             {owner ? 'Изменить владельца' : 'Выбрать владельца'}
-          </Button>
+          </WpButton>
         </InputLine>
       )}
 
       <InputLine label={'Персонал компании'} labelTag={'div'}>
-        <Table<UserInterface>
+        <WpTable<UserInterface>
           columns={columns}
           data={staff}
           testIdKey={'itemId'}
@@ -191,7 +191,7 @@ const CompanyMainFields: React.FC<CompanyMainFieldsInterface> = ({
 
       {inConsole ? null : (
         <InputLine labelTag={'div'}>
-          <Button
+          <WpButton
             theme={'secondary'}
             size={'small'}
             testId={'add-staff'}
@@ -210,7 +210,7 @@ const CompanyMainFields: React.FC<CompanyMainFieldsInterface> = ({
             }
           >
             {'Добавить сотрудника'}
-          </Button>
+          </WpButton>
         </InputLine>
       )}
     </React.Fragment>

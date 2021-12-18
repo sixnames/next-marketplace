@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FixedButtons from 'components/button/FixedButtons';
 import RubricMainFields from 'components/FormTemplates/RubricMainFields';
 import Inner from 'components/Inner';
@@ -149,9 +149,9 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
                 />
 
                 <FixedButtons>
-                  <Button type={'submit'} testId={'rubric-submit'}>
+                  <WpButton type={'submit'} testId={'rubric-submit'}>
                     Сохранить
-                  </Button>
+                  </WpButton>
                 </FixedButtons>
               </Form>
             );

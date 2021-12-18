@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FixedButtons from 'components/button/FixedButtons';
 import WpIconUpload from 'components/FormElements/Upload/WpIconUpload';
 import WpImageUpload from 'components/FormElements/Upload/WpImageUpload';
@@ -250,9 +250,9 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
                 <SeoContentEditor label={'SEO текст внизу каталога'} filedName={'textBottom'} />
 
                 <FixedButtons>
-                  <Button type={'submit'} testId={'category-submit'} size={'small'}>
+                  <WpButton type={'submit'} testId={'category-submit'} size={'small'}>
                     Сохранить
-                  </Button>
+                  </WpButton>
                 </FixedButtons>
               </Form>
             );

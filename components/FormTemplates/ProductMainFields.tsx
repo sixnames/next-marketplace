@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FormikBarcodeInput from 'components/FormElements/FormikBarcodeInput/FormikBarcodeInput';
 import InputLine from 'components/FormElements/Input/InputLine';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
@@ -74,7 +74,7 @@ const ProductMainFields: React.FC = () => {
           );
         })}
         <div>
-          <Button
+          <WpButton
             onClick={() => {
               setFieldValue('barcode', [...values.barcode, '']);
             }}
@@ -82,7 +82,7 @@ const ProductMainFields: React.FC = () => {
             size={'small'}
           >
             Добавить штрих-код
-          </Button>
+          </WpButton>
         </div>
       </InputLine>
 

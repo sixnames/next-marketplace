@@ -1,12 +1,12 @@
 import Accordion from 'components/Accordion';
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import ButtonCross from 'components/button/ButtonCross';
 import Checkbox from 'components/FormElements/Checkbox/Checkbox';
 import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
 import FormikAddressInput from 'components/FormElements/Input/FormikAddressInput';
 import FormikInput, { FormikInputPropsInterface } from 'components/FormElements/Input/FormikInput';
 import InputLine from 'components/FormElements/Input/InputLine';
-import Icon from 'components/Icon';
+import WpIcon from 'components/WpIcon';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import PageEditor from 'components/PageEditor';
 import WpTooltip from 'components/WpTooltip';
@@ -126,7 +126,7 @@ const ConfigInput: React.FC<ConfigInputInterface> = ({ name, multi, variant, tes
       })}
 
       {multi ? (
-        <Button
+        <WpButton
           frameClassName={'w-auto'}
           onClick={addFieldHandler}
           size={'small'}
@@ -134,7 +134,7 @@ const ConfigInput: React.FC<ConfigInputInterface> = ({ name, multi, variant, tes
           testId={`${name}-add`}
         >
           Добавить
-        </Button>
+        </WpButton>
       ) : null}
     </div>
   );
@@ -188,7 +188,7 @@ const ConfigTranslationInput: React.FC<ConfigTranslationInputInterface> = ({
               titleRight={
                 <WpTooltip title={accordionIconTooltip}>
                   <div>
-                    <Icon className={`w-4 h-4 ${accordionIconClass}`} name={accordionIcon} />
+                    <WpIcon className={`w-4 h-4 ${accordionIconClass}`} name={accordionIcon} />
                   </div>
                 </WpTooltip>
               }
@@ -492,7 +492,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
               {' '}
               <WpTooltip title={description}>
                 <div className='inline-block cursor-pointer ml-3'>
-                  <Icon className='w-5 h-5' name={'question-circle'} />
+                  <WpIcon className='w-5 h-5' name={'question-circle'} />
                 </div>
               </WpTooltip>
             </React.Fragment>
@@ -547,7 +547,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
               {' '}
               <WpTooltip title={description}>
                 <div className='inline-block cursor-pointer ml-3'>
-                  <Icon className='w-5 h-5' name={'question-circle'} />
+                  <WpIcon className='w-5 h-5' name={'question-circle'} />
                 </div>
               </WpTooltip>
             </React.Fragment>
@@ -580,14 +580,14 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
                   );
                 })}
                 <div className='flex mb-12 mt-4'>
-                  <Button
+                  <WpButton
                     theme={'secondary'}
                     size={'small'}
                     type={'submit'}
                     testId={`${configSlug}-submit`}
                   >
                     Сохранить
-                  </Button>
+                  </WpButton>
                 </div>
               </Form>
             );
@@ -610,7 +610,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
               {' '}
               <WpTooltip title={description}>
                 <div className='inline-block cursor-pointer ml-3'>
-                  <Icon className='w-5 h-5' name={'question-circle'} />
+                  <WpIcon className='w-5 h-5' name={'question-circle'} />
                 </div>
               </WpTooltip>
             </React.Fragment>
@@ -672,14 +672,14 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
                   );
                 })}
                 <div className='flex mb-12 mt-4'>
-                  <Button
+                  <WpButton
                     theme={'secondary'}
                     size={'small'}
                     type={'submit'}
                     testId={`${configSlug}-submit`}
                   >
                     Сохранить
-                  </Button>
+                  </WpButton>
                 </div>
               </Form>
             );
@@ -701,7 +701,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
             {' '}
             <WpTooltip title={description}>
               <div className='inline-block cursor-pointer ml-3'>
-                <Icon className='w-5 h-5' name={'question-circle'} />
+                <WpIcon className='w-5 h-5' name={'question-circle'} />
               </div>
             </WpTooltip>
           </React.Fragment>
@@ -739,14 +739,14 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
                 );
               })}
               <div className='flex mb-12 mt-4'>
-                <Button
+                <WpButton
                   theme={'secondary'}
                   size={'small'}
                   type={'submit'}
                   testId={`${configSlug}-submit`}
                 >
                   Сохранить
-                </Button>
+                </WpButton>
               </div>
             </Form>
           );

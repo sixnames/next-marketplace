@@ -4,7 +4,7 @@ import { ProductSnippetInterface } from 'db/uiInterfaces';
 import ProductAddToCartButton from 'layout/snippet/ProductAddToCartButton';
 import ProductSnippetEditButton from 'layout/snippet/ProductSnippetEditButton';
 import * as React from 'react';
-import Link from 'components/Link/Link';
+import WpLink from 'components/Link/WpLink';
 import RatingStars from 'components/RatingStars';
 import ControlButton from 'components/button/ControlButton';
 import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
@@ -78,28 +78,28 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
             width={85}
             className='w-full h-full object-contain'
           />
-          <Link
+          <WpLink
             testId={`${testId}-image-grid`}
             target={'_blank'}
             className='block absolute z-10 inset-0 text-indent-full'
             href={`${urlPrefix}/${slug}`}
           >
             {snippetTitle}
-          </Link>
+          </WpLink>
         </div>
 
         <div className='col-span-9 flex flex-col pt-12 pr-5 gap-4 min-h-[235px]'>
           <div className='mb-auto'>
             {/*name*/}
             <div className='mb-3'>
-              <Link
+              <WpLink
                 testId={`${testId}-name-grid`}
                 target={'_blank'}
                 className='text-lg sm:text-xl font-medium block text-primary-text hover:no-underline hover:text-primary-text'
                 href={`${urlPrefix}/${slug}`}
               >
                 {snippetTitle}
-              </Link>
+              </WpLink>
               {name ? <div className='text-secondary-text mt-1'>{name}</div> : null}
             </div>
 

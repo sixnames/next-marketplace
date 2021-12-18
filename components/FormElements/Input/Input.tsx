@@ -1,7 +1,7 @@
 import * as React from 'react';
 import InputLine, { InputLinePropsInterface } from './InputLine';
 import MaskedField from 'react-masked-field';
-import Icon from 'components/Icon';
+import WpIcon from 'components/WpIcon';
 import ButtonCross from 'components/button/ButtonCross';
 import { InputTheme, InputType, OnOffType } from 'types/clientTypes';
 import { IconType } from 'types/iconTypes';
@@ -108,7 +108,7 @@ const Input: React.FC<InputPropsInterface> = ({
       description={description}
     >
       {icon ? (
-        <Icon
+        <WpIcon
           name={icon}
           className='absolute top-half left-input-padding-horizontal z-20 w-input-icon-size h-input-icon-size transform -translate-y-1/2'
         />

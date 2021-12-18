@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import ContentItemControls from 'components/button/ContentItemControls';
 import Currency from 'components/Currency';
 import FixedButtons from 'components/button/FixedButtons';
@@ -6,7 +6,7 @@ import Inner from 'components/Inner';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { UserCategoryModalInterface } from 'components/Modal/UserCategoryModal';
 import Percent from 'components/Percent';
-import Table, { TableColumn } from 'components/Table';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import { ROUTE_CMS } from 'config/common';
 import { CONFIRM_MODAL, USER_CATEGORY_MODAL } from 'config/modalVariants';
 import { useAppContext } from 'context/appContext';
@@ -34,7 +34,7 @@ const CompanyDetailsConsumer: React.FC<CompanyDetailsConsumerInterface> = ({ pag
   const { showModal } = useAppContext();
   const [deleteUserCategory] = useDeleteUserCategory();
 
-  const columns: TableColumn<UserCategoryInterface>[] = [
+  const columns: WpTableColumn<UserCategoryInterface>[] = [
     {
       headTitle: 'Название',
       accessor: 'name',
@@ -116,13 +116,13 @@ const CompanyDetailsConsumer: React.FC<CompanyDetailsConsumerInterface> = ({ pag
   return (
     <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
       <Inner testId={'company-categories-page'}>
-        <Table<UserCategoryInterface>
+        <WpTable<UserCategoryInterface>
           testIdKey={'name'}
           columns={columns}
           data={pageCompany?.categories}
         />
         <FixedButtons>
-          <Button
+          <WpButton
             testId={'create-user-category'}
             size={'small'}
             onClick={() => {
@@ -135,7 +135,7 @@ const CompanyDetailsConsumer: React.FC<CompanyDetailsConsumerInterface> = ({ pag
             }}
           >
             Создать категорию клиента
-          </Button>
+          </WpButton>
         </FixedButtons>
       </Inner>
     </CmsCompanyLayout>

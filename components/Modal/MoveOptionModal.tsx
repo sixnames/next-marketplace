@@ -9,7 +9,7 @@ import RequestError from 'components/RequestError';
 import { Formik, Form } from 'formik';
 import FormikSelect from 'components/FormElements/Select/FormikSelect';
 import ModalButtons from 'components/Modal/ModalButtons';
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 
 export interface MoveOptionModalInterface {
   option: OptionInterface;
@@ -84,9 +84,9 @@ const MoveOptionModal: React.FC<MoveOptionModalInterface> = ({ option }) => {
               />
 
               <ModalButtons>
-                <Button type={'submit'} testId={'options-group-submit'}>
+                <WpButton type={'submit'} testId={'options-group-submit'}>
                   Сохранить
-                </Button>
+                </WpButton>
               </ModalButtons>
             </Form>
           );

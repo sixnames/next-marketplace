@@ -1,10 +1,10 @@
 import FormattedDateTime from 'components/FormattedDateTime';
 import Inner from 'components/Inner';
-import Link from 'components/Link/Link';
+import WpLink from 'components/Link/WpLink';
 import LinkEmail from 'components/Link/LinkEmail';
 import LinkPhone from 'components/Link/LinkPhone';
 import Pager from 'components/Pager';
-import Table, { TableColumn } from 'components/Table';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import { ConsoleShopLayoutInterface, OrderInterface } from 'db/uiInterfaces';
 import ConsoleShopLayout from 'layout/console/ConsoleShopLayout';
 import { useRouter } from 'next/router';
@@ -15,17 +15,17 @@ export type ShopOrdersInterface = ConsoleShopLayoutInterface;
 const ShopOrders: React.FC<ShopOrdersInterface> = ({ shop, basePath, breadcrumbs }) => {
   const router = useRouter();
 
-  const columns: TableColumn<OrderInterface>[] = [
+  const columns: WpTableColumn<OrderInterface>[] = [
     {
       accessor: 'itemId',
       headTitle: 'ID',
       render: ({ cellData, dataItem }) => (
-        <Link
+        <WpLink
           testId={`order-${dataItem.itemId}-link`}
           href={`${basePath}/${shop._id}/shop-orders/${dataItem._id}`}
         >
           {cellData}
-        </Link>
+        </WpLink>
       ),
     },
     {
@@ -77,7 +77,7 @@ const ShopOrders: React.FC<ShopOrdersInterface> = ({ shop, basePath, breadcrumbs
       <Inner>
         <div data-cy={'shop-orders-list'}>
           <div className='overflow-x-auto'>
-            <Table<OrderInterface>
+            <WpTable<OrderInterface>
               columns={columns}
               data={shop.orders}
               testIdKey={'itemId'}

@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import FormikDatePicker from 'components/FormElements/Input/FormikDatePicker';
 import FormikInput from 'components/FormElements/Input/FormikInput';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
@@ -110,9 +110,9 @@ const CreatePromoModal: React.FC<CreatePromoModalInterface> = ({ pageCompany }) 
               />
 
               <ModalButtons>
-                <Button type={'submit'} testId={'submit-promo'}>
+                <WpButton type={'submit'} testId={'submit-promo'}>
                   Создать
-                </Button>
+                </WpButton>
               </ModalButtons>
             </Form>
           );

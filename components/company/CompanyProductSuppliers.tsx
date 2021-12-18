@@ -1,4 +1,4 @@
-import Button from 'components/button/Button';
+import WpButton from 'components/button/WpButton';
 import ContentItemControls from 'components/button/ContentItemControls';
 import Currency from 'components/Currency';
 import FormikBarcodeInput from 'components/FormElements/FormikBarcodeInput/FormikBarcodeInput';
@@ -9,7 +9,7 @@ import Inner from 'components/Inner';
 import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
 import { ShopProductSupplierModalInterface } from 'components/Modal/ShopProductSupplierModal';
 import Percent from 'components/Percent';
-import Table, { TableColumn } from 'components/Table';
+import WpTable, { WpTableColumn } from 'components/WpTable';
 import { getConstantTranslation } from 'config/constantTranslations';
 import { CONFIRM_MODAL, SHOP_PRODUCT_SUPPLIER_MODAL } from 'config/modalVariants';
 import { useLocaleContext } from 'context/localeContext';
@@ -49,7 +49,7 @@ const CompanyProductSuppliers: React.FC<CompanyProductSuppliersInterface> = ({
     schema: updateManyShopProductsSchema,
   });
 
-  const columns: TableColumn<SupplierProductInterface>[] = [
+  const columns: WpTableColumn<SupplierProductInterface>[] = [
     {
       headTitle: 'Название',
       accessor: 'supplier.name',
@@ -194,7 +194,7 @@ const CompanyProductSuppliers: React.FC<CompanyProductSuppliersInterface> = ({
                     );
                   })}
                   <div>
-                    <Button
+                    <WpButton
                       theme={'secondary'}
                       size={'small'}
                       onClick={() => {
@@ -202,13 +202,13 @@ const CompanyProductSuppliers: React.FC<CompanyProductSuppliersInterface> = ({
                       }}
                     >
                       Добавить штрих-код
-                    </Button>
+                    </WpButton>
                   </div>
                 </InputLine>
 
-                <Button size={'small'} type={'submit'}>
+                <WpButton size={'small'} type={'submit'}>
                   Сохранить
-                </Button>
+                </WpButton>
               </Form>
             );
           }}
@@ -218,7 +218,7 @@ const CompanyProductSuppliers: React.FC<CompanyProductSuppliersInterface> = ({
       {/*suppliers list*/}
       <div className='mb-16'>
         <div className='overflow-x-auto overflow-y-hidden mb-8'>
-          <Table<SupplierProductInterface>
+          <WpTable<SupplierProductInterface>
             columns={columns}
             data={shopProduct.supplierProducts}
             testIdKey={'supplier.name'}
@@ -234,7 +234,7 @@ const CompanyProductSuppliers: React.FC<CompanyProductSuppliersInterface> = ({
             }}
           />
         </div>
-        <Button
+        <WpButton
           disabled={disableAddSupplier}
           testId={'add-supplier'}
           size={'small'}
@@ -249,7 +249,7 @@ const CompanyProductSuppliers: React.FC<CompanyProductSuppliersInterface> = ({
           }}
         >
           Добавить поставщика
-        </Button>
+        </WpButton>
       </div>
 
       {/*barcode*/}

@@ -12,7 +12,7 @@ import * as React from 'react';
 import Inner from 'components/Inner';
 import { useSiteContext } from 'context/siteContext';
 import { useRouter } from 'next/router';
-import Link from 'components/Link/Link';
+import WpLink from 'components/Link/WpLink';
 
 interface AttributeStylesInterface {
   attributeLinkStyle: React.CSSProperties;
@@ -127,7 +127,7 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({
       data-cy={`main-rubric-list-item-${rubric.slug}`}
       onMouseLeave={() => setIsDropdownVisible(true)}
     >
-      <Link
+      <WpLink
         href={path}
         style={linkStyle}
         testId={`main-rubric-${rubric.slug}`}
@@ -138,7 +138,7 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({
         {isCurrent ? (
           <span className='absolute bottom-0 inset-x-0 w-full h-[2px] bg-theme' />
         ) : null}
-      </Link>
+      </WpLink>
 
       {isDropdownVisible ? (
         <StickyNavDropdown

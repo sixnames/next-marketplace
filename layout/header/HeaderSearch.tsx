@@ -14,7 +14,7 @@ import Inner from 'components/Inner';
 import OutsideClickHandler from 'react-outside-click-handler';
 import Input from 'components/FormElements/Input/Input';
 import Spinner from 'components/Spinner';
-import Link from 'components/Link/Link';
+import WpLink from 'components/Link/WpLink';
 
 interface HeaderSearchResultInterface {
   shopProducts?: ShopProductInterface[] | null;
@@ -50,7 +50,7 @@ const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({
         })}
       </div>
       {isProductsFound ? (
-        <Link
+        <WpLink
           className='flex items-center min-h-[var(--minLinkHeightSmall)] text-theme'
           href={`${urlPrefix}${ROUTE_SEARCH_RESULT}/${encodeURIComponent(string)}`}
           onClick={() => {
@@ -58,7 +58,7 @@ const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({
           }}
         >
           <span className='overflow-ellipsis whitespace-nowrap'>Показать все результаты</span>
-        </Link>
+        </WpLink>
       ) : null}
     </div>
   );

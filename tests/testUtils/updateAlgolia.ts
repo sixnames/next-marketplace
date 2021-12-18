@@ -1,26 +1,126 @@
-import capitalize from 'capitalize';
 import {
   ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD,
   ATTRIBUTE_POSITION_IN_TITLE_BEFORE_KEYWORD,
   ATTRIBUTE_POSITION_IN_TITLE_BEGIN,
   ATTRIBUTE_POSITION_IN_TITLE_END,
   ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD,
-  GENDER_IT,
-  FILTER_PRICE_KEY,
   FILTER_CATEGORY_KEY,
-} from '../config/common';
-import { getConstantTranslation } from '../config/constantTranslations';
-import { GenderModel } from '../db/dbModels';
+  FILTER_PRICE_KEY,
+  GENDER_IT,
+} from '../../config/common';
+import { getConstantTranslation } from '../../config/constantTranslations';
+import { get } from 'lodash';
 import {
   AttributeInterface,
   BrandInterface,
   CategoryInterface,
   OptionInterface,
   ProductAttributeInterface,
-} from '../db/uiInterfaces';
-import { getFieldStringLocale } from '../lib/i18n';
-import { get } from 'lodash';
+  ProductInterface,
+} from '../../db/uiInterfaces';
+import { getFieldStringLocale } from '../../lib/i18n';
+import { ObjectId, Db } from 'mongodb';
+import { dbsConfig, getProdDb } from './getProdDb';
+import {
+  COL_ATTRIBUTES,
+  COL_BRAND_COLLECTIONS,
+  COL_BRANDS,
+  COL_CATEGORIES,
+  COL_LANGUAGES,
+  COL_OPTIONS,
+  COL_PRODUCT_ASSETS,
+  COL_PRODUCT_ATTRIBUTES,
+  COL_PRODUCTS,
+  COL_RUBRICS,
+} from '../../db/collectionNames';
+import {
+  GenderModel,
+  LanguageModel,
+  ObjectIdModel,
+  OptionVariantsModel,
+  ProductModel,
+  TranslationModel,
+} from '../../db/dbModels';
+import algoliasearch from 'algoliasearch';
+import { SearchClient, SearchIndex } from 'algoliasearch/dist/algoliasearch';
 import trim from 'trim';
+import capitalize from 'capitalize';
+
+require('dotenv').config();
+
+export function sortByName(list: any[], fieldName = 'name'): any[] {
+  return [...list].sort((a, b) => {
+    const nameA = `${get(a, fieldName)}`.toUpperCase();
+    const nameB = `${get(b, fieldName)}`.toUpperCase();
+
+    if (nameA < nameB) {
+      return -1;
+    }
+    if (nameA > nameB) {
+      return 1;
+    }
+    return 0;
+  });
+}
+
+interface TreeItemInterface extends Record<any, any> {
+  parentId?: ObjectIdModel | null;
+  childrenCount?: number | null;
+  variants?: OptionVariantsModel | null;
+}
+
+interface GetTreeFromListInterface<T> {
+  childrenFieldName: string;
+  list?: T[] | null;
+  parentId?: ObjectId | null;
+  locale?: string;
+  gender?: GenderModel | null;
+  log?: boolean;
+}
+
+export function getTreeFromList<T extends TreeItemInterface>({
+  list,
+  parentId,
+  locale,
+  childrenFieldName,
+  gender,
+  log,
+}: GetTreeFromListInterface<T>): T[] {
+  const realList = list || [];
+  const parentsList = realList.filter((listItem) => {
+    return parentId ? listItem.parentId?.equals(parentId) : !listItem.parentId;
+  });
+
+  return parentsList.map((parent) => {
+    const children = getTreeFromList({
+      list: realList,
+      locale,
+      parentId: parent._id,
+      childrenFieldName,
+      gender,
+      log,
+    });
+
+    const nameTranslation = getFieldStringLocale(parent.nameI18n, locale);
+    let name = nameTranslation;
+    if (parent.variants && gender) {
+      const variant = get(parent.variants, gender);
+      if (variant) {
+        name = getFieldStringLocale(variant, locale);
+      }
+    }
+    if (!name) {
+      name = nameTranslation;
+    }
+
+    return {
+      ...parent,
+      name,
+      [childrenFieldName]: sortByName(children),
+      childrenCount: children.length,
+    };
+  });
+}
 
 interface TitleOptionInterface
   extends Pick<OptionInterface, 'nameI18n' | 'variants'>,
@@ -433,3 +533,385 @@ export function generateSnippetTitle(props: GenerateCardTitleInterface): string 
     attributeVisibilityFieldName: 'showInSnippetTitle',
   });
 }
+
+interface GetAlgoliaClientPayloadInterface {
+  algoliaClient: SearchClient;
+  algoliaIndex: SearchIndex;
+}
+
+export const getAlgoliaClient = (indexName: string): GetAlgoliaClientPayloadInterface => {
+  const algoliaClient = algoliasearch(
+    `${process.env.ALGOLIA_APP_ID}`,
+    `${process.env.ALGOLIA_API_KEY}`,
+  );
+  const algoliaIndex = algoliaClient.initIndex(indexName);
+  return {
+    algoliaClient,
+    algoliaIndex,
+  };
+};
+
+interface AlgoliaObjectInterface extends Record<string, any> {
+  objectID: string;
+}
+
+interface SaveAlgoliaObjectsInterface {
+  indexName: string;
+  objects: AlgoliaObjectInterface[];
+}
+
+export const saveAlgoliaObjects = async ({ indexName, objects }: SaveAlgoliaObjectsInterface) => {
+  try {
+    const { algoliaIndex } = getAlgoliaClient(indexName);
+    const saveResult = await algoliaIndex.saveObjects(objects);
+    if (saveResult.objectIDs.length < objects.length) {
+      return false;
+    }
+    return true;
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
+};
+
+interface AlgoliaProductInterface {
+  _id: string;
+  objectID: string;
+  cardTitleI18n: TranslationModel;
+  snippetTitleI18n: TranslationModel;
+  barcode?: string[] | null;
+  slug: string;
+}
+
+export async function fastUpdateAlgoliaProduct(
+  productId: ObjectIdModel,
+  indexName: string,
+  db: Db,
+) {
+  const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
+  const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
+  const languages = await languagesCollection.find({}).toArray();
+  const locales = languages.map(({ slug }) => slug);
+
+  const productAggregation = await productsCollection
+    .aggregate<ProductInterface>([
+      {
+        $match: {
+          _id: new ObjectId(productId),
+        },
+      },
+
+      // get product assets
+      {
+        $lookup: {
+          as: 'assets',
+          from: COL_PRODUCT_ASSETS,
+          localField: '_id',
+          foreignField: 'productId',
+        },
+      },
+      {
+        $addFields: {
+          assets: {
+            $arrayElemAt: ['$assets', 0],
+          },
+        },
+      },
+
+      // get product rubric
+      {
+        $lookup: {
+          from: COL_RUBRICS,
+          as: 'rubric',
+          let: {
+            rubricId: '$rubricId',
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ['$_id', '$$rubricId'],
+                },
+              },
+            },
+          ],
+        },
+      },
+      {
+        $addFields: {
+          rubric: {
+            $arrayElemAt: ['$rubric', 0],
+          },
+        },
+      },
+
+      // get product attributes
+      {
+        $lookup: {
+          from: COL_PRODUCT_ATTRIBUTES,
+          as: 'attributes',
+          let: {
+            productId: '$_id',
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ['$$productId', '$productId'],
+                },
+              },
+            },
+            {
+              $lookup: {
+                from: COL_ATTRIBUTES,
+                as: 'attribute',
+                let: {
+                  attributeId: '$attributeId',
+                  selectedOptionsIds: '$selectedOptionsIds',
+                },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $eq: ['$$attributeId', '$_id'],
+                      },
+                    },
+                  },
+                  {
+                    $lookup: {
+                      from: COL_OPTIONS,
+                      as: 'options',
+                      pipeline: [
+                        {
+                          $match: {
+                            $expr: {
+                              $and: [
+                                {
+                                  $in: ['$_id', '$$selectedOptionsIds'],
+                                },
+                              ],
+                            },
+                          },
+                        },
+                      ],
+                    },
+                  },
+                ],
+              },
+            },
+            {
+              $addFields: {
+                attribute: {
+                  $arrayElemAt: ['$attribute', 0],
+                },
+              },
+            },
+            {
+              $match: {
+                attribute: {
+                  $exists: true,
+                },
+              },
+            },
+          ],
+        },
+      },
+
+      // get product brand
+      {
+        $lookup: {
+          from: COL_BRANDS,
+          as: 'brand',
+          let: {
+            slug: '$brandSlug',
+            brandCollectionSlug: '$brandCollectionSlug',
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ['$$slug', '$itemId'],
+                },
+              },
+            },
+            {
+              $lookup: {
+                from: COL_BRAND_COLLECTIONS,
+                as: 'collections',
+                let: {
+                  brandId: '$_id',
+                },
+                pipeline: [
+                  {
+                    $match: {
+                      $and: [
+                        {
+                          $expr: {
+                            $eq: ['$brandId', '$$brandId'],
+                          },
+                        },
+                        {
+                          $expr: {
+                            $eq: ['$itemId', '$$brandCollectionSlug'],
+                          },
+                        },
+                      ],
+                    },
+                  },
+                  {
+                    $project: {
+                      descriptionI18n: false,
+                    },
+                  },
+                ],
+              },
+            },
+            {
+              $project: {
+                url: false,
+                descriptionI18n: false,
+                logo: false,
+              },
+            },
+          ],
+        },
+      },
+      {
+        $addFields: {
+          brand: {
+            $arrayElemAt: ['$brand', 0],
+          },
+        },
+      },
+
+      // get product categories
+      {
+        $lookup: {
+          from: COL_CATEGORIES,
+          as: 'categories',
+          let: {
+            rubricId: '$rubricId',
+            selectedOptionsSlugs: '$selectedOptionsSlugs',
+          },
+          pipeline: [
+            {
+              $match: {
+                $and: [
+                  {
+                    $expr: {
+                      $eq: ['$rubricId', '$$rubricId'],
+                    },
+                  },
+                  {
+                    $expr: {
+                      $in: ['$slug', '$$selectedOptionsSlugs'],
+                    },
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      },
+    ])
+    .toArray();
+  const initialProduct = productAggregation[0];
+  if (!initialProduct) {
+    return false;
+  }
+
+  const { rubric, ...restProduct } = initialProduct;
+  if (!rubric) {
+    return false;
+  }
+
+  let algoliaProduct: AlgoliaProductInterface = {
+    _id: initialProduct._id.toHexString(),
+    slug: initialProduct.slug,
+    objectID: initialProduct._id.toHexString(),
+    barcode: initialProduct.barcode,
+    cardTitleI18n: {},
+    snippetTitleI18n: {},
+  };
+
+  for await (const locale of locales) {
+    const categories = getTreeFromList({
+      list: initialProduct.categories,
+      childrenFieldName: 'categories',
+      locale,
+    });
+
+    // title
+    const titleProps = {
+      locale,
+      brand: initialProduct.brand,
+      rubricName: getFieldStringLocale(rubric.nameI18n, locale),
+      showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
+      showCategoryInProductTitle: rubric.showCategoryInProductTitle,
+      attributes: initialProduct.attributes,
+      titleCategoriesSlugs: restProduct.titleCategoriesSlugs,
+      originalName: restProduct.originalName,
+      defaultGender: restProduct.gender,
+      categories,
+    };
+    const cardTitle = generateCardTitle(titleProps);
+    algoliaProduct.cardTitleI18n[locale] = cardTitle;
+    const snippetTitle = generateSnippetTitle(titleProps);
+    algoliaProduct.snippetTitleI18n[locale] = snippetTitle;
+  }
+
+  const algoliaProductResult = await saveAlgoliaObjects({
+    indexName,
+    objects: [algoliaProduct],
+  });
+  if (!algoliaProductResult) {
+    console.log('algolia error');
+    return false;
+  }
+
+  return true;
+}
+
+async function updateProds() {
+  for await (const dbConfig of dbsConfig) {
+    console.log(' ');
+    console.log('>>>>>>>>>>>>>>>>>>>>>>>>');
+    console.log(' ');
+    console.log(`Updating ${dbConfig.dbName} db`);
+    const { db, client } = await getProdDb(dbConfig);
+    const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+
+    // products
+    const products = await productsCollection
+      .aggregate([
+        {
+          $project: {
+            _id: true,
+          },
+        },
+      ])
+      .toArray();
+    console.log(products.length);
+    console.log(products[0]);
+    for await (const product of products) {
+      await fastUpdateAlgoliaProduct(product._id, dbConfig.algoliaProductsIndexName, db);
+    }
+
+    // disconnect form db
+    await client.close();
+    console.log(`Done ${dbConfig.dbName}`);
+    console.log(' ');
+  }
+}
+
+(() => {
+  updateProds()
+    .then(() => {
+      console.log('Success!');
+      process.exit();
+    })
+    .catch((e) => {
+      console.log(e);
+      process.exit();
+    });
+})();

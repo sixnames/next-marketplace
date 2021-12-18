@@ -2,6 +2,7 @@ import Button from 'components/button/Button';
 import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
 import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import { SingleSeoContentEditor } from 'components/SeoContentEditor';
+import { useConfigContext } from 'context/configContext';
 import { SeoContentModel } from 'db/dbModels';
 import { Form, Formik } from 'formik';
 import { useUpdateSeoContent } from 'hooks/mutations/useSeoContentMutations';
@@ -18,6 +19,7 @@ const ConsoleSeoContentDetails: React.FC<ConsoleSeoContentDetailsInterface> = ({
   companySlug,
   showSeoFields,
 }) => {
+  const { configs } = useConfigContext();
   const [updateSeoContentMutation] = useUpdateSeoContent();
 
   return (
@@ -41,11 +43,13 @@ const ConsoleSeoContentDetails: React.FC<ConsoleSeoContentDetailsInterface> = ({
             <Form>
               {showSeoFields ? (
                 <React.Fragment>
-                  <FormikCheckboxLine
-                    label={'Открыть для индексации'}
-                    name={'showForIndex'}
-                    testId={'showForIndex'}
-                  />
+                  {configs.useNoIndexRules ? (
+                    <FormikCheckboxLine
+                      label={'Открыть для индексации'}
+                      name={'showForIndex'}
+                      testId={'showForIndex'}
+                    />
+                  ) : null}
 
                   <FormikTranslationsInput
                     label={'Заголовок'}

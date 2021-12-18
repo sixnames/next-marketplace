@@ -1,18 +1,17 @@
 import Breadcrumbs from 'components/Breadcrumbs';
 import Button from 'components/button/Button';
 import ErrorBoundaryFallback from 'components/ErrorBoundaryFallback';
-import Checkbox from 'components/FormElements/Checkbox/Checkbox';
 import Icon from 'components/Icon';
 import Inner from 'components/Inner';
 import MenuButtonWithName from 'components/MenuButtonWithName';
 import PageEditor from 'components/PageEditor';
 import Pager from 'components/Pager';
+import SeoContentNoIndexTrigger from 'components/SeoContentNoIndexTrigger';
 import SeoTextLocalesInfoList from 'components/SeoTextLocalesInfoList';
 import { CATALOGUE_HEAD_LAYOUT_WITH_CATEGORIES } from 'config/constantSelects';
 import { useSiteContext } from 'context/siteContext';
 import { useSiteUserContext } from 'context/siteUserContext';
 import { CatalogueBreadcrumbModel, SeoContentModel } from 'db/dbModels';
-import { useUpdateSeoContent } from 'hooks/mutations/useSeoContentMutations';
 import ProductSnippetGrid from 'layout/snippet/ProductSnippetGrid';
 import ProductSnippetRow from 'layout/snippet/ProductSnippetRow';
 import HeadlessMenuButton from 'components/HeadlessMenuButton';
@@ -30,7 +29,6 @@ import {
   SORT_DIR_KEY,
   REQUEST_METHOD_POST,
   ROUTE_CATALOGUE,
-  DEFAULT_COMPANY_SLUG,
   FILTER_SEPARATOR,
 } from 'config/common';
 import { useConfigContext } from 'context/configContext';
@@ -79,12 +77,10 @@ const CatalogueHead: React.FC<CatalogueHeadInterface> = ({
 }) => {
   const router = useRouter();
   const sessionUser = useSiteUserContext();
-  const { urlPrefix, domainCompany } = useSiteContext();
+  const { urlPrefix } = useSiteContext();
   const { asPath } = router;
   const basePath = `${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}`;
   const showIndexCheckBox = asPath !== basePath;
-
-  const [updateSeoContentMutation] = useUpdateSeoContent();
 
   let catalogueHead;
   if (catalogueHeadLayout === CATALOGUE_HEAD_LAYOUT_WITH_CATEGORIES) {
@@ -132,24 +128,7 @@ const CatalogueHead: React.FC<CatalogueHeadInterface> = ({
               </Button>
 
               {showIndexCheckBox && textTop ? (
-                <label className='flex gap-2 items-center cursor-pointer'>
-                  <Checkbox
-                    checked={Boolean(textTop.showForIndex)}
-                    name={'showForIndex'}
-                    onChange={() => {
-                      updateSeoContentMutation({
-                        companySlug: domainCompany?.slug || DEFAULT_COMPANY_SLUG,
-                        seoContentId: `${textTop._id}`,
-                        content: textTop.content,
-                        showForIndex: !textTop.showForIndex,
-                        metaTitleI18n: textTop.metaTitleI18n,
-                        metaDescriptionI18n: textTop.metaDescriptionI18n,
-                        titleI18n: textTop.titleI18n,
-                      }).catch(console.log);
-                    }}
-                  />
-                  <span>Открыть для индексации</span>
-                </label>
+                <SeoContentNoIndexTrigger seoContent={textTop} />
               ) : null}
             </div>
           </div>

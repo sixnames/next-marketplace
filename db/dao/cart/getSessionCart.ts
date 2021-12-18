@@ -166,7 +166,6 @@ export const getSessionCart = async ({
           shopProducts: sortedShopProductsByPrice,
           name: getFieldStringLocale(product.nameI18n, locale),
           cardPrices: {
-            _id: new ObjectId(),
             min: `${minPriceShopProduct?.price}`,
             max: `${maxPriceShopProduct?.price}`,
           },

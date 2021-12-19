@@ -1,10 +1,10 @@
 import * as React from 'react';
+import { IconType } from '../types/iconTypes';
 import HeadlessMenuButton, {
   HeadlessMenuItemInterface,
   MenuButtonInterface,
-} from 'components/HeadlessMenuButton';
-import WpIcon from 'components/WpIcon';
-import { IconType } from 'types/iconTypes';
+} from './HeadlessMenuButton';
+import WpIcon from './WpIcon';
 
 export interface MenuButtonWithNameInterface extends Omit<MenuButtonInterface, 'buttonText'> {
   iconPosition?: 'left' | 'right';

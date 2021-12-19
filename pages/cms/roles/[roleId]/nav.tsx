@@ -1,29 +1,33 @@
-import Checkbox from 'components/FormElements/Checkbox/Checkbox';
-import Inner from 'components/Inner';
-import WpTable, { WpTableColumn } from 'components/WpTable';
-import Title from 'components/Title';
-import { ROUTE_CMS, SORT_ASC, SORT_DESC } from 'config/common';
-import { getConstantTranslation } from 'config/constantTranslations';
-import { COL_NAV_ITEMS, COL_ROLES } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import {
-  NavGroupInterface,
-  RoleInterface,
-  NavItemInterface,
-  AppContentWrapperBreadCrumbs,
-} from 'db/uiInterfaces';
-import { useUpdateRoleNavMutation } from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import AppSubNav from 'layout/AppSubNav';
-import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
 import Head from 'next/head';
 import * as React from 'react';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import { ClientNavItemInterface } from 'types/clientTypes';
+import WpCheckbox from '../../../../components/FormElements/Checkbox/WpCheckbox';
+import Inner from '../../../../components/Inner';
+import WpTable, { WpTableColumn } from '../../../../components/WpTable';
+import WpTitle from '../../../../components/WpTitle';
+import { ROUTE_CMS, SORT_ASC, SORT_DESC } from '../../../../config/common';
+import { getConstantTranslation } from '../../../../config/constantTranslations';
+import { COL_NAV_ITEMS, COL_ROLES } from '../../../../db/collectionNames';
+import { getDatabase } from '../../../../db/mongodb';
+import {
+  AppContentWrapperBreadCrumbs,
+  NavGroupInterface,
+  NavItemInterface,
+  RoleInterface,
+} from '../../../../db/uiInterfaces';
+import { useUpdateRoleNavMutation } from '../../../../generated/apolloComponents';
+import useMutationCallbacks from '../../../../hooks/useMutationCallbacks';
+import AppContentWrapper from '../../../../layout/AppContentWrapper';
+import AppSubNav from '../../../../layout/AppSubNav';
+import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
+import { getFieldStringLocale } from '../../../../lib/i18n';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../../lib/ssrUtils';
+import { ClientNavItemInterface } from '../../../../types/clientTypes';
 
 interface RoleNavConsumerInterface {
   role: RoleInterface;
@@ -77,7 +81,7 @@ const RoleNavConsumer: React.FC<RoleNavConsumerInterface> = ({ role, navItemGrou
         });
 
         return (
-          <Checkbox
+          <WpCheckbox
             testId={`${dataItem.navGroup}-${dataItem.name}`}
             checked={checked}
             name={'allow'}
@@ -119,7 +123,7 @@ const RoleNavConsumer: React.FC<RoleNavConsumerInterface> = ({ role, navItemGrou
         <title>{role.name}</title>
       </Head>
       <Inner lowBottom>
-        <Title>{role.name}</Title>
+        <WpTitle>{role.name}</WpTitle>
       </Inner>
       <AppSubNav navConfig={navConfig} />
 

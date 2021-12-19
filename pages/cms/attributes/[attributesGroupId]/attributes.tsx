@@ -1,43 +1,54 @@
-import FixedButtons from 'components/button/FixedButtons';
-import ContentItemControls from 'components/button/ContentItemControls';
-import { AddAttributeToGroupModalInterface } from 'components/Modal/AttributeInGroupModal';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import { MoveAttributeModalInterface } from 'components/Modal/MoveAttributeModal';
-import WpTable, { WpTableColumn } from 'components/WpTable';
-import { DEFAULT_LOCALE, ROUTE_CMS, SORT_ASC } from 'config/common';
-import { getBooleanTranslation, getConstantTranslation } from 'config/constantTranslations';
+import { ObjectId } from 'mongodb';
+import * as React from 'react';
+import Head from 'next/head';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import ContentItemControls from '../../../../components/button/ContentItemControls';
+import FixedButtons from '../../../../components/button/FixedButtons';
+import WpButton from '../../../../components/button/WpButton';
+import Inner from '../../../../components/Inner';
+import { AddAttributeToGroupModalInterface } from '../../../../components/Modal/AttributeInGroupModal';
+import { ConfirmModalInterface } from '../../../../components/Modal/ConfirmModal';
+import { MoveAttributeModalInterface } from '../../../../components/Modal/MoveAttributeModal';
+import WpTable, { WpTableColumn } from '../../../../components/WpTable';
+import WpTitle from '../../../../components/WpTitle';
+import { DEFAULT_LOCALE, ROUTE_CMS, SORT_ASC } from '../../../../config/common';
+import {
+  getBooleanTranslation,
+  getConstantTranslation,
+} from '../../../../config/constantTranslations';
 import {
   ATTRIBUTE_IN_GROUP_MODAL,
   CONFIRM_MODAL,
   MOVE_ATTRIBUTE_MODAL,
-} from 'config/modalVariants';
-import { useLocaleContext } from 'context/localeContext';
+} from '../../../../config/modalVariants';
+import { useLocaleContext } from '../../../../context/localeContext';
 import {
-  useCreateAttributeMutation,
-  useDeleteAttributeMutation,
-  useUpdateAttributeMutation,
-} from 'hooks/mutations/useAttributeMutations';
-import AppSubNav from 'layout/AppSubNav';
-import { ObjectId } from 'mongodb';
-import * as React from 'react';
-import WpButton from 'components/button/WpButton';
-import Inner from 'components/Inner';
-import Title from 'components/Title';
-import { COL_ATTRIBUTES, COL_ATTRIBUTES_GROUPS, COL_OPTIONS_GROUPS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
+  COL_ATTRIBUTES,
+  COL_ATTRIBUTES_GROUPS,
+  COL_OPTIONS_GROUPS,
+} from '../../../../db/collectionNames';
+import { getDatabase } from '../../../../db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   AttributeInterface,
   AttributesGroupInterface,
-} from 'db/uiInterfaces';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import { getFieldStringLocale } from 'lib/i18n';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import Head from 'next/head';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { ClientNavItemInterface } from 'types/clientTypes';
+} from '../../../../db/uiInterfaces';
+import {
+  useCreateAttributeMutation,
+  useDeleteAttributeMutation,
+  useUpdateAttributeMutation,
+} from '../../../../hooks/mutations/useAttributeMutations';
+import useMutationCallbacks from '../../../../hooks/useMutationCallbacks';
+import AppContentWrapper from '../../../../layout/AppContentWrapper';
+import AppSubNav from '../../../../layout/AppSubNav';
+import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
+import { getFieldStringLocale } from '../../../../lib/i18n';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../../lib/ssrUtils';
+import { ClientNavItemInterface } from '../../../../types/clientTypes';
 
 const pageTitle = `Группы атрибутов`;
 
@@ -287,7 +298,7 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({ attributesG
         <title>{attributesGroup.name}</title>
       </Head>
       <Inner lowBottom>
-        <Title testId={'attributes-group-title'}>{attributesGroup.name}</Title>
+        <WpTitle testId={'attributes-group-title'}>{attributesGroup.name}</WpTitle>
       </Inner>
       <AppSubNav navConfig={navConfig} />
 

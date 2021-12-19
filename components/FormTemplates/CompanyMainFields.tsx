@@ -1,23 +1,21 @@
-import WpLink from 'components/Link/WpLink';
-import LinkEmail from 'components/Link/LinkEmail';
-import LinkPhone from 'components/Link/LinkPhone';
-import { ROUTE_CMS } from 'config/common';
-import { UserInterface } from 'db/uiInterfaces';
 import * as React from 'react';
-import { UpdateCompanyInput } from 'generated/apolloComponents';
-import { useAppContext } from 'context/appContext';
 import { useFormikContext } from 'formik';
-import { UsersSearchModalInterface } from 'components/Modal/UsersSearchModal';
-import { USERS_SEARCH_MODAL } from 'config/modalVariants';
-import ContentItemControls, {
-  ContentItemControlsInterface,
-} from 'components/button/ContentItemControls';
 import FormikInput from '../../components/FormElements/Input/FormikInput';
 import FormikMultiLineInput from '../../components/FormElements/Input/FormikMultiLineInput';
 import FakeInput from '../../components/FormElements/Input/FakeInput';
 import InputLine from '../../components/FormElements/Input/InputLine';
-import WpButton from 'components/button/WpButton';
-import WpTable, { WpTableColumn } from 'components/WpTable';
+import { ROUTE_CMS } from '../../config/common';
+import { USERS_SEARCH_MODAL } from '../../config/modalVariants';
+import { useAppContext } from '../../context/appContext';
+import { UserInterface } from '../../db/uiInterfaces';
+import { UpdateCompanyInput } from '../../generated/apolloComponents';
+import ContentItemControls, { ContentItemControlsInterface } from '../button/ContentItemControls';
+import WpButton from '../button/WpButton';
+import LinkEmail from '../Link/LinkEmail';
+import LinkPhone from '../Link/LinkPhone';
+import WpLink from '../Link/WpLink';
+import { UsersSearchModalInterface } from '../Modal/UsersSearchModal';
+import WpTable, { WpTableColumn } from '../WpTable';
 
 export interface CompanyFormMainValuesInterface extends Omit<UpdateCompanyInput, 'companyId'> {
   owner: UserInterface | null;

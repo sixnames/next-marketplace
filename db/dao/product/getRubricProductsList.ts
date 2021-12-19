@@ -1,9 +1,9 @@
-import { DEFAULT_COMPANY_SLUG, DEFAULT_PAGE } from 'config/common';
-import { getConsoleRubricProducts } from 'db/dao/product/getConsoleRubricProducts';
-import { ConsoleRubricProductsInterface } from 'db/uiInterfaces';
-import { alwaysString } from 'lib/arrayUtils';
-import { noNaN } from 'lib/numbers';
 import { ObjectId } from 'mongodb';
+import { DEFAULT_COMPANY_SLUG, DEFAULT_PAGE } from '../../../config/common';
+import { alwaysString } from '../../../lib/arrayUtils';
+import { noNaN } from '../../../lib/numbers';
+import { ConsoleRubricProductsInterface } from '../../uiInterfaces';
+import { getConsoleRubricProducts } from './getConsoleRubricProducts';
 
 export interface GetRubricProductsListInputInterface {
   rubricSlug: string;

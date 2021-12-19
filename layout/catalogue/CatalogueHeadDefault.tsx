@@ -1,9 +1,9 @@
-import Breadcrumbs from 'components/Breadcrumbs';
-import { CatalogueHeadDefaultInterface } from 'components/Catalogue';
-import Inner from 'components/Inner';
-import Title from 'components/Title';
-import { useSiteContext } from 'context/siteContext';
 import * as React from 'react';
+import { CatalogueHeadDefaultInterface } from '../../components/Catalogue';
+import Inner from '../../components/Inner';
+import WpBreadcrumbs from '../../components/WpBreadcrumbs';
+import WpTitle from '../../components/WpTitle';
+import { useSiteContext } from '../../context/siteContext';
 
 const CatalogueHeadDefault: React.FC<CatalogueHeadDefaultInterface> = ({
   catalogueCounterString,
@@ -14,14 +14,14 @@ const CatalogueHeadDefault: React.FC<CatalogueHeadDefaultInterface> = ({
 
   return (
     <React.Fragment>
-      <Breadcrumbs config={breadcrumbs} urlPrefix={urlPrefix} />
+      <WpBreadcrumbs config={breadcrumbs} urlPrefix={urlPrefix} />
       <Inner lowBottom lowTop>
-        <Title
+        <WpTitle
           testId={'catalogue-title'}
           subtitle={<span className='lg:hidden'>{catalogueCounterString}</span>}
         >
           {catalogueTitle}
-        </Title>
+        </WpTitle>
       </Inner>
     </React.Fragment>
   );

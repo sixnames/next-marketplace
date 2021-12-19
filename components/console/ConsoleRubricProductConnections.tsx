@@ -1,28 +1,32 @@
-import Accordion from 'components/Accordion';
-import WpButton from 'components/button/WpButton';
-import ContentItemControls from 'components/button/ContentItemControls';
-import FixedButtons from 'components/button/FixedButtons';
-import Inner from 'components/Inner';
-import WpLink from 'components/Link/WpLink';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import { CreateConnectionModalInterface } from 'components/Modal/CreateConnectionModal';
-import { ProductSearchModalInterface } from 'components/Modal/ProductSearchModal';
-import WpTable, { WpTableColumn } from 'components/WpTable';
-import TableRowImage from 'components/TableRowImage';
-import { FILTER_SEPARATOR, ROUTE_CMS } from 'config/common';
-import { CONFIRM_MODAL, CREATE_CONNECTION_MODAL, PRODUCT_SEARCH_MODAL } from 'config/modalVariants';
+import * as React from 'react';
+import { FILTER_SEPARATOR, ROUTE_CMS } from '../../config/common';
+import {
+  CONFIRM_MODAL,
+  CREATE_CONNECTION_MODAL,
+  PRODUCT_SEARCH_MODAL,
+} from '../../config/modalVariants';
 import {
   ProductConnectionInterface,
   ProductConnectionItemInterface,
   ProductInterface,
-} from 'db/uiInterfaces';
+} from '../../db/uiInterfaces';
 import {
   useAddProductToConnectionMutation,
   useCreateProductConnectionMutation,
   useDeleteProductFromConnectionMutation,
-} from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import * as React from 'react';
+} from '../../generated/apolloComponents';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import ContentItemControls from '../button/ContentItemControls';
+import FixedButtons from '../button/FixedButtons';
+import WpButton from '../button/WpButton';
+import Inner from '../Inner';
+import WpLink from '../Link/WpLink';
+import { ConfirmModalInterface } from '../Modal/ConfirmModal';
+import { CreateConnectionModalInterface } from '../Modal/CreateConnectionModal';
+import { ProductSearchModalInterface } from '../Modal/ProductSearchModal';
+import TableRowImage from '../TableRowImage';
+import WpAccordion from '../WpAccordion';
+import WpTable, { WpTableColumn } from '../WpTable';
 
 interface ProductConnectionControlsInterface {
   connection: ProductConnectionInterface;
@@ -193,7 +197,7 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
   }
 
   return (
-    <Accordion
+    <WpAccordion
       testId={`${connection.attribute.name}-connection`}
       title={`${connection.attribute.name}`}
       isOpen
@@ -214,7 +218,7 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
           testIdKey={'product.name'}
         />
       </div>
-    </Accordion>
+    </WpAccordion>
   );
 };
 

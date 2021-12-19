@@ -1,29 +1,33 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import WpButton from 'components/button/WpButton';
-import FixedButtons from 'components/button/FixedButtons';
-import ContentItemControls from 'components/button/ContentItemControls';
-import Inner from 'components/Inner';
-import { AttributesGroupModalInterface } from 'components/Modal/AttributesGroupModal';
-import WpTable, { WpTableColumn } from 'components/WpTable';
-import Title from 'components/Title';
-import { DEFAULT_LOCALE, ROUTE_CMS, SORT_ASC } from 'config/common';
-import { ATTRIBUTES_GROUP_MODAL, CONFIRM_MODAL } from 'config/modalVariants';
-import { COL_ATTRIBUTES_GROUPS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { AttributesGroupInterface } from 'db/uiInterfaces';
+import Head from 'next/head';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import ContentItemControls from '../../../components/button/ContentItemControls';
+import FixedButtons from '../../../components/button/FixedButtons';
+import WpButton from '../../../components/button/WpButton';
+import Inner from '../../../components/Inner';
+import { AttributesGroupModalInterface } from '../../../components/Modal/AttributesGroupModal';
+import WpTable, { WpTableColumn } from '../../../components/WpTable';
+import WpTitle from '../../../components/WpTitle';
+import { DEFAULT_LOCALE, ROUTE_CMS, SORT_ASC } from '../../../config/common';
+import { ATTRIBUTES_GROUP_MODAL, CONFIRM_MODAL } from '../../../config/modalVariants';
+import { COL_ATTRIBUTES_GROUPS } from '../../../db/collectionNames';
+import { getDatabase } from '../../../db/mongodb';
+import { AttributesGroupInterface } from '../../../db/uiInterfaces';
 import {
   useCreateAttributesGroupMutation,
   useDeleteAttributesGroupMutation,
-} from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import { getFieldStringLocale } from 'lib/i18n';
-import { noNaN } from 'lib/numbers';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import Head from 'next/head';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+} from '../../../generated/apolloComponents';
+import useMutationCallbacks from '../../../hooks/useMutationCallbacks';
+import AppContentWrapper from '../../../layout/AppContentWrapper';
+import { getFieldStringLocale } from '../../../lib/i18n';
+import { noNaN } from '../../../lib/numbers';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../lib/ssrUtils';
+import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
 
 const pageTitle = `Группы атрибутов`;
 
@@ -103,7 +107,7 @@ const AttributesGroupsConsumer: React.FC<AttributesGroupsConsumerInterface> = ({
         <title>{pageTitle}</title>
       </Head>
       <Inner>
-        <Title>{pageTitle}</Title>
+        <WpTitle>{pageTitle}</WpTitle>
         <div className='overflow-x-auto'>
           <WpTable<AttributesGroupInterface>
             columns={columns}

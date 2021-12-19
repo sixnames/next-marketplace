@@ -1,6 +1,6 @@
 import * as React from 'react';
+import { InputTheme, OnOffType } from '../../../types/clientTypes';
 import InputLine, { InputLinePropsInterface } from '../Input/InputLine';
-import { InputTheme, OnOffType } from 'types/clientTypes';
 
 export interface TextareaInterface extends InputLinePropsInterface {
   name: string;

@@ -1,44 +1,44 @@
-import WpButton from 'components/button/WpButton';
-import ContentItemControls from 'components/button/ContentItemControls';
-import FixedButtons from 'components/button/FixedButtons';
-import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
-import Inner from 'components/Inner';
-import WpLink from 'components/Link/WpLink';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import { CreateShopModalInterface } from 'components/Modal/CreateShopModal';
-import Pager from 'components/Pager';
-import Spinner from 'components/Spinner';
-import WpTable, { WpTableColumn } from 'components/WpTable';
-import TableRowImage from 'components/TableRowImage';
-import Title from 'components/Title';
-import { DEFAULT_PAGE, ROUTE_CONSOLE, SORT_DESC } from 'config/common';
-import { CONFIRM_MODAL, CREATE_SHOP_MODAL } from 'config/modalVariants';
-import { COL_CITIES, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
+import { ObjectId } from 'mongodb';
+import { useRouter } from 'next/router';
+import * as React from 'react';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import ContentItemControls from '../../../../components/button/ContentItemControls';
+import FixedButtons from '../../../../components/button/FixedButtons';
+import WpButton from '../../../../components/button/WpButton';
+import FormikRouterSearch from '../../../../components/FormElements/Search/FormikRouterSearch';
+import Inner from '../../../../components/Inner';
+import WpLink from '../../../../components/Link/WpLink';
+import { ConfirmModalInterface } from '../../../../components/Modal/ConfirmModal';
+import { CreateShopModalInterface } from '../../../../components/Modal/CreateShopModal';
+import Pager from '../../../../components/Pager';
+import Spinner from '../../../../components/Spinner';
+import TableRowImage from '../../../../components/TableRowImage';
+import WpTable, { WpTableColumn } from '../../../../components/WpTable';
+import WpTitle from '../../../../components/WpTitle';
+import { DEFAULT_PAGE, ROUTE_CONSOLE, SORT_DESC } from '../../../../config/common';
+import { CONFIRM_MODAL, CREATE_SHOP_MODAL } from '../../../../config/modalVariants';
+import { COL_CITIES, COL_SHOP_PRODUCTS, COL_SHOPS } from '../../../../db/collectionNames';
+import { getDatabase } from '../../../../db/mongodb';
 import {
   AppPaginationAggregationInterface,
   AppPaginationInterface,
   CompanyInterface,
   ShopInterface,
-} from 'db/uiInterfaces';
-import { useDeleteShopFromCompanyMutation } from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import usePageLoadingState from 'hooks/usePageLoadingState';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { alwaysArray } from 'lib/arrayUtils';
-import { castUrlFilters } from 'lib/catalogueUtils';
-import { getFieldStringLocale, getNumWord } from 'lib/i18n';
-import { noNaN } from 'lib/numbers';
-import { ObjectId } from 'mongodb';
-import { useRouter } from 'next/router';
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+} from '../../../../db/uiInterfaces';
+import { useDeleteShopFromCompanyMutation } from '../../../../generated/apolloComponents';
+import useMutationCallbacks from '../../../../hooks/useMutationCallbacks';
+import usePageLoadingState from '../../../../hooks/usePageLoadingState';
+import AppContentWrapper from '../../../../layout/AppContentWrapper';
+import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
+import { alwaysArray } from '../../../../lib/arrayUtils';
+import { castUrlFilters } from '../../../../lib/catalogueUtils';
+import { getFieldStringLocale, getNumWord } from '../../../../lib/i18n';
+import { noNaN } from '../../../../lib/numbers';
 import {
   castDbData,
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
-} from 'lib/ssrUtils';
+} from '../../../../lib/ssrUtils';
 
 const pageTitle = 'Магазины компании';
 
@@ -150,7 +150,7 @@ const CompanyShopsPageConsumer: React.FC<CompanyShopsPageConsumerInterface> = ({
   return (
     <AppContentWrapper>
       <Inner testId={'shops-list'}>
-        <Title>{pageTitle}</Title>
+        <WpTitle>{pageTitle}</WpTitle>
         <div className={`text-xl font-medium mb-2`}>{counterString}</div>
         <FormikRouterSearch testId={'shops'} />
 

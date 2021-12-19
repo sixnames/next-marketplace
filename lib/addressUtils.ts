@@ -2,7 +2,7 @@ import {
   AddressType,
   GeocodingAddressComponentType,
 } from '@googlemaps/google-maps-services-js/dist/common';
-import { AddressComponentModel } from 'db/dbModels';
+import { AddressComponentModel } from '../db/dbModels';
 
 export function getReadableAddress(addressComponents: AddressComponentModel[]): string {
   let streetNumber = '';

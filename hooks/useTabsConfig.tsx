@@ -1,8 +1,8 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { ParsedUrlQuery } from 'querystring';
-import { ClientNavItemInterface } from 'types/clientTypes';
 import qs from 'qs';
+import { ClientNavItemInterface } from '../types/clientTypes';
 
 interface UseTabsConfigInterface {
   config: Omit<ClientNavItemInterface, 'to'>[];

@@ -1,7 +1,7 @@
 import * as React from 'react';
-import WpIcon from 'components/WpIcon';
+import WpIcon from './WpIcon';
 
-export interface AccordionInterface {
+export interface WpAccordionInterface {
   titleClassName?: string;
   className?: string;
   isOpen?: boolean;
@@ -15,7 +15,7 @@ export interface AccordionInterface {
   testId?: string;
 }
 
-const Accordion: React.FC<AccordionInterface> = ({
+const WpAccordion: React.FC<WpAccordionInterface> = ({
   titleClassName,
   className,
   isOpen,
@@ -86,4 +86,4 @@ const Accordion: React.FC<AccordionInterface> = ({
     </div>
   );
 };
-export default Accordion;
+export default WpAccordion;

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import WpIcon from 'components/WpIcon';
+import WpIcon from './WpIcon';
 
 interface ArrowTriggerInterface {
   name: string;

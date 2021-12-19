@@ -1,7 +1,7 @@
-import { noNaN } from 'lib/numbers';
 import * as React from 'react';
-import { useLocaleContext } from 'context/localeContext';
 import NumberFormat from 'react-number-format';
+import { useLocaleContext } from '../context/localeContext';
+import { noNaN } from '../lib/numbers';
 
 interface CurrencyInterface {
   value?: string | number | null;

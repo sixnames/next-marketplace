@@ -1,37 +1,44 @@
-import Accordion from 'components/Accordion';
-import WpButton from 'components/button/WpButton';
-import FixedButtons from 'components/button/FixedButtons';
-import ContentItemControls from 'components/button/ContentItemControls';
-import CheckBox from 'components/FormElements/Checkbox/Checkbox';
-import Inner from 'components/Inner';
-import WpLink from 'components/Link/WpLink';
-import { AddAttributesGroupToRubricModalInterface } from 'components/Modal/AddAttributesGroupToRubricModal';
-import WpTable, { WpTableColumn } from 'components/WpTable';
-import { ROUTE_CMS } from 'config/common';
-import { getConstantTranslation } from 'config/constantTranslations';
-import { ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL, CONFIRM_MODAL } from 'config/modalVariants';
-import { useLocaleContext } from 'context/localeContext';
-import { COL_CATEGORIES, COL_ATTRIBUTES, COL_RUBRICS } from 'db/collectionNames';
-import { castCategoryForUI } from 'db/dao/category/castCategoryForUI';
-import { rubricAttributeGroupsPipeline } from 'db/dao/constantPipelines';
-import { ObjectIdModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import {
-  CategoryInterface,
-  AttributeInterface,
-  AppContentWrapperBreadCrumbs,
-} from 'db/uiInterfaces';
-import {
-  useAddAttributesGroupToCategoryMutation,
-  useDeleteAttributesGroupFromCategoryMutation,
-} from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import CmsCategoryLayout from 'layout/cms/CmsCategoryLayout';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
+import ContentItemControls from '../../../../../../components/button/ContentItemControls';
+import FixedButtons from '../../../../../../components/button/FixedButtons';
+import WpButton from '../../../../../../components/button/WpButton';
+import WpCheckbox from '../../../../../../components/FormElements/Checkbox/WpCheckbox';
+import Inner from '../../../../../../components/Inner';
+import WpLink from '../../../../../../components/Link/WpLink';
+import { AddAttributesGroupToRubricModalInterface } from '../../../../../../components/Modal/AddAttributesGroupToRubricModal';
+import WpAccordion from '../../../../../../components/WpAccordion';
+import WpTable, { WpTableColumn } from '../../../../../../components/WpTable';
+import { ROUTE_CMS } from '../../../../../../config/common';
+import { getConstantTranslation } from '../../../../../../config/constantTranslations';
+import {
+  ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL,
+  CONFIRM_MODAL,
+} from '../../../../../../config/modalVariants';
+import { useLocaleContext } from '../../../../../../context/localeContext';
+import { COL_ATTRIBUTES, COL_CATEGORIES, COL_RUBRICS } from '../../../../../../db/collectionNames';
+import { castCategoryForUI } from '../../../../../../db/dao/category/castCategoryForUI';
+import { rubricAttributeGroupsPipeline } from '../../../../../../db/dao/constantPipelines';
+import { ObjectIdModel } from '../../../../../../db/dbModels';
+import { getDatabase } from '../../../../../../db/mongodb';
+import {
+  AppContentWrapperBreadCrumbs,
+  AttributeInterface,
+  CategoryInterface,
+} from '../../../../../../db/uiInterfaces';
+import {
+  useAddAttributesGroupToCategoryMutation,
+  useDeleteAttributesGroupFromCategoryMutation,
+} from '../../../../../../generated/apolloComponents';
+import useMutationCallbacks from '../../../../../../hooks/useMutationCallbacks';
+import CmsCategoryLayout from '../../../../../../layout/cms/CmsCategoryLayout';
+import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../../../../lib/ssrUtils';
 
 interface CategoryAttributesConsumerInterface {
   category: CategoryInterface;
@@ -80,8 +87,9 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
       headTitle: 'Показывать в фильтре рубрики',
       render: ({ cellData, dataItem }) => {
         const checked = category.rubric?.filterVisibleAttributeIds.includes(dataItem._id);
+
         return (
-          <CheckBox
+          <WpCheckbox
             disabled
             value={cellData}
             name={dataItem.slug}
@@ -141,7 +149,7 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
 
           return (
             <div key={`${_id}`} className='mb-12'>
-              <Accordion
+              <WpAccordion
                 title={`${name}`}
                 titleRight={
                   <ContentItemControls
@@ -179,7 +187,7 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
                     testIdKey={'nameString'}
                   />
                 </div>
-              </Accordion>
+              </WpAccordion>
             </div>
           );
         })}
@@ -192,7 +200,7 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
 
                 return (
                   <div key={`${_id}`} className='mb-12'>
-                    <Accordion
+                    <WpAccordion
                       title={`${name}`}
                       titleRight={
                         <ContentItemControls
@@ -212,7 +220,7 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
                           testIdKey={'nameString'}
                         />
                       </div>
-                    </Accordion>
+                    </WpAccordion>
                   </div>
                 );
               })}
@@ -225,7 +233,7 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
 
           return (
             <div key={`${_id}`} className='mb-12'>
-              <Accordion
+              <WpAccordion
                 isOpen
                 title={`${name}`}
                 titleRight={
@@ -246,7 +254,7 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
                     testIdKey={'nameString'}
                   />
                 </div>
-              </Accordion>
+              </WpAccordion>
             </div>
           );
         })}

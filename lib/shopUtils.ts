@@ -1,5 +1,5 @@
-import { ShopProductModel } from 'db/dbModels';
-import { getPercentage } from 'lib/numbers';
+import { ShopProductModel } from '../db/dbModels';
+import { getPercentage } from './numbers';
 
 interface GetUpdatedShopProductPricesInterface {
   shopProduct: ShopProductModel;

@@ -1,13 +1,13 @@
-import WpButton from 'components/button/WpButton';
-import Inner from 'components/Inner';
-import Title from 'components/Title';
-import { ROUTE_CMS } from 'config/common';
-import { AppContentWrapperBreadCrumbs, ShopProductInterface } from 'db/uiInterfaces';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import AppSubNav from 'layout/AppSubNav';
 import Head from 'next/head';
 import * as React from 'react';
-import { ClientNavItemInterface } from 'types/clientTypes';
+import WpButton from '../../components/button/WpButton';
+import Inner from '../../components/Inner';
+import WpTitle from '../../components/WpTitle';
+import { ROUTE_CMS } from '../../config/common';
+import { AppContentWrapperBreadCrumbs, ShopProductInterface } from '../../db/uiInterfaces';
+import { ClientNavItemInterface } from '../../types/clientTypes';
+import AppContentWrapper from '../AppContentWrapper';
+import AppSubNav from '../AppSubNav';
 
 interface ConsoleShopProductLayoutInterface {
   shopProduct: ShopProductInterface;
@@ -46,7 +46,7 @@ const ConsoleShopProductLayout: React.FC<ConsoleShopProductLayoutInterface> = ({
         <title>{shopProduct.product?.snippetTitle}</title>
       </Head>
       <Inner lowBottom>
-        <Title
+        <WpTitle
           subtitle={
             <div>
               <div>Арт. {shopProduct.product?.itemId}</div>
@@ -70,7 +70,7 @@ const ConsoleShopProductLayout: React.FC<ConsoleShopProductLayoutInterface> = ({
           testId={`${shopProduct.product?.originalName}-product-title`}
         >
           {shopProduct.product?.snippetTitle}
-        </Title>
+        </WpTitle>
       </Inner>
       <AppSubNav navConfig={navConfig} />
       {children}

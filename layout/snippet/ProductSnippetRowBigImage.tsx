@@ -1,15 +1,15 @@
-import ControlButton from 'components/button/ControlButton';
-import WpLink from 'components/Link/WpLink';
-import RatingStars from 'components/RatingStars';
-import WpImage from 'components/WpImage';
-import { useSiteContext } from 'context/siteContext';
-import { ProductSnippetInterface } from 'db/uiInterfaces';
-import ProductAddToCartButton from 'layout/snippet/ProductAddToCartButton';
-import ProductSnippetAvailability from 'layout/snippet/ProductSnippetAvailability';
-import ProductSnippetEditButton from 'layout/snippet/ProductSnippetEditButton';
-import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
-import { noNaN } from 'lib/numbers';
 import * as React from 'react';
+import ControlButton from '../../components/button/ControlButton';
+import WpLink from '../../components/Link/WpLink';
+import RatingStars from '../../components/RatingStars';
+import WpImage from '../../components/WpImage';
+import { useSiteContext } from '../../context/siteContext';
+import { ProductSnippetInterface } from '../../db/uiInterfaces';
+import { noNaN } from '../../lib/numbers';
+import ProductAddToCartButton from './ProductAddToCartButton';
+import ProductSnippetAvailability from './ProductSnippetAvailability';
+import ProductSnippetEditButton from './ProductSnippetEditButton';
+import ProductSnippetPrice from './ProductSnippetPrice';
 
 const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
   shopProduct,

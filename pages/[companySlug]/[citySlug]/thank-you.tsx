@@ -1,13 +1,13 @@
-import WpButton from 'components/button/WpButton';
-import Inner from 'components/Inner';
-import Title from 'components/Title';
-import { ROUTE_PROFILE } from 'config/common';
-import { useSiteContext } from 'context/siteContext';
-import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { getSiteInitialData } from 'lib/ssrUtils';
+import WpButton from '../../../components/button/WpButton';
+import Inner from '../../../components/Inner';
+import WpTitle from '../../../components/WpTitle';
+import { ROUTE_PROFILE } from '../../../config/common';
+import { useSiteContext } from '../../../context/siteContext';
+import SiteLayout, { SiteLayoutProviderInterface } from '../../../layout/SiteLayout';
+import { getSiteInitialData } from '../../../lib/ssrUtils';
 
 const ThankYouRoute: React.FC = () => {
   const { urlPrefix } = useSiteContext();
@@ -16,7 +16,7 @@ const ThankYouRoute: React.FC = () => {
   return (
     <div className='mb-20' data-cy={'thank-you'}>
       <Inner>
-        <Title>Спасибо за Ваш заказ!</Title>
+        <WpTitle>Спасибо за Ваш заказ!</WpTitle>
 
         <div className='prose mb-6'>
           <p>

@@ -1,14 +1,14 @@
-import FormattedDateTime from 'components/FormattedDateTime';
-import Inner from 'components/Inner';
-import WpLink from 'components/Link/WpLink';
-import LinkEmail from 'components/Link/LinkEmail';
-import LinkPhone from 'components/Link/LinkPhone';
-import Pager from 'components/Pager';
-import WpTable, { WpTableColumn } from 'components/WpTable';
-import { ConsoleShopLayoutInterface, OrderInterface } from 'db/uiInterfaces';
-import ConsoleShopLayout from 'layout/console/ConsoleShopLayout';
 import { useRouter } from 'next/router';
 import * as React from 'react';
+import { ConsoleShopLayoutInterface, OrderInterface } from '../../db/uiInterfaces';
+import ConsoleShopLayout from '../../layout/console/ConsoleShopLayout';
+import FormattedDateTime from '../FormattedDateTime';
+import Inner from '../Inner';
+import LinkEmail from '../Link/LinkEmail';
+import LinkPhone from '../Link/LinkPhone';
+import WpLink from '../Link/WpLink';
+import Pager from '../Pager';
+import WpTable, { WpTableColumn } from '../WpTable';
 
 export type ShopOrdersInterface = ConsoleShopLayoutInterface;
 

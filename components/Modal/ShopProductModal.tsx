@@ -1,15 +1,15 @@
-import WpImage from 'components/WpImage';
-import { UpdateShopProductInputInterface } from 'db/dao/shopProduct/updateManyShopProducts';
-import { ProductInterface, ShopProductInterface } from 'db/uiInterfaces';
-import { noNaN } from 'lib/numbers';
 import * as React from 'react';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
 import { Form, Formik } from 'formik';
-import useValidationSchema from 'hooks/useValidationSchema';
-import FormikInput from 'components/FormElements/Input/FormikInput';
-import WpButton from 'components/button/WpButton';
-import { shopProductInModalSchema } from 'validation/shopSchema';
+import { UpdateShopProductInputInterface } from '../../db/dao/shopProduct/updateManyShopProducts';
+import { ProductInterface, ShopProductInterface } from '../../db/uiInterfaces';
+import useValidationSchema from '../../hooks/useValidationSchema';
+import { noNaN } from '../../lib/numbers';
+import { shopProductInModalSchema } from '../../validation/shopSchema';
+import WpButton from '../button/WpButton';
+import FormikInput from '../FormElements/Input/FormikInput';
+import WpImage from '../WpImage';
+import ModalFrame from './ModalFrame';
+import ModalTitle from './ModalTitle';
 
 interface ModalShopProductInterface extends Partial<Omit<ShopProductInterface, 'product'>> {
   product?: Partial<ProductInterface> | null;

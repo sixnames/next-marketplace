@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { getSiteInitialData } from 'lib/ssrUtils';
+import { getSiteInitialData } from '../../lib/ssrUtils';
 
 const Home: NextPage = () => {
   return <div />;

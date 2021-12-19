@@ -1,7 +1,14 @@
-import { ATTRIBUTE_VARIANT_SELECT, FILTER_SEPARATOR } from 'config/common';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { noNaN } from 'lib/numbers';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
+import { ATTRIBUTE_VARIANT_SELECT, FILTER_SEPARATOR } from '../config/common';
+import {
+  COL_ATTRIBUTES,
+  COL_OPTIONS,
+  COL_PRODUCT_ATTRIBUTES,
+  COL_PRODUCT_CONNECTION_ITEMS,
+  COL_PRODUCT_CONNECTIONS,
+  COL_PRODUCTS,
+  COL_SHOP_PRODUCTS,
+} from '../db/collectionNames';
 import {
   AttributeModel,
   OptionModel,
@@ -11,18 +18,11 @@ import {
   ProductModel,
   ProductPayloadModel,
   ShopProductModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import {
-  COL_ATTRIBUTES,
-  COL_OPTIONS,
-  COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCT_CONNECTION_ITEMS,
-  COL_PRODUCT_CONNECTIONS,
-  COL_PRODUCTS,
-  COL_SHOP_PRODUCTS,
-} from 'db/collectionNames';
-import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
+} from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import getResolverErrorMessage from '../lib/getResolverErrorMessage';
+import { noNaN } from '../lib/numbers';
+import { getOperationPermission, getRequestParams } from '../lib/sessionHelpers';
 
 export const ProductAttribute = objectType({
   name: 'ProductAttribute',

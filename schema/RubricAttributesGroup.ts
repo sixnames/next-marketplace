@@ -1,8 +1,8 @@
-import { COL_OPTIONS_GROUPS } from 'db/collectionNames';
-import { OptionsGroupModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { getRequestParams } from 'lib/sessionHelpers';
 import { objectType } from 'nexus';
+import { COL_OPTIONS_GROUPS } from '../db/collectionNames';
+import { OptionsGroupModel } from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import { getRequestParams } from '../lib/sessionHelpers';
 
 export const RubricOption = objectType({
   name: 'RubricOption',

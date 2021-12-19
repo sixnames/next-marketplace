@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useLocaleContext } from 'context/localeContext';
+import { useLocaleContext } from '../context/localeContext';
 
 interface FormattedDateInterface {
   value?: string | Date | null;

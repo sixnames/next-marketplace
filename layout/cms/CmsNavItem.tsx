@@ -1,14 +1,14 @@
-import CounterSticker from 'components/CounterSticker';
-import { CMS_ORDERS_NAV_ITEM_SLUG, CONSOLE_ORDERS_NAV_ITEM_SLUG } from 'config/common';
-import { NavItemInterface } from 'db/uiInterfaces';
-import { useNewOrdersCounter } from 'hooks/useNewOrdersCounter';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import WpIcon from 'components/WpIcon';
+import CounterSticker from '../../components/CounterSticker';
 import WpLink from '../../components/Link/WpLink';
+import WpIcon from '../../components/WpIcon';
+import WpTooltip from '../../components/WpTooltip';
+import { CMS_ORDERS_NAV_ITEM_SLUG, CONSOLE_ORDERS_NAV_ITEM_SLUG } from '../../config/common';
+import { NavItemInterface } from '../../db/uiInterfaces';
 import useCompact from '../../hooks/useCompact';
-import WpTooltip from 'components/WpTooltip';
-import { IconType } from 'types/iconTypes';
+import { useNewOrdersCounter } from '../../hooks/useNewOrdersCounter';
+import { IconType } from '../../types/iconTypes';
 
 interface CmsNavItemNameInterface {
   icon?: string | null;

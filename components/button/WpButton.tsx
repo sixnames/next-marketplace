@@ -1,9 +1,9 @@
-import Spinner from 'components/Spinner';
 import * as React from 'react';
-import WpIcon from 'components/WpIcon';
-import WpTooltip from 'components/WpTooltip';
-import { ButtonTheme, ButtonType, SizeType } from 'types/clientTypes';
-import { IconType } from 'types/iconTypes';
+import { ButtonTheme, ButtonType, SizeType } from '../../types/clientTypes';
+import { IconType } from '../../types/iconTypes';
+import Spinner from '../Spinner';
+import WpIcon from '../WpIcon';
+import WpTooltip from '../WpTooltip';
 
 export interface ButtonPropsInterface {
   theme?: ButtonTheme;

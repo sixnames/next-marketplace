@@ -1,20 +1,20 @@
-import OptionMainFields from 'components/FormTemplates/OptionMainFields';
-import { GENDER_ENUMS } from 'config/common';
-import { OptionVariantsModel } from 'db/dbModels';
 import * as React from 'react';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
-import ModalButtons from 'components/Modal/ModalButtons';
 import { Form, Formik } from 'formik';
-import WpButton from 'components/button/WpButton';
-import { useAppContext } from 'context/appContext';
+import { GENDER_ENUMS } from '../../config/common';
+import { useAppContext } from '../../context/appContext';
+import { OptionVariantsModel } from '../../db/dbModels';
 import {
   AddOptionToGroupInput,
-  UpdateOptionInGroupInput,
   OptionsGroupVariant,
-} from 'generated/apolloComponents';
-import useValidationSchema from 'hooks/useValidationSchema';
-import { optionInGroupModalSchema } from 'validation/optionsGroupSchema';
+  UpdateOptionInGroupInput,
+} from '../../generated/apolloComponents';
+import useValidationSchema from '../../hooks/useValidationSchema';
+import { optionInGroupModalSchema } from '../../validation/optionsGroupSchema';
+import WpButton from '../button/WpButton';
+import OptionMainFields from '../FormTemplates/OptionMainFields';
+import ModalButtons from './ModalButtons';
+import ModalFrame from './ModalFrame';
+import ModalTitle from './ModalTitle';
 
 type OptionInGroupModalValuesType =
   | Omit<AddOptionToGroupInput, 'optionsGroupId'>

@@ -1,15 +1,13 @@
 import * as React from 'react';
-import Spinner from 'components/Spinner';
 import dynamic from 'next/dynamic';
 import {
   ADD_ASSETS_MODAL,
   ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL,
   ADULT_MODAL,
-  ATTRIBUTES_GROUP_MODAL,
   ATTRIBUTE_IN_GROUP_MODAL,
   ATTRIBUTE_OPTIONS_MODAL,
+  ATTRIBUTES_GROUP_MODAL,
   BARCODE_INTERSECTS_MODAL,
-  SHOP_PRODUCT_BARCODE_INTERSECTS_MODAL,
   BLOG_ATTRIBUTE_MODAL,
   BLOG_POST_MODAL,
   BRAND_COLLECTION_MODAL,
@@ -17,6 +15,7 @@ import {
   BRAND_OPTIONS_MODAL,
   CART_MODAL,
   CATALOGUE_ADDITIONAL_OPTIONS_MODAL,
+  CATEGORY_OPTIONS_MODAL,
   CONFIRM_MODAL,
   CREATE_BRAND_MODAL,
   CREATE_CATEGORY_MODAL,
@@ -24,10 +23,13 @@ import {
   CREATE_NEW_PRODUCT_MODAL,
   CREATE_PAGE_MODAL,
   CREATE_PRODUCT_WITH_SYNC_ERROR_MODAL,
+  CREATE_PROMO_MODAL,
   CREATE_ROLE_MODAL,
   CREATE_RUBRIC_MODAL,
   CREATE_SHOP_MODAL,
   CREATE_USER_MODAL,
+  GIFT_CERTIFICATE_MODAL,
+  INFO_MODAL,
   LANGUAGE_MODAL,
   MANUFACTURER_MODAL,
   MANUFACTURER_OPTIONS_MODAL,
@@ -36,35 +38,33 @@ import {
   MOVE_ATTRIBUTE_MODAL,
   MOVE_OPTION_MODAL,
   NAV_ITEM_MODAL,
-  OPTIONS_GROUP_MODAL,
   OPTION_IN_GROUP_MODAL,
+  OPTIONS_GROUP_MODAL,
+  ORDER_DELIVERY_ADDRESS_MODAL,
   ORDER_STATUS_MODAL,
   PAGES_GROUP_MODAL,
   PRODUCT_SEARCH_MODAL,
   RUBRIC_VARIANT_MODAL,
+  SET_USER_CATEGORY_MODAL,
+  SHOP_PRODUCT_BARCODE_INTERSECTS_MODAL,
   SHOP_PRODUCT_MODAL,
+  SHOP_PRODUCT_SUPPLIER_MODAL,
   SUPPLIER_MODAL,
   SUPPLIER_OPTIONS_MODAL,
   UPDATE_MY_PASSWORD_MODAL,
-  USERS_SEARCH_MODAL,
-  CATEGORY_OPTIONS_MODAL,
   USER_CATEGORY_MODAL,
-  SET_USER_CATEGORY_MODAL,
-  CREATE_PROMO_MODAL,
-  SHOP_PRODUCT_SUPPLIER_MODAL,
-  ORDER_DELIVERY_ADDRESS_MODAL,
-  GIFT_CERTIFICATE_MODAL,
-  INFO_MODAL,
-} from 'config/modalVariants';
+  USERS_SEARCH_MODAL,
+} from '../../config/modalVariants';
+import Spinner from '../Spinner';
 
-const AdultModal = dynamic(() => import('components/Modal/AdultModal'));
-const InfoModal = dynamic(() => import('components/Modal/InfoModal'));
-const BarcodeIntersectsModal = dynamic(() => import('components/Modal/BarcodeIntersectsModal'));
+const AdultModal = dynamic(() => import('./AdultModal'));
+const InfoModal = dynamic(() => import('./InfoModal'));
+const BarcodeIntersectsModal = dynamic(() => import('./BarcodeIntersectsModal'));
 const ShopProductBarcodeIntersectsModal = dynamic(
-  () => import('components/Modal/ShopProductBarcodeIntersectsModal'),
+  () => import('./ShopProductBarcodeIntersectsModal'),
 );
-const BlogPostModal = dynamic(() => import('components/Modal/BlogPostModal'));
-const BlogAttributeModal = dynamic(() => import('components/Modal/BlogAttributeModal'));
+const BlogPostModal = dynamic(() => import('./BlogPostModal'));
+const BlogAttributeModal = dynamic(() => import('./BlogAttributeModal'));
 const CatalogueAdditionalOptionsModal = dynamic(() => import('./CatalogueAdditionalOptionsModal'));
 const BrandOptionsModal = dynamic(() => import('./BrandOptionsModal'));
 const CategoryOptionsModal = dynamic(() => import('./CategoryOptionsModal'));
@@ -73,59 +73,53 @@ const ManufacturerOptionsModal = dynamic(() => import('./ManufacturerOptionsModa
 const SupplierOptionsModal = dynamic(() => import('./SupplierOptionsModal'));
 const AttributeOptionsModal = dynamic(() => import('./AttributeOptionsModal'));
 const NavItemModal = dynamic(() => import('./NavItemModal'));
-const ConfirmModal = dynamic(() => import('components/Modal/ConfirmModal'));
-const MapModal = dynamic(() => import('components/Modal/MapModal'));
-const LanguageModal = dynamic(() => import('components/Modal/LanguageModal'));
-const OptionsGroupModal = dynamic(() => import('components/Modal/OptionsGroupModal'));
-const AttributesGroupModal = dynamic(() => import('components/Modal/AttributesGroupModal'));
-const RubricVariantModal = dynamic(() => import('components/Modal/RubricVariantModal'));
-const OptionInGroupModal = dynamic(() => import('components/Modal/OptionInGroupModal'));
-const CreateRubricModal = dynamic(() => import('components/Modal/CreateRubricModal'));
-const CreateCategoryModal = dynamic(() => import('components/Modal/CreateCategoryModal'));
-const CreateUserModal = dynamic(() => import('components/Modal/CreateUserModal'));
-const PagesGroupModal = dynamic(() => import('components/Modal/PagesGroupModal'));
-const CreatePageModal = dynamic(() => import('components/Modal/CreatePageModal'));
-const CreateBrandModal = dynamic(() => import('components/Modal/CreateBrandModal'));
-const BrandCollectionModal = dynamic(() => import('components/Modal/BrandCollectionModal'));
-const ManufacturerModal = dynamic(() => import('components/Modal/ManufacturerModal'));
-const SupplierModal = dynamic(() => import('components/Modal/SupplierModal'));
-const ShopProductSupplierModal = dynamic(() => import('components/Modal/ShopProductSupplierModal'));
-const AddAssetsModal = dynamic(() => import('components/Modal/AddAssetsModal'));
-const MoveAttributeModal = dynamic(() => import('components/Modal/MoveAttributeModal'));
-const MoveOptionModal = dynamic(() => import('components/Modal/MoveOptionModal'));
-const AddAttributesGroupToRubricModal = dynamic(
-  () => import('components/Modal/AddAttributesGroupToRubricModal'),
-);
-const AttributeInGroupModal = dynamic(() => import('components/Modal/AttributeInGroupModal'));
-const CreateNewProductModal = dynamic(() => import('components/Modal/CreateNewProductModal'));
-const CreateProductWithSyncErrorModal = dynamic(
-  () => import('components/Modal/CreateProductWithSyncErrorModal'),
-);
+const ConfirmModal = dynamic(() => import('./ConfirmModal'));
+const MapModal = dynamic(() => import('./MapModal'));
+const LanguageModal = dynamic(() => import('./LanguageModal'));
+const OptionsGroupModal = dynamic(() => import('./OptionsGroupModal'));
+const AttributesGroupModal = dynamic(() => import('./AttributesGroupModal'));
+const RubricVariantModal = dynamic(() => import('./RubricVariantModal'));
+const OptionInGroupModal = dynamic(() => import('./OptionInGroupModal'));
+const CreateRubricModal = dynamic(() => import('./CreateRubricModal'));
+const CreateCategoryModal = dynamic(() => import('./CreateCategoryModal'));
+const CreateUserModal = dynamic(() => import('./CreateUserModal'));
+const PagesGroupModal = dynamic(() => import('./PagesGroupModal'));
+const CreatePageModal = dynamic(() => import('./CreatePageModal'));
+const CreateBrandModal = dynamic(() => import('./CreateBrandModal'));
+const BrandCollectionModal = dynamic(() => import('./BrandCollectionModal'));
+const ManufacturerModal = dynamic(() => import('./ManufacturerModal'));
+const SupplierModal = dynamic(() => import('./SupplierModal'));
+const ShopProductSupplierModal = dynamic(() => import('./ShopProductSupplierModal'));
+const AddAssetsModal = dynamic(() => import('./AddAssetsModal'));
+const MoveAttributeModal = dynamic(() => import('./MoveAttributeModal'));
+const MoveOptionModal = dynamic(() => import('./MoveOptionModal'));
+const AddAttributesGroupToRubricModal = dynamic(() => import('./AddAttributesGroupToRubricModal'));
+const AttributeInGroupModal = dynamic(() => import('./AttributeInGroupModal'));
+const CreateNewProductModal = dynamic(() => import('./CreateNewProductModal'));
+const CreateProductWithSyncErrorModal = dynamic(() => import('./CreateProductWithSyncErrorModal'));
 
-const UsersSearchModal = dynamic(() => import('components/Modal/UsersSearchModal'));
-const ProductSearchModal = dynamic(() => import('components/Modal/ProductSearchModal'));
-const UpdateMyPasswordModal = dynamic(() => import('components/Modal/UpdateMyPasswordModal'));
-const CreateConnectionModal = dynamic(() => import('components/Modal/CreateConnectionModal'));
-const CreateShopModal = dynamic(() => import('components/Modal/CreateShopModal'));
-const ShopProductModal = dynamic(() => import('components/Modal/ShopProductModal'));
-const CartModal = dynamic(() => import('components/Modal/CartModal'));
-const CreateRoleModal = dynamic(() => import('components/Modal/CreateRoleModal'));
-const MetricModal = dynamic(() => import('components/Modal/MetricModal'));
-const OrderStatusModal = dynamic(() => import('components/Modal/OrderStatusModal'));
-const UserCategoryModal = dynamic(() => import('components/Modal/UserCategoryModal'));
-const SetUserCategoryModal = dynamic(() => import('components/Modal/SetUserCategoryModal'));
-const CreatePromoModal = dynamic(() => import('components/Modal/CreatePromoModal'));
-const GiftCertificateModal = dynamic(() => import('components/Modal/GiftCertificateModal'));
-const OrderDeliveryAddressModal = dynamic(
-  () => import('components/Modal/OrderDeliveryAddressModal'),
-);
+const UsersSearchModal = dynamic(() => import('./UsersSearchModal'));
+const ProductSearchModal = dynamic(() => import('./ProductSearchModal'));
+const UpdateMyPasswordModal = dynamic(() => import('./UpdateMyPasswordModal'));
+const CreateConnectionModal = dynamic(() => import('./CreateConnectionModal'));
+const CreateShopModal = dynamic(() => import('./CreateShopModal'));
+const ShopProductModal = dynamic(() => import('./ShopProductModal'));
+const CartModal = dynamic(() => import('./CartModal'));
+const CreateRoleModal = dynamic(() => import('./CreateRoleModal'));
+const MetricModal = dynamic(() => import('./MetricModal'));
+const OrderStatusModal = dynamic(() => import('./OrderStatusModal'));
+const UserCategoryModal = dynamic(() => import('./UserCategoryModal'));
+const SetUserCategoryModal = dynamic(() => import('./SetUserCategoryModal'));
+const CreatePromoModal = dynamic(() => import('./CreatePromoModal'));
+const GiftCertificateModal = dynamic(() => import('./GiftCertificateModal'));
+const OrderDeliveryAddressModal = dynamic(() => import('./OrderDeliveryAddressModal'));
 
-interface ModalInterface {
+interface WpModalInterface {
   modalType: string;
   modalProps?: any;
 }
 
-const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
+const WpModal: React.FC<WpModalInterface> = ({ modalType, modalProps = {} }) => {
   return (
     <div className='fixed inset-0 z-[999] w-full h-[var(--fullHeight)] min-w-[320px] overflow-x-hidden overflow-y-auto'>
       <div className='relative flex items-center justify-center z-20 w-full min-h-full p-inner-block-horizontal-padding bg-gray-700 bg-opacity-50'>
@@ -257,4 +251,4 @@ const Modal: React.FC<ModalInterface> = ({ modalType, modalProps = {} }) => {
   );
 };
 
-export default Modal;
+export default WpModal;

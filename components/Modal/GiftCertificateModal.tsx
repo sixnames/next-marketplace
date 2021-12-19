@@ -1,14 +1,14 @@
-import WpButton from 'components/button/WpButton';
-import FormikCodeInput from 'components/FormElements/Input/FormikCodeInput';
-import FormikInput from 'components/FormElements/Input/FormikInput';
-import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
-import ModalButtons from 'components/Modal/ModalButtons';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
-import { CreateGiftCertificateInputInterface } from 'db/dao/giftCertificate/createGiftCertificate';
-import { CompanyInterface, GiftCertificateInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import { Form, Formik } from 'formik';
+import { CreateGiftCertificateInputInterface } from '../../db/dao/giftCertificate/createGiftCertificate';
+import { CompanyInterface, GiftCertificateInterface } from '../../db/uiInterfaces';
+import WpButton from '../button/WpButton';
+import FormikCodeInput from '../FormElements/Input/FormikCodeInput';
+import FormikInput from '../FormElements/Input/FormikInput';
+import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
+import ModalButtons from './ModalButtons';
+import ModalFrame from './ModalFrame';
+import ModalTitle from './ModalTitle';
 
 export interface GiftCertificateModalInterface {
   pageCompany: CompanyInterface;

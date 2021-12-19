@@ -1,10 +1,10 @@
 import { objectType } from 'nexus';
-import { getDatabase } from 'db/mongodb';
-import { FormattedPhoneModel, RoleModel } from 'db/dbModels';
-import { COL_ROLES } from 'db/collectionNames';
-import { ROLE_SLUG_GUEST } from 'config/common';
-import { getFullName, getShortName } from 'lib/nameUtils';
-import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
+import { ROLE_SLUG_GUEST } from '../config/common';
+import { COL_ROLES } from '../db/collectionNames';
+import { FormattedPhoneModel, RoleModel } from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import { getFullName, getShortName } from '../lib/nameUtils';
+import { phoneToRaw, phoneToReadable } from '../lib/phoneUtils';
 
 // User type
 export const User = objectType({

@@ -1,35 +1,34 @@
-import { IMAGE_FALLBACK } from 'config/common';
+import { ObjectId } from 'mongodb';
+import { IMAGE_FALLBACK } from '../../../config/common';
+import { updateAlgoliaProducts } from '../../../lib/algolia/productAlgoliaUtils';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import { getNextItemId } from '../../../lib/itemIdUtils';
+import { checkBarcodeIntersects, trimProductName } from '../../../lib/productUtils';
+import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
 import {
   COL_PRODUCT_ASSETS,
   COL_PRODUCTS,
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
-} from 'db/collectionNames';
+} from '../../collectionNames';
 import {
   GenderModel,
-  Maybe,
   ProductAssetsModel,
   ProductModel,
   ProductPayloadModel,
   RubricModel,
   RubricVariantModel,
   TranslationModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
-import { updateAlgoliaProducts } from 'lib/algolia/productAlgoliaUtils';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getNextItemId } from 'lib/itemIdUtils';
-import { checkBarcodeIntersects, trimProductName } from 'lib/productUtils';
-import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { ObjectId } from 'mongodb';
+} from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface CreateProductInputInterface {
   active: boolean;
   barcode: string[];
   originalName: string;
-  nameI18n: Maybe<TranslationModel>;
-  descriptionI18n: Maybe<TranslationModel>;
+  nameI18n?: TranslationModel | null;
+  descriptionI18n?: TranslationModel | null;
   rubricId: string;
   gender: GenderModel;
 }

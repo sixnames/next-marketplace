@@ -1,16 +1,16 @@
-import CategoryMainFields from 'components/FormTemplates/CategoryMainFields';
-import { GENDER_ENUMS } from 'config/common';
-import { OptionVariantsModel } from 'db/dbModels';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import * as React from 'react';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
-import ModalButtons from 'components/Modal/ModalButtons';
 import { Form, Formik } from 'formik';
-import WpButton from 'components/button/WpButton';
-import { CreateCategoryInput, useCreateCategoryMutation } from 'generated/apolloComponents';
-import useValidationSchema from 'hooks/useValidationSchema';
-import { createCategorySchema } from 'validation/categorySchema';
+import { GENDER_ENUMS } from '../../config/common';
+import { OptionVariantsModel } from '../../db/dbModels';
+import { CreateCategoryInput, useCreateCategoryMutation } from '../../generated/apolloComponents';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import useValidationSchema from '../../hooks/useValidationSchema';
+import { createCategorySchema } from '../../validation/categorySchema';
+import WpButton from '../button/WpButton';
+import CategoryMainFields from '../FormTemplates/CategoryMainFields';
+import ModalButtons from './ModalButtons';
+import ModalFrame from './ModalFrame';
+import ModalTitle from './ModalTitle';
 
 export interface CreateCategoryModalInterface {
   parentId?: string | null;

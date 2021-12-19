@@ -1,18 +1,18 @@
-import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
-import { MetricInterface } from 'db/uiInterfaces';
+import * as React from 'react';
+import { Form, Formik } from 'formik';
+import { MetricInterface } from '../../db/uiInterfaces';
 import {
   UpdateMetricInput,
   useCreateMetricMutation,
   useUpdateMetricMutation,
-} from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import { ResolverValidationSchema } from 'lib/sessionHelpers';
-import * as React from 'react';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
-import ModalButtons from 'components/Modal/ModalButtons';
-import { Form, Formik } from 'formik';
-import WpButton from 'components/button/WpButton';
+} from '../../generated/apolloComponents';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import { ResolverValidationSchema } from '../../lib/sessionHelpers';
+import WpButton from '../button/WpButton';
+import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
+import ModalButtons from './ModalButtons';
+import ModalFrame from './ModalFrame';
+import ModalTitle from './ModalTitle';
 
 export interface MetricModalInterface {
   metric?: MetricInterface;

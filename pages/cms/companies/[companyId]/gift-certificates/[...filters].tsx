@@ -1,19 +1,23 @@
-import ConsoleGiftCertificatesList, {
-  ConsoleGiftCertificatesListInterface,
-} from 'components/console/ConsoleGiftCertificatesList';
-import Inner from 'components/Inner';
-import { ROUTE_CMS } from 'config/common';
-import { COL_COMPANIES, COL_USERS } from 'db/collectionNames';
-import { getConsoleGiftCertificates } from 'db/dao/giftCertificate/getConsoleGiftCertificates';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
-import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
-import { alwaysArray } from 'lib/arrayUtils';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import ConsoleGiftCertificatesList, {
+  ConsoleGiftCertificatesListInterface,
+} from '../../../../../components/console/ConsoleGiftCertificatesList';
+import Inner from '../../../../../components/Inner';
+import { ROUTE_CMS } from '../../../../../config/common';
+import { COL_COMPANIES, COL_USERS } from '../../../../../db/collectionNames';
+import { getConsoleGiftCertificates } from '../../../../../db/dao/giftCertificate/getConsoleGiftCertificates';
+import { getDatabase } from '../../../../../db/mongodb';
+import { AppContentWrapperBreadCrumbs, CompanyInterface } from '../../../../../db/uiInterfaces';
+import CmsCompanyLayout from '../../../../../layout/cms/CmsCompanyLayout';
+import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
+import { alwaysArray } from '../../../../../lib/arrayUtils';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../../../lib/ssrUtils';
 
 interface CompanyGiftCertificatesConsumerInterface extends ConsoleGiftCertificatesListInterface {}
 

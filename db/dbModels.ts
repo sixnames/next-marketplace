@@ -1,7 +1,7 @@
-import { GEO_POINT_TYPE } from 'config/common';
-import { BarcodeDoublesInterface, ShopProductBarcodeDoublesInterface } from 'db/uiInterfaces';
 import { ObjectId } from 'mongodb';
-import { IconType } from 'types/iconTypes';
+import { GEO_POINT_TYPE } from '../config/common';
+import { IconType } from '../types/iconTypes';
+import { BarcodeDoublesInterface, ShopProductBarcodeDoublesInterface } from './uiInterfaces';
 
 export type DateModel = Date;
 export type JSONObjectModel = Record<string, any>;
@@ -9,7 +9,6 @@ export type ObjectIdModel = ObjectId;
 export type EmailAddressModel = string;
 export type PhoneNumberModel = string;
 export type URLModel = string;
-export type Maybe<T> = T | undefined | null;
 
 // Gender enum
 export enum GenderModel {

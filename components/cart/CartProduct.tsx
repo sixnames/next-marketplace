@@ -1,20 +1,20 @@
-import WpButton from 'components/button/WpButton';
-import ButtonCross from 'components/button/ButtonCross';
-import ControlButton from 'components/button/ControlButton';
-import CartShopsList from 'components/CartShopsList';
-import FormikSpinnerInput from 'components/FormElements/SpinnerInput/FormikSpinnerInput';
-import WpLink from 'components/Link/WpLink';
-import ProductShopPrices from 'components/ProductShopPrices';
-import WpImage from 'components/WpImage';
-import { ORDER_DELIVERY_VARIANT_COURIER } from 'config/common';
-import { useSiteContext } from 'context/siteContext';
-import { CartProductInterface, ShopProductInterface } from 'db/uiInterfaces';
 import { useFormikContext } from 'formik';
-import LayoutCard from 'layout/LayoutCard';
-import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
-import { noNaN } from 'lib/numbers';
 import { get } from 'lodash';
 import * as React from 'react';
+import { ORDER_DELIVERY_VARIANT_COURIER } from '../../config/common';
+import { useSiteContext } from '../../context/siteContext';
+import { CartProductInterface, ShopProductInterface } from '../../db/uiInterfaces';
+import LayoutCard from '../../layout/LayoutCard';
+import ProductSnippetPrice from '../../layout/snippet/ProductSnippetPrice';
+import { noNaN } from '../../lib/numbers';
+import ButtonCross from '../button/ButtonCross';
+import ControlButton from '../button/ControlButton';
+import WpButton from '../button/WpButton';
+import CartShopsList from '../CartShopsList';
+import FormikSpinnerInput from '../FormElements/SpinnerInput/FormikSpinnerInput';
+import WpLink from '../Link/WpLink';
+import ProductShopPrices from '../ProductShopPrices';
+import WpImage from '../WpImage';
 
 interface CartProductFrameInterface {
   cartProductId: string;

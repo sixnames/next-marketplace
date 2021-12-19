@@ -1,6 +1,6 @@
-import { REQUEST_METHOD_PATCH } from 'config/common';
-import { addPostLike } from 'db/dao/blog/addPostLike';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { REQUEST_METHOD_PATCH } from '../../../config/common';
+import { addPostLike } from '../../../db/dao/blog/addPostLike';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === REQUEST_METHOD_PATCH) {

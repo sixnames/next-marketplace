@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
-import { objectIdSchema, requiredStringSchema } from 'validation/schemaTemplates';
-import { ValidationSchemaArgsInterface } from 'types/validataionTypes';
+import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
+import { objectIdSchema, requiredStringSchema } from './schemaTemplates';
 
 const currencyNameMinLength = 1;
 

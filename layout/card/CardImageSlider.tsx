@@ -1,9 +1,9 @@
-import ControlButton from 'components/button/ControlButton';
-import WpImage from 'components/WpImage';
-import { useAppContext } from 'context/appContext';
-import { AssetModel } from 'db/dbModels';
 import * as React from 'react';
 import ImageGallery, { ReactImageGalleryItem, ReactImageGalleryProps } from 'react-image-gallery';
+import ControlButton from '../../components/button/ControlButton';
+import WpImage from '../../components/WpImage';
+import { useAppContext } from '../../context/appContext';
+import { AssetModel } from '../../db/dbModels';
 
 interface CardImageSliderInterface
   extends Omit<ReactImageGalleryProps, 'items' | 'renderLeftNav' | 'renderRightNav'> {

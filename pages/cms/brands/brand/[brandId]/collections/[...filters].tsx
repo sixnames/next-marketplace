@@ -1,46 +1,53 @@
-import WpButton from 'components/button/WpButton';
-import ContentItemControls from 'components/button/ContentItemControls';
-import FixedButtons from 'components/button/FixedButtons';
-import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
-import Inner from 'components/Inner';
-import { BrandCollectionModalInterface } from 'components/Modal/BrandCollectionModal';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import Pager from 'components/Pager';
-import WpTable, { WpTableColumn } from 'components/WpTable';
-import Title from 'components/Title';
+import { ObjectId } from 'mongodb';
+import Head from 'next/head';
+import * as React from 'react';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import ContentItemControls from '../../../../../../components/button/ContentItemControls';
+import FixedButtons from '../../../../../../components/button/FixedButtons';
+import WpButton from '../../../../../../components/button/WpButton';
+import FormikRouterSearch from '../../../../../../components/FormElements/Search/FormikRouterSearch';
+import Inner from '../../../../../../components/Inner';
+import { BrandCollectionModalInterface } from '../../../../../../components/Modal/BrandCollectionModal';
+import { ConfirmModalInterface } from '../../../../../../components/Modal/ConfirmModal';
+import Pager from '../../../../../../components/Pager';
+import WpTable, { WpTableColumn } from '../../../../../../components/WpTable';
+import WpTitle from '../../../../../../components/WpTitle';
 import {
-  ISO_LANGUAGES,
-  DEFAULT_PAGE,
-  ROUTE_CMS,
-  SORT_DESC,
   CMS_BRANDS_LIMIT,
   DEFAULT_LOCALE,
+  DEFAULT_PAGE,
+  ISO_LANGUAGES,
+  ROUTE_CMS,
   SORT_ASC,
-} from 'config/common';
-import { BRAND_COLLECTION_MODAL, CONFIRM_MODAL } from 'config/modalVariants';
-import { COL_BRAND_COLLECTIONS, COL_BRANDS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
+  SORT_DESC,
+} from '../../../../../../config/common';
+import { BRAND_COLLECTION_MODAL, CONFIRM_MODAL } from '../../../../../../config/modalVariants';
+import { COL_BRAND_COLLECTIONS, COL_BRANDS } from '../../../../../../db/collectionNames';
+import { getDatabase } from '../../../../../../db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   AppPaginationInterface,
   BrandCollectionInterface,
   BrandInterface,
-} from 'db/uiInterfaces';
-import { useDeleteCollectionFromBrandMutation } from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useValidationSchema from 'hooks/useValidationSchema';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import AppSubNav from 'layout/AppSubNav';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { alwaysArray } from 'lib/arrayUtils';
-import { castUrlFilters } from 'lib/catalogueUtils';
-import { getFieldStringLocale } from 'lib/i18n';
-import { ObjectId } from 'mongodb';
-import Head from 'next/head';
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import { addCollectionToBrandSchema, updateCollectionInBrandSchema } from 'validation/brandSchema';
+} from '../../../../../../db/uiInterfaces';
+import { useDeleteCollectionFromBrandMutation } from '../../../../../../generated/apolloComponents';
+import useMutationCallbacks from '../../../../../../hooks/useMutationCallbacks';
+import useValidationSchema from '../../../../../../hooks/useValidationSchema';
+import AppContentWrapper from '../../../../../../layout/AppContentWrapper';
+import AppSubNav from '../../../../../../layout/AppSubNav';
+import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
+import { alwaysArray } from '../../../../../../lib/arrayUtils';
+import { castUrlFilters } from '../../../../../../lib/catalogueUtils';
+import { getFieldStringLocale } from '../../../../../../lib/i18n';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../../../../lib/ssrUtils';
+import {
+  addCollectionToBrandSchema,
+  updateCollectionInBrandSchema,
+} from '../../../../../../validation/brandSchema';
 
 type BrandCollectionsAggregationInterface = AppPaginationInterface<BrandCollectionInterface>;
 
@@ -179,7 +186,7 @@ const BrandCollectionsConsumer: React.FC<BrandCollectionsConsumerInterface> = ({
         <title>{brand.name}</title>
       </Head>
       <Inner lowBottom>
-        <Title testId={`${brand.itemId}-brand-title`}>{brand.name}</Title>
+        <WpTitle testId={`${brand.itemId}-brand-title`}>{brand.name}</WpTitle>
       </Inner>
 
       <AppSubNav navConfig={navConfig} />

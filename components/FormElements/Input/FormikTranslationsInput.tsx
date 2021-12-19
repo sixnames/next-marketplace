@@ -1,14 +1,14 @@
-import FormikTextarea from 'components/FormElements/Textarea/FormikTextarea';
 import * as React from 'react';
+import { useLocaleContext } from '../../../context/localeContext';
+import { TranslationModel } from '../../../db/dbModels';
+import WpAccordion from '../../WpAccordion';
+import WpIcon from '../../WpIcon';
+import WpTooltip from '../../WpTooltip';
+import FormikTextarea from '../Textarea/FormikTextarea';
 import FormikInput, { FormikInputPropsInterface } from './FormikInput';
 import { useFormikContext } from 'formik';
 import { get } from 'lodash';
-import { useLocaleContext } from 'context/localeContext';
-import Accordion from 'components/Accordion';
 import InputLine from './InputLine';
-import WpIcon from 'components/WpIcon';
-import WpTooltip from 'components/WpTooltip';
-import { TranslationModel } from 'db/dbModels';
 
 interface FormikTranslationsInputInterface extends FormikInputPropsInterface {
   variant?: 'input' | 'textarea';
@@ -109,7 +109,7 @@ const FormikTranslationsInput: React.FC<FormikTranslationsInputInterface> = ({
 
         return (
           <div className={isLast ? '' : 'mb-6'} key={name}>
-            <Accordion
+            <WpAccordion
               testId={`${testId}-accordion-${localeSlug}`}
               isOpen={isDefault}
               title={localeSlug}
@@ -130,7 +130,7 @@ const FormikTranslationsInput: React.FC<FormikTranslationsInputInterface> = ({
                   <FormikInput {...props} name={name} testId={`${testId}-${localeSlug}`} low />
                 )}
               </div>
-            </Accordion>
+            </WpAccordion>
           </div>
         );
       })}

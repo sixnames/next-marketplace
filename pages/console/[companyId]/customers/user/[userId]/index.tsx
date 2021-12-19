@@ -1,27 +1,36 @@
-import FakeInput from 'components/FormElements/Input/FakeInput';
-import Inner from 'components/Inner';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import { SetUserCategoryModalInterface } from 'components/Modal/SetUserCategoryModal';
-import { ROUTE_CONSOLE, SORT_ASC } from 'config/common';
-import { CONFIRM_MODAL, SET_USER_CATEGORY_MODAL } from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
-import { COL_COMPANIES, COL_ROLES, COL_USER_CATEGORIES, COL_USERS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, CompanyInterface, UserInterface } from 'db/uiInterfaces';
-import { useSetUserCategoryMutation } from 'hooks/mutations/useUserMutations';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import ConsoleUserLayout from 'layout/console/ConsoleUserLayout';
-import { getFieldStringLocale } from 'lib/i18n';
-import { getFullName } from 'lib/nameUtils';
-import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import FakeInput from '../../../../../../components/FormElements/Input/FakeInput';
+import Inner from '../../../../../../components/Inner';
+import { ConfirmModalInterface } from '../../../../../../components/Modal/ConfirmModal';
+import { SetUserCategoryModalInterface } from '../../../../../../components/Modal/SetUserCategoryModal';
+import { ROUTE_CONSOLE, SORT_ASC } from '../../../../../../config/common';
+import { CONFIRM_MODAL, SET_USER_CATEGORY_MODAL } from '../../../../../../config/modalVariants';
+import { useAppContext } from '../../../../../../context/appContext';
+import {
+  COL_COMPANIES,
+  COL_ROLES,
+  COL_USER_CATEGORIES,
+  COL_USERS,
+} from '../../../../../../db/collectionNames';
+import { getDatabase } from '../../../../../../db/mongodb';
+import {
+  AppContentWrapperBreadCrumbs,
+  CompanyInterface,
+  UserInterface,
+} from '../../../../../../db/uiInterfaces';
+import { useSetUserCategoryMutation } from '../../../../../../hooks/mutations/useUserMutations';
+import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
+import ConsoleUserLayout from '../../../../../../layout/console/ConsoleUserLayout';
+import { getFieldStringLocale } from '../../../../../../lib/i18n';
+import { getFullName } from '../../../../../../lib/nameUtils';
+import { phoneToRaw, phoneToReadable } from '../../../../../../lib/phoneUtils';
 import {
   castDbData,
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
-} from 'lib/ssrUtils';
+} from '../../../../../../lib/ssrUtils';
 
 interface UserDetailsConsumerInterface {
   user: UserInterface;

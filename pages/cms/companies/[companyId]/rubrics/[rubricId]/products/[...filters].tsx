@@ -1,19 +1,26 @@
-import CompanyRubricProductsList, {
-  CompanyRubricProductsListInterface,
-} from 'components/company/CompanyRubricProductsList';
-import RequestError from 'components/RequestError';
-import { ROUTE_CMS, DEFAULT_PAGE_FILTER } from 'config/common';
-import { COL_COMPANIES } from 'db/collectionNames';
-import { getConsoleCompanyRubricProducts } from 'db/dao/product/getConsoleCompanyRubricProducts';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
-import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { alwaysString } from 'lib/arrayUtils';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
+import CompanyRubricProductsList, {
+  CompanyRubricProductsListInterface,
+} from '../../../../../../../components/company/CompanyRubricProductsList';
+import RequestError from '../../../../../../../components/RequestError';
+import { DEFAULT_PAGE_FILTER, ROUTE_CMS } from '../../../../../../../config/common';
+import { COL_COMPANIES } from '../../../../../../../db/collectionNames';
+import { getConsoleCompanyRubricProducts } from '../../../../../../../db/dao/product/getConsoleCompanyRubricProducts';
+import { getDatabase } from '../../../../../../../db/mongodb';
+import {
+  AppContentWrapperBreadCrumbs,
+  CompanyInterface,
+} from '../../../../../../../db/uiInterfaces';
+import CmsRubricLayout from '../../../../../../../layout/cms/CmsRubricLayout';
+import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
+import { alwaysString } from '../../../../../../../lib/arrayUtils';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../../../../../lib/ssrUtils';
 
 interface RubricProductsConsumerInterface extends CompanyRubricProductsListInterface {}
 

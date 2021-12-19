@@ -1,17 +1,17 @@
-import ModalText from 'components/Modal/ModalText';
-import { ProductAttributeInterface, ProductInterface } from 'db/uiInterfaces';
 import * as React from 'react';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
-import { CreateProductConnectionInput } from 'generated/apolloComponents';
 import { Form, Formik } from 'formik';
-import FormikSelect from 'components/FormElements/Select/FormikSelect';
-import useValidationSchema from 'hooks/useValidationSchema';
-import WpButton from 'components/button/WpButton';
-import { SelectOptionInterface } from 'components/FormElements/Select/Select';
-import { createProductConnectionModalSchema } from 'validation/productSchema';
-import { ATTRIBUTE_VARIANT_SELECT } from 'config/common';
-import { useNotificationsContext } from 'context/notificationsContext';
+import { ATTRIBUTE_VARIANT_SELECT } from '../../config/common';
+import { useNotificationsContext } from '../../context/notificationsContext';
+import { ProductAttributeInterface, ProductInterface } from '../../db/uiInterfaces';
+import { CreateProductConnectionInput } from '../../generated/apolloComponents';
+import useValidationSchema from '../../hooks/useValidationSchema';
+import { createProductConnectionModalSchema } from '../../validation/productSchema';
+import WpButton from '../button/WpButton';
+import FormikSelect from '../FormElements/Select/FormikSelect';
+import { SelectOptionInterface } from '../FormElements/Select/Select';
+import ModalFrame from './ModalFrame';
+import ModalText from './ModalText';
+import ModalTitle from './ModalTitle';
 
 export interface CreateConnectionModalInterface {
   product: ProductInterface;

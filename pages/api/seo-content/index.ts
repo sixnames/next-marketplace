@@ -1,7 +1,7 @@
-import { REQUEST_METHOD_PATCH } from 'config/common';
-import { updateSeoContent } from 'db/dao/seo-content/updateSeoContent';
-import { sendApiRouteResponse } from 'lib/sessionHelpers';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { REQUEST_METHOD_PATCH } from '../../../config/common';
+import { updateSeoContent } from '../../../db/dao/seo-content/updateSeoContent';
+import { sendApiRouteResponse } from '../../../lib/sessionHelpers';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   // update

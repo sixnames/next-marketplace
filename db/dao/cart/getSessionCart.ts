@@ -1,4 +1,13 @@
-import { CART_COOKIE_KEY } from 'config/common';
+import { ObjectId } from 'mongodb';
+import nookies from 'nookies';
+import { CART_COOKIE_KEY } from '../../../config/common';
+import { getFieldStringLocale } from '../../../lib/i18n';
+import { noNaN } from '../../../lib/numbers';
+import { phoneToRaw, phoneToReadable } from '../../../lib/phoneUtils';
+import { getRequestParams } from '../../../lib/sessionHelpers';
+import { generateSnippetTitle } from '../../../lib/titleUtils';
+import { getTreeFromList } from '../../../lib/treeUtils';
+import { NexusContext } from '../../../types/apiContextTypes';
 import {
   COL_CARTS,
   COL_GIFT_CERTIFICATES,
@@ -7,32 +16,23 @@ import {
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
   COL_USERS,
-} from 'db/collectionNames';
-import {
-  brandPipeline,
-  productAttributesPipeline,
-  productCategoriesPipeline,
-  shopProductFieldsPipeline,
-} from 'db/dao/constantPipelines';
-import { getPageSessionUser } from 'db/dao/user/getPageSessionUser';
-import { CartModel, GiftCertificateModel, UserModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+} from '../../collectionNames';
+import { CartModel, GiftCertificateModel, UserModel } from '../../dbModels';
+import { getDatabase } from '../../mongodb';
 import {
   CartInterface,
   CartProductInterface,
   GiftCertificateInterface,
   ProductInterface,
   ShopProductInterface,
-} from 'db/uiInterfaces';
-import { getFieldStringLocale } from 'lib/i18n';
-import { noNaN } from 'lib/numbers';
-import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
-import { getRequestParams } from 'lib/sessionHelpers';
-import { generateSnippetTitle } from 'lib/titleUtils';
-import { getTreeFromList } from 'lib/treeUtils';
-import { ObjectId } from 'mongodb';
-import nookies from 'nookies';
-import { NexusContext } from 'types/apiContextTypes';
+} from '../../uiInterfaces';
+import {
+  brandPipeline,
+  productAttributesPipeline,
+  productCategoriesPipeline,
+  shopProductFieldsPipeline,
+} from '../constantPipelines';
+import { getPageSessionUser } from '../user/getPageSessionUser';
 
 export interface GetSessionCartInterface {
   context: NexusContext;

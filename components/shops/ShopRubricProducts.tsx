@@ -1,36 +1,36 @@
-import AppContentFilter from 'components/AppContentFilter';
-import WpButton from 'components/button/WpButton';
-import FixedButtons from 'components/button/FixedButtons';
-import ContentItemControls from 'components/button/ContentItemControls';
-import FormikInput from 'components/FormElements/Input/FormikInput';
-import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
-import Inner from 'components/Inner';
-import WpLink from 'components/Link/WpLink';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import Pager from 'components/Pager';
-import ProductsListSuppliersList from 'components/shops/ProductsListSuppliersList';
-import WpTable, { WpTableColumn } from 'components/WpTable';
-import TableRowImage from 'components/TableRowImage';
-import { CONFIRM_MODAL } from 'config/modalVariants';
-import { useUserContext } from 'context/userContext';
-import { ShopProductModel } from 'db/dbModels';
+import { Form, Formik } from 'formik';
+import { useRouter } from 'next/router';
+import * as React from 'react';
+import { CONFIRM_MODAL } from '../../config/modalVariants';
+import { useUserContext } from '../../context/userContext';
+import { ShopProductModel } from '../../db/dbModels';
 import {
   ShopProductInterface,
   ShopRubricProductsInterface,
   SupplierProductInterface,
-} from 'db/uiInterfaces';
-import { Form, Formik } from 'formik';
-import { useDeleteProductFromShopMutation } from 'generated/apolloComponents';
-import { useUpdateManyShopProducts } from 'hooks/mutations/useShopProductMutations';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useValidationSchema from 'hooks/useValidationSchema';
-import ConsoleShopLayout from 'layout/console/ConsoleShopLayout';
-import { alwaysArray } from 'lib/arrayUtils';
-import { getNumWord } from 'lib/i18n';
-import { noNaN } from 'lib/numbers';
-import { useRouter } from 'next/router';
-import * as React from 'react';
-import { updateManyShopProductsSchema } from 'validation/shopSchema';
+} from '../../db/uiInterfaces';
+import { useDeleteProductFromShopMutation } from '../../generated/apolloComponents';
+import { useUpdateManyShopProducts } from '../../hooks/mutations/useShopProductMutations';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import useValidationSchema from '../../hooks/useValidationSchema';
+import ConsoleShopLayout from '../../layout/console/ConsoleShopLayout';
+import { alwaysArray } from '../../lib/arrayUtils';
+import { getNumWord } from '../../lib/i18n';
+import { noNaN } from '../../lib/numbers';
+import { updateManyShopProductsSchema } from '../../validation/shopSchema';
+import AppContentFilter from '../AppContentFilter';
+import ContentItemControls from '../button/ContentItemControls';
+import FixedButtons from '../button/FixedButtons';
+import WpButton from '../button/WpButton';
+import FormikInput from '../FormElements/Input/FormikInput';
+import FormikRouterSearch from '../FormElements/Search/FormikRouterSearch';
+import Inner from '../Inner';
+import WpLink from '../Link/WpLink';
+import { ConfirmModalInterface } from '../Modal/ConfirmModal';
+import Pager from '../Pager';
+import TableRowImage from '../TableRowImage';
+import WpTable, { WpTableColumn } from '../WpTable';
+import ProductsListSuppliersList from './ProductsListSuppliersList';
 
 const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
   shop,

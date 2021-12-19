@@ -1,28 +1,28 @@
-import WpButton from 'components/button/WpButton';
-import FixedButtons from 'components/button/FixedButtons';
-import FakeInput from 'components/FormElements/Input/FakeInput';
-import FormikInput from 'components/FormElements/Input/FormikInput';
-import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
-import FormikSelect from 'components/FormElements/Select/FormikSelect';
-import WpImageUpload from 'components/FormElements/Upload/WpImageUpload';
-import { AttributeOptionsModalInterface } from 'components/Modal/AttributeOptionsModal';
-import PageEditor from 'components/PageEditor';
-import Title from 'components/Title';
-import { PAGE_STATE_OPTIONS, REQUEST_METHOD_PATCH } from 'config/common';
-import { ATTRIBUTE_OPTIONS_MODAL } from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
-import { useNotificationsContext } from 'context/notificationsContext';
-import { BlogAttributeInterface, BlogPostInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
+import { useRouter } from 'next/router';
+import * as React from 'react';
+import { PAGE_STATE_OPTIONS, REQUEST_METHOD_PATCH } from '../../config/common';
+import { ATTRIBUTE_OPTIONS_MODAL } from '../../config/modalVariants';
+import { useAppContext } from '../../context/appContext';
+import { useNotificationsContext } from '../../context/notificationsContext';
+import { BlogAttributeInterface, BlogPostInterface } from '../../db/uiInterfaces';
 import {
   useDeleteBlogPostPreviewImage,
   useUpdateBlogPost,
   useUpdateBlogPostAttribute,
-} from 'hooks/mutations/useBlogMutations';
-import useValidationSchema from 'hooks/useValidationSchema';
-import { useRouter } from 'next/router';
-import * as React from 'react';
-import { updateBlogPostSchema } from 'validation/blogSchema';
+} from '../../hooks/mutations/useBlogMutations';
+import useValidationSchema from '../../hooks/useValidationSchema';
+import { updateBlogPostSchema } from '../../validation/blogSchema';
+import FixedButtons from '../button/FixedButtons';
+import WpButton from '../button/WpButton';
+import FakeInput from '../FormElements/Input/FakeInput';
+import FormikInput from '../FormElements/Input/FormikInput';
+import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
+import FormikSelect from '../FormElements/Select/FormikSelect';
+import WpImageUpload from '../FormElements/Upload/WpImageUpload';
+import { AttributeOptionsModalInterface } from '../Modal/AttributeOptionsModal';
+import PageEditor from '../PageEditor';
+import WpTitle from '../WpTitle';
 
 const sectionClassName = 'border-t border-border-300 pt-8 mt-12';
 
@@ -139,9 +139,9 @@ const BlogPostsDetails: React.FC<BlogPostsDetailsInterface> = ({ post, attribute
 
               {attributes.length > 0 ? (
                 <div className={sectionClassName}>
-                  <Title tag={'div'} size={'small'}>
+                  <WpTitle tag={'div'} size={'small'}>
                     Атрибуты блог-поста
-                  </Title>
+                  </WpTitle>
 
                   <div className='grid sm:grid-cols-2 md:grid-cols-3 gap-x-8'>
                     {attributes.map((attribute) => {
@@ -191,9 +191,9 @@ const BlogPostsDetails: React.FC<BlogPostsDetailsInterface> = ({ post, attribute
               ) : null}
 
               <div className={sectionClassName}>
-                <Title tag={'div'} size={'small'}>
+                <WpTitle tag={'div'} size={'small'}>
                   Контент блог-поста
-                </Title>
+                </WpTitle>
                 <PageEditor
                   value={values.content}
                   setValue={(value) => {

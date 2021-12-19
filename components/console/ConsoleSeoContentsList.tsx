@@ -1,8 +1,8 @@
-import ContentItemControls from 'components/button/ContentItemControls';
-import WpLink from 'components/Link/WpLink';
-import WpTable, { WpTableColumn } from 'components/WpTable';
-import { SeoContentModel } from 'db/dbModels';
 import * as React from 'react';
+import { SeoContentModel } from '../../db/dbModels';
+import ContentItemControls from '../button/ContentItemControls';
+import WpLink from '../Link/WpLink';
+import WpTable, { WpTableColumn } from '../WpTable';
 
 export interface ConsoleSeoContentsListInterface {
   seoContents: SeoContentModel[];

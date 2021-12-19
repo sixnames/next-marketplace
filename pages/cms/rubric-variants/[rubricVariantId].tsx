@@ -1,40 +1,44 @@
-import WpButton from 'components/button/WpButton';
-import FixedButtons from 'components/button/FixedButtons';
-import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
-import FormikInput from 'components/FormElements/Input/FormikInput';
-import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
-import FormikLayoutSelect from 'components/FormElements/Select/FormikLayoutSelect';
-import Inner from 'components/Inner';
-import Title from 'components/Title';
-import { ROUTE_CMS } from 'config/common';
-import {
-  CARD_LAYOUT_OPTIONS,
-  GRID_SNIPPET_LAYOUT_OPTIONS,
-  DEFAULT_LAYOUT,
-  NAV_DROPDOWN_LAYOUT_OPTIONS,
-  ROW_SNIPPET_LAYOUT_OPTIONS,
-  CATALOGUE_FILTER_LAYOUT_OPTIONS,
-  CATALOGUE_HEAD_LAYOUT_OPTIONS,
-} from 'config/constantSelects';
-import { COL_RUBRIC_VARIANTS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, RubricVariantInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
-import {
-  UpdateRubricVariantInput,
-  useUpdateRubricVariantMutation,
-} from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useValidationSchema from 'hooks/useValidationSchema';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { getFieldStringLocale } from 'lib/i18n';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import Head from 'next/head';
 import * as React from 'react';
-import { updateRubricVariantSchema } from 'validation/rubricVariantSchema';
+import FixedButtons from '../../../components/button/FixedButtons';
+import WpButton from '../../../components/button/WpButton';
+import FormikCheckboxLine from '../../../components/FormElements/Checkbox/FormikCheckboxLine';
+import FormikInput from '../../../components/FormElements/Input/FormikInput';
+import FormikTranslationsInput from '../../../components/FormElements/Input/FormikTranslationsInput';
+import FormikLayoutSelect from '../../../components/FormElements/Select/FormikLayoutSelect';
+import Inner from '../../../components/Inner';
+import WpTitle from '../../../components/WpTitle';
+import { ROUTE_CMS } from '../../../config/common';
+import {
+  CARD_LAYOUT_OPTIONS,
+  CATALOGUE_FILTER_LAYOUT_OPTIONS,
+  CATALOGUE_HEAD_LAYOUT_OPTIONS,
+  DEFAULT_LAYOUT,
+  GRID_SNIPPET_LAYOUT_OPTIONS,
+  NAV_DROPDOWN_LAYOUT_OPTIONS,
+  ROW_SNIPPET_LAYOUT_OPTIONS,
+} from '../../../config/constantSelects';
+import { COL_RUBRIC_VARIANTS } from '../../../db/collectionNames';
+import { getDatabase } from '../../../db/mongodb';
+import { AppContentWrapperBreadCrumbs, RubricVariantInterface } from '../../../db/uiInterfaces';
+import {
+  UpdateRubricVariantInput,
+  useUpdateRubricVariantMutation,
+} from '../../../generated/apolloComponents';
+import useMutationCallbacks from '../../../hooks/useMutationCallbacks';
+import useValidationSchema from '../../../hooks/useValidationSchema';
+import AppContentWrapper from '../../../layout/AppContentWrapper';
+import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
+import { getFieldStringLocale } from '../../../lib/i18n';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../lib/ssrUtils';
+import { updateRubricVariantSchema } from '../../../validation/rubricVariantSchema';
 
 interface RubricVariantConsumerInterface {
   rubricVariant: RubricVariantInterface;
@@ -71,7 +75,7 @@ const RubricVariantConsumer: React.FC<RubricVariantConsumerInterface> = ({ rubri
         <title>{rubricVariant.name}</title>
       </Head>
       <Inner testId={'rubric-variant-details'}>
-        <Title>{rubricVariant.name}</Title>
+        <WpTitle>{rubricVariant.name}</WpTitle>
 
         <Formik<UpdateRubricVariantInput>
           validationSchema={validationSchema}

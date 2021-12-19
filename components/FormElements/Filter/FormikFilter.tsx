@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Formik, Form } from 'formik';
 import { useRouter } from 'next/router';
-import { ObjectType } from 'types/clientTypes';
+import { ObjectType } from '../../../types/clientTypes';
 
 interface ChildrenPropsInterface {
   onResetHandler: () => void;

@@ -1,18 +1,18 @@
-import WpImage from 'components/WpImage';
-import { useConfigContext } from 'context/configContext';
-import { useSiteContext } from 'context/siteContext';
-import { CartInterface } from 'db/uiInterfaces';
 import * as React from 'react';
-import ProductShopPrices from 'components/ProductShopPrices';
-import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
-import ButtonCross from 'components/button/ButtonCross';
-import ControlButton from 'components/button/ControlButton';
-import SpinnerInput from 'components/FormElements/SpinnerInput/SpinnerInput';
-import Currency from 'components/Currency';
-import WpButton from 'components/button/WpButton';
 import { useRouter } from 'next/router';
-import { useNotificationsContext } from 'context/notificationsContext';
-import { noNaN } from 'lib/numbers';
+import ButtonCross from '../../components/button/ButtonCross';
+import ControlButton from '../../components/button/ControlButton';
+import WpButton from '../../components/button/WpButton';
+import Currency from '../../components/Currency';
+import SpinnerInput from '../../components/FormElements/SpinnerInput/SpinnerInput';
+import ProductShopPrices from '../../components/ProductShopPrices';
+import WpImage from '../../components/WpImage';
+import { useConfigContext } from '../../context/configContext';
+import { useNotificationsContext } from '../../context/notificationsContext';
+import { useSiteContext } from '../../context/siteContext';
+import { CartInterface } from '../../db/uiInterfaces';
+import { noNaN } from '../../lib/numbers';
+import ProductSnippetPrice from '../snippet/ProductSnippetPrice';
 
 interface CartDropdownInterface {
   cart: CartInterface;

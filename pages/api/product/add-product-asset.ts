@@ -1,12 +1,12 @@
-import { ASSETS_DIST_PRODUCTS, ASSETS_PRODUCT_IMAGE_WIDTH } from 'config/common';
-import { COL_PRODUCT_ASSETS, COL_PRODUCTS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
-import { ProductAssetsModel, ProductModel, ShopProductModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { getMainImage, storeUploads } from 'lib/assetUtils/assetUtils';
-import { parseRestApiFormData } from 'lib/restApi';
-import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { ASSETS_DIST_PRODUCTS, ASSETS_PRODUCT_IMAGE_WIDTH } from '../../../config/common';
+import { COL_PRODUCT_ASSETS, COL_PRODUCTS, COL_SHOP_PRODUCTS } from '../../../db/collectionNames';
+import { ProductAssetsModel, ProductModel, ShopProductModel } from '../../../db/dbModels';
+import { getDatabase } from '../../../db/mongodb';
+import { getMainImage, storeUploads } from '../../../lib/assetUtils/assetUtils';
+import { parseRestApiFormData } from '../../../lib/restApi';
+import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
 
 export const config = {
   api: {

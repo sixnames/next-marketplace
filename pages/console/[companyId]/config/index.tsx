@@ -1,27 +1,27 @@
-import WpButton from 'components/button/WpButton';
-import CompanyMainFields from 'components/FormTemplates/CompanyMainFields';
-import Inner from 'components/Inner';
-import { COL_COMPANIES, COL_ROLES, COL_USERS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { CompanyInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
-import { useUpdateCompanyMutation } from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useValidationSchema from 'hooks/useValidationSchema';
-import ConsoleCompanyLayout from 'layout/console/ConsoleCompanyLayout';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { getFieldStringLocale } from 'lib/i18n';
-import { getFullName, getShortName } from 'lib/nameUtils';
-import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import WpButton from '../../../../components/button/WpButton';
+import CompanyMainFields from '../../../../components/FormTemplates/CompanyMainFields';
+import Inner from '../../../../components/Inner';
+import { COL_COMPANIES, COL_ROLES, COL_USERS } from '../../../../db/collectionNames';
+import { getDatabase } from '../../../../db/mongodb';
+import { CompanyInterface } from '../../../../db/uiInterfaces';
+import { useUpdateCompanyMutation } from '../../../../generated/apolloComponents';
+import useMutationCallbacks from '../../../../hooks/useMutationCallbacks';
+import useValidationSchema from '../../../../hooks/useValidationSchema';
+import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
+import ConsoleCompanyLayout from '../../../../layout/console/ConsoleCompanyLayout';
+import { getFieldStringLocale } from '../../../../lib/i18n';
+import { getFullName, getShortName } from '../../../../lib/nameUtils';
+import { phoneToRaw, phoneToReadable } from '../../../../lib/phoneUtils';
 import {
   castDbData,
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
-} from 'lib/ssrUtils';
-import { updateCompanyClientSchema } from 'validation/companySchema';
+} from '../../../../lib/ssrUtils';
+import { updateCompanyClientSchema } from '../../../../validation/companySchema';
 
 interface CompanyDetailsConsumerInterface {
   pageCompany: CompanyInterface;

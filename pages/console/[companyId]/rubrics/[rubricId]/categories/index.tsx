@@ -1,28 +1,33 @@
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
 import CompanyRubricCategoriesList, {
   CompanyRubricCategoriesListInterface,
-} from 'components/company/CompanyRubricCategoriesList';
-import { ROUTE_CONSOLE } from 'config/common';
-import { COL_CATEGORIES, COL_ICONS, COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
+} from '../../../../../../components/company/CompanyRubricCategoriesList';
+import { ROUTE_CONSOLE } from '../../../../../../config/common';
+import {
+  COL_CATEGORIES,
+  COL_ICONS,
+  COL_RUBRICS,
+  COL_SHOP_PRODUCTS,
+} from '../../../../../../db/collectionNames';
+import { getDatabase } from '../../../../../../db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   CategoryInterface,
   RubricInterface,
   ShopProductInterface,
-} from 'db/uiInterfaces';
-import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { sortObjectsByField } from 'lib/arrayUtils';
-import { getFieldStringLocale } from 'lib/i18n';
+} from '../../../../../../db/uiInterfaces';
+import CmsRubricLayout from '../../../../../../layout/cms/CmsRubricLayout';
+import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
+import { sortObjectsByField } from '../../../../../../lib/arrayUtils';
+import { getFieldStringLocale } from '../../../../../../lib/i18n';
 import {
   castDbData,
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
-} from 'lib/ssrUtils';
-import { getTreeFromList } from 'lib/treeUtils';
-import { ObjectId } from 'mongodb';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import * as React from 'react';
+} from '../../../../../../lib/ssrUtils';
+import { getTreeFromList } from '../../../../../../lib/treeUtils';
 
 interface RubricCategoriesConsumerInterface extends CompanyRubricCategoriesListInterface {}
 const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({

@@ -1,7 +1,7 @@
-import WpLink from 'components/Link/WpLink';
-import { FILTER_SEPARATOR, ROUTE_CATALOGUE } from 'config/common';
-import { StickyNavAttributeInterface, StickyNavDropdownInterface } from 'layout/header/StickyNav';
 import * as React from 'react';
+import WpLink from '../../components/Link/WpLink';
+import { FILTER_SEPARATOR, ROUTE_CATALOGUE } from '../../config/common';
+import { StickyNavAttributeInterface, StickyNavDropdownInterface } from './StickyNav';
 
 const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
   attribute,

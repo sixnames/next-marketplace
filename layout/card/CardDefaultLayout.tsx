@@ -1,35 +1,35 @@
-import Breadcrumbs from 'components/Breadcrumbs';
-import WpIcon from 'components/WpIcon';
-import Inner from 'components/Inner';
-import TagLink from 'components/Link/TagLink';
-import WpImage from 'components/WpImage';
+import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
+import * as React from 'react';
+import Inner from '../../components/Inner';
+import TagLink from '../../components/Link/TagLink';
+import WpBreadcrumbs from '../../components/WpBreadcrumbs';
+import WpIcon from '../../components/WpIcon';
+import WpImage from '../../components/WpImage';
+import WpTitle from '../../components/WpTitle';
 import {
   FILTER_BRAND_COLLECTION_KEY,
   FILTER_BRAND_KEY,
   FILTER_SEPARATOR,
   ROUTE_CATALOGUE,
-} from 'config/common';
-import { useConfigContext } from 'context/configContext';
-import { useSiteContext } from 'context/siteContext';
-import { CardLayoutInterface } from 'db/uiInterfaces';
-import CardSimilarProducts from 'layout/card/CardSimilarProducts';
-import Title from 'components/Title';
-import useCardData from 'hooks/useCardData';
-import CardControls from 'layout/card/CardControls';
-import CardDynamicContent from 'layout/card/CardDynamicContent';
-import CardIconFeatures from 'layout/card/CardIconFeatures';
-import CardPrices from 'layout/card/CardPrices';
-import CardRatingFeatures from 'layout/card/CardRatingFeatures';
-import CardShopsList from 'layout/card/CardShopsList';
-import CardTagFeatures from 'layout/card/CardTagFeatures';
-import CardTextFeatures from 'layout/card/CardTextFeatures';
-import ProductAddToCartButton from 'layout/snippet/ProductAddToCartButton';
-import { noNaN } from 'lib/numbers';
-import dynamic from 'next/dynamic';
-import { useRouter } from 'next/router';
-import * as React from 'react';
+} from '../../config/common';
+import { useConfigContext } from '../../context/configContext';
+import { useSiteContext } from '../../context/siteContext';
+import { CardLayoutInterface } from '../../db/uiInterfaces';
+import useCardData from '../../hooks/useCardData';
+import { noNaN } from '../../lib/numbers';
+import ProductAddToCartButton from '../snippet/ProductAddToCartButton';
+import CardControls from './CardControls';
+import CardDynamicContent from './CardDynamicContent';
+import CardIconFeatures from './CardIconFeatures';
+import CardPrices from './CardPrices';
+import CardRatingFeatures from './CardRatingFeatures';
+import CardShopsList from './CardShopsList';
+import CardSimilarProducts from './CardSimilarProducts';
+import CardTagFeatures from './CardTagFeatures';
+import CardTextFeatures from './CardTextFeatures';
 
-const CardImageSlider = dynamic(() => import('layout/card/CardImageSlider'));
+const CardImageSlider = dynamic(() => import('./CardImageSlider'));
 
 interface CardTitleInterface {
   productId: any;
@@ -49,9 +49,9 @@ const CardTitle: React.FC<CardTitleInterface> = ({
 }) => {
   return (
     <div className='mb-6'>
-      <Title className='mb-1' tag={isMobile ? 'div' : 'h1'} low>
+      <WpTitle className='mb-1' tag={isMobile ? 'div' : 'h1'} low>
         {cardTitle}
-      </Title>
+      </WpTitle>
 
       {name ? (
         isMobile ? (
@@ -107,7 +107,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
 
   return (
     <article className='pb-20 pt-8 lg:pt-0' data-cy={`card`}>
-      <Breadcrumbs urlPrefix={urlPrefix} currentPageName={cardTitle} config={cardBreadcrumbs} />
+      <WpBreadcrumbs urlPrefix={urlPrefix} currentPageName={cardTitle} config={cardBreadcrumbs} />
 
       <div className='mb-28 relative'>
         <Inner className='relative z-20' lowBottom lowTop>

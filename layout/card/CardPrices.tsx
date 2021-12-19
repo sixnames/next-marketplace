@@ -1,7 +1,7 @@
-import Currency from 'components/Currency';
-import { ProductCardPricesModel } from 'db/dbModels';
-import { noNaN } from 'lib/numbers';
 import * as React from 'react';
+import Currency from '../../components/Currency';
+import { ProductCardPricesModel } from '../../db/dbModels';
+import { noNaN } from '../../lib/numbers';
 
 interface CardPricesInterface {
   shopsCount?: number | null;

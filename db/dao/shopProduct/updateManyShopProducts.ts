@@ -1,17 +1,17 @@
-import { COL_PRODUCTS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
-import { ProductModel, ShopProductModel, ShopProductPayloadModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface, ShopProductBarcodeDoublesInterface } from 'db/uiInterfaces';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { checkShopProductBarcodeIntersects } from 'lib/productUtils';
+import { ObjectId } from 'mongodb';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import { checkShopProductBarcodeIntersects } from '../../../lib/productUtils';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from 'lib/sessionHelpers';
-import { getUpdatedShopProductPrices } from 'lib/shopUtils';
-import { ObjectId } from 'mongodb';
-import { updateManyShopProductsSchema } from 'validation/shopSchema';
+} from '../../../lib/sessionHelpers';
+import { getUpdatedShopProductPrices } from '../../../lib/shopUtils';
+import { updateManyShopProductsSchema } from '../../../validation/shopSchema';
+import { COL_PRODUCTS, COL_SHOP_PRODUCTS } from '../../collectionNames';
+import { ProductModel, ShopProductModel, ShopProductPayloadModel } from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { DaoPropsInterface, ShopProductBarcodeDoublesInterface } from '../../uiInterfaces';
 
 export interface UpdateShopProductInputInterface {
   shopProductId: string;

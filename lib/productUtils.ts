@@ -1,4 +1,6 @@
-import { SUPPLIER_PRICE_VARIANT_CHARGE } from 'config/common';
+import { ObjectId } from 'mongodb';
+import trim from 'trim';
+import { SUPPLIER_PRICE_VARIANT_CHARGE } from '../config/common';
 import {
   COL_COMPANIES,
   COL_PRODUCT_ASSETS,
@@ -6,7 +8,7 @@ import {
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
-} from 'db/collectionNames';
+} from '../db/collectionNames';
 import {
   brandPipeline,
   productAttributesPipeline,
@@ -15,9 +17,9 @@ import {
   productRubricPipeline,
   shopProductFieldsPipeline,
   shopProductSupplierProductsPipeline,
-} from 'db/dao/constantPipelines';
-import { Maybe, ObjectIdModel, TranslationModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+} from '../db/dao/constantPipelines';
+import { ObjectIdModel, TranslationModel } from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
 import {
   BarcodeDoublesInterface,
   CategoryInterface,
@@ -30,13 +32,11 @@ import {
   ShopProductBarcodeDoublesInterface,
   ShopProductInterface,
   SupplierProductInterface,
-} from 'db/uiInterfaces';
-import { getFieldStringLocale } from 'lib/i18n';
-import { getProductAllSeoContents } from 'lib/seoContentUtils';
-import { generateCardTitle, generateSnippetTitle } from 'lib/titleUtils';
-import { getTreeFromList } from 'lib/treeUtils';
-import { ObjectId } from 'mongodb';
-import trim from 'trim';
+} from '../db/uiInterfaces';
+import { getFieldStringLocale } from './i18n';
+import { getProductAllSeoContents } from './seoContentUtils';
+import { generateCardTitle, generateSnippetTitle } from './titleUtils';
+import { getTreeFromList } from './treeUtils';
 
 interface GetCmsProductInterface {
   productId: string;
@@ -360,7 +360,7 @@ export async function getConsoleShopProduct({
 
 interface CheckBarcodeIntersectsInterface {
   barcode: string[];
-  productId: Maybe<ObjectIdModel>;
+  productId?: ObjectIdModel | null;
   locale: string;
 }
 

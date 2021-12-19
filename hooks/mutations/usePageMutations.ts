@@ -1,12 +1,16 @@
-import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'config/common';
-import { CreatePageInputInterface } from 'db/dao/pages/createPage';
-import { CreatePagesGroupInputInterface } from 'db/dao/pages/createPagesGroup';
-import { DeletePageInputInterface } from 'db/dao/pages/deletePage';
-import { DeletePagesGroupInputInterface } from 'db/dao/pages/deletePagesGroup';
-import { UpdatePageInputInterface } from 'db/dao/pages/updatePage';
-import { UpdatePagesGroupInputInterface } from 'db/dao/pages/updatePagesGroup';
-import { PagePayloadModel, PagesGroupPayloadModel } from 'db/dbModels';
-import { useMutationHandler } from 'hooks/mutations/useFetch';
+import {
+  REQUEST_METHOD_DELETE,
+  REQUEST_METHOD_PATCH,
+  REQUEST_METHOD_POST,
+} from '../../config/common';
+import { CreatePageInputInterface } from '../../db/dao/pages/createPage';
+import { CreatePagesGroupInputInterface } from '../../db/dao/pages/createPagesGroup';
+import { DeletePageInputInterface } from '../../db/dao/pages/deletePage';
+import { DeletePagesGroupInputInterface } from '../../db/dao/pages/deletePagesGroup';
+import { UpdatePageInputInterface } from '../../db/dao/pages/updatePage';
+import { UpdatePagesGroupInputInterface } from '../../db/dao/pages/updatePagesGroup';
+import { PagePayloadModel, PagesGroupPayloadModel } from '../../db/dbModels';
+import { useMutationHandler } from './useFetch';
 
 const basePath = '/api/page';
 

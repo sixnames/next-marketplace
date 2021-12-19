@@ -1,22 +1,26 @@
-import WpButton from 'components/button/WpButton';
-import FixedButtons from 'components/button/FixedButtons';
-import FakeInput from 'components/FormElements/Input/FakeInput';
-import FormikInput from 'components/FormElements/Input/FormikInput';
-import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
-import Inner from 'components/Inner';
-import { AttributeOptionsModalInterface } from 'components/Modal/AttributeOptionsModal';
-import { OptionsModalOptionInterface } from 'components/Modal/OptionsModal';
-import { ATTRIBUTE_OPTIONS_MODAL } from 'config/modalVariants';
-import { OptionInterface, ProductAttributeInterface, ProductInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
+import * as React from 'react';
+import { ATTRIBUTE_OPTIONS_MODAL } from '../../config/modalVariants';
+import {
+  OptionInterface,
+  ProductAttributeInterface,
+  ProductInterface,
+} from '../../db/uiInterfaces';
 import {
   useUpdateProductNumberAttributeMutation,
   useUpdateProductSelectAttributeMutation,
   useUpdateProductTextAttributeMutation,
-} from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import { noNaN } from 'lib/numbers';
-import * as React from 'react';
+} from '../../generated/apolloComponents';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import { noNaN } from '../../lib/numbers';
+import FixedButtons from '../button/FixedButtons';
+import WpButton from '../button/WpButton';
+import FakeInput from '../FormElements/Input/FakeInput';
+import FormikInput from '../FormElements/Input/FormikInput';
+import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
+import Inner from '../Inner';
+import { AttributeOptionsModalInterface } from '../Modal/AttributeOptionsModal';
+import { OptionsModalOptionInterface } from '../Modal/OptionsModal';
 
 function castSelectedOptions(option: OptionInterface): OptionsModalOptionInterface {
   return {

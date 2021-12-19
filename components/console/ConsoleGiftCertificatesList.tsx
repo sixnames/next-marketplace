@@ -1,28 +1,28 @@
-import WpButton from 'components/button/WpButton';
-import ContentItemControls from 'components/button/ContentItemControls';
-import FixedButtons from 'components/button/FixedButtons';
-import Currency from 'components/Currency';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import { GiftCertificateModalInterface } from 'components/Modal/GiftCertificateModal';
-import Pager from 'components/Pager';
-import Spinner from 'components/Spinner';
-import WpTable, { WpTableColumn } from 'components/WpTable';
-import { CONFIRM_MODAL, GIFT_CERTIFICATE_MODAL } from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
+import * as React from 'react';
+import { CONFIRM_MODAL, GIFT_CERTIFICATE_MODAL } from '../../config/modalVariants';
+import { useAppContext } from '../../context/appContext';
 import {
   CompanyInterface,
   GetConsoleGiftCertificatesPayloadInterface,
   GiftCertificateInterface,
   UserInterface,
-} from 'db/uiInterfaces';
+} from '../../db/uiInterfaces';
 import {
   useCreateGiftCertificateMutation,
   useDeleteGiftCertificateMutation,
   useUpdateGiftCertificateMutation,
-} from 'hooks/mutations/useGiftCertificateMutations';
-import usePageLoadingState from 'hooks/usePageLoadingState';
-import { getNumWord } from 'lib/i18n';
-import * as React from 'react';
+} from '../../hooks/mutations/useGiftCertificateMutations';
+import usePageLoadingState from '../../hooks/usePageLoadingState';
+import { getNumWord } from '../../lib/i18n';
+import ContentItemControls from '../button/ContentItemControls';
+import FixedButtons from '../button/FixedButtons';
+import WpButton from '../button/WpButton';
+import Currency from '../Currency';
+import { ConfirmModalInterface } from '../Modal/ConfirmModal';
+import { GiftCertificateModalInterface } from '../Modal/GiftCertificateModal';
+import Pager from '../Pager';
+import Spinner from '../Spinner';
+import WpTable, { WpTableColumn } from '../WpTable';
 
 export interface ConsoleGiftCertificatesListInterface
   extends GetConsoleGiftCertificatesPayloadInterface {

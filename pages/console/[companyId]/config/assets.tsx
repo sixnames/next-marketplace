@@ -1,18 +1,18 @@
-import FormikImageUpload from 'components/FormElements/Upload/FormikImageUpload';
-import Inner from 'components/Inner';
-import { CompanyInterface } from 'db/uiInterfaces';
-import { Form, Formik } from 'formik';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import ConsoleCompanyLayout from 'layout/console/ConsoleCompanyLayout';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import { Form, Formik } from 'formik';
+import FormikImageUpload from '../../../../components/FormElements/Upload/FormikImageUpload';
+import Inner from '../../../../components/Inner';
+import { CompanyInterface } from '../../../../db/uiInterfaces';
+import useMutationCallbacks from '../../../../hooks/useMutationCallbacks';
+import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
+import ConsoleCompanyLayout from '../../../../layout/console/ConsoleCompanyLayout';
 import {
   castDbData,
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
-} from 'lib/ssrUtils';
+} from '../../../../lib/ssrUtils';
 
 interface CompanyAssetsConsumerInterface {
   pageCompany: CompanyInterface;

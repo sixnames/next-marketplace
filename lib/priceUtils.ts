@@ -1,4 +1,4 @@
-import { noNaN } from 'lib/numbers';
+import { noNaN } from './numbers';
 
 interface GetOrderDiscountedPriceInterface {
   giftCertificateDiscount?: number | null;

@@ -1,7 +1,7 @@
-import { noNaN } from 'lib/numbers';
 import * as React from 'react';
-import Currency from 'components/Currency';
-import Percent from 'components/Percent';
+import { noNaN } from '../lib/numbers';
+import Currency from './Currency';
+import Percent from './Percent';
 
 interface ProductPricesInterface {
   discountedPercent?: number | null;

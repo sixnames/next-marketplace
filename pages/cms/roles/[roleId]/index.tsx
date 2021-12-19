@@ -1,27 +1,31 @@
-import WpButton from 'components/button/WpButton';
-import FixedButtons from 'components/button/FixedButtons';
-import RoleMainFields from 'components/FormTemplates/RoleMainFields';
-import Inner from 'components/Inner';
-import Title from 'components/Title';
-import { ROUTE_CMS } from 'config/common';
-import { COL_ROLES } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, RoleInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
-import { useUpdateRoleMutation } from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useValidationSchema from 'hooks/useValidationSchema';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import AppSubNav from 'layout/AppSubNav';
-import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
 import Head from 'next/head';
 import * as React from 'react';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import { ClientNavItemInterface } from 'types/clientTypes';
-import { updateRoleSchema } from 'validation/roleSchema';
+import FixedButtons from '../../../../components/button/FixedButtons';
+import WpButton from '../../../../components/button/WpButton';
+import RoleMainFields from '../../../../components/FormTemplates/RoleMainFields';
+import Inner from '../../../../components/Inner';
+import WpTitle from '../../../../components/WpTitle';
+import { ROUTE_CMS } from '../../../../config/common';
+import { COL_ROLES } from '../../../../db/collectionNames';
+import { getDatabase } from '../../../../db/mongodb';
+import { AppContentWrapperBreadCrumbs, RoleInterface } from '../../../../db/uiInterfaces';
+import { useUpdateRoleMutation } from '../../../../generated/apolloComponents';
+import useMutationCallbacks from '../../../../hooks/useMutationCallbacks';
+import useValidationSchema from '../../../../hooks/useValidationSchema';
+import AppContentWrapper from '../../../../layout/AppContentWrapper';
+import AppSubNav from '../../../../layout/AppSubNav';
+import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
+import { getFieldStringLocale } from '../../../../lib/i18n';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../../lib/ssrUtils';
+import { ClientNavItemInterface } from '../../../../types/clientTypes';
+import { updateRoleSchema } from '../../../../validation/roleSchema';
 
 interface RoleDetailsConsumerInterface {
   role: RoleInterface;
@@ -78,7 +82,7 @@ const RoleDetailsConsumer: React.FC<RoleDetailsConsumerInterface> = ({ role }) =
         <title>{role.name}</title>
       </Head>
       <Inner lowBottom>
-        <Title>{role.name}</Title>
+        <WpTitle>{role.name}</WpTitle>
       </Inner>
       <AppSubNav navConfig={navConfig} />
 

@@ -1,30 +1,30 @@
-import WpButton from 'components/button/WpButton';
-import ContentItemControls from 'components/button/ContentItemControls';
-import Currency from 'components/Currency';
-import FixedButtons from 'components/button/FixedButtons';
-import Inner from 'components/Inner';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import { UserCategoryModalInterface } from 'components/Modal/UserCategoryModal';
-import Percent from 'components/Percent';
-import WpTable, { WpTableColumn } from 'components/WpTable';
-import Title from 'components/Title';
-import { CONFIRM_MODAL, USER_CATEGORY_MODAL } from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
-import { COL_USER_CATEGORIES } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { UserCategoryInterface } from 'db/uiInterfaces';
-import { useDeleteUserCategory } from 'hooks/mutations/useUserCategoryMutations';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import ContentItemControls from '../../../components/button/ContentItemControls';
+import FixedButtons from '../../../components/button/FixedButtons';
+import WpButton from '../../../components/button/WpButton';
+import Currency from '../../../components/Currency';
+import Inner from '../../../components/Inner';
+import { ConfirmModalInterface } from '../../../components/Modal/ConfirmModal';
+import { UserCategoryModalInterface } from '../../../components/Modal/UserCategoryModal';
+import Percent from '../../../components/Percent';
+import WpTable, { WpTableColumn } from '../../../components/WpTable';
+import WpTitle from '../../../components/WpTitle';
+import { CONFIRM_MODAL, USER_CATEGORY_MODAL } from '../../../config/modalVariants';
+import { useAppContext } from '../../../context/appContext';
+import { COL_USER_CATEGORIES } from '../../../db/collectionNames';
+import { getDatabase } from '../../../db/mongodb';
+import { UserCategoryInterface } from '../../../db/uiInterfaces';
+import { useDeleteUserCategory } from '../../../hooks/mutations/useUserCategoryMutations';
+import AppContentWrapper from '../../../layout/AppContentWrapper';
+import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
+import { getFieldStringLocale } from '../../../lib/i18n';
 import {
   castDbData,
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
-} from 'lib/ssrUtils';
+} from '../../../lib/ssrUtils';
 
 interface UserCategoriesConsumerInterface {
   userCategories: UserCategoryInterface[];
@@ -106,7 +106,7 @@ const UserCategoriesConsumer: NextPage<UserCategoriesConsumerInterface> = ({
   return (
     <AppContentWrapper>
       <Inner testId={'user-categories-list'}>
-        <Title>Категории клиентов</Title>
+        <WpTitle>Категории клиентов</WpTitle>
         <WpTable<UserCategoryInterface>
           testIdKey={'name'}
           columns={columns}

@@ -1,7 +1,7 @@
+import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
 import { objectIdSchema } from './schemaTemplates';
 import * as Yup from 'yup';
 import { productIdSchema } from './productSchema';
-import { ValidationSchemaArgsInterface } from 'types/validataionTypes';
 
 export const shopProductIdSchema = (args: ValidationSchemaArgsInterface) => {
   return objectIdSchema({ ...args, slug: 'validation.carts.shopProductId' });

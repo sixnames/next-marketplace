@@ -1,6 +1,6 @@
-import { COL_CARTS } from 'db/collectionNames';
-import { CartModel, ObjectIdModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { COL_CARTS } from '../../collectionNames';
+import { CartModel, ObjectIdModel } from '../../dbModels';
+import { getDatabase } from '../../mongodb';
 
 export interface UpdateCartGiftCertificateInterface {
   cartId: ObjectIdModel;

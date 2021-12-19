@@ -1,17 +1,17 @@
-import ErrorBoundary from 'components/ErrorBoundary';
-import Modal from 'components/Modal/Modal';
-import Spinner from 'components/Spinner';
-import { useAppContext } from 'context/appContext';
-import { useConfigContext } from 'context/configContext';
-import { SiteContextProvider } from 'context/siteContext';
-import { SiteUserContextProvider } from 'context/siteUserContext';
-import { PagesGroupInterface, RubricInterface } from 'db/uiInterfaces';
-import Footer from 'layout/footer/Footer';
-import Header from 'layout/header/Header';
-import { StickNavInterface } from 'layout/header/StickyNav';
-import Meta, { MetaInterface } from 'layout/Meta';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
+import ErrorBoundary from '../components/ErrorBoundary';
+import WpModal from '../components/Modal/WpModal';
+import Spinner from '../components/Spinner';
+import { useAppContext } from '../context/appContext';
+import { useConfigContext } from '../context/configContext';
+import { SiteContextProvider } from '../context/siteContext';
+import { SiteUserContextProvider } from '../context/siteUserContext';
+import { PagesGroupInterface, RubricInterface } from '../db/uiInterfaces';
+import { PagePropsInterface } from '../pages/_app';
+import Footer from './footer/Footer';
+import Header from './header/Header';
+import { StickNavInterface } from './header/StickyNav';
+import Meta, { MetaInterface } from './Meta';
 
 export interface SiteLayoutCatalogueCreatedPages {
   footerPageGroups: PagesGroupInterface[];
@@ -71,7 +71,7 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
       </div>
 
       {isLoading ? <Spinner /> : null}
-      {isModal.show ? <Modal modalType={isModal.variant} modalProps={isModal.props} /> : null}
+      {isModal.show ? <WpModal modalType={isModal.variant} modalProps={isModal.props} /> : null}
     </div>
   );
 };

@@ -1,11 +1,11 @@
-import { COL_BLOG_LIKES, COL_BLOG_POSTS } from 'db/collectionNames';
-import { UpdateBlogPostInputInterface } from 'db/dao/blog/updateBlogPost';
-import { BlogLikeModel, BlogPostModel, BlogPostPayloadModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getRequestParams, getSessionUser } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import { getRequestParams, getSessionUser } from '../../../lib/sessionHelpers';
+import { COL_BLOG_LIKES, COL_BLOG_POSTS } from '../../collectionNames';
+import { BlogLikeModel, BlogPostModel, BlogPostPayloadModel } from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { UpdateBlogPostInputInterface } from './updateBlogPost';
 
 export interface AddBlogPostLikeInputInterface {
   blogPostId: string;

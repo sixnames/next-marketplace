@@ -1,17 +1,17 @@
-import WpButton from 'components/button/WpButton';
-import ContentItemControls from 'components/button/ContentItemControls';
-import FixedButtons from 'components/button/FixedButtons';
-import FormattedDateTime from 'components/FormattedDateTime';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import { CreatePromoModalInterface } from 'components/Modal/CreatePromoModal';
-import Percent from 'components/Percent';
-import WpTable, { WpTableColumn } from 'components/WpTable';
-import { CONFIRM_MODAL, CREATE_PROMO_MODAL } from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
-import { CompanyInterface, PromoInterface } from 'db/uiInterfaces';
-import { useDeletePromo } from 'hooks/mutations/usePromoMutations';
 import { useRouter } from 'next/router';
 import * as React from 'react';
+import { CONFIRM_MODAL, CREATE_PROMO_MODAL } from '../../config/modalVariants';
+import { useAppContext } from '../../context/appContext';
+import { CompanyInterface, PromoInterface } from '../../db/uiInterfaces';
+import { useDeletePromo } from '../../hooks/mutations/usePromoMutations';
+import ContentItemControls from '../button/ContentItemControls';
+import FixedButtons from '../button/FixedButtons';
+import WpButton from '../button/WpButton';
+import FormattedDateTime from '../FormattedDateTime';
+import { ConfirmModalInterface } from '../Modal/ConfirmModal';
+import { CreatePromoModalInterface } from '../Modal/CreatePromoModal';
+import Percent from '../Percent';
+import WpTable, { WpTableColumn } from '../WpTable';
 
 export interface PromoListInterface {
   promoList: PromoInterface[];

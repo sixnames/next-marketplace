@@ -12,7 +12,7 @@ interface TitlePropsInterface {
   centered?: boolean;
 }
 
-const Title: React.FC<TitlePropsInterface> = ({
+const WpTitle: React.FC<TitlePropsInterface> = ({
   children,
   subtitle,
   className,
@@ -53,4 +53,4 @@ const Title: React.FC<TitlePropsInterface> = ({
   );
 };
 
-export default Title;
+export default WpTitle;

@@ -1,16 +1,19 @@
-import WpButton from 'components/button/WpButton';
-import ContentItemControls from 'components/button/ContentItemControls';
-import Currency from 'components/Currency';
-import { CreateProductWithSyncErrorModalInterface } from 'components/Modal/CreateProductWithSyncErrorModal';
-import { ProductSearchModalInterface } from 'components/Modal/ProductSearchModal';
-import Pager from 'components/Pager';
-import WpTable, { WpTableColumn } from 'components/WpTable';
-import { CREATE_PRODUCT_WITH_SYNC_ERROR_MODAL, PRODUCT_SEARCH_MODAL } from 'config/modalVariants';
-import { AppPaginationInterface, NotSyncedProductInterface } from 'db/uiInterfaces';
-import { useUpdateProductWithSyncError } from 'hooks/mutations/useProductMutations';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import { getNumWord } from 'lib/i18n';
 import * as React from 'react';
+import {
+  CREATE_PRODUCT_WITH_SYNC_ERROR_MODAL,
+  PRODUCT_SEARCH_MODAL,
+} from '../config/modalVariants';
+import { AppPaginationInterface, NotSyncedProductInterface } from '../db/uiInterfaces';
+import { useUpdateProductWithSyncError } from '../hooks/mutations/useProductMutations';
+import useMutationCallbacks from '../hooks/useMutationCallbacks';
+import { getNumWord } from '../lib/i18n';
+import ContentItemControls from './button/ContentItemControls';
+import WpButton from './button/WpButton';
+import Currency from './Currency';
+import { CreateProductWithSyncErrorModalInterface } from './Modal/CreateProductWithSyncErrorModal';
+import { ProductSearchModalInterface } from './Modal/ProductSearchModal';
+import Pager from './Pager';
+import WpTable, { WpTableColumn } from './WpTable';
 
 export interface SyncErrorsListInterface {
   notSyncedProducts: AppPaginationInterface<NotSyncedProductInterface>;

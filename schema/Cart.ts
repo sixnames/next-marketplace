@@ -1,6 +1,13 @@
-import { getSessionCart } from 'db/dao/cart/getSessionCart';
-import { OrderInterface } from 'db/uiInterfaces';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
+import { ObjectId } from 'mongodb';
+import {
+  COL_CARTS,
+  COL_ORDER_PRODUCTS,
+  COL_ORDERS,
+  COL_PRODUCTS,
+  COL_SHOP_PRODUCTS,
+} from '../db/collectionNames';
+import { getSessionCart } from '../db/dao/cart/getSessionCart';
 import {
   CartModel,
   CartPayloadModel,
@@ -8,25 +15,18 @@ import {
   OrderModel,
   ProductModel,
   ShopProductModel,
-} from 'db/dbModels';
-import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
-import { getDatabase } from 'db/mongodb';
-import {
-  COL_CARTS,
-  COL_ORDER_PRODUCTS,
-  COL_ORDERS,
-  COL_PRODUCTS,
-  COL_SHOP_PRODUCTS,
-} from 'db/collectionNames';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+} from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import { OrderInterface } from '../db/uiInterfaces';
+import getResolverErrorMessage from '../lib/getResolverErrorMessage';
+import { getRequestParams, getResolverValidationSchema } from '../lib/sessionHelpers';
 import {
   addProductToCartSchema,
   addShoplessProductToCartSchema,
   addShopToCartProductSchema,
   deleteProductFromCartSchema,
   updateProductInCartSchema,
-} from 'validation/cartSchema';
-import { ObjectId } from 'mongodb';
+} from '../validation/cartSchema';
 
 export const CartProduct = objectType({
   name: 'CartProduct',

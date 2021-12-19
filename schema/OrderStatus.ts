@@ -1,16 +1,16 @@
-import { COL_ORDER_STATUSES } from 'db/collectionNames';
-import { OrderStatusModel, OrderStatusPayloadModel } from 'db/dbModels';
-import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
-import { getDatabase } from 'db/mongodb';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { generateDefaultLangSlug } from 'lib/slugUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
+import { COL_ORDER_STATUSES } from '../db/collectionNames';
+import { findDocumentByI18nField } from '../db/dao/findDocumentByI18nField';
+import { OrderStatusModel, OrderStatusPayloadModel } from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from 'lib/sessionHelpers';
-import { createOrderStatusSchema, updateOrderStatusSchema } from 'validation/orderStatusSchema';
+} from '../lib/sessionHelpers';
+import { generateDefaultLangSlug } from '../lib/slugUtils';
+import { createOrderStatusSchema, updateOrderStatusSchema } from '../validation/orderStatusSchema';
 
 export const OrderStatus = objectType({
   name: 'OrderStatus',

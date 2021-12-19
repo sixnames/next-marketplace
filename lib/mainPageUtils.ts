@@ -1,13 +1,14 @@
+import { ObjectId } from 'mongodb';
 import {
   CATALOGUE_TOP_FILTERS_LIMIT,
   CATALOGUE_TOP_PRODUCTS_LIMIT,
   FILTER_SEPARATOR,
   ROUTE_CATALOGUE,
   SORT_DESC,
-} from 'config/common';
-import { COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
-import { ignoreNoImageStage, shopProductFieldsPipeline } from 'db/dao/constantPipelines';
-import { getDatabase } from 'db/mongodb';
+} from '../config/common';
+import { COL_SHOP_PRODUCTS, COL_SHOPS } from '../db/collectionNames';
+import { ignoreNoImageStage, shopProductFieldsPipeline } from '../db/dao/constantPipelines';
+import { getDatabase } from '../db/mongodb';
 import {
   CompanyInterface,
   MobileTopFilters,
@@ -17,14 +18,13 @@ import {
   ShopInterface,
   ShopProductInterface,
   TopFilterInterface,
-} from 'db/uiInterfaces';
-import { getFieldStringLocale } from 'lib/i18n';
-import { noNaN } from 'lib/numbers';
-import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
-import { castDbData } from 'lib/ssrUtils';
-import { generateSnippetTitle, generateTitle } from 'lib/titleUtils';
-import { getTreeFromList } from 'lib/treeUtils';
-import { ObjectId } from 'mongodb';
+} from '../db/uiInterfaces';
+import { getFieldStringLocale } from './i18n';
+import { noNaN } from './numbers';
+import { phoneToRaw, phoneToReadable } from './phoneUtils';
+import { castDbData } from './ssrUtils';
+import { generateSnippetTitle, generateTitle } from './titleUtils';
+import { getTreeFromList } from './treeUtils';
 
 export interface MainPageInterface {
   topProducts: ShopProductInterface[];

@@ -1,31 +1,38 @@
-import WpButton from 'components/button/WpButton';
-import FixedButtons from 'components/button/FixedButtons';
-import ContentItemControls from 'components/button/ContentItemControls';
-import Inner from 'components/Inner';
-import { CreateRubricModalInterface } from 'components/Modal/CreateRubricModal';
-import WpTable, { WpTableColumn } from 'components/WpTable';
-import Title from 'components/Title';
-import { DEFAULT_COMPANY_SLUG, DEFAULT_PAGE_FILTER, ROUTE_CMS } from 'config/common';
-import { CONFIRM_MODAL, CREATE_RUBRIC_MODAL } from 'config/modalVariants';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import * as React from 'react';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import ContentItemControls from '../../../components/button/ContentItemControls';
+import FixedButtons from '../../../components/button/FixedButtons';
+import WpButton from '../../../components/button/WpButton';
+import Inner from '../../../components/Inner';
+import { CreateRubricModalInterface } from '../../../components/Modal/CreateRubricModal';
+import WpTable, { WpTableColumn } from '../../../components/WpTable';
+import WpTitle from '../../../components/WpTitle';
+import { DEFAULT_COMPANY_SLUG, DEFAULT_PAGE_FILTER, ROUTE_CMS } from '../../../config/common';
+import { CONFIRM_MODAL, CREATE_RUBRIC_MODAL } from '../../../config/modalVariants';
 import {
   COL_PRODUCTS,
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
-} from 'db/collectionNames';
-import { RubricModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { RubricInterface } from 'db/uiInterfaces';
-import { useCreateRubricMutation, useDeleteRubricMutation } from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { getFieldStringLocale } from 'lib/i18n';
-import Head from 'next/head';
-import { useRouter } from 'next/router';
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+} from '../../../db/collectionNames';
+import { RubricModel } from '../../../db/dbModels';
+import { getDatabase } from '../../../db/mongodb';
+import { RubricInterface } from '../../../db/uiInterfaces';
+import {
+  useCreateRubricMutation,
+  useDeleteRubricMutation,
+} from '../../../generated/apolloComponents';
+import useMutationCallbacks from '../../../hooks/useMutationCallbacks';
+import AppContentWrapper from '../../../layout/AppContentWrapper';
+import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
+import { getFieldStringLocale } from '../../../lib/i18n';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../lib/ssrUtils';
 
 interface RubricsRouteInterface {
   rubrics: RubricInterface[];
@@ -115,7 +122,7 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics }) => {
         <title>{`Рубрикатор`}</title>
       </Head>
       <Inner>
-        <Title>Рубрикатор</Title>
+        <WpTitle>Рубрикатор</WpTitle>
 
         <div className='overflow-x-auto'>
           <WpTable<RubricInterface>

@@ -1,9 +1,7 @@
-import ConsoleOrderDetails, {
-  CmsOrderDetailsBaseInterface,
-} from 'components/order/ConsoleOrderDetails';
-import { ConsoleShopLayoutInterface } from 'db/uiInterfaces';
-import ConsoleShopLayout from 'layout/console/ConsoleShopLayout';
 import * as React from 'react';
+import { ConsoleShopLayoutInterface } from '../../db/uiInterfaces';
+import ConsoleShopLayout from '../../layout/console/ConsoleShopLayout';
+import ConsoleOrderDetails, { CmsOrderDetailsBaseInterface } from '../order/ConsoleOrderDetails';
 
 export interface ShopOrderInterface
   extends ConsoleShopLayoutInterface,
@@ -12,7 +10,7 @@ export interface ShopOrderInterface
   title: string;
 }
 
-const ShopOrders: React.FC<ShopOrderInterface> = ({
+const ShopOrder: React.FC<ShopOrderInterface> = ({
   shop,
   basePath,
   title,
@@ -33,4 +31,4 @@ const ShopOrders: React.FC<ShopOrderInterface> = ({
   );
 };
 
-export default ShopOrders;
+export default ShopOrder;

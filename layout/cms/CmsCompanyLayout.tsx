@@ -1,12 +1,12 @@
-import Inner from 'components/Inner';
-import Title from 'components/Title';
-import { ROUTE_CMS } from 'config/common';
-import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import AppSubNav from 'layout/AppSubNav';
 import Head from 'next/head';
 import * as React from 'react';
-import { ClientNavItemInterface } from 'types/clientTypes';
+import Inner from '../../components/Inner';
+import WpTitle from '../../components/WpTitle';
+import { ROUTE_CMS } from '../../config/common';
+import { AppContentWrapperBreadCrumbs, CompanyInterface } from '../../db/uiInterfaces';
+import { ClientNavItemInterface } from '../../types/clientTypes';
+import AppContentWrapper from '../AppContentWrapper';
+import AppSubNav from '../AppSubNav';
 
 interface CmsCompanyLayoutInterface {
   company?: CompanyInterface | null;
@@ -120,7 +120,7 @@ const CmsCompanyLayout: React.FC<CmsCompanyLayoutInterface> = ({
         <title>{company?.name}</title>
       </Head>
       <Inner lowBottom>
-        <Title>{company?.name}</Title>
+        <WpTitle>{company?.name}</WpTitle>
       </Inner>
       <AppSubNav navConfig={navConfig} />
       {children}

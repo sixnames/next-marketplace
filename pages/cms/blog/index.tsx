@@ -1,16 +1,20 @@
-import BlogPostsList from 'components/blog/BlogPostsList';
-import Inner from 'components/Inner';
-import Title from 'components/Title';
-import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
-import { getBlogPostsList } from 'db/dao/blog/getBlogPostsList';
-import { BlogPostInterface } from 'db/uiInterfaces';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import AppSubNav from 'layout/AppSubNav';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsResult, GetServerSidePropsContext } from 'next';
 import * as React from 'react';
-import { ClientNavItemInterface } from 'types/clientTypes';
+import BlogPostsList from '../../../components/blog/BlogPostsList';
+import Inner from '../../../components/Inner';
+import WpTitle from '../../../components/WpTitle';
+import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from '../../../config/common';
+import { getBlogPostsList } from '../../../db/dao/blog/getBlogPostsList';
+import { BlogPostInterface } from '../../../db/uiInterfaces';
+import AppContentWrapper from '../../../layout/AppContentWrapper';
+import AppSubNav from '../../../layout/AppSubNav';
+import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../lib/ssrUtils';
+import { ClientNavItemInterface } from '../../../types/clientTypes';
 
 interface BlogPostsListConsumerInterface {
   posts: BlogPostInterface[];
@@ -39,7 +43,7 @@ const BlogPostsListConsumer: React.FC<BlogPostsListConsumerInterface> = ({ posts
   return (
     <AppContentWrapper testId={'posts-list'}>
       <Inner lowBottom>
-        <Title>{pageTitle}</Title>
+        <WpTitle>{pageTitle}</WpTitle>
       </Inner>
       <AppSubNav navConfig={navConfig} />
       <Inner>

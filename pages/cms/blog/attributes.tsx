@@ -1,26 +1,30 @@
-import WpButton from 'components/button/WpButton';
-import ContentItemControls from 'components/button/ContentItemControls';
-import FixedButtons from 'components/button/FixedButtons';
-import Inner from 'components/Inner';
-import { BlogAttributeModalInterface } from 'components/Modal/BlogAttributeModal';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import WpTable, { WpTableColumn } from 'components/WpTable';
-import Title from 'components/Title';
-import { DEFAULT_LOCALE, ROUTE_CMS, SORT_ASC } from 'config/common';
-import { BLOG_ATTRIBUTE_MODAL, CONFIRM_MODAL } from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
-import { COL_BLOG_ATTRIBUTES, COL_OPTIONS_GROUPS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { BlogAttributeInterface } from 'db/uiInterfaces';
-import { useDeleteBlogAttribute } from 'hooks/mutations/useBlogMutations';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import AppSubNav from 'layout/AppSubNav';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { getFieldStringLocale } from 'lib/i18n';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsResult, GetServerSidePropsContext } from 'next';
 import * as React from 'react';
-import { ClientNavItemInterface } from 'types/clientTypes';
+import ContentItemControls from '../../../components/button/ContentItemControls';
+import FixedButtons from '../../../components/button/FixedButtons';
+import WpButton from '../../../components/button/WpButton';
+import Inner from '../../../components/Inner';
+import { BlogAttributeModalInterface } from '../../../components/Modal/BlogAttributeModal';
+import { ConfirmModalInterface } from '../../../components/Modal/ConfirmModal';
+import WpTable, { WpTableColumn } from '../../../components/WpTable';
+import WpTitle from '../../../components/WpTitle';
+import { DEFAULT_LOCALE, ROUTE_CMS, SORT_ASC } from '../../../config/common';
+import { BLOG_ATTRIBUTE_MODAL, CONFIRM_MODAL } from '../../../config/modalVariants';
+import { useAppContext } from '../../../context/appContext';
+import { COL_BLOG_ATTRIBUTES, COL_OPTIONS_GROUPS } from '../../../db/collectionNames';
+import { getDatabase } from '../../../db/mongodb';
+import { BlogAttributeInterface } from '../../../db/uiInterfaces';
+import { useDeleteBlogAttribute } from '../../../hooks/mutations/useBlogMutations';
+import AppContentWrapper from '../../../layout/AppContentWrapper';
+import AppSubNav from '../../../layout/AppSubNav';
+import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
+import { getFieldStringLocale } from '../../../lib/i18n';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../lib/ssrUtils';
+import { ClientNavItemInterface } from '../../../types/clientTypes';
 
 interface BlogAttributesListConsumerInterface {
   attributes: BlogAttributeInterface[];
@@ -103,7 +107,7 @@ const BlogAttributesListConsumer: React.FC<BlogAttributesListConsumerInterface> 
   return (
     <AppContentWrapper testId={'blog-attributes-list'}>
       <Inner lowBottom>
-        <Title>{pageTitle}</Title>
+        <WpTitle>{pageTitle}</WpTitle>
       </Inner>
       <AppSubNav navConfig={navConfig} />
       <Inner>

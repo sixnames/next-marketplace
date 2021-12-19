@@ -1,6 +1,6 @@
-import { castAttributeForUI } from 'db/dao/attributes/castAttributesGroupForUI';
-import { castOptionForUI } from 'db/dao/options/castOptionForUI';
-import { ProductConnectionInterface, ProductConnectionItemInterface } from 'db/uiInterfaces';
+import { ProductConnectionInterface, ProductConnectionItemInterface } from '../../uiInterfaces';
+import { castAttributeForUI } from '../attributes/castAttributesGroupForUI';
+import { castOptionForUI } from '../options/castOptionForUI';
 
 interface CastProductConnectionForUI {
   connection: ProductConnectionInterface;

@@ -1,22 +1,22 @@
-import { SORT_ASC, SORT_DESC } from 'config/common';
+import { ObjectId } from 'mongodb';
+import { SORT_ASC, SORT_DESC } from '../config/common';
 import {
   COL_CITIES,
   COL_PAGE_TEMPLATES,
   COL_PAGES,
   COL_PAGES_GROUP,
   COL_PAGES_GROUP_TEMPLATES,
-} from 'db/collectionNames';
-import { PagesGroupModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+} from '../db/collectionNames';
+import { PagesGroupModel } from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
 import {
   CityInterface,
   PageInterface,
   PagesGroupInterface,
   PagesGroupTemplateInterface,
   PagesTemplateInterface,
-} from 'db/uiInterfaces';
-import { getFieldStringLocale } from 'lib/i18n';
-import { ObjectId } from 'mongodb';
+} from '../db/uiInterfaces';
+import { getFieldStringLocale } from './i18n';
 
 // Page groups list
 interface GetPageGroupsSsrInterface {

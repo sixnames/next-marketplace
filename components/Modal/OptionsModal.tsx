@@ -1,13 +1,13 @@
-import WpButton from 'components/button/WpButton';
-import FixedButtons from 'components/button/FixedButtons';
-import FormikIndividualSearch from 'components/FormElements/Search/FormikIndividualSearch';
-import WpIcon from 'components/WpIcon';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
-import RequestError from 'components/RequestError';
-import Spinner from 'components/Spinner';
 import cyrillicToTranslit from 'cyrillic-to-translit-js';
 import * as React from 'react';
+import FixedButtons from '../button/FixedButtons';
+import WpButton from '../button/WpButton';
+import FormikIndividualSearch from '../FormElements/Search/FormikIndividualSearch';
+import RequestError from '../RequestError';
+import Spinner from '../Spinner';
+import WpIcon from '../WpIcon';
+import ModalFrame from './ModalFrame';
+import ModalTitle from './ModalTitle';
 
 export interface OptionsModalOptionInterface extends Record<string, any> {
   _id: any;

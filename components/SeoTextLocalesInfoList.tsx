@@ -1,9 +1,9 @@
-import Percent from 'components/Percent';
-import { useConfigContext } from 'context/configContext';
-import { TextUniquenessApiParsedResponseModel } from 'db/dbModels';
-import { SeoContentCitiesInterface } from 'db/uiInterfaces';
-import { noNaN } from 'lib/numbers';
 import * as React from 'react';
+import { useConfigContext } from '../context/configContext';
+import { TextUniquenessApiParsedResponseModel } from '../db/dbModels';
+import { SeoContentCitiesInterface } from '../db/uiInterfaces';
+import { noNaN } from '../lib/numbers';
+import Percent from './Percent';
 
 interface SeoTextLocaleInfoInterface {
   seoLocale?: TextUniquenessApiParsedResponseModel;

@@ -1,7 +1,7 @@
-import { noNaN } from 'lib/numbers';
 import * as React from 'react';
-import WpIcon from 'components/WpIcon';
-import { SizeType } from 'types/clientTypes';
+import { noNaN } from '../lib/numbers';
+import { SizeType } from '../types/clientTypes';
+import WpIcon from './WpIcon';
 
 interface RatingStarsInterface {
   size?: SizeType;

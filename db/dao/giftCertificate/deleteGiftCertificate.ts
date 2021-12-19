@@ -1,10 +1,10 @@
-import { COL_GIFT_CERTIFICATES } from 'db/collectionNames';
-import { GiftCertificateModel, GiftCertificatePayloadModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
+import { COL_GIFT_CERTIFICATES } from '../../collectionNames';
+import { GiftCertificateModel, GiftCertificatePayloadModel } from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface DeleteGiftCertificateInputInterface {
   _id: string;

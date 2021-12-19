@@ -1,10 +1,10 @@
-import ContentItemControls from 'components/button/ContentItemControls';
-import Inner from 'components/Inner';
-import WpTable, { WpTableColumn } from 'components/WpTable';
-import { DEFAULT_PAGE_FILTER } from 'config/common';
-import { CompanyInterface, RubricInterface } from 'db/uiInterfaces';
 import { useRouter } from 'next/router';
 import * as React from 'react';
+import ContentItemControls from '../components/button/ContentItemControls';
+import Inner from '../components/Inner';
+import WpTable, { WpTableColumn } from '../components/WpTable';
+import { DEFAULT_PAGE_FILTER } from '../config/common';
+import { CompanyInterface, RubricInterface } from '../db/uiInterfaces';
 
 export interface CompanyRubricsListInterface {
   rubrics: RubricInterface[];

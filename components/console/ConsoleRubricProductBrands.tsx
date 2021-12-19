@@ -1,27 +1,27 @@
-import FakeInput from 'components/FormElements/Input/FakeInput';
-import InputLine from 'components/FormElements/Input/InputLine';
-import Inner from 'components/Inner';
-import { BrandCollectionOptionsModalInterface } from 'components/Modal/BrandCollectionOptionsModal';
-import { BrandOptionsModalInterface } from 'components/Modal/BrandOptionsModal';
-import { ManufacturerOptionsModalInterface } from 'components/Modal/ManufacturerOptionsModal';
+import * as React from 'react';
 import {
   BRAND_COLLECTION_OPTIONS_MODAL,
   BRAND_OPTIONS_MODAL,
   MANUFACTURER_OPTIONS_MODAL,
-} from 'config/modalVariants';
+} from '../../config/modalVariants';
 import {
   BrandCollectionInterface,
   BrandInterface,
   ManufacturerInterface,
   ProductInterface,
-} from 'db/uiInterfaces';
+} from '../../db/uiInterfaces';
 import {
   useUpdateProductBrandCollectionMutation,
   useUpdateProductBrandMutation,
   useUpdateProductManufacturerMutation,
-} from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import * as React from 'react';
+} from '../../generated/apolloComponents';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import FakeInput from '../FormElements/Input/FakeInput';
+import InputLine from '../FormElements/Input/InputLine';
+import Inner from '../Inner';
+import { BrandCollectionOptionsModalInterface } from '../Modal/BrandCollectionOptionsModal';
+import { BrandOptionsModalInterface } from '../Modal/BrandOptionsModal';
+import { ManufacturerOptionsModalInterface } from '../Modal/ManufacturerOptionsModal';
 
 const emptyValue = 'Не назначено';
 

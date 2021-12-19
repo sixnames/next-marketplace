@@ -1,23 +1,23 @@
-import Accordion from 'components/Accordion';
-import FilterSelectedAttributes from 'components/FilterSelectedAttributes';
-import WpIcon from 'components/WpIcon';
-import WpLink from 'components/Link/WpLink';
-import { CatalogueAdditionalOptionsModalInterface } from 'components/Modal/CatalogueAdditionalOptionsModal';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 import {
   CATALOGUE_FILTER_VISIBLE_OPTIONS,
   FILTER_BRAND_COLLECTION_KEY,
   FILTER_BRAND_KEY,
-} from 'config/common';
-import { CATALOGUE_ADDITIONAL_OPTIONS_MODAL } from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
-import { useConfigContext } from 'context/configContext';
+} from '../config/common';
+import { CATALOGUE_ADDITIONAL_OPTIONS_MODAL } from '../config/modalVariants';
+import { useAppContext } from '../context/appContext';
+import { useConfigContext } from '../context/configContext';
 import {
   CatalogueFilterAttributeInterface,
   CatalogueFilterAttributeOptionInterface,
-} from 'db/uiInterfaces';
-import { FilterBaseInterface } from 'layout/catalogue/CatalogueFilter';
-import { useRouter } from 'next/router';
-import * as React from 'react';
+} from '../db/uiInterfaces';
+import { FilterBaseInterface } from '../layout/catalogue/CatalogueFilter';
+import FilterSelectedAttributes from './FilterSelectedAttributes';
+import WpLink from './Link/WpLink';
+import { CatalogueAdditionalOptionsModalInterface } from './Modal/CatalogueAdditionalOptionsModal';
+import WpAccordion from './WpAccordion';
+import WpIcon from './WpIcon';
 
 export function getFilterOptions(
   maxVisibleOptions: number,
@@ -207,7 +207,7 @@ const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
   if (attribute.showAsAccordionInFilter) {
     return (
       <div className='mb-8'>
-        <Accordion
+        <WpAccordion
           noTitleStyle
           titleClassName='font-medium text-lg mb-2'
           isOpen={attribute.isSelected}
@@ -241,7 +241,7 @@ const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
             onClick={onClick}
             urlPrefix={urlPrefix}
           />
-        </Accordion>
+        </WpAccordion>
       </div>
     );
   }

@@ -1,4 +1,4 @@
-import { sendEmail, SendEmailInterface } from 'lib/email/mailer';
+import { sendEmail, SendEmailInterface } from './mailer';
 
 interface SendPasswordUpdatedEmailInterface
   extends Omit<SendEmailInterface, 'content' | 'text' | 'subject'> {

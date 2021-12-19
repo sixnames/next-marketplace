@@ -1,10 +1,10 @@
-import { COL_COMPANIES, COL_USER_CATEGORIES } from 'db/collectionNames';
-import { CompanyModel, UserCategoryModel, UserCategoryPayloadModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
+import { COL_COMPANIES, COL_USER_CATEGORIES } from '../../collectionNames';
+import { CompanyModel, UserCategoryModel, UserCategoryPayloadModel } from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface DeleteUserCategoryInputInterface {
   _id: string;

@@ -1,8 +1,8 @@
-import { REQUEST_METHOD_DELETE, REQUEST_METHOD_POST } from 'config/common';
-import { addPromoProducts } from 'db/dao/promo/addPromoProducts';
-import { deletePromoProducts } from 'db/dao/promo/deletePromoProducts';
-import { sendApiRouteResponse } from 'lib/sessionHelpers';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { REQUEST_METHOD_DELETE, REQUEST_METHOD_POST } from '../../../config/common';
+import { addPromoProducts } from '../../../db/dao/promo/addPromoProducts';
+import { deletePromoProducts } from '../../../db/dao/promo/deletePromoProducts';
+import { sendApiRouteResponse } from '../../../lib/sessionHelpers';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   // create

@@ -1,8 +1,8 @@
 import { Menu } from '@headlessui/react';
-import { CounterStickerInterface } from 'components/CounterSticker';
-import WpIcon from 'components/WpIcon';
 import * as React from 'react';
-import { IconType } from 'types/iconTypes';
+import { IconType } from '../types/iconTypes';
+import { CounterStickerInterface } from './CounterSticker';
+import WpIcon from './WpIcon';
 
 type CurrentAction = (menuItem: HeadlessMenuItemInterface) => boolean;
 

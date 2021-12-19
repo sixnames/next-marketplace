@@ -1,23 +1,28 @@
-import Inner from 'components/Inner';
-import Title from 'components/Title';
-import { ROUTE_CONSOLE } from 'config/common';
-import { COL_RUBRIC_VARIANTS, COL_RUBRICS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
-import { RubricModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { RubricInterface } from 'db/uiInterfaces';
-import AppContentWrapper from 'layout/AppContentWrapper';
-
-import CompanyRubricsList, { CompanyRubricsListInterface } from 'layout/CompanyRubricsList';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import Inner from '../../../../components/Inner';
+import WpTitle from '../../../../components/WpTitle';
+import { ROUTE_CONSOLE } from '../../../../config/common';
+import {
+  COL_RUBRIC_VARIANTS,
+  COL_RUBRICS,
+  COL_SHOP_PRODUCTS,
+} from '../../../../db/collectionNames';
+import { RubricModel } from '../../../../db/dbModels';
+import { getDatabase } from '../../../../db/mongodb';
+import { RubricInterface } from '../../../../db/uiInterfaces';
+import AppContentWrapper from '../../../../layout/AppContentWrapper';
+import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
+import CompanyRubricsList, {
+  CompanyRubricsListInterface,
+} from '../../../../layout/CompanyRubricsList';
+import { getFieldStringLocale } from '../../../../lib/i18n';
 import {
   castDbData,
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
-} from 'lib/ssrUtils';
+} from '../../../../lib/ssrUtils';
 
 interface RubricsRouteInterface extends CompanyRubricsListInterface {}
 const pageTitle = 'Рубрикатор';
@@ -26,7 +31,7 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, pageCompany, r
   return (
     <AppContentWrapper>
       <Inner lowBottom>
-        <Title>{pageTitle}</Title>
+        <WpTitle>{pageTitle}</WpTitle>
       </Inner>
       <CompanyRubricsList
         rubrics={rubrics}

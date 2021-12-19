@@ -1,14 +1,4 @@
-import {
-  ASSETS_DIST,
-  ASSETS_DIST_CONFIGS,
-  ASSETS_DIST_CONFIGS_WATERMARK,
-  ASSETS_DIST_PRODUCTS,
-  IMAGE_FALLBACK,
-  IMAGE_FALLBACK_BOTTLE,
-} from 'config/common';
 import Formidable from 'formidable';
-import { AssetModel } from 'db/dbModels';
-import { alwaysArray } from 'lib/arrayUtils';
 import mkdirp from 'mkdirp';
 import extName from 'ext-name';
 import rimraf from 'rimraf';
@@ -27,6 +17,16 @@ import sharp, {
 import fs from 'fs';
 import path from 'path';
 import { promisify } from 'util';
+import {
+  ASSETS_DIST,
+  ASSETS_DIST_CONFIGS,
+  ASSETS_DIST_CONFIGS_WATERMARK,
+  ASSETS_DIST_PRODUCTS,
+  IMAGE_FALLBACK,
+  IMAGE_FALLBACK_BOTTLE,
+} from '../../config/common';
+import { AssetModel } from '../../db/dbModels';
+import { alwaysArray } from '../arrayUtils';
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
 

@@ -1,5 +1,7 @@
-import { FILTER_SEPARATOR } from 'config/common';
-import { castProductConnectionForUI } from 'db/dao/product/castProductConnectionForUI';
+import { FILTER_SEPARATOR } from '../../../config/common';
+import { getFieldStringLocale } from '../../../lib/i18n';
+import { generateCardTitle, generateSnippetTitle } from '../../../lib/titleUtils';
+import { getTreeFromList } from '../../../lib/treeUtils';
 import {
   AttributeInterface,
   BrandInterface,
@@ -8,10 +10,8 @@ import {
   ProductConnectionInterface,
   ProductInterface,
   RubricInterface,
-} from 'db/uiInterfaces';
-import { getFieldStringLocale } from 'lib/i18n';
-import { generateCardTitle, generateSnippetTitle } from 'lib/titleUtils';
-import { getTreeFromList } from 'lib/treeUtils';
+} from '../../uiInterfaces';
+import { castProductConnectionForUI } from './castProductConnectionForUI';
 
 interface CastProductForUI {
   product: ProductInterface;

@@ -1,13 +1,17 @@
-import Inner from 'components/Inner';
-import PageGroupsList, { PageGroupsListInterface } from 'components/Pages/PageGroupsList';
-import Title from 'components/Title';
-import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import { getPageGroupsSsr } from 'lib/pageUtils';
 import * as React from 'react';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import Inner from '../../../components/Inner';
+import PageGroupsList, { PageGroupsListInterface } from '../../../components/Pages/PageGroupsList';
+import WpTitle from '../../../components/WpTitle';
+import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from '../../../config/common';
+import AppContentWrapper from '../../../layout/AppContentWrapper';
+import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
+import { getPageGroupsSsr } from '../../../lib/pageUtils';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../lib/ssrUtils';
 
 const pageTitle = 'Группы страниц';
 
@@ -20,7 +24,7 @@ const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({ layoutProps, pagesG
     <ConsoleLayout title={pageTitle} {...layoutProps}>
       <AppContentWrapper>
         <Inner>
-          <Title>{pageTitle}</Title>
+          <WpTitle>{pageTitle}</WpTitle>
           <PageGroupsList
             companySlug={DEFAULT_COMPANY_SLUG}
             basePath={`${ROUTE_CMS}/pages`}

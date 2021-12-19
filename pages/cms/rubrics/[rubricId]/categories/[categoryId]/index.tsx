@@ -1,28 +1,36 @@
-import WpButton from 'components/button/WpButton';
-import FixedButtons from 'components/button/FixedButtons';
-import WpIconUpload from 'components/FormElements/Upload/WpIconUpload';
-import WpImageUpload from 'components/FormElements/Upload/WpImageUpload';
-import CategoryMainFields from 'components/FormTemplates/CategoryMainFields';
-import Inner from 'components/Inner';
-import SeoContentEditor from 'components/SeoContentEditor';
-import { DEFAULT_COMPANY_SLUG, GENDER_ENUMS, ROUTE_CMS } from 'config/common';
-import { getConsoleCategoryDetails } from 'db/dao/category/getConsoleCategoryDetails';
-import { OptionVariantsModel } from 'db/dbModels';
+import { Form, Formik } from 'formik';
+import * as React from 'react';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import FixedButtons from '../../../../../../components/button/FixedButtons';
+import WpButton from '../../../../../../components/button/WpButton';
+import WpIconUpload from '../../../../../../components/FormElements/Upload/WpIconUpload';
+import WpImageUpload from '../../../../../../components/FormElements/Upload/WpImageUpload';
+import CategoryMainFields from '../../../../../../components/FormTemplates/CategoryMainFields';
+import Inner from '../../../../../../components/Inner';
+import SeoContentEditor from '../../../../../../components/SeoContentEditor';
+import { DEFAULT_COMPANY_SLUG, GENDER_ENUMS, ROUTE_CMS } from '../../../../../../config/common';
+import { getConsoleCategoryDetails } from '../../../../../../db/dao/category/getConsoleCategoryDetails';
+import { OptionVariantsModel } from '../../../../../../db/dbModels';
 import {
   AppContentWrapperBreadCrumbs,
   CategoryInterface,
   SeoContentCitiesInterface,
-} from 'db/uiInterfaces';
-import { Form, Formik } from 'formik';
-import { Gender, UpdateCategoryInput, useUpdateCategoryMutation } from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useValidationSchema from 'hooks/useValidationSchema';
-import CmsCategoryLayout from 'layout/cms/CmsCategoryLayout';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import { updateCategorySchema } from 'validation/categorySchema';
+} from '../../../../../../db/uiInterfaces';
+import {
+  Gender,
+  UpdateCategoryInput,
+  useUpdateCategoryMutation,
+} from '../../../../../../generated/apolloComponents';
+import useMutationCallbacks from '../../../../../../hooks/useMutationCallbacks';
+import useValidationSchema from '../../../../../../hooks/useValidationSchema';
+import CmsCategoryLayout from '../../../../../../layout/cms/CmsCategoryLayout';
+import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../../../../lib/ssrUtils';
+import { updateCategorySchema } from '../../../../../../validation/categorySchema';
 
 interface CategoryDetailsInterface {
   category: CategoryInterface;

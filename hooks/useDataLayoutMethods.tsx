@@ -1,9 +1,9 @@
 import * as React from 'react';
+import { QUERY_DATA_LAYOUT_PAGE } from '../config/common';
+import { noNaN } from '../lib/numbers';
+import { ObjectType } from '../types/clientTypes';
 import useRouterQuery from './useRouterQuery';
 import { ParsedUrlQuery } from 'querystring';
-import { noNaN } from 'lib/numbers';
-import { QUERY_DATA_LAYOUT_PAGE } from 'config/common';
-import { ObjectType } from 'types/clientTypes';
 
 export interface UseDataLayoutMethodsInterface {
   setPage: (page: string | number) => void;

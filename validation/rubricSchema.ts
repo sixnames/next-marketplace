@@ -1,10 +1,10 @@
-import { ValidationSchemaArgsInterface } from 'types/validataionTypes';
-import { objectIdSchema, requiredStringTranslationSchema } from 'validation/schemaTemplates';
 import * as Yup from 'yup';
-import { GENDER_ENUMS } from 'config/common';
-import { attributesGroupIdSchema } from 'validation/attributesGroupSchema';
-import { rubricVariantIdSchema } from 'validation/rubricVariantSchema';
-import { getFieldValidationMessage } from 'lib/getFieldValidationMessage';
+import { GENDER_ENUMS } from '../config/common';
+import { getFieldValidationMessage } from '../lib/getFieldValidationMessage';
+import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
+import { attributesGroupIdSchema } from './attributesGroupSchema';
+import { rubricVariantIdSchema } from './rubricVariantSchema';
+import { objectIdSchema, requiredStringTranslationSchema } from './schemaTemplates';
 
 export const rubricIdSchema = (args: ValidationSchemaArgsInterface) => {
   return objectIdSchema({ ...args, slug: 'validation.rubrics.id' });

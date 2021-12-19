@@ -1,22 +1,22 @@
-import WpButton from 'components/button/WpButton';
-import FormikInput from 'components/FormElements/Input/FormikInput';
-import FormikSelect from 'components/FormElements/Select/FormikSelect';
-import { SelectOptionInterface } from 'components/FormElements/Select/Select';
-import ModalText from 'components/Modal/ModalText';
-import { SUPPLIER_PRICE_VARIANT_CHARGE } from 'config/common';
-import { getConstantOptions, SUPPLIER_PRICE_VARIANT_OPTIONS } from 'config/constantSelects';
-import { useLocaleContext } from 'context/localeContext';
-import { ShopProductInterface, SupplierProductInterface } from 'db/uiInterfaces';
 import * as React from 'react';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import { Form, Formik } from 'formik';
+import { SUPPLIER_PRICE_VARIANT_CHARGE } from '../../config/common';
+import { getConstantOptions, SUPPLIER_PRICE_VARIANT_OPTIONS } from '../../config/constantSelects';
+import { useLocaleContext } from '../../context/localeContext';
+import { ShopProductInterface, SupplierProductInterface } from '../../db/uiInterfaces';
 import {
   AddShopProductSupplierInput,
   useAddShopProductSupplierMutation,
   useUpdateShopProductSupplierMutation,
-} from 'generated/apolloComponents';
-import { Form, Formik } from 'formik';
+} from '../../generated/apolloComponents';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import WpButton from '../button/WpButton';
+import FormikInput from '../FormElements/Input/FormikInput';
+import FormikSelect from '../FormElements/Select/FormikSelect';
+import { SelectOptionInterface } from '../FormElements/Select/Select';
+import ModalFrame from './ModalFrame';
+import ModalText from './ModalText';
+import ModalTitle from './ModalTitle';
 
 export interface ShopProductSupplierModalInterface {
   shopProduct: ShopProductInterface;

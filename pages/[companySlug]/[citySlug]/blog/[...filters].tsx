@@ -1,56 +1,56 @@
-import Breadcrumbs from 'components/Breadcrumbs';
-import FormattedDate from 'components/FormattedDate';
-import WpIcon from 'components/WpIcon';
-import Inner from 'components/Inner';
-import FilterLink from 'components/Link/FilterLink';
-import WpLink from 'components/Link/WpLink';
-import TagLink from 'components/Link/TagLink';
-import Title from 'components/Title';
-import WpImage from 'components/WpImage';
+import Head from 'next/head';
+import { GetStaticPathsResult, GetStaticPropsResult } from 'next';
+import { useRouter } from 'next/router';
+import * as React from 'react';
+import WpBreadcrumbs from '../../../../components/WpBreadcrumbs';
+import FormattedDate from '../../../../components/FormattedDate';
+import Inner from '../../../../components/Inner';
+import FilterLink from '../../../../components/Link/FilterLink';
+import TagLink from '../../../../components/Link/TagLink';
+import WpLink from '../../../../components/Link/WpLink';
+import WpIcon from '../../../../components/WpIcon';
+import WpImage from '../../../../components/WpImage';
+import WpTitle from '../../../../components/WpTitle';
 import {
   ATTRIBUTE_VIEW_VARIANT_LIST,
-  FILTER_SEPARATOR,
   CATALOGUE_PRODUCTS_LIMIT,
   DEFAULT_PAGE,
+  FILTER_SEPARATOR,
+  ISR_FIVE_SECONDS,
   PAGE_STATE_PUBLISHED,
+  REQUEST_METHOD_POST,
+  ROUTE_BLOG,
   ROUTE_BLOG_POST,
   ROUTE_BLOG_WITH_PAGE,
   SORT_DESC,
-  ROUTE_BLOG,
-  REQUEST_METHOD_POST,
-  ISR_FIVE_SECONDS,
-} from 'config/common';
-import { getConstantTranslation } from 'config/constantTranslations';
-import { useAppContext } from 'context/appContext';
-import { useConfigContext } from 'context/configContext';
-import { useSiteContext } from 'context/siteContext';
+} from '../../../../config/common';
+import { getConstantTranslation } from '../../../../config/constantTranslations';
+import { useAppContext } from '../../../../context/appContext';
+import { useConfigContext } from '../../../../context/configContext';
+import { useSiteContext } from '../../../../context/siteContext';
 import {
   COL_BLOG_ATTRIBUTES,
   COL_BLOG_LIKES,
   COL_BLOG_POSTS,
   COL_OPTIONS,
-} from 'db/collectionNames';
-import { UpdateBlogAttributeCountersInputInterface } from 'db/dao/blog/updateBlogAttributeCounters';
-import { AttributeViewVariantModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+} from '../../../../db/collectionNames';
+import { UpdateBlogAttributeCountersInputInterface } from '../../../../db/dao/blog/updateBlogAttributeCounters';
+import { AttributeViewVariantModel } from '../../../../db/dbModels';
+import { getDatabase } from '../../../../db/mongodb';
 import {
   BlogAttributeInterface,
   BlogPostInterface,
   CatalogueFilterAttributeInterface,
   CatalogueFilterAttributeOptionInterface,
   OptionInterface,
-} from 'db/uiInterfaces';
-import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
-import { alwaysArray } from 'lib/arrayUtils';
-import { castUrlFilters, castCatalogueParamToObject } from 'lib/catalogueUtils';
-import { getFieldStringLocale } from 'lib/i18n';
-import { getIsrSiteInitialData, IsrContextInterface } from 'lib/isrUtils';
-import { noNaN } from 'lib/numbers';
-import { castDbData } from 'lib/ssrUtils';
-import Head from 'next/head';
-import { GetStaticPathsResult, GetStaticPropsResult } from 'next';
-import { useRouter } from 'next/router';
-import * as React from 'react';
+} from '../../../../db/uiInterfaces';
+import SiteLayout, { SiteLayoutProviderInterface } from '../../../../layout/SiteLayout';
+import { alwaysArray } from '../../../../lib/arrayUtils';
+import { castCatalogueParamToObject, castUrlFilters } from '../../../../lib/catalogueUtils';
+import { getFieldStringLocale } from '../../../../lib/i18n';
+import { getIsrSiteInitialData, IsrContextInterface } from '../../../../lib/isrUtils';
+import { noNaN } from '../../../../lib/numbers';
+import { castDbData } from '../../../../lib/ssrUtils';
 
 interface BlogListSnippetMetaInterface {
   createdAt?: string | Date | null;
@@ -368,9 +368,9 @@ const BlogListPageConsumer: React.FC<BlogListPageConsumerInterface> = ({
         <meta name={'description'} content={blogTitle} />
       </Head>
       <div className='mb-12'>
-        <Breadcrumbs currentPageName={blogTitle} />
+        <WpBreadcrumbs currentPageName={blogTitle} />
         <Inner lowTop>
-          <Title>{blogTitle}</Title>
+          <WpTitle>{blogTitle}</WpTitle>
 
           {posts.length > 0 ? (
             <div className={`grid lg:grid-cols-4 gap-6`}>

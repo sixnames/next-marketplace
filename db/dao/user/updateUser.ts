@@ -1,16 +1,16 @@
-import { COL_USERS } from 'db/collectionNames';
-import { UserModel, UserNotificationsModel, UserPayloadModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { phoneToRaw } from 'lib/phoneUtils';
+import { ObjectId } from 'mongodb';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import { phoneToRaw } from '../../../lib/phoneUtils';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from 'lib/sessionHelpers';
-import { ObjectId } from 'mongodb';
-import { updateUserSchema } from 'validation/userSchema';
+} from '../../../lib/sessionHelpers';
+import { updateUserSchema } from '../../../validation/userSchema';
+import { COL_USERS } from '../../collectionNames';
+import { UserModel, UserNotificationsModel, UserPayloadModel } from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface UpdateUserInputInterface {
   _id: string;

@@ -1,15 +1,15 @@
-import { DEFAULT_PAGE, PAGINATION_DEFAULT_LIMIT, SORT_DESC } from 'config/common';
-import { COL_GIFT_CERTIFICATES, COL_USERS } from 'db/collectionNames';
-import { ObjectIdModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { DEFAULT_PAGE, PAGINATION_DEFAULT_LIMIT, SORT_DESC } from '../../../config/common';
+import { castUrlFilters } from '../../../lib/catalogueUtils';
+import { getFieldStringLocale } from '../../../lib/i18n';
+import { getFullName } from '../../../lib/nameUtils';
+import { phoneToRaw, phoneToReadable } from '../../../lib/phoneUtils';
+import { COL_GIFT_CERTIFICATES, COL_USERS } from '../../collectionNames';
+import { ObjectIdModel } from '../../dbModels';
+import { getDatabase } from '../../mongodb';
 import {
   GetConsoleGiftCertificatesPayloadInterface,
   GiftCertificateInterface,
-} from 'db/uiInterfaces';
-import { castUrlFilters } from 'lib/catalogueUtils';
-import { getFieldStringLocale } from 'lib/i18n';
-import { getFullName } from 'lib/nameUtils';
-import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
+} from '../../uiInterfaces';
 
 export interface GetConsoleGiftCertificatesInterface {
   companyId: ObjectIdModel;

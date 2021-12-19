@@ -1,8 +1,8 @@
 import * as React from 'react';
 import OutsideClickHandler from 'react-outside-click-handler';
-import ButtonCross from 'components/button/ButtonCross';
-import { useAppContext } from 'context/appContext';
-import { ModalSizeType } from 'types/clientTypes';
+import { useAppContext } from '../../context/appContext';
+import { ModalSizeType } from '../../types/clientTypes';
+import ButtonCross from '../button/ButtonCross';
 
 interface ModalFrameInterface {
   className?: string;

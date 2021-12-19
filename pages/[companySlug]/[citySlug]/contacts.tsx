@@ -1,19 +1,19 @@
-import Inner from 'components/Inner';
-import LinkEmail from 'components/Link/LinkEmail';
-import LinkPhone from 'components/Link/LinkPhone';
-import PageEditor from 'components/PageEditor';
-import Socials from 'components/Socials';
-import Title from 'components/Title';
-import WpMap from 'components/WpMap';
-import { useConfigContext } from 'context/configContext';
-import { useThemeContext } from 'context/themeContext';
-import { AddressModel } from 'db/dbModels';
-import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
-import { phoneToReadable } from 'lib/phoneUtils';
-import { getSiteInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, NextPage } from 'next';
 import Head from 'next/head';
 import * as React from 'react';
+import Inner from '../../../components/Inner';
+import LinkEmail from '../../../components/Link/LinkEmail';
+import LinkPhone from '../../../components/Link/LinkPhone';
+import PageEditor from '../../../components/PageEditor';
+import Socials from '../../../components/Socials';
+import WpMap from '../../../components/WpMap';
+import WpTitle from '../../../components/WpTitle';
+import { useConfigContext } from '../../../context/configContext';
+import { useThemeContext } from '../../../context/themeContext';
+import { AddressModel } from '../../../db/dbModels';
+import SiteLayout, { SiteLayoutProviderInterface } from '../../../layout/SiteLayout';
+import { phoneToReadable } from '../../../lib/phoneUtils';
+import { getSiteInitialData } from '../../../lib/ssrUtils';
 
 const ContactsRoute: React.FC = () => {
   const mapRef = React.useRef<any>(null);
@@ -58,7 +58,7 @@ const ContactsRoute: React.FC = () => {
           }`}
         >
           <div>
-            <Title>Контакты {configSiteName}</Title>
+            <WpTitle>Контакты {configSiteName}</WpTitle>
 
             {actualAddress && actualAddress.readableAddress ? (
               <div className='mb-8 font-medium not-italic'>

@@ -1,20 +1,20 @@
-import ControlButton from 'components/button/ControlButton';
-import ErrorBoundary from 'components/ErrorBoundary';
-import LanguageTrigger from 'components/LanguageTrigger';
-import Modal from 'components/Modal/Modal';
-import Spinner from 'components/Spinner';
-import ThemeTrigger from 'components/ThemeTrigger';
-import { ROUTE_CONSOLE } from 'config/common';
-import { useAppContext } from 'context/appContext';
-import { useConfigContext } from 'context/configContext';
-import { UserContextProvider, useUserContext } from 'context/userContext';
-import { SessionUserPayloadInterface } from 'db/dao/user/getPageSessionUser';
-import { CompanyInterface } from 'db/uiInterfaces';
-import useCompact from 'hooks/useCompact';
-import CmsNav from 'layout/cms/CmsNav';
-import Meta from 'layout/Meta';
 import { useRouter } from 'next/router';
 import * as React from 'react';
+import ControlButton from '../../components/button/ControlButton';
+import ErrorBoundary from '../../components/ErrorBoundary';
+import LanguageTrigger from '../../components/LanguageTrigger';
+import WpModal from '../../components/Modal/WpModal';
+import Spinner from '../../components/Spinner';
+import ThemeTrigger from '../../components/ThemeTrigger';
+import { ROUTE_CONSOLE } from '../../config/common';
+import { useAppContext } from '../../context/appContext';
+import { useConfigContext } from '../../context/configContext';
+import { UserContextProvider, useUserContext } from '../../context/userContext';
+import { SessionUserPayloadInterface } from '../../db/dao/user/getPageSessionUser';
+import { CompanyInterface } from '../../db/uiInterfaces';
+import useCompact from '../../hooks/useCompact';
+import Meta from '../Meta';
+import CmsNav from './CmsNav';
 
 interface ConsoleLayoutConsumerInterface {
   title?: string;
@@ -97,7 +97,7 @@ const ConsoleLayoutConsumer: React.FC<ConsoleLayoutConsumerInterface> = ({
       />
 
       {isLoading ? <Spinner /> : null}
-      {isModal.show ? <Modal modalType={isModal.variant} modalProps={isModal.props} /> : null}
+      {isModal.show ? <WpModal modalType={isModal.variant} modalProps={isModal.props} /> : null}
     </div>
   );
 };
@@ -106,7 +106,7 @@ export interface ConsoleLayoutInterface extends ConsoleLayoutConsumerInterface {
   sessionUser: SessionUserPayloadInterface;
 }
 
-export const ConsoleLayout: React.FC<ConsoleLayoutInterface> = ({ sessionUser, ...props }) => {
+const ConsoleLayout: React.FC<ConsoleLayoutInterface> = ({ sessionUser, ...props }) => {
   return (
     <UserContextProvider sessionUser={sessionUser?.me}>
       <ConsoleLayoutConsumer {...props} />

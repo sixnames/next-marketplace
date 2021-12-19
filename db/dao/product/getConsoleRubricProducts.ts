@@ -1,10 +1,23 @@
-import { GENDER_HE, PAGINATION_DEFAULT_LIMIT, SORT_DESC } from 'config/common';
+import { ObjectId } from 'mongodb';
+import { ParsedUrlQuery } from 'querystring';
+import { GENDER_HE, PAGINATION_DEFAULT_LIMIT, SORT_DESC } from '../../../config/common';
 import {
   getBrandFilterAttribute,
   getCategoryFilterAttribute,
   getCommonFilterAttribute,
   getPriceAttribute,
-} from 'config/constantAttributes';
+} from '../../../config/constantAttributes';
+import { alwaysArray, alwaysString } from '../../../lib/arrayUtils';
+import { castUrlFilters, getCatalogueAttributes } from '../../../lib/catalogueUtils';
+import { getFieldStringLocale } from '../../../lib/i18n';
+import { noNaN } from '../../../lib/numbers';
+import {
+  countProductAttributes,
+  getCategoryAllAttributes,
+  getRubricAllAttributes,
+} from '../../../lib/productAttributesUtils';
+import { getProductAllSeoContents } from '../../../lib/seoContentUtils';
+import { getTreeFromList } from '../../../lib/treeUtils';
 import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
@@ -13,31 +26,18 @@ import {
   COL_PRODUCTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
-} from 'db/collectionNames';
-import { filterAttributesPipeline } from 'db/dao/constantPipelines';
-import { castProductForUI } from 'db/dao/product/castProductForUI';
-import { ObjectIdModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+} from '../../collectionNames';
+import { ObjectIdModel } from '../../dbModels';
+import { getDatabase } from '../../mongodb';
 import {
   AttributeInterface,
   ConsoleRubricProductsInterface,
   ProductInterface,
   ProductsAggregationInterface,
   RubricInterface,
-} from 'db/uiInterfaces';
-import { alwaysArray, alwaysString } from 'lib/arrayUtils';
-import { castUrlFilters, getCatalogueAttributes } from 'lib/catalogueUtils';
-import { getFieldStringLocale } from 'lib/i18n';
-import { noNaN } from 'lib/numbers';
-import {
-  countProductAttributes,
-  getCategoryAllAttributes,
-  getRubricAllAttributes,
-} from 'lib/productAttributesUtils';
-import { getProductAllSeoContents } from 'lib/seoContentUtils';
-import { getTreeFromList } from 'lib/treeUtils';
-import { ObjectId } from 'mongodb';
-import { ParsedUrlQuery } from 'querystring';
+} from '../../uiInterfaces';
+import { filterAttributesPipeline } from '../constantPipelines';
+import { castProductForUI } from './castProductForUI';
 
 export interface GetConsoleRubricProductsInputInterface {
   locale: string;

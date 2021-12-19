@@ -1,22 +1,22 @@
+import { ObjectId } from 'mongodb';
+import { NextApiRequest, NextApiResponse } from 'next';
 import {
   DEFAULT_COMPANY_SLUG,
   HEADER_SEARCH_PRODUCTS_LIMIT,
   REQUEST_METHOD_POST,
   SORT_DESC,
-} from 'config/common';
-import { COL_SHOP_PRODUCTS } from 'db/collectionNames';
-import { ignoreNoImageStage, shopProductFieldsPipeline } from 'db/dao/constantPipelines';
-import { ObjectIdModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { ShopProductInterface } from 'db/uiInterfaces';
-import { getAlgoliaProductsSearch } from 'lib/algolia/productAlgoliaUtils';
-import { getFieldStringLocale } from 'lib/i18n';
-import { noNaN } from 'lib/numbers';
-import { getRequestParams } from 'lib/sessionHelpers';
-import { generateSnippetTitle } from 'lib/titleUtils';
-import { getTreeFromList } from 'lib/treeUtils';
-import { ObjectId } from 'mongodb';
-import { NextApiRequest, NextApiResponse } from 'next';
+} from '../../../config/common';
+import { COL_SHOP_PRODUCTS } from '../../../db/collectionNames';
+import { ignoreNoImageStage, shopProductFieldsPipeline } from '../../../db/dao/constantPipelines';
+import { ObjectIdModel } from '../../../db/dbModels';
+import { getDatabase } from '../../../db/mongodb';
+import { ShopProductInterface } from '../../../db/uiInterfaces';
+import { getAlgoliaProductsSearch } from '../../../lib/algolia/productAlgoliaUtils';
+import { getFieldStringLocale } from '../../../lib/i18n';
+import { noNaN } from '../../../lib/numbers';
+import { getRequestParams } from '../../../lib/sessionHelpers';
+import { generateSnippetTitle } from '../../../lib/titleUtils';
+import { getTreeFromList } from '../../../lib/treeUtils';
 
 export interface HeaderSearchPayloadInterface {
   shopProducts: ShopProductInterface[];

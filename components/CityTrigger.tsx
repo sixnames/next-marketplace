@@ -1,9 +1,9 @@
-import { HeadlessMenuGroupInterface } from 'components/HeadlessMenuButton';
-import { useAppContext } from 'context/appContext';
-import { useConfigContext } from 'context/configContext';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import MenuButtonWithName from 'components/MenuButtonWithName';
+import { useAppContext } from '../context/appContext';
+import { useConfigContext } from '../context/configContext';
+import { HeadlessMenuGroupInterface } from './HeadlessMenuButton';
+import MenuButtonWithName from './MenuButtonWithName';
 
 interface CityTriggerInterface {
   style?: React.CSSProperties;

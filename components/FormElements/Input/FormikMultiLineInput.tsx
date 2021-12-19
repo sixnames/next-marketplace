@@ -1,9 +1,9 @@
 import * as React from 'react';
+import { NEGATIVE_INDEX } from '../../../config/common';
+import WpButton from '../../button/WpButton';
 import FormikInput, { FormikInputPropsInterface } from './FormikInput';
 import { useField } from 'formik';
-import WpButton from 'components/button/WpButton';
 import InputLine from './InputLine';
-import { NEGATIVE_INDEX } from 'config/common';
 
 type FormikMultiLineInputInterface = FormikInputPropsInterface;
 

@@ -1,28 +1,28 @@
-import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
-import { UpdateAttributeInputInterface } from 'db/dao/attributes/updateAttribute';
-import { AttributeInterface } from 'db/uiInterfaces';
 import * as React from 'react';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
-import ModalButtons from 'components/Modal/ModalButtons';
 import { Form, Formik } from 'formik';
-import FormikSelect from 'components/FormElements/Select/FormikSelect';
-import Spinner from 'components/Spinner';
-import WpButton from 'components/button/WpButton';
-import { useGetNewAttributeOptionsQuery } from 'generated/apolloComponents';
-import RequestError from 'components/RequestError';
-import { useAppContext } from 'context/appContext';
-import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
-import FormikTranslationsSelect from 'components/FormElements/Select/FormikTranslationsSelect';
-import useValidationSchema from 'hooks/useValidationSchema';
-import { attributeInGroupModalSchema } from 'validation/attributesGroupSchema';
 import {
   ATTRIBUTE_POSITION_IN_TITLE_BEGIN,
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
   ATTRIBUTE_VARIANT_SELECT,
   ATTRIBUTE_VIEW_VARIANT_LIST,
   DEFAULT_LOCALE,
-} from 'config/common';
+} from '../../config/common';
+import { useAppContext } from '../../context/appContext';
+import { UpdateAttributeInputInterface } from '../../db/dao/attributes/updateAttribute';
+import { AttributeInterface } from '../../db/uiInterfaces';
+import { useGetNewAttributeOptionsQuery } from '../../generated/apolloComponents';
+import useValidationSchema from '../../hooks/useValidationSchema';
+import { attributeInGroupModalSchema } from '../../validation/attributesGroupSchema';
+import WpButton from '../button/WpButton';
+import FormikCheckboxLine from '../FormElements/Checkbox/FormikCheckboxLine';
+import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
+import FormikSelect from '../FormElements/Select/FormikSelect';
+import FormikTranslationsSelect from '../FormElements/Select/FormikTranslationsSelect';
+import RequestError from '../RequestError';
+import Spinner from '../Spinner';
+import ModalButtons from './ModalButtons';
+import ModalFrame from './ModalFrame';
+import ModalTitle from './ModalTitle';
 
 type AddAttributeToGroupModalValuesType = Omit<
   UpdateAttributeInputInterface,

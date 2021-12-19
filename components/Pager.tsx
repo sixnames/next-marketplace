@@ -1,12 +1,12 @@
-import WpButton from 'components/button/WpButton';
-import WpLink from 'components/Link/WpLink';
-import { FILTER_SEPARATOR, FILTER_PAGE_KEY } from 'config/common';
-import { alwaysString } from 'lib/arrayUtils';
-import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import WpIcon from 'components/WpIcon';
 import { usePagination } from '@material-ui/lab/Pagination';
+import { FILTER_PAGE_KEY, FILTER_SEPARATOR } from '../config/common';
+import { alwaysString } from '../lib/arrayUtils';
+import { noNaN } from '../lib/numbers';
+import WpButton from './button/WpButton';
+import WpLink from './Link/WpLink';
+import WpIcon from './WpIcon';
 
 const minimalPagesCount = 2;
 const siblingCount = 7;

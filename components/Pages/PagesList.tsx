@@ -1,22 +1,22 @@
-import WpButton from 'components/button/WpButton';
-import ContentItemControls from 'components/button/ContentItemControls';
-import FixedButtons from 'components/button/FixedButtons';
-import WpLink from 'components/Link/WpLink';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import { CreatePageModalInterface } from 'components/Modal/CreatePageModal';
-import WpTable, { WpTableColumn } from 'components/WpTable';
-import { PAGE_STATE_DRAFT } from 'config/common';
-import { CONFIRM_MODAL, CREATE_PAGE_MODAL } from 'config/modalVariants';
+import { useRouter } from 'next/router';
+import * as React from 'react';
+import { PAGE_STATE_DRAFT } from '../../config/common';
+import { CONFIRM_MODAL, CREATE_PAGE_MODAL } from '../../config/modalVariants';
 import {
   PageInterface,
   PagesGroupInterface,
   PagesGroupTemplateInterface,
   PagesTemplateInterface,
-} from 'db/uiInterfaces';
-import { useDeletePage } from 'hooks/mutations/usePageMutations';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import { useRouter } from 'next/router';
-import * as React from 'react';
+} from '../../db/uiInterfaces';
+import { useDeletePage } from '../../hooks/mutations/usePageMutations';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import ContentItemControls from '../button/ContentItemControls';
+import FixedButtons from '../button/FixedButtons';
+import WpButton from '../button/WpButton';
+import WpLink from '../Link/WpLink';
+import { ConfirmModalInterface } from '../Modal/ConfirmModal';
+import { CreatePageModalInterface } from '../Modal/CreatePageModal';
+import WpTable, { WpTableColumn } from '../WpTable';
 
 export interface PagesListInterface {
   pagesGroup: PagesGroupInterface | PagesGroupTemplateInterface;

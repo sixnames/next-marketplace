@@ -1,7 +1,7 @@
-import HorizontalScroll from 'components/HorizontalScroll';
-import { ShopProductInterface } from 'db/uiInterfaces';
-import ProductSnippetGridBigImage from 'layout/snippet/ProductSnippetGridBigImage';
 import * as React from 'react';
+import HorizontalScroll from '../../components/HorizontalScroll';
+import { ShopProductInterface } from '../../db/uiInterfaces';
+import ProductSnippetGridBigImage from '../snippet/ProductSnippetGridBigImage';
 
 interface CardSimilarProductsInterface {
   similarProducts: ShopProductInterface[];

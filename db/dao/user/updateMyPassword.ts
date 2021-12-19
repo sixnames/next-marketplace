@@ -1,12 +1,16 @@
 import { compare, hash } from 'bcryptjs';
-import { COL_USERS } from 'db/collectionNames';
-import { UserModel, UserPayloadModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
-import { sendPasswordUpdatedEmail } from 'lib/email/sendPasswordUpdatedEmail';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getRequestParams, getResolverValidationSchema, getSessionUser } from 'lib/sessionHelpers';
-import { updateMyPasswordSchema } from 'validation/userSchema';
+import { sendPasswordUpdatedEmail } from '../../../lib/email/sendPasswordUpdatedEmail';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import {
+  getRequestParams,
+  getResolverValidationSchema,
+  getSessionUser,
+} from '../../../lib/sessionHelpers';
+import { updateMyPasswordSchema } from '../../../validation/userSchema';
+import { COL_USERS } from '../../collectionNames';
+import { UserModel, UserPayloadModel } from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface UpdateMyPasswordInputInterface {
   oldPassword: string;

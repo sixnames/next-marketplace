@@ -1,20 +1,20 @@
-import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
-import FormikInput from 'components/FormElements/Input/FormikInput';
-import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
-import { OrderStatusInterface } from 'db/uiInterfaces';
+import * as React from 'react';
+import { Form, Formik } from 'formik';
+import { OrderStatusInterface } from '../../db/uiInterfaces';
 import {
   UpdateOrderStatusInput,
   useCreateOrderStatusMutation,
   useUpdateOrderStatusMutation,
-} from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import { ResolverValidationSchema } from 'lib/sessionHelpers';
-import * as React from 'react';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
-import ModalButtons from 'components/Modal/ModalButtons';
-import { Form, Formik } from 'formik';
-import WpButton from 'components/button/WpButton';
+} from '../../generated/apolloComponents';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import { ResolverValidationSchema } from '../../lib/sessionHelpers';
+import WpButton from '../button/WpButton';
+import FormikCheckboxLine from '../FormElements/Checkbox/FormikCheckboxLine';
+import FormikInput from '../FormElements/Input/FormikInput';
+import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
+import ModalButtons from './ModalButtons';
+import ModalFrame from './ModalFrame';
+import ModalTitle from './ModalTitle';
 
 export interface OrderStatusModalInterface {
   orderStatus?: OrderStatusInterface;

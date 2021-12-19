@@ -1,9 +1,9 @@
-import { ROUTE_PROFILE, ROUTE_SIGN_IN } from 'config/common';
-import { getPageSessionUser } from 'db/dao/user/getPageSessionUser';
-import { alwaysArray } from 'lib/arrayUtils';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { getSiteInitialData } from 'lib/ssrUtils';
+import { ROUTE_PROFILE, ROUTE_SIGN_IN } from '../../config/common';
+import { getPageSessionUser } from '../../db/dao/user/getPageSessionUser';
+import { alwaysArray } from '../../lib/arrayUtils';
+import { getSiteInitialData } from '../../lib/ssrUtils';
 
 const Profile: NextPage = () => {
   return <div />;

@@ -1,6 +1,6 @@
 import cyrillicToTranslit from 'cyrillic-to-translit-js';
-import { TranslationModel } from 'db/dbModels';
-import { DEFAULT_LOCALE } from 'config/common';
+import { DEFAULT_LOCALE } from '../config/common';
+import { TranslationModel } from '../db/dbModels';
 
 export const generateSlug = (name: string) => {
   const translit = new cyrillicToTranslit();

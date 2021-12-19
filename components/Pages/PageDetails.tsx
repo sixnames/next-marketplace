@@ -1,27 +1,27 @@
-import WpButton from 'components/button/WpButton';
-import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
-import FormikInput from 'components/FormElements/Input/FormikInput';
-import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
-import FormikSelect from 'components/FormElements/Select/FormikSelect';
-import FormikImageUpload from 'components/FormElements/Upload/FormikImageUpload';
-import PageEditor from 'components/PageEditor';
-import Title from 'components/Title';
-import {
-  REQUEST_METHOD_POST,
-  PAGE_STATE_OPTIONS,
-  TEXT_HORIZONTAL_ALIGN_OPTIONS,
-  TEXT_VERTICAL_FLEX_OPTIONS,
-  TEXT_HORIZONTAL_FLEX_OPTIONS,
-} from 'config/common';
-import { CityInterface, PageInterface, PagesTemplateInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
-import { useUpdatePage } from 'hooks/mutations/usePageMutations';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useValidationSchema from 'hooks/useValidationSchema';
-import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { updatePageSchema } from 'validation/pagesSchema';
+import {
+  PAGE_STATE_OPTIONS,
+  REQUEST_METHOD_POST,
+  TEXT_HORIZONTAL_ALIGN_OPTIONS,
+  TEXT_HORIZONTAL_FLEX_OPTIONS,
+  TEXT_VERTICAL_FLEX_OPTIONS,
+} from '../../config/common';
+import { CityInterface, PageInterface, PagesTemplateInterface } from '../../db/uiInterfaces';
+import { useUpdatePage } from '../../hooks/mutations/usePageMutations';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import useValidationSchema from '../../hooks/useValidationSchema';
+import { noNaN } from '../../lib/numbers';
+import { updatePageSchema } from '../../validation/pagesSchema';
+import WpButton from '../button/WpButton';
+import FormikCheckboxLine from '../FormElements/Checkbox/FormikCheckboxLine';
+import FormikInput from '../FormElements/Input/FormikInput';
+import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
+import FormikSelect from '../FormElements/Select/FormikSelect';
+import FormikImageUpload from '../FormElements/Upload/FormikImageUpload';
+import PageEditor from '../PageEditor';
+import WpTitle from '../WpTitle';
 
 const sectionClassName = 'border-t border-border-300 pt-8 mt-12';
 
@@ -139,9 +139,9 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate 
                 />
 
                 <div className={sectionClassName}>
-                  <Title tag={'div'} size={'small'}>
+                  <WpTitle tag={'div'} size={'small'}>
                     Слайдер на главной странице
-                  </Title>
+                  </WpTitle>
 
                   <FormikCheckboxLine
                     label={'Показывать в слайдере на главной странице'}
@@ -265,9 +265,9 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate 
                 </div>
 
                 <div className={sectionClassName}>
-                  <Title tag={'div'} size={'small'}>
+                  <WpTitle tag={'div'} size={'small'}>
                     Акции на главной странице
-                  </Title>
+                  </WpTitle>
 
                   <FormikCheckboxLine
                     label={'Показывать в блоке Акции на главной странице'}
@@ -398,9 +398,9 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate 
                 </div>
 
                 <div className={sectionClassName}>
-                  <Title tag={'div'} size={'small'}>
+                  <WpTitle tag={'div'} size={'small'}>
                     Контент страницы
-                  </Title>
+                  </WpTitle>
                   <PageEditor
                     value={values.content}
                     setValue={(value) => {

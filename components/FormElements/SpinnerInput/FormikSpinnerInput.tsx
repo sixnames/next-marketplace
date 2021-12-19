@@ -1,8 +1,6 @@
-import SpinnerInput, {
-  SpinnerPropsInterface,
-} from 'components/FormElements/SpinnerInput/SpinnerInput';
 import { Field, FieldProps } from 'formik';
 import * as React from 'react';
+import SpinnerInput, { SpinnerPropsInterface } from './SpinnerInput';
 
 interface FormikSpinnerInputInterface extends Omit<SpinnerPropsInterface, 'value'> {}
 

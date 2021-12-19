@@ -1,5 +1,9 @@
 import { getTextContents, Value } from '@react-page/editor';
-import { reactPageCellPlugins } from 'components/PageEditor';
+import { sortBy } from 'lodash';
+import { ObjectId } from 'mongodb';
+import fetch from 'node-fetch';
+import qs from 'qs';
+import { reactPageCellPlugins } from '../components/PageEditor';
 import {
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   CATALOGUE_SEO_TEXT_POSITION_TOP,
@@ -12,8 +16,8 @@ import {
   REQUEST_METHOD_POST,
   ROUTE_CATALOGUE,
   SORT_DESC,
-} from 'config/common';
-import { getPriceAttribute } from 'config/constantAttributes';
+} from '../config/common';
+import { getPriceAttribute } from '../config/constantAttributes';
 import {
   COL_ATTRIBUTES,
   COL_BRAND_COLLECTIONS,
@@ -26,8 +30,8 @@ import {
   COL_OPTIONS,
   COL_RUBRICS,
   COL_SEO_CONTENTS,
-} from 'db/collectionNames';
-import { getCitiesList } from 'db/dao/cities/getCitiesList';
+} from '../db/collectionNames';
+import { getCitiesList } from '../db/dao/cities/getCitiesList';
 import {
   AttributeModel,
   BrandCollectionModel,
@@ -41,23 +45,19 @@ import {
   ObjectIdModel,
   RubricModel,
   SeoContentModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+} from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
 import {
   AttributeInterface,
   CategoryInterface,
   SeoContentCitiesInterface,
   SeoContentInterface,
-} from 'db/uiInterfaces';
-import { castUrlFilters } from 'lib/catalogueUtils';
-import { castConfigs, getConfigStringValue } from 'lib/configsUtils';
-import { getFieldStringLocale } from 'lib/i18n';
-import { sortStringArray } from 'lib/stringUtils';
-import { getTreeFromList, getTreeLeaves } from 'lib/treeUtils';
-import { sortBy } from 'lodash';
-import { ObjectId } from 'mongodb';
-import fetch from 'node-fetch';
-import qs from 'qs';
+} from '../db/uiInterfaces';
+import { castUrlFilters } from './catalogueUtils';
+import { castConfigs, getConfigStringValue } from './configsUtils';
+import { getFieldStringLocale } from './i18n';
+import { sortStringArray } from './stringUtils';
+import { getTreeFromList, getTreeLeaves } from './treeUtils';
 
 export function castSeoContent(
   seoContent?: SeoContentInterface | null,

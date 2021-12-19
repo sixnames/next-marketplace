@@ -1,17 +1,17 @@
-import WpButton from 'components/button/WpButton';
-import ContentItemControls from 'components/button/ContentItemControls';
-import FixedButtons from 'components/button/FixedButtons';
-import FormattedDateTime from 'components/FormattedDateTime';
-import { BlogPostModalInterface } from 'components/Modal/BlogPostModal';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import WpTable, { WpTableColumn } from 'components/WpTable';
-import { PAGE_STATE_DRAFT, ROUTE_BLOG } from 'config/common';
-import { BLOG_POST_MODAL, CONFIRM_MODAL } from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
-import { BlogPostInterface } from 'db/uiInterfaces';
-import { useDeleteBlogPost } from 'hooks/mutations/useBlogMutations';
 import { useRouter } from 'next/router';
 import * as React from 'react';
+import { PAGE_STATE_DRAFT, ROUTE_BLOG } from '../../config/common';
+import { BLOG_POST_MODAL, CONFIRM_MODAL } from '../../config/modalVariants';
+import { useAppContext } from '../../context/appContext';
+import { BlogPostInterface } from '../../db/uiInterfaces';
+import { useDeleteBlogPost } from '../../hooks/mutations/useBlogMutations';
+import ContentItemControls from '../button/ContentItemControls';
+import FixedButtons from '../button/FixedButtons';
+import WpButton from '../button/WpButton';
+import FormattedDateTime from '../FormattedDateTime';
+import { BlogPostModalInterface } from '../Modal/BlogPostModal';
+import { ConfirmModalInterface } from '../Modal/ConfirmModal';
+import WpTable, { WpTableColumn } from '../WpTable';
 
 interface BlogPostsListInterface {
   posts: BlogPostInterface[];

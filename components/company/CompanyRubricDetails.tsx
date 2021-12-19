@@ -1,14 +1,18 @@
-import WpButton from 'components/button/WpButton';
-import FixedButtons from 'components/button/FixedButtons';
-import Inner from 'components/Inner';
-import SeoContentEditor from 'components/SeoContentEditor';
-import { CompanyInterface, RubricInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
-import { UpdateRubricInput, useUpdateRubricMutation } from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useValidationSchema from 'hooks/useValidationSchema';
 import * as React from 'react';
-import { updateRubricSchema } from 'validation/rubricSchema';
+import {
+  CompanyInterface,
+  RubricInterface,
+  SeoContentCitiesInterface,
+} from '../../db/uiInterfaces';
+import { UpdateRubricInput, useUpdateRubricMutation } from '../../generated/apolloComponents';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import useValidationSchema from '../../hooks/useValidationSchema';
+import { updateRubricSchema } from '../../validation/rubricSchema';
+import FixedButtons from '../button/FixedButtons';
+import WpButton from '../button/WpButton';
+import Inner from '../Inner';
+import SeoContentEditor from '../SeoContentEditor';
 
 export interface CompanyRubricDetailsInterface {
   rubric: RubricInterface;

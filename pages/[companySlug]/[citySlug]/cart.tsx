@@ -1,19 +1,19 @@
-import Breadcrumbs from 'components/Breadcrumbs';
-import DefaultCart from 'components/cart/DefaultCart';
-import EmptyCart from 'components/cart/EmptyCart';
-import OneShopCompanyCart from 'components/cart/OneShopCompanyCart';
-import Inner from 'components/Inner';
-import RequestError from 'components/RequestError';
-import Spinner from 'components/Spinner';
-import Title from 'components/Title';
-import { useConfigContext } from 'context/configContext';
-import { useSiteContext } from 'context/siteContext';
-import { MakeAnOrderInputInterface } from 'db/dao/orders/makeAnOrder';
-import { CartInterface } from 'db/uiInterfaces';
-import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { getSiteInitialData } from 'lib/ssrUtils';
+import DefaultCart from '../../../components/cart/DefaultCart';
+import EmptyCart from '../../../components/cart/EmptyCart';
+import OneShopCompanyCart from '../../../components/cart/OneShopCompanyCart';
+import Inner from '../../../components/Inner';
+import RequestError from '../../../components/RequestError';
+import Spinner from '../../../components/Spinner';
+import WpBreadcrumbs from '../../../components/WpBreadcrumbs';
+import WpTitle from '../../../components/WpTitle';
+import { useConfigContext } from '../../../context/configContext';
+import { useSiteContext } from '../../../context/siteContext';
+import { MakeAnOrderInputInterface } from '../../../db/dao/orders/makeAnOrder';
+import { CartInterface } from '../../../db/uiInterfaces';
+import SiteLayout, { SiteLayoutProviderInterface } from '../../../layout/SiteLayout';
+import { getSiteInitialData } from '../../../lib/ssrUtils';
 
 export type CartTabIndexType = 0 | 1;
 
@@ -42,7 +42,7 @@ const CartPageConsumer: React.FC = () => {
   if (loadingCart && !cart) {
     return (
       <div>
-        <Breadcrumbs currentPageName={'Корзина'} />
+        <WpBreadcrumbs currentPageName={'Корзина'} />
 
         <Inner lowTop testId={'cart'}>
           <Spinner isNested isTransparent />
@@ -54,7 +54,7 @@ const CartPageConsumer: React.FC = () => {
   if (!cart) {
     return (
       <div>
-        <Breadcrumbs currentPageName={'Корзина'} />
+        <WpBreadcrumbs currentPageName={'Корзина'} />
 
         <Inner lowTop testId={'cart'}>
           <RequestError message={'Загружаю корзину'} />
@@ -71,7 +71,7 @@ const CartPageConsumer: React.FC = () => {
 
   return (
     <div className='mb-12'>
-      <Breadcrumbs currentPageName={'Корзина'} />
+      <WpBreadcrumbs currentPageName={'Корзина'} />
 
       <Inner lowTop testId={'cart'}>
         {/*tabs*/}
@@ -86,9 +86,9 @@ const CartPageConsumer: React.FC = () => {
                 setTabIndex(0);
               }}
             >
-              <Title tag={'div'} size={'small'} low>
+              <WpTitle tag={'div'} size={'small'} low>
                 Корзина {cartDeliveryProducts.length} шт.
-              </Title>
+              </WpTitle>
             </div>
           ) : null}
 
@@ -102,9 +102,9 @@ const CartPageConsumer: React.FC = () => {
                 setTabIndex(1);
               }}
             >
-              <Title tag={'div'} size={'small'} low>
+              <WpTitle tag={'div'} size={'small'} low>
                 Бронирование {cartBookingProducts.length} шт.
-              </Title>
+              </WpTitle>
             </div>
           ) : null}
         </div>

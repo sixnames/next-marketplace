@@ -1,10 +1,10 @@
-import WpIcon from 'components/WpIcon';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 import {
   CatalogueFilterAttributeInterface,
   CatalogueFilterAttributeOptionInterface,
-} from 'db/uiInterfaces';
-import { useRouter } from 'next/router';
-import * as React from 'react';
+} from '../db/uiInterfaces';
+import WpIcon from './WpIcon';
 
 interface FilterSelectedAttributesInterface {
   selectedAttributes?: CatalogueFilterAttributeInterface[] | null;

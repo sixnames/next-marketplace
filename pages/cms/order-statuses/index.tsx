@@ -1,28 +1,35 @@
-import WpButton from 'components/button/WpButton';
-import ColorPreview from 'components/ColorPreview';
-import FixedButtons from 'components/button/FixedButtons';
-import ContentItemControls from 'components/button/ContentItemControls';
-import Inner from 'components/Inner';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import { OrderStatusModalInterface } from 'components/Modal/OrderStatusModal';
-import WpTable, { WpTableColumn } from 'components/WpTable';
-import Title from 'components/Title';
-import { SORT_ASC } from 'config/common';
-import { CONFIRM_MODAL, ORDER_STATUS_MODAL } from 'config/modalVariants';
-import { COL_ORDER_STATUSES } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { OrderStatusInterface } from 'db/uiInterfaces';
-import { useDeleteOrderStatusMutation } from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useValidationSchema from 'hooks/useValidationSchema';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import { getFieldStringLocale } from 'lib/i18n';
 import Head from 'next/head';
 import * as React from 'react';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import { createOrderStatusSchema, updateOrderStatusSchema } from 'validation/orderStatusSchema';
+import ContentItemControls from '../../../components/button/ContentItemControls';
+import FixedButtons from '../../../components/button/FixedButtons';
+import WpButton from '../../../components/button/WpButton';
+import ColorPreview from '../../../components/ColorPreview';
+import Inner from '../../../components/Inner';
+import { ConfirmModalInterface } from '../../../components/Modal/ConfirmModal';
+import { OrderStatusModalInterface } from '../../../components/Modal/OrderStatusModal';
+import WpTable, { WpTableColumn } from '../../../components/WpTable';
+import WpTitle from '../../../components/WpTitle';
+import { SORT_ASC } from '../../../config/common';
+import { CONFIRM_MODAL, ORDER_STATUS_MODAL } from '../../../config/modalVariants';
+import { COL_ORDER_STATUSES } from '../../../db/collectionNames';
+import { getDatabase } from '../../../db/mongodb';
+import { OrderStatusInterface } from '../../../db/uiInterfaces';
+import { useDeleteOrderStatusMutation } from '../../../generated/apolloComponents';
+import useMutationCallbacks from '../../../hooks/useMutationCallbacks';
+import useValidationSchema from '../../../hooks/useValidationSchema';
+import AppContentWrapper from '../../../layout/AppContentWrapper';
+import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
+import { getFieldStringLocale } from '../../../lib/i18n';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../lib/ssrUtils';
+import {
+  createOrderStatusSchema,
+  updateOrderStatusSchema,
+} from '../../../validation/orderStatusSchema';
 
 const pageTitle = 'Статусы заказа';
 
@@ -112,7 +119,7 @@ const OrderStatusesConsumer: React.FC<OrderStatusesConsumerInterface> = ({ order
       </Head>
 
       <Inner testId={'order-statuses-list'}>
-        <Title>{pageTitle}</Title>
+        <WpTitle>{pageTitle}</WpTitle>
         <div className='overflow-x-auto overflow-y-hidden'>
           <WpTable<OrderStatusInterface>
             columns={columns}

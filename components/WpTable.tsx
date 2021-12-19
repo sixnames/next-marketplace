@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { get } from 'lodash';
-import RequestError from 'components/RequestError';
+import RequestError from './RequestError';
 
 export interface RenderArgs<T> {
   cellData: any;

@@ -1,8 +1,8 @@
-import { COL_NOT_SYNCED_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
-import { NotSyncedProductModel, ShopModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { SyncParamsInterface } from 'db/syncInterfaces';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { COL_NOT_SYNCED_PRODUCTS, COL_SHOPS } from '../../../db/collectionNames';
+import { NotSyncedProductModel, ShopModel } from '../../../db/dbModels';
+import { getDatabase } from '../../../db/mongodb';
+import { SyncParamsInterface } from '../../../db/syncInterfaces';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== 'GET') {

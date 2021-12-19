@@ -1,17 +1,20 @@
 import { Disclosure } from '@headlessui/react';
-import ControlButton from 'components/button/ControlButton';
-import ControlButtonChevron from 'components/button/ControlButtonChevron';
-import Currency from 'components/Currency';
-import FormattedDate from 'components/FormattedDate';
-import WpIcon from 'components/WpIcon';
-import WpLink from 'components/Link/WpLink';
-import ProductShopPrices from 'components/ProductShopPrices';
-import RequestError from 'components/RequestError';
-import Title from 'components/Title';
-import WpImage from 'components/WpImage';
-import WpTooltip from 'components/WpTooltip';
-import { IMAGE_FALLBACK, ROUTE_SIGN_IN } from 'config/common';
-import { useSiteContext } from 'context/siteContext';
+import { ObjectId } from 'mongodb';
+import * as React from 'react';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import ControlButton from '../../../../components/button/ControlButton';
+import ControlButtonChevron from '../../../../components/button/ControlButtonChevron';
+import Currency from '../../../../components/Currency';
+import FormattedDate from '../../../../components/FormattedDate';
+import WpLink from '../../../../components/Link/WpLink';
+import ProductShopPrices from '../../../../components/ProductShopPrices';
+import RequestError from '../../../../components/RequestError';
+import WpIcon from '../../../../components/WpIcon';
+import WpImage from '../../../../components/WpImage';
+import WpTitle from '../../../../components/WpTitle';
+import WpTooltip from '../../../../components/WpTooltip';
+import { IMAGE_FALLBACK, ROUTE_SIGN_IN } from '../../../../config/common';
+import { useSiteContext } from '../../../../context/siteContext';
 import {
   COL_GIFT_CERTIFICATES,
   COL_ORDER_PRODUCTS,
@@ -19,22 +22,19 @@ import {
   COL_ORDERS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
-} from 'db/collectionNames';
-import { shopProductFieldsPipeline } from 'db/dao/constantPipelines';
-import { castOrderStatus } from 'db/dao/orders/getConsoleOrder';
-import { getPageSessionUser } from 'db/dao/user/getPageSessionUser';
-import { OrderModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { OrderInterface, OrderProductInterface } from 'db/uiInterfaces';
-import ProfileLayout from 'layout/ProfileLayout/ProfileLayout';
-import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
-import { getFieldStringLocale } from 'lib/i18n';
-import { noNaN } from 'lib/numbers';
-import { generateSnippetTitle } from 'lib/titleUtils';
-import { ObjectId } from 'mongodb';
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getSiteInitialData } from 'lib/ssrUtils';
+} from '../../../../db/collectionNames';
+import { shopProductFieldsPipeline } from '../../../../db/dao/constantPipelines';
+import { castOrderStatus } from '../../../../db/dao/orders/getConsoleOrder';
+import { getPageSessionUser } from '../../../../db/dao/user/getPageSessionUser';
+import { OrderModel } from '../../../../db/dbModels';
+import { getDatabase } from '../../../../db/mongodb';
+import { OrderInterface, OrderProductInterface } from '../../../../db/uiInterfaces';
+import ProfileLayout from '../../../../layout/ProfileLayout/ProfileLayout';
+import { getFieldStringLocale } from '../../../../lib/i18n';
+import { noNaN } from '../../../../lib/numbers';
+import { castDbData, getSiteInitialData } from '../../../../lib/ssrUtils';
+import { generateSnippetTitle } from '../../../../lib/titleUtils';
+import SiteLayout, { SiteLayoutProviderInterface } from '../../../../layout/SiteLayout';
 
 interface ProfileOrderProductInterface {
   orderIndex: number;
@@ -259,12 +259,12 @@ const ProfileOrdersRoute: React.FC<ProfileOrdersRouteInterface> = ({ orders }) =
     <div className='mb-8' data-cy={'profile-orders'}>
       {orders.length < 1 ? (
         <div>
-          <Title size={'small'}>История заказов</Title>
+          <WpTitle size={'small'}>История заказов</WpTitle>
           <RequestError message={'Вы ещё не сделали ни одного заказа'} />
         </div>
       ) : (
         <React.Fragment>
-          <Title size={'small'}>История заказов</Title>
+          <WpTitle size={'small'}>История заказов</WpTitle>
           {orders.map((order, orderIndex) => {
             return <ProfileOrder key={`${order._id}`} orderIndex={orderIndex} order={order} />;
           })}

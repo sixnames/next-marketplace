@@ -1,10 +1,10 @@
 import * as React from 'react';
+import { InputTheme, InputType, OnOffType } from '../../../types/clientTypes';
+import { IconType } from '../../../types/iconTypes';
+import ButtonCross from '../../button/ButtonCross';
+import WpIcon from '../../WpIcon';
 import InputLine, { InputLinePropsInterface } from './InputLine';
 import MaskedField from 'react-masked-field';
-import WpIcon from 'components/WpIcon';
-import ButtonCross from 'components/button/ButtonCross';
-import { InputTheme, InputType, OnOffType } from 'types/clientTypes';
-import { IconType } from 'types/iconTypes';
 
 export interface InputEvent {
   target: {
@@ -14,7 +14,7 @@ export interface InputEvent {
   };
 }
 
-export interface InputPropsInterface extends InputLinePropsInterface {
+export interface WpInputPropsInterface extends InputLinePropsInterface {
   name: string;
   className?: string;
   value?: any;
@@ -35,7 +35,7 @@ export interface InputPropsInterface extends InputLinePropsInterface {
   size?: 'smaller' | 'small' | 'normal' | 'big';
 }
 
-const Input: React.FC<InputPropsInterface> = ({
+const WpInput: React.FC<WpInputPropsInterface> = ({
   name,
   className,
   isRequired,
@@ -149,4 +149,4 @@ const Input: React.FC<InputPropsInterface> = ({
   );
 };
 
-export default Input;
+export default WpInput;

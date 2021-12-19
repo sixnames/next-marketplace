@@ -1,8 +1,8 @@
-import WpDropZone, { WpDropZoneInterface } from 'components/FormElements/Upload/WpDropZone';
-import ModalText from 'components/Modal/ModalText';
 import * as React from 'react';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
+import WpDropZone, { WpDropZoneInterface } from '../FormElements/Upload/WpDropZone';
+import ModalFrame from './ModalFrame';
+import ModalText from './ModalText';
+import ModalTitle from './ModalTitle';
 
 export interface AddAssetsModalInterface extends Omit<WpDropZoneInterface, 'testId'> {
   message?: any;

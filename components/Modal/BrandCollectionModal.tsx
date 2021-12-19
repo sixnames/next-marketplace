@@ -1,18 +1,18 @@
-import WpButton from 'components/button/WpButton';
-import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
-import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
-import { BrandCollectionInterface } from 'db/uiInterfaces';
-import { ResolverValidationSchema } from 'lib/sessionHelpers';
+import { Form, Formik } from 'formik';
 import * as React from 'react';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import { BrandCollectionInterface } from '../../db/uiInterfaces';
 import {
   CreateBrandInput,
   useAddCollectionToBrandMutation,
   useUpdateCollectionInBrandMutation,
-} from 'generated/apolloComponents';
-import { Form, Formik } from 'formik';
+} from '../../generated/apolloComponents';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import { ResolverValidationSchema } from '../../lib/sessionHelpers';
+import WpButton from '../button/WpButton';
+import FormikCheckboxLine from '../FormElements/Checkbox/FormikCheckboxLine';
+import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
+import ModalFrame from './ModalFrame';
+import ModalTitle from './ModalTitle';
 
 export interface BrandCollectionModalInterface {
   brandCollection?: BrandCollectionInterface;

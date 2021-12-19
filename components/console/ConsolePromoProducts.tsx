@@ -1,24 +1,27 @@
-import WpButton from 'components/button/WpButton';
-import CheckBox from 'components/FormElements/Checkbox/Checkbox';
-import AppContentFilter from 'components/AppContentFilter';
-import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
-import Inner from 'components/Inner';
-import Pager from 'components/Pager';
-import Spinner from 'components/Spinner';
-import WpTable, { WpTableColumn } from 'components/WpTable';
-import TableRowImage from 'components/TableRowImage';
-import { useAppContext } from 'context/appContext';
+import * as React from 'react';
+import { useAppContext } from '../../context/appContext';
 import {
   CompanyInterface,
   GetConsoleRubricPromoProductsPayloadInterface,
   PromoInterface,
   RubricInterface,
   ShopProductInterface,
-} from 'db/uiInterfaces';
-import { useAddPromoProducts, useDeletePromoProducts } from 'hooks/mutations/usePromoMutations';
-import usePageLoadingState from 'hooks/usePageLoadingState';
-import { alwaysArray } from 'lib/arrayUtils';
-import * as React from 'react';
+} from '../../db/uiInterfaces';
+import {
+  useAddPromoProducts,
+  useDeletePromoProducts,
+} from '../../hooks/mutations/usePromoMutations';
+import usePageLoadingState from '../../hooks/usePageLoadingState';
+import { alwaysArray } from '../../lib/arrayUtils';
+import AppContentFilter from '../AppContentFilter';
+import WpButton from '../button/WpButton';
+import WpCheckbox from '../FormElements/Checkbox/WpCheckbox';
+import FormikRouterSearch from '../FormElements/Search/FormikRouterSearch';
+import Inner from '../Inner';
+import Pager from '../Pager';
+import Spinner from '../Spinner';
+import TableRowImage from '../TableRowImage';
+import WpTable, { WpTableColumn } from '../WpTable';
 
 export interface ConsolePromoProductsInterface {
   rubric: RubricInterface;
@@ -95,7 +98,7 @@ const ConsolePromoProducts: React.FC<ConsolePromoProductsInterface> = ({
       render: ({ cellData, rowIndex, dataItem }) => {
         const checked = promoProducts.selectedShopProductIds.includes(cellData);
         return (
-          <CheckBox
+          <WpCheckbox
             onChange={() => {
               showLoading();
 

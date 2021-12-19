@@ -1,13 +1,13 @@
 import { enumType, objectType } from 'nexus';
-import { getRequestParams } from 'lib/sessionHelpers';
 import {
-  ATTRIBUTE_VARIANTS_ENUMS,
   ATTRIBUTE_POSITION_IN_TITLE_ENUMS,
+  ATTRIBUTE_VARIANTS_ENUMS,
   ATTRIBUTE_VIEW_VARIANTS_ENUMS,
-} from 'config/common';
-import { OptionsGroupModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { COL_OPTIONS_GROUPS } from 'db/collectionNames';
+} from '../config/common';
+import { COL_OPTIONS_GROUPS } from '../db/collectionNames';
+import { OptionsGroupModel } from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import { getRequestParams } from '../lib/sessionHelpers';
 
 export const AttributeVariant = enumType({
   name: 'AttributeVariant',

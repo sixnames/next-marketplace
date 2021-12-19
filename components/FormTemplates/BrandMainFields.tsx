@@ -1,7 +1,7 @@
-import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
-import FormikMultiLineInput from 'components/FormElements/Input/FormikMultiLineInput';
-import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import * as React from 'react';
+import FormikCheckboxLine from '../FormElements/Checkbox/FormikCheckboxLine';
+import FormikMultiLineInput from '../FormElements/Input/FormikMultiLineInput';
+import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
 
 const BrandMainFields: React.FC = () => {
   return (

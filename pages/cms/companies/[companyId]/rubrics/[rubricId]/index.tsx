@@ -1,23 +1,31 @@
+import { ObjectId } from 'mongodb';
+import * as React from 'react';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import CompanyRubricDetails, {
   CompanyRubricDetailsInterface,
-} from 'components/company/CompanyRubricDetails';
+} from '../../../../../../components/company/CompanyRubricDetails';
 import {
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   CATALOGUE_SEO_TEXT_POSITION_TOP,
   ROUTE_CMS,
-} from 'config/common';
-import { COL_COMPANIES, COL_RUBRICS } from 'db/collectionNames';
-import { RubricModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, CompanyInterface, RubricInterface } from 'db/uiInterfaces';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
-import { getFieldStringLocale } from 'lib/i18n';
-import { getRubricAllSeoContents } from 'lib/seoContentUtils';
-import { ObjectId } from 'mongodb';
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+} from '../../../../../../config/common';
+import { COL_COMPANIES, COL_RUBRICS } from '../../../../../../db/collectionNames';
+import { RubricModel } from '../../../../../../db/dbModels';
+import { getDatabase } from '../../../../../../db/mongodb';
+import {
+  AppContentWrapperBreadCrumbs,
+  CompanyInterface,
+  RubricInterface,
+} from '../../../../../../db/uiInterfaces';
+import CmsRubricLayout from '../../../../../../layout/cms/CmsRubricLayout';
+import { getFieldStringLocale } from '../../../../../../lib/i18n';
+import { getRubricAllSeoContents } from '../../../../../../lib/seoContentUtils';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../../../../lib/ssrUtils';
+import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
 
 interface RubricDetailsInterface extends CompanyRubricDetailsInterface {}
 

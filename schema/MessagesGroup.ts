@@ -1,8 +1,8 @@
-import { getRequestParams } from 'lib/sessionHelpers';
 import { objectType } from 'nexus';
-import { MessageModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { COL_MESSAGES_GROUPS } from 'db/collectionNames';
+import { COL_MESSAGES_GROUPS } from '../db/collectionNames';
+import { MessageModel } from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import { getRequestParams } from '../lib/sessionHelpers';
 
 export const MessagesGroup = objectType({
   name: 'MessagesGroup',

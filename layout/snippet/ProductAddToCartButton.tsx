@@ -1,7 +1,7 @@
-import WpButton, { ButtonPropsInterface } from 'components/button/WpButton';
-import { useSiteContext } from 'context/siteContext';
-import { useIsInCart, UseIsInCartInterface } from 'hooks/useIsInCart';
 import * as React from 'react';
+import WpButton, { ButtonPropsInterface } from '../../components/button/WpButton';
+import { useSiteContext } from '../../context/siteContext';
+import { useIsInCart, UseIsInCartInterface } from '../../hooks/useIsInCart';
 
 interface ProductAddToCartButtonInterface extends ButtonPropsInterface, UseIsInCartInterface {
   available: number;

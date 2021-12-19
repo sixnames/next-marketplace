@@ -1,20 +1,20 @@
-import RubricMainFields from 'components/FormTemplates/RubricMainFields';
-import RequestError from 'components/RequestError';
-import Spinner from 'components/Spinner';
 import * as React from 'react';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
-import ModalButtons from 'components/Modal/ModalButtons';
 import { Form, Formik } from 'formik';
-import WpButton from 'components/button/WpButton';
+import { useAppContext } from '../../context/appContext';
 import {
   CreateRubricInput,
   Gender,
   useGetAllRubricVariantsQuery,
-} from 'generated/apolloComponents';
-import { useAppContext } from 'context/appContext';
-import useValidationSchema from 'hooks/useValidationSchema';
-import { createRubricSchema } from 'validation/rubricSchema';
+} from '../../generated/apolloComponents';
+import useValidationSchema from '../../hooks/useValidationSchema';
+import { createRubricSchema } from '../../validation/rubricSchema';
+import WpButton from '../button/WpButton';
+import RubricMainFields from '../FormTemplates/RubricMainFields';
+import RequestError from '../RequestError';
+import Spinner from '../Spinner';
+import ModalButtons from './ModalButtons';
+import ModalFrame from './ModalFrame';
+import ModalTitle from './ModalTitle';
 
 export interface CreateRubricModalInterface {
   confirm: (values: CreateRubricInput) => void;

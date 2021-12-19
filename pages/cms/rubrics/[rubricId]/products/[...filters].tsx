@@ -1,37 +1,41 @@
-import AppContentFilter from 'components/AppContentFilter';
-import WpButton from 'components/button/WpButton';
-import FixedButtons from 'components/button/FixedButtons';
-import ContentItemControls from 'components/button/ContentItemControls';
-import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
-import Inner from 'components/Inner';
-import WpLink from 'components/Link/WpLink';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import { CreateNewProductModalInterface } from 'components/Modal/CreateNewProductModal';
-import Pager from 'components/Pager';
-import RequestError from 'components/RequestError';
-import Spinner from 'components/Spinner';
-import WpTable, { WpTableColumn } from 'components/WpTable';
-import TableRowImage from 'components/TableRowImage';
-import { SeoTextCitiesInfoList } from 'components/SeoTextLocalesInfoList';
-import { ROUTE_CMS, DEFAULT_PAGE_FILTER, DEFAULT_COMPANY_SLUG } from 'config/common';
-import { CONFIRM_MODAL, CREATE_NEW_PRODUCT_MODAL } from 'config/modalVariants';
-import { getConsoleRubricProducts } from 'db/dao/product/getConsoleRubricProducts';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
+import AppContentFilter from '../../../../../components/AppContentFilter';
+import ContentItemControls from '../../../../../components/button/ContentItemControls';
+import FixedButtons from '../../../../../components/button/FixedButtons';
+import WpButton from '../../../../../components/button/WpButton';
+import FormikRouterSearch from '../../../../../components/FormElements/Search/FormikRouterSearch';
+import Inner from '../../../../../components/Inner';
+import WpLink from '../../../../../components/Link/WpLink';
+import { ConfirmModalInterface } from '../../../../../components/Modal/ConfirmModal';
+import { CreateNewProductModalInterface } from '../../../../../components/Modal/CreateNewProductModal';
+import Pager from '../../../../../components/Pager';
+import RequestError from '../../../../../components/RequestError';
+import { SeoTextCitiesInfoList } from '../../../../../components/SeoTextLocalesInfoList';
+import Spinner from '../../../../../components/Spinner';
+import TableRowImage from '../../../../../components/TableRowImage';
+import WpTable, { WpTableColumn } from '../../../../../components/WpTable';
+import { DEFAULT_COMPANY_SLUG, DEFAULT_PAGE_FILTER, ROUTE_CMS } from '../../../../../config/common';
+import { CONFIRM_MODAL, CREATE_NEW_PRODUCT_MODAL } from '../../../../../config/modalVariants';
+import { getConsoleRubricProducts } from '../../../../../db/dao/product/getConsoleRubricProducts';
 import {
   AppContentWrapperBreadCrumbs,
   ConsoleRubricProductsInterface,
   ProductInterface,
-} from 'db/uiInterfaces';
-import { useDeleteProduct } from 'hooks/mutations/useProductMutations';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import usePageLoadingState from 'hooks/usePageLoadingState';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
-import { alwaysArray, alwaysString } from 'lib/arrayUtils';
-import { getNumWord } from 'lib/i18n';
-import { noNaN } from 'lib/numbers';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import * as React from 'react';
+} from '../../../../../db/uiInterfaces';
+import { useDeleteProduct } from '../../../../../hooks/mutations/useProductMutations';
+import useMutationCallbacks from '../../../../../hooks/useMutationCallbacks';
+import usePageLoadingState from '../../../../../hooks/usePageLoadingState';
+import CmsRubricLayout from '../../../../../layout/cms/CmsRubricLayout';
+import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
+import { alwaysArray, alwaysString } from '../../../../../lib/arrayUtils';
+import { getNumWord } from '../../../../../lib/i18n';
+import { noNaN } from '../../../../../lib/numbers';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../../../lib/ssrUtils';
 
 const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
   rubric,

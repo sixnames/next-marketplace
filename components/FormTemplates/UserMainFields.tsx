@@ -1,7 +1,7 @@
-import FormikInput from 'components/FormElements/Input/FormikInput';
-import FormikSelect from 'components/FormElements/Select/FormikSelect';
-import { RoleInterface } from 'db/uiInterfaces';
 import * as React from 'react';
+import { RoleInterface } from '../../db/uiInterfaces';
+import FormikInput from '../FormElements/Input/FormikInput';
+import FormikSelect from '../FormElements/Select/FormikSelect';
 
 interface UserMainFieldsInterface {
   roles: RoleInterface[];

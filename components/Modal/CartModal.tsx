@@ -1,15 +1,15 @@
-import RequestError from 'components/RequestError';
-import Spinner from 'components/Spinner';
-import { useSiteContext } from 'context/siteContext';
 import * as React from 'react';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
-import ModalText from 'components/Modal/ModalText';
-import ModalButtons from 'components/Modal/ModalButtons';
-import WpButton from 'components/button/WpButton';
-import { useAppContext } from 'context/appContext';
 import { useRouter } from 'next/router';
-import { useNotificationsContext } from 'context/notificationsContext';
+import { useAppContext } from '../../context/appContext';
+import { useNotificationsContext } from '../../context/notificationsContext';
+import { useSiteContext } from '../../context/siteContext';
+import WpButton from '../button/WpButton';
+import RequestError from '../RequestError';
+import Spinner from '../Spinner';
+import ModalButtons from './ModalButtons';
+import ModalFrame from './ModalFrame';
+import ModalText from './ModalText';
+import ModalTitle from './ModalTitle';
 
 export interface CartModalInterface {
   title?: string;

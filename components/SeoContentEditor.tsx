@@ -1,19 +1,19 @@
-import Accordion from 'components/Accordion';
-import InputLine from 'components/FormElements/Input/InputLine';
-import PageEditor from 'components/PageEditor';
-import SeoContentNoIndexTrigger from 'components/SeoContentNoIndexTrigger';
-import SeoTextLocalesInfoList from 'components/SeoTextLocalesInfoList';
+import { useFormikContext } from 'formik';
+import * as React from 'react';
+import { get } from 'lodash';
 import {
   CATALOGUE_SEO_TEXT_POSITION_TOP,
   DEFAULT_CITY,
   PAGE_EDITOR_DEFAULT_VALUE_STRING,
   REQUEST_METHOD_POST,
-} from 'config/common';
-import { useConfigContext } from 'context/configContext';
-import { SeoContentInterface } from 'db/uiInterfaces';
-import { useFormikContext } from 'formik';
-import * as React from 'react';
-import { get } from 'lodash';
+} from '../config/common';
+import { useConfigContext } from '../context/configContext';
+import { SeoContentInterface } from '../db/uiInterfaces';
+import InputLine from './FormElements/Input/InputLine';
+import PageEditor from './PageEditor';
+import SeoContentNoIndexTrigger from './SeoContentNoIndexTrigger';
+import SeoTextLocalesInfoList from './SeoTextLocalesInfoList';
+import WpAccordion from './WpAccordion';
 
 interface SingleSeoContentEditorInterface {
   filedName: string;
@@ -101,7 +101,7 @@ const SeoContentEditor: React.FC<SeoContentEditorInterface> = ({
 
         return (
           <div key={city.slug}>
-            <Accordion title={`${city.name}`} isOpen={city.slug === DEFAULT_CITY}>
+            <WpAccordion title={`${city.name}`} isOpen={city.slug === DEFAULT_CITY}>
               <div className='ml-8 pt-[var(--lineGap-200)]'>
                 {!hideIndexCheckbox && showSeoFields ? (
                   <SeoContentNoIndexTrigger seoContent={seoContent} />
@@ -112,7 +112,7 @@ const SeoContentEditor: React.FC<SeoContentEditorInterface> = ({
                   seoContentId={`${seoContent._id}`}
                 />
               </div>
-            </Accordion>
+            </WpAccordion>
           </div>
         );
       })}

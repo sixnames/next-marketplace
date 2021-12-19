@@ -1,13 +1,13 @@
-import { CONFIG_VARIANT_ASSET, DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE } from 'config/common';
-import { COL_COMPANIES, COL_CONFIGS } from 'db/collectionNames';
-import { ConfigModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { CompanyInterface, ConfigInterface } from 'db/uiInterfaces';
-import { getConfigTemplates } from 'lib/getConfigTemplates';
-import { getCityFieldLocaleString } from 'lib/i18n';
-import { noNaN } from 'lib/numbers';
-import { castDbData } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
+import { CONFIG_VARIANT_ASSET, DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE } from '../config/common';
+import { COL_COMPANIES, COL_CONFIGS } from '../db/collectionNames';
+import { ConfigModel } from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import { CompanyInterface, ConfigInterface } from '../db/uiInterfaces';
+import { getConfigTemplates } from './getConfigTemplates';
+import { getCityFieldLocaleString } from './i18n';
+import { noNaN } from './numbers';
+import { castDbData } from './ssrUtils';
 
 interface GetConfigPageDataInterface {
   group: string;

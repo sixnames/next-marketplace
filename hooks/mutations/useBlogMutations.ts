@@ -1,21 +1,21 @@
-import { AddBlogPostLikeInputInterface } from 'db/dao/blog/addPostLike';
-import { CreateBlogAttributeInputInterface } from 'db/dao/blog/createBlogAttribute';
-import { CreateBlogPostInputInterface } from 'db/dao/blog/createBlogPost';
-import { DeleteBlogAttributeInputInterface } from 'db/dao/blog/deleteBlogAttribute';
-import { DeleteBlogPostInputInterface } from 'db/dao/blog/deleteBlogPost';
-import { DeleteBlogPostPreviewImageInterface } from 'db/dao/blog/deletePostPreviewImage';
-import { UpdateBlogAttributeInputInterface } from 'db/dao/blog/updateBlogAttribute';
-import { UpdateBlogPostInputInterface } from 'db/dao/blog/updateBlogPost';
-import { UpdateBlogPostAttributeInterface } from 'db/dao/blog/updateBlogPostAttribute';
 import { useRouter } from 'next/router';
 import {
   REQUEST_METHOD_DELETE,
   REQUEST_METHOD_PATCH,
   REQUEST_METHOD_POST,
   ROUTE_BLOG,
-} from 'config/common';
-import { BlogAttributePayloadModel, BlogPostPayloadModel } from 'db/dbModels';
-import { UseMutationConsumerPayload, useMutationHandler } from 'hooks/mutations/useFetch';
+} from '../../config/common';
+import { AddBlogPostLikeInputInterface } from '../../db/dao/blog/addPostLike';
+import { CreateBlogAttributeInputInterface } from '../../db/dao/blog/createBlogAttribute';
+import { CreateBlogPostInputInterface } from '../../db/dao/blog/createBlogPost';
+import { DeleteBlogAttributeInputInterface } from '../../db/dao/blog/deleteBlogAttribute';
+import { DeleteBlogPostInputInterface } from '../../db/dao/blog/deleteBlogPost';
+import { DeleteBlogPostPreviewImageInterface } from '../../db/dao/blog/deletePostPreviewImage';
+import { UpdateBlogAttributeInputInterface } from '../../db/dao/blog/updateBlogAttribute';
+import { UpdateBlogPostInputInterface } from '../../db/dao/blog/updateBlogPost';
+import { UpdateBlogPostAttributeInterface } from '../../db/dao/blog/updateBlogPostAttribute';
+import { BlogAttributePayloadModel, BlogPostPayloadModel } from '../../db/dbModels';
+import { UseMutationConsumerPayload, useMutationHandler } from './useFetch';
 
 const basePath = '/api/blog';
 

@@ -1,22 +1,26 @@
-import BlogPostsDetails from 'components/blog/BlogPostsDetails';
-import Inner from 'components/Inner';
-import { ROUTE_BLOG, ROUTE_CMS } from 'config/common';
-import { COL_COMPANIES } from 'db/collectionNames';
-import { getBlogPost } from 'db/dao/blog/getBlogPost';
-import { getDatabase } from 'db/mongodb';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsResult, GetServerSidePropsContext } from 'next';
+import Head from 'next/head';
+import * as React from 'react';
+import BlogPostsDetails from '../../../../../../components/blog/BlogPostsDetails';
+import Inner from '../../../../../../components/Inner';
+import { ROUTE_BLOG, ROUTE_CMS } from '../../../../../../config/common';
+import { COL_COMPANIES } from '../../../../../../db/collectionNames';
+import { getBlogPost } from '../../../../../../db/dao/blog/getBlogPost';
+import { getDatabase } from '../../../../../../db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   BlogAttributeInterface,
   BlogPostInterface,
   CompanyInterface,
-} from 'db/uiInterfaces';
-import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import { ObjectId } from 'mongodb';
-import { GetServerSidePropsResult, GetServerSidePropsContext } from 'next';
-import Head from 'next/head';
-import * as React from 'react';
+} from '../../../../../../db/uiInterfaces';
+import CmsCompanyLayout from '../../../../../../layout/cms/CmsCompanyLayout';
+import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../../../../lib/ssrUtils';
 
 interface BlogPostConsumerInterface {
   post: BlogPostInterface;

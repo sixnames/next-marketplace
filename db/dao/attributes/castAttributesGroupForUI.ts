@@ -1,7 +1,7 @@
-import { castOptionForUI } from 'db/dao/options/castOptionForUI';
-import { AttributeInterface, AttributesGroupInterface } from 'db/uiInterfaces';
-import { sortObjectsByField } from 'lib/arrayUtils';
-import { getFieldStringLocale } from 'lib/i18n';
+import { sortObjectsByField } from '../../../lib/arrayUtils';
+import { getFieldStringLocale } from '../../../lib/i18n';
+import { AttributeInterface, AttributesGroupInterface } from '../../uiInterfaces';
+import { castOptionForUI } from '../options/castOptionForUI';
 
 interface CastAttributeForUI {
   attribute: AttributeInterface;

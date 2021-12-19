@@ -1,39 +1,43 @@
-import WpButton from 'components/button/WpButton';
-import FixedButtons from 'components/button/FixedButtons';
-import ContentItemControls from 'components/button/ContentItemControls';
-import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
-import Inner from 'components/Inner';
-import WpLink from 'components/Link/WpLink';
-import LinkPhone from 'components/Link/LinkPhone';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import { CreateUserModalInterface } from 'components/Modal/CreateUserModal';
-import Pager from 'components/Pager';
-import WpTable, { WpTableColumn } from 'components/WpTable';
-import Title from 'components/Title';
-import { DEFAULT_PAGE, ROUTE_CMS, SORT_DESC } from 'config/common';
-import { CONFIRM_MODAL, CREATE_USER_MODAL } from 'config/modalVariants';
-import { COL_ROLES, COL_USER_CATEGORIES, COL_USERS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import * as React from 'react';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import ContentItemControls from '../../../components/button/ContentItemControls';
+import FixedButtons from '../../../components/button/FixedButtons';
+import WpButton from '../../../components/button/WpButton';
+import FormikRouterSearch from '../../../components/FormElements/Search/FormikRouterSearch';
+import Inner from '../../../components/Inner';
+import LinkPhone from '../../../components/Link/LinkPhone';
+import WpLink from '../../../components/Link/WpLink';
+import { ConfirmModalInterface } from '../../../components/Modal/ConfirmModal';
+import { CreateUserModalInterface } from '../../../components/Modal/CreateUserModal';
+import Pager from '../../../components/Pager';
+import WpTable, { WpTableColumn } from '../../../components/WpTable';
+import WpTitle from '../../../components/WpTitle';
+import { DEFAULT_PAGE, ROUTE_CMS, SORT_DESC } from '../../../config/common';
+import { CONFIRM_MODAL, CREATE_USER_MODAL } from '../../../config/modalVariants';
+import { COL_ROLES, COL_USER_CATEGORIES, COL_USERS } from '../../../db/collectionNames';
+import { getDatabase } from '../../../db/mongodb';
 import {
   AppPaginationInterface,
   RoleInterface,
   UserCategoryInterface,
   UserInterface,
-} from 'db/uiInterfaces';
-import { useDeleteUserMutation } from 'hooks/mutations/useUserMutations';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import { alwaysArray } from 'lib/arrayUtils';
-import { castUrlFilters } from 'lib/catalogueUtils';
-import { getFieldStringLocale } from 'lib/i18n';
-import { getFullName } from 'lib/nameUtils';
-import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
-import Head from 'next/head';
-import { useRouter } from 'next/router';
-import * as React from 'react';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+} from '../../../db/uiInterfaces';
+import { useDeleteUserMutation } from '../../../hooks/mutations/useUserMutations';
+import useMutationCallbacks from '../../../hooks/useMutationCallbacks';
+import AppContentWrapper from '../../../layout/AppContentWrapper';
+import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
+import { alwaysArray } from '../../../lib/arrayUtils';
+import { castUrlFilters } from '../../../lib/catalogueUtils';
+import { getFieldStringLocale } from '../../../lib/i18n';
+import { getFullName } from '../../../lib/nameUtils';
+import { phoneToRaw, phoneToReadable } from '../../../lib/phoneUtils';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../lib/ssrUtils';
 
 interface UsersConsumerFiltersInterface {
   roles: RoleInterface[];
@@ -146,7 +150,7 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
         <title>{pageTitle}</title>
       </Head>
       <Inner>
-        <Title>{pageTitle}</Title>
+        <WpTitle>{pageTitle}</WpTitle>
         <div className='relative'>
           <FormikRouterSearch testId={'users'} />
 

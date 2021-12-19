@@ -1,18 +1,18 @@
-import { ROUTE_CONSOLE } from 'config/common';
-import { COL_COMPANIES, COL_SHOPS } from 'db/collectionNames';
-import { ShopModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import ShopDetails, { ShopDetailsInterface } from '../../../../../../components/shops/ShopDetails';
+import { ROUTE_CONSOLE } from '../../../../../../config/common';
+import { COL_COMPANIES, COL_SHOPS } from '../../../../../../db/collectionNames';
+import { ShopModel } from '../../../../../../db/dbModels';
+import { getDatabase } from '../../../../../../db/mongodb';
+import { AppContentWrapperBreadCrumbs } from '../../../../../../db/uiInterfaces';
+import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
 import {
   castDbData,
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
-} from 'lib/ssrUtils';
-import ShopDetails, { ShopDetailsInterface } from 'components/shops/ShopDetails';
+} from '../../../../../../lib/ssrUtils';
 
 interface CompanyShopInterface
   extends GetConsoleInitialDataPropsInterface,

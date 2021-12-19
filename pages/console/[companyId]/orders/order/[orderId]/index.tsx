@@ -1,26 +1,29 @@
-import WpButton from 'components/button/WpButton';
-import ConsoleOrderDetails, {
-  CmsOrderDetailsBaseInterface,
-} from 'components/order/ConsoleOrderDetails';
-import FixedButtons from 'components/button/FixedButtons';
-import Inner from 'components/Inner';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import { DEFAULT_COMPANY_SLUG, ROUTE_CONSOLE } from 'config/common';
-import { CONFIRM_MODAL } from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
-import { getConsoleOrder } from 'db/dao/orders/getConsoleOrder';
-import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
-import { useCancelOrder, useConfirmOrder } from 'hooks/mutations/useOrderMutations';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import FixedButtons from '../../../../../../components/button/FixedButtons';
+import WpButton from '../../../../../../components/button/WpButton';
+import Inner from '../../../../../../components/Inner';
+import { ConfirmModalInterface } from '../../../../../../components/Modal/ConfirmModal';
+import ConsoleOrderDetails, {
+  CmsOrderDetailsBaseInterface,
+} from '../../../../../../components/order/ConsoleOrderDetails';
+import { DEFAULT_COMPANY_SLUG, ROUTE_CONSOLE } from '../../../../../../config/common';
+import { CONFIRM_MODAL } from '../../../../../../config/modalVariants';
+import { useAppContext } from '../../../../../../context/appContext';
+import { getConsoleOrder } from '../../../../../../db/dao/orders/getConsoleOrder';
+import { AppContentWrapperBreadCrumbs, CompanyInterface } from '../../../../../../db/uiInterfaces';
+import {
+  useCancelOrder,
+  useConfirmOrder,
+} from '../../../../../../hooks/mutations/useOrderMutations';
+import AppContentWrapper from '../../../../../../layout/AppContentWrapper';
+import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
 import {
   castDbData,
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
-} from 'lib/ssrUtils';
+} from '../../../../../../lib/ssrUtils';
 
 interface OrderPageConsumerInterface extends CmsOrderDetailsBaseInterface {
   pageCompany: CompanyInterface;

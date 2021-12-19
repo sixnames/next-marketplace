@@ -1,8 +1,8 @@
-import { castAttributesGroupForUI } from 'db/dao/attributes/castAttributesGroupForUI';
-import { castCategoryForUI } from 'db/dao/category/castCategoryForUI';
-import { RubricInterface } from 'db/uiInterfaces';
-import { sortObjectsByField } from 'lib/arrayUtils';
-import { getFieldStringLocale } from 'lib/i18n';
+import { sortObjectsByField } from '../../../lib/arrayUtils';
+import { getFieldStringLocale } from '../../../lib/i18n';
+import { RubricInterface } from '../../uiInterfaces';
+import { castAttributesGroupForUI } from '../attributes/castAttributesGroupForUI';
+import { castCategoryForUI } from '../category/castCategoryForUI';
 
 interface CastRubricForUI {
   rubric: RubricInterface;

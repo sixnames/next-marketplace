@@ -1,9 +1,9 @@
-import { useConfigContext } from 'context/configContext';
 import * as React from 'react';
-import Currency from 'components/Currency';
-import WpButton from 'components/button/WpButton';
-import LayoutCard from 'layout/LayoutCard';
-import { noNaN } from 'lib/numbers';
+import { useConfigContext } from '../context/configContext';
+import LayoutCard from '../layout/LayoutCard';
+import { noNaN } from '../lib/numbers';
+import WpButton from './button/WpButton';
+import Currency from './Currency';
 
 export interface UseCartAsideDiscountsValuesInterface {
   giftCertificateDiscount?: number | null;

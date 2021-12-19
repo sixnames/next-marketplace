@@ -1,14 +1,18 @@
-import Inner from 'components/Inner';
-import SyncErrorsList, { SyncErrorsListInterface } from 'components/SyncErrorsList';
-import Title from 'components/Title';
-import { DEFAULT_COMPANY_SLUG } from 'config/common';
-import { getPaginatedNotSyncedProducts } from 'db/dao/notSyncedProducts/getPaginatedNotSyncedProducts';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { alwaysArray } from 'lib/arrayUtils';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import Inner from '../../../components/Inner';
+import SyncErrorsList, { SyncErrorsListInterface } from '../../../components/SyncErrorsList';
+import WpTitle from '../../../components/WpTitle';
+import { DEFAULT_COMPANY_SLUG } from '../../../config/common';
+import { getPaginatedNotSyncedProducts } from '../../../db/dao/notSyncedProducts/getPaginatedNotSyncedProducts';
+import AppContentWrapper from '../../../layout/AppContentWrapper';
+import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
+import { alwaysArray } from '../../../lib/arrayUtils';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../lib/ssrUtils';
 
 const pageTitle = 'Ошибки синхронизации';
 
@@ -19,7 +23,7 @@ const CompanyShopSyncErrorsConsumer: React.FC<SyncErrorsListInterface> = ({
   return (
     <AppContentWrapper>
       <Inner testId={'sync-errors-page'}>
-        <Title>{pageTitle}</Title>
+        <WpTitle>{pageTitle}</WpTitle>
         <SyncErrorsList notSyncedProducts={notSyncedProducts} companySlug={companySlug} />
       </Inner>
     </AppContentWrapper>

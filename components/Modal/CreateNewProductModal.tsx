@@ -1,16 +1,14 @@
-import WpButton from 'components/button/WpButton';
-import ModalButtons from 'components/Modal/ModalButtons';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
-import { GENDER_IT } from 'config/common';
-import { ProductInterface } from 'db/uiInterfaces';
-import { useCopyProduct, useCreateProduct } from 'hooks/mutations/useProductMutations';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import * as React from 'react';
 import { Form, Formik } from 'formik';
-import ProductMainFields, {
-  ProductFormValuesInterface,
-} from 'components/FormTemplates/ProductMainFields';
+import { GENDER_IT } from '../../config/common';
+import { ProductInterface } from '../../db/uiInterfaces';
+import { useCopyProduct, useCreateProduct } from '../../hooks/mutations/useProductMutations';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import WpButton from '../button/WpButton';
+import ProductMainFields, { ProductFormValuesInterface } from '../FormTemplates/ProductMainFields';
+import ModalButtons from './ModalButtons';
+import ModalFrame from './ModalFrame';
+import ModalTitle from './ModalTitle';
 
 export interface CreateNewProductModalInterface {
   rubricId: string;

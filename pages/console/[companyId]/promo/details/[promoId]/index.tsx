@@ -1,16 +1,18 @@
-import PromoDetails, { PromoDetailsInterface } from 'components/Promo/PromoDetails';
-import { ROUTE_CONSOLE } from 'config/common';
-import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import ConsolePromoLayout from 'layout/console/ConsolePromoLayout';
-import { getPromoSsr } from 'lib/promoUtils';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import PromoDetails, {
+  PromoDetailsInterface,
+} from '../../../../../../components/Promo/PromoDetails';
+import { ROUTE_CONSOLE } from '../../../../../../config/common';
+import { AppContentWrapperBreadCrumbs, CompanyInterface } from '../../../../../../db/uiInterfaces';
+import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
+import ConsolePromoLayout from '../../../../../../layout/console/ConsolePromoLayout';
+import { getPromoSsr } from '../../../../../../lib/promoUtils';
 import {
   castDbData,
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
-} from 'lib/ssrUtils';
+} from '../../../../../../lib/ssrUtils';
 
 interface PromoDetailsPageInterface
   extends GetConsoleInitialDataPropsInterface,

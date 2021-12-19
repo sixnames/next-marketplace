@@ -1,38 +1,45 @@
-import WpButton from 'components/button/WpButton';
-import FixedButtons from 'components/button/FixedButtons';
-import ContentItemControls from 'components/button/ContentItemControls';
-import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
-import Inner from 'components/Inner';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import { ManufacturerModalInterface } from 'components/Modal/ManufacturerModal';
-import Pager from 'components/Pager';
-import WpTable, { WpTableColumn } from 'components/WpTable';
-import Title from 'components/Title';
-import {
-  ISO_LANGUAGES,
-  DEFAULT_PAGE,
-  SORT_DESC,
-  DEFAULT_LOCALE,
-  SORT_ASC,
-  CMS_BRANDS_LIMIT,
-} from 'config/common';
-import { CONFIRM_MODAL, MANUFACTURER_MODAL } from 'config/modalVariants';
-import { COL_MANUFACTURERS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { AppPaginationInterface, ManufacturerInterface } from 'db/uiInterfaces';
-import { useDeleteManufacturerMutation } from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useValidationSchema from 'hooks/useValidationSchema';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { alwaysArray } from 'lib/arrayUtils';
-import { castUrlFilters } from 'lib/catalogueUtils';
-import { getFieldStringLocale } from 'lib/i18n';
 import Head from 'next/head';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import { createManufacturerSchema, updateManufacturerSchema } from 'validation/manufacturerSchema';
+import ContentItemControls from '../../../components/button/ContentItemControls';
+import FixedButtons from '../../../components/button/FixedButtons';
+import WpButton from '../../../components/button/WpButton';
+import FormikRouterSearch from '../../../components/FormElements/Search/FormikRouterSearch';
+import Inner from '../../../components/Inner';
+import { ConfirmModalInterface } from '../../../components/Modal/ConfirmModal';
+import { ManufacturerModalInterface } from '../../../components/Modal/ManufacturerModal';
+import Pager from '../../../components/Pager';
+import WpTable, { WpTableColumn } from '../../../components/WpTable';
+import WpTitle from '../../../components/WpTitle';
+import {
+  CMS_BRANDS_LIMIT,
+  DEFAULT_LOCALE,
+  DEFAULT_PAGE,
+  ISO_LANGUAGES,
+  SORT_ASC,
+  SORT_DESC,
+} from '../../../config/common';
+import { CONFIRM_MODAL, MANUFACTURER_MODAL } from '../../../config/modalVariants';
+import { COL_MANUFACTURERS } from '../../../db/collectionNames';
+import { getDatabase } from '../../../db/mongodb';
+import { AppPaginationInterface, ManufacturerInterface } from '../../../db/uiInterfaces';
+import { useDeleteManufacturerMutation } from '../../../generated/apolloComponents';
+import useMutationCallbacks from '../../../hooks/useMutationCallbacks';
+import useValidationSchema from '../../../hooks/useValidationSchema';
+import AppContentWrapper from '../../../layout/AppContentWrapper';
+import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
+import { alwaysArray } from '../../../lib/arrayUtils';
+import { castUrlFilters } from '../../../lib/catalogueUtils';
+import { getFieldStringLocale } from '../../../lib/i18n';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../lib/ssrUtils';
+import {
+  createManufacturerSchema,
+  updateManufacturerSchema,
+} from '../../../validation/manufacturerSchema';
 
 type ManufacturersConsumerInterface = AppPaginationInterface<ManufacturerInterface>;
 
@@ -134,7 +141,7 @@ const ManufacturersConsumer: React.FC<ManufacturersConsumerInterface> = ({
         <title>{pageTitle}</title>
       </Head>
       <Inner>
-        <Title>{pageTitle}</Title>
+        <WpTitle>{pageTitle}</WpTitle>
         <div className='relative'>
           <FormikRouterSearch testId={'brands'} />
 

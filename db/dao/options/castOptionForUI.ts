@@ -1,5 +1,5 @@
-import { OptionInterface } from 'db/uiInterfaces';
-import { getFieldStringLocale } from 'lib/i18n';
+import { getFieldStringLocale } from '../../../lib/i18n';
+import { OptionInterface } from '../../uiInterfaces';
 
 interface CastOptionForUI {
   option: OptionInterface;

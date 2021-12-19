@@ -1,11 +1,11 @@
-import { COL_SEO_CONTENTS } from 'db/collectionNames';
-import { SeoContentModel, SeoContentPayloadModel, TranslationModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { checkSeoContentUniqueness } from 'lib/seoContentUtils';
-import { getRequestParams } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import { checkSeoContentUniqueness } from '../../../lib/seoContentUtils';
+import { getRequestParams } from '../../../lib/sessionHelpers';
+import { COL_SEO_CONTENTS } from '../../collectionNames';
+import { SeoContentModel, SeoContentPayloadModel, TranslationModel } from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface UpdateSeoContentInputInterface {
   seoContentId: string;

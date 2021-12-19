@@ -1,5 +1,5 @@
-import { useThemeContext } from 'context/themeContext';
-import { ShopInterface } from 'db/uiInterfaces';
+import { useThemeContext } from '../context/themeContext';
+import { ShopInterface } from '../db/uiInterfaces';
 
 interface UseShopMarkerShopInterface extends Omit<ShopInterface, '_id'> {
   _id: any;

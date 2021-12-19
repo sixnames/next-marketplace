@@ -1,12 +1,12 @@
-import WpButton from 'components/button/WpButton';
-import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
-import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
-import { SingleSeoContentEditor } from 'components/SeoContentEditor';
-import { useConfigContext } from 'context/configContext';
-import { SeoContentModel } from 'db/dbModels';
 import { Form, Formik } from 'formik';
-import { useUpdateSeoContent } from 'hooks/mutations/useSeoContentMutations';
 import * as React from 'react';
+import { useConfigContext } from '../../context/configContext';
+import { SeoContentModel } from '../../db/dbModels';
+import { useUpdateSeoContent } from '../../hooks/mutations/useSeoContentMutations';
+import WpButton from '../button/WpButton';
+import FormikCheckboxLine from '../FormElements/Checkbox/FormikCheckboxLine';
+import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
+import { SingleSeoContentEditor } from '../SeoContentEditor';
 
 export interface ConsoleSeoContentDetailsInterface {
   seoContent: SeoContentModel;

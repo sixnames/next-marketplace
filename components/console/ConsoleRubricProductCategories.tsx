@@ -1,14 +1,14 @@
-import Checkbox from 'components/FormElements/Checkbox/Checkbox';
-import Inner from 'components/Inner';
-import RequestError from 'components/RequestError';
-import WpTooltip from 'components/WpTooltip';
-import { ProductCategoryInterface, ProductInterface } from 'db/uiInterfaces';
+import * as React from 'react';
+import { ProductCategoryInterface, ProductInterface } from '../../db/uiInterfaces';
 import {
   useUpdateProductCategory,
   useUpdateProductCategoryVisibility,
-} from 'hooks/mutations/useProductMutations';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import * as React from 'react';
+} from '../../hooks/mutations/useProductMutations';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import WpCheckbox from '../FormElements/Checkbox/WpCheckbox';
+import Inner from '../Inner';
+import RequestError from '../RequestError';
+import WpTooltip from '../WpTooltip';
 
 interface ConsoleRubricProductCategoriesInterface {
   product: ProductInterface;
@@ -35,7 +35,7 @@ const ConsoleRubricProductCategories: React.FC<ConsoleRubricProductCategoriesInt
         <div>
           <div className='cms-option flex gap-4 items-center'>
             <div>
-              <Checkbox
+              <WpCheckbox
                 disabled={hasSelectedChildren}
                 testId={`${category.name}`}
                 checked={category.selected}
@@ -57,7 +57,7 @@ const ConsoleRubricProductCategories: React.FC<ConsoleRubricProductCategoriesInt
               title={isViewChecked ? 'Показывать в заголовке товара' : 'Категория не выбрана'}
             >
               <div>
-                <Checkbox
+                <WpCheckbox
                   disabled={!category.selected}
                   testId={`${category.name}-view`}
                   checked={isViewChecked}

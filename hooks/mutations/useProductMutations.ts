@@ -1,28 +1,28 @@
-import { BarcodeIntersectsModalInterface } from 'components/Modal/BarcodeIntersectsModal';
+import { useRouter } from 'next/router';
+import { BarcodeIntersectsModalInterface } from '../../components/Modal/BarcodeIntersectsModal';
 import {
   REQUEST_METHOD_DELETE,
   REQUEST_METHOD_PATCH,
   REQUEST_METHOD_POST,
   ROUTE_CMS,
-} from 'config/common';
-import { BARCODE_INTERSECTS_MODAL } from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
-import { useNotificationsContext } from 'context/notificationsContext';
-import { CopyProductInputInterface } from 'db/dao/product/copyProduct';
-import { CreateProductInputInterface } from 'db/dao/product/createProduct';
-import { CreateProductWithSyncErrorInputInterface } from 'db/dao/product/createProductWithSyncError';
-import { DeleteProductInputInterface } from 'db/dao/product/deleteProduct';
-import { DeleteProductAssetInputInterface } from 'db/dao/product/deleteProductAsset';
-import { UpdateProductInputInterface } from 'db/dao/product/updateProduct';
-import { UpdateProductAssetIndexInputInterface } from 'db/dao/product/updateProductAssetIndex';
-import { UpdateProductCardContentInputInterface } from 'db/dao/product/updateProductCardContent';
-import { UpdateProductCategoryInputInterface } from 'db/dao/product/updateProductCategory';
-import { UpdateProductWithSyncErrorInputInterface } from 'db/dao/product/updateProductWithSyncError';
-import { ProductPayloadModel } from 'db/dbModels';
-import { ProductInterface } from 'db/uiInterfaces';
-import { useMutationHandler } from 'hooks/mutations/useFetch';
-import { useReloadListener } from 'hooks/useReloadListener';
-import { useRouter } from 'next/router';
+} from '../../config/common';
+import { BARCODE_INTERSECTS_MODAL } from '../../config/modalVariants';
+import { useAppContext } from '../../context/appContext';
+import { useNotificationsContext } from '../../context/notificationsContext';
+import { CopyProductInputInterface } from '../../db/dao/product/copyProduct';
+import { CreateProductInputInterface } from '../../db/dao/product/createProduct';
+import { CreateProductWithSyncErrorInputInterface } from '../../db/dao/product/createProductWithSyncError';
+import { DeleteProductInputInterface } from '../../db/dao/product/deleteProduct';
+import { DeleteProductAssetInputInterface } from '../../db/dao/product/deleteProductAsset';
+import { UpdateProductInputInterface } from '../../db/dao/product/updateProduct';
+import { UpdateProductAssetIndexInputInterface } from '../../db/dao/product/updateProductAssetIndex';
+import { UpdateProductCardContentInputInterface } from '../../db/dao/product/updateProductCardContent';
+import { UpdateProductCategoryInputInterface } from '../../db/dao/product/updateProductCategory';
+import { UpdateProductWithSyncErrorInputInterface } from '../../db/dao/product/updateProductWithSyncError';
+import { ProductPayloadModel } from '../../db/dbModels';
+import { ProductInterface } from '../../db/uiInterfaces';
+import { useReloadListener } from '../useReloadListener';
+import { useMutationHandler } from './useFetch';
 
 const basePath = '/api/product';
 

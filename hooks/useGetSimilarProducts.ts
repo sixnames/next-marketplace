@@ -1,5 +1,5 @@
-import { ShopProductInterface } from 'db/uiInterfaces';
 import * as React from 'react';
+import { ShopProductInterface } from '../db/uiInterfaces';
 
 export interface UseGetSimilarProductsInterface {
   productId: any;

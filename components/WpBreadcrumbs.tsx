@@ -1,14 +1,14 @@
-import { getConstantTranslation } from 'config/constantTranslations';
-import { BreadcrumbsInterface } from 'db/uiInterfaces';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import Inner from 'components/Inner';
-import WpLink from 'components/Link/WpLink';
+import { getConstantTranslation } from '../config/constantTranslations';
+import { BreadcrumbsInterface } from '../db/uiInterfaces';
+import Inner from './Inner';
+import WpLink from './Link/WpLink';
 
 const linkClassName =
   'text-primary-text hover:text-primary-text hover:no-underline whitespace-nowrap';
 
-const Breadcrumbs: React.FC<BreadcrumbsInterface> = ({
+const WpBreadcrumbs: React.FC<BreadcrumbsInterface> = ({
   currentPageName,
   config = [],
   noMainPage,
@@ -64,4 +64,4 @@ const Breadcrumbs: React.FC<BreadcrumbsInterface> = ({
   );
 };
 
-export default Breadcrumbs;
+export default WpBreadcrumbs;

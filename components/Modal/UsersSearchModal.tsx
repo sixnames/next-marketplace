@@ -1,17 +1,17 @@
-import WpLink from 'components/Link/WpLink';
-import LinkEmail from 'components/Link/LinkEmail';
-import LinkPhone from 'components/Link/LinkPhone';
-import Pager from 'components/Pager';
-import { DEFAULT_PAGE, REQUEST_METHOD_POST, ROUTE_CMS } from 'config/common';
-import { UsersPaginationPayloadModel } from 'db/dbModels';
-import { UserInterface } from 'db/uiInterfaces';
 import * as React from 'react';
-import Spinner from 'components/Spinner';
-import RequestError from 'components/RequestError';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
-import FormikIndividualSearch from 'components/FormElements/Search/FormikIndividualSearch';
-import WpTable, { WpTableColumn } from 'components/WpTable';
+import { DEFAULT_PAGE, REQUEST_METHOD_POST, ROUTE_CMS } from '../../config/common';
+import { UsersPaginationPayloadModel } from '../../db/dbModels';
+import { UserInterface } from '../../db/uiInterfaces';
+import FormikIndividualSearch from '../FormElements/Search/FormikIndividualSearch';
+import LinkEmail from '../Link/LinkEmail';
+import LinkPhone from '../Link/LinkPhone';
+import WpLink from '../Link/WpLink';
+import Pager from '../Pager';
+import RequestError from '../RequestError';
+import Spinner from '../Spinner';
+import WpTable, { WpTableColumn } from '../WpTable';
+import ModalFrame from './ModalFrame';
+import ModalTitle from './ModalTitle';
 
 export interface UsersSearchModalInterface {
   testId?: string;

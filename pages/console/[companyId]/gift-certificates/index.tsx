@@ -1,16 +1,20 @@
-import ConsoleGiftCertificatesList, {
-  ConsoleGiftCertificatesListInterface,
-} from 'components/console/ConsoleGiftCertificatesList';
-import Inner from 'components/Inner';
-import Title from 'components/Title';
-import { ROUTE_CONSOLE } from 'config/common';
-import { getConsoleGiftCertificates } from 'db/dao/giftCertificate/getConsoleGiftCertificates';
-import AppContentWrapper from 'layout/AppContentWrapper';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, GetAppInitialDataPropsInterface, getConsoleInitialData } from 'lib/ssrUtils';
+import ConsoleGiftCertificatesList, {
+  ConsoleGiftCertificatesListInterface,
+} from '../../../../components/console/ConsoleGiftCertificatesList';
+import Inner from '../../../../components/Inner';
+import WpTitle from '../../../../components/WpTitle';
+import { ROUTE_CONSOLE } from '../../../../config/common';
+import { getConsoleGiftCertificates } from '../../../../db/dao/giftCertificate/getConsoleGiftCertificates';
+import AppContentWrapper from '../../../../layout/AppContentWrapper';
+import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
+import {
+  castDbData,
+  GetAppInitialDataPropsInterface,
+  getConsoleInitialData,
+} from '../../../../lib/ssrUtils';
 
 interface CompanyGiftCertificatesConsumerInterface extends ConsoleGiftCertificatesListInterface {}
 
@@ -20,7 +24,7 @@ const CompanyGiftCertificatesConsumer: React.FC<CompanyGiftCertificatesConsumerI
   return (
     <AppContentWrapper>
       <Inner lowTop>
-        <Title>Подарочные сертификаты</Title>
+        <WpTitle>Подарочные сертификаты</WpTitle>
         <ConsoleGiftCertificatesList {...props} />
       </Inner>
     </AppContentWrapper>

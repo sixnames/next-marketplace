@@ -1,6 +1,6 @@
-import { ROUTE_CONSOLE } from 'config/common';
 import { GetServerSidePropsContext } from 'next';
 import * as React from 'react';
+import { ROUTE_CONSOLE } from '../../../../config/common';
 
 const ShopsIndex: React.FC = () => {
   return <div />;

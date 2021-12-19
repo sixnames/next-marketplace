@@ -1,12 +1,12 @@
-import { FILTER_SEPARATOR } from 'config/common';
-import { COL_OPTIONS } from 'db/collectionNames';
-import { OptionAlphabetListModel, OptionModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { OptionInterface } from 'db/uiInterfaces';
-import { getAlphabetList } from 'lib/optionUtils';
-import { getTreeFromList } from 'lib/treeUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { getRequestParams } from 'lib/sessionHelpers';
+import { FILTER_SEPARATOR } from '../config/common';
+import { COL_OPTIONS } from '../db/collectionNames';
+import { OptionAlphabetListModel, OptionModel } from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import { OptionInterface } from '../db/uiInterfaces';
+import { getAlphabetList } from '../lib/optionUtils';
+import { getRequestParams } from '../lib/sessionHelpers';
+import { getTreeFromList } from '../lib/treeUtils';
 
 export const Option = objectType({
   name: 'Option',

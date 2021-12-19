@@ -1,9 +1,9 @@
 import * as React from 'react';
-import WpIcon from 'components/WpIcon';
+import ButtonCross from '../../button/ButtonCross';
+import WpIcon from '../../WpIcon';
+import WpTooltip from '../../WpTooltip';
 import InputLine, { InputLinePropsInterface } from '../Input/InputLine';
-import ButtonCross from 'components/button/ButtonCross';
 import { useDropzone } from 'react-dropzone';
-import WpTooltip from 'components/WpTooltip';
 
 interface WpIconUploadInterface extends InputLinePropsInterface {
   tooltip?: any;

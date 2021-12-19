@@ -1,6 +1,6 @@
 import * as React from 'react';
-import WpButton from 'components/button/WpButton';
-import { ButtonTheme, JustifyType, SizeType } from 'types/clientTypes';
+import { ButtonTheme, JustifyType, SizeType } from '../../types/clientTypes';
+import WpButton from './WpButton';
 
 export interface ContentItemControlsInterface {
   createTitle?: string;

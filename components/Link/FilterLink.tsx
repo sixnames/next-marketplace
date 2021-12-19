@@ -1,8 +1,8 @@
-import { CatalogueFilterAttributeOptionInterface } from 'db/uiInterfaces';
 import { useRouter } from 'next/router';
 import * as React from 'react';
+import { CatalogueFilterAttributeOptionInterface } from '../../db/uiInterfaces';
+import WpIcon from '../WpIcon';
 import TagLink, { TagLinkInterface } from './TagLink';
-import WpIcon from 'components/WpIcon';
 
 interface FilterLinkInterface extends Omit<TagLinkInterface, 'href' | 'as'> {
   counter?: number | string | null;

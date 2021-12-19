@@ -1,12 +1,12 @@
-import { shopFieldsSchema, shopIdSchema } from 'validation/shopSchema';
 import * as Yup from 'yup';
+import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
 import {
   contactsInputSchema,
   notRequiredDomainSchema,
   objectIdSchema,
   requiredStringSchema,
 } from './schemaTemplates';
-import { ValidationSchemaArgsInterface } from 'types/validataionTypes';
+import { shopFieldsSchema, shopIdSchema } from './shopSchema';
 
 export const companyIdSchema = (args: ValidationSchemaArgsInterface) => {
   return objectIdSchema({ ...args, slug: 'validation.companies.id' });

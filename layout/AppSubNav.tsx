@@ -1,8 +1,8 @@
-import WpLink from 'components/Link/WpLink';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import Inner from 'components/Inner';
-import { ClientNavItemInterface } from 'types/clientTypes';
+import Inner from '../components/Inner';
+import WpLink from '../components/Link/WpLink';
+import { ClientNavItemInterface } from '../types/clientTypes';
 
 interface AppSubNavInterface {
   navConfig: ClientNavItemInterface[];

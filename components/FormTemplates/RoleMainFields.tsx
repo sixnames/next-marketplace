@@ -1,6 +1,6 @@
-import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
-import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
 import * as React from 'react';
+import FormikCheckboxLine from '../FormElements/Checkbox/FormikCheckboxLine';
+import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
 
 const RoleMainFields: React.FC = () => {
   return (

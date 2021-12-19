@@ -1,5 +1,5 @@
-import { ROUTE_CMS } from 'config/common';
 import * as React from 'react';
+import { ROUTE_CMS } from '../../../config/common';
 
 const BrandsIndex: React.FC = () => {
   return <div />;

@@ -1,10 +1,10 @@
-import MainPage, { MainPagePropsInterface } from 'components/MainPage';
-import { ISR_FIVE_SECONDS } from 'config/common';
-import { getIsrSiteInitialData, IsrContextInterface } from 'lib/isrUtils';
-import { getMainPageData } from 'lib/mainPageUtils';
-import { noNaN } from 'lib/numbers';
 import * as React from 'react';
 import { GetStaticPathsResult, GetStaticPropsResult, NextPage } from 'next';
+import MainPage, { MainPagePropsInterface } from '../../../components/MainPage';
+import { ISR_FIVE_SECONDS } from '../../../config/common';
+import { getIsrSiteInitialData, IsrContextInterface } from '../../../lib/isrUtils';
+import { getMainPageData } from '../../../lib/mainPageUtils';
+import { noNaN } from '../../../lib/numbers';
 
 const Page: NextPage<MainPagePropsInterface> = (props) => <MainPage {...props} />;
 

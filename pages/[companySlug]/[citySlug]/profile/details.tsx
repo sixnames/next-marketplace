@@ -1,33 +1,33 @@
-import WpButton from 'components/button/WpButton';
-import StringButton from 'components/StringButton';
-import FormikInput from 'components/FormElements/Input/FormikInput';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import { UpdateMyPasswordModalInterface } from 'components/Modal/UpdateMyPasswordModal';
-import RequestError from 'components/RequestError';
-import Title from 'components/Title';
-import { ROUTE_SIGN_IN } from 'config/common';
-import { CONFIRM_MODAL, UPDATE_MY_PASSWORD_MODAL } from 'config/modalVariants';
-import { useSiteContext } from 'context/siteContext';
-import { useSiteUserContext } from 'context/siteUserContext';
-import { getPageSessionUser } from 'db/dao/user/getPageSessionUser';
-import { UpdateMyProfileInputInterface } from 'db/dao/user/updateMyProfile';
 import { Form, Formik } from 'formik';
-import {
-  useUpdateMyPasswordMutation,
-  useUpdateMyProfileMutation,
-} from 'hooks/mutations/useUserMutations';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useValidationSchema from 'hooks/useValidationSchema';
-import ProfileLayout from 'layout/ProfileLayout/ProfileLayout';
-import RowWithGap from 'layout/RowWithGap/RowWithGap';
-import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
-import { phoneToRaw } from 'lib/phoneUtils';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { getSiteInitialData } from 'lib/ssrUtils';
-import { updateMyProfileSchema } from 'validation/userSchema';
 import { signOut } from 'next-auth/client';
+import WpButton from '../../../../components/button/WpButton';
+import FormikInput from '../../../../components/FormElements/Input/FormikInput';
+import { ConfirmModalInterface } from '../../../../components/Modal/ConfirmModal';
+import { UpdateMyPasswordModalInterface } from '../../../../components/Modal/UpdateMyPasswordModal';
+import RequestError from '../../../../components/RequestError';
+import StringButton from '../../../../components/StringButton';
+import WpTitle from '../../../../components/WpTitle';
+import { ROUTE_SIGN_IN } from '../../../../config/common';
+import { CONFIRM_MODAL, UPDATE_MY_PASSWORD_MODAL } from '../../../../config/modalVariants';
+import { useSiteContext } from '../../../../context/siteContext';
+import { useSiteUserContext } from '../../../../context/siteUserContext';
+import { getPageSessionUser } from '../../../../db/dao/user/getPageSessionUser';
+import { UpdateMyProfileInputInterface } from '../../../../db/dao/user/updateMyProfile';
+import {
+  useUpdateMyPasswordMutation,
+  useUpdateMyProfileMutation,
+} from '../../../../hooks/mutations/useUserMutations';
+import useMutationCallbacks from '../../../../hooks/useMutationCallbacks';
+import useValidationSchema from '../../../../hooks/useValidationSchema';
+import ProfileLayout from '../../../../layout/ProfileLayout/ProfileLayout';
+import RowWithGap from '../../../../layout/RowWithGap/RowWithGap';
+import { phoneToRaw } from '../../../../lib/phoneUtils';
+import { getSiteInitialData } from '../../../../lib/ssrUtils';
+import { updateMyProfileSchema } from '../../../../validation/userSchema';
+import SiteLayout, { SiteLayoutProviderInterface } from '../../../../layout/SiteLayout';
 
 const ProfileDetailsRoute: React.FC = () => {
   const router = useRouter();
@@ -203,7 +203,7 @@ const ProfileDetails: NextPage<ProfileDetailsInterface> = (props) => {
   return (
     <SiteLayout title={'Профиль'} {...props}>
       <ProfileLayout>
-        <Title size={'small'}>Профиль</Title>
+        <WpTitle size={'small'}>Профиль</WpTitle>
         <ProfileDetailsRoute />
       </ProfileLayout>
     </SiteLayout>

@@ -1,20 +1,20 @@
-import Breadcrumbs from 'components/Breadcrumbs';
-import { CatalogueHeadDefaultInterface } from 'components/Catalogue';
-import Inner from 'components/Inner';
-import WpLink from 'components/Link/WpLink';
-import Title from 'components/Title';
+import { useRouter } from 'next/router';
+import * as React from 'react';
+import { CatalogueHeadDefaultInterface } from '../../components/Catalogue';
+import Inner from '../../components/Inner';
+import WpLink from '../../components/Link/WpLink';
+import WpBreadcrumbs from '../../components/WpBreadcrumbs';
+import WpTitle from '../../components/WpTitle';
 import {
   DEFAULT_CITY,
   FILTER_CATEGORY_KEY,
   FILTER_SEPARATOR,
   ROUTE_CATALOGUE,
-} from 'config/common';
-import { useConfigContext } from 'context/configContext';
-import { useSiteContext } from 'context/siteContext';
-import { alwaysArray, alwaysString } from 'lib/arrayUtils';
-import { sortStringArray } from 'lib/stringUtils';
-import { useRouter } from 'next/router';
-import * as React from 'react';
+} from '../../config/common';
+import { useConfigContext } from '../../context/configContext';
+import { useSiteContext } from '../../context/siteContext';
+import { alwaysArray, alwaysString } from '../../lib/arrayUtils';
+import { sortStringArray } from '../../lib/stringUtils';
 
 const minCategoriesCount = 1;
 
@@ -30,15 +30,15 @@ const CatalogueHeadWithCategories: React.FC<CatalogueHeadDefaultInterface> = ({
   const { query } = router;
   return (
     <div className='mb-4 border-b border-border-100'>
-      <Breadcrumbs lowBottom config={breadcrumbs} urlPrefix={urlPrefix} />
+      <WpBreadcrumbs lowBottom config={breadcrumbs} urlPrefix={urlPrefix} />
       <Inner lowBottom lowTop>
-        <Title
+        <WpTitle
           centered
           testId={'catalogue-title'}
           subtitle={<div className='lg:hidden text-center'>{catalogueCounterString}</div>}
         >
           {catalogueTitle}
-        </Title>
+        </WpTitle>
 
         {headCategories && headCategories.length > minCategoriesCount ? (
           <div className='flex flex-wrap justify-between md:justify-center md:gap-x-4 gap-y-8 mt-8 mb-8'>

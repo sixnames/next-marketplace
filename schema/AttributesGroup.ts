@@ -1,30 +1,30 @@
-import { DEFAULT_LOCALE, SORT_ASC } from 'config/common';
 import { arg, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
+import { DEFAULT_LOCALE, SORT_ASC } from '../config/common';
 import {
-  getOperationPermission,
-  getRequestParams,
-  getResolverValidationSchema,
-} from 'lib/sessionHelpers';
+  COL_ATTRIBUTES,
+  COL_ATTRIBUTES_GROUPS,
+  COL_PRODUCT_ATTRIBUTES,
+  COL_PRODUCT_CONNECTIONS,
+} from '../db/collectionNames';
+import { findDocumentByI18nField } from '../db/dao/findDocumentByI18nField';
 import {
   AttributeModel,
   AttributesGroupModel,
   AttributesGroupPayloadModel,
   ProductAttributeModel,
   ProductConnectionModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+} from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 import {
-  COL_ATTRIBUTES,
-  COL_ATTRIBUTES_GROUPS,
-  COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCT_CONNECTIONS,
-} from 'db/collectionNames';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+} from '../lib/sessionHelpers';
 import {
   createAttributesGroupSchema,
   updateAttributesGroupSchema,
-} from 'validation/attributesGroupSchema';
+} from '../validation/attributesGroupSchema';
 
 export const AttributesGroup = objectType({
   name: 'AttributesGroup',

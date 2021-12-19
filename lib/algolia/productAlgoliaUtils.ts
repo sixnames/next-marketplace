@@ -1,21 +1,21 @@
-import { HITS_PER_PAGE, ID_COUNTER_DIGITS } from 'config/common';
-import { COL_LANGUAGES, COL_PRODUCT_ASSETS, COL_PRODUCTS } from 'db/collectionNames';
+import { ObjectId } from 'mongodb';
+import addZero from 'add-zero';
+import { HITS_PER_PAGE, ID_COUNTER_DIGITS } from '../../config/common';
+import { COL_LANGUAGES, COL_PRODUCT_ASSETS, COL_PRODUCTS } from '../../db/collectionNames';
 import {
   brandPipeline,
   productAttributesPipeline,
   productCategoriesPipeline,
   productRubricPipeline,
-} from 'db/dao/constantPipelines';
-import { ObjectIdModel, TranslationModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { ProductInterface } from 'db/uiInterfaces';
-import { getAlgoliaClient, saveAlgoliaObjects } from 'lib/algolia/algoliaUtils';
-import { getFieldStringLocale } from 'lib/i18n';
-import { noNaN } from 'lib/numbers';
-import { generateCardTitle, generateSnippetTitle } from 'lib/titleUtils';
-import { getTreeFromList } from 'lib/treeUtils';
-import { ObjectId } from 'mongodb';
-import addZero from 'add-zero';
+} from '../../db/dao/constantPipelines';
+import { ObjectIdModel, TranslationModel } from '../../db/dbModels';
+import { getDatabase } from '../../db/mongodb';
+import { ProductInterface } from '../../db/uiInterfaces';
+import { getFieldStringLocale } from '../i18n';
+import { noNaN } from '../numbers';
+import { generateCardTitle, generateSnippetTitle } from '../titleUtils';
+import { getTreeFromList } from '../treeUtils';
+import { getAlgoliaClient, saveAlgoliaObjects } from './algoliaUtils';
 
 export function getAlgoliaProductsIndex() {
   const { algoliaIndex } = getAlgoliaClient(`${process.env.ALG_INDEX_PRODUCTS}`);

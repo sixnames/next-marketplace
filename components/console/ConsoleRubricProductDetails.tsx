@@ -1,17 +1,15 @@
-import WpButton from 'components/button/WpButton';
-import FixedButtons from 'components/button/FixedButtons';
-import ProductMainFields, {
-  ProductFormValuesInterface,
-} from 'components/FormTemplates/ProductMainFields';
-import Inner from 'components/Inner';
-import WpImage from 'components/WpImage';
-import { ProductInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
-import { useUpdateProduct } from 'hooks/mutations/useProductMutations';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useValidationSchema from 'hooks/useValidationSchema';
 import * as React from 'react';
-import { updateProductSchema } from 'validation/productSchema';
+import { ProductInterface } from '../../db/uiInterfaces';
+import { useUpdateProduct } from '../../hooks/mutations/useProductMutations';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import useValidationSchema from '../../hooks/useValidationSchema';
+import { updateProductSchema } from '../../validation/productSchema';
+import FixedButtons from '../button/FixedButtons';
+import WpButton from '../button/WpButton';
+import ProductMainFields, { ProductFormValuesInterface } from '../FormTemplates/ProductMainFields';
+import Inner from '../Inner';
+import WpImage from '../WpImage';
 
 interface ConsoleRubricProductDetailsInterface {
   product: ProductInterface;

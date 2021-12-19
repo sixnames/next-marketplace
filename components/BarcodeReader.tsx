@@ -1,7 +1,7 @@
-import WpButton from 'components/button/WpButton';
 import { debounce } from 'lodash';
 import * as React from 'react';
 import BarcodeScannerComponent from 'react-qr-barcode-scanner';
+import WpButton from './button/WpButton';
 
 interface VideoSizeInterface {
   width: number;

@@ -1,4 +1,10 @@
-import { SORT_ASC } from 'config/common';
+import { ObjectId } from 'mongodb';
+import { SORT_ASC } from '../../../config/common';
+import { getFieldStringLocale } from '../../../lib/i18n';
+import { getFullName } from '../../../lib/nameUtils';
+import { phoneToRaw, phoneToReadable } from '../../../lib/phoneUtils';
+import { castSupplierProductsList } from '../../../lib/productUtils';
+import { generateCardTitle } from '../../../lib/titleUtils';
 import {
   COL_GIFT_CERTIFICATES,
   COL_ORDER_CUSTOMERS,
@@ -7,20 +13,14 @@ import {
   COL_ORDERS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
-} from 'db/collectionNames';
+} from '../../collectionNames';
+import { ObjectIdModel } from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { OrderInterface, OrderStatusInterface } from '../../uiInterfaces';
 import {
   shopProductFieldsPipeline,
   shopProductSupplierProductsPipeline,
-} from 'db/dao/constantPipelines';
-import { ObjectIdModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { OrderInterface, OrderStatusInterface } from 'db/uiInterfaces';
-import { getFieldStringLocale } from 'lib/i18n';
-import { getFullName } from 'lib/nameUtils';
-import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
-import { castSupplierProductsList } from 'lib/productUtils';
-import { generateCardTitle } from 'lib/titleUtils';
-import { ObjectId } from 'mongodb';
+} from '../constantPipelines';
 
 interface CastOrderStatusInterface {
   locale?: string;

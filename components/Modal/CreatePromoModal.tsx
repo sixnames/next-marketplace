@@ -1,19 +1,19 @@
-import WpButton from 'components/button/WpButton';
-import FormikDatePicker from 'components/FormElements/Input/FormikDatePicker';
-import FormikInput from 'components/FormElements/Input/FormikInput';
-import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
-import ModalButtons from 'components/Modal/ModalButtons';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
-import { DEFAULT_LOCALE } from 'config/common';
-import { useAppContext } from 'context/appContext';
-import { CreatePromoInputInterface } from 'db/dao/promo/createPromo';
-import { CompanyInterface } from 'db/uiInterfaces';
-import { useCreatePromo } from 'hooks/mutations/usePromoMutations';
-import useValidationSchema from 'hooks/useValidationSchema';
 import * as React from 'react';
 import { Form, Formik } from 'formik';
-import { createPromoSchema } from 'validation/promoSchema';
+import { DEFAULT_LOCALE } from '../../config/common';
+import { useAppContext } from '../../context/appContext';
+import { CreatePromoInputInterface } from '../../db/dao/promo/createPromo';
+import { CompanyInterface } from '../../db/uiInterfaces';
+import { useCreatePromo } from '../../hooks/mutations/usePromoMutations';
+import useValidationSchema from '../../hooks/useValidationSchema';
+import { createPromoSchema } from '../../validation/promoSchema';
+import WpButton from '../button/WpButton';
+import FormikDatePicker from '../FormElements/Input/FormikDatePicker';
+import FormikInput from '../FormElements/Input/FormikInput';
+import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
+import ModalButtons from './ModalButtons';
+import ModalFrame from './ModalFrame';
+import ModalTitle from './ModalTitle';
 
 export interface CreatePromoModalInterface {
   pageCompany: CompanyInterface;

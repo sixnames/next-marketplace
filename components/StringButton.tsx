@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ButtonType } from 'types/clientTypes';
+import { ButtonType } from '../types/clientTypes';
 
 interface StringButtonInterface {
   className?: string;

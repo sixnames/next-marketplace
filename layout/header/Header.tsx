@@ -1,47 +1,47 @@
 import { Disclosure, Popover } from '@headlessui/react';
-import ButtonCross from 'components/button/ButtonCross';
-import CityTrigger from 'components/CityTrigger';
-import LanguageTrigger from 'components/LanguageTrigger';
-import LinkPhone from 'components/Link/LinkPhone';
-import { MapModalInterface } from 'components/Modal/MapModal';
-import ThemeTrigger from 'components/ThemeTrigger';
-import { getConstantTranslation } from 'config/constantTranslations';
-import { MAP_MODAL } from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
-import { useLocaleContext } from 'context/localeContext';
-import { useSiteUserContext } from 'context/siteUserContext';
-import { PagesGroupInterface } from 'db/uiInterfaces';
-import { useShopMarker } from 'hooks/useShopMarker';
-import useSignOut from 'hooks/useSignOut';
-import LayoutCard from 'layout/LayoutCard';
-import { noNaN } from 'lib/numbers';
-import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import StickyNav, { StickNavInterface } from 'layout/header/StickyNav';
-import WpLink from 'components/Link/WpLink';
-import { useThemeContext } from 'context/themeContext';
-import { useConfigContext } from 'context/configContext';
-import WpIcon from 'components/WpIcon';
-import Inner from 'components/Inner';
-import { useSiteContext } from 'context/siteContext';
-import HeaderSearch from 'layout/header/HeaderSearch';
-import CounterSticker from 'components/CounterSticker';
-import CartDropdown from 'layout/header/CartDropdown';
 import { get } from 'lodash';
+import ButtonCross from '../../components/button/ButtonCross';
+import CityTrigger from '../../components/CityTrigger';
+import CounterSticker from '../../components/CounterSticker';
+import Inner from '../../components/Inner';
+import LanguageTrigger from '../../components/LanguageTrigger';
+import LinkPhone from '../../components/Link/LinkPhone';
+import WpLink from '../../components/Link/WpLink';
+import { MapModalInterface } from '../../components/Modal/MapModal';
+import ThemeTrigger from '../../components/ThemeTrigger';
+import WpIcon from '../../components/WpIcon';
 import {
-  ROUTE_CONSOLE,
+  FILTER_CATEGORY_KEY,
+  FILTER_SEPARATOR,
+  IMAGE_FALLBACK,
+  ROUTE_BLOG_WITH_PAGE,
   ROUTE_CATALOGUE,
   ROUTE_CMS,
+  ROUTE_CONSOLE,
+  ROUTE_CONTACTS,
+  ROUTE_DOCS_PAGES,
   ROUTE_PROFILE,
   ROUTE_SIGN_IN,
-  ROUTE_DOCS_PAGES,
-  FILTER_SEPARATOR,
-  ROUTE_CONTACTS,
-  FILTER_CATEGORY_KEY,
-  ROUTE_BLOG_WITH_PAGE,
-  IMAGE_FALLBACK,
-} from 'config/common';
+} from '../../config/common';
+import { getConstantTranslation } from '../../config/constantTranslations';
+import { MAP_MODAL } from '../../config/modalVariants';
+import { useAppContext } from '../../context/appContext';
+import { useConfigContext } from '../../context/configContext';
+import { useLocaleContext } from '../../context/localeContext';
+import { useSiteContext } from '../../context/siteContext';
+import { useSiteUserContext } from '../../context/siteUserContext';
+import { useThemeContext } from '../../context/themeContext';
+import { PagesGroupInterface } from '../../db/uiInterfaces';
+import { useShopMarker } from '../../hooks/useShopMarker';
+import useSignOut from '../../hooks/useSignOut';
+import { noNaN } from '../../lib/numbers';
+import { phoneToRaw, phoneToReadable } from '../../lib/phoneUtils';
+import LayoutCard from '../LayoutCard';
+import CartDropdown from './CartDropdown';
+import HeaderSearch from './HeaderSearch';
+import StickyNav, { StickNavInterface } from './StickyNav';
 
 const middleLinkClassName =
   'flex items-center justify-center min-h-[3rem] text-secondary-text cursor-pointer hover:text-theme transition-colors duration-200';

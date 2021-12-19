@@ -1,18 +1,18 @@
-import HorizontalScroll from 'components/HorizontalScroll';
-import Inner from 'components/Inner';
-import WpLink from 'components/Link/WpLink';
-import TagLink from 'components/Link/TagLink';
-import PageEditor from 'components/PageEditor';
-import ShopsMap from 'components/ShopsMap';
-import Title from 'components/Title';
-import { PAGE_EDITOR_DEFAULT_VALUE_STRING, ROUTE_DOCS_PAGES } from 'config/common';
-import { useConfigContext } from 'context/configContext';
-import { useSiteContext } from 'context/siteContext';
-import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
-import ProductSnippetGridBigImage from 'layout/snippet/ProductSnippetGridBigImage';
-import { MainPageInterface } from 'lib/mainPageUtils';
 import * as React from 'react';
 import ImageGallery, { ReactImageGalleryItem } from 'react-image-gallery';
+import { PAGE_EDITOR_DEFAULT_VALUE_STRING, ROUTE_DOCS_PAGES } from '../config/common';
+import { useConfigContext } from '../context/configContext';
+import { useSiteContext } from '../context/siteContext';
+import SiteLayout, { SiteLayoutProviderInterface } from '../layout/SiteLayout';
+import ProductSnippetGridBigImage from '../layout/snippet/ProductSnippetGridBigImage';
+import { MainPageInterface } from '../lib/mainPageUtils';
+import HorizontalScroll from './HorizontalScroll';
+import Inner from './Inner';
+import TagLink from './Link/TagLink';
+import WpLink from './Link/WpLink';
+import PageEditor from './PageEditor';
+import ShopsMap from './ShopsMap';
+import WpTitle from './WpTitle';
 
 const MainPageConsumer: React.FC<MainPageInterface> = ({
   topProducts,
@@ -151,7 +151,7 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
         {/*seo top*/}
         {configTitle || configSeoContent ? (
           <div className='mb-14 sm:mb-20'>
-            {configTitle ? <Title textClassName='max-w-[1440px]'>{configTitle}</Title> : null}
+            {configTitle ? <WpTitle textClassName='max-w-[1440px]'>{configTitle}</WpTitle> : null}
             {configSeoContent &&
             configSeoContent.length &&
             configSeoContent !== PAGE_EDITOR_DEFAULT_VALUE_STRING ? (

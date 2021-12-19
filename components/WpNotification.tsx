@@ -1,8 +1,8 @@
 import * as React from 'react';
-import WpIcon from 'components/WpIcon';
-import ButtonCross from 'components/button/ButtonCross';
-import { IconType } from 'types/iconTypes';
-import { NotificationVariant } from 'types/clientTypes';
+import { NotificationVariant } from '../types/clientTypes';
+import { IconType } from '../types/iconTypes';
+import ButtonCross from './button/ButtonCross';
+import WpIcon from './WpIcon';
 
 export interface NotificationInterface {
   variant: NotificationVariant;
@@ -14,7 +14,7 @@ export interface NotificationInterface {
   closeHandler?: () => void;
 }
 
-const Notification: React.FC<NotificationInterface> = ({
+const WpNotification: React.FC<NotificationInterface> = ({
   variant = 'success',
   title = '',
   message = '',
@@ -65,4 +65,4 @@ const Notification: React.FC<NotificationInterface> = ({
   );
 };
 
-export default Notification;
+export default WpNotification;

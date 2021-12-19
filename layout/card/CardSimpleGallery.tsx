@@ -1,6 +1,6 @@
-import WpImage from 'components/WpImage';
-import { AssetModel } from 'db/dbModels';
 import * as React from 'react';
+import WpImage from '../../components/WpImage';
+import { AssetModel } from '../../db/dbModels';
 
 interface CardSimpleGalleryInterface {
   assets: AssetModel[];

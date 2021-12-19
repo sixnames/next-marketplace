@@ -1,28 +1,39 @@
-import WpButton from 'components/button/WpButton';
-import FixedButtons from 'components/button/FixedButtons';
-import WpImageUpload from 'components/FormElements/Upload/WpImageUpload';
-import BrandMainFields from 'components/FormTemplates/BrandMainFields';
-import Inner from 'components/Inner';
-import Title from 'components/Title';
-import { REQUEST_METHOD_DELETE, REQUEST_METHOD_POST, ROUTE_CMS } from 'config/common';
-import { COL_BRANDS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, BrandInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
-import { UpdateBrandInput, useUpdateBrandMutation } from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useValidationSchema from 'hooks/useValidationSchema';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import AppSubNav from 'layout/AppSubNav';
-import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import { updateBrandSchema } from 'validation/brandSchema';
+import FixedButtons from '../../../../../components/button/FixedButtons';
+import WpButton from '../../../../../components/button/WpButton';
+import WpImageUpload from '../../../../../components/FormElements/Upload/WpImageUpload';
+import BrandMainFields from '../../../../../components/FormTemplates/BrandMainFields';
+import Inner from '../../../../../components/Inner';
+import WpTitle from '../../../../../components/WpTitle';
+import {
+  REQUEST_METHOD_DELETE,
+  REQUEST_METHOD_POST,
+  ROUTE_CMS,
+} from '../../../../../config/common';
+import { COL_BRANDS } from '../../../../../db/collectionNames';
+import { getDatabase } from '../../../../../db/mongodb';
+import { AppContentWrapperBreadCrumbs, BrandInterface } from '../../../../../db/uiInterfaces';
+import {
+  UpdateBrandInput,
+  useUpdateBrandMutation,
+} from '../../../../../generated/apolloComponents';
+import useMutationCallbacks from '../../../../../hooks/useMutationCallbacks';
+import useValidationSchema from '../../../../../hooks/useValidationSchema';
+import AppContentWrapper from '../../../../../layout/AppContentWrapper';
+import AppSubNav from '../../../../../layout/AppSubNav';
+import { getFieldStringLocale } from '../../../../../lib/i18n';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../../../lib/ssrUtils';
+import { updateBrandSchema } from '../../../../../validation/brandSchema';
+import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
 
 interface BrandDetailsConsumerInterface {
   brand: BrandInterface;
@@ -86,7 +97,7 @@ const BrandDetailsConsumer: React.FC<BrandDetailsConsumerInterface> = ({ brand }
         <title>{brand.name}</title>
       </Head>
       <Inner lowBottom>
-        <Title testId={`${brand.itemId}-brand-title`}>{brand.name}</Title>
+        <WpTitle testId={`${brand.itemId}-brand-title`}>{brand.name}</WpTitle>
       </Inner>
 
       <AppSubNav navConfig={navConfig} />

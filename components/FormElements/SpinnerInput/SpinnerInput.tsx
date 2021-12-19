@@ -1,7 +1,7 @@
 import * as React from 'react';
-import WpIcon from 'components/WpIcon';
-import { InputTheme, OnOffType } from 'types/clientTypes';
-import { noNaN } from 'lib/numbers';
+import { noNaN } from '../../../lib/numbers';
+import { InputTheme, OnOffType } from '../../../types/clientTypes';
+import WpIcon from '../../WpIcon';
 
 export interface SpinnerChangeEventInterface {
   target: {

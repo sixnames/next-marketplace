@@ -1,11 +1,11 @@
-import Accordion from 'components/Accordion';
-import WpButton from 'components/button/WpButton';
-import Inner from 'components/Inner';
-import { DEFAULT_CITY } from 'config/common';
-import { useConfigContext } from 'context/configContext';
-import { CompanyInterface, ProductInterface, RubricInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
 import * as React from 'react';
+import { DEFAULT_CITY } from '../../config/common';
+import { useConfigContext } from '../../context/configContext';
+import { CompanyInterface, ProductInterface, RubricInterface } from '../../db/uiInterfaces';
+import WpButton from '../button/WpButton';
+import Inner from '../Inner';
+import WpAccordion from '../WpAccordion';
 
 export interface CompanyProductConstructorInterface {
   product: ProductInterface;
@@ -40,14 +40,14 @@ const CompanyProductConstructor: React.FC<CompanyProductConstructorInterface> = 
                 const cityTestId = `${product.slug}-${slug}`;
 
                 return (
-                  <Accordion
+                  <WpAccordion
                     isOpen={slug === DEFAULT_CITY}
                     testId={cityTestId}
                     title={`${name}`}
                     key={slug}
                   >
                     <div className='ml-8 pt-[var(--lineGap-200)]'>{slug}</div>
-                  </Accordion>
+                  </WpAccordion>
                 );
               })}
               <div className='flex mb-12 mt-4'>

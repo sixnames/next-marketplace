@@ -1,23 +1,23 @@
-import { PAGE_EDITOR_DEFAULT_VALUE_STRING, PAGE_STATE_PUBLISHED } from 'config/common';
+import { ObjectId } from 'mongodb';
+import { PAGE_EDITOR_DEFAULT_VALUE_STRING, PAGE_STATE_PUBLISHED } from '../../../config/common';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import { getNextItemId } from '../../../lib/itemIdUtils';
+import {
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+} from '../../../lib/sessionHelpers';
+import { createPageSchema } from '../../../validation/pagesSchema';
 import {
   COL_PAGE_TEMPLATES,
   COL_PAGES,
   COL_PAGES_GROUP,
   COL_PAGES_GROUP_TEMPLATES,
-} from 'db/collectionNames';
-import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
-import { PageModel, PagePayloadModel, PagesGroupModel, TranslationModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getNextItemId } from 'lib/itemIdUtils';
-import {
-  getOperationPermission,
-  getRequestParams,
-  getResolverValidationSchema,
-} from 'lib/sessionHelpers';
-import { ObjectId } from 'mongodb';
-import { createPageSchema } from 'validation/pagesSchema';
+} from '../../collectionNames';
+import { PageModel, PagePayloadModel, PagesGroupModel, TranslationModel } from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { DaoPropsInterface } from '../../uiInterfaces';
+import { findDocumentByI18nField } from '../findDocumentByI18nField';
 
 export interface CreatePageInputInterface {
   nameI18n: TranslationModel;

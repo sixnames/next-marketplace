@@ -1,12 +1,12 @@
-import ControlButton from 'components/button/ControlButton';
-import WpLink from 'components/Link/WpLink';
-import WpImage from 'components/WpImage';
-import { useSiteContext } from 'context/siteContext';
-import { ProductSnippetInterface } from 'db/uiInterfaces';
-import ProductAddToCartButton from 'layout/snippet/ProductAddToCartButton';
-import ProductSnippetEditButton from 'layout/snippet/ProductSnippetEditButton';
-import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
 import * as React from 'react';
+import ControlButton from '../../components/button/ControlButton';
+import WpLink from '../../components/Link/WpLink';
+import WpImage from '../../components/WpImage';
+import { useSiteContext } from '../../context/siteContext';
+import { ProductSnippetInterface } from '../../db/uiInterfaces';
+import ProductAddToCartButton from './ProductAddToCartButton';
+import ProductSnippetEditButton from './ProductSnippetEditButton';
+import ProductSnippetPrice from './ProductSnippetPrice';
 
 const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
   shopProduct,

@@ -1,12 +1,12 @@
-import WpLink from 'components/Link/WpLink';
-import { ProductInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import ContentItemControls, {
   ContentItemControlsInterface,
-} from 'components/button/ContentItemControls';
-import TableRowImage from 'components/TableRowImage';
-import { WpTableColumn } from 'components/WpTable';
-import { ROUTE_CMS } from 'config/common';
+} from '../components/button/ContentItemControls';
+import WpLink from '../components/Link/WpLink';
+import TableRowImage from '../components/TableRowImage';
+import { WpTableColumn } from '../components/WpTable';
+import { ROUTE_CMS } from '../config/common';
+import { ProductInterface } from '../db/uiInterfaces';
 
 export type ProductColumnsItemHandler = (product: ProductInterface) => void;
 export type ProductColumnsHandlerPermission = (product: ProductInterface) => boolean;

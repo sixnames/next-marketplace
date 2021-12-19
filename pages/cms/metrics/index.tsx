@@ -1,27 +1,31 @@
-import WpButton from 'components/button/WpButton';
-import FixedButtons from 'components/button/FixedButtons';
-import ContentItemControls from 'components/button/ContentItemControls';
-import Inner from 'components/Inner';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import { MetricModalInterface } from 'components/Modal/MetricModal';
-import WpTable, { WpTableColumn } from 'components/WpTable';
-import Title from 'components/Title';
-import { DEFAULT_LOCALE, SORT_ASC } from 'config/common';
-import { CONFIRM_MODAL, METRIC_MODAL } from 'config/modalVariants';
-import { COL_METRICS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { MetricInterface } from 'db/uiInterfaces';
-import { useDeleteMetricMutation } from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useValidationSchema from 'hooks/useValidationSchema';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import { getFieldStringLocale } from 'lib/i18n';
 import Head from 'next/head';
 import * as React from 'react';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import { createMetricSchema, updateMetricSchema } from 'validation/metricSchema';
+import ContentItemControls from '../../../components/button/ContentItemControls';
+import FixedButtons from '../../../components/button/FixedButtons';
+import WpButton from '../../../components/button/WpButton';
+import Inner from '../../../components/Inner';
+import { ConfirmModalInterface } from '../../../components/Modal/ConfirmModal';
+import { MetricModalInterface } from '../../../components/Modal/MetricModal';
+import WpTable, { WpTableColumn } from '../../../components/WpTable';
+import WpTitle from '../../../components/WpTitle';
+import { DEFAULT_LOCALE, SORT_ASC } from '../../../config/common';
+import { CONFIRM_MODAL, METRIC_MODAL } from '../../../config/modalVariants';
+import { COL_METRICS } from '../../../db/collectionNames';
+import { getDatabase } from '../../../db/mongodb';
+import { MetricInterface } from '../../../db/uiInterfaces';
+import { useDeleteMetricMutation } from '../../../generated/apolloComponents';
+import useMutationCallbacks from '../../../hooks/useMutationCallbacks';
+import useValidationSchema from '../../../hooks/useValidationSchema';
+import AppContentWrapper from '../../../layout/AppContentWrapper';
+import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
+import { getFieldStringLocale } from '../../../lib/i18n';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../lib/ssrUtils';
+import { createMetricSchema, updateMetricSchema } from '../../../validation/metricSchema';
 
 const pageTitle = 'Единицы измерения';
 
@@ -101,7 +105,7 @@ const MetricsConsumer: React.FC<MetricsConsumerInterface> = ({ metrics }) => {
       </Head>
 
       <Inner testId={'metrics-list'}>
-        <Title>{pageTitle}</Title>
+        <WpTitle>{pageTitle}</WpTitle>
         <div className='overflow-x-auto overflow-y-hidden'>
           <WpTable<MetricInterface>
             columns={columns}

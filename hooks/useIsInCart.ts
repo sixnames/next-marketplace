@@ -1,8 +1,8 @@
-import { useSiteContext } from 'context/siteContext';
-import { ObjectIdModel } from 'db/dbModels';
-import { CartProductInterface } from 'db/uiInterfaces';
-import { alwaysArray } from 'lib/arrayUtils';
 import * as React from 'react';
+import { useSiteContext } from '../context/siteContext';
+import { ObjectIdModel } from '../db/dbModels';
+import { CartProductInterface } from '../db/uiInterfaces';
+import { alwaysArray } from '../lib/arrayUtils';
 
 export interface UseIsInCartInterface {
   productId: string | ObjectIdModel;

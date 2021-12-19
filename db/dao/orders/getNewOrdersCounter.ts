@@ -1,9 +1,9 @@
-import { COL_ORDER_STATUSES, COL_ORDERS } from 'db/collectionNames';
-import { OrderModel, OrderStatusModel, PayloadType } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { ObjectId } from 'mongodb';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import { COL_ORDER_STATUSES, COL_ORDERS } from '../../collectionNames';
+import { OrderModel, OrderStatusModel, PayloadType } from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { DaoPropsInterface } from '../../uiInterfaces';
 
 export type GetNewOrdersCounterPayload = PayloadType<number>;
 

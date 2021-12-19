@@ -1,22 +1,22 @@
-import WpButton from 'components/button/WpButton';
-import ContentItemControls from 'components/button/ContentItemControls';
-import FixedButtons from 'components/button/FixedButtons';
-import WpLink from 'components/Link/WpLink';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import { PagesGroupModalInterface } from 'components/Modal/PagesGroupModal';
-import WpTable, { WpTableColumn } from 'components/WpTable';
-import { CONFIRM_MODAL, PAGES_GROUP_MODAL } from 'config/modalVariants';
+import { useRouter } from 'next/router';
+import * as React from 'react';
+import { CONFIRM_MODAL, PAGES_GROUP_MODAL } from '../../config/modalVariants';
 import {
   CompanyInterface,
   PagesGroupInterface,
   PagesGroupTemplateInterface,
-} from 'db/uiInterfaces';
-import { useDeletePagesGroup } from 'hooks/mutations/usePageMutations';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useValidationSchema from 'hooks/useValidationSchema';
-import { useRouter } from 'next/router';
-import * as React from 'react';
-import { createPagesGroupSchema, updatePagesGroupSchema } from 'validation/pagesSchema';
+} from '../../db/uiInterfaces';
+import { useDeletePagesGroup } from '../../hooks/mutations/usePageMutations';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import useValidationSchema from '../../hooks/useValidationSchema';
+import { createPagesGroupSchema, updatePagesGroupSchema } from '../../validation/pagesSchema';
+import ContentItemControls from '../button/ContentItemControls';
+import FixedButtons from '../button/FixedButtons';
+import WpButton from '../button/WpButton';
+import WpLink from '../Link/WpLink';
+import { ConfirmModalInterface } from '../Modal/ConfirmModal';
+import { PagesGroupModalInterface } from '../Modal/PagesGroupModal';
+import WpTable, { WpTableColumn } from '../WpTable';
 
 export interface PageGroupsListInterface {
   pagesGroups: PagesGroupInterface[] | PagesGroupTemplateInterface[];

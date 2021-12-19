@@ -1,30 +1,34 @@
-import WpButton from 'components/button/WpButton';
-import ContentItemControls from 'components/button/ContentItemControls';
-import Currency from 'components/Currency';
-import FixedButtons from 'components/button/FixedButtons';
-import Inner from 'components/Inner';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import { UserCategoryModalInterface } from 'components/Modal/UserCategoryModal';
-import Percent from 'components/Percent';
-import WpTable, { WpTableColumn } from 'components/WpTable';
-import { ROUTE_CMS } from 'config/common';
-import { CONFIRM_MODAL, USER_CATEGORY_MODAL } from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
-import { COL_COMPANIES, COL_USER_CATEGORIES } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
+import { ObjectId } from 'mongodb';
+import * as React from 'react';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import ContentItemControls from '../../../../components/button/ContentItemControls';
+import FixedButtons from '../../../../components/button/FixedButtons';
+import WpButton from '../../../../components/button/WpButton';
+import Currency from '../../../../components/Currency';
+import Inner from '../../../../components/Inner';
+import { ConfirmModalInterface } from '../../../../components/Modal/ConfirmModal';
+import { UserCategoryModalInterface } from '../../../../components/Modal/UserCategoryModal';
+import Percent from '../../../../components/Percent';
+import WpTable, { WpTableColumn } from '../../../../components/WpTable';
+import { ROUTE_CMS } from '../../../../config/common';
+import { CONFIRM_MODAL, USER_CATEGORY_MODAL } from '../../../../config/modalVariants';
+import { useAppContext } from '../../../../context/appContext';
+import { COL_COMPANIES, COL_USER_CATEGORIES } from '../../../../db/collectionNames';
+import { getDatabase } from '../../../../db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   CompanyInterface,
   UserCategoryInterface,
-} from 'db/uiInterfaces';
-import { useDeleteUserCategory } from 'hooks/mutations/useUserCategoryMutations';
-import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
-import { getFieldStringLocale } from 'lib/i18n';
-import { ObjectId } from 'mongodb';
-import * as React from 'react';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+} from '../../../../db/uiInterfaces';
+import { useDeleteUserCategory } from '../../../../hooks/mutations/useUserCategoryMutations';
+import CmsCompanyLayout from '../../../../layout/cms/CmsCompanyLayout';
+import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
+import { getFieldStringLocale } from '../../../../lib/i18n';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../../lib/ssrUtils';
 
 interface CompanyDetailsConsumerInterface {
   pageCompany: CompanyInterface;

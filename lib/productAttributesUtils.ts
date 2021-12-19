@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb';
 import {
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
   ATTRIBUTE_VARIANT_NUMBER,
@@ -5,21 +6,20 @@ import {
   ATTRIBUTE_VARIANT_STRING,
   DEFAULT_LOCALE,
   LOCALES,
-} from 'config/common';
-import { COL_CATEGORIES, COL_RUBRICS } from 'db/collectionNames';
-import { rubricAttributeGroupsPipeline } from 'db/dao/constantPipelines';
-import { ObjectIdModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+} from '../config/common';
+import { COL_CATEGORIES, COL_RUBRICS } from '../db/collectionNames';
+import { rubricAttributeGroupsPipeline } from '../db/dao/constantPipelines';
+import { ObjectIdModel } from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
 import {
   AttributeInterface,
   CategoryInterface,
   ProductAttributeInterface,
   RubricInterface,
-} from 'db/uiInterfaces';
-import { sortObjectsByField } from 'lib/arrayUtils';
-import { getFieldStringLocale } from 'lib/i18n';
-import { getStringValueFromOptionsList } from 'lib/optionUtils';
-import { ObjectId } from 'mongodb';
+} from '../db/uiInterfaces';
+import { sortObjectsByField } from './arrayUtils';
+import { getFieldStringLocale } from './i18n';
+import { getStringValueFromOptionsList } from './optionUtils';
 
 export async function getRubricAllAttributes(
   rubricId: ObjectIdModel,

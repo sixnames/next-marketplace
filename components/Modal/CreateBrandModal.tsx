@@ -1,13 +1,13 @@
-import WpButton from 'components/button/WpButton';
-import BrandMainFields from 'components/FormTemplates/BrandMainFields';
 import * as React from 'react';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
-import useValidationSchema from 'hooks/useValidationSchema';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import { CreateBrandInput, useCreateBrandMutation } from 'generated/apolloComponents';
-import { createBrandSchema } from 'validation/brandSchema';
 import { Form, Formik } from 'formik';
+import { CreateBrandInput, useCreateBrandMutation } from '../../generated/apolloComponents';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import useValidationSchema from '../../hooks/useValidationSchema';
+import { createBrandSchema } from '../../validation/brandSchema';
+import WpButton from '../button/WpButton';
+import BrandMainFields from '../FormTemplates/BrandMainFields';
+import ModalFrame from './ModalFrame';
+import ModalTitle from './ModalTitle';
 
 const CreateBrandModal: React.FC = () => {
   const { onCompleteCallback, onErrorCallback, showLoading, showErrorNotification } =

@@ -1,18 +1,18 @@
-import WpButton from 'components/button/WpButton';
-import FormikMultiLineInput from 'components/FormElements/Input/FormikMultiLineInput';
-import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
-import { SupplierInterface } from 'db/uiInterfaces';
-import { ResolverValidationSchema } from 'lib/sessionHelpers';
 import * as React from 'react';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import { Form, Formik } from 'formik';
+import { SupplierInterface } from '../../db/uiInterfaces';
 import {
   CreateSupplierInput,
   useCreateSupplierMutation,
   useUpdateSupplierMutation,
-} from 'generated/apolloComponents';
-import { Form, Formik } from 'formik';
+} from '../../generated/apolloComponents';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import { ResolverValidationSchema } from '../../lib/sessionHelpers';
+import WpButton from '../button/WpButton';
+import FormikMultiLineInput from '../FormElements/Input/FormikMultiLineInput';
+import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
+import ModalFrame from './ModalFrame';
+import ModalTitle from './ModalTitle';
 
 export interface SupplierModalInterface {
   supplier?: SupplierInterface;

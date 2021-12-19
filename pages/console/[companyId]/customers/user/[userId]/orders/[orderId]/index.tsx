@@ -1,24 +1,32 @@
-import ConsoleOrderDetails, {
-  CmsOrderDetailsBaseInterface,
-} from 'components/order/ConsoleOrderDetails';
-import { DEFAULT_COMPANY_SLUG, ROUTE_CONSOLE } from 'config/common';
-import { COL_ROLES, COL_USER_CATEGORIES, COL_USERS } from 'db/collectionNames';
-import { getConsoleOrder } from 'db/dao/orders/getConsoleOrder';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, CompanyInterface, UserInterface } from 'db/uiInterfaces';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import ConsoleUserLayout from 'layout/console/ConsoleUserLayout';
-import { getFieldStringLocale } from 'lib/i18n';
-import { getFullName } from 'lib/nameUtils';
-import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import ConsoleOrderDetails, {
+  CmsOrderDetailsBaseInterface,
+} from '../../../../../../../../components/order/ConsoleOrderDetails';
+import { DEFAULT_COMPANY_SLUG, ROUTE_CONSOLE } from '../../../../../../../../config/common';
+import {
+  COL_ROLES,
+  COL_USER_CATEGORIES,
+  COL_USERS,
+} from '../../../../../../../../db/collectionNames';
+import { getConsoleOrder } from '../../../../../../../../db/dao/orders/getConsoleOrder';
+import { getDatabase } from '../../../../../../../../db/mongodb';
+import {
+  AppContentWrapperBreadCrumbs,
+  CompanyInterface,
+  UserInterface,
+} from '../../../../../../../../db/uiInterfaces';
+import ConsoleLayout from '../../../../../../../../layout/cms/ConsoleLayout';
+import ConsoleUserLayout from '../../../../../../../../layout/console/ConsoleUserLayout';
+import { getFieldStringLocale } from '../../../../../../../../lib/i18n';
+import { getFullName } from '../../../../../../../../lib/nameUtils';
+import { phoneToRaw, phoneToReadable } from '../../../../../../../../lib/phoneUtils';
 import {
   castDbData,
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
-} from 'lib/ssrUtils';
+} from '../../../../../../../../lib/ssrUtils';
 
 interface UserOrderConsumerInterface extends CmsOrderDetailsBaseInterface {
   user: UserInterface;

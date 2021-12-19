@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
-import { ValidationSchemaArgsInterface } from 'types/validataionTypes';
-import { objectIdSchema, requiredStringTranslationSchema } from 'validation/schemaTemplates';
+import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
+import { objectIdSchema, requiredStringTranslationSchema } from './schemaTemplates';
 
 export const rubricVariantIdSchema = (args: ValidationSchemaArgsInterface) => {
   return objectIdSchema({ ...args, slug: 'validation.rubricVariants.id' });

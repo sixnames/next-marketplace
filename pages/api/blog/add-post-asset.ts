@@ -1,6 +1,6 @@
-import { REQUEST_METHOD_PATCH } from 'config/common';
-import { uploadPostAsset } from 'db/dao/blog/uploadPostAsset';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { REQUEST_METHOD_PATCH } from '../../../config/common';
+import { uploadPostAsset } from '../../../db/dao/blog/uploadPostAsset';
 
 export const config = {
   api: {

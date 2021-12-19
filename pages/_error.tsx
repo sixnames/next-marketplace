@@ -1,8 +1,8 @@
-import Inner from 'components/Inner';
 import { NextPage } from 'next';
-import { PagePropsInterface } from 'pages/_app';
 import * as React from 'react';
 import Error from 'next/error';
+import Inner from '../components/Inner';
+import { PagePropsInterface } from './_app';
 
 const ErrorPage: NextPage<PagePropsInterface> = () => {
   return (

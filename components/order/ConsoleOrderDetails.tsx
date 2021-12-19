@@ -1,41 +1,41 @@
-import WpButton from 'components/button/WpButton';
-import FixedButtons from 'components/button/FixedButtons';
-import Currency from 'components/Currency';
-import FormattedDateTime from 'components/FormattedDateTime';
-import FormikInput from 'components/FormElements/Input/FormikInput';
-import InputLine from 'components/FormElements/Input/InputLine';
-import FormikSelect from 'components/FormElements/Select/FormikSelect';
-import FormikSpinnerInput from 'components/FormElements/SpinnerInput/FormikSpinnerInput';
-import Inner from 'components/Inner';
-import WpLink from 'components/Link/WpLink';
-import LinkEmail from 'components/Link/LinkEmail';
-import LinkPhone from 'components/Link/LinkPhone';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import OrderDeliveryInfo from 'components/order/OrderDeliveryInfo';
-import ProductsListSuppliersList from 'components/shops/ProductsListSuppliersList';
-import Title from 'components/Title';
-import WpImage from 'components/WpImage';
-import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, IMAGE_FALLBACK, ROUTE_CMS } from 'config/common';
+import { Form, Formik, useFormikContext } from 'formik';
+import { get } from 'lodash';
+import * as React from 'react';
+import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, IMAGE_FALLBACK, ROUTE_CMS } from '../../config/common';
 import {
   DELIVERY_VARIANT_OPTIONS,
   getConstantOptionName,
   PAYMENT_VARIANT_OPTIONS,
-} from 'config/constantSelects';
-import { CONFIRM_MODAL } from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
-import { useLocaleContext } from 'context/localeContext';
-import { useNotificationsContext } from 'context/notificationsContext';
-import { useUserContext } from 'context/userContext';
-import { OrderInterface, OrderProductInterface, OrderStatusInterface } from 'db/uiInterfaces';
-import { Form, Formik, useFormikContext } from 'formik';
+} from '../../config/constantSelects';
+import { CONFIRM_MODAL } from '../../config/modalVariants';
+import { useAppContext } from '../../context/appContext';
+import { useLocaleContext } from '../../context/localeContext';
+import { useNotificationsContext } from '../../context/notificationsContext';
+import { useUserContext } from '../../context/userContext';
+import { OrderInterface, OrderProductInterface, OrderStatusInterface } from '../../db/uiInterfaces';
 import {
   useCancelOrderProduct,
   useUpdateOrder,
   useUpdateOrderProduct,
-} from 'hooks/mutations/useOrderMutations';
-import { noNaN } from 'lib/numbers';
-import { get } from 'lodash';
-import * as React from 'react';
+} from '../../hooks/mutations/useOrderMutations';
+import { noNaN } from '../../lib/numbers';
+import FixedButtons from '../button/FixedButtons';
+import WpButton from '../button/WpButton';
+import Currency from '../Currency';
+import FormattedDateTime from '../FormattedDateTime';
+import FormikInput from '../FormElements/Input/FormikInput';
+import InputLine from '../FormElements/Input/InputLine';
+import FormikSelect from '../FormElements/Select/FormikSelect';
+import FormikSpinnerInput from '../FormElements/SpinnerInput/FormikSpinnerInput';
+import Inner from '../Inner';
+import LinkEmail from '../Link/LinkEmail';
+import LinkPhone from '../Link/LinkPhone';
+import WpLink from '../Link/WpLink';
+import { ConfirmModalInterface } from '../Modal/ConfirmModal';
+import ProductsListSuppliersList from '../shops/ProductsListSuppliersList';
+import WpImage from '../WpImage';
+import WpTitle from '../WpTitle';
+import OrderDeliveryInfo from './OrderDeliveryInfo';
 
 interface OrderProductProductInterface {
   orderProductIndex: number;
@@ -310,7 +310,7 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
     <Inner testId={`order-details`}>
       <div className='grid gap-4 md:flex justify-between items-baseline mb-12'>
         <div>
-          <Title low>{title}</Title>
+          <WpTitle low>{title}</WpTitle>
           <div className='text-secondary-text'>
             от <FormattedDateTime value={createdAt} />
           </div>

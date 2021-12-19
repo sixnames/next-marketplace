@@ -1,8 +1,8 @@
 import * as React from 'react';
-import WpIcon from 'components/WpIcon';
 import { FormikHandlers } from 'formik/dist/types';
+import WpIcon from '../../WpIcon';
 
-export interface CheckboxInterface {
+export interface WpCheckboxInterface {
   name: string;
   onChange: FormikHandlers['handleChange'];
   notValid?: boolean;
@@ -13,7 +13,7 @@ export interface CheckboxInterface {
   testId?: string;
 }
 
-const Checkbox: React.FC<CheckboxInterface> = ({
+const WpCheckbox: React.FC<WpCheckboxInterface> = ({
   notValid,
   className,
   value,
@@ -47,4 +47,4 @@ const Checkbox: React.FC<CheckboxInterface> = ({
   );
 };
 
-export default Checkbox;
+export default WpCheckbox;

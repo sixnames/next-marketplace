@@ -1,16 +1,16 @@
-import WpButton from 'components/button/WpButton';
-import Input, { InputPropsInterface } from 'components/FormElements/Input/Input';
-import InputLine from 'components/FormElements/Input/InputLine';
 import dynamic from 'next/dynamic';
 import * as React from 'react';
 import { Field, FieldProps } from 'formik';
 import { get } from 'lodash';
+import WpButton from '../../button/WpButton';
+import WpInput, { WpInputPropsInterface } from '../Input/WpInput';
+import InputLine from '../Input/InputLine';
 
-const BarcodeReader = dynamic(() => import('components/BarcodeReader'), {
+const BarcodeReader = dynamic(() => import('../../BarcodeReader'), {
   ssr: false,
 });
 
-export interface FormikBarcodeInputPropsInterface extends InputPropsInterface {
+export interface FormikBarcodeInputPropsInterface extends WpInputPropsInterface {
   frameClass?: string;
   showInlineError?: boolean;
 }
@@ -59,7 +59,7 @@ const FormikBarcodeInput: React.FC<FormikBarcodeInputPropsInterface> = ({
               error={error}
             >
               <div className='flex-grow'>
-                <Input
+                <WpInput
                   low
                   {...field}
                   {...props}

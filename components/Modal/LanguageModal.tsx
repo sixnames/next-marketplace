@@ -1,21 +1,21 @@
-import { LanguageModel } from 'db/dbModels';
 import * as React from 'react';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
-import ModalButtons from 'components/Modal/ModalButtons';
-import WpButton from 'components/button/WpButton';
+import { Formik, Form } from 'formik';
+import { LanguageModel } from '../../db/dbModels';
 import {
   CreateLanguageInput,
   UpdateLanguageInput,
   useGetIsoLanguagesListQuery,
-} from 'generated/apolloComponents';
-import RequestError from 'components/RequestError';
-import Spinner from 'components/Spinner';
-import { Formik, Form } from 'formik';
-import FormikSelect from 'components/FormElements/Select/FormikSelect';
-import FormikInput from 'components/FormElements/Input/FormikInput';
-import useValidationSchema from 'hooks/useValidationSchema';
-import { languageInModalSchema } from 'validation/languageSchema';
+} from '../../generated/apolloComponents';
+import useValidationSchema from '../../hooks/useValidationSchema';
+import { languageInModalSchema } from '../../validation/languageSchema';
+import WpButton from '../button/WpButton';
+import FormikInput from '../FormElements/Input/FormikInput';
+import FormikSelect from '../FormElements/Select/FormikSelect';
+import RequestError from '../RequestError';
+import Spinner from '../Spinner';
+import ModalButtons from './ModalButtons';
+import ModalFrame from './ModalFrame';
+import ModalTitle from './ModalTitle';
 
 export type UpdateLanguageModalInput = Omit<UpdateLanguageInput, 'languageId'>;
 

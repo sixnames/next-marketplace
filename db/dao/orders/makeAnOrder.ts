@@ -1,11 +1,29 @@
 import { hash } from 'bcryptjs';
+import generator from 'generate-password';
+import { ObjectId } from 'mongodb';
+import uniqid from 'uniqid';
 import {
   DEFAULT_COMPANY_SLUG,
   DEFAULT_DIFF,
   ORDER_DELIVERY_VARIANT_PICKUP,
   ORDER_PAYMENT_VARIANT_RECEIPT,
   ROLE_SLUG_GUEST,
-} from 'config/common';
+} from '../../../config/common';
+import { sendOrderCreatedEmail } from '../../../lib/email/sendOrderCreatedEmail';
+import { sendSignUpEmail } from '../../../lib/email/sendSignUpEmail';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import { getUserInitialNotificationsConf } from '../../../lib/getUserNotificationsTemplate';
+import { getNextItemId, getOrderNextItemId } from '../../../lib/itemIdUtils';
+import { noNaN } from '../../../lib/numbers';
+import { phoneToRaw } from '../../../lib/phoneUtils';
+import { getOrderDiscountedPrice } from '../../../lib/priceUtils';
+import {
+  getRequestParams,
+  getResolverValidationSchema,
+  getSessionUser,
+} from '../../../lib/sessionHelpers';
+import { sendOrderCreatedSms } from '../../../lib/sms/sendOrderCreatedSms';
+import { makeAnOrderSchema } from '../../../validation/orderSchema';
 import {
   COL_CARTS,
   COL_COMPANIES,
@@ -19,9 +37,7 @@ import {
   COL_ROLES,
   COL_SHOPS,
   COL_USERS,
-} from 'db/collectionNames';
-import { getSessionCart } from 'db/dao/cart/getSessionCart';
-import { checkGiftCertificateAvailability } from 'db/dao/giftCertificate/checkGiftCertificateAvailability';
+} from '../../collectionNames';
 import {
   CartModel,
   CompanyModel,
@@ -38,23 +54,11 @@ import {
   RoleModel,
   ShopModel,
   UserModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
-import generator from 'generate-password';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getNextItemId, getOrderNextItemId } from 'lib/itemIdUtils';
-import { getUserInitialNotificationsConf } from 'lib/getUserNotificationsTemplate';
-import { sendOrderCreatedEmail } from 'lib/email/sendOrderCreatedEmail';
-import { sendSignUpEmail } from 'lib/email/sendSignUpEmail';
-import { noNaN } from 'lib/numbers';
-import { phoneToRaw } from 'lib/phoneUtils';
-import { getOrderDiscountedPrice } from 'lib/priceUtils';
-import { getRequestParams, getResolverValidationSchema, getSessionUser } from 'lib/sessionHelpers';
-import { sendOrderCreatedSms } from 'lib/sms/sendOrderCreatedSms';
-import { ObjectId } from 'mongodb';
-import { makeAnOrderSchema } from 'validation/orderSchema';
-import uniqid from 'uniqid';
+} from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { DaoPropsInterface } from '../../uiInterfaces';
+import { getSessionCart } from '../cart/getSessionCart';
+import { checkGiftCertificateAvailability } from '../giftCertificate/checkGiftCertificateAvailability';
 
 export interface MakeAnOrderPayloadModel {
   success: boolean;

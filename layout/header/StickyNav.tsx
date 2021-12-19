@@ -1,18 +1,18 @@
-import { ROUTE_CATALOGUE } from 'config/common';
+import dynamic from 'next/dynamic';
+import * as React from 'react';
+import { useRouter } from 'next/router';
+import Inner from '../../components/Inner';
+import WpLink from '../../components/Link/WpLink';
+import { ROUTE_CATALOGUE } from '../../config/common';
 import {
   NAV_DROPDOWN_LAYOUT_OPTIONS_ONLY,
   NAV_DROPDOWN_LAYOUT_WITH_CATEGORIES,
   NAV_DROPDOWN_LAYOUT_WITHOUT_SUBCATEGORIES,
-} from 'config/constantSelects';
-import { useConfigContext } from 'context/configContext';
-import { useThemeContext } from 'context/themeContext';
-import { CategoryInterface, AttributeInterface, RubricInterface } from 'db/uiInterfaces';
-import dynamic from 'next/dynamic';
-import * as React from 'react';
-import Inner from 'components/Inner';
-import { useSiteContext } from 'context/siteContext';
-import { useRouter } from 'next/router';
-import WpLink from 'components/Link/WpLink';
+} from '../../config/constantSelects';
+import { useConfigContext } from '../../context/configContext';
+import { useSiteContext } from '../../context/siteContext';
+import { useThemeContext } from '../../context/themeContext';
+import { AttributeInterface, CategoryInterface, RubricInterface } from '../../db/uiInterfaces';
 
 interface AttributeStylesInterface {
   attributeLinkStyle: React.CSSProperties;
@@ -50,18 +50,14 @@ export interface StickyNavDropdownGlobalInterface extends StickyNavDropdownInter
   catalogueNavLayout: string;
 }
 
-const StickyNavDropdownDefault = dynamic(() => import('layout/header/StickyNavDropdownDefault'));
+const StickyNavDropdownDefault = dynamic(() => import('./StickyNavDropdownDefault'));
 
-const StickyNavDropdownOptionsOnly = dynamic(
-  () => import('layout/header/StickyNavDropdownOptionsOnly'),
-);
+const StickyNavDropdownOptionsOnly = dynamic(() => import('./StickyNavDropdownOptionsOnly'));
 
-const StickyNavDropdownWithCategories = dynamic(
-  () => import('layout/header/StickyNavDropdownWithCategories'),
-);
+const StickyNavDropdownWithCategories = dynamic(() => import('./StickyNavDropdownWithCategories'));
 
 const StickyNavDropdownWithoutSubCategories = dynamic(
-  () => import('layout/header/StickyNavDropdownWithoutSubCategories'),
+  () => import('./StickyNavDropdownWithoutSubCategories'),
 );
 
 const StickyNavDropdown: React.FC<StickyNavDropdownGlobalInterface> = ({

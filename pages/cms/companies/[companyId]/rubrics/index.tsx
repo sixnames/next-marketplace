@@ -1,21 +1,31 @@
-import { ROUTE_CMS } from 'config/common';
+import { ObjectId } from 'mongodb';
+import * as React from 'react';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import { ROUTE_CMS } from '../../../../../config/common';
 import {
   COL_COMPANIES,
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
-} from 'db/collectionNames';
-import { castRubricForUI } from 'db/dao/rubrics/castRubricForUI';
-import { RubricModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, CompanyInterface, RubricInterface } from 'db/uiInterfaces';
-import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import CompanyRubricsList, { CompanyRubricsListInterface } from 'layout/CompanyRubricsList';
-import { ObjectId } from 'mongodb';
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+} from '../../../../../db/collectionNames';
+import { castRubricForUI } from '../../../../../db/dao/rubrics/castRubricForUI';
+import { RubricModel } from '../../../../../db/dbModels';
+import { getDatabase } from '../../../../../db/mongodb';
+import {
+  AppContentWrapperBreadCrumbs,
+  CompanyInterface,
+  RubricInterface,
+} from '../../../../../db/uiInterfaces';
+import CmsCompanyLayout from '../../../../../layout/cms/CmsCompanyLayout';
+import CompanyRubricsList, {
+  CompanyRubricsListInterface,
+} from '../../../../../layout/CompanyRubricsList';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../../../lib/ssrUtils';
+import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
 
 interface RubricsRouteInterface extends CompanyRubricsListInterface {}
 

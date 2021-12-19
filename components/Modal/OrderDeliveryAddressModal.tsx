@@ -1,22 +1,22 @@
 import { GoogleMap, Marker, useLoadScript } from '@react-google-maps/api';
-import WpButton from 'components/button/WpButton';
-import ControlButton from 'components/button/ControlButton';
-import FormikAddressInput from 'components/FormElements/Input/FormikAddressInput';
-import FormikDatePicker from 'components/FormElements/Input/FormikDatePicker';
-import FormikInput from 'components/FormElements/Input/FormikInput';
-import FormikTextarea from 'components/FormElements/Textarea/FormikTextarea';
-import Inner from 'components/Inner';
-import RequestError from 'components/RequestError';
-import Spinner from 'components/Spinner';
-import { DATE_FORMAT_FULL, GEO_POINT_TYPE, MAP_DEFAULT_CENTER } from 'config/common';
-import { useAppContext } from 'context/appContext';
-import { useLocaleContext } from 'context/localeContext';
-import { AddressModel, CoordinatesModel, OrderDeliveryInfoModel } from 'db/dbModels';
 import { Form, Formik } from 'formik';
-import { getReadableAddress } from 'lib/addressUtils';
-import { GeocodeResultInterface, ReverseGeocodePayload } from 'lib/geocode';
 import fetch from 'node-fetch';
 import * as React from 'react';
+import { DATE_FORMAT_FULL, GEO_POINT_TYPE, MAP_DEFAULT_CENTER } from '../../config/common';
+import { useAppContext } from '../../context/appContext';
+import { useLocaleContext } from '../../context/localeContext';
+import { AddressModel, CoordinatesModel, OrderDeliveryInfoModel } from '../../db/dbModels';
+import { getReadableAddress } from '../../lib/addressUtils';
+import { GeocodeResultInterface, ReverseGeocodePayload } from '../../lib/geocode';
+import ControlButton from '../button/ControlButton';
+import WpButton from '../button/WpButton';
+import FormikAddressInput from '../FormElements/Input/FormikAddressInput';
+import FormikDatePicker from '../FormElements/Input/FormikDatePicker';
+import FormikInput from '../FormElements/Input/FormikInput';
+import FormikTextarea from '../FormElements/Textarea/FormikTextarea';
+import Inner from '../Inner';
+import RequestError from '../RequestError';
+import Spinner from '../Spinner';
 
 const mapContainerStyle = {
   width: '100%',

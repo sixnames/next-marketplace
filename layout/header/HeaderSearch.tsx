@@ -1,20 +1,20 @@
-import ControlButton from 'components/button/ControlButton';
-import { REQUEST_METHOD_POST, ROUTE_SEARCH_RESULT } from 'config/common';
-import { useSiteContext } from 'context/siteContext';
-import { ShopProductInterface } from 'db/uiInterfaces';
-import ProductSnippetGridBigImage from 'layout/snippet/ProductSnippetGridBigImage';
 import { useRouter } from 'next/router';
+import * as React from 'react';
+import { useDebounce } from 'use-debounce';
+import OutsideClickHandler from 'react-outside-click-handler';
+import ControlButton from '../../components/button/ControlButton';
+import WpInput from '../../components/FormElements/Input/WpInput';
+import Inner from '../../components/Inner';
+import WpLink from '../../components/Link/WpLink';
+import Spinner from '../../components/Spinner';
+import { REQUEST_METHOD_POST, ROUTE_SEARCH_RESULT } from '../../config/common';
+import { useSiteContext } from '../../context/siteContext';
+import { ShopProductInterface } from '../../db/uiInterfaces';
 import {
   HeaderSearchInputInterface,
   HeaderSearchPayloadInterface,
-} from 'pages/api/search/header-search';
-import * as React from 'react';
-import { useDebounce } from 'use-debounce';
-import Inner from 'components/Inner';
-import OutsideClickHandler from 'react-outside-click-handler';
-import Input from 'components/FormElements/Input/Input';
-import Spinner from 'components/Spinner';
-import WpLink from 'components/Link/WpLink';
+} from '../../pages/api/search/header-search';
+import ProductSnippetGridBigImage from '../snippet/ProductSnippetGridBigImage';
 
 interface HeaderSearchResultInterface {
   shopProducts?: ShopProductInterface[] | null;
@@ -145,7 +145,7 @@ const HeaderSearch: React.FC<HeaderSearchInterface> = ({ setIsSearchOpen }) => {
                 }
               }}
             >
-              <Input
+              <WpInput
                 onChange={(e) => setString(e.target.value)}
                 name={'search'}
                 icon={'search'}

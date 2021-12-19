@@ -1,14 +1,14 @@
-import { PAGINATION_DEFAULT_LIMIT, SORT_DESC } from 'config/common';
-import { COL_NOT_SYNCED_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
+import { ObjectId } from 'mongodb';
+import { PAGINATION_DEFAULT_LIMIT, SORT_DESC } from '../../../config/common';
+import { castUrlFilters } from '../../../lib/catalogueUtils';
+import { COL_NOT_SYNCED_PRODUCTS, COL_SHOPS } from '../../collectionNames';
+import { getDatabase } from '../../mongodb';
 import {
   AppPaginationAggregationInterface,
   AppPaginationInterface,
   NotSyncedProductInterface,
   ShopInterface,
-} from 'db/uiInterfaces';
-import { castUrlFilters } from 'lib/catalogueUtils';
-import { ObjectId } from 'mongodb';
+} from '../../uiInterfaces';
 
 interface GetPaginatedNotSyncedProductsInterface {
   shopId?: string;

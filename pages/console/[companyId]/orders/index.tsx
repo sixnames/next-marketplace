@@ -1,27 +1,30 @@
-import ContentItemControls from 'components/button/ContentItemControls';
-import Currency from 'components/Currency';
-import FormattedDateTime from 'components/FormattedDateTime';
-import Inner from 'components/Inner';
-import WpLink from 'components/Link/WpLink';
-import LinkEmail from 'components/Link/LinkEmail';
-import LinkPhone from 'components/Link/LinkPhone';
-import Pager from 'components/Pager';
-import WpTable, { WpTableColumn } from 'components/WpTable';
-import Title from 'components/Title';
-import { ROUTE_CMS, ROUTE_CONSOLE } from 'config/common';
-import { getConsoleOrders, GetConsoleOrdersPayloadType } from 'db/dao/orders/getConsoleOrders';
-import { OrderInterface } from 'db/uiInterfaces';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import ContentItemControls from '../../../../components/button/ContentItemControls';
+import Currency from '../../../../components/Currency';
+import FormattedDateTime from '../../../../components/FormattedDateTime';
+import Inner from '../../../../components/Inner';
+import LinkEmail from '../../../../components/Link/LinkEmail';
+import LinkPhone from '../../../../components/Link/LinkPhone';
+import WpLink from '../../../../components/Link/WpLink';
+import Pager from '../../../../components/Pager';
+import WpTable, { WpTableColumn } from '../../../../components/WpTable';
+import WpTitle from '../../../../components/WpTitle';
+import { ROUTE_CMS, ROUTE_CONSOLE } from '../../../../config/common';
+import {
+  getConsoleOrders,
+  GetConsoleOrdersPayloadType,
+} from '../../../../db/dao/orders/getConsoleOrders';
+import { OrderInterface } from '../../../../db/uiInterfaces';
+import AppContentWrapper from '../../../../layout/AppContentWrapper';
+import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
 import {
   castDbData,
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
-} from 'lib/ssrUtils';
+} from '../../../../lib/ssrUtils';
 
 interface OrdersRouteInterface {
   data: GetConsoleOrdersPayloadType;
@@ -124,7 +127,7 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ data }) => {
         <title>{`Заказы`}</title>
       </Head>
       <Inner>
-        <Title subtitle={<div>Всего заказов {data.totalDocs}</div>}>Заказы</Title>
+        <WpTitle subtitle={<div>Всего заказов {data.totalDocs}</div>}>Заказы</WpTitle>
 
         <div className='overflow-x-auto' data-cy={'orders-list'}>
           <WpTable<OrderInterface>

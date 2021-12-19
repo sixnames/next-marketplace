@@ -1,13 +1,13 @@
-import { ASSETS_DIST_SHOPS_LOGOS, ASSETS_LOGO_WIDTH } from 'config/common';
-import { COL_SHOPS } from 'db/collectionNames';
-import { ShopModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { getApiMessageValue } from 'lib/apiMessageUtils';
-import { deleteUpload, storeUploads } from 'lib/assetUtils/assetUtils';
-import { parseRestApiFormData } from 'lib/restApi';
-import { getOperationPermission } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { ASSETS_DIST_SHOPS_LOGOS, ASSETS_LOGO_WIDTH } from '../../../config/common';
+import { COL_SHOPS } from '../../../db/collectionNames';
+import { ShopModel } from '../../../db/dbModels';
+import { getDatabase } from '../../../db/mongodb';
+import { getApiMessageValue } from '../../../lib/apiMessageUtils';
+import { deleteUpload, storeUploads } from '../../../lib/assetUtils/assetUtils';
+import { parseRestApiFormData } from '../../../lib/restApi';
+import { getOperationPermission } from '../../../lib/sessionHelpers';
 
 export const config = {
   api: {

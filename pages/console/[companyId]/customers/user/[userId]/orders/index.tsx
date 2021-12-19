@@ -1,8 +1,11 @@
-import FormattedDateTime from 'components/FormattedDateTime';
-import Inner from 'components/Inner';
-import WpLink from 'components/Link/WpLink';
-import WpTable, { WpTableColumn } from 'components/WpTable';
-import { ROUTE_CONSOLE, SORT_DESC } from 'config/common';
+import { ObjectId } from 'mongodb';
+import * as React from 'react';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import FormattedDateTime from '../../../../../../../components/FormattedDateTime';
+import Inner from '../../../../../../../components/Inner';
+import WpLink from '../../../../../../../components/Link/WpLink';
+import WpTable, { WpTableColumn } from '../../../../../../../components/WpTable';
+import { ROUTE_CONSOLE, SORT_DESC } from '../../../../../../../config/common';
 import {
   COL_ORDER_STATUSES,
   COL_ORDERS,
@@ -10,27 +13,24 @@ import {
   COL_SHOPS,
   COL_USER_CATEGORIES,
   COL_USERS,
-} from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
+} from '../../../../../../../db/collectionNames';
+import { getDatabase } from '../../../../../../../db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   CompanyInterface,
   OrderInterface,
   UserInterface,
-} from 'db/uiInterfaces';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import ConsoleUserLayout from 'layout/console/ConsoleUserLayout';
-import { getFieldStringLocale } from 'lib/i18n';
-import { getFullName } from 'lib/nameUtils';
-import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
-import { ObjectId } from 'mongodb';
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+} from '../../../../../../../db/uiInterfaces';
+import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
+import ConsoleUserLayout from '../../../../../../../layout/console/ConsoleUserLayout';
+import { getFieldStringLocale } from '../../../../../../../lib/i18n';
+import { getFullName } from '../../../../../../../lib/nameUtils';
+import { phoneToRaw, phoneToReadable } from '../../../../../../../lib/phoneUtils';
 import {
   castDbData,
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
-} from 'lib/ssrUtils';
+} from '../../../../../../../lib/ssrUtils';
 
 interface UserOrdersConsumerInterface {
   user: UserInterface;

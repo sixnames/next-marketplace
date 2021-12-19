@@ -1,9 +1,9 @@
-import { GenderModel, ObjectIdModel, OptionVariantsModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { alwaysArray, sortObjectsByField } from 'lib/arrayUtils';
-import { getFieldStringLocale } from 'lib/i18n';
 import { get } from 'lodash';
 import { ObjectId } from 'mongodb';
+import { GenderModel, ObjectIdModel, OptionVariantsModel } from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import { alwaysArray, sortObjectsByField } from './arrayUtils';
+import { getFieldStringLocale } from './i18n';
 
 interface TreeItemInterface extends Record<any, any> {
   parentId?: ObjectIdModel | null;

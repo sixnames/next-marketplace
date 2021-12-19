@@ -1,17 +1,17 @@
-import ModalText from 'components/Modal/ModalText';
-import { useSiteUserContext } from 'context/siteUserContext';
-import { UpdateMyPasswordInputInterface } from 'db/dao/user/updateMyPassword';
 import * as React from 'react';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
-import ModalButtons from 'components/Modal/ModalButtons';
 import { Form, Formik } from 'formik';
-import WpButton from 'components/button/WpButton';
-import { useAppContext } from 'context/appContext';
-import useValidationSchema from 'hooks/useValidationSchema';
-import RequestError from 'components/RequestError';
-import FormikInput from 'components/FormElements/Input/FormikInput';
-import { updateMyPasswordSchema } from 'validation/userSchema';
+import { useAppContext } from '../../context/appContext';
+import { useSiteUserContext } from '../../context/siteUserContext';
+import { UpdateMyPasswordInputInterface } from '../../db/dao/user/updateMyPassword';
+import useValidationSchema from '../../hooks/useValidationSchema';
+import { updateMyPasswordSchema } from '../../validation/userSchema';
+import WpButton from '../button/WpButton';
+import FormikInput from '../FormElements/Input/FormikInput';
+import RequestError from '../RequestError';
+import ModalButtons from './ModalButtons';
+import ModalFrame from './ModalFrame';
+import ModalText from './ModalText';
+import ModalTitle from './ModalTitle';
 
 export interface UpdateMyPasswordModalInterface {
   confirm: (input: UpdateMyPasswordInputInterface) => void;

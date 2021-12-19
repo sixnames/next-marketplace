@@ -2,7 +2,7 @@ import { DEFAULT_CITY, ROUTE_CMS } from 'config/common';
 import { fixtureIds } from 'cypress/fixtures/fixtureIds';
 import { MOCK_ADDRESS_A, MOCK_ADDRESS_B } from 'tests/mocks';
 
-describe('Companies list', () => {
+describe('Company shops', () => {
   const companiesPath = `${ROUTE_CMS}/companies`;
   beforeEach(() => {
     cy.testAuth(companiesPath);
@@ -106,26 +106,19 @@ describe('Companies list', () => {
     cy.getByCy('assets').attachFile('test-shop-asset-0.png', { subjectType: 'drag-n-drop' });
   });
 
-  it('Should generate shop token', () => {
+  it('Should CRUD shop products', () => {
+    // Should generate shop token
     cy.visit(`${ROUTE_CMS}/companies/${fixtureIds.companyB}/shops/shop/${fixtureIds.shopB}`);
     cy.wait(1500);
     cy.getByCy('shop-details-page').should('exist');
     cy.getByCy('generate-api-token').click();
     cy.wait(1500);
     cy.getByCy('generated-token').should('exist');
-  });
-
-  it('Should CRUD shop products', () => {
-    cy.getByCy(`company_a-update`).click();
-    cy.wait(1500);
-    cy.getByCy(`company-shops`).click();
-    cy.wait(1500);
 
     // Should display shop products list
-    cy.getByCy(`Shop A-update`).click();
-    cy.wait(1500);
-    cy.getByCy(`shop-products`).click();
-    cy.wait(1500);
+    cy.visit(
+      `${ROUTE_CMS}/companies/${fixtureIds.companyA}/shops/shop/${fixtureIds.shopA}/products`,
+    );
     cy.getByCy('shop-rubrics-list').should('exist');
     cy.getByCy(`Вино-update`).click();
     cy.wait(1500);

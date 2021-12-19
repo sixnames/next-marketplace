@@ -1,10 +1,10 @@
-import ContentItemControls from 'components/button/ContentItemControls';
-import Inner from 'components/Inner';
-import WpTable, { WpTableColumn } from 'components/WpTable';
-import { ConsoleShopLayoutInterface, RubricInterface } from 'db/uiInterfaces';
-import ConsoleShopLayout from 'layout/console/ConsoleShopLayout';
 import { useRouter } from 'next/router';
 import * as React from 'react';
+import { ConsoleShopLayoutInterface, RubricInterface } from '../../db/uiInterfaces';
+import ConsoleShopLayout from '../../layout/console/ConsoleShopLayout';
+import ContentItemControls from '../button/ContentItemControls';
+import Inner from '../Inner';
+import WpTable, { WpTableColumn } from '../WpTable';
 
 export interface ShopRubricsInterface extends ConsoleShopLayoutInterface {
   rubrics: RubricInterface[];

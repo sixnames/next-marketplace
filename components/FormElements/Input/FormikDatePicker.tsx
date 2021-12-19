@@ -1,7 +1,7 @@
-import DatePickerInput, { DatePickerInputInterface } from 'components/FormElements/DatePickerInput';
 import * as React from 'react';
 import { Field, FieldProps } from 'formik';
 import { get } from 'lodash';
+import DatePickerInput, { DatePickerInputInterface } from '../DatePickerInput';
 
 export interface FormikDatePickerInterface
   extends Omit<DatePickerInputInterface, 'onChange' | 'error' | 'notValid'> {

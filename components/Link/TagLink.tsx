@@ -1,5 +1,5 @@
-import { LinkInterface } from 'db/uiInterfaces';
 import * as React from 'react';
+import { LinkInterface } from '../../db/uiInterfaces';
 import WpLink from './WpLink';
 
 export interface TagLinkInterface extends Omit<LinkInterface, 'activeClassName' | 'href'> {

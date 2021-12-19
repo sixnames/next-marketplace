@@ -1,14 +1,14 @@
-import InputLine, { InputLinePropsInterface } from 'components/FormElements/Input/InputLine';
-import HeadlessMenuButton, {
-  HeadlessMenuGroupInterface,
-  HeadlessMenuItemInterface,
-} from 'components/HeadlessMenuButton';
-import WpIcon from 'components/WpIcon';
-import { SelectOptionFragment, useIconsOptionsQuery } from 'generated/apolloComponents';
 import * as React from 'react';
 import { Field, FieldProps } from 'formik';
 import { get } from 'lodash';
-import { InputTheme } from 'types/clientTypes';
+import { SelectOptionFragment, useIconsOptionsQuery } from '../../generated/apolloComponents';
+import { InputTheme } from '../../types/clientTypes';
+import HeadlessMenuButton, {
+  HeadlessMenuGroupInterface,
+  HeadlessMenuItemInterface,
+} from '../HeadlessMenuButton';
+import WpIcon from '../WpIcon';
+import InputLine, { InputLinePropsInterface } from './Input/InputLine';
 
 export interface FormikSelectInterface extends InputLinePropsInterface {
   name: string;

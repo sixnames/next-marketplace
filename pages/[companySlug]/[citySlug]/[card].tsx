@@ -1,23 +1,23 @@
-import WpButton from 'components/button/WpButton';
-import ErrorBoundaryFallback from 'components/ErrorBoundaryFallback';
-import FixedButtons from 'components/button/FixedButtons';
-import Inner from 'components/Inner';
-import { ISR_FIVE_SECONDS } from 'config/common';
-import { CARD_LAYOUT_HALF_COLUMNS, DEFAULT_LAYOUT } from 'config/constantSelects';
-import { useConfigContext } from 'context/configContext';
-import { useSiteUserContext } from 'context/siteUserContext';
-import { CardLayoutInterface, InitialCardDataInterface } from 'db/uiInterfaces';
-import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
-import { getCardData } from 'lib/cardUtils';
-import { getIsrSiteInitialData, IsrContextInterface } from 'lib/isrUtils';
-import { castDbData } from 'lib/ssrUtils';
 import { cityIn } from 'lvovich';
 import { GetStaticPathsResult, GetStaticPropsResult, NextPage } from 'next';
 import dynamic from 'next/dynamic';
 import * as React from 'react';
+import FixedButtons from '../../../components/button/FixedButtons';
+import WpButton from '../../../components/button/WpButton';
+import ErrorBoundaryFallback from '../../../components/ErrorBoundaryFallback';
+import Inner from '../../../components/Inner';
+import { ISR_FIVE_SECONDS } from '../../../config/common';
+import { CARD_LAYOUT_HALF_COLUMNS, DEFAULT_LAYOUT } from '../../../config/constantSelects';
+import { useConfigContext } from '../../../context/configContext';
+import { useSiteUserContext } from '../../../context/siteUserContext';
+import { CardLayoutInterface, InitialCardDataInterface } from '../../../db/uiInterfaces';
+import SiteLayout, { SiteLayoutProviderInterface } from '../../../layout/SiteLayout';
+import { getCardData } from '../../../lib/cardUtils';
+import { getIsrSiteInitialData, IsrContextInterface } from '../../../lib/isrUtils';
+import { castDbData } from '../../../lib/ssrUtils';
 
-const CardDefaultLayout = dynamic(() => import('layout/card/CardDefaultLayout'));
-const CardHalfColumnsLayout = dynamic(() => import('layout/card/CardHalfColumnsLayout'));
+const CardDefaultLayout = dynamic(() => import('../../../layout/card/CardDefaultLayout'));
+const CardHalfColumnsLayout = dynamic(() => import('../../../layout/card/CardHalfColumnsLayout'));
 
 const CardConsumer: React.FC<CardLayoutInterface> = (props) => {
   const sessionUser = useSiteUserContext();

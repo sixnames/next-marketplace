@@ -1,4 +1,4 @@
-import { IconType } from 'types/iconTypes';
+import { IconType } from './iconTypes';
 
 export type Theme = 'light' | 'dark';
 export type ButtonTheme = 'primary' | 'secondary' | 'secondary-b' | 'gray';

@@ -1,14 +1,14 @@
-import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
-import { CreateBlogPostInputInterface } from 'db/dao/blog/createBlogPost';
-import { useCreateBlogPost } from 'hooks/mutations/useBlogMutations';
 import * as React from 'react';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
-import ModalButtons from 'components/Modal/ModalButtons';
-import WpButton from 'components/button/WpButton';
 import { Formik, Form } from 'formik';
-import useValidationSchema from 'hooks/useValidationSchema';
-import { createBlogPostSchema } from 'validation/blogSchema';
+import { CreateBlogPostInputInterface } from '../../db/dao/blog/createBlogPost';
+import { useCreateBlogPost } from '../../hooks/mutations/useBlogMutations';
+import useValidationSchema from '../../hooks/useValidationSchema';
+import { createBlogPostSchema } from '../../validation/blogSchema';
+import WpButton from '../button/WpButton';
+import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
+import ModalButtons from './ModalButtons';
+import ModalFrame from './ModalFrame';
+import ModalTitle from './ModalTitle';
 
 export interface BlogPostModalInterface {
   companySlug: string;

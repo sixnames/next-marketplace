@@ -1,3 +1,6 @@
+import { useRouter } from 'next/router';
+import * as React from 'react';
+import { setCookie, destroyCookie } from 'nookies';
 import {
   CATALOGUE_PRODUCTS_LIMIT,
   COOKIE_CITY,
@@ -8,11 +11,8 @@ import {
   DEFAULT_COMPANY_SLUG,
   DEFAULT_CURRENCY,
   DEFAULT_LOCALE,
-} from 'config/common';
-import { CityInterface, CompanyInterface, SsrConfigsInterface } from 'db/uiInterfaces';
-import { useRouter } from 'next/router';
-import * as React from 'react';
-import { setCookie, destroyCookie } from 'nookies';
+} from '../config/common';
+import { CityInterface, CompanyInterface, SsrConfigsInterface } from '../db/uiInterfaces';
 
 interface ConfigContextInterface {
   configs: SsrConfigsInterface;

@@ -1,12 +1,12 @@
 import { GoogleMap, InfoWindow, Marker, useLoadScript } from '@react-google-maps/api';
-import RequestError from 'components/RequestError';
-import Spinner from 'components/Spinner';
-import { MAP_DEFAULT_CENTER } from 'config/common';
-import { darkMapStyles, lightMapStyles } from 'config/mapsConfig';
-import { useConfigContext } from 'context/configContext';
-import { useThemeContext } from 'context/themeContext';
-import { AddressModel } from 'db/dbModels';
 import * as React from 'react';
+import { MAP_DEFAULT_CENTER } from '../config/common';
+import { darkMapStyles, lightMapStyles } from '../config/mapsConfig';
+import { useConfigContext } from '../context/configContext';
+import { useThemeContext } from '../context/themeContext';
+import { AddressModel } from '../db/dbModels';
+import RequestError from './RequestError';
+import Spinner from './Spinner';
 
 /*const fallbackMarker = {
   path: 'M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0',

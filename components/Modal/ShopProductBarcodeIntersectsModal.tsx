@@ -1,14 +1,14 @@
-import WpLink from 'components/Link/WpLink';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
-import WpTable, { WpTableColumn } from 'components/WpTable';
-import TableRowImage from 'components/TableRowImage';
-import Title from 'components/Title';
-import { ROUTE_CMS } from 'config/common';
-import { ShopProductBarcodeDoublesInterface, ShopProductInterface } from 'db/uiInterfaces';
-import { alwaysArray } from 'lib/arrayUtils';
-import { getNumWord } from 'lib/i18n';
 import * as React from 'react';
+import { ROUTE_CMS } from '../../config/common';
+import { ShopProductBarcodeDoublesInterface, ShopProductInterface } from '../../db/uiInterfaces';
+import { alwaysArray } from '../../lib/arrayUtils';
+import { getNumWord } from '../../lib/i18n';
+import WpLink from '../Link/WpLink';
+import TableRowImage from '../TableRowImage';
+import WpTable, { WpTableColumn } from '../WpTable';
+import WpTitle from '../WpTitle';
+import ModalFrame from './ModalFrame';
+import ModalTitle from './ModalTitle';
 
 interface BarcodeIntersectsModalConsumerInterface {
   barcodeDouble: ShopProductBarcodeDoublesInterface;
@@ -89,9 +89,9 @@ const BarcodeIntersectsModalConsumer: React.FC<BarcodeIntersectsModalConsumerInt
 
   return (
     <div className='mb-16'>
-      <Title size={'small'} tag={'div'}>
+      <WpTitle size={'small'} tag={'div'}>
         {barcode}
-      </Title>
+      </WpTitle>
 
       <div className={`text-xl font-medium mb-2`}>{catalogueCounterString}</div>
 

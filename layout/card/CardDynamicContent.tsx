@@ -1,11 +1,11 @@
-import WpButton from 'components/button/WpButton';
-import PageEditor from 'components/PageEditor';
-import SeoTextLocalesInfoList from 'components/SeoTextLocalesInfoList';
-import { PAGE_EDITOR_DEFAULT_VALUE_STRING } from 'config/common';
-import { useSiteUserContext } from 'context/siteUserContext';
-import { SeoContentModel } from 'db/dbModels';
-import { ProductInterface } from 'db/uiInterfaces';
 import * as React from 'react';
+import WpButton from '../../components/button/WpButton';
+import PageEditor from '../../components/PageEditor';
+import SeoTextLocalesInfoList from '../../components/SeoTextLocalesInfoList';
+import { PAGE_EDITOR_DEFAULT_VALUE_STRING } from '../../config/common';
+import { useSiteUserContext } from '../../context/siteUserContext';
+import { SeoContentModel } from '../../db/dbModels';
+import { ProductInterface } from '../../db/uiInterfaces';
 
 interface CardDynamicContentInterface {
   cardContent?: SeoContentModel | null | undefined;

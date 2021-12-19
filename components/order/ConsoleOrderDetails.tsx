@@ -57,7 +57,7 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
   const { showErrorNotification } = useNotificationsContext();
   const { product, originalName, shopProduct, itemId, price, totalPrice, finalPrice, isCanceled } =
     orderProduct;
-  const productImageSrc = shopProduct ? `${product?.mainImage}` : IMAGE_FALLBACK;
+  const productImageSrc = product?.mainImage || IMAGE_FALLBACK;
   const minAmount = 1;
   const supplierProducts = shopProduct?.supplierProducts || [];
 

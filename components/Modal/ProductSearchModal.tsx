@@ -1,18 +1,24 @@
-import Pager from 'components/Pager';
-import { DEFAULT_PAGE } from 'config/common';
-import { GetRubricProductsListInputInterface } from 'db/dao/product/getRubricProductsList';
-import { ConsoleRubricProductsInterface, ProductInterface, RubricInterface } from 'db/uiInterfaces';
 import * as React from 'react';
-import Spinner from 'components/Spinner';
-import RequestError from 'components/RequestError';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
-import FormikIndividualSearch from 'components/FormElements/Search/FormikIndividualSearch';
-import RubricsList from 'components/RubricsList';
-import useProductsListColumns, { ProductColumnsInterface } from 'hooks/useProductsListColumns';
-import Table from 'components/Table';
 import useSWR from 'swr';
 import qs from 'qs';
+import { DEFAULT_PAGE } from '../../config/common';
+import { GetRubricProductsListInputInterface } from '../../db/dao/product/getRubricProductsList';
+import {
+  ConsoleRubricProductsInterface,
+  ProductInterface,
+  RubricInterface,
+} from '../../db/uiInterfaces';
+import useProductsListColumns, {
+  ProductColumnsInterface,
+} from '../../hooks/useProductsListColumns';
+import FormikIndividualSearch from '../FormElements/Search/FormikIndividualSearch';
+import Pager from '../Pager';
+import RequestError from '../RequestError';
+import RubricsList from '../RubricsList';
+import Spinner from '../Spinner';
+import WpTable from '../WpTable';
+import ModalFrame from './ModalFrame';
+import ModalTitle from './ModalTitle';
 
 interface ProductsListInterface extends ProductColumnsInterface {
   rubricSlug: string;
@@ -63,7 +69,7 @@ const ProductsList: React.FC<ProductsListInterface> = ({
   return (
     <div>
       <div className='overflow-x-auto'>
-        <Table<ProductInterface>
+        <WpTable<ProductInterface>
           data={data?.docs}
           columns={columns}
           emptyMessage={'Список пуст'}

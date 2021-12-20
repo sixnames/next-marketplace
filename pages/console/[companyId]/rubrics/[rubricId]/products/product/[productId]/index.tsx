@@ -1,21 +1,24 @@
-import CompanyProductDetails, {
-  CompanyProductDetailsInterface,
-} from 'components/company/CompanyProductDetails';
-import { ROUTE_CONSOLE } from 'config/common';
-import { COL_COMPANIES } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
-import CmsProductLayout from 'layout/cms/CmsProductLayout';
-import { getCmsProduct } from 'lib/productUtils';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import CompanyProductDetails, {
+  CompanyProductDetailsInterface,
+} from '../../../../../../../../components/company/CompanyProductDetails';
+import { ROUTE_CONSOLE } from '../../../../../../../../config/common';
+import { COL_COMPANIES } from '../../../../../../../../db/collectionNames';
+import { getDatabase } from '../../../../../../../../db/mongodb';
+import {
+  AppContentWrapperBreadCrumbs,
+  CompanyInterface,
+} from '../../../../../../../../db/uiInterfaces';
+import CmsProductLayout from '../../../../../../../../layout/cms/CmsProductLayout';
+import ConsoleLayout from '../../../../../../../../layout/cms/ConsoleLayout';
+import { getCmsProduct } from '../../../../../../../../lib/productUtils';
 import {
   castDbData,
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
-} from 'lib/ssrUtils';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
+} from '../../../../../../../../lib/ssrUtils';
 
 interface ProductDetailsInterface extends CompanyProductDetailsInterface {}
 

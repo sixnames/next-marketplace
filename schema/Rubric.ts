@@ -1,8 +1,8 @@
 import { inputObjectType, objectType } from 'nexus';
-import { getRequestParams } from 'lib/sessionHelpers';
-import { RubricVariantModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { COL_RUBRIC_VARIANTS } from 'db/collectionNames';
+import { COL_RUBRIC_VARIANTS } from '../db/collectionNames';
+import { RubricVariantModel } from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import { getRequestParams } from '../lib/sessionHelpers';
 
 export const RubricProductsCountersInput = inputObjectType({
   name: 'RubricProductsCountersInput',

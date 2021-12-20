@@ -1,10 +1,10 @@
-import { ADULT_FALSE, ADULT_KEY, DEFAULT_COMPANY_SLUG, DEFAULT_CITY } from 'config/common';
-import { ADULT_MODAL } from 'config/modalVariants';
-import { SsrConfigsInterface } from 'db/uiInterfaces';
 import * as React from 'react';
 import Router from 'next/router';
 import { debounce } from 'lodash';
-import { IpInfoInterface } from 'types/clientTypes';
+import { ADULT_FALSE, ADULT_KEY, DEFAULT_CITY, DEFAULT_COMPANY_SLUG } from '../config/common';
+import { ADULT_MODAL } from '../config/modalVariants';
+import { SsrConfigsInterface } from '../db/uiInterfaces';
+import { IpInfoInterface } from '../types/clientTypes';
 
 interface ContextState {
   isModal: {

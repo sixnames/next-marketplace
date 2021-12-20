@@ -1,13 +1,13 @@
-import Button from 'components/button/Button';
-import InputLine from 'components/FormElements/Input/InputLine';
 import * as React from 'react';
-import Input, { InputPropsInterface } from './Input';
+import WpButton from '../../button/WpButton';
+import InputLine from './InputLine';
+import WpInput, { WpInputPropsInterface } from './WpInput';
 import { Field, FieldProps } from 'formik';
 import { get } from 'lodash';
 import uniqid from 'uniqid';
 
 export interface FormikCodeInputPropsInterface
-  extends Omit<InputPropsInterface, 'label' | 'value' | 'type'> {
+  extends Omit<WpInputPropsInterface, 'label' | 'value' | 'type'> {
   showInlineError?: boolean;
 }
 
@@ -27,7 +27,7 @@ const FormikCodeInput: React.FC<FormikCodeInputPropsInterface> = ({
         return (
           <InputLine low={low} lineContentClass='flex gap-4 items-end'>
             <div className='flex-grow'>
-              <Input
+              <WpInput
                 {...field}
                 {...props}
                 low
@@ -41,7 +41,7 @@ const FormikCodeInput: React.FC<FormikCodeInputPropsInterface> = ({
               />
             </div>
 
-            <Button
+            <WpButton
               frameClassName='w-auto'
               theme={'secondary'}
               onClick={() => {
@@ -49,7 +49,7 @@ const FormikCodeInput: React.FC<FormikCodeInputPropsInterface> = ({
               }}
             >
               Сгенерировать
-            </Button>
+            </WpButton>
           </InputLine>
         );
       }}

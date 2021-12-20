@@ -1,15 +1,18 @@
-import { DEFAULT_CITY } from 'config/common';
-import { useConfigContext } from 'context/configContext';
-import { useSiteContext } from 'context/siteContext';
-import { InitialCardDataInterface, ProductAttributeInterface } from 'db/uiInterfaces';
-import { AddProductToCartInput, AddShoplessProductToCartInput } from 'generated/apolloComponents';
+import * as React from 'react';
+import { DEFAULT_CITY } from '../config/common';
+import { useConfigContext } from '../context/configContext';
+import { useSiteContext } from '../context/siteContext';
+import { InitialCardDataInterface, ProductAttributeInterface } from '../db/uiInterfaces';
+import {
+  AddProductToCartInput,
+  AddShoplessProductToCartInput,
+} from '../generated/apolloComponents';
+import { alwaysArray } from '../lib/arrayUtils';
+import { noNaN } from '../lib/numbers';
 import useGetSimilarProducts, {
   UseGetSimilarProductsPayloadInterface,
-} from 'hooks/useGetSimilarProducts';
-import useUpdateCardCounter from 'hooks/useUpdateCardCounter';
-import { alwaysArray } from 'lib/arrayUtils';
-import { noNaN } from 'lib/numbers';
-import * as React from 'react';
+} from './useGetSimilarProducts';
+import useUpdateCardCounter from './useUpdateCardCounter';
 
 interface UseCardDataPayloadInterface
   extends InitialCardDataInterface,

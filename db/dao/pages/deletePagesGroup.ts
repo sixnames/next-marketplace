@@ -1,15 +1,15 @@
+import { ObjectId } from 'mongodb';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
 import {
   COL_PAGE_TEMPLATES,
   COL_PAGES,
   COL_PAGES_GROUP,
   COL_PAGES_GROUP_TEMPLATES,
-} from 'db/collectionNames';
-import { PageModel, PagesGroupModel, PagesGroupPayloadModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { ObjectId } from 'mongodb';
+} from '../../collectionNames';
+import { PageModel, PagesGroupModel, PagesGroupPayloadModel } from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface DeletePagesGroupInputInterface {
   _id: string;

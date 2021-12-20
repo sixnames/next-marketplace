@@ -1,15 +1,15 @@
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { LanguageModel, LanguagePayloadModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { COL_LANGUAGES } from 'db/collectionNames';
-import { SORT_ASC } from 'config/common';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { SORT_ASC } from '../config/common';
+import { COL_LANGUAGES } from '../db/collectionNames';
+import { LanguageModel, LanguagePayloadModel } from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from 'lib/sessionHelpers';
-import { createLanguageSchema, updateLanguageSchema } from 'validation/languageSchema';
+} from '../lib/sessionHelpers';
+import { createLanguageSchema, updateLanguageSchema } from '../validation/languageSchema';
 
 export const Language = objectType({
   name: 'Language',

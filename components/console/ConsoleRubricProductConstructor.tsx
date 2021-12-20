@@ -1,11 +1,11 @@
-import Button from 'components/button/Button';
-import Inner from 'components/Inner';
-import SeoContentEditor from 'components/SeoContentEditor';
-import { UpdateProductCardContentInputInterface } from 'db/dao/product/updateProductCardContent';
-import { ProductInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
-import { useUpdateProductCardContent } from 'hooks/mutations/useProductMutations';
 import * as React from 'react';
+import { UpdateProductCardContentInputInterface } from '../../db/dao/product/updateProductCardContent';
+import { ProductInterface, SeoContentCitiesInterface } from '../../db/uiInterfaces';
+import { useUpdateProductCardContent } from '../../hooks/mutations/useProductMutations';
+import WpButton from '../button/WpButton';
+import Inner from '../Inner';
+import SeoContentEditor from '../SeoContentEditor';
 
 export interface ConsoleRubricProductConstructorInterface {
   product: ProductInterface;
@@ -37,14 +37,14 @@ const ConsoleRubricProductConstructor: React.FC<ConsoleRubricProductConstructorI
               <SeoContentEditor filedName={'cardContent'} />
 
               <div className='flex mb-12 mt-4'>
-                <Button
+                <WpButton
                   theme={'secondary'}
                   size={'small'}
                   type={'submit'}
                   testId={`card-content-submit`}
                 >
                   Сохранить
-                </Button>
+                </WpButton>
               </div>
             </Form>
           );

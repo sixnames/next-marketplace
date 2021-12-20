@@ -1,12 +1,12 @@
-import Button from 'components/button/Button';
-import Link from 'components/Link/Link';
-import { FILTER_SEPARATOR, FILTER_PAGE_KEY } from 'config/common';
-import { alwaysString } from 'lib/arrayUtils';
-import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import Icon from 'components/Icon';
 import { usePagination } from '@material-ui/lab/Pagination';
+import { FILTER_PAGE_KEY, FILTER_SEPARATOR } from '../config/common';
+import { alwaysString } from '../lib/arrayUtils';
+import { noNaN } from '../lib/numbers';
+import WpButton from './button/WpButton';
+import WpLink from './Link/WpLink';
+import WpIcon from './WpIcon';
 
 const minimalPagesCount = 2;
 const siblingCount = 7;
@@ -92,7 +92,7 @@ const Pager: React.FC<PagerInterface> = ({
             children = '…';
           } else if (type === 'page') {
             children = (
-              <Link
+              <WpLink
                 onClick={onClick}
                 className={`flex items-center justify-center w-10 h-10 hover:no-underline ${
                   selected
@@ -102,44 +102,44 @@ const Pager: React.FC<PagerInterface> = ({
                 href={nextUrl}
               >
                 {page}
-              </Link>
+              </WpLink>
             );
           } else if (type === 'previous') {
             if (disabled) {
               children = (
                 <span className={`${buttonClassName} ${arrowClassName}`}>
-                  <Icon className={iconClassName} name={'chevron-left'} />
+                  <WpIcon className={iconClassName} name={'chevron-left'} />
                 </span>
               );
             } else {
               children = (
-                <Link
+                <WpLink
                   ariaLabel={'Go to previous page'}
                   onClick={onClick}
                   className={`${buttonClassName} ${arrowClassName}`}
                   href={nextUrl}
                 >
-                  <Icon className={iconClassName} name={'chevron-left'} />
-                </Link>
+                  <WpIcon className={iconClassName} name={'chevron-left'} />
+                </WpLink>
               );
             }
           } else {
             if (disabled) {
               children = (
                 <span className={`${buttonClassName} ${arrowClassName}`}>
-                  <Icon className={iconClassName} name={'chevron-right'} />
+                  <WpIcon className={iconClassName} name={'chevron-right'} />
                 </span>
               );
             } else {
               children = (
-                <Link
+                <WpLink
                   ariaLabel={'Go to next page'}
                   onClick={onClick}
                   className={`${buttonClassName} ${arrowClassName}`}
                   href={nextUrl}
                 >
-                  <Icon className={iconClassName} name={'chevron-right'} />
-                </Link>
+                  <WpIcon className={iconClassName} name={'chevron-right'} />
+                </WpLink>
               );
             }
           }
@@ -150,7 +150,7 @@ const Pager: React.FC<PagerInterface> = ({
 
       {showMoreHandler && noNaN(totalPages) > page ? (
         <div className='flex justify-center mt-6'>
-          <Button
+          <WpButton
             isLoading={isLoading}
             size={'small'}
             onClick={() => {
@@ -160,7 +160,7 @@ const Pager: React.FC<PagerInterface> = ({
             }}
           >
             Показать ещё
-          </Button>
+          </WpButton>
         </div>
       ) : null}
     </div>

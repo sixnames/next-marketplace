@@ -1,7 +1,7 @@
-import { ValidationSchemaArgsInterface } from 'types/validataionTypes';
-import { objectIdSchema } from 'validation/schemaTemplates';
 import * as Yup from 'yup';
-import { attributeIdSchema } from 'validation/attributesGroupSchema';
+import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
+import { attributeIdSchema } from './attributesGroupSchema';
+import { objectIdSchema } from './schemaTemplates';
 
 export const productIdSchema = (args: ValidationSchemaArgsInterface) => {
   return objectIdSchema({ ...args, slug: 'validation.products.id' });

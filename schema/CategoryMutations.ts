@@ -1,35 +1,5 @@
-import { updateAlgoliaProducts } from 'lib/algolia/productAlgoliaUtils';
-import { getNextItemId } from 'lib/itemIdUtils';
-import { updateCitiesSeoContent } from 'lib/seoContentUtils';
-import { deleteDocumentsTree, getParentTreeIds } from 'lib/treeUtils';
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import {
-  AttributesGroupModel,
-  ProductAttributeModel,
-  CategoryModel,
-  CategoryPayloadModel,
-  RubricModel,
-  ObjectIdModel,
-  CompanyModel,
-  ConfigModel,
-} from 'db/dbModels';
-import {
-  getOperationPermission,
-  getRequestParams,
-  getResolverValidationSchema,
-} from 'lib/sessionHelpers';
-import { getDatabase } from 'db/mongodb';
-import {
-  COL_ATTRIBUTES_GROUPS,
-  COL_PRODUCT_ATTRIBUTES,
-  COL_RUBRICS,
-  COL_CATEGORIES,
-  COL_COMPANIES,
-  COL_CONFIGS,
-} from 'db/collectionNames';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
 import {
   CATEGORY_SLUG_PREFIX,
   CONFIG_VARIANT_CATEGORIES_TREE,
@@ -38,13 +8,43 @@ import {
   DEFAULT_COUNTERS_OBJECT,
   DEFAULT_LOCALE,
   FILTER_SEPARATOR,
-} from 'config/common';
+} from '../config/common';
+import {
+  COL_ATTRIBUTES_GROUPS,
+  COL_CATEGORIES,
+  COL_COMPANIES,
+  COL_CONFIGS,
+  COL_PRODUCT_ATTRIBUTES,
+  COL_RUBRICS,
+} from '../db/collectionNames';
+import { findDocumentByI18nField } from '../db/dao/findDocumentByI18nField';
+import {
+  AttributesGroupModel,
+  CategoryModel,
+  CategoryPayloadModel,
+  CompanyModel,
+  ConfigModel,
+  ObjectIdModel,
+  ProductAttributeModel,
+  RubricModel,
+} from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import { updateAlgoliaProducts } from '../lib/algolia/productAlgoliaUtils';
+import getResolverErrorMessage from '../lib/getResolverErrorMessage';
+import { getNextItemId } from '../lib/itemIdUtils';
+import { updateCitiesSeoContent } from '../lib/seoContentUtils';
+import {
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+} from '../lib/sessionHelpers';
+import { deleteDocumentsTree, getParentTreeIds } from '../lib/treeUtils';
 import {
   addAttributesGroupToCategorySchema,
   createCategorySchema,
   deleteAttributesGroupFromCategorySchema,
   updateCategorySchema,
-} from 'validation/categorySchema';
+} from '../validation/categorySchema';
 
 export const CategoryPayload = objectType({
   name: 'CategoryPayload',

@@ -1,24 +1,24 @@
-import AppContentFilter from 'components/AppContentFilter';
-import ContentItemControls from 'components/button/ContentItemControls';
-import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
-import Inner from 'components/Inner';
-import Link from 'components/Link/Link';
-import Pager from 'components/Pager';
-import RequestError from 'components/RequestError';
-import { SeoTextCitiesInfoList } from 'components/SeoTextLocalesInfoList';
-import Spinner from 'components/Spinner';
-import Table, { TableColumn } from 'components/Table';
-import TableRowImage from 'components/TableRowImage';
+import * as React from 'react';
 import {
   CompanyInterface,
   ConsoleRubricProductsInterface,
   ProductInterface,
-} from 'db/uiInterfaces';
-import usePageLoadingState from 'hooks/usePageLoadingState';
-import { alwaysArray } from 'lib/arrayUtils';
-import { getNumWord } from 'lib/i18n';
-import { noNaN } from 'lib/numbers';
-import * as React from 'react';
+} from '../../db/uiInterfaces';
+import usePageLoadingState from '../../hooks/usePageLoadingState';
+import { alwaysArray } from '../../lib/arrayUtils';
+import { getNumWord } from '../../lib/i18n';
+import { noNaN } from '../../lib/numbers';
+import AppContentFilter from '../AppContentFilter';
+import ContentItemControls from '../button/ContentItemControls';
+import FormikRouterSearch from '../FormElements/Search/FormikRouterSearch';
+import Inner from '../Inner';
+import WpLink from '../Link/WpLink';
+import Pager from '../Pager';
+import RequestError from '../RequestError';
+import { SeoTextCitiesInfoList } from '../SeoTextLocalesInfoList';
+import Spinner from '../Spinner';
+import TableRowImage from '../TableRowImage';
+import WpTable, { WpTableColumn } from '../WpTable';
 
 export interface CompanyRubricProductsListInterface extends ConsoleRubricProductsInterface {
   pageCompany: CompanyInterface;
@@ -39,18 +39,18 @@ const CompanyRubricProductsList: React.FC<CompanyRubricProductsListInterface> = 
 }) => {
   const isPageLoading = usePageLoadingState();
 
-  const columns: TableColumn<ProductInterface>[] = [
+  const columns: WpTableColumn<ProductInterface>[] = [
     {
       headTitle: 'Арт',
       render: ({ dataItem, rowIndex }) => {
         return (
-          <Link
+          <WpLink
             testId={`product-link-${rowIndex}`}
             href={`${itemPath}/${dataItem._id}`}
             target={'_blank'}
           >
             {dataItem.itemId}
-          </Link>
+          </WpLink>
         );
       },
     },
@@ -153,7 +153,7 @@ const CompanyRubricProductsList: React.FC<CompanyRubricProductsListInterface> = 
 
         <div className={'max-w-full'}>
           <div className={`relative overflow-x-auto overflow-y-hidden`}>
-            <Table<ProductInterface>
+            <WpTable<ProductInterface>
               onRowDoubleClick={(dataItem) => {
                 window.open(`${itemPath}/${dataItem._id}`, '_blank');
               }}

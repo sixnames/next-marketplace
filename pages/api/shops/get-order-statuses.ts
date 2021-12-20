@@ -1,11 +1,11 @@
-import { SORT_ASC } from 'config/common';
-import { COL_ORDER_STATUSES, COL_SHOPS } from 'db/collectionNames';
-import { OrderStatusModel, ShopModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { SyncOrderStatusInterface, SyncParamsInterface } from 'db/syncInterfaces';
-import { getFieldStringLocale } from 'lib/i18n';
-import { getSessionLocale } from 'lib/sessionHelpers';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { SORT_ASC } from '../../../config/common';
+import { COL_ORDER_STATUSES, COL_SHOPS } from '../../../db/collectionNames';
+import { OrderStatusModel, ShopModel } from '../../../db/dbModels';
+import { getDatabase } from '../../../db/mongodb';
+import { SyncOrderStatusInterface, SyncParamsInterface } from '../../../db/syncInterfaces';
+import { getFieldStringLocale } from '../../../lib/i18n';
+import { getSessionLocale } from '../../../lib/sessionHelpers';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== 'GET') {

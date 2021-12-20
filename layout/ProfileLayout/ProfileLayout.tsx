@@ -1,4 +1,10 @@
-import { HeadlessMenuGroupInterface } from 'components/HeadlessMenuButton';
+import { useRouter } from 'next/router';
+import * as React from 'react';
+import AsideNav from '../../components/AsideNav';
+import { HeadlessMenuGroupInterface } from '../../components/HeadlessMenuButton';
+import Inner from '../../components/Inner';
+import WpBreadcrumbs from '../../components/WpBreadcrumbs';
+import WpTitle from '../../components/WpTitle';
 import {
   ROUTE_PROFILE,
   ROUTE_PROFILE_BONUS,
@@ -10,15 +16,9 @@ import {
   ROUTE_PROFILE_PREFERENCES,
   ROUTE_PROFILE_PROPOSALS,
   ROUTE_PROFILE_VIEWED,
-} from 'config/common';
-import { useSiteContext } from 'context/siteContext';
-import { useSiteUserContext } from 'context/siteUserContext';
-import { useRouter } from 'next/router';
-import * as React from 'react';
-import Breadcrumbs from 'components/Breadcrumbs';
-import Inner from 'components/Inner';
-import Title from 'components/Title';
-import AsideNav from 'components/AsideNav';
+} from '../../config/common';
+import { useSiteContext } from '../../context/siteContext';
+import { useSiteUserContext } from '../../context/siteUserContext';
 
 interface ProfileLayoutInterface {
   testId?: string;
@@ -164,12 +164,12 @@ const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) =
 
   return (
     <div className='mb-12'>
-      <Breadcrumbs currentPageName={'Профиль'} />
+      <WpBreadcrumbs currentPageName={'Профиль'} />
 
       <Inner lowTop testId={'profile'}>
         <div className='flex flex-col gap-8 md:flex-row'>
           <div className='relative z-20 md:w-[var(--catalogue-filter-width)] flex-shrink-0'>
-            <Title>Личный кабинет</Title>
+            <WpTitle>Личный кабинет</WpTitle>
             <div className='text-5 font-medium mb-8 md:mb-12'>
               С возвращением, {sessionUser?.me.name}
             </div>

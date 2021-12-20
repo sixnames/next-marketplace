@@ -1,27 +1,27 @@
-import { ROUTE_CONSOLE, SORT_DESC } from 'config/common';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
+import ShopOrders, { ShopOrdersInterface } from '../../../../../../../components/shops/ShopOrders';
+import { ROUTE_CONSOLE, SORT_DESC } from '../../../../../../../config/common';
 import {
   COL_COMPANIES,
   COL_ORDER_CUSTOMERS,
   COL_ORDER_STATUSES,
   COL_ORDERS,
   COL_SHOPS,
-} from 'db/collectionNames';
-import { ShopModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, ShopInterface } from 'db/uiInterfaces';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { getFieldStringLocale } from 'lib/i18n';
-import { getShortName } from 'lib/nameUtils';
-import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
+} from '../../../../../../../db/collectionNames';
+import { ShopModel } from '../../../../../../../db/dbModels';
+import { getDatabase } from '../../../../../../../db/mongodb';
+import { AppContentWrapperBreadCrumbs, ShopInterface } from '../../../../../../../db/uiInterfaces';
+import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
+import { getFieldStringLocale } from '../../../../../../../lib/i18n';
+import { getShortName } from '../../../../../../../lib/nameUtils';
+import { phoneToRaw, phoneToReadable } from '../../../../../../../lib/phoneUtils';
 import {
   castDbData,
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
-} from 'lib/ssrUtils';
-import { ObjectId } from 'mongodb';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import * as React from 'react';
-import ShopOrders, { ShopOrdersInterface } from 'components/shops/ShopOrders';
+} from '../../../../../../../lib/ssrUtils';
 
 interface CompanyShopAssetsInterface
   extends GetConsoleInitialDataPropsInterface,

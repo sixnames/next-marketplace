@@ -1,9 +1,9 @@
-import { COL_BRAND_COLLECTIONS } from 'db/collectionNames';
-import { BrandCollectionModel, BrandCollectionsAlphabetListModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { getAlphabetList } from 'lib/optionUtils';
 import { arg, extendType, inputObjectType, objectType } from 'nexus';
-import { getRequestParams } from 'lib/sessionHelpers';
+import { COL_BRAND_COLLECTIONS } from '../db/collectionNames';
+import { BrandCollectionModel, BrandCollectionsAlphabetListModel } from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import { getAlphabetList } from '../lib/optionUtils';
+import { getRequestParams } from '../lib/sessionHelpers';
 
 export const BrandCollection = objectType({
   name: 'BrandCollection',

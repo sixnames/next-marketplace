@@ -1,3 +1,4 @@
+import { getSession } from 'next-auth/client';
 import {
   ROLE_SLUG_ADMIN,
   ROUTE_CMS,
@@ -5,13 +6,12 @@ import {
   ROUTE_CONSOLE,
   ROUTE_CONSOLE_NAV_GROUP,
   SORT_ASC,
-} from 'config/common';
-import { COL_COMPANIES, COL_NAV_ITEMS, COL_ROLES, COL_USERS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { UserInterface } from 'db/uiInterfaces';
-import { getFullName, getShortName } from 'lib/nameUtils';
-import { getSession } from 'next-auth/client';
-import { NexusContext } from 'types/apiContextTypes';
+} from '../../../config/common';
+import { getFullName, getShortName } from '../../../lib/nameUtils';
+import { NexusContext } from '../../../types/apiContextTypes';
+import { COL_COMPANIES, COL_NAV_ITEMS, COL_ROLES, COL_USERS } from '../../collectionNames';
+import { getDatabase } from '../../mongodb';
+import { UserInterface } from '../../uiInterfaces';
 
 export interface SessionUserPayloadInterface {
   me: UserInterface;

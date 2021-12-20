@@ -1,6 +1,6 @@
-import { getSiteInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
+import { getSiteInitialData } from '../../../../../../lib/ssrUtils';
 
 const CardPage: NextPage = () => {
   return <div />;

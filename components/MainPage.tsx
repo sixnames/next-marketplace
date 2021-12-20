@@ -1,18 +1,18 @@
-import HorizontalScroll from 'components/HorizontalScroll';
-import Inner from 'components/Inner';
-import Link from 'components/Link/Link';
-import TagLink from 'components/Link/TagLink';
-import PageEditor from 'components/PageEditor';
-import ShopsMap from 'components/ShopsMap';
-import Title from 'components/Title';
-import { PAGE_EDITOR_DEFAULT_VALUE_STRING, ROUTE_DOCS_PAGES } from 'config/common';
-import { useConfigContext } from 'context/configContext';
-import { useSiteContext } from 'context/siteContext';
-import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
-import ProductSnippetGridBigImage from 'layout/snippet/ProductSnippetGridBigImage';
-import { MainPageInterface } from 'lib/mainPageUtils';
 import * as React from 'react';
 import ImageGallery, { ReactImageGalleryItem } from 'react-image-gallery';
+import { PAGE_EDITOR_DEFAULT_VALUE_STRING, ROUTE_DOCS_PAGES } from '../config/common';
+import { useConfigContext } from '../context/configContext';
+import { useSiteContext } from '../context/siteContext';
+import SiteLayout, { SiteLayoutProviderInterface } from '../layout/SiteLayout';
+import ProductSnippetGridBigImage from '../layout/snippet/ProductSnippetGridBigImage';
+import { MainPageInterface } from '../lib/mainPageUtils';
+import HorizontalScroll from './HorizontalScroll';
+import Inner from './Inner';
+import TagLink from './Link/TagLink';
+import WpLink from './Link/WpLink';
+import PageEditor from './PageEditor';
+import ShopsMap from './ShopsMap';
+import WpTitle from './WpTitle';
 
 const MainPageConsumer: React.FC<MainPageInterface> = ({
   topProducts,
@@ -60,7 +60,7 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
           renderItem(): React.ReactNode {
             return (
               <div key={mainBanner.url} className='overflow-hidden rounded-xl'>
-                <Link
+                <WpLink
                   target={'_blank'}
                   href={`${ROUTE_DOCS_PAGES}/${slug}`}
                   className={`relative block ${mainBannerMobile ? '' : 'h-[400px] md:h-auto'}`}
@@ -120,7 +120,7 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
                       ) : null}
                     </span>
                   </span>
-                </Link>
+                </WpLink>
               </div>
             );
           },
@@ -151,7 +151,7 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
         {/*seo top*/}
         {configTitle || configSeoContent ? (
           <div className='mb-14 sm:mb-20'>
-            {configTitle ? <Title textClassName='max-w-[1440px]'>{configTitle}</Title> : null}
+            {configTitle ? <WpTitle textClassName='max-w-[1440px]'>{configTitle}</WpTitle> : null}
             {configSeoContent &&
             configSeoContent.length &&
             configSeoContent !== PAGE_EDITOR_DEFAULT_VALUE_STRING ? (
@@ -215,7 +215,7 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
                       className='flex min-w-[80vw] sm:min-w-[21rem] w-[80vw] sm:w-[21rem] overflow-hidden rounded-lg'
                       key={`${secondaryBanner.url}`}
                     >
-                      <Link
+                      <WpLink
                         className='relative block'
                         target={'_blank'}
                         href={`${ROUTE_DOCS_PAGES}/${slug}`}
@@ -255,7 +255,7 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
                             {name}
                           </span>
                         </span>
-                      </Link>
+                      </WpLink>
                     </div>
                   );
                 },

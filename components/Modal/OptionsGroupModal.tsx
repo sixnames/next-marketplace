@@ -1,22 +1,22 @@
-import { OPTIONS_GROUP_VARIANT_TEXT } from 'config/common';
 import * as React from 'react';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
-import ModalButtons from 'components/Modal/ModalButtons';
 import { Form, Formik } from 'formik';
-import Button from 'components/button/Button';
-import { useAppContext } from 'context/appContext';
+import { OPTIONS_GROUP_VARIANT_TEXT } from '../../config/common';
+import { useAppContext } from '../../context/appContext';
 import {
   CreateOptionsGroupInput,
   OptionsGroupVariant,
   useOptionsGroupVariantsQuery,
-} from 'generated/apolloComponents';
-import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
-import useValidationSchema from 'hooks/useValidationSchema';
-import RequestError from 'components/RequestError';
-import Spinner from 'components/Spinner';
-import FormikSelect from 'components/FormElements/Select/FormikSelect';
-import { optionsGroupModalSchema } from 'validation/optionsGroupSchema';
+} from '../../generated/apolloComponents';
+import useValidationSchema from '../../hooks/useValidationSchema';
+import { optionsGroupModalSchema } from '../../validation/optionsGroupSchema';
+import WpButton from '../button/WpButton';
+import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
+import FormikSelect from '../FormElements/Select/FormikSelect';
+import RequestError from '../RequestError';
+import Spinner from '../Spinner';
+import ModalButtons from './ModalButtons';
+import ModalFrame from './ModalFrame';
+import ModalTitle from './ModalTitle';
 
 export interface OptionsGroupModalInterface {
   confirm: (values: CreateOptionsGroupInput) => void;
@@ -83,13 +83,13 @@ const OptionsGroupModal: React.FC<OptionsGroupModalInterface> = ({ confirm }) =>
               />
 
               <ModalButtons>
-                <Button type={'submit'} testId={'options-group-submit'}>
+                <WpButton type={'submit'} testId={'options-group-submit'}>
                   Создать
-                </Button>
+                </WpButton>
 
-                <Button theme={'secondary'} onClick={hideModal} testId={'options-group-decline'}>
+                <WpButton theme={'secondary'} onClick={hideModal} testId={'options-group-decline'}>
                   Отмена
-                </Button>
+                </WpButton>
               </ModalButtons>
             </Form>
           );

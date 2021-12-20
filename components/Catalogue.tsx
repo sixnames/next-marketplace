@@ -1,51 +1,51 @@
-import Breadcrumbs from 'components/Breadcrumbs';
-import Button from 'components/button/Button';
-import ErrorBoundaryFallback from 'components/ErrorBoundaryFallback';
-import Icon from 'components/Icon';
-import Inner from 'components/Inner';
-import MenuButtonWithName from 'components/MenuButtonWithName';
-import PageEditor from 'components/PageEditor';
-import Pager from 'components/Pager';
-import SeoContentNoIndexTrigger from 'components/SeoContentNoIndexTrigger';
-import SeoTextLocalesInfoList from 'components/SeoTextLocalesInfoList';
-import { CATALOGUE_HEAD_LAYOUT_WITH_CATEGORIES } from 'config/constantSelects';
-import { useSiteContext } from 'context/siteContext';
-import { useSiteUserContext } from 'context/siteUserContext';
-import { CatalogueBreadcrumbModel, SeoContentModel } from 'db/dbModels';
-import ProductSnippetGrid from 'layout/snippet/ProductSnippetGrid';
-import ProductSnippetRow from 'layout/snippet/ProductSnippetRow';
-import HeadlessMenuButton from 'components/HeadlessMenuButton';
-import RequestError from 'components/RequestError';
-import Spinner from 'components/Spinner';
-import Title from 'components/Title';
-import {
-  FILTER_SORT_KEYS,
-  CATALOGUE_VIEW_GRID,
-  CATALOGUE_VIEW_ROW,
-  CATALOGUE_VIEW_STORAGE_KEY,
-  SORT_ASC_STR,
-  SORT_BY_KEY,
-  SORT_DESC_STR,
-  SORT_DIR_KEY,
-  REQUEST_METHOD_POST,
-  ROUTE_CATALOGUE,
-  FILTER_SEPARATOR,
-} from 'config/common';
-import { useConfigContext } from 'context/configContext';
-import { CatalogueDataInterface, CategoryInterface } from 'db/uiInterfaces';
-import { useUpdateCatalogueCountersMutation } from 'generated/apolloComponents';
-import usePageLoadingState from 'hooks/usePageLoadingState';
-import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
-import { alwaysArray } from 'lib/arrayUtils';
-import { getCatalogueFilterNextPath, getCatalogueFilterValueByKey } from 'lib/catalogueHelpers';
-import { getNumWord } from 'lib/i18n';
 import { debounce } from 'lodash';
 import { cityIn } from 'lvovich';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import { CatalogueApiInputInterface } from 'pages/api/catalogue/[...filters]';
 import * as React from 'react';
-import CatalogueFilter from 'layout/catalogue/CatalogueFilter';
+import {
+  CATALOGUE_VIEW_GRID,
+  CATALOGUE_VIEW_ROW,
+  CATALOGUE_VIEW_STORAGE_KEY,
+  FILTER_SEPARATOR,
+  FILTER_SORT_KEYS,
+  REQUEST_METHOD_POST,
+  ROUTE_CATALOGUE,
+  SORT_ASC_STR,
+  SORT_BY_KEY,
+  SORT_DESC_STR,
+  SORT_DIR_KEY,
+} from '../config/common';
+import { CATALOGUE_HEAD_LAYOUT_WITH_CATEGORIES } from '../config/constantSelects';
+import { useConfigContext } from '../context/configContext';
+import { useSiteContext } from '../context/siteContext';
+import { useSiteUserContext } from '../context/siteUserContext';
+import { CatalogueBreadcrumbModel, SeoContentModel } from '../db/dbModels';
+import { CatalogueDataInterface, CategoryInterface } from '../db/uiInterfaces';
+import { useUpdateCatalogueCountersMutation } from '../generated/apolloComponents';
+import usePageLoadingState from '../hooks/usePageLoadingState';
+import CatalogueFilter from '../layout/catalogue/CatalogueFilter';
+import SiteLayout, { SiteLayoutProviderInterface } from '../layout/SiteLayout';
+import ProductSnippetGrid from '../layout/snippet/ProductSnippetGrid';
+import ProductSnippetRow from '../layout/snippet/ProductSnippetRow';
+import { alwaysArray } from '../lib/arrayUtils';
+import { getCatalogueFilterNextPath, getCatalogueFilterValueByKey } from '../lib/catalogueHelpers';
+import { getNumWord } from '../lib/i18n';
+import { CatalogueApiInputInterface } from '../pages/api/catalogue/[...filters]';
+import WpButton from './button/WpButton';
+import ErrorBoundaryFallback from './ErrorBoundaryFallback';
+import HeadlessMenuButton from './HeadlessMenuButton';
+import Inner from './Inner';
+import MenuButtonWithName from './MenuButtonWithName';
+import PageEditor from './PageEditor';
+import Pager from './Pager';
+import RequestError from './RequestError';
+import SeoContentNoIndexTrigger from './SeoContentNoIndexTrigger';
+import SeoTextLocalesInfoList from './SeoTextLocalesInfoList';
+import Spinner from './Spinner';
+import WpBreadcrumbs from './WpBreadcrumbs';
+import WpIcon from './WpIcon';
+import WpTitle from './WpTitle';
 
 const lazyLoadingImagesLimit = 5;
 
@@ -56,9 +56,9 @@ export interface CatalogueHeadDefaultInterface {
   headCategories?: CategoryInterface[] | null;
 }
 
-const CatalogueHeadDefault = dynamic(() => import('layout/catalogue/CatalogueHeadDefault'));
+const CatalogueHeadDefault = dynamic(() => import('../layout/catalogue/CatalogueHeadDefault'));
 const CatalogueHeadWithCategories = dynamic(
-  () => import('layout/catalogue/CatalogueHeadWithCategories'),
+  () => import('../layout/catalogue/CatalogueHeadWithCategories'),
 );
 
 interface CatalogueHeadInterface extends CatalogueHeadDefaultInterface {
@@ -110,7 +110,7 @@ const CatalogueHead: React.FC<CatalogueHeadInterface> = ({
             </div>
 
             <div className='flex flex-wrap gap-6 items-center'>
-              <Button
+              <WpButton
                 frameClassName='w-auto'
                 size={'small'}
                 onClick={() => {
@@ -125,7 +125,7 @@ const CatalogueHead: React.FC<CatalogueHeadInterface> = ({
                 }}
               >
                 Редактировать SEO блок
-              </Button>
+              </WpButton>
 
               {showIndexCheckBox && textTop ? (
                 <SeoContentNoIndexTrigger seoContent={textTop} />
@@ -369,9 +369,9 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
   if (catalogueData.totalProducts < 1) {
     return (
       <div className='mb-12 catalogue'>
-        <Breadcrumbs config={state.breadcrumbs} urlPrefix={urlPrefix} />
+        <WpBreadcrumbs config={state.breadcrumbs} urlPrefix={urlPrefix} />
         <Inner lowTop testId={'catalogue'}>
-          <Title testId={'catalogue-title'}>{catalogueData.catalogueTitle}</Title>
+          <WpTitle testId={'catalogue-title'}>{catalogueData.catalogueTitle}</WpTitle>
           <RequestError message={'В данном разделе нет товаров. Загляните пожалуйста позже'} />
         </Inner>
       </div>
@@ -412,9 +412,9 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
             <div>
               {/*Mobile controls*/}
               <div className='grid grid-cols-2 gap-4 md:gap-6 grid lg:hidden'>
-                <Button theme={'secondary'} className='w-full' onClick={showFilterHandler} short>
+                <WpButton theme={'secondary'} className='w-full' onClick={showFilterHandler} short>
                   Фильтр
-                </Button>
+                </WpButton>
                 <HeadlessMenuButton
                   buttonAs={'div'}
                   config={sortConfig}
@@ -443,7 +443,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
                     }`}
                     onClick={() => setIsRowViewHandler(CATALOGUE_VIEW_GRID)}
                   >
-                    <Icon
+                    <WpIcon
                       className='w-[var(--catalogueVieButtonSize)] h-[var(--catalogueVieButtonSize)]'
                       name={'grid'}
                     />
@@ -456,7 +456,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
                     }`}
                     onClick={() => setIsRowViewHandler(CATALOGUE_VIEW_ROW)}
                   >
-                    <Icon
+                    <WpIcon
                       className='w-[var(--catalogueVieButtonSize)] h-[var(--catalogueVieButtonSize)]'
                       name={'rows'}
                     />
@@ -537,23 +537,25 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
               />
             </div>
 
-            <Button
+            <WpButton
               size={'small'}
               onClick={() => {
                 window.open(
-                  `${sessionUser?.editLinkBasePath}${state.textBottomEditUrl}?url=${router.asPath}`,
+                  `${sessionUser?.editLinkBasePath}${state.textBottomEditUrl}?url=${
+                    router.asPath
+                  }&title=${encodeURIComponent(state.catalogueTitle)}`,
                   '_blank',
                 );
               }}
             >
               Редактировать SEO блок
-            </Button>
+            </WpButton>
           </div>
         ) : null}
       </Inner>
 
       {isUpButtonVisible ? (
-        <Button
+        <WpButton
           onClick={() => {
             window.scrollTo({
               left: 0,
@@ -561,7 +563,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
               behavior: 'smooth',
             });
           }}
-          className='fixed right-inner-block-horizontal-padding bottom-28 lg:bottom-8 z-30'
+          className='fixed right-inner-block-horizontal-padding bottom-28 lg:bottom-8 z-[777]'
           icon={'chevron-up'}
           circle
         />

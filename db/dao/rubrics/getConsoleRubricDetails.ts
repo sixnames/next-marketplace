@@ -1,11 +1,14 @@
-import { CATALOGUE_SEO_TEXT_POSITION_BOTTOM, CATALOGUE_SEO_TEXT_POSITION_TOP } from 'config/common';
-import { COL_RUBRICS } from 'db/collectionNames';
-import { RubricModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { RubricInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
-import { getFieldStringLocale } from 'lib/i18n';
-import { getRubricAllSeoContents } from 'lib/seoContentUtils';
 import { ObjectId } from 'mongodb';
+import {
+  CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
+  CATALOGUE_SEO_TEXT_POSITION_TOP,
+} from '../../../config/common';
+import { getFieldStringLocale } from '../../../lib/i18n';
+import { getRubricAllSeoContents } from '../../../lib/seoContentUtils';
+import { COL_RUBRICS } from '../../collectionNames';
+import { RubricModel } from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { RubricInterface, SeoContentCitiesInterface } from '../../uiInterfaces';
 
 interface GetConsoleRubricDetailsPayloadInterface {
   rubric: RubricInterface;

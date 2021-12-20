@@ -1,7 +1,7 @@
-import { REQUEST_METHOD_POST } from 'config/common';
-import { getPaginatedUsers } from 'db/dao/user/getPaginatedUsers';
-import { sendApiRouteResponse } from 'lib/sessionHelpers';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { REQUEST_METHOD_POST } from '../../../config/common';
+import { getPaginatedUsers } from '../../../db/dao/user/getPaginatedUsers';
+import { sendApiRouteResponse } from '../../../lib/sessionHelpers';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === REQUEST_METHOD_POST) {

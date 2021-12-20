@@ -1,15 +1,15 @@
-import Button from 'components/button/Button';
+import { Form, Formik } from 'formik';
+import * as React from 'react';
+import { useUpdateProduct } from '../../hooks/mutations/useProductMutations';
+import useValidationSchema from '../../hooks/useValidationSchema';
+import { updateProductSchema } from '../../validation/productSchema';
+import WpButton from '../button/WpButton';
 import ConsoleRubricProductConstructor, {
   ConsoleRubricProductConstructorInterface,
-} from 'components/console/ConsoleRubricProductConstructor';
-import { ProductFormValuesInterface } from 'components/FormTemplates/ProductMainFields';
-import Inner from 'components/Inner';
-import WpImage from 'components/WpImage';
-import { Form, Formik } from 'formik';
-import { useUpdateProduct } from 'hooks/mutations/useProductMutations';
-import useValidationSchema from 'hooks/useValidationSchema';
-import * as React from 'react';
-import { updateProductSchema } from 'validation/productSchema';
+} from '../console/ConsoleRubricProductConstructor';
+import { ProductFormValuesInterface } from '../FormTemplates/ProductMainFields';
+import Inner from '../Inner';
+import WpImage from '../WpImage';
 
 export interface CompanyProductDetailsInterface extends ConsoleRubricProductConstructorInterface {
   routeBasePath: string;
@@ -70,9 +70,9 @@ const CompanyProductDetails: React.FC<CompanyProductDetailsInterface> = ({
         {() => {
           return (
             <Form noValidate>
-              <Button testId={'submit-product'} type={'submit'} size={'small'}>
+              <WpButton testId={'submit-product'} type={'submit'} size={'small'}>
                 Сохранить
-              </Button>
+              </WpButton>
             </Form>
           );
         }}

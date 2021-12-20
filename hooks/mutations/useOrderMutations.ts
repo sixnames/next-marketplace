@@ -1,18 +1,14 @@
-import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH } from 'config/common';
-import { CancelOrderInputInterface } from 'db/dao/orders/cancelOrder';
-import { CancelOrderProductInputInterface } from 'db/dao/orders/cancelOrderProduct';
-import { DeleteOrderInputInterface } from 'db/dao/orders/deleteOrder';
-import { UpdateOrderInterface } from 'db/dao/orders/updateOrder';
-import { UpdateOrderProductInputInterface } from 'db/dao/orders/updateOrderProduct';
-import { OrderInterfacePayloadModel } from 'db/uiInterfaces';
 import * as React from 'react';
-import { ConfirmOrderInputInterface } from 'db/dao/orders/confirmOrder';
-import { OrderPayloadModel } from 'db/dbModels';
-import {
-  useMutation,
-  UseMutationConsumerPayload,
-  useMutationHandler,
-} from 'hooks/mutations/useFetch';
+import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH } from '../../config/common';
+import { CancelOrderInputInterface } from '../../db/dao/orders/cancelOrder';
+import { CancelOrderProductInputInterface } from '../../db/dao/orders/cancelOrderProduct';
+import { ConfirmOrderInputInterface } from '../../db/dao/orders/confirmOrder';
+import { DeleteOrderInputInterface } from '../../db/dao/orders/deleteOrder';
+import { UpdateOrderInterface } from '../../db/dao/orders/updateOrder';
+import { UpdateOrderProductInputInterface } from '../../db/dao/orders/updateOrderProduct';
+import { OrderPayloadModel } from '../../db/dbModels';
+import { OrderInterfacePayloadModel } from '../../db/uiInterfaces';
+import { useMutation, UseMutationConsumerPayload, useMutationHandler } from './useFetch';
 
 const basePath = '/api/order';
 

@@ -1,11 +1,11 @@
-import { CatalogueInterface } from 'components/Catalogue';
-import { ROUTE_CATALOGUE, ISR_FIVE_SECONDS } from 'config/common';
-import { alwaysArray } from 'lib/arrayUtils';
-import { getCatalogueData } from 'lib/catalogueUtils';
-import { getIsrSiteInitialData } from 'lib/isrUtils';
-import { castDbData } from 'lib/ssrUtils';
-import { sortStringArray } from 'lib/stringUtils';
 import { GetStaticPropsContext, GetStaticPropsResult } from 'next';
+import { CatalogueInterface } from '../components/Catalogue';
+import { ISR_FIVE_SECONDS, ROUTE_CATALOGUE } from '../config/common';
+import { alwaysArray } from './arrayUtils';
+import { getCatalogueData } from './catalogueUtils';
+import { getIsrSiteInitialData } from './isrUtils';
+import { castDbData } from './ssrUtils';
+import { sortStringArray } from './stringUtils';
 
 export async function getCatalogueIsrProps(
   context: GetStaticPropsContext<any>,

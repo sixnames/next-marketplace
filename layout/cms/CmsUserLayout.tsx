@@ -1,11 +1,11 @@
-import Inner from 'components/Inner';
-import Title from 'components/Title';
-import { ROUTE_CMS } from 'config/common';
-import { AppContentWrapperBreadCrumbs, UserInterface } from 'db/uiInterfaces';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import AppSubNav from 'layout/AppSubNav';
 import Head from 'next/head';
 import * as React from 'react';
+import Inner from '../../components/Inner';
+import WpTitle from '../../components/WpTitle';
+import { ROUTE_CMS } from '../../config/common';
+import { AppContentWrapperBreadCrumbs, UserInterface } from '../../db/uiInterfaces';
+import AppContentWrapper from '../AppContentWrapper';
+import AppSubNav from '../AppSubNav';
 
 interface CmsUserLayoutInterface {
   user: UserInterface;
@@ -59,7 +59,7 @@ const CmsUserLayout: React.FC<CmsUserLayoutInterface> = ({ user, children, bread
         <title>{user.fullName}</title>
       </Head>
       <Inner lowBottom>
-        <Title
+        <WpTitle
           subtitle={
             <div className='flex'>
               <div>{`ID ${user.itemId}`}</div>
@@ -69,7 +69,7 @@ const CmsUserLayout: React.FC<CmsUserLayoutInterface> = ({ user, children, bread
           testId={`${user.itemId}-user-title`}
         >
           {user.fullName}
-        </Title>
+        </WpTitle>
       </Inner>
       <AppSubNav navConfig={navConfig} />
       {children}

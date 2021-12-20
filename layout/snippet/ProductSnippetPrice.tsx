@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Currency from 'components/Currency';
+import Currency from '../../components/Currency';
 
 interface ProductSnippetPriceInterface {
   value?: string | number | null;

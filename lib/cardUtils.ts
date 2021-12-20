@@ -1,40 +1,46 @@
+import { get } from 'lodash';
+import { ObjectId } from 'mongodb';
 import {
   ATTRIBUTE_VIEW_VARIANT_ICON,
   ATTRIBUTE_VIEW_VARIANT_LIST,
   ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
   ATTRIBUTE_VIEW_VARIANT_TAG,
   ATTRIBUTE_VIEW_VARIANT_TEXT,
-  FILTER_SEPARATOR,
-  ROUTE_CATALOGUE,
-  FILTER_CATEGORY_KEY,
-  FILTER_BRAND_KEY,
   FILTER_BRAND_COLLECTION_KEY,
-  SORT_DESC,
+  FILTER_BRAND_KEY,
+  FILTER_CATEGORY_KEY,
+  FILTER_SEPARATOR,
   GENDER_PLURAL,
-} from 'config/common';
-import { DEFAULT_LAYOUT } from 'config/constantSelects';
-import { getConstantTranslation } from 'config/constantTranslations';
+  ROUTE_CATALOGUE,
+  SORT_DESC,
+} from '../config/common';
+import { DEFAULT_LAYOUT } from '../config/constantSelects';
+import { getConstantTranslation } from '../config/constantTranslations';
 import {
-  COL_BRANDS,
-  COL_MANUFACTURERS,
-  COL_PRODUCT_ASSETS,
-  COL_PRODUCTS,
-  COL_BRAND_COLLECTIONS,
-  COL_PRODUCT_CONNECTIONS,
   COL_ATTRIBUTES,
-  COL_PRODUCT_CONNECTION_ITEMS,
-  COL_OPTIONS,
-  COL_RUBRICS,
-  COL_RUBRIC_VARIANTS,
-  COL_PRODUCT_ATTRIBUTES,
   COL_ATTRIBUTES_GROUPS,
+  COL_BRAND_COLLECTIONS,
+  COL_BRANDS,
+  COL_ICONS,
+  COL_MANUFACTURERS,
+  COL_OPTIONS,
+  COL_PRODUCT_ASSETS,
+  COL_PRODUCT_ATTRIBUTES,
+  COL_PRODUCT_CONNECTION_ITEMS,
+  COL_PRODUCT_CONNECTIONS,
+  COL_PRODUCTS,
+  COL_RUBRIC_VARIANTS,
+  COL_RUBRICS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
-  COL_ICONS,
-} from 'db/collectionNames';
-import { ignoreNoImageStage, productCategoriesPipeline } from 'db/dao/constantPipelines';
-import { CatalogueBreadcrumbModel, ObjectIdModel, ProductCardBreadcrumbModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+} from '../db/collectionNames';
+import { ignoreNoImageStage, productCategoriesPipeline } from '../db/dao/constantPipelines';
+import {
+  CatalogueBreadcrumbModel,
+  ObjectIdModel,
+  ProductCardBreadcrumbModel,
+} from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
 import {
   CategoryInterface,
   InitialCardDataInterface,
@@ -44,20 +50,18 @@ import {
   ProductConnectionItemInterface,
   ProductInterface,
   ShopInterface,
-} from 'db/uiInterfaces';
-import { sortObjectsByField } from 'lib/arrayUtils';
-import { getFieldStringLocale } from 'lib/i18n';
-import { noNaN } from 'lib/numbers';
-import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
+} from '../db/uiInterfaces';
+import { sortObjectsByField } from './arrayUtils';
+import { getFieldStringLocale } from './i18n';
+import { noNaN } from './numbers';
+import { phoneToRaw, phoneToReadable } from './phoneUtils';
 import {
   castProductAttributeForUi,
   getProductCurrentViewCastedAttributes,
-} from 'lib/productAttributesUtils';
-import { getProductSeoContent } from 'lib/seoContentUtils';
-import { generateCardTitle } from 'lib/titleUtils';
-import { getTreeFromList } from 'lib/treeUtils';
-import { get } from 'lodash';
-import { ObjectId } from 'mongodb';
+} from './productAttributesUtils';
+import { getProductSeoContent } from './seoContentUtils';
+import { generateCardTitle } from './titleUtils';
+import { getTreeFromList } from './treeUtils';
 
 interface CastOptionsForBreadcrumbsInterface {
   category: CategoryInterface;

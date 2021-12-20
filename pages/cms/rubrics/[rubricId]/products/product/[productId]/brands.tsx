@@ -1,22 +1,34 @@
-import ConsoleRubricProductBrands from 'components/console/ConsoleRubricProductBrands';
-import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
-import { COL_BRAND_COLLECTIONS, COL_BRANDS, COL_MANUFACTURERS } from 'db/collectionNames';
-import { BrandCollectionModel, BrandModel, ManufacturerModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
+import ConsoleRubricProductBrands from '../../../../../../../components/console/ConsoleRubricProductBrands';
+import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from '../../../../../../../config/common';
+import {
+  COL_BRAND_COLLECTIONS,
+  COL_BRANDS,
+  COL_MANUFACTURERS,
+} from '../../../../../../../db/collectionNames';
+import {
+  BrandCollectionModel,
+  BrandModel,
+  ManufacturerModel,
+} from '../../../../../../../db/dbModels';
+import { getDatabase } from '../../../../../../../db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   BrandCollectionInterface,
   BrandInterface,
   ManufacturerInterface,
   ProductInterface,
-} from 'db/uiInterfaces';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import CmsProductLayout from 'layout/cms/CmsProductLayout';
-import { getFieldStringLocale } from 'lib/i18n';
-import { getCmsProduct } from 'lib/productUtils';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import * as React from 'react';
+} from '../../../../../../../db/uiInterfaces';
+import CmsProductLayout from '../../../../../../../layout/cms/CmsProductLayout';
+import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
+import { getFieldStringLocale } from '../../../../../../../lib/i18n';
+import { getCmsProduct } from '../../../../../../../lib/productUtils';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../../../../../lib/ssrUtils';
 
 interface ProductBrandsInterface {
   product: ProductInterface;

@@ -1,32 +1,41 @@
-import Button from 'components/button/Button';
-import ContentItemControls from 'components/button/ContentItemControls';
-import Currency from 'components/Currency';
-import FixedButtons from 'components/button/FixedButtons';
-import Inner from 'components/Inner';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import { SetUserCategoryModalInterface } from 'components/Modal/SetUserCategoryModal';
-import Percent from 'components/Percent';
-import Table, { TableColumn } from 'components/Table';
-import { ROUTE_CMS, SORT_ASC } from 'config/common';
-import { CONFIRM_MODAL, SET_USER_CATEGORY_MODAL } from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
-import { COL_COMPANIES, COL_ROLES, COL_USER_CATEGORIES, COL_USERS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
+import { ObjectId } from 'mongodb';
+import * as React from 'react';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import ContentItemControls from '../../../../../components/button/ContentItemControls';
+import FixedButtons from '../../../../../components/button/FixedButtons';
+import WpButton from '../../../../../components/button/WpButton';
+import Currency from '../../../../../components/Currency';
+import Inner from '../../../../../components/Inner';
+import { ConfirmModalInterface } from '../../../../../components/Modal/ConfirmModal';
+import { SetUserCategoryModalInterface } from '../../../../../components/Modal/SetUserCategoryModal';
+import Percent from '../../../../../components/Percent';
+import WpTable, { WpTableColumn } from '../../../../../components/WpTable';
+import { ROUTE_CMS, SORT_ASC } from '../../../../../config/common';
+import { CONFIRM_MODAL, SET_USER_CATEGORY_MODAL } from '../../../../../config/modalVariants';
+import { useAppContext } from '../../../../../context/appContext';
+import {
+  COL_COMPANIES,
+  COL_ROLES,
+  COL_USER_CATEGORIES,
+  COL_USERS,
+} from '../../../../../db/collectionNames';
+import { getDatabase } from '../../../../../db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   CompanyInterface,
   UserCategoryInterface,
   UserInterface,
-} from 'db/uiInterfaces';
-import { useSetUserCategoryMutation } from 'hooks/mutations/useUserMutations';
-import CmsUserLayout from 'layout/cms/CmsUserLayout';
-import { getFieldStringLocale } from 'lib/i18n';
-import { getFullName } from 'lib/nameUtils';
-import { ObjectId } from 'mongodb';
-import * as React from 'react';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+} from '../../../../../db/uiInterfaces';
+import { useSetUserCategoryMutation } from '../../../../../hooks/mutations/useUserMutations';
+import CmsUserLayout from '../../../../../layout/cms/CmsUserLayout';
+import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
+import { getFieldStringLocale } from '../../../../../lib/i18n';
+import { getFullName } from '../../../../../lib/nameUtils';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../../../lib/ssrUtils';
 
 interface UserCategoriesConsumerInterface {
   user: UserInterface;
@@ -51,7 +60,7 @@ const UserCategoriesConsumer: React.FC<UserCategoriesConsumerInterface> = ({ use
     ],
   };
 
-  const columns: TableColumn<UserCategoryInterface>[] = [
+  const columns: WpTableColumn<UserCategoryInterface>[] = [
     {
       accessor: 'name',
       headTitle: 'Название',
@@ -116,11 +125,11 @@ const UserCategoriesConsumer: React.FC<UserCategoriesConsumerInterface> = ({ use
       <Inner testId={'user-categories-page'}>
         <div className='relative'>
           <div className='overflow-x-auto overflow-y-hidden'>
-            <Table columns={columns} data={user.categories} testIdKey={'name'} />
+            <WpTable columns={columns} data={user.categories} testIdKey={'name'} />
           </div>
 
           <FixedButtons>
-            <Button
+            <WpButton
               size={'small'}
               testId={'add-user-category'}
               onClick={() => {
@@ -134,7 +143,7 @@ const UserCategoriesConsumer: React.FC<UserCategoriesConsumerInterface> = ({ use
               }}
             >
               Добавить категорию пользователя
-            </Button>
+            </WpButton>
           </FixedButtons>
         </div>
       </Inner>

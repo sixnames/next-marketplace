@@ -1,17 +1,12 @@
-import { castCatalogueParamToObject } from 'lib/catalogueUtils';
 import { arg, extendType, inputObjectType, nonNull } from 'nexus';
 import {
-  AttributeModel,
-  BrandCollectionModel,
-  BrandModel,
-  CategoryModel,
-  ManufacturerModel,
-  OptionModel,
-  ProductAttributeModel,
-  RubricModel,
-} from 'db/dbModels';
-import { getRequestParams, getSessionRole } from 'lib/sessionHelpers';
-import { getDatabase } from 'db/mongodb';
+  DEFAULT_COMPANY_SLUG,
+  FILTER_BRAND_COLLECTION_KEY,
+  FILTER_BRAND_KEY,
+  FILTER_CATEGORY_KEY,
+  FILTER_MANUFACTURER_KEY,
+  VIEWS_COUNTER_STEP,
+} from '../config/common';
 import {
   COL_ATTRIBUTES,
   COL_BRAND_COLLECTIONS,
@@ -21,15 +16,20 @@ import {
   COL_OPTIONS,
   COL_PRODUCT_ATTRIBUTES,
   COL_RUBRICS,
-} from 'db/collectionNames';
+} from '../db/collectionNames';
 import {
-  FILTER_BRAND_COLLECTION_KEY,
-  FILTER_BRAND_KEY,
-  FILTER_CATEGORY_KEY,
-  FILTER_MANUFACTURER_KEY,
-  DEFAULT_COMPANY_SLUG,
-  VIEWS_COUNTER_STEP,
-} from 'config/common';
+  AttributeModel,
+  BrandCollectionModel,
+  BrandModel,
+  CategoryModel,
+  ManufacturerModel,
+  OptionModel,
+  ProductAttributeModel,
+  RubricModel,
+} from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import { castCatalogueParamToObject } from '../lib/catalogueUtils';
+import { getRequestParams, getSessionRole } from '../lib/sessionHelpers';
 
 export const CatalogueAdditionalOptionsInput = inputObjectType({
   name: 'CatalogueAdditionalOptionsInput',

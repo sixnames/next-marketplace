@@ -1,8 +1,8 @@
-import Link from 'components/Link/Link';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import Inner from 'components/Inner';
-import { ClientNavItemInterface } from 'types/clientTypes';
+import Inner from '../components/Inner';
+import WpLink from '../components/Link/WpLink';
+import { ClientNavItemInterface } from '../types/clientTypes';
 
 interface AppSubNavInterface {
   navConfig: ClientNavItemInterface[];
@@ -39,7 +39,7 @@ const AppSubNav: React.FC<AppSubNavInterface> = ({ navConfig }) => {
             const isCurrent = exact ? cleanHref === cleanAasPath : reg.test(asPath);
 
             return (
-              <Link
+              <WpLink
                 className={`flex pt-4 pb-4 text-lg mr-6 border-b-2 hover:no-underline hover:text-primary-text ${
                   isCurrent ? activeClassName : staticClassName
                 } ${disabled ? disabledClassName : ''}`}
@@ -49,7 +49,7 @@ const AppSubNav: React.FC<AppSubNavInterface> = ({ navConfig }) => {
                 key={`${path}`}
               >
                 {name}
-              </Link>
+              </WpLink>
             );
           })}
         </div>

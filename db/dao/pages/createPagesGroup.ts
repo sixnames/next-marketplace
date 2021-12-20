@@ -1,15 +1,15 @@
-import { COL_PAGES_GROUP, COL_PAGES_GROUP_TEMPLATES } from 'db/collectionNames';
-import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
-import { PagesGroupModel, PagesGroupPayloadModel, TranslationModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from 'lib/sessionHelpers';
-import { createPagesGroupSchema } from 'validation/pagesSchema';
+} from '../../../lib/sessionHelpers';
+import { createPagesGroupSchema } from '../../../validation/pagesSchema';
+import { COL_PAGES_GROUP, COL_PAGES_GROUP_TEMPLATES } from '../../collectionNames';
+import { PagesGroupModel, PagesGroupPayloadModel, TranslationModel } from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { DaoPropsInterface } from '../../uiInterfaces';
+import { findDocumentByI18nField } from '../findDocumentByI18nField';
 
 export interface CreatePagesGroupInputInterface {
   nameI18n: TranslationModel;

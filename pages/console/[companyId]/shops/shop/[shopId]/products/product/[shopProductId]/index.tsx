@@ -1,17 +1,20 @@
-import CompanyProductDetails from 'components/company/CompanyProductDetails';
-import RequestError from 'components/RequestError';
-import { ROUTE_CONSOLE } from 'config/common';
-import { AppContentWrapperBreadCrumbs, ShopProductInterface } from 'db/uiInterfaces';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import ConsoleShopProductLayout from 'layout/console/ConsoleShopProductLayout';
-import { getConsoleShopProduct } from 'lib/productUtils';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import CompanyProductDetails from '../../../../../../../../../components/company/CompanyProductDetails';
+import RequestError from '../../../../../../../../../components/RequestError';
+import { ROUTE_CONSOLE } from '../../../../../../../../../config/common';
+import {
+  AppContentWrapperBreadCrumbs,
+  ShopProductInterface,
+} from '../../../../../../../../../db/uiInterfaces';
+import ConsoleLayout from '../../../../../../../../../layout/cms/ConsoleLayout';
+import ConsoleShopProductLayout from '../../../../../../../../../layout/console/ConsoleShopProductLayout';
+import { getConsoleShopProduct } from '../../../../../../../../../lib/productUtils';
 import {
   castDbData,
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
-} from 'lib/ssrUtils';
+} from '../../../../../../../../../lib/ssrUtils';
 
 interface ProductDetailsInterface {
   shopProduct: ShopProductInterface;

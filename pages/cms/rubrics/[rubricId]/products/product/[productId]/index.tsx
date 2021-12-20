@@ -1,12 +1,19 @@
-import ConsoleRubricProductDetails from 'components/console/ConsoleRubricProductDetails';
-import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
-import { AppContentWrapperBreadCrumbs, ProductInterface } from 'db/uiInterfaces';
-import CmsProductLayout from 'layout/cms/CmsProductLayout';
-import { getCmsProduct } from 'lib/productUtils';
 import * as React from 'react';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import ConsoleRubricProductDetails from '../../../../../../../components/console/ConsoleRubricProductDetails';
+import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from '../../../../../../../config/common';
+import {
+  AppContentWrapperBreadCrumbs,
+  ProductInterface,
+} from '../../../../../../../db/uiInterfaces';
+import CmsProductLayout from '../../../../../../../layout/cms/CmsProductLayout';
+import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
+import { getCmsProduct } from '../../../../../../../lib/productUtils';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../../../../../lib/ssrUtils';
 
 interface ProductDetailsInterface {
   product: ProductInterface;

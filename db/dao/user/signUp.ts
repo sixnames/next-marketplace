@@ -1,16 +1,16 @@
 import { hash } from 'bcryptjs';
-import { ROLE_SLUG_GUEST } from 'config/common';
-import { COL_ROLES, COL_USERS } from 'db/collectionNames';
-import { RoleModel, UserModel, UserPayloadModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
-import { sendSignUpEmail } from 'lib/email/sendSignUpEmail';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getUserInitialNotificationsConf } from 'lib/getUserNotificationsTemplate';
-import { getNextItemId } from 'lib/itemIdUtils';
-import { phoneToRaw } from 'lib/phoneUtils';
-import { getRequestParams, getResolverValidationSchema } from 'lib/sessionHelpers';
-import { signUpSchema } from 'validation/userSchema';
+import { ROLE_SLUG_GUEST } from '../../../config/common';
+import { sendSignUpEmail } from '../../../lib/email/sendSignUpEmail';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import { getUserInitialNotificationsConf } from '../../../lib/getUserNotificationsTemplate';
+import { getNextItemId } from '../../../lib/itemIdUtils';
+import { phoneToRaw } from '../../../lib/phoneUtils';
+import { getRequestParams, getResolverValidationSchema } from '../../../lib/sessionHelpers';
+import { signUpSchema } from '../../../validation/userSchema';
+import { COL_ROLES, COL_USERS } from '../../collectionNames';
+import { RoleModel, UserModel, UserPayloadModel } from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface SignUpInputInterface {
   name: string;

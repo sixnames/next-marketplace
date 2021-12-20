@@ -1,9 +1,9 @@
 import * as React from 'react';
+import { NEGATIVE_INDEX } from '../../../config/common';
+import WpButton from '../../button/WpButton';
 import FormikInput, { FormikInputPropsInterface } from './FormikInput';
 import { useField } from 'formik';
-import Button from 'components/button/Button';
 import InputLine from './InputLine';
-import { NEGATIVE_INDEX } from 'config/common';
 
 type FormikMultiLineInputInterface = FormikInputPropsInterface;
 
@@ -80,7 +80,7 @@ const FormikMultiLineInput: React.FC<FormikMultiLineInputInterface> = ({
                 {isFirst ? (
                   <div />
                 ) : (
-                  <Button
+                  <WpButton
                     frameClassName='w-auto'
                     size={'small'}
                     theme={'gray'}
@@ -95,7 +95,7 @@ const FormikMultiLineInput: React.FC<FormikMultiLineInputInterface> = ({
           );
         })}
 
-        <Button
+        <WpButton
           frameClassName={'w-auto'}
           onClick={addFieldHandler}
           size={'small'}
@@ -103,23 +103,23 @@ const FormikMultiLineInput: React.FC<FormikMultiLineInputInterface> = ({
           testId={`${testId}-add`}
         >
           Добавить
-        </Button>
+        </WpButton>
 
         {removeIndex > NEGATIVE_INDEX ? (
           <div className='absolute inset-0 gap-4 flex flex-col items-center justify-center w-full h-full z-20 rounded-md backdrop-blur-md'>
             <div className='font-medium'>Вы уверенны, что хотите удалить поле?</div>
             <div className='flex gap-4'>
-              <Button
+              <WpButton
                 theme={'secondary'}
                 size={'small'}
                 onClick={() => removeFieldConfirm(removeIndex)}
                 testId={'remove-field-confirm'}
               >
                 Да
-              </Button>
-              <Button size={'small'} onClick={removeFieldDecline} testId={'remove-field-decline'}>
+              </WpButton>
+              <WpButton size={'small'} onClick={removeFieldDecline} testId={'remove-field-decline'}>
                 Нет
-              </Button>
+              </WpButton>
             </div>
           </div>
         ) : null}

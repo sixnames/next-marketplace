@@ -1,31 +1,35 @@
-import Button from 'components/button/Button';
-import FixedButtons from 'components/button/FixedButtons';
-import WpIconUpload from 'components/FormElements/Upload/WpIconUpload';
-import WpImageUpload from 'components/FormElements/Upload/WpImageUpload';
-import OptionMainFields from 'components/FormTemplates/OptionMainFields';
-import Inner from 'components/Inner';
-import Title from 'components/Title';
-import { GENDER_ENUMS, ROUTE_CMS } from 'config/common';
-import { COL_ICONS, COL_OPTIONS, COL_OPTIONS_GROUPS } from 'db/collectionNames';
-import { OptionVariantsModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, OptionInterface } from 'db/uiInterfaces';
+import { ObjectId } from 'mongodb';
+import Head from 'next/head';
+import * as React from 'react';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import { Form, Formik } from 'formik';
+import FixedButtons from '../../../../../components/button/FixedButtons';
+import WpButton from '../../../../../components/button/WpButton';
+import WpIconUpload from '../../../../../components/FormElements/Upload/WpIconUpload';
+import WpImageUpload from '../../../../../components/FormElements/Upload/WpImageUpload';
+import OptionMainFields from '../../../../../components/FormTemplates/OptionMainFields';
+import Inner from '../../../../../components/Inner';
+import WpTitle from '../../../../../components/WpTitle';
+import { GENDER_ENUMS, ROUTE_CMS } from '../../../../../config/common';
+import { COL_ICONS, COL_OPTIONS, COL_OPTIONS_GROUPS } from '../../../../../db/collectionNames';
+import { OptionVariantsModel } from '../../../../../db/dbModels';
+import { getDatabase } from '../../../../../db/mongodb';
+import { AppContentWrapperBreadCrumbs, OptionInterface } from '../../../../../db/uiInterfaces';
 import {
   Gender,
   OptionsGroupVariant,
   UpdateOptionInGroupInput,
   useUpdateOptionInGroupMutation,
-} from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import { getFieldStringLocale } from 'lib/i18n';
-import { ObjectId } from 'mongodb';
-import Head from 'next/head';
-import * as React from 'react';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { Form, Formik } from 'formik';
+} from '../../../../../generated/apolloComponents';
+import useMutationCallbacks from '../../../../../hooks/useMutationCallbacks';
+import AppContentWrapper from '../../../../../layout/AppContentWrapper';
+import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
+import { getFieldStringLocale } from '../../../../../lib/i18n';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../../../lib/ssrUtils';
 
 interface OptionPageConsumerInterface {
   option: OptionInterface;
@@ -92,7 +96,7 @@ const OptionPageConsumer: React.FC<OptionPageConsumerInterface> = ({ option }) =
         <title>{option.name}</title>
       </Head>
       <Inner lowBottom>
-        <Title>{option.name}</Title>
+        <WpTitle>{option.name}</WpTitle>
       </Inner>
       <Inner testId={'option-details'}>
         <div className='relative'>
@@ -245,9 +249,9 @@ const OptionPageConsumer: React.FC<OptionPageConsumerInterface> = ({ option }) =
                   />
 
                   <FixedButtons>
-                    <Button type={'submit'} testId={'option-submit'} size={'small'}>
+                    <WpButton type={'submit'} testId={'option-submit'} size={'small'}>
                       Сохранить
-                    </Button>
+                    </WpButton>
                   </FixedButtons>
                 </Form>
               );

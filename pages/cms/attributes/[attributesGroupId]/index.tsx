@@ -1,26 +1,33 @@
-import FixedButtons from 'components/button/FixedButtons';
-import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
-import { ROUTE_CMS } from 'config/common';
-import useValidationSchema from 'hooks/useValidationSchema';
-import AppSubNav from 'layout/AppSubNav';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
-import Button from 'components/button/Button';
-import Inner from 'components/Inner';
-import Title from 'components/Title';
-import { COL_ATTRIBUTES_GROUPS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, AttributesGroupInterface } from 'db/uiInterfaces';
-import { useUpdateAttributesGroupMutation } from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import { getFieldStringLocale } from 'lib/i18n';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import Head from 'next/head';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { Form, Formik } from 'formik';
-import { attributesGroupModalSchema } from 'validation/attributesGroupSchema';
+import FixedButtons from '../../../../components/button/FixedButtons';
+import WpButton from '../../../../components/button/WpButton';
+import FormikTranslationsInput from '../../../../components/FormElements/Input/FormikTranslationsInput';
+import Inner from '../../../../components/Inner';
+import WpTitle from '../../../../components/WpTitle';
+import { ROUTE_CMS } from '../../../../config/common';
+import { COL_ATTRIBUTES_GROUPS } from '../../../../db/collectionNames';
+import { getDatabase } from '../../../../db/mongodb';
+import {
+  AppContentWrapperBreadCrumbs,
+  AttributesGroupInterface,
+} from '../../../../db/uiInterfaces';
+import { useUpdateAttributesGroupMutation } from '../../../../generated/apolloComponents';
+import useMutationCallbacks from '../../../../hooks/useMutationCallbacks';
+import useValidationSchema from '../../../../hooks/useValidationSchema';
+import AppContentWrapper from '../../../../layout/AppContentWrapper';
+import AppSubNav from '../../../../layout/AppSubNav';
+import { getFieldStringLocale } from '../../../../lib/i18n';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../../lib/ssrUtils';
+import { attributesGroupModalSchema } from '../../../../validation/attributesGroupSchema';
+import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
 
 const pageTitle = `Группы атрибутов`;
 
@@ -76,7 +83,7 @@ const AttributesGroupConsumer: React.FC<AttributesGroupConsumerInterface> = ({
         <title>{attributesGroup.name}</title>
       </Head>
       <Inner lowBottom>
-        <Title testId={'attributes-group-title'}>{attributesGroup.name}</Title>
+        <WpTitle testId={'attributes-group-title'}>{attributesGroup.name}</WpTitle>
       </Inner>
       <AppSubNav navConfig={navConfig} />
 
@@ -113,9 +120,9 @@ const AttributesGroupConsumer: React.FC<AttributesGroupConsumerInterface> = ({
                   isRequired
                 />
                 <FixedButtons>
-                  <Button type={'submit'} testId={'attributes-group-submit'}>
+                  <WpButton type={'submit'} testId={'attributes-group-submit'}>
                     Сохранить
-                  </Button>
+                  </WpButton>
                 </FixedButtons>
               </Form>
             );

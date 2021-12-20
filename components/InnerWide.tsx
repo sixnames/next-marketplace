@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Inner, { InnerInterface } from 'components/Inner';
+import Inner, { InnerInterface } from './Inner';
 
 type InnerWideInterface = Omit<InnerInterface, 'wide'>;
 

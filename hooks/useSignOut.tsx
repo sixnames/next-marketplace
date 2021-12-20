@@ -1,6 +1,6 @@
 import { signOut } from 'next-auth/client';
 import * as React from 'react';
-import { useNotificationsContext } from 'context/notificationsContext';
+import { useNotificationsContext } from '../context/notificationsContext';
 
 const useSignOut = () => {
   const { showErrorNotification } = useNotificationsContext();

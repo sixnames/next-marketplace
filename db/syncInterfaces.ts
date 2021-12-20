@@ -1,4 +1,4 @@
-import { EmailAddressModel, PhoneNumberModel, TimestampModel } from 'db/dbModels';
+import { EmailAddressModel, PhoneNumberModel, TimestampModel } from './dbModels';
 
 export interface SyncParamsInterface {
   // apiVersion?: string;

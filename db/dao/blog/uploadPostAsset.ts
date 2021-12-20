@@ -1,13 +1,13 @@
-import { ASSETS_DIST_BLOG_CONTENT } from 'config/common';
-import { COL_BLOG_POSTS } from 'db/collectionNames';
-import { BlogPostModel, ConstructorAssetPayloadModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { storeUploads } from 'lib/assetUtils/assetUtils';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { parseApiFormData, UploadRestApiImageInterface } from 'lib/restApi';
-import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { ASSETS_DIST_BLOG_CONTENT } from '../../../config/common';
+import { storeUploads } from '../../../lib/assetUtils/assetUtils';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import { parseApiFormData, UploadRestApiImageInterface } from '../../../lib/restApi';
+import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
+import { COL_BLOG_POSTS } from '../../collectionNames';
+import { BlogPostModel, ConstructorAssetPayloadModel } from '../../dbModels';
+import { getDatabase } from '../../mongodb';
 
 export interface UpdateBlogPostPreviewFieldsInterface {
   blogPostId: string;

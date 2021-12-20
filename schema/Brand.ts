@@ -1,12 +1,8 @@
-import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
-import { updateAlgoliaProducts } from 'lib/algolia/productAlgoliaUtils';
-import { getAlphabetList } from 'lib/optionUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType, stringArg } from 'nexus';
-import {
-  getOperationPermission,
-  getRequestParams,
-  getResolverValidationSchema,
-} from 'lib/sessionHelpers';
+import { DEFAULT_COUNTERS_OBJECT } from '../config/common';
+import { COL_BRAND_COLLECTIONS, COL_BRANDS, COL_PRODUCTS } from '../db/collectionNames';
+import { aggregatePagination } from '../db/dao/aggregatePagination';
+import { findDocumentByI18nField } from '../db/dao/findDocumentByI18nField';
 import {
   BrandCollectionModel,
   BrandCollectionsPaginationPayloadModel,
@@ -15,20 +11,24 @@ import {
   BrandsAlphabetListModel,
   BrandsPaginationPayloadModel,
   ProductModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { COL_BRAND_COLLECTIONS, COL_BRANDS, COL_PRODUCTS } from 'db/collectionNames';
-import { aggregatePagination } from 'db/dao/aggregatePagination';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
-import { getNextNumberItemId } from 'lib/itemIdUtils';
+} from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import { updateAlgoliaProducts } from '../lib/algolia/productAlgoliaUtils';
+import getResolverErrorMessage from '../lib/getResolverErrorMessage';
+import { getNextNumberItemId } from '../lib/itemIdUtils';
+import { getAlphabetList } from '../lib/optionUtils';
+import {
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+} from '../lib/sessionHelpers';
 import {
   addCollectionToBrandSchema,
   createBrandSchema,
   deleteCollectionFromBrandSchema,
   updateBrandSchema,
   updateCollectionInBrandSchema,
-} from 'validation/brandSchema';
+} from '../validation/brandSchema';
 
 export const BrandCollectionsPaginationPayload = objectType({
   name: 'BrandCollectionsPaginationPayload',

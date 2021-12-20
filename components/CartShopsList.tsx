@@ -1,16 +1,16 @@
-import { MapModalInterface } from 'components/Modal/MapModal';
-import WpImage from 'components/WpImage';
-import { MAP_MODAL } from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
-import { useSiteContext } from 'context/siteContext';
-import { ShopProductInterface } from 'db/uiInterfaces';
-import { useShopMarker } from 'hooks/useShopMarker';
-import LayoutCard from 'layout/LayoutCard';
 import * as React from 'react';
-import Button from 'components/button/Button';
-import RatingStars from 'components/RatingStars';
-import LinkPhone from 'components/Link/LinkPhone';
-import ProductShopPrices from 'components/ProductShopPrices';
+import { MAP_MODAL } from '../config/modalVariants';
+import { useAppContext } from '../context/appContext';
+import { useSiteContext } from '../context/siteContext';
+import { ShopProductInterface } from '../db/uiInterfaces';
+import { useShopMarker } from '../hooks/useShopMarker';
+import LayoutCard from '../layout/LayoutCard';
+import WpButton from './button/WpButton';
+import LinkPhone from './Link/LinkPhone';
+import { MapModalInterface } from './Modal/MapModal';
+import ProductShopPrices from './ProductShopPrices';
+import RatingStars from './RatingStars';
+import WpImage from './WpImage';
 
 interface CartShopInterface {
   shopProduct: ShopProductInterface;
@@ -105,7 +105,7 @@ const CartShop: React.FC<CartShopInterface> = ({ shopProduct, testId, cartProduc
             </div>
           </div>
 
-          <Button
+          <WpButton
             testId={`cart-shops-${testId}-add-to-cart`}
             onClick={() => {
               addShopToCartProduct({
@@ -115,7 +115,7 @@ const CartShop: React.FC<CartShopInterface> = ({ shopProduct, testId, cartProduc
             }}
           >
             Выбрать
-          </Button>
+          </WpButton>
         </div>
       </div>
     </LayoutCard>

@@ -1,19 +1,19 @@
-import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
+import { ObjectId } from 'mongodb';
+import { DEFAULT_COUNTERS_OBJECT } from '../../../config/common';
+import { updateAlgoliaProducts } from '../../../lib/algolia/productAlgoliaUtils';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import { getNextItemId } from '../../../lib/itemIdUtils';
+import { checkBarcodeIntersects } from '../../../lib/productUtils';
+import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
 import {
   COL_NOT_SYNCED_PRODUCTS,
   COL_PRODUCTS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
-} from 'db/collectionNames';
-import { ProductModel, ProductPayloadModel, ShopModel, ShopProductModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
-import { updateAlgoliaProducts } from 'lib/algolia/productAlgoliaUtils';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getNextItemId } from 'lib/itemIdUtils';
-import { checkBarcodeIntersects } from 'lib/productUtils';
-import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { ObjectId } from 'mongodb';
+} from '../../collectionNames';
+import { ProductModel, ProductPayloadModel, ShopModel, ShopProductModel } from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface UpdateProductWithSyncErrorInputInterface {
   productId: string;

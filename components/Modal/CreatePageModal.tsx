@@ -1,21 +1,21 @@
-import Button from 'components/button/Button';
-import FormikInput from 'components/FormElements/Input/FormikInput';
-import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
-import FormikSelect from 'components/FormElements/Select/FormikSelect';
-import ModalButtons from 'components/Modal/ModalButtons';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
-import RequestError from 'components/RequestError';
-import Spinner from 'components/Spinner';
-import { DEFAULT_LOCALE } from 'config/common';
-import { useCreatePage } from 'hooks/mutations/usePageMutations';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useValidationSchema from 'hooks/useValidationSchema';
-import { noNaN } from 'lib/numbers';
 import * as React from 'react';
-import { createPageSchema } from 'validation/pagesSchema';
 import { Form, Formik } from 'formik';
-import { useGetSessionCitiesQuery } from 'generated/apolloComponents';
+import { DEFAULT_LOCALE } from '../../config/common';
+import { useGetSessionCitiesQuery } from '../../generated/apolloComponents';
+import { useCreatePage } from '../../hooks/mutations/usePageMutations';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import useValidationSchema from '../../hooks/useValidationSchema';
+import { noNaN } from '../../lib/numbers';
+import { createPageSchema } from '../../validation/pagesSchema';
+import WpButton from '../button/WpButton';
+import FormikInput from '../FormElements/Input/FormikInput';
+import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
+import FormikSelect from '../FormElements/Select/FormikSelect';
+import RequestError from '../RequestError';
+import Spinner from '../Spinner';
+import ModalButtons from './ModalButtons';
+import ModalFrame from './ModalFrame';
+import ModalTitle from './ModalTitle';
 
 export interface CreatePageModalInterface {
   pagesGroupId: string;
@@ -112,12 +112,12 @@ const CreatePageModal: React.FC<CreatePageModalInterface> = ({ pagesGroupId, isT
               />
 
               <ModalButtons>
-                <Button type={'submit'} testId={'submit-page'}>
+                <WpButton type={'submit'} testId={'submit-page'}>
                   Создать
-                </Button>
-                <Button theme={'secondary'} onClick={hideModal}>
+                </WpButton>
+                <WpButton theme={'secondary'} onClick={hideModal}>
                   Закрыть
-                </Button>
+                </WpButton>
               </ModalButtons>
             </Form>
           );

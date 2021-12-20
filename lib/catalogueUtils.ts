@@ -1,14 +1,43 @@
+import { ObjectId } from 'mongodb';
 import {
-  getRubricFilterAttribute,
+  ATTRIBUTE_VIEW_VARIANT_LIST,
+  ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
+  CATALOGUE_FILTER_LIMIT,
+  CATALOGUE_GRID_DEFAULT_COLUMNS_COUNT,
+  CATALOGUE_PRODUCTS_LIMIT,
+  DEFAULT_COMPANY_SLUG,
+  DEFAULT_PAGE,
+  DEFAULT_SORT_STAGE,
+  FILTER_BRAND_COLLECTION_KEY,
+  FILTER_BRAND_KEY,
+  FILTER_CATEGORY_KEY,
+  FILTER_COMMON_KEY,
+  FILTER_NO_PHOTO_KEY,
+  FILTER_PAGE_KEY,
+  FILTER_PRICE_KEY,
+  FILTER_RUBRIC_KEY,
+  FILTER_SEPARATOR,
+  GENDER_HE,
+  ROUTE_CATALOGUE,
+  SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY,
+  SORT_ASC,
+  SORT_BY_KEY,
+  SORT_DESC,
+  SORT_DESC_STR,
+  SORT_DIR_KEY,
+  ZERO_PAGE_FILTER,
+} from '../config/common';
+import {
   getBrandFilterAttribute,
   getCategoryFilterAttribute,
   getPriceAttribute,
-} from 'config/constantAttributes';
+  getRubricFilterAttribute,
+} from '../config/constantAttributes';
 import {
   DEFAULT_LAYOUT,
   GRID_SNIPPET_LAYOUT_BIG_IMAGE,
   ROW_SNIPPET_LAYOUT_BIG_IMAGE,
-} from 'config/constantSelects';
+} from '../config/constantSelects';
 import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
@@ -19,43 +48,15 @@ import {
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
-} from 'db/collectionNames';
+} from '../db/collectionNames';
 import {
   filterAttributesPipeline,
   ignoreNoImageStage,
   noImageStage,
-} from 'db/dao/constantPipelines';
-import { castProductForUI } from 'db/dao/product/castProductForUI';
-import { CatalogueBreadcrumbModel, ObjectIdModel, ShopProductModel } from 'db/dbModels';
-import {
-  ATTRIBUTE_VIEW_VARIANT_LIST,
-  CATALOGUE_FILTER_LIMIT,
-  FILTER_PAGE_KEY,
-  FILTER_SEPARATOR,
-  CATALOGUE_PRODUCTS_LIMIT,
-  DEFAULT_COMPANY_SLUG,
-  FILTER_PRICE_KEY,
-  ROUTE_CATALOGUE,
-  SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY,
-  SORT_ASC,
-  SORT_BY_KEY,
-  SORT_DESC,
-  SORT_DESC_STR,
-  SORT_DIR_KEY,
-  DEFAULT_PAGE,
-  FILTER_RUBRIC_KEY,
-  FILTER_CATEGORY_KEY,
-  FILTER_BRAND_KEY,
-  FILTER_BRAND_COLLECTION_KEY,
-  ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
-  DEFAULT_SORT_STAGE,
-  GENDER_HE,
-  CATALOGUE_GRID_DEFAULT_COLUMNS_COUNT,
-  FILTER_COMMON_KEY,
-  FILTER_NO_PHOTO_KEY,
-  ZERO_PAGE_FILTER,
-} from 'config/common';
-import { getDatabase } from 'db/mongodb';
+} from '../db/dao/constantPipelines';
+import { castProductForUI } from '../db/dao/product/castProductForUI';
+import { CatalogueBreadcrumbModel, ObjectIdModel, ShopProductModel } from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
 import {
   AttributeInterface,
   BrandInterface,
@@ -69,17 +70,16 @@ import {
   RubricInterface,
   SeoContentInterface,
   ShopProductInterface,
-} from 'db/uiInterfaces';
-import { getAlgoliaProductsSearch } from 'lib/algolia/productAlgoliaUtils';
-import { alwaysString, sortObjectsByField } from 'lib/arrayUtils';
-import { getFieldStringLocale } from 'lib/i18n';
-import { noNaN } from 'lib/numbers';
-import { getProductCurrentViewCastedAttributes } from 'lib/productAttributesUtils';
-import { getCatalogueAllSeoContents } from 'lib/seoContentUtils';
-import { sortStringArray } from 'lib/stringUtils';
-import { generateTitle } from 'lib/titleUtils';
-import { getTreeFromList } from 'lib/treeUtils';
-import { ObjectId } from 'mongodb';
+} from '../db/uiInterfaces';
+import { getAlgoliaProductsSearch } from './algolia/productAlgoliaUtils';
+import { alwaysString, sortObjectsByField } from './arrayUtils';
+import { getFieldStringLocale } from './i18n';
+import { noNaN } from './numbers';
+import { getProductCurrentViewCastedAttributes } from './productAttributesUtils';
+import { getCatalogueAllSeoContents } from './seoContentUtils';
+import { sortStringArray } from './stringUtils';
+import { generateTitle } from './titleUtils';
+import { getTreeFromList } from './treeUtils';
 
 interface GetSelectedCategoryLeaf {
   acc: ObjectIdModel[];

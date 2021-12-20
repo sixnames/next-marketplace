@@ -1,8 +1,8 @@
-import TagLink from 'components/Link/TagLink';
-import { FILTER_SEPARATOR, ROUTE_CATALOGUE } from 'config/common';
-import { useSiteContext } from 'context/siteContext';
-import { ProductAttributeInterface } from 'db/uiInterfaces';
 import * as React from 'react';
+import TagLink from '../../components/Link/TagLink';
+import { FILTER_SEPARATOR, ROUTE_CATALOGUE } from '../../config/common';
+import { useSiteContext } from '../../context/siteContext';
+import { ProductAttributeInterface } from '../../db/uiInterfaces';
 
 interface CardIconFeaturesInterface {
   iconFeatures: ProductAttributeInterface[];

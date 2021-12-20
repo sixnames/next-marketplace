@@ -1,39 +1,46 @@
-import CheckBox from 'components/FormElements/Checkbox/Checkbox';
-import Accordion from 'components/Accordion';
-import Button from 'components/button/Button';
-import FixedButtons from 'components/button/FixedButtons';
-import ContentItemControls from 'components/button/ContentItemControls';
-import Inner from 'components/Inner';
-import Link from 'components/Link/Link';
-import { AddAttributesGroupToRubricModalInterface } from 'components/Modal/AddAttributesGroupToRubricModal';
-import Table, { TableColumn } from 'components/Table';
-import { ROUTE_CMS } from 'config/common';
-import { getConstantTranslation } from 'config/constantTranslations';
-import { ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL, CONFIRM_MODAL } from 'config/modalVariants';
-import { useLocaleContext } from 'context/localeContext';
-import { COL_CATEGORIES, COL_RUBRICS } from 'db/collectionNames';
-import { rubricAttributeGroupsPipeline } from 'db/dao/constantPipelines';
-import { castRubricForUI } from 'db/dao/rubrics/castRubricForUI';
-import { RubricModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
+import ContentItemControls from '../../../../components/button/ContentItemControls';
+import FixedButtons from '../../../../components/button/FixedButtons';
+import WpButton from '../../../../components/button/WpButton';
+import WpCheckbox from '../../../../components/FormElements/Checkbox/WpCheckbox';
+import Inner from '../../../../components/Inner';
+import WpLink from '../../../../components/Link/WpLink';
+import { AddAttributesGroupToRubricModalInterface } from '../../../../components/Modal/AddAttributesGroupToRubricModal';
+import WpAccordion from '../../../../components/WpAccordion';
+import WpTable, { WpTableColumn } from '../../../../components/WpTable';
+import { ROUTE_CMS } from '../../../../config/common';
+import { getConstantTranslation } from '../../../../config/constantTranslations';
+import {
+  ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL,
+  CONFIRM_MODAL,
+} from '../../../../config/modalVariants';
+import { useLocaleContext } from '../../../../context/localeContext';
+import { COL_CATEGORIES, COL_RUBRICS } from '../../../../db/collectionNames';
+import { rubricAttributeGroupsPipeline } from '../../../../db/dao/constantPipelines';
+import { castRubricForUI } from '../../../../db/dao/rubrics/castRubricForUI';
+import { RubricModel } from '../../../../db/dbModels';
+import { getDatabase } from '../../../../db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   AttributeInterface,
   CategoryInterface,
   RubricInterface,
-} from 'db/uiInterfaces';
+} from '../../../../db/uiInterfaces';
 import {
   useAddAttributesGroupToRubricMutation,
   useDeleteAttributesGroupFromRubricMutation,
   useUpdateAttributeInRubricMutation,
-} from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import { ObjectId } from 'mongodb';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import * as React from 'react';
+} from '../../../../generated/apolloComponents';
+import useMutationCallbacks from '../../../../hooks/useMutationCallbacks';
+import CmsRubricLayout from '../../../../layout/cms/CmsRubricLayout';
+import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../../lib/ssrUtils';
 
 interface RubricAttributesConsumerInterface {
   rubric: RubricInterface;
@@ -61,7 +68,7 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
     onError: onErrorCallback,
   });
 
-  const columns = (category?: CategoryInterface): TableColumn<AttributeInterface>[] => [
+  const columns = (category?: CategoryInterface): WpTableColumn<AttributeInterface>[] => [
     {
       accessor: 'name',
       headTitle: 'Название',
@@ -83,7 +90,7 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
       render: ({ dataItem }) => {
         const checked = rubric.filterVisibleAttributeIds.includes(dataItem._id);
         return (
-          <CheckBox
+          <WpCheckbox
             value={dataItem.slug}
             name={dataItem.slug}
             checked={checked}
@@ -106,11 +113,11 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
       render: () => {
         if (category) {
           return (
-            <Link
+            <WpLink
               href={`${ROUTE_CMS}/rubrics/${rubric?._id}/categories/${category._id}/attributes`}
             >
               {category.name}
-            </Link>
+            </WpLink>
           );
         }
         return null;
@@ -139,7 +146,7 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
           const { name, attributes, _id } = attributesGroup;
           return (
             <div key={`${_id}`} className='mb-12'>
-              <Accordion
+              <WpAccordion
                 title={`${name}`}
                 titleRight={
                   <ContentItemControls
@@ -170,14 +177,14 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
                 }
               >
                 <div className={`overflow-x-auto mt-4`}>
-                  <Table<AttributeInterface>
+                  <WpTable<AttributeInterface>
                     data={attributes}
                     columns={columns()}
                     emptyMessage={'Список атрибутов пуст'}
                     testIdKey={'nameString'}
                   />
                 </div>
-              </Accordion>
+              </WpAccordion>
             </div>
           );
         })}
@@ -189,7 +196,7 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
                 const { name, attributes, _id } = attributesGroup;
                 return (
                   <div key={`${_id}`} className='mb-12'>
-                    <Accordion
+                    <WpAccordion
                       title={`${name}`}
                       titleRight={
                         <ContentItemControls
@@ -202,14 +209,14 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
                       }
                     >
                       <div className={`overflow-x-auto mt-4`}>
-                        <Table<AttributeInterface>
+                        <WpTable<AttributeInterface>
                           data={attributes}
                           columns={columns(category)}
                           emptyMessage={'Список атрибутов пуст'}
                           testIdKey={'nameString'}
                         />
                       </div>
-                    </Accordion>
+                    </WpAccordion>
                   </div>
                 );
               })}
@@ -218,7 +225,7 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
         })}
 
         <FixedButtons>
-          <Button
+          <WpButton
             size={'small'}
             testId={'add-attributes-group'}
             onClick={() => {
@@ -243,7 +250,7 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
             }}
           >
             Добавить группу атрибутов
-          </Button>
+          </WpButton>
         </FixedButtons>
       </Inner>
     </CmsRubricLayout>

@@ -1,10 +1,18 @@
-import { GEO_POINT_TYPE, IMAGE_FALLBACK } from 'config/common';
-import { getReadableAddress } from 'lib/addressUtils';
-import { deleteUpload } from 'lib/assetUtils/assetUtils';
-import { updateCompanyDomain } from 'lib/companyUtils';
-import { getConfigTemplates } from 'lib/getConfigTemplates';
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
+import { GEO_POINT_TYPE, IMAGE_FALLBACK } from '../config/common';
+import {
+  COL_COMPANIES,
+  COL_CONFIGS,
+  COL_PAGE_TEMPLATES,
+  COL_PAGES,
+  COL_PAGES_GROUP,
+  COL_PAGES_GROUP_TEMPLATES,
+  COL_SHOP_PRODUCTS,
+  COL_SHOPS,
+  COL_USERS,
+} from '../db/collectionNames';
+import { aggregatePagination } from '../db/dao/aggregatePagination';
 import {
   CompaniesPaginationPayloadModel,
   CompanyModel,
@@ -18,35 +26,27 @@ import {
   ShopProductModel,
   ShopsPaginationPayloadModel,
   UserModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import {
-  COL_COMPANIES,
-  COL_CONFIGS,
-  COL_PAGE_TEMPLATES,
-  COL_PAGES,
-  COL_PAGES_GROUP,
-  COL_PAGES_GROUP_TEMPLATES,
-  COL_SHOP_PRODUCTS,
-  COL_SHOPS,
-  COL_USERS,
-} from 'db/collectionNames';
-import { aggregatePagination } from 'db/dao/aggregatePagination';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+} from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import { getReadableAddress } from '../lib/addressUtils';
+import { deleteUpload } from '../lib/assetUtils/assetUtils';
+import { updateCompanyDomain } from '../lib/companyUtils';
+import { getConfigTemplates } from '../lib/getConfigTemplates';
+import getResolverErrorMessage from '../lib/getResolverErrorMessage';
+import { getNextItemId, getNextNumberItemId } from '../lib/itemIdUtils';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
   getSessionUser,
-} from 'lib/sessionHelpers';
-import { generateShopSlug } from 'lib/slugUtils';
-import { getNextItemId, getNextNumberItemId } from 'lib/itemIdUtils';
+} from '../lib/sessionHelpers';
+import { generateShopSlug } from '../lib/slugUtils';
 import {
   addShopToCompanySchema,
   createCompanySchema,
   deleteShopFromCompanySchema,
   updateCompanySchema,
-} from 'validation/companySchema';
+} from '../validation/companySchema';
 
 export const Company = objectType({
   name: 'Company',

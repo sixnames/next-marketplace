@@ -1,16 +1,16 @@
-import { SORT_DESC } from 'config/common';
-import { COL_PRODUCTS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
-import { ignoreNoImageStage, shopProductFieldsPipeline } from 'db/dao/constantPipelines';
-import { ProductModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { ShopProductInterface } from 'db/uiInterfaces';
-import { getFieldStringLocale } from 'lib/i18n';
-import { noNaN } from 'lib/numbers';
-import { getRequestParams, getSessionCompanySlug } from 'lib/sessionHelpers';
-import { generateSnippetTitle } from 'lib/titleUtils';
-import { getTreeFromList } from 'lib/treeUtils';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { SORT_DESC } from '../../../config/common';
+import { COL_PRODUCTS, COL_SHOP_PRODUCTS } from '../../../db/collectionNames';
+import { ignoreNoImageStage, shopProductFieldsPipeline } from '../../../db/dao/constantPipelines';
+import { ProductModel } from '../../../db/dbModels';
+import { getDatabase } from '../../../db/mongodb';
+import { ShopProductInterface } from '../../../db/uiInterfaces';
+import { getFieldStringLocale } from '../../../lib/i18n';
+import { noNaN } from '../../../lib/numbers';
+import { getRequestParams, getSessionCompanySlug } from '../../../lib/sessionHelpers';
+import { generateSnippetTitle } from '../../../lib/titleUtils';
+import { getTreeFromList } from '../../../lib/treeUtils';
 
 const fullPercentage = 100;
 const filterPercentage = 50;

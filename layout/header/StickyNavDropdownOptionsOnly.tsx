@@ -1,7 +1,7 @@
-import Link from 'components/Link/Link';
-import { FILTER_SEPARATOR, ROUTE_CATALOGUE } from 'config/common';
-import { StickyNavAttributeInterface, StickyNavDropdownInterface } from 'layout/header/StickyNav';
 import * as React from 'react';
+import WpLink from '../../components/Link/WpLink';
+import { FILTER_SEPARATOR, ROUTE_CATALOGUE } from '../../config/common';
+import { StickyNavAttributeInterface, StickyNavDropdownInterface } from './StickyNav';
 
 const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
   attribute,
@@ -25,7 +25,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
 
         return (
           <div key={`${option._id}`}>
-            <Link
+            <WpLink
               onClick={hideDropdown}
               style={attributeLinkStyle}
               testId={`header-nav-dropdown-option`}
@@ -47,14 +47,14 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
                 {option.name}
                 {postfix}
               </span>
-            </Link>
+            </WpLink>
 
             {childOptions.length > 0 ? (
               <ul className='mt-2 space-y-1'>
                 {childOptions.map((childOption) => {
                   return (
                     <li key={`${childOption._id}`}>
-                      <Link
+                      <WpLink
                         onClick={hideDropdown}
                         style={attributeLinkStyle}
                         testId={`header-nav-dropdown-option`}
@@ -65,7 +65,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
                           {childOption.name}
                           {postfix}
                         </span>
-                      </Link>
+                      </WpLink>
                     </li>
                   );
                 })}

@@ -1,6 +1,6 @@
-import ControlButton from 'components/button/ControlButton';
 import * as React from 'react';
-import { InputTheme } from 'types/clientTypes';
+import { InputTheme } from '../../../types/clientTypes';
+import ControlButton from '../../button/ControlButton';
 import InputLine, { InputLinePropsInterface } from './InputLine';
 
 interface FakeInputInterface extends Omit<InputLinePropsInterface, 'name' | 'labelTag'> {

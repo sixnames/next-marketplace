@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { debounce } from 'lodash';
-import { THEME_DARK, THEME_LIGHT } from 'config/common';
-import { Theme } from 'types/clientTypes';
+import { THEME_DARK, THEME_LIGHT } from '../config/common';
+import { Theme } from '../types/clientTypes';
 
 interface ThemeContextInterface {
   theme: Theme;

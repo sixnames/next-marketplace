@@ -1,21 +1,21 @@
-import { COL_COMPANIES, COL_USER_CATEGORIES } from 'db/collectionNames';
+import { ObjectId } from 'mongodb';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import { noNaN } from '../../../lib/numbers';
+import {
+  getApiResolverValidationSchema,
+  getOperationPermission,
+  getRequestParams,
+} from '../../../lib/sessionHelpers';
+import { updateUserCategorySchema } from '../../../validation/userCategorySchema';
+import { COL_COMPANIES, COL_USER_CATEGORIES } from '../../collectionNames';
 import {
   CompanyModel,
   TranslationModel,
   UserCategoryModel,
   UserCategoryPayloadModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { noNaN } from 'lib/numbers';
-import {
-  getApiResolverValidationSchema,
-  getOperationPermission,
-  getRequestParams,
-} from 'lib/sessionHelpers';
-import { ObjectId } from 'mongodb';
-import { updateUserCategorySchema } from 'validation/userCategorySchema';
+} from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface UpdateUserCategoryInputInterface {
   _id: string;

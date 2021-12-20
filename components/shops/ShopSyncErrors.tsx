@@ -1,8 +1,8 @@
-import Inner from 'components/Inner';
-import SyncErrorsList, { SyncErrorsListInterface } from 'components/SyncErrorsList';
-import { ConsoleShopLayoutInterface } from 'db/uiInterfaces';
-import ConsoleShopLayout from 'layout/console/ConsoleShopLayout';
 import * as React from 'react';
+import { ConsoleShopLayoutInterface } from '../../db/uiInterfaces';
+import ConsoleShopLayout from '../../layout/console/ConsoleShopLayout';
+import Inner from '../Inner';
+import SyncErrorsList, { SyncErrorsListInterface } from '../SyncErrorsList';
 
 export interface ShopSyncErrorsInterface
   extends ConsoleShopLayoutInterface,

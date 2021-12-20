@@ -1,7 +1,7 @@
-import { ROUTE_BLOG } from 'config/common';
-import { getSiteInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
+import { ROUTE_BLOG } from '../../../config/common';
+import { getSiteInitialData } from '../../../lib/ssrUtils';
 
 const BlogPostPage: React.FC = () => {
   return <div />;

@@ -1,9 +1,9 @@
-import Currency from 'components/Currency';
-import Percent from 'components/Percent';
-import { getConstantTranslation } from 'config/constantTranslations';
-import { useLocaleContext } from 'context/localeContext';
-import { SupplierProductInterface } from 'db/uiInterfaces';
 import * as React from 'react';
+import { getConstantTranslation } from '../../config/constantTranslations';
+import { useLocaleContext } from '../../context/localeContext';
+import { SupplierProductInterface } from '../../db/uiInterfaces';
+import Currency from '../Currency';
+import Percent from '../Percent';
 
 interface ProductsListSuppliersListInterface {
   supplierProducts: SupplierProductInterface[];

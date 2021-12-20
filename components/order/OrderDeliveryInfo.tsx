@@ -1,6 +1,6 @@
-import FormattedDateTime from 'components/FormattedDateTime';
-import { OrderDeliveryInfoModel } from 'db/dbModels';
 import * as React from 'react';
+import { OrderDeliveryInfoModel } from '../../db/dbModels';
+import FormattedDateTime from '../FormattedDateTime';
 
 interface OrderDeliveryInfoInterface {
   deliveryInfo?: OrderDeliveryInfoModel | null;

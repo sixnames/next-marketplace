@@ -1,18 +1,18 @@
-import Accordion from 'components/Accordion';
-import { getFilterOptions } from 'components/CheckBoxFilter';
-import FilterSelectedAttributes from 'components/FilterSelectedAttributes';
-import { CatalogueAdditionalOptionsModalInterface } from 'components/Modal/CatalogueAdditionalOptionsModal';
-import { CATALOGUE_FILTER_VISIBLE_OPTIONS } from 'config/common';
-import { CATALOGUE_ADDITIONAL_OPTIONS_MODAL } from 'config/modalVariants';
+import { useRouter } from 'next/router';
+import * as React from 'react';
+import { getFilterOptions } from '../../components/CheckBoxFilter';
+import FilterSelectedAttributes from '../../components/FilterSelectedAttributes';
+import FilterLink from '../../components/Link/FilterLink';
+import { CatalogueAdditionalOptionsModalInterface } from '../../components/Modal/CatalogueAdditionalOptionsModal';
+import WpAccordion from '../../components/WpAccordion';
+import { CATALOGUE_FILTER_VISIBLE_OPTIONS } from '../../config/common';
+import { CATALOGUE_ADDITIONAL_OPTIONS_MODAL } from '../../config/modalVariants';
+import { useAppContext } from '../../context/appContext';
+import { useConfigContext } from '../../context/configContext';
 import {
   CatalogueFilterAttributePropsInterface,
   CatalogueFilterInterface,
-} from 'layout/catalogue/CatalogueFilter';
-import { useRouter } from 'next/router';
-import * as React from 'react';
-import FilterLink from 'components/Link/FilterLink';
-import { useConfigContext } from 'context/configContext';
-import { useAppContext } from 'context/appContext';
+} from './CatalogueFilter';
 
 const CatalogueFilterAttributeOptions: React.FC<CatalogueFilterAttributePropsInterface> = ({
   attribute,
@@ -82,7 +82,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
   if (attribute.showAsAccordionInFilter) {
     return (
       <div className='mb-12'>
-        <Accordion
+        <WpAccordion
           noTitleStyle
           titleClassName='font-medium text-lg mb-2'
           isOpen={attribute.isSelected}
@@ -115,7 +115,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
             urlPrefix={urlPrefix}
             rubricSlug={rubricSlug}
           />
-        </Accordion>
+        </WpAccordion>
       </div>
     );
   }

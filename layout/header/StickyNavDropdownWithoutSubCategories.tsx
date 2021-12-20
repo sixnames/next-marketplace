@@ -1,14 +1,14 @@
-import Link from 'components/Link/Link';
-import { FILTER_CATEGORY_KEY, FILTER_SEPARATOR, ROUTE_CATALOGUE } from 'config/common';
-import { useConfigContext } from 'context/configContext';
+import { useRouter } from 'next/router';
+import * as React from 'react';
+import WpLink from '../../components/Link/WpLink';
+import { FILTER_CATEGORY_KEY, FILTER_SEPARATOR, ROUTE_CATALOGUE } from '../../config/common';
+import { useConfigContext } from '../../context/configContext';
+import { noNaN } from '../../lib/numbers';
 import {
   StickyNavAttributeInterface,
   StickyNavCategoryInterface,
   StickyNavDropdownInterface,
-} from 'layout/header/StickyNav';
-import { noNaN } from 'lib/numbers';
-import { useRouter } from 'next/router';
-import * as React from 'react';
+} from './StickyNav';
 
 const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
   attribute,
@@ -41,7 +41,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
         {(options || []).map((option) => {
           return (
             <li key={`${option._id}`}>
-              <Link
+              <WpLink
                 onClick={hideDropdown}
                 style={attributeLinkStyle}
                 testId={`header-nav-dropdown-option`}
@@ -51,7 +51,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
               >
                 {option.name}
                 {postfix}
-              </Link>
+              </WpLink>
             </li>
           );
         })}
@@ -93,7 +93,7 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
   return (
     <div className='flex flex-col'>
       <div className='flex items-center pb-1'>
-        <Link
+        <WpLink
           onClick={hideDropdown}
           style={attributeStyle}
           testId={`header-nav-dropdown-option`}
@@ -108,7 +108,7 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
             />
           ) : null}
           <span>{name}</span>
-        </Link>
+        </WpLink>
       </div>
     </div>
   );

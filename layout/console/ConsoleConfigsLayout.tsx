@@ -1,14 +1,14 @@
-import Inner from 'components/Inner';
-import Title from 'components/Title';
-import { ROUTE_CONSOLE, ROUTE_CMS } from 'config/common';
-import { useUserContext } from 'context/userContext';
-import { ConfigModel } from 'db/dbModels';
-import { RubricInterface } from 'db/uiInterfaces';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import AppSubNav from 'layout/AppSubNav';
 import Head from 'next/head';
 import * as React from 'react';
-import { ClientNavItemInterface } from 'types/clientTypes';
+import Inner from '../../components/Inner';
+import WpTitle from '../../components/WpTitle';
+import { ROUTE_CMS, ROUTE_CONSOLE } from '../../config/common';
+import { useUserContext } from '../../context/userContext';
+import { ConfigModel } from '../../db/dbModels';
+import { RubricInterface } from '../../db/uiInterfaces';
+import { ClientNavItemInterface } from '../../types/clientTypes';
+import AppContentWrapper from '../AppContentWrapper';
+import AppSubNav from '../AppSubNav';
 
 export interface ConfigPageInterface {
   assetConfigs: ConfigModel[];
@@ -89,7 +89,7 @@ const ConsoleConfigsLayout: React.FC<AppConfigsLayoutInterface> = ({
       </Head>
 
       <Inner lowBottom>
-        <Title>Настройки сайта</Title>
+        <WpTitle>Настройки сайта</WpTitle>
       </Inner>
       <AppSubNav navConfig={navConfig} />
       {children}

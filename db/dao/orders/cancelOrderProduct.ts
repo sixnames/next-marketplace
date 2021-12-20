@@ -1,11 +1,16 @@
-import { DEFAULT_DIFF } from 'config/common';
+import { ObjectId } from 'mongodb';
+import { DEFAULT_DIFF } from '../../../config/common';
+import { sendOrderProductCanceledEmail } from '../../../lib/email/sendOrderProductCanceledEmail';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
+import { sendOrderProductCanceledSms } from '../../../lib/sms/sendOrderProductCanceledSms';
 import {
   COL_ORDER_LOGS,
   COL_ORDER_PRODUCTS,
   COL_ORDER_STATUSES,
   COL_ORDERS,
   COL_USERS,
-} from 'db/collectionNames';
+} from '../../collectionNames';
 import {
   OrderLogModel,
   OrderModel,
@@ -13,14 +18,9 @@ import {
   OrderProductPayloadModel,
   OrderStatusModel,
   UserModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
-import { sendOrderProductCanceledEmail } from 'lib/email/sendOrderProductCanceledEmail';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { sendOrderProductCanceledSms } from 'lib/sms/sendOrderProductCanceledSms';
-import { ObjectId } from 'mongodb';
+} from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface CancelOrderProductInputInterface {
   orderProductId: string;

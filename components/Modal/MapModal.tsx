@@ -1,7 +1,7 @@
-import WpMap, { WpMapInterface } from 'components/WpMap';
 import * as React from 'react';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
+import WpMap, { WpMapInterface } from '../WpMap';
+import ModalFrame from './ModalFrame';
+import ModalTitle from './ModalTitle';
 
 export interface MapModalInterface extends Omit<WpMapInterface, 'mapRef'> {
   title: string;

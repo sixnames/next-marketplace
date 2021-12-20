@@ -1,38 +1,42 @@
-import Button from 'components/button/Button';
-import FixedButtons from 'components/button/FixedButtons';
-import ContentItemControls from 'components/button/ContentItemControls';
-import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
-import Inner from 'components/Inner';
-import Link from 'components/Link/Link';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import Pager from 'components/Pager';
-import Table, { TableColumn } from 'components/Table';
-import Title from 'components/Title';
-import {
-  ISO_LANGUAGES,
-  DEFAULT_PAGE,
-  ROUTE_CMS,
-  CMS_BRANDS_LIMIT,
-  SORT_ASC,
-  DEFAULT_LOCALE,
-  SORT_DESC,
-} from 'config/common';
-import { CONFIRM_MODAL, CREATE_BRAND_MODAL } from 'config/modalVariants';
-import { COL_BRANDS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { AppPaginationInterface, BrandInterface } from 'db/uiInterfaces';
-import { useDeleteBrandMutation } from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { alwaysArray } from 'lib/arrayUtils';
-import { castUrlFilters } from 'lib/catalogueUtils';
-import { getFieldStringLocale } from 'lib/i18n';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import ContentItemControls from '../../../components/button/ContentItemControls';
+import FixedButtons from '../../../components/button/FixedButtons';
+import WpButton from '../../../components/button/WpButton';
+import FormikRouterSearch from '../../../components/FormElements/Search/FormikRouterSearch';
+import Inner from '../../../components/Inner';
+import WpLink from '../../../components/Link/WpLink';
+import { ConfirmModalInterface } from '../../../components/Modal/ConfirmModal';
+import Pager from '../../../components/Pager';
+import WpTable, { WpTableColumn } from '../../../components/WpTable';
+import WpTitle from '../../../components/WpTitle';
+import {
+  CMS_BRANDS_LIMIT,
+  DEFAULT_LOCALE,
+  DEFAULT_PAGE,
+  ISO_LANGUAGES,
+  ROUTE_CMS,
+  SORT_ASC,
+  SORT_DESC,
+} from '../../../config/common';
+import { CONFIRM_MODAL, CREATE_BRAND_MODAL } from '../../../config/modalVariants';
+import { COL_BRANDS } from '../../../db/collectionNames';
+import { getDatabase } from '../../../db/mongodb';
+import { AppPaginationInterface, BrandInterface } from '../../../db/uiInterfaces';
+import { useDeleteBrandMutation } from '../../../generated/apolloComponents';
+import useMutationCallbacks from '../../../hooks/useMutationCallbacks';
+import AppContentWrapper from '../../../layout/AppContentWrapper';
+import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
+import { alwaysArray } from '../../../lib/arrayUtils';
+import { castUrlFilters } from '../../../lib/catalogueUtils';
+import { getFieldStringLocale } from '../../../lib/i18n';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../lib/ssrUtils';
 
 type BrandsConsumerInterface = AppPaginationInterface<BrandInterface>;
 
@@ -54,12 +58,12 @@ const BrandsConsumer: React.FC<BrandsConsumerInterface> = ({
     onError: onErrorCallback,
   });
 
-  const columns: TableColumn<BrandInterface>[] = [
+  const columns: WpTableColumn<BrandInterface>[] = [
     {
       headTitle: 'ID',
       accessor: 'itemId',
       render: ({ cellData, dataItem }) => {
-        return <Link href={`${itemPath}/${dataItem._id}`}>{cellData}</Link>;
+        return <WpLink href={`${itemPath}/${dataItem._id}`}>{cellData}</WpLink>;
       },
     },
     {
@@ -108,12 +112,12 @@ const BrandsConsumer: React.FC<BrandsConsumerInterface> = ({
         <title>{pageTitle}</title>
       </Head>
       <Inner>
-        <Title>{pageTitle}</Title>
+        <WpTitle>{pageTitle}</WpTitle>
         <div className='relative'>
           <FormikRouterSearch testId={'brands'} />
 
           <div className='overflew-x-auto overflew-y-hidden'>
-            <Table<BrandInterface>
+            <WpTable<BrandInterface>
               columns={columns}
               data={docs}
               testIdKey={'name'}
@@ -126,7 +130,7 @@ const BrandsConsumer: React.FC<BrandsConsumerInterface> = ({
           <Pager page={page} totalPages={totalPages} />
 
           <FixedButtons>
-            <Button
+            <WpButton
               testId={'create-brand'}
               size={'small'}
               onClick={() => {
@@ -136,7 +140,7 @@ const BrandsConsumer: React.FC<BrandsConsumerInterface> = ({
               }}
             >
               Добавить бренд
-            </Button>
+            </WpButton>
           </FixedButtons>
         </div>
       </Inner>

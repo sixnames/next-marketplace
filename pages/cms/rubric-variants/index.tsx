@@ -1,28 +1,32 @@
-import Button from 'components/button/Button';
-import FixedButtons from 'components/button/FixedButtons';
-import ContentItemControls from 'components/button/ContentItemControls';
-import Inner from 'components/Inner';
-import { RubricVariantModalInterface } from 'components/Modal/RubricVariantModal';
-import Table, { TableColumn } from 'components/Table';
-import Title from 'components/Title';
-import { DEFAULT_COMPANY_SLUG, ROUTE_CMS, SORT_DESC } from 'config/common';
-import { CONFIRM_MODAL, RUBRIC_VARIANT_MODAL } from 'config/modalVariants';
-import { COL_RUBRIC_VARIANTS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { RubricVariantInterface } from 'db/uiInterfaces';
-import {
-  useCreateRubricVariantMutation,
-  useDeleteRubricVariantMutation,
-} from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { getFieldStringLocale } from 'lib/i18n';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import ContentItemControls from '../../../components/button/ContentItemControls';
+import FixedButtons from '../../../components/button/FixedButtons';
+import WpButton from '../../../components/button/WpButton';
+import Inner from '../../../components/Inner';
+import { RubricVariantModalInterface } from '../../../components/Modal/RubricVariantModal';
+import WpTable, { WpTableColumn } from '../../../components/WpTable';
+import WpTitle from '../../../components/WpTitle';
+import { DEFAULT_COMPANY_SLUG, ROUTE_CMS, SORT_DESC } from '../../../config/common';
+import { CONFIRM_MODAL, RUBRIC_VARIANT_MODAL } from '../../../config/modalVariants';
+import { COL_RUBRIC_VARIANTS } from '../../../db/collectionNames';
+import { getDatabase } from '../../../db/mongodb';
+import { RubricVariantInterface } from '../../../db/uiInterfaces';
+import {
+  useCreateRubricVariantMutation,
+  useDeleteRubricVariantMutation,
+} from '../../../generated/apolloComponents';
+import useMutationCallbacks from '../../../hooks/useMutationCallbacks';
+import AppContentWrapper from '../../../layout/AppContentWrapper';
+import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
+import { getFieldStringLocale } from '../../../lib/i18n';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../lib/ssrUtils';
 
 interface RubricVariantsConsumerInterface {
   rubricVariants: RubricVariantInterface[];
@@ -47,7 +51,7 @@ const RubricVariantsConsumer: React.FC<RubricVariantsConsumerInterface> = ({ rub
     onCompleted: (data) => onCompleteCallback(data.deleteRubricVariant),
   });
 
-  const columns: TableColumn<RubricVariantInterface>[] = [
+  const columns: WpTableColumn<RubricVariantInterface>[] = [
     {
       accessor: 'name',
       headTitle: 'Название',
@@ -94,8 +98,8 @@ const RubricVariantsConsumer: React.FC<RubricVariantsConsumerInterface> = ({ rub
         <title>{pageTitle}</title>
       </Head>
       <Inner testId={'rubric-variants-list'}>
-        <Title>{pageTitle}</Title>
-        <Table<RubricVariantInterface>
+        <WpTitle>{pageTitle}</WpTitle>
+        <WpTable<RubricVariantInterface>
           data={rubricVariants}
           columns={columns}
           emptyMessage={'Список пуст'}
@@ -105,7 +109,7 @@ const RubricVariantsConsumer: React.FC<RubricVariantsConsumerInterface> = ({ rub
           }}
         />
         <FixedButtons>
-          <Button
+          <WpButton
             testId={'create-rubric-variant'}
             size={'small'}
             onClick={() => {
@@ -128,7 +132,7 @@ const RubricVariantsConsumer: React.FC<RubricVariantsConsumerInterface> = ({ rub
             }}
           >
             Добавить тип рубрики
-          </Button>
+          </WpButton>
         </FixedButtons>
       </Inner>
     </AppContentWrapper>

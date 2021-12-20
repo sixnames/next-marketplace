@@ -1,7 +1,7 @@
-import { noNaN } from 'lib/numbers';
 import * as React from 'react';
-import Icon from 'components/Icon';
-import { SizeType } from 'types/clientTypes';
+import { noNaN } from '../lib/numbers';
+import { SizeType } from '../types/clientTypes';
+import WpIcon from './WpIcon';
 
 interface RatingStarsInterface {
   size?: SizeType;
@@ -23,7 +23,7 @@ const RatingStars: React.FC<RatingStarsInterface> = ({
       <div className={`flex items-center text-lg font-medium ${className ? className : ''}`}>
         <span>{noNaN(rating)}</span>
         <div className='text-wp-yellow ml-2'>
-          <Icon className='w-5 h-5' name={'star'} />
+          <WpIcon className='w-5 h-5' name={'star'} />
         </div>
       </div>
     );
@@ -40,22 +40,22 @@ const RatingStars: React.FC<RatingStarsInterface> = ({
       {showRatingNumber ? <div className='text-lg font-medium mr-2'>{noNaN(rating)}</div> : null}
       <div className='relative'>
         <div className='flex gap-[0.1rem] relative z-10'>
-          <Icon name={'star'} className={`${starClassName}`} />
-          <Icon name={'star'} className={`${starClassName}`} />
-          <Icon name={'star'} className={`${starClassName}`} />
-          <Icon name={'star'} className={`${starClassName}`} />
-          <Icon name={'star'} className={`${starClassName}`} />
+          <WpIcon name={'star'} className={`${starClassName}`} />
+          <WpIcon name={'star'} className={`${starClassName}`} />
+          <WpIcon name={'star'} className={`${starClassName}`} />
+          <WpIcon name={'star'} className={`${starClassName}`} />
+          <WpIcon name={'star'} className={`${starClassName}`} />
         </div>
 
         <div
           className='absolute top-0 left-0 z-20 flex gap-[0.1rem] text-wp-yellow overflow-hidden'
           style={{ width: `${filledRatingWidth}%` }}
         >
-          <Icon name={'star'} className={`${starClassName}`} />
-          <Icon name={'star'} className={`${starClassName}`} />
-          <Icon name={'star'} className={`${starClassName}`} />
-          <Icon name={'star'} className={`${starClassName}`} />
-          <Icon name={'star'} className={`${starClassName}`} />
+          <WpIcon name={'star'} className={`${starClassName}`} />
+          <WpIcon name={'star'} className={`${starClassName}`} />
+          <WpIcon name={'star'} className={`${starClassName}`} />
+          <WpIcon name={'star'} className={`${starClassName}`} />
+          <WpIcon name={'star'} className={`${starClassName}`} />
         </div>
       </div>
     </div>

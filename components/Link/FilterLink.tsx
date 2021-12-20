@@ -1,8 +1,8 @@
-import { CatalogueFilterAttributeOptionInterface } from 'db/uiInterfaces';
 import { useRouter } from 'next/router';
 import * as React from 'react';
+import { CatalogueFilterAttributeOptionInterface } from '../../db/uiInterfaces';
+import WpIcon from '../WpIcon';
 import TagLink, { TagLinkInterface } from './TagLink';
-import Icon from 'components/Icon';
 
 interface FilterLinkInterface extends Omit<TagLinkInterface, 'href' | 'as'> {
   counter?: number | string | null;
@@ -57,7 +57,7 @@ const FilterLink: React.FC<FilterLinkInterface> = ({
       </span>
       {counter ? <span>{counter}</span> : null}
       {withCross ? (
-        <Icon className='flex-shrink-0 w-3 h-3 ml-2 fill-theme cursor-pointer' name={'cross'} />
+        <WpIcon className='flex-shrink-0 w-3 h-3 ml-2 fill-theme cursor-pointer' name={'cross'} />
       ) : null}
     </TagLink>
   );

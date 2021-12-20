@@ -1,16 +1,24 @@
-import Button from 'components/button/Button';
-import FixedButtons from 'components/button/FixedButtons';
-import Inner from 'components/Inner';
-import SeoContentEditor from 'components/SeoContentEditor';
-import { GENDER_ENUMS } from 'config/common';
-import { OptionVariantsModel } from 'db/dbModels';
-import { CategoryInterface, CompanyInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
-import { Gender, UpdateCategoryInput, useUpdateCategoryMutation } from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useValidationSchema from 'hooks/useValidationSchema';
 import * as React from 'react';
-import { updateCategorySchema } from 'validation/categorySchema';
+import { GENDER_ENUMS } from '../../config/common';
+import { OptionVariantsModel } from '../../db/dbModels';
+import {
+  CategoryInterface,
+  CompanyInterface,
+  SeoContentCitiesInterface,
+} from '../../db/uiInterfaces';
+import {
+  Gender,
+  UpdateCategoryInput,
+  useUpdateCategoryMutation,
+} from '../../generated/apolloComponents';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import useValidationSchema from '../../hooks/useValidationSchema';
+import { updateCategorySchema } from '../../validation/categorySchema';
+import FixedButtons from '../button/FixedButtons';
+import WpButton from '../button/WpButton';
+import Inner from '../Inner';
+import SeoContentEditor from '../SeoContentEditor';
 
 export interface CompanyRubricCategoryDetailsInterface {
   category: CategoryInterface;
@@ -87,9 +95,9 @@ const CompanyRubricCategoryDetails: React.FC<CompanyRubricCategoryDetailsInterfa
               <SeoContentEditor label={'SEO текст внизу каталога'} filedName={'textBottom'} />
 
               <FixedButtons>
-                <Button type={'submit'} testId={'category-submit'} size={'small'}>
+                <WpButton type={'submit'} testId={'category-submit'} size={'small'}>
                   Сохранить
-                </Button>
+                </WpButton>
               </FixedButtons>
             </Form>
           );

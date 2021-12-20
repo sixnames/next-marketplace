@@ -1,15 +1,6 @@
-import Accordion from 'components/Accordion';
-import Button from 'components/button/Button';
-import ButtonCross from 'components/button/ButtonCross';
-import Checkbox from 'components/FormElements/Checkbox/Checkbox';
-import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
-import FormikAddressInput from 'components/FormElements/Input/FormikAddressInput';
-import FormikInput, { FormikInputPropsInterface } from 'components/FormElements/Input/FormikInput';
-import InputLine from 'components/FormElements/Input/InputLine';
-import Icon from 'components/Icon';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import PageEditor from 'components/PageEditor';
-import WpTooltip from 'components/WpTooltip';
+import { Form, Formik, useField, useFormikContext } from 'formik';
+import { get } from 'lodash';
+import * as React from 'react';
 import {
   CONFIG_VARIANT_ADDRESS,
   CONFIG_VARIANT_BOOLEAN,
@@ -21,29 +12,38 @@ import {
   DEFAULT_LOCALE,
   FILTER_SEPARATOR,
   GEO_POINT_TYPE,
-} from 'config/common';
-import { CONFIRM_MODAL } from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
-import { useConfigContext } from 'context/configContext';
-import { useLocaleContext } from 'context/localeContext';
-import { AddressModel, ConfigModel, JSONObjectModel, TranslationModel } from 'db/dbModels';
-import { CategoryInterface, RubricInterface } from 'db/uiInterfaces';
-import { Form, Formik, useField, useFormikContext } from 'formik';
+} from '../../config/common';
+import { CONFIRM_MODAL } from '../../config/modalVariants';
+import { useAppContext } from '../../context/appContext';
+import { useConfigContext } from '../../context/configContext';
+import { useLocaleContext } from '../../context/localeContext';
+import { AddressModel, ConfigModel, JSONObjectModel, TranslationModel } from '../../db/dbModels';
+import { CategoryInterface, RubricInterface } from '../../db/uiInterfaces';
 import {
   useUpdateConfigMutation,
   useUpdateVisibleCategoriesInNavDropdownMutation,
-} from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useValidationSchema from 'hooks/useValidationSchema';
-import { getReadableAddress } from 'lib/addressUtils';
-import { alwaysArray } from 'lib/arrayUtils';
-import { getConstructorDefaultValue } from 'lib/constructorUtils';
-import { GeocodeResultInterface } from 'lib/geocode';
-import { noNaN } from 'lib/numbers';
-import { get } from 'lodash';
-import * as React from 'react';
-import { InputType } from 'types/clientTypes';
-import { updateConfigSchema } from 'validation/configSchema';
+} from '../../generated/apolloComponents';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import useValidationSchema from '../../hooks/useValidationSchema';
+import { getReadableAddress } from '../../lib/addressUtils';
+import { alwaysArray } from '../../lib/arrayUtils';
+import { getConstructorDefaultValue } from '../../lib/constructorUtils';
+import { GeocodeResultInterface } from '../../lib/geocode';
+import { noNaN } from '../../lib/numbers';
+import { InputType } from '../../types/clientTypes';
+import { updateConfigSchema } from '../../validation/configSchema';
+import ButtonCross from '../button/ButtonCross';
+import WpButton from '../button/WpButton';
+import { ConfirmModalInterface } from '../Modal/ConfirmModal';
+import PageEditor from '../PageEditor';
+import WpAccordion from '../WpAccordion';
+import WpIcon from '../WpIcon';
+import WpTooltip from '../WpTooltip';
+import FormikCheckboxLine from './Checkbox/FormikCheckboxLine';
+import WpCheckbox from './Checkbox/WpCheckbox';
+import FormikAddressInput from './Input/FormikAddressInput';
+import FormikInput, { FormikInputPropsInterface } from './Input/FormikInput';
+import InputLine from './Input/InputLine';
 
 interface ConfigInputInterface extends FormikInputPropsInterface {
   onRemoveHandler?: (values: any) => void;
@@ -126,7 +126,7 @@ const ConfigInput: React.FC<ConfigInputInterface> = ({ name, multi, variant, tes
       })}
 
       {multi ? (
-        <Button
+        <WpButton
           frameClassName={'w-auto'}
           onClick={addFieldHandler}
           size={'small'}
@@ -134,7 +134,7 @@ const ConfigInput: React.FC<ConfigInputInterface> = ({ name, multi, variant, tes
           testId={`${name}-add`}
         >
           Добавить
-        </Button>
+        </WpButton>
       ) : null}
     </div>
   );
@@ -181,14 +181,14 @@ const ConfigTranslationInput: React.FC<ConfigTranslationInputInterface> = ({
 
         return (
           <div className={isNotLast ? 'mb-6' : ''} key={name}>
-            <Accordion
+            <WpAccordion
               testId={`${testId}-accordion-${localeSlug}`}
               isOpen={localeSlug === defaultLocale}
               title={localeSlug}
               titleRight={
                 <WpTooltip title={accordionIconTooltip}>
                   <div>
-                    <Icon className={`w-4 h-4 ${accordionIconClass}`} name={accordionIcon} />
+                    <WpIcon className={`w-4 h-4 ${accordionIconClass}`} name={accordionIcon} />
                   </div>
                 </WpTooltip>
               }
@@ -197,7 +197,7 @@ const ConfigTranslationInput: React.FC<ConfigTranslationInputInterface> = ({
               <div className='mt-3 mb-6'>
                 <ConfigInput {...props} name={name} testId={`${testId}-${localeSlug}`} />
               </div>
-            </Accordion>
+            </WpAccordion>
           </div>
         );
       })}
@@ -414,7 +414,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
         <div>
           <div className='cms-option flex gap-4 items-center'>
             <div>
-              <Checkbox
+              <WpCheckbox
                 disabled={!isParentSelected}
                 testId={`${category.name}`}
                 checked={isSelected}
@@ -492,7 +492,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
               {' '}
               <WpTooltip title={description}>
                 <div className='inline-block cursor-pointer ml-3'>
-                  <Icon className='w-5 h-5' name={'question-circle'} />
+                  <WpIcon className='w-5 h-5' name={'question-circle'} />
                 </div>
               </WpTooltip>
             </React.Fragment>
@@ -501,7 +501,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
         {cities.map(({ name, slug }) => {
           const cityTestId = `${configSlug}-${slug}`;
           return (
-            <Accordion
+            <WpAccordion
               isOpen={slug === DEFAULT_CITY}
               testId={cityTestId}
               title={`${name}`}
@@ -527,7 +527,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
                   );
                 })}
               </div>
-            </Accordion>
+            </WpAccordion>
           );
         })}
       </div>
@@ -547,7 +547,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
               {' '}
               <WpTooltip title={description}>
                 <div className='inline-block cursor-pointer ml-3'>
-                  <Icon className='w-5 h-5' name={'question-circle'} />
+                  <WpIcon className='w-5 h-5' name={'question-circle'} />
                 </div>
               </WpTooltip>
             </React.Fragment>
@@ -567,7 +567,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
                 {cities.map(({ name, slug }) => {
                   const cityTestId = `${configSlug}-${slug}`;
                   return (
-                    <Accordion
+                    <WpAccordion
                       isOpen={slug === DEFAULT_CITY}
                       testId={cityTestId}
                       title={`${name}`}
@@ -576,18 +576,18 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
                       <div className='ml-8 pt-[var(--lineGap-200)]'>
                         <FormikAddressInput name={fieldName} />
                       </div>
-                    </Accordion>
+                    </WpAccordion>
                   );
                 })}
                 <div className='flex mb-12 mt-4'>
-                  <Button
+                  <WpButton
                     theme={'secondary'}
                     size={'small'}
                     type={'submit'}
                     testId={`${configSlug}-submit`}
                   >
                     Сохранить
-                  </Button>
+                  </WpButton>
                 </div>
               </Form>
             );
@@ -610,7 +610,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
               {' '}
               <WpTooltip title={description}>
                 <div className='inline-block cursor-pointer ml-3'>
-                  <Icon className='w-5 h-5' name={'question-circle'} />
+                  <WpIcon className='w-5 h-5' name={'question-circle'} />
                 </div>
               </WpTooltip>
             </React.Fragment>
@@ -632,7 +632,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
                 {cities.map(({ name, slug }) => {
                   const cityTestId = `${configSlug}-${slug}`;
                   return (
-                    <Accordion
+                    <WpAccordion
                       isOpen={slug === DEFAULT_CITY}
                       testId={cityTestId}
                       title={`${name}`}
@@ -668,18 +668,18 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
                           }}
                         />
                       </div>
-                    </Accordion>
+                    </WpAccordion>
                   );
                 })}
                 <div className='flex mb-12 mt-4'>
-                  <Button
+                  <WpButton
                     theme={'secondary'}
                     size={'small'}
                     type={'submit'}
                     testId={`${configSlug}-submit`}
                   >
                     Сохранить
-                  </Button>
+                  </WpButton>
                 </div>
               </Form>
             );
@@ -701,7 +701,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
             {' '}
             <WpTooltip title={description}>
               <div className='inline-block cursor-pointer ml-3'>
-                <Icon className='w-5 h-5' name={'question-circle'} />
+                <WpIcon className='w-5 h-5' name={'question-circle'} />
               </div>
             </WpTooltip>
           </React.Fragment>
@@ -720,7 +720,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
               {cities.map(({ name, slug }) => {
                 const cityTestId = `${configSlug}-${slug}`;
                 return (
-                  <Accordion
+                  <WpAccordion
                     isOpen={slug === DEFAULT_CITY}
                     testId={cityTestId}
                     title={`${name}`}
@@ -735,18 +735,18 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
                         variant={variant}
                       />
                     </div>
-                  </Accordion>
+                  </WpAccordion>
                 );
               })}
               <div className='flex mb-12 mt-4'>
-                <Button
+                <WpButton
                   theme={'secondary'}
                   size={'small'}
                   type={'submit'}
                   testId={`${configSlug}-submit`}
                 >
                   Сохранить
-                </Button>
+                </WpButton>
               </div>
             </Form>
           );

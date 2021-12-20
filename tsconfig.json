@@ -32,8 +32,8 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "allowJs": false,
-    "baseUrl": "."
+    "allowJs": false
+//    "baseUrl": "."
   },
   "include": [
     "next-env.d.ts",

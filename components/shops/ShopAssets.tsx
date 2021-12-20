@@ -1,18 +1,18 @@
-import AssetsManager from 'components/AssetsManager';
-import FormikImageUpload from 'components/FormElements/Upload/FormikImageUpload';
-import WpDropZone from 'components/FormElements/Upload/WpDropZone';
-import Inner from 'components/Inner';
-import { ConsoleShopLayoutInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
+import { useRouter } from 'next/router';
+import * as React from 'react';
+import { ConsoleShopLayoutInterface } from '../../db/uiInterfaces';
 import {
   useDeleteShopAssetMutation,
   useUpdateShopAssetIndexMutation,
-} from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import ConsoleShopLayout from 'layout/console/ConsoleShopLayout';
-import { alwaysArray } from 'lib/arrayUtils';
-import { useRouter } from 'next/router';
-import * as React from 'react';
+} from '../../generated/apolloComponents';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import ConsoleShopLayout from '../../layout/console/ConsoleShopLayout';
+import { alwaysArray } from '../../lib/arrayUtils';
+import AssetsManager from '../AssetsManager';
+import FormikImageUpload from '../FormElements/Upload/FormikImageUpload';
+import WpDropZone from '../FormElements/Upload/WpDropZone';
+import Inner from '../Inner';
 
 export type ShopAssetsInterface = ConsoleShopLayoutInterface;
 

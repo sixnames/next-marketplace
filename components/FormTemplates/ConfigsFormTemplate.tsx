@@ -1,9 +1,9 @@
-import ConfigsAssetInput from 'components/FormElements/FormikConfigAssetInput';
-import FormikConfigInput from 'components/FormElements/FormikConfigInput';
-import Notification from 'components/Notification';
-import { ConfigModel } from 'db/dbModels';
-import { RubricInterface } from 'db/uiInterfaces';
 import * as React from 'react';
+import { ConfigModel } from '../../db/dbModels';
+import { RubricInterface } from '../../db/uiInterfaces';
+import ConfigsAssetInput from '../FormElements/FormikConfigAssetInput';
+import FormikConfigInput from '../FormElements/FormikConfigInput';
+import WpNotification from '../WpNotification';
 
 export interface ConfigsFormTemplateInterface {
   assetConfigs: ConfigModel[];
@@ -33,7 +33,7 @@ const ConfigsFormTemplate: React.FC<ConfigsFormTemplateInterface> = ({
 
       {normalConfigs.length > 0 ? (
         <div className='mb-8 max-w-[980px]'>
-          <Notification
+          <WpNotification
             variant={'warning'}
             title={'Внимание!'}
             message={`Каждая настройка содержит города и языки созданные в базе данных.

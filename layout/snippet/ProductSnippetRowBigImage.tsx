@@ -1,15 +1,15 @@
-import ControlButton from 'components/button/ControlButton';
-import Link from 'components/Link/Link';
-import RatingStars from 'components/RatingStars';
-import WpImage from 'components/WpImage';
-import { useSiteContext } from 'context/siteContext';
-import { ProductSnippetInterface } from 'db/uiInterfaces';
-import ProductAddToCartButton from 'layout/snippet/ProductAddToCartButton';
-import ProductSnippetAvailability from 'layout/snippet/ProductSnippetAvailability';
-import ProductSnippetEditButton from 'layout/snippet/ProductSnippetEditButton';
-import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
-import { noNaN } from 'lib/numbers';
 import * as React from 'react';
+import ControlButton from '../../components/button/ControlButton';
+import WpLink from '../../components/Link/WpLink';
+import RatingStars from '../../components/RatingStars';
+import WpImage from '../../components/WpImage';
+import { useSiteContext } from '../../context/siteContext';
+import { ProductSnippetInterface } from '../../db/uiInterfaces';
+import { noNaN } from '../../lib/numbers';
+import ProductAddToCartButton from './ProductAddToCartButton';
+import ProductSnippetAvailability from './ProductSnippetAvailability';
+import ProductSnippetEditButton from './ProductSnippetEditButton';
+import ProductSnippetPrice from './ProductSnippetPrice';
 
 const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
   shopProduct,
@@ -70,14 +70,14 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
               />
             </div>
           </div>
-          <Link
+          <WpLink
             testId={`${testId}-image-row`}
             target={'_blank'}
             className='block absolute z-10 inset-0 text-indent-full'
             href={`${urlPrefix}/${slug}`}
           >
             {snippetTitle}
-          </Link>
+          </WpLink>
         </div>
       </div>
 
@@ -97,14 +97,14 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
 
         {/*name*/}
         <div className='mb-3'>
-          <Link
+          <WpLink
             testId={`${testId}-name-row`}
             target={'_blank'}
             className='block text-2xl font-medium text-primary-text hover:no-underline hover:text-primary-text'
             href={`${urlPrefix}/${slug}`}
           >
             {snippetTitle}
-          </Link>
+          </WpLink>
           {name ? <div className='text-secondary-text mt-1'>{name}</div> : null}
         </div>
 

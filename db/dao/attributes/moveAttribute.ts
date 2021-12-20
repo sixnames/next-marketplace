@@ -1,10 +1,10 @@
-import { COL_ATTRIBUTES, COL_ATTRIBUTES_GROUPS } from 'db/collectionNames';
-import { AttributeModel, AttributePayloadModel, AttributesGroupModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
+import { COL_ATTRIBUTES, COL_ATTRIBUTES_GROUPS } from '../../collectionNames';
+import { AttributeModel, AttributePayloadModel, AttributesGroupModel } from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface MoveAttributeInputInterface {
   attributeId: string;

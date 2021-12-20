@@ -1,10 +1,10 @@
-import Inner from 'components/Inner';
-import Title from 'components/Title';
-import { ConsoleShopLayoutInterface } from 'db/uiInterfaces';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import AppSubNav from 'layout/AppSubNav';
 import Head from 'next/head';
 import * as React from 'react';
+import Inner from '../../components/Inner';
+import WpTitle from '../../components/WpTitle';
+import { ConsoleShopLayoutInterface } from '../../db/uiInterfaces';
+import AppContentWrapper from '../AppContentWrapper';
+import AppSubNav from '../AppSubNav';
 
 const ConsoleShopLayout: React.FC<ConsoleShopLayoutInterface> = ({
   shop,
@@ -51,7 +51,7 @@ const ConsoleShopLayout: React.FC<ConsoleShopLayoutInterface> = ({
       </Head>
 
       <Inner lowBottom>
-        <Title>Магазин {shop.name}</Title>
+        <WpTitle>Магазин {shop.name}</WpTitle>
       </Inner>
       <AppSubNav navConfig={navConfig} />
       {children}

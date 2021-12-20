@@ -1,16 +1,19 @@
-import { DEFAULT_COMPANY_SLUG } from 'config/common';
 import * as React from 'react';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
-import ModalButtons from 'components/Modal/ModalButtons';
 import { Form, Formik } from 'formik';
-import Button from 'components/button/Button';
-import { useAppContext } from 'context/appContext';
-import { CreateRubricVariantInput, UpdateRubricVariantInput } from 'generated/apolloComponents';
-import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
-import useValidationSchema from 'hooks/useValidationSchema';
-import { TranslationModel } from 'db/dbModels';
-import { rubricVariantInModalSchema } from 'validation/rubricVariantSchema';
+import { DEFAULT_COMPANY_SLUG } from '../../config/common';
+import { useAppContext } from '../../context/appContext';
+import { TranslationModel } from '../../db/dbModels';
+import {
+  CreateRubricVariantInput,
+  UpdateRubricVariantInput,
+} from '../../generated/apolloComponents';
+import useValidationSchema from '../../hooks/useValidationSchema';
+import { rubricVariantInModalSchema } from '../../validation/rubricVariantSchema';
+import WpButton from '../button/WpButton';
+import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
+import ModalButtons from './ModalButtons';
+import ModalFrame from './ModalFrame';
+import ModalTitle from './ModalTitle';
 
 export interface RubricVariantModalInterface {
   nameI18n?: TranslationModel;
@@ -48,13 +51,13 @@ const RubricVariantModal: React.FC<RubricVariantModalInterface> = ({ nameI18n, c
               />
 
               <ModalButtons>
-                <Button type={'submit'} testId={'rubric-variant-submit'}>
+                <WpButton type={'submit'} testId={'rubric-variant-submit'}>
                   {nameI18n ? 'Изменить' : 'Создать'}
-                </Button>
+                </WpButton>
 
-                <Button theme={'secondary'} onClick={hideModal} testId={'options-group-decline'}>
+                <WpButton theme={'secondary'} onClick={hideModal} testId={'options-group-decline'}>
                   Отмена
-                </Button>
+                </WpButton>
               </ModalButtons>
             </Form>
           );

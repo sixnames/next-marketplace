@@ -1,24 +1,24 @@
-import { DEFAULT_DIFF } from 'config/common';
+import { ObjectId } from 'mongodb';
+import { DEFAULT_DIFF } from '../../../config/common';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import { noNaN } from '../../../lib/numbers';
+import { countDiscountedPrice } from '../../../lib/priceUtils';
+import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
 import {
   COL_ORDER_LOGS,
   COL_ORDER_PRODUCTS,
   COL_ORDERS,
   COL_SHOP_PRODUCTS,
-} from 'db/collectionNames';
+} from '../../collectionNames';
 import {
   OrderLogModel,
   OrderModel,
   OrderProductModel,
   OrderProductPayloadModel,
   ShopProductModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { noNaN } from 'lib/numbers';
-import { countDiscountedPrice } from 'lib/priceUtils';
-import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { ObjectId } from 'mongodb';
+} from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface UpdateOrderProductInputInterface {
   orderProductId: string;

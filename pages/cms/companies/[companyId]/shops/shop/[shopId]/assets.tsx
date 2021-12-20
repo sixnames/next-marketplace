@@ -1,14 +1,18 @@
-import { ROUTE_CMS } from 'config/common';
-import { COL_COMPANIES, COL_SHOPS } from 'db/collectionNames';
-import { ShopModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
-import ShopAssets, { ShopAssetsInterface } from 'components/shops/ShopAssets';
+import ShopAssets, { ShopAssetsInterface } from '../../../../../../../components/shops/ShopAssets';
+import { ROUTE_CMS } from '../../../../../../../config/common';
+import { COL_COMPANIES, COL_SHOPS } from '../../../../../../../db/collectionNames';
+import { ShopModel } from '../../../../../../../db/dbModels';
+import { getDatabase } from '../../../../../../../db/mongodb';
+import { AppContentWrapperBreadCrumbs } from '../../../../../../../db/uiInterfaces';
+import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../../../../../lib/ssrUtils';
 
 interface CompanyShopAssetsInterface
   extends GetAppInitialDataPropsInterface,

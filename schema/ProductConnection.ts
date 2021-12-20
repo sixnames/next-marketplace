@@ -1,12 +1,14 @@
-import { ATTRIBUTE_VARIANT_SELECT } from 'config/common';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import {
-  getOperationPermission,
-  getRequestParams,
-  getResolverValidationSchema,
-} from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
+import { ATTRIBUTE_VARIANT_SELECT } from '../config/common';
+import {
+  COL_ATTRIBUTES,
+  COL_OPTIONS,
+  COL_PRODUCT_ATTRIBUTES,
+  COL_PRODUCT_CONNECTION_ITEMS,
+  COL_PRODUCT_CONNECTIONS,
+  COL_PRODUCTS,
+} from '../db/collectionNames';
 import {
   AttributeModel,
   OptionModel,
@@ -15,21 +17,19 @@ import {
   ProductConnectionModel,
   ProductModel,
   ProductPayloadModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+} from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 import {
-  COL_ATTRIBUTES,
-  COL_OPTIONS,
-  COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCT_CONNECTION_ITEMS,
-  COL_PRODUCT_CONNECTIONS,
-  COL_PRODUCTS,
-} from 'db/collectionNames';
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+} from '../lib/sessionHelpers';
 import {
   addProductToConnectionSchema,
   createProductConnectionSchema,
   deleteProductFromConnectionSchema,
-} from 'validation/productSchema';
+} from '../validation/productSchema';
 
 export const ProductConnectionItem = objectType({
   name: 'ProductConnectionItem',

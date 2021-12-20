@@ -1,14 +1,14 @@
 import { objectType } from 'nexus';
-import { getRequestParams } from 'lib/sessionHelpers';
-import { getDatabase } from 'db/mongodb';
-import { NavItemModel } from 'db/dbModels';
-import { COL_NAV_ITEMS } from 'db/collectionNames';
 import {
   ROLE_SLUG_ADMIN,
-  ROUTE_CONSOLE_NAV_GROUP,
   ROUTE_CMS_NAV_GROUP,
+  ROUTE_CONSOLE_NAV_GROUP,
   SORT_ASC,
-} from 'config/common';
+} from '../config/common';
+import { COL_NAV_ITEMS } from '../db/collectionNames';
+import { NavItemModel } from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import { getRequestParams } from '../lib/sessionHelpers';
 
 export const Role = objectType({
   name: 'Role',

@@ -1,7 +1,7 @@
 import { extendType, objectType } from 'nexus';
-import { getRequestParams } from 'lib/sessionHelpers';
-import { MessageModel } from 'db/dbModels';
-import { getValidationMessages } from 'lib/apiMessageUtils';
+import { MessageModel } from '../db/dbModels';
+import { getValidationMessages } from '../lib/apiMessageUtils';
+import { getRequestParams } from '../lib/sessionHelpers';
 
 export const Message = objectType({
   name: 'Message',

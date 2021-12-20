@@ -1,25 +1,29 @@
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import * as React from 'react';
 import ConsolePromoProducts, {
   ConsolePromoProductsInterface,
-} from 'components/console/ConsolePromoProducts';
-import { DEFAULT_CURRENCY, DEFAULT_PAGE_FILTER, ROUTE_CONSOLE } from 'config/common';
-import { COL_RUBRICS } from 'db/collectionNames';
-import { getConsolePromoProducts } from 'db/dao/promo/getConsolePromoProducts';
-import { castRubricForUI } from 'db/dao/rubrics/castRubricForUI';
-import { RubricModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import ConsolePromoLayout from 'layout/console/ConsolePromoLayout';
-import { alwaysArray, alwaysString } from 'lib/arrayUtils';
-import { getPromoSsr } from 'lib/promoUtils';
+} from '../../../../../../../../../components/console/ConsolePromoProducts';
+import {
+  DEFAULT_CURRENCY,
+  DEFAULT_PAGE_FILTER,
+  ROUTE_CONSOLE,
+} from '../../../../../../../../../config/common';
+import { COL_RUBRICS } from '../../../../../../../../../db/collectionNames';
+import { getConsolePromoProducts } from '../../../../../../../../../db/dao/promo/getConsolePromoProducts';
+import { castRubricForUI } from '../../../../../../../../../db/dao/rubrics/castRubricForUI';
+import { RubricModel } from '../../../../../../../../../db/dbModels';
+import { getDatabase } from '../../../../../../../../../db/mongodb';
+import { AppContentWrapperBreadCrumbs } from '../../../../../../../../../db/uiInterfaces';
+import ConsoleLayout from '../../../../../../../../../layout/cms/ConsoleLayout';
+import ConsolePromoLayout from '../../../../../../../../../layout/console/ConsolePromoLayout';
+import { alwaysArray, alwaysString } from '../../../../../../../../../lib/arrayUtils';
+import { getPromoSsr } from '../../../../../../../../../lib/promoUtils';
 import {
   castDbData,
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
-} from 'lib/ssrUtils';
-import { ObjectId } from 'mongodb';
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import * as React from 'react';
+} from '../../../../../../../../../lib/ssrUtils';
 
 interface PromoProductsPageInterface
   extends GetConsoleInitialDataPropsInterface,

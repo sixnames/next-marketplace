@@ -1,10 +1,10 @@
 import NextAuth, { NextAuthOptions } from 'next-auth';
 import Providers from 'next-auth/providers';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getDatabase } from 'db/mongodb';
 import bcrypt from 'bcryptjs';
-import { UserModel } from 'db/dbModels';
-import { COL_USERS } from 'db/collectionNames';
+import { COL_USERS } from '../../../db/collectionNames';
+import { UserModel } from '../../../db/dbModels';
+import { getDatabase } from '../../../db/mongodb';
 
 const options: NextAuthOptions = {
   session: {

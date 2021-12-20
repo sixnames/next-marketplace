@@ -1,10 +1,20 @@
-import { DEFAULT_PAGE, GENDER_HE, PAGINATION_DEFAULT_LIMIT, SORT_DESC } from 'config/common';
+import { ObjectId } from 'mongodb';
+import {
+  DEFAULT_PAGE,
+  GENDER_HE,
+  PAGINATION_DEFAULT_LIMIT,
+  SORT_DESC,
+} from '../../../config/common';
 import {
   getBrandFilterAttribute,
   getCategoryFilterAttribute,
   getCommonFilterAttribute,
   getPriceAttribute,
-} from 'config/constantAttributes';
+} from '../../../config/constantAttributes';
+import { castUrlFilters, getCatalogueAttributes } from '../../../lib/catalogueUtils';
+import { noNaN } from '../../../lib/numbers';
+import { castSupplierProductsList } from '../../../lib/productUtils';
+import { getTreeFromList } from '../../../lib/treeUtils';
 import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
@@ -14,26 +24,18 @@ import {
   COL_PROMO_PRODUCTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
-} from 'db/collectionNames';
-import {
-  filterAttributesPipeline,
-  // shopProductSupplierProductsPipeline,
-} from 'db/dao/constantPipelines';
-import { castProductForUI } from 'db/dao/product/castProductForUI';
-import { ObjectIdModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+} from '../../collectionNames';
+import { ObjectIdModel } from '../../dbModels';
+import { getDatabase } from '../../mongodb';
 import {
   AttributeInterface,
   GetConsoleRubricPromoProductsPayloadInterface,
   RubricInterface,
   ShopProductInterface,
   ShopProductsAggregationInterface,
-} from 'db/uiInterfaces';
-import { castUrlFilters, getCatalogueAttributes } from 'lib/catalogueUtils';
-import { noNaN } from 'lib/numbers';
-import { castSupplierProductsList } from 'lib/productUtils';
-import { getTreeFromList } from 'lib/treeUtils';
-import { ObjectId } from 'mongodb';
+} from '../../uiInterfaces';
+import { filterAttributesPipeline } from '../constantPipelines';
+import { castProductForUI } from '../product/castProductForUI';
 
 interface GetConsolePromoProductsInterface {
   companyId: ObjectIdModel;

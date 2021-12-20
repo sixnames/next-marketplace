@@ -1,20 +1,25 @@
-import { PAGINATION_DEFAULT_LIMIT, SORT_DESC } from 'config/common';
-import { COL_ORDER_CUSTOMERS, COL_ORDER_STATUSES, COL_ORDERS, COL_SHOPS } from 'db/collectionNames';
-import { castOrderStatus } from 'db/dao/orders/getConsoleOrder';
-import { OrderModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext } from 'next';
+import { PAGINATION_DEFAULT_LIMIT, SORT_DESC } from '../../../config/common';
+import { alwaysArray, alwaysString } from '../../../lib/arrayUtils';
+import { castUrlFilters } from '../../../lib/catalogueUtils';
+import { getShortName } from '../../../lib/nameUtils';
+import { phoneToRaw, phoneToReadable } from '../../../lib/phoneUtils';
+import { getRequestParams } from '../../../lib/sessionHelpers';
+import {
+  COL_ORDER_CUSTOMERS,
+  COL_ORDER_STATUSES,
+  COL_ORDERS,
+  COL_SHOPS,
+} from '../../collectionNames';
+import { OrderModel } from '../../dbModels';
+import { getDatabase } from '../../mongodb';
 import {
   AppPaginationAggregationInterface,
   AppPaginationInterface,
   OrderInterface,
-} from 'db/uiInterfaces';
-import { alwaysArray, alwaysString } from 'lib/arrayUtils';
-import { castUrlFilters } from 'lib/catalogueUtils';
-import { getShortName } from 'lib/nameUtils';
-import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
-import { getRequestParams } from 'lib/sessionHelpers';
-import { ObjectId } from 'mongodb';
-import { GetServerSidePropsContext } from 'next';
+} from '../../uiInterfaces';
+import { castOrderStatus } from './getConsoleOrder';
 
 export interface OrderPaginationAggregationInterface
   extends AppPaginationAggregationInterface<OrderInterface> {}

@@ -1,12 +1,12 @@
-import { REQUEST_METHOD_GET } from 'config/common';
+import { NextApiRequest, NextApiResponse } from 'next';
+import qs from 'qs';
+import { REQUEST_METHOD_GET } from '../../../config/common';
 import {
   getRubricProductsList,
   GetRubricProductsListInputInterface,
-} from 'db/dao/product/getRubricProductsList';
-import { alwaysString } from 'lib/arrayUtils';
-import { getRequestParams } from 'lib/sessionHelpers';
-import { NextApiRequest, NextApiResponse } from 'next';
-import qs from 'qs';
+} from '../../../db/dao/product/getRubricProductsList';
+import { alwaysString } from '../../../lib/arrayUtils';
+import { getRequestParams } from '../../../lib/sessionHelpers';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   // get list of rubrics

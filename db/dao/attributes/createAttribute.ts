@@ -1,5 +1,13 @@
-import { COL_ATTRIBUTES, COL_ATTRIBUTES_GROUPS, COL_METRICS } from 'db/collectionNames';
-import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
+import { ObjectId } from 'mongodb';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import { getNextNumberItemId } from '../../../lib/itemIdUtils';
+import {
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+} from '../../../lib/sessionHelpers';
+import { addAttributeToGroupSchema } from '../../../validation/attributesGroupSchema';
+import { COL_ATTRIBUTES, COL_ATTRIBUTES_GROUPS, COL_METRICS } from '../../collectionNames';
 import {
   AttributeModel,
   AttributePayloadModel,
@@ -9,18 +17,10 @@ import {
   AttributeViewVariantModel,
   MetricModel,
   TranslationModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getNextNumberItemId } from 'lib/itemIdUtils';
-import {
-  getOperationPermission,
-  getRequestParams,
-  getResolverValidationSchema,
-} from 'lib/sessionHelpers';
-import { ObjectId } from 'mongodb';
-import { addAttributeToGroupSchema } from 'validation/attributesGroupSchema';
+} from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { DaoPropsInterface } from '../../uiInterfaces';
+import { findDocumentByI18nField } from '../findDocumentByI18nField';
 
 export interface CreateAttributeInputInterface {
   attributesGroupId: string;

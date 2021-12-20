@@ -1,31 +1,34 @@
-import Button from 'components/button/Button';
-import { CartProduct } from 'components/cart/CartProduct';
-import { CartDeliveryFields } from 'components/cart/DefaultCart';
-import CartAside from 'components/CartAside';
-import FormikDatePicker from 'components/FormElements/Input/FormikDatePicker';
-import FormikInput from 'components/FormElements/Input/FormikInput';
-import InputLine from 'components/FormElements/Input/InputLine';
-import FormikTextarea from 'components/FormElements/Textarea/FormikTextarea';
-import Notification from 'components/Notification';
-import RequestError from 'components/RequestError';
+import { Form, Formik } from 'formik';
+import { get } from 'lodash';
+import * as React from 'react';
 import {
   ORDER_DELIVERY_VARIANT_COURIER,
   ORDER_DELIVERY_VARIANT_PICKUP,
   ORDER_PAYMENT_VARIANT_RECEIPT,
-} from 'config/common';
-import { useConfigContext } from 'context/configContext';
-import { useSiteContext } from 'context/siteContext';
-import { useSiteUserContext } from 'context/siteUserContext';
-import { CartInterface, CompanyInterface } from 'db/uiInterfaces';
-import { Form, Formik } from 'formik';
-import useValidationSchema from 'hooks/useValidationSchema';
-import LayoutCard from 'layout/LayoutCard';
-import { noNaN } from 'lib/numbers';
-import { phoneToRaw } from 'lib/phoneUtils';
-import { get } from 'lodash';
-import { CartTabIndexType, MakeOrderFormInterface } from 'pages/[companySlug]/[citySlug]/cart';
-import * as React from 'react';
-import { makeAnOrderSchema } from 'validation/orderSchema';
+} from '../../config/common';
+import { useConfigContext } from '../../context/configContext';
+import { useSiteContext } from '../../context/siteContext';
+import { useSiteUserContext } from '../../context/siteUserContext';
+import { CartInterface, CompanyInterface } from '../../db/uiInterfaces';
+import useValidationSchema from '../../hooks/useValidationSchema';
+import LayoutCard from '../../layout/LayoutCard';
+import { noNaN } from '../../lib/numbers';
+import { phoneToRaw } from '../../lib/phoneUtils';
+import {
+  CartTabIndexType,
+  MakeOrderFormInterface,
+} from '../../pages/[companySlug]/[citySlug]/cart';
+import { makeAnOrderSchema } from '../../validation/orderSchema';
+import WpButton from '../button/WpButton';
+import CartAside from '../CartAside';
+import FormikDatePicker from '../FormElements/Input/FormikDatePicker';
+import FormikInput from '../FormElements/Input/FormikInput';
+import InputLine from '../FormElements/Input/InputLine';
+import FormikTextarea from '../FormElements/Textarea/FormikTextarea';
+import RequestError from '../RequestError';
+import WpNotification from '../WpNotification';
+import { CartProduct } from './CartProduct';
+import { CartDeliveryFields } from './DefaultCart';
 
 interface OneShopCompanyCartFormInterface {
   cart: CartInterface;
@@ -238,17 +241,19 @@ const OneShopCompanyDeliveryCart: React.FC<OneShopCompanyCartFormInterface> = ({
                         low
                         labelTag={'div'}
                         label={'Подарочный сертификат'}
-                        lineContentClass='flex flex-col sm:flex-row gap-4 sm:items-end'
+                        lineContentClass='flex flex-col sm:flex-row gap-4 sm:items-center'
                       >
                         <div className='flex-grow'>
                           <FormikInput
+                            size={'small'}
                             name={giftCertificateFieldName}
                             testId={`gift-certificate-input-${domainCompany.mainShop?.slug}`}
                             low
                           />
                         </div>
-                        <Button
+                        <WpButton
                           short
+                          size={'small'}
                           frameClassName='w-auto'
                           theme={'secondary'}
                           testId={`gift-certificate-confirm-${domainCompany.mainShop?.slug}`}
@@ -265,20 +270,21 @@ const OneShopCompanyDeliveryCart: React.FC<OneShopCompanyCartFormInterface> = ({
                           }}
                         >
                           Применить
-                        </Button>
+                        </WpButton>
                       </InputLine>
 
                       <InputLine
                         low
                         labelTag={'div'}
                         label={'Промокод'}
-                        lineContentClass='flex flex-col sm:flex-row gap-4 sm:items-end'
+                        lineContentClass='flex flex-col sm:flex-row gap-4 sm:items-center'
                       >
                         <div className='flex-grow'>
-                          <FormikInput name={`shopConfigs[0].promoCode`} low />
+                          <FormikInput size={'small'} name={`shopConfigs[0].promoCode`} low />
                         </div>
-                        <Button
+                        <WpButton
                           short
+                          size={'small'}
                           frameClassName='w-auto'
                           theme={'secondary'}
                           onClick={() => {
@@ -286,7 +292,7 @@ const OneShopCompanyDeliveryCart: React.FC<OneShopCompanyCartFormInterface> = ({
                           }}
                         >
                           Применить
-                        </Button>
+                        </WpButton>
                       </InputLine>
                     </div>
                   </LayoutCard>
@@ -379,7 +385,7 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
           <Form>
             {domainCompany.mainShop?.priceWarning ? (
               <div className='mt-4'>
-                <Notification
+                <WpNotification
                   className='dark:bg-primary'
                   variant={'success'}
                   message={domainCompany.mainShop.priceWarning}
@@ -496,17 +502,19 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
                         low
                         labelTag={'div'}
                         label={'Подарочный сертификат'}
-                        lineContentClass='flex flex-col sm:flex-row gap-4 sm:items-end'
+                        lineContentClass='flex flex-col sm:flex-row gap-4 sm:items-center'
                       >
                         <div className='flex-grow'>
                           <FormikInput
+                            size={'small'}
                             name={giftCertificateFieldName}
                             testId={`gift-certificate-input-${domainCompany.mainShop?.slug}`}
                             low
                           />
                         </div>
-                        <Button
+                        <WpButton
                           short
+                          size={'small'}
                           frameClassName='w-auto'
                           theme={'secondary'}
                           testId={`gift-certificate-confirm-${domainCompany.mainShop?.slug}`}
@@ -523,19 +531,20 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
                           }}
                         >
                           Применить
-                        </Button>
+                        </WpButton>
                       </InputLine>
 
                       <InputLine
                         low
                         labelTag={'div'}
                         label={'Промокод'}
-                        lineContentClass='flex flex-col sm:flex-row gap-4 sm:items-end'
+                        lineContentClass='flex flex-col sm:flex-row gap-4 sm:items-center'
                       >
                         <div className='flex-grow'>
-                          <FormikInput name={`shopConfigs[0].promoCode`} low />
+                          <FormikInput size={'small'} name={`shopConfigs[0].promoCode`} low />
                         </div>
-                        <Button
+                        <WpButton
+                          size={'small'}
                           short
                           frameClassName='w-auto'
                           theme={'secondary'}
@@ -544,7 +553,7 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
                           }}
                         >
                           Применить
-                        </Button>
+                        </WpButton>
                       </InputLine>
                     </div>
                   </LayoutCard>

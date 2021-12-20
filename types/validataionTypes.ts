@@ -1,4 +1,4 @@
-import { MessageBase } from 'db/dbModels';
+import { MessageBase } from '../db/dbModels';
 
 interface ValidationMessageInterface extends MessageBase {
   [key: string]: any;

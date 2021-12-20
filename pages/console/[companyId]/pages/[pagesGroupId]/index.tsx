@@ -1,18 +1,18 @@
-import Inner from 'components/Inner';
-import PagesList, { PagesListInterface } from 'components/Pages/PagesList';
-import Title from 'components/Title';
-import { ROUTE_CONSOLE } from 'config/common';
-import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { getPagesListSsr } from 'lib/pageUtils';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import Inner from '../../../../../components/Inner';
+import PagesList, { PagesListInterface } from '../../../../../components/Pages/PagesList';
+import WpTitle from '../../../../../components/WpTitle';
+import { ROUTE_CONSOLE } from '../../../../../config/common';
+import { AppContentWrapperBreadCrumbs } from '../../../../../db/uiInterfaces';
+import AppContentWrapper from '../../../../../layout/AppContentWrapper';
+import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
+import { getPagesListSsr } from '../../../../../lib/pageUtils';
 import {
   castDbData,
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
-} from 'lib/ssrUtils';
+} from '../../../../../lib/ssrUtils';
 
 interface PagesListPageInterface
   extends GetConsoleInitialDataPropsInterface,
@@ -34,7 +34,7 @@ const PagesListPage: NextPage<PagesListPageInterface> = ({ layoutProps, pagesGro
     <ConsoleLayout title={`${pagesGroup.name}`} {...layoutProps}>
       <AppContentWrapper breadcrumbs={breadcrumbs}>
         <Inner>
-          <Title>{pagesGroup.name}</Title>
+          <WpTitle>{pagesGroup.name}</WpTitle>
           <PagesList basePath={basePath} pagesGroup={pagesGroup} />
         </Inner>
       </AppContentWrapper>

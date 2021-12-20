@@ -1,9 +1,9 @@
-import ContentItemControls from 'components/button/ContentItemControls';
-import Inner from 'components/Inner';
-import RequestError from 'components/RequestError';
-import WpImage from 'components/WpImage';
-import { CategoryInterface, CompanyInterface, RubricInterface } from 'db/uiInterfaces';
 import * as React from 'react';
+import { CategoryInterface, CompanyInterface, RubricInterface } from '../../db/uiInterfaces';
+import ContentItemControls from '../button/ContentItemControls';
+import Inner from '../Inner';
+import RequestError from '../RequestError';
+import WpImage from '../WpImage';
 
 export interface CompanyRubricCategoriesListInterface {
   rubric: RubricInterface;

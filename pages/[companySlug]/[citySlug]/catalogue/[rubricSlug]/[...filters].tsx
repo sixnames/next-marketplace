@@ -1,8 +1,8 @@
-import Catalogue, { CatalogueInterface } from 'components/Catalogue';
-import { getCatalogueIsrProps } from 'lib/catalogueIsrUtils';
-import { IsrContextInterface } from 'lib/isrUtils';
 import { GetStaticPathsResult, GetStaticPropsResult, NextPage } from 'next';
 import * as React from 'react';
+import Catalogue, { CatalogueInterface } from '../../../../../components/Catalogue';
+import { getCatalogueIsrProps } from '../../../../../lib/catalogueIsrUtils';
+import { IsrContextInterface } from '../../../../../lib/isrUtils';
 
 const CataloguePage: NextPage<CatalogueInterface> = (props) => {
   return <Catalogue {...props} />;

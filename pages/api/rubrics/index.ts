@@ -1,6 +1,6 @@
-import { REQUEST_METHOD_GET } from 'config/common';
-import { getRubricsList } from 'db/dao/rubrics/getRubricsList';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { REQUEST_METHOD_GET } from '../../../config/common';
+import { getRubricsList } from '../../../db/dao/rubrics/getRubricsList';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   // get list of rubrics

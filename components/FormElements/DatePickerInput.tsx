@@ -1,12 +1,3 @@
-import ButtonCross from 'components/button/ButtonCross';
-import InputLine, { InputLinePropsInterface } from 'components/FormElements/Input/InputLine';
-import Icon from 'components/Icon';
-import {
-  DATE_FORMAT_DATE,
-  DEFAULT_LOCALE,
-  // SECONDARY_LOCALE
-} from 'config/common';
-// import { useLocaleContext } from 'context/localeContext';
 import * as React from 'react';
 import DatePicker, {
   ReactDatePickerProps,
@@ -15,8 +6,12 @@ import DatePicker, {
 } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import ru from 'date-fns/locale/ru';
-import { InputTheme } from 'types/clientTypes';
-import { IconType } from 'types/iconTypes';
+import { DATE_FORMAT_DATE, DEFAULT_LOCALE } from '../../config/common';
+import { InputTheme } from '../../types/clientTypes';
+import { IconType } from '../../types/iconTypes';
+import ButtonCross from '../button/ButtonCross';
+import WpIcon from '../WpIcon';
+import InputLine, { InputLinePropsInterface } from './Input/InputLine';
 
 registerLocale(DEFAULT_LOCALE, ru);
 setDefaultLocale(DEFAULT_LOCALE);
@@ -95,7 +90,7 @@ const DatePickerInput: React.FC<DatePickerInputInterface> = ({
       error={error}
     >
       {icon ? (
-        <Icon
+        <WpIcon
           name={icon}
           className='absolute top-half left-input-padding-horizontal z-20 w-input-icon-size h-input-icon-size transform -translate-y-1/2'
         />

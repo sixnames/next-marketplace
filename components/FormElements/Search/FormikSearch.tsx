@@ -1,5 +1,5 @@
-import ControlButton from 'components/button/ControlButton';
 import * as React from 'react';
+import ControlButton from '../../button/ControlButton';
 import FormikInput from '../Input/FormikInput';
 
 interface FormikSearchInterface {

@@ -1,15 +1,15 @@
-import { useMoveAttributeMutation } from 'hooks/mutations/useAttributeMutations';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import * as React from 'react';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
-import { useGetAttributesGroupsForRubricQuery } from 'generated/apolloComponents';
-import Spinner from 'components/Spinner';
-import RequestError from 'components/RequestError';
 import { Formik, Form } from 'formik';
-import FormikSelect from 'components/FormElements/Select/FormikSelect';
-import ModalButtons from 'components/Modal/ModalButtons';
-import Button from 'components/button/Button';
+import { useGetAttributesGroupsForRubricQuery } from '../../generated/apolloComponents';
+import { useMoveAttributeMutation } from '../../hooks/mutations/useAttributeMutations';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import WpButton from '../button/WpButton';
+import FormikSelect from '../FormElements/Select/FormikSelect';
+import RequestError from '../RequestError';
+import Spinner from '../Spinner';
+import ModalButtons from './ModalButtons';
+import ModalFrame from './ModalFrame';
+import ModalTitle from './ModalTitle';
 
 export interface MoveAttributeModalInterface {
   oldAttributesGroupId: string;
@@ -80,9 +80,9 @@ const MoveAttributeModal: React.FC<MoveAttributeModalInterface> = ({
               />
 
               <ModalButtons>
-                <Button type={'submit'} testId={'attributes-group-submit'}>
+                <WpButton type={'submit'} testId={'attributes-group-submit'}>
                   Сохранить
-                </Button>
+                </WpButton>
               </ModalButtons>
             </Form>
           );

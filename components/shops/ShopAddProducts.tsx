@@ -1,38 +1,38 @@
-import AppContentFilter from 'components/AppContentFilter';
-import Button from 'components/button/Button';
-import FixedButtons from 'components/button/FixedButtons';
-import ContentItemControls from 'components/button/ContentItemControls';
-import Checkbox from 'components/FormElements/Checkbox/Checkbox';
-import FormikInput from 'components/FormElements/Input/FormikInput';
-import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
-import Inner from 'components/Inner';
-import Link from 'components/Link/Link';
-import Pager from 'components/Pager';
-import Table, { TableColumn } from 'components/Table';
-import TableRowImage from 'components/TableRowImage';
-import { ROUTE_CMS } from 'config/common';
-import { useUserContext } from 'context/userContext';
+import { Form, Formik } from 'formik';
+import { useRouter } from 'next/router';
+import * as React from 'react';
+import { ROUTE_CMS } from '../../config/common';
+import { useUserContext } from '../../context/userContext';
 import {
   AppContentWrapperBreadCrumbs,
   CatalogueFilterAttributeInterface,
   ConsoleRubricProductsInterface,
   ProductInterface,
   ShopInterface,
-} from 'db/uiInterfaces';
-import { Form, Formik } from 'formik';
+} from '../../db/uiInterfaces';
 import {
   AddProductToShopInput,
   useAddManyProductsToShopMutation,
-} from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import { useReloadListener } from 'hooks/useReloadListener';
-import useValidationSchema from 'hooks/useValidationSchema';
-import ConsoleShopLayout from 'layout/console/ConsoleShopLayout';
-import { alwaysArray } from 'lib/arrayUtils';
-import { getNumWord } from 'lib/i18n';
-import { useRouter } from 'next/router';
-import * as React from 'react';
-import { addManyProductsToShopSchema } from 'validation/shopSchema';
+} from '../../generated/apolloComponents';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import { useReloadListener } from '../../hooks/useReloadListener';
+import useValidationSchema from '../../hooks/useValidationSchema';
+import ConsoleShopLayout from '../../layout/console/ConsoleShopLayout';
+import { alwaysArray } from '../../lib/arrayUtils';
+import { getNumWord } from '../../lib/i18n';
+import { addManyProductsToShopSchema } from '../../validation/shopSchema';
+import AppContentFilter from '../AppContentFilter';
+import ContentItemControls from '../button/ContentItemControls';
+import FixedButtons from '../button/FixedButtons';
+import WpButton from '../button/WpButton';
+import WpCheckbox from '../FormElements/Checkbox/WpCheckbox';
+import FormikInput from '../FormElements/Input/FormikInput';
+import FormikRouterSearch from '../FormElements/Search/FormikRouterSearch';
+import Inner from '../Inner';
+import WpLink from '../Link/WpLink';
+import Pager from '../Pager';
+import TableRowImage from '../TableRowImage';
+import WpTable, { WpTableColumn } from '../WpTable';
 
 export type ShopAddProductsStepType = 1 | 2;
 export type ShopAddProductsCreateChosenProduct = (product: ProductInterface) => void;
@@ -79,7 +79,7 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
   useReloadListener();
   const { sessionUser } = useUserContext();
 
-  const columns: TableColumn<ProductInterface>[] = [
+  const columns: WpTableColumn<ProductInterface>[] = [
     {
       render: ({ dataItem, rowIndex }) => {
         const isSelected = chosen.find(({ _id }) => {
@@ -87,7 +87,7 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
         });
 
         return (
-          <Checkbox
+          <WpCheckbox
             testId={`product-${rowIndex}`}
             name={'chosen'}
             value={isSelected ? 'true' : ''}
@@ -107,12 +107,12 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
       headTitle: 'Арт',
       render: ({ dataItem }) => {
         return sessionUser?.role?.isStaff ? (
-          <Link
+          <WpLink
             href={`${ROUTE_CMS}/rubrics/${dataItem.rubricId}/products/product/${dataItem._id}`}
             target={'_blank'}
           >
             {dataItem.itemId}
-          </Link>
+          </WpLink>
         ) : (
           dataItem.itemId
         );
@@ -209,7 +209,7 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
 
           <div className={'max-w-full'}>
             <div className={`overflow-x-auto`}>
-              <Table<ProductInterface>
+              <WpTable<ProductInterface>
                 columns={columns}
                 data={docs}
                 testIdKey={'_id'}
@@ -224,14 +224,15 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
               />
             </div>
             <FixedButtons>
-              <Button
+              <WpButton
+                frameClassName={'w-auto'}
                 disabled={chosen.length < 1}
                 onClick={() => setStepHandler(2)}
                 testId={'next-step'}
                 size={'small'}
               >
                 Далее
-              </Button>
+              </WpButton>
             </FixedButtons>
 
             <Pager page={page} totalPages={totalPages} />
@@ -268,7 +269,7 @@ export const ShopAddProductsFinalStep: React.FC<ShopAddProductsListInterface> = 
   });
   const validationSchema = useValidationSchema({ schema: addManyProductsToShopSchema });
 
-  const columns: TableColumn<ProductInterface>[] = [
+  const columns: WpTableColumn<ProductInterface>[] = [
     {
       render: ({ dataItem }) => {
         const isSelected = chosen.find(({ _id }) => {
@@ -276,7 +277,7 @@ export const ShopAddProductsFinalStep: React.FC<ShopAddProductsListInterface> = 
         });
 
         return (
-          <Checkbox
+          <WpCheckbox
             name={'chosen'}
             value={isSelected ? 'true' : ''}
             checked={Boolean(isSelected)}
@@ -417,26 +418,32 @@ export const ShopAddProductsFinalStep: React.FC<ShopAddProductsListInterface> = 
                 return (
                   <Form>
                     <div className={`overflow-x-auto`}>
-                      <Table<ProductInterface> columns={columns} data={chosen} testIdKey={'_id'} />
+                      <WpTable<ProductInterface>
+                        columns={columns}
+                        data={chosen}
+                        testIdKey={'_id'}
+                      />
                     </div>
                     <FixedButtons>
-                      <Button
+                      <WpButton
+                        frameClassName={'w-auto'}
                         disabled={chosen.length < 1}
                         testId={'save-shop-products'}
                         type={'submit'}
                         size={'small'}
                       >
                         Сохранить
-                      </Button>
+                      </WpButton>
 
-                      <Button
+                      <WpButton
+                        frameClassName={'w-auto'}
                         onClick={() => setStepHandler(1)}
                         testId={'back-bottom'}
                         size={'small'}
                         theme={'secondary'}
                       >
                         Назад
-                      </Button>
+                      </WpButton>
                     </FixedButtons>
                   </Form>
                 );

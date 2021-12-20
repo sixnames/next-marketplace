@@ -1,14 +1,18 @@
-import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'config/common';
-import { DeleteUserInputInterface } from 'db/dao/user/deleteUser';
-import { SetUserCategoryInputInterface } from 'db/dao/user/setUserCategory';
-import { SignUpInputInterface } from 'db/dao/user/signUp';
-import { UpdateMyPasswordInputInterface } from 'db/dao/user/updateMyPassword';
-import { UpdateMyProfileInputInterface } from 'db/dao/user/updateMyProfile';
-import { UpdateUserInputInterface } from 'db/dao/user/updateUser';
-import { UpdateUserPasswordInputInterface } from 'db/dao/user/updateUserPassword';
-import { CreateUserInputInterface } from 'db/dao/user/createUser';
-import { UserPayloadModel } from 'db/dbModels';
-import { useMutationHandler } from 'hooks/mutations/useFetch';
+import {
+  REQUEST_METHOD_DELETE,
+  REQUEST_METHOD_PATCH,
+  REQUEST_METHOD_POST,
+} from '../../config/common';
+import { CreateUserInputInterface } from '../../db/dao/user/createUser';
+import { DeleteUserInputInterface } from '../../db/dao/user/deleteUser';
+import { SetUserCategoryInputInterface } from '../../db/dao/user/setUserCategory';
+import { SignUpInputInterface } from '../../db/dao/user/signUp';
+import { UpdateMyPasswordInputInterface } from '../../db/dao/user/updateMyPassword';
+import { UpdateMyProfileInputInterface } from '../../db/dao/user/updateMyProfile';
+import { UpdateUserInputInterface } from '../../db/dao/user/updateUser';
+import { UpdateUserPasswordInputInterface } from '../../db/dao/user/updateUserPassword';
+import { UserPayloadModel } from '../../db/dbModels';
+import { useMutationHandler } from './useFetch';
 
 const basePath = '/api/user';
 

@@ -1,19 +1,22 @@
-import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
-import FormikSelect from 'components/FormElements/Select/FormikSelect';
-import RequestError from 'components/RequestError';
-import Spinner from 'components/Spinner';
-import { CreateBlogAttributeInputInterface } from 'db/dao/blog/createBlogAttribute';
-import { BlogAttributeInterface } from 'db/uiInterfaces';
-import { useGetNewAttributeOptionsQuery } from 'generated/apolloComponents';
-import { useCreateBlogAttribute, useUpdateBlogAttribute } from 'hooks/mutations/useBlogMutations';
 import * as React from 'react';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
-import ModalButtons from 'components/Modal/ModalButtons';
-import Button from 'components/button/Button';
 import { Formik, Form } from 'formik';
-import useValidationSchema from 'hooks/useValidationSchema';
-import { createBlogAttributeSchema } from 'validation/blogSchema';
+import { CreateBlogAttributeInputInterface } from '../../db/dao/blog/createBlogAttribute';
+import { BlogAttributeInterface } from '../../db/uiInterfaces';
+import { useGetNewAttributeOptionsQuery } from '../../generated/apolloComponents';
+import {
+  useCreateBlogAttribute,
+  useUpdateBlogAttribute,
+} from '../../hooks/mutations/useBlogMutations';
+import useValidationSchema from '../../hooks/useValidationSchema';
+import { createBlogAttributeSchema } from '../../validation/blogSchema';
+import WpButton from '../button/WpButton';
+import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
+import FormikSelect from '../FormElements/Select/FormikSelect';
+import RequestError from '../RequestError';
+import Spinner from '../Spinner';
+import ModalButtons from './ModalButtons';
+import ModalFrame from './ModalFrame';
+import ModalTitle from './ModalTitle';
 
 export interface BlogAttributeModalInterface {
   attribute?: BlogAttributeInterface;
@@ -91,9 +94,9 @@ const BlogAttributeModal: React.FC<BlogAttributeModalInterface> = ({ attribute }
               />
 
               <ModalButtons>
-                <Button testId={'blog-attribute-submit'} type={'submit'}>
+                <WpButton testId={'blog-attribute-submit'} type={'submit'}>
                   {attribute ? 'Обновить' : 'Создать'}
-                </Button>
+                </WpButton>
               </ModalButtons>
             </Form>
           );

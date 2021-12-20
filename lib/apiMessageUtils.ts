@@ -1,9 +1,9 @@
-import { DEFAULT_LOCALE } from 'config/common';
-import { COL_MESSAGES } from 'db/collectionNames';
-import { MessageModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { getI18nLocaleValue } from 'lib/i18n';
-import { MessageSlug } from 'types/messageSlugTypes';
+import { DEFAULT_LOCALE } from '../config/common';
+import { COL_MESSAGES } from '../db/collectionNames';
+import { MessageModel } from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import { MessageSlug } from '../types/messageSlugTypes';
+import { getI18nLocaleValue } from './i18n';
 
 interface GetApiMessageInterface {
   slug: MessageSlug;

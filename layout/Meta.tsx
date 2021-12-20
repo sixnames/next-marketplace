@@ -1,9 +1,9 @@
-import { useSiteContext } from 'context/siteContext';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import Head from 'next/head';
-import { useConfigContext } from 'context/configContext';
 import parse from 'html-react-parser';
+import { useConfigContext } from '../context/configContext';
+import { useSiteContext } from '../context/siteContext';
 
 export interface MetaInterface {
   title?: string;

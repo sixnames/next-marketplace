@@ -1,18 +1,21 @@
+import { Db, ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, Redirect } from 'next';
+import { getDomain } from 'tldts';
 import {
-  DEFAULT_COMPANY_SLUG,
+  CATALOGUE_PRODUCTS_LIMIT,
+  CONFIG_GROUP_PROJECT,
   DEFAULT_CITY,
+  DEFAULT_COMPANY_SLUG,
   DEFAULT_CURRENCY,
   DEFAULT_LOCALE,
+  FILTER_SEPARATOR,
+  PAGE_STATE_PUBLISHED,
   ROLE_SLUG_ADMIN,
   ROUTE_CMS,
   ROUTE_SIGN_IN,
   SORT_ASC,
   SORT_DESC,
-  PAGE_STATE_PUBLISHED,
-  FILTER_SEPARATOR,
-  CONFIG_GROUP_PROJECT,
-  CATALOGUE_PRODUCTS_LIMIT,
-} from 'config/common';
+} from '../config/common';
 import {
   COL_ATTRIBUTES,
   COL_CATEGORIES,
@@ -28,10 +31,10 @@ import {
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
-} from 'db/collectionNames';
-import { castAttributeForUI } from 'db/dao/attributes/castAttributesGroupForUI';
-import { ignoreNoImageStage } from 'db/dao/constantPipelines';
-import { getPageSessionUser, SessionUserPayloadInterface } from 'db/dao/user/getPageSessionUser';
+} from '../db/collectionNames';
+import { castAttributeForUI } from '../db/dao/attributes/castAttributesGroupForUI';
+import { ignoreNoImageStage } from '../db/dao/constantPipelines';
+import { getPageSessionUser, SessionUserPayloadInterface } from '../db/dao/user/getPageSessionUser';
 import {
   AttributeModel,
   CategoryModel,
@@ -42,8 +45,8 @@ import {
   RubricModel,
   ShopModel,
   ShopProductModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+} from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
 import {
   CityInterface,
   CompanyInterface,
@@ -51,24 +54,21 @@ import {
   PagesGroupInterface,
   RubricInterface,
   SsrConfigsInterface,
-} from 'db/uiInterfaces';
-import { SiteLayoutCatalogueCreatedPages, SiteLayoutProviderInterface } from 'layout/SiteLayout';
-import { alwaysString } from 'lib/arrayUtils';
+} from '../db/uiInterfaces';
+import { SiteLayoutCatalogueCreatedPages, SiteLayoutProviderInterface } from '../layout/SiteLayout';
+import { PagePropsInterface } from '../pages/_app';
+import { alwaysString } from './arrayUtils';
 import {
   castConfigs,
   getConfigBooleanValue,
   getConfigListValue,
   getConfigNumberValue,
   getConfigStringValue,
-} from 'lib/configsUtils';
-import { getFieldStringLocale, getI18nLocaleValue } from 'lib/i18n';
-import { noNaN } from 'lib/numbers';
-import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
-import { getTreeFromList } from 'lib/treeUtils';
-import { Db, ObjectId } from 'mongodb';
-import { GetServerSidePropsContext, Redirect } from 'next';
-import { PagePropsInterface } from 'pages/_app';
-import { getDomain } from 'tldts';
+} from './configsUtils';
+import { getFieldStringLocale, getI18nLocaleValue } from './i18n';
+import { noNaN } from './numbers';
+import { phoneToRaw, phoneToReadable } from './phoneUtils';
+import { getTreeFromList } from './treeUtils';
 
 export async function getSsrDomainCompany(
   match: Record<any, any>,

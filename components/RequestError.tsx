@@ -1,6 +1,6 @@
-import { getConstantTranslation } from 'config/constantTranslations';
 import { useRouter } from 'next/router';
 import * as React from 'react';
+import { getConstantTranslation } from '../config/constantTranslations';
 
 interface RequestErrorInterface {
   message?: string;

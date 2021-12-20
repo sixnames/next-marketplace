@@ -1,11 +1,11 @@
 import * as Yup from 'yup';
-import { ValidationSchemaArgsInterface } from 'types/validataionTypes';
+import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
 import {
   objectIdSchema,
   requiredNumberSchema,
   requiredStringSchema,
   requiredStringTranslationSchema,
-} from 'validation/schemaTemplates';
+} from './schemaTemplates';
 
 export const orderStatusIdSchema = (args: ValidationSchemaArgsInterface) => {
   return objectIdSchema({ ...args, slug: 'validation.orderStatuses.id' });

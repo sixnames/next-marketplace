@@ -1,11 +1,11 @@
-import { REQUEST_METHOD_GET, REQUEST_METHOD_POST, SORT_ASC } from 'config/common';
-import { COL_BLACKLIST_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
-import { BlackListProductItemModel, BlackListProductModel, ShopModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { SyncBlackListProductInterface, SyncParamsInterface } from 'db/syncInterfaces';
-import { noNaN } from 'lib/numbers';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { REQUEST_METHOD_GET, REQUEST_METHOD_POST, SORT_ASC } from '../../../config/common';
+import { COL_BLACKLIST_PRODUCTS, COL_SHOPS } from '../../../db/collectionNames';
+import { BlackListProductItemModel, BlackListProductModel, ShopModel } from '../../../db/dbModels';
+import { getDatabase } from '../../../db/mongodb';
+import { SyncBlackListProductInterface, SyncParamsInterface } from '../../../db/syncInterfaces';
+import { noNaN } from '../../../lib/numbers';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   try {

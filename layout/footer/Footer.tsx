@@ -1,22 +1,22 @@
-import Button from 'components/button/Button';
-import FakeInput from 'components/FormElements/Input/FakeInput';
-import LinkEmail from 'components/Link/LinkEmail';
-import LinkPhone from 'components/Link/LinkPhone';
-import { MapModalInterface } from 'components/Modal/MapModal';
-import Socials from 'components/Socials';
-import { ROUTE_BLOG_WITH_PAGE, ROUTE_CONTACTS, ROUTE_DOCS_PAGES } from 'config/common';
-import { getConstantTranslation } from 'config/constantTranslations';
-import { MAP_MODAL } from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
-import { useLocaleContext } from 'context/localeContext';
-import { useSiteContext } from 'context/siteContext';
-import { PagesGroupInterface } from 'db/uiInterfaces';
-import { useShopMarker } from 'hooks/useShopMarker';
-import { phoneToReadable } from 'lib/phoneUtils';
 import * as React from 'react';
-import { useConfigContext } from 'context/configContext';
-import Inner from 'components/Inner';
-import Link from 'components/Link/Link';
+import WpButton from '../../components/button/WpButton';
+import FakeInput from '../../components/FormElements/Input/FakeInput';
+import Inner from '../../components/Inner';
+import LinkEmail from '../../components/Link/LinkEmail';
+import LinkPhone from '../../components/Link/LinkPhone';
+import WpLink from '../../components/Link/WpLink';
+import { MapModalInterface } from '../../components/Modal/MapModal';
+import Socials from '../../components/Socials';
+import { ROUTE_BLOG_WITH_PAGE, ROUTE_CONTACTS, ROUTE_DOCS_PAGES } from '../../config/common';
+import { getConstantTranslation } from '../../config/constantTranslations';
+import { MAP_MODAL } from '../../config/modalVariants';
+import { useAppContext } from '../../context/appContext';
+import { useConfigContext } from '../../context/configContext';
+import { useLocaleContext } from '../../context/localeContext';
+import { useSiteContext } from '../../context/siteContext';
+import { PagesGroupInterface } from '../../db/uiInterfaces';
+import { useShopMarker } from '../../hooks/useShopMarker';
+import { phoneToReadable } from '../../lib/phoneUtils';
 
 export interface FooterInterface {
   footerPageGroups: PagesGroupInterface[];
@@ -66,7 +66,7 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
                 <FakeInput value={'Введите Ваш E-mail'} low theme={'secondary'} />
               </div>
               <div className='flex-shrink-0 w-form-input-height ml-4'>
-                <Button
+                <WpButton
                   className='w-full'
                   icon={'arrow-right'}
                   theme={'secondary-b'}
@@ -131,38 +131,38 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
                     {(pages || []).map(({ name, slug, _id }) => {
                       return (
                         <li className='' key={`${_id}`}>
-                          <Link
+                          <WpLink
                             href={`${urlPrefix}${ROUTE_DOCS_PAGES}/${slug}`}
                             target={'_blank'}
                             className='block pt-1.5 pb-1.5 text-secondary-text hover:no-underline hover:text-theme cursor-pointer'
                           >
                             {name}
-                          </Link>
+                          </WpLink>
                         </li>
                       );
                     })}
 
                     {index === 0 && showBlog ? (
                       <li className=''>
-                        <Link
+                        <WpLink
                           href={`${urlPrefix}${ROUTE_BLOG_WITH_PAGE}`}
                           target={'_blank'}
                           className='block pt-1.5 pb-1.5 text-secondary-text hover:no-underline hover:text-theme cursor-pointer'
                         >
                           {blogLinkName}
-                        </Link>
+                        </WpLink>
                       </li>
                     ) : null}
 
                     {index === 0 ? (
                       <li className=''>
-                        <Link
+                        <WpLink
                           href={`${urlPrefix}${ROUTE_CONTACTS}`}
                           target={'_blank'}
                           className='block pt-1.5 pb-1.5 text-secondary-text hover:no-underline hover:text-theme cursor-pointer'
                         >
                           {contactsLinkName}
-                        </Link>
+                        </WpLink>
                       </li>
                     ) : null}
                   </ul>
@@ -175,7 +175,8 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
             <div className='grid gap-x-6 gap-y-2 sm:grid-cols-2 border-t border-border-300 pt-8 sm:border-0 sm:pt-0'>
               <div>
                 <small className='text-secondary-text text-[1em]'>
-                  {configSiteName} © {configFoundationYear || new Date().getFullYear()}
+                  {configSiteName} © {configFoundationYear || new Date().getFullYear()} -{' '}
+                  {new Date().getFullYear()}
                 </small>
               </div>
 

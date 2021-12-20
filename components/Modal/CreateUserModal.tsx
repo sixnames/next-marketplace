@@ -1,17 +1,17 @@
-import Button from 'components/button/Button';
-import UserMainFields from 'components/FormTemplates/UserMainFields';
-import ModalButtons from 'components/Modal/ModalButtons';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
-import { CreateUserInputInterface } from 'db/dao/user/createUser';
-import { RoleInterface } from 'db/uiInterfaces';
-import { useCreateUserMutation } from 'hooks/mutations/useUserMutations';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useValidationSchema from 'hooks/useValidationSchema';
-import { phoneToRaw } from 'lib/phoneUtils';
 import * as React from 'react';
-import { createUserSchema } from 'validation/userSchema';
 import { Form, Formik } from 'formik';
+import { CreateUserInputInterface } from '../../db/dao/user/createUser';
+import { RoleInterface } from '../../db/uiInterfaces';
+import { useCreateUserMutation } from '../../hooks/mutations/useUserMutations';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import useValidationSchema from '../../hooks/useValidationSchema';
+import { phoneToRaw } from '../../lib/phoneUtils';
+import { createUserSchema } from '../../validation/userSchema';
+import WpButton from '../button/WpButton';
+import UserMainFields from '../FormTemplates/UserMainFields';
+import ModalButtons from './ModalButtons';
+import ModalFrame from './ModalFrame';
+import ModalTitle from './ModalTitle';
 
 export interface CreateUserModalInterface {
   roles: RoleInterface[];
@@ -55,12 +55,12 @@ const CreateUserModal: React.FC<CreateUserModalInterface> = ({ roles }) => {
               <UserMainFields roles={roles} />
 
               <ModalButtons>
-                <Button type={'submit'} testId={'submit-user'}>
+                <WpButton type={'submit'} testId={'submit-user'}>
                   Создать
-                </Button>
-                <Button theme={'secondary'} onClick={hideModal}>
+                </WpButton>
+                <WpButton theme={'secondary'} onClick={hideModal}>
                   Закрыть
-                </Button>
+                </WpButton>
               </ModalButtons>
             </Form>
           );

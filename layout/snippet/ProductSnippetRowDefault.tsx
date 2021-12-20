@@ -1,15 +1,15 @@
-import ControlButton from 'components/button/ControlButton';
-import Link from 'components/Link/Link';
-import RatingStars from 'components/RatingStars';
-import WpImage from 'components/WpImage';
-import { useSiteContext } from 'context/siteContext';
-import { ProductSnippetInterface } from 'db/uiInterfaces';
-import ProductAddToCartButton from 'layout/snippet/ProductAddToCartButton';
-import ProductSnippetAvailability from 'layout/snippet/ProductSnippetAvailability';
-import ProductSnippetEditButton from 'layout/snippet/ProductSnippetEditButton';
-import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
-import { noNaN } from 'lib/numbers';
 import * as React from 'react';
+import ControlButton from '../../components/button/ControlButton';
+import WpLink from '../../components/Link/WpLink';
+import RatingStars from '../../components/RatingStars';
+import WpImage from '../../components/WpImage';
+import { useSiteContext } from '../../context/siteContext';
+import { ProductSnippetInterface } from '../../db/uiInterfaces';
+import { noNaN } from '../../lib/numbers';
+import ProductAddToCartButton from './ProductAddToCartButton';
+import ProductSnippetAvailability from './ProductSnippetAvailability';
+import ProductSnippetEditButton from './ProductSnippetEditButton';
+import ProductSnippetPrice from './ProductSnippetPrice';
 
 const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
   shopProduct,
@@ -67,14 +67,14 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
             width={100}
             className='w-full h-full object-contain'
           />
-          <Link
+          <WpLink
             testId={`${testId}-image-row`}
             target={'_blank'}
             className='block absolute z-10 inset-0 text-indent-full'
             href={`${urlPrefix}/${slug}`}
           >
             {snippetTitle}
-          </Link>
+          </WpLink>
         </div>
 
         {/*rating*/}
@@ -95,14 +95,14 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
           <div className='flex flex-col col-span-7 md:col-span-5'>
             {/*name*/}
             <div className='mb-3'>
-              <Link
+              <WpLink
                 testId={`${testId}-name-row`}
                 target={'_blank'}
                 className='text-2xl font-medium block text-primary-text hover:no-underline hover:text-primary-text'
                 href={`${urlPrefix}/${slug}`}
               >
                 {snippetTitle}
-              </Link>
+              </WpLink>
 
               {name ? <div className='text-secondary-text mt-1'>{name}</div> : null}
             </div>

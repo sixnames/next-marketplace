@@ -1,8 +1,8 @@
-import { ROUTE_BLOG } from 'config/common';
-import { alwaysArray } from 'lib/arrayUtils';
-import { getSiteInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
+import { ROUTE_BLOG } from '../../config/common';
+import { alwaysArray } from '../../lib/arrayUtils';
+import { getSiteInitialData } from '../../lib/ssrUtils';
 
 const BlogListPage: React.FC = () => {
   return <div />;

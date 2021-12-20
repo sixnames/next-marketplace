@@ -1,15 +1,15 @@
-import WpImageUpload from 'components/FormElements/Upload/WpImageUpload';
-import Notification from 'components/Notification';
+import { get } from 'lodash';
+import * as React from 'react';
 import {
   DEFAULT_CITY,
   DEFAULT_LOCALE,
   REQUEST_METHOD_DELETE,
   REQUEST_METHOD_POST,
-} from 'config/common';
-import { ConfigModel } from 'db/dbModels';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import { get } from 'lodash';
-import * as React from 'react';
+} from '../../config/common';
+import { ConfigModel } from '../../db/dbModels';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import WpNotification from '../WpNotification';
+import WpImageUpload from './Upload/WpImageUpload';
 
 interface ConfigsAssetInputInterface {
   config: ConfigModel;
@@ -81,7 +81,7 @@ const ConfigsAssetInput: React.FC<ConfigsAssetInputInterface> = ({ config }) => 
           }}
         />
       </div>
-      <div>{description ? <Notification variant={'success'} message={description} /> : null}</div>
+      <div>{description ? <WpNotification variant={'success'} message={description} /> : null}</div>
     </div>
   );
 };

@@ -1,8 +1,8 @@
-import { ProductPayloadModel } from 'db/dbModels';
-import { DaoPropsInterface, SeoContentCitiesInterface } from 'db/uiInterfaces';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { updateCitiesSeoContent } from 'lib/seoContentUtils';
-import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import { updateCitiesSeoContent } from '../../../lib/seoContentUtils';
+import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
+import { ProductPayloadModel } from '../../dbModels';
+import { DaoPropsInterface, SeoContentCitiesInterface } from '../../uiInterfaces';
 
 export interface UpdateProductCardContentInputInterface {
   cardContent: SeoContentCitiesInterface;

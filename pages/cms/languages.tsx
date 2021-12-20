@@ -1,30 +1,33 @@
-import Button from 'components/button/Button';
-import FixedButtons from 'components/button/FixedButtons';
-import ContentItemControls from 'components/button/ContentItemControls';
-import Inner from 'components/Inner';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import { LanguageModalInterface, UpdateLanguageModalInput } from 'components/Modal/LanguageModal';
-import Table, { TableColumn } from 'components/Table';
-import Title from 'components/Title';
-import { SORT_DESC } from 'config/common';
-import { CONFIRM_MODAL, LANGUAGE_MODAL } from 'config/modalVariants';
-import { useLocaleContext } from 'context/localeContext';
-import { COL_LANGUAGES } from 'db/collectionNames';
-import { LanguageModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import Head from 'next/head';
+import * as React from 'react';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import ContentItemControls from '../../components/button/ContentItemControls';
+import FixedButtons from '../../components/button/FixedButtons';
+import WpButton from '../../components/button/WpButton';
+import Inner from '../../components/Inner';
+import { ConfirmModalInterface } from '../../components/Modal/ConfirmModal';
+import {
+  LanguageModalInterface,
+  UpdateLanguageModalInput,
+} from '../../components/Modal/LanguageModal';
+import WpTable, { WpTableColumn } from '../../components/WpTable';
+import WpTitle from '../../components/WpTitle';
+import { SORT_DESC } from '../../config/common';
+import { CONFIRM_MODAL, LANGUAGE_MODAL } from '../../config/modalVariants';
+import { useLocaleContext } from '../../context/localeContext';
+import { COL_LANGUAGES } from '../../db/collectionNames';
+import { LanguageModel } from '../../db/dbModels';
+import { getDatabase } from '../../db/mongodb';
 import {
   CreateLanguageInput,
   useCreateLanguageMutation,
   useDeleteLanguageMutation,
   useUpdateLanguageMutation,
-} from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import Head from 'next/head';
-import * as React from 'react';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+} from '../../generated/apolloComponents';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import AppContentWrapper from '../../layout/AppContentWrapper';
+import ConsoleLayout from '../../layout/cms/ConsoleLayout';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from '../../lib/ssrUtils';
 
 const pageTitle = 'Языки сайта';
 
@@ -54,7 +57,7 @@ const LanguagesContent: React.FC<LanguagesContentInterface> = ({ languages }) =>
     onError: onErrorCallback,
   });
 
-  const columns: TableColumn<LanguageModel>[] = [
+  const columns: WpTableColumn<LanguageModel>[] = [
     {
       accessor: 'name',
       headTitle: 'Название',
@@ -129,9 +132,9 @@ const LanguagesContent: React.FC<LanguagesContentInterface> = ({ languages }) =>
       </Head>
 
       <Inner data-cy={'languages-list'}>
-        <Title>{pageTitle}</Title>
+        <WpTitle>{pageTitle}</WpTitle>
         <div className='overflow-x-auto overflow-y-hidden'>
-          <Table<LanguageModel>
+          <WpTable<LanguageModel>
             columns={columns}
             data={languages}
             testIdKey={'name'}
@@ -139,7 +142,7 @@ const LanguagesContent: React.FC<LanguagesContentInterface> = ({ languages }) =>
           />
         </div>
         <FixedButtons>
-          <Button
+          <WpButton
             size={'small'}
             testId={`language-create`}
             onClick={() => {
@@ -160,7 +163,7 @@ const LanguagesContent: React.FC<LanguagesContentInterface> = ({ languages }) =>
             }}
           >
             Создать язык
-          </Button>
+          </WpButton>
         </FixedButtons>
       </Inner>
     </AppContentWrapper>

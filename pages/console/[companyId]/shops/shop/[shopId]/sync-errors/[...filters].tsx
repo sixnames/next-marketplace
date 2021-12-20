@@ -1,20 +1,22 @@
-import ShopSyncErrors, { ShopSyncErrorsInterface } from 'components/shops/ShopSyncErrors';
-import { DEFAULT_COMPANY_SLUG, ROUTE_CONSOLE } from 'config/common';
-import { COL_SHOPS } from 'db/collectionNames';
-import { getPaginatedNotSyncedProducts } from 'db/dao/notSyncedProducts/getPaginatedNotSyncedProducts';
-import { ShopModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { alwaysArray, alwaysString } from 'lib/arrayUtils';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import ShopSyncErrors, {
+  ShopSyncErrorsInterface,
+} from '../../../../../../../components/shops/ShopSyncErrors';
+import { DEFAULT_COMPANY_SLUG, ROUTE_CONSOLE } from '../../../../../../../config/common';
+import { COL_SHOPS } from '../../../../../../../db/collectionNames';
+import { getPaginatedNotSyncedProducts } from '../../../../../../../db/dao/notSyncedProducts/getPaginatedNotSyncedProducts';
+import { ShopModel } from '../../../../../../../db/dbModels';
+import { getDatabase } from '../../../../../../../db/mongodb';
+import { AppContentWrapperBreadCrumbs } from '../../../../../../../db/uiInterfaces';
+import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
+import { alwaysArray, alwaysString } from '../../../../../../../lib/arrayUtils';
 import {
   castDbData,
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
-} from 'lib/ssrUtils';
+} from '../../../../../../../lib/ssrUtils';
 
 interface CompanyShopSyncErrorsInterface
   extends GetConsoleInitialDataPropsInterface,

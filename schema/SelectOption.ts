@@ -6,11 +6,11 @@ import {
   GENDER_ENUMS,
   ISO_LANGUAGES,
   OPTIONS_GROUP_VARIANT_ENUMS,
-} from 'config/common';
-import { getConstantTranslation } from 'config/constantTranslations';
-import { getRequestParams } from 'lib/sessionHelpers';
-import { SelectOptionModel } from 'db/dbModels';
-import { iconTypesList } from 'types/iconTypes';
+} from '../config/common';
+import { getConstantTranslation } from '../config/constantTranslations';
+import { SelectOptionModel } from '../db/dbModels';
+import { getRequestParams } from '../lib/sessionHelpers';
+import { iconTypesList } from '../types/iconTypes';
 
 export const SelectOptionsQueries = extendType({
   type: 'Query',

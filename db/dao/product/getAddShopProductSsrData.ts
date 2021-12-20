@@ -1,14 +1,14 @@
-import { COL_COMPANIES, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
+import { ObjectId } from 'mongodb';
+import { alwaysArray, alwaysString } from '../../../lib/arrayUtils';
+import { getFieldStringLocale } from '../../../lib/i18n';
+import { ShopAddProductsListRouteReduced } from '../../../pages/cms/companies/[companyId]/shops/shop/[shopId]/products/add/[...filters]';
+import { COL_COMPANIES, COL_SHOP_PRODUCTS, COL_SHOPS } from '../../collectionNames';
+import { getDatabase } from '../../mongodb';
+import { ShopInterface } from '../../uiInterfaces';
 import {
   getConsoleRubricProducts,
   GetConsoleRubricProductsInputInterface,
-} from 'db/dao/product/getConsoleRubricProducts';
-import { getDatabase } from 'db/mongodb';
-import { ShopInterface } from 'db/uiInterfaces';
-import { alwaysString } from 'lib/arrayUtils';
-import { getFieldStringLocale } from 'lib/i18n';
-import { ObjectId } from 'mongodb';
-import { ShopAddProductsListRouteReduced } from 'pages/cms/companies/[companyId]/shops/shop/[shopId]/products/add/[...filters]';
+} from './getConsoleRubricProducts';
 
 interface GetAddShopProductSsrDataInterface extends GetConsoleRubricProductsInputInterface {}
 
@@ -79,10 +79,15 @@ export async function getAddShopProductSsrData({
   }
   const excludedProductsIds = (shop.shopProducts || []).map(({ productId }) => productId);
 
+  const filters = alwaysArray(query.filters);
   const { selectedAttributes, page, docs, clearSlug, attributes, totalPages, totalDocs, rubric } =
     await getConsoleRubricProducts({
       excludedProductsIds,
-      query,
+      query: {
+        ...query,
+        rubricId: filters[0],
+        filters: filters.slice(1),
+      },
       locale,
       basePath,
       currency,

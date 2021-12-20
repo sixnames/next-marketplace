@@ -1,21 +1,21 @@
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
+
 import CompanyRubricProductsList, {
   CompanyRubricProductsListInterface,
-} from 'components/company/CompanyRubricProductsList';
-import RequestError from 'components/RequestError';
-import { DEFAULT_PAGE_FILTER, ROUTE_CONSOLE } from 'config/common';
-import { getConsoleCompanyRubricProducts } from 'db/dao/product/getConsoleCompanyRubricProducts';
-import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
-import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { alwaysString } from 'lib/arrayUtils';
+} from '../../../../../../components/company/CompanyRubricProductsList';
+import RequestError from '../../../../../../components/RequestError';
+import { DEFAULT_PAGE_FILTER, ROUTE_CONSOLE } from '../../../../../../config/common';
+import { getConsoleCompanyRubricProducts } from '../../../../../../db/dao/product/getConsoleCompanyRubricProducts';
+import { AppContentWrapperBreadCrumbs } from '../../../../../../db/uiInterfaces';
+import CmsRubricLayout from '../../../../../../layout/cms/CmsRubricLayout';
+import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
+import { alwaysString } from '../../../../../../lib/arrayUtils';
 import {
   castDbData,
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
-} from 'lib/ssrUtils';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import * as React from 'react';
-
+} from '../../../../../../lib/ssrUtils';
 interface RubricProductsConsumerInterface extends CompanyRubricProductsListInterface {}
 
 const RubricProductsConsumer: React.FC<RubricProductsConsumerInterface> = (props) => {

@@ -1,17 +1,18 @@
+import { ObjectId } from 'mongodb';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
 import {
   COL_ORDER_CUSTOMERS,
   COL_ORDER_LOGS,
   COL_ORDER_PRODUCTS,
   COL_ORDERS,
-} from 'db/collectionNames';
-import { OrderCustomerModel, OrderLogModel, OrderModel, OrderProductModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { ObjectId } from 'mongodb';
+} from '../../collectionNames';
+import { OrderCustomerModel, OrderLogModel, OrderModel, OrderProductModel } from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { DaoPropsInterface } from '../../uiInterfaces';
+import { MakeAnOrderPayloadModel } from './makeAnOrder';
 
-export interface MakeAnOrderPayloadModel {
+export interface DeleteOrderPayloadModel {
   success: boolean;
   message: string;
 }
@@ -23,7 +24,7 @@ export interface DeleteOrderInputInterface {
 export async function deleteOrder({
   context,
   input,
-}: DaoPropsInterface<DeleteOrderInputInterface>): Promise<MakeAnOrderPayloadModel> {
+}: DaoPropsInterface<DeleteOrderInputInterface>): Promise<DeleteOrderPayloadModel> {
   const { getApiMessage } = await getRequestParams(context);
   const { db, client } = await getDatabase();
   const ordersCollection = db.collection<OrderModel>(COL_ORDERS);

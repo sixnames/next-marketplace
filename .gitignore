@@ -39,17 +39,12 @@ yarn-error.log*
 .vercel
 
 # dev
-/cypress/fixtures/assets/products
+/tests/assets/products
 /data
-/db/initialData/parsed
-/db/initialData/parsedBigCollections
 
 # production
 domains
-cypress/fixtures/initialData
-public/assets
-assets
+tests/initialData
+/assets
 !pages/assets
-!/cypress/fixtures/assets/configs/0/
-products.json
-shopProducts.json
+!tests/assets

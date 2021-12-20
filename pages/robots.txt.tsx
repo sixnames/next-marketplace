@@ -1,6 +1,6 @@
-import { getSiteInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext } from 'next';
 import * as React from 'react';
+import { getSiteInitialData } from '../lib/ssrUtils';
 
 const RobotsTxt: React.FC = () => {
   return <div />;

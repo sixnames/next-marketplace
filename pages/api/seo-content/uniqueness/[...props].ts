@@ -1,14 +1,14 @@
-import { EMPTY_OBJECT_AS_STRING } from 'config/common';
-import { COL_SEO_CONTENTS } from 'db/collectionNames';
+import { ObjectId } from 'mongodb';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { EMPTY_OBJECT_AS_STRING } from '../../../../config/common';
+import { COL_SEO_CONTENTS } from '../../../../db/collectionNames';
 import {
   SeoContentModel,
   TextUniquenessApiParsedResponseModel,
   TextUniquenessApiResponseInterface,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { alwaysArray } from 'lib/arrayUtils';
-import { ObjectId } from 'mongodb';
-import { NextApiRequest, NextApiResponse } from 'next';
+} from '../../../../db/dbModels';
+import { getDatabase } from '../../../../db/mongodb';
+import { alwaysArray } from '../../../../lib/arrayUtils';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   try {

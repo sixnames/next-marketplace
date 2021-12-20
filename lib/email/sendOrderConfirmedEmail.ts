@@ -1,8 +1,8 @@
-import { DEFAULT_COMPANY_SLUG } from 'config/common';
-import { COL_COMPANIES, COL_USERS } from 'db/collectionNames';
-import { CompanyModel, ObjectIdModel, UserModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { sendEmail, SendEmailInterface } from 'lib/email/mailer';
+import { DEFAULT_COMPANY_SLUG } from '../../config/common';
+import { COL_COMPANIES, COL_USERS } from '../../db/collectionNames';
+import { CompanyModel, ObjectIdModel, UserModel } from '../../db/dbModels';
+import { getDatabase } from '../../db/mongodb';
+import { sendEmail, SendEmailInterface } from './mailer';
 
 interface SendOrderConfirmedEmailInterface
   extends Omit<SendEmailInterface, 'content' | 'text' | 'subject' | 'to'> {

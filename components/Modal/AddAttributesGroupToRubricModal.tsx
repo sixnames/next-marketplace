@@ -1,18 +1,18 @@
+import { Form, Formik } from 'formik';
 import * as React from 'react';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
 import {
   AddAttributesGroupToRubricInput,
   useGetAttributesGroupsForRubricQuery,
-} from 'generated/apolloComponents';
-import Spinner from 'components/Spinner';
-import RequestError from 'components/RequestError';
-import { Formik, Form } from 'formik';
-import FormikSelect from 'components/FormElements/Select/FormikSelect';
-import ModalButtons from 'components/Modal/ModalButtons';
-import Button from 'components/button/Button';
-import useValidationSchema from 'hooks/useValidationSchema';
-import { addAttributesGroupToRubricSchema } from 'validation/rubricSchema';
+} from '../../generated/apolloComponents';
+import useValidationSchema from '../../hooks/useValidationSchema';
+import { addAttributesGroupToRubricSchema } from '../../validation/rubricSchema';
+import WpButton from '../button/WpButton';
+import FormikSelect from '../FormElements/Select/FormikSelect';
+import RequestError from '../RequestError';
+import Spinner from '../Spinner';
+import ModalButtons from './ModalButtons';
+import ModalFrame from './ModalFrame';
+import ModalTitle from './ModalTitle';
 
 export interface AddAttributesGroupToRubricModalInterface {
   testId: string;
@@ -74,9 +74,9 @@ const AddAttributesGroupToRubricModal: React.FC<AddAttributesGroupToRubricModalI
               />
 
               <ModalButtons>
-                <Button type={'submit'} testId={'attributes-group-submit'}>
+                <WpButton type={'submit'} testId={'attributes-group-submit'}>
                   Добавить
-                </Button>
+                </WpButton>
               </ModalButtons>
             </Form>
           );

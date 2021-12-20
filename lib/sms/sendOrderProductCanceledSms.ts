@@ -1,8 +1,8 @@
-import { DEFAULT_COMPANY_SLUG } from 'config/common';
-import { COL_COMPANIES, COL_USERS } from 'db/collectionNames';
-import { CompanyModel, ObjectIdModel, UserModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { smsSender, SmsSenderInterface } from 'lib/sms/smsUtils';
+import { DEFAULT_COMPANY_SLUG } from '../../config/common';
+import { COL_COMPANIES, COL_USERS } from '../../db/collectionNames';
+import { CompanyModel, ObjectIdModel, UserModel } from '../../db/dbModels';
+import { getDatabase } from '../../db/mongodb';
+import { smsSender, SmsSenderInterface } from './smsUtils';
 
 interface SendOrderProductCanceledSmsInterface
   extends Omit<SmsSenderInterface, 'text' | 'numbers'> {

@@ -1,10 +1,10 @@
-import { COL_USERS } from 'db/collectionNames';
-import { UserModel, UserPayloadModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { phoneToRaw } from 'lib/phoneUtils';
-import { getRequestParams, getSessionUser } from 'lib/sessionHelpers';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import { phoneToRaw } from '../../../lib/phoneUtils';
+import { getRequestParams, getSessionUser } from '../../../lib/sessionHelpers';
+import { COL_USERS } from '../../collectionNames';
+import { UserModel, UserPayloadModel } from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface UpdateMyProfileInputInterface {
   name: string;

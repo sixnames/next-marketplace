@@ -1,4 +1,10 @@
-import { DEFAULT_COUNTERS_OBJECT, IMAGE_FALLBACK } from 'config/common';
+import { ObjectId } from 'mongodb';
+import { DEFAULT_COUNTERS_OBJECT, IMAGE_FALLBACK } from '../../../config/common';
+import { updateAlgoliaProducts } from '../../../lib/algolia/productAlgoliaUtils';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import { getNextItemId } from '../../../lib/itemIdUtils';
+import { checkBarcodeIntersects } from '../../../lib/productUtils';
+import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
 import {
   COL_NOT_SYNCED_PRODUCTS,
   COL_PRODUCTS,
@@ -6,8 +12,7 @@ import {
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
-} from 'db/collectionNames';
-import { CreateProductInputInterface } from 'db/dao/product/createProduct';
+} from '../../collectionNames';
 import {
   ProductModel,
   ProductPayloadModel,
@@ -15,15 +20,10 @@ import {
   RubricVariantModel,
   ShopModel,
   ShopProductModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
-import { updateAlgoliaProducts } from 'lib/algolia/productAlgoliaUtils';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getNextItemId } from 'lib/itemIdUtils';
-import { checkBarcodeIntersects } from 'lib/productUtils';
-import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { ObjectId } from 'mongodb';
+} from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { DaoPropsInterface } from '../../uiInterfaces';
+import { CreateProductInputInterface } from './createProduct';
 
 export interface CreateProductWithSyncErrorInputInterface {
   shopId: string;

@@ -1,20 +1,20 @@
-import Button from 'components/button/Button';
-import ButtonCross from 'components/button/ButtonCross';
-import ControlButton from 'components/button/ControlButton';
-import CartShopsList from 'components/CartShopsList';
-import FormikSpinnerInput from 'components/FormElements/SpinnerInput/FormikSpinnerInput';
-import Link from 'components/Link/Link';
-import ProductShopPrices from 'components/ProductShopPrices';
-import WpImage from 'components/WpImage';
-import { ORDER_DELIVERY_VARIANT_COURIER } from 'config/common';
-import { useSiteContext } from 'context/siteContext';
-import { CartProductInterface, ShopProductInterface } from 'db/uiInterfaces';
 import { useFormikContext } from 'formik';
-import LayoutCard from 'layout/LayoutCard';
-import ProductSnippetPrice from 'layout/snippet/ProductSnippetPrice';
-import { noNaN } from 'lib/numbers';
 import { get } from 'lodash';
 import * as React from 'react';
+import { ORDER_DELIVERY_VARIANT_COURIER } from '../../config/common';
+import { useSiteContext } from '../../context/siteContext';
+import { CartProductInterface, ShopProductInterface } from '../../db/uiInterfaces';
+import LayoutCard from '../../layout/LayoutCard';
+import ProductSnippetPrice from '../../layout/snippet/ProductSnippetPrice';
+import { noNaN } from '../../lib/numbers';
+import ButtonCross from '../button/ButtonCross';
+import ControlButton from '../button/ControlButton';
+import WpButton from '../button/WpButton';
+import CartShopsList from '../CartShopsList';
+import FormikSpinnerInput from '../FormElements/SpinnerInput/FormikSpinnerInput';
+import WpLink from '../Link/WpLink';
+import ProductShopPrices from '../ProductShopPrices';
+import WpImage from '../WpImage';
 
 interface CartProductFrameInterface {
   cartProductId: string;
@@ -60,13 +60,13 @@ const CartProductFrame: React.FC<CartProductFrameInterface> = ({
               />
             </div>
 
-            <Link
+            <WpLink
               target={'_blank'}
               className='block absolute z-10 inset-0 text-indent-full'
               href={`${urlPrefix}/${slug}`}
             >
               {snippetTitle}
-            </Link>
+            </WpLink>
           </div>
         </div>
 
@@ -111,13 +111,13 @@ const CartProductMainData: React.FC<CartProductMainDataInterface> = ({
     <React.Fragment>
       <div className='text-secondary-text mb-3'>{`Артикул: ${itemId}`}</div>
       <div className='mb-6'>
-        <Link
+        <WpLink
           target={'_blank'}
           className='block text-primary-text hover:no-underline hover:text-primary-text font-medium text-lg lg:text-2xl'
           href={`${urlPrefix}/${slug}`}
         >
           {snippetTitle}
-        </Link>
+        </WpLink>
         {name ? <div className='text-secondary-text mt-1'>{name}</div> : null}
       </div>
     </React.Fragment>
@@ -170,14 +170,14 @@ export const CartShoplessProduct: React.FC<CartProductPropsInterface> = ({
         </div>
       </div>
 
-      <Button
+      <WpButton
         onClick={() => {
           setIsShopsVisible(true);
         }}
         testId={`cart-product-${testId}-show-shops`}
       >
         Выбрать магазин
-      </Button>
+      </WpButton>
     </CartProductFrame>
   );
 };

@@ -1,8 +1,8 @@
-import Checkbox from 'components/FormElements/Checkbox/Checkbox';
-import { useConfigContext } from 'context/configContext';
-import { SeoContentInterface } from 'db/uiInterfaces';
-import { useUpdateSeoContent } from 'hooks/mutations/useSeoContentMutations';
 import * as React from 'react';
+import { useConfigContext } from '../context/configContext';
+import { SeoContentInterface } from '../db/uiInterfaces';
+import { useUpdateSeoContent } from '../hooks/mutations/useSeoContentMutations';
+import WpCheckbox from './FormElements/Checkbox/WpCheckbox';
 
 interface SeoContentNoIndexTriggerInterface {
   seoContent?: SeoContentInterface | null;
@@ -18,7 +18,7 @@ const SeoContentNoIndexTrigger: React.FC<SeoContentNoIndexTriggerInterface> = ({
 
   return (
     <label className='flex gap-2 items-center cursor-pointer'>
-      <Checkbox
+      <WpCheckbox
         checked={Boolean(seoContent.showForIndex)}
         name={'showForIndex'}
         onChange={() => {

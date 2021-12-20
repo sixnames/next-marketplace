@@ -1,56 +1,56 @@
-import Breadcrumbs from 'components/Breadcrumbs';
-import FormattedDate from 'components/FormattedDate';
-import Icon from 'components/Icon';
-import Inner from 'components/Inner';
-import FilterLink from 'components/Link/FilterLink';
-import Link from 'components/Link/Link';
-import TagLink from 'components/Link/TagLink';
-import Title from 'components/Title';
-import WpImage from 'components/WpImage';
+import Head from 'next/head';
+import { GetStaticPathsResult, GetStaticPropsResult } from 'next';
+import { useRouter } from 'next/router';
+import * as React from 'react';
+import WpBreadcrumbs from '../../../../components/WpBreadcrumbs';
+import FormattedDate from '../../../../components/FormattedDate';
+import Inner from '../../../../components/Inner';
+import FilterLink from '../../../../components/Link/FilterLink';
+import TagLink from '../../../../components/Link/TagLink';
+import WpLink from '../../../../components/Link/WpLink';
+import WpIcon from '../../../../components/WpIcon';
+import WpImage from '../../../../components/WpImage';
+import WpTitle from '../../../../components/WpTitle';
 import {
   ATTRIBUTE_VIEW_VARIANT_LIST,
-  FILTER_SEPARATOR,
   CATALOGUE_PRODUCTS_LIMIT,
   DEFAULT_PAGE,
+  FILTER_SEPARATOR,
+  ISR_FIVE_SECONDS,
   PAGE_STATE_PUBLISHED,
+  REQUEST_METHOD_POST,
+  ROUTE_BLOG,
   ROUTE_BLOG_POST,
   ROUTE_BLOG_WITH_PAGE,
   SORT_DESC,
-  ROUTE_BLOG,
-  REQUEST_METHOD_POST,
-  ISR_FIVE_SECONDS,
-} from 'config/common';
-import { getConstantTranslation } from 'config/constantTranslations';
-import { useAppContext } from 'context/appContext';
-import { useConfigContext } from 'context/configContext';
-import { useSiteContext } from 'context/siteContext';
+} from '../../../../config/common';
+import { getConstantTranslation } from '../../../../config/constantTranslations';
+import { useAppContext } from '../../../../context/appContext';
+import { useConfigContext } from '../../../../context/configContext';
+import { useSiteContext } from '../../../../context/siteContext';
 import {
   COL_BLOG_ATTRIBUTES,
   COL_BLOG_LIKES,
   COL_BLOG_POSTS,
   COL_OPTIONS,
-} from 'db/collectionNames';
-import { UpdateBlogAttributeCountersInputInterface } from 'db/dao/blog/updateBlogAttributeCounters';
-import { AttributeViewVariantModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+} from '../../../../db/collectionNames';
+import { UpdateBlogAttributeCountersInputInterface } from '../../../../db/dao/blog/updateBlogAttributeCounters';
+import { AttributeViewVariantModel } from '../../../../db/dbModels';
+import { getDatabase } from '../../../../db/mongodb';
 import {
   BlogAttributeInterface,
   BlogPostInterface,
   CatalogueFilterAttributeInterface,
   CatalogueFilterAttributeOptionInterface,
   OptionInterface,
-} from 'db/uiInterfaces';
-import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
-import { alwaysArray } from 'lib/arrayUtils';
-import { castUrlFilters, castCatalogueParamToObject } from 'lib/catalogueUtils';
-import { getFieldStringLocale } from 'lib/i18n';
-import { getIsrSiteInitialData, IsrContextInterface } from 'lib/isrUtils';
-import { noNaN } from 'lib/numbers';
-import { castDbData } from 'lib/ssrUtils';
-import Head from 'next/head';
-import { GetStaticPathsResult, GetStaticPropsResult } from 'next';
-import { useRouter } from 'next/router';
-import * as React from 'react';
+} from '../../../../db/uiInterfaces';
+import SiteLayout, { SiteLayoutProviderInterface } from '../../../../layout/SiteLayout';
+import { alwaysArray } from '../../../../lib/arrayUtils';
+import { castCatalogueParamToObject, castUrlFilters } from '../../../../lib/catalogueUtils';
+import { getFieldStringLocale } from '../../../../lib/i18n';
+import { getIsrSiteInitialData, IsrContextInterface } from '../../../../lib/isrUtils';
+import { noNaN } from '../../../../lib/numbers';
+import { castDbData } from '../../../../lib/ssrUtils';
 
 interface BlogListSnippetMetaInterface {
   createdAt?: string | Date | null;
@@ -77,7 +77,7 @@ const BlogListSnippetMeta: React.FC<BlogListSnippetMetaInterface> = ({
       {/*views counter*/}
       {showViews ? (
         <div className='flex items-center gap-2'>
-          <Icon className='w-5 h-5' name={'eye'} />
+          <WpIcon className='w-5 h-5' name={'eye'} />
           <div>{viewsCount}</div>
         </div>
       ) : null}
@@ -85,7 +85,7 @@ const BlogListSnippetMeta: React.FC<BlogListSnippetMetaInterface> = ({
       {/*likes counter*/}
       {likesCount ? (
         <div className='flex items-center gap-2'>
-          <Icon className='w-4 h-4' name={'like'} />
+          <WpIcon className='w-4 h-4' name={'like'} />
           <div>{likesCount}</div>
         </div>
       ) : null}
@@ -153,25 +153,25 @@ const BlogListSnippet: React.FC<BlogListSnippetInterface> = ({ post, showViews }
           title={`${post.title}`}
           width={295}
         />
-        <Link
+        <WpLink
           testId={`${post.title}-image-link`}
           className='block absolute z-20 inset-0 text-indent-full'
           href={`${urlPrefix}${ROUTE_BLOG_POST}/${post.slug}`}
         >
           {post.title}
-        </Link>
+        </WpLink>
       </div>
 
       <div className='px-4 py-6 flex flex-col flex-grow-1 h-full'>
         {/*title*/}
         <div className='font-medium text-lg mb-3'>
-          <Link
+          <WpLink
             testId={`${post.title}-title-link`}
             className='block text-primary-text hover:no-underline'
             href={`${ROUTE_BLOG_POST}/${post.slug}`}
           >
             {post.title}
-          </Link>
+          </WpLink>
         </div>
 
         {/*meta*/}
@@ -228,13 +228,13 @@ const BlogListMainSnippet: React.FC<BlogListSnippetInterface> = ({ post, showVie
         </div>
       </div>
 
-      <Link
+      <WpLink
         testId={`${post.title}-image-link`}
         className='block absolute z-20 inset-0 text-indent-full'
         href={`${urlPrefix}${ROUTE_BLOG_POST}/${post.slug}`}
       >
         {post.title}
-      </Link>
+      </WpLink>
     </div>
   );
 };
@@ -246,13 +246,13 @@ const BlogListTopSnippet: React.FC<BlogListSnippetInterface> = ({ post, showView
     <div className='py-4'>
       {/*title*/}
       <div className='font-medium text-lg mb-3'>
-        <Link
+        <WpLink
           testId={`${post.title}-title-link`}
           className='block text-primary-text hover:no-underline'
           href={`${urlPrefix}${ROUTE_BLOG_POST}/${post.slug}`}
         >
           {post.title}
-        </Link>
+        </WpLink>
       </div>
 
       <div className='mt-3'>
@@ -285,9 +285,9 @@ const BlogFilterAttribute: React.FC<BlogFilterAttributeInterface> = ({
       <div className='flex items-baseline justify-between mb-4'>
         <span className='text-lg font-bold'>{name}</span>
         {isSelected ? (
-          <Link href={`${urlPrefix}${clearSlug}`} className='font-medium text-theme'>
+          <WpLink href={`${urlPrefix}${clearSlug}`} className='font-medium text-theme'>
             Сбросить
-          </Link>
+          </WpLink>
         ) : null}
       </div>
 
@@ -368,9 +368,9 @@ const BlogListPageConsumer: React.FC<BlogListPageConsumerInterface> = ({
         <meta name={'description'} content={blogTitle} />
       </Head>
       <div className='mb-12'>
-        <Breadcrumbs currentPageName={blogTitle} />
+        <WpBreadcrumbs currentPageName={blogTitle} />
         <Inner lowTop>
-          <Title>{blogTitle}</Title>
+          <WpTitle>{blogTitle}</WpTitle>
 
           {posts.length > 0 ? (
             <div className={`grid lg:grid-cols-4 gap-6`}>

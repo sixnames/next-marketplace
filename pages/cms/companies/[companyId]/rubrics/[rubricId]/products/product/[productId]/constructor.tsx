@@ -1,20 +1,24 @@
-import ConsoleRubricProductConstructor from 'components/console/ConsoleRubricProductConstructor';
-import { ROUTE_CMS } from 'config/common';
-import { COL_COMPANIES } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
+import { ObjectId } from 'mongodb';
+import * as React from 'react';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import ConsoleRubricProductConstructor from '../../../../../../../../../components/console/ConsoleRubricProductConstructor';
+import { ROUTE_CMS } from '../../../../../../../../../config/common';
+import { COL_COMPANIES } from '../../../../../../../../../db/collectionNames';
+import { getDatabase } from '../../../../../../../../../db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   CompanyInterface,
   ProductInterface,
   SeoContentCitiesInterface,
-} from 'db/uiInterfaces';
-import CmsProductLayout from 'layout/cms/CmsProductLayout';
-import { getCmsProduct } from 'lib/productUtils';
-import { ObjectId } from 'mongodb';
-import * as React from 'react';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+} from '../../../../../../../../../db/uiInterfaces';
+import CmsProductLayout from '../../../../../../../../../layout/cms/CmsProductLayout';
+import { getCmsProduct } from '../../../../../../../../../lib/productUtils';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../../../../../../../lib/ssrUtils';
+import ConsoleLayout from '../../../../../../../../../layout/cms/ConsoleLayout';
 
 interface ProductAttributesInterface {
   product: ProductInterface;

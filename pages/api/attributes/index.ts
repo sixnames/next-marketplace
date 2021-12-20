@@ -1,10 +1,14 @@
-import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'config/common';
-import { createAttribute } from 'db/dao/attributes/createAttribute';
-import { deleteAttribute } from 'db/dao/attributes/deleteAttribute';
-import { updateAttribute } from 'db/dao/attributes/updateAttribute';
-import { updateAlgoliaProducts } from 'lib/algolia/productAlgoliaUtils';
-import { sendApiRouteResponse } from 'lib/sessionHelpers';
 import { NextApiRequest, NextApiResponse } from 'next';
+import {
+  REQUEST_METHOD_DELETE,
+  REQUEST_METHOD_PATCH,
+  REQUEST_METHOD_POST,
+} from '../../../config/common';
+import { createAttribute } from '../../../db/dao/attributes/createAttribute';
+import { deleteAttribute } from '../../../db/dao/attributes/deleteAttribute';
+import { updateAttribute } from '../../../db/dao/attributes/updateAttribute';
+import { updateAlgoliaProducts } from '../../../lib/algolia/productAlgoliaUtils';
+import { sendApiRouteResponse } from '../../../lib/sessionHelpers';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   // create

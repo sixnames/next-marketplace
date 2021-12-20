@@ -1,6 +1,6 @@
 import * as React from 'react';
-import Button from 'components/button/Button';
-import { ButtonTheme, JustifyType, SizeType } from 'types/clientTypes';
+import { ButtonTheme, JustifyType, SizeType } from '../../types/clientTypes';
+import WpButton from './WpButton';
 
 export interface ContentItemControlsInterface {
   createTitle?: string;
@@ -61,7 +61,7 @@ const ContentItemControls: React.FC<ContentItemControlsInterface> = ({
       style={{ justifyContent }}
     >
       {createHandler ? (
-        <Button
+        <WpButton
           circle
           size={size}
           icon={'plus'}
@@ -75,7 +75,7 @@ const ContentItemControls: React.FC<ContentItemControlsInterface> = ({
       ) : null}
 
       {moveHandler ? (
-        <Button
+        <WpButton
           circle
           size={size}
           icon={'move'}
@@ -89,7 +89,7 @@ const ContentItemControls: React.FC<ContentItemControlsInterface> = ({
       ) : null}
 
       {addAssetHandler ? (
-        <Button
+        <WpButton
           circle
           size={size}
           icon={'image'}
@@ -103,7 +103,7 @@ const ContentItemControls: React.FC<ContentItemControlsInterface> = ({
       ) : null}
 
       {updateHandler ? (
-        <Button
+        <WpButton
           circle
           size={size}
           icon={'pencil'}
@@ -117,7 +117,7 @@ const ContentItemControls: React.FC<ContentItemControlsInterface> = ({
       ) : null}
 
       {copyHandler ? (
-        <Button
+        <WpButton
           circle
           size={size}
           icon={'copy'}
@@ -130,7 +130,7 @@ const ContentItemControls: React.FC<ContentItemControlsInterface> = ({
         />
       ) : null}
       {deleteHandler ? (
-        <Button
+        <WpButton
           circle
           size={size}
           icon={'trash'}

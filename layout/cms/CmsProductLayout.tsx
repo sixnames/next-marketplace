@@ -1,19 +1,19 @@
-import Button from 'components/button/Button';
-import Inner from 'components/Inner';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import Title from 'components/Title';
-import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
-import { CONFIRM_MODAL } from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
-import { useConfigContext } from 'context/configContext';
-import { AppContentWrapperBreadCrumbs, ProductInterface } from 'db/uiInterfaces';
-import { useDeleteProduct } from 'hooks/mutations/useProductMutations';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import AppSubNav from 'layout/AppSubNav';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { ClientNavItemInterface } from 'types/clientTypes';
+import WpButton from '../../components/button/WpButton';
+import Inner from '../../components/Inner';
+import { ConfirmModalInterface } from '../../components/Modal/ConfirmModal';
+import WpTitle from '../../components/WpTitle';
+import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, ROUTE_CMS } from '../../config/common';
+import { CONFIRM_MODAL } from '../../config/modalVariants';
+import { useAppContext } from '../../context/appContext';
+import { useConfigContext } from '../../context/configContext';
+import { AppContentWrapperBreadCrumbs, ProductInterface } from '../../db/uiInterfaces';
+import { useDeleteProduct } from '../../hooks/mutations/useProductMutations';
+import { ClientNavItemInterface } from '../../types/clientTypes';
+import AppContentWrapper from '../AppContentWrapper';
+import AppSubNav from '../AppSubNav';
 
 interface CmsProductLayoutInterface {
   product: ProductInterface;
@@ -130,11 +130,14 @@ const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({
         <title>{product.cardTitle}</title>
       </Head>
       <Inner lowBottom>
-        <Title subtitle={`Арт. ${product.itemId}`} testId={`${product.originalName}-product-title`}>
+        <WpTitle
+          subtitle={`Арт. ${product.itemId}`}
+          testId={`${product.originalName}-product-title`}
+        >
           {product.cardTitle}
-        </Title>
+        </WpTitle>
         <div className='mb-4 flex gap-4'>
-          <Button
+          <WpButton
             frameClassName='w-auto'
             size={'small'}
             onClick={() => {
@@ -147,8 +150,8 @@ const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({
             }}
           >
             Карточка товара
-          </Button>
-          <Button
+          </WpButton>
+          <WpButton
             frameClassName='w-auto'
             theme={'secondary'}
             size={'small'}
@@ -168,7 +171,7 @@ const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({
             }}
           >
             Удалить товар
-          </Button>
+          </WpButton>
         </div>
       </Inner>
       <AppSubNav navConfig={navConfig} />

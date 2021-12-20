@@ -1,22 +1,22 @@
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { getDatabase } from 'db/mongodb';
-import { COL_CITIES, COL_COUNTRIES } from 'db/collectionNames';
-import { CityModel, CountryModel, CountryPayloadModel } from 'db/dbModels';
-import { SORT_ASC } from 'config/common';
+import { SORT_ASC } from '../config/common';
+import { COL_CITIES, COL_COUNTRIES } from '../db/collectionNames';
+import { findDocumentByI18nField } from '../db/dao/findDocumentByI18nField';
+import { CityModel, CountryModel, CountryPayloadModel } from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from 'lib/sessionHelpers';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
+} from '../lib/sessionHelpers';
 import {
   addCityToCountrySchema,
   createCountrySchema,
   deleteCityFromCountrySchema,
   updateCityInCountrySchema,
   updateCountrySchema,
-} from 'validation/countrySchema';
+} from '../validation/countrySchema';
 
 export const Country = objectType({
   name: 'Country',

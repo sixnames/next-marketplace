@@ -1,16 +1,14 @@
-import { DEFAULT_COUNTERS_OBJECT, GEO_POINT_TYPE } from 'config/common';
-import { getReadableAddress } from 'lib/addressUtils';
-import { deleteUpload, getMainImage, reorderAssets } from 'lib/assetUtils/assetUtils';
-import { getNextItemId } from 'lib/itemIdUtils';
 import { arg, extendType, inputObjectType, list, nonNull, objectType, stringArg } from 'nexus';
-import { getDatabase } from 'db/mongodb';
+import generator from 'generate-password';
+import { DEFAULT_COUNTERS_OBJECT, GEO_POINT_TYPE } from '../config/common';
 import {
   COL_CITIES,
   COL_COMPANIES,
   COL_PRODUCTS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
-} from 'db/collectionNames';
+} from '../db/collectionNames';
+import { aggregatePagination } from '../db/dao/aggregatePagination';
 import {
   CityModel,
   CompanyModel,
@@ -20,20 +18,22 @@ import {
   ShopProductModel,
   ShopProductsPaginationPayloadModel,
   ShopsPaginationPayloadModel,
-} from 'db/dbModels';
-import { aggregatePagination } from 'db/dao/aggregatePagination';
+} from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import { getReadableAddress } from '../lib/addressUtils';
+import { deleteUpload, getMainImage, reorderAssets } from '../lib/assetUtils/assetUtils';
+import getResolverErrorMessage from '../lib/getResolverErrorMessage';
+import { getNextItemId } from '../lib/itemIdUtils';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from 'lib/sessionHelpers';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+} from '../lib/sessionHelpers';
 import {
   addManyProductsToShopSchema,
   deleteProductFromShopSchema,
   updateShopSchema,
-} from 'validation/shopSchema';
-import generator from 'generate-password';
+} from '../validation/shopSchema';
 
 export const ShopProductsPaginationPayload = objectType({
   name: 'ShopProductsPaginationPayload',

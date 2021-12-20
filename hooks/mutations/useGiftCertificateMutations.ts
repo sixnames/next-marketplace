@@ -1,13 +1,17 @@
-import { InfoModalInterface } from 'components/Modal/InfoModal';
-import { REQUEST_METHOD_DELETE, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'config/common';
-import { INFO_MODAL } from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
-import { CheckGiftCertificateAvailabilityInputInterface } from 'db/dao/giftCertificate/checkGiftCertificateAvailability';
-import { CreateGiftCertificateInputInterface } from 'db/dao/giftCertificate/createGiftCertificate';
-import { DeleteGiftCertificateInputInterface } from 'db/dao/giftCertificate/deleteGiftCertificate';
-import { UpdateGiftCertificateInputInterface } from 'db/dao/giftCertificate/updateGiftCertificate';
-import { GiftCertificatePayloadModel } from 'db/dbModels';
-import { useMutationHandler } from 'hooks/mutations/useFetch';
+import { InfoModalInterface } from '../../components/Modal/InfoModal';
+import {
+  REQUEST_METHOD_DELETE,
+  REQUEST_METHOD_PATCH,
+  REQUEST_METHOD_POST,
+} from '../../config/common';
+import { INFO_MODAL } from '../../config/modalVariants';
+import { useAppContext } from '../../context/appContext';
+import { CheckGiftCertificateAvailabilityInputInterface } from '../../db/dao/giftCertificate/checkGiftCertificateAvailability';
+import { CreateGiftCertificateInputInterface } from '../../db/dao/giftCertificate/createGiftCertificate';
+import { DeleteGiftCertificateInputInterface } from '../../db/dao/giftCertificate/deleteGiftCertificate';
+import { UpdateGiftCertificateInputInterface } from '../../db/dao/giftCertificate/updateGiftCertificate';
+import { GiftCertificatePayloadModel } from '../../db/dbModels';
+import { useMutationHandler } from './useFetch';
 
 const basePath = '/api/gift-certificates';
 

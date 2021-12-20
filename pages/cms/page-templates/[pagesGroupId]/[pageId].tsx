@@ -1,14 +1,18 @@
-import Inner from 'components/Inner';
-import PageDetails, { PageDetailsInterface } from 'components/Pages/PageDetails';
-import Title from 'components/Title';
-import { ROUTE_CMS } from 'config/common';
-import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import { getPageSsr } from 'lib/pageUtils';
 import * as React from 'react';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import Inner from '../../../../components/Inner';
+import PageDetails, { PageDetailsInterface } from '../../../../components/Pages/PageDetails';
+import WpTitle from '../../../../components/WpTitle';
+import { ROUTE_CMS } from '../../../../config/common';
+import { AppContentWrapperBreadCrumbs } from '../../../../db/uiInterfaces';
+import AppContentWrapper from '../../../../layout/AppContentWrapper';
+import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
+import { getPageSsr } from '../../../../lib/pageUtils';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../../lib/ssrUtils';
 
 export interface PageDetailsPageInterface
   extends GetAppInitialDataPropsInterface,
@@ -33,7 +37,7 @@ const PageDetailsPage: NextPage<PageDetailsPageInterface> = ({ layoutProps, page
     <ConsoleLayout title={`${page.name}`} {...layoutProps}>
       <AppContentWrapper breadcrumbs={breadcrumbs}>
         <Inner>
-          <Title>{page.name}</Title>
+          <WpTitle>{page.name}</WpTitle>
           <PageDetails page={page} cities={cities} isTemplate />
         </Inner>
       </AppContentWrapper>

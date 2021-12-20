@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { getConstantTranslation } from 'config/constantTranslations';
-import { useNotificationsContext } from 'context/notificationsContext';
-import { useAppContext } from 'context/appContext';
 import { useRouter } from 'next/router';
 import { useCallback } from 'react';
+import { getConstantTranslation } from '../config/constantTranslations';
+import { useAppContext } from '../context/appContext';
+import { useNotificationsContext } from '../context/notificationsContext';
 
 interface ResponseInterface extends Record<string, any> {
   success: boolean;

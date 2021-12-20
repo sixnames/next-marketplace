@@ -1,20 +1,24 @@
-import ConsoleRubricProductCategories from 'components/console/ConsoleRubricProductCategories';
-import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
-import { COL_CATEGORIES } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
+import * as React from 'react';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import ConsoleRubricProductCategories from '../../../../../../../components/console/ConsoleRubricProductCategories';
+import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from '../../../../../../../config/common';
+import { COL_CATEGORIES } from '../../../../../../../db/collectionNames';
+import { getDatabase } from '../../../../../../../db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   CategoryInterface,
   ProductCategoryInterface,
   ProductInterface,
-} from 'db/uiInterfaces';
-import CmsProductLayout from 'layout/cms/CmsProductLayout';
-import { getCmsProduct } from 'lib/productUtils';
-import { getTreeFromList } from 'lib/treeUtils';
-import * as React from 'react';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+} from '../../../../../../../db/uiInterfaces';
+import CmsProductLayout from '../../../../../../../layout/cms/CmsProductLayout';
+import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
+import { getCmsProduct } from '../../../../../../../lib/productUtils';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../../../../../lib/ssrUtils';
+import { getTreeFromList } from '../../../../../../../lib/treeUtils';
 
 interface ProductCategoriesInterface {
   product: ProductInterface;

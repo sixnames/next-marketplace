@@ -1,19 +1,19 @@
-import ArrowTrigger from 'components/ArrowTrigger';
-import Button from 'components/button/Button';
-import SpinnerInput from 'components/FormElements/SpinnerInput/SpinnerInput';
-import LinkPhone from 'components/Link/LinkPhone';
-import { MapModalInterface } from 'components/Modal/MapModal';
-import ProductShopPrices from 'components/ProductShopPrices';
-import RatingStars from 'components/RatingStars';
-import ShopsMap from 'components/ShopsMap';
-import WpImage from 'components/WpImage';
-import { MAP_MODAL } from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
-import { useSiteContext } from 'context/siteContext';
-import { ShopInterface } from 'db/uiInterfaces';
-import LayoutCard from 'layout/LayoutCard';
-import { noNaN } from 'lib/numbers';
 import * as React from 'react';
+import ArrowTrigger from '../../components/ArrowTrigger';
+import WpButton from '../../components/button/WpButton';
+import SpinnerInput from '../../components/FormElements/SpinnerInput/SpinnerInput';
+import LinkPhone from '../../components/Link/LinkPhone';
+import { MapModalInterface } from '../../components/Modal/MapModal';
+import ProductShopPrices from '../../components/ProductShopPrices';
+import RatingStars from '../../components/RatingStars';
+import ShopsMap from '../../components/ShopsMap';
+import WpImage from '../../components/WpImage';
+import { MAP_MODAL } from '../../config/modalVariants';
+import { useAppContext } from '../../context/appContext';
+import { useSiteContext } from '../../context/siteContext';
+import { ShopInterface } from '../../db/uiInterfaces';
+import { noNaN } from '../../lib/numbers';
+import LayoutCard from '../LayoutCard';
 
 interface CardShopInterface {
   shop: ShopInterface;
@@ -141,7 +141,7 @@ const CardShop: React.FC<CardShopInterface> = ({ shop }) => {
                   />
                 </div>
                 <div className='col-span-2'>
-                  <Button
+                  <WpButton
                     short
                     className='w-full'
                     disabled={disabled}
@@ -155,7 +155,7 @@ const CardShop: React.FC<CardShopInterface> = ({ shop }) => {
                     }}
                   >
                     {noNaN(inCartCount) > 0 ? `В корзине ${inCartCount}` : 'В корзину'}
-                  </Button>
+                  </WpButton>
                 </div>
               </React.Fragment>
             )}

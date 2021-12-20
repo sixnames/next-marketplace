@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { ParsedUrlQuery } from 'querystring';
 import { useCallback, useMemo } from 'react';
-import { ObjectType } from 'types/clientTypes';
+import { ObjectType } from '../types/clientTypes';
 
 interface RemoveQueryInterface {
   key: string;

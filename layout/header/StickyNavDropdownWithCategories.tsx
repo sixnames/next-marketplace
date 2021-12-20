@@ -1,14 +1,14 @@
-import Link from 'components/Link/Link';
-import { FILTER_CATEGORY_KEY, FILTER_SEPARATOR, ROUTE_CATALOGUE } from 'config/common';
-import { useConfigContext } from 'context/configContext';
+import { useRouter } from 'next/router';
+import * as React from 'react';
+import WpLink from '../../components/Link/WpLink';
+import { FILTER_CATEGORY_KEY, FILTER_SEPARATOR, ROUTE_CATALOGUE } from '../../config/common';
+import { useConfigContext } from '../../context/configContext';
+import { noNaN } from '../../lib/numbers';
 import {
   StickyNavAttributeInterface,
   StickyNavCategoryInterface,
   StickyNavDropdownInterface,
-} from 'layout/header/StickyNav';
-import { noNaN } from 'lib/numbers';
-import { useRouter } from 'next/router';
-import * as React from 'react';
+} from './StickyNav';
 
 const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
   attribute,
@@ -41,7 +41,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
         {(options || []).map((option) => {
           return (
             <li key={`${option._id}`}>
-              <Link
+              <WpLink
                 onClick={hideDropdown}
                 style={attributeLinkStyle}
                 testId={`header-nav-dropdown-option`}
@@ -51,7 +51,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
               >
                 {option.name}
                 {postfix}
-              </Link>
+              </WpLink>
             </li>
           );
         })}
@@ -99,7 +99,7 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
   return (
     <div className='flex flex-col'>
       <div className='flex items-center pb-1 font-medium'>
-        <Link
+        <WpLink
           onClick={hideDropdown}
           style={attributeStyle}
           testId={`header-nav-dropdown-option`}
@@ -108,7 +108,7 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
           className='flex items-center gap-3 leading-snug text-secondary-text text-lg font-medium'
         >
           <span>{name}</span>
-        </Link>
+        </WpLink>
       </div>
       <ul className='flex-grow flex flex-col'>
         {(categories || []).map((childCategory, index) => {
@@ -116,7 +116,7 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
           if (index < stickyNavVisibleSubCategoriesCount) {
             return (
               <li key={`${childCategory._id}`}>
-                <Link
+                <WpLink
                   onClick={hideDropdown}
                   style={attributeLinkStyle}
                   testId={`header-nav-dropdown-option`}
@@ -125,7 +125,7 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
                   className='flex items-center py-1 text-secondary-text'
                 >
                   {childCategory.name}
-                </Link>
+                </WpLink>
               </li>
             );
           }

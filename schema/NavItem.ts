@@ -1,16 +1,16 @@
-import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
+import { SORT_ASC } from '../config/common';
+import { COL_NAV_ITEMS } from '../db/collectionNames';
+import { findDocumentByI18nField } from '../db/dao/findDocumentByI18nField';
+import { NavItemModel, NavItemPayloadModel } from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from 'lib/sessionHelpers';
-import { NavItemModel, NavItemPayloadModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { COL_NAV_ITEMS } from 'db/collectionNames';
-import { SORT_ASC } from 'config/common';
-import { createNavItemSchema, updateNavItemSchema } from 'validation/navItemSchema';
+} from '../lib/sessionHelpers';
+import { createNavItemSchema, updateNavItemSchema } from '../validation/navItemSchema';
 
 export const NavItem = objectType({
   name: 'NavItem',

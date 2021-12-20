@@ -1,25 +1,25 @@
-import Button from 'components/button/Button';
-import CompanyMainFields, {
-  CompanyFormMainValuesInterface,
-} from 'components/FormTemplates/CompanyMainFields';
-import Inner from 'components/Inner';
-import Title from 'components/Title';
-import { ROUTE_CMS } from 'config/common';
-import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
-import { useCreateCompanyMutation } from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useValidationSchema from 'hooks/useValidationSchema';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import { phoneToRaw } from 'lib/phoneUtils';
 import { omit } from 'lodash';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, NextPage } from 'next';
-import { getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import { createCompanyClientSchema } from 'validation/companySchema';
+import WpButton from '../../../components/button/WpButton';
+import CompanyMainFields, {
+  CompanyFormMainValuesInterface,
+} from '../../../components/FormTemplates/CompanyMainFields';
+import Inner from '../../../components/Inner';
+import WpTitle from '../../../components/WpTitle';
+import { ROUTE_CMS } from '../../../config/common';
+import { AppContentWrapperBreadCrumbs } from '../../../db/uiInterfaces';
+import { useCreateCompanyMutation } from '../../../generated/apolloComponents';
+import useMutationCallbacks from '../../../hooks/useMutationCallbacks';
+import useValidationSchema from '../../../hooks/useValidationSchema';
+import AppContentWrapper from '../../../layout/AppContentWrapper';
+import { phoneToRaw } from '../../../lib/phoneUtils';
+import { getAppInitialData, GetAppInitialDataPropsInterface } from '../../../lib/ssrUtils';
+import { createCompanyClientSchema } from '../../../validation/companySchema';
+import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
 
 const pageTitle = 'Создание компании';
 
@@ -74,7 +74,7 @@ const CreateCompanyContent: React.FC = () => {
       </Head>
 
       <Inner>
-        <Title>{pageTitle}</Title>
+        <WpTitle>{pageTitle}</WpTitle>
 
         <Formik<CreateCompanyFieldsInterface>
           enableReinitialize
@@ -110,9 +110,9 @@ const CreateCompanyContent: React.FC = () => {
             return (
               <Form>
                 <CompanyMainFields />
-                <Button type={'submit'} testId={'company-submit'}>
+                <WpButton type={'submit'} testId={'company-submit'}>
                   Создать компанию
-                </Button>
+                </WpButton>
               </Form>
             );
           }}

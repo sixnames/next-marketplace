@@ -187,16 +187,18 @@ const DefaultCartShop: React.FC<DefaultCartShopUIInterface> = ({
               low
               labelTag={'div'}
               label={'Подарочный сертификат'}
-              lineContentClass='flex flex-col sm:flex-row gap-4 sm:items-end'
+              lineContentClass='flex flex-col sm:flex-row gap-4 sm:items-center'
             >
               <div className='flex-grow'>
                 <FormikInput
+                  size={'small'}
                   testId={`gift-certificate-input-${shop.slug}`}
                   name={giftCertificateFieldName}
                   low
                 />
               </div>
               <WpButton
+                size={'small'}
                 frameClassName='w-auto'
                 theme={'secondary'}
                 testId={`gift-certificate-confirm-${shop.slug}`}
@@ -222,12 +224,13 @@ const DefaultCartShop: React.FC<DefaultCartShopUIInterface> = ({
               low
               labelTag={'div'}
               label={'Промокод'}
-              lineContentClass='flex flex-col sm:flex-row gap-4 sm:items-end'
+              lineContentClass='flex flex-col sm:flex-row gap-4 sm:items-center'
             >
               <div className='flex-grow'>
-                <FormikInput name={`shopConfigs[${index}].promoCode`} low />
+                <FormikInput size={'small'} name={`shopConfigs[${index}].promoCode`} low />
               </div>
               <WpButton
+                size={'small'}
                 frameClassName='w-auto'
                 theme={'secondary'}
                 onClick={() => {

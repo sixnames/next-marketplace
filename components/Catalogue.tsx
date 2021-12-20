@@ -541,7 +541,9 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
               size={'small'}
               onClick={() => {
                 window.open(
-                  `${sessionUser?.editLinkBasePath}${state.textBottomEditUrl}?url=${router.asPath}`,
+                  `${sessionUser?.editLinkBasePath}${state.textBottomEditUrl}?url=${
+                    router.asPath
+                  }&title=${encodeURIComponent(state.catalogueTitle)}`,
                   '_blank',
                 );
               }}
@@ -561,7 +563,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
               behavior: 'smooth',
             });
           }}
-          className='fixed right-inner-block-horizontal-padding bottom-28 lg:bottom-8 z-30'
+          className='fixed right-inner-block-horizontal-padding bottom-28 lg:bottom-8 z-[777]'
           icon={'chevron-up'}
           circle
         />

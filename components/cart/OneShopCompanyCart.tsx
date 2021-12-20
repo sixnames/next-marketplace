@@ -241,10 +241,11 @@ const OneShopCompanyDeliveryCart: React.FC<OneShopCompanyCartFormInterface> = ({
                         low
                         labelTag={'div'}
                         label={'Подарочный сертификат'}
-                        lineContentClass='flex flex-col sm:flex-row gap-4 sm:items-end'
+                        lineContentClass='flex flex-col sm:flex-row gap-4 sm:items-center'
                       >
                         <div className='flex-grow'>
                           <FormikInput
+                            size={'small'}
                             name={giftCertificateFieldName}
                             testId={`gift-certificate-input-${domainCompany.mainShop?.slug}`}
                             low
@@ -252,6 +253,7 @@ const OneShopCompanyDeliveryCart: React.FC<OneShopCompanyCartFormInterface> = ({
                         </div>
                         <WpButton
                           short
+                          size={'small'}
                           frameClassName='w-auto'
                           theme={'secondary'}
                           testId={`gift-certificate-confirm-${domainCompany.mainShop?.slug}`}
@@ -275,13 +277,14 @@ const OneShopCompanyDeliveryCart: React.FC<OneShopCompanyCartFormInterface> = ({
                         low
                         labelTag={'div'}
                         label={'Промокод'}
-                        lineContentClass='flex flex-col sm:flex-row gap-4 sm:items-end'
+                        lineContentClass='flex flex-col sm:flex-row gap-4 sm:items-center'
                       >
                         <div className='flex-grow'>
-                          <FormikInput name={`shopConfigs[0].promoCode`} low />
+                          <FormikInput size={'small'} name={`shopConfigs[0].promoCode`} low />
                         </div>
                         <WpButton
                           short
+                          size={'small'}
                           frameClassName='w-auto'
                           theme={'secondary'}
                           onClick={() => {
@@ -499,10 +502,11 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
                         low
                         labelTag={'div'}
                         label={'Подарочный сертификат'}
-                        lineContentClass='flex flex-col sm:flex-row gap-4 sm:items-end'
+                        lineContentClass='flex flex-col sm:flex-row gap-4 sm:items-center'
                       >
                         <div className='flex-grow'>
                           <FormikInput
+                            size={'small'}
                             name={giftCertificateFieldName}
                             testId={`gift-certificate-input-${domainCompany.mainShop?.slug}`}
                             low
@@ -510,6 +514,7 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
                         </div>
                         <WpButton
                           short
+                          size={'small'}
                           frameClassName='w-auto'
                           theme={'secondary'}
                           testId={`gift-certificate-confirm-${domainCompany.mainShop?.slug}`}
@@ -533,12 +538,13 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
                         low
                         labelTag={'div'}
                         label={'Промокод'}
-                        lineContentClass='flex flex-col sm:flex-row gap-4 sm:items-end'
+                        lineContentClass='flex flex-col sm:flex-row gap-4 sm:items-center'
                       >
                         <div className='flex-grow'>
-                          <FormikInput name={`shopConfigs[0].promoCode`} low />
+                          <FormikInput size={'small'} name={`shopConfigs[0].promoCode`} low />
                         </div>
                         <WpButton
+                          size={'small'}
                           short
                           frameClassName='w-auto'
                           theme={'secondary'}

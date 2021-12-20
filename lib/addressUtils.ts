@@ -5,6 +5,7 @@ import {
 import { AddressComponentModel } from '../db/dbModels';
 
 export function getReadableAddress(addressComponents: AddressComponentModel[]): string {
+  // console.log(addressComponents);
   let streetNumber = '';
   let street = '';
   let city = '';

@@ -18,6 +18,7 @@ import {
   useUpdateOrder,
   useUpdateOrderProduct,
 } from '../../hooks/mutations/useOrderMutations';
+import { getNumWord } from '../../lib/i18n';
 import { noNaN } from '../../lib/numbers';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
@@ -306,12 +307,21 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
     locale,
   });
 
+  const productsCount = products?.length;
+  const productsCountWord = getNumWord(productsCount, ['товар', 'товара', 'товаров']);
+
   return (
     <Inner testId={`order-details`}>
       <div className='grid gap-4 md:flex justify-between items-baseline mb-12'>
         <div>
-          <WpTitle low>{title}</WpTitle>
-          <div className='text-secondary-text'>
+          <WpTitle
+            low
+            className='flex flex-wrap items-baseline gap-4'
+            subtitle={`${productsCount} ${productsCountWord}`}
+          >
+            {title}
+          </WpTitle>
+          <div className='text-secondary-text mt-2'>
             от <FormattedDateTime value={createdAt} />
           </div>
         </div>

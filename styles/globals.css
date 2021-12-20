@@ -924,6 +924,10 @@ table {
   margin-bottom: 0.75rem;
 }
 
+.react-page-row img {
+  border-radius: 1rem;
+}
+
 /* Slick slider */
 .wp-slider .slick-dots {
   bottom: -35px;

@@ -2,6 +2,8 @@ import * as React from 'react';
 import WpImage from '../../components/WpImage';
 import { AssetModel } from '../../db/dbModels';
 
+const quality = 70;
+
 interface CardSimpleGalleryInterface {
   assets: AssetModel[];
   mainImage: string;
@@ -30,6 +32,7 @@ const CardSimpleGallery: React.FC<CardSimpleGalleryInterface> = ({
               title={title}
               width={550}
               className='absolute inset-0 w-full h-full object-contain'
+              quality={quality}
             />
           </div>
         </div>
@@ -51,6 +54,7 @@ const CardSimpleGallery: React.FC<CardSimpleGalleryInterface> = ({
                     title={`${title} photo ${index}`}
                     width={550}
                     className='absolute inset-0 w-full h-full object-contain'
+                    quality={quality}
                   />
                 </div>
               </div>

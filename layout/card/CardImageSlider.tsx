@@ -5,6 +5,8 @@ import WpImage from '../../components/WpImage';
 import { useAppContext } from '../../context/appContext';
 import { AssetModel } from '../../db/dbModels';
 
+const quality = 70;
+
 interface CardImageSliderInterface
   extends Omit<ReactImageGalleryProps, 'items' | 'renderLeftNav' | 'renderRightNav'> {
   assets: AssetModel[];
@@ -49,6 +51,7 @@ const CardImageSlider: React.FC<CardImageSliderInterface> = ({
                 >
                   <WpImage
                     url={url}
+                    quality={quality}
                     title={`${slideTitle} ${index}`}
                     alt={`${slideTitle} ${index}`}
                     width={imageWidth}
@@ -67,6 +70,7 @@ const CardImageSlider: React.FC<CardImageSliderInterface> = ({
           <div className={slideClassName}>
             <WpImage
               url={url}
+              quality={quality}
               title={`${slideTitle} ${index}`}
               alt={`${slideTitle} ${index}`}
               width={imageWidth}
@@ -83,6 +87,7 @@ const CardImageSlider: React.FC<CardImageSliderInterface> = ({
           <div className='relative pb-[100%] w-full'>
             <WpImage
               url={url}
+              quality={quality}
               title={`${slideTitle}`}
               alt={`${slideTitle}`}
               width={80}

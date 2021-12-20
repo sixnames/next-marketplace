@@ -1,9 +1,11 @@
-import ControlButton from 'components/button/ControlButton';
-import WpImage from 'components/WpImage';
-import { useAppContext } from 'context/appContext';
-import { AssetModel } from 'db/dbModels';
 import * as React from 'react';
 import ImageGallery, { ReactImageGalleryItem, ReactImageGalleryProps } from 'react-image-gallery';
+import ControlButton from '../../components/button/ControlButton';
+import WpImage from '../../components/WpImage';
+import { useAppContext } from '../../context/appContext';
+import { AssetModel } from '../../db/dbModels';
+
+const quality = 70;
 
 interface CardImageSliderInterface
   extends Omit<ReactImageGalleryProps, 'items' | 'renderLeftNav' | 'renderRightNav'> {
@@ -49,6 +51,7 @@ const CardImageSlider: React.FC<CardImageSliderInterface> = ({
                 >
                   <WpImage
                     url={url}
+                    quality={quality}
                     title={`${slideTitle} ${index}`}
                     alt={`${slideTitle} ${index}`}
                     width={imageWidth}
@@ -67,6 +70,7 @@ const CardImageSlider: React.FC<CardImageSliderInterface> = ({
           <div className={slideClassName}>
             <WpImage
               url={url}
+              quality={quality}
               title={`${slideTitle} ${index}`}
               alt={`${slideTitle} ${index}`}
               width={imageWidth}
@@ -83,6 +87,7 @@ const CardImageSlider: React.FC<CardImageSliderInterface> = ({
           <div className='relative pb-[100%] w-full'>
             <WpImage
               url={url}
+              quality={quality}
               title={`${slideTitle}`}
               alt={`${slideTitle}`}
               width={80}

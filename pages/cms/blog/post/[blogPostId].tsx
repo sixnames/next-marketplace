@@ -1,19 +1,23 @@
-import BlogPostsDetails from 'components/blog/BlogPostsDetails';
-import Inner from 'components/Inner';
-import Title from 'components/Title';
-import { ROUTE_CMS } from 'config/common';
-import { getBlogPost } from 'db/dao/blog/getBlogPost';
+import { GetServerSidePropsResult, GetServerSidePropsContext } from 'next';
+import Head from 'next/head';
+import * as React from 'react';
+import BlogPostsDetails from '../../../../components/blog/BlogPostsDetails';
+import Inner from '../../../../components/Inner';
+import WpTitle from '../../../../components/WpTitle';
+import { ROUTE_CMS } from '../../../../config/common';
+import { getBlogPost } from '../../../../db/dao/blog/getBlogPost';
 import {
   AppContentWrapperBreadCrumbs,
   BlogAttributeInterface,
   BlogPostInterface,
-} from 'db/uiInterfaces';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import { GetServerSidePropsResult, GetServerSidePropsContext } from 'next';
-import Head from 'next/head';
-import * as React from 'react';
+} from '../../../../db/uiInterfaces';
+import AppContentWrapper from '../../../../layout/AppContentWrapper';
+import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../../lib/ssrUtils';
 
 interface BlogPostConsumerInterface {
   post: BlogPostInterface;
@@ -39,7 +43,7 @@ const BlogPostConsumer: React.FC<BlogPostConsumerInterface> = ({ post, attribute
         <title>{post.title}</title>
       </Head>
       <Inner lowBottom>
-        <Title>{post.title}</Title>
+        <WpTitle>{post.title}</WpTitle>
       </Inner>
 
       <Inner>

@@ -1,6 +1,6 @@
-import { LinkInterface } from 'db/uiInterfaces';
 import * as React from 'react';
-import Link from './Link';
+import { LinkInterface } from '../../db/uiInterfaces';
+import WpLink from './WpLink';
 
 export interface TagLinkInterface extends Omit<LinkInterface, 'activeClassName' | 'href'> {
   theme?: 'primary' | 'secondary';
@@ -41,7 +41,7 @@ const TagLink: React.FC<TagLinkInterface> = ({
 
   if (href) {
     return (
-      <Link
+      <WpLink
         href={href}
         testId={testId}
         prefetch={prefetch}
@@ -56,7 +56,7 @@ const TagLink: React.FC<TagLinkInterface> = ({
           <span dangerouslySetInnerHTML={{ __html: icon }} className={iconClassName} />
         ) : null}
         {children}
-      </Link>
+      </WpLink>
     );
   }
 

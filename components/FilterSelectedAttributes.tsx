@@ -1,10 +1,10 @@
-import Icon from 'components/Icon';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 import {
   CatalogueFilterAttributeInterface,
   CatalogueFilterAttributeOptionInterface,
-} from 'db/uiInterfaces';
-import { useRouter } from 'next/router';
-import * as React from 'react';
+} from '../db/uiInterfaces';
+import WpIcon from './WpIcon';
 
 interface FilterSelectedAttributesInterface {
   selectedAttributes?: CatalogueFilterAttributeInterface[] | null;
@@ -80,7 +80,7 @@ const FilterSelectedAttributes: React.FC<FilterSelectedAttributesInterface> = ({
                         }}
                       >
                         <span className='hover:text-theme'>
-                          <Icon name={'cross'} className='w-[0.75rem] h-[0.75rem]' />
+                          <WpIcon name={'cross'} className='w-[0.75rem] h-[0.75rem]' />
                         </span>
                         <span className='block w-[calc(100%-1.25rem)]'>
                           {getSelectedOptionName(option)}

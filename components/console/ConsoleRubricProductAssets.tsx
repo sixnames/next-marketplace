@@ -1,15 +1,15 @@
-import AssetsManager from 'components/AssetsManager';
-import WpDropZone from 'components/FormElements/Upload/WpDropZone';
-import Inner from 'components/Inner';
-import { ProductInterface } from 'db/uiInterfaces';
+import { useRouter } from 'next/router';
+import * as React from 'react';
+import { ProductInterface } from '../../db/uiInterfaces';
 import {
   useDeleteProductAsset,
   useUpdateProductAssetIndex,
-} from 'hooks/mutations/useProductMutations';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import { alwaysArray } from 'lib/arrayUtils';
-import { useRouter } from 'next/router';
-import * as React from 'react';
+} from '../../hooks/mutations/useProductMutations';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import { alwaysArray } from '../../lib/arrayUtils';
+import AssetsManager from '../AssetsManager';
+import WpDropZone from '../FormElements/Upload/WpDropZone';
+import Inner from '../Inner';
 
 interface ConsoleRubricProductAssetsInterface {
   product: ProductInterface;

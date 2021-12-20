@@ -1,19 +1,19 @@
-import FormikInput from 'components/FormElements/Input/FormikInput';
-import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
-import { CreateUserCategoryInputInterface } from 'db/dao/userCategory/createUserCategory';
-import { UserCategoryInterface } from 'db/uiInterfaces';
+import * as React from 'react';
+import { Formik, Form } from 'formik';
+import { CreateUserCategoryInputInterface } from '../../db/dao/userCategory/createUserCategory';
+import { UserCategoryInterface } from '../../db/uiInterfaces';
 import {
   useCreateUserCategory,
   useUpdateUserCategory,
-} from 'hooks/mutations/useUserCategoryMutations';
-import * as React from 'react';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
-import ModalButtons from 'components/Modal/ModalButtons';
-import Button from 'components/button/Button';
-import { Formik, Form } from 'formik';
-import useValidationSchema from 'hooks/useValidationSchema';
-import { createUserCategorySchema } from 'validation/userCategorySchema';
+} from '../../hooks/mutations/useUserCategoryMutations';
+import useValidationSchema from '../../hooks/useValidationSchema';
+import { createUserCategorySchema } from '../../validation/userCategorySchema';
+import WpButton from '../button/WpButton';
+import FormikInput from '../FormElements/Input/FormikInput';
+import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
+import ModalButtons from './ModalButtons';
+import ModalFrame from './ModalFrame';
+import ModalTitle from './ModalTitle';
 
 export interface UserCategoryModalInterface {
   userCategory?: UserCategoryInterface;
@@ -118,9 +118,9 @@ const UserCategoryModal: React.FC<UserCategoryModalInterface> = ({ userCategory,
               />
 
               <ModalButtons>
-                <Button testId={'submit-user-category'} type={'submit'}>
+                <WpButton testId={'submit-user-category'} type={'submit'}>
                   {userCategory ? 'Обновить' : 'Создать'}
-                </Button>
+                </WpButton>
               </ModalButtons>
             </Form>
           );

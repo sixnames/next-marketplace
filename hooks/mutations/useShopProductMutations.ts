@@ -1,15 +1,15 @@
-// update
-import { ShopProductBarcodeIntersectsModalInterface } from 'components/Modal/ShopProductBarcodeIntersectsModal';
-import { REQUEST_METHOD_PATCH } from 'config/common';
-import { SHOP_PRODUCT_BARCODE_INTERSECTS_MODAL } from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
-import { UpdateManyShopProductsInputType } from 'db/dao/shopProduct/updateManyShopProducts';
-import { ShopProductPayloadModel } from 'db/dbModels';
-import { useMutationHandler } from 'hooks/mutations/useFetch';
-import { useReloadListener } from 'hooks/useReloadListener';
+import { ShopProductBarcodeIntersectsModalInterface } from '../../components/Modal/ShopProductBarcodeIntersectsModal';
+import { REQUEST_METHOD_PATCH } from '../../config/common';
+import { SHOP_PRODUCT_BARCODE_INTERSECTS_MODAL } from '../../config/modalVariants';
+import { useAppContext } from '../../context/appContext';
+import { UpdateManyShopProductsInputType } from '../../db/dao/shopProduct/updateManyShopProducts';
+import { ShopProductPayloadModel } from '../../db/dbModels';
+import { useReloadListener } from '../useReloadListener';
+import { useMutationHandler } from './useFetch';
 
 const basePath = '/api/shop-product';
 
+// update
 export const useUpdateManyShopProducts = () => {
   const { showModal } = useAppContext();
   const { setReloadToTrue } = useReloadListener();

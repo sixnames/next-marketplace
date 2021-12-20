@@ -1,22 +1,22 @@
-import { COL_ORDER_LOGS, COL_ORDER_PRODUCTS, COL_ORDERS } from 'db/collectionNames';
-import { getConsoleOrder } from 'db/dao/orders/getConsoleOrder';
+import { detailedDiff } from 'deep-object-diff';
+import { ObjectId } from 'mongodb';
+import { get } from 'lodash';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import { noNaN } from '../../../lib/numbers';
+import { countDiscountedPrice, getOrderDiscountedPrice } from '../../../lib/priceUtils';
+import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
+import { castDbData } from '../../../lib/ssrUtils';
+import { COL_ORDER_LOGS, COL_ORDER_PRODUCTS, COL_ORDERS } from '../../collectionNames';
 import {
   ObjectIdModel,
   OrderLogDiffModel,
   OrderLogModel,
   OrderModel,
   OrderProductModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface, OrderInterface, OrderInterfacePayloadModel } from 'db/uiInterfaces';
-import { detailedDiff } from 'deep-object-diff';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { noNaN } from 'lib/numbers';
-import { countDiscountedPrice, getOrderDiscountedPrice } from 'lib/priceUtils';
-import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { castDbData } from 'lib/ssrUtils';
-import { ObjectId } from 'mongodb';
-import { get } from 'lodash';
+} from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { DaoPropsInterface, OrderInterface, OrderInterfacePayloadModel } from '../../uiInterfaces';
+import { getConsoleOrder } from './getConsoleOrder';
 
 export interface UpdateOrderInterface {
   order: OrderInterface;

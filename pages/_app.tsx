@@ -1,19 +1,19 @@
-import { ConfigContextProvider } from 'context/configContext';
-import { LocaleContextProvider } from 'context/localeContext';
-import { ThemeContextProvider } from 'context/themeContext';
-import { CityInterface, CompanyInterface } from 'db/uiInterfaces';
-import { PageInitialDataPayload } from 'lib/ssrUtils';
 import * as React from 'react';
-import 'styles/globals.css';
+import '../styles/globals.css';
 import type { AppProps } from 'next/app';
 import { ApolloProvider } from '@apollo/client';
-import { useApollo } from 'apollo/apolloClient';
 import { Provider } from 'next-auth/client';
 import Router from 'next/router';
-import { AppContextProvider } from 'context/appContext';
-import { NotificationsProvider } from 'context/notificationsContext';
 import NProgress from 'nprogress';
 import { SWRConfig } from 'swr';
+import { useApollo } from '../apollo/apolloClient';
+import { AppContextProvider } from '../context/appContext';
+import { ConfigContextProvider } from '../context/configContext';
+import { LocaleContextProvider } from '../context/localeContext';
+import { NotificationsProvider } from '../context/notificationsContext';
+import { ThemeContextProvider } from '../context/themeContext';
+import { CityInterface, CompanyInterface } from '../db/uiInterfaces';
+import { PageInitialDataPayload } from '../lib/ssrUtils';
 
 export interface PagePropsInterface {
   initialData: PageInitialDataPayload;

@@ -1,3 +1,7 @@
+import { NextApiRequest, NextApiResponse } from 'next';
+import { getSession } from 'next-auth/client';
+import nookies from 'nookies';
+import { ArraySchema, ObjectSchema } from 'yup';
 import {
   CITY_COOKIE_KEY,
   COMPANY_SLUG_COOKIE_KEY,
@@ -10,20 +14,16 @@ import {
   ROLE_SLUG_ADMIN,
   ROLE_SLUG_GUEST,
   SECONDARY_LOCALE,
-} from 'config/common';
-import { COL_ROLE_RULES, COL_ROLES, COL_USERS } from 'db/collectionNames';
-import { RoleModel, RoleRuleModel, UserModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { getApiMessageValue, getValidationMessages } from 'lib/apiMessageUtils';
-import { getCityFieldData, getI18nLocaleValue } from 'lib/i18n';
-import { RoleRuleSlugType } from 'lib/roleUtils';
-import { NextApiRequest, NextApiResponse } from 'next';
-import { getSession } from 'next-auth/client';
-import nookies from 'nookies';
-import { NexusContext } from 'types/apiContextTypes';
-import { MessageSlug } from 'types/messageSlugTypes';
-import { ValidationSchemaArgsInterface } from 'types/validataionTypes';
-import { ArraySchema, ObjectSchema } from 'yup';
+} from '../config/common';
+import { COL_ROLE_RULES, COL_ROLES, COL_USERS } from '../db/collectionNames';
+import { RoleModel, RoleRuleModel, UserModel } from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import { NexusContext } from '../types/apiContextTypes';
+import { MessageSlug } from '../types/messageSlugTypes';
+import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
+import { getApiMessageValue, getValidationMessages } from './apiMessageUtils';
+import { getCityFieldData, getI18nLocaleValue } from './i18n';
+import { RoleRuleSlugType } from './roleUtils';
 
 export const getSessionUser = async (context: NexusContext): Promise<UserModel | null> => {
   // Get session user

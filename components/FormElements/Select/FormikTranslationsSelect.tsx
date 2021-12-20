@@ -1,13 +1,13 @@
 import * as React from 'react';
+import { useLocaleContext } from '../../../context/localeContext';
+import { TranslationModel } from '../../../db/dbModels';
+import WpAccordion from '../../WpAccordion';
+import WpIcon from '../../WpIcon';
+import WpTooltip from '../../WpTooltip';
 import FormikSelect, { FormikSelectInterface } from './FormikSelect';
 import { useFormikContext } from 'formik';
 import { get } from 'lodash';
-import { useLocaleContext } from 'context/localeContext';
-import Accordion from 'components/Accordion';
 import InputLine from '../Input/InputLine';
-import Icon from 'components/Icon';
-import WpTooltip from 'components/WpTooltip';
-import { TranslationModel } from 'db/dbModels';
 
 const FormikTranslationsSelect: React.FC<FormikSelectInterface> = ({
   name: inputName,
@@ -79,14 +79,14 @@ const FormikTranslationsSelect: React.FC<FormikSelectInterface> = ({
 
         return (
           <div className={isNotLast ? 'mb-6' : ''} key={name}>
-            <Accordion
+            <WpAccordion
               testId={`${testId}-accordion-${localeSlug}`}
               isOpen={isDefault}
               title={localeSlug}
               titleRight={
                 <WpTooltip title={accordionIconTooltip}>
                   <div className={accordionIconClass}>
-                    <Icon className='w-4 h-4' name={accordionIcon} />
+                    <WpIcon className='w-4 h-4' name={accordionIcon} />
                   </div>
                 </WpTooltip>
               }
@@ -100,7 +100,7 @@ const FormikTranslationsSelect: React.FC<FormikSelectInterface> = ({
                   low
                 />
               </div>
-            </Accordion>
+            </WpAccordion>
           </div>
         );
       })}

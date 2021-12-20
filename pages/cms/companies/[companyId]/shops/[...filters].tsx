@@ -1,46 +1,50 @@
-import Button from 'components/button/Button';
-import FixedButtons from 'components/button/FixedButtons';
-import ContentItemControls from 'components/button/ContentItemControls';
-import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
-import Inner from 'components/Inner';
-import Link from 'components/Link/Link';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import { CreateShopModalInterface } from 'components/Modal/CreateShopModal';
-import Pager from 'components/Pager';
-import Spinner from 'components/Spinner';
-import Table, { TableColumn } from 'components/Table';
-import TableRowImage from 'components/TableRowImage';
-import { ROUTE_CMS, SORT_DESC, DEFAULT_PAGE } from 'config/common';
-import { CONFIRM_MODAL, CREATE_SHOP_MODAL } from 'config/modalVariants';
+import { ObjectId } from 'mongodb';
+import { useRouter } from 'next/router';
+import * as React from 'react';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import ContentItemControls from '../../../../../components/button/ContentItemControls';
+import FixedButtons from '../../../../../components/button/FixedButtons';
+import WpButton from '../../../../../components/button/WpButton';
+import FormikRouterSearch from '../../../../../components/FormElements/Search/FormikRouterSearch';
+import Inner from '../../../../../components/Inner';
+import WpLink from '../../../../../components/Link/WpLink';
+import { ConfirmModalInterface } from '../../../../../components/Modal/ConfirmModal';
+import { CreateShopModalInterface } from '../../../../../components/Modal/CreateShopModal';
+import Pager from '../../../../../components/Pager';
+import Spinner from '../../../../../components/Spinner';
+import TableRowImage from '../../../../../components/TableRowImage';
+import WpTable, { WpTableColumn } from '../../../../../components/WpTable';
+import { DEFAULT_PAGE, ROUTE_CMS, SORT_DESC } from '../../../../../config/common';
+import { CONFIRM_MODAL, CREATE_SHOP_MODAL } from '../../../../../config/modalVariants';
 import {
   COL_CITIES,
   COL_COMPANIES,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
   COL_USERS,
-} from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
+} from '../../../../../db/collectionNames';
+import { getDatabase } from '../../../../../db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   AppPaginationAggregationInterface,
   AppPaginationInterface,
   CompanyInterface,
   ShopInterface,
-} from 'db/uiInterfaces';
-import { useDeleteShopFromCompanyMutation } from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import usePageLoadingState from 'hooks/usePageLoadingState';
-import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
-import { alwaysArray } from 'lib/arrayUtils';
-import { castUrlFilters } from 'lib/catalogueUtils';
-import { getFieldStringLocale, getNumWord } from 'lib/i18n';
-import { noNaN } from 'lib/numbers';
-import { ObjectId } from 'mongodb';
-import { useRouter } from 'next/router';
-import * as React from 'react';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+} from '../../../../../db/uiInterfaces';
+import { useDeleteShopFromCompanyMutation } from '../../../../../generated/apolloComponents';
+import useMutationCallbacks from '../../../../../hooks/useMutationCallbacks';
+import usePageLoadingState from '../../../../../hooks/usePageLoadingState';
+import CmsCompanyLayout from '../../../../../layout/cms/CmsCompanyLayout';
+import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
+import { alwaysArray } from '../../../../../lib/arrayUtils';
+import { castUrlFilters } from '../../../../../lib/catalogueUtils';
+import { getFieldStringLocale, getNumWord } from '../../../../../lib/i18n';
+import { noNaN } from '../../../../../lib/numbers';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../../../lib/ssrUtils';
 
 interface CompanyShopsConsumerInterface extends AppPaginationInterface<ShopInterface> {
   pageCompany: CompanyInterface;
@@ -78,12 +82,12 @@ const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
     onError: onErrorCallback,
   });
 
-  const columns: TableColumn<ShopInterface>[] = [
+  const columns: WpTableColumn<ShopInterface>[] = [
     {
       accessor: 'itemId',
       headTitle: 'ID',
       render: ({ cellData, dataItem }) => (
-        <Link href={`${itemPath}/${dataItem._id}`}>{cellData}</Link>
+        <WpLink href={`${itemPath}/${dataItem._id}`}>{cellData}</WpLink>
       ),
     },
     {
@@ -168,7 +172,7 @@ const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
         <FormikRouterSearch testId={'shops'} />
 
         <div className={`relative overflow-x-auto overflow-y-hidden`}>
-          <Table<ShopInterface>
+          <WpTable<ShopInterface>
             onRowDoubleClick={(dataItem) => {
               router.push(`${itemPath}/${dataItem._id}`).catch((e) => console.log(e));
             }}
@@ -180,7 +184,7 @@ const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
           {isPageLoading ? <Spinner isNestedAbsolute isTransparent /> : null}
 
           <FixedButtons>
-            <Button
+            <WpButton
               onClick={() => {
                 showModal<CreateShopModalInterface>({
                   variant: CREATE_SHOP_MODAL,
@@ -193,7 +197,7 @@ const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
               size={'small'}
             >
               Добавить магазин
-            </Button>
+            </WpButton>
           </FixedButtons>
         </div>
 

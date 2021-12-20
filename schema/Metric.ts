@@ -1,21 +1,21 @@
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import {
-  getOperationPermission,
-  getRequestParams,
-  getResolverValidationSchema,
-} from 'lib/sessionHelpers';
+import { SORT_ASC } from '../config/common';
+import { COL_ATTRIBUTES, COL_METRICS, COL_PRODUCT_ATTRIBUTES } from '../db/collectionNames';
+import { findDocumentByI18nField } from '../db/dao/findDocumentByI18nField';
 import {
   AttributeModel,
   MetricModel,
   MetricPayloadModel,
   ProductAttributeModel,
-} from 'db/dbModels';
-import { COL_ATTRIBUTES, COL_METRICS, COL_PRODUCT_ATTRIBUTES } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { SORT_ASC } from 'config/common';
-import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { createMetricSchema, updateMetricSchema } from 'validation/metricSchema';
+} from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import getResolverErrorMessage from '../lib/getResolverErrorMessage';
+import {
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+} from '../lib/sessionHelpers';
+import { createMetricSchema, updateMetricSchema } from '../validation/metricSchema';
 
 export const Metric = objectType({
   name: 'Metric',

@@ -1,22 +1,22 @@
+import { ObjectId } from 'mongodb';
 import {
   PAGE_EDITOR_DEFAULT_VALUE_STRING,
   TEXT_HORIZONTAL_ALIGN_OPTIONS,
   TEXT_HORIZONTAL_FLEX_OPTIONS,
   TEXT_VERTICAL_FLEX_OPTIONS,
-} from 'config/common';
-import { COL_PROMO } from 'db/collectionNames';
-import { DateModel, PromoModel, PromoPayloadModel, TranslationModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getNextItemId } from 'lib/itemIdUtils';
+} from '../../../config/common';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import { getNextItemId } from '../../../lib/itemIdUtils';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from 'lib/sessionHelpers';
-import { ObjectId } from 'mongodb';
-import { createPromoSchema } from 'validation/promoSchema';
+} from '../../../lib/sessionHelpers';
+import { createPromoSchema } from '../../../validation/promoSchema';
+import { COL_PROMO } from '../../collectionNames';
+import { DateModel, PromoModel, PromoPayloadModel, TranslationModel } from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface CreatePromoInputInterface {
   nameI18n: TranslationModel;

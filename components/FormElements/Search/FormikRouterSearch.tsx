@@ -1,7 +1,7 @@
-import FormikIndividualSearch from 'components/FormElements/Search/FormikIndividualSearch';
-import { FILTER_SEPARATOR, DEFAULT_PAGE, FILTER_PAGE_KEY } from 'config/common';
 import { useRouter } from 'next/router';
 import * as React from 'react';
+import { DEFAULT_PAGE, FILTER_PAGE_KEY, FILTER_SEPARATOR } from '../../../config/common';
+import FormikIndividualSearch from './FormikIndividualSearch';
 
 interface FormikRouterSearchInterface {
   testId: string;

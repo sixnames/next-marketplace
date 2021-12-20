@@ -1,18 +1,18 @@
-import Button from 'components/button/Button';
-import ShopMainFields from 'components/FormTemplates/ShopMainFields';
-import { phoneToRaw } from 'lib/phoneUtils';
 import * as React from 'react';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
-import useValidationSchema from 'hooks/useValidationSchema';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
+import { Form, Formik } from 'formik';
 import {
   AddressInput,
   AddShopToCompanyInput,
   useAddShopToCompanyMutation,
-} from 'generated/apolloComponents';
-import { addShopToCompanySchema } from 'validation/companySchema';
-import { Form, Formik } from 'formik';
+} from '../../generated/apolloComponents';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import useValidationSchema from '../../hooks/useValidationSchema';
+import { phoneToRaw } from '../../lib/phoneUtils';
+import { addShopToCompanySchema } from '../../validation/companySchema';
+import WpButton from '../button/WpButton';
+import ShopMainFields from '../FormTemplates/ShopMainFields';
+import ModalFrame from './ModalFrame';
+import ModalTitle from './ModalTitle';
 
 export interface CreateShopModalInterface {
   companyId: string;
@@ -82,9 +82,9 @@ const CreateShopModal: React.FC<CreateShopModalInterface> = ({ companyId }) => {
             <Form>
               <ShopMainFields />
 
-              <Button type={'submit'} testId={'shop-submit'}>
+              <WpButton type={'submit'} testId={'shop-submit'}>
                 Создать
-              </Button>
+              </WpButton>
             </Form>
           );
         }}

@@ -1,8 +1,8 @@
-import MainPage, { MainPagePropsInterface } from 'components/MainPage';
-import { getMainPageData } from 'lib/mainPageUtils';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { getSiteInitialData } from 'lib/ssrUtils';
+import { getMainPageData } from '../lib/mainPageUtils';
+import { getSiteInitialData } from '../lib/ssrUtils';
+import MainPage, { MainPagePropsInterface } from '../components/MainPage';
 
 const Page: NextPage<MainPagePropsInterface> = (props) => <MainPage {...props} />;
 

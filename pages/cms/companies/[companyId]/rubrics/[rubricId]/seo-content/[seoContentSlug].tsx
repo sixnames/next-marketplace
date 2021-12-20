@@ -1,20 +1,28 @@
-import ConsoleSeoContentDetails, {
-  ConsoleSeoContentDetailsInterface,
-} from 'components/console/ConsoleSeoContentDetails';
-import Inner from 'components/Inner';
-import { CATALOGUE_SEO_TEXT_POSITION_TOP, ROUTE_CMS } from 'config/common';
-import { COL_COMPANIES } from 'db/collectionNames';
-import { getConsoleRubricDetails } from 'db/dao/rubrics/getConsoleRubricDetails';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, CompanyInterface, RubricInterface } from 'db/uiInterfaces';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
-import { alwaysString } from 'lib/arrayUtils';
-import { getSeoContentBySlug } from 'lib/seoContentUtils';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import ConsoleSeoContentDetails, {
+  ConsoleSeoContentDetailsInterface,
+} from '../../../../../../../components/console/ConsoleSeoContentDetails';
+import Inner from '../../../../../../../components/Inner';
+import { CATALOGUE_SEO_TEXT_POSITION_TOP, ROUTE_CMS } from '../../../../../../../config/common';
+import { COL_COMPANIES } from '../../../../../../../db/collectionNames';
+import { getConsoleRubricDetails } from '../../../../../../../db/dao/rubrics/getConsoleRubricDetails';
+import { getDatabase } from '../../../../../../../db/mongodb';
+import {
+  AppContentWrapperBreadCrumbs,
+  CompanyInterface,
+  RubricInterface,
+} from '../../../../../../../db/uiInterfaces';
+import CmsRubricLayout from '../../../../../../../layout/cms/CmsRubricLayout';
+import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
+import { alwaysString } from '../../../../../../../lib/arrayUtils';
+import { getSeoContentBySlug } from '../../../../../../../lib/seoContentUtils';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../../../../../lib/ssrUtils';
 
 interface RubricDetailsInterface extends ConsoleSeoContentDetailsInterface {
   rubric: RubricInterface;

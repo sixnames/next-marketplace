@@ -1,20 +1,20 @@
 import { hash } from 'bcryptjs';
-import { COL_USERS } from 'db/collectionNames';
-import { UserModel, UserPayloadModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
 import generator from 'generate-password';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getUserInitialNotificationsConf } from 'lib/getUserNotificationsTemplate';
-import { getNextItemId } from 'lib/itemIdUtils';
-import { phoneToRaw } from 'lib/phoneUtils';
+import { ObjectId } from 'mongodb';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import { getUserInitialNotificationsConf } from '../../../lib/getUserNotificationsTemplate';
+import { getNextItemId } from '../../../lib/itemIdUtils';
+import { phoneToRaw } from '../../../lib/phoneUtils';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from 'lib/sessionHelpers';
-import { ObjectId } from 'mongodb';
-import { createUserSchema } from 'validation/userSchema';
+} from '../../../lib/sessionHelpers';
+import { createUserSchema } from '../../../validation/userSchema';
+import { COL_USERS } from '../../collectionNames';
+import { UserModel, UserPayloadModel } from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface CreateUserInputInterface {
   name: string;

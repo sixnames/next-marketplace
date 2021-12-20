@@ -1,15 +1,15 @@
-import { DEFAULT_COMPANY_SLUG, VIEWS_COUNTER_STEP } from 'config/common';
-import { COL_SHOP_PRODUCTS } from 'db/collectionNames';
-import { Maybe, ProductPayloadModel, ShopProductModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getSessionRole } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
+import { DEFAULT_COMPANY_SLUG, VIEWS_COUNTER_STEP } from '../../../config/common';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import { getSessionRole } from '../../../lib/sessionHelpers';
+import { COL_SHOP_PRODUCTS } from '../../collectionNames';
+import { ProductPayloadModel, ShopProductModel } from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface UpdateProductCounterInputInterface {
   shopProductIds: string[];
-  companySlug: Maybe<string>;
+  companySlug?: string | null;
   citySlug: string;
 }
 

@@ -1,9 +1,9 @@
-import { COL_RUBRICS } from 'db/collectionNames';
-import { castRubricForUI } from 'db/dao/rubrics/castRubricForUI';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface, RubricInterface } from 'db/uiInterfaces';
-import { sortObjectsByField } from 'lib/arrayUtils';
-import { getRequestParams } from 'lib/sessionHelpers';
+import { sortObjectsByField } from '../../../lib/arrayUtils';
+import { getRequestParams } from '../../../lib/sessionHelpers';
+import { COL_RUBRICS } from '../../collectionNames';
+import { getDatabase } from '../../mongodb';
+import { DaoPropsInterface, RubricInterface } from '../../uiInterfaces';
+import { castRubricForUI } from './castRubricForUI';
 
 export interface GetRubricsListInputInterface {}
 

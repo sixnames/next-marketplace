@@ -1,20 +1,20 @@
-import OptionMainFields from 'components/FormTemplates/OptionMainFields';
-import { GENDER_ENUMS } from 'config/common';
-import { OptionVariantsModel } from 'db/dbModels';
 import * as React from 'react';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
-import ModalButtons from 'components/Modal/ModalButtons';
 import { Form, Formik } from 'formik';
-import Button from 'components/button/Button';
-import { useAppContext } from 'context/appContext';
+import { GENDER_ENUMS } from '../../config/common';
+import { useAppContext } from '../../context/appContext';
+import { OptionVariantsModel } from '../../db/dbModels';
 import {
   AddOptionToGroupInput,
-  UpdateOptionInGroupInput,
   OptionsGroupVariant,
-} from 'generated/apolloComponents';
-import useValidationSchema from 'hooks/useValidationSchema';
-import { optionInGroupModalSchema } from 'validation/optionsGroupSchema';
+  UpdateOptionInGroupInput,
+} from '../../generated/apolloComponents';
+import useValidationSchema from '../../hooks/useValidationSchema';
+import { optionInGroupModalSchema } from '../../validation/optionsGroupSchema';
+import WpButton from '../button/WpButton';
+import OptionMainFields from '../FormTemplates/OptionMainFields';
+import ModalButtons from './ModalButtons';
+import ModalFrame from './ModalFrame';
+import ModalTitle from './ModalTitle';
 
 type OptionInGroupModalValuesType =
   | Omit<AddOptionToGroupInput, 'optionsGroupId'>
@@ -61,13 +61,13 @@ const OptionInGroupModal: React.FC<OptionInGroupModalInterface> = ({ confirm, gr
               <OptionMainFields groupVariant={groupVariant} />
 
               <ModalButtons>
-                <Button type={'submit'} testId={'option-submit'}>
+                <WpButton type={'submit'} testId={'option-submit'}>
                   Создать
-                </Button>
+                </WpButton>
 
-                <Button theme={'secondary'} onClick={hideModal} testId={'option-decline'}>
+                <WpButton theme={'secondary'} onClick={hideModal} testId={'option-decline'}>
                   Отмена
-                </Button>
+                </WpButton>
               </ModalButtons>
             </Form>
           );

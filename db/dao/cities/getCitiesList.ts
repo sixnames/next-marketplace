@@ -1,7 +1,7 @@
-import { SORT_ASC } from 'config/common';
-import { COL_CITIES } from 'db/collectionNames';
-import { CityModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+import { SORT_ASC } from '../../../config/common';
+import { COL_CITIES } from '../../collectionNames';
+import { CityModel } from '../../dbModels';
+import { getDatabase } from '../../mongodb';
 
 export async function getCitiesList(): Promise<CityModel[]> {
   const { db } = await getDatabase();

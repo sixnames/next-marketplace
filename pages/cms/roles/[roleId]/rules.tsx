@@ -1,25 +1,33 @@
-import Checkbox from 'components/FormElements/Checkbox/Checkbox';
-import FormikIndividualSearch from 'components/FormElements/Search/FormikIndividualSearch';
-import Inner from 'components/Inner';
-import Table, { TableColumn } from 'components/Table';
-import Title from 'components/Title';
-import { ROUTE_CMS } from 'config/common';
-import { COL_ROLES } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, RoleInterface, RoleRuleInterface } from 'db/uiInterfaces';
-import { useUpdateRoleRuleMutation } from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import AppSubNav from 'layout/AppSubNav';
-import { getFieldStringLocale } from 'lib/i18n';
-import { getRoleRulesAst } from 'lib/roleUtils';
 import { ObjectId } from 'mongodb';
 import Head from 'next/head';
 import * as React from 'react';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import { ClientNavItemInterface } from 'types/clientTypes';
+import WpCheckbox from '../../../../components/FormElements/Checkbox/WpCheckbox';
+import FormikIndividualSearch from '../../../../components/FormElements/Search/FormikIndividualSearch';
+import Inner from '../../../../components/Inner';
+import WpTable, { WpTableColumn } from '../../../../components/WpTable';
+import WpTitle from '../../../../components/WpTitle';
+import { ROUTE_CMS } from '../../../../config/common';
+import { COL_ROLES } from '../../../../db/collectionNames';
+import { getDatabase } from '../../../../db/mongodb';
+import {
+  AppContentWrapperBreadCrumbs,
+  RoleInterface,
+  RoleRuleInterface,
+} from '../../../../db/uiInterfaces';
+import { useUpdateRoleRuleMutation } from '../../../../generated/apolloComponents';
+import useMutationCallbacks from '../../../../hooks/useMutationCallbacks';
+import AppContentWrapper from '../../../../layout/AppContentWrapper';
+import AppSubNav from '../../../../layout/AppSubNav';
+import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
+import { getFieldStringLocale } from '../../../../lib/i18n';
+import { getRoleRulesAst } from '../../../../lib/roleUtils';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../../lib/ssrUtils';
+import { ClientNavItemInterface } from '../../../../types/clientTypes';
 
 interface RoleRulesConsumerInterface {
   role: RoleInterface;
@@ -63,7 +71,7 @@ const RoleRulesConsumer: React.FC<RoleRulesConsumerInterface> = ({ role }) => {
     ];
   }, [role._id]);
 
-  const columns: TableColumn<RoleRuleInterface>[] = [
+  const columns: WpTableColumn<RoleRuleInterface>[] = [
     {
       headTitle: 'Действие',
       accessor: 'name',
@@ -74,7 +82,7 @@ const RoleRulesConsumer: React.FC<RoleRulesConsumerInterface> = ({ role }) => {
       accessor: 'allow',
       render: ({ cellData, dataItem }) => {
         return (
-          <Checkbox
+          <WpCheckbox
             testId={`${dataItem.name}`}
             checked={cellData}
             name={'allow'}
@@ -119,7 +127,7 @@ const RoleRulesConsumer: React.FC<RoleRulesConsumerInterface> = ({ role }) => {
         <title>{role.name}</title>
       </Head>
       <Inner lowBottom>
-        <Title>{role.name}</Title>
+        <WpTitle>{role.name}</WpTitle>
       </Inner>
       <AppSubNav navConfig={navConfig} />
 
@@ -140,7 +148,7 @@ const RoleRulesConsumer: React.FC<RoleRulesConsumerInterface> = ({ role }) => {
         />
 
         <div className='overflow-x-auto overflow-y-hidden'>
-          <Table<RoleRuleInterface> columns={columns} data={rules} />
+          <WpTable<RoleRuleInterface> columns={columns} data={rules} />
         </div>
       </Inner>
     </AppContentWrapper>

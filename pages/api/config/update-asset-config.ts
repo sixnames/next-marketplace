@@ -1,19 +1,19 @@
-import {
-  ASSETS_DIST_CONFIGS,
-  DEFAULT_COMPANY_SLUG,
-  DEFAULT_CITY,
-  DEFAULT_LOCALE,
-  REQUEST_METHOD_DELETE,
-} from 'config/common';
-import { COL_CONFIGS } from 'db/collectionNames';
-import { ConfigModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { getApiMessageValue } from 'lib/apiMessageUtils';
-import { storeUploads } from 'lib/assetUtils/assetUtils';
-import { parseRestApiFormData } from 'lib/restApi';
-import { getOperationPermission } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
+import {
+  ASSETS_DIST_CONFIGS,
+  DEFAULT_CITY,
+  DEFAULT_COMPANY_SLUG,
+  DEFAULT_LOCALE,
+  REQUEST_METHOD_DELETE,
+} from '../../../config/common';
+import { COL_CONFIGS } from '../../../db/collectionNames';
+import { ConfigModel } from '../../../db/dbModels';
+import { getDatabase } from '../../../db/mongodb';
+import { getApiMessageValue } from '../../../lib/apiMessageUtils';
+import { storeUploads } from '../../../lib/assetUtils/assetUtils';
+import { parseRestApiFormData } from '../../../lib/restApi';
+import { getOperationPermission } from '../../../lib/sessionHelpers';
 
 export const config = {
   api: {

@@ -1,27 +1,27 @@
+import { ObjectId } from 'mongodb';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import {
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+} from '../../../lib/sessionHelpers';
+import { updatePageSchema } from '../../../validation/pagesSchema';
 import {
   COL_PAGE_TEMPLATES,
   COL_PAGES,
   COL_PAGES_GROUP,
   COL_PAGES_GROUP_TEMPLATES,
-} from 'db/collectionNames';
-import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
+} from '../../collectionNames';
 import {
   PageModel,
   PagePayloadModel,
   PagesGroupModel,
   PageStateModel,
   TranslationModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import {
-  getOperationPermission,
-  getRequestParams,
-  getResolverValidationSchema,
-} from 'lib/sessionHelpers';
-import { ObjectId } from 'mongodb';
-import { updatePageSchema } from 'validation/pagesSchema';
+} from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { DaoPropsInterface } from '../../uiInterfaces';
+import { findDocumentByI18nField } from '../findDocumentByI18nField';
 
 export interface UpdatePageInputInterface {
   _id: string;

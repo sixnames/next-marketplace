@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Icon from 'components/Icon';
+import WpIcon from './WpIcon';
 
 interface ArrowTriggerInterface {
   name: string;
@@ -20,11 +20,11 @@ const ArrowTrigger: React.FC<ArrowTriggerInterface> = ({
       onClick={onClick}
     >
       {arrowPosition === 'left' ? (
-        <Icon className={`${iconClassName} mr-4`} name={'arrow-left'} />
+        <WpIcon className={`${iconClassName} mr-4`} name={'arrow-left'} />
       ) : null}
       {name}
       {arrowPosition === 'right' ? (
-        <Icon className={`${iconClassName} ml-4`} name={'arrow-right'} />
+        <WpIcon className={`${iconClassName} ml-4`} name={'arrow-right'} />
       ) : null}
     </div>
   );

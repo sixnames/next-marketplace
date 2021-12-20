@@ -1,7 +1,7 @@
-import { RubricInterface } from 'db/uiInterfaces';
 import * as React from 'react';
-import Accordion from 'components/Accordion';
-import RequestError from 'components/RequestError';
+import { RubricInterface } from '../db/uiInterfaces';
+import RequestError from './RequestError';
+import WpAccordion from './WpAccordion';
 
 interface RubricsTreeInterface {
   rubrics: RubricInterface[];
@@ -45,7 +45,7 @@ const RubricsList: React.FC<RubricsTreeInterface> = ({
         const { _id, name } = rubric;
         return (
           <div key={`${_id}`} className='mb-4'>
-            <Accordion
+            <WpAccordion
               isOpen={openAll}
               titleLeft={titleLeftContent(rubric)}
               disabled={isAccordionDisabled}
@@ -53,7 +53,7 @@ const RubricsList: React.FC<RubricsTreeInterface> = ({
               testId={`tree-${name}`}
             >
               {render ? render(rubric) : null}
-            </Accordion>
+            </WpAccordion>
           </div>
         );
       })}

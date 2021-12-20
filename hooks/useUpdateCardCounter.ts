@@ -1,7 +1,6 @@
-/* eslint-disable react-app/react-hooks/exhaustive-deps */
-import { DEFAULT_COMPANY_SLUG, REQUEST_METHOD_PATCH } from 'config/common';
-import { UpdateProductCounterInputInterface } from 'db/dao/product/updateProductCounter';
 import * as React from 'react';
+import { DEFAULT_COMPANY_SLUG, REQUEST_METHOD_PATCH } from '../config/common';
+import { UpdateProductCounterInputInterface } from '../db/dao/product/updateProductCounter';
 
 const useUpdateCardCounter = ({
   shopProductIds,
@@ -19,6 +18,8 @@ const useUpdateCardCounter = ({
     }).catch((e) => {
       console.log(e);
     });
+    /* eslint-disable react-hooks/exhaustive-deps */
+    // eslint-disable-next-line react-app/react-hooks/exhaustive-deps
   }, [shopProductIds, companySlug]);
 };
 

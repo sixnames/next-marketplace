@@ -1,21 +1,20 @@
-import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE } from 'config/common';
-import { COL_CITIES } from 'db/collectionNames';
-import { CityModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { SiteLayoutProviderInterface } from 'layout/SiteLayout';
-import { alwaysString } from 'lib/arrayUtils';
-import { getI18nLocaleValue } from 'lib/i18n';
-import { noNaN } from 'lib/numbers';
+import { GetStaticPropsContext } from 'next';
+import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE } from '../config/common';
+import { COL_CITIES } from '../db/collectionNames';
+import { CityModel } from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import { SiteLayoutProviderInterface } from '../layout/SiteLayout';
+import { PagePropsInterface } from '../pages/_app';
+import { alwaysString } from './arrayUtils';
+import { getI18nLocaleValue } from './i18n';
+import { noNaN } from './numbers';
 import {
   castDbData,
   getCatalogueCreatedPages,
   getCatalogueNavRubrics,
   getPageInitialData,
   getSsrDomainCompany,
-} from 'lib/ssrUtils';
-import { GetStaticPropsContext } from 'next';
-// import nookies from 'nookies';
-import { PagePropsInterface } from 'pages/_app';
+} from './ssrUtils';
 
 type ParamsInterface = {
   companySlug: string;

@@ -1,16 +1,19 @@
-import Button from 'components/button/Button';
-import ContentItemControls from 'components/button/ContentItemControls';
-import Currency from 'components/Currency';
-import { CreateProductWithSyncErrorModalInterface } from 'components/Modal/CreateProductWithSyncErrorModal';
-import { ProductSearchModalInterface } from 'components/Modal/ProductSearchModal';
-import Pager from 'components/Pager';
-import Table, { TableColumn } from 'components/Table';
-import { CREATE_PRODUCT_WITH_SYNC_ERROR_MODAL, PRODUCT_SEARCH_MODAL } from 'config/modalVariants';
-import { AppPaginationInterface, NotSyncedProductInterface } from 'db/uiInterfaces';
-import { useUpdateProductWithSyncError } from 'hooks/mutations/useProductMutations';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import { getNumWord } from 'lib/i18n';
 import * as React from 'react';
+import {
+  CREATE_PRODUCT_WITH_SYNC_ERROR_MODAL,
+  PRODUCT_SEARCH_MODAL,
+} from '../config/modalVariants';
+import { AppPaginationInterface, NotSyncedProductInterface } from '../db/uiInterfaces';
+import { useUpdateProductWithSyncError } from '../hooks/mutations/useProductMutations';
+import useMutationCallbacks from '../hooks/useMutationCallbacks';
+import { getNumWord } from '../lib/i18n';
+import ContentItemControls from './button/ContentItemControls';
+import WpButton from './button/WpButton';
+import Currency from './Currency';
+import { CreateProductWithSyncErrorModalInterface } from './Modal/CreateProductWithSyncErrorModal';
+import { ProductSearchModalInterface } from './Modal/ProductSearchModal';
+import Pager from './Pager';
+import WpTable, { WpTableColumn } from './WpTable';
 
 export interface SyncErrorsListInterface {
   notSyncedProducts: AppPaginationInterface<NotSyncedProductInterface>;
@@ -31,7 +34,7 @@ const SyncErrorsList: React.FC<SyncErrorsListInterface> = ({
 
   const [updateProductWithSyncErrorMutation] = useUpdateProductWithSyncError();
 
-  const columns: TableColumn<NotSyncedProductInterface>[] = [
+  const columns: WpTableColumn<NotSyncedProductInterface>[] = [
     {
       accessor: 'barcode',
       headTitle: 'Штрих-код',
@@ -85,7 +88,7 @@ const SyncErrorsList: React.FC<SyncErrorsListInterface> = ({
                       <div>
                         <div className='mb-6'>Вы ищите товар с названием {dataItem.name}</div>
                         <div className='mb-8'>
-                          <Button
+                          <WpButton
                             testId={'create-product'}
                             size={'small'}
                             onClick={() => {
@@ -99,7 +102,7 @@ const SyncErrorsList: React.FC<SyncErrorsListInterface> = ({
                             }}
                           >
                             Создать товар
-                          </Button>
+                          </WpButton>
                         </div>
                       </div>
                     ),
@@ -134,7 +137,7 @@ const SyncErrorsList: React.FC<SyncErrorsListInterface> = ({
         </div>
       ) : null}
       <div className='overflow-x-auto overflow-y-hidden'>
-        <Table<NotSyncedProductInterface> testIdKey={'name'} columns={columns} data={docs} />
+        <WpTable<NotSyncedProductInterface> testIdKey={'name'} columns={columns} data={docs} />
       </div>
       <Pager page={page} totalPages={totalPages} />
     </div>

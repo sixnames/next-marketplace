@@ -1,11 +1,11 @@
-import { DEFAULT_COMPANY_SLUG, DEFAULT_CITY, DEFAULT_LOCALE, SORT_ASC } from 'config/common';
-import { COL_COMPANIES, COL_CONFIGS } from 'db/collectionNames';
-import { CompanyModel, ConfigModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { getCityFieldLocaleString } from 'lib/i18n';
 import { GetServerSidePropsContext } from 'next';
 import * as React from 'react';
 import { getDomain } from 'tldts';
+import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE, SORT_ASC } from '../config/common';
+import { COL_COMPANIES, COL_CONFIGS } from '../db/collectionNames';
+import { CompanyModel, ConfigModel } from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import { getCityFieldLocaleString } from '../lib/i18n';
 
 const SiteWebmanifest: React.FC = () => {
   return <div />;

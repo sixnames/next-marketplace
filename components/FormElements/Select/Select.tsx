@@ -1,10 +1,10 @@
-import { useLocaleContext } from 'context/localeContext';
-import { TranslationModel } from 'db/dbModels';
-import { getFieldStringLocale } from 'lib/i18n';
 import * as React from 'react';
+import { useLocaleContext } from '../../../context/localeContext';
+import { TranslationModel } from '../../../db/dbModels';
+import { getFieldStringLocale } from '../../../lib/i18n';
+import { InputTheme, OnOffType } from '../../../types/clientTypes';
+import WpIcon from '../../WpIcon';
 import InputLine, { InputLinePropsInterface } from '../Input/InputLine';
-import Icon from 'components/Icon';
-import { InputTheme, OnOffType } from 'types/clientTypes';
 
 export interface SelectOptionInterface {
   _id: any;
@@ -142,7 +142,7 @@ const Select: React.FC<SelectInterface> = ({
             );
           })}
         </select>
-        <Icon
+        <WpIcon
           className='absolute top-half right-5 w-3 h-3 transform translate-y-[-5px]'
           name={'chevron-down'}
         />

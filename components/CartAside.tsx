@@ -1,9 +1,9 @@
-import { useConfigContext } from 'context/configContext';
 import * as React from 'react';
-import Currency from 'components/Currency';
-import Button from 'components/button/Button';
-import LayoutCard from 'layout/LayoutCard';
-import { noNaN } from 'lib/numbers';
+import { useConfigContext } from '../context/configContext';
+import LayoutCard from '../layout/LayoutCard';
+import { noNaN } from '../lib/numbers';
+import WpButton from './button/WpButton';
+import Currency from './Currency';
 
 export interface UseCartAsideDiscountsValuesInterface {
   giftCertificateDiscount?: number | null;
@@ -59,14 +59,14 @@ const CartAside: React.FC<CartAsideInterface> = ({
           </div>
         </div>
 
-        <Button
+        <WpButton
           type={'submit'}
           testId={'cart-aside-confirm'}
           disabled={isWithShopless}
           className='w-full'
         >
           {buyButtonText}
-        </Button>
+        </WpButton>
 
         {isWithShopless ? (
           <div className='text-red-500 font-medium' data-cy={`cart-aside-warning`}>

@@ -1,21 +1,21 @@
-import { COL_PROMO, COL_PROMO_PRODUCTS } from 'db/collectionNames';
+import { ObjectId } from 'mongodb';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import {
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+} from '../../../lib/sessionHelpers';
+import { updatePromoSchema } from '../../../validation/promoSchema';
+import { COL_PROMO, COL_PROMO_PRODUCTS } from '../../collectionNames';
 import {
   DateModel,
   PromoModel,
   PromoPayloadModel,
   PromoProductModel,
   TranslationModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import {
-  getOperationPermission,
-  getRequestParams,
-  getResolverValidationSchema,
-} from 'lib/sessionHelpers';
-import { ObjectId } from 'mongodb';
-import { updatePromoSchema } from 'validation/promoSchema';
+} from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface UpdatePromoInputInterface {
   _id: string;

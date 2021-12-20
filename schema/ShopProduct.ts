@@ -1,13 +1,12 @@
-import { SUPPLIER_PRICE_VARIANT_ENUMS } from 'config/common';
 import { arg, enumType, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { getDatabase } from 'db/mongodb';
+import { SUPPLIER_PRICE_VARIANT_ENUMS } from '../config/common';
 import {
   COL_PRODUCTS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
   COL_SUPPLIER_PRODUCTS,
   COL_SUPPLIERS,
-} from 'db/collectionNames';
+} from '../db/collectionNames';
 import {
   ProductModel,
   ShopModel,
@@ -15,9 +14,10 @@ import {
   ShopProductPayloadModel,
   SupplierModel,
   SupplierProductModel,
-} from 'db/dbModels';
-import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+} from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import getResolverErrorMessage from '../lib/getResolverErrorMessage';
+import { getOperationPermission, getRequestParams } from '../lib/sessionHelpers';
 
 export const ShopProductOldPrice = objectType({
   name: 'ShopProductOldPrice',

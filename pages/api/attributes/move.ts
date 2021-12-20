@@ -1,8 +1,8 @@
-import { REQUEST_METHOD_PATCH } from 'config/common';
-import { moveAttribute } from 'db/dao/attributes/moveAttribute';
-import { updateAlgoliaProducts } from 'lib/algolia/productAlgoliaUtils';
-import { sendApiRouteResponse } from 'lib/sessionHelpers';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { REQUEST_METHOD_PATCH } from '../../../config/common';
+import { moveAttribute } from '../../../db/dao/attributes/moveAttribute';
+import { updateAlgoliaProducts } from '../../../lib/algolia/productAlgoliaUtils';
+import { sendApiRouteResponse } from '../../../lib/sessionHelpers';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   // move

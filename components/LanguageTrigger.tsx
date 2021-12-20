@@ -1,8 +1,8 @@
-import { HeadlessMenuGroupInterface } from 'components/HeadlessMenuButton';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import MenuButtonWithName from 'components/MenuButtonWithName';
-import { useLocaleContext } from 'context/localeContext';
+import { useLocaleContext } from '../context/localeContext';
+import { HeadlessMenuGroupInterface } from './HeadlessMenuButton';
+import MenuButtonWithName from './MenuButtonWithName';
 
 interface LanguageTriggerInterface {
   style?: React.CSSProperties;

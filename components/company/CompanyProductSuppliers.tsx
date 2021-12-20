@@ -1,27 +1,27 @@
-import Button from 'components/button/Button';
-import ContentItemControls from 'components/button/ContentItemControls';
-import Currency from 'components/Currency';
-import FormikBarcodeInput from 'components/FormElements/FormikBarcodeInput/FormikBarcodeInput';
-import FormikInput from 'components/FormElements/Input/FormikInput';
-import InputLine from 'components/FormElements/Input/InputLine';
-import { SelectOptionInterface } from 'components/FormElements/Select/Select';
-import Inner from 'components/Inner';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import { ShopProductSupplierModalInterface } from 'components/Modal/ShopProductSupplierModal';
-import Percent from 'components/Percent';
-import Table, { TableColumn } from 'components/Table';
-import { getConstantTranslation } from 'config/constantTranslations';
-import { CONFIRM_MODAL, SHOP_PRODUCT_SUPPLIER_MODAL } from 'config/modalVariants';
-import { useLocaleContext } from 'context/localeContext';
-import { ShopProductInterface, SupplierProductInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
-import { useDeleteShopProductSupplierMutation } from 'generated/apolloComponents';
-import { useUpdateManyShopProducts } from 'hooks/mutations/useShopProductMutations';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useValidationSchema from 'hooks/useValidationSchema';
-import { noNaN } from 'lib/numbers';
 import * as React from 'react';
-import { updateManyShopProductsSchema } from 'validation/shopSchema';
+import { getConstantTranslation } from '../../config/constantTranslations';
+import { CONFIRM_MODAL, SHOP_PRODUCT_SUPPLIER_MODAL } from '../../config/modalVariants';
+import { useLocaleContext } from '../../context/localeContext';
+import { ShopProductInterface, SupplierProductInterface } from '../../db/uiInterfaces';
+import { useDeleteShopProductSupplierMutation } from '../../generated/apolloComponents';
+import { useUpdateManyShopProducts } from '../../hooks/mutations/useShopProductMutations';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import useValidationSchema from '../../hooks/useValidationSchema';
+import { noNaN } from '../../lib/numbers';
+import { updateManyShopProductsSchema } from '../../validation/shopSchema';
+import ContentItemControls from '../button/ContentItemControls';
+import WpButton from '../button/WpButton';
+import Currency from '../Currency';
+import FormikBarcodeInput from '../FormElements/FormikBarcodeInput/FormikBarcodeInput';
+import FormikInput from '../FormElements/Input/FormikInput';
+import InputLine from '../FormElements/Input/InputLine';
+import { SelectOptionInterface } from '../FormElements/Select/Select';
+import Inner from '../Inner';
+import { ConfirmModalInterface } from '../Modal/ConfirmModal';
+import { ShopProductSupplierModalInterface } from '../Modal/ShopProductSupplierModal';
+import Percent from '../Percent';
+import WpTable, { WpTableColumn } from '../WpTable';
 
 export interface CompanyProductSuppliersInterface {
   shopProduct: ShopProductInterface;
@@ -49,7 +49,7 @@ const CompanyProductSuppliers: React.FC<CompanyProductSuppliersInterface> = ({
     schema: updateManyShopProductsSchema,
   });
 
-  const columns: TableColumn<SupplierProductInterface>[] = [
+  const columns: WpTableColumn<SupplierProductInterface>[] = [
     {
       headTitle: 'Название',
       accessor: 'supplier.name',
@@ -194,7 +194,7 @@ const CompanyProductSuppliers: React.FC<CompanyProductSuppliersInterface> = ({
                     );
                   })}
                   <div>
-                    <Button
+                    <WpButton
                       theme={'secondary'}
                       size={'small'}
                       onClick={() => {
@@ -202,13 +202,13 @@ const CompanyProductSuppliers: React.FC<CompanyProductSuppliersInterface> = ({
                       }}
                     >
                       Добавить штрих-код
-                    </Button>
+                    </WpButton>
                   </div>
                 </InputLine>
 
-                <Button size={'small'} type={'submit'}>
+                <WpButton size={'small'} type={'submit'}>
                   Сохранить
-                </Button>
+                </WpButton>
               </Form>
             );
           }}
@@ -218,7 +218,7 @@ const CompanyProductSuppliers: React.FC<CompanyProductSuppliersInterface> = ({
       {/*suppliers list*/}
       <div className='mb-16'>
         <div className='overflow-x-auto overflow-y-hidden mb-8'>
-          <Table<SupplierProductInterface>
+          <WpTable<SupplierProductInterface>
             columns={columns}
             data={shopProduct.supplierProducts}
             testIdKey={'supplier.name'}
@@ -234,7 +234,7 @@ const CompanyProductSuppliers: React.FC<CompanyProductSuppliersInterface> = ({
             }}
           />
         </div>
-        <Button
+        <WpButton
           disabled={disableAddSupplier}
           testId={'add-supplier'}
           size={'small'}
@@ -249,7 +249,7 @@ const CompanyProductSuppliers: React.FC<CompanyProductSuppliersInterface> = ({
           }}
         >
           Добавить поставщика
-        </Button>
+        </WpButton>
       </div>
 
       {/*barcode*/}

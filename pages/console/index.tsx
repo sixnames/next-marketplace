@@ -1,18 +1,18 @@
-import Inner from 'components/Inner';
-import Title from 'components/Title';
-import { ROUTE_CONSOLE, ROUTE_SIGN_IN } from 'config/common';
-import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { GetConsoleMainPageDataPropsInterface, getConsoleMainPageData } from 'lib/ssrUtils';
+import Inner from '../../components/Inner';
+import WpTitle from '../../components/WpTitle';
+import { ROUTE_CONSOLE, ROUTE_SIGN_IN } from '../../config/common';
+import { noNaN } from '../../lib/numbers';
+import { getConsoleMainPageData, GetConsoleMainPageDataPropsInterface } from '../../lib/ssrUtils';
 
 const App: NextPage<GetConsoleMainPageDataPropsInterface> = ({ layoutProps }) => {
   const router = useRouter();
 
   return (
     <Inner>
-      <Title>Панель управления</Title>
+      <WpTitle>Панель управления</WpTitle>
       <div className='mb-8 text-lg'>Ваши компании</div>
       <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
         {(layoutProps.sessionUser.me.companies || []).map((company) => {

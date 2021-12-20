@@ -1,33 +1,33 @@
-import Button from 'components/button/Button';
-import FixedButtons from 'components/button/FixedButtons';
-import ContentItemControls from 'components/button/ContentItemControls';
-import Icon from 'components/Icon';
-import Inner from 'components/Inner';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import { NavItemModalInterface } from 'components/Modal/NavItemModal';
-import Table, { TableColumn } from 'components/Table';
-import Title from 'components/Title';
-import { SORT_ASC, SORT_DESC } from 'config/common';
-import { getConstantTranslation } from 'config/constantTranslations';
-import { CONFIRM_MODAL, NAV_ITEM_MODAL } from 'config/modalVariants';
-import { COL_NAV_ITEMS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { NavGroupInterface, NavItemInterface } from 'db/uiInterfaces';
+import Head from 'next/head';
+import * as React from 'react';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import ContentItemControls from '../../components/button/ContentItemControls';
+import FixedButtons from '../../components/button/FixedButtons';
+import WpButton from '../../components/button/WpButton';
+import Inner from '../../components/Inner';
+import { ConfirmModalInterface } from '../../components/Modal/ConfirmModal';
+import { NavItemModalInterface } from '../../components/Modal/NavItemModal';
+import WpIcon from '../../components/WpIcon';
+import WpTable, { WpTableColumn } from '../../components/WpTable';
+import WpTitle from '../../components/WpTitle';
+import { SORT_ASC, SORT_DESC } from '../../config/common';
+import { getConstantTranslation } from '../../config/constantTranslations';
+import { CONFIRM_MODAL, NAV_ITEM_MODAL } from '../../config/modalVariants';
+import { COL_NAV_ITEMS } from '../../db/collectionNames';
+import { getDatabase } from '../../db/mongodb';
+import { NavGroupInterface, NavItemInterface } from '../../db/uiInterfaces';
 import {
   CreateNavItemInput,
   UpdateNavItemInput,
   useCreateNavItemMutation,
   useDeleteNavItemMutation,
   useUpdateNavItemMutation,
-} from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import { getFieldStringLocale } from 'lib/i18n';
-import Head from 'next/head';
-import * as React from 'react';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+} from '../../generated/apolloComponents';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import AppContentWrapper from '../../layout/AppContentWrapper';
+import ConsoleLayout from '../../layout/cms/ConsoleLayout';
+import { getFieldStringLocale } from '../../lib/i18n';
+import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from '../../lib/ssrUtils';
 
 const pageTitle = 'Навигация';
 
@@ -55,7 +55,7 @@ const NavItemsPageConsumer: React.FC<NavItemsPageConsumerInterface> = ({ navItem
     onCompleted: (data) => onCompleteCallback(data.deleteNavItem),
   });
 
-  const columns: TableColumn<NavItemInterface>[] = [
+  const columns: WpTableColumn<NavItemInterface>[] = [
     {
       headTitle: 'Иконка',
       accessor: 'icon',
@@ -63,7 +63,7 @@ const NavItemsPageConsumer: React.FC<NavItemsPageConsumerInterface> = ({ navItem
         if (!cellData) {
           return null;
         }
-        return <Icon className='w-6 h-6' name={cellData} />;
+        return <WpIcon className='w-6 h-6' name={cellData} />;
       },
     },
     {
@@ -146,7 +146,7 @@ const NavItemsPageConsumer: React.FC<NavItemsPageConsumerInterface> = ({ navItem
         <title>{pageTitle}</title>
       </Head>
       <Inner lowBottom>
-        <Title>{pageTitle}</Title>
+        <WpTitle>{pageTitle}</WpTitle>
       </Inner>
 
       <Inner testId={'nav-items-page'}>
@@ -155,10 +155,10 @@ const NavItemsPageConsumer: React.FC<NavItemsPageConsumerInterface> = ({ navItem
             <div key={navGroup._id} className='relative mb-8'>
               <div className='mb-4 font-medium text-lg'>{navGroup.name}</div>
               <div className='overflow-x-auto overflow-y-hidden'>
-                <Table<NavItemInterface> columns={columns} data={navGroup.children || []} />
+                <WpTable<NavItemInterface> columns={columns} data={navGroup.children || []} />
               </div>
               <FixedButtons>
-                <Button
+                <WpButton
                   testId={`${navGroup._id}-create-nav-item`}
                   size={'small'}
                   onClick={() => {
@@ -180,7 +180,7 @@ const NavItemsPageConsumer: React.FC<NavItemsPageConsumerInterface> = ({ navItem
                   }}
                 >
                   Добавить страницу
-                </Button>
+                </WpButton>
               </FixedButtons>
             </div>
           );

@@ -1,18 +1,18 @@
-import Button from 'components/button/Button';
-import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
-import FormikInput from 'components/FormElements/Input/FormikInput';
-import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
-import ModalButtons from 'components/Modal/ModalButtons';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
-import { DEFAULT_LOCALE } from 'config/common';
-import { PagesGroupInterface } from 'db/uiInterfaces';
-import { useCreatePagesGroup, useUpdatePagesGroup } from 'hooks/mutations/usePageMutations';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import { noNaN } from 'lib/numbers';
-import { ResolverValidationSchema } from 'lib/sessionHelpers';
 import * as React from 'react';
 import { Form, Formik } from 'formik';
+import { DEFAULT_LOCALE } from '../../config/common';
+import { PagesGroupInterface } from '../../db/uiInterfaces';
+import { useCreatePagesGroup, useUpdatePagesGroup } from '../../hooks/mutations/usePageMutations';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import { noNaN } from '../../lib/numbers';
+import { ResolverValidationSchema } from '../../lib/sessionHelpers';
+import WpButton from '../button/WpButton';
+import FormikCheckboxLine from '../FormElements/Checkbox/FormikCheckboxLine';
+import FormikInput from '../FormElements/Input/FormikInput';
+import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
+import ModalButtons from './ModalButtons';
+import ModalFrame from './ModalFrame';
+import ModalTitle from './ModalTitle';
 
 export interface PagesGroupModalInterface {
   pagesGroup?: PagesGroupInterface;
@@ -110,12 +110,12 @@ const PagesGroupModal: React.FC<PagesGroupModalInterface> = ({
               />
 
               <ModalButtons>
-                <Button type={'submit'} testId={'submit-pages-group'}>
+                <WpButton type={'submit'} testId={'submit-pages-group'}>
                   {pagesGroup ? 'Сохранить' : 'Создать'}
-                </Button>
-                <Button theme={'secondary'} onClick={hideModal}>
+                </WpButton>
+                <WpButton theme={'secondary'} onClick={hideModal}>
                   Закрыть
-                </Button>
+                </WpButton>
               </ModalButtons>
             </Form>
           );

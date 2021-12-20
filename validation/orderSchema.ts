@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
+import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
 import { emailSchema, phoneSchema } from './schemaTemplates';
 import { userNameSchema } from './userSchema';
-import { ValidationSchemaArgsInterface } from 'types/validataionTypes';
 
 export const makeAnOrderSchema = (args: ValidationSchemaArgsInterface) => {
   return Yup.object({

@@ -1,26 +1,34 @@
-import Button from 'components/button/Button';
-import FixedButtons from 'components/button/FixedButtons';
-import UserMainFields from 'components/FormTemplates/UserMainFields';
-import Inner from 'components/Inner';
-import { ROUTE_CMS, SORT_DESC } from 'config/common';
-import { COL_ROLES, COL_USERS } from 'db/collectionNames';
-import { UpdateUserInputInterface } from 'db/dao/user/updateUser';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, RoleInterface, UserInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
-import { useUpdateUserMutation } from 'hooks/mutations/useUserMutations';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useValidationSchema from 'hooks/useValidationSchema';
-import CmsUserLayout from 'layout/cms/CmsUserLayout';
-import { getFieldStringLocale } from 'lib/i18n';
-import { getFullName } from 'lib/nameUtils';
-import { phoneToRaw } from 'lib/phoneUtils';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import { updateUserSchema } from 'validation/userSchema';
+import FixedButtons from '../../../../../components/button/FixedButtons';
+import WpButton from '../../../../../components/button/WpButton';
+import UserMainFields from '../../../../../components/FormTemplates/UserMainFields';
+import Inner from '../../../../../components/Inner';
+import { ROUTE_CMS, SORT_DESC } from '../../../../../config/common';
+import { COL_ROLES, COL_USERS } from '../../../../../db/collectionNames';
+import { UpdateUserInputInterface } from '../../../../../db/dao/user/updateUser';
+import { getDatabase } from '../../../../../db/mongodb';
+import {
+  AppContentWrapperBreadCrumbs,
+  RoleInterface,
+  UserInterface,
+} from '../../../../../db/uiInterfaces';
+import { useUpdateUserMutation } from '../../../../../hooks/mutations/useUserMutations';
+import useMutationCallbacks from '../../../../../hooks/useMutationCallbacks';
+import useValidationSchema from '../../../../../hooks/useValidationSchema';
+import CmsUserLayout from '../../../../../layout/cms/CmsUserLayout';
+import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
+import { getFieldStringLocale } from '../../../../../lib/i18n';
+import { getFullName } from '../../../../../lib/nameUtils';
+import { phoneToRaw } from '../../../../../lib/phoneUtils';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../../../lib/ssrUtils';
+import { updateUserSchema } from '../../../../../validation/userSchema';
 
 interface UserDetailsConsumerInterface {
   user: UserInterface;
@@ -78,9 +86,9 @@ const UserDetailsConsumer: React.FC<UserDetailsConsumerInterface> = ({ user, rol
                 <UserMainFields roles={roles} />
 
                 <FixedButtons>
-                  <Button size={'small'} testId={'submit-user'} type={'submit'}>
+                  <WpButton size={'small'} testId={'submit-user'} type={'submit'}>
                     Сохранить
-                  </Button>
+                  </WpButton>
                 </FixedButtons>
               </Form>
             );

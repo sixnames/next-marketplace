@@ -1,40 +1,48 @@
-import Button from 'components/button/Button';
-import FixedButtons from 'components/button/FixedButtons';
-import ContentItemControls from 'components/button/ContentItemControls';
-import Inner from 'components/Inner';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import { MoveOptionModalInterface } from 'components/Modal/MoveOptionModal';
-import { OptionInGroupModalInterface } from 'components/Modal/OptionInGroupModal';
-import RequestError from 'components/RequestError';
-import Title from 'components/Title';
-import WpImage from 'components/WpImage';
-import { DEFAULT_LOCALE, ROUTE_CMS, SORT_ASC } from 'config/common';
-import { getConstantTranslation } from 'config/constantTranslations';
-import { CONFIRM_MODAL, MOVE_OPTION_MODAL, OPTION_IN_GROUP_MODAL } from 'config/modalVariants';
-import { COL_ICONS, COL_OPTIONS, COL_OPTIONS_GROUPS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
+import { ObjectId } from 'mongodb';
+import Head from 'next/head';
+import * as React from 'react';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import ContentItemControls from '../../../../../components/button/ContentItemControls';
+import FixedButtons from '../../../../../components/button/FixedButtons';
+import WpButton from '../../../../../components/button/WpButton';
+import Inner from '../../../../../components/Inner';
+import { ConfirmModalInterface } from '../../../../../components/Modal/ConfirmModal';
+import { MoveOptionModalInterface } from '../../../../../components/Modal/MoveOptionModal';
+import { OptionInGroupModalInterface } from '../../../../../components/Modal/OptionInGroupModal';
+import RequestError from '../../../../../components/RequestError';
+import WpImage from '../../../../../components/WpImage';
+import WpTitle from '../../../../../components/WpTitle';
+import { DEFAULT_LOCALE, ROUTE_CMS, SORT_ASC } from '../../../../../config/common';
+import { getConstantTranslation } from '../../../../../config/constantTranslations';
+import {
+  CONFIRM_MODAL,
+  MOVE_OPTION_MODAL,
+  OPTION_IN_GROUP_MODAL,
+} from '../../../../../config/modalVariants';
+import { COL_ICONS, COL_OPTIONS, COL_OPTIONS_GROUPS } from '../../../../../db/collectionNames';
+import { getDatabase } from '../../../../../db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   OptionInterface,
   OptionsGroupInterface,
-} from 'db/uiInterfaces';
+} from '../../../../../db/uiInterfaces';
 import {
   Gender,
   OptionsGroupVariant,
   useAddOptionToGroupMutation,
   useDeleteOptionFromGroupMutation,
-} from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import AppSubNav from 'layout/AppSubNav';
-import { getFieldStringLocale } from 'lib/i18n';
-import { getTreeFromList } from 'lib/treeUtils';
-import { ObjectId } from 'mongodb';
-import Head from 'next/head';
-import * as React from 'react';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+} from '../../../../../generated/apolloComponents';
+import useMutationCallbacks from '../../../../../hooks/useMutationCallbacks';
+import AppContentWrapper from '../../../../../layout/AppContentWrapper';
+import AppSubNav from '../../../../../layout/AppSubNav';
+import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
+import { getFieldStringLocale } from '../../../../../lib/i18n';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../../../lib/ssrUtils';
+import { getTreeFromList } from '../../../../../lib/treeUtils';
 
 interface OptionsGroupOptionsConsumerInterface {
   optionsGroup: OptionsGroupInterface;
@@ -208,7 +216,7 @@ const OptionsGroupOptionsConsumer: React.FC<OptionsGroupOptionsConsumerInterface
         <title>{optionsGroup.name}</title>
       </Head>
       <Inner lowBottom>
-        <Title>{optionsGroup.name}</Title>
+        <WpTitle>{optionsGroup.name}</WpTitle>
       </Inner>
       <AppSubNav navConfig={navConfig} />
       <Inner testId={'options-group-options'}>
@@ -229,7 +237,7 @@ const OptionsGroupOptionsConsumer: React.FC<OptionsGroupOptionsConsumerInterface
           )}
 
           <FixedButtons>
-            <Button
+            <WpButton
               testId={'create-top-level-option'}
               size={'small'}
               onClick={() => {
@@ -254,7 +262,7 @@ const OptionsGroupOptionsConsumer: React.FC<OptionsGroupOptionsConsumerInterface
               }}
             >
               Добавить родительскую опцию
-            </Button>
+            </WpButton>
           </FixedButtons>
         </div>
       </Inner>

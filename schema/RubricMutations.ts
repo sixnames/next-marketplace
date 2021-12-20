@@ -1,6 +1,15 @@
-import { updateAlgoliaProducts } from 'lib/algolia/productAlgoliaUtils';
-import { updateCitiesSeoContent } from 'lib/seoContentUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
+import { DEFAULT_COUNTERS_OBJECT } from '../config/common';
+import {
+  COL_ATTRIBUTES,
+  COL_ATTRIBUTES_GROUPS,
+  COL_CATEGORIES,
+  COL_PRODUCT_ATTRIBUTES,
+  COL_PRODUCTS,
+  COL_RUBRICS,
+  COL_SHOP_PRODUCTS,
+} from '../db/collectionNames';
+import { findDocumentByI18nField } from '../db/dao/findDocumentByI18nField';
 import {
   AttributeModel,
   AttributesGroupModel,
@@ -10,32 +19,23 @@ import {
   RubricModel,
   RubricPayloadModel,
   ShopProductModel,
-} from 'db/dbModels';
+} from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import { updateAlgoliaProducts } from '../lib/algolia/productAlgoliaUtils';
+import getResolverErrorMessage from '../lib/getResolverErrorMessage';
+import { updateCitiesSeoContent } from '../lib/seoContentUtils';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from 'lib/sessionHelpers';
-import { getDatabase } from 'db/mongodb';
-import {
-  COL_ATTRIBUTES,
-  COL_ATTRIBUTES_GROUPS,
-  COL_CATEGORIES,
-  COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCTS,
-  COL_RUBRICS,
-  COL_SHOP_PRODUCTS,
-} from 'db/collectionNames';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
-import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
-import { generateDefaultLangSlug } from 'lib/slugUtils';
+} from '../lib/sessionHelpers';
+import { generateDefaultLangSlug } from '../lib/slugUtils';
 import {
   addAttributesGroupToRubricSchema,
   createRubricSchema,
   deleteAttributesGroupFromRubricSchema,
   updateRubricSchema,
-} from 'validation/rubricSchema';
+} from '../validation/rubricSchema';
 
 export const RubricPayload = objectType({
   name: 'RubricPayload',

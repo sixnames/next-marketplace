@@ -1,17 +1,17 @@
-import Button from 'components/button/Button';
-import ContentItemControls from 'components/button/ContentItemControls';
-import FixedButtons from 'components/button/FixedButtons';
-import FormattedDateTime from 'components/FormattedDateTime';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import { CreatePromoModalInterface } from 'components/Modal/CreatePromoModal';
-import Percent from 'components/Percent';
-import Table, { TableColumn } from 'components/Table';
-import { CONFIRM_MODAL, CREATE_PROMO_MODAL } from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
-import { CompanyInterface, PromoInterface } from 'db/uiInterfaces';
-import { useDeletePromo } from 'hooks/mutations/usePromoMutations';
 import { useRouter } from 'next/router';
 import * as React from 'react';
+import { CONFIRM_MODAL, CREATE_PROMO_MODAL } from '../../config/modalVariants';
+import { useAppContext } from '../../context/appContext';
+import { CompanyInterface, PromoInterface } from '../../db/uiInterfaces';
+import { useDeletePromo } from '../../hooks/mutations/usePromoMutations';
+import ContentItemControls from '../button/ContentItemControls';
+import FixedButtons from '../button/FixedButtons';
+import WpButton from '../button/WpButton';
+import FormattedDateTime from '../FormattedDateTime';
+import { ConfirmModalInterface } from '../Modal/ConfirmModal';
+import { CreatePromoModalInterface } from '../Modal/CreatePromoModal';
+import Percent from '../Percent';
+import WpTable, { WpTableColumn } from '../WpTable';
 
 export interface PromoListInterface {
   promoList: PromoInterface[];
@@ -24,7 +24,7 @@ const PromoList: React.FC<PromoListInterface> = ({ promoList, basePath, pageComp
   const { showModal } = useAppContext();
   const [deletePromo] = useDeletePromo();
 
-  const columns: TableColumn<PromoInterface>[] = [
+  const columns: WpTableColumn<PromoInterface>[] = [
     {
       accessor: 'name',
       headTitle: 'Название',
@@ -85,7 +85,7 @@ const PromoList: React.FC<PromoListInterface> = ({ promoList, basePath, pageComp
   return (
     <div className='relative' data-cy={'promo-list'}>
       <div className='overflow-y-hidden overflow-x-auto'>
-        <Table<PromoInterface>
+        <WpTable<PromoInterface>
           testIdKey={'name'}
           columns={columns}
           data={promoList}
@@ -95,7 +95,7 @@ const PromoList: React.FC<PromoListInterface> = ({ promoList, basePath, pageComp
         />
       </div>
       <FixedButtons>
-        <Button
+        <WpButton
           testId={'create-promo'}
           onClick={() => {
             showModal<CreatePromoModalInterface>({
@@ -107,7 +107,7 @@ const PromoList: React.FC<PromoListInterface> = ({ promoList, basePath, pageComp
           }}
         >
           Создать акцию
-        </Button>
+        </WpButton>
       </FixedButtons>
     </div>
   );

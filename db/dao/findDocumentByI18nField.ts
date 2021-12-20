@@ -1,5 +1,5 @@
-import { getDatabase } from 'db/mongodb';
-import { LOCALES } from 'config/common';
+import { LOCALES } from '../../config/common';
+import { getDatabase } from '../mongodb';
 
 export interface FindDocumentByI18nFieldInterface {
   fieldName: string;

@@ -1,6 +1,6 @@
-import InputLine, { InputLinePropsInterface } from 'components/FormElements/Input/InputLine';
 import * as React from 'react';
 import { useDropzone } from 'react-dropzone';
+import InputLine, { InputLinePropsInterface } from '../Input/InputLine';
 
 export interface WpDropZoneInterface extends InputLinePropsInterface {
   onDropHandler: (acceptedFiles: any) => void;

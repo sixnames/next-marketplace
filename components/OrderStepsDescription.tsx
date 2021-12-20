@@ -1,6 +1,6 @@
-import Icon from 'components/Icon';
 import * as React from 'react';
-import { IconType } from 'types/iconTypes';
+import { IconType } from '../types/iconTypes';
+import WpIcon from './WpIcon';
 
 interface OrderStepsDescriptionItemInterface {
   icon: IconType;
@@ -13,7 +13,7 @@ const OrderStepsDescriptionItem: React.FC<OrderStepsDescriptionItemInterface> = 
   return (
     <div className='flex gap-6'>
       <div className='flex flex-shrink-0 justify-center items-center w-20 h-20 border-[3px] border-secondary rounded-full text-theme'>
-        <Icon name={icon} className='w-[60%] h-[60%]' />
+        <WpIcon name={icon} className='w-[60%] h-[60%]' />
       </div>
       <div className='flex-grow'>
         <div className='prose max-w-[15rem]'>{children}</div>

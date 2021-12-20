@@ -1,11 +1,11 @@
-import LinkPhone from 'components/Link/LinkPhone';
-import WpImage from 'components/WpImage';
-import WpMap from 'components/WpMap';
-import { useThemeContext } from 'context/themeContext';
-import { ShopInterface } from 'db/uiInterfaces';
-import LayoutCard from 'layout/LayoutCard';
 import * as React from 'react';
-import { Coordinates } from 'generated/apolloComponents';
+import { useThemeContext } from '../context/themeContext';
+import { ShopInterface } from '../db/uiInterfaces';
+import { Coordinates } from '../generated/apolloComponents';
+import LayoutCard from '../layout/LayoutCard';
+import LinkPhone from './Link/LinkPhone';
+import WpImage from './WpImage';
+import WpMap from './WpMap';
 
 interface ShopsMapInterface {
   shops: ShopInterface[];

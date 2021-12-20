@@ -1,13 +1,3 @@
-import { ROUTE_CONSOLE } from 'config/common';
-import { getAddShopProductSsrData } from 'db/dao/product/getAddShopProductSsrData';
-import { AppContentWrapperBreadCrumbs, ProductInterface } from 'db/uiInterfaces';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { alwaysArray, alwaysString } from 'lib/arrayUtils';
-import {
-  castDbData,
-  getConsoleInitialData,
-  GetConsoleInitialDataPropsInterface,
-} from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 import {
@@ -18,7 +8,20 @@ import {
   ShopAddProductsListInterface,
   ShopAddProductsSetStepHandler,
   ShopAddProductsStepType,
-} from 'components/shops/ShopAddProducts';
+} from '../../../../../../../../components/shops/ShopAddProducts';
+import { ROUTE_CONSOLE } from '../../../../../../../../config/common';
+import { getAddShopProductSsrData } from '../../../../../../../../db/dao/product/getAddShopProductSsrData';
+import {
+  AppContentWrapperBreadCrumbs,
+  ProductInterface,
+} from '../../../../../../../../db/uiInterfaces';
+import ConsoleLayout from '../../../../../../../../layout/cms/ConsoleLayout';
+import { alwaysArray, alwaysString } from '../../../../../../../../lib/arrayUtils';
+import {
+  castDbData,
+  getConsoleInitialData,
+  GetConsoleInitialDataPropsInterface,
+} from '../../../../../../../../lib/ssrUtils';
 
 type ShopAddProductsListRouteReduced = Omit<
   ShopAddProductsListInterface,

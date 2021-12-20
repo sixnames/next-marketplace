@@ -1,31 +1,31 @@
-import { DEFAULT_COMPANY_SLUG, SORT_ASC } from 'config/common';
-import { generateDefaultLangSlug } from 'lib/slugUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
+import { DEFAULT_COMPANY_SLUG, SORT_ASC } from '../config/common';
 import {
-  getOperationPermission,
-  getRequestParams,
-  getResolverValidationSchema,
-} from 'lib/sessionHelpers';
+  COL_PRODUCTS,
+  COL_RUBRIC_VARIANTS,
+  COL_RUBRICS,
+  COL_SHOP_PRODUCTS,
+} from '../db/collectionNames';
+import { findDocumentByI18nField } from '../db/dao/findDocumentByI18nField';
 import {
   ProductModel,
   RubricModel,
   RubricVariantModel,
   RubricVariantPayloadModel,
   ShopProductModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+} from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 import {
-  COL_PRODUCTS,
-  COL_RUBRIC_VARIANTS,
-  COL_RUBRICS,
-  COL_SHOP_PRODUCTS,
-} from 'db/collectionNames';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+} from '../lib/sessionHelpers';
+import { generateDefaultLangSlug } from '../lib/slugUtils';
 import {
   createRubricVariantSchema,
   updateRubricVariantSchema,
-} from 'validation/rubricVariantSchema';
+} from '../validation/rubricVariantSchema';
 
 export const RubricVariant = objectType({
   name: 'RubricVariant',

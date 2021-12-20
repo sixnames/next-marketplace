@@ -1,9 +1,9 @@
 import * as React from 'react';
-import Icon from 'components/Icon';
-import WpTooltip from 'components/WpTooltip';
-import { noNaN } from 'lib/numbers';
-import { ButtonType } from 'types/clientTypes';
-import { IconType } from 'types/iconTypes';
+import { noNaN } from '../../lib/numbers';
+import { ButtonType } from '../../types/clientTypes';
+import { IconType } from '../../types/iconTypes';
+import WpIcon from '../WpIcon';
+import WpTooltip from '../WpTooltip';
 
 export interface ControlButtonInterface {
   className?: string;
@@ -87,7 +87,7 @@ const ControlButton: React.FC<ControlButtonInterface> = ({
           type={type}
           className={buttonClass}
         >
-          <Icon
+          <WpIcon
             style={{
               top: noNaN(iconPositionTop),
               left: noNaN(iconPositionLeft),

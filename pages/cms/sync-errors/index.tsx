@@ -1,6 +1,6 @@
-import { DEFAULT_PAGE_FILTER, ROUTE_CMS } from 'config/common';
 import * as React from 'react';
 import { NextPage } from 'next';
+import { DEFAULT_PAGE_FILTER, ROUTE_CMS } from '../../../config/common';
 
 const SyncIndexErrors: NextPage = () => {
   return <div />;

@@ -1,8 +1,8 @@
-import { NOTIFICATION_TIMEOUT } from 'config/common';
-import { getConstantTranslation } from 'config/constantTranslations';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import Notification, { NotificationInterface } from 'components/Notification';
+import WpNotification, { NotificationInterface } from '../components/WpNotification';
+import { NOTIFICATION_TIMEOUT } from '../config/common';
+import { getConstantTranslation } from '../config/constantTranslations';
 
 interface StateNotificationInterface extends Omit<NotificationInterface, 'closeHandler'> {
   createdAt: number;
@@ -59,7 +59,7 @@ const NotificationsProvider: React.FC = ({ children }) => {
       <div style={notificationStyles}>
         {notifications.map((notification, index) => {
           return (
-            <Notification
+            <WpNotification
               {...notification}
               className='mb-4'
               key={`${notification.title}-${notification.message}-${index}`}

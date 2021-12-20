@@ -1,3 +1,8 @@
+import { ObjectId } from 'mongodb';
+import { deleteAlgoliaObjects } from '../../../lib/algolia/algoliaUtils';
+import { deleteUpload } from '../../../lib/assetUtils/assetUtils';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
 import {
   COL_PRODUCT_ASSETS,
   COL_PRODUCT_ATTRIBUTES,
@@ -5,7 +10,7 @@ import {
   COL_PRODUCTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
-} from 'db/collectionNames';
+} from '../../collectionNames';
 import {
   ProductAssetsModel,
   ProductAttributeModel,
@@ -14,14 +19,9 @@ import {
   ProductPayloadModel,
   RubricModel,
   ShopProductModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
-import { deleteAlgoliaObjects } from 'lib/algolia/algoliaUtils';
-import { deleteUpload } from 'lib/assetUtils/assetUtils';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { ObjectId } from 'mongodb';
+} from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface DeleteProductInputInterface {
   productId: string;

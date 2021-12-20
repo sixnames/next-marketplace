@@ -1,24 +1,24 @@
-import { IMAGE_FALLBACK } from 'config/common';
-import { COL_PRODUCT_ASSETS, COL_PRODUCT_ATTRIBUTES, COL_PRODUCTS } from 'db/collectionNames';
-import { CreateProductInputInterface } from 'db/dao/product/createProduct';
+import { ObjectId } from 'mongodb';
+import { IMAGE_FALLBACK } from '../../../config/common';
+import { updateAlgoliaProducts } from '../../../lib/algolia/productAlgoliaUtils';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import { getNextItemId } from '../../../lib/itemIdUtils';
+import {
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+} from '../../../lib/sessionHelpers';
+import { updateProductSchema } from '../../../validation/productSchema';
+import { COL_PRODUCT_ASSETS, COL_PRODUCT_ATTRIBUTES, COL_PRODUCTS } from '../../collectionNames';
 import {
   ProductAssetsModel,
   ProductAttributeModel,
   ProductModel,
   ProductPayloadModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
-import { updateAlgoliaProducts } from 'lib/algolia/productAlgoliaUtils';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getNextItemId } from 'lib/itemIdUtils';
-import {
-  getOperationPermission,
-  getRequestParams,
-  getResolverValidationSchema,
-} from 'lib/sessionHelpers';
-import { ObjectId } from 'mongodb';
-import { updateProductSchema } from 'validation/productSchema';
+} from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { DaoPropsInterface } from '../../uiInterfaces';
+import { CreateProductInputInterface } from './createProduct';
 
 export interface CopyProductInputInterface extends CreateProductInputInterface {
   productId: string;

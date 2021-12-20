@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { noNaN } from 'lib/numbers';
+import { noNaN } from '../lib/numbers';
 
 interface PercentInterface {
   value?: string | number | null;

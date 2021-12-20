@@ -1,4 +1,4 @@
-import { FILTER_SEPARATOR } from 'config/common';
+import { FILTER_SEPARATOR } from '../config/common';
 
 interface GetCatalogueFilterNextPathInterface {
   filters: string[];

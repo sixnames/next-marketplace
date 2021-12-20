@@ -1,3 +1,6 @@
+import { GetServerSidePropsContext } from 'next';
+import * as React from 'react';
+import { getDomain } from 'tldts';
 import {
   DEFAULT_COMPANY_SLUG,
   DEFAULT_LOCALE,
@@ -5,7 +8,7 @@ import {
   ROUTE_BLOG_POST,
   ROUTE_BLOG_WITH_PAGE,
   ROUTE_CATALOGUE,
-} from 'config/common';
+} from '../config/common';
 import {
   COL_BLOG_POSTS,
   COL_CITIES,
@@ -13,14 +16,17 @@ import {
   COL_CONFIGS,
   COL_PRODUCTS,
   COL_SHOP_PRODUCTS,
-} from 'db/collectionNames';
-import { ignoreNoImageStage } from 'db/dao/constantPipelines';
-import { BlogPostModel, CityModel, CompanyModel, ConfigModel, ShopProductModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { castConfigs, getConfigBooleanValue } from 'lib/configsUtils';
-import { GetServerSidePropsContext } from 'next';
-import * as React from 'react';
-import { getDomain } from 'tldts';
+} from '../db/collectionNames';
+import { ignoreNoImageStage } from '../db/dao/constantPipelines';
+import {
+  BlogPostModel,
+  CityModel,
+  CompanyModel,
+  ConfigModel,
+  ShopProductModel,
+} from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import { castConfigs, getConfigBooleanValue } from '../lib/configsUtils';
 
 const SitemapXml: React.FC = () => {
   return <div />;

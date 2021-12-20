@@ -1,14 +1,4 @@
-import { updateAlgoliaProducts } from 'lib/algolia/productAlgoliaUtils';
-import { getFieldStringLocale } from 'lib/i18n';
-import { getNextNumberItemId } from 'lib/itemIdUtils';
-import { trimOptionNames } from 'lib/optionUtils';
-import { deleteDocumentsTree } from 'lib/treeUtils';
 import { arg, enumType, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
-import {
-  getOperationPermission,
-  getRequestParams,
-  getResolverValidationSchema,
-} from 'lib/sessionHelpers';
 import {
   DEFAULT_COUNTERS_OBJECT,
   DEFAULT_LOCALE,
@@ -16,7 +6,20 @@ import {
   OPTIONS_GROUP_VARIANT_COLOR,
   OPTIONS_GROUP_VARIANT_ENUMS,
   SORT_ASC,
-} from 'config/common';
+} from '../config/common';
+import {
+  COL_ATTRIBUTES,
+  COL_CATEGORIES,
+  COL_OPTIONS,
+  COL_OPTIONS_GROUPS,
+  COL_PRODUCT_ATTRIBUTES,
+  COL_PRODUCT_CONNECTION_ITEMS,
+  COL_PRODUCT_CONNECTIONS,
+  COL_PRODUCTS,
+  COL_RUBRICS,
+  COL_SHOP_PRODUCTS,
+} from '../db/collectionNames';
+import { findDocumentByI18nField } from '../db/dao/findDocumentByI18nField';
 import {
   AttributeModel,
   CategoryModel,
@@ -30,29 +33,26 @@ import {
   ProductModel,
   RubricModel,
   ShopProductModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+} from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import { updateAlgoliaProducts } from '../lib/algolia/productAlgoliaUtils';
+import getResolverErrorMessage from '../lib/getResolverErrorMessage';
+import { getFieldStringLocale } from '../lib/i18n';
+import { getNextNumberItemId } from '../lib/itemIdUtils';
+import { trimOptionNames } from '../lib/optionUtils';
 import {
-  COL_ATTRIBUTES,
-  COL_CATEGORIES,
-  COL_OPTIONS,
-  COL_OPTIONS_GROUPS,
-  COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCT_CONNECTION_ITEMS,
-  COL_PRODUCT_CONNECTIONS,
-  COL_PRODUCTS,
-  COL_RUBRICS,
-  COL_SHOP_PRODUCTS,
-} from 'db/collectionNames';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+} from '../lib/sessionHelpers';
+import { deleteDocumentsTree } from '../lib/treeUtils';
 import {
   addOptionToGroupSchema,
   createOptionsGroupSchema,
   deleteOptionFromGroupSchema,
   updateOptionInGroupSchema,
   updateOptionsGroupSchema,
-} from 'validation/optionsGroupSchema';
+} from '../validation/optionsGroupSchema';
 
 export const OptionsGroupVariant = enumType({
   name: 'OptionsGroupVariant',

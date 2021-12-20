@@ -1,14 +1,14 @@
-import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
-import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
-import InputLine from 'components/FormElements/Input/InputLine';
-import FormikSelect from 'components/FormElements/Select/FormikSelect';
-import RequestError from 'components/RequestError';
-import Spinner from 'components/Spinner';
-import { getConstantTranslation } from 'config/constantTranslations';
-import { useLocaleContext } from 'context/localeContext';
 import { useFormikContext } from 'formik';
-import { CreateCategoryInput, useGetGenderOptionsQuery } from 'generated/apolloComponents';
 import * as React from 'react';
+import { getConstantTranslation } from '../../config/constantTranslations';
+import { useLocaleContext } from '../../context/localeContext';
+import { CreateCategoryInput, useGetGenderOptionsQuery } from '../../generated/apolloComponents';
+import FormikCheckboxLine from '../FormElements/Checkbox/FormikCheckboxLine';
+import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
+import InputLine from '../FormElements/Input/InputLine';
+import FormikSelect from '../FormElements/Select/FormikSelect';
+import RequestError from '../RequestError';
+import Spinner from '../Spinner';
 
 const CategoryMainFields: React.FC = () => {
   const { locale } = useLocaleContext();

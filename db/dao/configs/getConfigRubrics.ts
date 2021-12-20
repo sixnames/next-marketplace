@@ -1,9 +1,9 @@
-import { SORT_DESC } from 'config/common';
-import { COL_CATEGORIES, COL_RUBRICS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { RubricInterface } from 'db/uiInterfaces';
-import { getFieldStringLocale } from 'lib/i18n';
-import { getTreeFromList } from 'lib/treeUtils';
+import { SORT_DESC } from '../../../config/common';
+import { getFieldStringLocale } from '../../../lib/i18n';
+import { getTreeFromList } from '../../../lib/treeUtils';
+import { COL_CATEGORIES, COL_RUBRICS } from '../../collectionNames';
+import { getDatabase } from '../../mongodb';
+import { RubricInterface } from '../../uiInterfaces';
 
 export async function getConfigRubrics(locale: string) {
   const { db } = await getDatabase();

@@ -1,14 +1,14 @@
-import Link from 'components/Link/Link';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
-import Table, { TableColumn } from 'components/Table';
-import TableRowImage from 'components/TableRowImage';
-import Title from 'components/Title';
-import { ROUTE_CMS } from 'config/common';
-import { BarcodeDoublesInterface, ProductInterface } from 'db/uiInterfaces';
-import { alwaysArray } from 'lib/arrayUtils';
-import { getNumWord } from 'lib/i18n';
 import * as React from 'react';
+import { ROUTE_CMS } from '../../config/common';
+import { BarcodeDoublesInterface, ProductInterface } from '../../db/uiInterfaces';
+import { alwaysArray } from '../../lib/arrayUtils';
+import { getNumWord } from '../../lib/i18n';
+import WpLink from '../Link/WpLink';
+import TableRowImage from '../TableRowImage';
+import WpTable, { WpTableColumn } from '../WpTable';
+import WpTitle from '../WpTitle';
+import ModalFrame from './ModalFrame';
+import ModalTitle from './ModalTitle';
 
 interface BarcodeIntersectsModalConsumerInterface {
   barcodeDouble: BarcodeDoublesInterface;
@@ -19,18 +19,18 @@ const BarcodeIntersectsModalConsumer: React.FC<BarcodeIntersectsModalConsumerInt
 }) => {
   const { barcode, products } = barcodeDouble;
 
-  const columns: TableColumn<ProductInterface>[] = [
+  const columns: WpTableColumn<ProductInterface>[] = [
     {
       headTitle: 'Арт',
       render: ({ dataItem, rowIndex }) => {
         return (
-          <Link
+          <WpLink
             testId={`product-link-${rowIndex}`}
             href={`${ROUTE_CMS}/rubrics/${dataItem.rubricId}/products/product/${dataItem._id}`}
             target={'_blank'}
           >
             {dataItem.itemId}
-          </Link>
+          </WpLink>
         );
       },
     },
@@ -89,14 +89,14 @@ const BarcodeIntersectsModalConsumer: React.FC<BarcodeIntersectsModalConsumerInt
 
   return (
     <div className='mb-16'>
-      <Title size={'small'} tag={'div'}>
+      <WpTitle size={'small'} tag={'div'}>
         {barcode}
-      </Title>
+      </WpTitle>
 
       <div className={`text-xl font-medium mb-2`}>{catalogueCounterString}</div>
 
       <div className={`overflow-x-auto overflow-y-hidden`}>
-        <Table<ProductInterface>
+        <WpTable<ProductInterface>
           onRowDoubleClick={(dataItem) => {
             window.open(
               `${ROUTE_CMS}/rubrics/${dataItem.rubricId}/products/product/${dataItem._id}`,

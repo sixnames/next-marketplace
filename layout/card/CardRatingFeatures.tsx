@@ -1,6 +1,6 @@
-import TagLink from 'components/Link/TagLink';
-import { ProductAttributeInterface } from 'db/uiInterfaces';
 import * as React from 'react';
+import TagLink from '../../components/Link/TagLink';
+import { ProductAttributeInterface } from '../../db/uiInterfaces';
 
 interface CardRatingFeaturesInterface {
   ratingFeatures: ProductAttributeInterface[];

@@ -1,10 +1,10 @@
-import { FILTER_PAGE_KEY, FILTER_SEPARATOR, VIEWS_COUNTER_STEP } from 'config/common';
-import { COL_BLOG_ATTRIBUTES, COL_OPTIONS } from 'db/collectionNames';
-import { BlogAttributeModel, BlogAttributePayloadModel, OptionModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getRequestParams, getSessionRole } from 'lib/sessionHelpers';
+import { FILTER_PAGE_KEY, FILTER_SEPARATOR, VIEWS_COUNTER_STEP } from '../../../config/common';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import { getRequestParams, getSessionRole } from '../../../lib/sessionHelpers';
+import { COL_BLOG_ATTRIBUTES, COL_OPTIONS } from '../../collectionNames';
+import { BlogAttributeModel, BlogAttributePayloadModel, OptionModel } from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface UpdateBlogAttributeCountersInputInterface {
   filters: string[];

@@ -1,15 +1,15 @@
-import { COL_ROLE_RULES } from 'db/collectionNames';
-import { RoleRuleModel, RoleRulePayloadModel } from 'db/dbModels';
-import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
-import { getDatabase } from 'db/mongodb';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
+import { COL_ROLE_RULES } from '../db/collectionNames';
+import { findDocumentByI18nField } from '../db/dao/findDocumentByI18nField';
+import { RoleRuleModel, RoleRulePayloadModel } from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from 'lib/sessionHelpers';
-import { updateRoleRuleSchema } from 'validation/roleSchema';
+} from '../lib/sessionHelpers';
+import { updateRoleRuleSchema } from '../validation/roleSchema';
 
 export const RoleRule = objectType({
   name: 'RoleRule',

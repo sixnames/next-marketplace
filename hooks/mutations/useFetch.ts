@@ -1,8 +1,8 @@
-import { useAppContext } from 'context/appContext';
-import { useNotificationsContext } from 'context/notificationsContext';
-import { PayloadModel } from 'db/dbModels';
 import { useRouter } from 'next/router';
 import * as React from 'react';
+import { useAppContext } from '../../context/appContext';
+import { useNotificationsContext } from '../../context/notificationsContext';
+import { PayloadModel } from '../../db/dbModels';
 
 export interface UseFetchInterface<T> {
   input: RequestInfo;

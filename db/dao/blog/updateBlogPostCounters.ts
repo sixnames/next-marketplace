@@ -1,11 +1,11 @@
-import { VIEWS_COUNTER_STEP } from 'config/common';
-import { COL_BLOG_POSTS } from 'db/collectionNames';
-import { BlogPostPayloadModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { BlogPostInterface, DaoPropsInterface } from 'db/uiInterfaces';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getRequestParams, getSessionRole } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
+import { VIEWS_COUNTER_STEP } from '../../../config/common';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import { getRequestParams, getSessionRole } from '../../../lib/sessionHelpers';
+import { COL_BLOG_POSTS } from '../../collectionNames';
+import { BlogPostPayloadModel } from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { BlogPostInterface, DaoPropsInterface } from '../../uiInterfaces';
 
 export interface UpdateBlogPostCountersInputInterface {
   blogPostId: string;

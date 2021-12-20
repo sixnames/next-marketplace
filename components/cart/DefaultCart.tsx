@@ -1,38 +1,41 @@
-import Button from 'components/button/Button';
-import { CartProduct, CartShoplessProduct } from 'components/cart/CartProduct';
-import CartAside, { UseCartAsideDiscountsValuesInterface } from 'components/CartAside';
-import FormikInput from 'components/FormElements/Input/FormikInput';
-import InputLine from 'components/FormElements/Input/InputLine';
-import FormikSelect from 'components/FormElements/Select/FormikSelect';
-import FormikTextarea from 'components/FormElements/Textarea/FormikTextarea';
-import { MapModalInterface } from 'components/Modal/MapModal';
-import { OrderDeliveryAddressModalInterface } from 'components/Modal/OrderDeliveryAddressModal';
-import Notification from 'components/Notification';
-import OrderDeliveryInfo from 'components/order/OrderDeliveryInfo';
+import { Form, Formik, useFormikContext } from 'formik';
+import * as React from 'react';
+import { get } from 'lodash';
 import {
   DEFAULT_COMPANY_SLUG,
   ORDER_DELIVERY_VARIANT_COURIER,
   ORDER_PAYMENT_VARIANT_RECEIPT,
-} from 'config/common';
-import { DELIVERY_VARIANT_OPTIONS, PAYMENT_VARIANT_OPTIONS } from 'config/constantSelects';
-import { MAP_MODAL, ORDER_DELIVERY_ADDRESS_MODAL } from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
-import { useConfigContext } from 'context/configContext';
-import { useSiteContext } from 'context/siteContext';
-import { useSiteUserContext } from 'context/siteUserContext';
-import { MakeAnOrderShopConfigInterface } from 'db/dao/orders/makeAnOrder';
-import { OrderDeliveryInfoModel } from 'db/dbModels';
-import { CartInterface, CartProductInterface, ShopInterface } from 'db/uiInterfaces';
-import { Form, Formik, useFormikContext } from 'formik';
-import { useShopMarker } from 'hooks/useShopMarker';
-import useValidationSchema from 'hooks/useValidationSchema';
-import LayoutCard from 'layout/LayoutCard';
-import { noNaN } from 'lib/numbers';
-import { phoneToRaw } from 'lib/phoneUtils';
-import { CartTabIndexType, MakeOrderFormInterface } from 'pages/[companySlug]/[citySlug]/cart';
-import * as React from 'react';
-import { get } from 'lodash';
-import { makeAnOrderSchema } from 'validation/orderSchema';
+} from '../../config/common';
+import { DELIVERY_VARIANT_OPTIONS, PAYMENT_VARIANT_OPTIONS } from '../../config/constantSelects';
+import { MAP_MODAL, ORDER_DELIVERY_ADDRESS_MODAL } from '../../config/modalVariants';
+import { useAppContext } from '../../context/appContext';
+import { useConfigContext } from '../../context/configContext';
+import { useSiteContext } from '../../context/siteContext';
+import { useSiteUserContext } from '../../context/siteUserContext';
+import { MakeAnOrderShopConfigInterface } from '../../db/dao/orders/makeAnOrder';
+import { OrderDeliveryInfoModel } from '../../db/dbModels';
+import { CartInterface, CartProductInterface, ShopInterface } from '../../db/uiInterfaces';
+import { useShopMarker } from '../../hooks/useShopMarker';
+import useValidationSchema from '../../hooks/useValidationSchema';
+import LayoutCard from '../../layout/LayoutCard';
+import { noNaN } from '../../lib/numbers';
+import { phoneToRaw } from '../../lib/phoneUtils';
+import {
+  CartTabIndexType,
+  MakeOrderFormInterface,
+} from '../../pages/[companySlug]/[citySlug]/cart';
+import { makeAnOrderSchema } from '../../validation/orderSchema';
+import WpButton from '../button/WpButton';
+import CartAside, { UseCartAsideDiscountsValuesInterface } from '../CartAside';
+import FormikInput from '../FormElements/Input/FormikInput';
+import InputLine from '../FormElements/Input/InputLine';
+import FormikSelect from '../FormElements/Select/FormikSelect';
+import FormikTextarea from '../FormElements/Textarea/FormikTextarea';
+import { MapModalInterface } from '../Modal/MapModal';
+import { OrderDeliveryAddressModalInterface } from '../Modal/OrderDeliveryAddressModal';
+import OrderDeliveryInfo from '../order/OrderDeliveryInfo';
+import WpNotification from '../WpNotification';
+import { CartProduct, CartShoplessProduct } from './CartProduct';
 
 interface CartDeliveryFieldsInterface {
   index: number;
@@ -73,7 +76,7 @@ export const CartDeliveryFields: React.FC<CartDeliveryFieldsInterface> = ({ inde
 
       {shopAddressError ? (
         <div className='mt-6'>
-          <Notification
+          <WpNotification
             className={inShop ? 'dark:bg-primary' : ''}
             variant={'error'}
             message={shopAddressError}
@@ -89,7 +92,7 @@ export const CartDeliveryFields: React.FC<CartDeliveryFieldsInterface> = ({ inde
             className={'mb-4'}
           />
 
-          <Button
+          <WpButton
             size={'small'}
             theme={deliveryInfo ? 'gray' : 'primary'}
             onClick={() => {
@@ -107,7 +110,7 @@ export const CartDeliveryFields: React.FC<CartDeliveryFieldsInterface> = ({ inde
             }}
           >
             {deliveryInfo ? 'Изменить адрес' : 'Указать адрес'}
-          </Button>
+          </WpButton>
         </div>
       ) : null}
     </div>
@@ -184,16 +187,18 @@ const DefaultCartShop: React.FC<DefaultCartShopUIInterface> = ({
               low
               labelTag={'div'}
               label={'Подарочный сертификат'}
-              lineContentClass='flex flex-col sm:flex-row gap-4 sm:items-end'
+              lineContentClass='flex flex-col sm:flex-row gap-4 sm:items-center'
             >
               <div className='flex-grow'>
                 <FormikInput
+                  size={'small'}
                   testId={`gift-certificate-input-${shop.slug}`}
                   name={giftCertificateFieldName}
                   low
                 />
               </div>
-              <Button
+              <WpButton
+                size={'small'}
                 frameClassName='w-auto'
                 theme={'secondary'}
                 testId={`gift-certificate-confirm-${shop.slug}`}
@@ -210,7 +215,7 @@ const DefaultCartShop: React.FC<DefaultCartShopUIInterface> = ({
                 }}
               >
                 Применить
-              </Button>
+              </WpButton>
             </InputLine>
           </div>
 
@@ -219,12 +224,13 @@ const DefaultCartShop: React.FC<DefaultCartShopUIInterface> = ({
               low
               labelTag={'div'}
               label={'Промокод'}
-              lineContentClass='flex flex-col sm:flex-row gap-4 sm:items-end'
+              lineContentClass='flex flex-col sm:flex-row gap-4 sm:items-center'
             >
               <div className='flex-grow'>
-                <FormikInput name={`shopConfigs[${index}].promoCode`} low />
+                <FormikInput size={'small'} name={`shopConfigs[${index}].promoCode`} low />
               </div>
-              <Button
+              <WpButton
+                size={'small'}
                 frameClassName='w-auto'
                 theme={'secondary'}
                 onClick={() => {
@@ -232,7 +238,7 @@ const DefaultCartShop: React.FC<DefaultCartShopUIInterface> = ({
                 }}
               >
                 Применить
-              </Button>
+              </WpButton>
             </InputLine>
           </div>
         </div>
@@ -241,7 +247,7 @@ const DefaultCartShop: React.FC<DefaultCartShopUIInterface> = ({
 
         {showPriceWarning && shop.priceWarning ? (
           <div className='mt-6'>
-            <Notification
+            <WpNotification
               className='dark:bg-primary'
               variant={'success'}
               message={shop.priceWarning}
@@ -636,7 +642,7 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
                         />
                       </div>
 
-                      <Notification
+                      <WpNotification
                         variant={'success'}
                         message={
                           'Для полученя забронированного товара необходим документ подтверждающий личность.'

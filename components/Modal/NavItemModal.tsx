@@ -1,15 +1,15 @@
-import Button from 'components/button/Button';
-import FormikIconSelect from 'components/FormElements/FormikIconSelect';
-import FormikInput from 'components/FormElements/Input/FormikInput';
-import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
-import ModalButtons from 'components/Modal/ModalButtons';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
-import { NavItemInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
-import useValidationSchema from 'hooks/useValidationSchema';
 import * as React from 'react';
-import { createNavItemSchema } from 'validation/navItemSchema';
+import { NavItemInterface } from '../../db/uiInterfaces';
+import useValidationSchema from '../../hooks/useValidationSchema';
+import { createNavItemSchema } from '../../validation/navItemSchema';
+import WpButton from '../button/WpButton';
+import FormikIconSelect from '../FormElements/FormikIconSelect';
+import FormikInput from '../FormElements/Input/FormikInput';
+import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
+import ModalButtons from './ModalButtons';
+import ModalFrame from './ModalFrame';
+import ModalTitle from './ModalTitle';
 
 export interface NavItemModalInterface<TArgs extends Record<any, any>> {
   navItem?: NavItemInterface;
@@ -76,10 +76,10 @@ const NavItemModal = <TArgs extends Record<any, any>>({
               />
 
               <ModalButtons>
-                <Button testId={'nav-item-submit'} type={'submit'}>
+                <WpButton testId={'nav-item-submit'} type={'submit'}>
                   {buttonLabel}
-                </Button>
-                <Button theme={'secondary'}>Отмена</Button>
+                </WpButton>
+                <WpButton theme={'secondary'}>Отмена</WpButton>
               </ModalButtons>
             </Form>
           );

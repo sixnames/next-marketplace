@@ -1,21 +1,21 @@
-import Link from 'components/Link/Link';
-import LinkEmail from 'components/Link/LinkEmail';
-import LinkPhone from 'components/Link/LinkPhone';
-import Pager from 'components/Pager';
-import { DEFAULT_PAGE, REQUEST_METHOD_POST, ROUTE_CMS } from 'config/common';
-import { UsersPaginationPayloadModel } from 'db/dbModels';
-import { UserInterface } from 'db/uiInterfaces';
 import * as React from 'react';
-import Spinner from 'components/Spinner';
-import RequestError from 'components/RequestError';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
-import FormikIndividualSearch from 'components/FormElements/Search/FormikIndividualSearch';
-import Table, { TableColumn } from 'components/Table';
+import { DEFAULT_PAGE, REQUEST_METHOD_POST, ROUTE_CMS } from '../../config/common';
+import { UsersPaginationPayloadModel } from '../../db/dbModels';
+import { UserInterface } from '../../db/uiInterfaces';
+import FormikIndividualSearch from '../FormElements/Search/FormikIndividualSearch';
+import LinkEmail from '../Link/LinkEmail';
+import LinkPhone from '../Link/LinkPhone';
+import WpLink from '../Link/WpLink';
+import Pager from '../Pager';
+import RequestError from '../RequestError';
+import Spinner from '../Spinner';
+import WpTable, { WpTableColumn } from '../WpTable';
+import ModalFrame from './ModalFrame';
+import ModalTitle from './ModalTitle';
 
 export interface UsersSearchModalInterface {
   testId?: string;
-  controlsColumn?: TableColumn<UserInterface>;
+  controlsColumn?: WpTableColumn<UserInterface>;
 }
 
 const UsersSearchModal: React.FC<UsersSearchModalInterface> = ({
@@ -57,12 +57,12 @@ const UsersSearchModal: React.FC<UsersSearchModalInterface> = ({
 
   const { docs } = data.payload;
 
-  const columns: TableColumn<UserInterface>[] = [
+  const columns: WpTableColumn<UserInterface>[] = [
     {
       accessor: 'itemId',
       headTitle: 'ID',
       render: ({ cellData, dataItem }) => (
-        <Link href={`${ROUTE_CMS}/users/user/${dataItem._id}`}>{cellData}</Link>
+        <WpLink href={`${ROUTE_CMS}/users/user/${dataItem._id}`}>{cellData}</WpLink>
       ),
     },
     {
@@ -98,7 +98,7 @@ const UsersSearchModal: React.FC<UsersSearchModalInterface> = ({
         onReset={() => setSearch(null)}
       />
 
-      <Table<UserInterface> columns={columns} data={docs} testIdKey={'itemId'} />
+      <WpTable<UserInterface> columns={columns} data={docs} testIdKey={'itemId'} />
       <Pager page={data.payload.page} setPage={setPage} totalPages={data.payload.totalPages} />
     </ModalFrame>
   );

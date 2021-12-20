@@ -1,11 +1,11 @@
-import { COL_CATEGORIES, COL_PRODUCTS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
-import { CategoryModel, ProductModel, ProductPayloadModel, ShopProductModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { getParentTreeSlugs } from 'lib/treeUtils';
 import { ObjectId } from 'mongodb';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
+import { getParentTreeSlugs } from '../../../lib/treeUtils';
+import { COL_CATEGORIES, COL_PRODUCTS, COL_SHOP_PRODUCTS } from '../../collectionNames';
+import { CategoryModel, ProductModel, ProductPayloadModel, ShopProductModel } from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface UpdateProductCategoryInputInterface {
   productId: string;

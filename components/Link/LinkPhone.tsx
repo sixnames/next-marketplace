@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { FormattedPhone } from 'generated/apolloComponents';
+import { FormattedPhoneModel } from '../../db/dbModels';
 
 interface PhoneLinkInterface {
-  value?: FormattedPhone | null;
+  value?: FormattedPhoneModel | null;
   className?: string;
   style?: React.CSSProperties;
 }

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Field, FieldProps } from 'formik';
-import Checkbox from './Checkbox';
+import WpCheckbox from './WpCheckbox';
 import { get } from 'lodash';
 
 interface FormikArrayCheckboxInterface {
@@ -38,7 +38,7 @@ const FormikArrayCheckbox: React.FC<FormikArrayCheckboxInterface> = ({
         }
 
         return (
-          <Checkbox
+          <WpCheckbox
             {...props}
             testId={testId}
             name={name}

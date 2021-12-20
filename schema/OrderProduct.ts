@@ -1,8 +1,8 @@
 import { objectType } from 'nexus';
-import { ProductModel, ShopModel, ShopProductModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { COL_PRODUCTS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
-import { noNaN } from 'lib/numbers';
+import { COL_PRODUCTS, COL_SHOP_PRODUCTS, COL_SHOPS } from '../db/collectionNames';
+import { ProductModel, ShopModel, ShopProductModel } from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import { noNaN } from '../lib/numbers';
 
 export const OrderProduct = objectType({
   name: 'OrderProduct',

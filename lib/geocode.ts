@@ -1,6 +1,6 @@
-import { AddressComponentModel } from 'db/dbModels';
 import fetch from 'node-fetch';
 import { ReverseGeocodeResponseData } from '@googlemaps/google-maps-services-js/dist/geocode/reversegeocode';
+import { AddressComponentModel } from '../db/dbModels';
 
 export type ReverseGeocodePayload = ReverseGeocodeResponseData;
 

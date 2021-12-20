@@ -1,18 +1,18 @@
-import Button from 'components/button/Button';
-import FormikBarcodeInput from 'components/FormElements/FormikBarcodeInput/FormikBarcodeInput';
-import InputLine from 'components/FormElements/Input/InputLine';
-import FormikSelect from 'components/FormElements/Select/FormikSelect';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import RequestError from 'components/RequestError';
-import Spinner from 'components/Spinner';
-import { CONFIRM_MODAL } from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
-import { CreateProductInputInterface } from 'db/dao/product/createProduct';
 import { useFormikContext } from 'formik';
 import * as React from 'react';
-import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
-import FormikInput from 'components/FormElements/Input/FormikInput';
-import { useGetGenderOptionsQuery } from 'generated/apolloComponents';
+import { CONFIRM_MODAL } from '../../config/modalVariants';
+import { useAppContext } from '../../context/appContext';
+import { CreateProductInputInterface } from '../../db/dao/product/createProduct';
+import { useGetGenderOptionsQuery } from '../../generated/apolloComponents';
+import WpButton from '../button/WpButton';
+import FormikBarcodeInput from '../FormElements/FormikBarcodeInput/FormikBarcodeInput';
+import FormikInput from '../FormElements/Input/FormikInput';
+import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
+import InputLine from '../FormElements/Input/InputLine';
+import FormikSelect from '../FormElements/Select/FormikSelect';
+import { ConfirmModalInterface } from '../Modal/ConfirmModal';
+import RequestError from '../RequestError';
+import Spinner from '../Spinner';
 
 export type ProductFormValuesBaseType = Omit<CreateProductInputInterface, 'rubricId'>;
 
@@ -74,7 +74,7 @@ const ProductMainFields: React.FC = () => {
           );
         })}
         <div>
-          <Button
+          <WpButton
             onClick={() => {
               setFieldValue('barcode', [...values.barcode, '']);
             }}
@@ -82,7 +82,7 @@ const ProductMainFields: React.FC = () => {
             size={'small'}
           >
             Добавить штрих-код
-          </Button>
+          </WpButton>
         </div>
       </InputLine>
 

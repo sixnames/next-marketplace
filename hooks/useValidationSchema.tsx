@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { useGetValidationMessagesQuery } from 'generated/apolloComponents';
 import * as Yup from 'yup';
-import { ValidationSchemaArgsInterface } from 'types/validataionTypes';
-import { useLocaleContext } from 'context/localeContext';
-import { ResolverValidationSchema } from 'lib/sessionHelpers';
+import { useLocaleContext } from '../context/localeContext';
+import { useGetValidationMessagesQuery } from '../generated/apolloComponents';
+import { ResolverValidationSchema } from '../lib/sessionHelpers';
+import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
 
 interface UseValidationSchemaInterface {
   schema: (args: ValidationSchemaArgsInterface) => ResolverValidationSchema;

@@ -1,21 +1,21 @@
-import { CategoryInterface } from 'db/uiInterfaces';
-import { alwaysArray } from 'lib/arrayUtils';
-import { phoneToRaw } from 'lib/phoneUtils';
-import { getTreeFromList } from 'lib/treeUtils';
 import { arg, enumType, extendType, inputObjectType, nonNull, objectType } from 'nexus';
+import { get } from 'lodash';
 import {
-  DEFAULT_COMPANY_SLUG,
   CONFIG_VARIANTS_ENUMS,
-  SORT_ASC,
+  DEFAULT_COMPANY_SLUG,
   DEFAULT_LOCALE,
   FILTER_SEPARATOR,
-} from 'config/common';
-import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { getDatabase } from 'db/mongodb';
-import { CategoryModel, ConfigModel, ConfigPayloadModel, ObjectIdModel } from 'db/dbModels';
-import { COL_CATEGORIES, COL_CONFIGS } from 'db/collectionNames';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { get } from 'lodash';
+  SORT_ASC,
+} from '../config/common';
+import { COL_CATEGORIES, COL_CONFIGS } from '../db/collectionNames';
+import { CategoryModel, ConfigModel, ConfigPayloadModel, ObjectIdModel } from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import { CategoryInterface } from '../db/uiInterfaces';
+import { alwaysArray } from '../lib/arrayUtils';
+import getResolverErrorMessage from '../lib/getResolverErrorMessage';
+import { phoneToRaw } from '../lib/phoneUtils';
+import { getOperationPermission, getRequestParams } from '../lib/sessionHelpers';
+import { getTreeFromList } from '../lib/treeUtils';
 
 export const ConfigVariant = enumType({
   name: 'ConfigVariant',

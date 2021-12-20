@@ -1,7 +1,7 @@
-import { COL_ROLES } from 'db/collectionNames';
-import { RoleModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
 import { arg, extendType, nonNull } from 'nexus';
+import { COL_ROLES } from '../db/collectionNames';
+import { RoleModel } from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
 
 export const RoleQueries = extendType({
   type: 'Query',

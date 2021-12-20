@@ -1,9 +1,9 @@
-import { ALL_ALPHABETS, GENDER_ENUMS, GENDER_HE } from 'config/common';
-import { AlphabetListModelType, OptionVariantsModel, TranslationModel } from 'db/dbModels';
-import { OptionInterface } from 'db/uiInterfaces';
-import { getFieldStringLocale, trimTranslationField } from 'lib/i18n';
-import { noNaN } from 'lib/numbers';
 import trim from 'trim';
+import { ALL_ALPHABETS, GENDER_ENUMS, GENDER_HE } from '../config/common';
+import { AlphabetListModelType, OptionVariantsModel, TranslationModel } from '../db/dbModels';
+import { OptionInterface } from '../db/uiInterfaces';
+import { getFieldStringLocale, trimTranslationField } from './i18n';
+import { noNaN } from './numbers';
 
 export interface GetStringValueFromOptionsList {
   options: OptionInterface[];

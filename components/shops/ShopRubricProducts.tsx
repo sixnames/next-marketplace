@@ -1,36 +1,36 @@
-import AppContentFilter from 'components/AppContentFilter';
-import Button from 'components/button/Button';
-import FixedButtons from 'components/button/FixedButtons';
-import ContentItemControls from 'components/button/ContentItemControls';
-import FormikInput from 'components/FormElements/Input/FormikInput';
-import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
-import Inner from 'components/Inner';
-import Link from 'components/Link/Link';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import Pager from 'components/Pager';
-import ProductsListSuppliersList from 'components/shops/ProductsListSuppliersList';
-import Table, { TableColumn } from 'components/Table';
-import TableRowImage from 'components/TableRowImage';
-import { CONFIRM_MODAL } from 'config/modalVariants';
-import { useUserContext } from 'context/userContext';
-import { ShopProductModel } from 'db/dbModels';
+import { Form, Formik } from 'formik';
+import { useRouter } from 'next/router';
+import * as React from 'react';
+import { CONFIRM_MODAL } from '../../config/modalVariants';
+import { useUserContext } from '../../context/userContext';
+import { ShopProductModel } from '../../db/dbModels';
 import {
   ShopProductInterface,
   ShopRubricProductsInterface,
   SupplierProductInterface,
-} from 'db/uiInterfaces';
-import { Form, Formik } from 'formik';
-import { useDeleteProductFromShopMutation } from 'generated/apolloComponents';
-import { useUpdateManyShopProducts } from 'hooks/mutations/useShopProductMutations';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useValidationSchema from 'hooks/useValidationSchema';
-import ConsoleShopLayout from 'layout/console/ConsoleShopLayout';
-import { alwaysArray } from 'lib/arrayUtils';
-import { getNumWord } from 'lib/i18n';
-import { noNaN } from 'lib/numbers';
-import { useRouter } from 'next/router';
-import * as React from 'react';
-import { updateManyShopProductsSchema } from 'validation/shopSchema';
+} from '../../db/uiInterfaces';
+import { useDeleteProductFromShopMutation } from '../../generated/apolloComponents';
+import { useUpdateManyShopProducts } from '../../hooks/mutations/useShopProductMutations';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import useValidationSchema from '../../hooks/useValidationSchema';
+import ConsoleShopLayout from '../../layout/console/ConsoleShopLayout';
+import { alwaysArray } from '../../lib/arrayUtils';
+import { getNumWord } from '../../lib/i18n';
+import { noNaN } from '../../lib/numbers';
+import { updateManyShopProductsSchema } from '../../validation/shopSchema';
+import AppContentFilter from '../AppContentFilter';
+import ContentItemControls from '../button/ContentItemControls';
+import FixedButtons from '../button/FixedButtons';
+import WpButton from '../button/WpButton';
+import FormikInput from '../FormElements/Input/FormikInput';
+import FormikRouterSearch from '../FormElements/Search/FormikRouterSearch';
+import Inner from '../Inner';
+import WpLink from '../Link/WpLink';
+import { ConfirmModalInterface } from '../Modal/ConfirmModal';
+import Pager from '../Pager';
+import TableRowImage from '../TableRowImage';
+import WpTable, { WpTableColumn } from '../WpTable';
+import ProductsListSuppliersList from './ProductsListSuppliersList';
 
 const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
   shop,
@@ -69,18 +69,18 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
     onError: onErrorCallback,
   });
 
-  const columns: TableColumn<ShopProductInterface>[] = [
+  const columns: WpTableColumn<ShopProductInterface>[] = [
     {
       accessor: 'itemId',
       headTitle: 'Арт',
       render: ({ dataItem }) => {
         return (
-          <Link
+          <WpLink
             href={`${layoutBasePath}/${shop._id}/products/product/${dataItem._id}`}
             target={'_blank'}
           >
             {dataItem.product?.itemId}
-          </Link>
+          </WpLink>
         );
       },
     },
@@ -275,7 +275,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
                 return (
                   <Form>
                     <div className={`overflow-x-auto`}>
-                      <Table<ShopProductInterface>
+                      <WpTable<ShopProductInterface>
                         columns={columns}
                         data={docs}
                         testIdKey={'_id'}
@@ -291,17 +291,17 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
                     </div>
                     <FixedButtons>
                       {withProducts ? (
-                        <Button
+                        <WpButton
                           frameClassName='w-auto'
                           testId={'save-shop-products'}
                           type={'submit'}
                           size={'small'}
                         >
                           Сохранить
-                        </Button>
+                        </WpButton>
                       ) : null}
 
-                      <Button
+                      <WpButton
                         frameClassName='w-auto'
                         onClick={() => {
                           router.push(addProductsPath).catch((e) => console.log(e));
@@ -310,7 +310,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
                         size={'small'}
                       >
                         Добавить товары
-                      </Button>
+                      </WpButton>
                     </FixedButtons>
                   </Form>
                 );

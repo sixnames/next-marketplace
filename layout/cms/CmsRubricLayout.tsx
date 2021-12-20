@@ -1,13 +1,13 @@
-import Inner from 'components/Inner';
-import Title from 'components/Title';
-import { DEFAULT_PAGE_FILTER, ROUTE_CMS } from 'config/common';
-import { AppContentWrapperBreadCrumbs, RubricInterface } from 'db/uiInterfaces';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import AppSubNav from 'layout/AppSubNav';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { ClientNavItemInterface } from 'types/clientTypes';
+import Inner from '../../components/Inner';
+import WpTitle from '../../components/WpTitle';
+import { DEFAULT_PAGE_FILTER, ROUTE_CMS } from '../../config/common';
+import { AppContentWrapperBreadCrumbs, RubricInterface } from '../../db/uiInterfaces';
+import { ClientNavItemInterface } from '../../types/clientTypes';
+import AppContentWrapper from '../AppContentWrapper';
+import AppSubNav from '../AppSubNav';
 
 interface CmsRubricLayoutInterface {
   rubric: RubricInterface;
@@ -66,7 +66,7 @@ const CmsRubricLayout: React.FC<CmsRubricLayoutInterface> = ({
         <title>{title}</title>
       </Head>
       <Inner lowBottom>
-        <Title>{title}</Title>
+        <WpTitle>{title}</WpTitle>
       </Inner>
       <AppSubNav navConfig={navConfig} />
       {children}

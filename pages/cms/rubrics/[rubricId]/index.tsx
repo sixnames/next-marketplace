@@ -1,31 +1,35 @@
-import Button from 'components/button/Button';
-import FixedButtons from 'components/button/FixedButtons';
-import RubricMainFields from 'components/FormTemplates/RubricMainFields';
-import Inner from 'components/Inner';
-import RequestError from 'components/RequestError';
-import SeoContentEditor from 'components/SeoContentEditor';
-import Spinner from 'components/Spinner';
-import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from 'config/common';
-import { getConsoleRubricDetails } from 'db/dao/rubrics/getConsoleRubricDetails';
+import { Form, Formik } from 'formik';
+import * as React from 'react';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import FixedButtons from '../../../../components/button/FixedButtons';
+import WpButton from '../../../../components/button/WpButton';
+import RubricMainFields from '../../../../components/FormTemplates/RubricMainFields';
+import Inner from '../../../../components/Inner';
+import RequestError from '../../../../components/RequestError';
+import SeoContentEditor from '../../../../components/SeoContentEditor';
+import Spinner from '../../../../components/Spinner';
+import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from '../../../../config/common';
+import { getConsoleRubricDetails } from '../../../../db/dao/rubrics/getConsoleRubricDetails';
 import {
   AppContentWrapperBreadCrumbs,
   RubricInterface,
   SeoContentCitiesInterface,
-} from 'db/uiInterfaces';
-import { Form, Formik } from 'formik';
+} from '../../../../db/uiInterfaces';
 import {
   UpdateRubricInput,
   useGetAllRubricVariantsQuery,
   useUpdateRubricMutation,
-} from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useValidationSchema from 'hooks/useValidationSchema';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import { updateRubricSchema } from 'validation/rubricSchema';
+} from '../../../../generated/apolloComponents';
+import useMutationCallbacks from '../../../../hooks/useMutationCallbacks';
+import useValidationSchema from '../../../../hooks/useValidationSchema';
+import CmsRubricLayout from '../../../../layout/cms/CmsRubricLayout';
+import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../../lib/ssrUtils';
+import { updateRubricSchema } from '../../../../validation/rubricSchema';
 
 interface RubricDetailsInterface {
   rubric: RubricInterface;
@@ -149,9 +153,9 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
                 />
 
                 <FixedButtons>
-                  <Button type={'submit'} testId={'rubric-submit'}>
+                  <WpButton type={'submit'} testId={'rubric-submit'}>
                     Сохранить
-                  </Button>
+                  </WpButton>
                 </FixedButtons>
               </Form>
             );

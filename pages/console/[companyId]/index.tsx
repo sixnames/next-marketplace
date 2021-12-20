@@ -1,10 +1,10 @@
-import Inner from 'components/Inner';
-import Title from 'components/Title';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { getConsoleInitialData, GetConsoleInitialDataPropsInterface } from 'lib/ssrUtils';
+import Inner from '../../../components/Inner';
+import WpTitle from '../../../components/WpTitle';
+import AppContentWrapper from '../../../layout/AppContentWrapper';
+import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
+import { getConsoleInitialData, GetConsoleInitialDataPropsInterface } from '../../../lib/ssrUtils';
 
 interface OrdersInterface extends GetConsoleInitialDataPropsInterface {}
 
@@ -13,7 +13,7 @@ const Orders: NextPage<OrdersInterface> = ({ layoutProps }) => {
     <ConsoleLayout {...layoutProps}>
       <AppContentWrapper>
         <Inner>
-          <Title>{layoutProps.pageCompany.name}</Title>
+          <WpTitle>{layoutProps.pageCompany.name}</WpTitle>
         </Inner>
       </AppContentWrapper>
     </ConsoleLayout>

@@ -1,5 +1,5 @@
 import { Seeder } from 'mongo-seeding';
-import products from '../cypress/fixtures/data/products/products';
+import products from './data/products/products';
 const mkdirp = require('mkdirp');
 const path = require('path');
 const fs = require('fs');
@@ -9,9 +9,9 @@ require('dotenv').config();
 
 function prepareTestAssets() {
   products.forEach(({ itemId }) => {
-    const pathToSrc = path.join(process.cwd(), 'cypress/fixtures/test-image-0.png');
+    const pathToSrc = path.join(process.cwd(), 'tests/assets/test-image-0.png');
     const fileName = `${itemId}-0.png`;
-    const pathToDist = path.join(process.cwd(), `cypress/fixtures/assets/products/${itemId}`);
+    const pathToDist = path.join(process.cwd(), `tests/assets/products/${itemId}`);
     fs.access(pathToDist, (err: any) => {
       if (err) {
         mkdirp(pathToDist).then(() => {
@@ -23,7 +23,7 @@ function prepareTestAssets() {
     });
   });
 
-  const src = './cypress/fixtures/assets';
+  const src = './tests/assets';
   const dist = './assets';
   rimraf(dist, (e: any) => {
     if (e) {
@@ -55,12 +55,9 @@ const config = {
   const startTime = new Date().getTime();
   const seeder = new Seeder(config);
 
-  const collections = seeder.readCollectionsFromPath(
-    path.resolve(process.cwd(), 'cypress/fixtures/data'),
-    {
-      extensions: ['json', 'ts'],
-    },
-  );
+  const collections = seeder.readCollectionsFromPath(path.resolve(process.cwd(), 'tests/data'), {
+    extensions: ['json', 'ts'],
+  });
 
   try {
     await seeder.import(collections);

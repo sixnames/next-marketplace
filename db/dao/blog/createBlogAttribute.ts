@@ -1,18 +1,18 @@
-import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
-import { COL_BLOG_ATTRIBUTES } from 'db/collectionNames';
-import { BlogAttributeModel, BlogAttributePayloadModel, TranslationModel } from 'db/dbModels';
-import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
-import { getDatabase } from 'db/mongodb';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { ObjectId } from 'mongodb';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { DEFAULT_COUNTERS_OBJECT } from '../../../config/common';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
 import {
   getApiResolverValidationSchema,
   getOperationPermission,
   getRequestParams,
-} from 'lib/sessionHelpers';
-import { generateDefaultLangSlug } from 'lib/slugUtils';
-import { ObjectId } from 'mongodb';
-import { NextApiRequest, NextApiResponse } from 'next';
-import { createBlogAttributeSchema } from 'validation/blogSchema';
+} from '../../../lib/sessionHelpers';
+import { generateDefaultLangSlug } from '../../../lib/slugUtils';
+import { createBlogAttributeSchema } from '../../../validation/blogSchema';
+import { COL_BLOG_ATTRIBUTES } from '../../collectionNames';
+import { BlogAttributeModel, BlogAttributePayloadModel, TranslationModel } from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { findDocumentByI18nField } from '../findDocumentByI18nField';
 
 export interface CreateBlogAttributeInputInterface {
   nameI18n: TranslationModel;

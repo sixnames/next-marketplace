@@ -1,13 +1,13 @@
-import { COL_OPTIONS, COL_ICONS } from 'db/collectionNames';
-import { OptionModel, IconModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { getApiMessageValue } from 'lib/apiMessageUtils';
-import { alwaysArray } from 'lib/arrayUtils';
-import { parseRestApiFormData } from 'lib/restApi';
-import { getOperationPermission } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 import fs from 'fs';
+import { COL_ICONS, COL_OPTIONS } from '../../../db/collectionNames';
+import { IconModel, OptionModel } from '../../../db/dbModels';
+import { getDatabase } from '../../../db/mongodb';
+import { getApiMessageValue } from '../../../lib/apiMessageUtils';
+import { alwaysArray } from '../../../lib/arrayUtils';
+import { parseRestApiFormData } from '../../../lib/restApi';
+import { getOperationPermission } from '../../../lib/sessionHelpers';
 
 export const config = {
   api: {

@@ -1,23 +1,23 @@
-import Breadcrumbs from 'components/Breadcrumbs';
-import Button from 'components/button/Button';
-import Inner from 'components/Inner';
-import Title from 'components/Title';
-import { ROUTE_PROFILE } from 'config/common';
-import { useSiteContext } from 'context/siteContext';
 import { useRouter } from 'next/router';
 import * as React from 'react';
+import { ROUTE_PROFILE } from '../../config/common';
+import { useSiteContext } from '../../context/siteContext';
+import WpButton from '../button/WpButton';
+import Inner from '../Inner';
+import WpBreadcrumbs from '../WpBreadcrumbs';
+import WpTitle from '../WpTitle';
 
 const EmptyCart: React.FC = () => {
   const router = useRouter();
   const { urlPrefix } = useSiteContext();
   return (
     <div>
-      <Breadcrumbs currentPageName={'Корзина'} />
+      <WpBreadcrumbs currentPageName={'Корзина'} />
 
       <Inner lowTop testId={'cart'}>
-        <Title>Корзина пуста</Title>
+        <WpTitle>Корзина пуста</WpTitle>
         <div className='flex gap-4 flex-wrap'>
-          <Button
+          <WpButton
             frameClassName='w-auto'
             theme={'secondary'}
             onClick={() => {
@@ -25,8 +25,8 @@ const EmptyCart: React.FC = () => {
             }}
           >
             Продолжить покупки
-          </Button>
-          <Button
+          </WpButton>
+          <WpButton
             frameClassName='w-auto'
             theme={'secondary'}
             onClick={() => {
@@ -34,7 +34,7 @@ const EmptyCart: React.FC = () => {
             }}
           >
             Мои заказы
-          </Button>
+          </WpButton>
         </div>
       </Inner>
     </div>

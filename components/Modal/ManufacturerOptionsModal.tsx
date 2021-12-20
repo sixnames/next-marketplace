@@ -1,6 +1,6 @@
-import OptionsModal, { OptionsModalCommonPropsInterface } from 'components/Modal/OptionsModal';
-import { useGetManufacturerAlphabetListsQuery } from 'generated/apolloComponents';
 import * as React from 'react';
+import { useGetManufacturerAlphabetListsQuery } from '../../generated/apolloComponents';
+import OptionsModal, { OptionsModalCommonPropsInterface } from './OptionsModal';
 
 export interface ManufacturerOptionsModalInterface extends OptionsModalCommonPropsInterface {
   slugs?: string[];

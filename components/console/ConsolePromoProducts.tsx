@@ -1,24 +1,27 @@
-import Button from 'components/button/Button';
-import CheckBox from 'components/FormElements/Checkbox/Checkbox';
-import AppContentFilter from 'components/AppContentFilter';
-import FormikRouterSearch from 'components/FormElements/Search/FormikRouterSearch';
-import Inner from 'components/Inner';
-import Pager from 'components/Pager';
-import Spinner from 'components/Spinner';
-import Table, { TableColumn } from 'components/Table';
-import TableRowImage from 'components/TableRowImage';
-import { useAppContext } from 'context/appContext';
+import * as React from 'react';
+import { useAppContext } from '../../context/appContext';
 import {
   CompanyInterface,
   GetConsoleRubricPromoProductsPayloadInterface,
   PromoInterface,
   RubricInterface,
   ShopProductInterface,
-} from 'db/uiInterfaces';
-import { useAddPromoProducts, useDeletePromoProducts } from 'hooks/mutations/usePromoMutations';
-import usePageLoadingState from 'hooks/usePageLoadingState';
-import { alwaysArray } from 'lib/arrayUtils';
-import * as React from 'react';
+} from '../../db/uiInterfaces';
+import {
+  useAddPromoProducts,
+  useDeletePromoProducts,
+} from '../../hooks/mutations/usePromoMutations';
+import usePageLoadingState from '../../hooks/usePageLoadingState';
+import { alwaysArray } from '../../lib/arrayUtils';
+import AppContentFilter from '../AppContentFilter';
+import WpButton from '../button/WpButton';
+import WpCheckbox from '../FormElements/Checkbox/WpCheckbox';
+import FormikRouterSearch from '../FormElements/Search/FormikRouterSearch';
+import Inner from '../Inner';
+import Pager from '../Pager';
+import Spinner from '../Spinner';
+import TableRowImage from '../TableRowImage';
+import WpTable, { WpTableColumn } from '../WpTable';
 
 export interface ConsolePromoProductsInterface {
   rubric: RubricInterface;
@@ -44,7 +47,7 @@ const ConsolePromoProducts: React.FC<ConsolePromoProductsInterface> = ({
   const [deletePromoProductsMutation] = useDeletePromoProducts();
   const [addPromoProductsMutation] = useAddPromoProducts();
 
-  const columns: TableColumn<ShopProductInterface>[] = [
+  const columns: WpTableColumn<ShopProductInterface>[] = [
     {
       accessor: 'product.slug',
       headTitle: 'Арт',
@@ -95,7 +98,7 @@ const ConsolePromoProducts: React.FC<ConsolePromoProductsInterface> = ({
       render: ({ cellData, rowIndex, dataItem }) => {
         const checked = promoProducts.selectedShopProductIds.includes(cellData);
         return (
-          <CheckBox
+          <WpCheckbox
             onChange={() => {
               showLoading();
 
@@ -147,7 +150,7 @@ const ConsolePromoProducts: React.FC<ConsolePromoProductsInterface> = ({
 
         <div className='flex flex-wrap gap-4 mb-6'>
           {filters.length > 0 ? (
-            <Button
+            <WpButton
               size={'small'}
               frameClassName={'w-auto'}
               testId={'add-filtered-rubric-products'}
@@ -163,11 +166,11 @@ const ConsolePromoProducts: React.FC<ConsolePromoProductsInterface> = ({
               }}
             >
               Добавить товары по выбранному фильтру
-            </Button>
+            </WpButton>
           ) : null}
 
           {search.length > 0 ? (
-            <Button
+            <WpButton
               size={'small'}
               frameClassName={'w-auto'}
               testId={'add-search-rubric-products'}
@@ -184,11 +187,11 @@ const ConsolePromoProducts: React.FC<ConsolePromoProductsInterface> = ({
               }}
             >
               Добавить результат поиска
-            </Button>
+            </WpButton>
           ) : null}
 
           {filters.length > 0 || search.length > 0 ? null : (
-            <Button
+            <WpButton
               size={'small'}
               frameClassName={'w-auto'}
               testId={'add-all-rubric-products'}
@@ -204,11 +207,11 @@ const ConsolePromoProducts: React.FC<ConsolePromoProductsInterface> = ({
               }}
             >
               Добавить все товары рубрики
-            </Button>
+            </WpButton>
           )}
 
           {promoProducts.selectedShopProductIds.length > 0 ? (
-            <Button
+            <WpButton
               theme={'secondary'}
               size={'small'}
               frameClassName={'w-auto'}
@@ -224,13 +227,13 @@ const ConsolePromoProducts: React.FC<ConsolePromoProductsInterface> = ({
               }}
             >
               Удалить все товары рубрики
-            </Button>
+            </WpButton>
           ) : null}
         </div>
 
         <div className={' max-w-full'}>
           <div className={`relative overflow-x-auto overflow-y-hidden`}>
-            <Table<ShopProductInterface>
+            <WpTable<ShopProductInterface>
               columns={columns}
               data={promoProducts.docs}
               testIdKey={'_id'}

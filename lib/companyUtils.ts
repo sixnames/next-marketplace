@@ -1,6 +1,6 @@
-import { CompanyModel, UserModel } from 'db/dbModels';
 import path from 'path';
 import fs from 'fs';
+import { CompanyModel, UserModel } from '../db/dbModels';
 
 export interface UpdateCompanyDomainInterface {
   company: CompanyModel;

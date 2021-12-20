@@ -1,17 +1,17 @@
-import { ROLE_SLUG_GUEST } from 'config/common';
-import { COL_NAV_ITEMS, COL_ROLES, COL_USERS } from 'db/collectionNames';
-import { NavItemModel, RoleModel, RolePayloadModel, UserModel } from 'db/dbModels';
-import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
-import { getDatabase } from 'db/mongodb';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
+import { ROLE_SLUG_GUEST } from '../config/common';
+import { COL_NAV_ITEMS, COL_ROLES, COL_USERS } from '../db/collectionNames';
+import { findDocumentByI18nField } from '../db/dao/findDocumentByI18nField';
+import { NavItemModel, RoleModel, RolePayloadModel, UserModel } from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from 'lib/sessionHelpers';
-import { generateDefaultLangSlug } from 'lib/slugUtils';
-import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { createRoleSchema, updateRoleSchema } from 'validation/roleSchema';
+} from '../lib/sessionHelpers';
+import { generateDefaultLangSlug } from '../lib/slugUtils';
+import { createRoleSchema, updateRoleSchema } from '../validation/roleSchema';
 
 export const RolePayload = objectType({
   name: 'RolePayload',

@@ -1,8 +1,8 @@
-import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
-import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
-import FormikSelect from 'components/FormElements/Select/FormikSelect';
-import { RubricVariant, SelectOption } from 'generated/apolloComponents';
 import * as React from 'react';
+import { RubricVariant, SelectOption } from '../../generated/apolloComponents';
+import FormikCheckboxLine from '../FormElements/Checkbox/FormikCheckboxLine';
+import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
+import FormikSelect from '../FormElements/Select/FormikSelect';
 
 interface RubricMainFieldsInterface {
   rubricVariants: Pick<RubricVariant, '_id' | 'name' | 'nameI18n'>[];

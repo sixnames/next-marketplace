@@ -1,7 +1,7 @@
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalText from 'components/Modal/ModalText';
-import ModalTitle from 'components/Modal/ModalTitle';
 import * as React from 'react';
+import ModalFrame from './ModalFrame';
+import ModalText from './ModalText';
+import ModalTitle from './ModalTitle';
 
 export interface InfoModalInterface {
   title?: string;

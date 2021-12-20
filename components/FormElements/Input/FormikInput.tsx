@@ -1,9 +1,9 @@
 import * as React from 'react';
-import Input, { InputPropsInterface } from './Input';
+import WpInput, { WpInputPropsInterface } from './WpInput';
 import { Field, FieldProps } from 'formik';
 import { get } from 'lodash';
 
-export interface FormikInputPropsInterface extends InputPropsInterface {
+export interface FormikInputPropsInterface extends WpInputPropsInterface {
   frameClass?: string;
   showInlineError?: boolean;
 }
@@ -24,7 +24,7 @@ const FormikInput: React.FC<FormikInputPropsInterface> = ({
         const notValid = Boolean(error);
         return (
           <div className={frameClass ? frameClass : ''}>
-            <Input
+            <WpInput
               {...field}
               {...props}
               type={type}

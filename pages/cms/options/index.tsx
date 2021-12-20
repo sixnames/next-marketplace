@@ -1,30 +1,34 @@
-import Button from 'components/button/Button';
-import FixedButtons from 'components/button/FixedButtons';
-import ContentItemControls from 'components/button/ContentItemControls';
-import Inner from 'components/Inner';
-import { OptionsGroupModalInterface } from 'components/Modal/OptionsGroupModal';
-import Table, { TableColumn } from 'components/Table';
-import Title from 'components/Title';
-import { DEFAULT_LOCALE, ROUTE_CMS, SORT_ASC } from 'config/common';
-import { getConstantTranslation } from 'config/constantTranslations';
-import { CONFIRM_MODAL, OPTIONS_GROUP_MODAL } from 'config/modalVariants';
-import { COL_OPTIONS, COL_OPTIONS_GROUPS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { OptionsGroupInterface } from 'db/uiInterfaces';
-import {
-  useCreateOptionsGroupMutation,
-  useDeleteOptionsGroupMutation,
-} from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import { getFieldStringLocale } from 'lib/i18n';
-import { noNaN } from 'lib/numbers';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import ContentItemControls from '../../../components/button/ContentItemControls';
+import FixedButtons from '../../../components/button/FixedButtons';
+import WpButton from '../../../components/button/WpButton';
+import Inner from '../../../components/Inner';
+import { OptionsGroupModalInterface } from '../../../components/Modal/OptionsGroupModal';
+import WpTable, { WpTableColumn } from '../../../components/WpTable';
+import WpTitle from '../../../components/WpTitle';
+import { DEFAULT_LOCALE, ROUTE_CMS, SORT_ASC } from '../../../config/common';
+import { getConstantTranslation } from '../../../config/constantTranslations';
+import { CONFIRM_MODAL, OPTIONS_GROUP_MODAL } from '../../../config/modalVariants';
+import { COL_OPTIONS, COL_OPTIONS_GROUPS } from '../../../db/collectionNames';
+import { getDatabase } from '../../../db/mongodb';
+import { OptionsGroupInterface } from '../../../db/uiInterfaces';
+import {
+  useCreateOptionsGroupMutation,
+  useDeleteOptionsGroupMutation,
+} from '../../../generated/apolloComponents';
+import useMutationCallbacks from '../../../hooks/useMutationCallbacks';
+import AppContentWrapper from '../../../layout/AppContentWrapper';
+import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
+import { getFieldStringLocale } from '../../../lib/i18n';
+import { noNaN } from '../../../lib/numbers';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../lib/ssrUtils';
 
 interface OptionsGroupsConsumerInterface {
   optionsGroups: OptionsGroupInterface[];
@@ -49,7 +53,7 @@ const OptionsGroupsConsumer: React.FC<OptionsGroupsConsumerInterface> = ({ optio
     onError: onErrorCallback,
   });
 
-  const columns: TableColumn<OptionsGroupInterface>[] = [
+  const columns: WpTableColumn<OptionsGroupInterface>[] = [
     {
       accessor: 'name',
       headTitle: 'Название',
@@ -106,11 +110,11 @@ const OptionsGroupsConsumer: React.FC<OptionsGroupsConsumerInterface> = ({ optio
         <title>{pageTitle}</title>
       </Head>
       <Inner testId={'options-groups-list'}>
-        <Title>{pageTitle}</Title>
+        <WpTitle>{pageTitle}</WpTitle>
 
         <div className='relative'>
           <div className='overflow-x-auto overflow-y-hidden'>
-            <Table<OptionsGroupInterface>
+            <WpTable<OptionsGroupInterface>
               testIdKey={'name'}
               columns={columns}
               data={optionsGroups}
@@ -120,7 +124,7 @@ const OptionsGroupsConsumer: React.FC<OptionsGroupsConsumerInterface> = ({ optio
             />
           </div>
           <FixedButtons>
-            <Button
+            <WpButton
               size={'small'}
               testId='create-options-group'
               onClick={() => {
@@ -136,7 +140,7 @@ const OptionsGroupsConsumer: React.FC<OptionsGroupsConsumerInterface> = ({ optio
               }}
             >
               Добавить группу опций
-            </Button>
+            </WpButton>
           </FixedButtons>
         </div>
       </Inner>

@@ -1,9 +1,9 @@
 import * as React from 'react';
-import Icon from 'components/Icon';
+import ButtonCross from '../../button/ButtonCross';
+import WpIcon from '../../WpIcon';
+import WpTooltip from '../../WpTooltip';
 import InputLine, { InputLinePropsInterface } from '../Input/InputLine';
-import ButtonCross from 'components/button/ButtonCross';
 import { useDropzone } from 'react-dropzone';
-import WpTooltip from 'components/WpTooltip';
 
 interface WpImageUploadInterface extends InputLinePropsInterface {
   tooltip?: any;
@@ -101,7 +101,7 @@ const WpImageUpload: React.FC<WpImageUploadInterface> = ({
               ) : null}
             </React.Fragment>
           ) : (
-            <Icon name={'image'} className='absolute top-[10%] left-[10%] w-[80%] h-[80%]' />
+            <WpIcon name={'image'} className='absolute top-[10%] left-[10%] w-[80%] h-[80%]' />
           )}
         </div>
       </WpTooltip>

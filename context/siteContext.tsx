@@ -1,13 +1,13 @@
-import { CartModalInterface } from 'components/Modal/CartModal';
-import { REQUEST_METHOD_POST, ROUTE_THANK_YOU } from 'config/common';
-import { CART_MODAL } from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
-import { useNotificationsContext } from 'context/notificationsContext';
-import { useSiteUserContext } from 'context/siteUserContext';
-import { CheckGiftCertificateAvailabilityInputInterface } from 'db/dao/giftCertificate/checkGiftCertificateAvailability';
-import { MakeAnOrderInputInterface, MakeAnOrderPayloadModel } from 'db/dao/orders/makeAnOrder';
-import { CartProductsFieldNameType, GiftCertificateModel } from 'db/dbModels';
-import { CartInterface, CompanyInterface, RubricInterface } from 'db/uiInterfaces';
+import { useRouter } from 'next/router';
+import * as React from 'react';
+import { get } from 'lodash';
+import { CartModalInterface } from '../components/Modal/CartModal';
+import { REQUEST_METHOD_POST, ROUTE_THANK_YOU } from '../config/common';
+import { CART_MODAL } from '../config/modalVariants';
+import { CheckGiftCertificateAvailabilityInputInterface } from '../db/dao/giftCertificate/checkGiftCertificateAvailability';
+import { MakeAnOrderInputInterface, MakeAnOrderPayloadModel } from '../db/dao/orders/makeAnOrder';
+import { CartProductsFieldNameType, GiftCertificateModel } from '../db/dbModels';
+import { CartInterface, CompanyInterface, RubricInterface } from '../db/uiInterfaces';
 import {
   AddProductToCartInput,
   AddShoplessProductToCartInput,
@@ -21,13 +21,13 @@ import {
   useDeleteProductFromCartMutation,
   useRepeatAnOrderMutation,
   useUpdateProductInCartMutation,
-} from 'generated/apolloComponents';
-import { useMutation } from 'hooks/mutations/useFetch';
-import { useCheckGiftCertificateMutation } from 'hooks/mutations/useGiftCertificateMutations';
-import { noNaN } from 'lib/numbers';
-import { useRouter } from 'next/router';
-import * as React from 'react';
-import { get } from 'lodash';
+} from '../generated/apolloComponents';
+import { useMutation } from '../hooks/mutations/useFetch';
+import { useCheckGiftCertificateMutation } from '../hooks/mutations/useGiftCertificateMutations';
+import { noNaN } from '../lib/numbers';
+import { useAppContext } from './appContext';
+import { useNotificationsContext } from './notificationsContext';
+import { useSiteUserContext } from './siteUserContext';
 
 interface SiteContextStateInterface {
   loadingCart: boolean;

@@ -1,9 +1,3 @@
-import ButtonCross from 'components/button/ButtonCross';
-import InputLine from 'components/FormElements/Input/InputLine';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import WpImage from 'components/WpImage';
-import { CONFIRM_MODAL } from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
 import * as React from 'react';
 import {
   DragDropContext,
@@ -12,6 +6,12 @@ import {
   Droppable,
   resetServerContext,
 } from 'react-beautiful-dnd';
+import { CONFIRM_MODAL } from '../config/modalVariants';
+import { useAppContext } from '../context/appContext';
+import ButtonCross from './button/ButtonCross';
+import InputLine from './FormElements/Input/InputLine';
+import { ConfirmModalInterface } from './Modal/ConfirmModal';
+import WpImage from './WpImage';
 
 interface AssetItem {
   url: string;

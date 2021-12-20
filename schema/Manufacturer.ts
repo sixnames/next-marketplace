@@ -1,25 +1,28 @@
-import { DEFAULT_COUNTERS_OBJECT } from 'config/common';
-import { getAlphabetList } from 'lib/optionUtils';
 import { arg, extendType, inputObjectType, nonNull, objectType, stringArg } from 'nexus';
-import {
-  getOperationPermission,
-  getRequestParams,
-  getResolverValidationSchema,
-} from 'lib/sessionHelpers';
+import { DEFAULT_COUNTERS_OBJECT } from '../config/common';
+import { COL_MANUFACTURERS, COL_PRODUCTS } from '../db/collectionNames';
+import { aggregatePagination } from '../db/dao/aggregatePagination';
+import { findDocumentByI18nField } from '../db/dao/findDocumentByI18nField';
 import {
   ManufacturerModel,
   ManufacturerPayloadModel,
   ManufacturersAlphabetListModel,
   ManufacturersPaginationPayloadModel,
   ProductModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { COL_MANUFACTURERS, COL_PRODUCTS } from 'db/collectionNames';
-import { aggregatePagination } from 'db/dao/aggregatePagination';
-import { findDocumentByI18nField } from 'db/dao/findDocumentByI18nField';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getNextNumberItemId } from 'lib/itemIdUtils';
-import { createManufacturerSchema, updateManufacturerSchema } from 'validation/manufacturerSchema';
+} from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import getResolverErrorMessage from '../lib/getResolverErrorMessage';
+import { getNextNumberItemId } from '../lib/itemIdUtils';
+import { getAlphabetList } from '../lib/optionUtils';
+import {
+  getOperationPermission,
+  getRequestParams,
+  getResolverValidationSchema,
+} from '../lib/sessionHelpers';
+import {
+  createManufacturerSchema,
+  updateManufacturerSchema,
+} from '../validation/manufacturerSchema';
 
 export const Manufacturer = objectType({
   name: 'Manufacturer',

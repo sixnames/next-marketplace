@@ -1,13 +1,13 @@
 import * as React from 'react';
-import { useLocaleContext } from 'context/localeContext';
 import { get } from 'lodash';
-import Input, { InputPropsInterface } from './Input';
+import { useLocaleContext } from '../../../context/localeContext';
+import { GeocodeResultInterface, ReverseGeocodePayload } from '../../../lib/geocode';
+import Spinner from '../../Spinner';
+import WpInput, { WpInputPropsInterface } from './WpInput';
 import { Field, FieldProps } from 'formik';
-import Spinner from 'components/Spinner';
 import { useDebounce } from 'use-debounce';
-import { GeocodeResultInterface, ReverseGeocodePayload } from 'lib/geocode';
 
-type AddressInputType = Omit<InputPropsInterface, 'autoComplete' | 'type'>;
+type AddressInputType = Omit<WpInputPropsInterface, 'autoComplete' | 'type'>;
 
 interface FormikAddressInputConsumerInterface extends AddressInputType {
   notValid: boolean;
@@ -43,6 +43,7 @@ const FormikAddressInputConsumer: React.FC<FormikAddressInputConsumerInterface> 
         const url = `https://maps.googleapis.com/maps/api/geocode/json?${address}&${settings}&${apiKey}`;
         const res = await fetch(url);
         const json: ReverseGeocodePayload = await res.json();
+        // console.log(json);
         const results: GeocodeResultInterface[] = json.results.map(
           ({ formatted_address, geometry, address_components }) => {
             return {
@@ -102,7 +103,7 @@ const FormikAddressInputConsumer: React.FC<FormikAddressInputConsumerInterface> 
 
   return (
     <div className='relative z-10'>
-      <Input
+      <WpInput
         {...props}
         disabled={disabled}
         name={name}

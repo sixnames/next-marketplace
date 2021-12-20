@@ -1,8 +1,8 @@
-import ContentItemControls from 'components/button/ContentItemControls';
-import Link from 'components/Link/Link';
-import Table, { TableColumn } from 'components/Table';
-import { SeoContentModel } from 'db/dbModels';
 import * as React from 'react';
+import { SeoContentModel } from '../../db/dbModels';
+import ContentItemControls from '../button/ContentItemControls';
+import WpLink from '../Link/WpLink';
+import WpTable, { WpTableColumn } from '../WpTable';
 
 export interface ConsoleSeoContentsListInterface {
   seoContents: SeoContentModel[];
@@ -15,15 +15,15 @@ const ConsoleSeoContentsList: React.FC<ConsoleSeoContentsListInterface> = ({
   routeBasePath,
   rubricId,
 }) => {
-  const columns: TableColumn<SeoContentModel>[] = [
+  const columns: WpTableColumn<SeoContentModel>[] = [
     {
       accessor: 'url',
       headTitle: 'Ссылка',
       render: ({ cellData }) => {
         return (
-          <Link target={'_blank'} href={cellData}>
+          <WpLink target={'_blank'} href={cellData}>
             {cellData}
-          </Link>
+          </WpLink>
         );
       },
     },
@@ -49,7 +49,7 @@ const ConsoleSeoContentsList: React.FC<ConsoleSeoContentsListInterface> = ({
 
   return (
     <div className='overflow-x-auto overflow-y-hidden' data-cy={'rubric-seo-content-list'}>
-      <Table<SeoContentModel>
+      <WpTable<SeoContentModel>
         columns={columns}
         data={seoContents}
         onRowDoubleClick={(dataItem) => {

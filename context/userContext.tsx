@@ -1,6 +1,5 @@
-import { UserInterface } from 'db/uiInterfaces';
 import * as React from 'react';
-// import { useSession } from 'next-auth/client';
+import { UserInterface } from '../db/uiInterfaces';
 
 interface UserContextInterface {
   sessionUser?: UserInterface | null;

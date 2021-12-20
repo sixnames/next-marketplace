@@ -1,9 +1,9 @@
 import { objectType } from 'nexus';
-import { FormattedPhoneModel, UserModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { COL_USERS } from 'db/collectionNames';
-import { getFullName, getShortName } from 'lib/nameUtils';
-import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
+import { COL_USERS } from '../db/collectionNames';
+import { FormattedPhoneModel, UserModel } from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import { getFullName, getShortName } from '../lib/nameUtils';
+import { phoneToRaw, phoneToReadable } from '../lib/phoneUtils';
 
 export const OrderCustomer = objectType({
   name: 'OrderCustomer',

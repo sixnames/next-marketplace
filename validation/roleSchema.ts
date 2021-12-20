@@ -1,11 +1,11 @@
-import { getFieldValidationMessage } from 'lib/getFieldValidationMessage';
-import { ValidationSchemaArgsInterface } from 'types/validataionTypes';
+import * as Yup from 'yup';
+import { getFieldValidationMessage } from '../lib/getFieldValidationMessage';
+import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
 import {
   objectIdSchema,
   requiredStringSchema,
   requiredStringTranslationSchema,
-} from 'validation/schemaTemplates';
-import * as Yup from 'yup';
+} from './schemaTemplates';
 
 export const roleIdSchema = (args: ValidationSchemaArgsInterface) => {
   return objectIdSchema({ ...args, slug: 'validation.roles.id' });

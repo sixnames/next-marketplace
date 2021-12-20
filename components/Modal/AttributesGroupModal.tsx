@@ -1,15 +1,18 @@
 import * as React from 'react';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
-import ModalButtons from 'components/Modal/ModalButtons';
 import { Form, Formik } from 'formik';
-import Button from 'components/button/Button';
-import { useAppContext } from 'context/appContext';
-import { CreateAttributesGroupInput, UpdateAttributesGroupInput } from 'generated/apolloComponents';
-import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
-import useValidationSchema from 'hooks/useValidationSchema';
-import { TranslationModel } from 'db/dbModels';
-import { attributesGroupModalSchema } from 'validation/attributesGroupSchema';
+import { useAppContext } from '../../context/appContext';
+import { TranslationModel } from '../../db/dbModels';
+import {
+  CreateAttributesGroupInput,
+  UpdateAttributesGroupInput,
+} from '../../generated/apolloComponents';
+import useValidationSchema from '../../hooks/useValidationSchema';
+import { attributesGroupModalSchema } from '../../validation/attributesGroupSchema';
+import WpButton from '../button/WpButton';
+import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
+import ModalButtons from './ModalButtons';
+import ModalFrame from './ModalFrame';
+import ModalTitle from './ModalTitle';
 
 type AttributesGroupModalValuesType =
   | CreateAttributesGroupInput
@@ -51,13 +54,17 @@ const AttributesGroupModal: React.FC<AttributesGroupModalInterface> = ({ nameI18
               />
 
               <ModalButtons>
-                <Button type={'submit'} testId={'attributes-group-submit'}>
+                <WpButton type={'submit'} testId={'attributes-group-submit'}>
                   {nameI18n ? 'Изменить' : 'Создать'}
-                </Button>
+                </WpButton>
 
-                <Button theme={'secondary'} onClick={hideModal} testId={'attributes-group-decline'}>
+                <WpButton
+                  theme={'secondary'}
+                  onClick={hideModal}
+                  testId={'attributes-group-decline'}
+                >
                   Отмена
-                </Button>
+                </WpButton>
               </ModalButtons>
             </Form>
           );

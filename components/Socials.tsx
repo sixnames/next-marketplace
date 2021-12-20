@@ -1,6 +1,6 @@
-import Icon from 'components/Icon';
 import * as React from 'react';
-import { IconType } from 'types/iconTypes';
+import { IconType } from '../types/iconTypes';
+import WpIcon from './WpIcon';
 
 interface SocialLinkInterface {
   href?: string | null;
@@ -19,7 +19,7 @@ const SocialLink: React.FC<SocialLinkInterface> = ({ href, icon }) => {
         window.open(href, '_blank');
       }}
     >
-      <Icon className='w-4 h-4' name={icon} />
+      <WpIcon className='w-4 h-4' name={icon} />
     </div>
   );
 };

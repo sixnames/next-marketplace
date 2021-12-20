@@ -1,30 +1,30 @@
+import { getObjectId } from 'mongo-seeding';
+import { ObjectId } from 'mongodb';
+import { ObjectIdModel } from '../db/dbModels';
+import {
+  AttributeInterface,
+  BrandInterface,
+  CategoryInterface,
+  OptionInterface,
+  RubricInterface,
+} from '../db/uiInterfaces';
+import { getFieldStringLocale } from '../lib/i18n';
+import { getTreeFromList } from '../lib/treeUtils';
 import {
   ATTRIBUTE_POSITION_IN_TITLE_AFTER_KEYWORD,
   ATTRIBUTE_POSITION_IN_TITLE_REPLACE_KEYWORD,
   ATTRIBUTE_VARIANT_SELECT,
   ATTRIBUTE_VIEW_VARIANT_TAG,
+  DEFAULT_LOCALE,
   FILTER_BRAND_KEY,
   FILTER_CATEGORY_KEY,
-  DEFAULT_LOCALE,
-  GENDER_IT,
-  FILTER_PRICE_KEY,
-  SECONDARY_LOCALE,
-  FILTER_RUBRIC_KEY,
   FILTER_COMMON_KEY,
   FILTER_NO_PHOTO_KEY,
-} from 'config/common';
-import { ObjectIdModel } from 'db/dbModels';
-import {
-  BrandInterface,
-  CategoryInterface,
-  OptionInterface,
-  AttributeInterface,
-  RubricInterface,
-} from 'db/uiInterfaces';
-import { getFieldStringLocale } from 'lib/i18n';
-import { getTreeFromList } from 'lib/treeUtils';
-import { getObjectId } from 'mongo-seeding';
-import { ObjectId } from 'mongodb';
+  FILTER_PRICE_KEY,
+  FILTER_RUBRIC_KEY,
+  GENDER_IT,
+  SECONDARY_LOCALE,
+} from './common';
 
 export const getCommonOptionFields = (
   optionsGroupId: ObjectIdModel,

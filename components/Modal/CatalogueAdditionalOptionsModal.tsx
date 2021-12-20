@@ -1,12 +1,12 @@
-import OptionsModal, { OptionsModalInterface } from 'components/Modal/OptionsModal';
-import { ALL_ALPHABETS, FILTER_PAGE_KEY, FILTER_SEPARATOR } from 'config/common';
-import { useAppContext } from 'context/appContext';
-import { AlphabetListModelType } from 'db/dbModels';
-import { CatalogueFilterAttributeOptionInterface } from 'db/uiInterfaces';
-import { alwaysArray } from 'lib/arrayUtils';
-import { noNaN } from 'lib/numbers';
 import { useRouter } from 'next/router';
 import * as React from 'react';
+import { ALL_ALPHABETS, FILTER_PAGE_KEY, FILTER_SEPARATOR } from '../../config/common';
+import { useAppContext } from '../../context/appContext';
+import { AlphabetListModelType } from '../../db/dbModels';
+import { CatalogueFilterAttributeOptionInterface } from '../../db/uiInterfaces';
+import { alwaysArray } from '../../lib/arrayUtils';
+import { noNaN } from '../../lib/numbers';
+import OptionsModal, { OptionsModalInterface } from './OptionsModal';
 
 interface GetFilterOptionsAlphabetListInterface {
   options?: CatalogueFilterAttributeOptionInterface[] | null;

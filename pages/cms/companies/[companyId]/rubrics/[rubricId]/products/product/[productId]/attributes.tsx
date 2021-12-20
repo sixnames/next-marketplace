@@ -1,33 +1,40 @@
-import ConsoleRubricProductAttributes from 'components/console/ConsoleRubricProductAttributes';
+import { ObjectId } from 'mongodb';
+import * as React from 'react';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import ConsoleRubricProductAttributes from '../../../../../../../../../components/console/ConsoleRubricProductAttributes';
 import {
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
   ATTRIBUTE_VARIANT_NUMBER,
   ATTRIBUTE_VARIANT_SELECT,
   ATTRIBUTE_VARIANT_STRING,
   ROUTE_CMS,
-} from 'config/common';
-import { COL_ATTRIBUTES_GROUPS, COL_COMPANIES } from 'db/collectionNames';
-import { rubricAttributesGroupAttributesPipeline } from 'db/dao/constantPipelines';
-import { ObjectIdModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+} from '../../../../../../../../../config/common';
 import {
-  ProductAttributeInterface,
-  ProductInterface,
-  AttributesGroupInterface,
-  ProductAttributesGroupInterface,
-  CompanyInterface,
+  COL_ATTRIBUTES_GROUPS,
+  COL_COMPANIES,
+} from '../../../../../../../../../db/collectionNames';
+import { rubricAttributesGroupAttributesPipeline } from '../../../../../../../../../db/dao/constantPipelines';
+import { ObjectIdModel } from '../../../../../../../../../db/dbModels';
+import { getDatabase } from '../../../../../../../../../db/mongodb';
+import {
   AppContentWrapperBreadCrumbs,
-} from 'db/uiInterfaces';
-import CmsProductLayout from 'layout/cms/CmsProductLayout';
-import { sortObjectsByField } from 'lib/arrayUtils';
-import { getFieldStringLocale } from 'lib/i18n';
-import { getAttributeReadableValue } from 'lib/productAttributesUtils';
-import { getCmsProduct } from 'lib/productUtils';
-import { ObjectId } from 'mongodb';
-import * as React from 'react';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+  AttributesGroupInterface,
+  CompanyInterface,
+  ProductAttributeInterface,
+  ProductAttributesGroupInterface,
+  ProductInterface,
+} from '../../../../../../../../../db/uiInterfaces';
+import CmsProductLayout from '../../../../../../../../../layout/cms/CmsProductLayout';
+import ConsoleLayout from '../../../../../../../../../layout/cms/ConsoleLayout';
+import { sortObjectsByField } from '../../../../../../../../../lib/arrayUtils';
+import { getFieldStringLocale } from '../../../../../../../../../lib/i18n';
+import { getAttributeReadableValue } from '../../../../../../../../../lib/productAttributesUtils';
+import { getCmsProduct } from '../../../../../../../../../lib/productUtils';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../../../../../../../lib/ssrUtils';
 
 interface ProductAttributesInterface {
   product: ProductInterface;

@@ -1,12 +1,12 @@
-import { ASSETS_DIST_PAGES, ASSETS_DIST_TEMPLATES } from 'config/common';
-import { COL_PAGES } from 'db/collectionNames';
-import { PageModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { storeUploads } from 'lib/assetUtils/assetUtils';
-import { parseRestApiFormData } from 'lib/restApi';
-import { getRequestParams } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { ASSETS_DIST_PAGES, ASSETS_DIST_TEMPLATES } from '../../../config/common';
+import { COL_PAGES } from '../../../db/collectionNames';
+import { PageModel } from '../../../db/dbModels';
+import { getDatabase } from '../../../db/mongodb';
+import { storeUploads } from '../../../lib/assetUtils/assetUtils';
+import { parseRestApiFormData } from '../../../lib/restApi';
+import { getRequestParams } from '../../../lib/sessionHelpers';
 
 export const config = {
   api: {

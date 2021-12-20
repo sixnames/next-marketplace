@@ -1,27 +1,34 @@
-import ContentItemControls from 'components/button/ContentItemControls';
-import Currency from 'components/Currency';
-import FormattedDateTime from 'components/FormattedDateTime';
-import Inner from 'components/Inner';
-import Link from 'components/Link/Link';
-import LinkEmail from 'components/Link/LinkEmail';
-import LinkPhone from 'components/Link/LinkPhone';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import Pager from 'components/Pager';
-import Table, { TableColumn } from 'components/Table';
-import Title from 'components/Title';
-import { ROUTE_CMS } from 'config/common';
-import { CONFIRM_MODAL } from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
-import { getConsoleOrders, GetConsoleOrdersPayloadType } from 'db/dao/orders/getConsoleOrders';
-import { OrderInterface } from 'db/uiInterfaces';
-import { useDeleteOrder } from 'hooks/mutations/useOrderMutations';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import ContentItemControls from '../../../components/button/ContentItemControls';
+import Currency from '../../../components/Currency';
+import FormattedDateTime from '../../../components/FormattedDateTime';
+import Inner from '../../../components/Inner';
+import LinkEmail from '../../../components/Link/LinkEmail';
+import LinkPhone from '../../../components/Link/LinkPhone';
+import WpLink from '../../../components/Link/WpLink';
+import { ConfirmModalInterface } from '../../../components/Modal/ConfirmModal';
+import Pager from '../../../components/Pager';
+import WpTable, { WpTableColumn } from '../../../components/WpTable';
+import WpTitle from '../../../components/WpTitle';
+import { ROUTE_CMS } from '../../../config/common';
+import { CONFIRM_MODAL } from '../../../config/modalVariants';
+import { useAppContext } from '../../../context/appContext';
+import {
+  getConsoleOrders,
+  GetConsoleOrdersPayloadType,
+} from '../../../db/dao/orders/getConsoleOrders';
+import { OrderInterface } from '../../../db/uiInterfaces';
+import { useDeleteOrder } from '../../../hooks/mutations/useOrderMutations';
+import AppContentWrapper from '../../../layout/AppContentWrapper';
+import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../lib/ssrUtils';
 
 interface OrdersRouteInterface {
   data: GetConsoleOrdersPayloadType;
@@ -33,14 +40,17 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ data }) => {
 
   const [deleteOrder] = useDeleteOrder();
 
-  const columns: TableColumn<OrderInterface>[] = [
+  const columns: WpTableColumn<OrderInterface>[] = [
     {
       accessor: 'itemId',
       headTitle: 'ID',
       render: ({ cellData, dataItem }) => (
-        <Link testId={`order-${dataItem.itemId}-link`} href={`${ROUTE_CMS}/orders/${dataItem._id}`}>
+        <WpLink
+          testId={`order-${dataItem.itemId}-link`}
+          href={`${ROUTE_CMS}/orders/${dataItem._id}`}
+        >
           {cellData}
-        </Link>
+        </WpLink>
       ),
     },
     {
@@ -141,10 +151,10 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ data }) => {
         <title>{`Заказы`}</title>
       </Head>
       <Inner>
-        <Title subtitle={<div>Всего заказов {data.totalDocs}</div>}>Заказы</Title>
+        <WpTitle subtitle={<div>Всего заказов {data.totalDocs}</div>}>Заказы</WpTitle>
 
         <div className='overflow-x-auto' data-cy={'orders-list'}>
-          <Table<OrderInterface>
+          <WpTable<OrderInterface>
             columns={columns}
             data={data.docs}
             testIdKey={'itemId'}

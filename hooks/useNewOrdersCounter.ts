@@ -1,12 +1,12 @@
-import { ONE_MINUTE } from 'config/common';
+import * as React from 'react';
+import useSWR from 'swr';
+import { ONE_MINUTE } from '../config/common';
 import {
   GetNewOrdersCounterInputInterface,
   GetNewOrdersCounterPayload,
-} from 'db/dao/orders/getNewOrdersCounter';
-import { noNaN } from 'lib/numbers';
-import { stringifyApiParams } from 'lib/qsUtils';
-import * as React from 'react';
-import useSWR from 'swr';
+} from '../db/dao/orders/getNewOrdersCounter';
+import { noNaN } from '../lib/numbers';
+import { stringifyApiParams } from '../lib/qsUtils';
 
 export interface UseNewOrdersCounterInterface {
   input?: GetNewOrdersCounterInputInterface;

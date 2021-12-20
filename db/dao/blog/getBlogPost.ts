@@ -1,10 +1,10 @@
-import { FILTER_SEPARATOR, DEFAULT_LOCALE, SORT_ASC } from 'config/common';
-import { COL_BLOG_ATTRIBUTES, COL_BLOG_POSTS, COL_OPTIONS, COL_USERS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { BlogAttributeInterface, BlogPostInterface } from 'db/uiInterfaces';
-import { getFieldStringLocale } from 'lib/i18n';
-import { getFullName } from 'lib/nameUtils';
 import { ObjectId } from 'mongodb';
+import { DEFAULT_LOCALE, FILTER_SEPARATOR, SORT_ASC } from '../../../config/common';
+import { getFieldStringLocale } from '../../../lib/i18n';
+import { getFullName } from '../../../lib/nameUtils';
+import { COL_BLOG_ATTRIBUTES, COL_BLOG_POSTS, COL_OPTIONS, COL_USERS } from '../../collectionNames';
+import { getDatabase } from '../../mongodb';
+import { BlogAttributeInterface, BlogPostInterface } from '../../uiInterfaces';
 
 interface GetBlogPostInterface {
   locale: string;

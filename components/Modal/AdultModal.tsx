@@ -1,10 +1,10 @@
-import Button from 'components/button/Button';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalText from 'components/Modal/ModalText';
-import ModalTitle from 'components/Modal/ModalTitle';
-import { ADULT_KEY, ADULT_TRUE } from 'config/common';
-import { useAppContext } from 'context/appContext';
 import * as React from 'react';
+import { ADULT_KEY, ADULT_TRUE } from '../../config/common';
+import { useAppContext } from '../../context/appContext';
+import WpButton from '../button/WpButton';
+import ModalFrame from './ModalFrame';
+import ModalText from './ModalText';
+import ModalTitle from './ModalTitle';
 
 const AdultModal: React.FC = () => {
   const { hideModal } = useAppContext();
@@ -18,14 +18,14 @@ const AdultModal: React.FC = () => {
           предназначены только для личного использования.
         </p>
       </ModalText>
-      <Button
+      <WpButton
         onClick={() => {
           window.localStorage.setItem(ADULT_KEY, ADULT_TRUE);
           hideModal();
         }}
       >
         Мне исполнилось 18 лет
-      </Button>
+      </WpButton>
     </ModalFrame>
   );
 };

@@ -1,13 +1,13 @@
+import { AggregateOptions } from 'mongodb';
 import {
   DEFAULT_PAGE,
   PAGINATION_DEFAULT_LIMIT,
   SORT_BY_CREATED_AT,
   SORT_BY_ID_DIRECTION,
   SORT_DESC,
-} from 'config/common';
-import { PaginationInputModel, PaginationPayloadType } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { AggregateOptions } from 'mongodb';
+} from '../../config/common';
+import { PaginationInputModel, PaginationPayloadType } from '../dbModels';
+import { getDatabase } from '../mongodb';
 
 interface CastPaginationInputPayload {
   search?: string | null;

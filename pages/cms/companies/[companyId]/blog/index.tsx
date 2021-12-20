@@ -1,17 +1,24 @@
-import BlogPostsList from 'components/blog/BlogPostsList';
-import Inner from 'components/Inner';
-import { ROUTE_CMS } from 'config/common';
-import { COL_COMPANIES } from 'db/collectionNames';
-import { getBlogPostsList } from 'db/dao/blog/getBlogPostsList';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, BlogPostInterface, CompanyInterface } from 'db/uiInterfaces';
-
-import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsResult, GetServerSidePropsContext } from 'next';
 import * as React from 'react';
+import BlogPostsList from '../../../../../components/blog/BlogPostsList';
+import Inner from '../../../../../components/Inner';
+import { ROUTE_CMS } from '../../../../../config/common';
+import { COL_COMPANIES } from '../../../../../db/collectionNames';
+import { getBlogPostsList } from '../../../../../db/dao/blog/getBlogPostsList';
+import { getDatabase } from '../../../../../db/mongodb';
+import {
+  AppContentWrapperBreadCrumbs,
+  BlogPostInterface,
+  CompanyInterface,
+} from '../../../../../db/uiInterfaces';
+import CmsCompanyLayout from '../../../../../layout/cms/CmsCompanyLayout';
+import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../../../lib/ssrUtils';
 
 interface BlogPostsListConsumerInterface {
   posts: BlogPostInterface[];

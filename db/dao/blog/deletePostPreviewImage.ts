@@ -1,11 +1,11 @@
-import { COL_BLOG_POSTS } from 'db/collectionNames';
-import { BlogPostModel, BlogPostPayloadModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { deleteUpload } from 'lib/assetUtils/assetUtils';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { deleteUpload } from '../../../lib/assetUtils/assetUtils';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
+import { COL_BLOG_POSTS } from '../../collectionNames';
+import { BlogPostModel, BlogPostPayloadModel } from '../../dbModels';
+import { getDatabase } from '../../mongodb';
 
 export interface DeleteBlogPostPreviewImageInterface {
   blogPostId: string;

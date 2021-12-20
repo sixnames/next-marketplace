@@ -1,8 +1,8 @@
-import { REQUEST_METHOD_GET } from 'config/common';
-import { getNewOrdersCounter } from 'db/dao/orders/getNewOrdersCounter';
-import { parseApiParams } from 'lib/qsUtils';
-import { sendApiRouteResponse, sendApiRouteWrongMethod } from 'lib/sessionHelpers';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { REQUEST_METHOD_GET } from '../../../config/common';
+import { getNewOrdersCounter } from '../../../db/dao/orders/getNewOrdersCounter';
+import { parseApiParams } from '../../../lib/qsUtils';
+import { sendApiRouteResponse, sendApiRouteWrongMethod } from '../../../lib/sessionHelpers';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === REQUEST_METHOD_GET) {

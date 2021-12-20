@@ -1,19 +1,19 @@
-import FormikInput from 'components/FormElements/Input/FormikInput';
-import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
-import InputLine from 'components/FormElements/Input/InputLine';
-import FormikSelect from 'components/FormElements/Select/FormikSelect';
-import RequestError from 'components/RequestError';
-import Spinner from 'components/Spinner';
-import { OPTIONS_GROUP_VARIANT_COLOR } from 'config/common';
-import { getConstantTranslation } from 'config/constantTranslations';
-import { useLocaleContext } from 'context/localeContext';
 import { useFormikContext } from 'formik';
+import * as React from 'react';
+import { OPTIONS_GROUP_VARIANT_COLOR } from '../../config/common';
+import { getConstantTranslation } from '../../config/constantTranslations';
+import { useLocaleContext } from '../../context/localeContext';
 import {
   AddOptionToGroupInput,
   OptionsGroupVariant,
   useGetGenderOptionsQuery,
-} from 'generated/apolloComponents';
-import * as React from 'react';
+} from '../../generated/apolloComponents';
+import FormikInput from '../FormElements/Input/FormikInput';
+import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
+import InputLine from '../FormElements/Input/InputLine';
+import FormikSelect from '../FormElements/Select/FormikSelect';
+import RequestError from '../RequestError';
+import Spinner from '../Spinner';
 
 export interface OptionMainFieldsInterface {
   groupVariant: OptionsGroupVariant;

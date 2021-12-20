@@ -1,27 +1,27 @@
+import { ObjectId } from 'mongodb';
+import * as React from 'react';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import CompanyRubricDetails, {
   CompanyRubricDetailsInterface,
-} from 'components/company/CompanyRubricDetails';
+} from '../../../../../components/company/CompanyRubricDetails';
 import {
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   CATALOGUE_SEO_TEXT_POSITION_TOP,
   ROUTE_CONSOLE,
-} from 'config/common';
-import { COL_RUBRICS } from 'db/collectionNames';
-import { RubricModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, RubricInterface } from 'db/uiInterfaces';
-import CmsRubricLayout from 'layout/cms/CmsRubricLayout';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { getFieldStringLocale } from 'lib/i18n';
-import { getRubricAllSeoContents } from 'lib/seoContentUtils';
-import { ObjectId } from 'mongodb';
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+} from '../../../../../config/common';
+import { COL_RUBRICS } from '../../../../../db/collectionNames';
+import { RubricModel } from '../../../../../db/dbModels';
+import { getDatabase } from '../../../../../db/mongodb';
+import { AppContentWrapperBreadCrumbs, RubricInterface } from '../../../../../db/uiInterfaces';
+import CmsRubricLayout from '../../../../../layout/cms/CmsRubricLayout';
+import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
+import { getFieldStringLocale } from '../../../../../lib/i18n';
+import { getRubricAllSeoContents } from '../../../../../lib/seoContentUtils';
 import {
   castDbData,
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
-} from 'lib/ssrUtils';
+} from '../../../../../lib/ssrUtils';
 
 interface RubricDetailsInterface extends CompanyRubricDetailsInterface {}
 

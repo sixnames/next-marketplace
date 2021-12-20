@@ -1,6 +1,6 @@
-import Breadcrumbs from 'components/Breadcrumbs';
-import { AppContentWrapperBreadCrumbs } from 'db/uiInterfaces';
 import * as React from 'react';
+import WpBreadcrumbs from '../components/WpBreadcrumbs';
+import { AppContentWrapperBreadCrumbs } from '../db/uiInterfaces';
 
 interface AppContentWrapperInterface {
   testId?: string | number;
@@ -15,7 +15,7 @@ const AppContentWrapper: React.FC<AppContentWrapperInterface> = ({
   return (
     <div data-cy={testId} className={`${breadcrumbs ? '' : 'pt-12'} pb-11`}>
       {breadcrumbs ? (
-        <Breadcrumbs
+        <WpBreadcrumbs
           currentPageName={breadcrumbs.currentPageName}
           config={breadcrumbs.config}
           noMainPage={true}

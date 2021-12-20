@@ -1,15 +1,15 @@
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { CountryModel, CurrencyModel, CurrencyPayloadModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { COL_COUNTRIES, COL_CURRENCIES } from 'db/collectionNames';
-import { SORT_ASC } from 'config/common';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
+import { SORT_ASC } from '../config/common';
+import { COL_COUNTRIES, COL_CURRENCIES } from '../db/collectionNames';
+import { CountryModel, CurrencyModel, CurrencyPayloadModel } from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from 'lib/sessionHelpers';
-import { createCurrencySchema, updateCurrencySchema } from 'validation/currencySchema';
+} from '../lib/sessionHelpers';
+import { createCurrencySchema, updateCurrencySchema } from '../validation/currencySchema';
 
 export const Currency = objectType({
   name: 'Currency',

@@ -1,6 +1,6 @@
-import OptionsModal, { OptionsModalCommonPropsInterface } from 'components/Modal/OptionsModal';
-import { useGetBrandCollectionAlphabetListsQuery } from 'generated/apolloComponents';
 import * as React from 'react';
+import { useGetBrandCollectionAlphabetListsQuery } from '../../generated/apolloComponents';
+import OptionsModal, { OptionsModalCommonPropsInterface } from './OptionsModal';
 
 export interface BrandCollectionOptionsModalInterface extends OptionsModalCommonPropsInterface {
   brandSlug?: string;

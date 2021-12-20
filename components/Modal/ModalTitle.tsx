@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { SizeType } from 'types/clientTypes';
+import { SizeType } from '../../types/clientTypes';
 
 interface ModalTitleInterface {
   className?: string;

@@ -1,14 +1,14 @@
-import CounterSticker from 'components/CounterSticker';
-import { CMS_ORDERS_NAV_ITEM_SLUG, CONSOLE_ORDERS_NAV_ITEM_SLUG } from 'config/common';
-import { NavItemInterface } from 'db/uiInterfaces';
-import { useNewOrdersCounter } from 'hooks/useNewOrdersCounter';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import Icon from 'components/Icon';
-import Link from '../../components/Link/Link';
+import CounterSticker from '../../components/CounterSticker';
+import WpLink from '../../components/Link/WpLink';
+import WpIcon from '../../components/WpIcon';
+import WpTooltip from '../../components/WpTooltip';
+import { CMS_ORDERS_NAV_ITEM_SLUG, CONSOLE_ORDERS_NAV_ITEM_SLUG } from '../../config/common';
+import { NavItemInterface } from '../../db/uiInterfaces';
 import useCompact from '../../hooks/useCompact';
-import WpTooltip from 'components/WpTooltip';
-import { IconType } from 'types/iconTypes';
+import { useNewOrdersCounter } from '../../hooks/useNewOrdersCounter';
+import { IconType } from '../../types/iconTypes';
 
 interface CmsNavItemNameInterface {
   icon?: string | null;
@@ -32,7 +32,7 @@ export const CmsNavItemName: React.FC<CmsNavItemNameInterface> = ({
     >
       {icon ? (
         <span>
-          <Icon className='w-[18px] h-[18px]' name={iconType} />
+          <WpIcon className='w-[18px] h-[18px]' name={iconType} />
         </span>
       ) : null}
       {compact ? null : <span className=''>{name}</span>}
@@ -134,14 +134,14 @@ const CmsNavItem: React.FC<AppNavItemInterface> = ({
 
               return (
                 <li key={name} data-cy={`app-nav-item-${slug}`}>
-                  <Link
+                  <WpLink
                     href={`${basePath}${path}`}
                     className={`block ${
                       isCurrent ? 'bg-theme text-white' : 'text-white hover:text-theme'
                     }`}
                   >
                     <span className='pr-[10px] py-[10px]'>{name}</span>
-                  </Link>
+                  </WpLink>
                 </li>
               );
             })}
@@ -156,14 +156,14 @@ const CmsNavItem: React.FC<AppNavItemInterface> = ({
     <li className={itemClassName} data-cy={`app-nav-item-${slug}`}>
       <WpTooltip title={isCompact ? `${name}` : ''}>
         <div>
-          <Link
+          <WpLink
             href={`${basePath}${path}`}
             className={`block hover:no-underline ${
               isCurrent ? 'bg-theme text-white' : 'text-white hover:text-theme'
             }`}
           >
             <CmsNavItemName name={name} compact={isCompact} icon={icon} counter={counter} />
-          </Link>
+          </WpLink>
         </div>
       </WpTooltip>
     </li>

@@ -1,14 +1,14 @@
-import FormikTextarea from 'components/FormElements/Textarea/FormikTextarea';
 import * as React from 'react';
+import { useLocaleContext } from '../../../context/localeContext';
+import { TranslationModel } from '../../../db/dbModels';
+import WpAccordion from '../../WpAccordion';
+import WpIcon from '../../WpIcon';
+import WpTooltip from '../../WpTooltip';
+import FormikTextarea from '../Textarea/FormikTextarea';
 import FormikInput, { FormikInputPropsInterface } from './FormikInput';
 import { useFormikContext } from 'formik';
 import { get } from 'lodash';
-import { useLocaleContext } from 'context/localeContext';
-import Accordion from 'components/Accordion';
 import InputLine from './InputLine';
-import Icon from 'components/Icon';
-import WpTooltip from 'components/WpTooltip';
-import { TranslationModel } from 'db/dbModels';
 
 interface FormikTranslationsInputInterface extends FormikInputPropsInterface {
   variant?: 'input' | 'textarea';
@@ -109,14 +109,14 @@ const FormikTranslationsInput: React.FC<FormikTranslationsInputInterface> = ({
 
         return (
           <div className={isLast ? '' : 'mb-6'} key={name}>
-            <Accordion
+            <WpAccordion
               testId={`${testId}-accordion-${localeSlug}`}
               isOpen={isDefault}
               title={localeSlug}
               titleRight={
                 <WpTooltip title={accordionIconTooltip}>
                   <div className={accordionIconClass}>
-                    <Icon className='w-4 h-4' name={accordionIcon} />
+                    <WpIcon className='w-4 h-4' name={accordionIcon} />
                   </div>
                 </WpTooltip>
               }
@@ -130,7 +130,7 @@ const FormikTranslationsInput: React.FC<FormikTranslationsInputInterface> = ({
                   <FormikInput {...props} name={name} testId={`${testId}-${localeSlug}`} low />
                 )}
               </div>
-            </Accordion>
+            </WpAccordion>
           </div>
         );
       })}

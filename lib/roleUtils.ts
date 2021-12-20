@@ -1,9 +1,9 @@
-import { COL_ROLE_RULES } from 'db/collectionNames';
-import { ObjectIdModel, RoleRuleBase } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { RoleRuleInterface } from 'db/uiInterfaces';
-import { getFieldStringLocale } from 'lib/i18n';
 import { ObjectId } from 'mongodb';
+import { COL_ROLE_RULES } from '../db/collectionNames';
+import { ObjectIdModel, RoleRuleBase } from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import { RoleRuleInterface } from '../db/uiInterfaces';
+import { getFieldStringLocale } from './i18n';
 
 export type RoleRuleSlugType =
   // Attributes

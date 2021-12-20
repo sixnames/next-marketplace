@@ -1,15 +1,19 @@
-import { COL_ATTRIBUTES, COL_ATTRIBUTES_GROUPS, COL_PRODUCT_ATTRIBUTES } from 'db/collectionNames';
+import { ObjectId } from 'mongodb';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
+import {
+  COL_ATTRIBUTES,
+  COL_ATTRIBUTES_GROUPS,
+  COL_PRODUCT_ATTRIBUTES,
+} from '../../collectionNames';
 import {
   AttributeModel,
   AttributePayloadModel,
   AttributesGroupModel,
   ProductAttributeModel,
-} from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
-import { ObjectId } from 'mongodb';
+} from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface DeleteAttributeInputInterface {
   attributeId: string;

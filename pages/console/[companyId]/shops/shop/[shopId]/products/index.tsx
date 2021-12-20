@@ -1,20 +1,25 @@
-import { ROUTE_CONSOLE } from 'config/common';
-import { COL_RUBRICS, COL_SHOP_PRODUCTS, COL_SHOPS } from 'db/collectionNames';
-import { RubricModel, ShopModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, RubricInterface } from 'db/uiInterfaces';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { getI18nLocaleValue } from 'lib/i18n';
-import { noNaN } from 'lib/numbers';
+import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import * as React from 'react';
+import ShopRubrics, {
+  ShopRubricsInterface,
+} from '../../../../../../../components/shops/ShopRubrics';
+import { ROUTE_CONSOLE } from '../../../../../../../config/common';
+import { COL_RUBRICS, COL_SHOP_PRODUCTS, COL_SHOPS } from '../../../../../../../db/collectionNames';
+import { RubricModel, ShopModel } from '../../../../../../../db/dbModels';
+import { getDatabase } from '../../../../../../../db/mongodb';
+import {
+  AppContentWrapperBreadCrumbs,
+  RubricInterface,
+} from '../../../../../../../db/uiInterfaces';
+import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
+import { getI18nLocaleValue } from '../../../../../../../lib/i18n';
+import { noNaN } from '../../../../../../../lib/numbers';
 import {
   castDbData,
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
-} from 'lib/ssrUtils';
-import { ObjectId } from 'mongodb';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import * as React from 'react';
-import ShopRubrics, { ShopRubricsInterface } from 'components/shops/ShopRubrics';
+} from '../../../../../../../lib/ssrUtils';
 
 interface CompanyShopProductsInterface
   extends GetConsoleInitialDataPropsInterface,

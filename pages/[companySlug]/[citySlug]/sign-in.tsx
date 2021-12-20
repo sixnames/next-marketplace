@@ -1,18 +1,18 @@
-import Button from 'components/button/Button';
-import FormikInput from 'components/FormElements/Input/FormikInput';
-import Inner from 'components/Inner';
-import Title from 'components/Title';
-import { useAppContext } from 'context/appContext';
-import { useSiteContext } from 'context/siteContext';
-import { getPageSessionUser } from 'db/dao/user/getPageSessionUser';
-import useValidationSchema from 'hooks/useValidationSchema';
-import SiteLayout, { SiteLayoutProviderInterface } from 'layout/SiteLayout';
-import { getSiteInitialData } from 'lib/ssrUtils';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { signIn } from 'next-auth/client';
-import { signInSchema } from 'validation/userSchema';
 import { Form, Formik } from 'formik';
+import WpButton from '../../../components/button/WpButton';
+import FormikInput from '../../../components/FormElements/Input/FormikInput';
+import Inner from '../../../components/Inner';
+import WpTitle from '../../../components/WpTitle';
+import { useAppContext } from '../../../context/appContext';
+import { useSiteContext } from '../../../context/siteContext';
+import { getPageSessionUser } from '../../../db/dao/user/getPageSessionUser';
+import useValidationSchema from '../../../hooks/useValidationSchema';
+import SiteLayout, { SiteLayoutProviderInterface } from '../../../layout/SiteLayout';
+import { getSiteInitialData } from '../../../lib/ssrUtils';
+import { signInSchema } from '../../../validation/userSchema';
 
 const SignInRoute: React.FC = () => {
   const { showLoading, hideLoading } = useAppContext();
@@ -61,7 +61,7 @@ const SignInRoute: React.FC = () => {
         {() => {
           return (
             <Form className='max-w-[20rem] py-12 mx-auto'>
-              <Title className='justify-center'>Авторизация</Title>
+              <WpTitle className='justify-center'>Авторизация</WpTitle>
 
               <FormikInput
                 label={'Ваш Email'}
@@ -77,13 +77,13 @@ const SignInRoute: React.FC = () => {
                 testId={'sign-in-password'}
               />
 
-              <Button
+              <WpButton
                 // disabled={errors.email || errors.password}
                 type={'submit'}
                 testId={'sign-in-submit'}
               >
                 Войти
-              </Button>
+              </WpButton>
               {isError ? (
                 <div className='mt-6 font-medium text-red-500'>
                   Пожалуйста проверьте правильность введённых данных

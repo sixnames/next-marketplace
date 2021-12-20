@@ -1,6 +1,6 @@
-import WpImage from 'components/WpImage';
 import * as React from 'react';
-import { TABLE_IMAGE_WIDTH } from 'config/common';
+import { TABLE_IMAGE_WIDTH } from '../config/common';
+import WpImage from './WpImage';
 
 interface TableRowImageInterface {
   src: string;

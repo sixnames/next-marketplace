@@ -1,7 +1,7 @@
-import { ROUTE_CATALOGUE } from 'config/common';
-import { getSiteInitialData } from 'lib/ssrUtils';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
+import { ROUTE_CATALOGUE } from '../../../config/common';
+import { getSiteInitialData } from '../../../lib/ssrUtils';
 
 const CataloguePage: NextPage = () => {
   return <div />;

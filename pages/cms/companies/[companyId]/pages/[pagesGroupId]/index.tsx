@@ -1,16 +1,20 @@
-import Inner from 'components/Inner';
-import PagesList, { PagesListInterface } from 'components/Pages/PagesList';
-import { ROUTE_CMS } from 'config/common';
-import { COL_COMPANIES } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, CompanyInterface } from 'db/uiInterfaces';
-import CmsCompanyLayout from 'layout/cms/CmsCompanyLayout';
-import { getPagesListSsr } from 'lib/pageUtils';
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+import Inner from '../../../../../../components/Inner';
+import PagesList, { PagesListInterface } from '../../../../../../components/Pages/PagesList';
+import { ROUTE_CMS } from '../../../../../../config/common';
+import { COL_COMPANIES } from '../../../../../../db/collectionNames';
+import { getDatabase } from '../../../../../../db/mongodb';
+import { AppContentWrapperBreadCrumbs, CompanyInterface } from '../../../../../../db/uiInterfaces';
+import CmsCompanyLayout from '../../../../../../layout/cms/CmsCompanyLayout';
+import { getPagesListSsr } from '../../../../../../lib/pageUtils';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../../../../lib/ssrUtils';
+import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
 
 interface PagesListPageInterface
   extends GetAppInitialDataPropsInterface,

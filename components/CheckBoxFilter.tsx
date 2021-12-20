@@ -1,23 +1,23 @@
-import Accordion from 'components/Accordion';
-import FilterSelectedAttributes from 'components/FilterSelectedAttributes';
-import Icon from 'components/Icon';
-import Link from 'components/Link/Link';
-import { CatalogueAdditionalOptionsModalInterface } from 'components/Modal/CatalogueAdditionalOptionsModal';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 import {
   CATALOGUE_FILTER_VISIBLE_OPTIONS,
   FILTER_BRAND_COLLECTION_KEY,
   FILTER_BRAND_KEY,
-} from 'config/common';
-import { CATALOGUE_ADDITIONAL_OPTIONS_MODAL } from 'config/modalVariants';
-import { useAppContext } from 'context/appContext';
-import { useConfigContext } from 'context/configContext';
+} from '../config/common';
+import { CATALOGUE_ADDITIONAL_OPTIONS_MODAL } from '../config/modalVariants';
+import { useAppContext } from '../context/appContext';
+import { useConfigContext } from '../context/configContext';
 import {
   CatalogueFilterAttributeInterface,
   CatalogueFilterAttributeOptionInterface,
-} from 'db/uiInterfaces';
-import { FilterBaseInterface } from 'layout/catalogue/CatalogueFilter';
-import { useRouter } from 'next/router';
-import * as React from 'react';
+} from '../db/uiInterfaces';
+import { FilterBaseInterface } from '../layout/catalogue/CatalogueFilter';
+import FilterSelectedAttributes from './FilterSelectedAttributes';
+import WpLink from './Link/WpLink';
+import { CatalogueAdditionalOptionsModalInterface } from './Modal/CatalogueAdditionalOptionsModal';
+import WpAccordion from './WpAccordion';
+import WpIcon from './WpIcon';
 
 export function getFilterOptions(
   maxVisibleOptions: number,
@@ -74,7 +74,7 @@ const CheckBoxFilterAttributeOptions: React.FC<CheckBoxFilterAttributeInterface>
     return (
       <div key={`${option._id}`}>
         {attribute.showAsLinkInFilter ? (
-          <Link
+          <WpLink
             href={`${urlPrefix}${nextSlug}`}
             onClick={onClick}
             testId={testId}
@@ -82,7 +82,7 @@ const CheckBoxFilterAttributeOptions: React.FC<CheckBoxFilterAttributeInterface>
           >
             <span className='relative text-theme w-[18px] h-[18px] border border-border-300 rounded border-1 bg-secondary overflow-hidden text-theme flex-shrink-0'>
               {isSelected ? (
-                <Icon
+                <WpIcon
                   className='absolute w-[14px] h-[14px] top-[1px] left-[1px] z-10'
                   name={'check'}
                 />
@@ -92,7 +92,7 @@ const CheckBoxFilterAttributeOptions: React.FC<CheckBoxFilterAttributeInterface>
             <span className=''>
               <span>{name}</span>
             </span>
-          </Link>
+          </WpLink>
         ) : (
           <div
             data-cy={testId}
@@ -110,7 +110,7 @@ const CheckBoxFilterAttributeOptions: React.FC<CheckBoxFilterAttributeInterface>
           >
             <span className='relative text-theme w-[18px] h-[18px] border border-border-300 rounded border-1 bg-secondary overflow-hidden text-theme flex-shrink-0'>
               {isSelected ? (
-                <Icon
+                <WpIcon
                   className='absolute w-[14px] h-[14px] top-[1px] left-[1px] z-10'
                   name={'check'}
                 />
@@ -207,7 +207,7 @@ const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
   if (attribute.showAsAccordionInFilter) {
     return (
       <div className='mb-8'>
-        <Accordion
+        <WpAccordion
           noTitleStyle
           titleClassName='font-medium text-lg mb-2'
           isOpen={attribute.isSelected}
@@ -241,7 +241,7 @@ const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
             onClick={onClick}
             urlPrefix={urlPrefix}
           />
-        </Accordion>
+        </WpAccordion>
       </div>
     );
   }

@@ -1,42 +1,50 @@
-import FormattedDateTime from 'components/FormattedDateTime';
-import Inner from 'components/Inner';
-import Link from 'components/Link/Link';
-import Table, { TableColumn } from 'components/Table';
-import { ROUTE_CMS, SORT_DESC } from 'config/common';
+import { ObjectId } from 'mongodb';
+import * as React from 'react';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import FormattedDateTime from '../../../../../../components/FormattedDateTime';
+import Inner from '../../../../../../components/Inner';
+import WpLink from '../../../../../../components/Link/WpLink';
+import WpTable, { WpTableColumn } from '../../../../../../components/WpTable';
+import { ROUTE_CMS, SORT_DESC } from '../../../../../../config/common';
 import {
   COL_ORDER_STATUSES,
   COL_ORDERS,
   COL_ROLES,
   COL_SHOPS,
   COL_USERS,
-} from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, OrderInterface, UserInterface } from 'db/uiInterfaces';
-import CmsUserLayout from 'layout/cms/CmsUserLayout';
-import { getFieldStringLocale } from 'lib/i18n';
-import { getFullName } from 'lib/nameUtils';
-import { ObjectId } from 'mongodb';
-import * as React from 'react';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
+} from '../../../../../../db/collectionNames';
+import { getDatabase } from '../../../../../../db/mongodb';
+import {
+  AppContentWrapperBreadCrumbs,
+  OrderInterface,
+  UserInterface,
+} from '../../../../../../db/uiInterfaces';
+import CmsUserLayout from '../../../../../../layout/cms/CmsUserLayout';
+import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
+import { getFieldStringLocale } from '../../../../../../lib/i18n';
+import { getFullName } from '../../../../../../lib/nameUtils';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../../../../lib/ssrUtils';
 
 interface UserOrdersInterface {
   user: UserInterface;
 }
 
 const UserOrdersConsumer: React.FC<UserOrdersInterface> = ({ user }) => {
-  const columns: TableColumn<OrderInterface>[] = [
+  const columns: WpTableColumn<OrderInterface>[] = [
     {
       accessor: 'itemId',
       headTitle: 'ID',
       render: ({ cellData, dataItem }) => (
-        <Link
+        <WpLink
           testId={`order-${dataItem.itemId}-link`}
           href={`${ROUTE_CMS}/users/user/${user._id}/orders/${dataItem._id}`}
         >
           {cellData}
-        </Link>
+        </WpLink>
       ),
     },
     {
@@ -86,7 +94,7 @@ const UserOrdersConsumer: React.FC<UserOrdersInterface> = ({ user }) => {
       <Inner testId={'user-orders-page'}>
         <div className='mb-4 text-secondary-text'>Всего заказов {user.orders?.length}</div>
         <div className='overflow-x-auto'>
-          <Table<OrderInterface> columns={columns} data={user.orders} testIdKey={'itemId'} />
+          <WpTable<OrderInterface> columns={columns} data={user.orders} testIdKey={'itemId'} />
         </div>
       </Inner>
     </CmsUserLayout>

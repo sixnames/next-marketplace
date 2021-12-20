@@ -1,33 +1,37 @@
-import Button from 'components/button/Button';
-import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
-import FormikSelect from 'components/FormElements/Select/FormikSelect';
-import Inner from 'components/Inner';
-import RequestError from 'components/RequestError';
-import Spinner from 'components/Spinner';
-import Title from 'components/Title';
-import { ROUTE_CMS } from 'config/common';
-import { getConstantTranslation } from 'config/constantTranslations';
-import { COL_OPTIONS_GROUPS } from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, OptionsGroupInterface } from 'db/uiInterfaces';
 import { Form, Formik } from 'formik';
+import { ObjectId } from 'mongodb';
+import Head from 'next/head';
+import * as React from 'react';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import WpButton from '../../../../components/button/WpButton';
+import FormikTranslationsInput from '../../../../components/FormElements/Input/FormikTranslationsInput';
+import FormikSelect from '../../../../components/FormElements/Select/FormikSelect';
+import Inner from '../../../../components/Inner';
+import RequestError from '../../../../components/RequestError';
+import Spinner from '../../../../components/Spinner';
+import WpTitle from '../../../../components/WpTitle';
+import { ROUTE_CMS } from '../../../../config/common';
+import { getConstantTranslation } from '../../../../config/constantTranslations';
+import { COL_OPTIONS_GROUPS } from '../../../../db/collectionNames';
+import { getDatabase } from '../../../../db/mongodb';
+import { AppContentWrapperBreadCrumbs, OptionsGroupInterface } from '../../../../db/uiInterfaces';
 import {
   OptionsGroupVariant,
   useOptionsGroupVariantsQuery,
   useUpdateOptionsGroupMutation,
-} from 'generated/apolloComponents';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useValidationSchema from 'hooks/useValidationSchema';
-import AppContentWrapper from 'layout/AppContentWrapper';
-import AppSubNav from 'layout/AppSubNav';
-import { getFieldStringLocale } from 'lib/i18n';
-import { ObjectId } from 'mongodb';
-import Head from 'next/head';
-import * as React from 'react';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import { castDbData, getAppInitialData, GetAppInitialDataPropsInterface } from 'lib/ssrUtils';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { optionsGroupModalSchema } from 'validation/optionsGroupSchema';
+} from '../../../../generated/apolloComponents';
+import useMutationCallbacks from '../../../../hooks/useMutationCallbacks';
+import useValidationSchema from '../../../../hooks/useValidationSchema';
+import AppContentWrapper from '../../../../layout/AppContentWrapper';
+import AppSubNav from '../../../../layout/AppSubNav';
+import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
+import { getFieldStringLocale } from '../../../../lib/i18n';
+import {
+  castDbData,
+  getAppInitialData,
+  GetAppInitialDataPropsInterface,
+} from '../../../../lib/ssrUtils';
+import { optionsGroupModalSchema } from '../../../../validation/optionsGroupSchema';
 
 interface OptionsGroupConsumerInterface {
   optionsGroup: OptionsGroupInterface;
@@ -92,7 +96,7 @@ const OptionsGroupConsumer: React.FC<OptionsGroupConsumerInterface> = ({ options
         <title>{optionsGroup.name}</title>
       </Head>
       <Inner lowBottom>
-        <Title>{optionsGroup.name}</Title>
+        <WpTitle>{optionsGroup.name}</WpTitle>
       </Inner>
       <AppSubNav navConfig={navConfig} />
       <Inner testId={'options-group-details'}>
@@ -130,9 +134,9 @@ const OptionsGroupConsumer: React.FC<OptionsGroupConsumerInterface> = ({ options
                   options={data.getOptionsGroupVariantsOptions}
                 />
 
-                <Button type={'submit'} testId={'options-group-submit'}>
+                <WpButton type={'submit'} testId={'options-group-submit'}>
                   Сохранить
-                </Button>
+                </WpButton>
               </Form>
             );
           }}

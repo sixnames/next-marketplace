@@ -1,11 +1,11 @@
-import FormikAddressInput from 'components/FormElements/Input/FormikAddressInput';
-import FormikInput from 'components/FormElements/Input/FormikInput';
-import FormikMultiLineInput from 'components/FormElements/Input/FormikMultiLineInput';
-import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
-import FormikSelect from 'components/FormElements/Select/FormikSelect';
-import Notification from 'components/Notification';
-import { useConfigContext } from 'context/configContext';
 import * as React from 'react';
+import { useConfigContext } from '../../context/configContext';
+import FormikAddressInput from '../FormElements/Input/FormikAddressInput';
+import FormikInput from '../FormElements/Input/FormikInput';
+import FormikMultiLineInput from '../FormElements/Input/FormikMultiLineInput';
+import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
+import FormikSelect from '../FormElements/Select/FormikSelect';
+import WpNotification from '../WpNotification';
 
 const ShopMainFields: React.FC = () => {
   const { cities } = useConfigContext();
@@ -60,7 +60,7 @@ const ShopMainFields: React.FC = () => {
       />
 
       <div className='mb-8 flex max-w-[980px]'>
-        <Notification
+        <WpNotification
           variant={'success'}
           message={`Попробуйте дописать название города в поисковик адреса,если нет нужного результата.`}
         />

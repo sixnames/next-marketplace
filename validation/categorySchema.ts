@@ -1,8 +1,8 @@
-import { ValidationSchemaArgsInterface } from 'types/validataionTypes';
-import { rubricIdSchema } from 'validation/rubricSchema';
-import { objectIdSchema, requiredStringTranslationSchema } from 'validation/schemaTemplates';
 import * as Yup from 'yup';
-import { attributeIdSchema, attributesGroupIdSchema } from 'validation/attributesGroupSchema';
+import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
+import { attributeIdSchema, attributesGroupIdSchema } from './attributesGroupSchema';
+import { rubricIdSchema } from './rubricSchema';
+import { objectIdSchema, requiredStringTranslationSchema } from './schemaTemplates';
 
 export const categoryIdSchema = (args: ValidationSchemaArgsInterface) => {
   return objectIdSchema({ ...args, slug: 'validation.categories.id' });

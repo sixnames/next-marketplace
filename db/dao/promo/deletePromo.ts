@@ -1,11 +1,11 @@
-import { COL_PROMO, COL_PROMO_PRODUCTS } from 'db/collectionNames';
-import { PromoModel, PromoPayloadModel, PromoProductModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
-import { deleteUpload } from 'lib/assetUtils/assetUtils';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
+import { deleteUpload } from '../../../lib/assetUtils/assetUtils';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
+import { COL_PROMO, COL_PROMO_PRODUCTS } from '../../collectionNames';
+import { PromoModel, PromoPayloadModel, PromoProductModel } from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface DeletePromoInputInterface {
   _id: string;

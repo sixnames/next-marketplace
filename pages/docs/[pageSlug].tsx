@@ -1,7 +1,7 @@
-import { ROUTE_DOCS_PAGES } from 'config/common';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { getSiteInitialData } from 'lib/ssrUtils';
+import { ROUTE_DOCS_PAGES } from '../../config/common';
+import { getSiteInitialData } from '../../lib/ssrUtils';
 
 const CreatedPage: NextPage = () => {
   return <div />;

@@ -1,11 +1,11 @@
-import { COL_PROMO, COL_PROMO_PRODUCTS, COL_SHOP_PRODUCTS } from 'db/collectionNames';
-import { PromoModel, PromoProductModel, ShopProductModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
-import { castUrlFilters } from 'lib/catalogueUtils';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
+import { castUrlFilters } from '../../../lib/catalogueUtils';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
+import { COL_PROMO, COL_PROMO_PRODUCTS, COL_SHOP_PRODUCTS } from '../../collectionNames';
+import { PromoModel, PromoProductModel, ShopProductModel } from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface AddPromoProductsInputInterface {
   promoId: string;

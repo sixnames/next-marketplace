@@ -1,10 +1,10 @@
 import * as Yup from 'yup';
+import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
 import {
   objectIdSchema,
   requiredStringSchema,
   requiredStringTranslationSchema,
 } from './schemaTemplates';
-import { ValidationSchemaArgsInterface } from 'types/validataionTypes';
 
 const minCurrencyLength = 1;
 const minCityKeyLength = 1;

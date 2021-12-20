@@ -1,8 +1,11 @@
-import FormattedDateTime from 'components/FormattedDateTime';
-import Inner from 'components/Inner';
-import Link from 'components/Link/Link';
-import Table, { TableColumn } from 'components/Table';
-import { ROUTE_CONSOLE, SORT_DESC } from 'config/common';
+import { ObjectId } from 'mongodb';
+import * as React from 'react';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import FormattedDateTime from '../../../../../../../components/FormattedDateTime';
+import Inner from '../../../../../../../components/Inner';
+import WpLink from '../../../../../../../components/Link/WpLink';
+import WpTable, { WpTableColumn } from '../../../../../../../components/WpTable';
+import { ROUTE_CONSOLE, SORT_DESC } from '../../../../../../../config/common';
 import {
   COL_ORDER_STATUSES,
   COL_ORDERS,
@@ -10,27 +13,24 @@ import {
   COL_SHOPS,
   COL_USER_CATEGORIES,
   COL_USERS,
-} from 'db/collectionNames';
-import { getDatabase } from 'db/mongodb';
+} from '../../../../../../../db/collectionNames';
+import { getDatabase } from '../../../../../../../db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   CompanyInterface,
   OrderInterface,
   UserInterface,
-} from 'db/uiInterfaces';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import ConsoleUserLayout from 'layout/console/ConsoleUserLayout';
-import { getFieldStringLocale } from 'lib/i18n';
-import { getFullName } from 'lib/nameUtils';
-import { phoneToRaw, phoneToReadable } from 'lib/phoneUtils';
-import { ObjectId } from 'mongodb';
-import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+} from '../../../../../../../db/uiInterfaces';
+import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
+import ConsoleUserLayout from '../../../../../../../layout/console/ConsoleUserLayout';
+import { getFieldStringLocale } from '../../../../../../../lib/i18n';
+import { getFullName } from '../../../../../../../lib/nameUtils';
+import { phoneToRaw, phoneToReadable } from '../../../../../../../lib/phoneUtils';
 import {
   castDbData,
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
-} from 'lib/ssrUtils';
+} from '../../../../../../../lib/ssrUtils';
 
 interface UserOrdersConsumerInterface {
   user: UserInterface;
@@ -40,17 +40,17 @@ interface UserOrdersConsumerInterface {
 const UserOrdersConsumer: React.FC<UserOrdersConsumerInterface> = ({ user, pageCompany }) => {
   const basePath = `${ROUTE_CONSOLE}/${pageCompany?._id}/customers`;
 
-  const columns: TableColumn<OrderInterface>[] = [
+  const columns: WpTableColumn<OrderInterface>[] = [
     {
       accessor: 'orderId',
       headTitle: 'ID',
       render: ({ cellData, dataItem }) => (
-        <Link
+        <WpLink
           testId={`order-${dataItem.itemId}-link`}
           href={`${basePath}/user/${user._id}/orders/${dataItem._id}`}
         >
           {cellData}
-        </Link>
+        </WpLink>
       ),
     },
     {
@@ -100,7 +100,7 @@ const UserOrdersConsumer: React.FC<UserOrdersConsumerInterface> = ({ user, pageC
       <Inner>
         <div className='mb-4 text-secondary-text'>Всего заказов {user.orders?.length}</div>
         <div className='overflow-x-auto'>
-          <Table<OrderInterface> columns={columns} data={user.orders} testIdKey={'itemId'} />
+          <WpTable<OrderInterface> columns={columns} data={user.orders} testIdKey={'itemId'} />
         </div>
       </Inner>
     </ConsoleUserLayout>

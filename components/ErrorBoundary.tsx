@@ -1,6 +1,6 @@
 import * as React from 'react';
-import ErrorBoundaryFallback from 'components/ErrorBoundaryFallback';
-import { ObjectType } from 'types/clientTypes';
+import { ObjectType } from '../types/clientTypes';
+import ErrorBoundaryFallback from './ErrorBoundaryFallback';
 
 interface ErrorBoundaryStateInterface {
   hasError: boolean;

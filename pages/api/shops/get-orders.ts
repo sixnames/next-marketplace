@@ -1,21 +1,21 @@
-import { ORDER_DELIVERY_VARIANT_COURIER } from 'config/common';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { ORDER_DELIVERY_VARIANT_COURIER } from '../../../config/common';
 import {
   COL_ORDER_CUSTOMERS,
   COL_ORDER_PRODUCTS,
   COL_ORDER_STATUSES,
   COL_ORDERS,
   COL_SHOPS,
-} from 'db/collectionNames';
-import { ShopModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
+} from '../../../db/collectionNames';
+import { ShopModel } from '../../../db/dbModels';
+import { getDatabase } from '../../../db/mongodb';
 import {
+  GetOrdersParamsInterface,
   SyncOrderInterface,
   SyncOrderProductInterface,
-  GetOrdersParamsInterface,
-} from 'db/syncInterfaces';
-import { OrderInterface } from 'db/uiInterfaces';
-import { alwaysArray } from 'lib/arrayUtils';
-import { NextApiRequest, NextApiResponse } from 'next';
+} from '../../../db/syncInterfaces';
+import { OrderInterface } from '../../../db/uiInterfaces';
+import { alwaysArray } from '../../../lib/arrayUtils';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== 'GET') {

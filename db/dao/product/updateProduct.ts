@@ -1,18 +1,18 @@
-import { COL_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
-import { CreateProductInputInterface } from 'db/dao/product/createProduct';
-import { ProductModel, ProductPayloadModel, RubricModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { DaoPropsInterface } from 'db/uiInterfaces';
-import { updateAlgoliaProducts } from 'lib/algolia/productAlgoliaUtils';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { checkBarcodeIntersects, trimProductName } from 'lib/productUtils';
+import { ObjectId } from 'mongodb';
+import { updateAlgoliaProducts } from '../../../lib/algolia/productAlgoliaUtils';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import { checkBarcodeIntersects, trimProductName } from '../../../lib/productUtils';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
-} from 'lib/sessionHelpers';
-import { ObjectId } from 'mongodb';
-import { updateProductSchema } from 'validation/productSchema';
+} from '../../../lib/sessionHelpers';
+import { updateProductSchema } from '../../../validation/productSchema';
+import { COL_PRODUCTS, COL_RUBRICS } from '../../collectionNames';
+import { ProductModel, ProductPayloadModel, RubricModel } from '../../dbModels';
+import { getDatabase } from '../../mongodb';
+import { DaoPropsInterface } from '../../uiInterfaces';
+import { CreateProductInputInterface } from './createProduct';
 
 export interface UpdateProductInputInterface extends CreateProductInputInterface {
   productId: string;

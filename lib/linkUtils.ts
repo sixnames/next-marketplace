@@ -1,5 +1,5 @@
-import { ROUTE_CMS, ROUTE_CONSOLE, ROUTE_PROFILE } from 'config/common';
-import { ObjectIdModel } from 'db/dbModels';
+import { ROUTE_CMS, ROUTE_CONSOLE, ROUTE_PROFILE } from '../config/common';
+import { ObjectIdModel } from '../db/dbModels';
 
 interface GetOrderLinkInterface {
   variant?: 'companyManager' | 'siteAdmin';

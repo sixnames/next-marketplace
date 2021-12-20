@@ -1,20 +1,26 @@
-import { ROUTE_CONSOLE } from 'config/common';
-import { COL_PROMO_PRODUCTS, COL_RUBRICS } from 'db/collectionNames';
-import { castRubricForUI } from 'db/dao/rubrics/castRubricForUI';
-import { RubricModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { AppContentWrapperBreadCrumbs, PromoInterface, RubricInterface } from 'db/uiInterfaces';
-import ConsoleLayout from 'layout/cms/ConsoleLayout';
-import CompanyRubricsList, { CompanyRubricsListInterface } from 'layout/CompanyRubricsList';
-import ConsolePromoLayout from 'layout/console/ConsolePromoLayout';
-import { getPromoSsr } from 'lib/promoUtils';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import * as React from 'react';
+import { ROUTE_CONSOLE } from '../../../../../../../config/common';
+import { COL_PROMO_PRODUCTS, COL_RUBRICS } from '../../../../../../../db/collectionNames';
+import { castRubricForUI } from '../../../../../../../db/dao/rubrics/castRubricForUI';
+import { RubricModel } from '../../../../../../../db/dbModels';
+import { getDatabase } from '../../../../../../../db/mongodb';
+import {
+  AppContentWrapperBreadCrumbs,
+  PromoInterface,
+  RubricInterface,
+} from '../../../../../../../db/uiInterfaces';
+import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
+import CompanyRubricsList, {
+  CompanyRubricsListInterface,
+} from '../../../../../../../layout/CompanyRubricsList';
+import ConsolePromoLayout from '../../../../../../../layout/console/ConsolePromoLayout';
+import { getPromoSsr } from '../../../../../../../lib/promoUtils';
 import {
   castDbData,
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
-} from 'lib/ssrUtils';
-import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import * as React from 'react';
+} from '../../../../../../../lib/ssrUtils';
 
 interface ConsolePromoRubricsInterface extends CompanyRubricsListInterface {
   promo: PromoInterface;

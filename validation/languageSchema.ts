@@ -1,6 +1,6 @@
-import { objectIdSchema, requiredStringSchema } from 'validation/schemaTemplates';
-import { ValidationSchemaArgsInterface } from 'types/validataionTypes';
 import * as Yup from 'yup';
+import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
+import { objectIdSchema, requiredStringSchema } from './schemaTemplates';
 
 export const languageIdSchema = (args: ValidationSchemaArgsInterface) => {
   return objectIdSchema({ ...args, slug: 'validation.languages.id' });

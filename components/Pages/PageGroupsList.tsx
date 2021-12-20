@@ -1,22 +1,22 @@
-import Button from 'components/button/Button';
-import ContentItemControls from 'components/button/ContentItemControls';
-import FixedButtons from 'components/button/FixedButtons';
-import Link from 'components/Link/Link';
-import { ConfirmModalInterface } from 'components/Modal/ConfirmModal';
-import { PagesGroupModalInterface } from 'components/Modal/PagesGroupModal';
-import Table, { TableColumn } from 'components/Table';
-import { CONFIRM_MODAL, PAGES_GROUP_MODAL } from 'config/modalVariants';
+import { useRouter } from 'next/router';
+import * as React from 'react';
+import { CONFIRM_MODAL, PAGES_GROUP_MODAL } from '../../config/modalVariants';
 import {
   CompanyInterface,
   PagesGroupInterface,
   PagesGroupTemplateInterface,
-} from 'db/uiInterfaces';
-import { useDeletePagesGroup } from 'hooks/mutations/usePageMutations';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useValidationSchema from 'hooks/useValidationSchema';
-import { useRouter } from 'next/router';
-import * as React from 'react';
-import { createPagesGroupSchema, updatePagesGroupSchema } from 'validation/pagesSchema';
+} from '../../db/uiInterfaces';
+import { useDeletePagesGroup } from '../../hooks/mutations/usePageMutations';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import useValidationSchema from '../../hooks/useValidationSchema';
+import { createPagesGroupSchema, updatePagesGroupSchema } from '../../validation/pagesSchema';
+import ContentItemControls from '../button/ContentItemControls';
+import FixedButtons from '../button/FixedButtons';
+import WpButton from '../button/WpButton';
+import WpLink from '../Link/WpLink';
+import { ConfirmModalInterface } from '../Modal/ConfirmModal';
+import { PagesGroupModalInterface } from '../Modal/PagesGroupModal';
+import WpTable, { WpTableColumn } from '../WpTable';
 
 export interface PageGroupsListInterface {
   pagesGroups: PagesGroupInterface[] | PagesGroupTemplateInterface[];
@@ -47,19 +47,19 @@ const PageGroupsList: React.FC<PageGroupsListInterface> = ({
 
   const [deletePagesGroupMutation] = useDeletePagesGroup();
 
-  const columns: TableColumn<PagesGroupInterface | PagesGroupTemplateInterface>[] = [
+  const columns: WpTableColumn<PagesGroupInterface | PagesGroupTemplateInterface>[] = [
     {
       accessor: 'name',
       headTitle: 'Название',
       render: ({ cellData, dataItem }) => {
         return (
-          <Link
+          <WpLink
             testId={`${cellData}-link`}
             className='text-primary-text hover:no-underline hover:text-link-text'
             href={`${basePath}/${dataItem._id}`}
           >
             {cellData}
-          </Link>
+          </WpLink>
         );
       },
     },
@@ -113,7 +113,7 @@ const PageGroupsList: React.FC<PageGroupsListInterface> = ({
   return (
     <div className='relative' data-cy={'page-groups-list'}>
       <div className='overflow-x-auto overflow-y-hidden'>
-        <Table<PagesGroupInterface | PagesGroupTemplateInterface>
+        <WpTable<PagesGroupInterface | PagesGroupTemplateInterface>
           testIdKey={'name'}
           columns={columns}
           data={pagesGroups}
@@ -124,7 +124,7 @@ const PageGroupsList: React.FC<PageGroupsListInterface> = ({
       </div>
 
       <FixedButtons>
-        <Button
+        <WpButton
           testId={'create-pages-group'}
           size={'small'}
           onClick={() => {
@@ -139,7 +139,7 @@ const PageGroupsList: React.FC<PageGroupsListInterface> = ({
           }}
         >
           Добавить группу страниц
-        </Button>
+        </WpButton>
       </FixedButtons>
     </div>
   );

@@ -1,12 +1,17 @@
-import { FILTER_SEPARATOR } from 'config/common';
-import { COL_BLOG_ATTRIBUTES, COL_BLOG_POSTS, COL_OPTIONS } from 'db/collectionNames';
-import { BlogAttributeModel, BlogPostModel, BlogPostPayloadModel, OptionModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import getResolverErrorMessage from 'lib/getResolverErrorMessage';
-import { noNaN } from 'lib/numbers';
-import { getOperationPermission, getRequestParams } from 'lib/sessionHelpers';
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { FILTER_SEPARATOR } from '../../../config/common';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
+import { noNaN } from '../../../lib/numbers';
+import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
+import { COL_BLOG_ATTRIBUTES, COL_BLOG_POSTS, COL_OPTIONS } from '../../collectionNames';
+import {
+  BlogAttributeModel,
+  BlogPostModel,
+  BlogPostPayloadModel,
+  OptionModel,
+} from '../../dbModels';
+import { getDatabase } from '../../mongodb';
 
 export interface UpdateBlogPostAttributeInterface {
   blogPostId: string;

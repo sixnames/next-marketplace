@@ -1,20 +1,18 @@
-import Button from 'components/button/Button';
-import FormikSelect from 'components/FormElements/Select/FormikSelect';
-import ModalButtons from 'components/Modal/ModalButtons';
-import ModalFrame from 'components/Modal/ModalFrame';
-import ModalTitle from 'components/Modal/ModalTitle';
-import RequestError from 'components/RequestError';
-import Spinner from 'components/Spinner';
-import { DEFAULT_LOCALE, GENDER_IT } from 'config/common';
-import { NotSyncedProductInterface, RubricInterface } from 'db/uiInterfaces';
-import { useCreateProductWithSyncError } from 'hooks/mutations/useProductMutations';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
 import * as React from 'react';
 import { Form, Formik } from 'formik';
-import ProductMainFields, {
-  ProductFormValuesInterface,
-} from 'components/FormTemplates/ProductMainFields';
 import useSWR from 'swr';
+import { DEFAULT_LOCALE, GENDER_IT } from '../../config/common';
+import { NotSyncedProductInterface, RubricInterface } from '../../db/uiInterfaces';
+import { useCreateProductWithSyncError } from '../../hooks/mutations/useProductMutations';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import WpButton from '../button/WpButton';
+import FormikSelect from '../FormElements/Select/FormikSelect';
+import ProductMainFields, { ProductFormValuesInterface } from '../FormTemplates/ProductMainFields';
+import RequestError from '../RequestError';
+import Spinner from '../Spinner';
+import ModalButtons from './ModalButtons';
+import ModalFrame from './ModalFrame';
+import ModalTitle from './ModalTitle';
 
 interface InitialValuesInterface extends ProductFormValuesInterface {
   rubricId?: string;
@@ -117,12 +115,12 @@ const CreateProductWithSyncErrorModal: React.FC<CreateProductWithSyncErrorModalI
               <ProductMainFields />
 
               <ModalButtons>
-                <Button type={'submit'} testId={'submit-new-product'}>
+                <WpButton type={'submit'} testId={'submit-new-product'}>
                   Создать
-                </Button>
-                <Button theme={'secondary'} onClick={hideModal} testId={'product-decline'}>
+                </WpButton>
+                <WpButton theme={'secondary'} onClick={hideModal} testId={'product-decline'}>
                   Отмена
-                </Button>
+                </WpButton>
               </ModalButtons>
             </Form>
           );

@@ -1,10 +1,10 @@
 import { arg, extendType, nonNull, objectType, stringArg } from 'nexus';
-import { getRequestParams } from 'lib/sessionHelpers';
-import { CitiesPaginationPayloadModel, CityModel } from 'db/dbModels';
-import { getDatabase } from 'db/mongodb';
-import { COL_CITIES } from 'db/collectionNames';
-import { aggregatePagination } from 'db/dao/aggregatePagination';
-import { SORT_DESC } from 'config/common';
+import { SORT_DESC } from '../config/common';
+import { COL_CITIES } from '../db/collectionNames';
+import { aggregatePagination } from '../db/dao/aggregatePagination';
+import { CitiesPaginationPayloadModel, CityModel } from '../db/dbModels';
+import { getDatabase } from '../db/mongodb';
+import { getRequestParams } from '../lib/sessionHelpers';
 
 export const City = objectType({
   name: 'City',

@@ -1,28 +1,28 @@
-import Button from 'components/button/Button';
-import FormikCheckboxLine from 'components/FormElements/Checkbox/FormikCheckboxLine';
-import FormikDatePicker from 'components/FormElements/Input/FormikDatePicker';
-import FormikInput from 'components/FormElements/Input/FormikInput';
-import FormikTranslationsInput from 'components/FormElements/Input/FormikTranslationsInput';
-import FormikSelect from 'components/FormElements/Select/FormikSelect';
-import FormikImageUpload from 'components/FormElements/Upload/FormikImageUpload';
-import Inner from 'components/Inner';
-import PageEditor from 'components/PageEditor';
-import Title from 'components/Title';
+import { Form, Formik } from 'formik';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 import {
   REQUEST_METHOD_POST,
   TEXT_HORIZONTAL_ALIGN_OPTIONS,
   TEXT_HORIZONTAL_FLEX_OPTIONS,
   TEXT_VERTICAL_FLEX_OPTIONS,
-} from 'config/common';
-import { CompanyInterface, PromoInterface } from 'db/uiInterfaces';
-import { Form, Formik } from 'formik';
-import { useUpdatePromo } from 'hooks/mutations/usePromoMutations';
-import useMutationCallbacks from 'hooks/useMutationCallbacks';
-import useValidationSchema from 'hooks/useValidationSchema';
-import { noNaN } from 'lib/numbers';
-import { useRouter } from 'next/router';
-import * as React from 'react';
-import { updatePromoSchema } from 'validation/promoSchema';
+} from '../../config/common';
+import { CompanyInterface, PromoInterface } from '../../db/uiInterfaces';
+import { useUpdatePromo } from '../../hooks/mutations/usePromoMutations';
+import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import useValidationSchema from '../../hooks/useValidationSchema';
+import { noNaN } from '../../lib/numbers';
+import { updatePromoSchema } from '../../validation/promoSchema';
+import WpButton from '../button/WpButton';
+import FormikCheckboxLine from '../FormElements/Checkbox/FormikCheckboxLine';
+import FormikDatePicker from '../FormElements/Input/FormikDatePicker';
+import FormikInput from '../FormElements/Input/FormikInput';
+import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
+import FormikSelect from '../FormElements/Select/FormikSelect';
+import FormikImageUpload from '../FormElements/Upload/FormikImageUpload';
+import Inner from '../Inner';
+import PageEditor from '../PageEditor';
+import WpTitle from '../WpTitle';
 
 export interface PromoDetailsInterface {
   promo: PromoInterface;
@@ -191,9 +191,9 @@ const PromoDetails: React.FC<PromoDetailsInterface> = ({ promo }) => {
 
                 {/*ui*/}
                 <div className={sectionClassName}>
-                  <Title tag={'div'} size={'small'}>
+                  <WpTitle tag={'div'} size={'small'}>
                     Слайдер на главной странице
-                  </Title>
+                  </WpTitle>
 
                   <FormikCheckboxLine
                     label={'Показывать в слайдере на главной странице'}
@@ -311,9 +311,9 @@ const PromoDetails: React.FC<PromoDetailsInterface> = ({ promo }) => {
                 </div>
 
                 <div className={sectionClassName}>
-                  <Title tag={'div'} size={'small'}>
+                  <WpTitle tag={'div'} size={'small'}>
                     Акции на главной странице
-                  </Title>
+                  </WpTitle>
 
                   <FormikCheckboxLine
                     label={'Показывать в блоке Акции на главной странице'}
@@ -394,15 +394,15 @@ const PromoDetails: React.FC<PromoDetailsInterface> = ({ promo }) => {
                 </div>
 
                 <div className={sectionClassName}>
-                  <Button type={'submit'} testId={'submit-promo'}>
+                  <WpButton type={'submit'} testId={'submit-promo'}>
                     Сохранить
-                  </Button>
+                  </WpButton>
                 </div>
 
                 <div className={sectionClassName}>
-                  <Title tag={'div'} size={'small'}>
+                  <WpTitle tag={'div'} size={'small'}>
                     Контент страницы
-                  </Title>
+                  </WpTitle>
                   <PageEditor
                     value={values.content}
                     setValue={(value) => {

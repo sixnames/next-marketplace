@@ -1,7 +1,7 @@
 import * as React from 'react';
-import Icon from 'components/Icon';
-import { InputTheme, OnOffType } from 'types/clientTypes';
-import { noNaN } from 'lib/numbers';
+import { noNaN } from '../../../lib/numbers';
+import { InputTheme, OnOffType } from '../../../types/clientTypes';
+import WpIcon from '../../WpIcon';
 
 export interface SpinnerChangeEventInterface {
   target: {
@@ -86,7 +86,7 @@ const SpinnerInput: React.FC<SpinnerPropsInterface> = ({
           }
         }}
       >
-        <Icon className={iconClassName} name={'dash'} />
+        <WpIcon className={iconClassName} name={'dash'} />
       </button>
       <input
         aria-label={'Количество'}
@@ -129,7 +129,7 @@ const SpinnerInput: React.FC<SpinnerPropsInterface> = ({
           }
         }}
       >
-        <Icon className={iconClassName} name={'plus'} />
+        <WpIcon className={iconClassName} name={'plus'} />
       </button>
     </div>
   );

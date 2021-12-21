@@ -43,7 +43,6 @@ const FormikAddressInputConsumer: React.FC<FormikAddressInputConsumerInterface> 
         const url = `https://maps.googleapis.com/maps/api/geocode/json?${address}&${settings}&${apiKey}`;
         const res = await fetch(url);
         const json: ReverseGeocodePayload = await res.json();
-        // console.log(json);
         const results: GeocodeResultInterface[] = json.results.map(
           ({ formatted_address, geometry, address_components }) => {
             return {

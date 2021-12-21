@@ -135,6 +135,26 @@ export const UpdateVisibleCategoriesInNavDropdownInput = inputObjectType({
   },
 });
 
+export const UpdateRubricNavItemConfigInput = inputObjectType({
+  name: 'UpdateRubricNavItemConfigInput',
+  definition(t) {
+    t.nonNull.objectId('_id');
+    t.nonNull.boolean('multi');
+    t.nonNull.list.nonNull.string('acceptedFormats');
+    t.nonNull.string('slug');
+    t.nonNull.string('companySlug');
+    t.nonNull.string('group');
+    t.nonNull.string('name');
+    t.string('description');
+    t.nonNull.json('cities');
+    t.nonNull.field('variant', {
+      type: 'ConfigVariant',
+    });
+    t.nonNull.objectId('rubricId');
+    t.nonNull.string('citySlug');
+  },
+});
+
 // Config Mutations
 export const ConfigMutations = extendType({
   type: 'Mutation',
@@ -306,6 +326,95 @@ export const ConfigMutations = extendType({
             });
             prevCityValue = prevCityValue.filter((prevValue) => {
               return ![...castedChildValues, castedValue].includes(prevValue);
+            });
+          } else {
+            prevCityValue.push(castedValue);
+          }
+
+          // Update config
+          const updatedConfigResult = await configsCollection.findOneAndUpdate(
+            {
+              _id,
+            },
+            {
+              $set: {
+                ...values,
+                cities: {
+                  ...cities,
+                  [citySlug]: {
+                    [DEFAULT_LOCALE]: prevCityValue,
+                  },
+                },
+              },
+            },
+            {
+              returnDocument: 'after',
+              upsert: true,
+            },
+          );
+          const updatedConfig = updatedConfigResult.value;
+          if (!updatedConfigResult.ok || !updatedConfig) {
+            return {
+              success: false,
+              message: await getApiMessage('configs.update.error'),
+            };
+          }
+
+          return {
+            success: true,
+            message: await getApiMessage('configs.update.success'),
+            payload: updatedConfig,
+          };
+        } catch (e) {
+          return {
+            success: false,
+            message: await getResolverErrorMessage(e),
+          };
+        }
+      },
+    });
+
+    // Should update rubric nav item config
+    t.nonNull.field('updateRubricNavItemConfig', {
+      type: 'ConfigPayload',
+      description: 'Should update rubric nav item config',
+      args: {
+        input: nonNull(
+          arg({
+            type: 'UpdateRubricNavItemConfigInput',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<ConfigPayloadModel> => {
+        try {
+          // Permission
+          const { allow, message } = await getOperationPermission({
+            context,
+            slug:
+              args.input.companySlug === DEFAULT_COMPANY_SLUG
+                ? 'updateConfig'
+                : 'updateCompanyConfig',
+          });
+          if (!allow) {
+            return {
+              success: false,
+              message,
+            };
+          }
+
+          const { getApiMessage } = await getRequestParams(context);
+          const { db } = await getDatabase();
+          const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+          const { input } = args;
+          const { _id, rubricId, citySlug, cities, ...values } = input;
+
+          let prevCityValue = alwaysArray(get(cities, `${citySlug}.${DEFAULT_LOCALE}`));
+
+          const castedValue = rubricId.toHexString();
+          const exist = prevCityValue.includes(castedValue);
+          if (exist) {
+            prevCityValue = prevCityValue.filter((prevValue) => {
+              return prevValue !== castedValue;
             });
           } else {
             prevCityValue.push(castedValue);

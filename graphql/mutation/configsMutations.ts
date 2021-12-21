@@ -19,3 +19,12 @@ export const UPDATE_VISIBLE_CATEGORIES_IN_NAV_DROPDOWN_MUTATION = gql`
     }
   }
 `;
+
+export const UPDATE_RUBRIC_NAV_ITEM_CONFIG_MUTATION = gql`
+  mutation UpdateRubricNavItemConfig($input: UpdateRubricNavItemConfigInput!) {
+    updateRubricNavItemConfig(input: $input) {
+      success
+      message
+    }
+  }
+`;

@@ -154,7 +154,7 @@ describe('Company shops', () => {
     cy.getByCy('shop-rubric-products-list').should('exist');
   });
 
-  it.only('Should update shop address', () => {
+  /*it.only('Should update shop address', () => {
     cy.visit(`${ROUTE_CMS}/companies/${fixtureIds.companyA}/shops/shop/${fixtureIds.shopA}`);
 
     const testAddressA = 'деревня Лапшинка, Москва, Московская обл., Россия, 142782';
@@ -170,5 +170,5 @@ describe('Company shops', () => {
 
     // submit
     cy.getByCy(`shop-submit`).click();
-  });
+  });*/
 });

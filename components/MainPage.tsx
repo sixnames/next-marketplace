@@ -23,7 +23,7 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
   mobileTopFilters,
 }) => {
   const [topFiltersVisible, setTopFiltersVisible] = React.useState<boolean>(false);
-  const { urlPrefix } = useSiteContext();
+  const { urlPrefix, domainCompany } = useSiteContext();
   const { configs } = useConfigContext();
   const configTitle = configs.seoTextTitle;
   const configSeoContent = configs.seoText;
@@ -322,9 +322,9 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
 
         {/*top shops*/}
         {topShops.length > 0 ? (
-          <section className={sectionClassName}>
+          <section className={sectionClassName} id={'top-shops'}>
             <div className='text-2xl mb-4 font-medium flex items-baseline'>
-              <h2>Магазины</h2>
+              <h2>Магазины{domainCompany ? ` ${domainCompany.name}` : ''}</h2>
               <span className='ml-3 text-xl text-theme'>({topShops.length})</span>
             </div>
             <ShopsMap shops={topShops} />

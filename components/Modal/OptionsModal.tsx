@@ -128,7 +128,13 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
 
       return (
         <div
-          onClick={() => onOptionClickHandler(option)}
+          onClick={() => {
+            if (isCheckbox) {
+              onOptionClickHandler(option);
+              return;
+            }
+            onSubmit([option]);
+          }}
           className='transition duration-150 flex cursor-pointer hover:text-theme pt-3 pb-3'
         >
           <div
@@ -144,7 +150,7 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
         </div>
       );
     },
-    [disableNestedOptions, inputIcon, isCheckbox, onOptionClickHandler, selectedOptions],
+    [disableNestedOptions, inputIcon, isCheckbox, onOptionClickHandler, onSubmit, selectedOptions],
   );
 
   React.useEffect(() => {
@@ -243,7 +249,7 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
         })
       )}
 
-      {selectedOptions.length > 0 ? (
+      {selectedOptions.length > 0 && isCheckbox ? (
         <FixedButtons>
           <WpButton testId={`options-submit`} onClick={() => onSubmit(selectedOptions)}>
             {buttonText}

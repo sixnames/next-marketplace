@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import WpLink from '../../components/Link/WpLink';
-import { FILTER_CATEGORY_KEY, FILTER_SEPARATOR, ROUTE_CATALOGUE } from '../../config/common';
+import { FILTER_CATEGORY_KEY, FILTER_SEPARATOR } from '../../config/common';
 import { useConfigContext } from '../../context/configContext';
 import { noNaN } from '../../lib/numbers';
 import {
@@ -12,11 +12,10 @@ import {
 
 const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
   attribute,
-  rubricSlug,
   attributeStyle,
   attributeLinkStyle,
   hideDropdown,
-  urlPrefix,
+  parentHref,
 }) => {
   const router = useRouter();
   const { configs } = useConfigContext();
@@ -46,7 +45,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
                 style={attributeLinkStyle}
                 testId={`header-nav-dropdown-option`}
                 prefetch={false}
-                href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`}
+                href={`${parentHref}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`}
                 className='flex items-center py-1 text-secondary-text'
               >
                 {option.name}
@@ -62,7 +61,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
               className='flex items-center py-1 text-theme cursor-pointer hover:underline'
               onClick={() => {
                 router
-                  .push(`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}`)
+                  .push(parentHref)
                   .then(() => {
                     if (hideDropdown) {
                       hideDropdown();
@@ -82,11 +81,10 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
 
 const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
   category,
-  rubricSlug,
   attributeStyle,
   attributeLinkStyle,
   hideDropdown,
-  urlPrefix,
+  parentHref,
 }) => {
   const router = useRouter();
   const { configs } = useConfigContext();
@@ -104,7 +102,7 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
           style={attributeStyle}
           testId={`header-nav-dropdown-option`}
           prefetch={false}
-          href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}/${categoryPath}`}
+          href={`${parentHref}/${categoryPath}`}
           className='flex items-center gap-3 leading-snug text-secondary-text text-lg font-medium'
         >
           <span>{name}</span>
@@ -121,7 +119,7 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
                   style={attributeLinkStyle}
                   testId={`header-nav-dropdown-option`}
                   prefetch={false}
-                  href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}/${categoryPath}/${childCategoryPath}`}
+                  href={`${parentHref}/${categoryPath}/${childCategoryPath}`}
                   className='flex items-center py-1 text-secondary-text'
                 >
                   {childCategory.name}
@@ -137,7 +135,7 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
               className='flex items-center py-1 text-theme cursor-pointer hover:underline'
               onClick={() => {
                 router
-                  .push(`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}/${categoryPath}`)
+                  .push(`${parentHref}/${categoryPath}`)
                   .then(() => {
                     if (hideDropdown) {
                       hideDropdown();
@@ -159,11 +157,11 @@ const StickyNavDropdownWithCategories: React.FC<StickyNavDropdownInterface> = ({
   attributes,
   attributeStyle,
   attributeLinkStyle,
-  rubricSlug,
+
   categories,
   hideDropdown,
-  urlPrefix,
   navCategoryColumns,
+  parentHref,
 }) => {
   let categoryColumnsClassName = 'grid-cols-4';
   if (navCategoryColumns === 3) {
@@ -186,10 +184,9 @@ const StickyNavDropdownWithCategories: React.FC<StickyNavDropdownInterface> = ({
                 hideDropdown={hideDropdown}
                 key={`${category._id}`}
                 category={category}
-                rubricSlug={rubricSlug}
+                parentHref={parentHref}
                 attributeStyle={attributeStyle}
                 attributeLinkStyle={attributeLinkStyle}
-                urlPrefix={urlPrefix}
               />
             );
           })}
@@ -202,10 +199,9 @@ const StickyNavDropdownWithCategories: React.FC<StickyNavDropdownInterface> = ({
               hideDropdown={hideDropdown}
               key={`${attribute._id}`}
               attribute={attribute}
-              rubricSlug={rubricSlug}
+              parentHref={parentHref}
               attributeStyle={attributeStyle}
               attributeLinkStyle={attributeLinkStyle}
-              urlPrefix={urlPrefix}
             />
           );
         })}

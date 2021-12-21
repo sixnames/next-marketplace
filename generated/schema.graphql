@@ -435,6 +435,7 @@ enum ConfigVariant {
   email
   number
   password
+  rubrics
   string
   tel
 }
@@ -1238,6 +1239,11 @@ type Mutation {
   Should update rubric
   """
   updateRubric(input: UpdateRubricInput!): RubricPayload!
+
+  """
+  Should update rubric nav item config
+  """
+  updateRubricNavItemConfig(input: UpdateRubricNavItemConfigInput!): ConfigPayload!
 
   """
   Should update rubric variant
@@ -2284,6 +2290,21 @@ input UpdateRubricInput {
   textBottom: JSONObject
   textTop: JSONObject
   variantId: ObjectId!
+}
+
+input UpdateRubricNavItemConfigInput {
+  _id: ObjectId!
+  acceptedFormats: [String!]!
+  cities: JSONObject!
+  citySlug: String!
+  companySlug: String!
+  description: String
+  group: String!
+  multi: Boolean!
+  name: String!
+  rubricId: ObjectId!
+  slug: String!
+  variant: ConfigVariant!
 }
 
 input UpdateRubricVariantInput {

@@ -10,6 +10,7 @@ import {
   CONFIG_VARIANT_NUMBER,
   CONFIG_VARIANT_PASSWORD,
   CONFIG_VARIANT_PHONE,
+  CONFIG_VARIANT_RUBRICS,
   CONFIG_VARIANT_STRING,
   DEFAULT_CITY,
   DEFAULT_LOCALE,
@@ -587,6 +588,21 @@ export function getConfigTemplates({
       cities: {
         [DEFAULT_CITY]: {
           [DEFAULT_LOCALE]: ['false'],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'ui',
+      variant: CONFIG_VARIANT_RUBRICS,
+      slug: 'categoriesAsNavItems',
+      name: 'Рубрики категории которых нужно показывать в меню шапки каталога',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [],
         },
       },
     },

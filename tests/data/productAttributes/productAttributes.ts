@@ -2,10 +2,10 @@ import {
   ATTRIBUTE_VARIANT_NUMBER,
   ATTRIBUTE_VARIANT_STRING,
   FILTER_SEPARATOR,
-  DEFAULT_COUNTERS_OBJECT,
 } from '../../../config/common';
-import { ObjectIdModel, ProductAttributeModel } from '../../../db/dbModels';
+import { ObjectIdModel, OptionModel, ProductAttributeModel } from '../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
+import { getAttributeReadableValueLocales } from '../../../lib/productAttributesUtils';
 import attributes from '../attributes/attributes';
 import products from '../products/products';
 import rubrics from '../rubrics/rubrics';
@@ -66,12 +66,26 @@ const productAttributes: ProductAttributeModel[] = products.reduce(
 
         const selectedOptionsIds: ObjectIdModel[] = [];
         const selectedOptionsSlugs: string[] = [];
+        const selectedOptions: OptionModel[] = [];
         rubricAttributeOptions.forEach((option) => {
           if (cleanOptionSlugs.includes(option.slug)) {
             selectedOptionsIds.push(option._id);
+            selectedOptions.push(option);
             selectedOptionsSlugs.push(`${rubricAttribute.slug}${FILTER_SEPARATOR}${option.slug}`);
           }
         });
+
+        const textI18n =
+          rubricAttribute.variant === ATTRIBUTE_VARIANT_STRING
+            ? {
+                ru: attributeText,
+              }
+            : undefined;
+
+        const number =
+          rubricAttribute.variant === ATTRIBUTE_VARIANT_NUMBER
+            ? Math.round(Math.random() * 10)
+            : undefined;
 
         const payload: ProductAttributeModel = {
           _id: getObjectId(`${product.slug} ${rubricAttribute.slug}`),
@@ -82,20 +96,26 @@ const productAttributes: ProductAttributeModel[] = products.reduce(
           productId: product._id,
           selectedOptionsSlugs,
           selectedOptionsIds,
-          textI18n:
-            rubricAttribute.variant === ATTRIBUTE_VARIANT_STRING
-              ? {
-                  ru: attributeText,
-                }
-              : undefined,
-          number:
-            rubricAttribute.variant === ATTRIBUTE_VARIANT_NUMBER
-              ? Math.round(Math.random() * 10)
-              : undefined,
-          ...DEFAULT_COUNTERS_OBJECT,
+          readableValueI18n: {},
+          textI18n,
+          number,
         };
 
-        return payload;
+        const readableValueI18n = getAttributeReadableValueLocales({
+          gender: product.gender,
+          productAttribute: {
+            ...payload,
+            attribute: {
+              ...rubricAttribute,
+              options: selectedOptions,
+            },
+          },
+        });
+
+        return {
+          ...payload,
+          readableValueI18n,
+        };
       },
     );
 

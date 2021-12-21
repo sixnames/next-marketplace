@@ -295,6 +295,8 @@ export interface ProductSummaryInterface extends ProductSummaryModel {
   shopProductIds?: string[] | null;
 
   // ui
+  cardTitle?: string | null;
+  snippetTitle?: string | null;
   name?: string | null;
   description?: string | null;
   cardContent?: SeoContentModel | null;
@@ -302,7 +304,7 @@ export interface ProductSummaryInterface extends ProductSummaryModel {
   connections?: ProductConnectionInterface[] | null;
   shopProducts?: ShopProductInterface[] | null;
   shops?: ShopInterface[] | null;
-  breadcrumbs?: ProductCardBreadcrumbModel[] | null;
+  shopsCount?: number | null;
 
   // parents
   rubric?: RubricInterface | null;
@@ -716,6 +718,7 @@ export interface InitialCardDataInterface {
   cardLayout: string;
   rubric: RubricInterface;
   cardPrices: ProductCardPricesModel;
+  breadcrumbs?: ProductCardBreadcrumbModel[] | null;
   maxAvailable: number;
 }
 

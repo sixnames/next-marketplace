@@ -210,6 +210,7 @@ export const getServerSideProps = async (
             ...attribute,
             name: getFieldStringLocale(attribute.nameI18n, props.sessionLocale),
           },
+          readableValueI18n: {},
           rubricId: product.rubricId,
           rubricSlug: product.rubricSlug,
           attributeId: attribute._id,

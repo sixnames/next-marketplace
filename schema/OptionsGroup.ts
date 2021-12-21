@@ -979,6 +979,7 @@ export const OptionsGroupMutations = extendType({
                       productSlug: product.slug,
                       selectedOptionsIds: [option._id],
                       selectedOptionsSlugs: [selectedOptionSlug],
+                      readableValueI18n: {},
                       number: undefined,
                       textI18n: {},
                     });

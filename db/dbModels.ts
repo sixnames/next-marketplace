@@ -642,6 +642,7 @@ export interface ProductAttributeModel {
   selectedOptionsIds: ObjectIdModel[];
   textI18n?: TranslationModel | null;
   number?: number | null;
+  readableValueI18n: TranslationModel;
 }
 
 interface ProductMainFieldsInterface {
@@ -671,10 +672,10 @@ export interface ProductSummaryModel extends BaseModel, TimestampModel {
   slug: string;
   active: boolean;
   originalName: string;
-  snippetTitle: string;
-  cardTitle: string;
   nameI18n?: TranslationModel | null;
   descriptionI18n?: TranslationModel | null;
+  snippetTitleI18n: TranslationModel;
+  cardTitleI18n: TranslationModel;
   mainImage: string;
   assets: string[];
   gender: GenderModel;
@@ -685,7 +686,6 @@ export interface ProductSummaryModel extends BaseModel, TimestampModel {
   attributes: ProductAttributeModel[];
   attributesCount: number;
   totalAttributesCount: number;
-  shopsCount: number;
   cardPrices: ProductCardPricesModel;
 }
 

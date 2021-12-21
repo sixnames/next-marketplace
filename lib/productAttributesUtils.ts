@@ -9,7 +9,7 @@ import {
 } from '../config/common';
 import { COL_CATEGORIES, COL_RUBRICS } from '../db/collectionNames';
 import { rubricAttributeGroupsPipeline } from '../db/dao/constantPipelines';
-import { ObjectIdModel } from '../db/dbModels';
+import { ObjectIdModel, TranslationModel } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
 import {
   AttributeInterface,
@@ -174,6 +174,27 @@ export function getAttributeReadableValue({
   }
 
   return null;
+}
+
+export interface GetAttributeReadableValueLocalesInterface {
+  productAttribute: ProductAttributeInterface;
+  gender?: string;
+}
+
+export function getAttributeReadableValueLocales({
+  productAttribute,
+  gender,
+}: GetAttributeReadableValueLocalesInterface): TranslationModel {
+  let payload: TranslationModel = {};
+  LOCALES.forEach((locale) => {
+    const readableValue = getAttributeReadableValue({
+      gender,
+      locale,
+      productAttribute,
+    });
+    payload[locale] = readableValue;
+  });
+  return payload;
 }
 
 export interface CastProductAttributeForUiInterface {

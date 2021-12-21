@@ -583,6 +583,7 @@ export const ProductAttributeMutations = extendType({
                 selectedOptionsSlugs: [],
                 number: undefined,
                 textI18n: {},
+                readableValueI18n: {},
               };
             }
 
@@ -816,6 +817,7 @@ export const ProductAttributeMutations = extendType({
                 selectedOptionsSlugs: [],
                 number: undefined,
                 textI18n: {},
+                readableValueI18n: {},
               };
             }
 
@@ -926,6 +928,7 @@ export const ProductAttributeMutations = extendType({
                 selectedOptionsSlugs: [],
                 number: undefined,
                 textI18n: {},
+                readableValueI18n: {},
               };
             }
 

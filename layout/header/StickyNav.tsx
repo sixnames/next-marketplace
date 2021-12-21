@@ -116,7 +116,8 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({
   const path = `${urlPrefix}${ROUTE_CATALOGUE}/${slug}`;
   const reg = RegExp(`${path}`);
   const isCurrent = reg.test(asPath) || slug === currentRubricSlug;
-  const renderCategoriesAsNavItem = configs.categoriesAsNavItems && categories.length > 0;
+  const renderCategoriesAsNavItem =
+    configs.categoriesAsNavItems.includes(`${rubric._id}`) && categories.length > 0;
 
   if (renderCategoriesAsNavItem) {
     return (

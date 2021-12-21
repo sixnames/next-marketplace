@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useRouter } from 'next/router';
 import Inner from '../../components/Inner';
 import WpLink from '../../components/Link/WpLink';
-import { ROUTE_CATALOGUE } from '../../config/common';
+import { FILTER_CATEGORY_KEY, FILTER_SEPARATOR, ROUTE_CATALOGUE } from '../../config/common';
 import {
   NAV_DROPDOWN_LAYOUT_OPTIONS_ONLY,
   NAV_DROPDOWN_LAYOUT_WITH_CATEGORIES,
@@ -21,16 +21,14 @@ interface AttributeStylesInterface {
 
 export interface StickyNavAttributeInterface extends AttributeStylesInterface {
   attribute: AttributeInterface;
-  rubricSlug: string;
   hideDropdown: () => void;
-  urlPrefix?: string;
+  parentHref: string;
 }
 
 export interface StickyNavCategoryInterface extends AttributeStylesInterface {
   category: CategoryInterface;
-  rubricSlug: string;
   hideDropdown: () => void;
-  urlPrefix?: string;
+  parentHref: string;
 }
 
 interface StylesInterface extends AttributeStylesInterface {
@@ -40,10 +38,11 @@ interface StylesInterface extends AttributeStylesInterface {
 export interface StickyNavDropdownInterface extends StylesInterface {
   attributes: AttributeInterface[] | null | undefined;
   navCategoryColumns: number;
-  rubricSlug: string;
   categories: CategoryInterface[];
   hideDropdown: () => void;
-  urlPrefix?: string;
+  parentHref: string;
+  // rubricSlug: string;
+  // urlPrefix?: string;
 }
 
 export interface StickyNavDropdownGlobalInterface extends StickyNavDropdownInterface {
@@ -103,6 +102,7 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({
   categories,
   currentRubricSlug,
 }) => {
+  const { configs } = useConfigContext();
   const { asPath } = useRouter();
   const { urlPrefix } = useSiteContext();
   const { name, slug, attributes } = rubric;
@@ -116,6 +116,55 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({
   const path = `${urlPrefix}${ROUTE_CATALOGUE}/${slug}`;
   const reg = RegExp(`${path}`);
   const isCurrent = reg.test(asPath) || slug === currentRubricSlug;
+  const renderCategoriesAsNavItem = configs.categoriesAsNavItems && categories.length > 0;
+
+  if (renderCategoriesAsNavItem) {
+    return (
+      <React.Fragment>
+        {categories.map(({ _id, slug, categories, name }) => {
+          const categoryNavSlug = `${FILTER_CATEGORY_KEY}${FILTER_SEPARATOR}${slug}`;
+          const href = `${path}/${categoryNavSlug}`;
+          const isCurrent = asPath.indexOf(categoryNavSlug) > -1;
+
+          return (
+            <li
+              key={`${_id}`}
+              className='group px-4 first:pl-0 last:pr-0'
+              data-cy={`main-rubric-list-item-${rubric.slug}-${slug}`}
+              onMouseLeave={() => setIsDropdownVisible(true)}
+            >
+              <WpLink
+                href={href}
+                style={linkStyle}
+                testId={`main-rubric-${rubric.slug}`}
+                onClick={hideDropdown}
+                className='relative flex items-center pt-[2px] h-[2.5rem] uppercase font-medium text-primary-text hover:no-underline hover:text-theme'
+              >
+                {name}
+                {isCurrent ? (
+                  <span className='absolute bottom-0 inset-x-0 w-full h-[2px] bg-theme' />
+                ) : null}
+              </WpLink>
+
+              {isDropdownVisible ? (
+                <StickyNavDropdown
+                  hideDropdown={hideDropdown}
+                  categories={categories || []}
+                  attributeLinkStyle={attributeLinkStyle}
+                  attributeStyle={attributeStyle}
+                  dropdownStyle={dropdownStyle}
+                  parentHref={href}
+                  attributes={attributes}
+                  navCategoryColumns={rubric.variant?.navCategoryColumns || 4}
+                  catalogueNavLayout={`${rubric.variant?.catalogueNavLayout}`}
+                />
+              ) : null}
+            </li>
+          );
+        })}
+      </React.Fragment>
+    );
+  }
 
   return (
     <li
@@ -143,11 +192,10 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({
           attributeLinkStyle={attributeLinkStyle}
           attributeStyle={attributeStyle}
           dropdownStyle={dropdownStyle}
-          rubricSlug={slug}
+          parentHref={path}
           attributes={attributes}
           navCategoryColumns={rubric.variant?.navCategoryColumns || 4}
           catalogueNavLayout={`${rubric.variant?.catalogueNavLayout}`}
-          urlPrefix={urlPrefix}
         />
       ) : null}
     </li>

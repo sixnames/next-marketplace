@@ -749,6 +749,7 @@ export interface SsrConfigsInterface {
   showAdultModal: boolean;
   showBlog: boolean;
   showBlogPostViews: boolean;
+  categoriesAsNavItems: string[];
   visibleCategoriesInNavDropdown: string[];
 
   // Contacts

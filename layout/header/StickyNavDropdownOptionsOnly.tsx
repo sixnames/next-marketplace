@@ -1,14 +1,13 @@
 import * as React from 'react';
 import WpLink from '../../components/Link/WpLink';
-import { FILTER_SEPARATOR, ROUTE_CATALOGUE } from '../../config/common';
+import { FILTER_SEPARATOR } from '../../config/common';
 import { StickyNavAttributeInterface, StickyNavDropdownInterface } from './StickyNav';
 
 const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
   attribute,
-  rubricSlug,
   attributeLinkStyle,
   hideDropdown,
-  urlPrefix,
+  parentHref,
 }) => {
   const { options, metric } = attribute;
   const postfix = metric ? ` ${metric.name}` : null;
@@ -30,7 +29,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
               style={attributeLinkStyle}
               testId={`header-nav-dropdown-option`}
               prefetch={false}
-              href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`}
+              href={`${parentHref}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`}
             >
               {option.image ? (
                 <span className={`flex mb-4 ${isCentered ? 'justify-center' : ''}`}>
@@ -59,7 +58,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
                         style={attributeLinkStyle}
                         testId={`header-nav-dropdown-option`}
                         prefetch={false}
-                        href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${FILTER_SEPARATOR}${childOption.slug}`}
+                        href={`${parentHref}/${attribute.slug}${FILTER_SEPARATOR}${childOption.slug}`}
                       >
                         <span className='block text-secondary-text'>
                           {childOption.name}
@@ -82,9 +81,8 @@ const StickyNavDropdownOptionsOnly: React.FC<StickyNavDropdownInterface> = ({
   attributes,
   attributeStyle,
   attributeLinkStyle,
-  rubricSlug,
   hideDropdown,
-  urlPrefix,
+  parentHref,
 }) => {
   if (!attributes || attributes.length < 1) {
     return null;
@@ -95,11 +93,10 @@ const StickyNavDropdownOptionsOnly: React.FC<StickyNavDropdownInterface> = ({
       {(attributes || []).map((attribute) => {
         return (
           <StickyNavAttribute
-            urlPrefix={urlPrefix}
             hideDropdown={hideDropdown}
             key={`${attribute._id}`}
             attribute={attribute}
-            rubricSlug={rubricSlug}
+            parentHref={parentHref}
             attributeStyle={attributeStyle}
             attributeLinkStyle={attributeLinkStyle}
           />

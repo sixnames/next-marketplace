@@ -407,6 +407,8 @@ export interface ShopProductInterface extends ShopProductModel {
   supplierProducts?: SupplierProductInterface[] | null;
   promoProducts?: PromoProductInterface[] | null;
   promoProductsCount?: number | null;
+  minPrice?: number | null;
+  maxPrice?: number | null;
 }
 
 export interface ShopInterface extends ShopModel {

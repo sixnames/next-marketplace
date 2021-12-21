@@ -44,6 +44,12 @@ import {
 } from '../constantPipelines';
 import { castProductForUI } from './castProductForUI';
 
+interface ShopProductPricesAggregationInterface {
+  _id: ObjectIdModel;
+  minPrice: number;
+  maxPrice: number;
+}
+
 export interface GetConsoleShopProductsInputInterface {
   locale: string;
   basePath: string;
@@ -564,10 +570,10 @@ export const getConsoleShopProducts = async ({
 
     // cast shop products
     const docs: ShopProductInterface[] = [];
-    shopProductsAggregation.docs.forEach((shopProduct) => {
+    for await (const shopProduct of shopProductsAggregation.docs) {
       const product = shopProduct.product;
       if (!product) {
-        return;
+        continue;
       }
 
       const castedProduct = castProductForUI({
@@ -580,8 +586,28 @@ export const getConsoleShopProducts = async ({
         getSnippetTitle: true,
       });
 
+      const otherShopProducts = await shopProductsCollection
+        .aggregate<ShopProductPricesAggregationInterface>([
+          {
+            $match: {
+              productId: product._id,
+            },
+          },
+          {
+            $group: {
+              _id: '$productId',
+              minPrice: { $min: '$price' },
+              maxPrice: { $max: '$price' },
+            },
+          },
+        ])
+        .toArray();
+      const shopProductPrices = otherShopProducts[0];
+
       docs.push({
         ...shopProduct,
+        minPrice: shopProductPrices?.minPrice,
+        maxPrice: shopProductPrices?.maxPrice,
         supplierProducts: castSupplierProductsList({
           supplierProducts: shopProduct.supplierProducts,
           locale,
@@ -591,7 +617,7 @@ export const getConsoleShopProducts = async ({
           shopsCount: shopProduct.shopsCount,
         },
       });
-    });
+    }
 
     const payload: CompanyShopProductsPageInterface = {
       shop,

@@ -35,6 +35,8 @@ import {
   ProductInterface,
   ProductsAggregationInterface,
   RubricInterface,
+  ShopProductInterface,
+  ShopProductPricesInterface,
 } from '../../uiInterfaces';
 import { filterAttributesPipeline } from '../constantPipelines';
 import { castProductForUI } from './castProductForUI';
@@ -80,6 +82,7 @@ export const getConsoleRubricProducts = async ({
     const { db } = await getDatabase();
     const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
     const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
+    const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
     const filters = alwaysArray(query.filters);
     const search = alwaysString(query.search);
     const rubricId = alwaysString(query.rubricId);
@@ -642,12 +645,6 @@ export const getConsoleRubricProducts = async ({
     const allRubricAttributes = await getRubricAllAttributes(rubric._id);
     const docs: ProductInterface[] = [];
     for await (const product of productDataAggregation.docs) {
-      const cardPrices = {
-        _id: new ObjectId(),
-        min: `${noNaN(product.cardPrices?.min)}`,
-        max: `${noNaN(product.cardPrices?.max)}`,
-      };
-
       const productCategoryAttributes = await getCategoryAllAttributes(
         product.selectedOptionsSlugs,
       );
@@ -671,9 +668,28 @@ export const getConsoleRubricProducts = async ({
         getSnippetTitle: true,
       });
 
+      const otherShopProducts = await shopProductsCollection
+        .aggregate<ShopProductPricesInterface>([
+          {
+            $match: {
+              productId: product._id,
+            },
+          },
+          {
+            $group: {
+              _id: '$productId',
+              minPrice: { $min: '$price' },
+              maxPrice: { $max: '$price' },
+            },
+          },
+        ])
+        .toArray();
+      const shopProductPrices = otherShopProducts[0];
+
       const castedProduct: ProductInterface = {
         ...initialCastedProduct,
-        cardPrices,
+        minPrice: noNaN(shopProductPrices?.minPrice),
+        maxPrice: noNaN(shopProductPrices?.maxPrice),
         cardContentCities,
         name: getFieldStringLocale(product.nameI18n, locale),
         attributesCount: countProductAttributes(initialCastedProduct.attributes),

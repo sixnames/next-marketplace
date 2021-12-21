@@ -36,6 +36,7 @@ import {
   CompanyShopProductsPageInterface,
   ShopInterface,
   ShopProductInterface,
+  ShopProductPricesInterface,
   ShopProductsAggregationInterface,
 } from '../../uiInterfaces';
 import {
@@ -43,12 +44,6 @@ import {
   shopProductSupplierProductsPipeline,
 } from '../constantPipelines';
 import { castProductForUI } from './castProductForUI';
-
-interface ShopProductPricesAggregationInterface {
-  _id: ObjectIdModel;
-  minPrice: number;
-  maxPrice: number;
-}
 
 export interface GetConsoleShopProductsInputInterface {
   locale: string;
@@ -587,7 +582,7 @@ export const getConsoleShopProducts = async ({
       });
 
       const otherShopProducts = await shopProductsCollection
-        .aggregate<ShopProductPricesAggregationInterface>([
+        .aggregate<ShopProductPricesInterface>([
           {
             $match: {
               productId: product._id,

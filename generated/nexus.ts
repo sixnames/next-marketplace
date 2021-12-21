@@ -695,6 +695,21 @@ export interface NexusGenInputs {
     textTop?: NexusGenScalars['JSONObject'] | null; // JSONObject
     variantId: NexusGenScalars['ObjectId']; // ObjectId!
   };
+  UpdateRubricNavItemConfigInput: {
+    // input type
+    _id: NexusGenScalars['ObjectId']; // ObjectId!
+    acceptedFormats: string[]; // [String!]!
+    cities: NexusGenScalars['JSONObject']; // JSONObject!
+    citySlug: string; // String!
+    companySlug: string; // String!
+    description?: string | null; // String
+    group: string; // String!
+    multi: boolean; // Boolean!
+    name: string; // String!
+    rubricId: NexusGenScalars['ObjectId']; // ObjectId!
+    slug: string; // String!
+    variant: NexusGenEnums['ConfigVariant']; // ConfigVariant!
+  };
   UpdateRubricVariantInput: {
     // input type
     allowDelivery?: boolean | null; // Boolean
@@ -1382,6 +1397,7 @@ export interface NexusGenFieldTypes {
     updateRoleNav: NexusGenRootTypes['RolePayload']; // RolePayload!
     updateRoleRule: NexusGenRootTypes['RoleRulePayload']; // RoleRulePayload!
     updateRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
+    updateRubricNavItemConfig: NexusGenRootTypes['ConfigPayload']; // ConfigPayload!
     updateRubricVariant: NexusGenRootTypes['RubricVariantPayload']; // RubricVariantPayload!
     updateShop: NexusGenRootTypes['ShopPayload']; // ShopPayload!
     updateShopAssetIndex: NexusGenRootTypes['ShopPayload']; // ShopPayload!
@@ -2377,6 +2393,7 @@ export interface NexusGenFieldTypeNames {
     updateRoleNav: 'RolePayload';
     updateRoleRule: 'RoleRulePayload';
     updateRubric: 'RubricPayload';
+    updateRubricNavItemConfig: 'ConfigPayload';
     updateRubricVariant: 'RubricVariantPayload';
     updateShop: 'ShopPayload';
     updateShopAssetIndex: 'ShopPayload';
@@ -3289,6 +3306,10 @@ export interface NexusGenArgTypes {
     updateRubric: {
       // args
       input: NexusGenInputs['UpdateRubricInput']; // UpdateRubricInput!
+    };
+    updateRubricNavItemConfig: {
+      // args
+      input: NexusGenInputs['UpdateRubricNavItemConfigInput']; // UpdateRubricNavItemConfigInput!
     };
     updateRubricVariant: {
       // args

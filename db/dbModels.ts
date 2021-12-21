@@ -648,6 +648,7 @@ export interface ProductAttributeModel {
 interface ProductMainFieldsInterface {
   rubricId: ObjectIdModel;
   rubricSlug: string;
+  categorySlugs?: string[] | null;
   brandSlug?: string | null;
   brandCollectionSlug?: string | null;
   manufacturerSlug?: string | null;
@@ -659,34 +660,20 @@ interface ProductMainFieldsInterface {
 export interface ProductModel extends ProductMainFieldsInterface, BaseModel, TimestampModel {
   slug: string;
   active: boolean;
-  originalName: string;
-  nameI18n?: TranslationModel | null;
-  descriptionI18n?: TranslationModel | null;
-  mainImage: string;
-  gender: GenderModel;
   titleCategoriesSlugs: string[];
   selectedAttributesIds: ObjectId[];
 }
 
-export interface ProductSummaryModel extends BaseModel, TimestampModel {
-  slug: string;
-  active: boolean;
+export interface ProductSummaryModel extends ProductModel {
   originalName: string;
   nameI18n?: TranslationModel | null;
   descriptionI18n?: TranslationModel | null;
+  mainImage: string;
+  gender: GenderModel;
   snippetTitleI18n: TranslationModel;
   cardTitleI18n: TranslationModel;
-  mainImage: string;
   assets: string[];
-  gender: GenderModel;
-  barcode?: string[] | null;
-  allowDelivery: boolean;
-  rubricId: ObjectIdModel;
-  rubricSlug: string;
   attributes: ProductAttributeModel[];
-  attributesCount: number;
-  totalAttributesCount: number;
-  cardPrices: ProductCardPricesModel;
 }
 
 export interface ProductAssetsModel {

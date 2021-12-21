@@ -945,6 +945,10 @@ export const getSsrConfigs = async ({
     configs,
     slug: 'visibleCategoriesInNavDropdown',
   });
+  const categoriesAsNavItems = getConfigListValue({
+    configs,
+    slug: 'categoriesAsNavItems',
+  });
   const cartBookingButtonDescription = getConfigStringValue({
     configs,
     slug: 'cartBookingButtonDescription',
@@ -958,6 +962,7 @@ export const getSsrConfigs = async ({
   return {
     isOneShopCompany,
     useNoIndexRules,
+    categoriesAsNavItems,
     seoTextBottom,
     robotsTxt,
     cartBookingButtonDescription,

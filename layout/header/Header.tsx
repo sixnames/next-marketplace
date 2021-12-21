@@ -438,7 +438,19 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
               </div>
             </div>
           </div>
-        ) : null}
+        ) : (
+          <div
+            className='flex items-center min-h-[3rem] text-secondary-text cursor-pointer hover:text-theme transition-colors duration-200'
+            onClick={() => {
+              router.push(`${urlPrefix}/#top-shops`).catch(console.log);
+            }}
+          >
+            <div className={`relative mr-3`}>
+              <WpIcon name={'marker'} className='w-5 h-5' />
+            </div>
+            <span>{domainCompany ? 'Наши магазины' : 'Магазины'}</span>
+          </div>
+        )}
       </Inner>
     </div>
   );
@@ -452,6 +464,7 @@ const middleSideClassName =
   'inline-flex shrink-0 lg:w-[calc((100%-(var(--logoWidth)+2rem))/2)] min-h-[1rem] gap-2';
 
 const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug }) => {
+  const router = useRouter();
   const { isDark } = useThemeContext();
   const { showModal } = useAppContext();
   const { configs, domainCompany } = useConfigContext();
@@ -638,13 +651,19 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
                     </div>
                   </div>
                 </div>
-              ) : null}
-              {/*<div className={`${middleLinkClassName}`}>
-                <div className={`relative mr-3`}>
-                  <Icon name={'marker'} className='w-5 h-5' />
+              ) : (
+                <div
+                  className={`${middleLinkClassName}`}
+                  onClick={() => {
+                    router.push(`${urlPrefix}/#top-shops`).catch(console.log);
+                  }}
+                >
+                  <div className={`relative mr-3`}>
+                    <WpIcon name={'marker'} className='w-5 h-5' />
+                  </div>
+                  <span>{domainCompany ? 'Наши магазины' : 'Магазины'}</span>
                 </div>
-                <span>Магазины</span>
-              </div>*/}
+              )}
             </div>
 
             <WpLink

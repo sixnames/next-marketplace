@@ -92,6 +92,7 @@ const ConfigContext = React.createContext<ConfigContextInterface>({
     mapMarkerLightTheme: '',
     showReservationDate: false,
     buyButtonText: '',
+    categoriesAsNavItems: [],
     visibleCategoriesInNavDropdown: [],
     cartBookingButtonDescription: '',
     catalogueProductsCount: CATALOGUE_PRODUCTS_LIMIT,

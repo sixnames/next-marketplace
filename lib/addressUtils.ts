@@ -5,10 +5,9 @@ import {
 import { AddressComponentModel } from '../db/dbModels';
 
 export function getReadableAddress(addressComponents: AddressComponentModel[]): string {
-  // console.log(addressComponents);
   let streetNumber = '';
   let street = '';
-  let city = '';
+  let city: string[] = [];
   addressComponents.forEach((component) => {
     const types = component.types as Array<AddressType | GeocodingAddressComponentType>;
     const shortName = component.shortName;
@@ -48,9 +47,11 @@ export function getReadableAddress(addressComponents: AddressComponentModel[]): 
       return cityTypes.includes(type);
     });
     if (isCity) {
-      city = shortName;
+      city.push(shortName);
     }
   });
 
-  return `${street}${streetNumber ? ` ${streetNumber}` : ''}${city ? `, ${city}` : ''}`;
+  return `${street}${streetNumber ? ` ${streetNumber}` : ''}${
+    city.length > 0 ? `, ${city.join(', ')}` : ''
+  }`;
 }

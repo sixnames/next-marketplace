@@ -7,6 +7,7 @@ import {
   CONFIG_VARIANT_CATEGORIES_TREE,
   CONFIG_VARIANT_CONSTRUCTOR,
   CONFIG_VARIANT_NUMBER,
+  CONFIG_VARIANT_RUBRICS,
   CONFIG_VARIANT_STRING,
   DEFAULT_CITY,
   DEFAULT_LOCALE,
@@ -21,6 +22,7 @@ import { AddressModel, ConfigModel, JSONObjectModel, TranslationModel } from '..
 import { CategoryInterface, RubricInterface } from '../../db/uiInterfaces';
 import {
   useUpdateConfigMutation,
+  useUpdateRubricNavItemConfigMutation,
   useUpdateVisibleCategoriesInNavDropdownMutation,
 } from '../../generated/apolloComponents';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
@@ -224,7 +226,7 @@ interface FormikConfigInputInterface {
 
 const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubrics }) => {
   const { cities } = useConfigContext();
-  const { onErrorCallback, onCompleteCallback } = useMutationCallbacks({
+  const { onErrorCallback, onCompleteCallback, showLoading } = useMutationCallbacks({
     reload: true,
   });
   const [updateConfigMutation] = useUpdateConfigMutation({
@@ -242,6 +244,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
   const isAddress = variant === CONFIG_VARIANT_ADDRESS;
   const isNumber = variant === CONFIG_VARIANT_NUMBER;
   const isCategoriesTree = variant === CONFIG_VARIANT_CATEGORIES_TREE;
+  const isRubrics = variant === CONFIG_VARIANT_RUBRICS;
 
   const initialCities = Object.keys(configCities).reduce((acc: JSONObjectModel, cityKey) => {
     const cityLocales = configCities[cityKey] as JSONObjectModel | undefined;
@@ -403,6 +406,11 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
       onError: onErrorCallback,
     });
 
+  const [updateRubricNavItemConfigMutation] = useUpdateRubricNavItemConfigMutation({
+    onCompleted: (data) => onCompleteCallback(data.updateRubricNavItemConfig),
+    onError: onErrorCallback,
+  });
+
   const renderCategories = React.useCallback(
     ({ category, rubricId, citySlug, isParentSelected }: RenderCategoriesInterface) => {
       const { name, categories } = category;
@@ -421,6 +429,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
                 value={category._id}
                 name={`${category._id}`}
                 onChange={() => {
+                  showLoading();
                   updateVisibleCategoriesInNavDropdownMutation({
                     variables: {
                       input: {
@@ -475,9 +484,89 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
       config.name,
       config.slug,
       config.variant,
+      showLoading,
       updateVisibleCategoriesInNavDropdownMutation,
     ],
   );
+
+  if (isRubrics) {
+    return (
+      <div className='mb-24' data-cy={`${configSlug}-config`} key={configSlug}>
+        <div
+          className='flex items-start min-h-[1.3rem] mb-3 font-medium overflow-ellipsis whitespace-nowrap text-secondary-text'
+          data-cy={`${configSlug}-config-name`}
+        >
+          <span>{name}</span>
+          {description ? (
+            <React.Fragment>
+              {' '}
+              <WpTooltip title={description}>
+                <div className='inline-block cursor-pointer ml-3'>
+                  <WpIcon className='w-5 h-5' name={'question-circle'} />
+                </div>
+              </WpTooltip>
+            </React.Fragment>
+          ) : null}
+        </div>
+        {cities.map(({ name, slug }) => {
+          const cityTestId = `${configSlug}-${slug}`;
+          return (
+            <WpAccordion
+              isOpen={slug === DEFAULT_CITY}
+              testId={cityTestId}
+              title={`${name}`}
+              key={slug}
+            >
+              <div className='ml-8 py-[var(--lineGap-200)] grid gap-4'>
+                {(rubrics || []).map((rubric) => {
+                  const configValue = alwaysArray(get(config.cities, `${slug}.${DEFAULT_LOCALE}`));
+                  const categoryValue = `${rubric._id}`;
+                  const isSelected = configValue.includes(categoryValue);
+
+                  return (
+                    <div className='cms-option flex gap-4 items-center' key={`${rubric._id}`}>
+                      <div>
+                        <WpCheckbox
+                          testId={`${rubric.name}`}
+                          checked={isSelected}
+                          value={rubric._id}
+                          name={`${rubric._id}`}
+                          onChange={() => {
+                            showLoading();
+                            updateRubricNavItemConfigMutation({
+                              variables: {
+                                input: {
+                                  _id: config._id,
+                                  slug: config.slug,
+                                  companySlug: config.companySlug,
+                                  description: config.description,
+                                  variant: config.variant as any,
+                                  acceptedFormats: config.acceptedFormats,
+                                  group: config.group,
+                                  multi: config.multi,
+                                  name: config.name,
+                                  cities: config.cities,
+                                  citySlug: slug,
+                                  rubricId: rubric._id,
+                                },
+                              },
+                            }).catch(console.log);
+                          }}
+                        />
+                      </div>
+                      <div className='font-medium' data-cy={`rubric-${rubric.name}`}>
+                        {rubric.name}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </WpAccordion>
+          );
+        })}
+      </div>
+    );
+  }
 
   if (isCategoriesTree) {
     return (

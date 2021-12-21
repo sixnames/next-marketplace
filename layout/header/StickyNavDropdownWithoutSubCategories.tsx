@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import WpLink from '../../components/Link/WpLink';
-import { FILTER_CATEGORY_KEY, FILTER_SEPARATOR, ROUTE_CATALOGUE } from '../../config/common';
+import { FILTER_CATEGORY_KEY, FILTER_SEPARATOR } from '../../config/common';
 import { useConfigContext } from '../../context/configContext';
 import { noNaN } from '../../lib/numbers';
 import {
@@ -12,11 +12,10 @@ import {
 
 const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
   attribute,
-  rubricSlug,
   attributeStyle,
   attributeLinkStyle,
   hideDropdown,
-  urlPrefix,
+  parentHref,
 }) => {
   const router = useRouter();
   const { configs } = useConfigContext();
@@ -46,7 +45,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
                 style={attributeLinkStyle}
                 testId={`header-nav-dropdown-option`}
                 prefetch={false}
-                href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`}
+                href={`${parentHref}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`}
                 className='flex items-center py-1 text-secondary-text'
               >
                 {option.name}
@@ -62,7 +61,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
               className='flex items-center py-1 text-theme cursor-pointer hover:underline'
               onClick={() => {
                 router
-                  .push(`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}`)
+                  .push(parentHref)
                   .then(() => {
                     if (hideDropdown) {
                       hideDropdown();
@@ -82,10 +81,9 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
 
 const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
   category,
-  rubricSlug,
   attributeStyle,
   hideDropdown,
-  urlPrefix,
+  parentHref,
 }) => {
   const { name, icon } = category;
   const categoryPath = `${FILTER_CATEGORY_KEY}${FILTER_SEPARATOR}${category.slug}`;
@@ -98,7 +96,7 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
           style={attributeStyle}
           testId={`header-nav-dropdown-option`}
           prefetch={false}
-          href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}/${categoryPath}`}
+          href={`${parentHref}/${categoryPath}`}
           className='flex nav-dropdown-icon-link items-center gap-3 leading-snug text-secondary-text text-lg hover:no-underline group'
         >
           {icon ? (
@@ -118,11 +116,10 @@ const StickyNavDropdownWithoutSubCategories: React.FC<StickyNavDropdownInterface
   attributes,
   attributeStyle,
   attributeLinkStyle,
-  rubricSlug,
   categories,
   hideDropdown,
-  urlPrefix,
   navCategoryColumns,
+  parentHref,
 }) => {
   let categoryColumnsClassName = 'grid-cols-4';
   if (navCategoryColumns === 3) {
@@ -144,10 +141,9 @@ const StickyNavDropdownWithoutSubCategories: React.FC<StickyNavDropdownInterface
                 hideDropdown={hideDropdown}
                 key={`${category._id}`}
                 category={category}
-                rubricSlug={rubricSlug}
                 attributeStyle={attributeStyle}
                 attributeLinkStyle={attributeLinkStyle}
-                urlPrefix={urlPrefix}
+                parentHref={parentHref}
               />
             );
           })}
@@ -160,10 +156,9 @@ const StickyNavDropdownWithoutSubCategories: React.FC<StickyNavDropdownInterface
               hideDropdown={hideDropdown}
               key={`${attribute._id}`}
               attribute={attribute}
-              rubricSlug={rubricSlug}
               attributeStyle={attributeStyle}
               attributeLinkStyle={attributeLinkStyle}
-              urlPrefix={urlPrefix}
+              parentHref={parentHref}
             />
           );
         })}

@@ -22,6 +22,7 @@ import AppContentFilter from '../AppContentFilter';
 import ContentItemControls from '../button/ContentItemControls';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
+import Currency from '../Currency';
 import FormikInput from '../FormElements/Input/FormikInput';
 import FormikRouterSearch from '../FormElements/Search/FormikRouterSearch';
 import Inner from '../Inner';
@@ -130,6 +131,23 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
               low
             />
             <div>{currency}</div>
+          </div>
+        );
+      },
+    },
+    {
+      headTitle: 'Цены на сайте',
+      render: ({ dataItem }) => {
+        return (
+          <div className='flex flex-col gap-2'>
+            <div className='flex gap-3 justify-between'>
+              <span>Мин.</span>
+              <Currency value={dataItem.minPrice} />
+            </div>
+            <div className='flex gap-3 justify-between'>
+              <span>Макс.</span>
+              <Currency value={dataItem.maxPrice} />
+            </div>
           </div>
         );
       },

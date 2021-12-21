@@ -474,7 +474,7 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
       cardTitleI18n: {
         [DEFAULT_LOCALE]: cardTitle,
       },
-      selectedOptionsSlugs,
+      filterSlugs: selectedOptionsSlugs,
       titleCategoriesSlugs,
       selectedAttributesIds,
       createdAt: new Date(),

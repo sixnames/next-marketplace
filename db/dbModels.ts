@@ -647,7 +647,7 @@ interface ProductMainFieldsInterface {
   brandSlug?: string | null;
   brandCollectionSlug?: string | null;
   manufacturerSlug?: string | null;
-  selectedOptionsSlugs: string[];
+  filterSlugs: string[];
   barcode?: string[] | null;
   allowDelivery: boolean;
 }

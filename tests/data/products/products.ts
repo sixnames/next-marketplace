@@ -15,7 +15,7 @@ const products: ProductModel[] = productSummaries.map((productSummary) => {
     brandSlug: productSummary.brandSlug,
     manufacturerSlug: productSummary.manufacturerSlug,
     selectedAttributesIds: productSummary.selectedAttributesIds,
-    selectedOptionsSlugs: productSummary.selectedOptionsSlugs,
+    filterSlugs: productSummary.filterSlugs,
     slug: productSummary.slug,
   };
   return product;

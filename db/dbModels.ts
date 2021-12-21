@@ -632,7 +632,6 @@ export interface ProductConnectionModel {
 }
 
 export interface ProductAttributeModel {
-  _id: ObjectIdModel;
   attributeId: ObjectIdModel;
   selectedOptionsSlugs: string[];
   selectedOptionsIds: ObjectIdModel[];
@@ -656,7 +655,6 @@ interface ProductMainFieldsInterface {
 export interface ProductModel extends ProductMainFieldsInterface, BaseModel {
   slug: string;
   active: boolean;
-  titleCategoriesSlugs: string[];
   selectedAttributesIds: ObjectId[];
 }
 
@@ -670,6 +668,7 @@ export interface ProductSummaryModel extends ProductModel, TimestampModel {
   cardTitleI18n: TranslationModel;
   assets: string[];
   attributes: ProductAttributeModel[];
+  titleCategoriesSlugs: string[];
 }
 
 export interface ProductAssetsModel {

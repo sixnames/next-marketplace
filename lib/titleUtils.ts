@@ -18,7 +18,7 @@ import {
   OptionInterface,
   ProductAttributeInterface,
 } from '../db/uiInterfaces';
-import { getFieldStringLocale } from '../lib/i18n';
+import { getFieldStringLocale } from './i18n';
 import { get } from 'lodash';
 import trim from 'trim';
 
@@ -344,6 +344,7 @@ interface GenerateProductTitleInterface
       | 'attributeNameVisibilityFieldName'
       | 'fallbackTitle'
       | 'defaultKeyword'
+      | 'page'
     > {
   attributeVisibilityFieldName: 'showInCardTitle' | 'showInSnippetTitle';
   attributeNameVisibilityFieldName: 'showNameInCardTitle' | 'showNameInSnippetTitle';
@@ -393,7 +394,7 @@ function generateProductTitle({
   });
 }
 
-interface GenerateCardTitleInterface
+export interface GenerateCardTitleInterface
   extends Omit<
     GenerateProductTitleInterface,
     | 'attributes'

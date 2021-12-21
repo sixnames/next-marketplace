@@ -24,7 +24,7 @@ export function getStringValueFromOptionsList({
 
   const names: string[] = [];
 
-  options.forEach((option) => {
+  function iter(option: OptionInterface) {
     const name =
       option.variants[gender] && option.variants[gender][locale]
         ? getFieldStringLocale(option.variants[gender], locale)
@@ -32,8 +32,26 @@ export function getStringValueFromOptionsList({
     if (name) {
       names.push(name);
     }
-  });
 
+    if (option.options) {
+      return option.options.forEach(iter);
+    }
+  }
+
+  options.forEach(iter);
+
+  /*options.forEach((option) => {
+    const name =
+      option.variants[gender] && option.variants[gender][locale]
+        ? getFieldStringLocale(option.variants[gender], locale)
+        : getFieldStringLocale(option.nameI18n, locale);
+    if (name) {
+      names.push(name);
+    }
+  });*/
+  /*if (names.length > 0) {
+    console.log(names);
+  }*/
   const asString = names.join(', ');
 
   return `${asString}${metricName}`;

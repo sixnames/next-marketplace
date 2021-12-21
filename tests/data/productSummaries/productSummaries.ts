@@ -1,4 +1,3 @@
-import { ObjectId } from 'mongodb';
 import {
   ASSETS_DIST_PRODUCTS,
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
@@ -9,6 +8,8 @@ import {
   GENDER_IT,
   ATTRIBUTE_VARIANT_NUMBER,
   ATTRIBUTE_VARIANT_STRING,
+  DEFAULT_CURRENCY,
+  DEFAULT_LOCALE,
 } from '../../../config/common';
 import {
   ObjectIdModel,
@@ -18,6 +19,14 @@ import {
   CategoryModel,
 } from '../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
+import { OptionInterface, ProductAttributeInterface } from '../../../db/uiInterfaces';
+import { getFieldStringLocale } from '../../../lib/i18n';
+import {
+  generateCardTitle,
+  GenerateCardTitleInterface,
+  generateSnippetTitle,
+} from '../../../lib/titleUtils';
+import { getTreeFromList } from '../../../lib/treeUtils';
 const addZero = require('add-zero');
 import rubrics from '../rubrics/rubrics';
 import rubricVariants from '../rubricVariants/rubricVariants';
@@ -28,12 +37,8 @@ import brands from '../brands/brands';
 import brandCollections from '../brandCollections/brandCollections';
 import categories from '../categories/categories';
 import { getAttributeReadableValueLocales } from '../../../lib/productAttributesUtils';
-import products from '../products/products';
 
-const attributeText = `
-Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi debitis eligendi eum, excepturi iure libero molestias quas quis ratione reiciendis sed sequi sint sit! Architecto minus modi officia provident voluptates.
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi debitis eligendi eum, excepturi iure libero molestias quas quis ratione reiciendis sed sequi sint sit! Architecto minus modi officia provident voluptates.
-`;
+const attributeText = `Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi debitis eligendi eum, excepturi iure libero molestias quas quis ratione reiciendis sed sequi sint sit! Architecto minus modi officia provident voluptates.`;
 
 function getOptionsTree(option: OptionModel, acc: OptionModel[]): OptionModel[] {
   const resultOptions: OptionModel[] = acc;
@@ -144,11 +149,15 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
 
   for (let i = 1; i <= maxProductsCount; i = i + 1) {
     counter = counter + 1;
+    const gender = GENDER_IT;
     const selectedAttributesIds: ObjectIdModel[] = [];
     const selectedOptionsSlugs: string[] = [];
     const titleCategoriesSlugs: string[] = [];
     const productAttributes: ProductAttributeModel[] = [];
+    const itemId: string = addZero(counter, ID_COUNTER_DIGITS);
+    const name = `${rubricSlug.toUpperCase()} ${itemId}`;
 
+    // attributes
     rubricAttributes.forEach((attribute) => {
       if (attribute.showInCatalogueFilter) {
         selectedAttributesIds.push(attribute._id);
@@ -168,7 +177,6 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
             ? Math.round(Math.random() * 10)
             : undefined;
         const productAttribute: ProductAttributeModel = {
-          _id: new ObjectId(),
           readableValueI18n: {},
           selectedOptionsIds: [],
           selectedOptionsSlugs: [],
@@ -177,6 +185,7 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
           textI18n,
         };
 
+        // region
         if (attribute.slug === '000006') {
           const randomOptionIndex = getNextOptionIndex({
             optionsLength: attributeOptions.length,
@@ -187,12 +196,33 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
             optionIndex: randomOptionIndex,
           });
           const selectedOption = attributeOptions[randomOptionIndex];
+          let options: OptionInterface[] = [];
           if (selectedOption) {
             const regionOptionsTree = getOptionsTree(selectedOption, [selectedOption]);
-            regionOptionsTree.forEach(({ slug }) => {
-              selectedOptionsSlugs.push(`${attribute.slug}${FILTER_SEPARATOR}${slug}`);
+            options = getTreeFromList({
+              list: regionOptionsTree,
+              locale: DEFAULT_LOCALE,
+              childrenFieldName: 'options',
+              gender,
+            });
+            regionOptionsTree.forEach(({ slug, _id }) => {
+              const optionSlug = `${attribute.slug}${FILTER_SEPARATOR}${slug}`;
+              productAttribute.selectedOptionsIds.push(_id);
+              productAttribute.selectedOptionsSlugs.push(optionSlug);
+              selectedOptionsSlugs.push(optionSlug);
             });
           }
+          const readableValueI18n = getAttributeReadableValueLocales({
+            gender,
+            productAttribute: {
+              ...productAttribute,
+              attribute: {
+                ...attribute,
+                options,
+              },
+            },
+          });
+          productAttributes.push({ ...productAttribute, readableValueI18n });
           return;
         }
 
@@ -208,8 +238,22 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
           });
           const selectedOption = attributeOptions[randomOptionIndex];
           if (selectedOption) {
-            selectedOptionsSlugs.push(`${attribute.slug}${FILTER_SEPARATOR}${selectedOption.slug}`);
+            const optionSlug = `${attribute.slug}${FILTER_SEPARATOR}${selectedOption.slug}`;
+            productAttribute.selectedOptionsIds.push(selectedOption._id);
+            productAttribute.selectedOptionsSlugs.push(optionSlug);
+            selectedOptionsSlugs.push(optionSlug);
           }
+          const readableValueI18n = getAttributeReadableValueLocales({
+            gender,
+            productAttribute: {
+              ...productAttribute,
+              attribute: {
+                ...attribute,
+                options: [selectedOption],
+              },
+            },
+          });
+          productAttributes.push({ ...productAttribute, readableValueI18n });
           return;
         }
 
@@ -222,9 +266,14 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
             attributeSlug: attribute.slug,
             optionIndex: randomOptionIndex,
           });
+          const selectedOptions: OptionInterface[] = [];
           const selectedOption = attributeOptions[randomOptionIndex];
           if (selectedOption) {
-            selectedOptionsSlugs.push(`${attribute.slug}${FILTER_SEPARATOR}${selectedOption.slug}`);
+            selectedOptions.push(selectedOption);
+            const optionSlug = `${attribute.slug}${FILTER_SEPARATOR}${selectedOption.slug}`;
+            productAttribute.selectedOptionsIds.push(selectedOption._id);
+            productAttribute.selectedOptionsSlugs.push(optionSlug);
+            selectedOptionsSlugs.push(optionSlug);
           }
 
           const randomOptionIndexB = getNextOptionIndex({
@@ -237,17 +286,43 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
           });
           const nextSelectedOption = attributeOptions[randomOptionIndexB];
           if (nextSelectedOption) {
-            selectedOptionsSlugs.push(
-              `${attribute.slug}${FILTER_SEPARATOR}${nextSelectedOption.slug}`,
-            );
+            selectedOptions.push(nextSelectedOption);
+            const optionSlug = `${attribute.slug}${FILTER_SEPARATOR}${nextSelectedOption.slug}`;
+            productAttribute.selectedOptionsIds.push(nextSelectedOption._id);
+            productAttribute.selectedOptionsSlugs.push(optionSlug);
+            selectedOptionsSlugs.push(optionSlug);
           }
+
+          const options = getTreeFromList({
+            list: selectedOptions,
+            locale: DEFAULT_LOCALE,
+            childrenFieldName: 'options',
+            gender,
+          });
+          const readableValueI18n = getAttributeReadableValueLocales({
+            gender,
+            productAttribute: {
+              ...productAttribute,
+              attribute: {
+                ...attribute,
+                options,
+              },
+            },
+          });
+          productAttributes.push({ ...productAttribute, readableValueI18n });
           return;
         }
+
+        const readableValueI18n = getAttributeReadableValueLocales({
+          gender,
+          productAttribute: {
+            ...productAttribute,
+            attribute,
+          },
+        });
+        productAttributes.push({ ...productAttribute, readableValueI18n });
       }
     });
-
-    const itemId: string = addZero(counter, ID_COUNTER_DIGITS);
-    const name = `${rubricSlug.toUpperCase()} ${itemId}`;
 
     // manufacturer
     const manufacturerIndex = getNextOptionIndex({
@@ -318,37 +393,90 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
       });
     }
 
-    // attributes
+    const titleAttributes = productAttributes.reduce(
+      (acc: ProductAttributeInterface[], productAttribute) => {
+        const attribute = attributes.find(({ _id }) => _id.equals(productAttribute.attributeId));
+        if (!attribute) {
+          return acc;
+        }
+        const attributeOptions = options.filter((option) => {
+          return productAttribute.selectedOptionsIds.some((_id) => {
+            return _id.equals(option._id);
+          });
+        });
+        const titleAttribute: ProductAttributeInterface = {
+          ...productAttribute,
+          attribute: {
+            ...attribute,
+            options: getTreeFromList({
+              list: attributeOptions,
+              childrenFieldName: 'options',
+              locale: DEFAULT_LOCALE,
+              gender,
+            }),
+          },
+        };
+        return [...acc, titleAttribute];
+      },
+      [],
+    );
+
+    const titleConfig: GenerateCardTitleInterface = {
+      attributes: titleAttributes,
+      brand,
+      rubricName: getFieldStringLocale(rubric.nameI18n, DEFAULT_LOCALE),
+      categories: getTreeFromList({
+        list: titleCategories,
+        childrenFieldName: 'categories',
+        locale: DEFAULT_LOCALE,
+        gender,
+      }),
+      currency: DEFAULT_CURRENCY,
+      defaultGender: gender,
+      locale: DEFAULT_LOCALE,
+      originalName: name,
+      titleCategoriesSlugs: categorySlugs,
+      showCategoryInProductTitle: true,
+      showRubricNameInProductTitle: true,
+    };
+
+    const snippetTitle = generateSnippetTitle(titleConfig);
+
+    const cardTitle = generateCardTitle(titleConfig);
 
     const summary: ProductSummaryModel = {
       _id: getObjectId(`${rubricSlug} ${itemId}`),
       active: true,
       itemId,
+      slug: itemId,
+      barcode: [itemId, `${itemId}9999`],
       rubricSlug: rubric.slug,
       rubricId: rubric._id,
-      barcode: [itemId, `${itemId}9999`],
-      slug: itemId,
       originalName: name,
-      gender: GENDER_IT,
+      categorySlugs,
+      brandSlug: brand?.itemId,
+      brandCollectionSlug: brandCollection?.itemId,
+      manufacturerSlug: manufacturer?.itemId,
+      allowDelivery: Boolean(rubricVariant.allowDelivery),
+      mainImage: `/assets/${ASSETS_DIST_PRODUCTS}/${itemId}/${itemId}-0.png`,
+      assets: [`/assets/${ASSETS_DIST_PRODUCTS}/${itemId}/${itemId}-0.png`],
+      gender,
       nameI18n: {
         ru: `${name} RU`,
       },
       descriptionI18n: {
         ru: `Description ${name} RU`,
       },
-      mainImage: `/assets/${ASSETS_DIST_PRODUCTS}/${itemId}/${itemId}-0.png`,
-      attributes: [],
-      assets: [],
-      categorySlugs,
-      snippetTitleI18n: {},
-      cardTitleI18n: {},
+      attributes: productAttributes,
+      snippetTitleI18n: {
+        [DEFAULT_LOCALE]: snippetTitle,
+      },
+      cardTitleI18n: {
+        [DEFAULT_LOCALE]: cardTitle,
+      },
       selectedOptionsSlugs,
       titleCategoriesSlugs,
       selectedAttributesIds,
-      brandSlug: brand?.itemId,
-      brandCollectionSlug: brandCollection?.itemId,
-      manufacturerSlug: manufacturer?.itemId,
-      allowDelivery: Boolean(rubricVariant.allowDelivery),
       createdAt: new Date(),
       updatedAt: new Date(),
     };

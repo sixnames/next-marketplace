@@ -3,7 +3,7 @@ import { getCliParamBoolean } from '../../testUtils/testDbUtils';
 import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, ID_COUNTER_DIGITS } from '../../../config/common';
 import { ShopProductModel } from '../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
-import products from '../products/products';
+import productSummaries from '../productSummaries/productSummaries';
 import productConnectionItems from '../productConnectionItems/productConnectionItems';
 import shops from '../shops/shops';
 import rubrics from '../rubrics/rubrics';
@@ -15,7 +15,7 @@ const isOneShopCompany = getCliParamBoolean('oneShop');
 
 if (isOneShopCompany) {
   rubrics.forEach((rubric) => {
-    const rubricProducts = products.filter(({ rubricSlug }) => rubricSlug === rubric.slug);
+    const rubricProducts = productSummaries.filter(({ rubricSlug }) => rubricSlug === rubric.slug);
     for (let i = 0; i < maxProductsCountForShop; i = i + 1) {
       const product = rubricProducts[i];
       const productId = product._id;
@@ -89,7 +89,7 @@ if (isOneShopCompany) {
   });
 } else {
   rubrics.forEach((rubric) => {
-    const rubricProducts = products.filter(({ rubricSlug }) => rubricSlug === rubric.slug);
+    const rubricProducts = productSummaries.filter(({ rubricSlug }) => rubricSlug === rubric.slug);
     const isWhiskey = rubric.slug === 'viski';
 
     for (let i = 0; i < maxProductsCountForShop; i = i + 1) {

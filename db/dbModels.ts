@@ -633,10 +633,6 @@ export interface ProductConnectionModel {
 
 export interface ProductAttributeModel {
   _id: ObjectIdModel;
-  rubricId: ObjectIdModel;
-  rubricSlug: string;
-  productSlug: string;
-  productId: ObjectIdModel;
   attributeId: ObjectIdModel;
   selectedOptionsSlugs: string[];
   selectedOptionsIds: ObjectIdModel[];
@@ -657,14 +653,14 @@ interface ProductMainFieldsInterface {
   allowDelivery: boolean;
 }
 
-export interface ProductModel extends ProductMainFieldsInterface, BaseModel, TimestampModel {
+export interface ProductModel extends ProductMainFieldsInterface, BaseModel {
   slug: string;
   active: boolean;
   titleCategoriesSlugs: string[];
   selectedAttributesIds: ObjectId[];
 }
 
-export interface ProductSummaryModel extends ProductModel {
+export interface ProductSummaryModel extends ProductModel, TimestampModel {
   originalName: string;
   nameI18n?: TranslationModel | null;
   descriptionI18n?: TranslationModel | null;

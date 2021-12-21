@@ -474,7 +474,7 @@ export const getStaticProps = async (
     props: {
       ...props,
       post: castDbData(post),
-      showForIndex: false,
+      showForIndex: true,
     },
   };
 };

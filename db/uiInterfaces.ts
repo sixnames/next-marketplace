@@ -250,6 +250,8 @@ export interface ProductAttributesGroupInterface extends AttributesGroupModel {
 }
 
 export interface ProductInterface extends ProductModel {
+  minPrice?: number | null;
+  maxPrice?: number | null;
   available?: boolean | null;
   name?: string | null;
   description?: string | null;
@@ -949,3 +951,9 @@ export interface SeoContentCitiesInterface {
 }
 
 export type OrderInterfacePayloadModel = PayloadType<OrderInterface>;
+
+export interface ShopProductPricesInterface {
+  _id: ObjectIdModel;
+  minPrice: number;
+  maxPrice: number;
+}

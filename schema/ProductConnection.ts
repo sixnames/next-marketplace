@@ -7,7 +7,7 @@ import {
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCT_CONNECTION_ITEMS,
   COL_PRODUCT_CONNECTIONS,
-  COL_PRODUCTS,
+  COL_PRODUCT_FACETS,
 } from '../db/collectionNames';
 import {
   AttributeModel,
@@ -15,7 +15,7 @@ import {
   ProductAttributeModel,
   ProductConnectionItemModel,
   ProductConnectionModel,
-  ProductModel,
+  ProductFacetModel,
   ProductPayloadModel,
 } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
@@ -38,9 +38,9 @@ export const ProductConnectionItem = objectType({
     t.nonNull.objectId('productId');
     t.nonNull.field('product', {
       type: 'Product',
-      resolve: async (source): Promise<ProductModel> => {
+      resolve: async (source): Promise<ProductFacetModel> => {
         const { db } = await getDatabase();
-        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+        const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
         const product = await productsCollection.findOne({ _id: source.productId });
         if (!product) {
           throw Error('Product not found in ProductConnectionItem');
@@ -105,7 +105,7 @@ export const ProductConnectionMutations = extendType({
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
         const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+        const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
         const productsAttributesCollection =
           db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
         const productConnectionsCollection =
@@ -306,7 +306,7 @@ export const ProductConnectionMutations = extendType({
       resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
-        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+        const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
         const productsAttributesCollection =
           db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
         const productConnectionsCollection =
@@ -493,7 +493,7 @@ export const ProductConnectionMutations = extendType({
       resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
-        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+        const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
         const productConnectionsCollection =
           db.collection<ProductConnectionModel>(COL_PRODUCT_CONNECTIONS);
         const productConnectionItemsCollection = db.collection<ProductConnectionItemModel>(

@@ -1,14 +1,14 @@
 import { arg, enumType, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import { SUPPLIER_PRICE_VARIANT_ENUMS } from '../config/common';
 import {
-  COL_PRODUCTS,
+  COL_PRODUCT_FACETS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
   COL_SUPPLIER_PRODUCTS,
   COL_SUPPLIERS,
 } from '../db/collectionNames';
 import {
-  ProductModel,
+  ProductFacetModel,
   ShopModel,
   ShopProductModel,
   ShopProductPayloadModel,
@@ -49,9 +49,9 @@ export const ShopProduct = objectType({
     // ShopProduct product field resolver
     t.nonNull.field('product', {
       type: 'Product',
-      resolve: async (source): Promise<ProductModel> => {
+      resolve: async (source): Promise<ProductFacetModel> => {
         const { db } = await getDatabase();
-        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+        const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
         const product = await productsCollection.findOne({ _id: source.productId });
         if (!product) {
           throw Error('Product not found in ShopProduct');

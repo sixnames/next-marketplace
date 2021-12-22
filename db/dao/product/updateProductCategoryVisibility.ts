@@ -1,8 +1,13 @@
 import { ObjectId } from 'mongodb';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
-import { COL_CATEGORIES, COL_PRODUCTS, COL_SHOP_PRODUCTS } from '../../collectionNames';
-import { CategoryModel, ProductModel, ProductPayloadModel, ShopProductModel } from '../../dbModels';
+import { COL_CATEGORIES, COL_PRODUCT_FACETS, COL_SHOP_PRODUCTS } from '../../collectionNames';
+import {
+  CategoryModel,
+  ProductFacetModel,
+  ProductPayloadModel,
+  ShopProductModel,
+} from '../../dbModels';
 import { getDatabase } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
 import { UpdateProductCategoryInputInterface } from './updateProductCategory';
@@ -13,7 +18,7 @@ export async function updateProductCategoryVisibility({
 }: DaoPropsInterface<UpdateProductCategoryInputInterface>): Promise<ProductPayloadModel> {
   const { db, client } = await getDatabase();
   const { getApiMessage } = await getRequestParams(context);
-  const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+  const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
   const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
 

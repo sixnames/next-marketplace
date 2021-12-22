@@ -4,7 +4,7 @@ import { DEFAULT_COUNTERS_OBJECT, GEO_POINT_TYPE } from '../config/common';
 import {
   COL_CITIES,
   COL_COMPANIES,
-  COL_PRODUCTS,
+  COL_PRODUCT_FACETS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
 } from '../db/collectionNames';
@@ -12,7 +12,7 @@ import { aggregatePagination } from '../db/dao/aggregatePagination';
 import {
   CityModel,
   CompanyModel,
-  ProductModel,
+  ProductFacetModel,
   ShopModel,
   ShopPayloadModel,
   ShopProductModel,
@@ -634,7 +634,7 @@ export const ShopMutations = extendType({
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
         const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
-        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+        const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
 
         const session = client.startSession();

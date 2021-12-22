@@ -1,8 +1,12 @@
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { ASSETS_DIST_PRODUCTS, ASSETS_PRODUCT_IMAGE_WIDTH } from '../../../config/common';
-import { COL_PRODUCT_ASSETS, COL_PRODUCTS, COL_SHOP_PRODUCTS } from '../../../db/collectionNames';
-import { ProductAssetsModel, ProductModel, ShopProductModel } from '../../../db/dbModels';
+import {
+  COL_PRODUCT_ASSETS,
+  COL_PRODUCT_FACETS,
+  COL_SHOP_PRODUCTS,
+} from '../../../db/collectionNames';
+import { ProductAssetsModel, ProductFacetModel, ShopProductModel } from '../../../db/dbModels';
 import { getDatabase } from '../../../db/mongodb';
 import { getMainImage, storeUploads } from '../../../lib/assetUtils/assetUtils';
 import { parseRestApiFormData } from '../../../lib/restApi';
@@ -32,7 +36,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   const { db } = await getDatabase();
-  const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+  const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
   const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
 

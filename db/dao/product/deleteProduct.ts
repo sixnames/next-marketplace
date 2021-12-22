@@ -7,7 +7,7 @@ import {
   COL_PRODUCT_ASSETS,
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCT_CONNECTION_ITEMS,
-  COL_PRODUCTS,
+  COL_PRODUCT_FACETS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from '../../collectionNames';
@@ -15,7 +15,7 @@ import {
   ProductAssetsModel,
   ProductAttributeModel,
   ProductConnectionItemModel,
-  ProductModel,
+  ProductFacetModel,
   ProductPayloadModel,
   RubricModel,
   ShopProductModel,
@@ -34,7 +34,7 @@ export async function deleteProduct({
   const { getApiMessage } = await getRequestParams(context);
   const { db, client } = await getDatabase();
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-  const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+  const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
   const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
   const productAttributesCollection = db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);

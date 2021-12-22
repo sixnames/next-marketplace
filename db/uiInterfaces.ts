@@ -44,7 +44,7 @@ import {
   ProductCardPricesModel,
   ProductConnectionItemModel,
   ProductConnectionModel,
-  ProductModel,
+  ProductFacetModel,
   ProductSummaryModel,
   PromoModel,
   PromoProductModel,
@@ -248,7 +248,7 @@ export interface ProductAttributesGroupInterface extends AttributesGroupModel {
   selectAttributesAST?: ProductAttributeInterface[] | null;
 }
 
-export interface ProductInterface extends ProductModel {
+export interface ProductInterface extends ProductFacetModel {
   summary?: ProductSummaryInterface | null;
 }
 

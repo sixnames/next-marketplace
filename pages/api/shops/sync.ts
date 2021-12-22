@@ -4,14 +4,14 @@ import { DEFAULT_COUNTERS_OBJECT, REQUEST_METHOD_POST } from '../../../config/co
 import {
   COL_BLACKLIST_PRODUCTS,
   COL_NOT_SYNCED_PRODUCTS,
-  COL_PRODUCTS,
+  COL_PRODUCT_FACETS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
 } from '../../../db/collectionNames';
 import {
   BlackListProductModel,
   NotSyncedProductModel,
-  ProductModel,
+  ProductFacetModel,
   ShopModel,
   ShopProductModel,
 } from '../../../db/dbModels';
@@ -55,7 +55,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
     const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
     const blacklistProducts = db.collection<BlackListProductModel>(COL_BLACKLIST_PRODUCTS);
-    const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+    const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
     const notSyncedProductsCollection =
       db.collection<NotSyncedProductModel>(COL_NOT_SYNCED_PRODUCTS);
 

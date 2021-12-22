@@ -2,10 +2,10 @@ import { ObjectId } from 'mongodb';
 import { deleteUpload, getMainImage } from '../../../lib/assetUtils/assetUtils';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
-import { COL_PRODUCT_ASSETS, COL_PRODUCTS, COL_SHOP_PRODUCTS } from '../../collectionNames';
+import { COL_PRODUCT_ASSETS, COL_PRODUCT_FACETS, COL_SHOP_PRODUCTS } from '../../collectionNames';
 import {
   ProductAssetsModel,
-  ProductModel,
+  ProductFacetModel,
   ProductPayloadModel,
   ShopProductModel,
 } from '../../dbModels';
@@ -23,7 +23,7 @@ export async function deleteProductAsset({
 }: DaoPropsInterface<DeleteProductAssetInputInterface>): Promise<ProductPayloadModel> {
   const { getApiMessage } = await getRequestParams(context);
   const { db, client } = await getDatabase();
-  const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+  const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
   const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
 

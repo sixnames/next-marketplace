@@ -7,14 +7,14 @@ import { checkBarcodeIntersects, trimProductName } from '../../../lib/productUti
 import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
 import {
   COL_PRODUCT_ASSETS,
-  COL_PRODUCTS,
+  COL_PRODUCT_FACETS,
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
 } from '../../collectionNames';
 import {
   GenderModel,
   ProductAssetsModel,
-  ProductModel,
+  ProductFacetModel,
   ProductPayloadModel,
   RubricModel,
   RubricVariantModel,
@@ -39,7 +39,7 @@ export async function createProduct({
 }: DaoPropsInterface<CreateProductInputInterface>): Promise<ProductPayloadModel> {
   const { getApiMessage, locale } = await getRequestParams(context);
   const { db, client } = await getDatabase();
-  const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+  const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
   const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
   const rubricVariantCollection = db.collection<RubricVariantModel>(COL_RUBRIC_VARIANTS);
@@ -117,7 +117,7 @@ export async function createProduct({
       }
 
       // create product
-      const itemId = await getNextItemId(COL_PRODUCTS);
+      const itemId = await getNextItemId(COL_PRODUCT_FACETS);
       const productId = new ObjectId();
       const { originalName, nameI18n } = trimProductName({
         nameI18n: values.nameI18n,

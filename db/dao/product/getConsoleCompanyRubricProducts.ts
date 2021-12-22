@@ -22,7 +22,7 @@ import {
   COL_BRANDS,
   COL_CATEGORIES,
   COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCTS,
+  COL_PRODUCT_FACETS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from '../../collectionNames';
@@ -217,7 +217,7 @@ export const getConsoleCompanyRubricProducts = async ({
               // get shop product fields
               {
                 $lookup: {
-                  from: COL_PRODUCTS,
+                  from: COL_PRODUCT_FACETS,
                   as: 'product',
                   let: {
                     productId: '$_id',

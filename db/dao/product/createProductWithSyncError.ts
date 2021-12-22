@@ -7,14 +7,14 @@ import { checkBarcodeIntersects } from '../../../lib/productUtils';
 import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
 import {
   COL_NOT_SYNCED_PRODUCTS,
-  COL_PRODUCTS,
+  COL_PRODUCT_FACETS,
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
 } from '../../collectionNames';
 import {
-  ProductModel,
+  ProductFacetModel,
   ProductPayloadModel,
   RubricModel,
   RubricVariantModel,
@@ -38,7 +38,7 @@ export async function createProductWithSyncError({
 }: DaoPropsInterface<CreateProductWithSyncErrorInputInterface>): Promise<ProductPayloadModel> {
   const { getApiMessage, locale } = await getRequestParams(context);
   const { db, client } = await getDatabase();
-  const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+  const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
   const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
   const notSyncedProductsCollection = db.collection<ShopModel>(COL_NOT_SYNCED_PRODUCTS);
@@ -148,7 +148,7 @@ export async function createProductWithSyncError({
       }
 
       // create product
-      const productItemId = await getNextItemId(COL_PRODUCTS);
+      const productItemId = await getNextItemId(COL_PRODUCT_FACETS);
       const productId = new ObjectId();
       const createdProductResult = await productsCollection.insertOne({
         ...productFields,

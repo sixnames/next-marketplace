@@ -1,8 +1,8 @@
-import { ProductModel } from '../../../db/dbModels';
+import { ProductFacetModel } from '../../../db/dbModels';
 import productSummaries from '../productSummaries/productSummaries';
 
-const products: ProductModel[] = productSummaries.map((productSummary) => {
-  const product: ProductModel = {
+const products: ProductFacetModel[] = productSummaries.map((productSummary) => {
+  const product: ProductFacetModel = {
     _id: productSummary._id,
     categorySlugs: productSummary.categorySlugs,
     rubricId: productSummary.rubricId,

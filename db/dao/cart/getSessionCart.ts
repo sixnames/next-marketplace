@@ -11,7 +11,7 @@ import { NexusContext } from '../../../types/apiContextTypes';
 import {
   COL_CARTS,
   COL_GIFT_CERTIFICATES,
-  COL_PRODUCTS,
+  COL_PRODUCT_FACETS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
@@ -49,7 +49,7 @@ export const getSessionCart = async ({
     const { locale, city } = await getRequestParams(context);
     const cartsCollection = db.collection<CartModel>(COL_CARTS);
     const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
-    const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
+    const productsCollection = db.collection<ProductInterface>(COL_PRODUCT_FACETS);
     const usersCollection = db.collection<UserModel>(COL_USERS);
     const giftCertificatesCollection = db.collection<GiftCertificateModel>(COL_GIFT_CERTIFICATES);
 

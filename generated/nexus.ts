@@ -872,7 +872,7 @@ export interface NexusGenObjects {
   OrderStatus: dbModels.OrderStatusModel;
   OrderStatusPayload: dbModels.OrderStatusPayloadModel;
   PointGeoJSON: dbModels.PointGeoJSONModel;
-  Product: dbModels.ProductModel;
+  Product: dbModels.ProductFacetModel;
   ProductAssets: dbModels.ProductAssetsModel;
   ProductAttribute: dbModels.ProductAttributeModel;
   ProductCardPrices: dbModels.ProductCardPricesModel;

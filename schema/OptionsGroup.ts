@@ -15,7 +15,7 @@ import {
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCT_CONNECTION_ITEMS,
   COL_PRODUCT_CONNECTIONS,
-  COL_PRODUCTS,
+  COL_PRODUCT_FACETS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from '../db/collectionNames';
@@ -30,7 +30,7 @@ import {
   ProductAttributeModel,
   ProductConnectionItemModel,
   ProductConnectionModel,
-  ProductModel,
+  ProductFacetModel,
   RubricModel,
   ShopProductModel,
 } from '../db/dbModels';
@@ -831,7 +831,7 @@ export const OptionsGroupMutations = extendType({
           const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
-          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
           const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
           const productAttributesCollection =

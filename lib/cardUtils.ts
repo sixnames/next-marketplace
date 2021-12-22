@@ -28,7 +28,7 @@ import {
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCT_CONNECTION_ITEMS,
   COL_PRODUCT_CONNECTIONS,
-  COL_PRODUCTS,
+  COL_PRODUCT_FACETS,
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
@@ -117,7 +117,7 @@ export async function getCardData({
   try {
     // const startTime = new Date().getTime();
     const { db } = await getDatabase();
-    const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
+    const productsCollection = db.collection<ProductInterface>(COL_PRODUCT_FACETS);
     const companyMatch = companyId ? { companyId: new ObjectId(companyId) } : {};
     const companySlug = props.companySlug;
     const shopProductsMatch = {
@@ -281,7 +281,7 @@ export async function getCardData({
                           },
                           {
                             $lookup: {
-                              from: COL_PRODUCTS,
+                              from: COL_PRODUCT_FACETS,
                               as: 'product',
                               let: { productId: '$productId' },
                               pipeline: [

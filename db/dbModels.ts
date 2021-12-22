@@ -652,13 +652,13 @@ interface ProductMainFieldsInterface {
   allowDelivery: boolean;
 }
 
-export interface ProductModel extends ProductMainFieldsInterface, BaseModel {
+export interface ProductFacetModel extends ProductMainFieldsInterface, BaseModel {
   slug: string;
   active: boolean;
   selectedAttributesIds: ObjectId[];
 }
 
-export interface ProductSummaryModel extends ProductModel, TimestampModel {
+export interface ProductSummaryModel extends ProductFacetModel, TimestampModel {
   originalName: string;
   nameI18n?: TranslationModel | null;
   descriptionI18n?: TranslationModel | null;
@@ -1150,7 +1150,7 @@ export interface GiftCertificatePayloadModel extends PayloadType<GiftCertificate
   notAuth?: boolean;
 }
 
-export interface ProductPayloadModel extends PayloadType<ProductModel> {
+export interface ProductPayloadModel extends PayloadType<ProductFacetModel> {
   barcodeDoubles?: BarcodeDoublesInterface[] | null;
 }
 

@@ -24,7 +24,7 @@ import {
   COL_CITIES,
   COL_COMPANIES,
   COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCTS,
+  COL_PRODUCT_FACETS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
@@ -205,7 +205,7 @@ export const getConsoleShopProducts = async ({
               // get shop product fields
               {
                 $lookup: {
-                  from: COL_PRODUCTS,
+                  from: COL_PRODUCT_FACETS,
                   as: 'product',
                   let: {
                     productId: '$productId',

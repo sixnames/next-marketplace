@@ -23,7 +23,7 @@ import {
   COL_BRANDS,
   COL_CATEGORIES,
   COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCTS,
+  COL_PRODUCT_FACETS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from '../../collectionNames';
@@ -80,7 +80,7 @@ export const getConsoleRubricProducts = async ({
 
   try {
     const { db } = await getDatabase();
-    const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
+    const productsCollection = db.collection<ProductInterface>(COL_PRODUCT_FACETS);
     const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
     const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
     const filters = alwaysArray(query.filters);

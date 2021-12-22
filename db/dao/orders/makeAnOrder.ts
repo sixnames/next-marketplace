@@ -33,7 +33,7 @@ import {
   COL_ORDER_PRODUCTS,
   COL_ORDER_STATUSES,
   COL_ORDERS,
-  COL_PRODUCTS,
+  COL_PRODUCT_FACETS,
   COL_ROLES,
   COL_SHOPS,
   COL_USERS,
@@ -50,7 +50,7 @@ import {
   OrderPaymentVariantModel,
   OrderProductModel,
   OrderStatusModel,
-  ProductModel,
+  ProductFacetModel,
   RoleModel,
   ShopModel,
   UserModel,
@@ -104,7 +104,7 @@ export async function makeAnOrder({
   const orderStatusesCollection = db.collection<OrderStatusModel>(COL_ORDER_STATUSES);
   const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
   const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
-  const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+  const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
   const giftCertificatesCollection = db.collection<GiftCertificateModel>(COL_GIFT_CERTIFICATES);
 
   const session = client.startSession();

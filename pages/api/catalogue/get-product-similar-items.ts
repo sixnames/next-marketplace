@@ -1,9 +1,9 @@
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { SORT_DESC } from '../../../config/common';
-import { COL_PRODUCTS, COL_SHOP_PRODUCTS } from '../../../db/collectionNames';
+import { COL_PRODUCT_FACETS, COL_SHOP_PRODUCTS } from '../../../db/collectionNames';
 import { ignoreNoImageStage, shopProductFieldsPipeline } from '../../../db/dao/constantPipelines';
-import { ProductModel } from '../../../db/dbModels';
+import { ProductFacetModel } from '../../../db/dbModels';
 import { getDatabase } from '../../../db/mongodb';
 import { ShopProductInterface } from '../../../db/uiInterfaces';
 import { getFieldStringLocale } from '../../../lib/i18n';
@@ -38,7 +38,7 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
 
     const { db } = await getDatabase();
     const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
-    const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+    const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
     const companyRubricsMatch = companyId ? { companyId: new ObjectId(companyId) } : {};
 
     // get product

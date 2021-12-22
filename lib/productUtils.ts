@@ -4,7 +4,7 @@ import { SUPPLIER_PRICE_VARIANT_CHARGE } from '../config/common';
 import {
   COL_COMPANIES,
   COL_PRODUCT_ASSETS,
-  COL_PRODUCTS,
+  COL_PRODUCT_FACETS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
@@ -56,7 +56,7 @@ export async function getCmsProduct({
   companySlug,
 }: GetCmsProductInterface): Promise<GetCmsProductPayloadInterface | null> {
   const { db } = await getDatabase();
-  const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
+  const productsCollection = db.collection<ProductInterface>(COL_PRODUCT_FACETS);
   const productAggregation = await productsCollection
     .aggregate<ProductInterface>([
       {
@@ -370,7 +370,7 @@ export async function checkBarcodeIntersects({
   productId,
 }: CheckBarcodeIntersectsInterface): Promise<BarcodeDoublesInterface[]> {
   const { db } = await getDatabase();
-  const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
+  const productsCollection = db.collection<ProductInterface>(COL_PRODUCT_FACETS);
   const idMatch = productId
     ? {
         _id: {

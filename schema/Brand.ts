@@ -1,6 +1,6 @@
 import { arg, extendType, inputObjectType, nonNull, objectType, stringArg } from 'nexus';
 import { DEFAULT_COUNTERS_OBJECT } from '../config/common';
-import { COL_BRAND_COLLECTIONS, COL_BRANDS, COL_PRODUCTS } from '../db/collectionNames';
+import { COL_BRAND_COLLECTIONS, COL_BRANDS, COL_PRODUCT_FACETS } from '../db/collectionNames';
 import { aggregatePagination } from '../db/dao/aggregatePagination';
 import { findDocumentByI18nField } from '../db/dao/findDocumentByI18nField';
 import {
@@ -10,7 +10,7 @@ import {
   BrandPayloadModel,
   BrandsAlphabetListModel,
   BrandsPaginationPayloadModel,
-  ProductModel,
+  ProductFacetModel,
 } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
 import { updateAlgoliaProducts } from '../lib/algolia/productAlgoliaUtils';
@@ -532,7 +532,7 @@ export const BrandMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
           const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
-          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
 
           // Check brand availability
           const brand = await brandsCollection.findOne({ _id: args._id });
@@ -899,7 +899,7 @@ export const BrandMutations = extendType({
         const dbBrandsCollection = db.collection<BrandModel>(COL_BRANDS);
         const dbBrandsCollectionsCollection =
           db.collection<BrandCollectionModel>(COL_BRAND_COLLECTIONS);
-        const dbProductsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+        const dbProductsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
 
         const session = client.startSession();
 

@@ -8,8 +8,8 @@ import {
   getResolverValidationSchema,
 } from '../../../lib/sessionHelpers';
 import { updateProductSchema } from '../../../validation/productSchema';
-import { COL_PRODUCTS, COL_RUBRICS } from '../../collectionNames';
-import { ProductModel, ProductPayloadModel, RubricModel } from '../../dbModels';
+import { COL_PRODUCT_FACETS, COL_RUBRICS } from '../../collectionNames';
+import { ProductFacetModel, ProductPayloadModel, RubricModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
 import { CreateProductInputInterface } from './createProduct';
@@ -24,7 +24,7 @@ export async function updateProduct({
 }: DaoPropsInterface<UpdateProductInputInterface>): Promise<ProductPayloadModel> {
   const { getApiMessage, locale } = await getRequestParams(context);
   const { db, client } = await getDatabase();
-  const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+  const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
 
   const session = client.startSession();

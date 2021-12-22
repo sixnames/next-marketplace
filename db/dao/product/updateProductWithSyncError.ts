@@ -7,11 +7,16 @@ import { checkBarcodeIntersects } from '../../../lib/productUtils';
 import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
 import {
   COL_NOT_SYNCED_PRODUCTS,
-  COL_PRODUCTS,
+  COL_PRODUCT_FACETS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
 } from '../../collectionNames';
-import { ProductModel, ProductPayloadModel, ShopModel, ShopProductModel } from '../../dbModels';
+import {
+  ProductFacetModel,
+  ProductPayloadModel,
+  ShopModel,
+  ShopProductModel,
+} from '../../dbModels';
 import { getDatabase } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
 
@@ -29,7 +34,7 @@ export async function updateProductWithSyncError({
 }: DaoPropsInterface<UpdateProductWithSyncErrorInputInterface>): Promise<ProductPayloadModel> {
   const { getApiMessage, locale } = await getRequestParams(context);
   const { db, client } = await getDatabase();
-  const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+  const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
   const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
   const notSyncedProductsCollection = db.collection<ShopModel>(COL_NOT_SYNCED_PRODUCTS);

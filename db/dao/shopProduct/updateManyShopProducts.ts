@@ -8,8 +8,8 @@ import {
 } from '../../../lib/sessionHelpers';
 import { getUpdatedShopProductPrices } from '../../../lib/shopUtils';
 import { updateManyShopProductsSchema } from '../../../validation/shopSchema';
-import { COL_PRODUCTS, COL_SHOP_PRODUCTS } from '../../collectionNames';
-import { ProductModel, ShopProductModel, ShopProductPayloadModel } from '../../dbModels';
+import { COL_PRODUCT_FACETS, COL_SHOP_PRODUCTS } from '../../collectionNames';
+import { ProductFacetModel, ShopProductModel, ShopProductPayloadModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
 import { DaoPropsInterface, ShopProductBarcodeDoublesInterface } from '../../uiInterfaces';
 
@@ -29,7 +29,7 @@ export async function updateManyShopProducts({
   const { getApiMessage, locale } = await getRequestParams(context);
   const { db, client } = await getDatabase();
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-  const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+  const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
 
   const session = client.startSession();
 

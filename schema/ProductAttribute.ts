@@ -6,7 +6,7 @@ import {
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCT_CONNECTION_ITEMS,
   COL_PRODUCT_CONNECTIONS,
-  COL_PRODUCTS,
+  COL_PRODUCT_FACETS,
   COL_SHOP_PRODUCTS,
 } from '../db/collectionNames';
 import {
@@ -15,7 +15,7 @@ import {
   ProductAttributeModel,
   ProductConnectionItemModel,
   ProductConnectionModel,
-  ProductModel,
+  ProductFacetModel,
   ProductPayloadModel,
   ShopProductModel,
 } from '../db/dbModels';
@@ -160,7 +160,7 @@ export const ProductAttributeMutations = extendType({
       resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
-        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+        const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
 
         const session = client.startSession();
@@ -275,7 +275,7 @@ export const ProductAttributeMutations = extendType({
       resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
-        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+        const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
 
         const session = client.startSession();
@@ -388,7 +388,7 @@ export const ProductAttributeMutations = extendType({
       resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
-        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+        const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
 
         const session = client.startSession();
@@ -505,7 +505,7 @@ export const ProductAttributeMutations = extendType({
       resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
-        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+        const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
         const productConnectionsCollection =
           db.collection<ProductConnectionModel>(COL_PRODUCT_CONNECTIONS);
         const productConnectionItemsCollection = db.collection<ProductConnectionItemModel>(
@@ -759,7 +759,7 @@ export const ProductAttributeMutations = extendType({
         try {
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
-          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
           const productAttributesCollection =
             db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
@@ -870,7 +870,7 @@ export const ProductAttributeMutations = extendType({
         try {
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
-          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
           const productAttributesCollection =
             db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);

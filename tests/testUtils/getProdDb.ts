@@ -19,7 +19,7 @@ import {
   ProductAttributeModel,
   ProductConnectionItemModel,
   ProductConnectionModel,
-  ProductModel,
+  ProductFacetModel,
   RubricModel,
   ShopModel,
   ShopProductModel,
@@ -59,7 +59,7 @@ import {
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCT_CONNECTION_ITEMS,
   COL_PRODUCT_CONNECTIONS,
-  COL_PRODUCTS,
+  COL_PRODUCT_FACETS,
   COL_PROMO,
   COL_PROMO_CODES,
   COL_PROMO_PRODUCTS,
@@ -770,8 +770,8 @@ export async function updateIndexes(db: Db) {
   });
 
   // Products
-  await createCollectionIfNotExist(COL_PRODUCTS);
-  const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+  await createCollectionIfNotExist(COL_PRODUCT_FACETS);
+  const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
   await productsCollection.createIndex({ itemId: 1 }, { unique: true });
   await productsCollection.createIndex({ slug: 1 }, { unique: true });
   await productsCollection.createIndex({

@@ -5,7 +5,7 @@ import {
   COL_ATTRIBUTES_GROUPS,
   COL_CATEGORIES,
   COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCTS,
+  COL_PRODUCT_FACETS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from '../db/collectionNames';
@@ -15,7 +15,7 @@ import {
   AttributesGroupModel,
   CategoryModel,
   ProductAttributeModel,
-  ProductModel,
+  ProductFacetModel,
   RubricModel,
   RubricPayloadModel,
   ShopProductModel,
@@ -339,7 +339,7 @@ export const RubricMutations = extendType({
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
         const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+        const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
         const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
 

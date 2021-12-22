@@ -9,11 +9,15 @@ import {
   getResolverValidationSchema,
 } from '../../../lib/sessionHelpers';
 import { updateProductSchema } from '../../../validation/productSchema';
-import { COL_PRODUCT_ASSETS, COL_PRODUCT_ATTRIBUTES, COL_PRODUCTS } from '../../collectionNames';
+import {
+  COL_PRODUCT_ASSETS,
+  COL_PRODUCT_ATTRIBUTES,
+  COL_PRODUCT_FACETS,
+} from '../../collectionNames';
 import {
   ProductAssetsModel,
   ProductAttributeModel,
-  ProductModel,
+  ProductFacetModel,
   ProductPayloadModel,
 } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
@@ -30,7 +34,7 @@ export async function copyProduct({
 }: DaoPropsInterface<CopyProductInputInterface>): Promise<ProductPayloadModel> {
   const { getApiMessage } = await getRequestParams(context);
   const { db, client } = await getDatabase();
-  const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+  const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
   const productAttributesCollection = db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
   const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
 
@@ -84,7 +88,7 @@ export async function copyProduct({
       }
 
       // create product
-      const itemId = await getNextItemId(COL_PRODUCTS);
+      const itemId = await getNextItemId(COL_PRODUCT_FACETS);
       const newProductId = new ObjectId();
       const createdProductResult = await productsCollection.insertOne({
         ...sourceProduct,

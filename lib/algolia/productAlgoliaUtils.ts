@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
 import addZero from 'add-zero';
 import { HITS_PER_PAGE, ID_COUNTER_DIGITS } from '../../config/common';
-import { COL_LANGUAGES, COL_PRODUCT_ASSETS, COL_PRODUCTS } from '../../db/collectionNames';
+import { COL_LANGUAGES, COL_PRODUCT_ASSETS, COL_PRODUCT_FACETS } from '../../db/collectionNames';
 import {
   brandPipeline,
   productAttributesPipeline,
@@ -34,7 +34,7 @@ interface AlgoliaProductInterface {
 export async function updateAlgoliaProducts(match?: Record<any, any>) {
   try {
     const { db } = await getDatabase();
-    const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
+    const productsCollection = db.collection<ProductInterface>(COL_PRODUCT_FACETS);
     const languagesCollection = db.collection<ProductInterface>(COL_LANGUAGES);
     const languages = await languagesCollection.find({}).toArray();
     const locales = languages.map(({ slug }) => slug);
@@ -156,7 +156,7 @@ export async function getAlgoliaProductsSearch({
   excludedProductsIds,
 }: GetAlgoliaProductsSearch): Promise<ObjectId[]> {
   const { db } = await getDatabase();
-  const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
+  const productsCollection = db.collection<ProductInterface>(COL_PRODUCT_FACETS);
   const algoliaIndex = getAlgoliaProductsIndex();
   const searchIds: ObjectId[] = [];
   try {

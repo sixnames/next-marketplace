@@ -12,7 +12,7 @@ import {
   COL_OPTIONS,
   COL_PRODUCT_CONNECTIONS,
   COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCTS,
+  COL_PRODUCT_FACETS,
   COL_SUPPLIERS,
   COL_SUPPLIER_PRODUCTS,
   COL_ATTRIBUTES,
@@ -450,7 +450,7 @@ export const productConnectionsSimplePipeline = [
               },
               {
                 $lookup: {
-                  from: COL_PRODUCTS,
+                  from: COL_PRODUCT_FACETS,
                   as: 'product',
                   let: { productId: '$productId' },
                   pipeline: [
@@ -598,7 +598,7 @@ export const shopProductFieldsPipeline = (idFieldName: string) => {
   return [
     {
       $lookup: {
-        from: COL_PRODUCTS,
+        from: COL_PRODUCT_FACETS,
         as: 'product',
         let: {
           productId: idFieldName,

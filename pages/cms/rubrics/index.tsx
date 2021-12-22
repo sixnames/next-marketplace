@@ -12,7 +12,7 @@ import WpTitle from '../../../components/WpTitle';
 import { DEFAULT_COMPANY_SLUG, DEFAULT_PAGE_FILTER, ROUTE_CMS } from '../../../config/common';
 import { CONFIRM_MODAL, CREATE_RUBRIC_MODAL } from '../../../config/modalVariants';
 import {
-  COL_PRODUCTS,
+  COL_PRODUCT_FACETS,
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
@@ -254,7 +254,7 @@ export const getServerSideProps = async (
       },
       {
         $lookup: {
-          from: COL_PRODUCTS,
+          from: COL_PRODUCT_FACETS,
           as: 'products',
           let: { rubricId: '$_id' },
           pipeline: [

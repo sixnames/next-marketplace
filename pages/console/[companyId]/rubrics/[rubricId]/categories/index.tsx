@@ -111,22 +111,22 @@ export const getServerSideProps = async (
       },
       {
         $unwind: {
-          path: '$selectedOptionsSlugs',
+          path: '$categorySlugs',
           preserveNullAndEmptyArrays: true,
         },
       },
       {
         $group: {
           _id: null,
-          selectedOptionsSlugs: {
-            $addToSet: '$selectedOptionsSlugs',
+          categorySlugs: {
+            $addToSet: '$categorySlugs',
           },
         },
       },
     ])
     .toArray();
   const categoriesConfig = categoriesConfigAggregationResult[0];
-  if (!categoriesConfig || categoriesConfig.selectedOptionsSlugs.length < 1) {
+  if (!categoriesConfig || categoriesConfig.categorySlugs.length < 1) {
     const rubric = await rubricsCollection.findOne({
       _id: rubricId,
     });
@@ -172,7 +172,7 @@ export const getServerSideProps = async (
             {
               $match: {
                 slug: {
-                  $in: categoriesConfig.selectedOptionsSlugs,
+                  $in: categoriesConfig.categorySlugs,
                 },
                 $expr: {
                   $eq: ['$rubricId', '$$rubricId'],

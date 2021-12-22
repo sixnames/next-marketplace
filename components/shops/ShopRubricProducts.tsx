@@ -80,7 +80,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
             href={`${layoutBasePath}/${shop._id}/products/product/${dataItem._id}`}
             target={'_blank'}
           >
-            {dataItem.product?.itemId}
+            {dataItem.summary?.itemId}
           </WpLink>
         );
       },
@@ -91,9 +91,9 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
         return (
           <TableRowImage
             testId={'shop-product-main-image'}
-            src={`${dataItem.product?.mainImage}`}
-            alt={`${dataItem.product?.name}`}
-            title={`${dataItem.product?.name}`}
+            src={`${dataItem.summary?.mainImage}`}
+            alt={`${dataItem.summary?.name}`}
+            title={`${dataItem.summary?.name}`}
           />
         );
       },
@@ -189,7 +189,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
                 variant: CONFIRM_MODAL,
                 props: {
                   testId: `delete-shop-product-modal`,
-                  message: `Вы уверенны, что хотите удалить ${dataItem.product?.originalName} из магазина?`,
+                  message: `Вы уверенны, что хотите удалить ${dataItem.summary?.snippetTitle} из магазина?`,
                   confirm: () => {
                     showLoading();
                     deleteProductFromShopMutation({

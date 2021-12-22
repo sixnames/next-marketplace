@@ -965,7 +965,7 @@ export const OptionsGroupMutations = extendType({
                       {
                         $push: {
                           selectedOptionsIds: option._id,
-                          selectedOptionsSlugs: selectedOptionSlug,
+                          optionSlugs: selectedOptionSlug,
                         },
                       },
                     );
@@ -977,7 +977,7 @@ export const OptionsGroupMutations = extendType({
                       productId: product._id,
                       productSlug: product.slug,
                       selectedOptionsIds: [option._id],
-                      selectedOptionsSlugs: [selectedOptionSlug],
+                      optionSlugs: [selectedOptionSlug],
                       readableValueI18n: {},
                       number: undefined,
                       textI18n: {},

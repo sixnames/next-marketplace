@@ -26,12 +26,12 @@ interface ProductDetailsInterface {
 }
 
 const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct, companySlug }) => {
-  const { product, shop, company } = shopProduct;
-  if (!product || !shop || !company) {
+  const { summary, shop, company } = shopProduct;
+  if (!summary || !shop || !company) {
     return <RequestError />;
   }
 
-  const { rubric, snippetTitle, cardContentCities } = product;
+  const { rubric, snippetTitle, cardContentCities } = summary;
   if (!rubric || !cardContentCities) {
     return <RequestError />;
   }
@@ -76,7 +76,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct, compan
     >
       <CompanyProductDetails
         routeBasePath={''}
-        product={product}
+        product={summary}
         cardContent={cardContentCities}
         companySlug={companySlug}
       />
@@ -128,15 +128,10 @@ export const getServerSideProps = async (
     };
   }
 
-  const shopProduct: ShopProductInterface = {
-    ...shopProductResult,
-    product: shopProductResult.product,
-  };
-
   return {
     props: {
       ...props,
-      shopProduct: castDbData(shopProduct),
+      shopProduct: castDbData(shopProductResult),
     },
   };
 };

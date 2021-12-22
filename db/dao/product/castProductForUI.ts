@@ -139,7 +139,7 @@ export function castProductForUI({
       showCategoryInProductTitle: productRubric?.showCategoryInProductTitle,
       attributes: productAttributes,
       categories: productCategories,
-      titleCategoriesSlugs: product.titleCategoriesSlugs,
+      titleCategorySlugs: product.titleCategoriesSlugs,
       originalName: product.originalName,
       defaultGender: product.gender,
     });
@@ -156,7 +156,7 @@ export function castProductForUI({
       showCategoryInProductTitle: productRubric?.showCategoryInProductTitle,
       attributes: productAttributes,
       categories: productCategories,
-      titleCategoriesSlugs: product.titleCategoriesSlugs,
+      titleCategorySlugs: product.titleCategoriesSlugs,
       originalName: product.originalName,
       defaultGender: product.gender,
     });

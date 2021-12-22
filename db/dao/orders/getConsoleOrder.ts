@@ -231,7 +231,7 @@ export async function getConsoleOrder({
         showCategoryInProductTitle: orderProduct.product?.rubric?.showCategoryInProductTitle,
         attributes: orderProduct.product?.attributes || [],
         categories: orderProduct.product?.categories,
-        titleCategoriesSlugs: orderProduct.product?.titleCategoriesSlugs,
+        titleCategorySlugs: orderProduct.product?.titleCategoriesSlugs,
         originalName: `${orderProduct.product?.originalName}`,
         defaultGender: `${orderProduct.product?.gender}`,
       });

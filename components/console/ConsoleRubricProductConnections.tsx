@@ -8,7 +8,7 @@ import {
 import {
   ProductVariantInterface,
   ProductVariantItemInterface,
-  ProductFacetInterface,
+  ProductSummaryInterface,
 } from '../../db/uiInterfaces';
 import {
   useAddProductToConnectionMutation,
@@ -30,7 +30,7 @@ import WpTable, { WpTableColumn } from '../WpTable';
 
 interface ProductConnectionControlsInterface {
   connection: ProductVariantInterface;
-  product: ProductFacetInterface;
+  product: ProductSummaryInterface;
 }
 
 const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = ({
@@ -46,8 +46,9 @@ const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = 
     onCompleted: (data) => onCompleteCallback(data.addProductToConnection),
   });
 
-  const excludedProductsIds = connection.productsIds.map((productId) => `${productId}`);
-  const excludedOptionsSlugs = (connection.connectionProducts || []).map(({ option }) => {
+  const excludedProductsIds: string[] = [];
+  const excludedOptionsSlugs = (connection.products || []).map(({ option, productId }) => {
+    excludedProductsIds.push(`${productId}`);
     return `${connection.attribute?.slug}${FILTER_SEPARATOR}${option?.slug}`;
   });
 
@@ -85,7 +86,7 @@ const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = 
 };
 
 export interface ProductConnectionsItemInterface {
-  product: ProductFacetInterface;
+  product: ProductSummaryInterface;
   connection: ProductVariantInterface;
   connectionIndex: number;
 }
@@ -104,7 +105,7 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
     onCompleted: (data) => onCompleteCallback(data.deleteProductFromConnection),
   });
 
-  const { connectionProducts } = connection;
+  const { products } = connection;
 
   const columns: WpTableColumn<ProductVariantItemInterface>[] = [
     {
@@ -207,7 +208,7 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
       <div className='mt-4'>
         <WpTable<ProductVariantItemInterface>
           columns={columns}
-          data={connectionProducts}
+          data={products}
           tableTestId={`${connection.attribute.name}-connection-list`}
           onRowDoubleClick={(dataItem) => {
             window.open(
@@ -223,7 +224,7 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
 };
 
 interface ConsoleRubricProductConnectionsInterface {
-  product: ProductFacetInterface;
+  product: ProductSummaryInterface;
 }
 
 const ConsoleRubricProductConnections: React.FC<ConsoleRubricProductConnectionsInterface> = ({
@@ -241,7 +242,7 @@ const ConsoleRubricProductConnections: React.FC<ConsoleRubricProductConnectionsI
   return (
     <Inner testId={'product-connections-list'}>
       <div className='mb-8'>
-        {(product.connections || []).map((connection, connectionIndex) => {
+        {product.variants.map((connection, connectionIndex) => {
           return (
             <ProductConnectionsItem
               key={`${connection._id}`}

@@ -986,7 +986,7 @@ export async function getCardData({
       showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
       showCategoryInProductTitle: rubric.showCategoryInProductTitle,
       attributes: allProductAttributes,
-      titleCategoriesSlugs: restProduct.titleCategoriesSlugs,
+      titleCategorySlugs: restProduct.titleCategoriesSlugs,
       originalName: restProduct.originalName,
       defaultGender: restProduct.gender,
       categories: cardCategories,

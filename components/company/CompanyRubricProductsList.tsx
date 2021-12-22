@@ -2,7 +2,7 @@ import * as React from 'react';
 import {
   CompanyInterface,
   ConsoleRubricProductsInterface,
-  ProductFacetInterface,
+  ProductSummaryInterface,
 } from '../../db/uiInterfaces';
 import usePageLoadingState from '../../hooks/usePageLoadingState';
 import { alwaysArray } from '../../lib/arrayUtils';
@@ -39,7 +39,7 @@ const CompanyRubricProductsList: React.FC<CompanyRubricProductsListInterface> = 
 }) => {
   const isPageLoading = usePageLoadingState();
 
-  const columns: WpTableColumn<ProductFacetInterface>[] = [
+  const columns: WpTableColumn<ProductSummaryInterface>[] = [
     {
       headTitle: 'Арт',
       render: ({ dataItem, rowIndex }) => {
@@ -153,7 +153,7 @@ const CompanyRubricProductsList: React.FC<CompanyRubricProductsListInterface> = 
 
         <div className={'max-w-full'}>
           <div className={`relative overflow-x-auto overflow-y-hidden`}>
-            <WpTable<ProductFacetInterface>
+            <WpTable<ProductSummaryInterface>
               onRowDoubleClick={(dataItem) => {
                 window.open(`${itemPath}/${dataItem._id}`, '_blank');
               }}

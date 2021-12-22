@@ -79,7 +79,7 @@ const CardShop: React.FC<CardShopInterface> = ({ shop }) => {
                   markers: [
                     {
                       _id: shop._id,
-                      icon: logo.url,
+                      icon: logo,
                       name,
                       address,
                     },

@@ -17,7 +17,7 @@ import {
 import { getAddShopProductSsrData } from '../../../../../../../../../db/dao/product/getAddShopProductSsrData';
 import {
   AppContentWrapperBreadCrumbs,
-  ProductFacetInterface,
+  ProductSummaryInterface,
 } from '../../../../../../../../../db/uiInterfaces';
 import ConsoleLayout from '../../../../../../../../../layout/cms/ConsoleLayout';
 import { alwaysArray, alwaysString } from '../../../../../../../../../lib/arrayUtils';
@@ -43,7 +43,7 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
   rubricId,
   ...props
 }) => {
-  const [chosen, setChosen] = React.useState<ProductFacetInterface[]>([]);
+  const [chosen, setChosen] = React.useState<ProductSummaryInterface[]>([]);
   const [step, setStep] = React.useState<ShopAddProductsStepType>(1);
   const companyBasePath = `${ROUTE_CMS}/companies/${shop.companyId}`;
   const layoutBasePath = `${companyBasePath}/shops/shop`;

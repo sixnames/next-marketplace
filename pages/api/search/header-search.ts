@@ -151,7 +151,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         showRubricNameInProductTitle: product?.rubric?.showRubricNameInProductTitle,
         showCategoryInProductTitle: product?.rubric?.showCategoryInProductTitle,
         attributes: product?.attributes || [],
-        titleCategoriesSlugs: product?.titleCategoriesSlugs,
+        titleCategorySlugs: product?.titleCategoriesSlugs,
         originalName: product?.originalName,
         defaultGender: product?.gender,
         categories: getTreeFromList({

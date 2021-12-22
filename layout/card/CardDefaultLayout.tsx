@@ -174,13 +174,12 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                 {/*connections*/}
                 {connections.length > 0 ? (
                   <div className='mb-8'>
-                    {connections.map(({ _id, attribute, connectionProducts }) => {
+                    {connections.map(({ _id, attribute, products }) => {
                       return (
                         <div key={`${_id}`} className='mb-8'>
                           <div className='text-secondary-text mb-3 font-bold'>{`${attribute?.name}:`}</div>
                           <div className='flex flex-wrap gap-2'>
-                            {(connectionProducts || []).map(({ option, productSlug }) => {
-                              const isCurrent = productSlug === product.slug;
+                            {products.map(({ option, productSlug, isCurrent }) => {
                               const name = `${option?.name} ${
                                 attribute?.metric ? ` ${attribute.metric.name}` : ''
                               }`;
@@ -256,13 +255,13 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
 
               {/*list features*/}
               <div className='flex flex-col justify-center md:col-span-1 md:order-1 lg:col-span-2'>
-                {visibleListFeatures.map(({ attribute, _id, readableValue }) => {
+                {visibleListFeatures.map(({ attribute, readableValue }) => {
                   if (!attribute || !attribute.showInCard) {
                     return null;
                   }
 
                   return (
-                    <div key={`${_id}`} className='mb-6'>
+                    <div key={`${attribute._id}`} className='mb-6'>
                       <div className='text-secondary-text mb-1 font-bold'>{attribute.name}</div>
                       <div>{readableValue}</div>
                     </div>

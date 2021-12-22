@@ -27,7 +27,7 @@ const App: NextPage<GetConsoleMainPageDataPropsInterface> = ({ layoutProps }) =>
               <div className='rounded-full overflow-hidden col-span-1'>
                 <img
                   className='w-full h-full object-contain'
-                  src={company.logo.url}
+                  src={company.logo}
                   width='100'
                   height='100'
                   alt=''

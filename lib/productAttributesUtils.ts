@@ -99,7 +99,7 @@ export function getProductCurrentViewAttributes({
       return false;
     }
     const { variant } = attribute;
-    const { selectedOptionsSlugs, textI18n, number } = productAttribute;
+    const { optionSlugs, textI18n, number } = productAttribute;
     const isSelect =
       variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT || variant === ATTRIBUTE_VARIANT_SELECT;
     const isText = variant === ATTRIBUTE_VARIANT_STRING;
@@ -109,7 +109,7 @@ export function getProductCurrentViewAttributes({
       return false;
     }
 
-    if (isSelect && selectedOptionsSlugs.length > 0) {
+    if (isSelect && optionSlugs.length > 0) {
       return true;
     }
 
@@ -148,7 +148,7 @@ export function getAttributeReadableValue({
   if (
     (attribute.variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT ||
       attribute.variant === ATTRIBUTE_VARIANT_SELECT) &&
-    productAttribute.selectedOptionsSlugs.length > 0 &&
+    productAttribute.optionSlugs.length > 0 &&
     attribute.options &&
     attribute.options.length > 0
   ) {

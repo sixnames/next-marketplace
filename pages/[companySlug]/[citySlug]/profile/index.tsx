@@ -33,7 +33,6 @@ import ProfileLayout from '../../../../layout/ProfileLayout/ProfileLayout';
 import { getFieldStringLocale } from '../../../../lib/i18n';
 import { noNaN } from '../../../../lib/numbers';
 import { castDbData, getSiteInitialData } from '../../../../lib/ssrUtils';
-import { generateSnippetTitle } from '../../../../lib/titleUtils';
 import SiteLayout, { SiteLayoutProviderInterface } from '../../../../layout/SiteLayout';
 
 interface ProfileOrderProductInterface {
@@ -429,19 +428,6 @@ export async function getServerSideProps(
         }
 
         // title
-        const snippetTitle = generateSnippetTitle({
-          locale,
-          brand: orderProduct.product?.brand,
-          rubricName: getFieldStringLocale(orderProduct.product?.rubric?.nameI18n, locale),
-          showRubricNameInProductTitle: orderProduct.product?.rubric?.showRubricNameInProductTitle,
-          showCategoryInProductTitle: orderProduct.product?.rubric?.showCategoryInProductTitle,
-          attributes: orderProduct.product?.attributes || [],
-          categories: orderProduct.product?.categories,
-          titleCategoriesSlugs: orderProduct.product?.titleCategoriesSlugs,
-          originalName: `${orderProduct.product?.originalName}`,
-          defaultGender: `${orderProduct.product?.gender}`,
-        });
-
         return [
           ...acc,
           {
@@ -450,7 +436,7 @@ export async function getServerSideProps(
             product: orderProduct.product
               ? {
                   ...orderProduct.product,
-                  snippetTitle,
+                  snippetTitle: getFieldStringLocale(orderProduct.product.snippetTitleI18n, locale),
                 }
               : null,
           },

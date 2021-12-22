@@ -82,7 +82,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         showCategoryInProductTitle: product.rubric?.showCategoryInProductTitle,
         attributes: product.attributes || [],
         categories: product.categories,
-        titleCategoriesSlugs: product.titleCategoriesSlugs,
+        titleCategorySlugs: product.titleCategoriesSlugs,
         originalName: `${product.originalName}`,
         defaultGender: `${product.gender}`,
       });

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Form, Formik } from 'formik';
 import { GENDER_IT } from '../../config/common';
-import { ProductFacetInterface } from '../../db/uiInterfaces';
+import { ProductSummaryInterface } from '../../db/uiInterfaces';
 import { useCopyProduct, useCreateProduct } from '../../hooks/mutations/useProductMutations';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import WpButton from '../button/WpButton';
@@ -12,7 +12,7 @@ import ModalTitle from './ModalTitle';
 
 export interface CreateNewProductModalInterface {
   rubricId: string;
-  product?: ProductFacetInterface | null;
+  product?: ProductSummaryInterface | null;
 }
 
 const CreateNewProductModal: React.FC<CreateNewProductModalInterface> = ({ rubricId, product }) => {

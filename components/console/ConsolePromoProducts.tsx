@@ -61,14 +61,14 @@ const ConsolePromoProducts: React.FC<ConsolePromoProductsInterface> = ({
         return (
           <TableRowImage
             src={`${dataItem.mainImage}`}
-            alt={`${dataItem.product?.snippetTitle}`}
-            title={`${dataItem.product?.snippetTitle}`}
+            alt={`${dataItem.summary?.snippetTitle}`}
+            title={`${dataItem.summary?.snippetTitle}`}
           />
         );
       },
     },
     {
-      accessor: 'product.snippetTitle',
+      accessor: 'summary.snippetTitle',
       headTitle: 'Название',
       render: ({ cellData }) => cellData,
     },

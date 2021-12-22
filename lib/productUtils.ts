@@ -148,7 +148,7 @@ export async function getCmsProduct({
 
     variants.push({
       ...productVariant,
-      variantProducts,
+      products: variantProducts,
       attribute: attribute
         ? {
             ...attribute,
@@ -439,7 +439,7 @@ export function trimProductName({ originalName, nameI18n }: TrimProductNameInter
   };
 }
 
-export async function updateProductTitlesInterface(match?: Record<any, any>) {
+export async function updateProductTitles(match?: Record<any, any>) {
   try {
     const { db } = await getDatabase();
     const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
@@ -496,7 +496,7 @@ export async function updateProductTitlesInterface(match?: Record<any, any>) {
           showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
           showCategoryInProductTitle: rubric.showCategoryInProductTitle,
           attributes: initialProduct.attributes,
-          titleCategoriesSlugs: restProduct.titleCategoriesSlugs,
+          titleCategorySlugs: restProduct.titleCategorySlugs,
           originalName: restProduct.originalName,
           defaultGender: restProduct.gender,
           categories,

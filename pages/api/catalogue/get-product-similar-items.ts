@@ -242,7 +242,7 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
           attributes: product.attributes || [],
           originalName: product.originalName,
           defaultGender: product.gender,
-          titleCategoriesSlugs: product.titleCategoriesSlugs,
+          titleCategorySlugs: product.titleCategoriesSlugs,
           categories: getTreeFromList({
             list: product.categories,
             childrenFieldName: 'categories',

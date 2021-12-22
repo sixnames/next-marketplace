@@ -272,7 +272,7 @@ interface GenerateProductTitlePrefixInterface {
   brand?: BrandInterface | null;
   rubricName?: string | null;
   defaultGender: string;
-  titleCategoriesSlugs?: string[] | null;
+  titleCategorySlugs?: string[] | null;
   categories?: CategoryInterface[] | null;
   showRubricNameInProductTitle?: boolean | null;
   showCategoryInProductTitle?: boolean | null;
@@ -287,7 +287,7 @@ export function generateProductTitlePrefix({
   defaultGender,
   showCategoryInProductTitle,
   showRubricNameInProductTitle,
-  titleCategoriesSlugs,
+  titleCategorySlugs,
   brandVisibilityFieldName,
 }: GenerateProductTitlePrefixInterface): string {
   // rubric name as main prefix
@@ -296,7 +296,7 @@ export function generateProductTitlePrefix({
 
   // category names as secondary prefix
   function getCategoryNames(category: CategoryInterface) {
-    const visible = (titleCategoriesSlugs || []).some((slug) => slug === category.slug);
+    const visible = (titleCategorySlugs || []).some((slug) => slug === category.slug);
     if (showCategoryInProductTitle) {
       const variant = get(category, `variants.${defaultGender}.${locale}`);
       const name = getFieldStringLocale(category.nameI18n, locale);
@@ -363,7 +363,7 @@ function generateProductTitle({
   currency,
   attributeVisibilityFieldName,
   attributeNameVisibilityFieldName,
-  titleCategoriesSlugs,
+  titleCategorySlugs,
   brandVisibilityFieldName,
   brand,
 }: GenerateProductTitleInterface): string {
@@ -375,7 +375,7 @@ function generateProductTitle({
     defaultGender,
     showCategoryInProductTitle,
     showRubricNameInProductTitle,
-    titleCategoriesSlugs,
+    titleCategorySlugs,
     brandVisibilityFieldName,
   });
 

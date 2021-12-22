@@ -98,11 +98,6 @@ export interface ContactsModel {
   phones: PhoneNumberModel[];
 }
 
-export interface AssetModel {
-  url: string;
-  index: number;
-}
-
 // Sort direction
 export enum SortDirectionModel {
   ASC = 1,
@@ -332,7 +327,7 @@ export interface CartModel extends TimestampModel {
 export interface CompanyModel extends BaseModel, TimestampModel {
   name: string;
   slug: string;
-  logo: AssetModel;
+  logo: string;
   ownerId: ObjectIdModel;
   staffIds: ObjectIdModel[];
   contacts: ContactsModel;
@@ -631,9 +626,10 @@ export interface ProductVariantModel {
 }
 
 export interface ProductAttributeModel {
+  _id: ObjectIdModel;
   attributeId: ObjectIdModel;
-  selectedOptionsSlugs: string[];
-  selectedOptionIds: ObjectIdModel[];
+  optionSlugs: string[];
+  optionIds: ObjectIdModel[];
   textI18n?: TranslationModel | null;
   number?: number | null;
   readableValueI18n: TranslationModel;
@@ -642,7 +638,7 @@ export interface ProductAttributeModel {
 interface ProductMainFieldsInterface {
   rubricId: ObjectIdModel;
   rubricSlug: string;
-  categorySlugs?: string[] | null;
+  categorySlugs: string[];
   brandSlug?: string | null;
   brandCollectionSlug?: string | null;
   manufacturerSlug?: string | null;
@@ -667,7 +663,7 @@ export interface ProductSummaryModel extends ProductFacetModel, TimestampModel {
   cardTitleI18n: TranslationModel;
   assets: string[];
   attributes: ProductAttributeModel[];
-  titleCategoriesSlugs: string[];
+  titleCategorySlugs: string[];
   variants: ProductVariantModel[];
 }
 
@@ -675,7 +671,7 @@ export interface ProductAssetsModel {
   _id: ObjectIdModel;
   productSlug: string;
   productId: ObjectIdModel;
-  assets: AssetModel[];
+  assets: string[];
 }
 
 export interface ProductCardPricesModel {
@@ -836,8 +832,8 @@ export interface ShopModel extends BaseModel, TimestampModel {
   name: string;
   slug: string;
   citySlug: string;
-  logo: AssetModel;
-  assets: AssetModel[];
+  logo: string;
+  assets: string[];
   contacts: ContactsModel;
   address: AddressModel;
   companyId: ObjectIdModel;
@@ -903,7 +899,7 @@ export interface UserModel extends BaseModel, TimestampModel {
   email: EmailAddressModel;
   phone: PhoneNumberModel;
   password: string;
-  avatar?: AssetModel | null;
+  avatar?: string | null;
   roleId: ObjectIdModel;
   cartId?: ObjectIdModel | null;
   notifications: UserNotificationsModel;
@@ -990,8 +986,8 @@ export interface PromoModel extends TimestampModel, PromoBaseInterface {
 
   // main banner
   showAsMainBanner: boolean;
-  mainBanner?: AssetModel | null;
-  mainBannerMobile?: AssetModel | null;
+  mainBanner?: string | null;
+  mainBannerMobile?: string | null;
   mainBannerTextColor: string;
   mainBannerVerticalTextAlign: string;
   mainBannerHorizontalTextAlign: string;
@@ -1001,7 +997,7 @@ export interface PromoModel extends TimestampModel, PromoBaseInterface {
 
   //secondary banner
   showAsSecondaryBanner: boolean;
-  secondaryBanner?: AssetModel | null;
+  secondaryBanner?: string | null;
   secondaryBannerTextColor: string;
   secondaryBannerVerticalTextAlign: string;
   secondaryBannerHorizontalTextAlign: string;
@@ -1057,9 +1053,9 @@ export interface PageModel extends TimestampModel {
   content: string;
   state: PageStateModel;
   companySlug: string;
-  pageScreenshot?: AssetModel | null;
-  mainBanner?: AssetModel | null;
-  mainBannerMobile?: AssetModel | null;
+  pageScreenshot?: string | null;
+  mainBanner?: string | null;
+  mainBannerMobile?: string | null;
   showAsMainBanner?: boolean | null;
   mainBannerTextColor?: string | null;
   mainBannerVerticalTextAlign?: string | null;
@@ -1067,7 +1063,7 @@ export interface PageModel extends TimestampModel {
   mainBannerTextAlign?: string | null;
   mainBannerTextPadding?: number | null;
   mainBannerTextMaxWidth?: number | null;
-  secondaryBanner?: AssetModel | null;
+  secondaryBanner?: string | null;
   showAsSecondaryBanner?: boolean | null;
   secondaryBannerTextColor?: string | null;
   secondaryBannerVerticalTextAlign?: string | null;

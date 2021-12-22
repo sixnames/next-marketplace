@@ -10,7 +10,7 @@ import {
   CategoryInterface,
   CompanyInterface,
   ProductCategoryInterface,
-  ProductFacetInterface,
+  ProductSummaryInterface,
 } from '../../../../../../../../../db/uiInterfaces';
 import CmsProductLayout from '../../../../../../../../../layout/cms/CmsProductLayout';
 import ConsoleLayout from '../../../../../../../../../layout/cms/ConsoleLayout';
@@ -23,7 +23,7 @@ import {
 import { getTreeFromList } from '../../../../../../../../../lib/treeUtils';
 
 interface ProductCategoriesInterface {
-  product: ProductFacetInterface;
+  product: ProductSummaryInterface;
   categoriesTree: ProductCategoryInterface[];
   pageCompany: CompanyInterface;
   routeBasePath: string;
@@ -146,7 +146,7 @@ export const getServerSideProps = async (
     return {
       ...category,
       categories: [],
-      selected: product.selectedOptionsSlugs.some((slug) => slug === category.slug),
+      selected: product.categorySlugs.some((slug) => slug === category.slug),
     };
   });
 

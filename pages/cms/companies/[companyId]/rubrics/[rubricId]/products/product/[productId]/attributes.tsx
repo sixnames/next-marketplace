@@ -22,7 +22,7 @@ import {
   CompanyInterface,
   ProductAttributeInterface,
   ProductAttributesGroupInterface,
-  ProductFacetInterface,
+  ProductSummaryInterface,
 } from '../../../../../../../../../db/uiInterfaces';
 import CmsProductLayout from '../../../../../../../../../layout/cms/CmsProductLayout';
 import ConsoleLayout from '../../../../../../../../../layout/cms/ConsoleLayout';
@@ -37,7 +37,7 @@ import {
 } from '../../../../../../../../../lib/ssrUtils';
 
 interface ProductAttributesInterface {
-  product: ProductFacetInterface;
+  product: ProductSummaryInterface;
   routeBasePath: string;
   pageCompany: CompanyInterface;
 }
@@ -168,9 +168,7 @@ export const getServerSideProps = async (
     ])
     .toArray();
 
-  // Cast rubric attributes to product attributes
-  const { attributes, ...restProduct } = product;
-
+  // Get product attribute groups
   const productAttributesGroups: ProductAttributesGroupInterface[] = [];
   rubricAttributes.forEach((group) => {
     const groupAttributes: ProductAttributeInterface[] = [];
@@ -181,7 +179,7 @@ export const getServerSideProps = async (
     const selectAttributesAST: ProductAttributeInterface[] = [];
 
     (group.attributes || []).forEach((attribute) => {
-      const currentProductAttribute = (attributes || []).find(({ attributeId }) => {
+      const currentProductAttribute = product.attributes.find(({ attributeId }) => {
         return attributeId.equals(attribute._id);
       });
 
@@ -211,13 +209,10 @@ export const getServerSideProps = async (
             name: getFieldStringLocale(attribute.nameI18n, props.sessionLocale),
           },
           readableValueI18n: {},
-          rubricId: product.rubricId,
-          rubricSlug: product.rubricSlug,
           attributeId: attribute._id,
-          productId: product._id,
-          productSlug: product.slug,
-          selectedOptionsIds: [],
-          selectedOptionsSlugs: [],
+          readableValue: '',
+          optionIds: [],
+          optionSlugs: [],
           number: undefined,
           textI18n: {},
         };
@@ -263,8 +258,8 @@ export const getServerSideProps = async (
     productAttributesGroups.push(productAttributesGroup);
   });
 
-  const finalProduct: ProductFacetInterface = {
-    ...restProduct,
+  const finalProduct: ProductSummaryInterface = {
+    ...product,
     attributesGroups: sortObjectsByField(productAttributesGroups),
   };
 

@@ -20,13 +20,13 @@ const CardRatingFeatures: React.FC<CardRatingFeaturesInterface> = ({
         <div className=''>
           <div className='text-2xl mb-4 font-medium'>Мнение экспертов:</div>
           <ul className='flex flex-wrap gap-4'>
-            {ratingFeatures.map(({ _id, attribute, number }) => {
+            {ratingFeatures.map(({ attribute, number }) => {
               if (!attribute) {
                 return null;
               }
               const optionName = `${attribute.name} ${number}`;
               return (
-                <li key={`${_id}`}>
+                <li key={`${attribute._id}`}>
                   <TagLink testId={`card-rating-option-${attribute.name}`}>{optionName}</TagLink>
                 </li>
               );

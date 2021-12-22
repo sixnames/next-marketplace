@@ -56,10 +56,10 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
       return [
         ...acc,
         {
-          original: `${mainBanner?.url}`,
+          original: `${mainBanner}`,
           renderItem(): React.ReactNode {
             return (
-              <div key={mainBanner.url} className='overflow-hidden rounded-xl'>
+              <div key={mainBanner} className='overflow-hidden rounded-xl'>
                 <WpLink
                   target={'_blank'}
                   href={`${ROUTE_DOCS_PAGES}/${slug}`}
@@ -68,12 +68,12 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
                   {/*image*/}
                   <picture>
                     {mainBannerMobile ? (
-                      <source media='(max-width:767px)' srcSet={mainBannerMobile.url} />
+                      <source media='(max-width:767px)' srcSet={mainBannerMobile} />
                     ) : null}
-                    <source srcSet={mainBanner.url} />
+                    <source srcSet={mainBanner} />
                     <img
                       className='block relative w-full h-full z-10 object-cover'
-                      src={mainBanner.url}
+                      src={mainBanner}
                       alt={`${name}`}
                       title={`${name}`}
                       width='1250'
@@ -213,7 +213,7 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
                   return (
                     <div
                       className='flex min-w-[80vw] sm:min-w-[21rem] w-[80vw] sm:w-[21rem] overflow-hidden rounded-lg'
-                      key={`${secondaryBanner.url}`}
+                      key={`${secondaryBanner}`}
                     >
                       <WpLink
                         className='relative block'
@@ -222,7 +222,7 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
                       >
                         <img
                           className='block relative z-10'
-                          src={`${secondaryBanner.url}`}
+                          src={`${secondaryBanner}`}
                           width='526'
                           height='360'
                           alt={`${name}`}

@@ -19,14 +19,14 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
   imageLoading,
 }) => {
   const { urlPrefix } = useSiteContext();
-  const { product, available } = shopProduct;
+  const { summary, available } = shopProduct;
 
-  if (!product) {
+  if (!summary) {
     return null;
   }
 
-  const { slug, cardPrices, shopsCount, mainImage, shopProductsIds, snippetTitle, name, itemId } =
-    product;
+  const { slug, minPrice, shopsCount, mainImage, shopProductsIds, snippetTitle, name, itemId } =
+    summary;
 
   let mainFrameClassName = '';
   if (showSnippetBackground && showSnippetButtonsOnHover) {
@@ -82,7 +82,7 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
       }`}
     >
       {/*edit button for admin*/}
-      <ProductSnippetEditButton product={product} />
+      <ProductSnippetEditButton product={summary} />
 
       <div className={`rounded-md h-full flex flex-col ${secondaryFrameClassName}`}>
         <div className='px-4 pt-6'>
@@ -123,7 +123,7 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
 
         {/*price*/}
         <div className='flex flex-col items-center justify-center px-4 mb-2 mt-auto'>
-          <ProductSnippetPrice size={'medium'} shopsCount={shopsCount} value={cardPrices?.min} />
+          <ProductSnippetPrice size={'medium'} shopsCount={shopsCount} value={minPrice} />
         </div>
       </div>
 
@@ -148,7 +148,7 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
           <ProductAddToCartButton
             className='w-full'
             frameClassName={'w-auto'}
-            productId={product._id}
+            productId={summary._id}
             shopProductsIds={shopProductsIds}
             testId={`${testId}-add-to-cart-grid`}
             size={'small'}

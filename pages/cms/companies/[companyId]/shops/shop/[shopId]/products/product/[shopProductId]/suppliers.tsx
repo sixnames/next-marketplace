@@ -32,13 +32,13 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
   suppliers,
   routeBasePath,
 }) => {
-  const { product, shop, company } = shopProduct;
+  const { summary, shop, company } = shopProduct;
 
-  if (!product || !shop || !company) {
+  if (!summary || !shop || !company) {
     return <RequestError />;
   }
 
-  const { rubric, snippetTitle } = product;
+  const { rubric, snippetTitle } = summary;
   if (!rubric) {
     return <RequestError />;
   }

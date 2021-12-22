@@ -21,12 +21,12 @@ interface ProductDetailsInterface {
 }
 
 const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct }) => {
-  const { product, shop, company } = shopProduct;
-  if (!product || !shop || !company) {
+  const { summary, shop, company } = shopProduct;
+  if (!summary || !shop || !company) {
     return <RequestError />;
   }
 
-  const { rubric, snippetTitle } = product;
+  const { rubric, snippetTitle } = summary;
   if (!rubric) {
     return <RequestError />;
   }
@@ -66,7 +66,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct }) => {
     >
       <CompanyProductConstructor
         routeBasePath={''}
-        product={product}
+        product={summary}
         rubric={rubric}
         currentCompany={company}
       />
@@ -103,7 +103,7 @@ export const getServerSideProps = async (
     locale: props.sessionLocale,
     companySlug: props.layoutProps.pageCompany.slug,
   });
-  if (!shopProduct || !shopProduct.product) {
+  if (!shopProduct || !shopProduct.summary) {
     return {
       notFound: true,
     };

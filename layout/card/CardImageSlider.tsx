@@ -3,13 +3,12 @@ import ImageGallery, { ReactImageGalleryItem, ReactImageGalleryProps } from 'rea
 import ControlButton from '../../components/button/ControlButton';
 import WpImage from '../../components/WpImage';
 import { useAppContext } from '../../context/appContext';
-import { AssetModel } from '../../db/dbModels';
 
 const quality = 70;
 
 interface CardImageSliderInterface
   extends Omit<ReactImageGalleryProps, 'items' | 'renderLeftNav' | 'renderRightNav'> {
-  assets: AssetModel[];
+  assets: string[];
   className?: string;
   arrowClassName?: string;
   arrowLeftClassName?: string;
@@ -37,7 +36,7 @@ const CardImageSlider: React.FC<CardImageSliderInterface> = ({
   ...props
 }) => {
   const { isMobile } = useAppContext();
-  const items: ReactImageGalleryItem[] = assets.map(({ url }, index) => {
+  const items: ReactImageGalleryItem[] = assets.map((url, index) => {
     return {
       original: url,
       thumbnail: url,

@@ -179,7 +179,7 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
         const productAttribute: ProductAttributeModel = {
           readableValueI18n: {},
           selectedOptionsIds: [],
-          selectedOptionsSlugs: [],
+          optionSlugs: [],
           attributeId: attribute._id,
           number,
           textI18n,
@@ -208,7 +208,7 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
             regionOptionsTree.forEach(({ slug, _id }) => {
               const optionSlug = `${attribute.slug}${FILTER_SEPARATOR}${slug}`;
               productAttribute.selectedOptionsIds.push(_id);
-              productAttribute.selectedOptionsSlugs.push(optionSlug);
+              productAttribute.optionSlugs.push(optionSlug);
               selectedOptionsSlugs.push(optionSlug);
             });
           }
@@ -240,7 +240,7 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
           if (selectedOption) {
             const optionSlug = `${attribute.slug}${FILTER_SEPARATOR}${selectedOption.slug}`;
             productAttribute.selectedOptionsIds.push(selectedOption._id);
-            productAttribute.selectedOptionsSlugs.push(optionSlug);
+            productAttribute.optionSlugs.push(optionSlug);
             selectedOptionsSlugs.push(optionSlug);
           }
           const readableValueI18n = getAttributeReadableValueLocales({
@@ -272,7 +272,7 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
             selectedOptions.push(selectedOption);
             const optionSlug = `${attribute.slug}${FILTER_SEPARATOR}${selectedOption.slug}`;
             productAttribute.selectedOptionsIds.push(selectedOption._id);
-            productAttribute.selectedOptionsSlugs.push(optionSlug);
+            productAttribute.optionSlugs.push(optionSlug);
             selectedOptionsSlugs.push(optionSlug);
           }
 
@@ -289,7 +289,7 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
             selectedOptions.push(nextSelectedOption);
             const optionSlug = `${attribute.slug}${FILTER_SEPARATOR}${nextSelectedOption.slug}`;
             productAttribute.selectedOptionsIds.push(nextSelectedOption._id);
-            productAttribute.selectedOptionsSlugs.push(optionSlug);
+            productAttribute.optionSlugs.push(optionSlug);
             selectedOptionsSlugs.push(optionSlug);
           }
 
@@ -435,7 +435,7 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
       defaultGender: gender,
       locale: DEFAULT_LOCALE,
       originalName: name,
-      titleCategoriesSlugs: categorySlugs,
+      titleCategorySlugs: categorySlugs,
       showCategoryInProductTitle: true,
       showRubricNameInProductTitle: true,
     };

@@ -5,7 +5,7 @@ import { DEFAULT_PAGE } from '../../config/common';
 import { GetRubricProductsListInputInterface } from '../../db/dao/product/getRubricProductsList';
 import {
   ConsoleRubricProductsInterface,
-  ProductFacetInterface,
+  ProductSummaryInterface,
   RubricInterface,
 } from '../../db/uiInterfaces';
 import useProductsListColumns, {
@@ -69,7 +69,7 @@ const ProductsList: React.FC<ProductsListInterface> = ({
   return (
     <div>
       <div className='overflow-x-auto'>
-        <WpTable<ProductFacetInterface>
+        <WpTable<ProductSummaryInterface>
           data={data?.docs}
           columns={columns}
           emptyMessage={'Список пуст'}

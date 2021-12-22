@@ -148,7 +148,7 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
                   variant: CREATE_NEW_PRODUCT_MODAL,
                   props: {
                     rubricId: `${rubric?._id}`,
-                    product: dataItem,
+                    product: dataItem.summary,
                   },
                 });
               }}

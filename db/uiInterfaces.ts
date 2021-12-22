@@ -1,7 +1,6 @@
 import { LinkProps } from 'next/link';
 import * as React from 'react';
 import {
-  AssetModel,
   AttributeModel,
   AttributesGroupModel,
   AttributeViewVariantModel,
@@ -137,7 +136,7 @@ export interface SupplierInterface extends SupplierModel {
 }
 
 export interface CartProductInterface extends CartProductModel {
-  product?: ProductFacetInterface | null;
+  product?: ProductSummaryInterface | null;
   shopProduct?: ShopProductInterface | null;
   isShopless?: boolean;
   totalPrice?: number;
@@ -220,12 +219,12 @@ export interface ProductVariantItemInterface extends ProductVariantItemModel {
   shopProduct?: ShopProductInterface;
   product?: ProductSummaryInterface;
   option?: OptionInterface | null;
+  isCurrent: boolean;
 }
 
 export interface ProductVariantInterface extends ProductVariantModel {
   attribute?: AttributeInterface | null;
-  variantProducts: ProductVariantItemInterface[];
-  isCurrent: boolean;
+  products: ProductVariantItemInterface[];
 }
 
 export interface ProductAttributeInterface extends ProductAttributeModel {
@@ -253,7 +252,7 @@ export interface ProductFacetInterface extends ProductFacetModel {
   summary?: ProductSummaryInterface | null;
 }
 
-export interface ProductSummaryInterface extends ProductSummaryModel {
+export interface ProductSummaryInterface extends ProductSummaryModel, PricesInterface {
   shopProductIds?: string[] | null;
 
   // ui
@@ -265,6 +264,7 @@ export interface ProductSummaryInterface extends ProductSummaryModel {
   cardContentCities?: SeoContentCitiesInterface | null;
   variants: ProductVariantInterface[];
   shopProducts?: ShopProductInterface[] | null;
+  shopProductsIds?: ObjectIdModel[] | null;
   shops?: ShopInterface[] | null;
   shopsCount?: number | null;
   attributesCount?: number | null;
@@ -288,7 +288,7 @@ export interface ProductSummaryInterface extends ProductSummaryModel {
 }
 
 export interface BarcodeDoublesInterface {
-  products: ProductFacetInterface[];
+  products: ProductSummaryInterface[];
   barcode: string;
 }
 
@@ -358,7 +358,12 @@ export interface SupplierProductInterface extends SupplierProductModel {
   recommendedPrice?: number | null;
 }
 
-export interface ShopProductInterface extends ShopProductModel {
+export interface PricesInterface {
+  minPrice?: number | null;
+  maxPrice?: number | null;
+}
+
+export interface ShopProductInterface extends ShopProductModel, PricesInterface {
   shop?: ShopInterface | null;
   minAvailable?: number | null;
   maxAvailable?: number | null;
@@ -368,8 +373,6 @@ export interface ShopProductInterface extends ShopProductModel {
   supplierProducts?: SupplierProductInterface[] | null;
   promoProducts?: PromoProductInterface[] | null;
   promoProductsCount?: number | null;
-  minPrice?: number | null;
-  maxPrice?: number | null;
   summary?: ProductSummaryInterface | null;
 }
 
@@ -560,7 +563,7 @@ export interface OrderCustomerInterface extends OrderCustomerModel {
 }
 
 export interface OrderProductInterface extends OrderProductModel {
-  product?: ProductFacetInterface | null;
+  product?: ProductSummaryInterface | null;
   shopProduct?: ShopProductInterface | null;
   shop?: ShopInterface | null;
   company?: CompanyInterface | null;
@@ -654,7 +657,7 @@ export interface ProductSnippetLayoutInterface extends ProductSnippetInterface {
 
 export interface InitialCardDataInterface {
   cardTitle: string;
-  product: ProductFacetInterface;
+  product: ProductSummaryInterface;
   listFeatures: ProductAttributeInterface[];
   iconFeatures: ProductAttributeInterface[];
   tagFeatures: ProductAttributeInterface[];
@@ -670,7 +673,7 @@ export interface InitialCardDataInterface {
   isShopless: boolean;
   shopsCounterPostfix: string;
   isSingleImage: boolean;
-  assets: AssetModel[];
+  assets: string[];
   cardShops: ShopInterface[];
   cardBreadcrumbs: ProductCardBreadcrumbModel[];
   shopsCount: number;
@@ -824,7 +827,7 @@ export interface AppPaginationWithFiltersInterface<Model> extends AppPaginationI
 }
 
 export interface ConsoleRubricProductsInterface
-  extends AppPaginationWithFiltersInterface<ProductFacetInterface> {
+  extends AppPaginationWithFiltersInterface<ProductSummaryInterface> {
   rubric?: RubricInterface | null;
   companySlug: string;
 }

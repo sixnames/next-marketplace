@@ -1,14 +1,14 @@
 import { FILTER_SEPARATOR } from '../../../config/common';
 import { ProductConnectionItemModel } from '../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
-import products from '../products/products';
+import productFacets from '../productFacets/productFacets';
 import productConnections from '../productConnections/productConnections';
 import options from '../options/options';
 
 const productConnectionItems: ProductConnectionItemModel[] = [];
 
 productConnections.forEach((connection) => {
-  const connectionProducts = products.filter((product) => {
+  const connectionProducts = productFacets.filter((product) => {
     return connection.productsIds.some((_id) => _id.equals(product._id));
   });
 

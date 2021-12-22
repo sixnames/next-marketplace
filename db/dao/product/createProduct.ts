@@ -117,7 +117,7 @@ export async function createProduct({
       }
 
       // create product
-      const itemId = await getNextItemId(COL_PRODUCT_FACETS);
+      const itemId = await getNextItemId(COL_PRODUCT_SUMMARIES);
       const productId = new ObjectId();
       const { originalName, nameI18n } = trimProductName({
         nameI18n: values.nameI18n,

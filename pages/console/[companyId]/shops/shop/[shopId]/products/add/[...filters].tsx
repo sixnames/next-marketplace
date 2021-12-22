@@ -13,7 +13,7 @@ import { ROUTE_CONSOLE } from '../../../../../../../../config/common';
 import { getAddShopProductSsrData } from '../../../../../../../../db/dao/product/getAddShopProductSsrData';
 import {
   AppContentWrapperBreadCrumbs,
-  ProductInterface,
+  ProductFacetInterface,
 } from '../../../../../../../../db/uiInterfaces';
 import ConsoleLayout from '../../../../../../../../layout/cms/ConsoleLayout';
 import { alwaysArray, alwaysString } from '../../../../../../../../lib/arrayUtils';
@@ -39,7 +39,7 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
   rubricId,
   ...props
 }) => {
-  const [chosen, setChosen] = React.useState<ProductInterface[]>([]);
+  const [chosen, setChosen] = React.useState<ProductFacetInterface[]>([]);
   const [step, setStep] = React.useState<ShopAddProductsStepType>(1);
   const companyBasePath = `${ROUTE_CONSOLE}/${shop.companyId}/shops/shop/${shop._id}`;
   const layoutBasePath = `${ROUTE_CONSOLE}/${shop.companyId}/shops/shop`;

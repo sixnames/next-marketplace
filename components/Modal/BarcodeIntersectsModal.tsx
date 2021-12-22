@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ROUTE_CMS } from '../../config/common';
-import { BarcodeDoublesInterface, ProductInterface } from '../../db/uiInterfaces';
+import { BarcodeDoublesInterface, ProductFacetInterface } from '../../db/uiInterfaces';
 import { alwaysArray } from '../../lib/arrayUtils';
 import { getNumWord } from '../../lib/i18n';
 import WpLink from '../Link/WpLink';
@@ -19,7 +19,7 @@ const BarcodeIntersectsModalConsumer: React.FC<BarcodeIntersectsModalConsumerInt
 }) => {
   const { barcode, products } = barcodeDouble;
 
-  const columns: WpTableColumn<ProductInterface>[] = [
+  const columns: WpTableColumn<ProductFacetInterface>[] = [
     {
       headTitle: 'Арт',
       render: ({ dataItem, rowIndex }) => {
@@ -96,7 +96,7 @@ const BarcodeIntersectsModalConsumer: React.FC<BarcodeIntersectsModalConsumerInt
       <div className={`text-xl font-medium mb-2`}>{catalogueCounterString}</div>
 
       <div className={`overflow-x-auto overflow-y-hidden`}>
-        <WpTable<ProductInterface>
+        <WpTable<ProductFacetInterface>
           onRowDoubleClick={(dataItem) => {
             window.open(
               `${ROUTE_CMS}/rubrics/${dataItem.rubricId}/products/product/${dataItem._id}`,

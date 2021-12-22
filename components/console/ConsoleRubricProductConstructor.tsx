@@ -1,14 +1,14 @@
 import { Form, Formik } from 'formik';
 import * as React from 'react';
 import { UpdateProductCardContentInputInterface } from '../../db/dao/product/updateProductCardContent';
-import { ProductInterface, SeoContentCitiesInterface } from '../../db/uiInterfaces';
+import { ProductFacetInterface, SeoContentCitiesInterface } from '../../db/uiInterfaces';
 import { useUpdateProductCardContent } from '../../hooks/mutations/useProductMutations';
 import WpButton from '../button/WpButton';
 import Inner from '../Inner';
 import SeoContentEditor from '../SeoContentEditor';
 
 export interface ConsoleRubricProductConstructorInterface {
-  product: ProductInterface;
+  product: ProductFacetInterface;
   cardContent: SeoContentCitiesInterface;
   companySlug: string;
 }

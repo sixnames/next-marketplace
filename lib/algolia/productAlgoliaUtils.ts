@@ -1,20 +1,11 @@
 import { ObjectId } from 'mongodb';
 import addZero from 'add-zero';
 import { HITS_PER_PAGE, ID_COUNTER_DIGITS } from '../../config/common';
-import { COL_LANGUAGES, COL_PRODUCT_ASSETS, COL_PRODUCT_FACETS } from '../../db/collectionNames';
-import {
-  brandPipeline,
-  productAttributesPipeline,
-  productCategoriesPipeline,
-  productRubricPipeline,
-} from '../../db/dao/constantPipelines';
-import { ObjectIdModel, TranslationModel } from '../../db/dbModels';
+import { COL_PRODUCT_FACETS, COL_PRODUCT_SUMMARIES } from '../../db/collectionNames';
+import { ObjectIdModel, ProductSummaryModel, TranslationModel } from '../../db/dbModels';
 import { getDatabase } from '../../db/mongodb';
-import { ProductInterface } from '../../db/uiInterfaces';
-import { getFieldStringLocale } from '../i18n';
+import { ProductFacetInterface, ProductSummaryInterface } from '../../db/uiInterfaces';
 import { noNaN } from '../numbers';
-import { generateCardTitle, generateSnippetTitle } from '../titleUtils';
-import { getTreeFromList } from '../treeUtils';
 import { getAlgoliaClient, saveAlgoliaObjects } from './algoliaUtils';
 
 export function getAlgoliaProductsIndex() {
@@ -34,10 +25,7 @@ interface AlgoliaProductInterface {
 export async function updateAlgoliaProducts(match?: Record<any, any>) {
   try {
     const { db } = await getDatabase();
-    const productsCollection = db.collection<ProductInterface>(COL_PRODUCT_FACETS);
-    const languagesCollection = db.collection<ProductInterface>(COL_LANGUAGES);
-    const languages = await languagesCollection.find({}).toArray();
-    const locales = languages.map(({ slug }) => slug);
+    const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
 
     const aggregationMatch = match
       ? [
@@ -47,83 +35,25 @@ export async function updateAlgoliaProducts(match?: Record<any, any>) {
         ]
       : [];
 
-    const products = await productsCollection
-      .aggregate<ProductInterface>([
-        ...aggregationMatch,
-
-        // get product assets
-        {
-          $lookup: {
-            as: 'assets',
-            from: COL_PRODUCT_ASSETS,
-            localField: '_id',
-            foreignField: 'productId',
-          },
-        },
-        {
-          $addFields: {
-            assets: {
-              $arrayElemAt: ['$assets', 0],
-            },
-          },
-        },
-
-        // get product rubric
-        ...productRubricPipeline,
-
-        // get product attributes
-        ...productAttributesPipeline,
-
-        // get product brand
-        ...brandPipeline,
-
-        // get product categories
-        ...productCategoriesPipeline(),
-      ])
+    const products = await productSummariesCollection
+      .aggregate<ProductSummaryInterface>([...aggregationMatch])
       .toArray();
 
     const algoliaProducts: AlgoliaProductInterface[] = [];
     for await (const initialProduct of products) {
       const { rubric, ...restProduct } = initialProduct;
       if (!rubric) {
-        return false;
+        continue;
       }
 
       let algoliaProduct: AlgoliaProductInterface = {
-        _id: initialProduct._id.toHexString(),
-        slug: initialProduct.slug,
-        objectID: initialProduct._id.toHexString(),
-        barcode: initialProduct.barcode,
-        cardTitleI18n: {},
-        snippetTitleI18n: {},
+        _id: restProduct._id.toHexString(),
+        slug: restProduct.slug,
+        objectID: restProduct._id.toHexString(),
+        barcode: restProduct.barcode,
+        cardTitleI18n: restProduct.cardTitleI18n,
+        snippetTitleI18n: restProduct.snippetTitleI18n,
       };
-
-      for await (const locale of locales) {
-        const categories = getTreeFromList({
-          list: initialProduct.categories,
-          childrenFieldName: 'categories',
-          locale,
-        });
-
-        // title
-        const titleProps = {
-          locale,
-          brand: initialProduct.brand,
-          rubricName: getFieldStringLocale(rubric.nameI18n, locale),
-          showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
-          showCategoryInProductTitle: rubric.showCategoryInProductTitle,
-          attributes: initialProduct.attributes,
-          titleCategoriesSlugs: restProduct.titleCategoriesSlugs,
-          originalName: restProduct.originalName,
-          defaultGender: restProduct.gender,
-          categories,
-        };
-        const cardTitle = generateCardTitle(titleProps);
-        algoliaProduct.cardTitleI18n[locale] = cardTitle;
-        const snippetTitle = generateSnippetTitle(titleProps);
-        algoliaProduct.snippetTitleI18n[locale] = snippetTitle;
-      }
-
       algoliaProducts.push(algoliaProduct);
     }
 
@@ -156,7 +86,7 @@ export async function getAlgoliaProductsSearch({
   excludedProductsIds,
 }: GetAlgoliaProductsSearch): Promise<ObjectId[]> {
   const { db } = await getDatabase();
-  const productsCollection = db.collection<ProductInterface>(COL_PRODUCT_FACETS);
+  const productFacetsCollection = db.collection<ProductFacetInterface>(COL_PRODUCT_FACETS);
   const algoliaIndex = getAlgoliaProductsIndex();
   const searchIds: ObjectId[] = [];
   try {
@@ -164,7 +94,7 @@ export async function getAlgoliaProductsSearch({
       return searchIds;
     }
     if (noNaN(search) > 0) {
-      const productBySlug = await productsCollection.findOne({
+      const productBySlug = await productFacetsCollection.findOne({
         slug: addZero(search, ID_COUNTER_DIGITS),
       });
       if (productBySlug) {

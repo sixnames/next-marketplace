@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { ProductInterface } from '../../db/uiInterfaces';
+import { ProductFacetInterface } from '../../db/uiInterfaces';
 import {
   useDeleteProductAsset,
   useUpdateProductAssetIndex,
@@ -12,7 +12,7 @@ import WpDropZone from '../FormElements/Upload/WpDropZone';
 import Inner from '../Inner';
 
 interface ConsoleRubricProductAssetsInterface {
-  product: ProductInterface;
+  product: ProductFacetInterface;
 }
 
 const ConsoleRubricProductAssets: React.FC<ConsoleRubricProductAssetsInterface> = ({ product }) => {

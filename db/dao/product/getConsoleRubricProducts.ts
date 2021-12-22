@@ -32,7 +32,7 @@ import { getDatabase } from '../../mongodb';
 import {
   AttributeInterface,
   ConsoleRubricProductsInterface,
-  ProductInterface,
+  ProductFacetInterface,
   ProductsAggregationInterface,
   RubricInterface,
   ShopProductInterface,
@@ -80,7 +80,7 @@ export const getConsoleRubricProducts = async ({
 
   try {
     const { db } = await getDatabase();
-    const productsCollection = db.collection<ProductInterface>(COL_PRODUCT_FACETS);
+    const productsCollection = db.collection<ProductFacetInterface>(COL_PRODUCT_FACETS);
     const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
     const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
     const filters = alwaysArray(query.filters);
@@ -643,7 +643,7 @@ export const getConsoleRubricProducts = async ({
 
     // rubric attributes
     const allRubricAttributes = await getRubricAllAttributes(rubric._id);
-    const docs: ProductInterface[] = [];
+    const docs: ProductFacetInterface[] = [];
     for await (const product of productDataAggregation.docs) {
       const productCategoryAttributes = await getCategoryAllAttributes(
         product.selectedOptionsSlugs,
@@ -686,7 +686,7 @@ export const getConsoleRubricProducts = async ({
         .toArray();
       const shopProductPrices = otherShopProducts[0];
 
-      const castedProduct: ProductInterface = {
+      const castedProduct: ProductFacetInterface = {
         ...initialCastedProduct,
         minPrice: noNaN(shopProductPrices?.minPrice),
         maxPrice: noNaN(shopProductPrices?.maxPrice),

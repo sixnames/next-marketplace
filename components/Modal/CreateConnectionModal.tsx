@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Form, Formik } from 'formik';
 import { ATTRIBUTE_VARIANT_SELECT } from '../../config/common';
 import { useNotificationsContext } from '../../context/notificationsContext';
-import { ProductAttributeInterface, ProductInterface } from '../../db/uiInterfaces';
+import { ProductAttributeInterface, ProductFacetInterface } from '../../db/uiInterfaces';
 import { CreateProductConnectionInput } from '../../generated/apolloComponents';
 import useValidationSchema from '../../hooks/useValidationSchema';
 import { createProductConnectionModalSchema } from '../../validation/productSchema';
@@ -14,7 +14,7 @@ import ModalText from './ModalText';
 import ModalTitle from './ModalTitle';
 
 export interface CreateConnectionModalInterface {
-  product: ProductInterface;
+  product: ProductFacetInterface;
   confirm: (input: CreateProductConnectionInput) => void;
 }
 

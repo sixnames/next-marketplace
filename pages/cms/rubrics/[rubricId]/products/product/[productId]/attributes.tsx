@@ -19,7 +19,7 @@ import {
   AttributesGroupInterface,
   ProductAttributeInterface,
   ProductAttributesGroupInterface,
-  ProductInterface,
+  ProductFacetInterface,
 } from '../../../../../../../db/uiInterfaces';
 import CmsProductLayout from '../../../../../../../layout/cms/CmsProductLayout';
 import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
@@ -34,7 +34,7 @@ import {
 } from '../../../../../../../lib/ssrUtils';
 
 interface ProductAttributesInterface {
-  product: ProductInterface;
+  product: ProductFacetInterface;
 }
 
 const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) => {
@@ -222,7 +222,7 @@ export const getServerSideProps = async (
     productAttributesGroups.push(productAttributesGroup);
   });
 
-  const finalProduct: ProductInterface = {
+  const finalProduct: ProductFacetInterface = {
     ...restProduct,
     attributesGroups: sortObjectsByField(productAttributesGroups),
   };

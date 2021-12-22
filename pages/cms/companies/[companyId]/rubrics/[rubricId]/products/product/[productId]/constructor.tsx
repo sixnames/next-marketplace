@@ -8,7 +8,7 @@ import { getDatabase } from '../../../../../../../../../db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   CompanyInterface,
-  ProductInterface,
+  ProductFacetInterface,
   SeoContentCitiesInterface,
 } from '../../../../../../../../../db/uiInterfaces';
 import CmsProductLayout from '../../../../../../../../../layout/cms/CmsProductLayout';
@@ -21,7 +21,7 @@ import {
 import ConsoleLayout from '../../../../../../../../../layout/cms/ConsoleLayout';
 
 interface ProductAttributesInterface {
-  product: ProductInterface;
+  product: ProductFacetInterface;
   pageCompany: CompanyInterface;
   cardContent: SeoContentCitiesInterface;
   routeBasePath: string;

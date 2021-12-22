@@ -9,14 +9,14 @@ import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, ROUTE_CMS } from '../../config/comm
 import { CONFIRM_MODAL } from '../../config/modalVariants';
 import { useAppContext } from '../../context/appContext';
 import { useConfigContext } from '../../context/configContext';
-import { AppContentWrapperBreadCrumbs, ProductInterface } from '../../db/uiInterfaces';
+import { AppContentWrapperBreadCrumbs, ProductFacetInterface } from '../../db/uiInterfaces';
 import { useDeleteProduct } from '../../hooks/mutations/useProductMutations';
 import { ClientNavItemInterface } from '../../types/clientTypes';
 import AppContentWrapper from '../AppContentWrapper';
 import AppSubNav from '../AppSubNav';
 
 interface CmsProductLayoutInterface {
-  product: ProductInterface;
+  product: ProductFacetInterface;
   breadcrumbs?: AppContentWrapperBreadCrumbs;
   basePath?: string;
   hideAttributesPath?: boolean;

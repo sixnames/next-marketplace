@@ -31,7 +31,7 @@ import { getDatabase } from '../../mongodb';
 import {
   AttributeInterface,
   ConsoleRubricProductsInterface,
-  ProductInterface,
+  ProductFacetInterface,
   ProductsAggregationInterface,
   RubricInterface,
   ShopProductInterface,
@@ -576,7 +576,7 @@ export const getConsoleCompanyRubricProducts = async ({
 
     // rubric attributes
     const allRubricAttributes = await getRubricAllAttributes(rubric._id);
-    const docs: ProductInterface[] = [];
+    const docs: ProductFacetInterface[] = [];
     for await (const product of productDataAggregation.docs) {
       const cardPrices = {
         _id: new ObjectId(),
@@ -598,7 +598,7 @@ export const getConsoleCompanyRubricProducts = async ({
         getSnippetTitle: true,
       });
 
-      const castedProduct: ProductInterface = {
+      const castedProduct: ProductFacetInterface = {
         ...initialCastedProduct,
         cardPrices,
         attributesCount: countProductAttributes(product.attributes),

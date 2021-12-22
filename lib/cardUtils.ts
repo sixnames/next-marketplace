@@ -48,7 +48,7 @@ import {
   ProductAttributesGroupInterface,
   ProductConnectionInterface,
   ProductConnectionItemInterface,
-  ProductInterface,
+  ProductFacetInterface,
   ShopInterface,
 } from '../db/uiInterfaces';
 import { sortObjectsByField } from './arrayUtils';
@@ -117,7 +117,7 @@ export async function getCardData({
   try {
     // const startTime = new Date().getTime();
     const { db } = await getDatabase();
-    const productsCollection = db.collection<ProductInterface>(COL_PRODUCT_FACETS);
+    const productsCollection = db.collection<ProductFacetInterface>(COL_PRODUCT_FACETS);
     const companyMatch = companyId ? { companyId: new ObjectId(companyId) } : {};
     const companySlug = props.companySlug;
     const shopProductsMatch = {
@@ -127,7 +127,7 @@ export async function getCardData({
 
     // const shopProductsStartTime = new Date().getTime();
     const shopProductsAggregation = await productsCollection
-      .aggregate<ProductInterface>([
+      .aggregate<ProductFacetInterface>([
         {
           $match: {
             slug,

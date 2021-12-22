@@ -3,8 +3,10 @@ import trim from 'trim';
 import { SUPPLIER_PRICE_VARIANT_CHARGE } from '../config/common';
 import {
   COL_COMPANIES,
+  COL_LANGUAGES,
   COL_PRODUCT_ASSETS,
   COL_PRODUCT_FACETS,
+  COL_PRODUCT_SUMMARIES,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
@@ -18,7 +20,12 @@ import {
   shopProductFieldsPipeline,
   shopProductSupplierProductsPipeline,
 } from '../db/dao/constantPipelines';
-import { ObjectIdModel, TranslationModel } from '../db/dbModels';
+import {
+  LanguageModel,
+  ObjectIdModel,
+  ProductSummaryModel,
+  TranslationModel,
+} from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
 import {
   BarcodeDoublesInterface,
@@ -26,16 +33,18 @@ import {
   ProductAttributeInterface,
   ProductConnectionInterface,
   ProductConnectionItemInterface,
-  ProductInterface,
+  ProductFacetInterface,
+  ProductSummaryInterface,
   RubricInterface,
   SeoContentCitiesInterface,
   ShopProductBarcodeDoublesInterface,
   ShopProductInterface,
   SupplierProductInterface,
 } from '../db/uiInterfaces';
+import { updateAlgoliaProducts } from './algolia/productAlgoliaUtils';
 import { getFieldStringLocale } from './i18n';
 import { getProductAllSeoContents } from './seoContentUtils';
-import { generateCardTitle, generateSnippetTitle } from './titleUtils';
+import { generateCardTitle, GenerateCardTitleInterface, generateSnippetTitle } from './titleUtils';
 import { getTreeFromList } from './treeUtils';
 
 interface GetCmsProductInterface {
@@ -45,7 +54,7 @@ interface GetCmsProductInterface {
 }
 
 interface GetCmsProductPayloadInterface {
-  product: ProductInterface;
+  product: ProductFacetInterface;
   categoriesList: CategoryInterface[];
   cardContent: SeoContentCitiesInterface;
 }
@@ -56,9 +65,9 @@ export async function getCmsProduct({
   companySlug,
 }: GetCmsProductInterface): Promise<GetCmsProductPayloadInterface | null> {
   const { db } = await getDatabase();
-  const productsCollection = db.collection<ProductInterface>(COL_PRODUCT_FACETS);
+  const productsCollection = db.collection<ProductFacetInterface>(COL_PRODUCT_FACETS);
   const productAggregation = await productsCollection
-    .aggregate<ProductInterface>([
+    .aggregate<ProductFacetInterface>([
       {
         $match: {
           _id: new ObjectId(productId),
@@ -201,7 +210,7 @@ export async function getCmsProduct({
     [],
   );
 
-  const product: ProductInterface = {
+  const product: ProductFacetInterface = {
     ...initialProduct,
     rubric: castedRubric,
     cardTitle,
@@ -370,7 +379,7 @@ export async function checkBarcodeIntersects({
   productId,
 }: CheckBarcodeIntersectsInterface): Promise<BarcodeDoublesInterface[]> {
   const { db } = await getDatabase();
-  const productsCollection = db.collection<ProductInterface>(COL_PRODUCT_FACETS);
+  const productsCollection = db.collection<ProductFacetInterface>(COL_PRODUCT_FACETS);
   const idMatch = productId
     ? {
         _id: {
@@ -385,7 +394,7 @@ export async function checkBarcodeIntersects({
 
   for await (const barcodeItem of barcode) {
     const products = await productsCollection
-      .aggregate<ProductInterface>([
+      .aggregate<ProductFacetInterface>([
         {
           $match: {
             ...idMatch,
@@ -538,7 +547,7 @@ export async function checkShopProductBarcodeIntersects({
             defaultGender: `${product.gender}`,
           });
 
-          const productPayload: ProductInterface = {
+          const productPayload: ProductFacetInterface = {
             ...product,
             snippetTitle,
           };
@@ -574,4 +583,93 @@ export function trimProductName({ originalName, nameI18n }: TrimProductNameInter
       return acc;
     }, {}),
   };
+}
+
+export async function updateProductTitlesInterface(match?: Record<any, any>) {
+  try {
+    const { db } = await getDatabase();
+    const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
+    const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
+    const languages = await languagesCollection.find({}).toArray();
+    const locales = languages.map(({ slug }) => slug);
+
+    const aggregationMatch = match
+      ? [
+          {
+            $match: match,
+          },
+        ]
+      : [];
+
+    const products = await productSummariesCollection
+      .aggregate<ProductSummaryInterface>([
+        ...aggregationMatch,
+
+        // get product rubric
+        ...productRubricPipeline,
+
+        // get product attributes
+        ...productAttributesPipeline,
+
+        // get product brand
+        ...brandPipeline,
+
+        // get product categories
+        ...productCategoriesPipeline(),
+      ])
+      .toArray();
+
+    for await (const initialProduct of products) {
+      const { rubric, ...restProduct } = initialProduct;
+      if (!rubric) {
+        return false;
+      }
+
+      // update titles
+      const cardTitleI18n: TranslationModel = {};
+      const snippetTitleI18n: TranslationModel = {};
+      for await (const locale of locales) {
+        const categories = getTreeFromList({
+          list: initialProduct.categories,
+          childrenFieldName: 'categories',
+          locale,
+        });
+
+        const titleProps: GenerateCardTitleInterface = {
+          locale,
+          brand: initialProduct.brand,
+          rubricName: getFieldStringLocale(rubric.nameI18n, locale),
+          showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
+          showCategoryInProductTitle: rubric.showCategoryInProductTitle,
+          attributes: initialProduct.attributes,
+          titleCategoriesSlugs: restProduct.titleCategoriesSlugs,
+          originalName: restProduct.originalName,
+          defaultGender: restProduct.gender,
+          categories,
+        };
+        const cardTitle = generateCardTitle(titleProps);
+        cardTitleI18n[locale] = cardTitle;
+        const snippetTitle = generateSnippetTitle(titleProps);
+        snippetTitleI18n[locale] = snippetTitle;
+      }
+      await productSummariesCollection.findOneAndUpdate(
+        {
+          _id: initialProduct._id,
+        },
+        {
+          $set: {
+            cardTitleI18n,
+            snippetTitleI18n,
+          },
+        },
+      );
+
+      // update algolia index
+      await updateAlgoliaProducts({ _id: initialProduct._id });
+    }
+    return true;
+  } catch (e) {
+    console.log('updateProductTitlesInterface error ', e);
+    return false;
+  }
 }

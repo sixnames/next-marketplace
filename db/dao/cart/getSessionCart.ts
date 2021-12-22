@@ -23,7 +23,7 @@ import {
   CartInterface,
   CartProductInterface,
   GiftCertificateInterface,
-  ProductInterface,
+  ProductFacetInterface,
   ShopProductInterface,
 } from '../../uiInterfaces';
 import {
@@ -49,7 +49,7 @@ export const getSessionCart = async ({
     const { locale, city } = await getRequestParams(context);
     const cartsCollection = db.collection<CartModel>(COL_CARTS);
     const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
-    const productsCollection = db.collection<ProductInterface>(COL_PRODUCT_FACETS);
+    const productsCollection = db.collection<ProductFacetInterface>(COL_PRODUCT_FACETS);
     const usersCollection = db.collection<UserModel>(COL_USERS);
     const giftCertificatesCollection = db.collection<GiftCertificateModel>(COL_GIFT_CERTIFICATES);
 
@@ -294,7 +294,7 @@ export const getSessionCart = async ({
 
       if (productId) {
         const productAggregation = await productsCollection
-          .aggregate<ProductInterface>([
+          .aggregate<ProductFacetInterface>([
             {
               $match: {
                 _id: productId,

@@ -8,7 +8,7 @@ import {
 import {
   ProductConnectionInterface,
   ProductConnectionItemInterface,
-  ProductInterface,
+  ProductFacetInterface,
 } from '../../db/uiInterfaces';
 import {
   useAddProductToConnectionMutation,
@@ -30,7 +30,7 @@ import WpTable, { WpTableColumn } from '../WpTable';
 
 interface ProductConnectionControlsInterface {
   connection: ProductConnectionInterface;
-  product: ProductInterface;
+  product: ProductFacetInterface;
 }
 
 const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = ({
@@ -85,7 +85,7 @@ const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = 
 };
 
 export interface ProductConnectionsItemInterface {
-  product: ProductInterface;
+  product: ProductFacetInterface;
   connection: ProductConnectionInterface;
   connectionIndex: number;
 }
@@ -223,7 +223,7 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
 };
 
 interface ConsoleRubricProductConnectionsInterface {
-  product: ProductInterface;
+  product: ProductFacetInterface;
 }
 
 const ConsoleRubricProductConnections: React.FC<ConsoleRubricProductConnectionsInterface> = ({

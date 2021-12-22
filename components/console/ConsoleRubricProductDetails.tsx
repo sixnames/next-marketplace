@@ -1,6 +1,6 @@
 import { Form, Formik } from 'formik';
 import * as React from 'react';
-import { ProductInterface } from '../../db/uiInterfaces';
+import { ProductFacetInterface } from '../../db/uiInterfaces';
 import { useUpdateProduct } from '../../hooks/mutations/useProductMutations';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import useValidationSchema from '../../hooks/useValidationSchema';
@@ -12,7 +12,7 @@ import Inner from '../Inner';
 import WpImage from '../WpImage';
 
 interface ConsoleRubricProductDetailsInterface {
-  product: ProductInterface;
+  product: ProductFacetInterface;
   companySlug: string;
 }
 

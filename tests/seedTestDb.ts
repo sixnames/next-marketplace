@@ -1,5 +1,5 @@
 import { Seeder } from 'mongo-seeding';
-import products from './data/products/products';
+import productFacets from './data/productFacets/productFacets';
 const mkdirp = require('mkdirp');
 const path = require('path');
 const fs = require('fs');
@@ -8,7 +8,7 @@ const copy = require('recursive-copy');
 require('dotenv').config();
 
 function prepareTestAssets() {
-  products.forEach(({ itemId }) => {
+  productFacets.forEach(({ itemId }) => {
     const pathToSrc = path.join(process.cwd(), 'tests/assets/test-image-0.png');
     const fileName = `${itemId}-0.png`;
     const pathToDist = path.join(process.cwd(), `tests/assets/products/${itemId}`);

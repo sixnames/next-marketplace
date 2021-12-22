@@ -18,7 +18,7 @@ import {
   BrandCollectionInterface,
   BrandInterface,
   ManufacturerInterface,
-  ProductInterface,
+  ProductFacetInterface,
 } from '../../../../../../../db/uiInterfaces';
 import CmsProductLayout from '../../../../../../../layout/cms/CmsProductLayout';
 import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
@@ -31,7 +31,7 @@ import {
 } from '../../../../../../../lib/ssrUtils';
 
 interface ProductBrandsInterface {
-  product: ProductInterface;
+  product: ProductFacetInterface;
   brand?: BrandInterface | null;
   brandCollection?: BrandCollectionInterface | null;
   manufacturer?: ManufacturerInterface | null;

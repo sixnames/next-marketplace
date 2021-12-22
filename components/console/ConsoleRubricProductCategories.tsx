@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ProductCategoryInterface, ProductInterface } from '../../db/uiInterfaces';
+import { ProductCategoryInterface, ProductFacetInterface } from '../../db/uiInterfaces';
 import {
   useUpdateProductCategory,
   useUpdateProductCategoryVisibility,
@@ -11,7 +11,7 @@ import RequestError from '../RequestError';
 import WpTooltip from '../WpTooltip';
 
 interface ConsoleRubricProductCategoriesInterface {
-  product: ProductInterface;
+  product: ProductFacetInterface;
   categoriesTree: ProductCategoryInterface[];
 }
 

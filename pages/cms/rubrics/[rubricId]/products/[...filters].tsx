@@ -21,7 +21,7 @@ import { getConsoleRubricProducts } from '../../../../../db/dao/product/getConso
 import {
   AppContentWrapperBreadCrumbs,
   ConsoleRubricProductsInterface,
-  ProductInterface,
+  ProductFacetInterface,
 } from '../../../../../db/uiInterfaces';
 import { useDeleteProduct } from '../../../../../hooks/mutations/useProductMutations';
 import useMutationCallbacks from '../../../../../hooks/useMutationCallbacks';
@@ -57,7 +57,7 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
 
   const [deleteProductFromRubricMutation] = useDeleteProduct();
 
-  const columns: WpTableColumn<ProductInterface>[] = [
+  const columns: WpTableColumn<ProductFacetInterface>[] = [
     {
       headTitle: 'Арт',
       render: ({ dataItem, rowIndex }) => {
@@ -231,7 +231,7 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
 
           <div className={'max-w-full'}>
             <div className={`relative overflow-x-auto overflow-y-hidden`}>
-              <WpTable<ProductInterface>
+              <WpTable<ProductFacetInterface>
                 onRowDoubleClick={(dataItem) => {
                   window.open(`${itemPath}/${dataItem._id}`, '_blank');
                 }}

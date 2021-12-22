@@ -10,7 +10,7 @@ import {
   CategoryInterface,
   CompanyInterface,
   ProductCategoryInterface,
-  ProductInterface,
+  ProductFacetInterface,
 } from '../../../../../../../../../db/uiInterfaces';
 import CmsProductLayout from '../../../../../../../../../layout/cms/CmsProductLayout';
 import ConsoleLayout from '../../../../../../../../../layout/cms/ConsoleLayout';
@@ -23,7 +23,7 @@ import {
 import { getTreeFromList } from '../../../../../../../../../lib/treeUtils';
 
 interface ProductCategoriesInterface {
-  product: ProductInterface;
+  product: ProductFacetInterface;
   categoriesTree: ProductCategoryInterface[];
   pageCompany: CompanyInterface;
   routeBasePath: string;

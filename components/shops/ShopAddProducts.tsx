@@ -7,7 +7,7 @@ import {
   AppContentWrapperBreadCrumbs,
   CatalogueFilterAttributeInterface,
   ConsoleRubricProductsInterface,
-  ProductInterface,
+  ProductFacetInterface,
   ShopInterface,
 } from '../../db/uiInterfaces';
 import {
@@ -36,13 +36,13 @@ import TableRowImage from '../TableRowImage';
 import WpTable, { WpTableColumn } from '../WpTable';
 
 export type ShopAddProductsStepType = 1 | 2;
-export type ShopAddProductsCreateChosenProduct = (product: ProductInterface) => void;
-export type ShopAddProductsDeleteChosenProduct = (product: ProductInterface) => void;
+export type ShopAddProductsCreateChosenProduct = (product: ProductFacetInterface) => void;
+export type ShopAddProductsDeleteChosenProduct = (product: ProductFacetInterface) => void;
 export type ShopAddProductsSetStepHandler = (step: ShopAddProductsStepType) => void;
 
 export interface ShopAddProductsListInterface extends ConsoleRubricProductsInterface {
   shop: ShopInterface;
-  chosen: ProductInterface[];
+  chosen: ProductFacetInterface[];
   createChosenProduct: ShopAddProductsCreateChosenProduct;
   deleteChosenProduct: ShopAddProductsDeleteChosenProduct;
   setStepHandler: ShopAddProductsSetStepHandler;
@@ -80,7 +80,7 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
   useReloadListener();
   const { sessionUser } = useUserContext();
 
-  const columns: WpTableColumn<ProductInterface>[] = [
+  const columns: WpTableColumn<ProductFacetInterface>[] = [
     {
       render: ({ dataItem, rowIndex }) => {
         const isSelected = chosen.find(({ _id }) => {
@@ -227,7 +227,7 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
 
           <div className={'max-w-full'}>
             <div className={`overflow-x-auto`}>
-              <WpTable<ProductInterface>
+              <WpTable<ProductFacetInterface>
                 columns={columns}
                 data={docs}
                 testIdKey={'_id'}
@@ -287,7 +287,7 @@ export const ShopAddProductsFinalStep: React.FC<ShopAddProductsListInterface> = 
   });
   const validationSchema = useValidationSchema({ schema: addManyProductsToShopSchema });
 
-  const columns: WpTableColumn<ProductInterface>[] = [
+  const columns: WpTableColumn<ProductFacetInterface>[] = [
     {
       render: ({ dataItem }) => {
         const isSelected = chosen.find(({ _id }) => {
@@ -453,7 +453,7 @@ export const ShopAddProductsFinalStep: React.FC<ShopAddProductsListInterface> = 
                 return (
                   <Form>
                     <div className={`overflow-x-auto`}>
-                      <WpTable<ProductInterface>
+                      <WpTable<ProductFacetInterface>
                         columns={columns}
                         data={chosen}
                         testIdKey={'_id'}

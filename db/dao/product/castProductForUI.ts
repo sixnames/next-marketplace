@@ -8,13 +8,13 @@ import {
   CategoryInterface,
   ProductAttributeInterface,
   ProductConnectionInterface,
-  ProductInterface,
+  ProductFacetInterface,
   RubricInterface,
 } from '../../uiInterfaces';
 import { castProductConnectionForUI } from './castProductConnectionForUI';
 
 interface CastProductForUI {
-  product: ProductInterface;
+  product: ProductFacetInterface;
   attributes?: AttributeInterface[] | null;
   brands?: BrandInterface[] | null;
   categories?: CategoryInterface[] | null;
@@ -33,7 +33,7 @@ export function castProductForUI({
   rubric,
   getSnippetTitle,
   locale,
-}: CastProductForUI): ProductInterface {
+}: CastProductForUI): ProductFacetInterface {
   const productRubric = product.rubric || rubric;
 
   // product attributes

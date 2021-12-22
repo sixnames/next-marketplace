@@ -1,7 +1,7 @@
 import { FILTER_SEPARATOR } from '../../../config/common';
 import { ObjectIdModel, ProductConnectionModel, ProductFacetModel } from '../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
-import products from '../products/products';
+import productFacets from '../productFacets/productFacets';
 import rubrics from '../rubrics/rubrics';
 
 const connectionAttributesConfig = [
@@ -35,7 +35,7 @@ const productConnections: ProductConnectionModel[] = [];
 
 rubrics.forEach(({ slug }) => {
   connectionAttributesConfig.forEach(({ attributeSlug, attributeId }) => {
-    const rubricProducts = products.filter(({ rubricSlug }) => slug === rubricSlug);
+    const rubricProducts = productFacets.filter(({ rubricSlug }) => slug === rubricSlug);
     const attributeProducts = rubricProducts.filter(({ selectedAttributesIds }) => {
       return selectedAttributesIds.some((_id) => _id.equals(attributeId));
     });

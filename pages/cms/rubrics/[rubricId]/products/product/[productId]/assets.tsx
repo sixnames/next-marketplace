@@ -4,7 +4,7 @@ import ConsoleRubricProductAssets from '../../../../../../../components/console/
 import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from '../../../../../../../config/common';
 import {
   AppContentWrapperBreadCrumbs,
-  ProductInterface,
+  ProductFacetInterface,
 } from '../../../../../../../db/uiInterfaces';
 import CmsProductLayout from '../../../../../../../layout/cms/CmsProductLayout';
 import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
@@ -16,7 +16,7 @@ import {
 } from '../../../../../../../lib/ssrUtils';
 
 interface ProductAssetsInterface {
-  product: ProductInterface;
+  product: ProductFacetInterface;
 }
 
 const ProductAssets: React.FC<ProductAssetsInterface> = ({ product }) => {

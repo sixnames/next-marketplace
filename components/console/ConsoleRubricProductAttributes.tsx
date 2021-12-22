@@ -4,7 +4,7 @@ import { ATTRIBUTE_OPTIONS_MODAL } from '../../config/modalVariants';
 import {
   OptionInterface,
   ProductAttributeInterface,
-  ProductInterface,
+  ProductFacetInterface,
 } from '../../db/uiInterfaces';
 import {
   useUpdateProductNumberAttributeMutation,
@@ -36,7 +36,7 @@ const attributesGroupTitleClassName = 'mb-4 font-medium text-xl';
 const selectsListClassName = 'grid sm:grid-cols-2 md:grid-cols-3 gap-x-8';
 
 interface ConsoleRubricProductAttributesInterface {
-  product: ProductInterface;
+  product: ProductFacetInterface;
 }
 
 const ConsoleRubricProductAttributes: React.FC<ConsoleRubricProductAttributesInterface> = ({

@@ -1,7 +1,7 @@
 import { ProductFacetModel } from '../../../db/dbModels';
 import productSummaries from '../productSummaries/productSummaries';
 
-const products: ProductFacetModel[] = productSummaries.map((productSummary) => {
+const productFacets: ProductFacetModel[] = productSummaries.map((productSummary) => {
   const product: ProductFacetModel = {
     _id: productSummary._id,
     categorySlugs: productSummary.categorySlugs,
@@ -22,4 +22,4 @@ const products: ProductFacetModel[] = productSummaries.map((productSummary) => {
 }, []);
 
 // @ts-ignore
-export = products;
+export = productFacets;

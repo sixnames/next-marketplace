@@ -22,7 +22,7 @@ import {
   CompanyInterface,
   ProductAttributeInterface,
   ProductAttributesGroupInterface,
-  ProductInterface,
+  ProductFacetInterface,
 } from '../../../../../../../../../db/uiInterfaces';
 import CmsProductLayout from '../../../../../../../../../layout/cms/CmsProductLayout';
 import ConsoleLayout from '../../../../../../../../../layout/cms/ConsoleLayout';
@@ -37,7 +37,7 @@ import {
 } from '../../../../../../../../../lib/ssrUtils';
 
 interface ProductAttributesInterface {
-  product: ProductInterface;
+  product: ProductFacetInterface;
   routeBasePath: string;
   pageCompany: CompanyInterface;
 }
@@ -263,7 +263,7 @@ export const getServerSideProps = async (
     productAttributesGroups.push(productAttributesGroup);
   });
 
-  const finalProduct: ProductInterface = {
+  const finalProduct: ProductFacetInterface = {
     ...restProduct,
     attributesGroups: sortObjectsByField(productAttributesGroups),
   };

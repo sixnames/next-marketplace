@@ -5,13 +5,13 @@ import { shopProductFieldsPipeline } from '../../../db/dao/constantPipelines';
 import { ObjectIdModel, ShopModel } from '../../../db/dbModels';
 import { getDatabase } from '../../../db/mongodb';
 import { SyncParamsInterface, SyncProductInterface } from '../../../db/syncInterfaces';
-import { ProductInterface, ShopProductInterface } from '../../../db/uiInterfaces';
+import { ProductFacetInterface, ShopProductInterface } from '../../../db/uiInterfaces';
 import { getFieldStringLocale } from '../../../lib/i18n';
 import { generateSnippetTitle } from '../../../lib/titleUtils';
 
 interface SyncProductAggregationInterface extends Omit<SyncProductInterface, '_id'> {
   _id: ObjectIdModel;
-  product: ProductInterface;
+  product: ProductFacetInterface;
 }
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {

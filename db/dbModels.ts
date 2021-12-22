@@ -658,6 +658,7 @@ export interface ProductFacetModel extends ProductMainFieldsInterface, BaseModel
   selectedAttributesIds: ObjectId[];
 }
 
+// TODO connections
 export interface ProductSummaryModel extends ProductFacetModel, TimestampModel {
   originalName: string;
   nameI18n?: TranslationModel | null;

@@ -77,9 +77,9 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
       render: ({ dataItem }) => {
         return (
           <TableRowImage
-            src={`${dataItem.mainImage}`}
-            alt={`${dataItem.snippetTitle}`}
-            title={`${dataItem.snippetTitle}`}
+            src={`${dataItem.summary?.mainImage}`}
+            alt={`${dataItem.summary?.snippetTitle}`}
+            title={`${dataItem.summary?.snippetTitle}`}
           />
         );
       },
@@ -124,7 +124,7 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
           <div className='flex gap-2'>
             <div>{noNaN(cellData)}</div>
             <div>/</div>
-            <div>{noNaN(dataItem.totalAttributesCount)}</div>
+            <div>{noNaN(dataItem.summary?.totalAttributesCount)}</div>
           </div>
         );
       },
@@ -141,7 +141,7 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
         return (
           <div className='flex justify-end'>
             <ContentItemControls
-              testId={`${dataItem.originalName}`}
+              testId={`${dataItem.summary?.originalName}`}
               copyTitle={'Копировать товар'}
               copyHandler={() => {
                 showModal<CreateNewProductModalInterface>({
@@ -162,7 +162,7 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
                   variant: CONFIRM_MODAL,
                   props: {
                     testId: 'delete-product-modal',
-                    message: `Вы уверенны, что хотите удалить товар ${dataItem.originalName}?`,
+                    message: `Вы уверенны, что хотите удалить товар ${dataItem.summary?.snippetTitle}?`,
                     confirm: () => {
                       deleteProductFromRubricMutation({
                         productId: `${dataItem._id}`,

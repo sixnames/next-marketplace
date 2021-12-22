@@ -474,34 +474,12 @@ export const shopProductFieldsPipeline = (idFieldName: string) => {
               },
             },
           },
-          {
-            $project: {
-              descriptionI18n: false,
-            },
-          },
-          {
-            $addFields: {
-              shopProductsIds: '$$shopProductIds',
-            },
-          },
-
-          // get product attributes
-          ...productAttributesPipeline,
-
-          // get product brand
-          ...brandPipeline,
-
-          // get product categories
-          ...productCategoriesPipeline(),
-
-          // get product rubric
-          ...productRubricPipeline,
         ],
       },
     },
     {
       $addFields: {
-        product: { $arrayElemAt: ['$product', 0] },
+        summary: { $arrayElemAt: ['$summary', 0] },
       },
     },
   ];

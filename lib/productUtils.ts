@@ -1,15 +1,10 @@
 import { ObjectId } from 'mongodb';
 import trim from 'trim';
-import { SUPPLIER_PRICE_VARIANT_CHARGE } from '../config/common';
 import {
-  COL_COMPANIES,
   COL_LANGUAGES,
   COL_OPTIONS,
-  COL_PRODUCT_FACETS,
   COL_PRODUCT_SUMMARIES,
-  COL_RUBRICS,
   COL_SHOP_PRODUCTS,
-  COL_SHOPS,
 } from '../db/collectionNames';
 import {
   brandPipeline,
@@ -28,22 +23,22 @@ import {
 } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
 import {
+  AttributeInterface,
   BarcodeDoublesInterface,
   CategoryInterface,
   ProductAttributeInterface,
+  ProductSummaryInterface,
   ProductVariantInterface,
   ProductVariantItemInterface,
-  ProductFacetInterface,
-  ProductSummaryInterface,
   RubricInterface,
   SeoContentCitiesInterface,
   ShopProductBarcodeDoublesInterface,
   ShopProductInterface,
   SupplierProductInterface,
-  AttributeInterface,
 } from '../db/uiInterfaces';
 import { updateAlgoliaProducts } from './algolia/productAlgoliaUtils';
 import { getFieldStringLocale } from './i18n';
+import { getSupplierPrice } from './priceUtils';
 import { getProductAllSeoContents } from './seoContentUtils';
 import { generateCardTitle, GenerateCardTitleInterface, generateSnippetTitle } from './titleUtils';
 import { getTreeFromList } from './treeUtils';
@@ -55,7 +50,7 @@ interface GetCmsProductInterface {
 }
 
 interface GetCmsProductPayloadInterface {
-  product: ProductFacetInterface;
+  product: ProductSummaryInterface;
   categoriesList: CategoryInterface[];
   cardContent: SeoContentCitiesInterface;
 }
@@ -217,15 +212,6 @@ export async function getCmsProduct({
   };
 }
 
-export function getSupplierPrice(supplierProduct: SupplierProductInterface): number {
-  const { variant, price, percent } = supplierProduct;
-  if (variant === SUPPLIER_PRICE_VARIANT_CHARGE) {
-    const charge = Math.round((price / 100) * percent);
-    return charge + price;
-  }
-  return price;
-}
-
 interface CastSupplierProductsListInterface {
   supplierProducts?: SupplierProductInterface[] | null;
   locale: string;
@@ -277,40 +263,6 @@ export async function getConsoleShopProduct({
 
       // get supplier products
       ...shopProductSupplierProductsPipeline,
-
-      // get company
-      {
-        $lookup: {
-          from: COL_COMPANIES,
-          as: 'company',
-          localField: 'companyId',
-          foreignField: '_id',
-        },
-      },
-      {
-        $addFields: {
-          company: {
-            $arrayElemAt: ['$company', 0],
-          },
-        },
-      },
-
-      // get shop
-      {
-        $lookup: {
-          from: COL_SHOPS,
-          as: 'shop',
-          localField: 'shopId',
-          foreignField: '_id',
-        },
-      },
-      {
-        $addFields: {
-          shop: {
-            $arrayElemAt: ['$shop', 0],
-          },
-        },
-      },
     ])
     .toArray();
   const shopProductResult = shopProductsAggregation[0];
@@ -334,14 +286,11 @@ export async function getConsoleShopProduct({
       supplierProducts: shopProductResult.supplierProducts,
       locale,
     }),
-    product: {
+    summary: {
       ...product,
       cardContentCities: cardContent,
     },
   };
-  if (!shopProduct || !shopProduct.product) {
-    return null;
-  }
 
   return shopProduct;
 }
@@ -358,7 +307,7 @@ export async function checkBarcodeIntersects({
   productId,
 }: CheckBarcodeIntersectsInterface): Promise<BarcodeDoublesInterface[]> {
   const { db } = await getDatabase();
-  const productsCollection = db.collection<ProductFacetInterface>(COL_PRODUCT_FACETS);
+  const productSummariesCollection = db.collection<ProductSummaryInterface>(COL_PRODUCT_SUMMARIES);
   const idMatch = productId
     ? {
         _id: {
@@ -372,60 +321,12 @@ export async function checkBarcodeIntersects({
   }
 
   for await (const barcodeItem of barcode) {
-    const products = await productsCollection
-      .aggregate<ProductFacetInterface>([
+    const products = await productSummariesCollection
+      .aggregate<ProductSummaryInterface>([
         {
           $match: {
             ...idMatch,
             barcode: barcodeItem,
-          },
-        },
-        {
-          $project: {
-            descriptionI18n: false,
-          },
-        },
-
-        // get product attributes
-        ...productAttributesPipeline,
-
-        // get product brand
-        ...brandPipeline,
-
-        // get product categories
-        ...productCategoriesPipeline(),
-
-        // get product rubric
-        {
-          $lookup: {
-            from: COL_RUBRICS,
-            as: 'rubric',
-            let: {
-              rubricId: '$rubricId',
-            },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $eq: ['$$rubricId', '$_id'],
-                  },
-                },
-              },
-              {
-                $project: {
-                  _id: true,
-                  slug: true,
-                  nameI18n: true,
-                  showRubricNameInProductTitle: true,
-                  showCategoryInProductTitle: true,
-                },
-              },
-            ],
-          },
-        },
-        {
-          $addFields: {
-            rubric: { $arrayElemAt: ['$rubric', 0] },
           },
         },
       ])
@@ -435,22 +336,9 @@ export async function checkBarcodeIntersects({
       barcodeDoubles.push({
         barcode: barcodeItem,
         products: products.map((product) => {
-          const snippetTitle = generateSnippetTitle({
-            locale,
-            brand: product.brand,
-            rubricName: getFieldStringLocale(product.rubric?.nameI18n, locale),
-            showRubricNameInProductTitle: product.rubric?.showRubricNameInProductTitle,
-            showCategoryInProductTitle: product.rubric?.showCategoryInProductTitle,
-            attributes: product.attributes || [],
-            categories: product.categories,
-            titleCategoriesSlugs: product.titleCategoriesSlugs,
-            originalName: `${product.originalName}`,
-            defaultGender: `${product.gender}`,
-          });
-
           return {
             ...product,
-            snippetTitle,
+            snippetTitle: getFieldStringLocale(product.snippetTitleI18n, locale),
           };
         }),
       });
@@ -508,32 +396,19 @@ export async function checkShopProductBarcodeIntersects({
       const double: ShopProductBarcodeDoublesInterface = {
         barcode: barcodeItem,
         products: shopProducts.reduce((acc: ShopProductInterface[], shopProduct) => {
-          const { product } = shopProduct;
-          if (!product) {
+          const { summary } = shopProduct;
+          if (!summary) {
             return acc;
           }
 
-          const snippetTitle = generateSnippetTitle({
-            locale,
-            brand: product.brand,
-            rubricName: getFieldStringLocale(product.rubric?.nameI18n, locale),
-            showRubricNameInProductTitle: product.rubric?.showRubricNameInProductTitle,
-            showCategoryInProductTitle: product.rubric?.showCategoryInProductTitle,
-            attributes: product.attributes || [],
-            categories: product.categories,
-            titleCategoriesSlugs: product.titleCategoriesSlugs,
-            originalName: `${product.originalName}`,
-            defaultGender: `${product.gender}`,
-          });
-
-          const productPayload: ProductFacetInterface = {
-            ...product,
-            snippetTitle,
+          const productPayload: ProductSummaryInterface = {
+            ...summary,
+            snippetTitle: getFieldStringLocale(summary.snippetTitleI18n, locale),
           };
 
           const payload: ShopProductInterface = {
             ...shopProduct,
-            product: productPayload,
+            summary: productPayload,
           };
           return [...acc, payload];
         }, []),

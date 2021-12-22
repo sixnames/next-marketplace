@@ -26,8 +26,8 @@ import {
   COL_OPTIONS,
   COL_PRODUCT_ASSETS,
   COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCT_CONNECTION_ITEMS,
-  COL_PRODUCT_CONNECTIONS,
+  COL_PRODUCT_VARIANT_ITEMS,
+  COL_PRODUCT_VARIANTS,
   COL_PRODUCT_FACETS,
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
@@ -46,8 +46,8 @@ import {
   InitialCardDataInterface,
   ProductAttributeInterface,
   ProductAttributesGroupInterface,
-  ProductConnectionInterface,
-  ProductConnectionItemInterface,
+  ProductVariantInterface,
+  ProductVariantItemInterface,
   ProductFacetInterface,
   ShopInterface,
 } from '../db/uiInterfaces';
@@ -197,7 +197,7 @@ export async function getCardData({
         // get product connection
         {
           $lookup: {
-            from: COL_PRODUCT_CONNECTIONS,
+            from: COL_PRODUCT_VARIANTS,
             as: 'connections',
             let: { productId: '$_id' },
             pipeline: [
@@ -233,7 +233,7 @@ export async function getCardData({
               },
               {
                 $lookup: {
-                  from: COL_PRODUCT_CONNECTION_ITEMS,
+                  from: COL_PRODUCT_VARIANT_ITEMS,
                   as: 'connectionProducts',
                   let: { connectionId: '$_id' },
                   pipeline: [
@@ -626,10 +626,10 @@ export async function getCardData({
 
     // card connections
     const excludedAttributesIds: ObjectIdModel[] = [];
-    const cardConnections: ProductConnectionInterface[] = [];
+    const cardConnections: ProductVariantInterface[] = [];
     (connections || []).forEach(({ attribute, ...connection }) => {
       const connectionProducts = (connection.connectionProducts || []).reduce(
-        (acc: ProductConnectionItemInterface[], connectionProduct) => {
+        (acc: ProductVariantItemInterface[], connectionProduct) => {
           if (
             !connectionProduct.shopProduct ||
             !connectionProduct.shopProduct.product ||

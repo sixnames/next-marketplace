@@ -6,7 +6,7 @@ import { getOperationPermission, getRequestParams } from '../../../lib/sessionHe
 import {
   COL_PRODUCT_ASSETS,
   COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCT_CONNECTION_ITEMS,
+  COL_PRODUCT_VARIANT_ITEMS,
   COL_PRODUCT_FACETS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
@@ -14,7 +14,7 @@ import {
 import {
   ProductAssetsModel,
   ProductAttributeModel,
-  ProductConnectionItemModel,
+  ProductVariantItemModel,
   ProductFacetModel,
   ProductPayloadModel,
   RubricModel,
@@ -38,9 +38,8 @@ export async function deleteProduct({
   const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
   const productAttributesCollection = db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-  const productConnectionItemsCollection = db.collection<ProductConnectionItemModel>(
-    COL_PRODUCT_CONNECTION_ITEMS,
-  );
+  const productConnectionItemsCollection =
+    db.collection<ProductVariantItemModel>(COL_PRODUCT_VARIANT_ITEMS);
 
   const session = client.startSession();
 

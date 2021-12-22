@@ -13,8 +13,8 @@ import {
   COL_OPTIONS,
   COL_OPTIONS_GROUPS,
   COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCT_CONNECTION_ITEMS,
-  COL_PRODUCT_CONNECTIONS,
+  COL_PRODUCT_VARIANT_ITEMS,
+  COL_PRODUCT_VARIANTS,
   COL_PRODUCT_FACETS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
@@ -28,8 +28,8 @@ import {
   OptionsGroupModel,
   OptionsGroupPayloadModel,
   ProductAttributeModel,
-  ProductConnectionItemModel,
-  ProductConnectionModel,
+  ProductVariantItemModel,
+  ProductVariantModel,
   ProductFacetModel,
   RubricModel,
   ShopProductModel,
@@ -416,11 +416,10 @@ export const OptionsGroupMutations = extendType({
         const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
         const optionsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS);
         const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-        const productConnectionItemsCollection = db.collection<ProductConnectionItemModel>(
-          COL_PRODUCT_CONNECTION_ITEMS,
-        );
+        const productConnectionItemsCollection =
+          db.collection<ProductVariantItemModel>(COL_PRODUCT_VARIANT_ITEMS);
         const productConnectionsCollection =
-          db.collection<ProductConnectionModel>(COL_PRODUCT_CONNECTIONS);
+          db.collection<ProductVariantModel>(COL_PRODUCT_VARIANTS);
 
         const session = client.startSession();
 
@@ -1055,11 +1054,10 @@ export const OptionsGroupMutations = extendType({
 
           const { db } = await getDatabase();
           const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
-          const productConnectionItemsCollection = db.collection<ProductConnectionItemModel>(
-            COL_PRODUCT_CONNECTION_ITEMS,
-          );
+          const productConnectionItemsCollection =
+            db.collection<ProductVariantItemModel>(COL_PRODUCT_VARIANT_ITEMS);
           const productConnectionsCollection =
-            db.collection<ProductConnectionModel>(COL_PRODUCT_CONNECTIONS);
+            db.collection<ProductVariantModel>(COL_PRODUCT_VARIANTS);
           const { input } = args;
           const { optionsGroupId, optionId } = input;
 

@@ -4,7 +4,7 @@ import { SUPPLIER_PRICE_VARIANT_CHARGE } from '../config/common';
 import {
   COL_COMPANIES,
   COL_LANGUAGES,
-  COL_PRODUCT_ASSETS,
+  COL_OPTIONS,
   COL_PRODUCT_FACETS,
   COL_PRODUCT_SUMMARIES,
   COL_RUBRICS,
@@ -13,9 +13,8 @@ import {
 } from '../db/collectionNames';
 import {
   brandPipeline,
-  facetAttributesPipeline,
+  productAttributesPipeline,
   productCategoriesPipeline,
-  productConnectionsSimplePipeline,
   productRubricPipeline,
   shopProductFieldsPipeline,
   shopProductSupplierProductsPipeline,
@@ -23,6 +22,7 @@ import {
 import {
   LanguageModel,
   ObjectIdModel,
+  OptionModel,
   ProductSummaryModel,
   TranslationModel,
 } from '../db/dbModels';
@@ -31,8 +31,8 @@ import {
   BarcodeDoublesInterface,
   CategoryInterface,
   ProductAttributeInterface,
-  ProductConnectionInterface,
-  ProductConnectionItemInterface,
+  ProductVariantInterface,
+  ProductVariantItemInterface,
   ProductFacetInterface,
   ProductSummaryInterface,
   RubricInterface,
@@ -40,6 +40,7 @@ import {
   ShopProductBarcodeDoublesInterface,
   ShopProductInterface,
   SupplierProductInterface,
+  AttributeInterface,
 } from '../db/uiInterfaces';
 import { updateAlgoliaProducts } from './algolia/productAlgoliaUtils';
 import { getFieldStringLocale } from './i18n';
@@ -65,29 +66,13 @@ export async function getCmsProduct({
   companySlug,
 }: GetCmsProductInterface): Promise<GetCmsProductPayloadInterface | null> {
   const { db } = await getDatabase();
-  const productsCollection = db.collection<ProductFacetInterface>(COL_PRODUCT_FACETS);
-  const productAggregation = await productsCollection
-    .aggregate<ProductFacetInterface>([
+  const productSummariesCollection = db.collection<ProductSummaryInterface>(COL_PRODUCT_SUMMARIES);
+  const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
+  const productAggregation = await productSummariesCollection
+    .aggregate<ProductSummaryInterface>([
       {
         $match: {
           _id: new ObjectId(productId),
-        },
-      },
-
-      // get product assets
-      {
-        $lookup: {
-          as: 'assets',
-          from: COL_PRODUCT_ASSETS,
-          localField: '_id',
-          foreignField: 'productId',
-        },
-      },
-      {
-        $addFields: {
-          assets: {
-            $arrayElemAt: ['$assets', 0],
-          },
         },
       },
 
@@ -95,16 +80,13 @@ export async function getCmsProduct({
       ...productRubricPipeline,
 
       // get product attributes
-      ...facetAttributesPipeline,
+      ...productAttributesPipeline,
 
       // get product brand
       ...brandPipeline,
 
       // get product categories
       ...productCategoriesPipeline(),
-
-      // get product connections
-      ...productConnectionsSimplePipeline,
     ])
     .toArray();
   const initialProduct = productAggregation[0];
@@ -121,71 +103,63 @@ export async function getCmsProduct({
     name: getFieldStringLocale(rubric.nameI18n, locale),
   };
 
-  const categories = getTreeFromList({
-    list: initialProduct.categories,
-    childrenFieldName: 'categories',
-    locale,
-  });
-
-  // title
-  const titleProps = {
-    locale,
-    brand: initialProduct.brand,
-    rubricName: getFieldStringLocale(rubric.nameI18n, locale),
-    showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
-    showCategoryInProductTitle: rubric.showCategoryInProductTitle,
-    attributes: initialProduct.attributes,
-    titleCategoriesSlugs: restProduct.titleCategoriesSlugs,
-    originalName: restProduct.originalName,
-    defaultGender: restProduct.gender,
-    categories,
-  };
-  const cardTitle = generateCardTitle(titleProps);
-  const snippetTitle = generateSnippetTitle(titleProps);
+  const allProductAttributes = restProduct.attributes.reduce(
+    (acc: AttributeInterface[], { attribute }) => {
+      if (!attribute) {
+        return acc;
+      }
+      return [...acc, attribute];
+    },
+    [],
+  );
 
   // connections
-  const connections: ProductConnectionInterface[] = [];
-  for await (const productConnection of initialProduct.connections || []) {
-    const connectionProducts: ProductConnectionItemInterface[] = [];
-    for await (const connectionProduct of productConnection.connectionProducts || []) {
-      if (connectionProduct.product) {
-        const snippetTitle = generateSnippetTitle({
-          locale,
-          brand: connectionProduct.product.brand,
-          rubricName: getFieldStringLocale(rubric.nameI18n, locale),
-          showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
-          showCategoryInProductTitle: rubric.showCategoryInProductTitle,
-          attributes: connectionProduct.product.attributes,
-          titleCategoriesSlugs: connectionProduct.product.titleCategoriesSlugs,
-          originalName: connectionProduct.product.originalName,
-          defaultGender: connectionProduct.product.gender,
-          categories,
-        });
-        connectionProducts.push({
-          ...connectionProduct,
+  const variants: ProductVariantInterface[] = [];
+  for await (const productVariant of initialProduct.variants) {
+    const variantProducts: ProductVariantItemInterface[] = [];
+    const attribute = allProductAttributes.find(({ _id }) => {
+      return _id.equals(productVariant.attributeId);
+    });
+    if (!attribute || !attribute.options) {
+      continue;
+    }
+
+    for await (const variantProduct of productVariant.products || []) {
+      const variantProductSummary = await productSummariesCollection.findOne({
+        _id: variantProduct.productId,
+      });
+
+      const option = await optionsCollection.findOne({
+        _id: variantProduct.optionId,
+      });
+
+      if (variantProductSummary && option) {
+        variantProducts.push({
+          ...variantProduct,
           product: {
-            ...connectionProduct.product,
-            snippetTitle,
+            ...variantProductSummary,
+            snippetTitle: getFieldStringLocale(variantProductSummary.snippetTitleI18n, locale),
+            cardTitle: getFieldStringLocale(variantProductSummary.cardTitleI18n, locale),
           },
-          option: connectionProduct.option
+          option: option
             ? {
-                ...connectionProduct.option,
-                name: getFieldStringLocale(connectionProduct.option?.nameI18n, locale),
+                ...option,
+                name: getFieldStringLocale(option.nameI18n, locale),
               }
             : null,
         });
       }
     }
 
-    connections.push({
-      ...productConnection,
-      attribute: productConnection.attribute
+    variants.push({
+      ...productVariant,
+      variantProducts,
+      attribute: attribute
         ? {
-            ...productConnection.attribute,
-            name: getFieldStringLocale(productConnection.attribute?.nameI18n, locale),
+            ...attribute,
+            name: getFieldStringLocale(attribute?.nameI18n, locale),
           }
         : null,
-      connectionProducts,
     });
   }
 
@@ -210,12 +184,17 @@ export async function getCmsProduct({
     [],
   );
 
-  const product: ProductFacetInterface = {
+  // title
+  const cardTitle = getFieldStringLocale(restProduct.cardTitleI18n, locale);
+  const snippetTitle = getFieldStringLocale(restProduct.snippetTitleI18n, locale);
+
+  // payload
+  const product: ProductSummaryInterface = {
     ...initialProduct,
     rubric: castedRubric,
     cardTitle,
     snippetTitle,
-    connections,
+    variants,
     attributes,
   };
 
@@ -408,7 +387,7 @@ export async function checkBarcodeIntersects({
         },
 
         // get product attributes
-        ...facetAttributesPipeline,
+        ...productAttributesPipeline,
 
         // get product brand
         ...brandPipeline,
@@ -609,7 +588,7 @@ export async function updateProductTitlesInterface(match?: Record<any, any>) {
         ...productRubricPipeline,
 
         // get product attributes
-        ...facetAttributesPipeline,
+        ...productAttributesPipeline,
 
         // get product brand
         ...brandPipeline,

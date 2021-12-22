@@ -147,6 +147,7 @@ export async function createProduct({
         titleCategoriesSlugs: [],
         filterSlugs: [],
         selectedAttributesIds: [],
+        variants: [],
         createdAt: new Date(),
         updatedAt: new Date(),
       });

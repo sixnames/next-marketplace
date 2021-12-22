@@ -4,7 +4,7 @@ import {
   COL_ATTRIBUTES,
   COL_ATTRIBUTES_GROUPS,
   COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCT_CONNECTIONS,
+  COL_PRODUCT_VARIANTS,
 } from '../db/collectionNames';
 import { findDocumentByI18nField } from '../db/dao/findDocumentByI18nField';
 import {
@@ -12,7 +12,7 @@ import {
   AttributesGroupModel,
   AttributesGroupPayloadModel,
   ProductAttributeModel,
-  ProductConnectionModel,
+  ProductVariantModel,
 } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
 import getResolverErrorMessage from '../lib/getResolverErrorMessage';
@@ -330,7 +330,7 @@ export const attributesGroupMutations = extendType({
         const productAttributesCollection =
           db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
         const productConnectionsCollection =
-          db.collection<ProductConnectionModel>(COL_PRODUCT_CONNECTIONS);
+          db.collection<ProductVariantModel>(COL_PRODUCT_VARIANTS);
 
         const session = client.startSession();
 

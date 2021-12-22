@@ -1,18 +1,18 @@
-import { ProductConnectionInterface, ProductConnectionItemInterface } from '../../uiInterfaces';
+import { ProductVariantInterface, ProductVariantItemInterface } from '../../uiInterfaces';
 import { castAttributeForUI } from '../attributes/castAttributesGroupForUI';
 import { castOptionForUI } from '../options/castOptionForUI';
 
 interface CastProductConnectionForUI {
-  connection: ProductConnectionInterface;
+  connection: ProductVariantInterface;
   locale: string;
 }
 
 export function castProductConnectionForUI({
   connection,
   locale,
-}: CastProductConnectionForUI): ProductConnectionInterface | null {
+}: CastProductConnectionForUI): ProductVariantInterface | null {
   const connectionProducts = (connection.connectionProducts || []).reduce(
-    (acc: ProductConnectionItemInterface[], connectionProduct) => {
+    (acc: ProductVariantItemInterface[], connectionProduct) => {
       if (!connectionProduct.option) {
         return acc;
       }

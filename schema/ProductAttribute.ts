@@ -4,8 +4,8 @@ import {
   COL_ATTRIBUTES,
   COL_OPTIONS,
   COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCT_CONNECTION_ITEMS,
-  COL_PRODUCT_CONNECTIONS,
+  COL_PRODUCT_VARIANT_ITEMS,
+  COL_PRODUCT_VARIANTS,
   COL_PRODUCT_FACETS,
   COL_SHOP_PRODUCTS,
 } from '../db/collectionNames';
@@ -13,8 +13,8 @@ import {
   AttributeModel,
   OptionModel,
   ProductAttributeModel,
-  ProductConnectionItemModel,
-  ProductConnectionModel,
+  ProductVariantItemModel,
+  ProductVariantModel,
   ProductFacetModel,
   ProductPayloadModel,
   ShopProductModel,
@@ -507,10 +507,9 @@ export const ProductAttributeMutations = extendType({
         const { db, client } = await getDatabase();
         const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
         const productConnectionsCollection =
-          db.collection<ProductConnectionModel>(COL_PRODUCT_CONNECTIONS);
-        const productConnectionItemsCollection = db.collection<ProductConnectionItemModel>(
-          COL_PRODUCT_CONNECTION_ITEMS,
-        );
+          db.collection<ProductVariantModel>(COL_PRODUCT_VARIANTS);
+        const productConnectionItemsCollection =
+          db.collection<ProductVariantItemModel>(COL_PRODUCT_VARIANT_ITEMS);
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
         const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
         const productAttributesCollection =

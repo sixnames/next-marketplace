@@ -876,8 +876,8 @@ export interface NexusGenObjects {
   ProductAssets: dbModels.ProductAssetsModel;
   ProductAttribute: dbModels.ProductAttributeModel;
   ProductCardPrices: dbModels.ProductCardPricesModel;
-  ProductConnection: dbModels.ProductConnectionModel;
-  ProductConnectionItem: dbModels.ProductConnectionItemModel;
+  ProductConnection: dbModels.ProductVariantModel;
+  ProductConnectionItem: dbModels.ProductVariantItemModel;
   ProductPayload: dbModels.ProductPayloadModel;
   Query: {};
   Role: dbModels.RoleModel;

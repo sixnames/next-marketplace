@@ -6,8 +6,8 @@ import {
   PRODUCT_SEARCH_MODAL,
 } from '../../config/modalVariants';
 import {
-  ProductConnectionInterface,
-  ProductConnectionItemInterface,
+  ProductVariantInterface,
+  ProductVariantItemInterface,
   ProductFacetInterface,
 } from '../../db/uiInterfaces';
 import {
@@ -29,7 +29,7 @@ import WpAccordion from '../WpAccordion';
 import WpTable, { WpTableColumn } from '../WpTable';
 
 interface ProductConnectionControlsInterface {
-  connection: ProductConnectionInterface;
+  connection: ProductVariantInterface;
   product: ProductFacetInterface;
 }
 
@@ -86,7 +86,7 @@ const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = 
 
 export interface ProductConnectionsItemInterface {
   product: ProductFacetInterface;
-  connection: ProductConnectionInterface;
+  connection: ProductVariantInterface;
   connectionIndex: number;
 }
 
@@ -106,7 +106,7 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
 
   const { connectionProducts } = connection;
 
-  const columns: WpTableColumn<ProductConnectionItemInterface>[] = [
+  const columns: WpTableColumn<ProductVariantItemInterface>[] = [
     {
       headTitle: 'Арт',
       render: ({ dataItem, rowIndex }) => {
@@ -205,7 +205,7 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
       titleRight={<ProductConnectionControls connection={connection} product={product} />}
     >
       <div className='mt-4'>
-        <WpTable<ProductConnectionItemInterface>
+        <WpTable<ProductVariantItemInterface>
           columns={columns}
           data={connectionProducts}
           tableTestId={`${connection.attribute.name}-connection-list`}

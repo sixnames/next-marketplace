@@ -616,19 +616,18 @@ export interface OrderModel extends TimestampModel, BaseModel {
   giftCertificateChargedValue?: number | null;
 }
 
-export interface ProductConnectionItemModel {
+export interface ProductVariantItemModel {
   _id: ObjectIdModel;
   optionId: ObjectIdModel;
   productSlug: string;
   productId: ObjectIdModel;
-  connectionId: ObjectIdModel;
 }
 
-export interface ProductConnectionModel {
+export interface ProductVariantModel {
   _id: ObjectIdModel;
   attributeId: ObjectIdModel;
   attributeSlug: string;
-  productsIds: ObjectIdModel[];
+  products: ProductVariantItemModel[];
 }
 
 export interface ProductAttributeModel {
@@ -658,7 +657,6 @@ export interface ProductFacetModel extends ProductMainFieldsInterface, BaseModel
   selectedAttributesIds: ObjectId[];
 }
 
-// TODO connections
 export interface ProductSummaryModel extends ProductFacetModel, TimestampModel {
   originalName: string;
   nameI18n?: TranslationModel | null;
@@ -670,6 +668,7 @@ export interface ProductSummaryModel extends ProductFacetModel, TimestampModel {
   assets: string[];
   attributes: ProductAttributeModel[];
   titleCategoriesSlugs: string[];
+  variants: ProductVariantModel[];
 }
 
 export interface ProductAssetsModel {

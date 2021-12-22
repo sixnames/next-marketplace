@@ -10,13 +10,10 @@ import {
   COL_RUBRICS,
   COL_ATTRIBUTES_GROUPS,
   COL_OPTIONS,
-  COL_PRODUCT_CONNECTIONS,
-  COL_PRODUCT_FACETS,
   COL_SUPPLIERS,
   COL_SUPPLIER_PRODUCTS,
   COL_ATTRIBUTES,
   COL_CATEGORIES,
-  COL_PRODUCT_CONNECTION_ITEMS,
   COL_PRODUCT_SUMMARIES,
 } from '../collectionNames';
 
@@ -41,7 +38,7 @@ export const noImageStage = {
   },
 };
 
-export const facetAttributesPipeline = [
+export const productAttributesPipeline = [
   {
     $unwind: '$attributes',
   },
@@ -61,17 +58,17 @@ export const facetAttributesPipeline = [
     },
   },
   {
-    from: COL_OPTIONS,
-    localField: 'attributes.selectedOptionsIds',
-    foreignField: '_id',
-    as: 'attributes.attribute.options',
-  },
-  {
     $match: {
       'attributes.attribute': {
         $exists: true,
       },
     },
+  },
+  {
+    from: COL_OPTIONS,
+    localField: 'attributes.selectedOptionsIds',
+    foreignField: '_id',
+    as: 'attributes.attribute.options',
   },
   {
     $group: {
@@ -169,7 +166,7 @@ export const productCategoriesPipeline = (additionalStages: Record<any, any>[] =
         as: 'categories',
         let: {
           rubricId: '$rubricId',
-          selectedOptionsSlugs: '$selectedOptionsSlugs',
+          filterSlugs: '$filterSlugs',
         },
         pipeline: [
           {
@@ -182,7 +179,7 @@ export const productCategoriesPipeline = (additionalStages: Record<any, any>[] =
                 },
                 {
                   $expr: {
-                    $in: ['$slug', '$$selectedOptionsSlugs'],
+                    $in: ['$slug', '$$categorySlugs'],
                   },
                 },
               ],
@@ -199,27 +196,27 @@ export const filterAttributesPipeline = (sortStage: Record<any, any>) => {
   return [
     {
       $unwind: {
-        path: '$selectedOptionsSlugs',
+        path: '$filterSlugs',
         preserveNullAndEmptyArrays: true,
       },
     },
     {
       $group: {
         _id: null,
-        selectedOptionsSlugs: {
-          $addToSet: '$selectedOptionsSlugs',
+        filterSlugs: {
+          $addToSet: '$filterSlugs',
         },
       },
     },
     {
       $unwind: {
-        path: '$selectedOptionsSlugs',
+        path: '$filterSlugs',
         preserveNullAndEmptyArrays: true,
       },
     },
     {
       $match: {
-        selectedOptionsSlugs: {
+        filterSlugs: {
           $exists: true,
         },
       },
@@ -227,7 +224,7 @@ export const filterAttributesPipeline = (sortStage: Record<any, any>) => {
     {
       $addFields: {
         slugArray: {
-          $split: ['$selectedOptionsSlugs', FILTER_SEPARATOR],
+          $split: ['$filterSlugs', FILTER_SEPARATOR],
         },
       },
     },
@@ -352,120 +349,6 @@ export const productRubricPipeline = [
       rubric: {
         $arrayElemAt: ['$rubric', 0],
       },
-    },
-  },
-];
-
-export const productConnectionsSimplePipeline = [
-  {
-    $lookup: {
-      from: COL_PRODUCT_CONNECTIONS,
-      as: 'connections',
-      let: { productId: '$_id' },
-      pipeline: [
-        {
-          $match: {
-            $expr: {
-              $in: ['$$productId', '$productsIds'],
-            },
-          },
-        },
-        {
-          $lookup: {
-            from: COL_ATTRIBUTES,
-            as: 'attribute',
-            let: { attributeId: '$attributeId' },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $eq: ['$$attributeId', '$_id'],
-                  },
-                },
-              },
-            ],
-          },
-        },
-        {
-          $addFields: {
-            attribute: {
-              $arrayElemAt: ['$attribute', 0],
-            },
-          },
-        },
-        {
-          $lookup: {
-            from: COL_PRODUCT_CONNECTION_ITEMS,
-            as: 'connectionProducts',
-            let: { connectionId: '$_id' },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $eq: ['$$connectionId', '$connectionId'],
-                  },
-                },
-              },
-              {
-                $sort: {
-                  _id: SORT_DESC,
-                },
-              },
-              {
-                $lookup: {
-                  from: COL_OPTIONS,
-                  as: 'option',
-                  let: { optionId: '$optionId' },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $eq: ['$$optionId', '$_id'],
-                        },
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                $lookup: {
-                  from: COL_PRODUCT_FACETS,
-                  as: 'product',
-                  let: { productId: '$productId' },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $eq: ['$$productId', '$_id'],
-                        },
-                      },
-                    },
-
-                    // Lookup product attributes
-                    ...facetAttributesPipeline,
-
-                    // Lookup product brand
-                    ...brandPipeline,
-
-                    // Lookup product categories
-                    ...productCategoriesPipeline(),
-                  ],
-                },
-              },
-              {
-                $addFields: {
-                  product: {
-                    $arrayElemAt: ['$product', 0],
-                  },
-                  option: {
-                    $arrayElemAt: ['$option', 0],
-                  },
-                },
-              },
-            ],
-          },
-        },
-      ],
     },
   },
 ];
@@ -603,7 +486,7 @@ export const shopProductFieldsPipeline = (idFieldName: string) => {
           },
 
           // get product attributes
-          ...facetAttributesPipeline,
+          ...productAttributesPipeline,
 
           // get product brand
           ...brandPipeline,

@@ -7,7 +7,7 @@ import {
   BrandInterface,
   CategoryInterface,
   ProductAttributeInterface,
-  ProductConnectionInterface,
+  ProductVariantInterface,
   ProductFacetInterface,
   RubricInterface,
 } from '../../uiInterfaces';
@@ -113,7 +113,7 @@ export function castProductForUI({
 
   // connections
   const connections = (product.connections || []).reduce(
-    (acc: ProductConnectionInterface[], connection) => {
+    (acc: ProductVariantInterface[], connection) => {
       const castedConnection = castProductConnectionForUI({
         connection,
         locale,

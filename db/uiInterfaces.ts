@@ -42,8 +42,8 @@ import {
   ProductAttributeModel,
   ProductCardBreadcrumbModel,
   ProductCardPricesModel,
-  ProductConnectionItemModel,
-  ProductConnectionModel,
+  ProductVariantItemModel,
+  ProductVariantModel,
   ProductFacetModel,
   ProductSummaryModel,
   PromoModel,
@@ -216,15 +216,16 @@ export interface OptionsGroupInterface extends OptionsGroupModel {
   options?: OptionInterface[] | null;
 }
 
-export interface ProductConnectionItemInterface extends ProductConnectionItemModel {
+export interface ProductVariantItemInterface extends ProductVariantItemModel {
   shopProduct?: ShopProductInterface;
-  product?: ProductFacetInterface;
+  product?: ProductSummaryInterface;
   option?: OptionInterface | null;
 }
 
-export interface ProductConnectionInterface extends ProductConnectionModel {
+export interface ProductVariantInterface extends ProductVariantModel {
   attribute?: AttributeInterface | null;
-  connectionProducts?: ProductConnectionItemInterface[];
+  variantProducts: ProductVariantItemInterface[];
+  isCurrent: boolean;
 }
 
 export interface ProductAttributeInterface extends ProductAttributeModel {
@@ -262,7 +263,7 @@ export interface ProductSummaryInterface extends ProductSummaryModel {
   description?: string | null;
   cardContent?: SeoContentModel | null;
   cardContentCities?: SeoContentCitiesInterface | null;
-  connections?: ProductConnectionInterface[] | null;
+  variants: ProductVariantInterface[];
   shopProducts?: ShopProductInterface[] | null;
   shops?: ShopInterface[] | null;
   shopsCount?: number | null;
@@ -660,7 +661,7 @@ export interface InitialCardDataInterface {
   textFeatures: ProductAttributeInterface[];
   ratingFeatures: ProductAttributeInterface[];
   attributesGroups: ProductAttributesGroupInterface[];
-  connections: ProductConnectionInterface[];
+  connections: ProductVariantInterface[];
   showFeaturesSection: boolean;
   showCardImagesSlider: boolean;
   showArticle: boolean;

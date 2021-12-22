@@ -1,11 +1,11 @@
 import { FILTER_SEPARATOR } from '../../../config/common';
-import { ProductConnectionItemModel } from '../../../db/dbModels';
+import { ProductVariantItemModel } from '../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 import productFacets from '../productFacets/productFacets';
 import productConnections from '../productConnections/productConnections';
 import options from '../options/options';
 
-const productConnectionItems: ProductConnectionItemModel[] = [];
+const productConnectionItems: ProductVariantItemModel[] = [];
 
 productConnections.forEach((connection) => {
   const connectionProducts = productFacets.filter((product) => {

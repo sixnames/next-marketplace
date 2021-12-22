@@ -5,16 +5,16 @@ import {
   COL_ATTRIBUTES,
   COL_OPTIONS,
   COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCT_CONNECTION_ITEMS,
-  COL_PRODUCT_CONNECTIONS,
+  COL_PRODUCT_VARIANT_ITEMS,
+  COL_PRODUCT_VARIANTS,
   COL_PRODUCT_FACETS,
 } from '../db/collectionNames';
 import {
   AttributeModel,
   OptionModel,
   ProductAttributeModel,
-  ProductConnectionItemModel,
-  ProductConnectionModel,
+  ProductVariantItemModel,
+  ProductVariantModel,
   ProductFacetModel,
   ProductPayloadModel,
 } from '../db/dbModels';
@@ -109,10 +109,9 @@ export const ProductConnectionMutations = extendType({
         const productsAttributesCollection =
           db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
         const productConnectionsCollection =
-          db.collection<ProductConnectionModel>(COL_PRODUCT_CONNECTIONS);
-        const productConnectionItemsCollection = db.collection<ProductConnectionItemModel>(
-          COL_PRODUCT_CONNECTION_ITEMS,
-        );
+          db.collection<ProductVariantModel>(COL_PRODUCT_VARIANTS);
+        const productConnectionItemsCollection =
+          db.collection<ProductVariantItemModel>(COL_PRODUCT_VARIANT_ITEMS);
         const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
 
         const session = client.startSession();
@@ -310,10 +309,9 @@ export const ProductConnectionMutations = extendType({
         const productsAttributesCollection =
           db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
         const productConnectionsCollection =
-          db.collection<ProductConnectionModel>(COL_PRODUCT_CONNECTIONS);
-        const productConnectionItemsCollection = db.collection<ProductConnectionItemModel>(
-          COL_PRODUCT_CONNECTION_ITEMS,
-        );
+          db.collection<ProductVariantModel>(COL_PRODUCT_VARIANTS);
+        const productConnectionItemsCollection =
+          db.collection<ProductVariantItemModel>(COL_PRODUCT_VARIANT_ITEMS);
         const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
 
         const session = client.startSession();
@@ -495,10 +493,9 @@ export const ProductConnectionMutations = extendType({
         const { db, client } = await getDatabase();
         const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
         const productConnectionsCollection =
-          db.collection<ProductConnectionModel>(COL_PRODUCT_CONNECTIONS);
-        const productConnectionItemsCollection = db.collection<ProductConnectionItemModel>(
-          COL_PRODUCT_CONNECTION_ITEMS,
-        );
+          db.collection<ProductVariantModel>(COL_PRODUCT_VARIANTS);
+        const productConnectionItemsCollection =
+          db.collection<ProductVariantItemModel>(COL_PRODUCT_VARIANT_ITEMS);
 
         const session = client.startSession();
 

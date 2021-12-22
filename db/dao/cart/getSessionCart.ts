@@ -28,7 +28,7 @@ import {
 } from '../../uiInterfaces';
 import {
   brandPipeline,
-  facetAttributesPipeline,
+  productAttributesPipeline,
   productCategoriesPipeline,
   shopProductFieldsPipeline,
 } from '../constantPipelines';
@@ -307,7 +307,7 @@ export const getSessionCart = async ({
             },
 
             // get product attributes
-            ...facetAttributesPipeline,
+            ...productAttributesPipeline,
 
             // get product brand
             ...brandPipeline,

@@ -13,7 +13,7 @@ productConnections.forEach((connection) => {
   });
 
   connectionProducts.forEach((product) => {
-    const selectedOptionSlug = product.selectedOptionsSlugs.find((slug) => {
+    const selectedOptionSlug = product.filterSlugs.find((slug) => {
       const slugArray = slug.split(FILTER_SEPARATOR);
       return connection.attributeSlug === slugArray[0];
     });

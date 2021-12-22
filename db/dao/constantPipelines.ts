@@ -11,13 +11,13 @@ import {
   COL_ATTRIBUTES_GROUPS,
   COL_OPTIONS,
   COL_PRODUCT_CONNECTIONS,
-  COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCT_FACETS,
   COL_SUPPLIERS,
   COL_SUPPLIER_PRODUCTS,
   COL_ATTRIBUTES,
   COL_CATEGORIES,
   COL_PRODUCT_CONNECTION_ITEMS,
+  COL_PRODUCT_SUMMARIES,
 } from '../collectionNames';
 
 export const ignoreNoImageStage = {
@@ -41,75 +41,54 @@ export const noImageStage = {
   },
 };
 
-export const productAttributesPipeline = [
+export const facetAttributesPipeline = [
+  {
+    $unwind: '$attributes',
+  },
   {
     $lookup: {
-      from: COL_PRODUCT_ATTRIBUTES,
-      as: 'attributes',
-      let: {
-        productId: '$_id',
+      from: COL_ATTRIBUTES,
+      localField: 'attributes.attributeId',
+      foreignField: '_id',
+      as: 'attributes.attribute',
+    },
+  },
+  {
+    $addFields: {
+      'attributes.attribute': {
+        $arrayElemAt: ['$attributes.attribute', 0],
       },
-      pipeline: [
-        {
-          $match: {
-            $expr: {
-              $eq: ['$$productId', '$productId'],
-            },
-          },
-        },
-        {
-          $lookup: {
-            from: COL_ATTRIBUTES,
-            as: 'attribute',
-            let: {
-              attributeId: '$attributeId',
-              selectedOptionsIds: '$selectedOptionsIds',
-            },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $eq: ['$$attributeId', '$_id'],
-                  },
-                },
-              },
-              {
-                $lookup: {
-                  from: COL_OPTIONS,
-                  as: 'options',
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $and: [
-                            {
-                              $in: ['$_id', '$$selectedOptionsIds'],
-                            },
-                          ],
-                        },
-                      },
-                    },
-                  ],
-                },
-              },
-            ],
-          },
-        },
-        {
-          $addFields: {
-            attribute: {
-              $arrayElemAt: ['$attribute', 0],
-            },
-          },
-        },
-        {
-          $match: {
-            attribute: {
-              $exists: true,
-            },
-          },
-        },
-      ],
+    },
+  },
+  {
+    from: COL_OPTIONS,
+    localField: 'attributes.selectedOptionsIds',
+    foreignField: '_id',
+    as: 'attributes.attribute.options',
+  },
+  {
+    $match: {
+      'attributes.attribute': {
+        $exists: true,
+      },
+    },
+  },
+  {
+    $group: {
+      _id: '$_id',
+      attributes: {
+        $push: '$attributes',
+      },
+      doc: {
+        $first: '$$ROOT',
+      },
+    },
+  },
+  {
+    $replaceRoot: {
+      newRoot: {
+        $mergeObjects: ['$doc', { attributes: '$attributes' }],
+      },
     },
   },
 ];
@@ -463,7 +442,7 @@ export const productConnectionsSimplePipeline = [
                     },
 
                     // Lookup product attributes
-                    ...productAttributesPipeline,
+                    ...facetAttributesPipeline,
 
                     // Lookup product brand
                     ...brandPipeline,
@@ -598,11 +577,11 @@ export const shopProductFieldsPipeline = (idFieldName: string) => {
   return [
     {
       $lookup: {
-        from: COL_PRODUCT_FACETS,
-        as: 'product',
+        from: COL_PRODUCT_SUMMARIES,
+        as: 'summary',
         let: {
           productId: idFieldName,
-          shopProductsIds: '$shopProductsIds',
+          shopProductIds: '$shopProductIds',
         },
         pipeline: [
           {
@@ -619,12 +598,12 @@ export const shopProductFieldsPipeline = (idFieldName: string) => {
           },
           {
             $addFields: {
-              shopProductsIds: '$$shopProductsIds',
+              shopProductsIds: '$$shopProductIds',
             },
           },
 
           // get product attributes
-          ...productAttributesPipeline,
+          ...facetAttributesPipeline,
 
           // get product brand
           ...brandPipeline,
@@ -633,38 +612,7 @@ export const shopProductFieldsPipeline = (idFieldName: string) => {
           ...productCategoriesPipeline(),
 
           // get product rubric
-          {
-            $lookup: {
-              from: COL_RUBRICS,
-              as: 'rubric',
-              let: {
-                rubricId: '$rubricId',
-              },
-              pipeline: [
-                {
-                  $match: {
-                    $expr: {
-                      $eq: ['$$rubricId', '$_id'],
-                    },
-                  },
-                },
-                {
-                  $project: {
-                    _id: true,
-                    slug: true,
-                    nameI18n: true,
-                    showRubricNameInProductTitle: true,
-                    showCategoryInProductTitle: true,
-                  },
-                },
-              ],
-            },
-          },
-          {
-            $addFields: {
-              rubric: { $arrayElemAt: ['$rubric', 0] },
-            },
-          },
+          ...productRubricPipeline,
         ],
       },
     },

@@ -634,7 +634,7 @@ export interface ProductConnectionModel {
 export interface ProductAttributeModel {
   attributeId: ObjectIdModel;
   selectedOptionsSlugs: string[];
-  selectedOptionsIds: ObjectIdModel[];
+  selectedOptionIds: ObjectIdModel[];
   textI18n?: TranslationModel | null;
   number?: number | null;
   readableValueI18n: TranslationModel;

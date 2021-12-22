@@ -13,7 +13,7 @@ import {
 } from '../db/collectionNames';
 import {
   brandPipeline,
-  productAttributesPipeline,
+  facetAttributesPipeline,
   productCategoriesPipeline,
   productConnectionsSimplePipeline,
   productRubricPipeline,
@@ -95,7 +95,7 @@ export async function getCmsProduct({
       ...productRubricPipeline,
 
       // get product attributes
-      ...productAttributesPipeline,
+      ...facetAttributesPipeline,
 
       // get product brand
       ...brandPipeline,
@@ -408,7 +408,7 @@ export async function checkBarcodeIntersects({
         },
 
         // get product attributes
-        ...productAttributesPipeline,
+        ...facetAttributesPipeline,
 
         // get product brand
         ...brandPipeline,
@@ -609,7 +609,7 @@ export async function updateProductTitlesInterface(match?: Record<any, any>) {
         ...productRubricPipeline,
 
         // get product attributes
-        ...productAttributesPipeline,
+        ...facetAttributesPipeline,
 
         // get product brand
         ...brandPipeline,

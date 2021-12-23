@@ -45,7 +45,6 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
   const { urlPrefix } = useSiteContext();
   const {
     isSingleImage,
-    assets,
     similarProducts,
     attributesGroups,
     showFeaturesSection,
@@ -56,7 +55,6 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
     shopsCounterPostfix,
     isShopless,
     showArticle,
-    connections,
     product,
     cardBreadcrumbs,
     cardContent,
@@ -74,7 +72,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
     companyId,
   });
 
-  const { brand, brandCollection, manufacturer, name } = product;
+  const { brand, brandCollection, manufacturer, name, variants, assets } = product;
 
   return (
     <article className='pb-20 pt-8 lg:pt-0' data-cy={`card`}>
@@ -196,9 +194,9 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                 </div>
 
                 {/*connections*/}
-                {connections.length > 0 ? (
+                {variants.length > 0 ? (
                   <div className={dataSectionClassName}>
-                    {connections.map(({ _id, attribute, products }) => {
+                    {variants.map(({ _id, attribute, products }) => {
                       return (
                         <div key={`${_id}`} className='mb-12'>
                           <div className='text-secondary-text mb-3 font-bold'>{`${attribute?.name}:`}</div>

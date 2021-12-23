@@ -45,6 +45,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   res.status(200).send({
     success: true,
     message: 'success',
-    url: asset.url,
+    url: asset,
   });
 };

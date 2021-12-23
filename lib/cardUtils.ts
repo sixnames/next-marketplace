@@ -18,24 +18,26 @@ import { DEFAULT_LAYOUT } from '../config/constantSelects';
 import { getConstantTranslation } from '../config/constantTranslations';
 import {
   COL_ATTRIBUTES,
-  COL_ATTRIBUTES_GROUPS,
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
-  COL_ICONS,
   COL_MANUFACTURERS,
   COL_OPTIONS,
-  COL_PRODUCT_ASSETS,
-  COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCT_VARIANT_ITEMS,
   COL_PRODUCT_VARIANTS,
-  COL_PRODUCT_FACETS,
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
+  COL_PRODUCT_SUMMARIES,
+  COL_ATTRIBUTES_GROUPS,
 } from '../db/collectionNames';
-import { ignoreNoImageStage, productCategoriesPipeline } from '../db/dao/constantPipelines';
 import {
+  ignoreNoImageStage,
+  productAttributesPipeline,
+  productCategoriesPipeline,
+} from '../db/dao/constantPipelines';
+import {
+  AttributesGroupModel,
   CatalogueBreadcrumbModel,
   ObjectIdModel,
   ProductCardBreadcrumbModel,
@@ -48,8 +50,8 @@ import {
   ProductAttributesGroupInterface,
   ProductVariantInterface,
   ProductVariantItemInterface,
-  ProductFacetInterface,
   ShopInterface,
+  ProductSummaryInterface,
 } from '../db/uiInterfaces';
 import { sortObjectsByField } from './arrayUtils';
 import { getFieldStringLocale } from './i18n';
@@ -60,7 +62,6 @@ import {
   getProductCurrentViewCastedAttributes,
 } from './productAttributesUtils';
 import { getProductSeoContent } from './seoContentUtils';
-import { generateCardTitle } from './titleUtils';
 import { getTreeFromList } from './treeUtils';
 
 interface CastOptionsForBreadcrumbsInterface {
@@ -117,7 +118,9 @@ export async function getCardData({
   try {
     // const startTime = new Date().getTime();
     const { db } = await getDatabase();
-    const productsCollection = db.collection<ProductFacetInterface>(COL_PRODUCT_FACETS);
+    const productSummariesCollection =
+      db.collection<ProductSummaryInterface>(COL_PRODUCT_SUMMARIES);
+    const attributeGroupsCollection = db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
     const companyMatch = companyId ? { companyId: new ObjectId(companyId) } : {};
     const companySlug = props.companySlug;
     const shopProductsMatch = {
@@ -126,8 +129,8 @@ export async function getCardData({
     };
 
     // const shopProductsStartTime = new Date().getTime();
-    const shopProductsAggregation = await productsCollection
-      .aggregate<ProductFacetInterface>([
+    const shopProductsAggregation = await productSummariesCollection
+      .aggregate<ProductSummaryInterface>([
         {
           $match: {
             slug,
@@ -181,20 +184,11 @@ export async function getCardData({
           },
         },
 
-        // get product assets
-        {
-          $lookup: {
-            from: COL_PRODUCT_ASSETS,
-            as: 'assets',
-            localField: '_id',
-            foreignField: 'productId',
-          },
-        },
-
         // get product categories
         ...productCategoriesPipeline(),
 
         // get product connection
+        // TODO
         {
           $lookup: {
             from: COL_PRODUCT_VARIANTS,
@@ -281,7 +275,7 @@ export async function getCardData({
                           },
                           {
                             $lookup: {
-                              from: COL_PRODUCT_FACETS,
+                              from: COL_PRODUCT_SUMMARIES,
                               as: 'product',
                               let: { productId: '$productId' },
                               pipeline: [
@@ -323,153 +317,7 @@ export async function getCardData({
         },
 
         // get product attributes
-        {
-          $lookup: {
-            from: COL_PRODUCT_ATTRIBUTES,
-            as: 'attributesGroups',
-            let: {
-              productId: '$_id',
-            },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $eq: ['$$productId', '$productId'],
-                  },
-                },
-              },
-              {
-                $lookup: {
-                  from: COL_ATTRIBUTES,
-                  as: 'attribute',
-                  let: {
-                    attributeId: '$attributeId',
-                    selectedOptionsIds: '$selectedOptionsIds',
-                  },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $eq: ['$$attributeId', '$_id'],
-                        },
-                      },
-                    },
-                    {
-                      $lookup: {
-                        from: COL_OPTIONS,
-                        as: 'options',
-                        pipeline: [
-                          {
-                            $match: {
-                              $expr: {
-                                $and: [
-                                  {
-                                    $in: ['$_id', '$$selectedOptionsIds'],
-                                  },
-                                ],
-                              },
-                            },
-                          },
-                          {
-                            $lookup: {
-                              from: COL_ICONS,
-                              as: 'icon',
-                              let: {
-                                documentId: '$_id',
-                              },
-                              pipeline: [
-                                {
-                                  $match: {
-                                    collectionName: COL_OPTIONS,
-                                    $expr: {
-                                      $eq: ['$documentId', '$$documentId'],
-                                    },
-                                  },
-                                },
-                              ],
-                            },
-                          },
-                          {
-                            $addFields: {
-                              icon: {
-                                $arrayElemAt: ['$icon', 0],
-                              },
-                            },
-                          },
-                        ],
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                $addFields: {
-                  attribute: {
-                    $arrayElemAt: ['$attribute', 0],
-                  },
-                },
-              },
-              {
-                $match: {
-                  attribute: {
-                    $exists: true,
-                  },
-                },
-              },
-              {
-                $addFields: {
-                  attributesGroupId: '$attribute.attributesGroupId',
-                },
-              },
-              {
-                $group: {
-                  _id: '$attributesGroupId',
-                  attributes: {
-                    $addToSet: '$$ROOT',
-                  },
-                },
-              },
-              {
-                $lookup: {
-                  from: COL_ATTRIBUTES_GROUPS,
-                  as: 'attributesGroup',
-                  let: {
-                    attributesGroupId: '$_id',
-                  },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $eq: ['$$attributesGroupId', '$_id'],
-                        },
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                $addFields: {
-                  attributesGroup: {
-                    $arrayElemAt: ['$attributesGroup', 0],
-                  },
-                },
-              },
-              {
-                $match: {
-                  attributesGroup: {
-                    $exists: true,
-                  },
-                },
-              },
-              {
-                $addFields: {
-                  nameI18n: '$attributesGroup.nameI18n',
-                  attributesGroup: null,
-                },
-              },
-            ],
-          },
-        },
+        ...productAttributesPipeline({ getOptionIcon: true }),
 
         // get product manufacturer
         {
@@ -588,10 +436,8 @@ export async function getCardData({
         // final fields
         {
           $addFields: {
-            cardPrices: {
-              min: '$minPrice',
-              max: '$maxPrice',
-            },
+            minPrice: '$minPrice',
+            maxPrice: '$maxPrice',
             shopsCount: { $size: '$shops' },
             rubric: { $arrayElemAt: ['$rubric', 0] },
             brand: { $arrayElemAt: ['$brand', 0] },
@@ -613,9 +459,8 @@ export async function getCardData({
 
     const {
       rubric,
-      assets,
-      connections,
-      attributesGroups,
+      variants,
+      attributes,
       brand,
       brandCollection,
       manufacturer,
@@ -626,21 +471,21 @@ export async function getCardData({
 
     // card connections
     const excludedAttributesIds: ObjectIdModel[] = [];
-    const cardConnections: ProductVariantInterface[] = [];
-    (connections || []).forEach(({ attribute, ...connection }) => {
-      const connectionProducts = (connection.connectionProducts || []).reduce(
-        (acc: ProductVariantItemInterface[], connectionProduct) => {
+    const cardVariants: ProductVariantInterface[] = [];
+    variants.forEach(({ attribute, ...variant }) => {
+      const variantProducts = variant.products.reduce(
+        (acc: ProductVariantItemInterface[], variantProduct) => {
           if (
-            !connectionProduct.shopProduct ||
-            !connectionProduct.shopProduct.product ||
-            !connectionProduct.option
+            !variantProduct.shopProduct ||
+            !variantProduct.shopProduct.summary ||
+            !variantProduct.option
           ) {
             return acc;
           }
 
-          const gender = connectionProduct.shopProduct.product.gender;
-          let optionName = getFieldStringLocale(connectionProduct.option.nameI18n, locale);
-          const optionVariant = connectionProduct.option.variants[gender];
+          const gender = variantProduct.shopProduct.summary.gender;
+          let optionName = getFieldStringLocale(variantProduct.option.nameI18n, locale);
+          const optionVariant = variantProduct.option.variants[gender];
           if (optionVariant) {
             const variantName = getFieldStringLocale(optionVariant, locale);
             if (variantName) {
@@ -651,9 +496,9 @@ export async function getCardData({
           return [
             ...acc,
             {
-              ...connectionProduct,
+              ...variantProduct,
               option: {
-                ...connectionProduct.option,
+                ...variantProduct.option,
                 name: optionName,
               },
             },
@@ -662,14 +507,14 @@ export async function getCardData({
         [],
       );
 
-      if (connectionProducts.length < 1 || !attribute) {
+      if (variantProducts.length < 1 || !attribute) {
         return;
       }
 
       excludedAttributesIds.push(attribute._id);
-      cardConnections.push({
-        ...connection,
-        connectionProducts,
+      cardVariants.push({
+        ...variant,
+        products: variantProducts,
         attribute: {
           ...attribute,
           name: getFieldStringLocale(attribute?.nameI18n, locale),
@@ -682,31 +527,13 @@ export async function getCardData({
         },
       });
     });
-    // console.log(`card connections `, new Date().getTime() - startTime);
 
-    const allProductAttributes = (attributesGroups || []).reduce(
-      (acc: ProductAttributeInterface[], { attributes }) => {
-        return [...acc, ...attributes];
-      },
-      [],
-    );
-
-    const initialProductAttributes = (attributesGroups || []).reduce(
-      (acc: ProductAttributeInterface[], { attributes }) => {
-        const visibleAttributes = attributes.filter(({ attribute, attributeId }) => {
-          if (!attribute) {
-            return false;
-          }
-          const excluded = excludedAttributesIds.some((excludedAttributeId) => {
-            return excludedAttributeId.equals(attributeId);
-          });
-          return attribute.showInCard && !excluded;
-        });
-
-        return [...acc, ...visibleAttributes];
-      },
-      [],
-    );
+    const initialProductAttributes = attributes.filter((productAttribute) => {
+      const excluded = excludedAttributesIds.some((excludedAttributeId) => {
+        return excludedAttributeId.equals(productAttribute.attributeId);
+      });
+      return !productAttribute.attribute?.showInCard && !excluded;
+    });
 
     // listFeatures
     const listFeatures = getProductCurrentViewCastedAttributes({
@@ -790,11 +617,6 @@ export async function getCardData({
     });
     const minPrice = sortedPrices[0];
     const maxPrice = sortedPrices[sortedPrices.length - 1];
-    const cardPrices = {
-      _id: new ObjectId(),
-      min: `${noNaN(minPrice)}`,
-      max: `${noNaN(maxPrice)}`,
-    };
     // console.log(`cardShopProducts `, new Date().getTime() - startTime);
 
     // card seo content
@@ -805,13 +627,6 @@ export async function getCardData({
       productSlug: product.slug,
       rubricSlug: product.rubricSlug,
       locale,
-    });
-
-    const cardCategories = getTreeFromList({
-      list: categories,
-      childrenFieldName: 'categories',
-      locale,
-      gender: restProduct.gender,
     });
 
     // cardBreadcrumbs
@@ -866,8 +681,8 @@ export async function getCardData({
       }
       if (
         !attribute.showAsBreadcrumb ||
-        !productAttribute.selectedOptionsSlugs ||
-        productAttribute.selectedOptionsSlugs.length < 1
+        !productAttribute.optionSlugs ||
+        productAttribute.optionSlugs.length < 1
       ) {
         continue;
       }
@@ -915,54 +730,53 @@ export async function getCardData({
     const description = getFieldStringLocale(restProduct.descriptionI18n, locale);
     const shopsCount = finalCardShops.length;
     const isShopless = noNaN(shopsCount) < 1;
-    const cardAssets = assets ? assets.assets : [];
-    const cardAttributesGroups = (attributesGroups || []).reduce(
-      (acc: ProductAttributesGroupInterface[], attributesGroup) => {
-        const visibleAttributes = attributesGroup.attributes.filter(
-          ({ attributeId, attribute }) => {
-            if (!attribute) {
-              return false;
-            }
-            const isListViewAttribute = attribute.viewVariant === ATTRIBUTE_VIEW_VARIANT_LIST;
-            const excluded = excludedAttributesIds.some((excludedAttributeId) => {
-              return excludedAttributeId.equals(attributeId);
-            });
-            return attribute.showInCard && !excluded && isListViewAttribute;
-          },
-        );
 
-        if (visibleAttributes.length > 0) {
-          const groupAttributes = visibleAttributes.reduce(
-            (acc: ProductAttributeInterface[], productAttribute) => {
-              const castedAttribute = castProductAttributeForUi({
-                productAttribute,
-                locale,
-                gender: product.gender,
-              });
-              if (!castedAttribute) {
-                return acc;
-              }
-              return [...acc, castedAttribute];
-            },
-            [],
-          );
+    // get attribute groups
+    const productAttributesGroups: ProductAttributesGroupInterface[] = [];
+    const attributeGroupsIds: ObjectIdModel[] = [];
+    initialProductAttributes.forEach(({ attribute }) => {
+      if (!attribute) {
+        return;
+      }
+      const exist = attributeGroupsIds.some((_id) => _id.equals(attribute.attributesGroupId));
+      if (!exist) {
+        attributeGroupsIds.push(attribute.attributesGroupId);
+      }
+    });
+    const attributesGroups = await attributeGroupsCollection
+      .find({
+        _id: {
+          $in: attributeGroupsIds,
+        },
+      })
+      .toArray();
+    attributesGroups.forEach((attributesGroup) => {
+      const groupAttributes = initialProductAttributes.reduce(
+        (acc: ProductAttributeInterface[], productAttribute) => {
+          if (!productAttribute.attribute?.attributesGroupId.equals(attributesGroup._id)) {
+            return acc;
+          }
+          const castedAttribute = castProductAttributeForUi({
+            productAttribute,
+            locale,
+            gender: product.gender,
+          });
+          if (!castedAttribute) {
+            return acc;
+          }
+          return [...acc, castedAttribute];
+        },
+        [],
+      );
 
-          return [
-            ...acc,
-            {
-              ...attributesGroup,
-              name: getFieldStringLocale(attributesGroup.nameI18n, locale),
-              attributes: sortObjectsByField(groupAttributes),
-            },
-          ];
-        }
+      productAttributesGroups.push({
+        ...attributesGroup,
+        name: getFieldStringLocale(attributesGroup.nameI18n, locale),
+        attributes: sortObjectsByField(groupAttributes),
+      });
+    });
 
-        return acc;
-      },
-      [],
-    );
-
-    const isSingleImage = cardAssets.length < minAssetsListCount;
+    const isSingleImage = restProduct.assets.length < minAssetsListCount;
     const showCardImagesSlider = !isSingleImage && Boolean(rubric?.variant?.showCardImagesSlider);
     const showCardBrands = Boolean(rubric?.variant?.showCardBrands);
     const showArticle = Boolean(rubric?.variant?.showCardArticle);
@@ -974,23 +788,7 @@ export async function getCardData({
         : getConstantTranslation(`shops.single.${locale}`);
 
     // title
-    const cardTitle = generateCardTitle({
-      locale,
-      brand: brand
-        ? {
-            ...brand,
-            collections: brandCollection ? [brandCollection] : [],
-          }
-        : null,
-      rubricName: getFieldStringLocale(rubric.nameI18n, locale),
-      showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
-      showCategoryInProductTitle: rubric.showCategoryInProductTitle,
-      attributes: allProductAttributes,
-      titleCategorySlugs: restProduct.titleCategoriesSlugs,
-      originalName: restProduct.originalName,
-      defaultGender: restProduct.gender,
-      categories: cardCategories,
-    });
+    const cardTitle = getFieldStringLocale(restProduct.cardTitleI18n, locale);
 
     return {
       product: {
@@ -998,6 +796,10 @@ export async function getCardData({
         name,
         shopProductIds,
         description: description || cardTitle,
+        variants: cardVariants,
+        attributes: [],
+        minPrice,
+        maxPrice,
         brand: brand
           ? {
               ...brand,
@@ -1024,23 +826,20 @@ export async function getCardData({
       },
       maxAvailable,
       cardTitle,
-      cardPrices,
       rubric,
       cardLayout: rubric?.variant?.cardLayout || DEFAULT_LAYOUT,
-      connections: cardConnections,
       listFeatures,
       textFeatures,
       tagFeatures,
       iconFeatures,
       ratingFeatures,
+      attributesGroups: sortObjectsByField(productAttributesGroups),
       cardShops: finalCardShops,
       cardBreadcrumbs,
       shopsCount,
       isShopless,
       cardContent,
       shopsCounterPostfix,
-      attributesGroups: sortObjectsByField(cardAttributesGroups),
-      assets: cardAssets,
       showArticle,
       isSingleImage,
       showCardImagesSlider,

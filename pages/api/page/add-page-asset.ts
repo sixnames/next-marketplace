@@ -75,7 +75,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     },
     {
       $addToSet: {
-        assetKeys: asset.url,
+        assetKeys: asset,
       },
     },
     {
@@ -96,6 +96,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   res.status(200).send({
     success: true,
     message: await getApiMessage('pages.update.success'),
-    url: asset.url,
+    url: asset,
   });
 };

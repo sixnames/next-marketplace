@@ -674,11 +674,6 @@ export interface ProductAssetsModel {
   assets: string[];
 }
 
-export interface ProductCardPricesModel {
-  min: string;
-  max: string;
-}
-
 export interface ProductCardBreadcrumbModel {
   _id: ObjectIdModel;
   name: string;

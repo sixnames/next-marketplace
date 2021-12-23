@@ -296,7 +296,7 @@ export function getProductCurrentViewCastedAttributes({
 
 export function countProductAttributes(attributes?: ProductAttributeInterface[] | null): number {
   let counter = 0;
-  (attributes || []).forEach(({ attribute, number, textI18n, selectedOptionsIds }) => {
+  (attributes || []).forEach(({ attribute, number, textI18n, optionIds }) => {
     const variant = attribute?.variant;
     if (variant === ATTRIBUTE_VARIANT_NUMBER && number) {
       counter += 1;
@@ -304,7 +304,7 @@ export function countProductAttributes(attributes?: ProductAttributeInterface[] 
 
     if (
       (variant === ATTRIBUTE_VARIANT_SELECT || variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT) &&
-      selectedOptionsIds.length > 0
+      optionIds.length > 0
     ) {
       counter += 1;
     }

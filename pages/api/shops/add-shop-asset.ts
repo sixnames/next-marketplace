@@ -70,7 +70,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     dirName: shop.itemId,
     dist: ASSETS_DIST_SHOPS,
     width: ASSETS_SHOP_IMAGE_WIDTH,
-    startIndex: shop.assets.length,
   });
   if (!assets) {
     res.status(500).send({

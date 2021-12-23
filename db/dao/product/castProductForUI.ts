@@ -1,6 +1,5 @@
 import { FILTER_SEPARATOR } from '../../../config/common';
 import { getFieldStringLocale } from '../../../lib/i18n';
-import { generateCardTitle, generateSnippetTitle } from '../../../lib/titleUtils';
 import { getTreeFromList } from '../../../lib/treeUtils';
 import {
   AttributeInterface,
@@ -8,19 +7,15 @@ import {
   CategoryInterface,
   ProductAttributeInterface,
   ProductVariantInterface,
-  ProductFacetInterface,
-  RubricInterface,
+  ProductSummaryInterface,
 } from '../../uiInterfaces';
-import { castProductConnectionForUI } from './castProductConnectionForUI';
+import { castProductVariantForUI } from './castProductVariantForUI';
 
 interface CastProductForUI {
-  product: ProductFacetInterface;
+  product: ProductSummaryInterface;
   attributes?: AttributeInterface[] | null;
   brands?: BrandInterface[] | null;
   categories?: CategoryInterface[] | null;
-  rubric?: RubricInterface | null;
-  getSnippetTitle?: boolean;
-  getCardTitle?: boolean;
   locale: string;
 }
 
@@ -29,13 +24,8 @@ export function castProductForUI({
   attributes,
   brands,
   categories,
-  getCardTitle,
-  rubric,
-  getSnippetTitle,
   locale,
-}: CastProductForUI): ProductFacetInterface {
-  const productRubric = product.rubric || rubric;
-
+}: CastProductForUI): ProductSummaryInterface {
   // product attributes
   const productAttributes = (product.attributes || []).reduce(
     (acc: ProductAttributeInterface[], attribute) => {
@@ -46,7 +36,7 @@ export function castProductForUI({
         return acc;
       }
 
-      const optionSlugs = product.selectedOptionsSlugs.reduce((acc: string[], selectedSlug) => {
+      const optionSlugs = product.filterSlugs.reduce((acc: string[], selectedSlug) => {
         const splittedOption = selectedSlug.split(FILTER_SEPARATOR);
         const attributeSlug = splittedOption[0];
         const optionSlug = splittedOption[1];
@@ -88,7 +78,7 @@ export function castProductForUI({
 
   // product categories
   const initialProductCategories = (categories || []).filter(({ slug }) => {
-    return product.selectedOptionsSlugs.includes(slug);
+    return product.categorySlugs.includes(slug);
   });
   const productCategories = getTreeFromList({
     list: initialProductCategories,
@@ -102,70 +92,28 @@ export function castProductForUI({
         return itemId === product.brandSlug;
       })
     : null;
-  const productBrand = initialProductBrand
-    ? {
-        ...initialProductBrand,
-        collections: (initialProductBrand.collections || []).filter((collection) => {
-          return collection.itemId === product.brandCollectionSlug;
-        }),
-      }
-    : null;
 
-  // connections
-  const connections = (product.connections || []).reduce(
-    (acc: ProductVariantInterface[], connection) => {
-      const castedConnection = castProductConnectionForUI({
-        connection,
-        locale,
-      });
+  // variants
+  const variants = product.variants.reduce((acc: ProductVariantInterface[], connection) => {
+    const castedConnection = castProductVariantForUI({
+      variant: connection,
+      locale,
+    });
 
-      if (!castedConnection) {
-        return acc;
-      }
+    if (!castedConnection) {
+      return acc;
+    }
 
-      return [...acc, castedConnection];
-    },
-    [],
-  );
+    return [...acc, castedConnection];
+  }, []);
 
   // snippet title
-  let snippetTitle: string | null = null;
-  if (getSnippetTitle) {
-    snippetTitle = generateSnippetTitle({
-      locale,
-      brand: productBrand,
-      rubricName: getFieldStringLocale(productRubric?.nameI18n, locale),
-      showRubricNameInProductTitle: productRubric?.showRubricNameInProductTitle,
-      showCategoryInProductTitle: productRubric?.showCategoryInProductTitle,
-      attributes: productAttributes,
-      categories: productCategories,
-      titleCategorySlugs: product.titleCategoriesSlugs,
-      originalName: product.originalName,
-      defaultGender: product.gender,
-    });
-  }
-
-  // card title
-  let cardTitle: string | null = null;
-  if (getCardTitle) {
-    cardTitle = generateCardTitle({
-      locale,
-      brand: productBrand,
-      rubricName: getFieldStringLocale(productRubric?.nameI18n, locale),
-      showRubricNameInProductTitle: productRubric?.showRubricNameInProductTitle,
-      showCategoryInProductTitle: productRubric?.showCategoryInProductTitle,
-      attributes: productAttributes,
-      categories: productCategories,
-      titleCategorySlugs: product.titleCategoriesSlugs,
-      originalName: product.originalName,
-      defaultGender: product.gender,
-    });
-  }
+  const snippetTitle = getFieldStringLocale(product.snippetTitleI18n, locale);
+  const cardTitle = getFieldStringLocale(product.cardTitleI18n, locale);
 
   return {
     ...product,
-    name: getFieldStringLocale(product?.nameI18n, locale),
-    connections,
+    variants,
     attributes: productAttributes,
     brand: initialProductBrand,
     categories: productCategories,

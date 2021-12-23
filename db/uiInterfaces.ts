@@ -40,7 +40,6 @@ import {
   PayloadType,
   ProductAttributeModel,
   ProductCardBreadcrumbModel,
-  ProductCardPricesModel,
   ProductVariantItemModel,
   ProductVariantModel,
   ProductFacetModel,
@@ -664,7 +663,6 @@ export interface InitialCardDataInterface {
   textFeatures: ProductAttributeInterface[];
   ratingFeatures: ProductAttributeInterface[];
   attributesGroups: ProductAttributesGroupInterface[];
-  connections: ProductVariantInterface[];
   showFeaturesSection: boolean;
   showCardImagesSlider: boolean;
   showArticle: boolean;
@@ -673,14 +671,12 @@ export interface InitialCardDataInterface {
   isShopless: boolean;
   shopsCounterPostfix: string;
   isSingleImage: boolean;
-  assets: string[];
   cardShops: ShopInterface[];
   cardBreadcrumbs: ProductCardBreadcrumbModel[];
   shopsCount: number;
   cardContent: SeoContentModel | null;
   cardLayout: string;
   rubric: RubricInterface;
-  cardPrices: ProductCardPricesModel;
   breadcrumbs?: ProductCardBreadcrumbModel[] | null;
   maxAvailable: number;
 }

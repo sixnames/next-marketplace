@@ -307,7 +307,7 @@ export const getSessionCart = async ({
             },
 
             // get product attributes
-            ...productAttributesPipeline,
+            ...productAttributesPipeline(),
 
             // get product brand
             ...brandPipeline,

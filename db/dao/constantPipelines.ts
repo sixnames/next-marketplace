@@ -15,6 +15,7 @@ import {
   COL_ATTRIBUTES,
   COL_CATEGORIES,
   COL_PRODUCT_SUMMARIES,
+  COL_ICONS,
 } from '../collectionNames';
 
 export const ignoreNoImageStage = {
@@ -38,57 +39,113 @@ export const noImageStage = {
   },
 };
 
-export const productAttributesPipeline = [
-  {
-    $unwind: '$attributes',
-  },
-  {
-    $lookup: {
-      from: COL_ATTRIBUTES,
-      localField: 'attributes.attributeId',
-      foreignField: '_id',
-      as: 'attributes.attribute',
+interface ProductAttributesPipelineInterface {
+  getOptionIcon?: boolean;
+}
+
+export const productAttributesPipeline = ({
+  getOptionIcon,
+}: ProductAttributesPipelineInterface) => {
+  const optionIconPipeline = getOptionIcon
+    ? [
+        {
+          $lookup: {
+            from: COL_ICONS,
+            as: 'icon',
+            let: {
+              documentId: '$_id',
+            },
+            pipeline: [
+              {
+                $match: {
+                  collectionName: COL_OPTIONS,
+                  $expr: {
+                    $eq: ['$documentId', '$$documentId'],
+                  },
+                },
+              },
+            ],
+          },
+        },
+        {
+          $addFields: {
+            icon: {
+              $arrayElemAt: ['$icon', 0],
+            },
+          },
+        },
+      ]
+    : [];
+
+  return [
+    {
+      $unwind: '$attributes',
     },
-  },
-  {
-    $addFields: {
-      'attributes.attribute': {
-        $arrayElemAt: ['$attributes.attribute', 0],
+    {
+      $lookup: {
+        from: COL_ATTRIBUTES,
+        localField: 'attributes.attributeId',
+        foreignField: '_id',
+        as: 'attributes.attribute',
       },
     },
-  },
-  {
-    $match: {
-      'attributes.attribute': {
-        $exists: true,
+    {
+      $addFields: {
+        'attributes.attribute': {
+          $arrayElemAt: ['$attributes.attribute', 0],
+        },
       },
     },
-  },
-  {
-    from: COL_OPTIONS,
-    localField: 'attributes.selectedOptionsIds',
-    foreignField: '_id',
-    as: 'attributes.attribute.options',
-  },
-  {
-    $group: {
-      _id: '$_id',
-      attributes: {
-        $push: '$attributes',
-      },
-      doc: {
-        $first: '$$ROOT',
+    {
+      $match: {
+        'attributes.attribute': {
+          $exists: true,
+        },
       },
     },
-  },
-  {
-    $replaceRoot: {
-      newRoot: {
-        $mergeObjects: ['$doc', { attributes: '$attributes' }],
+    {
+      $lookup: {
+        from: COL_OPTIONS,
+        as: 'attributes.attribute.options',
+        let: {
+          optionIds: '$optionIds',
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  {
+                    $in: ['$_id', '$$optionIds'],
+                  },
+                ],
+              },
+            },
+          },
+          ...optionIconPipeline,
+        ],
       },
     },
-  },
-];
+    {
+      $group: {
+        _id: '$_id',
+        attributes: {
+          $push: '$attributes',
+        },
+        doc: {
+          $first: '$$ROOT',
+        },
+      },
+    },
+    {
+      $replaceRoot: {
+        newRoot: {
+          $mergeObjects: ['$doc', { attributes: '$attributes' }],
+        },
+      },
+    },
+  ];
+};
 
 export const brandPipeline = [
   {

@@ -74,7 +74,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     files: formData.files,
     dist: ASSETS_DIST_PRODUCTS,
     dirName: product.itemId,
-    startIndex: initialAssets.length,
     width: ASSETS_PRODUCT_IMAGE_WIDTH,
   });
   if (!assets) {

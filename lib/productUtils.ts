@@ -75,7 +75,7 @@ export async function getCmsProduct({
       ...productRubricPipeline,
 
       // get product attributes
-      ...productAttributesPipeline,
+      ...productAttributesPipeline(),
 
       // get product brand
       ...brandPipeline,
@@ -463,7 +463,7 @@ export async function updateProductTitles(match?: Record<any, any>) {
         ...productRubricPipeline,
 
         // get product attributes
-        ...productAttributesPipeline,
+        ...productAttributesPipeline(),
 
         // get product brand
         ...brandPipeline,

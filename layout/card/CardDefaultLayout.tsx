@@ -86,14 +86,12 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
     shopsCounterPostfix,
     isShopless,
     showArticle,
-    connections,
     product,
     cardBreadcrumbs,
     cardPrices,
     shopsCount,
     cardShops,
     cardContent,
-    assets,
     showCardImagesSlider,
     cardTitle,
     maxAvailable,
@@ -103,7 +101,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
     companyId,
   });
 
-  const { brand, brandCollection, manufacturer, name } = product;
+  const { brand, brandCollection, manufacturer, name, variants, assets } = product;
 
   return (
     <article className='pb-20 pt-8 lg:pt-0' data-cy={`card`}>
@@ -172,9 +170,9 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                 </div>
 
                 {/*connections*/}
-                {connections.length > 0 ? (
+                {variants.length > 0 ? (
                   <div className='mb-8'>
-                    {connections.map(({ _id, attribute, products }) => {
+                    {variants.map(({ _id, attribute, products }) => {
                       return (
                         <div key={`${_id}`} className='mb-8'>
                           <div className='text-secondary-text mb-3 font-bold'>{`${attribute?.name}:`}</div>

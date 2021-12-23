@@ -6,6 +6,7 @@ import {
   COL_CATEGORIES,
   COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCT_FACETS,
+  COL_PRODUCT_SUMMARIES,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from '../db/collectionNames';
@@ -16,6 +17,7 @@ import {
   CategoryModel,
   ProductAttributeModel,
   ProductFacetModel,
+  ProductSummaryModel,
   RubricModel,
   RubricPayloadModel,
   ShopProductModel,
@@ -339,7 +341,9 @@ export const RubricMutations = extendType({
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
         const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-        const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
+        const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
+        const productSummariesCollection =
+          db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
         const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
 
@@ -383,10 +387,17 @@ export const RubricMutations = extendType({
             const removedShopProductsResult = await shopProductsCollection.deleteMany({
               rubricId: _id,
             });
-            const removedProductsResult = await productsCollection.deleteMany({
+            const removedFacetsResult = await productFacetsCollection.deleteMany({
               rubricId: _id,
             });
-            if (!removedProductsResult.acknowledged || !removedShopProductsResult.acknowledged) {
+            const removedSummariesResult = await productSummariesCollection.deleteMany({
+              rubricId: _id,
+            });
+            if (
+              !removedFacetsResult.acknowledged ||
+              !removedSummariesResult.acknowledged ||
+              !removedShopProductsResult.acknowledged
+            ) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('rubrics.deleteProduct.error'),

@@ -6,7 +6,7 @@ import { ObjectIdModel, ProductSummaryModel, TranslationModel } from '../../db/d
 import { getDatabase } from '../../db/mongodb';
 import { ProductFacetInterface, ProductSummaryInterface } from '../../db/uiInterfaces';
 import { noNaN } from '../numbers';
-import { getAlgoliaClient, saveAlgoliaObjects } from './algoliaUtils';
+import { deleteAlgoliaObjects, getAlgoliaClient, saveAlgoliaObjects } from './algoliaUtils';
 
 export function getAlgoliaProductsIndex() {
   const { algoliaIndex } = getAlgoliaClient(`${process.env.ALG_INDEX_PRODUCTS}`);
@@ -75,6 +75,25 @@ export async function updateAlgoliaProducts(match?: Record<any, any>) {
     return false;
   }
 }
+
+interface DeleteProductAlgoliaObjectsInterface {
+  productIds: ObjectIdModel[];
+}
+
+export const deleteProductAlgoliaObjects = async ({
+  productIds,
+}: DeleteProductAlgoliaObjectsInterface) => {
+  try {
+    const algoliaProductResult = await deleteAlgoliaObjects({
+      indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
+      objectIDs: productIds.map((_id) => _id.toHexString()),
+    });
+    return algoliaProductResult;
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
+};
 
 interface GetAlgoliaProductsSearch {
   search: string;

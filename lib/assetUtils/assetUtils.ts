@@ -25,7 +25,6 @@ import {
   IMAGE_FALLBACK,
   IMAGE_FALLBACK_BOTTLE,
 } from '../../config/common';
-import { AssetModel } from '../../db/dbModels';
 import { alwaysArray } from '../arrayUtils';
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
@@ -131,7 +130,6 @@ export interface StoreUploadsInterface {
   files: Formidable.Files;
   dist: string;
   dirName: string;
-  startIndex?: number;
   format?: keyof FormatEnum;
   width?: number;
   height?: number;
@@ -140,11 +138,10 @@ export interface StoreUploadsInterface {
 export async function storeUploads({
   files,
   dist,
-  startIndex = 0,
   dirName,
   format = 'webp',
   width,
-}: StoreUploadsInterface): Promise<AssetModel[] | null> {
+}: StoreUploadsInterface): Promise<string[] | null> {
   try {
     const assetsPath = `${ASSETS_DIST}/${dist}/${dirName}`;
     const filesPath = path.join(process.cwd(), assetsPath);
@@ -162,8 +159,8 @@ export async function storeUploads({
     const filesPathArray = filesPath.split('/');
     const isWatermark = filesPathArray.includes(ASSETS_DIST_CONFIGS_WATERMARK);
 
-    const assets: AssetModel[] = [];
-    for await (const [index, file] of initialFiles.entries()) {
+    const assets: string[] = [];
+    for await (const file of initialFiles) {
       const fileName = isWatermark ? ASSETS_DIST_CONFIGS_WATERMARK : new Date().getTime();
       const fileTypeResult = extName(file.name);
       const fileType = alwaysArray(fileTypeResult)[0];
@@ -178,10 +175,7 @@ export async function storeUploads({
       // save as svg if file type is svg
       if (fileType.ext === `svg` || fileType.ext === `ico`) {
         await writeFile(`${filesPath}/${fileName}.${fileType.ext}`, buffer);
-        assets.push({
-          url: `${assetsPath}/${fileName}.${fileType.ext}`,
-          index: startIndex + index,
-        });
+        assets.push(`${assetsPath}/${fileName}.${fileType.ext}`);
       } else {
         // Save file to the FS
         const finalFormat = isWatermark ? 'png' : format;
@@ -192,10 +186,7 @@ export async function storeUploads({
         }
         await transform.toFile(`${filesPath}/${fileFullName}`);
 
-        assets.push({
-          url: `${assetsPath}/${fileFullName}`,
-          index: startIndex + index,
-        });
+        assets.push(`${assetsPath}/${fileFullName}`);
       }
     }
 
@@ -275,7 +266,7 @@ export const deleteAssetsDirectory = async (dirPath: string): Promise<boolean> =
 };
 
 export interface ReorderAssetsInterface {
-  initialAssets: AssetModel[];
+  initialAssets: string[];
   assetNewIndex: number;
   assetUrl: string;
 }
@@ -284,46 +275,26 @@ export const reorderAssets = ({
   assetNewIndex,
   assetUrl,
   initialAssets,
-}: ReorderAssetsInterface): AssetModel[] | null => {
-  const sortedAssets = initialAssets.sort((assetA, assetB) => {
-    return assetA.index - assetB.index;
-  });
-  const assetsWithUpdatedIndexes: AssetModel[] = sortedAssets.map(({ url }, index) => {
-    return {
-      url,
-      index,
-    };
-  });
+}: ReorderAssetsInterface): string[] | null => {
+  const currentAssetIndex = initialAssets.findIndex((url) => url === assetUrl);
 
-  const currentAsset = assetsWithUpdatedIndexes.find(({ url }) => url === assetUrl);
-
-  if (!currentAsset) {
+  if (!currentAssetIndex) {
     return null;
   }
 
-  const reorderedAssets = [...assetsWithUpdatedIndexes];
-  const [removed] = reorderedAssets.splice(currentAsset.index, 1);
+  const reorderedAssets = [...initialAssets];
+  const [removed] = reorderedAssets.splice(currentAssetIndex, 1);
   reorderedAssets.splice(assetNewIndex, 0, removed);
 
-  const reorderedAssetsWithUpdatedIndexes: AssetModel[] = reorderedAssets.map(({ url }, index) => {
-    return {
-      url,
-      index,
-    };
-  });
-
-  return reorderedAssetsWithUpdatedIndexes;
+  return reorderedAssets;
 };
 
-export function getMainImage(assets: AssetModel[]): string {
-  const sortedAssets = assets.sort((assetA, assetB) => {
-    return assetA.index - assetB.index;
-  });
-  const firstAsset = sortedAssets[0];
+export function getMainImage(assets: string[]): string {
+  const firstAsset = assets[0];
   let mainImage = IMAGE_FALLBACK;
 
   if (firstAsset) {
-    mainImage = firstAsset.url;
+    mainImage = firstAsset;
   }
   return mainImage;
 }

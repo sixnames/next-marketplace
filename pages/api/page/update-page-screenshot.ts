@@ -68,7 +68,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   // Delete page screenshot
   if (page.pageScreenshot) {
-    await deleteUpload(page.pageScreenshot.url);
+    await deleteUpload(page.pageScreenshot);
   }
 
   // Upload new company logo
@@ -76,7 +76,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     files: formData.files,
     dirName: `${formData.fields.pageId}`,
     dist: isTemplate ? ASSETS_DIST_TEMPLATES : ASSETS_DIST_PAGES,
-    startIndex: 0,
   });
   if (!uploadedAsset) {
     res.status(500).send({
@@ -106,7 +105,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     { _id: page._id },
     {
       $addToSet: {
-        assetKeys: asset.url,
+        assetKeys: asset,
       },
       $set: {
         pageScreenshot: asset,

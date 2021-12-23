@@ -133,7 +133,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         ...config,
         cities: {
           [DEFAULT_CITY]: {
-            [DEFAULT_LOCALE]: [currentAsset.url],
+            [DEFAULT_LOCALE]: [currentAsset],
           },
         },
       },

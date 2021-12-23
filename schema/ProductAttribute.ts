@@ -31,11 +31,6 @@ export const ProductAttribute = objectType({
     t.nonNull.objectId('attributeId');
     t.json('textI18n');
     t.float('number');
-    t.nonNull.list.nonNull.objectId('selectedOptionsIds');
-    t.nonNull.list.nonNull.field('selectedOptionsSlugs', {
-      type: 'String',
-      description: 'List of selected options slug',
-    });
 
     // ProductAttribute text translation field resolver
     t.nonNull.field('text', {

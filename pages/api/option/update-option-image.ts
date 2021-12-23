@@ -164,7 +164,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     { _id: option._id },
     {
       $set: {
-        image: currentAsset.url,
+        image: currentAsset,
       },
     },
     {

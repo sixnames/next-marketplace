@@ -312,10 +312,7 @@ export const CompanyMutations = extendType({
               ...input,
               itemId,
               slug,
-              logo: {
-                index: 1,
-                url: IMAGE_FALLBACK,
-              },
+              logo: IMAGE_FALLBACK,
               shopsIds: [],
               createdAt: new Date(),
               updatedAt: new Date(),
@@ -792,10 +789,7 @@ export const CompanyMutations = extendType({
               ...values,
               slug,
               itemId,
-              logo: {
-                index: 1,
-                url: IMAGE_FALLBACK,
-              },
+              logo: IMAGE_FALLBACK,
               assets: [],
               mainImage: IMAGE_FALLBACK,
               companyId: companyId,

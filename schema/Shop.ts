@@ -4,7 +4,7 @@ import { DEFAULT_COUNTERS_OBJECT, GEO_POINT_TYPE } from '../config/common';
 import {
   COL_CITIES,
   COL_COMPANIES,
-  COL_PRODUCT_FACETS,
+  COL_PRODUCT_SUMMARIES,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
 } from '../db/collectionNames';
@@ -12,7 +12,7 @@ import { aggregatePagination } from '../db/dao/aggregatePagination';
 import {
   CityModel,
   CompanyModel,
-  ProductFacetModel,
+  ProductSummaryModel,
   ShopModel,
   ShopPayloadModel,
   ShopProductModel,
@@ -456,8 +456,8 @@ export const ShopMutations = extendType({
           }
 
           // Delete shop asset
-          const currentAsset = shop.assets.find(({ index }) => index === assetIndex);
-          const removedAsset = await deleteUpload(`${currentAsset?.url}`);
+          const currentAsset = shop.assets[assetIndex];
+          const removedAsset = await deleteUpload(`${currentAsset}`);
           if (!removedAsset) {
             return {
               success: false,
@@ -634,7 +634,8 @@ export const ShopMutations = extendType({
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
         const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
-        const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
+        const productSummariesCollection =
+          db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
 
         const session = client.startSession();
@@ -673,7 +674,7 @@ export const ShopMutations = extendType({
 
               // Check shop and product availability
               const shop = await shopsCollection.findOne({ _id: shopId });
-              const product = await productsCollection.findOne({ _id: productId });
+              const product = await productSummariesCollection.findOne({ _id: productId });
               if (!shop || !product) {
                 break;
               }
@@ -706,7 +707,8 @@ export const ShopMutations = extendType({
                 allowDelivery: product.allowDelivery,
                 brandCollectionSlug: product.brandCollectionSlug,
                 manufacturerSlug: product.manufacturerSlug,
-                selectedOptionsSlugs: product.selectedOptionsSlugs,
+                filterSlugs: product.filterSlugs,
+                categorySlugs: product.categorySlugs,
                 updatedAt: new Date(),
                 createdAt: new Date(),
                 ...DEFAULT_COUNTERS_OBJECT,

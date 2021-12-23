@@ -64,7 +64,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   // Delete company logo
-  const removedAsset = await deleteUpload(`${company.logo.url}`);
+  const removedAsset = await deleteUpload(`${company.logo}`);
   if (!removedAsset) {
     res.status(500).send({
       success: false,
@@ -81,7 +81,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     files: formData.files,
     dirName: company.itemId,
     dist: ASSETS_DIST_COMPANIES,
-    startIndex: 0,
     width: ASSETS_LOGO_WIDTH,
   });
 

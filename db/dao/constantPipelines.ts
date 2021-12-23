@@ -43,9 +43,9 @@ interface ProductAttributesPipelineInterface {
   getOptionIcon?: boolean;
 }
 
-export const productAttributesPipeline = ({
-  getOptionIcon,
-}: ProductAttributesPipelineInterface) => {
+export const productAttributesPipeline = (props?: ProductAttributesPipelineInterface) => {
+  const getOptionIcon = props?.getOptionIcon;
+
   const optionIconPipeline = getOptionIcon
     ? [
         {

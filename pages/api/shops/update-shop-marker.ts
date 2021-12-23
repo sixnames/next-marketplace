@@ -117,7 +117,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     files: formData.files,
     dirName: shop.itemId,
     dist: ASSETS_DIST_SHOPS,
-    startIndex: 0,
   });
   if (!uploadedAsset) {
     res.status(500).send({
@@ -144,10 +143,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   const updater = isDark
     ? {
-        'mapMarker.darkTheme': asset.url,
+        'mapMarker.darkTheme': asset,
       }
     : {
-        'mapMarker.lightTheme': asset.url,
+        'mapMarker.lightTheme': asset,
       };
 
   // Update shop

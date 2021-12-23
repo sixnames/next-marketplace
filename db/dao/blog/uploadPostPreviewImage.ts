@@ -76,7 +76,6 @@ export async function updatePostPreviewImage(req: NextApiRequest, res: NextApiRe
       files: formData.files,
       dirName: blogPost.slug,
       dist: ASSETS_DIST_BLOG,
-      startIndex: 0,
     });
     if (!uploadedAsset) {
       payload = {
@@ -102,10 +101,10 @@ export async function updatePostPreviewImage(req: NextApiRequest, res: NextApiRe
       { _id: blogPostId },
       {
         $addToSet: {
-          assetKeys: asset.url,
+          assetKeys: asset,
         },
         $set: {
-          previewImage: asset.url,
+          previewImage: asset,
           updatedAt: new Date(),
         },
       },

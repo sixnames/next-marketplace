@@ -1,19 +1,18 @@
 import { ObjectId } from 'mongodb';
-import { DEFAULT_COUNTERS_OBJECT } from '../../../config/common';
 import { updateAlgoliaProducts } from '../../../lib/algolia/productAlgoliaUtils';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
 import { getNextItemId } from '../../../lib/itemIdUtils';
-import { checkBarcodeIntersects } from '../../../lib/productUtils';
+import { castSummaryToShopProduct, checkBarcodeIntersects } from '../../../lib/productUtils';
 import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
 import {
   COL_NOT_SYNCED_PRODUCTS,
-  COL_PRODUCT_FACETS,
+  COL_PRODUCT_SUMMARIES,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
 } from '../../collectionNames';
 import {
-  ProductFacetModel,
   ProductPayloadModel,
+  ProductSummaryModel,
   ShopModel,
   ShopProductModel,
 } from '../../dbModels';
@@ -34,7 +33,7 @@ export async function updateProductWithSyncError({
 }: DaoPropsInterface<UpdateProductWithSyncErrorInputInterface>): Promise<ProductPayloadModel> {
   const { getApiMessage, locale } = await getRequestParams(context);
   const { db, client } = await getDatabase();
-  const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
+  const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
   const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
   const notSyncedProductsCollection = db.collection<ShopModel>(COL_NOT_SYNCED_PRODUCTS);
@@ -72,7 +71,7 @@ export async function updateProductWithSyncError({
 
       // check product availability
       const productObjectId = new ObjectId(productId);
-      const product = await productsCollection.findOne({ _id: productObjectId });
+      const product = await productSummariesCollection.findOne({ _id: productObjectId });
       if (!product) {
         mutationPayload = {
           success: false,
@@ -128,7 +127,7 @@ export async function updateProductWithSyncError({
       }
 
       // Update product
-      const updatedProductResult = await productsCollection.findOneAndUpdate(
+      const updatedProductResult = await productSummariesCollection.findOneAndUpdate(
         {
           _id: product._id,
         },
@@ -179,30 +178,18 @@ export async function updateProductWithSyncError({
 
       // create shop products
       const itemId = await getNextItemId(COL_SHOP_PRODUCTS);
-      const createdShopProductResult = await shopProductsCollection.insertOne({
+      const newShopProduct = castSummaryToShopProduct({
         barcode: input.barcode,
         available,
         price,
         itemId,
-        productId: product._id,
-        discountedPercent: 0,
+        summary: product,
         shopId: shop._id,
         citySlug: shop.citySlug,
-        oldPrices: [],
-        rubricId: product.rubricId,
-        rubricSlug: product.rubricSlug,
         companyId: shop.companyId,
         companySlug: shop.companySlug,
-        brandSlug: product.brandSlug,
-        mainImage: product.mainImage,
-        allowDelivery: product.allowDelivery,
-        brandCollectionSlug: product.brandCollectionSlug,
-        manufacturerSlug: product.manufacturerSlug,
-        selectedOptionsSlugs: product.selectedOptionsSlugs,
-        updatedAt: new Date(),
-        createdAt: new Date(),
-        ...DEFAULT_COUNTERS_OBJECT,
       });
+      const createdShopProductResult = await shopProductsCollection.insertOne(newShopProduct);
 
       if (!createdShopProductResult.acknowledged) {
         mutationPayload = {

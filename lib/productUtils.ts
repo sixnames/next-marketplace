@@ -1,5 +1,6 @@
 import { ObjectId } from 'mongodb';
 import trim from 'trim';
+import { DEFAULT_COUNTERS_OBJECT } from '../config/common';
 import {
   COL_LANGUAGES,
   COL_OPTIONS,
@@ -19,6 +20,7 @@ import {
   ObjectIdModel,
   OptionModel,
   ProductSummaryModel,
+  ShopProductModel,
   TranslationModel,
 } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
@@ -38,6 +40,7 @@ import {
 } from '../db/uiInterfaces';
 import { updateAlgoliaProducts } from './algolia/productAlgoliaUtils';
 import { getFieldStringLocale } from './i18n';
+import { noNaN } from './numbers';
 import { getSupplierPrice } from './priceUtils';
 import { getProductAllSeoContents } from './seoContentUtils';
 import { generateCardTitle, GenerateCardTitleInterface, generateSnippetTitle } from './titleUtils';
@@ -131,7 +134,7 @@ export async function getCmsProduct({
       if (variantProductSummary && option) {
         variantProducts.push({
           ...variantProduct,
-          product: {
+          summary: {
             ...variantProductSummary,
             snippetTitle: getFieldStringLocale(variantProductSummary.snippetTitleI18n, locale),
             cardTitle: getFieldStringLocale(variantProductSummary.cardTitleI18n, locale),
@@ -526,4 +529,55 @@ export async function updateProductTitles(match?: Record<any, any>) {
     console.log('updateProductTitlesInterface error ', e);
     return false;
   }
+}
+
+interface CastSummaryToShopProductInterface {
+  summary: ProductSummaryModel;
+  available?: number | null;
+  price?: number | null;
+  itemId: string;
+  barcode: string[];
+  shopId: ObjectIdModel;
+  citySlug: string;
+  companyId: ObjectIdModel;
+  companySlug: string;
+}
+
+export function castSummaryToShopProduct({
+  available,
+  barcode,
+  itemId,
+  price,
+  summary,
+  citySlug,
+  companyId,
+  companySlug,
+  shopId,
+}: CastSummaryToShopProductInterface): ShopProductModel {
+  return {
+    _id: new ObjectId(),
+    itemId,
+    barcode,
+    available: noNaN(available),
+    price: noNaN(price),
+    oldPrices: [],
+    discountedPercent: 0,
+    productId: summary._id,
+    shopId,
+    citySlug,
+    companyId,
+    companySlug,
+    rubricId: summary.rubricId,
+    rubricSlug: summary.rubricSlug,
+    brandSlug: summary.brandSlug,
+    mainImage: summary.mainImage,
+    allowDelivery: summary.allowDelivery,
+    brandCollectionSlug: summary.brandCollectionSlug,
+    manufacturerSlug: summary.manufacturerSlug,
+    filterSlugs: summary.filterSlugs,
+    categorySlugs: summary.categorySlugs,
+    updatedAt: new Date(),
+    createdAt: new Date(),
+    ...DEFAULT_COUNTERS_OBJECT,
+  };
 }

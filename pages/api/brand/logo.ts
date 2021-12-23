@@ -152,7 +152,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     { _id: brand._id },
     {
       $set: {
-        logo: currentAsset.url,
+        logo: currentAsset,
       },
     },
     {

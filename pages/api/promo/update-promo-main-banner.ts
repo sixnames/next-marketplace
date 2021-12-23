@@ -67,10 +67,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   // Delete main banner
   if (promo.mainBanner && !isMobile) {
-    await deleteUpload(promo.mainBanner.url);
+    await deleteUpload(promo.mainBanner);
   }
   if (promo.mainBannerMobile && isMobile) {
-    await deleteUpload(promo.mainBannerMobile.url);
+    await deleteUpload(promo.mainBannerMobile);
   }
 
   // Upload new company logo
@@ -78,7 +78,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     files: formData.files,
     dirName: `${formData.fields.promoId}`,
     dist: ASSETS_DIST_PROMO,
-    startIndex: 0,
   });
   if (!uploadedAsset) {
     res.status(500).send({
@@ -116,7 +115,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     { _id: promo._id },
     {
       $addToSet: {
-        assetKeys: asset.url,
+        assetKeys: asset,
       },
       $set: {
         ...updater,

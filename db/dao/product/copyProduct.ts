@@ -9,16 +9,12 @@ import {
   getResolverValidationSchema,
 } from '../../../lib/sessionHelpers';
 import { updateProductSchema } from '../../../validation/productSchema';
+import { COL_PRODUCT_FACETS, COL_PRODUCT_SUMMARIES } from '../../collectionNames';
 import {
-  COL_PRODUCT_ASSETS,
-  COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCT_FACETS,
-} from '../../collectionNames';
-import {
-  ProductAssetsModel,
   ProductAttributeModel,
   ProductFacetModel,
   ProductPayloadModel,
+  ProductSummaryModel,
 } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
@@ -34,9 +30,8 @@ export async function copyProduct({
 }: DaoPropsInterface<CopyProductInputInterface>): Promise<ProductPayloadModel> {
   const { getApiMessage } = await getRequestParams(context);
   const { db, client } = await getDatabase();
-  const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
-  const productAttributesCollection = db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
-  const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
+  const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
+  const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
 
   const session = client.startSession();
 
@@ -77,7 +72,7 @@ export async function copyProduct({
 
       // get source product
       const productObjectId = new ObjectId(productId);
-      const sourceProduct = await productsCollection.findOne({ _id: productObjectId });
+      const sourceProduct = await productSummariesCollection.findOne({ _id: productObjectId });
       if (!sourceProduct) {
         mutationPayload = {
           success: false,
@@ -87,10 +82,10 @@ export async function copyProduct({
         return;
       }
 
-      // create product
+      // create summary
       const itemId = await getNextItemId(COL_PRODUCT_FACETS);
       const newProductId = new ObjectId();
-      const createdProductResult = await productsCollection.insertOne({
+      const createdProductResult = await productSummariesCollection.insertOne({
         ...sourceProduct,
         ...values,
         _id: newProductId,
@@ -99,15 +94,16 @@ export async function copyProduct({
         slug: itemId,
         originalName: values.originalName || '',
         mainImage: IMAGE_FALLBACK,
+        assets: [IMAGE_FALLBACK],
         rubricId: sourceProduct.rubricId,
         rubricSlug: sourceProduct.rubricSlug,
         active: true,
-        selectedOptionsSlugs: sourceProduct.selectedOptionsSlugs,
-        selectedAttributesIds: sourceProduct.selectedAttributesIds,
+        filterSlugs: sourceProduct.filterSlugs,
+        attributeIds: sourceProduct.attributeIds,
         createdAt: new Date(),
         updatedAt: new Date(),
       });
-      const createdProduct = await productsCollection.findOne({
+      const createdProduct = await productSummariesCollection.findOne({
         _id: createdProductResult.insertedId,
       });
       if (!createdProductResult.acknowledged || !createdProduct) {
@@ -119,16 +115,22 @@ export async function copyProduct({
         return;
       }
 
-      // create product assets
-      const createdAssetsResult = await productAssetsCollection.insertOne({
-        productId: newProductId,
-        productSlug: itemId,
-        assets: [
-          {
-            index: 1,
-            url: IMAGE_FALLBACK,
-          },
-        ],
+      // create product facet
+      const createdAssetsResult = await productFacetsCollection.insertOne({
+        _id: newProductId,
+        filterSlugs: createdProduct.filterSlugs,
+        attributeIds: createdProduct.attributeIds,
+        categorySlugs: createdProduct.categorySlugs,
+        slug: createdProduct.slug,
+        active: createdProduct.active,
+        rubricId: createdProduct.rubricId,
+        rubricSlug: createdProduct.rubricSlug,
+        itemId: createdProduct.itemId,
+        allowDelivery: createdProduct.allowDelivery,
+        brandCollectionSlug: createdProduct.brandCollectionSlug,
+        brandSlug: createdProduct.brandSlug,
+        manufacturerSlug: createdProduct.manufacturerSlug,
+        barcode: createdProduct.barcode,
       });
       if (!createdAssetsResult.acknowledged) {
         mutationPayload = {
@@ -139,40 +141,9 @@ export async function copyProduct({
         return;
       }
 
-      // get source product attributes
-      const sourceProductAttributes = await productAttributesCollection
-        .find({
-          productId: sourceProduct._id,
-        })
-        .toArray();
-
-      // create product attributes
-      const createdProductAttributes: ProductAttributeModel[] = [];
-      for await (const productAttribute of sourceProductAttributes) {
-        createdProductAttributes.push({
-          ...productAttribute,
-          _id: new ObjectId(),
-          productId: createdProduct._id,
-          productSlug: createdProduct.slug,
-        });
-      }
-      if (createdProductAttributes.length > 0) {
-        const newAttributesResult = await productAttributesCollection.insertMany(
-          createdProductAttributes,
-        );
-        if (!newAttributesResult.acknowledged) {
-          mutationPayload = {
-            success: false,
-            message: await getApiMessage(`products.create.error`),
-          };
-          await session.abortTransaction();
-          return;
-        }
-      }
-
       // create algolia object
       await updateAlgoliaProducts({
-        _id: createdAssetsResult.insertedId,
+        _id: createdProduct._id,
       });
 
       mutationPayload = {

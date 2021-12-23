@@ -64,7 +64,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   // Delete shop logo
-  const removedAsset = await deleteUpload(`${shop.logo.url}`);
+  const removedAsset = await deleteUpload(`${shop.logo}`);
   if (!removedAsset) {
     res.status(500).send({
       success: false,
@@ -82,7 +82,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     dirName: shop.itemId,
     dist: ASSETS_DIST_SHOPS_LOGOS,
     width: ASSETS_LOGO_WIDTH,
-    startIndex: 0,
   });
   if (!assets) {
     res.status(500).send({

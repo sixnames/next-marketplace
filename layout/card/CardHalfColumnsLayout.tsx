@@ -58,7 +58,6 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
     product,
     cardBreadcrumbs,
     cardContent,
-    cardPrices,
     shopsCount,
     cardShops,
     showCardImagesSlider,
@@ -72,7 +71,8 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
     companyId,
   });
 
-  const { brand, brandCollection, manufacturer, name, variants, assets } = product;
+  const { brand, brandCollection, manufacturer, name, variants, assets, minPrice, maxPrice } =
+    product;
 
   return (
     <article className='pb-20 pt-8 lg:pt-0' data-cy={`card`}>
@@ -145,7 +145,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
 
                   {/*price*/}
                   <div className='flex flex-wrap gap-6 items-baseline mb-8'>
-                    <CardPrices cardPrices={cardPrices} shopsCount={shopsCount} />
+                    <CardPrices minPrice={minPrice} maxPrice={maxPrice} shopsCount={shopsCount} />
 
                     {/*availability*/}
                     {configs.isOneShopCompany || maxAvailable === 0 ? null : (

@@ -912,8 +912,4 @@ export interface SeoContentCitiesInterface {
 
 export type OrderInterfacePayloadModel = PayloadType<OrderInterface>;
 
-export interface ShopProductPricesInterface {
-  _id: ObjectIdModel;
-  minPrice: number;
-  maxPrice: number;
-}
+export interface ShopProductPricesInterface extends PricesInterface {}

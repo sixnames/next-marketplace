@@ -1,17 +1,15 @@
 import * as React from 'react';
 import Currency from '../../components/Currency';
-import { ProductCardPricesModel } from '../../db/dbModels';
+import { PricesInterface } from '../../db/uiInterfaces';
 import { noNaN } from '../../lib/numbers';
 
-interface CardPricesInterface {
+interface CardPricesInterface extends PricesInterface {
   shopsCount?: number | null;
-  cardPrices: ProductCardPricesModel | undefined;
 }
 
-const CardPrices: React.FC<CardPricesInterface> = ({ cardPrices, shopsCount }) => {
+const CardPrices: React.FC<CardPricesInterface> = ({ minPrice, maxPrice, shopsCount }) => {
   const isShopless = noNaN(shopsCount) < 1;
-  const isMultiplePrice =
-    noNaN(cardPrices?.min) !== noNaN(cardPrices?.max) && noNaN(shopsCount) > 1;
+  const isMultiplePrice = noNaN(minPrice) !== noNaN(maxPrice) && noNaN(shopsCount) > 1;
 
   if (isShopless) {
     return null;
@@ -23,16 +21,16 @@ const CardPrices: React.FC<CardPricesInterface> = ({ cardPrices, shopsCount }) =
         <React.Fragment>
           <div className='mr-2'>Цена от</div>
           <div className='flex items-baseline text-2xl sm:text-3xl md:text-4xl'>
-            <Currency value={cardPrices?.min} />
+            <Currency value={minPrice} />
             <div className='text-lg mx-2'>до</div>
-            <Currency value={cardPrices?.max} />
+            <Currency value={maxPrice} />
           </div>
         </React.Fragment>
       ) : (
         <React.Fragment>
           <div className='mr-2'>Цена</div>
           <div className='flex items-baseline text-2xl sm:text-3xl md:text-4xl'>
-            <Currency value={cardPrices?.min} />
+            <Currency value={minPrice} />
           </div>
         </React.Fragment>
       )}

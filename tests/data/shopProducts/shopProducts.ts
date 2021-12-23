@@ -4,7 +4,6 @@ import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, ID_COUNTER_DIGITS } from '../../../
 import { ShopProductModel } from '../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 import productSummaries from '../productSummaries/productSummaries';
-import productConnectionItems from '../productConnectionItems/productConnectionItems';
 import shops from '../shops/shops';
 import rubrics from '../rubrics/rubrics';
 
@@ -20,9 +19,7 @@ if (isOneShopCompany) {
       const product = rubricProducts[i];
       const productId = product._id;
 
-      const withConnection = productConnectionItems.some((connectionItem) => {
-        return connectionItem.productId.equals(productId);
-      });
+      const withConnection = product.variants.length > 0;
 
       const shop = shops.find(({ slug }) => {
         return slug === 'shop_a';
@@ -57,7 +54,8 @@ if (isOneShopCompany) {
           rubricId: product.rubricId,
           rubricSlug: product.rubricSlug,
           allowDelivery: product.allowDelivery,
-          selectedOptionsSlugs: product.selectedOptionsSlugs,
+          filterSlugs: product.filterSlugs,
+          categorySlugs: product.categorySlugs,
           discountedPercent: withDiscount ? discountedPercent : 0,
           oldPrice,
           price,
@@ -96,9 +94,7 @@ if (isOneShopCompany) {
       const product = rubricProducts[i];
       const productId = product._id;
 
-      const withConnection = productConnectionItems.some((connectionItem) => {
-        return connectionItem.productId.equals(productId);
-      });
+      const withConnection = product.variants.length > 0;
 
       shops.forEach((shop) => {
         if (product) {
@@ -134,7 +130,8 @@ if (isOneShopCompany) {
             rubricId: product.rubricId,
             rubricSlug: product.rubricSlug,
             allowDelivery: product.allowDelivery,
-            selectedOptionsSlugs: product.selectedOptionsSlugs,
+            filterSlugs: product.filterSlugs,
+            categorySlugs: product.categorySlugs,
             discountedPercent: withDiscount ? discountedPercent : 0,
             oldPrice,
             price,

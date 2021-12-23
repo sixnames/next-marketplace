@@ -88,7 +88,6 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
     showArticle,
     product,
     cardBreadcrumbs,
-    cardPrices,
     shopsCount,
     cardShops,
     cardContent,
@@ -101,7 +100,8 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
     companyId,
   });
 
-  const { brand, brandCollection, manufacturer, name, variants, assets } = product;
+  const { brand, brandCollection, manufacturer, name, variants, assets, minPrice, maxPrice } =
+    product;
 
   return (
     <article className='pb-20 pt-8 lg:pt-0' data-cy={`card`}>
@@ -204,7 +204,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
 
                 {/*price*/}
                 <div className='flex flex-wrap gap-6 items-baseline mb-6 mt-auto'>
-                  <CardPrices cardPrices={cardPrices} shopsCount={shopsCount} />
+                  <CardPrices minPrice={minPrice} maxPrice={maxPrice} shopsCount={shopsCount} />
 
                   {/*availability*/}
                   {configs.isOneShopCompany || maxAvailable === 0 ? null : (

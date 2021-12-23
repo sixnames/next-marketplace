@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb';
 import {
   ASSETS_DIST_PRODUCTS,
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
@@ -17,6 +18,8 @@ import {
   ProductSummaryModel,
   ProductAttributeModel,
   CategoryModel,
+  ProductVariantModel,
+  ProductVariantItemModel,
 } from '../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 import { OptionInterface, ProductAttributeInterface } from '../../../db/uiInterfaces';
@@ -39,6 +42,37 @@ import categories from '../categories/categories';
 import { getAttributeReadableValueLocales } from '../../../lib/productAttributesUtils';
 
 const attributeText = `Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi debitis eligendi eum, excepturi iure libero molestias quas quis ratione reiciendis sed sequi sint sit! Architecto minus modi officia provident voluptates.`;
+
+function getVariantObjectId(attributeSlug: string, rubricSlug: string) {
+  return getObjectId(`variant ${attributeSlug} ${rubricSlug}`);
+}
+
+const variantAttributesConfig = [
+  {
+    attributeId: getObjectId(`attribute Объем`),
+    attributeSlug: '000007',
+  },
+  {
+    attributeId: getObjectId(`attribute Тип ёмкости`),
+    attributeSlug: '000008',
+  },
+  {
+    attributeId: getObjectId(`attribute Год`),
+    attributeSlug: '000009',
+  },
+  {
+    attributeId: getObjectId(`attribute Винтаж`),
+    attributeSlug: '000011',
+  },
+  {
+    attributeId: getObjectId(`attribute Сахар`),
+    attributeSlug: '000012',
+  },
+  {
+    attributeId: getObjectId(`attribute Тип вина`),
+    attributeSlug: '000015',
+  },
+];
 
 function getOptionsTree(option: OptionModel, acc: OptionModel[]): OptionModel[] {
   const resultOptions: OptionModel[] = acc;
@@ -150,9 +184,9 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
   for (let i = 1; i <= maxProductsCount; i = i + 1) {
     counter = counter + 1;
     const gender = GENDER_IT;
-    const selectedAttributesIds: ObjectIdModel[] = [];
+    const attributeIds: ObjectIdModel[] = [];
     const selectedOptionsSlugs: string[] = [];
-    const titleCategoriesSlugs: string[] = [];
+    const titleCategorySlugs: string[] = [];
     const productAttributes: ProductAttributeModel[] = [];
     const itemId: string = addZero(counter, ID_COUNTER_DIGITS);
     const name = `${rubricSlug.toUpperCase()} ${itemId}`;
@@ -160,7 +194,7 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
     // attributes
     rubricAttributes.forEach((attribute) => {
       if (attribute.showInCatalogueFilter) {
-        selectedAttributesIds.push(attribute._id);
+        attributeIds.push(attribute._id);
 
         const attributeOptions = options.filter(({ optionsGroupId }) => {
           return attribute.optionsGroupId && optionsGroupId.equals(attribute.optionsGroupId);
@@ -177,8 +211,9 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
             ? Math.round(Math.random() * 10)
             : undefined;
         const productAttribute: ProductAttributeModel = {
+          _id: new ObjectId(),
           readableValueI18n: {},
-          selectedOptionsIds: [],
+          optionIds: [],
           optionSlugs: [],
           attributeId: attribute._id,
           number,
@@ -207,7 +242,7 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
             });
             regionOptionsTree.forEach(({ slug, _id }) => {
               const optionSlug = `${attribute.slug}${FILTER_SEPARATOR}${slug}`;
-              productAttribute.selectedOptionsIds.push(_id);
+              productAttribute.optionIds.push(_id);
               productAttribute.optionSlugs.push(optionSlug);
               selectedOptionsSlugs.push(optionSlug);
             });
@@ -239,7 +274,7 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
           const selectedOption = attributeOptions[randomOptionIndex];
           if (selectedOption) {
             const optionSlug = `${attribute.slug}${FILTER_SEPARATOR}${selectedOption.slug}`;
-            productAttribute.selectedOptionsIds.push(selectedOption._id);
+            productAttribute.optionIds.push(selectedOption._id);
             productAttribute.optionSlugs.push(optionSlug);
             selectedOptionsSlugs.push(optionSlug);
           }
@@ -271,7 +306,7 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
           if (selectedOption) {
             selectedOptions.push(selectedOption);
             const optionSlug = `${attribute.slug}${FILTER_SEPARATOR}${selectedOption.slug}`;
-            productAttribute.selectedOptionsIds.push(selectedOption._id);
+            productAttribute.optionIds.push(selectedOption._id);
             productAttribute.optionSlugs.push(optionSlug);
             selectedOptionsSlugs.push(optionSlug);
           }
@@ -288,7 +323,7 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
           if (nextSelectedOption) {
             selectedOptions.push(nextSelectedOption);
             const optionSlug = `${attribute.slug}${FILTER_SEPARATOR}${nextSelectedOption.slug}`;
-            productAttribute.selectedOptionsIds.push(nextSelectedOption._id);
+            productAttribute.optionIds.push(nextSelectedOption._id);
             productAttribute.optionSlugs.push(optionSlug);
             selectedOptionsSlugs.push(optionSlug);
           }
@@ -370,7 +405,7 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
         `${CATEGORY_SLUG_PREFIX}3`,
       ];
       categoriesSlugsForTitle.forEach((categorySlug) => {
-        titleCategoriesSlugs.push(categorySlug);
+        titleCategorySlugs.push(categorySlug);
       });
 
       const addedCategorySlugs = [
@@ -393,6 +428,7 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
       });
     }
 
+    // titles
     const titleAttributes = productAttributes.reduce(
       (acc: ProductAttributeInterface[], productAttribute) => {
         const attribute = attributes.find(({ _id }) => _id.equals(productAttribute.attributeId));
@@ -400,7 +436,7 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
           return acc;
         }
         const attributeOptions = options.filter((option) => {
-          return productAttribute.selectedOptionsIds.some((_id) => {
+          return productAttribute.optionIds.some((_id) => {
             return _id.equals(option._id);
           });
         });
@@ -439,10 +475,30 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
       showCategoryInProductTitle: true,
       showRubricNameInProductTitle: true,
     };
-
     const snippetTitle = generateSnippetTitle(titleConfig);
-
     const cardTitle = generateCardTitle(titleConfig);
+
+    // variants
+    const variants = variantAttributesConfig.reduce(
+      (acc: ProductVariantModel[], { attributeSlug, attributeId }) => {
+        const productAttribute = productAttributes.find((productAttribute) => {
+          return productAttribute.attributeId.equals(attributeId);
+        });
+        if (!productAttribute) {
+          return acc;
+        }
+        return [
+          ...acc,
+          {
+            _id: getVariantObjectId(attributeSlug, rubric.slug),
+            attributeId,
+            attributeSlug,
+            products: [],
+          },
+        ];
+      },
+      [],
+    );
 
     const summary: ProductSummaryModel = {
       _id: getObjectId(`${rubricSlug} ${itemId}`),
@@ -475,14 +531,77 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
         [DEFAULT_LOCALE]: cardTitle,
       },
       filterSlugs: selectedOptionsSlugs,
-      titleCategoriesSlugs,
-      selectedAttributesIds,
+      titleCategorySlugs,
+      attributeIds,
+      variants,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
 
     rubricProducts.push(summary);
   }
+
+  // get variant products
+  variantAttributesConfig.forEach(({ attributeSlug }) => {
+    const variantId = getVariantObjectId(attributeSlug, rubric.slug);
+    const variantSummaries = rubricProducts.filter(({ variants }) => {
+      return variants.some(({ _id }) => _id.equals(variantId));
+    });
+    const firstSummary = variantSummaries[0];
+    if (!firstSummary) {
+      return;
+    }
+    const variant = firstSummary.variants.find(({ _id }) => {
+      return _id.equals(variantId);
+    });
+    if (!variant) {
+      return;
+    }
+
+    const variantProducts: ProductVariantItemModel[] = [];
+    variantSummaries.forEach((product) => {
+      const filterSlug = product.filterSlugs.find((slug) => {
+        const slugArray = slug.split(FILTER_SEPARATOR);
+        return variant.attributeSlug === slugArray[0];
+      });
+
+      const optionsSlugArray = `${filterSlug}`.split(FILTER_SEPARATOR);
+      const optionsSlug = `${optionsSlugArray[1]}`;
+      const option = options.find(({ slug }) => slug === optionsSlug);
+
+      if (option) {
+        variantProducts.push({
+          _id: getObjectId(`${variantId} ${product._id}`),
+          productId: product._id,
+          productSlug: product.slug,
+          optionId: option._id,
+        });
+      }
+    });
+
+    variantSummaries.forEach((summary) => {
+      const summaryIndex = rubricProducts.findIndex(({ _id }) => {
+        return _id.equals(summary._id);
+      });
+      if (summaryIndex > -1) {
+        rubricProducts[summaryIndex] = {
+          ...summary,
+          variants: summary.variants.reduce((acc: ProductVariantModel[], summaryVariant) => {
+            if (summaryVariant._id.equals(variantId)) {
+              return [
+                ...acc,
+                {
+                  ...summaryVariant,
+                  products: variantProducts,
+                },
+              ];
+            }
+            return acc;
+          }, []),
+        };
+      }
+    });
+  });
 
   return [...acc, ...rubricProducts];
 }, []);

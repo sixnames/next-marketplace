@@ -14,7 +14,7 @@ const productFacets: ProductFacetModel[] = productSummaries.map((productSummary)
     brandCollectionSlug: productSummary.brandCollectionSlug,
     brandSlug: productSummary.brandSlug,
     manufacturerSlug: productSummary.manufacturerSlug,
-    selectedAttributesIds: productSummary.selectedAttributesIds,
+    attributeIds: productSummary.attributeIds,
     filterSlugs: productSummary.filterSlugs,
     slug: productSummary.slug,
   };

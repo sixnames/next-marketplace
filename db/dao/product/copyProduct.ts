@@ -3,6 +3,7 @@ import { IMAGE_FALLBACK } from '../../../config/common';
 import { updateAlgoliaProducts } from '../../../lib/algolia/productAlgoliaUtils';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
 import { getNextItemId } from '../../../lib/itemIdUtils';
+import { castSummaryToFacet } from '../../../lib/productUtils';
 import {
   getOperationPermission,
   getRequestParams,
@@ -10,12 +11,7 @@ import {
 } from '../../../lib/sessionHelpers';
 import { updateProductSchema } from '../../../validation/productSchema';
 import { COL_PRODUCT_FACETS, COL_PRODUCT_SUMMARIES } from '../../collectionNames';
-import {
-  ProductAttributeModel,
-  ProductFacetModel,
-  ProductPayloadModel,
-  ProductSummaryModel,
-} from '../../dbModels';
+import { ProductFacetModel, ProductPayloadModel, ProductSummaryModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
 import { CreateProductInputInterface } from './createProduct';
@@ -72,8 +68,10 @@ export async function copyProduct({
 
       // get source product
       const productObjectId = new ObjectId(productId);
-      const sourceProduct = await productSummariesCollection.findOne({ _id: productObjectId });
-      if (!sourceProduct) {
+      const sourceProductSummary = await productSummariesCollection.findOne({
+        _id: productObjectId,
+      });
+      if (!sourceProductSummary) {
         mutationPayload = {
           success: false,
           message: await getApiMessage(`products.update.notFound`),
@@ -85,8 +83,8 @@ export async function copyProduct({
       // create summary
       const itemId = await getNextItemId(COL_PRODUCT_FACETS);
       const newProductId = new ObjectId();
-      const createdProductResult = await productSummariesCollection.insertOne({
-        ...sourceProduct,
+      const createdProductSummaryResult = await productSummariesCollection.insertOne({
+        ...sourceProductSummary,
         ...values,
         _id: newProductId,
         itemId,
@@ -95,18 +93,18 @@ export async function copyProduct({
         originalName: values.originalName || '',
         mainImage: IMAGE_FALLBACK,
         assets: [IMAGE_FALLBACK],
-        rubricId: sourceProduct.rubricId,
-        rubricSlug: sourceProduct.rubricSlug,
+        rubricId: sourceProductSummary.rubricId,
+        rubricSlug: sourceProductSummary.rubricSlug,
         active: true,
-        filterSlugs: sourceProduct.filterSlugs,
-        attributeIds: sourceProduct.attributeIds,
+        filterSlugs: sourceProductSummary.filterSlugs,
+        attributeIds: sourceProductSummary.attributeIds,
         createdAt: new Date(),
         updatedAt: new Date(),
       });
-      const createdProduct = await productSummariesCollection.findOne({
-        _id: createdProductResult.insertedId,
+      const createdProductSummary = await productSummariesCollection.findOne({
+        _id: createdProductSummaryResult.insertedId,
       });
-      if (!createdProductResult.acknowledged || !createdProduct) {
+      if (!createdProductSummaryResult.acknowledged || !createdProductSummary) {
         mutationPayload = {
           success: false,
           message: await getApiMessage(`products.create.error`),
@@ -116,23 +114,11 @@ export async function copyProduct({
       }
 
       // create product facet
-      const createdAssetsResult = await productFacetsCollection.insertOne({
-        _id: newProductId,
-        filterSlugs: createdProduct.filterSlugs,
-        attributeIds: createdProduct.attributeIds,
-        categorySlugs: createdProduct.categorySlugs,
-        slug: createdProduct.slug,
-        active: createdProduct.active,
-        rubricId: createdProduct.rubricId,
-        rubricSlug: createdProduct.rubricSlug,
-        itemId: createdProduct.itemId,
-        allowDelivery: createdProduct.allowDelivery,
-        brandCollectionSlug: createdProduct.brandCollectionSlug,
-        brandSlug: createdProduct.brandSlug,
-        manufacturerSlug: createdProduct.manufacturerSlug,
-        barcode: createdProduct.barcode,
+      const newFacet = castSummaryToFacet({
+        summary: createdProductSummary,
       });
-      if (!createdAssetsResult.acknowledged) {
+      const createdFacetResult = await productFacetsCollection.insertOne(newFacet);
+      if (!createdFacetResult.acknowledged) {
         mutationPayload = {
           success: false,
           message: await getApiMessage(`products.create.error`),
@@ -143,13 +129,13 @@ export async function copyProduct({
 
       // create algolia object
       await updateAlgoliaProducts({
-        _id: createdProduct._id,
+        _id: createdProductSummary._id,
       });
 
       mutationPayload = {
         success: true,
         message: await getApiMessage('products.create.success'),
-        payload: createdProduct,
+        payload: createdProductSummary,
       };
     });
 

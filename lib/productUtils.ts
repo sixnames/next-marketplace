@@ -19,6 +19,7 @@ import {
   LanguageModel,
   ObjectIdModel,
   OptionModel,
+  ProductFacetModel,
   ProductSummaryModel,
   ShopProductModel,
   TranslationModel,
@@ -579,5 +580,28 @@ export function castSummaryToShopProduct({
     updatedAt: new Date(),
     createdAt: new Date(),
     ...DEFAULT_COUNTERS_OBJECT,
+  };
+}
+
+interface CastSummaryToFacetInterface {
+  summary: ProductSummaryModel;
+}
+
+export function castSummaryToFacet({ summary }: CastSummaryToFacetInterface): ProductFacetModel {
+  return {
+    _id: summary._id,
+    filterSlugs: summary.filterSlugs,
+    attributeIds: summary.attributeIds,
+    categorySlugs: summary.categorySlugs,
+    slug: summary.slug,
+    active: summary.active,
+    rubricId: summary.rubricId,
+    rubricSlug: summary.rubricSlug,
+    itemId: summary.itemId,
+    allowDelivery: summary.allowDelivery,
+    brandCollectionSlug: summary.brandCollectionSlug,
+    brandSlug: summary.brandSlug,
+    manufacturerSlug: summary.manufacturerSlug,
+    barcode: summary.barcode,
   };
 }

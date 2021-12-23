@@ -193,7 +193,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                   </div>
                 </div>
 
-                {/*connections*/}
+                {/*variants*/}
                 {variants.length > 0 ? (
                   <div className={dataSectionClassName}>
                     {variants.map(({ _id, attribute, products }) => {
@@ -201,8 +201,8 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                         <div key={`${_id}`} className='mb-12'>
                           <div className='text-secondary-text mb-3 font-bold'>{`${attribute?.name}:`}</div>
                           <div className='grid grid-cols-4 sm:grid-cols-5 lg:grid-cols-6 gap-x-4 gap-y-6'>
-                            {products.map(({ option, shopProduct, isCurrent }) => {
-                              const mainImage = shopProduct?.summary?.mainImage;
+                            {products.map(({ option, summary, isCurrent }) => {
+                              const mainImage = summary?.mainImage;
                               const name = `${option?.name} ${
                                 attribute?.metric ? ` ${attribute.metric.name}` : ''
                               }`;
@@ -231,7 +231,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                                   {isCurrent ? null : (
                                     <WpLink
                                       className='absolute inset-0 z-30 block text-indent-full overflow-hidden'
-                                      href={`${urlPrefix}/${shopProduct?.summary?.slug}`}
+                                      href={`${urlPrefix}/${summary?.slug}`}
                                     >
                                       {name}
                                     </WpLink>

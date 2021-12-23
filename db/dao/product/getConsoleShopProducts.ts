@@ -43,7 +43,7 @@ import {
   filterAttributesPipeline,
   shopProductSupplierProductsPipeline,
 } from '../constantPipelines';
-import { castProductForUI } from './castProductForUI';
+import { castSummaryForUI } from './castSummaryForUI';
 
 export interface GetConsoleShopProductsInputInterface {
   locale: string;
@@ -571,8 +571,8 @@ export const getConsoleShopProducts = async ({
         continue;
       }
 
-      const castedProduct = castProductForUI({
-        product,
+      const castedProduct = castSummaryForUI({
+        summary: product,
         attributes,
         brands,
         categories,

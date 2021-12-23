@@ -37,7 +37,7 @@ import {
   ShopProductInterface,
 } from '../../uiInterfaces';
 import { filterAttributesPipeline } from '../constantPipelines';
-import { castProductForUI } from './castProductForUI';
+import { castSummaryForUI } from './castSummaryForUI';
 
 export interface GetConsoleCompanyRubricProductsInputInterface {
   locale: string;
@@ -588,8 +588,8 @@ export const getConsoleCompanyRubricProducts = async ({
         product.selectedOptionsSlugs,
       );
 
-      const initialCastedProduct = castProductForUI({
-        product,
+      const initialCastedProduct = castSummaryForUI({
+        summary: product,
         attributes,
         brands,
         categories,

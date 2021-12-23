@@ -215,8 +215,8 @@ export interface OptionsGroupInterface extends OptionsGroupModel {
 }
 
 export interface ProductVariantItemInterface extends ProductVariantItemModel {
-  shopProduct?: ShopProductInterface;
-  product?: ProductSummaryInterface;
+  summary?: ProductSummaryInterface;
+  shopProducts?: ShopProductInterface[];
   option?: OptionInterface | null;
   isCurrent: boolean;
 }

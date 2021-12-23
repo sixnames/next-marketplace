@@ -115,9 +115,9 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
           <WpLink
             target={'_blank'}
             testId={`product-link-${rowIndex}`}
-            href={`${ROUTE_CMS}/rubrics/${dataItem.product?.rubricId}/products/product/${dataItem.product?._id}`}
+            href={`${ROUTE_CMS}/rubrics/${dataItem.summary?.rubricId}/products/product/${dataItem.summary?._id}`}
           >
-            {dataItem.product?.itemId}
+            {dataItem.summary?.itemId}
           </WpLink>
         );
       },
@@ -161,7 +161,7 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
             updateTitle={'Редактировать товар'}
             updateHandler={() => {
               window.open(
-                `${ROUTE_CMS}/rubrics/${dataItem.product?.rubricId}/products/product/${dataItem.product?._id}`,
+                `${ROUTE_CMS}/rubrics/${dataItem.summary?.rubricId}/products/product/${dataItem.summary?._id}`,
                 '_blank',
               );
             }}
@@ -170,14 +170,14 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
               showModal<ConfirmModalInterface>({
                 variant: CONFIRM_MODAL,
                 props: {
-                  message: `Вы уверенны, что хотите удалить ${dataItem?.product?.originalName} из связи ${connection.attribute?.name}?`,
+                  message: `Вы уверенны, что хотите удалить ${dataItem?.summary?.snippetTitle} из связи ${connection.attribute?.name}?`,
                   testId: 'delete-product-from-connection-modal',
                   confirm: () => {
                     showLoading();
                     deleteProductFromConnectionMutation({
                       variables: {
                         input: {
-                          deleteProductId: dataItem?.product?._id,
+                          deleteProductId: dataItem?.summary?._id,
                           connectionId: connection._id,
                           productId: product._id,
                         },
@@ -212,7 +212,7 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
           tableTestId={`${connection.attribute.name}-connection-list`}
           onRowDoubleClick={(dataItem) => {
             window.open(
-              `${ROUTE_CMS}/rubrics/${dataItem.product?.rubricId}/products/product/${dataItem.product?._id}`,
+              `${ROUTE_CMS}/rubrics/${dataItem.summary?.rubricId}/products/product/${dataItem.summary?._id}`,
               '_blank',
             );
           }}

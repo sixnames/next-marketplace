@@ -35,7 +35,7 @@ import {
   ShopProductsAggregationInterface,
 } from '../../uiInterfaces';
 import { filterAttributesPipeline } from '../constantPipelines';
-import { castProductForUI } from '../product/castProductForUI';
+import { castSummaryForUI } from '../product/castSummaryForUI';
 
 interface GetConsolePromoProductsInterface {
   companyId: ObjectIdModel;
@@ -543,8 +543,8 @@ export async function getConsolePromoProducts({
         return;
       }
 
-      const castedProduct = castProductForUI({
-        product,
+      const castedProduct = castSummaryForUI({
+        summary: product,
         attributes,
         brands,
         categories,

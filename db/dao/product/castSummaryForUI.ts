@@ -12,22 +12,22 @@ import {
 import { castProductVariantForUI } from './castProductVariantForUI';
 
 interface CastProductForUI {
-  product: ProductSummaryInterface;
+  summary: ProductSummaryInterface;
   attributes?: AttributeInterface[] | null;
   brands?: BrandInterface[] | null;
   categories?: CategoryInterface[] | null;
   locale: string;
 }
 
-export function castProductForUI({
-  product,
+export function castSummaryForUI({
+  summary,
   attributes,
   brands,
   categories,
   locale,
 }: CastProductForUI): ProductSummaryInterface {
   // product attributes
-  const productAttributes = (product.attributes || []).reduce(
+  const productAttributes = (summary.attributes || []).reduce(
     (acc: ProductAttributeInterface[], attribute) => {
       const existingAttribute = (attributes || []).find(({ _id }) => {
         return _id.equals(attribute.attributeId);
@@ -36,7 +36,7 @@ export function castProductForUI({
         return acc;
       }
 
-      const optionSlugs = product.filterSlugs.reduce((acc: string[], selectedSlug) => {
+      const optionSlugs = summary.filterSlugs.reduce((acc: string[], selectedSlug) => {
         const splittedOption = selectedSlug.split(FILTER_SEPARATOR);
         const attributeSlug = splittedOption[0];
         const optionSlug = splittedOption[1];
@@ -67,7 +67,7 @@ export function castProductForUI({
             list: options,
             childrenFieldName: 'options',
             locale,
-            gender: product.gender,
+            gender: summary.gender,
           }),
         },
       };
@@ -78,7 +78,7 @@ export function castProductForUI({
 
   // product categories
   const initialProductCategories = (categories || []).filter(({ slug }) => {
-    return product.categorySlugs.includes(slug);
+    return summary.categorySlugs.includes(slug);
   });
   const productCategories = getTreeFromList({
     list: initialProductCategories,
@@ -87,14 +87,14 @@ export function castProductForUI({
   });
 
   // product brand
-  const initialProductBrand = product.brandSlug
+  const initialProductBrand = summary.brandSlug
     ? (brands || []).find(({ itemId }) => {
-        return itemId === product.brandSlug;
+        return itemId === summary.brandSlug;
       })
     : null;
 
   // variants
-  const variants = product.variants.reduce((acc: ProductVariantInterface[], connection) => {
+  const variants = summary.variants.reduce((acc: ProductVariantInterface[], connection) => {
     const castedConnection = castProductVariantForUI({
       variant: connection,
       locale,
@@ -107,13 +107,26 @@ export function castProductForUI({
     return [...acc, castedConnection];
   }, []);
 
+  // shop products
+  const prices: number[] = [];
+  (summary.shopProducts || []).forEach(({ price }) => {
+    prices.push(price);
+  });
+  const sortedPrices = prices.sort((a, b) => {
+    return a - b;
+  });
+  const minPrice = sortedPrices[0];
+  const maxPrice = sortedPrices[sortedPrices.length - 1];
+
   // snippet title
-  const snippetTitle = getFieldStringLocale(product.snippetTitleI18n, locale);
-  const cardTitle = getFieldStringLocale(product.cardTitleI18n, locale);
+  const snippetTitle = getFieldStringLocale(summary.snippetTitleI18n, locale);
+  const cardTitle = getFieldStringLocale(summary.cardTitleI18n, locale);
 
   return {
-    ...product,
+    ...summary,
     variants,
+    minPrice,
+    maxPrice,
     attributes: productAttributes,
     brand: initialProductBrand,
     categories: productCategories,

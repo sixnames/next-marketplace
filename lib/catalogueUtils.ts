@@ -54,7 +54,7 @@ import {
   ignoreNoImageStage,
   noImageStage,
 } from '../db/dao/constantPipelines';
-import { castProductForUI } from '../db/dao/product/castProductForUI';
+import { castSummaryForUI } from '../db/dao/product/castSummaryForUI';
 import { CatalogueBreadcrumbModel, ObjectIdModel, ShopProductModel } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
 import {
@@ -1606,8 +1606,8 @@ export const getCatalogueData = async ({
         return;
       }
 
-      const castedProduct = castProductForUI({
-        product,
+      const castedProduct = castSummaryForUI({
+        summary: product,
         attributes,
         brands,
         categories,

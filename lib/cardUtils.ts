@@ -22,8 +22,6 @@ import {
   COL_BRANDS,
   COL_MANUFACTURERS,
   COL_OPTIONS,
-  COL_PRODUCT_VARIANT_ITEMS,
-  COL_PRODUCT_VARIANTS,
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
@@ -31,11 +29,14 @@ import {
   COL_PRODUCT_SUMMARIES,
   COL_ATTRIBUTES_GROUPS,
 } from '../db/collectionNames';
+import { castAttributeForUI } from '../db/dao/attributes/castAttributesGroupForUI';
 import {
   ignoreNoImageStage,
   productAttributesPipeline,
   productCategoriesPipeline,
 } from '../db/dao/constantPipelines';
+import { castOptionForUI } from '../db/dao/options/castOptionForUI';
+import { castSummaryForUI } from '../db/dao/product/castSummaryForUI';
 import {
   AttributesGroupModel,
   CatalogueBreadcrumbModel,
@@ -52,6 +53,9 @@ import {
   ProductVariantItemInterface,
   ShopInterface,
   ProductSummaryInterface,
+  ShopProductInterface,
+  AttributeInterface,
+  OptionInterface,
 } from '../db/uiInterfaces';
 import { sortObjectsByField } from './arrayUtils';
 import { getFieldStringLocale } from './i18n';
@@ -98,14 +102,97 @@ function castCategoriesForBreadcrumbs({
   }, newAcc);
 }
 
-const minAssetsListCount = 2;
-
-export interface GetCardDataInterface {
+export interface GetCardDataBaseInterface {
   locale: string;
   city: string;
+  companyId?: string | ObjectId | null;
+}
+
+interface GetCardVariantsInterface extends GetCardDataBaseInterface {
+  variants: ProductVariantInterface[];
+}
+
+async function getCardVariants({
+  city,
+  companyId,
+  locale,
+  variants,
+}: GetCardVariantsInterface): Promise<ProductVariantInterface[]> {
+  const { db } = await getDatabase();
+  const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
+  const attributesCollection = db.collection<AttributeInterface>(COL_ATTRIBUTES);
+  const optionsCollection = db.collection<OptionInterface>(COL_OPTIONS);
+  const productSummariesCollection = db.collection<ProductSummaryInterface>(COL_PRODUCT_SUMMARIES);
+  const companyMatch = companyId ? { companyId: new ObjectId(companyId) } : {};
+
+  const productVariants: ProductVariantInterface[] = [];
+  for await (const variant of variants) {
+    // get attribute
+    const attribute = await attributesCollection.findOne({
+      _id: variant.attributeId,
+    });
+    if (!attribute) {
+      continue;
+    }
+
+    const variantProducts: ProductVariantItemInterface[] = [];
+
+    // get products and options
+    for await (const variantProduct of variantProducts) {
+      // option
+      const option = await optionsCollection.findOne({ _id: variantProduct.optionId });
+      if (!option) {
+        continue;
+      }
+
+      // summary
+      const summary = await productSummariesCollection.findOne({ _id: variantProduct.productId });
+      if (!summary) {
+        continue;
+      }
+
+      // shop products
+      const shopProducts = await shopProductsCollection
+        .aggregate<ShopProductInterface>([
+          {
+            $match: {
+              citySlug: city,
+              ...companyMatch,
+              productId: summary._id,
+              ...ignoreNoImageStage,
+            },
+          },
+        ])
+        .toArray();
+
+      variantProducts.push({
+        ...variantProduct,
+        option: castOptionForUI({ option, locale, gender: summary.gender }),
+        summary: castSummaryForUI({
+          summary: {
+            ...summary,
+            shopProducts,
+          },
+          locale,
+        }),
+      });
+    }
+
+    productVariants.push({
+      ...variant,
+      attribute: castAttributeForUI({ attribute, locale }),
+      products: variantProducts,
+    });
+  }
+
+  return productVariants;
+}
+
+const minAssetsListCount = 2;
+
+export interface GetCardDataInterface extends GetCardDataBaseInterface {
   slug: string;
   companySlug: string;
-  companyId?: string | ObjectId | null;
 }
 
 export async function getCardData({
@@ -186,135 +273,6 @@ export async function getCardData({
 
         // get product categories
         ...productCategoriesPipeline(),
-
-        // get product connection
-        // TODO
-        {
-          $lookup: {
-            from: COL_PRODUCT_VARIANTS,
-            as: 'connections',
-            let: { productId: '$_id' },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $in: ['$$productId', '$productsIds'],
-                  },
-                },
-              },
-              {
-                $lookup: {
-                  from: COL_ATTRIBUTES,
-                  as: 'attribute',
-                  let: { attributeId: '$attributeId' },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $eq: ['$$attributeId', '$_id'],
-                        },
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                $addFields: {
-                  attribute: {
-                    $arrayElemAt: ['$attribute', 0],
-                  },
-                },
-              },
-              {
-                $lookup: {
-                  from: COL_PRODUCT_VARIANT_ITEMS,
-                  as: 'connectionProducts',
-                  let: { connectionId: '$_id' },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $eq: ['$$connectionId', '$connectionId'],
-                        },
-                      },
-                    },
-                    {
-                      $sort: {
-                        _id: SORT_DESC,
-                      },
-                    },
-                    {
-                      $lookup: {
-                        from: COL_OPTIONS,
-                        as: 'option',
-                        let: { optionId: '$optionId' },
-                        pipeline: [
-                          {
-                            $match: {
-                              $expr: {
-                                $eq: ['$$optionId', '$_id'],
-                              },
-                            },
-                          },
-                        ],
-                      },
-                    },
-                    {
-                      $lookup: {
-                        from: COL_SHOP_PRODUCTS,
-                        as: 'shopProduct',
-                        let: { productId: '$productId' },
-                        pipeline: [
-                          {
-                            $match: {
-                              $expr: {
-                                $eq: ['$$productId', '$productId'],
-                              },
-                              ...ignoreNoImageStage,
-                            },
-                          },
-                          {
-                            $lookup: {
-                              from: COL_PRODUCT_SUMMARIES,
-                              as: 'product',
-                              let: { productId: '$productId' },
-                              pipeline: [
-                                {
-                                  $match: {
-                                    $expr: {
-                                      $eq: ['$$productId', '$_id'],
-                                    },
-                                  },
-                                },
-                              ],
-                            },
-                          },
-                          {
-                            $addFields: {
-                              product: {
-                                $arrayElemAt: ['$product', 0],
-                              },
-                            },
-                          },
-                        ],
-                      },
-                    },
-                    {
-                      $addFields: {
-                        shopProduct: {
-                          $arrayElemAt: ['$shopProduct', 0],
-                        },
-                        option: {
-                          $arrayElemAt: ['$option', 0],
-                        },
-                      },
-                    },
-                  ],
-                },
-              },
-            ],
-          },
-        },
 
         // get product attributes
         ...productAttributesPipeline({ getOptionIcon: true }),
@@ -459,7 +417,6 @@ export async function getCardData({
 
     const {
       rubric,
-      variants,
       attributes,
       brand,
       brandCollection,
@@ -471,61 +428,14 @@ export async function getCardData({
 
     // card connections
     const excludedAttributesIds: ObjectIdModel[] = [];
-    const cardVariants: ProductVariantInterface[] = [];
-    variants.forEach(({ attribute, ...variant }) => {
-      const variantProducts = variant.products.reduce(
-        (acc: ProductVariantItemInterface[], variantProduct) => {
-          if (
-            !variantProduct.shopProduct ||
-            !variantProduct.shopProduct.summary ||
-            !variantProduct.option
-          ) {
-            return acc;
-          }
-
-          const gender = variantProduct.shopProduct.summary.gender;
-          let optionName = getFieldStringLocale(variantProduct.option.nameI18n, locale);
-          const optionVariant = variantProduct.option.variants[gender];
-          if (optionVariant) {
-            const variantName = getFieldStringLocale(optionVariant, locale);
-            if (variantName) {
-              optionName = variantName;
-            }
-          }
-
-          return [
-            ...acc,
-            {
-              ...variantProduct,
-              option: {
-                ...variantProduct.option,
-                name: optionName,
-              },
-            },
-          ];
-        },
-        [],
-      );
-
-      if (variantProducts.length < 1 || !attribute) {
-        return;
-      }
-
-      excludedAttributesIds.push(attribute._id);
-      cardVariants.push({
-        ...variant,
-        products: variantProducts,
-        attribute: {
-          ...attribute,
-          name: getFieldStringLocale(attribute?.nameI18n, locale),
-          metric: attribute.metric
-            ? {
-                ...attribute.metric,
-                name: getFieldStringLocale(attribute.metric.nameI18n, locale),
-              }
-            : null,
-        },
-      });
+    const cardVariants = await getCardVariants({
+      variants: product.variants,
+      locale,
+      companyId,
+      city,
+    });
+    cardVariants.forEach(({ attributeId }) => {
+      excludedAttributesIds.push(attributeId);
     });
 
     const initialProductAttributes = attributes.filter((productAttribute) => {

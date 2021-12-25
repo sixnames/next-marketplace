@@ -19,8 +19,6 @@ import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_CATEGORIES,
-  COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCT_FACETS,
   COL_PROMO_PRODUCTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
@@ -34,7 +32,7 @@ import {
   ShopProductInterface,
   ShopProductsAggregationInterface,
 } from '../../uiInterfaces';
-import { filterAttributesPipeline } from '../constantPipelines';
+import { filterAttributesPipeline, summaryPipeline } from '../constantPipelines';
 import { castSummaryForUI } from '../product/castSummaryForUI';
 
 interface GetConsolePromoProductsInterface {
@@ -103,6 +101,7 @@ export async function getConsolePromoProducts({
       pricesStage,
       photoStage,
       searchStage,
+      categoryStage,
       noSearchResults,
     } = await castUrlFilters({
       filters,
@@ -141,6 +140,7 @@ export async function getConsolePromoProducts({
     // initial match
     const productsInitialMatch = {
       ...rubricStage,
+      ...categoryStage,
       ...brandStage,
       ...brandCollectionStage,
       ...optionsStage,
@@ -203,46 +203,7 @@ export async function getConsolePromoProducts({
               },
 
               // get shop product fields
-              {
-                $lookup: {
-                  from: COL_PRODUCT_FACETS,
-                  as: 'product',
-                  let: {
-                    productId: '$productId',
-                  },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $eq: ['$$productId', '$_id'],
-                        },
-                      },
-                    },
-
-                    // get product attributes
-                    {
-                      $lookup: {
-                        from: COL_PRODUCT_ATTRIBUTES,
-                        as: 'attributes',
-                        pipeline: [
-                          {
-                            $match: {
-                              $expr: {
-                                $eq: ['$$productId', '$productId'],
-                              },
-                            },
-                          },
-                        ],
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                $addFields: {
-                  product: { $arrayElemAt: ['$product', 0] },
-                },
-              },
+              ...summaryPipeline('$productId'),
 
               // get supplier products
               // ...shopProductSupplierProductsPipeline,
@@ -271,7 +232,7 @@ export async function getConsolePromoProducts({
             categories: [
               {
                 $unwind: {
-                  path: '$selectedOptionsSlugs',
+                  path: '$filterSlugs',
                   preserveNullAndEmptyArrays: true,
                 },
               },
@@ -279,8 +240,8 @@ export async function getConsolePromoProducts({
                 $group: {
                   _id: null,
                   rubricId: { $first: '$rubricId' },
-                  selectedOptionsSlugs: {
-                    $addToSet: '$selectedOptionsSlugs',
+                  filterSlugs: {
+                    $addToSet: '$filterSlugs',
                   },
                 },
               },
@@ -290,7 +251,7 @@ export async function getConsolePromoProducts({
                   as: 'categories',
                   let: {
                     rubricId: '$rubricId',
-                    selectedOptionsSlugs: '$selectedOptionsSlugs',
+                    filterSlugs: '$filterSlugs',
                   },
                   pipeline: [
                     {
@@ -303,7 +264,7 @@ export async function getConsolePromoProducts({
                           },
                           {
                             $expr: {
-                              $in: ['$slug', '$$selectedOptionsSlugs'],
+                              $in: ['$slug', '$$filterSlugs'],
                             },
                           },
                         ],
@@ -538,19 +499,17 @@ export async function getConsolePromoProducts({
     // cast shop products
     const docs: ShopProductInterface[] = [];
     shopProductsAggregation.docs.forEach((shopProduct) => {
-      const product = shopProduct.product;
-      if (!product) {
+      const summary = shopProduct.summary;
+      if (!summary) {
         return;
       }
 
       const castedProduct = castSummaryForUI({
-        summary: product,
+        summary,
         attributes,
         brands,
         categories,
-        rubric,
         locale,
-        getSnippetTitle: true,
       });
 
       docs.push({
@@ -559,7 +518,7 @@ export async function getConsolePromoProducts({
           supplierProducts: shopProduct.supplierProducts,
           locale,
         }),
-        product: {
+        summary: {
           ...castedProduct,
           shopsCount: shopProduct.shopsCount,
         },

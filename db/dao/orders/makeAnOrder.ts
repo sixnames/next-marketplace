@@ -33,7 +33,7 @@ import {
   COL_ORDER_PRODUCTS,
   COL_ORDER_STATUSES,
   COL_ORDERS,
-  COL_PRODUCT_FACETS,
+  COL_PRODUCT_SUMMARIES,
   COL_ROLES,
   COL_SHOPS,
   COL_USERS,
@@ -50,13 +50,12 @@ import {
   OrderPaymentVariantModel,
   OrderProductModel,
   OrderStatusModel,
-  ProductFacetModel,
   RoleModel,
   ShopModel,
   UserModel,
 } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface } from '../../uiInterfaces';
+import { DaoPropsInterface, ProductSummaryInterface } from '../../uiInterfaces';
 import { getSessionCart } from '../cart/getSessionCart';
 import { checkGiftCertificateAvailability } from '../giftCertificate/checkGiftCertificateAvailability';
 
@@ -104,7 +103,7 @@ export async function makeAnOrder({
   const orderStatusesCollection = db.collection<OrderStatusModel>(COL_ORDER_STATUSES);
   const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
   const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
-  const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
+  const productSummariesCollection = db.collection<ProductSummaryInterface>(COL_PRODUCT_SUMMARIES);
   const giftCertificatesCollection = db.collection<GiftCertificateModel>(COL_GIFT_CERTIFICATES);
 
   const session = client.startSession();
@@ -278,7 +277,7 @@ export async function makeAnOrder({
           const { price, itemId } = shopProduct;
 
           // check product availability
-          const product = await productsCollection.findOne({
+          const product = await productSummariesCollection.findOne({
             _id: shopProduct.productId,
           });
           if (!product) {

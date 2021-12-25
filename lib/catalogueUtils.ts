@@ -43,8 +43,6 @@ import {
   COL_BRANDS,
   COL_CATEGORIES,
   COL_ICONS,
-  COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCT_FACETS,
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
@@ -53,6 +51,7 @@ import {
   filterAttributesPipeline,
   ignoreNoImageStage,
   noImageStage,
+  shopProductFieldsPipeline,
 } from '../db/dao/constantPipelines';
 import { castSummaryForUI } from '../db/dao/product/castSummaryForUI';
 import { CatalogueBreadcrumbModel, ObjectIdModel, ShopProductModel } from '../db/dbModels';
@@ -598,6 +597,7 @@ interface CastUrlFiltersPayloadInterface {
   skip: number;
   limit: number;
   clearSlug: string;
+  categoryStage: Record<any, any>;
   pricesStage: Record<any, any>;
   optionsStage: Record<any, any>;
   brandStage: Record<any, any>;
@@ -668,8 +668,9 @@ export async function castUrlFilters({
     }
 
     if (filterAttributeSlug) {
+      allUrlParams.push(filterOption);
+
       if (filterAttributeSlug === FILTER_RUBRIC_KEY) {
-        allUrlParams.push(filterOption);
         rubricFilters.push(filterOptionSlug);
         return;
       }
@@ -680,13 +681,11 @@ export async function castUrlFilters({
       }
 
       if (filterAttributeSlug === CATALOGUE_FILTER_LIMIT) {
-        allUrlParams.push(filterOption);
         limit = noNaN(filterOptionSlug) || defaultLimit;
         return;
       }
 
       if (filterAttributeSlug === FILTER_PRICE_KEY) {
-        allUrlParams.push(filterOption);
         priceFilters.push(filterOption);
         noCategoryFilters.push(filterOption);
         const prices = filterOptionSlug.split('_');
@@ -696,29 +695,24 @@ export async function castUrlFilters({
       }
 
       if (filterAttributeSlug === SORT_BY_KEY) {
-        allUrlParams.push(filterOption);
         sortFilterOptions.push(filterOption);
         sortBy = filterOptionSlug;
         return;
       }
 
       if (filterAttributeSlug === SORT_DIR_KEY) {
-        allUrlParams.push(filterOption);
         sortFilterOptions.push(filterOption);
         sortDir = filterOptionSlug;
         return;
       }
 
       if (filterAttributeSlug === FILTER_CATEGORY_KEY) {
-        allUrlParams.push(filterOption);
-        realFilters.push(filterOptionSlug);
         categoryFilters.push(filterOption);
         categoryCastedFilters.push(filterOptionSlug);
         return;
       }
 
       if (filterAttributeSlug === FILTER_BRAND_KEY) {
-        allUrlParams.push(filterOption);
         noCategoryFilters.push(filterOption);
         const slugParts = filterOption.split(FILTER_SEPARATOR);
         if (slugParts[1]) {
@@ -728,7 +722,6 @@ export async function castUrlFilters({
       }
 
       if (filterAttributeSlug === FILTER_BRAND_COLLECTION_KEY) {
-        allUrlParams.push(filterOption);
         noCategoryFilters.push(filterOption);
         const slugParts = filterOption.split(FILTER_SEPARATOR);
         if (slugParts[1]) {
@@ -738,7 +731,6 @@ export async function castUrlFilters({
       }
 
       if (filterAttributeSlug === FILTER_COMMON_KEY) {
-        allUrlParams.push(filterOption);
         if (filterOptionSlug === FILTER_NO_PHOTO_KEY) {
           photoStage = noImageStage;
         }
@@ -746,7 +738,6 @@ export async function castUrlFilters({
       }
 
       noCategoryFilters.push(filterOption);
-      allUrlParams.push(filterOption);
       realFilterAttributes.push(filterAttributeSlug);
       realFilters.push(filterOption);
     }
@@ -769,8 +760,17 @@ export async function castUrlFilters({
   const optionsStage =
     realFilters.length > 0
       ? {
-          selectedOptionsSlugs: {
+          filterSlugs: {
             $all: realFilters,
+          },
+        }
+      : {};
+
+  const categoryStage =
+    categoryCastedFilters.length > 0
+      ? {
+          filterSlugs: {
+            $all: categoryCastedFilters,
           },
         }
       : {};
@@ -828,6 +828,7 @@ export async function castUrlFilters({
 
   return {
     searchStage,
+    categoryStage,
     searchIds,
     noSearchResults: search.length > 0 && searchIds.length < 1,
     allUrlParams,
@@ -1004,10 +1005,10 @@ export const getCatalogueData = async ({
           $match: productsInitialMatch,
         },
 
-        // unwind selectedOptionsSlugs field
+        // unwind filterSlugs field
         {
           $unwind: {
-            path: '$selectedOptionsSlugs',
+            path: '$filterSlugs',
             preserveNullAndEmptyArrays: true,
           },
         },
@@ -1034,8 +1035,8 @@ export const getCatalogueData = async ({
             available: {
               $max: '$available',
             },
-            selectedOptionsSlugs: {
-              $addToSet: '$selectedOptionsSlugs',
+            filterSlugs: {
+              $addToSet: '$filterSlugs',
             },
             shopsIds: {
               $addToSet: '$shopId',
@@ -1077,72 +1078,8 @@ export const getCatalogueData = async ({
                 $limit: limit,
               },
 
-              // add ui prices
-              {
-                $addFields: {
-                  shopsCount: { $size: '$shopsIds' },
-                  cardPrices: {
-                    min: '$minPrice',
-                    max: '$maxPrice',
-                  },
-                },
-              },
-
               // get shop product fields
-              {
-                $lookup: {
-                  from: COL_PRODUCT_FACETS,
-                  as: 'product',
-                  let: {
-                    productId: '$_id',
-                    shopProductsIds: '$shopProductsIds',
-                  },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $eq: ['$$productId', '$_id'],
-                        },
-                      },
-                    },
-                    {
-                      $addFields: {
-                        shopProductsIds: '$$shopProductsIds',
-                      },
-                    },
-
-                    // get product attributes
-                    {
-                      $lookup: {
-                        from: COL_PRODUCT_ATTRIBUTES,
-                        as: 'attributes',
-                        let: {
-                          productId: '$_id',
-                        },
-                        pipeline: [
-                          {
-                            $match: {
-                              $expr: {
-                                $eq: ['$$productId', '$productId'],
-                              },
-                            },
-                          },
-                        ],
-                      },
-                    },
-                    {
-                      $project: {
-                        descriptionI18n: false,
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                $addFields: {
-                  product: { $arrayElemAt: ['$product', 0] },
-                },
-              },
+              ...shopProductFieldsPipeline('$_id'),
             ],
 
             // prices facet
@@ -1158,7 +1095,7 @@ export const getCatalogueData = async ({
             categories: [
               {
                 $unwind: {
-                  path: '$selectedOptionsSlugs',
+                  path: '$filterSlugs',
                   preserveNullAndEmptyArrays: true,
                 },
               },
@@ -1166,8 +1103,8 @@ export const getCatalogueData = async ({
                 $group: {
                   _id: null,
                   rubricId: { $first: '$rubricId' },
-                  selectedOptionsSlugs: {
-                    $addToSet: '$selectedOptionsSlugs',
+                  filterSlugs: {
+                    $addToSet: '$filterSlugs',
                   },
                 },
               },
@@ -1177,7 +1114,7 @@ export const getCatalogueData = async ({
                   as: 'categories',
                   let: {
                     rubricId: '$rubricId',
-                    selectedOptionsSlugs: '$selectedOptionsSlugs',
+                    filterSlugs: '$filterSlugs',
                   },
                   pipeline: [
                     {
@@ -1190,7 +1127,7 @@ export const getCatalogueData = async ({
                           },
                           {
                             $expr: {
-                              $in: ['$slug', '$$selectedOptionsSlugs'],
+                              $in: ['$slug', '$$filterSlugs'],
                             },
                           },
                         ],
@@ -1601,7 +1538,7 @@ export const getCatalogueData = async ({
     // cast catalogue products
     const products: ShopProductInterface[] = [];
     docs.forEach((shopProduct) => {
-      const product = shopProduct.product;
+      const product = shopProduct.summary;
       if (!product) {
         return;
       }
@@ -1611,29 +1548,18 @@ export const getCatalogueData = async ({
         attributes,
         brands,
         categories,
-        rubric,
         locale,
-        getSnippetTitle: true,
       });
 
-      // product prices
-      const minPrice = noNaN(shopProduct.cardPrices?.min);
-      const maxPrice = noNaN(shopProduct.cardPrices?.max);
-      const cardPrices = {
-        _id: new ObjectId(),
-        min: `${minPrice}`,
-        max: `${maxPrice}`,
-      };
-
       // list features
-      const initialListFeatures = getProductCurrentViewCastedAttributes({
+      const initialListAttributes = getProductCurrentViewCastedAttributes({
         attributes: castedProduct.attributes || [],
         viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
         locale,
         gender: product.gender,
       });
-      const listFeatures = sortObjectsByField(
-        initialListFeatures
+      const listAttributes = sortObjectsByField(
+        initialListAttributes
           .filter(({ attribute }) => {
             return attribute?.showInSnippet;
           })
@@ -1642,25 +1568,26 @@ export const getCatalogueData = async ({
       );
 
       // rating features
-      const initialRatingFeatures = getProductCurrentViewCastedAttributes({
+      const initialRatingAttributes = getProductCurrentViewCastedAttributes({
         attributes: castedProduct.attributes || [],
         viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
         locale,
         gender: product.gender,
       });
-      const ratingFeatures = initialRatingFeatures.filter(({ attribute }) => {
+      const ratingAttributes = initialRatingAttributes.filter(({ attribute }) => {
         return attribute?.showInSnippet;
       });
 
       products.push({
         ...shopProduct,
-        product: {
+        summary: {
           ...castedProduct,
           shopsCount: shopProduct.shopsCount,
           attributes: [],
-          listFeatures,
-          ratingFeatures,
-          cardPrices,
+          listAttributes,
+          ratingAttributes,
+          minPrice: noNaN(shopProduct.minPrice),
+          maxPrice: noNaN(shopProduct.maxPrice),
         },
       });
     });

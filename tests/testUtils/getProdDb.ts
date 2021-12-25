@@ -247,7 +247,7 @@ export async function updateIndexes(db: Db) {
   await blogPostsCollection.createIndex({
     companySlug: 1,
     state: 1,
-    selectedOptionsSlugs: 1,
+    filterSlugs: 1,
     priorities: -1,
     views: -1,
     createdAt: -1,

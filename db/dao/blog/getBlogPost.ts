@@ -75,7 +75,7 @@ export const getBlogPost = async ({
       : null,
   };
 
-  const selectedOptionsSlugs = post.selectedOptionsSlugs.reduce((acc: string[], slug) => {
+  const filterSlugs = post.filterSlugs.reduce((acc: string[], slug) => {
     const slugParts = slug.split(FILTER_SEPARATOR);
     const optionSlug = slugParts[1];
     if (!optionSlug) {
@@ -102,7 +102,7 @@ export const getBlogPost = async ({
             {
               $match: {
                 slug: {
-                  $in: selectedOptionsSlugs,
+                  $in: filterSlugs,
                 },
                 $expr: {
                   $eq: ['$optionsGroupId', '$$optionsGroupId'],

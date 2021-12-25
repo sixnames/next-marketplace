@@ -113,7 +113,7 @@ export async function updateProductCategory({
 
       let updater: Record<string, any> = {
         $addToSet: {
-          selectedOptionsSlugs: {
+          filterSlugs: {
             $each: categoryParentTreeSlugs,
           },
         },

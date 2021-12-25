@@ -86,7 +86,7 @@ export async function createBlogPost(req: NextApiRequest, res: NextApiResponse) 
       slug,
       state: PAGE_STATE_PUBLISHED,
       assetKeys: [],
-      selectedOptionsSlugs: [],
+      filterSlugs: [],
       authorId: user._id,
       content: PAGE_EDITOR_DEFAULT_VALUE_STRING,
       createdAt: new Date(),

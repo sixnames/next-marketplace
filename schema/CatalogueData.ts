@@ -96,7 +96,7 @@ export const CatalogueMutations = extendType({
             const selectedBrandCollectionSlugs: string[] = [];
             const selectedManufacturerSlugs: string[] = [];
             const selectedAttributesSlugs: string[] = [];
-            const selectedOptionsSlugs: string[] = [];
+            const filterSlugs: string[] = [];
             const selectedCategoriesSlugs: string[] = [];
 
             filter.forEach((param) => {
@@ -124,7 +124,7 @@ export const CatalogueMutations = extendType({
               }
 
               selectedAttributesSlugs.push(slug);
-              selectedOptionsSlugs.push(value);
+              filterSlugs.push(value);
             });
 
             const counterUpdater = {
@@ -213,7 +213,7 @@ export const CatalogueMutations = extendType({
                     {
                       optionsGroupId,
                       slug: {
-                        $in: selectedOptionsSlugs,
+                        $in: filterSlugs,
                       },
                     },
                     counterUpdater,

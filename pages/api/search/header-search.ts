@@ -101,8 +101,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             available: {
               $max: '$available',
             },
-            selectedOptionsSlugs: {
-              $first: '$selectedOptionsSlugs',
+            filterSlugs: {
+              $first: '$filterSlugs',
             },
             shopProductsIds: {
               $addToSet: '$_id',

@@ -162,7 +162,7 @@ export const getConsoleCompanyRubricProducts = async ({
           $match: productsInitialMatch,
         },
 
-        // unwind selectedOptionsSlugs field
+        // unwind filterSlugs field
         {
           $unwind: {
             path: '$filterSlugs',

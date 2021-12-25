@@ -40,7 +40,7 @@ export async function updateBlogAttributeCounters({
 
     const { companySlug, sessionCity, filters } = input;
     const selectedAttributesSlugs: string[] = [];
-    const selectedOptionsSlugs: string[] = [];
+    const filterSlugs: string[] = [];
     filters.forEach((filter) => {
       const filterParts = filter.split(FILTER_SEPARATOR);
       const attributeSlug = filterParts[0];
@@ -55,7 +55,7 @@ export async function updateBlogAttributeCounters({
       }
 
       if (optionSlug) {
-        selectedOptionsSlugs.push(optionSlug);
+        filterSlugs.push(optionSlug);
       }
     });
 
@@ -66,11 +66,11 @@ export async function updateBlogAttributeCounters({
     };
 
     // options
-    if (selectedOptionsSlugs.length > 0) {
+    if (filterSlugs.length > 0) {
       await optionsCollection.updateMany(
         {
           slug: {
-            $in: selectedOptionsSlugs,
+            $in: filterSlugs,
           },
         },
         counterUpdater,

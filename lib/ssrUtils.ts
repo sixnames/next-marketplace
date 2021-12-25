@@ -253,34 +253,34 @@ export const getCatalogueNavRubrics = async ({
       },
       {
         $project: {
-          selectedOptionsSlugs: true,
+          filterSlugs: true,
           rubricId: true,
         },
       },
       {
         $unwind: {
-          path: '$selectedOptionsSlugs',
+          path: '$filterSlugs',
           preserveNullAndEmptyArrays: true,
         },
       },
       {
         $group: {
           _id: '$rubricId',
-          selectedOptionsSlugs: {
-            $addToSet: '$selectedOptionsSlugs',
+          filterSlugs: {
+            $addToSet: '$filterSlugs',
           },
         },
       },
       {
         $unwind: {
-          path: '$selectedOptionsSlugs',
+          path: '$filterSlugs',
           preserveNullAndEmptyArrays: true,
         },
       },
       {
         $addFields: {
           slugArray: {
-            $split: ['$selectedOptionsSlugs', FILTER_SEPARATOR],
+            $split: ['$filterSlugs', FILTER_SEPARATOR],
           },
         },
       },

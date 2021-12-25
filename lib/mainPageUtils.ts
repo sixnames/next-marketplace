@@ -88,8 +88,8 @@ export async function getMainPageData({
           available: {
             $max: '$available',
           },
-          selectedOptionsSlugs: {
-            $first: '$selectedOptionsSlugs',
+          filterSlugs: {
+            $first: '$filterSlugs',
           },
           shopProductsIds: {
             $addToSet: '$_id',

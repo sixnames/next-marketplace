@@ -200,27 +200,27 @@ export const getConsoleRubricProducts = async ({
       ? [
           {
             $unwind: {
-              path: '$selectedOptionsSlugs',
+              path: '$filterSlugs',
               preserveNullAndEmptyArrays: true,
             },
           },
           {
             $match: {
-              selectedOptionsSlugs: { $nin: excludedOptionsSlugs },
+              filterSlugs: { $nin: excludedOptionsSlugs },
             },
           },
           {
             $group: {
               _id: '$_id',
               doc: { $first: '$$ROOT' },
-              selectedOptionsSlugs: {
-                $push: '$selectedOptionsSlugs',
+              filterSlugs: {
+                $push: '$filterSlugs',
               },
             },
           },
           {
             $addFields: {
-              'doc.selectedOptionsSlugs': '$selectedOptionsSlugs',
+              'doc.filterSlugs': '$filterSlugs',
             },
           },
           {
@@ -333,7 +333,7 @@ export const getConsoleRubricProducts = async ({
             categories: [
               {
                 $unwind: {
-                  path: '$selectedOptionsSlugs',
+                  path: '$filterSlugs',
                   preserveNullAndEmptyArrays: true,
                 },
               },
@@ -341,8 +341,8 @@ export const getConsoleRubricProducts = async ({
                 $group: {
                   _id: null,
                   rubricId: { $first: '$rubricId' },
-                  selectedOptionsSlugs: {
-                    $addToSet: '$selectedOptionsSlugs',
+                  filterSlugs: {
+                    $addToSet: '$filterSlugs',
                   },
                 },
               },
@@ -352,7 +352,7 @@ export const getConsoleRubricProducts = async ({
                   as: 'categories',
                   let: {
                     rubricId: '$rubricId',
-                    selectedOptionsSlugs: '$selectedOptionsSlugs',
+                    filterSlugs: '$filterSlugs',
                   },
                   pipeline: [
                     {
@@ -365,7 +365,7 @@ export const getConsoleRubricProducts = async ({
                           },
                           {
                             $expr: {
-                              $in: ['$slug', '$$selectedOptionsSlugs'],
+                              $in: ['$slug', '$$filterSlugs'],
                             },
                           },
                         ],

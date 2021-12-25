@@ -1091,7 +1091,7 @@ export interface BlogPostModel extends CountersModel {
   assetKeys: string[];
   content: string;
   authorId: ObjectIdModel;
-  selectedOptionsSlugs: string[];
+  filterSlugs: string[];
   createdAt: Date;
   updatedAt: Date;
 }

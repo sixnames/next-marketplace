@@ -1489,7 +1489,7 @@ type ProductAttribute {
   """
   List of selected options slug
   """
-  selectedOptionsSlugs: [String!]!
+  filterSlugs: [String!]!
   text: String!
   textI18n: JSONObject
 }

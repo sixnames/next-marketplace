@@ -10,7 +10,6 @@ import {
 import { alwaysArray, alwaysString } from '../../../lib/arrayUtils';
 import { castUrlFilters, getCatalogueAttributes } from '../../../lib/catalogueUtils';
 import { getFieldStringLocale } from '../../../lib/i18n';
-import { noNaN } from '../../../lib/numbers';
 import {
   countProductAttributes,
   getCategoryAllAttributes,
@@ -31,8 +30,8 @@ import { getDatabase } from '../../mongodb';
 import {
   AttributeInterface,
   ConsoleRubricProductsInterface,
-  ProductFacetInterface,
   ProductsAggregationInterface,
+  ProductSummaryInterface,
   RubricInterface,
   ShopProductInterface,
 } from '../../uiInterfaces';
@@ -104,6 +103,7 @@ export const getConsoleCompanyRubricProducts = async ({
       brandCollectionStage,
       optionsStage,
       pricesStage,
+      categoryStage,
       photoStage,
       searchStage,
       noSearchResults,
@@ -146,6 +146,7 @@ export const getConsoleCompanyRubricProducts = async ({
     // initial match
     const productsInitialMatch = {
       ...rubricStage,
+      ...categoryStage,
       ...brandStage,
       ...brandCollectionStage,
       ...optionsStage,
@@ -166,7 +167,7 @@ export const getConsoleCompanyRubricProducts = async ({
         // unwind selectedOptionsSlugs field
         {
           $unwind: {
-            path: '$selectedOptionsSlugs',
+            path: '$filterSlugs',
             preserveNullAndEmptyArrays: true,
           },
         },
@@ -188,8 +189,8 @@ export const getConsoleCompanyRubricProducts = async ({
             available: {
               $max: '$available',
             },
-            selectedOptionsSlugs: {
-              $addToSet: '$selectedOptionsSlugs',
+            filterSlugs: {
+              $addToSet: '$filterSlugs',
             },
             shopsIds: {
               $addToSet: '$shopId',
@@ -275,7 +276,7 @@ export const getConsoleCompanyRubricProducts = async ({
             categories: [
               {
                 $unwind: {
-                  path: '$selectedOptionsSlugs',
+                  path: '$filterSlugs',
                   preserveNullAndEmptyArrays: true,
                 },
               },
@@ -283,8 +284,8 @@ export const getConsoleCompanyRubricProducts = async ({
                 $group: {
                   _id: null,
                   rubricId: { $first: '$rubricId' },
-                  selectedOptionsSlugs: {
-                    $addToSet: '$selectedOptionsSlugs',
+                  filterSlugs: {
+                    $addToSet: '$filterSlugs',
                   },
                 },
               },
@@ -294,7 +295,7 @@ export const getConsoleCompanyRubricProducts = async ({
                   as: 'categories',
                   let: {
                     rubricId: '$rubricId',
-                    selectedOptionsSlugs: '$selectedOptionsSlugs',
+                    filterSlugs: '$filterSlugs',
                   },
                   pipeline: [
                     {
@@ -307,7 +308,7 @@ export const getConsoleCompanyRubricProducts = async ({
                           },
                           {
                             $expr: {
-                              $in: ['$slug', '$$selectedOptionsSlugs'],
+                              $in: ['$slug', '$$filterSlugs'],
                             },
                           },
                         ],
@@ -576,32 +577,21 @@ export const getConsoleCompanyRubricProducts = async ({
 
     // rubric attributes
     const allRubricAttributes = await getRubricAllAttributes(rubric._id);
-    const docs: ProductFacetInterface[] = [];
-    for await (const product of productDataAggregation.docs) {
-      const cardPrices = {
-        _id: new ObjectId(),
-        min: `${noNaN(product.cardPrices?.min)}`,
-        max: `${noNaN(product.cardPrices?.max)}`,
-      };
-
-      const productCategoryAttributes = await getCategoryAllAttributes(
-        product.selectedOptionsSlugs,
-      );
+    const docs: ProductSummaryInterface[] = [];
+    for await (const summary of productDataAggregation.docs) {
+      const productCategoryAttributes = await getCategoryAllAttributes(summary.filterSlugs);
 
       const initialCastedProduct = castSummaryForUI({
-        summary: product,
+        summary: summary,
         attributes,
         brands,
         categories,
-        rubric,
         locale,
-        getSnippetTitle: true,
       });
 
-      const castedProduct: ProductFacetInterface = {
+      const castedProduct: ProductSummaryInterface = {
         ...initialCastedProduct,
-        cardPrices,
-        attributesCount: countProductAttributes(product.attributes),
+        attributesCount: countProductAttributes(summary.attributes),
         totalAttributesCount: allRubricAttributes.length + productCategoryAttributes.length,
       };
 

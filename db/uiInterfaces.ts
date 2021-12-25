@@ -791,7 +791,7 @@ export interface ShopProductsAggregationInterface {
 }
 
 export interface ProductsAggregationInterface {
-  docs: ProductFacetInterface[];
+  docs: ProductSummaryInterface[];
   totalDocs: number;
   totalPages: number;
   prices: CatalogueProductPricesInterface[];

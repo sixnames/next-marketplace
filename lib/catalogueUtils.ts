@@ -911,6 +911,7 @@ export const getCatalogueData = async ({
       sortFilterOptions,
       rubricFilters,
       categoryFilters,
+      categoryStage,
       inCategory,
       sortStage,
       defaultSortStage,
@@ -988,8 +989,9 @@ export const getCatalogueData = async ({
     const productsInitialMatch = {
       ...searchStage,
       ...companyMatch,
-      ...rubricStage,
       citySlug: city,
+      ...rubricStage,
+      ...categoryStage,
       ...brandStage,
       ...brandCollectionStage,
       ...optionsStage,

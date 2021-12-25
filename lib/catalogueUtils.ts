@@ -426,7 +426,7 @@ export async function getCatalogueAttributes({
       // If price attribute
       if (slug === FILTER_PRICE_KEY) {
         const splittedOption = optionSlug.split(FILTER_SEPARATOR);
-        const prices = `${splittedOption[0]}`.split('_');
+        const prices = `${splittedOption[1]}`.split('_');
         const minPrice = prices[0];
         const maxPrice = prices[1];
 

@@ -23,8 +23,7 @@ import { getFieldStringLocale } from './i18n';
 import { noNaN } from './numbers';
 import { phoneToRaw, phoneToReadable } from './phoneUtils';
 import { castDbData } from './ssrUtils';
-import { generateSnippetTitle, generateTitle } from './titleUtils';
-import { getTreeFromList } from './treeUtils';
+import { generateTitle } from './titleUtils';
 
 export interface MainPageInterface {
   topProducts: ShopProductInterface[];
@@ -125,47 +124,21 @@ export async function getMainPageData({
 
   const topProducts: ShopProductInterface[] = [];
   shopProductsAggregation.forEach((shopProduct) => {
-    const { product, shopsCount, ...restShopProduct } = shopProduct;
-    if (!product) {
+    const { summary, shopsCount, ...restShopProduct } = shopProduct;
+    if (!summary) {
       return;
     }
 
-    // title
-    const snippetTitle = generateSnippetTitle({
-      locale: sessionLocale,
-      brand: product?.brand,
-      rubricName: getFieldStringLocale(product?.rubric?.nameI18n, sessionLocale),
-      showRubricNameInProductTitle: product?.rubric?.showRubricNameInProductTitle,
-      showCategoryInProductTitle: product?.rubric?.showCategoryInProductTitle,
-      attributes: product?.attributes || [],
-      titleCategorySlugs: product?.titleCategoriesSlugs,
-      originalName: product?.originalName,
-      defaultGender: product?.gender,
-      categories: getTreeFromList({
-        list: product?.categories,
-        childrenFieldName: 'categories',
-        locale: sessionLocale,
-      }),
-    });
-
-    // prices
-    const minPrice = noNaN(shopProduct.cardPrices?.min);
-    const maxPrice = noNaN(shopProduct.cardPrices?.max);
-    const cardPrices = {
-      _id: new ObjectId(),
-      min: `${minPrice}`,
-      max: `${maxPrice}`,
-    };
-
     topProducts.push({
       ...restShopProduct,
-      product: {
-        ...product,
+      summary: {
+        ...summary,
         shopsCount,
-        name: getFieldStringLocale(product?.nameI18n, sessionLocale),
-        cardPrices,
-        connections: [],
-        snippetTitle,
+        name: getFieldStringLocale(summary?.nameI18n, sessionLocale),
+        snippetTitle: getFieldStringLocale(summary.snippetTitleI18n, sessionLocale),
+        minPrice: noNaN(shopProduct.minPrice),
+        maxPrice: noNaN(shopProduct.maxPrice),
+        variants: [],
       },
     });
   });
@@ -259,7 +232,7 @@ export async function getMainPageData({
     const { pages } = pagesGroup;
     (pages || []).forEach((page) => {
       // main slide
-      const showAsMainBanner = page.showAsMainBanner && page.mainBanner?.url;
+      const showAsMainBanner = page.showAsMainBanner && page.mainBanner;
       const existInSliderPages = sliderPages.find(({ _id }) => {
         return _id === page._id;
       });
@@ -268,7 +241,7 @@ export async function getMainPageData({
       }
 
       // banners
-      const showAsSecondaryBanner = page.showAsSecondaryBanner && page.secondaryBanner?.url;
+      const showAsSecondaryBanner = page.showAsSecondaryBanner && page.secondaryBanner;
       const existInBannerPages = bannerPages.find(({ _id }) => {
         return _id === page._id;
       });

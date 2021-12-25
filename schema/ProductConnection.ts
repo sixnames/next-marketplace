@@ -1,18 +1,12 @@
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import { ATTRIBUTE_VARIANT_SELECT } from '../config/common';
-import {
-  COL_ATTRIBUTES,
-  COL_OPTIONS,
-  COL_PRODUCT_FACETS,
-  COL_PRODUCT_SUMMARIES,
-} from '../db/collectionNames';
+import { COL_ATTRIBUTES, COL_OPTIONS, COL_PRODUCT_SUMMARIES } from '../db/collectionNames';
 import {
   AttributeModel,
   OptionModel,
   ProductVariantItemModel,
   ProductVariantModel,
-  ProductFacetModel,
   ProductPayloadModel,
   ProductSummaryModel,
   ObjectIdModel,
@@ -35,18 +29,6 @@ export const ProductConnectionItem = objectType({
   definition(t) {
     t.nonNull.objectId('_id');
     t.nonNull.objectId('productId');
-    t.nonNull.field('product', {
-      type: 'Product',
-      resolve: async (source): Promise<ProductFacetModel> => {
-        const { db } = await getDatabase();
-        const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
-        const product = await productsCollection.findOne({ _id: source.productId });
-        if (!product) {
-          throw Error('Product not found in ProductConnectionItem');
-        }
-        return product;
-      },
-    });
   },
 });
 

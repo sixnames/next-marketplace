@@ -121,7 +121,7 @@ export async function updateBlogPostAttribute(req: NextApiRequest, res: NextApiR
         });
       });
     }
-    const finalfilterSlugs = finalOptions.map(
+    const finalFilterSlugs = finalOptions.map(
       ({ slug }) => `${attribute.slug}${FILTER_SEPARATOR}${slug}`,
     );
 
@@ -135,7 +135,7 @@ export async function updateBlogPostAttribute(req: NextApiRequest, res: NextApiR
       { _id: blogPostId },
       {
         $set: {
-          filterSlugs: [...otherAttributesOptions, ...finalfilterSlugs],
+          filterSlugs: [...otherAttributesOptions, ...finalFilterSlugs],
           updatedAt: new Date(),
         },
       },

@@ -113,11 +113,6 @@ interface AlphabetList {
   letter: String!
 }
 
-type Asset {
-  index: Int!
-  url: String!
-}
-
 type Attribute {
   _id: ObjectId!
   capitalise: Boolean
@@ -362,7 +357,7 @@ type Company implements Base & Timestamp {
   createdAt: Date!
   domain: String
   itemId: String!
-  logo: Asset!
+  logo: String!
   name: String!
   owner: User!
   ownerId: ObjectId!
@@ -1382,7 +1377,6 @@ type OrderProduct {
   nameI18n: JSONObject
   originalName: String!
   price: Int!
-  product: Product
   productId: ObjectId!
   shop: Shop
   shopId: ObjectId!
@@ -1451,52 +1445,13 @@ type PointGeoJSON {
   type: String!
 }
 
-type Product implements Base & Timestamp {
-  _id: ObjectId!
-  active: Boolean!
-  available: Boolean
-  barcode: String
-  brandCollectionSlug: String
-  brandSlug: String
-  createdAt: Date!
-  descriptionI18n: JSONObject
-  itemId: String!
-  mainImage: String!
-  manufacturerSlug: String
-  nameI18n: JSONObject
-  originalName: String!
-  rubricId: ObjectId!
-  rubricSlug: String!
-  slug: String!
-  supplierSlug: String
-  updatedAt: Date!
-}
-
-type ProductAssets {
-  _id: ObjectId!
-  assets: [Asset!]!
-  productId: ObjectId!
-  productSlug: String!
-}
-
 type ProductAttribute {
   _id: ObjectId!
   attribute: Attribute!
   attributeId: ObjectId!
   number: Float
-  selectedOptionsIds: [ObjectId!]!
-
-  """
-  List of selected options slug
-  """
-  filterSlugs: [String!]!
   text: String!
   textI18n: JSONObject
-}
-
-type ProductCardPrices {
-  max: String!
-  min: String!
 }
 
 type ProductConnection {
@@ -1508,13 +1463,11 @@ type ProductConnection {
 
 type ProductConnectionItem {
   _id: ObjectId!
-  product: Product!
   productId: ObjectId!
 }
 
 type ProductPayload implements Payload {
   message: String!
-  payload: Product
   success: Boolean!
 }
 
@@ -1904,7 +1857,7 @@ type SelectOption {
 type Shop implements Base & Timestamp {
   _id: ObjectId!
   address: Address!
-  assets: [Asset!]!
+  assets: [String!]!
   city: City!
   citySlug: String!
   company: Company!
@@ -1912,7 +1865,7 @@ type Shop implements Base & Timestamp {
   contacts: Contacts!
   createdAt: Date!
   itemId: String!
-  logo: Asset!
+  logo: String!
   mapMarker: MapMarker
   name: String!
   productsCount: Int!
@@ -1937,7 +1890,6 @@ type ShopProduct implements Timestamp {
   oldPrice: Int
   oldPrices: [ShopProductOldPrice!]!
   price: Int!
-  product: Product!
   productId: ObjectId!
   shop: Shop!
   shopId: ObjectId!

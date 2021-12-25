@@ -62,9 +62,6 @@ export const ProductPayload = objectType({
   name: 'ProductPayload',
   definition(t) {
     t.implements('Payload');
-    t.field('payload', {
-      type: 'Product',
-    });
   },
 });
 

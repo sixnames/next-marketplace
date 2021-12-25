@@ -57,12 +57,8 @@ export const Shop = objectType({
     t.field('mapMarker', {
       type: 'MapMarker',
     });
-    t.nonNull.field('logo', {
-      type: 'Asset',
-    });
-    t.nonNull.list.nonNull.field('assets', {
-      type: 'Asset',
-    });
+    t.nonNull.string('logo');
+    t.nonNull.list.nonNull.string('assets');
     t.nonNull.field('contacts', {
       type: 'Contacts',
     });

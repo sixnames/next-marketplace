@@ -3,7 +3,6 @@ import { FILTER_SEPARATOR } from '../config/common';
 import {
   COL_ATTRIBUTES,
   COL_OPTIONS,
-  COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCT_FACETS,
   COL_SHOP_PRODUCTS,
   COL_PRODUCT_SUMMARIES,
@@ -11,7 +10,6 @@ import {
 import {
   AttributeModel,
   OptionModel,
-  ProductAttributeModel,
   ProductFacetModel,
   ProductPayloadModel,
   ShopProductModel,
@@ -863,10 +861,9 @@ export const ProductAttributeMutations = extendType({
         try {
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
-          const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
+          const productSummariesCollection =
+            db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-          const productAttributesCollection =
-            db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
           const { input } = args;
           const { productId, attributes } = input;
 
@@ -883,8 +880,8 @@ export const ProductAttributeMutations = extendType({
           }
 
           // Check if product exist
-          const product = await productsCollection.findOne({ _id: productId });
-          if (!product) {
+          const summary = await productSummariesCollection.findOne({ _id: productId });
+          if (!summary) {
             return {
               success: false,
               message: await getApiMessage('products.update.error'),
@@ -895,59 +892,68 @@ export const ProductAttributeMutations = extendType({
             const { textI18n, attributeId, productAttributeId } = attributesItem;
 
             // Check if product attribute exist
-            let productAttribute = await productAttributesCollection.findOne({
-              _id: productAttributeId,
+            let productAttribute = await summary.attributes.find(({ _id }) => {
+              return _id.equals(productAttributeId);
             });
+
+            const attribute = await attributesCollection.findOne({ _id: attributeId });
+            if (!attribute) {
+              continue;
+            }
 
             // Create new product attribute if original is absent
             if (!productAttribute) {
-              const attribute = await attributesCollection.findOne({ _id: attributeId });
-
-              if (!attribute) {
-                return {
-                  success: false,
-                  message: await getApiMessage('products.update.error'),
-                };
-              }
-
               productAttribute = {
                 _id: productAttributeId,
                 attributeId,
-                productId: product._id,
-                productSlug: product.slug,
-                rubricId: product.rubricId,
-                rubricSlug: product.rubricSlug,
-                selectedOptionsIds: [],
+                optionIds: [],
                 filterSlugs: [],
-                number: undefined,
-                textI18n: {},
+                number: null,
+                textI18n,
                 readableValueI18n: {},
               };
             }
+            const readableValueI18n = getAttributeReadableValueLocales({
+              productAttribute: {
+                ...productAttribute,
+                attribute,
+              },
+              gender: summary.gender,
+            });
+            productAttribute.readableValueI18n = readableValueI18n;
 
-            // Update or create product attribute
-            const { _id, ...restProductAttribute } = productAttribute;
-            await productAttributesCollection.findOneAndUpdate(
-              {
-                _id,
-              },
-              {
-                $set: {
-                  ...restProductAttribute,
-                  textI18n,
+            if (!productAttribute) {
+              await productSummariesCollection.findOneAndUpdate(
+                {
+                  _id: summary._id,
                 },
-              },
-              {
-                upsert: true,
-                returnDocument: 'after',
-              },
-            );
+                {
+                  $push: {
+                    attributes: productAttribute,
+                  },
+                },
+              );
+            } else {
+              await productSummariesCollection.findOneAndUpdate(
+                {
+                  _id: summary._id,
+                },
+                {
+                  $set: {
+                    'attributes.$[oldAttribute]': productAttribute,
+                  },
+                },
+                {
+                  arrayFilters: [{ 'oldAttribute._id': { $eq: productAttribute._id } }],
+                },
+              );
+            }
           }
 
           return {
             success: true,
             message: await getApiMessage('products.update.success'),
-            payload: product,
+            payload: summary,
           };
         } catch (e) {
           console.log(e);

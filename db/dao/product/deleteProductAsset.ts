@@ -72,9 +72,9 @@ export async function deleteProductAsset({
       }
 
       // delete product asset
-      const currentAsset = initialAssets.assets.find(({ index }) => index === assetIndex);
+      const currentAsset = initialAssets.assets[assetIndex];
       if (currentAsset) {
-        const removedAsset = await deleteUpload(`${currentAsset?.url}`);
+        const removedAsset = await deleteUpload(`${currentAsset}`);
         if (!removedAsset) {
           mutationPayload = {
             success: false,

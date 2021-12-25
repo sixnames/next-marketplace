@@ -23,8 +23,6 @@ import {
   COL_CATEGORIES,
   COL_CITIES,
   COL_COMPANIES,
-  COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCT_FACETS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
@@ -42,6 +40,7 @@ import {
 import {
   filterAttributesPipeline,
   shopProductSupplierProductsPipeline,
+  summaryPipeline,
 } from '../constantPipelines';
 import { castSummaryForUI } from './castSummaryForUI';
 
@@ -139,6 +138,7 @@ export const getConsoleShopProducts = async ({
       photoStage,
       page,
       searchStage,
+      categoryStage,
       noSearchResults,
     } = await castUrlFilters({
       filters,
@@ -170,6 +170,7 @@ export const getConsoleShopProducts = async ({
     const productsInitialMatch = {
       shopId: shop._id,
       ...rubricStage,
+      ...categoryStage,
       ...searchStage,
       ...brandStage,
       ...brandCollectionStage,
@@ -203,46 +204,7 @@ export const getConsoleShopProducts = async ({
               },
 
               // get shop product fields
-              {
-                $lookup: {
-                  from: COL_PRODUCT_FACETS,
-                  as: 'product',
-                  let: {
-                    productId: '$productId',
-                  },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $eq: ['$$productId', '$_id'],
-                        },
-                      },
-                    },
-
-                    // get product attributes
-                    {
-                      $lookup: {
-                        from: COL_PRODUCT_ATTRIBUTES,
-                        as: 'attributes',
-                        pipeline: [
-                          {
-                            $match: {
-                              $expr: {
-                                $eq: ['$$productId', '$productId'],
-                              },
-                            },
-                          },
-                        ],
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                $addFields: {
-                  product: { $arrayElemAt: ['$product', 0] },
-                },
-              },
+              ...summaryPipeline('$_id'),
 
               // get supplier products
               ...shopProductSupplierProductsPipeline,
@@ -261,7 +223,7 @@ export const getConsoleShopProducts = async ({
             categories: [
               {
                 $unwind: {
-                  path: '$selectedOptionsSlugs',
+                  path: '$filterSlugs',
                   preserveNullAndEmptyArrays: true,
                 },
               },
@@ -269,8 +231,8 @@ export const getConsoleShopProducts = async ({
                 $group: {
                   _id: null,
                   rubricId: { $first: '$rubricId' },
-                  selectedOptionsSlugs: {
-                    $addToSet: '$selectedOptionsSlugs',
+                  filterSlugs: {
+                    $addToSet: '$filterSlugs',
                   },
                 },
               },
@@ -280,7 +242,7 @@ export const getConsoleShopProducts = async ({
                   as: 'categories',
                   let: {
                     rubricId: '$rubricId',
-                    selectedOptionsSlugs: '$selectedOptionsSlugs',
+                    filterSlugs: '$filterSlugs',
                   },
                   pipeline: [
                     {
@@ -293,7 +255,7 @@ export const getConsoleShopProducts = async ({
                           },
                           {
                             $expr: {
-                              $in: ['$slug', '$$selectedOptionsSlugs'],
+                              $in: ['$slug', '$$filterSlugs'],
                             },
                           },
                         ],
@@ -566,26 +528,24 @@ export const getConsoleShopProducts = async ({
     // cast shop products
     const docs: ShopProductInterface[] = [];
     for await (const shopProduct of shopProductsAggregation.docs) {
-      const product = shopProduct.product;
-      if (!product) {
+      const summary = shopProduct.summary;
+      if (!summary) {
         continue;
       }
 
       const castedProduct = castSummaryForUI({
-        summary: product,
+        summary,
         attributes,
         brands,
         categories,
-        rubric,
         locale,
-        getSnippetTitle: true,
       });
 
       const otherShopProducts = await shopProductsCollection
         .aggregate<ShopProductPricesInterface>([
           {
             $match: {
-              productId: product._id,
+              productId: summary._id,
             },
           },
           {
@@ -607,7 +567,7 @@ export const getConsoleShopProducts = async ({
           supplierProducts: shopProduct.supplierProducts,
           locale,
         }),
-        product: {
+        summary: {
           ...castedProduct,
           shopsCount: shopProduct.shopsCount,
         },

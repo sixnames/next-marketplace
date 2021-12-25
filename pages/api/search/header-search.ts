@@ -7,7 +7,7 @@ import {
   SORT_DESC,
 } from '../../../config/common';
 import { COL_SHOP_PRODUCTS } from '../../../db/collectionNames';
-import { ignoreNoImageStage, shopProductFieldsPipeline } from '../../../db/dao/constantPipelines';
+import { ignoreNoImageStage, summaryPipeline } from '../../../db/dao/constantPipelines';
 import { ObjectIdModel } from '../../../db/dbModels';
 import { getDatabase } from '../../../db/mongodb';
 import { ShopProductInterface } from '../../../db/uiInterfaces';
@@ -123,7 +123,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         },
 
         // get shop product fields
-        ...shopProductFieldsPipeline('$_id'),
+        ...summaryPipeline('$_id'),
 
         {
           $addFields: {

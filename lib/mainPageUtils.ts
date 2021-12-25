@@ -7,7 +7,7 @@ import {
   SORT_DESC,
 } from '../config/common';
 import { COL_SHOP_PRODUCTS, COL_SHOPS } from '../db/collectionNames';
-import { ignoreNoImageStage, shopProductFieldsPipeline } from '../db/dao/constantPipelines';
+import { ignoreNoImageStage, summaryPipeline } from '../db/dao/constantPipelines';
 import { getDatabase } from '../db/mongodb';
 import {
   CompanyInterface,
@@ -109,7 +109,7 @@ export async function getMainPageData({
       },
 
       // get shop product fields
-      ...shopProductFieldsPipeline('$_id'),
+      ...summaryPipeline('$_id'),
 
       {
         $addFields: {

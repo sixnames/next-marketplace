@@ -2,7 +2,7 @@ import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { SORT_DESC } from '../../../config/common';
 import { COL_PRODUCT_FACETS, COL_SHOP_PRODUCTS } from '../../../db/collectionNames';
-import { ignoreNoImageStage, shopProductFieldsPipeline } from '../../../db/dao/constantPipelines';
+import { ignoreNoImageStage, summaryPipeline } from '../../../db/dao/constantPipelines';
 import { ProductFacetModel } from '../../../db/dbModels';
 import { getDatabase } from '../../../db/mongodb';
 import { ShopProductInterface } from '../../../db/uiInterfaces';
@@ -186,7 +186,7 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
               },
 
               // get shop product fields
-              ...shopProductFieldsPipeline('$_id'),
+              ...summaryPipeline('$_id'),
             ],
           },
         },

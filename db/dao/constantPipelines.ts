@@ -513,7 +513,7 @@ export const shopProductSupplierProductsPipeline = [
   },
 ];
 
-export const shopProductFieldsPipeline = (idFieldName: string) => {
+export const summaryPipeline = (idFieldName: string) => {
   return [
     {
       $lookup: {

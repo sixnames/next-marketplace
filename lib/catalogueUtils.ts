@@ -51,7 +51,7 @@ import {
   filterAttributesPipeline,
   ignoreNoImageStage,
   noImageStage,
-  shopProductFieldsPipeline,
+  summaryPipeline,
 } from '../db/dao/constantPipelines';
 import { castSummaryForUI } from '../db/dao/product/castSummaryForUI';
 import { CatalogueBreadcrumbModel, ObjectIdModel, ShopProductModel } from '../db/dbModels';
@@ -1081,7 +1081,7 @@ export const getCatalogueData = async ({
               },
 
               // get shop product fields
-              ...shopProductFieldsPipeline('$_id'),
+              ...summaryPipeline('$_id'),
             ],
 
             // prices facet

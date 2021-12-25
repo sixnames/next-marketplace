@@ -23,7 +23,7 @@ import {
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
 } from '../../../../db/collectionNames';
-import { shopProductFieldsPipeline } from '../../../../db/dao/constantPipelines';
+import { summaryPipeline } from '../../../../db/dao/constantPipelines';
 import { castOrderStatus } from '../../../../db/dao/orders/getConsoleOrder';
 import { getPageSessionUser } from '../../../../db/dao/user/getPageSessionUser';
 import { OrderModel } from '../../../../db/dbModels';
@@ -386,7 +386,7 @@ export async function getServerSideProps(
                 ],
               },
             },
-            ...shopProductFieldsPipeline('$productId'),
+            ...summaryPipeline('$productId'),
             {
               $lookup: {
                 from: COL_ORDER_STATUSES,

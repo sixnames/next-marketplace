@@ -22,7 +22,6 @@ import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_CATEGORIES,
-  COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCT_FACETS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
@@ -34,11 +33,12 @@ import {
   ConsoleRubricProductsInterface,
   ProductFacetInterface,
   ProductsAggregationInterface,
+  ProductSummaryInterface,
   RubricInterface,
   ShopProductInterface,
   ShopProductPricesInterface,
 } from '../../uiInterfaces';
-import { filterAttributesPipeline } from '../constantPipelines';
+import { filterAttributesPipeline, summaryPipeline } from '../constantPipelines';
 import { castSummaryForUI } from './castSummaryForUI';
 
 export interface GetConsoleRubricProductsInputInterface {
@@ -80,7 +80,7 @@ export const getConsoleRubricProducts = async ({
 
   try {
     const { db } = await getDatabase();
-    const productsCollection = db.collection<ProductFacetInterface>(COL_PRODUCT_FACETS);
+    const productFacetsCollection = db.collection<ProductFacetInterface>(COL_PRODUCT_FACETS);
     const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
     const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
     const filters = alwaysArray(query.filters);
@@ -116,6 +116,7 @@ export const getConsoleRubricProducts = async ({
       brandStage,
       brandCollectionStage,
       optionsStage,
+      categoryStage,
       pricesStage,
       photoStage,
       searchIds,
@@ -234,6 +235,7 @@ export const getConsoleRubricProducts = async ({
     const productsInitialMatch = {
       ...excludedIdsStage,
       ...rubricStage,
+      ...categoryStage,
       ...brandStage,
       ...brandCollectionStage,
       ...optionsStage,
@@ -254,7 +256,7 @@ export const getConsoleRubricProducts = async ({
           ]
         : [];
 
-    const productDataAggregationResult = await productsCollection
+    const productDataAggregationResult = await productFacetsCollection
       .aggregate<ProductsAggregationInterface>([
         // match products
         ...searchStage,
@@ -279,23 +281,11 @@ export const getConsoleRubricProducts = async ({
                 $limit: limit,
               },
 
-              // get product attributes
+              // get summary
+              ...summaryPipeline('$_id'),
               {
-                $lookup: {
-                  from: COL_PRODUCT_ATTRIBUTES,
-                  as: 'attributes',
-                  let: {
-                    productId: '$_id',
-                  },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $eq: ['$$productId', '$productId'],
-                        },
-                      },
-                    },
-                  ],
+                $replaceRoot: {
+                  newRoot: '$summary',
                 },
               },
 
@@ -643,11 +633,9 @@ export const getConsoleRubricProducts = async ({
 
     // rubric attributes
     const allRubricAttributes = await getRubricAllAttributes(rubric._id);
-    const docs: ProductFacetInterface[] = [];
+    const docs: ProductSummaryInterface[] = [];
     for await (const product of productDataAggregation.docs) {
-      const productCategoryAttributes = await getCategoryAllAttributes(
-        product.selectedOptionsSlugs,
-      );
+      const productCategoryAttributes = await getCategoryAllAttributes(product.categorySlugs);
 
       // seo content
       const cardContentCities = await getProductAllSeoContents({
@@ -663,9 +651,7 @@ export const getConsoleRubricProducts = async ({
         attributes,
         brands,
         categories,
-        rubric,
         locale,
-        getSnippetTitle: true,
       });
 
       const otherShopProducts = await shopProductsCollection
@@ -686,7 +672,7 @@ export const getConsoleRubricProducts = async ({
         .toArray();
       const shopProductPrices = otherShopProducts[0];
 
-      const castedProduct: ProductFacetInterface = {
+      const castedProduct: ProductSummaryInterface = {
         ...initialCastedProduct,
         minPrice: noNaN(shopProductPrices?.minPrice),
         maxPrice: noNaN(shopProductPrices?.maxPrice),

@@ -20,8 +20,6 @@ import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_CATEGORIES,
-  COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCT_FACETS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from '../../collectionNames';
@@ -35,7 +33,7 @@ import {
   RubricInterface,
   ShopProductInterface,
 } from '../../uiInterfaces';
-import { filterAttributesPipeline } from '../constantPipelines';
+import { filterAttributesPipeline, summaryPipeline } from '../constantPipelines';
 import { castSummaryForUI } from './castSummaryForUI';
 
 export interface GetConsoleCompanyRubricProductsInputInterface {
@@ -215,50 +213,11 @@ export const getConsoleCompanyRubricProducts = async ({
                 $limit: limit,
               },
 
-              // get shop product fields
-              {
-                $lookup: {
-                  from: COL_PRODUCT_FACETS,
-                  as: 'product',
-                  let: {
-                    productId: '$_id',
-                  },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $eq: ['$$productId', '$_id'],
-                        },
-                      },
-                    },
-
-                    // get product attributes
-                    {
-                      $lookup: {
-                        from: COL_PRODUCT_ATTRIBUTES,
-                        as: 'attributes',
-                        pipeline: [
-                          {
-                            $match: {
-                              $expr: {
-                                $eq: ['$$productId', '$productId'],
-                              },
-                            },
-                          },
-                        ],
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                $addFields: {
-                  product: { $arrayElemAt: ['$product', 0] },
-                },
-              },
+              // get summary
+              ...summaryPipeline('$_id'),
               {
                 $replaceRoot: {
-                  newRoot: '$product',
+                  newRoot: '$summary',
                 },
               },
             ],

@@ -30,7 +30,7 @@ import {
   brandPipeline,
   productAttributesPipeline,
   productCategoriesPipeline,
-  shopProductFieldsPipeline,
+  summaryPipeline,
 } from '../constantPipelines';
 import { getPageSessionUser } from '../user/getPageSessionUser';
 
@@ -234,7 +234,7 @@ export const getSessionCart = async ({
             },
 
             // get shop product fields
-            ...shopProductFieldsPipeline('$productId'),
+            ...summaryPipeline('$productId'),
 
             // Lookup product shop
             {
@@ -345,7 +345,7 @@ export const getSessionCart = async ({
                   },
 
                   // get shop product fields
-                  ...shopProductFieldsPipeline('$productId'),
+                  ...summaryPipeline('$productId'),
 
                   // Lookup product shop
                   {

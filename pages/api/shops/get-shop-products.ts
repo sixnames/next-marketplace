@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { DEFAULT_LOCALE } from '../../../config/common';
 import { COL_SHOP_PRODUCTS, COL_SHOPS } from '../../../db/collectionNames';
-import { shopProductFieldsPipeline } from '../../../db/dao/constantPipelines';
+import { summaryPipeline } from '../../../db/dao/constantPipelines';
 import { ObjectIdModel, ProductSummaryModel, ShopModel } from '../../../db/dbModels';
 import { getDatabase } from '../../../db/mongodb';
 import { SyncParamsInterface, SyncProductInterface } from '../../../db/syncInterfaces';
@@ -64,7 +64,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           shopId: shop._id,
         },
       },
-      ...shopProductFieldsPipeline('$productId'),
+      ...summaryPipeline('$productId'),
     ])
     .toArray();
 

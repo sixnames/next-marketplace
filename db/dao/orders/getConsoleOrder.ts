@@ -17,10 +17,7 @@ import {
 import { ObjectIdModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
 import { OrderInterface, OrderStatusInterface } from '../../uiInterfaces';
-import {
-  shopProductFieldsPipeline,
-  shopProductSupplierProductsPipeline,
-} from '../constantPipelines';
+import { summaryPipeline, shopProductSupplierProductsPipeline } from '../constantPipelines';
 
 interface CastOrderStatusInterface {
   locale?: string;
@@ -177,7 +174,7 @@ export async function getConsoleOrder({
             },
 
             // product
-            ...shopProductFieldsPipeline('$productId'),
+            ...summaryPipeline('$productId'),
 
             // order product status
             {

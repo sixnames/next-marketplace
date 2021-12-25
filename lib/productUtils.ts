@@ -12,7 +12,7 @@ import {
   productAttributesPipeline,
   productCategoriesPipeline,
   productRubricPipeline,
-  shopProductFieldsPipeline,
+  summaryPipeline,
   shopProductSupplierProductsPipeline,
 } from '../db/dao/constantPipelines';
 import {
@@ -392,7 +392,7 @@ export async function checkShopProductBarcodeIntersects({
         },
 
         // get product
-        ...shopProductFieldsPipeline('$productId'),
+        ...summaryPipeline('$productId'),
       ])
       .toArray();
 

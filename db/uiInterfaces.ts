@@ -373,6 +373,8 @@ export interface ShopProductInterface extends ShopProductModel, PricesInterface 
   promoProducts?: PromoProductInterface[] | null;
   promoProductsCount?: number | null;
   summary?: ProductSummaryInterface | null;
+  similarProducts?: ShopProductInterface[] | null;
+  shopsCount?: number | null;
 }
 
 export interface ShopInterface extends ShopModel {

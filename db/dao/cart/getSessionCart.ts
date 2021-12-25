@@ -11,7 +11,7 @@ import { NexusContext } from '../../../types/apiContextTypes';
 import {
   COL_CARTS,
   COL_GIFT_CERTIFICATES,
-  COL_PRODUCT_FACETS,
+  COL_PRODUCT_SUMMARIES,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
@@ -23,7 +23,7 @@ import {
   CartInterface,
   CartProductInterface,
   GiftCertificateInterface,
-  ProductFacetInterface,
+  ProductSummaryInterface,
   ShopProductInterface,
 } from '../../uiInterfaces';
 import {
@@ -49,7 +49,8 @@ export const getSessionCart = async ({
     const { locale, city } = await getRequestParams(context);
     const cartsCollection = db.collection<CartModel>(COL_CARTS);
     const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
-    const productsCollection = db.collection<ProductFacetInterface>(COL_PRODUCT_FACETS);
+    const productSummariesCollection =
+      db.collection<ProductSummaryInterface>(COL_PRODUCT_SUMMARIES);
     const usersCollection = db.collection<UserModel>(COL_USERS);
     const giftCertificatesCollection = db.collection<GiftCertificateModel>(COL_GIFT_CERTIFICATES);
 
@@ -154,7 +155,7 @@ export const getSessionCart = async ({
           showRubricNameInProductTitle: product.rubric?.showRubricNameInProductTitle,
           showCategoryInProductTitle: product.rubric?.showCategoryInProductTitle,
           attributes: product.attributes,
-          titleCategorySlugs: product.titleCategoriesSlugs,
+          titleCategorySlugs: product.titleCategorySlugs,
           originalName: product.originalName,
           defaultGender: product.gender,
           categories,
@@ -165,44 +166,21 @@ export const getSessionCart = async ({
           snippetTitle,
           shopProducts: sortedShopProductsByPrice,
           name: getFieldStringLocale(product.nameI18n, locale),
-          cardPrices: {
-            min: `${minPriceShopProduct?.price}`,
-            max: `${maxPriceShopProduct?.price}`,
-          },
+          minPrice: noNaN(minPriceShopProduct?.price),
+          maxPrice: noNaN(maxPriceShopProduct?.price),
         };
       }
 
       const shopProduct = initialCartProduct.shopProduct;
-      const shopProductCategories = getTreeFromList({
-        list: shopProduct?.product?.categories,
-        childrenFieldName: 'categories',
-        locale,
-      });
-
-      const shopProductSnippetTitle = shopProduct
-        ? generateSnippetTitle({
-            locale,
-            brand: shopProduct?.product?.brand,
-            rubricName: getFieldStringLocale(shopProduct?.product?.rubric?.nameI18n, locale),
-            showRubricNameInProductTitle:
-              shopProduct?.product?.rubric?.showRubricNameInProductTitle,
-            showCategoryInProductTitle: shopProduct?.product?.rubric?.showCategoryInProductTitle,
-            attributes: shopProduct?.product?.attributes,
-            titleCategorySlugs: shopProduct?.product?.titleCategoriesSlugs,
-            originalName: `${shopProduct?.product?.originalName}`,
-            defaultGender: `${shopProduct?.product?.gender}`,
-            categories: shopProductCategories,
-          })
-        : null;
 
       const finalShopProduct: ShopProductInterface | null =
-        shopProduct && shopProduct.product
+        shopProduct && shopProduct.summary
           ? {
               ...shopProduct,
-              product: {
-                ...shopProduct.product,
-                name: getFieldStringLocale(shopProduct.product.nameI18n, locale),
-                snippetTitle: shopProductSnippetTitle,
+              summary: {
+                ...shopProduct.summary,
+                name: getFieldStringLocale(shopProduct.summary.nameI18n, locale),
+                snippetTitle: getFieldStringLocale(shopProduct.summary.snippetTitleI18n, locale),
               },
               shop: shopProduct.shop
                 ? {
@@ -293,8 +271,8 @@ export const getSessionCart = async ({
       }
 
       if (productId) {
-        const productAggregation = await productsCollection
-          .aggregate<ProductFacetInterface>([
+        const productAggregation = await productSummariesCollection
+          .aggregate<ProductSummaryInterface>([
             {
               $match: {
                 _id: productId,

@@ -117,42 +117,6 @@ export async function getParentTreeSlugs({
   return getParentTreeSlugs({ _id: document.parentId, collectionName, acc });
 }
 
-export interface DeleteDocumentsTreeInterface {
-  _id: ObjectIdModel;
-  collectionName: string;
-}
-
-export async function deleteDocumentsTree({
-  _id,
-  collectionName,
-}: DeleteDocumentsTreeInterface): Promise<boolean> {
-  const { db } = await getDatabase();
-  const collection = db.collection(collectionName);
-  const removedResult = await collection.findOneAndDelete({
-    _id,
-  });
-
-  if (!removedResult.ok) {
-    return false;
-  }
-
-  // Delete tree
-  const children = await collection.find({ parentId: _id }).toArray();
-  const removedChildrenResults = [];
-  for await (const child of children) {
-    const removedChild = await deleteDocumentsTree({ _id: child._id, collectionName });
-    if (removedChild) {
-      removedChildrenResults.push(removedChild);
-    }
-  }
-
-  if (removedChildrenResults.length < children.length) {
-    return false;
-  }
-
-  return true;
-}
-
 interface GetParentTreeIdsInterface {
   _id: ObjectIdModel;
   collectionName: string;
@@ -175,4 +139,67 @@ export async function getParentTreeIds({
   }
 
   return getParentTreeIds({ _id: document.parentId, collectionName, acc });
+}
+
+interface GetChildrenTreeIdsInterface {
+  _id: ObjectIdModel;
+  collectionName: string;
+  acc: ObjectIdModel[];
+}
+
+export async function getChildrenTreeIds({
+  _id,
+  collectionName,
+  acc,
+}: GetChildrenTreeIdsInterface): Promise<ObjectIdModel[]> {
+  const { db } = await getDatabase();
+  const collection = db.collection(collectionName);
+  const document = await collection.findOne({ _id });
+
+  acc.push(_id);
+
+  if (!document) {
+    return acc;
+  }
+
+  const children = await collection.find({ parentId: _id }).toArray();
+  for await (const child of children) {
+    const childIds = await getChildrenTreeIds({ _id: child._id, collectionName, acc });
+    childIds.forEach((_id) => acc.push(_id));
+  }
+
+  return acc;
+}
+
+export interface DeleteDocumentsTreeInterface {
+  _id: ObjectIdModel;
+  collectionName: string;
+}
+
+export interface DeleteDocumentsTreePayloadInterface {
+  treeIds: ObjectIdModel[];
+  success: boolean;
+}
+
+export async function deleteDocumentsTree({
+  _id,
+  collectionName,
+}: DeleteDocumentsTreeInterface): Promise<DeleteDocumentsTreePayloadInterface> {
+  const treeIds = await getChildrenTreeIds({
+    _id,
+    acc: [],
+    collectionName,
+  });
+  const { db } = await getDatabase();
+  const collection = db.collection(collectionName);
+  const removedResult = await collection.deleteMany({
+    _id: {
+      $in: treeIds,
+    },
+  });
+
+  return {
+    treeIds,
+    success: removedResult.acknowledged,
+  };
 }

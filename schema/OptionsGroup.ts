@@ -9,27 +9,19 @@ import {
 } from '../config/common';
 import {
   COL_ATTRIBUTES,
-  COL_CATEGORIES,
   COL_OPTIONS,
   COL_OPTIONS_GROUPS,
-  COL_PRODUCT_VARIANT_ITEMS,
-  COL_PRODUCT_VARIANTS,
   COL_PRODUCT_FACETS,
-  COL_RUBRICS,
   COL_SHOP_PRODUCTS,
   COL_PRODUCT_SUMMARIES,
 } from '../db/collectionNames';
 import { findDocumentByI18nField } from '../db/dao/findDocumentByI18nField';
 import {
   AttributeModel,
-  CategoryModel,
   OptionModel,
   OptionsGroupModel,
   OptionsGroupPayloadModel,
-  ProductVariantItemModel,
-  ProductVariantModel,
   ProductFacetModel,
-  RubricModel,
   ShopProductModel,
   ProductSummaryModel,
 } from '../db/dbModels';
@@ -44,7 +36,7 @@ import {
   getRequestParams,
   getResolverValidationSchema,
 } from '../lib/sessionHelpers';
-import { deleteDocumentsTree } from '../lib/treeUtils';
+import { deleteDocumentsTree, getChildrenTreeIds } from '../lib/treeUtils';
 import {
   addOptionToGroupSchema,
   createOptionsGroupSchema,
@@ -793,8 +785,6 @@ export const OptionsGroupMutations = extendType({
           const { db } = await getDatabase();
           const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
           const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
-          const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-          const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
           const productSummariesCollection =
             db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
           const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
@@ -820,6 +810,18 @@ export const OptionsGroupMutations = extendType({
               message: await getApiMessage('optionsGroups.updateOption.error'),
             };
           }
+          const optionsTreeIds = await getChildrenTreeIds({
+            _id: option._id,
+            collectionName: COL_OPTIONS,
+            acc: [],
+          });
+          const treeOptions = await optionsCollection
+            .find({
+              _id: {
+                $in: optionsTreeIds,
+              },
+            })
+            .toArray();
 
           // update product attributes
           const oldAttributes = await attributesCollection
@@ -828,56 +830,69 @@ export const OptionsGroupMutations = extendType({
             })
             .toArray();
           const oldAttributeIds = oldAttributes.map(({ _id }) => _id);
-
-          const newAttributes = await attributesCollection
+          const summaries = await productSummariesCollection
             .find({
-              optionsGroupId: newOptionsGroup._id,
+              'attributes.attributeId': {
+                $in: oldAttributeIds,
+              },
             })
             .toArray();
+          const summaryIds = summaries.map(({ _id }) => _id);
 
-          const summaries = await productSummariesCollection.find({
-            'attributes.attributeId': {
-              $in: oldAttributeIds,
-            },
-          });
-
-          for await (const summary of summaries) {
-            for await (const oldAttribute of oldAttributes) {
-              const filterSlug = `${oldAttribute}${FILTER_SEPARATOR}${option.slug}`;
-              const summaryAttribute = summary.attributes.find(({ attributeId }) => {
-                return oldAttribute._id.equals(attributeId);
-              });
-
-              if (!summaryAttribute) {
-                continue;
-              }
-              const isSelected = summaryAttribute.optionIds.some((_id) => {
-                return _id.equals(option._id);
-              });
-              if (!isSelected) {
-                continue;
-              }
-              await productSummariesCollection.findOneAndUpdate(
-                {
-                  _id: summary._id,
+          // remove option form products
+          for await (const oldAttribute of oldAttributes) {
+            const filterSlugs = treeOptions.map((option) => {
+              return `${oldAttribute.slug}${FILTER_SEPARATOR}${option.slug}`;
+            });
+            await productSummariesCollection.updateMany(
+              {
+                _id: {
+                  $in: summaryIds,
                 },
-                {
-                  $pull: {
-                    'attributes.$[oldAttribute].optionIds': option._id,
-                    'attributes.$[oldAttribute].filterSlugs': filterSlug,
-                  },
+              },
+              {
+                $pullAll: {
+                  'attributes.$[oldAttribute].optionIds': optionsTreeIds,
+                  'attributes.$[oldAttribute].filterSlugs': filterSlugs,
+                  filterSlugs: filterSlugs,
                 },
-                {
-                  arrayFilters: [{ 'oldAttribute.attributeId': { $eq: oldAttribute._id } }],
+              },
+              {
+                arrayFilters: [{ 'oldAttribute.attributeId': { $eq: oldAttribute._id } }],
+              },
+            );
+            await shopProductsCollection.updateMany(
+              {
+                productId: {
+                  $in: summaryIds,
                 },
-              );
-            }
+              },
+              {
+                $pullAll: {
+                  filterSlugs,
+                },
+              },
+            );
+            await productFacetsCollection.updateMany(
+              {
+                _id: {
+                  $in: summaryIds,
+                },
+              },
+              {
+                $pullAll: {
+                  filterSlugs,
+                },
+              },
+            );
           }
 
           // move option
-          const updatedOptionResult = await optionsCollection.findOneAndUpdate(
+          const updatedOptionResult = await optionsCollection.updateMany(
             {
-              _id: option._id,
+              _id: {
+                $in: optionsTreeIds,
+              },
             },
             {
               $set: {
@@ -885,7 +900,7 @@ export const OptionsGroupMutations = extendType({
               },
             },
           );
-          if (!updatedOptionResult.ok) {
+          if (!updatedOptionResult.acknowledged) {
             return {
               success: false,
               message: await getApiMessage('optionsGroups.updateOption.error'),
@@ -940,10 +955,12 @@ export const OptionsGroupMutations = extendType({
 
           const { db } = await getDatabase();
           const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
-          const productConnectionItemsCollection =
-            db.collection<ProductVariantItemModel>(COL_PRODUCT_VARIANT_ITEMS);
-          const productConnectionsCollection =
-            db.collection<ProductVariantModel>(COL_PRODUCT_VARIANTS);
+          const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
+          const productSummariesCollection =
+            db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
+          const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
+          const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+          const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
           const { input } = args;
           const { optionsGroupId, optionId } = input;
 
@@ -956,26 +973,89 @@ export const OptionsGroupMutations = extendType({
             };
           }
 
-          // cleanup product connections
-          const connectionItems = await productConnectionItemsCollection
+          // get option
+          const option = await optionsCollection.findOne({ _id: optionId });
+          if (!option) {
+            return {
+              success: false,
+              message: await getApiMessage('optionsGroups.deleteOption.error'),
+            };
+          }
+          const optionsTreeIds = await getChildrenTreeIds({
+            _id: option._id,
+            collectionName: COL_OPTIONS,
+            acc: [],
+          });
+          const treeOptions = await optionsCollection
             .find({
-              optionId,
+              _id: {
+                $in: optionsTreeIds,
+              },
             })
             .toArray();
-          for await (const connectionItem of connectionItems) {
-            await productConnectionsCollection.findOneAndUpdate(
+
+          // update product attributes
+          const oldAttributes = await attributesCollection
+            .find({
+              optionsGroupId: option.optionsGroupId,
+            })
+            .toArray();
+          const oldAttributeIds = oldAttributes.map(({ _id }) => _id);
+          const summaries = await productSummariesCollection
+            .find({
+              'attributes.attributeId': {
+                $in: oldAttributeIds,
+              },
+            })
+            .toArray();
+          const summaryIds = summaries.map(({ _id }) => _id);
+
+          // remove option form products
+          for await (const oldAttribute of oldAttributes) {
+            const filterSlugs = treeOptions.map((option) => {
+              return `${oldAttribute.slug}${FILTER_SEPARATOR}${option.slug}`;
+            });
+            await productSummariesCollection.updateMany(
               {
-                _id: connectionItem.connectionId,
+                _id: {
+                  $in: summaryIds,
+                },
               },
               {
-                $pull: {
-                  productsIds: connectionItem.productId,
+                $pullAll: {
+                  'attributes.$[oldAttribute].optionIds': optionsTreeIds,
+                  'attributes.$[oldAttribute].filterSlugs': filterSlugs,
+                  filterSlugs: filterSlugs,
+                },
+              },
+              {
+                arrayFilters: [{ 'oldAttribute.attributeId': { $eq: oldAttribute._id } }],
+              },
+            );
+            await shopProductsCollection.updateMany(
+              {
+                productId: {
+                  $in: summaryIds,
+                },
+              },
+              {
+                $pullAll: {
+                  filterSlugs,
                 },
               },
             );
-            await productConnectionItemsCollection.findOneAndDelete({
-              _id: connectionItem._id,
-            });
+            await productFacetsCollection.updateMany(
+              {
+                _id: {
+                  $in: summaryIds,
+                },
+              },
+              {
+                $pullAll: {
+                  filterSlugs,
+                },
+              },
+            );
           }
 
           // Update options group options list

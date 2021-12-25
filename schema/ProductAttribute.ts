@@ -16,11 +16,13 @@ import {
   ProductPayloadModel,
   ShopProductModel,
   ProductSummaryModel,
+  ObjectIdModel,
 } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
 import getResolverErrorMessage from '../lib/getResolverErrorMessage';
-import { noNaN } from '../lib/numbers';
+import { getAttributeReadableValueLocales } from '../lib/productAttributesUtils';
 import { getOperationPermission, getRequestParams } from '../lib/sessionHelpers';
+import { getParentTreeIds } from '../lib/treeUtils';
 
 export const ProductAttribute = objectType({
   name: 'ProductAttribute',
@@ -571,49 +573,34 @@ export const ProductAttributeMutations = extendType({
                 readableValueI18n: {},
               };
             }
+            const readableValueI18n = getAttributeReadableValueLocales({
+              productAttribute: {
+                ...productAttribute,
+                attribute,
+              },
+              gender: summary.gender,
+            });
+            productAttribute.readableValueI18n = readableValueI18n;
 
             // Get selected options tree
-            const finalOptions: OptionModel[] = [];
-            if (selectedOptionsIds.length > 0) {
-              const optionsAggregation = await optionsCollection
-                .aggregate<OptionModel>([
-                  {
-                    $match: {
-                      _id: {
-                        $in: selectedOptionsIds,
-                      },
-                    },
-                  },
-                  {
-                    $graphLookup: {
-                      from: COL_OPTIONS,
-                      as: 'options',
-                      startWith: '$parentId',
-                      connectFromField: 'parentId',
-                      connectToField: '_id',
-                      depthField: 'level',
-                    },
-                  },
-                ])
-                .toArray();
-
-              // sort parent options in descendant order for each selected option
-              optionsAggregation.forEach((selectedOptionTree) => {
-                const { options, ...restOption } = selectedOptionTree;
-
-                const sortedOptions = (options || []).sort((a, b) => {
-                  return noNaN(b.level) - noNaN(a.level);
-                });
-
-                const treeQueue = [...sortedOptions, restOption];
-                treeQueue.forEach((finalOption) => {
-                  finalOptions.push(finalOption);
-                });
+            const finalOptionIds: ObjectIdModel[] = [];
+            for await (const optionId of selectedOptionsIds) {
+              const optionsTreeIds = await getParentTreeIds({
+                collectionName: COL_OPTIONS,
+                _id: optionId,
+                acc: [],
               });
+              optionsTreeIds.forEach((_id) => finalOptionIds.push(_id));
             }
+            const finalOptions = await optionsCollection
+              .find({
+                _id: {
+                  $in: finalOptionIds,
+                },
+              })
+              .toArray();
 
             // Update or create product attribute
-            const finalOptionIds = finalOptions.map(({ _id }) => _id);
             const finalFilterSlugs = finalOptions.map(
               ({ slug }) => `${attribute.slug}${FILTER_SEPARATOR}${slug}`,
             );
@@ -757,10 +744,9 @@ export const ProductAttributeMutations = extendType({
         try {
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
-          const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
+          const productSummariesCollection =
+            db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-          const productAttributesCollection =
-            db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
           const { input } = args;
           const { productId, attributes } = input;
 
@@ -777,8 +763,8 @@ export const ProductAttributeMutations = extendType({
           }
 
           // Check if product exist
-          const product = await productsCollection.findOne({ _id: productId });
-          if (!product) {
+          const summary = await productSummariesCollection.findOne({ _id: productId });
+          if (!summary) {
             return {
               success: false,
               message: await getApiMessage('products.update.error'),
@@ -789,59 +775,68 @@ export const ProductAttributeMutations = extendType({
             const { number, attributeId, productAttributeId } = attributesItem;
 
             // Check if product attribute exist
-            let productAttribute = await productAttributesCollection.findOne({
-              _id: productAttributeId,
+            let productAttribute = await summary.attributes.find(({ _id }) => {
+              return _id.equals(productAttributeId);
             });
+
+            const attribute = await attributesCollection.findOne({ _id: attributeId });
+            if (!attribute) {
+              continue;
+            }
 
             // Create new product attribute if original is absent
             if (!productAttribute) {
-              const attribute = await attributesCollection.findOne({ _id: attributeId });
-
-              if (!attribute) {
-                return {
-                  success: false,
-                  message: await getApiMessage('products.update.error'),
-                };
-              }
-
               productAttribute = {
                 _id: productAttributeId,
                 attributeId,
-                productId: product._id,
-                productSlug: product.slug,
-                rubricId: product.rubricId,
-                rubricSlug: product.rubricSlug,
-                selectedOptionsIds: [],
+                optionIds: [],
                 filterSlugs: [],
-                number: undefined,
+                number,
                 textI18n: {},
                 readableValueI18n: {},
               };
             }
+            const readableValueI18n = getAttributeReadableValueLocales({
+              productAttribute: {
+                ...productAttribute,
+                attribute,
+              },
+              gender: summary.gender,
+            });
+            productAttribute.readableValueI18n = readableValueI18n;
 
-            // Update or create product attribute
-            const { _id, ...restProductAttribute } = productAttribute;
-            await productAttributesCollection.findOneAndUpdate(
-              {
-                _id,
-              },
-              {
-                $set: {
-                  ...restProductAttribute,
-                  number,
+            if (!productAttribute) {
+              await productSummariesCollection.findOneAndUpdate(
+                {
+                  _id: summary._id,
                 },
-              },
-              {
-                upsert: true,
-                returnDocument: 'after',
-              },
-            );
+                {
+                  $push: {
+                    attributes: productAttribute,
+                  },
+                },
+              );
+            } else {
+              await productSummariesCollection.findOneAndUpdate(
+                {
+                  _id: summary._id,
+                },
+                {
+                  $set: {
+                    'attributes.$[oldAttribute]': productAttribute,
+                  },
+                },
+                {
+                  arrayFilters: [{ 'oldAttribute._id': { $eq: productAttribute._id } }],
+                },
+              );
+            }
           }
 
           return {
             success: true,
             message: await getApiMessage('products.update.success'),
-            payload: product,
+            payload: summary,
           };
         } catch (e) {
           console.log(e);

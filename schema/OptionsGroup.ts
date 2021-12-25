@@ -12,34 +12,33 @@ import {
   COL_CATEGORIES,
   COL_OPTIONS,
   COL_OPTIONS_GROUPS,
-  COL_PRODUCT_ATTRIBUTES,
   COL_PRODUCT_VARIANT_ITEMS,
   COL_PRODUCT_VARIANTS,
   COL_PRODUCT_FACETS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
+  COL_PRODUCT_SUMMARIES,
 } from '../db/collectionNames';
 import { findDocumentByI18nField } from '../db/dao/findDocumentByI18nField';
 import {
   AttributeModel,
   CategoryModel,
-  ObjectIdModel,
   OptionModel,
   OptionsGroupModel,
   OptionsGroupPayloadModel,
-  ProductAttributeModel,
   ProductVariantItemModel,
   ProductVariantModel,
   ProductFacetModel,
   RubricModel,
   ShopProductModel,
+  ProductSummaryModel,
 } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
-import { updateAlgoliaProducts } from '../lib/algolia/productAlgoliaUtils';
 import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 import { getFieldStringLocale } from '../lib/i18n';
 import { getNextNumberItemId } from '../lib/itemIdUtils';
 import { trimOptionNames } from '../lib/optionUtils';
+import { updateProductTitles } from '../lib/productUtils';
 import {
   getOperationPermission,
   getRequestParams,
@@ -416,10 +415,6 @@ export const OptionsGroupMutations = extendType({
         const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
         const optionsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS);
         const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-        const productConnectionItemsCollection =
-          db.collection<ProductVariantItemModel>(COL_PRODUCT_VARIANT_ITEMS);
-        const productConnectionsCollection =
-          db.collection<ProductVariantModel>(COL_PRODUCT_VARIANTS);
 
         const session = client.startSession();
 
@@ -474,36 +469,6 @@ export const OptionsGroupMutations = extendType({
               };
               await session.abortTransaction();
               return;
-            }
-
-            // cleanup product connections
-            const options = await optionsCollection
-              .find({
-                optionsGroupId: _id,
-              })
-              .toArray();
-            for await (const option of options) {
-              const optionId = option._id;
-              const connectionItems = await productConnectionItemsCollection
-                .find({
-                  optionId,
-                })
-                .toArray();
-              for await (const connectionItem of connectionItems) {
-                await productConnectionsCollection.findOneAndUpdate(
-                  {
-                    _id: connectionItem.connectionId,
-                  },
-                  {
-                    $pull: {
-                      productsIds: connectionItem.productId,
-                    },
-                  },
-                );
-                await productConnectionItemsCollection.findOneAndDelete({
-                  _id: connectionItem._id,
-                });
-              }
             }
 
             // Delete options group
@@ -699,8 +664,8 @@ export const OptionsGroupMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
           const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
-          const productAttributesCollection =
-            db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
+          const productSummariesCollection =
+            db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
           const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
           const { input } = args;
           const { optionsGroupId, optionId, parentId, ...values } = input;
@@ -764,22 +729,22 @@ export const OptionsGroupMutations = extendType({
           }
 
           // update product algolia indexes
-          const productAttributes = await productAttributesCollection
-            .aggregate<ProductAttributeModel>([
+          const productSummaries = await productSummariesCollection
+            .aggregate<ProductFacetModel>([
               {
                 $match: {
-                  selectedOptionsIds: updatedOption._id,
+                  'attributes.optionIds': updatedOption._id,
                 },
               },
               {
                 $project: {
-                  productId: true,
+                  _id: true,
                 },
               },
             ])
             .toArray();
-          const productIds = productAttributes.map(({ productId }) => productId);
-          await updateAlgoliaProducts({
+          const productIds = productSummaries.map(({ _id }) => _id);
+          await updateProductTitles({
             _id: {
               $in: productIds,
             },
@@ -830,11 +795,11 @@ export const OptionsGroupMutations = extendType({
           const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
-          const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
+          const productSummariesCollection =
+            db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
+          const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
           const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-          const productAttributesCollection =
-            db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
           const { input } = args;
           const { optionsGroupId, optionId } = input;
 
@@ -844,15 +809,6 @@ export const OptionsGroupMutations = extendType({
             return {
               success: false,
               message: await getApiMessage('optionsGroups.updateOption.error'),
-            };
-          }
-          const newAttributesCount = await attributesCollection.countDocuments({
-            optionsGroupId: newOptionsGroup._id,
-          });
-          if (newAttributesCount < 1) {
-            return {
-              success: false,
-              message: await getApiMessage('optionsGroups.updateOption.attributeNotFound'),
             };
           }
 
@@ -871,120 +827,50 @@ export const OptionsGroupMutations = extendType({
               optionsGroupId: option.optionsGroupId,
             })
             .toArray();
-          for await (const attribute of oldAttributes) {
-            const oldProductAttributes = await productAttributesCollection
-              .find({
-                attributeId: attribute._id,
-              })
-              .toArray();
+          const oldAttributeIds = oldAttributes.map(({ _id }) => _id);
 
-            for await (const oldProductAttribute of oldProductAttributes) {
-              const isOptionSelected = oldProductAttribute.selectedOptionsIds.some((_id) => {
-                return _id.equals(option._id);
+          const newAttributes = await attributesCollection
+            .find({
+              optionsGroupId: newOptionsGroup._id,
+            })
+            .toArray();
+
+          const summaries = await productSummariesCollection.find({
+            'attributes.attributeId': {
+              $in: oldAttributeIds,
+            },
+          });
+
+          for await (const summary of summaries) {
+            for await (const oldAttribute of oldAttributes) {
+              const filterSlug = `${oldAttribute}${FILTER_SEPARATOR}${option.slug}`;
+              const summaryAttribute = summary.attributes.find(({ attributeId }) => {
+                return oldAttribute._id.equals(attributeId);
               });
 
-              if (isOptionSelected) {
-                const product = await productsCollection.findOne({
-                  _id: oldProductAttribute.productId,
-                });
-
-                if (!product) {
-                  continue;
-                }
-                const rubric = await rubricsCollection.findOne({ _id: product.rubricId });
-                const categories = await categoriesCollection
-                  .find({
-                    slug: {
-                      $in: product.selectedOptionsSlugs,
-                    },
-                  })
-                  .toArray();
-                if (!rubric) {
-                  continue;
-                }
-
-                // remove option from old product attribute, product and shop product
-                const updater = {
-                  $pull: {
-                    selectedOptionsIds: option._id,
-                    selectedOptionsSlugs: `${attribute.slug}${FILTER_SEPARATOR}${option.slug}`,
-                  },
-                };
-                await productAttributesCollection.findOneAndUpdate(
-                  {
-                    _id: oldProductAttribute._id,
-                  },
-                  updater,
-                );
-                await productsCollection.findOneAndUpdate(
-                  {
-                    _id: product._id,
-                  },
-                  updater,
-                );
-                await shopProductsCollection.findOneAndUpdate(
-                  {
-                    productId: product._id,
-                  },
-                  updater,
-                );
-
-                const categoryAttributesGroupIds = categories.reduce(
-                  (acc: ObjectIdModel[], { attributesGroupIds }) => {
-                    return [...acc, ...attributesGroupIds];
-                  },
-                  [],
-                );
-                const allAttributesGroupIds = [
-                  ...categoryAttributesGroupIds,
-                  ...rubric.attributesGroupIds,
-                ];
-
-                // get new attributes
-                const newAttributes = await attributesCollection
-                  .find({
-                    optionsGroupId: newOptionsGroup._id,
-                    attributesGroupId: {
-                      $in: allAttributesGroupIds,
-                    },
-                  })
-                  .toArray();
-
-                // update or create product attributes
-                for await (const newAttribute of newAttributes) {
-                  const existingProductAttribute = await productAttributesCollection.findOne({
-                    productId: product._id,
-                    attributeId: newAttribute._id,
-                  });
-                  const selectedOptionSlug = `${newAttribute.slug}${FILTER_SEPARATOR}${option.slug}`;
-                  if (existingProductAttribute) {
-                    await productAttributesCollection.findOneAndUpdate(
-                      {
-                        _id: existingProductAttribute._id,
-                      },
-                      {
-                        $push: {
-                          selectedOptionsIds: option._id,
-                          optionSlugs: selectedOptionSlug,
-                        },
-                      },
-                    );
-                  } else {
-                    await productAttributesCollection.insertOne({
-                      rubricId: rubric._id,
-                      rubricSlug: rubric.slug,
-                      attributeId: newAttribute._id,
-                      productId: product._id,
-                      productSlug: product.slug,
-                      selectedOptionsIds: [option._id],
-                      optionSlugs: [selectedOptionSlug],
-                      readableValueI18n: {},
-                      number: undefined,
-                      textI18n: {},
-                    });
-                  }
-                }
+              if (!summaryAttribute) {
+                continue;
               }
+              const isSelected = summaryAttribute.optionIds.some((_id) => {
+                return _id.equals(option._id);
+              });
+              if (!isSelected) {
+                continue;
+              }
+              await productSummariesCollection.findOneAndUpdate(
+                {
+                  _id: summary._id,
+                },
+                {
+                  $pull: {
+                    'attributes.$[oldAttribute].optionIds': option._id,
+                    'attributes.$[oldAttribute].filterSlugs': filterSlug,
+                  },
+                },
+                {
+                  arrayFilters: [{ 'oldAttribute.attributeId': { $eq: oldAttribute._id } }],
+                },
+              );
             }
           }
 

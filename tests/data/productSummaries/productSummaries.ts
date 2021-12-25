@@ -214,7 +214,7 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
           _id: new ObjectId(),
           readableValueI18n: {},
           optionIds: [],
-          optionSlugs: [],
+          filterSlugs: [],
           attributeId: attribute._id,
           number,
           textI18n,
@@ -241,10 +241,10 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
               gender,
             });
             regionOptionsTree.forEach(({ slug, _id }) => {
-              const optionSlug = `${attribute.slug}${FILTER_SEPARATOR}${slug}`;
+              const filterSlug = `${attribute.slug}${FILTER_SEPARATOR}${slug}`;
               productAttribute.optionIds.push(_id);
-              productAttribute.optionSlugs.push(optionSlug);
-              selectedOptionsSlugs.push(optionSlug);
+              productAttribute.filterSlugs.push(filterSlug);
+              selectedOptionsSlugs.push(filterSlug);
             });
           }
           const readableValueI18n = getAttributeReadableValueLocales({
@@ -275,7 +275,7 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
           if (selectedOption) {
             const optionSlug = `${attribute.slug}${FILTER_SEPARATOR}${selectedOption.slug}`;
             productAttribute.optionIds.push(selectedOption._id);
-            productAttribute.optionSlugs.push(optionSlug);
+            productAttribute.filterSlugs.push(optionSlug);
             selectedOptionsSlugs.push(optionSlug);
           }
           const readableValueI18n = getAttributeReadableValueLocales({
@@ -307,7 +307,7 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
             selectedOptions.push(selectedOption);
             const optionSlug = `${attribute.slug}${FILTER_SEPARATOR}${selectedOption.slug}`;
             productAttribute.optionIds.push(selectedOption._id);
-            productAttribute.optionSlugs.push(optionSlug);
+            productAttribute.filterSlugs.push(optionSlug);
             selectedOptionsSlugs.push(optionSlug);
           }
 
@@ -324,7 +324,7 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
             selectedOptions.push(nextSelectedOption);
             const optionSlug = `${attribute.slug}${FILTER_SEPARATOR}${nextSelectedOption.slug}`;
             productAttribute.optionIds.push(nextSelectedOption._id);
-            productAttribute.optionSlugs.push(optionSlug);
+            productAttribute.filterSlugs.push(optionSlug);
             selectedOptionsSlugs.push(optionSlug);
           }
 

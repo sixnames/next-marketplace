@@ -628,7 +628,7 @@ export interface ProductVariantModel {
 export interface ProductAttributeModel {
   _id: ObjectIdModel;
   attributeId: ObjectIdModel;
-  optionSlugs: string[];
+  filterSlugs: string[];
   optionIds: ObjectIdModel[];
   textI18n?: TranslationModel | null;
   number?: number | null;

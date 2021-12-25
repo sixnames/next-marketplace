@@ -1,7 +1,10 @@
 import { ObjectId } from 'mongodb';
-import { updateAlgoliaProducts } from '../../../lib/algolia/productAlgoliaUtils';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import { checkBarcodeIntersects, trimProductName } from '../../../lib/productUtils';
+import {
+  checkBarcodeIntersects,
+  trimProductName,
+  updateProductTitles,
+} from '../../../lib/productUtils';
 import {
   getOperationPermission,
   getRequestParams,
@@ -138,7 +141,7 @@ export async function updateProduct({
       }
 
       // update algolia product object
-      await updateAlgoliaProducts({
+      await updateProductTitles({
         _id: updatedProduct._id,
       });
 

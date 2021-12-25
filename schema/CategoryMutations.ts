@@ -29,9 +29,9 @@ import {
   RubricModel,
 } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
-import { updateAlgoliaProducts } from '../lib/algolia/productAlgoliaUtils';
 import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 import { getNextItemId } from '../lib/itemIdUtils';
+import { updateProductTitles } from '../lib/productUtils';
 import { updateCitiesSeoContent } from '../lib/seoContentUtils';
 import {
   getOperationPermission,
@@ -422,8 +422,8 @@ export const CategoryMutations = extendType({
           }
 
           // update product algolia indexes
-          await updateAlgoliaProducts({
-            selectedOptionsSlugs: updatedCategory.slug,
+          await updateProductTitles({
+            categorySlugs: updatedCategory.slug,
           });
 
           return {

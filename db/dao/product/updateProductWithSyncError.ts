@@ -1,8 +1,11 @@
 import { ObjectId } from 'mongodb';
-import { updateAlgoliaProducts } from '../../../lib/algolia/productAlgoliaUtils';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
 import { getNextItemId } from '../../../lib/itemIdUtils';
-import { castSummaryToShopProduct, checkBarcodeIntersects } from '../../../lib/productUtils';
+import {
+  castSummaryToShopProduct,
+  checkBarcodeIntersects,
+  updateProductTitles,
+} from '../../../lib/productUtils';
 import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
 import {
   COL_NOT_SYNCED_PRODUCTS,
@@ -157,7 +160,7 @@ export async function updateProductWithSyncError({
       }
 
       // update algolia product object
-      await updateAlgoliaProducts({
+      await updateProductTitles({
         _id: updatedProduct._id,
       });
 

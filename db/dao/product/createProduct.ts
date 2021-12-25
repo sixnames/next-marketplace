@@ -1,9 +1,12 @@
 import { ObjectId } from 'mongodb';
 import { DEFAULT_LOCALE, IMAGE_FALLBACK } from '../../../config/common';
-import { updateAlgoliaProducts } from '../../../lib/algolia/productAlgoliaUtils';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
 import { getNextItemId } from '../../../lib/itemIdUtils';
-import { checkBarcodeIntersects, trimProductName } from '../../../lib/productUtils';
+import {
+  checkBarcodeIntersects,
+  trimProductName,
+  updateProductTitles,
+} from '../../../lib/productUtils';
 import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
 import {
   COL_PRODUCT_FACETS,
@@ -191,7 +194,7 @@ export async function createProduct({
       }
 
       // create algolia object
-      await updateAlgoliaProducts({
+      await updateProductTitles({
         _id: createdSummary._id,
       });
 

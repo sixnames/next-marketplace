@@ -23,8 +23,8 @@ import {
   ShopProductModel,
 } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
-import { updateAlgoliaProducts } from '../lib/algolia/productAlgoliaUtils';
 import getResolverErrorMessage from '../lib/getResolverErrorMessage';
+import { updateProductTitles } from '../lib/productUtils';
 import { updateCitiesSeoContent } from '../lib/seoContentUtils';
 import {
   getOperationPermission,
@@ -307,7 +307,7 @@ export const RubricMutations = extendType({
           }
 
           // update product algolia indexes
-          await updateAlgoliaProducts({
+          await updateProductTitles({
             rubricId: updatedRubric._id,
           });
 

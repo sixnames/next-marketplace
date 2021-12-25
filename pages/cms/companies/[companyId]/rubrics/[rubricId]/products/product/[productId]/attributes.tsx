@@ -212,7 +212,7 @@ export const getServerSideProps = async (
           attributeId: attribute._id,
           readableValue: '',
           optionIds: [],
-          optionSlugs: [],
+          filterSlugs: [],
           number: undefined,
           textI18n: {},
         };

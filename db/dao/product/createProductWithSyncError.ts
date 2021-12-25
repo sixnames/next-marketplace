@@ -1,12 +1,12 @@
 import { ObjectId } from 'mongodb';
 import { DEFAULT_LOCALE, IMAGE_FALLBACK } from '../../../config/common';
-import { updateAlgoliaProducts } from '../../../lib/algolia/productAlgoliaUtils';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
 import { getNextItemId } from '../../../lib/itemIdUtils';
 import {
   castSummaryToFacet,
   castSummaryToShopProduct,
   checkBarcodeIntersects,
+  updateProductTitles,
 } from '../../../lib/productUtils';
 import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
 import {
@@ -208,7 +208,7 @@ export async function createProductWithSyncError({
       }
 
       // create product algolia object
-      await updateAlgoliaProducts({
+      await updateProductTitles({
         _id: createdProductSummary._id,
       });
 

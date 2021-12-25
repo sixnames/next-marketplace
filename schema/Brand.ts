@@ -13,10 +13,10 @@ import {
   ProductFacetModel,
 } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
-import { updateAlgoliaProducts } from '../lib/algolia/productAlgoliaUtils';
 import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 import { getNextNumberItemId } from '../lib/itemIdUtils';
 import { getAlphabetList } from '../lib/optionUtils';
+import { updateProductTitles } from '../lib/productUtils';
 import {
   getOperationPermission,
   getRequestParams,
@@ -486,7 +486,7 @@ export const BrandMutations = extendType({
           }
 
           // update product algolia indexes
-          await updateAlgoliaProducts({
+          await updateProductTitles({
             brandSlug: updatedBrandResult.value.itemId,
           });
 
@@ -858,7 +858,7 @@ export const BrandMutations = extendType({
             }
 
             // update product algolia indexes
-            await updateAlgoliaProducts({
+            await updateProductTitles({
               brandCollectionSlug: updatedBrandCollection.itemId,
             });
 

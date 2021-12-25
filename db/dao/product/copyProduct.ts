@@ -1,9 +1,8 @@
 import { ObjectId } from 'mongodb';
 import { IMAGE_FALLBACK } from '../../../config/common';
-import { updateAlgoliaProducts } from '../../../lib/algolia/productAlgoliaUtils';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
 import { getNextItemId } from '../../../lib/itemIdUtils';
-import { castSummaryToFacet } from '../../../lib/productUtils';
+import { castSummaryToFacet, updateProductTitles } from '../../../lib/productUtils';
 import {
   getOperationPermission,
   getRequestParams,
@@ -128,7 +127,7 @@ export async function copyProduct({
       }
 
       // create algolia object
-      await updateAlgoliaProducts({
+      await updateProductTitles({
         _id: createdProductSummary._id,
       });
 

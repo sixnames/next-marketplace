@@ -591,8 +591,8 @@ export async function getCardData({
       }
       if (
         !attribute.showAsBreadcrumb ||
-        !productAttribute.optionSlugs ||
-        productAttribute.optionSlugs.length < 1
+        !productAttribute.filterSlugs ||
+        productAttribute.filterSlugs.length < 1
       ) {
         continue;
       }

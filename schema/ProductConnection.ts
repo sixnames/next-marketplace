@@ -4,8 +4,6 @@ import { ATTRIBUTE_VARIANT_SELECT } from '../config/common';
 import {
   COL_ATTRIBUTES,
   COL_OPTIONS,
-  COL_PRODUCT_VARIANT_ITEMS,
-  COL_PRODUCT_VARIANTS,
   COL_PRODUCT_FACETS,
   COL_PRODUCT_SUMMARIES,
 } from '../db/collectionNames';
@@ -374,37 +372,22 @@ export const ProductConnectionMutations = extendType({
             }
 
             // Create connection item
-            const updateProductIds: ObjectIdModel[] = [];
-            const updatedVariants = summary.variants.reduce(
-              (acc: ProductVariantModel[], summaryVariant) => {
-                if (!summaryVariant._id.equals(variant._id)) {
-                  return [...acc, summaryVariant];
-                }
-
-                const products = [
-                  ...summaryVariant.products,
-                  {
-                    _id: new ObjectId(),
-                    optionId: option._id,
-                    productId: addProductId,
-                    productSlug: addSummary.slug,
-                  },
-                ];
-
-                products.forEach(({ productId }) => {
-                  updateProductIds.push(productId);
-                });
-
-                return [
-                  ...acc,
-                  {
-                    ...summaryVariant,
-                    products,
-                  },
-                ];
+            const updatedVariantProducts: ProductVariantItemModel[] = [
+              ...variant.products,
+              {
+                _id: new ObjectId(),
+                optionId: option._id,
+                productId: addProductId,
+                productSlug: addSummary.slug,
               },
-              [],
-            );
+            ];
+            const updateProductIds = variant.products.map(({ productId }) => {
+              return productId;
+            });
+            const updatedVariant: ProductVariantModel = {
+              ...variant,
+              products: updatedVariantProducts,
+            };
 
             // Update connection
             const updatedSummaryResult = await productSummariesCollection.updateMany(
@@ -415,11 +398,28 @@ export const ProductConnectionMutations = extendType({
               },
               {
                 $set: {
-                  variants: updatedVariants,
+                  'variants.$[oldVariant]': updatedVariant,
+                },
+              },
+              {
+                arrayFilters: [
+                  {
+                    'oldVariant._id': { $eq: variant._id },
+                  },
+                ],
+              },
+            );
+            const updatedAddSummaryResult = await productSummariesCollection.findOneAndUpdate(
+              {
+                _id: addProductId,
+              },
+              {
+                $push: {
+                  variants: updatedVariant,
                 },
               },
             );
-            if (!updatedSummaryResult.acknowledged) {
+            if (!updatedSummaryResult.acknowledged || !updatedAddSummaryResult.ok) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`products.connection.updateError`),
@@ -464,11 +464,8 @@ export const ProductConnectionMutations = extendType({
       resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
-        const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
-        const productConnectionsCollection =
-          db.collection<ProductVariantModel>(COL_PRODUCT_VARIANTS);
-        const productConnectionItemsCollection =
-          db.collection<ProductVariantItemModel>(COL_PRODUCT_VARIANT_ITEMS);
+        const productSummariesCollection =
+          db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
 
         const session = client.startSession();
 
@@ -505,10 +502,14 @@ export const ProductConnectionMutations = extendType({
             const minimumProductsCountForConnectionDelete = 2;
 
             // Check all entities availability
-            const product = await productsCollection.findOne({ _id: productId });
-            const deleteProduct = await productsCollection.findOne({ _id: deleteProductId });
-            const connection = await productConnectionsCollection.findOne({ _id: connectionId });
-            if (!product || !deleteProduct || !connection) {
+            const summary = await productSummariesCollection.findOne({ _id: productId });
+            const deleteSummary = await productSummariesCollection.findOne({
+              _id: deleteProductId,
+            });
+            const variant = summary?.variants.find((variant) => {
+              return variant._id.equals(connectionId);
+            });
+            if (!summary || !deleteSummary || !variant) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`products.update.notFound`),
@@ -517,20 +518,41 @@ export const ProductConnectionMutations = extendType({
               return;
             }
 
-            // Get connection items
-            const connectionItems = await productConnectionItemsCollection
-              .find({ connectionId })
-              .toArray();
-
             const errorMessage = await getApiMessage('products.connection.deleteError');
             const successMessage = await getApiMessage('products.connection.deleteProductSuccess');
 
+            const updateProductIds: ObjectIdModel[] = [];
+            const allVariantProductIds: ObjectIdModel[] = [];
+            const updatedVariantProducts = variant.products.reduce(
+              (acc: ProductVariantItemModel[], variantProduct) => {
+                allVariantProductIds.push(variantProduct.productId);
+                if (variantProduct.productId.equals(deleteProductId)) {
+                  return acc;
+                }
+
+                updateProductIds.push(variantProduct.productId);
+                return [...acc, variantProduct];
+              },
+              [],
+            );
+
             // Delete connection if it has one item
-            if (connectionItems.length < minimumProductsCountForConnectionDelete) {
-              const removedConnectionResult = await productConnectionsCollection.findOneAndDelete({
-                _id: connectionId,
-              });
-              if (!removedConnectionResult.ok) {
+            if (variant.products.length < minimumProductsCountForConnectionDelete) {
+              const removedConnectionResult = await productSummariesCollection.updateMany(
+                {
+                  _id: {
+                    $in: allVariantProductIds,
+                  },
+                },
+                {
+                  $pull: {
+                    variants: {
+                      _id: variant._id,
+                    },
+                  },
+                },
+              );
+              if (!removedConnectionResult.acknowledged) {
                 mutationPayload = {
                   success: false,
                   message: errorMessage,
@@ -540,18 +562,45 @@ export const ProductConnectionMutations = extendType({
               }
             } else {
               // Update connection
-              const updatedConnectionResult = await productConnectionsCollection.findOneAndUpdate(
+              const updatedVariantSummariesResult = await productSummariesCollection.updateMany(
                 {
-                  _id: connectionId,
+                  _id: {
+                    $in: updateProductIds,
+                  },
+                },
+                {
+                  $set: {
+                    'variants.$[oldVariant].products': updatedVariantProducts,
+                  },
+                },
+                {
+                  arrayFilters: [
+                    {
+                      'oldVariant._id': { $eq: variant._id },
+                    },
+                  ],
+                },
+              );
+              const updatedOldSummaryResult = await productSummariesCollection.findOneAndUpdate(
+                {
+                  _id: deleteProductId,
                 },
                 {
                   $pull: {
-                    productsIds: deleteProductId,
+                    variants: {
+                      _id: variant._id,
+                    },
                   },
                 },
+                {
+                  arrayFilters: [
+                    {
+                      'oldVariant._id': { $eq: variant._id },
+                    },
+                  ],
+                },
               );
-              const updatedConnection = updatedConnectionResult.value;
-              if (!updatedConnectionResult.ok || !updatedConnection) {
+              if (!updatedVariantSummariesResult.acknowledged || !updatedOldSummaryResult.ok) {
                 mutationPayload = {
                   success: false,
                   message: errorMessage,
@@ -561,33 +610,10 @@ export const ProductConnectionMutations = extendType({
               }
             }
 
-            // Remove connection item
-            const removedConnectionItemResult =
-              await productConnectionItemsCollection.findOneAndDelete({
-                productId: deleteProductId,
-              });
-            if (!removedConnectionItemResult.ok) {
-              mutationPayload = {
-                success: false,
-                message: errorMessage,
-              };
-              await session.abortTransaction();
-              return;
-            }
-            const removedConnectionItem = removedConnectionItemResult.value;
-            if (!removedConnectionItemResult.ok || !removedConnectionItem) {
-              mutationPayload = {
-                success: false,
-                message: errorMessage,
-              };
-              await session.abortTransaction();
-              return;
-            }
-
             mutationPayload = {
               success: true,
               message: successMessage,
-              payload: product,
+              payload: summary,
             };
           });
 

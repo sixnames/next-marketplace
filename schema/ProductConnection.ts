@@ -558,7 +558,7 @@ export const ProductConnectionMutations = extendType({
                 {
                   arrayFilters: [
                     {
-                      'oldVariant._id': { $eq: variant._id },
+                      'oldVariant._id': variant._id,
                     },
                   ],
                 },
@@ -573,13 +573,6 @@ export const ProductConnectionMutations = extendType({
                       _id: variant._id,
                     },
                   },
-                },
-                {
-                  arrayFilters: [
-                    {
-                      'oldVariant._id': { $eq: variant._id },
-                    },
-                  ],
                 },
               );
               if (!updatedVariantSummariesResult.acknowledged || !updatedOldSummaryResult.ok) {

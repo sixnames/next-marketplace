@@ -1,14 +1,14 @@
 import { ROUTE_CMS } from 'config/common';
 import { fixtureIds } from 'cypress/fixtures/fixtureIds';
 
-describe('Rubric products', () => {
+describe('Product variants', () => {
   beforeEach(() => {
     cy.testAuth(
       `${ROUTE_CMS}/rubrics/${fixtureIds.rubricWine}/products/product/${fixtureIds.wineProductA}/connections`,
     );
   });
 
-  it('Should CRUD product connections', () => {
+  it('Should CRUD product variants', () => {
     cy.getByCy('product-connections-list').should('exist');
     cy.getByCy('create-connection').click();
     cy.getByCy('create-connection-modal').should('exist');
@@ -24,7 +24,7 @@ describe('Rubric products', () => {
     cy.wait(1500);
 
     // delete first product
-    cy.getByCy('0-0-delete').click();
+    cy.getByCy('0-1-delete').click();
     cy.getByCy('confirm').click();
     cy.wait(1500);
 

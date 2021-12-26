@@ -19,7 +19,6 @@ import {
   ProductAttributeModel,
   CategoryModel,
   ProductVariantModel,
-  ProductVariantItemModel,
 } from '../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 import { OptionInterface, ProductAttributeInterface } from '../../../db/uiInterfaces';
@@ -134,6 +133,7 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
 
   let addedAttributes: AddedAttributeInterface[] = [];
   const rubricProducts: ProductSummaryModel[] = [];
+  const allVariants: ProductVariantModel[] = [];
 
   interface GetAddedAttributeInterface {
     attributeSlug: string;
@@ -477,31 +477,64 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
     };
     const snippetTitle = generateSnippetTitle(titleConfig);
     const cardTitle = generateCardTitle(titleConfig);
+    const summaryId = getObjectId(`${rubricSlug} ${itemId}`);
 
     // variants
-    const variants = variantAttributesConfig.reduce(
-      (acc: ProductVariantModel[], { attributeSlug, attributeId }) => {
-        const productAttribute = productAttributes.find((productAttribute) => {
-          return productAttribute.attributeId.equals(attributeId);
-        });
-        if (!productAttribute) {
-          return acc;
-        }
-        return [
-          ...acc,
-          {
+    variantAttributesConfig.forEach(({ attributeSlug, attributeId }) => {
+      const variantId = getVariantObjectId(attributeSlug, rubric.slug);
+      const productAttribute = productAttributes.find((productAttribute) => {
+        return productAttribute.attributeId.equals(attributeId);
+      });
+      if (!productAttribute) {
+        return;
+      }
+
+      const existingVariantIndex = allVariants.findIndex(({ _id }) => {
+        return _id.equals(variantId);
+      });
+
+      const filterSlug = productAttribute.filterSlugs[0];
+      const optionsSlugArray = `${filterSlug}`.split(FILTER_SEPARATOR);
+      const optionsSlug = `${optionsSlugArray[1]}`;
+      const option = options.find(({ slug }) => slug === optionsSlug);
+
+      if (option) {
+        const variantProductId = getObjectId(`${option.slug}`);
+
+        if (existingVariantIndex < 0) {
+          allVariants.push({
             _id: getVariantObjectId(attributeSlug, rubric.slug),
             attributeId,
             attributeSlug,
-            products: [],
-          },
-        ];
-      },
-      [],
-    );
+            products: [
+              {
+                _id: variantProductId,
+                optionId: option._id,
+                productSlug: itemId,
+                productId: summaryId,
+              },
+            ],
+          });
+        } else {
+          const existingVariant = allVariants[existingVariantIndex];
+          const variantProductAlreadyExist = existingVariant.products.some(({ _id }) => {
+            return _id.equals(variantProductId);
+          });
+          if (variantProductAlreadyExist) {
+            return;
+          }
+          allVariants[existingVariantIndex].products.push({
+            _id: variantProductId,
+            optionId: option._id,
+            productSlug: itemId,
+            productId: summaryId,
+          });
+        }
+      }
+    });
 
     const summary: ProductSummaryModel = {
-      _id: getObjectId(`${rubricSlug} ${itemId}`),
+      _id: summaryId,
       active: true,
       itemId,
       slug: itemId,
@@ -533,7 +566,7 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
       filterSlugs: filterSlugs,
       titleCategorySlugs,
       attributeIds,
-      variants,
+      variants: [],
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -542,68 +575,21 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
   }
 
   // get variant products
-  variantAttributesConfig.forEach(({ attributeSlug }) => {
-    const variantId = getVariantObjectId(attributeSlug, rubric.slug);
-    const variantSummaries = rubricProducts.filter(({ variants }) => {
-      return variants.some(({ _id }) => _id.equals(variantId));
-    });
-    const firstSummary = variantSummaries[0];
-    if (!firstSummary) {
-      return;
-    }
-    const variant = firstSummary.variants.find(({ _id }) => {
-      return _id.equals(variantId);
-    });
-    if (!variant) {
-      return;
-    }
-
-    const variantProducts: ProductVariantItemModel[] = [];
-    variantSummaries.forEach((product) => {
-      const filterSlug = product.filterSlugs.find((slug) => {
-        const slugArray = slug.split(FILTER_SEPARATOR);
-        return variant.attributeSlug === slugArray[0];
+  const rubricProductsWithVariants = rubricProducts.map((summary) => {
+    const summaryVariants = allVariants.filter((variant) => {
+      const exist = variant.products.some(({ productId }) => {
+        return productId.equals(summary._id);
       });
-
-      const optionsSlugArray = `${filterSlug}`.split(FILTER_SEPARATOR);
-      const optionsSlug = `${optionsSlugArray[1]}`;
-      const option = options.find(({ slug }) => slug === optionsSlug);
-
-      if (option) {
-        variantProducts.push({
-          _id: getObjectId(`${variantId} ${product._id}`),
-          productId: product._id,
-          productSlug: product.slug,
-          optionId: option._id,
-        });
-      }
+      return exist;
     });
 
-    variantSummaries.forEach((summary) => {
-      const summaryIndex = rubricProducts.findIndex(({ _id }) => {
-        return _id.equals(summary._id);
-      });
-      if (summaryIndex > -1) {
-        rubricProducts[summaryIndex] = {
-          ...summary,
-          variants: summary.variants.reduce((acc: ProductVariantModel[], summaryVariant) => {
-            if (summaryVariant._id.equals(variantId)) {
-              return [
-                ...acc,
-                {
-                  ...summaryVariant,
-                  products: variantProducts,
-                },
-              ];
-            }
-            return acc;
-          }, []),
-        };
-      }
-    });
+    return {
+      ...summary,
+      variants: summaryVariants,
+    };
   });
 
-  return [...acc, ...rubricProducts];
+  return [...acc, ...rubricProductsWithVariants];
 }, []);
 
 // @ts-ignore

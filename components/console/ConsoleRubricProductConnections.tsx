@@ -123,7 +123,7 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
       },
     },
     {
-      accessor: 'product',
+      accessor: 'summary',
       headTitle: 'Фото',
       render: ({ cellData }) => {
         if (!cellData) {
@@ -132,14 +132,14 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
         return (
           <TableRowImage
             src={cellData.mainImage}
-            alt={cellData.originalName}
-            title={cellData.originalName}
+            alt={cellData.snippetTitle}
+            title={cellData.snippetTitle}
           />
         );
       },
     },
     {
-      accessor: 'product.snippetTitle',
+      accessor: 'summary.snippetTitle',
       headTitle: 'Название',
       render: ({ cellData }) => {
         return cellData || 'Товар не найден';

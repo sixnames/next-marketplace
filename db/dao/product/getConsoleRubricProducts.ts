@@ -22,7 +22,7 @@ import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_CATEGORIES,
-  COL_PRODUCT_FACETS,
+  COL_PRODUCT_SUMMARIES,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from '../../collectionNames';
@@ -31,7 +31,6 @@ import { getDatabase } from '../../mongodb';
 import {
   AttributeInterface,
   ConsoleRubricProductsInterface,
-  ProductFacetInterface,
   ProductsAggregationInterface,
   ProductSummaryInterface,
   RubricInterface,
@@ -80,7 +79,8 @@ export const getConsoleRubricProducts = async ({
 
   try {
     const { db } = await getDatabase();
-    const productFacetsCollection = db.collection<ProductFacetInterface>(COL_PRODUCT_FACETS);
+    const productSummariesCollection =
+      db.collection<ProductSummaryInterface>(COL_PRODUCT_SUMMARIES);
     const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
     const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
     const filters = alwaysArray(query.filters);
@@ -164,13 +164,13 @@ export const getConsoleRubricProducts = async ({
         ? [
             {
               $unwind: {
-                path: '$selectedAttributesIds',
+                path: '$attributes',
                 preserveNullAndEmptyArrays: true,
               },
             },
             {
               $match: {
-                selectedAttributesIds: { $in: attributesObjectIds },
+                'attributes.attributeId': { $in: attributesObjectIds },
               },
             },
             {
@@ -178,7 +178,7 @@ export const getConsoleRubricProducts = async ({
                 _id: '$_id',
                 doc: { $first: '$$ROOT' },
                 selectedAttributesIds: {
-                  $push: '$selectedAttributesIds',
+                  $push: '$attributes.attributeId',
                 },
               },
             },
@@ -256,7 +256,7 @@ export const getConsoleRubricProducts = async ({
           ]
         : [];
 
-    const productDataAggregationResult = await productFacetsCollection
+    const productDataAggregationResult = await productSummariesCollection
       .aggregate<ProductsAggregationInterface>([
         // match products
         ...searchStage,

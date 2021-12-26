@@ -600,6 +600,8 @@ export const ProductAttributeMutations = extendType({
               ({ slug }) => `${attribute.slug}${FILTER_SEPARATOR}${slug}`,
             );
 
+            const oldFilterSlugs = [...productAttribute.filterSlugs];
+
             // add new product attribute if not exist
             if (productAttributeNotExist && finalOptionIds.length > 0) {
               const updatedSummaryResult = await productSummariesCollection.findOneAndUpdate(
@@ -654,6 +656,7 @@ export const ProductAttributeMutations = extendType({
                   },
                 },
               );
+
               mutationPayload = {
                 success: true,
                 message: await getApiMessage('products.update.success'),
@@ -661,18 +664,87 @@ export const ProductAttributeMutations = extendType({
               return;
             }
 
-            // Update product
+            // remove attribute if value is empty
+            if (finalOptionIds.length < 1) {
+              const updatedProductAttributeResult =
+                await productSummariesCollection.findOneAndUpdate(
+                  {
+                    _id: summary._id,
+                  },
+                  {
+                    $pull: {
+                      attributes: {
+                        attributeId,
+                      },
+                    },
+                    $pullAll: {
+                      filterSlugs: oldFilterSlugs,
+                    },
+                  },
+                );
+              if (!updatedProductAttributeResult.ok) {
+                mutationPayload = {
+                  success: false,
+                  message: await getApiMessage('products.update.error'),
+                };
+                await session.abortTransaction();
+                return;
+              }
+              await shopProductsCollection.updateMany(
+                {
+                  productId: summary._id,
+                },
+                {
+                  $pullAll: {
+                    filterSlugs: oldFilterSlugs,
+                  },
+                },
+              );
+              await productFacetsCollection.findOneAndUpdate(
+                {
+                  _id: summary._id,
+                },
+                {
+                  $pullAll: {
+                    filterSlugs: oldFilterSlugs,
+                  },
+                },
+              );
+
+              mutationPayload = {
+                success: true,
+                message: await getApiMessage('products.update.success'),
+              };
+              return;
+            }
+
+            // update attribute
+            const updatedFilterSlugs = summary.filterSlugs.reduce((acc: string[], filterSlug) => {
+              if (oldFilterSlugs.includes(filterSlug)) {
+                return acc;
+              }
+              return [...acc, filterSlug];
+            }, finalFilterSlugs);
             const updatedProductAttributeResult = await productSummariesCollection.findOneAndUpdate(
               {
                 _id: summary._id,
               },
               {
-                $pull: {
-                  'attributes.attributeId': attributeId,
+                $set: {
+                  'attributes.$[oldAttribute]': {
+                    ...productAttribute,
+                    optionIds: finalOptionIds,
+                    filterSlugs: finalFilterSlugs,
+                  },
+                  filterSlugs: updatedFilterSlugs,
                 },
-                $pullAll: {
-                  filterSlugs: productAttribute.filterSlugs,
-                },
+              },
+              {
+                arrayFilters: [
+                  {
+                    'oldAttribute._id': productAttribute._id,
+                  },
+                ],
               },
             );
             if (!updatedProductAttributeResult.ok) {
@@ -688,8 +760,8 @@ export const ProductAttributeMutations = extendType({
                 productId: summary._id,
               },
               {
-                $pullAll: {
-                  filterSlugs: productAttribute.filterSlugs,
+                $set: {
+                  filterSlugs: updatedFilterSlugs,
                 },
               },
             );
@@ -698,8 +770,8 @@ export const ProductAttributeMutations = extendType({
                 _id: summary._id,
               },
               {
-                $pullAll: {
-                  filterSlugs: productAttribute.filterSlugs,
+                $set: {
+                  filterSlugs: updatedFilterSlugs,
                 },
               },
             );
@@ -766,8 +838,8 @@ export const ProductAttributeMutations = extendType({
             };
           }
 
-          for await (const attributesItem of attributes) {
-            const { number, attributeId, productAttributeId } = attributesItem;
+          for await (const inputAttribute of attributes) {
+            const { number, attributeId, productAttributeId } = inputAttribute;
 
             // Check if product attribute exist
             let productAttribute = await summary.attributes.find(({ _id }) => {
@@ -778,6 +850,7 @@ export const ProductAttributeMutations = extendType({
             if (!attribute) {
               continue;
             }
+            const productAttributeNotExist = !productAttribute;
 
             // Create new product attribute if original is absent
             if (!productAttribute) {
@@ -800,7 +873,7 @@ export const ProductAttributeMutations = extendType({
             });
             productAttribute.readableValueI18n = readableValueI18n;
 
-            if (!productAttribute) {
+            if (productAttributeNotExist) {
               await productSummariesCollection.findOneAndUpdate(
                 {
                   _id: summary._id,
@@ -818,7 +891,10 @@ export const ProductAttributeMutations = extendType({
                 },
                 {
                   $set: {
-                    'attributes.$[oldAttribute]': productAttribute,
+                    'attributes.$[oldAttribute]': {
+                      ...productAttribute,
+                      number: inputAttribute.number,
+                    },
                   },
                 },
                 {
@@ -885,8 +961,8 @@ export const ProductAttributeMutations = extendType({
             };
           }
 
-          for await (const attributesItem of attributes) {
-            const { textI18n, attributeId, productAttributeId } = attributesItem;
+          for await (const inputAttribute of attributes) {
+            const { textI18n, attributeId, productAttributeId } = inputAttribute;
 
             // Check if product attribute exist
             let productAttribute = await summary.attributes.find(({ _id }) => {
@@ -897,6 +973,7 @@ export const ProductAttributeMutations = extendType({
             if (!attribute) {
               continue;
             }
+            const productAttributeNotExist = !productAttribute;
 
             // Create new product attribute if original is absent
             if (!productAttribute) {
@@ -919,7 +996,7 @@ export const ProductAttributeMutations = extendType({
             });
             productAttribute.readableValueI18n = readableValueI18n;
 
-            if (!productAttribute) {
+            if (productAttributeNotExist) {
               await productSummariesCollection.findOneAndUpdate(
                 {
                   _id: summary._id,
@@ -937,7 +1014,10 @@ export const ProductAttributeMutations = extendType({
                 },
                 {
                   $set: {
-                    'attributes.$[oldAttribute]': productAttribute,
+                    'attributes.$[oldAttribute]': {
+                      ...productAttribute,
+                      textI18n: inputAttribute.textI18n,
+                    },
                   },
                 },
                 {

@@ -5,6 +5,7 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import ContentItemControls from '../../../components/button/ContentItemControls';
 import FixedButtons from '../../../components/button/FixedButtons';
 import WpButton from '../../../components/button/WpButton';
+import { RubricMainFieldsInterface } from '../../../components/FormTemplates/RubricMainFields';
 import Inner from '../../../components/Inner';
 import { CreateRubricModalInterface } from '../../../components/Modal/CreateRubricModal';
 import WpTable, { WpTableColumn } from '../../../components/WpTable';
@@ -19,7 +20,7 @@ import {
 } from '../../../db/collectionNames';
 import { RubricModel } from '../../../db/dbModels';
 import { getDatabase } from '../../../db/mongodb';
-import { RubricInterface } from '../../../db/uiInterfaces';
+import { RubricInterface, RubricVariantInterface } from '../../../db/uiInterfaces';
 import {
   useCreateRubricMutation,
   useDeleteRubricMutation,
@@ -27,6 +28,7 @@ import {
 import useMutationCallbacks from '../../../hooks/useMutationCallbacks';
 import AppContentWrapper from '../../../layout/AppContentWrapper';
 import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
+import { sortObjectsByField } from '../../../lib/arrayUtils';
 import { getFieldStringLocale } from '../../../lib/i18n';
 import {
   castDbData,
@@ -34,11 +36,11 @@ import {
   GetAppInitialDataPropsInterface,
 } from '../../../lib/ssrUtils';
 
-interface RubricsRouteInterface {
+interface RubricsRouteInterface extends RubricMainFieldsInterface {
   rubrics: RubricInterface[];
 }
 
-const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics }) => {
+const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, rubricVariants }) => {
   const router = useRouter();
   const { onCompleteCallback, onErrorCallback, showModal, showLoading } = useMutationCallbacks({
     withModal: true,
@@ -147,6 +149,7 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics }) => {
               showModal<CreateRubricModalInterface>({
                 variant: CREATE_RUBRIC_MODAL,
                 props: {
+                  rubricVariants,
                   confirm: (values) => {
                     showLoading();
                     return createRubricMutation({ variables: { input: values } });
@@ -177,6 +180,7 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<RubricsInterface>> => {
   const { db } = await getDatabase();
+  const rubricVariantsCollection = db.collection<RubricVariantInterface>(COL_RUBRIC_VARIANTS);
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
 
   const { props } = await getAppInitialData({ context });
@@ -309,10 +313,20 @@ export const getServerSideProps = async (
     };
   });
 
+  const initialRubricVariants = await rubricVariantsCollection.find({}).toArray();
+  const castedRubricVariants = initialRubricVariants.map((document) => {
+    return {
+      ...document,
+      name: getFieldStringLocale(document.nameI18n, sessionLocale),
+    };
+  });
+  const sortedRubricVariants = sortObjectsByField(castedRubricVariants);
+
   return {
     props: {
       ...props,
       rubrics: castDbData(rawRubrics),
+      rubricVariants: castDbData(sortedRubricVariants),
       companySlug: DEFAULT_COMPANY_SLUG,
     },
   };

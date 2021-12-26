@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Field, FieldProps } from 'formik';
 import { get } from 'lodash';
-import { SelectOptionFragment, useIconsOptionsQuery } from '../../generated/apolloComponents';
+import { useConstantOptions } from '../../hooks/useConstantOptions';
 import { InputTheme } from '../../types/clientTypes';
 import HeadlessMenuButton, {
   HeadlessMenuGroupInterface,
@@ -42,14 +42,7 @@ const FormikIconSelect: React.FC<FormikSelectInterface> = ({
   showInlineError,
   disabled,
 }) => {
-  const [options, setOptions] = React.useState<SelectOptionFragment[]>([]);
-  const { data, loading, error } = useIconsOptionsQuery();
-
-  React.useEffect(() => {
-    if (!loading && !error && data && data.getIconsOptions) {
-      setOptions(data.getIconsOptions);
-    }
-  }, [data, loading, error]);
+  const { iconOptions } = useConstantOptions();
 
   return (
     <Field name={name}>
@@ -65,11 +58,11 @@ const FormikIconSelect: React.FC<FormikSelectInterface> = ({
           : `border-gray-300 focus:border-gray-400 dark:border-gray-600 dark:focus:border-gray-400`;
         const selectClassName = `relative z-20 flex gap-4 items-center w-full pl-input-padding-horizontal input-with-clear-padding w-full h-[var(--formInputHeight)] text-[var(--inputTextColor)] rounded-lg cursor-pointer bg-transparent border outline-none ${inputTheme} ${disabledClass} ${inputBorder} ${additionalClassName}`;
 
-        const children: HeadlessMenuItemInterface[] = options.map((option) => {
+        const children: HeadlessMenuItemInterface[] = iconOptions.map((option) => {
           return {
             _id: option._id,
             name: option.name,
-            icon: option.name,
+            icon: `${option.name}`,
             current: () => {
               return field.value === option._id;
             },

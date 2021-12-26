@@ -3,6 +3,7 @@ import * as React from 'react';
 import { PAGE_STATE_DRAFT } from '../../config/common';
 import { CONFIRM_MODAL, CREATE_PAGE_MODAL } from '../../config/modalVariants';
 import {
+  CityInterface,
   PageInterface,
   PagesGroupInterface,
   PagesGroupTemplateInterface,
@@ -22,9 +23,10 @@ export interface PagesListInterface {
   pagesGroup: PagesGroupInterface | PagesGroupTemplateInterface;
   isTemplate?: boolean;
   basePath: string;
+  cities: CityInterface[];
 }
 
-const PagesList: React.FC<PagesListInterface> = ({ pagesGroup, isTemplate, basePath }) => {
+const PagesList: React.FC<PagesListInterface> = ({ pagesGroup, cities, isTemplate, basePath }) => {
   const router = useRouter();
   const { showModal, showLoading } = useMutationCallbacks({
     reload: true,
@@ -120,6 +122,7 @@ const PagesList: React.FC<PagesListInterface> = ({ pagesGroup, isTemplate, baseP
               props: {
                 pagesGroupId: `${pagesGroup._id}`,
                 isTemplate,
+                cities,
               },
             });
           }}

@@ -14,11 +14,7 @@ export interface CreateRubricModalInterface extends RubricMainFieldsInterface {
   confirm: (values: CreateRubricInput) => void;
 }
 
-const CreateRubricModal: React.FC<CreateRubricModalInterface> = ({
-  confirm,
-  rubricVariants,
-  genderOptions,
-}) => {
+const CreateRubricModal: React.FC<CreateRubricModalInterface> = ({ confirm, rubricVariants }) => {
   const { hideModal } = useAppContext();
   const validationSchema = useValidationSchema({
     schema: createRubricSchema,
@@ -53,7 +49,7 @@ const CreateRubricModal: React.FC<CreateRubricModalInterface> = ({
         {() => {
           return (
             <Form>
-              <RubricMainFields rubricVariants={rubricVariants} genderOptions={genderOptions} />
+              <RubricMainFields rubricVariants={rubricVariants} />
 
               <ModalButtons>
                 <WpButton type={'submit'} testId={'rubric-submit'}>

@@ -1,52 +1,29 @@
 import * as React from 'react';
 import { Formik, Form } from 'formik';
-import { useGetAttributesGroupsForRubricQuery } from '../../generated/apolloComponents';
+import { AttributesGroupInterface } from '../../db/uiInterfaces';
 import { useMoveAttributeMutation } from '../../hooks/mutations/useAttributeMutations';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import WpButton from '../button/WpButton';
 import FormikSelect from '../FormElements/Select/FormikSelect';
-import RequestError from '../RequestError';
-import Spinner from '../Spinner';
 import ModalButtons from './ModalButtons';
 import ModalFrame from './ModalFrame';
 import ModalTitle from './ModalTitle';
 
 export interface MoveAttributeModalInterface {
-  oldAttributesGroupId: string;
   attributeId: string;
+  attributeGroups: AttributesGroupInterface[];
 }
 
 const MoveAttributeModal: React.FC<MoveAttributeModalInterface> = ({
-  oldAttributesGroupId,
   attributeId,
+  attributeGroups,
 }) => {
   const { showErrorNotification } = useMutationCallbacks({
     reload: true,
     withModal: true,
   });
 
-  const { data, loading, error } = useGetAttributesGroupsForRubricQuery({
-    fetchPolicy: 'network-only',
-    variables: {
-      excludedIds: [oldAttributesGroupId],
-    },
-  });
-
   const [moveAttributeMutation] = useMoveAttributeMutation();
-
-  if (loading) {
-    return <Spinner />;
-  }
-
-  if (error || !data) {
-    return (
-      <ModalFrame>
-        <RequestError />
-      </ModalFrame>
-    );
-  }
-
-  const { getAllAttributesGroups } = data;
 
   return (
     <ModalFrame testId={'move-attribute-modal'}>
@@ -74,7 +51,7 @@ const MoveAttributeModal: React.FC<MoveAttributeModalInterface> = ({
                 showInlineError
                 label={'Группа атрибутов'}
                 name={'attributesGroupId'}
-                options={getAllAttributesGroups}
+                options={attributeGroups}
                 testId={'attributes-groups'}
                 firstOption
               />

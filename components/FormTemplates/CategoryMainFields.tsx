@@ -2,27 +2,17 @@ import { useFormikContext } from 'formik';
 import * as React from 'react';
 import { getConstantTranslation } from '../../config/constantTranslations';
 import { useLocaleContext } from '../../context/localeContext';
-import { CreateCategoryInput, useGetGenderOptionsQuery } from '../../generated/apolloComponents';
+import { CreateCategoryInput } from '../../generated/apolloComponents';
+import { useConstantOptions } from '../../hooks/useConstantOptions';
 import FormikCheckboxLine from '../FormElements/Checkbox/FormikCheckboxLine';
 import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
 import InputLine from '../FormElements/Input/InputLine';
 import FormikSelect from '../FormElements/Select/FormikSelect';
-import RequestError from '../RequestError';
-import Spinner from '../Spinner';
 
 const CategoryMainFields: React.FC = () => {
   const { locale } = useLocaleContext();
   const { values } = useFormikContext<CreateCategoryInput>();
-  const { data, loading, error } = useGetGenderOptionsQuery();
-  if (error || (!loading && !data)) {
-    return <RequestError />;
-  }
-
-  if (loading) {
-    return <Spinner isTransparent isNested />;
-  }
-
-  const { getGenderOptions } = data!;
+  const { genderOptions } = useConstantOptions();
 
   return (
     <React.Fragment>
@@ -42,7 +32,7 @@ const CategoryMainFields: React.FC = () => {
       <FormikSelect
         name={'gender'}
         firstOption
-        options={getGenderOptions}
+        options={genderOptions}
         testId={`gender`}
         label={'Род названия'}
       />

@@ -36,6 +36,7 @@ import useMutationCallbacks from '../../../../../hooks/useMutationCallbacks';
 import AppContentWrapper from '../../../../../layout/AppContentWrapper';
 import AppSubNav from '../../../../../layout/AppSubNav';
 import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
+import { sortObjectsByField } from '../../../../../lib/arrayUtils';
 import { getFieldStringLocale } from '../../../../../lib/i18n';
 import {
   castDbData,
@@ -46,10 +47,12 @@ import { getTreeFromList } from '../../../../../lib/treeUtils';
 
 interface OptionsGroupOptionsConsumerInterface {
   optionsGroup: OptionsGroupInterface;
+  optionGroups: OptionsGroupInterface[];
 }
 
 const OptionsGroupOptionsConsumer: React.FC<OptionsGroupOptionsConsumerInterface> = ({
   optionsGroup,
+  optionGroups,
 }) => {
   const { onCompleteCallback, onErrorCallback, showLoading, showModal } = useMutationCallbacks({
     reload: true,
@@ -142,6 +145,7 @@ const OptionsGroupOptionsConsumer: React.FC<OptionsGroupOptionsConsumerInterface
                     variant: MOVE_OPTION_MODAL,
                     props: {
                       option,
+                      optionGroups,
                     },
                   });
                 }}
@@ -185,6 +189,7 @@ const OptionsGroupOptionsConsumer: React.FC<OptionsGroupOptionsConsumerInterface
       );
     },
     [
+      optionGroups,
       addOptionToGroupMutation,
       deleteOptionFromGroupMutation,
       optionsGroup._id,
@@ -297,9 +302,9 @@ export const getServerSideProps = async (
   }
 
   const { db } = await getDatabase();
-  const optionsGroupsCollection = await db.collection<OptionsGroupInterface>(COL_OPTIONS_GROUPS);
+  const optionGroupsCollection = await db.collection<OptionsGroupInterface>(COL_OPTIONS_GROUPS);
 
-  const optionsGroupAggregationResult = await optionsGroupsCollection
+  const optionsGroupAggregationResult = await optionGroupsCollection
     .aggregate<OptionsGroupInterface>([
       {
         $match: {
@@ -377,10 +382,21 @@ export const getServerSideProps = async (
     ),
   };
 
+  // option groups
+  const initialOptionGroups = await optionGroupsCollection.find({}).toArray();
+  const castedOptionGroups = initialOptionGroups.map((document) => {
+    return {
+      ...document,
+      name: getFieldStringLocale(document.nameI18n, props.sessionLocale),
+    };
+  });
+  const sortedOptionGroups = sortObjectsByField(castedOptionGroups);
+
   return {
     props: {
       ...props,
       optionsGroup: castDbData(optionsGroup),
+      optionGroups: castDbData(sortedOptionGroups),
     },
   };
 };

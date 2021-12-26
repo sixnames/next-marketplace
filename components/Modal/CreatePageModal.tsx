@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Form, Formik } from 'formik';
 import { DEFAULT_LOCALE } from '../../config/common';
-import { useGetSessionCitiesQuery } from '../../generated/apolloComponents';
+import { CityInterface } from '../../db/uiInterfaces';
 import { useCreatePage } from '../../hooks/mutations/usePageMutations';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import useValidationSchema from '../../hooks/useValidationSchema';
@@ -11,8 +11,6 @@ import WpButton from '../button/WpButton';
 import FormikInput from '../FormElements/Input/FormikInput';
 import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
 import FormikSelect from '../FormElements/Select/FormikSelect';
-import RequestError from '../RequestError';
-import Spinner from '../Spinner';
 import ModalButtons from './ModalButtons';
 import ModalFrame from './ModalFrame';
 import ModalTitle from './ModalTitle';
@@ -20,9 +18,14 @@ import ModalTitle from './ModalTitle';
 export interface CreatePageModalInterface {
   pagesGroupId: string;
   isTemplate?: boolean;
+  cities: CityInterface[];
 }
 
-const CreatePageModal: React.FC<CreatePageModalInterface> = ({ pagesGroupId, isTemplate }) => {
+const CreatePageModal: React.FC<CreatePageModalInterface> = ({
+  pagesGroupId,
+  cities,
+  isTemplate,
+}) => {
   const { showLoading, hideModal } = useMutationCallbacks({
     reload: true,
   });
@@ -31,24 +34,6 @@ const CreatePageModal: React.FC<CreatePageModalInterface> = ({ pagesGroupId, isT
   });
 
   const [createPageMutation] = useCreatePage();
-
-  const { data, loading, error } = useGetSessionCitiesQuery();
-
-  if (loading) {
-    return (
-      <ModalFrame>
-        <Spinner isNested isTransparent />
-      </ModalFrame>
-    );
-  }
-
-  if (error || !data) {
-    return (
-      <ModalFrame>
-        <RequestError />
-      </ModalFrame>
-    );
-  }
 
   return (
     <ModalFrame testId={'create-page-modal'}>
@@ -106,7 +91,7 @@ const CreatePageModal: React.FC<CreatePageModalInterface> = ({ pagesGroupId, isT
                 label={'Город'}
                 name={'citySlug'}
                 testId={'citySlug'}
-                options={data?.getSessionCities || []}
+                options={cities}
                 isRequired
                 showInlineError
               />

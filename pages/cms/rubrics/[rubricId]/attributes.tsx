@@ -17,7 +17,7 @@ import {
   CONFIRM_MODAL,
 } from '../../../../config/modalVariants';
 import { useLocaleContext } from '../../../../context/localeContext';
-import { COL_CATEGORIES, COL_RUBRICS } from '../../../../db/collectionNames';
+import { COL_ATTRIBUTES_GROUPS, COL_CATEGORIES, COL_RUBRICS } from '../../../../db/collectionNames';
 import { rubricAttributeGroupsPipeline } from '../../../../db/dao/constantPipelines';
 import { castRubricForUI } from '../../../../db/dao/rubrics/castRubricForUI';
 import { RubricModel } from '../../../../db/dbModels';
@@ -25,6 +25,7 @@ import { getDatabase } from '../../../../db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   AttributeInterface,
+  AttributesGroupInterface,
   CategoryInterface,
   RubricInterface,
 } from '../../../../db/uiInterfaces';
@@ -36,6 +37,8 @@ import {
 import useMutationCallbacks from '../../../../hooks/useMutationCallbacks';
 import CmsRubricLayout from '../../../../layout/cms/CmsRubricLayout';
 import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
+import { sortObjectsByField } from '../../../../lib/arrayUtils';
+import { getFieldStringLocale } from '../../../../lib/i18n';
 import {
   castDbData,
   getAppInitialData,
@@ -44,9 +47,13 @@ import {
 
 interface RubricAttributesConsumerInterface {
   rubric: RubricInterface;
+  attributeGroups: AttributesGroupInterface[];
 }
 
-const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({ rubric }) => {
+const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
+  rubric,
+  attributeGroups,
+}) => {
   const { locale } = useLocaleContext();
   const { showModal, onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
     withModal: true,
@@ -234,9 +241,7 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
                 props: {
                   testId: 'add-attributes-group-to-rubric-modal',
                   rubricId: `${rubric._id}`,
-                  excludedIds: (rubric.attributesGroups || []).map(
-                    (attributesGroup) => `${attributesGroup._id}`,
-                  ),
+                  attributeGroups,
                   confirm: (values) => {
                     showLoading();
                     return addAttributesGroupToRubricMutation({
@@ -278,6 +283,7 @@ export const getServerSideProps = async (
   const { query } = context;
   const { db } = await getDatabase();
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+  const attributeGroupsCollection = db.collection<AttributesGroupInterface>(COL_ATTRIBUTES_GROUPS);
 
   const { props } = await getAppInitialData({ context });
   if (!props || !query.rubricId) {
@@ -339,10 +345,26 @@ export const getServerSideProps = async (
     locale: props.sessionLocale,
   });
 
+  const rawAttributeGroups = await attributeGroupsCollection
+    .find({
+      _id: {
+        $nin: rawRubric.attributesGroupIds,
+      },
+    })
+    .toArray();
+  const castedAttributeGroups = rawAttributeGroups.map((attributeGroup) => {
+    return {
+      ...attributeGroup,
+      name: getFieldStringLocale(attributeGroup.nameI18n, props.sessionLocale),
+    };
+  });
+  const sortedAttributeGroups = sortObjectsByField(castedAttributeGroups);
+
   return {
     props: {
       ...props,
       rubric: castDbData(rawRubric),
+      attributeGroups: castDbData(sortedAttributeGroups),
     },
   };
 };

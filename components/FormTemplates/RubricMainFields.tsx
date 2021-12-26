@@ -1,18 +1,16 @@
 import * as React from 'react';
 import { RubricVariantInterface } from '../../db/uiInterfaces';
+import { useConstantOptions } from '../../hooks/useConstantOptions';
 import FormikCheckboxLine from '../FormElements/Checkbox/FormikCheckboxLine';
 import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
 import FormikSelect from '../FormElements/Select/FormikSelect';
-import { SelectOptionInterface } from '../FormElements/Select/Select';
 
 export interface RubricMainFieldsInterface {
   rubricVariants: RubricVariantInterface[];
-  genderOptions: SelectOptionInterface[];
 }
-const RubricMainFields: React.FC<RubricMainFieldsInterface> = ({
-  genderOptions,
-  rubricVariants,
-}) => {
+const RubricMainFields: React.FC<RubricMainFieldsInterface> = ({ rubricVariants }) => {
+  const { genderOptions } = useConstantOptions();
+
   return (
     <React.Fragment>
       <FormikCheckboxLine label={'С заглавной буквы в заголовке'} name={'capitalise'} />

@@ -4,9 +4,13 @@ import Inner from '../../../../../components/Inner';
 import PagesList, { PagesListInterface } from '../../../../../components/Pages/PagesList';
 import WpTitle from '../../../../../components/WpTitle';
 import { ROUTE_CONSOLE } from '../../../../../config/common';
-import { AppContentWrapperBreadCrumbs } from '../../../../../db/uiInterfaces';
+import { COL_CITIES } from '../../../../../db/collectionNames';
+import { getDatabase } from '../../../../../db/mongodb';
+import { AppContentWrapperBreadCrumbs, CityInterface } from '../../../../../db/uiInterfaces';
 import AppContentWrapper from '../../../../../layout/AppContentWrapper';
 import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
+import { sortObjectsByField } from '../../../../../lib/arrayUtils';
+import { getFieldStringLocale } from '../../../../../lib/i18n';
 import { getPagesListSsr } from '../../../../../lib/pageUtils';
 import {
   castDbData,
@@ -18,7 +22,7 @@ interface PagesListPageInterface
   extends GetConsoleInitialDataPropsInterface,
     Omit<PagesListInterface, 'basePath' | 'breadcrumbs'> {}
 
-const PagesListPage: NextPage<PagesListPageInterface> = ({ layoutProps, pagesGroup }) => {
+const PagesListPage: NextPage<PagesListPageInterface> = ({ layoutProps, pagesGroup, cities }) => {
   const basePath = `${ROUTE_CONSOLE}/${layoutProps.pageCompany._id}/pages`;
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${pagesGroup.name}`,
@@ -35,7 +39,7 @@ const PagesListPage: NextPage<PagesListPageInterface> = ({ layoutProps, pagesGro
       <AppContentWrapper breadcrumbs={breadcrumbs}>
         <Inner>
           <WpTitle>{pagesGroup.name}</WpTitle>
-          <PagesList basePath={basePath} pagesGroup={pagesGroup} />
+          <PagesList cities={cities} basePath={basePath} pagesGroup={pagesGroup} />
         </Inner>
       </AppContentWrapper>
     </ConsoleLayout>
@@ -64,10 +68,22 @@ export const getServerSideProps = async (
     };
   }
 
+  const { db } = await getDatabase();
+  const citiesCollection = db.collection<CityInterface>(COL_CITIES);
+  const initialCities = await citiesCollection.find({}).toArray();
+  const castedCities = initialCities.map((document) => {
+    return {
+      ...document,
+      name: getFieldStringLocale(document.nameI18n, props.sessionLocale),
+    };
+  });
+  const sortedCities = sortObjectsByField(castedCities);
+
   return {
     props: {
       ...props,
       pagesGroup: castDbData(pagesGroup),
+      cities: castDbData(sortedCities),
     },
   };
 };

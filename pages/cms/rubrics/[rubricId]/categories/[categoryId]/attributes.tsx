@@ -17,7 +17,12 @@ import {
   CONFIRM_MODAL,
 } from '../../../../../../config/modalVariants';
 import { useLocaleContext } from '../../../../../../context/localeContext';
-import { COL_ATTRIBUTES, COL_CATEGORIES, COL_RUBRICS } from '../../../../../../db/collectionNames';
+import {
+  COL_ATTRIBUTES,
+  COL_ATTRIBUTES_GROUPS,
+  COL_CATEGORIES,
+  COL_RUBRICS,
+} from '../../../../../../db/collectionNames';
 import { castCategoryForUI } from '../../../../../../db/dao/category/castCategoryForUI';
 import { rubricAttributeGroupsPipeline } from '../../../../../../db/dao/constantPipelines';
 import { ObjectIdModel } from '../../../../../../db/dbModels';
@@ -25,6 +30,7 @@ import { getDatabase } from '../../../../../../db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   AttributeInterface,
+  AttributesGroupInterface,
   CategoryInterface,
 } from '../../../../../../db/uiInterfaces';
 import {
@@ -34,6 +40,8 @@ import {
 import useMutationCallbacks from '../../../../../../hooks/useMutationCallbacks';
 import CmsCategoryLayout from '../../../../../../layout/cms/CmsCategoryLayout';
 import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
+import { sortObjectsByField } from '../../../../../../lib/arrayUtils';
+import { getFieldStringLocale } from '../../../../../../lib/i18n';
 import {
   castDbData,
   getAppInitialData,
@@ -42,12 +50,12 @@ import {
 
 interface CategoryAttributesConsumerInterface {
   category: CategoryInterface;
-  excludedAttributesGroupsIds: ObjectIdModel[];
+  attributeGroups: AttributesGroupInterface[];
 }
 
 const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> = ({
   category,
-  excludedAttributesGroupsIds,
+  attributeGroups,
 }) => {
   const { locale } = useLocaleContext();
   const { showModal, onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
@@ -269,7 +277,7 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
                 props: {
                   testId: 'add-attributes-group-to-rubric-modal',
                   rubricId: `${category._id}`,
-                  excludedIds: excludedAttributesGroupsIds.map((_id) => `${_id}`),
+                  attributeGroups,
                   confirm: (values) => {
                     showLoading();
                     return addAttributesGroupToCategoryMutation({
@@ -315,6 +323,7 @@ export const getServerSideProps = async (
   const { db } = await getDatabase();
   const categoriesCollection = db.collection<CategoryInterface>(COL_CATEGORIES);
   const attributesCollection = db.collection<AttributeInterface>(COL_ATTRIBUTES);
+  const attributeGroupsCollection = db.collection<AttributesGroupInterface>(COL_ATTRIBUTES_GROUPS);
 
   const { props } = await getAppInitialData({ context });
   if (!props || !query.categoryId) {
@@ -449,11 +458,26 @@ export const getServerSideProps = async (
     locale,
   });
 
+  const rawAttributeGroups = await attributeGroupsCollection
+    .find({
+      _id: {
+        $nin: excludedAttributesGroupsIds,
+      },
+    })
+    .toArray();
+  const castedAttributeGroups = rawAttributeGroups.map((attributeGroup) => {
+    return {
+      ...attributeGroup,
+      name: getFieldStringLocale(attributeGroup.nameI18n, props.sessionLocale),
+    };
+  });
+  const sortedAttributeGroups = sortObjectsByField(castedAttributeGroups);
+
   return {
     props: {
       ...props,
       category: castDbData(category),
-      excludedAttributesGroupsIds: castDbData(excludedAttributesGroupsIds),
+      attributeGroups: castDbData(sortedAttributeGroups),
     },
   };
 };

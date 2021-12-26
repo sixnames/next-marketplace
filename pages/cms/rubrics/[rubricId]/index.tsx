@@ -5,25 +5,24 @@ import FixedButtons from '../../../../components/button/FixedButtons';
 import WpButton from '../../../../components/button/WpButton';
 import RubricMainFields from '../../../../components/FormTemplates/RubricMainFields';
 import Inner from '../../../../components/Inner';
-import RequestError from '../../../../components/RequestError';
 import SeoContentEditor from '../../../../components/SeoContentEditor';
-import Spinner from '../../../../components/Spinner';
 import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from '../../../../config/common';
+import { COL_RUBRIC_VARIANTS } from '../../../../db/collectionNames';
 import { getConsoleRubricDetails } from '../../../../db/dao/rubrics/getConsoleRubricDetails';
+import { getDatabase } from '../../../../db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   RubricInterface,
+  RubricVariantInterface,
   SeoContentCitiesInterface,
 } from '../../../../db/uiInterfaces';
-import {
-  UpdateRubricInput,
-  useGetAllRubricVariantsQuery,
-  useUpdateRubricMutation,
-} from '../../../../generated/apolloComponents';
+import { UpdateRubricInput, useUpdateRubricMutation } from '../../../../generated/apolloComponents';
 import useMutationCallbacks from '../../../../hooks/useMutationCallbacks';
 import useValidationSchema from '../../../../hooks/useValidationSchema';
 import CmsRubricLayout from '../../../../layout/cms/CmsRubricLayout';
 import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
+import { sortObjectsByField } from '../../../../lib/arrayUtils';
+import { getFieldStringLocale } from '../../../../lib/i18n';
 import {
   castDbData,
   getAppInitialData,
@@ -36,6 +35,7 @@ interface RubricDetailsInterface {
   seoDescriptionTop: SeoContentCitiesInterface;
   seoDescriptionBottom: SeoContentCitiesInterface;
   companySlug: string;
+  rubricVariants: RubricVariantInterface[];
 }
 
 const RubricDetails: React.FC<RubricDetailsInterface> = ({
@@ -43,6 +43,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
   companySlug,
   seoDescriptionTop,
   seoDescriptionBottom,
+  rubricVariants,
 }) => {
   const validationSchema = useValidationSchema({
     schema: updateRubricSchema,
@@ -50,22 +51,11 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
   const { onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
     reload: true,
   });
-  const { data, loading, error } = useGetAllRubricVariantsQuery();
 
   const [updateRubricMutation] = useUpdateRubricMutation({
     onCompleted: (data) => onCompleteCallback(data.updateRubric),
     onError: onErrorCallback,
   });
-
-  if (loading) {
-    return <Spinner isNested isTransparent />;
-  }
-  if (error) {
-    return <RequestError />;
-  }
-  if (!data) {
-    return <RequestError />;
-  }
 
   const {
     _id = '',
@@ -137,10 +127,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
           {() => {
             return (
               <Form>
-                <RubricMainFields
-                  rubricVariants={data.getAllRubricVariants}
-                  genderOptions={data.getGenderOptions}
-                />
+                <RubricMainFields rubricVariants={rubricVariants} />
                 <SeoContentEditor
                   label={'SEO текст вверху каталога'}
                   filedName={'textTop'}
@@ -198,9 +185,21 @@ export const getServerSideProps = async (
     };
   }
 
+  const { db } = await getDatabase();
+  const rubricVariantsCollection = db.collection<RubricVariantInterface>(COL_RUBRIC_VARIANTS);
+  const initialRubricVariants = await rubricVariantsCollection.find({}).toArray();
+  const castedRubricVariants = initialRubricVariants.map((document) => {
+    return {
+      ...document,
+      name: getFieldStringLocale(document.nameI18n, props.sessionLocale),
+    };
+  });
+  const sortedRubricVariants = sortObjectsByField(castedRubricVariants);
+
   return {
     props: {
       ...props,
+      rubricVariants: castDbData(sortedRubricVariants),
       seoDescriptionBottom: castDbData(payload.seoDescriptionBottom),
       seoDescriptionTop: castDbData(payload.seoDescriptionTop),
       rubric: castDbData(payload.rubric),

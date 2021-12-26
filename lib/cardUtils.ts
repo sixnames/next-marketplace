@@ -401,7 +401,6 @@ export async function getCardData({
             brand: { $arrayElemAt: ['$brand', 0] },
             brandCollection: { $arrayElemAt: ['$brandCollection', 0] },
             manufacturer: { $arrayElemAt: ['$manufacturer', 0] },
-            assets: { $arrayElemAt: ['$assets', 0] },
           },
         },
       ])
@@ -762,7 +761,7 @@ export async function getCardData({
         ratingFeatures.length > 0,
     };
   } catch (e) {
-    console.log(e);
+    console.log('getCardData error', e);
     return null;
   }
 }

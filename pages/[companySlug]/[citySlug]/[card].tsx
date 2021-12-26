@@ -117,7 +117,7 @@ export async function getStaticProps(
   if (!rawCardData) {
     return {
       redirect: {
-        permanent: true,
+        permanent: false,
         destination: `${props.urlPrefix}`,
       },
     };

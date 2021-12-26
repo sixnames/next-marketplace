@@ -108,7 +108,7 @@ export const productAttributesPipeline = (props?: ProductAttributesPipelineInter
         from: COL_OPTIONS,
         as: 'attributes.attribute.options',
         let: {
-          optionIds: '$optionIds',
+          optionIds: '$attributes.optionIds',
         },
         pipeline: [
           {
@@ -223,7 +223,7 @@ export const productCategoriesPipeline = (additionalStages: Record<any, any>[] =
         as: 'categories',
         let: {
           rubricId: '$rubricId',
-          filterSlugs: '$filterSlugs',
+          categorySlugs: '$categorySlugs',
         },
         pipeline: [
           {

@@ -1535,21 +1535,6 @@ type Query {
   Should return paginated suppliers
   """
   getAllSuppliers(input: PaginationInput): SuppliersPaginationPayload!
-
-  """
-  Should return attribute positioning options
-  """
-  getAttributePositioningOptions: [SelectOption!]!
-
-  """
-  Should return attribute variants options
-  """
-  getAttributeVariantsOptions: [SelectOption!]!
-
-  """
-  Should return attribute view variants options
-  """
-  getAttributeViewVariantsOptions: [SelectOption!]!
   getAttributesGroup(_id: ObjectId!): AttributesGroup!
 
   """
@@ -1600,21 +1585,6 @@ type Query {
   getCompanyShops(companyId: ObjectId!, input: PaginationInput): ShopsPaginationPayload!
 
   """
-  Should return gender options
-  """
-  getGenderOptions: [SelectOption!]!
-
-  """
-  Should return ISO languages options
-  """
-  getISOLanguagesOptions: [SelectOption!]!
-
-  """
-  Should return icon options
-  """
-  getIconsOptions: [SelectOption!]!
-
-  """
   Should return manufacturer by given id
   """
   getManufacturer(_id: ObjectId!): Manufacturer!
@@ -1638,11 +1608,6 @@ type Query {
   Should return options group by given id
   """
   getOptionsGroup(_id: ObjectId!): OptionsGroup!
-
-  """
-  Should return options groups variants options
-  """
-  getOptionsGroupVariantsOptions: [SelectOption!]!
 
   """
   Should return role by give id

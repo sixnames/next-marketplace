@@ -16,11 +16,11 @@ import {
   CMS_BRANDS_LIMIT,
   DEFAULT_LOCALE,
   DEFAULT_PAGE,
-  ISO_LANGUAGES,
   ROUTE_CMS,
   SORT_ASC,
   SORT_DESC,
 } from '../../../config/common';
+import { ISO_LANGUAGES } from '../../../config/constantSelects';
 import { CONFIRM_MODAL, CREATE_BRAND_MODAL } from '../../../config/modalVariants';
 import { COL_BRANDS } from '../../../db/collectionNames';
 import { getDatabase } from '../../../db/mongodb';

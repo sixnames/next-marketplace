@@ -1564,9 +1564,6 @@ export interface NexusGenFieldTypes {
     getAllRubricVariants: NexusGenRootTypes['RubricVariant'][]; // [RubricVariant!]!
     getAllShops: NexusGenRootTypes['ShopsPaginationPayload']; // ShopsPaginationPayload!
     getAllSuppliers: NexusGenRootTypes['SuppliersPaginationPayload']; // SuppliersPaginationPayload!
-    getAttributePositioningOptions: NexusGenRootTypes['SelectOption'][]; // [SelectOption!]!
-    getAttributeVariantsOptions: NexusGenRootTypes['SelectOption'][]; // [SelectOption!]!
-    getAttributeViewVariantsOptions: NexusGenRootTypes['SelectOption'][]; // [SelectOption!]!
     getAttributesGroup: NexusGenRootTypes['AttributesGroup']; // AttributesGroup!
     getBrand: NexusGenRootTypes['Brand']; // Brand!
     getBrandAlphabetLists: NexusGenRootTypes['BrandsAlphabetList'][]; // [BrandsAlphabetList!]!
@@ -1577,15 +1574,11 @@ export interface NexusGenFieldTypes {
     getCityBySlug: NexusGenRootTypes['City']; // City!
     getCompany: NexusGenRootTypes['Company'] | null; // Company
     getCompanyShops: NexusGenRootTypes['ShopsPaginationPayload']; // ShopsPaginationPayload!
-    getGenderOptions: NexusGenRootTypes['SelectOption'][]; // [SelectOption!]!
-    getISOLanguagesOptions: NexusGenRootTypes['SelectOption'][]; // [SelectOption!]!
-    getIconsOptions: NexusGenRootTypes['SelectOption'][]; // [SelectOption!]!
     getManufacturer: NexusGenRootTypes['Manufacturer']; // Manufacturer!
     getManufacturerAlphabetLists: NexusGenRootTypes['ManufacturersAlphabetList'][]; // [ManufacturersAlphabetList!]!
     getManufacturerBySlug: NexusGenRootTypes['Manufacturer']; // Manufacturer!
     getOptionAlphabetLists: NexusGenRootTypes['OptionsAlphabetList'][]; // [OptionsAlphabetList!]!
     getOptionsGroup: NexusGenRootTypes['OptionsGroup']; // OptionsGroup!
-    getOptionsGroupVariantsOptions: NexusGenRootTypes['SelectOption'][]; // [SelectOption!]!
     getRole: NexusGenRootTypes['Role'] | null; // Role
     getRubricVariant: NexusGenRootTypes['RubricVariant']; // RubricVariant!
     getSessionCities: NexusGenRootTypes['City'][]; // [City!]!
@@ -2516,9 +2509,6 @@ export interface NexusGenFieldTypeNames {
     getAllRubricVariants: 'RubricVariant';
     getAllShops: 'ShopsPaginationPayload';
     getAllSuppliers: 'SuppliersPaginationPayload';
-    getAttributePositioningOptions: 'SelectOption';
-    getAttributeVariantsOptions: 'SelectOption';
-    getAttributeViewVariantsOptions: 'SelectOption';
     getAttributesGroup: 'AttributesGroup';
     getBrand: 'Brand';
     getBrandAlphabetLists: 'BrandsAlphabetList';
@@ -2529,15 +2519,11 @@ export interface NexusGenFieldTypeNames {
     getCityBySlug: 'City';
     getCompany: 'Company';
     getCompanyShops: 'ShopsPaginationPayload';
-    getGenderOptions: 'SelectOption';
-    getISOLanguagesOptions: 'SelectOption';
-    getIconsOptions: 'SelectOption';
     getManufacturer: 'Manufacturer';
     getManufacturerAlphabetLists: 'ManufacturersAlphabetList';
     getManufacturerBySlug: 'Manufacturer';
     getOptionAlphabetLists: 'OptionsAlphabetList';
     getOptionsGroup: 'OptionsGroup';
-    getOptionsGroupVariantsOptions: 'SelectOption';
     getRole: 'Role';
     getRubricVariant: 'RubricVariant';
     getSessionCities: 'City';

@@ -1,12 +1,13 @@
 import * as React from 'react';
-import { RubricVariant, SelectOption } from '../../generated/apolloComponents';
+import { RubricVariantInterface } from '../../db/uiInterfaces';
 import FormikCheckboxLine from '../FormElements/Checkbox/FormikCheckboxLine';
 import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
 import FormikSelect from '../FormElements/Select/FormikSelect';
+import { SelectOptionInterface } from '../FormElements/Select/Select';
 
-interface RubricMainFieldsInterface {
-  rubricVariants: Pick<RubricVariant, '_id' | 'name' | 'nameI18n'>[];
-  genderOptions: Pick<SelectOption, '_id' | 'name'>[];
+export interface RubricMainFieldsInterface {
+  rubricVariants: RubricVariantInterface[];
+  genderOptions: SelectOptionInterface[];
 }
 const RubricMainFields: React.FC<RubricMainFieldsInterface> = ({
   genderOptions,

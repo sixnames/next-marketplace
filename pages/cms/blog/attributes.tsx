@@ -140,6 +140,9 @@ const BlogAttributesListConsumer: React.FC<BlogAttributesListConsumerInterface> 
               onClick={() => {
                 showModal<BlogAttributeModalInterface>({
                   variant: BLOG_ATTRIBUTE_MODAL,
+                  props: {
+                    optionGroups,
+                  },
                 });
               }}
             >

@@ -1,55 +1,30 @@
 import { Form, Formik } from 'formik';
 import * as React from 'react';
-import { OptionInterface } from '../../db/uiInterfaces';
-import {
-  useGetAllOptionsGroupsQuery,
-  useMoveOptionMutation,
-} from '../../generated/apolloComponents';
+import { OptionInterface, OptionsGroupInterface } from '../../db/uiInterfaces';
+import { useMoveOptionMutation } from '../../generated/apolloComponents';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
 import WpButton from '../button/WpButton';
 import FormikSelect from '../FormElements/Select/FormikSelect';
-import RequestError from '../RequestError';
-import Spinner from '../Spinner';
 import ModalButtons from './ModalButtons';
 import ModalFrame from './ModalFrame';
 import ModalTitle from './ModalTitle';
 
 export interface MoveOptionModalInterface {
   option: OptionInterface;
+  optionGroups: OptionsGroupInterface[];
 }
 
-const MoveOptionModal: React.FC<MoveOptionModalInterface> = ({ option }) => {
+const MoveOptionModal: React.FC<MoveOptionModalInterface> = ({ option, optionGroups }) => {
   const { onCompleteCallback, onErrorCallback, showLoading, showErrorNotification } =
     useMutationCallbacks({
       reload: true,
       withModal: true,
     });
 
-  const { data, loading, error } = useGetAllOptionsGroupsQuery({
-    fetchPolicy: 'network-only',
-    variables: {
-      excludedIds: [option.optionsGroupId],
-    },
-  });
-
   const [moveOptionMutation] = useMoveOptionMutation({
     onCompleted: (data) => onCompleteCallback(data.moveOption),
     onError: onErrorCallback,
   });
-
-  if (loading) {
-    return <Spinner />;
-  }
-
-  if (error || !data) {
-    return (
-      <ModalFrame>
-        <RequestError />
-      </ModalFrame>
-    );
-  }
-
-  const { getAllOptionsGroups } = data;
 
   return (
     <ModalFrame testId={'move-option-modal'}>
@@ -81,7 +56,7 @@ const MoveOptionModal: React.FC<MoveOptionModalInterface> = ({ option }) => {
                 showInlineError
                 label={'Группа опций'}
                 name={'optionsGroupId'}
-                options={getAllOptionsGroups}
+                options={optionGroups}
                 testId={'options-groups'}
                 firstOption
               />

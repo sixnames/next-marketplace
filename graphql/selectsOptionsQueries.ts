@@ -8,20 +8,6 @@ export const selectOptionFragment = gql`
   }
 `;
 
-export const NEW_ATTRIBUTE_OPTIONS_QUERY = gql`
-  query GetNewAttributeOptions {
-    getAllOptionsGroups {
-      _id
-      name
-    }
-    getAllMetricsOptions {
-      _id
-      name
-    }
-  }
-  ${selectOptionFragment}
-`;
-
 export const BRAND_ALPHABET_OPTIONS_QUERY = gql`
   query GetBrandAlphabetLists($input: BrandAlphabetInput) {
     getBrandAlphabetLists(input: $input) {
@@ -141,25 +127,6 @@ export const OPTIONS_ALPHABET_QUERY = gql`
           }
         }
       }
-    }
-  }
-`;
-
-export const CITIES_LIST_QUERY = gql`
-  query GetSessionCities {
-    getSessionCities {
-      _id
-      slug
-      name
-    }
-  }
-`;
-
-export const OPTION_GROUPS_LIST_QUERY = gql`
-  query GetAllOptionsGroups($excludedIds: [ObjectId!]) {
-    getAllOptionsGroups(excludedIds: $excludedIds) {
-      _id
-      name
     }
   }
 `;

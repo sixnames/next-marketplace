@@ -1,18 +1,13 @@
 import * as React from 'react';
 import { Formik, Form } from 'formik';
 import { LanguageModel } from '../../db/dbModels';
-import {
-  CreateLanguageInput,
-  UpdateLanguageInput,
-  useGetIsoLanguagesListQuery,
-} from '../../generated/apolloComponents';
+import { CreateLanguageInput, UpdateLanguageInput } from '../../generated/apolloComponents';
+import { useConstantOptions } from '../../hooks/useConstantOptions';
 import useValidationSchema from '../../hooks/useValidationSchema';
 import { languageInModalSchema } from '../../validation/languageSchema';
 import WpButton from '../button/WpButton';
 import FormikInput from '../FormElements/Input/FormikInput';
 import FormikSelect from '../FormElements/Select/FormikSelect';
-import RequestError from '../RequestError';
-import Spinner from '../Spinner';
 import ModalButtons from './ModalButtons';
 import ModalFrame from './ModalFrame';
 import ModalTitle from './ModalTitle';
@@ -26,24 +21,10 @@ export interface LanguageModalInterface {
 }
 
 const LanguageModal: React.FC<LanguageModalInterface> = ({ confirm, testId, language }) => {
-  const { data, loading, error } = useGetIsoLanguagesListQuery();
+  const { localeOptions } = useConstantOptions();
   const validationSchema = useValidationSchema({
     schema: languageInModalSchema,
   });
-
-  if (error || (!loading && !data)) {
-    return (
-      <ModalFrame>
-        <RequestError />
-      </ModalFrame>
-    );
-  }
-
-  if (loading) {
-    return <Spinner isTransparent />;
-  }
-
-  const { getISOLanguagesOptions } = data!;
 
   const initialValues = {
     name: language?.name || '',
@@ -82,7 +63,7 @@ const LanguageModal: React.FC<LanguageModalInterface> = ({ confirm, testId, lang
 
               <FormikSelect
                 label={'Ключ языка'}
-                options={getISOLanguagesOptions}
+                options={localeOptions}
                 name={'slug'}
                 firstOption
                 testId={'language-slug'}

@@ -6,7 +6,7 @@ import { REQUEST_METHOD_DELETE } from '../../../config/common';
 import { COL_CATEGORIES, COL_ICONS } from '../../../db/collectionNames';
 import { CategoryModel, IconModel } from '../../../db/dbModels';
 import { getDatabase } from '../../../db/mongodb';
-import { getApiMessageValue } from '../../../lib/apiMessageUtils';
+import { getApiMessageValue } from '../../../db/dao/messages/apiMessageUtils';
 import { alwaysArray } from '../../../lib/arrayUtils';
 import { parseRestApiFormData } from '../../../lib/restApi';
 import { getOperationPermission } from '../../../lib/sessionHelpers';

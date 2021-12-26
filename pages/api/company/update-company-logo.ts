@@ -4,7 +4,7 @@ import { ASSETS_DIST_COMPANIES, ASSETS_LOGO_WIDTH } from '../../../config/common
 import { COL_COMPANIES } from '../../../db/collectionNames';
 import { CompanyModel } from '../../../db/dbModels';
 import { getDatabase } from '../../../db/mongodb';
-import { getApiMessageValue } from '../../../lib/apiMessageUtils';
+import { getApiMessageValue } from '../../../db/dao/messages/apiMessageUtils';
 import { deleteUpload, storeUploads } from '../../../lib/assetUtils/assetUtils';
 import { parseRestApiFormData } from '../../../lib/restApi';
 import { getOperationPermission } from '../../../lib/sessionHelpers';

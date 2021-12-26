@@ -4,7 +4,7 @@ import fs from 'fs';
 import { COL_ICONS, COL_OPTIONS } from '../../../db/collectionNames';
 import { IconModel, OptionModel } from '../../../db/dbModels';
 import { getDatabase } from '../../../db/mongodb';
-import { getApiMessageValue } from '../../../lib/apiMessageUtils';
+import { getApiMessageValue } from '../../../db/dao/messages/apiMessageUtils';
 import { alwaysArray } from '../../../lib/arrayUtils';
 import { parseRestApiFormData } from '../../../lib/restApi';
 import { getOperationPermission } from '../../../lib/sessionHelpers';

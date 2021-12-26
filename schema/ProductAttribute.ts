@@ -19,6 +19,7 @@ import {
 import { getDatabase } from '../db/mongodb';
 import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 import { getAttributeReadableValueLocales } from '../lib/productAttributesUtils';
+import { updateProductTitles } from '../lib/productUtils';
 import { getOperationPermission, getRequestParams } from '../lib/sessionHelpers';
 import { getParentTreeIds } from '../lib/treeUtils';
 
@@ -150,7 +151,9 @@ export const ProductAttributeMutations = extendType({
       resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
-        const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
+        const productSummariesCollection =
+          db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
+        const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
 
         const session = client.startSession();
@@ -180,8 +183,8 @@ export const ProductAttributeMutations = extendType({
             const { productId, brandSlug } = input;
 
             // Check product availability
-            const product = await productsCollection.findOne({ _id: productId });
-            if (!product) {
+            const summary = await productSummariesCollection.findOne({ _id: productId });
+            if (!summary) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('products.update.error'),
@@ -190,14 +193,18 @@ export const ProductAttributeMutations = extendType({
               return;
             }
 
-            const updatedProductResult = await productsCollection.findOneAndUpdate(
+            const updater = {
+              brandSlug,
+              brandCollectionSlug: brandSlug ? summary.brandCollectionSlug : null,
+            };
+
+            const updatedSummaryResult = await productSummariesCollection.findOneAndUpdate(
               {
                 _id: productId,
               },
               {
                 $set: {
-                  brandSlug,
-                  brandCollectionSlug: brandSlug ? product.brandCollectionSlug : null,
+                  ...updater,
                   updatedAt: new Date(),
                 },
               },
@@ -205,8 +212,29 @@ export const ProductAttributeMutations = extendType({
                 returnDocument: 'after',
               },
             );
-            const updatedProduct = updatedProductResult.value;
-            if (!updatedProductResult.ok || !updatedProduct) {
+            if (!updatedSummaryResult.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('products.update.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            const updatedFacetResult = await productFacetsCollection.findOneAndUpdate(
+              {
+                _id: productId,
+              },
+              {
+                $set: {
+                  ...updater,
+                },
+              },
+              {
+                returnDocument: 'after',
+              },
+            );
+            if (!updatedFacetResult.ok) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('products.update.error'),
@@ -221,8 +249,7 @@ export const ProductAttributeMutations = extendType({
               },
               {
                 $set: {
-                  brandSlug,
-                  brandCollectionSlug: brandSlug ? product.brandCollectionSlug : null,
+                  ...updater,
                   updatedAt: new Date(),
                 },
               },
@@ -236,10 +263,13 @@ export const ProductAttributeMutations = extendType({
               return;
             }
 
+            await updateProductTitles({
+              _id: productId,
+            });
+
             mutationPayload = {
               success: true,
               message: await getApiMessage('products.update.success'),
-              payload: updatedProduct,
             };
           });
 
@@ -265,7 +295,9 @@ export const ProductAttributeMutations = extendType({
       resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
-        const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
+        const productSummariesCollection =
+          db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
+        const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
 
         const session = client.startSession();
@@ -295,8 +327,8 @@ export const ProductAttributeMutations = extendType({
             const { productId, brandCollectionSlug } = input;
 
             // Check product availability
-            const product = await productsCollection.findOne({ _id: productId });
-            if (!product) {
+            const summary = await productSummariesCollection.findOne({ _id: productId });
+            if (!summary) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('products.update.error'),
@@ -305,7 +337,7 @@ export const ProductAttributeMutations = extendType({
               return;
             }
 
-            const updatedProductResult = await productsCollection.findOneAndUpdate(
+            const updatedSummaryResult = await productSummariesCollection.findOneAndUpdate(
               {
                 _id: productId,
               },
@@ -315,12 +347,27 @@ export const ProductAttributeMutations = extendType({
                   updatedAt: new Date(),
                 },
               },
+            );
+            if (!updatedSummaryResult.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('products.update.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            const updatedFacetResult = await productFacetsCollection.findOneAndUpdate(
               {
-                returnDocument: 'after',
+                _id: productId,
+              },
+              {
+                $set: {
+                  brandCollectionSlug,
+                },
               },
             );
-            const updatedProduct = updatedProductResult.value;
-            if (!updatedProductResult.ok || !updatedProduct) {
+            if (!updatedFacetResult.ok) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('products.update.error'),
@@ -349,10 +396,13 @@ export const ProductAttributeMutations = extendType({
               return;
             }
 
+            await updateProductTitles({
+              _id: productId,
+            });
+
             mutationPayload = {
               success: true,
               message: await getApiMessage('products.update.success'),
-              payload: updatedProduct,
             };
           });
 
@@ -378,7 +428,9 @@ export const ProductAttributeMutations = extendType({
       resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
-        const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
+        const productSummariesCollection =
+          db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
+        const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
 
         const session = client.startSession();
@@ -408,8 +460,8 @@ export const ProductAttributeMutations = extendType({
             const { productId, manufacturerSlug } = input;
 
             // Check product availability
-            const product = await productsCollection.findOne({ _id: productId });
-            if (!product) {
+            const summary = await productSummariesCollection.findOne({ _id: productId });
+            if (!summary) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('products.update.error'),
@@ -418,7 +470,7 @@ export const ProductAttributeMutations = extendType({
               return;
             }
 
-            const updatedProductResult = await productsCollection.findOneAndUpdate(
+            const updatedSummaryResult = await productSummariesCollection.findOneAndUpdate(
               {
                 _id: productId,
               },
@@ -432,8 +484,29 @@ export const ProductAttributeMutations = extendType({
                 returnDocument: 'after',
               },
             );
-            const updatedProduct = updatedProductResult.value;
-            if (!updatedProductResult.ok || !updatedProduct) {
+            if (!updatedSummaryResult.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('products.update.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            const updatedFacetResult = await productFacetsCollection.findOneAndUpdate(
+              {
+                _id: productId,
+              },
+              {
+                $set: {
+                  manufacturerSlug,
+                },
+              },
+              {
+                returnDocument: 'after',
+              },
+            );
+            if (!updatedFacetResult.ok) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('products.update.error'),
@@ -465,7 +538,6 @@ export const ProductAttributeMutations = extendType({
             mutationPayload = {
               success: true,
               message: await getApiMessage('products.update.success'),
-              payload: updatedProduct,
             };
           });
 

@@ -1,7 +1,6 @@
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { ROUTE_CMS } from '../../config/common';
 import { useUserContext } from '../../context/userContext';
 import {
   AppContentWrapperBreadCrumbs,
@@ -20,6 +19,7 @@ import useValidationSchema from '../../hooks/useValidationSchema';
 import ConsoleShopLayout from '../../layout/console/ConsoleShopLayout';
 import { alwaysArray } from '../../lib/arrayUtils';
 import { getNumWord } from '../../lib/i18n';
+import { getConsoleCompanyLinks, getConsoleProductLinks } from '../../lib/linkUtils';
 import { addManyProductsToShopSchema } from '../../validation/shopSchema';
 import AppContentFilter from '../AppContentFilter';
 import ContentItemControls from '../button/ContentItemControls';
@@ -50,7 +50,6 @@ export interface ShopAddProductsListInterface extends ConsoleRubricProductsInter
   selectedAttributes: CatalogueFilterAttributeInterface[];
   clearSlug: string;
   rubricName: string;
-  rubricId: string;
   layoutBasePath: string;
   breadcrumbs?: AppContentWrapperBreadCrumbs;
   basePath: string;
@@ -75,7 +74,6 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
   breadcrumbs,
   basePath,
   rubricSlug,
-  rubricId,
 }) => {
   useReloadListener();
   const { sessionUser } = useUserContext();
@@ -107,11 +105,12 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
     {
       headTitle: 'Арт',
       render: ({ dataItem }) => {
+        const links = getConsoleProductLinks({
+          productId: dataItem._id,
+          rubricSlug: dataItem.rubricSlug,
+        });
         return sessionUser?.role?.isStaff ? (
-          <WpLink
-            href={`${ROUTE_CMS}/rubrics/${dataItem.rubricId}/products/product/${dataItem._id}`}
-            target={'_blank'}
-          >
+          <WpLink href={links.root} target={'_blank'}>
             {dataItem.itemId}
           </WpLink>
         ) : (
@@ -183,10 +182,11 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
               updateTitle={'Редактировать товар'}
               updateHandler={() => {
                 if (sessionUser?.role?.isStaff) {
-                  window.open(
-                    `${ROUTE_CMS}/rubrics/${dataItem.rubricId}/products/product/${dataItem._id}`,
-                    '_blank',
-                  );
+                  const links = getConsoleProductLinks({
+                    productId: dataItem._id,
+                    rubricSlug: dataItem.rubricSlug,
+                  });
+                  window.open(links.root, '_blank');
                 }
               }}
             />
@@ -219,7 +219,6 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
               basePath={basePath}
               rubricSlug={rubricSlug}
               attributes={attributes}
-              excludedParams={[rubricId]}
               selectedAttributes={selectedAttributes}
               clearSlug={clearSlug}
             />
@@ -233,10 +232,11 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
                 testIdKey={'_id'}
                 onRowDoubleClick={(dataItem) => {
                   if (sessionUser?.role?.isStaff) {
-                    window.open(
-                      `${ROUTE_CMS}/rubrics/${dataItem.rubricId}/products/product/${dataItem._id}`,
-                      '_blank',
-                    );
+                    const links = getConsoleProductLinks({
+                      productId: dataItem._id,
+                      rubricSlug: dataItem.rubricSlug,
+                    });
+                    window.open(links.root, '_blank');
                   }
                 }}
               />
@@ -267,7 +267,7 @@ export const ShopAddProductsFinalStep: React.FC<ShopAddProductsListInterface> = 
   createChosenProduct,
   deleteChosenProduct,
   setStepHandler,
-  rubricId,
+  rubricSlug,
   layoutBasePath,
   breadcrumbs,
 }) => {
@@ -278,9 +278,13 @@ export const ShopAddProductsFinalStep: React.FC<ShopAddProductsListInterface> = 
     onCompleted: (data) => {
       onCompleteCallback(data.addManyProductsToShop);
       if (data.addManyProductsToShop.success) {
-        router
-          .push(`${layoutBasePath}/${shop._id}/products/${rubricId}`)
-          .catch((e) => console.log(e));
+        const links = getConsoleCompanyLinks({
+          companyId: shop.companyId,
+          shopId: shop._id,
+          rubricSlug: rubricSlug,
+        });
+
+        router.push(links.shop.products.rubric.root).catch((e) => console.log(e));
       }
     },
     onError: onErrorCallback,

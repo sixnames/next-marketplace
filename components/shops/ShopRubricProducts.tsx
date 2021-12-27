@@ -334,7 +334,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
                       <WpButton
                         frameClassName='w-auto'
                         onClick={() => {
-                          router.push(links.products.add).catch((e) => console.log(e));
+                          router.push(links.products.rubric.add).catch((e) => console.log(e));
                         }}
                         testId={'add-shop-product'}
                         size={'small'}

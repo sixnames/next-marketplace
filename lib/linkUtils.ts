@@ -49,7 +49,7 @@ export function getConsoleRubricLinks({
 
 // console product
 interface GetConsoleProductLinksInterface extends GetConsoleRubricLinkInterface {
-  productId: string;
+  productId: string | ObjectIdModel;
 }
 
 export function getConsoleProductLinks({
@@ -134,9 +134,9 @@ export function getConsoleShopLinks({
     syncErrors: `${root}/sync-errors`,
     products: {
       root: productsRoot,
-      add: `${productsRoot}/add`,
       rubric: {
         root: rubricRoot,
+        add: `${rubricRoot}/add`,
         product: getConsoleShopProductLinks({
           basePath: productRoot,
           productId,

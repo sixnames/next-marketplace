@@ -7,7 +7,7 @@ import Inner from '../../../../../components/Inner';
 import { CreateCategoryModalInterface } from '../../../../../components/Modal/CreateCategoryModal';
 import RequestError from '../../../../../components/RequestError';
 import WpImage from '../../../../../components/WpImage';
-import { DEFAULT_LOCALE, ROUTE_CMS, SORT_ASC } from '../../../../../config/common';
+import { DEFAULT_LOCALE, SORT_ASC } from '../../../../../config/common';
 import { CONFIRM_MODAL, CREATE_CATEGORY_MODAL } from '../../../../../config/modalVariants';
 import { COL_CATEGORIES, COL_ICONS, COL_RUBRICS } from '../../../../../db/collectionNames';
 import { getDatabase } from '../../../../../db/mongodb';
@@ -22,6 +22,7 @@ import CmsRubricLayout from '../../../../../layout/cms/CmsRubricLayout';
 import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
 import { sortObjectsByField } from '../../../../../lib/arrayUtils';
 import { getFieldStringLocale } from '../../../../../lib/i18n';
+import { getConsoleRubricLinks } from '../../../../../lib/linkUtils';
 import {
   castDbData,
   getAppInitialData,
@@ -44,10 +45,14 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
     onError: onErrorCallback,
   });
 
+  const links = getConsoleRubricLinks({
+    rubricSlug: rubric.slug,
+  });
+
   const renderCategories = React.useCallback(
     (category: CategoryInterface) => {
       const { name, categories, image } = category;
-      const categoryUrl = `${ROUTE_CMS}/rubrics/${rubric._id}/categories/${category._id}`;
+      const categoryUrl = `${links.categories}/${category._id}`;
       return (
         <div data-cy={`${name}`} data-url={categoryUrl}>
           {image ? (
@@ -125,7 +130,7 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
         </div>
       );
     },
-    [deleteCategoryMutation, rubric._id, showLoading, showModal],
+    [deleteCategoryMutation, links.categories, rubric._id, showLoading, showModal],
   );
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -133,11 +138,11 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
     config: [
       {
         name: 'Рубрикатор',
-        href: `${ROUTE_CMS}/rubrics`,
+        href: links.parentLink,
       },
       {
         name: `${rubric.name}`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}`,
+        href: links.root,
       },
     ],
   };

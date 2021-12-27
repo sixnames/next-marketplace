@@ -8,7 +8,7 @@ import WpImageUpload from '../../../../../../components/FormElements/Upload/WpIm
 import CategoryMainFields from '../../../../../../components/FormTemplates/CategoryMainFields';
 import Inner from '../../../../../../components/Inner';
 import SeoContentEditor from '../../../../../../components/SeoContentEditor';
-import { DEFAULT_COMPANY_SLUG, GENDER_ENUMS, ROUTE_CMS } from '../../../../../../config/common';
+import { DEFAULT_COMPANY_SLUG, GENDER_ENUMS } from '../../../../../../config/common';
 import { getConsoleCategoryDetails } from '../../../../../../db/dao/category/getConsoleCategoryDetails';
 import { OptionVariantsModel } from '../../../../../../db/dbModels';
 import {
@@ -25,6 +25,7 @@ import useMutationCallbacks from '../../../../../../hooks/useMutationCallbacks';
 import useValidationSchema from '../../../../../../hooks/useValidationSchema';
 import CmsCategoryLayout from '../../../../../../layout/cms/CmsCategoryLayout';
 import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
+import { getConsoleRubricLinks } from '../../../../../../lib/linkUtils';
 import {
   castDbData,
   getAppInitialData,
@@ -93,20 +94,24 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
           }, {}),
   };
 
+  const links = getConsoleRubricLinks({
+    rubricSlug: `${rubric?.slug}`,
+  });
+
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${category.name}`,
     config: [
       {
         name: 'Рубрикатор',
-        href: `${ROUTE_CMS}/rubrics`,
+        href: links.parentLink,
       },
       {
         name: `${rubric?.name}`,
-        href: `${ROUTE_CMS}/rubrics/${rubricId}`,
+        href: links.root,
       },
       {
         name: `Категории`,
-        href: `${ROUTE_CMS}/rubrics/${rubricId}/categories`,
+        href: links.categories,
       },
     ],
   };

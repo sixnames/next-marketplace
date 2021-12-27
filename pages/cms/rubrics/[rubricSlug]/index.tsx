@@ -6,7 +6,7 @@ import WpButton from '../../../../components/button/WpButton';
 import RubricMainFields from '../../../../components/FormTemplates/RubricMainFields';
 import Inner from '../../../../components/Inner';
 import SeoContentEditor from '../../../../components/SeoContentEditor';
-import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from '../../../../config/common';
+import { DEFAULT_COMPANY_SLUG } from '../../../../config/common';
 import { COL_RUBRIC_VARIANTS } from '../../../../db/collectionNames';
 import { getConsoleRubricDetails } from '../../../../db/dao/rubrics/getConsoleRubricDetails';
 import { getDatabase } from '../../../../db/mongodb';
@@ -23,6 +23,7 @@ import CmsRubricLayout from '../../../../layout/cms/CmsRubricLayout';
 import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
 import { sortObjectsByField } from '../../../../lib/arrayUtils';
 import { getFieldStringLocale } from '../../../../lib/i18n';
+import { getConsoleRubricLinks } from '../../../../lib/linkUtils';
 import {
   castDbData,
   getAppInitialData,
@@ -98,12 +99,16 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
     variantId,
   };
 
+  const { parentLink } = getConsoleRubricLinks({
+    rubricSlug: rubric.slug,
+  });
+
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${rubric.name}`,
     config: [
       {
         name: 'Рубрикатор',
-        href: `${ROUTE_CMS}/rubrics`,
+        href: parentLink,
       },
     ],
   };

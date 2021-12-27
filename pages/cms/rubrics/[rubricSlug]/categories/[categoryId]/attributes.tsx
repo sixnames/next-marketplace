@@ -10,7 +10,6 @@ import WpLink from '../../../../../../components/Link/WpLink';
 import { AddAttributesGroupToRubricModalInterface } from '../../../../../../components/Modal/AddAttributesGroupToRubricModal';
 import WpAccordion from '../../../../../../components/WpAccordion';
 import WpTable, { WpTableColumn } from '../../../../../../components/WpTable';
-import { ROUTE_CMS } from '../../../../../../config/common';
 import { getConstantTranslation } from '../../../../../../config/constantTranslations';
 import {
   ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL,
@@ -42,6 +41,7 @@ import CmsCategoryLayout from '../../../../../../layout/cms/CmsCategoryLayout';
 import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
 import { sortObjectsByField } from '../../../../../../lib/arrayUtils';
 import { getFieldStringLocale } from '../../../../../../lib/i18n';
+import { getConsoleRubricLinks } from '../../../../../../lib/linkUtils';
 import {
   castDbData,
   getAppInitialData,
@@ -71,6 +71,10 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
   const [addAttributesGroupToCategoryMutation] = useAddAttributesGroupToCategoryMutation({
     onCompleted: (data) => onCompleteCallback(data.addAttributesGroupToCategory),
     onError: onErrorCallback,
+  });
+
+  const links = getConsoleRubricLinks({
+    rubricSlug: `${category.rubric?.slug}`,
   });
 
   const columns = (columnCategory?: CategoryInterface): WpTableColumn<AttributeInterface>[] => [
@@ -112,9 +116,7 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
       render: () => {
         if (columnCategory && columnCategory._id !== category._id) {
           return (
-            <WpLink
-              href={`${ROUTE_CMS}/rubrics/${columnCategory.rubric?._id}/categories/${columnCategory._id}/attributes`}
-            >
+            <WpLink href={`${links.categories}/${columnCategory._id}/attributes`}>
               {columnCategory.name}
             </WpLink>
           );
@@ -132,19 +134,19 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
     config: [
       {
         name: 'Рубрикатор',
-        href: `${ROUTE_CMS}/rubrics`,
+        href: links.parentLink,
       },
       {
         name: `${category.rubric?.name}`,
-        href: `${ROUTE_CMS}/rubrics/${category.rubricId}`,
+        href: links.root,
       },
       {
         name: `Категории`,
-        href: `${ROUTE_CMS}/rubrics/${category.rubricId}/categories`,
+        href: links.categories,
       },
       {
         name: `${category.name}`,
-        href: `${ROUTE_CMS}/rubrics/${category.rubricId}/categories/${category._id}`,
+        href: `${links.categories}/${category._id}`,
       },
     ],
   };

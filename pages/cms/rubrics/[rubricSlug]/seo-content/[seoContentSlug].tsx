@@ -7,13 +7,13 @@ import Inner from '../../../../../components/Inner';
 import {
   CATALOGUE_SEO_TEXT_POSITION_TOP,
   DEFAULT_COMPANY_SLUG,
-  ROUTE_CMS,
 } from '../../../../../config/common';
 import { getConsoleRubricDetails } from '../../../../../db/dao/rubrics/getConsoleRubricDetails';
 import { AppContentWrapperBreadCrumbs, RubricInterface } from '../../../../../db/uiInterfaces';
 import CmsRubricLayout from '../../../../../layout/cms/CmsRubricLayout';
 import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
 import { alwaysString } from '../../../../../lib/arrayUtils';
+import { getConsoleRubricLinks } from '../../../../../lib/linkUtils';
 import { getSeoContentBySlug } from '../../../../../lib/seoContentUtils';
 import {
   castDbData,
@@ -32,16 +32,20 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
   showSeoFields,
   companySlug,
 }) => {
+  const { parentLink, root } = getConsoleRubricLinks({
+    rubricSlug: rubric.slug,
+  });
+
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `SEO тексты`,
     config: [
       {
         name: 'Рубрикатор',
-        href: `${ROUTE_CMS}/rubrics`,
+        href: parentLink,
       },
       {
         name: `${rubric.name}`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}`,
+        href: root,
       },
     ],
   };

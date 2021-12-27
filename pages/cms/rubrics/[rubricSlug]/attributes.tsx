@@ -38,6 +38,7 @@ import CmsRubricLayout from '../../../../layout/cms/CmsRubricLayout';
 import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
 import { sortObjectsByField } from '../../../../lib/arrayUtils';
 import { getFieldStringLocale } from '../../../../lib/i18n';
+import { getConsoleRubricLinks } from '../../../../lib/linkUtils';
 import {
   castDbData,
   getAppInitialData,
@@ -131,16 +132,20 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
     },
   ];
 
+  const { parentLink, root } = getConsoleRubricLinks({
+    rubricSlug: rubric.slug,
+  });
+
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Атрибуты',
     config: [
       {
         name: 'Рубрикатор',
-        href: `${ROUTE_CMS}/rubrics`,
+        href: parentLink,
       },
       {
         name: `${rubric.name}`,
-        href: `${ROUTE_CMS}/rubrics/${rubric._id}`,
+        href: root,
       },
     ],
   };

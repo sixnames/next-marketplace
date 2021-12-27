@@ -16,6 +16,7 @@ import { getDatabase } from '../../../../../db/mongodb';
 import { AppContentWrapperBreadCrumbs, RubricInterface } from '../../../../../db/uiInterfaces';
 import CmsRubricLayout from '../../../../../layout/cms/CmsRubricLayout';
 import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
+import { getConsoleRubricLinks } from '../../../../../lib/linkUtils';
 import {
   castDbData,
   getAppInitialData,
@@ -32,17 +33,22 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
   rubric,
   seoContents,
   routeBasePath,
+  rubricSlug,
 }) => {
+  const { parentLink, root } = getConsoleRubricLinks({
+    rubricSlug,
+  });
+
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `SEO тексты`,
     config: [
       {
         name: 'Рубрикатор',
-        href: `${routeBasePath}/rubrics`,
+        href: parentLink,
       },
       {
         name: `${rubric.name}`,
-        href: `${routeBasePath}/rubrics/${rubric._id}`,
+        href: root,
       },
     ],
   };
@@ -53,7 +59,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
         <ConsoleSeoContentsList
           seoContents={seoContents}
           routeBasePath={routeBasePath}
-          rubricId={`${rubric._id}`}
+          rubricSlug={rubricSlug}
         />
       </Inner>
     </CmsRubricLayout>
@@ -111,7 +117,7 @@ export const getServerSideProps = async (
       rubric: castDbData(payload.rubric),
       seoContents: castDbData(seoContents),
       routeBasePath: ROUTE_CMS,
-      rubricId: `${payload.rubric._id}`,
+      rubricSlug: payload.rubric.slug,
       companySlug,
     },
   };

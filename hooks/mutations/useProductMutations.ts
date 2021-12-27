@@ -4,7 +4,6 @@ import {
   REQUEST_METHOD_DELETE,
   REQUEST_METHOD_PATCH,
   REQUEST_METHOD_POST,
-  ROUTE_CMS,
 } from '../../config/common';
 import { BARCODE_INTERSECTS_MODAL } from '../../config/modalVariants';
 import { useAppContext } from '../../context/appContext';
@@ -49,7 +48,6 @@ export const useCreateProduct = () => {
     onSuccess: ({ payload, message }) => {
       if (payload) {
         const { root } = getConsoleProductLinks({
-          basePath: ROUTE_CMS,
           rubricSlug: payload.rubricSlug,
           productId: `${payload._id}`,
         });
@@ -117,7 +115,6 @@ export const useCopyProduct = () => {
     onSuccess: ({ payload, message }) => {
       if (payload) {
         const { root } = getConsoleProductLinks({
-          basePath: ROUTE_CMS,
           rubricSlug: payload.rubricSlug,
           productId: `${payload._id}`,
         });
@@ -152,7 +149,6 @@ export const useCreateProductWithSyncError = () => {
     onSuccess: ({ payload, message }) => {
       if (payload) {
         const { root } = getConsoleProductLinks({
-          basePath: ROUTE_CMS,
           rubricSlug: payload.rubricSlug,
           productId: `${payload._id}`,
         });
@@ -186,7 +182,6 @@ export const useUpdateProductWithSyncError = () => {
     onSuccess: ({ payload }) => {
       if (payload) {
         const { root } = getConsoleProductLinks({
-          basePath: ROUTE_CMS,
           rubricSlug: payload.rubricSlug,
           productId: `${payload._id}`,
         });

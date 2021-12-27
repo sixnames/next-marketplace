@@ -10,7 +10,7 @@ import Inner from '../../../components/Inner';
 import { CreateRubricModalInterface } from '../../../components/Modal/CreateRubricModal';
 import WpTable, { WpTableColumn } from '../../../components/WpTable';
 import WpTitle from '../../../components/WpTitle';
-import { DEFAULT_COMPANY_SLUG, DEFAULT_PAGE_FILTER, ROUTE_CMS } from '../../../config/common';
+import { DEFAULT_COMPANY_SLUG } from '../../../config/common';
 import { CONFIRM_MODAL, CREATE_RUBRIC_MODAL } from '../../../config/modalVariants';
 import {
   COL_PRODUCT_FACETS,
@@ -30,6 +30,7 @@ import AppContentWrapper from '../../../layout/AppContentWrapper';
 import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
 import { sortObjectsByField } from '../../../lib/arrayUtils';
 import { getFieldStringLocale } from '../../../lib/i18n';
+import { getConsoleRubricLinks } from '../../../lib/linkUtils';
 import {
   castDbData,
   getAppInitialData,
@@ -90,9 +91,10 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, rubricVariants
             justifyContent={'flex-end'}
             updateTitle={'Редактировать рубрику'}
             updateHandler={() => {
-              router
-                .push(`${ROUTE_CMS}/rubrics/${dataItem.slug}/products/${DEFAULT_PAGE_FILTER}`)
-                .catch((e) => console.log(e));
+              const { products } = getConsoleRubricLinks({
+                rubricSlug: dataItem.slug,
+              });
+              router.push(products).catch((e) => console.log(e));
             }}
             deleteTitle={'Удалить рубрику'}
             deleteHandler={() => {
@@ -133,9 +135,10 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, rubricVariants
             testIdKey={'name'}
             emptyMessage={'Список пуст'}
             onRowDoubleClick={(rubric) => {
-              router
-                .push(`${ROUTE_CMS}/rubrics/${rubric.slug}/products/${DEFAULT_PAGE_FILTER}`)
-                .catch((e) => console.log(e));
+              const { products } = getConsoleRubricLinks({
+                rubricSlug: rubric.slug,
+              });
+              router.push(products).catch((e) => console.log(e));
             }}
           />
         </div>

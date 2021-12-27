@@ -29,15 +29,21 @@ export function getOrderLink(props?: GetOrderLinkInterface) {
 // rubric
 interface GetCmsRubricLinkInterface {
   rubricSlug: string;
-  basePath: string;
+  basePath?: string;
 }
-export function getConsoleRubricLinks({ rubricSlug, basePath }: GetCmsRubricLinkInterface) {
+export function getConsoleRubricLinks({
+  rubricSlug,
+  basePath = ROUTE_CMS,
+}: GetCmsRubricLinkInterface) {
+  const parentLink = `${basePath}/rubrics`;
+  const root = `${parentLink}/${rubricSlug}`;
   return {
-    root: `${basePath}/rubrics/${rubricSlug}`,
-    products: `${basePath}/rubrics/${rubricSlug}/products`,
-    categories: `${basePath}/rubrics/${rubricSlug}/categories`,
-    seoContent: `${basePath}/rubrics/${rubricSlug}/seo-content`,
-    attributes: `${basePath}/rubrics/${rubricSlug}/attributes`,
+    parentLink,
+    root,
+    products: `${root}/products`,
+    categories: `${root}/categories`,
+    seoContent: `${root}/seo-content`,
+    attributes: `${root}/attributes`,
   };
 }
 
@@ -52,13 +58,14 @@ export function getConsoleProductLinks({
   basePath,
 }: GetConsoleProductLinksInterface) {
   const { products } = getConsoleRubricLinks({ rubricSlug, basePath });
+  const root = `${products}/product/${productId}`;
   return {
-    assets: `${products}/product/${productId}/assets`,
-    attributes: `${products}/product/${productId}/attributes`,
-    brands: `${products}/product/${productId}/brands`,
-    categories: `${products}/product/${productId}/categories`,
-    constructor: `${products}/product/${productId}/constructor`,
-    root: `${products}/product/${productId}`,
-    variants: `${products}/product/${productId}/variants`,
+    root,
+    assets: `${root}/assets`,
+    attributes: `${root}/attributes`,
+    brands: `${root}/brands`,
+    categories: `${root}/categories`,
+    constructor: `${root}/constructor`,
+    variants: `${root}/variants`,
   };
 }

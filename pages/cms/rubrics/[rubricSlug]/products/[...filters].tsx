@@ -15,7 +15,7 @@ import { SeoTextCitiesInfoList } from '../../../../../components/SeoTextLocalesI
 import Spinner from '../../../../../components/Spinner';
 import TableRowImage from '../../../../../components/TableRowImage';
 import WpTable, { WpTableColumn } from '../../../../../components/WpTable';
-import { DEFAULT_COMPANY_SLUG, DEFAULT_PAGE_FILTER, ROUTE_CMS } from '../../../../../config/common';
+import { DEFAULT_COMPANY_SLUG } from '../../../../../config/common';
 import { CONFIRM_MODAL, CREATE_NEW_PRODUCT_MODAL } from '../../../../../config/modalVariants';
 import { getConsoleRubricProducts } from '../../../../../db/dao/product/getConsoleRubricProducts';
 import {
@@ -30,6 +30,7 @@ import CmsRubricLayout from '../../../../../layout/cms/CmsRubricLayout';
 import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
 import { alwaysArray, alwaysString } from '../../../../../lib/arrayUtils';
 import { getNumWord } from '../../../../../lib/i18n';
+import { getConsoleRubricLinks } from '../../../../../lib/linkUtils';
 import { noNaN } from '../../../../../lib/numbers';
 import {
   castDbData,
@@ -192,16 +193,20 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
     return `Найдено ${counter} ${catalogueCounterPostfix}`;
   }, [totalDocs]);
 
+  const { parentLink, root } = getConsoleRubricLinks({
+    rubricSlug: `${rubric?.slug}`,
+  });
+
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Товары',
     config: [
       {
         name: 'Рубрикатор',
-        href: `${ROUTE_CMS}/rubrics`,
+        href: parentLink,
       },
       {
         name: `${rubric?.name}`,
-        href: `${ROUTE_CMS}/rubrics/${rubric?._id}`,
+        href: root,
       },
     ],
   };
@@ -287,7 +292,7 @@ export const getCmsRubricProductsListPageProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<CmsRubricProductsListPageInterface>> => {
   const { query } = context;
-  const rubricId = alwaysString(query.rubricId);
+  const rubricSlug = alwaysString(query.rubricSlug);
   const initialProps = await getAppInitialData({ context });
 
   // Get shop
@@ -298,13 +303,16 @@ export const getCmsRubricProductsListPageProps = async (
   }
   const locale = initialProps.props.sessionLocale;
   const currency = initialProps.props.initialData.currency;
-  const basePath = `${ROUTE_CMS}/rubrics/${rubricId}/products/${rubricId}/${DEFAULT_PAGE_FILTER}`;
-  const itemPath = `${ROUTE_CMS}/rubrics/${rubricId}/products/product`;
+
+  const { products } = getConsoleRubricLinks({
+    rubricSlug,
+  });
+  const itemPath = `${products}/product`;
 
   const payload = await getConsoleRubricProducts({
     query: context.query,
     locale,
-    basePath,
+    basePath: products,
     currency,
     companySlug: DEFAULT_COMPANY_SLUG,
   });

@@ -511,7 +511,7 @@ export interface CatalogueProductPricesInterface {
 }
 
 export interface CatalogueProductsAggregationInterface {
-  totalProducts: number;
+  totalDocs: number;
   prices: CatalogueProductPricesInterface[];
   docs: ShopProductInterface[];
   rubrics: RubricInterface[];

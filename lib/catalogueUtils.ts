@@ -42,8 +42,11 @@ import { COL_RUBRIC_VARIANTS, COL_RUBRICS, COL_SHOP_PRODUCTS } from '../db/colle
 import {
   ignoreNoImageStage,
   noImageStage,
+  paginatedAggregationFinalPipeline,
   productsPaginatedAggregationFacetsPipeline,
-  summaryPipeline,
+  ProductsPaginatedAggregationInterface,
+  shopProductDocsFacetPipeline,
+  shopProductsGroupPipeline,
 } from '../db/dao/constantPipelines';
 import { castSummaryForUI } from '../db/dao/product/castSummaryForUI';
 import { CatalogueBreadcrumbModel, ObjectIdModel, ShopProductModel } from '../db/dbModels';
@@ -991,6 +994,10 @@ export const getCatalogueData = async ({
     };
 
     // aggregate catalogue initial data
+    const pipelineConfig: ProductsPaginatedAggregationInterface = {
+      citySlug: city,
+      companySlug,
+    };
     const productDataAggregationResult = await shopProductsCollection
       .aggregate<CatalogueProductsAggregationInterface>([
         // match shop products
@@ -998,103 +1005,24 @@ export const getCatalogueData = async ({
           $match: productsInitialMatch,
         },
 
-        // unwind filterSlugs field
-        {
-          $unwind: {
-            path: '$filterSlugs',
-            preserveNullAndEmptyArrays: true,
-          },
-        },
-
-        // group shop products by productId field
-        {
-          $group: {
-            _id: '$productId',
-            companyId: { $first: `$companyId` },
-            itemId: { $first: '$itemId' },
-            rubricId: { $first: '$rubricId' },
-            rubricSlug: { $first: `$rubricSlug` },
-            brandSlug: { $first: '$brandSlug' },
-            mainImage: { $first: '$mainImage' },
-            brandCollectionSlug: { $first: '$brandCollectionSlug' },
-            views: { $max: `$views.${companySlug}.${city}` },
-            // priorities: { $max: `$priorities.${companySlug}.${city}` },
-            minPrice: {
-              $min: '$price',
-            },
-            maxPrice: {
-              $min: '$price',
-            },
-            available: {
-              $max: '$available',
-            },
-            filterSlugs: {
-              $addToSet: '$filterSlugs',
-            },
-            shopsIds: {
-              $addToSet: '$shopId',
-            },
-            shopProductsIds: {
-              $addToSet: '$_id',
-            },
-          },
-        },
-        {
-          $addFields: {
-            sortIndex: {
-              $cond: {
-                if: {
-                  $gt: ['$available', 0],
-                },
-                then: 1,
-                else: 0,
-              },
-            },
-          },
-        },
+        ...shopProductsGroupPipeline(pipelineConfig),
 
         // catalogue data facets
         {
           $facet: {
             // docs facet
-            docs: [
-              {
-                $sort: {
-                  sortIndex: SORT_DESC,
-                  ...sortStage,
-                },
-              },
-              {
-                $skip: skip,
-              },
-              {
-                $limit: limit,
-              },
-
-              // get shop product fields
-              ...summaryPipeline('$_id'),
-            ],
-
-            ...productsPaginatedAggregationFacetsPipeline({
-              citySlug: city,
-              companySlug,
+            docs: shopProductDocsFacetPipeline({
+              sortStage,
+              skip,
+              limit,
             }),
+
+            ...productsPaginatedAggregationFacetsPipeline(pipelineConfig),
           },
         },
 
         // cast facets
-        {
-          $addFields: {
-            totalDocsObject: { $arrayElemAt: ['$countAllDocs', 0] },
-          },
-        },
-        {
-          $addFields: {
-            countAllDocs: null,
-            totalDocsObject: null,
-            totalProducts: '$totalDocsObject.totalDocs',
-          },
-        },
+        ...paginatedAggregationFinalPipeline,
       ])
       .toArray();
     const productDataAggregation = productDataAggregationResult[0];
@@ -1103,7 +1031,7 @@ export const getCatalogueData = async ({
     }
     // console.log('aggregation ', new Date().getTime() - timeStart);
 
-    const { docs, totalProducts, attributes, brands, categories, prices } = productDataAggregation;
+    const { docs, totalDocs, attributes, brands, categories, prices } = productDataAggregation;
 
     // get rubric
     let rubrics = productDataAggregation.rubrics;
@@ -1433,7 +1361,7 @@ export const getCatalogueData = async ({
       : rubric.variant?.gridCatalogueColumns || CATALOGUE_GRID_DEFAULT_COLUMNS_COUNT;
 
     // count total pages
-    const totalPages = Math.ceil(totalProducts / limit);
+    const totalPages = Math.ceil(totalDocs / limit);
 
     // get head categories
     let visibleHeadCategoryIds: ObjectIdModel[] = [];
@@ -1573,7 +1501,7 @@ export const getCatalogueData = async ({
       // filter
       headCategories,
       totalPages,
-      totalProducts: noNaN(totalProducts),
+      totalProducts: noNaN(totalDocs),
       attributes: finalSortedFilterAttributes,
       selectedAttributes: finalSelectedAttributes,
       page,

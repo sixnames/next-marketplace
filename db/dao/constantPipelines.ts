@@ -411,15 +411,113 @@ export const summaryPipeline = (idFieldName: string) => {
   ];
 };
 
-interface ProductsPaginatedAggregationFacetsPipelineInterface {
+export const paginatedAggregationFinalPipeline = [
+  {
+    $addFields: {
+      totalDocsObject: { $arrayElemAt: ['$countAllDocs', 0] },
+    },
+  },
+  {
+    $addFields: {
+      countAllDocs: null,
+      totalDocsObject: null,
+      totalDocs: '$totalDocsObject.totalDocs',
+    },
+  },
+];
+
+interface ShopProductDocsFacetPipelineInterface {
+  skip: number;
+  limit: number;
+  sortStage: Record<any, any>;
+}
+
+export function shopProductDocsFacetPipeline({
+  limit,
+  skip,
+  sortStage,
+}: ShopProductDocsFacetPipelineInterface) {
+  return [
+    {
+      $sort: {
+        sortIndex: SORT_DESC,
+        ...sortStage,
+      },
+    },
+    {
+      $skip: skip,
+    },
+    {
+      $limit: limit,
+    },
+
+    // get shop product fields
+    ...summaryPipeline('$_id'),
+  ];
+}
+
+export interface ProductsPaginatedAggregationInterface {
   companySlug: string;
   citySlug: string;
+}
+
+export function shopProductsGroupPipeline({
+  citySlug,
+  companySlug,
+}: ProductsPaginatedAggregationInterface) {
+  return [
+    // group shop products by productId field
+    {
+      $group: {
+        _id: '$productId',
+        companyId: { $first: `$companyId` },
+        itemId: { $first: '$itemId' },
+        rubricId: { $first: '$rubricId' },
+        rubricSlug: { $first: `$rubricSlug` },
+        brandSlug: { $first: '$brandSlug' },
+        mainImage: { $first: '$mainImage' },
+        brandCollectionSlug: { $first: '$brandCollectionSlug' },
+        views: { $max: `$views.${companySlug}.${citySlug}` },
+        minPrice: {
+          $min: '$price',
+        },
+        maxPrice: {
+          $min: '$price',
+        },
+        available: {
+          $max: '$available',
+        },
+        filterSlugs: {
+          $first: '$filterSlugs',
+        },
+        shopsIds: {
+          $addToSet: '$shopId',
+        },
+        shopProductsIds: {
+          $addToSet: '$_id',
+        },
+      },
+    },
+    {
+      $addFields: {
+        sortIndex: {
+          $cond: {
+            if: {
+              $gt: ['$available', 0],
+            },
+            then: 1,
+            else: 0,
+          },
+        },
+      },
+    },
+  ];
 }
 
 export function productsPaginatedAggregationFacetsPipeline({
   companySlug,
   citySlug,
-}: ProductsPaginatedAggregationFacetsPipelineInterface) {
+}: ProductsPaginatedAggregationInterface) {
   const sortPipeline = [
     {
       $addFields: {

@@ -11,7 +11,7 @@ import { ConfirmModalInterface } from '../../../components/Modal/ConfirmModal';
 import TableRowImage from '../../../components/TableRowImage';
 import WpTable, { WpTableColumn } from '../../../components/WpTable';
 import WpTitle from '../../../components/WpTitle';
-import { ROUTE_CMS, SORT_DESC } from '../../../config/common';
+import { SORT_DESC } from '../../../config/common';
 import { CONFIRM_MODAL } from '../../../config/modalVariants';
 import { COL_COMPANIES, COL_USERS } from '../../../db/collectionNames';
 import { getDatabase } from '../../../db/mongodb';
@@ -19,6 +19,7 @@ import { CompanyInterface } from '../../../db/uiInterfaces';
 import { useDeleteCompanyMutation } from '../../../generated/apolloComponents';
 import useMutationCallbacks from '../../../hooks/useMutationCallbacks';
 import AppContentWrapper from '../../../layout/AppContentWrapper';
+import { getConsoleCompanyLinks } from '../../../lib/linkUtils';
 import { getShortName } from '../../../lib/nameUtils';
 import {
   castDbData,
@@ -69,9 +70,12 @@ const CompaniesConsumer: React.FC<CompaniesConsumerInterface> = ({ companies }) 
     {
       accessor: 'itemId',
       headTitle: 'ID',
-      render: ({ cellData, dataItem }) => (
-        <WpLink href={`${ROUTE_CMS}/companies/${dataItem._id}`}>{cellData}</WpLink>
-      ),
+      render: ({ cellData, dataItem }) => {
+        const { root } = getConsoleCompanyLinks({
+          companyId: dataItem._id,
+        });
+        return <WpLink href={root}>{cellData}</WpLink>;
+      },
     },
     {
       accessor: 'logo',
@@ -102,7 +106,10 @@ const CompaniesConsumer: React.FC<CompaniesConsumerInterface> = ({ companies }) 
             deleteHandler={() => deleteCompanyHandler(dataItem)}
             updateTitle={`Редактировать компанию`}
             updateHandler={() => {
-              router.push(`${ROUTE_CMS}/companies/${dataItem._id}`).catch((e) => console.log(e));
+              const { root } = getConsoleCompanyLinks({
+                companyId: dataItem._id,
+              });
+              router.push(root).catch((e) => console.log(e));
             }}
           />
         );
@@ -125,7 +132,8 @@ const CompaniesConsumer: React.FC<CompaniesConsumerInterface> = ({ companies }) 
             size={'small'}
             testId={'create-company'}
             onClick={() => {
-              router.push(`${ROUTE_CMS}/companies/create`).catch((e) => {
+              const { create } = getConsoleCompanyLinks({});
+              router.push(create).catch((e) => {
                 console.log(e);
               });
             }}

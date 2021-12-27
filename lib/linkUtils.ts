@@ -26,15 +26,15 @@ export function getOrderLink(props?: GetOrderLinkInterface) {
   return `${protocol}${domain}${path}`;
 }
 
-// rubric
-interface GetCmsRubricLinkInterface {
-  rubricSlug: string;
+// console rubric
+interface GetConsoleRubricLinkInterface {
+  rubricSlug?: string;
   basePath?: string;
 }
 export function getConsoleRubricLinks({
-  rubricSlug,
+  rubricSlug = '',
   basePath = ROUTE_CMS,
-}: GetCmsRubricLinkInterface) {
+}: GetConsoleRubricLinkInterface) {
   const parentLink = `${basePath}/rubrics`;
   const root = `${parentLink}/${rubricSlug}`;
   return {
@@ -47,25 +47,56 @@ export function getConsoleRubricLinks({
   };
 }
 
-// product
-interface GetConsoleProductLinksInterface extends GetCmsRubricLinkInterface {
+// console product
+interface GetConsoleProductLinksInterface extends GetConsoleRubricLinkInterface {
   productId: string;
 }
 
 export function getConsoleProductLinks({
   rubricSlug,
   productId,
-  basePath,
+  basePath = ROUTE_CMS,
 }: GetConsoleProductLinksInterface) {
-  const { products } = getConsoleRubricLinks({ rubricSlug, basePath });
-  const root = `${products}/product/${productId}`;
+  const rubric = getConsoleRubricLinks({ rubricSlug, basePath });
+  const root = `${rubric.products}/product/${productId}`;
   return {
     root,
+    rubric,
     assets: `${root}/assets`,
     attributes: `${root}/attributes`,
     brands: `${root}/brands`,
     categories: `${root}/categories`,
     constructor: `${root}/constructor`,
     variants: `${root}/variants`,
+  };
+}
+
+// console rubric
+interface GetConsoleCompanyLinkInterface extends GetConsoleRubricLinkInterface {
+  companyId?: string | ObjectIdModel;
+}
+export function getConsoleCompanyLinks({
+  companyId = '',
+  basePath = ROUTE_CMS,
+  rubricSlug,
+}: GetConsoleCompanyLinkInterface) {
+  const parentLink = `${basePath}/companies`;
+  const root = `${parentLink}/${companyId}`;
+  return {
+    parentLink,
+    root,
+    create: `${parentLink}/create`,
+    blog: `${root}/blog`,
+    config: `${root}/config`,
+    giftCertificates: `${root}/gift-certificates`,
+    pages: `${root}/pages`,
+    promo: `${root}/promo`,
+    shops: `${root}/shops`,
+    assets: `${root}/assets`,
+    userCategories: `${root}/user-categories`,
+    rubrics: getConsoleRubricLinks({
+      basePath: root,
+      rubricSlug,
+    }),
   };
 }

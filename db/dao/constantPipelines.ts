@@ -447,6 +447,7 @@ interface ShopProductDocsFacetPipelineInterface {
   limit: number;
   sortStage: Record<any, any>;
   getSuppliers?: boolean;
+  summaryIdFieldName?: string;
 }
 
 export function shopProductDocsFacetPipeline({
@@ -454,6 +455,7 @@ export function shopProductDocsFacetPipeline({
   skip,
   sortStage,
   getSuppliers,
+  summaryIdFieldName = '$_id',
 }: ShopProductDocsFacetPipelineInterface) {
   const suppliersPipeline = getSuppliers ? shopProductSupplierProductsPipeline : [];
   return [
@@ -471,7 +473,7 @@ export function shopProductDocsFacetPipeline({
     },
 
     // get shop product fields
-    ...summaryPipeline('$_id'),
+    ...summaryPipeline(summaryIdFieldName),
 
     // get supplier products
     ...suppliersPipeline,

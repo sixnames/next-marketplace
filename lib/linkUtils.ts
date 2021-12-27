@@ -94,16 +94,18 @@ interface GetConsoleShopLinkInterface {
   shopId?: string | ObjectIdModel;
   basePath: string;
   rubricSlug?: string;
+  productId?: string | ObjectIdModel;
 }
 export function getShopCompanyLinks({
   shopId = '',
   basePath,
   rubricSlug,
+  productId,
 }: GetConsoleShopLinkInterface) {
   const root = `${basePath}/${shopId}`;
   const productsRoot = `${root}/products`;
   const rubricRoot = `${productsRoot}/${rubricSlug}`;
-  const productRoot = `${rubricRoot}/product`;
+  const productRoot = `${rubricRoot}/product/${productId}`;
 
   return {
     root,

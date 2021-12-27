@@ -16,6 +16,7 @@ import useValidationSchema from '../../hooks/useValidationSchema';
 import ConsoleShopLayout from '../../layout/console/ConsoleShopLayout';
 import { alwaysArray } from '../../lib/arrayUtils';
 import { getNumWord } from '../../lib/i18n';
+import { getShopCompanyLinks } from '../../lib/linkUtils';
 import { noNaN } from '../../lib/numbers';
 import { updateManyShopProductsSchema } from '../../validation/shopSchema';
 import AppContentFilter from '../AppContentFilter';
@@ -74,11 +75,14 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
       accessor: 'itemId',
       headTitle: 'Арт',
       render: ({ dataItem }) => {
+        const { products } = getShopCompanyLinks({
+          shopId: shop._id,
+          rubricSlug: dataItem.rubricSlug,
+          productId: dataItem.productId,
+          basePath,
+        });
         return (
-          <WpLink
-            href={`${layoutBasePath}/${shop._id}/products/product/${dataItem._id}`}
-            target={'_blank'}
-          >
+          <WpLink href={products.rubric.product.root} target={'_blank'}>
             {dataItem.summary?.itemId}
           </WpLink>
         );
@@ -91,14 +95,14 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
           <TableRowImage
             testId={'shop-product-main-image'}
             src={`${dataItem.summary?.mainImage}`}
-            alt={`${dataItem.summary?.name}`}
-            title={`${dataItem.summary?.name}`}
+            alt={`${dataItem.summary?.snippetTitle}`}
+            title={`${dataItem.summary?.snippetTitle}`}
           />
         );
       },
     },
     {
-      accessor: 'product.snippetTitle',
+      accessor: 'summary.snippetTitle',
       headTitle: 'Название',
       render: ({ cellData }) => cellData,
     },
@@ -296,11 +300,14 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
                         data={docs}
                         testIdKey={'_id'}
                         onRowDoubleClick={(dataItem) => {
+                          const { products } = getShopCompanyLinks({
+                            shopId: shop._id,
+                            rubricSlug: dataItem.rubricSlug,
+                            productId: dataItem.productId,
+                            basePath,
+                          });
                           if (sessionUser?.role?.isStaff) {
-                            window.open(
-                              `${layoutBasePath}/${shop._id}/products/product/${dataItem._id}`,
-                              '_blank',
-                            );
+                            window.open(products.rubric.product.root, '_blank');
                           }
                         }}
                       />

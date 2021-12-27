@@ -17,12 +17,19 @@ import { castUrlFilters, getCatalogueAttributes } from '../../../lib/catalogueUt
 import { getFieldStringLocale } from '../../../lib/i18n';
 import { castSupplierProductsList } from '../../../lib/productUtils';
 import { getTreeFromList } from '../../../lib/treeUtils';
-import { COL_CITIES, COL_COMPANIES, COL_SHOP_PRODUCTS, COL_SHOPS } from '../../collectionNames';
+import {
+  COL_CITIES,
+  COL_COMPANIES,
+  COL_RUBRICS,
+  COL_SHOP_PRODUCTS,
+  COL_SHOPS,
+} from '../../collectionNames';
 import { ObjectIdModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
 import {
   AttributeInterface,
   CompanyShopProductsPageInterface,
+  RubricInterface,
   ShopInterface,
   ShopProductInterface,
   ShopProductPricesInterface,
@@ -59,6 +66,7 @@ export const getConsoleShopProducts = async ({
     const { db } = await getDatabase();
     const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
     const shopsCollection = db.collection<ShopInterface>(COL_SHOPS);
+    const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
     const filters = alwaysArray(query.filters);
     const search = alwaysString(query.search);
     const shopId = alwaysString(query.shopId);
@@ -117,6 +125,12 @@ export const getConsoleShopProducts = async ({
       currency: DEFAULT_CURRENCY,
       shop,
     };
+
+    // get rubric
+    const rubric = await rubricsCollection.findOne({ slug: rubricSlug });
+    if (!rubric) {
+      return fallbackPayload;
+    }
 
     // cast selected filters
     const {
@@ -192,6 +206,7 @@ export const getConsoleShopProducts = async ({
               skip,
               limit,
               getSuppliers: true,
+              summaryIdFieldName: '$productId',
             }),
 
             ...productsPaginatedAggregationFacetsPipeline(pipelineConfig),
@@ -207,12 +222,8 @@ export const getConsoleShopProducts = async ({
       return fallbackPayload;
     }
 
-    const { totalDocs, totalPages, attributes, rubric, prices, brands, categories } =
+    const { totalDocs, totalPages, attributes, prices, brands, categories } =
       shopProductsAggregation;
-
-    if (!rubric) {
-      return fallbackPayload;
-    }
 
     // get filter attributes
     // price attribute

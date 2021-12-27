@@ -5,6 +5,7 @@ import Inner from '../../components/Inner';
 import WpTitle from '../../components/WpTitle';
 import { ROUTE_CMS } from '../../config/common';
 import { AppContentWrapperBreadCrumbs, ShopProductInterface } from '../../db/uiInterfaces';
+import { getConsoleShopProductLinks } from '../../lib/linkUtils';
 import { ClientNavItemInterface } from '../../types/clientTypes';
 import AppContentWrapper from '../AppContentWrapper';
 import AppSubNav from '../AppSubNav';
@@ -24,17 +25,24 @@ const ConsoleShopProductLayout: React.FC<ConsoleShopProductLayoutInterface> = ({
   showEditButton,
 }) => {
   const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
+    const { root, suppliers } = getConsoleShopProductLinks({
+      basePath,
+      productId: shopProduct._id,
+    });
+
+    console.log({ root, suppliers });
+
     return [
       {
         name: 'Детали',
         testId: 'details',
-        path: `${basePath}/${shopProduct._id}`,
+        path: root,
         exact: true,
       },
       {
         name: 'Ценообразование',
         testId: 'suppliers',
-        path: `${basePath}/${shopProduct._id}/suppliers`,
+        path: suppliers,
         exact: true,
       },
     ];

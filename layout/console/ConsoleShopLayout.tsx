@@ -3,7 +3,7 @@ import * as React from 'react';
 import Inner from '../../components/Inner';
 import WpTitle from '../../components/WpTitle';
 import { ConsoleShopLayoutInterface } from '../../db/uiInterfaces';
-import { getShopCompanyLinks } from '../../lib/linkUtils';
+import { getConsoleShopLinks } from '../../lib/linkUtils';
 import AppContentWrapper from '../AppContentWrapper';
 import AppSubNav from '../AppSubNav';
 
@@ -14,7 +14,7 @@ const ConsoleShopLayout: React.FC<ConsoleShopLayoutInterface> = ({
   children,
 }) => {
   const navConfig = React.useMemo(() => {
-    const { root, orders, products, assets, syncErrors } = getShopCompanyLinks({
+    const { root, orders, products, assets, syncErrors } = getConsoleShopLinks({
       basePath,
       shopId: shop._id,
     });

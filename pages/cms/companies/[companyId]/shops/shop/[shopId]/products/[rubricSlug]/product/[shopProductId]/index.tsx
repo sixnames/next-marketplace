@@ -3,7 +3,6 @@ import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import CompanyProductDetails from '../../../../../../../../../../../components/company/CompanyProductDetails';
 import RequestError from '../../../../../../../../../../../components/RequestError';
-import { ROUTE_CMS } from '../../../../../../../../../../../config/common';
 import { COL_COMPANIES } from '../../../../../../../../../../../db/collectionNames';
 import { getDatabase } from '../../../../../../../../../../../db/mongodb';
 import {
@@ -12,6 +11,7 @@ import {
   ShopProductInterface,
 } from '../../../../../../../../../../../db/uiInterfaces';
 import ConsoleShopProductLayout from '../../../../../../../../../../../layout/console/ConsoleShopProductLayout';
+import { getConsoleCompanyLinks } from '../../../../../../../../../../../lib/linkUtils';
 import { getConsoleShopProduct } from '../../../../../../../../../../../lib/productUtils';
 import {
   castDbData,
@@ -23,11 +23,16 @@ import ConsoleLayout from '../../../../../../../../../../../layout/cms/ConsoleLa
 interface ProductDetailsInterface {
   shopProduct: ShopProductInterface;
   companySlug: string;
+  pageCompany: CompanyInterface;
 }
 
-const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct, companySlug }) => {
-  const { summary, shop, company } = shopProduct;
-  if (!summary || !shop || !company) {
+const ProductDetails: React.FC<ProductDetailsInterface> = ({
+  shopProduct,
+  pageCompany,
+  companySlug,
+}) => {
+  const { summary, shop } = shopProduct;
+  if (!summary || !shop) {
     return <RequestError />;
   }
 
@@ -36,33 +41,39 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct, compan
     return <RequestError />;
   }
 
-  const companyBasePath = `${ROUTE_CMS}/companies/${shopProduct.companyId}`;
+  const { root, parentLink, shops, ...links } = getConsoleCompanyLinks({
+    companyId: shop.companyId,
+    shopId: shop._id,
+    rubricSlug: rubric?.slug,
+    productId: shopProduct._id,
+  });
+
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${snippetTitle}`,
     config: [
       {
         name: 'Компании',
-        href: `${ROUTE_CMS}/companies`,
+        href: parentLink,
       },
       {
-        name: `${company.name}`,
-        href: companyBasePath,
+        name: `${pageCompany.name}`,
+        href: root,
       },
       {
         name: 'Магазины',
-        href: `${companyBasePath}/shops/${shop.companyId}`,
+        href: shops,
       },
       {
         name: shop.name,
-        href: `${companyBasePath}/shops/shop/${shop._id}`,
+        href: links.shop.root,
       },
       {
         name: 'Товары',
-        href: `${companyBasePath}/shops/shop/${shop._id}/products`,
+        href: links.shop.products.root,
       },
       {
         name: `${rubric?.name}`,
-        href: `${companyBasePath}/shops/shop/${shop._id}/products/${rubric?._id}`,
+        href: links.shop.products.rubric.root,
       },
     ],
   };
@@ -72,7 +83,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct, compan
       showEditButton
       breadcrumbs={breadcrumbs}
       shopProduct={shopProduct}
-      basePath={`${companyBasePath}/shops/shop/${shopProduct.shopId}/products/product`}
+      basePath={links.shop.productBasePath}
     >
       <CompanyProductDetails
         routeBasePath={''}
@@ -122,6 +133,7 @@ export const getServerSideProps = async (
     locale: props.sessionLocale,
     companySlug: companyResult.slug,
   });
+
   if (!shopProductResult) {
     return {
       notFound: true,
@@ -132,6 +144,7 @@ export const getServerSideProps = async (
     props: {
       ...props,
       shopProduct: castDbData(shopProductResult),
+      pageCompany: castDbData(companyResult),
     },
   };
 };

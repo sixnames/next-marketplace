@@ -17,6 +17,7 @@ import {
 import ConsoleLayout from '../../../../../../../../../../../layout/cms/ConsoleLayout';
 import ConsoleShopProductLayout from '../../../../../../../../../../../layout/console/ConsoleShopProductLayout';
 import { getFieldStringLocale } from '../../../../../../../../../../../lib/i18n';
+import { getConsoleCompanyLinks } from '../../../../../../../../../../../lib/linkUtils';
 import { getConsoleShopProduct } from '../../../../../../../../../../../lib/productUtils';
 import {
   castDbData,
@@ -24,17 +25,20 @@ import {
   GetAppInitialDataPropsInterface,
 } from '../../../../../../../../../../../lib/ssrUtils';
 
-interface ProductDetailsInterface extends CompanyProductSuppliersInterface {}
+interface ProductDetailsInterface extends CompanyProductSuppliersInterface {
+  pageCompany: CompanyInterface;
+}
 
 const ProductDetails: React.FC<ProductDetailsInterface> = ({
   shopProduct,
   disableAddSupplier,
   suppliers,
   routeBasePath,
+  pageCompany,
 }) => {
-  const { summary, shop, company } = shopProduct;
+  const { summary, shop } = shopProduct;
 
-  if (!summary || !shop || !company) {
+  if (!summary || !shop) {
     return <RequestError />;
   }
 
@@ -43,36 +47,43 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
     return <RequestError />;
   }
 
+  const { root, parentLink, shops, ...links } = getConsoleCompanyLinks({
+    companyId: shop.companyId,
+    shopId: shop._id,
+    rubricSlug: rubric?.slug,
+    productId: shopProduct._id,
+  });
+
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: 'Поставщики',
+    currentPageName: `Ценообразование`,
     config: [
       {
         name: 'Компании',
-        href: `${ROUTE_CMS}/companies`,
+        href: parentLink,
       },
       {
-        name: `${company.name}`,
-        href: routeBasePath,
+        name: `${pageCompany.name}`,
+        href: root,
       },
       {
         name: 'Магазины',
-        href: `${routeBasePath}/shops/${shop.companyId}`,
+        href: shops,
       },
       {
         name: shop.name,
-        href: `${routeBasePath}/shops/shop/${shop._id}`,
+        href: links.shop.root,
       },
       {
         name: 'Товары',
-        href: `${routeBasePath}/shops/shop/${shop._id}/products`,
+        href: links.shop.products.root,
       },
       {
         name: `${rubric?.name}`,
-        href: `${routeBasePath}/shops/shop/${shop._id}/products/${rubric?._id}`,
+        href: links.shop.products.rubric.root,
       },
       {
         name: `${snippetTitle}`,
-        href: `${routeBasePath}/shops/shop/${shop._id}/products/${rubric?._id}/${shopProduct._id}`,
+        href: links.shop.products.rubric.product.root,
       },
     ],
   };
@@ -82,7 +93,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
       showEditButton
       breadcrumbs={breadcrumbs}
       shopProduct={shopProduct}
-      basePath={`${routeBasePath}/shops/shop/${shopProduct.shopId}/products/product`}
+      basePath={links.shop.productBasePath}
     >
       <CompanyProductSuppliers
         shopProduct={shopProduct}
@@ -170,6 +181,7 @@ export const getServerSideProps = async (
       ...props,
       shopProduct: castDbData(shopProduct),
       suppliers: castDbData(suppliers),
+      pageCompany: castDbData(companyResult),
       disableAddSupplier: disabledSuppliers.length === suppliers.length,
       routeBasePath: `${ROUTE_CMS}/companies/${shopProduct.companyId}`,
     },

@@ -90,13 +90,30 @@ export function getConsoleConfigsLinks({ basePath = ROUTE_CMS }: GetConsoleConfi
 }
 
 // console shop
+interface GetConsoleShopProductLinkInterface {
+  basePath: string;
+  productId?: string | ObjectIdModel;
+}
+export function getConsoleShopProductLinks({
+  basePath,
+  productId,
+}: GetConsoleShopProductLinkInterface) {
+  const root = `${basePath}/${productId}`;
+
+  return {
+    root,
+    suppliers: `${root}/suppliers`,
+  };
+}
+
+// console shop
 interface GetConsoleShopLinkInterface {
   shopId?: string | ObjectIdModel;
   basePath: string;
   rubricSlug?: string;
   productId?: string | ObjectIdModel;
 }
-export function getShopCompanyLinks({
+export function getConsoleShopLinks({
   shopId = '',
   basePath,
   rubricSlug,
@@ -105,23 +122,25 @@ export function getShopCompanyLinks({
   const root = `${basePath}/${shopId}`;
   const productsRoot = `${root}/products`;
   const rubricRoot = `${productsRoot}/${rubricSlug}`;
-  const productRoot = `${rubricRoot}/product/${productId}`;
+  const productBasePath = `${rubricRoot}/product`;
+  const productRoot = `${productBasePath}/${productId}`;
 
   return {
     root,
     shopBasePath: basePath,
+    productBasePath,
     assets: `${root}/assets`,
     orders: `${root}/shop-orders`,
     syncErrors: `${root}/sync-errors`,
     products: {
       root: productsRoot,
+      add: `${productsRoot}/add`,
       rubric: {
         root: rubricRoot,
-        add: `${rubricRoot}/add`,
-        product: {
-          root: productRoot,
-          suppliers: `${productRoot}/suppliers`,
-        },
+        product: getConsoleShopProductLinks({
+          basePath: productRoot,
+          productId,
+        }),
       },
     },
   };
@@ -131,12 +150,14 @@ export function getShopCompanyLinks({
 interface GetConsoleCompanyLinkInterface extends GetConsoleRubricLinkInterface {
   companyId?: string | ObjectIdModel;
   shopId?: string | ObjectIdModel;
+  productId?: string | ObjectIdModel;
 }
 export function getConsoleCompanyLinks({
   companyId = '',
   basePath = ROUTE_CMS,
   rubricSlug,
   shopId,
+  productId,
 }: GetConsoleCompanyLinkInterface) {
   const parentLink = `${basePath}/companies`;
   const root = `${parentLink}/${companyId}`;
@@ -149,10 +170,11 @@ export function getConsoleCompanyLinks({
     pages: `${root}/pages`,
     promo: `${root}/promo`,
     shops: `${root}/shops`,
-    shop: getShopCompanyLinks({
+    shop: getConsoleShopLinks({
       basePath: `${root}/shops/shop`,
       rubricSlug,
       shopId,
+      productId,
     }),
     assets: `${root}/assets`,
     config: getConsoleConfigsLinks({

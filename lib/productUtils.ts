@@ -14,6 +14,7 @@ import {
   productRubricPipeline,
   summaryPipeline,
   shopProductSupplierProductsPipeline,
+  shopProductShopPipeline,
 } from '../db/dao/constantPipelines';
 import {
   LanguageModel,
@@ -264,6 +265,9 @@ export async function getConsoleShopProduct({
           _id: new ObjectId(`${shopProductId}`),
         },
       },
+
+      // get shop
+      ...shopProductShopPipeline,
 
       // get supplier products
       ...shopProductSupplierProductsPipeline,

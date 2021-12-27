@@ -18,6 +18,7 @@ import {
   COL_PRODUCT_SUMMARIES,
   COL_ICONS,
   COL_RUBRIC_VARIANTS,
+  COL_SHOPS,
 } from '../collectionNames';
 
 export const ignoreNoImageStage = {
@@ -334,6 +335,24 @@ export const rubricAttributeGroupsPipeline = [
   },
 ];
 
+export const shopProductShopPipeline = [
+  {
+    $lookup: {
+      from: COL_SHOPS,
+      as: 'shop',
+      localField: 'shopId',
+      foreignField: '_id',
+    },
+  },
+  {
+    $addFields: {
+      shop: {
+        $arrayElemAt: ['$shop', 0],
+      },
+    },
+  },
+];
+
 export const shopProductSupplierProductsPipeline = [
   {
     $lookup: {
@@ -390,7 +409,6 @@ export const summaryPipeline = (idFieldName: string) => {
         as: 'summary',
         let: {
           productId: idFieldName,
-          shopProductIds: '$shopProductIds',
         },
         pipeline: [
           {

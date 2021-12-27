@@ -1,4 +1,3 @@
-import { ObjectId } from 'mongodb';
 import {
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   CATALOGUE_SEO_TEXT_POSITION_TOP,
@@ -17,13 +16,13 @@ interface GetConsoleRubricDetailsPayloadInterface {
 }
 
 interface GetConsoleRubricDetailsInterface {
-  rubricId: string;
+  rubricSlug: string;
   companySlug: string;
   locale: string;
 }
 
 export async function getConsoleRubricDetails({
-  rubricId,
+  rubricSlug,
   companySlug,
   locale,
 }: GetConsoleRubricDetailsInterface): Promise<GetConsoleRubricDetailsPayloadInterface | null> {
@@ -33,14 +32,12 @@ export async function getConsoleRubricDetails({
     .aggregate<RubricInterface>([
       {
         $match: {
-          _id: new ObjectId(`${rubricId}`),
+          slug: rubricSlug,
         },
       },
 
       {
         $project: {
-          attributes: false,
-          priorities: false,
           views: false,
         },
       },

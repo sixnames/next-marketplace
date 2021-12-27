@@ -1,4 +1,3 @@
-import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 import ContentItemControls from '../../../../../components/button/ContentItemControls';
@@ -207,9 +206,8 @@ export const getServerSideProps = async (
   const { db } = await getDatabase();
   const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
   const { query } = context;
-  const { rubricId } = query;
   const initialProps = await getAppInitialData({ context });
-  if (!initialProps.props || !rubricId) {
+  if (!initialProps.props) {
     return {
       notFound: true,
     };
@@ -219,7 +217,7 @@ export const getServerSideProps = async (
     .aggregate<RubricInterface>([
       {
         $match: {
-          _id: new ObjectId(`${rubricId}`),
+          slug: `${query.rubricSlug}`,
         },
       },
       {

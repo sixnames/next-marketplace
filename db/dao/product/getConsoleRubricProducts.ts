@@ -235,8 +235,6 @@ export const getConsoleRubricProducts = async ({
       ...photoStage,
     };
 
-    console.log(productsInitialMatch);
-
     const searchStage =
       searchIds.length > 0
         ? [

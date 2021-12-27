@@ -168,7 +168,7 @@ export const getServerSideProps = async (
 ): Promise<GetServerSidePropsResult<RubricPageInterface>> => {
   const { query } = context;
   const { props } = await getAppInitialData({ context });
-  if (!props || !query.rubricId) {
+  if (!props) {
     return {
       notFound: true,
     };
@@ -176,7 +176,7 @@ export const getServerSideProps = async (
 
   const payload = await getConsoleRubricDetails({
     locale: props.sessionLocale,
-    rubricId: `${query.rubricId}`,
+    rubricSlug: `${query.rubricSlug}`,
     companySlug: DEFAULT_COMPANY_SLUG,
   });
   if (!payload) {

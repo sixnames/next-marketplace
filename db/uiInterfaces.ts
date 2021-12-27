@@ -518,6 +518,7 @@ export interface CatalogueProductsAggregationInterface {
   attributes?: AttributeInterface[] | null;
   categories?: CategoryInterface[];
   brands?: BrandInterface[];
+  totalPages: number;
 }
 
 export interface CatalogueFilterAttributeOptionInterface {
@@ -886,7 +887,6 @@ export interface ShopRubricProductsInterface
   selectedAttributes: CatalogueFilterAttributeInterface[];
   clearSlug: string;
   rubricName: string;
-  rubricId: string;
   rubricSlug: string;
   layoutBasePath: string;
   basePath: string;

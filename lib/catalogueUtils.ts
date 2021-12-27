@@ -764,7 +764,7 @@ export async function castUrlFilters({
   const categoryStage =
     categoryCastedFilters.length > 0
       ? {
-          filterSlugs: {
+          categorySlugs: {
             $all: categoryCastedFilters,
           },
         }
@@ -1005,6 +1005,7 @@ export const getCatalogueData = async ({
           $match: productsInitialMatch,
         },
 
+        // group shop products by productId
         ...shopProductsGroupPipeline(pipelineConfig),
 
         // catalogue data facets
@@ -1022,7 +1023,7 @@ export const getCatalogueData = async ({
         },
 
         // cast facets
-        ...paginatedAggregationFinalPipeline,
+        ...paginatedAggregationFinalPipeline(limit),
       ])
       .toArray();
     const productDataAggregation = productDataAggregationResult[0];
@@ -1031,7 +1032,8 @@ export const getCatalogueData = async ({
     }
     // console.log('aggregation ', new Date().getTime() - timeStart);
 
-    const { docs, totalDocs, attributes, brands, categories, prices } = productDataAggregation;
+    const { docs, totalDocs, totalPages, attributes, brands, categories, prices } =
+      productDataAggregation;
 
     // get rubric
     let rubrics = productDataAggregation.rubrics;
@@ -1359,9 +1361,6 @@ export const getCatalogueData = async ({
     const gridCatalogueColumns = search
       ? CATALOGUE_GRID_DEFAULT_COLUMNS_COUNT
       : rubric.variant?.gridCatalogueColumns || CATALOGUE_GRID_DEFAULT_COLUMNS_COUNT;
-
-    // count total pages
-    const totalPages = Math.ceil(totalDocs / limit);
 
     // get head categories
     let visibleHeadCategoryIds: ObjectIdModel[] = [];

@@ -36,7 +36,6 @@ export async function getRubricProductsList({
       attributesIds: (attributesIds || []).map((_id) => new ObjectId(_id)),
       excludedOptionsSlugs: excludedOptionsSlugs,
       companySlug: DEFAULT_COMPANY_SLUG,
-      byRubricSlug: true,
       query: {
         search: alwaysString(search),
         rubricSlug,

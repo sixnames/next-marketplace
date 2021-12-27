@@ -43,7 +43,6 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
   page,
   totalPages,
   rubricName,
-  rubricId,
   layoutBasePath,
   rubricSlug,
   breadcrumbs,
@@ -56,7 +55,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
   const { showModal, onErrorCallback, onCompleteCallback, showLoading, showErrorNotification } =
     useMutationCallbacks({ withModal: true, reload: true });
 
-  const addProductsPath = `${layoutBasePath}/${shop._id}/products/add/${rubricId}`;
+  const addProductsPath = `${layoutBasePath}/${shop._id}/products/add`;
   const validationSchema = useValidationSchema({
     schema: updateManyShopProductsSchema,
   });
@@ -242,7 +241,6 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
           {withProducts ? (
             <div className={'mb-8'}>
               <AppContentFilter
-                excludedParams={[rubricId]}
                 rubricSlug={rubricSlug}
                 basePath={basePath}
                 attributes={attributes}

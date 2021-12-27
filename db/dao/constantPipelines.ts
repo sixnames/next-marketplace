@@ -411,32 +411,51 @@ export const summaryPipeline = (idFieldName: string) => {
   ];
 };
 
-export const paginatedAggregationFinalPipeline = [
-  {
-    $addFields: {
-      totalDocsObject: { $arrayElemAt: ['$countAllDocs', 0] },
+export const paginatedAggregationFinalPipeline = (limit: number) => {
+  return [
+    {
+      $addFields: {
+        totalDocsObject: { $arrayElemAt: ['$countAllDocs', 0] },
+      },
     },
-  },
-  {
-    $addFields: {
-      countAllDocs: null,
-      totalDocsObject: null,
-      totalDocs: '$totalDocsObject.totalDocs',
+    {
+      $addFields: {
+        countAllDocs: null,
+        totalDocsObject: null,
+        totalDocs: '$totalDocsObject.totalDocs',
+      },
     },
-  },
-];
+    {
+      $addFields: {
+        totalPagesFloat: {
+          $divide: ['$totalDocs', limit],
+        },
+      },
+    },
+    {
+      $addFields: {
+        totalPages: {
+          $ceil: '$totalPagesFloat',
+        },
+      },
+    },
+  ];
+};
 
 interface ShopProductDocsFacetPipelineInterface {
   skip: number;
   limit: number;
   sortStage: Record<any, any>;
+  getSuppliers?: boolean;
 }
 
 export function shopProductDocsFacetPipeline({
   limit,
   skip,
   sortStage,
+  getSuppliers,
 }: ShopProductDocsFacetPipelineInterface) {
+  const suppliersPipeline = getSuppliers ? shopProductSupplierProductsPipeline : [];
   return [
     {
       $sort: {
@@ -453,6 +472,9 @@ export function shopProductDocsFacetPipeline({
 
     // get shop product fields
     ...summaryPipeline('$_id'),
+
+    // get supplier products
+    ...suppliersPipeline,
   ];
 }
 

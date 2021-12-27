@@ -3,7 +3,6 @@ import { GetServerSidePropsResult, GetServerSidePropsContext } from 'next';
 import * as React from 'react';
 import BlogPostsList from '../../../../../components/blog/BlogPostsList';
 import Inner from '../../../../../components/Inner';
-import { ROUTE_CMS } from '../../../../../config/common';
 import { COL_COMPANIES } from '../../../../../db/collectionNames';
 import { getBlogPostsList } from '../../../../../db/dao/blog/getBlogPostsList';
 import { getDatabase } from '../../../../../db/mongodb';
@@ -14,6 +13,7 @@ import {
 } from '../../../../../db/uiInterfaces';
 import CmsCompanyLayout from '../../../../../layout/cms/CmsCompanyLayout';
 import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
+import { getConsoleCompanyLinks } from '../../../../../lib/linkUtils';
 import {
   castDbData,
   getAppInitialData,
@@ -31,17 +31,19 @@ const BlogPostsListConsumer: React.FC<BlogPostsListConsumerInterface> = ({
   posts,
   pageCompany,
 }) => {
-  const basePath = `${ROUTE_CMS}/companies/${pageCompany?._id}`;
+  const { root, parentLink } = getConsoleCompanyLinks({
+    companyId: pageCompany?._id,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: pageTitle,
     config: [
       {
         name: 'Компании',
-        href: `${ROUTE_CMS}/companies`,
+        href: parentLink,
       },
       {
         name: `${pageCompany?.name}`,
-        href: `${ROUTE_CMS}/companies/${pageCompany?._id}`,
+        href: root,
       },
     ],
   };
@@ -49,7 +51,7 @@ const BlogPostsListConsumer: React.FC<BlogPostsListConsumerInterface> = ({
   return (
     <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
       <Inner testId={'company-posts-list'}>
-        <BlogPostsList posts={posts} basePath={basePath} companySlug={`${pageCompany?.slug}`} />
+        <BlogPostsList posts={posts} basePath={root} companySlug={`${pageCompany?.slug}`} />
       </Inner>
     </CmsCompanyLayout>
   );
@@ -71,7 +73,7 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<BlogPostsListPageInterface>> => {
   const { props } = await getAppInitialData({ context });
-  if (!props || !context.query.companyId) {
+  if (!props) {
     return {
       notFound: true,
     };

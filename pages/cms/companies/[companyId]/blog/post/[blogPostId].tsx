@@ -4,7 +4,6 @@ import Head from 'next/head';
 import * as React from 'react';
 import BlogPostsDetails from '../../../../../../components/blog/BlogPostsDetails';
 import Inner from '../../../../../../components/Inner';
-import { ROUTE_BLOG, ROUTE_CMS } from '../../../../../../config/common';
 import { COL_COMPANIES } from '../../../../../../db/collectionNames';
 import { getBlogPost } from '../../../../../../db/dao/blog/getBlogPost';
 import { getDatabase } from '../../../../../../db/mongodb';
@@ -16,6 +15,7 @@ import {
 } from '../../../../../../db/uiInterfaces';
 import CmsCompanyLayout from '../../../../../../layout/cms/CmsCompanyLayout';
 import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
+import { getConsoleCompanyLinks } from '../../../../../../lib/linkUtils';
 import {
   castDbData,
   getAppInitialData,
@@ -35,20 +35,23 @@ const BlogPostConsumer: React.FC<BlogPostConsumerInterface> = ({
   pageCompany,
   attributes,
 }) => {
+  const { root, parentLink, blog } = getConsoleCompanyLinks({
+    companyId: pageCompany?._id,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${post.title}`,
     config: [
       {
         name: 'Компании',
-        href: `${ROUTE_CMS}/companies`,
+        href: parentLink,
       },
       {
         name: `${pageCompany?.name}`,
-        href: `${ROUTE_CMS}/companies/${pageCompany?._id}`,
+        href: root,
       },
       {
         name: pageTitle,
-        href: `${ROUTE_CMS}/companies/${pageCompany?._id}${ROUTE_BLOG}`,
+        href: blog,
       },
     ],
   };

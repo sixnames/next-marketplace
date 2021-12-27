@@ -71,7 +71,25 @@ export function getConsoleProductLinks({
   };
 }
 
-// console rubric
+// console configs
+interface GetConsoleConfigsLinkInterface {
+  basePath?: string;
+}
+export function getConsoleConfigsLinks({ basePath = ROUTE_CMS }: GetConsoleConfigsLinkInterface) {
+  const parentLink = `${basePath}`;
+  const root = `${parentLink}/config`;
+  return {
+    parentLink,
+    root,
+    analytics: `${root}/analytics`,
+    catalogue: `${root}/catalogue`,
+    contacts: `${root}/contacts`,
+    seo: `${root}/seo`,
+    ui: `${root}/ui`,
+  };
+}
+
+// console company
 interface GetConsoleCompanyLinkInterface extends GetConsoleRubricLinkInterface {
   companyId?: string | ObjectIdModel;
 }
@@ -87,12 +105,14 @@ export function getConsoleCompanyLinks({
     root,
     create: `${parentLink}/create`,
     blog: `${root}/blog`,
-    config: `${root}/config`,
     giftCertificates: `${root}/gift-certificates`,
     pages: `${root}/pages`,
     promo: `${root}/promo`,
     shops: `${root}/shops`,
     assets: `${root}/assets`,
+    config: getConsoleConfigsLinks({
+      basePath: root,
+    }),
     userCategories: `${root}/user-categories`,
     rubrics: getConsoleRubricLinks({
       basePath: root,

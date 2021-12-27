@@ -4,7 +4,6 @@ import * as React from 'react';
 import PromoDetails, {
   PromoDetailsInterface,
 } from '../../../../../../../components/Promo/PromoDetails';
-import { ROUTE_CMS } from '../../../../../../../config/common';
 import { COL_COMPANIES } from '../../../../../../../db/collectionNames';
 import { getDatabase } from '../../../../../../../db/mongodb';
 import {
@@ -13,6 +12,7 @@ import {
 } from '../../../../../../../db/uiInterfaces';
 import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
 import ConsolePromoLayout from '../../../../../../../layout/console/ConsolePromoLayout';
+import { getConsoleCompanyLinks } from '../../../../../../../lib/linkUtils';
 import { getPromoSsr } from '../../../../../../../lib/promoUtils';
 import {
   castDbData,
@@ -30,20 +30,23 @@ const PromoDetailsPage: React.FC<PromoDetailsPageInterface> = ({
   pageCompany,
   basePath,
 }) => {
+  const { root, parentLink, ...links } = getConsoleCompanyLinks({
+    companyId: pageCompany._id,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${promo.name}`,
     config: [
       {
         name: 'Компании',
-        href: `${ROUTE_CMS}/companies`,
+        href: parentLink,
       },
       {
         name: pageCompany.name,
-        href: `${ROUTE_CMS}/companies/${pageCompany._id}`,
+        href: root,
       },
       {
         name: 'Акции',
-        href: `${ROUTE_CMS}/companies/${pageCompany._id}/promo`,
+        href: links.promo,
       },
     ],
   };
@@ -89,10 +92,14 @@ export const getServerSideProps = async (
     };
   }
 
+  const links = getConsoleCompanyLinks({
+    companyId: company._id,
+  });
+
   return {
     props: {
       ...props,
-      basePath: `${ROUTE_CMS}/companies/${company._id}/promo/details/${promo._id}`,
+      basePath: `${links.promo}/details/${promo._id}`,
       pageCompany: castDbData(company),
       promo: castDbData(promo),
     },

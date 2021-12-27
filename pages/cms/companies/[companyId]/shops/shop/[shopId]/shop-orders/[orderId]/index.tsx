@@ -4,7 +4,7 @@ import * as React from 'react';
 import ShopOrder, {
   ShopOrderInterface,
 } from '../../../../../../../../../components/shops/ShopOrder';
-import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from '../../../../../../../../../config/common';
+import { DEFAULT_COMPANY_SLUG } from '../../../../../../../../../config/common';
 import { COL_COMPANIES, COL_SHOPS } from '../../../../../../../../../db/collectionNames';
 import { getConsoleOrder } from '../../../../../../../../../db/dao/orders/getConsoleOrder';
 import { getDatabase } from '../../../../../../../../../db/mongodb';
@@ -13,6 +13,7 @@ import {
   ShopInterface,
 } from '../../../../../../../../../db/uiInterfaces';
 import ConsoleLayout from '../../../../../../../../../layout/cms/ConsoleLayout';
+import { getConsoleCompanyLinks } from '../../../../../../../../../lib/linkUtils';
 import {
   castDbData,
   getAppInitialData,
@@ -30,31 +31,35 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({
   order,
   orderStatuses,
 }) => {
-  const companyBasePath = `${ROUTE_CMS}/companies/${shop.companyId}`;
   const title = `Заказ №${order.itemId}`;
+
+  const { root, parentLink, shops, ...links } = getConsoleCompanyLinks({
+    companyId: shop.companyId,
+    shopId: shop._id,
+  });
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: title,
     config: [
       {
         name: 'Компании',
-        href: `${ROUTE_CMS}/companies`,
+        href: parentLink,
       },
       {
         name: `${shop.company?.name}`,
-        href: companyBasePath,
+        href: root,
       },
       {
         name: 'Магазины',
-        href: `${companyBasePath}/shops/${shop.companyId}`,
+        href: shops,
       },
       {
         name: shop.name,
-        href: `${companyBasePath}/shops/shop/${shop._id}`,
+        href: `${links.shop}/${shop._id}`,
       },
       {
         name: 'Заказы',
-        href: `${companyBasePath}/shops/shop/${shop._id}/orders`,
+        href: links.shop.root,
       },
     ],
   };
@@ -67,7 +72,7 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({
         order={order}
         orderStatuses={orderStatuses}
         breadcrumbs={breadcrumbs}
-        basePath={`${companyBasePath}/shops/shop`}
+        basePath={links.shop.shopBasePath}
         shop={shop}
       />
     </ConsoleLayout>

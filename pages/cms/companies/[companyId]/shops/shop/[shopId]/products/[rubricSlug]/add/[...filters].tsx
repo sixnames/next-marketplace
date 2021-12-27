@@ -8,24 +8,24 @@ import {
   ShopAddProductsListInterface,
   ShopAddProductsSetStepHandler,
   ShopAddProductsStepType,
-} from '../../../../../../../../../components/shops/ShopAddProducts';
+} from '../../../../../../../../../../components/shops/ShopAddProducts';
 import {
   DEFAULT_COMPANY_SLUG,
   DEFAULT_PAGE_FILTER,
   ROUTE_CMS,
-} from '../../../../../../../../../config/common';
-import { getAddShopProductSsrData } from '../../../../../../../../../db/dao/product/getAddShopProductSsrData';
+} from '../../../../../../../../../../config/common';
+import { getAddShopProductSsrData } from '../../../../../../../../../../db/dao/product/getAddShopProductSsrData';
 import {
   AppContentWrapperBreadCrumbs,
   ProductSummaryInterface,
-} from '../../../../../../../../../db/uiInterfaces';
-import ConsoleLayout from '../../../../../../../../../layout/cms/ConsoleLayout';
-import { alwaysArray, alwaysString } from '../../../../../../../../../lib/arrayUtils';
+} from '../../../../../../../../../../db/uiInterfaces';
+import ConsoleLayout from '../../../../../../../../../../layout/cms/ConsoleLayout';
+import { alwaysArray, alwaysString } from '../../../../../../../../../../lib/arrayUtils';
 import {
   castDbData,
   getAppInitialData,
   GetAppInitialDataPropsInterface,
-} from '../../../../../../../../../lib/ssrUtils';
+} from '../../../../../../../../../../lib/ssrUtils';
 
 export type ShopAddProductsListRouteReduced = Omit<
   ShopAddProductsListInterface,

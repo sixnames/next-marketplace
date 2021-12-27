@@ -3,6 +3,7 @@ import * as React from 'react';
 import Inner from '../../components/Inner';
 import WpTitle from '../../components/WpTitle';
 import { ConsoleShopLayoutInterface } from '../../db/uiInterfaces';
+import { getShopCompanyLinks } from '../../lib/linkUtils';
 import AppContentWrapper from '../AppContentWrapper';
 import AppSubNav from '../AppSubNav';
 
@@ -13,33 +14,37 @@ const ConsoleShopLayout: React.FC<ConsoleShopLayoutInterface> = ({
   children,
 }) => {
   const navConfig = React.useMemo(() => {
+    const { root, orders, products, assets, syncErrors } = getShopCompanyLinks({
+      basePath,
+      shopId: shop._id,
+    });
     return [
       {
         name: 'Детали',
         testId: 'shop-details',
-        path: `${basePath}/${shop._id}`,
+        path: root,
         exact: true,
       },
       {
         name: 'Заказы',
         testId: 'shop-orders',
-        path: `${basePath}/${shop._id}/shop-orders`,
+        path: orders,
       },
       {
         name: 'Товары',
         testId: 'shop-products',
-        path: `${basePath}/${shop._id}/products`,
+        path: products.root,
       },
       {
         name: 'Изображения',
         testId: 'shop-assets',
-        path: `${basePath}/${shop._id}/assets`,
+        path: assets,
         exact: true,
       },
       {
         name: 'Ошибки синхронизации',
         testId: 'shop-sync-errors',
-        path: `${basePath}/${shop._id}/sync-errors`,
+        path: syncErrors,
       },
     ];
   }, [basePath, shop._id]);

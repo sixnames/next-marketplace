@@ -4,7 +4,7 @@ import * as React from 'react';
 import ShopOrders, {
   ShopOrdersInterface,
 } from '../../../../../../../../components/shops/ShopOrders';
-import { ROUTE_CMS, SORT_DESC } from '../../../../../../../../config/common';
+import { SORT_DESC } from '../../../../../../../../config/common';
 import {
   COL_COMPANIES,
   COL_ORDER_CUSTOMERS,
@@ -20,6 +20,7 @@ import {
 } from '../../../../../../../../db/uiInterfaces';
 import ConsoleLayout from '../../../../../../../../layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from '../../../../../../../../lib/i18n';
+import { getConsoleCompanyLinks } from '../../../../../../../../lib/linkUtils';
 import { getShortName } from '../../../../../../../../lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from '../../../../../../../../lib/phoneUtils';
 import {
@@ -33,37 +34,36 @@ interface CompanyShopAssetsInterface
     Omit<ShopOrdersInterface, 'basePath'> {}
 
 const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ layoutProps, shop }) => {
-  const companyBasePath = `${ROUTE_CMS}/companies/${shop.companyId}`;
+  const { root, parentLink, shops, ...links } = getConsoleCompanyLinks({
+    companyId: shop.companyId,
+    shopId: shop._id,
+  });
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Заказы',
     config: [
       {
         name: 'Компании',
-        href: `${ROUTE_CMS}/companies`,
+        href: parentLink,
       },
       {
         name: `${shop.company?.name}`,
-        href: companyBasePath,
+        href: root,
       },
       {
         name: 'Магазины',
-        href: `${companyBasePath}/shops/${shop.companyId}`,
+        href: shops,
       },
       {
         name: shop.name,
-        href: `${companyBasePath}/shops/shop/${shop._id}`,
+        href: links.shop.root,
       },
     ],
   };
 
   return (
     <ConsoleLayout {...layoutProps}>
-      <ShopOrders
-        breadcrumbs={breadcrumbs}
-        basePath={`${companyBasePath}/shops/shop`}
-        shop={shop}
-      />
+      <ShopOrders breadcrumbs={breadcrumbs} basePath={links.shop.shopBasePath} shop={shop} />
     </ConsoleLayout>
   );
 };

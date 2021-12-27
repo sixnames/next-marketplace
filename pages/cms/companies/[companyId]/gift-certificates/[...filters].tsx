@@ -1,23 +1,15 @@
-import { ObjectId } from 'mongodb';
+import { NextPage } from 'next';
 import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import ConsoleGiftCertificatesList, {
   ConsoleGiftCertificatesListInterface,
 } from '../../../../../components/console/ConsoleGiftCertificatesList';
 import Inner from '../../../../../components/Inner';
-import { ROUTE_CMS } from '../../../../../config/common';
-import { COL_COMPANIES, COL_USERS } from '../../../../../db/collectionNames';
-import { getConsoleGiftCertificates } from '../../../../../db/dao/giftCertificate/getConsoleGiftCertificates';
-import { getDatabase } from '../../../../../db/mongodb';
-import { AppContentWrapperBreadCrumbs, CompanyInterface } from '../../../../../db/uiInterfaces';
+import { getCmsCompanyGiftCertificatesPageSsr } from '../../../../../db/dao/ssr/getCmsCompanyGiftCertificatesPageSsr';
+import { AppContentWrapperBreadCrumbs } from '../../../../../db/uiInterfaces';
 import CmsCompanyLayout from '../../../../../layout/cms/CmsCompanyLayout';
 import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
-import { alwaysArray } from '../../../../../lib/arrayUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../lib/ssrUtils';
+import { getConsoleCompanyLinks } from '../../../../../lib/linkUtils';
+import { GetAppInitialDataPropsInterface } from '../../../../../lib/ssrUtils';
 
 interface CompanyGiftCertificatesConsumerInterface extends ConsoleGiftCertificatesListInterface {}
 
@@ -25,16 +17,20 @@ const CompanyGiftCertificatesConsumer: React.FC<CompanyGiftCertificatesConsumerI
   pageCompany,
   ...props
 }) => {
+  const { root, parentLink } = getConsoleCompanyLinks({
+    companyId: pageCompany?._id,
+  });
+
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Подарочные сертификаты',
     config: [
       {
         name: 'Компании',
-        href: `${ROUTE_CMS}/companies`,
+        href: parentLink,
       },
       {
         name: `${pageCompany?.name}`,
-        href: `${ROUTE_CMS}/companies/${pageCompany?._id}`,
+        href: root,
       },
     ],
   };
@@ -48,11 +44,11 @@ const CompanyGiftCertificatesConsumer: React.FC<CompanyGiftCertificatesConsumerI
   );
 };
 
-interface CompanyGiftCertificatesPageInterface
+export interface CmsCompanyGiftCertificatesPageInterface
   extends GetAppInitialDataPropsInterface,
     CompanyGiftCertificatesConsumerInterface {}
 
-const CompanyGiftCertificatesPage: NextPage<CompanyGiftCertificatesPageInterface> = ({
+const CmsCompanyGiftCertificatesPage: NextPage<CmsCompanyGiftCertificatesPageInterface> = ({
   layoutProps,
   ...props
 }) => {
@@ -63,68 +59,5 @@ const CompanyGiftCertificatesPage: NextPage<CompanyGiftCertificatesPageInterface
   );
 };
 
-export const getServerSideProps = async (
-  context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<CompanyGiftCertificatesPageInterface>> => {
-  const { query } = context;
-  const { props } = await getAppInitialData({ context });
-  if (!props || !query.companyId) {
-    return {
-      notFound: true,
-    };
-  }
-
-  const { db } = await getDatabase();
-  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
-  const { filters, companyId } = query;
-
-  const companyAggregationResult = await companiesCollection
-    .aggregate<CompanyInterface>([
-      {
-        $match: {
-          _id: new ObjectId(`${companyId}`),
-        },
-      },
-      {
-        $lookup: {
-          from: COL_USERS,
-          as: 'owner',
-          let: { ownerId: '$ownerId' },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $eq: ['$_id', '$$ownerId'],
-                },
-              },
-            },
-          ],
-        },
-      },
-    ])
-    .toArray();
-  const companyResult = companyAggregationResult[0];
-  if (!companyResult) {
-    return {
-      notFound: true,
-    };
-  }
-
-  const rawPayload = await getConsoleGiftCertificates({
-    filters: alwaysArray(filters),
-    companyId: companyResult._id,
-    locale: props.sessionLocale,
-  });
-  const payload = castDbData(rawPayload);
-
-  return {
-    props: {
-      ...props,
-      ...payload,
-      pageCompany: castDbData(companyResult),
-      userRouteBasePath: `${ROUTE_CMS}/users/user`,
-    },
-  };
-};
-
-export default CompanyGiftCertificatesPage;
+export const getServerSideProps = getCmsCompanyGiftCertificatesPageSsr;
+export default CmsCompanyGiftCertificatesPage;

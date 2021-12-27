@@ -1,7 +1,6 @@
-import { ObjectId } from 'mongodb';
+import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import ContentItemControls from '../../../../../components/button/ContentItemControls';
 import FixedButtons from '../../../../../components/button/FixedButtons';
 import WpButton from '../../../../../components/button/WpButton';
@@ -14,19 +13,10 @@ import Pager from '../../../../../components/Pager';
 import Spinner from '../../../../../components/Spinner';
 import TableRowImage from '../../../../../components/TableRowImage';
 import WpTable, { WpTableColumn } from '../../../../../components/WpTable';
-import { DEFAULT_PAGE, ROUTE_CMS, SORT_DESC } from '../../../../../config/common';
 import { CONFIRM_MODAL, CREATE_SHOP_MODAL } from '../../../../../config/modalVariants';
-import {
-  COL_CITIES,
-  COL_COMPANIES,
-  COL_SHOP_PRODUCTS,
-  COL_SHOPS,
-  COL_USERS,
-} from '../../../../../db/collectionNames';
-import { getDatabase } from '../../../../../db/mongodb';
+import { getCmsCompanyShopsPageSsr } from '../../../../../db/dao/ssr/getCmsCompanyShopsPageSsr';
 import {
   AppContentWrapperBreadCrumbs,
-  AppPaginationAggregationInterface,
   AppPaginationInterface,
   CompanyInterface,
   ShopInterface,
@@ -36,15 +26,10 @@ import useMutationCallbacks from '../../../../../hooks/useMutationCallbacks';
 import usePageLoadingState from '../../../../../hooks/usePageLoadingState';
 import CmsCompanyLayout from '../../../../../layout/cms/CmsCompanyLayout';
 import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
-import { alwaysArray } from '../../../../../lib/arrayUtils';
-import { castUrlFilters } from '../../../../../lib/catalogueUtils';
-import { getFieldStringLocale, getNumWord } from '../../../../../lib/i18n';
+import { getNumWord } from '../../../../../lib/i18n';
+import { getConsoleCompanyLinks } from '../../../../../lib/linkUtils';
 import { noNaN } from '../../../../../lib/numbers';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../lib/ssrUtils';
+import { GetAppInitialDataPropsInterface } from '../../../../../lib/ssrUtils';
 
 interface CompanyShopsConsumerInterface extends AppPaginationInterface<ShopInterface> {
   pageCompany: CompanyInterface;
@@ -151,16 +136,20 @@ const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
     },
   ];
 
+  const { root, parentLink } = getConsoleCompanyLinks({
+    companyId: pageCompany._id,
+  });
+
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Магазины',
     config: [
       {
         name: 'Компании',
-        href: `${ROUTE_CMS}/companies`,
+        href: parentLink,
       },
       {
         name: `${pageCompany?.name}`,
-        href: `${ROUTE_CMS}/companies/${pageCompany?._id}`,
+        href: root,
       },
     ],
   };
@@ -207,11 +196,11 @@ const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
   );
 };
 
-interface CompanyShopsPageInterface
+export interface CmsCompanyShopsPageInterface
   extends GetAppInitialDataPropsInterface,
     CompanyShopsConsumerInterface {}
 
-const CompanyShopsPage: NextPage<CompanyShopsPageInterface> = ({ layoutProps, ...props }) => {
+const CmsCompanyShopsPage: NextPage<CmsCompanyShopsPageInterface> = ({ layoutProps, ...props }) => {
   return (
     <ConsoleLayout {...layoutProps}>
       <CompanyShopsConsumer {...props} />
@@ -219,247 +208,5 @@ const CompanyShopsPage: NextPage<CompanyShopsPageInterface> = ({ layoutProps, ..
   );
 };
 
-export const getServerSideProps = async (
-  context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<CompanyShopsPageInterface>> => {
-  const { query } = context;
-  const { props } = await getAppInitialData({ context });
-  if (!props || !query.companyId) {
-    return {
-      notFound: true,
-    };
-  }
-
-  const { db } = await getDatabase();
-  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
-  const shopsCollection = db.collection<ShopInterface>(COL_SHOPS);
-
-  const { filters, search } = query;
-  const [companyId, ...restFilter] = alwaysArray(filters);
-
-  // Cast filters
-  const { page, skip, limit, clearSlug } = await castUrlFilters({
-    filters: restFilter,
-    searchFieldName: '_id',
-  });
-  const itemPath = `${ROUTE_CMS}/companies/${companyId}/shops/shop`;
-
-  const companyAggregationResult = await companiesCollection
-    .aggregate([
-      {
-        $match: {
-          _id: new ObjectId(`${companyId}`),
-        },
-      },
-      {
-        $lookup: {
-          from: COL_USERS,
-          as: 'owner',
-          let: { ownerId: '$ownerId' },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $eq: ['$_id', '$$ownerId'],
-                },
-              },
-            },
-          ],
-        },
-      },
-    ])
-    .toArray();
-  const companyResult = companyAggregationResult[0];
-  if (!companyResult) {
-    return {
-      notFound: true,
-    };
-  }
-
-  const searchStage = search
-    ? {
-        $or: [
-          {
-            itemId: {
-              $regex: search,
-              $options: 'i',
-            },
-          },
-          {
-            'contacts.emails': {
-              $regex: search,
-              $options: 'i',
-            },
-          },
-          {
-            name: {
-              $regex: search,
-              $options: 'i',
-            },
-          },
-          {
-            slug: {
-              $regex: search,
-              $options: 'i',
-            },
-          },
-        ],
-      }
-    : {};
-
-  const shopsAggregationResult = await shopsCollection
-    .aggregate<AppPaginationAggregationInterface<ShopInterface>>([
-      {
-        $match: {
-          companyId: new ObjectId(`${companyId}`),
-          ...searchStage,
-        },
-      },
-      {
-        $facet: {
-          docs: [
-            {
-              $sort: {
-                _id: SORT_DESC,
-              },
-            },
-            {
-              $skip: skip,
-            },
-            {
-              $limit: limit,
-            },
-            {
-              $lookup: {
-                from: COL_CITIES,
-                as: 'city',
-                let: { citySlug: '$citySlug' },
-                pipeline: [
-                  {
-                    $match: {
-                      $expr: {
-                        $eq: ['$$citySlug', '$slug'],
-                      },
-                    },
-                  },
-                ],
-              },
-            },
-            {
-              $lookup: {
-                from: COL_SHOP_PRODUCTS,
-                as: 'productsCount',
-                let: { shopId: '$_id' },
-                pipeline: [
-                  {
-                    $match: {
-                      $expr: {
-                        $eq: ['$$shopId', '$shopId'],
-                      },
-                    },
-                  },
-                  {
-                    $count: 'counter',
-                  },
-                ],
-              },
-            },
-            {
-              $addFields: {
-                city: {
-                  $arrayElemAt: ['$city', 0],
-                },
-                productsCount: {
-                  $arrayElemAt: ['$productsCount', 0],
-                },
-              },
-            },
-            {
-              $addFields: {
-                productsCount: '$productsCount.counter',
-              },
-            },
-          ],
-          countAllDocs: [
-            {
-              $count: 'totalDocs',
-            },
-          ],
-        },
-      },
-      {
-        $addFields: {
-          totalDocsObject: {
-            $arrayElemAt: ['$countAllDocs', 0],
-          },
-        },
-      },
-      {
-        $addFields: {
-          totalDocs: '$totalDocsObject.totalDocs',
-        },
-      },
-      {
-        $addFields: {
-          totalPagesFloat: {
-            $divide: ['$totalDocs', limit],
-          },
-        },
-      },
-      {
-        $addFields: {
-          totalPages: {
-            $ceil: '$totalPagesFloat',
-          },
-        },
-      },
-      {
-        $project: {
-          docs: 1,
-          totalDocs: 1,
-          totalPages: 1,
-          hasPrevPage: {
-            $gt: [page, DEFAULT_PAGE],
-          },
-          hasNextPage: {
-            $lt: [page, '$totalPages'],
-          },
-        },
-      },
-    ])
-    .toArray();
-
-  const shopsAggregation = shopsAggregationResult[0];
-  if (!shopsAggregation) {
-    return {
-      notFound: true,
-    };
-  }
-
-  const docs = shopsAggregation.docs.map(({ city, ...shop }) => {
-    return {
-      ...shop,
-      city: city
-        ? {
-            ...city,
-            name: getFieldStringLocale(city.nameI18n, props.sessionLocale),
-          }
-        : null,
-    };
-  });
-
-  return {
-    props: {
-      ...props,
-      itemPath,
-      clearSlug,
-      page,
-      pageCompany: castDbData(companyResult),
-      totalPages: noNaN(shopsAggregation.totalPages),
-      totalDocs: noNaN(shopsAggregation.totalDocs),
-      docs: castDbData(docs),
-    },
-  };
-};
-
-export default CompanyShopsPage;
+export const getServerSideProps = getCmsCompanyShopsPageSsr;
+export default CmsCompanyShopsPage;

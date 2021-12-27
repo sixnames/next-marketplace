@@ -20,6 +20,7 @@ import CmsCompanyLayout from '../../../../../layout/cms/CmsCompanyLayout';
 import CompanyRubricsList, {
   CompanyRubricsListInterface,
 } from '../../../../../layout/CompanyRubricsList';
+import { getConsoleCompanyLinks } from '../../../../../lib/linkUtils';
 import {
   castDbData,
   getAppInitialData,
@@ -30,16 +31,20 @@ import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
 interface RubricsRouteInterface extends CompanyRubricsListInterface {}
 
 const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, pageCompany, routeBasePath }) => {
+  const { root, parentLink } = getConsoleCompanyLinks({
+    companyId: pageCompany._id,
+  });
+
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Рубрикатор',
     config: [
       {
         name: 'Компании',
-        href: `${ROUTE_CMS}/companies`,
+        href: parentLink,
       },
       {
         name: `${pageCompany?.name}`,
-        href: `${ROUTE_CMS}/companies/${pageCompany?._id}`,
+        href: root,
       },
     ],
   };

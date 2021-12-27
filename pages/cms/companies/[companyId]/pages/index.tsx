@@ -10,6 +10,7 @@ import { COL_COMPANIES } from '../../../../../db/collectionNames';
 import { getDatabase } from '../../../../../db/mongodb';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from '../../../../../db/uiInterfaces';
 import CmsCompanyLayout from '../../../../../layout/cms/CmsCompanyLayout';
+import { getConsoleCompanyLinks } from '../../../../../lib/linkUtils';
 import { getPageGroupsSsr } from '../../../../../lib/pageUtils';
 import {
   castDbData,
@@ -31,16 +32,19 @@ const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({
   pagesGroups,
   pageCompany,
 }) => {
+  const { root, parentLink } = getConsoleCompanyLinks({
+    companyId: pageCompany._id,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Группы страниц',
     config: [
       {
         name: 'Компании',
-        href: `${ROUTE_CMS}/companies`,
+        href: parentLink,
       },
       {
         name: pageCompany.name,
-        href: `${ROUTE_CMS}/companies/${pageCompany._id}`,
+        href: root,
       },
     ],
   };

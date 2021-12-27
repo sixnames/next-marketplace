@@ -3,7 +3,6 @@ import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import Inner from '../../../../../../components/Inner';
 import PagesList, { PagesListInterface } from '../../../../../../components/Pages/PagesList';
-import { ROUTE_CMS } from '../../../../../../config/common';
 import { COL_CITIES, COL_COMPANIES } from '../../../../../../db/collectionNames';
 import { getDatabase } from '../../../../../../db/mongodb';
 import {
@@ -14,6 +13,7 @@ import {
 import CmsCompanyLayout from '../../../../../../layout/cms/CmsCompanyLayout';
 import { sortObjectsByField } from '../../../../../../lib/arrayUtils';
 import { getFieldStringLocale } from '../../../../../../lib/i18n';
+import { getConsoleCompanyLinks } from '../../../../../../lib/linkUtils';
 import { getPagesListSsr } from '../../../../../../lib/pageUtils';
 import {
   castDbData,
@@ -34,20 +34,23 @@ const PagesListPage: NextPage<PagesListPageInterface> = ({
   pagesGroup,
   cities,
 }) => {
+  const { root, parentLink, pages } = getConsoleCompanyLinks({
+    companyId: pageCompany._id,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${pagesGroup?.name}`,
     config: [
       {
         name: 'Компании',
-        href: `${ROUTE_CMS}/companies`,
+        href: parentLink,
       },
       {
         name: pageCompany.name,
-        href: `${ROUTE_CMS}/companies/${pageCompany._id}`,
+        href: root,
       },
       {
         name: 'Группы страниц',
-        href: `${ROUTE_CMS}/companies/${pageCompany._id}/pages`,
+        href: pages,
       },
     ],
   };
@@ -56,11 +59,7 @@ const PagesListPage: NextPage<PagesListPageInterface> = ({
     <ConsoleLayout title={`${pagesGroup.name}`} {...layoutProps}>
       <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
         <Inner>
-          <PagesList
-            cities={cities}
-            basePath={`${ROUTE_CMS}/companies/${pageCompany._id}/pages`}
-            pagesGroup={pagesGroup}
-          />
+          <PagesList cities={cities} basePath={pages} pagesGroup={pagesGroup} />
         </Inner>
       </CmsCompanyLayout>
     </ConsoleLayout>

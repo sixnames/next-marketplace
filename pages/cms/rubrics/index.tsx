@@ -91,7 +91,7 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, rubricVariants
             updateTitle={'Редактировать рубрику'}
             updateHandler={() => {
               router
-                .push(`${ROUTE_CMS}/rubrics/${dataItem._id}/products/${DEFAULT_PAGE_FILTER}`)
+                .push(`${ROUTE_CMS}/rubrics/${dataItem.slug}/products/${DEFAULT_PAGE_FILTER}`)
                 .catch((e) => console.log(e));
             }}
             deleteTitle={'Удалить рубрику'}
@@ -134,7 +134,7 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, rubricVariants
             emptyMessage={'Список пуст'}
             onRowDoubleClick={(rubric) => {
               router
-                .push(`${ROUTE_CMS}/rubrics/${rubric._id}/products/${DEFAULT_PAGE_FILTER}`)
+                .push(`${ROUTE_CMS}/rubrics/${rubric.slug}/products/${DEFAULT_PAGE_FILTER}`)
                 .catch((e) => console.log(e));
             }}
           />

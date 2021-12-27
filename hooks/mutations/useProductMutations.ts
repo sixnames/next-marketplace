@@ -20,15 +20,11 @@ import { UpdateProductCardContentInputInterface } from '../../db/dao/product/upd
 import { UpdateProductCategoryInputInterface } from '../../db/dao/product/updateProductCategory';
 import { UpdateProductWithSyncErrorInputInterface } from '../../db/dao/product/updateProductWithSyncError';
 import { ProductPayloadModel } from '../../db/dbModels';
-import { ProductFacetInterface } from '../../db/uiInterfaces';
+import { getConsoleProductLinks } from '../../lib/linkUtils';
 import { useReloadListener } from '../useReloadListener';
 import { useMutationHandler } from './useFetch';
 
 const basePath = '/api/product';
-
-function getCmsProductUrl(product: ProductFacetInterface) {
-  return `${ROUTE_CMS}/rubrics/${product.rubricId}/products/product/${product._id}`;
-}
 
 // create
 export const useCreateProduct = () => {
@@ -52,7 +48,12 @@ export const useCreateProduct = () => {
     },
     onSuccess: ({ payload, message }) => {
       if (payload) {
-        router.push(getCmsProductUrl(payload)).catch(console.log);
+        const { root } = getConsoleProductLinks({
+          basePath: ROUTE_CMS,
+          rubricSlug: payload.rubricSlug,
+          productId: `${payload._id}`,
+        });
+        router.push(root).catch(console.log);
       } else {
         showErrorNotification({ title: message });
       }
@@ -115,7 +116,12 @@ export const useCopyProduct = () => {
     reload: false,
     onSuccess: ({ payload, message }) => {
       if (payload) {
-        router.push(getCmsProductUrl(payload)).catch(console.log);
+        const { root } = getConsoleProductLinks({
+          basePath: ROUTE_CMS,
+          rubricSlug: payload.rubricSlug,
+          productId: `${payload._id}`,
+        });
+        router.push(root).catch(console.log);
       } else {
         showErrorNotification({ title: message });
       }
@@ -145,7 +151,12 @@ export const useCreateProductWithSyncError = () => {
     },
     onSuccess: ({ payload, message }) => {
       if (payload) {
-        router.push(getCmsProductUrl(payload)).catch(console.log);
+        const { root } = getConsoleProductLinks({
+          basePath: ROUTE_CMS,
+          rubricSlug: payload.rubricSlug,
+          productId: `${payload._id}`,
+        });
+        router.push(root).catch(console.log);
       } else {
         showErrorNotification({ title: message });
       }
@@ -174,7 +185,12 @@ export const useUpdateProductWithSyncError = () => {
     },
     onSuccess: ({ payload }) => {
       if (payload) {
-        router.push(getCmsProductUrl(payload)).catch(console.log);
+        const { root } = getConsoleProductLinks({
+          basePath: ROUTE_CMS,
+          rubricSlug: payload.rubricSlug,
+          productId: `${payload._id}`,
+        });
+        router.push(root).catch(console.log);
       }
     },
   });

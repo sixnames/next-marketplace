@@ -268,11 +268,14 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
   );
 };
 
-interface RubricProductsPageInterface
+interface CmsRubricProductsListPageInterface
   extends GetAppInitialDataPropsInterface,
     ConsoleRubricProductsInterface {}
 
-const RubricProducts: NextPage<RubricProductsPageInterface> = ({ layoutProps, ...props }) => {
+const CmsRubricProductsListPage: NextPage<CmsRubricProductsListPageInterface> = ({
+  layoutProps,
+  ...props
+}) => {
   return (
     <ConsoleLayout {...layoutProps}>
       <RubricProductsConsumer {...props} />
@@ -280,9 +283,9 @@ const RubricProducts: NextPage<RubricProductsPageInterface> = ({ layoutProps, ..
   );
 };
 
-export const getServerSideProps = async (
+export const getCmsRubricProductsListPageProps = async (
   context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<RubricProductsPageInterface>> => {
+): Promise<GetServerSidePropsResult<CmsRubricProductsListPageInterface>> => {
   const { query } = context;
   const rubricId = alwaysString(query.rubricId);
   const initialProps = await getAppInitialData({ context });
@@ -318,4 +321,5 @@ export const getServerSideProps = async (
   };
 };
 
-export default RubricProducts;
+export const getServerSideProps = getCmsRubricProductsListPageProps;
+export default CmsRubricProductsListPage;

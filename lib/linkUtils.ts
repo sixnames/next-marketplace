@@ -226,8 +226,19 @@ interface GetConsoleCompanyLinkInterface extends GetCmsCompanyLinkInterface {
 }
 
 export function getConsoleCompanyLinks(props: GetConsoleCompanyLinkInterface) {
-  return getCmsCompanyLinks({
+  const links = getCmsCompanyLinks({
     ...props,
     basePath: ROUTE_CONSOLE,
   });
+  const configRoot = `${links.root}/config`;
+  return {
+    ...links,
+    config: {
+      root: configRoot,
+      assets: `${configRoot}/assets`,
+      config: getConsoleConfigsLinks({
+        basePath: configRoot,
+      }),
+    },
+  };
 }

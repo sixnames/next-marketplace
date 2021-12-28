@@ -26,14 +26,37 @@ export function getOrderLink(props?: GetOrderLinkInterface) {
   return `${protocol}${domain}${path}`;
 }
 
+// console product
+interface GetConsoleProductLinksInterface {
+  productId?: string | ObjectIdModel;
+  basePath?: string;
+}
+
+export function getConsoleProductLinks({
+  productId,
+  basePath = ROUTE_CMS,
+}: GetConsoleProductLinksInterface) {
+  const root = `${basePath}/${productId}`;
+  return {
+    root,
+    assets: `${root}/assets`,
+    attributes: `${root}/attributes`,
+    brands: `${root}/brands`,
+    categories: `${root}/categories`,
+    constructor: `${root}/constructor`,
+    variants: `${root}/variants`,
+  };
+}
+
 // console rubric
-interface GetConsoleRubricLinkInterface {
+interface GetConsoleRubricLinkInterface extends GetConsoleProductLinksInterface {
   rubricSlug?: string;
   basePath?: string;
 }
 export function getConsoleRubricLinks({
   rubricSlug = '',
   basePath = ROUTE_CMS,
+  productId,
 }: GetConsoleRubricLinkInterface) {
   const parentLink = `${basePath}/rubrics`;
   const root = `${parentLink}/${rubricSlug}`;
@@ -44,30 +67,10 @@ export function getConsoleRubricLinks({
     categories: `${root}/categories`,
     seoContent: `${root}/seo-content`,
     attributes: `${root}/attributes`,
-  };
-}
-
-// console product
-interface GetConsoleProductLinksInterface extends GetConsoleRubricLinkInterface {
-  productId: string | ObjectIdModel;
-}
-
-export function getConsoleProductLinks({
-  rubricSlug,
-  productId,
-  basePath = ROUTE_CMS,
-}: GetConsoleProductLinksInterface) {
-  const rubric = getConsoleRubricLinks({ rubricSlug, basePath });
-  const root = `${rubric.products}/product/${productId}`;
-  return {
-    root,
-    rubric,
-    assets: `${root}/assets`,
-    attributes: `${root}/attributes`,
-    brands: `${root}/brands`,
-    categories: `${root}/categories`,
-    constructor: `${root}/constructor`,
-    variants: `${root}/variants`,
+    product: getConsoleProductLinks({
+      productId,
+      basePath: `${root}/products/product`,
+    }),
   };
 }
 
@@ -150,7 +153,6 @@ export function getConsoleShopLinks({
 interface GetConsoleCompanyLinkInterface extends GetConsoleRubricLinkInterface {
   companyId?: string | ObjectIdModel;
   shopId?: string | ObjectIdModel;
-  productId?: string | ObjectIdModel;
 }
 export function getConsoleCompanyLinks({
   companyId = '',

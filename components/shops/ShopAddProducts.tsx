@@ -19,7 +19,7 @@ import useValidationSchema from '../../hooks/useValidationSchema';
 import ConsoleShopLayout from '../../layout/console/ConsoleShopLayout';
 import { alwaysArray } from '../../lib/arrayUtils';
 import { getNumWord } from '../../lib/i18n';
-import { getConsoleCompanyLinks, getConsoleProductLinks } from '../../lib/linkUtils';
+import { getConsoleCompanyLinks, getConsoleRubricLinks } from '../../lib/linkUtils';
 import { addManyProductsToShopSchema } from '../../validation/shopSchema';
 import AppContentFilter from '../AppContentFilter';
 import ContentItemControls from '../button/ContentItemControls';
@@ -105,12 +105,12 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
     {
       headTitle: 'Арт',
       render: ({ dataItem }) => {
-        const links = getConsoleProductLinks({
+        const links = getConsoleRubricLinks({
           productId: dataItem._id,
           rubricSlug: dataItem.rubricSlug,
         });
         return sessionUser?.role?.isStaff ? (
-          <WpLink href={links.root} target={'_blank'}>
+          <WpLink href={links.product.root} target={'_blank'}>
             {dataItem.itemId}
           </WpLink>
         ) : (
@@ -182,11 +182,11 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
               updateTitle={'Редактировать товар'}
               updateHandler={() => {
                 if (sessionUser?.role?.isStaff) {
-                  const links = getConsoleProductLinks({
+                  const links = getConsoleRubricLinks({
                     productId: dataItem._id,
                     rubricSlug: dataItem.rubricSlug,
                   });
-                  window.open(links.root, '_blank');
+                  window.open(links.product.root, '_blank');
                 }
               }}
             />
@@ -232,11 +232,11 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
                 testIdKey={'_id'}
                 onRowDoubleClick={(dataItem) => {
                   if (sessionUser?.role?.isStaff) {
-                    const links = getConsoleProductLinks({
+                    const links = getConsoleRubricLinks({
                       productId: dataItem._id,
                       rubricSlug: dataItem.rubricSlug,
                     });
-                    window.open(links.root, '_blank');
+                    window.open(links.product.root, '_blank');
                   }
                 }}
               />

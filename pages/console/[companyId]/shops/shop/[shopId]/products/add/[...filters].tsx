@@ -36,7 +36,7 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
   layoutProps,
   shop,
   rubricName,
-  rubricId,
+  rubricSlug,
   ...props
 }) => {
   const [chosen, setChosen] = React.useState<ProductSummaryInterface[]>([]);
@@ -61,7 +61,7 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
       },
       {
         name: rubricName,
-        href: `${companyBasePath}/products/${rubricId}`,
+        href: `${companyBasePath}/products/${rubricSlug}`,
       },
     ],
   };
@@ -89,7 +89,7 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
         <ShopAddProductsFinalStep
           breadcrumbs={breadcrumbs}
           rubricName={rubricName}
-          rubricId={rubricId}
+          rubricSlug={rubricSlug}
           layoutBasePath={layoutBasePath}
           createChosenProduct={createChosenProduct}
           deleteChosenProduct={deleteChosenProduct}
@@ -107,7 +107,7 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
       <ShopAddProductsList
         breadcrumbs={breadcrumbs}
         rubricName={rubricName}
-        rubricId={rubricId}
+        rubricSlug={rubricSlug}
         layoutBasePath={layoutBasePath}
         createChosenProduct={createChosenProduct}
         deleteChosenProduct={deleteChosenProduct}

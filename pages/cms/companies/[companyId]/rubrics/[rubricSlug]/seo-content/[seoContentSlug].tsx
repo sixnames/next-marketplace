@@ -86,7 +86,7 @@ export const getServerSideProps = async (
   const { props } = await getAppInitialData({ context });
   const { db } = await getDatabase();
   const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
-  if (!props || !query.rubricId || !query.companyId) {
+  if (!props || !query.companyId) {
     return {
       notFound: true,
     };
@@ -116,7 +116,7 @@ export const getServerSideProps = async (
 
   const payload = await getConsoleRubricDetails({
     locale: props.sessionLocale,
-    rubricId: `${query.rubricId}`,
+    rubricSlug: `${query.rubricSlug}`,
     companySlug,
   });
   if (!payload) {

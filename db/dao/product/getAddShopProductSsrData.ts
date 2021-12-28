@@ -95,7 +95,6 @@ export async function getAddShopProductSsrData({
 
   const payload: ShopAddProductsListRouteReduced = {
     shop,
-    rubricId: rubric._id.toHexString(),
     rubricName: getFieldStringLocale(rubric.nameI18n, locale),
     rubricSlug: rubric.slug,
     clearSlug,

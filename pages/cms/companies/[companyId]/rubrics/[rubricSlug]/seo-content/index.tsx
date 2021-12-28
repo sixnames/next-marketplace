@@ -59,7 +59,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
         <ConsoleSeoContentsList
           seoContents={seoContents}
           routeBasePath={routeBasePath}
-          rubricId={`${rubric._id}`}
+          rubricSlug={rubric.slug}
         />
       </Inner>
     </CmsRubricLayout>
@@ -84,7 +84,7 @@ export const getServerSideProps = async (
   const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
   const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
   const { props } = await getAppInitialData({ context });
-  if (!props || !query.rubricId || !query.companyId) {
+  if (!props || !query.companyId) {
     return {
       notFound: true,
     };
@@ -111,7 +111,7 @@ export const getServerSideProps = async (
 
   const payload = await getConsoleRubricDetails({
     locale: props.sessionLocale,
-    rubricId: `${query.rubricId}`,
+    rubricSlug: `${query.rubricSlug}`,
     companySlug,
   });
   if (!payload) {
@@ -136,7 +136,7 @@ export const getServerSideProps = async (
       rubric: castDbData(payload.rubric),
       seoContents: castDbData(seoContents),
       routeBasePath: `${ROUTE_CMS}/companies/${companyResult._id}`,
-      rubricId: `${payload.rubric._id}`,
+      rubricSlug: `${payload.rubric.slug}`,
       companySlug,
     },
   };

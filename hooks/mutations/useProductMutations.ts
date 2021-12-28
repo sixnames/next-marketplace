@@ -19,7 +19,7 @@ import { UpdateProductCardContentInputInterface } from '../../db/dao/product/upd
 import { UpdateProductCategoryInputInterface } from '../../db/dao/product/updateProductCategory';
 import { UpdateProductWithSyncErrorInputInterface } from '../../db/dao/product/updateProductWithSyncError';
 import { ProductPayloadModel } from '../../db/dbModels';
-import { getConsoleProductLinks } from '../../lib/linkUtils';
+import { getConsoleRubricLinks } from '../../lib/linkUtils';
 import { useReloadListener } from '../useReloadListener';
 import { useMutationHandler } from './useFetch';
 
@@ -47,11 +47,11 @@ export const useCreateProduct = () => {
     },
     onSuccess: ({ payload, message }) => {
       if (payload) {
-        const { root } = getConsoleProductLinks({
+        const { product } = getConsoleRubricLinks({
           rubricSlug: payload.rubricSlug,
           productId: `${payload._id}`,
         });
-        router.push(root).catch(console.log);
+        router.push(product.root).catch(console.log);
       } else {
         showErrorNotification({ title: message });
       }
@@ -114,11 +114,11 @@ export const useCopyProduct = () => {
     reload: false,
     onSuccess: ({ payload, message }) => {
       if (payload) {
-        const { root } = getConsoleProductLinks({
+        const { product } = getConsoleRubricLinks({
           rubricSlug: payload.rubricSlug,
           productId: `${payload._id}`,
         });
-        router.push(root).catch(console.log);
+        router.push(product.root).catch(console.log);
       } else {
         showErrorNotification({ title: message });
       }
@@ -148,11 +148,11 @@ export const useCreateProductWithSyncError = () => {
     },
     onSuccess: ({ payload, message }) => {
       if (payload) {
-        const { root } = getConsoleProductLinks({
+        const { product } = getConsoleRubricLinks({
           rubricSlug: payload.rubricSlug,
           productId: `${payload._id}`,
         });
-        router.push(root).catch(console.log);
+        router.push(product.root).catch(console.log);
       } else {
         showErrorNotification({ title: message });
       }
@@ -181,11 +181,11 @@ export const useUpdateProductWithSyncError = () => {
     },
     onSuccess: ({ payload }) => {
       if (payload) {
-        const { root } = getConsoleProductLinks({
+        const { product } = getConsoleRubricLinks({
           rubricSlug: payload.rubricSlug,
           productId: `${payload._id}`,
         });
-        router.push(root).catch(console.log);
+        router.push(product.root).catch(console.log);
       }
     },
   });

@@ -233,6 +233,7 @@ export function getConsoleCompanyLinks(props: GetConsoleCompanyLinkInterface) {
     basePath: ROUTE_CONSOLE,
   });
   const configRoot = `${links.root}/config`;
+  const orderParentLink = `${links.root}/orders`;
   const customersParentLink = `${links.root}/customers`;
   const userRoot = `${customersParentLink}/user/${props.userId}`;
   const userOrdersParentLink = `${userRoot}/orders`;
@@ -245,6 +246,10 @@ export function getConsoleCompanyLinks(props: GetConsoleCompanyLinkInterface) {
       config: getConsoleConfigsLinks({
         basePath: configRoot,
       }),
+    },
+    order: {
+      parentLink: orderParentLink,
+      root: `${orderParentLink}/order/${props.orderId}`,
     },
     customer: {
       parentLink: customersParentLink,

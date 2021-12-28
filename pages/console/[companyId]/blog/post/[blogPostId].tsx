@@ -3,7 +3,6 @@ import * as React from 'react';
 import BlogPostsDetails from '../../../../../components/blog/BlogPostsDetails';
 import Inner from '../../../../../components/Inner';
 import WpTitle from '../../../../../components/WpTitle';
-import { ROUTE_BLOG, ROUTE_CONSOLE } from '../../../../../config/common';
 import { getBlogPost } from '../../../../../db/dao/blog/getBlogPost';
 import {
   AppContentWrapperBreadCrumbs,
@@ -13,6 +12,7 @@ import {
 } from '../../../../../db/uiInterfaces';
 import AppContentWrapper from '../../../../../layout/AppContentWrapper';
 import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
+import { getConsoleCompanyLinks } from '../../../../../lib/linkUtils';
 import {
   castDbData,
   getConsoleInitialData,
@@ -32,12 +32,15 @@ const BlogPostConsumer: React.FC<BlogPostConsumerInterface> = ({
   pageCompany,
   attributes,
 }) => {
+  const links = getConsoleCompanyLinks({
+    companyId: pageCompany._id,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${post.title}`,
     config: [
       {
         name: pageTitle,
-        href: `${ROUTE_CONSOLE}/${pageCompany?._id}${ROUTE_BLOG}`,
+        href: links.blog,
       },
     ],
   };

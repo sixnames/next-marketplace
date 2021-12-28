@@ -81,7 +81,7 @@ const CompaniesConsumer: React.FC<CompaniesConsumerInterface> = ({ companies }) 
       accessor: 'logo',
       headTitle: 'Лого',
       render: ({ cellData, dataItem }) => {
-        return <TableRowImage src={cellData.url} alt={dataItem.name} title={dataItem.name} />;
+        return <TableRowImage src={cellData} alt={dataItem.name} title={dataItem.name} />;
       },
     },
     {

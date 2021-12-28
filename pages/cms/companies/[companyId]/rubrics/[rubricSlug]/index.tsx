@@ -7,7 +7,6 @@ import CompanyRubricDetails, {
 import {
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   CATALOGUE_SEO_TEXT_POSITION_TOP,
-  ROUTE_CMS,
 } from '../../../../../../config/common';
 import { COL_COMPANIES, COL_RUBRICS } from '../../../../../../db/collectionNames';
 import { RubricModel } from '../../../../../../db/dbModels';
@@ -19,6 +18,7 @@ import {
 } from '../../../../../../db/uiInterfaces';
 import CmsRubricLayout from '../../../../../../layout/cms/CmsRubricLayout';
 import { getFieldStringLocale } from '../../../../../../lib/i18n';
+import { getConsoleCompanyLinks } from '../../../../../../lib/linkUtils';
 import { getRubricAllSeoContents } from '../../../../../../lib/seoContentUtils';
 import {
   castDbData,
@@ -36,20 +36,23 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
   pageCompany,
   routeBasePath,
 }) => {
+  const links = getConsoleCompanyLinks({
+    companyId: pageCompany._id,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${rubric.name}`,
     config: [
       {
         name: 'Компании',
-        href: `${ROUTE_CMS}/companies`,
+        href: links.parentLink,
       },
       {
         name: `${pageCompany?.name}`,
-        href: routeBasePath,
+        href: links.root,
       },
       {
         name: `Рубрикатор`,
-        href: `${routeBasePath}/rubrics`,
+        href: links.rubrics.parentLink,
       },
     ],
   };
@@ -167,6 +170,10 @@ export const getServerSideProps = async (
     };
   }
 
+  const links = getConsoleCompanyLinks({
+    companyId: companyResult._id,
+  });
+
   return {
     props: {
       ...props,
@@ -174,7 +181,7 @@ export const getServerSideProps = async (
       seoDescriptionTop: castDbData(seoDescriptionTop),
       rubric: castDbData(rubric),
       pageCompany: castDbData(companyResult),
-      routeBasePath: `${ROUTE_CMS}/companies/${companyResult._id}`,
+      routeBasePath: links.root,
     },
   };
 };

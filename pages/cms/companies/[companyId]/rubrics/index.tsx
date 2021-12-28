@@ -1,7 +1,6 @@
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { ROUTE_CMS } from '../../../../../config/common';
 import {
   COL_COMPANIES,
   COL_RUBRIC_VARIANTS,
@@ -185,12 +184,16 @@ export const getServerSideProps = async (
     return castRubricForUI({ rubric, locale: props.sessionLocale });
   });
 
+  const links = getConsoleCompanyLinks({
+    companyId: companyResult._id,
+  });
+
   return {
     props: {
       ...props,
       rubrics: castDbData(rawRubrics),
       pageCompany: castDbData(companyResult),
-      routeBasePath: `${ROUTE_CMS}/companies/${companyResult._id}/rubrics`,
+      routeBasePath: links.rubrics.parentLink,
     },
   };
 };

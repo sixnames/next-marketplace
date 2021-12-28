@@ -7,7 +7,6 @@ import CompanyRubricCategoryDetails, {
 import {
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   CATALOGUE_SEO_TEXT_POSITION_TOP,
-  ROUTE_CMS,
 } from '../../../../../../../../config/common';
 import {
   COL_CATEGORIES,
@@ -23,6 +22,7 @@ import {
 } from '../../../../../../../../db/uiInterfaces';
 import CmsCategoryLayout from '../../../../../../../../layout/cms/CmsCategoryLayout';
 import { getFieldStringLocale } from '../../../../../../../../lib/i18n';
+import { getConsoleCompanyLinks } from '../../../../../../../../lib/linkUtils';
 import { getCategoryAllSeoContents } from '../../../../../../../../lib/seoContentUtils';
 import {
   castDbData,
@@ -40,28 +40,32 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
   seoDescriptionTop,
   seoDescriptionBottom,
 }) => {
+  const links = getConsoleCompanyLinks({
+    companyId: pageCompany._id,
+    rubricSlug: category.rubricSlug,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: `${category.name}`,
+    currentPageName: `Категории`,
     config: [
       {
         name: 'Компании',
-        href: `${ROUTE_CMS}/companies`,
+        href: links.parentLink,
       },
       {
         name: `${pageCompany?.name}`,
-        href: routeBasePath,
+        href: links.root,
       },
       {
         name: `Рубрикатор`,
-        href: `${routeBasePath}/rubrics`,
+        href: links.rubrics.parentLink,
       },
       {
         name: `${category.rubric?.name}`,
-        href: `${routeBasePath}/rubrics/${category.rubric?._id}`,
+        href: links.rubrics.root,
       },
       {
         name: `Категории`,
-        href: `${routeBasePath}/rubrics/${category.rubricId}/categories`,
+        href: links.rubrics.categories,
       },
     ],
   };
@@ -226,6 +230,10 @@ export const getServerSideProps = async (
     };
   }
 
+  const links = getConsoleCompanyLinks({
+    companyId: companyResult._id,
+  });
+
   return {
     props: {
       ...props,
@@ -233,7 +241,7 @@ export const getServerSideProps = async (
       seoDescriptionTop: castDbData(seoDescriptionTop),
       category: castDbData(category),
       pageCompany: castDbData(companyResult),
-      routeBasePath: `${ROUTE_CMS}/companies/${companyResult._id}`,
+      routeBasePath: links.root,
     },
   };
 };

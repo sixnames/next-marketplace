@@ -3,7 +3,6 @@ import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import Inner from '../../../../../components/Inner';
 import PromoList, { PromoListInterface } from '../../../../../components/Promo/PromoList';
-import { ROUTE_CMS } from '../../../../../config/common';
 import { COL_COMPANIES } from '../../../../../db/collectionNames';
 import { getDatabase } from '../../../../../db/mongodb';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from '../../../../../db/uiInterfaces';
@@ -83,10 +82,14 @@ export const getServerSideProps = async (
     companyId: company._id.toHexString(),
   });
 
+  const links = getConsoleCompanyLinks({
+    companyId: company._id,
+  });
+
   return {
     props: {
       ...props,
-      basePath: `${ROUTE_CMS}/companies/${company._id}/promo`,
+      basePath: links.promo,
       pageCompany: castDbData(company),
       promoList: castDbData(promoList),
     },

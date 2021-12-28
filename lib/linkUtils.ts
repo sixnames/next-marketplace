@@ -39,6 +39,7 @@ export function getConsoleProductLinks({
   const root = `${basePath}/${productId}`;
   return {
     root,
+    parentLink: basePath,
     assets: `${root}/assets`,
     attributes: `${root}/attributes`,
     brands: `${root}/brands`,

@@ -2,7 +2,6 @@ import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import ConsoleRubricProductCategories from '../../../../../../../../../components/console/ConsoleRubricProductCategories';
-import { ROUTE_CMS } from '../../../../../../../../../config/common';
 import { COL_CATEGORIES, COL_COMPANIES } from '../../../../../../../../../db/collectionNames';
 import { getDatabase } from '../../../../../../../../../db/mongodb';
 import {
@@ -14,6 +13,7 @@ import {
 } from '../../../../../../../../../db/uiInterfaces';
 import CmsProductLayout from '../../../../../../../../../layout/cms/CmsProductLayout';
 import ConsoleLayout from '../../../../../../../../../layout/cms/ConsoleLayout';
+import { getConsoleCompanyLinks } from '../../../../../../../../../lib/linkUtils';
 import { getCmsProduct } from '../../../../../../../../../lib/productUtils';
 import {
   castDbData,
@@ -35,32 +35,37 @@ const ProductCategories: React.FC<ProductCategoriesInterface> = ({
   pageCompany,
   categoriesTree,
 }) => {
+  const links = getConsoleCompanyLinks({
+    companyId: pageCompany._id,
+    rubricSlug: product.rubricSlug,
+    productId: product._id,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Категории',
     config: [
       {
         name: 'Компании',
-        href: `${ROUTE_CMS}/companies`,
+        href: links.parentLink,
       },
       {
-        name: `${pageCompany?.name}`,
-        href: routeBasePath,
+        name: `${pageCompany.name}`,
+        href: links.root,
       },
       {
         name: `Рубрикатор`,
-        href: `${routeBasePath}/rubrics`,
+        href: links.rubrics.parentLink,
       },
       {
         name: `${product.rubric?.name}`,
-        href: `${routeBasePath}/rubrics/${product.rubric?._id}`,
+        href: links.rubrics.root,
       },
       {
         name: `Товары`,
-        href: `${routeBasePath}/rubrics/${product.rubric?._id}/products/${product.rubric?._id}`,
+        href: links.rubrics.products,
       },
       {
         name: `${product.snippetTitle}`,
-        href: `${routeBasePath}/rubrics/${product.rubric?._id}/products/product/${product._id}`,
+        href: links.rubrics.product.root,
       },
     ],
   };
@@ -155,13 +160,17 @@ export const getServerSideProps = async (
     childrenFieldName: 'categories',
   });
 
+  const links = getConsoleCompanyLinks({
+    companyId: companyResult._id,
+  });
+
   return {
     props: {
       ...props,
       product: castDbData(product),
       categoriesTree: castDbData(categoriesTree),
       pageCompany: castDbData(companyResult),
-      routeBasePath: `${ROUTE_CMS}/companies/${companyResult._id}`,
+      routeBasePath: links.root,
     },
   };
 };

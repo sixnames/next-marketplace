@@ -4,7 +4,6 @@ import * as React from 'react';
 import CompanyRubricCategoriesList, {
   CompanyRubricCategoriesListInterface,
 } from '../../../../../../../components/company/CompanyRubricCategoriesList';
-import { ROUTE_CMS } from '../../../../../../../config/common';
 import {
   COL_CATEGORIES,
   COL_COMPANIES,
@@ -24,6 +23,7 @@ import CmsRubricLayout from '../../../../../../../layout/cms/CmsRubricLayout';
 import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
 import { sortObjectsByField } from '../../../../../../../lib/arrayUtils';
 import { getFieldStringLocale } from '../../../../../../../lib/i18n';
+import { getConsoleCompanyLinks } from '../../../../../../../lib/linkUtils';
 import {
   castDbData,
   getAppInitialData,
@@ -37,24 +37,28 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
   pageCompany,
   routeBasePath,
 }) => {
+  const links = getConsoleCompanyLinks({
+    companyId: pageCompany._id,
+    rubricSlug: rubric.slug,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `Категории`,
     config: [
       {
         name: 'Компании',
-        href: `${ROUTE_CMS}/companies`,
+        href: links.parentLink,
       },
       {
-        name: `${pageCompany.name}`,
-        href: routeBasePath,
+        name: `${pageCompany?.name}`,
+        href: links.root,
       },
       {
         name: `Рубрикатор`,
-        href: `${routeBasePath}/rubrics`,
+        href: links.rubrics.parentLink,
       },
       {
         name: `${rubric?.name}`,
-        href: `${routeBasePath}/rubrics/${rubric?._id}`,
+        href: links.rubrics.root,
       },
     ],
   };
@@ -124,7 +128,10 @@ export const getServerSideProps = async (
       notFound: true,
     };
   }
-  const routeBasePath = `${ROUTE_CMS}/companies/${companyResult._id}`;
+  const links = getConsoleCompanyLinks({
+    companyId: companyResult._id,
+  });
+  const routeBasePath = links.root;
 
   // get categories config
   const categoriesConfigAggregationResult = await shopProductsCollection

@@ -2,7 +2,6 @@ import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 import ConsoleRubricProductBrands from '../../../../../../../../../components/console/ConsoleRubricProductBrands';
-import { ROUTE_CMS } from '../../../../../../../../../config/common';
 import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
@@ -26,6 +25,7 @@ import {
 import CmsProductLayout from '../../../../../../../../../layout/cms/CmsProductLayout';
 import ConsoleLayout from '../../../../../../../../../layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from '../../../../../../../../../lib/i18n';
+import { getConsoleCompanyLinks } from '../../../../../../../../../lib/linkUtils';
 import { getCmsProduct } from '../../../../../../../../../lib/productUtils';
 import {
   castDbData,
@@ -50,32 +50,37 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
   pageCompany,
   routeBasePath,
 }) => {
+  const links = getConsoleCompanyLinks({
+    companyId: pageCompany._id,
+    rubricSlug: product.rubricSlug,
+    productId: product._id,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: 'Бренд / Производитель',
+    currentPageName: `Бренд / Производитель`,
     config: [
       {
         name: 'Компании',
-        href: `${ROUTE_CMS}/companies`,
+        href: links.parentLink,
       },
       {
-        name: `${pageCompany?.name}`,
-        href: routeBasePath,
+        name: `${pageCompany.name}`,
+        href: links.root,
       },
       {
         name: `Рубрикатор`,
-        href: `${routeBasePath}/rubrics`,
+        href: links.rubrics.parentLink,
       },
       {
         name: `${product.rubric?.name}`,
-        href: `${routeBasePath}/rubrics/${product.rubric?._id}`,
+        href: links.rubrics.root,
       },
       {
         name: `Товары`,
-        href: `${routeBasePath}/rubrics/${product.rubric?._id}/products/${product.rubric?._id}`,
+        href: links.rubrics.products,
       },
       {
         name: `${product.snippetTitle}`,
-        href: `${routeBasePath}/rubrics/${product.rubric?._id}/products/product/${product._id}`,
+        href: links.rubrics.product.root,
       },
     ],
   };
@@ -216,6 +221,10 @@ export const getServerSideProps = async (
       }
     : null;
 
+  const links = getConsoleCompanyLinks({
+    companyId: companyResult._id,
+  });
+
   return {
     props: {
       ...props,
@@ -224,7 +233,7 @@ export const getServerSideProps = async (
       brandCollection: castDbData(brandCollection),
       manufacturer: castDbData(manufacturer),
       pageCompany: castDbData(companyResult),
-      routeBasePath: `${ROUTE_CMS}/companies/${companyResult._id}`,
+      routeBasePath: links.root,
     },
   };
 };

@@ -223,6 +223,8 @@ export function getCmsCompanyLinks({
 
 interface GetConsoleCompanyLinkInterface extends GetCmsCompanyLinkInterface {
   companyId: string | ObjectIdModel;
+  userId?: string | ObjectIdModel;
+  orderId?: string | ObjectIdModel;
 }
 
 export function getConsoleCompanyLinks(props: GetConsoleCompanyLinkInterface) {
@@ -231,6 +233,10 @@ export function getConsoleCompanyLinks(props: GetConsoleCompanyLinkInterface) {
     basePath: ROUTE_CONSOLE,
   });
   const configRoot = `${links.root}/config`;
+  const customersParentLink = `${links.root}/customers`;
+  const userRoot = `${customersParentLink}/user/${props.userId}`;
+  const userOrdersParentLink = `${userRoot}/orders`;
+
   return {
     ...links,
     config: {
@@ -239,6 +245,15 @@ export function getConsoleCompanyLinks(props: GetConsoleCompanyLinkInterface) {
       config: getConsoleConfigsLinks({
         basePath: configRoot,
       }),
+    },
+    customer: {
+      parentLink: customersParentLink,
+      itemPath: `${customersParentLink}/user`,
+      root: userRoot,
+      order: {
+        parentLink: userOrdersParentLink,
+        root: `${userOrdersParentLink}/${props.orderId}`,
+      },
     },
   };
 }

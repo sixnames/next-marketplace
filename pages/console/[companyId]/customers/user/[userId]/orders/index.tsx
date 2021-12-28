@@ -5,7 +5,7 @@ import FormattedDateTime from '../../../../../../../components/FormattedDateTime
 import Inner from '../../../../../../../components/Inner';
 import WpLink from '../../../../../../../components/Link/WpLink';
 import WpTable, { WpTableColumn } from '../../../../../../../components/WpTable';
-import { ROUTE_CONSOLE, SORT_DESC } from '../../../../../../../config/common';
+import { SORT_DESC } from '../../../../../../../config/common';
 import {
   COL_ORDER_STATUSES,
   COL_ORDERS,
@@ -24,6 +24,7 @@ import {
 import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
 import ConsoleUserLayout from '../../../../../../../layout/console/ConsoleUserLayout';
 import { getFieldStringLocale } from '../../../../../../../lib/i18n';
+import { getConsoleCompanyLinks } from '../../../../../../../lib/linkUtils';
 import { getFullName } from '../../../../../../../lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from '../../../../../../../lib/phoneUtils';
 import {
@@ -38,20 +39,27 @@ interface UserOrdersConsumerInterface {
 }
 
 const UserOrdersConsumer: React.FC<UserOrdersConsumerInterface> = ({ user, pageCompany }) => {
-  const basePath = `${ROUTE_CONSOLE}/${pageCompany?._id}/customers`;
+  const links = getConsoleCompanyLinks({
+    companyId: pageCompany._id,
+    userId: user._id,
+  });
 
   const columns: WpTableColumn<OrderInterface>[] = [
     {
       accessor: 'orderId',
       headTitle: 'ID',
-      render: ({ cellData, dataItem }) => (
-        <WpLink
-          testId={`order-${dataItem.itemId}-link`}
-          href={`${basePath}/user/${user._id}/orders/${dataItem._id}`}
-        >
-          {cellData}
-        </WpLink>
-      ),
+      render: ({ cellData, dataItem }) => {
+        const links = getConsoleCompanyLinks({
+          companyId: pageCompany._id,
+          userId: user._id,
+          orderId: dataItem._id,
+        });
+        return (
+          <WpLink testId={`order-${dataItem.itemId}-link`} href={links.customer.order.root}>
+            {cellData}
+          </WpLink>
+        );
+      },
     },
     {
       accessor: 'status',
@@ -86,11 +94,11 @@ const UserOrdersConsumer: React.FC<UserOrdersConsumerInterface> = ({ user, pageC
     config: [
       {
         name: 'Клиенты',
-        href: basePath,
+        href: links.customer.parentLink,
       },
       {
         name: `${user.fullName}`,
-        href: `${basePath}/user/${user._id}`,
+        href: links.customer.root,
       },
     ],
   };

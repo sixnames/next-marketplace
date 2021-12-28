@@ -3,7 +3,6 @@ import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import Inner from '../../../../components/Inner';
 import WpTitle from '../../../../components/WpTitle';
-import { ROUTE_CONSOLE } from '../../../../config/common';
 import {
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
@@ -18,6 +17,7 @@ import CompanyRubricsList, {
   CompanyRubricsListInterface,
 } from '../../../../layout/CompanyRubricsList';
 import { getFieldStringLocale } from '../../../../lib/i18n';
+import { getConsoleCompanyLinks } from '../../../../lib/linkUtils';
 import {
   castDbData,
   getConsoleInitialData,
@@ -158,11 +158,15 @@ export const getServerSideProps = async (
     };
   });
 
+  const links = getConsoleCompanyLinks({
+    companyId: props.layoutProps.pageCompany._id,
+  });
+
   return {
     props: {
       ...props,
       rubrics: castDbData(rawRubrics),
-      routeBasePath: `${ROUTE_CONSOLE}/${props.layoutProps.pageCompany._id}/rubrics`,
+      routeBasePath: links.rubrics.parentLink,
       pageCompany: castDbData(props.layoutProps.pageCompany),
     },
   };

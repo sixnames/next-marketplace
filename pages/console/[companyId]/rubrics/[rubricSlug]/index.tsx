@@ -1,4 +1,3 @@
-import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import CompanyRubricDetails, {
@@ -7,7 +6,6 @@ import CompanyRubricDetails, {
 import {
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   CATALOGUE_SEO_TEXT_POSITION_TOP,
-  ROUTE_CONSOLE,
 } from '../../../../../config/common';
 import { COL_RUBRICS } from '../../../../../db/collectionNames';
 import { RubricModel } from '../../../../../db/dbModels';
@@ -16,6 +14,7 @@ import { AppContentWrapperBreadCrumbs, RubricInterface } from '../../../../../db
 import CmsRubricLayout from '../../../../../layout/cms/CmsRubricLayout';
 import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from '../../../../../lib/i18n';
+import { getConsoleCompanyLinks } from '../../../../../lib/linkUtils';
 import { getRubricAllSeoContents } from '../../../../../lib/seoContentUtils';
 import {
   castDbData,
@@ -78,7 +77,7 @@ export const getServerSideProps = async (
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
 
   const { props } = await getConsoleInitialData({ context });
-  if (!props || !query.rubricId) {
+  if (!props) {
     return {
       notFound: true,
     };
@@ -89,13 +88,11 @@ export const getServerSideProps = async (
     .aggregate<RubricInterface>([
       {
         $match: {
-          _id: new ObjectId(`${query.rubricId}`),
+          slug: `${query.rubricSlug}`,
         },
       },
       {
         $project: {
-          attributes: false,
-          priorities: false,
           views: false,
         },
       },
@@ -136,13 +133,17 @@ export const getServerSideProps = async (
     };
   }
 
+  const links = getConsoleCompanyLinks({
+    companyId: props.layoutProps.pageCompany._id,
+  });
+
   return {
     props: {
       ...props,
       seoDescriptionBottom: castDbData(seoDescriptionBottom),
       seoDescriptionTop: castDbData(seoDescriptionTop),
       rubric: castDbData(rubric),
-      routeBasePath: `${ROUTE_CONSOLE}/${props.layoutProps.pageCompany._id}`,
+      routeBasePath: links.root,
       pageCompany: castDbData(props.layoutProps.pageCompany),
     },
   };

@@ -7,7 +7,6 @@ import CompanyRubricCategoryDetails, {
 import {
   CATALOGUE_SEO_TEXT_POSITION_BOTTOM,
   CATALOGUE_SEO_TEXT_POSITION_TOP,
-  ROUTE_CONSOLE,
 } from '../../../../../../../config/common';
 import { COL_CATEGORIES, COL_ICONS, COL_RUBRICS } from '../../../../../../../db/collectionNames';
 import { getDatabase } from '../../../../../../../db/mongodb';
@@ -18,6 +17,7 @@ import {
 import CmsCategoryLayout from '../../../../../../../layout/cms/CmsCategoryLayout';
 import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from '../../../../../../../lib/i18n';
+import { getConsoleCompanyLinks, getConsoleRubricLinks } from '../../../../../../../lib/linkUtils';
 import { getCategoryAllSeoContents } from '../../../../../../../lib/seoContentUtils';
 import {
   castDbData,
@@ -34,20 +34,24 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
   seoDescriptionTop,
   routeBasePath,
 }) => {
+  const links = getConsoleRubricLinks({
+    rubricSlug: category.rubricSlug,
+    basePath: routeBasePath,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: `${category.name}`,
+    currentPageName: `Категории`,
     config: [
       {
         name: `Рубрикатор`,
-        href: `${routeBasePath}/rubrics`,
+        href: links.parentLink,
       },
       {
         name: `${category.rubric?.name}`,
-        href: `${routeBasePath}/rubrics/${category.rubric?._id}`,
+        href: links.root,
       },
       {
         name: `Категории`,
-        href: `${routeBasePath}/rubrics/${category.rubricId}/categories`,
+        href: links.categories,
       },
     ],
   };
@@ -90,7 +94,7 @@ export const getServerSideProps = async (
   const categoriesCollection = db.collection<CategoryInterface>(COL_CATEGORIES);
 
   const { props } = await getConsoleInitialData({ context });
-  if (!props || !query.categoryId) {
+  if (!props) {
     return {
       notFound: true,
     };
@@ -196,13 +200,16 @@ export const getServerSideProps = async (
     };
   }
 
+  const links = getConsoleCompanyLinks({
+    companyId: props.layoutProps.pageCompany._id,
+  });
   return {
     props: {
       ...props,
       seoDescriptionBottom: castDbData(seoDescriptionBottom),
       seoDescriptionTop: castDbData(seoDescriptionTop),
       category: castDbData(category),
-      routeBasePath: `${ROUTE_CONSOLE}/${props.layoutProps.pageCompany._id}`,
+      routeBasePath: links.root,
       pageCompany: castDbData(props.layoutProps.pageCompany),
     },
   };

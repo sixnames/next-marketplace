@@ -4,7 +4,6 @@ import * as React from 'react';
 import CompanyRubricCategoriesList, {
   CompanyRubricCategoriesListInterface,
 } from '../../../../../../components/company/CompanyRubricCategoriesList';
-import { ROUTE_CONSOLE } from '../../../../../../config/common';
 import {
   COL_CATEGORIES,
   COL_ICONS,
@@ -22,6 +21,7 @@ import CmsRubricLayout from '../../../../../../layout/cms/CmsRubricLayout';
 import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
 import { sortObjectsByField } from '../../../../../../lib/arrayUtils';
 import { getFieldStringLocale } from '../../../../../../lib/i18n';
+import { getConsoleCompanyLinks, getConsoleRubricLinks } from '../../../../../../lib/linkUtils';
 import {
   castDbData,
   getConsoleInitialData,
@@ -35,16 +35,20 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
   pageCompany,
   routeBasePath,
 }) => {
+  const links = getConsoleRubricLinks({
+    rubricSlug: rubric.slug,
+    basePath: routeBasePath,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `Категории`,
     config: [
       {
         name: `Рубрикатор`,
-        href: `${routeBasePath}/rubrics`,
+        href: links.parentLink,
       },
       {
         name: `${rubric?.name}`,
-        href: `${routeBasePath}/rubrics/${rubric?._id}`,
+        href: links.root,
       },
     ],
   };
@@ -88,7 +92,7 @@ export const getServerSideProps = async (
   const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
   const { query } = context;
   const { props } = await getConsoleInitialData({ context });
-  if (!props || !query.rubricId) {
+  if (!props) {
     return {
       notFound: true,
     };
@@ -96,9 +100,13 @@ export const getServerSideProps = async (
 
   // get company
   const locale = props.sessionLocale;
-  const rubricId = new ObjectId(`${query.rubricId}`);
+  const rubricSlug = `${query.rubricSlug}`;
   const companyId = new ObjectId(`${query.companyId}`);
-  const routeBasePath = `${ROUTE_CONSOLE}/${props.layoutProps.pageCompany._id}`;
+  const links = getConsoleCompanyLinks({
+    companyId: props.layoutProps.pageCompany._id,
+    rubricSlug,
+  });
+  const routeBasePath = links.root;
 
   // get categories config
   const categoriesConfigAggregationResult = await shopProductsCollection
@@ -106,7 +114,7 @@ export const getServerSideProps = async (
       {
         $match: {
           companyId,
-          rubricId,
+          rubricSlug,
         },
       },
       {
@@ -128,7 +136,7 @@ export const getServerSideProps = async (
   const categoriesConfig = categoriesConfigAggregationResult[0];
   if (!categoriesConfig || categoriesConfig.categorySlugs.length < 1) {
     const rubric = await rubricsCollection.findOne({
-      _id: rubricId,
+      slug: rubricSlug,
     });
 
     if (!rubric) {
@@ -160,7 +168,7 @@ export const getServerSideProps = async (
     .aggregate<RubricInterface>([
       {
         $match: {
-          _id: rubricId,
+          slug: rubricSlug,
         },
       },
       {

@@ -4,7 +4,6 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import CompanyProductDetails, {
   CompanyProductDetailsInterface,
 } from '../../../../../../../../components/company/CompanyProductDetails';
-import { ROUTE_CONSOLE } from '../../../../../../../../config/common';
 import { COL_COMPANIES } from '../../../../../../../../db/collectionNames';
 import { getDatabase } from '../../../../../../../../db/mongodb';
 import {
@@ -13,6 +12,10 @@ import {
 } from '../../../../../../../../db/uiInterfaces';
 import CmsProductLayout from '../../../../../../../../layout/cms/CmsProductLayout';
 import ConsoleLayout from '../../../../../../../../layout/cms/ConsoleLayout';
+import {
+  getConsoleCompanyLinks,
+  getConsoleRubricLinks,
+} from '../../../../../../../../lib/linkUtils';
 import { getCmsProduct } from '../../../../../../../../lib/productUtils';
 import {
   castDbData,
@@ -28,20 +31,26 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
   companySlug,
   cardContent,
 }) => {
+  const links = getConsoleRubricLinks({
+    rubricSlug: product.rubric?.slug,
+    basePath: routeBasePath,
+    productId: product._id,
+  });
+
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${product.cardTitle}`,
     config: [
       {
         name: `Рубрикатор`,
-        href: `${routeBasePath}/rubrics`,
+        href: links.parentLink,
       },
       {
         name: `${product.rubric?.name}`,
-        href: `${routeBasePath}/rubrics/${product.rubric?._id}`,
+        href: links.root,
       },
       {
         name: `Товары`,
-        href: `${routeBasePath}/rubrics/${product.rubric?._id}/products/${product.rubric?._id}`,
+        href: links.products,
       },
     ],
   };
@@ -84,12 +93,12 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<ProductPageInterface>> => {
   const { query } = context;
-  const { productId, rubricId, companyId } = query;
+  const { productId, companyId } = query;
   const { db } = await getDatabase();
   const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
   const { props } = await getConsoleInitialData({ context });
 
-  if (!props || !productId || !rubricId || !companyId) {
+  if (!props) {
     return {
       notFound: true,
     };
@@ -116,13 +125,17 @@ export const getServerSideProps = async (
     };
   }
 
+  const links = getConsoleCompanyLinks({
+    companyId: props.layoutProps.pageCompany._id,
+  });
+
   return {
     props: {
       ...props,
       product: castDbData(payload.product),
       cardContent: castDbData(payload.cardContent),
       companySlug: companyResult.slug,
-      routeBasePath: `${ROUTE_CONSOLE}/${props.layoutProps.pageCompany._id}`,
+      routeBasePath: links.root,
     },
   };
 };

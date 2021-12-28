@@ -5,7 +5,7 @@ import WpButton from '../../components/button/WpButton';
 import Inner from '../../components/Inner';
 import { ConfirmModalInterface } from '../../components/Modal/ConfirmModal';
 import WpTitle from '../../components/WpTitle';
-import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, ROUTE_CMS } from '../../config/common';
+import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG } from '../../config/common';
 import { CONFIRM_MODAL } from '../../config/modalVariants';
 import { useAppContext } from '../../context/appContext';
 import { useConfigContext } from '../../context/configContext';
@@ -45,16 +45,20 @@ const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({
   const { query } = useRouter();
   const { domainCompany } = useConfigContext();
   const { showModal } = useAppContext();
+  const rubricLinks = getConsoleRubricLinks({
+    rubricSlug: `${query.rubricSlug}`,
+    basePath,
+  });
   const [deleteProductFromRubricMutation] = useDeleteProduct({
     reload: false,
-    redirectUrl: `${basePath || ROUTE_CMS}/rubrics/${query.rubricId}/products/${query.rubricId}`,
+    redirectUrl: rubricLinks.products,
   });
 
   const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
     const links = getConsoleRubricLinks({
       productId: product._id,
       rubricSlug: product.rubricSlug,
-      basePath: basePath || ROUTE_CMS,
+      basePath,
     });
     return [
       {

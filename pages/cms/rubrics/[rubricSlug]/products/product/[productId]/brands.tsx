@@ -1,7 +1,7 @@
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 import ConsoleRubricProductBrands from '../../../../../../../components/console/ConsoleRubricProductBrands';
-import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from '../../../../../../../config/common';
+import { DEFAULT_COMPANY_SLUG } from '../../../../../../../config/common';
 import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
@@ -23,6 +23,7 @@ import {
 import CmsProductLayout from '../../../../../../../layout/cms/CmsProductLayout';
 import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from '../../../../../../../lib/i18n';
+import { getConsoleRubricLinks } from '../../../../../../../lib/linkUtils';
 import { getCmsProduct } from '../../../../../../../lib/productUtils';
 import {
   castDbData,
@@ -43,24 +44,28 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
   brandCollection,
   manufacturer,
 }) => {
+  const links = getConsoleRubricLinks({
+    productId: product._id,
+    rubricSlug: product.rubricSlug,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Бренд / Производитель',
     config: [
       {
         name: 'Рубрикатор',
-        href: `${ROUTE_CMS}/rubrics`,
+        href: links.parentLink,
       },
       {
         name: `${product.rubric?.name}`,
-        href: `${ROUTE_CMS}/rubrics/${product.rubric?._id}`,
+        href: links.root,
       },
       {
         name: `Товары`,
-        href: `${ROUTE_CMS}/rubrics/${product.rubric?._id}/products/${product.rubric?._id}`,
+        href: links.products,
       },
       {
         name: `${product.cardTitle}`,
-        href: `${ROUTE_CMS}/rubrics/${product.rubric?._id}/products/product/${product._id}`,
+        href: links.product.root,
       },
     ],
   };

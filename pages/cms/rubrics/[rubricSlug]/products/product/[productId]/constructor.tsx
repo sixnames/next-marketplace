@@ -3,9 +3,10 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import ConsoleRubricProductConstructor, {
   ConsoleRubricProductConstructorInterface,
 } from '../../../../../../../components/console/ConsoleRubricProductConstructor';
-import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from '../../../../../../../config/common';
+import { DEFAULT_COMPANY_SLUG } from '../../../../../../../config/common';
 import { AppContentWrapperBreadCrumbs } from '../../../../../../../db/uiInterfaces';
 import CmsProductLayout from '../../../../../../../layout/cms/CmsProductLayout';
+import { getConsoleRubricLinks } from '../../../../../../../lib/linkUtils';
 import { getCmsProduct } from '../../../../../../../lib/productUtils';
 import {
   castDbData,
@@ -21,24 +22,28 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({
   cardContent,
   companySlug,
 }) => {
+  const links = getConsoleRubricLinks({
+    productId: product._id,
+    rubricSlug: product.rubricSlug,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Контент карточки',
     config: [
       {
         name: 'Рубрикатор',
-        href: `${ROUTE_CMS}/rubrics`,
+        href: links.parentLink,
       },
       {
         name: `${product.rubric?.name}`,
-        href: `${ROUTE_CMS}/rubrics/${product.rubric?._id}`,
+        href: links.root,
       },
       {
         name: `Товары`,
-        href: `${ROUTE_CMS}/rubrics/${product.rubric?._id}/products/${product.rubric?._id}`,
+        href: links.products,
       },
       {
         name: `${product.cardTitle}`,
-        href: `${ROUTE_CMS}/rubrics/${product.rubric?._id}/products/product/${product._id}`,
+        href: links.product.root,
       },
     ],
   };

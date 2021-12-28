@@ -8,7 +8,6 @@ import {
   ATTRIBUTE_VARIANT_SELECT,
   ATTRIBUTE_VARIANT_STRING,
   DEFAULT_COMPANY_SLUG,
-  ROUTE_CMS,
 } from '../../../../../../../config/common';
 import { COL_ATTRIBUTES_GROUPS } from '../../../../../../../db/collectionNames';
 import { rubricAttributesGroupAttributesPipeline } from '../../../../../../../db/dao/constantPipelines';
@@ -25,6 +24,7 @@ import CmsProductLayout from '../../../../../../../layout/cms/CmsProductLayout';
 import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
 import { sortObjectsByField } from '../../../../../../../lib/arrayUtils';
 import { getFieldStringLocale } from '../../../../../../../lib/i18n';
+import { getConsoleRubricLinks } from '../../../../../../../lib/linkUtils';
 import { getAttributeReadableValue } from '../../../../../../../lib/productAttributesUtils';
 import { getCmsProduct } from '../../../../../../../lib/productUtils';
 import {
@@ -38,24 +38,28 @@ interface ProductAttributesInterface {
 }
 
 const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) => {
+  const links = getConsoleRubricLinks({
+    productId: product._id,
+    rubricSlug: product.rubricSlug,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Атрибуты',
     config: [
       {
         name: 'Рубрикатор',
-        href: `${ROUTE_CMS}/rubrics`,
+        href: links.parentLink,
       },
       {
         name: `${product.rubric?.name}`,
-        href: `${ROUTE_CMS}/rubrics/${product.rubric?._id}`,
+        href: links.root,
       },
       {
         name: `Товары`,
-        href: `${ROUTE_CMS}/rubrics/${product.rubric?._id}/products/${product.rubric?._id}`,
+        href: links.products,
       },
       {
         name: `${product.cardTitle}`,
-        href: `${ROUTE_CMS}/rubrics/${product.rubric?._id}/products/product/${product._id}`,
+        href: links.product.root,
       },
     ],
   };

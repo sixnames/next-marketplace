@@ -186,6 +186,7 @@ export function getConsoleCompanyLinks({
     rubrics: getConsoleRubricLinks({
       basePath: root,
       rubricSlug,
+      productId,
     }),
   };
 }

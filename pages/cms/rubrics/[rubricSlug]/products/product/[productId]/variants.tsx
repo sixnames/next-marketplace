@@ -1,13 +1,14 @@
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 import ConsoleRubricProductConnections from '../../../../../../../components/console/ConsoleRubricProductConnections';
-import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from '../../../../../../../config/common';
+import { DEFAULT_COMPANY_SLUG } from '../../../../../../../config/common';
 import {
   AppContentWrapperBreadCrumbs,
   ProductSummaryInterface,
 } from '../../../../../../../db/uiInterfaces';
 import CmsProductLayout from '../../../../../../../layout/cms/CmsProductLayout';
 import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
+import { getConsoleRubricLinks } from '../../../../../../../lib/linkUtils';
 import { getCmsProduct } from '../../../../../../../lib/productUtils';
 import {
   castDbData,
@@ -20,24 +21,28 @@ interface ProductConnectionsPropsInterface {
 }
 
 const ProductConnections: React.FC<ProductConnectionsPropsInterface> = ({ product }) => {
+  const links = getConsoleRubricLinks({
+    productId: product._id,
+    rubricSlug: product.rubricSlug,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Связи',
     config: [
       {
         name: 'Рубрикатор',
-        href: `${ROUTE_CMS}/rubrics`,
+        href: links.parentLink,
       },
       {
         name: `${product.rubric?.name}`,
-        href: `${ROUTE_CMS}/rubrics/${product.rubric?._id}`,
+        href: links.root,
       },
       {
         name: `Товары`,
-        href: `${ROUTE_CMS}/rubrics/${product.rubric?._id}/products/${product.rubric?._id}`,
+        href: links.products,
       },
       {
         name: `${product.cardTitle}`,
-        href: `${ROUTE_CMS}/rubrics/${product.rubric?._id}/products/product/${product._id}`,
+        href: links.product.root,
       },
     ],
   };

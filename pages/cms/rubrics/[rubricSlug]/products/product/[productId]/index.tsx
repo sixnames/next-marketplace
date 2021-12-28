@@ -67,8 +67,7 @@ export const getServerSideProps = async (
   const { query } = context;
   const { productId } = query;
   const { props } = await getAppInitialData({ context });
-
-  if (!props || !productId) {
+  if (!props) {
     return {
       notFound: true,
     };

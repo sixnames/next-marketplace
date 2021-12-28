@@ -56,7 +56,7 @@ const CmsCompanyLayout: React.FC<CmsCompanyLayoutInterface> = ({
       {
         name: 'Акции',
         testId: 'company-promo',
-        path: promo,
+        path: promo.parentLink,
       },
       {
         name: 'Подарочные сертификаты',

@@ -46,7 +46,7 @@ const PromoDetailsPage: React.FC<PromoDetailsPageInterface> = ({
       },
       {
         name: 'Акции',
-        href: links.promo,
+        href: links.promo.parentLink,
       },
     ],
   };

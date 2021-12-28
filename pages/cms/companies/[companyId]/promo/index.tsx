@@ -89,7 +89,7 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      basePath: links.promo,
+      basePath: links.promo.parentLink,
       pageCompany: castDbData(company),
       promoList: castDbData(promoList),
     },

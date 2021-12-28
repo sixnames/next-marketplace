@@ -5,7 +5,6 @@ import Inner from '../../../../../components/Inner';
 import PageGroupsList, {
   PageGroupsListInterface,
 } from '../../../../../components/Pages/PageGroupsList';
-import { ROUTE_CMS } from '../../../../../config/common';
 import { COL_COMPANIES } from '../../../../../db/collectionNames';
 import { getDatabase } from '../../../../../db/mongodb';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from '../../../../../db/uiInterfaces';
@@ -32,7 +31,7 @@ const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({
   pagesGroups,
   pageCompany,
 }) => {
-  const { root, parentLink } = getConsoleCompanyLinks({
+  const { root, parentLink, ...links } = getConsoleCompanyLinks({
     companyId: pageCompany._id,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -55,7 +54,7 @@ const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({
         <Inner>
           <PageGroupsList
             companySlug={pageCompany.slug}
-            basePath={`${ROUTE_CMS}/companies/${pageCompany._id}/pages`}
+            basePath={links.pages}
             pagesGroups={pagesGroups}
           />
         </Inner>

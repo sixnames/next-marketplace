@@ -1,7 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
-import { ROUTE_CMS } from '../../../../../../../../config/common';
 import {
   COL_COMPANIES,
   COL_PROMO_PRODUCTS,
@@ -21,6 +20,7 @@ import CompanyRubricsList, {
   CompanyRubricsListInterface,
 } from '../../../../../../../../layout/CompanyRubricsList';
 import ConsolePromoLayout from '../../../../../../../../layout/console/ConsolePromoLayout';
+import { getConsoleCompanyLinks } from '../../../../../../../../lib/linkUtils';
 import { getPromoSsr } from '../../../../../../../../lib/promoUtils';
 import {
   castDbData,
@@ -38,24 +38,28 @@ const ConsolePromoRubrics: React.FC<ConsolePromoRubricsInterface> = ({
   routeBasePath,
   rubrics,
 }) => {
+  const links = getConsoleCompanyLinks({
+    companyId: pageCompany._id,
+    promoId: promo._id,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `Товары`,
     config: [
       {
         name: 'Компании',
-        href: `${ROUTE_CMS}/companies`,
+        href: links.parentLink,
       },
       {
         name: pageCompany.name,
-        href: `${ROUTE_CMS}/companies/${pageCompany._id}`,
+        href: links.root,
       },
       {
         name: 'Акции',
-        href: `${ROUTE_CMS}/companies/${pageCompany._id}/promo`,
+        href: links.promo.parentLink,
       },
       {
         name: `${promo.name}`,
-        href: `${ROUTE_CMS}/companies/${pageCompany._id}/promo/details/${promo._id}`,
+        href: links.promo.root,
       },
     ],
   };
@@ -172,10 +176,14 @@ export const getServerSideProps = async (
     return castRubricForUI({ rubric, locale: props.sessionLocale });
   });
 
+  const links = getConsoleCompanyLinks({
+    companyId: company._id,
+    promoId: promo._id,
+  });
   return {
     props: {
       ...props,
-      routeBasePath: `${ROUTE_CMS}/companies/${company._id}/promo/details/${promo._id}`,
+      routeBasePath: links.promo.root,
       pageCompany: castDbData(company),
       promo: castDbData(promo),
       rubrics: castDbData(rawRubrics),

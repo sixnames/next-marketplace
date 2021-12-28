@@ -96,13 +96,13 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<ProductPageInterface>> => {
   const { query } = context;
-  const { productId, rubricId } = query;
+  const { productId } = query;
   const { db } = await getDatabase();
   const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
   const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
   const brandCollectionsCollection = db.collection<BrandCollectionModel>(COL_BRAND_COLLECTIONS);
   const { props } = await getAppInitialData({ context });
-  if (!props || !productId || !rubricId) {
+  if (!props) {
     return {
       notFound: true,
     };

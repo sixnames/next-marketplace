@@ -1524,10 +1524,8 @@ export interface NexusGenFieldTypes {
   ProductAttribute: {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
-    attribute: NexusGenRootTypes['Attribute']; // Attribute!
     attributeId: NexusGenScalars['ObjectId']; // ObjectId!
     number: number | null; // Float
-    text: string; // String!
     textI18n: NexusGenScalars['JSONObject'] | null; // JSONObject
   };
   ProductConnection: {
@@ -2469,10 +2467,8 @@ export interface NexusGenFieldTypeNames {
   ProductAttribute: {
     // field return type name
     _id: 'ObjectId';
-    attribute: 'Attribute';
     attributeId: 'ObjectId';
     number: 'Float';
-    text: 'String';
     textI18n: 'JSONObject';
   };
   ProductConnection: {

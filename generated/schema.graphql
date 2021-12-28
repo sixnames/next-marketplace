@@ -1447,10 +1447,8 @@ type PointGeoJSON {
 
 type ProductAttribute {
   _id: ObjectId!
-  attribute: Attribute!
   attributeId: ObjectId!
   number: Float
-  text: String!
   textI18n: JSONObject
 }
 

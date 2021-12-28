@@ -4,7 +4,7 @@ import { fixtureIds } from 'cypress/fixtures/fixtureIds';
 describe('Product variants', () => {
   beforeEach(() => {
     cy.testAuth(
-      `${ROUTE_CMS}/rubrics/${fixtureIds.rubricWine}/products/product/${fixtureIds.wineProductA}/connections`,
+      `${ROUTE_CMS}/rubrics/${fixtureIds.rubricWineSlug}/products/product/${fixtureIds.wineProductA}/variants`,
     );
   });
 

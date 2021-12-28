@@ -157,27 +157,19 @@ export const getConsoleRubricProducts = async ({
         ? [
             {
               $unwind: {
-                path: '$attributes',
+                path: '$attributeIds',
                 preserveNullAndEmptyArrays: true,
               },
             },
             {
               $match: {
-                'attributes.attributeId': { $in: attributesObjectIds },
+                attributeIds: { $in: attributesObjectIds },
               },
             },
             {
               $group: {
                 _id: '$_id',
                 doc: { $first: '$$ROOT' },
-                selectedAttributesIds: {
-                  $push: '$attributes.attributeId',
-                },
-              },
-            },
-            {
-              $addFields: {
-                'doc.selectedAttributesIds': '$selectedAttributesIds',
               },
             },
             {
@@ -206,14 +198,6 @@ export const getConsoleRubricProducts = async ({
             $group: {
               _id: '$_id',
               doc: { $first: '$$ROOT' },
-              filterSlugs: {
-                $push: '$filterSlugs',
-              },
-            },
-          },
-          {
-            $addFields: {
-              'doc.filterSlugs': '$filterSlugs',
             },
           },
           {
@@ -253,6 +237,7 @@ export const getConsoleRubricProducts = async ({
       citySlug: DEFAULT_CITY,
       companySlug,
     };
+
     const productDataAggregationResult = await productFacetsCollection
       .aggregate<ProductsAggregationInterface>(
         [

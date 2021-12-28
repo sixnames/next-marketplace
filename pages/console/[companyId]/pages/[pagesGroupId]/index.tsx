@@ -3,7 +3,6 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import Inner from '../../../../../components/Inner';
 import PagesList, { PagesListInterface } from '../../../../../components/Pages/PagesList';
 import WpTitle from '../../../../../components/WpTitle';
-import { ROUTE_CONSOLE } from '../../../../../config/common';
 import { COL_CITIES } from '../../../../../db/collectionNames';
 import { getDatabase } from '../../../../../db/mongodb';
 import { AppContentWrapperBreadCrumbs, CityInterface } from '../../../../../db/uiInterfaces';
@@ -11,6 +10,7 @@ import AppContentWrapper from '../../../../../layout/AppContentWrapper';
 import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
 import { sortObjectsByField } from '../../../../../lib/arrayUtils';
 import { getFieldStringLocale } from '../../../../../lib/i18n';
+import { getConsoleCompanyLinks } from '../../../../../lib/linkUtils';
 import { getPagesListSsr } from '../../../../../lib/pageUtils';
 import {
   castDbData,
@@ -23,13 +23,15 @@ interface PagesListPageInterface
     Omit<PagesListInterface, 'basePath' | 'breadcrumbs'> {}
 
 const PagesListPage: NextPage<PagesListPageInterface> = ({ layoutProps, pagesGroup, cities }) => {
-  const basePath = `${ROUTE_CONSOLE}/${layoutProps.pageCompany._id}/pages`;
+  const links = getConsoleCompanyLinks({
+    companyId: layoutProps.pageCompany._id,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${pagesGroup.name}`,
     config: [
       {
-        name: 'Группы шаблонов страниц',
-        href: basePath,
+        name: 'Группы страниц',
+        href: links.pages,
       },
     ],
   };
@@ -39,7 +41,7 @@ const PagesListPage: NextPage<PagesListPageInterface> = ({ layoutProps, pagesGro
       <AppContentWrapper breadcrumbs={breadcrumbs}>
         <Inner>
           <WpTitle>{pagesGroup.name}</WpTitle>
-          <PagesList cities={cities} basePath={basePath} pagesGroup={pagesGroup} />
+          <PagesList cities={cities} basePath={links.pages} pagesGroup={pagesGroup} />
         </Inner>
       </AppContentWrapper>
     </ConsoleLayout>

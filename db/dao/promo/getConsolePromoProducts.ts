@@ -197,6 +197,7 @@ export async function getConsolePromoProducts({
               sortStage,
               skip,
               limit,
+              summaryIdFieldName: '$productId',
             }),
 
             // prices facet

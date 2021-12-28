@@ -94,12 +94,13 @@ export const getServerSideProps = async (
 
   const links = getCmsCompanyLinks({
     companyId: company._id,
+    promoId: promo._id,
   });
 
   return {
     props: {
       ...props,
-      basePath: `${links.promo}/details/${promo._id}`,
+      basePath: links.promo.root,
       pageCompany: castDbData(company),
       promo: castDbData(promo),
     },

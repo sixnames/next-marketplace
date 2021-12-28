@@ -49,7 +49,7 @@ const ConsolePromoProducts: React.FC<ConsolePromoProductsInterface> = ({
 
   const columns: WpTableColumn<ShopProductInterface>[] = [
     {
-      accessor: 'product.slug',
+      accessor: 'summary.slug',
       headTitle: 'Арт',
       render: ({ cellData }) => {
         return <div>{cellData}</div>;

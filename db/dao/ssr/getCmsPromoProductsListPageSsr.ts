@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import { DEFAULT_CURRENCY, DEFAULT_PAGE_FILTER } from '../../../config/common';
+import { DEFAULT_CURRENCY } from '../../../config/common';
 import { alwaysArray, alwaysString } from '../../../lib/arrayUtils';
 import { getCmsCompanyLinks } from '../../../lib/linkUtils';
 import { getPromoSsr } from '../../../lib/promoUtils';
@@ -52,7 +52,7 @@ export const getCmsPromoProductsListPageSsr = async (
 
   // get rubric
   const initialRubric = await rubricsCollection.findOne({
-    slug: new ObjectId(`${query.rubricSlug}`),
+    slug: `${query.rubricSlug}`,
   });
   if (!initialRubric) {
     return {
@@ -64,6 +64,7 @@ export const getCmsPromoProductsListPageSsr = async (
   const links = getCmsCompanyLinks({
     companyId: company._id,
     promoId: promo._id,
+    rubricSlug: rubric.slug,
   });
   const basePath = links.promo.root;
   const promoProducts = await getConsolePromoProducts({
@@ -74,7 +75,7 @@ export const getCmsPromoProductsListPageSsr = async (
     locale,
     currency: props.currentCity?.currency || DEFAULT_CURRENCY,
     companyId: company._id,
-    basePath: `${basePath}/rubrics/${rubric._id}/products/${DEFAULT_PAGE_FILTER}`,
+    basePath: links.promo.rubrics.root,
     excludedShopProductIds: [],
   });
 
@@ -86,7 +87,7 @@ export const getCmsPromoProductsListPageSsr = async (
       promo: castDbData(promo),
       rubric: castDbData(rubric),
       promoProducts: castDbData(promoProducts),
-      filters: alwaysArray(query.filters).filter((filter) => filter !== DEFAULT_PAGE_FILTER),
+      filters: alwaysArray(query.filters),
       search: alwaysString(query.search),
     },
   };

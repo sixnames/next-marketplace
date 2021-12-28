@@ -82,7 +82,10 @@ export const productAttributesPipeline = (props?: ProductAttributesPipelineInter
 
   return [
     {
-      $unwind: '$attributes',
+      $unwind: {
+        path: '$attributes',
+        preserveNullAndEmptyArrays: true,
+      },
     },
     {
       $lookup: {
@@ -100,13 +103,6 @@ export const productAttributesPipeline = (props?: ProductAttributesPipelineInter
       },
     },
     {
-      $match: {
-        'attributes.attribute': {
-          $exists: true,
-        },
-      },
-    },
-    {
       $lookup: {
         from: COL_OPTIONS,
         as: 'attributes.attribute.options',
@@ -117,7 +113,16 @@ export const productAttributesPipeline = (props?: ProductAttributesPipelineInter
           {
             $match: {
               $expr: {
-                $and: [
+                $cond: [
+                  {
+                    $eq: [
+                      {
+                        $type: '$$optionIds',
+                      },
+                      'missing',
+                    ],
+                  },
+                  {},
                   {
                     $in: ['$_id', '$$optionIds'],
                   },

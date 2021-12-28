@@ -41,18 +41,13 @@ export async function updateAlgoliaProducts(match?: Record<any, any>) {
 
     const algoliaProducts: AlgoliaProductInterface[] = [];
     for await (const initialProduct of products) {
-      const { rubric, ...restProduct } = initialProduct;
-      if (!rubric) {
-        continue;
-      }
-
       let algoliaProduct: AlgoliaProductInterface = {
-        _id: restProduct._id.toHexString(),
-        slug: restProduct.slug,
-        objectID: restProduct._id.toHexString(),
-        barcode: restProduct.barcode,
-        cardTitleI18n: restProduct.cardTitleI18n,
-        snippetTitleI18n: restProduct.snippetTitleI18n,
+        _id: initialProduct._id.toHexString(),
+        slug: initialProduct.slug,
+        objectID: initialProduct._id.toHexString(),
+        barcode: initialProduct.barcode,
+        cardTitleI18n: initialProduct.cardTitleI18n,
+        snippetTitleI18n: initialProduct.snippetTitleI18n,
       };
       algoliaProducts.push(algoliaProduct);
     }

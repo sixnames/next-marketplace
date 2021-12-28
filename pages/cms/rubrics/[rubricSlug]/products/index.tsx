@@ -1,5 +1,5 @@
-import { getCmsRubricProductsListPageProps } from '../../../../../db/dao/ssr/getCmsRubricProductsListPageProps';
+import { getCmsRubricProductsListPageSsr } from '../../../../../db/dao/ssr/getCmsRubricProductsListPageSsr';
 import CmsRubricProductsListPage from './[...filters]';
 
-export const getServerSideProps = getCmsRubricProductsListPageProps;
+export const getServerSideProps = getCmsRubricProductsListPageSsr;
 export default CmsRubricProductsListPage;

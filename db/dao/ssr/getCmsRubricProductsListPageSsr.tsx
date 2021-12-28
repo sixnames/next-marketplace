@@ -6,7 +6,7 @@ import { castDbData, getAppInitialData } from '../../../lib/ssrUtils';
 import { CmsRubricProductsListPageInterface } from '../../../pages/cms/rubrics/[rubricSlug]/products/[...filters]';
 import { getConsoleRubricProducts } from '../product/getConsoleRubricProducts';
 
-export const getCmsRubricProductsListPageProps = async (
+export const getCmsRubricProductsListPageSsr = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<CmsRubricProductsListPageInterface>> => {
   const { query } = context;

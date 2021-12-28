@@ -68,6 +68,7 @@ export async function getCmsProduct({
   const { db } = await getDatabase();
   const productSummariesCollection = db.collection<ProductSummaryInterface>(COL_PRODUCT_SUMMARIES);
   const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
+
   const productAggregation = await productSummariesCollection
     .aggregate<ProductSummaryInterface>([
       {

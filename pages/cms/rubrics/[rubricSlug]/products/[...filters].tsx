@@ -16,7 +16,7 @@ import Spinner from '../../../../../components/Spinner';
 import TableRowImage from '../../../../../components/TableRowImage';
 import WpTable, { WpTableColumn } from '../../../../../components/WpTable';
 import { CONFIRM_MODAL, CREATE_NEW_PRODUCT_MODAL } from '../../../../../config/modalVariants';
-import { getCmsRubricProductsListPageProps } from '../../../../../db/dao/ssr/getCmsRubricProductsListPageProps';
+import { getCmsRubricProductsListPageSsr } from '../../../../../db/dao/ssr/getCmsRubricProductsListPageSsr';
 import {
   AppContentWrapperBreadCrumbs,
   ConsoleRubricProductsInterface,
@@ -137,7 +137,7 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
         return (
           <div className='flex justify-end'>
             <ContentItemControls
-              testId={`${dataItem.slug}`}
+              testId={`${dataItem.originalName}`}
               copyTitle={'Копировать товар'}
               copyHandler={() => {
                 showModal<CreateNewProductModalInterface>({
@@ -283,5 +283,5 @@ const CmsRubricProductsListPage: NextPage<CmsRubricProductsListPageInterface> = 
   );
 };
 
-export const getServerSideProps = getCmsRubricProductsListPageProps;
+export const getServerSideProps = getCmsRubricProductsListPageSsr;
 export default CmsRubricProductsListPage;

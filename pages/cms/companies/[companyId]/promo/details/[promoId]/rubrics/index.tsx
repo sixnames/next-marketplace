@@ -20,7 +20,7 @@ import CompanyRubricsList, {
   CompanyRubricsListInterface,
 } from '../../../../../../../../layout/CompanyRubricsList';
 import ConsolePromoLayout from '../../../../../../../../layout/console/ConsolePromoLayout';
-import { getConsoleCompanyLinks } from '../../../../../../../../lib/linkUtils';
+import { getCmsCompanyLinks } from '../../../../../../../../lib/linkUtils';
 import { getPromoSsr } from '../../../../../../../../lib/promoUtils';
 import {
   castDbData,
@@ -38,7 +38,7 @@ const ConsolePromoRubrics: React.FC<ConsolePromoRubricsInterface> = ({
   routeBasePath,
   rubrics,
 }) => {
-  const links = getConsoleCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId: pageCompany._id,
     promoId: promo._id,
   });
@@ -176,7 +176,7 @@ export const getServerSideProps = async (
     return castRubricForUI({ rubric, locale: props.sessionLocale });
   });
 
-  const links = getConsoleCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId: company._id,
     promoId: promo._id,
   });

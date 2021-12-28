@@ -8,7 +8,7 @@ import { COL_COMPANIES, COL_SHOPS } from '../../../../../../../db/collectionName
 import { ShopModel } from '../../../../../../../db/dbModels';
 import { getDatabase } from '../../../../../../../db/mongodb';
 import { AppContentWrapperBreadCrumbs } from '../../../../../../../db/uiInterfaces';
-import { getConsoleCompanyLinks } from '../../../../../../../lib/linkUtils';
+import { getCmsCompanyLinks } from '../../../../../../../lib/linkUtils';
 import {
   castDbData,
   getAppInitialData,
@@ -21,7 +21,7 @@ interface CompanyShopInterface
     Omit<ShopDetailsInterface, 'basePath'> {}
 
 const CompanyShop: NextPage<CompanyShopInterface> = ({ layoutProps, shop }) => {
-  const { root, parentLink, shops, ...links } = getConsoleCompanyLinks({
+  const { root, parentLink, shops, ...links } = getCmsCompanyLinks({
     companyId: shop.companyId,
     shopId: shop._id,
   });

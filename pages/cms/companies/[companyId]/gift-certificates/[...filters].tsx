@@ -8,7 +8,7 @@ import { getCmsCompanyGiftCertificatesPageSsr } from '../../../../../db/dao/ssr/
 import { AppContentWrapperBreadCrumbs } from '../../../../../db/uiInterfaces';
 import CmsCompanyLayout from '../../../../../layout/cms/CmsCompanyLayout';
 import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
-import { getConsoleCompanyLinks } from '../../../../../lib/linkUtils';
+import { getCmsCompanyLinks } from '../../../../../lib/linkUtils';
 import { GetAppInitialDataPropsInterface } from '../../../../../lib/ssrUtils';
 
 interface CompanyGiftCertificatesConsumerInterface extends ConsoleGiftCertificatesListInterface {}
@@ -17,7 +17,7 @@ const CompanyGiftCertificatesConsumer: React.FC<CompanyGiftCertificatesConsumerI
   pageCompany,
   ...props
 }) => {
-  const { root, parentLink } = getConsoleCompanyLinks({
+  const { root, parentLink } = getCmsCompanyLinks({
     companyId: pageCompany?._id,
   });
 

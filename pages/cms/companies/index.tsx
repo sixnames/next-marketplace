@@ -19,7 +19,7 @@ import { CompanyInterface } from '../../../db/uiInterfaces';
 import { useDeleteCompanyMutation } from '../../../generated/apolloComponents';
 import useMutationCallbacks from '../../../hooks/useMutationCallbacks';
 import AppContentWrapper from '../../../layout/AppContentWrapper';
-import { getConsoleCompanyLinks } from '../../../lib/linkUtils';
+import { getCmsCompanyLinks } from '../../../lib/linkUtils';
 import { getShortName } from '../../../lib/nameUtils';
 import {
   castDbData,
@@ -71,7 +71,7 @@ const CompaniesConsumer: React.FC<CompaniesConsumerInterface> = ({ companies }) 
       accessor: 'itemId',
       headTitle: 'ID',
       render: ({ cellData, dataItem }) => {
-        const { root } = getConsoleCompanyLinks({
+        const { root } = getCmsCompanyLinks({
           companyId: dataItem._id,
         });
         return <WpLink href={root}>{cellData}</WpLink>;
@@ -106,7 +106,7 @@ const CompaniesConsumer: React.FC<CompaniesConsumerInterface> = ({ companies }) 
             deleteHandler={() => deleteCompanyHandler(dataItem)}
             updateTitle={`Редактировать компанию`}
             updateHandler={() => {
-              const { root } = getConsoleCompanyLinks({
+              const { root } = getCmsCompanyLinks({
                 companyId: dataItem._id,
               });
               router.push(root).catch((e) => console.log(e));
@@ -132,7 +132,7 @@ const CompaniesConsumer: React.FC<CompaniesConsumerInterface> = ({ companies }) 
             size={'small'}
             testId={'create-company'}
             onClick={() => {
-              const { create } = getConsoleCompanyLinks({});
+              const { create } = getCmsCompanyLinks({});
               router.push(create).catch((e) => {
                 console.log(e);
               });

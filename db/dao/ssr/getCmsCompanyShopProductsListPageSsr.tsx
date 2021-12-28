@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import { getConsoleCompanyLinks } from '../../../lib/linkUtils';
+import { getCmsCompanyLinks } from '../../../lib/linkUtils';
 import { castDbData, getAppInitialData } from '../../../lib/ssrUtils';
 import { CmsCompanyShopProductsListPageInterface } from '../../../pages/cms/companies/[companyId]/shops/shop/[shopId]/products/[rubricSlug]/[...filters]';
 import { COL_COMPANIES } from '../../collectionNames';
@@ -31,7 +31,7 @@ export const getCmsCompanyShopProductsListPageSsr = async (
     };
   }
 
-  const links = getConsoleCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId: company._id.toHexString(),
     shopId: `${shopId}`,
     rubricSlug: `${rubricSlug}`,

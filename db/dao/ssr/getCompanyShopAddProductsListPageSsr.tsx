@@ -1,7 +1,7 @@
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import { DEFAULT_COMPANY_SLUG } from '../../../config/common';
 import { alwaysString } from '../../../lib/arrayUtils';
-import { getConsoleCompanyLinks } from '../../../lib/linkUtils';
+import { getCmsCompanyLinks } from '../../../lib/linkUtils';
 import { castDbData, getAppInitialData } from '../../../lib/ssrUtils';
 import { CompanyShopAddProductsListPageInterface } from '../../../pages/cms/companies/[companyId]/shops/shop/[shopId]/products/[rubricSlug]/add/[...filters]';
 import { getAddShopProductSsrData } from '../product/getAddShopProductSsrData';
@@ -19,7 +19,7 @@ export const getCompanyShopAddProductsListPageSsr = async (
     };
   }
 
-  const { shop } = getConsoleCompanyLinks({
+  const { shop } = getCmsCompanyLinks({
     companyId: `${query.companyId}`,
     shopId: shopId,
     rubricSlug: `${query.rubricSlug}`,

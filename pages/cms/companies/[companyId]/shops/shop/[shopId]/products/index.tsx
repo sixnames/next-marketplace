@@ -18,7 +18,7 @@ import {
 } from '../../../../../../../../db/uiInterfaces';
 import ConsoleLayout from '../../../../../../../../layout/cms/ConsoleLayout';
 import { getI18nLocaleValue } from '../../../../../../../../lib/i18n';
-import { getConsoleCompanyLinks } from '../../../../../../../../lib/linkUtils';
+import { getCmsCompanyLinks } from '../../../../../../../../lib/linkUtils';
 import { noNaN } from '../../../../../../../../lib/numbers';
 import {
   castDbData,
@@ -35,7 +35,7 @@ const CompanyShopProducts: NextPage<CompanyShopProductsInterface> = ({
   rubrics,
   shop,
 }) => {
-  const { root, parentLink, shops, ...links } = getConsoleCompanyLinks({
+  const { root, parentLink, shops, ...links } = getCmsCompanyLinks({
     companyId: shop.companyId,
     shopId: shop._id,
   });

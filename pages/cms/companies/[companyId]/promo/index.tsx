@@ -7,7 +7,7 @@ import { COL_COMPANIES } from '../../../../../db/collectionNames';
 import { getDatabase } from '../../../../../db/mongodb';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from '../../../../../db/uiInterfaces';
 import CmsCompanyLayout from '../../../../../layout/cms/CmsCompanyLayout';
-import { getConsoleCompanyLinks } from '../../../../../lib/linkUtils';
+import { getCmsCompanyLinks } from '../../../../../lib/linkUtils';
 import { getPromoListSsr } from '../../../../../lib/promoUtils';
 import {
   castDbData,
@@ -26,7 +26,7 @@ const PromoListPage: NextPage<PromoListPageInterface> = ({
   pageCompany,
   basePath,
 }) => {
-  const { root, parentLink } = getConsoleCompanyLinks({
+  const { root, parentLink } = getCmsCompanyLinks({
     companyId: pageCompany._id,
   });
 
@@ -82,7 +82,7 @@ export const getServerSideProps = async (
     companyId: company._id.toHexString(),
   });
 
-  const links = getConsoleCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId: company._id,
   });
 

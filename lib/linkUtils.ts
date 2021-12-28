@@ -174,20 +174,20 @@ export function getConsoleCompanyPromoLinks({
 }
 
 // console company
-interface GetConsoleCompanyLinkInterface extends GetConsoleRubricLinkInterface {
+interface GetCmsCompanyLinkInterface extends GetConsoleRubricLinkInterface {
   companyId?: string | ObjectIdModel;
   shopId?: string | ObjectIdModel;
   promoId?: string | ObjectIdModel;
 }
-export function getConsoleCompanyLinks({
+export function getCmsCompanyLinks({
   companyId = '',
   basePath = ROUTE_CMS,
   rubricSlug,
   shopId,
   productId,
   promoId,
-}: GetConsoleCompanyLinkInterface) {
-  const parentLink = `${basePath}/companies`;
+}: GetCmsCompanyLinkInterface) {
+  const parentLink = basePath === ROUTE_CMS ? `${basePath}/companies` : basePath;
   const root = `${parentLink}/${companyId}`;
   return {
     parentLink,
@@ -219,4 +219,15 @@ export function getConsoleCompanyLinks({
       productId,
     }),
   };
+}
+
+interface GetConsoleCompanyLinkInterface extends GetCmsCompanyLinkInterface {
+  companyId: string | ObjectIdModel;
+}
+
+export function getConsoleCompanyLinks(props: GetConsoleCompanyLinkInterface) {
+  return getCmsCompanyLinks({
+    ...props,
+    basePath: ROUTE_CONSOLE,
+  });
 }

@@ -8,13 +8,13 @@ import { getCmsCompanyRubricProductsPageSsr } from '../../../../../../../db/dao/
 import { AppContentWrapperBreadCrumbs } from '../../../../../../../db/uiInterfaces';
 import CmsRubricLayout from '../../../../../../../layout/cms/CmsRubricLayout';
 import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
-import { getConsoleCompanyLinks } from '../../../../../../../lib/linkUtils';
+import { getCmsCompanyLinks } from '../../../../../../../lib/linkUtils';
 import { GetAppInitialDataPropsInterface } from '../../../../../../../lib/ssrUtils';
 
 interface RubricProductsConsumerInterface extends CompanyRubricProductsListInterface {}
 
 const RubricProductsConsumer: React.FC<RubricProductsConsumerInterface> = (props) => {
-  const links = getConsoleCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId: props.pageCompany._id,
     rubricSlug: props.rubric?.slug,
   });

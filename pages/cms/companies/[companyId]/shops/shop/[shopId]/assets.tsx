@@ -7,7 +7,7 @@ import { ShopModel } from '../../../../../../../db/dbModels';
 import { getDatabase } from '../../../../../../../db/mongodb';
 import { AppContentWrapperBreadCrumbs } from '../../../../../../../db/uiInterfaces';
 import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
-import { getConsoleCompanyLinks } from '../../../../../../../lib/linkUtils';
+import { getCmsCompanyLinks } from '../../../../../../../lib/linkUtils';
 import {
   castDbData,
   getAppInitialData,
@@ -19,7 +19,7 @@ interface CompanyShopAssetsInterface
     Omit<ShopAssetsInterface, 'basePath'> {}
 
 const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ layoutProps, shop }) => {
-  const { root, parentLink, shops, ...links } = getConsoleCompanyLinks({
+  const { root, parentLink, shops, ...links } = getCmsCompanyLinks({
     companyId: shop.companyId,
     shopId: shop._id,
   });

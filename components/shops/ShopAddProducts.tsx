@@ -19,7 +19,7 @@ import useValidationSchema from '../../hooks/useValidationSchema';
 import ConsoleShopLayout from '../../layout/console/ConsoleShopLayout';
 import { alwaysArray } from '../../lib/arrayUtils';
 import { getNumWord } from '../../lib/i18n';
-import { getConsoleCompanyLinks, getConsoleRubricLinks } from '../../lib/linkUtils';
+import { getCmsCompanyLinks, getConsoleRubricLinks } from '../../lib/linkUtils';
 import { addManyProductsToShopSchema } from '../../validation/shopSchema';
 import AppContentFilter from '../AppContentFilter';
 import ContentItemControls from '../button/ContentItemControls';
@@ -278,7 +278,7 @@ export const ShopAddProductsFinalStep: React.FC<ShopAddProductsListInterface> = 
     onCompleted: (data) => {
       onCompleteCallback(data.addManyProductsToShop);
       if (data.addManyProductsToShop.success) {
-        const links = getConsoleCompanyLinks({
+        const links = getCmsCompanyLinks({
           companyId: shop.companyId,
           shopId: shop._id,
           rubricSlug: rubricSlug,

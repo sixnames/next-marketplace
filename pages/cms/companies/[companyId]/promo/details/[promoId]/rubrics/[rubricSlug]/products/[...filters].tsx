@@ -6,7 +6,7 @@ import { getCmsPromoProductsListPageSsr } from '../../../../../../../../../../db
 import { AppContentWrapperBreadCrumbs } from '../../../../../../../../../../db/uiInterfaces';
 import ConsoleLayout from '../../../../../../../../../../layout/cms/ConsoleLayout';
 import ConsolePromoLayout from '../../../../../../../../../../layout/console/ConsolePromoLayout';
-import { getConsoleCompanyLinks } from '../../../../../../../../../../lib/linkUtils';
+import { getCmsCompanyLinks } from '../../../../../../../../../../lib/linkUtils';
 import { GetAppInitialDataPropsInterface } from '../../../../../../../../../../lib/ssrUtils';
 
 export interface CmsPromoProductsListPageInterface
@@ -23,7 +23,7 @@ const CmsPromoProductsListPage: React.FC<CmsPromoProductsListPageInterface> = ({
   filters,
   search,
 }) => {
-  const links = getConsoleCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId: pageCompany._id,
     promoId: promo._id,
   });

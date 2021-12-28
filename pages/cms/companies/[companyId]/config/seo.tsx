@@ -8,7 +8,7 @@ import CmsCompanyLayout from '../../../../../layout/cms/CmsCompanyLayout';
 import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
 import { ConfigPageInterface } from '../../../../../layout/console/ConsoleConfigsLayout';
 import { getConfigPageData } from '../../../../../lib/configsUtils';
-import { getConsoleCompanyLinks } from '../../../../../lib/linkUtils';
+import { getCmsCompanyLinks } from '../../../../../lib/linkUtils';
 import {
   castDbData,
   getAppInitialData,
@@ -24,7 +24,7 @@ const ConfigConsumer: React.FC<ConfigConsumerInterface> = ({
   normalConfigs,
   pageCompany,
 }) => {
-  const { root, parentLink } = getConsoleCompanyLinks({
+  const { root, parentLink } = getCmsCompanyLinks({
     companyId: pageCompany?._id,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {

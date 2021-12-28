@@ -13,7 +13,7 @@ import {
   ShopInterface,
 } from '../../../../../../../../../db/uiInterfaces';
 import ConsoleLayout from '../../../../../../../../../layout/cms/ConsoleLayout';
-import { getConsoleCompanyLinks } from '../../../../../../../../../lib/linkUtils';
+import { getCmsCompanyLinks } from '../../../../../../../../../lib/linkUtils';
 import {
   castDbData,
   getAppInitialData,
@@ -33,7 +33,7 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({
 }) => {
   const title = `Заказ №${order.itemId}`;
 
-  const { root, parentLink, shops, ...links } = getConsoleCompanyLinks({
+  const { root, parentLink, shops, ...links } = getCmsCompanyLinks({
     companyId: shop.companyId,
     shopId: shop._id,
   });

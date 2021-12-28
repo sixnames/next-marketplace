@@ -27,7 +27,7 @@ import usePageLoadingState from '../../../../../hooks/usePageLoadingState';
 import CmsCompanyLayout from '../../../../../layout/cms/CmsCompanyLayout';
 import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
 import { getNumWord } from '../../../../../lib/i18n';
-import { getConsoleCompanyLinks } from '../../../../../lib/linkUtils';
+import { getCmsCompanyLinks } from '../../../../../lib/linkUtils';
 import { noNaN } from '../../../../../lib/numbers';
 import { GetAppInitialDataPropsInterface } from '../../../../../lib/ssrUtils';
 
@@ -136,7 +136,7 @@ const CompanyShopsConsumer: React.FC<CompanyShopsConsumerInterface> = ({
     },
   ];
 
-  const { root, parentLink } = getConsoleCompanyLinks({
+  const { root, parentLink } = getCmsCompanyLinks({
     companyId: pageCompany._id,
   });
 

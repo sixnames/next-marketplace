@@ -13,7 +13,7 @@ import {
 import CmsCompanyLayout from '../../../../../../layout/cms/CmsCompanyLayout';
 import { sortObjectsByField } from '../../../../../../lib/arrayUtils';
 import { getFieldStringLocale } from '../../../../../../lib/i18n';
-import { getConsoleCompanyLinks } from '../../../../../../lib/linkUtils';
+import { getCmsCompanyLinks } from '../../../../../../lib/linkUtils';
 import { getPagesListSsr } from '../../../../../../lib/pageUtils';
 import {
   castDbData,
@@ -34,7 +34,7 @@ const PagesListPage: NextPage<PagesListPageInterface> = ({
   pagesGroup,
   cities,
 }) => {
-  const { root, parentLink, pages } = getConsoleCompanyLinks({
+  const { root, parentLink, pages } = getCmsCompanyLinks({
     companyId: pageCompany._id,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {

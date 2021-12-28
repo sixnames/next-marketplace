@@ -27,7 +27,7 @@ import CmsProductLayout from '../../../../../../../../../layout/cms/CmsProductLa
 import ConsoleLayout from '../../../../../../../../../layout/cms/ConsoleLayout';
 import { sortObjectsByField } from '../../../../../../../../../lib/arrayUtils';
 import { getFieldStringLocale } from '../../../../../../../../../lib/i18n';
-import { getConsoleCompanyLinks } from '../../../../../../../../../lib/linkUtils';
+import { getCmsCompanyLinks } from '../../../../../../../../../lib/linkUtils';
 import { getAttributeReadableValue } from '../../../../../../../../../lib/productAttributesUtils';
 import { getCmsProduct } from '../../../../../../../../../lib/productUtils';
 import {
@@ -47,7 +47,7 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({
   pageCompany,
   routeBasePath,
 }) => {
-  const links = getConsoleCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId: pageCompany._id,
     rubricSlug: product.rubricSlug,
     productId: product._id,
@@ -268,7 +268,7 @@ export const getServerSideProps = async (
     attributesGroups: sortObjectsByField(productAttributesGroups),
   };
 
-  const links = getConsoleCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId: companyResult._id,
   });
   return {

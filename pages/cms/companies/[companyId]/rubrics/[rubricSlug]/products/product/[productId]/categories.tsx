@@ -13,7 +13,7 @@ import {
 } from '../../../../../../../../../db/uiInterfaces';
 import CmsProductLayout from '../../../../../../../../../layout/cms/CmsProductLayout';
 import ConsoleLayout from '../../../../../../../../../layout/cms/ConsoleLayout';
-import { getConsoleCompanyLinks } from '../../../../../../../../../lib/linkUtils';
+import { getCmsCompanyLinks } from '../../../../../../../../../lib/linkUtils';
 import { getCmsProduct } from '../../../../../../../../../lib/productUtils';
 import {
   castDbData,
@@ -35,7 +35,7 @@ const ProductCategories: React.FC<ProductCategoriesInterface> = ({
   pageCompany,
   categoriesTree,
 }) => {
-  const links = getConsoleCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId: pageCompany._id,
     rubricSlug: product.rubricSlug,
     productId: product._id,
@@ -160,7 +160,7 @@ export const getServerSideProps = async (
     childrenFieldName: 'categories',
   });
 
-  const links = getConsoleCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId: companyResult._id,
   });
 

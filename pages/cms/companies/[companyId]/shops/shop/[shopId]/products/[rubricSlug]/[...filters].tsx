@@ -7,7 +7,7 @@ import {
   ShopRubricProductsInterface,
 } from '../../../../../../../../../db/uiInterfaces';
 import ConsoleLayout from '../../../../../../../../../layout/cms/ConsoleLayout';
-import { getConsoleCompanyLinks } from '../../../../../../../../../lib/linkUtils';
+import { getCmsCompanyLinks } from '../../../../../../../../../lib/linkUtils';
 import { GetAppInitialDataPropsInterface } from '../../../../../../../../../lib/ssrUtils';
 
 export interface CmsCompanyShopProductsListPageInterface
@@ -20,7 +20,7 @@ const CmsCompanyShopProductsListPage: NextPage<CmsCompanyShopProductsListPageInt
   rubricName,
   ...props
 }) => {
-  const { root, parentLink, shops, ...links } = getConsoleCompanyLinks({
+  const { root, parentLink, shops, ...links } = getCmsCompanyLinks({
     companyId: shop.companyId,
     shopId: shop._id,
   });

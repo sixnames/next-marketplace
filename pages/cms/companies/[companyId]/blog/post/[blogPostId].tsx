@@ -15,7 +15,7 @@ import {
 } from '../../../../../../db/uiInterfaces';
 import CmsCompanyLayout from '../../../../../../layout/cms/CmsCompanyLayout';
 import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
-import { getConsoleCompanyLinks } from '../../../../../../lib/linkUtils';
+import { getCmsCompanyLinks } from '../../../../../../lib/linkUtils';
 import {
   castDbData,
   getAppInitialData,
@@ -35,7 +35,7 @@ const BlogPostConsumer: React.FC<BlogPostConsumerInterface> = ({
   pageCompany,
   attributes,
 }) => {
-  const { root, parentLink, blog } = getConsoleCompanyLinks({
+  const { root, parentLink, blog } = getCmsCompanyLinks({
     companyId: pageCompany?._id,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {

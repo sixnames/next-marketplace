@@ -19,7 +19,7 @@ import CmsCompanyLayout from '../../../../../layout/cms/CmsCompanyLayout';
 import CompanyRubricsList, {
   CompanyRubricsListInterface,
 } from '../../../../../layout/CompanyRubricsList';
-import { getConsoleCompanyLinks } from '../../../../../lib/linkUtils';
+import { getCmsCompanyLinks } from '../../../../../lib/linkUtils';
 import {
   castDbData,
   getAppInitialData,
@@ -30,7 +30,7 @@ import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
 interface RubricsRouteInterface extends CompanyRubricsListInterface {}
 
 const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, pageCompany, routeBasePath }) => {
-  const { root, parentLink } = getConsoleCompanyLinks({
+  const { root, parentLink } = getCmsCompanyLinks({
     companyId: pageCompany._id,
   });
 
@@ -184,7 +184,7 @@ export const getServerSideProps = async (
     return castRubricForUI({ rubric, locale: props.sessionLocale });
   });
 
-  const links = getConsoleCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId: companyResult._id,
   });
 

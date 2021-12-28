@@ -4,7 +4,7 @@ import { DEFAULT_PAGE, SORT_DESC } from '../../../config/common';
 import { alwaysArray, alwaysString } from '../../../lib/arrayUtils';
 import { castUrlFilters } from '../../../lib/catalogueUtils';
 import { getFieldStringLocale } from '../../../lib/i18n';
-import { getConsoleCompanyLinks } from '../../../lib/linkUtils';
+import { getCmsCompanyLinks } from '../../../lib/linkUtils';
 import { noNaN } from '../../../lib/numbers';
 import { castDbData, getAppInitialData } from '../../../lib/ssrUtils';
 import { CmsCompanyShopsPageInterface } from '../../../pages/cms/companies/[companyId]/shops/[...filters]';
@@ -46,7 +46,7 @@ export const getCmsCompanyShopsPageSsr = async (
     filters,
     searchFieldName: '_id',
   });
-  const links = getConsoleCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId,
   });
   const itemPath = `${links.shops}/shop`;

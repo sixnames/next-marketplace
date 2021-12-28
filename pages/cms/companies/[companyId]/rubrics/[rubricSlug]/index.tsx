@@ -18,7 +18,7 @@ import {
 } from '../../../../../../db/uiInterfaces';
 import CmsRubricLayout from '../../../../../../layout/cms/CmsRubricLayout';
 import { getFieldStringLocale } from '../../../../../../lib/i18n';
-import { getConsoleCompanyLinks } from '../../../../../../lib/linkUtils';
+import { getCmsCompanyLinks } from '../../../../../../lib/linkUtils';
 import { getRubricAllSeoContents } from '../../../../../../lib/seoContentUtils';
 import {
   castDbData,
@@ -36,7 +36,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
   pageCompany,
   routeBasePath,
 }) => {
-  const links = getConsoleCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId: pageCompany._id,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -170,7 +170,7 @@ export const getServerSideProps = async (
     };
   }
 
-  const links = getConsoleCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId: companyResult._id,
   });
 

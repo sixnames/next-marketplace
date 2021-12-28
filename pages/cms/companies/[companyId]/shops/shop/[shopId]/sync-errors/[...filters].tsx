@@ -6,7 +6,7 @@ import ShopSyncErrors, {
 import { getCmsCompanyShopSyncErrorsPageSsr } from '../../../../../../../../db/dao/ssr/getCmsCompanyShopSyncErrorsPageSsr';
 import { AppContentWrapperBreadCrumbs } from '../../../../../../../../db/uiInterfaces';
 import ConsoleLayout from '../../../../../../../../layout/cms/ConsoleLayout';
-import { getConsoleCompanyLinks } from '../../../../../../../../lib/linkUtils';
+import { getCmsCompanyLinks } from '../../../../../../../../lib/linkUtils';
 import { GetAppInitialDataPropsInterface } from '../../../../../../../../lib/ssrUtils';
 
 export interface CmsCompanyShopSyncErrorsPageInterface
@@ -19,7 +19,7 @@ const CmsCompanyShopSyncErrorsPage: NextPage<CmsCompanyShopSyncErrorsPageInterfa
   notSyncedProducts,
   companySlug,
 }) => {
-  const { root, parentLink, shops, ...links } = getConsoleCompanyLinks({
+  const { root, parentLink, shops, ...links } = getCmsCompanyLinks({
     companyId: shop.companyId,
     shopId: shop._id,
   });

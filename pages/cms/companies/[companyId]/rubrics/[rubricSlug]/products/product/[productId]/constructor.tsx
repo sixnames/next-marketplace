@@ -11,7 +11,7 @@ import {
   SeoContentCitiesInterface,
 } from '../../../../../../../../../db/uiInterfaces';
 import CmsProductLayout from '../../../../../../../../../layout/cms/CmsProductLayout';
-import { getConsoleCompanyLinks } from '../../../../../../../../../lib/linkUtils';
+import { getCmsCompanyLinks } from '../../../../../../../../../lib/linkUtils';
 import { getCmsProduct } from '../../../../../../../../../lib/productUtils';
 import {
   castDbData,
@@ -33,7 +33,7 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({
   routeBasePath,
   cardContent,
 }) => {
-  const links = getConsoleCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId: pageCompany._id,
     rubricSlug: product.rubricSlug,
     productId: product._id,
@@ -142,7 +142,7 @@ export const getServerSideProps = async (
 
   const { product, cardContent } = payload;
 
-  const links = getConsoleCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId: companyResult._id,
   });
 

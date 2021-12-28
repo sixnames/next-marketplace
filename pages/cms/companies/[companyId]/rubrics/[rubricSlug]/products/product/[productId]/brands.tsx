@@ -25,7 +25,7 @@ import {
 import CmsProductLayout from '../../../../../../../../../layout/cms/CmsProductLayout';
 import ConsoleLayout from '../../../../../../../../../layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from '../../../../../../../../../lib/i18n';
-import { getConsoleCompanyLinks } from '../../../../../../../../../lib/linkUtils';
+import { getCmsCompanyLinks } from '../../../../../../../../../lib/linkUtils';
 import { getCmsProduct } from '../../../../../../../../../lib/productUtils';
 import {
   castDbData,
@@ -50,7 +50,7 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
   pageCompany,
   routeBasePath,
 }) => {
-  const links = getConsoleCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId: pageCompany._id,
     rubricSlug: product.rubricSlug,
     productId: product._id,
@@ -221,7 +221,7 @@ export const getServerSideProps = async (
       }
     : null;
 
-  const links = getConsoleCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId: companyResult._id,
   });
 

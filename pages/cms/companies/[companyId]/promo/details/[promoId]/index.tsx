@@ -12,7 +12,7 @@ import {
 } from '../../../../../../../db/uiInterfaces';
 import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
 import ConsolePromoLayout from '../../../../../../../layout/console/ConsolePromoLayout';
-import { getConsoleCompanyLinks } from '../../../../../../../lib/linkUtils';
+import { getCmsCompanyLinks } from '../../../../../../../lib/linkUtils';
 import { getPromoSsr } from '../../../../../../../lib/promoUtils';
 import {
   castDbData,
@@ -30,7 +30,7 @@ const PromoDetailsPage: React.FC<PromoDetailsPageInterface> = ({
   pageCompany,
   basePath,
 }) => {
-  const { root, parentLink, ...links } = getConsoleCompanyLinks({
+  const { root, parentLink, ...links } = getCmsCompanyLinks({
     companyId: pageCompany._id,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -92,7 +92,7 @@ export const getServerSideProps = async (
     };
   }
 
-  const links = getConsoleCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId: company._id,
   });
 

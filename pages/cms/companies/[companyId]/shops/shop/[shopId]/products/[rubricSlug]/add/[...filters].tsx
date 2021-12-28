@@ -15,7 +15,7 @@ import {
   ProductSummaryInterface,
 } from '../../../../../../../../../../db/uiInterfaces';
 import ConsoleLayout from '../../../../../../../../../../layout/cms/ConsoleLayout';
-import { getConsoleCompanyLinks } from '../../../../../../../../../../lib/linkUtils';
+import { getCmsCompanyLinks } from '../../../../../../../../../../lib/linkUtils';
 import { GetAppInitialDataPropsInterface } from '../../../../../../../../../../lib/ssrUtils';
 
 export type ShopAddProductsListRouteReduced = Omit<
@@ -37,7 +37,7 @@ const CompanyShopAddProductsListPage: NextPage<CompanyShopAddProductsListPageInt
   const [chosen, setChosen] = React.useState<ProductSummaryInterface[]>([]);
   const [step, setStep] = React.useState<ShopAddProductsStepType>(1);
 
-  const { root, parentLink, shops, ...links } = getConsoleCompanyLinks({
+  const { root, parentLink, shops, ...links } = getCmsCompanyLinks({
     companyId: shop.companyId,
     shopId: shop._id,
     rubricSlug,

@@ -8,7 +8,7 @@ import { getDatabase } from '../../../../../../db/mongodb';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from '../../../../../../db/uiInterfaces';
 import CmsCompanyLayout from '../../../../../../layout/cms/CmsCompanyLayout';
 import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
-import { getConsoleCompanyLinks } from '../../../../../../lib/linkUtils';
+import { getCmsCompanyLinks } from '../../../../../../lib/linkUtils';
 import { getPageSsr } from '../../../../../../lib/pageUtils';
 import {
   castDbData,
@@ -28,7 +28,7 @@ const PageDetailsPage: NextPage<PageDetailsPageInterface> = ({
   page,
   cities,
 }) => {
-  const { root, parentLink, pages } = getConsoleCompanyLinks({
+  const { root, parentLink, pages } = getCmsCompanyLinks({
     companyId: pageCompany._id,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {

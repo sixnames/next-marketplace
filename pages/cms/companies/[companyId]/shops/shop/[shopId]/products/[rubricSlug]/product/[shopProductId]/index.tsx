@@ -11,7 +11,7 @@ import {
   ShopProductInterface,
 } from '../../../../../../../../../../../db/uiInterfaces';
 import ConsoleShopProductLayout from '../../../../../../../../../../../layout/console/ConsoleShopProductLayout';
-import { getConsoleCompanyLinks } from '../../../../../../../../../../../lib/linkUtils';
+import { getCmsCompanyLinks } from '../../../../../../../../../../../lib/linkUtils';
 import { getConsoleShopProduct } from '../../../../../../../../../../../lib/productUtils';
 import {
   castDbData,
@@ -41,7 +41,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
     return <RequestError />;
   }
 
-  const { root, parentLink, shops, ...links } = getConsoleCompanyLinks({
+  const { root, parentLink, shops, ...links } = getCmsCompanyLinks({
     companyId: shop.companyId,
     shopId: shop._id,
     rubricSlug: rubric?.slug,

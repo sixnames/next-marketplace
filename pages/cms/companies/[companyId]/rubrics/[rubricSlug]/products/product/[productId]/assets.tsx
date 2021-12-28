@@ -11,7 +11,7 @@ import {
 } from '../../../../../../../../../db/uiInterfaces';
 import CmsProductLayout from '../../../../../../../../../layout/cms/CmsProductLayout';
 import ConsoleLayout from '../../../../../../../../../layout/cms/ConsoleLayout';
-import { getConsoleCompanyLinks } from '../../../../../../../../../lib/linkUtils';
+import { getCmsCompanyLinks } from '../../../../../../../../../lib/linkUtils';
 import { getCmsProduct } from '../../../../../../../../../lib/productUtils';
 import {
   castDbData,
@@ -30,7 +30,7 @@ const ProductAssets: React.FC<ProductAssetsInterface> = ({
   pageCompany,
   routeBasePath,
 }) => {
-  const links = getConsoleCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId: pageCompany._id,
     rubricSlug: product.rubricSlug,
     productId: product._id,
@@ -131,7 +131,7 @@ export const getServerSideProps = async (
     };
   }
 
-  const links = getConsoleCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId: companyResult._id,
   });
 

@@ -23,7 +23,7 @@ import CmsRubricLayout from '../../../../../../../layout/cms/CmsRubricLayout';
 import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
 import { sortObjectsByField } from '../../../../../../../lib/arrayUtils';
 import { getFieldStringLocale } from '../../../../../../../lib/i18n';
-import { getConsoleCompanyLinks } from '../../../../../../../lib/linkUtils';
+import { getCmsCompanyLinks } from '../../../../../../../lib/linkUtils';
 import {
   castDbData,
   getAppInitialData,
@@ -37,7 +37,7 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
   pageCompany,
   routeBasePath,
 }) => {
-  const links = getConsoleCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId: pageCompany._id,
     rubricSlug: rubric.slug,
   });
@@ -128,7 +128,7 @@ export const getServerSideProps = async (
       notFound: true,
     };
   }
-  const links = getConsoleCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId: companyResult._id,
   });
   const routeBasePath = links.root;

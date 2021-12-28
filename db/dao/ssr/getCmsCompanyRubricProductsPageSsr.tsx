@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import { getConsoleCompanyLinks } from '../../../lib/linkUtils';
+import { getCmsCompanyLinks } from '../../../lib/linkUtils';
 import { castDbData, getAppInitialData } from '../../../lib/ssrUtils';
 import { CmsCompanyRubricProductsPageInterface } from '../../../pages/cms/companies/[companyId]/rubrics/[rubricSlug]/products/[...filters]';
 import { COL_COMPANIES } from '../../collectionNames';
@@ -42,7 +42,7 @@ export const getCmsCompanyRubricProductsPageSsr = async (
 
   const locale = initialProps.props.sessionLocale;
   const currency = initialProps.props.initialData.currency;
-  const links = getConsoleCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId: companyResult._id,
     rubricSlug: `${query.rubricSlug}`,
   });

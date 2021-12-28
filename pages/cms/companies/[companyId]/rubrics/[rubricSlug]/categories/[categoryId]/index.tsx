@@ -22,7 +22,7 @@ import {
 } from '../../../../../../../../db/uiInterfaces';
 import CmsCategoryLayout from '../../../../../../../../layout/cms/CmsCategoryLayout';
 import { getFieldStringLocale } from '../../../../../../../../lib/i18n';
-import { getConsoleCompanyLinks } from '../../../../../../../../lib/linkUtils';
+import { getCmsCompanyLinks } from '../../../../../../../../lib/linkUtils';
 import { getCategoryAllSeoContents } from '../../../../../../../../lib/seoContentUtils';
 import {
   castDbData,
@@ -40,7 +40,7 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
   seoDescriptionTop,
   seoDescriptionBottom,
 }) => {
-  const links = getConsoleCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId: pageCompany._id,
     rubricSlug: category.rubricSlug,
   });
@@ -230,7 +230,7 @@ export const getServerSideProps = async (
     };
   }
 
-  const links = getConsoleCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId: companyResult._id,
   });
 

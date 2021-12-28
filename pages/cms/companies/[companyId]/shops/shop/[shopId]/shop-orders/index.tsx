@@ -20,7 +20,7 @@ import {
 } from '../../../../../../../../db/uiInterfaces';
 import ConsoleLayout from '../../../../../../../../layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from '../../../../../../../../lib/i18n';
-import { getConsoleCompanyLinks } from '../../../../../../../../lib/linkUtils';
+import { getCmsCompanyLinks } from '../../../../../../../../lib/linkUtils';
 import { getShortName } from '../../../../../../../../lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from '../../../../../../../../lib/phoneUtils';
 import {
@@ -34,7 +34,7 @@ interface CompanyShopAssetsInterface
     Omit<ShopOrdersInterface, 'basePath'> {}
 
 const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ layoutProps, shop }) => {
-  const { root, parentLink, shops, ...links } = getConsoleCompanyLinks({
+  const { root, parentLink, shops, ...links } = getCmsCompanyLinks({
     companyId: shop.companyId,
     shopId: shop._id,
   });

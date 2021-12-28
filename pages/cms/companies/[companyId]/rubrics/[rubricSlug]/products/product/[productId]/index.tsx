@@ -10,7 +10,7 @@ import {
   ProductSummaryInterface,
 } from '../../../../../../../../../db/uiInterfaces';
 import CmsProductLayout from '../../../../../../../../../layout/cms/CmsProductLayout';
-import { getConsoleCompanyLinks } from '../../../../../../../../../lib/linkUtils';
+import { getCmsCompanyLinks } from '../../../../../../../../../lib/linkUtils';
 import { getCmsProduct } from '../../../../../../../../../lib/productUtils';
 import {
   castDbData,
@@ -30,7 +30,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
   routeBasePath,
   pageCompany,
 }) => {
-  const links = getConsoleCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId: pageCompany._id,
     rubricSlug: product.rubricSlug,
     productId: product._id,
@@ -128,7 +128,7 @@ export const getServerSideProps = async (
     };
   }
 
-  const links = getConsoleCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId: companyResult._id,
   });
 

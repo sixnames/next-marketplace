@@ -30,8 +30,6 @@ const ConsoleShopProductLayout: React.FC<ConsoleShopProductLayoutInterface> = ({
       productId: shopProduct._id,
     });
 
-    console.log({ root, suppliers });
-
     return [
       {
         name: 'Детали',

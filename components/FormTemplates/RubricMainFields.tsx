@@ -97,6 +97,7 @@ const RubricMainFields: React.FC<RubricMainFieldsInterface> = ({ rubricVariants 
       />
 
       <FormikSelect
+        useIdField
         isRequired
         showInlineError
         label={'Тип рубрики'}

@@ -1,4 +1,5 @@
 import { DEFAULT_LOCALE, GENDER_HE, GENDER_SHE, ROUTE_CMS, SECONDARY_LOCALE } from 'config/common';
+import { fixtureIds } from '../../fixtures/fixtureIds';
 
 describe('Rubrics', () => {
   beforeEach(() => {
@@ -7,7 +8,6 @@ describe('Rubrics', () => {
 
   it('Should CRUD rubrics', () => {
     const mainRubricName = 'Вино';
-    const rubricVariantName = 'Алкоголь';
     const newRubricName = 'newRubricName';
     const updatedRubricName = 'updatedRubricName';
 
@@ -20,7 +20,7 @@ describe('Rubrics', () => {
     cy.getByCy(`catalogueTitle-defaultTitleI18n-${DEFAULT_LOCALE}`).type(mainRubricName);
     cy.getByCy(`catalogueTitle-prefixI18n-${DEFAULT_LOCALE}`).type(mainRubricName);
     cy.getByCy(`catalogueTitle-keywordI18n-${DEFAULT_LOCALE}`).type(mainRubricName);
-    cy.selectOptionByTestId(`variantId`, rubricVariantName);
+    cy.getByCy(`variantId`).select(fixtureIds.rubricVariantAlcohol);
     cy.getByCy(`catalogueTitle-gender`).select(GENDER_SHE);
     cy.getByCy(`rubric-submit`).click();
     cy.getByCy(`create-rubric-modal`).should('not.exist');
@@ -34,7 +34,7 @@ describe('Rubrics', () => {
     cy.getByCy(`catalogueTitle-defaultTitleI18n-${DEFAULT_LOCALE}`).type(newRubricName);
     cy.getByCy(`catalogueTitle-prefixI18n-${DEFAULT_LOCALE}`).type(newRubricName);
     cy.getByCy(`catalogueTitle-keywordI18n-${DEFAULT_LOCALE}`).type(newRubricName);
-    cy.selectOptionByTestId(`variantId`, rubricVariantName);
+    cy.getByCy(`variantId`).select(fixtureIds.rubricVariantAlcohol);
     cy.getByCy(`catalogueTitle-gender`).select(GENDER_SHE);
     cy.getByCy(`rubric-submit`).click();
     cy.wait(1500);
@@ -59,7 +59,6 @@ describe('Rubrics', () => {
     cy.getByCy(`catalogueTitle-defaultTitleI18n-${DEFAULT_LOCALE}`).clear().type(updatedRubricName);
     cy.getByCy(`catalogueTitle-prefixI18n-${DEFAULT_LOCALE}`).clear().type(updatedRubricName);
     cy.getByCy(`catalogueTitle-keywordI18n-${DEFAULT_LOCALE}`).clear().type(updatedRubricName);
-    cy.selectOptionByTestId(`variantId`, rubricVariantName);
     cy.getByCy(`catalogueTitle-gender`).select(GENDER_HE);
     cy.getByCy('rubric-submit').click();
     cy.wait(1500);

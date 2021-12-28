@@ -155,7 +155,7 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, rubricVariants
                   rubricVariants,
                   confirm: (values) => {
                     showLoading();
-                    return createRubricMutation({ variables: { input: values } });
+                    createRubricMutation({ variables: { input: values } }).catch(console.log);
                   },
                 },
               });

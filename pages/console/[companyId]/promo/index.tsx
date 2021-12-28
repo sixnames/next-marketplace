@@ -3,10 +3,10 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import Inner from '../../../../components/Inner';
 import PromoList, { PromoListInterface } from '../../../../components/Promo/PromoList';
 import WpTitle from '../../../../components/WpTitle';
-import { ROUTE_CONSOLE } from '../../../../config/common';
 import { CompanyInterface } from '../../../../db/uiInterfaces';
 import AppContentWrapper from '../../../../layout/AppContentWrapper';
 import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
+import { getConsoleCompanyLinks } from '../../../../lib/linkUtils';
 import { getPromoListSsr } from '../../../../lib/promoUtils';
 import {
   castDbData,
@@ -53,10 +53,14 @@ export const getServerSideProps = async (
     companyId: `${props.layoutProps.pageCompany._id}`,
   });
 
+  const links = getConsoleCompanyLinks({
+    companyId: props.layoutProps.pageCompany._id,
+  });
+
   return {
     props: {
       ...props,
-      basePath: `${ROUTE_CONSOLE}/${props.layoutProps.pageCompany._id}/promo`,
+      basePath: links.promo.parentLink,
       promoList: castDbData(promoList),
       pageCompany: props.layoutProps.pageCompany,
     },

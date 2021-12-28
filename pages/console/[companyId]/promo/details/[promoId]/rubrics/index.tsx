@@ -1,6 +1,5 @@
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
-import { ROUTE_CONSOLE } from '../../../../../../../config/common';
 import { COL_PROMO_PRODUCTS, COL_RUBRICS } from '../../../../../../../db/collectionNames';
 import { castRubricForUI } from '../../../../../../../db/dao/rubrics/castRubricForUI';
 import { RubricModel } from '../../../../../../../db/dbModels';
@@ -15,6 +14,7 @@ import CompanyRubricsList, {
   CompanyRubricsListInterface,
 } from '../../../../../../../layout/CompanyRubricsList';
 import ConsolePromoLayout from '../../../../../../../layout/console/ConsolePromoLayout';
+import { getConsoleCompanyLinks } from '../../../../../../../lib/linkUtils';
 import { getPromoSsr } from '../../../../../../../lib/promoUtils';
 import {
   castDbData,
@@ -32,16 +32,21 @@ const ConsolePromoRubrics: React.FC<ConsolePromoRubricsInterface> = ({
   routeBasePath,
   rubrics,
 }) => {
+  const links = getConsoleCompanyLinks({
+    companyId: pageCompany._id,
+    promoId: promo._id,
+  });
+
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `Товары`,
     config: [
       {
         name: 'Акции',
-        href: `${ROUTE_CONSOLE}/${pageCompany._id}/promo`,
+        href: links.promo.parentLink,
       },
       {
         name: `${promo.name}`,
-        href: `${ROUTE_CONSOLE}/${pageCompany._id}/promo/details/${promo._id}`,
+        href: links.promo.root,
       },
     ],
   };
@@ -149,10 +154,15 @@ export const getServerSideProps = async (
     return castRubricForUI({ rubric, locale: props.sessionLocale });
   });
 
+  const links = getConsoleCompanyLinks({
+    companyId: props.layoutProps.pageCompany._id,
+    promoId: promo._id,
+  });
+
   return {
     props: {
       ...props,
-      routeBasePath: `${ROUTE_CONSOLE}/${props.layoutProps.pageCompany._id}/promo/details/${promo._id}`,
+      routeBasePath: links.promo.root,
       pageCompany: castDbData(props.layoutProps.pageCompany),
       promo: castDbData(promo),
       rubrics: castDbData(rawRubrics),

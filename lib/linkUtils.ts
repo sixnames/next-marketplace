@@ -196,23 +196,23 @@ export function getCmsCompanyLinks({
     blog: `${root}/blog`,
     giftCertificates: `${root}/gift-certificates`,
     pages: `${root}/pages`,
+    shops: `${root}/shops`,
+    assets: `${root}/assets`,
+    userCategories: `${root}/user-categories`,
     promo: getConsoleCompanyPromoLinks({
       basePath: root,
       rubricSlug,
       promoId,
     }),
-    shops: `${root}/shops`,
     shop: getConsoleShopLinks({
       basePath: `${root}/shops/shop`,
       rubricSlug,
       shopId,
       productId,
     }),
-    assets: `${root}/assets`,
     config: getConsoleConfigsLinks({
       basePath: root,
     }),
-    userCategories: `${root}/user-categories`,
     rubrics: getConsoleRubricLinks({
       basePath: root,
       rubricSlug,

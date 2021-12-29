@@ -79,7 +79,7 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      basePath: links.promo.parentLink,
+      basePath: links.promo.root,
       promo: castDbData(promo),
       pageCompany: props.layoutProps.pageCompany,
     },

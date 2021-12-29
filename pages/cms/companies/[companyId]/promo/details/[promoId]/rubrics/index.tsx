@@ -183,7 +183,7 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      routeBasePath: links.promo.parentLink,
+      routeBasePath: links.promo.root,
       pageCompany: castDbData(company),
       promo: castDbData(promo),
       rubrics: castDbData(rawRubrics),

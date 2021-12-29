@@ -64,7 +64,7 @@ const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({
       {
         name: 'Детали',
         testId: 'details',
-        path: links.product.parentLink,
+        path: links.product.root,
         exact: true,
       },
       {

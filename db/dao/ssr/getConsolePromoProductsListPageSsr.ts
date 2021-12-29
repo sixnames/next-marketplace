@@ -53,7 +53,7 @@ export const getConsolePromoProductsListPageSsr = async (
     promoId: promo._id,
     rubricSlug: `${query.rubricSlug}`,
   });
-  const basePath = links.promo.parentLink;
+
   const promoProducts = await getConsolePromoProducts({
     search: alwaysString(query.search),
     filters: alwaysArray(query.filters),
@@ -69,7 +69,7 @@ export const getConsolePromoProductsListPageSsr = async (
   return {
     props: {
       ...props,
-      basePath,
+      basePath: links.promo.root,
       pageCompany: castDbData(props.layoutProps.pageCompany),
       promo: castDbData(promo),
       rubric: castDbData(rubric),

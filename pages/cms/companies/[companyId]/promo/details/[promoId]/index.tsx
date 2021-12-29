@@ -32,6 +32,7 @@ const PromoDetailsPage: React.FC<PromoDetailsPageInterface> = ({
 }) => {
   const { root, parentLink, ...links } = getCmsCompanyLinks({
     companyId: pageCompany._id,
+    productId: promo._id,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${promo.name}`,
@@ -100,7 +101,7 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      basePath: links.promo.parentLink,
+      basePath: links.promo.root,
       pageCompany: castDbData(company),
       promo: castDbData(promo),
     },

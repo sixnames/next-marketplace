@@ -110,7 +110,6 @@ export const getConsoleRubricProducts = async ({
       brandStage,
       brandCollectionStage,
       optionsStage,
-      categoryStage,
       photoStage,
       searchIds,
       noSearchResults,
@@ -211,7 +210,6 @@ export const getConsoleRubricProducts = async ({
     // initial match
     const productsInitialMatch = {
       ...rubricStage,
-      ...categoryStage,
       ...brandStage,
       ...brandCollectionStage,
       ...optionsStage,
@@ -386,7 +384,7 @@ export const getConsoleRubricProducts = async ({
     const allRubricAttributes = await getRubricAllAttributes(rubric._id);
     const docs: ProductSummaryInterface[] = [];
     for await (const product of productDataAggregation.docs) {
-      const productCategoryAttributes = await getCategoryAllAttributes(product.categorySlugs);
+      const productCategoryAttributes = await getCategoryAllAttributes(product.filterSlugs);
 
       // seo content
       const cardContentCities = await getProductAllSeoContents({

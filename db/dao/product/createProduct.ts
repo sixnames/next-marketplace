@@ -150,7 +150,6 @@ export async function createProduct({
         titleCategorySlugs: [],
         filterSlugs: [],
         attributeIds: [],
-        categorySlugs: [],
         variants: [],
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -175,7 +174,6 @@ export async function createProduct({
         barcode: createdSummary.barcode,
         rubricSlug: createdSummary.rubricSlug,
         rubricId: createdSummary.rubricId,
-        categorySlugs: createdSummary.categorySlugs,
         manufacturerSlug: createdSummary.manufacturerSlug,
         brandSlug: createdSummary.brandSlug,
         brandCollectionSlug: createdSummary.brandCollectionSlug,
@@ -183,6 +181,7 @@ export async function createProduct({
         attributeIds: createdSummary.attributeIds,
         allowDelivery: createdSummary.allowDelivery,
         active: createdSummary.active,
+        mainImage: createdSummary.mainImage,
       });
       if (!createdProductFacetResult.acknowledged) {
         mutationPayload = {

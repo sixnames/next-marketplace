@@ -53,9 +53,7 @@ export async function getRubricAllAttributes(
   return rubricAttributes;
 }
 
-export async function getCategoryAllAttributes(
-  categorySlugs: string[],
-): Promise<AttributeInterface[]> {
+export async function getCategoryAllAttributes(slugs: string[]): Promise<AttributeInterface[]> {
   const { db } = await getDatabase();
   const categoriesCollection = db.collection<CategoryInterface>(COL_CATEGORIES);
   const categories = await categoriesCollection
@@ -63,7 +61,7 @@ export async function getCategoryAllAttributes(
       {
         $match: {
           slug: {
-            $in: categorySlugs,
+            $in: slugs,
           },
         },
       },

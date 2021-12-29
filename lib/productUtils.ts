@@ -581,7 +581,6 @@ export function castSummaryToShopProduct({
     brandCollectionSlug: summary.brandCollectionSlug,
     manufacturerSlug: summary.manufacturerSlug,
     filterSlugs: summary.filterSlugs,
-    categorySlugs: summary.categorySlugs,
     updatedAt: new Date(),
     createdAt: new Date(),
     ...DEFAULT_COUNTERS_OBJECT,
@@ -597,7 +596,6 @@ export function castSummaryToFacet({ summary }: CastSummaryToFacetInterface): Pr
     _id: summary._id,
     filterSlugs: summary.filterSlugs,
     attributeIds: summary.attributeIds,
-    categorySlugs: summary.categorySlugs,
     slug: summary.slug,
     active: summary.active,
     rubricId: summary.rubricId,
@@ -608,5 +606,6 @@ export function castSummaryToFacet({ summary }: CastSummaryToFacetInterface): Pr
     brandSlug: summary.brandSlug,
     manufacturerSlug: summary.manufacturerSlug,
     barcode: summary.barcode,
+    mainImage: summary.mainImage,
   };
 }

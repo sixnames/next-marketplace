@@ -151,7 +151,7 @@ export const getServerSideProps = async (
     return {
       ...category,
       categories: [],
-      selected: product.categorySlugs.some((slug) => slug === category.slug),
+      selected: product.filterSlugs.some((slug) => slug === category.slug),
     };
   });
 

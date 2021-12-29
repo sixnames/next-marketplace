@@ -78,7 +78,7 @@ export function castSummaryForUI({
 
   // product categories
   const initialProductCategories = (categories || []).filter(({ slug }) => {
-    return summary.categorySlugs.includes(slug);
+    return summary.filterSlugs.includes(slug);
   });
   const productCategories = getTreeFromList({
     list: initialProductCategories,

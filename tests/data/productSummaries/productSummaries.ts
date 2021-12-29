@@ -542,7 +542,6 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
       rubricSlug: rubric.slug,
       rubricId: rubric._id,
       originalName: name,
-      categorySlugs,
       brandSlug: brand?.itemId,
       brandCollectionSlug: brandCollection?.itemId,
       manufacturerSlug: manufacturer?.itemId,
@@ -563,7 +562,7 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
       cardTitleI18n: {
         [DEFAULT_LOCALE]: cardTitle,
       },
-      filterSlugs: filterSlugs,
+      filterSlugs: [...filterSlugs, ...categorySlugs],
       titleCategorySlugs,
       attributeIds,
       variants: [],

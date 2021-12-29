@@ -100,7 +100,6 @@ export async function getConsolePromoProducts({
       pricesStage,
       photoStage,
       searchStage,
-      categoryStage,
       noSearchResults,
       sortStage,
     } = await castUrlFilters({
@@ -140,7 +139,6 @@ export async function getConsolePromoProducts({
     // initial match
     const productsInitialMatch = {
       ...rubricStage,
-      ...categoryStage,
       ...brandStage,
       ...brandCollectionStage,
       ...optionsStage,

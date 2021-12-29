@@ -101,7 +101,6 @@ export const getConsoleCompanyRubricProducts = async ({
       brandCollectionStage,
       optionsStage,
       pricesStage,
-      categoryStage,
       photoStage,
       searchStage,
       noSearchResults,
@@ -145,7 +144,6 @@ export const getConsoleCompanyRubricProducts = async ({
     // initial match
     const productsInitialMatch = {
       ...rubricStage,
-      ...categoryStage,
       ...brandStage,
       ...brandCollectionStage,
       ...optionsStage,

@@ -592,7 +592,6 @@ interface CastUrlFiltersPayloadInterface {
   skip: number;
   limit: number;
   clearSlug: string;
-  categoryStage: Record<any, any>;
   pricesStage: Record<any, any>;
   optionsStage: Record<any, any>;
   brandStage: Record<any, any>;
@@ -702,6 +701,8 @@ export async function castUrlFilters({
       }
 
       if (filterAttributeSlug === FILTER_CATEGORY_KEY) {
+        allUrlParams.push(filterOption);
+        realFilters.push(filterOptionSlug);
         categoryFilters.push(filterOption);
         categoryCastedFilters.push(filterOptionSlug);
         return;
@@ -761,15 +762,6 @@ export async function castUrlFilters({
         }
       : {};
 
-  const categoryStage =
-    categoryCastedFilters.length > 0
-      ? {
-          categorySlugs: {
-            $all: categoryCastedFilters,
-          },
-        }
-      : {};
-
   const brandStage =
     brandFilters.length > 0
       ? {
@@ -823,7 +815,6 @@ export async function castUrlFilters({
 
   return {
     searchStage,
-    categoryStage,
     searchIds,
     noSearchResults: search.length > 0 && searchIds.length < 1,
     allUrlParams,
@@ -906,7 +897,6 @@ export const getCatalogueData = async ({
       sortFilterOptions,
       rubricFilters,
       categoryFilters,
-      categoryStage,
       inCategory,
       sortStage,
       brandStage,
@@ -981,16 +971,15 @@ export const getCatalogueData = async ({
     // initial match
     const companyMatch = companyId ? { companyId: new ObjectId(companyId) } : {};
     const productsInitialMatch = {
-      ...searchStage,
-      ...companyMatch,
-      citySlug: city,
       ...rubricStage,
-      ...categoryStage,
       ...brandStage,
       ...brandCollectionStage,
       ...optionsStage,
       ...pricesStage,
+      citySlug: city,
       ...ignoreNoImageStage,
+      ...companyMatch,
+      ...searchStage,
     };
 
     // aggregate catalogue initial data

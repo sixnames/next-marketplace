@@ -85,7 +85,7 @@ export async function updateProductCategoryVisibility({
       }
 
       // toggle category in product
-      const selected = product.categorySlugs.some((slug) => slug === category.slug);
+      const selected = product.filterSlugs.some((slug) => slug === category.slug);
       let updater: Record<string, any> = {
         $addToSet: {
           titleCategorySlugs: category.slug,

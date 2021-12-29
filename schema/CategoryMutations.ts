@@ -423,7 +423,7 @@ export const CategoryMutations = extendType({
 
           // update product algolia indexes
           await updateProductTitles({
-            categorySlugs: updatedCategory.slug,
+            filterSlugs: updatedCategory.slug,
           });
 
           return {

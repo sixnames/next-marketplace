@@ -176,7 +176,6 @@ export async function createProductWithSyncError({
         filterSlugs: [],
         attributeIds: [],
         attributes: [],
-        categorySlugs: [],
         variants: [],
         assets: [IMAGE_FALLBACK],
         titleCategorySlugs: [],

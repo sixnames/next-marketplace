@@ -231,7 +231,7 @@ export const productCategoriesPipeline = (additionalStages: Record<any, any>[] =
         as: 'categories',
         let: {
           rubricId: '$rubricId',
-          categorySlugs: '$categorySlugs',
+          filterSlugs: '$filterSlugs',
         },
         pipeline: [
           {
@@ -244,7 +244,7 @@ export const productCategoriesPipeline = (additionalStages: Record<any, any>[] =
                 },
                 {
                   $expr: {
-                    $in: ['$slug', '$$categorySlugs'],
+                    $in: ['$slug', '$$filterSlugs'],
                   },
                 },
               ],
@@ -534,9 +534,6 @@ export function shopProductsGroupPipeline({
         available: {
           $max: '$available',
         },
-        categorySlugs: {
-          $first: '$categorySlugs',
-        },
         filterSlugs: {
           $first: '$filterSlugs',
         },
@@ -593,7 +590,7 @@ export function productsPaginatedAggregationFacetsPipeline({
     categories: [
       {
         $unwind: {
-          path: '$categorySlugs',
+          path: '$filterSlugs',
           preserveNullAndEmptyArrays: true,
         },
       },
@@ -601,8 +598,8 @@ export function productsPaginatedAggregationFacetsPipeline({
         $group: {
           _id: null,
           rubricId: { $first: '$rubricId' },
-          categorySlugs: {
-            $addToSet: '$categorySlugs',
+          filterSlugs: {
+            $addToSet: '$filterSlugs',
           },
         },
       },
@@ -612,7 +609,7 @@ export function productsPaginatedAggregationFacetsPipeline({
           as: 'categories',
           let: {
             rubricId: '$rubricId',
-            categorySlugs: '$categorySlugs',
+            filterSlugs: '$filterSlugs',
           },
           pipeline: [
             {
@@ -625,7 +622,7 @@ export function productsPaginatedAggregationFacetsPipeline({
                   },
                   {
                     $expr: {
-                      $in: ['$slug', '$$categorySlugs'],
+                      $in: ['$slug', '$$filterSlugs'],
                     },
                   },
                 ],

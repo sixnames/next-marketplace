@@ -704,7 +704,6 @@ export const ShopMutations = extendType({
                 brandCollectionSlug: product.brandCollectionSlug,
                 manufacturerSlug: product.manufacturerSlug,
                 filterSlugs: product.filterSlugs,
-                categorySlugs: product.categorySlugs,
                 updatedAt: new Date(),
                 createdAt: new Date(),
                 ...DEFAULT_COUNTERS_OBJECT,

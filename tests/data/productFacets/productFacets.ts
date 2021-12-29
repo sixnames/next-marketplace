@@ -4,7 +4,6 @@ import productSummaries from '../productSummaries/productSummaries';
 const productFacets: ProductFacetModel[] = productSummaries.map((productSummary) => {
   const product: ProductFacetModel = {
     _id: productSummary._id,
-    categorySlugs: productSummary.categorySlugs,
     rubricId: productSummary.rubricId,
     rubricSlug: productSummary.rubricSlug,
     itemId: productSummary.itemId,
@@ -17,6 +16,7 @@ const productFacets: ProductFacetModel[] = productSummaries.map((productSummary)
     attributeIds: productSummary.attributeIds,
     filterSlugs: productSummary.filterSlugs,
     slug: productSummary.slug,
+    mainImage: productSummary.mainImage,
   };
   return product;
 }, []);

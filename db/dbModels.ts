@@ -638,13 +638,13 @@ export interface ProductAttributeModel {
 interface ProductMainFieldsInterface {
   rubricId: ObjectIdModel;
   rubricSlug: string;
-  categorySlugs: string[];
   brandSlug?: string | null;
   brandCollectionSlug?: string | null;
   manufacturerSlug?: string | null;
   filterSlugs: string[];
   barcode?: string[] | null;
   allowDelivery: boolean;
+  mainImage: string;
 }
 
 export interface ProductFacetModel extends ProductMainFieldsInterface, BaseModel {
@@ -657,7 +657,6 @@ export interface ProductSummaryModel extends ProductFacetModel, TimestampModel {
   originalName: string;
   nameI18n?: TranslationModel | null;
   descriptionI18n?: TranslationModel | null;
-  mainImage: string;
   gender: GenderModel;
   snippetTitleI18n: TranslationModel;
   cardTitleI18n: TranslationModel;
@@ -817,7 +816,6 @@ export interface ShopProductModel
   shopId: ObjectIdModel;
   companyId: ObjectIdModel;
   companySlug: string;
-  mainImage: string;
   useCategoryDiscount?: boolean | null;
   useCategoryCashback?: boolean | null;
   useCategoryPayFromCashback?: boolean | null;

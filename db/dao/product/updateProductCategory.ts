@@ -98,13 +98,13 @@ export async function updateProductCategory({
           },
           parentId: category.parentId,
           slug: {
-            $in: product.categorySlugs,
+            $in: product.filterSlugs,
           },
         });
       }
 
       // toggle category in product
-      const selected = product.categorySlugs.some((slug) => slug === category.slug);
+      const selected = product.filterSlugs.some((slug) => slug === category.slug);
       const categoryParentTreeSlugs = await getParentTreeSlugs({
         _id: category._id,
         collectionName: COL_CATEGORIES,
@@ -122,14 +122,14 @@ export async function updateProductCategory({
         if (countSelectedSiblings > 0) {
           updater = {
             $pull: {
-              categorySlugs: category.slug,
+              filterSlugs: category.slug,
               titleCategorySlugs: category.slug,
             },
           };
         } else {
           updater = {
             $pullAll: {
-              categorySlugs: categoryParentTreeSlugs,
+              filterSlugs: categoryParentTreeSlugs,
               titleCategorySlugs: categoryParentTreeSlugs,
             },
           };

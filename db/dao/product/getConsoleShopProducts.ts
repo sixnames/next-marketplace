@@ -144,7 +144,6 @@ export const getConsoleShopProducts = async ({
       photoStage,
       page,
       searchStage,
-      categoryStage,
       noSearchResults,
       sortStage,
     } = await castUrlFilters({
@@ -177,7 +176,6 @@ export const getConsoleShopProducts = async ({
     const productsInitialMatch = {
       shopId: shop._id,
       ...rubricStage,
-      ...categoryStage,
       ...searchStage,
       ...brandStage,
       ...brandCollectionStage,

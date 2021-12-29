@@ -40,7 +40,6 @@ interface CatalogueGroupedNavConfigItemInterface {
 
 interface CatalogueGroupedNavConfigsInterface {
   _id: ObjectIdModel;
-  categorySlugs: string[];
   attributeSlugs: string[];
   attributeConfigs: CatalogueGroupedNavConfigItemInterface[];
 }
@@ -52,7 +51,6 @@ interface CatalogueNavConfigItemInterface {
 
 interface CatalogueNavConfigsInterface {
   _id: ObjectIdModel;
-  categorySlugs: string[];
   attributeConfigs: CatalogueNavConfigItemInterface[];
 }
 
@@ -136,7 +134,6 @@ export const getCatalogueNavRubrics = async ({
       {
         $project: {
           _id: true,
-          categorySlugs: true,
           filterSlugs: true,
           rubricId: true,
         },
@@ -144,12 +141,6 @@ export const getCatalogueNavRubrics = async ({
       {
         $unwind: {
           path: '$filterSlugs',
-          preserveNullAndEmptyArrays: true,
-        },
-      },
-      {
-        $unwind: {
-          path: '$categorySlugs',
           preserveNullAndEmptyArrays: true,
         },
       },
@@ -173,9 +164,6 @@ export const getCatalogueNavRubrics = async ({
       {
         $group: {
           _id: '$rubricId',
-          categorySlugs: {
-            $addToSet: '$categorySlugs',
-          },
           attributeConfigs: {
             $addToSet: {
               attributeSlug: '$attributeSlug',
@@ -191,7 +179,6 @@ export const getCatalogueNavRubrics = async ({
     catalogueNavConfigAggregation.map((rubricConfig) => {
       return {
         _id: rubricConfig._id,
-        categorySlugs: rubricConfig.categorySlugs,
         attributeSlugs: rubricConfig.attributeConfigs.map(({ attributeSlug }) => attributeSlug),
         attributeConfigs: rubricConfig.attributeConfigs.reduce(
           (acc: CatalogueGroupedNavConfigItemInterface[], config) => {
@@ -431,7 +418,7 @@ export const getCatalogueNavRubrics = async ({
                   },
                   rubricId: rubric._id,
                   slug: {
-                    $in: rubricConfig.categorySlugs,
+                    $in: rubricConfig.attributeSlugs,
                   },
                 },
               },

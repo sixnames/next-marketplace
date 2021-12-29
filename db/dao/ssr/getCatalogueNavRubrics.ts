@@ -40,6 +40,7 @@ interface CatalogueGroupedNavConfigItemInterface {
 
 interface CatalogueGroupedNavConfigsInterface {
   _id: ObjectIdModel;
+  categorySlugs: string[];
   attributeSlugs: string[];
   attributeConfigs: CatalogueGroupedNavConfigItemInterface[];
 }
@@ -124,7 +125,7 @@ export const getCatalogueNavRubrics = async ({
     : [];
 
   const catalogueNavConfigAggregation = await shopProductsCollection
-    .aggregate<ShopProductModel>([
+    .aggregate<CatalogueNavConfigsInterface>([
       {
         $match: {
           ...companyMatch,
@@ -153,23 +154,6 @@ export const getCatalogueNavRubrics = async ({
         },
       },
       {
-        $group: {
-          _id: '$rubricId',
-          filterSlugs: {
-            $addToSet: '$filterSlugs',
-          },
-          categorySlugs: {
-            $addToSet: '$categorySlugs',
-          },
-        },
-      },
-      /*{
-        $unwind: {
-          path: '$filterSlugs',
-          preserveNullAndEmptyArrays: true,
-        },
-      },
-      {
         $addFields: {
           slugArray: {
             $split: ['$filterSlugs', FILTER_SEPARATOR],
@@ -188,18 +172,18 @@ export const getCatalogueNavRubrics = async ({
       },
       {
         $group: {
-          _id: '$_id',
-          attributesSlugs: {
-            $addToSet: '$attributeSlug',
+          _id: '$rubricId',
+          categorySlugs: {
+            $addToSet: '$categorySlugs',
           },
           attributeConfigs: {
-            $push: {
+            $addToSet: {
               attributeSlug: '$attributeSlug',
               optionSlug: '$optionSlug',
             },
           },
         },
-      },*/
+      },
     ])
     .toArray();
 
@@ -207,6 +191,7 @@ export const getCatalogueNavRubrics = async ({
     catalogueNavConfigAggregation.map((rubricConfig) => {
       return {
         _id: rubricConfig._id,
+        categorySlugs: rubricConfig.categorySlugs,
         attributeSlugs: rubricConfig.attributeConfigs.map(({ attributeSlug }) => attributeSlug),
         attributeConfigs: rubricConfig.attributeConfigs.reduce(
           (acc: CatalogueGroupedNavConfigItemInterface[], config) => {
@@ -359,7 +344,7 @@ export const getCatalogueNavRubrics = async ({
               as: 'options',
               let: {
                 optionsGroupId: '$optionsGroupId',
-                optionsSlugs: '$config.optionSlugs',
+                optionSlugs: '$config.optionSlugs',
               },
               pipeline: [
                 {
@@ -370,7 +355,7 @@ export const getCatalogueNavRubrics = async ({
                           $eq: ['$$optionsGroupId', '$optionsGroupId'],
                         },
                         {
-                          $in: ['$slug', '$$optionsSlugs'],
+                          $in: ['$slug', '$$optionSlugs'],
                         },
                       ],
                     },
@@ -408,7 +393,7 @@ export const getCatalogueNavRubrics = async ({
                                 $eq: ['$$optionsGroupId', '$optionsGroupId'],
                               },
                               {
-                                $in: ['$slug', '$$optionsSlugs'],
+                                $in: ['$slug', '$$optionSlugs'],
                               },
                               {
                                 $eq: ['$parentId', '$$parentId'],
@@ -446,7 +431,7 @@ export const getCatalogueNavRubrics = async ({
                   },
                   rubricId: rubric._id,
                   slug: {
-                    $in: rubricConfig.attributeSlugs,
+                    $in: rubricConfig.categorySlugs,
                   },
                 },
               },

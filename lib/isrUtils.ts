@@ -1,6 +1,8 @@
 import { GetStaticPropsContext } from 'next';
 import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE } from '../config/common';
 import { COL_CITIES } from '../db/collectionNames';
+import { getCatalogueNavRubrics } from '../db/dao/ssr/getCatalogueNavRubrics';
+import { getSsrDomainCompany } from '../db/dao/ssr/getSsrDomainCompany';
 import { CityModel } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
 import { SiteLayoutProviderInterface } from '../layout/SiteLayout';
@@ -8,13 +10,7 @@ import { PagePropsInterface } from '../pages/_app';
 import { alwaysString } from './arrayUtils';
 import { getI18nLocaleValue } from './i18n';
 import { noNaN } from './numbers';
-import {
-  castDbData,
-  getCatalogueCreatedPages,
-  getCatalogueNavRubrics,
-  getPageInitialData,
-  getSsrDomainCompany,
-} from './ssrUtils';
+import { castDbData, getCatalogueCreatedPages, getPageInitialData } from './ssrUtils';
 
 type ParamsInterface = {
   companySlug: string;

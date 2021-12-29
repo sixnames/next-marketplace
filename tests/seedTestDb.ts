@@ -1,7 +1,7 @@
 import { Seeder } from 'mongo-seeding';
 import productFacets from './data/productFacets/productFacets';
-import { getDatabase } from '../db/mongodb';
-import { updateIndexes } from './testUtils/getProdDb';
+// import { getDatabase } from '../db/mongodb';
+// import { updateIndexes } from './testUtils/getProdDb';
 const mkdirp = require('mkdirp');
 const path = require('path');
 const fs = require('fs');
@@ -69,11 +69,11 @@ const config = {
     await seeder.import(collections);
     console.log(`Test data seeded in ${(new Date().getTime() - startTime) / 1000}s`);
 
-    console.log('creating indexes');
-    const { db, client } = await getDatabase();
-    await updateIndexes(db);
-    await client.close();
-    console.log('indexes created');
+    // console.log('creating indexes');
+    // const { db, client } = await getDatabase();
+    // await updateIndexes(db);
+    // await client.close();
+    // console.log('indexes created');
 
     prepareTestAssets();
     return;

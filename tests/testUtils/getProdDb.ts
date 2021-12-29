@@ -29,7 +29,6 @@ import {
   GiftCertificateModel,
   UserPaybackLogModel,
   UserCashbackLogModel,
-  ShopProductModel,
 } from '../../db/dbModels';
 import {
   COL_ATTRIBUTES,
@@ -62,7 +61,6 @@ import {
   COL_USER_CATEGORIES,
   COL_USER_PAYBACK_LOGS,
   COL_USERS,
-  COL_SHOP_PRODUCTS,
 } from '../../db/collectionNames';
 import { Db, MongoClient } from 'mongodb';
 import path from 'path';
@@ -404,7 +402,7 @@ export async function updateIndexes(db: Db) {
   await orderLogsCollection.createIndex({ variant: 1, _id: -1 });
 
   // Shop products
-  await createCollectionIfNotExist(COL_SHOP_PRODUCTS);
+  /*await createCollectionIfNotExist(COL_SHOP_PRODUCTS);
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
   const shopProductCommonIndexes = {
     companyId: 1,
@@ -419,31 +417,15 @@ export async function updateIndexes(db: Db) {
     filterSlugs: 1,
     price: 1,
     ...shopProductCommonIndexes,
-  });
-  await shopProductsCollection.createIndex({
-    rubricSlug: 1,
-    brandCollectionSlug: 1,
-    filterSlugs: 1,
-    price: 1,
-    ...shopProductCommonIndexes,
-  });
-  await shopProductsCollection.createIndex({
-    rubricSlug: 1,
-    filterSlugs: 1,
-    price: 1,
-    ...shopProductCommonIndexes,
-  });
-  await shopProductsCollection.createIndex({
-    rubricSlug: 1,
-    price: 1,
-    ...shopProductCommonIndexes,
-  });
-  await shopProductsCollection.createIndex({
-    rubricSlug: 1,
-    ...shopProductCommonIndexes,
-  });
+  });*/
 
   // Products
   // await createCollectionIfNotExist(COL_PRODUCT_FACETS);
   // const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
 }
+
+/*const test = {
+  department: 'Shoes',
+  'vars.attr': { color: 'red' },
+  category: /Shoes/,
+};*/

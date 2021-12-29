@@ -534,6 +534,9 @@ export function shopProductsGroupPipeline({
         available: {
           $max: '$available',
         },
+        categorySlugs: {
+          $first: '$categorySlugs',
+        },
         filterSlugs: {
           $first: '$filterSlugs',
         },

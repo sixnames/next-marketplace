@@ -8,7 +8,7 @@ import shops from '../shops/shops';
 import rubrics from '../rubrics/rubrics';
 
 const maxProductsCountForShop = 50;
-const shopProducts: ShopProductModel[] = [];
+const shpProducts: ShopProductModel[] = [];
 
 const isOneShopCompany = getCliParamBoolean('oneShop');
 
@@ -38,7 +38,7 @@ if (isOneShopCompany) {
         const discountedPercent = 100 - Math.floor(price / pricePercent);
         const barcode = product.barcode;
 
-        shopProducts.push({
+        shpProducts.push({
           _id: getObjectId(`shopProduct ${shop.slug} ${product.slug}`),
           barcode,
           productId,
@@ -114,7 +114,7 @@ if (isOneShopCompany) {
           const discountedPercent = 100 - Math.floor(price / pricePercent);
           const barcode = product.barcode;
 
-          shopProducts.push({
+          shpProducts.push({
             _id: getObjectId(`shopProduct ${shop.slug} ${product.slug}`),
             barcode,
             productId,
@@ -165,4 +165,4 @@ if (isOneShopCompany) {
 }
 
 // @ts-ignore
-export = shopProducts;
+export = shpProducts;

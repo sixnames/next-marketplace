@@ -29,7 +29,7 @@ const ConsoleUserLayout: React.FC<ConsoleUserLayoutInterface> = ({
       {
         name: 'Детали',
         testId: 'user-details',
-        path: customer.root,
+        path: customer.parentLink,
         exact: true,
       },
       {

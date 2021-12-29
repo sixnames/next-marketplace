@@ -34,7 +34,7 @@ const ProductAssets: React.FC<ProductAssetsInterface> = ({ product }) => {
       },
       {
         name: `${product.rubric?.name}`,
-        href: links.root,
+        href: links.parentLink,
       },
       {
         name: `Товары`,
@@ -42,7 +42,7 @@ const ProductAssets: React.FC<ProductAssetsInterface> = ({ product }) => {
       },
       {
         name: `${product.cardTitle}`,
-        href: links.product.root,
+        href: links.product.parentLink,
       },
     ],
   };

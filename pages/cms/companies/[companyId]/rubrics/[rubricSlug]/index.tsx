@@ -48,7 +48,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
       },
       {
         name: `${pageCompany?.name}`,
-        href: links.root,
+        href: links.parentLink,
       },
       {
         name: `Рубрикатор`,
@@ -181,7 +181,7 @@ export const getServerSideProps = async (
       seoDescriptionTop: castDbData(seoDescriptionTop),
       rubric: castDbData(rubric),
       pageCompany: castDbData(companyResult),
-      routeBasePath: links.root,
+      routeBasePath: links.parentLink,
     },
   };
 };

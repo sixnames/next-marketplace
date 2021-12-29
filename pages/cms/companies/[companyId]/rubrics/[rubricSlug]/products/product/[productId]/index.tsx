@@ -44,7 +44,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
       },
       {
         name: `${pageCompany.name}`,
-        href: links.root,
+        href: links.parentLink,
       },
       {
         name: `Рубрикатор`,
@@ -52,7 +52,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
       },
       {
         name: `${product.rubric?.name}`,
-        href: links.rubrics.root,
+        href: links.rubrics.parentLink,
       },
       {
         name: `Товары`,
@@ -137,7 +137,7 @@ export const getServerSideProps = async (
       ...props,
       product: castDbData(payload.product),
       pageCompany: castDbData(companyResult),
-      routeBasePath: links.root,
+      routeBasePath: links.parentLink,
     },
   };
 };

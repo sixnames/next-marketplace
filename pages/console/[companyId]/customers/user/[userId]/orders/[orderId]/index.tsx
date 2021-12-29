@@ -57,7 +57,7 @@ const UserOrderConsumer: React.FC<UserOrderConsumerInterface> = ({
       },
       {
         name: `${user.fullName}`,
-        href: links.customer.root,
+        href: links.customer.parentLink,
       },
       {
         name: `Заказы`,

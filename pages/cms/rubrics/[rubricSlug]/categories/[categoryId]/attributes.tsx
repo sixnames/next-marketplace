@@ -138,7 +138,7 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
       },
       {
         name: `${category.rubric?.name}`,
-        href: links.root,
+        href: links.parentLink,
       },
       {
         name: `Категории`,

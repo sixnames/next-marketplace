@@ -142,7 +142,7 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
       },
       {
         name: `${rubric.name}`,
-        href: links.root,
+        href: links.parentLink,
       },
     ],
   };

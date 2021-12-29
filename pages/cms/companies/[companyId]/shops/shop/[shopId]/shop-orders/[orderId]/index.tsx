@@ -72,7 +72,7 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({
         order={order}
         orderStatuses={orderStatuses}
         breadcrumbs={breadcrumbs}
-        basePath={links.shop.shopBasePath}
+        basePath={links.shop.itemPath}
         shop={shop}
       />
     </ConsoleLayout>

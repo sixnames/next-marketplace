@@ -2,7 +2,7 @@ import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 import ShopOrders, { ShopOrdersInterface } from '../../../../../../../components/shops/ShopOrders';
-import { ROUTE_CONSOLE, SORT_DESC } from '../../../../../../../config/common';
+import { SORT_DESC } from '../../../../../../../config/common';
 import {
   COL_COMPANIES,
   COL_ORDER_CUSTOMERS,
@@ -15,6 +15,7 @@ import { getDatabase } from '../../../../../../../db/mongodb';
 import { AppContentWrapperBreadCrumbs, ShopInterface } from '../../../../../../../db/uiInterfaces';
 import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from '../../../../../../../lib/i18n';
+import { getConsoleCompanyLinks } from '../../../../../../../lib/linkUtils';
 import { getShortName } from '../../../../../../../lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from '../../../../../../../lib/phoneUtils';
 import {
@@ -28,25 +29,27 @@ interface CompanyShopAssetsInterface
     Omit<ShopOrdersInterface, 'basePath'> {}
 
 const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ layoutProps, shop }) => {
-  const companyBasePath = `${ROUTE_CONSOLE}/${shop.companyId}/shops`;
-
+  const links = getConsoleCompanyLinks({
+    companyId: shop.companyId,
+    shopId: shop._id,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Заказы',
     config: [
       {
         name: 'Магазины',
-        href: companyBasePath,
+        href: links.shops,
       },
       {
         name: shop.name,
-        href: `${companyBasePath}/shop/${shop._id}`,
+        href: links.shop.root,
       },
     ],
   };
 
   return (
     <ConsoleLayout {...layoutProps}>
-      <ShopOrders breadcrumbs={breadcrumbs} basePath={`${companyBasePath}/shop`} shop={shop} />
+      <ShopOrders breadcrumbs={breadcrumbs} basePath={links.shop.itemPath} shop={shop} />
     </ConsoleLayout>
   );
 };

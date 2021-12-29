@@ -43,7 +43,7 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ data }) => {
           orderId: dataItem._id,
         });
         return (
-          <WpLink testId={`order-${dataItem.itemId}-link`} href={links.order.root}>
+          <WpLink testId={`order-${dataItem.itemId}-link`} href={links.order.parentLink}>
             {cellData}
           </WpLink>
         );
@@ -117,7 +117,7 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ data }) => {
                   companyId: `${router.query.companyId}`,
                   orderId: dataItem._id,
                 });
-                router.push(links.order.root).catch(console.log);
+                router.push(links.order.parentLink).catch(console.log);
               }}
             />
           </div>
@@ -144,7 +144,7 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ data }) => {
                 companyId: `${router.query.companyId}`,
                 orderId: dataItem._id,
               });
-              router.push(links.order.root).catch(console.log);
+              router.push(links.order.parentLink).catch(console.log);
             }}
           />
         </div>

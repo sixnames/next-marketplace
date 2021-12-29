@@ -28,7 +28,7 @@ const RubricProductsConsumer: React.FC<RubricProductsConsumerInterface> = (props
       },
       {
         name: `${props.rubric?.name}`,
-        href: links.root,
+        href: links.parentLink,
       },
     ],
   };

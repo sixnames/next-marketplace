@@ -107,7 +107,7 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
       },
       {
         name: `${rubric?.name}`,
-        href: links.root,
+        href: links.parentLink,
       },
       {
         name: `Категории`,

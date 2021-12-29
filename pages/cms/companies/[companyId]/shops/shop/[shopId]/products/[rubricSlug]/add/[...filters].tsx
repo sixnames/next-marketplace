@@ -97,7 +97,7 @@ const CompanyShopAddProductsListPage: NextPage<CompanyShopAddProductsListPageInt
           breadcrumbs={breadcrumbs}
           rubricName={rubricName}
           rubricSlug={rubricSlug}
-          layoutBasePath={links.shop.shopBasePath}
+          layoutBasePath={links.shop.itemPath}
           createChosenProduct={createChosenProduct}
           deleteChosenProduct={deleteChosenProduct}
           setStepHandler={setStepHandler}
@@ -115,7 +115,7 @@ const CompanyShopAddProductsListPage: NextPage<CompanyShopAddProductsListPageInt
         breadcrumbs={breadcrumbs}
         rubricName={rubricName}
         rubricSlug={rubricSlug}
-        layoutBasePath={links.shop.shopBasePath}
+        layoutBasePath={links.shop.itemPath}
         createChosenProduct={createChosenProduct}
         deleteChosenProduct={deleteChosenProduct}
         setStepHandler={setStepHandler}

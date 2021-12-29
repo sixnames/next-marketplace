@@ -87,7 +87,7 @@ const CmsCompanyLayout: React.FC<CmsCompanyLayoutInterface> = ({
       {
         name: 'Основные настройки',
         testId: 'company-global-config',
-        path: config.root,
+        path: config.parentLink,
         hidden: !company?.domain,
         exact: true,
       },

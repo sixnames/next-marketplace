@@ -46,7 +46,7 @@ const ConsolePromoRubrics: React.FC<ConsolePromoRubricsInterface> = ({
       },
       {
         name: `${promo.name}`,
-        href: links.promo.root,
+        href: links.promo.parentLink,
       },
     ],
   };
@@ -162,7 +162,7 @@ export const getServerSideProps = async (
   return {
     props: {
       ...props,
-      routeBasePath: links.promo.root,
+      routeBasePath: links.promo.parentLink,
       pageCompany: castDbData(props.layoutProps.pageCompany),
       promo: castDbData(promo),
       rubrics: castDbData(rawRubrics),

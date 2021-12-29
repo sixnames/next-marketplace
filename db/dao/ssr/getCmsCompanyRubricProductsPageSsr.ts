@@ -67,7 +67,7 @@ export const getCmsCompanyRubricProductsPageSsr = async (
       itemPath,
       companySlug,
       pageCompany: castDbData(companyResult),
-      routeBasePath: links.root,
+      routeBasePath: links.parentLink,
     },
   };
 };

@@ -1,28 +1,27 @@
-import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import CompanyProductSuppliers, {
   CompanyProductSuppliersInterface,
-} from '../../../../../../../../../components/company/CompanyProductSuppliers';
-import { SelectOptionInterface } from '../../../../../../../../../components/FormElements/Select/Select';
-import RequestError from '../../../../../../../../../components/RequestError';
-import { ROUTE_CMS, ROUTE_CONSOLE, SORT_ASC } from '../../../../../../../../../config/common';
-import { COL_COMPANIES, COL_SUPPLIERS } from '../../../../../../../../../db/collectionNames';
-import { getDatabase } from '../../../../../../../../../db/mongodb';
+} from '../../../../../../../../../../components/company/CompanyProductSuppliers';
+import { SelectOptionInterface } from '../../../../../../../../../../components/FormElements/Select/Select';
+import RequestError from '../../../../../../../../../../components/RequestError';
+import { SORT_ASC } from '../../../../../../../../../../config/common';
+import { COL_SUPPLIERS } from '../../../../../../../../../../db/collectionNames';
+import { getDatabase } from '../../../../../../../../../../db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
-  CompanyInterface,
   SupplierInterface,
-} from '../../../../../../../../../db/uiInterfaces';
-import ConsoleLayout from '../../../../../../../../../layout/cms/ConsoleLayout';
-import ConsoleShopProductLayout from '../../../../../../../../../layout/console/ConsoleShopProductLayout';
-import { getFieldStringLocale } from '../../../../../../../../../lib/i18n';
-import { getConsoleShopProduct } from '../../../../../../../../../lib/productUtils';
+} from '../../../../../../../../../../db/uiInterfaces';
+import ConsoleLayout from '../../../../../../../../../../layout/cms/ConsoleLayout';
+import ConsoleShopProductLayout from '../../../../../../../../../../layout/console/ConsoleShopProductLayout';
+import { getFieldStringLocale } from '../../../../../../../../../../lib/i18n';
+import { getConsoleCompanyLinks } from '../../../../../../../../../../lib/linkUtils';
+import { getConsoleShopProduct } from '../../../../../../../../../../lib/productUtils';
 import {
   castDbData,
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
-} from '../../../../../../../../../lib/ssrUtils';
+} from '../../../../../../../../../../lib/ssrUtils';
 
 interface ProductDetailsInterface extends CompanyProductSuppliersInterface {}
 
@@ -32,9 +31,9 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
   suppliers,
   routeBasePath,
 }) => {
-  const { summary, shop, company } = shopProduct;
+  const { summary, shop } = shopProduct;
 
-  if (!summary || !shop || !company) {
+  if (!summary || !shop) {
     return <RequestError />;
   }
 
@@ -43,29 +42,34 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
     return <RequestError />;
   }
 
-  const companyBasePath = `${ROUTE_CONSOLE}/${shop.companyId}/shops`;
+  const links = getConsoleCompanyLinks({
+    companyId: shop.companyId,
+    shopId: shop._id,
+    rubricSlug: rubric.slug,
+    productId: shopProduct._id,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: 'Поставщики',
+    currentPageName: `Ценообразование`,
     config: [
       {
         name: 'Магазины',
-        href: companyBasePath,
+        href: links.shops,
       },
       {
         name: shop.name,
-        href: `${companyBasePath}/shop/${shop._id}`,
+        href: links.shop.root,
       },
       {
         name: 'Товары',
-        href: `${companyBasePath}/shop/${shop._id}/products`,
+        href: links.shop.products.root,
       },
       {
         name: `${rubric.name}`,
-        href: `${companyBasePath}/shop/${shop._id}/products/${rubric._id}`,
+        href: links.shop.products.rubric.root,
       },
       {
         name: `${snippetTitle}`,
-        href: `${companyBasePath}/shop/${shop._id}/products/product/${shopProduct._id}`,
+        href: links.shop.products.rubric.product.root,
       },
     ],
   };
@@ -74,7 +78,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
     <ConsoleShopProductLayout
       breadcrumbs={breadcrumbs}
       shopProduct={shopProduct}
-      basePath={`${companyBasePath}/shop/${shopProduct.shopId}/products/product`}
+      basePath={links.shop.products.rubric.product.parentLink}
     >
       <CompanyProductSuppliers
         shopProduct={shopProduct}
@@ -102,21 +106,10 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<ProductPageInterface>> => {
   const { query } = context;
-  const { shopProductId, companyId, shopId } = query;
   const { props } = await getConsoleInitialData({ context });
   const { db } = await getDatabase();
   const suppliersCollection = db.collection<SupplierInterface>(COL_SUPPLIERS);
-  const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
-  if (!props || !shopProductId || !companyId || !shopId) {
-    return {
-      notFound: true,
-    };
-  }
-
-  const companyResult = await companiesCollection.findOne({
-    _id: new ObjectId(`${companyId}`),
-  });
-  if (!companyResult) {
+  if (!props) {
     return {
       notFound: true,
     };
@@ -124,9 +117,9 @@ export const getServerSideProps = async (
 
   const locale = props.sessionLocale;
   const shopProduct = await getConsoleShopProduct({
-    shopProductId,
+    shopProductId: `${query.shopProductId}`,
+    companySlug: props.layoutProps.pageCompany.slug,
     locale,
-    companySlug: companyResult.slug,
   });
   if (!shopProduct) {
     return {
@@ -159,13 +152,20 @@ export const getServerSideProps = async (
 
   const disabledSuppliers = suppliers.filter(({ disabled }) => disabled);
 
+  const links = getConsoleCompanyLinks({
+    companyId: `${query.companyId}`,
+    shopId: `${query.shopId}`,
+    rubricSlug: `${query.rubricSlug}`,
+    productId: `${query.shopProductId}`,
+  });
+
   return {
     props: {
       ...props,
       shopProduct: castDbData(shopProduct),
       suppliers: castDbData(suppliers),
       disableAddSupplier: disabledSuppliers.length === suppliers.length,
-      routeBasePath: `${ROUTE_CMS}/companies/${shopProduct.companyId}`,
+      routeBasePath: links.root,
     },
   };
 };

@@ -51,7 +51,7 @@ export const useCreateProduct = () => {
           rubricSlug: payload.rubricSlug,
           productId: `${payload._id}`,
         });
-        router.push(product.root).catch(console.log);
+        router.push(product.parentLink).catch(console.log);
       } else {
         showErrorNotification({ title: message });
       }
@@ -118,7 +118,7 @@ export const useCopyProduct = () => {
           rubricSlug: payload.rubricSlug,
           productId: `${payload._id}`,
         });
-        router.push(product.root).catch(console.log);
+        router.push(product.parentLink).catch(console.log);
       } else {
         showErrorNotification({ title: message });
       }
@@ -152,7 +152,7 @@ export const useCreateProductWithSyncError = () => {
           rubricSlug: payload.rubricSlug,
           productId: `${payload._id}`,
         });
-        router.push(product.root).catch(console.log);
+        router.push(product.parentLink).catch(console.log);
       } else {
         showErrorNotification({ title: message });
       }
@@ -185,7 +185,7 @@ export const useUpdateProductWithSyncError = () => {
           rubricSlug: payload.rubricSlug,
           productId: `${payload._id}`,
         });
-        router.push(product.root).catch(console.log);
+        router.push(product.parentLink).catch(console.log);
       }
     },
   });

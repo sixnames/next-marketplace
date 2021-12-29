@@ -38,7 +38,7 @@ const ConsolePromoProductsListPage: React.FC<ConsolePromoProductsListPageInterfa
       },
       {
         name: `${promo.name}`,
-        href: links.promo.root,
+        href: links.promo.parentLink,
       },
       {
         name: `Товары`,

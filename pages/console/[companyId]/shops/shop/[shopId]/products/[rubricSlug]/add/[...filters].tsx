@@ -1,4 +1,4 @@
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import { NextPage } from 'next';
 import * as React from 'react';
 import {
   ShopAddProductsCreateChosenProduct,
@@ -8,31 +8,26 @@ import {
   ShopAddProductsListInterface,
   ShopAddProductsSetStepHandler,
   ShopAddProductsStepType,
-} from '../../../../../../../../components/shops/ShopAddProducts';
-import { ROUTE_CONSOLE } from '../../../../../../../../config/common';
-import { getAddShopProductSsrData } from '../../../../../../../../db/dao/product/getAddShopProductSsrData';
+} from '../../../../../../../../../components/shops/ShopAddProducts';
+import { getConsoleShopAddProductsListPageSsr } from '../../../../../../../../../db/dao/ssr/getConsoleShopAddProductsListPageSsr';
 import {
   AppContentWrapperBreadCrumbs,
   ProductSummaryInterface,
-} from '../../../../../../../../db/uiInterfaces';
-import ConsoleLayout from '../../../../../../../../layout/cms/ConsoleLayout';
-import { alwaysArray, alwaysString } from '../../../../../../../../lib/arrayUtils';
-import {
-  castDbData,
-  getConsoleInitialData,
-  GetConsoleInitialDataPropsInterface,
-} from '../../../../../../../../lib/ssrUtils';
+} from '../../../../../../../../../db/uiInterfaces';
+import ConsoleLayout from '../../../../../../../../../layout/cms/ConsoleLayout';
+import { getConsoleCompanyLinks } from '../../../../../../../../../lib/linkUtils';
+import { GetConsoleInitialDataPropsInterface } from '../../../../../../../../../lib/ssrUtils';
 
 type ShopAddProductsListRouteReduced = Omit<
   ShopAddProductsListInterface,
   'chosen' | 'createChosenProduct' | 'deleteChosenProduct' | 'setStepHandler' | 'layoutBasePath'
 >;
 
-interface CompanyShopProductsListInterface
+export interface ConsoleShopAddProductsListPageInterface
   extends GetConsoleInitialDataPropsInterface,
     ShopAddProductsListRouteReduced {}
 
-const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = ({
+const ConsoleShopAddProductsListPage: NextPage<ConsoleShopAddProductsListPageInterface> = ({
   layoutProps,
   shop,
   rubricName,
@@ -41,27 +36,30 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
 }) => {
   const [chosen, setChosen] = React.useState<ProductSummaryInterface[]>([]);
   const [step, setStep] = React.useState<ShopAddProductsStepType>(1);
-  const companyBasePath = `${ROUTE_CONSOLE}/${shop.companyId}/shops/shop/${shop._id}`;
-  const layoutBasePath = `${ROUTE_CONSOLE}/${shop.companyId}/shops/shop`;
+  const links = getConsoleCompanyLinks({
+    companyId: shop.companyId,
+    shopId: shop._id,
+    rubricSlug,
+  });
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Добавление товаров',
     config: [
       {
         name: 'Магазины',
-        href: companyBasePath,
+        href: links.shops,
       },
       {
         name: shop.name,
-        href: `${companyBasePath}`,
+        href: links.shop.root,
       },
       {
         name: 'Товары',
-        href: `${companyBasePath}/products`,
+        href: links.shop.products.root,
       },
       {
         name: rubricName,
-        href: `${companyBasePath}/products/${rubricSlug}`,
+        href: links.shop.products.rubric.root,
       },
     ],
   };
@@ -90,7 +88,7 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
           breadcrumbs={breadcrumbs}
           rubricName={rubricName}
           rubricSlug={rubricSlug}
-          layoutBasePath={layoutBasePath}
+          layoutBasePath={links.shop.itemPath}
           createChosenProduct={createChosenProduct}
           deleteChosenProduct={deleteChosenProduct}
           setStepHandler={setStepHandler}
@@ -108,7 +106,7 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
         breadcrumbs={breadcrumbs}
         rubricName={rubricName}
         rubricSlug={rubricSlug}
-        layoutBasePath={layoutBasePath}
+        layoutBasePath={links.shop.itemPath}
         createChosenProduct={createChosenProduct}
         deleteChosenProduct={deleteChosenProduct}
         setStepHandler={setStepHandler}
@@ -120,45 +118,5 @@ const CompanyShopAddProductsList: NextPage<CompanyShopProductsListInterface> = (
   );
 };
 
-export const getServerSideProps = async (
-  context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<CompanyShopProductsListInterface>> => {
-  const { query } = context;
-  const companyId = alwaysString(query.companyId);
-  const shopId = alwaysString(query.shopId);
-  const [rubricId] = alwaysArray(query.filters);
-  const initialProps = await getConsoleInitialData({ context });
-  if (!initialProps.props) {
-    return {
-      notFound: true,
-    };
-  }
-  const locale = initialProps.props.sessionLocale;
-  const currency = initialProps.props.initialData.currency;
-  const basePath = `${ROUTE_CONSOLE}/${companyId}/shops/shop/${shopId}/products/add/${rubricId}`;
-
-  const payload = await getAddShopProductSsrData({
-    locale,
-    basePath,
-    query,
-    currency,
-    companySlug: initialProps.props.layoutProps.pageCompany.slug,
-  });
-
-  if (!payload) {
-    return {
-      notFound: true,
-    };
-  }
-
-  const castedPayload = castDbData(payload);
-
-  return {
-    props: {
-      ...initialProps.props,
-      ...castedPayload,
-    },
-  };
-};
-
-export default CompanyShopAddProductsList;
+export const getServerSideProps = getConsoleShopAddProductsListPageSsr;
+export default ConsoleShopAddProductsListPage;

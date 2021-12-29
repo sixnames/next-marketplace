@@ -2,7 +2,7 @@ import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 import ShopOrder, { ShopOrderInterface } from '../../../../../../../../components/shops/ShopOrder';
-import { DEFAULT_COMPANY_SLUG, ROUTE_CONSOLE } from '../../../../../../../../config/common';
+import { DEFAULT_COMPANY_SLUG } from '../../../../../../../../config/common';
 import { COL_COMPANIES, COL_SHOPS } from '../../../../../../../../db/collectionNames';
 import { getConsoleOrder } from '../../../../../../../../db/dao/orders/getConsoleOrder';
 import { getDatabase } from '../../../../../../../../db/mongodb';
@@ -11,6 +11,7 @@ import {
   ShopInterface,
 } from '../../../../../../../../db/uiInterfaces';
 import ConsoleLayout from '../../../../../../../../layout/cms/ConsoleLayout';
+import { getConsoleCompanyLinks } from '../../../../../../../../lib/linkUtils';
 import {
   castDbData,
   getConsoleInitialData,
@@ -28,23 +29,26 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({
   order,
   orderStatuses,
 }) => {
-  const companyBasePath = `${ROUTE_CONSOLE}/${shop.companyId}/shops`;
   const title = `Заказ №${order.orderId}`;
 
+  const links = getConsoleCompanyLinks({
+    companyId: shop.companyId,
+    shopId: shop._id,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: title,
     config: [
       {
         name: 'Магазины',
-        href: companyBasePath,
+        href: links.shops,
       },
       {
         name: shop.name,
-        href: `${companyBasePath}/shop/${shop._id}`,
+        href: links.shop.root,
       },
       {
         name: 'Заказы',
-        href: `${companyBasePath}/shop/${shop._id}/orders`,
+        href: links.shop.orders,
       },
     ],
   };
@@ -57,7 +61,7 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({
         title={title}
         order={order}
         breadcrumbs={breadcrumbs}
-        basePath={`${companyBasePath}/shop`}
+        basePath={links.shop.itemPath}
         shop={shop}
       />
     </ConsoleLayout>

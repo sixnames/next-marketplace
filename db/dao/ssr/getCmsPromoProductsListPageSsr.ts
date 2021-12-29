@@ -66,7 +66,7 @@ export const getCmsPromoProductsListPageSsr = async (
     promoId: promo._id,
     rubricSlug: rubric.slug,
   });
-  const basePath = links.promo.root;
+  const basePath = links.promo.parentLink;
   const promoProducts = await getConsolePromoProducts({
     search: alwaysString(query.search),
     filters: alwaysArray(query.filters),
@@ -75,7 +75,7 @@ export const getCmsPromoProductsListPageSsr = async (
     locale,
     currency: props.currentCity?.currency || DEFAULT_CURRENCY,
     companyId: company._id,
-    basePath: links.promo.rubrics.root,
+    basePath: links.promo.rubrics.parentLink,
     excludedShopProductIds: [],
   });
 

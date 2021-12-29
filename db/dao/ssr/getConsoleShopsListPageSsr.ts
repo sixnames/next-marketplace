@@ -36,7 +36,7 @@ export const getConsoleShopsListPageSsr = async (
   const links = getConsoleCompanyLinks({
     companyId: props.layoutProps.pageCompany._id,
   });
-  const itemPath = links.shop.shopBasePath;
+  const itemPath = links.shop.itemPath;
 
   const searchStage = search
     ? {

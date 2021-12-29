@@ -64,7 +64,7 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
       },
       {
         name: `${pageCompany.name}`,
-        href: links.root,
+        href: links.parentLink,
       },
       {
         name: `Рубрикатор`,
@@ -72,7 +72,7 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
       },
       {
         name: `${product.rubric?.name}`,
-        href: links.rubrics.root,
+        href: links.rubrics.parentLink,
       },
       {
         name: `Товары`,
@@ -80,7 +80,7 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
       },
       {
         name: `${product.snippetTitle}`,
-        href: links.rubrics.product.root,
+        href: links.rubrics.product.parentLink,
       },
     ],
   };
@@ -233,7 +233,7 @@ export const getServerSideProps = async (
       brandCollection: castDbData(brandCollection),
       manufacturer: castDbData(manufacturer),
       pageCompany: castDbData(companyResult),
-      routeBasePath: links.root,
+      routeBasePath: links.parentLink,
     },
   };
 };

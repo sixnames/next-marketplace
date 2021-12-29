@@ -106,6 +106,7 @@ export function getConsoleShopProductLinks({
 
   return {
     root,
+    parentLink: basePath,
     suppliers: `${root}/suppliers`,
   };
 }
@@ -127,11 +128,10 @@ export function getConsoleShopLinks({
   const productsRoot = `${root}/products`;
   const rubricRoot = `${productsRoot}/${rubricSlug}`;
   const productBasePath = `${rubricRoot}/product`;
-  const productRoot = `${productBasePath}/${productId}`;
 
   return {
     root,
-    shopBasePath: basePath,
+    itemPath: basePath,
     productBasePath,
     assets: `${root}/assets`,
     orders: `${root}/shop-orders`,
@@ -142,7 +142,7 @@ export function getConsoleShopLinks({
         root: rubricRoot,
         add: `${rubricRoot}/add`,
         product: getConsoleShopProductLinks({
-          basePath: productRoot,
+          basePath: productBasePath,
           productId,
         }),
       },

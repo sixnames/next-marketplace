@@ -35,7 +35,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ product, companySlu
       },
       {
         name: `${product.rubric?.name}`,
-        href: links.root,
+        href: links.parentLink,
       },
       {
         name: `Товары`,

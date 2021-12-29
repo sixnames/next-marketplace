@@ -45,7 +45,7 @@ export const getConsoleRubricProductsListPageSsr = async (
       ...castedPayload,
       itemPath,
       companySlug,
-      routeBasePath: links.root,
+      routeBasePath: links.parentLink,
     },
   };
 };

@@ -36,7 +36,7 @@ const CmsPromoProductsListPage: React.FC<CmsPromoProductsListPageInterface> = ({
       },
       {
         name: pageCompany.name,
-        href: links.root,
+        href: links.parentLink,
       },
       {
         name: 'Акции',
@@ -44,7 +44,7 @@ const CmsPromoProductsListPage: React.FC<CmsPromoProductsListPageInterface> = ({
       },
       {
         name: `${promo.name}`,
-        href: links.promo.root,
+        href: links.promo.parentLink,
       },
       {
         name: `Товары`,

@@ -51,7 +51,7 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
       },
       {
         name: `${product.rubric?.name}`,
-        href: links.root,
+        href: links.parentLink,
       },
       {
         name: `Товары`,
@@ -59,7 +59,7 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
       },
       {
         name: `${product.cardTitle}`,
-        href: links.product.root,
+        href: links.product.parentLink,
       },
     ],
   };

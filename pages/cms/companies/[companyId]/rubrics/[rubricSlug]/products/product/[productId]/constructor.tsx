@@ -47,7 +47,7 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({
       },
       {
         name: `${pageCompany.name}`,
-        href: links.root,
+        href: links.parentLink,
       },
       {
         name: `Рубрикатор`,
@@ -55,7 +55,7 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({
       },
       {
         name: `${product.rubric?.name}`,
-        href: links.rubrics.root,
+        href: links.rubrics.parentLink,
       },
       {
         name: `Товары`,
@@ -63,7 +63,7 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({
       },
       {
         name: `${product.snippetTitle}`,
-        href: links.rubrics.product.root,
+        href: links.rubrics.product.parentLink,
       },
     ],
   };
@@ -152,7 +152,7 @@ export const getServerSideProps = async (
       product: castDbData(product),
       cardContent: castDbData(cardContent),
       pageCompany: castDbData(companyResult),
-      routeBasePath: links.root,
+      routeBasePath: links.parentLink,
     },
   };
 };

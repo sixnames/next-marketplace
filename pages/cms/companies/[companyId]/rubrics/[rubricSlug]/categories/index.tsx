@@ -50,7 +50,7 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
       },
       {
         name: `${pageCompany?.name}`,
-        href: links.root,
+        href: links.parentLink,
       },
       {
         name: `Рубрикатор`,
@@ -58,7 +58,7 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
       },
       {
         name: `${rubric?.name}`,
-        href: links.rubrics.root,
+        href: links.rubrics.parentLink,
       },
     ],
   };
@@ -131,7 +131,7 @@ export const getServerSideProps = async (
   const links = getCmsCompanyLinks({
     companyId: companyResult._id,
   });
-  const routeBasePath = links.root;
+  const routeBasePath = links.parentLink;
 
   // get categories config
   const categoriesConfigAggregationResult = await shopProductsCollection

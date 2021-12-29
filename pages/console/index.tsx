@@ -25,7 +25,7 @@ const App: NextPage<GetConsoleMainPageDataPropsInterface> = ({ layoutProps }) =>
                 const links = getConsoleCompanyLinks({
                   companyId: company._id,
                 });
-                router.push(links.root).catch((e) => console.log(e));
+                router.push(links.parentLink).catch((e) => console.log(e));
               }}
             >
               <div className='rounded-full overflow-hidden col-span-1'>
@@ -83,7 +83,7 @@ export const getServerSideProps = async (
     });
     return {
       redirect: {
-        destination: links.root,
+        destination: links.parentLink,
         permanent: false,
       },
     };

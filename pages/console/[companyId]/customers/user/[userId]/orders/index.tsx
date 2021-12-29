@@ -55,7 +55,7 @@ const UserOrdersConsumer: React.FC<UserOrdersConsumerInterface> = ({ user, pageC
           orderId: dataItem._id,
         });
         return (
-          <WpLink testId={`order-${dataItem.itemId}-link`} href={links.customer.order.root}>
+          <WpLink testId={`order-${dataItem.itemId}-link`} href={links.customer.order.parentLink}>
             {cellData}
           </WpLink>
         );
@@ -98,7 +98,7 @@ const UserOrdersConsumer: React.FC<UserOrdersConsumerInterface> = ({ user, pageC
       },
       {
         name: `${user.fullName}`,
-        href: links.customer.root,
+        href: links.customer.parentLink,
       },
     ],
   };

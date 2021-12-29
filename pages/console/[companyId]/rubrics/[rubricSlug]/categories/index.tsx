@@ -48,7 +48,7 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
       },
       {
         name: `${rubric?.name}`,
-        href: links.root,
+        href: links.parentLink,
       },
     ],
   };
@@ -106,7 +106,7 @@ export const getServerSideProps = async (
     companyId: props.layoutProps.pageCompany._id,
     rubricSlug,
   });
-  const routeBasePath = links.root;
+  const routeBasePath = links.parentLink;
 
   // get categories config
   const categoriesConfigAggregationResult = await shopProductsCollection

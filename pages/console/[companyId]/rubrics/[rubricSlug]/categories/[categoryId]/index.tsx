@@ -47,7 +47,7 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
       },
       {
         name: `${category.rubric?.name}`,
-        href: links.root,
+        href: links.parentLink,
       },
       {
         name: `Категории`,
@@ -209,7 +209,7 @@ export const getServerSideProps = async (
       seoDescriptionBottom: castDbData(seoDescriptionBottom),
       seoDescriptionTop: castDbData(seoDescriptionTop),
       category: castDbData(category),
-      routeBasePath: links.root,
+      routeBasePath: links.parentLink,
       pageCompany: castDbData(props.layoutProps.pageCompany),
     },
   };

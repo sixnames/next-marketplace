@@ -53,7 +53,7 @@ const CmsCompanyShopSyncErrorsPage: NextPage<CmsCompanyShopSyncErrorsPageInterfa
         breadcrumbs={breadcrumbs}
         notSyncedProducts={notSyncedProducts}
         showShopName={false}
-        basePath={links.shop.shopBasePath}
+        basePath={links.shop.itemPath}
         shop={shop}
       />
     </ConsoleLayout>

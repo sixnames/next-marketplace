@@ -40,7 +40,7 @@ const ProductCategories: React.FC<ProductCategoriesInterface> = ({ product, cate
       },
       {
         name: `${product.rubric?.name}`,
-        href: links.root,
+        href: links.parentLink,
       },
       {
         name: `Товары`,
@@ -48,7 +48,7 @@ const ProductCategories: React.FC<ProductCategoriesInterface> = ({ product, cate
       },
       {
         name: `${product.cardTitle}`,
-        href: links.product.root,
+        href: links.product.parentLink,
       },
     ],
   };

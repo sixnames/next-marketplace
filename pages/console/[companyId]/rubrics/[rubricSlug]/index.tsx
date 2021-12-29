@@ -143,7 +143,7 @@ export const getServerSideProps = async (
       seoDescriptionBottom: castDbData(seoDescriptionBottom),
       seoDescriptionTop: castDbData(seoDescriptionTop),
       rubric: castDbData(rubric),
-      routeBasePath: links.root,
+      routeBasePath: links.parentLink,
       pageCompany: castDbData(props.layoutProps.pageCompany),
     },
   };

@@ -33,7 +33,11 @@ const BlogPostsListConsumer: React.FC<BlogPostsListConsumerInterface> = ({
     <AppContentWrapper>
       <Inner testId={'company-posts-list'}>
         <WpTitle>{pageTitle}</WpTitle>
-        <BlogPostsList posts={posts} basePath={links.root} companySlug={`${pageCompany?.slug}`} />
+        <BlogPostsList
+          posts={posts}
+          basePath={links.parentLink}
+          companySlug={`${pageCompany?.slug}`}
+        />
       </Inner>
     </AppContentWrapper>
   );

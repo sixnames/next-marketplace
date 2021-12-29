@@ -1,20 +1,20 @@
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import CompanyProductDetails from '../../../../../../../../../components/company/CompanyProductDetails';
-import RequestError from '../../../../../../../../../components/RequestError';
-import { ROUTE_CONSOLE } from '../../../../../../../../../config/common';
+import CompanyProductDetails from '../../../../../../../../../../components/company/CompanyProductDetails';
+import RequestError from '../../../../../../../../../../components/RequestError';
 import {
   AppContentWrapperBreadCrumbs,
   ShopProductInterface,
-} from '../../../../../../../../../db/uiInterfaces';
-import ConsoleLayout from '../../../../../../../../../layout/cms/ConsoleLayout';
-import ConsoleShopProductLayout from '../../../../../../../../../layout/console/ConsoleShopProductLayout';
-import { getConsoleShopProduct } from '../../../../../../../../../lib/productUtils';
+} from '../../../../../../../../../../db/uiInterfaces';
+import ConsoleLayout from '../../../../../../../../../../layout/cms/ConsoleLayout';
+import ConsoleShopProductLayout from '../../../../../../../../../../layout/console/ConsoleShopProductLayout';
+import { getConsoleCompanyLinks } from '../../../../../../../../../../lib/linkUtils';
+import { getConsoleShopProduct } from '../../../../../../../../../../lib/productUtils';
 import {
   castDbData,
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
-} from '../../../../../../../../../lib/ssrUtils';
+} from '../../../../../../../../../../lib/ssrUtils';
 
 interface ProductDetailsInterface {
   shopProduct: ShopProductInterface;
@@ -22,8 +22,9 @@ interface ProductDetailsInterface {
 }
 
 const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct, companySlug }) => {
-  const { summary, shop, company } = shopProduct;
-  if (!summary || !shop || !company) {
+  const { summary, shop } = shopProduct;
+
+  if (!summary || !shop) {
     return <RequestError />;
   }
 
@@ -32,25 +33,29 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct, compan
     return <RequestError />;
   }
 
-  const companyBasePath = `${ROUTE_CONSOLE}/${shop.companyId}/shops`;
+  const links = getConsoleCompanyLinks({
+    companyId: shop.companyId,
+    shopId: shop._id,
+    rubricSlug: rubric.slug,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${snippetTitle}`,
     config: [
       {
         name: 'Магазины',
-        href: companyBasePath,
+        href: links.shops,
       },
       {
         name: shop.name,
-        href: `${companyBasePath}/shop/${shop._id}`,
+        href: links.shop.root,
       },
       {
         name: 'Товары',
-        href: `${companyBasePath}/shop/${shop._id}/products`,
+        href: links.shop.products.root,
       },
       {
         name: `${rubric.name}`,
-        href: `${companyBasePath}/shop/${shop._id}/products/${rubric._id}`,
+        href: links.shop.products.rubric.root,
       },
     ],
   };
@@ -58,7 +63,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct, compan
   return (
     <ConsoleShopProductLayout
       shopProduct={shopProduct}
-      basePath={`${companyBasePath}/shop/${shopProduct.shopId}/products/product`}
+      basePath={links.shop.products.rubric.product.parentLink}
       breadcrumbs={breadcrumbs}
     >
       <CompanyProductDetails
@@ -100,6 +105,7 @@ export const getServerSideProps = async (
     locale: props.sessionLocale,
     companySlug: props.layoutProps.pageCompany.slug,
   });
+
   if (!shopProductResult) {
     return {
       notFound: true,

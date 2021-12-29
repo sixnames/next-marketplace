@@ -67,7 +67,7 @@ const CompanyShopProducts: NextPage<CompanyShopProductsInterface> = ({
       <ShopRubrics
         shop={shop}
         rubrics={rubrics}
-        basePath={links.shop.shopBasePath}
+        basePath={links.shop.itemPath}
         breadcrumbs={breadcrumbs}
       />
     </ConsoleLayout>

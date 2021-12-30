@@ -1067,6 +1067,7 @@ export const getCatalogueData = async ({
     if (!rubric) {
       return fallbackPayload;
     }
+    // console.log(`rubrics >>>>>>>>>>>>>>>> `, new Date().getTime() - timeStart);
 
     // get selected categories
     const selectedCategorySlugs = categoryFilters.map((slug) => {
@@ -1170,6 +1171,7 @@ export const getCatalogueData = async ({
         brands,
         // visibleAttributesCount,
       });
+    // console.log(`getCatalogueAttributes >>>>>>>>>>>>>>>> `, new Date().getTime() - timeStart);
 
     // cast catalogue products
     const products: ShopProductInterface[] = [];
@@ -1246,6 +1248,7 @@ export const getCatalogueData = async ({
           currency,
           page,
         });
+    // console.log(`catalogueTitle >>>>>>>>>>>>>>>> `, new Date().getTime() - timeStart);
 
     const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
 

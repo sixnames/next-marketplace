@@ -976,8 +976,8 @@ export const getCatalogueData = async ({
       ...brandCollectionStage,
       ...optionsStage,
       ...pricesStage,
-      citySlug: city,
       ...ignoreNoImageStage,
+      citySlug: city,
       ...companyMatch,
       ...searchStage,
     };

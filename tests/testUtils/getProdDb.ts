@@ -410,11 +410,12 @@ export async function updateIndexes(db: Db) {
   // Shop products
   await createCollectionIfNotExist(COL_SHOP_PRODUCTS);
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+
+  // TODO shopProductCommonIndexes companyId, shopId
   const shopProductCommonIndexes = {
+    citySlug: 1,
     companyId: 1,
     shopId: 1,
-    mainImage: 1,
-    citySlug: 1,
   };
   await shopProductsCollection.createIndex({
     rubricSlug: 1,
@@ -422,6 +423,7 @@ export async function updateIndexes(db: Db) {
     brandCollectionSlug: 1,
     filterSlugs: 1,
     price: 1,
+    mainImage: 1,
     ...shopProductCommonIndexes,
   });
 
@@ -433,15 +435,21 @@ export async function updateIndexes(db: Db) {
     brandSlug: 1,
     brandCollectionSlug: 1,
     filterSlugs: 1,
-  });
-  await productFacetsCollection.createIndex({
-    rubricSlug: 1,
-    brandCollectionSlug: 1,
-    filterSlugs: 1,
+    mainImage: 1,
   });
   await productFacetsCollection.createIndex({
     rubricSlug: 1,
     filterSlugs: 1,
+    mainImage: 1,
+  });
+  await productFacetsCollection.createIndex({
+    rubricSlug: 1,
+    filterSlugs: 1,
+    mainImage: 1,
+  });
+  await productFacetsCollection.createIndex({
+    rubricSlug: 1,
+    mainImage: 1,
   });
 
   // Summaries

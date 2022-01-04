@@ -407,50 +407,133 @@ export async function updateIndexes(db: Db) {
   await orderLogsCollection.createIndex({ userId: 1, _id: -1 });
   await orderLogsCollection.createIndex({ variant: 1, _id: -1 });
 
-  // Shop products
-  await createCollectionIfNotExist(COL_SHOP_PRODUCTS);
-  const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-
-  // TODO shopProductCommonIndexes companyId, shopId
-  const shopProductCommonIndexes = {
-    citySlug: 1,
-    companyId: 1,
-    shopId: 1,
-  };
-  await shopProductsCollection.createIndex({
+  // product filters
+  const productsFilterFull = {
     rubricSlug: 1,
     brandSlug: 1,
     brandCollectionSlug: 1,
     filterSlugs: 1,
-    price: 1,
     mainImage: 1,
-    ...shopProductCommonIndexes,
+  };
+  const productsFilterNoBrandCollection = {
+    rubricSlug: 1,
+    brandSlug: 1,
+    filterSlugs: 1,
+    mainImage: 1,
+  };
+  const productsFilterWithBrandNoFilters = {
+    rubricSlug: 1,
+    brandSlug: 1,
+    mainImage: 1,
+  };
+  const productsFilterNoBrand = {
+    rubricSlug: 1,
+    filterSlugs: 1,
+    mainImage: 1,
+  };
+  const productsFilterNoFilters = {
+    rubricSlug: 1,
+    mainImage: 1,
+  };
+
+  // Shop products
+  await createCollectionIfNotExist(COL_SHOP_PRODUCTS);
+  const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+
+  // catalogue for company domain
+  await shopProductsCollection.createIndex({
+    companyId: 1,
+    citySlug: 1,
+    ...productsFilterFull,
+    price: 1,
+  });
+  await shopProductsCollection.createIndex({
+    companyId: 1,
+    citySlug: 1,
+    ...productsFilterNoBrandCollection,
+    price: 1,
+  });
+  await shopProductsCollection.createIndex({
+    companyId: 1,
+    citySlug: 1,
+    ...productsFilterWithBrandNoFilters,
+    price: 1,
+  });
+  await shopProductsCollection.createIndex({
+    companyId: 1,
+    citySlug: 1,
+    ...productsFilterNoBrand,
+    price: 1,
+  });
+  await shopProductsCollection.createIndex({
+    companyId: 1,
+    citySlug: 1,
+    ...productsFilterNoFilters,
+    price: 1,
+  });
+
+  // catalogue for main domain
+  await shopProductsCollection.createIndex({
+    citySlug: 1,
+    ...productsFilterFull,
+    price: 1,
+  });
+  await shopProductsCollection.createIndex({
+    citySlug: 1,
+    ...productsFilterNoBrandCollection,
+    price: 1,
+  });
+  await shopProductsCollection.createIndex({
+    citySlug: 1,
+    ...productsFilterWithBrandNoFilters,
+    price: 1,
+  });
+  await shopProductsCollection.createIndex({
+    citySlug: 1,
+    ...productsFilterNoBrand,
+    price: 1,
+  });
+  await shopProductsCollection.createIndex({
+    citySlug: 1,
+    ...productsFilterNoFilters,
+    price: 1,
+  });
+
+  // cms for shop
+  await shopProductsCollection.createIndex({
+    shopId: 1,
+    ...productsFilterFull,
+    price: 1,
+  });
+  await shopProductsCollection.createIndex({
+    shopId: 1,
+    ...productsFilterNoBrandCollection,
+    price: 1,
+  });
+  await shopProductsCollection.createIndex({
+    shopId: 1,
+    ...productsFilterWithBrandNoFilters,
+    price: 1,
+  });
+  await shopProductsCollection.createIndex({
+    shopId: 1,
+    ...productsFilterNoBrand,
+    price: 1,
+  });
+  await shopProductsCollection.createIndex({
+    shopId: 1,
+    ...productsFilterNoFilters,
+    price: 1,
   });
 
   // Facets
   await createCollectionIfNotExist(COL_PRODUCT_FACETS);
   const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
-  await productFacetsCollection.createIndex({
-    rubricSlug: 1,
-    brandSlug: 1,
-    brandCollectionSlug: 1,
-    filterSlugs: 1,
-    mainImage: 1,
-  });
-  await productFacetsCollection.createIndex({
-    rubricSlug: 1,
-    filterSlugs: 1,
-    mainImage: 1,
-  });
-  await productFacetsCollection.createIndex({
-    rubricSlug: 1,
-    filterSlugs: 1,
-    mainImage: 1,
-  });
-  await productFacetsCollection.createIndex({
-    rubricSlug: 1,
-    mainImage: 1,
-  });
+  await productFacetsCollection.createIndex(productsFilterFull);
+  await productFacetsCollection.createIndex(productsFilterNoBrandCollection);
+  await productFacetsCollection.createIndex(productsFilterWithBrandNoFilters);
+  await productFacetsCollection.createIndex(productsFilterNoBrand);
+  await productFacetsCollection.createIndex(productsFilterNoFilters);
 
   // Summaries
   await createCollectionIfNotExist(COL_PRODUCT_SUMMARIES);

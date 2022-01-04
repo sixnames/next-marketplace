@@ -971,14 +971,14 @@ export const getCatalogueData = async ({
     // initial match
     const companyMatch = companyId ? { companyId: new ObjectId(companyId) } : {};
     const productsInitialMatch = {
+      ...companyMatch,
+      citySlug: city,
       ...rubricStage,
       ...brandStage,
       ...brandCollectionStage,
       ...optionsStage,
-      ...pricesStage,
       ...ignoreNoImageStage,
-      citySlug: city,
-      ...companyMatch,
+      ...pricesStage,
       ...searchStage,
     };
 
@@ -987,6 +987,7 @@ export const getCatalogueData = async ({
       citySlug: city,
       companySlug,
     };
+
     const productDataAggregationResult = await shopProductsCollection
       .aggregate<CatalogueProductsAggregationInterface>([
         // match shop products
@@ -1466,6 +1467,7 @@ export const getCatalogueData = async ({
       redirect = `/${sortedRedirectArray.join('/')}`;
     }
     // console.log(`Catalogue data >>>>>>>>>>>>>>>> `, new Date().getTime() - timeStart);
+
     return {
       // rubric
       _id: rubric._id,

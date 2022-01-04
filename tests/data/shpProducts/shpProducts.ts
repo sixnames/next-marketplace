@@ -7,7 +7,7 @@ import productSummaries from '../productSummaries/productSummaries';
 import shops from '../shops/shops';
 import rubrics from '../rubrics/rubrics';
 
-const maxProductsCountForShop = 50;
+const maxProductsCountForShop = 8000;
 const shpProducts: ShopProductModel[] = [];
 
 const isOneShopCompany = getCliParamBoolean('oneShop');

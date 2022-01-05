@@ -15,6 +15,7 @@ import {
   CategoryInterface,
   ProductAttributeInterface,
 } from '../../db/uiInterfaces';
+import { getPercentage } from '../../lib/numbers';
 import { getAttributeReadableValue } from '../../lib/productAttributesUtils';
 import {
   generateCardTitle,
@@ -33,26 +34,147 @@ import {
   COL_RUBRICS,
 } from '../../db/collectionNames';
 import {
+  AddressModel,
   BaseModel,
+  ContactsModel,
   CountersModel,
+  EmailAddressModel,
   GenderModel,
   IdCounterModel,
+  MapMarkerModel,
   ObjectIdModel,
+  PageStateModel,
+  PhoneNumberModel,
   ProductFacetModel,
   ProductSummaryAttributeModel,
   ProductSummaryModel,
   ProductVariantItemModel,
   ProductVariantModel,
+  PromoBaseInterface,
   RubricModel,
+  ShopProductModel,
   ShopProductOldPriceModel,
   TimestampModel,
   TranslationModel,
+  UserCashbackModel,
+  UserNotificationsModel,
+  UserPaybackModel,
 } from '../../db/dbModels';
 require('dotenv').config();
 
 export interface AssetModel {
   url: string;
   index: number;
+}
+
+export interface OldCompanyModel extends BaseModel, TimestampModel {
+  name: string;
+  slug: string;
+  logo: AssetModel;
+  ownerId: ObjectIdModel;
+  staffIds: ObjectIdModel[];
+  contacts: ContactsModel;
+  shopsIds: ObjectIdModel[];
+  domain?: string | null;
+}
+
+export interface OldShopModel extends BaseModel, TimestampModel {
+  name: string;
+  slug: string;
+  citySlug: string;
+  logo: AssetModel;
+  assets: AssetModel[];
+  contacts: ContactsModel;
+  address: AddressModel;
+  companyId: ObjectIdModel;
+  companySlug: string;
+  mainImage: string;
+  token?: string | null;
+  rating?: number | null;
+  mapMarker?: MapMarkerModel | null;
+  license?: string | null;
+  priceWarningI18n?: TranslationModel | null;
+}
+
+export interface OldUserModel extends BaseModel, TimestampModel {
+  name: string;
+  lastName?: string | null;
+  secondName?: string | null;
+  email: EmailAddressModel;
+  phone: PhoneNumberModel;
+  password: string;
+  avatar?: AssetModel | null;
+  roleId: ObjectIdModel;
+  cartId?: ObjectIdModel | null;
+  notifications: UserNotificationsModel;
+  categoryIds: ObjectIdModel[];
+  cashback?: UserCashbackModel[] | null;
+  payback?: UserPaybackModel[] | null;
+}
+
+export interface OldPromoModel extends TimestampModel, PromoBaseInterface {
+  _id: ObjectIdModel;
+  slug: string;
+  nameI18n: TranslationModel;
+  descriptionI18n: TranslationModel;
+
+  // ui configs
+  showAsPromoPage: boolean;
+  assetKeys: string[];
+  content: string;
+
+  // main banner
+  showAsMainBanner: boolean;
+  mainBanner?: AssetModel | null;
+  mainBannerMobile?: AssetModel | null;
+  mainBannerTextColor: string;
+  mainBannerVerticalTextAlign: string;
+  mainBannerHorizontalTextAlign: string;
+  mainBannerTextAlign: string;
+  mainBannerTextPadding: number;
+  mainBannerTextMaxWidth: number;
+
+  //secondary banner
+  showAsSecondaryBanner: boolean;
+  secondaryBanner?: AssetModel | null;
+  secondaryBannerTextColor: string;
+  secondaryBannerVerticalTextAlign: string;
+  secondaryBannerHorizontalTextAlign: string;
+  secondaryBannerTextAlign: string;
+  secondaryBannerTextPadding: number;
+  secondaryBannerTextMaxWidth: number;
+}
+
+export interface OldPageModel extends TimestampModel {
+  _id: ObjectIdModel;
+  nameI18n: TranslationModel;
+  descriptionI18n?: TranslationModel | null;
+  index: number;
+  slug: string;
+  citySlug: string;
+  assetKeys: string[];
+  pagesGroupId: ObjectIdModel;
+  content: string;
+  state: PageStateModel;
+  companySlug: string;
+  pageScreenshot?: AssetModel | null;
+  mainBanner?: AssetModel | null;
+  mainBannerMobile?: AssetModel | null;
+  showAsMainBanner?: boolean | null;
+  mainBannerTextColor?: string | null;
+  mainBannerVerticalTextAlign?: string | null;
+  mainBannerHorizontalTextAlign?: string | null;
+  mainBannerTextAlign?: string | null;
+  mainBannerTextPadding?: number | null;
+  mainBannerTextMaxWidth?: number | null;
+  secondaryBanner?: AssetModel | null;
+  showAsSecondaryBanner?: boolean | null;
+  secondaryBannerTextColor?: string | null;
+  secondaryBannerVerticalTextAlign?: string | null;
+  secondaryBannerHorizontalTextAlign?: string | null;
+  secondaryBannerTextAlign?: string | null;
+  secondaryBannerTextPadding?: number | null;
+  secondaryBannerTextMaxWidth?: number | null;
 }
 
 export interface OldProductConnectionItemModel {
@@ -205,14 +327,15 @@ async function updateProds() {
           {
             rubricId: rubric._id,
           },
-          { limit: 10 },
+          { limit: 1 },
         )
         .toArray();
       console.log(rubric.nameI18n.ru, products.length);
       const rubricSummaries: ProductSummaryModel[] = [];
       const rubricFacets: ProductFacetModel[] = [];
+      const rubricShopProducts: ShopProductModel[] = [];
 
-      for await (const product of products) {
+      for await (const [productIndex, product] of products.entries()) {
         // get product brand
         let brand: BrandInterface | null | undefined = null;
         if (product.brandSlug) {
@@ -564,11 +687,74 @@ async function updateProds() {
           })
           .toArray();
 
-        console.log(oldShopProducts.length);
+        oldShopProducts.forEach((oldShopProduct) => {
+          const lastOldPrice =
+            oldShopProduct.oldPrices.length > 0
+              ? oldShopProduct.oldPrices[oldShopProduct.oldPrices.length - 1]
+              : null;
+          const currentPrice = oldShopProduct.price;
+          const discountedPercent =
+            lastOldPrice && lastOldPrice.price > oldShopProduct.price
+              ? getPercentage({
+                  fullValue: lastOldPrice.price,
+                  partialValue: currentPrice,
+                })
+              : 0;
+          const oldPrice = lastOldPrice ? lastOldPrice.price : oldShopProduct.price;
+
+          const shopProduct: ShopProductModel = {
+            _id: oldShopProduct._id,
+            updatedAt: oldShopProduct.updatedAt,
+            createdAt: oldShopProduct.createdAt,
+            barcode: oldShopProduct.barcode,
+            available: oldShopProduct.available,
+            oldPrices: oldShopProduct.oldPrices,
+            citySlug: oldShopProduct.citySlug,
+            companyId: oldShopProduct.companyId,
+            companySlug: oldShopProduct.companySlug,
+            views: oldShopProduct.views,
+            shopId: oldShopProduct.shopId,
+            useCategoryCashback: oldShopProduct.useCategoryCashback,
+            useCategoryDiscount: oldShopProduct.useCategoryDiscount,
+            useCategoryPayFromCashback: oldShopProduct.useCategoryPayFromCashback,
+            price: currentPrice,
+            discountedPercent,
+            oldPrice,
+            productId: facet._id,
+            itemId: facet.itemId,
+            filterSlugs: facet.filterSlugs,
+            manufacturerSlug: facet.manufacturerSlug,
+            brandCollectionSlug: facet.brandCollectionSlug,
+            brandSlug: facet.brandSlug,
+            rubricSlug: facet.rubricSlug,
+            rubricId: facet.rubricId,
+            mainImage: facet.mainImage,
+            allowDelivery: facet.allowDelivery,
+          };
+          rubricShopProducts.push(shopProduct);
+        });
+
+        // log counter for each 100 product
+        if (productIndex % 100 === 0) {
+          console.log(`${productIndex} of ${products.length} ${snippetTitle}`);
+        }
       }
+
+      // TODO save all
+      console.log({
+        rubricSummaries: rubricSummaries.length,
+        rubricFacets: rubricFacets.length,
+        rubricShopProducts: rubricShopProducts.length,
+      });
     }
 
-    // TODO update shop, company assets
+    // update asset fields
+    // CompanyModel logo
+    // ShopModel logo, assets
+    // UserModel avatar
+    // PromoModel mainBanner, mainBannerMobile, secondaryBanner
+    // PageModel pageScreenshot, mainBanner, secondaryBanner,
+
     // TODO update indexes
     // disconnect form db
     await client.close();

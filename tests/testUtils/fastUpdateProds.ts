@@ -29,6 +29,7 @@ import {
   COL_BRAND_COLLECTIONS,
   COL_BRANDS,
   COL_CATEGORIES,
+  COL_COMPANIES,
   COL_ID_COUNTERS,
   COL_OPTIONS,
   COL_RUBRICS,
@@ -36,29 +37,29 @@ import {
 import {
   AddressModel,
   BaseModel,
+  CompanyModel,
   ContactsModel,
   CountersModel,
-  EmailAddressModel,
   GenderModel,
   IdCounterModel,
   MapMarkerModel,
   ObjectIdModel,
-  PageStateModel,
-  PhoneNumberModel,
+  PageModel,
+  PagesTemplateModel,
   ProductFacetModel,
   ProductSummaryAttributeModel,
   ProductSummaryModel,
   ProductVariantItemModel,
   ProductVariantModel,
   PromoBaseInterface,
+  PromoModel,
   RubricModel,
+  ShopModel,
   ShopProductModel,
   ShopProductOldPriceModel,
   TimestampModel,
   TranslationModel,
-  UserCashbackModel,
-  UserNotificationsModel,
-  UserPaybackModel,
+  UserModel,
 } from '../../db/dbModels';
 require('dotenv').config();
 
@@ -97,84 +98,30 @@ export interface OldShopModel extends BaseModel, TimestampModel {
 }
 
 export interface OldUserModel extends BaseModel, TimestampModel {
-  name: string;
-  lastName?: string | null;
-  secondName?: string | null;
-  email: EmailAddressModel;
-  phone: PhoneNumberModel;
-  password: string;
   avatar?: AssetModel | null;
-  roleId: ObjectIdModel;
-  cartId?: ObjectIdModel | null;
-  notifications: UserNotificationsModel;
-  categoryIds: ObjectIdModel[];
-  cashback?: UserCashbackModel[] | null;
-  payback?: UserPaybackModel[] | null;
 }
 
 export interface OldPromoModel extends TimestampModel, PromoBaseInterface {
   _id: ObjectIdModel;
-  slug: string;
-  nameI18n: TranslationModel;
-  descriptionI18n: TranslationModel;
-
-  // ui configs
-  showAsPromoPage: boolean;
-  assetKeys: string[];
-  content: string;
-
-  // main banner
-  showAsMainBanner: boolean;
   mainBanner?: AssetModel | null;
   mainBannerMobile?: AssetModel | null;
-  mainBannerTextColor: string;
-  mainBannerVerticalTextAlign: string;
-  mainBannerHorizontalTextAlign: string;
-  mainBannerTextAlign: string;
-  mainBannerTextPadding: number;
-  mainBannerTextMaxWidth: number;
-
-  //secondary banner
-  showAsSecondaryBanner: boolean;
   secondaryBanner?: AssetModel | null;
-  secondaryBannerTextColor: string;
-  secondaryBannerVerticalTextAlign: string;
-  secondaryBannerHorizontalTextAlign: string;
-  secondaryBannerTextAlign: string;
-  secondaryBannerTextPadding: number;
-  secondaryBannerTextMaxWidth: number;
 }
 
 export interface OldPageModel extends TimestampModel {
   _id: ObjectIdModel;
-  nameI18n: TranslationModel;
-  descriptionI18n?: TranslationModel | null;
-  index: number;
-  slug: string;
-  citySlug: string;
-  assetKeys: string[];
-  pagesGroupId: ObjectIdModel;
-  content: string;
-  state: PageStateModel;
-  companySlug: string;
   pageScreenshot?: AssetModel | null;
   mainBanner?: AssetModel | null;
   mainBannerMobile?: AssetModel | null;
-  showAsMainBanner?: boolean | null;
-  mainBannerTextColor?: string | null;
-  mainBannerVerticalTextAlign?: string | null;
-  mainBannerHorizontalTextAlign?: string | null;
-  mainBannerTextAlign?: string | null;
-  mainBannerTextPadding?: number | null;
-  mainBannerTextMaxWidth?: number | null;
   secondaryBanner?: AssetModel | null;
-  showAsSecondaryBanner?: boolean | null;
-  secondaryBannerTextColor?: string | null;
-  secondaryBannerVerticalTextAlign?: string | null;
-  secondaryBannerHorizontalTextAlign?: string | null;
-  secondaryBannerTextAlign?: string | null;
-  secondaryBannerTextPadding?: number | null;
-  secondaryBannerTextMaxWidth?: number | null;
+}
+
+export interface OldPagesTemplateModel {
+  _id: ObjectIdModel;
+  pageScreenshot?: AssetModel | null;
+  mainBanner?: AssetModel | null;
+  mainBannerMobile?: AssetModel | null;
+  secondaryBanner?: AssetModel | null;
 }
 
 export interface OldProductConnectionItemModel {
@@ -295,8 +242,6 @@ async function updateProds() {
     console.log(`Updating ${dbConfig.dbName} db`);
     const locale = DEFAULT_LOCALE;
     const { db, client } = await getProdDb(dbConfig);
-    // const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-    // const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
     const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
     const brandsCollection = db.collection<BrandInterface>(COL_BRANDS);
     const categoriesCollection = db.collection<CategoryInterface>(COL_CATEGORIES);
@@ -750,12 +695,123 @@ async function updateProds() {
 
     // update asset fields
     // CompanyModel logo
-    // ShopModel logo, assets
-    // UserModel avatar
-    // PromoModel mainBanner, mainBannerMobile, secondaryBanner
-    // PageModel pageScreenshot, mainBanner, secondaryBanner,
+    console.log('CompanyModel logo');
+    const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
+    const oldCompanies = await companiesCollection.aggregate<OldCompanyModel>([]).toArray();
+    for await (const document of oldCompanies) {
+      await companiesCollection.findOneAndUpdate(
+        {
+          _id: document._id,
+        },
+        {
+          $set: {
+            logo: document.logo.url || IMAGE_FALLBACK,
+          },
+        },
+      );
+    }
 
-    // TODO update indexes
+    // ShopModel logo, assets
+    console.log('ShopModel logo, assets');
+    const shopsCollection = db.collection<ShopModel>(COL_COMPANIES);
+    const oldShops = await shopsCollection.aggregate<OldShopModel>([]).toArray();
+    for await (const document of oldShops) {
+      await shopsCollection.findOneAndUpdate(
+        {
+          _id: document._id,
+        },
+        {
+          $set: {
+            logo: document.logo.url || IMAGE_FALLBACK,
+            assets: document.assets.map(({ url }) => url),
+          },
+        },
+      );
+    }
+
+    // UserModel avatar
+    console.log('UserModel avatar');
+    const usersCollection = db.collection<UserModel>(COL_COMPANIES);
+    const oldUsers = await usersCollection.aggregate<OldUserModel>([]).toArray();
+    for await (const document of oldUsers) {
+      await usersCollection.findOneAndUpdate(
+        {
+          _id: document._id,
+        },
+        {
+          $set: {
+            avatar: document.avatar?.url,
+          },
+        },
+      );
+    }
+
+    // PromoModel mainBanner, mainBannerMobile, secondaryBanner
+    console.log('PromoModel mainBanner, mainBannerMobile, secondaryBanner');
+    const promoCollection = db.collection<PromoModel>(COL_COMPANIES);
+    const oldPromos = await promoCollection.aggregate<OldPromoModel>([]).toArray();
+    for await (const document of oldPromos) {
+      await promoCollection.findOneAndUpdate(
+        {
+          _id: document._id,
+        },
+        {
+          $set: {
+            mainBanner: document.mainBanner?.url,
+            mainBannerMobile: document.mainBannerMobile?.url,
+            secondaryBanner: document.secondaryBanner?.url,
+          },
+        },
+      );
+    }
+
+    // PageModel pageScreenshot, mainBanner, mainBannerMobile, secondaryBanner
+    console.log('PageModel pageScreenshot, mainBanner, mainBannerMobile, secondaryBanner');
+    const pagesCollection = db.collection<PageModel>(COL_COMPANIES);
+    const oldPages = await pagesCollection.aggregate<OldPageModel>([]).toArray();
+    for await (const document of oldPages) {
+      await pagesCollection.findOneAndUpdate(
+        {
+          _id: document._id,
+        },
+        {
+          $set: {
+            pageScreenshot: document.pageScreenshot?.url,
+            mainBanner: document.mainBanner?.url,
+            mainBannerMobile: document.mainBannerMobile?.url,
+            secondaryBanner: document.secondaryBanner?.url,
+          },
+        },
+      );
+    }
+
+    // PagesTemplateModel pageScreenshot, mainBanner, mainBannerMobile, secondaryBanner
+    console.log('PagesTemplateModel pageScreenshot, mainBanner, mainBannerMobile, secondaryBanner');
+    const pageTemplatesCollection = db.collection<PagesTemplateModel>(COL_COMPANIES);
+    const oldPageTemplates = await pageTemplatesCollection
+      .aggregate<OldPagesTemplateModel>([])
+      .toArray();
+    for await (const document of oldPageTemplates) {
+      await pageTemplatesCollection.findOneAndUpdate(
+        {
+          _id: document._id,
+        },
+        {
+          $set: {
+            pageScreenshot: document.pageScreenshot?.url,
+            mainBanner: document.mainBanner?.url,
+            mainBannerMobile: document.mainBannerMobile?.url,
+            secondaryBanner: document.secondaryBanner?.url,
+          },
+        },
+      );
+    }
+
+    // update indexes
+    console.log(`Updating indexes in ${dbConfig.dbName} db`);
+    // await updateIndexes(db);
+    console.log(`Indexes updated in ${dbConfig.dbName} db`);
+
     // disconnect form db
     await client.close();
     console.log(`Done ${dbConfig.dbName}`);

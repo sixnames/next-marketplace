@@ -38,7 +38,7 @@ import {
   PageModel,
   PagesGroupModel,
   PayloadType,
-  ProductAttributeModel,
+  ProductSummaryAttributeModel,
   ProductCardBreadcrumbModel,
   ProductVariantItemModel,
   ProductVariantModel,
@@ -226,7 +226,7 @@ export interface ProductVariantInterface extends ProductVariantModel {
   products: ProductVariantItemInterface[];
 }
 
-export interface ProductAttributeInterface extends ProductAttributeModel {
+export interface ProductAttributeInterface extends ProductSummaryAttributeModel {
   readableValue?: string | null;
   index?: number | null;
   attribute?: AttributeInterface | null;

@@ -122,7 +122,9 @@ export const productAttributesPipeline = (props?: ProductAttributesPipelineInter
                       'missing',
                     ],
                   },
-                  {},
+                  {
+                    $eq: ['$_id', null],
+                  },
                   {
                     $in: ['$_id', '$$optionIds'],
                   },

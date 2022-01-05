@@ -15,7 +15,7 @@ import {
   AttributeModel,
   AttributesGroupModel,
   CategoryModel,
-  ProductAttributeModel,
+  ProductSummaryAttributeModel,
   ProductFacetModel,
   ProductSummaryModel,
   RubricModel,
@@ -568,7 +568,7 @@ export const RubricMutations = extendType({
         const attributesGroupsCollection =
           db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
         const productAttributesCollection =
-          db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
+          db.collection<ProductSummaryAttributeModel>(COL_PRODUCT_ATTRIBUTES);
 
         const session = client.startSession();
 

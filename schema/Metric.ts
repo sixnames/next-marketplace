@@ -6,7 +6,7 @@ import {
   AttributeModel,
   MetricModel,
   MetricPayloadModel,
-  ProductAttributeModel,
+  ProductSummaryAttributeModel,
 } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
 import getResolverErrorMessage from '../lib/getResolverErrorMessage';
@@ -172,7 +172,7 @@ export const MetricMutations = extendType({
         const metricsCollection = db.collection<MetricModel>(COL_METRICS);
         const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
         const productAttributesCollection =
-          db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
+          db.collection<ProductSummaryAttributeModel>(COL_PRODUCT_ATTRIBUTES);
 
         const session = client.startSession();
 

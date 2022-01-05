@@ -16,7 +16,7 @@ import {
   ObjectIdModel,
   OptionModel,
   ProductSummaryModel,
-  ProductAttributeModel,
+  ProductSummaryAttributeModel,
   CategoryModel,
   ProductVariantModel,
 } from '../../../db/dbModels';
@@ -187,7 +187,7 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
     const attributeIds: ObjectIdModel[] = [];
     const filterSlugs: string[] = [];
     const titleCategorySlugs: string[] = [];
-    const productAttributes: ProductAttributeModel[] = [];
+    const productAttributes: ProductSummaryAttributeModel[] = [];
     const itemId: string = addZero(counter, ID_COUNTER_DIGITS);
     const name = `${rubricSlug.toUpperCase()} ${itemId}`;
 
@@ -210,7 +210,7 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
           attribute.variant === ATTRIBUTE_VARIANT_NUMBER
             ? Math.round(Math.random() * 10)
             : undefined;
-        const productAttribute: ProductAttributeModel = {
+        const productAttribute: ProductSummaryAttributeModel = {
           _id: new ObjectId(),
           readableValueI18n: {},
           optionIds: [],

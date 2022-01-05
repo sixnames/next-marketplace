@@ -625,7 +625,7 @@ export interface ProductVariantModel {
   products: ProductVariantItemModel[];
 }
 
-export interface ProductAttributeModel {
+export interface ProductSummaryAttributeModel {
   _id: ObjectIdModel;
   attributeId: ObjectIdModel;
   filterSlugs: string[];
@@ -661,7 +661,7 @@ export interface ProductSummaryModel extends ProductFacetModel, TimestampModel {
   snippetTitleI18n: TranslationModel;
   cardTitleI18n: TranslationModel;
   assets: string[];
-  attributes: ProductAttributeModel[];
+  attributes: ProductSummaryAttributeModel[];
   titleCategorySlugs: string[];
   variants: ProductVariantModel[];
 }

@@ -24,7 +24,7 @@ import {
   CategoryModel,
   ManufacturerModel,
   OptionModel,
-  ProductAttributeModel,
+  ProductSummaryAttributeModel,
   RubricModel,
 } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
@@ -74,7 +74,7 @@ export const CatalogueMutations = extendType({
           const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
           const productAttributesCollection =
-            db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
+            db.collection<ProductSummaryAttributeModel>(COL_PRODUCT_ATTRIBUTES);
           const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
           const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
           const brandCollectionsCollection =

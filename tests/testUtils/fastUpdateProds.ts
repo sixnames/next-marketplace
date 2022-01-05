@@ -4,6 +4,7 @@ import {
   ATTRIBUTE_VARIANT_NUMBER,
   ATTRIBUTE_VARIANT_SELECT,
   ATTRIBUTE_VARIANT_STRING,
+  CATEGORY_SLUG_PREFIX,
   DEFAULT_CURRENCY,
   DEFAULT_LOCALE,
   ID_COUNTER_STEP,
@@ -37,6 +38,11 @@ import {
   GenderModel,
   IdCounterModel,
   ObjectIdModel,
+  ProductFacetModel,
+  ProductSummaryAttributeModel,
+  ProductSummaryModel,
+  ProductVariantItemModel,
+  ProductVariantModel,
   RubricModel,
   ShopProductOldPriceModel,
   TimestampModel,
@@ -49,7 +55,7 @@ export interface AssetModel {
   index: number;
 }
 
-export interface ProductConnectionItemModel {
+export interface OldProductConnectionItemModel {
   _id: ObjectIdModel;
   optionId: ObjectIdModel;
   productSlug: string;
@@ -57,14 +63,14 @@ export interface ProductConnectionItemModel {
   connectionId: ObjectIdModel;
 }
 
-export interface ProductConnectionModel {
+export interface OldProductConnectionModel {
   _id: ObjectIdModel;
   attributeId: ObjectIdModel;
   attributeSlug: string;
   productsIds: ObjectIdModel[];
 }
 
-export interface ProductAttributeModel {
+export interface OldProductAttributeModel {
   _id: ObjectIdModel;
   rubricId: ObjectIdModel;
   rubricSlug: string;
@@ -77,14 +83,14 @@ export interface ProductAttributeModel {
   number?: number | null;
 }
 
-export interface ProductAssetsModel {
+export interface OldProductAssetsModel {
   _id: ObjectIdModel;
   productSlug: string;
   productId: ObjectIdModel;
   assets: AssetModel[];
 }
 
-interface ProductMainFieldsInterface {
+interface OldProductMainFieldsInterface {
   rubricId: ObjectIdModel;
   rubricSlug: string;
   brandSlug?: string | null;
@@ -95,7 +101,7 @@ interface ProductMainFieldsInterface {
   allowDelivery: boolean;
 }
 
-export interface ProductModel extends ProductMainFieldsInterface, BaseModel, TimestampModel {
+export interface OldProductModel extends OldProductMainFieldsInterface, BaseModel, TimestampModel {
   slug: string;
   active: boolean;
   originalName: string;
@@ -107,8 +113,8 @@ export interface ProductModel extends ProductMainFieldsInterface, BaseModel, Tim
   selectedAttributesIds: ObjectId[];
 }
 
-export interface ShopProductOldModel
-  extends ProductMainFieldsInterface,
+export interface OldShopProductModel
+  extends OldProductMainFieldsInterface,
     TimestampModel,
     CountersModel {
   _id: ObjectIdModel;
@@ -174,18 +180,21 @@ async function updateProds() {
     const categoriesCollection = db.collection<CategoryInterface>(COL_CATEGORIES);
 
     // old collections
-    const oldProductsCollection = db.collection<ProductModel>(COL_PRODUCTS_OLD);
-    const oldShopProductsCollection = db.collection<ShopProductOldModel>(COL_SHOP_PRODUCTS_OLD);
-    const oldProductAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS_OLD);
-    const oldProductAttributesCollection = db.collection<ProductAttributeModel>(
+    const oldProductsCollection = db.collection<OldProductModel>(COL_PRODUCTS_OLD);
+    const oldShopProductsCollection = db.collection<OldShopProductModel>(COL_SHOP_PRODUCTS_OLD);
+    const oldProductAssetsCollection = db.collection<OldProductAssetsModel>(COL_PRODUCT_ASSETS_OLD);
+    const oldProductAttributesCollection = db.collection<OldProductAttributeModel>(
       COL_PRODUCT_ATTRIBUTES_OLD,
     );
-    const oldConnectionsCollection = db.collection<ProductConnectionModel>(
+    const oldConnectionsCollection = db.collection<OldProductConnectionModel>(
       COL_PRODUCT_CONNECTIONS_OLD,
     );
-    const oldConnectionItemsCollection = db.collection<ProductConnectionItemModel>(
+    const oldConnectionItemsCollection = db.collection<OldProductConnectionItemModel>(
       COL_PRODUCT_CONNECTION_ITEMS_OLD,
     );
+
+    // get old connections
+    const connections = await oldConnectionsCollection.find({}).toArray();
 
     // get rubrics
     const rubrics = await rubricsCollection.find({}).toArray();
@@ -196,10 +205,12 @@ async function updateProds() {
           {
             rubricId: rubric._id,
           },
-          { limit: 1 },
+          { limit: 10 },
         )
         .toArray();
       console.log(rubric.nameI18n.ru, products.length);
+      const rubricSummaries: ProductSummaryModel[] = [];
+      const rubricFacets: ProductFacetModel[] = [];
 
       for await (const product of products) {
         // get product brand
@@ -352,18 +363,16 @@ async function updateProds() {
               _id: productAttribute._id,
               attribute: productAttribute.attribute,
               attributeId: productAttribute.attributeId,
-              filterSlugs: productAttribute.selectedOptionsSlugs,
-              optionIds: productAttribute.selectedOptionsIds,
+              filterSlugs: productAttribute.selectedOptionsSlugs || [],
+              optionIds: productAttribute.selectedOptionsIds || [],
               number: productAttribute.number,
               textI18n: productAttribute.textI18n,
               readableValueI18n: {},
             };
 
-            const readableValue = getAttributeReadableValue({
-              gender: product.gender,
-              locale,
-              productAttribute: newProductAttribute,
-            });
+            if (!productAttribute.attribute) {
+              return acc;
+            }
 
             if (
               productAttribute.attribute.variant === ATTRIBUTE_VARIANT_STRING &&
@@ -373,7 +382,7 @@ async function updateProds() {
             }
             if (
               productAttribute.attribute.variant === ATTRIBUTE_VARIANT_NUMBER &&
-              typeof productAttribute.textI18n.number !== 'number'
+              typeof productAttribute.number !== 'number'
             ) {
               return acc;
             }
@@ -386,6 +395,12 @@ async function updateProds() {
               return acc;
             }
 
+            const readableValue = getAttributeReadableValue({
+              gender: product.gender,
+              locale,
+              productAttribute: newProductAttribute,
+            });
+
             return [
               ...acc,
               {
@@ -397,6 +412,20 @@ async function updateProds() {
             ];
           },
           [],
+        );
+        const castedAttributes: ProductSummaryAttributeModel[] = attributes.map(
+          (oldProductAttribute) => {
+            const payload: ProductSummaryAttributeModel = {
+              _id: oldProductAttribute._id,
+              readableValueI18n: oldProductAttribute.readableValueI18n,
+              textI18n: oldProductAttribute.textI18n,
+              number: oldProductAttribute.number,
+              optionIds: oldProductAttribute.optionIds,
+              filterSlugs: oldProductAttribute.filterSlugs,
+              attributeId: oldProductAttribute.attributeId,
+            };
+            return payload;
+          },
         );
 
         // get product titles
@@ -416,7 +445,7 @@ async function updateProds() {
         const snippetTitle = generateSnippetTitle(titleConfig);
         const cardTitle = generateCardTitle(titleConfig);
 
-        // get assets
+        // get product assets
         const initialAssets = await oldProductAssetsCollection.findOne({
           productId: product._id,
         });
@@ -426,24 +455,116 @@ async function updateProds() {
             })
           : [IMAGE_FALLBACK];
 
-        /*console.log(
-          JSON.stringify(
-            {
-              ...attributes[0],
-              attribute: {
-                ...attributes[0].attribute,
-              },
-            },
-            null,
-            2,
-          ),
-        );*/
-        console.log({
-          snippetTitle,
-          cardTitle,
-          assets,
-          originalName: product.originalName,
+        // get product connections
+        const variants: ProductVariantModel[] = [];
+        const connectionItems = await oldConnectionItemsCollection
+          .find({ productId: product._id })
+          .toArray();
+        for await (const connectionItem of connectionItems) {
+          const variantItem: ProductVariantItemModel = {
+            _id: connectionItem._id,
+            optionId: connectionItem.optionId,
+            productId: connectionItem.productId,
+            productSlug: connectionItem.productSlug,
+          };
+
+          const variant = variants.find(({ _id }) => {
+            return connectionItem.connectionId.equals(_id);
+          });
+          if (variant) {
+            variant.products.push(variantItem);
+            continue;
+          }
+
+          const connection = connections.find(({ _id }) => {
+            return connectionItem.connectionId.equals(_id);
+          });
+          if (connection) {
+            const newVariant: ProductVariantModel = {
+              _id: connection._id,
+              attributeId: connection.attributeId,
+              attributeSlug: connection.attributeSlug,
+              products: [variantItem],
+            };
+            variants.push(newVariant);
+          }
+        }
+
+        // cast to summary
+        const categorySlugs = product.selectedOptionsSlugs.filter((slug) => {
+          return slug.indexOf(CATEGORY_SLUG_PREFIX) === 0;
         });
+        const initialFilterSlugs = castedAttributes.reduce((acc: string[], productAttribute) => {
+          return [...acc, ...productAttribute.filterSlugs];
+        }, []);
+        const attributeIds = castedAttributes.reduce((acc: ObjectIdModel[], productAttribute) => {
+          return [...acc, productAttribute.attributeId];
+        }, []);
+        const filterSlugs = [...initialFilterSlugs, ...categorySlugs];
+        const titleCategorySlugs = (product.titleCategoriesSlugs || []).filter((slug) => {
+          return filterSlugs.includes(slug);
+        });
+        const summary: ProductSummaryModel = {
+          _id: product._id,
+          itemId: product.itemId,
+          slug: product.slug,
+          gender: product.gender,
+          active: product.active,
+          rubricId: product.rubricId,
+          rubricSlug: product.rubricSlug,
+          brandSlug: product.brandSlug,
+          brandCollectionSlug: product.brandCollectionSlug,
+          manufacturerSlug: product.manufacturerSlug,
+          filterSlugs,
+          barcode: product.barcode || [],
+          allowDelivery: product.allowDelivery,
+          mainImage: product.mainImage,
+          attributes: castedAttributes,
+          attributeIds,
+          variants,
+          assets,
+          nameI18n: product.nameI18n,
+          descriptionI18n: product.descriptionI18n,
+          titleCategorySlugs,
+          originalName: product.originalName,
+          cardTitleI18n: {
+            [DEFAULT_LOCALE]: cardTitle,
+          },
+          snippetTitleI18n: {
+            [DEFAULT_LOCALE]: snippetTitle,
+          },
+          createdAt: product.createdAt,
+          updatedAt: product.updatedAt,
+        };
+        rubricSummaries.push(summary);
+
+        // get facet
+        const facet: ProductFacetModel = {
+          _id: summary._id,
+          filterSlugs: summary.filterSlugs,
+          attributeIds: summary.attributeIds,
+          slug: summary.slug,
+          active: summary.active,
+          rubricId: summary.rubricId,
+          rubricSlug: summary.rubricSlug,
+          itemId: summary.itemId,
+          allowDelivery: summary.allowDelivery,
+          brandCollectionSlug: summary.brandCollectionSlug,
+          brandSlug: summary.brandSlug,
+          manufacturerSlug: summary.manufacturerSlug,
+          barcode: summary.barcode,
+          mainImage: summary.mainImage,
+        };
+        rubricFacets.push(facet);
+
+        // get shop products
+        const oldShopProducts = await oldShopProductsCollection
+          .find({
+            productId: product._id,
+          })
+          .toArray();
+
+        console.log(oldShopProducts.length);
       }
     }
 

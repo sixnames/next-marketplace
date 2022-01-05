@@ -650,7 +650,7 @@ interface ProductMainFieldsInterface {
 export interface ProductFacetModel extends ProductMainFieldsInterface, BaseModel {
   slug: string;
   active: boolean;
-  attributeIds: ObjectId[];
+  attributeIds: ObjectIdModel[];
 }
 
 export interface ProductSummaryModel extends ProductFacetModel, TimestampModel {

@@ -32,10 +32,15 @@ import {
   COL_COMPANIES,
   COL_ID_COUNTERS,
   COL_OPTIONS,
+  COL_PAGE_TEMPLATES,
+  COL_PAGES,
   COL_PRODUCT_FACETS,
   COL_PRODUCT_SUMMARIES,
+  COL_PROMO,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
+  COL_SHOPS,
+  COL_USERS,
 } from '../../db/collectionNames';
 import {
   AddressModel,
@@ -278,7 +283,7 @@ async function updateProds() {
           {
             rubricId: rubric._id,
           },
-          // { limit: 1 },
+          { limit: 10 },
         )
         .toArray();
       console.log(rubric.nameI18n.ru, products.length);
@@ -692,9 +697,14 @@ async function updateProds() {
       }
 
       // save all documents
-      await productSummariesCollection.insertMany(rubricSummaries);
-      await productFacetsCollection.insertMany(rubricFacets);
-      await shopProductsCollection.insertMany(rubricShopProducts);
+      // await productSummariesCollection.insertMany(rubricSummaries);
+      // await productFacetsCollection.insertMany(rubricFacets);
+      // await shopProductsCollection.insertMany(rubricShopProducts);
+      console.log({
+        rubricSummaries: rubricSummaries.length,
+        rubricFacets: rubricFacets.length,
+        rubricShopProducts: rubricShopProducts.length,
+      });
     }
 
     // update asset fields
@@ -702,7 +712,8 @@ async function updateProds() {
     console.log('CompanyModel logo');
     const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
     const oldCompanies = await companiesCollection.aggregate<OldCompanyModel>([]).toArray();
-    for await (const document of oldCompanies) {
+    console.log(oldCompanies.length);
+    /*for await (const document of oldCompanies) {
       await companiesCollection.findOneAndUpdate(
         {
           _id: document._id,
@@ -713,13 +724,14 @@ async function updateProds() {
           },
         },
       );
-    }
+    }*/
 
     // ShopModel logo, assets
     console.log('ShopModel logo, assets');
-    const shopsCollection = db.collection<ShopModel>(COL_COMPANIES);
+    const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
     const oldShops = await shopsCollection.aggregate<OldShopModel>([]).toArray();
-    for await (const document of oldShops) {
+    console.log(oldShops.length);
+    /*for await (const document of oldShops) {
       await shopsCollection.findOneAndUpdate(
         {
           _id: document._id,
@@ -731,13 +743,14 @@ async function updateProds() {
           },
         },
       );
-    }
+    }*/
 
     // UserModel avatar
     console.log('UserModel avatar');
-    const usersCollection = db.collection<UserModel>(COL_COMPANIES);
+    const usersCollection = db.collection<UserModel>(COL_USERS);
     const oldUsers = await usersCollection.aggregate<OldUserModel>([]).toArray();
-    for await (const document of oldUsers) {
+    console.log(oldUsers.length);
+    /*for await (const document of oldUsers) {
       await usersCollection.findOneAndUpdate(
         {
           _id: document._id,
@@ -748,13 +761,14 @@ async function updateProds() {
           },
         },
       );
-    }
+    }*/
 
     // PromoModel mainBanner, mainBannerMobile, secondaryBanner
     console.log('PromoModel mainBanner, mainBannerMobile, secondaryBanner');
-    const promoCollection = db.collection<PromoModel>(COL_COMPANIES);
+    const promoCollection = db.collection<PromoModel>(COL_PROMO);
     const oldPromos = await promoCollection.aggregate<OldPromoModel>([]).toArray();
-    for await (const document of oldPromos) {
+    console.log(oldPromos.length);
+    /*for await (const document of oldPromos) {
       await promoCollection.findOneAndUpdate(
         {
           _id: document._id,
@@ -767,13 +781,14 @@ async function updateProds() {
           },
         },
       );
-    }
+    }*/
 
     // PageModel pageScreenshot, mainBanner, mainBannerMobile, secondaryBanner
     console.log('PageModel pageScreenshot, mainBanner, mainBannerMobile, secondaryBanner');
-    const pagesCollection = db.collection<PageModel>(COL_COMPANIES);
+    const pagesCollection = db.collection<PageModel>(COL_PAGES);
     const oldPages = await pagesCollection.aggregate<OldPageModel>([]).toArray();
-    for await (const document of oldPages) {
+    console.log(oldPages.length);
+    /*for await (const document of oldPages) {
       await pagesCollection.findOneAndUpdate(
         {
           _id: document._id,
@@ -787,15 +802,16 @@ async function updateProds() {
           },
         },
       );
-    }
+    }*/
 
     // PagesTemplateModel pageScreenshot, mainBanner, mainBannerMobile, secondaryBanner
     console.log('PagesTemplateModel pageScreenshot, mainBanner, mainBannerMobile, secondaryBanner');
-    const pageTemplatesCollection = db.collection<PagesTemplateModel>(COL_COMPANIES);
+    const pageTemplatesCollection = db.collection<PagesTemplateModel>(COL_PAGE_TEMPLATES);
     const oldPageTemplates = await pageTemplatesCollection
       .aggregate<OldPagesTemplateModel>([])
       .toArray();
-    for await (const document of oldPageTemplates) {
+    console.log(oldPageTemplates.length);
+    /*for await (const document of oldPageTemplates) {
       await pageTemplatesCollection.findOneAndUpdate(
         {
           _id: document._id,
@@ -809,11 +825,11 @@ async function updateProds() {
           },
         },
       );
-    }
+    }*/
 
     // update indexes
     console.log(`Updating indexes in ${dbConfig.dbName} db`);
-    await updateIndexes(db);
+    // await updateIndexes(db);
     console.log(`Indexes updated in ${dbConfig.dbName} db`);
 
     // disconnect form db

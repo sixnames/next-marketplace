@@ -100,26 +100,26 @@ export async function getProdDb({ uri, dbName }: GetProdDd) {
 }
 
 export const dbsConfig: GetProdDd[] = [
-  /*{
+  {
     uri: `${process.env.WP_DB_URI}`,
     dbName: `${process.env.WP_DB_NAME}`,
     algoliaProductsIndexName: `${process.env.WP_ALGOLIA_PRODUCTS_INDEX_NAME}`,
-  },*/
+  },
   {
     uri: `${process.env.TFJ_DB_URI}`,
     dbName: `${process.env.TFJ_DB_NAME}`,
     algoliaProductsIndexName: `${process.env.TFJ_ALGOLIA_PRODUCTS_INDEX_NAME}`,
   },
-  /*{
+  {
     uri: `${process.env.AG_DB_URI}`,
     dbName: `${process.env.AG_DB_NAME}`,
     algoliaProductsIndexName: `${process.env.AG_ALGOLIA_PRODUCTS_INDEX_NAME}`,
-  },*/
-  /*{
+  },
+  {
     uri: `${process.env.KB_DB_URI}`,
     dbName: `${process.env.KB_DB_NAME}`,
     algoliaProductsIndexName: `${process.env.KB_ALGOLIA_PRODUCTS_INDEX_NAME}`,
-  },*/
+  },
 ];
 
 export async function updateIndexes(db: Db) {

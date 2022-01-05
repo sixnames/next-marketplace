@@ -32,7 +32,10 @@ import {
   COL_COMPANIES,
   COL_ID_COUNTERS,
   COL_OPTIONS,
+  COL_PRODUCT_FACETS,
+  COL_PRODUCT_SUMMARIES,
   COL_RUBRICS,
+  COL_SHOP_PRODUCTS,
 } from '../../db/collectionNames';
 import {
   AddressModel,
@@ -245,6 +248,9 @@ async function updateProds() {
     const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
     const brandsCollection = db.collection<BrandInterface>(COL_BRANDS);
     const categoriesCollection = db.collection<CategoryInterface>(COL_CATEGORIES);
+    const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
+    const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
+    const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
 
     // old collections
     const oldProductsCollection = db.collection<OldProductModel>(COL_PRODUCTS_OLD);
@@ -272,7 +278,7 @@ async function updateProds() {
           {
             rubricId: rubric._id,
           },
-          { limit: 1 },
+          // { limit: 1 },
         )
         .toArray();
       console.log(rubric.nameI18n.ru, products.length);
@@ -685,12 +691,10 @@ async function updateProds() {
         }
       }
 
-      // TODO save all
-      console.log({
-        rubricSummaries: rubricSummaries.length,
-        rubricFacets: rubricFacets.length,
-        rubricShopProducts: rubricShopProducts.length,
-      });
+      // save all documents
+      await productSummariesCollection.insertMany(rubricSummaries);
+      await productFacetsCollection.insertMany(rubricFacets);
+      await shopProductsCollection.insertMany(rubricShopProducts);
     }
 
     // update asset fields

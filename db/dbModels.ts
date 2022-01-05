@@ -666,13 +666,6 @@ export interface ProductSummaryModel extends ProductFacetModel, TimestampModel {
   variants: ProductVariantModel[];
 }
 
-export interface ProductAssetsModel {
-  _id: ObjectIdModel;
-  productSlug: string;
-  productId: ObjectIdModel;
-  assets: string[];
-}
-
 export interface ProductCardBreadcrumbModel {
   _id: ObjectIdModel;
   name: string;

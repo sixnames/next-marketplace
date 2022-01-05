@@ -1,12 +1,8 @@
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { ASSETS_DIST_PRODUCTS, ASSETS_PRODUCT_IMAGE_WIDTH } from '../../../config/common';
-import {
-  COL_PRODUCT_ASSETS,
-  COL_PRODUCT_FACETS,
-  COL_SHOP_PRODUCTS,
-} from '../../../db/collectionNames';
-import { ProductAssetsModel, ProductFacetModel, ShopProductModel } from '../../../db/dbModels';
+import { COL_PRODUCT_SUMMARIES, COL_SHOP_PRODUCTS } from '../../../db/collectionNames';
+import { ProductSummaryModel, ShopProductModel } from '../../../db/dbModels';
 import { getDatabase } from '../../../db/mongodb';
 import { getMainImage, storeUploads } from '../../../lib/assetUtils/assetUtils';
 import { parseRestApiFormData } from '../../../lib/restApi';
@@ -36,9 +32,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   const { db } = await getDatabase();
-  const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
+  const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-  const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
 
   const formData = await parseRestApiFormData(req);
   const { getApiMessage } = await getRequestParams({
@@ -58,22 +53,21 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const productId = new ObjectId(`${fields.productId}`);
 
   // Check product availability
-  const product = await productsCollection.findOne({ _id: productId });
-  const initialAssetsDocument = await productAssetsCollection.findOne({ productId });
-  const initialAssets = initialAssetsDocument ? initialAssetsDocument.assets : [];
-  if (!product) {
+  const summary = await productSummariesCollection.findOne({ _id: productId });
+  if (!summary) {
     res.status(500).send({
       success: false,
       message: await getApiMessage('products.update.error'),
     });
     return;
   }
+  const initialAssets = summary.assets;
 
   // Update product assets
   const assets = await storeUploads({
     files: formData.files,
     dist: ASSETS_DIST_PRODUCTS,
-    dirName: product.itemId,
+    dirName: summary.itemId,
     width: ASSETS_PRODUCT_IMAGE_WIDTH,
   });
   if (!assets) {
@@ -85,38 +79,14 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
   const finalAssets = [...initialAssets, ...assets];
   const mainImage = getMainImage(finalAssets);
-
-  // Update product
-  const updatedProductAssetsResult = await productAssetsCollection.findOneAndUpdate(
-    {
-      productId,
-    },
-    {
-      $set: {
-        assets: finalAssets,
-      },
-    },
-    {
-      returnDocument: 'after',
-      upsert: true,
-    },
-  );
-
-  const updatedProductAssets = updatedProductAssetsResult.value;
-  if (!updatedProductAssetsResult.ok || !updatedProductAssets) {
-    res.status(500).send({
-      success: false,
-      message: await getApiMessage('products.update.error'),
-    });
-    return;
-  }
-  const updatedProductMainImageResult = await productsCollection.findOneAndUpdate(
+  const updatedProductMainImageResult = await productSummariesCollection.findOneAndUpdate(
     {
       _id: productId,
     },
     {
       $set: {
         mainImage,
+        assets: finalAssets,
         updatedAt: new Date(),
       },
     },
@@ -124,7 +94,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       returnDocument: 'after',
     },
   );
-
   const updatedProductMainImage = updatedProductMainImageResult.value;
   if (!updatedProductMainImageResult.ok || !updatedProductMainImage) {
     res.status(500).send({
@@ -133,6 +102,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     });
     return;
   }
+
   const updatedShopProductsResult = await shopProductsCollection.updateMany(
     {
       productId,

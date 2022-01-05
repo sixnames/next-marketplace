@@ -35,7 +35,6 @@ export const COL_PAGES_GROUP_TEMPLATES = 'pagesGroupTemplates';
 export const COL_PAGE_TEMPLATES = 'pageTemplates';
 export const COL_PRODUCT_FACETS = 'productFacets';
 export const COL_PRODUCT_SUMMARIES = 'productSummaries';
-export const COL_PRODUCT_ASSETS = 'productAssets';
 export const COL_PRODUCT_ATTRIBUTES = 'productAttributes';
 export const COL_PROMO = 'promo';
 export const COL_PROMO_CODES = 'promoCodes';

@@ -23,7 +23,7 @@ import {
   generateSnippetTitle,
 } from '../../lib/titleUtils';
 import { getTreeFromList } from '../../lib/treeUtils';
-import { dbsConfig, getProdDb } from './getProdDb';
+import { dbsConfig, getProdDb, updateIndexes } from './getProdDb';
 import {
   COL_ATTRIBUTES,
   COL_BRAND_COLLECTIONS,
@@ -813,7 +813,7 @@ async function updateProds() {
 
     // update indexes
     console.log(`Updating indexes in ${dbConfig.dbName} db`);
-    // await updateIndexes(db);
+    await updateIndexes(db);
     console.log(`Indexes updated in ${dbConfig.dbName} db`);
 
     // disconnect form db

@@ -124,6 +124,7 @@ export interface SiteInitialDataPayloadInterface {
 export async function getIsrSiteInitialData({
   context,
 }: GetSiteInitialDataInterface): Promise<SiteInitialDataPayloadInterface> {
+  // const timeStart = new Date().getTime();
   const {
     currentCity,
     sessionCity,
@@ -136,6 +137,7 @@ export async function getIsrSiteInitialData({
     cityNotFound,
     companyNotFound,
   } = await getPageInitialState({ context });
+  // console.log(`getPageInitialState >>>>>>>>>>>>>>>> `, new Date().getTime() - timeStart);
 
   // initial data
   const rawNavRubrics = await getCatalogueNavRubrics({
@@ -148,11 +150,14 @@ export async function getIsrSiteInitialData({
     visibleCategoriesInNavDropdown: initialData.configs.visibleCategoriesInNavDropdown,
   });
   const navRubrics = castDbData(rawNavRubrics);
+  // console.log(`getCatalogueNavRubrics >>>>>>>>>>>>>>>> `, new Date().getTime() - timeStart);
+
   const catalogueCreatedPages = await getCatalogueCreatedPages({
     sessionCity,
     sessionLocale,
     companySlug,
   });
+  // console.log(`getCatalogueCreatedPages >>>>>>>>>>>>>>>> `, new Date().getTime() - timeStart);
 
   let redirect = null;
   if (cityNotFound && companyNotFound) {

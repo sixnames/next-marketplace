@@ -78,8 +78,6 @@ export const getCatalogueNavRubrics = async ({
   const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
   const companySlug = domainCompany?.slug || DEFAULT_COMPANY_SLUG;
 
-  // console.log('Before rubrics', new Date().getTime() - timeStart);
-
   // get nav rubric categories config
   let categoryConfigs: CatalogueNavCategoriesConfigInterface[] = [];
   visibleCategoriesInNavDropdown.forEach((configString) => {
@@ -100,6 +98,7 @@ export const getCatalogueNavRubrics = async ({
       }
     }
   });
+  // console.log('categoryConfigs', new Date().getTime() - timeStart);
 
   // common pipeline stages
   const sortStage = {
@@ -174,6 +173,7 @@ export const getCatalogueNavRubrics = async ({
       },
     ])
     .toArray();
+  // console.log('catalogueNavConfigAggregation', new Date().getTime() - timeStart);
 
   const catalogueGroupedNavConfigs: CatalogueGroupedNavConfigsInterface[] =
     catalogueNavConfigAggregation.map((rubricConfig) => {
@@ -205,6 +205,7 @@ export const getCatalogueNavRubrics = async ({
         ),
       };
     });
+  // console.log('catalogueGroupedNavConfigs', new Date().getTime() - timeStart);
 
   const rubricsIds = catalogueGroupedNavConfigs.map(({ _id }) => _id);
   const initialRubricsAggregation = await rubricsCollection
@@ -247,6 +248,7 @@ export const getCatalogueNavRubrics = async ({
       },
     ])
     .toArray();
+  // console.log('initialRubricsAggregation', new Date().getTime() - timeStart);
 
   const rubrics: RubricInterface[] = [];
   for await (const rubric of initialRubricsAggregation) {
@@ -401,6 +403,7 @@ export const getCatalogueNavRubrics = async ({
           },
         ])
         .toArray();
+      // console.log('rubricAttributesAggregation', new Date().getTime() - timeStart);
 
       let categories: CategoryModel[] = [];
       if (rubric.variant?.showCategoriesInNav) {
@@ -452,12 +455,14 @@ export const getCatalogueNavRubrics = async ({
             .toArray();
         }
       }
+      // console.log('categories', new Date().getTime() - timeStart);
 
       const categoriesTree = getTreeFromList({
         list: categories,
         childrenFieldName: 'categories',
         locale,
       });
+      // console.log('categoriesTree', new Date().getTime() - timeStart);
 
       rubrics.push({
         ...rubric,
@@ -473,7 +478,7 @@ export const getCatalogueNavRubrics = async ({
       });
     }
   }
-  // console.log('Nav >>>>>>>>>>>>>>>> ', new Date().getTime() - timeStart);
+  // console.log('All rubrics >>>>>>>>>>>>>>>> ', new Date().getTime() - timeStart);
 
   return rubrics;
 };

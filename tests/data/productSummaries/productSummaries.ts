@@ -91,7 +91,7 @@ function getOptionsTree(option: OptionModel, acc: OptionModel[]): OptionModel[] 
   return resultOptions;
 }
 
-const maxProductsCount = 10000;
+const maxProductsCount = 70;
 const manufacturersAttributeSlug = 'manufacturers';
 const brandsAttributeSlug = 'brands';
 const brandCollectionsAttributeSlug = 'brandCollections';

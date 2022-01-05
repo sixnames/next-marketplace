@@ -10,9 +10,11 @@ import { sortStringArray } from './stringUtils';
 export async function getCatalogueIsrProps(
   context: GetStaticPropsContext<any>,
 ): Promise<GetStaticPropsResult<CatalogueInterface>> {
+  // const timeStart = new Date().getTime();
   const { props } = await getIsrSiteInitialData({
     context,
   });
+  // console.log('getIsrSiteInitialData ', new Date().getTime() - timeStart);
   const rubricSlug = context.params?.rubricSlug;
 
   const notFoundResponse = {
@@ -64,6 +66,7 @@ export async function getCatalogueIsrProps(
       page: 1,
     },
   });
+  // console.log('getCatalogueData ', new Date().getTime() - timeStart);
 
   if (!rawCatalogueData) {
     return {
@@ -100,6 +103,7 @@ export async function getCatalogueIsrProps(
   const noIndexFollow = rawCatalogueData.page > 1;
   const showForIndex =
     rootPath === asPath && !noIndexFollow ? true : Boolean(rawCatalogueData.textTop?.showForIndex);
+  // console.log('seo ', new Date().getTime() - timeStart);
 
   return {
     revalidate: ISR_FIVE_SECONDS,

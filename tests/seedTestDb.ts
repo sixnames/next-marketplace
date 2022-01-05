@@ -1,7 +1,7 @@
 import { Seeder } from 'mongo-seeding';
 import productFacets from './data/productFacets/productFacets';
-import { getDatabase } from '../db/mongodb';
-import { updateIndexes } from './testUtils/getProdDb';
+// import { getDatabase } from '../db/mongodb';
+// import { updateIndexes } from './testUtils/getProdDb';
 const mkdirp = require('mkdirp');
 const path = require('path');
 const fs = require('fs');
@@ -9,7 +9,7 @@ const rimraf = require('rimraf');
 const copy = require('recursive-copy');
 require('dotenv').config();
 
-export function prepareTestAssets() {
+function prepareTestAssets() {
   console.log('creating product assets');
   productFacets.forEach(({ itemId }) => {
     const pathToSrc = path.join(process.cwd(), 'tests/assets/test-image-0.png');
@@ -69,13 +69,13 @@ const config = {
     await seeder.import(collections);
     console.log(`Test data seeded in ${(new Date().getTime() - startTime) / 1000}s`);
 
-    console.log('creating indexes');
-    const { db, client } = await getDatabase();
-    await updateIndexes(db);
-    await client.close();
-    console.log('indexes created');
+    // console.log('creating indexes');
+    // const { db, client } = await getDatabase();
+    // await updateIndexes(db);
+    // await client.close();
+    // console.log('indexes created');
 
-    // prepareTestAssets();
+    prepareTestAssets();
     return;
   } catch (err) {
     console.log(err);

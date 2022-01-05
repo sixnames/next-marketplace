@@ -2,13 +2,8 @@ import { ObjectId } from 'mongodb';
 import { deleteUpload, getMainImage } from '../../../lib/assetUtils/assetUtils';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
-import { COL_PRODUCT_ASSETS, COL_PRODUCT_FACETS, COL_SHOP_PRODUCTS } from '../../collectionNames';
-import {
-  ProductAssetsModel,
-  ProductFacetModel,
-  ProductPayloadModel,
-  ShopProductModel,
-} from '../../dbModels';
+import { COL_PRODUCT_SUMMARIES, COL_SHOP_PRODUCTS } from '../../collectionNames';
+import { ProductPayloadModel, ProductSummaryModel, ShopProductModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
 
@@ -23,9 +18,8 @@ export async function deleteProductAsset({
 }: DaoPropsInterface<DeleteProductAssetInputInterface>): Promise<ProductPayloadModel> {
   const { getApiMessage } = await getRequestParams(context);
   const { db, client } = await getDatabase();
-  const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
+  const summariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-  const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
 
   const session = client.startSession();
 
@@ -60,9 +54,8 @@ export async function deleteProductAsset({
 
       // check product availability
       const productObjectId = new ObjectId(productId);
-      const product = await productsCollection.findOne({ _id: productObjectId });
-      const initialAssets = await productAssetsCollection.findOne({ productId: productObjectId });
-      if (!product || !initialAssets) {
+      const product = await summariesCollection.findOne({ _id: productObjectId });
+      if (!product) {
         mutationPayload = {
           success: false,
           message: await getApiMessage(`products.update.notFound`),
@@ -72,7 +65,7 @@ export async function deleteProductAsset({
       }
 
       // delete product asset
-      const currentAsset = initialAssets.assets[assetIndex];
+      const currentAsset = product.assets[assetIndex];
       if (currentAsset) {
         const removedAsset = await deleteUpload(`${currentAsset}`);
         if (!removedAsset) {
@@ -86,42 +79,23 @@ export async function deleteProductAsset({
       }
 
       // Update product assets
-      const updatedProductAssetsResult = await productAssetsCollection.findOneAndUpdate(
-        {
-          productId: product._id,
-        },
-        {
-          $pull: {
-            assets: {
-              index: assetIndex,
-            },
-          },
-        },
-        {
-          returnDocument: 'after',
-        },
-      );
-      const updatedProductAssets = updatedProductAssetsResult.value;
-      if (!updatedProductAssetsResult.ok || !updatedProductAssets) {
-        mutationPayload = {
-          success: false,
-          message: await getApiMessage(`products.update.error`),
-        };
-        await session.abortTransaction();
-        return;
-      }
-
-      const newAssets = updatedProductAssets.assets;
-      const mainImage = getMainImage(newAssets);
+      const updatedProductAssetsResult = product.assets.reduce((acc: string[], asset, index) => {
+        if (index === assetIndex) {
+          return acc;
+        }
+        return [...acc, asset];
+      }, []);
+      const mainImage = getMainImage(updatedProductAssetsResult);
 
       // Update product
-      const updatedProductResult = await productsCollection.findOneAndUpdate(
+      const updatedProductResult = await summariesCollection.findOneAndUpdate(
         {
           _id: product._id,
         },
         {
           $set: {
             mainImage,
+            assets: updatedProductAssetsResult,
             updatedAt: new Date(),
           },
         },

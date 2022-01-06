@@ -12,7 +12,7 @@
     "lint": "next lint",
     "generate": "graphql-codegen --config codegen.yml",
     "cy:open": "cypress open",
-    "cy:run-file": "cypress run --spec cypress/e2e/cms/attributes.spec.ts",
+    "cy:run-file": "cypress run --spec cypress/e2e/cms/product-attributes.spec.ts",
     "test": "cypress run",
     "ci": "server-test 3000",
     "build-and-test": "yarn build && yarn ci",

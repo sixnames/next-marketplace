@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb';
-import { DEFAULT_COMPANY_SLUG, FILTER_SEPARATOR, SORT_DESC } from '../../../config/common';
+import { DEFAULT_COMPANY_SLUG, FILTER_SEPARATOR, ONE_DAY, SORT_DESC } from '../../../config/common';
 import { getTreeFromList } from '../../../lib/treeUtils';
 import {
   COL_ATTRIBUTES,
@@ -535,6 +535,19 @@ export const getCatalogueNavRubrics = async ({
   });
 
   if (!catalogueNav) {
+    const newCatalogueNav = await updateCatalogueNavRubrics({
+      citySlug,
+      locale,
+      companySlug,
+      ...props,
+    });
+    catalogueNav = newCatalogueNav;
+  }
+
+  // update nav every day
+  const createdAtTime = new Date(catalogueNav.createdAt).getTime();
+  const ttlDiff = new Date().getTime() - createdAtTime;
+  if (ttlDiff > ONE_DAY) {
     const newCatalogueNav = await updateCatalogueNavRubrics({
       citySlug,
       locale,

@@ -493,9 +493,15 @@ export async function getCardData({
     const prices: number[] = [];
     const shopProductIds: string[] = [];
     let maxAvailable = 0;
+    let maxViews = 0;
     const finalCardShops = (shops || []).reduce((acc: ShopInterface[], shop) => {
       if (!shop.cardShopProduct) {
         return acc;
+      }
+
+      const views = noNaN(get(shop.cardShopProduct.views, `${companySlug}.${city}`));
+      if (views > maxViews) {
+        maxViews = views;
       }
 
       prices.push(shop.cardShopProduct.price);
@@ -709,6 +715,7 @@ export async function getCardData({
         attributes: [],
         minPrice,
         maxPrice,
+        views: maxViews,
         brand: brand
           ? {
               ...brand,

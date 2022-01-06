@@ -871,7 +871,13 @@ export interface NexusGenObjects {
   OrderStatus: dbModels.OrderStatusModel;
   OrderStatusPayload: dbModels.OrderStatusPayloadModel;
   PointGeoJSON: dbModels.PointGeoJSONModel;
-  ProductAttribute: dbModels.ProductSummaryAttributeModel;
+  ProductAttribute: {
+    // root type
+    _id: NexusGenScalars['ObjectId']; // ObjectId!
+    attributeId: NexusGenScalars['ObjectId']; // ObjectId!
+    number?: number | null; // Float
+    textI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
+  };
   ProductConnection: {
     // root type
     _id: NexusGenScalars['ObjectId']; // ObjectId!

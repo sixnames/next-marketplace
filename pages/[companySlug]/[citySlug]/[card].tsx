@@ -14,6 +14,7 @@ import { CardLayoutInterface, InitialCardDataInterface } from '../../../db/uiInt
 import SiteLayout, { SiteLayoutProviderInterface } from '../../../layout/SiteLayout';
 import { getCardData } from '../../../lib/cardUtils';
 import { getIsrSiteInitialData, IsrContextInterface } from '../../../lib/isrUtils';
+import { noNaN } from '../../../lib/numbers';
 import { castDbData } from '../../../lib/ssrUtils';
 
 const CardDefaultLayout = dynamic(() => import('../../../layout/card/CardDefaultLayout'));
@@ -33,17 +34,22 @@ const CardConsumer: React.FC<CardLayoutInterface> = (props) => {
       {sessionUser?.showAdminUiInCatalogue ? (
         <FixedButtons>
           <Inner lowTop lowBottom>
-            <WpButton
-              size={'small'}
-              onClick={() => {
-                window.open(
-                  `${sessionUser.editLinkBasePath}/rubrics/${props.cardData.product.rubricId}/products/product/${props.cardData.product._id}`,
-                  '_blank',
-                );
-              }}
-            >
-              Редактировать товар
-            </WpButton>
+            <div className='flex items-center justify-between'>
+              <WpButton
+                size={'small'}
+                frameClassName='w-auto'
+                onClick={() => {
+                  window.open(
+                    `${sessionUser.editLinkBasePath}/rubrics/${props.cardData.product.rubricId}/products/product/${props.cardData.product._id}`,
+                    '_blank',
+                  );
+                }}
+              >
+                Редактировать товар
+              </WpButton>
+
+              <div>Просмотров {noNaN(props.cardData.product.views)}</div>
+            </div>
           </Inner>
         </FixedButtons>
       ) : null}

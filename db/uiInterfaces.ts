@@ -268,6 +268,7 @@ export interface ProductSummaryInterface extends ProductSummaryModel, PricesInte
   shopsCount?: number | null;
   attributesCount?: number | null;
   totalAttributesCount?: number | null;
+  views?: number | null;
 
   // parents
   rubric?: RubricInterface | null;

@@ -7,6 +7,7 @@ import {
   CATALOGUE_PRODUCTS_LIMIT,
   DEFAULT_COMPANY_SLUG,
   DEFAULT_PAGE,
+  DEFAULT_PAGE_FILTER,
   DEFAULT_SORT_STAGE,
   FILTER_BRAND_COLLECTION_KEY,
   FILTER_BRAND_KEY,
@@ -1458,7 +1459,8 @@ export const getCatalogueData = async ({
     });
 
     const isRedirect = lostFilters.length > 0 || lostNestedFilters.length > 0;
-    const isPageRedirect = input.filters.includes(ZERO_PAGE_FILTER);
+    const isPageRedirect =
+      input.filters.includes(ZERO_PAGE_FILTER) || input.filters.includes(DEFAULT_PAGE_FILTER);
     if (isRedirect || isPageRedirect) {
       const filteredRedirectArray = selectedFilterSlugs.filter((filter) => {
         return filter !== ZERO_PAGE_FILTER && !lostFilters.includes(filter);

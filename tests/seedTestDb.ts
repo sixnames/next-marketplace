@@ -1,5 +1,6 @@
+import addZero from 'add-zero';
 import { Seeder } from 'mongo-seeding';
-import productFacets from './data/productFacets/productFacets';
+import { ID_COUNTER_DIGITS } from '../config/common';
 // import { getDatabase } from '../db/mongodb';
 // import { updateIndexes } from './testUtils/getProdDb';
 const mkdirp = require('mkdirp');
@@ -9,23 +10,9 @@ const rimraf = require('rimraf');
 const copy = require('recursive-copy');
 require('dotenv').config();
 
-function prepareTestAssets() {
-  console.log('creating product assets');
-  productFacets.forEach(({ itemId }) => {
-    const pathToSrc = path.join(process.cwd(), 'tests/assets/test-image-0.png');
-    const fileName = `${itemId}-0.png`;
-    const pathToDist = path.join(process.cwd(), `tests/assets/products/${itemId}`);
-    fs.access(pathToDist, (err: any) => {
-      if (err) {
-        mkdirp(pathToDist).then(() => {
-          fs.copyFileSync(pathToSrc, path.join(pathToDist, fileName));
-        });
-      } else {
-        fs.copyFileSync(pathToSrc, path.join(pathToDist, fileName));
-      }
-    });
-  });
+const maxProductsCount = 70;
 
+function prepareTestAssets() {
   console.log('removing old assets');
   const src = './tests/assets';
   const dist = './assets';
@@ -38,6 +25,17 @@ function prepareTestAssets() {
       copy(src, dist).catch((e: any) => {
         console.log(e);
       });
+
+      console.log('creating product assets');
+      for (let i = 1; i <= maxProductsCount; i = i + 1) {
+        const itemId: string = addZero(i, ID_COUNTER_DIGITS);
+        const pathToSrc = path.join(process.cwd(), 'tests/assets/test-image-0.png');
+        const fileName = `${itemId}-0.png`;
+        const pathToDist = path.join(process.cwd(), `assets/products/${itemId}`);
+        mkdirp(pathToDist).then(() => {
+          fs.copyFileSync(pathToSrc, path.join(pathToDist, fileName));
+        });
+      }
     }
   });
   return;

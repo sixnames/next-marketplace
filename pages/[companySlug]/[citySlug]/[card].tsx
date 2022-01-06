@@ -9,11 +9,13 @@ import Inner from '../../../components/Inner';
 import { ISR_FIVE_SECONDS } from '../../../config/common';
 import { CARD_LAYOUT_HALF_COLUMNS, DEFAULT_LAYOUT } from '../../../config/constantSelects';
 import { useConfigContext } from '../../../context/configContext';
+import { useLocaleContext } from '../../../context/localeContext';
 import { useSiteUserContext } from '../../../context/siteUserContext';
 import { CardLayoutInterface, InitialCardDataInterface } from '../../../db/uiInterfaces';
 import SiteLayout, { SiteLayoutProviderInterface } from '../../../layout/SiteLayout';
 import { getCardData } from '../../../lib/cardUtils';
 import { getIsrSiteInitialData, IsrContextInterface } from '../../../lib/isrUtils';
+import { getConsoleRubricLinks } from '../../../lib/linkUtils';
 import { noNaN } from '../../../lib/numbers';
 import { castDbData } from '../../../lib/ssrUtils';
 
@@ -22,6 +24,11 @@ const CardHalfColumnsLayout = dynamic(() => import('../../../layout/card/CardHal
 
 const CardConsumer: React.FC<CardLayoutInterface> = (props) => {
   const sessionUser = useSiteUserContext();
+  const links = getConsoleRubricLinks({
+    productId: props.cardData.product._id,
+    rubricSlug: props.cardData.product.rubricSlug,
+    basePath: sessionUser?.editLinkBasePath,
+  });
 
   return (
     <React.Fragment>
@@ -39,10 +46,7 @@ const CardConsumer: React.FC<CardLayoutInterface> = (props) => {
                 size={'small'}
                 frameClassName='w-auto'
                 onClick={() => {
-                  window.open(
-                    `${sessionUser.editLinkBasePath}/rubrics/${props.cardData.product.rubricId}/products/product/${props.cardData.product._id}`,
-                    '_blank',
-                  );
+                  window.open(links.product.root, '_blank');
                 }}
               >
                 Редактировать товар
@@ -63,6 +67,7 @@ interface CardInterface extends SiteLayoutProviderInterface {
 
 const Card: NextPage<CardInterface> = ({ cardData, domainCompany, ...props }) => {
   const { currentCity } = props;
+  const { currency } = useLocaleContext();
   const { configs } = useConfigContext();
   if (!cardData) {
     return (
@@ -81,7 +86,7 @@ const Card: NextPage<CardInterface> = ({ cardData, domainCompany, ...props }) =>
     <SiteLayout
       currentRubricSlug={cardData.product.rubricSlug}
       previewImage={cardData.product.mainImage}
-      title={`${cardData.cardTitle}${prefix} ${cityDescription} ${siteName}`}
+      title={`${cardData.cardTitle} цена ${cardData.product.minPrice} ${currency}${prefix} ${cityDescription} ${siteName}`}
       description={`${cardData.product.description} ${cityDescription} ${siteName}`}
       domainCompany={domainCompany}
       {...props}

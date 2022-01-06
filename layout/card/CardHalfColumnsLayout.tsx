@@ -200,7 +200,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                       return (
                         <div key={`${_id}`} className='mb-12'>
                           <div className='text-secondary-text mb-3 font-bold'>{`${attribute?.name}:`}</div>
-                          <div className='grid grid-cols-4 sm:grid-cols-5 lg:grid-cols-6 gap-x-4 gap-y-6'>
+                          <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-6'>
                             {products.map(({ option, summary, isCurrent }) => {
                               const mainImage = summary?.mainImage;
                               const name = `${option?.name} ${

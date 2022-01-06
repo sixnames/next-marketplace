@@ -440,6 +440,21 @@ export async function updateIndexes(db: Db) {
   await createCollectionIfNotExist(COL_SHOP_PRODUCTS);
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
 
+  // card for company domain
+  await shopProductsCollection.createIndex({
+    companyId: 1,
+    citySlug: 1,
+    productId: 1,
+    mainImage: 1,
+  });
+
+  // card for main domain
+  await shopProductsCollection.createIndex({
+    citySlug: 1,
+    productId: 1,
+    mainImage: 1,
+  });
+
   // catalogue for company domain
   await shopProductsCollection.createIndex({
     companyId: 1,

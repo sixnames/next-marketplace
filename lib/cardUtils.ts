@@ -110,6 +110,7 @@ export interface GetCardDataBaseInterface {
 
 interface GetCardVariantsInterface extends GetCardDataBaseInterface {
   variants: ProductVariantInterface[];
+  summaryId: ObjectIdModel;
 }
 
 async function getCardVariants({
@@ -117,6 +118,7 @@ async function getCardVariants({
   companyId,
   locale,
   variants,
+  summaryId,
 }: GetCardVariantsInterface): Promise<ProductVariantInterface[]> {
   const { db } = await getDatabase();
   const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
@@ -138,9 +140,10 @@ async function getCardVariants({
     const variantProducts: ProductVariantItemInterface[] = [];
 
     // get products and options
-    for await (const variantProduct of variantProducts) {
+    for await (const variantProduct of variant.products) {
       // option
       const option = await optionsCollection.findOne({ _id: variantProduct.optionId });
+
       if (!option) {
         continue;
       }
@@ -156,8 +159,8 @@ async function getCardVariants({
         .aggregate<ShopProductInterface>([
           {
             $match: {
-              citySlug: city,
               ...companyMatch,
+              citySlug: city,
               productId: summary._id,
               ...ignoreNoImageStage,
             },
@@ -167,6 +170,7 @@ async function getCardVariants({
 
       variantProducts.push({
         ...variantProduct,
+        isCurrent: variantProduct.productId.equals(summaryId),
         option: castOptionForUI({ option, locale, gender: summary.gender }),
         summary: castSummaryForUI({
           summary: {
@@ -210,10 +214,6 @@ export async function getCardData({
     const attributeGroupsCollection = db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
     const companyMatch = companyId ? { companyId: new ObjectId(companyId) } : {};
     const companySlug = props.companySlug;
-    const shopProductsMatch = {
-      citySlug: city,
-      ...companyMatch,
-    };
 
     // const shopProductsStartTime = new Date().getTime();
     const shopProductsAggregation = await productSummariesCollection
@@ -318,10 +318,11 @@ export async function getCardData({
             pipeline: [
               {
                 $match: {
+                  ...companyMatch,
+                  citySlug: city,
                   $expr: {
                     $eq: ['$$productId', '$productId'],
                   },
-                  ...shopProductsMatch,
                 },
               },
               {
@@ -432,6 +433,7 @@ export async function getCardData({
       locale,
       companyId,
       city,
+      summaryId: product._id,
     });
     cardVariants.forEach(({ attributeId }) => {
       excludedAttributesIds.push(attributeId);

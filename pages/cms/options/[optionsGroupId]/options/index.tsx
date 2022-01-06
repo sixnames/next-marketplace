@@ -93,7 +93,7 @@ const OptionsGroupOptionsConsumer: React.FC<OptionsGroupOptionsConsumerInterface
       return (
         <div data-cy={name} data-url={optionUrl}>
           {image ? (
-            <div className='relative pb-[100%] w-[80px]'>
+            <div className='relative mb-4 w-[80px] h-[80px]'>
               <WpImage
                 url={image}
                 alt={`${name}`}

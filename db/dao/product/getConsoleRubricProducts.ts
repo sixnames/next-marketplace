@@ -213,8 +213,8 @@ export const getConsoleRubricProducts = async ({
       ...brandStage,
       ...brandCollectionStage,
       ...optionsStage,
-      ...excludedIdsStage,
       ...photoStage,
+      ...excludedIdsStage,
     };
 
     const searchStage =

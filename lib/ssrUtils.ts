@@ -1054,8 +1054,8 @@ export async function getSiteInitialData({
   // initial data
   const rawNavRubrics = await getCatalogueNavRubrics({
     locale: sessionLocale,
-    city: sessionCity,
-    domainCompany,
+    citySlug: sessionCity,
+    companySlug: domainCompany?.slug || DEFAULT_COMPANY_SLUG,
     stickyNavVisibleCategoriesCount: initialData.configs.stickyNavVisibleCategoriesCount,
     stickyNavVisibleAttributesCount: initialData.configs.stickyNavVisibleAttributesCount,
     stickyNavVisibleOptionsCount: initialData.configs.stickyNavVisibleOptionsCount,

@@ -19,7 +19,7 @@ import {
   ShopProductModel,
 } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
-import { CompanyInterface, RubricInterface } from '../../uiInterfaces';
+import { RubricInterface } from '../../uiInterfaces';
 import { ignoreNoImageStage } from '../constantPipelines';
 import { castRubricForUI } from '../rubrics/castRubricForUI';
 
@@ -50,8 +50,8 @@ interface CatalogueNavCategoriesConfigInterface {
 }
 
 interface GetCatalogueNavRubricsInterface {
-  city: string;
-  domainCompany?: CompanyInterface | null;
+  citySlug: string;
+  companySlug: string;
   stickyNavVisibleCategoriesCount: number;
   stickyNavVisibleAttributesCount: number;
   stickyNavVisibleOptionsCount: number;
@@ -60,8 +60,8 @@ interface GetCatalogueNavRubricsInterface {
 }
 
 export const createCatalogueNavRubrics = async ({
-  city,
-  domainCompany,
+  citySlug,
+  companySlug,
   stickyNavVisibleCategoriesCount,
   stickyNavVisibleAttributesCount,
   stickyNavVisibleOptionsCount,
@@ -75,7 +75,6 @@ export const createCatalogueNavRubrics = async ({
   const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
   const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
   const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-  const companySlug = domainCompany?.slug || DEFAULT_COMPANY_SLUG;
 
   // get nav rubric categories config
   let categoryConfigs: CatalogueNavCategoriesConfigInterface[] = [];
@@ -101,10 +100,10 @@ export const createCatalogueNavRubrics = async ({
 
   // common pipeline stages
   const sortStage = {
-    [`views.${companySlug}.${city}`]: SORT_DESC,
+    [`views.${companySlug}.${citySlug}`]: SORT_DESC,
     _id: SORT_DESC,
   };
-  const companyMatch = domainCompany ? { companyId: new ObjectId(domainCompany._id) } : {};
+  const companyMatch = companySlug !== DEFAULT_COMPANY_SLUG ? { companySlug } : {};
   const attributesLimit = stickyNavVisibleAttributesCount
     ? [
         {
@@ -125,7 +124,7 @@ export const createCatalogueNavRubrics = async ({
       {
         $match: {
           ...companyMatch,
-          citySlug: city,
+          citySlug,
           ...ignoreNoImageStage,
         },
       },
@@ -474,54 +473,75 @@ export const createCatalogueNavRubrics = async ({
   return rubrics;
 };
 
-export const getCatalogueNavRubrics = async ({
-  city,
+export const updateCatalogueNavRubrics = async ({
+  citySlug,
   locale,
-  domainCompany,
+  companySlug,
   ...props
-}: GetCatalogueNavRubricsInterface): Promise<RubricInterface[]> => {
+}: GetCatalogueNavRubricsInterface): Promise<CatalogueNavModel> => {
   // console.log(' ');
-  // console.log('=================== getCatalogueNavRubrics =======================');
+  // console.log('=================== updateCatalogueNavRubrics =======================');
   // const timeStart = new Date().getTime();
   const { db } = await getDatabase();
   const catalogueNavCollection = db.collection<CatalogueNavModel>(COL_CATALOGUE_NAV);
+  const newCatalogueNavRubrics = await createCatalogueNavRubrics({
+    citySlug,
+    locale,
+    companySlug,
+    ...props,
+  });
+  const newCatalogueNav: CatalogueNavModel = {
+    _id: new ObjectId(),
+    companySlug,
+    citySlug,
+    rubrics: newCatalogueNavRubrics,
+    createdAt: new Date(),
+  };
+
+  await catalogueNavCollection.findOneAndUpdate(
+    {
+      companySlug,
+      citySlug,
+    },
+    {
+      $set: {
+        companySlug,
+        citySlug,
+        rubrics: newCatalogueNav.rubrics,
+        createdAt: newCatalogueNav.createdAt,
+      },
+    },
+    {
+      upsert: true,
+    },
+  );
+  return newCatalogueNav;
+};
+
+export const getCatalogueNavRubrics = async ({
+  citySlug,
+  locale,
+  companySlug,
+  ...props
+}: GetCatalogueNavRubricsInterface): Promise<RubricInterface[]> => {
+  console.log(' ');
+  console.log('=================== getCatalogueNavRubrics =======================');
+  const timeStart = new Date().getTime();
+  const { db } = await getDatabase();
+  const catalogueNavCollection = db.collection<CatalogueNavModel>(COL_CATALOGUE_NAV);
   let catalogueNav = await catalogueNavCollection.findOne({
-    companySlug: domainCompany?.slug || DEFAULT_COMPANY_SLUG,
-    citySlug: city,
+    companySlug,
+    citySlug,
   });
 
   if (!catalogueNav) {
-    const newCatalogueNavRubrics = await createCatalogueNavRubrics({
-      city,
+    const newCatalogueNav = await updateCatalogueNavRubrics({
+      citySlug,
       locale,
-      domainCompany,
+      companySlug,
       ...props,
     });
-    const newCatalogueNav: CatalogueNavModel = {
-      _id: new ObjectId(),
-      companySlug: domainCompany?.slug || DEFAULT_COMPANY_SLUG,
-      citySlug: city,
-      rubrics: newCatalogueNavRubrics,
-      createdAt: new Date(),
-    };
     catalogueNav = newCatalogueNav;
-    await catalogueNavCollection.findOneAndUpdate(
-      {
-        companySlug: catalogueNav.companySlug,
-        citySlug: catalogueNav.citySlug,
-      },
-      {
-        $set: {
-          companySlug: catalogueNav.companySlug,
-          citySlug: catalogueNav.citySlug,
-          rubrics: catalogueNav.rubrics,
-          createdAt: catalogueNav.createdAt,
-        },
-      },
-      {
-        upsert: true,
-      },
-    );
   }
 
   const payload: RubricInterface[] = catalogueNav.rubrics.map((rubric) => {
@@ -531,7 +551,7 @@ export const getCatalogueNavRubrics = async ({
       noSort: true,
     });
   });
-  // console.log('categoryConfigs', new Date().getTime() - timeStart);
+  console.log('categoryConfigs', new Date().getTime() - timeStart);
 
   return payload;
 };

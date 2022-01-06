@@ -1,7 +1,11 @@
 import { ObjectId } from 'mongodb';
 import { GEO_POINT_TYPE } from '../config/common';
 import { IconType } from '../types/iconTypes';
-import { BarcodeDoublesInterface, ShopProductBarcodeDoublesInterface } from './uiInterfaces';
+import {
+  BarcodeDoublesInterface,
+  RubricInterface,
+  ShopProductBarcodeDoublesInterface,
+} from './uiInterfaces';
 
 export type DateModel = Date;
 export type JSONObjectModel = Record<string, any>;
@@ -1232,4 +1236,13 @@ export interface BlackListProductModel {
   shopProductId: ObjectIdModel;
   shopId: ObjectIdModel;
   products: BlackListProductItemModel[];
+}
+
+// Catalogue nav
+export interface CatalogueNavModel {
+  _id: ObjectIdModel;
+  companySlug: string;
+  citySlug: string;
+  rubrics: RubricInterface[];
+  createdAt: DateModel;
 }

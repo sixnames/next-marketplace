@@ -32,6 +32,7 @@ import {
   ShopProductModel,
   ProductFacetModel,
   ProductSummaryModel,
+  CatalogueNavModel,
 } from '../../db/dbModels';
 import {
   COL_ATTRIBUTES,
@@ -67,6 +68,7 @@ import {
   COL_SHOP_PRODUCTS,
   COL_PRODUCT_FACETS,
   COL_PRODUCT_SUMMARIES,
+  COL_CATALOGUE_NAV,
 } from '../../db/collectionNames';
 import { Db, MongoClient } from 'mongodb';
 import path from 'path';
@@ -435,6 +437,19 @@ export async function updateIndexes(db: Db) {
     rubricSlug: 1,
     mainImage: 1,
   };
+
+  // Catalogue nav
+  await createCollectionIfNotExist(COL_CATALOGUE_NAV);
+  const catalogueNavCollection = db.collection<CatalogueNavModel>(COL_CATALOGUE_NAV);
+  await catalogueNavCollection.createIndex(
+    {
+      companySlug: 1,
+      citySlug: 1,
+    },
+    {
+      unique: true,
+    },
+  );
 
   // Shop products
   await createCollectionIfNotExist(COL_SHOP_PRODUCTS);

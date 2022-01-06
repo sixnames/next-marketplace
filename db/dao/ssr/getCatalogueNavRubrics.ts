@@ -1,9 +1,9 @@
 import { ObjectId } from 'mongodb';
 import { DEFAULT_COMPANY_SLUG, FILTER_SEPARATOR, SORT_DESC } from '../../../config/common';
-import { getFieldStringLocale } from '../../../lib/i18n';
 import { getTreeFromList } from '../../../lib/treeUtils';
 import {
   COL_ATTRIBUTES,
+  COL_CATALOGUE_NAV,
   COL_CATEGORIES,
   COL_ICONS,
   COL_OPTIONS,
@@ -13,25 +13,15 @@ import {
 } from '../../collectionNames';
 import {
   AttributeModel,
+  CatalogueNavModel,
   CategoryModel,
   ObjectIdModel,
-  RubricModel,
   ShopProductModel,
 } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
 import { CompanyInterface, RubricInterface } from '../../uiInterfaces';
-import { castAttributeForUI } from '../attributes/castAttributesGroupForUI';
 import { ignoreNoImageStage } from '../constantPipelines';
-
-export interface GetCatalogueNavRubricsInterface {
-  locale: string;
-  city: string;
-  domainCompany?: CompanyInterface | null;
-  stickyNavVisibleCategoriesCount: number;
-  stickyNavVisibleAttributesCount: number;
-  stickyNavVisibleOptionsCount: number;
-  visibleCategoriesInNavDropdown: string[];
-}
+import { castRubricForUI } from '../rubrics/castRubricForUI';
 
 interface CatalogueGroupedNavConfigItemInterface {
   attributeSlug: string;
@@ -59,17 +49,26 @@ interface CatalogueNavCategoriesConfigInterface {
   categoryIds: ObjectIdModel[];
 }
 
-export const getCatalogueNavRubrics = async ({
+interface GetCatalogueNavRubricsInterface {
+  city: string;
+  domainCompany?: CompanyInterface | null;
+  stickyNavVisibleCategoriesCount: number;
+  stickyNavVisibleAttributesCount: number;
+  stickyNavVisibleOptionsCount: number;
+  visibleCategoriesInNavDropdown: string[];
+  locale: string;
+}
+
+export const createCatalogueNavRubrics = async ({
   city,
-  locale,
   domainCompany,
   stickyNavVisibleCategoriesCount,
   stickyNavVisibleAttributesCount,
   stickyNavVisibleOptionsCount,
   visibleCategoriesInNavDropdown,
-}: GetCatalogueNavRubricsInterface): Promise<RubricModel[]> => {
+}: GetCatalogueNavRubricsInterface): Promise<RubricInterface[]> => {
   // console.log(' ');
-  // console.log('=================== getCatalogueNavRubrics =======================');
+  // console.log('=================== createCatalogueNavRubrics =======================');
   // const timeStart = new Date().getTime();
   const { db } = await getDatabase();
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
@@ -460,25 +459,79 @@ export const getCatalogueNavRubrics = async ({
       const categoriesTree = getTreeFromList({
         list: categories,
         childrenFieldName: 'categories',
-        locale,
       });
       // console.log('categoriesTree', new Date().getTime() - timeStart);
 
       rubrics.push({
         ...rubric,
-        nameI18n: {},
-        name: getFieldStringLocale(rubric.nameI18n, locale),
         categories: categoriesTree.slice(0, stickyNavVisibleCategoriesCount),
-        attributes: rubricAttributesAggregation.map((attribute) => {
-          return castAttributeForUI({
-            attribute,
-            locale,
-          });
-        }),
+        attributes: rubricAttributesAggregation,
       });
     }
   }
   // console.log('All rubrics >>>>>>>>>>>>>>>> ', new Date().getTime() - timeStart);
 
   return rubrics;
+};
+
+export const getCatalogueNavRubrics = async ({
+  city,
+  locale,
+  domainCompany,
+  ...props
+}: GetCatalogueNavRubricsInterface): Promise<RubricInterface[]> => {
+  // console.log(' ');
+  // console.log('=================== getCatalogueNavRubrics =======================');
+  // const timeStart = new Date().getTime();
+  const { db } = await getDatabase();
+  const catalogueNavCollection = db.collection<CatalogueNavModel>(COL_CATALOGUE_NAV);
+  let catalogueNav = await catalogueNavCollection.findOne({
+    companySlug: domainCompany?.slug || DEFAULT_COMPANY_SLUG,
+    citySlug: city,
+  });
+
+  if (!catalogueNav) {
+    const newCatalogueNavRubrics = await createCatalogueNavRubrics({
+      city,
+      locale,
+      domainCompany,
+      ...props,
+    });
+    const newCatalogueNav: CatalogueNavModel = {
+      _id: new ObjectId(),
+      companySlug: domainCompany?.slug || DEFAULT_COMPANY_SLUG,
+      citySlug: city,
+      rubrics: newCatalogueNavRubrics,
+      createdAt: new Date(),
+    };
+    catalogueNav = newCatalogueNav;
+    await catalogueNavCollection.findOneAndUpdate(
+      {
+        companySlug: catalogueNav.companySlug,
+        citySlug: catalogueNav.citySlug,
+      },
+      {
+        $set: {
+          companySlug: catalogueNav.companySlug,
+          citySlug: catalogueNav.citySlug,
+          rubrics: catalogueNav.rubrics,
+          createdAt: catalogueNav.createdAt,
+        },
+      },
+      {
+        upsert: true,
+      },
+    );
+  }
+
+  const payload: RubricInterface[] = catalogueNav.rubrics.map((rubric) => {
+    return castRubricForUI({
+      rubric,
+      locale,
+      noSort: true,
+    });
+  });
+  // console.log('categoryConfigs', new Date().getTime() - timeStart);
+
+  return payload;
 };

@@ -283,7 +283,7 @@ async function updateProds() {
           {
             rubricId: rubric._id,
           },
-          { limit: 10 },
+          // { limit: 10 },
         )
         .toArray();
       console.log(rubric.nameI18n.ru, products.length);

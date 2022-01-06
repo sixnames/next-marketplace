@@ -524,9 +524,9 @@ export const getCatalogueNavRubrics = async ({
   companySlug,
   ...props
 }: GetCatalogueNavRubricsInterface): Promise<RubricInterface[]> => {
-  console.log(' ');
-  console.log('=================== getCatalogueNavRubrics =======================');
-  const timeStart = new Date().getTime();
+  // console.log(' ');
+  // console.log('=================== getCatalogueNavRubrics =======================');
+  // const timeStart = new Date().getTime();
   const { db } = await getDatabase();
   const catalogueNavCollection = db.collection<CatalogueNavModel>(COL_CATALOGUE_NAV);
   let catalogueNav = await catalogueNavCollection.findOne({
@@ -551,7 +551,7 @@ export const getCatalogueNavRubrics = async ({
       noSort: true,
     });
   });
-  console.log('categoryConfigs', new Date().getTime() - timeStart);
+  // console.log('categoryConfigs', new Date().getTime() - timeStart);
 
   return payload;
 };

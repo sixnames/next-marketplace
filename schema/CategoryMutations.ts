@@ -38,7 +38,7 @@ import {
   getResolverValidationSchema,
 } from '../lib/sessionHelpers';
 import { deleteDocumentsTree, getParentTreeIds } from '../lib/treeUtils';
-import { updateProductTitles } from '../lib/updateProductTitles';
+import { execUpdateProductTitles } from '../lib/updateProductTitles';
 import {
   addAttributesGroupToCategorySchema,
   createCategorySchema,
@@ -422,9 +422,7 @@ export const CategoryMutations = extendType({
           }
 
           // update product algolia indexes
-          await updateProductTitles({
-            filterSlugs: updatedCategory.slug,
-          });
+          execUpdateProductTitles(`filterSlugs=${updatedCategory.slug}`);
 
           return {
             success: true,

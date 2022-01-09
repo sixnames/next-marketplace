@@ -3,7 +3,7 @@ import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
 import { getNextItemId } from '../../../lib/itemIdUtils';
 import { castSummaryToShopProduct, checkBarcodeIntersects } from '../../../lib/productUtils';
 import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
-import { updateProductTitles } from '../../../lib/updateProductTitles';
+import { execUpdateProductTitles } from '../../../lib/updateProductTitles';
 import {
   COL_NOT_SYNCED_PRODUCTS,
   COL_PRODUCT_SUMMARIES,
@@ -157,9 +157,7 @@ export async function updateProductWithSyncError({
       }
 
       // update algolia product object
-      await updateProductTitles({
-        _id: updatedProduct._id,
-      });
+      execUpdateProductTitles(`productId=${updatedProduct._id.toHexString()}`);
 
       // Delete sync errors
       const removedNotSyncedProductsResult = await notSyncedProductsCollection.deleteMany({

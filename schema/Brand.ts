@@ -21,7 +21,7 @@ import {
   getRequestParams,
   getResolverValidationSchema,
 } from '../lib/sessionHelpers';
-import { updateProductTitles } from '../lib/updateProductTitles';
+import { execUpdateProductTitles } from '../lib/updateProductTitles';
 import {
   addCollectionToBrandSchema,
   createBrandSchema,
@@ -486,9 +486,7 @@ export const BrandMutations = extendType({
           }
 
           // update product algolia indexes
-          await updateProductTitles({
-            brandSlug: updatedBrandResult.value.itemId,
-          });
+          execUpdateProductTitles(`brandSlug=${updatedBrandResult.value.itemId}`);
 
           return {
             success: true,
@@ -858,9 +856,7 @@ export const BrandMutations = extendType({
             }
 
             // update product algolia indexes
-            await updateProductTitles({
-              brandCollectionSlug: updatedBrandCollection.itemId,
-            });
+            execUpdateProductTitles(`brandCollectionSlug=${updatedBrandCollection.itemId}`);
 
             mutationPayload = {
               success: true,

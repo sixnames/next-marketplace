@@ -21,7 +21,7 @@ import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 import { getAttributeReadableValueLocales } from '../lib/productAttributesUtils';
 import { getOperationPermission, getRequestParams } from '../lib/sessionHelpers';
 import { getParentTreeIds } from '../lib/treeUtils';
-import { updateProductTitles } from '../lib/updateProductTitles';
+import { execUpdateProductTitles } from '../lib/updateProductTitles';
 
 export const ProductAttribute = objectType({
   name: 'ProductAttribute',
@@ -237,9 +237,8 @@ export const ProductAttributeMutations = extendType({
               return;
             }
 
-            await updateProductTitles({
-              _id: productId,
-            });
+            // update algolia object
+            execUpdateProductTitles(`productId=${productId.toHexString()}`);
 
             mutationPayload = {
               success: true,
@@ -370,9 +369,8 @@ export const ProductAttributeMutations = extendType({
               return;
             }
 
-            await updateProductTitles({
-              _id: productId,
-            });
+            // update algolia object
+            execUpdateProductTitles(`productId=${productId.toHexString()}`);
 
             mutationPayload = {
               success: true,

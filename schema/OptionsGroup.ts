@@ -36,7 +36,7 @@ import {
   getResolverValidationSchema,
 } from '../lib/sessionHelpers';
 import { deleteDocumentsTree, getChildrenTreeIds } from '../lib/treeUtils';
-import { updateProductTitles } from '../lib/updateProductTitles';
+import { execUpdateProductTitles } from '../lib/updateProductTitles';
 import {
   addOptionToGroupSchema,
   createOptionsGroupSchema,
@@ -735,12 +735,10 @@ export const OptionsGroupMutations = extendType({
               },
             ])
             .toArray();
-          const productIds = productSummaries.map(({ _id }) => _id);
-          await updateProductTitles({
-            _id: {
-              $in: productIds,
-            },
-          });
+          const productIds = productSummaries
+            .map(({ _id }) => _id.toHexString())
+            .join(FILTER_SEPARATOR);
+          execUpdateProductTitles(`productIds=${productIds}`);
 
           return {
             success: true,

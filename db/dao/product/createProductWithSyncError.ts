@@ -8,7 +8,7 @@ import {
   checkBarcodeIntersects,
 } from '../../../lib/productUtils';
 import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
-import { updateProductTitles } from '../../../lib/updateProductTitles';
+import { execUpdateProductTitles } from '../../../lib/updateProductTitles';
 import {
   COL_NOT_SYNCED_PRODUCTS,
   COL_PRODUCT_FACETS,
@@ -206,10 +206,8 @@ export async function createProductWithSyncError({
         return;
       }
 
-      // create product algolia object
-      await updateProductTitles({
-        _id: createdProductSummary._id,
-      });
+      // create algolia object
+      execUpdateProductTitles(`productId=${createdProductSummary._id.toHexString()}`);
 
       // delete sync errors
       const removedNotSyncedProductsResult = await notSyncedProductsCollection.deleteMany({

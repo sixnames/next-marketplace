@@ -8,7 +8,7 @@ import {
   getRequestParams,
   getResolverValidationSchema,
 } from '../../../lib/sessionHelpers';
-import { updateProductTitles } from '../../../lib/updateProductTitles';
+import { execUpdateProductTitles } from '../../../lib/updateProductTitles';
 import { updateProductSchema } from '../../../validation/productSchema';
 import { COL_PRODUCT_FACETS, COL_PRODUCT_SUMMARIES } from '../../collectionNames';
 import { ProductFacetModel, ProductPayloadModel, ProductSummaryModel } from '../../dbModels';
@@ -128,9 +128,7 @@ export async function copyProduct({
       }
 
       // create algolia object
-      await updateProductTitles({
-        _id: createdProductSummary._id,
-      });
+      execUpdateProductTitles(`productId=${createdProductSummary._id.toHexString()}`);
 
       mutationPayload = {
         success: true,

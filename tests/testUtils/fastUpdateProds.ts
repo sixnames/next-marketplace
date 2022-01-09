@@ -697,9 +697,15 @@ async function updateProds() {
       }
 
       // save all documents
-      await productSummariesCollection.insertMany(rubricSummaries);
-      await productFacetsCollection.insertMany(rubricFacets);
-      await shopProductsCollection.insertMany(rubricShopProducts);
+      if (rubricSummaries.length > 0) {
+        await productSummariesCollection.insertMany(rubricSummaries);
+      }
+      if (rubricFacets.length > 0) {
+        await productFacetsCollection.insertMany(rubricFacets);
+      }
+      if (rubricShopProducts.length > 0) {
+        await shopProductsCollection.insertMany(rubricShopProducts);
+      }
       /*console.log({
         rubricSummaries: rubricSummaries.length,
         rubricFacets: rubricFacets.length,

@@ -1,23 +1,17 @@
 import { ObjectId } from 'mongodb';
 import trim from 'trim';
 import { DEFAULT_COUNTERS_OBJECT } from '../config/common';
-import {
-  COL_LANGUAGES,
-  COL_OPTIONS,
-  COL_PRODUCT_SUMMARIES,
-  COL_SHOP_PRODUCTS,
-} from '../db/collectionNames';
+import { COL_OPTIONS, COL_PRODUCT_SUMMARIES, COL_SHOP_PRODUCTS } from '../db/collectionNames';
 import {
   brandPipeline,
   productAttributesPipeline,
   productCategoriesPipeline,
   productRubricPipeline,
-  summaryPipeline,
-  shopProductSupplierProductsPipeline,
   shopProductShopPipeline,
+  shopProductSupplierProductsPipeline,
+  summaryPipeline,
 } from '../db/dao/constantPipelines';
 import {
-  LanguageModel,
   ObjectIdModel,
   OptionModel,
   ProductFacetModel,
@@ -40,13 +34,10 @@ import {
   ShopProductInterface,
   SupplierProductInterface,
 } from '../db/uiInterfaces';
-import { updateAlgoliaProducts } from './algolia/productAlgoliaUtils';
 import { getFieldStringLocale } from './i18n';
 import { noNaN } from './numbers';
 import { getSupplierPrice } from './priceUtils';
 import { getProductAllSeoContents } from './seoContentUtils';
-import { generateCardTitle, GenerateCardTitleInterface, generateSnippetTitle } from './titleUtils';
-import { getTreeFromList } from './treeUtils';
 
 interface GetCmsProductInterface {
   productId: string;
@@ -446,95 +437,6 @@ export function trimProductName({ originalName, nameI18n }: TrimProductNameInter
       return acc;
     }, {}),
   };
-}
-
-export async function updateProductTitles(match?: Record<any, any>) {
-  try {
-    const { db } = await getDatabase();
-    const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
-    const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
-    const languages = await languagesCollection.find({}).toArray();
-    const locales = languages.map(({ slug }) => slug);
-
-    const aggregationMatch = match
-      ? [
-          {
-            $match: match,
-          },
-        ]
-      : [];
-
-    const products = await productSummariesCollection
-      .aggregate<ProductSummaryInterface>([
-        ...aggregationMatch,
-
-        // get product rubric
-        ...productRubricPipeline,
-
-        // get product attributes
-        ...productAttributesPipeline(),
-
-        // get product brand
-        ...brandPipeline,
-
-        // get product categories
-        ...productCategoriesPipeline(),
-      ])
-      .toArray();
-
-    for await (const initialProduct of products) {
-      const { rubric, ...restProduct } = initialProduct;
-      if (!rubric) {
-        return false;
-      }
-
-      // update titles
-      const cardTitleI18n: TranslationModel = {};
-      const snippetTitleI18n: TranslationModel = {};
-      for await (const locale of locales) {
-        const categories = getTreeFromList({
-          list: initialProduct.categories,
-          childrenFieldName: 'categories',
-          locale,
-        });
-
-        const titleProps: GenerateCardTitleInterface = {
-          locale,
-          brand: initialProduct.brand,
-          rubricName: getFieldStringLocale(rubric.nameI18n, locale),
-          showRubricNameInProductTitle: rubric.showRubricNameInProductTitle,
-          showCategoryInProductTitle: rubric.showCategoryInProductTitle,
-          attributes: initialProduct.attributes,
-          titleCategorySlugs: restProduct.titleCategorySlugs,
-          originalName: restProduct.originalName,
-          defaultGender: restProduct.gender,
-          categories,
-        };
-        const cardTitle = generateCardTitle(titleProps);
-        cardTitleI18n[locale] = cardTitle;
-        const snippetTitle = generateSnippetTitle(titleProps);
-        snippetTitleI18n[locale] = snippetTitle;
-      }
-      await productSummariesCollection.findOneAndUpdate(
-        {
-          _id: initialProduct._id,
-        },
-        {
-          $set: {
-            cardTitleI18n,
-            snippetTitleI18n,
-          },
-        },
-      );
-
-      // update algolia index
-      await updateAlgoliaProducts({ _id: initialProduct._id });
-    }
-    return true;
-  } catch (e) {
-    console.log('updateProductTitlesInterface error ', e);
-    return false;
-  }
 }
 
 interface CastSummaryToShopProductInterface {

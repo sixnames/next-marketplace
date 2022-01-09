@@ -6,9 +6,9 @@ import {
   castSummaryToFacet,
   castSummaryToShopProduct,
   checkBarcodeIntersects,
-  updateProductTitles,
 } from '../../../lib/productUtils';
 import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
+import { updateProductTitles } from '../../../lib/updateProductTitles';
 import {
   COL_NOT_SYNCED_PRODUCTS,
   COL_PRODUCT_FACETS,

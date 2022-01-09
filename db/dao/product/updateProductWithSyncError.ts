@@ -1,12 +1,9 @@
 import { ObjectId } from 'mongodb';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
 import { getNextItemId } from '../../../lib/itemIdUtils';
-import {
-  castSummaryToShopProduct,
-  checkBarcodeIntersects,
-  updateProductTitles,
-} from '../../../lib/productUtils';
+import { castSummaryToShopProduct, checkBarcodeIntersects } from '../../../lib/productUtils';
 import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
+import { updateProductTitles } from '../../../lib/updateProductTitles';
 import {
   COL_NOT_SYNCED_PRODUCTS,
   COL_PRODUCT_SUMMARIES,

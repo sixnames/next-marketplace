@@ -2,12 +2,13 @@ import { ObjectId } from 'mongodb';
 import { IMAGE_FALLBACK } from '../../../config/common';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
 import { getNextItemId } from '../../../lib/itemIdUtils';
-import { castSummaryToFacet, updateProductTitles } from '../../../lib/productUtils';
+import { castSummaryToFacet } from '../../../lib/productUtils';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
 } from '../../../lib/sessionHelpers';
+import { updateProductTitles } from '../../../lib/updateProductTitles';
 import { updateProductSchema } from '../../../validation/productSchema';
 import { COL_PRODUCT_FACETS, COL_PRODUCT_SUMMARIES } from '../../collectionNames';
 import { ProductFacetModel, ProductPayloadModel, ProductSummaryModel } from '../../dbModels';

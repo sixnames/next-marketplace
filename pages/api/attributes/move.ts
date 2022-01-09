@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { REQUEST_METHOD_PATCH } from '../../../config/common';
 import { moveAttribute } from '../../../db/dao/attributes/moveAttribute';
-import { updateProductTitles } from '../../../lib/productUtils';
 import { sendApiRouteResponse } from '../../../lib/sessionHelpers';
+import { updateProductTitles } from '../../../lib/updateProductTitles';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   // move

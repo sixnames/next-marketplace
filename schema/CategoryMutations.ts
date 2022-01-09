@@ -31,7 +31,6 @@ import {
 import { getDatabase } from '../db/mongodb';
 import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 import { getNextItemId } from '../lib/itemIdUtils';
-import { updateProductTitles } from '../lib/productUtils';
 import { updateCitiesSeoContent } from '../lib/seoContentUtils';
 import {
   getOperationPermission,
@@ -39,6 +38,7 @@ import {
   getResolverValidationSchema,
 } from '../lib/sessionHelpers';
 import { deleteDocumentsTree, getParentTreeIds } from '../lib/treeUtils';
+import { updateProductTitles } from '../lib/updateProductTitles';
 import {
   addAttributesGroupToCategorySchema,
   createCategorySchema,

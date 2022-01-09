@@ -30,13 +30,13 @@ import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 import { getFieldStringLocale } from '../lib/i18n';
 import { getNextNumberItemId } from '../lib/itemIdUtils';
 import { trimOptionNames } from '../lib/optionUtils';
-import { updateProductTitles } from '../lib/productUtils';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
 } from '../lib/sessionHelpers';
 import { deleteDocumentsTree, getChildrenTreeIds } from '../lib/treeUtils';
+import { updateProductTitles } from '../lib/updateProductTitles';
 import {
   addOptionToGroupSchema,
   createOptionsGroupSchema,

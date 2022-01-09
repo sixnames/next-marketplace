@@ -19,9 +19,9 @@ import {
 import { getDatabase } from '../db/mongodb';
 import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 import { getAttributeReadableValueLocales } from '../lib/productAttributesUtils';
-import { updateProductTitles } from '../lib/productUtils';
 import { getOperationPermission, getRequestParams } from '../lib/sessionHelpers';
 import { getParentTreeIds } from '../lib/treeUtils';
+import { updateProductTitles } from '../lib/updateProductTitles';
 
 export const ProductAttribute = objectType({
   name: 'ProductAttribute',

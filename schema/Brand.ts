@@ -16,12 +16,12 @@ import { getDatabase } from '../db/mongodb';
 import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 import { getNextNumberItemId } from '../lib/itemIdUtils';
 import { getAlphabetList } from '../lib/optionUtils';
-import { updateProductTitles } from '../lib/productUtils';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
 } from '../lib/sessionHelpers';
+import { updateProductTitles } from '../lib/updateProductTitles';
 import {
   addCollectionToBrandSchema,
   createBrandSchema,

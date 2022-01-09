@@ -2,12 +2,9 @@ import { ObjectId } from 'mongodb';
 import { DEFAULT_LOCALE, IMAGE_FALLBACK } from '../../../config/common';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
 import { getNextItemId } from '../../../lib/itemIdUtils';
-import {
-  checkBarcodeIntersects,
-  trimProductName,
-  updateProductTitles,
-} from '../../../lib/productUtils';
+import { checkBarcodeIntersects, trimProductName } from '../../../lib/productUtils';
 import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
+import { execUpdateProductTitles } from '../../../lib/updateProductTitles';
 import {
   COL_PRODUCT_FACETS,
   COL_PRODUCT_SUMMARIES,
@@ -193,9 +190,7 @@ export async function createProduct({
       }
 
       // create algolia object
-      await updateProductTitles({
-        _id: createdSummary._id,
-      });
+      execUpdateProductTitles(`productId=${createdSummary._id.toHexString()}`);
 
       mutationPayload = {
         success: true,

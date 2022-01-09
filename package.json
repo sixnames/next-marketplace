@@ -16,6 +16,7 @@
     "test": "cypress run",
     "ci": "server-test 3000",
     "build-and-test": "yarn build && yarn ci",
+    "update-product-titles": "ts-node --skip-project db/dao/product/updateProductTitlesInChildProcess.ts",
     "seed-stage-db": "ts-node --skip-project tests/seedStageDb.ts",
     "fast-update-prods": "ts-node --skip-project tests/testUtils/fastUpdateProds.ts",
     "update-prods": "ts-node --skip-project tests/testUtils/updateProds.ts",

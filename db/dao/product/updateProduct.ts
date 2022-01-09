@@ -1,15 +1,12 @@
 import { ObjectId } from 'mongodb';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
-import {
-  checkBarcodeIntersects,
-  trimProductName,
-  updateProductTitles,
-} from '../../../lib/productUtils';
+import { checkBarcodeIntersects, trimProductName } from '../../../lib/productUtils';
 import {
   getOperationPermission,
   getRequestParams,
   getResolverValidationSchema,
 } from '../../../lib/sessionHelpers';
+import { execUpdateProductTitles } from '../../../lib/updateProductTitles';
 import { updateProductSchema } from '../../../validation/productSchema';
 import { COL_PRODUCT_SUMMARIES } from '../../collectionNames';
 import { ProductPayloadModel, ProductSummaryModel } from '../../dbModels';
@@ -128,10 +125,8 @@ export async function updateProduct({
         return;
       }
 
-      // update algolia product object
-      await updateProductTitles({
-        _id: updatedProduct._id,
-      });
+      // update product title
+      execUpdateProductTitles(`productId=${updatedProduct._id.toHexString()}`);
 
       mutationPayload = {
         success: true,

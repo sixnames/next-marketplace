@@ -7,8 +7,8 @@ import {
 import { createAttribute } from '../../../db/dao/attributes/createAttribute';
 import { deleteAttribute } from '../../../db/dao/attributes/deleteAttribute';
 import { updateAttribute } from '../../../db/dao/attributes/updateAttribute';
-import { updateProductTitles } from '../../../lib/productUtils';
 import { sendApiRouteResponse } from '../../../lib/sessionHelpers';
+import { updateProductTitles } from '../../../lib/updateProductTitles';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   // create

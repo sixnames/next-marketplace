@@ -24,7 +24,6 @@ import {
 } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
 import getResolverErrorMessage from '../lib/getResolverErrorMessage';
-import { updateProductTitles } from '../lib/productUtils';
 import { updateCitiesSeoContent } from '../lib/seoContentUtils';
 import {
   getOperationPermission,
@@ -32,6 +31,7 @@ import {
   getResolverValidationSchema,
 } from '../lib/sessionHelpers';
 import { generateDefaultLangSlug } from '../lib/slugUtils';
+import { execUpdateProductTitles } from '../lib/updateProductTitles';
 import {
   addAttributesGroupToRubricSchema,
   createRubricSchema,
@@ -306,10 +306,8 @@ export const RubricMutations = extendType({
             });
           }
 
-          // update product algolia indexes
-          await updateProductTitles({
-            rubricId: updatedRubric._id,
-          });
+          // update product titles
+          execUpdateProductTitles(`rubricSlug=${updatedRubric.slug}`);
 
           return {
             success: true,

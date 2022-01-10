@@ -1226,6 +1226,7 @@ export interface TextUniquenessApiParsedResponseModel {
 }
 
 export interface BlackListProductItemModel {
+  id?: string | null;
   barcode: string[];
   available: number;
   price: number;
@@ -1234,7 +1235,13 @@ export interface BlackListProductItemModel {
 
 export interface BlackListProductModel {
   _id: ObjectIdModel;
-  shopProductId: ObjectIdModel;
+  shopProductUid: string;
+  shopId: ObjectIdModel;
+  products: BlackListProductItemModel[];
+}
+
+export interface SyncIntersectModel {
+  _id: ObjectIdModel;
   shopId: ObjectIdModel;
   products: BlackListProductItemModel[];
 }

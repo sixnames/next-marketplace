@@ -5,6 +5,7 @@ import { COL_BLACKLIST_PRODUCTS, COL_SHOPS } from '../../../db/collectionNames';
 import { BlackListProductItemModel, BlackListProductModel, ShopModel } from '../../../db/dbModels';
 import { getDatabase } from '../../../db/mongodb';
 import { SyncBlackListProductInterface, SyncParamsInterface } from '../../../db/syncInterfaces';
+import { alwaysString } from '../../../lib/arrayUtils';
 import { noNaN } from '../../../lib/numbers';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
@@ -51,14 +52,15 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           continue;
         }
 
-        const shopProductId = new ObjectId(id);
+        const shopProductUid = alwaysString(id);
 
         const filteredProducts = products.reduce((acc: BlackListProductItemModel[], product) => {
-          const { barcode, available, price, name } = product;
+          const { barcode, available, price, name, id } = product;
           if (!barcode || barcode.length < 1) {
             return acc;
           }
           const productPayload: BlackListProductItemModel = {
+            id,
             barcode,
             available: noNaN(available),
             price: noNaN(price),
@@ -69,7 +71,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
         // check if exists and update existing
         const existingBlacklistProduct = await blacklistProductsCollection.findOne({
-          shopProductId,
+          shopId: shop._id,
+          shopProductUid,
         });
         if (existingBlacklistProduct) {
           await blacklistProductsCollection.findOneAndUpdate(
@@ -88,7 +91,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         const payload: BlackListProductModel = {
           _id: new ObjectId(),
           shopId: shop._id,
-          shopProductId,
+          shopProductUid,
           products: filteredProducts,
         };
 

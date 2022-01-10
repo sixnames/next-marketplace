@@ -546,8 +546,8 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
       brandCollectionSlug: brandCollection?.itemId,
       manufacturerSlug: manufacturer?.itemId,
       allowDelivery: Boolean(rubricVariant.allowDelivery),
-      mainImage: `/assets/${ASSETS_DIST_PRODUCTS}/${itemId}/${itemId}-0.png`,
-      assets: [`/assets/${ASSETS_DIST_PRODUCTS}/${itemId}/${itemId}-0.png`],
+      mainImage: `/assets/${ASSETS_DIST_PRODUCTS}/${itemId}/${itemId}.png`,
+      assets: [`/assets/${ASSETS_DIST_PRODUCTS}/${itemId}/${itemId}.png`],
       gender,
       nameI18n: {
         ru: `${name} RU`,

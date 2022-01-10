@@ -1222,7 +1222,7 @@ export const getCatalogueData = async ({
         ...shopProduct,
         summary: {
           ...castedProduct,
-          shopsCount: shopProduct.shopsCount,
+          shopsCount: shopProduct.shopsIds?.length,
           attributes: [],
           listAttributes,
           ratingAttributes,

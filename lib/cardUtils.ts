@@ -443,7 +443,7 @@ export async function getCardData({
       const excluded = excludedAttributesIds.some((excludedAttributeId) => {
         return excludedAttributeId.equals(productAttribute.attributeId);
       });
-      return !productAttribute.attribute?.showInCard && !excluded;
+      return productAttribute.attribute?.showInCard && !excluded;
     });
 
     // listFeatures

@@ -10,7 +10,7 @@ import {
   AttributeModel,
   AttributePayloadModel,
   AttributesGroupModel,
-  ProductAttributeModel,
+  ProductSummaryAttributeModel,
 } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
@@ -26,7 +26,8 @@ export async function deleteAttribute({
 }: DaoPropsInterface<DeleteAttributeInputInterface>): Promise<AttributePayloadModel> {
   const { getApiMessage } = await getRequestParams(context);
   const { db, client } = await getDatabase();
-  const productAttributesCollection = db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
+  const productAttributesCollection =
+    db.collection<ProductSummaryAttributeModel>(COL_PRODUCT_ATTRIBUTES);
   const attributesGroupCollection = db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
   const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
 

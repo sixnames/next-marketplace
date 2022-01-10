@@ -23,23 +23,23 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
   imageLoading,
 }) => {
   const { urlPrefix } = useSiteContext();
-  const { product, available } = shopProduct;
-  if (!product) {
+  const { summary, available } = shopProduct;
+  if (!summary) {
     return null;
   }
   const {
     slug,
-    cardPrices,
+    minPrice,
     itemId,
-    listFeatures,
-    ratingFeatures,
-    connections,
+    listAttributes,
+    ratingAttributes,
+    variants,
     shopsCount,
     mainImage,
     shopProductsIds,
     snippetTitle,
     name,
-  } = product;
+  } = summary;
 
   const isShopless = noNaN(shopsCount) < 1;
 
@@ -54,7 +54,7 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
       }`}
     >
       {/*edit button for admin*/}
-      <ProductSnippetEditButton product={product} />
+      <ProductSnippetEditButton product={summary} />
 
       <div className='relative flex flex-col col-span-3 md:col-span-2 items-center justify-center flex-grow pt-4 pl-5 pr-5 dark:snippet-image'>
         {/*image*/}
@@ -109,7 +109,7 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
 
             {/*list features*/}
             <div className='mb-6 space-y-2 md:space-y-2'>
-              {(listFeatures || []).map(({ attribute, _id, readableValue }) => {
+              {(listAttributes || []).map(({ attribute, _id, readableValue }) => {
                 if (!attribute) {
                   return null;
                 }
@@ -123,9 +123,9 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
             </div>
 
             {/*rating features*/}
-            {(ratingFeatures || []).length > 0 ? (
+            {(ratingAttributes || []).length > 0 ? (
               <div className='flex flex-wrap items-center min-h-control-button-height'>
-                {(ratingFeatures || []).map(({ _id, attribute, readableValue }) => {
+                {(ratingAttributes || []).map(({ _id, attribute, readableValue }) => {
                   if (!attribute) {
                     return null;
                   }
@@ -144,20 +144,18 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
 
           <div className='flex flex-col col-span-7 md:col-span-2'>
             {/*price*/}
-            {isShopless ? null : (
-              <ProductSnippetPrice shopsCount={shopsCount} value={cardPrices?.min} />
-            )}
+            {isShopless ? null : <ProductSnippetPrice shopsCount={shopsCount} value={minPrice} />}
 
             {/*connections*/}
-            {(connections || []).length > 0 && showSnippetConnections ? (
+            {(variants || []).length > 0 && showSnippetConnections ? (
               <div className='hidden md:block mt-2 mb-4'>
-                {(connections || []).map(({ _id, attribute, connectionProducts }) => {
+                {(variants || []).map(({ _id, attribute, products }) => {
                   return (
                     <div key={`${_id}`} className='mb-4'>
                       <div className='mr-1 whitespace-nowrap'>{`${attribute?.name}:`}</div>
                       <div>
-                        {(connectionProducts || []).map(({ option, productId }, index) => {
-                          const isLast = (connectionProducts || []).length - 1 === index;
+                        {(products || []).map(({ option, productId }, index) => {
+                          const isLast = (products || []).length - 1 === index;
                           const isCurrent = productId === shopProduct._id;
 
                           if (!option) {
@@ -215,7 +213,7 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
                 <ProductAddToCartButton
                   available={available}
                   disabled={isShopless}
-                  productId={product._id}
+                  productId={summary._id}
                   shopProductsIds={shopProductsIds}
                   testId={`${testId}-add-to-cart-row`}
                 />

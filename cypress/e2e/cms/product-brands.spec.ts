@@ -21,7 +21,6 @@ describe('Rubric products', () => {
     cy.getByCy('brand-input').click();
     cy.getByCy('brand-options-modal').should('exist');
     cy.getByCy('option-Brand B').click();
-    cy.getByCy('options-submit').click();
     cy.wait(1500);
     cy.getByCy('brand-input').should('contain', 'Brand B');
 
@@ -29,7 +28,6 @@ describe('Rubric products', () => {
     cy.getByCy('brand-collection-input').click();
     cy.getByCy('brand-collection-options-modal').should('exist');
     cy.getByCy('option-Brand collection B').click();
-    cy.getByCy('options-submit').click();
     cy.wait(1500);
     cy.getByCy('brand-collection-input').should('contain', 'Brand collection B');
 
@@ -39,7 +37,6 @@ describe('Rubric products', () => {
     cy.getByCy('manufacturer-input').click();
     cy.getByCy('manufacturer-options-modal').should('exist');
     cy.getByCy('option-Manufacturer B').click();
-    cy.getByCy('options-submit').click();
     cy.wait(1500);
     cy.getByCy('manufacturer-input').should('contain', 'Manufacturer B');
   });

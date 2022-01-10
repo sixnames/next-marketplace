@@ -2,12 +2,12 @@ import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
 import ShopAssets, { ShopAssetsInterface } from '../../../../../../../components/shops/ShopAssets';
-import { ROUTE_CMS } from '../../../../../../../config/common';
 import { COL_COMPANIES, COL_SHOPS } from '../../../../../../../db/collectionNames';
 import { ShopModel } from '../../../../../../../db/dbModels';
 import { getDatabase } from '../../../../../../../db/mongodb';
 import { AppContentWrapperBreadCrumbs } from '../../../../../../../db/uiInterfaces';
 import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
+import { getCmsCompanyLinks } from '../../../../../../../lib/linkUtils';
 import {
   castDbData,
   getAppInitialData,
@@ -19,37 +19,36 @@ interface CompanyShopAssetsInterface
     Omit<ShopAssetsInterface, 'basePath'> {}
 
 const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ layoutProps, shop }) => {
-  const companyBasePath = `${ROUTE_CMS}/companies/${shop.companyId}`;
+  const { root, parentLink, shops, ...links } = getCmsCompanyLinks({
+    companyId: shop.companyId,
+    shopId: shop._id,
+  });
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Изображения',
     config: [
       {
         name: 'Компании',
-        href: `${ROUTE_CMS}/companies`,
+        href: parentLink,
       },
       {
         name: `${shop.company?.name}`,
-        href: companyBasePath,
+        href: root,
       },
       {
         name: 'Магазины',
-        href: `${companyBasePath}/shops/${shop.companyId}`,
+        href: shops,
       },
       {
         name: shop.name,
-        href: `${companyBasePath}/shops/shop/${shop._id}`,
+        href: links.shop.root,
       },
     ],
   };
 
   return (
     <ConsoleLayout {...layoutProps}>
-      <ShopAssets
-        basePath={`${companyBasePath}/shops/shop`}
-        shop={shop}
-        breadcrumbs={breadcrumbs}
-      />
+      <ShopAssets basePath={links.shop.itemPath} shop={shop} breadcrumbs={breadcrumbs} />
     </ConsoleLayout>
   );
 };

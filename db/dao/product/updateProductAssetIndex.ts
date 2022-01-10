@@ -2,13 +2,8 @@ import { ObjectId } from 'mongodb';
 import { getMainImage, reorderAssets } from '../../../lib/assetUtils/assetUtils';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
-import { COL_PRODUCT_ASSETS, COL_PRODUCTS, COL_SHOP_PRODUCTS } from '../../collectionNames';
-import {
-  ProductAssetsModel,
-  ProductModel,
-  ProductPayloadModel,
-  ShopProductModel,
-} from '../../dbModels';
+import { COL_PRODUCT_SUMMARIES, COL_SHOP_PRODUCTS } from '../../collectionNames';
+import { ProductPayloadModel, ProductSummaryModel, ShopProductModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
 
@@ -24,9 +19,8 @@ export async function updateProductAssetIndex({
 }: DaoPropsInterface<UpdateProductAssetIndexInputInterface>): Promise<ProductPayloadModel> {
   const { getApiMessage } = await getRequestParams(context);
   const { db, client } = await getDatabase();
-  const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+  const productsCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-  const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
 
   const session = client.startSession();
 
@@ -61,8 +55,7 @@ export async function updateProductAssetIndex({
       // check product availability
       const productObjectId = new ObjectId(productId);
       const product = await productsCollection.findOne({ _id: productObjectId });
-      const initialAssets = await productAssetsCollection.findOne({ productId: productObjectId });
-      if (!product || !initialAssets) {
+      if (!product) {
         mutationPayload = {
           success: false,
           message: await getApiMessage(`products.update.notFound`),
@@ -70,12 +63,13 @@ export async function updateProductAssetIndex({
         await session.abortTransaction();
         return;
       }
+      const initialAssets = product.assets;
 
       // reorder assets
       const reorderedAssetsWithUpdatedIndexes = reorderAssets({
         assetUrl,
         assetNewIndex,
-        initialAssets: initialAssets.assets,
+        initialAssets,
       });
       if (!reorderedAssetsWithUpdatedIndexes) {
         mutationPayload = {
@@ -86,32 +80,8 @@ export async function updateProductAssetIndex({
         return;
       }
 
-      const updatedProductAssetsResult = await productAssetsCollection.findOneAndUpdate(
-        {
-          productId: product._id,
-        },
-        {
-          $set: {
-            assets: reorderedAssetsWithUpdatedIndexes,
-          },
-        },
-        {
-          returnDocument: 'after',
-        },
-      );
-      const updatedProductAssets = updatedProductAssetsResult.value;
-      if (!updatedProductAssetsResult.ok || !updatedProductAssets) {
-        mutationPayload = {
-          success: false,
-          message: await getApiMessage(`products.update.error`),
-        };
-        await session.abortTransaction();
-        return;
-      }
-      const newAssets = updatedProductAssets.assets;
-      const mainImage = getMainImage(newAssets);
-
       // Update product
+      const mainImage = getMainImage(reorderedAssetsWithUpdatedIndexes);
       const updatedProductResult = await productsCollection.findOneAndUpdate(
         {
           _id: product._id,
@@ -119,6 +89,7 @@ export async function updateProductAssetIndex({
         {
           $set: {
             mainImage,
+            assets: reorderedAssetsWithUpdatedIndexes,
             updatedAt: new Date(),
           },
         },

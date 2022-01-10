@@ -22,21 +22,21 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
   imageLoading,
 }) => {
   const { urlPrefix } = useSiteContext();
-  const { product, available } = shopProduct;
-  if (!product) {
+  const { summary, available } = shopProduct;
+  if (!summary) {
     return null;
   }
   const {
     snippetTitle,
     slug,
-    cardPrices,
-    listFeatures,
+    minPrice,
+    listAttributes,
     shopsCount,
     mainImage,
     shopProductsIds,
     itemId,
     name,
-  } = product;
+  } = summary;
 
   const mainFrameClassName = showSnippetBackground
     ? 'bg-secondary dark:shadow-md'
@@ -65,7 +65,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
       }`}
     >
       {/*edit button for admin*/}
-      <ProductSnippetEditButton product={product} />
+      <ProductSnippetEditButton product={summary} />
 
       <div className='md:grid px-4 md:px-0 grid-cols-12 flex-grow'>
         {/*image*/}
@@ -111,12 +111,12 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
             {/*list features*/}
             {noAttributes ? null : (
               <div className='text-sm text-secondary-text'>
-                {(listFeatures || []).map(({ readableValue }, index) => {
+                {(listAttributes || []).map(({ readableValue }, index) => {
                   if (!readableValue) {
                     return null;
                   }
 
-                  const isLast = index === (listFeatures || []).length - 1;
+                  const isLast = index === (listAttributes || []).length - 1;
                   return (
                     <span className='inline-block mr-1' key={`${readableValue}-${index}`}>
                       {isLast ? readableValue : `${readableValue},`}
@@ -128,7 +128,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
           </div>
 
           {/*price*/}
-          <ProductSnippetPrice shopsCount={shopsCount} value={cardPrices?.min} />
+          <ProductSnippetPrice shopsCount={shopsCount} value={minPrice} />
         </div>
       </div>
 
@@ -153,7 +153,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
               available={available}
               className='w-full'
               frameClassName={'w-[50%]'}
-              productId={product._id}
+              productId={summary._id}
               shopProductsIds={shopProductsIds}
               testId={`${testId}-add-to-cart-grid`}
               size={'small'}

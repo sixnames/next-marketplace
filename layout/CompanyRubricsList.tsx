@@ -3,7 +3,6 @@ import * as React from 'react';
 import ContentItemControls from '../components/button/ContentItemControls';
 import Inner from '../components/Inner';
 import WpTable, { WpTableColumn } from '../components/WpTable';
-import { DEFAULT_PAGE_FILTER } from '../config/common';
 import { CompanyInterface, RubricInterface } from '../db/uiInterfaces';
 
 export interface CompanyRubricsListInterface {
@@ -37,7 +36,7 @@ const CompanyRubricsList: React.FC<CompanyRubricsListInterface> = ({ rubrics, ro
             updateTitle={'Редактировать рубрику'}
             updateHandler={() => {
               router
-                .push(`${routeBasePath}/${dataItem._id}/products/${DEFAULT_PAGE_FILTER}`)
+                .push(`${routeBasePath}/${dataItem.slug}/products`)
                 .catch((e) => console.log(e));
             }}
           />
@@ -55,9 +54,7 @@ const CompanyRubricsList: React.FC<CompanyRubricsListInterface> = ({ rubrics, ro
           testIdKey={'name'}
           emptyMessage={'Список пуст'}
           onRowDoubleClick={(dataItem) => {
-            router
-              .push(`${routeBasePath}/${dataItem._id}/products/${DEFAULT_PAGE_FILTER}`)
-              .catch((e) => console.log(e));
+            router.push(`${routeBasePath}/${dataItem.slug}/products`).catch((e) => console.log(e));
           }}
         />
       </div>

@@ -4,7 +4,6 @@ import * as React from 'react';
 import ShopRubrics, {
   ShopRubricsInterface,
 } from '../../../../../../../../components/shops/ShopRubrics';
-import { ROUTE_CMS } from '../../../../../../../../config/common';
 import {
   COL_COMPANIES,
   COL_RUBRICS,
@@ -19,6 +18,7 @@ import {
 } from '../../../../../../../../db/uiInterfaces';
 import ConsoleLayout from '../../../../../../../../layout/cms/ConsoleLayout';
 import { getI18nLocaleValue } from '../../../../../../../../lib/i18n';
+import { getCmsCompanyLinks } from '../../../../../../../../lib/linkUtils';
 import { noNaN } from '../../../../../../../../lib/numbers';
 import {
   castDbData,
@@ -35,26 +35,29 @@ const CompanyShopProducts: NextPage<CompanyShopProductsInterface> = ({
   rubrics,
   shop,
 }) => {
-  const companyBasePath = `${ROUTE_CMS}/companies/${shop.companyId}`;
+  const { root, parentLink, shops, ...links } = getCmsCompanyLinks({
+    companyId: shop.companyId,
+    shopId: shop._id,
+  });
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Товары',
     config: [
       {
         name: 'Компании',
-        href: `${ROUTE_CMS}/companies`,
+        href: parentLink,
       },
       {
         name: `${shop.company?.name}`,
-        href: companyBasePath,
+        href: root,
       },
       {
         name: 'Магазины',
-        href: `${companyBasePath}/shops/${shop.companyId}`,
+        href: shops,
       },
       {
         name: shop.name,
-        href: `${companyBasePath}/shops/shop/${shop._id}`,
+        href: links.shop.root,
       },
     ],
   };
@@ -64,7 +67,7 @@ const CompanyShopProducts: NextPage<CompanyShopProductsInterface> = ({
       <ShopRubrics
         shop={shop}
         rubrics={rubrics}
-        basePath={`${companyBasePath}/shops/shop`}
+        basePath={links.shop.itemPath}
         breadcrumbs={breadcrumbs}
       />
     </ConsoleLayout>

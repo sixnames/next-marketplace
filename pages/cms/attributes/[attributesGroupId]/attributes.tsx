@@ -25,13 +25,17 @@ import { useLocaleContext } from '../../../../context/localeContext';
 import {
   COL_ATTRIBUTES,
   COL_ATTRIBUTES_GROUPS,
+  COL_METRICS,
   COL_OPTIONS_GROUPS,
 } from '../../../../db/collectionNames';
+import { castAttributeForUI } from '../../../../db/dao/attributes/castAttributesGroupForUI';
 import { getDatabase } from '../../../../db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   AttributeInterface,
   AttributesGroupInterface,
+  MetricInterface,
+  OptionsGroupInterface,
 } from '../../../../db/uiInterfaces';
 import {
   useCreateAttributeMutation,
@@ -42,6 +46,7 @@ import useMutationCallbacks from '../../../../hooks/useMutationCallbacks';
 import AppContentWrapper from '../../../../layout/AppContentWrapper';
 import AppSubNav from '../../../../layout/AppSubNav';
 import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
+import { sortObjectsByField } from '../../../../lib/arrayUtils';
 import { getFieldStringLocale } from '../../../../lib/i18n';
 import {
   castDbData,
@@ -54,9 +59,17 @@ const pageTitle = `Группы атрибутов`;
 
 interface AttributesConsumerInterface {
   attributesGroup: AttributesGroupInterface;
+  metrics: MetricInterface[];
+  optionGroups: OptionsGroupInterface[];
+  attributeGroups: AttributesGroupInterface[];
 }
 
-const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({ attributesGroup }) => {
+const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({
+  attributesGroup,
+  metrics,
+  attributeGroups,
+  optionGroups,
+}) => {
   const { locale } = useLocaleContext();
   const { showModal } = useMutationCallbacks({
     reload: true,
@@ -73,6 +86,8 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({ attributesG
       props: {
         attribute,
         attributesGroupId: `${attributesGroup._id}`,
+        metrics,
+        optionGroups,
         confirm: (input) => {
           updateAttributeMutation({
             attributesGroupId: `${attributesGroup._id}`,
@@ -266,7 +281,7 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({ attributesG
                 variant: MOVE_ATTRIBUTE_MODAL,
                 props: {
                   attributeId: `${dataItem._id}`,
-                  oldAttributesGroupId: `${dataItem.attributesGroupId}`,
+                  attributeGroups,
                 },
               });
             }}
@@ -320,6 +335,8 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({ attributesG
               showModal<AddAttributeToGroupModalInterface>({
                 variant: ATTRIBUTE_IN_GROUP_MODAL,
                 props: {
+                  metrics,
+                  optionGroups,
                   attributesGroupId: `${attributesGroup._id}`,
                   confirm: (input) => {
                     return createAttributeMutation({
@@ -365,6 +382,8 @@ export const getServerSideProps = async (
 
   const { db } = await getDatabase();
   const attributesGroupsCollection = db.collection<AttributesGroupInterface>(COL_ATTRIBUTES_GROUPS);
+  const metricsCollection = db.collection<MetricInterface>(COL_METRICS);
+  const optionGroupsCollection = db.collection<OptionsGroupInterface>(COL_OPTIONS_GROUPS);
 
   const attributesGroupAggregationResult = await attributesGroupsCollection
     .aggregate<AttributesGroupInterface>([
@@ -420,39 +439,63 @@ export const getServerSideProps = async (
     ])
     .toArray();
 
-  const attributesGroup = attributesGroupAggregationResult[0];
+  const rawAttributesGroup = attributesGroupAggregationResult[0];
 
-  if (!attributesGroup) {
+  if (!rawAttributesGroup) {
     return {
       notFound: true,
     };
   }
 
+  const locale = props.sessionLocale;
+  const attributesGroup = {
+    ...rawAttributesGroup,
+    name: getFieldStringLocale(rawAttributesGroup.nameI18n, locale),
+    attributes: (rawAttributesGroup.attributes || []).map((attribute) => {
+      return castAttributeForUI({
+        locale,
+        attribute,
+      });
+    }),
+  };
+
+  // metrics
+  const initialMetrics = await metricsCollection.find({}).toArray();
+  const castedMetrics = initialMetrics.map((document) => {
+    return {
+      ...document,
+      name: getFieldStringLocale(document.nameI18n, locale),
+    };
+  });
+  const sortedMetrics = sortObjectsByField(castedMetrics);
+
+  // option groups
+  const initialOptionGroups = await optionGroupsCollection.find({}).toArray();
+  const castedOptionGroups = initialOptionGroups.map((document) => {
+    return {
+      ...document,
+      name: getFieldStringLocale(document.nameI18n, locale),
+    };
+  });
+  const sortedOptionGroups = sortObjectsByField(castedOptionGroups);
+
+  // attribute groups
+  const initialAttributeGroups = await attributesGroupsCollection.find({}).toArray();
+  const castedAttributeGroups = initialAttributeGroups.map((document) => {
+    return {
+      ...document,
+      name: getFieldStringLocale(document.nameI18n, locale),
+    };
+  });
+  const sortedAttributeGroups = sortObjectsByField(castedAttributeGroups);
+
   return {
     props: {
       ...props,
-      attributesGroup: castDbData({
-        ...attributesGroup,
-        name: getFieldStringLocale(attributesGroup.nameI18n, props.sessionLocale),
-        attributes: (attributesGroup.attributes || []).map((attribute) => {
-          return {
-            ...attribute,
-            optionsGroup: attribute.optionsGroup
-              ? {
-                  ...attribute.optionsGroup,
-                  name: getFieldStringLocale(attribute.optionsGroup.nameI18n, props.sessionLocale),
-                }
-              : null,
-            name: getFieldStringLocale(attribute.nameI18n, props.sessionLocale),
-            metric: attribute.metric
-              ? {
-                  ...attribute.metric,
-                  name: getFieldStringLocale(attribute.metric.nameI18n, props.sessionLocale),
-                }
-              : null,
-          };
-        }),
-      }),
+      attributesGroup: castDbData(attributesGroup),
+      metrics: castDbData(sortedMetrics),
+      optionGroups: castDbData(sortedOptionGroups),
+      attributeGroups: castDbData(sortedAttributeGroups),
     },
   };
 };

@@ -1,3 +1,5 @@
+import { SUPPLIER_PRICE_VARIANT_CHARGE } from '../config/common';
+import { SupplierProductInterface } from '../db/uiInterfaces';
 import { noNaN } from './numbers';
 
 interface GetOrderDiscountedPriceInterface {
@@ -70,4 +72,13 @@ export function countDiscountedPrice({
     discountedPrice: Math.ceil(discountedPrice),
     finalDiscount,
   };
+}
+
+export function getSupplierPrice(supplierProduct: SupplierProductInterface): number {
+  const { variant, price, percent } = supplierProduct;
+  if (variant === SUPPLIER_PRICE_VARIANT_CHARGE) {
+    const charge = Math.round((price / 100) * percent);
+    return charge + price;
+  }
+  return price;
 }

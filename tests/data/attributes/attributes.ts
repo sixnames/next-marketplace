@@ -137,6 +137,10 @@ const attributes: AttributeModel[] = [
     ...booleans,
     showAsLinkInFilter: false,
     showAsAccordionInFilter: true,
+    showNameInCardTitle: true,
+    showNameInSnippetTitle: true,
+    showNameInSelectedAttributes: true,
+    showNameInTitle: true,
   },
   {
     _id: getObjectId(`attribute Объем`),
@@ -159,6 +163,10 @@ const attributes: AttributeModel[] = [
     },
     attributesGroupId: getObjectId('attributesGroup Общие характеристики'),
     ...booleans,
+    showNameInCardTitle: true,
+    showNameInSnippetTitle: true,
+    showNameInSelectedAttributes: true,
+    showNameInTitle: true,
   },
   {
     _id: getObjectId(`attribute Тип ёмкости`),
@@ -219,6 +227,10 @@ const attributes: AttributeModel[] = [
     },
     attributesGroupId: getObjectId('attributesGroup Общие характеристики'),
     ...booleans,
+    showNameInCardTitle: true,
+    showNameInSnippetTitle: true,
+    showNameInSelectedAttributes: true,
+    showNameInTitle: true,
   },
   {
     _id: getObjectId(`attribute Сахар`),

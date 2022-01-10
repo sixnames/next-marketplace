@@ -1,9 +1,10 @@
 import { ObjectId } from 'mongodb';
 import {
+  DEFAULT_CITY,
+  DEFAULT_COMPANY_SLUG,
   DEFAULT_PAGE,
   GENDER_HE,
   PAGINATION_DEFAULT_LIMIT,
-  SORT_DESC,
 } from '../../../config/common';
 import {
   getBrandFilterAttribute,
@@ -15,16 +16,7 @@ import { castUrlFilters, getCatalogueAttributes } from '../../../lib/catalogueUt
 import { noNaN } from '../../../lib/numbers';
 import { castSupplierProductsList } from '../../../lib/productUtils';
 import { getTreeFromList } from '../../../lib/treeUtils';
-import {
-  COL_BRAND_COLLECTIONS,
-  COL_BRANDS,
-  COL_CATEGORIES,
-  COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCTS,
-  COL_PROMO_PRODUCTS,
-  COL_RUBRICS,
-  COL_SHOP_PRODUCTS,
-} from '../../collectionNames';
+import { COL_PROMO_PRODUCTS, COL_RUBRICS, COL_SHOP_PRODUCTS } from '../../collectionNames';
 import { ObjectIdModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
 import {
@@ -34,8 +26,13 @@ import {
   ShopProductInterface,
   ShopProductsAggregationInterface,
 } from '../../uiInterfaces';
-import { filterAttributesPipeline } from '../constantPipelines';
-import { castProductForUI } from '../product/castProductForUI';
+import {
+  paginatedAggregationFinalPipeline,
+  productsPaginatedAggregationFacetsPipeline,
+  ProductsPaginatedAggregationInterface,
+  shopProductDocsFacetPipeline,
+} from '../constantPipelines';
+import { castSummaryForUI } from '../product/castSummaryForUI';
 
 interface GetConsolePromoProductsInterface {
   companyId: ObjectIdModel;
@@ -104,6 +101,7 @@ export async function getConsolePromoProducts({
       photoStage,
       searchStage,
       noSearchResults,
+      sortStage,
     } = await castUrlFilters({
       filters,
       initialLimit: PAGINATION_DEFAULT_LIMIT,
@@ -151,6 +149,10 @@ export async function getConsolePromoProducts({
       ...excludedIdsStage,
     };
 
+    const pipelineConfig: ProductsPaginatedAggregationInterface = {
+      citySlug: DEFAULT_CITY,
+      companySlug: DEFAULT_COMPANY_SLUG,
+    };
     const shopProductsAggregationResult = await shopProductsCollection
       .aggregate<ShopProductsAggregationInterface>([
         // match products
@@ -189,64 +191,12 @@ export async function getConsolePromoProducts({
         {
           $facet: {
             // docs facet
-            docs: [
-              {
-                $sort: {
-                  _id: SORT_DESC,
-                },
-              },
-              {
-                $skip: skip,
-              },
-              {
-                $limit: limit,
-              },
-
-              // get shop product fields
-              {
-                $lookup: {
-                  from: COL_PRODUCTS,
-                  as: 'product',
-                  let: {
-                    productId: '$productId',
-                  },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $eq: ['$$productId', '$_id'],
-                        },
-                      },
-                    },
-
-                    // get product attributes
-                    {
-                      $lookup: {
-                        from: COL_PRODUCT_ATTRIBUTES,
-                        as: 'attributes',
-                        pipeline: [
-                          {
-                            $match: {
-                              $expr: {
-                                $eq: ['$$productId', '$productId'],
-                              },
-                            },
-                          },
-                        ],
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                $addFields: {
-                  product: { $arrayElemAt: ['$product', 0] },
-                },
-              },
-
-              // get supplier products
-              // ...shopProductSupplierProductsPipeline,
-            ],
+            docs: shopProductDocsFacetPipeline({
+              sortStage,
+              skip,
+              limit,
+              summaryIdFieldName: '$productId',
+            }),
 
             // prices facet
             allShopProducts: [
@@ -258,214 +208,12 @@ export async function getConsolePromoProducts({
               },
             ],
 
-            // prices facet
-            prices: [
-              {
-                $group: {
-                  _id: '$minPrice',
-                },
-              },
-            ],
-
-            // categories facet
-            categories: [
-              {
-                $unwind: {
-                  path: '$selectedOptionsSlugs',
-                  preserveNullAndEmptyArrays: true,
-                },
-              },
-              {
-                $group: {
-                  _id: null,
-                  rubricId: { $first: '$rubricId' },
-                  selectedOptionsSlugs: {
-                    $addToSet: '$selectedOptionsSlugs',
-                  },
-                },
-              },
-              {
-                $lookup: {
-                  from: COL_CATEGORIES,
-                  as: 'categories',
-                  let: {
-                    rubricId: '$rubricId',
-                    selectedOptionsSlugs: '$selectedOptionsSlugs',
-                  },
-                  pipeline: [
-                    {
-                      $match: {
-                        $and: [
-                          {
-                            $expr: {
-                              $eq: ['$rubricId', '$$rubricId'],
-                            },
-                          },
-                          {
-                            $expr: {
-                              $in: ['$slug', '$$selectedOptionsSlugs'],
-                            },
-                          },
-                        ],
-                      },
-                    },
-                    {
-                      $sort: {
-                        _id: SORT_DESC,
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                $unwind: {
-                  path: '$categories',
-                  preserveNullAndEmptyArrays: true,
-                },
-              },
-              {
-                $match: {
-                  categories: {
-                    $exists: true,
-                  },
-                },
-              },
-              {
-                $replaceRoot: {
-                  newRoot: '$categories',
-                },
-              },
-            ],
-
-            // brands facet
-            brands: [
-              {
-                $group: {
-                  _id: '$brandSlug',
-                  collectionSlugs: {
-                    $addToSet: '$brandCollectionSlug',
-                  },
-                },
-              },
-              {
-                $lookup: {
-                  from: COL_BRANDS,
-                  as: 'brand',
-                  let: {
-                    itemId: '$_id',
-                    collectionSlugs: '$collectionSlugs',
-                  },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $eq: ['$itemId', '$$itemId'],
-                        },
-                      },
-                    },
-                    {
-                      $lookup: {
-                        from: COL_BRAND_COLLECTIONS,
-                        as: 'collections',
-                        let: {
-                          brandId: '$_id',
-                        },
-                        pipeline: [
-                          {
-                            $match: {
-                              $and: [
-                                {
-                                  $expr: {
-                                    $eq: ['$brandId', '$$brandId'],
-                                  },
-                                },
-                                {
-                                  $expr: {
-                                    $in: ['$itemId', '$$collectionSlugs'],
-                                  },
-                                },
-                              ],
-                            },
-                          },
-                          {
-                            $sort: {
-                              _id: SORT_DESC,
-                            },
-                          },
-                        ],
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                $addFields: {
-                  brand: {
-                    $arrayElemAt: ['$brand', 0],
-                  },
-                },
-              },
-              {
-                $match: {
-                  brand: {
-                    $exists: true,
-                  },
-                },
-              },
-              {
-                $replaceRoot: {
-                  newRoot: '$brand',
-                },
-              },
-              {
-                $sort: {
-                  _id: SORT_DESC,
-                },
-              },
-            ],
-
-            // countAllDocs facet
-            countAllDocs: [
-              {
-                $count: 'totalDocs',
-              },
-            ],
-
-            // attributes facet
-            attributes: filterAttributesPipeline({
-              _id: SORT_DESC,
-            }),
+            ...productsPaginatedAggregationFacetsPipeline(pipelineConfig),
           },
         },
 
         // cast facets
-        {
-          $addFields: {
-            totalDocsObject: { $arrayElemAt: ['$countAllDocs', 0] },
-            rubric: { $arrayElemAt: ['$rubric', 0] },
-          },
-        },
-        {
-          $addFields: {
-            countAllDocs: null,
-            totalDocsObject: null,
-            totalDocs: '$totalDocsObject.totalDocs',
-          },
-        },
-        {
-          $addFields: {
-            totalPagesFloat: {
-              $divide: ['$totalDocs', limit],
-            },
-          },
-        },
-        {
-          $addFields: {
-            totalPages: {
-              $ceil: '$totalPagesFloat',
-            },
-          },
-        },
+        ...paginatedAggregationFinalPipeline(limit),
       ])
       .toArray();
     const shopProductsAggregation = shopProductsAggregationResult[0];
@@ -538,19 +286,17 @@ export async function getConsolePromoProducts({
     // cast shop products
     const docs: ShopProductInterface[] = [];
     shopProductsAggregation.docs.forEach((shopProduct) => {
-      const product = shopProduct.product;
-      if (!product) {
+      const summary = shopProduct.summary;
+      if (!summary) {
         return;
       }
 
-      const castedProduct = castProductForUI({
-        product,
+      const castedProduct = castSummaryForUI({
+        summary,
         attributes,
         brands,
         categories,
-        rubric,
         locale,
-        getSnippetTitle: true,
       });
 
       docs.push({
@@ -559,7 +305,7 @@ export async function getConsolePromoProducts({
           supplierProducts: shopProduct.supplierProducts,
           locale,
         }),
-        product: {
+        summary: {
           ...castedProduct,
           shopsCount: shopProduct.shopsCount,
         },

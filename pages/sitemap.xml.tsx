@@ -14,7 +14,7 @@ import {
   COL_CITIES,
   COL_COMPANIES,
   COL_CONFIGS,
-  COL_PRODUCTS,
+  COL_PRODUCT_FACETS,
   COL_SHOP_PRODUCTS,
 } from '../db/collectionNames';
 import { ignoreNoImageStage } from '../db/dao/constantPipelines';
@@ -110,7 +110,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         },
         {
           $lookup: {
-            from: COL_PRODUCTS,
+            from: COL_PRODUCT_FACETS,
             as: 'products',
             let: {
               productIds: '$productIds',

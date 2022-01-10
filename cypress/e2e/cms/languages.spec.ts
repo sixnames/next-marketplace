@@ -1,4 +1,5 @@
-import { ISO_LANGUAGES, ROUTE_CMS } from 'config/common';
+import { ROUTE_CMS } from 'config/common';
+import { ISO_LANGUAGES } from '../../../config/constantSelects';
 
 describe('Languages', () => {
   beforeEach(() => {

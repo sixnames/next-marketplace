@@ -59,9 +59,7 @@ export const Company = objectType({
     t.string('domain');
     t.nonNull.list.nonNull.objectId('staffIds');
     t.nonNull.list.nonNull.objectId('shopsIds');
-    t.nonNull.field('logo', {
-      type: 'Asset',
-    });
+    t.nonNull.string('logo');
     t.nonNull.field('contacts', {
       type: 'Contacts',
     });
@@ -312,10 +310,7 @@ export const CompanyMutations = extendType({
               ...input,
               itemId,
               slug,
-              logo: {
-                index: 1,
-                url: IMAGE_FALLBACK,
-              },
+              logo: IMAGE_FALLBACK,
               shopsIds: [],
               createdAt: new Date(),
               updatedAt: new Date(),
@@ -792,10 +787,7 @@ export const CompanyMutations = extendType({
               ...values,
               slug,
               itemId,
-              logo: {
-                index: 1,
-                url: IMAGE_FALLBACK,
-              },
+              logo: IMAGE_FALLBACK,
               assets: [],
               mainImage: IMAGE_FALLBACK,
               companyId: companyId,

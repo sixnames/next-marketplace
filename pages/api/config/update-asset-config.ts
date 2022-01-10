@@ -10,7 +10,7 @@ import {
 import { COL_CONFIGS } from '../../../db/collectionNames';
 import { ConfigModel } from '../../../db/dbModels';
 import { getDatabase } from '../../../db/mongodb';
-import { getApiMessageValue } from '../../../lib/apiMessageUtils';
+import { getApiMessageValue } from '../../../db/dao/messages/apiMessageUtils';
 import { storeUploads } from '../../../lib/assetUtils/assetUtils';
 import { parseRestApiFormData } from '../../../lib/restApi';
 import { getOperationPermission } from '../../../lib/sessionHelpers';
@@ -133,7 +133,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         ...config,
         cities: {
           [DEFAULT_CITY]: {
-            [DEFAULT_LOCALE]: [currentAsset.url],
+            [DEFAULT_LOCALE]: [currentAsset],
           },
         },
       },

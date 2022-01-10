@@ -18,7 +18,7 @@ import {
   OptionInterface,
   ProductAttributeInterface,
 } from '../db/uiInterfaces';
-import { getFieldStringLocale } from '../lib/i18n';
+import { getFieldStringLocale } from './i18n';
 import { get } from 'lodash';
 import trim from 'trim';
 
@@ -272,7 +272,7 @@ interface GenerateProductTitlePrefixInterface {
   brand?: BrandInterface | null;
   rubricName?: string | null;
   defaultGender: string;
-  titleCategoriesSlugs?: string[] | null;
+  titleCategorySlugs?: string[] | null;
   categories?: CategoryInterface[] | null;
   showRubricNameInProductTitle?: boolean | null;
   showCategoryInProductTitle?: boolean | null;
@@ -287,7 +287,7 @@ export function generateProductTitlePrefix({
   defaultGender,
   showCategoryInProductTitle,
   showRubricNameInProductTitle,
-  titleCategoriesSlugs,
+  titleCategorySlugs,
   brandVisibilityFieldName,
 }: GenerateProductTitlePrefixInterface): string {
   // rubric name as main prefix
@@ -296,7 +296,7 @@ export function generateProductTitlePrefix({
 
   // category names as secondary prefix
   function getCategoryNames(category: CategoryInterface) {
-    const visible = (titleCategoriesSlugs || []).some((slug) => slug === category.slug);
+    const visible = (titleCategorySlugs || []).some((slug) => slug === category.slug);
     if (showCategoryInProductTitle) {
       const variant = get(category, `variants.${defaultGender}.${locale}`);
       const name = getFieldStringLocale(category.nameI18n, locale);
@@ -344,6 +344,7 @@ interface GenerateProductTitleInterface
       | 'attributeNameVisibilityFieldName'
       | 'fallbackTitle'
       | 'defaultKeyword'
+      | 'page'
     > {
   attributeVisibilityFieldName: 'showInCardTitle' | 'showInSnippetTitle';
   attributeNameVisibilityFieldName: 'showNameInCardTitle' | 'showNameInSnippetTitle';
@@ -362,7 +363,7 @@ function generateProductTitle({
   currency,
   attributeVisibilityFieldName,
   attributeNameVisibilityFieldName,
-  titleCategoriesSlugs,
+  titleCategorySlugs,
   brandVisibilityFieldName,
   brand,
 }: GenerateProductTitleInterface): string {
@@ -374,7 +375,7 @@ function generateProductTitle({
     defaultGender,
     showCategoryInProductTitle,
     showRubricNameInProductTitle,
-    titleCategoriesSlugs,
+    titleCategorySlugs,
     brandVisibilityFieldName,
   });
 
@@ -393,7 +394,7 @@ function generateProductTitle({
   });
 }
 
-interface GenerateCardTitleInterface
+export interface GenerateCardTitleInterface
   extends Omit<
     GenerateProductTitleInterface,
     | 'attributes'

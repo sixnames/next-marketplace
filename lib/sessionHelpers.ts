@@ -21,7 +21,7 @@ import { getDatabase } from '../db/mongodb';
 import { NexusContext } from '../types/apiContextTypes';
 import { MessageSlug } from '../types/messageSlugTypes';
 import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
-import { getApiMessageValue, getValidationMessages } from './apiMessageUtils';
+import { getApiMessageValue, getValidationMessages } from '../db/dao/messages/apiMessageUtils';
 import { getCityFieldData, getI18nLocaleValue } from './i18n';
 import { RoleRuleSlugType } from './roleUtils';
 

@@ -7,8 +7,6 @@ import WpButton from '../../../../components/button/WpButton';
 import FormikTranslationsInput from '../../../../components/FormElements/Input/FormikTranslationsInput';
 import FormikSelect from '../../../../components/FormElements/Select/FormikSelect';
 import Inner from '../../../../components/Inner';
-import RequestError from '../../../../components/RequestError';
-import Spinner from '../../../../components/Spinner';
 import WpTitle from '../../../../components/WpTitle';
 import { ROUTE_CMS } from '../../../../config/common';
 import { getConstantTranslation } from '../../../../config/constantTranslations';
@@ -17,9 +15,9 @@ import { getDatabase } from '../../../../db/mongodb';
 import { AppContentWrapperBreadCrumbs, OptionsGroupInterface } from '../../../../db/uiInterfaces';
 import {
   OptionsGroupVariant,
-  useOptionsGroupVariantsQuery,
   useUpdateOptionsGroupMutation,
 } from '../../../../generated/apolloComponents';
+import { useConstantOptions } from '../../../../hooks/useConstantOptions';
 import useMutationCallbacks from '../../../../hooks/useMutationCallbacks';
 import useValidationSchema from '../../../../hooks/useValidationSchema';
 import AppContentWrapper from '../../../../layout/AppContentWrapper';
@@ -41,7 +39,7 @@ const OptionsGroupConsumer: React.FC<OptionsGroupConsumerInterface> = ({ options
   const { onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
     reload: true,
   });
-  const { data, loading, error } = useOptionsGroupVariantsQuery();
+  const { optionsGroupVariantOptions } = useConstantOptions();
   const validationSchema = useValidationSchema({
     schema: optionsGroupModalSchema,
   });
@@ -67,18 +65,6 @@ const OptionsGroupConsumer: React.FC<OptionsGroupConsumerInterface> = ({ options
       },
     ];
   }, [optionsGroup._id]);
-
-  if (loading) {
-    return <Spinner />;
-  }
-
-  if (error || !data || !data.getOptionsGroupVariantsOptions) {
-    return (
-      <AppContentWrapper>
-        <RequestError />
-      </AppContentWrapper>
-    );
-  }
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${optionsGroup.name}`,
@@ -131,7 +117,7 @@ const OptionsGroupConsumer: React.FC<OptionsGroupConsumerInterface> = ({ options
                   testId={'variant'}
                   label={'Тип группы'}
                   name={'variant'}
-                  options={data.getOptionsGroupVariantsOptions}
+                  options={optionsGroupVariantOptions}
                 />
 
                 <WpButton type={'submit'} testId={'options-group-submit'}>

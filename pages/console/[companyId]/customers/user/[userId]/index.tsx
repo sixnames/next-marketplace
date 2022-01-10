@@ -5,7 +5,7 @@ import FakeInput from '../../../../../../components/FormElements/Input/FakeInput
 import Inner from '../../../../../../components/Inner';
 import { ConfirmModalInterface } from '../../../../../../components/Modal/ConfirmModal';
 import { SetUserCategoryModalInterface } from '../../../../../../components/Modal/SetUserCategoryModal';
-import { ROUTE_CONSOLE, SORT_ASC } from '../../../../../../config/common';
+import { SORT_ASC } from '../../../../../../config/common';
 import { CONFIRM_MODAL, SET_USER_CATEGORY_MODAL } from '../../../../../../config/modalVariants';
 import { useAppContext } from '../../../../../../context/appContext';
 import {
@@ -24,6 +24,7 @@ import { useSetUserCategoryMutation } from '../../../../../../hooks/mutations/us
 import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
 import ConsoleUserLayout from '../../../../../../layout/console/ConsoleUserLayout';
 import { getFieldStringLocale } from '../../../../../../lib/i18n';
+import { getConsoleCompanyLinks } from '../../../../../../lib/linkUtils';
 import { getFullName } from '../../../../../../lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from '../../../../../../lib/phoneUtils';
 import {
@@ -45,13 +46,17 @@ const UserDetailsConsumer: React.FC<UserDetailsConsumerInterface> = ({
 }) => {
   const { showModal } = useAppContext();
   const [setUserCategoryMutation] = useSetUserCategoryMutation();
+  const links = getConsoleCompanyLinks({
+    companyId: pageCompany._id,
+    userId: user._id,
+  });
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${user.fullName}`,
     config: [
       {
         name: 'Клиенты',
-        href: `${ROUTE_CONSOLE}/${pageCompany?._id}/customers`,
+        href: links.customer.parentLink,
       },
     ],
   };

@@ -1,14 +1,21 @@
-import { getFieldStringLocale } from '../lib/i18n';
 import {
+  ATTRIBUTE_POSITION_IN_TITLE_ENUMS,
+  ATTRIBUTE_VARIANTS_ENUMS,
+  ATTRIBUTE_VIEW_VARIANTS_ENUMS,
   DEFAULT_LOCALE,
+  GENDER_ENUMS,
+  OPTIONS_GROUP_VARIANT_ENUMS,
   ORDER_DELIVERY_VARIANT_COURIER,
   ORDER_DELIVERY_VARIANT_PICKUP,
   ORDER_PAYMENT_VARIANT_RECEIPT,
   SECONDARY_LOCALE,
   SUPPLIER_PRICE_VARIANT_CHARGE,
   SUPPLIER_PRICE_VARIANT_DISCOUNT,
-} from '../config/common';
+} from './common';
 import { TranslationModel } from '../db/dbModels';
+import { getFieldStringLocale } from '../lib/i18n';
+import { iconTypesList } from '../types/iconTypes';
+import { getConstantTranslation } from './constantTranslations';
 
 export const DEFAULT_LAYOUT = 'default';
 
@@ -194,5 +201,115 @@ export const PAYMENT_VARIANT_OPTIONS: ConstantOptionsType = [
       [DEFAULT_LOCALE]: 'При получении',
       [SECONDARY_LOCALE]: 'Upon receipt',
     },
+  },
+];
+
+// gender
+export const getGenderOptions = (locale: string): ConstantOptionsType => {
+  return GENDER_ENUMS.map((gender) => {
+    const option: ConstantOptionInterface = {
+      _id: gender,
+      nameI18n: {},
+      name: getConstantTranslation(`selectsOptions.gender.${gender}.${locale}`),
+    };
+    return option;
+  });
+};
+
+// attribute variant
+export const getAttributeVariantsOptions = (locale: string): ConstantOptionsType => {
+  return ATTRIBUTE_VARIANTS_ENUMS.map((variant) => {
+    const option: ConstantOptionInterface = {
+      _id: variant,
+      nameI18n: {},
+      name: getConstantTranslation(`selectsOptions.attributeVariants.${variant}.${locale}`),
+    };
+    return option;
+  });
+};
+
+// attribute view variant
+export const getAttributeViewVariantsOptions = (locale: string): ConstantOptionsType => {
+  return ATTRIBUTE_VIEW_VARIANTS_ENUMS.map((variant) => {
+    const option: ConstantOptionInterface = {
+      _id: variant,
+      nameI18n: {},
+      name: getConstantTranslation(`selectsOptions.attributeView.${variant}.${locale}`),
+    };
+    return option;
+  });
+};
+
+// attribute positioning
+export const getAttributePositioningOptions = (locale: string): ConstantOptionsType => {
+  return ATTRIBUTE_POSITION_IN_TITLE_ENUMS.map((position) => {
+    const option: ConstantOptionInterface = {
+      _id: position,
+      nameI18n: {},
+      name: getConstantTranslation(`selectsOptions.attributePositioning.${position}.${locale}`),
+    };
+    return option;
+  });
+};
+
+// options group variant
+export const getOptionsGroupVariantsOptions = (locale: string): ConstantOptionsType => {
+  return OPTIONS_GROUP_VARIANT_ENUMS.map((variant) => {
+    const option: ConstantOptionInterface = {
+      _id: variant,
+      nameI18n: {},
+      name: getConstantTranslation(`selectsOptions.optionsGroupVariant.${variant}.${locale}`),
+    };
+    return option;
+  });
+};
+
+// icons
+export const getIconOptions = (): ConstantOptionsType => {
+  return iconTypesList
+    .map((icon) => ({
+      _id: icon,
+      nameI18n: {},
+      name: icon,
+      icon: icon,
+    }))
+    .sort((a, b) => {
+      const nameA = a.name.toUpperCase();
+      const nameB = b.name.toUpperCase();
+      if (nameA < nameB) {
+        return -1;
+      }
+      if (nameA > nameB) {
+        return 1;
+      }
+      return 0;
+    });
+};
+
+// languages
+export const ISO_LANGUAGES = [
+  {
+    _id: DEFAULT_LOCALE,
+    name: 'Russian',
+    slug: 'ru',
+    nativeName: 'ru',
+  },
+  {
+    _id: SECONDARY_LOCALE,
+    name: 'English',
+    slug: 'en',
+    nativeName: 'en',
+  },
+  {
+    _id: 'ua',
+    name: 'Украинский',
+    slug: 'ua',
+    nativeName: 'ua',
+  },
+  {
+    _id: 'pl',
+    name: 'Польский',
+    slug: 'pl',
+    nativeName: 'pl',
   },
 ];

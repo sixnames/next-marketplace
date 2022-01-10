@@ -15,14 +15,8 @@ import {
   OrderLogModel,
   OrderModel,
   OrderProductModel,
-  ProductAssetsModel,
-  ProductAttributeModel,
-  ProductConnectionItemModel,
-  ProductConnectionModel,
-  ProductModel,
   RubricModel,
   ShopModel,
-  ShopProductModel,
   SupplierModel,
   UserModel,
   UserCategoryModel,
@@ -35,6 +29,10 @@ import {
   GiftCertificateModel,
   UserPaybackLogModel,
   UserCashbackLogModel,
+  ShopProductModel,
+  ProductFacetModel,
+  ProductSummaryModel,
+  CatalogueNavModel,
 } from '../../db/dbModels';
 import {
   COL_ATTRIBUTES,
@@ -55,17 +53,11 @@ import {
   COL_ORDER_LOGS,
   COL_ORDER_PRODUCTS,
   COL_ORDERS,
-  COL_PRODUCT_ASSETS,
-  COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCT_CONNECTION_ITEMS,
-  COL_PRODUCT_CONNECTIONS,
-  COL_PRODUCTS,
   COL_PROMO,
   COL_PROMO_CODES,
   COL_PROMO_PRODUCTS,
   COL_RUBRICS,
   COL_SEO_CONTENTS,
-  COL_SHOP_PRODUCTS,
   COL_SHOPS,
   COL_SUPPLIER_PRODUCTS,
   COL_SUPPLIERS,
@@ -73,6 +65,10 @@ import {
   COL_USER_CATEGORIES,
   COL_USER_PAYBACK_LOGS,
   COL_USERS,
+  COL_SHOP_PRODUCTS,
+  COL_PRODUCT_FACETS,
+  COL_PRODUCT_SUMMARIES,
+  COL_CATALOGUE_NAV,
 } from '../../db/collectionNames';
 import { Db, MongoClient } from 'mongodb';
 import path from 'path';
@@ -181,7 +177,7 @@ export async function updateIndexes(db: Db) {
   await seoContentsCollection.createIndex({ slug: 1 }, { unique: true });
   await seoContentsCollection.createIndex({ companySlug: 1, rubricSlug: 1, content: 1 });
 
-  // blacklist
+  // Blacklist
   await createCollectionIfNotExist(COL_BLACKLIST_PRODUCTS);
   const blacklistProductsCollection = db.collection<BlackListProductModel>(COL_BLACKLIST_PRODUCTS);
   await blacklistProductsCollection.createIndex({ shopId: 1 });
@@ -259,7 +255,7 @@ export async function updateIndexes(db: Db) {
   await blogPostsCollection.createIndex({
     companySlug: 1,
     state: 1,
-    selectedOptionsSlugs: 1,
+    filterSlugs: 1,
     priorities: -1,
     views: -1,
     createdAt: -1,
@@ -375,508 +371,6 @@ export async function updateIndexes(db: Db) {
   await shopsCollection.createIndex({ citySlug: 1 });
   await shopsCollection.createIndex({ address: 1 });
 
-  // Shop products
-  await createCollectionIfNotExist(COL_SHOP_PRODUCTS);
-  const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-  await shopProductsCollection.createIndex({
-    productId: 1,
-    citySlug: 1,
-  });
-
-  // catalogue nav
-  await shopProductsCollection.createIndex({
-    citySlug: 1,
-  });
-  await shopProductsCollection.createIndex({
-    companyId: 1,
-    citySlug: 1,
-  });
-
-  // console
-  await shopProductsCollection.createIndex({
-    rubricId: 1,
-    productId: 1,
-    brandSlug: 1,
-    brandCollectionSlug: 1,
-    selectedOptionsSlugs: 1,
-    price: 1,
-    companyId: 1,
-    mainImage: 1,
-    _id: 1,
-  });
-  await shopProductsCollection.createIndex({
-    rubricSlug: 1,
-    productId: 1,
-    brandSlug: 1,
-    brandCollectionSlug: 1,
-    selectedOptionsSlugs: 1,
-    price: 1,
-    companyId: 1,
-    mainImage: 1,
-    _id: 1,
-  });
-  await shopProductsCollection.createIndex({
-    shopId: 1,
-    rubricId: 1,
-    productId: 1,
-    brandSlug: 1,
-    brandCollectionSlug: 1,
-    selectedOptionsSlugs: 1,
-    price: 1,
-    mainImage: 1,
-    _id: 1,
-  });
-  await shopProductsCollection.createIndex({
-    shopId: 1,
-    rubricSlug: 1,
-    productId: 1,
-    brandSlug: 1,
-    brandCollectionSlug: 1,
-    selectedOptionsSlugs: 1,
-    price: 1,
-    mainImage: 1,
-    _id: 1,
-  });
-
-  // catalogue
-  // views / priorities sort in main catalogue
-  await shopProductsCollection.createIndex({
-    rubricId: 1,
-    citySlug: 1,
-    brandSlug: 1,
-    brandCollectionSlug: 1,
-    manufacturerSlug: 1,
-    selectedOptionsSlugs: 1,
-    price: 1,
-  });
-
-  await shopProductsCollection.createIndex({
-    rubricId: 1,
-    citySlug: 1,
-    brandCollectionSlug: 1,
-    manufacturerSlug: 1,
-    selectedOptionsSlugs: 1,
-    price: 1,
-  });
-
-  await shopProductsCollection.createIndex({
-    rubricId: 1,
-    citySlug: 1,
-    manufacturerSlug: 1,
-    selectedOptionsSlugs: 1,
-    price: 1,
-  });
-
-  await shopProductsCollection.createIndex({
-    rubricId: 1,
-    citySlug: 1,
-    selectedOptionsSlugs: 1,
-    price: 1,
-  });
-
-  await shopProductsCollection.createIndex({
-    rubricId: 1,
-    citySlug: 1,
-    price: 1,
-  });
-
-  // views / priorities sort in company catalogue
-  await shopProductsCollection.createIndex({
-    companyId: 1,
-    rubricId: 1,
-    citySlug: 1,
-    brandSlug: 1,
-    brandCollectionSlug: 1,
-    manufacturerSlug: 1,
-    selectedOptionsSlugs: 1,
-    price: 1,
-  });
-
-  await shopProductsCollection.createIndex({
-    companyId: 1,
-    rubricId: 1,
-    citySlug: 1,
-    brandCollectionSlug: 1,
-    manufacturerSlug: 1,
-    selectedOptionsSlugs: 1,
-    price: 1,
-  });
-
-  await shopProductsCollection.createIndex({
-    companyId: 1,
-    rubricId: 1,
-    citySlug: 1,
-    manufacturerSlug: 1,
-    selectedOptionsSlugs: 1,
-    price: 1,
-  });
-
-  await shopProductsCollection.createIndex({
-    companyId: 1,
-    rubricId: 1,
-    citySlug: 1,
-    selectedOptionsSlugs: 1,
-    price: 1,
-  });
-
-  await shopProductsCollection.createIndex({
-    companyId: 1,
-    rubricId: 1,
-    citySlug: 1,
-    price: 1,
-  });
-
-  // views / priorities sort in shop catalogue
-  await shopProductsCollection.createIndex({
-    shopId: 1,
-    rubricId: 1,
-    citySlug: 1,
-    brandSlug: 1,
-    brandCollectionSlug: 1,
-    manufacturerSlug: 1,
-    selectedOptionsSlugs: 1,
-    price: 1,
-  });
-
-  await shopProductsCollection.createIndex({
-    shopId: 1,
-    rubricId: 1,
-    citySlug: 1,
-    brandCollectionSlug: 1,
-    manufacturerSlug: 1,
-    selectedOptionsSlugs: 1,
-    price: 1,
-  });
-
-  await shopProductsCollection.createIndex({
-    shopId: 1,
-    rubricId: 1,
-    citySlug: 1,
-    manufacturerSlug: 1,
-    selectedOptionsSlugs: 1,
-    price: 1,
-  });
-
-  await shopProductsCollection.createIndex({
-    shopId: 1,
-    rubricId: 1,
-    citySlug: 1,
-    selectedOptionsSlugs: 1,
-    price: 1,
-  });
-
-  await shopProductsCollection.createIndex({
-    shopId: 1,
-    rubricId: 1,
-    citySlug: 1,
-    price: 1,
-  });
-
-  await shopProductsCollection.createIndex({
-    shopId: 1,
-    rubricId: 1,
-    citySlug: 1,
-  });
-
-  // catalogue by slug
-  // views / priorities sort in main catalogue
-  await shopProductsCollection.createIndex({
-    rubricSlug: 1,
-    citySlug: 1,
-    brandSlug: 1,
-    brandCollectionSlug: 1,
-    manufacturerSlug: 1,
-    selectedOptionsSlugs: 1,
-    price: 1,
-  });
-
-  await shopProductsCollection.createIndex({
-    rubricSlug: 1,
-    citySlug: 1,
-    brandCollectionSlug: 1,
-    manufacturerSlug: 1,
-    selectedOptionsSlugs: 1,
-    price: 1,
-  });
-
-  await shopProductsCollection.createIndex({
-    rubricSlug: 1,
-    citySlug: 1,
-    manufacturerSlug: 1,
-    selectedOptionsSlugs: 1,
-    price: 1,
-  });
-
-  await shopProductsCollection.createIndex({
-    rubricSlug: 1,
-    citySlug: 1,
-    selectedOptionsSlugs: 1,
-    price: 1,
-  });
-
-  await shopProductsCollection.createIndex({
-    rubricSlug: 1,
-    citySlug: 1,
-    price: 1,
-  });
-
-  // views / priorities sort in company catalogue
-  await shopProductsCollection.createIndex({
-    companyId: 1,
-    rubricSlug: 1,
-    citySlug: 1,
-    brandSlug: 1,
-    brandCollectionSlug: 1,
-    manufacturerSlug: 1,
-    selectedOptionsSlugs: 1,
-    price: 1,
-  });
-
-  await shopProductsCollection.createIndex({
-    companyId: 1,
-    rubricSlug: 1,
-    citySlug: 1,
-    brandCollectionSlug: 1,
-    manufacturerSlug: 1,
-    selectedOptionsSlugs: 1,
-    price: 1,
-  });
-
-  await shopProductsCollection.createIndex({
-    companyId: 1,
-    rubricSlug: 1,
-    citySlug: 1,
-    manufacturerSlug: 1,
-    selectedOptionsSlugs: 1,
-    price: 1,
-  });
-
-  await shopProductsCollection.createIndex({
-    companyId: 1,
-    rubricSlug: 1,
-    citySlug: 1,
-    selectedOptionsSlugs: 1,
-    price: 1,
-  });
-
-  await shopProductsCollection.createIndex({
-    companyId: 1,
-    rubricSlug: 1,
-    citySlug: 1,
-    price: 1,
-  });
-
-  // views / priorities sort in shop catalogue
-  await shopProductsCollection.createIndex({
-    shopId: 1,
-    rubricSlug: 1,
-    citySlug: 1,
-    brandSlug: 1,
-    brandCollectionSlug: 1,
-    manufacturerSlug: 1,
-    selectedOptionsSlugs: 1,
-    price: 1,
-  });
-
-  await shopProductsCollection.createIndex({
-    shopId: 1,
-    rubricSlug: 1,
-    citySlug: 1,
-    brandCollectionSlug: 1,
-    manufacturerSlug: 1,
-    selectedOptionsSlugs: 1,
-    price: 1,
-  });
-
-  await shopProductsCollection.createIndex({
-    shopId: 1,
-    rubricSlug: 1,
-    citySlug: 1,
-    manufacturerSlug: 1,
-    selectedOptionsSlugs: 1,
-    price: 1,
-  });
-
-  await shopProductsCollection.createIndex({
-    shopId: 1,
-    rubricSlug: 1,
-    citySlug: 1,
-    selectedOptionsSlugs: 1,
-    price: 1,
-  });
-
-  await shopProductsCollection.createIndex({
-    shopId: 1,
-    rubricSlug: 1,
-    citySlug: 1,
-    price: 1,
-  });
-
-  await shopProductsCollection.createIndex({
-    shopId: 1,
-    rubricSlug: 1,
-    citySlug: 1,
-  });
-
-  // product card
-  await shopProductsCollection.createIndex({
-    slug: 1,
-    citySlug: 1,
-    companyId: 1,
-  });
-
-  // Product connections
-  await createCollectionIfNotExist(COL_PRODUCT_CONNECTIONS);
-  const productConnectionsCollection =
-    db.collection<ProductConnectionModel>(COL_PRODUCT_CONNECTIONS);
-  await productConnectionsCollection.createIndex({ productsIds: 1 });
-  await productConnectionsCollection.createIndex({ attributeId: 1 });
-  await productConnectionsCollection.createIndex({ attributeSlug: 1 });
-
-  await createCollectionIfNotExist(COL_PRODUCT_CONNECTION_ITEMS);
-  const productConnectionItemsCollection = db.collection<ProductConnectionItemModel>(
-    COL_PRODUCT_CONNECTION_ITEMS,
-  );
-  await productConnectionItemsCollection.createIndex({ connectionId: 1, productsId: 1 });
-  await productConnectionItemsCollection.createIndex({ productsId: 1 });
-  await productConnectionItemsCollection.createIndex({ connectionId: 1, productSlug: 1 });
-  await productConnectionItemsCollection.createIndex({ productSlug: 1 });
-  await productConnectionItemsCollection.createIndex({ optionId: 1 });
-
-  // Product assets
-  await createCollectionIfNotExist(COL_PRODUCT_ASSETS);
-  const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
-  await productAssetsCollection.createIndex({ productId: 1 });
-  await productAssetsCollection.createIndex({ productSlug: 1 });
-
-  // Product attributes
-  await createCollectionIfNotExist(COL_PRODUCT_ATTRIBUTES);
-  const productAttributesCollection = db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
-  await productAttributesCollection.createIndex({ attributeId: 1 });
-  await productAttributesCollection.createIndex({ productId: 1 });
-  await productAttributesCollection.createIndex({ productSlug: 1, attributeVariant: 1 });
-  await productAttributesCollection.createIndex({ productSlug: 1, showAsBreadcrumb: 1 });
-  await productAttributesCollection.createIndex({ productId: 1, attributeVariant: 1 });
-  await productAttributesCollection.createIndex({ productId: 1, showAsBreadcrumb: 1 });
-  await productAttributesCollection.createIndex({
-    productSlug: 1,
-    showInCard: 1,
-    attributeVariant: 1,
-  });
-  await productAttributesCollection.createIndex({
-    productId: 1,
-    showInCard: 1,
-    attributeVariant: 1,
-  });
-
-  // Products
-  await createCollectionIfNotExist(COL_PRODUCTS);
-  const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-  await productsCollection.createIndex({ itemId: 1 }, { unique: true });
-  await productsCollection.createIndex({ slug: 1 }, { unique: true });
-  await productsCollection.createIndex({
-    rubricId: 1,
-  });
-
-  // >>>>>>>>>>>>>>>>>> Products catalogue
-  // views / priorities sort
-  await productsCollection.createIndex({
-    rubricId: 1,
-    active: 1,
-    brandSlug: 1,
-    brandCollectionSlug: 1,
-    manufacturerSlug: 1,
-    selectedOptionsSlugs: 1,
-    priorities: -1,
-    views: -1,
-    _id: -1,
-  });
-
-  await productsCollection.createIndex({
-    rubricId: 1,
-    active: 1,
-    brandCollectionSlug: 1,
-    manufacturerSlug: 1,
-    selectedOptionsSlugs: 1,
-    priorities: -1,
-    views: -1,
-    _id: -1,
-  });
-
-  await productsCollection.createIndex({
-    rubricId: 1,
-    active: 1,
-    manufacturerSlug: 1,
-    selectedOptionsSlugs: 1,
-    priorities: -1,
-    views: -1,
-    _id: -1,
-  });
-
-  await productsCollection.createIndex({
-    rubricId: 1,
-    active: 1,
-    selectedOptionsSlugs: 1,
-    priorities: -1,
-    views: -1,
-    _id: -1,
-  });
-
-  await productsCollection.createIndex({
-    rubricId: 1,
-    active: 1,
-    priorities: -1,
-    views: -1,
-    _id: -1,
-  });
-
-  // >>>>>>>>>>>>>>>>>> Products without activity
-  // views / priorities sort
-  await productsCollection.createIndex({
-    rubricId: 1,
-    brandSlug: 1,
-    brandCollectionSlug: 1,
-    manufacturerSlug: 1,
-    selectedOptionsSlugs: 1,
-    priorities: -1,
-    views: -1,
-    _id: -1,
-  });
-
-  await productsCollection.createIndex({
-    rubricId: 1,
-    brandCollectionSlug: 1,
-    manufacturerSlug: 1,
-    selectedOptionsSlugs: 1,
-    priorities: -1,
-    views: -1,
-    _id: -1,
-  });
-
-  await productsCollection.createIndex({
-    rubricId: 1,
-    manufacturerSlug: 1,
-    selectedOptionsSlugs: 1,
-    priorities: -1,
-    views: -1,
-    _id: -1,
-  });
-
-  await productsCollection.createIndex({
-    rubricId: 1,
-    selectedOptionsSlugs: 1,
-    priorities: -1,
-    views: -1,
-    _id: -1,
-  });
-
-  await productsCollection.createIndex({
-    rubricId: 1,
-    priorities: -1,
-    views: -1,
-    _id: -1,
-  });
-
   // Orders
   await createCollectionIfNotExist(COL_ORDERS);
   const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
@@ -914,4 +408,172 @@ export async function updateIndexes(db: Db) {
   await orderLogsCollection.createIndex({ orderId: 1, _id: -1 });
   await orderLogsCollection.createIndex({ userId: 1, _id: -1 });
   await orderLogsCollection.createIndex({ variant: 1, _id: -1 });
+
+  // product filters
+  const productsFilterFull = {
+    rubricSlug: 1,
+    brandSlug: 1,
+    brandCollectionSlug: 1,
+    filterSlugs: 1,
+    mainImage: 1,
+  };
+  const productsFilterNoBrandCollection = {
+    rubricSlug: 1,
+    brandSlug: 1,
+    filterSlugs: 1,
+    mainImage: 1,
+  };
+  const productsFilterWithBrandNoFilters = {
+    rubricSlug: 1,
+    brandSlug: 1,
+    mainImage: 1,
+  };
+  const productsFilterNoBrand = {
+    rubricSlug: 1,
+    filterSlugs: 1,
+    mainImage: 1,
+  };
+  const productsFilterNoFilters = {
+    rubricSlug: 1,
+    mainImage: 1,
+  };
+
+  // Catalogue nav
+  await createCollectionIfNotExist(COL_CATALOGUE_NAV);
+  const catalogueNavCollection = db.collection<CatalogueNavModel>(COL_CATALOGUE_NAV);
+  await catalogueNavCollection.createIndex(
+    {
+      companySlug: 1,
+      citySlug: 1,
+    },
+    {
+      unique: true,
+    },
+  );
+
+  // Shop products
+  await createCollectionIfNotExist(COL_SHOP_PRODUCTS);
+  const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+
+  // card for company domain
+  await shopProductsCollection.createIndex({
+    companyId: 1,
+    citySlug: 1,
+    productId: 1,
+    mainImage: 1,
+  });
+
+  // card for main domain
+  await shopProductsCollection.createIndex({
+    citySlug: 1,
+    productId: 1,
+    mainImage: 1,
+  });
+
+  // catalogue for company domain
+  await shopProductsCollection.createIndex({
+    companyId: 1,
+    citySlug: 1,
+    ...productsFilterFull,
+    price: 1,
+  });
+  await shopProductsCollection.createIndex({
+    companyId: 1,
+    citySlug: 1,
+    ...productsFilterNoBrandCollection,
+    price: 1,
+  });
+  await shopProductsCollection.createIndex({
+    companyId: 1,
+    citySlug: 1,
+    ...productsFilterWithBrandNoFilters,
+    price: 1,
+  });
+  await shopProductsCollection.createIndex({
+    companyId: 1,
+    citySlug: 1,
+    ...productsFilterNoBrand,
+    price: 1,
+  });
+  await shopProductsCollection.createIndex({
+    companyId: 1,
+    citySlug: 1,
+    ...productsFilterNoFilters,
+    price: 1,
+  });
+
+  // catalogue for main domain
+  await shopProductsCollection.createIndex({
+    citySlug: 1,
+    ...productsFilterFull,
+    price: 1,
+  });
+  await shopProductsCollection.createIndex({
+    citySlug: 1,
+    ...productsFilterNoBrandCollection,
+    price: 1,
+  });
+  await shopProductsCollection.createIndex({
+    citySlug: 1,
+    ...productsFilterWithBrandNoFilters,
+    price: 1,
+  });
+  await shopProductsCollection.createIndex({
+    citySlug: 1,
+    ...productsFilterNoBrand,
+    price: 1,
+  });
+  await shopProductsCollection.createIndex({
+    citySlug: 1,
+    ...productsFilterNoFilters,
+    price: 1,
+  });
+
+  // cms for shop
+  await shopProductsCollection.createIndex({
+    shopId: 1,
+    ...productsFilterFull,
+    price: 1,
+  });
+  await shopProductsCollection.createIndex({
+    shopId: 1,
+    ...productsFilterNoBrandCollection,
+    price: 1,
+  });
+  await shopProductsCollection.createIndex({
+    shopId: 1,
+    ...productsFilterWithBrandNoFilters,
+    price: 1,
+  });
+  await shopProductsCollection.createIndex({
+    shopId: 1,
+    ...productsFilterNoBrand,
+    price: 1,
+  });
+  await shopProductsCollection.createIndex({
+    shopId: 1,
+    ...productsFilterNoFilters,
+    price: 1,
+  });
+
+  // Facets
+  await createCollectionIfNotExist(COL_PRODUCT_FACETS);
+  const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
+  await productFacetsCollection.createIndex(productsFilterFull);
+  await productFacetsCollection.createIndex(productsFilterNoBrandCollection);
+  await productFacetsCollection.createIndex(productsFilterWithBrandNoFilters);
+  await productFacetsCollection.createIndex(productsFilterNoBrand);
+  await productFacetsCollection.createIndex(productsFilterNoFilters);
+
+  // Summaries
+  await createCollectionIfNotExist(COL_PRODUCT_SUMMARIES);
+  const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
+  await productSummariesCollection.createIndex(
+    {
+      slug: 1,
+    },
+    {
+      unique: true,
+    },
+  );
 }

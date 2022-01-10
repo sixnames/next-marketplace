@@ -4,7 +4,7 @@ import { ASSETS_DIST_SHOPS, ASSETS_SHOP_IMAGE_WIDTH } from '../../../config/comm
 import { COL_SHOPS } from '../../../db/collectionNames';
 import { ShopModel } from '../../../db/dbModels';
 import { getDatabase } from '../../../db/mongodb';
-import { getApiMessageValue } from '../../../lib/apiMessageUtils';
+import { getApiMessageValue } from '../../../db/dao/messages/apiMessageUtils';
 import { getMainImage, storeUploads } from '../../../lib/assetUtils/assetUtils';
 import { parseRestApiFormData } from '../../../lib/restApi';
 import { getOperationPermission } from '../../../lib/sessionHelpers';
@@ -70,7 +70,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     dirName: shop.itemId,
     dist: ASSETS_DIST_SHOPS,
     width: ASSETS_SHOP_IMAGE_WIDTH,
-    startIndex: shop.assets.length,
   });
   if (!assets) {
     res.status(500).send({

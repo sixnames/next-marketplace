@@ -4,7 +4,7 @@ import { ASSETS_DIST_USERS } from '../../../config/common';
 import { COL_USERS } from '../../../db/collectionNames';
 import { UserModel } from '../../../db/dbModels';
 import { getDatabase } from '../../../db/mongodb';
-import { getApiMessageValue } from '../../../lib/apiMessageUtils';
+import { getApiMessageValue } from '../../../db/dao/messages/apiMessageUtils';
 import { deleteUpload, storeUploads } from '../../../lib/assetUtils/assetUtils';
 import { parseRestApiFormData } from '../../../lib/restApi';
 import { getOperationPermission } from '../../../lib/sessionHelpers';
@@ -65,7 +65,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   // Delete user logo
   if (user.avatar) {
-    const removedAsset = await deleteUpload(`${user.avatar.url}`);
+    const removedAsset = await deleteUpload(`${user.avatar}`);
     if (!removedAsset) {
       res.status(500).send({
         success: false,
@@ -83,7 +83,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     files: formData.files,
     dirName: user.itemId,
     dist: ASSETS_DIST_USERS,
-    startIndex: 0,
   });
   if (!uploadedAvatar) {
     res.status(500).send({

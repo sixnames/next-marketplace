@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { ProductInterface } from '../../db/uiInterfaces';
+import { ProductSummaryInterface } from '../../db/uiInterfaces';
 import {
   useDeleteProductAsset,
   useUpdateProductAssetIndex,
@@ -12,7 +12,7 @@ import WpDropZone from '../FormElements/Upload/WpDropZone';
 import Inner from '../Inner';
 
 interface ConsoleRubricProductAssetsInterface {
-  product: ProductInterface;
+  product: ProductSummaryInterface;
 }
 
 const ConsoleRubricProductAssets: React.FC<ConsoleRubricProductAssetsInterface> = ({ product }) => {
@@ -27,7 +27,7 @@ const ConsoleRubricProductAssets: React.FC<ConsoleRubricProductAssetsInterface> 
   return (
     <Inner testId={'product-assets-list'}>
       <AssetsManager
-        initialAssets={product.assets?.assets || []}
+        initialAssets={product.assets}
         assetsTitle={product.originalName}
         onRemoveHandler={(assetIndex) => {
           deleteProductAssetMutation({

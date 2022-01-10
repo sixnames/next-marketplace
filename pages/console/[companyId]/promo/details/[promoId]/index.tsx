@@ -3,10 +3,10 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import PromoDetails, {
   PromoDetailsInterface,
 } from '../../../../../../components/Promo/PromoDetails';
-import { ROUTE_CONSOLE } from '../../../../../../config/common';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from '../../../../../../db/uiInterfaces';
 import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
 import ConsolePromoLayout from '../../../../../../layout/console/ConsolePromoLayout';
+import { getConsoleCompanyLinks } from '../../../../../../lib/linkUtils';
 import { getPromoSsr } from '../../../../../../lib/promoUtils';
 import {
   castDbData,
@@ -26,12 +26,17 @@ const PromoListPage: NextPage<PromoDetailsPageInterface> = ({
   pageCompany,
   basePath,
 }) => {
+  const links = getConsoleCompanyLinks({
+    companyId: pageCompany._id,
+    promoId: promo._id,
+  });
+
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${promo.name}`,
     config: [
       {
         name: 'Акции',
-        href: `${ROUTE_CONSOLE}/${pageCompany._id}/promo`,
+        href: links.promo.parentLink,
       },
     ],
   };
@@ -66,10 +71,15 @@ export const getServerSideProps = async (
     };
   }
 
+  const links = getConsoleCompanyLinks({
+    companyId: props.layoutProps.pageCompany._id,
+    promoId: promo._id,
+  });
+
   return {
     props: {
       ...props,
-      basePath: `${ROUTE_CONSOLE}/${props.layoutProps.pageCompany._id}/promo/details/${promo._id}`,
+      basePath: links.promo.root,
       promo: castDbData(promo),
       pageCompany: props.layoutProps.pageCompany,
     },

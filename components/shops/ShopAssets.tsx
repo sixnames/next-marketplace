@@ -38,7 +38,7 @@ const ShopAssets: React.FC<ShopAssetsInterface> = ({ shop, basePath, breadcrumbs
         <div data-cy={'shop-assets-list'}>
           <Formik
             enableReinitialize
-            initialValues={{ logo: [logo.url] }}
+            initialValues={{ logo: [logo] }}
             onSubmit={(values) => console.log(values)}
           >
             {({ values: { logo } }) => {

@@ -6,10 +6,10 @@ import WpLink from '../components/Link/WpLink';
 import TableRowImage from '../components/TableRowImage';
 import { WpTableColumn } from '../components/WpTable';
 import { ROUTE_CMS } from '../config/common';
-import { ProductInterface } from '../db/uiInterfaces';
+import { ProductSummaryInterface } from '../db/uiInterfaces';
 
-export type ProductColumnsItemHandler = (product: ProductInterface) => void;
-export type ProductColumnsHandlerPermission = (product: ProductInterface) => boolean;
+export type ProductColumnsItemHandler = (product: ProductSummaryInterface) => void;
+export type ProductColumnsHandlerPermission = (product: ProductSummaryInterface) => boolean;
 
 export interface ProductColumnsInterface
   extends Omit<
@@ -40,7 +40,7 @@ const useProductsListColumns = ({
   isCreateDisabled,
   isUpdateDisabled,
   isDeleteDisabled,
-}: ProductColumnsInterface): WpTableColumn<ProductInterface>[] => {
+}: ProductColumnsInterface): WpTableColumn<ProductSummaryInterface>[] => {
   return React.useMemo(() => {
     return [
       {

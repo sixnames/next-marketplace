@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { Formik, Form } from 'formik';
 import { CreateBlogAttributeInputInterface } from '../../db/dao/blog/createBlogAttribute';
-import { BlogAttributeInterface } from '../../db/uiInterfaces';
-import { useGetNewAttributeOptionsQuery } from '../../generated/apolloComponents';
+import { BlogAttributeInterface, OptionsGroupInterface } from '../../db/uiInterfaces';
 import {
   useCreateBlogAttribute,
   useUpdateBlogAttribute,
@@ -12,43 +11,26 @@ import { createBlogAttributeSchema } from '../../validation/blogSchema';
 import WpButton from '../button/WpButton';
 import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
 import FormikSelect from '../FormElements/Select/FormikSelect';
-import RequestError from '../RequestError';
-import Spinner from '../Spinner';
 import ModalButtons from './ModalButtons';
 import ModalFrame from './ModalFrame';
 import ModalTitle from './ModalTitle';
 
 export interface BlogAttributeModalInterface {
   attribute?: BlogAttributeInterface;
+  optionGroups: OptionsGroupInterface[];
 }
 
-const BlogAttributeModal: React.FC<BlogAttributeModalInterface> = ({ attribute }) => {
+const BlogAttributeModal: React.FC<BlogAttributeModalInterface> = ({ attribute, optionGroups }) => {
   const [createBlogPostHandler] = useCreateBlogAttribute();
   const [updateBlogAttribute] = useUpdateBlogAttribute();
   const validationSchema = useValidationSchema({
     schema: createBlogAttributeSchema,
   });
 
-  const { data, loading, error } = useGetNewAttributeOptionsQuery();
-
   const initialValues: CreateBlogAttributeInputInterface = {
     nameI18n: attribute?.nameI18n || {},
     optionsGroupId: attribute ? `${attribute?.optionsGroupId}` : null,
   };
-
-  if (loading) {
-    return <Spinner />;
-  }
-
-  if (error || !data) {
-    return (
-      <ModalFrame>
-        <RequestError />
-      </ModalFrame>
-    );
-  }
-
-  const { getAllOptionsGroups } = data;
 
   return (
     <ModalFrame testId={'blog-attribute-modal'}>
@@ -85,7 +67,7 @@ const BlogAttributeModal: React.FC<BlogAttributeModalInterface> = ({ attribute }
               />
 
               <FormikSelect
-                options={getAllOptionsGroups}
+                options={optionGroups}
                 label={'Группа опций'}
                 name={'optionsGroupId'}
                 testId={'optionsGroupId'}

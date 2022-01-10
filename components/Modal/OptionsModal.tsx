@@ -103,8 +103,14 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
         return (
           <div>
             <div
-              onClick={() => onOptionClickHandler(option)}
               className='transition duration-150 flex cursor-pointer hover:text-theme pt-3 pb-3'
+              onClick={() => {
+                if (isCheckbox) {
+                  onOptionClickHandler(option);
+                  return;
+                }
+                onSubmit([option]);
+              }}
             >
               <div
                 data-cy={`option-${name}`}
@@ -128,6 +134,7 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
 
       return (
         <div
+          className='transition duration-150 flex cursor-pointer hover:text-theme pt-3 pb-3'
           onClick={() => {
             if (isCheckbox) {
               onOptionClickHandler(option);
@@ -135,7 +142,6 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
             }
             onSubmit([option]);
           }}
-          className='transition duration-150 flex cursor-pointer hover:text-theme pt-3 pb-3'
         >
           <div
             data-cy={`option-${name}`}

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Form, Formik } from 'formik';
 import { UpdateShopProductInputInterface } from '../../db/dao/shopProduct/updateManyShopProducts';
-import { ProductInterface, ShopProductInterface } from '../../db/uiInterfaces';
+import { ProductSummaryInterface, ShopProductInterface } from '../../db/uiInterfaces';
 import useValidationSchema from '../../hooks/useValidationSchema';
 import { noNaN } from '../../lib/numbers';
 import { shopProductInModalSchema } from '../../validation/shopSchema';
@@ -12,7 +12,7 @@ import ModalFrame from './ModalFrame';
 import ModalTitle from './ModalTitle';
 
 interface ModalShopProductInterface extends Partial<Omit<ShopProductInterface, 'product'>> {
-  product?: Partial<ProductInterface> | null;
+  product?: Partial<ProductSummaryInterface> | null;
 }
 
 export interface ShopProductModalInterface {

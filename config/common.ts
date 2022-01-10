@@ -278,34 +278,6 @@ export const MAP_DEFAULT_CENTER = {
   lng: 37.617575,
 };
 
-// LANGUAGES
-export const ISO_LANGUAGES = [
-  {
-    _id: DEFAULT_LOCALE,
-    name: 'Russian',
-    slug: 'ru',
-    nativeName: 'ru',
-  },
-  {
-    _id: SECONDARY_LOCALE,
-    name: 'English',
-    slug: 'en',
-    nativeName: 'en',
-  },
-  {
-    _id: 'ua',
-    name: 'Украинский',
-    slug: 'ua',
-    nativeName: 'ua',
-  },
-  {
-    _id: 'pl',
-    name: 'Польский',
-    slug: 'pl',
-    nativeName: 'pl',
-  },
-];
-
 // ALGOLIA
 export const HITS_PER_PAGE = 150;
 

@@ -1,17 +1,16 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { DEFAULT_LOCALE } from '../../../config/common';
 import { COL_SHOP_PRODUCTS, COL_SHOPS } from '../../../db/collectionNames';
-import { shopProductFieldsPipeline } from '../../../db/dao/constantPipelines';
-import { ObjectIdModel, ShopModel } from '../../../db/dbModels';
+import { summaryPipeline } from '../../../db/dao/constantPipelines';
+import { ObjectIdModel, ProductSummaryModel, ShopModel } from '../../../db/dbModels';
 import { getDatabase } from '../../../db/mongodb';
 import { SyncParamsInterface, SyncProductInterface } from '../../../db/syncInterfaces';
-import { ProductInterface, ShopProductInterface } from '../../../db/uiInterfaces';
+import { ShopProductInterface } from '../../../db/uiInterfaces';
 import { getFieldStringLocale } from '../../../lib/i18n';
-import { generateSnippetTitle } from '../../../lib/titleUtils';
 
 interface SyncProductAggregationInterface extends Omit<SyncProductInterface, '_id'> {
   _id: ObjectIdModel;
-  product: ProductInterface;
+  summary: ProductSummaryModel;
 }
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
@@ -65,27 +64,16 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           shopId: shop._id,
         },
       },
-      ...shopProductFieldsPipeline('$productId'),
+      ...summaryPipeline('$productId'),
     ])
     .toArray();
 
   const locale = DEFAULT_LOCALE;
   const shopProducts: SyncProductInterface[] = [];
   initialShopProducts.forEach((shopProduct) => {
-    const { barcode, available, price, product, _id } = shopProduct;
-    if (barcode && barcode.length > 0 && product) {
-      const snippetTitle = generateSnippetTitle({
-        locale,
-        brand: product.brand,
-        rubricName: getFieldStringLocale(product.rubric?.nameI18n, locale),
-        showRubricNameInProductTitle: product.rubric?.showRubricNameInProductTitle,
-        showCategoryInProductTitle: product.rubric?.showCategoryInProductTitle,
-        attributes: product.attributes || [],
-        categories: product.categories,
-        titleCategoriesSlugs: product.titleCategoriesSlugs,
-        originalName: `${product.originalName}`,
-        defaultGender: `${product.gender}`,
-      });
+    const { barcode, available, price, summary, _id } = shopProduct;
+    if (barcode && barcode.length > 0 && summary) {
+      const snippetTitle = getFieldStringLocale(summary.snippetTitleI18n, locale);
 
       shopProducts.push({
         id: _id.toHexString(),

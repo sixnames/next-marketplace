@@ -46,6 +46,6 @@ export function getUpdatedShopProductPrices({
   return {
     oldPriceUpdater,
     discountedPercent,
-    oldPrice: shopProduct.oldPrice,
+    oldPrice: priceChanged ? shopProduct.price : shopProduct.oldPrice,
   };
 }

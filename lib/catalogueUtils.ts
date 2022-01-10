@@ -7,6 +7,7 @@ import {
   CATALOGUE_PRODUCTS_LIMIT,
   DEFAULT_COMPANY_SLUG,
   DEFAULT_PAGE,
+  DEFAULT_PAGE_FILTER,
   DEFAULT_SORT_STAGE,
   FILTER_BRAND_COLLECTION_KEY,
   FILTER_BRAND_KEY,
@@ -38,23 +39,17 @@ import {
   GRID_SNIPPET_LAYOUT_BIG_IMAGE,
   ROW_SNIPPET_LAYOUT_BIG_IMAGE,
 } from '../config/constantSelects';
+import { COL_RUBRIC_VARIANTS, COL_RUBRICS, COL_SHOP_PRODUCTS } from '../db/collectionNames';
 import {
-  COL_BRAND_COLLECTIONS,
-  COL_BRANDS,
-  COL_CATEGORIES,
-  COL_ICONS,
-  COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCTS,
-  COL_RUBRIC_VARIANTS,
-  COL_RUBRICS,
-  COL_SHOP_PRODUCTS,
-} from '../db/collectionNames';
-import {
-  filterAttributesPipeline,
   ignoreNoImageStage,
   noImageStage,
+  paginatedAggregationFinalPipeline,
+  productsPaginatedAggregationFacetsPipeline,
+  ProductsPaginatedAggregationInterface,
+  shopProductDocsFacetPipeline,
+  shopProductsGroupPipeline,
 } from '../db/dao/constantPipelines';
-import { castProductForUI } from '../db/dao/product/castProductForUI';
+import { castSummaryForUI } from '../db/dao/product/castSummaryForUI';
 import { CatalogueBreadcrumbModel, ObjectIdModel, ShopProductModel } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
 import {
@@ -668,8 +663,9 @@ export async function castUrlFilters({
     }
 
     if (filterAttributeSlug) {
+      allUrlParams.push(filterOption);
+
       if (filterAttributeSlug === FILTER_RUBRIC_KEY) {
-        allUrlParams.push(filterOption);
         rubricFilters.push(filterOptionSlug);
         return;
       }
@@ -680,13 +676,11 @@ export async function castUrlFilters({
       }
 
       if (filterAttributeSlug === CATALOGUE_FILTER_LIMIT) {
-        allUrlParams.push(filterOption);
         limit = noNaN(filterOptionSlug) || defaultLimit;
         return;
       }
 
       if (filterAttributeSlug === FILTER_PRICE_KEY) {
-        allUrlParams.push(filterOption);
         priceFilters.push(filterOption);
         noCategoryFilters.push(filterOption);
         const prices = filterOptionSlug.split('_');
@@ -696,14 +690,12 @@ export async function castUrlFilters({
       }
 
       if (filterAttributeSlug === SORT_BY_KEY) {
-        allUrlParams.push(filterOption);
         sortFilterOptions.push(filterOption);
         sortBy = filterOptionSlug;
         return;
       }
 
       if (filterAttributeSlug === SORT_DIR_KEY) {
-        allUrlParams.push(filterOption);
         sortFilterOptions.push(filterOption);
         sortDir = filterOptionSlug;
         return;
@@ -718,7 +710,6 @@ export async function castUrlFilters({
       }
 
       if (filterAttributeSlug === FILTER_BRAND_KEY) {
-        allUrlParams.push(filterOption);
         noCategoryFilters.push(filterOption);
         const slugParts = filterOption.split(FILTER_SEPARATOR);
         if (slugParts[1]) {
@@ -728,7 +719,6 @@ export async function castUrlFilters({
       }
 
       if (filterAttributeSlug === FILTER_BRAND_COLLECTION_KEY) {
-        allUrlParams.push(filterOption);
         noCategoryFilters.push(filterOption);
         const slugParts = filterOption.split(FILTER_SEPARATOR);
         if (slugParts[1]) {
@@ -738,7 +728,6 @@ export async function castUrlFilters({
       }
 
       if (filterAttributeSlug === FILTER_COMMON_KEY) {
-        allUrlParams.push(filterOption);
         if (filterOptionSlug === FILTER_NO_PHOTO_KEY) {
           photoStage = noImageStage;
         }
@@ -746,7 +735,6 @@ export async function castUrlFilters({
       }
 
       noCategoryFilters.push(filterOption);
-      allUrlParams.push(filterOption);
       realFilterAttributes.push(filterAttributeSlug);
       realFilters.push(filterOption);
     }
@@ -769,7 +757,7 @@ export async function castUrlFilters({
   const optionsStage =
     realFilters.length > 0
       ? {
-          selectedOptionsSlugs: {
+          filterSlugs: {
             $all: realFilters,
           },
         }
@@ -912,7 +900,6 @@ export const getCatalogueData = async ({
       categoryFilters,
       inCategory,
       sortStage,
-      defaultSortStage,
       brandStage,
       brandCollectionStage,
       optionsStage,
@@ -985,18 +972,23 @@ export const getCatalogueData = async ({
     // initial match
     const companyMatch = companyId ? { companyId: new ObjectId(companyId) } : {};
     const productsInitialMatch = {
-      ...searchStage,
       ...companyMatch,
-      ...rubricStage,
       citySlug: city,
+      ...rubricStage,
       ...brandStage,
       ...brandCollectionStage,
       ...optionsStage,
-      ...pricesStage,
       ...ignoreNoImageStage,
+      ...pricesStage,
+      ...searchStage,
     };
 
     // aggregate catalogue initial data
+    const pipelineConfig: ProductsPaginatedAggregationInterface = {
+      citySlug: city,
+      companySlug,
+    };
+
     const productDataAggregationResult = await shopProductsCollection
       .aggregate<CatalogueProductsAggregationInterface>([
         // match shop products
@@ -1004,443 +996,25 @@ export const getCatalogueData = async ({
           $match: productsInitialMatch,
         },
 
-        // unwind selectedOptionsSlugs field
-        {
-          $unwind: {
-            path: '$selectedOptionsSlugs',
-            preserveNullAndEmptyArrays: true,
-          },
-        },
-
-        // group shop products by productId field
-        {
-          $group: {
-            _id: '$productId',
-            companyId: { $first: `$companyId` },
-            itemId: { $first: '$itemId' },
-            rubricId: { $first: '$rubricId' },
-            rubricSlug: { $first: `$rubricSlug` },
-            brandSlug: { $first: '$brandSlug' },
-            mainImage: { $first: '$mainImage' },
-            brandCollectionSlug: { $first: '$brandCollectionSlug' },
-            views: { $max: `$views.${companySlug}.${city}` },
-            // priorities: { $max: `$priorities.${companySlug}.${city}` },
-            minPrice: {
-              $min: '$price',
-            },
-            maxPrice: {
-              $min: '$price',
-            },
-            available: {
-              $max: '$available',
-            },
-            selectedOptionsSlugs: {
-              $addToSet: '$selectedOptionsSlugs',
-            },
-            shopsIds: {
-              $addToSet: '$shopId',
-            },
-            shopProductsIds: {
-              $addToSet: '$_id',
-            },
-          },
-        },
-        {
-          $addFields: {
-            sortIndex: {
-              $cond: {
-                if: {
-                  $gt: ['$available', 0],
-                },
-                then: 1,
-                else: 0,
-              },
-            },
-          },
-        },
+        // group shop products by productId
+        ...shopProductsGroupPipeline(pipelineConfig),
 
         // catalogue data facets
         {
           $facet: {
             // docs facet
-            docs: [
-              {
-                $sort: {
-                  sortIndex: SORT_DESC,
-                  ...sortStage,
-                },
-              },
-              {
-                $skip: skip,
-              },
-              {
-                $limit: limit,
-              },
+            docs: shopProductDocsFacetPipeline({
+              sortStage,
+              skip,
+              limit,
+            }),
 
-              // add ui prices
-              {
-                $addFields: {
-                  shopsCount: { $size: '$shopsIds' },
-                  cardPrices: {
-                    min: '$minPrice',
-                    max: '$maxPrice',
-                  },
-                },
-              },
-
-              // get shop product fields
-              {
-                $lookup: {
-                  from: COL_PRODUCTS,
-                  as: 'product',
-                  let: {
-                    productId: '$_id',
-                    shopProductsIds: '$shopProductsIds',
-                  },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $eq: ['$$productId', '$_id'],
-                        },
-                      },
-                    },
-                    {
-                      $addFields: {
-                        shopProductsIds: '$$shopProductsIds',
-                      },
-                    },
-
-                    // get product attributes
-                    {
-                      $lookup: {
-                        from: COL_PRODUCT_ATTRIBUTES,
-                        as: 'attributes',
-                        let: {
-                          productId: '$_id',
-                        },
-                        pipeline: [
-                          {
-                            $match: {
-                              $expr: {
-                                $eq: ['$$productId', '$productId'],
-                              },
-                            },
-                          },
-                        ],
-                      },
-                    },
-                    {
-                      $project: {
-                        descriptionI18n: false,
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                $addFields: {
-                  product: { $arrayElemAt: ['$product', 0] },
-                },
-              },
-            ],
-
-            // prices facet
-            prices: [
-              {
-                $group: {
-                  _id: '$minPrice',
-                },
-              },
-            ],
-
-            // categories facet
-            categories: [
-              {
-                $unwind: {
-                  path: '$selectedOptionsSlugs',
-                  preserveNullAndEmptyArrays: true,
-                },
-              },
-              {
-                $group: {
-                  _id: null,
-                  rubricId: { $first: '$rubricId' },
-                  selectedOptionsSlugs: {
-                    $addToSet: '$selectedOptionsSlugs',
-                  },
-                },
-              },
-              {
-                $lookup: {
-                  from: COL_CATEGORIES,
-                  as: 'categories',
-                  let: {
-                    rubricId: '$rubricId',
-                    selectedOptionsSlugs: '$selectedOptionsSlugs',
-                  },
-                  pipeline: [
-                    {
-                      $match: {
-                        $and: [
-                          {
-                            $expr: {
-                              $eq: ['$rubricId', '$$rubricId'],
-                            },
-                          },
-                          {
-                            $expr: {
-                              $in: ['$slug', '$$selectedOptionsSlugs'],
-                            },
-                          },
-                        ],
-                      },
-                    },
-                    {
-                      $addFields: {
-                        views: { $max: `$views.${companySlug}.${city}` },
-                        priorities: { $max: `$priorities.${companySlug}.${city}` },
-                      },
-                    },
-                    {
-                      $sort: defaultSortStage,
-                    },
-
-                    // get category icon
-                    {
-                      $lookup: {
-                        from: COL_ICONS,
-                        as: 'icon',
-                        let: {
-                          documentId: '$_id',
-                        },
-                        pipeline: [
-                          {
-                            $match: {
-                              collectionName: COL_CATEGORIES,
-                              $expr: {
-                                $eq: ['$documentId', '$$documentId'],
-                              },
-                            },
-                          },
-                        ],
-                      },
-                    },
-                    {
-                      $addFields: {
-                        icon: {
-                          $arrayElemAt: ['$icon', 0],
-                        },
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                $unwind: {
-                  path: '$categories',
-                  preserveNullAndEmptyArrays: true,
-                },
-              },
-              {
-                $match: {
-                  categories: {
-                    $exists: true,
-                  },
-                },
-              },
-              {
-                $replaceRoot: {
-                  newRoot: '$categories',
-                },
-              },
-            ],
-
-            // brands facet
-            brands: [
-              {
-                $group: {
-                  _id: '$brandSlug',
-                  collectionSlugs: {
-                    $addToSet: '$brandCollectionSlug',
-                  },
-                },
-              },
-              {
-                $lookup: {
-                  from: COL_BRANDS,
-                  as: 'brand',
-                  let: {
-                    itemId: '$_id',
-                    collectionSlugs: '$collectionSlugs',
-                  },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $eq: ['$itemId', '$$itemId'],
-                        },
-                      },
-                    },
-                    {
-                      $lookup: {
-                        from: COL_BRAND_COLLECTIONS,
-                        as: 'collections',
-                        let: {
-                          brandId: '$_id',
-                        },
-                        pipeline: [
-                          {
-                            $match: {
-                              $and: [
-                                {
-                                  $expr: {
-                                    $eq: ['$brandId', '$$brandId'],
-                                  },
-                                },
-                                {
-                                  $expr: {
-                                    $in: ['$itemId', '$$collectionSlugs'],
-                                  },
-                                },
-                              ],
-                            },
-                          },
-                          {
-                            $addFields: {
-                              views: { $max: `$views.${companySlug}.${city}` },
-                              priorities: { $max: `$priorities.${companySlug}.${city}` },
-                            },
-                          },
-                          {
-                            $sort: defaultSortStage,
-                          },
-                        ],
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                $addFields: {
-                  brand: {
-                    $arrayElemAt: ['$brand', 0],
-                  },
-                },
-              },
-              {
-                $match: {
-                  brand: {
-                    $exists: true,
-                  },
-                },
-              },
-              {
-                $replaceRoot: {
-                  newRoot: '$brand',
-                },
-              },
-              {
-                $addFields: {
-                  views: { $max: `$views.${companySlug}.${city}` },
-                  priorities: { $max: `$priorities.${companySlug}.${city}` },
-                },
-              },
-              {
-                $sort: defaultSortStage,
-              },
-            ],
-
-            // rubric facet
-            rubrics: [
-              {
-                $group: {
-                  _id: '$rubricId',
-                },
-              },
-              {
-                $lookup: {
-                  from: COL_RUBRICS,
-                  as: 'rubric',
-                  let: {
-                    rubricId: '$_id',
-                  },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $eq: ['$_id', '$$rubricId'],
-                        },
-                      },
-                    },
-                    {
-                      $project: {
-                        views: false,
-                        priorities: false,
-                      },
-                    },
-                    {
-                      $lookup: {
-                        from: COL_RUBRIC_VARIANTS,
-                        as: 'variant',
-                        let: {
-                          variantId: '$variantId',
-                        },
-                        pipeline: [
-                          {
-                            $match: {
-                              $expr: {
-                                $eq: ['$$variantId', '$_id'],
-                              },
-                            },
-                          },
-                        ],
-                      },
-                    },
-                    {
-                      $addFields: {
-                        variant: {
-                          $arrayElemAt: ['$variant', 0],
-                        },
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                $replaceRoot: {
-                  newRoot: {
-                    $arrayElemAt: ['$rubric', 0],
-                  },
-                },
-              },
-            ],
-
-            // attributes facet
-            attributes: filterAttributesPipeline(defaultSortStage),
-
-            // countAllDocs facet
-            countAllDocs: [
-              {
-                $count: 'totalDocs',
-              },
-            ],
+            ...productsPaginatedAggregationFacetsPipeline(pipelineConfig),
           },
         },
 
         // cast facets
-        {
-          $addFields: {
-            totalDocsObject: { $arrayElemAt: ['$countAllDocs', 0] },
-          },
-        },
-        {
-          $addFields: {
-            countAllDocs: null,
-            totalDocsObject: null,
-            totalProducts: '$totalDocsObject.totalDocs',
-          },
-        },
+        ...paginatedAggregationFinalPipeline(limit),
       ])
       .toArray();
     const productDataAggregation = productDataAggregationResult[0];
@@ -1449,7 +1023,8 @@ export const getCatalogueData = async ({
     }
     // console.log('aggregation ', new Date().getTime() - timeStart);
 
-    const { docs, totalProducts, attributes, brands, categories, prices } = productDataAggregation;
+    const { docs, totalDocs, totalPages, attributes, brands, categories, prices } =
+      productDataAggregation;
 
     // get rubric
     let rubrics = productDataAggregation.rubrics;
@@ -1494,6 +1069,7 @@ export const getCatalogueData = async ({
     if (!rubric) {
       return fallbackPayload;
     }
+    // console.log(`rubrics >>>>>>>>>>>>>>>> `, new Date().getTime() - timeStart);
 
     // get selected categories
     const selectedCategorySlugs = categoryFilters.map((slug) => {
@@ -1597,43 +1173,33 @@ export const getCatalogueData = async ({
         brands,
         // visibleAttributesCount,
       });
+    // console.log(`getCatalogueAttributes >>>>>>>>>>>>>>>> `, new Date().getTime() - timeStart);
 
     // cast catalogue products
     const products: ShopProductInterface[] = [];
     docs.forEach((shopProduct) => {
-      const product = shopProduct.product;
+      const product = shopProduct.summary;
       if (!product) {
         return;
       }
 
-      const castedProduct = castProductForUI({
-        product,
+      const castedProduct = castSummaryForUI({
+        summary: product,
         attributes,
         brands,
         categories,
-        rubric,
         locale,
-        getSnippetTitle: true,
       });
 
-      // product prices
-      const minPrice = noNaN(shopProduct.cardPrices?.min);
-      const maxPrice = noNaN(shopProduct.cardPrices?.max);
-      const cardPrices = {
-        _id: new ObjectId(),
-        min: `${minPrice}`,
-        max: `${maxPrice}`,
-      };
-
       // list features
-      const initialListFeatures = getProductCurrentViewCastedAttributes({
+      const initialListAttributes = getProductCurrentViewCastedAttributes({
         attributes: castedProduct.attributes || [],
         viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
         locale,
         gender: product.gender,
       });
-      const listFeatures = sortObjectsByField(
-        initialListFeatures
+      const listAttributes = sortObjectsByField(
+        initialListAttributes
           .filter(({ attribute }) => {
             return attribute?.showInSnippet;
           })
@@ -1642,25 +1208,26 @@ export const getCatalogueData = async ({
       );
 
       // rating features
-      const initialRatingFeatures = getProductCurrentViewCastedAttributes({
+      const initialRatingAttributes = getProductCurrentViewCastedAttributes({
         attributes: castedProduct.attributes || [],
         viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
         locale,
         gender: product.gender,
       });
-      const ratingFeatures = initialRatingFeatures.filter(({ attribute }) => {
+      const ratingAttributes = initialRatingAttributes.filter(({ attribute }) => {
         return attribute?.showInSnippet;
       });
 
       products.push({
         ...shopProduct,
-        product: {
+        summary: {
           ...castedProduct,
           shopsCount: shopProduct.shopsCount,
           attributes: [],
-          listFeatures,
-          ratingFeatures,
-          cardPrices,
+          listAttributes,
+          ratingAttributes,
+          minPrice: noNaN(shopProduct.minPrice),
+          maxPrice: noNaN(shopProduct.maxPrice),
         },
       });
     });
@@ -1683,6 +1250,7 @@ export const getCatalogueData = async ({
           currency,
           page,
         });
+    // console.log(`catalogueTitle >>>>>>>>>>>>>>>> `, new Date().getTime() - timeStart);
 
     const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
 
@@ -1788,9 +1356,6 @@ export const getCatalogueData = async ({
       ? CATALOGUE_GRID_DEFAULT_COLUMNS_COUNT
       : rubric.variant?.gridCatalogueColumns || CATALOGUE_GRID_DEFAULT_COLUMNS_COUNT;
 
-    // count total pages
-    const totalPages = Math.ceil(totalProducts / limit);
-
     // get head categories
     let visibleHeadCategoryIds: ObjectIdModel[] = [];
     visibleCategoriesInNavDropdown.forEach((configString) => {
@@ -1894,7 +1459,8 @@ export const getCatalogueData = async ({
     });
 
     const isRedirect = lostFilters.length > 0 || lostNestedFilters.length > 0;
-    const isPageRedirect = input.filters.includes(ZERO_PAGE_FILTER);
+    const isPageRedirect =
+      input.filters.includes(ZERO_PAGE_FILTER) || input.filters.includes(DEFAULT_PAGE_FILTER);
     if (isRedirect || isPageRedirect) {
       const filteredRedirectArray = selectedFilterSlugs.filter((filter) => {
         return filter !== ZERO_PAGE_FILTER && !lostFilters.includes(filter);
@@ -1903,6 +1469,7 @@ export const getCatalogueData = async ({
       redirect = `/${sortedRedirectArray.join('/')}`;
     }
     // console.log(`Catalogue data >>>>>>>>>>>>>>>> `, new Date().getTime() - timeStart);
+
     return {
       // rubric
       _id: rubric._id,
@@ -1929,7 +1496,7 @@ export const getCatalogueData = async ({
       // filter
       headCategories,
       totalPages,
-      totalProducts: noNaN(totalProducts),
+      totalProducts: noNaN(totalDocs),
       attributes: finalSortedFilterAttributes,
       selectedAttributes: finalSelectedAttributes,
       page,

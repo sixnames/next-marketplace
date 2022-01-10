@@ -1,15 +1,19 @@
 import { sortObjectsByField } from '../../../lib/arrayUtils';
 import { getFieldStringLocale } from '../../../lib/i18n';
 import { RubricInterface } from '../../uiInterfaces';
-import { castAttributesGroupForUI } from '../attributes/castAttributesGroupForUI';
+import {
+  castAttributeForUI,
+  castAttributesGroupForUI,
+} from '../attributes/castAttributesGroupForUI';
 import { castCategoryForUI } from '../category/castCategoryForUI';
 
 interface CastRubricForUI {
   rubric: RubricInterface;
   locale: string;
+  noSort?: boolean;
 }
 
-export function castRubricForUI({ rubric, locale }: CastRubricForUI): RubricInterface {
+export function castRubricForUI({ rubric, locale, noSort }: CastRubricForUI): RubricInterface {
   const categories = (rubric.categories || []).map((child) => {
     return castCategoryForUI({
       category: child,
@@ -24,10 +28,18 @@ export function castRubricForUI({ rubric, locale }: CastRubricForUI): RubricInte
     });
   });
 
+  const attributes = (rubric.attributes || []).map((attribute) => {
+    return castAttributeForUI({
+      attribute,
+      locale,
+    });
+  });
+
   return {
     ...rubric,
     name: getFieldStringLocale(rubric.nameI18n, locale),
-    categories: sortObjectsByField(categories),
-    attributesGroups: sortObjectsByField(attributesGroups),
+    categories: noSort ? categories : sortObjectsByField(categories),
+    attributesGroups: noSort ? attributesGroups : sortObjectsByField(attributesGroups),
+    attributes: noSort ? attributes : sortObjectsByField(attributes),
   };
 }

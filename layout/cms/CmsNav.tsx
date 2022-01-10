@@ -41,7 +41,7 @@ const CmsNav: React.FC<AppNavInterface> = ({
             <div className='px-[20px] pt-8 pb-8 relative'>
               <img
                 className='h-[70px] w-full object-contain'
-                src={pageCompany.logo.url}
+                src={pageCompany.logo}
                 width='100'
                 height='100'
                 alt={pageCompany.name}

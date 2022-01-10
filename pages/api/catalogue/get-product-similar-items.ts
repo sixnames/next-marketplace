@@ -1,16 +1,14 @@
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { SORT_DESC } from '../../../config/common';
-import { COL_PRODUCTS, COL_SHOP_PRODUCTS } from '../../../db/collectionNames';
-import { ignoreNoImageStage, shopProductFieldsPipeline } from '../../../db/dao/constantPipelines';
-import { ProductModel } from '../../../db/dbModels';
+import { COL_PRODUCT_FACETS, COL_SHOP_PRODUCTS } from '../../../db/collectionNames';
+import { ignoreNoImageStage, summaryPipeline } from '../../../db/dao/constantPipelines';
+import { ProductFacetModel } from '../../../db/dbModels';
 import { getDatabase } from '../../../db/mongodb';
 import { ShopProductInterface } from '../../../db/uiInterfaces';
 import { getFieldStringLocale } from '../../../lib/i18n';
 import { noNaN } from '../../../lib/numbers';
 import { getRequestParams, getSessionCompanySlug } from '../../../lib/sessionHelpers';
-import { generateSnippetTitle } from '../../../lib/titleUtils';
-import { getTreeFromList } from '../../../lib/treeUtils';
 
 const fullPercentage = 100;
 const filterPercentage = 50;
@@ -38,7 +36,7 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
 
     const { db } = await getDatabase();
     const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
-    const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+    const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
     const companyRubricsMatch = companyId ? { companyId: new ObjectId(companyId) } : {};
 
     // get product
@@ -123,8 +121,8 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
                 $match: {
                   ...companyRubricsMatch,
                   rubricSlug: product.rubricSlug,
-                  selectedOptionsSlugs: {
-                    $in: product.selectedOptionsSlugs,
+                  filterSlugs: {
+                    $in: product.filterSlugs,
                   },
                   // ...categoriesMatch,
                   citySlug: city,
@@ -150,8 +148,8 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
                   brandCollectionSlug: { $first: '$brandCollectionSlug' },
                   views: { $max: `$views.${companySlug}.${city}` },
                   priorities: { $max: `$priorities.${companySlug}.${city}` },
-                  selectedOptionsSlugs: {
-                    $first: '$selectedOptionsSlugs',
+                  filterSlugs: {
+                    $first: '$filterSlugs',
                   },
                   minPrice: {
                     $min: '$price',
@@ -188,7 +186,7 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
               },
 
               // get shop product fields
-              ...shopProductFieldsPipeline('$_id'),
+              ...summaryPipeline('$_id'),
             ],
           },
         },
@@ -227,47 +225,22 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
         if (exist) {
           return acc;
         }
-        const product = shopProduct.product;
-        if (!product) {
+        const summary = shopProduct.summary;
+        if (!summary) {
           return acc;
         }
-
-        // title
-        const snippetTitle = generateSnippetTitle({
-          locale,
-          brand: product.brand,
-          rubricName: getFieldStringLocale(product.rubric?.nameI18n, locale),
-          showRubricNameInProductTitle: product.rubric?.showRubricNameInProductTitle,
-          showCategoryInProductTitle: product.rubric?.showCategoryInProductTitle,
-          attributes: product.attributes || [],
-          originalName: product.originalName,
-          defaultGender: product.gender,
-          titleCategoriesSlugs: product.titleCategoriesSlugs,
-          categories: getTreeFromList({
-            list: product.categories,
-            childrenFieldName: 'categories',
-            locale,
-          }),
-        });
-
-        const minPrice = noNaN(shopProduct.cardPrices?.min);
-        const maxPrice = noNaN(shopProduct.cardPrices?.max);
-        const cardPrices = {
-          _id: new ObjectId(),
-          min: `${minPrice}`,
-          max: `${maxPrice}`,
-        };
 
         return [
           ...acc,
           {
             ...shopProduct,
-            product: {
-              ...product,
+            summary: {
+              ...summary,
               shopsCount: shopProduct.shopsCount,
-              name: getFieldStringLocale(product.nameI18n, locale),
-              cardPrices,
-              snippetTitle,
+              name: getFieldStringLocale(summary.nameI18n, locale),
+              snippetTitle: getFieldStringLocale(summary.snippetTitleI18n, locale),
+              minPrice: noNaN(shopProduct.minPrice),
+              maxPrice: noNaN(shopProduct.maxPrice),
             },
           },
         ];

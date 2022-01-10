@@ -3,7 +3,7 @@ import * as React from 'react';
 import { CONFIRM_MODAL } from '../../config/modalVariants';
 import { useAppContext } from '../../context/appContext';
 import { CreateProductInputInterface } from '../../db/dao/product/createProduct';
-import { useGetGenderOptionsQuery } from '../../generated/apolloComponents';
+import { useConstantOptions } from '../../hooks/useConstantOptions';
 import WpButton from '../button/WpButton';
 import FormikBarcodeInput from '../FormElements/FormikBarcodeInput/FormikBarcodeInput';
 import FormikInput from '../FormElements/Input/FormikInput';
@@ -11,8 +11,6 @@ import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInp
 import InputLine from '../FormElements/Input/InputLine';
 import FormikSelect from '../FormElements/Select/FormikSelect';
 import { ConfirmModalInterface } from '../Modal/ConfirmModal';
-import RequestError from '../RequestError';
-import Spinner from '../Spinner';
 
 export type ProductFormValuesBaseType = Omit<CreateProductInputInterface, 'rubricId'>;
 
@@ -23,16 +21,7 @@ export interface ProductFormValuesInterface extends ProductFormValuesBaseType {
 const ProductMainFields: React.FC = () => {
   const { setFieldValue, values } = useFormikContext<ProductFormValuesInterface>();
   const { showModal } = useAppContext();
-  const { data, loading, error } = useGetGenderOptionsQuery();
-  if (error || (!loading && !data)) {
-    return <RequestError />;
-  }
-
-  if (loading) {
-    return <Spinner isTransparent isNested />;
-  }
-
-  const { getGenderOptions } = data!;
+  const { genderOptions } = useConstantOptions();
 
   return (
     <React.Fragment>
@@ -42,7 +31,7 @@ const ProductMainFields: React.FC = () => {
       <FormikSelect
         name={'gender'}
         firstOption
-        options={getGenderOptions}
+        options={genderOptions}
         testId={`gender`}
         label={'Род названия'}
       />

@@ -4,7 +4,7 @@ import { DEFAULT_COUNTERS_OBJECT, GEO_POINT_TYPE } from '../config/common';
 import {
   COL_CITIES,
   COL_COMPANIES,
-  COL_PRODUCTS,
+  COL_PRODUCT_SUMMARIES,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
 } from '../db/collectionNames';
@@ -12,7 +12,7 @@ import { aggregatePagination } from '../db/dao/aggregatePagination';
 import {
   CityModel,
   CompanyModel,
-  ProductModel,
+  ProductSummaryModel,
   ShopModel,
   ShopPayloadModel,
   ShopProductModel,
@@ -57,12 +57,8 @@ export const Shop = objectType({
     t.field('mapMarker', {
       type: 'MapMarker',
     });
-    t.nonNull.field('logo', {
-      type: 'Asset',
-    });
-    t.nonNull.list.nonNull.field('assets', {
-      type: 'Asset',
-    });
+    t.nonNull.string('logo');
+    t.nonNull.list.nonNull.string('assets');
     t.nonNull.field('contacts', {
       type: 'Contacts',
     });
@@ -456,8 +452,8 @@ export const ShopMutations = extendType({
           }
 
           // Delete shop asset
-          const currentAsset = shop.assets.find(({ index }) => index === assetIndex);
-          const removedAsset = await deleteUpload(`${currentAsset?.url}`);
+          const currentAsset = shop.assets[assetIndex];
+          const removedAsset = await deleteUpload(`${currentAsset}`);
           if (!removedAsset) {
             return {
               success: false,
@@ -634,7 +630,8 @@ export const ShopMutations = extendType({
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
         const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
-        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+        const productSummariesCollection =
+          db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
 
         const session = client.startSession();
@@ -673,7 +670,7 @@ export const ShopMutations = extendType({
 
               // Check shop and product availability
               const shop = await shopsCollection.findOne({ _id: shopId });
-              const product = await productsCollection.findOne({ _id: productId });
+              const product = await productSummariesCollection.findOne({ _id: productId });
               if (!shop || !product) {
                 break;
               }
@@ -706,7 +703,7 @@ export const ShopMutations = extendType({
                 allowDelivery: product.allowDelivery,
                 brandCollectionSlug: product.brandCollectionSlug,
                 manufacturerSlug: product.manufacturerSlug,
-                selectedOptionsSlugs: product.selectedOptionsSlugs,
+                filterSlugs: product.filterSlugs,
                 updatedAt: new Date(),
                 createdAt: new Date(),
                 ...DEFAULT_COUNTERS_OBJECT,

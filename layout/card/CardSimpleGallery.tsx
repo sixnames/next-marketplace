@@ -1,11 +1,10 @@
 import * as React from 'react';
 import WpImage from '../../components/WpImage';
-import { AssetModel } from '../../db/dbModels';
 
 const quality = 70;
 
 interface CardSimpleGalleryInterface {
-  assets: AssetModel[];
+  assets: string[];
   mainImage: string;
   isSingleImage: boolean;
   className?: string;
@@ -44,7 +43,7 @@ const CardSimpleGallery: React.FC<CardSimpleGalleryInterface> = ({
     <div className={`${className ? className : ''}`}>
       <div className='overflow-x-auto lg:overflow-x-auto max-w-full pb-6'>
         <div className='flex mb-6 lg:mb-0 lg:grid lg:grid-cols-2 gap-x-6 gap-y-8'>
-          {assets.map(({ url }, index) => {
+          {assets.map((url, index) => {
             return (
               <div key={url} className='min-w-[260px] lg:min-w-full rounded-lg shadow-lg p-1'>
                 <div className='relative pb-[100%] w-full'>

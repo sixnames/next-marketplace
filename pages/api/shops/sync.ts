@@ -1,17 +1,16 @@
-import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { DEFAULT_COUNTERS_OBJECT, REQUEST_METHOD_POST } from '../../../config/common';
+import { REQUEST_METHOD_POST } from '../../../config/common';
 import {
   COL_BLACKLIST_PRODUCTS,
   COL_NOT_SYNCED_PRODUCTS,
-  COL_PRODUCTS,
+  COL_PRODUCT_SUMMARIES,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
 } from '../../../db/collectionNames';
 import {
   BlackListProductModel,
   NotSyncedProductModel,
-  ProductModel,
+  ProductSummaryModel,
   ShopModel,
   ShopProductModel,
 } from '../../../db/dbModels';
@@ -19,6 +18,7 @@ import { getDatabase } from '../../../db/mongodb';
 import { SyncParamsInterface, SyncProductInterface } from '../../../db/syncInterfaces';
 import { getNextItemId } from '../../../lib/itemIdUtils';
 import { noNaN } from '../../../lib/numbers';
+import { castSummaryToShopProduct } from '../../../lib/productUtils';
 import { getUpdatedShopProductPrices } from '../../../lib/shopUtils';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
@@ -55,7 +55,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
     const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
     const blacklistProducts = db.collection<BlackListProductModel>(COL_BLACKLIST_PRODUCTS);
-    const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+    const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
     const notSyncedProductsCollection =
       db.collection<NotSyncedProductModel>(COL_NOT_SYNCED_PRODUCTS);
 
@@ -108,7 +108,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       }
       return [...acc, ...barcode];
     }, []);
-    const products = await productsCollection
+    const products = await productSummariesCollection
       .find({
         barcode: {
           $in: barcodeList,
@@ -165,7 +165,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
       const { available, price, barcode } = bodyItem;
       // add new barcode to product
-      await productsCollection.findOneAndUpdate(
+      await productSummariesCollection.findOneAndUpdate(
         {
           _id: product._id,
         },
@@ -218,36 +218,22 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       } else {
         // create new shop product
         const itemId = await getNextItemId(COL_SHOP_PRODUCTS);
-        const shopProduct: ShopProductModel = {
-          _id: new ObjectId(),
-          available: noNaN(available),
-          price: noNaN(price),
-          itemId,
-          discountedPercent: 0,
-          productId: product._id,
-          shopId: shop._id,
-          citySlug: shop.citySlug,
-          oldPrices: [],
-          rubricId: product.rubricId,
-          rubricSlug: product.rubricSlug,
-          companyId: shop.companyId,
+        const shopProduct = castSummaryToShopProduct({
           companySlug: shop.companySlug,
-          brandSlug: product.brandSlug,
-          mainImage: product.mainImage,
-          allowDelivery: product.allowDelivery,
-          brandCollectionSlug: product.brandCollectionSlug,
-          manufacturerSlug: product.manufacturerSlug,
-          selectedOptionsSlugs: product.selectedOptionsSlugs,
+          companyId: shop.companyId,
+          citySlug: shop.citySlug,
           barcode: bodyItem.barcode,
-          updatedAt: new Date(),
-          createdAt: new Date(),
-          ...DEFAULT_COUNTERS_OBJECT,
-        };
+          shopId: shop._id,
+          summary: product,
+          price,
+          available,
+          itemId,
+        });
         shopProducts.push(shopProduct);
       }
 
       // update product barcode list
-      await productsCollection.findOneAndUpdate(
+      await productSummariesCollection.findOneAndUpdate(
         {
           _id: product._id,
         },

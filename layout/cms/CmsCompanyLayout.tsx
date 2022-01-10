@@ -2,8 +2,8 @@ import Head from 'next/head';
 import * as React from 'react';
 import Inner from '../../components/Inner';
 import WpTitle from '../../components/WpTitle';
-import { ROUTE_CMS } from '../../config/common';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from '../../db/uiInterfaces';
+import { getCmsCompanyLinks } from '../../lib/linkUtils';
 import { ClientNavItemInterface } from '../../types/clientTypes';
 import AppContentWrapper from '../AppContentWrapper';
 import AppSubNav from '../AppSubNav';
@@ -19,95 +19,110 @@ const CmsCompanyLayout: React.FC<CmsCompanyLayoutInterface> = ({
   children,
 }) => {
   const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
+    const {
+      root,
+      assets,
+      shops,
+      promo,
+      giftCertificates,
+      rubrics,
+      blog,
+      pages,
+      userCategories,
+      config,
+    } = getCmsCompanyLinks({
+      companyId: company?._id,
+    });
+
     return [
       {
         name: 'Детали',
         testId: 'company-details',
-        path: `${ROUTE_CMS}/companies/${company?._id}`,
+        path: root,
         exact: true,
       },
       {
         name: 'Изображения',
         testId: 'company-assets',
-        path: `${ROUTE_CMS}/companies/${company?._id}/assets`,
+        path: assets,
         exact: true,
       },
       {
         name: 'Магазины',
         testId: 'company-shops',
-        path: `${ROUTE_CMS}/companies/${company?._id}/shops/${company?._id}`,
+        path: shops,
         exact: true,
       },
       {
         name: 'Акции',
         testId: 'company-promo',
-        path: `${ROUTE_CMS}/companies/${company?._id}/promo`,
+        path: promo.parentLink,
       },
       {
         name: 'Подарочные сертификаты',
         testId: 'gift-certificates',
-        path: `${ROUTE_CMS}/companies/${company?._id}/gift-certificates/${company?._id}`,
+        path: giftCertificates,
       },
       {
         name: 'Рубрикатор',
         testId: 'company-rubrics',
-        path: `${ROUTE_CMS}/companies/${company?._id}/rubrics`,
+        path: rubrics.parentLink,
       },
       {
         name: 'Блог',
         testId: 'company-blog',
-        path: `${ROUTE_CMS}/companies/${company?._id}/blog`,
+        path: blog,
       },
       {
         name: 'Страницы',
         testId: 'company-pages',
-        path: `${ROUTE_CMS}/companies/${company?._id}/pages`,
+        path: pages,
         hidden: !company?.domain,
       },
       {
         name: 'Категории клиентов',
         testId: 'company-user-categories',
-        path: `${ROUTE_CMS}/companies/${company?._id}/user-categories`,
+        path: userCategories,
       },
       {
         name: 'Основные настройки',
         testId: 'company-global-config',
-        path: `${ROUTE_CMS}/companies/${company?._id}/config`,
+        path: config.root,
         hidden: !company?.domain,
         exact: true,
       },
       {
         name: 'Аналитика',
         testId: 'company-analytics',
-        path: `${ROUTE_CMS}/companies/${company?._id}/config/analytics`,
+        path: config.analytics,
         hidden: !company?.domain,
         exact: true,
       },
       {
         name: 'Интерфейс',
         testId: 'company-ui',
-        path: `${ROUTE_CMS}/companies/${company?._id}/config/ui`,
+        path: config.ui,
         hidden: !company?.domain,
         exact: true,
       },
       {
         name: 'Контактные данные',
         testId: 'company-contacts',
-        path: `${ROUTE_CMS}/companies/${company?._id}/config/contacts`,
+        path: config.contacts,
         hidden: !company?.domain,
         exact: true,
       },
       {
         name: 'SEO',
         testId: 'company-seo',
-        path: `${ROUTE_CMS}/companies/${company?._id}/config/seo`,
+        path: config.seo,
         hidden: !company?.domain,
         exact: true,
       },
       {
         name: 'Каталог',
         testId: 'company-catalogue',
-        path: `${ROUTE_CMS}/companies/${company?._id}/config/catalogue`,
+        path: config.catalogue,
         hidden: !company?.domain,
         exact: true,
       },

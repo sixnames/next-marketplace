@@ -1,22 +1,15 @@
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import { ATTRIBUTE_VARIANT_SELECT } from '../config/common';
-import {
-  COL_ATTRIBUTES,
-  COL_OPTIONS,
-  COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCT_CONNECTION_ITEMS,
-  COL_PRODUCT_CONNECTIONS,
-  COL_PRODUCTS,
-} from '../db/collectionNames';
+import { COL_ATTRIBUTES, COL_OPTIONS, COL_PRODUCT_SUMMARIES } from '../db/collectionNames';
 import {
   AttributeModel,
   OptionModel,
-  ProductAttributeModel,
-  ProductConnectionItemModel,
-  ProductConnectionModel,
-  ProductModel,
+  ProductVariantItemModel,
+  ProductVariantModel,
   ProductPayloadModel,
+  ProductSummaryModel,
+  ObjectIdModel,
 } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
 import getResolverErrorMessage from '../lib/getResolverErrorMessage';
@@ -36,18 +29,6 @@ export const ProductConnectionItem = objectType({
   definition(t) {
     t.nonNull.objectId('_id');
     t.nonNull.objectId('productId');
-    t.nonNull.field('product', {
-      type: 'Product',
-      resolve: async (source): Promise<ProductModel> => {
-        const { db } = await getDatabase();
-        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-        const product = await productsCollection.findOne({ _id: source.productId });
-        if (!product) {
-          throw Error('Product not found in ProductConnectionItem');
-        }
-        return product;
-      },
-    });
   },
 });
 
@@ -105,14 +86,8 @@ export const ProductConnectionMutations = extendType({
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
         const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-        const productsAttributesCollection =
-          db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
-        const productConnectionsCollection =
-          db.collection<ProductConnectionModel>(COL_PRODUCT_CONNECTIONS);
-        const productConnectionItemsCollection = db.collection<ProductConnectionItemModel>(
-          COL_PRODUCT_CONNECTION_ITEMS,
-        );
+        const productSummariesCollection =
+          db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
         const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
 
         const session = client.startSession();
@@ -148,24 +123,16 @@ export const ProductConnectionMutations = extendType({
             const { productId, attributeId } = input;
 
             // Check all entities availability
-            const product = await productsCollection.findOne({ _id: productId });
-            const productConnections = await productConnectionsCollection
-              .aggregate([
-                {
-                  $match: { productIds: productId },
-                },
-              ])
-              .toArray();
-            const productAttribute = await productsAttributesCollection.findOne({
-              productId,
-              attributeId,
+            const summary = await productSummariesCollection.findOne({ _id: productId });
+            const productAttribute = summary?.attributes.find((productAttribute) => {
+              return productAttribute.attributeId.equals(attributeId);
             });
             const attribute = await attributesCollection.findOne({
               _id: attributeId,
             });
 
             // Find current attribute in product
-            if (!product || !productAttribute || !attribute) {
+            if (!summary || !productAttribute || !attribute) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`products.update.notFound`),
@@ -185,7 +152,7 @@ export const ProductConnectionMutations = extendType({
             }
 
             // Check if connection already exist
-            const exist = productConnections.some((connection) => {
+            const exist = summary.variants.some((connection) => {
               return connection.attributeId.equals(attributeId);
             });
             if (exist) {
@@ -198,7 +165,7 @@ export const ProductConnectionMutations = extendType({
             }
 
             // Find current option
-            const optionId = productAttribute.selectedOptionsIds[0];
+            const optionId = productAttribute.optionIds[0];
             if (!optionId) {
               mutationPayload = {
                 success: false,
@@ -217,43 +184,27 @@ export const ProductConnectionMutations = extendType({
               return;
             }
 
-            // Create connection
-            const createdConnectionResult = await productConnectionsCollection.insertOne({
-              attributeId: productAttribute.attributeId,
-              attributeSlug: attribute.slug,
-              productsIds: [productId],
-            });
-            if (!createdConnectionResult.acknowledged) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`products.connection.createError`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Create connection item
-            const createdConnectionItemResult = await productConnectionItemsCollection.insertOne({
-              optionId,
-              productId,
-              productSlug: product.slug,
-              connectionId: createdConnectionResult.insertedId,
-            });
-            if (!createdConnectionItemResult.acknowledged) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`products.connection.createError`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
             // Update product
-            const updatedProductResult = await productsCollection.findOneAndUpdate(
+            const updatedProductResult = await productSummariesCollection.findOneAndUpdate(
               {
                 _id: productId,
               },
               {
+                $push: {
+                  variants: {
+                    _id: new ObjectId(),
+                    attributeId: attribute._id,
+                    attributeSlug: attribute.slug,
+                    products: [
+                      {
+                        _id: new ObjectId(),
+                        productId,
+                        optionId,
+                        productSlug: summary.slug,
+                      },
+                    ],
+                  },
+                },
                 $set: {
                   updatedAt: new Date(),
                 },
@@ -306,14 +257,8 @@ export const ProductConnectionMutations = extendType({
       resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
-        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-        const productsAttributesCollection =
-          db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
-        const productConnectionsCollection =
-          db.collection<ProductConnectionModel>(COL_PRODUCT_CONNECTIONS);
-        const productConnectionItemsCollection = db.collection<ProductConnectionItemModel>(
-          COL_PRODUCT_CONNECTION_ITEMS,
-        );
+        const productSummariesCollection =
+          db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
         const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
 
         const session = client.startSession();
@@ -350,10 +295,12 @@ export const ProductConnectionMutations = extendType({
             const { productId, addProductId, connectionId } = input;
 
             // Check all entities availability
-            const product = await productsCollection.findOne({ _id: productId });
-            const addProduct = await productsCollection.findOne({ _id: addProductId });
-            const connection = await productConnectionsCollection.findOne({ _id: connectionId });
-            if (!product || !addProduct || !connection) {
+            const summary = await productSummariesCollection.findOne({ _id: productId });
+            const addSummary = await productSummariesCollection.findOne({ _id: addProductId });
+            const variant = summary?.variants.find((variant) => {
+              return variant._id.equals(connectionId);
+            });
+            if (!summary || !addSummary || !variant) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`products.update.notFound`),
@@ -362,17 +309,11 @@ export const ProductConnectionMutations = extendType({
               return;
             }
 
-            // Get all connection items
-            const connectionItems = await productConnectionItemsCollection
-              .find({ connectionId: connection._id })
-              .toArray();
-
             // Check attribute existence in added product
-            const addProductAttribute = await productsAttributesCollection.findOne({
-              productId: addProductId,
-              attributeId: connection.attributeId,
+            const addProductAttribute = addSummary.attributes.find(({ attributeId }) => {
+              return variant.attributeId.equals(attributeId);
             });
-            const addProductOptionId = addProductAttribute?.selectedOptionsIds[0];
+            const addProductOptionId = addProductAttribute?.optionIds[0];
             if (!addProductAttribute || !addProductOptionId) {
               mutationPayload = {
                 success: false,
@@ -384,7 +325,7 @@ export const ProductConnectionMutations = extendType({
 
             // Check attribute value in added product
             // it should have attribute value and shouldn't intersect with existing values in connection
-            const connectionOptionIds = connectionItems.reduce((acc: ObjectId[], { optionId }) => {
+            const connectionOptionIds = variant.products.reduce((acc: ObjectId[], { optionId }) => {
               return [...acc, optionId];
             }, []);
             const includes = connectionOptionIds.some((_id) => {
@@ -411,44 +352,56 @@ export const ProductConnectionMutations = extendType({
               await session.abortTransaction();
               return;
             }
-            if (!option) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`products.connection.updateError`),
-              };
-              await session.abortTransaction();
-              return;
-            }
 
             // Create connection item
-            const createdConnectionItemResult = await productConnectionItemsCollection.insertOne({
-              optionId: option._id,
-              productId: addProductId,
-              productSlug: addProduct.slug,
-              connectionId,
+            const updatedVariantProducts: ProductVariantItemModel[] = [
+              ...variant.products,
+              {
+                _id: new ObjectId(),
+                optionId: option._id,
+                productId: addProductId,
+                productSlug: addSummary.slug,
+              },
+            ];
+            const updateProductIds = variant.products.map(({ productId }) => {
+              return productId;
             });
-            if (!createdConnectionItemResult.acknowledged) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`products.connection.updateError`),
-              };
-              await session.abortTransaction();
-              return;
-            }
+            const updatedVariant: ProductVariantModel = {
+              ...variant,
+              products: updatedVariantProducts,
+            };
 
             // Update connection
-            const updatedConnectionResult = await productConnectionsCollection.findOneAndUpdate(
+            const updatedSummaryResult = await productSummariesCollection.updateMany(
               {
-                _id: connectionId,
+                _id: {
+                  $in: updateProductIds,
+                },
+              },
+              {
+                $set: {
+                  'variants.$[oldVariant]': updatedVariant,
+                },
+              },
+              {
+                arrayFilters: [
+                  {
+                    'oldVariant._id': { $eq: variant._id },
+                  },
+                ],
+              },
+            );
+            const updatedAddSummaryResult = await productSummariesCollection.findOneAndUpdate(
+              {
+                _id: addProductId,
               },
               {
                 $push: {
-                  productsIds: addProductId,
+                  variants: updatedVariant,
                 },
               },
             );
-            const updatedConnection = updatedConnectionResult.value;
-            if (!updatedConnectionResult.ok || !updatedConnection) {
+            if (!updatedSummaryResult.acknowledged || !updatedAddSummaryResult.ok) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`products.connection.updateError`),
@@ -460,7 +413,7 @@ export const ProductConnectionMutations = extendType({
             mutationPayload = {
               success: true,
               message: await getApiMessage('products.connection.addProductSuccess'),
-              payload: product,
+              payload: summary,
             };
           });
 
@@ -493,12 +446,8 @@ export const ProductConnectionMutations = extendType({
       resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
-        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-        const productConnectionsCollection =
-          db.collection<ProductConnectionModel>(COL_PRODUCT_CONNECTIONS);
-        const productConnectionItemsCollection = db.collection<ProductConnectionItemModel>(
-          COL_PRODUCT_CONNECTION_ITEMS,
-        );
+        const productSummariesCollection =
+          db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
 
         const session = client.startSession();
 
@@ -535,10 +484,14 @@ export const ProductConnectionMutations = extendType({
             const minimumProductsCountForConnectionDelete = 2;
 
             // Check all entities availability
-            const product = await productsCollection.findOne({ _id: productId });
-            const deleteProduct = await productsCollection.findOne({ _id: deleteProductId });
-            const connection = await productConnectionsCollection.findOne({ _id: connectionId });
-            if (!product || !deleteProduct || !connection) {
+            const summary = await productSummariesCollection.findOne({ _id: productId });
+            const deleteSummary = await productSummariesCollection.findOne({
+              _id: deleteProductId,
+            });
+            const variant = summary?.variants.find((variant) => {
+              return variant._id.equals(connectionId);
+            });
+            if (!summary || !deleteSummary || !variant) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`products.update.notFound`),
@@ -547,20 +500,41 @@ export const ProductConnectionMutations = extendType({
               return;
             }
 
-            // Get connection items
-            const connectionItems = await productConnectionItemsCollection
-              .find({ connectionId })
-              .toArray();
-
             const errorMessage = await getApiMessage('products.connection.deleteError');
             const successMessage = await getApiMessage('products.connection.deleteProductSuccess');
 
+            const updateProductIds: ObjectIdModel[] = [];
+            const allVariantProductIds: ObjectIdModel[] = [];
+            const updatedVariantProducts = variant.products.reduce(
+              (acc: ProductVariantItemModel[], variantProduct) => {
+                allVariantProductIds.push(variantProduct.productId);
+                if (variantProduct.productId.equals(deleteProductId)) {
+                  return acc;
+                }
+
+                updateProductIds.push(variantProduct.productId);
+                return [...acc, variantProduct];
+              },
+              [],
+            );
+
             // Delete connection if it has one item
-            if (connectionItems.length < minimumProductsCountForConnectionDelete) {
-              const removedConnectionResult = await productConnectionsCollection.findOneAndDelete({
-                _id: connectionId,
-              });
-              if (!removedConnectionResult.ok) {
+            if (variant.products.length < minimumProductsCountForConnectionDelete) {
+              const removedConnectionResult = await productSummariesCollection.updateMany(
+                {
+                  _id: {
+                    $in: allVariantProductIds,
+                  },
+                },
+                {
+                  $pull: {
+                    variants: {
+                      _id: variant._id,
+                    },
+                  },
+                },
+              );
+              if (!removedConnectionResult.acknowledged) {
                 mutationPayload = {
                   success: false,
                   message: errorMessage,
@@ -570,18 +544,38 @@ export const ProductConnectionMutations = extendType({
               }
             } else {
               // Update connection
-              const updatedConnectionResult = await productConnectionsCollection.findOneAndUpdate(
+              const updatedVariantSummariesResult = await productSummariesCollection.updateMany(
                 {
-                  _id: connectionId,
+                  _id: {
+                    $in: updateProductIds,
+                  },
+                },
+                {
+                  $set: {
+                    'variants.$[oldVariant].products': updatedVariantProducts,
+                  },
+                },
+                {
+                  arrayFilters: [
+                    {
+                      'oldVariant._id': variant._id,
+                    },
+                  ],
+                },
+              );
+              const updatedOldSummaryResult = await productSummariesCollection.findOneAndUpdate(
+                {
+                  _id: deleteProductId,
                 },
                 {
                   $pull: {
-                    productsIds: deleteProductId,
+                    variants: {
+                      _id: variant._id,
+                    },
                   },
                 },
               );
-              const updatedConnection = updatedConnectionResult.value;
-              if (!updatedConnectionResult.ok || !updatedConnection) {
+              if (!updatedVariantSummariesResult.acknowledged || !updatedOldSummaryResult.ok) {
                 mutationPayload = {
                   success: false,
                   message: errorMessage,
@@ -591,33 +585,10 @@ export const ProductConnectionMutations = extendType({
               }
             }
 
-            // Remove connection item
-            const removedConnectionItemResult =
-              await productConnectionItemsCollection.findOneAndDelete({
-                productId: deleteProductId,
-              });
-            if (!removedConnectionItemResult.ok) {
-              mutationPayload = {
-                success: false,
-                message: errorMessage,
-              };
-              await session.abortTransaction();
-              return;
-            }
-            const removedConnectionItem = removedConnectionItemResult.value;
-            if (!removedConnectionItemResult.ok || !removedConnectionItem) {
-              mutationPayload = {
-                success: false,
-                message: errorMessage,
-              };
-              await session.abortTransaction();
-              return;
-            }
-
             mutationPayload = {
               success: true,
               message: successMessage,
-              payload: product,
+              payload: summary,
             };
           });
 

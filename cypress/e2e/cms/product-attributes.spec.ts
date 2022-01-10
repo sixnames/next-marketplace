@@ -23,7 +23,6 @@ describe('Product attributes', () => {
     cy.getByCy('Объем-attribute').click();
     cy.getByCy('select-attribute-options-modal').should('exist');
     cy.getByCy('option-350').click();
-    cy.getByCy('options-submit').click();
     cy.wait(1500);
 
     // clear multi-select attribute

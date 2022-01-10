@@ -47,10 +47,10 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate 
         validationSchema={validationSchema}
         initialValues={{
           ...page,
-          mainBanner: [page.mainBanner?.url],
-          pageScreenshot: [page.pageScreenshot?.url],
-          mainBannerMobile: [page.mainBannerMobile?.url],
-          secondaryBanner: [page.secondaryBanner?.url],
+          mainBanner: [page.mainBanner],
+          pageScreenshot: [page.pageScreenshot],
+          mainBannerMobile: [page.mainBannerMobile],
+          secondaryBanner: [page.secondaryBanner],
           content: JSON.parse(page.content),
           mainBannerTextColor: page.mainBannerTextColor || '#000000',
           mainBannerTextAlign: page.mainBannerTextAlign || TEXT_HORIZONTAL_ALIGN_OPTIONS[0]._id,

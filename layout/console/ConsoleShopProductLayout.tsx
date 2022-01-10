@@ -5,6 +5,7 @@ import Inner from '../../components/Inner';
 import WpTitle from '../../components/WpTitle';
 import { ROUTE_CMS } from '../../config/common';
 import { AppContentWrapperBreadCrumbs, ShopProductInterface } from '../../db/uiInterfaces';
+import { getConsoleShopProductLinks } from '../../lib/linkUtils';
 import { ClientNavItemInterface } from '../../types/clientTypes';
 import AppContentWrapper from '../AppContentWrapper';
 import AppSubNav from '../AppSubNav';
@@ -24,17 +25,22 @@ const ConsoleShopProductLayout: React.FC<ConsoleShopProductLayoutInterface> = ({
   showEditButton,
 }) => {
   const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
+    const { root, suppliers } = getConsoleShopProductLinks({
+      basePath,
+      productId: shopProduct._id,
+    });
+
     return [
       {
         name: 'Детали',
         testId: 'details',
-        path: `${basePath}/${shopProduct._id}`,
+        path: root,
         exact: true,
       },
       {
         name: 'Ценообразование',
         testId: 'suppliers',
-        path: `${basePath}/${shopProduct._id}/suppliers`,
+        path: suppliers,
         exact: true,
       },
     ];
@@ -43,13 +49,13 @@ const ConsoleShopProductLayout: React.FC<ConsoleShopProductLayoutInterface> = ({
   return (
     <AppContentWrapper breadcrumbs={breadcrumbs}>
       <Head>
-        <title>{shopProduct.product?.snippetTitle}</title>
+        <title>{shopProduct.summary?.snippetTitle}</title>
       </Head>
       <Inner lowBottom>
         <WpTitle
           subtitle={
             <div>
-              <div>Арт. {shopProduct.product?.itemId}</div>
+              <div>Арт. {shopProduct.summary?.itemId}</div>
               {showEditButton ? (
                 <div className='mt-4'>
                   <WpButton
@@ -67,9 +73,9 @@ const ConsoleShopProductLayout: React.FC<ConsoleShopProductLayoutInterface> = ({
               ) : null}
             </div>
           }
-          testId={`${shopProduct.product?.originalName}-product-title`}
+          testId={`${shopProduct.summary?.originalName}-product-title`}
         >
-          {shopProduct.product?.snippetTitle}
+          {shopProduct.summary?.snippetTitle}
         </WpTitle>
       </Inner>
       <AppSubNav navConfig={navConfig} />

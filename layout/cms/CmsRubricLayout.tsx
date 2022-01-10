@@ -3,8 +3,9 @@ import { useRouter } from 'next/router';
 import * as React from 'react';
 import Inner from '../../components/Inner';
 import WpTitle from '../../components/WpTitle';
-import { DEFAULT_PAGE_FILTER, ROUTE_CMS } from '../../config/common';
+import { ROUTE_CMS } from '../../config/common';
 import { AppContentWrapperBreadCrumbs, RubricInterface } from '../../db/uiInterfaces';
+import { getConsoleRubricLinks } from '../../lib/linkUtils';
 import { ClientNavItemInterface } from '../../types/clientTypes';
 import AppContentWrapper from '../AppContentWrapper';
 import AppSubNav from '../AppSubNav';
@@ -26,37 +27,42 @@ const CmsRubricLayout: React.FC<CmsRubricLayoutInterface> = ({
   const { query } = useRouter();
 
   const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
+    const { products, attributes, categories, seoContent, root } = getConsoleRubricLinks({
+      basePath: basePath || ROUTE_CMS,
+      rubricSlug: rubric.slug,
+    });
+
     return [
       {
         name: 'Товары',
         testId: 'products',
-        path: `${basePath || ROUTE_CMS}/rubrics/${rubric._id}/products/${DEFAULT_PAGE_FILTER}`,
+        path: products,
       },
       {
         name: 'Атрибуты',
         testId: 'attributes',
-        path: `${basePath || ROUTE_CMS}/rubrics/${rubric._id}/attributes`,
+        path: attributes,
         exact: true,
         hidden: hideAttributesPath,
       },
       {
         name: 'Категории',
         testId: 'categories',
-        path: `${basePath || ROUTE_CMS}/rubrics/${rubric._id}/categories`,
+        path: categories,
       },
       {
         name: 'Детали',
         testId: 'details',
-        path: `${basePath || ROUTE_CMS}/rubrics/${rubric._id}`,
+        path: root,
         exact: true,
       },
       {
         name: 'SEO тексты',
         testId: 'seo-content',
-        path: `${basePath || ROUTE_CMS}/rubrics/${rubric._id}/seo-content`,
+        path: seoContent,
       },
     ];
-  }, [basePath, hideAttributesPath, rubric._id]);
+  }, [basePath, hideAttributesPath, rubric.slug]);
 
   const title = query.title || rubric.name;
 

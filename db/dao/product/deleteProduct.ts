@@ -1,24 +1,20 @@
 import { ObjectId } from 'mongodb';
-import { deleteAlgoliaObjects } from '../../../lib/algolia/algoliaUtils';
+import { deleteProductAlgoliaObjects } from '../../../lib/algolia/productAlgoliaUtils';
 import { deleteUpload } from '../../../lib/assetUtils/assetUtils';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
 import {
-  COL_PRODUCT_ASSETS,
-  COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCT_CONNECTION_ITEMS,
-  COL_PRODUCTS,
+  COL_PRODUCT_FACETS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
+  COL_PRODUCT_SUMMARIES,
 } from '../../collectionNames';
 import {
-  ProductAssetsModel,
-  ProductAttributeModel,
-  ProductConnectionItemModel,
-  ProductModel,
+  ProductFacetModel,
   ProductPayloadModel,
   RubricModel,
   ShopProductModel,
+  ProductSummaryModel,
 } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
@@ -34,13 +30,9 @@ export async function deleteProduct({
   const { getApiMessage } = await getRequestParams(context);
   const { db, client } = await getDatabase();
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-  const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-  const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
-  const productAttributesCollection = db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
+  const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
+  const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-  const productConnectionItemsCollection = db.collection<ProductConnectionItemModel>(
-    COL_PRODUCT_CONNECTION_ITEMS,
-  );
 
   const session = client.startSession();
 
@@ -75,7 +67,7 @@ export async function deleteProduct({
 
       // check rubric and product availability
       const productObjectId = new ObjectId(productId);
-      const product = await productsCollection.findOne({
+      const product = await productSummariesCollection.findOne({
         _id: productObjectId,
       });
       if (!product) {
@@ -98,123 +90,30 @@ export async function deleteProduct({
       }
 
       // delete algolia product object
-      const algoliaProductResult = await deleteAlgoliaObjects({
-        indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
-        objectIDs: [product._id.toHexString()],
+      await deleteProductAlgoliaObjects({
+        productIds: [product._id],
       });
-      if (!algoliaProductResult) {
-        mutationPayload = {
-          success: false,
-          message: await getApiMessage(`rubrics.deleteProduct.error`),
-        };
-        await session.abortTransaction();
-        return;
-      }
-
-      // delete algolia shop product objects
-      const shopProducts = await shopProductsCollection
-        .find({
-          productId: product._id,
-        })
-        .toArray();
-      const shopProductIds: string[] = shopProducts.map(({ _id }) => _id.toHexString());
-      const algoliaShopProductsResult = await deleteAlgoliaObjects({
-        indexName: `${process.env.ALG_INDEX_PRODUCTS}`,
-        objectIDs: shopProductIds,
-      });
-      if (!algoliaShopProductsResult) {
-        mutationPayload = {
-          success: false,
-          message: await getApiMessage(`rubrics.deleteProduct.error`),
-        };
-        await session.abortTransaction();
-        return;
-      }
-
-      // delete product assets from cloud
-      const productAssets = await productAssetsCollection
-        .find({
-          productId: product._id,
-        })
-        .toArray();
-      for await (const productAsset of productAssets) {
-        for await (const asset of productAsset.assets) {
-          await deleteUpload(asset.url);
-        }
-      }
 
       // delete product assets
-      const removedProductAssetsResult = await productAssetsCollection.deleteMany({
-        productId: product._id,
-      });
-      if (!removedProductAssetsResult.acknowledged) {
-        mutationPayload = {
-          success: false,
-          message: await getApiMessage(`rubrics.deleteProduct.error`),
-        };
-        await session.abortTransaction();
-        return;
-      }
-
-      // delete product attributes
-      const removedProductAttributesResult = await productAttributesCollection.deleteMany({
-        productId: product._id,
-      });
-      if (!removedProductAttributesResult.acknowledged) {
-        mutationPayload = {
-          success: false,
-          message: await getApiMessage(`rubrics.deleteProduct.error`),
-        };
-        await session.abortTransaction();
-        return;
-      }
-
-      // delete product card content assets from cloud
-      /*const productCardContents = await productCardContentsCollection
-        .find({
-          productId: product._id,
-        })
-        .toArray();
-      for await (const productCardContent of productCardContents) {
-        for await (const filePath of productCardContent.assetKeys) {
-          await deleteUpload(filePath);
-        }
-      }*/
-
-      // delete product card content
-      /*const removedProductCardContents = await productCardContentsCollection.deleteMany({
-        productId: product._id,
-      });
-      if (!removedProductCardContents.acknowledged) {
-        mutationPayload = {
-          success: false,
-          message: await getApiMessage(`rubrics.deleteProduct.error`),
-        };
-        await session.abortTransaction();
-        return;
-      }*/
-
-      // delete product connections
-      const removedProductConnectionsResult = await productConnectionItemsCollection.deleteMany({
-        productId: product._id,
-      });
-      if (!removedProductConnectionsResult.acknowledged) {
-        mutationPayload = {
-          success: false,
-          message: await getApiMessage(`rubrics.deleteProduct.error`),
-        };
-        await session.abortTransaction();
-        return;
+      for await (const asset of product.assets) {
+        await deleteUpload(asset);
       }
 
       // delete product
-      const removedProductResult = await productsCollection.findOneAndDelete({
+      const removedFacetResult = await productFacetsCollection.findOneAndDelete({
+        _id: product._id,
+      });
+      const removedSummaryResult = await productSummariesCollection.findOneAndDelete({
         _id: product._id,
       });
       const removedShopProductResult = await shopProductsCollection.deleteMany({
         productId: product._id,
       });
-      if (!removedProductResult.ok || !removedShopProductResult.acknowledged) {
+      if (
+        !removedFacetResult.ok ||
+        !removedSummaryResult.ok ||
+        !removedShopProductResult.acknowledged
+      ) {
         mutationPayload = {
           success: false,
           message: await getApiMessage(`rubrics.deleteProduct.error`),

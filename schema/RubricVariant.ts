@@ -1,14 +1,14 @@
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import { DEFAULT_COMPANY_SLUG, SORT_ASC } from '../config/common';
 import {
-  COL_PRODUCTS,
+  COL_PRODUCT_FACETS,
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from '../db/collectionNames';
 import { findDocumentByI18nField } from '../db/dao/findDocumentByI18nField';
 import {
-  ProductModel,
+  ProductFacetModel,
   RubricModel,
   RubricVariantModel,
   RubricVariantPayloadModel,
@@ -285,7 +285,7 @@ export const RubricVariantMutations = extendType({
         const { db, client } = await getDatabase();
         const rubricVariantsCollection = db.collection<RubricVariantModel>(COL_RUBRIC_VARIANTS);
         const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+        const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
 
         const session = client.startSession();

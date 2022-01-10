@@ -13,18 +13,13 @@ import InputLine from './FormElements/Input/InputLine';
 import { ConfirmModalInterface } from './Modal/ConfirmModal';
 import WpImage from './WpImage';
 
-interface AssetItem {
-  url: string;
-  index: number;
-}
-
 interface OnRemoveInterface {
   assetNewIndex: number;
   assetUrl: string;
 }
 
 interface AssetsManagerInterface {
-  initialAssets: AssetItem[];
+  initialAssets: string[];
   onRemoveHandler: (assetIndex: number) => void;
   onReorderHandler: (args: OnRemoveInterface) => void;
   assetsTitle: string;
@@ -36,7 +31,7 @@ const AssetsManager: React.FC<AssetsManagerInterface> = ({
   onReorderHandler,
   onRemoveHandler,
 }) => {
-  const [assets, setAssets] = React.useState<AssetItem[]>([]);
+  const [assets, setAssets] = React.useState<string[]>([]);
   const { showModal } = useAppContext();
   resetServerContext();
 
@@ -73,7 +68,7 @@ const AssetsManager: React.FC<AssetsManagerInterface> = ({
               ref={provided.innerRef}
               {...provided.droppableProps}
             >
-              {assets.map(({ url, index }, draggableIndex) => (
+              {assets.map((url, draggableIndex) => (
                 <Draggable key={url} draggableId={url} index={draggableIndex}>
                   {(draggableProvided) => (
                     <div
@@ -104,7 +99,7 @@ const AssetsManager: React.FC<AssetsManagerInterface> = ({
                               props: {
                                 message: `Вы уверены, что хотите удалить изображение?`,
                                 confirm: () => {
-                                  onRemoveHandler(index);
+                                  onRemoveHandler(draggableIndex);
                                 },
                               },
                             });

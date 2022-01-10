@@ -2,8 +2,8 @@ import Head from 'next/head';
 import * as React from 'react';
 import Inner from '../../components/Inner';
 import WpTitle from '../../components/WpTitle';
-import { ROUTE_CONSOLE } from '../../config/common';
 import { AppContentWrapperBreadCrumbs, UserInterface } from '../../db/uiInterfaces';
+import { getConsoleCompanyLinks } from '../../lib/linkUtils';
 import AppContentWrapper from '../AppContentWrapper';
 import AppSubNav from '../AppSubNav';
 
@@ -20,17 +20,22 @@ const ConsoleUserLayout: React.FC<ConsoleUserLayoutInterface> = ({
   companyId,
 }) => {
   const navConfig = React.useMemo(() => {
+    const { customer } = getConsoleCompanyLinks({
+      companyId: companyId,
+      userId: user._id,
+    });
+
     return [
       {
         name: 'Детали',
         testId: 'user-details',
-        path: `${ROUTE_CONSOLE}/${companyId}/customers/user/${user._id}`,
+        path: customer.parentLink,
         exact: true,
       },
       {
         name: 'Заказы',
         testId: 'user-orders',
-        path: `${ROUTE_CONSOLE}/${companyId}/customers/user/${user._id}/orders`,
+        path: customer.order.parentLink,
       },
     ];
   }, [companyId, user._id]);

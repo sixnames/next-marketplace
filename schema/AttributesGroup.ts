@@ -1,19 +1,8 @@
 import { arg, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
 import { DEFAULT_LOCALE, SORT_ASC } from '../config/common';
-import {
-  COL_ATTRIBUTES,
-  COL_ATTRIBUTES_GROUPS,
-  COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCT_CONNECTIONS,
-} from '../db/collectionNames';
+import { COL_ATTRIBUTES, COL_ATTRIBUTES_GROUPS } from '../db/collectionNames';
 import { findDocumentByI18nField } from '../db/dao/findDocumentByI18nField';
-import {
-  AttributeModel,
-  AttributesGroupModel,
-  AttributesGroupPayloadModel,
-  ProductAttributeModel,
-  ProductConnectionModel,
-} from '../db/dbModels';
+import { AttributeModel, AttributesGroupModel, AttributesGroupPayloadModel } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
 import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 import {
@@ -327,10 +316,6 @@ export const attributesGroupMutations = extendType({
         const attributesGroupCollection =
           db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
         const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-        const productAttributesCollection =
-          db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
-        const productConnectionsCollection =
-          db.collection<ProductConnectionModel>(COL_PRODUCT_CONNECTIONS);
 
         const session = client.startSession();
 
@@ -361,26 +346,6 @@ export const attributesGroupMutations = extendType({
               mutationPayload = {
                 success: false,
                 message: await getApiMessage(`attributesGroups.delete.notFound`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Check if group attributes is used in product connections and in product attributes
-            const usedInProductAttributes = await productAttributesCollection.findOne({
-              attributeId: {
-                $in: group.attributesIds,
-              },
-            });
-            const usedInProductCollections = await productConnectionsCollection.findOne({
-              attributeId: {
-                $in: group.attributesIds,
-              },
-            });
-            if (usedInProductAttributes || usedInProductCollections) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`attributesGroups.delete.used`),
               };
               await session.abortTransaction();
               return;

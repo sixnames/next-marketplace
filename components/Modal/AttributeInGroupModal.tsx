@@ -9,8 +9,8 @@ import {
 } from '../../config/common';
 import { useAppContext } from '../../context/appContext';
 import { UpdateAttributeInputInterface } from '../../db/dao/attributes/updateAttribute';
-import { AttributeInterface } from '../../db/uiInterfaces';
-import { useGetNewAttributeOptionsQuery } from '../../generated/apolloComponents';
+import { AttributeInterface, MetricInterface, OptionsGroupInterface } from '../../db/uiInterfaces';
+import { useConstantOptions } from '../../hooks/useConstantOptions';
 import useValidationSchema from '../../hooks/useValidationSchema';
 import { attributeInGroupModalSchema } from '../../validation/attributesGroupSchema';
 import WpButton from '../button/WpButton';
@@ -18,8 +18,6 @@ import FormikCheckboxLine from '../FormElements/Checkbox/FormikCheckboxLine';
 import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
 import FormikSelect from '../FormElements/Select/FormikSelect';
 import FormikTranslationsSelect from '../FormElements/Select/FormikTranslationsSelect';
-import RequestError from '../RequestError';
-import Spinner from '../Spinner';
 import ModalButtons from './ModalButtons';
 import ModalFrame from './ModalFrame';
 import ModalTitle from './ModalTitle';
@@ -32,38 +30,23 @@ type AddAttributeToGroupModalValuesType = Omit<
 export interface AddAttributeToGroupModalInterface {
   attribute?: AttributeInterface;
   attributesGroupId: string;
+  metrics: MetricInterface[];
+  optionGroups: OptionsGroupInterface[];
   confirm: (values: AddAttributeToGroupModalValuesType) => void;
 }
 
 const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
   confirm,
   attribute,
+  metrics,
+  optionGroups,
 }) => {
   const validationSchema = useValidationSchema({
     schema: attributeInGroupModalSchema,
   });
   const { hideModal } = useAppContext();
-  const { data, loading, error } = useGetNewAttributeOptionsQuery();
-
-  if (loading) {
-    return <Spinner />;
-  }
-
-  if (error || !data) {
-    return (
-      <ModalFrame>
-        <RequestError />
-      </ModalFrame>
-    );
-  }
-
-  const {
-    getAllMetricsOptions,
-    getAllOptionsGroups,
-    getAttributeVariantsOptions,
-    getAttributePositioningOptions,
-    getAttributeViewVariantsOptions,
-  } = data;
+  const { attributePositioningOptions, attributeVariantOptions, attributeViewVariantOptions } =
+    useConstantOptions();
 
   const positioningInTitle = {
     [DEFAULT_LOCALE]: ATTRIBUTE_POSITION_IN_TITLE_BEGIN,
@@ -125,7 +108,7 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
                 firstOption
                 label={'Тип отображения атрибута'}
                 name={'viewVariant'}
-                options={getAttributeViewVariantsOptions || []}
+                options={attributeViewVariantOptions || []}
                 testId={'attribute-viewVariant'}
                 showInlineError
               />
@@ -135,7 +118,7 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
                 firstOption
                 label={'Тип атрибута'}
                 name={'variant'}
-                options={getAttributeVariantsOptions || []}
+                options={attributeVariantOptions || []}
                 testId={'attribute-variant'}
                 showInlineError
               />
@@ -144,7 +127,7 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
                 firstOption
                 label={'Единица измерения'}
                 name={'metricId'}
-                options={getAllMetricsOptions}
+                options={metrics}
                 testId={'attribute-metrics'}
               />
 
@@ -164,7 +147,7 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
                 firstOption
                 label={'Группа опций'}
                 name={'optionsGroupId'}
-                options={getAllOptionsGroups}
+                options={optionGroups}
                 testId={'attribute-options'}
                 showInlineError
               />
@@ -178,7 +161,7 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
                 }
                 name={'positioningInTitle'}
                 testId={'positioningInTitle'}
-                options={getAttributePositioningOptions}
+                options={attributePositioningOptions}
                 label={'Позиционирование в заголовке каталога'}
                 showInlineError
               />
@@ -192,7 +175,7 @@ const AttributeInGroupModal: React.FC<AddAttributeToGroupModalInterface> = ({
                 }
                 name={'positioningInCardTitle'}
                 testId={'positioningInCardTitle'}
-                options={getAttributePositioningOptions}
+                options={attributePositioningOptions}
                 label={'Позиционирование в заголовке товара'}
                 showInlineError
               />

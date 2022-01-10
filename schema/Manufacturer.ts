@@ -1,6 +1,6 @@
 import { arg, extendType, inputObjectType, nonNull, objectType, stringArg } from 'nexus';
 import { DEFAULT_COUNTERS_OBJECT } from '../config/common';
-import { COL_MANUFACTURERS, COL_PRODUCTS } from '../db/collectionNames';
+import { COL_MANUFACTURERS, COL_PRODUCT_FACETS } from '../db/collectionNames';
 import { aggregatePagination } from '../db/dao/aggregatePagination';
 import { findDocumentByI18nField } from '../db/dao/findDocumentByI18nField';
 import {
@@ -8,7 +8,7 @@ import {
   ManufacturerPayloadModel,
   ManufacturersAlphabetListModel,
   ManufacturersPaginationPayloadModel,
-  ProductModel,
+  ProductFacetModel,
 } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
 import getResolverErrorMessage from '../lib/getResolverErrorMessage';
@@ -433,7 +433,7 @@ export const ManufacturerMutations = extendType({
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
           const manufacturersCollection = db.collection<ManufacturerModel>(COL_MANUFACTURERS);
-          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
           const { _id } = args;
 
           // Check manufacturer availability

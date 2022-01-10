@@ -5,8 +5,7 @@ import { BreadcrumbsInterface } from '../db/uiInterfaces';
 import Inner from './Inner';
 import WpLink from './Link/WpLink';
 
-const linkClassName =
-  'text-primary-text hover:text-primary-text hover:no-underline whitespace-nowrap';
+const linkClassName = 'text-primary-text hover:text-primary-text hover:no-underline';
 
 const WpBreadcrumbs: React.FC<BreadcrumbsInterface> = ({
   currentPageName,
@@ -40,7 +39,7 @@ const WpBreadcrumbs: React.FC<BreadcrumbsInterface> = ({
 
             if (isLastItem && !currentPageName) {
               return (
-                <li key={index} className='inline mr-1 text-secondary-text whitespace-nowrap'>
+                <li key={index} className='inline mr-1 text-secondary-text'>
                   {configItem.name}
                 </li>
               );

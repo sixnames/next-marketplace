@@ -5,21 +5,22 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import ContentItemControls from '../../../components/button/ContentItemControls';
 import FixedButtons from '../../../components/button/FixedButtons';
 import WpButton from '../../../components/button/WpButton';
+import { RubricMainFieldsInterface } from '../../../components/FormTemplates/RubricMainFields';
 import Inner from '../../../components/Inner';
 import { CreateRubricModalInterface } from '../../../components/Modal/CreateRubricModal';
 import WpTable, { WpTableColumn } from '../../../components/WpTable';
 import WpTitle from '../../../components/WpTitle';
-import { DEFAULT_COMPANY_SLUG, DEFAULT_PAGE_FILTER, ROUTE_CMS } from '../../../config/common';
+import { DEFAULT_COMPANY_SLUG } from '../../../config/common';
 import { CONFIRM_MODAL, CREATE_RUBRIC_MODAL } from '../../../config/modalVariants';
 import {
-  COL_PRODUCTS,
+  COL_PRODUCT_FACETS,
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from '../../../db/collectionNames';
 import { RubricModel } from '../../../db/dbModels';
 import { getDatabase } from '../../../db/mongodb';
-import { RubricInterface } from '../../../db/uiInterfaces';
+import { RubricInterface, RubricVariantInterface } from '../../../db/uiInterfaces';
 import {
   useCreateRubricMutation,
   useDeleteRubricMutation,
@@ -27,18 +28,20 @@ import {
 import useMutationCallbacks from '../../../hooks/useMutationCallbacks';
 import AppContentWrapper from '../../../layout/AppContentWrapper';
 import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
+import { sortObjectsByField } from '../../../lib/arrayUtils';
 import { getFieldStringLocale } from '../../../lib/i18n';
+import { getConsoleRubricLinks } from '../../../lib/linkUtils';
 import {
   castDbData,
   getAppInitialData,
   GetAppInitialDataPropsInterface,
 } from '../../../lib/ssrUtils';
 
-interface RubricsRouteInterface {
+interface RubricsRouteInterface extends RubricMainFieldsInterface {
   rubrics: RubricInterface[];
 }
 
-const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics }) => {
+const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, rubricVariants }) => {
   const router = useRouter();
   const { onCompleteCallback, onErrorCallback, showModal, showLoading } = useMutationCallbacks({
     withModal: true,
@@ -88,9 +91,10 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics }) => {
             justifyContent={'flex-end'}
             updateTitle={'Редактировать рубрику'}
             updateHandler={() => {
-              router
-                .push(`${ROUTE_CMS}/rubrics/${dataItem._id}/products/${DEFAULT_PAGE_FILTER}`)
-                .catch((e) => console.log(e));
+              const { products } = getConsoleRubricLinks({
+                rubricSlug: dataItem.slug,
+              });
+              router.push(products).catch((e) => console.log(e));
             }}
             deleteTitle={'Удалить рубрику'}
             deleteHandler={() => {
@@ -131,9 +135,10 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics }) => {
             testIdKey={'name'}
             emptyMessage={'Список пуст'}
             onRowDoubleClick={(rubric) => {
-              router
-                .push(`${ROUTE_CMS}/rubrics/${rubric._id}/products/${DEFAULT_PAGE_FILTER}`)
-                .catch((e) => console.log(e));
+              const { products } = getConsoleRubricLinks({
+                rubricSlug: rubric.slug,
+              });
+              router.push(products).catch((e) => console.log(e));
             }}
           />
         </div>
@@ -147,9 +152,10 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics }) => {
               showModal<CreateRubricModalInterface>({
                 variant: CREATE_RUBRIC_MODAL,
                 props: {
+                  rubricVariants,
                   confirm: (values) => {
                     showLoading();
-                    return createRubricMutation({ variables: { input: values } });
+                    createRubricMutation({ variables: { input: values } }).catch(console.log);
                   },
                 },
               });
@@ -177,6 +183,7 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<RubricsInterface>> => {
   const { db } = await getDatabase();
+  const rubricVariantsCollection = db.collection<RubricVariantInterface>(COL_RUBRIC_VARIANTS);
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
 
   const { props } = await getAppInitialData({ context });
@@ -254,7 +261,7 @@ export const getServerSideProps = async (
       },
       {
         $lookup: {
-          from: COL_PRODUCTS,
+          from: COL_PRODUCT_FACETS,
           as: 'products',
           let: { rubricId: '$_id' },
           pipeline: [
@@ -309,10 +316,20 @@ export const getServerSideProps = async (
     };
   });
 
+  const initialRubricVariants = await rubricVariantsCollection.find({}).toArray();
+  const castedRubricVariants = initialRubricVariants.map((document) => {
+    return {
+      ...document,
+      name: getFieldStringLocale(document.nameI18n, sessionLocale),
+    };
+  });
+  const sortedRubricVariants = sortObjectsByField(castedRubricVariants);
+
   return {
     props: {
       ...props,
       rubrics: castDbData(rawRubrics),
+      rubricVariants: castDbData(sortedRubricVariants),
       companySlug: DEFAULT_COMPANY_SLUG,
     },
   };

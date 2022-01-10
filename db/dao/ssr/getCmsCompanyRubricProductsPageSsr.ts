@@ -15,7 +15,7 @@ export const getCmsCompanyRubricProductsPageSsr = async (
   const { db } = await getDatabase();
   const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
   const initialProps = await getAppInitialData({ context });
-  if (!initialProps.props || !query.companyId) {
+  if (!initialProps.props) {
     return {
       notFound: true,
     };
@@ -67,7 +67,7 @@ export const getCmsCompanyRubricProductsPageSsr = async (
       itemPath,
       companySlug,
       pageCompany: castDbData(companyResult),
-      routeBasePath: links.parentLink,
+      routeBasePath: links.root,
     },
   };
 };

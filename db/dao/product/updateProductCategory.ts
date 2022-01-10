@@ -2,6 +2,7 @@ import { ObjectId } from 'mongodb';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
 import { getParentTreeSlugs } from '../../../lib/treeUtils';
+import { execUpdateProductTitles } from '../../../lib/updateProductTitles';
 import {
   COL_CATEGORIES,
   COL_PRODUCT_FACETS,
@@ -143,14 +144,14 @@ export async function updateProductCategory({
         },
         updater,
       );
-      const updatedProductResult = await productFacetsCollection.findOneAndUpdate(
+      await productFacetsCollection.findOneAndUpdate(
         {
           _id: product._id,
         },
         updater,
       );
-      const updatedProduct = updatedProductResult.value;
-      if (!updatedProductResult.ok || !updatedProduct || !updatedSummaryResult.ok) {
+      const updatedProduct = updatedSummaryResult.value;
+      if (!updatedSummaryResult.ok || !updatedProduct || !updatedSummaryResult.ok) {
         mutationPayload = {
           success: false,
           message: await getApiMessage(`products.update.error`),
@@ -174,6 +175,9 @@ export async function updateProductCategory({
         await session.abortTransaction();
         return;
       }
+
+      // update product title
+      execUpdateProductTitles(`productId=${updatedProduct._id.toHexString()}`);
 
       mutationPayload = {
         success: true,

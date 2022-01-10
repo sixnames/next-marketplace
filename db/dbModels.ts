@@ -813,6 +813,7 @@ export interface ShopProductModel
   shopId: ObjectIdModel;
   companyId: ObjectIdModel;
   companySlug: string;
+  shopProductUid?: string | null;
   useCategoryDiscount?: boolean | null;
   useCategoryCashback?: boolean | null;
   useCategoryPayFromCashback?: boolean | null;

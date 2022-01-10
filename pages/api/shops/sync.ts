@@ -16,6 +16,7 @@ import {
 } from '../../../db/dbModels';
 import { getDatabase } from '../../../db/mongodb';
 import { SyncParamsInterface, SyncProductInterface } from '../../../db/syncInterfaces';
+import { alwaysString } from '../../../lib/arrayUtils';
 import { getNextItemId } from '../../../lib/itemIdUtils';
 import { noNaN } from '../../../lib/numbers';
 import { castSummaryToShopProduct } from '../../../lib/productUtils';
@@ -163,7 +164,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         continue;
       }
 
-      const { available, price, barcode } = bodyItem;
+      const { available, price, barcode, id } = bodyItem;
       // add new barcode to product
       await productSummariesCollection.findOneAndUpdate(
         {
@@ -204,6 +205,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
                 price: noNaN(price),
                 oldPrice,
                 discountedPercent,
+                shopProductUid: alwaysString(id),
                 updatedAt: new Date(),
               },
               $addToSet: {
@@ -225,6 +227,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           barcode: bodyItem.barcode,
           shopId: shop._id,
           summary: product,
+          shopProductUid: alwaysString(id),
           price,
           available,
           itemId,

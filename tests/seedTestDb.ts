@@ -10,7 +10,7 @@ const rimraf = require('rimraf');
 const copy = require('recursive-copy');
 require('dotenv').config();
 
-const maxProductsCount = 70;
+const maxProductsCount = 70 * 4;
 
 function prepareTestAssets() {
   console.log('removing old assets');
@@ -30,7 +30,7 @@ function prepareTestAssets() {
       for (let i = 1; i <= maxProductsCount; i = i + 1) {
         const itemId: string = addZero(i, ID_COUNTER_DIGITS);
         const pathToSrc = path.join(process.cwd(), 'tests/assets/test-image-0.png');
-        const fileName = `${itemId}-0.png`;
+        const fileName = `${itemId}.png`;
         const pathToDist = path.join(process.cwd(), `assets/products/${itemId}`);
         mkdirp(pathToDist).then(() => {
           fs.copyFileSync(pathToSrc, path.join(pathToDist, fileName));

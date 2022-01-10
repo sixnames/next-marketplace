@@ -78,7 +78,7 @@ export const getServerSideProps = async (
   const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
 
   const { props } = await getAppInitialData({ context });
-  if (!props || !query.companyId) {
+  if (!props) {
     return {
       notFound: true,
     };

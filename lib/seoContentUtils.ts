@@ -239,6 +239,7 @@ interface GetCatalogueSeoContentSlugPayloadInterface {
   noFiltersSelected: boolean;
   inCategory: boolean;
   rubricId: string;
+  rubricSlug: string;
 }
 
 interface GetCatalogueSeoContentSlugAttributeConfigInterface {
@@ -482,6 +483,7 @@ export async function getCatalogueSeoContentSlug({
 
     return {
       rubricId,
+      rubricSlug: rubric.slug,
       inCategory,
       noFiltersSelected,
       categoryLeaves,
@@ -517,7 +519,7 @@ export async function getCatalogueAllSeoContents(
     return null;
   }
 
-  const { noFiltersSelected, rubricId, seoContentSlug, categoryLeaves } = payload;
+  const { rubricSlug, seoContentSlug } = payload;
 
   const seoContentTopSlug = `${seoContentSlug}${CATALOGUE_SEO_TEXT_POSITION_TOP}`;
   const seoContentTop = await seoContentsCollection.findOne({
@@ -529,15 +531,10 @@ export async function getCatalogueAllSeoContents(
     slug: seoContentBottomSlug,
   });
 
-  const baseEditUrl = `/rubrics/${rubricId}`;
+  const baseEditUrl = `/rubrics/${rubricSlug}`;
   let editUrl = baseEditUrl;
-  let textTopEditUrl = editUrl;
-  let textBottomEditUrl = editUrl;
-
-  if (!noFiltersSelected || categoryLeaves.length > 0) {
-    textTopEditUrl = `${baseEditUrl}/seo-content/${seoContentTopSlug}`;
-    textBottomEditUrl = `${baseEditUrl}/seo-content/${seoContentBottomSlug}`;
-  }
+  const textTopEditUrl = `${baseEditUrl}/seo-content/${seoContentTopSlug}`;
+  const textBottomEditUrl = `${baseEditUrl}/seo-content/${seoContentBottomSlug}`;
 
   return {
     editUrl,

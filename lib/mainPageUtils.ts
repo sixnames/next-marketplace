@@ -91,7 +91,7 @@ export async function getMainPageData({
           filterSlugs: {
             $first: '$filterSlugs',
           },
-          shopProductsIds: {
+          shopProductIds: {
             $addToSet: '$_id',
           },
         },
@@ -112,7 +112,7 @@ export async function getMainPageData({
 
       {
         $addFields: {
-          shopsCount: { $size: '$shopProductsIds' },
+          shopsCount: { $size: '$shopProductIds' },
           cardPrices: {
             min: '$minPrice',
             max: '$maxPrice',

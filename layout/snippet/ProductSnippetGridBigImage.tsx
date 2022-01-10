@@ -25,7 +25,7 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
     return null;
   }
 
-  const { slug, minPrice, shopsCount, mainImage, shopProductsIds, snippetTitle, name, itemId } =
+  const { slug, minPrice, shopsCount, mainImage, shopProductIds, snippetTitle, name, itemId } =
     summary;
 
   let mainFrameClassName = '';
@@ -149,7 +149,7 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
             className='w-full'
             frameClassName={'w-auto'}
             productId={summary._id}
-            shopProductsIds={shopProductsIds}
+            shopProductIds={shopProductIds}
             testId={`${testId}-add-to-cart-grid`}
             size={'small'}
             available={available}

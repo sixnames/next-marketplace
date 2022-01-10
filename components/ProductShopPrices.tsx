@@ -1,7 +1,5 @@
 import * as React from 'react';
-import { noNaN } from '../lib/numbers';
 import Currency from './Currency';
-import Percent from './Percent';
 
 interface ProductPricesInterface {
   discountedPercent?: number | null;
@@ -12,19 +10,25 @@ interface ProductPricesInterface {
 }
 
 const ProductShopPrices: React.FC<ProductPricesInterface> = ({
-  discountedPercent,
-  oldPrice,
+  // discountedPercent,
+  // oldPrice,
   price,
   className,
   size = 'normal',
 }) => {
-  const withDiscount = discountedPercent && noNaN(oldPrice) > noNaN(price);
+  /*const withDiscount = discountedPercent && noNaN(oldPrice) > noNaN(price);*/
   const priseSizeClassName =
     size === 'big' ? 'text-[2rem]' : size === 'small' ? 'text-2xl' : 'text-[1.75rem]';
-  const oldPriseSizeClassName =
-    size === 'big' ? 'text-[1.5rem]' : size === 'small' ? 'text-[1rem]' : 'text-[1.35rem]';
+  /*const oldPriseSizeClassName =
+    size === 'big' ? 'text-[1.5rem]' : size === 'small' ? 'text-[1rem]' : 'text-[1.35rem]';*/
 
   return (
+    <div className={`flex gap-4 whitespace-nowrap items-baseline ${className ? className : ''}`}>
+      <Currency valueClassName={`${priseSizeClassName} font-medium`} value={price} />
+    </div>
+  );
+
+  /*return (
     <div className={`flex gap-4 whitespace-nowrap items-baseline ${className ? className : ''}`}>
       <div>
         <Currency
@@ -45,7 +49,7 @@ const ProductShopPrices: React.FC<ProductPricesInterface> = ({
         </div>
       ) : null}
     </div>
-  );
+  );*/
 };
 
 export default ProductShopPrices;

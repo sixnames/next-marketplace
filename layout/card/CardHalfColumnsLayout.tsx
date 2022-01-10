@@ -184,7 +184,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                       available={maxAvailable}
                       disabled={isShopless}
                       productId={product._id}
-                      shopProductsIds={[`${cardShops[0].cardShopProduct?._id}`]}
+                      shopProductIds={[`${cardShops[0].cardShopProduct?._id}`]}
                       testId={`card-add-to-cart`}
                     />
 

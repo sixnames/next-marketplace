@@ -252,8 +252,6 @@ export interface ProductFacetInterface extends ProductFacetModel {
 }
 
 export interface ProductSummaryInterface extends ProductSummaryModel, PricesInterface {
-  shopProductIds?: string[] | null;
-
   // ui
   cardTitle?: string | null;
   snippetTitle?: string | null;
@@ -263,7 +261,7 @@ export interface ProductSummaryInterface extends ProductSummaryModel, PricesInte
   cardContentCities?: SeoContentCitiesInterface | null;
   variants: ProductVariantInterface[];
   shopProducts?: ShopProductInterface[] | null;
-  shopProductsIds?: ObjectIdModel[] | null;
+  shopProductIds?: ObjectIdModel[] | null;
   shops?: ShopInterface[] | null;
   shopsCount?: number | null;
   attributesCount?: number | null;
@@ -377,6 +375,7 @@ export interface ShopProductInterface extends ShopProductModel, PricesInterface 
   similarProducts?: ShopProductInterface[] | null;
   shopsCount?: number | null;
   shopsIds?: ObjectIdModel[] | null;
+  shopProductIds?: ObjectIdModel[] | null;
 }
 
 export interface ShopInterface extends ShopModel {

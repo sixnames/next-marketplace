@@ -8,7 +8,7 @@ interface ProductAddToCartButtonInterface extends ButtonPropsInterface, UseIsInC
 }
 
 const ProductAddToCartButton: React.FC<ProductAddToCartButtonInterface> = ({
-  shopProductsIds,
+  shopProductIds,
   productId,
   frameClassName,
   available,
@@ -17,7 +17,7 @@ const ProductAddToCartButton: React.FC<ProductAddToCartButtonInterface> = ({
   const { addShoplessProductToCart, addProductToCart } = useSiteContext();
   const inCart = useIsInCart({
     productId,
-    shopProductsIds,
+    shopProductIds,
   });
 
   if (available < 1) {
@@ -31,11 +31,11 @@ const ProductAddToCartButton: React.FC<ProductAddToCartButtonInterface> = ({
       ariaLabel={'Добавить в корзину'}
       frameClassName={frameClassName || 'w-auto'}
       onClick={() => {
-        if (shopProductsIds && shopProductsIds.length < 2) {
+        if (shopProductIds && shopProductIds.length < 2) {
           addProductToCart({
             amount: 1,
             productId: productId,
-            shopProductId: `${shopProductsIds[0]}`,
+            shopProductId: `${shopProductIds[0]}`,
           });
         } else {
           addShoplessProductToCart({

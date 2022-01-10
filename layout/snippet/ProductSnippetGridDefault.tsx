@@ -33,7 +33,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
     listAttributes,
     shopsCount,
     mainImage,
-    shopProductsIds,
+    shopProductIds,
     itemId,
     name,
   } = summary;
@@ -154,7 +154,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
               className='w-full'
               frameClassName={'w-[50%]'}
               productId={summary._id}
-              shopProductsIds={shopProductsIds}
+              shopProductIds={shopProductIds}
               testId={`${testId}-add-to-cart-grid`}
               size={'small'}
               short

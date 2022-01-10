@@ -104,7 +104,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             filterSlugs: {
               $first: '$filterSlugs',
             },
-            shopProductsIds: {
+            shopProductIds: {
               $addToSet: '$_id',
             },
           },
@@ -125,7 +125,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
         {
           $addFields: {
-            shopsCount: { $size: '$shopProductsIds' },
+            shopsCount: { $size: '$shopProductIds' },
             cardPrices: {
               min: '$minPrice',
               max: '$maxPrice',

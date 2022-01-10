@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { REQUEST_METHOD_POST } from '../../../config/common';
 import {
@@ -18,7 +19,7 @@ import {
 } from '../../../db/dbModels';
 import { getDatabase } from '../../../db/mongodb';
 import { SyncParamsInterface, SyncProductInterface } from '../../../db/syncInterfaces';
-import { alwaysString } from '../../../lib/arrayUtils';
+import { alwaysArray, alwaysString } from '../../../lib/arrayUtils';
 import { getNextItemId } from '../../../lib/itemIdUtils';
 import { noNaN } from '../../../lib/numbers';
 import { castSummaryToShopProduct } from '../../../lib/productUtils';
@@ -62,7 +63,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const syncIntersectCollection = db.collection<SyncIntersectModel>(COL_SYNC_INTERSECT);
     const notSyncedProductsCollection =
       db.collection<NotSyncedProductModel>(COL_NOT_SYNCED_PRODUCTS);
-    console.log(syncIntersectCollection);
 
     // get shop
     const shop = await shopsCollection.findOne({ token });
@@ -122,6 +122,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       .toArray();
 
     const shopProducts: ShopProductModel[] = [];
+    const intersects: SyncIntersectModel[] = await syncIntersectCollection
+      .find({
+        shopId: shop._id,
+      })
+      .toArray();
     for await (const bodyItem of allowedBody) {
       if (!bodyItem.barcode || bodyItem.barcode.length < 1) {
         continue;
@@ -183,6 +188,42 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         },
       );
 
+      // check intersects
+      const foundInIntersectIndex = intersects.findIndex(({ products }) => {
+        return products.some(({ barcode }) => {
+          return barcode.some((barcodeItem) => bodyItem.barcode?.includes(barcodeItem));
+        });
+      });
+      if (foundInIntersectIndex > -1) {
+        intersects[foundInIntersectIndex].products.push({
+          id: bodyItem.id,
+          barcode: alwaysArray(bodyItem.barcode),
+          available: noNaN(bodyItem.available),
+          price: noNaN(bodyItem.price),
+          name: alwaysString(bodyItem.name),
+        });
+        continue;
+      }
+      const foundInBody = body.find(({ barcode }) => {
+        return barcode?.some((barcodeItem) => bodyItem.barcode?.includes(barcodeItem));
+      });
+      if (foundInBody) {
+        intersects.push({
+          _id: new ObjectId(),
+          shopId: shop._id,
+          products: [
+            {
+              id: bodyItem.id,
+              barcode: alwaysArray(bodyItem.barcode),
+              available: noNaN(bodyItem.available),
+              price: noNaN(bodyItem.price),
+              name: alwaysString(bodyItem.name),
+            },
+          ],
+        });
+        continue;
+      }
+
       const oldShopProducts = await shopProductsCollection
         .find({
           shopId: shop._id,
@@ -194,8 +235,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         .toArray();
       if (oldShopProducts.length > 0) {
         for await (const oldShopProduct of oldShopProducts) {
-          // check intersects
-
           // update existing shop product
           const { discountedPercent, oldPrice, oldPriceUpdater } = getUpdatedShopProductPrices({
             shopProduct: oldShopProduct,
@@ -268,6 +307,27 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           message: 'shop products create error',
         });
         return;
+      }
+    }
+
+    // insert all intersect items
+    console.log(JSON.stringify(intersects, null, 2));
+    if (intersects.length > 0) {
+      for await (const intersectItem of intersects) {
+        await syncIntersectCollection.findOneAndUpdate(
+          {
+            _id: intersectItem._id,
+          },
+          {
+            $set: {
+              products: intersectItem.products,
+              shopId: intersectItem.shopId,
+            },
+          },
+          {
+            upsert: true,
+          },
+        );
       }
     }
 

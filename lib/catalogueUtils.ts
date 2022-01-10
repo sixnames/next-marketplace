@@ -1178,13 +1178,13 @@ export const getCatalogueData = async ({
     // cast catalogue products
     const products: ShopProductInterface[] = [];
     docs.forEach((shopProduct) => {
-      const product = shopProduct.summary;
-      if (!product) {
+      const summary = shopProduct.summary;
+      if (!summary) {
         return;
       }
 
-      const castedProduct = castSummaryForUI({
-        summary: product,
+      const castedSummary = castSummaryForUI({
+        summary: summary,
         attributes,
         brands,
         categories,
@@ -1193,10 +1193,10 @@ export const getCatalogueData = async ({
 
       // list features
       const initialListAttributes = getProductCurrentViewCastedAttributes({
-        attributes: castedProduct.attributes || [],
+        attributes: castedSummary.attributes || [],
         viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
         locale,
-        gender: product.gender,
+        gender: summary.gender,
       });
       const listAttributes = sortObjectsByField(
         initialListAttributes
@@ -1209,10 +1209,10 @@ export const getCatalogueData = async ({
 
       // rating features
       const initialRatingAttributes = getProductCurrentViewCastedAttributes({
-        attributes: castedProduct.attributes || [],
+        attributes: castedSummary.attributes || [],
         viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
         locale,
-        gender: product.gender,
+        gender: summary.gender,
       });
       const ratingAttributes = initialRatingAttributes.filter(({ attribute }) => {
         return attribute?.showInSnippet;
@@ -1221,11 +1221,12 @@ export const getCatalogueData = async ({
       products.push({
         ...shopProduct,
         summary: {
-          ...castedProduct,
+          ...castedSummary,
           shopsCount: shopProduct.shopsIds?.length,
           attributes: [],
           listAttributes,
           ratingAttributes,
+          shopProductIds: shopProduct.shopProductIds,
           minPrice: noNaN(shopProduct.minPrice),
           maxPrice: noNaN(shopProduct.maxPrice),
         },

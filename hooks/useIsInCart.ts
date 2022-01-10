@@ -6,7 +6,7 @@ import { alwaysArray } from '../lib/arrayUtils';
 
 export interface UseIsInCartInterface {
   productId: string | ObjectIdModel;
-  shopProductsIds?: string[] | ObjectIdModel[] | null;
+  shopProductIds?: string[] | ObjectIdModel[] | null;
 }
 
 interface UseIsInCartPayloadInterface {
@@ -18,21 +18,21 @@ interface CheckIsInCart extends UseIsInCartInterface {
   cartProduct: CartProductInterface;
 }
 
-function checkIsInCart({ productId, cartProduct, shopProductsIds }: CheckIsInCart): boolean {
+function checkIsInCart({ productId, cartProduct, shopProductIds }: CheckIsInCart): boolean {
   const asProduct = cartProduct.productId === productId;
   const asShopProduct =
-    cartProduct.shopProductId && alwaysArray(shopProductsIds).includes(cartProduct.shopProductId);
+    cartProduct.shopProductId && alwaysArray(shopProductIds).includes(cartProduct.shopProductId);
   return Boolean(asProduct || asShopProduct);
 }
 
 export const useIsInCart = ({
   productId,
-  shopProductsIds,
+  shopProductIds,
 }: UseIsInCartInterface): UseIsInCartPayloadInterface => {
   const { cart } = useSiteContext();
   const isInCart = React.useMemo<UseIsInCartPayloadInterface>(() => {
     const inBooking = (cart?.cartBookingProducts || []).find((cartProduct) => {
-      return checkIsInCart({ cartProduct, shopProductsIds, productId });
+      return checkIsInCart({ cartProduct, shopProductIds, productId });
     });
     if (inBooking) {
       return {
@@ -42,7 +42,7 @@ export const useIsInCart = ({
     }
 
     const inDelivery = (cart?.cartDeliveryProducts || []).find((cartProduct) => {
-      return checkIsInCart({ cartProduct, shopProductsIds, productId });
+      return checkIsInCart({ cartProduct, shopProductIds, productId });
     });
     if (inDelivery) {
       return {
@@ -55,7 +55,7 @@ export const useIsInCart = ({
       isInCart: false,
       inCartCount: 0,
     };
-  }, [cart, productId, shopProductsIds]);
+  }, [cart, productId, shopProductIds]);
 
   return isInCart;
 };

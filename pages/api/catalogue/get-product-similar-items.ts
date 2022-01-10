@@ -160,7 +160,7 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
                   available: {
                     $max: '$available',
                   },
-                  shopProductsIds: {
+                  shopProductIds: {
                     $addToSet: '$_id',
                   },
                 },
@@ -177,7 +177,7 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
               },
               {
                 $addFields: {
-                  shopsCount: { $size: '$shopProductsIds' },
+                  shopsCount: { $size: '$shopProductIds' },
                   cardPrices: {
                     min: '$minPrice',
                     max: '$maxPrice',

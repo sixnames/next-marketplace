@@ -36,7 +36,7 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
     variants,
     shopsCount,
     mainImage,
-    shopProductsIds,
+    shopProductIds,
     snippetTitle,
     name,
   } = summary;
@@ -214,7 +214,7 @@ const ProductSnippetRowDefault: React.FC<ProductSnippetInterface> = ({
                   available={available}
                   disabled={isShopless}
                   productId={summary._id}
-                  shopProductsIds={shopProductsIds}
+                  shopProductIds={shopProductIds}
                   testId={`${testId}-add-to-cart-row`}
                 />
 

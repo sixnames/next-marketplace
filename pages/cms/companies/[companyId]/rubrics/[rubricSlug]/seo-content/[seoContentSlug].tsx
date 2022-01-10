@@ -5,7 +5,7 @@ import ConsoleSeoContentDetails, {
   ConsoleSeoContentDetailsInterface,
 } from '../../../../../../../components/console/ConsoleSeoContentDetails';
 import Inner from '../../../../../../../components/Inner';
-import { CATALOGUE_SEO_TEXT_POSITION_TOP, ROUTE_CMS } from '../../../../../../../config/common';
+import { CATALOGUE_SEO_TEXT_POSITION_TOP } from '../../../../../../../config/common';
 import { COL_COMPANIES } from '../../../../../../../db/collectionNames';
 import { getConsoleRubricDetails } from '../../../../../../../db/dao/rubrics/getConsoleRubricDetails';
 import { getDatabase } from '../../../../../../../db/mongodb';
@@ -17,6 +17,7 @@ import {
 import CmsRubricLayout from '../../../../../../../layout/cms/CmsRubricLayout';
 import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
 import { alwaysString } from '../../../../../../../lib/arrayUtils';
+import { getCmsCompanyLinks } from '../../../../../../../lib/linkUtils';
 import { getSeoContentBySlug } from '../../../../../../../lib/seoContentUtils';
 import {
   castDbData,
@@ -86,7 +87,7 @@ export const getServerSideProps = async (
   const { props } = await getAppInitialData({ context });
   const { db } = await getDatabase();
   const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
-  if (!props || !query.companyId) {
+  if (!props) {
     return {
       notFound: true,
     };
@@ -137,12 +138,16 @@ export const getServerSideProps = async (
     };
   }
 
+  const links = getCmsCompanyLinks({
+    companyId: companyResult._id,
+  });
+
   return {
     props: {
       ...props,
       rubric: castDbData(payload.rubric),
       seoContent: castDbData(seoContent),
-      routeBasePath: `${ROUTE_CMS}/companies/${companyResult._id}`,
+      routeBasePath: links.root,
       showSeoFields: seoContentSlug.indexOf(CATALOGUE_SEO_TEXT_POSITION_TOP) > -1,
       companySlug,
     },

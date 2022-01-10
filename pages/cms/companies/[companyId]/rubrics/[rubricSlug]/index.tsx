@@ -94,7 +94,7 @@ export const getServerSideProps = async (
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
 
   const { props } = await getAppInitialData({ context });
-  if (!props || !query.rubricId || !query.companyId) {
+  if (!props) {
     return {
       notFound: true,
     };
@@ -123,7 +123,7 @@ export const getServerSideProps = async (
     .aggregate<RubricInterface>([
       {
         $match: {
-          _id: new ObjectId(`${query.rubricId}`),
+          slug: `${query.rubricSlug}`,
         },
       },
       {
@@ -181,7 +181,7 @@ export const getServerSideProps = async (
       seoDescriptionTop: castDbData(seoDescriptionTop),
       rubric: castDbData(rubric),
       pageCompany: castDbData(companyResult),
-      routeBasePath: links.parentLink,
+      routeBasePath: links.root,
     },
   };
 };

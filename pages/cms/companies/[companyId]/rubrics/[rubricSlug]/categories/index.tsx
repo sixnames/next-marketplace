@@ -103,15 +103,14 @@ export const getServerSideProps = async (
   const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
   const { query } = context;
   const initialProps = await getAppInitialData({ context });
-  if (!initialProps.props || !query.rubricId || !query.companyId) {
+  if (!initialProps) {
     return {
       notFound: true,
     };
   }
 
   // get company
-  const locale = initialProps.props.sessionLocale;
-  const rubricId = new ObjectId(`${query.rubricId}`);
+  const locale = initialProps.props?.sessionLocale;
   const companyId = new ObjectId(`${query.companyId}`);
   const companyAggregationResult = await companiesCollection
     .aggregate<CompanyInterface>([
@@ -131,7 +130,16 @@ export const getServerSideProps = async (
   const links = getCmsCompanyLinks({
     companyId: companyResult._id,
   });
-  const routeBasePath = links.parentLink;
+  const routeBasePath = links.root;
+
+  const initialRubric = await rubricsCollection.findOne({
+    slug: `${query.rubricSlug}`,
+  });
+  if (!initialRubric) {
+    return {
+      notFound: true,
+    };
+  }
 
   // get categories config
   const categoriesConfigAggregationResult = await shopProductsCollection
@@ -139,7 +147,7 @@ export const getServerSideProps = async (
       {
         $match: {
           companyId,
-          rubricId,
+          rubricId: initialRubric._id,
         },
       },
       {
@@ -161,7 +169,7 @@ export const getServerSideProps = async (
   const categoriesConfig = categoriesConfigAggregationResult[0];
   if (!categoriesConfig || categoriesConfig.filterSlugs.length < 1) {
     const rubric = await rubricsCollection.findOne({
-      _id: rubricId,
+      _id: initialRubric._id,
     });
 
     if (!rubric) {
@@ -193,7 +201,7 @@ export const getServerSideProps = async (
     .aggregate<RubricInterface>([
       {
         $match: {
-          _id: rubricId,
+          _id: initialRubric._id,
         },
       },
       {

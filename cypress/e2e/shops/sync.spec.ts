@@ -128,36 +128,42 @@ const blacklistedSyncBody: SyncProductInterface[] = [
 
 const withIntersectsBody: SyncProductInterface[] = [
   {
+    id: '1',
     barcode: ['000004', '000004999'],
     available: 1,
     price: 100,
     name: '000004',
   },
   {
+    id: '2',
     barcode: ['000005', '000005999'],
     available: 1,
     price: 110,
     name: '000005',
   },
   {
+    id: '3',
     barcode: ['000004', '000004888'],
     available: 2,
     price: 200,
     name: '000004',
   },
   {
-    barcode: ['000004', '000004888'],
+    id: '4',
+    barcode: ['000005', '000005888'],
     available: 2,
     price: 220,
     name: '000005',
   },
   {
+    id: '5',
     barcode: ['000004', '000004777'],
     available: 3,
     price: 300,
     name: '000004',
   },
   {
+    id: '6',
     barcode: ['000005', '000005777'],
     available: 3,
     price: 330,
@@ -429,15 +435,14 @@ describe('Sync', () => {
     });
   });
 
-  it.only('Should find barcode intersect items', () => {
+  it('Should find barcode intersect items', () => {
     cy.request({
       method: REQUEST_METHOD_POST,
       url: `/api/shops/sync?${validRequestParamsC}`,
       body: JSON.stringify(withIntersectsBody),
     }).then((res) => {
       const body = res.body as SyncResponseInterface;
-      console.log(body);
-      // expect(body.success).equals(true);
+      expect(body.success).equals(true);
     });
   });
 });

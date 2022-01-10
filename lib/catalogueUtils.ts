@@ -1,4 +1,6 @@
 import { ObjectId } from 'mongodb';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import { CatalogueInterface } from '../components/Catalogue';
 import {
   ATTRIBUTE_VIEW_VARIANT_LIST,
   ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
@@ -67,11 +69,12 @@ import {
   ShopProductInterface,
 } from '../db/uiInterfaces';
 import { getAlgoliaProductsSearch } from './algolia/productAlgoliaUtils';
-import { alwaysString, sortObjectsByField } from './arrayUtils';
+import { alwaysArray, alwaysString, sortObjectsByField } from './arrayUtils';
 import { getFieldStringLocale } from './i18n';
 import { noNaN } from './numbers';
 import { getProductCurrentViewCastedAttributes } from './productAttributesUtils';
 import { getCatalogueAllSeoContents } from './seoContentUtils';
+import { castDbData, getSiteInitialData } from './ssrUtils';
 import { sortStringArray } from './stringUtils';
 import { generateTitle } from './titleUtils';
 import { getTreeFromList } from './treeUtils';
@@ -1178,13 +1181,13 @@ export const getCatalogueData = async ({
     // cast catalogue products
     const products: ShopProductInterface[] = [];
     docs.forEach((shopProduct) => {
-      const product = shopProduct.summary;
-      if (!product) {
+      const summary = shopProduct.summary;
+      if (!summary) {
         return;
       }
 
-      const castedProduct = castSummaryForUI({
-        summary: product,
+      const castedSummary = castSummaryForUI({
+        summary: summary,
         attributes,
         brands,
         categories,
@@ -1193,10 +1196,10 @@ export const getCatalogueData = async ({
 
       // list features
       const initialListAttributes = getProductCurrentViewCastedAttributes({
-        attributes: castedProduct.attributes || [],
+        attributes: castedSummary.attributes || [],
         viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
         locale,
-        gender: product.gender,
+        gender: summary.gender,
       });
       const listAttributes = sortObjectsByField(
         initialListAttributes
@@ -1209,10 +1212,10 @@ export const getCatalogueData = async ({
 
       // rating features
       const initialRatingAttributes = getProductCurrentViewCastedAttributes({
-        attributes: castedProduct.attributes || [],
+        attributes: castedSummary.attributes || [],
         viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
         locale,
-        gender: product.gender,
+        gender: summary.gender,
       });
       const ratingAttributes = initialRatingAttributes.filter(({ attribute }) => {
         return attribute?.showInSnippet;
@@ -1221,11 +1224,12 @@ export const getCatalogueData = async ({
       products.push({
         ...shopProduct,
         summary: {
-          ...castedProduct,
+          ...castedSummary,
           shopsCount: shopProduct.shopsIds?.length,
           attributes: [],
           listAttributes,
           ratingAttributes,
+          shopProductIds: shopProduct.shopProductIds,
           minPrice: noNaN(shopProduct.minPrice),
           maxPrice: noNaN(shopProduct.maxPrice),
         },
@@ -1517,3 +1521,111 @@ export const getCatalogueData = async ({
     return null;
   }
 };
+
+export async function getCatalogueProps(
+  context: GetServerSidePropsContext<any>,
+): Promise<GetServerSidePropsResult<CatalogueInterface>> {
+  // const timeStart = new Date().getTime();
+  const { props } = await getSiteInitialData({
+    context,
+  });
+  // console.log('getCatalogueProps ', new Date().getTime() - timeStart);
+  const rubricSlug = context.query?.rubricSlug;
+
+  const notFoundResponse = {
+    props: {
+      ...props,
+      route: '',
+      showForIndex: false,
+      noIndexFollow: false,
+    },
+    notFound: true,
+  };
+
+  if (!rubricSlug) {
+    return notFoundResponse;
+  }
+
+  // redirect to the sorted url path
+  const filters = alwaysArray(context.query?.filters);
+  const sortedFilters = sortStringArray(filters);
+  const filtersPath = filters.join('/');
+  const sortedFiltersPath = sortedFilters.join('/');
+  if (filtersPath !== sortedFiltersPath) {
+    return {
+      redirect: {
+        permanent: true,
+        destination: `${props.urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}/${sortedFiltersPath}`,
+      },
+    };
+  }
+
+  // catalogue
+  const basePath = `${ROUTE_CATALOGUE}/${rubricSlug}`;
+  const rootPath = `${props.urlPrefix}${basePath}/`;
+  const asPath = `${props.urlPrefix}${basePath}/${sortedFiltersPath}`;
+
+  const rawCatalogueData = await getCatalogueData({
+    locale: props.sessionLocale,
+    city: props.sessionCity,
+    companySlug: props.domainCompany?.slug,
+    companyId: props.domainCompany?._id,
+    currency: props.initialData.currency,
+    basePath,
+    snippetVisibleAttributesCount: props.initialData.configs.snippetAttributesCount,
+    visibleCategoriesInNavDropdown: props.initialData.configs.visibleCategoriesInNavDropdown,
+    limit: props.initialData.configs.catalogueProductsCount,
+    input: {
+      rubricSlug: `${rubricSlug}`,
+      filters,
+      page: 1,
+    },
+  });
+  // console.log('getCatalogueData ', new Date().getTime() - timeStart);
+
+  if (!rawCatalogueData) {
+    return {
+      redirect: {
+        permanent: true,
+        destination: `${props.urlPrefix}`,
+      },
+    };
+  }
+
+  if (!rawCatalogueData.isSearch && rawCatalogueData.products.length < 1 && filters.length > 0) {
+    return {
+      redirect: {
+        permanent: true,
+        destination: `${props.urlPrefix}${rawCatalogueData.basePath}`,
+      },
+    };
+  }
+
+  if (rawCatalogueData.products.length < 1) {
+    return notFoundResponse;
+  }
+
+  if (rawCatalogueData.redirect) {
+    return {
+      redirect: {
+        permanent: true,
+        destination: `${props.urlPrefix}${rawCatalogueData.basePath}${rawCatalogueData.redirect}`,
+      },
+    };
+  }
+
+  /*seo*/
+  const noIndexFollow = rawCatalogueData.page > 1;
+  const showForIndex =
+    rootPath === asPath && !noIndexFollow ? true : Boolean(rawCatalogueData.textTop?.showForIndex);
+  // console.log('seo ', new Date().getTime() - timeStart);
+
+  return {
+    props: {
+      ...props,
+      catalogueData: castDbData(rawCatalogueData),
+      showForIndex: showForIndex,
+      noIndexFollow,
+    },
+  };
+}

@@ -53,7 +53,7 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
       },
       {
         name: `${pageCompany?.name}`,
-        href: links.parentLink,
+        href: links.root,
       },
       {
         name: `Рубрикатор`,
@@ -61,7 +61,7 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
       },
       {
         name: `${category.rubric?.name}`,
-        href: links.rubrics.parentLink,
+        href: links.rubrics.root,
       },
       {
         name: `Категории`,
@@ -107,7 +107,7 @@ export const getServerSideProps = async (
   const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
 
   const { props } = await getAppInitialData({ context });
-  if (!props || !query.categoryId || !query.companyId) {
+  if (!props) {
     return {
       notFound: true,
     };
@@ -241,7 +241,7 @@ export const getServerSideProps = async (
       seoDescriptionTop: castDbData(seoDescriptionTop),
       category: castDbData(category),
       pageCompany: castDbData(companyResult),
-      routeBasePath: links.parentLink,
+      routeBasePath: links.root,
     },
   };
 };

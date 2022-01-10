@@ -5,7 +5,7 @@ import ConsoleSeoContentsList, {
   ConsoleSeoContentsListInterface,
 } from '../../../../../../../components/console/ConsoleSeoContentsList';
 import Inner from '../../../../../../../components/Inner';
-import { PAGE_EDITOR_DEFAULT_VALUE_STRING, ROUTE_CMS } from '../../../../../../../config/common';
+import { PAGE_EDITOR_DEFAULT_VALUE_STRING } from '../../../../../../../config/common';
 import { COL_COMPANIES, COL_SEO_CONTENTS } from '../../../../../../../db/collectionNames';
 import { getConsoleRubricDetails } from '../../../../../../../db/dao/rubrics/getConsoleRubricDetails';
 import { SeoContentModel } from '../../../../../../../db/dbModels';
@@ -16,6 +16,7 @@ import {
   RubricInterface,
 } from '../../../../../../../db/uiInterfaces';
 import CmsRubricLayout from '../../../../../../../layout/cms/CmsRubricLayout';
+import { getCmsCompanyLinks } from '../../../../../../../lib/linkUtils';
 import {
   castDbData,
   getAppInitialData,
@@ -84,7 +85,7 @@ export const getServerSideProps = async (
   const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
   const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
   const { props } = await getAppInitialData({ context });
-  if (!props || !query.companyId) {
+  if (!props) {
     return {
       notFound: true,
     };
@@ -130,12 +131,16 @@ export const getServerSideProps = async (
     })
     .toArray();
 
+  const links = getCmsCompanyLinks({
+    companyId: companyResult._id,
+  });
+
   return {
     props: {
       ...props,
       rubric: castDbData(payload.rubric),
       seoContents: castDbData(seoContents),
-      routeBasePath: `${ROUTE_CMS}/companies/${companyResult._id}`,
+      routeBasePath: links.root,
       rubricSlug: `${payload.rubric.slug}`,
       companySlug,
     },

@@ -542,7 +542,7 @@ export function shopProductsGroupPipeline({
         shopsIds: {
           $addToSet: '$shopId',
         },
-        shopProductsIds: {
+        shopProductIds: {
           $addToSet: '$_id',
         },
       },

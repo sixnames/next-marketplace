@@ -493,7 +493,7 @@ export async function getCardData({
 
     // cast shops and get card prices
     const prices: number[] = [];
-    const shopProductIds: string[] = [];
+    const shopProductIds: ObjectIdModel[] = [];
     let maxAvailable = 0;
     let maxViews = 0;
     const finalCardShops = (shops || []).reduce((acc: ShopInterface[], shop) => {
@@ -507,7 +507,7 @@ export async function getCardData({
       }
 
       prices.push(shop.cardShopProduct.price);
-      shopProductIds.push(`${shop.cardShopProduct._id}`);
+      shopProductIds.push(shop.cardShopProduct._id);
 
       if (shop.cardShopProduct.available > maxAvailable) {
         maxAvailable = shop.cardShopProduct.available;

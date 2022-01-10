@@ -449,6 +449,7 @@ interface CastSummaryToShopProductInterface {
   citySlug: string;
   companyId: ObjectIdModel;
   companySlug: string;
+  shopProductUid?: string | null;
 }
 
 export function castSummaryToShopProduct({

@@ -83,7 +83,7 @@ export const getServerSideProps = async (
     });
     return {
       redirect: {
-        destination: links.parentLink,
+        destination: links.root,
         permanent: false,
       },
     };

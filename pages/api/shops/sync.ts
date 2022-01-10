@@ -6,6 +6,7 @@ import {
   COL_PRODUCT_SUMMARIES,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
+  COL_SYNC_INTERSECT,
 } from '../../../db/collectionNames';
 import {
   BlackListProductModel,
@@ -13,9 +14,11 @@ import {
   ProductSummaryModel,
   ShopModel,
   ShopProductModel,
+  SyncIntersectModel,
 } from '../../../db/dbModels';
 import { getDatabase } from '../../../db/mongodb';
 import { SyncParamsInterface, SyncProductInterface } from '../../../db/syncInterfaces';
+import { alwaysString } from '../../../lib/arrayUtils';
 import { getNextItemId } from '../../../lib/itemIdUtils';
 import { noNaN } from '../../../lib/numbers';
 import { castSummaryToShopProduct } from '../../../lib/productUtils';
@@ -56,8 +59,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
     const blacklistProducts = db.collection<BlackListProductModel>(COL_BLACKLIST_PRODUCTS);
     const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
+    const syncIntersectCollection = db.collection<SyncIntersectModel>(COL_SYNC_INTERSECT);
     const notSyncedProductsCollection =
       db.collection<NotSyncedProductModel>(COL_NOT_SYNCED_PRODUCTS);
+    console.log(syncIntersectCollection);
 
     // get shop
     const shop = await shopsCollection.findOne({ token });
@@ -163,7 +168,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         continue;
       }
 
-      const { available, price, barcode } = bodyItem;
+      const { available, price, barcode, id } = bodyItem;
       // add new barcode to product
       await productSummariesCollection.findOneAndUpdate(
         {
@@ -189,6 +194,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         .toArray();
       if (oldShopProducts.length > 0) {
         for await (const oldShopProduct of oldShopProducts) {
+          // check intersects
+
           // update existing shop product
           const { discountedPercent, oldPrice, oldPriceUpdater } = getUpdatedShopProductPrices({
             shopProduct: oldShopProduct,
@@ -204,6 +211,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
                 price: noNaN(price),
                 oldPrice,
                 discountedPercent,
+                shopProductUid: alwaysString(id),
                 updatedAt: new Date(),
               },
               $addToSet: {
@@ -225,6 +233,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           barcode: bodyItem.barcode,
           shopId: shop._id,
           summary: product,
+          shopProductUid: alwaysString(id),
           price,
           available,
           itemId,

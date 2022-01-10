@@ -20,7 +20,9 @@ export const fixtureIds = {
   rubricWineSlug: 'vino',
   rubricWine: '7e2498e646ba5939eda457c7',
   rubricChampagne: '63c19173a47d7857c77cb696',
+  rubricChampagneSlug: 'shampanskoe',
   rubricWaterSlug: 'voda',
+  rubricVariantAlcohol: 'e8b173e67fda4af97faf5e86',
 
   // products
   wineProductA: 'fe57c5fa310ae737a372ae95',

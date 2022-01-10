@@ -8,7 +8,7 @@ import {
   BrandCollectionInterface,
   BrandInterface,
   ManufacturerInterface,
-  ProductInterface,
+  ProductFacetInterface,
 } from '../../db/uiInterfaces';
 import {
   useUpdateProductBrandCollectionMutation,
@@ -26,7 +26,7 @@ import { ManufacturerOptionsModalInterface } from '../Modal/ManufacturerOptionsM
 const emptyValue = 'Не назначено';
 
 interface ConsoleRubricProductBrandsInterface {
-  product: ProductInterface;
+  product: ProductFacetInterface;
   brand?: BrandInterface | null;
   brandCollection?: BrandCollectionInterface | null;
   manufacturer?: ManufacturerInterface | null;

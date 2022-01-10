@@ -6,9 +6,9 @@ import {
   PRODUCT_SEARCH_MODAL,
 } from '../../config/modalVariants';
 import {
-  ProductConnectionInterface,
-  ProductConnectionItemInterface,
-  ProductInterface,
+  ProductVariantInterface,
+  ProductVariantItemInterface,
+  ProductSummaryInterface,
 } from '../../db/uiInterfaces';
 import {
   useAddProductToConnectionMutation,
@@ -29,8 +29,8 @@ import WpAccordion from '../WpAccordion';
 import WpTable, { WpTableColumn } from '../WpTable';
 
 interface ProductConnectionControlsInterface {
-  connection: ProductConnectionInterface;
-  product: ProductInterface;
+  connection: ProductVariantInterface;
+  product: ProductSummaryInterface;
 }
 
 const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = ({
@@ -46,8 +46,9 @@ const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = 
     onCompleted: (data) => onCompleteCallback(data.addProductToConnection),
   });
 
-  const excludedProductsIds = connection.productsIds.map((productId) => `${productId}`);
-  const excludedOptionsSlugs = (connection.connectionProducts || []).map(({ option }) => {
+  const excludedProductsIds: string[] = [];
+  const excludedOptionsSlugs = (connection.products || []).map(({ option, productId }) => {
+    excludedProductsIds.push(`${productId}`);
     return `${connection.attribute?.slug}${FILTER_SEPARATOR}${option?.slug}`;
   });
 
@@ -85,8 +86,8 @@ const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = 
 };
 
 export interface ProductConnectionsItemInterface {
-  product: ProductInterface;
-  connection: ProductConnectionInterface;
+  product: ProductSummaryInterface;
+  connection: ProductVariantInterface;
   connectionIndex: number;
 }
 
@@ -104,9 +105,9 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
     onCompleted: (data) => onCompleteCallback(data.deleteProductFromConnection),
   });
 
-  const { connectionProducts } = connection;
+  const { products } = connection;
 
-  const columns: WpTableColumn<ProductConnectionItemInterface>[] = [
+  const columns: WpTableColumn<ProductVariantItemInterface>[] = [
     {
       headTitle: 'Арт',
       render: ({ dataItem, rowIndex }) => {
@@ -114,15 +115,15 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
           <WpLink
             target={'_blank'}
             testId={`product-link-${rowIndex}`}
-            href={`${ROUTE_CMS}/rubrics/${dataItem.product?.rubricId}/products/product/${dataItem.product?._id}`}
+            href={`${ROUTE_CMS}/rubrics/${dataItem.summary?.rubricId}/products/product/${dataItem.summary?._id}`}
           >
-            {dataItem.product?.itemId}
+            {dataItem.summary?.itemId}
           </WpLink>
         );
       },
     },
     {
-      accessor: 'product',
+      accessor: 'summary',
       headTitle: 'Фото',
       render: ({ cellData }) => {
         if (!cellData) {
@@ -131,14 +132,14 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
         return (
           <TableRowImage
             src={cellData.mainImage}
-            alt={cellData.originalName}
-            title={cellData.originalName}
+            alt={cellData.snippetTitle}
+            title={cellData.snippetTitle}
           />
         );
       },
     },
     {
-      accessor: 'product.snippetTitle',
+      accessor: 'summary.snippetTitle',
       headTitle: 'Название',
       render: ({ cellData }) => {
         return cellData || 'Товар не найден';
@@ -160,7 +161,7 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
             updateTitle={'Редактировать товар'}
             updateHandler={() => {
               window.open(
-                `${ROUTE_CMS}/rubrics/${dataItem.product?.rubricId}/products/product/${dataItem.product?._id}`,
+                `${ROUTE_CMS}/rubrics/${dataItem.summary?.rubricId}/products/product/${dataItem.summary?._id}`,
                 '_blank',
               );
             }}
@@ -169,14 +170,14 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
               showModal<ConfirmModalInterface>({
                 variant: CONFIRM_MODAL,
                 props: {
-                  message: `Вы уверенны, что хотите удалить ${dataItem?.product?.originalName} из связи ${connection.attribute?.name}?`,
+                  message: `Вы уверенны, что хотите удалить ${dataItem?.summary?.snippetTitle} из связи ${connection.attribute?.name}?`,
                   testId: 'delete-product-from-connection-modal',
                   confirm: () => {
                     showLoading();
                     deleteProductFromConnectionMutation({
                       variables: {
                         input: {
-                          deleteProductId: dataItem?.product?._id,
+                          deleteProductId: dataItem?.summary?._id,
                           connectionId: connection._id,
                           productId: product._id,
                         },
@@ -205,13 +206,13 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
       titleRight={<ProductConnectionControls connection={connection} product={product} />}
     >
       <div className='mt-4'>
-        <WpTable<ProductConnectionItemInterface>
+        <WpTable<ProductVariantItemInterface>
           columns={columns}
-          data={connectionProducts}
+          data={products}
           tableTestId={`${connection.attribute.name}-connection-list`}
           onRowDoubleClick={(dataItem) => {
             window.open(
-              `${ROUTE_CMS}/rubrics/${dataItem.product?.rubricId}/products/product/${dataItem.product?._id}`,
+              `${ROUTE_CMS}/rubrics/${dataItem.summary?.rubricId}/products/product/${dataItem.summary?._id}`,
               '_blank',
             );
           }}
@@ -223,7 +224,7 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
 };
 
 interface ConsoleRubricProductConnectionsInterface {
-  product: ProductInterface;
+  product: ProductSummaryInterface;
 }
 
 const ConsoleRubricProductConnections: React.FC<ConsoleRubricProductConnectionsInterface> = ({
@@ -241,7 +242,7 @@ const ConsoleRubricProductConnections: React.FC<ConsoleRubricProductConnectionsI
   return (
     <Inner testId={'product-connections-list'}>
       <div className='mb-8'>
-        {(product.connections || []).map((connection, connectionIndex) => {
+        {product.variants.map((connection, connectionIndex) => {
           return (
             <ProductConnectionsItem
               key={`${connection._id}`}

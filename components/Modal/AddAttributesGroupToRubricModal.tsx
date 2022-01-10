@@ -1,15 +1,11 @@
 import { Form, Formik } from 'formik';
 import * as React from 'react';
-import {
-  AddAttributesGroupToRubricInput,
-  useGetAttributesGroupsForRubricQuery,
-} from '../../generated/apolloComponents';
+import { AttributesGroupInterface } from '../../db/uiInterfaces';
+import { AddAttributesGroupToRubricInput } from '../../generated/apolloComponents';
 import useValidationSchema from '../../hooks/useValidationSchema';
 import { addAttributesGroupToRubricSchema } from '../../validation/rubricSchema';
 import WpButton from '../button/WpButton';
 import FormikSelect from '../FormElements/Select/FormikSelect';
-import RequestError from '../RequestError';
-import Spinner from '../Spinner';
 import ModalButtons from './ModalButtons';
 import ModalFrame from './ModalFrame';
 import ModalTitle from './ModalTitle';
@@ -17,39 +13,19 @@ import ModalTitle from './ModalTitle';
 export interface AddAttributesGroupToRubricModalInterface {
   testId: string;
   rubricId: string;
-  excludedIds: string[];
   confirm: (values: AddAttributesGroupToRubricInput) => void;
+  attributeGroups: AttributesGroupInterface[];
 }
 
 const AddAttributesGroupToRubricModal: React.FC<AddAttributesGroupToRubricModalInterface> = ({
   testId,
   rubricId,
-  excludedIds,
+  attributeGroups,
   confirm,
 }) => {
   const validationSchema = useValidationSchema({
     schema: addAttributesGroupToRubricSchema,
   });
-  const { data, loading, error } = useGetAttributesGroupsForRubricQuery({
-    fetchPolicy: 'network-only',
-    variables: {
-      excludedIds,
-    },
-  });
-
-  if (loading) {
-    return <Spinner />;
-  }
-
-  if (error || !data) {
-    return (
-      <ModalFrame>
-        <RequestError />
-      </ModalFrame>
-    );
-  }
-
-  const { getAllAttributesGroups } = data;
 
   return (
     <ModalFrame testId={testId}>
@@ -68,7 +44,7 @@ const AddAttributesGroupToRubricModal: React.FC<AddAttributesGroupToRubricModalI
                 showInlineError
                 label={'Группа атрибутов'}
                 name={'attributesGroupId'}
-                options={getAllAttributesGroups}
+                options={attributeGroups}
                 testId={'attributes-groups'}
                 firstOption
               />

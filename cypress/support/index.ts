@@ -16,6 +16,7 @@
 // Import commands.js using ES2015 syntax:
 import './commands';
 import { ADULT_KEY, ADULT_TRUE } from 'config/common';
+import 'cypress-dark';
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')

@@ -2,7 +2,7 @@ import { ROUTE_CMS } from 'config/common';
 import { fixtureIds } from 'cypress/fixtures/fixtureIds';
 
 describe('Shop product suppliers', () => {
-  const companiesPath = `${ROUTE_CMS}/companies/${fixtureIds.companyA}/shops/shop/${fixtureIds.shopA}/products/product/${fixtureIds.shopAShopProduct}/suppliers`;
+  const companiesPath = `${ROUTE_CMS}/companies/${fixtureIds.companyA}/shops/shop/${fixtureIds.shopA}/products/${fixtureIds.rubricWineSlug}/product/${fixtureIds.shopAShopProduct}/suppliers`;
   beforeEach(() => {
     cy.testAuth(companiesPath);
   });

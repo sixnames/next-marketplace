@@ -4,7 +4,6 @@ import { getFieldStringLocale } from '../../../lib/i18n';
 import { getFullName } from '../../../lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from '../../../lib/phoneUtils';
 import { castSupplierProductsList } from '../../../lib/productUtils';
-import { generateCardTitle } from '../../../lib/titleUtils';
 import {
   COL_GIFT_CERTIFICATES,
   COL_ORDER_CUSTOMERS,
@@ -17,10 +16,7 @@ import {
 import { ObjectIdModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
 import { OrderInterface, OrderStatusInterface } from '../../uiInterfaces';
-import {
-  shopProductFieldsPipeline,
-  shopProductSupplierProductsPipeline,
-} from '../constantPipelines';
+import { summaryPipeline, shopProductSupplierProductsPipeline } from '../constantPipelines';
 
 interface CastOrderStatusInterface {
   locale?: string;
@@ -177,7 +173,7 @@ export async function getConsoleOrder({
             },
 
             // product
-            ...shopProductFieldsPipeline('$productId'),
+            ...summaryPipeline('$productId'),
 
             // order product status
             {
@@ -222,20 +218,6 @@ export async function getConsoleOrder({
         }
       : null,
     products: initialOrder.products?.map((orderProduct) => {
-      // title
-      const cardTitle = generateCardTitle({
-        locale,
-        brand: orderProduct.product?.brand,
-        rubricName: getFieldStringLocale(orderProduct.product?.rubric?.nameI18n, locale),
-        showRubricNameInProductTitle: orderProduct.product?.rubric?.showRubricNameInProductTitle,
-        showCategoryInProductTitle: orderProduct.product?.rubric?.showCategoryInProductTitle,
-        attributes: orderProduct.product?.attributes || [],
-        categories: orderProduct.product?.categories,
-        titleCategoriesSlugs: orderProduct.product?.titleCategoriesSlugs,
-        originalName: `${orderProduct.product?.originalName}`,
-        defaultGender: `${orderProduct.product?.gender}`,
-      });
-
       return {
         ...orderProduct,
         status: castOrderStatus({
@@ -245,7 +227,7 @@ export async function getConsoleOrder({
         product: orderProduct.product
           ? {
               ...orderProduct.product,
-              cardTitle,
+              cardTitle: getFieldStringLocale(orderProduct.product.cardTitleI18n, locale),
             }
           : null,
         shopProduct: orderProduct.shopProduct

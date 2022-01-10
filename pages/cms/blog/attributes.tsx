@@ -13,11 +13,12 @@ import { BLOG_ATTRIBUTE_MODAL, CONFIRM_MODAL } from '../../../config/modalVarian
 import { useAppContext } from '../../../context/appContext';
 import { COL_BLOG_ATTRIBUTES, COL_OPTIONS_GROUPS } from '../../../db/collectionNames';
 import { getDatabase } from '../../../db/mongodb';
-import { BlogAttributeInterface } from '../../../db/uiInterfaces';
+import { BlogAttributeInterface, OptionsGroupInterface } from '../../../db/uiInterfaces';
 import { useDeleteBlogAttribute } from '../../../hooks/mutations/useBlogMutations';
 import AppContentWrapper from '../../../layout/AppContentWrapper';
 import AppSubNav from '../../../layout/AppSubNav';
 import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
+import { sortObjectsByField } from '../../../lib/arrayUtils';
 import { getFieldStringLocale } from '../../../lib/i18n';
 import {
   castDbData,
@@ -28,12 +29,14 @@ import { ClientNavItemInterface } from '../../../types/clientTypes';
 
 interface BlogAttributesListConsumerInterface {
   attributes: BlogAttributeInterface[];
+  optionGroups: OptionsGroupInterface[];
 }
 
 const pageTitle = 'Атрибуты блога';
 
 const BlogAttributesListConsumer: React.FC<BlogAttributesListConsumerInterface> = ({
   attributes,
+  optionGroups,
 }) => {
   const { showModal } = useAppContext();
   const [deleteBlogAttribute] = useDeleteBlogAttribute();
@@ -79,6 +82,7 @@ const BlogAttributesListConsumer: React.FC<BlogAttributesListConsumerInterface> 
                 showModal<BlogAttributeModalInterface>({
                   variant: BLOG_ATTRIBUTE_MODAL,
                   props: {
+                    optionGroups,
                     attribute: dataItem,
                   },
                 });
@@ -88,7 +92,7 @@ const BlogAttributesListConsumer: React.FC<BlogAttributesListConsumerInterface> 
                 showModal<ConfirmModalInterface>({
                   variant: CONFIRM_MODAL,
                   props: {
-                    message: `Вы уверенны, что хотите удалить атрибут блога ${dataItem.name}`,
+                    message: `Вы уверенны, что хотите удалить атрибут блога ${dataItem.name}?`,
                     confirm: () => {
                       deleteBlogAttribute({
                         _id: `${dataItem._id}`,
@@ -121,6 +125,7 @@ const BlogAttributesListConsumer: React.FC<BlogAttributesListConsumerInterface> 
                 showModal<BlogAttributeModalInterface>({
                   variant: BLOG_ATTRIBUTE_MODAL,
                   props: {
+                    optionGroups,
                     attribute: dataItem,
                   },
                 });
@@ -135,6 +140,9 @@ const BlogAttributesListConsumer: React.FC<BlogAttributesListConsumerInterface> 
               onClick={() => {
                 showModal<BlogAttributeModalInterface>({
                   variant: BLOG_ATTRIBUTE_MODAL,
+                  props: {
+                    optionGroups,
+                  },
                 });
               }}
             >
@@ -174,6 +182,7 @@ export const getServerSideProps = async (
 
   const { db } = await getDatabase();
   const blogAttributesCollection = db.collection<BlogAttributeInterface>(COL_BLOG_ATTRIBUTES);
+  const optionGroupsCollection = db.collection<OptionsGroupInterface>(COL_OPTIONS_GROUPS);
 
   const initialBlogAttributesAggregation = await blogAttributesCollection
     .aggregate([
@@ -210,23 +219,35 @@ export const getServerSideProps = async (
     ])
     .toArray();
 
+  const locale = props.sessionLocale;
   const attributes = initialBlogAttributesAggregation.map((attribute) => {
     return {
       ...attribute,
-      name: getFieldStringLocale(attribute.nameI18n, props.sessionLocale),
+      name: getFieldStringLocale(attribute.nameI18n, locale),
       optionsGroup: attribute.optionsGroup
         ? {
             ...attribute.optionsGroup,
-            name: getFieldStringLocale(attribute.optionsGroup.nameI18n, props.sessionLocale),
+            name: getFieldStringLocale(attribute.optionsGroup.nameI18n, locale),
           }
         : null,
     };
   });
 
+  // option groups
+  const initialOptionGroups = await optionGroupsCollection.find({}).toArray();
+  const castedOptionGroups = initialOptionGroups.map((document) => {
+    return {
+      ...document,
+      name: getFieldStringLocale(document.nameI18n, locale),
+    };
+  });
+  const sortedOptionGroups = sortObjectsByField(castedOptionGroups);
+
   return {
     props: {
       ...props,
       attributes: castDbData(attributes),
+      optionGroups: castDbData(sortedOptionGroups),
     },
   };
 };

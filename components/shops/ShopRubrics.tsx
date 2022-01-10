@@ -35,7 +35,7 @@ const ShopRubrics: React.FC<ShopRubricsInterface> = ({ shop, breadcrumbs, rubric
             updateTitle={'Просмотреть товары рубрики'}
             updateHandler={() => {
               router
-                .push(`${basePath}/${shop._id}/products/${dataItem._id}`)
+                .push(`${basePath}/${shop._id}/products/${dataItem.slug}`)
                 .catch((e) => console.log(e));
             }}
           />
@@ -54,7 +54,7 @@ const ShopRubrics: React.FC<ShopRubricsInterface> = ({ shop, breadcrumbs, rubric
           emptyMessage={'Список пуст'}
           onRowDoubleClick={(dataItem) => {
             router
-              .push(`${basePath}/${shop._id}/products/${dataItem._id}`)
+              .push(`${basePath}/${shop._id}/products/${dataItem.slug}`)
               .catch((e) => console.log(e));
           }}
         />

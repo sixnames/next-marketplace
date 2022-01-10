@@ -3,17 +3,12 @@ import * as React from 'react';
 import { OPTIONS_GROUP_VARIANT_COLOR } from '../../config/common';
 import { getConstantTranslation } from '../../config/constantTranslations';
 import { useLocaleContext } from '../../context/localeContext';
-import {
-  AddOptionToGroupInput,
-  OptionsGroupVariant,
-  useGetGenderOptionsQuery,
-} from '../../generated/apolloComponents';
+import { AddOptionToGroupInput, OptionsGroupVariant } from '../../generated/apolloComponents';
+import { useConstantOptions } from '../../hooks/useConstantOptions';
 import FormikInput from '../FormElements/Input/FormikInput';
 import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
 import InputLine from '../FormElements/Input/InputLine';
 import FormikSelect from '../FormElements/Select/FormikSelect';
-import RequestError from '../RequestError';
-import Spinner from '../Spinner';
 
 export interface OptionMainFieldsInterface {
   groupVariant: OptionsGroupVariant;
@@ -22,16 +17,7 @@ export interface OptionMainFieldsInterface {
 const OptionMainFields: React.FC<OptionMainFieldsInterface> = ({ groupVariant }) => {
   const { values } = useFormikContext<AddOptionToGroupInput>();
   const { locale } = useLocaleContext();
-  const { data, loading, error } = useGetGenderOptionsQuery();
-  if (error || (!loading && !data)) {
-    return <RequestError />;
-  }
-
-  if (loading) {
-    return <Spinner isTransparent isNested />;
-  }
-
-  const { getGenderOptions } = data!;
+  const { genderOptions } = useConstantOptions();
 
   return (
     <React.Fragment>
@@ -46,7 +32,7 @@ const OptionMainFields: React.FC<OptionMainFieldsInterface> = ({ groupVariant })
       <FormikSelect
         name={'gender'}
         firstOption
-        options={getGenderOptions}
+        options={genderOptions}
         testId={`option-gender`}
         label={'Род названия'}
       />

@@ -4,7 +4,6 @@ import {
   REQUEST_METHOD_DELETE,
   REQUEST_METHOD_PATCH,
   REQUEST_METHOD_POST,
-  ROUTE_CMS,
 } from '../../config/common';
 import { BARCODE_INTERSECTS_MODAL } from '../../config/modalVariants';
 import { useAppContext } from '../../context/appContext';
@@ -20,15 +19,11 @@ import { UpdateProductCardContentInputInterface } from '../../db/dao/product/upd
 import { UpdateProductCategoryInputInterface } from '../../db/dao/product/updateProductCategory';
 import { UpdateProductWithSyncErrorInputInterface } from '../../db/dao/product/updateProductWithSyncError';
 import { ProductPayloadModel } from '../../db/dbModels';
-import { ProductInterface } from '../../db/uiInterfaces';
+import { getConsoleRubricLinks } from '../../lib/linkUtils';
 import { useReloadListener } from '../useReloadListener';
 import { useMutationHandler } from './useFetch';
 
 const basePath = '/api/product';
-
-function getCmsProductUrl(product: ProductInterface) {
-  return `${ROUTE_CMS}/rubrics/${product.rubricId}/products/product/${product._id}`;
-}
 
 // create
 export const useCreateProduct = () => {
@@ -52,7 +47,11 @@ export const useCreateProduct = () => {
     },
     onSuccess: ({ payload, message }) => {
       if (payload) {
-        router.push(getCmsProductUrl(payload)).catch(console.log);
+        const { product } = getConsoleRubricLinks({
+          rubricSlug: payload.rubricSlug,
+          productId: `${payload._id}`,
+        });
+        router.push(product.root).catch(console.log);
       } else {
         showErrorNotification({ title: message });
       }
@@ -115,7 +114,11 @@ export const useCopyProduct = () => {
     reload: false,
     onSuccess: ({ payload, message }) => {
       if (payload) {
-        router.push(getCmsProductUrl(payload)).catch(console.log);
+        const { product } = getConsoleRubricLinks({
+          rubricSlug: payload.rubricSlug,
+          productId: `${payload._id}`,
+        });
+        router.push(product.root).catch(console.log);
       } else {
         showErrorNotification({ title: message });
       }
@@ -145,7 +148,11 @@ export const useCreateProductWithSyncError = () => {
     },
     onSuccess: ({ payload, message }) => {
       if (payload) {
-        router.push(getCmsProductUrl(payload)).catch(console.log);
+        const { product } = getConsoleRubricLinks({
+          rubricSlug: payload.rubricSlug,
+          productId: `${payload._id}`,
+        });
+        router.push(product.root).catch(console.log);
       } else {
         showErrorNotification({ title: message });
       }
@@ -174,7 +181,11 @@ export const useUpdateProductWithSyncError = () => {
     },
     onSuccess: ({ payload }) => {
       if (payload) {
-        router.push(getCmsProductUrl(payload)).catch(console.log);
+        const { product } = getConsoleRubricLinks({
+          rubricSlug: payload.rubricSlug,
+          productId: `${payload._id}`,
+        });
+        router.push(product.root).catch(console.log);
       }
     },
   });

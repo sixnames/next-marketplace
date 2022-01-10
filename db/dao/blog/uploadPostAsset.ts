@@ -74,7 +74,6 @@ export async function uploadPostAsset(req: NextApiRequest, res: NextApiResponse)
       files: formData.files,
       dirName: blogPost.slug,
       dist: ASSETS_DIST_BLOG_CONTENT,
-      startIndex: blogPost.assetKeys.length,
     });
     if (!uploadedAsset) {
       payload = {
@@ -102,7 +101,7 @@ export async function uploadPostAsset(req: NextApiRequest, res: NextApiResponse)
       { _id: blogPostId },
       {
         $push: {
-          assetKeys: asset.url,
+          assetKeys: asset,
         },
         $set: {
           updatedAt: new Date(),
@@ -127,7 +126,7 @@ export async function uploadPostAsset(req: NextApiRequest, res: NextApiResponse)
     payload = {
       success: true,
       message: await getApiMessage('blogPosts.update.success'),
-      payload: asset.url,
+      payload: asset,
     };
 
     // response

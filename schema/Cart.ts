@@ -4,7 +4,7 @@ import {
   COL_CARTS,
   COL_ORDER_PRODUCTS,
   COL_ORDERS,
-  COL_PRODUCTS,
+  COL_PRODUCT_FACETS,
   COL_SHOP_PRODUCTS,
 } from '../db/collectionNames';
 import { getSessionCart } from '../db/dao/cart/getSessionCart';
@@ -13,7 +13,7 @@ import {
   CartPayloadModel,
   CartProductModel,
   OrderModel,
-  ProductModel,
+  ProductFacetModel,
   ShopProductModel,
 } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
@@ -135,7 +135,7 @@ export const CartMutations = extendType({
           const cart = await getSessionCart({ context });
           const { db } = await getDatabase();
           const cartsCollection = db.collection<CartModel>(COL_CARTS);
-          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
           const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
           const { input } = args;
           const { shopProductId, amount, productId } = input;
@@ -320,7 +320,7 @@ export const CartMutations = extendType({
           const cart = await getSessionCart({ context });
           const { db } = await getDatabase();
           const cartsCollection = db.collection<CartModel>(COL_CARTS);
-          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
           const { input } = args;
           const { productId, amount } = input;
           if (!cart) {
@@ -722,7 +722,7 @@ export const CartMutations = extendType({
           const { db } = await getDatabase();
           const ordersCollection = db.collection<OrderModel>(COL_ORDERS);
           const cartsCollection = db.collection<CartModel>(COL_CARTS);
-          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
           if (!cart) {
             return {
               success: false,

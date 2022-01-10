@@ -15,10 +15,10 @@ import {
   CMS_BRANDS_LIMIT,
   DEFAULT_LOCALE,
   DEFAULT_PAGE,
-  ISO_LANGUAGES,
   SORT_ASC,
   SORT_DESC,
 } from '../../../config/common';
+import { ISO_LANGUAGES } from '../../../config/constantSelects';
 import { CONFIRM_MODAL, SUPPLIER_MODAL } from '../../../config/modalVariants';
 import { COL_SUPPLIERS } from '../../../db/collectionNames';
 import { getDatabase } from '../../../db/mongodb';

@@ -39,9 +39,9 @@ const BarcodeIntersectsModalConsumer: React.FC<BarcodeIntersectsModalConsumerInt
       render: ({ dataItem }) => {
         return (
           <TableRowImage
-            src={`${dataItem.product?.mainImage}`}
-            alt={`${dataItem.product?.snippetTitle}`}
-            title={`${dataItem.product?.snippetTitle}`}
+            src={`${dataItem.summary?.mainImage}`}
+            alt={`${dataItem.summary?.snippetTitle}`}
+            title={`${dataItem.summary?.snippetTitle}`}
           />
         );
       },

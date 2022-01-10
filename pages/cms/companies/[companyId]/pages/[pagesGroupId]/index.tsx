@@ -3,11 +3,17 @@ import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import Inner from '../../../../../../components/Inner';
 import PagesList, { PagesListInterface } from '../../../../../../components/Pages/PagesList';
-import { ROUTE_CMS } from '../../../../../../config/common';
-import { COL_COMPANIES } from '../../../../../../db/collectionNames';
+import { COL_CITIES, COL_COMPANIES } from '../../../../../../db/collectionNames';
 import { getDatabase } from '../../../../../../db/mongodb';
-import { AppContentWrapperBreadCrumbs, CompanyInterface } from '../../../../../../db/uiInterfaces';
+import {
+  AppContentWrapperBreadCrumbs,
+  CityInterface,
+  CompanyInterface,
+} from '../../../../../../db/uiInterfaces';
 import CmsCompanyLayout from '../../../../../../layout/cms/CmsCompanyLayout';
+import { sortObjectsByField } from '../../../../../../lib/arrayUtils';
+import { getFieldStringLocale } from '../../../../../../lib/i18n';
+import { getCmsCompanyLinks } from '../../../../../../lib/linkUtils';
 import { getPagesListSsr } from '../../../../../../lib/pageUtils';
 import {
   castDbData,
@@ -26,21 +32,25 @@ const PagesListPage: NextPage<PagesListPageInterface> = ({
   layoutProps,
   pageCompany,
   pagesGroup,
+  cities,
 }) => {
+  const { root, parentLink, pages } = getCmsCompanyLinks({
+    companyId: pageCompany._id,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${pagesGroup?.name}`,
     config: [
       {
         name: 'Компании',
-        href: `${ROUTE_CMS}/companies`,
+        href: parentLink,
       },
       {
         name: pageCompany.name,
-        href: `${ROUTE_CMS}/companies/${pageCompany._id}`,
+        href: root,
       },
       {
         name: 'Группы страниц',
-        href: `${ROUTE_CMS}/companies/${pageCompany._id}/pages`,
+        href: pages,
       },
     ],
   };
@@ -49,10 +59,7 @@ const PagesListPage: NextPage<PagesListPageInterface> = ({
     <ConsoleLayout title={`${pagesGroup.name}`} {...layoutProps}>
       <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
         <Inner>
-          <PagesList
-            basePath={`${ROUTE_CMS}/companies/${pageCompany._id}/pages`}
-            pagesGroup={pagesGroup}
-          />
+          <PagesList cities={cities} basePath={pages} pagesGroup={pagesGroup} />
         </Inner>
       </CmsCompanyLayout>
     </ConsoleLayout>
@@ -72,7 +79,9 @@ export const getServerSideProps = async (
   }
 
   const { db } = await getDatabase();
+  const citiesCollection = db.collection<CityInterface>(COL_CITIES);
   const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
+
   const company = await companiesCollection.findOne({
     _id: new ObjectId(`${companyId}`),
   });
@@ -92,11 +101,21 @@ export const getServerSideProps = async (
     };
   }
 
+  const initialCities = await citiesCollection.find({}).toArray();
+  const castedCities = initialCities.map((document) => {
+    return {
+      ...document,
+      name: getFieldStringLocale(document.nameI18n, props.sessionLocale),
+    };
+  });
+  const sortedCities = sortObjectsByField(castedCities);
+
   return {
     props: {
       ...props,
       pagesGroup: castDbData(pagesGroup),
       pageCompany: castDbData(company),
+      cities: castDbData(sortedCities),
     },
   };
 };

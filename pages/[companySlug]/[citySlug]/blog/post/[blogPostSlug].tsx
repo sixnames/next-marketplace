@@ -244,14 +244,14 @@ export const getStaticProps = async (
       viewsStage,
       {
         $unwind: {
-          path: '$selectedOptionsSlugs',
+          path: '$filterSlugs',
           preserveNullAndEmptyArrays: true,
         },
       },
       {
         $addFields: {
           slugArray: {
-            $split: ['$selectedOptionsSlugs', FILTER_SEPARATOR],
+            $split: ['$filterSlugs', FILTER_SEPARATOR],
           },
         },
       },
@@ -278,8 +278,8 @@ export const getStaticProps = async (
           createdAt: { $first: '$createdAt' },
           views: { $first: '$views' },
           content: { $first: '$content' },
-          selectedOptionsSlugs: {
-            $addToSet: '$selectedOptionsSlugs',
+          filterSlugs: {
+            $addToSet: '$filterSlugs',
           },
           attributesSlugs: {
             $addToSet: '$attributeSlug',

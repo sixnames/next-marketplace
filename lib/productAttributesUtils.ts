@@ -9,7 +9,7 @@ import {
 } from '../config/common';
 import { COL_CATEGORIES, COL_RUBRICS } from '../db/collectionNames';
 import { rubricAttributeGroupsPipeline } from '../db/dao/constantPipelines';
-import { ObjectIdModel } from '../db/dbModels';
+import { ObjectIdModel, TranslationModel } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
 import {
   AttributeInterface,
@@ -53,9 +53,7 @@ export async function getRubricAllAttributes(
   return rubricAttributes;
 }
 
-export async function getCategoryAllAttributes(
-  categorySlugs: string[],
-): Promise<AttributeInterface[]> {
+export async function getCategoryAllAttributes(slugs: string[]): Promise<AttributeInterface[]> {
   const { db } = await getDatabase();
   const categoriesCollection = db.collection<CategoryInterface>(COL_CATEGORIES);
   const categories = await categoriesCollection
@@ -63,7 +61,7 @@ export async function getCategoryAllAttributes(
       {
         $match: {
           slug: {
-            $in: categorySlugs,
+            $in: slugs,
           },
         },
       },
@@ -99,7 +97,7 @@ export function getProductCurrentViewAttributes({
       return false;
     }
     const { variant } = attribute;
-    const { selectedOptionsSlugs, textI18n, number } = productAttribute;
+    const { filterSlugs, textI18n, number } = productAttribute;
     const isSelect =
       variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT || variant === ATTRIBUTE_VARIANT_SELECT;
     const isText = variant === ATTRIBUTE_VARIANT_STRING;
@@ -109,7 +107,7 @@ export function getProductCurrentViewAttributes({
       return false;
     }
 
-    if (isSelect && selectedOptionsSlugs.length > 0) {
+    if (isSelect && filterSlugs.length > 0) {
       return true;
     }
 
@@ -148,7 +146,7 @@ export function getAttributeReadableValue({
   if (
     (attribute.variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT ||
       attribute.variant === ATTRIBUTE_VARIANT_SELECT) &&
-    productAttribute.selectedOptionsSlugs.length > 0 &&
+    productAttribute.filterSlugs.length > 0 &&
     attribute.options &&
     attribute.options.length > 0
   ) {
@@ -174,6 +172,27 @@ export function getAttributeReadableValue({
   }
 
   return null;
+}
+
+export interface GetAttributeReadableValueLocalesInterface {
+  productAttribute: ProductAttributeInterface;
+  gender?: string;
+}
+
+export function getAttributeReadableValueLocales({
+  productAttribute,
+  gender,
+}: GetAttributeReadableValueLocalesInterface): TranslationModel {
+  let payload: TranslationModel = {};
+  LOCALES.forEach((locale) => {
+    const readableValue = getAttributeReadableValue({
+      gender,
+      locale,
+      productAttribute,
+    });
+    payload[locale] = readableValue;
+  });
+  return payload;
 }
 
 export interface CastProductAttributeForUiInterface {
@@ -275,7 +294,7 @@ export function getProductCurrentViewCastedAttributes({
 
 export function countProductAttributes(attributes?: ProductAttributeInterface[] | null): number {
   let counter = 0;
-  (attributes || []).forEach(({ attribute, number, textI18n, selectedOptionsIds }) => {
+  (attributes || []).forEach(({ attribute, number, textI18n, optionIds }) => {
     const variant = attribute?.variant;
     if (variant === ATTRIBUTE_VARIANT_NUMBER && number) {
       counter += 1;
@@ -283,7 +302,7 @@ export function countProductAttributes(attributes?: ProductAttributeInterface[] 
 
     if (
       (variant === ATTRIBUTE_VARIANT_SELECT || variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT) &&
-      selectedOptionsIds.length > 0
+      optionIds.length > 0
     ) {
       counter += 1;
     }

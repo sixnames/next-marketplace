@@ -3,10 +3,10 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import Inner from '../../../../../components/Inner';
 import PageDetails, { PageDetailsInterface } from '../../../../../components/Pages/PageDetails';
 import WpTitle from '../../../../../components/WpTitle';
-import { ROUTE_CONSOLE } from '../../../../../config/common';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from '../../../../../db/uiInterfaces';
 import AppContentWrapper from '../../../../../layout/AppContentWrapper';
 import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
+import { getConsoleCompanyLinks } from '../../../../../lib/linkUtils';
 import { getPageSsr } from '../../../../../lib/pageUtils';
 import {
   castDbData,
@@ -26,16 +26,19 @@ const PageDetailsPage: NextPage<PageDetailsPageInterface> = ({
   pageCompany,
   cities,
 }) => {
+  const links = getConsoleCompanyLinks({
+    companyId: pageCompany._id,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${page.name}`,
     config: [
       {
         name: 'Группы страниц',
-        href: `${ROUTE_CONSOLE}/${pageCompany._id}/pages`,
+        href: links.pages,
       },
       {
         name: `${page.pagesGroup?.name}`,
-        href: `${ROUTE_CONSOLE}/${pageCompany._id}/pages/${page.pagesGroup?._id}`,
+        href: `${links.pages}/${page.pagesGroup?._id}`,
       },
     ],
   };

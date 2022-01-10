@@ -7,8 +7,8 @@ import {
 import { createAttribute } from '../../../db/dao/attributes/createAttribute';
 import { deleteAttribute } from '../../../db/dao/attributes/deleteAttribute';
 import { updateAttribute } from '../../../db/dao/attributes/updateAttribute';
-import { updateAlgoliaProducts } from '../../../lib/algolia/productAlgoliaUtils';
 import { sendApiRouteResponse } from '../../../lib/sessionHelpers';
+import { execUpdateProductTitles } from '../../../lib/updateProductTitles';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   // create
@@ -39,9 +39,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (payload.success && payload.payload) {
       // update product algolia indexes
-      await updateAlgoliaProducts({
-        selectedAttributesIds: payload.payload._id,
-      });
+      execUpdateProductTitles(`attributeId=${payload.payload._id.toHexString()}`);
     }
     return;
   }
@@ -60,9 +58,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (payload.success && payload.payload) {
       // update product algolia indexes
-      await updateAlgoliaProducts({
-        selectedAttributesIds: payload.payload._id,
-      });
+      execUpdateProductTitles(`attributeId=${payload.payload._id.toHexString()}`);
     }
     return;
   }

@@ -1,6 +1,11 @@
 import { ObjectId } from 'mongodb';
 import { ParsedUrlQuery } from 'querystring';
-import { GENDER_HE, PAGINATION_DEFAULT_LIMIT, SORT_DESC } from '../../../config/common';
+import {
+  DEFAULT_CITY,
+  GENDER_HE,
+  PAGINATION_DEFAULT_LIMIT,
+  SORT_DESC,
+} from '../../../config/common';
 import {
   getBrandFilterAttribute,
   getCategoryFilterAttribute,
@@ -18,28 +23,25 @@ import {
 } from '../../../lib/productAttributesUtils';
 import { getProductAllSeoContents } from '../../../lib/seoContentUtils';
 import { getTreeFromList } from '../../../lib/treeUtils';
-import {
-  COL_BRAND_COLLECTIONS,
-  COL_BRANDS,
-  COL_CATEGORIES,
-  COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCTS,
-  COL_RUBRICS,
-  COL_SHOP_PRODUCTS,
-} from '../../collectionNames';
-import { ObjectIdModel } from '../../dbModels';
+import { COL_PRODUCT_FACETS, COL_RUBRICS, COL_SHOP_PRODUCTS } from '../../collectionNames';
+import { ObjectIdModel, ProductFacetModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
 import {
   AttributeInterface,
   ConsoleRubricProductsInterface,
-  ProductInterface,
   ProductsAggregationInterface,
+  ProductSummaryInterface,
   RubricInterface,
   ShopProductInterface,
   ShopProductPricesInterface,
 } from '../../uiInterfaces';
-import { filterAttributesPipeline } from '../constantPipelines';
-import { castProductForUI } from './castProductForUI';
+import {
+  paginatedAggregationFinalPipeline,
+  productsPaginatedAggregationFacetsPipeline,
+  ProductsPaginatedAggregationInterface,
+  summaryPipeline,
+} from '../constantPipelines';
+import { castSummaryForUI } from './castSummaryForUI';
 
 export interface GetConsoleRubricProductsInputInterface {
   locale: string;
@@ -51,7 +53,6 @@ export interface GetConsoleRubricProductsInputInterface {
   attributesIds?: ObjectIdModel[] | null;
   excludedOptionsSlugs?: string[] | null;
   companySlug: string;
-  byRubricSlug?: boolean;
 }
 
 export const getConsoleRubricProducts = async ({
@@ -63,7 +64,6 @@ export const getConsoleRubricProducts = async ({
   excludedProductsIds,
   attributesIds,
   excludedOptionsSlugs,
-  byRubricSlug,
   ...props
 }: GetConsoleRubricProductsInputInterface): Promise<ConsoleRubricProductsInterface> => {
   let fallbackPayload: ConsoleRubricProductsInterface = {
@@ -80,23 +80,17 @@ export const getConsoleRubricProducts = async ({
 
   try {
     const { db } = await getDatabase();
-    const productsCollection = db.collection<ProductInterface>(COL_PRODUCTS);
+    const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
     const rubricsCollection = db.collection<RubricInterface>(COL_RUBRICS);
     const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
     const filters = alwaysArray(query.filters);
     const search = alwaysString(query.search);
-    const rubricId = alwaysString(query.rubricId);
     const rubricSlug = alwaysString(query.rubricSlug);
 
     // get rubric
-    const rubricQuery = byRubricSlug
-      ? {
-          slug: rubricSlug,
-        }
-      : {
-          _id: new ObjectId(rubricId),
-        };
-    const rubric = await rubricsCollection.findOne(rubricQuery);
+    const rubric = await rubricsCollection.findOne({
+      slug: rubricSlug,
+    });
     if (!rubric) {
       return fallbackPayload;
     }
@@ -116,7 +110,6 @@ export const getConsoleRubricProducts = async ({
       brandStage,
       brandCollectionStage,
       optionsStage,
-      pricesStage,
       photoStage,
       searchIds,
       noSearchResults,
@@ -131,7 +124,7 @@ export const getConsoleRubricProducts = async ({
 
     // rubric stage
     let rubricStage: Record<any, any> = {
-      rubricId: rubric._id,
+      rubricSlug: rubric.slug,
     };
     if (rubricFilters && rubricFilters.length > 0) {
       rubricStage = {
@@ -163,27 +156,19 @@ export const getConsoleRubricProducts = async ({
         ? [
             {
               $unwind: {
-                path: '$selectedAttributesIds',
+                path: '$attributeIds',
                 preserveNullAndEmptyArrays: true,
               },
             },
             {
               $match: {
-                selectedAttributesIds: { $in: attributesObjectIds },
+                attributeIds: { $in: attributesObjectIds },
               },
             },
             {
               $group: {
                 _id: '$_id',
                 doc: { $first: '$$ROOT' },
-                selectedAttributesIds: {
-                  $push: '$selectedAttributesIds',
-                },
-              },
-            },
-            {
-              $addFields: {
-                'doc.selectedAttributesIds': '$selectedAttributesIds',
               },
             },
             {
@@ -199,27 +184,19 @@ export const getConsoleRubricProducts = async ({
       ? [
           {
             $unwind: {
-              path: '$selectedOptionsSlugs',
+              path: '$filterSlugs',
               preserveNullAndEmptyArrays: true,
             },
           },
           {
             $match: {
-              selectedOptionsSlugs: { $nin: excludedOptionsSlugs },
+              filterSlugs: { $nin: excludedOptionsSlugs },
             },
           },
           {
             $group: {
               _id: '$_id',
               doc: { $first: '$$ROOT' },
-              selectedOptionsSlugs: {
-                $push: '$selectedOptionsSlugs',
-              },
-            },
-          },
-          {
-            $addFields: {
-              'doc.selectedOptionsSlugs': '$selectedOptionsSlugs',
             },
           },
           {
@@ -232,13 +209,12 @@ export const getConsoleRubricProducts = async ({
 
     // initial match
     const productsInitialMatch = {
-      ...excludedIdsStage,
       ...rubricStage,
       ...brandStage,
       ...brandCollectionStage,
       ...optionsStage,
-      ...pricesStage,
       ...photoStage,
+      ...excludedIdsStage,
     };
 
     const searchStage =
@@ -254,325 +230,88 @@ export const getConsoleRubricProducts = async ({
           ]
         : [];
 
-    const productDataAggregationResult = await productsCollection
-      .aggregate<ProductsAggregationInterface>([
-        // match products
-        ...searchStage,
-        {
-          $match: productsInitialMatch,
-        },
-        ...attributeIdsStage,
-        ...excludedOptionsStage,
-        {
-          $facet: {
-            // docs facet
-            docs: [
-              {
-                $sort: {
-                  _id: SORT_DESC,
-                },
-              },
-              {
-                $skip: skip,
-              },
-              {
-                $limit: limit,
-              },
+    // aggregate catalogue initial data
+    const pipelineConfig: ProductsPaginatedAggregationInterface = {
+      citySlug: DEFAULT_CITY,
+      companySlug,
+    };
 
-              // get product attributes
-              {
-                $lookup: {
-                  from: COL_PRODUCT_ATTRIBUTES,
-                  as: 'attributes',
-                  let: {
-                    productId: '$_id',
-                  },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $eq: ['$$productId', '$productId'],
-                        },
-                      },
-                    },
-                  ],
-                },
-              },
-
-              // count shop products
-              {
-                $lookup: {
-                  from: COL_SHOP_PRODUCTS,
-                  as: 'shopsCount',
-                  let: { productId: '$_id' },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $eq: ['$$productId', '$productId'],
-                        },
-                      },
-                    },
-                    {
-                      $group: {
-                        _id: '$shopId',
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                $addFields: {
-                  shopsCount: {
-                    $size: '$shopsCount',
-                  },
-                },
-              },
-            ],
-
-            // prices facet
-            prices: [
-              {
-                $group: {
-                  _id: '$minPrice',
-                },
-              },
-            ],
-
-            // categories facet
-            categories: [
-              {
-                $unwind: {
-                  path: '$selectedOptionsSlugs',
-                  preserveNullAndEmptyArrays: true,
-                },
-              },
-              {
-                $group: {
-                  _id: null,
-                  rubricId: { $first: '$rubricId' },
-                  selectedOptionsSlugs: {
-                    $addToSet: '$selectedOptionsSlugs',
-                  },
-                },
-              },
-              {
-                $lookup: {
-                  from: COL_CATEGORIES,
-                  as: 'categories',
-                  let: {
-                    rubricId: '$rubricId',
-                    selectedOptionsSlugs: '$selectedOptionsSlugs',
-                  },
-                  pipeline: [
-                    {
-                      $match: {
-                        $and: [
-                          {
-                            $expr: {
-                              $eq: ['$rubricId', '$$rubricId'],
-                            },
-                          },
-                          {
-                            $expr: {
-                              $in: ['$slug', '$$selectedOptionsSlugs'],
-                            },
-                          },
-                        ],
-                      },
-                    },
-                    {
-                      $sort: {
-                        _id: SORT_DESC,
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                $unwind: {
-                  path: '$categories',
-                  preserveNullAndEmptyArrays: true,
-                },
-              },
-              {
-                $match: {
-                  categories: {
-                    $exists: true,
-                  },
-                },
-              },
-              {
-                $replaceRoot: {
-                  newRoot: '$categories',
-                },
-              },
-            ],
-
-            // brands facet
-            brands: [
-              {
-                $group: {
-                  _id: '$brandSlug',
-                  collectionSlugs: {
-                    $addToSet: '$brandCollectionSlug',
-                  },
-                },
-              },
-              {
-                $lookup: {
-                  from: COL_BRANDS,
-                  as: 'brand',
-                  let: {
-                    itemId: '$_id',
-                    collectionSlugs: '$collectionSlugs',
-                  },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $eq: ['$itemId', '$$itemId'],
-                        },
-                      },
-                    },
-                    {
-                      $lookup: {
-                        from: COL_BRAND_COLLECTIONS,
-                        as: 'collections',
-                        let: {
-                          brandId: '$_id',
-                        },
-                        pipeline: [
-                          {
-                            $match: {
-                              $and: [
-                                {
-                                  $expr: {
-                                    $eq: ['$brandId', '$$brandId'],
-                                  },
-                                },
-                                {
-                                  $expr: {
-                                    $in: ['$itemId', '$$collectionSlugs'],
-                                  },
-                                },
-                              ],
-                            },
-                          },
-                          {
-                            $sort: {
-                              _id: SORT_DESC,
-                            },
-                          },
-                        ],
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                $addFields: {
-                  brand: {
-                    $arrayElemAt: ['$brand', 0],
-                  },
-                },
-              },
-              {
-                $match: {
-                  brand: {
-                    $exists: true,
-                  },
-                },
-              },
-              {
-                $replaceRoot: {
-                  newRoot: '$brand',
-                },
-              },
-              {
-                $sort: {
-                  _id: SORT_DESC,
-                },
-              },
-            ],
-
-            // countAllDocs facet
-            countAllDocs: [
-              {
-                $count: 'totalDocs',
-              },
-            ],
-
-            // rubric facet
-            rubric: [
-              {
-                $group: {
-                  _id: '$rubricId',
-                },
-              },
-              {
-                $lookup: {
-                  from: COL_RUBRICS,
-                  as: 'rubric',
-                  let: {
-                    rubricId: '$_id',
-                  },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $eq: ['$_id', '$$rubricId'],
-                        },
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                $replaceRoot: {
-                  newRoot: {
-                    $arrayElemAt: ['$rubric', 0],
-                  },
-                },
-              },
-            ],
-
-            // attributes facet
-            attributes: filterAttributesPipeline({
-              _id: SORT_DESC,
-            }),
+    const productDataAggregationResult = await productFacetsCollection
+      .aggregate<ProductsAggregationInterface>(
+        [
+          // match products
+          ...searchStage,
+          {
+            $match: productsInitialMatch,
           },
-        },
+          ...attributeIdsStage,
+          ...excludedOptionsStage,
+          {
+            $facet: {
+              // docs facet
+              docs: [
+                {
+                  $sort: {
+                    _id: SORT_DESC,
+                  },
+                },
+                {
+                  $skip: skip,
+                },
+                {
+                  $limit: limit,
+                },
 
-        // cast facets
-        {
-          $addFields: {
-            totalDocsObject: { $arrayElemAt: ['$countAllDocs', 0] },
-            rubric: { $arrayElemAt: ['$rubric', 0] },
-          },
-        },
-        {
-          $addFields: {
-            countAllDocs: null,
-            totalDocsObject: null,
-            totalDocs: '$totalDocsObject.totalDocs',
-          },
-        },
-        {
-          $addFields: {
-            totalPagesFloat: {
-              $divide: ['$totalDocs', limit],
+                // get summary
+                ...summaryPipeline('$_id'),
+                {
+                  $replaceRoot: {
+                    newRoot: '$summary',
+                  },
+                },
+
+                // count shop products
+                {
+                  $lookup: {
+                    from: COL_SHOP_PRODUCTS,
+                    as: 'shopsCount',
+                    let: { productId: '$_id' },
+                    pipeline: [
+                      {
+                        $match: {
+                          $expr: {
+                            $eq: ['$$productId', '$productId'],
+                          },
+                        },
+                      },
+                      {
+                        $group: {
+                          _id: '$shopId',
+                        },
+                      },
+                    ],
+                  },
+                },
+                {
+                  $addFields: {
+                    shopsCount: {
+                      $size: '$shopsCount',
+                    },
+                  },
+                },
+              ],
+
+              ...productsPaginatedAggregationFacetsPipeline(pipelineConfig),
             },
           },
-        },
+
+          // cast facets
+          ...paginatedAggregationFinalPipeline(limit),
+        ],
         {
-          $addFields: {
-            totalPages: {
-              $ceil: '$totalPagesFloat',
-            },
-          },
+          allowDiskUse: true,
         },
-      ])
+      )
       .toArray();
     const productDataAggregation = productDataAggregationResult[0];
     if (!productDataAggregation) {
@@ -643,11 +382,9 @@ export const getConsoleRubricProducts = async ({
 
     // rubric attributes
     const allRubricAttributes = await getRubricAllAttributes(rubric._id);
-    const docs: ProductInterface[] = [];
+    const docs: ProductSummaryInterface[] = [];
     for await (const product of productDataAggregation.docs) {
-      const productCategoryAttributes = await getCategoryAllAttributes(
-        product.selectedOptionsSlugs,
-      );
+      const productCategoryAttributes = await getCategoryAllAttributes(product.filterSlugs);
 
       // seo content
       const cardContentCities = await getProductAllSeoContents({
@@ -658,14 +395,12 @@ export const getConsoleRubricProducts = async ({
         locale,
       });
 
-      const initialCastedProduct = castProductForUI({
-        product,
+      const initialCastedProduct = castSummaryForUI({
+        summary: product,
         attributes,
         brands,
         categories,
-        rubric,
         locale,
-        getSnippetTitle: true,
       });
 
       const otherShopProducts = await shopProductsCollection
@@ -686,7 +421,7 @@ export const getConsoleRubricProducts = async ({
         .toArray();
       const shopProductPrices = otherShopProducts[0];
 
-      const castedProduct: ProductInterface = {
+      const castedProduct: ProductSummaryInterface = {
         ...initialCastedProduct,
         minPrice: noNaN(shopProductPrices?.minPrice),
         maxPrice: noNaN(shopProductPrices?.maxPrice),

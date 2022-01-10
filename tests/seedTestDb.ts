@@ -1,5 +1,8 @@
+import addZero from 'add-zero';
 import { Seeder } from 'mongo-seeding';
-import products from './data/products/products';
+import { ID_COUNTER_DIGITS } from '../config/common';
+// import { getDatabase } from '../db/mongodb';
+// import { updateIndexes } from './testUtils/getProdDb';
 const mkdirp = require('mkdirp');
 const path = require('path');
 const fs = require('fs');
@@ -7,22 +10,10 @@ const rimraf = require('rimraf');
 const copy = require('recursive-copy');
 require('dotenv').config();
 
-function prepareTestAssets() {
-  products.forEach(({ itemId }) => {
-    const pathToSrc = path.join(process.cwd(), 'tests/assets/test-image-0.png');
-    const fileName = `${itemId}-0.png`;
-    const pathToDist = path.join(process.cwd(), `tests/assets/products/${itemId}`);
-    fs.access(pathToDist, (err: any) => {
-      if (err) {
-        mkdirp(pathToDist).then(() => {
-          fs.copyFileSync(pathToSrc, path.join(pathToDist, fileName));
-        });
-      } else {
-        fs.copyFileSync(pathToSrc, path.join(pathToDist, fileName));
-      }
-    });
-  });
+const maxProductsCount = 70;
 
+function prepareTestAssets() {
+  console.log('removing old assets');
   const src = './tests/assets';
   const dist = './assets';
   rimraf(dist, (e: any) => {
@@ -30,11 +21,24 @@ function prepareTestAssets() {
       console.log(e);
     } else {
       console.log('old assets removed');
+      console.log('creating new assets');
       copy(src, dist).catch((e: any) => {
         console.log(e);
       });
+
+      console.log('creating product assets');
+      for (let i = 1; i <= maxProductsCount; i = i + 1) {
+        const itemId: string = addZero(i, ID_COUNTER_DIGITS);
+        const pathToSrc = path.join(process.cwd(), 'tests/assets/test-image-0.png');
+        const fileName = `${itemId}-0.png`;
+        const pathToDist = path.join(process.cwd(), `assets/products/${itemId}`);
+        mkdirp(pathToDist).then(() => {
+          fs.copyFileSync(pathToSrc, path.join(pathToDist, fileName));
+        });
+      }
     }
   });
+  return;
 }
 
 const config = {
@@ -62,7 +66,15 @@ const config = {
   try {
     await seeder.import(collections);
     console.log(`Test data seeded in ${(new Date().getTime() - startTime) / 1000}s`);
+
+    // console.log('creating indexes');
+    // const { db, client } = await getDatabase();
+    // await updateIndexes(db);
+    // await client.close();
+    // console.log('indexes created');
+
     prepareTestAssets();
+    return;
   } catch (err) {
     console.log(err);
   }

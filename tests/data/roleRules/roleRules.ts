@@ -82,6 +82,36 @@ const roleRules: RoleRuleModel[] = [
     descriptionI18n: {},
     roleId: getObjectId('companyOwnerRole'),
   },
+  {
+    _id: getObjectId('roleRule createBlogPost'),
+    slug: 'createBlogPost',
+    allow: true,
+    nameI18n: {
+      ru: 'Создание блог-поста',
+    },
+    descriptionI18n: {},
+    roleId: getObjectId('companyOwnerRole'),
+  },
+  {
+    _id: getObjectId('roleRule updateBlogPost'),
+    slug: 'updateBlogPost',
+    allow: true,
+    nameI18n: {
+      ru: 'Обновление блог-поста',
+    },
+    descriptionI18n: {},
+    roleId: getObjectId('companyOwnerRole'),
+  },
+  {
+    _id: getObjectId('roleRule deleteBlogPost'),
+    slug: 'deleteBlogPost',
+    allow: true,
+    nameI18n: {
+      ru: 'Удаление блог-поста',
+    },
+    descriptionI18n: {},
+    roleId: getObjectId('companyOwnerRole'),
+  },
 ];
 
 // @ts-ignore

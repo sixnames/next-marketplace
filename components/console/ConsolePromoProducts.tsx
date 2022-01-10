@@ -49,7 +49,7 @@ const ConsolePromoProducts: React.FC<ConsolePromoProductsInterface> = ({
 
   const columns: WpTableColumn<ShopProductInterface>[] = [
     {
-      accessor: 'product.slug',
+      accessor: 'summary.slug',
       headTitle: 'Арт',
       render: ({ cellData }) => {
         return <div>{cellData}</div>;
@@ -61,14 +61,14 @@ const ConsolePromoProducts: React.FC<ConsolePromoProductsInterface> = ({
         return (
           <TableRowImage
             src={`${dataItem.mainImage}`}
-            alt={`${dataItem.product?.snippetTitle}`}
-            title={`${dataItem.product?.snippetTitle}`}
+            alt={`${dataItem.summary?.snippetTitle}`}
+            title={`${dataItem.summary?.snippetTitle}`}
           />
         );
       },
     },
     {
-      accessor: 'product.snippetTitle',
+      accessor: 'summary.snippetTitle',
       headTitle: 'Название',
       render: ({ cellData }) => cellData,
     },

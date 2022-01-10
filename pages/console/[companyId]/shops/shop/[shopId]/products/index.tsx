@@ -4,7 +4,6 @@ import * as React from 'react';
 import ShopRubrics, {
   ShopRubricsInterface,
 } from '../../../../../../../components/shops/ShopRubrics';
-import { ROUTE_CONSOLE } from '../../../../../../../config/common';
 import { COL_RUBRICS, COL_SHOP_PRODUCTS, COL_SHOPS } from '../../../../../../../db/collectionNames';
 import { RubricModel, ShopModel } from '../../../../../../../db/dbModels';
 import { getDatabase } from '../../../../../../../db/mongodb';
@@ -14,6 +13,7 @@ import {
 } from '../../../../../../../db/uiInterfaces';
 import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
 import { getI18nLocaleValue } from '../../../../../../../lib/i18n';
+import { getConsoleCompanyLinks } from '../../../../../../../lib/linkUtils';
 import { noNaN } from '../../../../../../../lib/numbers';
 import {
   castDbData,
@@ -30,17 +30,20 @@ const CompanyShopProducts: NextPage<CompanyShopProductsInterface> = ({
   rubrics,
   shop,
 }) => {
-  const companyBasePath = `${ROUTE_CONSOLE}/${shop.companyId}/shops`;
+  const links = getConsoleCompanyLinks({
+    companyId: shop.companyId,
+    shopId: shop._id,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Товары',
     config: [
       {
         name: 'Магазины',
-        href: companyBasePath,
+        href: links.shops,
       },
       {
         name: shop.name,
-        href: `${companyBasePath}/shop/${shop._id}`,
+        href: links.shop.root,
       },
     ],
   };
@@ -50,7 +53,7 @@ const CompanyShopProducts: NextPage<CompanyShopProductsInterface> = ({
       <ShopRubrics
         shop={shop}
         rubrics={rubrics}
-        basePath={`${companyBasePath}/shop`}
+        basePath={links.shop.itemPath}
         breadcrumbs={breadcrumbs}
       />
     </ConsoleLayout>

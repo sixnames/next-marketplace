@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
-import { alwaysArray, alwaysString } from '../../../lib/arrayUtils';
+import { alwaysString } from '../../../lib/arrayUtils';
 import { getFieldStringLocale } from '../../../lib/i18n';
-import { ShopAddProductsListRouteReduced } from '../../../pages/cms/companies/[companyId]/shops/shop/[shopId]/products/add/[...filters]';
+import { ShopAddProductsListRouteReduced } from '../../../pages/cms/companies/[companyId]/shops/shop/[shopId]/products/[rubricSlug]/add/[...filters]';
 import { COL_COMPANIES, COL_SHOP_PRODUCTS, COL_SHOPS } from '../../collectionNames';
 import { getDatabase } from '../../mongodb';
 import { ShopInterface } from '../../uiInterfaces';
@@ -79,15 +79,10 @@ export async function getAddShopProductSsrData({
   }
   const excludedProductsIds = (shop.shopProducts || []).map(({ productId }) => productId);
 
-  const filters = alwaysArray(query.filters);
   const { selectedAttributes, page, docs, clearSlug, attributes, totalPages, totalDocs, rubric } =
     await getConsoleRubricProducts({
       excludedProductsIds,
-      query: {
-        ...query,
-        rubricId: filters[0],
-        filters: filters.slice(1),
-      },
+      query,
       locale,
       basePath,
       currency,
@@ -100,7 +95,6 @@ export async function getAddShopProductSsrData({
 
   const payload: ShopAddProductsListRouteReduced = {
     shop,
-    rubricId: rubric._id.toHexString(),
     rubricName: getFieldStringLocale(rubric.nameI18n, locale),
     rubricSlug: rubric.slug,
     clearSlug,

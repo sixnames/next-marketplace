@@ -5,9 +5,9 @@ import PageGroupsList, {
   PageGroupsListInterface,
 } from '../../../../components/Pages/PageGroupsList';
 import WpTitle from '../../../../components/WpTitle';
-import { ROUTE_CONSOLE } from '../../../../config/common';
 import AppContentWrapper from '../../../../layout/AppContentWrapper';
 import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
+import { getConsoleCompanyLinks } from '../../../../lib/linkUtils';
 import { getPageGroupsSsr } from '../../../../lib/pageUtils';
 import {
   castDbData,
@@ -22,6 +22,9 @@ interface PageGroupsPageInterface
     Omit<PageGroupsListInterface, 'basePath' | 'pageTitle'> {}
 
 const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({ layoutProps, pagesGroups }) => {
+  const links = getConsoleCompanyLinks({
+    companyId: layoutProps.pageCompany._id,
+  });
   return (
     <ConsoleLayout title={pageTitle} {...layoutProps}>
       <AppContentWrapper>
@@ -29,7 +32,7 @@ const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({ layoutProps, pagesG
           <WpTitle>{pageTitle}</WpTitle>
           <PageGroupsList
             companySlug={`${layoutProps.pageCompany.slug}`}
-            basePath={`${ROUTE_CONSOLE}/${layoutProps.pageCompany._id}/pages`}
+            basePath={links.pages}
             pagesGroups={pagesGroups}
           />
         </Inner>

@@ -1,28 +1,27 @@
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { ATTRIBUTE_VARIANT_SELECT, FILTER_SEPARATOR } from '../config/common';
+import { FILTER_SEPARATOR } from '../config/common';
 import {
   COL_ATTRIBUTES,
   COL_OPTIONS,
-  COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCT_CONNECTION_ITEMS,
-  COL_PRODUCT_CONNECTIONS,
-  COL_PRODUCTS,
+  COL_PRODUCT_FACETS,
   COL_SHOP_PRODUCTS,
+  COL_PRODUCT_SUMMARIES,
 } from '../db/collectionNames';
 import {
   AttributeModel,
   OptionModel,
-  ProductAttributeModel,
-  ProductConnectionItemModel,
-  ProductConnectionModel,
-  ProductModel,
+  ProductFacetModel,
   ProductPayloadModel,
   ShopProductModel,
+  ProductSummaryModel,
+  ObjectIdModel,
 } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
 import getResolverErrorMessage from '../lib/getResolverErrorMessage';
-import { noNaN } from '../lib/numbers';
+import { getAttributeReadableValueLocales } from '../lib/productAttributesUtils';
 import { getOperationPermission, getRequestParams } from '../lib/sessionHelpers';
+import { getParentTreeIds } from '../lib/treeUtils';
+import { execUpdateProductTitles } from '../lib/updateProductTitles';
 
 export const ProductAttribute = objectType({
   name: 'ProductAttribute',
@@ -31,37 +30,6 @@ export const ProductAttribute = objectType({
     t.nonNull.objectId('attributeId');
     t.json('textI18n');
     t.float('number');
-    t.nonNull.list.nonNull.objectId('selectedOptionsIds');
-    t.nonNull.list.nonNull.field('selectedOptionsSlugs', {
-      type: 'String',
-      description: 'List of selected options slug',
-    });
-
-    // ProductAttribute text translation field resolver
-    t.nonNull.field('text', {
-      type: 'String',
-      resolve: async (source, _args, context) => {
-        if (!source.textI18n) {
-          return '';
-        }
-        const { getI18nLocale } = await getRequestParams(context);
-        return getI18nLocale(source.textI18n);
-      },
-    });
-
-    // ProductAttribute attribute field resolver
-    t.nonNull.field('attribute', {
-      type: 'Attribute',
-      resolve: async (source): Promise<AttributeModel> => {
-        const { db } = await getDatabase();
-        const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-        const attribute = await attributesCollection.findOne({ _id: source.attributeId });
-        if (!attribute) {
-          throw Error('Attribute not found in ProductAttribute');
-        }
-        return attribute;
-      },
-    });
   },
 });
 
@@ -69,9 +37,6 @@ export const ProductPayload = objectType({
   name: 'ProductPayload',
   definition(t) {
     t.implements('Payload');
-    t.field('payload', {
-      type: 'Product',
-    });
   },
 });
 
@@ -160,7 +125,9 @@ export const ProductAttributeMutations = extendType({
       resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
-        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+        const productSummariesCollection =
+          db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
+        const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
 
         const session = client.startSession();
@@ -190,8 +157,8 @@ export const ProductAttributeMutations = extendType({
             const { productId, brandSlug } = input;
 
             // Check product availability
-            const product = await productsCollection.findOne({ _id: productId });
-            if (!product) {
+            const summary = await productSummariesCollection.findOne({ _id: productId });
+            if (!summary) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('products.update.error'),
@@ -200,14 +167,18 @@ export const ProductAttributeMutations = extendType({
               return;
             }
 
-            const updatedProductResult = await productsCollection.findOneAndUpdate(
+            const updater = {
+              brandSlug,
+              brandCollectionSlug: brandSlug ? summary.brandCollectionSlug : null,
+            };
+
+            const updatedSummaryResult = await productSummariesCollection.findOneAndUpdate(
               {
                 _id: productId,
               },
               {
                 $set: {
-                  brandSlug,
-                  brandCollectionSlug: brandSlug ? product.brandCollectionSlug : null,
+                  ...updater,
                   updatedAt: new Date(),
                 },
               },
@@ -215,8 +186,29 @@ export const ProductAttributeMutations = extendType({
                 returnDocument: 'after',
               },
             );
-            const updatedProduct = updatedProductResult.value;
-            if (!updatedProductResult.ok || !updatedProduct) {
+            if (!updatedSummaryResult.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('products.update.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            const updatedFacetResult = await productFacetsCollection.findOneAndUpdate(
+              {
+                _id: productId,
+              },
+              {
+                $set: {
+                  ...updater,
+                },
+              },
+              {
+                returnDocument: 'after',
+              },
+            );
+            if (!updatedFacetResult.ok) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('products.update.error'),
@@ -231,8 +223,7 @@ export const ProductAttributeMutations = extendType({
               },
               {
                 $set: {
-                  brandSlug,
-                  brandCollectionSlug: brandSlug ? product.brandCollectionSlug : null,
+                  ...updater,
                   updatedAt: new Date(),
                 },
               },
@@ -246,10 +237,12 @@ export const ProductAttributeMutations = extendType({
               return;
             }
 
+            // update algolia object
+            execUpdateProductTitles(`productId=${productId.toHexString()}`);
+
             mutationPayload = {
               success: true,
               message: await getApiMessage('products.update.success'),
-              payload: updatedProduct,
             };
           });
 
@@ -275,7 +268,9 @@ export const ProductAttributeMutations = extendType({
       resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
-        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+        const productSummariesCollection =
+          db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
+        const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
 
         const session = client.startSession();
@@ -305,8 +300,8 @@ export const ProductAttributeMutations = extendType({
             const { productId, brandCollectionSlug } = input;
 
             // Check product availability
-            const product = await productsCollection.findOne({ _id: productId });
-            if (!product) {
+            const summary = await productSummariesCollection.findOne({ _id: productId });
+            if (!summary) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('products.update.error'),
@@ -315,7 +310,7 @@ export const ProductAttributeMutations = extendType({
               return;
             }
 
-            const updatedProductResult = await productsCollection.findOneAndUpdate(
+            const updatedSummaryResult = await productSummariesCollection.findOneAndUpdate(
               {
                 _id: productId,
               },
@@ -325,12 +320,27 @@ export const ProductAttributeMutations = extendType({
                   updatedAt: new Date(),
                 },
               },
+            );
+            if (!updatedSummaryResult.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('products.update.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            const updatedFacetResult = await productFacetsCollection.findOneAndUpdate(
               {
-                returnDocument: 'after',
+                _id: productId,
+              },
+              {
+                $set: {
+                  brandCollectionSlug,
+                },
               },
             );
-            const updatedProduct = updatedProductResult.value;
-            if (!updatedProductResult.ok || !updatedProduct) {
+            if (!updatedFacetResult.ok) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('products.update.error'),
@@ -359,10 +369,12 @@ export const ProductAttributeMutations = extendType({
               return;
             }
 
+            // update algolia object
+            execUpdateProductTitles(`productId=${productId.toHexString()}`);
+
             mutationPayload = {
               success: true,
               message: await getApiMessage('products.update.success'),
-              payload: updatedProduct,
             };
           });
 
@@ -388,7 +400,9 @@ export const ProductAttributeMutations = extendType({
       resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
-        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+        const productSummariesCollection =
+          db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
+        const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
 
         const session = client.startSession();
@@ -418,8 +432,8 @@ export const ProductAttributeMutations = extendType({
             const { productId, manufacturerSlug } = input;
 
             // Check product availability
-            const product = await productsCollection.findOne({ _id: productId });
-            if (!product) {
+            const summary = await productSummariesCollection.findOne({ _id: productId });
+            if (!summary) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('products.update.error'),
@@ -428,7 +442,7 @@ export const ProductAttributeMutations = extendType({
               return;
             }
 
-            const updatedProductResult = await productsCollection.findOneAndUpdate(
+            const updatedSummaryResult = await productSummariesCollection.findOneAndUpdate(
               {
                 _id: productId,
               },
@@ -442,8 +456,29 @@ export const ProductAttributeMutations = extendType({
                 returnDocument: 'after',
               },
             );
-            const updatedProduct = updatedProductResult.value;
-            if (!updatedProductResult.ok || !updatedProduct) {
+            if (!updatedSummaryResult.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('products.update.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            const updatedFacetResult = await productFacetsCollection.findOneAndUpdate(
+              {
+                _id: productId,
+              },
+              {
+                $set: {
+                  manufacturerSlug,
+                },
+              },
+              {
+                returnDocument: 'after',
+              },
+            );
+            if (!updatedFacetResult.ok) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('products.update.error'),
@@ -475,7 +510,6 @@ export const ProductAttributeMutations = extendType({
             mutationPayload = {
               success: true,
               message: await getApiMessage('products.update.success'),
-              payload: updatedProduct,
             };
           });
 
@@ -505,16 +539,11 @@ export const ProductAttributeMutations = extendType({
       resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
-        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-        const productConnectionsCollection =
-          db.collection<ProductConnectionModel>(COL_PRODUCT_CONNECTIONS);
-        const productConnectionItemsCollection = db.collection<ProductConnectionItemModel>(
-          COL_PRODUCT_CONNECTION_ITEMS,
-        );
+        const productSummariesCollection =
+          db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
+        const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
         const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-        const productAttributesCollection =
-          db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
         const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
 
         const session = client.startSession();
@@ -544,8 +573,8 @@ export const ProductAttributeMutations = extendType({
             const { selectedOptionsIds, productId, attributeId, productAttributeId } = input;
 
             // Check if product exist
-            const product = await productsCollection.findOne({ _id: productId });
-            if (!product) {
+            const summary = await productSummariesCollection.findOne({ _id: productId });
+            if (!summary) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('products.update.error'),
@@ -555,8 +584,8 @@ export const ProductAttributeMutations = extendType({
             }
 
             // Check if product attribute exist
-            let productAttribute = await productAttributesCollection.findOne({
-              _id: productAttributeId,
+            let productAttribute = summary.attributes.find((productAttribute) => {
+              return productAttribute.attributeId.equals(attributeId);
             });
 
             // Check attribute availability
@@ -569,164 +598,236 @@ export const ProductAttributeMutations = extendType({
               await session.abortTransaction();
               return;
             }
+            const productAttributeNotExist = !productAttribute;
 
             // Create new product attribute if original is absent
             if (!productAttribute) {
               productAttribute = {
                 _id: productAttributeId,
                 attributeId,
-                productId: product._id,
-                productSlug: product.slug,
-                rubricId: product.rubricId,
-                rubricSlug: product.rubricSlug,
-                selectedOptionsIds: [],
-                selectedOptionsSlugs: [],
+                optionIds: [],
+                filterSlugs: [],
                 number: undefined,
                 textI18n: {},
+                readableValueI18n: {},
               };
             }
+            const readableValueI18n = getAttributeReadableValueLocales({
+              productAttribute: {
+                ...productAttribute,
+                attribute,
+              },
+              gender: summary.gender,
+            });
+            productAttribute.readableValueI18n = readableValueI18n;
 
             // Get selected options tree
-            const finalOptions: OptionModel[] = [];
-            if (selectedOptionsIds.length > 0) {
-              const optionsAggregation = await optionsCollection
-                .aggregate<OptionModel>([
-                  {
-                    $match: {
-                      _id: {
-                        $in: selectedOptionsIds,
-                      },
-                    },
-                  },
-                  {
-                    $graphLookup: {
-                      from: COL_OPTIONS,
-                      as: 'options',
-                      startWith: '$parentId',
-                      connectFromField: 'parentId',
-                      connectToField: '_id',
-                      depthField: 'level',
-                    },
-                  },
-                ])
-                .toArray();
-
-              // sort parent options in descendant order for each selected option
-              optionsAggregation.forEach((selectedOptionTree) => {
-                const { options, ...restOption } = selectedOptionTree;
-
-                const sortedOptions = (options || []).sort((a, b) => {
-                  return noNaN(b.level) - noNaN(a.level);
-                });
-
-                const treeQueue = [...sortedOptions, restOption];
-                treeQueue.forEach((finalOption) => {
-                  finalOptions.push(finalOption);
-                });
+            const finalOptionIds: ObjectIdModel[] = [];
+            for await (const optionId of selectedOptionsIds) {
+              const optionsTreeIds = await getParentTreeIds({
+                collectionName: COL_OPTIONS,
+                _id: optionId,
+                acc: [],
               });
+              optionsTreeIds.forEach((_id) => finalOptionIds.push(_id));
             }
+            const finalOptions = await optionsCollection
+              .find({
+                _id: {
+                  $in: finalOptionIds,
+                },
+              })
+              .toArray();
 
             // Update or create product attribute
-            const finalSelectedOptionsSlugs = finalOptions.map(
+            const finalFilterSlugs = finalOptions.map(
               ({ slug }) => `${attribute.slug}${FILTER_SEPARATOR}${slug}`,
             );
-            const finalSelectedOptionsIds = finalOptions.map(({ _id }) => _id);
-            const { _id, ...restProductAttribute } = productAttribute;
-            const updatedProductAttributeResult =
-              await productAttributesCollection.findOneAndUpdate(
+
+            const oldFilterSlugs = [...productAttribute.filterSlugs];
+
+            // add new product attribute if not exist
+            if (productAttributeNotExist && finalOptionIds.length > 0) {
+              const updatedSummaryResult = await productSummariesCollection.findOneAndUpdate(
                 {
-                  _id,
+                  _id: summary._id,
                 },
                 {
-                  $set: {
-                    ...restProductAttribute,
-                    selectedOptionsSlugs: finalSelectedOptionsSlugs,
-                    selectedOptionsIds: finalSelectedOptionsIds,
+                  $push: {
+                    attributes: {
+                      ...productAttribute,
+                      optionIds: finalOptionIds,
+                      filterSlugs: finalFilterSlugs,
+                    },
+                  },
+                  $addToSet: {
+                    filterSlugs: {
+                      $each: finalFilterSlugs,
+                    },
                   },
                 },
+              );
+              if (!updatedSummaryResult.ok) {
+                mutationPayload = {
+                  success: false,
+                  message: await getApiMessage('products.update.error'),
+                };
+                await session.abortTransaction();
+                return;
+              }
+
+              await shopProductsCollection.updateMany(
                 {
-                  upsert: true,
-                  returnDocument: 'after',
+                  productId: summary._id,
+                },
+                {
+                  $addToSet: {
+                    filterSlugs: {
+                      $each: finalFilterSlugs,
+                    },
+                  },
                 },
               );
-            const updatedProductAttribute = updatedProductAttributeResult.value;
-            if (!updatedProductAttributeResult.ok || !updatedProductAttribute) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage('products.update.error'),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Update product
-            const attributeSlug = attribute.slug;
-            const otherAttributesOptions = product.selectedOptionsSlugs.filter((slug) => {
-              const slugParts = slug.split(FILTER_SEPARATOR);
-              return slugParts[0] !== attributeSlug;
-            });
-
-            const attributeIdUpdater = selectedOptionsIds.length > 0 ? '$addToSet' : '$pull';
-            const productUpdater = {
-              $set: {
-                selectedOptionsSlugs: [...otherAttributesOptions, ...finalSelectedOptionsSlugs],
-              },
-              [attributeIdUpdater]: {
-                selectedAttributesIds: attributeId,
-              },
-            };
-
-            const updatedProduct = await productsCollection.findOneAndUpdate(
-              {
-                _id: productId,
-              },
-              productUpdater,
-            );
-            const updatedShopProduct = await shopProductsCollection.updateMany(
-              {
-                productId,
-              },
-              productUpdater,
-            );
-            if (!updatedProduct.ok || !updatedShopProduct.acknowledged) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage('products.update.error'),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // update connections
-            if (attribute.variant === ATTRIBUTE_VARIANT_SELECT) {
-              const selectedOption = finalOptions[0];
-              if (selectedOption) {
-                const connections = await productConnectionsCollection
-                  .find({
-                    productsIds: product._id,
-                    attributeId: attribute._id,
-                  })
-                  .toArray();
-                for await (const connection of connections) {
-                  await productConnectionItemsCollection.updateMany(
-                    {
-                      productId: product._id,
-                      connectionId: connection._id,
+              await productFacetsCollection.findOneAndUpdate(
+                {
+                  _id: summary._id,
+                },
+                {
+                  $addToSet: {
+                    attributeIds: attributeId,
+                    filterSlugs: {
+                      $each: finalFilterSlugs,
                     },
-                    {
-                      $set: {
-                        optionId: selectedOption._id,
+                  },
+                },
+              );
+
+              mutationPayload = {
+                success: true,
+                message: await getApiMessage('products.update.success'),
+              };
+              return;
+            }
+
+            // remove attribute if value is empty
+            if (finalOptionIds.length < 1) {
+              const updatedProductAttributeResult =
+                await productSummariesCollection.findOneAndUpdate(
+                  {
+                    _id: summary._id,
+                  },
+                  {
+                    $pull: {
+                      attributes: {
+                        attributeId,
                       },
                     },
-                  );
-                }
+                    $pullAll: {
+                      filterSlugs: oldFilterSlugs,
+                    },
+                  },
+                );
+              if (!updatedProductAttributeResult.ok) {
+                mutationPayload = {
+                  success: false,
+                  message: await getApiMessage('products.update.error'),
+                };
+                await session.abortTransaction();
+                return;
               }
+              await shopProductsCollection.updateMany(
+                {
+                  productId: summary._id,
+                },
+                {
+                  $pullAll: {
+                    filterSlugs: oldFilterSlugs,
+                  },
+                },
+              );
+              await productFacetsCollection.findOneAndUpdate(
+                {
+                  _id: summary._id,
+                },
+                {
+                  $pull: {
+                    attributeIds: attributeId,
+                  },
+                  $pullAll: {
+                    filterSlugs: oldFilterSlugs,
+                  },
+                },
+              );
+
+              mutationPayload = {
+                success: true,
+                message: await getApiMessage('products.update.success'),
+              };
+              return;
             }
+
+            // update attribute
+            const updatedFilterSlugs = summary.filterSlugs.reduce((acc: string[], filterSlug) => {
+              if (oldFilterSlugs.includes(filterSlug)) {
+                return acc;
+              }
+              return [...acc, filterSlug];
+            }, finalFilterSlugs);
+            const updatedProductAttributeResult = await productSummariesCollection.findOneAndUpdate(
+              {
+                _id: summary._id,
+              },
+              {
+                $set: {
+                  'attributes.$[oldAttribute]': {
+                    ...productAttribute,
+                    optionIds: finalOptionIds,
+                    filterSlugs: finalFilterSlugs,
+                  },
+                  filterSlugs: updatedFilterSlugs,
+                },
+              },
+              {
+                arrayFilters: [
+                  {
+                    'oldAttribute._id': productAttribute._id,
+                  },
+                ],
+              },
+            );
+            if (!updatedProductAttributeResult.ok) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('products.update.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+            await shopProductsCollection.updateMany(
+              {
+                productId: summary._id,
+              },
+              {
+                $set: {
+                  filterSlugs: updatedFilterSlugs,
+                },
+              },
+            );
+            await productFacetsCollection.findOneAndUpdate(
+              {
+                _id: summary._id,
+              },
+              {
+                $set: {
+                  filterSlugs: updatedFilterSlugs,
+                },
+              },
+            );
 
             mutationPayload = {
               success: true,
               message: await getApiMessage('products.update.success'),
-              payload: product,
+              payload: summary,
             };
           });
 
@@ -758,10 +859,9 @@ export const ProductAttributeMutations = extendType({
         try {
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
-          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const productSummariesCollection =
+            db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-          const productAttributesCollection =
-            db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
           const { input } = args;
           const { productId, attributes } = input;
 
@@ -778,70 +878,84 @@ export const ProductAttributeMutations = extendType({
           }
 
           // Check if product exist
-          const product = await productsCollection.findOne({ _id: productId });
-          if (!product) {
+          const summary = await productSummariesCollection.findOne({ _id: productId });
+          if (!summary) {
             return {
               success: false,
               message: await getApiMessage('products.update.error'),
             };
           }
 
-          for await (const attributesItem of attributes) {
-            const { number, attributeId, productAttributeId } = attributesItem;
+          for await (const inputAttribute of attributes) {
+            const { number, attributeId, productAttributeId } = inputAttribute;
 
             // Check if product attribute exist
-            let productAttribute = await productAttributesCollection.findOne({
-              _id: productAttributeId,
+            let productAttribute = await summary.attributes.find(({ _id }) => {
+              return _id.equals(productAttributeId);
             });
+
+            const attribute = await attributesCollection.findOne({ _id: attributeId });
+            if (!attribute) {
+              continue;
+            }
+            const productAttributeNotExist = !productAttribute;
 
             // Create new product attribute if original is absent
             if (!productAttribute) {
-              const attribute = await attributesCollection.findOne({ _id: attributeId });
-
-              if (!attribute) {
-                return {
-                  success: false,
-                  message: await getApiMessage('products.update.error'),
-                };
-              }
-
               productAttribute = {
                 _id: productAttributeId,
                 attributeId,
-                productId: product._id,
-                productSlug: product.slug,
-                rubricId: product.rubricId,
-                rubricSlug: product.rubricSlug,
-                selectedOptionsIds: [],
-                selectedOptionsSlugs: [],
-                number: undefined,
+                optionIds: [],
+                filterSlugs: [],
+                number,
                 textI18n: {},
+                readableValueI18n: {},
               };
             }
+            const readableValueI18n = getAttributeReadableValueLocales({
+              productAttribute: {
+                ...productAttribute,
+                attribute,
+              },
+              gender: summary.gender,
+            });
+            productAttribute.readableValueI18n = readableValueI18n;
 
-            // Update or create product attribute
-            const { _id, ...restProductAttribute } = productAttribute;
-            await productAttributesCollection.findOneAndUpdate(
-              {
-                _id,
-              },
-              {
-                $set: {
-                  ...restProductAttribute,
-                  number,
+            if (productAttributeNotExist) {
+              await productSummariesCollection.findOneAndUpdate(
+                {
+                  _id: summary._id,
                 },
-              },
-              {
-                upsert: true,
-                returnDocument: 'after',
-              },
-            );
+                {
+                  $push: {
+                    attributes: productAttribute,
+                  },
+                },
+              );
+            } else {
+              await productSummariesCollection.findOneAndUpdate(
+                {
+                  _id: summary._id,
+                },
+                {
+                  $set: {
+                    'attributes.$[oldAttribute]': {
+                      ...productAttribute,
+                      number: inputAttribute.number,
+                    },
+                  },
+                },
+                {
+                  arrayFilters: [{ 'oldAttribute._id': { $eq: productAttribute._id } }],
+                },
+              );
+            }
           }
 
           return {
             success: true,
             message: await getApiMessage('products.update.success'),
-            payload: product,
+            payload: summary,
           };
         } catch (e) {
           console.log(e);
@@ -868,10 +982,9 @@ export const ProductAttributeMutations = extendType({
         try {
           const { getApiMessage } = await getRequestParams(context);
           const { db } = await getDatabase();
-          const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+          const productSummariesCollection =
+            db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-          const productAttributesCollection =
-            db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
           const { input } = args;
           const { productId, attributes } = input;
 
@@ -888,70 +1001,84 @@ export const ProductAttributeMutations = extendType({
           }
 
           // Check if product exist
-          const product = await productsCollection.findOne({ _id: productId });
-          if (!product) {
+          const summary = await productSummariesCollection.findOne({ _id: productId });
+          if (!summary) {
             return {
               success: false,
               message: await getApiMessage('products.update.error'),
             };
           }
 
-          for await (const attributesItem of attributes) {
-            const { textI18n, attributeId, productAttributeId } = attributesItem;
+          for await (const inputAttribute of attributes) {
+            const { textI18n, attributeId, productAttributeId } = inputAttribute;
 
             // Check if product attribute exist
-            let productAttribute = await productAttributesCollection.findOne({
-              _id: productAttributeId,
+            let productAttribute = await summary.attributes.find(({ _id }) => {
+              return _id.equals(productAttributeId);
             });
+
+            const attribute = await attributesCollection.findOne({ _id: attributeId });
+            if (!attribute) {
+              continue;
+            }
+            const productAttributeNotExist = !productAttribute;
 
             // Create new product attribute if original is absent
             if (!productAttribute) {
-              const attribute = await attributesCollection.findOne({ _id: attributeId });
-
-              if (!attribute) {
-                return {
-                  success: false,
-                  message: await getApiMessage('products.update.error'),
-                };
-              }
-
               productAttribute = {
                 _id: productAttributeId,
                 attributeId,
-                productId: product._id,
-                productSlug: product.slug,
-                rubricId: product.rubricId,
-                rubricSlug: product.rubricSlug,
-                selectedOptionsIds: [],
-                selectedOptionsSlugs: [],
-                number: undefined,
-                textI18n: {},
+                optionIds: [],
+                filterSlugs: [],
+                number: null,
+                textI18n,
+                readableValueI18n: {},
               };
             }
+            const readableValueI18n = getAttributeReadableValueLocales({
+              productAttribute: {
+                ...productAttribute,
+                attribute,
+              },
+              gender: summary.gender,
+            });
+            productAttribute.readableValueI18n = readableValueI18n;
 
-            // Update or create product attribute
-            const { _id, ...restProductAttribute } = productAttribute;
-            await productAttributesCollection.findOneAndUpdate(
-              {
-                _id,
-              },
-              {
-                $set: {
-                  ...restProductAttribute,
-                  textI18n,
+            if (productAttributeNotExist) {
+              await productSummariesCollection.findOneAndUpdate(
+                {
+                  _id: summary._id,
                 },
-              },
-              {
-                upsert: true,
-                returnDocument: 'after',
-              },
-            );
+                {
+                  $push: {
+                    attributes: productAttribute,
+                  },
+                },
+              );
+            } else {
+              await productSummariesCollection.findOneAndUpdate(
+                {
+                  _id: summary._id,
+                },
+                {
+                  $set: {
+                    'attributes.$[oldAttribute]': {
+                      ...productAttribute,
+                      textI18n: inputAttribute.textI18n,
+                    },
+                  },
+                },
+                {
+                  arrayFilters: [{ 'oldAttribute._id': { $eq: productAttribute._id } }],
+                },
+              );
+            }
           }
 
           return {
             success: true,
             message: await getApiMessage('products.update.success'),
-            payload: product,
+            payload: summary,
           };
         } catch (e) {
           console.log(e);

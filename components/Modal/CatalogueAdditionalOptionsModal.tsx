@@ -80,21 +80,19 @@ const CatalogueAdditionalOptionsModal: React.FC<CatalogueAdditionalOptionsModalI
       notShowAsAlphabet={notShowAsAlphabet}
       onSubmit={(selectedOptions) => {
         hideModal();
-        const selectedOptionsSlugs = selectedOptions.map(({ slug }) => {
+        const filterSlugs = selectedOptions.map(({ slug }) => {
           return `${attributeSlug}${FILTER_SEPARATOR}${slug}`;
         });
-        const nextParamsList = [...alwaysArray(query.filters), ...selectedOptionsSlugs].filter(
-          (param) => {
-            const paramParts = param.split(FILTER_SEPARATOR);
-            if (paramParts[0] === FILTER_PAGE_KEY) {
-              return false;
-            }
-            if (!excludedParams) {
-              return param;
-            }
-            return !excludedParams.includes(param);
-          },
-        );
+        const nextParamsList = [...alwaysArray(query.filters), ...filterSlugs].filter((param) => {
+          const paramParts = param.split(FILTER_SEPARATOR);
+          if (paramParts[0] === FILTER_PAGE_KEY) {
+            return false;
+          }
+          if (!excludedParams) {
+            return param;
+          }
+          return !excludedParams.includes(param);
+        });
         const nextParams = nextParamsList.join('/');
         router.push(`${basePath}/${nextParams}`).catch((e) => {
           console.log(e);

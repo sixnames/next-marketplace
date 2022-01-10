@@ -1,53 +1,47 @@
-import { ObjectId } from 'mongodb';
+import { NextPage } from 'next';
 import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import ShopSyncErrors, {
   ShopSyncErrorsInterface,
 } from '../../../../../../../../components/shops/ShopSyncErrors';
-import { DEFAULT_COMPANY_SLUG, ROUTE_CMS } from '../../../../../../../../config/common';
-import { COL_COMPANIES, COL_SHOPS } from '../../../../../../../../db/collectionNames';
-import { getPaginatedNotSyncedProducts } from '../../../../../../../../db/dao/notSyncedProducts/getPaginatedNotSyncedProducts';
-import { ShopModel } from '../../../../../../../../db/dbModels';
-import { getDatabase } from '../../../../../../../../db/mongodb';
+import { getCmsCompanyShopSyncErrorsPageSsr } from '../../../../../../../../db/dao/ssr/getCmsCompanyShopSyncErrorsPageSsr';
 import { AppContentWrapperBreadCrumbs } from '../../../../../../../../db/uiInterfaces';
 import ConsoleLayout from '../../../../../../../../layout/cms/ConsoleLayout';
-import { alwaysArray, alwaysString } from '../../../../../../../../lib/arrayUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../../../../../../lib/ssrUtils';
+import { getCmsCompanyLinks } from '../../../../../../../../lib/linkUtils';
+import { GetAppInitialDataPropsInterface } from '../../../../../../../../lib/ssrUtils';
 
-interface CompanyShopSyncErrorsInterface
+export interface CmsCompanyShopSyncErrorsPageInterface
   extends GetAppInitialDataPropsInterface,
     Omit<ShopSyncErrorsInterface, 'basePath'> {}
 
-const CompanyShopSyncErrors: NextPage<CompanyShopSyncErrorsInterface> = ({
+const CmsCompanyShopSyncErrorsPage: NextPage<CmsCompanyShopSyncErrorsPageInterface> = ({
   layoutProps,
   shop,
   notSyncedProducts,
   companySlug,
 }) => {
-  const companyBasePath = `${ROUTE_CMS}/companies/${shop.companyId}`;
+  const { root, parentLink, shops, ...links } = getCmsCompanyLinks({
+    companyId: shop.companyId,
+    shopId: shop._id,
+  });
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Ошибки синхронизации',
     config: [
       {
         name: 'Компании',
-        href: `${ROUTE_CMS}/companies`,
+        href: parentLink,
       },
       {
         name: `${shop.company?.name}`,
-        href: companyBasePath,
+        href: root,
       },
       {
         name: 'Магазины',
-        href: `${companyBasePath}/shops/${shop.companyId}`,
+        href: shops,
       },
       {
         name: shop.name,
-        href: `${companyBasePath}/shops/shop/${shop._id}`,
+        href: `${links.shop}/${shop._id}`,
       },
     ],
   };
@@ -59,65 +53,12 @@ const CompanyShopSyncErrors: NextPage<CompanyShopSyncErrorsInterface> = ({
         breadcrumbs={breadcrumbs}
         notSyncedProducts={notSyncedProducts}
         showShopName={false}
-        basePath={`${companyBasePath}/shops/shop`}
+        basePath={links.shop.itemPath}
         shop={shop}
       />
     </ConsoleLayout>
   );
 };
 
-export const getServerSideProps = async (
-  context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<CompanyShopSyncErrorsInterface>> => {
-  const { db } = await getDatabase();
-  const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
-  const { query } = context;
-  const { shopId } = query;
-  const initialProps = await getAppInitialData({ context });
-
-  const shopAggregation = await shopsCollection
-    .aggregate([
-      {
-        $match: { _id: new ObjectId(`${shopId}`) },
-      },
-      {
-        $lookup: {
-          from: COL_COMPANIES,
-          as: 'company',
-          foreignField: '_id',
-          localField: 'companyId',
-        },
-      },
-      {
-        $addFields: {
-          company: {
-            $arrayElemAt: ['$company', 0],
-          },
-        },
-      },
-    ])
-    .toArray();
-  const shop = shopAggregation[0];
-
-  if (!initialProps.props || !shop) {
-    return {
-      notFound: true,
-    };
-  }
-
-  const payload = await getPaginatedNotSyncedProducts({
-    filters: alwaysArray(query.filters),
-    shopId: alwaysString(shopId),
-  });
-
-  return {
-    props: {
-      ...initialProps.props,
-      shop: castDbData(shop),
-      notSyncedProducts: castDbData(payload),
-      companySlug: DEFAULT_COMPANY_SLUG,
-    },
-  };
-};
-
-export default CompanyShopSyncErrors;
+export const getServerSideProps = getCmsCompanyShopSyncErrorsPageSsr;
+export default CmsCompanyShopSyncErrorsPage;

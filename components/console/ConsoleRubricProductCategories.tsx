@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ProductCategoryInterface, ProductInterface } from '../../db/uiInterfaces';
+import { ProductCategoryInterface, ProductSummaryInterface } from '../../db/uiInterfaces';
 import {
   useUpdateProductCategory,
   useUpdateProductCategoryVisibility,
@@ -11,7 +11,7 @@ import RequestError from '../RequestError';
 import WpTooltip from '../WpTooltip';
 
 interface ConsoleRubricProductCategoriesInterface {
-  product: ProductInterface;
+  product: ProductSummaryInterface;
   categoriesTree: ProductCategoryInterface[];
 }
 
@@ -29,7 +29,7 @@ const ConsoleRubricProductCategories: React.FC<ConsoleRubricProductCategoriesInt
     (category: ProductCategoryInterface) => {
       const { name, categories } = category;
       const hasSelectedChildren = categories.some(({ selected }) => selected);
-      const isViewChecked = product.titleCategoriesSlugs.includes(category.slug);
+      const isViewChecked = product.titleCategorySlugs.includes(category.slug);
 
       return (
         <div>
@@ -88,7 +88,7 @@ const ConsoleRubricProductCategories: React.FC<ConsoleRubricProductCategoriesInt
     },
     [
       product._id,
-      product.titleCategoriesSlugs,
+      product.titleCategorySlugs,
       showLoading,
       updateProductCategoryMutation,
       updateProductCategoryVisibilityMutation,

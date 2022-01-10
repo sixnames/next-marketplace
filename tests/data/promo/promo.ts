@@ -45,14 +45,8 @@ const promo: PromoModel[] = [
 
     // main banner
     showAsMainBanner: true,
-    mainBanner: {
-      index: 1,
-      url: `/assets/${ASSETS_DIST_PROMO}/assets/${ASSETS_DIST_PROMO}_a/main-banner.jpg`,
-    },
-    mainBannerMobile: {
-      index: 1,
-      url: `/assets/${ASSETS_DIST_PROMO}/assets/${ASSETS_DIST_PROMO}_a/main-banner-mobile.jpg`,
-    },
+    mainBanner: `/assets/${ASSETS_DIST_PROMO}/assets/${ASSETS_DIST_PROMO}_a/main-banner.jpg`,
+    mainBannerMobile: `/assets/${ASSETS_DIST_PROMO}/assets/${ASSETS_DIST_PROMO}_a/main-banner-mobile.jpg`,
     mainBannerTextColor: '#000000',
     mainBannerVerticalTextAlign: TEXT_VERTICAL_FLEX_OPTIONS[0]._id,
     mainBannerHorizontalTextAlign: TEXT_HORIZONTAL_FLEX_OPTIONS[0]._id,
@@ -62,10 +56,7 @@ const promo: PromoModel[] = [
 
     //secondary banner
     showAsSecondaryBanner: true,
-    secondaryBanner: {
-      index: 1,
-      url: `/assets/${ASSETS_DIST_PROMO}/assets/${ASSETS_DIST_PROMO}_a/secondary-banner-1.jpg`,
-    },
+    secondaryBanner: `/assets/${ASSETS_DIST_PROMO}/assets/${ASSETS_DIST_PROMO}_a/secondary-banner-1.jpg`,
     secondaryBannerTextColor: '#000000',
     secondaryBannerVerticalTextAlign: TEXT_VERTICAL_FLEX_OPTIONS[0]._id,
     secondaryBannerHorizontalTextAlign: TEXT_HORIZONTAL_FLEX_OPTIONS[0]._id,

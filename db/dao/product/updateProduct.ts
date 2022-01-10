@@ -1,5 +1,4 @@
 import { ObjectId } from 'mongodb';
-import { updateAlgoliaProducts } from '../../../lib/algolia/productAlgoliaUtils';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
 import { checkBarcodeIntersects, trimProductName } from '../../../lib/productUtils';
 import {
@@ -7,9 +6,10 @@ import {
   getRequestParams,
   getResolverValidationSchema,
 } from '../../../lib/sessionHelpers';
+import { execUpdateProductTitles } from '../../../lib/updateProductTitles';
 import { updateProductSchema } from '../../../validation/productSchema';
-import { COL_PRODUCTS, COL_RUBRICS } from '../../collectionNames';
-import { ProductModel, ProductPayloadModel, RubricModel } from '../../dbModels';
+import { COL_PRODUCT_SUMMARIES } from '../../collectionNames';
+import { ProductPayloadModel, ProductSummaryModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
 import { CreateProductInputInterface } from './createProduct';
@@ -24,8 +24,7 @@ export async function updateProduct({
 }: DaoPropsInterface<UpdateProductInputInterface>): Promise<ProductPayloadModel> {
   const { getApiMessage, locale } = await getRequestParams(context);
   const { db, client } = await getDatabase();
-  const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-  const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+  const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
 
   const session = client.startSession();
 
@@ -67,8 +66,8 @@ export async function updateProduct({
 
       // check product availability
       const productObjectId = new ObjectId(productId);
-      const product = await productsCollection.findOne({ _id: productObjectId });
-      if (!product) {
+      const summary = await productSummariesCollection.findOne({ _id: productObjectId });
+      if (!summary) {
         mutationPayload = {
           success: false,
           message: await getApiMessage(`products.update.notFound`),
@@ -81,7 +80,7 @@ export async function updateProduct({
       const barcodeDoubles = await checkBarcodeIntersects({
         locale,
         barcode: values.barcode,
-        productId: product._id,
+        productId: summary._id,
       });
       if (barcodeDoubles.length > 0) {
         mutationPayload = {
@@ -93,30 +92,19 @@ export async function updateProduct({
         return;
       }
 
-      // get selected rubric
-      const rubricObjectId = new ObjectId(rubricId);
-      const rubric = await rubricsCollection.findOne({ _id: rubricObjectId });
-      if (!rubric) {
-        mutationPayload = {
-          success: false,
-          message: await getApiMessage(`products.update.error`),
-        };
-        await session.abortTransaction();
-        return;
-      }
-
       // update product
       const { originalName, nameI18n } = trimProductName({
         nameI18n: values.nameI18n,
         originalName: values.originalName,
       });
-      const updatedProductResult = await productsCollection.findOneAndUpdate(
+      const updatedProductResult = await productSummariesCollection.findOneAndUpdate(
         {
-          _id: product._id,
+          _id: summary._id,
         },
         {
           $set: {
             ...values,
+            rubricId: new ObjectId(rubricId),
             nameI18n,
             originalName,
             updatedAt: new Date(),
@@ -137,10 +125,8 @@ export async function updateProduct({
         return;
       }
 
-      // update algolia product object
-      await updateAlgoliaProducts({
-        _id: updatedProduct._id,
-      });
+      // update product title
+      execUpdateProductTitles(`productId=${updatedProduct._id.toHexString()}`);
 
       mutationPayload = {
         success: true,

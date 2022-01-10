@@ -4,7 +4,7 @@ import { ASSETS_DIST_CATEGORIES } from '../../../config/common';
 import { COL_CATEGORIES } from '../../../db/collectionNames';
 import { CategoryModel } from '../../../db/dbModels';
 import { getDatabase } from '../../../db/mongodb';
-import { getApiMessageValue } from '../../../lib/apiMessageUtils';
+import { getApiMessageValue } from '../../../db/dao/messages/apiMessageUtils';
 import { deleteUpload, storeUploads } from '../../../lib/assetUtils/assetUtils';
 import { parseRestApiFormData } from '../../../lib/restApi';
 import { getOperationPermission } from '../../../lib/sessionHelpers';
@@ -165,7 +165,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     { _id: category._id },
     {
       $set: {
-        image: currentAsset.url,
+        image: currentAsset,
       },
     },
     {

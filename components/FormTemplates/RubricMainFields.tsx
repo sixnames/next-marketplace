@@ -1,17 +1,16 @@
 import * as React from 'react';
-import { RubricVariant, SelectOption } from '../../generated/apolloComponents';
+import { RubricVariantInterface } from '../../db/uiInterfaces';
+import { useConstantOptions } from '../../hooks/useConstantOptions';
 import FormikCheckboxLine from '../FormElements/Checkbox/FormikCheckboxLine';
 import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInput';
 import FormikSelect from '../FormElements/Select/FormikSelect';
 
-interface RubricMainFieldsInterface {
-  rubricVariants: Pick<RubricVariant, '_id' | 'name' | 'nameI18n'>[];
-  genderOptions: Pick<SelectOption, '_id' | 'name'>[];
+export interface RubricMainFieldsInterface {
+  rubricVariants: RubricVariantInterface[];
 }
-const RubricMainFields: React.FC<RubricMainFieldsInterface> = ({
-  genderOptions,
-  rubricVariants,
-}) => {
+const RubricMainFields: React.FC<RubricMainFieldsInterface> = ({ rubricVariants }) => {
+  const { genderOptions } = useConstantOptions();
+
   return (
     <React.Fragment>
       <FormikCheckboxLine label={'С заглавной буквы в заголовке'} name={'capitalise'} />
@@ -98,6 +97,7 @@ const RubricMainFields: React.FC<RubricMainFieldsInterface> = ({
       />
 
       <FormikSelect
+        useIdField
         isRequired
         showInlineError
         label={'Тип рубрики'}

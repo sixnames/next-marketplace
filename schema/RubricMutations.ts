@@ -5,7 +5,8 @@ import {
   COL_ATTRIBUTES_GROUPS,
   COL_CATEGORIES,
   COL_PRODUCT_ATTRIBUTES,
-  COL_PRODUCTS,
+  COL_PRODUCT_FACETS,
+  COL_PRODUCT_SUMMARIES,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
 } from '../db/collectionNames';
@@ -14,14 +15,14 @@ import {
   AttributeModel,
   AttributesGroupModel,
   CategoryModel,
-  ProductAttributeModel,
-  ProductModel,
+  ProductSummaryAttributeModel,
+  ProductFacetModel,
+  ProductSummaryModel,
   RubricModel,
   RubricPayloadModel,
   ShopProductModel,
 } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
-import { updateAlgoliaProducts } from '../lib/algolia/productAlgoliaUtils';
 import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 import { updateCitiesSeoContent } from '../lib/seoContentUtils';
 import {
@@ -30,6 +31,7 @@ import {
   getResolverValidationSchema,
 } from '../lib/sessionHelpers';
 import { generateDefaultLangSlug } from '../lib/slugUtils';
+import { execUpdateProductTitles } from '../lib/updateProductTitles';
 import {
   addAttributesGroupToRubricSchema,
   createRubricSchema,
@@ -304,10 +306,8 @@ export const RubricMutations = extendType({
             });
           }
 
-          // update product algolia indexes
-          await updateAlgoliaProducts({
-            rubricId: updatedRubric._id,
-          });
+          // update product titles
+          execUpdateProductTitles(`rubricSlug=${updatedRubric.slug}`);
 
           return {
             success: true,
@@ -339,7 +339,9 @@ export const RubricMutations = extendType({
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
         const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
+        const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
+        const productSummariesCollection =
+          db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
         const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
         const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
 
@@ -383,10 +385,17 @@ export const RubricMutations = extendType({
             const removedShopProductsResult = await shopProductsCollection.deleteMany({
               rubricId: _id,
             });
-            const removedProductsResult = await productsCollection.deleteMany({
+            const removedFacetsResult = await productFacetsCollection.deleteMany({
               rubricId: _id,
             });
-            if (!removedProductsResult.acknowledged || !removedShopProductsResult.acknowledged) {
+            const removedSummariesResult = await productSummariesCollection.deleteMany({
+              rubricId: _id,
+            });
+            if (
+              !removedFacetsResult.acknowledged ||
+              !removedSummariesResult.acknowledged ||
+              !removedShopProductsResult.acknowledged
+            ) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('rubrics.deleteProduct.error'),
@@ -557,7 +566,7 @@ export const RubricMutations = extendType({
         const attributesGroupsCollection =
           db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
         const productAttributesCollection =
-          db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
+          db.collection<ProductSummaryAttributeModel>(COL_PRODUCT_ATTRIBUTES);
 
         const session = client.startSession();
 

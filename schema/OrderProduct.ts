@@ -1,6 +1,6 @@
 import { objectType } from 'nexus';
-import { COL_PRODUCTS, COL_SHOP_PRODUCTS, COL_SHOPS } from '../db/collectionNames';
-import { ProductModel, ShopModel, ShopProductModel } from '../db/dbModels';
+import { COL_SHOP_PRODUCTS, COL_SHOPS } from '../db/collectionNames';
+import { ShopModel, ShopProductModel } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
 import { noNaN } from '../lib/numbers';
 
@@ -18,17 +18,6 @@ export const OrderProduct = objectType({
     t.nonNull.objectId('shopProductId');
     t.nonNull.objectId('shopId');
     t.nonNull.objectId('companyId');
-
-    // OrderProduct product field resolver
-    t.field('product', {
-      type: 'Product',
-      resolve: async (source): Promise<ProductModel | null> => {
-        const { db } = await getDatabase();
-        const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-        const product = await productsCollection.findOne({ _id: source.productId });
-        return product;
-      },
-    });
 
     // OrderProduct shopProduct field resolver
     t.field('shopProduct', {

@@ -50,9 +50,9 @@ const PromoDetails: React.FC<PromoDetailsInterface> = ({ promo }) => {
           ...promo,
           startAt: new Date(promo.startAt),
           endAt: new Date(promo.endAt),
-          mainBanner: [promo.mainBanner?.url],
-          mainBannerMobile: [promo.mainBannerMobile?.url],
-          secondaryBanner: [promo.secondaryBanner?.url],
+          mainBanner: [promo.mainBanner],
+          mainBannerMobile: [promo.mainBannerMobile],
+          secondaryBanner: [promo.secondaryBanner],
           content: JSON.parse(promo.content),
         }}
         onSubmit={(values) => {

@@ -488,11 +488,13 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
                 </div>
               </div>
 
-              <FixedButtons>
-                <WpButton frameClassName={'w-auto'} type={'submit'}>
-                  Сохранить
-                </WpButton>
-              </FixedButtons>
+              {showAdminUi ? (
+                <FixedButtons>
+                  <WpButton frameClassName={'w-auto'} type={'submit'}>
+                    Сохранить
+                  </WpButton>
+                </FixedButtons>
+              ) : null}
             </Form>
           );
         }}

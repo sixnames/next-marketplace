@@ -1,21 +1,21 @@
 import { ObjectId } from 'mongodb';
-import { IMAGE_FALLBACK } from '../../../config/common';
-import { updateAlgoliaProducts } from '../../../lib/algolia/productAlgoliaUtils';
+import { DEFAULT_LOCALE, IMAGE_FALLBACK } from '../../../config/common';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
 import { getNextItemId } from '../../../lib/itemIdUtils';
 import { checkBarcodeIntersects, trimProductName } from '../../../lib/productUtils';
 import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
+import { execUpdateProductTitles } from '../../../lib/updateProductTitles';
 import {
-  COL_PRODUCT_ASSETS,
-  COL_PRODUCTS,
+  COL_PRODUCT_FACETS,
+  COL_PRODUCT_SUMMARIES,
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
 } from '../../collectionNames';
 import {
   GenderModel,
-  ProductAssetsModel,
-  ProductModel,
+  ProductFacetModel,
   ProductPayloadModel,
+  ProductSummaryModel,
   RubricModel,
   RubricVariantModel,
   TranslationModel,
@@ -39,8 +39,8 @@ export async function createProduct({
 }: DaoPropsInterface<CreateProductInputInterface>): Promise<ProductPayloadModel> {
   const { getApiMessage, locale } = await getRequestParams(context);
   const { db, client } = await getDatabase();
-  const productsCollection = db.collection<ProductModel>(COL_PRODUCTS);
-  const productAssetsCollection = db.collection<ProductAssetsModel>(COL_PRODUCT_ASSETS);
+  const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
+  const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
   const rubricVariantCollection = db.collection<RubricVariantModel>(COL_RUBRIC_VARIANTS);
 
@@ -117,34 +117,44 @@ export async function createProduct({
       }
 
       // create product
-      const itemId = await getNextItemId(COL_PRODUCTS);
+      const itemId = await getNextItemId(COL_PRODUCT_SUMMARIES);
       const productId = new ObjectId();
       const { originalName, nameI18n } = trimProductName({
         nameI18n: values.nameI18n,
         originalName: values.originalName,
       });
-      const createdProductResult = await productsCollection.insertOne({
+      const createdSummaryResult = await productSummariesCollection.insertOne({
         ...values,
         _id: productId,
         itemId,
         mainImage: IMAGE_FALLBACK,
+        assets: [IMAGE_FALLBACK],
+        barcode: [],
+        attributes: [],
         slug: itemId,
         nameI18n,
+        snippetTitleI18n: {
+          [DEFAULT_LOCALE]: originalName,
+        },
+        cardTitleI18n: {
+          [DEFAULT_LOCALE]: originalName,
+        },
         originalName,
         rubricId: rubric._id,
         rubricSlug: rubric.slug,
         allowDelivery: Boolean(rubricVariant.allowDelivery),
         active: false,
-        titleCategoriesSlugs: [],
-        selectedOptionsSlugs: [],
-        selectedAttributesIds: [],
+        titleCategorySlugs: [],
+        filterSlugs: [],
+        attributeIds: [],
+        variants: [],
         createdAt: new Date(),
         updatedAt: new Date(),
       });
-      const createdProduct = await productsCollection.findOne({
-        _id: createdProductResult.insertedId,
+      const createdSummary = await productSummariesCollection.findOne({
+        _id: createdSummaryResult.insertedId,
       });
-      if (!createdProductResult.acknowledged || !createdProduct) {
+      if (!createdSummaryResult.acknowledged || !createdSummary) {
         mutationPayload = {
           success: false,
           message: await getApiMessage(`products.create.error`),
@@ -153,18 +163,24 @@ export async function createProduct({
         return;
       }
 
-      // create product assets
-      const createdAssetsResult = await productAssetsCollection.insertOne({
-        productId,
-        productSlug: itemId,
-        assets: [
-          {
-            index: 1,
-            url: IMAGE_FALLBACK,
-          },
-        ],
+      // create product facet
+      const createdProductFacetResult = await productFacetsCollection.insertOne({
+        _id: createdSummary._id,
+        itemId: createdSummary.itemId,
+        slug: createdSummary.slug,
+        barcode: createdSummary.barcode,
+        rubricSlug: createdSummary.rubricSlug,
+        rubricId: createdSummary.rubricId,
+        manufacturerSlug: createdSummary.manufacturerSlug,
+        brandSlug: createdSummary.brandSlug,
+        brandCollectionSlug: createdSummary.brandCollectionSlug,
+        filterSlugs: createdSummary.filterSlugs,
+        attributeIds: createdSummary.attributeIds,
+        allowDelivery: createdSummary.allowDelivery,
+        active: createdSummary.active,
+        mainImage: createdSummary.mainImage,
       });
-      if (!createdAssetsResult.acknowledged) {
+      if (!createdProductFacetResult.acknowledged) {
         mutationPayload = {
           success: false,
           message: await getApiMessage(`products.create.error`),
@@ -174,14 +190,12 @@ export async function createProduct({
       }
 
       // create algolia object
-      await updateAlgoliaProducts({
-        _id: createdAssetsResult.insertedId,
-      });
+      execUpdateProductTitles(`productId=${createdSummary._id.toHexString()}`);
 
       mutationPayload = {
         success: true,
         message: await getApiMessage('products.create.success'),
-        payload: createdProduct,
+        payload: createdSummary,
       };
     });
 

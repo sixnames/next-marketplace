@@ -25,11 +25,10 @@ import {
   CompanyModel,
   ConfigModel,
   ObjectIdModel,
-  ProductAttributeModel,
+  ProductSummaryAttributeModel,
   RubricModel,
 } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
-import { updateAlgoliaProducts } from '../lib/algolia/productAlgoliaUtils';
 import getResolverErrorMessage from '../lib/getResolverErrorMessage';
 import { getNextItemId } from '../lib/itemIdUtils';
 import { updateCitiesSeoContent } from '../lib/seoContentUtils';
@@ -39,6 +38,7 @@ import {
   getResolverValidationSchema,
 } from '../lib/sessionHelpers';
 import { deleteDocumentsTree, getParentTreeIds } from '../lib/treeUtils';
+import { execUpdateProductTitles } from '../lib/updateProductTitles';
 import {
   addAttributesGroupToCategorySchema,
   createCategorySchema,
@@ -422,9 +422,7 @@ export const CategoryMutations = extendType({
           }
 
           // update product algolia indexes
-          await updateAlgoliaProducts({
-            selectedOptionsSlugs: updatedCategory.slug,
-          });
+          execUpdateProductTitles(`filterSlugs=${updatedCategory.slug}`);
 
           return {
             success: true,
@@ -664,7 +662,7 @@ export const CategoryMutations = extendType({
         const attributesGroupsCollection =
           db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
         const productAttributesCollection =
-          db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
+          db.collection<ProductSummaryAttributeModel>(COL_PRODUCT_ATTRIBUTES);
 
         const session = client.startSession();
 

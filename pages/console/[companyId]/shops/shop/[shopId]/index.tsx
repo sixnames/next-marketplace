@@ -2,12 +2,12 @@ import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import ShopDetails, { ShopDetailsInterface } from '../../../../../../components/shops/ShopDetails';
-import { ROUTE_CONSOLE } from '../../../../../../config/common';
 import { COL_COMPANIES, COL_SHOPS } from '../../../../../../db/collectionNames';
 import { ShopModel } from '../../../../../../db/dbModels';
 import { getDatabase } from '../../../../../../db/mongodb';
 import { AppContentWrapperBreadCrumbs } from '../../../../../../db/uiInterfaces';
 import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
+import { getConsoleCompanyLinks } from '../../../../../../lib/linkUtils';
 import {
   castDbData,
   getConsoleInitialData,
@@ -19,20 +19,22 @@ interface CompanyShopInterface
     Omit<ShopDetailsInterface, 'basePath'> {}
 
 const CompanyShop: NextPage<CompanyShopInterface> = ({ layoutProps, shop }) => {
-  const companyBasePath = `${ROUTE_CONSOLE}/${shop.companyId}/shops`;
+  const links = getConsoleCompanyLinks({
+    companyId: shop.companyId,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: shop.name,
     config: [
       {
         name: 'Магазины',
-        href: companyBasePath,
+        href: links.shops,
       },
     ],
   };
 
   return (
     <ConsoleLayout {...layoutProps}>
-      <ShopDetails basePath={`${companyBasePath}/shop`} shop={shop} breadcrumbs={breadcrumbs} />
+      <ShopDetails basePath={links.shop.itemPath} shop={shop} breadcrumbs={breadcrumbs} />
     </ConsoleLayout>
   );
 };

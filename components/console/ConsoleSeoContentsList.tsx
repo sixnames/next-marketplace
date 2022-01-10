@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { SeoContentModel } from '../../db/dbModels';
+import { getConsoleRubricLinks } from '../../lib/linkUtils';
 import ContentItemControls from '../button/ContentItemControls';
 import WpLink from '../Link/WpLink';
 import WpTable, { WpTableColumn } from '../WpTable';
@@ -7,14 +8,19 @@ import WpTable, { WpTableColumn } from '../WpTable';
 export interface ConsoleSeoContentsListInterface {
   seoContents: SeoContentModel[];
   routeBasePath: string;
-  rubricId: string;
+  rubricSlug: string;
 }
 
 const ConsoleSeoContentsList: React.FC<ConsoleSeoContentsListInterface> = ({
   seoContents,
   routeBasePath,
-  rubricId,
+  rubricSlug,
 }) => {
+  const links = getConsoleRubricLinks({
+    rubricSlug,
+    basePath: routeBasePath,
+  });
+
   const columns: WpTableColumn<SeoContentModel>[] = [
     {
       accessor: 'url',
@@ -35,10 +41,7 @@ const ConsoleSeoContentsList: React.FC<ConsoleSeoContentsListInterface> = ({
               testId={dataItem.slug}
               updateTitle={'Редактировать текст'}
               updateHandler={() => {
-                window.open(
-                  `${routeBasePath}/rubrics/${rubricId}/seo-content/${dataItem.slug}`,
-                  '_blank',
-                );
+                window.open(`${links.seoContent}/${dataItem.slug}`, '_blank');
               }}
             />
           </div>
@@ -53,10 +56,7 @@ const ConsoleSeoContentsList: React.FC<ConsoleSeoContentsListInterface> = ({
         columns={columns}
         data={seoContents}
         onRowDoubleClick={(dataItem) => {
-          window.open(
-            `${routeBasePath}/rubrics/${rubricId}/seo-content/${dataItem.slug}`,
-            '_blank',
-          );
+          window.open(`${links.seoContent}/${dataItem.slug}`, '_blank');
         }}
       />
     </div>

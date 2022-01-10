@@ -65,14 +65,6 @@ export const ContactsInput = inputObjectType({
   },
 });
 
-export const Asset = objectType({
-  name: 'Asset',
-  definition(t) {
-    t.nonNull.string('url');
-    t.nonNull.int('index');
-  },
-});
-
 export const Coordinates = objectType({
   name: 'Coordinates',
   definition(t) {

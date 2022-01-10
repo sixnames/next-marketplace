@@ -4,7 +4,7 @@ import { ASSETS_DIST_BRANDS, REQUEST_METHOD_DELETE } from '../../../config/commo
 import { COL_BRANDS } from '../../../db/collectionNames';
 import { BrandModel } from '../../../db/dbModels';
 import { getDatabase } from '../../../db/mongodb';
-import { getApiMessageValue } from '../../../lib/apiMessageUtils';
+import { getApiMessageValue } from '../../../db/dao/messages/apiMessageUtils';
 import { deleteUpload, storeUploads } from '../../../lib/assetUtils/assetUtils';
 import { parseRestApiFormData } from '../../../lib/restApi';
 import { getOperationPermission } from '../../../lib/sessionHelpers';
@@ -152,7 +152,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     { _id: brand._id },
     {
       $set: {
-        logo: currentAsset.url,
+        logo: currentAsset,
       },
     },
     {

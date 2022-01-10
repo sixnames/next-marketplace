@@ -5,11 +5,11 @@ import Inner from '../../../../../components/Inner';
 import PageGroupsList, {
   PageGroupsListInterface,
 } from '../../../../../components/Pages/PageGroupsList';
-import { ROUTE_CMS } from '../../../../../config/common';
 import { COL_COMPANIES } from '../../../../../db/collectionNames';
 import { getDatabase } from '../../../../../db/mongodb';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from '../../../../../db/uiInterfaces';
 import CmsCompanyLayout from '../../../../../layout/cms/CmsCompanyLayout';
+import { getCmsCompanyLinks } from '../../../../../lib/linkUtils';
 import { getPageGroupsSsr } from '../../../../../lib/pageUtils';
 import {
   castDbData,
@@ -31,16 +31,19 @@ const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({
   pagesGroups,
   pageCompany,
 }) => {
+  const { root, parentLink, ...links } = getCmsCompanyLinks({
+    companyId: pageCompany._id,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Группы страниц',
     config: [
       {
         name: 'Компании',
-        href: `${ROUTE_CMS}/companies`,
+        href: parentLink,
       },
       {
         name: pageCompany.name,
-        href: `${ROUTE_CMS}/companies/${pageCompany._id}`,
+        href: root,
       },
     ],
   };
@@ -51,7 +54,7 @@ const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({
         <Inner>
           <PageGroupsList
             companySlug={pageCompany.slug}
-            basePath={`${ROUTE_CMS}/companies/${pageCompany._id}/pages`}
+            basePath={links.pages}
             pagesGroups={pagesGroups}
           />
         </Inner>

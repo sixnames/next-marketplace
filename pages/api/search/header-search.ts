@@ -7,7 +7,7 @@ import {
   SORT_DESC,
 } from '../../../config/common';
 import { COL_SHOP_PRODUCTS } from '../../../db/collectionNames';
-import { ignoreNoImageStage, shopProductFieldsPipeline } from '../../../db/dao/constantPipelines';
+import { ignoreNoImageStage, summaryPipeline } from '../../../db/dao/constantPipelines';
 import { ObjectIdModel } from '../../../db/dbModels';
 import { getDatabase } from '../../../db/mongodb';
 import { ShopProductInterface } from '../../../db/uiInterfaces';
@@ -15,8 +15,6 @@ import { getAlgoliaProductsSearch } from '../../../lib/algolia/productAlgoliaUti
 import { getFieldStringLocale } from '../../../lib/i18n';
 import { noNaN } from '../../../lib/numbers';
 import { getRequestParams } from '../../../lib/sessionHelpers';
-import { generateSnippetTitle } from '../../../lib/titleUtils';
-import { getTreeFromList } from '../../../lib/treeUtils';
 
 export interface HeaderSearchPayloadInterface {
   shopProducts: ShopProductInterface[];
@@ -103,8 +101,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             available: {
               $max: '$available',
             },
-            selectedOptionsSlugs: {
-              $first: '$selectedOptionsSlugs',
+            filterSlugs: {
+              $first: '$filterSlugs',
             },
             shopProductsIds: {
               $addToSet: '$_id',
@@ -123,7 +121,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         },
 
         // get shop product fields
-        ...shopProductFieldsPipeline('$_id'),
+        ...summaryPipeline('$_id'),
 
         {
           $addFields: {
@@ -138,47 +136,21 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       .toArray();
 
     shopProductsAggregation.forEach((shopProduct) => {
-      const { product, shopsCount, ...restShopProduct } = shopProduct;
-      if (!product) {
+      const { summary, shopsCount, ...restShopProduct } = shopProduct;
+      if (!summary) {
         return;
       }
 
-      // title
-      const snippetTitle = generateSnippetTitle({
-        locale: locale,
-        brand: product?.brand,
-        rubricName: getFieldStringLocale(product?.rubric?.nameI18n, locale),
-        showRubricNameInProductTitle: product?.rubric?.showRubricNameInProductTitle,
-        showCategoryInProductTitle: product?.rubric?.showCategoryInProductTitle,
-        attributes: product?.attributes || [],
-        titleCategoriesSlugs: product?.titleCategoriesSlugs,
-        originalName: product?.originalName,
-        defaultGender: product?.gender,
-        categories: getTreeFromList({
-          list: product?.categories,
-          childrenFieldName: 'categories',
-          locale: locale,
-        }),
-      });
-
-      // prices
-      const minPrice = noNaN(shopProduct.cardPrices?.min);
-      const maxPrice = noNaN(shopProduct.cardPrices?.max);
-      const cardPrices = {
-        _id: new ObjectId(),
-        min: `${minPrice}`,
-        max: `${maxPrice}`,
-      };
-
       shopProducts.push({
         ...restShopProduct,
-        product: {
-          ...product,
+        summary: {
+          ...summary,
           shopsCount,
-          name: getFieldStringLocale(product?.nameI18n, locale),
-          cardPrices,
-          connections: [],
-          snippetTitle,
+          minPrice: noNaN(shopProduct.minPrice),
+          maxPrice: noNaN(shopProduct.maxPrice),
+          name: getFieldStringLocale(summary?.nameI18n, locale),
+          snippetTitle: getFieldStringLocale(summary?.snippetTitleI18n, locale),
+          variants: [],
         },
       });
     });

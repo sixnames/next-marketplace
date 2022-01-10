@@ -45,7 +45,7 @@ const CompanyAssetsConsumer: React.FC<CompanyAssetsConsumerInterface> = ({ pageC
       <Inner testId={'company-assets-list'}>
         <Formik
           enableReinitialize
-          initialValues={{ logo: [pageCompany?.logo.url] }}
+          initialValues={{ logo: [pageCompany?.logo] }}
           onSubmit={(values) => console.log(values)}
         >
           {({ values: { logo } }) => {

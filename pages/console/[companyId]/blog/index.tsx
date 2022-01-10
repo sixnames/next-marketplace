@@ -3,11 +3,11 @@ import * as React from 'react';
 import BlogPostsList from '../../../../components/blog/BlogPostsList';
 import Inner from '../../../../components/Inner';
 import WpTitle from '../../../../components/WpTitle';
-import { ROUTE_CONSOLE } from '../../../../config/common';
 import { getBlogPostsList } from '../../../../db/dao/blog/getBlogPostsList';
 import { BlogPostInterface, CompanyInterface } from '../../../../db/uiInterfaces';
 import AppContentWrapper from '../../../../layout/AppContentWrapper';
 import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
+import { getConsoleCompanyLinks } from '../../../../lib/linkUtils';
 import {
   castDbData,
   getConsoleInitialData,
@@ -25,13 +25,19 @@ const BlogPostsListConsumer: React.FC<BlogPostsListConsumerInterface> = ({
   posts,
   pageCompany,
 }) => {
-  const basePath = `${ROUTE_CONSOLE}/${pageCompany?._id}`;
+  const links = getConsoleCompanyLinks({
+    companyId: pageCompany._id,
+  });
 
   return (
     <AppContentWrapper>
       <Inner testId={'company-posts-list'}>
         <WpTitle>{pageTitle}</WpTitle>
-        <BlogPostsList posts={posts} basePath={basePath} companySlug={`${pageCompany?.slug}`} />
+        <BlogPostsList
+          posts={posts}
+          basePath={links.parentLink}
+          companySlug={`${pageCompany?.slug}`}
+        />
       </Inner>
     </AppContentWrapper>
   );

@@ -12,7 +12,6 @@ import WpLink from '../../../../components/Link/WpLink';
 import Pager from '../../../../components/Pager';
 import WpTable, { WpTableColumn } from '../../../../components/WpTable';
 import WpTitle from '../../../../components/WpTitle';
-import { ROUTE_CMS, ROUTE_CONSOLE } from '../../../../config/common';
 import {
   getConsoleOrders,
   GetConsoleOrdersPayloadType,
@@ -20,6 +19,7 @@ import {
 import { OrderInterface } from '../../../../db/uiInterfaces';
 import AppContentWrapper from '../../../../layout/AppContentWrapper';
 import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
+import { getConsoleCompanyLinks } from '../../../../lib/linkUtils';
 import {
   castDbData,
   getConsoleInitialData,
@@ -37,14 +37,17 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ data }) => {
     {
       accessor: 'orderId',
       headTitle: 'ID',
-      render: ({ cellData, dataItem }) => (
-        <WpLink
-          testId={`order-${dataItem.itemId}-link`}
-          href={`${ROUTE_CONSOLE}/${router.query.companyId}/orders/order/${dataItem._id}`}
-        >
-          {cellData}
-        </WpLink>
-      ),
+      render: ({ cellData, dataItem }) => {
+        const links = getConsoleCompanyLinks({
+          companyId: `${router.query.companyId}`,
+          orderId: dataItem._id,
+        });
+        return (
+          <WpLink testId={`order-${dataItem.itemId}-link`} href={links.order.parentLink}>
+            {cellData}
+          </WpLink>
+        );
+      },
     },
     {
       accessor: 'status',
@@ -110,9 +113,11 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ data }) => {
               testId={dataItem.itemId}
               updateTitle={'Детали заказа'}
               updateHandler={() => {
-                router.push(`${ROUTE_CMS}/orders/${dataItem._id}`).catch((e) => {
-                  console.log(e);
+                const links = getConsoleCompanyLinks({
+                  companyId: `${router.query.companyId}`,
+                  orderId: dataItem._id,
                 });
+                router.push(links.order.parentLink).catch(console.log);
               }}
             />
           </div>
@@ -135,11 +140,11 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ data }) => {
             data={data.docs}
             testIdKey={'itemId'}
             onRowDoubleClick={(dataItem) => {
-              router
-                .push(`${ROUTE_CONSOLE}/${router.query.companyId}/orders/order/${dataItem._id}`)
-                .catch((e) => {
-                  console.log(e);
-                });
+              const links = getConsoleCompanyLinks({
+                companyId: `${router.query.companyId}`,
+                orderId: dataItem._id,
+              });
+              router.push(links.order.parentLink).catch(console.log);
             }}
           />
         </div>

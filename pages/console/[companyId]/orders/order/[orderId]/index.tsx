@@ -8,7 +8,7 @@ import { ConfirmModalInterface } from '../../../../../../components/Modal/Confir
 import ConsoleOrderDetails, {
   CmsOrderDetailsBaseInterface,
 } from '../../../../../../components/order/ConsoleOrderDetails';
-import { DEFAULT_COMPANY_SLUG, ROUTE_CONSOLE } from '../../../../../../config/common';
+import { DEFAULT_COMPANY_SLUG } from '../../../../../../config/common';
 import { CONFIRM_MODAL } from '../../../../../../config/modalVariants';
 import { useAppContext } from '../../../../../../context/appContext';
 import { getConsoleOrder } from '../../../../../../db/dao/orders/getConsoleOrder';
@@ -19,6 +19,7 @@ import {
 } from '../../../../../../hooks/mutations/useOrderMutations';
 import AppContentWrapper from '../../../../../../layout/AppContentWrapper';
 import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
+import { getConsoleCompanyLinks } from '../../../../../../lib/linkUtils';
 import {
   castDbData,
   getConsoleInitialData,
@@ -41,12 +42,17 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({
   const [confirmOrderMutation] = useConfirmOrder();
   const [cancelOrderMutation] = useCancelOrder();
 
+  const links = getConsoleCompanyLinks({
+    companyId: `${query.companyId}`,
+    orderId: order._id,
+  });
+
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: title,
     config: [
       {
         name: 'Список заказов',
-        href: `${ROUTE_CONSOLE}/${query.companyId}/orders`,
+        href: links.order.parentLink,
       },
     ],
   };
@@ -67,6 +73,7 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({
           <FixedButtons>
             {order.status?.isNew ? (
               <WpButton
+                frameClassName={'w-auto'}
                 onClick={() => {
                   confirmOrderMutation({
                     orderId: `${order._id}`,
@@ -79,6 +86,7 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({
 
             {!order.status?.isCanceled && !order.status?.isDone ? (
               <WpButton
+                frameClassName={'w-auto'}
                 theme={'secondary'}
                 onClick={() => {
                   showModal<ConfirmModalInterface>({

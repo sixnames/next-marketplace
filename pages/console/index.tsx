@@ -3,7 +3,8 @@ import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import Inner from '../../components/Inner';
 import WpTitle from '../../components/WpTitle';
-import { ROUTE_CONSOLE, ROUTE_SIGN_IN } from '../../config/common';
+import { ROUTE_SIGN_IN } from '../../config/common';
+import { getConsoleCompanyLinks } from '../../lib/linkUtils';
 import { noNaN } from '../../lib/numbers';
 import { getConsoleMainPageData, GetConsoleMainPageDataPropsInterface } from '../../lib/ssrUtils';
 
@@ -21,13 +22,16 @@ const App: NextPage<GetConsoleMainPageDataPropsInterface> = ({ layoutProps }) =>
               className='bg-secondary rounded-lg shadow-lg grid grid-cols-4 gap-4 px-4 py-6 cursor-pointer'
               key={`${company._id}`}
               onClick={() => {
-                router.push(`${ROUTE_CONSOLE}/${company?._id}`).catch((e) => console.log(e));
+                const links = getConsoleCompanyLinks({
+                  companyId: company._id,
+                });
+                router.push(links.parentLink).catch((e) => console.log(e));
               }}
             >
               <div className='rounded-full overflow-hidden col-span-1'>
                 <img
                   className='w-full h-full object-contain'
-                  src={company.logo.url}
+                  src={company.logo}
                   width='100'
                   height='100'
                   alt=''
@@ -74,9 +78,12 @@ export const getServerSideProps = async (
     noNaN(props.layoutProps.sessionUser.me.companies.length) === 1
   ) {
     const company = props?.layoutProps.sessionUser?.me.companies[0];
+    const links = getConsoleCompanyLinks({
+      companyId: company._id,
+    });
     return {
       redirect: {
-        destination: `${ROUTE_CONSOLE}/${company?._id}`,
+        destination: links.parentLink,
         permanent: false,
       },
     };

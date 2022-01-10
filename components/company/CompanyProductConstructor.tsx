@@ -2,13 +2,13 @@ import { Form, Formik } from 'formik';
 import * as React from 'react';
 import { DEFAULT_CITY } from '../../config/common';
 import { useConfigContext } from '../../context/configContext';
-import { CompanyInterface, ProductInterface, RubricInterface } from '../../db/uiInterfaces';
+import { CompanyInterface, ProductFacetInterface, RubricInterface } from '../../db/uiInterfaces';
 import WpButton from '../button/WpButton';
 import Inner from '../Inner';
 import WpAccordion from '../WpAccordion';
 
 export interface CompanyProductConstructorInterface {
-  product: ProductInterface;
+  product: ProductFacetInterface;
   rubric: RubricInterface;
   currentCompany?: CompanyInterface | null;
   routeBasePath: string;

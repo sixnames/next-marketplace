@@ -121,13 +121,13 @@ export async function updateBlogPostAttribute(req: NextApiRequest, res: NextApiR
         });
       });
     }
-    const finalSelectedOptionsSlugs = finalOptions.map(
+    const finalFilterSlugs = finalOptions.map(
       ({ slug }) => `${attribute.slug}${FILTER_SEPARATOR}${slug}`,
     );
 
     // update
     const attributeSlug = attribute.slug;
-    const otherAttributesOptions = post.selectedOptionsSlugs.filter((slug) => {
+    const otherAttributesOptions = post.filterSlugs.filter((slug) => {
       const slugParts = slug.split(FILTER_SEPARATOR);
       return slugParts[0] !== attributeSlug;
     });
@@ -135,7 +135,7 @@ export async function updateBlogPostAttribute(req: NextApiRequest, res: NextApiR
       { _id: blogPostId },
       {
         $set: {
-          selectedOptionsSlugs: [...otherAttributesOptions, ...finalSelectedOptionsSlugs],
+          filterSlugs: [...otherAttributesOptions, ...finalFilterSlugs],
           updatedAt: new Date(),
         },
       },

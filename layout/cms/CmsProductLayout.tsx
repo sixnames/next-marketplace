@@ -5,18 +5,19 @@ import WpButton from '../../components/button/WpButton';
 import Inner from '../../components/Inner';
 import { ConfirmModalInterface } from '../../components/Modal/ConfirmModal';
 import WpTitle from '../../components/WpTitle';
-import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, ROUTE_CMS } from '../../config/common';
+import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG } from '../../config/common';
 import { CONFIRM_MODAL } from '../../config/modalVariants';
 import { useAppContext } from '../../context/appContext';
 import { useConfigContext } from '../../context/configContext';
-import { AppContentWrapperBreadCrumbs, ProductInterface } from '../../db/uiInterfaces';
+import { AppContentWrapperBreadCrumbs, ProductSummaryInterface } from '../../db/uiInterfaces';
 import { useDeleteProduct } from '../../hooks/mutations/useProductMutations';
+import { getConsoleRubricLinks } from '../../lib/linkUtils';
 import { ClientNavItemInterface } from '../../types/clientTypes';
 import AppContentWrapper from '../AppContentWrapper';
 import AppSubNav from '../AppSubNav';
 
 interface CmsProductLayoutInterface {
-  product: ProductInterface;
+  product: ProductSummaryInterface;
   breadcrumbs?: AppContentWrapperBreadCrumbs;
   basePath?: string;
   hideAttributesPath?: boolean;
@@ -44,70 +45,67 @@ const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({
   const { query } = useRouter();
   const { domainCompany } = useConfigContext();
   const { showModal } = useAppContext();
+  const rubricLinks = getConsoleRubricLinks({
+    rubricSlug: `${query.rubricSlug}`,
+    basePath,
+  });
   const [deleteProductFromRubricMutation] = useDeleteProduct({
     reload: false,
-    redirectUrl: `${basePath || ROUTE_CMS}/rubrics/${query.rubricId}/products/${query.rubricId}`,
+    redirectUrl: rubricLinks.products,
   });
 
   const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
+    const links = getConsoleRubricLinks({
+      productId: product._id,
+      rubricSlug: product.rubricSlug,
+      basePath,
+    });
     return [
       {
         name: 'Детали',
         testId: 'details',
-        path: `${basePath || ROUTE_CMS}/rubrics/${query.rubricId}/products/product/${product._id}`,
+        path: links.product.root,
         exact: true,
       },
       {
         name: 'Категории',
         testId: 'categories',
-        path: `${basePath || ROUTE_CMS}/rubrics/${query.rubricId}/products/product/${
-          product._id
-        }/categories`,
+        path: links.product.categories,
         hidden: hideCategoriesPath,
         exact: true,
       },
       {
         name: 'Атрибуты',
         testId: 'attributes',
-        path: `${basePath || ROUTE_CMS}/rubrics/${query.rubricId}/products/product/${
-          product._id
-        }/attributes`,
+        path: links.product.attributes,
         hidden: hideAttributesPath,
         exact: true,
       },
       {
         name: 'Связи',
         testId: 'connections',
-        path: `${basePath || ROUTE_CMS}/rubrics/${query.rubricId}/products/product/${
-          product._id
-        }/connections`,
+        path: links.product.variants,
         hidden: hideConnectionsPath,
         exact: true,
       },
       {
         name: 'Бренд / Производитель',
         testId: 'brands',
-        path: `${basePath || ROUTE_CMS}/rubrics/${query.rubricId}/products/product/${
-          product._id
-        }/brands`,
+        path: links.product.brands,
         hidden: hideBrandPath,
         exact: true,
       },
       {
         name: 'Изображения',
         testId: 'assets',
-        path: `${basePath || ROUTE_CMS}/rubrics/${query.rubricId}/products/product/${
-          product._id
-        }/assets`,
+        path: links.product.assets,
         hidden: hideAssetsPath,
         exact: true,
       },
       {
         name: 'Контент карточки',
         testId: 'constructor',
-        path: `${basePath || ROUTE_CMS}/rubrics/${query.rubricId}/products/product/${
-          product._id
-        }/constructor`,
+        path: links.product.constructor,
         hidden: hideCardConstructor,
         exact: true,
       },
@@ -121,7 +119,7 @@ const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({
     hideCategoriesPath,
     hideConnectionsPath,
     product._id,
-    query.rubricId,
+    product.rubricSlug,
   ]);
 
   return (

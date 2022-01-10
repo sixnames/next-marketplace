@@ -1,14 +1,20 @@
 import { sortObjectsByField } from '../../../lib/arrayUtils';
 import { getFieldStringLocale } from '../../../lib/i18n';
+import { GenderModel } from '../../dbModels';
 import { AttributeInterface, AttributesGroupInterface } from '../../uiInterfaces';
 import { castOptionForUI } from '../options/castOptionForUI';
 
 interface CastAttributeForUI {
   attribute: AttributeInterface;
   locale: string;
+  gender?: GenderModel | null;
 }
 
-export function castAttributeForUI({ attribute, locale }: CastAttributeForUI): AttributeInterface {
+export function castAttributeForUI({
+  attribute,
+  locale,
+  gender,
+}: CastAttributeForUI): AttributeInterface {
   return {
     ...attribute,
     name: getFieldStringLocale(attribute.nameI18n, locale),
@@ -16,6 +22,7 @@ export function castAttributeForUI({ attribute, locale }: CastAttributeForUI): A
       return castOptionForUI({
         option,
         locale,
+        gender,
       });
     }),
     metric: attribute.metric
@@ -30,14 +37,16 @@ export function castAttributeForUI({ attribute, locale }: CastAttributeForUI): A
 interface CastAttributesGroupForUI {
   attributesGroup: AttributesGroupInterface;
   locale: string;
+  gender?: GenderModel | null;
 }
 
 export function castAttributesGroupForUI({
   attributesGroup,
   locale,
+  gender,
 }: CastAttributesGroupForUI): AttributesGroupInterface {
   const attributes = (attributesGroup.attributes || []).map((attribute) => {
-    return castAttributeForUI({ attribute, locale });
+    return castAttributeForUI({ attribute, locale, gender });
   });
 
   return {

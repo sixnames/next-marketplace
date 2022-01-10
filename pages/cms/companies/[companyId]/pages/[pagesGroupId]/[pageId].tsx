@@ -3,12 +3,12 @@ import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import Inner from '../../../../../../components/Inner';
 import PageDetails, { PageDetailsInterface } from '../../../../../../components/Pages/PageDetails';
-import { ROUTE_CMS } from '../../../../../../config/common';
 import { COL_COMPANIES } from '../../../../../../db/collectionNames';
 import { getDatabase } from '../../../../../../db/mongodb';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from '../../../../../../db/uiInterfaces';
 import CmsCompanyLayout from '../../../../../../layout/cms/CmsCompanyLayout';
 import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
+import { getCmsCompanyLinks } from '../../../../../../lib/linkUtils';
 import { getPageSsr } from '../../../../../../lib/pageUtils';
 import {
   castDbData,
@@ -28,24 +28,27 @@ const PageDetailsPage: NextPage<PageDetailsPageInterface> = ({
   page,
   cities,
 }) => {
+  const { root, parentLink, pages } = getCmsCompanyLinks({
+    companyId: pageCompany._id,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${page.name}`,
     config: [
       {
         name: 'Компании',
-        href: `${ROUTE_CMS}/companies`,
+        href: parentLink,
       },
       {
         name: pageCompany.name,
-        href: `${ROUTE_CMS}/companies/${pageCompany._id}`,
+        href: root,
       },
       {
         name: 'Группы страниц',
-        href: `${ROUTE_CMS}/companies/${pageCompany._id}/pages`,
+        href: pages,
       },
       {
         name: `${page.pagesGroup?.name}`,
-        href: `${ROUTE_CMS}/companies/${pageCompany._id}/pages/${page.pagesGroup?._id}`,
+        href: `${pages}/${page.pagesGroup?._id}`,
       },
     ],
   };

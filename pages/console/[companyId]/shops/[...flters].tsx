@@ -1,7 +1,6 @@
-import { ObjectId } from 'mongodb';
+import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import ContentItemControls from '../../../../components/button/ContentItemControls';
 import FixedButtons from '../../../../components/button/FixedButtons';
 import WpButton from '../../../../components/button/WpButton';
@@ -15,12 +14,9 @@ import Spinner from '../../../../components/Spinner';
 import TableRowImage from '../../../../components/TableRowImage';
 import WpTable, { WpTableColumn } from '../../../../components/WpTable';
 import WpTitle from '../../../../components/WpTitle';
-import { DEFAULT_PAGE, ROUTE_CONSOLE, SORT_DESC } from '../../../../config/common';
 import { CONFIRM_MODAL, CREATE_SHOP_MODAL } from '../../../../config/modalVariants';
-import { COL_CITIES, COL_SHOP_PRODUCTS, COL_SHOPS } from '../../../../db/collectionNames';
-import { getDatabase } from '../../../../db/mongodb';
+import { getConsoleShopsListPageSsr } from '../../../../db/dao/ssr/getConsoleShopsListPageSsr';
 import {
-  AppPaginationAggregationInterface,
   AppPaginationInterface,
   CompanyInterface,
   ShopInterface,
@@ -30,15 +26,9 @@ import useMutationCallbacks from '../../../../hooks/useMutationCallbacks';
 import usePageLoadingState from '../../../../hooks/usePageLoadingState';
 import AppContentWrapper from '../../../../layout/AppContentWrapper';
 import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
-import { alwaysArray } from '../../../../lib/arrayUtils';
-import { castUrlFilters } from '../../../../lib/catalogueUtils';
-import { getFieldStringLocale, getNumWord } from '../../../../lib/i18n';
+import { getNumWord } from '../../../../lib/i18n';
 import { noNaN } from '../../../../lib/numbers';
-import {
-  castDbData,
-  getConsoleInitialData,
-  GetConsoleInitialDataPropsInterface,
-} from '../../../../lib/ssrUtils';
+import { GetConsoleInitialDataPropsInterface } from '../../../../lib/ssrUtils';
 
 const pageTitle = 'Магазины компании';
 
@@ -90,7 +80,7 @@ const CompanyShopsPageConsumer: React.FC<CompanyShopsPageConsumerInterface> = ({
       accessor: 'logo',
       headTitle: 'Лого',
       render: ({ cellData, dataItem }) => {
-        return <TableRowImage src={cellData.url} alt={dataItem.name} title={dataItem.name} />;
+        return <TableRowImage src={cellData} alt={dataItem.name} title={dataItem.name} />;
       },
     },
     {
@@ -190,11 +180,11 @@ const CompanyShopsPageConsumer: React.FC<CompanyShopsPageConsumerInterface> = ({
   );
 };
 
-interface CompanyShopsPageInterface
+export interface ConsoleShopsListPageInterface
   extends GetConsoleInitialDataPropsInterface,
     AppPaginationInterface<ShopInterface> {}
 
-const CompanyShopsPage: NextPage<CompanyShopsPageInterface> = (props) => {
+const ConsoleShopsListPage: NextPage<ConsoleShopsListPageInterface> = (props) => {
   const { layoutProps } = props;
 
   return (
@@ -204,213 +194,5 @@ const CompanyShopsPage: NextPage<CompanyShopsPageInterface> = (props) => {
   );
 };
 
-export const getServerSideProps = async (
-  context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<CompanyShopsPageInterface>> => {
-  const { query } = context;
-  const { props } = await getConsoleInitialData({ context });
-  if (!props || !query.companyId) {
-    return {
-      notFound: true,
-    };
-  }
-
-  const { db } = await getDatabase();
-  const shopsCollection = db.collection<ShopInterface>(COL_SHOPS);
-
-  const { filters, search } = query;
-  const filtersArray = alwaysArray(filters);
-
-  // Cast filters
-  const { page, skip, limit, clearSlug } = await castUrlFilters({
-    filters: filtersArray,
-    searchFieldName: '_id',
-  });
-  const itemPath = `${ROUTE_CONSOLE}/${query.companyId}/shops/shop`;
-
-  const searchStage = search
-    ? {
-        $or: [
-          {
-            itemId: {
-              $regex: search,
-              $options: 'i',
-            },
-          },
-          {
-            'contacts.emails': {
-              $regex: search,
-              $options: 'i',
-            },
-          },
-          {
-            name: {
-              $regex: search,
-              $options: 'i',
-            },
-          },
-          {
-            slug: {
-              $regex: search,
-              $options: 'i',
-            },
-          },
-        ],
-      }
-    : {};
-
-  const shopsAggregationResult = await shopsCollection
-    .aggregate<AppPaginationAggregationInterface<ShopInterface>>([
-      {
-        $match: {
-          companyId: new ObjectId(`${query.companyId}`),
-          ...searchStage,
-        },
-      },
-      {
-        $facet: {
-          docs: [
-            {
-              $sort: {
-                _id: SORT_DESC,
-              },
-            },
-            {
-              $skip: skip,
-            },
-            {
-              $limit: limit,
-            },
-            {
-              $lookup: {
-                from: COL_CITIES,
-                as: 'city',
-                let: { citySlug: '$citySlug' },
-                pipeline: [
-                  {
-                    $match: {
-                      $expr: {
-                        $eq: ['$$citySlug', '$slug'],
-                      },
-                    },
-                  },
-                ],
-              },
-            },
-            {
-              $lookup: {
-                from: COL_SHOP_PRODUCTS,
-                as: 'productsCount',
-                let: { shopId: '$_id' },
-                pipeline: [
-                  {
-                    $match: {
-                      $expr: {
-                        $eq: ['$$shopId', '$shopId'],
-                      },
-                    },
-                  },
-                  {
-                    $count: 'counter',
-                  },
-                ],
-              },
-            },
-            {
-              $addFields: {
-                city: {
-                  $arrayElemAt: ['$city', 0],
-                },
-                productsCount: {
-                  $arrayElemAt: ['$productsCount', 0],
-                },
-              },
-            },
-            {
-              $addFields: {
-                productsCount: '$productsCount.counter',
-              },
-            },
-          ],
-          countAllDocs: [
-            {
-              $count: 'totalDocs',
-            },
-          ],
-        },
-      },
-      {
-        $addFields: {
-          totalDocsObject: {
-            $arrayElemAt: ['$countAllDocs', 0],
-          },
-        },
-      },
-      {
-        $addFields: {
-          totalDocs: '$totalDocsObject.totalDocs',
-        },
-      },
-      {
-        $addFields: {
-          totalPagesFloat: {
-            $divide: ['$totalDocs', limit],
-          },
-        },
-      },
-      {
-        $addFields: {
-          totalPages: {
-            $ceil: '$totalPagesFloat',
-          },
-        },
-      },
-      {
-        $project: {
-          docs: 1,
-          totalDocs: 1,
-          totalPages: 1,
-          hasPrevPage: {
-            $gt: [page, DEFAULT_PAGE],
-          },
-          hasNextPage: {
-            $lt: [page, '$totalPages'],
-          },
-        },
-      },
-    ])
-    .toArray();
-
-  const shopsAggregation = shopsAggregationResult[0];
-  if (!shopsAggregation) {
-    return {
-      notFound: true,
-    };
-  }
-
-  const docs = shopsAggregation.docs.map(({ city, ...shop }) => {
-    return {
-      ...shop,
-      city: city
-        ? {
-            ...city,
-            name: getFieldStringLocale(city.nameI18n, props.sessionLocale),
-          }
-        : null,
-    };
-  });
-
-  return {
-    props: {
-      ...props,
-      itemPath,
-      clearSlug,
-      page,
-      totalPages: noNaN(shopsAggregation.totalPages),
-      totalDocs: noNaN(shopsAggregation.totalDocs),
-      docs: castDbData(docs),
-    },
-  };
-};
-
-export default CompanyShopsPage;
+export const getServerSideProps = getConsoleShopsListPageSsr;
+export default ConsoleShopsListPage;

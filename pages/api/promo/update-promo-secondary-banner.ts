@@ -4,7 +4,7 @@ import { ASSETS_DIST_PROMO } from '../../../config/common';
 import { COL_PROMO } from '../../../db/collectionNames';
 import { PromoModel } from '../../../db/dbModels';
 import { getDatabase } from '../../../db/mongodb';
-import { getApiMessageValue } from '../../../lib/apiMessageUtils';
+import { getApiMessageValue } from '../../../db/dao/messages/apiMessageUtils';
 import { deleteUpload, storeUploads } from '../../../lib/assetUtils/assetUtils';
 import { parseRestApiFormData } from '../../../lib/restApi';
 import { getOperationPermission } from '../../../lib/sessionHelpers';
@@ -65,7 +65,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   // Delete promo main banner
   if (promo.secondaryBanner) {
-    await deleteUpload(promo.secondaryBanner.url);
+    await deleteUpload(promo.secondaryBanner);
   }
 
   // Upload new company logo
@@ -73,7 +73,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     files: formData.files,
     dirName: `${formData.fields.promoId}`,
     dist: ASSETS_DIST_PROMO,
-    startIndex: 0,
   });
   if (!uploadedAsset) {
     res.status(500).send({
@@ -103,7 +102,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     { _id: promo._id },
     {
       $addToSet: {
-        assetKeys: asset.url,
+        assetKeys: asset,
       },
       $set: {
         secondaryBanner: asset,

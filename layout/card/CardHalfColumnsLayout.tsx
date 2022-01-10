@@ -45,7 +45,6 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
   const { urlPrefix } = useSiteContext();
   const {
     isSingleImage,
-    assets,
     similarProducts,
     attributesGroups,
     showFeaturesSection,
@@ -56,11 +55,9 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
     shopsCounterPostfix,
     isShopless,
     showArticle,
-    connections,
     product,
     cardBreadcrumbs,
     cardContent,
-    cardPrices,
     shopsCount,
     cardShops,
     showCardImagesSlider,
@@ -74,7 +71,8 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
     companyId,
   });
 
-  const { brand, brandCollection, manufacturer, name } = product;
+  const { brand, brandCollection, manufacturer, name, variants, assets, minPrice, maxPrice } =
+    product;
 
   return (
     <article className='pb-20 pt-8 lg:pt-0' data-cy={`card`}>
@@ -147,7 +145,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
 
                   {/*price*/}
                   <div className='flex flex-wrap gap-6 items-baseline mb-8'>
-                    <CardPrices cardPrices={cardPrices} shopsCount={shopsCount} />
+                    <CardPrices minPrice={minPrice} maxPrice={maxPrice} shopsCount={shopsCount} />
 
                     {/*availability*/}
                     {configs.isOneShopCompany || maxAvailable === 0 ? null : (
@@ -195,17 +193,16 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                   </div>
                 </div>
 
-                {/*connections*/}
-                {connections.length > 0 ? (
+                {/*variants*/}
+                {variants.length > 0 ? (
                   <div className={dataSectionClassName}>
-                    {connections.map(({ _id, attribute, connectionProducts }) => {
+                    {variants.map(({ _id, attribute, products }) => {
                       return (
                         <div key={`${_id}`} className='mb-12'>
                           <div className='text-secondary-text mb-3 font-bold'>{`${attribute?.name}:`}</div>
-                          <div className='grid grid-cols-4 sm:grid-cols-5 lg:grid-cols-6 gap-x-4 gap-y-6'>
-                            {(connectionProducts || []).map(({ option, shopProduct }) => {
-                              const mainImage = shopProduct?.product?.mainImage;
-                              const isCurrent = shopProduct?.product?.slug === product.slug;
+                          <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-6'>
+                            {products.map(({ option, summary, isCurrent }) => {
+                              const mainImage = summary?.mainImage;
                               const name = `${option?.name} ${
                                 attribute?.metric ? ` ${attribute.metric.name}` : ''
                               }`;
@@ -234,7 +231,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                                   {isCurrent ? null : (
                                     <WpLink
                                       className='absolute inset-0 z-30 block text-indent-full overflow-hidden'
-                                      href={`${urlPrefix}/${shopProduct?.product?.slug}`}
+                                      href={`${urlPrefix}/${summary?.slug}`}
                                     >
                                       {name}
                                     </WpLink>
@@ -259,12 +256,12 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
                       <h2 className='text-2xl mb-4 font-medium'>{attributesGroup.name}</h2>
 
                       <ul className='space-y-4 sm:space-y-2'>
-                        {attributesGroup.attributes.map(({ _id, attribute, readableValue }) => {
+                        {attributesGroup.attributes.map(({ attribute, readableValue }) => {
                           if (!attribute) {
                             return null;
                           }
                           return (
-                            <li key={`${_id}`} className='sm:flex justify-between'>
+                            <li key={`${attribute._id}`} className='sm:flex justify-between'>
                               <div className='text-secondary-text mb-1 font-bold sm:half-column'>
                                 {attribute.name}
                               </div>

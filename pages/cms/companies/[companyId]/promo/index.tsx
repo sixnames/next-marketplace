@@ -3,11 +3,11 @@ import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import Inner from '../../../../../components/Inner';
 import PromoList, { PromoListInterface } from '../../../../../components/Promo/PromoList';
-import { ROUTE_CMS } from '../../../../../config/common';
 import { COL_COMPANIES } from '../../../../../db/collectionNames';
 import { getDatabase } from '../../../../../db/mongodb';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from '../../../../../db/uiInterfaces';
 import CmsCompanyLayout from '../../../../../layout/cms/CmsCompanyLayout';
+import { getCmsCompanyLinks } from '../../../../../lib/linkUtils';
 import { getPromoListSsr } from '../../../../../lib/promoUtils';
 import {
   castDbData,
@@ -26,16 +26,20 @@ const PromoListPage: NextPage<PromoListPageInterface> = ({
   pageCompany,
   basePath,
 }) => {
+  const { root, parentLink } = getCmsCompanyLinks({
+    companyId: pageCompany._id,
+  });
+
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: pageTitle,
     config: [
       {
         name: 'Компании',
-        href: `${ROUTE_CMS}/companies`,
+        href: parentLink,
       },
       {
         name: pageCompany.name,
-        href: `${ROUTE_CMS}/companies/${pageCompany._id}`,
+        href: root,
       },
     ],
   };
@@ -78,10 +82,14 @@ export const getServerSideProps = async (
     companyId: company._id.toHexString(),
   });
 
+  const links = getCmsCompanyLinks({
+    companyId: company._id,
+  });
+
   return {
     props: {
       ...props,
-      basePath: `${ROUTE_CMS}/companies/${company._id}/promo`,
+      basePath: links.promo.parentLink,
       pageCompany: castDbData(company),
       promoList: castDbData(promoList),
     },

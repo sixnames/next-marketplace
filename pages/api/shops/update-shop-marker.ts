@@ -4,7 +4,7 @@ import { ASSETS_DIST_SHOPS, REQUEST_METHOD_DELETE } from '../../../config/common
 import { COL_SHOPS } from '../../../db/collectionNames';
 import { ShopModel } from '../../../db/dbModels';
 import { getDatabase } from '../../../db/mongodb';
-import { getApiMessageValue } from '../../../lib/apiMessageUtils';
+import { getApiMessageValue } from '../../../db/dao/messages/apiMessageUtils';
 import { deleteUpload, storeUploads } from '../../../lib/assetUtils/assetUtils';
 import { parseRestApiFormData } from '../../../lib/restApi';
 import { getOperationPermission } from '../../../lib/sessionHelpers';
@@ -117,7 +117,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     files: formData.files,
     dirName: shop.itemId,
     dist: ASSETS_DIST_SHOPS,
-    startIndex: 0,
   });
   if (!uploadedAsset) {
     res.status(500).send({
@@ -144,10 +143,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   const updater = isDark
     ? {
-        'mapMarker.darkTheme': asset.url,
+        'mapMarker.darkTheme': asset,
       }
     : {
-        'mapMarker.lightTheme': asset.url,
+        'mapMarker.lightTheme': asset,
       };
 
   // Update shop

@@ -24,7 +24,7 @@ import {
   CategoryModel,
   ManufacturerModel,
   OptionModel,
-  ProductAttributeModel,
+  ProductSummaryAttributeModel,
   RubricModel,
 } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
@@ -74,7 +74,7 @@ export const CatalogueMutations = extendType({
           const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
           const productAttributesCollection =
-            db.collection<ProductAttributeModel>(COL_PRODUCT_ATTRIBUTES);
+            db.collection<ProductSummaryAttributeModel>(COL_PRODUCT_ATTRIBUTES);
           const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
           const brandsCollection = db.collection<BrandModel>(COL_BRANDS);
           const brandCollectionsCollection =
@@ -96,7 +96,7 @@ export const CatalogueMutations = extendType({
             const selectedBrandCollectionSlugs: string[] = [];
             const selectedManufacturerSlugs: string[] = [];
             const selectedAttributesSlugs: string[] = [];
-            const selectedOptionsSlugs: string[] = [];
+            const filterSlugs: string[] = [];
             const selectedCategoriesSlugs: string[] = [];
 
             filter.forEach((param) => {
@@ -124,7 +124,7 @@ export const CatalogueMutations = extendType({
               }
 
               selectedAttributesSlugs.push(slug);
-              selectedOptionsSlugs.push(value);
+              filterSlugs.push(value);
             });
 
             const counterUpdater = {
@@ -213,7 +213,7 @@ export const CatalogueMutations = extendType({
                     {
                       optionsGroupId,
                       slug: {
-                        $in: selectedOptionsSlugs,
+                        $in: filterSlugs,
                       },
                     },
                     counterUpdater,

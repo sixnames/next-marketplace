@@ -48,7 +48,7 @@ const UserAssetsConsumer: React.FC<UserAssetsInterface> = ({ user }) => {
       <Inner testId={'user-assets-page'}>
         <Formik
           enableReinitialize
-          initialValues={{ avatar: avatar ? [avatar.url] : [] }}
+          initialValues={{ avatar: avatar ? [avatar] : [] }}
           onSubmit={(values) => console.log(values)}
         >
           {() => {

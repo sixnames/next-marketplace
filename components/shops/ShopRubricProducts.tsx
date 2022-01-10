@@ -16,6 +16,7 @@ import useValidationSchema from '../../hooks/useValidationSchema';
 import ConsoleShopLayout from '../../layout/console/ConsoleShopLayout';
 import { alwaysArray } from '../../lib/arrayUtils';
 import { getNumWord } from '../../lib/i18n';
+import { getConsoleShopLinks } from '../../lib/linkUtils';
 import { noNaN } from '../../lib/numbers';
 import { updateManyShopProductsSchema } from '../../validation/shopSchema';
 import AppContentFilter from '../AppContentFilter';
@@ -43,7 +44,6 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
   page,
   totalPages,
   rubricName,
-  rubricId,
   layoutBasePath,
   rubricSlug,
   breadcrumbs,
@@ -56,7 +56,11 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
   const { showModal, onErrorCallback, onCompleteCallback, showLoading, showErrorNotification } =
     useMutationCallbacks({ withModal: true, reload: true });
 
-  const addProductsPath = `${layoutBasePath}/${shop._id}/products/add/${rubricId}`;
+  const links = getConsoleShopLinks({
+    shopId: shop._id,
+    rubricSlug: `${router.query.rubricSlug}`,
+    basePath: layoutBasePath,
+  });
   const validationSchema = useValidationSchema({
     schema: updateManyShopProductsSchema,
   });
@@ -75,12 +79,15 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
       accessor: 'itemId',
       headTitle: 'Арт',
       render: ({ dataItem }) => {
+        const { products } = getConsoleShopLinks({
+          shopId: shop._id,
+          rubricSlug: dataItem.rubricSlug,
+          productId: dataItem._id,
+          basePath: layoutBasePath,
+        });
         return (
-          <WpLink
-            href={`${layoutBasePath}/${shop._id}/products/product/${dataItem._id}`}
-            target={'_blank'}
-          >
-            {dataItem.product?.itemId}
+          <WpLink href={products.rubric.product.root} target={'_blank'}>
+            {dataItem.summary?.itemId}
           </WpLink>
         );
       },
@@ -91,15 +98,15 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
         return (
           <TableRowImage
             testId={'shop-product-main-image'}
-            src={`${dataItem.product?.mainImage}`}
-            alt={`${dataItem.product?.name}`}
-            title={`${dataItem.product?.name}`}
+            src={`${dataItem.summary?.mainImage}`}
+            alt={`${dataItem.summary?.snippetTitle}`}
+            title={`${dataItem.summary?.snippetTitle}`}
           />
         );
       },
     },
     {
-      accessor: 'product.snippetTitle',
+      accessor: 'summary.snippetTitle',
       headTitle: 'Название',
       render: ({ cellData }) => cellData,
     },
@@ -178,10 +185,13 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
             testId={`shop-product-${rowIndex}`}
             updateTitle={'Редактировать товар'}
             updateHandler={() => {
-              window.open(
-                `${layoutBasePath}/${shop._id}/products/product/${dataItem._id}`,
-                '_blank',
-              );
+              const { products } = getConsoleShopLinks({
+                shopId: shop._id,
+                rubricSlug: dataItem.rubricSlug,
+                productId: dataItem._id,
+                basePath: layoutBasePath,
+              });
+              window.open(products.rubric.product.root, '_blank');
             }}
             deleteTitle={'Удалить товар из магазина'}
             deleteHandler={() => {
@@ -189,7 +199,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
                 variant: CONFIRM_MODAL,
                 props: {
                   testId: `delete-shop-product-modal`,
-                  message: `Вы уверенны, что хотите удалить ${dataItem.product?.originalName} из магазина?`,
+                  message: `Вы уверенны, что хотите удалить ${dataItem.summary?.snippetTitle} из магазина?`,
                   confirm: () => {
                     showLoading();
                     deleteProductFromShopMutation({
@@ -242,7 +252,6 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
           {withProducts ? (
             <div className={'mb-8'}>
               <AppContentFilter
-                excludedParams={[rubricId]}
                 rubricSlug={rubricSlug}
                 basePath={basePath}
                 attributes={attributes}
@@ -298,11 +307,14 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
                         data={docs}
                         testIdKey={'_id'}
                         onRowDoubleClick={(dataItem) => {
+                          const { products } = getConsoleShopLinks({
+                            shopId: shop._id,
+                            rubricSlug: dataItem.rubricSlug,
+                            productId: dataItem._id,
+                            basePath: layoutBasePath,
+                          });
                           if (sessionUser?.role?.isStaff) {
-                            window.open(
-                              `${layoutBasePath}/${shop._id}/products/product/${dataItem._id}`,
-                              '_blank',
-                            );
+                            window.open(products.rubric.product.root, '_blank');
                           }
                         }}
                       />
@@ -322,7 +334,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
                       <WpButton
                         frameClassName='w-auto'
                         onClick={() => {
-                          router.push(addProductsPath).catch((e) => console.log(e));
+                          router.push(links.products.rubric.add).catch((e) => console.log(e));
                         }}
                         testId={'add-shop-product'}
                         size={'small'}

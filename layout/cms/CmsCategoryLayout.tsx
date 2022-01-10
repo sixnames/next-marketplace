@@ -4,6 +4,7 @@ import Inner from '../../components/Inner';
 import WpTitle from '../../components/WpTitle';
 import { ROUTE_CMS } from '../../config/common';
 import { AppContentWrapperBreadCrumbs, CategoryInterface } from '../../db/uiInterfaces';
+import { getConsoleRubricLinks } from '../../lib/linkUtils';
 import { ClientNavItemInterface } from '../../types/clientTypes';
 import AppContentWrapper from '../AppContentWrapper';
 import AppSubNav from '../AppSubNav';
@@ -22,25 +23,28 @@ const CmsCategoryLayout: React.FC<CmsCategoryLayoutInterface> = ({
   basePath,
   hideAttributesPath,
 }) => {
+  const links = getConsoleRubricLinks({
+    rubricSlug: `${category.rubric?.slug}`,
+    basePath: basePath || ROUTE_CMS,
+  });
+
   const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
     return [
       {
         name: 'Детали',
         testId: 'details',
-        path: `${basePath || ROUTE_CMS}/rubrics/${category.rubricId}/categories/${category._id}`,
+        path: `${links.categories}/${category._id}`,
         exact: true,
       },
       {
         name: 'Атрибуты',
         testId: 'attributes',
-        path: `${basePath || ROUTE_CMS}/rubrics/${category.rubricId}/categories/${
-          category._id
-        }/attributes`,
+        path: `${links.categories}/${category._id}/attributes`,
         exact: true,
         hidden: hideAttributesPath,
       },
     ];
-  }, [basePath, category._id, category.rubricId, hideAttributesPath]);
+  }, [links, basePath, category._id, category.rubricId, hideAttributesPath]);
 
   return (
     <AppContentWrapper breadcrumbs={breadcrumbs}>

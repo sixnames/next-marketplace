@@ -25,17 +25,9 @@ const shops: ShopModel[] = [
     priceWarningI18n: {
       [DEFAULT_LOCALE]: 'Текущая цена на сайте может отличаться от цены на кассе Shop A',
     },
-    logo: {
-      index: 0,
-      url: `/assets/${ASSETS_DIST_SHOPS_LOGOS}/000001/000001-0.webp`,
-    },
+    logo: `/assets/${ASSETS_DIST_SHOPS_LOGOS}/000001/000001-0.webp`,
     mainImage: `/assets/${ASSETS_DIST_SHOPS}/000001/000001-0.webp`,
-    assets: [
-      {
-        index: 0,
-        url: `/assets/${ASSETS_DIST_SHOPS}/000001/000001-0.webp`,
-      },
-    ],
+    assets: [`/assets/${ASSETS_DIST_SHOPS}/000001/000001-0.webp`],
     mapMarker: {
       lightTheme: `/assets/${ASSETS_DIST_SHOPS}/000001/marker-light.png`,
       darkTheme: `/assets/${ASSETS_DIST_SHOPS}/000001/marker-dark.png`,
@@ -71,17 +63,9 @@ const shops: ShopModel[] = [
     priceWarningI18n: {
       [DEFAULT_LOCALE]: 'Текущая цена на сайте может отличаться от цены на кассе Shop B',
     },
-    logo: {
-      index: 0,
-      url: `/assets/${ASSETS_DIST_SHOPS_LOGOS}/000002/000002-0.webp`,
-    },
+    logo: `/assets/${ASSETS_DIST_SHOPS_LOGOS}/000002/000002-0.webp`,
     mainImage: `/assets/${ASSETS_DIST_SHOPS}/000002/000002-0.webp`,
-    assets: [
-      {
-        index: 0,
-        url: `/assets/${ASSETS_DIST_SHOPS}/000002/000002-0.webp`,
-      },
-    ],
+    assets: [`/assets/${ASSETS_DIST_SHOPS}/000002/000002-0.webp`],
     contacts: {
       emails: ['shopB@gmail.com'],
       phones: ['+76667778899'],
@@ -116,17 +100,9 @@ const shops: ShopModel[] = [
     priceWarningI18n: {
       [DEFAULT_LOCALE]: 'Текущая цена на сайте может отличаться от цены на кассе Shop C',
     },
-    logo: {
-      index: 0,
-      url: `/assets/${ASSETS_DIST_SHOPS_LOGOS}/000003/000003-0.webp`,
-    },
+    logo: `/assets/${ASSETS_DIST_SHOPS_LOGOS}/000003/000003-0.webp`,
     mainImage: `/assets/${ASSETS_DIST_SHOPS}/000003/000003-0.webp`,
-    assets: [
-      {
-        index: 0,
-        url: `/assets/${ASSETS_DIST_SHOPS}/000003/000003-0.webp`,
-      },
-    ],
+    assets: [`/assets/${ASSETS_DIST_SHOPS}/000003/000003-0.webp`],
     contacts: {
       emails: ['shopC@gmail.com'],
       phones: ['+76665554433'],
@@ -158,17 +134,9 @@ const shops: ShopModel[] = [
     name: 'Shop D',
     citySlug: DEFAULT_CITY,
     license: 'Shop D license 098324knlkajdf98798',
-    logo: {
-      index: 0,
-      url: `/assets/${ASSETS_DIST_SHOPS_LOGOS}/000004/000004-0.webp`,
-    },
+    logo: `/assets/${ASSETS_DIST_SHOPS_LOGOS}/000004/000004-0.webp`,
     mainImage: `/assets/${ASSETS_DIST_SHOPS}/000004/000004-0.webp`,
-    assets: [
-      {
-        index: 0,
-        url: `/assets/${ASSETS_DIST_SHOPS}/000004/000004-0.webp`,
-      },
-    ],
+    assets: [`/assets/${ASSETS_DIST_SHOPS}/000004/000004-0.webp`],
     contacts: {
       emails: ['shopD@gmail.com'],
       phones: ['+76665554444'],

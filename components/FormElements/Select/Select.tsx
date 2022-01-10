@@ -84,7 +84,7 @@ const Select: React.FC<SelectInterface> = ({
     (option: SelectOptionInterface) => {
       const { name, lastName, nameI18n } = option;
       let optionName = lastName ? `${`${name}`.charAt(0)}. ${lastName}` : name;
-      if (nameI18n) {
+      if (nameI18n && !name) {
         optionName = getFieldStringLocale(nameI18n, locale);
       }
 

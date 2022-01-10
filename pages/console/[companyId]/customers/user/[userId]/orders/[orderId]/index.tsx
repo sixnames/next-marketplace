@@ -4,7 +4,7 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import ConsoleOrderDetails, {
   CmsOrderDetailsBaseInterface,
 } from '../../../../../../../../components/order/ConsoleOrderDetails';
-import { DEFAULT_COMPANY_SLUG, ROUTE_CONSOLE } from '../../../../../../../../config/common';
+import { DEFAULT_COMPANY_SLUG } from '../../../../../../../../config/common';
 import {
   COL_ROLES,
   COL_USER_CATEGORIES,
@@ -20,6 +20,7 @@ import {
 import ConsoleLayout from '../../../../../../../../layout/cms/ConsoleLayout';
 import ConsoleUserLayout from '../../../../../../../../layout/console/ConsoleUserLayout';
 import { getFieldStringLocale } from '../../../../../../../../lib/i18n';
+import { getConsoleCompanyLinks } from '../../../../../../../../lib/linkUtils';
 import { getFullName } from '../../../../../../../../lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from '../../../../../../../../lib/phoneUtils';
 import {
@@ -39,7 +40,12 @@ const UserOrderConsumer: React.FC<UserOrderConsumerInterface> = ({
   orderStatuses,
   pageCompany,
 }) => {
-  const basePath = `${ROUTE_CONSOLE}/${pageCompany?._id}/customers`;
+  const links = getConsoleCompanyLinks({
+    companyId: pageCompany._id,
+    userId: user._id,
+    orderId: order._id,
+  });
+
   const title = `Заказ №${order.orderId}`;
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -47,15 +53,15 @@ const UserOrderConsumer: React.FC<UserOrderConsumerInterface> = ({
     config: [
       {
         name: 'Клиенты',
-        href: basePath,
+        href: links.customer.parentLink,
       },
       {
         name: `${user.fullName}`,
-        href: `${basePath}/user/${user._id}`,
+        href: links.customer.parentLink,
       },
       {
         name: `Заказы`,
-        href: `${basePath}/user/${user._id}/orders`,
+        href: links.customer.order.parentLink,
       },
     ],
   };

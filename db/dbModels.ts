@@ -1,7 +1,11 @@
 import { ObjectId } from 'mongodb';
 import { GEO_POINT_TYPE } from '../config/common';
 import { IconType } from '../types/iconTypes';
-import { BarcodeDoublesInterface, ShopProductBarcodeDoublesInterface } from './uiInterfaces';
+import {
+  BarcodeDoublesInterface,
+  RubricInterface,
+  ShopProductBarcodeDoublesInterface,
+} from './uiInterfaces';
 
 export type DateModel = Date;
 export type JSONObjectModel = Record<string, any>;
@@ -96,11 +100,6 @@ export interface AddressModel {
 export interface ContactsModel {
   emails: EmailAddressModel[];
   phones: PhoneNumberModel[];
-}
-
-export interface AssetModel {
-  url: string;
-  index: number;
 }
 
 // Sort direction
@@ -332,7 +331,7 @@ export interface CartModel extends TimestampModel {
 export interface CompanyModel extends BaseModel, TimestampModel {
   name: string;
   slug: string;
-  logo: AssetModel;
+  logo: string;
   ownerId: ObjectIdModel;
   staffIds: ObjectIdModel[];
   contacts: ContactsModel;
@@ -616,32 +615,28 @@ export interface OrderModel extends TimestampModel, BaseModel {
   giftCertificateChargedValue?: number | null;
 }
 
-export interface ProductConnectionItemModel {
+export interface ProductVariantItemModel {
   _id: ObjectIdModel;
   optionId: ObjectIdModel;
   productSlug: string;
   productId: ObjectIdModel;
-  connectionId: ObjectIdModel;
 }
 
-export interface ProductConnectionModel {
+export interface ProductVariantModel {
   _id: ObjectIdModel;
   attributeId: ObjectIdModel;
   attributeSlug: string;
-  productsIds: ObjectIdModel[];
+  products: ProductVariantItemModel[];
 }
 
-export interface ProductAttributeModel {
+export interface ProductSummaryAttributeModel {
   _id: ObjectIdModel;
-  rubricId: ObjectIdModel;
-  rubricSlug: string;
-  productSlug: string;
-  productId: ObjectIdModel;
   attributeId: ObjectIdModel;
-  selectedOptionsSlugs: string[];
-  selectedOptionsIds: ObjectIdModel[];
+  filterSlugs: string[];
+  optionIds: ObjectIdModel[];
   textI18n?: TranslationModel | null;
   number?: number | null;
+  readableValueI18n: TranslationModel;
 }
 
 interface ProductMainFieldsInterface {
@@ -650,55 +645,29 @@ interface ProductMainFieldsInterface {
   brandSlug?: string | null;
   brandCollectionSlug?: string | null;
   manufacturerSlug?: string | null;
-  selectedOptionsSlugs: string[];
+  filterSlugs: string[];
   barcode?: string[] | null;
   allowDelivery: boolean;
+  mainImage: string;
 }
 
-export interface ProductModel extends ProductMainFieldsInterface, BaseModel, TimestampModel {
+export interface ProductFacetModel extends ProductMainFieldsInterface, BaseModel {
   slug: string;
   active: boolean;
+  attributeIds: ObjectIdModel[];
+}
+
+export interface ProductSummaryModel extends ProductFacetModel, TimestampModel {
   originalName: string;
   nameI18n?: TranslationModel | null;
   descriptionI18n?: TranslationModel | null;
-  mainImage: string;
   gender: GenderModel;
-  titleCategoriesSlugs: string[];
-  selectedAttributesIds: ObjectId[];
-}
-
-export interface ProductSummaryModel extends BaseModel, TimestampModel {
-  slug: string;
-  active: boolean;
-  originalName: string;
-  snippetTitle: string;
-  cardTitle: string;
-  nameI18n?: TranslationModel | null;
-  descriptionI18n?: TranslationModel | null;
-  mainImage: string;
+  snippetTitleI18n: TranslationModel;
+  cardTitleI18n: TranslationModel;
   assets: string[];
-  gender: GenderModel;
-  barcode?: string[] | null;
-  allowDelivery: boolean;
-  rubricId: ObjectIdModel;
-  rubricSlug: string;
-  attributes: ProductAttributeModel[];
-  attributesCount: number;
-  totalAttributesCount: number;
-  shopsCount: number;
-  cardPrices: ProductCardPricesModel;
-}
-
-export interface ProductAssetsModel {
-  _id: ObjectIdModel;
-  productSlug: string;
-  productId: ObjectIdModel;
-  assets: AssetModel[];
-}
-
-export interface ProductCardPricesModel {
-  min: string;
-  max: string;
+  attributes: ProductSummaryAttributeModel[];
+  titleCategorySlugs: string[];
+  variants: ProductVariantModel[];
 }
 
 export interface ProductCardBreadcrumbModel {
@@ -844,7 +813,6 @@ export interface ShopProductModel
   shopId: ObjectIdModel;
   companyId: ObjectIdModel;
   companySlug: string;
-  mainImage: string;
   useCategoryDiscount?: boolean | null;
   useCategoryCashback?: boolean | null;
   useCategoryPayFromCashback?: boolean | null;
@@ -854,8 +822,8 @@ export interface ShopModel extends BaseModel, TimestampModel {
   name: string;
   slug: string;
   citySlug: string;
-  logo: AssetModel;
-  assets: AssetModel[];
+  logo: string;
+  assets: string[];
   contacts: ContactsModel;
   address: AddressModel;
   companyId: ObjectIdModel;
@@ -921,7 +889,7 @@ export interface UserModel extends BaseModel, TimestampModel {
   email: EmailAddressModel;
   phone: PhoneNumberModel;
   password: string;
-  avatar?: AssetModel | null;
+  avatar?: string | null;
   roleId: ObjectIdModel;
   cartId?: ObjectIdModel | null;
   notifications: UserNotificationsModel;
@@ -1008,8 +976,8 @@ export interface PromoModel extends TimestampModel, PromoBaseInterface {
 
   // main banner
   showAsMainBanner: boolean;
-  mainBanner?: AssetModel | null;
-  mainBannerMobile?: AssetModel | null;
+  mainBanner?: string | null;
+  mainBannerMobile?: string | null;
   mainBannerTextColor: string;
   mainBannerVerticalTextAlign: string;
   mainBannerHorizontalTextAlign: string;
@@ -1019,7 +987,7 @@ export interface PromoModel extends TimestampModel, PromoBaseInterface {
 
   //secondary banner
   showAsSecondaryBanner: boolean;
-  secondaryBanner?: AssetModel | null;
+  secondaryBanner?: string | null;
   secondaryBannerTextColor: string;
   secondaryBannerVerticalTextAlign: string;
   secondaryBannerHorizontalTextAlign: string;
@@ -1075,9 +1043,9 @@ export interface PageModel extends TimestampModel {
   content: string;
   state: PageStateModel;
   companySlug: string;
-  pageScreenshot?: AssetModel | null;
-  mainBanner?: AssetModel | null;
-  mainBannerMobile?: AssetModel | null;
+  pageScreenshot?: string | null;
+  mainBanner?: string | null;
+  mainBannerMobile?: string | null;
   showAsMainBanner?: boolean | null;
   mainBannerTextColor?: string | null;
   mainBannerVerticalTextAlign?: string | null;
@@ -1085,7 +1053,7 @@ export interface PageModel extends TimestampModel {
   mainBannerTextAlign?: string | null;
   mainBannerTextPadding?: number | null;
   mainBannerTextMaxWidth?: number | null;
-  secondaryBanner?: AssetModel | null;
+  secondaryBanner?: string | null;
   showAsSecondaryBanner?: boolean | null;
   secondaryBannerTextColor?: string | null;
   secondaryBannerVerticalTextAlign?: string | null;
@@ -1118,7 +1086,7 @@ export interface BlogPostModel extends CountersModel {
   assetKeys: string[];
   content: string;
   authorId: ObjectIdModel;
-  selectedOptionsSlugs: string[];
+  filterSlugs: string[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -1168,7 +1136,7 @@ export interface GiftCertificatePayloadModel extends PayloadType<GiftCertificate
   notAuth?: boolean;
 }
 
-export interface ProductPayloadModel extends PayloadType<ProductModel> {
+export interface ProductPayloadModel extends PayloadType<ProductFacetModel> {
   barcodeDoubles?: BarcodeDoublesInterface[] | null;
 }
 
@@ -1268,4 +1236,13 @@ export interface BlackListProductModel {
   shopProductId: ObjectIdModel;
   shopId: ObjectIdModel;
   products: BlackListProductItemModel[];
+}
+
+// Catalogue nav
+export interface CatalogueNavModel {
+  _id: ObjectIdModel;
+  companySlug: string;
+  citySlug: string;
+  rubrics: RubricInterface[];
+  createdAt: DateModel;
 }

@@ -60,8 +60,8 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
             const { product, shopProduct, _id, amount } = cartProduct;
 
             if (shopProduct) {
-              const { product } = shopProduct;
-              if (!product) {
+              const { summary } = shopProduct;
+              if (!summary) {
                 return null;
               }
 
@@ -75,9 +75,9 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
                     <div className={productImageHolderClassName}>
                       <div className='relative pb-[100%] w-full'>
                         <WpImage
-                          url={`${product.mainImage}`}
-                          alt={`${product.snippetTitle}`}
-                          title={`${product.snippetTitle}`}
+                          url={`${summary.mainImage}`}
+                          alt={`${summary.snippetTitle}`}
+                          title={`${summary.snippetTitle}`}
                           width={100}
                           className='absolute inset-0 w-full h-full object-contain'
                         />
@@ -86,7 +86,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
                   </div>
                   <div className={productContentClassName}>
                     <div className='text-lg font-medium pr-[var(--controlButtonHeightSmall)] mb-[var(--textLineGap)]'>
-                      {product.snippetTitle}
+                      {summary.snippetTitle}
                     </div>
 
                     <ProductShopPrices
@@ -151,7 +151,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
               return null;
             }
 
-            const { snippetTitle, shopsCount, cardPrices } = product;
+            const { snippetTitle, shopsCount, minPrice } = product;
 
             return (
               <div key={`${_id}`} className={productClassName} data-cy={`cart-dropdown-product`}>
@@ -176,7 +176,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
                   <ProductSnippetPrice
                     shopsCount={shopsCount}
                     className='mb-[var(--textLineGap)]'
-                    value={cardPrices?.min}
+                    value={minPrice}
                   />
                   <div className='text-theme text-sm'>Магазин не выбран</div>
 

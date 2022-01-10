@@ -139,7 +139,7 @@ export const CartShoplessProduct: React.FC<CartProductPropsInterface> = ({
     return null;
   }
 
-  const { itemId, snippetTitle, shopProducts, cardPrices, shopsCount, mainImage, slug } = product;
+  const { itemId, snippetTitle, shopProducts, minPrice, shopsCount, mainImage, slug } = product;
 
   return (
     <CartProductFrame
@@ -161,7 +161,7 @@ export const CartShoplessProduct: React.FC<CartProductPropsInterface> = ({
       <div className='flex flex-wrap gap-6 mb-4 items-center'>
         <div>
           <div className='text-secondary-text'>Цена за ед.</div>
-          <ProductSnippetPrice shopsCount={shopsCount} value={cardPrices?.min} />
+          <ProductSnippetPrice shopsCount={shopsCount} value={minPrice} />
         </div>
 
         <div className='flex justify-center items-center gap-4'>
@@ -205,26 +205,26 @@ export const CartProduct: React.FC<CartProductPropsWithAmountInterface> = ({
     return null;
   }
 
-  const { price, oldPrice, discountedPercent, available, shop, itemId, product } = shopProduct;
+  const { price, oldPrice, discountedPercent, available, shop, itemId, summary } = shopProduct;
 
-  if (!shop || !product) {
+  if (!shop || !summary) {
     return null;
   }
 
   return (
     <CartProductFrame
       defaultView={defaultView}
-      slug={product.slug}
+      slug={summary.slug}
       testId={testId}
       cartProductId={`${_id}`}
-      mainImage={product.mainImage}
-      snippetTitle={product.snippetTitle}
+      mainImage={summary.mainImage}
+      snippetTitle={summary.snippetTitle}
     >
       <CartProductMainData
-        name={product.name}
-        slug={product.slug}
+        name={summary.name}
+        slug={summary.slug}
         itemId={itemId}
-        snippetTitle={product.snippetTitle}
+        snippetTitle={summary.snippetTitle}
       />
 
       <div className='flex flex-wrap gap-6 mt-auto'>

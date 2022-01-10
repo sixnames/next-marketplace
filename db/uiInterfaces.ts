@@ -1,7 +1,6 @@
 import { LinkProps } from 'next/link';
 import * as React from 'react';
 import {
-  AssetModel,
   AttributeModel,
   AttributesGroupModel,
   AttributeViewVariantModel,
@@ -39,13 +38,11 @@ import {
   PageModel,
   PagesGroupModel,
   PayloadType,
-  ProductAssetsModel,
-  ProductAttributeModel,
+  ProductSummaryAttributeModel,
   ProductCardBreadcrumbModel,
-  ProductCardPricesModel,
-  ProductConnectionItemModel,
-  ProductConnectionModel,
-  ProductModel,
+  ProductVariantItemModel,
+  ProductVariantModel,
+  ProductFacetModel,
   ProductSummaryModel,
   PromoModel,
   PromoProductModel,
@@ -138,7 +135,7 @@ export interface SupplierInterface extends SupplierModel {
 }
 
 export interface CartProductInterface extends CartProductModel {
-  product?: ProductInterface | null;
+  product?: ProductSummaryInterface | null;
   shopProduct?: ShopProductInterface | null;
   isShopless?: boolean;
   totalPrice?: number;
@@ -217,18 +214,19 @@ export interface OptionsGroupInterface extends OptionsGroupModel {
   options?: OptionInterface[] | null;
 }
 
-export interface ProductConnectionItemInterface extends ProductConnectionItemModel {
-  shopProduct?: ShopProductInterface;
-  product?: ProductInterface;
+export interface ProductVariantItemInterface extends ProductVariantItemModel {
+  summary?: ProductSummaryInterface;
+  shopProducts?: ShopProductInterface[];
   option?: OptionInterface | null;
+  isCurrent: boolean;
 }
 
-export interface ProductConnectionInterface extends ProductConnectionModel {
+export interface ProductVariantInterface extends ProductVariantModel {
   attribute?: AttributeInterface | null;
-  connectionProducts?: ProductConnectionItemInterface[];
+  products: ProductVariantItemInterface[];
 }
 
-export interface ProductAttributeInterface extends ProductAttributeModel {
+export interface ProductAttributeInterface extends ProductSummaryAttributeModel {
   readableValue?: string | null;
   index?: number | null;
   attribute?: AttributeInterface | null;
@@ -249,62 +247,28 @@ export interface ProductAttributesGroupInterface extends AttributesGroupModel {
   selectAttributesAST?: ProductAttributeInterface[] | null;
 }
 
-export interface ProductInterface extends ProductModel {
-  minPrice?: number | null;
-  maxPrice?: number | null;
-  available?: boolean | null;
-  name?: string | null;
-  description?: string | null;
-  assets?: ProductAssetsModel | null;
-  brand?: BrandInterface | null;
-  brandCollection?: BrandCollectionInterface | null;
-  manufacturer?: ManufacturerInterface | null;
-  suppliers?: SupplierInterface[] | null;
-  connections?: ProductConnectionInterface[] | null;
-  attributes?: ProductAttributeInterface[] | null;
-  attributesGroups?: ProductAttributesGroupInterface[] | null;
-  listFeatures?: ProductAttributeInterface[] | null;
-  textFeatures?: ProductAttributeInterface[] | null;
-  tagFeatures?: ProductAttributeInterface[] | null;
-  iconFeatures?: ProductAttributeInterface[] | null;
-  ratingFeatures?: ProductAttributeInterface[] | null;
-  cardShopProducts?: ShopProductInterface[] | null;
-  price?: number | null;
-  cardBreadcrumbs?: ProductCardBreadcrumbModel[] | null;
-  shopProductIds?: string[] | null;
-  shopProducts?: ShopProductInterface[] | null;
-  shopProduct?: ShopProductInterface | null;
-  rubric?: RubricInterface | null;
-  stringAttributesAST?: ProductAttributeInterface[] | null;
-  numberAttributesAST?: ProductAttributeInterface[] | null;
-  multipleSelectAttributesAST?: ProductAttributeInterface[] | null;
-  selectAttributesAST?: ProductAttributeInterface[] | null;
-  shopProductsIds?: ObjectIdModel[] | null;
-  attributesCount?: number | null;
-  totalAttributesCount?: number | null;
-  categories?: CategoryInterface[] | null;
-  snippetTitle?: string | null;
-  cardTitle?: string | null;
-  cardContent?: SeoContentModel | null;
-  cardContentCities?: SeoContentCitiesInterface | null;
-  shops?: ShopInterface[] | null;
-  shopsCount?: number | null;
-  cardPrices?: ProductCardPricesModel | null;
+export interface ProductFacetInterface extends ProductFacetModel {
   summary?: ProductSummaryInterface | null;
 }
 
-export interface ProductSummaryInterface extends ProductSummaryModel {
+export interface ProductSummaryInterface extends ProductSummaryModel, PricesInterface {
   shopProductIds?: string[] | null;
 
   // ui
+  cardTitle?: string | null;
+  snippetTitle?: string | null;
   name?: string | null;
   description?: string | null;
   cardContent?: SeoContentModel | null;
   cardContentCities?: SeoContentCitiesInterface | null;
-  connections?: ProductConnectionInterface[] | null;
+  variants: ProductVariantInterface[];
   shopProducts?: ShopProductInterface[] | null;
+  shopProductsIds?: ObjectIdModel[] | null;
   shops?: ShopInterface[] | null;
-  breadcrumbs?: ProductCardBreadcrumbModel[] | null;
+  shopsCount?: number | null;
+  attributesCount?: number | null;
+  totalAttributesCount?: number | null;
+  views?: number | null;
 
   // parents
   rubric?: RubricInterface | null;
@@ -324,7 +288,7 @@ export interface ProductSummaryInterface extends ProductSummaryModel {
 }
 
 export interface BarcodeDoublesInterface {
-  products: ProductInterface[];
+  products: ProductSummaryInterface[];
   barcode: string;
 }
 
@@ -394,23 +358,24 @@ export interface SupplierProductInterface extends SupplierProductModel {
   recommendedPrice?: number | null;
 }
 
-export interface ShopProductInterface extends ShopProductModel {
+export interface PricesInterface {
+  minPrice?: number | null;
+  maxPrice?: number | null;
+}
+
+export interface ShopProductInterface extends ShopProductModel, PricesInterface {
   shop?: ShopInterface | null;
   minAvailable?: number | null;
   maxAvailable?: number | null;
   company?: CompanyInterface | null;
-  product?: ProductInterface | null;
-  products?: ProductInterface[] | null;
   orders?: OrderInterface[] | null;
-  cardPrices?: ProductCardPricesModel | null;
-  shopsCount?: number | null;
-  similarProducts?: ShopProductInterface[] | null;
   suppliers?: SupplierInterface[] | null;
   supplierProducts?: SupplierProductInterface[] | null;
   promoProducts?: PromoProductInterface[] | null;
   promoProductsCount?: number | null;
-  minPrice?: number | null;
-  maxPrice?: number | null;
+  summary?: ProductSummaryInterface | null;
+  similarProducts?: ShopProductInterface[] | null;
+  shopsCount?: number | null;
 }
 
 export interface ShopInterface extends ShopModel {
@@ -428,7 +393,7 @@ export interface PromoProductInterface extends PromoProductModel {
   promo?: PromoInterface | null;
   shop?: ShopInterface | null;
   shopProduct?: ShopProductInterface | null;
-  product?: ProductInterface | null;
+  product?: ProductFacetInterface | null;
   company?: CompanyInterface | null;
 }
 
@@ -547,13 +512,14 @@ export interface CatalogueProductPricesInterface {
 }
 
 export interface CatalogueProductsAggregationInterface {
-  totalProducts: number;
+  totalDocs: number;
   prices: CatalogueProductPricesInterface[];
   docs: ShopProductInterface[];
   rubrics: RubricInterface[];
   attributes?: AttributeInterface[] | null;
   categories?: CategoryInterface[];
   brands?: BrandInterface[];
+  totalPages: number;
 }
 
 export interface CatalogueFilterAttributeOptionInterface {
@@ -600,7 +566,7 @@ export interface OrderCustomerInterface extends OrderCustomerModel {
 }
 
 export interface OrderProductInterface extends OrderProductModel {
-  product?: ProductInterface | null;
+  product?: ProductSummaryInterface | null;
   shopProduct?: ShopProductInterface | null;
   shop?: ShopInterface | null;
   company?: CompanyInterface | null;
@@ -694,14 +660,13 @@ export interface ProductSnippetLayoutInterface extends ProductSnippetInterface {
 
 export interface InitialCardDataInterface {
   cardTitle: string;
-  product: ProductInterface;
+  product: ProductSummaryInterface;
   listFeatures: ProductAttributeInterface[];
   iconFeatures: ProductAttributeInterface[];
   tagFeatures: ProductAttributeInterface[];
   textFeatures: ProductAttributeInterface[];
   ratingFeatures: ProductAttributeInterface[];
   attributesGroups: ProductAttributesGroupInterface[];
-  connections: ProductConnectionInterface[];
   showFeaturesSection: boolean;
   showCardImagesSlider: boolean;
   showArticle: boolean;
@@ -710,14 +675,13 @@ export interface InitialCardDataInterface {
   isShopless: boolean;
   shopsCounterPostfix: string;
   isSingleImage: boolean;
-  assets: AssetModel[];
   cardShops: ShopInterface[];
   cardBreadcrumbs: ProductCardBreadcrumbModel[];
   shopsCount: number;
   cardContent: SeoContentModel | null;
   cardLayout: string;
   rubric: RubricInterface;
-  cardPrices: ProductCardPricesModel;
+  breadcrumbs?: ProductCardBreadcrumbModel[] | null;
   maxAvailable: number;
 }
 
@@ -829,7 +793,7 @@ export interface ShopProductsAggregationInterface {
 }
 
 export interface ProductsAggregationInterface {
-  docs: ProductInterface[];
+  docs: ProductSummaryInterface[];
   totalDocs: number;
   totalPages: number;
   prices: CatalogueProductPricesInterface[];
@@ -863,7 +827,7 @@ export interface AppPaginationWithFiltersInterface<Model> extends AppPaginationI
 }
 
 export interface ConsoleRubricProductsInterface
-  extends AppPaginationWithFiltersInterface<ProductInterface> {
+  extends AppPaginationWithFiltersInterface<ProductSummaryInterface> {
   rubric?: RubricInterface | null;
   companySlug: string;
 }
@@ -924,7 +888,6 @@ export interface ShopRubricProductsInterface
   selectedAttributes: CatalogueFilterAttributeInterface[];
   clearSlug: string;
   rubricName: string;
-  rubricId: string;
   rubricSlug: string;
   layoutBasePath: string;
   basePath: string;
@@ -952,8 +915,4 @@ export interface SeoContentCitiesInterface {
 
 export type OrderInterfacePayloadModel = PayloadType<OrderInterface>;
 
-export interface ShopProductPricesInterface {
-  _id: ObjectIdModel;
-  minPrice: number;
-  maxPrice: number;
-}
+export interface ShopProductPricesInterface extends PricesInterface {}

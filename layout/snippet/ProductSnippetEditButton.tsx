@@ -1,10 +1,10 @@
 import * as React from 'react';
 import ControlButton from '../../components/button/ControlButton';
 import { useSiteUserContext } from '../../context/siteUserContext';
-import { ProductInterface } from '../../db/uiInterfaces';
+import { ProductFacetInterface } from '../../db/uiInterfaces';
 
 interface ProductSnippetEditButtonInterface {
-  product: ProductInterface;
+  product: ProductFacetInterface;
 }
 
 const ProductSnippetEditButton: React.FC<ProductSnippetEditButtonInterface> = ({ product }) => {

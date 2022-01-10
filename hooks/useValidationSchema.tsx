@@ -1,8 +1,9 @@
 import * as React from 'react';
+import useSWR from 'swr';
 import * as Yup from 'yup';
 import { useLocaleContext } from '../context/localeContext';
-import { useGetValidationMessagesQuery } from '../generated/apolloComponents';
 import { ResolverValidationSchema } from '../lib/sessionHelpers';
+import { GetValidationMessagesPayloadType } from '../pages/api/messages/validation';
 import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
 
 interface UseValidationSchemaInterface {
@@ -11,12 +12,12 @@ interface UseValidationSchemaInterface {
 
 function useValidationSchema({ schema }: UseValidationSchemaInterface): ResolverValidationSchema {
   const { locale } = useLocaleContext();
-  const { data, error } = useGetValidationMessagesQuery();
+  const { data, error } = useSWR<GetValidationMessagesPayloadType>('/api/messages/validation');
 
   const payload = React.useMemo(() => {
     return schema({
       locale,
-      messages: data?.getValidationMessages || [],
+      messages: data?.payload || [],
     });
   }, [data, locale, schema]);
 

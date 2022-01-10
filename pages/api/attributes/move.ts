@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { REQUEST_METHOD_PATCH } from '../../../config/common';
 import { moveAttribute } from '../../../db/dao/attributes/moveAttribute';
-import { updateAlgoliaProducts } from '../../../lib/algolia/productAlgoliaUtils';
 import { sendApiRouteResponse } from '../../../lib/sessionHelpers';
+import { execUpdateProductTitles } from '../../../lib/updateProductTitles';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   // move
@@ -19,9 +19,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (payload.success && payload.payload) {
       // update product algolia indexes
-      await updateAlgoliaProducts({
-        selectedAttributesIds: payload.payload._id,
-      });
+      execUpdateProductTitles(`attributeId=${payload.payload._id.toHexString()}`);
     }
     return;
   }

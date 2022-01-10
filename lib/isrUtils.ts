@@ -1,6 +1,8 @@
 import { GetStaticPropsContext } from 'next';
 import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE } from '../config/common';
 import { COL_CITIES } from '../db/collectionNames';
+import { getCatalogueNavRubrics } from '../db/dao/ssr/getCatalogueNavRubrics';
+import { getSsrDomainCompany } from '../db/dao/ssr/getSsrDomainCompany';
 import { CityModel } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
 import { SiteLayoutProviderInterface } from '../layout/SiteLayout';
@@ -8,13 +10,7 @@ import { PagePropsInterface } from '../pages/_app';
 import { alwaysString } from './arrayUtils';
 import { getI18nLocaleValue } from './i18n';
 import { noNaN } from './numbers';
-import {
-  castDbData,
-  getCatalogueCreatedPages,
-  getCatalogueNavRubrics,
-  getPageInitialData,
-  getSsrDomainCompany,
-} from './ssrUtils';
+import { castDbData, getCatalogueCreatedPages, getPageInitialData } from './ssrUtils';
 
 type ParamsInterface = {
   companySlug: string;
@@ -128,6 +124,7 @@ export interface SiteInitialDataPayloadInterface {
 export async function getIsrSiteInitialData({
   context,
 }: GetSiteInitialDataInterface): Promise<SiteInitialDataPayloadInterface> {
+  // const timeStart = new Date().getTime();
   const {
     currentCity,
     sessionCity,
@@ -140,23 +137,27 @@ export async function getIsrSiteInitialData({
     cityNotFound,
     companyNotFound,
   } = await getPageInitialState({ context });
+  // console.log(`getPageInitialState >>>>>>>>>>>>>>>> `, new Date().getTime() - timeStart);
 
   // initial data
   const rawNavRubrics = await getCatalogueNavRubrics({
     locale: sessionLocale,
-    city: sessionCity,
-    domainCompany,
+    citySlug: sessionCity,
+    companySlug: domainCompany?.slug || DEFAULT_COMPANY_SLUG,
     stickyNavVisibleCategoriesCount: initialData.configs.stickyNavVisibleCategoriesCount,
     stickyNavVisibleAttributesCount: initialData.configs.stickyNavVisibleAttributesCount,
     stickyNavVisibleOptionsCount: initialData.configs.stickyNavVisibleOptionsCount,
     visibleCategoriesInNavDropdown: initialData.configs.visibleCategoriesInNavDropdown,
   });
   const navRubrics = castDbData(rawNavRubrics);
+  // console.log(`getCatalogueNavRubrics >>>>>>>>>>>>>>>> `, new Date().getTime() - timeStart);
+
   const catalogueCreatedPages = await getCatalogueCreatedPages({
     sessionCity,
     sessionLocale,
     companySlug,
   });
+  // console.log(`getCatalogueCreatedPages >>>>>>>>>>>>>>>> `, new Date().getTime() - timeStart);
 
   let redirect = null;
   if (cityNotFound && companyNotFound) {

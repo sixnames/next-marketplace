@@ -310,7 +310,7 @@ describe('Sync', () => {
 
     // should display synced products
     cy.visit(
-      `${ROUTE_CMS}/companies/${fixtureIds.companyB}/shops/shop/${fixtureIds.shopC}/products/${fixtureIds.rubricChampagne}`,
+      `${ROUTE_CMS}/companies/${fixtureIds.companyB}/shops/shop/${fixtureIds.shopC}/products/${fixtureIds.rubricChampagneSlug}`,
     );
     cy.wait(1500);
     cy.getByCy('shop-rubric-products-list').should('exist');

@@ -86,14 +86,11 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
     shopsCounterPostfix,
     isShopless,
     showArticle,
-    connections,
     product,
     cardBreadcrumbs,
-    cardPrices,
     shopsCount,
     cardShops,
     cardContent,
-    assets,
     showCardImagesSlider,
     cardTitle,
     maxAvailable,
@@ -103,7 +100,8 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
     companyId,
   });
 
-  const { brand, brandCollection, manufacturer, name } = product;
+  const { brand, brandCollection, manufacturer, name, variants, assets, minPrice, maxPrice } =
+    product;
 
   return (
     <article className='pb-20 pt-8 lg:pt-0' data-cy={`card`}>
@@ -172,15 +170,14 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                 </div>
 
                 {/*connections*/}
-                {connections.length > 0 ? (
+                {variants.length > 0 ? (
                   <div className='mb-8'>
-                    {connections.map(({ _id, attribute, connectionProducts }) => {
+                    {variants.map(({ _id, attribute, products }) => {
                       return (
                         <div key={`${_id}`} className='mb-8'>
                           <div className='text-secondary-text mb-3 font-bold'>{`${attribute?.name}:`}</div>
                           <div className='flex flex-wrap gap-2'>
-                            {(connectionProducts || []).map(({ option, productSlug }) => {
-                              const isCurrent = productSlug === product.slug;
+                            {products.map(({ option, productSlug, isCurrent }) => {
                               const name = `${option?.name} ${
                                 attribute?.metric ? ` ${attribute.metric.name}` : ''
                               }`;
@@ -207,7 +204,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
 
                 {/*price*/}
                 <div className='flex flex-wrap gap-6 items-baseline mb-6 mt-auto'>
-                  <CardPrices cardPrices={cardPrices} shopsCount={shopsCount} />
+                  <CardPrices minPrice={minPrice} maxPrice={maxPrice} shopsCount={shopsCount} />
 
                   {/*availability*/}
                   {configs.isOneShopCompany || maxAvailable === 0 ? null : (
@@ -256,13 +253,13 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
 
               {/*list features*/}
               <div className='flex flex-col justify-center md:col-span-1 md:order-1 lg:col-span-2'>
-                {visibleListFeatures.map(({ attribute, _id, readableValue }) => {
+                {visibleListFeatures.map(({ attribute, readableValue }) => {
                   if (!attribute || !attribute.showInCard) {
                     return null;
                   }
 
                   return (
-                    <div key={`${_id}`} className='mb-6'>
+                    <div key={`${attribute._id}`} className='mb-6'>
                       <div className='text-secondary-text mb-1 font-bold'>{attribute.name}</div>
                       <div>{readableValue}</div>
                     </div>

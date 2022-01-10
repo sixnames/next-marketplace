@@ -1,19 +1,5 @@
-import * as React from 'react';
-import { GetServerSidePropsContext, NextPage } from 'next';
-import { DEFAULT_PAGE_FILTER, ROUTE_CONSOLE } from '../../../../../../../config/common';
+import { getConsoleShopSyncErrorsListPageSsr } from '../../../../../../../db/dao/ssr/getConsoleShopSyncErrorsListPageSsr';
+import ConsoleShopSyncErrorsListPage from './[...filters]';
 
-const SyncIndexErrors: NextPage = () => {
-  return <div />;
-};
-
-export const getServerSideProps = async (context: GetServerSidePropsContext) => {
-  const { query } = context;
-  return {
-    redirect: {
-      permanent: true,
-      destination: `${ROUTE_CONSOLE}/${query.companyId}/shops/shop/${query.shopId}/sync-errors/${DEFAULT_PAGE_FILTER}`,
-    },
-  };
-};
-
-export default SyncIndexErrors;
+export const getServerSideProps = getConsoleShopSyncErrorsListPageSsr;
+export default ConsoleShopSyncErrorsListPage;

@@ -81,11 +81,5 @@ describe('Attributes Groups', () => {
     cy.getByCy(`delete-attributes-group-modal`).should('exist');
     cy.getByCy(`confirm`).click();
     cy.getByCy(`attributes-group-${updatedGroupName}-delete`).should('not.exist');
-
-    // Shouldn't delete attributes group connected to the rubric
-    cy.getByCy(`attributes-group-Общие характеристики-delete`).click();
-    cy.getByCy(`delete-attributes-group-modal`).should('exist');
-    cy.getByCy(`confirm`).click();
-    cy.getByCy(`attributes-group-Общие характеристики-delete`).should('exist');
   });
 });

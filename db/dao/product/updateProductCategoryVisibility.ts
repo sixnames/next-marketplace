@@ -1,19 +1,9 @@
 import { ObjectId } from 'mongodb';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
-import {
-  COL_CATEGORIES,
-  COL_PRODUCT_FACETS,
-  COL_PRODUCT_SUMMARIES,
-  COL_SHOP_PRODUCTS,
-} from '../../collectionNames';
-import {
-  CategoryModel,
-  ProductFacetModel,
-  ProductPayloadModel,
-  ProductSummaryModel,
-  ShopProductModel,
-} from '../../dbModels';
+import { execUpdateProductTitles } from '../../../lib/updateProductTitles';
+import { COL_CATEGORIES, COL_PRODUCT_SUMMARIES } from '../../collectionNames';
+import { CategoryModel, ProductPayloadModel, ProductSummaryModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
 import { UpdateProductCategoryInputInterface } from './updateProductCategory';
@@ -25,8 +15,6 @@ export async function updateProductCategoryVisibility({
   const { db, client } = await getDatabase();
   const { getApiMessage } = await getRequestParams(context);
   const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
-  const productFacetsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
-  const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
   const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
 
   const session = client.startSession();
@@ -62,7 +50,7 @@ export async function updateProductCategoryVisibility({
 
       // check product availability
       const productObjectId = new ObjectId(productId);
-      const product = await productFacetsCollection.findOne({ _id: productObjectId });
+      const product = await productSummariesCollection.findOne({ _id: productObjectId });
       if (!product) {
         mutationPayload = {
           success: false,
@@ -85,7 +73,7 @@ export async function updateProductCategoryVisibility({
       }
 
       // toggle category in product
-      const selected = product.filterSlugs.some((slug) => slug === category.slug);
+      const selected = product.titleCategorySlugs.some((slug) => slug === category.slug);
       let updater: Record<string, any> = {
         $addToSet: {
           titleCategorySlugs: category.slug,
@@ -106,14 +94,8 @@ export async function updateProductCategoryVisibility({
         },
         updater,
       );
-      const updatedProductResult = await productFacetsCollection.findOneAndUpdate(
-        {
-          _id: product._id,
-        },
-        updater,
-      );
-      const updatedProduct = updatedProductResult.value;
-      if (!updatedProductResult.ok || !updatedProduct || !updatedSummaryResult.ok) {
+      const updatedProduct = updatedSummaryResult.value;
+      if (!updatedSummaryResult.ok || !updatedProduct || !updatedSummaryResult.ok) {
         mutationPayload = {
           success: false,
           message: await getApiMessage(`products.update.error`),
@@ -122,25 +104,12 @@ export async function updateProductCategoryVisibility({
         return;
       }
 
-      // update shop products
-      const updatedShopProductsResult = await shopProductsCollection.updateMany(
-        {
-          productId: product._id,
-        },
-        updater,
-      );
-      if (!updatedShopProductsResult.acknowledged) {
-        mutationPayload = {
-          success: false,
-          message: await getApiMessage(`products.update.error`),
-        };
-        await session.abortTransaction();
-        return;
-      }
+      // update product title
+      execUpdateProductTitles(`productId=${updatedProduct._id.toHexString()}`);
 
       mutationPayload = {
         success: true,
-        message: await getApiMessage('shopProducts.update.success'),
+        message: await getApiMessage('products.update.success'),
         payload: updatedProduct,
       };
     });

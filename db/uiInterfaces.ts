@@ -376,6 +376,7 @@ export interface ShopProductInterface extends ShopProductModel, PricesInterface 
   summary?: ProductSummaryInterface | null;
   similarProducts?: ShopProductInterface[] | null;
   shopsCount?: number | null;
+  shopsIds?: ObjectIdModel[] | null;
 }
 
 export interface ShopInterface extends ShopModel {

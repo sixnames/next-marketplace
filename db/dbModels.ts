@@ -813,6 +813,7 @@ export interface ShopProductModel
   shopId: ObjectIdModel;
   companyId: ObjectIdModel;
   companySlug: string;
+  shopProductUid?: string | null;
   useCategoryDiscount?: boolean | null;
   useCategoryCashback?: boolean | null;
   useCategoryPayFromCashback?: boolean | null;
@@ -1225,6 +1226,7 @@ export interface TextUniquenessApiParsedResponseModel {
 }
 
 export interface BlackListProductItemModel {
+  id?: string | null;
   barcode: string[];
   available: number;
   price: number;
@@ -1233,7 +1235,13 @@ export interface BlackListProductItemModel {
 
 export interface BlackListProductModel {
   _id: ObjectIdModel;
-  shopProductId: ObjectIdModel;
+  shopProductUid: string;
+  shopId: ObjectIdModel;
+  products: BlackListProductItemModel[];
+}
+
+export interface SyncIntersectModel {
+  _id: ObjectIdModel;
   shopId: ObjectIdModel;
   products: BlackListProductItemModel[];
 }

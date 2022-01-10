@@ -6,6 +6,7 @@ import { ObjectIdModel, ProductSummaryModel, ShopModel } from '../../../db/dbMod
 import { getDatabase } from '../../../db/mongodb';
 import { SyncParamsInterface, SyncProductInterface } from '../../../db/syncInterfaces';
 import { ShopProductInterface } from '../../../db/uiInterfaces';
+import { alwaysString } from '../../../lib/arrayUtils';
 import { getFieldStringLocale } from '../../../lib/i18n';
 
 interface SyncProductAggregationInterface extends Omit<SyncProductInterface, '_id'> {
@@ -71,12 +72,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const locale = DEFAULT_LOCALE;
   const shopProducts: SyncProductInterface[] = [];
   initialShopProducts.forEach((shopProduct) => {
-    const { barcode, available, price, summary, _id } = shopProduct;
+    const { barcode, available, price, summary, shopProductUid } = shopProduct;
     if (barcode && barcode.length > 0 && summary) {
       const snippetTitle = getFieldStringLocale(summary.snippetTitleI18n, locale);
 
       shopProducts.push({
-        id: _id.toHexString(),
+        id: alwaysString(shopProductUid),
         barcode,
         available,
         price,

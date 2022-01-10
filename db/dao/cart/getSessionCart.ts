@@ -5,8 +5,6 @@ import { getFieldStringLocale } from '../../../lib/i18n';
 import { noNaN } from '../../../lib/numbers';
 import { phoneToRaw, phoneToReadable } from '../../../lib/phoneUtils';
 import { getRequestParams } from '../../../lib/sessionHelpers';
-import { generateSnippetTitle } from '../../../lib/titleUtils';
-import { getTreeFromList } from '../../../lib/treeUtils';
 import { NexusContext } from '../../../types/apiContextTypes';
 import {
   COL_CARTS,
@@ -141,29 +139,9 @@ export const getSessionCart = async ({
         const minPriceShopProduct = sortedShopProductsByPrice[sortedShopProductsByPrice.length - 1];
         const maxPriceShopProduct = sortedShopProductsByPrice[0];
 
-        // title
-        const categories = getTreeFromList({
-          list: product.categories,
-          childrenFieldName: 'categories',
-          locale,
-        });
-
-        const snippetTitle = generateSnippetTitle({
-          locale,
-          brand: product.brand,
-          rubricName: getFieldStringLocale(product.rubric?.nameI18n, locale),
-          showRubricNameInProductTitle: product.rubric?.showRubricNameInProductTitle,
-          showCategoryInProductTitle: product.rubric?.showCategoryInProductTitle,
-          attributes: product.attributes,
-          titleCategorySlugs: product.titleCategorySlugs,
-          originalName: product.originalName,
-          defaultGender: product.gender,
-          categories,
-        });
-
         product = {
           ...product,
-          snippetTitle,
+          snippetTitle: getFieldStringLocale(product.snippetTitleI18n, locale),
           shopProducts: sortedShopProductsByPrice,
           name: getFieldStringLocale(product.nameI18n, locale),
           minPrice: noNaN(minPriceShopProduct?.price),

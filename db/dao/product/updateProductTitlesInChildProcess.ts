@@ -11,7 +11,7 @@ async function updateProductTitlesInChildProcess() {
 
   // by productIds
   const productIds = getCliParam('productIds');
-  if (productIds !== UNDEFINED_PARAM) {
+  if (productIds && productIds !== UNDEFINED_PARAM) {
     const ids = productIds.split(FILTER_SEPARATOR);
     if (ids.length > 0) {
       match = {
@@ -24,7 +24,7 @@ async function updateProductTitlesInChildProcess() {
 
   // by product _id
   const productId = getCliParam('productId');
-  if (productId !== UNDEFINED_PARAM) {
+  if (productId && productId !== UNDEFINED_PARAM) {
     match = {
       _id: new ObjectId(productId),
     };
@@ -32,7 +32,7 @@ async function updateProductTitlesInChildProcess() {
 
   // by rubric slug
   const rubricSlug = getCliParam('rubricSlug');
-  if (rubricSlug !== UNDEFINED_PARAM) {
+  if (rubricSlug && rubricSlug !== UNDEFINED_PARAM) {
     match = {
       rubricSlug,
     };
@@ -40,15 +40,15 @@ async function updateProductTitlesInChildProcess() {
 
   // by attributeId
   const attributeId = getCliParam('attributeId');
-  if (attributeId !== UNDEFINED_PARAM) {
+  if (attributeId && attributeId !== UNDEFINED_PARAM) {
     match = {
-      'attributes.attributeId': attributeId,
+      'attributes.attributeId': new ObjectId(attributeId),
     };
   }
 
   // by brandSlug
   const brandSlug = getCliParam('brandSlug');
-  if (brandSlug !== UNDEFINED_PARAM) {
+  if (brandSlug && brandSlug !== UNDEFINED_PARAM) {
     match = {
       brandSlug,
     };
@@ -56,7 +56,7 @@ async function updateProductTitlesInChildProcess() {
 
   // by brandCollectionSlug
   const brandCollectionSlug = getCliParam('brandCollectionSlug');
-  if (brandCollectionSlug !== UNDEFINED_PARAM) {
+  if (brandCollectionSlug && brandCollectionSlug !== UNDEFINED_PARAM) {
     match = {
       brandCollectionSlug,
     };
@@ -64,7 +64,7 @@ async function updateProductTitlesInChildProcess() {
 
   // by filterSlugs
   const filterSlugs = getCliParam('filterSlugs');
-  if (brandCollectionSlug !== UNDEFINED_PARAM) {
+  if (filterSlugs && filterSlugs !== UNDEFINED_PARAM) {
     match = {
       filterSlugs,
     };

@@ -98,12 +98,12 @@ export const getServerSideProps = async (
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<ProductPageInterface>> => {
   const { query } = context;
-  const { productId, rubricId } = query;
+  const { productId } = query;
   const { db } = await getDatabase();
   const companiesCollection = db.collection<CompanyInterface>(COL_COMPANIES);
   const categoriesCollection = db.collection<CategoryInterface>(COL_CATEGORIES);
   const { props } = await getAppInitialData({ context });
-  if (!props || !productId || !rubricId || !query.companyId) {
+  if (!props) {
     return {
       notFound: true,
     };
@@ -170,7 +170,7 @@ export const getServerSideProps = async (
       product: castDbData(product),
       categoriesTree: castDbData(categoriesTree),
       pageCompany: castDbData(companyResult),
-      routeBasePath: links.parentLink,
+      routeBasePath: links.root,
     },
   };
 };

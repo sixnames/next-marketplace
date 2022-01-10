@@ -61,6 +61,7 @@ export function getConsoleRubricLinks({
 }: GetConsoleRubricLinkInterface) {
   const parentLink = `${basePath}/rubrics`;
   const root = `${parentLink}/${rubricSlug}`;
+
   return {
     parentLink,
     root,
@@ -189,6 +190,7 @@ export function getCmsCompanyLinks({
 }: GetCmsCompanyLinkInterface) {
   const parentLink = basePath === ROUTE_CMS ? `${basePath}/companies` : basePath;
   const root = `${parentLink}/${companyId}`;
+
   return {
     parentLink,
     root,

@@ -998,3 +998,7 @@ table {
     border: 1px solid var(--theme);
   }
 }
+
+.image-gallery-thumbnails-wrapper.thumbnails-swipe-vertical .image-gallery-thumbnails {
+  overflow-y: auto;
+}

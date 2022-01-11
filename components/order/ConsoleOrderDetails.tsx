@@ -19,6 +19,7 @@ import {
   useUpdateOrderProduct,
 } from '../../hooks/mutations/useOrderMutations';
 import { getNumWord } from '../../lib/i18n';
+import { getConsoleRubricLinks } from '../../lib/linkUtils';
 import { noNaN } from '../../lib/numbers';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
@@ -61,9 +62,16 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
   const productImageSrc = summary?.mainImage || IMAGE_FALLBACK;
   const minAmount = 1;
   const supplierProducts = shopProduct?.supplierProducts || [];
+  const barcode = shopProduct?.barcode || [];
 
   const [cancelOrderProductMutation] = useCancelOrderProduct();
   const [updateOrderProductMutation] = useUpdateOrderProduct();
+
+  const links = getConsoleRubricLinks({
+    basePath: ROUTE_CMS,
+    productId: summary?._id,
+    rubricSlug: summary?.rubricSlug,
+  });
 
   return (
     <div
@@ -97,10 +105,7 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
                 circle
                 theme={'secondary'}
                 onClick={() => {
-                  window.open(
-                    `${ROUTE_CMS}/rubrics/${summary?.rubricId}/products/product/${summary?._id}`,
-                    '_blank',
-                  );
+                  window.open(links.product.root, '_blank');
                 }}
               />
             ) : (
@@ -175,7 +180,14 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
             </div>*/}
 
             {/*article*/}
-            <div className='text-secondary-text mb-3 text-sm'>{`Артикул: ${itemId}`}</div>
+            <div className='flex flex-wrap gap-4 mb-3'>
+              <div className='text-secondary-text text-sm'>{`Артикул: ${itemId}`}</div>
+              {barcode.length > 0 ? (
+                <div className='text-secondary-text text-sm'>
+                  {`Штрихкод: ${barcode.join(', ')}`}
+                </div>
+              ) : null}
+            </div>
 
             {/*name*/}
             <div className='text-lg font-bold flex-grow mb-2'>

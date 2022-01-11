@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb';
-import { castUrlFilters } from '../../../lib/catalogueUtils';
+import { castUrlFilters } from '../../../lib/castUrlFilters';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
 import { COL_PROMO, COL_PROMO_PRODUCTS, COL_SHOP_PRODUCTS } from '../../collectionNames';

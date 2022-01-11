@@ -1,5 +1,5 @@
 import { DEFAULT_PAGE, PAGINATION_DEFAULT_LIMIT, SORT_DESC } from '../../../config/common';
-import { castUrlFilters } from '../../../lib/catalogueUtils';
+import { castUrlFilters } from '../../../lib/castUrlFilters';
 import { getFieldStringLocale } from '../../../lib/i18n';
 import { getFullName } from '../../../lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from '../../../lib/phoneUtils';

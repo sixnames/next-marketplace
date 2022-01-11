@@ -6,27 +6,17 @@ import {
   ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
   CATALOGUE_FILTER_LIMIT,
   CATALOGUE_GRID_DEFAULT_COLUMNS_COUNT,
-  CATALOGUE_PRODUCTS_LIMIT,
   DEFAULT_COMPANY_SLUG,
-  DEFAULT_PAGE,
   DEFAULT_PAGE_FILTER,
-  DEFAULT_SORT_STAGE,
   FILTER_BRAND_COLLECTION_KEY,
   FILTER_BRAND_KEY,
   FILTER_CATEGORY_KEY,
-  FILTER_COMMON_KEY,
-  FILTER_NO_PHOTO_KEY,
   FILTER_PAGE_KEY,
   FILTER_PRICE_KEY,
-  FILTER_RUBRIC_KEY,
   FILTER_SEPARATOR,
   GENDER_HE,
   ROUTE_CATALOGUE,
-  SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY,
-  SORT_ASC,
   SORT_BY_KEY,
-  SORT_DESC,
-  SORT_DESC_STR,
   SORT_DIR_KEY,
   ZERO_PAGE_FILTER,
 } from '../config/common';
@@ -44,7 +34,6 @@ import {
 import { COL_RUBRIC_VARIANTS, COL_RUBRICS, COL_SHOP_PRODUCTS } from '../db/collectionNames';
 import {
   ignoreNoImageStage,
-  noImageStage,
   paginatedAggregationFinalPipeline,
   productsPaginatedAggregationFacetsPipeline,
   ProductsPaginatedAggregationInterface,
@@ -68,8 +57,8 @@ import {
   SeoContentInterface,
   ShopProductInterface,
 } from '../db/uiInterfaces';
-import { getAlgoliaProductsSearch } from './algolia/productAlgoliaUtils';
-import { alwaysArray, alwaysString, sortObjectsByField } from './arrayUtils';
+import { alwaysArray, sortObjectsByField } from './arrayUtils';
+import { castUrlFilters } from './castUrlFilters';
 import { getFieldStringLocale } from './i18n';
 import { noNaN } from './numbers';
 import { getProductCurrentViewCastedAttributes } from './productAttributesUtils';
@@ -573,282 +562,6 @@ function castOptionsForBreadcrumbs({
     });
     return [...innerAcc, ...castedOptionAcc];
   }, newAcc);
-}
-
-interface CastUrlFiltersPayloadInterface {
-  minPrice?: number | null;
-  maxPrice?: number | null;
-  realFilters: string[];
-  allUrlParams: string[];
-  realFilterAttributes: string[];
-  categoryFilters: string[];
-  categoryCastedFilters: string[];
-  priceFilters: string[];
-  brandFilters: string[];
-  brandCollectionFilters: string[];
-  inCategory: boolean;
-  sortBy: string | null;
-  sortDir: 1 | -1;
-  sortFilterOptions: string[];
-  rubricFilters?: string[] | null;
-  noFiltersSelected: boolean;
-  page: number;
-  skip: number;
-  limit: number;
-  clearSlug: string;
-  pricesStage: Record<any, any>;
-  optionsStage: Record<any, any>;
-  brandStage: Record<any, any>;
-  brandCollectionStage: Record<any, any>;
-  sortStage: Record<any, any>;
-  defaultSortStage: Record<any, any>;
-  photoStage: Record<any, any>;
-  searchStage: Record<any, any>;
-  searchIds: ObjectIdModel[];
-  noSearchResults: boolean;
-}
-
-interface CastUrlFiltersInterface {
-  filters: string[];
-  initialLimit?: number;
-  initialPage?: number;
-  search?: string | string[] | null;
-  excludedSearchIds?: ObjectIdModel[] | null;
-  searchFieldName: string;
-}
-
-export async function castUrlFilters({
-  filters,
-  initialPage,
-  initialLimit,
-  excludedSearchIds,
-  searchFieldName,
-  ...props
-}: CastUrlFiltersInterface): Promise<CastUrlFiltersPayloadInterface> {
-  const allUrlParams: string[] = [];
-  const categoryCastedFilters: string[] = [];
-  const priceFilters: string[] = [];
-  const realFilters: string[] = [];
-  const realFilterAttributes: string[] = [];
-  const categoryFilters: string[] = [];
-  const brandFilters: string[] = [];
-  const brandCollectionFilters: string[] = [];
-  const noCategoryFilters: string[] = [];
-  let sortBy: string | null = null;
-  let sortDir: string | null = null;
-
-  // pagination
-  const defaultPage = initialPage || DEFAULT_PAGE;
-  let page = defaultPage;
-
-  const defaultLimit = initialLimit || CATALOGUE_PRODUCTS_LIMIT;
-  let limit = defaultLimit;
-
-  // sort
-  const sortFilterOptions: string[] = [];
-
-  // prices
-  let minPrice: number | null = null;
-  let maxPrice: number | null = null;
-
-  // rubrics
-  const rubricFilters: string[] = [];
-
-  // photo stage
-  let photoStage: Record<any, any> = {};
-
-  filters.forEach((filterOption) => {
-    const splittedOption = filterOption.split(FILTER_SEPARATOR);
-    const filterAttributeSlug = splittedOption[0];
-    const filterOptionSlug = splittedOption[1];
-    if (!filterOptionSlug) {
-      return;
-    }
-
-    if (filterAttributeSlug) {
-      allUrlParams.push(filterOption);
-
-      if (filterAttributeSlug === FILTER_RUBRIC_KEY) {
-        rubricFilters.push(filterOptionSlug);
-        return;
-      }
-
-      if (filterAttributeSlug === FILTER_PAGE_KEY) {
-        page = noNaN(filterOptionSlug) || defaultPage;
-        return;
-      }
-
-      if (filterAttributeSlug === CATALOGUE_FILTER_LIMIT) {
-        limit = noNaN(filterOptionSlug) || defaultLimit;
-        return;
-      }
-
-      if (filterAttributeSlug === FILTER_PRICE_KEY) {
-        priceFilters.push(filterOption);
-        noCategoryFilters.push(filterOption);
-        const prices = filterOptionSlug.split('_');
-        minPrice = noNaN(prices[0]);
-        maxPrice = prices[1] ? noNaN(prices[1]) : null;
-        return;
-      }
-
-      if (filterAttributeSlug === SORT_BY_KEY) {
-        sortFilterOptions.push(filterOption);
-        sortBy = filterOptionSlug;
-        return;
-      }
-
-      if (filterAttributeSlug === SORT_DIR_KEY) {
-        sortFilterOptions.push(filterOption);
-        sortDir = filterOptionSlug;
-        return;
-      }
-
-      if (filterAttributeSlug === FILTER_CATEGORY_KEY) {
-        allUrlParams.push(filterOption);
-        realFilters.push(filterOptionSlug);
-        categoryFilters.push(filterOption);
-        categoryCastedFilters.push(filterOptionSlug);
-        return;
-      }
-
-      if (filterAttributeSlug === FILTER_BRAND_KEY) {
-        noCategoryFilters.push(filterOption);
-        const slugParts = filterOption.split(FILTER_SEPARATOR);
-        if (slugParts[1]) {
-          brandFilters.push(slugParts[1]);
-        }
-        return;
-      }
-
-      if (filterAttributeSlug === FILTER_BRAND_COLLECTION_KEY) {
-        noCategoryFilters.push(filterOption);
-        const slugParts = filterOption.split(FILTER_SEPARATOR);
-        if (slugParts[1]) {
-          brandCollectionFilters.push(slugParts[1]);
-        }
-        return;
-      }
-
-      if (filterAttributeSlug === FILTER_COMMON_KEY) {
-        if (filterOptionSlug === FILTER_NO_PHOTO_KEY) {
-          photoStage = noImageStage;
-        }
-        return;
-      }
-
-      noCategoryFilters.push(filterOption);
-      realFilterAttributes.push(filterAttributeSlug);
-      realFilters.push(filterOption);
-    }
-  });
-
-  const noFiltersSelected = noCategoryFilters.length < 1;
-  const castedSortDir = sortDir === SORT_DESC_STR ? SORT_DESC : SORT_ASC;
-  const skip = page ? (page - 1) * limit : 0;
-  const sortPathname = sortFilterOptions.length > 0 ? `/${sortFilterOptions.join('/')}` : '';
-
-  const pricesStage = maxPrice
-    ? {
-        price: {
-          $gte: minPrice,
-          $lte: maxPrice,
-        },
-      }
-    : {};
-
-  const optionsStage =
-    realFilters.length > 0
-      ? {
-          filterSlugs: {
-            $all: realFilters,
-          },
-        }
-      : {};
-
-  const brandStage =
-    brandFilters.length > 0
-      ? {
-          brandSlug: {
-            $in: brandFilters,
-          },
-        }
-      : {};
-
-  const brandCollectionStage =
-    brandCollectionFilters.length > 0
-      ? {
-          brandCollectionSlug: {
-            $in: brandCollectionFilters,
-          },
-        }
-      : {};
-
-  // sort stage
-  const defaultSortStage = DEFAULT_SORT_STAGE;
-  let sortStage: Record<any, any> = {
-    views: SORT_DESC,
-    _id: SORT_DESC,
-  };
-
-  // sort by price
-  if (sortBy === SHOP_PRODUCTS_DEFAULT_SORT_BY_KEY) {
-    sortStage = {
-      minPrice: castedSortDir,
-      views: SORT_DESC,
-      _id: SORT_DESC,
-    };
-  }
-
-  // search stage
-  let searchStage = {};
-  let searchIds: ObjectIdModel[] = [];
-  const search = alwaysString(props.search);
-
-  if (search) {
-    searchIds = await getAlgoliaProductsSearch({
-      search,
-      excludedProductsIds: excludedSearchIds,
-    });
-    searchStage = {
-      [searchFieldName]: {
-        $in: searchIds,
-      },
-    };
-  }
-
-  return {
-    searchStage,
-    searchIds,
-    noSearchResults: search.length > 0 && searchIds.length < 1,
-    allUrlParams,
-    rubricFilters: rubricFilters.length > 0 ? rubricFilters : null,
-    clearSlug: sortPathname,
-    minPrice,
-    maxPrice,
-    realFilters,
-    realFilterAttributes,
-    categoryFilters,
-    categoryCastedFilters,
-    priceFilters,
-    brandFilters,
-    brandCollectionFilters,
-    inCategory: categoryFilters.length > 0,
-    sortBy,
-    sortDir: castedSortDir,
-    sortFilterOptions,
-    noFiltersSelected,
-    page,
-    limit,
-    skip,
-    pricesStage,
-    optionsStage,
-    brandStage,
-    brandCollectionStage,
-    sortStage,
-    defaultSortStage,
-    photoStage,
-  };
 }
 
 export interface GetCatalogueDataInterface {

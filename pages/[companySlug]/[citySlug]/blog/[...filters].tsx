@@ -46,7 +46,8 @@ import {
 } from '../../../../db/uiInterfaces';
 import SiteLayout, { SiteLayoutProviderInterface } from '../../../../layout/SiteLayout';
 import { alwaysArray } from '../../../../lib/arrayUtils';
-import { castCatalogueParamToObject, castUrlFilters } from '../../../../lib/catalogueUtils';
+import { castUrlFilters } from '../../../../lib/castUrlFilters';
+import { castCatalogueParamToObject } from '../../../../lib/catalogueUtils';
 import { getFieldStringLocale } from '../../../../lib/i18n';
 import { getIsrSiteInitialData, IsrContextInterface } from '../../../../lib/isrUtils';
 import { noNaN } from '../../../../lib/numbers';

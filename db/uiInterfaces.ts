@@ -566,7 +566,7 @@ export interface OrderCustomerInterface extends OrderCustomerModel {
 }
 
 export interface OrderProductInterface extends OrderProductModel {
-  product?: ProductSummaryInterface | null;
+  summary?: ProductSummaryInterface | null;
   shopProduct?: ShopProductInterface | null;
   shop?: ShopInterface | null;
   company?: CompanyInterface | null;

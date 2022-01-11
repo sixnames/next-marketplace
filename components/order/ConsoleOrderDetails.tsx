@@ -56,9 +56,9 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
   const { values } = useFormikContext<OrderInterface>();
   const { showModal } = useAppContext();
   const { showErrorNotification } = useNotificationsContext();
-  const { product, originalName, shopProduct, itemId, price, totalPrice, finalPrice, isCanceled } =
+  const { summary, originalName, shopProduct, itemId, price, totalPrice, finalPrice, isCanceled } =
     orderProduct;
-  const productImageSrc = product?.mainImage || IMAGE_FALLBACK;
+  const productImageSrc = summary?.mainImage || IMAGE_FALLBACK;
   const minAmount = 1;
   const supplierProducts = shopProduct?.supplierProducts || [];
 
@@ -98,7 +98,7 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
                 theme={'secondary'}
                 onClick={() => {
                   window.open(
-                    `${ROUTE_CMS}/rubrics/${product?.rubricId}/products/product/${product?._id}`,
+                    `${ROUTE_CMS}/rubrics/${summary?.rubricId}/products/product/${summary?._id}`,
                     '_blank',
                   );
                 }}
@@ -179,13 +179,13 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
 
             {/*name*/}
             <div className='text-lg font-bold flex-grow mb-2'>
-              {product ? (
+              {summary ? (
                 <WpLink
-                  href={`/${companySlug}/${citySlug}/${product.slug}`}
+                  href={`/${companySlug}/${citySlug}/${summary.slug}`}
                   className='block text-primary-text hover:text-theme hover:no-underline'
                   target={'_blank'}
                 >
-                  {product.cardTitle}
+                  {summary.cardTitle}
                 </WpLink>
               ) : null}
             </div>

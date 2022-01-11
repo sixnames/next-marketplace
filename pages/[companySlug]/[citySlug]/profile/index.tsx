@@ -48,20 +48,20 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({
 }) => {
   const { urlPrefix } = useSiteContext();
   const { addProductToCart, getShopProductInCartCount } = useSiteContext();
-  const { originalName, product, shopProduct, itemId, price, amount, totalPrice, productId } =
+  const { originalName, summary, shopProduct, itemId, price, amount, totalPrice, productId } =
     orderProduct;
-  const slug = `${product?.slug}`;
+  const slug = `${summary?.slug}`;
 
   const addToCartAmount = 1;
   const inCartCount = getShopProductInCartCount(
     `${orderProduct.shopProductId}`,
-    Boolean(product?.allowDelivery),
+    Boolean(summary?.allowDelivery),
   );
   const productNotExist = !shopProduct;
   const isCartButtonDisabled =
     productNotExist || addToCartAmount + inCartCount > noNaN(shopProduct?.available);
 
-  const productImageSrc = shopProduct ? `${product?.mainImage}` : IMAGE_FALLBACK;
+  const productImageSrc = shopProduct ? `${summary?.mainImage}` : IMAGE_FALLBACK;
 
   return (
     <div className='relative py-10 flex pr-[calc(var(--controlButtonHeightBig)+1rem)]'>
@@ -81,7 +81,7 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({
           className='block absolute z-10 inset-0 text-indent-full'
           href={`${urlPrefix}/${slug}`}
         >
-          {product?.snippetTitle}
+          {summary?.snippetTitle}
         </WpLink>
       </div>
 
@@ -95,7 +95,7 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({
               className='block text-primary-text hover:no-underline hover:text-primary-text'
               href={`${urlPrefix}/${slug}`}
             >
-              {product?.snippetTitle}
+              {summary?.snippetTitle}
             </WpLink>
           </div>
 
@@ -433,10 +433,10 @@ export async function getServerSideProps(
           {
             ...orderProduct,
             status: productStatus,
-            product: orderProduct.product
+            summary: orderProduct.summary
               ? {
-                  ...orderProduct.product,
-                  snippetTitle: getFieldStringLocale(orderProduct.product.snippetTitleI18n, locale),
+                  ...orderProduct.summary,
+                  snippetTitle: getFieldStringLocale(orderProduct.summary.snippetTitleI18n, locale),
                 }
               : null,
           },

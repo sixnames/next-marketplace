@@ -965,6 +965,14 @@ export async function getCatalogueCreatedPages({
               },
             },
             {
+              $project: {
+                _id: true,
+                index: true,
+                nameI18n: true,
+                slug: true,
+              },
+            },
+            {
               $sort: {
                 index: SORT_ASC,
               },
@@ -983,19 +991,11 @@ export async function getCatalogueCreatedPages({
       ...pagesGroup,
       name: getI18nLocaleValue(pagesGroup.nameI18n, sessionLocale),
       pages: (pagesGroup.pages || []).reduce((acc: PageInterface[], page) => {
-        const content = JSON.parse(page.content);
-        if ((content.rows || []).length < 1) {
-          return acc;
-        }
-
         return [
           ...acc,
           {
             ...page,
             name: getI18nLocaleValue(page.nameI18n, sessionLocale),
-            description: page.descriptionI18n
-              ? getI18nLocaleValue(page.descriptionI18n, sessionLocale)
-              : '',
           },
         ];
       }, []),

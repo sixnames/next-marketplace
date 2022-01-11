@@ -77,7 +77,7 @@ export const getServerSideProps = async (
 
   const posts = await getBlogPostsList({
     locale: props.sessionLocale,
-    companySlug: props.companySlug,
+    companySlug: DEFAULT_COMPANY_SLUG,
   });
 
   return {

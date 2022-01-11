@@ -47,7 +47,21 @@ async function updateProds() {
       ])
       .toArray();
     for await (const post of posts) {
-      console.log(post);
+      const selectedOptionsSlugs = post.selectedOptionsSlugs || ([] as string[]);
+      const filterSlugs = [...selectedOptionsSlugs];
+      await postsCollection.findOneAndUpdate(
+        {
+          _id: post._id,
+        },
+        {
+          $set: {
+            filterSlugs,
+          },
+          $unset: {
+            selectedOptionsSlugs: '',
+          },
+        },
+      );
     }
 
     // disconnect form db

@@ -244,7 +244,9 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                       available={maxAvailable}
                       disabled={isShopless}
                       productId={product._id}
-                      shopProductIds={[`${cardShops[0].cardShopProduct?._id}`]}
+                      shopProductIds={
+                        (cardShops || []).length > 0 ? [`${cardShops[0].cardShopProduct?._id}`] : []
+                      }
                       testId={`card-add-to-cart`}
                     />
                   </div>

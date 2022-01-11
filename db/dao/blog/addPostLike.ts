@@ -62,6 +62,7 @@ export async function addPostLike(req: NextApiRequest, res: NextApiResponse) {
 
     // create
     const createdBlogLike = await blogLikesCollection.insertOne({
+      _id: new ObjectId(),
       blogPostId: post._id,
       userId: sessionUser._id,
     });

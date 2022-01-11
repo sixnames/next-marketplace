@@ -262,7 +262,8 @@ export const CategoryMutations = extendType({
             });
 
             if (!config) {
-              const newConfig = {
+              const newConfig: ConfigModel = {
+                _id: new ObjectId(),
                 companySlug,
                 group: 'ui',
                 variant: CONFIG_VARIANT_CATEGORIES_TREE,

@@ -668,11 +668,11 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
 
             <WpLink
               href={urlPrefix}
-              className='flex items-center flex-shrink-0 w-[var(--logoMobileWidth)] md:w-[var(--logoWidth)] max-h-16 lg:max-h-24'
+              className='flex items-center flex-shrink-0 w-[var(--logoMobileWidth)] md:w-[var(--logoWidth)]'
               aria-label={'Главная страница'}
             >
               <img
-                className='w-full h-full object-contain object-left lg:object-center'
+                className='w-full h-auto object-contain object-left lg:object-center'
                 src={`${siteLogoSrc}`}
                 width='150'
                 height='24'

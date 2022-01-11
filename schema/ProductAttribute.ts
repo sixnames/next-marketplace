@@ -702,6 +702,9 @@ export const ProductAttributeMutations = extendType({
                 },
               );
 
+              // update product title
+              execUpdateProductTitles(`productId=${summary._id.toHexString()}`);
+
               mutationPayload = {
                 success: true,
                 message: await getApiMessage('products.update.success'),
@@ -827,6 +830,8 @@ export const ProductAttributeMutations = extendType({
               },
             );
 
+            // update product title
+            execUpdateProductTitles(`productId=${summary._id.toHexString()}`);
             mutationPayload = {
               success: true,
               message: await getApiMessage('products.update.success'),

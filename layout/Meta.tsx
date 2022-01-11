@@ -188,6 +188,9 @@ const Meta: React.FC<MetaInterface> = ({
               trim: true,
             })
           : null}
+
+        {/*chat*/}
+        {configs.chat ? <script src={configs.chat} async /> : null}
       </Head>
     </React.Fragment>
   );

@@ -787,10 +787,11 @@ export function getConfigTemplates({
       _id: new ObjectId(),
       companySlug,
       group: 'contacts',
-      variant: CONFIG_VARIANT_CONSTRUCTOR,
+      variant: CONFIG_VARIANT_STRING,
       slug: 'chat',
       name: 'Код интеграции стороннего чата',
-      description: '',
+      description:
+        'Добавлять нужно только ссылку на скрипт чата. Например //code-ya.jivosit.com/widget/TOKEN',
       multi: false,
       acceptedFormats: [],
       cities: {

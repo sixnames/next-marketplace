@@ -391,8 +391,13 @@ export const getSsrConfigs = async ({
       configs,
       slug: 'catalogueProductsCount',
     }) || CATALOGUE_PRODUCTS_LIMIT;
+  const chat = getConfigStringValue({
+    configs,
+    slug: 'chat',
+  });
 
   return {
+    chat,
     isOneShopCompany,
     useNoIndexRules,
     categoriesAsNavItems,

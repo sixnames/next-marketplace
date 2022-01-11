@@ -24,6 +24,7 @@ interface ConfigContextInterface {
 const ConfigContext = React.createContext<ConfigContextInterface>({
   cities: [],
   configs: {
+    chat: '',
     isOneShopCompany: true,
     seoTextBottom: '',
     siteName: '',

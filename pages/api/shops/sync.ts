@@ -237,7 +237,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           },
         })
         .toArray();
-      console.log('oldShopProducts', oldShopProducts);
+
       if (oldShopProducts.length > 0) {
         for await (const oldShopProduct of oldShopProducts) {
           // update existing shop product
@@ -282,7 +282,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           available,
           itemId,
         });
-        console.log(shopProduct);
         shopProducts.push(shopProduct);
       }
 

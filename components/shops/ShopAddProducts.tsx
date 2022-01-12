@@ -279,12 +279,13 @@ export const ShopAddProductsFinalStep: React.FC<ShopAddProductsListInterface> = 
       onCompleteCallback(data.addManyProductsToShop);
       if (data.addManyProductsToShop.success) {
         const links = getCmsCompanyLinks({
+          basePath: layoutBasePath,
           companyId: shop.companyId,
           shopId: shop._id,
           rubricSlug: rubricSlug,
         });
 
-        router.push(links.shop.rubrics.root).catch(console.log);
+        router.push(links.shop.rubrics.product.parentLink).catch(console.log);
       }
     },
     onError: onErrorCallback,

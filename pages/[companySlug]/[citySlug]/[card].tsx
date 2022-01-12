@@ -1,12 +1,11 @@
 import { cityIn } from 'lvovich';
-import { GetStaticPathsResult, GetStaticPropsResult, NextPage } from 'next';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import dynamic from 'next/dynamic';
 import * as React from 'react';
 import FixedButtons from '../../../components/button/FixedButtons';
 import WpButton from '../../../components/button/WpButton';
 import ErrorBoundaryFallback from '../../../components/ErrorBoundaryFallback';
 import Inner from '../../../components/Inner';
-import { ISR_FIVE_SECONDS } from '../../../config/common';
 import { CARD_LAYOUT_HALF_COLUMNS, DEFAULT_LAYOUT } from '../../../config/constantSelects';
 import { useConfigContext } from '../../../context/configContext';
 import { useLocaleContext } from '../../../context/localeContext';
@@ -14,10 +13,14 @@ import { useSiteUserContext } from '../../../context/siteUserContext';
 import { CardLayoutInterface, InitialCardDataInterface } from '../../../db/uiInterfaces';
 import SiteLayout, { SiteLayoutProviderInterface } from '../../../layout/SiteLayout';
 import { getCardData } from '../../../lib/cardUtils';
-import { getIsrSiteInitialData, IsrContextInterface } from '../../../lib/isrUtils';
 import { getConsoleRubricLinks } from '../../../lib/linkUtils';
 import { noNaN } from '../../../lib/numbers';
-import { castDbData } from '../../../lib/ssrUtils';
+import { castDbData, getSiteInitialData } from '../../../lib/ssrUtils';
+import {
+  SeoSchemaAvailabilityType,
+  SeoSchemaBreadcrumbItemInterface,
+  SeoSchemaCardInterface,
+} from '../../../types/seoSchemaTypes';
 
 const CardDefaultLayout = dynamic(() => import('../../../layout/card/CardDefaultLayout'));
 const CardHalfColumnsLayout = dynamic(() => import('../../../layout/card/CardHalfColumnsLayout'));
@@ -100,19 +103,19 @@ const Card: NextPage<CardInterface> = ({ cardData, domainCompany, ...props }) =>
   );
 };
 
-export async function getStaticPaths(): Promise<GetStaticPathsResult> {
+/*export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   const paths: any[] = [];
   return {
     paths,
     fallback: 'blocking',
   };
-}
+}*/
 
-export async function getStaticProps(
-  context: IsrContextInterface,
-): Promise<GetStaticPropsResult<CardInterface>> {
+export async function getServerSideProps(
+  context: GetServerSidePropsContext,
+): Promise<GetServerSidePropsResult<CardInterface>> {
   const { locale, params } = context;
-  const { props } = await getIsrSiteInitialData({
+  const { props } = await getSiteInitialData({
     context,
   });
 
@@ -134,12 +137,69 @@ export async function getStaticProps(
     };
   }
 
+  /*seo schema*/
+  const asPath = `${props.urlPrefix}/${rawCardData.product.slug}`;
+  const siteUrl = `https://${props.domain}`;
+  const pageUrl = `${siteUrl}${asPath}`;
+  const seoSchemaBreadcrumbUrlPrefix = `${siteUrl}${props.urlPrefix}`;
+  const seoSchemaBreadcrumbs: SeoSchemaBreadcrumbItemInterface[] = rawCardData.cardBreadcrumbs.map(
+    ({ href, name }, index) => {
+      return {
+        '@type': 'ListItem',
+        position: index + 2,
+        name,
+        item: `${seoSchemaBreadcrumbUrlPrefix}${href}`,
+      };
+    },
+  );
+
+  let availability: SeoSchemaAvailabilityType = 'https://schema.org/PreOrder';
+  if (rawCardData.product.allowDelivery) {
+    availability = 'https://schema.org/InStock';
+  }
+  if (rawCardData.maxAvailable < 1) {
+    availability = 'https://schema.org/OutOfStock';
+  }
+
+  const seoSchema: SeoSchemaCardInterface = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemPage',
+    '@graph': [
+      {
+        '@type': 'Product',
+        image: `${siteUrl}${rawCardData.product.mainImage}`,
+        name: rawCardData.cardTitle,
+        offers: {
+          '@type': 'Offer',
+          availability,
+          itemCondition: 'https://schema.org/NewCondition',
+          price: `${rawCardData.product.minPrice}`,
+          priceCurrency: 'RUB',
+          url: pageUrl,
+        },
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          {
+            '@type': 'ListItem',
+            position: 1,
+            name: 'Главная',
+            item: seoSchemaBreadcrumbUrlPrefix,
+          },
+          ...seoSchemaBreadcrumbs,
+        ],
+      },
+    ],
+  };
+
   return {
-    revalidate: ISR_FIVE_SECONDS,
     props: {
       ...props,
       cardData: castDbData(rawCardData),
       showForIndex: true,
+      seoSchema: `<script type="application/ld+json">${JSON.stringify(seoSchema)}</script>`,
     },
   };
 }

@@ -11,11 +11,12 @@ export interface SeoSchemaBreadcrumbsInterface {
   itemListElement: SeoSchemaBreadcrumbItemInterface[];
 }
 
+export type SeoSchemaAvailabilityType =
+  | 'https://schema.org/InStock'
+  | 'https://schema.org/OutOfStock'
+  | 'https://schema.org/PreOrder';
 export interface SeoSchemaOffersInterface {
-  availability:
-    | 'https://schema.org/InStock'
-    | 'https://schema.org/OutOfStock'
-    | 'https://schema.org/PreOrder';
+  availability: SeoSchemaAvailabilityType;
   itemCondition: 'https://schema.org/NewCondition';
   priceCurrency: 'RUB';
   url: string;

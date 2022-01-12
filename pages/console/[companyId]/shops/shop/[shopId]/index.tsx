@@ -27,14 +27,14 @@ const CompanyShop: NextPage<CompanyShopInterface> = ({ layoutProps, shop }) => {
     config: [
       {
         name: 'Магазины',
-        href: links.shops,
+        href: links.shop.parentLink,
       },
     ],
   };
 
   return (
     <ConsoleLayout {...layoutProps}>
-      <ShopDetails basePath={links.shop.itemPath} shop={shop} breadcrumbs={breadcrumbs} />
+      <ShopDetails basePath={links.root} shop={shop} breadcrumbs={breadcrumbs} />
     </ConsoleLayout>
   );
 };

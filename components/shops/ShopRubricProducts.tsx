@@ -79,14 +79,14 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
       accessor: 'itemId',
       headTitle: 'Арт',
       render: ({ dataItem }) => {
-        const { products } = getConsoleShopLinks({
+        const links = getConsoleShopLinks({
           shopId: shop._id,
           rubricSlug: dataItem.rubricSlug,
           productId: dataItem._id,
           basePath: layoutBasePath,
         });
         return (
-          <WpLink href={products.rubric.product.root} target={'_blank'}>
+          <WpLink href={links.rubrics.product.root} target={'_blank'}>
             {dataItem.summary?.itemId}
           </WpLink>
         );
@@ -185,13 +185,13 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
             testId={`shop-product-${rowIndex}`}
             updateTitle={'Редактировать товар'}
             updateHandler={() => {
-              const { products } = getConsoleShopLinks({
+              const links = getConsoleShopLinks({
                 shopId: shop._id,
                 rubricSlug: dataItem.rubricSlug,
                 productId: dataItem._id,
                 basePath: layoutBasePath,
               });
-              window.open(products.rubric.product.root, '_blank');
+              window.open(links.rubrics.product.root, '_blank');
             }}
             deleteTitle={'Удалить товар из магазина'}
             deleteHandler={() => {
@@ -307,14 +307,14 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
                         data={docs}
                         testIdKey={'_id'}
                         onRowDoubleClick={(dataItem) => {
-                          const { products } = getConsoleShopLinks({
+                          const links = getConsoleShopLinks({
                             shopId: shop._id,
                             rubricSlug: dataItem.rubricSlug,
                             productId: dataItem._id,
                             basePath: layoutBasePath,
                           });
                           if (sessionUser?.role?.isStaff) {
-                            window.open(products.rubric.product.root, '_blank');
+                            window.open(links.rubrics.product.root, '_blank');
                           }
                         }}
                       />
@@ -334,7 +334,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
                       <WpButton
                         frameClassName='w-auto'
                         onClick={() => {
-                          router.push(links.products.rubric.add).catch((e) => console.log(e));
+                          router.push(links.rubrics.add).catch((e) => console.log(e));
                         }}
                         testId={'add-shop-product'}
                         size={'small'}

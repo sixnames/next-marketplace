@@ -37,6 +37,7 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({ order, orderS
         title={title}
         orderStatuses={orderStatuses}
         pageCompanySlug={DEFAULT_COMPANY_SLUG}
+        basePath={ROUTE_CMS}
       />
     </AppContentWrapper>
   );

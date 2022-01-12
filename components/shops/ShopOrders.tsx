@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import * as React from 'react';
 import { ConsoleShopLayoutInterface, OrderInterface } from '../../db/uiInterfaces';
 import ConsoleShopLayout from '../../layout/console/ConsoleShopLayout';
+import { getCmsCompanyLinks } from '../../lib/linkUtils';
 import FormattedDateTime from '../FormattedDateTime';
 import Inner from '../Inner';
 import LinkEmail from '../Link/LinkEmail';
@@ -19,14 +20,18 @@ const ShopOrders: React.FC<ShopOrdersInterface> = ({ shop, basePath, breadcrumbs
     {
       accessor: 'itemId',
       headTitle: 'ID',
-      render: ({ cellData, dataItem }) => (
-        <WpLink
-          testId={`order-${dataItem.itemId}-link`}
-          href={`${basePath}/${shop._id}/shop-orders/${dataItem._id}`}
-        >
-          {cellData}
-        </WpLink>
-      ),
+      render: ({ cellData, dataItem }) => {
+        const links = getCmsCompanyLinks({
+          orderId: dataItem._id,
+          companyId: shop.companyId,
+          shopId: shop._id,
+        });
+        return (
+          <WpLink testId={`order-${dataItem.itemId}-link`} href={links.shop.order.root}>
+            {cellData}
+          </WpLink>
+        );
+      },
     },
     {
       accessor: 'status',
@@ -82,9 +87,12 @@ const ShopOrders: React.FC<ShopOrdersInterface> = ({ shop, basePath, breadcrumbs
               data={shop.orders}
               testIdKey={'itemId'}
               onRowDoubleClick={(dataItem) => {
-                router.push(`${basePath}/${shop._id}/shop-orders/${dataItem._id}`).catch((e) => {
-                  console.log(e);
+                const links = getCmsCompanyLinks({
+                  orderId: dataItem._id,
+                  companyId: shop.companyId,
+                  shopId: shop._id,
                 });
+                router.push(links.shop.order.root).catch(console.log);
               }}
             />
           </div>

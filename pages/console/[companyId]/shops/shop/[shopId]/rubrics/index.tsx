@@ -39,7 +39,7 @@ const CompanyShopProducts: NextPage<CompanyShopProductsInterface> = ({
     config: [
       {
         name: 'Магазины',
-        href: links.shops,
+        href: links.shop.parentLink,
       },
       {
         name: shop.name,
@@ -50,12 +50,7 @@ const CompanyShopProducts: NextPage<CompanyShopProductsInterface> = ({
 
   return (
     <ConsoleLayout {...layoutProps}>
-      <ShopRubrics
-        shop={shop}
-        rubrics={rubrics}
-        basePath={links.shop.itemPath}
-        breadcrumbs={breadcrumbs}
-      />
+      <ShopRubrics shop={shop} rubrics={rubrics} basePath={links.root} breadcrumbs={breadcrumbs} />
     </ConsoleLayout>
   );
 };

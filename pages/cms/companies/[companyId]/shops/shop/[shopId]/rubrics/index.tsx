@@ -35,7 +35,7 @@ const CompanyShopProducts: NextPage<CompanyShopProductsInterface> = ({
   rubrics,
   shop,
 }) => {
-  const { root, parentLink, shops, ...links } = getCmsCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId: shop.companyId,
     shopId: shop._id,
   });
@@ -45,15 +45,15 @@ const CompanyShopProducts: NextPage<CompanyShopProductsInterface> = ({
     config: [
       {
         name: 'Компании',
-        href: parentLink,
+        href: links.parentLink,
       },
       {
         name: `${shop.company?.name}`,
-        href: root,
+        href: links.root,
       },
       {
         name: 'Магазины',
-        href: shops,
+        href: links.shop.parentLink,
       },
       {
         name: shop.name,
@@ -64,12 +64,7 @@ const CompanyShopProducts: NextPage<CompanyShopProductsInterface> = ({
 
   return (
     <ConsoleLayout {...layoutProps}>
-      <ShopRubrics
-        shop={shop}
-        rubrics={rubrics}
-        basePath={links.shop.itemPath}
-        breadcrumbs={breadcrumbs}
-      />
+      <ShopRubrics shop={shop} rubrics={rubrics} basePath={links.root} breadcrumbs={breadcrumbs} />
     </ConsoleLayout>
   );
 };

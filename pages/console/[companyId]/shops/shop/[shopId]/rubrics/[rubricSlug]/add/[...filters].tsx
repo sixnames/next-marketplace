@@ -8,26 +8,26 @@ import {
   ShopAddProductsListInterface,
   ShopAddProductsSetStepHandler,
   ShopAddProductsStepType,
-} from '../../../../../../../../../../components/shops/ShopAddProducts';
-import { getCompanyShopAddProductsListPageSsr } from '../../../../../../../../../../db/dao/ssr/getCompanyShopAddProductsListPageSsr';
+} from '../../../../../../../../../components/shops/ShopAddProducts';
+import { getConsoleShopAddProductsListPageSsr } from '../../../../../../../../../db/dao/ssr/getConsoleShopAddProductsListPageSsr';
 import {
   AppContentWrapperBreadCrumbs,
   ProductSummaryInterface,
-} from '../../../../../../../../../../db/uiInterfaces';
-import ConsoleLayout from '../../../../../../../../../../layout/cms/ConsoleLayout';
-import { getCmsCompanyLinks } from '../../../../../../../../../../lib/linkUtils';
-import { GetAppInitialDataPropsInterface } from '../../../../../../../../../../lib/ssrUtils';
+} from '../../../../../../../../../db/uiInterfaces';
+import ConsoleLayout from '../../../../../../../../../layout/cms/ConsoleLayout';
+import { getConsoleCompanyLinks } from '../../../../../../../../../lib/linkUtils';
+import { GetConsoleInitialDataPropsInterface } from '../../../../../../../../../lib/ssrUtils';
 
-export type ShopAddProductsListRouteReduced = Omit<
+type ShopAddProductsListRouteReduced = Omit<
   ShopAddProductsListInterface,
   'chosen' | 'createChosenProduct' | 'deleteChosenProduct' | 'setStepHandler' | 'layoutBasePath'
 >;
 
-export interface CompanyShopAddProductsListPageInterface
-  extends GetAppInitialDataPropsInterface,
+export interface ConsoleShopAddProductsListPageInterface
+  extends GetConsoleInitialDataPropsInterface,
     ShopAddProductsListRouteReduced {}
 
-const CompanyShopAddProductsListPage: NextPage<CompanyShopAddProductsListPageInterface> = ({
+const ConsoleShopAddProductsListPage: NextPage<ConsoleShopAddProductsListPageInterface> = ({
   layoutProps,
   shop,
   rubricName,
@@ -36,27 +36,18 @@ const CompanyShopAddProductsListPage: NextPage<CompanyShopAddProductsListPageInt
 }) => {
   const [chosen, setChosen] = React.useState<ProductSummaryInterface[]>([]);
   const [step, setStep] = React.useState<ShopAddProductsStepType>(1);
-
-  const { root, parentLink, shops, ...links } = getCmsCompanyLinks({
+  const links = getConsoleCompanyLinks({
     companyId: shop.companyId,
     shopId: shop._id,
     rubricSlug,
   });
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: 'Изображения',
+    currentPageName: 'Добавление товаров',
     config: [
       {
-        name: 'Компании',
-        href: parentLink,
-      },
-      {
-        name: `${shop.company?.name}`,
-        href: root,
-      },
-      {
         name: 'Магазины',
-        href: shops,
+        href: links.shop.parentLink,
       },
       {
         name: shop.name,
@@ -64,11 +55,11 @@ const CompanyShopAddProductsListPage: NextPage<CompanyShopAddProductsListPageInt
       },
       {
         name: 'Товары',
-        href: links.shop.products.root,
+        href: links.shop.rubrics.parentLink,
       },
       {
         name: rubricName,
-        href: links.shop.products.rubric.root,
+        href: links.shop.rubrics.root,
       },
     ],
   };
@@ -97,7 +88,7 @@ const CompanyShopAddProductsListPage: NextPage<CompanyShopAddProductsListPageInt
           breadcrumbs={breadcrumbs}
           rubricName={rubricName}
           rubricSlug={rubricSlug}
-          layoutBasePath={links.shop.itemPath}
+          layoutBasePath={links.root}
           createChosenProduct={createChosenProduct}
           deleteChosenProduct={deleteChosenProduct}
           setStepHandler={setStepHandler}
@@ -127,5 +118,5 @@ const CompanyShopAddProductsListPage: NextPage<CompanyShopAddProductsListPageInt
   );
 };
 
-export const getServerSideProps = getCompanyShopAddProductsListPageSsr;
-export default CompanyShopAddProductsListPage;
+export const getServerSideProps = getConsoleShopAddProductsListPageSsr;
+export default ConsoleShopAddProductsListPage;

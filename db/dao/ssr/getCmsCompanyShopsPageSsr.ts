@@ -49,7 +49,7 @@ export const getCmsCompanyShopsPageSsr = async (
   const links = getCmsCompanyLinks({
     companyId,
   });
-  const itemPath = `${links.shops}/shop`;
+  const itemPath = links.shop.itemPath;
 
   const companyAggregationResult = await companiesCollection
     .aggregate([

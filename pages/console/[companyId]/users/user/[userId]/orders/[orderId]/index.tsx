@@ -53,15 +53,15 @@ const UserOrderConsumer: React.FC<UserOrderConsumerInterface> = ({
     config: [
       {
         name: 'Клиенты',
-        href: links.customer.parentLink,
+        href: links.user.parentLink,
       },
       {
         name: `${user.fullName}`,
-        href: links.customer.parentLink,
+        href: links.user.root,
       },
       {
         name: `Заказы`,
-        href: links.customer.order.parentLink,
+        href: links.user.order.parentLink,
       },
     ],
   };
@@ -76,6 +76,7 @@ const UserOrderConsumer: React.FC<UserOrderConsumerInterface> = ({
         orderStatuses={orderStatuses}
         title={title}
         pageCompanySlug={pageCompanySlug}
+        basePath={links.root}
       />
     </ConsoleUserLayout>
   );

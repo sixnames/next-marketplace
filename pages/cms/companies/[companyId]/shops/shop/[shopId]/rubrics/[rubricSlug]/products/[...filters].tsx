@@ -1,14 +1,14 @@
 import { NextPage } from 'next';
 import * as React from 'react';
-import ShopRubricProducts from '../../../../../../../../../components/shops/ShopRubricProducts';
-import { getCmsCompanyShopProductsListPageSsr } from '../../../../../../../../../db/dao/ssr/getCmsCompanyShopProductsListPageSsr';
+import ShopRubricProducts from '../../../../../../../../../../components/shops/ShopRubricProducts';
+import { getCmsCompanyShopProductsListPageSsr } from '../../../../../../../../../../db/dao/ssr/getCmsCompanyShopProductsListPageSsr';
 import {
   AppContentWrapperBreadCrumbs,
   ShopRubricProductsInterface,
-} from '../../../../../../../../../db/uiInterfaces';
-import ConsoleLayout from '../../../../../../../../../layout/cms/ConsoleLayout';
-import { getCmsCompanyLinks } from '../../../../../../../../../lib/linkUtils';
-import { GetAppInitialDataPropsInterface } from '../../../../../../../../../lib/ssrUtils';
+} from '../../../../../../../../../../db/uiInterfaces';
+import ConsoleLayout from '../../../../../../../../../../layout/cms/ConsoleLayout';
+import { getCmsCompanyLinks } from '../../../../../../../../../../lib/linkUtils';
+import { GetAppInitialDataPropsInterface } from '../../../../../../../../../../lib/ssrUtils';
 
 export interface CmsCompanyShopProductsListPageInterface
   extends GetAppInitialDataPropsInterface,
@@ -20,7 +20,7 @@ const CmsCompanyShopProductsListPage: NextPage<CmsCompanyShopProductsListPageInt
   rubricName,
   ...props
 }) => {
-  const { root, parentLink, shops, ...links } = getCmsCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId: shop.companyId,
     shopId: shop._id,
   });
@@ -29,15 +29,15 @@ const CmsCompanyShopProductsListPage: NextPage<CmsCompanyShopProductsListPageInt
     config: [
       {
         name: 'Компании',
-        href: parentLink,
+        href: links.parentLink,
       },
       {
         name: `${shop.company?.name}`,
-        href: root,
+        href: links.root,
       },
       {
         name: 'Магазины',
-        href: shops,
+        href: links.shop.parentLink,
       },
       {
         name: shop.name,
@@ -45,7 +45,7 @@ const CmsCompanyShopProductsListPage: NextPage<CmsCompanyShopProductsListPageInt
       },
       {
         name: 'Товары',
-        href: links.shop.products.root,
+        href: links.shop.rubrics.parentLink,
       },
     ],
   };
@@ -54,7 +54,7 @@ const CmsCompanyShopProductsListPage: NextPage<CmsCompanyShopProductsListPageInt
     <ConsoleLayout {...layoutProps}>
       <ShopRubricProducts
         breadcrumbs={breadcrumbs}
-        layoutBasePath={links.shop.itemPath}
+        layoutBasePath={links.root}
         shop={shop}
         rubricName={rubricName}
         {...props}

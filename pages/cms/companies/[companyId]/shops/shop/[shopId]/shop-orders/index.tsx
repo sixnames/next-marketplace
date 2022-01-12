@@ -34,7 +34,7 @@ interface CompanyShopAssetsInterface
     Omit<ShopOrdersInterface, 'basePath'> {}
 
 const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ layoutProps, shop }) => {
-  const { root, parentLink, shops, ...links } = getCmsCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId: shop.companyId,
     shopId: shop._id,
   });
@@ -44,15 +44,15 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ layoutProps, 
     config: [
       {
         name: 'Компании',
-        href: parentLink,
+        href: links.parentLink,
       },
       {
         name: `${shop.company?.name}`,
-        href: root,
+        href: links.root,
       },
       {
         name: 'Магазины',
-        href: shops,
+        href: links.shop.parentLink,
       },
       {
         name: shop.name,
@@ -63,7 +63,7 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ layoutProps, 
 
   return (
     <ConsoleLayout {...layoutProps}>
-      <ShopOrders breadcrumbs={breadcrumbs} basePath={links.shop.itemPath} shop={shop} />
+      <ShopOrders breadcrumbs={breadcrumbs} basePath={links.root} shop={shop} />
     </ConsoleLayout>
   );
 };

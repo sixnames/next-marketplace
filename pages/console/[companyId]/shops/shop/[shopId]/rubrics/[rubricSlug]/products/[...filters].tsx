@@ -1,14 +1,14 @@
 import { NextPage } from 'next';
 import * as React from 'react';
-import ShopRubricProducts from '../../../../../../../../components/shops/ShopRubricProducts';
-import { getConsoleShopProductsListPageSsr } from '../../../../../../../../db/dao/ssr/getConsoleShopProductsListPageSsr';
+import ShopRubricProducts from '../../../../../../../../../components/shops/ShopRubricProducts';
+import { getConsoleShopProductsListPageSsr } from '../../../../../../../../../db/dao/ssr/getConsoleShopProductsListPageSsr';
 import {
   AppContentWrapperBreadCrumbs,
   ShopRubricProductsInterface,
-} from '../../../../../../../../db/uiInterfaces';
-import ConsoleLayout from '../../../../../../../../layout/cms/ConsoleLayout';
-import { getConsoleCompanyLinks } from '../../../../../../../../lib/linkUtils';
-import { GetConsoleInitialDataPropsInterface } from '../../../../../../../../lib/ssrUtils';
+} from '../../../../../../../../../db/uiInterfaces';
+import ConsoleLayout from '../../../../../../../../../layout/cms/ConsoleLayout';
+import { getConsoleCompanyLinks } from '../../../../../../../../../lib/linkUtils';
+import { GetConsoleInitialDataPropsInterface } from '../../../../../../../../../lib/ssrUtils';
 
 export interface ConsoleShopProductsListPageInterface
   extends GetConsoleInitialDataPropsInterface,
@@ -29,7 +29,7 @@ const ConsoleShopProductsListPage: NextPage<ConsoleShopProductsListPageInterface
     config: [
       {
         name: 'Магазины',
-        href: links.shops,
+        href: links.shop.parentLink,
       },
       {
         name: shop.name,
@@ -37,7 +37,7 @@ const ConsoleShopProductsListPage: NextPage<ConsoleShopProductsListPageInterface
       },
       {
         name: 'Товары',
-        href: links.shop.products.root,
+        href: links.shop.rubrics.parentLink,
       },
     ],
   };

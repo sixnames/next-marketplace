@@ -12,6 +12,7 @@ import { AppContentWrapperBreadCrumbs, UserInterface } from '../../../../../../.
 import CmsUserLayout from '../../../../../../../layout/cms/CmsUserLayout';
 import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from '../../../../../../../lib/i18n';
+import { getConsoleUserLinks } from '../../../../../../../lib/linkUtils';
 import { getFullName } from '../../../../../../../lib/nameUtils';
 import {
   castDbData,
@@ -29,21 +30,25 @@ const UserOrdersConsumer: React.FC<UserOrderConsumerInterface> = ({
   orderStatuses,
 }) => {
   const title = `Заказ №${order.itemId}`;
-
+  const links = getConsoleUserLinks({
+    userId: user._id,
+    orderId: order._id,
+    basePath: ROUTE_CMS,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: title,
     config: [
       {
         name: 'Пользователи',
-        href: `${ROUTE_CMS}/users`,
+        href: links.parentLink,
       },
       {
         name: `${user.fullName}`,
-        href: `${ROUTE_CMS}/users/user/${user._id}`,
+        href: links.root,
       },
       {
         name: `Заказы`,
-        href: `${ROUTE_CMS}/users/user/${user._id}/orders`,
+        href: links.order.parentLink,
       },
     ],
   };
@@ -55,6 +60,7 @@ const UserOrdersConsumer: React.FC<UserOrderConsumerInterface> = ({
         title={title}
         orderStatuses={orderStatuses}
         pageCompanySlug={DEFAULT_COMPANY_SLUG}
+        basePath={ROUTE_CMS}
       />
     </CmsUserLayout>
   );

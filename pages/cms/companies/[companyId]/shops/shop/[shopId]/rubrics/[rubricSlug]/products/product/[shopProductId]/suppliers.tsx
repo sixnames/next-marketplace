@@ -3,27 +3,30 @@ import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import CompanyProductSuppliers, {
   CompanyProductSuppliersInterface,
-} from '../../../../../../../../../../../components/company/CompanyProductSuppliers';
-import { SelectOptionInterface } from '../../../../../../../../../../../components/FormElements/Select/Select';
-import RequestError from '../../../../../../../../../../../components/RequestError';
-import { ROUTE_CMS, SORT_ASC } from '../../../../../../../../../../../config/common';
-import { COL_COMPANIES, COL_SUPPLIERS } from '../../../../../../../../../../../db/collectionNames';
-import { getDatabase } from '../../../../../../../../../../../db/mongodb';
+} from '../../../../../../../../../../../../components/company/CompanyProductSuppliers';
+import { SelectOptionInterface } from '../../../../../../../../../../../../components/FormElements/Select/Select';
+import RequestError from '../../../../../../../../../../../../components/RequestError';
+import { ROUTE_CMS, SORT_ASC } from '../../../../../../../../../../../../config/common';
+import {
+  COL_COMPANIES,
+  COL_SUPPLIERS,
+} from '../../../../../../../../../../../../db/collectionNames';
+import { getDatabase } from '../../../../../../../../../../../../db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   CompanyInterface,
   SupplierInterface,
-} from '../../../../../../../../../../../db/uiInterfaces';
-import ConsoleLayout from '../../../../../../../../../../../layout/cms/ConsoleLayout';
-import ConsoleShopProductLayout from '../../../../../../../../../../../layout/console/ConsoleShopProductLayout';
-import { getFieldStringLocale } from '../../../../../../../../../../../lib/i18n';
-import { getCmsCompanyLinks } from '../../../../../../../../../../../lib/linkUtils';
-import { getConsoleShopProduct } from '../../../../../../../../../../../lib/productUtils';
+} from '../../../../../../../../../../../../db/uiInterfaces';
+import ConsoleLayout from '../../../../../../../../../../../../layout/cms/ConsoleLayout';
+import ConsoleShopProductLayout from '../../../../../../../../../../../../layout/console/ConsoleShopProductLayout';
+import { getFieldStringLocale } from '../../../../../../../../../../../../lib/i18n';
+import { getCmsCompanyLinks } from '../../../../../../../../../../../../lib/linkUtils';
+import { getConsoleShopProduct } from '../../../../../../../../../../../../lib/productUtils';
 import {
   castDbData,
   getAppInitialData,
   GetAppInitialDataPropsInterface,
-} from '../../../../../../../../../../../lib/ssrUtils';
+} from '../../../../../../../../../../../../lib/ssrUtils';
 
 interface ProductDetailsInterface extends CompanyProductSuppliersInterface {
   pageCompany: CompanyInterface;
@@ -47,7 +50,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
     return <RequestError />;
   }
 
-  const { root, parentLink, shops, ...links } = getCmsCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId: shop.companyId,
     shopId: shop._id,
     rubricSlug: rubric?.slug,
@@ -59,15 +62,15 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
     config: [
       {
         name: 'Компании',
-        href: parentLink,
+        href: links.parentLink,
       },
       {
         name: `${pageCompany.name}`,
-        href: root,
+        href: links.root,
       },
       {
         name: 'Магазины',
-        href: shops,
+        href: links.shop.parentLink,
       },
       {
         name: shop.name,
@@ -75,15 +78,15 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
       },
       {
         name: 'Товары',
-        href: links.shop.products.root,
+        href: links.shop.rubrics.parentLink,
       },
       {
         name: `${rubric?.name}`,
-        href: links.shop.products.rubric.root,
+        href: links.shop.rubrics.product.parentLink,
       },
       {
         name: `${snippetTitle}`,
-        href: links.shop.products.rubric.product.root,
+        href: links.shop.rubrics.product.root,
       },
     ],
   };
@@ -93,7 +96,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
       showEditButton
       breadcrumbs={breadcrumbs}
       shopProduct={shopProduct}
-      basePath={links.shop.productBasePath}
+      basePath={links.root}
     >
       <CompanyProductSuppliers
         shopProduct={shopProduct}

@@ -68,6 +68,7 @@ const OrderPageConsumer: React.FC<OrderPageConsumerInterface> = ({
           order={order}
           title={title}
           pageCompanySlug={pageCompanySlug}
+          basePath={links.root}
         />
         <Inner>
           <FixedButtons>

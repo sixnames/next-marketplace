@@ -55,11 +55,11 @@ const ProductAttributes: React.FC<ProductAttributesInterface> = ({ product }) =>
       },
       {
         name: `Товары`,
-        href: links.products,
+        href: links.product.parentLink,
       },
       {
         name: `${product.cardTitle}`,
-        href: links.product.parentLink,
+        href: links.product.root,
       },
     ],
   };

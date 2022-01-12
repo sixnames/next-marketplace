@@ -40,7 +40,7 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({
     config: [
       {
         name: 'Магазины',
-        href: links.shops,
+        href: links.shop.parentLink,
       },
       {
         name: shop.name,
@@ -48,7 +48,7 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({
       },
       {
         name: 'Заказы',
-        href: links.shop.orders,
+        href: links.shop.order.parentLink,
       },
     ],
   };
@@ -61,7 +61,7 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({
         title={title}
         order={order}
         breadcrumbs={breadcrumbs}
-        basePath={links.shop.itemPath}
+        basePath={links.root}
         shop={shop}
       />
     </ConsoleLayout>

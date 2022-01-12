@@ -1,24 +1,24 @@
 import { ObjectId } from 'mongodb';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import CompanyProductDetails from '../../../../../../../../../../../components/company/CompanyProductDetails';
-import RequestError from '../../../../../../../../../../../components/RequestError';
-import { COL_COMPANIES } from '../../../../../../../../../../../db/collectionNames';
-import { getDatabase } from '../../../../../../../../../../../db/mongodb';
+import CompanyProductDetails from '../../../../../../../../../../../../components/company/CompanyProductDetails';
+import RequestError from '../../../../../../../../../../../../components/RequestError';
+import { COL_COMPANIES } from '../../../../../../../../../../../../db/collectionNames';
+import { getDatabase } from '../../../../../../../../../../../../db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   CompanyInterface,
   ShopProductInterface,
-} from '../../../../../../../../../../../db/uiInterfaces';
-import ConsoleShopProductLayout from '../../../../../../../../../../../layout/console/ConsoleShopProductLayout';
-import { getCmsCompanyLinks } from '../../../../../../../../../../../lib/linkUtils';
-import { getConsoleShopProduct } from '../../../../../../../../../../../lib/productUtils';
+} from '../../../../../../../../../../../../db/uiInterfaces';
+import ConsoleShopProductLayout from '../../../../../../../../../../../../layout/console/ConsoleShopProductLayout';
+import { getCmsCompanyLinks } from '../../../../../../../../../../../../lib/linkUtils';
+import { getConsoleShopProduct } from '../../../../../../../../../../../../lib/productUtils';
 import {
   castDbData,
   getAppInitialData,
   GetAppInitialDataPropsInterface,
-} from '../../../../../../../../../../../lib/ssrUtils';
-import ConsoleLayout from '../../../../../../../../../../../layout/cms/ConsoleLayout';
+} from '../../../../../../../../../../../../lib/ssrUtils';
+import ConsoleLayout from '../../../../../../../../../../../../layout/cms/ConsoleLayout';
 
 interface ProductDetailsInterface {
   shopProduct: ShopProductInterface;
@@ -41,7 +41,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
     return <RequestError />;
   }
 
-  const { root, parentLink, shops, ...links } = getCmsCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId: shop.companyId,
     shopId: shop._id,
     rubricSlug: rubric?.slug,
@@ -53,15 +53,15 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
     config: [
       {
         name: 'Компании',
-        href: parentLink,
+        href: links.parentLink,
       },
       {
         name: `${pageCompany.name}`,
-        href: root,
+        href: links.root,
       },
       {
         name: 'Магазины',
-        href: shops,
+        href: links.shop.parentLink,
       },
       {
         name: shop.name,
@@ -69,11 +69,11 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
       },
       {
         name: 'Товары',
-        href: links.shop.products.root,
+        href: links.shop.rubrics.parentLink,
       },
       {
         name: `${rubric?.name}`,
-        href: links.shop.products.rubric.root,
+        href: links.shop.rubrics.product.parentLink,
       },
     ],
   };
@@ -83,7 +83,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
       showEditButton
       breadcrumbs={breadcrumbs}
       shopProduct={shopProduct}
-      basePath={links.shop.productBasePath}
+      basePath={links.root}
     >
       <CompanyProductDetails
         routeBasePath={''}

@@ -91,10 +91,10 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, rubricVariants
             justifyContent={'flex-end'}
             updateTitle={'Редактировать рубрику'}
             updateHandler={() => {
-              const { products } = getConsoleRubricLinks({
+              const links = getConsoleRubricLinks({
                 rubricSlug: dataItem.slug,
               });
-              router.push(products).catch((e) => console.log(e));
+              router.push(links.product.parentLink).catch(console.log);
             }}
             deleteTitle={'Удалить рубрику'}
             deleteHandler={() => {
@@ -135,10 +135,10 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, rubricVariants
             testIdKey={'name'}
             emptyMessage={'Список пуст'}
             onRowDoubleClick={(rubric) => {
-              const { products } = getConsoleRubricLinks({
+              const links = getConsoleRubricLinks({
                 rubricSlug: rubric.slug,
               });
-              router.push(products).catch((e) => console.log(e));
+              router.push(links.product.parentLink).catch(console.log);
             }}
           />
         </div>

@@ -14,37 +14,38 @@ const ConsoleShopLayout: React.FC<ConsoleShopLayoutInterface> = ({
   children,
 }) => {
   const navConfig = React.useMemo(() => {
-    const { root, orders, products, assets, syncErrors } = getConsoleShopLinks({
+    const links = getConsoleShopLinks({
       basePath,
       shopId: shop._id,
     });
+
     return [
       {
         name: 'Детали',
         testId: 'shop-details',
-        path: root,
+        path: links.root,
         exact: true,
       },
       {
         name: 'Заказы',
         testId: 'shop-orders',
-        path: orders,
+        path: links.order.parentLink,
       },
       {
         name: 'Товары',
         testId: 'shop-products',
-        path: products.root,
+        path: links.rubrics.parentLink,
       },
       {
         name: 'Изображения',
         testId: 'shop-assets',
-        path: assets,
+        path: links.assets,
         exact: true,
       },
       {
         name: 'Ошибки синхронизации',
         testId: 'shop-sync-errors',
-        path: syncErrors,
+        path: links.syncErrors,
       },
     ];
   }, [basePath, shop._id]);

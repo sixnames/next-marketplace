@@ -36,16 +36,21 @@ export function getConsoleProductLinks({
   productId,
   basePath = ROUTE_CMS,
 }: GetConsoleProductLinksInterface) {
-  const root = `${basePath}/${productId}`;
+  const parentLink = `${basePath}/products`;
+  const itemPath = `${parentLink}/product`;
+  const root = `${itemPath}/${productId}`;
+
   return {
     root,
-    parentLink: basePath,
+    itemPath,
+    parentLink,
     assets: `${root}/assets`,
     attributes: `${root}/attributes`,
     brands: `${root}/brands`,
     categories: `${root}/categories`,
     constructor: `${root}/constructor`,
     variants: `${root}/variants`,
+    suppliers: `${root}/suppliers`,
   };
 }
 
@@ -65,13 +70,13 @@ export function getConsoleRubricLinks({
   return {
     parentLink,
     root,
-    products: `${root}/products`,
     categories: `${root}/categories`,
     seoContent: `${root}/seo-content`,
     attributes: `${root}/attributes`,
+    add: `${root}/add`,
     product: getConsoleProductLinks({
       productId,
-      basePath: `${root}/products/product`,
+      basePath: root,
     }),
   };
 }
@@ -95,59 +100,44 @@ export function getConsoleConfigsLinks({ basePath = ROUTE_CMS }: GetConsoleConfi
 }
 
 // console shop
-interface GetConsoleShopProductLinkInterface {
-  basePath: string;
-  productId?: string | ObjectIdModel;
-}
-export function getConsoleShopProductLinks({
-  basePath,
-  productId,
-}: GetConsoleShopProductLinkInterface) {
-  const root = `${basePath}/${productId}`;
-
-  return {
-    root,
-    parentLink: basePath,
-    suppliers: `${root}/suppliers`,
-  };
-}
-
-// console shop
 interface GetConsoleShopLinkInterface {
   shopId?: string | ObjectIdModel;
-  basePath: string;
+  basePath?: string;
   rubricSlug?: string;
   productId?: string | ObjectIdModel;
+  orderId?: string | ObjectIdModel;
 }
 export function getConsoleShopLinks({
   shopId = '',
   basePath,
   rubricSlug,
   productId,
+  orderId,
 }: GetConsoleShopLinkInterface) {
-  const root = `${basePath}/${shopId}`;
+  const parentLink = `${basePath}/shops`;
+  const itemPath = `${parentLink}/shop`;
+  const root = `${itemPath}/${shopId}`;
   const productsRoot = `${root}/products`;
   const rubricRoot = `${productsRoot}/${rubricSlug}`;
   const productBasePath = `${rubricRoot}/product`;
+  const orderParentLink = `${root}/shop-orders`;
 
   return {
     root,
-    itemPath: basePath,
+    parentLink,
+    itemPath,
     productBasePath,
     assets: `${root}/assets`,
-    orders: `${root}/shop-orders`,
-    syncErrors: `${root}/sync-errors`,
-    products: {
-      root: productsRoot,
-      rubric: {
-        root: rubricRoot,
-        add: `${rubricRoot}/add`,
-        product: getConsoleShopProductLinks({
-          basePath: productBasePath,
-          productId,
-        }),
-      },
+    order: {
+      parentLink: orderParentLink,
+      root: `${orderParentLink}/${orderId}`,
     },
+    syncErrors: `${root}/sync-errors`,
+    rubrics: getConsoleRubricLinks({
+      basePath: root,
+      rubricSlug,
+      productId,
+    }),
   };
 }
 
@@ -175,7 +165,9 @@ export function getConsoleCompanyPromoLinks({
 }
 
 // console company
-interface GetCmsCompanyLinkInterface extends GetConsoleRubricLinkInterface {
+interface GetCmsCompanyLinkInterface
+  extends GetConsoleRubricLinkInterface,
+    GetConsoleShopLinkInterface {
   companyId?: string | ObjectIdModel;
   shopId?: string | ObjectIdModel;
   promoId?: string | ObjectIdModel;
@@ -187,8 +179,9 @@ export function getCmsCompanyLinks({
   shopId,
   productId,
   promoId,
+  orderId,
 }: GetCmsCompanyLinkInterface) {
-  const parentLink = basePath === ROUTE_CMS ? `${basePath}/companies` : basePath;
+  const parentLink = basePath?.includes(ROUTE_CMS) ? `${basePath}/companies` : basePath;
   const root = `${parentLink}/${companyId}`;
 
   return {
@@ -198,7 +191,6 @@ export function getCmsCompanyLinks({
     blog: `${root}/blog`,
     giftCertificates: `${root}/gift-certificates`,
     pages: `${root}/pages`,
-    shops: `${root}/shops`,
     assets: `${root}/assets`,
     userCategories: `${root}/user-categories`,
     promo: getConsoleCompanyPromoLinks({
@@ -207,10 +199,11 @@ export function getCmsCompanyLinks({
       promoId,
     }),
     shop: getConsoleShopLinks({
-      basePath: `${root}/shops/shop`,
+      basePath: root,
       rubricSlug,
       shopId,
       productId,
+      orderId,
     }),
     config: getConsoleConfigsLinks({
       basePath: root,
@@ -223,10 +216,33 @@ export function getCmsCompanyLinks({
   };
 }
 
-interface GetConsoleCompanyLinkInterface extends GetCmsCompanyLinkInterface {
-  companyId: string | ObjectIdModel;
+interface getConsoleUserLinksInterface {
   userId?: string | ObjectIdModel;
+  basePath?: string;
   orderId?: string | ObjectIdModel;
+}
+
+export function getConsoleUserLinks({ basePath, orderId, userId }: getConsoleUserLinksInterface) {
+  const parentLink = `${basePath}/users`;
+  const itemPath = `${parentLink}/user`;
+  const root = `${itemPath}/${userId}`;
+  const ordersParentLink = `${root}/orders`;
+
+  return {
+    parentLink,
+    itemPath,
+    root,
+    order: {
+      parentLink: ordersParentLink,
+      root: `${ordersParentLink}/${orderId}`,
+    },
+  };
+}
+
+interface GetConsoleCompanyLinkInterface
+  extends GetCmsCompanyLinkInterface,
+    getConsoleUserLinksInterface {
+  companyId: string | ObjectIdModel;
 }
 
 export function getConsoleCompanyLinks(props: GetConsoleCompanyLinkInterface) {
@@ -236,9 +252,6 @@ export function getConsoleCompanyLinks(props: GetConsoleCompanyLinkInterface) {
   });
   const configRoot = `${links.root}/config`;
   const orderParentLink = `${links.root}/orders`;
-  const customersParentLink = `${links.root}/customers`;
-  const userRoot = `${customersParentLink}/user/${props.userId}`;
-  const userOrdersParentLink = `${userRoot}/orders`;
 
   return {
     ...links,
@@ -253,14 +266,10 @@ export function getConsoleCompanyLinks(props: GetConsoleCompanyLinkInterface) {
       parentLink: orderParentLink,
       root: `${orderParentLink}/order/${props.orderId}`,
     },
-    customer: {
-      parentLink: customersParentLink,
-      itemPath: `${customersParentLink}/user`,
-      root: userRoot,
-      order: {
-        parentLink: userOrdersParentLink,
-        root: `${userOrdersParentLink}/${props.orderId}`,
-      },
-    },
+    user: getConsoleUserLinks({
+      basePath: links.root,
+      userId: props.userId,
+      orderId: props.orderId,
+    }),
   };
 }

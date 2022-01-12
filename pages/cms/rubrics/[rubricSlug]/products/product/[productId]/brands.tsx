@@ -61,11 +61,11 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
       },
       {
         name: `Товары`,
-        href: links.products,
+        href: links.product.parentLink,
       },
       {
         name: `${product.cardTitle}`,
-        href: links.product.parentLink,
+        href: links.product.root,
       },
     ],
   };

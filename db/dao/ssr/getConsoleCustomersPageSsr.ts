@@ -11,7 +11,7 @@ import { castDbData, getConsoleInitialData } from '../../../lib/ssrUtils';
 import {
   ConsoleCustomersPageConsumerInterface,
   ConsoleCustomersPageInterface,
-} from '../../../pages/console/[companyId]/customers/[...filters]';
+} from '../../../pages/console/[companyId]/users/[...filters]';
 import { COL_ORDERS, COL_USER_CATEGORIES, COL_USERS } from '../../collectionNames';
 import { getDatabase } from '../../mongodb';
 import { AppPaginationInterface, OrderInterface, UserInterface } from '../../uiInterfaces';
@@ -224,7 +224,7 @@ export const getConsoleCustomersPageSsr = async (
       clearSlug,
       totalDocs: 0,
       totalPages: 0,
-      itemPath: links.customer.itemPath,
+      itemPath: links.user.itemPath,
       page,
       docs: [],
     };
@@ -266,7 +266,7 @@ export const getConsoleCustomersPageSsr = async (
     clearSlug,
     totalDocs: usersResult.totalDocs,
     totalPages: usersResult.totalPages,
-    itemPath: links.customer.itemPath,
+    itemPath: links.user.itemPath,
     page,
     docs,
   };

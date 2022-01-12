@@ -2,26 +2,26 @@ import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import CompanyProductSuppliers, {
   CompanyProductSuppliersInterface,
-} from '../../../../../../../../../../components/company/CompanyProductSuppliers';
-import { SelectOptionInterface } from '../../../../../../../../../../components/FormElements/Select/Select';
-import RequestError from '../../../../../../../../../../components/RequestError';
-import { SORT_ASC } from '../../../../../../../../../../config/common';
-import { COL_SUPPLIERS } from '../../../../../../../../../../db/collectionNames';
-import { getDatabase } from '../../../../../../../../../../db/mongodb';
+} from '../../../../../../../../../../../components/company/CompanyProductSuppliers';
+import { SelectOptionInterface } from '../../../../../../../../../../../components/FormElements/Select/Select';
+import RequestError from '../../../../../../../../../../../components/RequestError';
+import { SORT_ASC } from '../../../../../../../../../../../config/common';
+import { COL_SUPPLIERS } from '../../../../../../../../../../../db/collectionNames';
+import { getDatabase } from '../../../../../../../../../../../db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   SupplierInterface,
-} from '../../../../../../../../../../db/uiInterfaces';
-import ConsoleLayout from '../../../../../../../../../../layout/cms/ConsoleLayout';
-import ConsoleShopProductLayout from '../../../../../../../../../../layout/console/ConsoleShopProductLayout';
-import { getFieldStringLocale } from '../../../../../../../../../../lib/i18n';
-import { getConsoleCompanyLinks } from '../../../../../../../../../../lib/linkUtils';
-import { getConsoleShopProduct } from '../../../../../../../../../../lib/productUtils';
+} from '../../../../../../../../../../../db/uiInterfaces';
+import ConsoleLayout from '../../../../../../../../../../../layout/cms/ConsoleLayout';
+import ConsoleShopProductLayout from '../../../../../../../../../../../layout/console/ConsoleShopProductLayout';
+import { getFieldStringLocale } from '../../../../../../../../../../../lib/i18n';
+import { getConsoleCompanyLinks } from '../../../../../../../../../../../lib/linkUtils';
+import { getConsoleShopProduct } from '../../../../../../../../../../../lib/productUtils';
 import {
   castDbData,
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
-} from '../../../../../../../../../../lib/ssrUtils';
+} from '../../../../../../../../../../../lib/ssrUtils';
 
 interface ProductDetailsInterface extends CompanyProductSuppliersInterface {}
 
@@ -53,7 +53,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
     config: [
       {
         name: 'Магазины',
-        href: links.shops,
+        href: links.shop.parentLink,
       },
       {
         name: shop.name,
@@ -61,15 +61,15 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
       },
       {
         name: 'Товары',
-        href: links.shop.products.root,
+        href: links.shop.rubrics.parentLink,
       },
       {
-        name: `${rubric.name}`,
-        href: links.shop.products.rubric.root,
+        name: `${rubric?.name}`,
+        href: links.shop.rubrics.product.parentLink,
       },
       {
         name: `${snippetTitle}`,
-        href: links.shop.products.rubric.product.root,
+        href: links.shop.rubrics.product.root,
       },
     ],
   };
@@ -78,7 +78,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
     <ConsoleShopProductLayout
       breadcrumbs={breadcrumbs}
       shopProduct={shopProduct}
-      basePath={links.shop.products.rubric.product.parentLink}
+      basePath={links.root}
     >
       <CompanyProductSuppliers
         shopProduct={shopProduct}

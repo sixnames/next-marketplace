@@ -56,7 +56,7 @@ const UserDetailsConsumer: React.FC<UserDetailsConsumerInterface> = ({
     config: [
       {
         name: 'Клиенты',
-        href: links.customer.parentLink,
+        href: links.user.parentLink,
       },
     ],
   };

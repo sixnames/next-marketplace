@@ -28,7 +28,7 @@ const ConsoleShopSyncErrorsListPage: NextPage<ConsoleShopSyncErrorsListPageInter
     config: [
       {
         name: 'Магазины',
-        href: links.shops,
+        href: links.shop.parentLink,
       },
       {
         name: shop.name,
@@ -43,7 +43,7 @@ const ConsoleShopSyncErrorsListPage: NextPage<ConsoleShopSyncErrorsListPageInter
         showControls={false}
         showShopName={false}
         notSyncedProducts={notSyncedProducts}
-        basePath={links.shop.itemPath}
+        basePath={links.root}
         breadcrumbs={breadcrumbs}
         shop={shop}
         companySlug={companySlug}

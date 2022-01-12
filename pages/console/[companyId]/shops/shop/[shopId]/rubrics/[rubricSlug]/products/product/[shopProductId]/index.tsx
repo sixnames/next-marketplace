@@ -1,20 +1,20 @@
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import CompanyProductDetails from '../../../../../../../../../../components/company/CompanyProductDetails';
-import RequestError from '../../../../../../../../../../components/RequestError';
+import CompanyProductDetails from '../../../../../../../../../../../components/company/CompanyProductDetails';
+import RequestError from '../../../../../../../../../../../components/RequestError';
 import {
   AppContentWrapperBreadCrumbs,
   ShopProductInterface,
-} from '../../../../../../../../../../db/uiInterfaces';
-import ConsoleLayout from '../../../../../../../../../../layout/cms/ConsoleLayout';
-import ConsoleShopProductLayout from '../../../../../../../../../../layout/console/ConsoleShopProductLayout';
-import { getConsoleCompanyLinks } from '../../../../../../../../../../lib/linkUtils';
-import { getConsoleShopProduct } from '../../../../../../../../../../lib/productUtils';
+} from '../../../../../../../../../../../db/uiInterfaces';
+import ConsoleLayout from '../../../../../../../../../../../layout/cms/ConsoleLayout';
+import ConsoleShopProductLayout from '../../../../../../../../../../../layout/console/ConsoleShopProductLayout';
+import { getConsoleCompanyLinks } from '../../../../../../../../../../../lib/linkUtils';
+import { getConsoleShopProduct } from '../../../../../../../../../../../lib/productUtils';
 import {
   castDbData,
   getConsoleInitialData,
   GetConsoleInitialDataPropsInterface,
-} from '../../../../../../../../../../lib/ssrUtils';
+} from '../../../../../../../../../../../lib/ssrUtils';
 
 interface ProductDetailsInterface {
   shopProduct: ShopProductInterface;
@@ -43,7 +43,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct, compan
     config: [
       {
         name: 'Магазины',
-        href: links.shops,
+        href: links.shop.parentLink,
       },
       {
         name: shop.name,
@@ -51,11 +51,11 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct, compan
       },
       {
         name: 'Товары',
-        href: links.shop.products.root,
+        href: links.shop.rubrics.parentLink,
       },
       {
-        name: `${rubric.name}`,
-        href: links.shop.products.rubric.root,
+        name: `${rubric?.name}`,
+        href: links.shop.rubrics.product.parentLink,
       },
     ],
   };
@@ -63,7 +63,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({ shopProduct, compan
   return (
     <ConsoleShopProductLayout
       shopProduct={shopProduct}
-      basePath={links.shop.products.rubric.product.parentLink}
+      basePath={links.root}
       breadcrumbs={breadcrumbs}
     >
       <CompanyProductDetails

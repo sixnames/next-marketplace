@@ -28,7 +28,7 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ layoutProps, 
     config: [
       {
         name: 'Магазины',
-        href: links.shops,
+        href: links.shop.parentLink,
       },
       {
         name: shop.name,
@@ -39,7 +39,7 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ layoutProps, 
 
   return (
     <ConsoleLayout {...layoutProps}>
-      <ShopAssets basePath={links.shop.itemPath} shop={shop} breadcrumbs={breadcrumbs} />
+      <ShopAssets basePath={links.root} shop={shop} breadcrumbs={breadcrumbs} />
     </ConsoleLayout>
   );
 };

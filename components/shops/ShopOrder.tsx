@@ -24,6 +24,7 @@ const ShopOrder: React.FC<ShopOrderInterface> = ({
       <ConsoleOrderDetails
         order={order}
         title={title}
+        basePath={basePath}
         pageCompanySlug={pageCompanySlug}
         orderStatuses={orderStatuses}
       />

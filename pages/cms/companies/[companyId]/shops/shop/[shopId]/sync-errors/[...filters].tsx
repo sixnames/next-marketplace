@@ -19,7 +19,7 @@ const CmsCompanyShopSyncErrorsPage: NextPage<CmsCompanyShopSyncErrorsPageInterfa
   notSyncedProducts,
   companySlug,
 }) => {
-  const { root, parentLink, shops, ...links } = getCmsCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId: shop.companyId,
     shopId: shop._id,
   });
@@ -29,19 +29,19 @@ const CmsCompanyShopSyncErrorsPage: NextPage<CmsCompanyShopSyncErrorsPageInterfa
     config: [
       {
         name: 'Компании',
-        href: parentLink,
+        href: links.parentLink,
       },
       {
         name: `${shop.company?.name}`,
-        href: root,
+        href: links.root,
       },
       {
         name: 'Магазины',
-        href: shops,
+        href: links.shop.parentLink,
       },
       {
         name: shop.name,
-        href: `${links.shop}/${shop._id}`,
+        href: links.shop.root,
       },
     ],
   };
@@ -53,7 +53,7 @@ const CmsCompanyShopSyncErrorsPage: NextPage<CmsCompanyShopSyncErrorsPageInterfa
         breadcrumbs={breadcrumbs}
         notSyncedProducts={notSyncedProducts}
         showShopName={false}
-        basePath={links.shop.itemPath}
+        basePath={links.root}
         shop={shop}
       />
     </ConsoleLayout>

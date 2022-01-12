@@ -25,6 +25,7 @@ const ShopOrders: React.FC<ShopOrdersInterface> = ({ shop, basePath, breadcrumbs
           orderId: dataItem._id,
           companyId: shop.companyId,
           shopId: shop._id,
+          basePath,
         });
         return (
           <WpLink testId={`order-${dataItem.itemId}-link`} href={links.shop.order.root}>
@@ -91,6 +92,7 @@ const ShopOrders: React.FC<ShopOrdersInterface> = ({ shop, basePath, breadcrumbs
                   orderId: dataItem._id,
                   companyId: shop.companyId,
                   shopId: shop._id,
+                  basePath,
                 });
                 router.push(links.shop.order.root).catch(console.log);
               }}

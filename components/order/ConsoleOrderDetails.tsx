@@ -277,7 +277,7 @@ export interface CmsOrderDetailsBaseInterface {
 interface CmsOrderDetailsInterface extends CmsOrderDetailsBaseInterface {
   pageCompanySlug: string;
   title: string;
-  basePath: string;
+  basePath?: string;
 }
 
 const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({

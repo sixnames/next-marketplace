@@ -60,7 +60,6 @@ const UserOrdersConsumer: React.FC<UserOrderConsumerInterface> = ({
         title={title}
         orderStatuses={orderStatuses}
         pageCompanySlug={DEFAULT_COMPANY_SLUG}
-        basePath={ROUTE_CMS}
       />
     </CmsUserLayout>
   );

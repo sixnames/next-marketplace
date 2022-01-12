@@ -222,7 +222,11 @@ interface getConsoleUserLinksInterface {
   orderId?: string | ObjectIdModel;
 }
 
-export function getConsoleUserLinks({ basePath, orderId, userId }: getConsoleUserLinksInterface) {
+export function getConsoleUserLinks({
+  basePath = ROUTE_CMS,
+  orderId,
+  userId,
+}: getConsoleUserLinksInterface) {
   const parentLink = `${basePath}/users`;
   const itemPath = `${parentLink}/user`;
   const root = `${itemPath}/${userId}`;

@@ -39,7 +39,7 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({ layoutProps, 
 
   return (
     <ConsoleLayout {...layoutProps}>
-      <ShopAssets basePath={links.root} shop={shop} breadcrumbs={breadcrumbs} />
+      <ShopAssets basePath={links.parentLink} shop={shop} breadcrumbs={breadcrumbs} />
     </ConsoleLayout>
   );
 };

@@ -877,7 +877,7 @@ export interface BreadcrumbsInterface {
 
 export interface ConsoleShopLayoutInterface {
   shop: ShopInterface;
-  basePath: string;
+  basePath?: string;
   breadcrumbs?: AppContentWrapperBreadCrumbs;
 }
 

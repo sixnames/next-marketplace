@@ -3,7 +3,7 @@ import * as React from 'react';
 import Inner from '../../components/Inner';
 import WpTitle from '../../components/WpTitle';
 import { ConsoleShopLayoutInterface } from '../../db/uiInterfaces';
-import { getConsoleShopLinks } from '../../lib/linkUtils';
+import { getCmsCompanyLinks } from '../../lib/linkUtils';
 import AppContentWrapper from '../AppContentWrapper';
 import AppSubNav from '../AppSubNav';
 
@@ -14,41 +14,42 @@ const ConsoleShopLayout: React.FC<ConsoleShopLayoutInterface> = ({
   children,
 }) => {
   const navConfig = React.useMemo(() => {
-    const links = getConsoleShopLinks({
+    const links = getCmsCompanyLinks({
       basePath,
       shopId: shop._id,
+      companyId: shop.companyId,
     });
 
     return [
       {
         name: 'Детали',
         testId: 'shop-details',
-        path: links.root,
+        path: links.shop.root,
         exact: true,
       },
       {
         name: 'Заказы',
         testId: 'shop-orders',
-        path: links.order.parentLink,
+        path: links.shop.order.parentLink,
       },
       {
         name: 'Товары',
         testId: 'shop-products',
-        path: links.rubrics.parentLink,
+        path: links.shop.rubrics.parentLink,
       },
       {
         name: 'Изображения',
         testId: 'shop-assets',
-        path: links.assets,
+        path: links.shop.assets,
         exact: true,
       },
       {
         name: 'Ошибки синхронизации',
         testId: 'shop-sync-errors',
-        path: links.syncErrors,
+        path: links.shop.syncErrors,
       },
     ];
-  }, [basePath, shop._id]);
+  }, [basePath, shop]);
 
   return (
     <AppContentWrapper breadcrumbs={breadcrumbs}>

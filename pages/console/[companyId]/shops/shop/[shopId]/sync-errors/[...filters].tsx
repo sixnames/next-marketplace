@@ -43,7 +43,7 @@ const ConsoleShopSyncErrorsListPage: NextPage<ConsoleShopSyncErrorsListPageInter
         showControls={false}
         showShopName={false}
         notSyncedProducts={notSyncedProducts}
-        basePath={links.root}
+        basePath={links.parentLink}
         breadcrumbs={breadcrumbs}
         shop={shop}
         companySlug={companySlug}

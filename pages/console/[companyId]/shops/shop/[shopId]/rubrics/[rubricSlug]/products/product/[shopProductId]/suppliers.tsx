@@ -78,7 +78,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
     <ConsoleShopProductLayout
       breadcrumbs={breadcrumbs}
       shopProduct={shopProduct}
-      basePath={links.root}
+      basePath={links.parentLink}
     >
       <CompanyProductSuppliers
         shopProduct={shopProduct}

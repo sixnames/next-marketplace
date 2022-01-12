@@ -47,7 +47,7 @@ const ConsoleShopProductsListPage: NextPage<ConsoleShopProductsListPageInterface
       <ShopRubricProducts
         rubricName={rubricName}
         breadcrumbs={breadcrumbs}
-        layoutBasePath={links.shop.itemPath}
+        layoutBasePath={links.parentLink}
         shop={shop}
         {...props}
       />

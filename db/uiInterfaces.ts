@@ -500,6 +500,8 @@ export interface CatalogueDataInterface {
   textTopEditUrl: string;
   textBottom?: SeoContentInterface | null;
   textBottomEditUrl: string;
+  minPrice: number;
+  maxPrice: number;
 }
 
 export interface CatalogueProductOptionInterface {

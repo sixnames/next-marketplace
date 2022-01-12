@@ -975,6 +975,23 @@ export async function getCatalogueCreatedPages({
                 index: true,
                 nameI18n: true,
                 slug: true,
+                mainBanner: true,
+                mainBannerMobile: true,
+                showAsMainBanner: true,
+                mainBannerTextColor: true,
+                mainBannerVerticalTextAlign: true,
+                mainBannerHorizontalTextAlign: true,
+                mainBannerTextAlign: true,
+                mainBannerTextPadding: true,
+                mainBannerTextMaxWidth: true,
+                secondaryBanner: true,
+                showAsSecondaryBanner: true,
+                secondaryBannerTextColor: true,
+                secondaryBannerVerticalTextAlign: true,
+                secondaryBannerHorizontalTextAlign: true,
+                secondaryBannerTextAlign: true,
+                secondaryBannerTextPadding: true,
+                secondaryBannerTextMaxWidth: true,
               },
             },
             {
@@ -1032,6 +1049,7 @@ export interface SiteInitialDataPropsInterface
   extends PagePropsInterface,
     Omit<SiteLayoutProviderInterface, 'description' | 'title' | 'showForIndex'> {
   companyNotFound: boolean;
+  domain?: string | null;
 }
 
 export interface SiteInitialDataPayloadInterface {
@@ -1054,6 +1072,7 @@ export async function getSiteInitialData({
     themeStyle,
     urlPrefix,
     companyNotFound,
+    domain,
   } = await getPageInitialState({ context });
 
   // initial data
@@ -1088,6 +1107,7 @@ export async function getSiteInitialData({
       domainCompany,
       urlPrefix,
       companyNotFound,
+      domain,
     },
   };
 }

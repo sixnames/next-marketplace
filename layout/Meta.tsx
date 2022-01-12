@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import * as React from 'react';
 import Head from 'next/head';
 import parse from 'html-react-parser';
+import { ROUTE_CMS, ROUTE_CONSOLE } from '../config/common';
 import { useConfigContext } from '../context/configContext';
 import { useSiteContext } from '../context/siteContext';
 import { alwaysArray } from '../lib/arrayUtils';
@@ -15,6 +16,7 @@ export interface MetaInterface {
   foundationYear?: string;
   showForIndex: boolean;
   noIndexFollow?: boolean;
+  seoSchema?: string;
 }
 
 const Meta: React.FC<MetaInterface> = ({
@@ -25,6 +27,7 @@ const Meta: React.FC<MetaInterface> = ({
   previewImage,
   showForIndex,
   noIndexFollow,
+  seoSchema,
 }) => {
   const router = useRouter();
   const [canonicalUrl, setCanonicalUrl] = React.useState<string>('');
@@ -189,8 +192,19 @@ const Meta: React.FC<MetaInterface> = ({
             })
           : null}
 
+        {/* Seo schema */}
+        {seoSchema
+          ? parse(seoSchema, {
+              trim: true,
+            })
+          : null}
+
         {/*chat*/}
-        {configs.chat ? <script src={configs.chat} async /> : null}
+        {configs.chat &&
+        !router.asPath.includes(ROUTE_CMS) &&
+        !router.asPath.includes(ROUTE_CONSOLE) ? (
+          <script src={configs.chat} async />
+        ) : null}
       </Head>
     </React.Fragment>
   );

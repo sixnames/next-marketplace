@@ -29,7 +29,7 @@ export interface SeoSchemaCatalogueOffersInterface extends SeoSchemaOffersInterf
 }
 
 export interface SeoSchemaCatalogueProductsInterface {
-  '@context': 'https://schema.org';
+  // '@context': 'https://schema.org';
   '@type': 'Product';
   name: string;
   offers: SeoSchemaCatalogueOffersInterface;

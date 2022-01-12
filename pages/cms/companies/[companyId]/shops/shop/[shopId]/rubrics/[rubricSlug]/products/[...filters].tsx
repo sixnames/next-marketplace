@@ -54,7 +54,6 @@ const CmsCompanyShopProductsListPage: NextPage<CmsCompanyShopProductsListPageInt
     <ConsoleLayout {...layoutProps}>
       <ShopRubricProducts
         breadcrumbs={breadcrumbs}
-        layoutBasePath={links.root}
         shop={shop}
         rubricName={rubricName}
         {...props}

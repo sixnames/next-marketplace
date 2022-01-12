@@ -4,7 +4,7 @@ import WpButton from '../../components/button/WpButton';
 import Inner from '../../components/Inner';
 import WpTitle from '../../components/WpTitle';
 import { AppContentWrapperBreadCrumbs, ShopProductInterface } from '../../db/uiInterfaces';
-import { getConsoleRubricLinks, getConsoleShopLinks } from '../../lib/linkUtils';
+import { getCmsCompanyLinks, getConsoleRubricLinks } from '../../lib/linkUtils';
 import { ClientNavItemInterface } from '../../types/clientTypes';
 import AppContentWrapper from '../AppContentWrapper';
 import AppSubNav from '../AppSubNav';
@@ -12,7 +12,7 @@ import AppSubNav from '../AppSubNav';
 interface ConsoleShopProductLayoutInterface {
   shopProduct: ShopProductInterface;
   breadcrumbs?: AppContentWrapperBreadCrumbs;
-  basePath: string;
+  basePath?: string;
   showEditButton?: boolean;
 }
 
@@ -24,8 +24,9 @@ const ConsoleShopProductLayout: React.FC<ConsoleShopProductLayoutInterface> = ({
   showEditButton,
 }) => {
   const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
-    const links = getConsoleShopLinks({
+    const links = getCmsCompanyLinks({
       basePath,
+      companyId: shopProduct.companyId,
       shopId: shopProduct.shopId,
       productId: shopProduct._id,
       rubricSlug: shopProduct.rubricSlug,
@@ -35,13 +36,13 @@ const ConsoleShopProductLayout: React.FC<ConsoleShopProductLayoutInterface> = ({
       {
         name: 'Детали',
         testId: 'details',
-        path: links.rubrics.product.root,
+        path: links.shop.rubrics.product.root,
         exact: true,
       },
       {
         name: 'Ценообразование',
         testId: 'suppliers',
-        path: links.rubrics.product.suppliers,
+        path: links.shop.rubrics.product.suppliers,
         exact: true,
       },
     ];

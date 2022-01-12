@@ -50,7 +50,7 @@ export interface ShopAddProductsListInterface extends ConsoleRubricProductsInter
   selectedAttributes: CatalogueFilterAttributeInterface[];
   clearSlug: string;
   rubricName: string;
-  layoutBasePath: string;
+  layoutBasePath?: string;
   breadcrumbs?: AppContentWrapperBreadCrumbs;
   basePath: string;
   rubricSlug: string;

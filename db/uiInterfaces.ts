@@ -890,7 +890,7 @@ export interface ShopRubricProductsInterface
   clearSlug: string;
   rubricName: string;
   rubricSlug: string;
-  layoutBasePath: string;
+  layoutBasePath?: string;
   basePath: string;
   currency: string;
 }

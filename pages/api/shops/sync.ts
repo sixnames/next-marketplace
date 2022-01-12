@@ -127,6 +127,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         shopId: shop._id,
       })
       .toArray();
+
     for await (const bodyItem of allowedBody) {
       if (!bodyItem.barcode || bodyItem.barcode.length < 1) {
         continue;
@@ -204,8 +205,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         });
         continue;
       }
-      const foundInBody = body.find(({ barcode }) => {
-        return barcode?.some((barcodeItem) => bodyItem.barcode?.includes(barcodeItem));
+      const foundInBody = body.find(({ barcode, name, id }) => {
+        return (
+          barcode?.some((barcodeItem) => bodyItem.barcode?.includes(barcodeItem)) &&
+          (name !== bodyItem.name || id !== bodyItem.id)
+        );
       });
       if (foundInBody) {
         intersects.push({
@@ -233,6 +237,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           },
         })
         .toArray();
+      console.log('oldShopProducts', oldShopProducts);
       if (oldShopProducts.length > 0) {
         for await (const oldShopProduct of oldShopProducts) {
           // update existing shop product
@@ -277,6 +282,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           available,
           itemId,
         });
+        console.log(shopProduct);
         shopProducts.push(shopProduct);
       }
 
@@ -311,7 +317,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     // insert all intersect items
-    console.log(JSON.stringify(intersects, null, 2));
     if (intersects.length > 0) {
       for await (const intersectItem of intersects) {
         await syncIntersectCollection.findOneAndUpdate(

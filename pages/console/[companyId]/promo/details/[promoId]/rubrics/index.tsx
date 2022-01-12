@@ -56,7 +56,7 @@ const ConsolePromoRubrics: React.FC<ConsolePromoRubricsInterface> = ({
       <CompanyRubricsList
         rubrics={rubrics}
         pageCompany={pageCompany}
-        routeBasePath={`${routeBasePath}/rubrics`}
+        routeBasePath={routeBasePath}
       />
     </ConsolePromoLayout>
   );

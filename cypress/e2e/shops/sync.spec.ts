@@ -15,6 +15,7 @@ import {
   SyncShopProductsResponseInterface,
   SyncUpdateOrderProductInterface,
 } from 'db/syncInterfaces';
+import { getCmsCompanyLinks } from '../../../lib/linkUtils';
 
 const validRequestParamsA = 'token=000001';
 const validRequestParamsC = 'token=000003';
@@ -319,7 +320,7 @@ describe('Sync', () => {
     cy.getByCy(`${errorBarcode}-create`).should('not.exist');
   });
 
-  it('Should sync shop products with site catalogue', () => {
+  it.only('Should sync shop products with site catalogue', () => {
     // should error on no parameters
     cy.request({
       method: REQUEST_METHOD_POST,
@@ -354,9 +355,12 @@ describe('Sync', () => {
     });
 
     // should display synced products
-    cy.visit(
-      `${ROUTE_CMS}/companies/${fixtureIds.companyB}/shops/shop/${fixtureIds.shopC}/products/${fixtureIds.rubricChampagneSlug}`,
-    );
+    const shopCLinks = getCmsCompanyLinks({
+      companyId: fixtureIds.companyB,
+      shopId: fixtureIds.shopC,
+      rubricSlug: fixtureIds.rubricChampagneSlug,
+    });
+    cy.visit(shopCLinks.shop.rubrics.product.parentLink);
     cy.wait(1500);
     cy.getByCy('shop-rubric-products-list').should('exist');
     cy.getByCy('shop-product-main-image').should('have.length', 3);

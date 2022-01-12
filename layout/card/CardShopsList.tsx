@@ -127,7 +127,7 @@ const CardShop: React.FC<CardShopInterface> = ({ shop }) => {
               <React.Fragment>
                 <div className='col-span-3'>
                   <SpinnerInput
-                    className=''
+                    size={'small'}
                     plusTestId={`card-shops-${slug}-plus`}
                     minusTestId={`card-shops-${slug}-minus`}
                     testId={`card-shops-${slug}-input`}
@@ -143,6 +143,7 @@ const CardShop: React.FC<CardShopInterface> = ({ shop }) => {
                 <div className='col-span-2'>
                   <WpButton
                     short
+                    size={'small'}
                     className='w-full'
                     disabled={disabled}
                     testId={`card-shops-${slug}-add-to-cart`}
@@ -154,7 +155,7 @@ const CardShop: React.FC<CardShopInterface> = ({ shop }) => {
                       });
                     }}
                   >
-                    {noNaN(inCartCount) > 0 ? `В корзине ${inCartCount}` : 'В корзину'}
+                    {noNaN(inCartCount) > 0 ? `В корзине ${inCartCount} ед.` : 'В корзину'}
                   </WpButton>
                 </div>
               </React.Fragment>

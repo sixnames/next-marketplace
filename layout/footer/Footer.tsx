@@ -7,6 +7,7 @@ import LinkPhone from '../../components/Link/LinkPhone';
 import WpLink from '../../components/Link/WpLink';
 import { MapModalInterface } from '../../components/Modal/MapModal';
 import Socials from '../../components/Socials';
+import WpIcon from '../../components/WpIcon';
 import { ROUTE_BLOG_WITH_PAGE, ROUTE_CONTACTS, ROUTE_DOCS_PAGES } from '../../config/common';
 import { getConstantTranslation } from '../../config/constantTranslations';
 import { MAP_MODAL } from '../../config/modalVariants';
@@ -16,7 +17,7 @@ import { useLocaleContext } from '../../context/localeContext';
 import { useSiteContext } from '../../context/siteContext';
 import { PagesGroupInterface } from '../../db/uiInterfaces';
 import { useShopMarker } from '../../hooks/useShopMarker';
-import { phoneToReadable } from '../../lib/phoneUtils';
+import { phoneToRaw, phoneToReadable } from '../../lib/phoneUtils';
 
 export interface FooterInterface {
   footerPageGroups: PagesGroupInterface[];
@@ -76,6 +77,7 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
               </div>
             </div>
 
+            {/*socials*/}
             {showSocials ? (
               <div className='mt-auto pt-10'>
                 <div className='mb-2'>Мы в социальных сетях</div>
@@ -91,9 +93,10 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
               </div>
             ) : null}
 
+            {/*main shop address*/}
             {configs.isOneShopCompany && domainCompany && domainCompany.mainShop ? (
               <div
-                className='flex items-center mt-8'
+                className='mt-6 flex items-center gap-3 cursor-pointer hover:text-theme transition-all'
                 onClick={() => {
                   showModal<MapModalInterface>({
                     variant: MAP_MODAL,
@@ -112,11 +115,52 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
                   });
                 }}
               >
+                <div className='text-theme'>
+                  <WpIcon name={'marker'} className='w-5 h-5' />
+                </div>
+                <div>{domainCompany.mainShop.address.readableAddress}</div>
+              </div>
+            ) : null}
+
+            {/*phones*/}
+            {phonesList && phonesList.length > 0 ? (
+              <div className='flex items-center gap-3 mt-6'>
+                <div className='text-theme'>
+                  <WpIcon name={'phone'} className='w-5 h-5' />
+                </div>
                 <div>
-                  <div className='text-secondary-text'>Наш адрес</div>
-                  <div className='cursor-pointer hover:text-theme transition-all'>
-                    {domainCompany.mainShop.address.readableAddress}
-                  </div>
+                  {phonesList.map((phone) => {
+                    return (
+                      <LinkPhone
+                        key={phone}
+                        className='text-primary-text hover:text-theme hover:no-underline'
+                        value={{
+                          raw: phoneToRaw(phone),
+                          readable: phoneToReadable(phone),
+                        }}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+            ) : null}
+
+            {/*emails*/}
+            {contactEmail && contactEmail.length > 0 ? (
+              <div className='flex items-center gap-3 mt-6'>
+                <div className='text-theme'>
+                  <WpIcon name={'email'} className='w-5 h-5' />
+                </div>
+                <div>
+                  {contactEmail.map((email) => {
+                    return (
+                      <LinkEmail
+                        key={email}
+                        value={email}
+                        className='text-primary-text hover:text-theme hover:no-underline'
+                      />
+                    );
+                  })}
                 </div>
               </div>
             ) : null}
@@ -170,59 +214,14 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
               );
             })}
           </div>
-
-          <div className='lg:col-span-2'>
-            <div className='grid gap-x-6 gap-y-2 sm:grid-cols-2 border-t border-border-300 pt-8 sm:border-0 sm:pt-0'>
-              <div>
-                <small className='text-secondary-text text-[1em]'>
-                  {configSiteName} © {configFoundationYear || new Date().getFullYear()} -{' '}
-                  {new Date().getFullYear()}
-                </small>
-              </div>
-
-              <div>
-                {(contactEmail || []).map((email) => {
-                  return (
-                    <LinkEmail
-                      key={email}
-                      value={email}
-                      className='text-secondary-text hover:text-theme hover:no-underline lg:text-right'
-                    />
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-
-          <div className='lg:col-span-4 flex lg:justify-end'>
-            <div className='space-y-1'>
-              {(phonesList || []).map((phone) => {
-                return (
-                  <LinkPhone
-                    key={phone}
-                    className='text-secondary-text hover:text-theme hover:no-underline'
-                    value={{
-                      raw: phone,
-                      readable: phoneToReadable(phone),
-                    }}
-                  />
-                );
-              })}
-            </div>
-          </div>
         </div>
 
-        {/*<div className='text-center text-sm text-secondary-text'>
-          {'Powered by '}
-          <span
-            className='text-theme hover:underline cursor-pointer'
-            onClick={() => {
-              window.open('https://supercharger.site', '_blank');
-            }}
-          >
-            Supercharger
-          </span>
-        </div>*/}
+        <div>
+          <small className='text-secondary-text text-[1em]'>
+            {configSiteName} © {configFoundationYear || new Date().getFullYear()} -{' '}
+            {new Date().getFullYear()}
+          </small>
+        </div>
       </Inner>
     </footer>
   );

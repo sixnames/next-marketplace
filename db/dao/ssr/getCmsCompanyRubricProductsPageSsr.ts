@@ -46,8 +46,8 @@ export const getCmsCompanyRubricProductsPageSsr = async (
     companyId: companyResult._id,
     rubricSlug: `${query.rubricSlug}`,
   });
-  const basePath = links.rubrics.products;
-  const itemPath = links.rubrics.product.parentLink;
+  const basePath = links.rubrics.product.parentLink;
+  const itemPath = links.rubrics.product.itemPath;
 
   const payload = await getConsoleCompanyRubricProducts({
     query,

@@ -35,7 +35,7 @@ export const getConsoleGiftCertificatesPageSsr = async (
       ...props,
       ...payload,
       pageCompany: castDbData(company),
-      userRouteBasePath: links.customer.itemPath,
+      userRouteBasePath: links.user.itemPath,
     },
   };
 };

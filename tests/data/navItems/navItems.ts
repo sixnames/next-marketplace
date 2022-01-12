@@ -39,7 +39,7 @@ const navItems: NavItemModel[] = [
     },
     index: 2,
     icon: 'user',
-    path: `/customers`,
+    path: `/users`,
     navGroup: ROUTE_CONSOLE_NAV_GROUP,
   },
   {

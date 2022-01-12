@@ -1,11 +1,12 @@
-import { DEFAULT_CITY, ROUTE_CMS } from 'config/common';
+import { DEFAULT_CITY } from 'config/common';
 import { fixtureIds } from 'cypress/fixtures/fixtureIds';
 import { MOCK_ADDRESS_A, MOCK_ADDRESS_B } from 'tests/mocks';
+import { getCmsCompanyLinks } from '../../../lib/linkUtils';
 
 describe('Company shops', () => {
-  const companiesPath = `${ROUTE_CMS}/companies`;
+  const links = getCmsCompanyLinks({});
   beforeEach(() => {
-    cy.testAuth(companiesPath);
+    cy.testAuth(links.parentLink);
   });
 
   it('Should display company shops list', () => {
@@ -108,7 +109,11 @@ describe('Company shops', () => {
 
   it('Should CRUD shop products', () => {
     // Should generate shop token
-    cy.visit(`${ROUTE_CMS}/companies/${fixtureIds.companyB}/shops/shop/${fixtureIds.shopB}`);
+    const shopBLinks = getCmsCompanyLinks({
+      companyId: fixtureIds.companyB,
+      shopId: fixtureIds.shopB,
+    });
+    cy.visit(shopBLinks.shop.root);
     cy.wait(1500);
     cy.getByCy('shop-details-page').should('exist');
     cy.getByCy('generate-api-token').click();
@@ -116,9 +121,11 @@ describe('Company shops', () => {
     cy.getByCy('generated-token').should('exist');
 
     // Should display shop products list
-    cy.visit(
-      `${ROUTE_CMS}/companies/${fixtureIds.companyA}/shops/shop/${fixtureIds.shopA}/products`,
-    );
+    const shopALinks = getCmsCompanyLinks({
+      companyId: fixtureIds.companyA,
+      shopId: fixtureIds.shopA,
+    });
+    cy.visit(shopALinks.shop.rubrics.parentLink);
     cy.getByCy('shop-rubrics-list').should('exist');
     cy.getByCy(`Вино-update`).click();
     cy.wait(1500);

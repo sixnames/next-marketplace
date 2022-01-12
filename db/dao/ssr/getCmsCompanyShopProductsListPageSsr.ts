@@ -2,7 +2,7 @@ import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import { getCmsCompanyLinks } from '../../../lib/linkUtils';
 import { castDbData, getAppInitialData } from '../../../lib/ssrUtils';
-import { CmsCompanyShopProductsListPageInterface } from '../../../pages/cms/companies/[companyId]/shops/shop/[shopId]/products/[rubricSlug]/[...filters]';
+import { CmsCompanyShopProductsListPageInterface } from '../../../pages/cms/companies/[companyId]/shops/shop/[shopId]/rubrics/[rubricSlug]/products/[...filters]';
 import { COL_COMPANIES } from '../../collectionNames';
 import { CompanyModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
@@ -36,7 +36,7 @@ export const getCmsCompanyShopProductsListPageSsr = async (
     shopId: `${shopId}`,
     rubricSlug: `${rubricSlug}`,
   });
-  const basePath = links.shop.products.rubric.root;
+  const basePath = links.shop.rubrics.root;
   const locale = initialProps.props.sessionLocale;
   const currency = initialProps.props.initialData.currency;
 

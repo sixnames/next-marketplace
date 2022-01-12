@@ -33,7 +33,7 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({
 }) => {
   const title = `Заказ №${order.itemId}`;
 
-  const { root, parentLink, shops, ...links } = getCmsCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId: shop.companyId,
     shopId: shop._id,
   });
@@ -43,23 +43,23 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({
     config: [
       {
         name: 'Компании',
-        href: parentLink,
+        href: links.parentLink,
       },
       {
         name: `${shop.company?.name}`,
-        href: root,
+        href: links.root,
       },
       {
         name: 'Магазины',
-        href: shops,
+        href: links.shop.parentLink,
       },
       {
         name: shop.name,
-        href: `${links.shop}/${shop._id}`,
+        href: links.shop.root,
       },
       {
         name: 'Заказы',
-        href: links.shop.root,
+        href: links.shop.order.parentLink,
       },
     ],
   };
@@ -72,7 +72,6 @@ const CompanyShopAssets: NextPage<CompanyShopAssetsInterface> = ({
         order={order}
         orderStatuses={orderStatuses}
         breadcrumbs={breadcrumbs}
-        basePath={links.shop.itemPath}
         shop={shop}
       />
     </ConsoleLayout>

@@ -20,10 +20,11 @@ import {
   getConsoleOrders,
   GetConsoleOrdersPayloadType,
 } from '../../../db/dao/orders/getConsoleOrders';
-import { OrderInterface } from '../../../db/uiInterfaces';
+import { OrderCustomerInterface, OrderInterface } from '../../../db/uiInterfaces';
 import { useDeleteOrder } from '../../../hooks/mutations/useOrderMutations';
 import AppContentWrapper from '../../../layout/AppContentWrapper';
 import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
+import { getConsoleUserLinks } from '../../../lib/linkUtils';
 import {
   castDbData,
   getAppInitialData,
@@ -80,10 +81,19 @@ const OrdersRoute: React.FC<OrdersRouteInterface> = ({ data }) => {
       },
     },
     {
-      accessor: 'customer.shortName',
+      accessor: 'customer',
       headTitle: 'Заказчик',
       render: ({ cellData }) => {
-        return cellData;
+        const customer = cellData as OrderCustomerInterface;
+        const userLinks = getConsoleUserLinks({
+          basePath: ROUTE_CMS,
+          userId: customer?.userId,
+        });
+        return (
+          <WpLink href={userLinks.root} className='text-primary-text'>
+            {customer?.shortName}
+          </WpLink>
+        );
       },
     },
     {

@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import * as React from 'react';
 import { ConsoleShopLayoutInterface, RubricInterface } from '../../db/uiInterfaces';
 import ConsoleShopLayout from '../../layout/console/ConsoleShopLayout';
+import { getCmsCompanyLinks } from '../../lib/linkUtils';
 import ContentItemControls from '../button/ContentItemControls';
 import Inner from '../Inner';
 import WpTable, { WpTableColumn } from '../WpTable';
@@ -28,15 +29,19 @@ const ShopRubrics: React.FC<ShopRubricsInterface> = ({ shop, breadcrumbs, rubric
     },
     {
       render: ({ dataItem }) => {
+        const links = getCmsCompanyLinks({
+          shopId: shop._id,
+          companyId: shop.companyId,
+          rubricSlug: dataItem.slug,
+          basePath,
+        });
         return (
           <ContentItemControls
             testId={`${dataItem.name}`}
             justifyContent={'flex-end'}
             updateTitle={'Просмотреть товары рубрики'}
             updateHandler={() => {
-              router
-                .push(`${basePath}/${shop._id}/products/${dataItem.slug}`)
-                .catch((e) => console.log(e));
+              router.push(links.shop.rubrics.product.parentLink).catch(console.log);
             }}
           />
         );
@@ -53,9 +58,13 @@ const ShopRubrics: React.FC<ShopRubricsInterface> = ({ shop, breadcrumbs, rubric
           testIdKey={'name'}
           emptyMessage={'Список пуст'}
           onRowDoubleClick={(dataItem) => {
-            router
-              .push(`${basePath}/${shop._id}/products/${dataItem.slug}`)
-              .catch((e) => console.log(e));
+            const links = getCmsCompanyLinks({
+              shopId: shop._id,
+              companyId: shop.companyId,
+              rubricSlug: dataItem.slug,
+              basePath,
+            });
+            router.push(links.shop.rubrics.product.parentLink).catch(console.log);
           }}
         />
       </Inner>

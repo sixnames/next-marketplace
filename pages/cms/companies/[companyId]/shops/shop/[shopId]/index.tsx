@@ -21,7 +21,7 @@ interface CompanyShopInterface
     Omit<ShopDetailsInterface, 'basePath'> {}
 
 const CompanyShop: NextPage<CompanyShopInterface> = ({ layoutProps, shop }) => {
-  const { root, parentLink, shops, ...links } = getCmsCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId: shop.companyId,
     shopId: shop._id,
   });
@@ -31,22 +31,22 @@ const CompanyShop: NextPage<CompanyShopInterface> = ({ layoutProps, shop }) => {
     config: [
       {
         name: 'Компании',
-        href: parentLink,
+        href: links.parentLink,
       },
       {
         name: `${shop.company?.name}`,
-        href: root,
+        href: links.root,
       },
       {
         name: 'Магазины',
-        href: shops,
+        href: links.shop.parentLink,
       },
     ],
   };
 
   return (
     <ConsoleLayout {...layoutProps}>
-      <ShopDetails basePath={links.shop.itemPath} shop={shop} breadcrumbs={breadcrumbs} />
+      <ShopDetails shop={shop} breadcrumbs={breadcrumbs} />
     </ConsoleLayout>
   );
 };

@@ -19,6 +19,7 @@ const AdultModal: React.FC = () => {
         </p>
       </ModalText>
       <WpButton
+        size={'small'}
         onClick={() => {
           window.localStorage.setItem(ADULT_KEY, ADULT_TRUE);
           hideModal();

@@ -4,6 +4,7 @@ import ContentItemControls from '../components/button/ContentItemControls';
 import Inner from '../components/Inner';
 import WpTable, { WpTableColumn } from '../components/WpTable';
 import { CompanyInterface, RubricInterface } from '../db/uiInterfaces';
+import { getConsoleRubricLinks } from '../lib/linkUtils';
 
 export interface CompanyRubricsListInterface {
   rubrics: RubricInterface[];
@@ -29,15 +30,17 @@ const CompanyRubricsList: React.FC<CompanyRubricsListInterface> = ({ rubrics, ro
     },
     {
       render: ({ dataItem }) => {
+        const links = getConsoleRubricLinks({
+          rubricSlug: dataItem.slug,
+          basePath: routeBasePath,
+        });
         return (
           <ContentItemControls
             testId={`${dataItem.name}`}
             justifyContent={'flex-end'}
             updateTitle={'Редактировать рубрику'}
             updateHandler={() => {
-              router
-                .push(`${routeBasePath}/${dataItem.slug}/products`)
-                .catch((e) => console.log(e));
+              router.push(links.product.parentLink).catch(console.log);
             }}
           />
         );
@@ -54,7 +57,11 @@ const CompanyRubricsList: React.FC<CompanyRubricsListInterface> = ({ rubrics, ro
           testIdKey={'name'}
           emptyMessage={'Список пуст'}
           onRowDoubleClick={(dataItem) => {
-            router.push(`${routeBasePath}/${dataItem.slug}/products`).catch((e) => console.log(e));
+            const links = getConsoleRubricLinks({
+              rubricSlug: dataItem.slug,
+              basePath: routeBasePath,
+            });
+            router.push(links.product.parentLink).catch(console.log);
           }}
         />
       </div>

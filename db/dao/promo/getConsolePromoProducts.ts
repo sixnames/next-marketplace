@@ -12,7 +12,8 @@ import {
   getCommonFilterAttribute,
   getPriceAttribute,
 } from '../../../config/constantAttributes';
-import { castUrlFilters, getCatalogueAttributes } from '../../../lib/catalogueUtils';
+import { castUrlFilters } from '../../../lib/castUrlFilters';
+import { getCatalogueAttributes } from '../../../lib/catalogueUtils';
 import { noNaN } from '../../../lib/numbers';
 import { castSupplierProductsList } from '../../../lib/productUtils';
 import { getTreeFromList } from '../../../lib/treeUtils';

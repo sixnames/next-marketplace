@@ -62,7 +62,7 @@ export const getConsolePromoProductsListPageSsr = async (
     locale,
     currency: props.currentCity?.currency || DEFAULT_CURRENCY,
     companyId: props.layoutProps.pageCompany._id,
-    basePath: links.promo.rubrics.products,
+    basePath: links.promo.rubrics.product.parentLink,
     excludedShopProductIds: [],
   });
 

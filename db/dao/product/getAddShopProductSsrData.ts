@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
 import { alwaysString } from '../../../lib/arrayUtils';
 import { getFieldStringLocale } from '../../../lib/i18n';
-import { ShopAddProductsListRouteReduced } from '../../../pages/cms/companies/[companyId]/shops/shop/[shopId]/products/[rubricSlug]/add/[...filters]';
+import { ShopAddProductsListRouteReduced } from '../../../pages/cms/companies/[companyId]/shops/shop/[shopId]/rubrics/[rubricSlug]/add/[...filters]';
 import { COL_COMPANIES, COL_SHOP_PRODUCTS, COL_SHOPS } from '../../collectionNames';
 import { getDatabase } from '../../mongodb';
 import { ShopInterface } from '../../uiInterfaces';

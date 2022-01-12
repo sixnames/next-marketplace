@@ -53,7 +53,7 @@ import {
   SeoContentCitiesInterface,
   SeoContentInterface,
 } from '../db/uiInterfaces';
-import { castUrlFilters } from './catalogueUtils';
+import { castUrlFilters } from './castUrlFilters';
 import { castConfigs, getConfigStringValue } from './configsUtils';
 import { getFieldStringLocale } from './i18n';
 import { sortStringArray } from './stringUtils';

@@ -4,6 +4,8 @@ import Head from 'next/head';
 import parse from 'html-react-parser';
 import { useConfigContext } from '../context/configContext';
 import { useSiteContext } from '../context/siteContext';
+import { alwaysArray } from '../lib/arrayUtils';
+import { getFilterUrlValues } from '../lib/getFilterUrlValues';
 
 export interface MetaInterface {
   title?: string;
@@ -29,6 +31,11 @@ const Meta: React.FC<MetaInterface> = ({
   const [showCanonical, setShowCanonical] = React.useState<boolean>(false);
   const { configs } = useConfigContext();
   const { urlPrefix } = useSiteContext();
+  const { sortBy } = getFilterUrlValues({
+    initialPage: 1,
+    initialLimit: 1,
+    filters: alwaysArray(router.query.filters),
+  });
 
   const configTitle = configs.pageDefaultTitle;
   const pageTitle = title || configTitle;
@@ -80,7 +87,9 @@ const Meta: React.FC<MetaInterface> = ({
         />
 
         {/*seo index*/}
-        {noIndex && !noIndexFollow ? <meta name='robots' content='noindex, nofollow' /> : null}
+        {(noIndex && !noIndexFollow) || sortBy ? (
+          <meta name='robots' content='noindex, nofollow' />
+        ) : null}
         {noIndexFollow ? <meta name='robots' content='noindex, follow' /> : null}
 
         {/*canonical*/}
@@ -179,6 +188,9 @@ const Meta: React.FC<MetaInterface> = ({
               trim: true,
             })
           : null}
+
+        {/*chat*/}
+        {configs.chat ? <script src={configs.chat} async /> : null}
       </Head>
     </React.Fragment>
   );

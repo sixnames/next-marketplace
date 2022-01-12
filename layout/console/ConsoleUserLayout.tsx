@@ -20,7 +20,7 @@ const ConsoleUserLayout: React.FC<ConsoleUserLayoutInterface> = ({
   companyId,
 }) => {
   const navConfig = React.useMemo(() => {
-    const { customer } = getConsoleCompanyLinks({
+    const links = getConsoleCompanyLinks({
       companyId: companyId,
       userId: user._id,
     });
@@ -29,13 +29,13 @@ const ConsoleUserLayout: React.FC<ConsoleUserLayoutInterface> = ({
       {
         name: 'Детали',
         testId: 'user-details',
-        path: customer.parentLink,
+        path: links.user.root,
         exact: true,
       },
       {
         name: 'Заказы',
         testId: 'user-orders',
-        path: customer.order.parentLink,
+        path: links.user.order.parentLink,
       },
     ];
   }, [companyId, user._id]);

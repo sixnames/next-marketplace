@@ -1,7 +1,7 @@
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import { getConsoleCompanyLinks } from '../../../lib/linkUtils';
 import { castDbData, getConsoleInitialData } from '../../../lib/ssrUtils';
-import { ConsoleShopAddProductsListPageInterface } from '../../../pages/console/[companyId]/shops/shop/[shopId]/products/[rubricSlug]/add/[...filters]';
+import { ConsoleShopAddProductsListPageInterface } from '../../../pages/console/[companyId]/shops/shop/[shopId]/rubrics/[rubricSlug]/add/[...filters]';
 import { getAddShopProductSsrData } from '../product/getAddShopProductSsrData';
 
 export const getConsoleShopAddProductsListPageSsr = async (
@@ -22,7 +22,7 @@ export const getConsoleShopAddProductsListPageSsr = async (
     shopId: `${query.shopId}`,
     rubricSlug: `${query.rubricSlug}`,
   });
-  const basePath = links.shop.products.rubric.root;
+  const basePath = links.shop.rubrics.root;
   const payload = await getAddShopProductSsrData({
     locale,
     basePath,

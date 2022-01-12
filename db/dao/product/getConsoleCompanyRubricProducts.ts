@@ -8,7 +8,8 @@ import {
   getPriceAttribute,
 } from '../../../config/constantAttributes';
 import { alwaysArray, alwaysString } from '../../../lib/arrayUtils';
-import { castUrlFilters, getCatalogueAttributes } from '../../../lib/catalogueUtils';
+import { castUrlFilters } from '../../../lib/castUrlFilters';
+import { getCatalogueAttributes } from '../../../lib/catalogueUtils';
 import { getFieldStringLocale } from '../../../lib/i18n';
 import {
   countProductAttributes,

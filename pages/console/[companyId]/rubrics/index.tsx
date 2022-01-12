@@ -166,7 +166,7 @@ export const getServerSideProps = async (
     props: {
       ...props,
       rubrics: castDbData(rawRubrics),
-      routeBasePath: links.rubrics.parentLink,
+      routeBasePath: links.root,
       pageCompany: castDbData(props.layoutProps.pageCompany),
     },
   };

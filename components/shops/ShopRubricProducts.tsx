@@ -16,7 +16,7 @@ import useValidationSchema from '../../hooks/useValidationSchema';
 import ConsoleShopLayout from '../../layout/console/ConsoleShopLayout';
 import { alwaysArray } from '../../lib/arrayUtils';
 import { getNumWord } from '../../lib/i18n';
-import { getConsoleShopLinks } from '../../lib/linkUtils';
+import { getCmsCompanyLinks, getConsoleShopLinks } from '../../lib/linkUtils';
 import { noNaN } from '../../lib/numbers';
 import { updateManyShopProductsSchema } from '../../validation/shopSchema';
 import AppContentFilter from '../AppContentFilter';
@@ -56,9 +56,10 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
   const { showModal, onErrorCallback, onCompleteCallback, showLoading, showErrorNotification } =
     useMutationCallbacks({ withModal: true, reload: true });
 
-  const links = getConsoleShopLinks({
+  const links = getCmsCompanyLinks({
     shopId: shop._id,
     rubricSlug: `${router.query.rubricSlug}`,
+    companyId: shop.companyId,
     basePath: layoutBasePath,
   });
   const validationSchema = useValidationSchema({
@@ -79,14 +80,15 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
       accessor: 'itemId',
       headTitle: 'Арт',
       render: ({ dataItem }) => {
-        const { products } = getConsoleShopLinks({
+        const links = getCmsCompanyLinks({
           shopId: shop._id,
           rubricSlug: dataItem.rubricSlug,
+          companyId: shop.companyId,
           productId: dataItem._id,
           basePath: layoutBasePath,
         });
         return (
-          <WpLink href={products.rubric.product.root} target={'_blank'}>
+          <WpLink href={links.shop.rubrics.product.root} target={'_blank'}>
             {dataItem.summary?.itemId}
           </WpLink>
         );
@@ -185,13 +187,14 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
             testId={`shop-product-${rowIndex}`}
             updateTitle={'Редактировать товар'}
             updateHandler={() => {
-              const { products } = getConsoleShopLinks({
+              const links = getCmsCompanyLinks({
                 shopId: shop._id,
                 rubricSlug: dataItem.rubricSlug,
+                companyId: shop.companyId,
                 productId: dataItem._id,
                 basePath: layoutBasePath,
               });
-              window.open(products.rubric.product.root, '_blank');
+              window.open(links.shop.rubrics.product.root, '_blank');
             }}
             deleteTitle={'Удалить товар из магазина'}
             deleteHandler={() => {
@@ -307,14 +310,14 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
                         data={docs}
                         testIdKey={'_id'}
                         onRowDoubleClick={(dataItem) => {
-                          const { products } = getConsoleShopLinks({
+                          const links = getConsoleShopLinks({
                             shopId: shop._id,
                             rubricSlug: dataItem.rubricSlug,
                             productId: dataItem._id,
                             basePath: layoutBasePath,
                           });
                           if (sessionUser?.role?.isStaff) {
-                            window.open(products.rubric.product.root, '_blank');
+                            window.open(links.rubrics.product.root, '_blank');
                           }
                         }}
                       />
@@ -334,7 +337,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
                       <WpButton
                         frameClassName='w-auto'
                         onClick={() => {
-                          router.push(links.products.rubric.add).catch((e) => console.log(e));
+                          router.push(links.shop.rubrics.add).catch((e) => console.log(e));
                         }}
                         testId={'add-shop-product'}
                         size={'small'}

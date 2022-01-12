@@ -52,7 +52,7 @@ const ConsoleSeoContentDetails: React.FC<ConsoleSeoContentDetailsInterface> = ({
                   ) : null}
 
                   <FormikTranslationsInput
-                    label={'Заголовок'}
+                    label={'Заголовок H1'}
                     name={'titleI18n'}
                     testId={'titleI18n'}
                   />

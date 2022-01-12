@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType, stringArg } from 'nexus';
 import { DEFAULT_COUNTERS_OBJECT } from '../config/common';
 import { COL_BRAND_COLLECTIONS, COL_BRANDS, COL_PRODUCT_FACETS } from '../db/collectionNames';
@@ -375,6 +376,7 @@ export const BrandMutations = extendType({
             }),
             itemId,
             ...DEFAULT_COUNTERS_OBJECT,
+            _id: new ObjectId(),
             createdAt: new Date(),
             updatedAt: new Date(),
           });
@@ -657,6 +659,7 @@ export const BrandMutations = extendType({
             const itemId = await getNextNumberItemId(COL_BRAND_COLLECTIONS);
             const createdBrandCollectionResult = await brandsCollectionsCollection.insertOne({
               ...values,
+              _id: new ObjectId(),
               itemId,
               brandId: brand._id,
               brandSlug: brand.itemId,

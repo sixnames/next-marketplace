@@ -160,7 +160,7 @@ export async function getIsrSiteInitialData({
   // console.log(`getCatalogueCreatedPages >>>>>>>>>>>>>>>> `, new Date().getTime() - timeStart);
 
   let redirect = null;
-  if (cityNotFound && companyNotFound) {
+  if (cityNotFound || companyNotFound) {
     redirect = `/${DEFAULT_COMPANY_SLUG}/${DEFAULT_CITY}`;
   }
 

@@ -224,10 +224,10 @@ export async function getConsoleOrder({
           initialStatus: orderProduct.status,
           locale,
         }),
-        product: orderProduct.product
+        summary: orderProduct.summary
           ? {
-              ...orderProduct.product,
-              cardTitle: getFieldStringLocale(orderProduct.product.cardTitleI18n, locale),
+              ...orderProduct.summary,
+              cardTitle: getFieldStringLocale(orderProduct.summary.cardTitleI18n, locale),
             }
           : null,
         shopProduct: orderProduct.shopProduct

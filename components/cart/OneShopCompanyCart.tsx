@@ -92,9 +92,15 @@ const OneShopCompanyDeliveryCart: React.FC<OneShopCompanyCartFormInterface> = ({
           [],
         );
         if (noAddressShopConfigs.length > 0) {
-          noAddressShopConfigs.forEach((index) => {
-            setFieldError(`shopConfigs[${index}]`, 'Укажите адрес доставки');
-          });
+          setFieldError(`shopConfigs[0]`, 'Укажите адрес доставки');
+          const distElement = document.querySelector(`#delivery-fields-0`);
+          if (distElement) {
+            window.scrollTo({
+              top: noNaN(distElement.getBoundingClientRect().top),
+              left: 0,
+              behavior: 'smooth',
+            });
+          }
           return;
         }
 

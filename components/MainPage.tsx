@@ -287,7 +287,7 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
               <div className='flex flex-wrap gap-3'>
                 {mobileTopFilters.visible.map(({ name, href }) => {
                   return (
-                    <TagLink href={href} key={href}>
+                    <TagLink href={`${urlPrefix}${href}`} key={href}>
                       {name}
                     </TagLink>
                   );
@@ -298,7 +298,7 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
                 <div className='flex flex-wrap gap-3 mt-3'>
                   {mobileTopFilters.hidden.map(({ name, href }) => {
                     return (
-                      <TagLink href={href} key={href}>
+                      <TagLink href={`${urlPrefix}${href}`} key={href}>
                         {name}
                       </TagLink>
                     );

@@ -50,7 +50,7 @@ export interface ShopAddProductsListInterface extends ConsoleRubricProductsInter
   selectedAttributes: CatalogueFilterAttributeInterface[];
   clearSlug: string;
   rubricName: string;
-  layoutBasePath: string;
+  layoutBasePath?: string;
   breadcrumbs?: AppContentWrapperBreadCrumbs;
   basePath: string;
   rubricSlug: string;
@@ -110,7 +110,7 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
           rubricSlug: dataItem.rubricSlug,
         });
         return sessionUser?.role?.isStaff ? (
-          <WpLink href={links.product.parentLink} target={'_blank'}>
+          <WpLink href={links.product.root} target={'_blank'}>
             {dataItem.itemId}
           </WpLink>
         ) : (
@@ -186,7 +186,7 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
                     productId: dataItem._id,
                     rubricSlug: dataItem.rubricSlug,
                   });
-                  window.open(links.product.parentLink, '_blank');
+                  window.open(links.product.root, '_blank');
                 }
               }}
             />
@@ -236,7 +236,7 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
                       productId: dataItem._id,
                       rubricSlug: dataItem.rubricSlug,
                     });
-                    window.open(links.product.parentLink, '_blank');
+                    window.open(links.product.root, '_blank');
                   }
                 }}
               />
@@ -279,12 +279,13 @@ export const ShopAddProductsFinalStep: React.FC<ShopAddProductsListInterface> = 
       onCompleteCallback(data.addManyProductsToShop);
       if (data.addManyProductsToShop.success) {
         const links = getCmsCompanyLinks({
+          basePath: layoutBasePath,
           companyId: shop.companyId,
           shopId: shop._id,
           rubricSlug: rubricSlug,
         });
 
-        router.push(links.shop.products.rubric.root).catch((e) => console.log(e));
+        router.push(links.shop.rubrics.product.parentLink).catch(console.log);
       }
     },
     onError: onErrorCallback,

@@ -1,45 +1,3 @@
-export const ex = {
-  '@context': 'https://schema.org/',
-  '@type': 'ItemPage',
-  '@graph': [
-    {
-      '@type': 'Product',
-      name: 'Вибратор Iroha Rin Kogane слоновая кость',
-      image:
-        'https://womensprivacy.ru/assets/products/002021/1637708240144.webp?format=webp&width=550&quality=70&companySlug=5',
-      brand: {
-        '@type': 'Brand',
-        name: 'Iroha',
-      },
-      offers: {
-        '@type': 'Offer',
-        priceCurrency: 'RUB',
-        price: '4320',
-        url: 'https://womensprivacy.ru/5/msk/002021',
-        availability: 'https://schema.org/InStock',
-        itemCondition: 'https://schema.org/NewCondition',
-      },
-    },
-    {
-      '@type': 'BreadcrumbList',
-      itemListElement: [
-        {
-          '@type': 'ListItem',
-          position: 1,
-          name: 'Главная',
-          item: 'https://womensprivacy.ru/5/msk',
-        },
-        {
-          '@type': 'ListItem',
-          position: 2,
-          name: 'Секс-игрушки',
-          item: 'https://womensprivacy.ru/5/msk/catalogue/seks_igrushki',
-        },
-      ],
-    },
-  ],
-};
-
 export interface SeoSchemaBreadcrumbItemInterface {
   '@type': 'ListItem';
   position: number;
@@ -53,24 +11,59 @@ export interface SeoSchemaBreadcrumbsInterface {
   itemListElement: SeoSchemaBreadcrumbItemInterface[];
 }
 
+export interface SeoSchemaOffersInterface {
+  availability:
+    | 'https://schema.org/InStock'
+    | 'https://schema.org/OutOfStock'
+    | 'https://schema.org/PreOrder';
+  itemCondition: 'https://schema.org/NewCondition';
+  priceCurrency: 'RUB';
+  url: string;
+}
+
+export interface SeoSchemaCatalogueOffersInterface extends SeoSchemaOffersInterface {
+  '@type': 'AggregateOffer';
+  lowPrice: string;
+  highPrice: string;
+  offerCount: string;
+}
+
 export interface SeoSchemaCatalogueProductsInterface {
   '@context': 'https://schema.org';
   '@type': 'Product';
   name: string;
-  offers: {
-    '@type': 'AggregateOffer';
-    availability: 'https://schema.org/InStock';
-    itemCondition: 'https://schema.org/NewCondition';
-    priceCurrency: 'RUB';
-    lowPrice: number;
-    highPrice: number;
-    url: string;
-    offerCount: number;
-  };
+  offers: SeoSchemaCatalogueOffersInterface;
 }
 
-export interface SeoSchemaCatalogueInterface {
+export interface SeoSchemaBaseInterface<TGraph> {
   '@context': 'https://schema.org';
   '@type': 'ItemPage';
-  '@graph': [SeoSchemaCatalogueProductsInterface, SeoSchemaBreadcrumbsInterface];
+  '@graph': TGraph;
 }
+
+export interface SeoSchemaCatalogueInterface
+  extends SeoSchemaBaseInterface<
+    [SeoSchemaCatalogueProductsInterface, SeoSchemaBreadcrumbsInterface]
+  > {}
+
+// Card
+export interface SeoSchemaCardOffersInterface extends SeoSchemaOffersInterface {
+  '@type': 'Offer';
+  price: string;
+}
+
+export interface SeoSchemaCardBrandInterface extends SeoSchemaOffersInterface {
+  '@type': 'Brand';
+  name: string;
+}
+
+export interface SeoSchemaCardProductInterface {
+  '@type': 'Product';
+  name: string;
+  image: string;
+  brand?: SeoSchemaCardBrandInterface;
+  offers: SeoSchemaCardOffersInterface;
+}
+
+export interface SeoSchemaCardInterface
+  extends SeoSchemaBaseInterface<[SeoSchemaCardProductInterface, SeoSchemaBreadcrumbsInterface]> {}

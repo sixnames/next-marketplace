@@ -128,7 +128,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const category = await categoriesCollection.findOne({
     _id: categoryId,
   });
-  if (!category || !optimizedIcon) {
+  if (!category || !optimizedIcon || optimizedIcon.error) {
     res.status(500).send({
       success: false,
       message: await getApiMessageValue({
@@ -139,6 +139,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
+  const trulyOptimizedIcon = optimizedIcon as unknown as any;
   const createdIconResult = await iconsCollection.findOneAndUpdate(
     {
       documentId: categoryId,
@@ -148,7 +149,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       $set: {
         documentId: categoryId,
         collectionName: COL_CATEGORIES,
-        icon: optimizedIcon.data,
+        icon: trulyOptimizedIcon.data,
       },
     },
     {

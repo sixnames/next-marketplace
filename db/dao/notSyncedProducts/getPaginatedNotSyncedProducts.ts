@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { PAGINATION_DEFAULT_LIMIT, SORT_DESC } from '../../../config/common';
-import { castUrlFilters } from '../../../lib/catalogueUtils';
+import { castUrlFilters } from '../../../lib/castUrlFilters';
 import { COL_NOT_SYNCED_PRODUCTS, COL_SHOPS } from '../../collectionNames';
 import { getDatabase } from '../../mongodb';
 import {

@@ -29,7 +29,7 @@ import useMutationCallbacks from '../../../hooks/useMutationCallbacks';
 import AppContentWrapper from '../../../layout/AppContentWrapper';
 import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
 import { alwaysArray } from '../../../lib/arrayUtils';
-import { castUrlFilters } from '../../../lib/catalogueUtils';
+import { castUrlFilters } from '../../../lib/castUrlFilters';
 import { getFieldStringLocale } from '../../../lib/i18n';
 import { getFullName } from '../../../lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from '../../../lib/phoneUtils';

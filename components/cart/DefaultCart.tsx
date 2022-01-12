@@ -55,7 +55,7 @@ export const CartDeliveryFields: React.FC<CartDeliveryFieldsInterface> = ({ inde
 
   return (
     <div>
-      <div className='grid lg:grid-cols-2 gap-6 mt-6'>
+      <div className='grid lg:grid-cols-2 gap-6 mt-6' id={`delivery-fields-${index}`}>
         <FormikSelect
           low
           label={'Способ получения'}

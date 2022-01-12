@@ -27,7 +27,7 @@ const CmsRubricLayout: React.FC<CmsRubricLayoutInterface> = ({
   const { query } = useRouter();
 
   const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
-    const { products, attributes, categories, seoContent, root } = getConsoleRubricLinks({
+    const links = getConsoleRubricLinks({
       basePath: basePath || ROUTE_CMS,
       rubricSlug: rubric.slug,
     });
@@ -36,30 +36,30 @@ const CmsRubricLayout: React.FC<CmsRubricLayoutInterface> = ({
       {
         name: 'Товары',
         testId: 'products',
-        path: products,
+        path: links.product.parentLink,
       },
       {
         name: 'Атрибуты',
         testId: 'attributes',
-        path: attributes,
+        path: links.attributes,
         exact: true,
         hidden: hideAttributesPath,
       },
       {
         name: 'Категории',
         testId: 'categories',
-        path: categories,
+        path: links.categories,
       },
       {
         name: 'Детали',
         testId: 'details',
-        path: root,
+        path: links.root,
         exact: true,
       },
       {
         name: 'SEO тексты',
         testId: 'seo-content',
-        path: seoContent,
+        path: links.seoContent,
       },
     ];
   }, [basePath, hideAttributesPath, rubric.slug]);

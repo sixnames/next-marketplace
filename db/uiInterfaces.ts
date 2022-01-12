@@ -566,7 +566,7 @@ export interface OrderCustomerInterface extends OrderCustomerModel {
 }
 
 export interface OrderProductInterface extends OrderProductModel {
-  product?: ProductSummaryInterface | null;
+  summary?: ProductSummaryInterface | null;
   shopProduct?: ShopProductInterface | null;
   shop?: ShopInterface | null;
   company?: CompanyInterface | null;
@@ -745,6 +745,7 @@ export interface SsrConfigsInterface {
   seoTextBottom: string;
   mapMarkerDarkTheme: string;
   mapMarkerLightTheme: string;
+  chat: string;
 
   /// Catalogue
   mainBannerAutoplaySpeed: number;
@@ -876,7 +877,7 @@ export interface BreadcrumbsInterface {
 
 export interface ConsoleShopLayoutInterface {
   shop: ShopInterface;
-  basePath: string;
+  basePath?: string;
   breadcrumbs?: AppContentWrapperBreadCrumbs;
 }
 
@@ -889,7 +890,7 @@ export interface ShopRubricProductsInterface
   clearSlug: string;
   rubricName: string;
   rubricSlug: string;
-  layoutBasePath: string;
+  layoutBasePath?: string;
   basePath: string;
   currency: string;
 }

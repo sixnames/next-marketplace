@@ -1,8 +1,14 @@
-import { ROUTE_CMS } from 'config/common';
 import { fixtureIds } from 'cypress/fixtures/fixtureIds';
+import { getCmsCompanyLinks } from '../../../lib/linkUtils';
 
 describe('Shop product suppliers', () => {
-  const companiesPath = `${ROUTE_CMS}/companies/${fixtureIds.companyA}/shops/shop/${fixtureIds.shopA}/products/${fixtureIds.rubricWineSlug}/product/${fixtureIds.shopAShopProduct}/suppliers`;
+  const links = getCmsCompanyLinks({
+    companyId: fixtureIds.companyA,
+    shopId: fixtureIds.shopA,
+    rubricSlug: fixtureIds.rubricWineSlug,
+    productId: fixtureIds.shopAShopProduct,
+  });
+  const companiesPath = links.shop.rubrics.product.suppliers;
   beforeEach(() => {
     cy.testAuth(companiesPath);
   });

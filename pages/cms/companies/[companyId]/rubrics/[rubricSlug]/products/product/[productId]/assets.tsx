@@ -52,15 +52,15 @@ const ProductAssets: React.FC<ProductAssetsInterface> = ({
       },
       {
         name: `${product.rubric?.name}`,
-        href: links.rubrics.parentLink,
+        href: links.rubrics.root,
       },
       {
         name: `Товары`,
-        href: links.rubrics.products,
+        href: links.rubrics.product.parentLink,
       },
       {
         name: `${product.snippetTitle}`,
-        href: links.rubrics.product.parentLink,
+        href: links.rubrics.product.root,
       },
     ],
   };

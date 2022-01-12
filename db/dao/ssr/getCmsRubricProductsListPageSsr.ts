@@ -22,15 +22,15 @@ export const getCmsRubricProductsListPageSsr = async (
   const locale = initialProps.props.sessionLocale;
   const currency = initialProps.props.initialData.currency;
 
-  const { products } = getConsoleRubricLinks({
+  const links = getConsoleRubricLinks({
     rubricSlug,
   });
-  const itemPath = `${products}/product`;
+  const itemPath = links.product.itemPath;
 
   const payload = await getConsoleRubricProducts({
     query,
     locale,
-    basePath: products,
+    basePath: links.product.parentLink,
     currency,
     companySlug: DEFAULT_COMPANY_SLUG,
   });

@@ -1,7 +1,7 @@
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import { getConsoleCompanyLinks } from '../../../lib/linkUtils';
 import { castDbData, getConsoleInitialData } from '../../../lib/ssrUtils';
-import { ConsoleShopProductsListPageInterface } from '../../../pages/console/[companyId]/shops/shop/[shopId]/products/[rubricSlug]/[...filters]';
+import { ConsoleShopProductsListPageInterface } from '../../../pages/console/[companyId]/shops/shop/[shopId]/rubrics/[rubricSlug]/products/[...filters]';
 import { getConsoleShopProducts } from '../product/getConsoleShopProducts';
 
 export const getConsoleShopProductsListPageSsr = async (
@@ -20,7 +20,7 @@ export const getConsoleShopProductsListPageSsr = async (
     shopId: `${query.shopId}`,
     rubricSlug: `${query.rubricSlug}`,
   });
-  const basePath = links.shop.products.rubric.root;
+  const basePath = links.shop.rubrics.root;
   const locale = initialProps.props.sessionLocale;
   const currency = initialProps.props.initialData.currency;
   const payload = await getConsoleShopProducts({

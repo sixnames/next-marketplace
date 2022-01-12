@@ -2,7 +2,7 @@ import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext } from 'next';
 import { PAGINATION_DEFAULT_LIMIT, SORT_DESC } from '../../../config/common';
 import { alwaysArray, alwaysString } from '../../../lib/arrayUtils';
-import { castUrlFilters } from '../../../lib/catalogueUtils';
+import { castUrlFilters } from '../../../lib/castUrlFilters';
 import { getShortName } from '../../../lib/nameUtils';
 import { phoneToRaw, phoneToReadable } from '../../../lib/phoneUtils';
 import { getRequestParams } from '../../../lib/sessionHelpers';

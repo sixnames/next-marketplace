@@ -51,7 +51,7 @@ const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({
   });
   const [deleteProductFromRubricMutation] = useDeleteProduct({
     reload: false,
-    redirectUrl: rubricLinks.products,
+    redirectUrl: rubricLinks.product.parentLink,
   });
 
   const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {

@@ -3,9 +3,8 @@ import * as React from 'react';
 import WpButton from '../../components/button/WpButton';
 import Inner from '../../components/Inner';
 import WpTitle from '../../components/WpTitle';
-import { ROUTE_CMS } from '../../config/common';
 import { AppContentWrapperBreadCrumbs, ShopProductInterface } from '../../db/uiInterfaces';
-import { getConsoleShopProductLinks } from '../../lib/linkUtils';
+import { getCmsCompanyLinks, getConsoleRubricLinks } from '../../lib/linkUtils';
 import { ClientNavItemInterface } from '../../types/clientTypes';
 import AppContentWrapper from '../AppContentWrapper';
 import AppSubNav from '../AppSubNav';
@@ -13,7 +12,7 @@ import AppSubNav from '../AppSubNav';
 interface ConsoleShopProductLayoutInterface {
   shopProduct: ShopProductInterface;
   breadcrumbs?: AppContentWrapperBreadCrumbs;
-  basePath: string;
+  basePath?: string;
   showEditButton?: boolean;
 }
 
@@ -25,26 +24,29 @@ const ConsoleShopProductLayout: React.FC<ConsoleShopProductLayoutInterface> = ({
   showEditButton,
 }) => {
   const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
-    const { root, suppliers } = getConsoleShopProductLinks({
+    const links = getCmsCompanyLinks({
       basePath,
+      companyId: shopProduct.companyId,
+      shopId: shopProduct.shopId,
       productId: shopProduct._id,
+      rubricSlug: shopProduct.rubricSlug,
     });
 
     return [
       {
         name: 'Детали',
         testId: 'details',
-        path: root,
+        path: links.shop.rubrics.product.root,
         exact: true,
       },
       {
         name: 'Ценообразование',
         testId: 'suppliers',
-        path: suppliers,
+        path: links.shop.rubrics.product.suppliers,
         exact: true,
       },
     ];
-  }, [basePath, shopProduct._id]);
+  }, [basePath, shopProduct]);
 
   return (
     <AppContentWrapper breadcrumbs={breadcrumbs}>
@@ -61,10 +63,11 @@ const ConsoleShopProductLayout: React.FC<ConsoleShopProductLayoutInterface> = ({
                   <WpButton
                     size={'small'}
                     onClick={() => {
-                      window.open(
-                        `${ROUTE_CMS}/rubrics/${shopProduct.rubricId}/products/product/${shopProduct.productId}`,
-                        '_blank',
-                      );
+                      const productLinks = getConsoleRubricLinks({
+                        rubricSlug: shopProduct.rubricSlug,
+                        productId: shopProduct.productId,
+                      });
+                      window.open(productLinks.product.root, '_blank');
                     }}
                   >
                     Редактировать товар

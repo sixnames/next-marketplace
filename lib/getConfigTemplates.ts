@@ -787,6 +787,23 @@ export function getConfigTemplates({
       _id: new ObjectId(),
       companySlug,
       group: 'contacts',
+      variant: CONFIG_VARIANT_STRING,
+      slug: 'chat',
+      name: 'Код интеграции стороннего чата',
+      description:
+        'Добавлять нужно только ссылку на скрипт чата. Например //code-ya.jivosit.com/widget/TOKEN',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [''],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'contacts',
       variant: CONFIG_VARIANT_ASSET,
       slug: 'mapMarkerDarkTheme',
       name: 'Изображение маркера на карте с тёмной темой (40 x 40)',

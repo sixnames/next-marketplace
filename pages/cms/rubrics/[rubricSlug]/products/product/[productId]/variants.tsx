@@ -34,15 +34,15 @@ const ProductConnections: React.FC<ProductConnectionsPropsInterface> = ({ produc
       },
       {
         name: `${product.rubric?.name}`,
-        href: links.parentLink,
+        href: links.root,
       },
       {
         name: `Товары`,
-        href: links.products,
+        href: links.product.parentLink,
       },
       {
-        name: `${product.cardTitle}`,
-        href: links.product.parentLink,
+        name: `${product.snippetTitle}`,
+        href: links.product.root,
       },
     ],
   };

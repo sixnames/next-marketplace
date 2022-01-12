@@ -2,7 +2,7 @@ import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import { DEFAULT_PAGE, SORT_DESC } from '../../../config/common';
 import { alwaysArray, alwaysString } from '../../../lib/arrayUtils';
-import { castUrlFilters } from '../../../lib/catalogueUtils';
+import { castUrlFilters } from '../../../lib/castUrlFilters';
 import { getFieldStringLocale } from '../../../lib/i18n';
 import { getCmsCompanyLinks } from '../../../lib/linkUtils';
 import { noNaN } from '../../../lib/numbers';
@@ -49,7 +49,7 @@ export const getCmsCompanyShopsPageSsr = async (
   const links = getCmsCompanyLinks({
     companyId,
   });
-  const itemPath = `${links.shops}/shop`;
+  const itemPath = links.shop.itemPath;
 
   const companyAggregationResult = await companiesCollection
     .aggregate([

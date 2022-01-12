@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
 import { DEFAULT_LOCALE, SORT_ASC } from '../config/common';
 import { COL_ATTRIBUTES, COL_ATTRIBUTES_GROUPS } from '../db/collectionNames';
@@ -187,6 +188,7 @@ export const attributesGroupMutations = extendType({
           const createdAttributesGroup = await attributesGroupCollection.insertOne({
             ...args.input,
             attributesIds: [],
+            _id: new ObjectId(),
           });
           if (!createdAttributesGroup.acknowledged) {
             return {

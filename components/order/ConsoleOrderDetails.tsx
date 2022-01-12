@@ -19,6 +19,7 @@ import {
   useUpdateOrderProduct,
 } from '../../hooks/mutations/useOrderMutations';
 import { getNumWord } from '../../lib/i18n';
+import { getConsoleRubricLinks, getConsoleUserLinks } from '../../lib/linkUtils';
 import { noNaN } from '../../lib/numbers';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
@@ -56,14 +57,21 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
   const { values } = useFormikContext<OrderInterface>();
   const { showModal } = useAppContext();
   const { showErrorNotification } = useNotificationsContext();
-  const { product, originalName, shopProduct, itemId, price, totalPrice, finalPrice, isCanceled } =
+  const { summary, originalName, shopProduct, itemId, price, totalPrice, finalPrice, isCanceled } =
     orderProduct;
-  const productImageSrc = product?.mainImage || IMAGE_FALLBACK;
+  const productImageSrc = summary?.mainImage || IMAGE_FALLBACK;
   const minAmount = 1;
   const supplierProducts = shopProduct?.supplierProducts || [];
+  const barcode = shopProduct?.barcode || [];
 
   const [cancelOrderProductMutation] = useCancelOrderProduct();
   const [updateOrderProductMutation] = useUpdateOrderProduct();
+
+  const summaryLinks = getConsoleRubricLinks({
+    basePath: ROUTE_CMS,
+    productId: summary?._id,
+    rubricSlug: summary?.rubricSlug,
+  });
 
   return (
     <div
@@ -97,10 +105,7 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
                 circle
                 theme={'secondary'}
                 onClick={() => {
-                  window.open(
-                    `${ROUTE_CMS}/rubrics/${product?.rubricId}/products/product/${product?._id}`,
-                    '_blank',
-                  );
+                  window.open(summaryLinks.product.root, '_blank');
                 }}
               />
             ) : (
@@ -175,17 +180,24 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
             </div>*/}
 
             {/*article*/}
-            <div className='text-secondary-text mb-3 text-sm'>{`Артикул: ${itemId}`}</div>
+            <div className='flex flex-wrap gap-4 mb-3'>
+              <div className='text-secondary-text text-sm'>{`Артикул: ${itemId}`}</div>
+              {barcode.length > 0 ? (
+                <div className='text-secondary-text text-sm'>
+                  {`Штрихкод: ${barcode.join(', ')}`}
+                </div>
+              ) : null}
+            </div>
 
             {/*name*/}
             <div className='text-lg font-bold flex-grow mb-2'>
-              {product ? (
+              {summary ? (
                 <WpLink
-                  href={`/${companySlug}/${citySlug}/${product.slug}`}
+                  href={`/${companySlug}/${citySlug}/${summary.slug}`}
                   className='block text-primary-text hover:text-theme hover:no-underline'
                   target={'_blank'}
                 >
-                  {product.cardTitle}
+                  {summary.cardTitle}
                 </WpLink>
               ) : null}
             </div>
@@ -265,6 +277,7 @@ export interface CmsOrderDetailsBaseInterface {
 interface CmsOrderDetailsInterface extends CmsOrderDetailsBaseInterface {
   pageCompanySlug: string;
   title: string;
+  basePath?: string;
 }
 
 const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
@@ -272,6 +285,7 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
   pageCompanySlug,
   title,
   orderStatuses,
+  basePath,
 }) => {
   const { sessionUser } = useUserContext();
   const { locale } = useLocaleContext();
@@ -309,6 +323,11 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
 
   const productsCount = products?.length;
   const productsCountWord = getNumWord(productsCount, ['товар', 'товара', 'товаров']);
+
+  const userLinks = getConsoleUserLinks({
+    basePath,
+    userId: customer?.userId,
+  });
 
   return (
     <Inner testId={`order-details`}>
@@ -398,9 +417,10 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
                       className={'mb-6'}
                       labelClassName={'text-secondary-text mb-2'}
                       itemClassName={'flex gap-2 justify-between'}
-                      valueClassName={'text-right'}
+                      valueClassName={'text-right text-primary-text'}
                       titleClassName={'font-medium lg:text-lg'}
                       deliveryInfo={deliveryInfo}
+                      userLink={userLinks.root}
                     />
 
                     {/*payment*/}
@@ -414,7 +434,9 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
                       <div className='text-secondary-text mb-3'>Заказчик:</div>
                       {customer ? (
                         <div className='space-y-2'>
-                          <div className='font-medium'>{customer?.fullName}</div>
+                          <WpLink href={userLinks.root} className='font-medium text-primary-text'>
+                            {customer?.fullName}
+                          </WpLink>
                           <div className='font-medium text-secondary-text'>
                             <LinkEmail value={customer.email} />
                           </div>

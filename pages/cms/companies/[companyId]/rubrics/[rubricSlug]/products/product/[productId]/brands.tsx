@@ -76,11 +76,11 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
       },
       {
         name: `Товары`,
-        href: links.rubrics.products,
+        href: links.rubrics.parentLink,
       },
       {
         name: `${product.snippetTitle}`,
-        href: links.rubrics.product.parentLink,
+        href: links.rubrics.product.root,
       },
     ],
   };

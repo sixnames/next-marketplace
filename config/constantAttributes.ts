@@ -1,5 +1,4 @@
 import { getObjectId } from 'mongo-seeding';
-import { ObjectId } from 'mongodb';
 import { ObjectIdModel } from '../db/dbModels';
 import {
   AttributeInterface,
@@ -48,7 +47,7 @@ export function getCategoryFilterAttribute({
   categories,
   locale,
 }: GetCategoryFilterAttributeInterface): AttributeInterface {
-  const optionsGroupId = new ObjectId();
+  const optionsGroupId = getObjectId('getCategoryFilterAttribute optionsGroupId');
   const commonOptionFields = getCommonOptionFields(optionsGroupId);
   const initialOptions: OptionInterface[] = (categories || []).map((category) => {
     const option: OptionInterface = {
@@ -71,8 +70,8 @@ export function getCategoryFilterAttribute({
   });
 
   const attribute: AttributeInterface = {
-    _id: new ObjectId(),
-    attributesGroupId: new ObjectId(),
+    _id: getObjectId('getCategoryFilterAttribute attribute'),
+    attributesGroupId: getObjectId('getCategoryFilterAttribute attributes group'),
     optionsGroupId,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Категория',
@@ -120,7 +119,7 @@ export function getBrandFilterAttribute({
   locale,
   showBrandAsAlphabet,
 }: GetBrandFilterAttributeInterface): AttributeInterface {
-  const optionsGroupId = new ObjectId();
+  const optionsGroupId = getObjectId('getBrandFilterAttribute optionsGroupId');
   const commonOptionFields = getCommonOptionFields(optionsGroupId);
 
   function castBrandToOption(brand: BrandInterface): OptionInterface {
@@ -152,8 +151,8 @@ export function getBrandFilterAttribute({
   const options: OptionInterface[] = (brands || []).map(castBrandToOption);
 
   const attribute: AttributeInterface = {
-    _id: new ObjectId(),
-    attributesGroupId: new ObjectId(),
+    _id: getObjectId('brand attribute'),
+    attributesGroupId: getObjectId('brand attributes group'),
     optionsGroupId,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Бренд',
@@ -200,7 +199,7 @@ export function getRubricFilterAttribute({
   rubrics,
   locale,
 }: CastRubricsToCatalogueAttributeInterface): AttributeInterface {
-  const optionsGroupId = new ObjectId();
+  const optionsGroupId = getObjectId('getRubricFilterAttribute optionsGroupId');
   const commonOptionFields = getCommonOptionFields(optionsGroupId);
 
   function castRubricToOption(rubric: RubricInterface): OptionInterface {
@@ -220,8 +219,8 @@ export function getRubricFilterAttribute({
   const options: OptionInterface[] = rubrics.map(castRubricToOption);
 
   const attribute: AttributeInterface = {
-    _id: new ObjectId(),
-    attributesGroupId: new ObjectId(),
+    _id: getObjectId('getRubricFilterAttribute attribute'),
+    attributesGroupId: getObjectId('getRubricFilterAttribute attributesGroupId'),
     optionsGroupId,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Рубрика',
@@ -258,13 +257,13 @@ export function getRubricFilterAttribute({
 }
 
 export function getCommonFilterAttribute(): AttributeInterface {
-  const optionsGroupId = new ObjectId();
+  const optionsGroupId = getObjectId('getCommonFilterAttribute optionsGroupId');
   const commonOptionFields = getCommonOptionFields(optionsGroupId);
 
   const options: OptionInterface[] = [
     {
       ...commonOptionFields,
-      _id: new ObjectId(),
+      _id: getObjectId('getCommonFilterAttribute option'),
       nameI18n: {
         [DEFAULT_LOCALE]: 'Без фото',
         [SECONDARY_LOCALE]: 'No photo',
@@ -275,8 +274,8 @@ export function getCommonFilterAttribute(): AttributeInterface {
   ];
 
   const attribute: AttributeInterface = {
-    _id: new ObjectId(),
-    attributesGroupId: new ObjectId(),
+    _id: getObjectId('getCommonFilterAttribute attribute'),
+    attributesGroupId: getObjectId('getCommonFilterAttribute attributesGroupId'),
     optionsGroupId,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Общее',
@@ -314,12 +313,12 @@ export function getCommonFilterAttribute(): AttributeInterface {
 }
 
 export function getPriceAttribute(currency: string): AttributeInterface {
-  const optionsGroupId = new ObjectId();
+  const optionsGroupId = getObjectId('getPriceAttribute optionsGroupId');
   const commonOptionFields = getCommonOptionFields(optionsGroupId);
 
   return {
     _id: getObjectId('price'),
-    attributesGroupId: new ObjectId(),
+    attributesGroupId: getObjectId('getPriceAttribute attributesGroupId'),
     optionsGroupId,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Цена',
@@ -329,7 +328,7 @@ export function getPriceAttribute(currency: string): AttributeInterface {
     priorities: {},
     views: {},
     metric: {
-      _id: new ObjectId(),
+      _id: getObjectId('getPriceAttribute metric'),
       nameI18n: {
         [DEFAULT_LOCALE]: currency,
       },

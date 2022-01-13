@@ -761,10 +761,16 @@ export interface SsrConfigsInterface {
   catalogueFilterVisibleOptionsCount: number;
   snippetAttributesCount: number;
   cardListFeaturesCount: number;
-  catalogueMetaPrefix: string;
   cartBookingButtonDescription: string;
-  cardMetaPrefix: string;
   robotsTxt: string[];
+  catalogueTitleMetaPrefix: string;
+  catalogueDescriptionMetaPrefix: string;
+  catalogueTitleMetaPostfix: string;
+  catalogueDescriptionMetaPostfix: string;
+  cardTitleMetaPrefix: string;
+  cardTitleMetaPostfix: string;
+  cardDescriptionMetaPrefix: string;
+  cardDescriptionMetaPostfix: string;
 
   // Project
   showReservationDate: boolean;

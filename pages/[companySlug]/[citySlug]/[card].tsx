@@ -1,4 +1,3 @@
-import { cityIn } from 'lvovich';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import dynamic from 'next/dynamic';
 import * as React from 'react';
@@ -70,7 +69,6 @@ interface CardInterface extends SiteLayoutProviderInterface {
 }
 
 const Card: NextPage<CardInterface> = ({ cardData, domainCompany, ...props }) => {
-  const { currentCity } = props;
   const { currency } = useLocaleContext();
   const { configs } = useConfigContext();
   if (!cardData) {
@@ -81,17 +79,29 @@ const Card: NextPage<CardInterface> = ({ cardData, domainCompany, ...props }) =>
     );
   }
 
-  const siteName = configs.siteName;
-  const prefixConfig = configs.catalogueMetaPrefix;
-  const prefix = prefixConfig ? ` ${prefixConfig}` : '';
-  const cityDescription = currentCity ? `в ${cityIn(`${currentCity.name}`)}` : '';
+  // seo
+  const seoKeywords = `${cardData.cardTitle} по цене ${cardData.product.minPrice} ${currency}`;
+
+  // title
+  const titlePrefixConfig = configs.cardTitleMetaPrefix;
+  const titlePostfixConfig = configs.cardTitleMetaPostfix;
+  const titlePrefix = titlePrefixConfig ? `${titlePrefixConfig} ` : '';
+  const titlePostfix = titlePostfixConfig ? ` ${titlePostfixConfig}` : '';
+  const title = `${titlePrefix}${seoKeywords}${titlePostfix}`;
+
+  // description
+  const descriptionPrefixConfig = configs.cardDescriptionMetaPrefix;
+  const descriptionPostfixConfig = configs.cardDescriptionMetaPostfix;
+  const descriptionPrefix = descriptionPrefixConfig ? `${descriptionPrefixConfig} ` : '';
+  const descriptionPostfix = descriptionPostfixConfig ? ` ${descriptionPostfixConfig}` : '';
+  const description = `${descriptionPrefix}${seoKeywords}${descriptionPostfix}`;
 
   return (
     <SiteLayout
       currentRubricSlug={cardData.product.rubricSlug}
       previewImage={cardData.product.mainImage}
-      title={`${cardData.cardTitle} цена ${cardData.product.minPrice} ${currency}${prefix} ${cityDescription} ${siteName}`}
-      description={`${cardData.product.description} ${cityDescription} ${siteName}`}
+      title={title}
+      description={description}
       domainCompany={domainCompany}
       {...props}
     >

@@ -1237,24 +1237,26 @@ export function getConfigTemplates({
       companySlug,
       group: 'catalogue',
       variant: CONFIG_VARIANT_STRING,
-      slug: 'catalogueMetaPrefix',
-      name: 'Префикс в метатегах каталога',
+      slug: 'cartBookingButtonDescription',
+      name: 'Текст описания под кнопкой брони в корзине каталога',
       description: '',
       multi: false,
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: ['купить'],
+          [DEFAULT_LOCALE]: [''],
         },
       },
     },
+
+    // catalogue meta
     {
       _id: new ObjectId(),
       companySlug,
       group: 'catalogue',
       variant: CONFIG_VARIANT_STRING,
-      slug: 'cartBookingButtonDescription',
-      name: 'Текст описания под кнопкой брони в корзине каталога',
+      slug: 'catalogueTitleMetaPrefix',
+      name: 'Начало метатега title каталога',
       description: '',
       multi: false,
       acceptedFormats: [],
@@ -1269,14 +1271,112 @@ export function getConfigTemplates({
       companySlug,
       group: 'catalogue',
       variant: CONFIG_VARIANT_STRING,
-      slug: 'cardMetaPrefix',
-      name: 'Префикс в метатегах карточки',
+      slug: 'catalogueTitleMetaPostfix',
+      name: 'Окончание метатега title каталога',
       description: '',
       multi: false,
       acceptedFormats: [],
       cities: {
         [DEFAULT_CITY]: {
-          [DEFAULT_LOCALE]: ['купить'],
+          [DEFAULT_LOCALE]: [''],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'catalogue',
+      variant: CONFIG_VARIANT_STRING,
+      slug: 'catalogueDescriptionMetaPrefix',
+      name: 'Начало метатега description каталога',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [''],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'catalogue',
+      variant: CONFIG_VARIANT_STRING,
+      slug: 'catalogueDescriptionMetaPostfix',
+      name: 'Окончание метатега description каталога',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [''],
+        },
+      },
+    },
+
+    // card meta
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'catalogue',
+      variant: CONFIG_VARIANT_STRING,
+      slug: 'cardTitleMetaPrefix',
+      name: 'Начало метатега title карточки',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [''],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'catalogue',
+      variant: CONFIG_VARIANT_STRING,
+      slug: 'cardTitleMetaPostfix',
+      name: 'Окончание метатега title карточки',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [''],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'catalogue',
+      variant: CONFIG_VARIANT_STRING,
+      slug: 'cardDescriptionMetaPrefix',
+      name: 'Начало метатега description карточки',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [''],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'catalogue',
+      variant: CONFIG_VARIANT_STRING,
+      slug: 'cardDescriptionMetaPostfix',
+      name: 'Окончание метатега description карточки',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [''],
         },
       },
     },

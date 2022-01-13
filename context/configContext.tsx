@@ -87,8 +87,6 @@ const ConfigContext = React.createContext<ConfigContextInterface>({
     stickyNavVisibleSubCategoriesCount: 5,
     snippetAttributesCount: 5,
     cardListFeaturesCount: 5,
-    catalogueMetaPrefix: '',
-    cardMetaPrefix: '',
     mapMarkerDarkTheme: '',
     mapMarkerLightTheme: '',
     showReservationDate: false,
@@ -97,6 +95,14 @@ const ConfigContext = React.createContext<ConfigContextInterface>({
     visibleCategoriesInNavDropdown: [],
     cartBookingButtonDescription: '',
     catalogueProductsCount: CATALOGUE_PRODUCTS_LIMIT,
+    catalogueTitleMetaPrefix: '',
+    catalogueDescriptionMetaPrefix: '',
+    catalogueTitleMetaPostfix: '',
+    catalogueDescriptionMetaPostfix: '',
+    cardTitleMetaPrefix: '',
+    cardTitleMetaPostfix: '',
+    cardDescriptionMetaPrefix: '',
+    cardDescriptionMetaPostfix: '',
   },
 });
 

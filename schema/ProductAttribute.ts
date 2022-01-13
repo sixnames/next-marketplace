@@ -661,6 +661,7 @@ export const ProductAttributeMutations = extendType({
                     },
                   },
                   $addToSet: {
+                    attributeIds: attributeId,
                     filterSlugs: {
                       $each: finalFilterSlugs,
                     },
@@ -721,6 +722,7 @@ export const ProductAttributeMutations = extendType({
                   },
                   {
                     $pull: {
+                      attributeIds: attributeId,
                       attributes: {
                         attributeId,
                       },

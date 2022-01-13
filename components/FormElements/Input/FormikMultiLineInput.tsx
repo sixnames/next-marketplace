@@ -29,7 +29,7 @@ const FormikMultiLineInput: React.FC<FormikMultiLineInputInterface> = ({
   const [field, meta, { setValue }] = useField(name);
 
   function addFieldHandler() {
-    setValue([...meta.value, '']);
+    setValue([...(meta.value || []), '']);
   }
 
   function removeFieldHandler(index?: number) {
@@ -41,7 +41,7 @@ const FormikMultiLineInput: React.FC<FormikMultiLineInputInterface> = ({
   }
 
   function removeFieldConfirm(removeIndex: number | null) {
-    const newValue = meta.value.filter(
+    const newValue = (meta.value || []).filter(
       (_: string, fieldIndex: number) => fieldIndex !== removeIndex,
     );
     setValue(newValue);

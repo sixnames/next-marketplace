@@ -1,3 +1,4 @@
+import parse from 'html-react-parser';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -66,8 +67,17 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({ cardData, compan
     companySlug,
   });
 
-  const { brand, brandCollection, manufacturer, name, variants, assets, minPrice, maxPrice } =
-    product;
+  const {
+    brand,
+    brandCollection,
+    manufacturer,
+    name,
+    variants,
+    assets,
+    minPrice,
+    maxPrice,
+    videos,
+  } = product;
 
   return (
     <article className='pb-20 pt-8 lg:pt-0' data-cy={`card`}>
@@ -399,6 +409,20 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({ cardData, compan
 
           {/*dynamic content*/}
           <CardDynamicContent cardContent={cardContent} product={cardData.product} />
+
+          {videos && videos.length > 0 ? (
+            <div className='space-y-8 mb-28'>
+              {videos.map((video, index) => {
+                return (
+                  <div className={`video-box`} key={index}>
+                    {parse(video, {
+                      trim: true,
+                    })}
+                  </div>
+                );
+              })}
+            </div>
+          ) : null}
 
           {/*shops*/}
           {configs.isOneShopCompany ? null : <CardShopsList cardShops={cardShops} />}

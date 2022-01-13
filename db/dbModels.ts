@@ -668,6 +668,7 @@ export interface ProductSummaryModel extends ProductFacetModel, TimestampModel {
   attributes: ProductSummaryAttributeModel[];
   titleCategorySlugs: string[];
   variants: ProductVariantModel[];
+  videos?: string[];
 }
 
 export interface ProductCardBreadcrumbModel {

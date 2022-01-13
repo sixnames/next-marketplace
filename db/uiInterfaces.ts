@@ -909,7 +909,6 @@ export interface CompanyShopProductsPageInterface
 export interface CardLayoutInterface {
   cardData: InitialCardDataInterface;
   companySlug?: string;
-  companyId?: string | null;
 }
 
 export interface SeoContentInterface extends SeoContentModel {

@@ -1002,3 +1002,8 @@ table {
 .image-gallery-thumbnails-wrapper.thumbnails-swipe-vertical .image-gallery-thumbnails {
   overflow-y: auto;
 }
+
+/*jivo chat*/
+[class^=cssLeaf_] {
+  display: none !important;
+}

@@ -3,7 +3,6 @@ import { ShopProductInterface } from '../db/uiInterfaces';
 
 export interface UseGetSimilarProductsInterface {
   productId: any;
-  companyId?: any | null;
 }
 
 export interface UseGetSimilarProductsPayloadInterface {
@@ -13,17 +12,12 @@ export interface UseGetSimilarProductsPayloadInterface {
 
 const useGetSimilarProducts = ({
   productId,
-  companyId,
 }: UseGetSimilarProductsInterface): UseGetSimilarProductsPayloadInterface => {
   const [loading, setLoading] = React.useState<boolean>(true);
   const [similarProducts, setSimilarProducts] = React.useState<ShopProductInterface[]>([]);
 
   React.useEffect(() => {
-    fetch(
-      `/api/catalogue/get-product-similar-items?productId=${productId}${
-        companyId ? `&companyId=${companyId}` : ''
-      }`,
-    )
+    fetch(`/api/catalogue/get-product-similar-items?productId=${productId}`)
       .then((res) => res.json())
       .then((res: ShopProductInterface[]) => {
         if (res && res.length > 0) {
@@ -37,7 +31,7 @@ const useGetSimilarProducts = ({
     return () => {
       setSimilarProducts([]);
     };
-  }, [productId, companyId]);
+  }, [productId]);
 
   return {
     similarProducts,

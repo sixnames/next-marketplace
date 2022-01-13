@@ -105,11 +105,7 @@ const Card: NextPage<CardInterface> = ({ cardData, domainCompany, ...props }) =>
       domainCompany={domainCompany}
       {...props}
     >
-      <CardConsumer
-        cardData={cardData}
-        companySlug={domainCompany?.slug}
-        companyId={domainCompany ? `${domainCompany._id}` : null}
-      />
+      <CardConsumer cardData={cardData} companySlug={domainCompany?.slug} />
     </SiteLayout>
   );
 };

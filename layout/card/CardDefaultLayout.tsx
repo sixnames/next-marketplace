@@ -71,7 +71,7 @@ const CardTitle: React.FC<CardTitleInterface> = ({
   );
 };
 
-const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlug, companyId }) => {
+const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlug }) => {
   const router = useRouter();
   const { configs } = useConfigContext();
   const { urlPrefix } = useSiteContext();
@@ -97,7 +97,6 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
   } = useCardData({
     cardData,
     companySlug,
-    companyId,
   });
 
   const { brand, brandCollection, manufacturer, name, variants, assets, minPrice, maxPrice } =

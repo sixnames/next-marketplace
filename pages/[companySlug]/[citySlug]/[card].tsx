@@ -19,6 +19,7 @@ import { castDbData, getSiteInitialData } from '../../../lib/ssrUtils';
 import {
   SeoSchemaAvailabilityType,
   SeoSchemaBreadcrumbItemInterface,
+  SeoSchemaCardBrandInterface,
   SeoSchemaCardInterface,
 } from '../../../types/seoSchemaTypes';
 
@@ -153,13 +154,20 @@ export async function getServerSideProps(
     },
   );
 
-  let availability: SeoSchemaAvailabilityType = 'https://schema.org/PreOrder';
+  let seoSchemaAvailability: SeoSchemaAvailabilityType = 'https://schema.org/PreOrder';
   if (rawCardData.product.allowDelivery) {
-    availability = 'https://schema.org/InStock';
+    seoSchemaAvailability = 'https://schema.org/InStock';
   }
   if (rawCardData.maxAvailable < 1) {
-    availability = 'https://schema.org/OutOfStock';
+    seoSchemaAvailability = 'https://schema.org/OutOfStock';
   }
+
+  const seoSchemaBrand: SeoSchemaCardBrandInterface | undefined = rawCardData.product.brand
+    ? {
+        '@type': 'Brand',
+        name: `${rawCardData.product.brand.name}`,
+      }
+    : undefined;
 
   const seoSchema: SeoSchemaCardInterface = {
     '@context': 'https://schema.org',
@@ -169,9 +177,10 @@ export async function getServerSideProps(
         '@type': 'Product',
         image: `${siteUrl}${rawCardData.product.mainImage}`,
         name: rawCardData.cardTitle,
+        brand: seoSchemaBrand,
         offers: {
           '@type': 'Offer',
-          availability,
+          availability: seoSchemaAvailability,
           itemCondition: 'https://schema.org/NewCondition',
           price: `${rawCardData.product.minPrice}`,
           priceCurrency: 'RUB',

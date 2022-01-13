@@ -53,7 +53,7 @@ export interface SeoSchemaCardOffersInterface extends SeoSchemaOffersInterface {
   price: string;
 }
 
-export interface SeoSchemaCardBrandInterface extends SeoSchemaOffersInterface {
+export interface SeoSchemaCardBrandInterface {
   '@type': 'Brand';
   name: string;
 }

@@ -500,6 +500,8 @@ export interface CatalogueDataInterface {
   textTopEditUrl: string;
   textBottom?: SeoContentInterface | null;
   textBottomEditUrl: string;
+  minPrice: number;
+  maxPrice: number;
 }
 
 export interface CatalogueProductOptionInterface {
@@ -759,10 +761,16 @@ export interface SsrConfigsInterface {
   catalogueFilterVisibleOptionsCount: number;
   snippetAttributesCount: number;
   cardListFeaturesCount: number;
-  catalogueMetaPrefix: string;
   cartBookingButtonDescription: string;
-  cardMetaPrefix: string;
   robotsTxt: string[];
+  catalogueTitleMetaPrefix: string;
+  catalogueDescriptionMetaPrefix: string;
+  catalogueTitleMetaPostfix: string;
+  catalogueDescriptionMetaPostfix: string;
+  cardTitleMetaPrefix: string;
+  cardTitleMetaPostfix: string;
+  cardDescriptionMetaPrefix: string;
+  cardDescriptionMetaPostfix: string;
 
   // Project
   showReservationDate: boolean;
@@ -901,7 +909,6 @@ export interface CompanyShopProductsPageInterface
 export interface CardLayoutInterface {
   cardData: InitialCardDataInterface;
   companySlug?: string;
-  companyId?: string | null;
 }
 
 export interface SeoContentInterface extends SeoContentModel {

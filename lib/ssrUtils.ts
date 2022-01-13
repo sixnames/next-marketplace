@@ -130,10 +130,6 @@ export const getSsrConfigs = async ({
       configs,
       slug: 'cardListFeaturesCount',
     }) || 5;
-  const cardMetaPrefix = getConfigStringValue({
-    configs,
-    slug: 'cardMetaPrefix',
-  });
   const catalogueFilterVisibleAttributesCount =
     getConfigNumberValue({
       configs,
@@ -144,10 +140,6 @@ export const getSsrConfigs = async ({
       configs,
       slug: 'catalogueFilterVisibleOptionsCount',
     }) || 5;
-  const catalogueMetaPrefix = getConfigStringValue({
-    configs,
-    slug: 'catalogueMetaPrefix',
-  });
   const contactEmail = getConfigListValue({
     configs,
     slug: 'contactEmail',
@@ -395,8 +387,48 @@ export const getSsrConfigs = async ({
     configs,
     slug: 'chat',
   });
+  const catalogueTitleMetaPrefix = getConfigStringValue({
+    configs,
+    slug: 'catalogueTitleMetaPrefix',
+  });
+  const catalogueDescriptionMetaPrefix = getConfigStringValue({
+    configs,
+    slug: 'catalogueDescriptionMetaPrefix',
+  });
+  const catalogueTitleMetaPostfix = getConfigStringValue({
+    configs,
+    slug: 'catalogueTitleMetaPostfix',
+  });
+  const catalogueDescriptionMetaPostfix = getConfigStringValue({
+    configs,
+    slug: 'catalogueDescriptionMetaPostfix',
+  });
+  const cardTitleMetaPrefix = getConfigStringValue({
+    configs,
+    slug: 'cardTitleMetaPrefix',
+  });
+  const cardDescriptionMetaPrefix = getConfigStringValue({
+    configs,
+    slug: 'cardDescriptionMetaPrefix',
+  });
+  const cardTitleMetaPostfix = getConfigStringValue({
+    configs,
+    slug: 'cardTitleMetaPostfix',
+  });
+  const cardDescriptionMetaPostfix = getConfigStringValue({
+    configs,
+    slug: 'cardDescriptionMetaPostfix',
+  });
 
   return {
+    catalogueTitleMetaPrefix,
+    catalogueTitleMetaPostfix,
+    catalogueDescriptionMetaPrefix,
+    catalogueDescriptionMetaPostfix,
+    cardTitleMetaPrefix,
+    cardTitleMetaPostfix,
+    cardDescriptionMetaPrefix,
+    cardDescriptionMetaPostfix,
     chat,
     isOneShopCompany,
     useNoIndexRules,
@@ -413,13 +445,11 @@ export const getSsrConfigs = async ({
     androidChrome512,
     appleTouchIcon,
     cardListFeaturesCount,
-    cardMetaPrefix,
     catalogueFilterVisibleAttributesCount,
     catalogueFilterVisibleOptionsCount,
     stickyNavVisibleCategoriesCount,
     stickyNavVisibleSubCategoriesCount,
     visibleCategoriesInNavDropdown,
-    catalogueMetaPrefix,
     contactEmail,
     contactsContent,
     facebook,
@@ -975,6 +1005,23 @@ export async function getCatalogueCreatedPages({
                 index: true,
                 nameI18n: true,
                 slug: true,
+                mainBanner: true,
+                mainBannerMobile: true,
+                showAsMainBanner: true,
+                mainBannerTextColor: true,
+                mainBannerVerticalTextAlign: true,
+                mainBannerHorizontalTextAlign: true,
+                mainBannerTextAlign: true,
+                mainBannerTextPadding: true,
+                mainBannerTextMaxWidth: true,
+                secondaryBanner: true,
+                showAsSecondaryBanner: true,
+                secondaryBannerTextColor: true,
+                secondaryBannerVerticalTextAlign: true,
+                secondaryBannerHorizontalTextAlign: true,
+                secondaryBannerTextAlign: true,
+                secondaryBannerTextPadding: true,
+                secondaryBannerTextMaxWidth: true,
               },
             },
             {
@@ -1032,6 +1079,7 @@ export interface SiteInitialDataPropsInterface
   extends PagePropsInterface,
     Omit<SiteLayoutProviderInterface, 'description' | 'title' | 'showForIndex'> {
   companyNotFound: boolean;
+  domain?: string | null;
 }
 
 export interface SiteInitialDataPayloadInterface {
@@ -1054,6 +1102,7 @@ export async function getSiteInitialData({
     themeStyle,
     urlPrefix,
     companyNotFound,
+    domain,
   } = await getPageInitialState({ context });
 
   // initial data
@@ -1088,6 +1137,7 @@ export async function getSiteInitialData({
       domainCompany,
       urlPrefix,
       companyNotFound,
+      domain,
     },
   };
 }

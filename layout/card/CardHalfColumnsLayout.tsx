@@ -35,11 +35,7 @@ const CardSimpleGallery = dynamic(() => import('./CardSimpleGallery'));
 const dataSectionClassName = 'mb-14';
 const stickyClassName = 'sticky top-20';
 
-const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
-  cardData,
-  companySlug,
-  companyId,
-}) => {
+const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlug }) => {
   const router = useRouter();
   const { configs } = useConfigContext();
   const { urlPrefix } = useSiteContext();
@@ -68,7 +64,6 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({
   } = useCardData({
     cardData,
     companySlug,
-    companyId,
   });
 
   const { brand, brandCollection, manufacturer, name, variants, assets, minPrice, maxPrice } =

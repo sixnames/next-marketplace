@@ -57,6 +57,10 @@ import {
   SeoContentInterface,
   ShopProductInterface,
 } from '../db/uiInterfaces';
+import {
+  SeoSchemaBreadcrumbItemInterface,
+  SeoSchemaCatalogueInterface,
+} from '../types/seoSchemaTypes';
 import { alwaysArray, sortObjectsByField } from './arrayUtils';
 import { castUrlFilters } from './castUrlFilters';
 import { getFieldStringLocale } from './i18n';
@@ -650,6 +654,8 @@ export const getCatalogueData = async ({
       catalogueHeadLayout: DEFAULT_LAYOUT,
       totalPages: 0,
       totalProducts: 0,
+      minPrice: 0,
+      maxPrice: 0,
       attributes: [],
       selectedAttributes: [],
       breadcrumbs: [],
@@ -1185,6 +1191,13 @@ export const getCatalogueData = async ({
       const sortedRedirectArray = sortStringArray(filteredRedirectArray);
       redirect = `/${sortedRedirectArray.join('/')}`;
     }
+
+    // get min and max prices
+    const sortedPrices = sortObjectsByField(prices, '_id');
+    const minPriceObject = sortedPrices[0];
+    const maxPriceObject = sortedPrices[sortedPrices.length - 1];
+    const minPrice = noNaN(minPriceObject?._id);
+    const maxPrice = noNaN(maxPriceObject?._id);
     // console.log(`Catalogue data >>>>>>>>>>>>>>>> `, new Date().getTime() - timeStart);
 
     return {
@@ -1228,6 +1241,8 @@ export const getCatalogueData = async ({
       textBottomEditUrl,
       catalogueTitle: textTop && textTop.title ? textTop.title : catalogueTitle,
       breadcrumbs,
+      minPrice,
+      maxPrice,
     };
   } catch (e) {
     console.log(e);
@@ -1333,12 +1348,64 @@ export async function getCatalogueProps(
     rootPath === asPath && !noIndexFollow ? true : Boolean(rawCatalogueData.textTop?.showForIndex);
   // console.log('seo ', new Date().getTime() - timeStart);
 
+  /*seo schema*/
+  const siteUrl = `https://${props.domain}`;
+  const pageUrl = `${siteUrl}${asPath}`;
+  const seoSchemaBreadcrumbUrlPrefix = `${siteUrl}${props.urlPrefix}`;
+  const seoSchemaBreadcrumbs: SeoSchemaBreadcrumbItemInterface[] = rawCatalogueData.breadcrumbs.map(
+    ({ href, name }, index) => {
+      return {
+        '@type': 'ListItem',
+        position: index + 2,
+        name,
+        item: `${seoSchemaBreadcrumbUrlPrefix}${href}`,
+      };
+    },
+  );
+  const seoSchema: SeoSchemaCatalogueInterface = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemPage',
+    '@graph': [
+      {
+        '@type': 'Product',
+        name: rawCatalogueData.catalogueTitle,
+        offers: {
+          '@type': 'AggregateOffer',
+          availability: 'https://schema.org/InStock',
+          itemCondition: 'https://schema.org/NewCondition',
+          priceCurrency: 'RUB',
+          lowPrice: `${rawCatalogueData.minPrice}`,
+          highPrice: `${rawCatalogueData.maxPrice}`,
+          url: pageUrl,
+          offerCount: `${rawCatalogueData.totalProducts}`,
+        },
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          {
+            '@type': 'ListItem',
+            position: 1,
+            name: 'Главная',
+            item: seoSchemaBreadcrumbUrlPrefix,
+          },
+          ...seoSchemaBreadcrumbs,
+        ],
+      },
+    ],
+  };
+
+  // set cache
+  context.res.setHeader('Cache-Control', `public, max-age=60, stale-while-revalidate=300`);
+
   return {
     props: {
       ...props,
       catalogueData: castDbData(rawCatalogueData),
       showForIndex: showForIndex,
       noIndexFollow,
+      seoSchema: `<script type="application/ld+json">${JSON.stringify(seoSchema)}</script>`,
     },
   };
 }

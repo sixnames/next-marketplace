@@ -610,22 +610,35 @@ const Catalogue: React.FC<CatalogueInterface> = ({
   }
 
   // seo
-  const seoKeywords = `${catalogueData.catalogueTitle} по цене от ${catalogueData.minPrice} ${currency}`;
-  const pagePostfix = catalogueData.page > 1 ? ` Страница ${catalogueData.page}` : '';
+  const titlePrice = ` по цене от ${catalogueData.minPrice} ${currency}`;
 
   // title
   const titlePrefixConfig = configs.catalogueTitleMetaPrefix;
+  const titleMiddleConfig = configs.catalogueTitleMetaMiddle;
   const titlePostfixConfig = configs.catalogueTitleMetaPostfix;
   const titlePrefix = titlePrefixConfig ? `${titlePrefixConfig} ` : '';
+  const titleMiddle = titleMiddleConfig ? ` ${titleMiddleConfig}` : '';
   const titlePostfix = titlePostfixConfig ? ` ${titlePostfixConfig}` : '';
-  const title = `${titlePrefix}${seoKeywords}${titlePostfix}${pagePostfix}`;
+  const titleKeywords = `${catalogueData.catalogueTitle}${titleMiddle}${titlePrice}`;
+  const initialTitle = `${titlePrefix}${titleKeywords}${titlePostfix}`;
+  const title =
+    catalogueData.textTop && catalogueData.textTop.metaTitle
+      ? catalogueData.textTop.metaTitle
+      : initialTitle;
 
   // description
   const descriptionPrefixConfig = configs.catalogueDescriptionMetaPrefix;
+  const descriptionMiddleConfig = configs.catalogueDescriptionMetaMiddle;
   const descriptionPostfixConfig = configs.catalogueDescriptionMetaPostfix;
   const descriptionPrefix = descriptionPrefixConfig ? `${descriptionPrefixConfig} ` : '';
+  const descriptionMiddle = descriptionMiddleConfig ? ` ${descriptionMiddleConfig}` : '';
   const descriptionPostfix = descriptionPostfixConfig ? ` ${descriptionPostfixConfig}` : '';
-  const description = `${descriptionPrefix}${seoKeywords}${descriptionPostfix}`;
+  const descriptionKeywords = `${catalogueData.catalogueTitle}${descriptionMiddle}${titlePrice}`;
+  const initialDescription = `${descriptionPrefix}${descriptionKeywords}${descriptionPostfix}`;
+  const description =
+    catalogueData.textTop && catalogueData.textTop.metaDescription
+      ? catalogueData.textTop.metaDescription
+      : initialDescription;
 
   return (
     <SiteLayout

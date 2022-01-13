@@ -1194,7 +1194,10 @@ export const getCatalogueData = async ({
 
     // get min and max prices
     const sortedPrices = sortObjectsByField(prices, '_id');
-    const minPriceObject = sortedPrices[0];
+    let minPriceObject = sortedPrices[0];
+    if (minPriceObject._id === 0) {
+      minPriceObject = sortedPrices[1];
+    }
     const maxPriceObject = sortedPrices[sortedPrices.length - 1];
     const minPrice = noNaN(minPriceObject?._id);
     const maxPrice = noNaN(maxPriceObject?._id);

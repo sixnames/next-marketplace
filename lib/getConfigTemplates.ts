@@ -1249,7 +1249,7 @@ export function getConfigTemplates({
       },
     },
 
-    // catalogue meta
+    // catalogue meta title
     {
       _id: new ObjectId(),
       companySlug,
@@ -1257,6 +1257,22 @@ export function getConfigTemplates({
       variant: CONFIG_VARIANT_STRING,
       slug: 'catalogueTitleMetaPrefix',
       name: 'Начало метатега title каталога',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [''],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'catalogue',
+      variant: CONFIG_VARIANT_STRING,
+      slug: 'catalogueTitleMetaMiddle',
+      name: 'Середина метатега title каталога',
       description: '',
       multi: false,
       acceptedFormats: [],
@@ -1282,6 +1298,8 @@ export function getConfigTemplates({
         },
       },
     },
+
+    // catalogue meta description
     {
       _id: new ObjectId(),
       companySlug,
@@ -1289,6 +1307,22 @@ export function getConfigTemplates({
       variant: CONFIG_VARIANT_STRING,
       slug: 'catalogueDescriptionMetaPrefix',
       name: 'Начало метатега description каталога',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [''],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'catalogue',
+      variant: CONFIG_VARIANT_STRING,
+      slug: 'catalogueDescriptionMetaMiddle',
+      name: 'Середина метатега description каталога',
       description: '',
       multi: false,
       acceptedFormats: [],
@@ -1315,7 +1349,7 @@ export function getConfigTemplates({
       },
     },
 
-    // card meta
+    // card meta title
     {
       _id: new ObjectId(),
       companySlug,
@@ -1323,6 +1357,22 @@ export function getConfigTemplates({
       variant: CONFIG_VARIANT_STRING,
       slug: 'cardTitleMetaPrefix',
       name: 'Начало метатега title карточки',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [''],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'catalogue',
+      variant: CONFIG_VARIANT_STRING,
+      slug: 'cardTitleMetMiddle',
+      name: 'Середина метатега title карточки',
       description: '',
       multi: false,
       acceptedFormats: [],
@@ -1348,6 +1398,8 @@ export function getConfigTemplates({
         },
       },
     },
+
+    // card meta description
     {
       _id: new ObjectId(),
       companySlug,
@@ -1355,6 +1407,22 @@ export function getConfigTemplates({
       variant: CONFIG_VARIANT_STRING,
       slug: 'cardDescriptionMetaPrefix',
       name: 'Начало метатега description карточки',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [''],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'catalogue',
+      variant: CONFIG_VARIANT_STRING,
+      slug: 'cardDescriptionMetaMiddle',
+      name: 'Середина метатега description карточки',
       description: '',
       multi: false,
       acceptedFormats: [],

@@ -393,8 +393,13 @@ export const getSsrConfigs = async ({
     configs,
     slug: 'cardDescriptionMetaMiddle',
   });
+  const showShopProductAvailability = getConfigBooleanValue({
+    configs,
+    slug: 'showShopProductAvailability',
+  });
 
   return {
+    showShopProductAvailability,
     catalogueTitleMetaMiddle,
     catalogueDescriptionMetaMiddle,
     cardTitleMetaMiddle,

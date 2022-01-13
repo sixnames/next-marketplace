@@ -10,6 +10,7 @@ import ShopsMap from '../../components/ShopsMap';
 import WpImage from '../../components/WpImage';
 import { MAP_MODAL } from '../../config/modalVariants';
 import { useAppContext } from '../../context/appContext';
+import { useConfigContext } from '../../context/configContext';
 import { useSiteContext } from '../../context/siteContext';
 import { ShopInterface } from '../../db/uiInterfaces';
 import { noNaN } from '../../lib/numbers';
@@ -20,6 +21,7 @@ interface CardShopInterface {
 }
 
 const CardShop: React.FC<CardShopInterface> = ({ shop }) => {
+  const { configs } = useConfigContext();
   const { addProductToCart, getShopProductInCartCount } = useSiteContext();
   const { showModal } = useAppContext();
   const [amount, setAmount] = React.useState<number>(1);
@@ -111,11 +113,15 @@ const CardShop: React.FC<CardShopInterface> = ({ shop }) => {
               discountedPercent={discountedPercent}
               oldPrice={oldPrice}
             />
-            {disabled ? (
-              <div className='text-theme col-span-5'>Нет в наличии</div>
-            ) : (
-              <div className=''>В наличии {` ${available} `}шт.</div>
-            )}
+            {configs.showShopProductAvailability ? (
+              <React.Fragment>
+                {disabled ? (
+                  <div className='text-theme col-span-5'>Нет в наличии</div>
+                ) : (
+                  <div className=''>В наличии {` ${available} `}шт.</div>
+                )}
+              </React.Fragment>
+            ) : null}
 
             <div className='mt-4'>
               <a href='#'>Узнать больше</a>

@@ -107,6 +107,7 @@ const ConfigContext = React.createContext<ConfigContextInterface>({
     cardDescriptionMetaPrefix: '',
     cardDescriptionMetaMiddle: '',
     cardDescriptionMetaPostfix: '',
+    showShopProductAvailability: false,
   },
 });
 

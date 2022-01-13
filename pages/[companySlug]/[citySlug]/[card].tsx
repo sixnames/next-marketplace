@@ -80,21 +80,27 @@ const Card: NextPage<CardInterface> = ({ cardData, domainCompany, ...props }) =>
   }
 
   // seo
-  const seoKeywords = `${cardData.cardTitle} по цене ${cardData.product.minPrice} ${currency}`;
+  const titlePrice = ` по цене ${cardData.product.minPrice} ${currency}`;
 
   // title
   const titlePrefixConfig = configs.cardTitleMetaPrefix;
+  const titleMiddleConfig = configs.cardTitleMetaMiddle;
   const titlePostfixConfig = configs.cardTitleMetaPostfix;
   const titlePrefix = titlePrefixConfig ? `${titlePrefixConfig} ` : '';
+  const titleMiddle = titlePrefixConfig ? ` ${titleMiddleConfig}` : '';
   const titlePostfix = titlePostfixConfig ? ` ${titlePostfixConfig}` : '';
-  const title = `${titlePrefix}${seoKeywords}${titlePostfix}`;
+  const titleKeywords = `${cardData.cardTitle}${titleMiddle}${titlePrice}`;
+  const title = `${titlePrefix}${titleKeywords}${titlePostfix}`;
 
   // description
   const descriptionPrefixConfig = configs.cardDescriptionMetaPrefix;
+  const descriptionMiddleConfig = configs.cardDescriptionMetaMiddle;
   const descriptionPostfixConfig = configs.cardDescriptionMetaPostfix;
   const descriptionPrefix = descriptionPrefixConfig ? `${descriptionPrefixConfig} ` : '';
+  const descriptionMiddle = descriptionMiddleConfig ? ` ${descriptionMiddleConfig}` : '';
   const descriptionPostfix = descriptionPostfixConfig ? ` ${descriptionPostfixConfig}` : '';
-  const description = `${descriptionPrefix}${seoKeywords}${descriptionPostfix}`;
+  const descriptionKeywords = `${cardData.cardTitle}${descriptionMiddle}${titlePrice}`;
+  const description = `${descriptionPrefix}${descriptionKeywords}${descriptionPostfix}`;
 
   return (
     <SiteLayout

@@ -25,13 +25,11 @@ interface UseCardDataPayloadInterface
 
 interface UseCardDataInterface {
   cardData: InitialCardDataInterface;
-  companyId?: any | null;
   companySlug?: string | null;
 }
 
 const useCardData = ({
   cardData,
-  companyId,
   companySlug,
 }: UseCardDataInterface): UseCardDataPayloadInterface => {
   const shopsCounterPostfix = noNaN(cardData.shopsCount) > 1 ? 'магазинах' : 'магазине';
@@ -50,7 +48,6 @@ const useCardData = ({
 
   // similar products
   const { similarProducts, loading } = useGetSimilarProducts({
-    companyId,
     productId: cardData.product._id,
   });
 

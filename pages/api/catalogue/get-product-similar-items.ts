@@ -1,8 +1,12 @@
 import { ObjectId } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { SORT_DESC } from '../../../config/common';
+import { DEFAULT_COMPANY_SLUG, SORT_DESC } from '../../../config/common';
 import { COL_PRODUCT_FACETS, COL_SHOP_PRODUCTS } from '../../../db/collectionNames';
-import { ignoreNoImageStage, summaryPipeline } from '../../../db/dao/constantPipelines';
+import {
+  ignoreNoImageStage,
+  shopProductsGroupPipeline,
+  summaryPipeline,
+} from '../../../db/dao/constantPipelines';
 import { ProductFacetModel } from '../../../db/dbModels';
 import { getDatabase } from '../../../db/mongodb';
 import { ShopProductInterface } from '../../../db/uiInterfaces';
@@ -24,7 +28,7 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
     const { locale, city } = await getRequestParams({ req, res });
     const companySlug = getSessionCompanySlug({ req, res });
     const anyQuery = query as unknown;
-    const { productId, companyId } = anyQuery as CatalogueQueryInterface;
+    const { productId } = anyQuery as CatalogueQueryInterface;
     const finalProductId = productId ? new ObjectId(productId) : null;
 
     if (!finalProductId) {
@@ -37,7 +41,7 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
     const { db } = await getDatabase();
     const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
     const productsCollection = db.collection<ProductFacetModel>(COL_PRODUCT_FACETS);
-    const companyRubricsMatch = companyId ? { companyId: new ObjectId(companyId) } : {};
+    const companyMatch = companySlug !== DEFAULT_COMPANY_SLUG ? { companySlug } : {};
 
     // get product
     const product = await productsCollection.findOne({
@@ -56,9 +60,9 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
       .aggregate<ShopProductInterface>([
         {
           $match: {
-            productId: finalProductId,
+            ...companyMatch,
             citySlug: city,
-            ...companyRubricsMatch,
+            productId: finalProductId,
           },
         },
         {
@@ -119,15 +123,17 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
             pipeline: [
               {
                 $match: {
-                  ...companyRubricsMatch,
+                  ...companyMatch,
+                  citySlug: city,
                   rubricSlug: product.rubricSlug,
                   filterSlugs: {
                     $in: product.filterSlugs,
                   },
-                  // ...categoriesMatch,
-                  citySlug: city,
                   productId: {
                     $ne: finalProductId,
+                  },
+                  available: {
+                    $gt: 0,
                   },
                   $expr: {
                     $and: [
@@ -138,36 +144,13 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
                   ...ignoreNoImageStage,
                 },
               },
-              {
-                $group: {
-                  _id: '$productId',
-                  itemId: { $first: '$itemId' },
-                  rubricId: { $first: '$rubricId' },
-                  rubricSlug: { $first: `$rubricSlug` },
-                  brandSlug: { $first: `$brandSlug` },
-                  brandCollectionSlug: { $first: '$brandCollectionSlug' },
-                  views: { $max: `$views.${companySlug}.${city}` },
-                  priorities: { $max: `$priorities.${companySlug}.${city}` },
-                  filterSlugs: {
-                    $first: '$filterSlugs',
-                  },
-                  minPrice: {
-                    $min: '$price',
-                  },
-                  maxPrice: {
-                    $min: '$price',
-                  },
-                  available: {
-                    $max: '$available',
-                  },
-                  shopProductIds: {
-                    $addToSet: '$_id',
-                  },
-                },
-              },
+              ...shopProductsGroupPipeline({
+                citySlug: city,
+                companySlug,
+              }),
               {
                 $sort: {
-                  available: SORT_DESC,
+                  sortIndex: SORT_DESC,
                   views: SORT_DESC,
                   _id: SORT_DESC,
                 },
@@ -178,10 +161,6 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
               {
                 $addFields: {
                   shopsCount: { $size: '$shopProductIds' },
-                  cardPrices: {
-                    min: '$minPrice',
-                    max: '$maxPrice',
-                  },
                 },
               },
 

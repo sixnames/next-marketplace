@@ -1,5 +1,4 @@
 import { debounce } from 'lodash';
-import { cityIn } from 'lvovich';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -18,6 +17,7 @@ import {
 } from '../config/common';
 import { CATALOGUE_HEAD_LAYOUT_WITH_CATEGORIES } from '../config/constantSelects';
 import { useConfigContext } from '../context/configContext';
+import { useLocaleContext } from '../context/localeContext';
 import { useSiteContext } from '../context/siteContext';
 import { useSiteUserContext } from '../context/siteUserContext';
 import { CatalogueBreadcrumbModel, SeoContentModel } from '../db/dbModels';
@@ -139,7 +139,6 @@ const CatalogueHead: React.FC<CatalogueHeadInterface> = ({
 };
 
 interface CatalogueConsumerInterface {
-  subHeadText: string;
   catalogueData: CatalogueDataInterface;
   companySlug?: string;
   companyId?: string;
@@ -153,7 +152,6 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
   companySlug,
   isSearchResult,
   urlPrefix,
-  // subHeadText,
 }) => {
   const { configs } = useConfigContext();
   const router = useRouter();
@@ -601,6 +599,7 @@ const Catalogue: React.FC<CatalogueInterface> = ({
   urlPrefix,
   ...props
 }) => {
+  const { currency } = useLocaleContext();
   const { configs } = useConfigContext();
   if (!catalogueData) {
     return (
@@ -609,21 +608,24 @@ const Catalogue: React.FC<CatalogueInterface> = ({
       </SiteLayout>
     );
   }
-  const pageText = catalogueData.page > 1 ? ` Страница ${catalogueData.page}` : '';
-  const siteName = configs.siteName;
-  const prefixConfig = configs.catalogueMetaPrefix;
-  const prefix = prefixConfig ? ` ${prefixConfig}` : '';
-  const cityDescription = currentCity ? `в ${cityIn(`${currentCity.name}`)}` : '';
-  const subHeadText = `${prefix} ${cityDescription} ${siteName}`;
 
-  const title =
-    catalogueData.textTop && catalogueData.textTop.metaTitle
-      ? catalogueData.textTop.metaTitle
-      : `${catalogueData.catalogueTitle}${subHeadText}.${pageText}`;
-  const description =
-    catalogueData.textTop && catalogueData.textTop.metaDescription
-      ? catalogueData.textTop.metaDescription
-      : `${catalogueData.catalogueTitle}${subHeadText}.${pageText}`;
+  // seo
+  const seoKeywords = `${catalogueData.catalogueTitle} по цене от ${catalogueData.minPrice} ${currency}`;
+  const pagePostfix = catalogueData.page > 1 ? ` Страница ${catalogueData.page}` : '';
+
+  // title
+  const titlePrefixConfig = configs.catalogueTitleMetaPrefix;
+  const titlePostfixConfig = configs.catalogueTitleMetaPostfix;
+  const titlePrefix = titlePrefixConfig ? `${titlePrefixConfig} ` : '';
+  const titlePostfix = titlePostfixConfig ? ` ${titlePostfixConfig}` : '';
+  const title = `${titlePrefix}${seoKeywords}${titlePostfix}${pagePostfix}`;
+
+  // description
+  const descriptionPrefixConfig = configs.catalogueDescriptionMetaPrefix;
+  const descriptionPostfixConfig = configs.catalogueDescriptionMetaPostfix;
+  const descriptionPrefix = descriptionPrefixConfig ? `${descriptionPrefixConfig} ` : '';
+  const descriptionPostfix = descriptionPostfixConfig ? ` ${descriptionPostfixConfig}` : '';
+  const description = `${descriptionPrefix}${seoKeywords}${descriptionPostfix}`;
 
   return (
     <SiteLayout
@@ -635,7 +637,6 @@ const Catalogue: React.FC<CatalogueInterface> = ({
       {...props}
     >
       <CatalogueConsumer
-        subHeadText={subHeadText}
         urlPrefix={urlPrefix}
         isSearchResult={isSearchResult}
         catalogueData={catalogueData}

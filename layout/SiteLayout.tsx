@@ -23,6 +23,7 @@ interface SiteLayoutConsumerInterface
     MetaInterface,
     StickNavInterface {
   noIndexFollow: boolean;
+  seoSchema?: string;
 }
 
 const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
@@ -37,6 +38,7 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
   currentRubricSlug,
   showForIndex,
   noIndexFollow,
+  seoSchema,
 }) => {
   const { isLoading, isModal } = useAppContext();
   const { configs } = useConfigContext();
@@ -58,6 +60,7 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
         foundationYear={foundationYear}
         showForIndex={showForIndex}
         noIndexFollow={noIndexFollow}
+        seoSchema={seoSchema}
       />
 
       <Header headerPageGroups={headerPageGroups} currentRubricSlug={currentRubricSlug} />
@@ -87,6 +90,7 @@ export interface SiteLayoutProviderInterface
   urlPrefix: string;
   showForIndex: boolean;
   noIndexFollow?: boolean;
+  seoSchema?: string;
 }
 
 const SiteLayout: React.FC<SiteLayoutProviderInterface> = ({

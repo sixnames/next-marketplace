@@ -1366,9 +1366,19 @@ export async function getCatalogueProps(
   }
 
   /*seo*/
+  const getSafeUrl = (url: string) => {
+    return url
+      .split('/')
+      .filter((path) => {
+        return path;
+      })
+      .join('/');
+  };
   const noIndexFollow = rawCatalogueData.page > 1;
   const showForIndex =
-    basePath === asPath && !noIndexFollow ? true : Boolean(rawCatalogueData.textTop?.showForIndex);
+    getSafeUrl(basePath) === getSafeUrl(asPath) && !noIndexFollow
+      ? true
+      : Boolean(rawCatalogueData.textTop?.showForIndex);
   // console.log('seo ', new Date().getTime() - timeStart);
 
   /*seo schema*/
@@ -1425,7 +1435,7 @@ export async function getCatalogueProps(
     props: {
       ...props,
       catalogueData: castDbData(rawCatalogueData),
-      showForIndex: showForIndex,
+      showForIndex,
       noIndexFollow,
       seoSchema: `<script type="application/ld+json">${JSON.stringify(seoSchema)}</script>`,
     },

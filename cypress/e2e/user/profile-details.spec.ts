@@ -1,6 +1,4 @@
-import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG } from 'config/common';
-
-const profileUrl = `/${DEFAULT_COMPANY_SLUG}/${DEFAULT_CITY}/profile/details`;
+const profileUrl = `/profile/details`;
 
 describe('Profile details', () => {
   beforeEach(() => {

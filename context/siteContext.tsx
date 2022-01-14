@@ -53,7 +53,6 @@ interface SiteContextInterface extends SiteContextStateInterface {
   makeAnOrder: (input: MakeAnOrderInputInterface) => void;
   repeatAnOrder: (_id: string) => void;
   clearCart: () => void;
-  urlPrefix: string;
   domainCompany?: CompanyInterface | null;
 }
 
@@ -71,21 +70,18 @@ const SiteContext = React.createContext<SiteContextInterface>({
   repeatAnOrder: () => undefined,
   clearCart: () => undefined,
   checkGiftCertificate: () => undefined,
-  urlPrefix: '',
 });
 
 interface SiteContextProviderInterface {
   navRubrics: RubricInterface[];
   sessionCity: string;
   domainCompany?: CompanyInterface | null;
-  urlPrefix: string;
 }
 
 const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
   children,
   navRubrics,
   domainCompany,
-  urlPrefix,
 }) => {
   const sessionUser = useSiteUserContext();
   const router = useRouter();
@@ -190,7 +186,7 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
     onSuccess: (payload) => {
       if (payload.success) {
         refetchCartHandler();
-        router.push(`${urlPrefix}${ROUTE_THANK_YOU}`).catch(console.log);
+        router.push(ROUTE_THANK_YOU).catch(console.log);
         return;
       }
       hideLoading();
@@ -365,7 +361,6 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
       repeatAnOrder,
       getShopProductInCartCount,
       checkGiftCertificate,
-      urlPrefix,
       domainCompany,
       ...state,
     };
@@ -381,7 +376,6 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
     repeatAnOrder,
     getShopProductInCartCount,
     checkGiftCertificate,
-    urlPrefix,
     domainCompany,
     state,
   ]);

@@ -29,7 +29,6 @@ const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({
   isProductsFound,
   string,
 }) => {
-  const { urlPrefix } = useSiteContext();
   if (!shopProducts || shopProducts.length < 1) {
     return null;
   }
@@ -52,7 +51,7 @@ const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({
       {isProductsFound ? (
         <WpLink
           className='flex items-center min-h-[var(--minLinkHeightSmall)] text-theme'
-          href={`${urlPrefix}${ROUTE_SEARCH_RESULT}/${encodeURIComponent(string)}`}
+          href={`${ROUTE_SEARCH_RESULT}/${encodeURIComponent(string)}`}
           onClick={() => {
             setIsSearchOpen(false);
           }}
@@ -72,7 +71,7 @@ const minSearchLength = 2;
 
 const HeaderSearch: React.FC<HeaderSearchInterface> = ({ setIsSearchOpen }) => {
   const router = useRouter();
-  const { domainCompany, urlPrefix } = useSiteContext();
+  const { domainCompany } = useSiteContext();
   const [loading, setLoading] = React.useState<boolean>(true);
   const [searchResult, setSearchResult] = React.useState<ShopProductInterface[] | null>(null);
   const [topShopProducts, setTopShopProducts] = React.useState<ShopProductInterface[] | null>(null);
@@ -140,7 +139,7 @@ const HeaderSearch: React.FC<HeaderSearchInterface> = ({ setIsSearchOpen }) => {
                 e.preventDefault();
                 if (string && string.length > minSearchLength) {
                   router
-                    .push(`${urlPrefix}${ROUTE_SEARCH_RESULT}/${encodeURIComponent(string)}`)
+                    .push(`${ROUTE_SEARCH_RESULT}/${encodeURIComponent(string)}`)
                     .catch(console.log);
                 }
               }}

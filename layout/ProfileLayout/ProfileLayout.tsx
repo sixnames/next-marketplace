@@ -17,7 +17,6 @@ import {
   ROUTE_PROFILE_PROPOSALS,
   ROUTE_PROFILE_VIEWED,
 } from '../../config/common';
-import { useSiteContext } from '../../context/siteContext';
 import { useSiteUserContext } from '../../context/siteUserContext';
 
 interface ProfileLayoutInterface {
@@ -27,7 +26,6 @@ interface ProfileLayoutInterface {
 const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) => {
   const router = useRouter();
   const sessionUser = useSiteUserContext();
-  const { urlPrefix } = useSiteContext();
 
   const navConfig = React.useMemo<HeadlessMenuGroupInterface[]>(() => {
     return [
@@ -39,10 +37,10 @@ const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) =
             name: 'История заказов',
             testId: 'profile-orders-link',
             current: () => {
-              return router.asPath === `${urlPrefix}${ROUTE_PROFILE}`;
+              return router.asPath === `${ROUTE_PROFILE}`;
             },
             onSelect: () => {
-              router.push(`${urlPrefix}${ROUTE_PROFILE}`).catch(console.log);
+              router.push(`${ROUTE_PROFILE}`).catch(console.log);
             },
           },
           {
@@ -50,10 +48,10 @@ const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) =
             name: 'Избранное',
             testId: 'profile-favorite-link',
             current: () => {
-              return router.asPath === `${urlPrefix}${ROUTE_PROFILE_FAVORITE}`;
+              return router.asPath === `${ROUTE_PROFILE_FAVORITE}`;
             },
             onSelect: () => {
-              router.push(`${urlPrefix}${ROUTE_PROFILE_FAVORITE}`).catch(console.log);
+              router.push(`${ROUTE_PROFILE_FAVORITE}`).catch(console.log);
             },
           },
           {
@@ -62,10 +60,10 @@ const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) =
             href: ROUTE_PROFILE_COMPARE,
             testId: 'profile-compare-link',
             current: () => {
-              return router.asPath === `${urlPrefix}${ROUTE_PROFILE_COMPARE}`;
+              return router.asPath === `${ROUTE_PROFILE_COMPARE}`;
             },
             onSelect: () => {
-              router.push(`${urlPrefix}${ROUTE_PROFILE_COMPARE}`).catch(console.log);
+              router.push(`${ROUTE_PROFILE_COMPARE}`).catch(console.log);
             },
           },
           {
@@ -74,10 +72,10 @@ const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) =
             href: ROUTE_PROFILE_VIEWED,
             testId: 'profile-viewed-link',
             current: () => {
-              return router.asPath === `${urlPrefix}${ROUTE_PROFILE_VIEWED}`;
+              return router.asPath === `${ROUTE_PROFILE_VIEWED}`;
             },
             onSelect: () => {
-              router.push(`${urlPrefix}${ROUTE_PROFILE_VIEWED}`).catch(console.log);
+              router.push(`${ROUTE_PROFILE_VIEWED}`).catch(console.log);
             },
           },
           {
@@ -86,10 +84,10 @@ const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) =
             href: ROUTE_PROFILE_PROPOSALS,
             testId: 'profile-proposals-link',
             current: () => {
-              return router.asPath === `${urlPrefix}${ROUTE_PROFILE_PROPOSALS}`;
+              return router.asPath === `${ROUTE_PROFILE_PROPOSALS}`;
             },
             onSelect: () => {
-              router.push(`${urlPrefix}${ROUTE_PROFILE_PROPOSALS}`).catch(console.log);
+              router.push(`${ROUTE_PROFILE_PROPOSALS}`).catch(console.log);
             },
           },
         ],
@@ -103,7 +101,7 @@ const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) =
             href: ROUTE_PROFILE_BONUS,
             testId: 'profile-bonus-link',
             current: () => {
-              return router.asPath === `${urlPrefix}${ROUTE_PROFILE_BONUS}`;
+              return router.asPath === `${ROUTE_PROFILE_BONUS}`;
             },
             onSelect: () => {
               router.push(ROUTE_PROFILE_BONUS).catch(console.log);
@@ -115,10 +113,10 @@ const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) =
             href: ROUTE_PROFILE_PREFERENCES,
             testId: 'profile-preferences-link',
             current: () => {
-              return router.asPath === `${urlPrefix}${ROUTE_PROFILE_PREFERENCES}`;
+              return router.asPath === `${ROUTE_PROFILE_PREFERENCES}`;
             },
             onSelect: () => {
-              router.push(`${urlPrefix}${ROUTE_PROFILE_PREFERENCES}`).catch(console.log);
+              router.push(`${ROUTE_PROFILE_PREFERENCES}`).catch(console.log);
             },
           },
           {
@@ -127,10 +125,10 @@ const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) =
             href: ROUTE_PROFILE_CHATS,
             testId: 'profile-chats-link',
             current: () => {
-              return router.asPath === `${urlPrefix}${ROUTE_PROFILE_CHATS}`;
+              return router.asPath === `${ROUTE_PROFILE_CHATS}`;
             },
             onSelect: () => {
-              router.push(`${urlPrefix}${ROUTE_PROFILE_CHATS}`).catch(console.log);
+              router.push(`${ROUTE_PROFILE_CHATS}`).catch(console.log);
             },
           },
           {
@@ -139,10 +137,10 @@ const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) =
             href: ROUTE_PROFILE_FEEDBACK,
             testId: 'profile-feedback-link',
             current: () => {
-              return router.asPath === `${urlPrefix}${ROUTE_PROFILE_FEEDBACK}`;
+              return router.asPath === `${ROUTE_PROFILE_FEEDBACK}`;
             },
             onSelect: () => {
-              router.push(`${urlPrefix}${ROUTE_PROFILE_FEEDBACK}`).catch(console.log);
+              router.push(`${ROUTE_PROFILE_FEEDBACK}`).catch(console.log);
             },
           },
           {
@@ -151,16 +149,16 @@ const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) =
             href: ROUTE_PROFILE_DETAILS,
             testId: 'profile-details-link',
             current: () => {
-              return router.asPath === `${urlPrefix}${ROUTE_PROFILE_DETAILS}`;
+              return router.asPath === `${ROUTE_PROFILE_DETAILS}`;
             },
             onSelect: () => {
-              router.push(`${urlPrefix}${ROUTE_PROFILE_DETAILS}`).catch(console.log);
+              router.push(`${ROUTE_PROFILE_DETAILS}`).catch(console.log);
             },
           },
         ],
       },
     ];
-  }, [router, urlPrefix]);
+  }, [router]);
 
   return (
     <div className='mb-12'>

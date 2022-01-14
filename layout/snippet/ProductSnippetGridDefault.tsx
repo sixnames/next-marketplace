@@ -3,7 +3,6 @@ import ControlButton from '../../components/button/ControlButton';
 import WpLink from '../../components/Link/WpLink';
 import RatingStars from '../../components/RatingStars';
 import WpImage from '../../components/WpImage';
-import { useSiteContext } from '../../context/siteContext';
 import { ProductSnippetInterface } from '../../db/uiInterfaces';
 import ProductAddToCartButton from './ProductAddToCartButton';
 import ProductSnippetEditButton from './ProductSnippetEditButton';
@@ -21,7 +20,6 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
   gridCatalogueColumns,
   imageLoading,
 }) => {
-  const { urlPrefix } = useSiteContext();
   const { summary, available } = shopProduct;
   if (!summary) {
     return null;
@@ -82,7 +80,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
             testId={`${testId}-image-grid`}
             target={'_blank'}
             className='block absolute z-10 inset-0 text-indent-full'
-            href={`${urlPrefix}/${slug}`}
+            href={`/${slug}`}
           >
             {snippetTitle}
           </WpLink>
@@ -96,7 +94,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
                 testId={`${testId}-name-grid`}
                 target={'_blank'}
                 className='text-lg sm:text-xl font-medium block text-primary-text hover:no-underline hover:text-primary-text'
-                href={`${urlPrefix}/${slug}`}
+                href={`/${slug}`}
               >
                 {snippetTitle}
               </WpLink>

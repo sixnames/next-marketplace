@@ -15,7 +15,6 @@ export interface CatalogueFilterAttributePropsInterface {
   isSearchResult?: boolean;
   attributeIndex: number;
   basePath: string;
-  urlPrefix?: string;
 }
 
 export interface FilterBaseInterface {
@@ -33,7 +32,6 @@ export interface CatalogueFilterInterface extends FilterBaseInterface {
   catalogueCounterString: string;
   isFilterVisible: boolean;
   hideFilterHandler: () => void;
-  urlPrefix?: string;
 }
 
 interface CatalogueFilterProviderInterface extends CatalogueFilterInterface {

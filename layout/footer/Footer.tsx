@@ -8,13 +8,12 @@ import WpLink from '../../components/Link/WpLink';
 import { MapModalInterface } from '../../components/Modal/MapModal';
 import Socials from '../../components/Socials';
 import WpIcon from '../../components/WpIcon';
-import { ROUTE_BLOG_WITH_PAGE, ROUTE_CONTACTS, ROUTE_DOCS_PAGES } from '../../config/common';
+import { ROUTE_BLOG, ROUTE_CONTACTS, ROUTE_DOCS_PAGES } from '../../config/common';
 import { getConstantTranslation } from '../../config/constantTranslations';
 import { MAP_MODAL } from '../../config/modalVariants';
 import { useAppContext } from '../../context/appContext';
 import { useConfigContext } from '../../context/configContext';
 import { useLocaleContext } from '../../context/localeContext';
-import { useSiteContext } from '../../context/siteContext';
 import { PagesGroupInterface } from '../../db/uiInterfaces';
 import { useShopMarker } from '../../hooks/useShopMarker';
 import { phoneToRaw, phoneToReadable } from '../../lib/phoneUtils';
@@ -28,7 +27,6 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
   const { configs, domainCompany } = useConfigContext();
   const { locale } = useLocaleContext();
   const marker = useShopMarker(domainCompany?.mainShop);
-  const { urlPrefix } = useSiteContext();
 
   const configSiteName = configs.siteName;
   const configFoundationYear = configs.siteFoundationYear;
@@ -176,7 +174,7 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
                       return (
                         <li className='' key={`${_id}`}>
                           <WpLink
-                            href={`${urlPrefix}${ROUTE_DOCS_PAGES}/${slug}`}
+                            href={`${ROUTE_DOCS_PAGES}/${slug}`}
                             target={'_blank'}
                             className='block pt-1.5 pb-1.5 text-secondary-text hover:no-underline hover:text-theme cursor-pointer'
                           >
@@ -189,7 +187,7 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
                     {index === 0 && showBlog ? (
                       <li className=''>
                         <WpLink
-                          href={`${urlPrefix}${ROUTE_BLOG_WITH_PAGE}`}
+                          href={ROUTE_BLOG}
                           target={'_blank'}
                           className='block pt-1.5 pb-1.5 text-secondary-text hover:no-underline hover:text-theme cursor-pointer'
                         >
@@ -201,7 +199,7 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
                     {index === 0 ? (
                       <li className=''>
                         <WpLink
-                          href={`${urlPrefix}${ROUTE_CONTACTS}`}
+                          href={`${ROUTE_CONTACTS}`}
                           target={'_blank'}
                           className='block pt-1.5 pb-1.5 text-secondary-text hover:no-underline hover:text-theme cursor-pointer'
                         >

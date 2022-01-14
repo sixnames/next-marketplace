@@ -1,7 +1,6 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { ROUTE_PROFILE } from '../../config/common';
-import { useSiteContext } from '../../context/siteContext';
 import WpButton from '../button/WpButton';
 import Inner from '../Inner';
 import WpBreadcrumbs from '../WpBreadcrumbs';
@@ -9,7 +8,6 @@ import WpTitle from '../WpTitle';
 
 const EmptyCart: React.FC = () => {
   const router = useRouter();
-  const { urlPrefix } = useSiteContext();
   return (
     <div>
       <WpBreadcrumbs currentPageName={'Корзина'} />
@@ -21,7 +19,7 @@ const EmptyCart: React.FC = () => {
             frameClassName='w-auto'
             theme={'secondary'}
             onClick={() => {
-              router.push(urlPrefix).catch(console.log);
+              router.push('/').catch(console.log);
             }}
           >
             Продолжить покупки
@@ -30,7 +28,7 @@ const EmptyCart: React.FC = () => {
             frameClassName='w-auto'
             theme={'secondary'}
             onClick={() => {
-              router.push(`${urlPrefix}${ROUTE_PROFILE}`).catch(console.log);
+              router.push(ROUTE_PROFILE).catch(console.log);
             }}
           >
             Мои заказы

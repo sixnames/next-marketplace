@@ -721,6 +721,7 @@ export interface SsrConfigsInterface {
   showBlogPostViews: boolean;
   categoriesAsNavItems: string[];
   visibleCategoriesInNavDropdown: string[];
+  showShopProductAvailability: boolean;
 
   // Contacts
   contactEmail: string[];
@@ -764,12 +765,16 @@ export interface SsrConfigsInterface {
   cartBookingButtonDescription: string;
   robotsTxt: string[];
   catalogueTitleMetaPrefix: string;
-  catalogueDescriptionMetaPrefix: string;
+  catalogueTitleMetaMiddle: string;
   catalogueTitleMetaPostfix: string;
+  catalogueDescriptionMetaPrefix: string;
+  catalogueDescriptionMetaMiddle: string;
   catalogueDescriptionMetaPostfix: string;
   cardTitleMetaPrefix: string;
+  cardTitleMetaMiddle: string;
   cardTitleMetaPostfix: string;
   cardDescriptionMetaPrefix: string;
+  cardDescriptionMetaMiddle: string;
   cardDescriptionMetaPostfix: string;
 
   // Project
@@ -879,7 +884,6 @@ export interface BreadcrumbsInterface {
   lowTop?: boolean;
   lowBottom?: boolean;
   lowWrapper?: boolean;
-  urlPrefix?: string;
   centered?: boolean;
 }
 

@@ -4,7 +4,6 @@ import Head from 'next/head';
 import parse from 'html-react-parser';
 import { ROUTE_CMS, ROUTE_CONSOLE } from '../config/common';
 import { useConfigContext } from '../context/configContext';
-import { useSiteContext } from '../context/siteContext';
 import { alwaysArray } from '../lib/arrayUtils';
 import { getFilterUrlValues } from '../lib/getFilterUrlValues';
 
@@ -33,7 +32,6 @@ const Meta: React.FC<MetaInterface> = ({
   const [canonicalUrl, setCanonicalUrl] = React.useState<string>('');
   const [showCanonical, setShowCanonical] = React.useState<boolean>(false);
   const { configs } = useConfigContext();
-  const { urlPrefix } = useSiteContext();
   const { sortBy } = getFilterUrlValues({
     initialPage: 1,
     initialLimit: 1,
@@ -65,15 +63,9 @@ const Meta: React.FC<MetaInterface> = ({
 
   React.useEffect(() => {
     const href = window.location.href;
-    if (router.asPath === urlPrefix) {
-      setCanonicalUrl(href.replace(urlPrefix, ''));
-      setShowCanonical(true);
-      return;
-    }
-
     setCanonicalUrl(href);
     setShowCanonical(false);
-  }, [urlPrefix, router]);
+  }, [router]);
 
   // Metrics
   const yaVerification = configs.yaVerification;

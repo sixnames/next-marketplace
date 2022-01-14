@@ -1,28 +1,11 @@
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import { NextPage } from 'next';
 import * as React from 'react';
-import { ROUTE_CATALOGUE } from '../../../config/common';
-import { alwaysArray } from '../../../lib/arrayUtils';
-import { getSiteInitialData } from '../../../lib/ssrUtils';
+import Catalogue, { CatalogueInterface } from '../../../components/Catalogue';
+import { getCatalogueProps } from '../../../lib/catalogueUtils';
 
-const CataloguePage: NextPage = () => {
-  return <div />;
+const CataloguePage: NextPage<CatalogueInterface> = (props) => {
+  return <Catalogue {...props} />;
 };
 
-export async function getServerSideProps(
-  context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<any>> {
-  const { props } = await getSiteInitialData({
-    context,
-  });
-
-  const filters = alwaysArray(context.query.filters);
-  const filtersPath = filters.join('/');
-  return {
-    redirect: {
-      destination: `${props.urlPrefix}${ROUTE_CATALOGUE}/${context.query.rubricSlug}/${filtersPath}`,
-      permanent: true,
-    },
-  };
-}
-
+export const getServerSideProps = getCatalogueProps;
 export default CataloguePage;

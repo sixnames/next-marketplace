@@ -19,7 +19,6 @@ const CatalogueFilterAttributeOptions: React.FC<CatalogueFilterAttributePropsInt
   onClick,
   attributeIndex,
   basePath,
-  urlPrefix,
 }) => {
   const { configs } = useConfigContext();
   const { showModal } = useAppContext();
@@ -35,7 +34,6 @@ const CatalogueFilterAttributeOptions: React.FC<CatalogueFilterAttributePropsInt
           return (
             <FilterLink
               showAsLink={attribute.showAsLinkInFilter}
-              urlPrefix={urlPrefix}
               onClick={onClick}
               option={option}
               key={option.slug}
@@ -55,7 +53,7 @@ const CatalogueFilterAttributeOptions: React.FC<CatalogueFilterAttributePropsInt
                 attributeSlug: attribute.slug,
                 notShowAsAlphabet: attribute.notShowAsAlphabet,
                 title: attribute.name,
-                basePath: `${urlPrefix}${basePath}`,
+                basePath: basePath,
                 options: attribute.options,
               },
             });
@@ -73,7 +71,6 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
   onClick,
   attributeIndex,
   basePath,
-  urlPrefix,
   rubricSlug,
 }) => {
   const router = useRouter();
@@ -93,7 +90,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
                 className='ml-4 font-normal text-theme cursor-pointer hover:underline'
                 onClick={() => {
                   router
-                    .push(`${urlPrefix}${attribute.clearSlug}`)
+                    .push(`${attribute.clearSlug}`)
                     .then(() => {
                       if (onClick) {
                         onClick();
@@ -112,7 +109,6 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
             attributeIndex={attributeIndex}
             attribute={attribute}
             basePath={basePath}
-            urlPrefix={urlPrefix}
             rubricSlug={rubricSlug}
           />
         </WpAccordion>
@@ -129,7 +125,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
             className='ml-4 font-medium text-theme cursor-pointer hover:underline'
             onClick={() => {
               router
-                .push(`${urlPrefix}${clearSlug}`)
+                .push(`${clearSlug}`)
                 .then(() => {
                   if (onClick) {
                     onClick();
@@ -148,7 +144,6 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
         attributeIndex={attributeIndex}
         attribute={attribute}
         basePath={basePath}
-        urlPrefix={urlPrefix}
         rubricSlug={rubricSlug}
       />
     </div>
@@ -164,7 +159,6 @@ const CatalogueFilterDefault: React.FC<CatalogueFilterInterface> = ({
   isSearchResult,
   clearSlug,
   basePath,
-  urlPrefix,
 }) => {
   return (
     <React.Fragment>
@@ -172,7 +166,6 @@ const CatalogueFilterDefault: React.FC<CatalogueFilterInterface> = ({
         clearSlug={clearSlug}
         selectedAttributes={selectedAttributes}
         onClick={hideFilterHandler}
-        urlPrefix={urlPrefix}
       />
 
       {attributes.map((attribute, attributeIndex) => {
@@ -186,7 +179,6 @@ const CatalogueFilterDefault: React.FC<CatalogueFilterInterface> = ({
             isSearchResult={isSearchResult}
             attributeIndex={attributeIndex}
             basePath={basePath}
-            urlPrefix={urlPrefix}
           />
         );
       })}

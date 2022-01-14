@@ -1,7 +1,6 @@
 import * as React from 'react';
 import TagLink from '../../components/Link/TagLink';
 import { FILTER_SEPARATOR, ROUTE_CATALOGUE } from '../../config/common';
-import { useSiteContext } from '../../context/siteContext';
 import { ProductAttributeInterface } from '../../db/uiInterfaces';
 
 interface CardIconFeaturesInterface {
@@ -15,7 +14,6 @@ const CardIconFeatures: React.FC<CardIconFeaturesInterface> = ({
   rubricSlug,
   className,
 }) => {
-  const { urlPrefix } = useSiteContext();
   if (iconFeatures.length < 1) {
     return null;
   }
@@ -39,7 +37,7 @@ const CardIconFeatures: React.FC<CardIconFeaturesInterface> = ({
                   <li key={`${option?.name}`}>
                     <TagLink
                       icon={option.icon?.icon}
-                      href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`}
+                      href={`${ROUTE_CATALOGUE}/${rubricSlug}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`}
                       testId={`card-icon-option-${name}`}
                     >
                       {name}

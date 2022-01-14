@@ -19,7 +19,7 @@ const CartModal: React.FC<CartModalInterface> = ({ title = 'Товар был д
   const router = useRouter();
   const { hideModal } = useAppContext();
   const { showErrorNotification } = useNotificationsContext();
-  const { cart, loadingCart, urlPrefix } = useSiteContext();
+  const { cart, loadingCart } = useSiteContext();
 
   if (loadingCart && !cart) {
     return (
@@ -65,7 +65,7 @@ const CartModal: React.FC<CartModalInterface> = ({ title = 'Товар был д
         <WpButton
           onClick={() => {
             hideModal();
-            router.push(`${urlPrefix}/cart`).catch(() => {
+            router.push(`/cart`).catch(() => {
               showErrorNotification();
             });
           }}

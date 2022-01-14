@@ -128,7 +128,7 @@ const CardShop: React.FC<CardShopInterface> = ({ shop }) => {
             </div>
           </div>
 
-          <div className='max-w-[340px] grid gap-3 grid-cols-5'>
+          <div className='max-w-[340px] grid gap-3 grid-cols-6'>
             {disabled ? null : (
               <React.Fragment>
                 <div className='col-span-3'>
@@ -146,7 +146,7 @@ const CardShop: React.FC<CardShopInterface> = ({ shop }) => {
                     value={amount}
                   />
                 </div>
-                <div className='col-span-2'>
+                <div className='col-span-3'>
                   <WpButton
                     short
                     size={'small'}

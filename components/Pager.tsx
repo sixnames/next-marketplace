@@ -60,6 +60,9 @@ const Pager: React.FC<PagerInterface> = ({
   }
 
   const prevUrlArray = asPath.split('/').filter((param) => {
+    if (!param) {
+      return false;
+    }
     const paramParts = param.split(FILTER_SEPARATOR);
     return paramParts[0] !== FILTER_PAGE_KEY;
   });

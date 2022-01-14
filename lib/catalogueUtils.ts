@@ -908,8 +908,6 @@ export const getCatalogueData = async ({
       const castedSummary = castSummaryForUI({
         summary: summary,
         attributes,
-        brands,
-        categories,
         locale,
       });
 
@@ -940,19 +938,40 @@ export const getCatalogueData = async ({
         return attribute?.showInSnippet;
       });
 
-      products.push({
+      const finalShopProduct: ShopProductInterface = {
         ...shopProduct,
+        filterSlugs: [],
+        brandSlug: undefined,
+        brandCollectionSlug: undefined,
+        manufacturerSlug: undefined,
         summary: {
           ...castedSummary,
-          shopsCount: shopProduct.shopsIds?.length,
+          filterSlugs: [],
           attributes: [],
+          attributeIds: [],
+          categories: undefined,
+          assets: [],
+          variants: [],
+          snippetTitleI18n: {},
+          cardTitleI18n: {},
+          cardTitle: undefined,
+          titleCategorySlugs: [],
+          descriptionI18n: {},
+          videos: undefined,
+          brandSlug: undefined,
+          brandCollectionSlug: undefined,
+          manufacturerSlug: undefined,
+          originalName: '',
+          nameI18n: undefined,
           listAttributes,
           ratingAttributes,
+          shopsCount: shopProduct.shopsIds?.length,
           shopProductIds: shopProduct.shopProductIds,
           minPrice: noNaN(shopProduct.minPrice),
           maxPrice: noNaN(shopProduct.maxPrice),
         },
-      });
+      };
+      products.push(finalShopProduct);
     });
 
     // get catalogue title

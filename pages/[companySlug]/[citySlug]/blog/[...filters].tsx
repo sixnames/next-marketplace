@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import { GetStaticPathsResult, GetStaticPropsResult } from 'next';
+import { GetServerSidePropsContext, GetServerSidePropsResult, GetStaticPathsResult } from 'next';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import WpBreadcrumbs from '../../../../components/WpBreadcrumbs';
@@ -16,7 +16,6 @@ import {
   CATALOGUE_PRODUCTS_LIMIT,
   DEFAULT_PAGE,
   FILTER_SEPARATOR,
-  ISR_FIVE_SECONDS,
   PAGE_STATE_PUBLISHED,
   REQUEST_METHOD_POST,
   ROUTE_BLOG,
@@ -49,9 +48,8 @@ import { alwaysArray } from '../../../../lib/arrayUtils';
 import { castUrlFilters } from '../../../../lib/castUrlFilters';
 import { castCatalogueParamToObject } from '../../../../lib/catalogueUtils';
 import { getFieldStringLocale } from '../../../../lib/i18n';
-import { getIsrSiteInitialData, IsrContextInterface } from '../../../../lib/isrUtils';
 import { noNaN } from '../../../../lib/numbers';
-import { castDbData } from '../../../../lib/ssrUtils';
+import { castDbData, getSiteInitialData } from '../../../../lib/ssrUtils';
 
 interface BlogListSnippetMetaInterface {
   createdAt?: string | Date | null;
@@ -463,10 +461,10 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   };
 }
 
-export const getStaticProps = async (
-  context: IsrContextInterface,
-): Promise<GetStaticPropsResult<BlogListPageInterface>> => {
-  const { props } = await getIsrSiteInitialData({
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext,
+): Promise<GetServerSidePropsResult<BlogListPageInterface>> => {
+  const { props } = await getSiteInitialData({
     context,
   });
 
@@ -477,7 +475,7 @@ export const getStaticProps = async (
   }
 
   const locale = props.sessionLocale;
-  const filters = alwaysArray(context.params?.filters);
+  const filters = alwaysArray(context.query?.filters);
 
   // Cast selected filters
   const { realFilters, noFiltersSelected } = await castUrlFilters({
@@ -493,8 +491,8 @@ export const getStaticProps = async (
 
   const viewsStage = {
     $addFields: {
-      views: { $max: `$views.${props.companySlug}.${props.sessionCity}` },
-      priorities: { $max: `$priorities.${props.companySlug}.${props.sessionCity}` },
+      views: { $max: `$views.${props.companySlug}.${props.citySlug}` },
+      priorities: { $max: `$priorities.${props.companySlug}.${props.citySlug}` },
     },
   };
 
@@ -836,7 +834,6 @@ export const getStaticProps = async (
     selectedOptions.length > 0 ? ` на тему ${selectedOptions.join(', ')}` : '';
 
   return {
-    revalidate: ISR_FIVE_SECONDS,
     props: {
       ...props,
       posts: castDbData(posts),

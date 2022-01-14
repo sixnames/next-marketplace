@@ -1,4 +1,4 @@
-import { GetStaticPathsResult, GetStaticPropsResult } from 'next';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
 import WpBreadcrumbs from '../../../../../components/WpBreadcrumbs';
 import FormattedDate from '../../../../../components/FormattedDate';
@@ -8,7 +8,6 @@ import WpIcon from '../../../../../components/WpIcon';
 import WpTooltip from '../../../../../components/WpTooltip';
 import {
   FILTER_SEPARATOR,
-  ISR_FIVE_SECONDS,
   REQUEST_METHOD_POST,
   ROUTE_BLOG_WITH_PAGE,
   SORT_DESC,
@@ -36,10 +35,9 @@ import {
 import { useCreateBlogPostLike } from '../../../../../hooks/mutations/useBlogMutations';
 import SiteLayout, { SiteLayoutProviderInterface } from '../../../../../layout/SiteLayout';
 import { getFieldStringLocale } from '../../../../../lib/i18n';
-import { getIsrSiteInitialData, IsrContextInterface } from '../../../../../lib/isrUtils';
 import { getFullName } from '../../../../../lib/nameUtils';
 import { noNaN } from '../../../../../lib/numbers';
-import { castDbData } from '../../../../../lib/ssrUtils';
+import { castDbData, getSiteInitialData } from '../../../../../lib/ssrUtils';
 import { BlogListSnippetTags } from '../[...filters]';
 
 interface BlogListSnippetMetaInterface {
@@ -172,23 +170,15 @@ const BlogPostPage: React.FC<BlogPostPageInterface> = ({ post, ...props }) => {
   );
 };
 
-export async function getStaticPaths(): Promise<GetStaticPathsResult> {
-  const paths: any[] = [];
-  return {
-    paths,
-    fallback: 'blocking',
-  };
-}
-
-export const getStaticProps = async (
-  context: IsrContextInterface,
-): Promise<GetStaticPropsResult<BlogPostPageInterface>> => {
-  const { params } = context;
-  const { props } = await getIsrSiteInitialData({
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext,
+): Promise<GetServerSidePropsResult<BlogPostPageInterface>> => {
+  const { query } = context;
+  const { props } = await getSiteInitialData({
     context,
   });
 
-  if (!props || !props.initialData.configs.showBlog || !params?.blogPostSlug) {
+  if (!props || !props.initialData.configs.showBlog || !query?.blogPostSlug) {
     return {
       notFound: true,
     };
@@ -199,8 +189,7 @@ export const getStaticProps = async (
 
   const viewsStage = {
     $addFields: {
-      views: { $max: `$views.${props.companySlug}.${props.sessionCity}` },
-      priorities: { $max: `$priorities.${props.companySlug}.${props.sessionCity}` },
+      views: { $max: `$views.${props.companySlug}.${props.citySlug}` },
     },
   };
 
@@ -209,7 +198,7 @@ export const getStaticProps = async (
       {
         $match: {
           companySlug: props.companySlug,
-          slug: params.blogPostSlug,
+          slug: query.blogPostSlug,
         },
       },
 
@@ -470,7 +459,6 @@ export const getStaticProps = async (
   };
 
   return {
-    revalidate: ISR_FIVE_SECONDS,
     props: {
       ...props,
       post: castDbData(post),

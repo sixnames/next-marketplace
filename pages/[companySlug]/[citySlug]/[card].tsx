@@ -135,7 +135,7 @@ export async function getServerSideProps(
   // card data
   const rawCardData = await getCardData({
     locale: `${locale}`,
-    city: props.sessionCity,
+    city: props.citySlug,
     slug: `${params?.card}`,
     companyId: props.domainCompany?._id,
     companySlug: props.companySlug,

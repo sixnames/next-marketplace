@@ -142,10 +142,10 @@ export async function getPageInitialState({
     currentCity = castDbData(initialCity);
   }
   if (!currentCity) {
-    const initialCity = await citiesCollection.findOne({ slug: DEFAULT_CITY });
-    currentCity = currentCity = castDbData(initialCity);
+    const defaultCity = await citiesCollection.findOne({ slug: DEFAULT_CITY });
+    currentCity = castDbData(defaultCity);
   }
-  const sessionCity = currentCity?.slug || DEFAULT_CITY;
+  const citySlug = currentCity?.slug || DEFAULT_CITY;
 
   // Domain company
   const domainCompany = await getSsrDomainCompany({ domain });
@@ -160,7 +160,7 @@ export async function getPageInitialState({
   // Page initial data
   const rawInitialData = await getPageInitialData({
     locale: sessionLocale,
-    citySlug: sessionCity,
+    citySlug,
     companySlug: domainCompany ? domainCompany.slug : DEFAULT_COMPANY_SLUG,
   });
   const initialData = castDbData(rawInitialData);
@@ -178,8 +178,8 @@ export async function getPageInitialState({
   const themeStyle = {
     '--theme': `rgb(${finalThemeColor})`,
     '--themeR': `${themeR}`,
-    [`--themeG`]: `${themeG}`,
-    [`--themeB`]: `${themeB}`,
+    '--themeG': `${themeG}`,
+    '--themeB': `${themeB}`,
   };
 
   return {
@@ -188,10 +188,11 @@ export async function getPageInitialState({
     domain,
     initialData,
     themeStyle,
-    urlPrefix: `/${domainCompany?.slug || DEFAULT_COMPANY_SLUG}/${sessionCity}`,
+    // urlPrefix: `/${domainCompany?.slug || DEFAULT_COMPANY_SLUG}/${citySlug}`,
+    urlPrefix: '',
     domainCompany: castDbData(domainCompany),
     companySlug: domainCompany ? domainCompany.slug : DEFAULT_COMPANY_SLUG,
-    sessionCity,
+    citySlug,
     sessionLocale,
     companyNotFound,
     currentCity: currentCity
@@ -268,7 +269,7 @@ interface GetConsoleInitialDataPayloadInterface {
 export async function getConsoleInitialData({
   context,
 }: GetConsoleInitialDataInterface): Promise<GetConsoleInitialDataPayloadInterface> {
-  const { currentCity, sessionCity, sessionLocale, initialData, companySlug, themeStyle } =
+  const { currentCity, citySlug, sessionLocale, initialData, companySlug, themeStyle } =
     await getPageInitialState({ context });
 
   // Session user
@@ -329,7 +330,7 @@ export async function getConsoleInitialData({
       companySlug,
       initialData,
       currentCity,
-      sessionCity,
+      citySlug: citySlug,
       themeStyle,
       sessionLocale,
     },
@@ -358,7 +359,7 @@ interface GetConsoleMainPageDataPayloadInterface {
 export async function getConsoleMainPageData({
   context,
 }: GetConsoleMainPageDataInterface): Promise<GetConsoleMainPageDataPayloadInterface> {
-  const { currentCity, sessionCity, sessionLocale, initialData, companySlug, themeStyle } =
+  const { currentCity, citySlug, sessionLocale, initialData, companySlug, themeStyle } =
     await getPageInitialState({ context });
 
   // Session user
@@ -406,7 +407,7 @@ export async function getConsoleMainPageData({
       companySlug,
       initialData,
       currentCity,
-      sessionCity,
+      citySlug: citySlug,
       themeStyle,
       sessionLocale,
     },
@@ -435,7 +436,7 @@ interface GetAppInitialDataPayloadInterface {
 export async function getAppInitialData({
   context,
 }: GetAppInitialDataInterface): Promise<GetAppInitialDataPayloadInterface> {
-  const { currentCity, sessionCity, sessionLocale, initialData, companySlug, themeStyle } =
+  const { currentCity, citySlug, sessionLocale, initialData, companySlug, themeStyle } =
     await getPageInitialState({ context });
 
   // Session user
@@ -481,7 +482,7 @@ export async function getAppInitialData({
       companySlug,
       initialData,
       currentCity,
-      sessionCity,
+      citySlug,
       sessionLocale,
     },
   };
@@ -494,12 +495,12 @@ export function castDbData(data: any): any {
 interface GetCatalogueCreatedPagesInterface {
   companySlug: string;
   sessionLocale: string;
-  sessionCity: string;
+  citySlug: string;
 }
 
 export async function getCatalogueCreatedPages({
   companySlug,
-  sessionCity,
+  citySlug,
   sessionLocale,
 }: GetCatalogueCreatedPagesInterface): Promise<SiteLayoutCatalogueCreatedPages> {
   const { db } = await getDatabase();
@@ -526,7 +527,7 @@ export async function getCatalogueCreatedPages({
           pipeline: [
             {
               $match: {
-                citySlug: sessionCity,
+                citySlug: citySlug,
                 state: PAGE_STATE_PUBLISHED,
                 $expr: {
                   $eq: ['$pagesGroupId', '$$pagesGroupId'],
@@ -628,7 +629,7 @@ export async function getSiteInitialData({
   // const timeStart = new Date().getTime();
   const {
     currentCity,
-    sessionCity,
+    citySlug,
     sessionLocale,
     initialData,
     domainCompany,
@@ -642,7 +643,7 @@ export async function getSiteInitialData({
   // initial data
   const rawNavRubrics = await getCatalogueNavRubrics({
     locale: sessionLocale,
-    citySlug: sessionCity,
+    citySlug: citySlug,
     companySlug: domainCompany?.slug || DEFAULT_COMPANY_SLUG,
     stickyNavVisibleCategoriesCount: initialData.configs.stickyNavVisibleCategoriesCount,
     stickyNavVisibleAttributesCount: initialData.configs.stickyNavVisibleAttributesCount,
@@ -651,7 +652,7 @@ export async function getSiteInitialData({
   });
   const navRubrics = castDbData(rawNavRubrics);
   const catalogueCreatedPages = await getCatalogueCreatedPages({
-    sessionCity,
+    citySlug: citySlug,
     sessionLocale,
     companySlug,
   });
@@ -666,7 +667,7 @@ export async function getSiteInitialData({
       initialData,
       navRubrics,
       currentCity,
-      sessionCity,
+      citySlug: citySlug,
       sessionLocale,
       domainCompany,
       urlPrefix,

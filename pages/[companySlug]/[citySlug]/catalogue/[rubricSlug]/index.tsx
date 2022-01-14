@@ -7,19 +7,5 @@ const CataloguePage: NextPage<CatalogueInterface> = (props) => {
   return <Catalogue {...props} />;
 };
 
-/*export async function getStaticPaths(): Promise<GetStaticPathsResult> {
-  const paths: any[] = [];
-  return {
-    paths,
-    fallback: 'blocking',
-  };
-}
-
-export async function getStaticProps(
-  context: IsrContextInterface,
-): Promise<GetStaticPropsResult<CatalogueInterface>> {
-  return getCatalogueIsrProps(context);
-}*/
-
 export const getServerSideProps = getCatalogueProps;
 export default CataloguePage;

@@ -17,7 +17,7 @@ import { PageInitialDataPayload } from '../lib/ssrUtils';
 
 export interface PagePropsInterface {
   initialData: PageInitialDataPayload;
-  sessionCity: string;
+  citySlug: string;
   sessionLocale: string;
   initialApolloState?: any;
   currentCity?: CityInterface | null;

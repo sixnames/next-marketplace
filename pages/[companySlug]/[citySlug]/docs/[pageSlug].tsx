@@ -1,16 +1,15 @@
 import * as React from 'react';
-import { GetStaticPathsResult, GetStaticPropsResult, NextPage } from 'next';
+import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import Inner from '../../../../components/Inner';
 import PageEditor from '../../../../components/PageEditor';
 import WpBreadcrumbs from '../../../../components/WpBreadcrumbs';
-import { ISR_FIVE_SECONDS, PAGE_STATE_PUBLISHED } from '../../../../config/common';
+import { PAGE_STATE_PUBLISHED } from '../../../../config/common';
 import { COL_PAGES } from '../../../../db/collectionNames';
 import { getDatabase } from '../../../../db/mongodb';
 import { PageInterface } from '../../../../db/uiInterfaces';
 import SiteLayout, { SiteLayoutProviderInterface } from '../../../../layout/SiteLayout';
 import { getFieldStringLocale } from '../../../../lib/i18n';
-import { getIsrSiteInitialData, IsrContextInterface } from '../../../../lib/isrUtils';
-import { castDbData } from '../../../../lib/ssrUtils';
+import { castDbData, getSiteInitialData } from '../../../../lib/ssrUtils';
 
 interface CreatedPageConsumerInterface {
   page: PageInterface;
@@ -42,23 +41,15 @@ const CreatedPage: NextPage<CreatedPageInterface> = ({ page, ...props }) => {
   );
 };
 
-export async function getStaticPaths(): Promise<GetStaticPathsResult> {
-  const paths: any[] = [];
-  return {
-    paths,
-    fallback: 'blocking',
-  };
-}
-
-export async function getStaticProps(
-  context: IsrContextInterface,
-): Promise<GetStaticPropsResult<CreatedPageInterface>> {
-  const { params } = context;
-  const { props } = await getIsrSiteInitialData({
+export async function getServerSideProps(
+  context: GetServerSidePropsContext,
+): Promise<GetServerSidePropsResult<CreatedPageInterface>> {
+  const { query } = context;
+  const { props } = await getSiteInitialData({
     context,
   });
 
-  if (!props || !params?.pageSlug) {
+  if (!props) {
     return {
       notFound: true,
     };
@@ -67,8 +58,8 @@ export async function getStaticProps(
   const { db } = await getDatabase();
   const pagesCollection = db.collection<PageInterface>(COL_PAGES);
   const initialPage = await pagesCollection.findOne({
-    slug: `${params?.pageSlug}`,
-    citySlug: props.sessionCity,
+    slug: `${query?.pageSlug}`,
+    citySlug: props.citySlug,
     companySlug: props.companySlug,
     state: PAGE_STATE_PUBLISHED,
   });
@@ -86,7 +77,6 @@ export async function getStaticProps(
   };
 
   return {
-    revalidate: ISR_FIVE_SECONDS,
     props: {
       ...props,
       page: castDbData(page),

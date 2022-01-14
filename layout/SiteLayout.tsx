@@ -96,7 +96,7 @@ export interface SiteLayoutProviderInterface
 const SiteLayout: React.FC<SiteLayoutProviderInterface> = ({
   children,
   navRubrics,
-  sessionCity,
+  citySlug,
   domainCompany,
   urlPrefix,
   noIndexFollow,
@@ -106,7 +106,7 @@ const SiteLayout: React.FC<SiteLayoutProviderInterface> = ({
     <SiteUserContextProvider>
       <SiteContextProvider
         navRubrics={navRubrics}
-        sessionCity={sessionCity}
+        sessionCity={citySlug}
         domainCompany={domainCompany}
         urlPrefix={urlPrefix}
       >

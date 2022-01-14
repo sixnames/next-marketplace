@@ -22,7 +22,7 @@ export async function getServerSideProps(
 
     const {
       companySlug,
-      sessionCity,
+      citySlug,
       sessionLocale,
       initialData,
       domainCompany,
@@ -36,7 +36,7 @@ export async function getServerSideProps(
       domainCompany,
       footerPageGroups,
       headerPageGroups,
-      sessionCity,
+      citySlug: citySlug,
       sessionLocale,
       currency: initialData.currency,
       navRubrics,

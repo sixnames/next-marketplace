@@ -87,7 +87,7 @@ const Card: NextPage<CardInterface> = ({ cardData, domainCompany, ...props }) =>
   const titleMiddleConfig = configs.cardTitleMetaMiddle;
   const titlePostfixConfig = configs.cardTitleMetaPostfix;
   const titlePrefix = titlePrefixConfig ? `${titlePrefixConfig} ` : '';
-  const titleMiddle = titlePrefixConfig ? ` ${titleMiddleConfig}` : '';
+  const titleMiddle = titleMiddleConfig ? ` ${titleMiddleConfig}` : '';
   const titlePostfix = titlePostfixConfig ? ` ${titlePostfixConfig}` : '';
   const titleKeywords = `${cardData.cardTitle}${titleMiddle}${titlePrice}`;
   const title = `${titlePrefix}${titleKeywords}${titlePostfix}`;

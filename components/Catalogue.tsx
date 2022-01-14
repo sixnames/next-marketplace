@@ -6,6 +6,7 @@ import {
   CATALOGUE_VIEW_GRID,
   CATALOGUE_VIEW_ROW,
   CATALOGUE_VIEW_STORAGE_KEY,
+  FILTER_PRICE_KEY,
   FILTER_SEPARATOR,
   FILTER_SORT_KEYS,
   REQUEST_METHOD_POST,
@@ -603,7 +604,10 @@ const Catalogue: React.FC<CatalogueInterface> = ({
   }
 
   // seo
-  const titlePrice = ` по цене от ${catalogueData.minPrice} ${currency}`;
+  const priceFilterSelected = catalogueData.selectedAttributes.some(({ slug }) => {
+    return slug === FILTER_PRICE_KEY;
+  });
+  const titlePrice = priceFilterSelected ? '' : ` по цене от ${catalogueData.minPrice} ${currency}`;
 
   // title
   const titlePrefixConfig = configs.catalogueTitleMetaPrefix;

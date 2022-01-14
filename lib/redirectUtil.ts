@@ -8,7 +8,7 @@ export const redirectUtil = (context: GetServerSidePropsContext): GetServerSideP
 
   return {
     redirect: {
-      destination: resolvedUrl.replace(`/${companySlug}/${citySlug}`, ''),
+      destination: resolvedUrl.replace(`/${companySlug}/${citySlug}`, '') || '/',
       permanent: true,
     },
   };

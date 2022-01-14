@@ -117,11 +117,6 @@ export const dbsConfig: GetProdDd[] = [
     dbName: `${process.env.AG_DB_NAME}`,
     algoliaProductsIndexName: `${process.env.AG_ALGOLIA_PRODUCTS_INDEX_NAME}`,
   },
-  {
-    uri: `${process.env.KB_DB_URI}`,
-    dbName: `${process.env.KB_DB_NAME}`,
-    algoliaProductsIndexName: `${process.env.KB_ALGOLIA_PRODUCTS_INDEX_NAME}`,
-  },
 ];
 
 export async function updateIndexes(db: Db) {

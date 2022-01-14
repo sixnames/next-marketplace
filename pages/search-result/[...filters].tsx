@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { ROUTE_SEARCH_RESULT } from '../../../../config/common';
-import { alwaysArray } from '../../../../lib/arrayUtils';
-import { getCatalogueData } from '../../../../lib/catalogueUtils';
-import { castDbData, getSiteInitialData } from '../../../../lib/ssrUtils';
-import Catalogue, { CatalogueInterface } from '../../../../components/Catalogue';
+import Catalogue, { CatalogueInterface } from '../../components/Catalogue';
+import { ROUTE_SEARCH_RESULT } from '../../config/common';
+import { alwaysArray } from '../../lib/arrayUtils';
+import { getCatalogueData } from '../../lib/catalogueUtils';
+import { castDbData, getSiteInitialData } from '../../lib/ssrUtils';
 
 const SearchResultPage: NextPage<CatalogueInterface> = ({ ...props }) => {
   return <Catalogue {...props} isSearchResult />;

@@ -1,8 +1,9 @@
 import { Db } from 'mongodb';
-import { ID_COUNTER_STEP } from '../../config/common';
+import { DEFAULT_COMPANY_SLUG, ID_COUNTER_STEP } from '../../config/common';
+import { noNaN } from '../../lib/numbers';
 import { dbsConfig, getProdDb } from './getProdDb';
-import { COL_BLOG_POSTS, COL_ID_COUNTERS } from '../../db/collectionNames';
-import { BlogPostModel, IdCounterModel } from '../../db/dbModels';
+import { COL_COMPANIES, COL_ID_COUNTERS } from '../../db/collectionNames';
+import { CompanyModel, IdCounterModel } from '../../db/dbModels';
 require('dotenv').config();
 
 export async function getFastNextNumberItemId(collectionName: string, db: Db): Promise<string> {
@@ -28,40 +29,62 @@ export async function getFastNextNumberItemId(collectionName: string, db: Db): P
   return `${updatedCounter.value.counter}`;
 }
 
+/*
+* [
+  '0',//
+  '5',
+  '6',
+  '7',
+  '8',
+  '9',
+  '10',
+  '11',
+  '12',
+  '14',
+  '15',
+  '16',
+  '17',
+  '18',
+  '19',
+  '20',
+  '21',
+  '22',
+  '23',
+  '24',
+  '25',
+  '26'
+]
+* */
+
 async function updateProds() {
+  const slugs: string[] = [DEFAULT_COMPANY_SLUG];
   for await (const dbConfig of dbsConfig) {
     console.log(' ');
     console.log('>>>>>>>>>>>>>>>>>>>>>>>>');
     console.log(' ');
     console.log(`Updating ${dbConfig.dbName} db`);
     const { db, client } = await getProdDb(dbConfig);
-    const postsCollection = db.collection<BlogPostModel>(COL_BLOG_POSTS);
+    const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
 
-    const posts = await postsCollection
-      .aggregate<any>([
+    const companies = await companiesCollection
+      .aggregate<CompanyModel>([
         {
           $sort: {
-            _id: -1,
+            slug: -1,
+          },
+        },
+        {
+          $project: {
+            slug: true,
           },
         },
       ])
       .toArray();
-    for await (const post of posts) {
-      const selectedOptionsSlugs = post.selectedOptionsSlugs || ([] as string[]);
-      const filterSlugs = [...selectedOptionsSlugs];
-      await postsCollection.findOneAndUpdate(
-        {
-          _id: post._id,
-        },
-        {
-          $set: {
-            filterSlugs,
-          },
-          $unset: {
-            selectedOptionsSlugs: '',
-          },
-        },
-      );
+    for await (const company of companies) {
+      const exist = slugs.some((slug) => slug === company.slug);
+      if (!exist) {
+        slugs.push(company.slug);
+      }
     }
 
     // disconnect form db
@@ -69,6 +92,13 @@ async function updateProds() {
     console.log(`Done ${dbConfig.dbName}`);
     console.log(' ');
   }
+
+  console.log(
+    slugs.sort((a, b) => {
+      return noNaN(a) - noNaN(b);
+    }),
+    slugs.length,
+  );
 }
 
 (() => {

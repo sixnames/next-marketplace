@@ -20,10 +20,7 @@ import useValidationSchema from '../../hooks/useValidationSchema';
 import LayoutCard from '../../layout/LayoutCard';
 import { noNaN } from '../../lib/numbers';
 import { phoneToRaw } from '../../lib/phoneUtils';
-import {
-  CartTabIndexType,
-  MakeOrderFormInterface,
-} from '../../pages/[companySlug]/[citySlug]/cart';
+import { CartTabIndexType, MakeOrderFormInterface } from '../../pages/0/msk/cart';
 import { makeAnOrderSchema } from '../../validation/orderSchema';
 import WpButton from '../button/WpButton';
 import CartAside, { UseCartAsideDiscountsValuesInterface } from '../CartAside';

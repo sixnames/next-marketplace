@@ -1,19 +1,19 @@
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import DefaultCart from '../../../components/cart/DefaultCart';
-import EmptyCart from '../../../components/cart/EmptyCart';
-import OneShopCompanyCart from '../../../components/cart/OneShopCompanyCart';
-import Inner from '../../../components/Inner';
-import RequestError from '../../../components/RequestError';
-import Spinner from '../../../components/Spinner';
-import WpBreadcrumbs from '../../../components/WpBreadcrumbs';
-import WpTitle from '../../../components/WpTitle';
-import { useConfigContext } from '../../../context/configContext';
-import { useSiteContext } from '../../../context/siteContext';
-import { MakeAnOrderInputInterface } from '../../../db/dao/orders/makeAnOrder';
-import { CartInterface } from '../../../db/uiInterfaces';
-import SiteLayout, { SiteLayoutProviderInterface } from '../../../layout/SiteLayout';
-import { getSiteInitialData } from '../../../lib/ssrUtils';
+import DefaultCart from '../components/cart/DefaultCart';
+import EmptyCart from '../components/cart/EmptyCart';
+import OneShopCompanyCart from '../components/cart/OneShopCompanyCart';
+import Inner from '../components/Inner';
+import RequestError from '../components/RequestError';
+import Spinner from '../components/Spinner';
+import WpBreadcrumbs from '../components/WpBreadcrumbs';
+import WpTitle from '../components/WpTitle';
+import { useConfigContext } from '../context/configContext';
+import { useSiteContext } from '../context/siteContext';
+import { MakeAnOrderInputInterface } from '../db/dao/orders/makeAnOrder';
+import { CartInterface } from '../db/uiInterfaces';
+import SiteLayout, { SiteLayoutProviderInterface } from '../layout/SiteLayout';
+import { getSiteInitialData } from '../lib/ssrUtils';
 
 export type CartTabIndexType = 0 | 1;
 

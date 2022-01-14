@@ -1282,19 +1282,18 @@ export async function getCatalogueProps(
   const sortedFilters = sortStringArray(filters);
   const filtersPath = filters.join('/');
   const sortedFiltersPath = sortedFilters.join('/');
+  const basePath = `${ROUTE_CATALOGUE}/${rubricSlug}`;
   if (filtersPath !== sortedFiltersPath) {
     return {
       redirect: {
         permanent: true,
-        destination: `${props.urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}/${sortedFiltersPath}`,
+        destination: `${basePath}/${sortedFiltersPath}`,
       },
     };
   }
 
   // catalogue
-  const basePath = `${ROUTE_CATALOGUE}/${rubricSlug}`;
-  const rootPath = `${props.urlPrefix}${basePath}/`;
-  const asPath = `${props.urlPrefix}${basePath}/${sortedFiltersPath}`;
+  const asPath = `${basePath}/${sortedFiltersPath}`;
 
   const rawCatalogueData = await getCatalogueData({
     locale: props.sessionLocale,
@@ -1318,7 +1317,7 @@ export async function getCatalogueProps(
     return {
       redirect: {
         permanent: true,
-        destination: `${props.urlPrefix}`,
+        destination: `/`,
       },
     };
   }
@@ -1327,7 +1326,7 @@ export async function getCatalogueProps(
     return {
       redirect: {
         permanent: true,
-        destination: `${props.urlPrefix}${rawCatalogueData.basePath}`,
+        destination: `${rawCatalogueData.basePath}`,
       },
     };
   }
@@ -1340,7 +1339,7 @@ export async function getCatalogueProps(
     return {
       redirect: {
         permanent: true,
-        destination: `${props.urlPrefix}${rawCatalogueData.basePath}${rawCatalogueData.redirect}`,
+        destination: `${rawCatalogueData.basePath}${rawCatalogueData.redirect}`,
       },
     };
   }
@@ -1348,20 +1347,19 @@ export async function getCatalogueProps(
   /*seo*/
   const noIndexFollow = rawCatalogueData.page > 1;
   const showForIndex =
-    rootPath === asPath && !noIndexFollow ? true : Boolean(rawCatalogueData.textTop?.showForIndex);
+    basePath === asPath && !noIndexFollow ? true : Boolean(rawCatalogueData.textTop?.showForIndex);
   // console.log('seo ', new Date().getTime() - timeStart);
 
   /*seo schema*/
   const siteUrl = `https://${props.domain}`;
   const pageUrl = `${siteUrl}${asPath}`;
-  const seoSchemaBreadcrumbUrlPrefix = `${siteUrl}${props.urlPrefix}`;
   const seoSchemaBreadcrumbs: SeoSchemaBreadcrumbItemInterface[] = rawCatalogueData.breadcrumbs.map(
     ({ href, name }, index) => {
       return {
         '@type': 'ListItem',
         position: index + 2,
         name,
-        item: `${seoSchemaBreadcrumbUrlPrefix}${href}`,
+        item: `${pageUrl}${href}`,
       };
     },
   );
@@ -1391,7 +1389,7 @@ export async function getCatalogueProps(
             '@type': 'ListItem',
             position: 1,
             name: 'Главная',
-            item: seoSchemaBreadcrumbUrlPrefix,
+            item: pageUrl,
           },
           ...seoSchemaBreadcrumbs,
         ],

@@ -2,17 +2,17 @@ import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import { signIn } from 'next-auth/client';
 import { Form, Formik } from 'formik';
-import WpButton from '../../../components/button/WpButton';
-import FormikInput from '../../../components/FormElements/Input/FormikInput';
-import Inner from '../../../components/Inner';
-import WpTitle from '../../../components/WpTitle';
-import { useAppContext } from '../../../context/appContext';
-import { useSiteContext } from '../../../context/siteContext';
-import { getPageSessionUser } from '../../../db/dao/user/getPageSessionUser';
-import useValidationSchema from '../../../hooks/useValidationSchema';
-import SiteLayout, { SiteLayoutProviderInterface } from '../../../layout/SiteLayout';
-import { getSiteInitialData } from '../../../lib/ssrUtils';
-import { signInSchema } from '../../../validation/userSchema';
+import WpButton from '../components/button/WpButton';
+import FormikInput from '../components/FormElements/Input/FormikInput';
+import Inner from '../components/Inner';
+import WpTitle from '../components/WpTitle';
+import { useAppContext } from '../context/appContext';
+import { useSiteContext } from '../context/siteContext';
+import { getPageSessionUser } from '../db/dao/user/getPageSessionUser';
+import useValidationSchema from '../hooks/useValidationSchema';
+import SiteLayout, { SiteLayoutProviderInterface } from '../layout/SiteLayout';
+import { getSiteInitialData } from '../lib/ssrUtils';
+import { signInSchema } from '../validation/userSchema';
 
 const SignInRoute: React.FC = () => {
   const { showLoading, hideLoading } = useAppContext();

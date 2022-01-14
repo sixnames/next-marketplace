@@ -1,13 +1,13 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import WpButton from '../../../components/button/WpButton';
-import Inner from '../../../components/Inner';
-import WpTitle from '../../../components/WpTitle';
-import { ROUTE_PROFILE } from '../../../config/common';
-import { useSiteContext } from '../../../context/siteContext';
-import SiteLayout, { SiteLayoutProviderInterface } from '../../../layout/SiteLayout';
-import { getSiteInitialData } from '../../../lib/ssrUtils';
+import WpButton from '../components/button/WpButton';
+import Inner from '../components/Inner';
+import WpTitle from '../components/WpTitle';
+import { ROUTE_PROFILE } from '../config/common';
+import { useSiteContext } from '../context/siteContext';
+import SiteLayout, { SiteLayoutProviderInterface } from '../layout/SiteLayout';
+import { getSiteInitialData } from '../lib/ssrUtils';
 
 const ThankYouRoute: React.FC = () => {
   const { urlPrefix } = useSiteContext();

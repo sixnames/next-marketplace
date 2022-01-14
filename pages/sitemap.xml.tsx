@@ -5,8 +5,8 @@ import {
   DEFAULT_COMPANY_SLUG,
   DEFAULT_LOCALE,
   PAGE_STATE_PUBLISHED,
+  ROUTE_BLOG,
   ROUTE_BLOG_POST,
-  ROUTE_BLOG_WITH_PAGE,
   ROUTE_CATALOGUE,
 } from '../config/common';
 import {
@@ -89,8 +89,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     .toArray();
 
   for await (const city of cities) {
-    const urlPrefix = `${companySlug}/${city.slug}`;
-
     const companyRubricsMatch = company ? { companyId: company._id } : {};
     const productOptionsAggregation = await shopProductsCollection
       .aggregate<SlugsAggregationInterface>([
@@ -152,11 +150,11 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       const { _id, productSlugs } = template;
 
       // rubric
-      initialSlugs.push(`${urlPrefix}${ROUTE_CATALOGUE}/${_id}`);
+      initialSlugs.push(`${ROUTE_CATALOGUE}/${_id}`);
 
       // products
       productSlugs.forEach((slug) => {
-        initialSlugs.push(`${urlPrefix}/${slug}`);
+        initialSlugs.push(`/${slug}`);
       });
     });
 
@@ -186,11 +184,11 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     // get blog slugs
     const showBlog = getConfigBooleanValue({ configs, slug: 'showBlog' });
     if (showBlog && blogPosts.length > 0) {
-      const blogBasePath = `${urlPrefix}${ROUTE_BLOG_WITH_PAGE}`;
+      const blogBasePath = `${ROUTE_BLOG}`;
       slugsWithLocales.push(blogBasePath);
 
       blogPosts.forEach(({ slug }) => {
-        slugsWithLocales.push(`${urlPrefix}${ROUTE_BLOG_POST}/${slug}`);
+        slugsWithLocales.push(`${ROUTE_BLOG_POST}/${slug}`);
       });
     }
 

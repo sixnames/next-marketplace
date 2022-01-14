@@ -36,7 +36,7 @@ export interface MainPageInterface {
 
 interface GetMainPageDataInterface {
   companySlug: string;
-  sessionCity: string;
+  citySlug: string;
   currency: string;
   sessionLocale: string;
   domainCompany?: CompanyInterface | null;
@@ -50,7 +50,7 @@ export async function getMainPageData({
   domainCompany,
   footerPageGroups,
   headerPageGroups,
-  sessionCity,
+  citySlug,
   sessionLocale,
   currency,
   navRubrics,
@@ -65,7 +65,7 @@ export async function getMainPageData({
       {
         $match: {
           ...companyRubricsMatch,
-          citySlug: sessionCity,
+          citySlug,
           ...ignoreNoImageStage,
         },
       },
@@ -77,8 +77,8 @@ export async function getMainPageData({
           rubricSlug: { $first: `$rubricSlug` },
           brandSlug: { $first: '$brandSlug' },
           brandCollectionSlug: { $first: '$brandCollectionSlug' },
-          views: { $max: `$views.${companySlug}.${sessionCity}` },
-          priorities: { $max: `$priorities.${companySlug}.${sessionCity}` },
+          views: { $max: `$views.${companySlug}.${citySlug}` },
+          priorities: { $max: `$priorities.${companySlug}.${citySlug}` },
           minPrice: {
             $min: '$price',
           },
@@ -149,7 +149,7 @@ export async function getMainPageData({
       {
         $match: {
           ...companyRubricsMatch,
-          citySlug: sessionCity,
+          citySlug: citySlug,
         },
       },
       {

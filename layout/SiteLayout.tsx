@@ -87,7 +87,6 @@ export interface SiteLayoutProviderInterface
   description?: string;
   navRubrics: RubricInterface[];
   previewImage?: string;
-  urlPrefix: string;
   showForIndex: boolean;
   noIndexFollow?: boolean;
   seoSchema?: string;
@@ -96,9 +95,8 @@ export interface SiteLayoutProviderInterface
 const SiteLayout: React.FC<SiteLayoutProviderInterface> = ({
   children,
   navRubrics,
-  sessionCity,
+  citySlug,
   domainCompany,
-  urlPrefix,
   noIndexFollow,
   ...props
 }) => {
@@ -106,9 +104,8 @@ const SiteLayout: React.FC<SiteLayoutProviderInterface> = ({
     <SiteUserContextProvider>
       <SiteContextProvider
         navRubrics={navRubrics}
-        sessionCity={sessionCity}
+        sessionCity={citySlug}
         domainCompany={domainCompany}
-        urlPrefix={urlPrefix}
       >
         <SiteLayoutConsumer {...props} noIndexFollow={Boolean(noIndexFollow)}>
           {children}

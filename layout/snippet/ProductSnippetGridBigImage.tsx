@@ -2,7 +2,6 @@ import * as React from 'react';
 import ControlButton from '../../components/button/ControlButton';
 import WpLink from '../../components/Link/WpLink';
 import WpImage from '../../components/WpImage';
-import { useSiteContext } from '../../context/siteContext';
 import { ProductSnippetInterface } from '../../db/uiInterfaces';
 import ProductAddToCartButton from './ProductAddToCartButton';
 import ProductSnippetEditButton from './ProductSnippetEditButton';
@@ -18,7 +17,6 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
   gridCatalogueColumns = 3,
   imageLoading,
 }) => {
-  const { urlPrefix } = useSiteContext();
   const { summary, available } = shopProduct;
 
   if (!summary) {
@@ -101,7 +99,7 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
               testId={`${testId}-image-grid`}
               target={'_blank'}
               className='block absolute z-10 inset-0 text-indent-full'
-              href={`${urlPrefix}/${slug}`}
+              href={`/${slug}`}
             >
               {snippetTitle}
             </WpLink>
@@ -113,7 +111,7 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
               testId={`${testId}-name-grid`}
               target={'_blank'}
               className='text-lg block text-primary-text hover:no-underline hover:text-primary-text'
-              href={`${urlPrefix}/${slug}`}
+              href={`/${slug}`}
             >
               {snippetTitle}
             </WpLink>

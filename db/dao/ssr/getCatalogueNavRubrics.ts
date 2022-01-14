@@ -5,7 +5,6 @@ import {
   COL_ATTRIBUTES,
   COL_CATALOGUE_NAV,
   COL_CATEGORIES,
-  COL_ICONS,
   COL_OPTIONS,
   COL_RUBRIC_VARIANTS,
   COL_RUBRICS,
@@ -423,7 +422,7 @@ export const createCatalogueNavRubrics = async ({
                   },
                 },
               },
-              {
+              /*{
                 $lookup: {
                   from: COL_ICONS,
                   as: 'icon',
@@ -448,7 +447,7 @@ export const createCatalogueNavRubrics = async ({
                     $arrayElemAt: ['$icon', 0],
                   },
                 },
-              },
+              },*/
             ])
             .toArray();
         }

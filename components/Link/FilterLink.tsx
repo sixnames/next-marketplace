@@ -10,7 +10,6 @@ interface FilterLinkInterface extends Omit<TagLinkInterface, 'href' | 'as'> {
   withCross?: boolean;
   disabled?: boolean;
   postfix?: string | null;
-  urlPrefix?: string;
   showAsLink?: boolean;
 }
 
@@ -23,17 +22,15 @@ const FilterLink: React.FC<FilterLinkInterface> = ({
   postfix,
   onClick,
   size,
-  urlPrefix,
   showAsLink,
   ...props
 }) => {
   const router = useRouter();
   const { name, nextSlug, isSelected } = option;
-  const href = `${urlPrefix}${nextSlug}`;
   return (
     <TagLink
       size={size}
-      href={showAsLink ? href : undefined}
+      href={showAsLink ? nextSlug : undefined}
       isActive={isSelected}
       prefetch={false}
       onClick={() => {
@@ -41,7 +38,7 @@ const FilterLink: React.FC<FilterLinkInterface> = ({
           onClick();
         }
         if (!showAsLink) {
-          router.push(href).catch(console.log);
+          router.push(nextSlug).catch(console.log);
         }
       }}
       className={`${

@@ -155,6 +155,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             },
             {
               $set: {
+                $addToSet: {
+                  barcode: {
+                    $each: bodyItem.barcode,
+                  },
+                },
                 available: noNaN(bodyItem.available),
                 price: noNaN(bodyItem.price),
                 name: bodyItem.name,

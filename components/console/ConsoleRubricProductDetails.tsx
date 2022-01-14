@@ -7,6 +7,7 @@ import useValidationSchema from '../../hooks/useValidationSchema';
 import { updateProductSchema } from '../../validation/productSchema';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
+import FormikMultiLineInput from '../FormElements/Input/FormikMultiLineInput';
 import ProductMainFields, { ProductFormValuesInterface } from '../FormTemplates/ProductMainFields';
 import Inner from '../Inner';
 import WpImage from '../WpImage';
@@ -27,7 +28,8 @@ const ConsoleRubricProductDetails: React.FC<ConsoleRubricProductDetailsInterface
   });
   const [updateProductMutation] = useUpdateProduct();
 
-  const { nameI18n, originalName, descriptionI18n, active, mainImage, barcode, gender } = product;
+  const { nameI18n, originalName, descriptionI18n, active, mainImage, barcode, gender, videos } =
+    product;
 
   const initialValues: ProductFormValuesInterface = {
     productId: `${product._id}`,
@@ -37,6 +39,7 @@ const ConsoleRubricProductDetails: React.FC<ConsoleRubricProductDetailsInterface
     active,
     barcode: barcode || [],
     gender: gender as any,
+    videos: videos || [''],
   };
 
   return (
@@ -73,6 +76,8 @@ const ConsoleRubricProductDetails: React.FC<ConsoleRubricProductDetailsInterface
               {/*<FormikCheckboxLine label={'Активен'} name={'active'} testId={'active'} />*/}
 
               <ProductMainFields />
+
+              <FormikMultiLineInput label={'Видео'} name={'videos'} />
 
               <FixedButtons>
                 <WpButton testId={'submit-product'} type={'submit'}>

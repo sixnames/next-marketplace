@@ -16,7 +16,7 @@ import {
   FILTER_CATEGORY_KEY,
   FILTER_SEPARATOR,
   IMAGE_FALLBACK,
-  ROUTE_BLOG_WITH_PAGE,
+  ROUTE_BLOG,
   ROUTE_CATALOGUE,
   ROUTE_CMS,
   ROUTE_CONSOLE,
@@ -51,7 +51,6 @@ interface HeaderProfileLinkInterface {
 }
 
 const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => {
-  const { urlPrefix } = useSiteContext();
   const signOut = useSignOut();
   const sessionUser = useSiteUserContext();
 
@@ -82,7 +81,7 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
                       <WpLink
                         testId={`${testId}-user-dropdown-profile-link`}
                         className='flex items-center min-h-[3rem] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme hover:no-underline cursor-pointer no-underline'
-                        href={`${urlPrefix}${ROUTE_PROFILE}`}
+                        href={`${ROUTE_PROFILE}`}
                       >
                         <span>Личный кабинет</span>
                       </WpLink>
@@ -136,7 +135,7 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
     <WpLink
       ariaLabel={'Войти'}
       testId={`${testId}-sign-in-link`}
-      href={`${urlPrefix}${ROUTE_SIGN_IN}`}
+      href={`${ROUTE_SIGN_IN}`}
       className={`${middleLinkClassName} pr-2 pl-2`}
     >
       <span className={`relative`}>
@@ -201,7 +200,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
   const { locale } = useLocaleContext();
   const { configs, domainCompany } = useConfigContext();
   const router = useRouter();
-  const { navRubrics, urlPrefix } = useSiteContext();
+  const { navRubrics } = useSiteContext();
   const { query, asPath } = router;
   const { rubricSlug } = query;
   const marker = useShopMarker(domainCompany?.mainShop);
@@ -238,7 +237,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
               <li className='relative' key={rubric.slug}>
                 <WpLink
                   prefetch={false}
-                  href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubric.slug}`}
+                  href={`${ROUTE_CATALOGUE}/${rubric.slug}`}
                   onClick={hideBurgerDropdown}
                   testId={`main-rubric-${rubric.name}`}
                   className={`flex items-center justify-between min-h-[var(--minLinkHeight)] text-xl font-medium flex-grow ${
@@ -261,7 +260,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                               return (
                                 <li key={`${category._id}`}>
                                   <WpLink
-                                    href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubric.slug}/${FILTER_CATEGORY_KEY}${FILTER_SEPARATOR}${category.slug}`}
+                                    href={`${ROUTE_CATALOGUE}/${rubric.slug}/${FILTER_CATEGORY_KEY}${FILTER_SEPARATOR}${category.slug}`}
                                     onClick={hideBurgerDropdown}
                                     className={`flex items-center h-10 ${
                                       isCurrent ? 'text-theme' : 'text-primary-text'
@@ -290,7 +289,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                                 return (
                                   <li key={`${option._id}`}>
                                     <WpLink
-                                      href={`${urlPrefix}${ROUTE_CATALOGUE}/${rubric.slug}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`}
+                                      href={`${ROUTE_CATALOGUE}/${rubric.slug}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`}
                                       onClick={hideBurgerDropdown}
                                       className={`flex items-center h-10 ${
                                         isCurrent ? 'text-theme' : 'text-primary-text'
@@ -308,7 +307,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                                     className='flex items-center h-10 text-theme font-medium cursor-pointer'
                                     onClick={() => {
                                       router
-                                        .push(`${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}`)
+                                        .push(`${ROUTE_CATALOGUE}/${rubricSlug}`)
                                         .then(hideBurgerDropdown)
                                         .catch(console.log);
                                     }}
@@ -349,7 +348,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                     return (
                       <li className='' key={`${page._id}`}>
                         <WpLink
-                          href={`${urlPrefix}${ROUTE_DOCS_PAGES}/${page.slug}`}
+                          href={`${ROUTE_DOCS_PAGES}/${page.slug}`}
                           onClick={hideBurgerDropdown}
                           className={`flex items-center h-10 text-secondary-text`}
                         >
@@ -363,7 +362,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                     <li className=''>
                       <div className=''>
                         <WpLink
-                          href={`${urlPrefix}${ROUTE_CONTACTS}`}
+                          href={`${ROUTE_CONTACTS}`}
                           onClick={hideBurgerDropdown}
                           className={`flex items-center h-10 text-secondary-text`}
                         >
@@ -383,7 +382,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                 className={`flex items-center justify-between text-lg mb-3 font-medium flex-grow text-primary-text`}
                 onClick={() => {
                   hideBurgerDropdown();
-                  window.open(`${urlPrefix}${ROUTE_BLOG_WITH_PAGE}`, '_blank');
+                  window.open(`${ROUTE_BLOG}`, '_blank');
                 }}
               >
                 {blogLinkName}
@@ -442,7 +441,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
           <div
             className='flex items-center min-h-[3rem] text-secondary-text cursor-pointer hover:text-theme transition-colors duration-200'
             onClick={() => {
-              router.push(`${urlPrefix}/#top-shops`).catch(console.log);
+              router.push(`/#top-shops`).catch(console.log);
             }}
           >
             <div className={`relative mr-3`}>
@@ -470,7 +469,6 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
   const { configs, domainCompany } = useConfigContext();
   const { locale } = useLocaleContext();
   const { logoSlug } = useThemeContext();
-  const { urlPrefix } = useSiteContext();
   const [isBurgerDropdownOpen, setIsBurgerDropdownOpen] = React.useState<boolean>(false);
   const [isSearchOpen, setIsSearchOpen] = React.useState<boolean>(false);
   const marker = useShopMarker(domainCompany?.mainShop);
@@ -546,7 +544,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
                             <div
                               className='block py-1.5 px-3 text-primary-text hover:no-underline hover:text-theme'
                               onClick={() => {
-                                window.open(`${urlPrefix}${ROUTE_DOCS_PAGES}/${slug}`, '_blank');
+                                window.open(`${ROUTE_DOCS_PAGES}/${slug}`, '_blank');
                               }}
                             >
                               {name}
@@ -560,7 +558,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
                           <div
                             className='block py-1.5 px-3 text-primary-text hover:no-underline hover:text-theme'
                             onClick={() => {
-                              window.open(`${urlPrefix}${ROUTE_CONTACTS}`, '_blank');
+                              window.open(`${ROUTE_CONTACTS}`, '_blank');
                             }}
                           >
                             {contactsLinkName}
@@ -576,7 +574,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
                   className='flex items-center h-[30px] text-secondary-text hover:no-underline hover:text-theme cursor-pointer'
                   style={topTextColorStyle}
                   onClick={() => {
-                    window.open(`${urlPrefix}${ROUTE_BLOG_WITH_PAGE}`, '_blank');
+                    window.open(`${ROUTE_BLOG}`, '_blank');
                   }}
                 >
                   {blogLinkName}
@@ -655,7 +653,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
                 <div
                   className={`${middleLinkClassName}`}
                   onClick={() => {
-                    router.push(`${urlPrefix}/#top-shops`).catch(console.log);
+                    router.push(`/#top-shops`).catch(console.log);
                   }}
                 >
                   <div className={`relative mr-3`}>
@@ -667,7 +665,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
             </div>
 
             <WpLink
-              href={urlPrefix}
+              href={'/'}
               className='flex items-center flex-shrink-0 w-[var(--logoMobileWidth)] md:w-[var(--logoWidth)]'
               aria-label={'Главная страница'}
             >

@@ -31,6 +31,7 @@ export interface CreateProductInputInterface {
   descriptionI18n?: TranslationModel | null;
   rubricId: string;
   gender: GenderModel;
+  videos?: string[];
 }
 
 export async function createProduct({

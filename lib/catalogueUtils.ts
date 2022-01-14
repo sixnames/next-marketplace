@@ -908,8 +908,6 @@ export const getCatalogueData = async ({
       const castedSummary = castSummaryForUI({
         summary: summary,
         attributes,
-        brands,
-        categories,
         locale,
       });
 
@@ -940,19 +938,40 @@ export const getCatalogueData = async ({
         return attribute?.showInSnippet;
       });
 
-      products.push({
+      const finalShopProduct: ShopProductInterface = {
         ...shopProduct,
+        filterSlugs: [],
+        brandSlug: undefined,
+        brandCollectionSlug: undefined,
+        manufacturerSlug: undefined,
         summary: {
           ...castedSummary,
-          shopsCount: shopProduct.shopsIds?.length,
+          filterSlugs: [],
           attributes: [],
+          attributeIds: [],
+          categories: undefined,
+          assets: [],
+          variants: [],
+          snippetTitleI18n: {},
+          cardTitleI18n: {},
+          cardTitle: undefined,
+          titleCategorySlugs: [],
+          descriptionI18n: {},
+          videos: undefined,
+          brandSlug: undefined,
+          brandCollectionSlug: undefined,
+          manufacturerSlug: undefined,
+          originalName: '',
+          nameI18n: undefined,
           listAttributes,
           ratingAttributes,
+          shopsCount: shopProduct.shopsIds?.length,
           shopProductIds: shopProduct.shopProductIds,
           minPrice: noNaN(shopProduct.minPrice),
           maxPrice: noNaN(shopProduct.maxPrice),
         },
-      });
+      };
+      products.push(finalShopProduct);
     });
 
     // get catalogue title
@@ -1193,8 +1212,13 @@ export const getCatalogueData = async ({
     }
 
     // get min and max prices
-    const sortedPrices = sortObjectsByField(prices, '_id');
-    const minPriceObject = sortedPrices[0];
+    const sortedPrices = [...prices].sort((a, b) => {
+      return a._id - b._id;
+    });
+    let minPriceObject = sortedPrices[0];
+    if (minPriceObject._id === 0) {
+      minPriceObject = sortedPrices[1];
+    }
     const maxPriceObject = sortedPrices[sortedPrices.length - 1];
     const minPrice = noNaN(minPriceObject?._id);
     const maxPrice = noNaN(maxPriceObject?._id);
@@ -1279,23 +1303,22 @@ export async function getCatalogueProps(
   const sortedFilters = sortStringArray(filters);
   const filtersPath = filters.join('/');
   const sortedFiltersPath = sortedFilters.join('/');
+  const basePath = `${ROUTE_CATALOGUE}/${rubricSlug}`;
   if (filtersPath !== sortedFiltersPath) {
     return {
       redirect: {
         permanent: true,
-        destination: `${props.urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}/${sortedFiltersPath}`,
+        destination: `${basePath}/${sortedFiltersPath}`,
       },
     };
   }
 
   // catalogue
-  const basePath = `${ROUTE_CATALOGUE}/${rubricSlug}`;
-  const rootPath = `${props.urlPrefix}${basePath}/`;
-  const asPath = `${props.urlPrefix}${basePath}/${sortedFiltersPath}`;
+  const asPath = `${basePath}/${sortedFiltersPath}`;
 
   const rawCatalogueData = await getCatalogueData({
     locale: props.sessionLocale,
-    city: props.sessionCity,
+    city: props.citySlug,
     companySlug: props.domainCompany?.slug,
     companyId: props.domainCompany?._id,
     currency: props.initialData.currency,
@@ -1315,7 +1338,7 @@ export async function getCatalogueProps(
     return {
       redirect: {
         permanent: true,
-        destination: `${props.urlPrefix}`,
+        destination: `/`,
       },
     };
   }
@@ -1324,7 +1347,7 @@ export async function getCatalogueProps(
     return {
       redirect: {
         permanent: true,
-        destination: `${props.urlPrefix}${rawCatalogueData.basePath}`,
+        destination: `${rawCatalogueData.basePath}`,
       },
     };
   }
@@ -1337,7 +1360,7 @@ export async function getCatalogueProps(
     return {
       redirect: {
         permanent: true,
-        destination: `${props.urlPrefix}${rawCatalogueData.basePath}${rawCatalogueData.redirect}`,
+        destination: `${rawCatalogueData.basePath}${rawCatalogueData.redirect}`,
       },
     };
   }
@@ -1345,20 +1368,19 @@ export async function getCatalogueProps(
   /*seo*/
   const noIndexFollow = rawCatalogueData.page > 1;
   const showForIndex =
-    rootPath === asPath && !noIndexFollow ? true : Boolean(rawCatalogueData.textTop?.showForIndex);
+    basePath === asPath && !noIndexFollow ? true : Boolean(rawCatalogueData.textTop?.showForIndex);
   // console.log('seo ', new Date().getTime() - timeStart);
 
   /*seo schema*/
   const siteUrl = `https://${props.domain}`;
   const pageUrl = `${siteUrl}${asPath}`;
-  const seoSchemaBreadcrumbUrlPrefix = `${siteUrl}${props.urlPrefix}`;
   const seoSchemaBreadcrumbs: SeoSchemaBreadcrumbItemInterface[] = rawCatalogueData.breadcrumbs.map(
     ({ href, name }, index) => {
       return {
         '@type': 'ListItem',
         position: index + 2,
         name,
-        item: `${seoSchemaBreadcrumbUrlPrefix}${href}`,
+        item: `${pageUrl}${href}`,
       };
     },
   );
@@ -1388,7 +1410,7 @@ export async function getCatalogueProps(
             '@type': 'ListItem',
             position: 1,
             name: 'Главная',
-            item: seoSchemaBreadcrumbUrlPrefix,
+            item: pageUrl,
           },
           ...seoSchemaBreadcrumbs,
         ],

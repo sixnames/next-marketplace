@@ -5,14 +5,7 @@ import Inner from '../../components/Inner';
 import WpLink from '../../components/Link/WpLink';
 import WpBreadcrumbs from '../../components/WpBreadcrumbs';
 import WpTitle from '../../components/WpTitle';
-import {
-  DEFAULT_CITY,
-  FILTER_CATEGORY_KEY,
-  FILTER_SEPARATOR,
-  ROUTE_CATALOGUE,
-} from '../../config/common';
-import { useConfigContext } from '../../context/configContext';
-import { useSiteContext } from '../../context/siteContext';
+import { FILTER_CATEGORY_KEY, FILTER_SEPARATOR, ROUTE_CATALOGUE } from '../../config/common';
 import { alwaysArray, alwaysString } from '../../lib/arrayUtils';
 import { sortStringArray } from '../../lib/stringUtils';
 
@@ -25,12 +18,10 @@ const CatalogueHeadWithCategories: React.FC<CatalogueHeadDefaultInterface> = ({
   headCategories,
 }) => {
   const router = useRouter();
-  const { urlPrefix } = useSiteContext();
-  const { currentCity } = useConfigContext();
   const { query } = router;
   return (
     <div className='mb-4 border-b border-border-100'>
-      <WpBreadcrumbs lowBottom config={breadcrumbs} urlPrefix={urlPrefix} />
+      <WpBreadcrumbs lowBottom config={breadcrumbs} />
       <Inner lowBottom lowTop>
         <WpTitle
           centered
@@ -43,7 +34,6 @@ const CatalogueHeadWithCategories: React.FC<CatalogueHeadDefaultInterface> = ({
         {headCategories && headCategories.length > minCategoriesCount ? (
           <div className='flex flex-wrap justify-between md:justify-center md:gap-x-4 gap-y-8 mt-8 mb-8'>
             {headCategories.map(({ _id, icon, name, slug }) => {
-              const companySlug = alwaysString(query.companySlug);
               const rubricSlug = alwaysString(query.rubricSlug);
               const categoryFilter = `${FILTER_CATEGORY_KEY}${FILTER_SEPARATOR}${slug}`;
 
@@ -61,9 +51,7 @@ const CatalogueHeadWithCategories: React.FC<CatalogueHeadDefaultInterface> = ({
               const newPathArray = sortStringArray([...otherCategoryFiltersArray, categoryFilter]);
               const newPathString = newPathArray.join('/');
 
-              const href = `/${companySlug}/${
-                currentCity?.slug || DEFAULT_CITY
-              }${ROUTE_CATALOGUE}/${rubricSlug}/${newPathString}`;
+              const href = `${ROUTE_CATALOGUE}/${rubricSlug}/${newPathString}`;
 
               return (
                 <WpLink

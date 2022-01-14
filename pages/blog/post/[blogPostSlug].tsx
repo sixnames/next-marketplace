@@ -1,43 +1,42 @@
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
-import WpBreadcrumbs from '../../../../../components/WpBreadcrumbs';
-import FormattedDate from '../../../../../components/FormattedDate';
-import Inner from '../../../../../components/Inner';
-import PageEditor from '../../../../../components/PageEditor';
-import WpIcon from '../../../../../components/WpIcon';
-import WpTooltip from '../../../../../components/WpTooltip';
+import FormattedDate from '../../../components/FormattedDate';
+import Inner from '../../../components/Inner';
+import PageEditor from '../../../components/PageEditor';
+import WpBreadcrumbs from '../../../components/WpBreadcrumbs';
+import WpIcon from '../../../components/WpIcon';
+import WpTooltip from '../../../components/WpTooltip';
 import {
   FILTER_SEPARATOR,
   REQUEST_METHOD_POST,
-  ROUTE_BLOG_WITH_PAGE,
+  ROUTE_BLOG,
   SORT_DESC,
-} from '../../../../../config/common';
-import { getConstantTranslation } from '../../../../../config/constantTranslations';
-import { useAppContext } from '../../../../../context/appContext';
-import { useConfigContext } from '../../../../../context/configContext';
-import { useLocaleContext } from '../../../../../context/localeContext';
-import { useSiteContext } from '../../../../../context/siteContext';
-import { useSiteUserContext } from '../../../../../context/siteUserContext';
+} from '../../../config/common';
+import { getConstantTranslation } from '../../../config/constantTranslations';
+import { useAppContext } from '../../../context/appContext';
+import { useConfigContext } from '../../../context/configContext';
+import { useLocaleContext } from '../../../context/localeContext';
+import { useSiteUserContext } from '../../../context/siteUserContext';
 import {
   COL_BLOG_ATTRIBUTES,
   COL_BLOG_LIKES,
   COL_BLOG_POSTS,
   COL_OPTIONS,
   COL_USERS,
-} from '../../../../../db/collectionNames';
-import { UpdateBlogPostCountersInputInterface } from '../../../../../db/dao/blog/updateBlogPostCounters';
-import { getDatabase } from '../../../../../db/mongodb';
+} from '../../../db/collectionNames';
+import { UpdateBlogPostCountersInputInterface } from '../../../db/dao/blog/updateBlogPostCounters';
+import { getDatabase } from '../../../db/mongodb';
 import {
   BlogAttributeInterface,
   BlogPostInterface,
   OptionInterface,
-} from '../../../../../db/uiInterfaces';
-import { useCreateBlogPostLike } from '../../../../../hooks/mutations/useBlogMutations';
-import SiteLayout, { SiteLayoutProviderInterface } from '../../../../../layout/SiteLayout';
-import { getFieldStringLocale } from '../../../../../lib/i18n';
-import { getFullName } from '../../../../../lib/nameUtils';
-import { noNaN } from '../../../../../lib/numbers';
-import { castDbData, getSiteInitialData } from '../../../../../lib/ssrUtils';
+} from '../../../db/uiInterfaces';
+import { useCreateBlogPostLike } from '../../../hooks/mutations/useBlogMutations';
+import SiteLayout, { SiteLayoutProviderInterface } from '../../../layout/SiteLayout';
+import { getFieldStringLocale } from '../../../lib/i18n';
+import { getFullName } from '../../../lib/nameUtils';
+import { noNaN } from '../../../lib/numbers';
+import { castDbData, getSiteInitialData } from '../../../lib/ssrUtils';
 import { BlogListSnippetTags } from '../[...filters]';
 
 interface BlogListSnippetMetaInterface {
@@ -97,7 +96,6 @@ interface BlogPostPageConsumerInterface {
 const BlogPostPageConsumer: React.FC<BlogPostPageConsumerInterface> = ({ post }) => {
   const { sessionCity, companySlug } = useAppContext();
   const { locale } = useLocaleContext();
-  const { urlPrefix } = useSiteContext();
   const sessionUser = useSiteUserContext();
   const blogLinkName = getConstantTranslation(`nav.blog.${locale}`);
   const [isLikeAllowed, setIsLikeAllowed] = React.useState<boolean>(false);
@@ -126,12 +124,11 @@ const BlogPostPageConsumer: React.FC<BlogPostPageConsumerInterface> = ({ post })
   return (
     <div className='mb-12'>
       <WpBreadcrumbs
-        urlPrefix={urlPrefix}
         currentPageName={`${post.title}`}
         config={[
           {
             name: blogLinkName,
-            href: ROUTE_BLOG_WITH_PAGE,
+            href: ROUTE_BLOG,
           },
         ]}
       />

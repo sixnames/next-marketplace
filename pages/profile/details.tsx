@@ -12,7 +12,6 @@ import StringButton from '../../components/StringButton';
 import WpTitle from '../../components/WpTitle';
 import { ROUTE_SIGN_IN } from '../../config/common';
 import { CONFIRM_MODAL, UPDATE_MY_PASSWORD_MODAL } from '../../config/modalVariants';
-import { useSiteContext } from '../../context/siteContext';
 import { useSiteUserContext } from '../../context/siteUserContext';
 import { getPageSessionUser } from '../../db/dao/user/getPageSessionUser';
 import { UpdateMyProfileInputInterface } from '../../db/dao/user/updateMyProfile';
@@ -31,7 +30,6 @@ import { updateMyProfileSchema } from '../../validation/userSchema';
 
 const ProfileDetailsRoute: React.FC = () => {
   const router = useRouter();
-  const { urlPrefix } = useSiteContext();
   const sessionUser = useSiteUserContext();
   const { showModal, showLoading, showErrorNotification, hideLoading, hideModal } =
     useMutationCallbacks({
@@ -78,7 +76,7 @@ const ProfileDetailsRoute: React.FC = () => {
                         redirect: false,
                       })
                         .then(() => {
-                          router.push(`${urlPrefix}${ROUTE_SIGN_IN}`).catch((e) => {
+                          router.push(`${ROUTE_SIGN_IN}`).catch((e) => {
                             console.log(e);
                           });
                         })
@@ -169,7 +167,7 @@ const ProfileDetailsRoute: React.FC = () => {
                                   redirect: false,
                                 })
                                   .then(() => {
-                                    router.push(`${urlPrefix}${ROUTE_SIGN_IN}`).catch((e) => {
+                                    router.push(`${ROUTE_SIGN_IN}`).catch((e) => {
                                       console.log(e);
                                     });
                                   })
@@ -227,7 +225,7 @@ export async function getServerSideProps(
     return {
       redirect: {
         permanent: false,
-        destination: `${props.urlPrefix}${ROUTE_SIGN_IN}`,
+        destination: ROUTE_SIGN_IN,
       },
     };
   }

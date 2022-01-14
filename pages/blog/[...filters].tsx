@@ -20,13 +20,11 @@ import {
   REQUEST_METHOD_POST,
   ROUTE_BLOG,
   ROUTE_BLOG_POST,
-  ROUTE_BLOG_WITH_PAGE,
   SORT_DESC,
 } from '../../config/common';
 import { getConstantTranslation } from '../../config/constantTranslations';
 import { useAppContext } from '../../context/appContext';
 import { useConfigContext } from '../../context/configContext';
-import { useSiteContext } from '../../context/siteContext';
 import {
   COL_BLOG_ATTRIBUTES,
   COL_BLOG_LIKES,
@@ -101,7 +99,6 @@ export const BlogListSnippetTags: React.FC<BlogListSnippetTagsInterface> = ({
   attributes,
   theme,
 }) => {
-  const { urlPrefix } = useSiteContext();
   if (!attributes) {
     return null;
   }
@@ -117,7 +114,7 @@ export const BlogListSnippetTags: React.FC<BlogListSnippetTagsInterface> = ({
               return (
                 <TagLink
                   size={'small'}
-                  href={`${urlPrefix}${ROUTE_BLOG}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`}
+                  href={`${ROUTE_BLOG}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`}
                   theme={theme}
                   key={`${option._id}`}
                 >
@@ -140,7 +137,6 @@ interface BlogListSnippetInterface {
 }
 
 const BlogListSnippet: React.FC<BlogListSnippetInterface> = ({ post, showViews }) => {
-  const { urlPrefix } = useSiteContext();
   return (
     <div className={`${snippetClassName} flex flex-col`}>
       {/*image*/}
@@ -155,7 +151,7 @@ const BlogListSnippet: React.FC<BlogListSnippetInterface> = ({ post, showViews }
         <WpLink
           testId={`${post.title}-image-link`}
           className='block absolute z-20 inset-0 text-indent-full'
-          href={`${urlPrefix}${ROUTE_BLOG_POST}/${post.slug}`}
+          href={`${ROUTE_BLOG_POST}/${post.slug}`}
         >
           {post.title}
         </WpLink>
@@ -167,7 +163,7 @@ const BlogListSnippet: React.FC<BlogListSnippetInterface> = ({ post, showViews }
           <WpLink
             testId={`${post.title}-title-link`}
             className='block text-primary-text hover:no-underline'
-            href={`${urlPrefix}${ROUTE_BLOG_POST}/${post.slug}`}
+            href={`${ROUTE_BLOG_POST}/${post.slug}`}
           >
             {post.title}
           </WpLink>
@@ -194,7 +190,6 @@ const BlogListSnippet: React.FC<BlogListSnippetInterface> = ({ post, showViews }
 };
 
 const BlogListMainSnippet: React.FC<BlogListSnippetInterface> = ({ post, showViews }) => {
-  const { urlPrefix } = useSiteContext();
   return (
     <div className={`${snippetClassName} min-h-[300px] sm:col-span-2`}>
       <WpImage
@@ -230,7 +225,7 @@ const BlogListMainSnippet: React.FC<BlogListSnippetInterface> = ({ post, showVie
       <WpLink
         testId={`${post.title}-image-link`}
         className='block absolute z-20 inset-0 text-indent-full'
-        href={`${urlPrefix}${ROUTE_BLOG_POST}/${post.slug}`}
+        href={`${ROUTE_BLOG_POST}/${post.slug}`}
       >
         {post.title}
       </WpLink>
@@ -239,8 +234,6 @@ const BlogListMainSnippet: React.FC<BlogListSnippetInterface> = ({ post, showVie
 };
 
 const BlogListTopSnippet: React.FC<BlogListSnippetInterface> = ({ post, showViews }) => {
-  const { urlPrefix } = useSiteContext();
-
   return (
     <div className='py-4'>
       {/*title*/}
@@ -248,7 +241,7 @@ const BlogListTopSnippet: React.FC<BlogListSnippetInterface> = ({ post, showView
         <WpLink
           testId={`${post.title}-title-link`}
           className='block text-primary-text hover:no-underline'
-          href={`${urlPrefix}${ROUTE_BLOG_POST}/${post.slug}`}
+          href={`${ROUTE_BLOG_POST}/${post.slug}`}
         >
           {post.title}
         </WpLink>
@@ -276,7 +269,6 @@ const BlogFilterAttribute: React.FC<BlogFilterAttributeInterface> = ({
   attribute,
   attributeIndex,
 }) => {
-  const { urlPrefix } = useSiteContext();
   const { name, clearSlug, options, isSelected } = attribute;
 
   return (
@@ -284,7 +276,7 @@ const BlogFilterAttribute: React.FC<BlogFilterAttributeInterface> = ({
       <div className='flex items-baseline justify-between mb-4'>
         <span className='text-lg font-bold'>{name}</span>
         {isSelected ? (
-          <WpLink href={`${urlPrefix}${clearSlug}`} className='font-medium text-theme'>
+          <WpLink href={`${clearSlug}`} className='font-medium text-theme'>
             Сбросить
           </WpLink>
         ) : null}
@@ -293,15 +285,7 @@ const BlogFilterAttribute: React.FC<BlogFilterAttributeInterface> = ({
       <div className='flex flex-wrap gap-2'>
         {options.map((option, optionIndex) => {
           const testId = `catalogue-option-${attributeIndex}-${optionIndex}`;
-          return (
-            <FilterLink
-              urlPrefix={urlPrefix}
-              size={'small'}
-              option={option}
-              key={option.slug}
-              testId={testId}
-            />
-          );
+          return <FilterLink size={'small'} option={option} key={option.slug} testId={testId} />;
         })}
       </div>
     </div>
@@ -479,12 +463,11 @@ export const getServerSideProps = async (
 
   const { db } = await getDatabase();
   const blogPostsCollection = db.collection<BlogPostInterface>(COL_BLOG_POSTS);
-  const basePath = ROUTE_BLOG_WITH_PAGE;
+  const basePath = ROUTE_BLOG;
 
   const viewsStage = {
     $addFields: {
       views: { $max: `$views.${props.companySlug}.${props.citySlug}` },
-      priorities: { $max: `$priorities.${props.companySlug}.${props.citySlug}` },
     },
   };
 

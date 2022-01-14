@@ -15,7 +15,6 @@ import {
   ROUTE_CATALOGUE,
 } from '../../config/common';
 import { useConfigContext } from '../../context/configContext';
-import { useSiteContext } from '../../context/siteContext';
 import { CardLayoutInterface } from '../../db/uiInterfaces';
 import useCardData from '../../hooks/useCardData';
 import { noNaN } from '../../lib/numbers';
@@ -39,7 +38,6 @@ const stickyClassName = 'sticky top-20';
 const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlug }) => {
   const router = useRouter();
   const { configs } = useConfigContext();
-  const { urlPrefix } = useSiteContext();
   const {
     isSingleImage,
     similarProducts,
@@ -81,7 +79,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({ cardData, compan
 
   return (
     <article className='pb-20 pt-8 lg:pt-0' data-cy={`card`}>
-      <WpBreadcrumbs urlPrefix={urlPrefix} currentPageName={cardTitle} config={cardBreadcrumbs} />
+      <WpBreadcrumbs currentPageName={cardTitle} config={cardBreadcrumbs} />
 
       <div className='mb-28 relative'>
         <Inner lowBottom lowTop>
@@ -132,7 +130,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({ cardData, compan
                       onClick={() => {
                         router
                           .push(
-                            `${urlPrefix}${ROUTE_CATALOGUE}/${product.rubricSlug}/${FILTER_BRAND_KEY}${FILTER_SEPARATOR}${brand.itemId}`,
+                            `${ROUTE_CATALOGUE}/${product.rubricSlug}/${FILTER_BRAND_KEY}${FILTER_SEPARATOR}${brand.itemId}`,
                           )
                           .catch(console.log);
                       }}
@@ -238,7 +236,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({ cardData, compan
                                   {isCurrent ? null : (
                                     <WpLink
                                       className='absolute inset-0 z-30 block text-indent-full overflow-hidden'
-                                      href={`${urlPrefix}/${summary?.slug}`}
+                                      href={`/${summary?.slug}`}
                                     >
                                       {name}
                                     </WpLink>
@@ -299,7 +297,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({ cardData, compan
                             onClick={() => {
                               router
                                 .push(
-                                  `${urlPrefix}${ROUTE_CATALOGUE}/${product.rubricSlug}/${FILTER_BRAND_KEY}${FILTER_SEPARATOR}${brand.itemId}`,
+                                  `${ROUTE_CATALOGUE}/${product.rubricSlug}/${FILTER_BRAND_KEY}${FILTER_SEPARATOR}${brand.itemId}`,
                                 )
                                 .catch(console.log);
                             }}
@@ -337,7 +335,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({ cardData, compan
                             onClick={() => {
                               router
                                 .push(
-                                  `${urlPrefix}${ROUTE_CATALOGUE}/${product.rubricSlug}/${FILTER_BRAND_KEY}${FILTER_SEPARATOR}${brand.itemId}/${FILTER_BRAND_COLLECTION_KEY}${FILTER_SEPARATOR}${brandCollection.itemId}`,
+                                  `${ROUTE_CATALOGUE}/${product.rubricSlug}/${FILTER_BRAND_KEY}${FILTER_SEPARATOR}${brand.itemId}/${FILTER_BRAND_COLLECTION_KEY}${FILTER_SEPARATOR}${brandCollection.itemId}`,
                                 )
                                 .catch(console.log);
                             }}

@@ -7,7 +7,6 @@ import FormikInput from '../components/FormElements/Input/FormikInput';
 import Inner from '../components/Inner';
 import WpTitle from '../components/WpTitle';
 import { useAppContext } from '../context/appContext';
-import { useSiteContext } from '../context/siteContext';
 import { getPageSessionUser } from '../db/dao/user/getPageSessionUser';
 import useValidationSchema from '../hooks/useValidationSchema';
 import SiteLayout, { SiteLayoutProviderInterface } from '../layout/SiteLayout';
@@ -16,7 +15,6 @@ import { signInSchema } from '../validation/userSchema';
 
 const SignInRoute: React.FC = () => {
   const { showLoading, hideLoading } = useAppContext();
-  const { urlPrefix } = useSiteContext();
   const [isError, setIsError] = React.useState<boolean>(false);
   const validationSchema = useValidationSchema({
     schema: signInSchema,
@@ -46,7 +44,7 @@ const SignInRoute: React.FC = () => {
 
               if (res.ok) {
                 setIsError(false);
-                window.location.pathname = urlPrefix;
+                window.location.pathname = '/';
                 return;
               }
 
@@ -125,7 +123,7 @@ export async function getServerSideProps(
     return {
       redirect: {
         permanent: false,
-        destination: props.urlPrefix,
+        destination: '/',
       },
     };
   }

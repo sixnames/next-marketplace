@@ -23,7 +23,7 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
   mobileTopFilters,
 }) => {
   const [topFiltersVisible, setTopFiltersVisible] = React.useState<boolean>(false);
-  const { urlPrefix, domainCompany } = useSiteContext();
+  const { domainCompany } = useSiteContext();
   const { configs } = useConfigContext();
   const configTitle = configs.seoTextTitle;
   const configSeoContent = configs.seoText;
@@ -275,7 +275,7 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
             <div className='hidden lg:flex flex-wrap gap-3'>
               {topFilters.map(({ name, href }) => {
                 return (
-                  <TagLink href={`${urlPrefix}${href}`} key={href}>
+                  <TagLink href={`${href}`} key={href}>
                     {name}
                   </TagLink>
                 );
@@ -287,7 +287,7 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
               <div className='flex flex-wrap gap-3'>
                 {mobileTopFilters.visible.map(({ name, href }) => {
                   return (
-                    <TagLink href={`${urlPrefix}${href}`} key={href}>
+                    <TagLink href={`${href}`} key={href}>
                       {name}
                     </TagLink>
                   );
@@ -298,7 +298,7 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
                 <div className='flex flex-wrap gap-3 mt-3'>
                   {mobileTopFilters.hidden.map(({ name, href }) => {
                     return (
-                      <TagLink href={`${urlPrefix}${href}`} key={href}>
+                      <TagLink href={`${href}`} key={href}>
                         {name}
                       </TagLink>
                     );

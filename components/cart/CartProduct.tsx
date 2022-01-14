@@ -38,7 +38,7 @@ const CartProductFrame: React.FC<CartProductFrameInterface> = ({
   slug,
   defaultView,
 }) => {
-  const { deleteProductFromCart, urlPrefix } = useSiteContext();
+  const { deleteProductFromCart } = useSiteContext();
 
   return (
     <div className='space-y-4'>
@@ -63,7 +63,7 @@ const CartProductFrame: React.FC<CartProductFrameInterface> = ({
             <WpLink
               target={'_blank'}
               className='block absolute z-10 inset-0 text-indent-full'
-              href={`${urlPrefix}/${slug}`}
+              href={`/${slug}`}
             >
               {snippetTitle}
             </WpLink>
@@ -106,7 +106,6 @@ const CartProductMainData: React.FC<CartProductMainDataInterface> = ({
   slug,
   name,
 }) => {
-  const { urlPrefix } = useSiteContext();
   return (
     <React.Fragment>
       <div className='text-secondary-text mb-3'>{`Артикул: ${itemId}`}</div>
@@ -114,7 +113,7 @@ const CartProductMainData: React.FC<CartProductMainDataInterface> = ({
         <WpLink
           target={'_blank'}
           className='block text-primary-text hover:no-underline hover:text-primary-text font-medium text-lg lg:text-2xl'
-          href={`${urlPrefix}/${slug}`}
+          href={`/${slug}`}
         >
           {snippetTitle}
         </WpLink>

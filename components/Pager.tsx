@@ -20,7 +20,6 @@ interface PagerInterface {
   setPage?: (page: number) => void;
   className?: string;
   showMoreHandler?: (nextPath: string, page: number) => void;
-  urlPrefix?: string;
   isLoading?: boolean;
 }
 
@@ -47,7 +46,6 @@ const Pager: React.FC<PagerInterface> = ({
   totalPages,
   setPage,
   className,
-  urlPrefix = '',
   isLoading,
 }) => {
   const { query, asPath } = useRouter();
@@ -62,12 +60,6 @@ const Pager: React.FC<PagerInterface> = ({
   }
 
   const prevUrlArray = asPath.split('/').filter((param) => {
-    const urlPrefixArray = urlPrefix?.split('/').filter((param) => param);
-
-    if (!param || urlPrefixArray.includes(param)) {
-      return false;
-    }
-
     const paramParts = param.split(FILTER_SEPARATOR);
     return paramParts[0] !== FILTER_PAGE_KEY;
   });
@@ -79,7 +71,7 @@ const Pager: React.FC<PagerInterface> = ({
           let children;
           const arrowClassName = `${disabled ? 'pointer-events-none opacity-50' : ''}`;
           const initialNextUrl = getNextPath(prevUrlArray, page, query.search);
-          const nextUrl = `${urlPrefix}${initialNextUrl}`;
+          const nextUrl = initialNextUrl;
 
           const onClick = (e: any) => {
             if (setPage) {

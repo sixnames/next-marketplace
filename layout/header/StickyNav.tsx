@@ -41,8 +41,6 @@ export interface StickyNavDropdownInterface extends StylesInterface {
   categories: CategoryInterface[];
   hideDropdown: () => void;
   parentHref: string;
-  // rubricSlug: string;
-  // urlPrefix?: string;
 }
 
 export interface StickyNavDropdownGlobalInterface extends StickyNavDropdownInterface {
@@ -104,7 +102,6 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({
 }) => {
   const { configs } = useConfigContext();
   const { asPath } = useRouter();
-  const { urlPrefix } = useSiteContext();
   const { name, slug, attributes } = rubric;
   const [isDropdownVisible, setIsDropdownVisible] = React.useState<boolean>(true);
 
@@ -113,7 +110,7 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({
   }, []);
 
   // Get rubric slug from product card path
-  const path = `${urlPrefix}${ROUTE_CATALOGUE}/${slug}`;
+  const path = `${ROUTE_CATALOGUE}/${slug}`;
   const reg = RegExp(`${path}`);
   const isCurrent = reg.test(asPath) || slug === currentRubricSlug;
   const renderCategoriesAsNavItem =

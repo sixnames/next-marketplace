@@ -137,23 +137,22 @@ export async function getServerSideProps(
     return {
       redirect: {
         permanent: false,
-        destination: `${props.urlPrefix}`,
+        destination: '/',
       },
     };
   }
 
   /*seo schema*/
-  const asPath = `${props.urlPrefix}/${rawCardData.product.slug}`;
+  const asPath = `/${rawCardData.product.slug}`;
   const siteUrl = `https://${props.domain}`;
   const pageUrl = `${siteUrl}${asPath}`;
-  const seoSchemaBreadcrumbUrlPrefix = `${siteUrl}${props.urlPrefix}`;
   const seoSchemaBreadcrumbs: SeoSchemaBreadcrumbItemInterface[] = rawCardData.cardBreadcrumbs.map(
     ({ href, name }, index) => {
       return {
         '@type': 'ListItem',
         position: index + 2,
         name,
-        item: `${seoSchemaBreadcrumbUrlPrefix}${href}`,
+        item: `${siteUrl}${href}`,
       };
     },
   );
@@ -199,7 +198,7 @@ export async function getServerSideProps(
             '@type': 'ListItem',
             position: 1,
             name: 'Главная',
-            item: seoSchemaBreadcrumbUrlPrefix,
+            item: siteUrl,
           },
           ...seoSchemaBreadcrumbs,
         ],

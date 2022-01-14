@@ -884,7 +884,6 @@ export interface BreadcrumbsInterface {
   lowTop?: boolean;
   lowBottom?: boolean;
   lowWrapper?: boolean;
-  urlPrefix?: string;
   centered?: boolean;
 }
 

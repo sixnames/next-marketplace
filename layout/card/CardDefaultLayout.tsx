@@ -15,7 +15,6 @@ import {
   ROUTE_CATALOGUE,
 } from '../../config/common';
 import { useConfigContext } from '../../context/configContext';
-import { useSiteContext } from '../../context/siteContext';
 import { CardLayoutInterface } from '../../db/uiInterfaces';
 import useCardData from '../../hooks/useCardData';
 import { noNaN } from '../../lib/numbers';
@@ -75,7 +74,6 @@ const CardTitle: React.FC<CardTitleInterface> = ({
 const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlug }) => {
   const router = useRouter();
   const { configs } = useConfigContext();
-  const { urlPrefix } = useSiteContext();
   const {
     similarProducts,
     showFeaturesSection,
@@ -114,7 +112,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
 
   return (
     <article className='pb-20 pt-8 lg:pt-0' data-cy={`card`}>
-      <WpBreadcrumbs urlPrefix={urlPrefix} currentPageName={cardTitle} config={cardBreadcrumbs} />
+      <WpBreadcrumbs currentPageName={cardTitle} config={cardBreadcrumbs} />
 
       <div className='mb-28 relative'>
         <Inner className='relative z-20' lowBottom lowTop>
@@ -198,7 +196,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                                   className={isCurrent ? `pointer-events-none` : ``}
                                   key={`${option?.name}`}
                                   isActive={isCurrent}
-                                  href={`${urlPrefix}/${productSlug}`}
+                                  href={`/${productSlug}`}
                                 >
                                   {name}
                                 </TagLink>
@@ -334,7 +332,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                             onClick={() => {
                               router
                                 .push(
-                                  `${urlPrefix}${ROUTE_CATALOGUE}/${product.rubricSlug}/${FILTER_BRAND_KEY}${FILTER_SEPARATOR}${brand.itemId}`,
+                                  `${ROUTE_CATALOGUE}/${product.rubricSlug}/${FILTER_BRAND_KEY}${FILTER_SEPARATOR}${brand.itemId}`,
                                 )
                                 .catch(console.log);
                             }}
@@ -372,7 +370,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                             onClick={() => {
                               router
                                 .push(
-                                  `${urlPrefix}${ROUTE_CATALOGUE}/${product.rubricSlug}/${FILTER_BRAND_KEY}${FILTER_SEPARATOR}${brand.itemId}/${FILTER_BRAND_COLLECTION_KEY}${FILTER_SEPARATOR}${brandCollection.itemId}`,
+                                  `${ROUTE_CATALOGUE}/${product.rubricSlug}/${FILTER_BRAND_KEY}${FILTER_SEPARATOR}${brand.itemId}/${FILTER_BRAND_COLLECTION_KEY}${FILTER_SEPARATOR}${brandCollection.itemId}`,
                                 )
                                 .catch(console.log);
                             }}

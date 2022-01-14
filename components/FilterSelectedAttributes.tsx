@@ -10,7 +10,6 @@ interface FilterSelectedAttributesInterface {
   selectedAttributes?: CatalogueFilterAttributeInterface[] | null;
   onClick?: () => void | null;
   clearSlug: string;
-  urlPrefix?: string;
 }
 
 function getSelectedOptionName(option: CatalogueFilterAttributeOptionInterface): string {
@@ -36,7 +35,6 @@ const FilterSelectedAttributes: React.FC<FilterSelectedAttributesInterface> = ({
   selectedAttributes,
   onClick,
   clearSlug,
-  urlPrefix,
 }) => {
   const router = useRouter();
   if (!selectedAttributes || selectedAttributes.length < 1) {
@@ -50,7 +48,7 @@ const FilterSelectedAttributes: React.FC<FilterSelectedAttributesInterface> = ({
         <div
           className='ml-4 text-theme cursor-pointer hover:underline'
           onClick={() => {
-            router.push(`${urlPrefix}${clearSlug}`).then(() => {
+            router.push(`${clearSlug}`).then(() => {
               if (onClick) {
                 onClick();
               }
@@ -72,7 +70,7 @@ const FilterSelectedAttributes: React.FC<FilterSelectedAttributesInterface> = ({
                       <div
                         className='text-secondary-text hover:no-underline hover:text-theme transition-all cursor-pointer flex items-baseline justify-between'
                         onClick={() => {
-                          router.push(`${urlPrefix}${option.nextSlug}`).then(() => {
+                          router.push(`${option.nextSlug}`).then(() => {
                             if (onClick) {
                               onClick();
                             }

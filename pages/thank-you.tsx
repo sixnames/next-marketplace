@@ -5,12 +5,10 @@ import WpButton from '../components/button/WpButton';
 import Inner from '../components/Inner';
 import WpTitle from '../components/WpTitle';
 import { ROUTE_PROFILE } from '../config/common';
-import { useSiteContext } from '../context/siteContext';
 import SiteLayout, { SiteLayoutProviderInterface } from '../layout/SiteLayout';
 import { getSiteInitialData } from '../lib/ssrUtils';
 
 const ThankYouRoute: React.FC = () => {
-  const { urlPrefix } = useSiteContext();
   const router = useRouter();
 
   return (
@@ -30,7 +28,7 @@ const ThankYouRoute: React.FC = () => {
             frameClassName={'w-auto'}
             theme={'secondary'}
             onClick={() => {
-              router.push(urlPrefix).catch(console.log);
+              router.push('/').catch(console.log);
             }}
           >
             Продолжить покупки
@@ -38,7 +36,7 @@ const ThankYouRoute: React.FC = () => {
           <WpButton
             frameClassName={'w-auto'}
             onClick={() => {
-              router.push(`${urlPrefix}${ROUTE_PROFILE}`).catch(console.log);
+              router.push(`${ROUTE_PROFILE}`).catch(console.log);
             }}
             theme={'secondary'}
           >

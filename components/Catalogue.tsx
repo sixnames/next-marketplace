@@ -18,7 +18,6 @@ import {
 import { CATALOGUE_HEAD_LAYOUT_WITH_CATEGORIES } from '../config/constantSelects';
 import { useConfigContext } from '../context/configContext';
 import { useLocaleContext } from '../context/localeContext';
-import { useSiteContext } from '../context/siteContext';
 import { useSiteUserContext } from '../context/siteUserContext';
 import { CatalogueBreadcrumbModel, SeoContentModel } from '../db/dbModels';
 import { CatalogueDataInterface, CategoryInterface } from '../db/uiInterfaces';
@@ -77,9 +76,8 @@ const CatalogueHead: React.FC<CatalogueHeadInterface> = ({
 }) => {
   const router = useRouter();
   const sessionUser = useSiteUserContext();
-  const { urlPrefix } = useSiteContext();
   const { asPath } = router;
-  const basePath = `${urlPrefix}${ROUTE_CATALOGUE}/${rubricSlug}`;
+  const basePath = `${ROUTE_CATALOGUE}/${rubricSlug}`;
   const showIndexCheckBox = asPath !== basePath;
 
   let catalogueHead;
@@ -143,7 +141,6 @@ interface CatalogueConsumerInterface {
   companySlug?: string;
   companyId?: string;
   isSearchResult?: boolean;
-  urlPrefix: string;
 }
 
 const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
@@ -151,7 +148,6 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
   companyId,
   companySlug,
   isSearchResult,
-  urlPrefix,
 }) => {
   const { configs } = useConfigContext();
   const router = useRouter();
@@ -307,7 +303,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
                 filters,
                 excludedKeys: FILTER_SORT_KEYS,
               });
-              const nextPath = `${urlPrefix}${ROUTE_CATALOGUE}/${router.query.rubricSlug}${options}/${SORT_BY_KEY}${FILTER_SEPARATOR}priority`;
+              const nextPath = `${ROUTE_CATALOGUE}/${router.query.rubricSlug}${options}/${SORT_BY_KEY}${FILTER_SEPARATOR}priority`;
               router.push(nextPath).catch(console.log);
             },
           },
@@ -331,7 +327,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
                 filters,
                 excludedKeys: FILTER_SORT_KEYS,
               });
-              const nextPath = `${urlPrefix}${ROUTE_CATALOGUE}/${router.query.rubricSlug}${options}/${SORT_BY_KEY}-price/${SORT_DIR_KEY}${FILTER_SEPARATOR}${SORT_ASC_STR}`;
+              const nextPath = `${ROUTE_CATALOGUE}/${router.query.rubricSlug}${options}/${SORT_BY_KEY}-price/${SORT_DIR_KEY}${FILTER_SEPARATOR}${SORT_ASC_STR}`;
               router.push(nextPath).catch(console.log);
             },
           },
@@ -355,19 +351,19 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
                 filters,
                 excludedKeys: FILTER_SORT_KEYS,
               });
-              const nextPath = `${urlPrefix}${ROUTE_CATALOGUE}/${router.query.rubricSlug}${options}/${SORT_BY_KEY}-price/${SORT_DIR_KEY}${FILTER_SEPARATOR}${SORT_DESC_STR}`;
+              const nextPath = `${ROUTE_CATALOGUE}/${router.query.rubricSlug}${options}/${SORT_BY_KEY}-price/${SORT_DIR_KEY}${FILTER_SEPARATOR}${SORT_DESC_STR}`;
               router.push(nextPath).catch(console.log);
             },
           },
         ],
       },
     ];
-  }, [router, urlPrefix]);
+  }, [router]);
 
   if (catalogueData.totalProducts < 1) {
     return (
       <div className='mb-12 catalogue'>
-        <WpBreadcrumbs config={state.breadcrumbs} urlPrefix={urlPrefix} />
+        <WpBreadcrumbs config={state.breadcrumbs} />
         <Inner lowTop testId={'catalogue'}>
           <WpTitle testId={'catalogue-title'}>{catalogueData.catalogueTitle}</WpTitle>
           <RequestError message={'В данном разделе нет товаров. Загляните пожалуйста позже'} />
@@ -392,7 +388,6 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
       <Inner lowTop testId={'catalogue'}>
         <div className='grid lg:grid-cols-7 gap-8 mt-8'>
           <CatalogueFilter
-            urlPrefix={urlPrefix}
             basePath={state.basePath}
             clearSlug={state.clearSlug}
             rubricSlug={state.rubricSlug}
@@ -508,7 +503,6 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
 
                 <div className='w-full'>
                   <Pager
-                    urlPrefix={urlPrefix}
                     showMoreHandler={showMoreHandler}
                     page={state.page}
                     totalPages={state.totalPages}
@@ -596,14 +590,13 @@ const Catalogue: React.FC<CatalogueInterface> = ({
   currentCity,
   domainCompany,
   isSearchResult,
-  urlPrefix,
   ...props
 }) => {
   const { currency } = useLocaleContext();
   const { configs } = useConfigContext();
   if (!catalogueData) {
     return (
-      <SiteLayout {...props} urlPrefix={urlPrefix}>
+      <SiteLayout {...props}>
         <ErrorBoundaryFallback />
       </SiteLayout>
     );
@@ -642,7 +635,6 @@ const Catalogue: React.FC<CatalogueInterface> = ({
 
   return (
     <SiteLayout
-      urlPrefix={urlPrefix}
       currentCity={currentCity}
       domainCompany={domainCompany}
       title={title}
@@ -650,7 +642,6 @@ const Catalogue: React.FC<CatalogueInterface> = ({
       {...props}
     >
       <CatalogueConsumer
-        urlPrefix={urlPrefix}
         isSearchResult={isSearchResult}
         catalogueData={catalogueData}
         companySlug={domainCompany?.slug}

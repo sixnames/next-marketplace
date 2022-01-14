@@ -118,7 +118,6 @@ interface GetPageInitialStatePayloadInterface extends PagePropsInterface {
   path: string;
   host: string;
   domain: string | null;
-  urlPrefix: string;
   companyNotFound: boolean;
 }
 
@@ -188,8 +187,6 @@ export async function getPageInitialState({
     domain,
     initialData,
     themeStyle,
-    // urlPrefix: `/${domainCompany?.slug || DEFAULT_COMPANY_SLUG}/${citySlug}`,
-    urlPrefix: '',
     domainCompany: castDbData(domainCompany),
     companySlug: domainCompany ? domainCompany.slug : DEFAULT_COMPANY_SLUG,
     citySlug,
@@ -635,7 +632,6 @@ export async function getSiteInitialData({
     domainCompany,
     companySlug,
     themeStyle,
-    urlPrefix,
     companyNotFound,
     domain,
   } = await getPageInitialState({ context });
@@ -670,7 +666,6 @@ export async function getSiteInitialData({
       citySlug: citySlug,
       sessionLocale,
       domainCompany,
-      urlPrefix,
       companyNotFound,
       domain,
     },

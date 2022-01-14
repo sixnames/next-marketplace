@@ -1,7 +1,6 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { getConstantTranslation } from '../config/constantTranslations';
-import { useSiteContext } from '../context/siteContext';
 import { BreadcrumbsInterface } from '../db/uiInterfaces';
 import Inner from './Inner';
 import WpLink from './Link/WpLink';
@@ -15,11 +14,9 @@ const WpBreadcrumbs: React.FC<BreadcrumbsInterface> = ({
   lowBottom,
   lowTop,
   lowWrapper,
-  urlPrefix = '',
   centered,
 }) => {
   const { locale } = useRouter();
-  const siteContext = useSiteContext();
 
   const mainPageName = React.useMemo(() => {
     return getConstantTranslation(`breadcrumbs.main.${locale}`);
@@ -31,7 +28,7 @@ const WpBreadcrumbs: React.FC<BreadcrumbsInterface> = ({
         <ul className={centered ? 'text-center' : ''}>
           {noMainPage ? null : (
             <li className='inline mr-1'>
-              <WpLink className={linkClassName} href={urlPrefix || siteContext.urlPrefix || '/'}>
+              <WpLink className={linkClassName} href={'/'}>
                 <span className='hover:text-theme'>{mainPageName}</span> —
               </WpLink>
             </li>
@@ -49,7 +46,7 @@ const WpBreadcrumbs: React.FC<BreadcrumbsInterface> = ({
 
             return (
               <li className='inline mr-1' key={index}>
-                <WpLink className={linkClassName} href={`${urlPrefix}${configItem.href}`}>
+                <WpLink className={linkClassName} href={configItem.href}>
                   <span className='hover:text-theme'>{configItem.name}</span> —
                 </WpLink>
               </li>

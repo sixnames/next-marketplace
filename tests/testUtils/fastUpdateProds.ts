@@ -29,33 +29,6 @@ export async function getFastNextNumberItemId(collectionName: string, db: Db): P
   return `${updatedCounter.value.counter}`;
 }
 
-/*
-* [
-  '0',//
-  '5',
-  '6',
-  '7',
-  '8',
-  '9',
-  '10',
-  '11',
-  '12',
-  '14',
-  '15',
-  '16',
-  '17',
-  '18',
-  '19',
-  '20',
-  '21',
-  '22',
-  '23',
-  '24',
-  '25',
-  '26'
-]
-* */
-
 async function updateProds() {
   const slugs: string[] = [DEFAULT_COMPANY_SLUG];
   for await (const dbConfig of dbsConfig) {

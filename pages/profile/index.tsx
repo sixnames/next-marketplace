@@ -46,7 +46,6 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({
   orderIndex,
   testId,
 }) => {
-  const { urlPrefix } = useSiteContext();
   const { addProductToCart, getShopProductInCartCount } = useSiteContext();
   const { originalName, summary, shopProduct, itemId, price, amount, totalPrice, productId } =
     orderProduct;
@@ -79,7 +78,7 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({
         <WpLink
           target={'_blank'}
           className='block absolute z-10 inset-0 text-indent-full'
-          href={`${urlPrefix}/${slug}`}
+          href={`/${slug}`}
         >
           {summary?.snippetTitle}
         </WpLink>
@@ -93,7 +92,7 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({
             <WpLink
               target={'_blank'}
               className='block text-primary-text hover:no-underline hover:text-primary-text'
-              href={`${urlPrefix}/${slug}`}
+              href={`/${slug}`}
             >
               {summary?.snippetTitle}
             </WpLink>
@@ -304,7 +303,7 @@ export async function getServerSideProps(
     return {
       redirect: {
         permanent: false,
-        destination: `${props.urlPrefix}${ROUTE_SIGN_IN}`,
+        destination: ROUTE_SIGN_IN,
       },
     };
   }

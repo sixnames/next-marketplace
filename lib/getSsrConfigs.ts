@@ -397,8 +397,28 @@ export const getSsrConfigs = async ({
     configs,
     slug: 'showShopProductAvailability',
   });
+  const blogTitleMetaPrefix = getConfigStringValue({
+    configs,
+    slug: 'blogTitleMetaPrefix',
+  });
+  const blogTitleMetaPostfix = getConfigStringValue({
+    configs,
+    slug: 'blogTitleMetaPostfix',
+  });
+  const blogDescriptionMetaPrefix = getConfigStringValue({
+    configs,
+    slug: 'blogDescriptionMetaPrefix',
+  });
+  const blogDescriptionMetaPostfix = getConfigStringValue({
+    configs,
+    slug: 'blogDescriptionMetaPostfix',
+  });
 
   return {
+    blogTitleMetaPrefix,
+    blogTitleMetaPostfix,
+    blogDescriptionMetaPrefix,
+    blogDescriptionMetaPostfix,
     showShopProductAvailability,
     catalogueTitleMetaMiddle,
     catalogueDescriptionMetaMiddle,

@@ -615,6 +615,7 @@ export interface PagesGroupInterface extends PagesGroupModel {
 
 export interface PageInterface extends PageModel {
   name?: string | null;
+  title?: string | null;
   description?: string | null;
   city?: CityInterface | null;
   pagesGroup?: PagesGroupInterface | null;
@@ -776,6 +777,10 @@ export interface SsrConfigsInterface {
   cardDescriptionMetaPrefix: string;
   cardDescriptionMetaMiddle: string;
   cardDescriptionMetaPostfix: string;
+  blogTitleMetaPrefix: string;
+  blogTitleMetaPostfix: string;
+  blogDescriptionMetaPrefix: string;
+  blogDescriptionMetaPostfix: string;
 
   // Project
   showReservationDate: boolean;

@@ -33,7 +33,7 @@ const CreatedPage: NextPage<CreatedPageInterface> = ({ page, ...props }) => {
   return (
     <SiteLayout
       {...props}
-      title={`${page.name}`}
+      title={`${page.title || page.name}`}
       description={page.description ? page.description : `${page.name}`}
     >
       <CreatedPageConsumer page={page} />
@@ -72,6 +72,7 @@ export async function getServerSideProps(
 
   const page: PageInterface = {
     ...initialPage,
+    title: getFieldStringLocale(initialPage.titleI18n, props.sessionLocale),
     name: getFieldStringLocale(initialPage.nameI18n, props.sessionLocale),
     description: getFieldStringLocale(initialPage.descriptionI18n, props.sessionLocale),
   };

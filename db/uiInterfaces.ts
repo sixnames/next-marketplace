@@ -786,6 +786,8 @@ export interface SsrConfigsInterface {
   blogTitleMetaPostfix: string;
   blogDescriptionMetaPrefix: string;
   blogDescriptionMetaPostfix: string;
+  blogTitlePrefix: string;
+  blogTitlePostfix: string;
 
   // Project
   showReservationDate: boolean;

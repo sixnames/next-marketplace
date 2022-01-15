@@ -1,16 +1,13 @@
 import { ObjectId } from 'mongodb';
-import { arg, extendType, inputObjectType, nonNull, objectType, stringArg } from 'nexus';
+import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import { DEFAULT_COUNTERS_OBJECT } from '../config/common';
 import { COL_BRAND_COLLECTIONS, COL_BRANDS, COL_PRODUCT_FACETS } from '../db/collectionNames';
-import { aggregatePagination } from '../db/dao/aggregatePagination';
 import { findDocumentByI18nField } from '../db/dao/findDocumentByI18nField';
 import {
   BrandCollectionModel,
-  BrandCollectionsPaginationPayloadModel,
   BrandModel,
   BrandPayloadModel,
   BrandsAlphabetListModel,
-  BrandsPaginationPayloadModel,
   ProductFacetModel,
 } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
@@ -59,51 +56,6 @@ export const Brand = objectType({
         return getI18nLocale(source.nameI18n);
       },
     });
-
-    // Brand description translation field resolver
-    t.field('description', {
-      type: 'String',
-      resolve: async (source, _args, context) => {
-        if (!source.descriptionI18n) {
-          return null;
-        }
-        const { getI18nLocale } = await getRequestParams(context);
-        return getI18nLocale(source.descriptionI18n);
-      },
-    });
-
-    // Brand collections list resolver
-    t.nonNull.field('collections', {
-      type: 'BrandCollectionsPaginationPayload',
-      args: {
-        input: arg({
-          type: 'PaginationInput',
-        }),
-      },
-      resolve: async (source, args, context): Promise<BrandCollectionsPaginationPayloadModel> => {
-        const { city } = await getRequestParams(context);
-        const paginationResult = await aggregatePagination<BrandCollectionModel>({
-          input: args.input,
-          collectionName: COL_BRAND_COLLECTIONS,
-          pipeline: [{ $match: { brandId: source._id } }],
-          city,
-        });
-
-        return paginationResult;
-      },
-    });
-
-    // Brand collections list resolver
-    t.nonNull.list.nonNull.field('collectionsList', {
-      type: 'BrandCollection',
-      resolve: async (source): Promise<BrandCollectionModel[]> => {
-        const { db } = await getDatabase();
-        const brandCollectionsCollection =
-          db.collection<BrandCollectionModel>(COL_BRAND_COLLECTIONS);
-        const brands = await brandCollectionsCollection.find({ brandId: source._id }).toArray();
-        return brands;
-      },
-    });
   },
 });
 
@@ -138,63 +90,6 @@ export const BrandsAlphabetList = objectType({
 export const BrandQueries = extendType({
   type: 'Query',
   definition(t) {
-    // Should return brand by _id
-    t.nonNull.field('getBrand', {
-      type: 'Brand',
-      description: 'Should return brand by _id',
-      args: {
-        _id: nonNull(
-          arg({
-            type: 'ObjectId',
-          }),
-        ),
-      },
-      resolve: async (_root, args): Promise<BrandModel> => {
-        const { db } = await getDatabase();
-        const brandCollections = db.collection<BrandModel>(COL_BRANDS);
-        const brand = await brandCollections.findOne({ _id: args._id });
-        if (!brand) {
-          throw Error('Brand not fond by given ID');
-        }
-        return brand;
-      },
-    });
-
-    // Should return brand by slug
-    t.field('getBrandBySlug', {
-      type: 'Brand',
-      description: 'Should return brand by slug',
-      args: {
-        slug: nonNull(stringArg()),
-      },
-      resolve: async (_root, args): Promise<BrandModel | null> => {
-        const { db } = await getDatabase();
-        const brandCollections = db.collection<BrandModel>(COL_BRANDS);
-        const brand = await brandCollections.findOne({ slug: args.slug });
-        return brand;
-      },
-    });
-
-    // Should return paginated brands
-    t.field('getAllBrands', {
-      type: 'BrandsPaginationPayload',
-      description: 'Should return paginated brands',
-      args: {
-        input: arg({
-          type: 'PaginationInput',
-        }),
-      },
-      resolve: async (_root, args, context): Promise<BrandsPaginationPayloadModel> => {
-        const { city } = await getRequestParams(context);
-        const paginationResult = await aggregatePagination<BrandModel>({
-          collectionName: COL_BRANDS,
-          input: args.input,
-          city,
-        });
-        return paginationResult;
-      },
-    });
-
     // Should return brands grouped by alphabet
     t.nonNull.list.nonNull.field('getBrandAlphabetLists', {
       type: 'BrandsAlphabetList',

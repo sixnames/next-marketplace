@@ -22,18 +22,6 @@ export const BrandCollection = objectType({
         return getI18nLocale(source.nameI18n);
       },
     });
-
-    // BrandCollection description translation field resolver
-    t.field('description', {
-      type: 'String',
-      resolve: async (source, _args, context) => {
-        if (!source.descriptionI18n) {
-          return null;
-        }
-        const { getI18nLocale } = await getRequestParams(context);
-        return getI18nLocale(source.descriptionI18n);
-      },
-    });
   },
 });
 

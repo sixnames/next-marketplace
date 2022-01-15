@@ -116,16 +116,11 @@ interface AlphabetList {
 type Attribute {
   _id: ObjectId!
   capitalise: Boolean
-  metric: Metric
-  name: String!
   nameI18n: JSONObject!
   notShowAsAlphabet: Boolean
-  optionsGroup: OptionsGroup
   optionsGroupId: ObjectId
   positioningInTitle: JSONObject
   slug: String
-  variant: AttributeVariant!
-  viewVariant: AttributeViewVariant!
 }
 
 """
@@ -162,9 +157,7 @@ enum AttributeViewVariant {
 
 type AttributesGroup {
   _id: ObjectId!
-  attributes: [Attribute!]!
   attributesIds: [ObjectId!]!
-  name: String!
   nameI18n: JSONObject!
 }
 
@@ -181,10 +174,7 @@ interface Base {
 
 type Brand implements Base & Timestamp {
   _id: ObjectId!
-  collections(input: PaginationInput): BrandCollectionsPaginationPayload!
-  collectionsList: [BrandCollection!]!
   createdAt: Date!
-  description: String
   descriptionI18n: JSONObject
   itemId: String!
   name: String!
@@ -200,7 +190,6 @@ input BrandAlphabetInput {
 type BrandCollection implements Base & Timestamp {
   _id: ObjectId!
   createdAt: Date!
-  description: String
   descriptionI18n: JSONObject
   itemId: String!
   name: String!
@@ -1472,13 +1461,6 @@ type ProductPayload implements Payload {
 }
 
 type Query {
-  getAllAttributesGroups(excludedIds: [ObjectId!] = []): [AttributesGroup!]!
-
-  """
-  Should return paginated brands
-  """
-  getAllBrands(input: PaginationInput): BrandsPaginationPayload
-
   """
   Should return paginated cities
   """
@@ -1535,22 +1517,11 @@ type Query {
   Should return paginated suppliers
   """
   getAllSuppliers(input: PaginationInput): SuppliersPaginationPayload!
-  getAttributesGroup(_id: ObjectId!): AttributesGroup!
-
-  """
-  Should return brand by _id
-  """
-  getBrand(_id: ObjectId!): Brand!
 
   """
   Should return brands grouped by alphabet
   """
   getBrandAlphabetLists(input: BrandAlphabetInput): [BrandsAlphabetList!]!
-
-  """
-  Should return brand by slug
-  """
-  getBrandBySlug(slug: String!): Brand
 
   """
   Should return brand collections grouped by alphabet

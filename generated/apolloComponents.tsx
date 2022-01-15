@@ -149,11 +149,6 @@ export type Attribute = {
   notShowAsAlphabet?: Maybe<Scalars['Boolean']>;
   optionsGroupId?: Maybe<Scalars['ObjectId']>;
   positioningInTitle?: Maybe<Scalars['JSONObject']>;
-  variant: AttributeVariant;
-  viewVariant: AttributeViewVariant;
-  metric?: Maybe<Metric>;
-  name: Scalars['String'];
-  optionsGroup?: Maybe<OptionsGroup>;
 };
 
 /** Attribute position in catalogue title enum. */
@@ -187,8 +182,6 @@ export type AttributesGroup = {
   _id: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
   attributesIds: Array<Scalars['ObjectId']>;
-  name: Scalars['String'];
-  attributes: Array<Attribute>;
 };
 
 export type AttributesGroupPayload = Payload & {
@@ -213,14 +206,6 @@ export type Brand = Base & Timestamp & {
   nameI18n: Scalars['String'];
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
   name: Scalars['String'];
-  description?: Maybe<Scalars['String']>;
-  collections: BrandCollectionsPaginationPayload;
-  collectionsList: Array<BrandCollection>;
-};
-
-
-export type BrandCollectionsArgs = {
-  input?: Maybe<PaginationInput>;
 };
 
 export type BrandAlphabetInput = {
@@ -1695,14 +1680,6 @@ export type ProductPayload = Payload & {
 
 export type Query = {
   __typename?: 'Query';
-  getAttributesGroup: AttributesGroup;
-  getAllAttributesGroups: Array<AttributesGroup>;
-  /** Should return brand by _id */
-  getBrand: Brand;
-  /** Should return brand by slug */
-  getBrandBySlug?: Maybe<Brand>;
-  /** Should return paginated brands */
-  getAllBrands?: Maybe<BrandsPaginationPayload>;
   /** Should return brands grouped by alphabet */
   getBrandAlphabetLists: Array<BrandsAlphabetList>;
   /** Should return brand collections grouped by alphabet */
@@ -1769,31 +1746,6 @@ export type Query = {
   getAllSuppliers: SuppliersPaginationPayload;
   /** Should return suppliers grouped by alphabet */
   getSupplierAlphabetLists: Array<SuppliersAlphabetList>;
-};
-
-
-export type QueryGetAttributesGroupArgs = {
-  _id: Scalars['ObjectId'];
-};
-
-
-export type QueryGetAllAttributesGroupsArgs = {
-  excludedIds?: Maybe<Array<Scalars['ObjectId']>>;
-};
-
-
-export type QueryGetBrandArgs = {
-  _id: Scalars['ObjectId'];
-};
-
-
-export type QueryGetBrandBySlugArgs = {
-  slug: Scalars['String'];
-};
-
-
-export type QueryGetAllBrandsArgs = {
-  input?: Maybe<PaginationInput>;
 };
 
 

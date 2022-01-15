@@ -4,10 +4,6 @@ import {
   ATTRIBUTE_VARIANTS_ENUMS,
   ATTRIBUTE_VIEW_VARIANTS_ENUMS,
 } from '../config/common';
-import { COL_OPTIONS_GROUPS } from '../db/collectionNames';
-import { OptionsGroupModel } from '../db/dbModels';
-import { getDatabase } from '../db/mongodb';
-import { getRequestParams } from '../lib/sessionHelpers';
 
 export const AttributeVariant = enumType({
   name: 'AttributeVariant',
@@ -37,37 +33,5 @@ export const Attribute = objectType({
     t.boolean('notShowAsAlphabet');
     t.objectId('optionsGroupId');
     t.json('positioningInTitle');
-    t.nonNull.field('variant', {
-      type: 'AttributeVariant',
-    });
-    t.nonNull.field('viewVariant', {
-      type: 'AttributeViewVariant',
-    });
-    t.field('metric', {
-      type: 'Metric',
-    });
-
-    // Attribute name translation field resolver
-    t.nonNull.field('name', {
-      type: 'String',
-      resolve: async (source, _args, context) => {
-        const { getI18nLocale } = await getRequestParams(context);
-        return getI18nLocale(source.nameI18n);
-      },
-    });
-
-    // Attribute optionsGroup field resolver
-    t.field('optionsGroup', {
-      type: 'OptionsGroup',
-      resolve: async (source): Promise<OptionsGroupModel | null> => {
-        if (!source.optionsGroupId) {
-          return null;
-        }
-        const { db } = await getDatabase();
-        const optionsGroupsCollection = db.collection<OptionsGroupModel>(COL_OPTIONS_GROUPS);
-        const optionsGroup = await optionsGroupsCollection.findOne({ _id: source.optionsGroupId });
-        return optionsGroup;
-      },
-    });
   },
 });

@@ -1532,6 +1532,40 @@ export function getConfigTemplates({
       },
     },
 
+    // blog title
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'catalogue',
+      variant: CONFIG_VARIANT_STRING,
+      slug: 'blogTitlePrefix',
+      name: 'Начало заголовка H1 блога',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [''],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'catalogue',
+      variant: CONFIG_VARIANT_STRING,
+      slug: 'blogTitlePostfix',
+      name: 'Окончание заголовка H1 блога',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [''],
+        },
+      },
+    },
+
     // Project
     {
       _id: new ObjectId(),

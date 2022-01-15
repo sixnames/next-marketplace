@@ -1,6 +1,5 @@
 import { ObjectId } from 'mongodb';
-import { arg, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
-import { DEFAULT_LOCALE, SORT_ASC } from '../config/common';
+import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
 import { COL_ATTRIBUTES, COL_ATTRIBUTES_GROUPS } from '../db/collectionNames';
 import { findDocumentByI18nField } from '../db/dao/findDocumentByI18nField';
 import { AttributeModel, AttributesGroupModel, AttributesGroupPayloadModel } from '../db/dbModels';
@@ -22,85 +21,6 @@ export const AttributesGroup = objectType({
     t.nonNull.objectId('_id');
     t.nonNull.json('nameI18n');
     t.nonNull.list.nonNull.objectId('attributesIds');
-
-    // AttributesGroup name translation field resolver
-    t.nonNull.field('name', {
-      type: 'String',
-      resolve: async (source, _args, context) => {
-        const { getI18nLocale } = await getRequestParams(context);
-        return getI18nLocale(source.nameI18n);
-      },
-    });
-
-    // AttributesGroup attributes list field resolver
-    t.nonNull.list.nonNull.field('attributes', {
-      type: 'Attribute',
-      resolve: async (source): Promise<AttributeModel[]> => {
-        const { db } = await getDatabase();
-        const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-        const attributes = await attributesCollection
-          .find({ _id: { $in: source.attributesIds } })
-          .toArray();
-        return attributes;
-      },
-    });
-  },
-});
-
-// AttributesGroup queries
-export const AttributesGroupQueries = extendType({
-  type: 'Query',
-  definition(t) {
-    // Should return attributes group by given _id
-    t.nonNull.field('getAttributesGroup', {
-      type: 'AttributesGroup',
-      args: {
-        _id: nonNull(
-          arg({
-            type: 'ObjectId',
-          }),
-        ),
-      },
-      resolve: async (_root, args): Promise<AttributesGroupModel> => {
-        const { db } = await getDatabase();
-        const attributesGroupCollection =
-          db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
-        const attributesGroup = await attributesGroupCollection.findOne({ _id: args._id });
-
-        if (!attributesGroup) {
-          throw Error('AttributesGroup not found in getAttributesGroup');
-        }
-
-        return attributesGroup;
-      },
-    });
-
-    // Should return attributes groups list
-    t.nonNull.list.nonNull.field('getAllAttributesGroups', {
-      type: 'AttributesGroup',
-      args: {
-        excludedIds: arg({
-          type: list(nonNull('ObjectId')),
-          default: [],
-        }),
-      },
-      resolve: async (_root, args): Promise<AttributesGroupModel[]> => {
-        const { db } = await getDatabase();
-        const attributesGroupCollection =
-          db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
-        const attributesGroup = await attributesGroupCollection
-          .find(
-            { _id: { $nin: args.excludedIds || [] } },
-            {
-              sort: {
-                [`nameI18n.${DEFAULT_LOCALE}`]: SORT_ASC,
-              },
-            },
-          )
-          .toArray();
-        return attributesGroup;
-      },
-    });
   },
 });
 

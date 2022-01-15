@@ -20,7 +20,7 @@ export const getConsoleShopProductsListPageSsr = async (
     shopId: `${query.shopId}`,
     rubricSlug: `${query.rubricSlug}`,
   });
-  const basePath = links.shop.rubrics.root;
+  const basePath = links.shop.rubrics.product.parentLink;
   const locale = initialProps.props.sessionLocale;
   const currency = initialProps.props.initialData.currency;
   const payload = await getConsoleShopProducts({

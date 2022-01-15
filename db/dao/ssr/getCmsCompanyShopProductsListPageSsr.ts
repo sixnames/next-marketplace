@@ -36,7 +36,7 @@ export const getCmsCompanyShopProductsListPageSsr = async (
     shopId: `${shopId}`,
     rubricSlug: `${rubricSlug}`,
   });
-  const basePath = links.shop.rubrics.root;
+  const basePath = links.shop.rubrics.product.parentLink;
   const locale = initialProps.props.sessionLocale;
   const currency = initialProps.props.initialData.currency;
 

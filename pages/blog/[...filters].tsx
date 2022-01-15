@@ -1,4 +1,3 @@
-import Head from 'next/head';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import FormattedDate from '../../components/FormattedDate';
@@ -325,10 +324,6 @@ const BlogListPageConsumer: React.FC<BlogListPageConsumerInterface> = ({
 
   return (
     <React.Fragment>
-      <Head>
-        <title>{blogTitle}</title>
-        <meta name={'description'} content={blogTitle} />
-      </Head>
       <div className='mb-12'>
         <WpBreadcrumbs currentPageName={blogTitle} />
         <Inner lowTop>
@@ -404,8 +399,24 @@ const BlogListPage: React.FC<BlogListPageInterface> = ({
   blogTitle,
   ...props
 }) => {
+  const { configs } = useConfigContext();
+
+  // meta title
+  const titlePrefixConfig = configs.blogTitleMetaPrefix;
+  const titlePostfixConfig = configs.blogTitleMetaPostfix;
+  const titlePrefix = titlePrefixConfig ? `${titlePrefixConfig} ` : '';
+  const titlePostfix = titlePostfixConfig ? ` ${titlePostfixConfig}` : '';
+  const title = `${titlePrefix}${blogTitle}${titlePostfix}`;
+
+  // description
+  const descriptionPrefixConfig = configs.blogDescriptionMetaPrefix;
+  const descriptionPostfixConfig = configs.blogDescriptionMetaPostfix;
+  const descriptionPrefix = descriptionPrefixConfig ? `${descriptionPrefixConfig} ` : '';
+  const descriptionPostfix = descriptionPostfixConfig ? ` ${descriptionPostfixConfig}` : '';
+  const description = `${descriptionPrefix}${blogTitle}${descriptionPostfix}`;
+
   return (
-    <SiteLayout {...props}>
+    <SiteLayout {...props} title={title} description={description}>
       <BlogListPageConsumer
         topPosts={topPosts}
         blogFilter={blogFilter}

@@ -777,6 +777,10 @@ export interface SsrConfigsInterface {
   cardDescriptionMetaPrefix: string;
   cardDescriptionMetaMiddle: string;
   cardDescriptionMetaPostfix: string;
+  blogTitleMetaPrefix: string;
+  blogTitleMetaPostfix: string;
+  blogDescriptionMetaPrefix: string;
+  blogDescriptionMetaPostfix: string;
 
   // Project
   showReservationDate: boolean;

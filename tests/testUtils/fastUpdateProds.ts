@@ -1,9 +1,8 @@
 import { Db } from 'mongodb';
-import { DEFAULT_COMPANY_SLUG, ID_COUNTER_STEP } from '../../config/common';
-import { noNaN } from '../../lib/numbers';
+import { ID_COUNTER_STEP } from '../../config/common';
 import { dbsConfig, getProdDb } from './getProdDb';
-import { COL_COMPANIES, COL_ID_COUNTERS } from '../../db/collectionNames';
-import { CompanyModel, IdCounterModel } from '../../db/dbModels';
+import { COL_CATEGORIES, COL_ID_COUNTERS, COL_RUBRICS } from '../../db/collectionNames';
+import { CategoryModel, IdCounterModel, RubricModel } from '../../db/dbModels';
 require('dotenv').config();
 
 export async function getFastNextNumberItemId(collectionName: string, db: Db): Promise<string> {
@@ -30,48 +29,37 @@ export async function getFastNextNumberItemId(collectionName: string, db: Db): P
 }
 
 async function updateProds() {
-  const slugs: string[] = [DEFAULT_COMPANY_SLUG];
   for await (const dbConfig of dbsConfig) {
     console.log(' ');
     console.log('>>>>>>>>>>>>>>>>>>>>>>>>');
     console.log(' ');
     console.log(`Updating ${dbConfig.dbName} db`);
     const { db, client } = await getProdDb(dbConfig);
-    const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
+    const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+    const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
 
-    const companies = await companiesCollection
-      .aggregate<CompanyModel>([
-        {
-          $sort: {
-            slug: -1,
-          },
+    await rubricsCollection.updateMany(
+      {},
+      {
+        $set: {
+          cmsCardAttributeIds: [],
         },
-        {
-          $project: {
-            slug: true,
-          },
+      },
+    );
+    await categoriesCollection.updateMany(
+      {},
+      {
+        $set: {
+          cmsCardAttributeIds: [],
         },
-      ])
-      .toArray();
-    for await (const company of companies) {
-      const exist = slugs.some((slug) => slug === company.slug);
-      if (!exist) {
-        slugs.push(company.slug);
-      }
-    }
+      },
+    );
 
     // disconnect form db
     await client.close();
     console.log(`Done ${dbConfig.dbName}`);
     console.log(' ');
   }
-
-  console.log(
-    slugs.sort((a, b) => {
-      return noNaN(a) - noNaN(b);
-    }),
-    slugs.length,
-  );
 }
 
 (() => {

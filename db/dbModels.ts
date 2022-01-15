@@ -781,6 +781,7 @@ export interface RubricModel extends CountersModel {
   variantId: ObjectIdModel;
   capitalise?: boolean | null;
   attributesGroupIds: ObjectIdModel[];
+  cmsCardAttributeIds: ObjectIdModel[];
   filterVisibleAttributeIds: ObjectIdModel[];
   showRubricNameInProductTitle?: boolean | null;
   showCategoryInProductTitle?: boolean | null;
@@ -799,7 +800,7 @@ export interface CategoryModel extends CountersModel {
   nameI18n: TranslationModel;
   gender?: GenderModel | null;
   parentTreeIds: ObjectIdModel[];
-  attributesGroupIds: ObjectIdModel[];
+  cmsCardAttributeIds: ObjectIdModel[];
   rubricId: ObjectIdModel;
   rubricSlug: string;
   parentId?: ObjectIdModel | null;

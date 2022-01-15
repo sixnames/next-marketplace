@@ -104,11 +104,6 @@ declare global {
 }
 
 export interface NexusGenInputs {
-  AddAttributesGroupToCategoryInput: {
-    // input type
-    attributesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
-    categoryId: NexusGenScalars['ObjectId']; // ObjectId!
-  };
   AddAttributesGroupToRubricInput: {
     // input type
     attributesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -361,11 +356,6 @@ export interface NexusGenInputs {
     descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     url?: NexusGenScalars['URL'][] | null; // [URL!]
-  };
-  DeleteAttributesGroupFromCategoryInput: {
-    // input type
-    attributesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
-    categoryId: NexusGenScalars['ObjectId']; // ObjectId!
   };
   DeleteAttributesGroupFromRubricInput: {
     // input type
@@ -1308,7 +1298,6 @@ export interface NexusGenFieldTypes {
   };
   Mutation: {
     // field return type
-    addAttributesGroupToCategory: NexusGenRootTypes['CategoryPayload']; // CategoryPayload!
     addAttributesGroupToRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
     addCityToCountry: NexusGenRootTypes['CountryPayload']; // CountryPayload!
     addCollectionToBrand: NexusGenRootTypes['BrandPayload']; // BrandPayload!
@@ -1339,7 +1328,6 @@ export interface NexusGenFieldTypes {
     createRubricVariant: NexusGenRootTypes['RubricVariantPayload']; // RubricVariantPayload!
     createSupplier: NexusGenRootTypes['SupplierPayload']; // SupplierPayload!
     deleteAttributesGroup: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
-    deleteAttributesGroupFromCategory: NexusGenRootTypes['CategoryPayload']; // CategoryPayload!
     deleteAttributesGroupFromRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
     deleteBrand: NexusGenRootTypes['BrandPayload']; // BrandPayload!
     deleteCategory: NexusGenRootTypes['CategoryPayload']; // CategoryPayload!
@@ -1368,6 +1356,8 @@ export interface NexusGenFieldTypes {
     generateShopToken: NexusGenRootTypes['ShopPayload']; // ShopPayload!
     moveOption: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
     repeatOrder: NexusGenRootTypes['CartPayload']; // CartPayload!
+    toggleCmsCardAttributeInCategory: NexusGenRootTypes['CategoryPayload']; // CategoryPayload!
+    toggleCmsCardAttributeInRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
     updateAttributeInRubric: NexusGenRootTypes['RubricPayload']; // RubricPayload!
     updateAttributesGroup: NexusGenRootTypes['AttributesGroupPayload']; // AttributesGroupPayload!
     updateBrand: NexusGenRootTypes['BrandPayload']; // BrandPayload!
@@ -2231,7 +2221,6 @@ export interface NexusGenFieldTypeNames {
   };
   Mutation: {
     // field return type name
-    addAttributesGroupToCategory: 'CategoryPayload';
     addAttributesGroupToRubric: 'RubricPayload';
     addCityToCountry: 'CountryPayload';
     addCollectionToBrand: 'BrandPayload';
@@ -2262,7 +2251,6 @@ export interface NexusGenFieldTypeNames {
     createRubricVariant: 'RubricVariantPayload';
     createSupplier: 'SupplierPayload';
     deleteAttributesGroup: 'AttributesGroupPayload';
-    deleteAttributesGroupFromCategory: 'CategoryPayload';
     deleteAttributesGroupFromRubric: 'RubricPayload';
     deleteBrand: 'BrandPayload';
     deleteCategory: 'CategoryPayload';
@@ -2291,6 +2279,8 @@ export interface NexusGenFieldTypeNames {
     generateShopToken: 'ShopPayload';
     moveOption: 'OptionsGroupPayload';
     repeatOrder: 'CartPayload';
+    toggleCmsCardAttributeInCategory: 'CategoryPayload';
+    toggleCmsCardAttributeInRubric: 'RubricPayload';
     updateAttributeInRubric: 'RubricPayload';
     updateAttributesGroup: 'AttributesGroupPayload';
     updateBrand: 'BrandPayload';
@@ -2819,10 +2809,6 @@ export interface NexusGenArgTypes {
     };
   };
   Mutation: {
-    addAttributesGroupToCategory: {
-      // args
-      input: NexusGenInputs['AddAttributesGroupToCategoryInput']; // AddAttributesGroupToCategoryInput!
-    };
     addAttributesGroupToRubric: {
       // args
       input: NexusGenInputs['AddAttributesGroupToRubricInput']; // AddAttributesGroupToRubricInput!
@@ -2939,10 +2925,6 @@ export interface NexusGenArgTypes {
       // args
       _id: NexusGenScalars['ObjectId']; // ObjectId!
     };
-    deleteAttributesGroupFromCategory: {
-      // args
-      input: NexusGenInputs['DeleteAttributesGroupFromCategoryInput']; // DeleteAttributesGroupFromCategoryInput!
-    };
     deleteAttributesGroupFromRubric: {
       // args
       input: NexusGenInputs['DeleteAttributesGroupFromRubricInput']; // DeleteAttributesGroupFromRubricInput!
@@ -3054,6 +3036,14 @@ export interface NexusGenArgTypes {
     repeatOrder: {
       // args
       input: NexusGenInputs['RepeatOrderInput']; // RepeatOrderInput!
+    };
+    toggleCmsCardAttributeInCategory: {
+      // args
+      input: NexusGenInputs['UpdateAttributeInCategoryInput']; // UpdateAttributeInCategoryInput!
+    };
+    toggleCmsCardAttributeInRubric: {
+      // args
+      input: NexusGenInputs['UpdateAttributeInRubricInput']; // UpdateAttributeInRubricInput!
     };
     updateAttributeInRubric: {
       // args

@@ -26,6 +26,7 @@ import { findDocumentByI18nField } from '../findDocumentByI18nField';
 export interface UpdatePageInputInterface {
   _id: string;
   nameI18n: TranslationModel;
+  titleI18n?: TranslationModel | null;
   descriptionI18n?: TranslationModel | null;
   index: number;
   pagesGroupId: string;

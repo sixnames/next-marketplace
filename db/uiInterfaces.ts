@@ -615,6 +615,7 @@ export interface PagesGroupInterface extends PagesGroupModel {
 
 export interface PageInterface extends PageModel {
   name?: string | null;
+  title?: string | null;
   description?: string | null;
   city?: CityInterface | null;
   pagesGroup?: PagesGroupInterface | null;

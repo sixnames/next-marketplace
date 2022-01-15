@@ -73,6 +73,7 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate 
             content: JSON.stringify(values.content),
             nameI18n: values.nameI18n,
             descriptionI18n: values.descriptionI18n,
+            titleI18n: values.titleI18n,
             pagesGroupId: `${values.pagesGroupId}`,
             state: values.state,
             citySlug: `${values.citySlug}`,
@@ -107,7 +108,14 @@ const PageDetails: React.FC<PageDetailsInterface> = ({ page, cities, isTemplate 
                   isRequired
                 />
                 <FormikTranslationsInput
-                  label={'Описание'}
+                  label={'Заголовок для мета-тега title'}
+                  name={'titleI18n'}
+                  testId={'title'}
+                  showInlineError
+                  isRequired
+                />
+                <FormikTranslationsInput
+                  label={'Описание для мета-тега description'}
                   name={'descriptionI18n'}
                   testId={'description'}
                   showInlineError

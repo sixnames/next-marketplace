@@ -3,7 +3,6 @@ import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import { CatalogueInterface } from '../components/Catalogue';
 import {
   ATTRIBUTE_VIEW_VARIANT_LIST,
-  ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
   CATALOGUE_FILTER_LIMIT,
   CATALOGUE_GRID_DEFAULT_COLUMNS_COUNT,
   DEFAULT_COMPANY_SLUG,
@@ -916,7 +915,6 @@ export const getCatalogueData = async ({
         attributes: castedSummary.attributes || [],
         viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
         locale,
-        gender: summary.gender,
       });
       const listAttributes = sortObjectsByField(
         initialListAttributes
@@ -928,15 +926,14 @@ export const getCatalogueData = async ({
       );
 
       // rating features
-      const initialRatingAttributes = getProductCurrentViewCastedAttributes({
+      /*const initialRatingAttributes = getProductCurrentViewCastedAttributes({
         attributes: castedSummary.attributes || [],
         viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
         locale,
-        gender: summary.gender,
       });
       const ratingAttributes = initialRatingAttributes.filter(({ attribute }) => {
         return attribute?.showInSnippet;
-      });
+      });*/
 
       const finalShopProduct: ShopProductInterface = {
         ...shopProduct,
@@ -964,7 +961,7 @@ export const getCatalogueData = async ({
           originalName: '',
           nameI18n: undefined,
           listAttributes,
-          ratingAttributes,
+          // ratingAttributes,
           shopsCount: shopProduct.shopsIds?.length,
           shopProductIds: shopProduct.shopProductIds,
           minPrice: noNaN(shopProduct.minPrice),

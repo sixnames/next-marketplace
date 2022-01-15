@@ -198,24 +198,17 @@ export function getAttributeReadableValueLocales({
 export interface CastProductAttributeForUiInterface {
   productAttribute: ProductAttributeInterface;
   locale: string;
-  gender?: string;
 }
 
 export function castProductAttributeForUi({
   productAttribute,
   locale,
-  gender,
 }: CastProductAttributeForUiInterface): ProductAttributeInterface | null {
   if (!productAttribute.attribute) {
     return null;
   }
   const { attribute } = productAttribute;
-  const readableValue = getAttributeReadableValue({
-    productAttribute,
-    locale,
-    gender,
-  });
-
+  const readableValue = getFieldStringLocale(productAttribute.readableValueI18n, locale);
   if (!readableValue) {
     return null;
   }
@@ -229,6 +222,7 @@ export function castProductAttributeForUi({
 
   const castedAttribute: ProductAttributeInterface = {
     ...productAttribute,
+    readableValue,
     attribute: {
       ...attribute,
       name: getFieldStringLocale(attribute.nameI18n, locale),
@@ -242,7 +236,6 @@ export function castProductAttributeForUi({
         };
       }),
     },
-    readableValue,
   };
 
   return castedAttribute;
@@ -253,7 +246,6 @@ export interface GetProductCurrentViewCastedAttributes {
   attributes: ProductAttributeInterface[];
   viewVariant: string;
   locale: string;
-  gender?: string;
 }
 
 export function getProductCurrentViewCastedAttributes({
@@ -261,7 +253,6 @@ export function getProductCurrentViewCastedAttributes({
   attributes,
   viewVariant,
   locale,
-  gender,
 }: GetProductCurrentViewCastedAttributes): ProductAttributeInterface[] {
   const currentViewAttributes = getProductCurrentViewAttributes({
     attributes,
@@ -277,7 +268,6 @@ export function getProductCurrentViewCastedAttributes({
       const castedAttribute = castProductAttributeForUi({
         productAttribute,
         locale,
-        gender,
       });
 
       if (!castedAttribute) {

@@ -7,16 +7,11 @@ import {
   DEFAULT_LOCALE,
   LOCALES,
 } from '../config/common';
-import { COL_CATEGORIES, COL_RUBRICS } from '../db/collectionNames';
+import { COL_RUBRICS } from '../db/collectionNames';
 import { rubricAttributeGroupsPipeline } from '../db/dao/constantPipelines';
 import { ObjectIdModel, TranslationModel } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
-import {
-  AttributeInterface,
-  CategoryInterface,
-  ProductAttributeInterface,
-  RubricInterface,
-} from '../db/uiInterfaces';
+import { AttributeInterface, ProductAttributeInterface, RubricInterface } from '../db/uiInterfaces';
 import { sortObjectsByField } from './arrayUtils';
 import { getFieldStringLocale } from './i18n';
 import { getStringValueFromOptionsList } from './optionUtils';
@@ -51,36 +46,6 @@ export async function getRubricAllAttributes(
     });
   });
   return rubricAttributes;
-}
-
-export async function getCategoryAllAttributes(slugs: string[]): Promise<AttributeInterface[]> {
-  const { db } = await getDatabase();
-  const categoriesCollection = db.collection<CategoryInterface>(COL_CATEGORIES);
-  const categories = await categoriesCollection
-    .aggregate<CategoryInterface>([
-      {
-        $match: {
-          slug: {
-            $in: slugs,
-          },
-        },
-      },
-      ...rubricAttributeGroupsPipeline,
-    ])
-    .toArray();
-
-  const categoryAttributes: AttributeInterface[] = [];
-  categories.forEach((category) => {
-    (category.attributesGroups || []).forEach((group) => {
-      (group.attributes || []).forEach((attribute) => {
-        const exist = categoryAttributes.some(({ _id }) => _id.equals(attribute._id));
-        if (!exist) {
-          categoryAttributes.push(attribute);
-        }
-      });
-    });
-  });
-  return categoryAttributes;
 }
 
 export interface GetProductCurrentViewAttributesInterface {

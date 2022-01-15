@@ -1,10 +1,8 @@
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
-import ContentItemControls from '../../../../../../components/button/ContentItemControls';
 import WpCheckbox from '../../../../../../components/FormElements/Checkbox/WpCheckbox';
 import Inner from '../../../../../../components/Inner';
-import WpLink from '../../../../../../components/Link/WpLink';
 import WpAccordion from '../../../../../../components/WpAccordion';
 import WpTable, { WpTableColumn } from '../../../../../../components/WpTable';
 import { getConstantTranslation } from '../../../../../../config/constantTranslations';
@@ -51,7 +49,7 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
     rubricSlug: `${category.rubric?.slug}`,
   });
 
-  const columns = (columnCategory?: CategoryInterface): WpTableColumn<AttributeInterface>[] => [
+  const columns: WpTableColumn<AttributeInterface>[] = [
     {
       accessor: 'name',
       headTitle: 'Название',
@@ -69,31 +67,13 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
       render: ({ cellData }) => cellData?.name || null,
     },
     {
-      accessor: 'showInRubricFilter',
-      headTitle: 'Показывать в фильтре рубрики',
-      render: ({ cellData, dataItem }) => {
-        const checked = category.rubric?.filterVisibleAttributeIds.includes(dataItem._id);
-
-        return (
-          <WpCheckbox
-            disabled
-            value={cellData}
-            name={dataItem.slug}
-            checked={checked}
-            onChange={() => undefined}
-          />
-        );
-      },
-    },
-    {
-      accessor: 'showInRubricFilter',
+      accessor: 'cmsCardAttributeIds',
       headTitle: 'Показывать в CMS карточке товара',
       render: ({ cellData, dataItem }) => {
         const checked = category.cmsCardAttributeIds.includes(dataItem._id);
 
         return (
           <WpCheckbox
-            disabled
             value={cellData}
             name={dataItem.slug}
             checked={checked}
@@ -110,22 +90,6 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
             }}
           />
         );
-      },
-    },
-    {
-      headTitle: 'Категория',
-      render: () => {
-        if (columnCategory && columnCategory._id !== category._id) {
-          return (
-            <WpLink href={`${links.categories}/${columnCategory._id}/attributes`}>
-              {columnCategory.name}
-            </WpLink>
-          );
-        }
-        if (!columnCategory) {
-          return 'На уровне рубрики';
-        }
-        return null;
       },
     },
   ];
@@ -164,74 +128,7 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
                 <div className={`overflow-x-auto mt-4`}>
                   <WpTable<AttributeInterface>
                     data={attributes}
-                    columns={columns(category)}
-                    emptyMessage={'Список атрибутов пуст'}
-                    testIdKey={'nameString'}
-                  />
-                </div>
-              </WpAccordion>
-            </div>
-          );
-        })}
-
-        {(category.parents || []).map((parent) => {
-          return (
-            <React.Fragment key={`${parent._id}`}>
-              {(parent.attributesGroups || []).map((attributesGroup) => {
-                const { name, attributes, _id } = attributesGroup;
-
-                return (
-                  <div key={`${_id}`} className='mb-12'>
-                    <WpAccordion
-                      title={`${name}`}
-                      titleRight={
-                        <ContentItemControls
-                          testId={`${attributesGroup.name}`}
-                          justifyContent={'flex-end'}
-                          isDeleteDisabled
-                          deleteTitle={'Удалить группу атрибутов из категории'}
-                          deleteHandler={() => null}
-                        />
-                      }
-                    >
-                      <div className={`overflow-x-auto mt-4`}>
-                        <WpTable<AttributeInterface>
-                          data={attributes}
-                          columns={columns(parent)}
-                          emptyMessage={'Список атрибутов пуст'}
-                          testIdKey={'nameString'}
-                        />
-                      </div>
-                    </WpAccordion>
-                  </div>
-                );
-              })}
-            </React.Fragment>
-          );
-        })}
-
-        {(category.rubric?.attributesGroups || []).map((attributesGroup) => {
-          const { name, attributes, _id } = attributesGroup;
-
-          return (
-            <div key={`${_id}`} className='mb-12'>
-              <WpAccordion
-                isOpen
-                title={`${name}`}
-                titleRight={
-                  <ContentItemControls
-                    testId={`${attributesGroup.name}`}
-                    justifyContent={'flex-end'}
-                    isDeleteDisabled
-                    deleteTitle={'Удалить группу атрибутов из категории'}
-                    deleteHandler={() => null}
-                  />
-                }
-              >
-                <div className={`overflow-x-auto mt-4`}>
-                  <WpTable<AttributeInterface>
-                    data={attributes}
-                    columns={columns()}
+                    columns={columns}
                     emptyMessage={'Список атрибутов пуст'}
                     testIdKey={'nameString'}
                   />

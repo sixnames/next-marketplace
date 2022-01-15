@@ -5,18 +5,16 @@ import FixedButtons from '../../../../components/button/FixedButtons';
 import WpButton from '../../../../components/button/WpButton';
 import WpCheckbox from '../../../../components/FormElements/Checkbox/WpCheckbox';
 import Inner from '../../../../components/Inner';
-import WpLink from '../../../../components/Link/WpLink';
 import { AddAttributesGroupToRubricModalInterface } from '../../../../components/Modal/AddAttributesGroupToRubricModal';
 import WpAccordion from '../../../../components/WpAccordion';
 import WpTable, { WpTableColumn } from '../../../../components/WpTable';
-import { ROUTE_CMS } from '../../../../config/common';
 import { getConstantTranslation } from '../../../../config/constantTranslations';
 import {
   ADD_ATTRIBUTES_GROUP_TO_RUBRIC_MODAL,
   CONFIRM_MODAL,
 } from '../../../../config/modalVariants';
 import { useLocaleContext } from '../../../../context/localeContext';
-import { COL_ATTRIBUTES_GROUPS, COL_CATEGORIES, COL_RUBRICS } from '../../../../db/collectionNames';
+import { COL_ATTRIBUTES_GROUPS, COL_RUBRICS } from '../../../../db/collectionNames';
 import { rubricAttributeGroupsPipeline } from '../../../../db/dao/constantPipelines';
 import { castRubricForUI } from '../../../../db/dao/rubrics/castRubricForUI';
 import { RubricModel } from '../../../../db/dbModels';
@@ -25,12 +23,12 @@ import {
   AppContentWrapperBreadCrumbs,
   AttributeInterface,
   AttributesGroupInterface,
-  CategoryInterface,
   RubricInterface,
 } from '../../../../db/uiInterfaces';
 import {
   useAddAttributesGroupToRubricMutation,
   useDeleteAttributesGroupFromRubricMutation,
+  useToggleCmsCardAttributeInRubricMutation,
   useUpdateAttributeInRubricMutation,
 } from '../../../../generated/apolloComponents';
 import useMutationCallbacks from '../../../../hooks/useMutationCallbacks';
@@ -75,7 +73,12 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
     onError: onErrorCallback,
   });
 
-  const columns = (category?: CategoryInterface): WpTableColumn<AttributeInterface>[] => [
+  const [toggleCmsCardAttributeInRubricMutation] = useToggleCmsCardAttributeInRubricMutation({
+    onCompleted: (data) => onCompleteCallback(data.toggleCmsCardAttributeInRubric),
+    onError: onErrorCallback,
+  });
+
+  const columns: WpTableColumn<AttributeInterface>[] = [
     {
       accessor: 'name',
       headTitle: 'Название',
@@ -116,18 +119,29 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
       },
     },
     {
-      headTitle: 'Категория',
-      render: () => {
-        if (category) {
-          return (
-            <WpLink
-              href={`${ROUTE_CMS}/rubrics/${rubric?._id}/categories/${category._id}/attributes`}
-            >
-              {category.name}
-            </WpLink>
-          );
-        }
-        return null;
+      accessor: 'cmsCardAttributeIds',
+      headTitle: 'Показывать в CMS карточке товара',
+      render: ({ cellData, dataItem }) => {
+        const checked = rubric.cmsCardAttributeIds.includes(dataItem._id);
+
+        return (
+          <WpCheckbox
+            value={cellData}
+            name={dataItem.slug}
+            checked={checked}
+            onChange={() => {
+              showLoading();
+              toggleCmsCardAttributeInRubricMutation({
+                variables: {
+                  input: {
+                    attributeId: dataItem._id,
+                    rubricId: rubric._id,
+                  },
+                },
+              }).catch(console.log);
+            }}
+          />
+        );
       },
     },
   ];
@@ -190,48 +204,13 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
                 <div className={`overflow-x-auto mt-4`}>
                   <WpTable<AttributeInterface>
                     data={attributes}
-                    columns={columns()}
+                    columns={columns}
                     emptyMessage={'Список атрибутов пуст'}
                     testIdKey={'nameString'}
                   />
                 </div>
               </WpAccordion>
             </div>
-          );
-        })}
-
-        {(rubric.categories || []).map((category) => {
-          return (
-            <React.Fragment key={`${category._id}`}>
-              {(category.attributesGroups || []).map((attributesGroup) => {
-                const { name, attributes, _id } = attributesGroup;
-                return (
-                  <div key={`${_id}`} className='mb-12'>
-                    <WpAccordion
-                      title={`${name}`}
-                      titleRight={
-                        <ContentItemControls
-                          testId={`${attributesGroup.name}`}
-                          justifyContent={'flex-end'}
-                          isDeleteDisabled
-                          deleteTitle={'Удалить группу атрибутов из рубрики'}
-                          deleteHandler={() => null}
-                        />
-                      }
-                    >
-                      <div className={`overflow-x-auto mt-4`}>
-                        <WpTable<AttributeInterface>
-                          data={attributes}
-                          columns={columns(category)}
-                          emptyMessage={'Список атрибутов пуст'}
-                          testIdKey={'nameString'}
-                        />
-                      </div>
-                    </WpAccordion>
-                  </div>
-                );
-              })}
-            </React.Fragment>
           );
         })}
 
@@ -311,29 +290,6 @@ export const getServerSideProps = async (
       },
       // get attributes
       ...rubricAttributeGroupsPipeline,
-
-      // get categories
-      {
-        $lookup: {
-          from: COL_CATEGORIES,
-          as: 'categories',
-          let: {
-            rubricId: '$_id',
-          },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $eq: ['$rubricId', '$$rubricId'],
-                },
-              },
-            },
-
-            // get attributes groups
-            ...rubricAttributeGroupsPipeline,
-          ],
-        },
-      },
     ])
     .toArray();
   const initialRubric = initialRubrics[0];

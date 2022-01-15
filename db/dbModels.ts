@@ -671,6 +671,13 @@ export interface ProductSummaryModel extends ProductFacetModel, TimestampModel {
   videos?: string[];
 }
 
+export interface ProductDraftModel extends TimestampModel {
+  _id: ObjectIdModel;
+  authorId: ObjectIdModel;
+  moderatorId: ObjectIdModel;
+  summary: ProductSummaryModel;
+}
+
 export interface ProductCardBreadcrumbModel {
   _id: ObjectIdModel;
   name: string;

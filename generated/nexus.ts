@@ -328,6 +328,8 @@ export interface NexusGenInputs {
     // input type
     descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     isCompanyStaff: boolean; // Boolean!
+    isContentManager: boolean; // Boolean!
+    isModerator: boolean; // Boolean!
     isStaff: boolean; // Boolean!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     showAdminUiInCatalogue: boolean; // Boolean!
@@ -653,6 +655,8 @@ export interface NexusGenInputs {
     // input type
     descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     isCompanyStaff: boolean; // Boolean!
+    isContentManager: boolean; // Boolean!
+    isModerator: boolean; // Boolean!
     isStaff: boolean; // Boolean!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     roleId: NexusGenScalars['ObjectId']; // ObjectId!
@@ -1596,14 +1600,10 @@ export interface NexusGenFieldTypes {
   Role: {
     // field return type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
-    appNavigation: NexusGenRootTypes['NavItem'][]; // [NavItem!]!
-    cmsNavigation: NexusGenRootTypes['NavItem'][]; // [NavItem!]!
     createdAt: NexusGenScalars['Date']; // Date!
-    description: string; // String!
     descriptionI18n: NexusGenScalars['JSONObject'] | null; // JSONObject
     isCompanyStaff: boolean; // Boolean!
     isStaff: boolean; // Boolean!
-    name: string; // String!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     slug: string; // String!
     updatedAt: NexusGenScalars['Date']; // Date!
@@ -2539,14 +2539,10 @@ export interface NexusGenFieldTypeNames {
   Role: {
     // field return type name
     _id: 'ObjectId';
-    appNavigation: 'NavItem';
-    cmsNavigation: 'NavItem';
     createdAt: 'Date';
-    description: 'String';
     descriptionI18n: 'JSONObject';
     isCompanyStaff: 'Boolean';
     isStaff: 'Boolean';
-    name: 'String';
     nameI18n: 'JSONObject';
     slug: 'String';
     updatedAt: 'Date';

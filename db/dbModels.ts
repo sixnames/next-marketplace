@@ -489,7 +489,7 @@ export interface OrderStatusModel extends TimestampModel {
   isCanceled: boolean;
 }
 
-export interface OrderLogDiffModel {
+export interface DiffModel {
   added: Record<string, any>;
   deleted: Record<string, any>;
   updated: Record<string, any>;
@@ -509,7 +509,7 @@ export interface OrderLogModel {
   logUser: OrderLogUserModel;
   orderId: ObjectIdModel;
   createdAt: DateModel;
-  diff: OrderLogDiffModel;
+  diff: DiffModel;
 }
 
 export interface OrderProductModel extends TimestampModel {
@@ -671,11 +671,26 @@ export interface ProductSummaryModel extends ProductFacetModel, TimestampModel {
   videos?: string[];
 }
 
+export enum ProductDraftStateModel {
+  pending = 'pending',
+  returned = 'returned',
+  confirmed = 'confirmed',
+}
+
+export interface ProductDraftDiffModel {
+  diff: DiffModel;
+  createdAt: DateModel;
+}
+
 export interface ProductDraftModel extends TimestampModel {
   _id: ObjectIdModel;
   authorId: ObjectIdModel;
-  moderatorId: ObjectIdModel;
-  summary: ProductSummaryModel;
+  moderatorId?: ObjectIdModel | null;
+  moderatorComment?: string;
+  authorComment?: string;
+  state: ProductDraftStateModel;
+  draft: ProductSummaryModel;
+  log: ProductDraftDiffModel[];
 }
 
 export interface ProductCardBreadcrumbModel {
@@ -710,6 +725,8 @@ export interface RoleModel extends TimestampModel {
   isStaff: boolean;
   isCompanyStaff?: boolean;
   showAdminUiInCatalogue?: boolean;
+  isModerator?: boolean;
+  isContentManager?: boolean;
   allowedAppNavigation: string[];
 }
 

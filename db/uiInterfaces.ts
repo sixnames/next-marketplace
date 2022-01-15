@@ -61,6 +61,7 @@ import {
   UserCategoryModel,
   UserModel,
   UserNotificationsModel,
+  ProductDraftModel,
 } from './dbModels';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { MessageSlug } from '../types/messageSlugTypes';
@@ -283,6 +284,10 @@ export interface ProductSummaryInterface extends ProductSummaryModel, PricesInte
   tagAttributes?: ProductAttributeInterface[] | null;
   iconAttributes?: ProductAttributeInterface[] | null;
   ratingAttributes?: ProductAttributeInterface[] | null;
+}
+
+export interface ProductDraftInterface extends ProductDraftModel {
+  summary: ProductSummaryInterface;
 }
 
 export interface BarcodeDoublesInterface {

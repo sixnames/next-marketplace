@@ -605,6 +605,8 @@ export type CreateRoleInput = {
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
   isStaff: Scalars['Boolean'];
   isCompanyStaff: Scalars['Boolean'];
+  isModerator: Scalars['Boolean'];
+  isContentManager: Scalars['Boolean'];
   showAdminUiInCatalogue: Scalars['Boolean'];
 };
 
@@ -1669,8 +1671,6 @@ export type ProductAttribute = {
   attributeId: Scalars['ObjectId'];
   textI18n?: Maybe<Scalars['JSONObject']>;
   number?: Maybe<Scalars['Float']>;
-  text: Scalars['String'];
-  attribute: Attribute;
 };
 
 export type ProductConnection = {
@@ -1936,10 +1936,6 @@ export type Role = Timestamp & {
   isCompanyStaff: Scalars['Boolean'];
   nameI18n: Scalars['JSONObject'];
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
-  description: Scalars['String'];
-  name: Scalars['String'];
-  appNavigation: Array<NavItem>;
-  cmsNavigation: Array<NavItem>;
 };
 
 export type RolePayload = Payload & {
@@ -2449,6 +2445,8 @@ export type UpdateRoleInput = {
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
   isStaff: Scalars['Boolean'];
   isCompanyStaff: Scalars['Boolean'];
+  isModerator: Scalars['Boolean'];
+  isContentManager: Scalars['Boolean'];
   showAdminUiInCatalogue: Scalars['Boolean'];
 };
 

@@ -560,6 +560,8 @@ input CreateProductConnectionInput {
 input CreateRoleInput {
   descriptionI18n: JSONObject
   isCompanyStaff: Boolean!
+  isContentManager: Boolean!
+  isModerator: Boolean!
   isStaff: Boolean!
   nameI18n: JSONObject!
   showAdminUiInCatalogue: Boolean!
@@ -1659,14 +1661,10 @@ input RepeatOrderInput {
 
 type Role implements Timestamp {
   _id: ObjectId!
-  appNavigation: [NavItem!]!
-  cmsNavigation: [NavItem!]!
   createdAt: Date!
-  description: String!
   descriptionI18n: JSONObject
   isCompanyStaff: Boolean!
   isStaff: Boolean!
-  name: String!
   nameI18n: JSONObject!
   slug: String!
   updatedAt: Date!
@@ -2164,6 +2162,8 @@ input UpdateProductTextAttributeItemInput {
 input UpdateRoleInput {
   descriptionI18n: JSONObject
   isCompanyStaff: Boolean!
+  isContentManager: Boolean!
+  isModerator: Boolean!
   isStaff: Boolean!
   nameI18n: JSONObject!
   roleId: ObjectId!

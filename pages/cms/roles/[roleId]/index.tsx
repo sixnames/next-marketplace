@@ -95,6 +95,8 @@ const RoleDetailsConsumer: React.FC<RoleDetailsConsumerInterface> = ({ role }) =
             descriptionI18n: role.descriptionI18n,
             isStaff: role.isStaff || false,
             isCompanyStaff: role.isCompanyStaff || false,
+            isModerator: role.isModerator || false,
+            isContentManager: role.isContentManager || false,
             showAdminUiInCatalogue: role.showAdminUiInCatalogue || false,
           }}
           onSubmit={(values) => {

@@ -1,204 +1,26 @@
 import { GetServerSidePropsContext, Redirect } from 'next';
-import { getDomain } from 'tldts';
 import {
-  DEFAULT_CITY,
   DEFAULT_COMPANY_SLUG,
-  DEFAULT_CURRENCY,
-  DEFAULT_LOCALE,
   PAGE_STATE_PUBLISHED,
   ROLE_SLUG_ADMIN,
   ROUTE_CMS,
   ROUTE_SIGN_IN,
   SORT_ASC,
-  SORT_DESC,
 } from '../config/common';
-import { COL_CITIES, COL_LANGUAGES, COL_PAGES, COL_PAGES_GROUP } from '../db/collectionNames';
+import { COL_PAGES, COL_PAGES_GROUP } from '../db/collectionNames';
 import { getCatalogueNavRubrics } from '../db/dao/ssr/getCatalogueNavRubrics';
-import { getSsrDomainCompany } from '../db/dao/ssr/getSsrDomainCompany';
 import { getPageSessionUser, SessionUserPayloadInterface } from '../db/dao/user/getPageSessionUser';
-import { CityModel, LanguageModel } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
-import {
-  CityInterface,
-  CompanyInterface,
-  PageInterface,
-  PagesGroupInterface,
-  SsrConfigsInterface,
-} from '../db/uiInterfaces';
+import { CompanyInterface, PageInterface, PagesGroupInterface } from '../db/uiInterfaces';
 import { SiteLayoutCatalogueCreatedPages, SiteLayoutProviderInterface } from '../layout/SiteLayout';
 import { PagePropsInterface } from '../pages/_app';
-import { alwaysString } from './arrayUtils';
-import { getSsrConfigs } from './getSsrConfigs';
-import { getFieldStringLocale, getI18nLocaleValue } from './i18n';
-import { noNaN } from './numbers';
+import { getPageSsrInitialState } from './getPageSsrInitialState';
+import { getI18nLocaleValue } from './i18n';
 
 export interface GetPageInitialDataCommonInterface {
   locale: string;
   citySlug: string;
   companySlug?: string;
-}
-
-export interface PageInitialDataPayload {
-  configs: SsrConfigsInterface;
-  cities: CityInterface[];
-  languages: LanguageModel[];
-  currency: string;
-}
-
-export interface GetPageInitialDataInterface extends GetPageInitialDataCommonInterface {
-  locale: string;
-  citySlug: string;
-  companySlug?: string;
-}
-
-export const getPageInitialData = async ({
-  locale,
-  citySlug,
-  companySlug,
-}: GetPageInitialDataInterface): Promise<PageInitialDataPayload> => {
-  // console.log(' ');
-  // console.log('=================== getPageInitialData =======================');
-  // const timeStart = new Date().getTime();
-  const { db } = await getDatabase();
-
-  // configs
-  const configs = await getSsrConfigs({
-    citySlug,
-    locale,
-    companySlug,
-  });
-  // console.log('After configs ', new Date().getTime() - timeStart);
-
-  // languages
-  const languagesCollection = db.collection<LanguageModel>(COL_LANGUAGES);
-  const languages = await languagesCollection
-    .find(
-      {},
-      {
-        sort: {
-          _id: SORT_ASC,
-        },
-      },
-    )
-    .toArray();
-  // console.log('After languages ', new Date().getTime() - timeStart);
-
-  // cities
-  const citiesCollection = db.collection<CityModel>(COL_CITIES);
-  const initialCities = await citiesCollection.find({}, { sort: { _id: SORT_DESC } }).toArray();
-  const cities = initialCities.map((city) => {
-    return {
-      ...city,
-      name: getFieldStringLocale(city.nameI18n, locale),
-    };
-  });
-  // console.log('After cities ', new Date().getTime() - timeStart);
-
-  // currency
-  let currency = DEFAULT_CURRENCY;
-  const sessionCity = initialCities.find(({ slug }) => slug === citySlug);
-  if (sessionCity) {
-    currency = sessionCity.currency || DEFAULT_CURRENCY;
-  }
-  // console.log('After currency ', new Date().getTime() - timeStart);
-
-  return {
-    configs,
-    languages,
-    cities,
-    currency,
-  };
-};
-
-interface GetPageInitialStateInterface {
-  context: GetServerSidePropsContext;
-}
-
-interface GetPageInitialStatePayloadInterface extends PagePropsInterface {
-  path: string;
-  host: string;
-  domain: string | null;
-  companyNotFound: boolean;
-}
-
-export async function getPageInitialState({
-  context,
-}: GetPageInitialStateInterface): Promise<GetPageInitialStatePayloadInterface> {
-  const { locale, resolvedUrl, query } = context;
-  const { db } = await getDatabase();
-  const citiesCollection = db.collection<CityModel>(COL_CITIES);
-
-  const path = `${resolvedUrl}`;
-  const host = `${context.req.headers.host}`;
-  const domain = getDomain(host, { validHosts: ['localhost'] });
-  const sessionLocale = locale || DEFAULT_LOCALE;
-
-  // Session city
-  let currentCity: CityModel | null | undefined;
-  const queryCitySlug = alwaysString(query.citySlug);
-  if (queryCitySlug) {
-    const initialCity = await citiesCollection.findOne({ slug: queryCitySlug });
-    currentCity = castDbData(initialCity);
-  }
-  if (!currentCity) {
-    const defaultCity = await citiesCollection.findOne({ slug: DEFAULT_CITY });
-    currentCity = castDbData(defaultCity);
-  }
-  const citySlug = currentCity?.slug || DEFAULT_CITY;
-
-  // Domain company
-  const domainCompany = await getSsrDomainCompany({ domain });
-  /// domain company for development
-  // const domainCompany = await getSsrDomainCompany({ slug: `company_a` });
-  // const domainCompany = await getSsrDomainCompany({ slug: `5` });
-  let companyNotFound = false;
-  if (!domainCompany) {
-    companyNotFound = true;
-  }
-
-  // Page initial data
-  const rawInitialData = await getPageInitialData({
-    locale: sessionLocale,
-    citySlug,
-    companySlug: domainCompany ? domainCompany.slug : DEFAULT_COMPANY_SLUG,
-  });
-  const initialData = castDbData(rawInitialData);
-
-  // Site theme accent color
-  const themeColor = rawInitialData.configs.siteThemeColor;
-  const fallbackColor = `219, 83, 96`;
-  const themeRGB = `${themeColor}`.split(',').map((num) => noNaN(num));
-  const toShort = themeRGB.length < 3;
-  const finalThemeColor = toShort ? fallbackColor : themeColor;
-
-  const themeR = toShort ? '219' : themeRGB[0];
-  const themeG = toShort ? '83' : themeRGB[1];
-  const themeB = toShort ? '96' : themeRGB[2];
-  const themeStyle = {
-    '--theme': `rgb(${finalThemeColor})`,
-    '--themeR': `${themeR}`,
-    '--themeG': `${themeG}`,
-    '--themeB': `${themeB}`,
-  };
-
-  return {
-    path,
-    host,
-    domain,
-    initialData,
-    themeStyle,
-    domainCompany: castDbData(domainCompany),
-    companySlug: domainCompany ? domainCompany.slug : DEFAULT_COMPANY_SLUG,
-    citySlug,
-    sessionLocale,
-    companyNotFound,
-    currentCity: currentCity
-      ? {
-          ...currentCity,
-          name: getI18nLocaleValue(currentCity.nameI18n, sessionLocale),
-        }
-      : null,
-  };
 }
 
 interface CheckPagePermissionInterface {
@@ -267,7 +89,7 @@ export async function getConsoleInitialData({
   context,
 }: GetConsoleInitialDataInterface): Promise<GetConsoleInitialDataPayloadInterface> {
   const { currentCity, citySlug, sessionLocale, initialData, companySlug, themeStyle } =
-    await getPageInitialState({ context });
+    await getPageSsrInitialState({ context });
 
   // Session user
   const sessionUser = await getPageSessionUser({
@@ -357,7 +179,7 @@ export async function getConsoleMainPageData({
   context,
 }: GetConsoleMainPageDataInterface): Promise<GetConsoleMainPageDataPayloadInterface> {
   const { currentCity, citySlug, sessionLocale, initialData, companySlug, themeStyle } =
-    await getPageInitialState({ context });
+    await getPageSsrInitialState({ context });
 
   // Session user
   const sessionUser = await getPageSessionUser({
@@ -434,7 +256,7 @@ export async function getAppInitialData({
   context,
 }: GetAppInitialDataInterface): Promise<GetAppInitialDataPayloadInterface> {
   const { currentCity, citySlug, sessionLocale, initialData, companySlug, themeStyle } =
-    await getPageInitialState({ context });
+    await getPageSsrInitialState({ context });
 
   // Session user
   const sessionUser = await getPageSessionUser({
@@ -634,7 +456,7 @@ export async function getSiteInitialData({
     themeStyle,
     companyNotFound,
     domain,
-  } = await getPageInitialState({ context });
+  } = await getPageSsrInitialState({ context });
 
   // initial data
   const rawNavRubrics = await getCatalogueNavRubrics({

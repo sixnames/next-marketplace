@@ -13,7 +13,7 @@ import { LocaleContextProvider } from '../context/localeContext';
 import { NotificationsProvider } from '../context/notificationsContext';
 import { ThemeContextProvider } from '../context/themeContext';
 import { CityInterface, CompanyInterface } from '../db/uiInterfaces';
-import { PageInitialDataPayload } from '../lib/ssrUtils';
+import { PageInitialDataPayload } from '../lib/getSsrPageInitialData';
 
 export interface PagePropsInterface {
   initialData: PageInitialDataPayload;

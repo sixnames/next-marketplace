@@ -80,7 +80,9 @@ const Card: NextPage<CardInterface> = ({ cardData, domainCompany, ...props }) =>
   }
 
   // seo
-  const titlePrice = ` по цене ${cardData.product.minPrice} ${currency}`;
+  const titlePrice = cardData.product.minPrice
+    ? ` по цене ${cardData.product.minPrice} ${currency}`
+    : '';
 
   // title
   const titlePrefixConfig = configs.cardTitleMetaPrefix;

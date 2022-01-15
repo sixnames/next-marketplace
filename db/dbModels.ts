@@ -1036,6 +1036,7 @@ export enum PageStateModel {
 export interface PageModel extends TimestampModel {
   _id: ObjectIdModel;
   nameI18n: TranslationModel;
+  titleI18n?: TranslationModel | null;
   descriptionI18n?: TranslationModel | null;
   index: number;
   slug: string;

@@ -322,7 +322,8 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
 
         {/*top shops*/}
         {topShops.length > 0 ? (
-          <section className={sectionClassName} id={'top-shops'}>
+          <section className={`${sectionClassName} relative`}>
+            <div className='absolute w-full h-[1px] top-[-50px] left-0' id={'top-shops'} />
             <div className='text-2xl mb-4 font-medium flex items-baseline'>
               <h2>Магазины{domainCompany ? ` ${domainCompany.name}` : ''}</h2>
               <span className='ml-3 text-xl text-theme'>({topShops.length})</span>

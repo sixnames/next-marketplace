@@ -108,6 +108,10 @@ const ConfigContext = React.createContext<ConfigContextInterface>({
     cardDescriptionMetaMiddle: '',
     cardDescriptionMetaPostfix: '',
     showShopProductAvailability: false,
+    blogDescriptionMetaPostfix: '',
+    blogDescriptionMetaPrefix: '',
+    blogTitleMetaPostfix: '',
+    blogTitleMetaPrefix: '',
   },
 });
 

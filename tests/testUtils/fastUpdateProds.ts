@@ -1,8 +1,19 @@
 import { Db } from 'mongodb';
 import { ID_COUNTER_STEP } from '../../config/common';
 import { dbsConfig, getProdDb } from './getProdDb';
-import { COL_CATEGORIES, COL_ID_COUNTERS, COL_RUBRICS } from '../../db/collectionNames';
-import { CategoryModel, IdCounterModel, ObjectIdModel, RubricModel } from '../../db/dbModels';
+import {
+  COL_ATTRIBUTES,
+  COL_CATEGORIES,
+  COL_ID_COUNTERS,
+  COL_RUBRICS,
+} from '../../db/collectionNames';
+import {
+  AttributeModel,
+  CategoryModel,
+  IdCounterModel,
+  ObjectIdModel,
+  RubricModel,
+} from '../../db/dbModels';
 require('dotenv').config();
 
 export async function getFastNextNumberItemId(collectionName: string, db: Db): Promise<string> {
@@ -39,6 +50,7 @@ async function updateProds() {
     console.log(' ');
     console.log(`Updating ${dbConfig.dbName} db`);
     const { db, client } = await getProdDb(dbConfig);
+    const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
     const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
     const categoriesCollection = db.collection<CategoryType>(COL_CATEGORIES);
 
@@ -52,28 +64,48 @@ async function updateProds() {
       const attributesGroupIds = categories.reduce((acc: ObjectIdModel[], category) => {
         return [...acc, ...category.attributesGroupIds];
       }, []);
+
+      const attributes = await attributesCollection
+        .find({
+          attributesGroupId: {
+            $in: attributesGroupIds,
+          },
+        })
+        .toArray();
+      const attributeIds = attributes.map(({ _id }) => _id);
+
       await rubricsCollection.findOneAndUpdate(
         {
           _id: rubric._id,
         },
         {
           $addToSet: {
+            cmsCardAttributeIds: {
+              $each: attributeIds,
+            },
             attributesGroupIds: {
               $each: attributesGroupIds,
             },
           },
         },
       );
-    }
 
-    await categoriesCollection.updateMany(
-      {},
-      {
-        $unset: {
-          attributesGroupIds: '',
+      await categoriesCollection.updateMany(
+        {
+          rubricId: rubric._id,
         },
-      },
-    );
+        {
+          $addToSet: {
+            cmsCardAttributeIds: {
+              $each: attributeIds,
+            },
+          },
+          $unset: {
+            attributesGroupIds: '',
+          },
+        },
+      );
+    }
 
     // disconnect form db
     await client.close();

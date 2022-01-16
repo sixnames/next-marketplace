@@ -2,7 +2,7 @@ import { Db } from 'mongodb';
 import { ID_COUNTER_STEP } from '../../config/common';
 import { dbsConfig, getProdDb } from './getProdDb';
 import { COL_CATEGORIES, COL_ID_COUNTERS, COL_RUBRICS } from '../../db/collectionNames';
-import { CategoryModel, IdCounterModel, RubricModel } from '../../db/dbModels';
+import { CategoryModel, IdCounterModel, ObjectIdModel, RubricModel } from '../../db/dbModels';
 require('dotenv').config();
 
 export async function getFastNextNumberItemId(collectionName: string, db: Db): Promise<string> {
@@ -28,6 +28,10 @@ export async function getFastNextNumberItemId(collectionName: string, db: Db): P
   return `${updatedCounter.value.counter}`;
 }
 
+interface CategoryType extends CategoryModel {
+  attributesGroupIds: ObjectIdModel[];
+}
+
 async function updateProds() {
   for await (const dbConfig of dbsConfig) {
     console.log(' ');
@@ -36,21 +40,37 @@ async function updateProds() {
     console.log(`Updating ${dbConfig.dbName} db`);
     const { db, client } = await getProdDb(dbConfig);
     const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-    const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
+    const categoriesCollection = db.collection<CategoryType>(COL_CATEGORIES);
 
-    await rubricsCollection.updateMany(
-      {},
-      {
-        $set: {
-          cmsCardAttributeIds: [],
+    const rubrics = await rubricsCollection.find({}).toArray();
+    for await (const rubric of rubrics) {
+      const categories = await categoriesCollection
+        .find({
+          rubricId: rubric._id,
+        })
+        .toArray();
+      const attributesGroupIds = categories.reduce((acc: ObjectIdModel[], category) => {
+        return [...acc, ...category.attributesGroupIds];
+      }, []);
+      await rubricsCollection.findOneAndUpdate(
+        {
+          _id: rubric._id,
         },
-      },
-    );
+        {
+          $addToSet: {
+            attributesGroupIds: {
+              $each: attributesGroupIds,
+            },
+          },
+        },
+      );
+    }
+
     await categoriesCollection.updateMany(
       {},
       {
-        $set: {
-          cmsCardAttributeIds: [],
+        $unset: {
+          attributesGroupIds: '',
         },
       },
     );

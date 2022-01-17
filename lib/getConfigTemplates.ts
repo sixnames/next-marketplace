@@ -884,6 +884,22 @@ export function getConfigTemplates({
       companySlug,
       group: 'contacts',
       variant: CONFIG_VARIANT_STRING,
+      slug: 'contactsTitle',
+      name: 'Заголовок H1 страницы контактов',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [''],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'contacts',
+      variant: CONFIG_VARIANT_STRING,
       slug: 'contactsMetaDescription',
       name: 'Метатег description страницы контактов',
       description: '',

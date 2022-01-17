@@ -755,6 +755,7 @@ export interface SsrConfigsInterface {
   mapMarkerDarkTheme: string;
   mapMarkerLightTheme: string;
   chat: string;
+  contactsTitle: string;
   contactsMetaTitle: string;
   contactsMetaDescription: string;
 

@@ -95,8 +95,8 @@ export async function createPromoCode({
     });
     if (!createdPromoCodeResult.acknowledged || !createdPromoCode) {
       return {
-        success: true,
-        message: await getApiMessage('promoCode.create.success'),
+        success: false,
+        message: await getApiMessage('promoCode.create.error'),
       };
     }
 

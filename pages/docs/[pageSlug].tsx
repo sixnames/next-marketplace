@@ -81,7 +81,7 @@ export async function getServerSideProps(
     props: {
       ...props,
       page: castDbData(page),
-      showForIndex: false,
+      showForIndex: true,
     },
   };
 }

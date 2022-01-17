@@ -16,7 +16,7 @@ import {
 import { getDatabase } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
 
-export interface CreatePromoCodeInterface {
+export interface CreatePromoCodeInputInterface {
   promoId: string;
   code: string;
   descriptionI18n?: TranslationModel | null;
@@ -25,7 +25,7 @@ export interface CreatePromoCodeInterface {
 export async function createPromoCode({
   context,
   input,
-}: DaoPropsInterface<CreatePromoCodeInterface>): Promise<PromoCodePayloadModel> {
+}: DaoPropsInterface<CreatePromoCodeInputInterface>): Promise<PromoCodePayloadModel> {
   try {
     const { getApiMessage } = await getRequestParams(context);
     const { db } = await getDatabase();

@@ -216,7 +216,7 @@ export async function updatePromo({
 
     return mutationPayload;
   } catch (e) {
-    console.log(e);
+    console.log('updatePromo error', e);
     return {
       success: false,
       message: getResolverErrorMessage(e),

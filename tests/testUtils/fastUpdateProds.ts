@@ -1,9 +1,19 @@
 import { Db } from 'mongodb';
-import { DEFAULT_COMPANY_SLUG, ID_COUNTER_STEP } from '../../config/common';
-import { noNaN } from '../../lib/numbers';
+import { ID_COUNTER_STEP } from '../../config/common';
 import { dbsConfig, getProdDb } from './getProdDb';
-import { COL_COMPANIES, COL_ID_COUNTERS } from '../../db/collectionNames';
-import { CompanyModel, IdCounterModel } from '../../db/dbModels';
+import {
+  COL_ATTRIBUTES,
+  COL_CATEGORIES,
+  COL_ID_COUNTERS,
+  COL_RUBRICS,
+} from '../../db/collectionNames';
+import {
+  AttributeModel,
+  CategoryModel,
+  IdCounterModel,
+  ObjectIdModel,
+  RubricModel,
+} from '../../db/dbModels';
 require('dotenv').config();
 
 export async function getFastNextNumberItemId(collectionName: string, db: Db): Promise<string> {
@@ -29,35 +39,72 @@ export async function getFastNextNumberItemId(collectionName: string, db: Db): P
   return `${updatedCounter.value.counter}`;
 }
 
+interface CategoryType extends CategoryModel {
+  attributesGroupIds: ObjectIdModel[];
+}
+
 async function updateProds() {
-  const slugs: string[] = [DEFAULT_COMPANY_SLUG];
   for await (const dbConfig of dbsConfig) {
     console.log(' ');
     console.log('>>>>>>>>>>>>>>>>>>>>>>>>');
     console.log(' ');
     console.log(`Updating ${dbConfig.dbName} db`);
     const { db, client } = await getProdDb(dbConfig);
-    const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
+    const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
+    const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+    const categoriesCollection = db.collection<CategoryType>(COL_CATEGORIES);
 
-    const companies = await companiesCollection
-      .aggregate<CompanyModel>([
-        {
-          $sort: {
-            slug: -1,
+    const rubrics = await rubricsCollection.find({}).toArray();
+    for await (const rubric of rubrics) {
+      const categories = await categoriesCollection
+        .find({
+          rubricId: rubric._id,
+        })
+        .toArray();
+      const attributesGroupIds = categories.reduce((acc: ObjectIdModel[], category) => {
+        return [...acc, ...category.attributesGroupIds];
+      }, []);
+
+      const attributes = await attributesCollection
+        .find({
+          attributesGroupId: {
+            $in: attributesGroupIds,
           },
+        })
+        .toArray();
+      const attributeIds = attributes.map(({ _id }) => _id);
+
+      await rubricsCollection.findOneAndUpdate(
+        {
+          _id: rubric._id,
         },
         {
-          $project: {
-            slug: true,
+          $addToSet: {
+            cmsCardAttributeIds: {
+              $each: attributeIds,
+            },
+            attributesGroupIds: {
+              $each: attributesGroupIds,
+            },
           },
         },
-      ])
-      .toArray();
-    for await (const company of companies) {
-      const exist = slugs.some((slug) => slug === company.slug);
-      if (!exist) {
-        slugs.push(company.slug);
-      }
+      );
+
+      await categoriesCollection.updateMany(
+        {
+          rubricId: rubric._id,
+        },
+        {
+          $addToSet: {
+            cmsCardAttributeIds: {
+              $each: attributeIds,
+            },
+          },
+          $unset: {
+            attributesGroupIds: '',
+          },
+        },
+      );
     }
 
     // disconnect form db
@@ -65,13 +112,6 @@ async function updateProds() {
     console.log(`Done ${dbConfig.dbName}`);
     console.log(' ');
   }
-
-  console.log(
-    slugs.sort((a, b) => {
-      return noNaN(a) - noNaN(b);
-    }),
-    slugs.length,
-  );
 }
 
 (() => {

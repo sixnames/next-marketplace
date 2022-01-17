@@ -13,7 +13,6 @@ import { getCatalogueAttributes } from '../../../lib/catalogueUtils';
 import { getFieldStringLocale } from '../../../lib/i18n';
 import {
   countProductAttributes,
-  getCategoryAllAttributes,
   getRubricAllAttributes,
 } from '../../../lib/productAttributesUtils';
 import { getTreeFromList } from '../../../lib/treeUtils';
@@ -274,8 +273,6 @@ export const getConsoleCompanyRubricProducts = async ({
     const allRubricAttributes = await getRubricAllAttributes(rubric._id);
     const docs: ProductSummaryInterface[] = [];
     for await (const summary of productDataAggregation.docs) {
-      const productCategoryAttributes = await getCategoryAllAttributes(summary.filterSlugs);
-
       const initialCastedProduct = castSummaryForUI({
         summary: summary,
         attributes,
@@ -287,7 +284,7 @@ export const getConsoleCompanyRubricProducts = async ({
       const castedProduct: ProductSummaryInterface = {
         ...initialCastedProduct,
         attributesCount: countProductAttributes(summary.attributes),
-        totalAttributesCount: allRubricAttributes.length + productCategoryAttributes.length,
+        totalAttributesCount: allRubricAttributes.length,
       };
 
       docs.push(castedProduct);

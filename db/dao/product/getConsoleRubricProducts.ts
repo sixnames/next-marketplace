@@ -19,7 +19,6 @@ import { getFieldStringLocale } from '../../../lib/i18n';
 import { noNaN } from '../../../lib/numbers';
 import {
   countProductAttributes,
-  getCategoryAllAttributes,
   getRubricAllAttributes,
 } from '../../../lib/productAttributesUtils';
 import { getProductAllSeoContents } from '../../../lib/seoContentUtils';
@@ -385,8 +384,6 @@ export const getConsoleRubricProducts = async ({
     const allRubricAttributes = await getRubricAllAttributes(rubric._id);
     const docs: ProductSummaryInterface[] = [];
     for await (const product of productDataAggregation.docs) {
-      const productCategoryAttributes = await getCategoryAllAttributes(product.filterSlugs);
-
       // seo content
       const cardContentCities = await getProductAllSeoContents({
         companySlug,
@@ -429,7 +426,7 @@ export const getConsoleRubricProducts = async ({
         cardContentCities,
         name: getFieldStringLocale(product.nameI18n, locale),
         attributesCount: countProductAttributes(initialCastedProduct.attributes),
-        totalAttributesCount: allRubricAttributes.length + productCategoryAttributes.length,
+        totalAttributesCount: allRubricAttributes.length,
         attributes: [],
       };
 

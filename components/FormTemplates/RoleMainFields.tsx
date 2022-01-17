@@ -30,6 +30,14 @@ const RoleMainFields: React.FC = () => {
         name={'isCompanyStaff'}
       />
 
+      <FormikCheckboxLine testId={'isModerator'} label={'Модератор'} name={'isModerator'} />
+
+      <FormikCheckboxLine
+        testId={'isContentManager'}
+        label={'Контент менеджер'}
+        name={'isContentManager'}
+      />
+
       <FormikCheckboxLine
         testId={'showAdminUiInCatalogue'}
         label={'Показывать интерфейс администратора в каталоге'}

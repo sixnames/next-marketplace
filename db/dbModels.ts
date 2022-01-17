@@ -489,7 +489,7 @@ export interface OrderStatusModel extends TimestampModel {
   isCanceled: boolean;
 }
 
-export interface OrderLogDiffModel {
+export interface DiffModel {
   added: Record<string, any>;
   deleted: Record<string, any>;
   updated: Record<string, any>;
@@ -509,7 +509,7 @@ export interface OrderLogModel {
   logUser: OrderLogUserModel;
   orderId: ObjectIdModel;
   createdAt: DateModel;
-  diff: OrderLogDiffModel;
+  diff: DiffModel;
 }
 
 export interface OrderProductModel extends TimestampModel {
@@ -671,6 +671,28 @@ export interface ProductSummaryModel extends ProductFacetModel, TimestampModel {
   videos?: string[];
 }
 
+export enum ProductDraftStateModel {
+  pending = 'pending',
+  returned = 'returned',
+  confirmed = 'confirmed',
+}
+
+export interface ProductDraftDiffModel {
+  diff: DiffModel;
+  createdAt: DateModel;
+}
+
+export interface ProductDraftModel extends TimestampModel {
+  _id: ObjectIdModel;
+  authorId: ObjectIdModel;
+  moderatorId?: ObjectIdModel | null;
+  moderatorComment?: string;
+  authorComment?: string;
+  state: ProductDraftStateModel;
+  draft: ProductSummaryModel;
+  log: ProductDraftDiffModel[];
+}
+
 export interface ProductCardBreadcrumbModel {
   _id: ObjectIdModel;
   name: string;
@@ -703,6 +725,8 @@ export interface RoleModel extends TimestampModel {
   isStaff: boolean;
   isCompanyStaff?: boolean;
   showAdminUiInCatalogue?: boolean;
+  isModerator?: boolean;
+  isContentManager?: boolean;
   allowedAppNavigation: string[];
 }
 
@@ -757,6 +781,7 @@ export interface RubricModel extends CountersModel {
   variantId: ObjectIdModel;
   capitalise?: boolean | null;
   attributesGroupIds: ObjectIdModel[];
+  cmsCardAttributeIds: ObjectIdModel[];
   filterVisibleAttributeIds: ObjectIdModel[];
   showRubricNameInProductTitle?: boolean | null;
   showCategoryInProductTitle?: boolean | null;
@@ -775,7 +800,7 @@ export interface CategoryModel extends CountersModel {
   nameI18n: TranslationModel;
   gender?: GenderModel | null;
   parentTreeIds: ObjectIdModel[];
-  attributesGroupIds: ObjectIdModel[];
+  cmsCardAttributeIds: ObjectIdModel[];
   rubricId: ObjectIdModel;
   rubricSlug: string;
   parentId?: ObjectIdModel | null;

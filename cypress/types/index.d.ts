@@ -19,7 +19,7 @@ declare namespace Cypress {
      * @example cy.dataCy('greeting')
      */
     getByCy(testId: string): Chainable<Element>;
-    visitBlank(testId: string): void;
+    visitBlank(testId: string, additionalPath?: string): void;
     visitLinkHref(testId: string): void;
     shouldSuccess(log?: string): void;
     shouldError(log?: string): void;

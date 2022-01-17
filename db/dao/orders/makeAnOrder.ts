@@ -71,6 +71,7 @@ export interface MakeAnOrderShopConfigInterface {
   deliveryInfo?: OrderDeliveryInfoModel | null;
   giftCertificateCode?: string;
   giftCertificateDiscount?: number | null;
+  // TODO change promoCodeDiscount to promoCodeId
   promoCodeDiscount?: number | null;
 }
 

@@ -388,8 +388,14 @@ export const getCatalogueBlogSsr = async (
     })
     .slice(0, topPostsLimit);
 
+  // blog title
+  const blogTitlePrefixConfig = props.initialData.configs.blogTitlePrefix;
+  const blogTitlePrefix = blogTitlePrefixConfig ? `${blogTitlePrefixConfig} ` : '';
+  const blogTitlePostfixConfig = props.initialData.configs.blogTitlePostfix;
+  const blogTitlePostfix = blogTitlePostfixConfig ? ` ${blogTitlePostfixConfig}` : '';
+
   const blogListName = getConstantTranslation(`nav.blog.${locale}`);
-  const keyword = `${blogListName} ${props.initialData.configs.siteName}`;
+  const keyword = blogTitlePrefix ? blogListName.toLocaleLowerCase() : blogListName;
   const selectedOptions = blogFilter
     .reduce((acc: CatalogueFilterAttributeOptionInterface[], attribute) => {
       const { isSelected, options } = attribute;
@@ -400,8 +406,10 @@ export const getCatalogueBlogSsr = async (
       return [...acc, ...selectedOptions];
     }, [])
     .map(({ name }) => name.toLocaleLowerCase(locale));
-  const titleFilterPrefix =
-    selectedOptions.length > 0 ? ` на тему ${selectedOptions.join(', ')}` : '';
+
+  const titleFilters = selectedOptions.length > 0 ? ` на тему ${selectedOptions.join(', ')}` : '';
+
+  const blogTitle = `${blogTitlePrefix}${keyword}${titleFilters}${blogTitlePostfix}`;
 
   return {
     props: {
@@ -409,7 +417,7 @@ export const getCatalogueBlogSsr = async (
       posts: castDbData(posts),
       topPosts: castDbData(topPosts),
       blogFilter: castDbData(blogFilter),
-      blogTitle: `${keyword}${titleFilterPrefix}`,
+      blogTitle,
       showForIndex: true,
     },
   };

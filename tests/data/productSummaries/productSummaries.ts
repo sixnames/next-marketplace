@@ -113,14 +113,6 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
   const rubricCategories = categories.filter(({ rubricId }) => {
     return rubricId.equals(rubric._id);
   });
-  rubricCategories.forEach((category) => {
-    category.attributesGroupIds.forEach((_id) => {
-      const exist = attributesGroupIds.some((groupId) => groupId.equals(_id));
-      if (!exist) {
-        attributesGroupIds.push(_id);
-      }
-    });
-  });
 
   const rubricAttributes = attributes.filter(({ attributesGroupId }) => {
     return attributesGroupIds.some((_id) => _id.equals(attributesGroupId));

@@ -7,6 +7,7 @@ import { ASSETS_DIST, DEFAULT_COMPANY_SLUG, IMAGE_FALLBACK, ONE_WEEK } from '../
 import { alwaysArray, alwaysString } from '../../lib/arrayUtils';
 import { checkIfWatermarkNeeded, getSharpImage } from '../../lib/assetUtils/assetUtils';
 import { noNaN } from '../../lib/numbers';
+import qs from 'qs';
 
 const SitemapXml: React.FC = () => {
   return <div style={{ background: 'black', height: '100vh' }} />;
@@ -15,7 +16,7 @@ const SitemapXml: React.FC = () => {
 export async function getServerSideProps(
   context: GetServerSidePropsContext,
 ): Promise<GetServerSidePropsResult<any>> {
-  const { res, query } = context;
+  const { res, query, req } = context;
 
   // extract query parameters
   const widthString = (query.width as string) || undefined;
@@ -33,11 +34,12 @@ export async function getServerSideProps(
   const fileName = alwaysString(urlArray[urlArray.length - 1]);
   const initialFileFormatArray = fileName.split('.');
   const initialFileFormat = alwaysString(initialFileFormatArray[initialFileFormatArray.length - 1]);
-  const dist = path.join(process.cwd(), filePath);
+  const dist = path.join(process.cwd(), `${req.url}`);
 
   // set the content-type of the response
   res.setHeader('Content-Type', `image/${format}`);
   res.setHeader('Cache-Control', `public, max-age=${ONE_WEEK}`);
+  res.setHeader('etag', `${req.url}?${qs.stringify(query)}`);
 
   // check if watermark needed
   const showWatermark = checkIfWatermarkNeeded(dist);

@@ -149,9 +149,15 @@ const Contacts: NextPage<SiteLayoutProviderInterface> = (props) => {
 };
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  return getSiteInitialData({
+  const { props } = await getSiteInitialData({
     context,
   });
+  return {
+    props: {
+      ...props,
+      showForIndex: true,
+    },
+  };
 }
 
 export default Contacts;

@@ -1152,6 +1152,7 @@ export type OrderStatusPayloadModel = PayloadType<OrderStatusModel>;
 export type PagePayloadModel = PayloadType<PageModel>;
 export type PagesGroupPayloadModel = PayloadType<PagesGroupModel>;
 export type PromoPayloadModel = PayloadType<PromoModel>;
+export type PromoCodePayloadModel = PayloadType<PromoCodeModel>;
 export type RolePayloadModel = PayloadType<RoleModel>;
 export type RoleRulePayloadModel = PayloadType<RoleRuleModel>;
 export type RubricPayloadModel = PayloadType<RubricModel>;

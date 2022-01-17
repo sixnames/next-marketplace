@@ -57,6 +57,7 @@ export const updatePromoSchema = (args: ValidationSchemaArgsInterface) => {
 
 export const createPromoCodeSchema = (args: ValidationSchemaArgsInterface) => {
   return Yup.object({
+    promoId: promoIdSchema(args),
     code: requiredStringSchema({
       ...args,
       slug: 'validation.promoCode.code',

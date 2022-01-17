@@ -6,9 +6,10 @@ import {
   getResolverValidationSchema,
 } from '../../../lib/sessionHelpers';
 import { updatePromoSchema } from '../../../validation/promoSchema';
-import { COL_PROMO, COL_PROMO_PRODUCTS } from '../../collectionNames';
+import { COL_PROMO, COL_PROMO_CODES, COL_PROMO_PRODUCTS } from '../../collectionNames';
 import {
   DateModel,
+  PromoCodeModel,
   PromoModel,
   PromoPayloadModel,
   PromoProductModel,
@@ -68,6 +69,7 @@ export async function updatePromo({
   const { db, client } = await getDatabase();
   const promoCollection = db.collection<PromoModel>(COL_PROMO);
   const promoProductsCollection = db.collection<PromoProductModel>(COL_PROMO_PRODUCTS);
+  const promoCodesCollection = db.collection<PromoCodeModel>(COL_PROMO_CODES);
   const session = client.startSession();
   let mutationPayload: PromoPayloadModel = {
     success: false,
@@ -146,7 +148,7 @@ export async function updatePromo({
         return;
       }
 
-      // update product dates
+      // update product products
       const updatedPromoProductsResult = await promoProductsCollection.updateMany(
         {
           promoId,
@@ -166,6 +168,38 @@ export async function updatePromo({
         },
       );
       if (!updatedPromoProductsResult.acknowledged) {
+        mutationPayload = {
+          success: false,
+          message: await getApiMessage('promo.update.error'),
+        };
+        await session.abortTransaction();
+        return;
+      }
+
+      // update promo codes
+      const updatedPromoCodesResult = await promoCodesCollection.updateMany(
+        {
+          promoId,
+        },
+        {
+          $set: {
+            promoSlug: updatedPromo.slug,
+            promoId: updatedPromo._id,
+            addCategoryCashback: updatedPromo.addCategoryCashback,
+            addCategoryDiscount: updatedPromo.addCategoryDiscount,
+            allowPayFromCashback: updatedPromo.allowPayFromCashback,
+            cashbackPercent: updatedPromo.cashbackPercent,
+            companyId: updatedPromo.companyId,
+            companySlug: updatedPromo.companySlug,
+            discountPercent: updatedPromo.discountPercent,
+            useBiggestCashback: updatedPromo.useBiggestCashback,
+            useBiggestDiscount: updatedPromo.useBiggestDiscount,
+            startAt: updatedPromo.startAt,
+            endAt: updatedPromo.endAt,
+          },
+        },
+      );
+      if (!updatedPromoCodesResult.acknowledged) {
         mutationPayload = {
           success: false,
           message: await getApiMessage('promo.update.error'),

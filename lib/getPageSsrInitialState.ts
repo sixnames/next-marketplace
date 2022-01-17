@@ -49,10 +49,10 @@ export async function getPageSsrInitialState({
   const citySlug = currentCity?.slug || DEFAULT_CITY;
 
   // Domain company
-  // const domainCompany = await getSsrDomainCompany({ domain });
+  const domainCompany = await getSsrDomainCompany({ domain });
   /// domain company for development
   // const domainCompany = await getSsrDomainCompany({ slug: `company_a` });
-  const domainCompany = await getSsrDomainCompany({ slug: `5` });
+  // const domainCompany = await getSsrDomainCompany({ slug: `5` });
   let companyNotFound = false;
   if (!domainCompany) {
     companyNotFound = true;

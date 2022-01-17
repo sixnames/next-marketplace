@@ -59,6 +59,7 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
       render: ({ dataItem, rowIndex }) => {
         return (
           <WpLink
+            data-url={`${itemPath}/${dataItem._id}`}
             testId={`product-link-${rowIndex}`}
             target={'_blank'}
             href={`${itemPath}/${dataItem._id}`}

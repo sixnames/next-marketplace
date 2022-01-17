@@ -129,6 +129,7 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
             value={cellData}
             name={dataItem.slug}
             checked={checked}
+            testId={`${dataItem.name}`}
             onChange={() => {
               showLoading();
               toggleCmsCardAttributeInRubricMutation({
@@ -172,6 +173,7 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
           return (
             <div key={`${_id}`} className='mb-12'>
               <WpAccordion
+                isOpen
                 title={`${name}`}
                 titleRight={
                   <ContentItemControls

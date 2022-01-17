@@ -1,8 +1,13 @@
-import { DEFAULT_LOCALE, ROUTE_CMS } from 'config/common';
+import { DEFAULT_LOCALE } from 'config/common';
+import { getConsoleRubricLinks } from '../../../lib/linkUtils';
+import { fixtureIds } from '../../fixtures/fixtureIds';
 
 describe('Categories', () => {
+  const links = getConsoleRubricLinks({
+    rubricSlug: fixtureIds.rubricWineSlug,
+  });
   beforeEach(() => {
-    cy.testAuth(`${ROUTE_CMS}/rubrics`);
+    cy.testAuth(links.categories);
   });
 
   it('Should CRUD categories list', () => {
@@ -10,8 +15,6 @@ describe('Categories', () => {
     const childCategoryName = 'childCategoryName';
     const categoryNewName = 'categoryNewName';
 
-    cy.getByCy(`Вино-update`).click();
-    cy.getByCy(`categories`).click();
     cy.getByCy(`rubric-categories-list`).should('exist');
 
     // Should create top level category
@@ -44,16 +47,12 @@ describe('Categories', () => {
     cy.getByCy('attributes').click();
     cy.wait(1500);
     cy.getByCy('category-attributes').should('exist');
-    cy.getByCy('add-attributes-group').click();
-    cy.selectOptionByTestId('attributes-groups', 'Характеристики виски');
-    cy.getByCy(`attributes-group-submit`).click();
+    cy.getByCy('Виноград-checkbox').check();
     cy.wait(1500);
+    cy.getByCy('Виноград-checkbox').should('be.checked');
 
     // Should delete top level category and category children
-    cy.visit(`${ROUTE_CMS}/rubrics`);
-    cy.getByCy(`Вино-update`).click();
-    cy.wait(1500);
-    cy.getByCy(`categories`).click();
+    cy.visit(links.categories);
     cy.wait(1500);
     cy.getByCy(`${categoryNewName}-delete`).click();
     cy.getByCy('confirm').click();

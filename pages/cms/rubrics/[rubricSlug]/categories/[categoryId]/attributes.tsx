@@ -77,6 +77,7 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
             value={cellData}
             name={dataItem.slug}
             checked={checked}
+            testId={`${dataItem.name}`}
             onChange={() => {
               showLoading();
               toggleCmsCardAttributeInCategoryMutation({
@@ -124,7 +125,7 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
 
           return (
             <div key={`${_id}`} className='mb-12'>
-              <WpAccordion title={`${name}`}>
+              <WpAccordion title={`${name}`} isOpen>
                 <div className={`overflow-x-auto mt-4`}>
                   <WpTable<AttributeInterface>
                     data={attributes}

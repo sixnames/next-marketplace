@@ -36,11 +36,12 @@ Cypress.Commands.add('getByCy', (testId) => {
   return cy.get(`[data-cy="${testId}"]`) as any;
 });
 
-Cypress.Commands.add('visitBlank', (testId) => {
+Cypress.Commands.add('visitBlank', (testId, additionalPath?: string) => {
   cy.getByCy(testId)
     .first()
     .then((el: any) => {
-      cy.visit(el.data('url'));
+      const url = el.data('url');
+      cy.visit(`${url}${additionalPath ? `/${additionalPath}` : ''}`);
     });
 });
 

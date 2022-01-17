@@ -1,5 +1,4 @@
 import { GetServerSidePropsContext, NextPage } from 'next';
-import Head from 'next/head';
 import * as React from 'react';
 import Inner from '../components/Inner';
 import LinkEmail from '../components/Link/LinkEmail';
@@ -47,10 +46,6 @@ const ContactsRoute: React.FC = () => {
 
   return (
     <Inner>
-      <Head>
-        <title>Контакты {configSiteName}</title>
-      </Head>
-
       <div className='pt-10'>
         <div
           className={`mb-16 ${
@@ -141,11 +136,13 @@ const ContactsRoute: React.FC = () => {
   );
 };
 
-type ContactsInterface = SiteLayoutProviderInterface;
-
-const Contacts: NextPage<ContactsInterface> = (props) => {
+const Contacts: NextPage<SiteLayoutProviderInterface> = (props) => {
   return (
-    <SiteLayout {...props}>
+    <SiteLayout
+      {...props}
+      title={props.initialData.configs.contactsMetaTitle}
+      description={props.initialData.configs.contactsMetaDescription}
+    >
       <ContactsRoute />
     </SiteLayout>
   );

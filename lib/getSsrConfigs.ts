@@ -421,8 +421,18 @@ export const getSsrConfigs = async ({
     configs,
     slug: 'blogTitlePostfix',
   });
+  const contactsMetaTitle = getConfigStringValue({
+    configs,
+    slug: 'blogTitlePostfix',
+  });
+  const contactsMetaDescription = getConfigStringValue({
+    configs,
+    slug: 'blogTitlePostfix',
+  });
 
   return {
+    contactsMetaTitle,
+    contactsMetaDescription,
     blogTitlePrefix,
     blogTitlePostfix,
     blogTitleMetaPrefix,

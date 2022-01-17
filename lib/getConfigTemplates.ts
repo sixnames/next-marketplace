@@ -863,6 +863,38 @@ export function getConfigTemplates({
         },
       },
     },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'contacts',
+      variant: CONFIG_VARIANT_STRING,
+      slug: 'contactsMetaTitle',
+      name: 'Метатег title страницы контактов',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [''],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'contacts',
+      variant: CONFIG_VARIANT_STRING,
+      slug: 'contactsMetaDescription',
+      name: 'Метатег description страницы контактов',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [''],
+        },
+      },
+    },
 
     // SEO
     {

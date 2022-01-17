@@ -114,6 +114,8 @@ const ConfigContext = React.createContext<ConfigContextInterface>({
     blogTitleMetaPrefix: '',
     blogTitlePostfix: '',
     blogTitlePrefix: '',
+    contactsMetaTitle: '',
+    contactsMetaDescription: '',
   },
 });
 

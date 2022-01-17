@@ -1041,6 +1041,7 @@ export interface PromoCodeModel extends PromoBaseInterface {
   promoId: ObjectIdModel;
   promoterId?: ObjectIdModel;
   paybackPercent?: number;
+  descriptionI18n?: TranslationModel | null;
 }
 
 // Pages

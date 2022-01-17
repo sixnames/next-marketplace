@@ -1,4 +1,4 @@
-import { ONE_WEEK } from '../../../config/common';
+import { DEFAULT_LOCALE, ONE_WEEK } from '../../../config/common';
 import { PromoCodeModel } from '../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 require('dotenv').config();
@@ -12,6 +12,10 @@ const promoCodes: PromoCodeModel[] = [
     companyId: getObjectId('company Company A'),
     companySlug: 'company_a',
     code: 'code',
+    descriptionI18n: {
+      [DEFAULT_LOCALE]:
+        'Promo-code description. consectetur adipisicing elit. Ad aliquam, amet aperiam aspernatur beatae commodi ea eos',
+    },
 
     // discount
     discountPercent: 10,

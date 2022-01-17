@@ -450,7 +450,6 @@ export async function getCardData({
     const listFeatures = getProductCurrentViewCastedAttributes({
       attributes: initialProductAttributes,
       viewVariant: ATTRIBUTE_VIEW_VARIANT_LIST,
-      gender: product.gender,
       locale,
     });
     // console.log(`listFeatures `, new Date().getTime() - startTime);
@@ -459,7 +458,6 @@ export async function getCardData({
     const textFeatures = getProductCurrentViewCastedAttributes({
       attributes: initialProductAttributes,
       viewVariant: ATTRIBUTE_VIEW_VARIANT_TEXT,
-      gender: product.gender,
       locale,
     });
     // console.log(`textFeatures `, new Date().getTime() - startTime);
@@ -468,7 +466,6 @@ export async function getCardData({
     const tagFeatures = getProductCurrentViewCastedAttributes({
       attributes: initialProductAttributes,
       viewVariant: ATTRIBUTE_VIEW_VARIANT_TAG,
-      gender: product.gender,
       locale,
     });
     // console.log(`tagFeatures `, new Date().getTime() - startTime);
@@ -477,7 +474,6 @@ export async function getCardData({
     const iconFeatures = getProductCurrentViewCastedAttributes({
       attributes: initialProductAttributes,
       viewVariant: ATTRIBUTE_VIEW_VARIANT_ICON,
-      gender: product.gender,
       locale,
     });
     // console.log(`iconFeatures `, new Date().getTime() - startTime);
@@ -486,7 +482,6 @@ export async function getCardData({
     const ratingFeatures = getProductCurrentViewCastedAttributes({
       attributes: initialProductAttributes,
       viewVariant: ATTRIBUTE_VIEW_VARIANT_OUTER_RATING,
-      gender: product.gender,
       locale,
     });
     // console.log(`ratingFeatures `, new Date().getTime() - startTime);
@@ -676,7 +671,6 @@ export async function getCardData({
           const castedAttribute = castProductAttributeForUi({
             productAttribute,
             locale,
-            gender: product.gender,
           });
           if (!castedAttribute) {
             return acc;

@@ -117,6 +117,7 @@ const CardImageSlider: React.FC<CardImageSliderInterface> = ({
                 className={arrowClassName}
                 onClick={onClick}
                 disabled={disabled}
+                ariaLabel={'prev image'}
               />
             </div>
           );
@@ -129,6 +130,7 @@ const CardImageSlider: React.FC<CardImageSliderInterface> = ({
                 className={arrowClassName}
                 onClick={onClick}
                 disabled={disabled}
+                ariaLabel={'next image'}
               />
             </div>
           );

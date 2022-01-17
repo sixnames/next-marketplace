@@ -91,6 +91,15 @@ const ConsoleRubricProductAttributes: React.FC<ConsoleRubricProductAttributesInt
           selectAttributesAST,
           multipleSelectAttributesAST,
         } = attributesGroup;
+
+        if (
+          (stringAttributesAST || []).length < 1 &&
+          (numberAttributesAST || []).length < 1 &&
+          (selectAttributesAST || []).length < 1 &&
+          (multipleSelectAttributesAST || []).length < 1
+        ) {
+          return null;
+        }
         return (
           <div className={attributesGroupClassName} key={`${attributesGroup._id}`}>
             <div className={attributesGroupTitleClassName}>{attributesGroup.name}</div>

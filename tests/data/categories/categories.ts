@@ -4,7 +4,7 @@ import {
   DEFAULT_COUNTERS_OBJECT,
 } from '../../../config/common';
 import { CategoryModel } from '../../../db/dbModels';
-import { getObjectId, getObjectIds } from 'mongo-seeding';
+import { getObjectId } from 'mongo-seeding';
 
 const categories: CategoryModel[] = [
   {
@@ -18,10 +18,7 @@ const categories: CategoryModel[] = [
     nameI18n: {
       ru: 'Односолодовый',
     },
-    attributesGroupIds: getObjectIds([
-      'attributesGroup Общие характеристики',
-      'attributesGroup Характеристики виски',
-    ]),
+    cmsCardAttributeIds: [],
     ...DEFAULT_COUNTERS_OBJECT,
   },
   {
@@ -35,7 +32,7 @@ const categories: CategoryModel[] = [
     nameI18n: {
       ru: 'Односолодовый B',
     },
-    attributesGroupIds: [],
+    cmsCardAttributeIds: [],
     ...DEFAULT_COUNTERS_OBJECT,
   },
   {
@@ -49,7 +46,7 @@ const categories: CategoryModel[] = [
     nameI18n: {
       ru: 'Односолодовый A',
     },
-    attributesGroupIds: [],
+    cmsCardAttributeIds: [],
     ...DEFAULT_COUNTERS_OBJECT,
   },
   {
@@ -67,7 +64,7 @@ const categories: CategoryModel[] = [
     nameI18n: {
       ru: 'Односолодовый A-1',
     },
-    attributesGroupIds: [],
+    cmsCardAttributeIds: [],
     ...DEFAULT_COUNTERS_OBJECT,
   },
   {
@@ -85,7 +82,7 @@ const categories: CategoryModel[] = [
     nameI18n: {
       ru: 'Односолодовый A-2',
     },
-    attributesGroupIds: [],
+    cmsCardAttributeIds: [],
     ...DEFAULT_COUNTERS_OBJECT,
   },
   {
@@ -98,7 +95,7 @@ const categories: CategoryModel[] = [
     nameI18n: {
       ru: 'Купажированный',
     },
-    attributesGroupIds: [],
+    cmsCardAttributeIds: [],
     ...DEFAULT_COUNTERS_OBJECT,
   },
   {
@@ -111,7 +108,7 @@ const categories: CategoryModel[] = [
     nameI18n: {
       ru: 'Category C',
     },
-    attributesGroupIds: [],
+    cmsCardAttributeIds: [],
     ...DEFAULT_COUNTERS_OBJECT,
   },
   {
@@ -124,7 +121,7 @@ const categories: CategoryModel[] = [
     nameI18n: {
       ru: 'Category D',
     },
-    attributesGroupIds: [],
+    cmsCardAttributeIds: [],
     ...DEFAULT_COUNTERS_OBJECT,
   },
   {
@@ -137,7 +134,7 @@ const categories: CategoryModel[] = [
     nameI18n: {
       ru: 'Category E',
     },
-    attributesGroupIds: [],
+    cmsCardAttributeIds: [],
     ...DEFAULT_COUNTERS_OBJECT,
   },
   {
@@ -150,7 +147,7 @@ const categories: CategoryModel[] = [
     nameI18n: {
       ru: 'Category F',
     },
-    attributesGroupIds: [],
+    cmsCardAttributeIds: [],
     ...DEFAULT_COUNTERS_OBJECT,
   },
 ];

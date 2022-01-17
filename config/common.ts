@@ -11,6 +11,7 @@ import {
   OrderRequestStateModel,
   OrderRequestVariantModel,
   PageStateModel,
+  ProductDraftStateModel,
   SortDirectionModel,
   SupplierPriceVariantModel,
 } from '../db/dbModels';
@@ -209,8 +210,6 @@ export const NOTIFICATIONS_GROUP_ADMIN = 'admin';
 export const NOTIFICATIONS_GROUP_COMPANY = 'company';
 
 // CATALOGUE
-export const CATALOGUE_NAV_VISIBLE_ATTRIBUTES = '3';
-export const CATALOGUE_NAV_VISIBLE_OPTIONS = '5';
 export const CATALOGUE_FILTER_VISIBLE_OPTIONS = 5;
 export const CATALOGUE_FILTER_LIMIT = 'limit';
 export const CATALOGUE_SNIPPET_VISIBLE_ATTRIBUTES = '5';
@@ -236,7 +235,6 @@ export const CATALOGUE_VIEW_ROW = 'row';
 export const CATALOGUE_VIEW_GRID = 'grid';
 export const CATALOGUE_GRID_DEFAULT_COLUMNS_COUNT = 3;
 export const CATALOGUE_TOP_PRODUCTS_LIMIT = 20;
-export const CMS_FILTER_BRANDS_LIMIT = 20;
 export const CATALOGUE_TOP_FILTERS_LIMIT = 10;
 export const CMS_BRANDS_LIMIT = 100;
 export const CATALOGUE_SEO_TEXT_POSITION_TOP = 'top';
@@ -250,7 +248,6 @@ export const FILTER_PAGE_KEY = 'page';
 export const PAGINATION_DEFAULT_LIMIT = 50;
 export const SORT_BY_ID_DIRECTION = SORT_DESC;
 export const SORT_BY_CREATED_AT = 'createdAt';
-export const SORT_BY_ID = '_id';
 export const DEFAULT_PAGE = 1;
 export const ZERO_PAGE = 0;
 export const ZERO_PAGE_FILTER = `${FILTER_PAGE_KEY}${FILTER_SEPARATOR}${ZERO_PAGE}`;
@@ -435,6 +432,11 @@ export const SUPPLIER_PRICE_VARIANT_ENUMS = [
   SUPPLIER_PRICE_VARIANT_DISCOUNT,
   SUPPLIER_PRICE_VARIANT_CHARGE,
 ];
+
+// draft
+export const DRAFT_STATE_PENDING = 'pending' as ProductDraftStateModel;
+export const DRAFT_STATE_RETURNED = 'returned' as ProductDraftStateModel;
+export const DRAFT_STATE_CONFIRMED = 'confirmed' as ProductDraftStateModel;
 
 // Alphabets
 export const ALPHABET_EN = [

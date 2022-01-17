@@ -183,6 +183,7 @@ export const RubricMutations = extendType({
             active: true,
             attributesGroupIds: [],
             filterVisibleAttributeIds: [],
+            cmsCardAttributeIds: [],
             ...DEFAULT_COUNTERS_OBJECT,
           });
           const createdRubric = await rubricsCollection.findOne({
@@ -759,6 +760,111 @@ export const RubricMutations = extendType({
             success: false,
             message: getResolverErrorMessage(e),
           };
+        }
+      },
+    });
+
+    // Should toggle cms card attribute visibility
+    t.nonNull.field('toggleCmsCardAttributeInRubric', {
+      type: 'RubricPayload',
+      description: 'Should toggle cms card attribute visibility',
+      args: {
+        input: nonNull(
+          arg({
+            type: 'UpdateAttributeInRubricInput',
+          }),
+        ),
+      },
+      resolve: async (_root, args, context): Promise<RubricPayloadModel> => {
+        const { getApiMessage } = await getRequestParams(context);
+        const { db, client } = await getDatabase();
+        const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+
+        const session = client.startSession();
+
+        let mutationPayload: RubricPayloadModel = {
+          success: false,
+          message: await getApiMessage('rubrics.update.error'),
+        };
+
+        try {
+          await session.withTransaction(async () => {
+            // Permission
+            const { allow, message } = await getOperationPermission({
+              context,
+              slug: 'updateRubric',
+            });
+            if (!allow) {
+              mutationPayload = {
+                success: false,
+                message,
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            const { input } = args;
+            const { rubricId, attributeId } = input;
+
+            // Check rubric
+            const rubric = await rubricsCollection.findOne({ _id: rubricId });
+            if (!rubric) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('rubrics.update.notFound'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // update category
+            const exist = rubric.cmsCardAttributeIds.some((_id) => {
+              return _id.equals(attributeId);
+            });
+            const updater = exist
+              ? {
+                  $pull: {
+                    cmsCardAttributeIds: attributeId,
+                  },
+                }
+              : {
+                  $addToSet: {
+                    cmsCardAttributeIds: attributeId,
+                  },
+                };
+            const updatedRubricResult = await rubricsCollection.findOneAndUpdate(
+              { _id: rubricId },
+              updater,
+              {
+                returnDocument: 'after',
+              },
+            );
+            const updatedRubric = updatedRubricResult.value;
+            if (!updatedRubricResult.ok || !updatedRubric) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('rubrics.update.error'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            mutationPayload = {
+              success: true,
+              message: await getApiMessage('rubrics.update.success'),
+              payload: updatedRubric,
+            };
+          });
+
+          return mutationPayload;
+        } catch (e) {
+          console.log(e);
+          return {
+            success: false,
+            message: getResolverErrorMessage(e),
+          };
+        } finally {
+          await session.endSession();
         }
       },
     });

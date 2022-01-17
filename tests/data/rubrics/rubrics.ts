@@ -12,6 +12,18 @@ const booleans = {
   showBrandInFilter: true,
 };
 
+function getAttributeIds(groupIds: string[]) {
+  return attributes.reduce((acc: ObjectIdModel[], attribute) => {
+    const exist = groupIds.some((_idString) => {
+      return getObjectId(_idString).equals(attribute.attributesGroupId);
+    });
+    if (exist) {
+      return [...acc, attribute._id];
+    }
+    return acc;
+  }, []);
+}
+
 const rubrics: RubricModel[] = [
   {
     _id: getObjectId('rubric Шампанское'),
@@ -36,17 +48,14 @@ const rubrics: RubricModel[] = [
     },
     gender: GENDER_IT as GenderModel,
     variantId: getObjectId('rubricVariant alcohol'),
-    filterVisibleAttributeIds: attributes.reduce((acc: ObjectIdModel[], attribute) => {
-      const exist =
-        attribute.attributesGroupId.equals(getObjectId('attributesGroup Общие характеристики')) ||
-        attribute.attributesGroupId.equals(
-          getObjectId('attributesGroup Характеристики шампанского'),
-        );
-      if (exist) {
-        return [...acc, attribute._id];
-      }
-      return acc;
-    }, []),
+    filterVisibleAttributeIds: getAttributeIds([
+      'attributesGroup Общие характеристики',
+      'attributesGroup Характеристики шампанского',
+    ]),
+    cmsCardAttributeIds: getAttributeIds([
+      'attributesGroup Общие характеристики',
+      'attributesGroup Характеристики шампанского',
+    ]),
     attributesGroupIds: getObjectIds([
       'attributesGroup Общие характеристики',
       'attributesGroup Характеристики шампанского',
@@ -77,16 +86,18 @@ const rubrics: RubricModel[] = [
     },
     gender: GENDER_IT as GenderModel,
     variantId: getObjectId('rubricVariant whiskey'),
-    filterVisibleAttributeIds: attributes.reduce((acc: ObjectIdModel[], attribute) => {
-      const exist =
-        attribute.attributesGroupId.equals(getObjectId('attributesGroup Общие характеристики')) ||
-        attribute.attributesGroupId.equals(getObjectId('attributesGroup Характеристики виски'));
-      if (exist) {
-        return [...acc, attribute._id];
-      }
-      return acc;
-    }, []),
-    attributesGroupIds: [],
+    cmsCardAttributeIds: getAttributeIds([
+      'attributesGroup Общие характеристики',
+      'attributesGroup Характеристики виски',
+    ]),
+    filterVisibleAttributeIds: getAttributeIds([
+      'attributesGroup Общие характеристики',
+      'attributesGroup Характеристики виски',
+    ]),
+    attributesGroupIds: getObjectIds([
+      'attributesGroup Общие характеристики',
+      'attributesGroup Характеристики виски',
+    ]),
     ...booleans,
     ...DEFAULT_COUNTERS_OBJECT,
   },
@@ -113,15 +124,14 @@ const rubrics: RubricModel[] = [
     },
     gender: GENDER_IT as GenderModel,
     variantId: getObjectId('rubricVariant alcohol'),
-    filterVisibleAttributeIds: attributes.reduce((acc: ObjectIdModel[], attribute) => {
-      const exist =
-        attribute.attributesGroupId.equals(getObjectId('attributesGroup Общие характеристики')) ||
-        attribute.attributesGroupId.equals(getObjectId('attributesGroup Характеристики вина'));
-      if (exist) {
-        return [...acc, attribute._id];
-      }
-      return acc;
-    }, []),
+    cmsCardAttributeIds: getAttributeIds([
+      'attributesGroup Общие характеристики',
+      'attributesGroup Характеристики вина',
+    ]),
+    filterVisibleAttributeIds: getAttributeIds([
+      'attributesGroup Общие характеристики',
+      'attributesGroup Характеристики вина',
+    ]),
     attributesGroupIds: getObjectIds([
       'attributesGroup Общие характеристики',
       'attributesGroup Характеристики вина',
@@ -152,15 +162,14 @@ const rubrics: RubricModel[] = [
     },
     gender: GENDER_IT as GenderModel,
     variantId: getObjectId('rubricVariant water'),
-    filterVisibleAttributeIds: attributes.reduce((acc: ObjectIdModel[], attribute) => {
-      const exist =
-        attribute.attributesGroupId.equals(getObjectId('attributesGroup Общие характеристики')) ||
-        attribute.attributesGroupId.equals(getObjectId('Характеристики воды'));
-      if (exist) {
-        return [...acc, attribute._id];
-      }
-      return acc;
-    }, []),
+    cmsCardAttributeIds: getAttributeIds([
+      'attributesGroup Общие характеристики',
+      'attributesGroup Характеристики воды',
+    ]),
+    filterVisibleAttributeIds: getAttributeIds([
+      'attributesGroup Общие характеристики',
+      'attributesGroup Характеристики воды',
+    ]),
     attributesGroupIds: getObjectIds([
       'attributesGroup Общие характеристики',
       'attributesGroup Характеристики воды',

@@ -9,7 +9,7 @@ import { castDbData } from '../../../lib/ssrUtils';
 import { COL_ORDER_LOGS, COL_ORDER_PRODUCTS, COL_ORDERS } from '../../collectionNames';
 import {
   ObjectIdModel,
-  OrderLogDiffModel,
+  DiffModel,
   OrderLogModel,
   OrderModel,
   OrderProductModel,
@@ -88,7 +88,7 @@ export async function updateOrder({
 
       // get diff
       const prevOrderState = castDbData(prevOrder.order);
-      const diff = detailedDiff(prevOrderState, order) as OrderLogDiffModel;
+      const diff = detailedDiff(prevOrderState, order) as DiffModel;
       // console.log(JSON.stringify(diff, null, 2));
 
       // create order log

@@ -863,6 +863,54 @@ export function getConfigTemplates({
         },
       },
     },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'contacts',
+      variant: CONFIG_VARIANT_STRING,
+      slug: 'contactsMetaTitle',
+      name: 'Метатег title страницы контактов',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [''],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'contacts',
+      variant: CONFIG_VARIANT_STRING,
+      slug: 'contactsTitle',
+      name: 'Заголовок H1 страницы контактов',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [''],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'contacts',
+      variant: CONFIG_VARIANT_STRING,
+      slug: 'contactsMetaDescription',
+      name: 'Метатег description страницы контактов',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [''],
+        },
+      },
+    },
 
     // SEO
     {
@@ -1522,6 +1570,40 @@ export function getConfigTemplates({
       variant: CONFIG_VARIANT_STRING,
       slug: 'blogDescriptionMetaPostfix',
       name: 'Окончание метатега description блога',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [''],
+        },
+      },
+    },
+
+    // blog title
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'catalogue',
+      variant: CONFIG_VARIANT_STRING,
+      slug: 'blogTitlePrefix',
+      name: 'Начало заголовка H1 блога',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [''],
+        },
+      },
+    },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'catalogue',
+      variant: CONFIG_VARIANT_STRING,
+      slug: 'blogTitlePostfix',
+      name: 'Окончание заголовка H1 блога',
       description: '',
       multi: false,
       acceptedFormats: [],

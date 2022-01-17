@@ -1,5 +1,4 @@
 import { GetServerSidePropsContext, NextPage } from 'next';
-import Head from 'next/head';
 import * as React from 'react';
 import Inner from '../components/Inner';
 import LinkEmail from '../components/Link/LinkEmail';
@@ -19,7 +18,6 @@ const ContactsRoute: React.FC = () => {
   const mapRef = React.useRef<any>(null);
   const { isDark } = useThemeContext();
   const { configs } = useConfigContext();
-  const configSiteName = configs.siteName;
   const contactEmail = configs.contactEmail;
   const phone = configs.phone;
   const facebookLink = configs.facebook;
@@ -30,6 +28,7 @@ const ContactsRoute: React.FC = () => {
   const twitterLink = configs.twitter;
   const telegramLink = configs.telegram;
   const contactsContent = configs.contactsContent;
+  const contactsTitle = configs.contactsTitle;
   const actualAddress: AddressModel | null = configs.actualAddress
     ? JSON.parse(configs.actualAddress)
     : null;
@@ -47,10 +46,6 @@ const ContactsRoute: React.FC = () => {
 
   return (
     <Inner>
-      <Head>
-        <title>Контакты {configSiteName}</title>
-      </Head>
-
       <div className='pt-10'>
         <div
           className={`mb-16 ${
@@ -58,7 +53,7 @@ const ContactsRoute: React.FC = () => {
           }`}
         >
           <div>
-            <WpTitle>Контакты {configSiteName}</WpTitle>
+            <WpTitle>{contactsTitle}</WpTitle>
 
             {actualAddress && actualAddress.readableAddress ? (
               <div className='mb-8 font-medium not-italic'>
@@ -141,11 +136,13 @@ const ContactsRoute: React.FC = () => {
   );
 };
 
-type ContactsInterface = SiteLayoutProviderInterface;
-
-const Contacts: NextPage<ContactsInterface> = (props) => {
+const Contacts: NextPage<SiteLayoutProviderInterface> = (props) => {
   return (
-    <SiteLayout {...props}>
+    <SiteLayout
+      {...props}
+      title={props.initialData.configs.contactsMetaTitle}
+      description={props.initialData.configs.contactsMetaDescription}
+    >
       <ContactsRoute />
     </SiteLayout>
   );

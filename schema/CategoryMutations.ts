@@ -9,23 +9,14 @@ import {
   DEFAULT_LOCALE,
   FILTER_SEPARATOR,
 } from '../config/common';
-import {
-  COL_ATTRIBUTES_GROUPS,
-  COL_CATEGORIES,
-  COL_COMPANIES,
-  COL_CONFIGS,
-  COL_PRODUCT_ATTRIBUTES,
-  COL_RUBRICS,
-} from '../db/collectionNames';
+import { COL_CATEGORIES, COL_COMPANIES, COL_CONFIGS, COL_RUBRICS } from '../db/collectionNames';
 import { findDocumentByI18nField } from '../db/dao/findDocumentByI18nField';
 import {
-  AttributesGroupModel,
   CategoryModel,
   CategoryPayloadModel,
   CompanyModel,
   ConfigModel,
   ObjectIdModel,
-  ProductSummaryAttributeModel,
   RubricModel,
 } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
@@ -39,12 +30,7 @@ import {
 } from '../lib/sessionHelpers';
 import { deleteDocumentsTree, getParentTreeIds } from '../lib/treeUtils';
 import { execUpdateProductTitles } from '../lib/updateProductTitles';
-import {
-  addAttributesGroupToCategorySchema,
-  createCategorySchema,
-  deleteAttributesGroupFromCategorySchema,
-  updateCategorySchema,
-} from '../validation/categorySchema';
+import { createCategorySchema, updateCategorySchema } from '../validation/categorySchema';
 
 export const CategoryPayload = objectType({
   name: 'CategoryPayload',
@@ -84,22 +70,6 @@ export const UpdateCategoryInput = inputObjectType({
     t.field('gender', {
       type: 'Gender',
     });
-  },
-});
-
-export const AddAttributesGroupToCategoryInput = inputObjectType({
-  name: 'AddAttributesGroupToCategoryInput',
-  definition(t) {
-    t.nonNull.objectId('categoryId');
-    t.nonNull.objectId('attributesGroupId');
-  },
-});
-
-export const DeleteAttributesGroupFromCategoryInput = inputObjectType({
-  name: 'DeleteAttributesGroupFromCategoryInput',
-  definition(t) {
-    t.nonNull.objectId('categoryId');
-    t.nonNull.objectId('attributesGroupId');
   },
 });
 
@@ -213,7 +183,7 @@ export const CategoryMutations = extendType({
             _id: createdCategoryId,
             parentTreeIds: [...parentTreeIds, createdCategoryId],
             slug: `${CATEGORY_SLUG_PREFIX}${slug}`,
-            attributesGroupIds: [],
+            cmsCardAttributeIds: [],
             rubricSlug: rubric.slug,
             ...DEFAULT_COUNTERS_OBJECT,
           });
@@ -524,14 +494,14 @@ export const CategoryMutations = extendType({
       },
     });
 
-    // Should add attributes group to the category
-    t.nonNull.field('addAttributesGroupToCategory', {
+    // Should toggle cms card attribute visibility
+    t.nonNull.field('toggleCmsCardAttributeInCategory', {
       type: 'CategoryPayload',
-      description: 'Should add attributes group to the category',
+      description: 'Should toggle cms card attribute visibility',
       args: {
         input: nonNull(
           arg({
-            type: 'AddAttributesGroupToCategoryInput',
+            type: 'UpdateAttributeInCategoryInput',
           }),
         ),
       },
@@ -539,15 +509,12 @@ export const CategoryMutations = extendType({
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
         const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
-        const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-        const attributesGroupsCollection =
-          db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
 
         const session = client.startSession();
 
         let mutationPayload: CategoryPayloadModel = {
           success: false,
-          message: await getApiMessage('categories.addAttributesGroup.error'),
+          message: await getApiMessage('categories.update.error'),
         };
 
         try {
@@ -566,51 +533,38 @@ export const CategoryMutations = extendType({
               return;
             }
 
-            // Validate
-            const validationSchema = await getResolverValidationSchema({
-              context,
-              schema: addAttributesGroupToCategorySchema,
-            });
-            await validationSchema.validate(args.input);
-
             const { input } = args;
-            const { categoryId, attributesGroupId } = input;
+            const { categoryId, attributeId } = input;
 
-            // Check category and attributes group availability
-            const attributesGroup = await attributesGroupsCollection.findOne({
-              _id: attributesGroupId,
-            });
+            // Check category
             const category = await categoriesCollection.findOne({ _id: categoryId });
-            if (!category || !attributesGroup) {
+            if (!category) {
               mutationPayload = {
                 success: false,
-                message: await getApiMessage('categories.addAttributesGroup.notFound'),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Check rubric availability
-            const rubric = await rubricsCollection.findOne({
-              _id: category.rubricId,
-            });
-            if (!rubric) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage('rubrics.update.notFound'),
+                message: await getApiMessage('categories.update.notFound'),
               };
               await session.abortTransaction();
               return;
             }
 
             // update category
+            const exist = category.cmsCardAttributeIds.some((_id) => {
+              return _id.equals(attributeId);
+            });
+            const updater = exist
+              ? {
+                  $pull: {
+                    cmsCardAttributeIds: attributeId,
+                  },
+                }
+              : {
+                  $addToSet: {
+                    cmsCardAttributeIds: attributeId,
+                  },
+                };
             const updatedCategoryResult = await categoriesCollection.findOneAndUpdate(
               { _id: categoryId },
-              {
-                $addToSet: {
-                  attributesGroupIds: attributesGroup._id,
-                },
-              },
+              updater,
               {
                 returnDocument: 'after',
               },
@@ -619,7 +573,7 @@ export const CategoryMutations = extendType({
             if (!updatedCategoryResult.ok || !updatedCategory) {
               mutationPayload = {
                 success: false,
-                message: await getApiMessage('categories.addAttributesGroup.error'),
+                message: await getApiMessage('categories.update.error'),
               };
               await session.abortTransaction();
               return;
@@ -627,127 +581,7 @@ export const CategoryMutations = extendType({
 
             mutationPayload = {
               success: true,
-              message: await getApiMessage('categories.addAttributesGroup.success'),
-              payload: updatedCategory,
-            };
-          });
-
-          return mutationPayload;
-        } catch (e) {
-          console.log(e);
-          return {
-            success: false,
-            message: getResolverErrorMessage(e),
-          };
-        } finally {
-          await session.endSession();
-        }
-      },
-    });
-
-    // Should delete attributes group from category
-    t.nonNull.field('deleteAttributesGroupFromCategory', {
-      type: 'CategoryPayload',
-      description: 'Should delete attributes group from category',
-      args: {
-        input: nonNull(
-          arg({
-            type: 'DeleteAttributesGroupFromCategoryInput',
-          }),
-        ),
-      },
-      resolve: async (_root, args, context): Promise<CategoryPayloadModel> => {
-        const { getApiMessage } = await getRequestParams(context);
-        const { db, client } = await getDatabase();
-        const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
-        const attributesGroupsCollection =
-          db.collection<AttributesGroupModel>(COL_ATTRIBUTES_GROUPS);
-        const productAttributesCollection =
-          db.collection<ProductSummaryAttributeModel>(COL_PRODUCT_ATTRIBUTES);
-
-        const session = client.startSession();
-
-        let mutationPayload: CategoryPayloadModel = {
-          success: false,
-          message: await getApiMessage('categories.deleteAttributesGroup.error'),
-        };
-
-        try {
-          await session.withTransaction(async () => {
-            // Permission
-            const { allow, message } = await getOperationPermission({
-              context,
-              slug: 'updateCategory',
-            });
-            if (!allow) {
-              mutationPayload = {
-                success: false,
-                message,
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Validate
-            const validationSchema = await getResolverValidationSchema({
-              context,
-              schema: deleteAttributesGroupFromCategorySchema,
-            });
-            await validationSchema.validate(args.input);
-
-            const { input } = args;
-            const { categoryId, attributesGroupId } = input;
-
-            // Check category and attributes group availability
-            const attributesGroup = await attributesGroupsCollection.findOne({
-              _id: attributesGroupId,
-            });
-            const category = await categoriesCollection.findOne({ _id: categoryId });
-            if (!category || !attributesGroup) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage('categories.deleteAttributesGroup.notFound'),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Delete product attributes
-            const removedProductAttributesResult = await productAttributesCollection.deleteMany({
-              attributesGroupId,
-              categoryId: category._id,
-            });
-            if (!removedProductAttributesResult.acknowledged) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage('categories.deleteAttributesGroup.error'),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // update category
-            const updatedCategoryResult = await categoriesCollection.findOneAndUpdate(
-              { _id: categoryId },
-              {
-                $pull: {
-                  attributesGroupIds: attributesGroup._id,
-                },
-              },
-            );
-            const updatedCategory = updatedCategoryResult.value;
-            if (!updatedCategoryResult.ok || !updatedCategory) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage('categories.deleteAttributesGroup.error'),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            mutationPayload = {
-              success: true,
-              message: await getApiMessage('categories.deleteAttributesGroup.success'),
+              message: await getApiMessage('categories.update.success'),
               payload: updatedCategory,
             };
           });

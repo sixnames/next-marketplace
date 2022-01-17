@@ -45,18 +45,18 @@ export const DELETE_ATTRIBUTES_GROUP_FROM_RUBRIC = gql`
   }
 `;
 
-export const ADD_ATTRIBUTES_GROUP_TO_CATEGORY = gql`
-  mutation AddAttributesGroupToCategory($input: AddAttributesGroupToCategoryInput!) {
-    addAttributesGroupToCategory(input: $input) {
+export const TOGGLE_CMS_CARD_ATTRIBUTE_IN_CATEGORY = gql`
+  mutation ToggleCmsCardAttributeInCategory($input: UpdateAttributeInCategoryInput!) {
+    toggleCmsCardAttributeInCategory(input: $input) {
       success
       message
     }
   }
 `;
 
-export const DELETE_ATTRIBUTES_GROUP_FROM_CATEGORY = gql`
-  mutation DeleteAttributesGroupFromCategory($input: DeleteAttributesGroupFromCategoryInput!) {
-    deleteAttributesGroupFromCategory(input: $input) {
+export const TOGGLE_CMS_CARD_ATTRIBUTE_IN_RUBRIC = gql`
+  mutation ToggleCmsCardAttributeInRubric($input: UpdateAttributeInRubricInput!) {
+    toggleCmsCardAttributeInRubric(input: $input) {
       success
       message
     }

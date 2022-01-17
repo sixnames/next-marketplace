@@ -26,11 +26,6 @@ export type Scalars = {
   URL: any;
 };
 
-export type AddAttributesGroupToCategoryInput = {
-  categoryId: Scalars['ObjectId'];
-  attributesGroupId: Scalars['ObjectId'];
-};
-
 export type AddAttributesGroupToRubricInput = {
   rubricId: Scalars['ObjectId'];
   attributesGroupId: Scalars['ObjectId'];
@@ -149,11 +144,6 @@ export type Attribute = {
   notShowAsAlphabet?: Maybe<Scalars['Boolean']>;
   optionsGroupId?: Maybe<Scalars['ObjectId']>;
   positioningInTitle?: Maybe<Scalars['JSONObject']>;
-  variant: AttributeVariant;
-  viewVariant: AttributeViewVariant;
-  metric?: Maybe<Metric>;
-  name: Scalars['String'];
-  optionsGroup?: Maybe<OptionsGroup>;
 };
 
 /** Attribute position in catalogue title enum. */
@@ -187,8 +177,6 @@ export type AttributesGroup = {
   _id: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
   attributesIds: Array<Scalars['ObjectId']>;
-  name: Scalars['String'];
-  attributes: Array<Attribute>;
 };
 
 export type AttributesGroupPayload = Payload & {
@@ -213,14 +201,6 @@ export type Brand = Base & Timestamp & {
   nameI18n: Scalars['String'];
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
   name: Scalars['String'];
-  description?: Maybe<Scalars['String']>;
-  collections: BrandCollectionsPaginationPayload;
-  collectionsList: Array<BrandCollection>;
-};
-
-
-export type BrandCollectionsArgs = {
-  input?: Maybe<PaginationInput>;
 };
 
 export type BrandAlphabetInput = {
@@ -236,7 +216,6 @@ export type BrandCollection = Base & Timestamp & {
   nameI18n: Scalars['JSONObject'];
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
   name: Scalars['String'];
-  description?: Maybe<Scalars['String']>;
 };
 
 export type BrandCollectionAlphabetInput = {
@@ -605,6 +584,8 @@ export type CreateRoleInput = {
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
   isStaff: Scalars['Boolean'];
   isCompanyStaff: Scalars['Boolean'];
+  isModerator: Scalars['Boolean'];
+  isContentManager: Scalars['Boolean'];
   showAdminUiInCatalogue: Scalars['Boolean'];
 };
 
@@ -649,11 +630,6 @@ export type CurrencyPayload = Payload & {
   payload?: Maybe<Currency>;
 };
 
-
-export type DeleteAttributesGroupFromCategoryInput = {
-  categoryId: Scalars['ObjectId'];
-  attributesGroupId: Scalars['ObjectId'];
-};
 
 export type DeleteAttributesGroupFromRubricInput = {
   rubricId: Scalars['ObjectId'];
@@ -865,10 +841,8 @@ export type Mutation = {
   updateCategory: CategoryPayload;
   /** Should delete category */
   deleteCategory: CategoryPayload;
-  /** Should add attributes group to the category */
-  addAttributesGroupToCategory: CategoryPayload;
-  /** Should delete attributes group from category */
-  deleteAttributesGroupFromCategory: CategoryPayload;
+  /** Should toggle cms card attribute visibility */
+  toggleCmsCardAttributeInCategory: CategoryPayload;
   /** Should create company */
   createCompany: CompanyPayload;
   /** Should update company */
@@ -987,6 +961,8 @@ export type Mutation = {
   deleteAttributesGroupFromRubric: RubricPayload;
   /** Should update rubric attribute */
   updateAttributeInRubric: RubricPayload;
+  /** Should toggle cms card attribute visibility */
+  toggleCmsCardAttributeInRubric: CategoryPayload;
   /** Should create rubric variant */
   createRubricVariant: RubricVariantPayload;
   /** Should update rubric variant */
@@ -1115,13 +1091,8 @@ export type MutationDeleteCategoryArgs = {
 };
 
 
-export type MutationAddAttributesGroupToCategoryArgs = {
-  input: AddAttributesGroupToCategoryInput;
-};
-
-
-export type MutationDeleteAttributesGroupFromCategoryArgs = {
-  input: DeleteAttributesGroupFromCategoryInput;
+export type MutationToggleCmsCardAttributeInCategoryArgs = {
+  input: UpdateAttributeInCategoryInput;
 };
 
 
@@ -1420,6 +1391,11 @@ export type MutationUpdateAttributeInRubricArgs = {
 };
 
 
+export type MutationToggleCmsCardAttributeInRubricArgs = {
+  input: UpdateAttributeInRubricInput;
+};
+
+
 export type MutationCreateRubricVariantArgs = {
   input: CreateRubricVariantInput;
 };
@@ -1669,8 +1645,6 @@ export type ProductAttribute = {
   attributeId: Scalars['ObjectId'];
   textI18n?: Maybe<Scalars['JSONObject']>;
   number?: Maybe<Scalars['Float']>;
-  text: Scalars['String'];
-  attribute: Attribute;
 };
 
 export type ProductConnection = {
@@ -1695,14 +1669,6 @@ export type ProductPayload = Payload & {
 
 export type Query = {
   __typename?: 'Query';
-  getAttributesGroup: AttributesGroup;
-  getAllAttributesGroups: Array<AttributesGroup>;
-  /** Should return brand by _id */
-  getBrand: Brand;
-  /** Should return brand by slug */
-  getBrandBySlug?: Maybe<Brand>;
-  /** Should return paginated brands */
-  getAllBrands?: Maybe<BrandsPaginationPayload>;
   /** Should return brands grouped by alphabet */
   getBrandAlphabetLists: Array<BrandsAlphabetList>;
   /** Should return brand collections grouped by alphabet */
@@ -1769,31 +1735,6 @@ export type Query = {
   getAllSuppliers: SuppliersPaginationPayload;
   /** Should return suppliers grouped by alphabet */
   getSupplierAlphabetLists: Array<SuppliersAlphabetList>;
-};
-
-
-export type QueryGetAttributesGroupArgs = {
-  _id: Scalars['ObjectId'];
-};
-
-
-export type QueryGetAllAttributesGroupsArgs = {
-  excludedIds?: Maybe<Array<Scalars['ObjectId']>>;
-};
-
-
-export type QueryGetBrandArgs = {
-  _id: Scalars['ObjectId'];
-};
-
-
-export type QueryGetBrandBySlugArgs = {
-  slug: Scalars['String'];
-};
-
-
-export type QueryGetAllBrandsArgs = {
-  input?: Maybe<PaginationInput>;
 };
 
 
@@ -1936,10 +1877,6 @@ export type Role = Timestamp & {
   isCompanyStaff: Scalars['Boolean'];
   nameI18n: Scalars['JSONObject'];
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
-  description: Scalars['String'];
-  name: Scalars['String'];
-  appNavigation: Array<NavItem>;
-  cmsNavigation: Array<NavItem>;
 };
 
 export type RolePayload = Payload & {
@@ -2449,6 +2386,8 @@ export type UpdateRoleInput = {
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
   isStaff: Scalars['Boolean'];
   isCompanyStaff: Scalars['Boolean'];
+  isModerator: Scalars['Boolean'];
+  isContentManager: Scalars['Boolean'];
   showAdminUiInCatalogue: Scalars['Boolean'];
 };
 
@@ -2660,27 +2599,27 @@ export type DeleteAttributesGroupFromRubricMutation = (
   ) }
 );
 
-export type AddAttributesGroupToCategoryMutationVariables = Exact<{
-  input: AddAttributesGroupToCategoryInput;
+export type ToggleCmsCardAttributeInCategoryMutationVariables = Exact<{
+  input: UpdateAttributeInCategoryInput;
 }>;
 
 
-export type AddAttributesGroupToCategoryMutation = (
+export type ToggleCmsCardAttributeInCategoryMutation = (
   { __typename?: 'Mutation' }
-  & { addAttributesGroupToCategory: (
+  & { toggleCmsCardAttributeInCategory: (
     { __typename?: 'CategoryPayload' }
     & Pick<CategoryPayload, 'success' | 'message'>
   ) }
 );
 
-export type DeleteAttributesGroupFromCategoryMutationVariables = Exact<{
-  input: DeleteAttributesGroupFromCategoryInput;
+export type ToggleCmsCardAttributeInRubricMutationVariables = Exact<{
+  input: UpdateAttributeInRubricInput;
 }>;
 
 
-export type DeleteAttributesGroupFromCategoryMutation = (
+export type ToggleCmsCardAttributeInRubricMutation = (
   { __typename?: 'Mutation' }
-  & { deleteAttributesGroupFromCategory: (
+  & { toggleCmsCardAttributeInRubric: (
     { __typename?: 'CategoryPayload' }
     & Pick<CategoryPayload, 'success' | 'message'>
   ) }
@@ -4052,74 +3991,74 @@ export function useDeleteAttributesGroupFromRubricMutation(baseOptions?: Apollo.
 export type DeleteAttributesGroupFromRubricMutationHookResult = ReturnType<typeof useDeleteAttributesGroupFromRubricMutation>;
 export type DeleteAttributesGroupFromRubricMutationResult = Apollo.MutationResult<DeleteAttributesGroupFromRubricMutation>;
 export type DeleteAttributesGroupFromRubricMutationOptions = Apollo.BaseMutationOptions<DeleteAttributesGroupFromRubricMutation, DeleteAttributesGroupFromRubricMutationVariables>;
-export const AddAttributesGroupToCategoryDocument = gql`
-    mutation AddAttributesGroupToCategory($input: AddAttributesGroupToCategoryInput!) {
-  addAttributesGroupToCategory(input: $input) {
+export const ToggleCmsCardAttributeInCategoryDocument = gql`
+    mutation ToggleCmsCardAttributeInCategory($input: UpdateAttributeInCategoryInput!) {
+  toggleCmsCardAttributeInCategory(input: $input) {
     success
     message
   }
 }
     `;
-export type AddAttributesGroupToCategoryMutationFn = Apollo.MutationFunction<AddAttributesGroupToCategoryMutation, AddAttributesGroupToCategoryMutationVariables>;
+export type ToggleCmsCardAttributeInCategoryMutationFn = Apollo.MutationFunction<ToggleCmsCardAttributeInCategoryMutation, ToggleCmsCardAttributeInCategoryMutationVariables>;
 
 /**
- * __useAddAttributesGroupToCategoryMutation__
+ * __useToggleCmsCardAttributeInCategoryMutation__
  *
- * To run a mutation, you first call `useAddAttributesGroupToCategoryMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAddAttributesGroupToCategoryMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useToggleCmsCardAttributeInCategoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useToggleCmsCardAttributeInCategoryMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [addAttributesGroupToCategoryMutation, { data, loading, error }] = useAddAttributesGroupToCategoryMutation({
+ * const [toggleCmsCardAttributeInCategoryMutation, { data, loading, error }] = useToggleCmsCardAttributeInCategoryMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useAddAttributesGroupToCategoryMutation(baseOptions?: Apollo.MutationHookOptions<AddAttributesGroupToCategoryMutation, AddAttributesGroupToCategoryMutationVariables>) {
+export function useToggleCmsCardAttributeInCategoryMutation(baseOptions?: Apollo.MutationHookOptions<ToggleCmsCardAttributeInCategoryMutation, ToggleCmsCardAttributeInCategoryMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AddAttributesGroupToCategoryMutation, AddAttributesGroupToCategoryMutationVariables>(AddAttributesGroupToCategoryDocument, options);
+        return Apollo.useMutation<ToggleCmsCardAttributeInCategoryMutation, ToggleCmsCardAttributeInCategoryMutationVariables>(ToggleCmsCardAttributeInCategoryDocument, options);
       }
-export type AddAttributesGroupToCategoryMutationHookResult = ReturnType<typeof useAddAttributesGroupToCategoryMutation>;
-export type AddAttributesGroupToCategoryMutationResult = Apollo.MutationResult<AddAttributesGroupToCategoryMutation>;
-export type AddAttributesGroupToCategoryMutationOptions = Apollo.BaseMutationOptions<AddAttributesGroupToCategoryMutation, AddAttributesGroupToCategoryMutationVariables>;
-export const DeleteAttributesGroupFromCategoryDocument = gql`
-    mutation DeleteAttributesGroupFromCategory($input: DeleteAttributesGroupFromCategoryInput!) {
-  deleteAttributesGroupFromCategory(input: $input) {
+export type ToggleCmsCardAttributeInCategoryMutationHookResult = ReturnType<typeof useToggleCmsCardAttributeInCategoryMutation>;
+export type ToggleCmsCardAttributeInCategoryMutationResult = Apollo.MutationResult<ToggleCmsCardAttributeInCategoryMutation>;
+export type ToggleCmsCardAttributeInCategoryMutationOptions = Apollo.BaseMutationOptions<ToggleCmsCardAttributeInCategoryMutation, ToggleCmsCardAttributeInCategoryMutationVariables>;
+export const ToggleCmsCardAttributeInRubricDocument = gql`
+    mutation ToggleCmsCardAttributeInRubric($input: UpdateAttributeInRubricInput!) {
+  toggleCmsCardAttributeInRubric(input: $input) {
     success
     message
   }
 }
     `;
-export type DeleteAttributesGroupFromCategoryMutationFn = Apollo.MutationFunction<DeleteAttributesGroupFromCategoryMutation, DeleteAttributesGroupFromCategoryMutationVariables>;
+export type ToggleCmsCardAttributeInRubricMutationFn = Apollo.MutationFunction<ToggleCmsCardAttributeInRubricMutation, ToggleCmsCardAttributeInRubricMutationVariables>;
 
 /**
- * __useDeleteAttributesGroupFromCategoryMutation__
+ * __useToggleCmsCardAttributeInRubricMutation__
  *
- * To run a mutation, you first call `useDeleteAttributesGroupFromCategoryMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteAttributesGroupFromCategoryMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useToggleCmsCardAttributeInRubricMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useToggleCmsCardAttributeInRubricMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [deleteAttributesGroupFromCategoryMutation, { data, loading, error }] = useDeleteAttributesGroupFromCategoryMutation({
+ * const [toggleCmsCardAttributeInRubricMutation, { data, loading, error }] = useToggleCmsCardAttributeInRubricMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useDeleteAttributesGroupFromCategoryMutation(baseOptions?: Apollo.MutationHookOptions<DeleteAttributesGroupFromCategoryMutation, DeleteAttributesGroupFromCategoryMutationVariables>) {
+export function useToggleCmsCardAttributeInRubricMutation(baseOptions?: Apollo.MutationHookOptions<ToggleCmsCardAttributeInRubricMutation, ToggleCmsCardAttributeInRubricMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteAttributesGroupFromCategoryMutation, DeleteAttributesGroupFromCategoryMutationVariables>(DeleteAttributesGroupFromCategoryDocument, options);
+        return Apollo.useMutation<ToggleCmsCardAttributeInRubricMutation, ToggleCmsCardAttributeInRubricMutationVariables>(ToggleCmsCardAttributeInRubricDocument, options);
       }
-export type DeleteAttributesGroupFromCategoryMutationHookResult = ReturnType<typeof useDeleteAttributesGroupFromCategoryMutation>;
-export type DeleteAttributesGroupFromCategoryMutationResult = Apollo.MutationResult<DeleteAttributesGroupFromCategoryMutation>;
-export type DeleteAttributesGroupFromCategoryMutationOptions = Apollo.BaseMutationOptions<DeleteAttributesGroupFromCategoryMutation, DeleteAttributesGroupFromCategoryMutationVariables>;
+export type ToggleCmsCardAttributeInRubricMutationHookResult = ReturnType<typeof useToggleCmsCardAttributeInRubricMutation>;
+export type ToggleCmsCardAttributeInRubricMutationResult = Apollo.MutationResult<ToggleCmsCardAttributeInRubricMutation>;
+export type ToggleCmsCardAttributeInRubricMutationOptions = Apollo.BaseMutationOptions<ToggleCmsCardAttributeInRubricMutation, ToggleCmsCardAttributeInRubricMutationVariables>;
 export const CreateBrandDocument = gql`
     mutation CreateBrand($input: CreateBrandInput!) {
   createBrand(input: $input) {

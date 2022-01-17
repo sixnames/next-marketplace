@@ -345,6 +345,10 @@ export const getSsrConfigs = async ({
     configs,
     slug: 'chat',
   });
+  const showShopProductAvailability = getConfigBooleanValue({
+    configs,
+    slug: 'showShopProductAvailability',
+  });
   const catalogueTitleMetaPrefix = getConfigStringValue({
     configs,
     slug: 'catalogueTitleMetaPrefix',
@@ -393,9 +397,25 @@ export const getSsrConfigs = async ({
     configs,
     slug: 'cardDescriptionMetaMiddle',
   });
-  const showShopProductAvailability = getConfigBooleanValue({
+  const contactsTitle = getConfigStringValue({
     configs,
-    slug: 'showShopProductAvailability',
+    slug: 'contactsTitle',
+  });
+  const contactsMetaTitle = getConfigStringValue({
+    configs,
+    slug: 'contactsMetaTitle',
+  });
+  const contactsMetaDescription = getConfigStringValue({
+    configs,
+    slug: 'contactsMetaDescription',
+  });
+  const blogTitlePrefix = getConfigStringValue({
+    configs,
+    slug: 'blogTitlePrefix',
+  });
+  const blogTitlePostfix = getConfigStringValue({
+    configs,
+    slug: 'blogTitlePostfix',
   });
   const blogTitleMetaPrefix = getConfigStringValue({
     configs,
@@ -412,26 +432,6 @@ export const getSsrConfigs = async ({
   const blogDescriptionMetaPostfix = getConfigStringValue({
     configs,
     slug: 'blogDescriptionMetaPostfix',
-  });
-  const blogTitlePrefix = getConfigStringValue({
-    configs,
-    slug: 'blogTitlePrefix',
-  });
-  const blogTitlePostfix = getConfigStringValue({
-    configs,
-    slug: 'blogTitlePostfix',
-  });
-  const contactsMetaTitle = getConfigStringValue({
-    configs,
-    slug: 'blogTitlePostfix',
-  });
-  const contactsMetaDescription = getConfigStringValue({
-    configs,
-    slug: 'blogTitlePostfix',
-  });
-  const contactsTitle = getConfigStringValue({
-    configs,
-    slug: 'contactsTitle',
   });
 
   return {

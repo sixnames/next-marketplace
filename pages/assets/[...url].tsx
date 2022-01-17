@@ -7,6 +7,7 @@ import { ASSETS_DIST, DEFAULT_COMPANY_SLUG, IMAGE_FALLBACK, ONE_WEEK } from '../
 import { alwaysArray, alwaysString } from '../../lib/arrayUtils';
 import { checkIfWatermarkNeeded, getSharpImage } from '../../lib/assetUtils/assetUtils';
 import { noNaN } from '../../lib/numbers';
+import qs from 'qs';
 
 const SitemapXml: React.FC = () => {
   return <div style={{ background: 'black', height: '100vh' }} />;
@@ -38,7 +39,7 @@ export async function getServerSideProps(
   // set the content-type of the response
   res.setHeader('Content-Type', `image/${format}`);
   res.setHeader('Cache-Control', `public, max-age=${ONE_WEEK}`);
-  res.setHeader('etag', filePath);
+  res.setHeader('etag', `${req.url}?${qs.stringify(query)}`);
 
   // check if watermark needed
   const showWatermark = checkIfWatermarkNeeded(dist);

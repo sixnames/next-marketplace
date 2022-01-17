@@ -28,22 +28,21 @@ const PromoDetailsPage: React.FC<PromoDetailsPageInterface> = ({
   layoutProps,
   promo,
   pageCompany,
-  basePath,
 }) => {
-  const { root, parentLink, ...links } = getCmsCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId: pageCompany._id,
-    productId: promo._id,
+    promoId: promo._id,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${promo.name}`,
     config: [
       {
         name: 'Компании',
-        href: parentLink,
+        href: links.parentLink,
       },
       {
         name: pageCompany.name,
-        href: root,
+        href: links.root,
       },
       {
         name: 'Акции',
@@ -54,8 +53,8 @@ const PromoDetailsPage: React.FC<PromoDetailsPageInterface> = ({
 
   return (
     <ConsoleLayout title={`${promo.name}`} {...layoutProps}>
-      <ConsolePromoLayout basePath={basePath} promo={promo} breadcrumbs={breadcrumbs}>
-        <PromoDetails basePath={basePath} pageCompany={pageCompany} promo={promo} />
+      <ConsolePromoLayout promo={promo} breadcrumbs={breadcrumbs}>
+        <PromoDetails pageCompany={pageCompany} promo={promo} />
       </ConsolePromoLayout>
     </ConsoleLayout>
   );
@@ -93,15 +92,9 @@ export const getServerSideProps = async (
     };
   }
 
-  const links = getCmsCompanyLinks({
-    companyId: company._id,
-    promoId: promo._id,
-  });
-
   return {
     props: {
       ...props,
-      basePath: links.promo.root,
       pageCompany: castDbData(company),
       promo: castDbData(promo),
     },

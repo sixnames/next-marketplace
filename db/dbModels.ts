@@ -1039,7 +1039,7 @@ export interface PromoCodeModel extends PromoBaseInterface {
   promoSlug: string;
   active: boolean;
   promoId: ObjectIdModel;
-  promoterId?: ObjectIdModel;
+  promoterIds?: ObjectIdModel[];
   paybackPercent?: number;
   descriptionI18n?: TranslationModel | null;
 }

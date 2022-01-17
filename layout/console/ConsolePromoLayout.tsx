@@ -4,13 +4,14 @@ import FormattedDateTime from '../../components/FormattedDateTime';
 import Inner from '../../components/Inner';
 import WpTitle from '../../components/WpTitle';
 import { AppContentWrapperBreadCrumbs, PromoInterface } from '../../db/uiInterfaces';
+import { getCmsCompanyLinks } from '../../lib/linkUtils';
 import { ClientNavItemInterface } from '../../types/clientTypes';
 import AppContentWrapper from '../AppContentWrapper';
 import AppSubNav from '../AppSubNav';
 
 interface ConsolePromoLayoutInterface {
   promo: PromoInterface;
-  basePath: string;
+  basePath?: string;
   breadcrumbs?: AppContentWrapperBreadCrumbs;
 }
 
@@ -21,20 +22,31 @@ const ConsolePromoLayout: React.FC<ConsolePromoLayoutInterface> = ({
   breadcrumbs,
 }) => {
   const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
+    const links = getCmsCompanyLinks({
+      companyId: promo.companyId,
+      promoId: promo._id,
+      basePath,
+    });
+
     return [
       {
         name: 'Детали',
         testId: 'promo-details',
-        path: `${basePath}`,
+        path: links.promo.root,
         exact: true,
       },
       {
         name: 'Товары',
         testId: 'promo-products',
-        path: `${basePath}/rubrics`,
+        path: links.promo.rubrics.parentLink,
+      },
+      {
+        name: 'Промо-коды',
+        testId: 'promo-codes',
+        path: links.promo.code.parentLink,
       },
     ];
-  }, [basePath]);
+  }, [basePath, promo]);
 
   return (
     <AppContentWrapper breadcrumbs={breadcrumbs}>

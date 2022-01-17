@@ -26,7 +26,6 @@ import WpTitle from '../WpTitle';
 
 export interface PromoDetailsInterface {
   promo: PromoInterface;
-  basePath: string;
   pageCompany: CompanyInterface;
 }
 

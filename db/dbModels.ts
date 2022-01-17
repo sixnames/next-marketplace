@@ -1036,6 +1036,7 @@ export interface PromoProductModel extends PromoBaseInterface {
 export interface PromoCodeModel extends PromoBaseInterface {
   _id: ObjectIdModel;
   code: string;
+  promoSlug: string;
   active: boolean;
   promoId: ObjectIdModel;
   promoterId?: ObjectIdModel;

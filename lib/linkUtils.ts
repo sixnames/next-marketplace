@@ -142,7 +142,23 @@ export function getConsoleShopLinks({
 }
 
 // console company
-interface GetConsoleCompanyPromoLinkInterface {
+interface GetConsoleCompanyPromoCodeLinkInterface {
+  basePath: string;
+  promoCodeId?: string;
+}
+export function getConsoleCompanyPromoCodeLinks({
+  basePath,
+  promoCodeId,
+}: GetConsoleCompanyPromoCodeLinkInterface) {
+  const parentLink = `${basePath}/code`;
+  const root = `${parentLink}/${promoCodeId}`;
+  return {
+    parentLink,
+    root,
+  };
+}
+
+interface GetConsoleCompanyPromoLinkInterface extends GetConsoleCompanyPromoCodeLinkInterface {
   basePath: string;
   promoId?: string | ObjectIdModel;
   rubricSlug?: string;
@@ -151,12 +167,17 @@ export function getConsoleCompanyPromoLinks({
   basePath,
   promoId,
   rubricSlug,
+  promoCodeId,
 }: GetConsoleCompanyPromoLinkInterface) {
   const parentLink = `${basePath}/promo`;
   const root = `${parentLink}/details/${promoId}`;
   return {
     parentLink,
     root,
+    code: getConsoleCompanyPromoCodeLinks({
+      basePath: root,
+      promoCodeId,
+    }),
     rubrics: getConsoleRubricLinks({
       basePath: root,
       rubricSlug,

@@ -4,17 +4,13 @@ import { getCmsCompanyLinks } from '../../../lib/linkUtils';
 describe('Promo products', () => {
   const links = getCmsCompanyLinks({
     companyId: fixtureIds.companyA,
+    promoId: fixtureIds.promoACompanyA,
   });
   beforeEach(() => {
-    cy.testAuth(links.promo.parentLink);
+    cy.testAuth(links.promo.rubrics.parentLink);
   });
 
   it('Should CRUD promo products', () => {
-    cy.getByCy(`Promo A-update`).click();
-    cy.wait(1500);
-    cy.getByCy(`promo-details-page`).should('exist');
-    cy.getByCy(`promo-products`).click();
-    cy.wait(1500);
     cy.getByCy(`company-rubrics-list`).should('exist');
     cy.getByCy(`Виски-update`).click();
     cy.wait(1500);

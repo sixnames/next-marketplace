@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import * as React from 'react';
+import FormattedDateTime from '../../components/FormattedDateTime';
 import Inner from '../../components/Inner';
 import WpTitle from '../../components/WpTitle';
 import { AppContentWrapperBreadCrumbs, PromoInterface } from '../../db/uiInterfaces';
@@ -42,6 +43,16 @@ const ConsolePromoLayout: React.FC<ConsolePromoLayoutInterface> = ({
       </Head>
       <Inner lowBottom>
         <WpTitle tag={'div'}>{promo.name}</WpTitle>
+        <div className='space-y-2 text-secondary-text'>
+          <div className='flex items-baseline gap-2'>
+            <div>Начало:</div>
+            <FormattedDateTime value={promo.startAt} />
+          </div>
+          <div className='flex items-baseline gap-2'>
+            <div>Окончание:</div>
+            <FormattedDateTime value={promo.endAt} />
+          </div>
+        </div>
       </Inner>
       <AppSubNav navConfig={navConfig} />
       {children}

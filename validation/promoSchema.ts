@@ -4,6 +4,7 @@ import { companyIdSchema } from './companySchema';
 import {
   objectIdSchema,
   requiredNumberSchema,
+  requiredStringSchema,
   requiredStringTranslationSchema,
 } from './schemaTemplates';
 
@@ -11,6 +12,13 @@ export const promoIdSchema = (args: ValidationSchemaArgsInterface) => {
   return objectIdSchema({
     ...args,
     slug: 'validation.promo.id',
+  });
+};
+
+export const promoCodeIdSchema = (args: ValidationSchemaArgsInterface) => {
+  return objectIdSchema({
+    ...args,
+    slug: 'validation.promoCode.id',
   });
 };
 
@@ -44,5 +52,24 @@ export const updatePromoSchema = (args: ValidationSchemaArgsInterface) => {
   return Yup.object({
     _id: promoIdSchema(args),
     ...promoCommonFieldsSchema(args),
+  });
+};
+
+export const createPromoCodeSchema = (args: ValidationSchemaArgsInterface) => {
+  return Yup.object({
+    code: requiredStringSchema({
+      ...args,
+      slug: 'validation.promoCode.code',
+    }),
+  });
+};
+
+export const updatePromoCodeSchema = (args: ValidationSchemaArgsInterface) => {
+  return Yup.object({
+    _id: promoCodeIdSchema(args),
+    code: requiredStringSchema({
+      ...args,
+      slug: 'validation.promoCode.code',
+    }),
   });
 };

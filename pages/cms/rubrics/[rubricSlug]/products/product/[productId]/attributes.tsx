@@ -31,7 +31,7 @@ const CmsProductAttributesPageConsumer: React.FC<CmsProductAttributesPageConsume
       },
       {
         name: `${product.rubric?.name}`,
-        href: links.parentLink,
+        href: links.root,
       },
       {
         name: `Товары`,

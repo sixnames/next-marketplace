@@ -54,6 +54,7 @@ import {
   UPDATE_MY_PASSWORD_MODAL,
   USER_CATEGORY_MODAL,
   USERS_SEARCH_MODAL,
+  CREATE_PROMO_CODE_MODAL,
 } from '../../config/modalVariants';
 import Spinner from '../Spinner';
 
@@ -64,6 +65,7 @@ const ShopProductBarcodeIntersectsModal = dynamic(
   () => import('./ShopProductBarcodeIntersectsModal'),
 );
 const BlogPostModal = dynamic(() => import('./BlogPostModal'));
+const CreatePromoCodeModal = dynamic(() => import('./CreatePromoCodeModal'));
 const BlogAttributeModal = dynamic(() => import('./BlogAttributeModal'));
 const CatalogueAdditionalOptionsModal = dynamic(() => import('./CatalogueAdditionalOptionsModal'));
 const BrandOptionsModal = dynamic(() => import('./BrandOptionsModal'));
@@ -227,6 +229,8 @@ const WpModal: React.FC<WpModalInterface> = ({ modalType, modalProps = {} }) => 
           {modalType === SET_USER_CATEGORY_MODAL && <SetUserCategoryModal {...modalProps} />}
 
           {modalType === GIFT_CERTIFICATE_MODAL && <GiftCertificateModal {...modalProps} />}
+
+          {modalType === CREATE_PROMO_CODE_MODAL && <CreatePromoCodeModal {...modalProps} />}
 
           {modalType === CATALOGUE_ADDITIONAL_OPTIONS_MODAL && (
             <CatalogueAdditionalOptionsModal {...modalProps} />

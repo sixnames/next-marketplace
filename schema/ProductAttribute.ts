@@ -612,14 +612,6 @@ export const ProductAttributeMutations = extendType({
                 readableValueI18n: {},
               };
             }
-            const readableValueI18n = getAttributeReadableValueLocales({
-              productAttribute: {
-                ...productAttribute,
-                attribute,
-              },
-              gender: summary.gender,
-            });
-            productAttribute.readableValueI18n = readableValueI18n;
 
             // Get selected options tree
             const finalOptionIds: ObjectIdModel[] = [];
@@ -645,6 +637,18 @@ export const ProductAttributeMutations = extendType({
             );
 
             const oldFilterSlugs = [...productAttribute.filterSlugs];
+
+            const readableValueI18n = getAttributeReadableValueLocales({
+              productAttribute: {
+                ...productAttribute,
+                attribute: {
+                  ...attribute,
+                  options: finalOptions,
+                },
+              },
+              gender: summary.gender,
+            });
+            productAttribute.readableValueI18n = readableValueI18n;
 
             // add new product attribute if not exist
             if (productAttributeNotExist && finalOptionIds.length > 0) {

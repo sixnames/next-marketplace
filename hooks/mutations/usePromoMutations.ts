@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import {
   REQUEST_METHOD_DELETE,
   REQUEST_METHOD_PATCH,
@@ -12,6 +13,7 @@ import { DeletePromoProductsInputInterface } from '../../db/dao/promo/deleteProm
 import { UpdatePromoInputInterface } from '../../db/dao/promo/updatePromo';
 import { UpdatePromoCodeInputInterface } from '../../db/dao/promo/updatePromoCode';
 import { PromoCodePayloadModel, PromoPayloadModel } from '../../db/dbModels';
+import { getCmsCompanyLinks } from '../../lib/linkUtils';
 import { useMutationHandler } from './useFetch';
 
 const basePath = '/api/promo';
@@ -60,17 +62,30 @@ export const useDeletePromoProducts = () => {
 
 // promo code
 // create
-export const useCreatePromoCode = () => {
+export const useCreatePromoCode = (routeBasePath?: string) => {
+  const router = useRouter();
   return useMutationHandler<PromoCodePayloadModel, CreatePromoCodeInputInterface>({
-    path: basePath,
+    path: `${basePath}/codes`,
     method: REQUEST_METHOD_POST,
+    reload: false,
+    onSuccess: (payload) => {
+      if (payload.success && payload.payload) {
+        const links = getCmsCompanyLinks({
+          companyId: payload.payload.companyId,
+          promoId: payload.payload.promoId,
+          promoCodeId: payload.payload._id,
+          basePath: routeBasePath,
+        });
+        router.push(links.promo.code.root).catch(console.log);
+      }
+    },
   });
 };
 
 // update
 export const useUpdatePromoCode = () => {
   return useMutationHandler<PromoCodePayloadModel, UpdatePromoCodeInputInterface>({
-    path: basePath,
+    path: `${basePath}/codes`,
     method: REQUEST_METHOD_PATCH,
   });
 };
@@ -78,7 +93,7 @@ export const useUpdatePromoCode = () => {
 // delete
 export const useDeletePromoCode = () => {
   return useMutationHandler<PromoCodePayloadModel, DeletePromoCodeInputInterface>({
-    path: basePath,
+    path: `${basePath}/codes`,
     method: REQUEST_METHOD_DELETE,
   });
 };

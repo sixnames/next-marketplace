@@ -245,7 +245,7 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
               ...productAttribute,
               attribute: {
                 ...attribute,
-                options,
+                options: options.filter((option) => option),
               },
             },
           });
@@ -276,7 +276,7 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
               ...productAttribute,
               attribute: {
                 ...attribute,
-                options: [selectedOption],
+                options: selectedOption ? [selectedOption] : [],
               },
             },
           });
@@ -332,7 +332,7 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
               ...productAttribute,
               attribute: {
                 ...attribute,
-                options,
+                options: options.filter((option) => option),
               },
             },
           });
@@ -469,7 +469,7 @@ const productSummaries = rubrics.reduce((acc: ProductSummaryModel[], rubric) => 
     };
     const snippetTitle = generateSnippetTitle(titleConfig);
     const cardTitle = generateCardTitle(titleConfig);
-    const summaryId = getObjectId(`${rubricSlug} ${itemId}`);
+    const summaryId = getObjectId(itemId);
 
     // variants
     variantAttributesConfig.forEach(({ attributeSlug, attributeId }) => {

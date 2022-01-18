@@ -14,7 +14,7 @@ import { getDatabase } from '../db/mongodb';
 import { CompanyInterface, PageInterface, PagesGroupInterface } from '../db/uiInterfaces';
 import { SiteLayoutCatalogueCreatedPages, SiteLayoutProviderInterface } from '../layout/SiteLayout';
 import { PagePropsInterface } from '../pages/_app';
-import { getPageSsrInitialState } from './getPageSsrInitialState';
+import { getPageCompanySsr } from './getPageCompanySsr';
 import { getI18nLocaleValue } from './i18n';
 
 export interface GetPageInitialDataCommonInterface {
@@ -89,7 +89,7 @@ export async function getConsoleInitialData({
   context,
 }: GetConsoleInitialDataInterface): Promise<GetConsoleInitialDataPayloadInterface> {
   const { currentCity, citySlug, sessionLocale, initialData, companySlug, themeStyle } =
-    await getPageSsrInitialState({ context });
+    await getPageCompanySsr({ context });
 
   // Session user
   const sessionUser = await getPageSessionUser({
@@ -179,7 +179,7 @@ export async function getConsoleMainPageData({
   context,
 }: GetConsoleMainPageDataInterface): Promise<GetConsoleMainPageDataPayloadInterface> {
   const { currentCity, citySlug, sessionLocale, initialData, companySlug, themeStyle } =
-    await getPageSsrInitialState({ context });
+    await getPageCompanySsr({ context });
 
   // Session user
   const sessionUser = await getPageSessionUser({
@@ -256,7 +256,7 @@ export async function getAppInitialData({
   context,
 }: GetAppInitialDataInterface): Promise<GetAppInitialDataPayloadInterface> {
   const { currentCity, citySlug, sessionLocale, initialData, companySlug, themeStyle } =
-    await getPageSsrInitialState({ context });
+    await getPageCompanySsr({ context });
 
   // Session user
   const sessionUser = await getPageSessionUser({
@@ -456,7 +456,7 @@ export async function getSiteInitialData({
     themeStyle,
     companyNotFound,
     domain,
-  } = await getPageSsrInitialState({ context });
+  } = await getPageCompanySsr({ context });
 
   // initial data
   const rawNavRubrics = await getCatalogueNavRubrics({

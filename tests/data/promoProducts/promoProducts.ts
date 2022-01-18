@@ -1,36 +1,53 @@
-import { ObjectId } from 'mongodb';
-import { ONE_WEEK } from '../../../config/common';
-import { PromoProductModel } from '../../../db/dbModels';
+import { ObjectIdModel, PromoBaseInterface, PromoProductModel } from '../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
+import promo from '../promo/promo';
 
 require('dotenv').config();
+const shopAPromo = promo[0];
+
+interface ShopPromoBaseInterface extends PromoBaseInterface {
+  rubricSlug: string;
+  rubricId: ObjectIdModel;
+  promoId: ObjectIdModel;
+  shopId: ObjectIdModel;
+}
+
+const shopAPromoBase: ShopPromoBaseInterface = {
+  companyId: shopAPromo.companyId,
+  companySlug: shopAPromo.companySlug,
+  useBiggestDiscount: shopAPromo.useBiggestDiscount,
+  useBiggestCashback: shopAPromo.useBiggestCashback,
+  discountPercent: shopAPromo.discountPercent,
+  cashbackPercent: shopAPromo.cashbackPercent,
+  allowPayFromCashback: shopAPromo.allowPayFromCashback,
+  addCategoryDiscount: shopAPromo.addCategoryDiscount,
+  addCategoryCashback: shopAPromo.addCategoryCashback,
+  rubricSlug: 'viski',
+  rubricId: getObjectId('rubric Виски'),
+  promoId: shopAPromo._id,
+  shopId: getObjectId('shop Shop A'),
+  endAt: shopAPromo.endAt,
+  startAt: shopAPromo.startAt,
+};
 
 const promoProducts: PromoProductModel[] = [
   {
-    _id: getObjectId('promo a'),
-    promoId: getObjectId('promo a'),
-    shopId: getObjectId('shop Shop A'),
-    companyId: getObjectId('company Company A'),
-    companySlug: 'company_a',
-    shopProductId: new ObjectId('f7a28552e11e528e2cd0a8ca'),
-    productId: new ObjectId('63fc012952c3c3741cee5616'),
-    rubricSlug: 'viski',
-    rubricId: getObjectId('rubric Виски'),
-
-    // discount
-    discountPercent: 10,
-    addCategoryDiscount: true,
-    useBiggestDiscount: false,
-
-    // cashback
-    cashbackPercent: 10,
-    addCategoryCashback: true,
-    useBiggestCashback: false,
-    allowPayFromCashback: true,
-
-    // dates
-    startAt: new Date(),
-    endAt: new Date(new Date().getTime() + ONE_WEEK),
+    _id: getObjectId('000011'),
+    shopProductId: getObjectId('shop_a 000011'),
+    productId: getObjectId('000011'),
+    ...shopAPromoBase,
+  },
+  {
+    _id: getObjectId('000010'),
+    shopProductId: getObjectId('shop_a 000010'),
+    productId: getObjectId('000010'),
+    ...shopAPromoBase,
+  },
+  {
+    _id: getObjectId('000009'),
+    shopProductId: getObjectId('shop_a 000009'),
+    productId: getObjectId('000009'),
+    ...shopAPromoBase,
   },
 ];
 

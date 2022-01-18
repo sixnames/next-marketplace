@@ -24,7 +24,10 @@ export function getStringValueFromOptionsList({
 
   const names: string[] = [];
 
-  function iter(option: OptionInterface) {
+  function iter(option?: OptionInterface) {
+    if (!option) {
+      return;
+    }
     const name =
       option.variants[gender] && option.variants[gender][locale]
         ? getFieldStringLocale(option.variants[gender], locale)

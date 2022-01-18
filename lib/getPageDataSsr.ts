@@ -20,7 +20,7 @@ export interface GetSsrPageInitialDataInterface extends GetPageInitialDataCommon
   companySlug?: string;
 }
 
-export const getSsrPageInitialData = async ({
+export const getPageDataSsr = async ({
   locale,
   citySlug,
   companySlug,

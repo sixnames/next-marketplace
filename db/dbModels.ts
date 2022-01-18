@@ -1040,6 +1040,7 @@ export interface PromoCodeModel extends PromoBaseInterface {
   active: boolean;
   promoId: ObjectIdModel;
   promoterIds?: ObjectIdModel[];
+  usedByUserIds?: ObjectIdModel[];
   paybackPercent?: number;
   descriptionI18n?: TranslationModel | null;
 }

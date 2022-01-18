@@ -97,10 +97,6 @@ export const getSessionCart = async ({
           },
           { returnDocument: 'after' },
         );
-
-        if (!newCartResult) {
-          return null;
-        }
       }
 
       cart = newCart;

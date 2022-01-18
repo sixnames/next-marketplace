@@ -1,13 +1,15 @@
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
+import ConsolePromoCode, {
+  ConsolePromoCodeInterface,
+} from '../../../../../../../../components/console/ConsolePromoCode';
 import { COL_COMPANIES, COL_PROMO_CODES } from '../../../../../../../../db/collectionNames';
 import { PromoCodeModel } from '../../../../../../../../db/dbModels';
 import { getDatabase } from '../../../../../../../../db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   CompanyInterface,
-  PromoInterface,
 } from '../../../../../../../../db/uiInterfaces';
 import ConsoleLayout from '../../../../../../../../layout/cms/ConsoleLayout';
 import ConsolePromoLayout from '../../../../../../../../layout/console/ConsolePromoLayout';
@@ -19,11 +21,9 @@ import {
   GetAppInitialDataPropsInterface,
 } from '../../../../../../../../lib/ssrUtils';
 
-interface PromoDetailsPageInterface extends GetAppInitialDataPropsInterface {
-  promo: PromoInterface;
-  pageCompany: CompanyInterface;
-  promoCode: PromoCodeModel;
-}
+interface PromoDetailsPageInterface
+  extends GetAppInitialDataPropsInterface,
+    ConsolePromoCodeInterface {}
 
 const PromoDetailsPage: React.FC<PromoDetailsPageInterface> = ({
   layoutProps,
@@ -63,7 +63,9 @@ const PromoDetailsPage: React.FC<PromoDetailsPageInterface> = ({
 
   return (
     <ConsoleLayout title={`${promo.name}`} {...layoutProps}>
-      <ConsolePromoLayout promo={promo} breadcrumbs={breadcrumbs}></ConsolePromoLayout>
+      <ConsolePromoLayout promo={promo} breadcrumbs={breadcrumbs}>
+        <ConsolePromoCode promo={promo} pageCompany={pageCompany} promoCode={promoCode} />
+      </ConsolePromoLayout>
     </ConsoleLayout>
   );
 };

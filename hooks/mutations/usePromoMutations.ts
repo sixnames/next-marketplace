@@ -62,7 +62,7 @@ export const useDeletePromoProducts = () => {
 // create
 export const useCreatePromoCode = () => {
   return useMutationHandler<PromoCodePayloadModel, CreatePromoCodeInputInterface>({
-    path: basePath,
+    path: `${basePath}/codes`,
     method: REQUEST_METHOD_POST,
   });
 };
@@ -70,7 +70,7 @@ export const useCreatePromoCode = () => {
 // update
 export const useUpdatePromoCode = () => {
   return useMutationHandler<PromoCodePayloadModel, UpdatePromoCodeInputInterface>({
-    path: basePath,
+    path: `${basePath}/codes`,
     method: REQUEST_METHOD_PATCH,
   });
 };
@@ -78,7 +78,7 @@ export const useUpdatePromoCode = () => {
 // delete
 export const useDeletePromoCode = () => {
   return useMutationHandler<PromoCodePayloadModel, DeletePromoCodeInputInterface>({
-    path: basePath,
+    path: `${basePath}/codes`,
     method: REQUEST_METHOD_DELETE,
   });
 };

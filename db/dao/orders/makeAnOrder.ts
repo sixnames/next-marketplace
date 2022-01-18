@@ -337,6 +337,8 @@ export async function makeAnOrder({
             giftCertificateDiscount: noNaN(giftCertificate?.value),
           });
 
+        // TODO promo code & totalPrice after promo code
+
         // update gift certificate
         if (giftCertificate) {
           await giftCertificatesCollection.findOneAndUpdate(

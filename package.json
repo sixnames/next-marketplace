@@ -21,7 +21,6 @@
     "fast-update-prods": "ts-node --skip-project tests/testUtils/fastUpdateProds.ts",
     "update-prods": "ts-node --skip-project tests/testUtils/updateProds.ts",
     "seed-new-db": "ts-node --skip-project tests/testUtils/seedNewDb.ts",
-    "seed-one-shop-test-db": "ts-node --skip-project tests/seedTestDb.ts oneShop=true",
     "seed-test-db": "ts-node --transpile-only --skip-project tests/seedTestDb.ts"
   },
   "dependencies": {

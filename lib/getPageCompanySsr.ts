@@ -7,7 +7,7 @@ import { CityModel } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
 import { PagePropsInterface } from '../pages/_app';
 import { alwaysString } from './arrayUtils';
-import { getSsrPageInitialData } from './getSsrPageInitialData';
+import { getPageDataSsr } from './getPageDataSsr';
 import { getI18nLocaleValue } from './i18n';
 import { noNaN } from './numbers';
 import { castDbData } from './ssrUtils';
@@ -23,7 +23,7 @@ interface GetPageSsrInitialStatePayloadInterface extends PagePropsInterface {
   companyNotFound: boolean;
 }
 
-export async function getPageSsrInitialState({
+export async function getPageCompanySsr({
   context,
 }: GetPageSsrInitialStateInterface): Promise<GetPageSsrInitialStatePayloadInterface> {
   const { locale, resolvedUrl, query } = context;
@@ -59,7 +59,7 @@ export async function getPageSsrInitialState({
   }
 
   // Page initial data
-  const rawInitialData = await getSsrPageInitialData({
+  const rawInitialData = await getPageDataSsr({
     locale: sessionLocale,
     citySlug,
     companySlug: domainCompany ? domainCompany.slug : DEFAULT_COMPANY_SLUG,

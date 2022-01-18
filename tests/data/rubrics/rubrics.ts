@@ -1,4 +1,9 @@
-import { DEFAULT_COUNTERS_OBJECT, GENDER_IT } from '../../../config/common';
+import {
+  DEFAULT_CITY,
+  DEFAULT_COMPANY_SLUG,
+  DEFAULT_COUNTERS_OBJECT,
+  GENDER_IT,
+} from '../../../config/common';
 import { GenderModel, ObjectIdModel, RubricModel } from '../../../db/dbModels';
 import { getObjectId, getObjectIds } from 'mongo-seeding';
 import attributes from '../attributes/attributes';
@@ -25,44 +30,6 @@ function getAttributeIds(groupIds: string[]) {
 }
 
 const rubrics: RubricModel[] = [
-  {
-    _id: getObjectId('rubric Шампанское'),
-    slug: 'shampanskoe',
-    nameI18n: {
-      ru: 'Шампанское',
-    },
-    descriptionI18n: {
-      ru: 'Шампанское',
-    },
-    shortDescriptionI18n: {
-      ru: 'Шампанское',
-    },
-    defaultTitleI18n: {
-      ru: 'Шампанское',
-    },
-    keywordI18n: {
-      ru: 'Шампанское',
-    },
-    prefixI18n: {
-      ru: '',
-    },
-    gender: GENDER_IT as GenderModel,
-    variantId: getObjectId('rubricVariant alcohol'),
-    filterVisibleAttributeIds: getAttributeIds([
-      'attributesGroup Общие характеристики',
-      'attributesGroup Характеристики шампанского',
-    ]),
-    cmsCardAttributeIds: getAttributeIds([
-      'attributesGroup Общие характеристики',
-      'attributesGroup Характеристики шампанского',
-    ]),
-    attributesGroupIds: getObjectIds([
-      'attributesGroup Общие характеристики',
-      'attributesGroup Характеристики шампанского',
-    ]),
-    ...booleans,
-    ...DEFAULT_COUNTERS_OBJECT,
-  },
   {
     _id: getObjectId('rubric Виски'),
     slug: 'viski',
@@ -97,6 +64,48 @@ const rubrics: RubricModel[] = [
     attributesGroupIds: getObjectIds([
       'attributesGroup Общие характеристики',
       'attributesGroup Характеристики виски',
+    ]),
+    ...booleans,
+    views: {
+      [DEFAULT_COMPANY_SLUG]: {
+        [DEFAULT_CITY]: 50,
+      },
+    },
+  },
+  {
+    _id: getObjectId('rubric Шампанское'),
+    slug: 'shampanskoe',
+    nameI18n: {
+      ru: 'Шампанское',
+    },
+    descriptionI18n: {
+      ru: 'Шампанское',
+    },
+    shortDescriptionI18n: {
+      ru: 'Шампанское',
+    },
+    defaultTitleI18n: {
+      ru: 'Шампанское',
+    },
+    keywordI18n: {
+      ru: 'Шампанское',
+    },
+    prefixI18n: {
+      ru: '',
+    },
+    gender: GENDER_IT as GenderModel,
+    variantId: getObjectId('rubricVariant alcohol'),
+    filterVisibleAttributeIds: getAttributeIds([
+      'attributesGroup Общие характеристики',
+      'attributesGroup Характеристики шампанского',
+    ]),
+    cmsCardAttributeIds: getAttributeIds([
+      'attributesGroup Общие характеристики',
+      'attributesGroup Характеристики шампанского',
+    ]),
+    attributesGroupIds: getObjectIds([
+      'attributesGroup Общие характеристики',
+      'attributesGroup Характеристики шампанского',
     ]),
     ...booleans,
     ...DEFAULT_COUNTERS_OBJECT,

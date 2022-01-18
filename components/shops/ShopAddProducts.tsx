@@ -417,7 +417,7 @@ export const ShopAddProductsFinalStep: React.FC<ShopAddProductsListInterface> = 
         ...facet,
         productId: facet._id,
         shopId: shop._id,
-        available: 0,
+        available: 1,
         price: 0,
       };
     }),

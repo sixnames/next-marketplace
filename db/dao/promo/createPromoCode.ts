@@ -65,12 +65,24 @@ export async function createPromoCode({
     if (!promo) {
       return {
         success: true,
-        message: await getApiMessage('promoCode.create.success'),
+        message: await getApiMessage('promoCode.create.error'),
+      };
+    }
+
+    // check code intersects
+    const promoCodesCollection = db.collection<PromoCodeModel>(COL_PROMO_CODES);
+    const exist = await promoCodesCollection.findOne({
+      promoId: promo._id,
+      code: input.code,
+    });
+    if (exist) {
+      return {
+        success: true,
+        message: await getApiMessage('promoCode.create.error'),
       };
     }
 
     // create promo code
-    const promoCodesCollection = db.collection<PromoCodeModel>(COL_PROMO_CODES);
     const createdPromoCodeResult = await promoCodesCollection.insertOne({
       code: input.code,
       descriptionI18n: input.descriptionI18n,

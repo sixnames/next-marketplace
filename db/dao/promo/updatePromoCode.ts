@@ -75,6 +75,20 @@ export async function updatePromoCode({
         return;
       }
 
+      // check code intersects
+      const exist = await promoCodesCollection.findOne({
+        promoId: promoCode.promoId,
+        code: input.code,
+      });
+      if (exist) {
+        mutationPayload = {
+          success: false,
+          message: await getApiMessage('promoCode.create.error'),
+        };
+        await session.abortTransaction();
+        return;
+      }
+
       // update
       const updatePromoCodeResult = await promoCodesCollection.findOneAndUpdate(
         {

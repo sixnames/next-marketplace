@@ -111,12 +111,11 @@ export function getAttributeReadableValue({
   if (
     (attribute.variant === ATTRIBUTE_VARIANT_MULTIPLE_SELECT ||
       attribute.variant === ATTRIBUTE_VARIANT_SELECT) &&
-    productAttribute.filterSlugs.length > 0 &&
     attribute.options &&
     attribute.options.length > 0
   ) {
     return getStringValueFromOptionsList({
-      options: attribute.options,
+      options: attribute.options || [],
       locale,
       metricName,
       gender,

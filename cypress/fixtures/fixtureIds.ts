@@ -31,4 +31,9 @@ export const fixtureIds = {
 
   // shop products
   shopAShopProduct: 'f9f0b8c4ce95ac4ea9ed1e57',
+
+  // promo
+  promoACompanyA: 'c8380c35aac574cce1b771f5',
+  promoACodeCompanyA: 'd31d1cd4e79bc16548274258',
+  promoAProductCompanyA: 'c8380c35aac574cce1b771f5',
 };

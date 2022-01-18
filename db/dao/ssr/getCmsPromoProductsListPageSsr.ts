@@ -74,14 +74,13 @@ export const getCmsPromoProductsListPageSsr = async (
     locale,
     currency: props.currentCity?.currency || DEFAULT_CURRENCY,
     companyId: company._id,
-    basePath: links.promo.rubrics.parentLink,
+    basePath: links.promo.rubrics.product.parentLink,
     excludedShopProductIds: [],
   });
 
   return {
     props: {
       ...props,
-      basePath: links.promo.root,
       pageCompany: castDbData(company),
       promo: castDbData(promo),
       rubric: castDbData(rubric),

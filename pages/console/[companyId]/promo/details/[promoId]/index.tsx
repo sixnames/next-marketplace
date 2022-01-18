@@ -20,11 +20,10 @@ interface PromoDetailsPageInterface
   pageCompany: CompanyInterface;
 }
 
-const PromoListPage: NextPage<PromoDetailsPageInterface> = ({
+const PromoDetailsPage: NextPage<PromoDetailsPageInterface> = ({
   layoutProps,
   promo,
   pageCompany,
-  basePath,
 }) => {
   const links = getConsoleCompanyLinks({
     companyId: pageCompany._id,
@@ -43,8 +42,8 @@ const PromoListPage: NextPage<PromoDetailsPageInterface> = ({
 
   return (
     <ConsoleLayout title={`${promo.name}`} {...layoutProps}>
-      <ConsolePromoLayout promo={promo} basePath={basePath} breadcrumbs={breadcrumbs}>
-        <PromoDetails basePath={basePath} pageCompany={pageCompany} promo={promo} />
+      <ConsolePromoLayout promo={promo} basePath={links.root} breadcrumbs={breadcrumbs}>
+        <PromoDetails pageCompany={pageCompany} promo={promo} />
       </ConsolePromoLayout>
     </ConsoleLayout>
   );
@@ -71,19 +70,13 @@ export const getServerSideProps = async (
     };
   }
 
-  const links = getConsoleCompanyLinks({
-    companyId: props.layoutProps.pageCompany._id,
-    promoId: promo._id,
-  });
-
   return {
     props: {
       ...props,
-      basePath: links.promo.root,
       promo: castDbData(promo),
       pageCompany: props.layoutProps.pageCompany,
     },
   };
 };
 
-export default PromoListPage;
+export default PromoDetailsPage;

@@ -682,6 +682,17 @@ export type MessageSlug =
   | 'validation.promo.cashbackPercent'
   | 'validation.promo.datesError'
 
+  // Promo code ----------
+  | 'promoCode.create.error'
+  | 'promoCode.create.success'
+  | 'promoCode.update.error'
+  | 'promoCode.update.success'
+  | 'promoCode.delete.error'
+  | 'promoCode.delete.success'
+  // Promo validation
+  | 'validation.promoCode.id'
+  | 'validation.promoCode.code'
+
   // Promo product ----------
   | 'promoProduct.create.error'
   | 'promoProduct.create.success'

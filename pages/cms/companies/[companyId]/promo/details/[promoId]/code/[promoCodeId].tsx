@@ -1,40 +1,42 @@
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
-import PromoDetails, {
-  PromoDetailsInterface,
-} from '../../../../../../../components/Promo/PromoDetails';
-import { COL_COMPANIES } from '../../../../../../../db/collectionNames';
-import { getDatabase } from '../../../../../../../db/mongodb';
+import { COL_COMPANIES, COL_PROMO_CODES } from '../../../../../../../../db/collectionNames';
+import { PromoCodeModel } from '../../../../../../../../db/dbModels';
+import { getDatabase } from '../../../../../../../../db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   CompanyInterface,
-} from '../../../../../../../db/uiInterfaces';
-import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
-import ConsolePromoLayout from '../../../../../../../layout/console/ConsolePromoLayout';
-import { getCmsCompanyLinks } from '../../../../../../../lib/linkUtils';
-import { getPromoSsr } from '../../../../../../../lib/promoUtils';
+  PromoInterface,
+} from '../../../../../../../../db/uiInterfaces';
+import ConsoleLayout from '../../../../../../../../layout/cms/ConsoleLayout';
+import ConsolePromoLayout from '../../../../../../../../layout/console/ConsolePromoLayout';
+import { getCmsCompanyLinks } from '../../../../../../../../lib/linkUtils';
+import { getPromoSsr } from '../../../../../../../../lib/promoUtils';
 import {
   castDbData,
   getAppInitialData,
   GetAppInitialDataPropsInterface,
-} from '../../../../../../../lib/ssrUtils';
+} from '../../../../../../../../lib/ssrUtils';
 
-interface PromoDetailsPageInterface
-  extends GetAppInitialDataPropsInterface,
-    PromoDetailsInterface {}
+interface PromoDetailsPageInterface extends GetAppInitialDataPropsInterface {
+  promo: PromoInterface;
+  pageCompany: CompanyInterface;
+  promoCode: PromoCodeModel;
+}
 
 const PromoDetailsPage: React.FC<PromoDetailsPageInterface> = ({
   layoutProps,
   promo,
   pageCompany,
+  promoCode,
 }) => {
   const links = getCmsCompanyLinks({
     companyId: pageCompany._id,
     promoId: promo._id,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: `${promo.name}`,
+    currentPageName: promoCode.code,
     config: [
       {
         name: 'Компании',
@@ -48,14 +50,20 @@ const PromoDetailsPage: React.FC<PromoDetailsPageInterface> = ({
         name: 'Акции',
         href: links.promo.parentLink,
       },
+      {
+        name: `${promo.name}`,
+        href: links.promo.root,
+      },
+      {
+        name: `Промо-коды`,
+        href: links.promo.code.parentLink,
+      },
     ],
   };
 
   return (
     <ConsoleLayout title={`${promo.name}`} {...layoutProps}>
-      <ConsolePromoLayout promo={promo} breadcrumbs={breadcrumbs}>
-        <PromoDetails pageCompany={pageCompany} promo={promo} />
-      </ConsolePromoLayout>
+      <ConsolePromoLayout promo={promo} breadcrumbs={breadcrumbs}></ConsolePromoLayout>
     </ConsoleLayout>
   );
 };
@@ -65,7 +73,7 @@ export const getServerSideProps = async (
 ): Promise<GetServerSidePropsResult<PromoDetailsPageInterface>> => {
   const { query } = context;
   const { props } = await getAppInitialData({ context });
-  if (!props || !query.companyId || !query.promoId) {
+  if (!props) {
     return {
       notFound: true,
     };
@@ -92,11 +100,29 @@ export const getServerSideProps = async (
     };
   }
 
+  const promoCodesCollection = db.collection<PromoCodeModel>(COL_PROMO_CODES);
+  const promoCodesAggregation = await promoCodesCollection
+    .aggregate([
+      {
+        $match: {
+          _id: new ObjectId(`${query.promoCodeId}`),
+        },
+      },
+    ])
+    .toArray();
+  const promoCode = promoCodesAggregation[0];
+  if (!promoCode) {
+    return {
+      notFound: true,
+    };
+  }
+
   return {
     props: {
       ...props,
       pageCompany: castDbData(company),
       promo: castDbData(promo),
+      promoCode: castDbData(promoCode),
     },
   };
 };

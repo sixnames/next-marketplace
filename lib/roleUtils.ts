@@ -160,6 +160,11 @@ export type RoleRuleSlugType =
   | 'updatePromo'
   | 'deletePromo'
 
+  // Promo code
+  | 'createPromoCode'
+  | 'updatePromoCode'
+  | 'deletePromoCode'
+
   // Gift certificate
   | 'createGiftCertificate'
   | 'updateGiftCertificate'
@@ -1026,6 +1031,50 @@ const baseRoleRules: RoleRuleBaseExtended[] = [
     },
   },
 
+  // Promo code
+  {
+    allow: false,
+    slug: 'createPromoCode',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Создание поромо-кода',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updatePromoCode',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление поромо-кода',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deletePromoCode',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление поромо-кода',
+    },
+  },
+
+  // Promo product
+  {
+    allow: false,
+    slug: 'addPromoProduct',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Добавление товара к акции',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deletePromoProduct',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление товара из акции',
+    },
+  },
+
   // Gift certificate
   {
     allow: false,
@@ -1049,24 +1098,6 @@ const baseRoleRules: RoleRuleBaseExtended[] = [
     descriptionI18n: {},
     nameI18n: {
       ru: 'Удаление подарочного сертификата',
-    },
-  },
-
-  // Promo product
-  {
-    allow: false,
-    slug: 'addPromoProduct',
-    descriptionI18n: {},
-    nameI18n: {
-      ru: 'Добавление товара к акции',
-    },
-  },
-  {
-    allow: false,
-    slug: 'deletePromoProduct',
-    descriptionI18n: {},
-    nameI18n: {
-      ru: 'Удаление товара из акции',
     },
   },
 

@@ -11,13 +11,12 @@ import { GetAppInitialDataPropsInterface } from '../../../../../../../../../../l
 
 export interface CmsPromoProductsListPageInterface
   extends GetAppInitialDataPropsInterface,
-    ConsolePromoProductsInterface {}
+    Omit<ConsolePromoProductsInterface, 'basePath'> {}
 
 const CmsPromoProductsListPage: React.FC<CmsPromoProductsListPageInterface> = ({
   layoutProps,
   promo,
   pageCompany,
-  basePath,
   promoProducts,
   rubric,
   filters,
@@ -25,6 +24,7 @@ const CmsPromoProductsListPage: React.FC<CmsPromoProductsListPageInterface> = ({
 }) => {
   const links = getCmsCompanyLinks({
     companyId: pageCompany._id,
+    rubricSlug: rubric.slug,
     promoId: promo._id,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -55,9 +55,9 @@ const CmsPromoProductsListPage: React.FC<CmsPromoProductsListPageInterface> = ({
 
   return (
     <ConsoleLayout title={`${promo.name}`} {...layoutProps}>
-      <ConsolePromoLayout basePath={basePath} promo={promo} breadcrumbs={breadcrumbs}>
+      <ConsolePromoLayout promo={promo} breadcrumbs={breadcrumbs}>
         <ConsolePromoProducts
-          basePath={basePath}
+          basePath={links.promo.rubrics.product.parentLink}
           promo={promo}
           rubric={rubric}
           pageCompany={pageCompany}

@@ -17,7 +17,6 @@ const ConsolePromoProductsListPage: React.FC<ConsolePromoProductsListPageInterfa
   layoutProps,
   promo,
   pageCompany,
-  basePath,
   promoProducts,
   rubric,
   filters,
@@ -38,7 +37,7 @@ const ConsolePromoProductsListPage: React.FC<ConsolePromoProductsListPageInterfa
       },
       {
         name: `${promo.name}`,
-        href: links.promo.parentLink,
+        href: links.promo.root,
       },
       {
         name: `Товары`,
@@ -49,9 +48,9 @@ const ConsolePromoProductsListPage: React.FC<ConsolePromoProductsListPageInterfa
 
   return (
     <ConsoleLayout title={`${promo.name}`} {...layoutProps}>
-      <ConsolePromoLayout basePath={basePath} promo={promo} breadcrumbs={breadcrumbs}>
+      <ConsolePromoLayout basePath={links.root} promo={promo} breadcrumbs={breadcrumbs}>
         <ConsolePromoProducts
-          basePath={basePath}
+          basePath={links.root}
           promo={promo}
           rubric={rubric}
           pageCompany={pageCompany}

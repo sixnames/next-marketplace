@@ -34,12 +34,12 @@ export const useCreateProduct = () => {
     path: basePath,
     method: REQUEST_METHOD_POST,
     reload: false,
-    onError: ({ barcodeDoubles }) => {
-      if (barcodeDoubles) {
+    onError: (payload) => {
+      if (payload && payload.barcodeDoubles) {
         showModal<BarcodeIntersectsModalInterface>({
           variant: BARCODE_INTERSECTS_MODAL,
           props: {
-            barcodeDoubles,
+            barcodeDoubles: payload.barcodeDoubles,
           },
         });
         return;
@@ -66,12 +66,12 @@ export const useUpdateProduct = () => {
   return useMutationHandler<ProductPayloadModel, UpdateProductInputInterface>({
     path: basePath,
     method: REQUEST_METHOD_PATCH,
-    onError: ({ barcodeDoubles }) => {
-      if (barcodeDoubles) {
+    onError: (payload) => {
+      if (payload && payload.barcodeDoubles) {
         showModal<BarcodeIntersectsModalInterface>({
           variant: BARCODE_INTERSECTS_MODAL,
           props: {
-            barcodeDoubles,
+            barcodeDoubles: payload.barcodeDoubles,
           },
         });
         return;
@@ -135,12 +135,12 @@ export const useCreateProductWithSyncError = () => {
     path: `${basePath}/sync-error`,
     method: REQUEST_METHOD_POST,
     reload: false,
-    onError: ({ barcodeDoubles }) => {
-      if (barcodeDoubles) {
+    onError: (payload) => {
+      if (payload && payload.barcodeDoubles) {
         showModal<BarcodeIntersectsModalInterface>({
           variant: BARCODE_INTERSECTS_MODAL,
           props: {
-            barcodeDoubles,
+            barcodeDoubles: payload.barcodeDoubles,
           },
         });
         return;
@@ -168,12 +168,12 @@ export const useUpdateProductWithSyncError = () => {
     path: `${basePath}/sync-error`,
     method: REQUEST_METHOD_PATCH,
     reload: false,
-    onError: ({ barcodeDoubles }) => {
-      if (barcodeDoubles) {
+    onError: (payload) => {
+      if (payload && payload.barcodeDoubles) {
         showModal<BarcodeIntersectsModalInterface>({
           variant: BARCODE_INTERSECTS_MODAL,
           props: {
-            barcodeDoubles,
+            barcodeDoubles: payload.barcodeDoubles,
           },
         });
         return;

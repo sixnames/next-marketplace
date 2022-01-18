@@ -10,6 +10,7 @@ import { getDatabase } from '../../../../../../../../db/mongodb';
 import {
   AppContentWrapperBreadCrumbs,
   CompanyInterface,
+  PromoInterface,
 } from '../../../../../../../../db/uiInterfaces';
 import ConsoleLayout from '../../../../../../../../layout/cms/ConsoleLayout';
 import ConsolePromoLayout from '../../../../../../../../layout/console/ConsolePromoLayout';
@@ -23,7 +24,10 @@ import {
 
 interface PromoDetailsPageInterface
   extends GetAppInitialDataPropsInterface,
-    ConsolePromoCodeInterface {}
+    ConsolePromoCodeInterface {
+  promo: PromoInterface;
+  pageCompany: CompanyInterface;
+}
 
 const PromoDetailsPage: React.FC<PromoDetailsPageInterface> = ({
   layoutProps,
@@ -64,7 +68,7 @@ const PromoDetailsPage: React.FC<PromoDetailsPageInterface> = ({
   return (
     <ConsoleLayout title={`${promo.name}`} {...layoutProps}>
       <ConsolePromoLayout promo={promo} breadcrumbs={breadcrumbs}>
-        <ConsolePromoCode promo={promo} pageCompany={pageCompany} promoCode={promoCode} />
+        <ConsolePromoCode promoCode={promoCode} />
       </ConsolePromoLayout>
     </ConsoleLayout>
   );

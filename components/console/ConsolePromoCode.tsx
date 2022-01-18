@@ -3,7 +3,6 @@ import * as React from 'react';
 import { useAppContext } from '../../context/appContext';
 import { UpdatePromoCodeInputInterface } from '../../db/dao/promo/updatePromoCode';
 import { PromoCodeModel } from '../../db/dbModels';
-import { CompanyInterface, PromoInterface } from '../../db/uiInterfaces';
 import { useUpdatePromoCode } from '../../hooks/mutations/usePromoMutations';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
@@ -11,9 +10,6 @@ import PromoCodeMainFields from '../FormTemplates/PromoCodeMainFields';
 import Inner from '../Inner';
 
 export interface ConsolePromoCodeInterface {
-  basePath?: string;
-  promo: PromoInterface;
-  pageCompany: CompanyInterface;
   promoCode: PromoCodeModel;
 }
 

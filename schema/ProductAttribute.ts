@@ -1,5 +1,5 @@
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { FILTER_SEPARATOR } from '../config/common';
+import { DEFAULT_LOCALE, FILTER_SEPARATOR } from '../config/common';
 import {
   COL_ATTRIBUTES,
   COL_OPTIONS,
@@ -902,9 +902,25 @@ export const ProductAttributeMutations = extendType({
 
           for await (const inputAttribute of attributes) {
             const { number, attributeId, productAttributeId } = inputAttribute;
+            if (!number) {
+              await productSummariesCollection.findOneAndUpdate(
+                {
+                  _id: summary._id,
+                },
+                {
+                  $pull: {
+                    attributeIds: attributeId,
+                    attributes: {
+                      attributeId,
+                    },
+                  },
+                },
+              );
+              continue;
+            }
 
             // Check if product attribute exist
-            let productAttribute = await summary.attributes.find(({ _id }) => {
+            let productAttribute = summary.attributes.find(({ _id }) => {
               return _id.equals(productAttributeId);
             });
 
@@ -1025,6 +1041,22 @@ export const ProductAttributeMutations = extendType({
 
           for await (const inputAttribute of attributes) {
             const { textI18n, attributeId, productAttributeId } = inputAttribute;
+            if (!textI18n || !textI18n[DEFAULT_LOCALE]) {
+              await productSummariesCollection.findOneAndUpdate(
+                {
+                  _id: summary._id,
+                },
+                {
+                  $pull: {
+                    attributeIds: attributeId,
+                    attributes: {
+                      attributeId,
+                    },
+                  },
+                },
+              );
+              continue;
+            }
 
             // Check if product attribute exist
             let productAttribute = await summary.attributes.find(({ _id }) => {

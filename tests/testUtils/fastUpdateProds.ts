@@ -107,7 +107,19 @@ async function updateProds() {
         productAttributes.push(updatedProductAttribute);
       }
 
+      const attributeIds = productAttributes.map(({ attributeId }) => attributeId);
       // update summary
+      await summariesCollection.findOneAndUpdate(
+        {
+          _id: summary._id,
+        },
+        {
+          $set: {
+            attributes: productAttributes,
+            attributeIds,
+          },
+        },
+      );
     }
     console.log('summaries', summaries.length);
 

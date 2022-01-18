@@ -142,8 +142,24 @@ export function getConsoleShopLinks({
 }
 
 // console company
-interface GetConsoleCompanyPromoLinkInterface {
-  basePath: string;
+interface GetConsoleCompanyPromoCodeLinkInterface {
+  basePath?: string;
+  promoCodeId?: string | ObjectIdModel;
+}
+export function getConsoleCompanyPromoCodeLinks({
+  basePath,
+  promoCodeId,
+}: GetConsoleCompanyPromoCodeLinkInterface) {
+  const parentLink = `${basePath}/code`;
+  const root = `${parentLink}/${promoCodeId}`;
+  return {
+    parentLink,
+    root,
+  };
+}
+
+interface GetConsoleCompanyPromoLinkInterface extends GetConsoleCompanyPromoCodeLinkInterface {
+  basePath?: string;
   promoId?: string | ObjectIdModel;
   rubricSlug?: string;
 }
@@ -151,12 +167,17 @@ export function getConsoleCompanyPromoLinks({
   basePath,
   promoId,
   rubricSlug,
+  promoCodeId,
 }: GetConsoleCompanyPromoLinkInterface) {
   const parentLink = `${basePath}/promo`;
   const root = `${parentLink}/details/${promoId}`;
   return {
     parentLink,
     root,
+    code: getConsoleCompanyPromoCodeLinks({
+      basePath: root,
+      promoCodeId,
+    }),
     rubrics: getConsoleRubricLinks({
       basePath: root,
       rubricSlug,
@@ -167,10 +188,10 @@ export function getConsoleCompanyPromoLinks({
 // console company
 interface GetCmsCompanyLinkInterface
   extends GetConsoleRubricLinkInterface,
-    GetConsoleShopLinkInterface {
+    GetConsoleShopLinkInterface,
+    GetConsoleCompanyPromoLinkInterface {
   companyId?: string | ObjectIdModel;
   shopId?: string | ObjectIdModel;
-  promoId?: string | ObjectIdModel;
 }
 export function getCmsCompanyLinks({
   companyId = '',
@@ -180,6 +201,7 @@ export function getCmsCompanyLinks({
   productId,
   promoId,
   orderId,
+  promoCodeId,
 }: GetCmsCompanyLinkInterface) {
   const parentLink = basePath?.includes(ROUTE_CMS) ? `${basePath}/companies` : basePath;
   const root = `${parentLink}/${companyId}`;
@@ -197,6 +219,7 @@ export function getCmsCompanyLinks({
       basePath: root,
       rubricSlug,
       promoId,
+      promoCodeId,
     }),
     shop: getConsoleShopLinks({
       basePath: root,

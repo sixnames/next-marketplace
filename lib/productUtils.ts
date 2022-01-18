@@ -105,7 +105,7 @@ export async function getCmsProduct({
     [],
   );
 
-  // connections
+  // variants
   const variants: ProductVariantInterface[] = [];
   for await (const productVariant of initialProduct.variants) {
     const variantProducts: ProductVariantItemInterface[] = [];
@@ -158,8 +158,8 @@ export async function getCmsProduct({
   // attributes
   const attributes = (initialProduct.attributes || []).reduce(
     (acc: ProductAttributeInterface[], productAttribute) => {
-      const { attribute } = productAttribute;
-      if (!attribute) {
+      const { attribute, attributeId } = productAttribute;
+      if (!attribute || !attributeId) {
         return acc;
       }
       return [

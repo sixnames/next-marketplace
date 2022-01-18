@@ -22,14 +22,13 @@ import {
   GetConsoleInitialDataPropsInterface,
 } from '../../../../../../../lib/ssrUtils';
 
-interface ConsolePromoRubricsInterface extends CompanyRubricsListInterface {
+interface ConsolePromoRubricsInterface extends Omit<CompanyRubricsListInterface, 'routeBasePath'> {
   promo: PromoInterface;
 }
 
 const ConsolePromoRubrics: React.FC<ConsolePromoRubricsInterface> = ({
   pageCompany,
   promo,
-  routeBasePath,
   rubrics,
 }) => {
   const links = getConsoleCompanyLinks({
@@ -52,12 +51,8 @@ const ConsolePromoRubrics: React.FC<ConsolePromoRubricsInterface> = ({
   };
 
   return (
-    <ConsolePromoLayout basePath={routeBasePath} promo={promo} breadcrumbs={breadcrumbs}>
-      <CompanyRubricsList
-        rubrics={rubrics}
-        pageCompany={pageCompany}
-        routeBasePath={routeBasePath}
-      />
+    <ConsolePromoLayout basePath={links.root} promo={promo} breadcrumbs={breadcrumbs}>
+      <CompanyRubricsList rubrics={rubrics} pageCompany={pageCompany} routeBasePath={links.root} />
     </ConsolePromoLayout>
   );
 };
@@ -154,15 +149,9 @@ export const getServerSideProps = async (
     return castRubricForUI({ rubric, locale: props.sessionLocale });
   });
 
-  const links = getConsoleCompanyLinks({
-    companyId: props.layoutProps.pageCompany._id,
-    promoId: promo._id,
-  });
-
   return {
     props: {
       ...props,
-      routeBasePath: links.promo.root,
       pageCompany: castDbData(props.layoutProps.pageCompany),
       promo: castDbData(promo),
       rubrics: castDbData(rawRubrics),

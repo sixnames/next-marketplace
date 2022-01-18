@@ -2,8 +2,8 @@ import { ObjectId } from 'mongodb';
 import { deleteUpload } from '../../../lib/assetUtils/assetUtils';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
-import { COL_PROMO, COL_PROMO_PRODUCTS } from '../../collectionNames';
-import { PromoModel, PromoPayloadModel, PromoProductModel } from '../../dbModels';
+import { COL_PROMO, COL_PROMO_CODES, COL_PROMO_PRODUCTS } from '../../collectionNames';
+import { PromoCodeModel, PromoModel, PromoPayloadModel, PromoProductModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
 
@@ -19,6 +19,7 @@ export async function deletePromo({
   const { db, client } = await getDatabase();
   const promoCollection = db.collection<PromoModel>(COL_PROMO);
   const promoProductsCollection = db.collection<PromoProductModel>(COL_PROMO_PRODUCTS);
+  const promoCodesCollection = db.collection<PromoCodeModel>(COL_PROMO_CODES);
   const session = client.startSession();
   let mutationPayload: PromoPayloadModel = {
     success: false,
@@ -72,7 +73,10 @@ export async function deletePromo({
       const removedPromoProductsResult = await promoProductsCollection.deleteMany({
         promoId: promo._id,
       });
-      if (!removedPromoProductsResult.acknowledged) {
+      const removedPromoCodesResult = await promoCodesCollection.deleteMany({
+        promoId: promo._id,
+      });
+      if (!removedPromoProductsResult.acknowledged || !removedPromoCodesResult.acknowledged) {
         mutationPayload = {
           success: false,
           message: await getApiMessage('promo.delete.error'),

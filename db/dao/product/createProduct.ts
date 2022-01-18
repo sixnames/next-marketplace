@@ -129,7 +129,7 @@ export async function createProduct({
         _id: productId,
         itemId,
         mainImage: IMAGE_FALLBACK,
-        assets: [IMAGE_FALLBACK],
+        assets: [],
         barcode: [],
         attributes: [],
         slug: itemId,

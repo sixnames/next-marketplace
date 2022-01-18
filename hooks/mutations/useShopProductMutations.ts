@@ -16,12 +16,12 @@ export const useUpdateManyShopProducts = () => {
   return useMutationHandler<ShopProductPayloadModel, UpdateManyShopProductsInputType>({
     path: basePath,
     method: REQUEST_METHOD_PATCH,
-    onError: ({ barcodeDoubles }) => {
-      if (barcodeDoubles) {
+    onError: (payload) => {
+      if (payload && payload.barcodeDoubles) {
         showModal<ShopProductBarcodeIntersectsModalInterface>({
           variant: SHOP_PRODUCT_BARCODE_INTERSECTS_MODAL,
           props: {
-            barcodeDoubles,
+            barcodeDoubles: payload.barcodeDoubles,
           },
         });
         return;

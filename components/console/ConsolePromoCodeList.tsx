@@ -1,11 +1,16 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
+import { CREATE_PROMO_CODE_MODAL } from '../../config/modalVariants';
+import { useAppContext } from '../../context/appContext';
 import { PromoCodeModel } from '../../db/dbModels';
 import { CompanyInterface, PromoInterface } from '../../db/uiInterfaces';
 import { getCmsCompanyLinks } from '../../lib/linkUtils';
 import ContentItemControls from '../button/ContentItemControls';
+import FixedButtons from '../button/FixedButtons';
+import WpButton from '../button/WpButton';
 import Inner from '../Inner';
 import WpLink from '../Link/WpLink';
+import { CreatePromoCodeModalInterface } from '../Modal/CreatePromoCodeModal';
 import WpTable, { WpTableColumn } from '../WpTable';
 
 export interface ConsolePromoCodeListInterface {
@@ -22,6 +27,7 @@ const ConsolePromoCodeList: React.FC<ConsolePromoCodeListInterface> = ({
   basePath,
 }) => {
   const router = useRouter();
+  const { showModal } = useAppContext();
   const columns: WpTableColumn<PromoCodeModel>[] = [
     {
       headTitle: 'Код',
@@ -64,18 +70,36 @@ const ConsolePromoCodeList: React.FC<ConsolePromoCodeListInterface> = ({
   return (
     <Inner>
       <div className='relative'>
-        <WpTable<PromoCodeModel>
-          columns={columns}
-          data={promoCodes}
-          onRowDoubleClick={(dataItem) => {
-            const links = getCmsCompanyLinks({
-              companyId: pageCompany._id,
-              promoId: promo._id,
-              promoCodeId: dataItem._id,
-            });
-            router.push(links.promo.code.root).catch(console.log);
-          }}
-        />
+        <div className='overflow-y-hidden overflow-x-auto'>
+          <WpTable<PromoCodeModel>
+            columns={columns}
+            data={promoCodes}
+            onRowDoubleClick={(dataItem) => {
+              const links = getCmsCompanyLinks({
+                companyId: pageCompany._id,
+                promoId: promo._id,
+                promoCodeId: dataItem._id,
+              });
+              router.push(links.promo.code.root).catch(console.log);
+            }}
+          />
+        </div>
+
+        <FixedButtons>
+          <WpButton
+            size={'small'}
+            onClick={() => {
+              showModal<CreatePromoCodeModalInterface>({
+                variant: CREATE_PROMO_CODE_MODAL,
+                props: {
+                  promoId: `${promo._id}`,
+                },
+              });
+            }}
+          >
+            Добавить промо-код
+          </WpButton>
+        </FixedButtons>
       </div>
     </Inner>
   );

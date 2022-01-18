@@ -7,7 +7,7 @@ import { PayloadModel } from '../../db/dbModels';
 export interface UseFetchInterface<T> {
   input: RequestInfo;
   onSuccess: (payload: T) => void;
-  onError: (payload: T) => void;
+  onError: (payload?: T) => void;
   onFetchStart?: () => void;
   reload?: boolean;
 }
@@ -87,7 +87,7 @@ export function useFetch<T>({
 export interface UseMutationInterface<T> {
   input: RequestInfo;
   onSuccess?: (payload: T) => void;
-  onError?: (payload: T) => void;
+  onError?: (payload?: T) => void;
   showNotification?: boolean;
   reload?: boolean;
 }
@@ -153,7 +153,7 @@ interface UseMutationHandlerInputInterface<TPayload extends PayloadModel> {
   method: string;
   reload?: boolean;
   onSuccess?: (payload: TPayload) => void;
-  onError?: (payload: TPayload) => void;
+  onError?: (payload?: TPayload) => void;
   showNotification?: boolean;
 }
 

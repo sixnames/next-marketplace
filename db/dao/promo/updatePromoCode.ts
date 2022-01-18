@@ -49,7 +49,7 @@ export async function updatePromoCode({
       if (!input) {
         mutationPayload = {
           success: false,
-          message: await getApiMessage('promoCode.create.error'),
+          message: await getApiMessage('promoCode.update.error'),
         };
         await session.abortTransaction();
         return;
@@ -69,7 +69,7 @@ export async function updatePromoCode({
       if (!promoCode) {
         mutationPayload = {
           success: false,
-          message: await getApiMessage('promoCode.create.error'),
+          message: await getApiMessage('promoCode.update.error'),
         };
         await session.abortTransaction();
         return;
@@ -77,13 +77,16 @@ export async function updatePromoCode({
 
       // check code intersects
       const exist = await promoCodesCollection.findOne({
+        _id: {
+          $ne: promoCode._id,
+        },
         promoId: promoCode.promoId,
         code: input.code,
       });
       if (exist) {
         mutationPayload = {
           success: false,
-          message: await getApiMessage('promoCode.create.error'),
+          message: await getApiMessage('promoCode.update.error'),
         };
         await session.abortTransaction();
         return;
@@ -108,7 +111,7 @@ export async function updatePromoCode({
       if (!updatePromoCodeResult.ok || !updatePromoCode) {
         mutationPayload = {
           success: false,
-          message: await getApiMessage('promoCode.create.error'),
+          message: await getApiMessage('promoCode.update.error'),
         };
         await session.abortTransaction();
         return;
@@ -116,7 +119,7 @@ export async function updatePromoCode({
 
       mutationPayload = {
         success: true,
-        message: await getApiMessage('promoCode.create.success'),
+        message: await getApiMessage('promoCode.update.success'),
         payload: updatePromoCode,
       };
     });

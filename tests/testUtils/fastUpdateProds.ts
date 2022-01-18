@@ -1,19 +1,8 @@
 import { Db } from 'mongodb';
-import { ID_COUNTER_STEP } from '../../config/common';
+import { ID_COUNTER_STEP, IMAGE_FALLBACK } from '../../config/common';
 import { dbsConfig, getProdDb } from './getProdDb';
-import {
-  COL_ATTRIBUTES,
-  COL_CATEGORIES,
-  COL_ID_COUNTERS,
-  COL_RUBRICS,
-} from '../../db/collectionNames';
-import {
-  AttributeModel,
-  CategoryModel,
-  IdCounterModel,
-  ObjectIdModel,
-  RubricModel,
-} from '../../db/dbModels';
+import { COL_ID_COUNTERS, COL_PRODUCT_SUMMARIES } from '../../db/collectionNames';
+import { IdCounterModel, ProductSummaryModel } from '../../db/dbModels';
 require('dotenv').config();
 
 export async function getFastNextNumberItemId(collectionName: string, db: Db): Promise<string> {
@@ -39,10 +28,6 @@ export async function getFastNextNumberItemId(collectionName: string, db: Db): P
   return `${updatedCounter.value.counter}`;
 }
 
-interface CategoryType extends CategoryModel {
-  attributesGroupIds: ObjectIdModel[];
-}
-
 async function updateProds() {
   for await (const dbConfig of dbsConfig) {
     console.log(' ');
@@ -50,58 +35,22 @@ async function updateProds() {
     console.log(' ');
     console.log(`Updating ${dbConfig.dbName} db`);
     const { db, client } = await getProdDb(dbConfig);
-    const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-    const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
-    const categoriesCollection = db.collection<CategoryType>(COL_CATEGORIES);
+    const summariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
 
-    const rubrics = await rubricsCollection.find({}).toArray();
-    for await (const rubric of rubrics) {
-      const categories = await categoriesCollection
-        .find({
-          rubricId: rubric._id,
-        })
-        .toArray();
-      const attributesGroupIds = categories.reduce((acc: ObjectIdModel[], category) => {
-        return [...acc, ...category.attributesGroupIds];
-      }, []);
-
-      const attributes = await attributesCollection
-        .find({
-          attributesGroupId: {
-            $in: attributesGroupIds,
-          },
-        })
-        .toArray();
-      const attributeIds = attributes.map(({ _id }) => _id);
-
-      await rubricsCollection.findOneAndUpdate(
+    const summaries = await summariesCollection
+      .find({
+        assets: IMAGE_FALLBACK,
+      })
+      .toArray();
+    for await (const summary of summaries) {
+      const assets = summary.assets.filter((asset) => asset !== IMAGE_FALLBACK);
+      await summariesCollection.findOneAndUpdate(
         {
-          _id: rubric._id,
+          _id: summary._id,
         },
         {
-          $addToSet: {
-            cmsCardAttributeIds: {
-              $each: attributeIds,
-            },
-            attributesGroupIds: {
-              $each: attributesGroupIds,
-            },
-          },
-        },
-      );
-
-      await categoriesCollection.updateMany(
-        {
-          rubricId: rubric._id,
-        },
-        {
-          $addToSet: {
-            cmsCardAttributeIds: {
-              $each: attributeIds,
-            },
-          },
-          $unset: {
-            attributesGroupIds: '',
+          $set: {
+            assets,
           },
         },
       );

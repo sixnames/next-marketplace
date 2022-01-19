@@ -81,7 +81,7 @@ export async function copyProduct({
       }
 
       // create summary
-      const itemId = await getNextItemId(COL_PRODUCT_FACETS);
+      const itemId = await getNextItemId(COL_PRODUCT_SUMMARIES);
       const newProductId = new ObjectId();
       const createdProductSummaryResult = await productSummariesCollection.insertOne({
         ...sourceProductSummary,

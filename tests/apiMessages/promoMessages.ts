@@ -156,6 +156,48 @@ export const promoMessages: MessageBaseInterface[] = [
       [SECONDARY_LOCALE]: `Promo-code removed.`,
     },
   },
+  {
+    slug: 'promoCode.check.error',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Ошибка проверки промо-кода.`,
+      [SECONDARY_LOCALE]: `Promo-code check error.`,
+    },
+  },
+  {
+    slug: 'promoCode.check.notFound',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Промо-код не найден.`,
+      [SECONDARY_LOCALE]: `Promo-code not found.`,
+    },
+  },
+  {
+    slug: 'promoCode.check.used',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Промо-код был использован прежде.`,
+      [SECONDARY_LOCALE]: `Promo-code is already used.`,
+    },
+  },
+  {
+    slug: 'promoCode.check.expired',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Акция введёного промо-кода закончилась.`,
+      [SECONDARY_LOCALE]: `Promo-code is expired.`,
+    },
+  },
+  {
+    slug: 'promoCode.check.noProducts',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `По данному промо-коду не найдено ни одного товара.`,
+      [SECONDARY_LOCALE]: `Promo-code products not found.`,
+    },
+  },
+  {
+    slug: 'promoCode.check.success',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Промо-код применён.`,
+      [SECONDARY_LOCALE]: `Promo-code added.`,
+    },
+  },
 
   // promo code validation
   {

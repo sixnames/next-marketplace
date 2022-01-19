@@ -5,6 +5,10 @@ import {
   REQUEST_METHOD_POST,
 } from '../../config/common';
 import { AddPromoProductsInputInterface } from '../../db/dao/promo/addPromoProducts';
+import {
+  CheckPromoCodeAvailabilityInputInterface,
+  CheckPromoCodeAvailabilityPayloadModel,
+} from '../../db/dao/promo/checkPromoCodeAvailability';
 import { CreatePromoInputInterface } from '../../db/dao/promo/createPromo';
 import { CreatePromoCodeInputInterface } from '../../db/dao/promo/createPromoCode';
 import { DeletePromoInputInterface } from '../../db/dao/promo/deletePromo';
@@ -95,5 +99,16 @@ export const useDeletePromoCode = () => {
   return useMutationHandler<PromoCodePayloadModel, DeletePromoCodeInputInterface>({
     path: `${basePath}/codes`,
     method: REQUEST_METHOD_DELETE,
+  });
+};
+
+// check
+export const useCheckPromoCode = () => {
+  return useMutationHandler<
+    CheckPromoCodeAvailabilityPayloadModel,
+    CheckPromoCodeAvailabilityInputInterface
+  >({
+    path: `${basePath}/codes/check`,
+    method: REQUEST_METHOD_POST,
   });
 };

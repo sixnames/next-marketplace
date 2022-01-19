@@ -6,8 +6,14 @@ import { REQUEST_METHOD_POST, ROUTE_THANK_YOU } from '../config/common';
 import { CART_MODAL } from '../config/modalVariants';
 import { CheckGiftCertificateAvailabilityInputInterface } from '../db/dao/giftCertificate/checkGiftCertificateAvailability';
 import { MakeAnOrderInputInterface, MakeAnOrderPayloadModel } from '../db/dao/orders/makeAnOrder';
+import { CheckPromoCodeAvailabilityInputInterface } from '../db/dao/promo/checkPromoCodeAvailability';
 import { CartProductsFieldNameType, GiftCertificateModel } from '../db/dbModels';
-import { CartInterface, CompanyInterface, RubricInterface } from '../db/uiInterfaces';
+import {
+  CartInterface,
+  CompanyInterface,
+  PromoCodeInterface,
+  RubricInterface,
+} from '../db/uiInterfaces';
 import {
   AddProductToCartInput,
   AddShoplessProductToCartInput,
@@ -24,6 +30,7 @@ import {
 } from '../generated/apolloComponents';
 import { useMutation } from '../hooks/mutations/useFetch';
 import { useCheckGiftCertificateMutation } from '../hooks/mutations/useGiftCertificateMutations';
+import { useCheckPromoCode } from '../hooks/mutations/usePromoMutations';
 import { noNaN } from '../lib/numbers';
 import { useAppContext } from './appContext';
 import { useNotificationsContext } from './notificationsContext';
@@ -41,6 +48,13 @@ interface CheckGiftCertificateInputInterface
   onSuccess: (giftCertificate: GiftCertificateModel) => void;
 }
 
+interface CheckPromoCodeInputInterface
+  extends Omit<CheckPromoCodeAvailabilityInputInterface, 'userId'> {
+  cartId: string;
+  onError: () => void;
+  onSuccess: (promoCode: PromoCodeInterface) => void;
+}
+
 interface SiteContextInterface extends SiteContextStateInterface {
   navRubrics: RubricInterface[];
   addProductToCart: (input: AddProductToCartInput) => void;
@@ -49,6 +63,7 @@ interface SiteContextInterface extends SiteContextStateInterface {
   updateProductInCart: (input: UpdateProductInCartInput) => void;
   deleteProductFromCart: (input: DeleteProductFromCartInput) => void;
   checkGiftCertificate: (input: CheckGiftCertificateInputInterface) => void;
+  checkPromoCode: (input: CheckPromoCodeInputInterface) => void;
   getShopProductInCartCount: (shopProductId: string, allowDelivery: boolean) => number;
   makeAnOrder: (input: MakeAnOrderInputInterface) => void;
   repeatAnOrder: (_id: string) => void;
@@ -70,6 +85,7 @@ const SiteContext = React.createContext<SiteContextInterface>({
   repeatAnOrder: () => undefined,
   clearCart: () => undefined,
   checkGiftCertificate: () => undefined,
+  checkPromoCode: () => undefined,
 });
 
 interface SiteContextProviderInterface {
@@ -207,8 +223,8 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
     },
   });
 
+  // gift certificate
   const [checkGiftCertificateMutation] = useCheckGiftCertificateMutation();
-
   const checkGiftCertificate = React.useCallback(
     (input: CheckGiftCertificateInputInterface) => {
       checkGiftCertificateMutation({
@@ -228,6 +244,30 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
         .catch(console.log);
     },
     [checkGiftCertificateMutation, refetchCartHandler, sessionUser],
+  );
+
+  // promo code
+  const [checkPromoCodeMutation] = useCheckPromoCode();
+  const checkPromoCode = React.useCallback(
+    (input: CheckPromoCodeInputInterface) => {
+      checkPromoCodeMutation({
+        userId: sessionUser ? `${sessionUser.me._id}` : null,
+        cartId: input.cartId,
+        companyId: input.companyId,
+        code: input.code,
+        shopProductIds: input.shopProductIds,
+      })
+        .then((response) => {
+          if (!response || !response.success || !response.payload) {
+            input.onError();
+            return;
+          }
+          input.onSuccess(response.payload.promoCode);
+          refetchCartHandler();
+        })
+        .catch(console.log);
+    },
+    [checkPromoCodeMutation, refetchCartHandler, sessionUser],
   );
 
   const addProductToCart = React.useCallback(
@@ -361,6 +401,7 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
       repeatAnOrder,
       getShopProductInCartCount,
       checkGiftCertificate,
+      checkPromoCode,
       domainCompany,
       ...state,
     };
@@ -376,6 +417,7 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
     repeatAnOrder,
     getShopProductInCartCount,
     checkGiftCertificate,
+    checkPromoCode,
     domainCompany,
     state,
   ]);

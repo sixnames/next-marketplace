@@ -114,7 +114,7 @@ export const CartDeliveryFields: React.FC<CartDeliveryFieldsInterface> = ({ inde
   );
 };
 
-interface DefaultCartShopInterface
+export interface DefaultCartShopInterface
   extends MakeAnOrderShopConfigInterface,
     UseCartAsideDiscountsValuesInterface,
     Omit<ShopInterface, '_id'> {
@@ -142,10 +142,12 @@ const DefaultCartShop: React.FC<DefaultCartShopUIInterface> = ({
   const marker = useShopMarker(shop);
   const { showModal } = useAppContext();
   const { values, setFieldValue } = useFormikContext();
-  const { checkGiftCertificate } = useSiteContext();
+  const { checkGiftCertificate, checkPromoCode } = useSiteContext();
+  const promoCodeFieldName = `shopConfigs[${index}].promoCode.code`;
   const giftCertificateFieldName = `shopConfigs[${index}].giftCertificateCode`;
   const giftCertificateValueFieldName = `shopConfigs[${index}].giftCertificateDiscount`;
   const giftCertificateCode = get(values, giftCertificateFieldName);
+  const promoCodeCode = get(values, promoCodeFieldName);
 
   return (
     <LayoutCard key={`${shop._id}`}>
@@ -217,25 +219,48 @@ const DefaultCartShop: React.FC<DefaultCartShopUIInterface> = ({
           </div>
 
           <div>
-            <InputLine
-              low
-              labelTag={'div'}
-              label={'Промокод'}
-              lineContentClass='flex flex-col sm:flex-row gap-4 sm:items-center'
-            >
-              <div className='flex-grow'>
-                <FormikInput size={'small'} name={`shopConfigs[${index}].promoCode`} low />
+            <InputLine low labelTag={'div'} label={'Промокод'}>
+              <div className='flex flex-col sm:flex-row gap-4 sm:items-center'>
+                <div className='flex-grow'>
+                  <FormikInput
+                    readOnly={Boolean(shop.promoCode)}
+                    size={'small'}
+                    name={promoCodeFieldName}
+                    low
+                  />
+                </div>
+                <WpButton
+                  disabled={Boolean(shop.promoCode)}
+                  size={'small'}
+                  frameClassName='w-auto'
+                  theme={'secondary'}
+                  onClick={() => {
+                    checkPromoCode({
+                      code: promoCodeCode,
+                      companyId: `${shop.companyId}`,
+                      cartId,
+                      shopProductIds: shop.cartProducts.reduce(
+                        (acc: string[], { shopProductId }) => {
+                          if (shopProductId) {
+                            return [...acc, `${shopProductId}`];
+                          }
+                          return acc;
+                        },
+                        [],
+                      ),
+                      onError: () => setFieldValue(giftCertificateFieldName, ''),
+                      onSuccess: (promoCode) => {
+                        console.log(promoCode);
+                      },
+                    });
+                  }}
+                >
+                  Применить
+                </WpButton>
               </div>
-              <WpButton
-                size={'small'}
-                frameClassName='w-auto'
-                theme={'secondary'}
-                onClick={() => {
-                  console.log('Применить');
-                }}
-              >
-                Применить
-              </WpButton>
+              {shop.promoCode && shop.promoCode.description ? (
+                <div className='mt-4 text-secondary-text'>{shop.promoCode.description}</div>
+              ) : null}
             </InputLine>
           </div>
         </div>
@@ -322,16 +347,20 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
         return companyId === shop.companyId;
       });
 
+      const promoCode = (cart.promoCodes || []).find((promoCodeItem) => {
+        return promoCodeItem.companyId === shop.companyId;
+      });
+
       // add new shop config
       const newShopConfig: DefaultCartShopInterface = {
         ...shop,
         _id: `${shop._id}`,
         giftCertificateDiscount: giftCertificate?.value || 0,
         giftCertificateCode: giftCertificate?.code || '',
-        promoCodeDiscount: 0,
         cartProducts: [cartProduct],
         deliveryVariant: ORDER_DELIVERY_VARIANT_COURIER,
         paymentVariant: ORDER_PAYMENT_VARIANT_RECEIPT,
+        promoCode,
       };
       shopConfigs.push(newShopConfig);
     });
@@ -399,9 +428,6 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
               },
               0,
             );
-            const promoCodeDiscount = shopConfigs.reduce((acc: number, { promoCodeDiscount }) => {
-              return acc + noNaN(promoCodeDiscount);
-            }, 0);
 
             return (
               <Form>
@@ -504,7 +530,6 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
                         totalPrice={totalDeliveryPrice}
                         isWithShopless={cart.isWithShoplessDelivery}
                         giftCertificateDiscount={giftCertificateDiscount}
-                        promoCodeDiscount={promoCodeDiscount}
                       />
                     </div>
                   </div>
@@ -544,9 +569,6 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
               },
               0,
             );
-            const promoCodeDiscount = shopConfigs.reduce((acc: number, { promoCodeDiscount }) => {
-              return acc + noNaN(promoCodeDiscount);
-            }, 0);
 
             return (
               <Form>
@@ -657,7 +679,6 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
                         productsCount={cart.cartBookingProducts.length}
                         totalPrice={totalBookingPrice}
                         isWithShopless={cart.isWithShoplessBooking}
-                        promoCodeDiscount={promoCodeDiscount}
                         giftCertificateDiscount={giftCertificateDiscount}
                       />
                     </div>

@@ -4,19 +4,28 @@ import { CART_COOKIE_KEY } from '../../../config/common';
 import { getFieldStringLocale } from '../../../lib/i18n';
 import { noNaN } from '../../../lib/numbers';
 import { phoneToRaw, phoneToReadable } from '../../../lib/phoneUtils';
+import { countDiscountedPrice } from '../../../lib/priceUtils';
 import { getRequestParams } from '../../../lib/sessionHelpers';
+import { getUpdatedShopProductPrices } from '../../../lib/shopUtils';
 import { NexusContext } from '../../../types/apiContextTypes';
 import {
   COL_CARTS,
   COL_GIFT_CERTIFICATES,
   COL_PRODUCT_SUMMARIES,
   COL_PROMO_CODES,
+  COL_PROMO_PRODUCTS,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
   COL_USERS,
 } from '../../collectionNames';
-import { CartModel, GiftCertificateModel, PromoCodeModel, UserModel } from '../../dbModels';
+import {
+  CartModel,
+  GiftCertificateModel,
+  PromoCodeModel,
+  PromoProductModel,
+  UserModel,
+} from '../../dbModels';
 import { getDatabase } from '../../mongodb';
 import {
   CartInterface,
@@ -54,6 +63,7 @@ export const getSessionCart = async ({
     const usersCollection = db.collection<UserModel>(COL_USERS);
     const giftCertificatesCollection = db.collection<GiftCertificateModel>(COL_GIFT_CERTIFICATES);
     const promoCodesCollection = db.collection<PromoCodeModel>(COL_PROMO_CODES);
+    const promoProductsCollection = db.collection<PromoProductModel>(COL_PROMO_PRODUCTS);
 
     // get user
     const user = await getPageSessionUser({
@@ -105,6 +115,26 @@ export const getSessionCart = async ({
       cart = newCart;
     }
 
+    // get promo codes
+    let promoCodes: PromoCodeInterface[] = [];
+    if (cart?.promoCodeIds && cart?.promoCodeIds.length > 0) {
+      const initialPromoCodes = await promoCodesCollection
+        .find({
+          _id: {
+            $in: cart.promoCodeIds,
+          },
+        })
+        .toArray();
+      promoCodes = initialPromoCodes.map((promoCode) => {
+        return {
+          ...promoCode,
+          descriptionI18n: {},
+          usedByUserIds: [],
+          description: getFieldStringLocale(promoCode.descriptionI18n, locale),
+        };
+      });
+    }
+
     // Cast cart products
     let totalPrice = 0;
     const castCartProducts = (initialCartProduct: CartProductInterface): CartProductInterface => {
@@ -149,33 +179,55 @@ export const getSessionCart = async ({
       }
 
       const shopProduct = initialCartProduct.shopProduct;
+      const promoProduct = initialCartProduct.promoProduct;
 
-      const finalShopProduct: ShopProductInterface | null =
-        shopProduct && shopProduct.summary
-          ? {
-              ...shopProduct,
-              summary: {
-                ...shopProduct.summary,
-                name: getFieldStringLocale(shopProduct.summary.nameI18n, locale),
-                snippetTitle: getFieldStringLocale(shopProduct.summary.snippetTitleI18n, locale),
-              },
-              shop: shopProduct.shop
-                ? {
-                    ...shopProduct.shop,
-                    priceWarning: getFieldStringLocale(shopProduct.shop.priceWarningI18n, locale),
-                    contacts: {
-                      ...shopProduct.shop.contacts,
-                      formattedPhones: shopProduct.shop.contacts.phones.map((phone) => {
-                        return {
-                          raw: phoneToRaw(phone),
-                          readable: phoneToReadable(phone),
-                        };
-                      }),
-                    },
-                  }
-                : null,
-            }
-          : null;
+      let finalShopProduct: ShopProductInterface | null = null;
+      if (shopProduct) {
+        const shopProductCopy = { ...shopProduct };
+        if (promoProduct) {
+          const { discountedPrice } = countDiscountedPrice({
+            discount: promoProduct.discountPercent,
+            price: shopProductCopy.price,
+          });
+          const { lastOldPrice } = getUpdatedShopProductPrices({
+            shopProduct: shopProductCopy,
+            newPrice: discountedPrice,
+          });
+          shopProductCopy.oldPrices.push(lastOldPrice);
+          shopProductCopy.price = discountedPrice;
+          shopProductCopy.oldPrice = shopProduct.price;
+          shopProductCopy.discountedPercent = promoProduct.discountPercent;
+        }
+
+        finalShopProduct = {
+          ...shopProductCopy,
+          summary: shopProductCopy.summary
+            ? {
+                ...shopProductCopy.summary,
+                name: getFieldStringLocale(shopProductCopy.summary.nameI18n, locale),
+                snippetTitle: getFieldStringLocale(
+                  shopProductCopy.summary.snippetTitleI18n,
+                  locale,
+                ),
+              }
+            : null,
+          shop: shopProductCopy.shop
+            ? {
+                ...shopProductCopy.shop,
+                priceWarning: getFieldStringLocale(shopProductCopy.shop.priceWarningI18n, locale),
+                contacts: {
+                  ...shopProductCopy.shop.contacts,
+                  formattedPhones: shopProductCopy.shop.contacts.phones.map((phone) => {
+                    return {
+                      raw: phoneToRaw(phone),
+                      readable: phoneToReadable(phone),
+                    };
+                  }),
+                },
+              }
+            : null,
+        };
+      }
 
       let cartProductTotalPrice = 0;
       if (finalShopProduct) {
@@ -244,7 +296,18 @@ export const getSessionCart = async ({
             },
           ])
           .toArray();
-        cartProductCopy.shopProduct = shopProductAggregation[0];
+        const shopProduct = shopProductAggregation[0];
+        if (shopProduct) {
+          cartProductCopy.shopProduct = shopProduct;
+          const promoProduct = await promoProductsCollection.findOne({
+            shopProductId,
+            companyId: shopProduct.companyId,
+            endAt: {
+              $gt: new Date(),
+            },
+          });
+          cartProductCopy.promoProduct = promoProduct;
+        }
       }
 
       if (productId) {
@@ -413,17 +476,6 @@ export const getSessionCart = async ({
         .toArray();
     }
 
-    // get promo codes
-    let promoCodes: PromoCodeInterface[] = [];
-    if (cart?.promoCodeIds && cart?.promoCodeIds.length > 0) {
-      promoCodes = await promoCodesCollection
-        .find({
-          _id: {
-            $in: cart.promoCodeIds,
-          },
-        })
-        .toArray();
-    }
     // console.log('cart products', new Date().getTime() - start);
 
     const isWithShoplessBooking = cartBookingProducts.some(({ shopProductId }) => !shopProductId);

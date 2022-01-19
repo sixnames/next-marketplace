@@ -231,10 +231,20 @@ export const CartProduct: React.FC<CartProductPropsWithAmountInterface> = ({
           {/*shop product price*/}
           <div className='text-secondary-text'>Цена за ед.</div>
           <ProductShopPrices
+            showDiscountedPrice={
+              Boolean(cartProduct.promoProduct) &&
+              noNaN(cartProduct.promoProduct?.discountPercent) > 0
+            }
             price={price}
             oldPrice={oldPrice}
             discountedPercent={discountedPercent}
           />
+          {cartProduct.promoProduct?.discountPercent ? (
+            <div className='text-secondary-text'>
+              {`Скидка по промокоду ${cartProduct.promoProduct?.discountPercent}%`}
+            </div>
+          ) : null}
+
           {/*available*/}
           {isCourierDelivery ? null : (
             <div className='text-secondary-text'>{`В наличии ${available} шт`}</div>

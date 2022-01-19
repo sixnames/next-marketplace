@@ -139,6 +139,7 @@ export interface SupplierInterface extends SupplierModel {
 export interface CartProductInterface extends CartProductModel {
   product?: ProductSummaryInterface | null;
   shopProduct?: ShopProductInterface | null;
+  promoProduct?: PromoProductInterface | null;
   isShopless?: boolean;
   totalPrice?: number;
 }

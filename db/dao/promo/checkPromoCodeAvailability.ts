@@ -12,10 +12,13 @@ import {
 import { getDatabase } from '../../mongodb';
 import { DaoPropsInterface, PromoCodeInterface } from '../../uiInterfaces';
 
-export interface CheckPromoCodeAvailabilityPayloadModel {
+export interface CheckPromoCodeAvailabilityPayloadInterface {
   promoCode: PromoCodeInterface;
   shopProductIds: ObjectIdModel[];
 }
+
+export type CheckPromoCodeAvailabilityPayloadModel =
+  PayloadType<CheckPromoCodeAvailabilityPayloadInterface>;
 
 export interface CheckPromoCodeAvailabilityInputInterface {
   code: string;
@@ -28,9 +31,7 @@ export interface CheckPromoCodeAvailabilityInputInterface {
 export async function checkPromoCodeAvailability({
   input,
   context,
-}: DaoPropsInterface<CheckPromoCodeAvailabilityInputInterface>): Promise<
-  PayloadType<CheckPromoCodeAvailabilityPayloadModel>
-> {
+}: DaoPropsInterface<CheckPromoCodeAvailabilityInputInterface>): Promise<CheckPromoCodeAvailabilityPayloadModel> {
   try {
     const { getApiMessage } = await getRequestParams(context);
     const { db } = await getDatabase();
@@ -83,7 +84,7 @@ export async function checkPromoCodeAvailability({
     const shopProductIds = input.shopProductIds.map((_id) => new ObjectId(_id));
     const promoProducts = await promoProductsCollection
       .find({
-        productId: promoCode.promoId,
+        promoId: promoCode.promoId,
         shopProductId: {
           $in: shopProductIds,
         },

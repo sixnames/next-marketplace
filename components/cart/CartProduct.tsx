@@ -204,7 +204,7 @@ export const CartProduct: React.FC<CartProductPropsWithAmountInterface> = ({
     return null;
   }
 
-  const { price, oldPrice, discountedPercent, available, shop, itemId, summary } = shopProduct;
+  const { price, oldPrice, discountedPercent, available, shop, summary } = shopProduct;
 
   if (!shop || !summary) {
     return null;
@@ -222,7 +222,7 @@ export const CartProduct: React.FC<CartProductPropsWithAmountInterface> = ({
       <CartProductMainData
         name={summary.name}
         slug={summary.slug}
-        itemId={itemId}
+        itemId={summary.itemId}
         snippetTitle={summary.snippetTitle}
       />
 

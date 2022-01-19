@@ -25,7 +25,7 @@ import FormikTextarea from '../FormElements/Textarea/FormikTextarea';
 import RequestError from '../RequestError';
 import WpNotification from '../WpNotification';
 import { CartProduct } from './CartProduct';
-import { CartDeliveryFields } from './DefaultCart';
+import { CartDeliveryFields, DefaultCartShopInterface } from './DefaultCart';
 
 interface OneShopCompanyCartFormInterface {
   cart: CartInterface;
@@ -36,7 +36,7 @@ const OneShopCompanyDeliveryCart: React.FC<OneShopCompanyCartFormInterface> = ({
   domainCompany,
   cart,
 }) => {
-  const { makeAnOrder, checkGiftCertificate } = useSiteContext();
+  const { makeAnOrder, checkGiftCertificate, checkPromoCode } = useSiteContext();
   const sessionUser = useSiteUserContext();
   const disabled = !!sessionUser;
   const validationSchema = useValidationSchema({
@@ -49,6 +49,10 @@ const OneShopCompanyDeliveryCart: React.FC<OneShopCompanyCartFormInterface> = ({
 
   const giftCertificate = (cart.giftCertificates || []).find(({ companyId }) => {
     return `${companyId}` === `${domainCompany.mainShop?.companyId}`;
+  });
+
+  const promoCode = (cart.promoCodes || []).find((promoCodeItem) => {
+    return promoCodeItem.companyId === domainCompany.mainShop?.companyId;
   });
 
   const initialValues: MakeOrderFormInterface = {
@@ -66,6 +70,7 @@ const OneShopCompanyDeliveryCart: React.FC<OneShopCompanyCartFormInterface> = ({
         giftCertificateCode: giftCertificate?.code || '',
         deliveryVariant: ORDER_DELIVERY_VARIANT_COURIER,
         paymentVariant: ORDER_PAYMENT_VARIANT_RECEIPT,
+        promoCode,
       },
     ],
   };
@@ -116,20 +121,20 @@ const OneShopCompanyDeliveryCart: React.FC<OneShopCompanyCartFormInterface> = ({
       }}
     >
       {({ values, setFieldValue }) => {
+        const promoCodeFieldName = `shopConfigs[0].promoCode.code`;
         const giftCertificateFieldName = `shopConfigs[0].giftCertificateCode`;
         const giftCertificateValueFieldName = `shopConfigs[0].giftCertificateDiscount`;
         const { cartDeliveryProducts, totalDeliveryPrice, isWithShoplessDelivery, shopConfigs } =
           values;
         const giftCertificateCode = get(values, giftCertificateFieldName);
+        const promoCodeCode = get(values, promoCodeFieldName);
+        const shop = get(values, 'shopConfigs[0]') as DefaultCartShopInterface;
         const giftCertificateDiscount = shopConfigs.reduce(
           (acc: number, { giftCertificateDiscount }) => {
             return acc + noNaN(giftCertificateDiscount);
           },
           0,
         );
-        const promoCodeDiscount = shopConfigs.reduce((acc: number, { promoCodeDiscount }) => {
-          return acc + noNaN(promoCodeDiscount);
-        }, 0);
 
         return (
           <Form>
@@ -234,7 +239,6 @@ const OneShopCompanyDeliveryCart: React.FC<OneShopCompanyCartFormInterface> = ({
                     totalPrice={totalDeliveryPrice}
                     isWithShopless={isWithShoplessDelivery}
                     giftCertificateDiscount={giftCertificateDiscount}
-                    promoCodeDiscount={promoCodeDiscount}
                   />
 
                   {/*discount inputs*/}
@@ -276,26 +280,51 @@ const OneShopCompanyDeliveryCart: React.FC<OneShopCompanyCartFormInterface> = ({
                         </WpButton>
                       </InputLine>
 
-                      <InputLine
-                        low
-                        labelTag={'div'}
-                        label={'Промокод'}
-                        lineContentClass='flex flex-col sm:flex-row gap-4 sm:items-center'
-                      >
-                        <div className='flex-grow'>
-                          <FormikInput size={'small'} name={`shopConfigs[0].promoCode`} low />
+                      <InputLine low labelTag={'div'} label={'Промокод'}>
+                        <div className='flex flex-col sm:flex-row gap-4 sm:items-center'>
+                          <div className='flex-grow'>
+                            <FormikInput
+                              readOnly={Boolean(shop.promoCode)}
+                              size={'small'}
+                              name={promoCodeFieldName}
+                              low
+                            />
+                          </div>
+                          <WpButton
+                            short
+                            disabled={Boolean(shop.promoCode)}
+                            size={'small'}
+                            frameClassName='w-auto'
+                            theme={'secondary'}
+                            onClick={() => {
+                              checkPromoCode({
+                                code: promoCodeCode,
+                                companyId: `${shop.companyId}`,
+                                cartId: `${cart._id}`,
+                                shopProductIds: shop.cartProducts.reduce(
+                                  (acc: string[], { shopProductId }) => {
+                                    if (shopProductId) {
+                                      return [...acc, `${shopProductId}`];
+                                    }
+                                    return acc;
+                                  },
+                                  [],
+                                ),
+                                onError: () => setFieldValue(giftCertificateFieldName, ''),
+                                onSuccess: (promoCode) => {
+                                  console.log(promoCode);
+                                },
+                              });
+                            }}
+                          >
+                            Применить
+                          </WpButton>
                         </div>
-                        <WpButton
-                          short
-                          size={'small'}
-                          frameClassName='w-auto'
-                          theme={'secondary'}
-                          onClick={() => {
-                            console.log('Применить');
-                          }}
-                        >
-                          Применить
-                        </WpButton>
+                        {shop.promoCode && shop.promoCode.description ? (
+                          <div className='mt-4 text-secondary-text'>
+                            {shop.promoCode.description}
+                          </div>
+                        ) : null}
                       </InputLine>
                     </div>
                   </LayoutCard>
@@ -313,7 +342,7 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
   domainCompany,
   cart,
 }) => {
-  const { makeAnOrder, checkGiftCertificate } = useSiteContext();
+  const { makeAnOrder, checkGiftCertificate, checkPromoCode } = useSiteContext();
   const sessionUser = useSiteUserContext();
   const { configs } = useConfigContext();
   const disabled = !!sessionUser;
@@ -327,6 +356,10 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
 
   const giftCertificate = (cart.giftCertificates || []).find(({ companyId }) => {
     return `${companyId}` === `${domainCompany.mainShop?.companyId}`;
+  });
+
+  const promoCode = (cart.promoCodes || []).find((promoCodeItem) => {
+    return promoCodeItem.companyId === domainCompany.mainShop?.companyId;
   });
 
   const initialValues: MakeOrderFormInterface = {
@@ -344,6 +377,7 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
         giftCertificateCode: giftCertificate?.code || '',
         deliveryVariant: ORDER_DELIVERY_VARIANT_PICKUP,
         paymentVariant: ORDER_PAYMENT_VARIANT_RECEIPT,
+        promoCode,
       },
     ],
   };
@@ -371,18 +405,18 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
       {({ values, setFieldValue }) => {
         const { cartBookingProducts, totalBookingPrice, isWithShoplessBooking, shopConfigs } =
           values;
+        const promoCodeFieldName = `shopConfigs[0].promoCode.code`;
         const giftCertificateFieldName = `shopConfigs[0].giftCertificateCode`;
         const giftCertificateValueFieldName = `shopConfigs[0].giftCertificateDiscount`;
         const giftCertificateCode = get(values, giftCertificateFieldName);
+        const promoCodeCode = get(values, promoCodeFieldName);
+        const shop = get(values, 'shopConfigs[0]') as DefaultCartShopInterface;
         const giftCertificateDiscount = shopConfigs.reduce(
           (acc: number, { giftCertificateDiscount }) => {
             return acc + noNaN(giftCertificateDiscount);
           },
           0,
         );
-        const promoCodeDiscount = shopConfigs.reduce((acc: number, { promoCodeDiscount }) => {
-          return acc + noNaN(promoCodeDiscount);
-        }, 0);
 
         return (
           <Form>
@@ -495,7 +529,6 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
                     totalPrice={totalBookingPrice}
                     isWithShopless={isWithShoplessBooking}
                     giftCertificateDiscount={giftCertificateDiscount}
-                    promoCodeDiscount={promoCodeDiscount}
                   />
 
                   {/*discount inputs*/}
@@ -537,26 +570,51 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
                         </WpButton>
                       </InputLine>
 
-                      <InputLine
-                        low
-                        labelTag={'div'}
-                        label={'Промокод'}
-                        lineContentClass='flex flex-col sm:flex-row gap-4 sm:items-center'
-                      >
-                        <div className='flex-grow'>
-                          <FormikInput size={'small'} name={`shopConfigs[0].promoCode`} low />
+                      <InputLine low labelTag={'div'} label={'Промокод'}>
+                        <div className='flex flex-col sm:flex-row gap-4 sm:items-center'>
+                          <div className='flex-grow'>
+                            <FormikInput
+                              readOnly={Boolean(shop.promoCode)}
+                              size={'small'}
+                              name={promoCodeFieldName}
+                              low
+                            />
+                          </div>
+                          <WpButton
+                            short
+                            disabled={Boolean(shop.promoCode)}
+                            size={'small'}
+                            frameClassName='w-auto'
+                            theme={'secondary'}
+                            onClick={() => {
+                              checkPromoCode({
+                                code: promoCodeCode,
+                                companyId: `${shop.companyId}`,
+                                cartId: `${cart._id}`,
+                                shopProductIds: shop.cartProducts.reduce(
+                                  (acc: string[], { shopProductId }) => {
+                                    if (shopProductId) {
+                                      return [...acc, `${shopProductId}`];
+                                    }
+                                    return acc;
+                                  },
+                                  [],
+                                ),
+                                onError: () => setFieldValue(giftCertificateFieldName, ''),
+                                onSuccess: (promoCode) => {
+                                  console.log(promoCode);
+                                },
+                              });
+                            }}
+                          >
+                            Применить
+                          </WpButton>
                         </div>
-                        <WpButton
-                          size={'small'}
-                          short
-                          frameClassName='w-auto'
-                          theme={'secondary'}
-                          onClick={() => {
-                            console.log('Применить');
-                          }}
-                        >
-                          Применить
-                        </WpButton>
+                        {shop.promoCode && shop.promoCode.description ? (
+                          <div className='mt-4 text-secondary-text'>
+                            {shop.promoCode.description}
+                          </div>
+                        ) : null}
                       </InputLine>
                     </div>
                   </LayoutCard>

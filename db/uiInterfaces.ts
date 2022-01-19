@@ -62,6 +62,7 @@ import {
   UserModel,
   UserNotificationsModel,
   ProductDraftModel,
+  PromoCodeModel,
 } from './dbModels';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { MessageSlug } from '../types/messageSlugTypes';
@@ -138,6 +139,7 @@ export interface SupplierInterface extends SupplierModel {
 export interface CartProductInterface extends CartProductModel {
   product?: ProductSummaryInterface | null;
   shopProduct?: ShopProductInterface | null;
+  promoProduct?: PromoProductInterface | null;
   isShopless?: boolean;
   totalPrice?: number;
 }
@@ -153,10 +155,15 @@ export interface CartInterface extends CartModel {
   cartDeliveryProducts: CartProductInterface[];
   cartBookingProducts: CartProductInterface[];
   giftCertificates?: GiftCertificateInterface[] | null;
+  promoCodes?: PromoCodeInterface[] | null;
 }
 
 export interface PromoInterface extends PromoModel {
   name?: string | null;
+  description?: string | null;
+}
+
+export interface PromoCodeInterface extends PromoCodeModel {
   description?: string | null;
 }
 

@@ -55,7 +55,7 @@ import {
   UserModel,
 } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
-import { DaoPropsInterface, ProductSummaryInterface } from '../../uiInterfaces';
+import { DaoPropsInterface, ProductSummaryInterface, PromoCodeInterface } from '../../uiInterfaces';
 import { getSessionCart } from '../cart/getSessionCart';
 import { checkGiftCertificateAvailability } from '../giftCertificate/checkGiftCertificateAvailability';
 
@@ -71,8 +71,7 @@ export interface MakeAnOrderShopConfigInterface {
   deliveryInfo?: OrderDeliveryInfoModel | null;
   giftCertificateCode?: string;
   giftCertificateDiscount?: number | null;
-  // TODO change promoCodeDiscount to promoCodeId
-  promoCodeDiscount?: number | null;
+  promoCode?: PromoCodeInterface | null;
 }
 
 export interface MakeAnOrderInputInterface {

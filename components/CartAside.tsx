@@ -7,7 +7,6 @@ import Currency from './Currency';
 
 export interface UseCartAsideDiscountsValuesInterface {
   giftCertificateDiscount?: number | null;
-  promoCodeDiscount?: number | null;
 }
 
 interface CartAsideInterface extends UseCartAsideDiscountsValuesInterface {
@@ -24,10 +23,9 @@ const CartAside: React.FC<CartAsideInterface> = ({
   productsCount,
   isBooking,
   giftCertificateDiscount,
-  promoCodeDiscount,
   ...props
 }) => {
-  const discount = noNaN(giftCertificateDiscount) + noNaN(promoCodeDiscount);
+  const discount = noNaN(giftCertificateDiscount);
   const discountedPrice = noNaN(props.totalPrice) - discount;
   const totalPrice = discountedPrice < 0 ? 0 : discountedPrice;
 

@@ -85,8 +85,9 @@ const WpInput: React.FC<WpInputPropsInterface> = ({
     ? ''
     : 'pr-input-padding-horizontal';
   const additionalClass = className ? className : '';
-  const disabledClass = readOnly || disabled ? 'cursor-default opacity-50 pointer-events-none' : '';
-  const inputClassName = `relative form-input flex items-center w-full text-[var(--inputTextColor)] outline-none rounded-lg border ${sizeClass} ${disabledClass} ${inputPaddingLeft} ${inputPaddingRight} ${inputBorder} ${inputTheme} ${additionalClass}`;
+  const disabledClass = disabled ? 'cursor-default opacity-50 pointer-events-none' : '';
+  const readOnlyClass = readOnly ? 'cursor-default pointer-events-none' : '';
+  const inputClassName = `relative form-input flex items-center w-full text-[var(--inputTextColor)] outline-none rounded-lg border ${sizeClass} ${disabledClass} ${readOnlyClass} ${inputPaddingLeft} ${inputPaddingRight} ${inputBorder} ${inputTheme} ${additionalClass}`;
 
   const currentValue = !value && value !== 0 ? '' : value;
 

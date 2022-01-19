@@ -254,6 +254,8 @@ export async function makeAnOrder({
           break;
         }
 
+        // TODO shopConfig.promoCode
+
         // check shop company availability
         const company = await companiesCollection.findOne({ _id: shop.companyId });
         if (!company) {

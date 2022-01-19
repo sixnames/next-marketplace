@@ -171,6 +171,20 @@ export const promoMessages: MessageBaseInterface[] = [
     },
   },
   {
+    slug: 'promoCode.check.used',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Промо-код был использован прежде.`,
+      [SECONDARY_LOCALE]: `Promo-code is already used.`,
+    },
+  },
+  {
+    slug: 'promoCode.check.expired',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Акция введёного промо-кода закончилась.`,
+      [SECONDARY_LOCALE]: `Promo-code is expired.`,
+    },
+  },
+  {
     slug: 'promoCode.check.noProducts',
     messageI18n: {
       [DEFAULT_LOCALE]: `По данному промо-коду не найдено ни одного товара.`,

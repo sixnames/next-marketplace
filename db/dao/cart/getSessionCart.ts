@@ -10,18 +10,20 @@ import {
   COL_CARTS,
   COL_GIFT_CERTIFICATES,
   COL_PRODUCT_SUMMARIES,
+  COL_PROMO_CODES,
   COL_RUBRICS,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
   COL_USERS,
 } from '../../collectionNames';
-import { CartModel, GiftCertificateModel, UserModel } from '../../dbModels';
+import { CartModel, GiftCertificateModel, PromoCodeModel, UserModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
 import {
   CartInterface,
   CartProductInterface,
   GiftCertificateInterface,
   ProductSummaryInterface,
+  PromoCodeInterface,
   ShopProductInterface,
 } from '../../uiInterfaces';
 import {
@@ -51,6 +53,7 @@ export const getSessionCart = async ({
       db.collection<ProductSummaryInterface>(COL_PRODUCT_SUMMARIES);
     const usersCollection = db.collection<UserModel>(COL_USERS);
     const giftCertificatesCollection = db.collection<GiftCertificateModel>(COL_GIFT_CERTIFICATES);
+    const promoCodesCollection = db.collection<PromoCodeModel>(COL_PROMO_CODES);
 
     // get user
     const user = await getPageSessionUser({
@@ -409,6 +412,18 @@ export const getSessionCart = async ({
         })
         .toArray();
     }
+
+    // get promo codes
+    let promoCodes: PromoCodeInterface[] = [];
+    if (cart?.promoCodeIds && cart?.promoCodeIds.length > 0) {
+      promoCodes = await promoCodesCollection
+        .find({
+          _id: {
+            $in: cart.promoCodeIds,
+          },
+        })
+        .toArray();
+    }
     // console.log('cart products', new Date().getTime() - start);
 
     const isWithShoplessBooking = cartBookingProducts.some(({ shopProductId }) => !shopProductId);
@@ -418,6 +433,7 @@ export const getSessionCart = async ({
       ...cart,
       productsCount: cartBookingProducts.length + cartDeliveryProducts.length,
       giftCertificates,
+      promoCodes,
       cartBookingProducts,
       cartDeliveryProducts,
       isWithShopless,

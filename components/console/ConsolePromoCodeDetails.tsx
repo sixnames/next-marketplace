@@ -9,11 +9,11 @@ import WpButton from '../button/WpButton';
 import PromoCodeMainFields from '../FormTemplates/PromoCodeMainFields';
 import Inner from '../Inner';
 
-export interface ConsolePromoCodeInterface {
+export interface ConsolePromoCodeDetailsInterface {
   promoCode: PromoCodeModel;
 }
 
-const ConsolePromoCode: React.FC<ConsolePromoCodeInterface> = ({ promoCode }) => {
+const ConsolePromoCodeDetails: React.FC<ConsolePromoCodeDetailsInterface> = ({ promoCode }) => {
   const { showLoading } = useAppContext();
   const [updatePromoCode] = useUpdatePromoCode();
   const initialValues: UpdatePromoCodeInputInterface = {
@@ -23,7 +23,7 @@ const ConsolePromoCode: React.FC<ConsolePromoCodeInterface> = ({ promoCode }) =>
   };
 
   return (
-    <Inner>
+    <Inner testId={'promo-code-details-page'}>
       <div className='relative'>
         <Formik
           initialValues={initialValues}
@@ -37,7 +37,7 @@ const ConsolePromoCode: React.FC<ConsolePromoCodeInterface> = ({ promoCode }) =>
               <Form>
                 <PromoCodeMainFields />
                 <FixedButtons>
-                  <WpButton size={'small'} type={'submit'}>
+                  <WpButton testId={'submit-promo-code'} size={'small'} type={'submit'}>
                     Сохранить
                   </WpButton>
                 </FixedButtons>
@@ -50,4 +50,4 @@ const ConsolePromoCode: React.FC<ConsolePromoCodeInterface> = ({ promoCode }) =>
   );
 };
 
-export default ConsolePromoCode;
+export default ConsolePromoCodeDetails;

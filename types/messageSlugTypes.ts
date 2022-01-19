@@ -689,6 +689,10 @@ export type MessageSlug =
   | 'promoCode.update.success'
   | 'promoCode.delete.error'
   | 'promoCode.delete.success'
+  | 'promoCode.check.error'
+  | 'promoCode.check.notFound'
+  | 'promoCode.check.noProducts'
+  | 'promoCode.check.success'
   // Promo validation
   | 'validation.promoCode.id'
   | 'validation.promoCode.code'

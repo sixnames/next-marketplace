@@ -2,6 +2,7 @@ import { GetServerSidePropsContext } from 'next';
 import * as React from 'react';
 import { getDomain } from 'tldts';
 import {
+  DEFAULT_CITY,
   DEFAULT_COMPANY_SLUG,
   DEFAULT_LOCALE,
   PAGE_STATE_PUBLISHED,
@@ -11,20 +12,13 @@ import {
 } from '../config/common';
 import {
   COL_BLOG_POSTS,
-  COL_CITIES,
   COL_COMPANIES,
   COL_CONFIGS,
   COL_PRODUCT_FACETS,
   COL_SHOP_PRODUCTS,
 } from '../db/collectionNames';
 import { ignoreNoImageStage } from '../db/dao/constantPipelines';
-import {
-  BlogPostModel,
-  CityModel,
-  CompanyModel,
-  ConfigModel,
-  ShopProductModel,
-} from '../db/dbModels';
+import { BlogPostModel, CompanyModel, ConfigModel, ShopProductModel } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
 import { castConfigs, getConfigBooleanValue } from '../lib/configsUtils';
 
@@ -46,7 +40,7 @@ const createSitemap = ({
           .map((slug) => {
             return `
                     <url>
-                        <loc>https://${host}/${slug}</loc>
+                        <loc>https://${host}${slug}</loc>
                     </url>
                 `;
           })
@@ -65,7 +59,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const initialSlugs: string[] = [];
   const { db } = await getDatabase();
   const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-  const citiesCollection = db.collection<CityModel>(COL_CITIES);
   const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
   const blogPostsCollection = db.collection<BlogPostModel>(COL_BLOG_POSTS);
   const host = `${context.req.headers.host}`;
@@ -79,7 +72,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     company = await db.collection<CompanyModel>(COL_COMPANIES).findOne({ domain });
   }
   const companySlug = company?.slug || DEFAULT_COMPANY_SLUG;
-  const cities = await citiesCollection.find({}).toArray();
 
   // blog config
   const initialConfigs = await configsCollection
@@ -88,115 +80,114 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     })
     .toArray();
 
-  for await (const city of cities) {
-    const companyRubricsMatch = company ? { companyId: company._id } : {};
-    const productOptionsAggregation = await shopProductsCollection
-      .aggregate<SlugsAggregationInterface>([
-        {
-          $match: {
-            ...companyRubricsMatch,
-            ...ignoreNoImageStage,
+  const companyRubricsMatch = company ? { companyId: company._id } : {};
+  const productOptionsAggregation = await shopProductsCollection
+    .aggregate<SlugsAggregationInterface>([
+      {
+        $match: {
+          ...companyRubricsMatch,
+          citySlug: DEFAULT_CITY,
+          ...ignoreNoImageStage,
+        },
+      },
+      {
+        $group: {
+          _id: '$rubricSlug',
+          productIds: {
+            $addToSet: '$productId',
           },
         },
-        {
-          $group: {
-            _id: '$rubricSlug',
-            productIds: {
-              $addToSet: '$productId',
-            },
+      },
+      {
+        $lookup: {
+          from: COL_PRODUCT_FACETS,
+          as: 'products',
+          let: {
+            productIds: '$productIds',
           },
-        },
-        {
-          $lookup: {
-            from: COL_PRODUCT_FACETS,
-            as: 'products',
-            let: {
-              productIds: '$productIds',
-            },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $in: ['$_id', '$$productIds'],
-                  },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $in: ['$_id', '$$productIds'],
                 },
               },
-              {
-                $project: {
-                  slug: true,
-                },
-              },
-            ],
-          },
-        },
-        {
-          $unwind: {
-            path: '$products',
-            preserveNullAndEmptyArrays: true,
-          },
-        },
-        {
-          $group: {
-            _id: '$_id',
-            productSlugs: {
-              $addToSet: '$products.slug',
             },
+            {
+              $project: {
+                slug: true,
+              },
+            },
+          ],
+        },
+      },
+      {
+        $unwind: {
+          path: '$products',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $group: {
+          _id: '$_id',
+          productSlugs: {
+            $addToSet: '$products.slug',
           },
         },
-      ])
-      .toArray();
+      },
+    ])
+    .toArray();
 
-    productOptionsAggregation.forEach((template) => {
-      const { _id, productSlugs } = template;
+  productOptionsAggregation.forEach((template) => {
+    const { _id, productSlugs } = template;
 
-      // rubric
-      initialSlugs.push(`${ROUTE_CATALOGUE}/${_id}`);
+    // rubric
+    initialSlugs.push(`${ROUTE_CATALOGUE}/${_id}`);
 
-      // products
-      productSlugs.forEach((slug) => {
-        initialSlugs.push(`/${slug}`);
-      });
+    // products
+    productSlugs.forEach((slug) => {
+      initialSlugs.push(`/${slug}`);
     });
+  });
 
-    const blogPosts = await blogPostsCollection
-      .aggregate([
-        {
-          $match: {
-            companySlug,
-            state: PAGE_STATE_PUBLISHED,
-          },
+  const blogPosts = await blogPostsCollection
+    .aggregate([
+      {
+        $match: {
+          companySlug,
+          state: PAGE_STATE_PUBLISHED,
         },
-        {
-          $project: {
-            slug: true,
-          },
+      },
+      {
+        $project: {
+          slug: true,
         },
-      ])
-      .toArray();
+      },
+    ])
+    .toArray();
 
-    // configs
-    const configs = castConfigs({
-      configs: initialConfigs,
-      citySlug: city.slug,
-      locale: DEFAULT_LOCALE,
-    });
+  // configs
+  const configs = castConfigs({
+    configs: initialConfigs,
+    citySlug: DEFAULT_CITY,
+    locale: DEFAULT_LOCALE,
+  });
 
-    // get blog slugs
-    const showBlog = getConfigBooleanValue({ configs, slug: 'showBlog' });
-    if (showBlog && blogPosts.length > 0) {
-      const blogBasePath = `${ROUTE_BLOG}`;
-      slugsWithLocales.push(blogBasePath);
+  // get blog slugs
+  const showBlog = getConfigBooleanValue({ configs, slug: 'showBlog' });
+  if (showBlog && blogPosts.length > 0) {
+    const blogBasePath = `${ROUTE_BLOG}`;
+    slugsWithLocales.push(blogBasePath);
 
-      blogPosts.forEach(({ slug }) => {
-        slugsWithLocales.push(`${ROUTE_BLOG_POST}/${slug}`);
-      });
-    }
-
-    // get catalogue slugs
-    initialSlugs.forEach((slug) => {
-      slugsWithLocales.push(slug);
+    blogPosts.forEach(({ slug }) => {
+      slugsWithLocales.push(`${ROUTE_BLOG_POST}/${slug}`);
     });
   }
+
+  // get catalogue slugs
+  initialSlugs.forEach((slug) => {
+    slugsWithLocales.push(slug);
+  });
 
   res.setHeader('Content-Type', 'text/xml');
   res.write(

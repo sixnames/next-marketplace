@@ -1,4 +1,4 @@
-import { ONE_WEEK } from '../../config/common';
+import { ISR_ONE_WEEK } from '../../config/common';
 import {
   AttributeModel,
   BlogAttributeModel,
@@ -161,10 +161,11 @@ export async function updateIndexes(db: Db) {
   // Carts
   await createCollectionIfNotExist(COL_CARTS);
   const cartsCollection = db.collection<CartModel>(COL_CARTS);
-  const cartIndexExist = await cartsCollection.indexExists('updatedAt_1');
-  if (!cartIndexExist) {
-    await cartsCollection.createIndex({ updatedAt: 1 }, { expireAfterSeconds: ONE_WEEK });
-  }
+  // const cartIndexExist = await cartsCollection.indexExists('updatedAt_1');
+  await cartsCollection.createIndex({ updatedAt: 1 }, { expireAfterSeconds: ISR_ONE_WEEK });
+  /*if (!cartIndexExist) {
+    await cartsCollection.createIndex({ updatedAt: 1 }, { expireAfterSeconds: ISR_ONE_WEEK });
+  }*/
 
   // Seo contents
   await createCollectionIfNotExist(COL_SEO_CONTENTS);
@@ -311,6 +312,7 @@ export async function updateIndexes(db: Db) {
   await promoCodesCollection.createIndex({ promoId: 1 });
   await promoCodesCollection.createIndex({ promoterId: 1 });
   await promoCodesCollection.createIndex({ code: 1, companyId: 1 }, { unique: true });
+  await promoCodesCollection.createIndex({ endAt: 1 }, { expireAfterSeconds: ISR_ONE_WEEK });
 
   // Promo products
   await createCollectionIfNotExist(COL_PROMO_PRODUCTS);

@@ -779,6 +779,7 @@ export const RubricMutations = extendType({
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
         const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
+        const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
 
         const session = client.startSession();
 
@@ -839,8 +840,18 @@ export const RubricMutations = extendType({
                 returnDocument: 'after',
               },
             );
+            const updatedCategoriesResult = await categoriesCollection.updateMany(
+              {
+                rubricId: rubric._id,
+              },
+              updater,
+            );
             const updatedRubric = updatedRubricResult.value;
-            if (!updatedRubricResult.ok || !updatedRubric) {
+            if (
+              !updatedRubricResult.ok ||
+              !updatedRubric ||
+              !updatedCategoriesResult.acknowledged
+            ) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('rubrics.update.error'),

@@ -88,7 +88,7 @@ const ConsoleShopAddProductsListPage: NextPage<ConsoleShopAddProductsListPageInt
           breadcrumbs={breadcrumbs}
           rubricName={rubricName}
           rubricSlug={rubricSlug}
-          layoutBasePath={links.root}
+          layoutBasePath={links.parentLink}
           createChosenProduct={createChosenProduct}
           deleteChosenProduct={deleteChosenProduct}
           setStepHandler={setStepHandler}

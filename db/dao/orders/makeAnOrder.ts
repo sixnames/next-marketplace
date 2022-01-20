@@ -16,7 +16,7 @@ import { getUserInitialNotificationsConf } from '../../../lib/getUserNotificatio
 import { getNextItemId, getOrderNextItemId } from '../../../lib/itemIdUtils';
 import { noNaN } from '../../../lib/numbers';
 import { phoneToRaw } from '../../../lib/phoneUtils';
-import { getOrderDiscountedPrice } from '../../../lib/priceUtils';
+import { countDiscountedPrice, getOrderDiscountedPrice } from '../../../lib/priceUtils';
 import {
   getRequestParams,
   getResolverValidationSchema,
@@ -34,6 +34,9 @@ import {
   COL_ORDER_STATUSES,
   COL_ORDERS,
   COL_PRODUCT_SUMMARIES,
+  COL_PROMO,
+  COL_PROMO_CODES,
+  COL_PROMO_PRODUCTS,
   COL_ROLES,
   COL_SHOPS,
   COL_USERS,
@@ -50,6 +53,9 @@ import {
   OrderPaymentVariantModel,
   OrderProductModel,
   OrderStatusModel,
+  PromoCodeModel,
+  PromoModel,
+  PromoProductModel,
   RoleModel,
   ShopModel,
   UserModel,
@@ -105,6 +111,9 @@ export async function makeAnOrder({
   const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
   const productSummariesCollection = db.collection<ProductSummaryInterface>(COL_PRODUCT_SUMMARIES);
   const giftCertificatesCollection = db.collection<GiftCertificateModel>(COL_GIFT_CERTIFICATES);
+  const promoCodesCollection = db.collection<PromoCodeModel>(COL_PROMO_CODES);
+  const promoProductsCollection = db.collection<PromoProductModel>(COL_PROMO_PRODUCTS);
+  const promoCollection = db.collection<PromoModel>(COL_PROMO);
 
   const session = client.startSession();
 
@@ -243,6 +252,21 @@ export async function makeAnOrder({
         return;
       }
 
+      // get promo codes
+      let promoCodes: PromoCodeInterface[] = [];
+      if (cart.promoCodeIds && cart.promoCodeIds.length > 0) {
+        promoCodes = await promoCodesCollection
+          .find({
+            _id: {
+              $in: cart.promoCodeIds.map((_id) => new ObjectId(_id)),
+            },
+            endAt: {
+              $gt: new Date(),
+            },
+          })
+          .toArray();
+      }
+
       // create orders for all shops in cart
       const ordersInCart: OrderModel[] = [];
 
@@ -264,6 +288,17 @@ export async function makeAnOrder({
           return shopProduct && shopProduct.shopId.equals(shopId);
         });
 
+        // get shop promo
+        let promo: PromoModel | null = null;
+        const promoCode = promoCodes.find(({ companyId }) => {
+          return companyId.equals(company._id);
+        });
+        if (promoCode) {
+          promo = await promoCollection.findOne({
+            _id: promoCode.promoId,
+          });
+        }
+
         // get order _id
         const orderId = new ObjectId();
 
@@ -284,7 +319,26 @@ export async function makeAnOrder({
             break;
           }
 
-          const totalPrice = price * amount;
+          // get promo product
+          let promoProduct: PromoProductModel | null = null;
+          if (promo) {
+            promoProduct = await promoProductsCollection.findOne({
+              shopProductId: shopProduct._id,
+              promoId: promo._id,
+            });
+          }
+
+          // get order product prices
+          let finalPrice: number = price;
+          if (promoProduct && promo) {
+            const { discountedPrice } = countDiscountedPrice({
+              discount: promo.discountPercent,
+              price,
+            });
+            finalPrice = discountedPrice;
+          }
+          const totalPrice = finalPrice * amount;
+
           const orderProduct: OrderProductModel = {
             _id: new ObjectId(),
             statusId: initialStatus._id,
@@ -292,7 +346,8 @@ export async function makeAnOrder({
             price,
             amount,
             totalPrice,
-            finalPrice: price,
+            finalPrice,
+            promoIds: promo ? [promo._id] : null,
             slug: product.slug,
             originalName: product.originalName,
             nameI18n: product.nameI18n,
@@ -336,8 +391,6 @@ export async function makeAnOrder({
             giftCertificateDiscount: noNaN(giftCertificate?.value),
           });
 
-        // TODO promo code & totalPrice after promo code
-
         // update gift certificate
         if (giftCertificate) {
           await giftCertificatesCollection.findOneAndUpdate(
@@ -366,8 +419,9 @@ export async function makeAnOrder({
           statusId: initialStatus._id,
           customerId: user._id,
           companySiteSlug,
-          totalPrice: totalPrice,
+          totalPrice,
           discountedPrice,
+          promoIds: promo ? [promo._id] : null,
           comment: input.comment,
           productIds: castedOrderProducts.map(({ productId }) => {
             return productId;

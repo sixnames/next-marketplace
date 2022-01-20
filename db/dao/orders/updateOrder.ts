@@ -154,17 +154,8 @@ export async function updateOrder({
             orderId: prevOrder.order._id,
           })
           .toArray();
-        const totalPrice = updatedOrderProducts.reduce(
-          (acc: number, { isCanceled, totalPrice }) => {
-            if (isCanceled) {
-              return acc;
-            }
-            return acc + totalPrice;
-          },
-          0,
-        );
-        const { discountedPrice } = getOrderDiscountedPrice({
-          totalPrice,
+        const { discountedPrice, totalPrice } = getOrderDiscountedPrice({
+          orderProducts: updatedOrderProducts,
           giftCertificateDiscount: noNaN(prevOrder.order.giftCertificateChargedValue),
         });
 

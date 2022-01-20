@@ -1,35 +1,44 @@
 import { SUPPLIER_PRICE_VARIANT_CHARGE } from '../config/common';
+import { OrderProductModel } from '../db/dbModels';
 import { SupplierProductInterface } from '../db/uiInterfaces';
 import { noNaN } from './numbers';
 
 interface GetOrderDiscountedPriceInterface {
   giftCertificateDiscount?: number | null;
-  promoCodeDiscount?: number | null;
-  totalPrice: number;
+  orderProducts: OrderProductModel[];
 }
 
 interface GetOrderDiscountedPricePayloadInterface {
   giftCertificateNewValue: number;
   giftCertificateChargedValue: number;
+  totalPrice: number;
   discountedPrice: number;
   isDiscounted: boolean;
   discount: number;
 }
 
-export function getOrderDiscountedPrice({
-  totalPrice,
-  ...props
-}: GetOrderDiscountedPriceInterface): GetOrderDiscountedPricePayloadInterface {
+export function getOrderDiscountedPrice(
+  props: GetOrderDiscountedPriceInterface,
+): GetOrderDiscountedPricePayloadInterface {
+  const initialTotalPrice = props.orderProducts.reduce((acc: number, { isCanceled, price }) => {
+    if (isCanceled) {
+      return acc;
+    }
+    return acc + price;
+  }, 0);
+  const discountedTotalPrice = props.orderProducts.reduce((acc: number, { totalPrice }) => {
+    return acc + totalPrice;
+  }, 0);
+  const productsDiscountValue = initialTotalPrice - discountedTotalPrice;
   const giftCertificateDiscount = noNaN(props.giftCertificateDiscount);
-  const promoCodeDiscount = noNaN(props.promoCodeDiscount);
 
-  const discount = giftCertificateDiscount + promoCodeDiscount;
+  const discount = giftCertificateDiscount + productsDiscountValue;
   const isDiscounted = discount > 0;
 
-  const rawDiscountedPrice = noNaN(totalPrice) - discount;
+  const rawDiscountedPrice = noNaN(initialTotalPrice) - discount;
   const discountedPrice = rawDiscountedPrice < 0 ? 0 : rawDiscountedPrice;
 
-  const giftCertificateRawNewValue = giftCertificateDiscount - totalPrice;
+  const giftCertificateRawNewValue = giftCertificateDiscount - initialTotalPrice;
   const giftCertificateNewValue = giftCertificateRawNewValue < 0 ? 0 : giftCertificateRawNewValue;
   const giftCertificateChargedValue =
     giftCertificateNewValue === 0
@@ -40,6 +49,7 @@ export function getOrderDiscountedPrice({
     giftCertificateNewValue,
     giftCertificateChargedValue,
     discountedPrice,
+    totalPrice: initialTotalPrice,
     isDiscounted,
     discount,
   };

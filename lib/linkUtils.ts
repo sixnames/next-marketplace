@@ -66,6 +66,7 @@ export function getConsoleCategoryLinks({ categoryId, basePath }: GetConsoleCate
   return {
     parentLink,
     root,
+    attributes: `${root}/attributes`,
   };
 }
 

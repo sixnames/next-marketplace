@@ -26,6 +26,7 @@ const CmsCategoryLayout: React.FC<CmsCategoryLayoutInterface> = ({
   const links = getConsoleRubricLinks({
     rubricSlug: `${category.rubric?.slug}`,
     basePath: basePath || ROUTE_CMS,
+    categoryId: category._id,
   });
 
   const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
@@ -33,18 +34,18 @@ const CmsCategoryLayout: React.FC<CmsCategoryLayoutInterface> = ({
       {
         name: 'Детали',
         testId: 'details',
-        path: `${links.categories}/${category._id}`,
+        path: links.category.root,
         exact: true,
       },
       {
         name: 'Атрибуты',
         testId: 'attributes',
-        path: `${links.categories}/${category._id}/attributes`,
+        path: links.category.attributes,
         exact: true,
         hidden: hideAttributesPath,
       },
     ];
-  }, [links, basePath, category._id, category.rubricId, hideAttributesPath]);
+  }, [links, hideAttributesPath]);
 
   return (
     <AppContentWrapper breadcrumbs={breadcrumbs}>

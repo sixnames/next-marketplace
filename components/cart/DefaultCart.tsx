@@ -223,14 +223,16 @@ const DefaultCartShop: React.FC<DefaultCartShopUIInterface> = ({
               <div className='flex flex-col sm:flex-row gap-4 sm:items-center'>
                 <div className='flex-grow'>
                   <FormikInput
-                    readOnly={Boolean(shop.promoCode)}
+                    testId={`promo-code-input-${shop.slug}`}
+                    readOnly={Boolean(shop.promoCode?._id)}
                     size={'small'}
                     name={promoCodeFieldName}
                     low
                   />
                 </div>
                 <WpButton
-                  disabled={Boolean(shop.promoCode)}
+                  testId={`promo-code-submit-${shop.slug}`}
+                  disabled={Boolean(shop.promoCode?._id)}
                   size={'small'}
                   frameClassName='w-auto'
                   theme={'secondary'}

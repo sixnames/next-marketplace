@@ -134,6 +134,7 @@ export const getSessionCart = async ({
         };
       });
     }
+    const promoIds = promoCodes.map(({ promoId }) => promoId);
 
     // Cast cart products
     let totalPrice = 0;
@@ -299,14 +300,20 @@ export const getSessionCart = async ({
         const shopProduct = shopProductAggregation[0];
         if (shopProduct) {
           cartProductCopy.shopProduct = shopProduct;
-          const promoProduct = await promoProductsCollection.findOne({
-            shopProductId,
-            companyId: shopProduct.companyId,
-            endAt: {
-              $gt: new Date(),
-            },
-          });
-          cartProductCopy.promoProduct = promoProduct;
+
+          if (promoIds.length > 0) {
+            const promoProduct = await promoProductsCollection.findOne({
+              shopProductId,
+              promoId: {
+                $in: promoIds,
+              },
+              companyId: shopProduct.companyId,
+              endAt: {
+                $gt: new Date(),
+              },
+            });
+            cartProductCopy.promoProduct = promoProduct;
+          }
         }
       }
 

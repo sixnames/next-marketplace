@@ -31,7 +31,7 @@ const CreatePromoCodeModal: React.FC<CreatePromoCodeModalInterface> = ({ promoId
   };
 
   return (
-    <ModalFrame testId={'create-promo-modal'}>
+    <ModalFrame testId={'create-promo-code-modal'}>
       <ModalTitle>Создание промо-кода</ModalTitle>
 
       <Formik
@@ -47,7 +47,7 @@ const CreatePromoCodeModal: React.FC<CreatePromoCodeModalInterface> = ({ promoId
               <PromoCodeMainFields />
 
               <ModalButtons>
-                <WpButton type={'submit'} testId={'submit-promo'}>
+                <WpButton type={'submit'} testId={'submit-promo-code'}>
                   Создать
                 </WpButton>
               </ModalButtons>

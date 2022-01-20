@@ -5,7 +5,7 @@ import FormikTranslationsInput from '../FormElements/Input/FormikTranslationsInp
 const PromoCodeMainFields: React.FC = () => {
   return (
     <React.Fragment>
-      <FormikCodeInput name={'code'} isRequired showInlineError />
+      <FormikCodeInput testId={'code-input'} name={'code'} isRequired showInlineError />
 
       <FormikTranslationsInput
         label={'Описание'}

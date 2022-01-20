@@ -284,7 +284,7 @@ const OneShopCompanyDeliveryCart: React.FC<OneShopCompanyCartFormInterface> = ({
                         <div className='flex flex-col sm:flex-row gap-4 sm:items-center'>
                           <div className='flex-grow'>
                             <FormikInput
-                              readOnly={Boolean(shop.promoCode)}
+                              readOnly={Boolean(shop.promoCode?._id)}
                               size={'small'}
                               name={promoCodeFieldName}
                               low
@@ -292,7 +292,7 @@ const OneShopCompanyDeliveryCart: React.FC<OneShopCompanyCartFormInterface> = ({
                           </div>
                           <WpButton
                             short
-                            disabled={Boolean(shop.promoCode)}
+                            disabled={Boolean(shop.promoCode?._id)}
                             size={'small'}
                             frameClassName='w-auto'
                             theme={'secondary'}
@@ -544,7 +544,7 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
                           <FormikInput
                             size={'small'}
                             name={giftCertificateFieldName}
-                            testId={`gift-certificate-input-${domainCompany.mainShop?.slug}`}
+                            testId={`gift-certificate-input-${shop.slug}`}
                             low
                           />
                         </div>
@@ -553,7 +553,7 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
                           size={'small'}
                           frameClassName='w-auto'
                           theme={'secondary'}
-                          testId={`gift-certificate-confirm-${domainCompany.mainShop?.slug}`}
+                          testId={`gift-certificate-confirm-${shop.slug}`}
                           onClick={() => {
                             checkGiftCertificate({
                               code: giftCertificateCode,
@@ -574,7 +574,8 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
                         <div className='flex flex-col sm:flex-row gap-4 sm:items-center'>
                           <div className='flex-grow'>
                             <FormikInput
-                              readOnly={Boolean(shop.promoCode)}
+                              testId={`promo-code-input-${shop.slug}`}
+                              readOnly={Boolean(shop.promoCode?._id)}
                               size={'small'}
                               name={promoCodeFieldName}
                               low
@@ -582,7 +583,8 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
                           </div>
                           <WpButton
                             short
-                            disabled={Boolean(shop.promoCode)}
+                            testId={`promo-code-submit-${shop.slug}`}
+                            disabled={Boolean(shop.promoCode?._id)}
                             size={'small'}
                             frameClassName='w-auto'
                             theme={'secondary'}

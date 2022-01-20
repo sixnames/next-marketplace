@@ -68,6 +68,7 @@ const ConsolePromoCodeList: React.FC<ConsolePromoCodeListInterface> = ({
                 showModal<ConfirmModalInterface>({
                   variant: CONFIRM_MODAL,
                   props: {
+                    testId: 'delete-promo-code-modal',
                     message: `Вы уверенны, что хотите удалить промо-код ${dataItem.code}`,
                     confirm: () => {
                       deletePromoCodeMutation({
@@ -85,7 +86,7 @@ const ConsolePromoCodeList: React.FC<ConsolePromoCodeListInterface> = ({
   ];
 
   return (
-    <Inner>
+    <Inner testId={'promo-code-list-page'}>
       <div className='relative'>
         <div className='overflow-y-hidden overflow-x-auto'>
           <WpTable<PromoCodeModel>
@@ -104,6 +105,7 @@ const ConsolePromoCodeList: React.FC<ConsolePromoCodeListInterface> = ({
 
         <FixedButtons>
           <WpButton
+            testId={'create-promo-code'}
             size={'small'}
             onClick={() => {
               showModal<CreatePromoCodeModalInterface>({

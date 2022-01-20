@@ -1,5 +1,5 @@
 import { fixtureIds } from 'cypress/fixtures/fixtureIds';
-import { ROUTE_CATALOGUE } from '../../../config/common';
+import { ROUTE_CATALOGUE, ROUTE_CMS } from '../../../config/common';
 
 describe('Promo code', () => {
   beforeEach(() => {
@@ -25,5 +25,10 @@ describe('Promo code', () => {
     // make an order
     cy.getByCy(`cart-aside-confirm`).click();
     cy.wait(1500);
+    cy.getByCy(`thank-you`).should('exist');
+
+    // check cms order
+    cy.visit(`${ROUTE_CMS}/orders`);
+    cy.getByCy('order-1000000-link').click();
   });
 });

@@ -12,10 +12,7 @@ import {
 } from '../../../../../../../../db/uiInterfaces';
 import CmsProductLayout from '../../../../../../../../layout/cms/CmsProductLayout';
 import ConsoleLayout from '../../../../../../../../layout/cms/ConsoleLayout';
-import {
-  getConsoleCompanyLinks,
-  getConsoleRubricLinks,
-} from '../../../../../../../../lib/linkUtils';
+import { getConsoleCompanyLinks } from '../../../../../../../../lib/linkUtils';
 import { getCmsProduct } from '../../../../../../../../lib/productUtils';
 import {
   castDbData,
@@ -23,18 +20,20 @@ import {
   GetConsoleInitialDataPropsInterface,
 } from '../../../../../../../../lib/ssrUtils';
 
-interface ProductDetailsInterface extends CompanyProductDetailsInterface {}
+interface ProductDetailsInterface extends CompanyProductDetailsInterface {
+  pageCompany: CompanyInterface;
+}
 
 const ProductDetails: React.FC<ProductDetailsInterface> = ({
   product,
   routeBasePath,
   companySlug,
   cardContent,
+  pageCompany,
 }) => {
-  const links = getConsoleRubricLinks({
-    rubricSlug: product.rubric?.slug,
-    basePath: routeBasePath,
-    productId: product._id,
+  const links = getConsoleCompanyLinks({
+    companyId: pageCompany._id,
+    rubricSlug: product.rubricSlug,
   });
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -42,15 +41,15 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
     config: [
       {
         name: `Рубрикатор`,
-        href: links.parentLink,
+        href: links.rubrics.parentLink,
       },
       {
         name: `${product.rubric?.name}`,
-        href: links.root,
+        href: links.rubrics.root,
       },
       {
         name: `Товары`,
-        href: links.product.parentLink,
+        href: links.rubrics.product.parentLink,
       },
     ],
   };
@@ -63,6 +62,7 @@ const ProductDetails: React.FC<ProductDetailsInterface> = ({
       hideCategoriesPath
       hideConnectionsPath
       hideCardConstructor
+      hideDeleteButton
       product={product}
       basePath={routeBasePath}
       breadcrumbs={breadcrumbs}
@@ -135,6 +135,7 @@ export const getServerSideProps = async (
       product: castDbData(payload.product),
       cardContent: castDbData(payload.cardContent),
       companySlug: companyResult.slug,
+      pageCompany: castDbData(props.layoutProps.pageCompany),
       routeBasePath: links.parentLink,
     },
   };

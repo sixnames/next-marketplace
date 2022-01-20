@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { CategoryInterface, CompanyInterface, RubricInterface } from '../../db/uiInterfaces';
+import { getCmsCompanyLinks } from '../../lib/linkUtils';
 import ContentItemControls from '../button/ContentItemControls';
 import Inner from '../Inner';
 import RequestError from '../RequestError';
@@ -13,6 +14,7 @@ export interface CompanyRubricCategoriesListInterface {
 
 const CompanyRubricCategoriesList: React.FC<CompanyRubricCategoriesListInterface> = ({
   routeBasePath,
+  pageCompany,
   rubric,
 }) => {
   const renderCategories = React.useCallback(
@@ -50,10 +52,13 @@ const CompanyRubricCategoriesList: React.FC<CompanyRubricCategoriesListInterface
                 justifyContent={'flex-end'}
                 updateTitle={'Редактировать категорию'}
                 updateHandler={() => {
-                  window.open(
-                    `${routeBasePath}/rubrics/${rubric._id}/categories/${category._id}`,
-                    '_blank',
-                  );
+                  const links = getCmsCompanyLinks({
+                    companyId: pageCompany._id,
+                    rubricSlug: rubric.slug,
+                    categoryId: category._id,
+                    basePath: routeBasePath,
+                  });
+                  window.open(links.rubrics.category.root, '_blank');
                 }}
               />
             </div>
@@ -70,7 +75,7 @@ const CompanyRubricCategoriesList: React.FC<CompanyRubricCategoriesListInterface
         </div>
       );
     },
-    [routeBasePath, rubric._id],
+    [pageCompany._id, routeBasePath, rubric.slug],
   );
   const { categories } = rubric;
 

@@ -17,7 +17,7 @@ import {
 import CmsCategoryLayout from '../../../../../../../layout/cms/CmsCategoryLayout';
 import ConsoleLayout from '../../../../../../../layout/cms/ConsoleLayout';
 import { getFieldStringLocale } from '../../../../../../../lib/i18n';
-import { getConsoleCompanyLinks, getConsoleRubricLinks } from '../../../../../../../lib/linkUtils';
+import { getConsoleCompanyLinks } from '../../../../../../../lib/linkUtils';
 import { getCategoryAllSeoContents } from '../../../../../../../lib/seoContentUtils';
 import {
   castDbData,
@@ -34,24 +34,25 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
   seoDescriptionTop,
   routeBasePath,
 }) => {
-  const links = getConsoleRubricLinks({
+  const links = getConsoleCompanyLinks({
     rubricSlug: category.rubricSlug,
     basePath: routeBasePath,
+    companyId: pageCompany._id,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: `Категории`,
+    currentPageName: `${category.name}`,
     config: [
       {
         name: `Рубрикатор`,
-        href: links.parentLink,
+        href: links.rubrics.parentLink,
       },
       {
         name: `${category.rubric?.name}`,
-        href: links.parentLink,
+        href: links.rubrics.root,
       },
       {
         name: `Категории`,
-        href: links.categories,
+        href: links.rubrics.category.parentLink,
       },
     ],
   };

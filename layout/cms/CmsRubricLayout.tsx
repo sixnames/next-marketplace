@@ -48,7 +48,7 @@ const CmsRubricLayout: React.FC<CmsRubricLayoutInterface> = ({
       {
         name: 'Категории',
         testId: 'categories',
-        path: links.categories,
+        path: links.category.parentLink,
       },
       {
         name: 'Детали',

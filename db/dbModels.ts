@@ -849,6 +849,7 @@ export interface ShopProductModel
   useCategoryDiscount?: boolean | null;
   useCategoryCashback?: boolean | null;
   useCategoryPayFromCashback?: boolean | null;
+  lastSyncedAt?: DateModel;
 }
 
 export interface ShopModel extends BaseModel, TimestampModel {
@@ -877,6 +878,7 @@ export interface NotSyncedProductModel {
   barcode: string[];
   shopId: ObjectIdModel;
   createdAt: DateModel;
+  lastSyncedAt?: DateModel;
 }
 
 // User

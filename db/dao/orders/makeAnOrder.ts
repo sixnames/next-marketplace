@@ -339,13 +339,6 @@ export async function makeAnOrder({
           }
           const totalPrice = finalPrice * amount;
 
-          console.log({
-            price,
-            finalPrice,
-            prevTotalPrice: price * amount,
-            totalPrice,
-          });
-
           const orderProduct: OrderProductModel = {
             _id: new ObjectId(),
             statusId: initialStatus._id,
@@ -354,6 +347,7 @@ export async function makeAnOrder({
             amount,
             totalPrice,
             finalPrice,
+            promoIds: promo ? [promo._id] : null,
             slug: product.slug,
             originalName: product.originalName,
             nameI18n: product.nameI18n,
@@ -397,8 +391,6 @@ export async function makeAnOrder({
             giftCertificateDiscount: noNaN(giftCertificate?.value),
           });
 
-        // TODO promo code & totalPrice after promo code
-
         // update gift certificate
         if (giftCertificate) {
           await giftCertificatesCollection.findOneAndUpdate(
@@ -427,8 +419,9 @@ export async function makeAnOrder({
           statusId: initialStatus._id,
           customerId: user._id,
           companySiteSlug,
-          totalPrice: totalPrice,
+          totalPrice,
           discountedPrice,
+          promoIds: promo ? [promo._id] : null,
           comment: input.comment,
           productIds: castedOrderProducts.map(({ productId }) => {
             return productId;

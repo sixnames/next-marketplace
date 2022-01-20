@@ -524,6 +524,7 @@ export interface OrderProductModel extends TimestampModel {
   slug: string;
   originalName: string;
   nameI18n?: TranslationModel | null;
+  promoIds?: ObjectIdModel[] | null;
   productId: ObjectIdModel;
   customerId: ObjectIdModel;
   shopProductId: ObjectIdModel;
@@ -611,7 +612,7 @@ export interface OrderModel extends TimestampModel, BaseModel {
   deliveryInfo?: OrderDeliveryInfoModel | null;
   isCanceled?: boolean;
   requests?: OrderRequestModel[] | null;
-  promoId?: ObjectIdModel;
+  promoIds?: ObjectIdModel[] | null;
   giftCertificateId?: ObjectIdModel | null;
   giftCertificateChargedValue?: number | null;
 }

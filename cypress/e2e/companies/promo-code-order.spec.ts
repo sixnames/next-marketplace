@@ -6,7 +6,7 @@ describe('Promo code', () => {
     cy.testAuth(`${ROUTE_CATALOGUE}/${fixtureIds.rubricWhiskeySlug}`);
   });
 
-  it.only('Should create order with promo code', () => {
+  it('Should create order with promo code', () => {
     // add promo product to the cart
     cy.getByCy(`catalogue-item-0-add-to-cart-grid`).click();
     cy.getByCy(`cart-modal-close`).click();

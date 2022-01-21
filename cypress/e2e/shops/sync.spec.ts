@@ -475,7 +475,7 @@ describe('Sync', () => {
     });
   });
 
-  it.only('Should reset old shop products availability', () => {
+  it('Should reset old shop products availability', () => {
     const links = getCmsCompanyLinks({
       companyId: fixtureIds.companyA,
       shopId: fixtureIds.shopA,

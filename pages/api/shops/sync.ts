@@ -12,6 +12,7 @@ import {
 import {
   BlackListProductModel,
   NotSyncedProductModel,
+  ObjectIdModel,
   ProductSummaryModel,
   ShopModel,
   ShopProductModel,
@@ -127,6 +128,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         shopId: shop._id,
       })
       .toArray();
+    const updatedShopProductIds: ObjectIdModel[] = [];
 
     for await (const bodyItem of allowedBody) {
       if (!bodyItem.barcode || bodyItem.barcode.length < 1) {
@@ -181,8 +183,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         continue;
       }
 
-      const { available, price, barcode, id } = bodyItem;
-      // add new barcode to product
+      // update product barcode list
       await productSummariesCollection.findOneAndUpdate(
         {
           _id: product._id,
@@ -190,8 +191,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         {
           $addToSet: {
             barcode: {
-              $each: barcode,
+              $each: bodyItem.barcode,
             },
+          },
+          $set: {
+            updatedAt: new Date(),
           },
         },
       );
@@ -240,7 +244,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           shopId: shop._id,
           productId: product._id,
           barcode: {
-            $in: barcode,
+            $in: bodyItem.barcode,
           },
         })
         .toArray();
@@ -250,7 +254,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           // update existing shop product
           const { discountedPercent, oldPrice, oldPriceUpdater } = getUpdatedShopProductPrices({
             shopProduct: oldShopProduct,
-            newPrice: noNaN(price),
+            newPrice: noNaN(bodyItem.price),
           });
           await shopProductsCollection.findOneAndUpdate(
             {
@@ -258,22 +262,23 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             },
             {
               $set: {
-                available: noNaN(available),
-                price: noNaN(price),
+                available: noNaN(bodyItem.available),
+                price: noNaN(bodyItem.price),
                 oldPrice,
                 discountedPercent,
-                shopProductUid: alwaysString(id),
+                shopProductUid: alwaysString(bodyItem.id),
                 updatedAt: new Date(),
                 lastSyncedAt: new Date(),
               },
               $addToSet: {
                 barcode: {
-                  $each: barcode,
+                  $each: bodyItem.barcode,
                 },
               },
               ...oldPriceUpdater,
             },
           );
+          updatedShopProductIds.push(oldShopProduct._id);
         }
       } else {
         // create new shop product
@@ -285,33 +290,17 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           barcode: bodyItem.barcode,
           shopId: shop._id,
           summary: product,
-          shopProductUid: alwaysString(id),
-          price,
-          available,
+          shopProductUid: alwaysString(bodyItem.id),
+          price: noNaN(bodyItem.price),
+          available: noNaN(bodyItem.available),
           itemId,
         });
         shopProducts.push({
           ...shopProduct,
           lastSyncedAt: new Date(),
         });
+        updatedShopProductIds.push(shopProduct._id);
       }
-
-      // update product barcode list
-      await productSummariesCollection.findOneAndUpdate(
-        {
-          _id: product._id,
-        },
-        {
-          $addToSet: {
-            barcode: {
-              $each: barcode,
-            },
-          },
-          $set: {
-            updatedAt: new Date(),
-          },
-        },
-      );
     }
 
     // insert all created shop products
@@ -325,6 +314,21 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         return;
       }
     }
+
+    // reset old shop products availability to zero
+    await shopProductsCollection.updateMany(
+      {
+        shopId: shop._id,
+        _id: {
+          $nin: updatedShopProductIds,
+        },
+      },
+      {
+        $set: {
+          available: 0,
+        },
+      },
+    );
 
     // insert all intersect items
     if (intersects.length > 0) {

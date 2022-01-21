@@ -8,6 +8,7 @@ import {
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
   COL_SYNC_INTERSECT,
+  COL_SYNC_LOGS,
 } from '../../../db/collectionNames';
 import {
   BlackListProductModel,
@@ -17,21 +18,39 @@ import {
   ShopModel,
   ShopProductModel,
   SyncIntersectModel,
+  SyncLogModel,
 } from '../../../db/dbModels';
 import { getDatabase } from '../../../db/mongodb';
 import { SyncParamsInterface, SyncProductInterface } from '../../../db/syncInterfaces';
 import { alwaysArray, alwaysString } from '../../../lib/arrayUtils';
+import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
 import { getNextItemId } from '../../../lib/itemIdUtils';
 import { noNaN } from '../../../lib/numbers';
 import { castSummaryToShopProduct } from '../../../lib/productUtils';
 import { getUpdatedShopProductPrices } from '../../../lib/shopUtils';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
+  const { db } = await getDatabase();
+  const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
+  const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
+  const blacklistProducts = db.collection<BlackListProductModel>(COL_BLACKLIST_PRODUCTS);
+  const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
+  const syncIntersectCollection = db.collection<SyncIntersectModel>(COL_SYNC_INTERSECT);
+  const syncLogsCollection = db.collection<SyncLogModel>(COL_SYNC_LOGS);
+  const notSyncedProductsCollection = db.collection<NotSyncedProductModel>(COL_NOT_SYNCED_PRODUCTS);
+
   try {
     if (req.method !== REQUEST_METHOD_POST) {
+      const message = 'wrong method';
+      await syncLogsCollection.insertOne({
+        variant: 'error',
+        token: ``,
+        message,
+        createdAt: new Date(),
+      });
       res.status(405).send({
         success: false,
-        message: 'wrong method',
+        message,
       });
       return;
     }
@@ -40,38 +59,50 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const query = req.query as unknown as SyncParamsInterface | undefined | null;
 
     if (!body || body.length < 1 || !query) {
+      const message = 'no products or query params provided';
+      await syncLogsCollection.insertOne({
+        variant: 'error',
+        token: `${query?.token}`,
+        message,
+        createdAt: new Date(),
+      });
       res.status(400).send({
         success: false,
-        message: 'no products provided',
+        message,
       });
       return;
     }
 
     const { token } = query;
     if (!token) {
+      const message = 'no token provided';
+      await syncLogsCollection.insertOne({
+        variant: 'error',
+        token: '',
+        message,
+        createdAt: new Date(),
+      });
       res.status(400).send({
         success: false,
-        message: 'no query params provided',
+        message,
       });
       return;
     }
-
-    const { db } = await getDatabase();
-    const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
-    const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-    const blacklistProducts = db.collection<BlackListProductModel>(COL_BLACKLIST_PRODUCTS);
-    const productSummariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
-    const syncIntersectCollection = db.collection<SyncIntersectModel>(COL_SYNC_INTERSECT);
-    const notSyncedProductsCollection =
-      db.collection<NotSyncedProductModel>(COL_NOT_SYNCED_PRODUCTS);
 
     // get shop
     const shop = await shopsCollection.findOne({ token });
 
     if (!shop) {
+      const message = 'shop not found';
+      await syncLogsCollection.insertOne({
+        variant: 'error',
+        token,
+        message,
+        createdAt: new Date(),
+      });
       res.status(401).send({
         success: false,
-        message: 'shop not found',
+        message,
       });
       return;
     }
@@ -100,9 +131,16 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       return !inBlackList;
     });
     if (allowedBody.length < 1) {
+      const message = 'all products are blacklisted';
+      await syncLogsCollection.insertOne({
+        variant: 'success',
+        token,
+        message,
+        createdAt: new Date(),
+      });
       res.status(200).send({
         success: true,
-        message: 'all products are blacklisted',
+        message,
       });
       return;
     }
@@ -307,9 +345,16 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     if (shopProducts.length > 0) {
       const createdShopProductsResult = await shopProductsCollection.insertMany(shopProducts);
       if (!createdShopProductsResult.acknowledged) {
+        const message = 'shop products create error';
+        await syncLogsCollection.insertOne({
+          variant: 'error',
+          token,
+          message,
+          createdAt: new Date(),
+        });
         res.status(500).send({
           success: false,
-          message: 'shop products create error',
+          message,
         });
         return;
       }
@@ -350,13 +395,26 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       }
     }
 
+    const message = 'synced';
+    await syncLogsCollection.insertOne({
+      variant: 'success',
+      token,
+      message,
+      createdAt: new Date(),
+    });
     res.status(200).send({
       success: true,
-      message: 'synced',
+      message,
     });
     return;
   } catch (e) {
     console.log(e);
+    await syncLogsCollection.insertOne({
+      variant: 'success',
+      token: `${req.query.token}`,
+      message: getResolverErrorMessage(e),
+      createdAt: new Date(),
+    });
     res.status(500).send({
       success: false,
       message: 'Internal server error',

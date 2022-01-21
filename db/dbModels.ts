@@ -882,6 +882,14 @@ export interface NotSyncedProductModel {
   lastSyncedAt?: DateModel;
 }
 
+export interface SyncLogModel {
+  _id: ObjectIdModel;
+  variant: 'success' | 'error';
+  message: string;
+  token: string;
+  createdAt: DateModel;
+}
+
 // User
 export interface NotificationConfigModel {
   nameI18n: TranslationModel;
@@ -1299,6 +1307,7 @@ export interface CatalogueNavModel {
 // Session logs
 export enum SessionLogEventTypeEnum {
   visit = 'visit',
+  leave = 'leave',
   addToCartClick = 'addToCartClick',
   makeAnOrderClick = 'makeAnOrderClick',
 }
@@ -1327,9 +1336,14 @@ export interface SessionLogAddToCartEventModel extends SessionLogEventBaseModel 
   productId: ObjectIdModel;
 }
 
-export interface SessionLogEventModel extends SessionLogEventBaseModel {
-  variant: 'visit';
+export interface SessionLogNavEventModel extends SessionLogEventBaseModel {
+  variant: 'visit' | 'leave';
 }
+
+export type SessionLogEventModel =
+  | SessionLogNavEventModel
+  | SessionLogAddToCartEventModel
+  | SessionLogMakeAnOrderEventModel;
 
 export interface SessionLogModel {
   _id: ObjectIdModel;
@@ -1339,11 +1353,7 @@ export interface SessionLogModel {
   ipInfo: IpInfoInterface;
   userRoleId?: ObjectIdModel | null;
   userId?: ObjectIdModel | null;
-  events: (
-    | SessionLogEventModel
-    | SessionLogAddToCartEventModel
-    | SessionLogMakeAnOrderEventModel
-  )[];
+  events: SessionLogEventModel[];
   createdAt: DateModel;
   updatedAt: DateModel;
 }

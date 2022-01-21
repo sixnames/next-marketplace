@@ -60,6 +60,7 @@ export interface IpInfoInterface {
   location: Location;
   security: Security;
   time_zone: TimeZone;
+  user_agent: UserAgent;
 }
 
 export interface UserAgent {

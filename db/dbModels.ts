@@ -1,5 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { GEO_POINT_TYPE } from '../config/common';
+import { IpInfoInterface } from '../types/clientTypes';
 import { IconType } from '../types/iconTypes';
 import {
   BarcodeDoublesInterface,
@@ -1292,4 +1293,56 @@ export interface CatalogueNavModel {
   citySlug: string;
   rubrics: RubricInterface[];
   createdAt: DateModel;
+}
+
+// Session logs
+export enum SessionLogEventTypeEnum {
+  visit = 'visit',
+  addToCartClick = 'addToCartClick',
+  makeAnOrderClick = 'makeAnOrderClick',
+}
+
+export interface SessionLogMakeAnOrderProductEventModel {
+  _id: ObjectIdModel;
+  summaryId: ObjectIdModel;
+  shopProductId: ObjectIdModel;
+  shopId: ObjectIdModel;
+  amount: number;
+}
+
+export interface SessionLogMakeAnOrderEventModel {
+  _id: ObjectIdModel;
+  variant: SessionLogEventTypeEnum.makeAnOrderClick;
+  url: string;
+  createdAt: DateModel;
+  orderProducts: SessionLogMakeAnOrderProductEventModel[];
+}
+
+export interface SessionLogAddToCartEventModel {
+  _id: ObjectIdModel;
+  variant: SessionLogEventTypeEnum.addToCartClick;
+  url: string;
+  createdAt: DateModel;
+  productId: ObjectIdModel;
+}
+
+export interface SessionLogEventModel {
+  _id: ObjectIdModel;
+  variant: SessionLogEventTypeEnum.visit;
+  url: string;
+  createdAt: DateModel;
+}
+
+export interface SessionLogModel {
+  _id: ObjectIdModel;
+  companySlug: string;
+  ipInfo: IpInfoInterface;
+  userId?: ObjectIdModel;
+  events: (
+    | SessionLogEventModel
+    | SessionLogAddToCartEventModel
+    | SessionLogMakeAnOrderEventModel
+  )[];
+  createdAt: DateModel;
+  updatedAt: DateModel;
 }

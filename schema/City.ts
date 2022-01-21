@@ -87,7 +87,7 @@ export const CityQueries = extendType({
         const paginationResult = await aggregatePagination<CityModel>({
           collectionName: COL_CITIES,
           input: args.input,
-          citySlug: city,
+          citySlug,
         });
         return paginationResult;
       },

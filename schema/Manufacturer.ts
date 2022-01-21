@@ -142,7 +142,7 @@ export const ManufacturerQueries = extendType({
         const paginationResult = await aggregatePagination<ManufacturerModel>({
           collectionName: COL_MANUFACTURERS,
           input: args.input,
-          citySlug: city,
+          citySlug,
         });
         return paginationResult;
       },

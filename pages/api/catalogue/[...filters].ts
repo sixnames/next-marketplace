@@ -37,7 +37,7 @@ async function catalogueData(req: NextApiRequest, res: NextApiResponse) {
       companySlug,
       companyId,
       currency,
-      citySlug: city,
+      citySlug,
       basePath: `${ROUTE_CATALOGUE}/${rubricSlug}`,
       snippetVisibleAttributesCount:
         noNaN(snippetVisibleAttributesCount) || noNaN(CATALOGUE_SNIPPET_VISIBLE_ATTRIBUTES),

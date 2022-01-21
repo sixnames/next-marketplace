@@ -38,7 +38,7 @@ interface AggregatePaginationPropsInterface {
   collectionName: string;
   pipeline?: Record<string, any>[];
   options?: AggregateOptions;
-  city: string;
+  citySlug: string;
 }
 
 const aggregationFallback = {
@@ -59,7 +59,7 @@ export async function aggregatePagination<TModel>({
   collectionName,
   pipeline = [],
   options,
-  city,
+  citySlug,
 }: AggregatePaginationPropsInterface): Promise<PaginationPayloadType<TModel>> {
   try {
     const { db } = await getDatabase();
@@ -73,8 +73,8 @@ export async function aggregatePagination<TModel>({
           {
             $sort: {
               [`${sortBy}`]: sortDir,
-              [`views.${city}`]: SORT_DESC,
-              [`priorities.${city}`]: SORT_DESC,
+              [`views.${citySlug}`]: SORT_DESC,
+              [`priorities.${citySlug}`]: SORT_DESC,
               _id: SORT_BY_ID_DIRECTION,
             },
           },

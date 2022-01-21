@@ -282,6 +282,9 @@ export async function setSessionLog({
           $push: {
             events: event,
           },
+          $set: {
+            updatedAt: new Date(),
+          },
         },
       );
     }

@@ -27,6 +27,7 @@ interface CmsProductLayoutInterface {
   hideAssetsPath?: boolean;
   hideCardConstructor?: boolean;
   companySlug?: string;
+  hideDeleteButton?: boolean;
 }
 
 const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({
@@ -41,6 +42,7 @@ const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({
   children,
   basePath,
   companySlug,
+  hideDeleteButton,
 }) => {
   const { query } = useRouter();
   const { domainCompany } = useConfigContext();
@@ -149,27 +151,29 @@ const CmsProductLayout: React.FC<CmsProductLayoutInterface> = ({
           >
             Карточка товара
           </WpButton>
-          <WpButton
-            frameClassName='w-auto'
-            theme={'secondary'}
-            size={'small'}
-            onClick={() => {
-              showModal<ConfirmModalInterface>({
-                variant: CONFIRM_MODAL,
-                props: {
-                  testId: 'delete-product-modal',
-                  message: `Вы уверенны, что хотите удалить товар ${product.cardTitle}?`,
-                  confirm: () => {
-                    deleteProductFromRubricMutation({
-                      productId: `${product._id}`,
-                    }).catch((e) => console.log(e));
+          {hideDeleteButton ? null : (
+            <WpButton
+              frameClassName='w-auto'
+              theme={'secondary'}
+              size={'small'}
+              onClick={() => {
+                showModal<ConfirmModalInterface>({
+                  variant: CONFIRM_MODAL,
+                  props: {
+                    testId: 'delete-product-modal',
+                    message: `Вы уверенны, что хотите удалить товар ${product.cardTitle}?`,
+                    confirm: () => {
+                      deleteProductFromRubricMutation({
+                        productId: `${product._id}`,
+                      }).catch((e) => console.log(e));
+                    },
                   },
-                },
-              });
-            }}
-          >
-            Удалить товар
-          </WpButton>
+                });
+              }}
+            >
+              Удалить товар
+            </WpButton>
+          )}
         </div>
       </Inner>
       <AppSubNav navConfig={navConfig} />

@@ -48,7 +48,7 @@ const ConsolePromoProductsListPage: React.FC<ConsolePromoProductsListPageInterfa
 
   return (
     <ConsoleLayout title={`${promo.name}`} {...layoutProps}>
-      <ConsolePromoLayout basePath={links.root} promo={promo} breadcrumbs={breadcrumbs}>
+      <ConsolePromoLayout basePath={links.parentLink} promo={promo} breadcrumbs={breadcrumbs}>
         <ConsolePromoProducts
           basePath={links.root}
           promo={promo}

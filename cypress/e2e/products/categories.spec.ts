@@ -7,7 +7,7 @@ describe('Categories', () => {
     rubricSlug: fixtureIds.rubricWineSlug,
   });
   beforeEach(() => {
-    cy.testAuth(links.categories);
+    cy.testAuth(links.category.parentLink);
   });
 
   it('Should CRUD categories list', () => {
@@ -52,7 +52,7 @@ describe('Categories', () => {
     cy.getByCy('Виноград-checkbox').should('be.checked');
 
     // Should delete top level category and category children
-    cy.visit(links.categories);
+    cy.visit(links.category.parentLink);
     cy.wait(1500);
     cy.getByCy(`${categoryNewName}-delete`).click();
     cy.getByCy('confirm').click();

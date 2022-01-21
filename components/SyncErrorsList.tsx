@@ -52,7 +52,9 @@ const SyncErrorsList: React.FC<SyncErrorsListInterface> = ({
     {
       accessor: 'name',
       headTitle: 'Название',
-      render: ({ cellData }) => cellData,
+      render: ({ cellData }) => {
+        return <div data-cy={cellData}>{cellData}</div>;
+      },
     },
     {
       accessor: 'available',

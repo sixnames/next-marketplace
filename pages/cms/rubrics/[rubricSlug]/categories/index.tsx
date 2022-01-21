@@ -52,7 +52,11 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
   const renderCategories = React.useCallback(
     (category: CategoryInterface) => {
       const { name, categories, image } = category;
-      const categoryUrl = `${links.categories}/${category._id}`;
+      const categoryLinks = getConsoleRubricLinks({
+        rubricSlug: rubric.slug,
+        categoryId: category._id,
+      });
+      const categoryUrl = categoryLinks.category.root;
       return (
         <div data-cy={`${name}`} data-url={categoryUrl}>
           {image ? (
@@ -130,7 +134,7 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
         </div>
       );
     },
-    [deleteCategoryMutation, links.categories, rubric._id, showLoading, showModal],
+    [deleteCategoryMutation, rubric._id, rubric.slug, showLoading, showModal],
   );
 
   const breadcrumbs: AppContentWrapperBreadCrumbs = {

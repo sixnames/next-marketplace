@@ -54,8 +54,26 @@ export function getConsoleProductLinks({
   };
 }
 
+// console category
+interface GetConsoleCategoryLinkInterface extends GetConsoleProductLinksInterface {
+  categoryId?: string | ObjectIdModel;
+  basePath?: string;
+}
+export function getConsoleCategoryLinks({ categoryId, basePath }: GetConsoleCategoryLinkInterface) {
+  const parentLink = `${basePath}/categories`;
+  const root = `${parentLink}/${categoryId}`;
+
+  return {
+    parentLink,
+    root,
+    attributes: `${root}/attributes`,
+  };
+}
+
 // console rubric
-interface GetConsoleRubricLinkInterface extends GetConsoleProductLinksInterface {
+interface GetConsoleRubricLinkInterface
+  extends GetConsoleProductLinksInterface,
+    GetConsoleCategoryLinkInterface {
   rubricSlug?: string;
   basePath?: string;
 }
@@ -63,6 +81,7 @@ export function getConsoleRubricLinks({
   rubricSlug = '',
   basePath = ROUTE_CMS,
   productId,
+  categoryId,
 }: GetConsoleRubricLinkInterface) {
   const parentLink = `${basePath}/rubrics`;
   const root = `${parentLink}/${rubricSlug}`;
@@ -70,9 +89,12 @@ export function getConsoleRubricLinks({
   return {
     parentLink,
     root,
-    categories: `${root}/categories`,
     seoContent: `${root}/seo-content`,
     attributes: `${root}/attributes`,
+    category: getConsoleCategoryLinks({
+      basePath: root,
+      categoryId,
+    }),
     add: `${root}/add`,
     product: getConsoleProductLinks({
       productId,
@@ -202,6 +224,7 @@ export function getCmsCompanyLinks({
   promoId,
   orderId,
   promoCodeId,
+  categoryId,
 }: GetCmsCompanyLinkInterface) {
   const parentLink = basePath?.includes(ROUTE_CMS) ? `${basePath}/companies` : basePath;
   const root = `${parentLink}/${companyId}`;
@@ -235,6 +258,7 @@ export function getCmsCompanyLinks({
       basePath: root,
       rubricSlug,
       productId,
+      categoryId,
     }),
   };
 }

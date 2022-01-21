@@ -154,15 +154,16 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
               _id: existingSyncError._id,
             },
             {
-              $set: {
-                $addToSet: {
-                  barcode: {
-                    $each: bodyItem.barcode,
-                  },
+              $addToSet: {
+                barcode: {
+                  $each: bodyItem.barcode,
                 },
+              },
+              $set: {
                 available: noNaN(bodyItem.available),
                 price: noNaN(bodyItem.price),
                 name: bodyItem.name,
+                lastSyncedAt: new Date(),
               },
             },
           );
@@ -174,6 +175,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             barcode: bodyItem.barcode,
             shopId: shop._id,
             createdAt: new Date(),
+            lastSyncedAt: new Date(),
           });
         }
         continue;
@@ -262,6 +264,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
                 discountedPercent,
                 shopProductUid: alwaysString(id),
                 updatedAt: new Date(),
+                lastSyncedAt: new Date(),
               },
               $addToSet: {
                 barcode: {
@@ -287,7 +290,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           available,
           itemId,
         });
-        shopProducts.push(shopProduct);
+        shopProducts.push({
+          ...shopProduct,
+          lastSyncedAt: new Date(),
+        });
       }
 
       // update product barcode list

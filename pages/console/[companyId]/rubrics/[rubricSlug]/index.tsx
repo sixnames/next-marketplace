@@ -29,14 +29,17 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
   seoDescriptionBottom,
   seoDescriptionTop,
   pageCompany,
-  routeBasePath,
 }) => {
+  const links = getConsoleCompanyLinks({
+    companyId: pageCompany._id,
+  });
+
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${rubric.name}`,
     config: [
       {
         name: `Рубрикатор`,
-        href: `${routeBasePath}/rubrics`,
+        href: links.rubrics.parentLink,
       },
     ],
   };
@@ -46,10 +49,10 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
       hideAttributesPath
       rubric={rubric}
       breadcrumbs={breadcrumbs}
-      basePath={routeBasePath}
+      basePath={links.root}
     >
       <CompanyRubricDetails
-        routeBasePath={routeBasePath}
+        routeBasePath={links.root}
         rubric={rubric}
         pageCompany={pageCompany}
         seoDescriptionTop={seoDescriptionTop}

@@ -63,6 +63,7 @@ import {
   UserNotificationsModel,
   ProductDraftModel,
   PromoCodeModel,
+  OrderPromoModel,
 } from './dbModels';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { MessageSlug } from '../types/messageSlugTypes';
@@ -608,6 +609,11 @@ export interface OrderInterface extends OrderModel {
   formattedTotalPrice?: string | null;
   requests?: OrderRequestModelInterface[] | null;
   giftCertificate?: GiftCertificateInterface | null;
+  orderPromo?: OrderPromoInterface[] | null;
+}
+
+export interface OrderPromoInterface extends OrderPromoModel {
+  promo?: PromoInterface | null;
 }
 
 export interface TopFilterInterface {

@@ -4,12 +4,17 @@ import ConsoleSeoContentDetails, {
   ConsoleSeoContentDetailsInterface,
 } from '../../../../../../components/console/ConsoleSeoContentDetails';
 import Inner from '../../../../../../components/Inner';
-import { CATALOGUE_SEO_TEXT_POSITION_TOP, ROUTE_CONSOLE } from '../../../../../../config/common';
+import { CATALOGUE_SEO_TEXT_POSITION_TOP } from '../../../../../../config/common';
 import { getConsoleRubricDetails } from '../../../../../../db/dao/rubrics/getConsoleRubricDetails';
-import { AppContentWrapperBreadCrumbs, RubricInterface } from '../../../../../../db/uiInterfaces';
+import {
+  AppContentWrapperBreadCrumbs,
+  CompanyInterface,
+  RubricInterface,
+} from '../../../../../../db/uiInterfaces';
 import CmsRubricLayout from '../../../../../../layout/cms/CmsRubricLayout';
 import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
 import { alwaysString } from '../../../../../../lib/arrayUtils';
+import { getConsoleCompanyLinks } from '../../../../../../lib/linkUtils';
 import { getSeoContentBySlug } from '../../../../../../lib/seoContentUtils';
 import {
   castDbData,
@@ -20,26 +25,30 @@ import {
 interface RubricDetailsInterface extends ConsoleSeoContentDetailsInterface {
   rubric: RubricInterface;
   companySlug: string;
-  routeBasePath: string;
+  pageCompany: CompanyInterface;
 }
 
 const RubricDetails: React.FC<RubricDetailsInterface> = ({
   rubric,
   seoContent,
-  routeBasePath,
   companySlug,
   showSeoFields,
+  pageCompany,
 }) => {
+  const links = getConsoleCompanyLinks({
+    companyId: pageCompany?._id,
+    rubricSlug: rubric?.slug,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `SEO тексты`,
     config: [
       {
-        name: 'Рубрикатор',
-        href: `${routeBasePath}/rubrics`,
+        name: `Рубрикатор`,
+        href: links.rubrics.parentLink,
       },
       {
-        name: `${rubric.name}`,
-        href: `${routeBasePath}/rubrics/${rubric._id}`,
+        name: `${rubric?.name}`,
+        href: links.rubrics.root,
       },
     ],
   };
@@ -47,7 +56,7 @@ const RubricDetails: React.FC<RubricDetailsInterface> = ({
   return (
     <CmsRubricLayout
       hideAttributesPath
-      basePath={routeBasePath}
+      basePath={links.root}
       rubric={rubric}
       breadcrumbs={breadcrumbs}
     >
@@ -115,7 +124,7 @@ export const getServerSideProps = async (
       ...props,
       rubric: castDbData(payload.rubric),
       seoContent: castDbData(seoContent),
-      routeBasePath: `${ROUTE_CONSOLE}/${props.layoutProps.pageCompany._id}`,
+      pageCompany: castDbData(props.layoutProps.pageCompany),
       showSeoFields: seoContentSlug.indexOf(CATALOGUE_SEO_TEXT_POSITION_TOP) > -1,
       companySlug,
     },

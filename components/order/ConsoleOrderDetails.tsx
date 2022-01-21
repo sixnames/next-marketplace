@@ -306,6 +306,7 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
     companySiteSlug,
     giftCertificate,
     giftCertificateChargedValue,
+    orderPromo,
   } = state;
 
   const [updateOrderMutation] = useUpdateOrder();
@@ -471,7 +472,10 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
                       )}
                     </div>
 
-                    <div className='flex flex-wrap gap-2 items-baseline'>
+                    <div
+                      className='flex flex-wrap gap-2 items-baseline'
+                      data-cy={'order-total-price'}
+                    >
                       <div className='text-secondary-text'>Итого:</div>
                       <Currency
                         className='text-2xl'
@@ -481,7 +485,7 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
                     </div>
 
                     {totalPrice > discountedPrice ? (
-                      <div>
+                      <div data-cy={'order-discounted-price'}>
                         <div className='flex flex-wrap gap-2 items-baseline'>
                           <div className='text-secondary-text'>Со скидкой:</div>
                           <Currency
@@ -494,7 +498,7 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
                     ) : null}
 
                     {giftCertificate ? (
-                      <div className='mt-4'>
+                      <div className='mt-4' data-cy={'order-gift-certificate'}>
                         <div className='text-secondary-text mb-1'>
                           Применён подарочный сертификат
                         </div>
@@ -503,6 +507,23 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
                           {giftCertificate.code}
                           {' на сумму '}
                           <Currency value={giftCertificateChargedValue} />
+                        </div>
+                      </div>
+                    ) : null}
+
+                    {orderPromo && orderPromo.length > 0 ? (
+                      <div className='mt-4' data-cy={'order-promo-list'}>
+                        <div className='text-secondary-text mb-1'>Применёные акции</div>
+                        <div>
+                          {orderPromo.map((promoItem) => {
+                            return (
+                              <div key={`${promoItem._id}`}>
+                                {promoItem.promo
+                                  ? promoItem.promo.name
+                                  : 'Название акции не найдено'}
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
                     ) : null}

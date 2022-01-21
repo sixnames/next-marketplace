@@ -52,6 +52,7 @@ import {
   OrderModel,
   OrderPaymentVariantModel,
   OrderProductModel,
+  OrderPromoModel,
   OrderStatusModel,
   PromoCodeModel,
   PromoModel,
@@ -330,12 +331,28 @@ export async function makeAnOrder({
 
           // get order product prices
           let finalPrice: number = price;
+          let orderProductPromo: OrderPromoModel | null = null;
           if (promoProduct && promo) {
             const { discountedPrice } = countDiscountedPrice({
               discount: promo.discountPercent,
               price,
             });
+
             finalPrice = discountedPrice;
+            orderProductPromo = {
+              _id: promo._id,
+              companyId: promo.companyId,
+              discountPercent: promo.discountPercent,
+              addCategoryCashback: promo.addCategoryCashback,
+              addCategoryDiscount: promo.addCategoryDiscount,
+              allowPayFromCashback: promo.allowPayFromCashback,
+              cashbackPercent: promo.cashbackPercent,
+              companySlug: promo.companySlug,
+              useBiggestCashback: promo.useBiggestCashback,
+              useBiggestDiscount: promo.useBiggestDiscount,
+              startAt: promo.startAt,
+              endAt: promo.endAt,
+            };
           }
           const totalPrice = finalPrice * amount;
 
@@ -347,7 +364,7 @@ export async function makeAnOrder({
             amount,
             totalPrice,
             finalPrice,
-            promoIds: promo ? [promo._id] : null,
+            orderPromo: orderProductPromo ? [orderProductPromo] : null,
             slug: product.slug,
             originalName: product.originalName,
             nameI18n: product.nameI18n,
@@ -382,14 +399,15 @@ export async function makeAnOrder({
           }
         }
 
-        const totalPrice = castedOrderProducts.reduce((acc: number, { totalPrice }) => {
-          return acc + totalPrice;
-        }, 0);
-        const { discountedPrice, giftCertificateNewValue, giftCertificateChargedValue } =
-          getOrderDiscountedPrice({
-            totalPrice,
-            giftCertificateDiscount: noNaN(giftCertificate?.value),
-          });
+        const {
+          discountedPrice,
+          totalPrice,
+          giftCertificateNewValue,
+          giftCertificateChargedValue,
+        } = getOrderDiscountedPrice({
+          orderProducts: castedOrderProducts,
+          giftCertificateDiscount: noNaN(giftCertificate?.value),
+        });
 
         // update gift certificate
         if (giftCertificate) {
@@ -411,6 +429,15 @@ export async function makeAnOrder({
           );
         }
 
+        // collect all promo
+        const orderPromo = castedOrderProducts.reduce((acc: OrderPromoModel[], orderProduct) => {
+          const orderProductPromo = orderProduct.orderPromo || [];
+          const promoToAdd = orderProductPromo.filter((promo) => {
+            return !acc.some(({ _id }) => _id.equals(promo._id));
+          });
+          return [...acc, ...promoToAdd];
+        }, []);
+
         const order: OrderModel = {
           _id: orderId,
           orderId: uniqid.time(),
@@ -421,7 +448,7 @@ export async function makeAnOrder({
           companySiteSlug,
           totalPrice,
           discountedPrice,
-          promoIds: promo ? [promo._id] : null,
+          orderPromo,
           comment: input.comment,
           productIds: castedOrderProducts.map(({ productId }) => {
             return productId;

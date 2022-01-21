@@ -47,6 +47,7 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
 
   const links = getConsoleRubricLinks({
     rubricSlug: `${category.rubric?.slug}`,
+    categoryId: category._id,
   });
 
   const columns: WpTableColumn<AttributeInterface>[] = [
@@ -108,11 +109,11 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
       },
       {
         name: `Категории`,
-        href: links.categories,
+        href: links.category.parentLink,
       },
       {
         name: `${category.name}`,
-        href: `${links.categories}/${category._id}`,
+        href: links.category.root,
       },
     ],
   };

@@ -23,6 +23,16 @@ const validRequestParamsC = 'token=000003';
 const errorBarcode = '9999999999999999';
 const errorBarcodeB = '9999999999999999B';
 
+const newSyncErrorName = 'newSyncErrorName';
+const updateSyncErrorBody: SyncProductInterface[] = [
+  {
+    barcode: [errorBarcode, errorBarcodeB],
+    available: 0,
+    price: 100,
+    name: newSyncErrorName,
+  },
+];
+
 const initialBody: SyncProductInterface[] = [
   {
     barcode: [errorBarcode, errorBarcodeB],
@@ -31,64 +41,64 @@ const initialBody: SyncProductInterface[] = [
     name: errorBarcode,
   },
   {
-    barcode: ['000003', '0000039999'],
+    barcode: ['000140', '0001409999'],
     available: 10,
     price: 1890,
-    name: '000003',
+    name: '000140',
   },
   {
-    barcode: ['000004'],
+    barcode: ['000139'],
     available: 1,
     price: 800,
-    name: '000004',
+    name: '000139',
   },
   {
-    barcode: ['000005'],
+    barcode: ['000138'],
     available: 5,
     price: 650,
-    name: '000005',
+    name: '000138',
   },
 ];
 
 const secondarySyncBody: SyncProductInterface[] = [
   {
-    barcode: ['000003', '0000039999', '0000039999000000000000876876878767'],
+    barcode: ['000140', '0001409999', '0001409999000000000000876876878767'],
     available: 1,
     price: 1,
-    name: '000003',
+    name: '000140',
   },
   {
-    barcode: ['000004'],
+    barcode: ['000139'],
     available: 1,
     price: 1,
-    name: '000004',
+    name: '000139',
   },
   {
-    barcode: ['000005'],
+    barcode: ['000138'],
     available: 1,
     price: 1,
-    name: '000005',
+    name: '000138',
   },
   {
-    barcode: ['000006'],
+    barcode: ['000137'],
     available: 1,
     price: 1,
-    name: '000006',
+    name: '000137',
   },
 ];
 
 const updateBody: SyncProductInterface[] = [
   {
-    barcode: ['000003', '0000039999'],
+    barcode: ['000140', '0001409999'],
     available: 5,
     price: 890,
-    name: '000003',
+    name: '000140',
   },
   {
-    barcode: ['000004'],
+    barcode: ['000139'],
     available: 5,
     price: 1000,
-    name: '000004',
+    name: '000139',
   },
 ];
 
@@ -130,45 +140,45 @@ const blacklistedSyncBody: SyncProductInterface[] = [
 const withIntersectsBody: SyncProductInterface[] = [
   {
     id: '1',
-    barcode: ['000004', '000004999'],
+    barcode: ['000139', '000139999'],
     available: 1,
     price: 100,
-    name: '000004',
+    name: '000139',
   },
   {
     id: '2',
-    barcode: ['000005', '000005999'],
+    barcode: ['000138', '000138999'],
     available: 1,
     price: 110,
-    name: '000005',
+    name: '000138',
   },
   {
     id: '3',
-    barcode: ['000004', '000004888'],
+    barcode: ['000139', '000139888'],
     available: 2,
     price: 200,
-    name: '000004',
+    name: '000139',
   },
   {
     id: '4',
-    barcode: ['000005', '000005888'],
+    barcode: ['000138', '000138888'],
     available: 2,
     price: 220,
-    name: '000005',
+    name: '000138',
   },
   {
     id: '5',
-    barcode: ['000004', '000004777'],
+    barcode: ['000139', '000139777'],
     available: 3,
     price: 300,
-    name: '000004',
+    name: '000139',
   },
   {
     id: '6',
-    barcode: ['000005', '000005777'],
+    barcode: ['000138', '000138777'],
     available: 3,
     price: 330,
-    name: '000005',
+    name: '000138',
   },
 ];
 
@@ -320,7 +330,7 @@ describe('Sync', () => {
     cy.getByCy(`${errorBarcode}-create`).should('not.exist');
   });
 
-  it.only('Should sync shop products with site catalogue', () => {
+  it('Should sync shop products with site catalogue', () => {
     // should error on no parameters
     cy.request({
       method: REQUEST_METHOD_POST,
@@ -436,6 +446,34 @@ describe('Sync', () => {
       const body = res.body as SyncShopProductsResponseInterface;
       expect(body.success).equals(true);
       expect(body.shopProducts.length).equals(secondarySyncBody.length);
+    });
+  });
+
+  // TODO
+  it('Should update sync error values', () => {
+    // should success
+    cy.request({
+      method: REQUEST_METHOD_POST,
+      url: `/api/shops/sync?${validRequestParamsC}`,
+      body: JSON.stringify(initialBody),
+    }).then((res) => {
+      const body = res.body as SyncResponseInterface;
+      expect(body.success).equals(true);
+    });
+    cy.visit(`${ROUTE_CMS}/sync-errors`);
+
+    // should update sync error values
+    cy.request({
+      method: REQUEST_METHOD_POST,
+      url: `/api/shops/sync?${validRequestParamsC}`,
+      body: JSON.stringify(updateSyncErrorBody),
+      failOnStatusCode: false,
+    }).then((res) => {
+      const body = res.body as SyncResponseInterface;
+      console.log(body);
+      expect(body.success).equals(true);
+      cy.reload();
+      cy.getByCy(newSyncErrorName).should('exist');
     });
   });
 

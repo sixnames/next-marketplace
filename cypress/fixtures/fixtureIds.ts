@@ -27,10 +27,10 @@ export const fixtureIds = {
   rubricVariantAlcohol: 'e8b173e67fda4af97faf5e86',
 
   // products
-  wineProductA: 'fe57c5fa310ae737a372ae95',
+  wineProductA: '5cde39cfc3e063936b6ca9a5',
 
   // shop products
-  shopAShopProduct: 'f9f0b8c4ce95ac4ea9ed1e57',
+  shopAShopProduct: 'f94181f96d7a01ab671ecc4d',
 
   // promo
   promoACompanyA: 'c8380c35aac574cce1b771f5',

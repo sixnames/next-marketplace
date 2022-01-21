@@ -524,7 +524,7 @@ export interface OrderProductModel extends TimestampModel {
   slug: string;
   originalName: string;
   nameI18n?: TranslationModel | null;
-  promoIds?: ObjectIdModel[] | null;
+  orderPromo?: OrderPromoModel[] | null;
   productId: ObjectIdModel;
   customerId: ObjectIdModel;
   shopProductId: ObjectIdModel;
@@ -590,6 +590,10 @@ export interface OrderDeliveryInfoModel {
   desiredDeliveryDate?: DateModel | null;
 }
 
+export interface OrderPromoModel extends PromoBaseInterface {
+  _id: ObjectIdModel;
+}
+
 export interface OrderModel extends TimestampModel, BaseModel {
   orderId: string;
   statusId: ObjectIdModel;
@@ -612,7 +616,7 @@ export interface OrderModel extends TimestampModel, BaseModel {
   deliveryInfo?: OrderDeliveryInfoModel | null;
   isCanceled?: boolean;
   requests?: OrderRequestModel[] | null;
-  promoIds?: ObjectIdModel[] | null;
+  orderPromo?: OrderPromoModel[] | null;
   giftCertificateId?: ObjectIdModel | null;
   giftCertificateChargedValue?: number | null;
 }
@@ -845,6 +849,7 @@ export interface ShopProductModel
   useCategoryDiscount?: boolean | null;
   useCategoryCashback?: boolean | null;
   useCategoryPayFromCashback?: boolean | null;
+  lastSyncedAt?: DateModel;
 }
 
 export interface ShopModel extends BaseModel, TimestampModel {
@@ -873,6 +878,7 @@ export interface NotSyncedProductModel {
   barcode: string[];
   shopId: ObjectIdModel;
   createdAt: DateModel;
+  lastSyncedAt?: DateModel;
 }
 
 // User

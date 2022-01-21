@@ -1,11 +1,13 @@
-import { ROUTE_CMS } from 'config/common';
 import { fixtureIds } from 'cypress/fixtures/fixtureIds';
+import { getConsoleRubricLinks } from '../../../lib/linkUtils';
 
 describe('Product variants', () => {
+  const links = getConsoleRubricLinks({
+    rubricSlug: fixtureIds.rubricWineSlug,
+    productId: fixtureIds.wineProductA,
+  });
   beforeEach(() => {
-    cy.testAuth(
-      `${ROUTE_CMS}/rubrics/${fixtureIds.rubricWineSlug}/products/product/${fixtureIds.wineProductA}/variants`,
-    );
+    cy.testAuth(links.product.variants);
   });
 
   it('Should CRUD product variants', () => {

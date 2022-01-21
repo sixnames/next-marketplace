@@ -42,7 +42,7 @@ const PromoDetailsPage: NextPage<PromoDetailsPageInterface> = ({
 
   return (
     <ConsoleLayout title={`${promo.name}`} {...layoutProps}>
-      <ConsolePromoLayout promo={promo} basePath={links.root} breadcrumbs={breadcrumbs}>
+      <ConsolePromoLayout promo={promo} basePath={links.parentLink} breadcrumbs={breadcrumbs}>
         <PromoDetails pageCompany={pageCompany} promo={promo} />
       </ConsolePromoLayout>
     </ConsoleLayout>

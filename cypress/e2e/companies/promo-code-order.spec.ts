@@ -30,5 +30,7 @@ describe('Promo code', () => {
     // check cms order
     cy.visit(`${ROUTE_CMS}/orders`);
     cy.getByCy('order-1000000-link').click();
+    cy.getByCy(`order-promo-list`).should('exist');
+    cy.getByCy(`order-discounted-price`).should('exist');
   });
 });

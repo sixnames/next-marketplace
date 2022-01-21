@@ -53,13 +53,14 @@ export interface IpInfoInterface {
   ip: string;
   type: 'IPv4' | 'IPv6';
   hostname: string | null;
-  carrier: Carrier;
-  company: Company;
-  connection: Connection;
-  currency: Currency;
-  location: Location;
-  security: Security;
-  time_zone: TimeZone;
+  carrier?: Carrier;
+  company?: Company;
+  connection?: Connection;
+  currency?: Currency;
+  location?: Location;
+  security?: Security;
+  time_zone?: TimeZone;
+  user_agent?: UserAgent;
 }
 
 export interface UserAgent {

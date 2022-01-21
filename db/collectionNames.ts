@@ -55,3 +55,4 @@ export const COL_USER_PAYBACK_LOGS = 'userPaybackLogs';
 export const COL_USER_CASHBACK_LOGS = 'userCashbackLogs';
 export const COL_CATALOGUE_NAV = 'catalogueNav';
 export const COL_SYNC_INTERSECT = 'syncIntersect';
+export const COL_SESSION_LOGS = 'sessionLogs';

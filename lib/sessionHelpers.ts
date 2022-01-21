@@ -197,7 +197,7 @@ export type GetFieldLocaleType = (i18nField?: Record<string, string> | null) => 
 
 export interface GetRequestParamsPayloadInterface {
   locale: string;
-  city: string;
+  citySlug: string;
   currency: string;
   companySlug: string;
   getI18nLocale<T>(i18nField: Record<string, T>): T;
@@ -213,7 +213,7 @@ export const getRequestParams = async (
 ): Promise<GetRequestParamsPayloadInterface> => {
   const locale = getSessionLocale(context);
   const currency = getSessionCurrency(context);
-  const city = getSessionCity(context);
+  const citySlug = getSessionCity(context);
   const companySlug = getSessionCompanySlug(context);
 
   function getI18nLocale<T>(i18nField: Record<string, T>): T {
@@ -221,7 +221,7 @@ export const getRequestParams = async (
   }
 
   function getCityData<T>(cityField: Record<string, T>): T {
-    return getCityFieldData(cityField, city);
+    return getCityFieldData(cityField, citySlug);
   }
 
   function getFieldLocale(i18nField?: Record<string, string> | null): string {
@@ -231,7 +231,7 @@ export const getRequestParams = async (
 
     let translation = getI18nLocale<string>(i18nField);
 
-    // Get fallback language if chosen not found
+    // Get fallback locale if chosen locale not found
     if (!translation) {
       translation = i18nField[SECONDARY_LOCALE];
     }
@@ -264,7 +264,7 @@ export const getRequestParams = async (
 
   return {
     locale,
-    city,
+    citySlug,
     currency,
     companySlug,
     getI18nLocale,

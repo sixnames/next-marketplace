@@ -177,7 +177,7 @@ export async function createProductWithSyncError({
         attributeIds: [],
         attributes: [],
         variants: [],
-        assets: [IMAGE_FALLBACK],
+        assets: [],
         titleCategorySlugs: [],
         createdAt: new Date(),
         updatedAt: new Date(),

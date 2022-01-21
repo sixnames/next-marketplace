@@ -569,7 +569,7 @@ function castOptionsForBreadcrumbs({
 
 export interface GetCatalogueDataInterface {
   locale: string;
-  city: string;
+  citySlug: string;
   basePath: string;
   companySlug?: string;
   companyId?: string | ObjectIdModel | null;
@@ -587,7 +587,7 @@ export interface GetCatalogueDataInterface {
 
 export const getCatalogueData = async ({
   locale,
-  city,
+  citySlug,
   input,
   companyId,
   snippetVisibleAttributesCount,
@@ -694,7 +694,7 @@ export const getCatalogueData = async ({
     const companyMatch = companyId ? { companyId: new ObjectId(companyId) } : {};
     const productsInitialMatch = {
       ...companyMatch,
-      citySlug: city,
+      citySlug: citySlug,
       ...rubricStage,
       ...brandStage,
       ...brandCollectionStage,
@@ -706,7 +706,7 @@ export const getCatalogueData = async ({
 
     // aggregate catalogue initial data
     const pipelineConfig: ProductsPaginatedAggregationInterface = {
-      citySlug: city,
+      citySlug: citySlug,
       companySlug,
     };
 
@@ -1048,7 +1048,7 @@ export const getCatalogueData = async ({
     if (!search) {
       const seoContentParams = await getCatalogueAllSeoContents({
         rubricSlug: rubric.slug,
-        citySlug: city,
+        citySlug: citySlug,
         companySlug: companySlug,
         filters: input.filters,
         locale,
@@ -1315,7 +1315,7 @@ export async function getCatalogueProps(
 
   const rawCatalogueData = await getCatalogueData({
     locale: props.sessionLocale,
-    city: props.citySlug,
+    citySlug: props.citySlug,
     companySlug: props.domainCompany?.slug,
     companyId: props.domainCompany?._id,
     currency: props.initialData.currency,

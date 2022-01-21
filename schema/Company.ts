@@ -14,7 +14,6 @@ import {
 } from '../db/collectionNames';
 import { aggregatePagination } from '../db/dao/aggregatePagination';
 import {
-  CompaniesPaginationPayloadModel,
   CompanyModel,
   CompanyPayloadModel,
   ConfigModel,
@@ -98,9 +97,9 @@ export const Company = objectType({
         }),
       },
       resolve: async (source, args, context): Promise<ShopsPaginationPayloadModel> => {
-        const { city } = await getRequestParams(context);
+        const { citySlug } = await getRequestParams(context);
         const paginationResult = await aggregatePagination<ShopModel>({
-          city,
+          citySlug,
           input: args.input,
           collectionName: COL_SHOPS,
           pipeline: [{ $match: { companyId: source._id } }],
@@ -117,54 +116,6 @@ export const CompaniesPaginationPayload = objectType({
     t.implements('PaginationPayload');
     t.nonNull.list.nonNull.field('docs', {
       type: 'Company',
-    });
-  },
-});
-
-// Company Queries
-export const CompanyQueries = extendType({
-  type: 'Query',
-  definition(t) {
-    // Should return company by given id
-    t.field('getCompany', {
-      type: 'Company',
-      description: 'Should return company by given id',
-      args: {
-        _id: nonNull(
-          arg({
-            type: 'ObjectId',
-          }),
-        ),
-      },
-      resolve: async (_root, args): Promise<CompanyModel> => {
-        const { db } = await getDatabase();
-        const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
-        const company = await companiesCollection.findOne({ _id: args._id });
-        if (!company) {
-          throw Error('Company not found by given id');
-        }
-        return company;
-      },
-    });
-
-    // Should return paginated companies
-    t.field('getAllCompanies', {
-      type: 'CompaniesPaginationPayload',
-      description: 'Should return paginated companies',
-      args: {
-        input: arg({
-          type: 'PaginationInput',
-        }),
-      },
-      resolve: async (_root, args, context): Promise<CompaniesPaginationPayloadModel> => {
-        const { city } = await getRequestParams(context);
-        const paginationResult = await aggregatePagination<CompanyModel>({
-          collectionName: COL_COMPANIES,
-          input: args.input,
-          city,
-        });
-        return paginationResult;
-      },
     });
   },
 });

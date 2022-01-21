@@ -1453,11 +1453,6 @@ type Query {
   Should return paginated cities
   """
   getAllCities(input: PaginationInput): CitiesPaginationPayload!
-
-  """
-  Should return paginated companies
-  """
-  getAllCompanies(input: PaginationInput): CompaniesPaginationPayload
   getAllConfigs: [Config!]!
 
   """
@@ -1497,11 +1492,6 @@ type Query {
   getAllRubricVariants: [RubricVariant!]!
 
   """
-  Should return shop by given slug
-  """
-  getAllShops(input: PaginationInput): ShopsPaginationPayload!
-
-  """
   Should return paginated suppliers
   """
   getAllSuppliers(input: PaginationInput): SuppliersPaginationPayload!
@@ -1532,16 +1522,6 @@ type Query {
   Should return city by given slug
   """
   getCityBySlug(slug: String!): City!
-
-  """
-  Should return company by given id
-  """
-  getCompany(_id: ObjectId!): Company
-
-  """
-  Should return paginated company shops list
-  """
-  getCompanyShops(companyId: ObjectId!, input: PaginationInput): ShopsPaginationPayload!
 
   """
   Should return manufacturer by given id
@@ -1582,16 +1562,6 @@ type Query {
   Should return cities list
   """
   getSessionCities: [City!]!
-
-  """
-  Should return shop by given id
-  """
-  getShop(_id: ObjectId!): Shop!
-
-  """
-  Should return shop by given slug
-  """
-  getShopBySlug(slug: String!): Shop!
 
   """
   Should return supplier by given id
@@ -1778,9 +1748,7 @@ type Shop implements Base & Timestamp {
   _id: ObjectId!
   address: Address!
   assets: [String!]!
-  city: City!
   citySlug: String!
-  company: Company!
   companyId: ObjectId!
   contacts: Contacts!
   createdAt: Date!
@@ -1788,8 +1756,6 @@ type Shop implements Base & Timestamp {
   logo: String!
   mapMarker: MapMarker
   name: String!
-  productsCount: Int!
-  shopProducts(input: PaginationInput): ShopProductsPaginationPayload!
   slug: String!
   updatedAt: Date!
 }

@@ -12,6 +12,7 @@ import {
   OrderRequestVariantModel,
   PageStateModel,
   ProductDraftStateModel,
+  SessionLogEventTypeEnum,
   SortDirectionModel,
   SupplierPriceVariantModel,
 } from '../db/dbModels';
@@ -439,6 +440,11 @@ export const SUPPLIER_PRICE_VARIANT_ENUMS = [
 export const DRAFT_STATE_PENDING = 'pending' as ProductDraftStateModel;
 export const DRAFT_STATE_RETURNED = 'returned' as ProductDraftStateModel;
 export const DRAFT_STATE_CONFIRMED = 'confirmed' as ProductDraftStateModel;
+
+// session log event variants
+export const SESSION_LOG_EVENT_VISIT = 'visit' as SessionLogEventTypeEnum;
+export const SESSION_LOG_EVENT_ADD_TO_CART = 'addToCartClick' as ProductDraftStateModel;
+export const SESSION_LOG_EVENT_MAKE_AN_ORDER = 'makeAnOrderClick' as ProductDraftStateModel;
 
 // Alphabets
 export const ALPHABET_EN = [

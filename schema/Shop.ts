@@ -1,24 +1,8 @@
-import { arg, extendType, inputObjectType, list, nonNull, objectType, stringArg } from 'nexus';
+import { arg, extendType, inputObjectType, list, nonNull, objectType } from 'nexus';
 import generator from 'generate-password';
 import { DEFAULT_COUNTERS_OBJECT, GEO_POINT_TYPE } from '../config/common';
-import {
-  COL_CITIES,
-  COL_COMPANIES,
-  COL_PRODUCT_SUMMARIES,
-  COL_SHOP_PRODUCTS,
-  COL_SHOPS,
-} from '../db/collectionNames';
-import { aggregatePagination } from '../db/dao/aggregatePagination';
-import {
-  CityModel,
-  CompanyModel,
-  ProductSummaryModel,
-  ShopModel,
-  ShopPayloadModel,
-  ShopProductModel,
-  ShopProductsPaginationPayloadModel,
-  ShopsPaginationPayloadModel,
-} from '../db/dbModels';
+import { COL_PRODUCT_SUMMARIES, COL_SHOP_PRODUCTS, COL_SHOPS } from '../db/collectionNames';
+import { ProductSummaryModel, ShopModel, ShopPayloadModel, ShopProductModel } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
 import { getReadableAddress } from '../lib/addressUtils';
 import { deleteUpload, getMainImage, reorderAssets } from '../lib/assetUtils/assetUtils';
@@ -65,71 +49,6 @@ export const Shop = objectType({
     t.nonNull.field('address', {
       type: 'Address',
     });
-
-    // Shop paginated shopProducts field resolver
-    t.nonNull.field('shopProducts', {
-      type: 'ShopProductsPaginationPayload',
-      args: {
-        input: arg({
-          type: 'PaginationInput',
-        }),
-      },
-      resolve: async (source, args, context): Promise<ShopProductsPaginationPayloadModel> => {
-        const { city } = await getRequestParams(context);
-        const paginationResult = await aggregatePagination<ShopProductModel>({
-          city,
-          collectionName: COL_SHOP_PRODUCTS,
-          input: args.input,
-          pipeline: [
-            {
-              $match: {
-                shopId: source._id,
-              },
-            },
-          ],
-        });
-        return paginationResult;
-      },
-    });
-
-    // Shop city resolver
-    t.nonNull.field('city', {
-      type: 'City',
-      resolve: async (source): Promise<CityModel> => {
-        const { db } = await getDatabase();
-        const citiesCollection = db.collection<CityModel>(COL_CITIES);
-        const city = await citiesCollection.findOne({ slug: source.citySlug });
-        if (!city) {
-          throw Error('City not found on Shop city field');
-        }
-        return city;
-      },
-    });
-
-    // Shop company field resolver
-    t.nonNull.field('company', {
-      type: 'Company',
-      resolve: async (source): Promise<CompanyModel> => {
-        const { db } = await getDatabase();
-        const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
-        const company = await companiesCollection.findOne({ shopsIds: source._id });
-        if (!company) {
-          throw Error('Company not found on Shop company field');
-        }
-        return company;
-      },
-    });
-
-    // Shop productsCount field resolver
-    t.nonNull.field('productsCount', {
-      type: 'Int',
-      resolve: async (source): Promise<number> => {
-        const { db } = await getDatabase();
-        const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
-        const count = await shopProductsCollection.find({ shopId: source._id }).count();
-        return count;
-      },
-    });
   },
 });
 
@@ -139,104 +58,6 @@ export const ShopsPaginationPayload = objectType({
     t.implements('PaginationPayload');
     t.nonNull.list.nonNull.field('docs', {
       type: 'Shop',
-    });
-  },
-});
-
-// Shop Queries
-export const ShopQueries = extendType({
-  type: 'Query',
-  definition(t) {
-    // Should return shop by given id
-    t.nonNull.field('getShop', {
-      type: 'Shop',
-      description: 'Should return shop by given id',
-      args: {
-        _id: nonNull(
-          arg({
-            type: 'ObjectId',
-          }),
-        ),
-      },
-      resolve: async (_root, args): Promise<ShopModel> => {
-        const { db } = await getDatabase();
-        const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
-        const shop = await shopsCollection.findOne({ _id: args._id });
-        if (!shop) {
-          throw Error('Shop not found by given id');
-        }
-        return shop;
-      },
-    });
-
-    // Should return shop by given slug
-    t.nonNull.field('getShopBySlug', {
-      type: 'Shop',
-      description: 'Should return shop by given slug',
-      args: {
-        slug: nonNull(stringArg()),
-      },
-      resolve: async (_root, args): Promise<ShopModel> => {
-        const { db } = await getDatabase();
-        const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
-        const shop = await shopsCollection.findOne({ slug: args.slug });
-        if (!shop) {
-          throw Error('Shop not found by given slug');
-        }
-        return shop;
-      },
-    });
-
-    // Should return paginated shops list
-    t.nonNull.field('getAllShops', {
-      type: 'ShopsPaginationPayload',
-      description: 'Should return shop by given slug',
-      args: {
-        input: arg({
-          type: 'PaginationInput',
-        }),
-      },
-      resolve: async (_root, args, context): Promise<ShopsPaginationPayloadModel> => {
-        const { city } = await getRequestParams(context);
-        const paginationResult = await aggregatePagination<ShopModel>({
-          city,
-          input: args.input,
-          collectionName: COL_SHOPS,
-        });
-        return paginationResult;
-      },
-    });
-
-    // Should return paginated company shops list
-    t.nonNull.field('getCompanyShops', {
-      type: 'ShopsPaginationPayload',
-      description: 'Should return paginated company shops list',
-      args: {
-        input: arg({
-          type: 'PaginationInput',
-        }),
-        companyId: nonNull(
-          arg({
-            type: 'ObjectId',
-          }),
-        ),
-      },
-      resolve: async (_root, args, context): Promise<ShopsPaginationPayloadModel> => {
-        const { city } = await getRequestParams(context);
-        const paginationResult = await aggregatePagination<ShopModel>({
-          city,
-          input: args.input,
-          collectionName: COL_SHOPS,
-          pipeline: [
-            {
-              $match: {
-                companyId: args.companyId,
-              },
-            },
-          ],
-        });
-        return paginationResult;
-      },
     });
   },
 });

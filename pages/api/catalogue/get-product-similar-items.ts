@@ -25,7 +25,7 @@ export interface CatalogueQueryInterface {
 async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse) {
   try {
     const { query } = req;
-    const { locale, city } = await getRequestParams({ req, res });
+    const { locale, citySlug } = await getRequestParams({ req, res });
     const companySlug = getSessionCompanySlug({ req, res });
     const anyQuery = query as unknown;
     const { productId } = anyQuery as CatalogueQueryInterface;
@@ -61,7 +61,7 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
         {
           $match: {
             ...companyMatch,
-            citySlug: city,
+            citySlug: citySlug,
             productId: finalProductId,
           },
         },
@@ -124,7 +124,7 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
               {
                 $match: {
                   ...companyMatch,
-                  citySlug: city,
+                  citySlug: citySlug,
                   rubricSlug: product.rubricSlug,
                   filterSlugs: {
                     $in: product.filterSlugs,
@@ -145,7 +145,7 @@ async function getProductSimilarItems(req: NextApiRequest, res: NextApiResponse)
                 },
               },
               ...shopProductsGroupPipeline({
-                citySlug: city,
+                citySlug: citySlug,
                 companySlug,
               }),
               {

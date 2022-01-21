@@ -98,9 +98,9 @@ export const Company = objectType({
         }),
       },
       resolve: async (source, args, context): Promise<ShopsPaginationPayloadModel> => {
-        const { city } = await getRequestParams(context);
+        const { citySlug } = await getRequestParams(context);
         const paginationResult = await aggregatePagination<ShopModel>({
-          city,
+          citySlug: city,
           input: args.input,
           collectionName: COL_SHOPS,
           pipeline: [{ $match: { companyId: source._id } }],
@@ -157,11 +157,11 @@ export const CompanyQueries = extendType({
         }),
       },
       resolve: async (_root, args, context): Promise<CompaniesPaginationPayloadModel> => {
-        const { city } = await getRequestParams(context);
+        const { citySlug } = await getRequestParams(context);
         const paginationResult = await aggregatePagination<CompanyModel>({
           collectionName: COL_COMPANIES,
           input: args.input,
-          city,
+          citySlug: city,
         });
         return paginationResult;
       },

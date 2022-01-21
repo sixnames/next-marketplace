@@ -55,7 +55,7 @@ export const getSessionCart = async ({
   try {
     const { db } = await getDatabase();
     const { req } = context;
-    const { locale, city } = await getRequestParams(context);
+    const { locale, citySlug } = await getRequestParams(context);
     const cartsCollection = db.collection<CartModel>(COL_CARTS);
     const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
     const productSummariesCollection =
@@ -258,7 +258,7 @@ export const getSessionCart = async ({
             {
               $match: {
                 _id: shopProductId,
-                citySlug: city,
+                citySlug: citySlug,
                 ...companyIdStage,
               },
             },
@@ -386,7 +386,7 @@ export const getSessionCart = async ({
                       $expr: {
                         $eq: ['$$productId', '$productId'],
                       },
-                      citySlug: city,
+                      citySlug: citySlug,
                       ...companyIdStage,
                     },
                   },

@@ -75,9 +75,9 @@ export const Shop = objectType({
         }),
       },
       resolve: async (source, args, context): Promise<ShopProductsPaginationPayloadModel> => {
-        const { city } = await getRequestParams(context);
+        const { citySlug } = await getRequestParams(context);
         const paginationResult = await aggregatePagination<ShopProductModel>({
-          city,
+          citySlug: city,
           collectionName: COL_SHOP_PRODUCTS,
           input: args.input,
           pipeline: [
@@ -197,9 +197,9 @@ export const ShopQueries = extendType({
         }),
       },
       resolve: async (_root, args, context): Promise<ShopsPaginationPayloadModel> => {
-        const { city } = await getRequestParams(context);
+        const { citySlug } = await getRequestParams(context);
         const paginationResult = await aggregatePagination<ShopModel>({
-          city,
+          citySlug: city,
           input: args.input,
           collectionName: COL_SHOPS,
         });
@@ -222,9 +222,9 @@ export const ShopQueries = extendType({
         ),
       },
       resolve: async (_root, args, context): Promise<ShopsPaginationPayloadModel> => {
-        const { city } = await getRequestParams(context);
+        const { citySlug } = await getRequestParams(context);
         const paginationResult = await aggregatePagination<ShopModel>({
-          city,
+          citySlug: city,
           input: args.input,
           collectionName: COL_SHOPS,
           pipeline: [

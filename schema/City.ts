@@ -83,11 +83,11 @@ export const CityQueries = extendType({
         }),
       },
       resolve: async (_root, args, context): Promise<CitiesPaginationPayloadModel> => {
-        const { city } = await getRequestParams(context);
+        const { citySlug } = await getRequestParams(context);
         const paginationResult = await aggregatePagination<CityModel>({
           collectionName: COL_CITIES,
           input: args.input,
-          city,
+          citySlug: city,
         });
         return paginationResult;
       },

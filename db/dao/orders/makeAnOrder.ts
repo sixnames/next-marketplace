@@ -98,7 +98,7 @@ export async function makeAnOrder({
   context,
   input,
 }: DaoPropsInterface<MakeAnOrderInputInterface>): Promise<MakeAnOrderPayloadModel> {
-  const { getApiMessage, companySlug, city, locale } = await getRequestParams(context);
+  const { getApiMessage, companySlug, citySlug, locale } = await getRequestParams(context);
   const { db, client } = await getDatabase();
   const rolesCollection = db.collection<RoleModel>(COL_ROLES);
   const usersCollection = db.collection<UserModel>(COL_USERS);
@@ -227,7 +227,7 @@ export async function makeAnOrder({
           userName: createdUser.name,
           password: newPassword,
           companySiteSlug: companySlug,
-          citySlug: city,
+          citySlug: citySlug,
           locale,
         });
       }
@@ -489,7 +489,7 @@ export async function makeAnOrder({
           companyId: order.companyId,
           companySiteSlug: order.companySiteSlug,
           orderObjectId: order._id,
-          citySlug: city,
+          citySlug: citySlug,
           locale,
         };
         await sendOrderCreatedEmail(notificationConfig);

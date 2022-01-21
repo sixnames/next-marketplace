@@ -138,11 +138,11 @@ export const ManufacturerQueries = extendType({
         }),
       },
       resolve: async (_root, args, context): Promise<ManufacturersPaginationPayloadModel> => {
-        const { city } = await getRequestParams(context);
+        const { citySlug } = await getRequestParams(context);
         const paginationResult = await aggregatePagination<ManufacturerModel>({
           collectionName: COL_MANUFACTURERS,
           input: args.input,
-          city,
+          citySlug: city,
         });
         return paginationResult;
       },

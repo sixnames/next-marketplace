@@ -26,7 +26,7 @@ export async function signUp({
   input,
 }: DaoPropsInterface<SignUpInputInterface>): Promise<UserPayloadModel> {
   try {
-    const { getApiMessage, city, companySlug, locale } = await getRequestParams(context);
+    const { getApiMessage, citySlug, companySlug, locale } = await getRequestParams(context);
     const { db } = await getDatabase();
     const usersCollection = db.collection<UserModel>(COL_USERS);
     const rolesCollection = db.collection<RoleModel>(COL_ROLES);
@@ -96,7 +96,7 @@ export async function signUp({
       userName: createdUser.name,
       password: input.password,
       companySiteSlug: companySlug,
-      citySlug: city,
+      citySlug: citySlug,
       locale,
     });
 

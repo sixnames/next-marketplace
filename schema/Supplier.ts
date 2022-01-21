@@ -135,11 +135,11 @@ export const SupplierQueries = extendType({
         }),
       },
       resolve: async (_root, args, context): Promise<SuppliersPaginationPayloadModel> => {
-        const { city } = await getRequestParams(context);
+        const { citySlug } = await getRequestParams(context);
         const paginationResult = await aggregatePagination<SupplierModel>({
           collectionName: COL_SUPPLIERS,
           input: args.input,
-          city,
+          citySlug: city,
         });
         return paginationResult;
       },

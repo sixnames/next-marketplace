@@ -1172,6 +1172,7 @@ export type SupplierPayloadModel = PayloadType<SupplierModel>;
 export type UserCategoryPayloadModel = PayloadType<UserCategoryModel>;
 export type UserPayloadModel = PayloadType<UserModel>;
 export type SeoContentPayloadModel = PayloadType<SeoContentModel>;
+export type SessionLogPayloadModel = PayloadType<SessionLogModel>;
 
 export interface GiftCertificatePayloadModel extends PayloadType<GiftCertificateModel> {
   notAuth?: boolean;
@@ -1333,7 +1334,10 @@ export interface SessionLogEventModel extends SessionLogEventBaseModel {
 export interface SessionLogModel {
   _id: ObjectIdModel;
   companySlug: string;
+  citySlug: string;
+  locale: string;
   ipInfo: IpInfoInterface;
+  userRoleId?: ObjectIdModel | null;
   userId?: ObjectIdModel | null;
   events: (
     | SessionLogEventModel

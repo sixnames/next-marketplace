@@ -92,7 +92,7 @@ export async function copyProduct({
         slug: itemId,
         originalName: values.originalName || '',
         mainImage: IMAGE_FALLBACK,
-        assets: [IMAGE_FALLBACK],
+        assets: [],
         rubricId: sourceProductSummary.rubricId,
         rubricSlug: sourceProductSummary.rubricSlug,
         active: true,

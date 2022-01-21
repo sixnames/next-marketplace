@@ -38,7 +38,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const shopProducts: ShopProductInterface[] = [];
 
   try {
-    const { city, locale } = await getRequestParams({ req, res });
+    const { citySlug, locale } = await getRequestParams({ req, res });
     const { db } = await getDatabase();
     const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
     const args = JSON.parse(req.body) as HeaderSearchInputInterface;
@@ -73,7 +73,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const match = {
       ...searchStage,
       ...companyMatch,
-      citySlug: city,
+      citySlug: citySlug,
       ...ignoreNoImageStage,
     };
 
@@ -90,8 +90,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             rubricSlug: { $first: `$rubricSlug` },
             brandSlug: { $first: '$brandSlug' },
             brandCollectionSlug: { $first: '$brandCollectionSlug' },
-            views: { $max: `$views.${companySlug}.${city}` },
-            priorities: { $max: `$priorities.${companySlug}.${city}` },
+            views: { $max: `$views.${companySlug}.${citySlug}` },
+            priorities: { $max: `$priorities.${companySlug}.${citySlug}` },
             minPrice: {
               $min: '$price',
             },

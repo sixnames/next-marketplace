@@ -23,7 +23,7 @@ export async function updateMyPassword({
   input,
 }: DaoPropsInterface<UpdateMyPasswordInputInterface>): Promise<UserPayloadModel> {
   try {
-    const { getApiMessage, companySlug, city, locale } = await getRequestParams(context);
+    const { getApiMessage, companySlug, citySlug, locale } = await getRequestParams(context);
     const sessionUser = await getSessionUser(context);
     const { db } = await getDatabase();
     const usersCollection = db.collection<UserModel>(COL_USERS);
@@ -85,7 +85,7 @@ export async function updateMyPassword({
       to: updatedUser.email,
       userName: updatedUser.name,
       companySiteSlug: companySlug,
-      citySlug: city,
+      citySlug: citySlug,
       locale,
     });
 

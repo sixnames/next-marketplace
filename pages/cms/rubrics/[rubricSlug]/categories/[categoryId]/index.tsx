@@ -111,7 +111,7 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
       },
       {
         name: `Категории`,
-        href: links.categories,
+        href: links.category.parentLink,
       },
     ],
   };

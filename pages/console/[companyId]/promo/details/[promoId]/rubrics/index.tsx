@@ -45,14 +45,18 @@ const ConsolePromoRubrics: React.FC<ConsolePromoRubricsInterface> = ({
       },
       {
         name: `${promo.name}`,
-        href: links.promo.parentLink,
+        href: links.promo.root,
       },
     ],
   };
 
   return (
-    <ConsolePromoLayout basePath={links.root} promo={promo} breadcrumbs={breadcrumbs}>
-      <CompanyRubricsList rubrics={rubrics} pageCompany={pageCompany} routeBasePath={links.root} />
+    <ConsolePromoLayout basePath={links.parentLink} promo={promo} breadcrumbs={breadcrumbs}>
+      <CompanyRubricsList
+        rubrics={rubrics}
+        pageCompany={pageCompany}
+        routeBasePath={links.promo.root}
+      />
     </ConsolePromoLayout>
   );
 };

@@ -21,7 +21,7 @@ import CmsRubricLayout from '../../../../../../layout/cms/CmsRubricLayout';
 import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
 import { sortObjectsByField } from '../../../../../../lib/arrayUtils';
 import { getFieldStringLocale } from '../../../../../../lib/i18n';
-import { getConsoleCompanyLinks, getConsoleRubricLinks } from '../../../../../../lib/linkUtils';
+import { getConsoleCompanyLinks } from '../../../../../../lib/linkUtils';
 import {
   castDbData,
   getConsoleInitialData,
@@ -35,20 +35,21 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
   pageCompany,
   routeBasePath,
 }) => {
-  const links = getConsoleRubricLinks({
-    rubricSlug: rubric.slug,
-    basePath: routeBasePath,
+  const links = getConsoleCompanyLinks({
+    companyId: pageCompany?._id,
+    rubricSlug: rubric?.slug,
   });
+
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `Категории`,
     config: [
       {
         name: `Рубрикатор`,
-        href: links.parentLink,
+        href: links.rubrics.parentLink,
       },
       {
         name: `${rubric?.name}`,
-        href: links.parentLink,
+        href: links.rubrics.root,
       },
     ],
   };
@@ -56,7 +57,7 @@ const RubricCategoriesConsumer: React.FC<RubricCategoriesConsumerInterface> = ({
   return (
     <CmsRubricLayout
       hideAttributesPath
-      basePath={routeBasePath}
+      basePath={links.root}
       rubric={rubric}
       breadcrumbs={breadcrumbs}
     >

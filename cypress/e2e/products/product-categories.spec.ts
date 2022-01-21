@@ -18,7 +18,7 @@ describe('Product categories', () => {
     cy.getByCy('Объем-attribute').should('not.exist');
 
     // hide attribute in cms product card
-    cy.visit(links.categories);
+    cy.visit(links.category.parentLink);
     cy.visitBlank('Односолодовый');
     cy.getByCy('attributes').click();
     cy.wait(1500);

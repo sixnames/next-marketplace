@@ -10,12 +10,18 @@ import {
   COL_ORDER_PRODUCTS,
   COL_ORDER_STATUSES,
   COL_ORDERS,
+  COL_PROMO,
   COL_SHOP_PRODUCTS,
   COL_SHOPS,
 } from '../../collectionNames';
-import { ObjectIdModel } from '../../dbModels';
+import { ObjectIdModel, PromoModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
-import { OrderInterface, OrderStatusInterface } from '../../uiInterfaces';
+import {
+  OrderInterface,
+  OrderPromoInterface,
+  OrderStatusInterface,
+  PromoInterface,
+} from '../../uiInterfaces';
 import { summaryPipeline, shopProductSupplierProductsPipeline } from '../constantPipelines';
 
 interface CastOrderStatusInterface {
@@ -53,6 +59,7 @@ export async function getConsoleOrder({
 }: GetConsoleOrderInterface): Promise<GetConsoleOrderPayloadInterface | null> {
   const { db } = await getDatabase();
   const ordersCollection = db.collection<OrderInterface>(COL_ORDERS);
+  const promoCollection = db.collection<PromoModel>(COL_PROMO);
   const orderStatusesCollection = db.collection<OrderStatusInterface>(COL_ORDER_STATUSES);
   if (!orderId) {
     return null;
@@ -209,8 +216,42 @@ export async function getConsoleOrder({
     return null;
   }
 
+  // get order promos
+  let promoList: PromoInterface[] = [];
+  const promoIds = (initialOrder.orderPromo || []).map(({ _id }) => _id);
+  if (promoIds.length > 0) {
+    promoList = await promoCollection
+      .find({
+        _id: {
+          $in: promoIds,
+        },
+      })
+      .toArray();
+  }
+
   const order: OrderInterface = {
     ...initialOrder,
+    orderPromo: (initialOrder.orderPromo || []).reduce(
+      (acc: OrderPromoInterface[], orderPromoItem) => {
+        const promo = promoList.find(({ _id }) => {
+          return _id.equals(orderPromoItem._id);
+        });
+        if (!promo) {
+          return [...acc, orderPromoItem];
+        }
+        return [
+          ...acc,
+          {
+            ...orderPromoItem,
+            promo: {
+              ...promo,
+              name: getFieldStringLocale(promo.nameI18n, locale),
+            },
+          },
+        ];
+      },
+      [],
+    ),
     status: initialOrder.status
       ? {
           ...initialOrder.status,

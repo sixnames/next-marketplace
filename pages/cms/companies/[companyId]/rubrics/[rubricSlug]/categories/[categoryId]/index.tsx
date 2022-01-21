@@ -65,7 +65,7 @@ const CategoryDetails: React.FC<CategoryDetailsInterface> = ({
       },
       {
         name: `Категории`,
-        href: links.rubrics.categories,
+        href: links.rubrics.category.parentLink,
       },
     ],
   };

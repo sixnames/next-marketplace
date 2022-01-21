@@ -243,7 +243,6 @@ describe('Sync', () => {
     cy.request({
       method: REQUEST_METHOD_GET,
       url: `/api/shops/get-order-statuses?${validRequestParamsC}`,
-      body: JSON.stringify(updateBody),
     }).then((res) => {
       const body = res.body as SyncOrderStatusesResponseInterface;
       expect(body.success).equals(true);
@@ -449,7 +448,6 @@ describe('Sync', () => {
     });
   });
 
-  // TODO
   it('Should update sync error values', () => {
     // should success
     cy.request({
@@ -474,6 +472,23 @@ describe('Sync', () => {
       expect(body.success).equals(true);
       cy.reload();
       cy.getByCy(newSyncErrorName).should('exist');
+    });
+  });
+
+  it('Should reset old shop products availability', () => {
+    const links = getCmsCompanyLinks({
+      companyId: fixtureIds.companyA,
+      shopId: fixtureIds.shopA,
+      rubricSlug: fixtureIds.rubricChampagneSlug,
+    });
+    cy.request({
+      method: REQUEST_METHOD_POST,
+      url: `/api/shops/sync?${validRequestParamsA}`,
+      body: JSON.stringify(initialBody),
+    }).then((res) => {
+      const body = res.body as SyncResponseInterface;
+      expect(body.success).equals(true);
+      cy.visit(links.shop.rubrics.product.parentLink);
     });
   });
 

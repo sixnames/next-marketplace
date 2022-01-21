@@ -24,6 +24,7 @@ import ContentItemControls from '../button/ContentItemControls';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
 import Currency from '../Currency';
+import FormattedDateTime from '../FormattedDateTime';
 import FormikInput from '../FormElements/Input/FormikInput';
 import FormikRouterSearch from '../FormElements/Search/FormikRouterSearch';
 import Inner from '../Inner';
@@ -178,6 +179,11 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
           return <div key={barcodeItem}>{barcodeItem}</div>;
         });
       },
+    },
+    {
+      accessor: 'lastSyncedAt',
+      headTitle: 'Последняя синхронизация',
+      render: ({ cellData }) => <FormattedDateTime value={cellData} />,
     },
     {
       render: ({ dataItem, rowIndex }) => {

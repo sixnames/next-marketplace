@@ -9,6 +9,7 @@ const carts: NotSyncedProductModel[] = [
     available: 99,
     price: 99,
     name: 'Error product',
+    lastSyncedAt: new Date(),
     createdAt: new Date(),
   },
 ];

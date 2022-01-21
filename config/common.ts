@@ -69,6 +69,7 @@ export const LOCALES = [DEFAULT_LOCALE, SECONDARY_LOCALE];
 
 export const CITY_COOKIE_KEY = 'city';
 export const LOCALE_COOKIE_KEY = 'locale';
+export const SESSION_COOKIE_KEY = 'sessionId';
 export const COMPANY_SLUG_COOKIE_KEY = 'companySlug';
 export const LOCALE_HEADER = 'content-language';
 
@@ -443,6 +444,7 @@ export const DRAFT_STATE_CONFIRMED = 'confirmed' as ProductDraftStateModel;
 
 // session log event variants
 export const SESSION_LOG_EVENT_VISIT = 'visit' as SessionLogEventTypeEnum;
+export const SESSION_LOG_EVENT_LEAVE = 'leave' as SessionLogEventTypeEnum;
 export const SESSION_LOG_EVENT_ADD_TO_CART = 'addToCartClick' as ProductDraftStateModel;
 export const SESSION_LOG_EVENT_MAKE_AN_ORDER = 'makeAnOrderClick' as ProductDraftStateModel;
 

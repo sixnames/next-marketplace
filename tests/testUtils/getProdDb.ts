@@ -33,6 +33,7 @@ import {
   ProductFacetModel,
   ProductSummaryModel,
   CatalogueNavModel,
+  SessionLogModel,
 } from '../../db/dbModels';
 import {
   COL_ATTRIBUTES,
@@ -69,6 +70,7 @@ import {
   COL_PRODUCT_FACETS,
   COL_PRODUCT_SUMMARIES,
   COL_CATALOGUE_NAV,
+  COL_SESSION_LOGS,
 } from '../../db/collectionNames';
 import { Db, MongoClient } from 'mongodb';
 import path from 'path';
@@ -158,14 +160,16 @@ export async function updateIndexes(db: Db) {
     _id: -1,
   });
 
+  // Logs
+  await createCollectionIfNotExist(COL_SESSION_LOGS);
+  const sessionLogsCollection = db.collection<SessionLogModel>(COL_SESSION_LOGS);
+  await sessionLogsCollection.createIndex({ companySlug: 1, citySlug: 1 });
+  await sessionLogsCollection.createIndex({ userId: 1 });
+
   // Carts
   await createCollectionIfNotExist(COL_CARTS);
   const cartsCollection = db.collection<CartModel>(COL_CARTS);
-  // const cartIndexExist = await cartsCollection.indexExists('updatedAt_1');
   await cartsCollection.createIndex({ updatedAt: 1 }, { expireAfterSeconds: ISR_ONE_WEEK });
-  /*if (!cartIndexExist) {
-    await cartsCollection.createIndex({ updatedAt: 1 }, { expireAfterSeconds: ISR_ONE_WEEK });
-  }*/
 
   // Seo contents
   await createCollectionIfNotExist(COL_SEO_CONTENTS);

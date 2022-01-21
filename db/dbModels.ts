@@ -1337,7 +1337,7 @@ export interface SessionLogModel {
   _id: ObjectIdModel;
   companySlug: string;
   ipInfo: IpInfoInterface;
-  userId?: ObjectIdModel;
+  userId?: ObjectIdModel | null;
   events: (
     | SessionLogEventModel
     | SessionLogAddToCartEventModel

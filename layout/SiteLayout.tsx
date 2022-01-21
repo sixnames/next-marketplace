@@ -7,6 +7,7 @@ import { useConfigContext } from '../context/configContext';
 import { SiteContextProvider } from '../context/siteContext';
 import { SiteUserContextProvider } from '../context/siteUserContext';
 import { PagesGroupInterface, RubricInterface } from '../db/uiInterfaces';
+import { useSetSessionNavLog } from '../hooks/mutations/useSessionLogMutations';
 import { PagePropsInterface } from '../pages/_app';
 import Footer from './footer/Footer';
 import Header from './header/Header';
@@ -100,6 +101,8 @@ const SiteLayout: React.FC<SiteLayoutProviderInterface> = ({
   noIndexFollow,
   ...props
 }) => {
+  useSetSessionNavLog();
+
   return (
     <SiteUserContextProvider>
       <SiteContextProvider

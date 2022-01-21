@@ -41,9 +41,16 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   try {
     if (req.method !== REQUEST_METHOD_POST) {
+      const message = 'wrong method';
+      await syncLogsCollection.insertOne({
+        variant: 'error',
+        token: ``,
+        message,
+        createdAt: new Date(),
+      });
       res.status(405).send({
         success: false,
-        message: 'wrong method',
+        message,
       });
       return;
     }
@@ -52,18 +59,32 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const query = req.query as unknown as SyncParamsInterface | undefined | null;
 
     if (!body || body.length < 1 || !query) {
+      const message = 'no products or query params provided';
+      await syncLogsCollection.insertOne({
+        variant: 'error',
+        token: `${query?.token}`,
+        message,
+        createdAt: new Date(),
+      });
       res.status(400).send({
         success: false,
-        message: 'no products provided',
+        message,
       });
       return;
     }
 
     const { token } = query;
     if (!token) {
+      const message = 'no token provided';
+      await syncLogsCollection.insertOne({
+        variant: 'error',
+        token: '',
+        message,
+        createdAt: new Date(),
+      });
       res.status(400).send({
         success: false,
-        message: 'no query params provided',
+        message,
       });
       return;
     }

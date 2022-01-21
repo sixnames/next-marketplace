@@ -10,6 +10,7 @@ import { getNumWord } from '../lib/i18n';
 import ContentItemControls from './button/ContentItemControls';
 import WpButton from './button/WpButton';
 import Currency from './Currency';
+import FormattedDateTime from './FormattedDateTime';
 import { CreateProductWithSyncErrorModalInterface } from './Modal/CreateProductWithSyncErrorModal';
 import { ProductSearchModalInterface } from './Modal/ProductSearchModal';
 import Pager from './Pager';
@@ -71,6 +72,11 @@ const SyncErrorsList: React.FC<SyncErrorsListInterface> = ({
       headTitle: 'Магазин',
       render: ({ cellData }) => cellData,
       isHidden: !showShopName,
+    },
+    {
+      accessor: 'lastSyncedAt',
+      headTitle: 'Последняя синхронизация',
+      render: ({ cellData }) => <FormattedDateTime value={cellData} />,
     },
     {
       isHidden: !showControls,

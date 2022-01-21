@@ -1310,27 +1310,24 @@ export interface SessionLogMakeAnOrderProductEventModel {
   amount: number;
 }
 
-export interface SessionLogMakeAnOrderEventModel {
+export interface SessionLogEventBaseModel {
   _id: ObjectIdModel;
-  variant: SessionLogEventTypeEnum.makeAnOrderClick;
   url: string;
   createdAt: DateModel;
+}
+
+export interface SessionLogMakeAnOrderEventModel extends SessionLogEventBaseModel {
+  variant: 'makeAnOrderClick';
   orderProducts: SessionLogMakeAnOrderProductEventModel[];
 }
 
-export interface SessionLogAddToCartEventModel {
-  _id: ObjectIdModel;
-  variant: SessionLogEventTypeEnum.addToCartClick;
-  url: string;
-  createdAt: DateModel;
+export interface SessionLogAddToCartEventModel extends SessionLogEventBaseModel {
+  variant: 'addToCartClick';
   productId: ObjectIdModel;
 }
 
-export interface SessionLogEventModel {
-  _id: ObjectIdModel;
-  variant: SessionLogEventTypeEnum.visit;
-  url: string;
-  createdAt: DateModel;
+export interface SessionLogEventModel extends SessionLogEventBaseModel {
+  variant: 'visit';
 }
 
 export interface SessionLogModel {

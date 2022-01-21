@@ -19,7 +19,7 @@ export interface CatalogueApiInputInterface {
 
 async function catalogueData(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const { locale, city, currency } = await getRequestParams({ req, res });
+    const { locale, citySlug, currency } = await getRequestParams({ req, res });
     const { query } = req;
     const input = JSON.parse(req.body) as CatalogueApiInputInterface;
     const {
@@ -37,7 +37,7 @@ async function catalogueData(req: NextApiRequest, res: NextApiResponse) {
       companySlug,
       companyId,
       currency,
-      city,
+      citySlug,
       basePath: `${ROUTE_CATALOGUE}/${rubricSlug}`,
       snippetVisibleAttributesCount:
         noNaN(snippetVisibleAttributesCount) || noNaN(CATALOGUE_SNIPPET_VISIBLE_ATTRIBUTES),

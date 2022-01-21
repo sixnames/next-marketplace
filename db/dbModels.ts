@@ -1,5 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { GEO_POINT_TYPE } from '../config/common';
+import { IpInfoInterface } from '../types/clientTypes';
 import { IconType } from '../types/iconTypes';
 import {
   BarcodeDoublesInterface,
@@ -1171,6 +1172,7 @@ export type SupplierPayloadModel = PayloadType<SupplierModel>;
 export type UserCategoryPayloadModel = PayloadType<UserCategoryModel>;
 export type UserPayloadModel = PayloadType<UserModel>;
 export type SeoContentPayloadModel = PayloadType<SeoContentModel>;
+export type SessionLogPayloadModel = PayloadType<SessionLogModel>;
 
 export interface GiftCertificatePayloadModel extends PayloadType<GiftCertificateModel> {
   notAuth?: boolean;
@@ -1292,4 +1294,56 @@ export interface CatalogueNavModel {
   citySlug: string;
   rubrics: RubricInterface[];
   createdAt: DateModel;
+}
+
+// Session logs
+export enum SessionLogEventTypeEnum {
+  visit = 'visit',
+  addToCartClick = 'addToCartClick',
+  makeAnOrderClick = 'makeAnOrderClick',
+}
+
+export interface SessionLogMakeAnOrderProductEventModel {
+  _id: ObjectIdModel;
+  summaryId: ObjectIdModel;
+  shopProductId: ObjectIdModel;
+  shopId: ObjectIdModel;
+  amount: number;
+}
+
+export interface SessionLogEventBaseModel {
+  _id: ObjectIdModel;
+  url: string;
+  createdAt: DateModel;
+}
+
+export interface SessionLogMakeAnOrderEventModel extends SessionLogEventBaseModel {
+  variant: 'makeAnOrderClick';
+  orderProducts: SessionLogMakeAnOrderProductEventModel[];
+}
+
+export interface SessionLogAddToCartEventModel extends SessionLogEventBaseModel {
+  variant: 'addToCartClick';
+  productId: ObjectIdModel;
+}
+
+export interface SessionLogEventModel extends SessionLogEventBaseModel {
+  variant: 'visit';
+}
+
+export interface SessionLogModel {
+  _id: ObjectIdModel;
+  companySlug: string;
+  citySlug: string;
+  locale: string;
+  ipInfo: IpInfoInterface;
+  userRoleId?: ObjectIdModel | null;
+  userId?: ObjectIdModel | null;
+  events: (
+    | SessionLogEventModel
+    | SessionLogAddToCartEventModel
+    | SessionLogMakeAnOrderEventModel
+  )[];
+  createdAt: DateModel;
+  updatedAt: DateModel;
 }

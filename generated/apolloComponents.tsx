@@ -962,7 +962,7 @@ export type Mutation = {
   /** Should update rubric attribute */
   updateAttributeInRubric: RubricPayload;
   /** Should toggle cms card attribute visibility */
-  toggleCmsCardAttributeInRubric: CategoryPayload;
+  toggleCmsCardAttributeInRubric: RubricPayload;
   /** Should create rubric variant */
   createRubricVariant: RubricVariantPayload;
   /** Should update rubric variant */
@@ -1683,10 +1683,6 @@ export type Query = {
   getAllCities: CitiesPaginationPayload;
   /** Should return cities list */
   getSessionCities: Array<City>;
-  /** Should return company by given id */
-  getCompany?: Maybe<Company>;
-  /** Should return paginated companies */
-  getAllCompanies?: Maybe<CompaniesPaginationPayload>;
   getAllConfigs: Array<Config>;
   /** Should return countries list */
   getAllCountries: Array<Country>;
@@ -1719,14 +1715,6 @@ export type Query = {
   getRubricVariant: RubricVariant;
   /** Should return rubric variants list */
   getAllRubricVariants: Array<RubricVariant>;
-  /** Should return shop by given id */
-  getShop: Shop;
-  /** Should return shop by given slug */
-  getShopBySlug: Shop;
-  /** Should return shop by given slug */
-  getAllShops: ShopsPaginationPayload;
-  /** Should return paginated company shops list */
-  getCompanyShops: ShopsPaginationPayload;
   /** Should return supplier by given id */
   getSupplier: Supplier;
   /** Should return supplier by given slug */
@@ -1764,16 +1752,6 @@ export type QueryGetCityBySlugArgs = {
 
 
 export type QueryGetAllCitiesArgs = {
-  input?: Maybe<PaginationInput>;
-};
-
-
-export type QueryGetCompanyArgs = {
-  _id: Scalars['ObjectId'];
-};
-
-
-export type QueryGetAllCompaniesArgs = {
   input?: Maybe<PaginationInput>;
 };
 
@@ -1820,27 +1798,6 @@ export type QueryGetRoleArgs = {
 
 export type QueryGetRubricVariantArgs = {
   _id: Scalars['ObjectId'];
-};
-
-
-export type QueryGetShopArgs = {
-  _id: Scalars['ObjectId'];
-};
-
-
-export type QueryGetShopBySlugArgs = {
-  slug: Scalars['String'];
-};
-
-
-export type QueryGetAllShopsArgs = {
-  input?: Maybe<PaginationInput>;
-};
-
-
-export type QueryGetCompanyShopsArgs = {
-  input?: Maybe<PaginationInput>;
-  companyId: Scalars['ObjectId'];
 };
 
 
@@ -2043,15 +2000,6 @@ export type Shop = Base & Timestamp & {
   assets: Array<Scalars['String']>;
   contacts: Contacts;
   address: Address;
-  shopProducts: ShopProductsPaginationPayload;
-  city: City;
-  company: Company;
-  productsCount: Scalars['Int'];
-};
-
-
-export type ShopShopProductsArgs = {
-  input?: Maybe<PaginationInput>;
 };
 
 export type ShopPayload = Payload & {
@@ -2620,8 +2568,8 @@ export type ToggleCmsCardAttributeInRubricMutationVariables = Exact<{
 export type ToggleCmsCardAttributeInRubricMutation = (
   { __typename?: 'Mutation' }
   & { toggleCmsCardAttributeInRubric: (
-    { __typename?: 'CategoryPayload' }
-    & Pick<CategoryPayload, 'success' | 'message'>
+    { __typename?: 'RubricPayload' }
+    & Pick<RubricPayload, 'success' | 'message'>
   ) }
 );
 

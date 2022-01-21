@@ -69,7 +69,7 @@ export const CatalogueMutations = extendType({
         try {
           const { db } = await getDatabase();
           const { role } = await getSessionRole(context);
-          const { city } = await getRequestParams(context);
+          const { citySlug } = await getRequestParams(context);
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
@@ -129,7 +129,7 @@ export const CatalogueMutations = extendType({
 
             const counterUpdater = {
               $inc: {
-                [`views.${companySlug}.${city}`]: VIEWS_COUNTER_STEP,
+                [`views.${companySlug}.${citySlug}`]: VIEWS_COUNTER_STEP,
               },
             };
 
@@ -183,7 +183,7 @@ export const CatalogueMutations = extendType({
                 },
                 {
                   $inc: {
-                    [`views.${companySlug}.${city}.${rubric.slug}`]: VIEWS_COUNTER_STEP,
+                    [`views.${companySlug}.${citySlug}.${rubric.slug}`]: VIEWS_COUNTER_STEP,
                   },
                 },
               );

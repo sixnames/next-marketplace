@@ -882,6 +882,14 @@ export interface NotSyncedProductModel {
   lastSyncedAt?: DateModel;
 }
 
+export interface SyncLogModel {
+  _id: ObjectIdModel;
+  variant: 'success' | 'error';
+  message: string;
+  token: string;
+  createdAt: DateModel;
+}
+
 // User
 export interface NotificationConfigModel {
   nameI18n: TranslationModel;

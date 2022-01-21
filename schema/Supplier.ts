@@ -139,7 +139,7 @@ export const SupplierQueries = extendType({
         const paginationResult = await aggregatePagination<SupplierModel>({
           collectionName: COL_SUPPLIERS,
           input: args.input,
-          citySlug: city,
+          citySlug,
         });
         return paginationResult;
       },

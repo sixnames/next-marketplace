@@ -7,6 +7,7 @@ import { CART_MODAL } from '../config/modalVariants';
 import { CheckGiftCertificateAvailabilityInputInterface } from '../db/dao/giftCertificate/checkGiftCertificateAvailability';
 import { MakeAnOrderInputInterface, MakeAnOrderPayloadModel } from '../db/dao/orders/makeAnOrder';
 import { CheckPromoCodeAvailabilityInputInterface } from '../db/dao/promo/checkPromoCodeAvailability';
+import { SessionLogMakeAnOrderProductEventInputModel } from '../db/dao/sessionLogs/setSessionLog';
 import { CartProductsFieldNameType, GiftCertificateModel } from '../db/dbModels';
 import {
   CartInterface,
@@ -31,6 +32,7 @@ import {
 import { useMutation } from '../hooks/mutations/useFetch';
 import { useCheckGiftCertificateMutation } from '../hooks/mutations/useGiftCertificateMutations';
 import { useCheckPromoCode } from '../hooks/mutations/usePromoMutations';
+import { useSetSessionLogHandler } from '../hooks/mutations/useSessionLogMutations';
 import { noNaN } from '../lib/numbers';
 import { useAppContext } from './appContext';
 import { useNotificationsContext } from './notificationsContext';
@@ -101,6 +103,7 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
 }) => {
   const sessionUser = useSiteUserContext();
   const router = useRouter();
+  const logHandler = useSetSessionLogHandler();
   const { showModal, showLoading, hideLoading } = useAppContext();
   const { showErrorNotification, showSuccessNotification } = useNotificationsContext();
   const [state, setState] = React.useState<SiteContextStateInterface>({
@@ -344,6 +347,32 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
   const makeAnOrder = React.useCallback(
     (input: MakeAnOrderInputInterface) => {
       showLoading();
+
+      // create log
+      if (state.cart) {
+        const orderProducts: SessionLogMakeAnOrderProductEventInputModel[] = [];
+        [...state.cart.cartDeliveryProducts, ...state.cart.cartBookingProducts].forEach(
+          (cartProduct) => {
+            const orderProduct: SessionLogMakeAnOrderProductEventInputModel = {
+              shopProductId: `${cartProduct.shopProductId}`,
+              shopId: `${cartProduct.shopProduct?.shopId}`,
+              summaryId: `${cartProduct.shopProduct?.productId}`,
+              amount: cartProduct.amount,
+            };
+            orderProducts.push(orderProduct);
+          },
+        );
+
+        logHandler({
+          event: {
+            variant: 'makeAnOrderClick',
+            asPath: router.asPath,
+            orderProducts,
+          },
+        });
+      }
+
+      // make and order
       makeAnOrderMutation({
         method: REQUEST_METHOD_POST,
         body: JSON.stringify(input),
@@ -352,7 +381,15 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
         showErrorNotification();
       });
     },
-    [hideLoading, makeAnOrderMutation, showErrorNotification, showLoading],
+    [
+      hideLoading,
+      logHandler,
+      makeAnOrderMutation,
+      router.asPath,
+      showErrorNotification,
+      showLoading,
+      state.cart,
+    ],
   );
 
   const repeatAnOrder = React.useCallback(

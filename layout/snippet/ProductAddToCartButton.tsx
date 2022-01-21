@@ -1,6 +1,8 @@
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import WpButton, { ButtonPropsInterface } from '../../components/button/WpButton';
 import { useSiteContext } from '../../context/siteContext';
+import { useSetSessionLogHandler } from '../../hooks/mutations/useSessionLogMutations';
 import { useIsInCart, UseIsInCartInterface } from '../../hooks/useIsInCart';
 
 interface ProductAddToCartButtonInterface extends ButtonPropsInterface, UseIsInCartInterface {
@@ -14,7 +16,9 @@ const ProductAddToCartButton: React.FC<ProductAddToCartButtonInterface> = ({
   available,
   ...props
 }) => {
+  const router = useRouter();
   const { addShoplessProductToCart, addProductToCart } = useSiteContext();
+  const logHandler = useSetSessionLogHandler();
   const inCart = useIsInCart({
     productId,
     shopProductIds,
@@ -43,6 +47,13 @@ const ProductAddToCartButton: React.FC<ProductAddToCartButtonInterface> = ({
             productId: productId,
           });
         }
+        logHandler({
+          event: {
+            variant: 'addToCartClick',
+            asPath: router.asPath,
+            productId: `${productId}`,
+          },
+        });
       }}
     >
       {inCart.isInCart ? `В корзине ${inCart.inCartCount} шт.` : 'В корзину'}

@@ -20,7 +20,7 @@ interface UseSetSessionLogInputInterface {
 }
 
 // set log
-const useSetSessionLog = () => {
+export const useSetSessionLogHandler = () => {
   const { ipInfo } = useAppContext();
 
   const handler = React.useCallback(
@@ -50,7 +50,7 @@ const useSetSessionLog = () => {
 // set nav log
 export const useSetSessionNavLog = () => {
   const router = useRouter();
-  const handler = useSetSessionLog();
+  const handler = useSetSessionLogHandler();
   const { ipInfo } = useAppContext();
 
   // visit

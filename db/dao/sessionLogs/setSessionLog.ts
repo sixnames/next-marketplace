@@ -16,7 +16,7 @@ import {
 import { getDatabase } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
 
-interface SessionLogMakeAnOrderProductEventInputModel {
+export interface SessionLogMakeAnOrderProductEventInputModel {
   summaryId: string;
   shopProductId: string;
   shopId: string;

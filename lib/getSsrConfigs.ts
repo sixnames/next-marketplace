@@ -433,8 +433,13 @@ export const getSsrConfigs = async ({
     configs,
     slug: 'blogDescriptionMetaPostfix',
   });
+  const ipRegistryApiKey = getConfigStringValue({
+    configs,
+    slug: 'ipRegistryApiKey',
+  });
 
   return {
+    ipRegistryApiKey,
     contactsTitle,
     contactsMetaTitle,
     contactsMetaDescription,

@@ -102,7 +102,6 @@ export interface Carrier {
 export interface Company {
   domain: string | null;
   name: string | null;
-
   type: 'business' | 'education' | 'government' | 'isp' | 'hosting' | null;
 }
 

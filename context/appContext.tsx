@@ -3,8 +3,8 @@ import Router from 'next/router';
 import { debounce } from 'lodash';
 import { ADULT_FALSE, ADULT_KEY, DEFAULT_CITY, DEFAULT_COMPANY_SLUG } from '../config/common';
 import { ADULT_MODAL } from '../config/modalVariants';
-import { SsrConfigsInterface } from '../db/uiInterfaces';
 import { IpInfoInterface } from '../types/clientTypes';
+import { useConfigContext } from './configContext';
 
 interface ContextState {
   isModal: {
@@ -49,7 +49,6 @@ interface AppContextProviderInterface {
   isMobileDevice: boolean;
   sessionCity: string;
   companySlug: string;
-  configs: SsrConfigsInterface;
 }
 
 const AppContextProvider: React.FC<AppContextProviderInterface> = ({
@@ -57,8 +56,8 @@ const AppContextProvider: React.FC<AppContextProviderInterface> = ({
   isMobileDevice,
   sessionCity,
   companySlug,
-  configs,
 }) => {
+  const { configs } = useConfigContext();
   const [state, setState] = React.useState<ContextState>(() => ({
     isMobile: isMobileDevice,
     isModal: defaultModalState,
@@ -68,8 +67,10 @@ const AppContextProvider: React.FC<AppContextProviderInterface> = ({
   }));
 
   React.useEffect(() => {
-    if (!state.ipInfo && process.env.IP_REGISTRY) {
-      fetch(`https://api.ipregistry.co/?key=${process.env.IP_REGISTRY}`)
+    const ipRegistryApiKey =
+      process.env.NODE_ENV === 'development' ? process.env.IP_REGISTRY : configs.ipRegistryApiKey;
+    if (!state.ipInfo && ipRegistryApiKey) {
+      fetch(`https://api.ipregistry.co/?key=${ipRegistryApiKey}`)
         .then<IpInfoInterface>((response) => response.json())
         .then((ipInfo) => {
           setState((prevState) => {

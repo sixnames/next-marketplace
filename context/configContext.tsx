@@ -117,6 +117,7 @@ const ConfigContext = React.createContext<ConfigContextInterface>({
     contactsMetaTitle: '',
     contactsMetaDescription: '',
     contactsTitle: '',
+    ipRegistryApiKey: '',
   },
 });
 

@@ -46,19 +46,18 @@ function App({ Component, pageProps }: AppProps<PagePropsInterface>) {
       >
         <div className={`min-h-[100vh]`} id={'theme-provider'} style={themeStyle}>
           <ApolloProvider client={apolloClient}>
-            <AppContextProvider
-              companySlug={pageProps.companySlug}
-              sessionCity={pageProps.sessionCity}
-              isMobileDevice={pageProps.isMobileDevice}
+            <ConfigContextProvider
+              domainCompany={pageProps.domainCompany}
+              currentCity={currentCity}
               configs={initialData?.configs || []}
+              cities={initialData?.cities || []}
             >
-              <NotificationsProvider>
-                <ConfigContextProvider
-                  domainCompany={pageProps.domainCompany}
-                  currentCity={currentCity}
-                  configs={initialData?.configs || []}
-                  cities={initialData?.cities || []}
-                >
+              <AppContextProvider
+                companySlug={pageProps.companySlug}
+                sessionCity={pageProps.sessionCity}
+                isMobileDevice={pageProps.isMobileDevice}
+              >
+                <NotificationsProvider>
                   <ThemeContextProvider>
                     <LocaleContextProvider
                       languagesList={initialData?.languages || []}
@@ -67,9 +66,9 @@ function App({ Component, pageProps }: AppProps<PagePropsInterface>) {
                       <Component {...pageProps} />
                     </LocaleContextProvider>
                   </ThemeContextProvider>
-                </ConfigContextProvider>
-              </NotificationsProvider>
-            </AppContextProvider>
+                </NotificationsProvider>
+              </AppContextProvider>
+            </ConfigContextProvider>
           </ApolloProvider>
         </div>
       </SWRConfig>

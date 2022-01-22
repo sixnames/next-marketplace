@@ -187,6 +187,22 @@ export function getConfigTemplates({
         },
       },
     },
+    {
+      _id: new ObjectId(),
+      companySlug,
+      group: 'globals',
+      variant: CONFIG_VARIANT_PASSWORD,
+      slug: 'ipRegistryApiKey',
+      name: 'API ключ для генерации логов посещения',
+      description: '',
+      multi: false,
+      acceptedFormats: [],
+      cities: {
+        [DEFAULT_CITY]: {
+          [DEFAULT_LOCALE]: [''],
+        },
+      },
+    },
 
     // Analytics
     {

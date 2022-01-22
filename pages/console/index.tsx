@@ -17,15 +17,15 @@ const App: NextPage<GetConsoleMainPageDataPropsInterface> = ({ layoutProps }) =>
       <div className='mb-8 text-lg'>Ваши компании</div>
       <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
         {(layoutProps.sessionUser.me.companies || []).map((company) => {
+          const links = getConsoleCompanyLinks({
+            companyId: company._id,
+          });
           return (
             <div
               className='bg-secondary rounded-lg shadow-lg grid grid-cols-4 gap-4 px-4 py-6 cursor-pointer'
               key={`${company._id}`}
               onClick={() => {
-                const links = getConsoleCompanyLinks({
-                  companyId: company._id,
-                });
-                router.push(links.parentLink).catch((e) => console.log(e));
+                router.push(links.root).catch((e) => console.log(e));
               }}
             >
               <div className='rounded-full overflow-hidden col-span-1'>

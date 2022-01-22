@@ -714,6 +714,7 @@ export interface SsrConfigsInterface {
   yaMetrica: string;
   googleAnalytics: string;
   isOneShopCompany: boolean;
+  ipRegistryApiKey: string;
 
   // Site ui
   siteLogo: string;

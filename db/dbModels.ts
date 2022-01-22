@@ -1305,7 +1305,7 @@ export interface CatalogueNavModel {
 }
 
 // Session logs
-export enum SessionLogEventTypeEnum {
+export enum SessionLogEventVariantEnum {
   visit = 'visit',
   leave = 'leave',
   addToCartClick = 'addToCartClick',

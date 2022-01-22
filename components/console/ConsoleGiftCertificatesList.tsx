@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import { CONFIRM_MODAL, GIFT_CERTIFICATE_MODAL } from '../../config/modalVariants';
 import { useAppContext } from '../../context/appContext';
@@ -7,17 +8,15 @@ import {
   GiftCertificateInterface,
   UserInterface,
 } from '../../db/uiInterfaces';
-import {
-  useCreateGiftCertificateMutation,
-  useDeleteGiftCertificateMutation,
-  useUpdateGiftCertificateMutation,
-} from '../../hooks/mutations/useGiftCertificateMutations';
+import { useDeleteGiftCertificateMutation } from '../../hooks/mutations/useGiftCertificateMutations';
 import usePageLoadingState from '../../hooks/usePageLoadingState';
 import { getNumWord } from '../../lib/i18n';
+import { getCmsCompanyLinks } from '../../lib/linkUtils';
 import ContentItemControls from '../button/ContentItemControls';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
 import Currency from '../Currency';
+import WpLink from '../Link/WpLink';
 import { ConfirmModalInterface } from '../Modal/ConfirmModal';
 import { GiftCertificateModalInterface } from '../Modal/GiftCertificateModal';
 import Pager from '../Pager';
@@ -28,6 +27,7 @@ export interface ConsoleGiftCertificatesListInterface
   extends GetConsoleGiftCertificatesPayloadInterface {
   pageCompany: CompanyInterface;
   userRouteBasePath: string;
+  basePath?: string;
 }
 
 const ConsoleGiftCertificatesList: React.FC<ConsoleGiftCertificatesListInterface> = ({
@@ -37,12 +37,12 @@ const ConsoleGiftCertificatesList: React.FC<ConsoleGiftCertificatesListInterface
   totalDocs,
   docs,
   userRouteBasePath,
+  basePath,
 }) => {
+  const router = useRouter();
   const isPageLoading = usePageLoadingState();
   const { showModal } = useAppContext();
 
-  const [createGiftCertificateMutation] = useCreateGiftCertificateMutation();
-  const [updateGiftCertificateMutation] = useUpdateGiftCertificateMutation();
   const [deleteGiftCertificateMutation] = useDeleteGiftCertificateMutation();
 
   const counterString = React.useMemo(() => {
@@ -59,7 +59,14 @@ const ConsoleGiftCertificatesList: React.FC<ConsoleGiftCertificatesListInterface
     {
       accessor: 'code',
       headTitle: 'Код',
-      render: ({ cellData }) => <div>{cellData}</div>,
+      render: ({ cellData, dataItem }) => {
+        const links = getCmsCompanyLinks({
+          companyId: dataItem.companyId,
+          giftCertificateId: dataItem._id,
+          basePath,
+        });
+        return <WpLink href={links.giftCertificate.root}>{cellData}</WpLink>;
+      },
     },
     {
       accessor: 'name',
@@ -87,7 +94,7 @@ const ConsoleGiftCertificatesList: React.FC<ConsoleGiftCertificatesListInterface
         return (
           <div
             onClick={() => {
-              window.open(`${userRouteBasePath}/${user._id}`);
+              window.open(`${userRouteBasePath}/${user._id}`, '_blank');
             }}
             className='cursor-pointer hover:text-theme'
           >
@@ -106,19 +113,12 @@ const ConsoleGiftCertificatesList: React.FC<ConsoleGiftCertificatesListInterface
             justifyContent={'flex-end'}
             updateTitle={'Редактировать магазин'}
             updateHandler={() => {
-              showModal<GiftCertificateModalInterface>({
-                variant: GIFT_CERTIFICATE_MODAL,
-                props: {
-                  giftCertificate: dataItem,
-                  pageCompany,
-                  confirm: (values) => {
-                    updateGiftCertificateMutation({
-                      ...values,
-                      _id: `${dataItem._id}`,
-                    }).catch(console.log);
-                  },
-                },
+              const links = getCmsCompanyLinks({
+                companyId: dataItem.companyId,
+                giftCertificateId: dataItem._id,
+                basePath,
               });
+              router.push(links.giftCertificate.root).catch(console.log);
             }}
             deleteTitle={'Удалить магазин'}
             deleteHandler={() => {
@@ -151,19 +151,12 @@ const ConsoleGiftCertificatesList: React.FC<ConsoleGiftCertificatesListInterface
           data={docs}
           testIdKey={'_id'}
           onRowDoubleClick={(dataItem) => {
-            showModal<GiftCertificateModalInterface>({
-              variant: GIFT_CERTIFICATE_MODAL,
-              props: {
-                giftCertificate: dataItem,
-                pageCompany,
-                confirm: (values) => {
-                  updateGiftCertificateMutation({
-                    ...values,
-                    _id: `${dataItem._id}`,
-                  }).catch(console.log);
-                },
-              },
+            const links = getCmsCompanyLinks({
+              companyId: dataItem.companyId,
+              giftCertificateId: dataItem._id,
+              basePath,
             });
+            router.push(links.giftCertificate.root).catch(console.log);
           }}
         />
 
@@ -181,9 +174,6 @@ const ConsoleGiftCertificatesList: React.FC<ConsoleGiftCertificatesListInterface
               variant: GIFT_CERTIFICATE_MODAL,
               props: {
                 pageCompany,
-                confirm: (values) => {
-                  createGiftCertificateMutation(values).catch(console.log);
-                },
               },
             });
           }}

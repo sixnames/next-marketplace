@@ -207,10 +207,28 @@ export function getConsoleCompanyPromoLinks({
   };
 }
 
+interface GetConsoleGiftCertificateLinks {
+  basePath?: string;
+  giftCertificateId?: string | ObjectIdModel;
+}
+
+export function getConsoleGiftCertificateLinks({
+  basePath,
+  giftCertificateId,
+}: GetConsoleGiftCertificateLinks) {
+  const parentLink = `${basePath}/gift-certificates`;
+  const root = `${parentLink}/certificate/${giftCertificateId}`;
+  return {
+    parentLink,
+    root,
+  };
+}
+
 // console company
 interface GetCmsCompanyLinkInterface
   extends GetConsoleRubricLinkInterface,
     GetConsoleShopLinkInterface,
+    GetConsoleGiftCertificateLinks,
     GetConsoleCompanyPromoLinkInterface {
   companyId?: string | ObjectIdModel;
   shopId?: string | ObjectIdModel;
@@ -225,6 +243,7 @@ export function getCmsCompanyLinks({
   orderId,
   promoCodeId,
   categoryId,
+  giftCertificateId,
 }: GetCmsCompanyLinkInterface) {
   const parentLink = basePath?.includes(ROUTE_CMS) ? `${basePath}/companies` : basePath;
   const root = `${parentLink}/${companyId}`;
@@ -234,7 +253,10 @@ export function getCmsCompanyLinks({
     root,
     create: `${parentLink}/create`,
     blog: `${root}/blog`,
-    giftCertificates: `${root}/gift-certificates`,
+    giftCertificate: getConsoleGiftCertificateLinks({
+      basePath: root,
+      giftCertificateId,
+    }),
     pages: `${root}/pages`,
     assets: `${root}/assets`,
     userCategories: `${root}/user-categories`,

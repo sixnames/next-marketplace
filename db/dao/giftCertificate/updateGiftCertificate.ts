@@ -2,14 +2,14 @@ import { ObjectId } from 'mongodb';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
 import { COL_GIFT_CERTIFICATES } from '../../collectionNames';
-import { GiftCertificateModel, GiftCertificatePayloadModel, ObjectIdModel } from '../../dbModels';
+import { GiftCertificateModel, GiftCertificatePayloadModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
 import { CreateGiftCertificateInputInterface } from './createGiftCertificate';
 
 export interface UpdateGiftCertificateInputInterface extends CreateGiftCertificateInputInterface {
   _id: string;
-  userId?: ObjectIdModel | null;
+  userId?: string | null;
 }
 
 export async function updateGiftCertificate({
@@ -70,6 +70,7 @@ export async function updateGiftCertificate({
           initialValue: input.initialValue,
           value: input.initialValue,
           companySlug: input.companySlug,
+          userId: input.userId ? new ObjectId(input.userId) : null,
           companyId: new ObjectId(input.companyId),
           updatedAt: new Date(),
         },

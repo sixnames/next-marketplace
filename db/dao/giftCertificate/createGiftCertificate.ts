@@ -9,6 +9,7 @@ import {
 } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
+import trim from 'trim';
 
 export interface CreateGiftCertificateInputInterface {
   code: string;
@@ -51,7 +52,7 @@ export async function createGiftCertificate({
     // check if exist
     const exist = await giftCertificatesCollection.findOne({
       companyId: new ObjectId(input.companyId),
-      code: input.code,
+      code: trim(input.code),
     });
     if (exist) {
       return {
@@ -63,7 +64,7 @@ export async function createGiftCertificate({
     // create
     const createdGiftCertificateResult = await giftCertificatesCollection.insertOne({
       log: [],
-      code: input.code,
+      code: trim(input.code),
       nameI18n: input.nameI18n,
       descriptionI18n: input.descriptionI18n,
       initialValue: input.initialValue,

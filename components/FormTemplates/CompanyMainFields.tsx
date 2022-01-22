@@ -9,35 +9,20 @@ import { USERS_SEARCH_MODAL } from '../../config/modalVariants';
 import { useAppContext } from '../../context/appContext';
 import { UserInterface } from '../../db/uiInterfaces';
 import { UpdateCompanyInput } from '../../generated/apolloComponents';
-import ContentItemControls, { ContentItemControlsInterface } from '../button/ContentItemControls';
+import ContentItemControls from '../button/ContentItemControls';
 import WpButton from '../button/WpButton';
 import LinkEmail from '../Link/LinkEmail';
 import LinkPhone from '../Link/LinkPhone';
 import WpLink from '../Link/WpLink';
-import { UsersSearchModalInterface } from '../Modal/UsersSearchModal';
+import {
+  UsersSearchModalControlsInterface,
+  UsersSearchModalInterface,
+} from '../Modal/UsersSearchModal';
 import WpTable, { WpTableColumn } from '../WpTable';
 
 export interface CompanyFormMainValuesInterface extends Omit<UpdateCompanyInput, 'companyId'> {
   owner: UserInterface | null;
   staff: UserInterface[];
-}
-
-interface UsersSearchModalControlsInterface
-  extends Omit<
-    ContentItemControlsInterface,
-    | 'isCreateDisabled'
-    | 'isUpdateDisabled'
-    | 'isDeleteDisabled'
-    | 'createHandler'
-    | 'updateHandler'
-    | 'deleteHandler'
-  > {
-  createHandler?: (user: UserInterface) => void;
-  updateHandler?: (user: UserInterface) => void;
-  deleteHandler?: (user: UserInterface) => void;
-  isCreateDisabled?: (user: UserInterface) => boolean;
-  isUpdateDisabled?: (user: UserInterface) => boolean;
-  isDeleteDisabled?: (user: UserInterface) => boolean;
 }
 
 interface CompanyMainFieldsInterface {

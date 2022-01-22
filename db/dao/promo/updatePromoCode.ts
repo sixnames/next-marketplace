@@ -1,4 +1,5 @@
 import { ObjectId } from 'mongodb';
+import trim from 'trim';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
 import {
   getOperationPermission,
@@ -81,7 +82,7 @@ export async function updatePromoCode({
           $ne: promoCode._id,
         },
         promoId: promoCode.promoId,
-        code: input.code,
+        code: trim(input.code),
       });
       if (exist) {
         mutationPayload = {
@@ -99,7 +100,7 @@ export async function updatePromoCode({
         },
         {
           $set: {
-            code: input.code,
+            code: trim(input.code),
             descriptionI18n: input.descriptionI18n,
           },
         },

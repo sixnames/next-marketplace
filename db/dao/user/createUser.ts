@@ -1,6 +1,8 @@
 import { hash } from 'bcryptjs';
 import generator from 'generate-password';
 import { ObjectId } from 'mongodb';
+import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE } from '../../../config/common';
+import { sendSignUpEmail } from '../../../lib/email/sendSignUpEmail';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
 import { getUserInitialNotificationsConf } from '../../../lib/getUserNotificationsTemplate';
 import { getNextItemId } from '../../../lib/itemIdUtils';
@@ -92,12 +94,25 @@ export async function createUser({
       createdAt: new Date(),
       updatedAt: new Date(),
     });
-    if (!createdUserResult.acknowledged) {
+    const createdUser = await usersCollection.findOne({
+      _id: createdUserResult.insertedId,
+    });
+    if (!createdUserResult.acknowledged || !createdUser) {
       return {
         success: false,
         message: await getApiMessage('users.create.error'),
       };
     }
+
+    // send user creation email confirmation
+    await sendSignUpEmail({
+      to: createdUser.email,
+      userName: createdUser.name,
+      password: newPassword,
+      companySiteSlug: DEFAULT_COMPANY_SLUG,
+      citySlug: DEFAULT_CITY,
+      locale: DEFAULT_LOCALE,
+    });
 
     return {
       success: true,

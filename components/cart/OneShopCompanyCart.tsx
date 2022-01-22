@@ -299,9 +299,9 @@ const OneShopCompanyDeliveryCart: React.FC<OneShopCompanyCartFormInterface> = ({
                             onClick={() => {
                               checkPromoCode({
                                 code: promoCodeCode,
-                                companyId: `${shop.companyId}`,
+                                companyId: `${domainCompany._id}`,
                                 cartId: `${cart._id}`,
-                                shopProductIds: shop.cartProducts.reduce(
+                                shopProductIds: cartDeliveryProducts.reduce(
                                   (acc: string[], { shopProductId }) => {
                                     if (shopProductId) {
                                       return [...acc, `${shopProductId}`];
@@ -544,7 +544,7 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
                           <FormikInput
                             size={'small'}
                             name={giftCertificateFieldName}
-                            testId={`gift-certificate-input-${shop.slug}`}
+                            testId={`gift-certificate-input-${domainCompany.mainShop?.slug}`}
                             low
                           />
                         </div>
@@ -553,7 +553,7 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
                           size={'small'}
                           frameClassName='w-auto'
                           theme={'secondary'}
-                          testId={`gift-certificate-confirm-${shop.slug}`}
+                          testId={`gift-certificate-confirm-${domainCompany.mainShop?.slug}`}
                           onClick={() => {
                             checkGiftCertificate({
                               code: giftCertificateCode,
@@ -574,7 +574,7 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
                         <div className='flex flex-col sm:flex-row gap-4 sm:items-center'>
                           <div className='flex-grow'>
                             <FormikInput
-                              testId={`promo-code-input-${shop.slug}`}
+                              testId={`promo-code-input-${domainCompany.mainShop?.slug}`}
                               readOnly={Boolean(shop.promoCode?._id)}
                               size={'small'}
                               name={promoCodeFieldName}
@@ -583,7 +583,7 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
                           </div>
                           <WpButton
                             short
-                            testId={`promo-code-submit-${shop.slug}`}
+                            testId={`promo-code-submit-${domainCompany.mainShop?.slug}`}
                             disabled={Boolean(shop.promoCode?._id)}
                             size={'small'}
                             frameClassName='w-auto'
@@ -591,9 +591,9 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
                             onClick={() => {
                               checkPromoCode({
                                 code: promoCodeCode,
-                                companyId: `${shop.companyId}`,
+                                companyId: `${domainCompany._id}`,
                                 cartId: `${cart._id}`,
-                                shopProductIds: shop.cartProducts.reduce(
+                                shopProductIds: cartBookingProducts.reduce(
                                   (acc: string[], { shopProductId }) => {
                                     if (shopProductId) {
                                       return [...acc, `${shopProductId}`];

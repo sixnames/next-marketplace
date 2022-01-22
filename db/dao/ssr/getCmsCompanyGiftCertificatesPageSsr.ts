@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
-import { ROUTE_CMS } from '../../../config/common';
 import { alwaysArray } from '../../../lib/arrayUtils';
+import { getCmsCompanyLinks } from '../../../lib/linkUtils';
 import { castDbData, getAppInitialData } from '../../../lib/ssrUtils';
 import { CmsCompanyGiftCertificatesPageInterface } from '../../../pages/cms/companies/[companyId]/gift-certificates/[...filters]';
 import { COL_COMPANIES, COL_USERS } from '../../collectionNames';
@@ -63,12 +63,16 @@ export const getCmsCompanyGiftCertificatesPageSsr = async (
   });
   const payload = castDbData(rawPayload);
 
+  const links = getCmsCompanyLinks({
+    companyId: companyResult._id,
+  });
+
   return {
     props: {
       ...props,
       ...payload,
       pageCompany: castDbData(companyResult),
-      userRouteBasePath: `${ROUTE_CMS}/users/user`,
+      userRouteBasePath: links.user.itemPath,
     },
   };
 };

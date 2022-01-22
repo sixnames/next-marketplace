@@ -1,4 +1,5 @@
 import { ObjectId } from 'mongodb';
+import trim from 'trim';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
 import { getRequestParams } from '../../../lib/sessionHelpers';
 import { COL_CARTS, COL_PROMO_CODES, COL_PROMO_PRODUCTS } from '../../collectionNames';
@@ -50,7 +51,7 @@ export async function checkPromoCodeAvailability({
     // get promo code
     const promoCode = await promoCodesCollection.findOne({
       companyId: new ObjectId(input.companyId),
-      code: input.code,
+      code: trim(input.code),
     });
     if (!promoCode) {
       return {
@@ -134,7 +135,7 @@ export async function checkPromoCodeAvailability({
       },
     };
   } catch (e) {
-    console.log('checkGiftCertificateAvailability error ', e);
+    console.log('checkPromoCodeAvailability error ', e);
     return {
       success: false,
       message: getResolverErrorMessage(e),

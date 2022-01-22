@@ -5,6 +5,7 @@ import ConsoleGiftCertificateDetails, {
   ConsoleGiftCertificateDetailsInterface,
 } from '../../../../../../components/console/ConsoleGiftCertificateDetails';
 import Inner from '../../../../../../components/Inner';
+import { ROUTE_CMS } from '../../../../../../config/common';
 import {
   COL_COMPANIES,
   COL_GIFT_CERTIFICATES,
@@ -18,7 +19,10 @@ import {
 } from '../../../../../../db/uiInterfaces';
 import CmsCompanyLayout from '../../../../../../layout/cms/CmsCompanyLayout';
 import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
+import { getFieldStringLocale } from '../../../../../../lib/i18n';
 import { getCmsCompanyLinks } from '../../../../../../lib/linkUtils';
+import { getFullName } from '../../../../../../lib/nameUtils';
+import { phoneToRaw, phoneToReadable } from '../../../../../../lib/phoneUtils';
 import {
   castDbData,
   getAppInitialData,
@@ -30,6 +34,7 @@ interface GiftCertificateDetailsConsumerInterface extends ConsoleGiftCertificate
 const GiftCertificateDetailsConsumer: React.FC<GiftCertificateDetailsConsumerInterface> = ({
   pageCompany,
   giftCertificate,
+  userRouteBasePath,
 }) => {
   const links = getCmsCompanyLinks({
     companyId: pageCompany?._id,
@@ -57,8 +62,10 @@ const GiftCertificateDetailsConsumer: React.FC<GiftCertificateDetailsConsumerInt
     <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
       <Inner>
         <ConsoleGiftCertificateDetails
+          showUsersSearch
           giftCertificate={giftCertificate}
           pageCompany={pageCompany}
+          userRouteBasePath={userRouteBasePath}
         />
       </Inner>
     </CmsCompanyLayout>
@@ -127,20 +134,69 @@ export const getServerSideProps = async (
     };
   }
 
-  const giftCertificate = await giftCertificatesCollection.findOne({
-    _id: new ObjectId(`${query.giftCertificateId}`),
-  });
-  if (!giftCertificate) {
+  const giftCertificateAggregationResult = await giftCertificatesCollection
+    .aggregate([
+      {
+        $match: {
+          _id: new ObjectId(`${query.giftCertificateId}`),
+        },
+      },
+      // get user
+      {
+        $lookup: {
+          as: 'user',
+          from: COL_USERS,
+          let: {
+            userId: '$userId',
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ['$_id', '$$userId'],
+                },
+              },
+            },
+          ],
+        },
+      },
+      {
+        $addFields: {
+          user: {
+            $arrayElemAt: ['$user', 0],
+          },
+        },
+      },
+    ])
+    .toArray();
+  const rawGiftCertificate = giftCertificateAggregationResult[0];
+  if (!rawGiftCertificate) {
     return {
       notFound: true,
     };
   }
+  const giftCertificate = {
+    ...rawGiftCertificate,
+    name: getFieldStringLocale(rawGiftCertificate.nameI18n, props.sessionLocale),
+    description: getFieldStringLocale(rawGiftCertificate.descriptionI18n, props.sessionLocale),
+    user: rawGiftCertificate.user
+      ? {
+          ...rawGiftCertificate.user,
+          fullName: getFullName(rawGiftCertificate.user),
+          formattedPhone: {
+            raw: phoneToRaw(rawGiftCertificate.user.phone),
+            readable: phoneToReadable(rawGiftCertificate.user.phone),
+          },
+        }
+      : null,
+  };
 
   return {
     props: {
       ...props,
       giftCertificate: castDbData(giftCertificate),
       pageCompany: castDbData(companyResult),
+      userRouteBasePath: `${ROUTE_CMS}/users/user`,
     },
   };
 };

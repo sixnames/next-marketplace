@@ -1,8 +1,8 @@
 import { ObjectId } from 'mongodb';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
-import { COL_GIFT_CERTIFICATES } from '../../collectionNames';
-import { GiftCertificateModel, GiftCertificatePayloadModel } from '../../dbModels';
+import { COL_GIFT_CERTIFICATES, COL_USERS } from '../../collectionNames';
+import { GiftCertificateModel, GiftCertificatePayloadModel, UserModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
 import { CreateGiftCertificateInputInterface } from './createGiftCertificate';
@@ -20,6 +20,7 @@ export async function updateGiftCertificate({
     const { getApiMessage } = await getRequestParams(context);
     const { db } = await getDatabase();
     const giftCertificatesCollection = db.collection<GiftCertificateModel>(COL_GIFT_CERTIFICATES);
+    const usersCollection = db.collection<UserModel>(COL_USERS);
 
     // check input
     if (!input) {
@@ -38,6 +39,17 @@ export async function updateGiftCertificate({
       return {
         success: false,
         message,
+      };
+    }
+
+    // check availability
+    const giftCertificate = await giftCertificatesCollection.findOne({
+      _id: new ObjectId(input._id),
+    });
+    if (!giftCertificate) {
+      return {
+        success: false,
+        message: await getApiMessage('giftCertificate.update.error'),
       };
     }
 
@@ -85,6 +97,18 @@ export async function updateGiftCertificate({
         success: false,
         message: await getApiMessage('giftCertificate.update.error'),
       };
+    }
+
+    // TODO send user notification
+    if (input.userId) {
+      const userId = new ObjectId(input.userId);
+      const sendNotification = !giftCertificate.userId || !userId.equals(giftCertificate.userId);
+      if (sendNotification) {
+        const newUser = await usersCollection.findOne({
+          _id: userId,
+        });
+        console.log(newUser);
+      }
     }
 
     return {

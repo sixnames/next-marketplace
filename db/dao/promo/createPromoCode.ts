@@ -15,6 +15,7 @@ import {
 } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
+import trim from 'trim';
 
 export interface CreatePromoCodeInputInterface {
   promoId: string;
@@ -84,7 +85,7 @@ export async function createPromoCode({
 
     // create promo code
     const createdPromoCodeResult = await promoCodesCollection.insertOne({
-      code: input.code,
+      code: trim(input.code),
       descriptionI18n: input.descriptionI18n,
       active: true,
       paybackPercent: 0,

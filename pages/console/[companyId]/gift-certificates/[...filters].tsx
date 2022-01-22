@@ -8,6 +8,7 @@ import WpTitle from '../../../../components/WpTitle';
 import { getConsoleGiftCertificatesPageSsr } from '../../../../db/dao/ssr/getConsoleGiftCertificatesPageSsr';
 import AppContentWrapper from '../../../../layout/AppContentWrapper';
 import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
+import { getConsoleCompanyLinks } from '../../../../lib/linkUtils';
 import { GetAppInitialDataPropsInterface } from '../../../../lib/ssrUtils';
 
 interface CompanyGiftCertificatesConsumerInterface extends ConsoleGiftCertificatesListInterface {}
@@ -15,11 +16,14 @@ interface CompanyGiftCertificatesConsumerInterface extends ConsoleGiftCertificat
 const CompanyGiftCertificatesConsumer: React.FC<CompanyGiftCertificatesConsumerInterface> = (
   props,
 ) => {
+  const links = getConsoleCompanyLinks({
+    companyId: props.pageCompany._id,
+  });
   return (
     <AppContentWrapper>
       <Inner lowTop>
         <WpTitle>Подарочные сертификаты</WpTitle>
-        <ConsoleGiftCertificatesList {...props} />
+        <ConsoleGiftCertificatesList {...props} basePath={links.parentLink} />
       </Inner>
     </AppContentWrapper>
   );

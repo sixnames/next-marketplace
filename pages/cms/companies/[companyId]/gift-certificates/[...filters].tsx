@@ -17,7 +17,7 @@ const CompanyGiftCertificatesConsumer: React.FC<CompanyGiftCertificatesConsumerI
   pageCompany,
   ...props
 }) => {
-  const { root, parentLink } = getCmsCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId: pageCompany?._id,
   });
 
@@ -26,11 +26,11 @@ const CompanyGiftCertificatesConsumer: React.FC<CompanyGiftCertificatesConsumerI
     config: [
       {
         name: 'Компании',
-        href: parentLink,
+        href: links.parentLink,
       },
       {
         name: `${pageCompany?.name}`,
-        href: root,
+        href: links.root,
       },
     ],
   };

@@ -2,6 +2,7 @@ import * as React from 'react';
 import { DEFAULT_PAGE, REQUEST_METHOD_POST, ROUTE_CMS } from '../../config/common';
 import { UsersPaginationPayloadModel } from '../../db/dbModels';
 import { UserInterface } from '../../db/uiInterfaces';
+import { ContentItemControlsInterface } from '../button/ContentItemControls';
 import FormikIndividualSearch from '../FormElements/Search/FormikIndividualSearch';
 import LinkEmail from '../Link/LinkEmail';
 import LinkPhone from '../Link/LinkPhone';
@@ -12,6 +13,24 @@ import Spinner from '../Spinner';
 import WpTable, { WpTableColumn } from '../WpTable';
 import ModalFrame from './ModalFrame';
 import ModalTitle from './ModalTitle';
+
+export interface UsersSearchModalControlsInterface
+  extends Omit<
+    ContentItemControlsInterface,
+    | 'isCreateDisabled'
+    | 'isUpdateDisabled'
+    | 'isDeleteDisabled'
+    | 'createHandler'
+    | 'updateHandler'
+    | 'deleteHandler'
+  > {
+  createHandler?: (user: UserInterface) => void;
+  updateHandler?: (user: UserInterface) => void;
+  deleteHandler?: (user: UserInterface) => void;
+  isCreateDisabled?: (user: UserInterface) => boolean;
+  isUpdateDisabled?: (user: UserInterface) => boolean;
+  isDeleteDisabled?: (user: UserInterface) => boolean;
+}
 
 export interface UsersSearchModalInterface {
   testId?: string;
@@ -44,7 +63,7 @@ const UsersSearchModal: React.FC<UsersSearchModalInterface> = ({
   }, [search, page]);
 
   if (!data) {
-    return <Spinner isNested />;
+    return <Spinner isNested isTransparent />;
   }
 
   if (!data.success || !data.payload) {

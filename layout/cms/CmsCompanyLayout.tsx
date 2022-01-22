@@ -50,7 +50,7 @@ const CmsCompanyLayout: React.FC<CmsCompanyLayoutInterface> = ({
       {
         name: 'Подарочные сертификаты',
         testId: 'gift-certificates',
-        path: links.giftCertificates,
+        path: links.giftCertificate.parentLink,
       },
       {
         name: 'Рубрикатор',

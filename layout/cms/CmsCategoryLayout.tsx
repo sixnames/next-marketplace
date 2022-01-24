@@ -2,7 +2,6 @@ import Head from 'next/head';
 import * as React from 'react';
 import Inner from '../../components/Inner';
 import WpTitle from '../../components/WpTitle';
-import { ROUTE_CMS } from '../../config/common';
 import { AppContentWrapperBreadCrumbs, CategoryInterface } from '../../db/uiInterfaces';
 import { getConsoleRubricLinks } from '../../lib/linkUtils';
 import { ClientNavItemInterface } from '../../types/clientTypes';
@@ -25,7 +24,7 @@ const CmsCategoryLayout: React.FC<CmsCategoryLayoutInterface> = ({
 }) => {
   const links = getConsoleRubricLinks({
     rubricSlug: `${category.rubric?.slug}`,
-    basePath: basePath || ROUTE_CMS,
+    basePath,
     categoryId: category._id,
   });
 

@@ -49,7 +49,7 @@ const ProductCategories: React.FC<ProductCategoriesInterface> = ({
       },
       {
         name: `${pageCompany.name}`,
-        href: links.parentLink,
+        href: links.root,
       },
       {
         name: `Рубрикатор`,

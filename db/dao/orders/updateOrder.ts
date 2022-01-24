@@ -124,10 +124,13 @@ export async function updateOrder({
       for await (const index of Object.keys(updatedProducts)) {
         const orderProduct = (order.products || [])[noNaN(index)];
         if (orderProduct) {
-          const { price, customDiscount, amount } = orderProduct;
+          const { price, customDiscount, amount, orderPromo } = orderProduct;
+          const promoDiscounts = (orderPromo || []).reduce((acc: number, promo) => {
+            return acc + noNaN(promo.discountPercent);
+          }, 0);
           const { discountedPrice } = countDiscountedPrice({
             price,
-            discount: noNaN(customDiscount),
+            discount: noNaN(customDiscount) + promoDiscounts,
           });
           const updatedShopProductResult = await orderProductsCollection.findOneAndUpdate(
             {
@@ -138,6 +141,7 @@ export async function updateOrder({
                 amount: amount,
                 finalPrice: discountedPrice,
                 totalPrice: amount * discountedPrice,
+                customDiscount,
               },
             },
           );

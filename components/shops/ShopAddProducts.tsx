@@ -108,6 +108,7 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
         const links = getConsoleRubricLinks({
           productId: dataItem._id,
           rubricSlug: dataItem.rubricSlug,
+          basePath,
         });
         return sessionUser?.role?.isStaff ? (
           <WpLink href={links.product.root} target={'_blank'}>
@@ -185,6 +186,7 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
                   const links = getConsoleRubricLinks({
                     productId: dataItem._id,
                     rubricSlug: dataItem.rubricSlug,
+                    basePath,
                   });
                   window.open(links.product.root, '_blank');
                 }
@@ -235,6 +237,7 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
                     const links = getConsoleRubricLinks({
                       productId: dataItem._id,
                       rubricSlug: dataItem.rubricSlug,
+                      basePath,
                     });
                     window.open(links.product.root, '_blank');
                   }

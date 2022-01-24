@@ -64,7 +64,7 @@ const ProductBrands: React.FC<ProductBrandsInterface> = ({
       },
       {
         name: `${pageCompany.name}`,
-        href: links.parentLink,
+        href: links.root,
       },
       {
         name: `Рубрикатор`,

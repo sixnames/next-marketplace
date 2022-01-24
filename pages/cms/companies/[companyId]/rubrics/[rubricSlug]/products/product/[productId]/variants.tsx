@@ -44,7 +44,7 @@ const ProductConnections: React.FC<ProductConnectionsPropsInterface> = ({
       },
       {
         name: `${pageCompany.name}`,
-        href: links.parentLink,
+        href: links.root,
       },
       {
         name: `Рубрикатор`,

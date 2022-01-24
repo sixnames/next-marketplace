@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { ROUTE_CMS } from '../../config/common';
 import { ShopProductBarcodeDoublesInterface, ShopProductInterface } from '../../db/uiInterfaces';
 import { alwaysArray } from '../../lib/arrayUtils';
 import { getNumWord } from '../../lib/i18n';
+import { getCmsLinks } from '../../lib/linkUtils';
 import WpLink from '../Link/WpLink';
 import TableRowImage from '../TableRowImage';
 import WpTable, { WpTableColumn } from '../WpTable';
@@ -23,10 +23,16 @@ const BarcodeIntersectsModalConsumer: React.FC<BarcodeIntersectsModalConsumerInt
     {
       headTitle: 'Арт',
       render: ({ dataItem, rowIndex }) => {
+        const links = getCmsLinks({
+          companyId: dataItem.companyId,
+          shopId: dataItem.shopId,
+          productId: dataItem._id,
+          rubricSlug: dataItem.rubricSlug,
+        });
         return (
           <WpLink
             testId={`product-link-${rowIndex}`}
-            href={`${ROUTE_CMS}/companies/${dataItem.companyId}/shops/shop/${dataItem.shopId}/products/product/${dataItem._id}/suppliers`}
+            href={links.companies.shop.rubrics.product.suppliers}
             target={'_blank'}
           >
             {dataItem.itemId}
@@ -98,10 +104,13 @@ const BarcodeIntersectsModalConsumer: React.FC<BarcodeIntersectsModalConsumerInt
       <div className={`overflow-x-auto overflow-y-hidden`}>
         <WpTable<ShopProductInterface>
           onRowDoubleClick={(dataItem) => {
-            window.open(
-              `${ROUTE_CMS}/companies/${dataItem.companyId}/shops/shop/${dataItem.shopId}/products/product/${dataItem._id}/suppliers`,
-              '_blank',
-            );
+            const links = getCmsLinks({
+              companyId: dataItem.companyId,
+              shopId: dataItem.shopId,
+              productId: dataItem._id,
+              rubricSlug: dataItem.rubricSlug,
+            });
+            window.open(links.companies.shop.rubrics.product.suppliers, '_blank');
           }}
           columns={columns}
           data={products}

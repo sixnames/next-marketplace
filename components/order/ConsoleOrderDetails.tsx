@@ -1,7 +1,7 @@
 import { Form, Formik, useFormikContext } from 'formik';
 import { get } from 'lodash';
 import * as React from 'react';
-import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, IMAGE_FALLBACK, ROUTE_CMS } from '../../config/common';
+import { DEFAULT_CITY, DEFAULT_COMPANY_SLUG, IMAGE_FALLBACK } from '../../config/common';
 import {
   DELIVERY_VARIANT_OPTIONS,
   getConstantOptionName,
@@ -78,7 +78,6 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
   const [updateOrderProductMutation] = useUpdateOrderProduct();
 
   const summaryLinks = getConsoleRubricLinks({
-    basePath: ROUTE_CMS,
     productId: summary?._id,
     rubricSlug: summary?.rubricSlug,
   });

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { FILTER_SEPARATOR, ROUTE_CMS } from '../../config/common';
+import { FILTER_SEPARATOR } from '../../config/common';
 import {
   CONFIRM_MODAL,
   CREATE_CONNECTION_MODAL,
@@ -16,6 +16,7 @@ import {
   useDeleteProductFromConnectionMutation,
 } from '../../generated/apolloComponents';
 import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+import { getCmsLinks } from '../../lib/linkUtils';
 import ContentItemControls from '../button/ContentItemControls';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
@@ -111,11 +112,15 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
     {
       headTitle: 'Арт',
       render: ({ dataItem, rowIndex }) => {
+        const links = getCmsLinks({
+          rubricSlug: dataItem.summary?.rubricSlug,
+          productId: dataItem.summary?._id,
+        });
         return (
           <WpLink
             target={'_blank'}
             testId={`product-link-${rowIndex}`}
-            href={`${ROUTE_CMS}/rubrics/${dataItem.summary?.rubricId}/products/product/${dataItem.summary?._id}`}
+            href={links.rubrics.product.root}
           >
             {dataItem.summary?.itemId}
           </WpLink>
@@ -160,10 +165,11 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
             justifyContent={'flex-end'}
             updateTitle={'Редактировать товар'}
             updateHandler={() => {
-              window.open(
-                `${ROUTE_CMS}/rubrics/${dataItem.summary?.rubricId}/products/product/${dataItem.summary?._id}`,
-                '_blank',
-              );
+              const links = getCmsLinks({
+                rubricSlug: dataItem.summary?.rubricSlug,
+                productId: dataItem.summary?._id,
+              });
+              window.open(links.rubrics.product.root, '_blank');
             }}
             deleteTitle={'Удалить товар из связи'}
             deleteHandler={() => {
@@ -211,10 +217,11 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
           data={products}
           tableTestId={`${connection.attribute.name}-connection-list`}
           onRowDoubleClick={(dataItem) => {
-            window.open(
-              `${ROUTE_CMS}/rubrics/${dataItem.summary?.rubricId}/products/product/${dataItem.summary?._id}`,
-              '_blank',
-            );
+            const links = getCmsLinks({
+              rubricSlug: dataItem.summary?.rubricSlug,
+              productId: dataItem.summary?._id,
+            });
+            window.open(links.rubrics.product.root, '_blank');
           }}
           testIdKey={'product.name'}
         />

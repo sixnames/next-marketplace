@@ -1,12 +1,11 @@
 import * as React from 'react';
-import { DEFAULT_PAGE, REQUEST_METHOD_POST, ROUTE_CMS } from '../../config/common';
+import { DEFAULT_PAGE, REQUEST_METHOD_POST } from '../../config/common';
 import { UsersPaginationPayloadModel } from '../../db/dbModels';
 import { UserInterface } from '../../db/uiInterfaces';
 import { ContentItemControlsInterface } from '../button/ContentItemControls';
 import FormikIndividualSearch from '../FormElements/Search/FormikIndividualSearch';
 import LinkEmail from '../Link/LinkEmail';
 import LinkPhone from '../Link/LinkPhone';
-import WpLink from '../Link/WpLink';
 import Pager from '../Pager';
 import RequestError from '../RequestError';
 import Spinner from '../Spinner';
@@ -80,9 +79,7 @@ const UsersSearchModal: React.FC<UsersSearchModalInterface> = ({
     {
       accessor: 'itemId',
       headTitle: 'ID',
-      render: ({ cellData, dataItem }) => (
-        <WpLink href={`${ROUTE_CMS}/users/user/${dataItem._id}`}>{cellData}</WpLink>
-      ),
+      render: ({ cellData }) => cellData,
     },
     {
       accessor: 'fullName',

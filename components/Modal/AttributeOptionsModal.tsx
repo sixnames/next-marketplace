@@ -6,7 +6,6 @@ export interface AttributeOptionsModalInterface extends OptionsModalCommonPropsI
   slugs?: string[];
   optionsGroupId: string;
   parentId?: string | null;
-  selectedOptionIds?: string[] | null;
 }
 
 const AttributeOptionsModal: React.FC<AttributeOptionsModalInterface> = ({

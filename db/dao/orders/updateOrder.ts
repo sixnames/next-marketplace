@@ -141,6 +141,7 @@ export async function updateOrder({
                 amount: amount,
                 finalPrice: discountedPrice,
                 totalPrice: amount * discountedPrice,
+                customDiscount,
               },
             },
           );

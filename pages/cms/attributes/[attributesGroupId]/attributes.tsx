@@ -11,7 +11,7 @@ import { ConfirmModalInterface } from '../../../../components/Modal/ConfirmModal
 import { MoveAttributeModalInterface } from '../../../../components/Modal/MoveAttributeModal';
 import WpTable, { WpTableColumn } from '../../../../components/WpTable';
 import WpTitle from '../../../../components/WpTitle';
-import { DEFAULT_LOCALE, ROUTE_CMS, SORT_ASC } from '../../../../config/common';
+import { DEFAULT_LOCALE, SORT_ASC } from '../../../../config/common';
 import {
   getBooleanTranslation,
   getConstantTranslation,
@@ -48,6 +48,7 @@ import AppSubNav from '../../../../layout/AppSubNav';
 import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
 import { sortObjectsByField } from '../../../../lib/arrayUtils';
 import { getFieldStringLocale } from '../../../../lib/i18n';
+import { getCmsLinks } from '../../../../lib/linkUtils';
 import {
   castDbData,
   getAppInitialData,
@@ -99,16 +100,20 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({
     });
   }
 
+  const links = getCmsLinks({
+    attributesGroupId: attributesGroup._id,
+  });
+
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `Атрибуты`,
     config: [
       {
         name: 'Группы атрибутов',
-        href: `${ROUTE_CMS}/attributes`,
+        href: links.attributes.parentLink,
       },
       {
         name: `${attributesGroup.name}`,
-        href: `${ROUTE_CMS}/attributes/${attributesGroup._id}`,
+        href: links.attributes.root,
       },
     ],
   };
@@ -118,17 +123,17 @@ const AttributesConsumer: React.FC<AttributesConsumerInterface> = ({
       {
         name: 'Атрибуты',
         testId: 'sub-nav-attributes',
-        path: `${ROUTE_CMS}/attributes/${attributesGroup._id}/attributes`,
+        path: links.attributes.attribute.parentLink,
         exact: true,
       },
       {
         name: 'Детали',
         testId: 'sub-nav-details',
-        path: `${ROUTE_CMS}/attributes/${attributesGroup._id}`,
+        path: links.attributes.root,
         exact: true,
       },
     ];
-  }, [attributesGroup._id]);
+  }, [links]);
 
   const columns: WpTableColumn<AttributeInterface>[] = [
     {

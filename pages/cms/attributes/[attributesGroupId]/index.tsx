@@ -8,7 +8,6 @@ import WpButton from '../../../../components/button/WpButton';
 import FormikTranslationsInput from '../../../../components/FormElements/Input/FormikTranslationsInput';
 import Inner from '../../../../components/Inner';
 import WpTitle from '../../../../components/WpTitle';
-import { ROUTE_CMS } from '../../../../config/common';
 import { COL_ATTRIBUTES_GROUPS } from '../../../../db/collectionNames';
 import { getDatabase } from '../../../../db/mongodb';
 import {
@@ -21,6 +20,7 @@ import useValidationSchema from '../../../../hooks/useValidationSchema';
 import AppContentWrapper from '../../../../layout/AppContentWrapper';
 import AppSubNav from '../../../../layout/AppSubNav';
 import { getFieldStringLocale } from '../../../../lib/i18n';
+import { getCmsLinks } from '../../../../lib/linkUtils';
 import {
   castDbData,
   getAppInitialData,
@@ -50,12 +50,16 @@ const AttributesGroupConsumer: React.FC<AttributesGroupConsumerInterface> = ({
     onError: onErrorCallback,
   });
 
+  const links = getCmsLinks({
+    attributesGroupId: attributesGroup._id,
+  });
+
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${attributesGroup.name}`,
     config: [
       {
         name: 'Группы атрибутов',
-        href: `${ROUTE_CMS}/attributes`,
+        href: links.attributes.parentLink,
       },
     ],
   };
@@ -65,17 +69,17 @@ const AttributesGroupConsumer: React.FC<AttributesGroupConsumerInterface> = ({
       {
         name: 'Атрибуты',
         testId: 'sub-nav-attributes',
-        path: `${ROUTE_CMS}/attributes/${attributesGroup._id}/attributes`,
+        path: links.attributes.attribute.parentLink,
         exact: true,
       },
       {
         name: 'Детали',
         testId: 'sub-nav-details',
-        path: `${ROUTE_CMS}/attributes/${attributesGroup._id}`,
+        path: links.attributes.root,
         exact: true,
       },
     ];
-  }, [attributesGroup._id]);
+  }, [links]);
 
   return (
     <AppContentWrapper breadcrumbs={breadcrumbs}>

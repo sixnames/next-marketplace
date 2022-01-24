@@ -8,7 +8,7 @@ import { BlogAttributeModalInterface } from '../../../components/Modal/BlogAttri
 import { ConfirmModalInterface } from '../../../components/Modal/ConfirmModal';
 import WpTable, { WpTableColumn } from '../../../components/WpTable';
 import WpTitle from '../../../components/WpTitle';
-import { DEFAULT_LOCALE, ROUTE_CMS, SORT_ASC } from '../../../config/common';
+import { DEFAULT_LOCALE, SORT_ASC } from '../../../config/common';
 import { BLOG_ATTRIBUTE_MODAL, CONFIRM_MODAL } from '../../../config/modalVariants';
 import { useAppContext } from '../../../context/appContext';
 import { COL_BLOG_ATTRIBUTES, COL_OPTIONS_GROUPS } from '../../../db/collectionNames';
@@ -20,6 +20,7 @@ import AppSubNav from '../../../layout/AppSubNav';
 import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
 import { sortObjectsByField } from '../../../lib/arrayUtils';
 import { getFieldStringLocale } from '../../../lib/i18n';
+import { getCmsLinks } from '../../../lib/linkUtils';
 import {
   castDbData,
   getAppInitialData,
@@ -42,17 +43,18 @@ const BlogAttributesListConsumer: React.FC<BlogAttributesListConsumerInterface> 
   const [deleteBlogAttribute] = useDeleteBlogAttribute();
 
   const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
+    const links = getCmsLinks({});
     return [
       {
         name: 'Блог',
         testId: 'sub-nav-blog',
-        path: `${ROUTE_CMS}/blog`,
+        path: links.blog.parentLink,
         exact: true,
       },
       {
         name: 'Атрибуты',
         testId: 'sub-nav-attributes',
-        path: `${ROUTE_CMS}/blog/attributes`,
+        path: links.blog.attributes,
         exact: true,
       },
     ];

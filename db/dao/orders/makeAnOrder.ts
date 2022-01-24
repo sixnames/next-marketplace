@@ -330,7 +330,7 @@ export async function makeAnOrder({
           }
 
           // get order product prices
-          let finalPrice: number = price;
+          let finalPrice: number = Number(price);
           let orderProductPromo: OrderPromoModel | null = null;
           if (promoProduct && promo) {
             const { discountedPrice } = countDiscountedPrice({
@@ -361,9 +361,9 @@ export async function makeAnOrder({
             statusId: initialStatus._id,
             itemId,
             price,
-            amount,
-            totalPrice,
             finalPrice,
+            totalPrice,
+            amount,
             orderPromo: orderProductPromo ? [orderProductPromo] : null,
             slug: product.slug,
             originalName: product.originalName,

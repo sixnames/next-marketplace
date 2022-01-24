@@ -155,7 +155,7 @@ export async function createProductWithSyncError({
       }
 
       // create product
-      const productItemId = await getNextItemId(COL_PRODUCT_FACETS);
+      const productItemId = await getNextItemId(COL_PRODUCT_SUMMARIES);
       const productId = new ObjectId();
       const createdProductSummaryResult = await productSummariesCollection.insertOne({
         ...productFields,

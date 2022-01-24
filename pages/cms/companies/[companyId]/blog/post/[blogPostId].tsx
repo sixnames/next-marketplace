@@ -35,23 +35,24 @@ const BlogPostConsumer: React.FC<BlogPostConsumerInterface> = ({
   pageCompany,
   attributes,
 }) => {
-  const { root, parentLink, blog } = getCmsCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId: pageCompany?._id,
+    blogPostId: post._id,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${post.title}`,
     config: [
       {
         name: 'Компании',
-        href: parentLink,
+        href: links.parentLink,
       },
       {
         name: `${pageCompany?.name}`,
-        href: root,
+        href: links.root,
       },
       {
         name: pageTitle,
-        href: blog,
+        href: links.blog.root,
       },
     ],
   };

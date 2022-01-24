@@ -4,11 +4,11 @@ import FormikInput from '../../components/FormElements/Input/FormikInput';
 import FormikMultiLineInput from '../../components/FormElements/Input/FormikMultiLineInput';
 import FakeInput from '../../components/FormElements/Input/FakeInput';
 import InputLine from '../../components/FormElements/Input/InputLine';
-import { ROUTE_CMS } from '../../config/common';
 import { USERS_SEARCH_MODAL } from '../../config/modalVariants';
 import { useAppContext } from '../../context/appContext';
 import { UserInterface } from '../../db/uiInterfaces';
 import { UpdateCompanyInput } from '../../generated/apolloComponents';
+import { getCmsLinks } from '../../lib/linkUtils';
 import ContentItemControls from '../button/ContentItemControls';
 import WpButton from '../button/WpButton';
 import LinkEmail from '../Link/LinkEmail';
@@ -49,7 +49,10 @@ const CompanyMainFields: React.FC<CompanyMainFieldsInterface> = ({
         if (inConsole) {
           return cellData;
         }
-        return <WpLink href={`${ROUTE_CMS}/users/user/${dataItem._id}`}>{cellData}</WpLink>;
+        const links = getCmsLinks({
+          userId: dataItem._id,
+        });
+        return <WpLink href={links.user.root}>{cellData}</WpLink>;
       },
     },
     {

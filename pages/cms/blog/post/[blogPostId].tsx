@@ -4,7 +4,6 @@ import * as React from 'react';
 import BlogPostsDetails from '../../../../components/blog/BlogPostsDetails';
 import Inner from '../../../../components/Inner';
 import WpTitle from '../../../../components/WpTitle';
-import { ROUTE_CMS } from '../../../../config/common';
 import { getBlogPost } from '../../../../db/dao/blog/getBlogPost';
 import {
   AppContentWrapperBreadCrumbs,
@@ -13,6 +12,7 @@ import {
 } from '../../../../db/uiInterfaces';
 import AppContentWrapper from '../../../../layout/AppContentWrapper';
 import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
+import { getCmsLinks } from '../../../../lib/linkUtils';
 import {
   castDbData,
   getAppInitialData,
@@ -27,12 +27,15 @@ interface BlogPostConsumerInterface {
 const pageTitle = 'Блог';
 
 const BlogPostConsumer: React.FC<BlogPostConsumerInterface> = ({ post, attributes }) => {
+  const links = getCmsLinks({
+    blogPostId: post._id,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${post.title}`,
     config: [
       {
         name: 'Блог',
-        href: `${ROUTE_CMS}/blog`,
+        href: links.blog.parentLink,
       },
     ],
   };

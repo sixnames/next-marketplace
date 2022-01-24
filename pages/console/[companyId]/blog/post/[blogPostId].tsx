@@ -34,13 +34,14 @@ const BlogPostConsumer: React.FC<BlogPostConsumerInterface> = ({
 }) => {
   const links = getConsoleCompanyLinks({
     companyId: pageCompany._id,
+    blogPostId: post._id,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${post.title}`,
     config: [
       {
         name: pageTitle,
-        href: links.blog,
+        href: links.blog.root,
       },
     ],
   };

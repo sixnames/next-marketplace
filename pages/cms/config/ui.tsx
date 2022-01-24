@@ -21,7 +21,7 @@ const ConfigConsumer: React.FC<ConfigPageInterface> = ({
   rubrics,
 }) => {
   return (
-    <ConsoleConfigsLayout isCms={true}>
+    <ConsoleConfigsLayout>
       <Inner>
         <ConfigsFormTemplate
           assetConfigs={assetConfigs}

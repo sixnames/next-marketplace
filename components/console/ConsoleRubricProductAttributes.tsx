@@ -31,8 +31,6 @@ function castSelectedOptions(option: OptionInterface): OptionsModalOptionInterfa
   };
 }
 
-const attributesGroupClassName = 'relative mb-16';
-const attributesGroupTitleClassName = 'mb-4 font-medium text-xl';
 const selectsListClassName = 'grid sm:grid-cols-2 md:grid-cols-3 gap-x-8';
 
 interface ConsoleRubricProductAttributesInterface {
@@ -101,8 +99,8 @@ const ConsoleRubricProductAttributes: React.FC<ConsoleRubricProductAttributesInt
           return null;
         }
         return (
-          <div className={attributesGroupClassName} key={`${attributesGroup._id}`}>
-            <div className={attributesGroupTitleClassName}>{attributesGroup.name}</div>
+          <div className='relative mb-16' key={`${attributesGroup._id}`}>
+            <div className='mb-4 font-medium text-xl'>{attributesGroup.name}</div>
             {selectAttributesAST && selectAttributesAST.length > 0 ? (
               <div>
                 <div className={selectsListClassName}>

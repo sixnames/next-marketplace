@@ -96,9 +96,9 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({ cardData, compan
           </div>
 
           {/*columns*/}
-          <div className='lg:grid lg:grid-cols-7 gap-8 mb-28'>
+          <div className='lg:grid lg:grid-cols-7 gap-8 mb-28 relative'>
             {/*gallery*/}
-            <div className='lg:col-span-4 relative'>
+            <div className='lg:col-span-4 relative z-20'>
               {showCardImagesSlider ? (
                 <CardImageSlider
                   assets={assets}
@@ -119,7 +119,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({ cardData, compan
             </div>
 
             {/*data*/}
-            <div className='lg:col-span-3 relative'>
+            <div className='lg:col-span-3 relative z-10'>
               <div className={stickyClassName}>
                 {/*main block*/}
                 <div className={`rounded-xl bg-secondary px-6 py-8 ${dataSectionClassName}`}>

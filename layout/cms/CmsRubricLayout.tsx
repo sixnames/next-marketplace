@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import * as React from 'react';
 import Inner from '../../components/Inner';
 import WpTitle from '../../components/WpTitle';
-import { ROUTE_CMS } from '../../config/common';
 import { AppContentWrapperBreadCrumbs, RubricInterface } from '../../db/uiInterfaces';
 import { getConsoleRubricLinks } from '../../lib/linkUtils';
 import { ClientNavItemInterface } from '../../types/clientTypes';
@@ -28,7 +27,7 @@ const CmsRubricLayout: React.FC<CmsRubricLayoutInterface> = ({
 
   const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
     const links = getConsoleRubricLinks({
-      basePath: basePath || ROUTE_CMS,
+      basePath,
       rubricSlug: rubric.slug,
     });
 

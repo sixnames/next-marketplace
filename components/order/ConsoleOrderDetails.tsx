@@ -34,6 +34,7 @@ import LinkEmail from '../Link/LinkEmail';
 import LinkPhone from '../Link/LinkPhone';
 import WpLink from '../Link/WpLink';
 import { ConfirmModalInterface } from '../Modal/ConfirmModal';
+import Percent from '../Percent';
 import ProductsListSuppliersList from '../shops/ProductsListSuppliersList';
 import WpImage from '../WpImage';
 import WpTitle from '../WpTitle';
@@ -57,8 +58,17 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
   const { values } = useFormikContext<OrderInterface>();
   const { showModal } = useAppContext();
   const { showErrorNotification } = useNotificationsContext();
-  const { summary, originalName, shopProduct, itemId, price, totalPrice, finalPrice, isCanceled } =
-    orderProduct;
+  const {
+    summary,
+    originalName,
+    shopProduct,
+    itemId,
+    price,
+    totalPrice,
+    finalPrice,
+    isCanceled,
+    orderPromo,
+  } = orderProduct;
   const productImageSrc = summary?.mainImage || IMAGE_FALLBACK;
   const minAmount = 1;
   const supplierProducts = shopProduct?.supplierProducts || [];
@@ -216,6 +226,24 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
               <div className='mt-6'>
                 <div className='font-medium text-lg mb-2'>Поставщики</div>
                 <ProductsListSuppliersList supplierProducts={supplierProducts} />
+              </div>
+            ) : null}
+
+            {orderPromo && orderPromo.length > 0 ? (
+              <div className='mt-6'>
+                <div className='font-medium text-lg mb-2'>Применённые акции</div>
+                <div className='space-y-4 text-secondary-text'>
+                  {orderPromo.map((promo) => {
+                    return (
+                      <div className='flex flex-wrap gap-3' key={`${promo._id}`}>
+                        <div>{promo.promo?.name || 'Название акции не найдено'}</div>
+                        <div>
+                          Скидка <Percent value={promo.discountPercent} />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             ) : null}
           </div>

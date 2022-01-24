@@ -29,8 +29,8 @@ import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
 
 interface RubricsRouteInterface extends CompanyRubricsListInterface {}
 
-const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, pageCompany, routeBasePath }) => {
-  const { root, parentLink } = getCmsCompanyLinks({
+const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, pageCompany }) => {
+  const links = getCmsCompanyLinks({
     companyId: pageCompany._id,
   });
 
@@ -39,22 +39,18 @@ const RubricsRoute: React.FC<RubricsRouteInterface> = ({ rubrics, pageCompany, r
     config: [
       {
         name: 'Компании',
-        href: parentLink,
+        href: links.parentLink,
       },
       {
         name: `${pageCompany?.name}`,
-        href: root,
+        href: links.root,
       },
     ],
   };
 
   return (
     <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
-      <CompanyRubricsList
-        rubrics={rubrics}
-        pageCompany={pageCompany}
-        routeBasePath={routeBasePath}
-      />
+      <CompanyRubricsList rubrics={rubrics} pageCompany={pageCompany} routeBasePath={links.root} />
     </CmsCompanyLayout>
   );
 };
@@ -193,7 +189,7 @@ export const getServerSideProps = async (
       ...props,
       rubrics: castDbData(rawRubrics),
       pageCompany: castDbData(companyResult),
-      routeBasePath: links.rubrics.parentLink,
+      routeBasePath: links.root,
     },
   };
 };

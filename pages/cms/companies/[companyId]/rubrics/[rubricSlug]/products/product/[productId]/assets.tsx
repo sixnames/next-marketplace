@@ -44,7 +44,7 @@ const ProductAssets: React.FC<ProductAssetsInterface> = ({
       },
       {
         name: `${pageCompany.name}`,
-        href: links.parentLink,
+        href: links.root,
       },
       {
         name: `Рубрикатор`,

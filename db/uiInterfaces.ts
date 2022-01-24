@@ -589,6 +589,7 @@ export interface OrderProductInterface extends OrderProductModel {
   formattedTotalPrice?: string | null;
   name?: string | null;
   status?: OrderStatusInterface | null;
+  orderPromo?: OrderPromoInterface[] | null;
 }
 
 export interface OrderRequestModelInterface extends OrderRequestModel {

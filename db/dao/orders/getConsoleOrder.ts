@@ -229,29 +229,31 @@ export async function getConsoleOrder({
       .toArray();
   }
 
+  const orderPromo = (initialOrder.orderPromo || []).reduce(
+    (acc: OrderPromoInterface[], orderPromoItem) => {
+      const promo = promoList.find(({ _id }) => {
+        return _id.equals(orderPromoItem._id);
+      });
+      if (!promo) {
+        return [...acc, orderPromoItem];
+      }
+      return [
+        ...acc,
+        {
+          ...orderPromoItem,
+          promo: {
+            ...promo,
+            name: getFieldStringLocale(promo.nameI18n, locale),
+          },
+        },
+      ];
+    },
+    [],
+  );
+
   const order: OrderInterface = {
     ...initialOrder,
-    orderPromo: (initialOrder.orderPromo || []).reduce(
-      (acc: OrderPromoInterface[], orderPromoItem) => {
-        const promo = promoList.find(({ _id }) => {
-          return _id.equals(orderPromoItem._id);
-        });
-        if (!promo) {
-          return [...acc, orderPromoItem];
-        }
-        return [
-          ...acc,
-          {
-            ...orderPromoItem,
-            promo: {
-              ...promo,
-              name: getFieldStringLocale(promo.nameI18n, locale),
-            },
-          },
-        ];
-      },
-      [],
-    ),
+    orderPromo,
     status: initialOrder.status
       ? {
           ...initialOrder.status,
@@ -259,8 +261,13 @@ export async function getConsoleOrder({
         }
       : null,
     products: initialOrder.products?.map((orderProduct) => {
+      const productOrderPromoIds = (orderProduct.orderPromo || []).map(({ _id }) => _id);
+      const productOrderPromo = orderPromo.filter(({ _id }) => {
+        return productOrderPromoIds.some((promoId) => promoId.equals(_id));
+      });
       return {
         ...orderProduct,
+        orderPromo: productOrderPromo,
         status: castOrderStatus({
           initialStatus: orderProduct.status,
           locale,

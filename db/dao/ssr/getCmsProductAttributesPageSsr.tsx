@@ -13,11 +13,12 @@ import { getFieldStringLocale } from '../../../lib/i18n';
 import { getCmsProduct } from '../../../lib/productUtils';
 import { castDbData, getAppInitialData } from '../../../lib/ssrUtils';
 import { CmsProductAttributesPageInterface } from '../../../pages/cms/rubrics/[rubricSlug]/products/product/[productId]/attributes';
-import { COL_ATTRIBUTES, COL_ATTRIBUTES_GROUPS } from '../../collectionNames';
+import { COL_ATTRIBUTES, COL_ATTRIBUTES_GROUPS, COL_OPTIONS } from '../../collectionNames';
 import { ObjectIdModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
 import {
   AttributesGroupInterface,
+  OptionInterface,
   ProductAttributeInterface,
   ProductAttributesGroupInterface,
   ProductSummaryInterface,
@@ -30,22 +31,23 @@ export const getCmsProductAttributesPageSsr = async (
   const { productId } = query;
   const { db } = await getDatabase();
   const attributesGroupsCollection = db.collection<AttributesGroupInterface>(COL_ATTRIBUTES_GROUPS);
+  const optionsCollection = db.collection<OptionInterface>(COL_OPTIONS);
   const { props } = await getAppInitialData({ context });
   if (!props) {
     return null;
   }
 
-  const payload = await getCmsProduct({
+  const productPayload = await getCmsProduct({
     locale: props.sessionLocale,
     productId: `${productId}`,
     companySlug: DEFAULT_COMPANY_SLUG,
   });
 
-  if (!payload) {
+  if (!productPayload) {
     return null;
   }
 
-  const { product, categoriesList } = payload;
+  const { product, categoriesList } = productPayload;
   const attributesGroupIds: ObjectIdModel[] = product.rubric?.attributesGroupIds || [];
   let cmsCardAttributeIds: ObjectIdModel[] = product.rubric?.cmsCardAttributeIds || [];
   if (categoriesList.length > 0) {
@@ -107,19 +109,30 @@ export const getCmsProductAttributesPageSsr = async (
 
   // Get product attribute groups
   const productAttributesGroups: ProductAttributesGroupInterface[] = [];
-  rubricAttributeGroups.forEach((group) => {
+  for await (const group of rubricAttributeGroups) {
     const stringAttributesAST: ProductAttributeInterface[] = [];
     const numberAttributesAST: ProductAttributeInterface[] = [];
     const multipleSelectAttributesAST: ProductAttributeInterface[] = [];
     const selectAttributesAST: ProductAttributeInterface[] = [];
 
-    (group.attributes || []).forEach((attribute) => {
+    for await (const attribute of group.attributes || []) {
       const currentProductAttribute = product.attributes.find(({ attributeId }) => {
         return attributeId.equals(attribute._id);
       });
       let productAttribute: ProductAttributeInterface | null = null;
 
       if (currentProductAttribute) {
+        let attributeOptions: OptionInterface[] = [];
+        if (currentProductAttribute.optionIds.length > 0) {
+          attributeOptions = await optionsCollection
+            .find({
+              _id: {
+                $in: currentProductAttribute.optionIds,
+              },
+            })
+            .toArray();
+        }
+
         productAttribute = {
           ...currentProductAttribute,
           readableValue: getFieldStringLocale(
@@ -129,6 +142,12 @@ export const getCmsProductAttributesPageSsr = async (
           attribute: {
             ...attribute,
             name: getFieldStringLocale(attribute.nameI18n, props.sessionLocale),
+            options: attributeOptions.map((option) => {
+              return {
+                ...option,
+                name: getFieldStringLocale(option.nameI18n, props.sessionLocale),
+              };
+            }),
           },
         };
       } else {
@@ -137,6 +156,7 @@ export const getCmsProductAttributesPageSsr = async (
           attribute: {
             ...attribute,
             name: getFieldStringLocale(attribute.nameI18n, props.sessionLocale),
+            options: [],
           },
           readableValueI18n: {},
           attributeId: attribute._id,
@@ -165,7 +185,7 @@ export const getCmsProductAttributesPageSsr = async (
       if (variant === ATTRIBUTE_VARIANT_SELECT) {
         selectAttributesAST.push(productAttribute);
       }
-    });
+    }
 
     const productAttributesGroup: ProductAttributesGroupInterface = {
       ...group,
@@ -178,7 +198,7 @@ export const getCmsProductAttributesPageSsr = async (
     };
 
     productAttributesGroups.push(productAttributesGroup);
-  });
+  }
 
   const finalProduct: ProductSummaryInterface = {
     ...product,

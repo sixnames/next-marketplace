@@ -16,7 +16,7 @@ import {
 
 const ConfigConsumer: React.FC<ConfigPageInterface> = ({ assetConfigs, normalConfigs }) => {
   return (
-    <ConsoleConfigsLayout isCms={true}>
+    <ConsoleConfigsLayout>
       <Inner>
         <ConfigsFormTemplate assetConfigs={assetConfigs} normalConfigs={normalConfigs} />
       </Inner>

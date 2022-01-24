@@ -60,7 +60,7 @@ const CmsCompanyLayout: React.FC<CmsCompanyLayoutInterface> = ({
       {
         name: 'Блог',
         testId: 'company-blog',
-        path: links.blog,
+        path: links.blog.parentLink,
       },
       {
         name: 'Страницы',

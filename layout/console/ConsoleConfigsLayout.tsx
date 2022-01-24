@@ -2,10 +2,10 @@ import Head from 'next/head';
 import * as React from 'react';
 import Inner from '../../components/Inner';
 import WpTitle from '../../components/WpTitle';
-import { ROUTE_CMS, ROUTE_CONSOLE } from '../../config/common';
 import { useUserContext } from '../../context/userContext';
 import { ConfigModel } from '../../db/dbModels';
 import { RubricInterface } from '../../db/uiInterfaces';
+import { getConsoleConfigsLinks } from '../../lib/linkUtils';
 import { ClientNavItemInterface } from '../../types/clientTypes';
 import AppContentWrapper from '../AppContentWrapper';
 import AppSubNav from '../AppSubNav';
@@ -17,70 +17,62 @@ export interface ConfigPageInterface {
 }
 
 export interface AppConfigsLayoutInterface {
-  companyId?: string;
-  isCms?: boolean;
+  basePath?: string;
 }
 
-const ConsoleConfigsLayout: React.FC<AppConfigsLayoutInterface> = ({
-  children,
-  isCms,
-  companyId,
-}) => {
+const ConsoleConfigsLayout: React.FC<AppConfigsLayoutInterface> = ({ children, basePath }) => {
   const { sessionUser } = useUserContext();
 
   const navConfig = React.useMemo<ClientNavItemInterface[]>(() => {
+    const links = getConsoleConfigsLinks({
+      basePath,
+    });
     return [
       {
         name: 'Общие',
         testId: 'globals',
-        path: isCms ? `${ROUTE_CMS}/config` : `${ROUTE_CONSOLE}/${companyId}/config`,
+        path: links.root,
         exact: true,
       },
       {
         name: 'Аналитика',
         testId: 'analytics',
-        path: isCms
-          ? `${ROUTE_CMS}/config/analytics`
-          : `${ROUTE_CONSOLE}/${companyId}/config/analytics`,
+        path: links.analytics,
         exact: true,
       },
       {
         name: 'Интерфейс',
         testId: 'ui',
-        path: isCms ? `${ROUTE_CMS}/config/ui` : `${ROUTE_CONSOLE}/${companyId}/config/ui`,
+        path: links.ui,
         exact: true,
       },
       {
         name: 'Контактные данные',
         testId: 'contacts',
-        path: isCms
-          ? `${ROUTE_CMS}/config/contacts`
-          : `${ROUTE_CONSOLE}/${companyId}/config/contacts`,
+        path: links.contacts,
         exact: true,
       },
       {
         name: 'SEO',
         testId: 'seo',
-        path: isCms ? `${ROUTE_CMS}/config/seo` : `${ROUTE_CONSOLE}/${companyId}/config/seo`,
+        path: links.seo,
         exact: true,
       },
       {
         name: 'Каталог',
         testId: 'catalogue',
-        path: isCms
-          ? `${ROUTE_CMS}/config/catalogue`
-          : `${ROUTE_CONSOLE}/${companyId}/config/catalogue`,
+        path: links.catalogue,
         exact: true,
       },
       {
         name: 'Проект',
         testId: 'admin',
-        path: `${ROUTE_CMS}/config/project`,
+        path: links.project,
         exact: true,
         hidden: !sessionUser?.role?.isStaff,
       },
     ];
-  }, [isCms, companyId, sessionUser]);
+  }, [basePath, sessionUser]);
 
   return (
     <AppContentWrapper>

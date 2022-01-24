@@ -665,6 +665,9 @@ export async function getCardData({
     attributesGroups.forEach((attributesGroup) => {
       const groupAttributes = initialProductAttributes.reduce(
         (acc: ProductAttributeInterface[], productAttribute) => {
+          if (productAttribute.attribute?.viewVariant === ATTRIBUTE_VIEW_VARIANT_TEXT) {
+            return acc;
+          }
           if (!productAttribute.attribute?.attributesGroupId.equals(attributesGroup._id)) {
             return acc;
           }

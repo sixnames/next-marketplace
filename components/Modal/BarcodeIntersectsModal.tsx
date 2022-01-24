@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { ROUTE_CMS } from '../../config/common';
 import { BarcodeDoublesInterface, ProductSummaryInterface } from '../../db/uiInterfaces';
 import { alwaysArray } from '../../lib/arrayUtils';
 import { getNumWord } from '../../lib/i18n';
+import { getCmsLinks } from '../../lib/linkUtils';
 import WpLink from '../Link/WpLink';
 import TableRowImage from '../TableRowImage';
 import WpTable, { WpTableColumn } from '../WpTable';
@@ -23,10 +23,14 @@ const BarcodeIntersectsModalConsumer: React.FC<BarcodeIntersectsModalConsumerInt
     {
       headTitle: 'Арт',
       render: ({ dataItem, rowIndex }) => {
+        const links = getCmsLinks({
+          rubricSlug: dataItem.rubricSlug,
+          productId: dataItem._id,
+        });
         return (
           <WpLink
             testId={`product-link-${rowIndex}`}
-            href={`${ROUTE_CMS}/rubrics/${dataItem.rubricId}/products/product/${dataItem._id}`}
+            href={links.rubrics.product.root}
             target={'_blank'}
           >
             {dataItem.itemId}
@@ -98,10 +102,11 @@ const BarcodeIntersectsModalConsumer: React.FC<BarcodeIntersectsModalConsumerInt
       <div className={`overflow-x-auto overflow-y-hidden`}>
         <WpTable<ProductSummaryInterface>
           onRowDoubleClick={(dataItem) => {
-            window.open(
-              `${ROUTE_CMS}/rubrics/${dataItem.rubricId}/products/product/${dataItem._id}`,
-              '_blank',
-            );
+            const links = getCmsLinks({
+              rubricSlug: dataItem.rubricSlug,
+              productId: dataItem._id,
+            });
+            window.open(links.rubrics.product.root, '_blank');
           }}
           columns={columns}
           data={products}

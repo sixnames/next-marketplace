@@ -2,8 +2,8 @@ import Head from 'next/head';
 import * as React from 'react';
 import Inner from '../../components/Inner';
 import WpTitle from '../../components/WpTitle';
-import { ROUTE_CMS } from '../../config/common';
 import { AppContentWrapperBreadCrumbs, UserInterface } from '../../db/uiInterfaces';
+import { getCmsLinks } from '../../lib/linkUtils';
 import AppContentWrapper from '../AppContentWrapper';
 import AppSubNav from '../AppSubNav';
 
@@ -14,40 +14,43 @@ interface CmsUserLayoutInterface {
 
 const CmsUserLayout: React.FC<CmsUserLayoutInterface> = ({ user, children, breadcrumbs }) => {
   const navConfig = React.useMemo(() => {
+    const links = getCmsLinks({
+      userId: user._id,
+    });
     return [
       {
         name: 'Детали',
         testId: 'user-details',
-        path: `${ROUTE_CMS}/users/user/${user._id}`,
+        path: links.user.root,
         exact: true,
       },
       {
         name: 'Заказы',
         testId: 'user-orders',
-        path: `${ROUTE_CMS}/users/user/${user._id}/orders`,
+        path: links.user.order.parentLink,
       },
       {
         name: 'Изображения',
         testId: 'user-assets',
-        path: `${ROUTE_CMS}/users/user/${user._id}/assets`,
+        path: links.user.assets,
         exact: true,
       },
       {
         name: 'Оповещения',
         testId: 'user-notifications',
-        path: `${ROUTE_CMS}/users/user/${user._id}/notifications`,
+        path: links.user.notifications,
         exact: true,
       },
       {
         name: 'Категории',
         testId: 'user-categories',
-        path: `${ROUTE_CMS}/users/user/${user._id}/categories`,
+        path: links.user.categories,
         exact: true,
       },
       {
         name: 'Пароль',
         testId: 'user-password',
-        path: `${ROUTE_CMS}/users/user/${user._id}/password`,
+        path: links.user.password,
         exact: true,
       },
     ];

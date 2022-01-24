@@ -122,6 +122,5 @@ export const useDeleteOrder = () => {
   return useMutationHandler<OrderPayloadModel, DeleteOrderInputInterface>({
     path: basePath,
     method: REQUEST_METHOD_DELETE,
-    reload: false,
   });
 };

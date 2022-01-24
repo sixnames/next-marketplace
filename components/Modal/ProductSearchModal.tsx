@@ -8,17 +8,39 @@ import {
   ProductSummaryInterface,
   RubricInterface,
 } from '../../db/uiInterfaces';
-import useProductsListColumns, {
-  ProductColumnsInterface,
-} from '../../hooks/useProductsListColumns';
+import { getCmsLinks } from '../../lib/linkUtils';
+import ContentItemControls, { ContentItemControlsInterface } from '../button/ContentItemControls';
 import FormikIndividualSearch from '../FormElements/Search/FormikIndividualSearch';
+import WpLink from '../Link/WpLink';
 import Pager from '../Pager';
 import RequestError from '../RequestError';
 import RubricsList from '../RubricsList';
 import Spinner from '../Spinner';
-import WpTable from '../WpTable';
+import TableRowImage from '../TableRowImage';
+import WpTable, { WpTableColumn } from '../WpTable';
 import ModalFrame from './ModalFrame';
 import ModalTitle from './ModalTitle';
+
+export type ProductColumnsItemHandler = (product: ProductSummaryInterface) => void;
+export type ProductColumnsHandlerPermission = (product: ProductSummaryInterface) => boolean;
+
+export interface ProductColumnsInterface
+  extends Omit<
+    ContentItemControlsInterface,
+    | 'isCreateDisabled'
+    | 'isUpdateDisabled'
+    | 'isDeleteDisabled'
+    | 'createHandler'
+    | 'updateHandler'
+    | 'deleteHandler'
+  > {
+  createHandler?: ProductColumnsItemHandler;
+  updateHandler?: ProductColumnsItemHandler;
+  deleteHandler?: ProductColumnsItemHandler;
+  isCreateDisabled?: ProductColumnsHandlerPermission;
+  isUpdateDisabled?: ProductColumnsHandlerPermission;
+  isDeleteDisabled?: ProductColumnsHandlerPermission;
+}
 
 interface ProductsListInterface extends ProductColumnsInterface {
   rubricSlug: string;
@@ -34,13 +56,70 @@ const ProductsList: React.FC<ProductsListInterface> = ({
   attributesIds,
   excludedOptionsSlugs,
   search,
-  ...props
+  createTitle,
+  updateTitle,
+  deleteTitle,
+  createHandler,
+  updateHandler,
+  deleteHandler,
+  disabled,
+  isCreateDisabled,
+  isUpdateDisabled,
+  isDeleteDisabled,
 }) => {
   const [page, setPage] = React.useState<number>(DEFAULT_PAGE);
-  const columns = useProductsListColumns({
-    createTitle: 'Добавить товар в рубрику',
-    ...props,
-  });
+  const columns: WpTableColumn<ProductSummaryInterface>[] = [
+    {
+      accessor: 'itemId',
+      headTitle: 'Арт.',
+      render: ({ cellData, dataItem }) => {
+        const links = getCmsLinks({
+          rubricSlug: dataItem.rubricSlug,
+          productId: dataItem._id,
+        });
+        return (
+          <WpLink target={'_blank'} href={links.rubrics.product.root}>
+            {cellData}
+          </WpLink>
+        );
+      },
+    },
+    {
+      accessor: 'mainImage',
+      headTitle: 'Фото',
+      render: ({ cellData, dataItem }) => {
+        return (
+          <TableRowImage src={cellData} alt={dataItem.originalName} title={dataItem.originalName} />
+        );
+      },
+    },
+    {
+      accessor: 'snippetTitle',
+      headTitle: 'Название',
+      render: ({ cellData }) => cellData,
+    },
+    {
+      render: ({ dataItem }) => {
+        return (
+          <div className='flex justify-end'>
+            <ContentItemControls
+              testId={dataItem.originalName}
+              disabled={disabled}
+              createTitle={createTitle}
+              updateTitle={updateTitle}
+              deleteTitle={deleteTitle}
+              createHandler={createHandler ? () => createHandler(dataItem) : undefined}
+              updateHandler={updateHandler ? () => updateHandler(dataItem) : undefined}
+              deleteHandler={deleteHandler ? () => deleteHandler(dataItem) : undefined}
+              isDeleteDisabled={isDeleteDisabled ? isDeleteDisabled(dataItem) : undefined}
+              isCreateDisabled={isCreateDisabled ? isCreateDisabled(dataItem) : undefined}
+              isUpdateDisabled={isUpdateDisabled ? isUpdateDisabled(dataItem) : undefined}
+            />
+          </div>
+        );
+      },
+    },
+  ];
 
   const params = React.useMemo<string>(() => {
     const queryParams: Omit<GetRubricProductsListInputInterface, 'currency' | 'locale'> = {

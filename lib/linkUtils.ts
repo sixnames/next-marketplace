@@ -116,6 +116,7 @@ export function getConsoleConfigsLinks({ basePath = ROUTE_CMS }: GetConsoleConfi
     analytics: `${root}/analytics`,
     catalogue: `${root}/catalogue`,
     contacts: `${root}/contacts`,
+    project: `${root}/project`,
     seo: `${root}/seo`,
     ui: `${root}/ui`,
   };
@@ -224,12 +225,32 @@ export function getConsoleGiftCertificateLinks({
   };
 }
 
+export interface GetConsoleBlogLinksInterface {
+  basePath?: string;
+  blogPostId?: string | ObjectIdModel;
+}
+
+export function getConsoleBlogLinks({ basePath, blogPostId }: GetConsoleBlogLinksInterface) {
+  const mainPath = '/blog';
+  const parentLink = `${basePath}${mainPath}`;
+  const itemPath = `${parentLink}/post`;
+  const root = `${itemPath}/${blogPostId}`;
+  return {
+    parentLink,
+    mainPath,
+    itemPath,
+    root,
+    attributes: `${parentLink}/attributes`,
+  };
+}
+
 // console company
 interface GetCmsCompanyLinkInterface
   extends GetConsoleRubricLinkInterface,
     GetConsoleShopLinkInterface,
     GetConsoleGiftCertificateLinks,
     GetConsoleCompanyPromoLinkInterface,
+    GetConsoleBlogLinksInterface,
     GetConsoleUserLinksInterface {
   companyId?: string | ObjectIdModel;
   shopId?: string | ObjectIdModel;
@@ -246,6 +267,7 @@ export function getCmsCompanyLinks({
   categoryId,
   giftCertificateId,
   userId,
+  blogPostId,
 }: GetCmsCompanyLinkInterface) {
   const parentLink = basePath?.includes(ROUTE_CMS) ? `${basePath}/companies` : basePath;
   const root = `${parentLink}/${companyId}`;
@@ -254,7 +276,6 @@ export function getCmsCompanyLinks({
     parentLink,
     root,
     create: `${parentLink}/create`,
-    blog: `${root}/blog`,
     giftCertificate: getConsoleGiftCertificateLinks({
       basePath: root,
       giftCertificateId,
@@ -267,6 +288,10 @@ export function getCmsCompanyLinks({
       rubricSlug,
       promoId,
       promoCodeId,
+    }),
+    blog: getConsoleBlogLinks({
+      basePath: root,
+      blogPostId,
     }),
     shop: getConsoleShopLinks({
       basePath: root,
@@ -312,6 +337,10 @@ export function getConsoleUserLinks({
     parentLink,
     itemPath,
     root,
+    assets: `${root}/assets`,
+    notifications: `${root}/notifications`,
+    categories: `${root}/categories`,
+    password: `${root}/password`,
     order: {
       parentLink: ordersParentLink,
       root: `${ordersParentLink}/${orderId}`,
@@ -344,5 +373,80 @@ export function getConsoleCompanyLinks(props: GetConsoleCompanyLinkInterface) {
       parentLink: orderParentLink,
       root: `${orderParentLink}/order/${props.orderId}`,
     },
+  };
+}
+
+export interface GetCmsAttributesLinks {
+  attributesGroupId?: string | ObjectIdModel;
+  attributeId?: string | ObjectIdModel;
+  basePath?: string;
+}
+
+export function getCmsAttributesLinks({
+  attributeId,
+  attributesGroupId,
+  basePath,
+}: GetCmsAttributesLinks) {
+  const parentLink = `${basePath}/attributes`;
+  const root = `${parentLink}/${attributesGroupId}`;
+  const attributesParentLink = `${root}/attributes`;
+  const attributeRoot = `${attributesParentLink}/${attributeId}`;
+  return {
+    parentLink,
+    root,
+    attribute: {
+      parentLink: attributesParentLink,
+      root: attributeRoot,
+    },
+  };
+}
+
+export interface GetCmsLinksInterface
+  extends Omit<GetCmsCompanyLinkInterface, 'basePath'>,
+    GetCmsAttributesLinks {}
+
+export function getCmsLinks(props: GetCmsLinksInterface) {
+  const {
+    rubricSlug,
+    productId,
+    categoryId,
+    blogPostId,
+    userId,
+    orderId,
+    attributeId,
+    attributesGroupId,
+  } = props;
+  const root = ROUTE_CMS;
+  const basePath = root;
+
+  return {
+    root,
+    companies: getCmsCompanyLinks({
+      ...props,
+      basePath,
+    }),
+    rubrics: getConsoleRubricLinks({
+      basePath,
+      rubricSlug: rubricSlug,
+      productId: productId,
+      categoryId: categoryId,
+    }),
+    blog: getConsoleBlogLinks({
+      basePath,
+      blogPostId: blogPostId,
+    }),
+    user: getConsoleUserLinks({
+      basePath,
+      userId: userId,
+      orderId: orderId,
+    }),
+    config: getConsoleConfigsLinks({
+      basePath,
+    }),
+    attributes: getCmsAttributesLinks({
+      basePath,
+      attributesGroupId,
+      attributeId,
+    }),
   };
 }

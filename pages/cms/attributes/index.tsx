@@ -9,7 +9,7 @@ import Inner from '../../../components/Inner';
 import { AttributesGroupModalInterface } from '../../../components/Modal/AttributesGroupModal';
 import WpTable, { WpTableColumn } from '../../../components/WpTable';
 import WpTitle from '../../../components/WpTitle';
-import { DEFAULT_LOCALE, ROUTE_CMS, SORT_ASC } from '../../../config/common';
+import { DEFAULT_LOCALE, SORT_ASC } from '../../../config/common';
 import { ATTRIBUTES_GROUP_MODAL, CONFIRM_MODAL } from '../../../config/modalVariants';
 import { COL_ATTRIBUTES_GROUPS } from '../../../db/collectionNames';
 import { getDatabase } from '../../../db/mongodb';
@@ -21,6 +21,7 @@ import {
 import useMutationCallbacks from '../../../hooks/useMutationCallbacks';
 import AppContentWrapper from '../../../layout/AppContentWrapper';
 import { getFieldStringLocale } from '../../../lib/i18n';
+import { getCmsLinks } from '../../../lib/linkUtils';
 import { noNaN } from '../../../lib/numbers';
 import {
   castDbData,
@@ -77,9 +78,10 @@ const AttributesGroupsConsumer: React.FC<AttributesGroupsConsumerInterface> = ({
               updateTitle={'Редактировать группу'}
               deleteTitle={'Удалить группу'}
               updateHandler={() => {
-                router
-                  .push(`${ROUTE_CMS}/attributes/${dataItem._id}/attributes`)
-                  .catch(console.log);
+                const links = getCmsLinks({
+                  attributesGroupId: dataItem._id,
+                });
+                router.push(links.attributes.attribute.parentLink).catch(console.log);
               }}
               deleteHandler={() => {
                 showModal({
@@ -114,7 +116,10 @@ const AttributesGroupsConsumer: React.FC<AttributesGroupsConsumerInterface> = ({
             data={attributesGroups}
             testIdKey={'name'}
             onRowDoubleClick={(dataItem) => {
-              router.push(`${ROUTE_CMS}/attributes/${dataItem._id}/attributes`).catch(console.log);
+              const links = getCmsLinks({
+                attributesGroupId: dataItem._id,
+              });
+              router.push(links.attributes.attribute.parentLink).catch(console.log);
             }}
           />
         </div>

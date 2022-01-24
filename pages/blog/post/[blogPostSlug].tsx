@@ -1,5 +1,7 @@
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
+import FixedButtons from '../../../components/button/FixedButtons';
+import WpButton from '../../../components/button/WpButton';
 import FormattedDate from '../../../components/FormattedDate';
 import Inner from '../../../components/Inner';
 import PageEditor from '../../../components/PageEditor';
@@ -34,6 +36,7 @@ import {
 import { useCreateBlogPostLike } from '../../../hooks/mutations/useBlogMutations';
 import SiteLayout, { SiteLayoutProviderInterface } from '../../../layout/SiteLayout';
 import { getFieldStringLocale } from '../../../lib/i18n';
+import { getConsoleBlogLinks } from '../../../lib/linkUtils';
 import { getFullName } from '../../../lib/nameUtils';
 import { noNaN } from '../../../lib/numbers';
 import { castDbData, getSiteInitialData } from '../../../lib/ssrUtils';
@@ -99,6 +102,13 @@ const BlogPostPageConsumer: React.FC<BlogPostPageConsumerInterface> = ({ post })
   const sessionUser = useSiteUserContext();
   const blogLinkName = getConstantTranslation(`nav.blog.${locale}`);
   const [isLikeAllowed, setIsLikeAllowed] = React.useState<boolean>(false);
+  const links = getConsoleBlogLinks({
+    basePath: sessionUser?.editLinkBasePath,
+    blogPostId: post._id,
+  });
+  const showEditButton = sessionUser?.me.role?.cmsNavigation?.some(({ path }) => {
+    return path.includes(links.mainPath);
+  });
 
   React.useCallback(() => {
     const likedBySessionUser = (post.likes || []).some((like) => {
@@ -122,7 +132,7 @@ const BlogPostPageConsumer: React.FC<BlogPostPageConsumerInterface> = ({ post })
   }, [companySlug, post._id, sessionCity]);
 
   return (
-    <div className='mb-12'>
+    <div className='mb-12 relative'>
       <WpBreadcrumbs
         currentPageName={`${post.title}`}
         config={[
@@ -149,6 +159,20 @@ const BlogPostPageConsumer: React.FC<BlogPostPageConsumerInterface> = ({ post })
 
         {post.source ? (
           <div className='mt-8 text-secondary-text'>Источник {post.source}</div>
+        ) : null}
+
+        {showEditButton ? (
+          <FixedButtons>
+            <WpButton
+              size={'small'}
+              frameClassName={'w-auto'}
+              onClick={() => {
+                window.open(links.root, '_blank');
+              }}
+            >
+              Редактировать
+            </WpButton>
+          </FixedButtons>
         ) : null}
       </Inner>
     </div>

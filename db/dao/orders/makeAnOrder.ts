@@ -38,6 +38,7 @@ import {
   COL_PROMO_CODES,
   COL_PROMO_PRODUCTS,
   COL_ROLES,
+  COL_SHOP_PRODUCTS,
   COL_SHOPS,
   COL_USERS,
 } from '../../collectionNames';
@@ -59,6 +60,7 @@ import {
   PromoProductModel,
   RoleModel,
   ShopModel,
+  ShopProductModel,
   UserModel,
 } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
@@ -110,6 +112,7 @@ export async function makeAnOrder({
   const orderStatusesCollection = db.collection<OrderStatusModel>(COL_ORDER_STATUSES);
   const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
   const shopsCollection = db.collection<ShopModel>(COL_SHOPS);
+  const shopProductsCollection = db.collection<ShopProductModel>(COL_SHOP_PRODUCTS);
   const productSummariesCollection = db.collection<ProductSummaryInterface>(COL_PRODUCT_SUMMARIES);
   const giftCertificatesCollection = db.collection<GiftCertificateModel>(COL_GIFT_CERTIFICATES);
   const promoCodesCollection = db.collection<PromoCodeModel>(COL_PROMO_CODES);
@@ -306,7 +309,15 @@ export async function makeAnOrder({
         // cast cart products to order products
         const castedOrderProducts: OrderProductModel[] = [];
         for await (const cartProduct of cartShopProducts) {
-          const { shopProduct, amount } = cartProduct;
+          const { amount } = cartProduct;
+
+          // check shop product availability
+          if (!cartProduct.shopProductId) {
+            return;
+          }
+          const shopProduct = await shopProductsCollection.findOne({
+            _id: cartProduct.shopProductId,
+          });
           if (!shopProduct) {
             return;
           }
@@ -354,7 +365,10 @@ export async function makeAnOrder({
               endAt: promo.endAt,
             };
           }
-          const finalPrice = noNaN(discountedPrice) < price ? noNaN(discountedPrice) : price;
+          const finalPrice =
+            noNaN(discountedPrice) < price && noNaN(discountedPrice) !== 0
+              ? noNaN(discountedPrice)
+              : price;
           const totalPrice = finalPrice * amount;
 
           const orderProduct: OrderProductModel = {
@@ -549,6 +563,8 @@ export async function makeAnOrder({
         { _id: cart._id },
         {
           $set: {
+            promoCodeIds: [],
+            giftCertificateIds: [],
             [cartProductsFieldName]: [],
             updatedAt: new Date(),
           },

@@ -231,11 +231,13 @@ export interface GetConsoleBlogLinksInterface {
 }
 
 export function getConsoleBlogLinks({ basePath, blogPostId }: GetConsoleBlogLinksInterface) {
-  const parentLink = `${basePath}/blog`;
+  const mainPath = '/blog';
+  const parentLink = `${basePath}${mainPath}`;
   const itemPath = `${parentLink}/post`;
   const root = `${itemPath}/${blogPostId}`;
   return {
     parentLink,
+    mainPath,
     itemPath,
     root,
     attributes: `${parentLink}/attributes`,

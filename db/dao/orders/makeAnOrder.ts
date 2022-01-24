@@ -330,15 +330,15 @@ export async function makeAnOrder({
           }
 
           // get order product prices
-          let finalPrice: number = Number(price);
+          let discountedPrice: number | null = null;
           let orderProductPromo: OrderPromoModel | null = null;
           if (promoProduct && promo) {
-            const { discountedPrice } = countDiscountedPrice({
+            const discountResult = countDiscountedPrice({
               discount: promo.discountPercent,
               price,
             });
 
-            finalPrice = discountedPrice;
+            discountedPrice = discountResult.discountedPrice;
             orderProductPromo = {
               _id: promo._id,
               companyId: promo.companyId,
@@ -354,6 +354,7 @@ export async function makeAnOrder({
               endAt: promo.endAt,
             };
           }
+          const finalPrice = noNaN(discountedPrice) < price ? noNaN(discountedPrice) : price;
           const totalPrice = finalPrice * amount;
 
           const orderProduct: OrderProductModel = {

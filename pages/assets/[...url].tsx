@@ -38,7 +38,10 @@ export async function getServerSideProps(
 
   // set the content-type of the response
   res.setHeader('Content-Type', `image/${format}`);
-  res.setHeader('Cache-Control', `public, max-age=${ONE_WEEK}`);
+  res.setHeader(
+    'Cache-Control',
+    `public, max-age=${ONE_WEEK}, s-max-age=${ONE_WEEK}, stale-while-revalidate=${ONE_WEEK}`,
+  );
   res.setHeader('etag', `${req.url}?${qs.stringify(query)}`);
 
   // check if watermark needed

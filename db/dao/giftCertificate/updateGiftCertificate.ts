@@ -1,5 +1,7 @@
 import { ObjectId } from 'mongodb';
 import trim from 'trim';
+import { DEFAULT_CITY, DEFAULT_LOCALE } from '../../../config/common';
+import { sendGiftCertificateEmail } from '../../../lib/email/sendGiftCertificateEmail';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
 import { COL_GIFT_CERTIFICATES, COL_USERS } from '../../collectionNames';
@@ -100,7 +102,7 @@ export async function updateGiftCertificate({
       };
     }
 
-    // TODO send user notification
+    // send user notification
     if (input.userId) {
       const userId = new ObjectId(input.userId);
       const sendNotification = !giftCertificate.userId || !userId.equals(giftCertificate.userId);
@@ -108,7 +110,16 @@ export async function updateGiftCertificate({
         const newUser = await usersCollection.findOne({
           _id: userId,
         });
-        console.log(newUser);
+        if (newUser) {
+          await sendGiftCertificateEmail({
+            citySlug: DEFAULT_CITY,
+            code: updatedGiftCertificate.code,
+            companySiteSlug: updatedGiftCertificate.companySlug,
+            locale: DEFAULT_LOCALE,
+            to: newUser.email,
+            userName: newUser.name,
+          });
+        }
       }
     }
 

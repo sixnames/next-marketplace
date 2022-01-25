@@ -40,7 +40,7 @@ export async function getServerSideProps(
   res.setHeader('Content-Type', `image/${format}`);
   res.setHeader(
     'Cache-Control',
-    `public, max-age=${ONE_WEEK}, s-maxage=${ONE_WEEK}, stale-while-revalidate=${ONE_WEEK}`,
+    `public, max-age=${ONE_WEEK}, s-maxage=${ONE_WEEK}, stale-while-revalidate`,
   );
   res.setHeader('etag', `${req.url}?${qs.stringify(query)}`);
 

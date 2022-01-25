@@ -256,10 +256,10 @@ const ProfileOrdersRoute: React.FC<ProfileOrdersRouteInterface> = ({ orders }) =
   return (
     <div className='mb-8' data-cy={'profile-orders'}>
       {orders.length < 1 ? (
-        <div>
+        <React.Fragment>
           <WpTitle size={'small'}>История заказов</WpTitle>
           <RequestError message={'Вы ещё не сделали ни одного заказа'} />
-        </div>
+        </React.Fragment>
       ) : (
         <React.Fragment>
           <WpTitle size={'small'}>История заказов</WpTitle>

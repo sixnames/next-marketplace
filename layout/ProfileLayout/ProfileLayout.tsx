@@ -7,7 +7,7 @@ import WpBreadcrumbs from '../../components/WpBreadcrumbs';
 import WpTitle from '../../components/WpTitle';
 import {
   ROUTE_PROFILE,
-  ROUTE_PROFILE_BONUS,
+  ROUTE_PROFILE_GIFT_CERTIFICATES,
   ROUTE_PROFILE_CHATS,
   ROUTE_PROFILE_COMPARE,
   ROUTE_PROFILE_DETAILS,
@@ -96,15 +96,15 @@ const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) =
         name: 'Профиль',
         children: [
           {
-            _id: 'Бонусный счет',
-            name: 'Бонусный счет',
-            href: ROUTE_PROFILE_BONUS,
-            testId: 'profile-bonus-link',
+            _id: 'Подарочные сертификаты',
+            name: 'Подарочные сертификаты',
+            href: ROUTE_PROFILE_GIFT_CERTIFICATES,
+            testId: 'profile-gift-certificates',
             current: () => {
-              return router.asPath === `${ROUTE_PROFILE_BONUS}`;
+              return router.asPath === `${ROUTE_PROFILE_GIFT_CERTIFICATES}`;
             },
             onSelect: () => {
-              router.push(ROUTE_PROFILE_BONUS).catch(console.log);
+              router.push(ROUTE_PROFILE_GIFT_CERTIFICATES).catch(console.log);
             },
           },
           {

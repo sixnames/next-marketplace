@@ -122,10 +122,6 @@ const CardShop: React.FC<CardShopInterface> = ({ shop }) => {
                 )}
               </React.Fragment>
             ) : null}
-
-            <div className='mt-4'>
-              <a href='#'>Узнать больше</a>
-            </div>
           </div>
 
           <div className='max-w-[340px] grid gap-3 grid-cols-6'>

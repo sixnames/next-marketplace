@@ -164,7 +164,7 @@ const OneShopCompanyDeliveryCart: React.FC<OneShopCompanyCartFormInterface> = ({
                   </div>
                 </div>
 
-                <div className='relative z-20 mb-12'>
+                <div className='relative z-20 mb-12' id={'cart-inputs'}>
                   <div className='flex items-center gap-4 mb-8 text-lg font-medium'>
                     <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
                       2
@@ -456,7 +456,7 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
                   </div>
                 </div>
 
-                <div className='relative z-20 mb-12'>
+                <div className='relative z-20 mb-12' id={'cart-inputs'}>
                   <div className='flex items-center gap-4 mb-8 text-lg font-medium'>
                     <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
                       2

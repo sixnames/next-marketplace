@@ -1426,7 +1426,10 @@ export async function getCatalogueProps(
   };
 
   // set cache
-  context.res.setHeader('Cache-Control', `public, max-age=60, stale-while-revalidate=300`);
+  context.res.setHeader(
+    'Cache-Control',
+    `public, max-age=60, s-max-age=300, stale-while-revalidate=60`,
+  );
 
   return {
     props: {

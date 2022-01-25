@@ -59,7 +59,8 @@ const PromoDetails: React.FC<PromoDetailsInterface> = ({ promo }) => {
           updatePromoMutation({
             _id: `${values._id}`,
             nameI18n: values.nameI18n,
-            descriptionI18n: values.descriptionI18n,
+            descriptionI18n: values.descriptionI18n || {},
+            titleI18n: values.titleI18n || {},
 
             // discount
             discountPercent: values.discountPercent,
@@ -77,20 +78,25 @@ const PromoDetails: React.FC<PromoDetailsInterface> = ({ promo }) => {
             content: JSON.stringify(values.content),
 
             // main banner
-            showAsMainBanner: values.showAsMainBanner,
-            mainBannerTextColor: values.mainBannerTextColor,
-            mainBannerVerticalTextAlign: values.mainBannerVerticalTextAlign,
-            mainBannerHorizontalTextAlign: values.mainBannerHorizontalTextAlign,
-            mainBannerTextAlign: values.mainBannerTextAlign,
+            showAsMainBanner: values.showAsMainBanner || false,
+            mainBannerTextColor: values.mainBannerTextColor || '#000000',
+            mainBannerVerticalTextAlign:
+              values.mainBannerVerticalTextAlign || TEXT_VERTICAL_FLEX_OPTIONS[0]._id,
+            mainBannerHorizontalTextAlign:
+              values.mainBannerHorizontalTextAlign || TEXT_HORIZONTAL_FLEX_OPTIONS[0]._id,
+            mainBannerTextAlign: values.mainBannerTextAlign || TEXT_HORIZONTAL_ALIGN_OPTIONS[0]._id,
             mainBannerTextPadding: noNaN(values.mainBannerTextPadding),
             mainBannerTextMaxWidth: noNaN(values.mainBannerTextMaxWidth),
 
             //secondary banner
-            showAsSecondaryBanner: values.showAsSecondaryBanner,
-            secondaryBannerTextColor: values.secondaryBannerTextColor,
-            secondaryBannerVerticalTextAlign: values.secondaryBannerVerticalTextAlign,
-            secondaryBannerHorizontalTextAlign: values.secondaryBannerHorizontalTextAlign,
-            secondaryBannerTextAlign: values.secondaryBannerTextAlign,
+            showAsSecondaryBanner: values.showAsSecondaryBanner || false,
+            secondaryBannerTextColor: values.secondaryBannerTextColor || '#000000',
+            secondaryBannerVerticalTextAlign:
+              values.secondaryBannerVerticalTextAlign || TEXT_VERTICAL_FLEX_OPTIONS[0]._id,
+            secondaryBannerHorizontalTextAlign:
+              values.secondaryBannerHorizontalTextAlign || TEXT_HORIZONTAL_FLEX_OPTIONS[0]._id,
+            secondaryBannerTextAlign:
+              values.secondaryBannerTextAlign || TEXT_HORIZONTAL_ALIGN_OPTIONS[0]._id,
             secondaryBannerTextPadding: noNaN(values.secondaryBannerTextPadding),
             secondaryBannerTextMaxWidth: noNaN(values.secondaryBannerTextMaxWidth),
 
@@ -108,6 +114,14 @@ const PromoDetails: React.FC<PromoDetailsInterface> = ({ promo }) => {
                   label={'Название'}
                   name={'nameI18n'}
                   testId={'name'}
+                  showInlineError
+                  isRequired
+                />
+
+                <FormikTranslationsInput
+                  label={'Заголовок для мета-тега title'}
+                  name={'titleI18n'}
+                  testId={'title'}
                   showInlineError
                   isRequired
                 />

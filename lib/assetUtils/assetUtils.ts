@@ -192,7 +192,7 @@ export async function storeUploads({
 
     return assets;
   } catch (e) {
-    console.log(e);
+    console.log('storeUploads', e);
     return null;
   }
 }

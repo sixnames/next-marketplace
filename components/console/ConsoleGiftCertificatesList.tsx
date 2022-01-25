@@ -111,7 +111,7 @@ const ConsoleGiftCertificatesList: React.FC<ConsoleGiftCertificatesListInterface
           <ContentItemControls
             testId={dataItem.code}
             justifyContent={'flex-end'}
-            updateTitle={'Редактировать магазин'}
+            updateTitle={'Редактировать подарочный сертификат'}
             updateHandler={() => {
               const links = getCmsCompanyLinks({
                 companyId: dataItem.companyId,
@@ -120,12 +120,12 @@ const ConsoleGiftCertificatesList: React.FC<ConsoleGiftCertificatesListInterface
               });
               router.push(links.giftCertificate.root).catch(console.log);
             }}
-            deleteTitle={'Удалить магазин'}
+            deleteTitle={'Удалить подарочный сертификат'}
             deleteHandler={() => {
               showModal<ConfirmModalInterface>({
                 variant: CONFIRM_MODAL,
                 props: {
-                  testId: 'delete-shop-modal',
+                  testId: 'delete-gift-certificate-modal',
                   message: `Вы уверенны, что хотите удалить подарочный сертификат ${dataItem.code}?`,
                   confirm: () => {
                     deleteGiftCertificateMutation({

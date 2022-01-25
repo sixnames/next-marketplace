@@ -8,7 +8,7 @@ import WpLink from '../../components/Link/WpLink';
 import { MapModalInterface } from '../../components/Modal/MapModal';
 import Socials from '../../components/Socials';
 import WpIcon from '../../components/WpIcon';
-import { ROUTE_BLOG, ROUTE_CONTACTS, ROUTE_DOCS_PAGES } from '../../config/common';
+import { ROUTE_BLOG, ROUTE_CONTACTS, ROUTE_DOCS } from '../../config/common';
 import { getConstantTranslation } from '../../config/constantTranslations';
 import { MAP_MODAL } from '../../config/modalVariants';
 import { useAppContext } from '../../context/appContext';
@@ -174,7 +174,7 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
                       return (
                         <li className='' key={`${_id}`}>
                           <WpLink
-                            href={`${ROUTE_DOCS_PAGES}/${slug}`}
+                            href={`${ROUTE_DOCS}/${slug}`}
                             target={'_blank'}
                             className='block pt-1.5 pb-1.5 text-secondary-text hover:no-underline hover:text-theme cursor-pointer'
                           >

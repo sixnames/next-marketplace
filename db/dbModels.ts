@@ -1006,38 +1006,41 @@ export interface PromoBaseInterface {
   endAt: DateModel;
 }
 
-// Promo
-export interface PromoModel extends TimestampModel, PromoBaseInterface {
+// main page banner model
+export interface MainPageBannerModel {
   _id: ObjectIdModel;
   slug: string;
   nameI18n: TranslationModel;
-  descriptionI18n: TranslationModel;
-
-  // ui configs
-  showAsPromoPage: boolean;
-  assetKeys: string[];
+  titleI18n?: TranslationModel | null;
+  descriptionI18n?: TranslationModel | null;
   content: string;
-
-  // main banner
-  showAsMainBanner: boolean;
-  mainBanner?: string | null;
-  mainBannerMobile?: string | null;
-  mainBannerTextColor: string;
-  mainBannerVerticalTextAlign: string;
-  mainBannerHorizontalTextAlign: string;
-  mainBannerTextAlign: string;
-  mainBannerTextPadding: number;
-  mainBannerTextMaxWidth: number;
+  assetKeys: string[];
 
   //secondary banner
-  showAsSecondaryBanner: boolean;
+  showAsSecondaryBanner?: boolean | null;
   secondaryBanner?: string | null;
-  secondaryBannerTextColor: string;
-  secondaryBannerVerticalTextAlign: string;
-  secondaryBannerHorizontalTextAlign: string;
-  secondaryBannerTextAlign: string;
-  secondaryBannerTextPadding: number;
-  secondaryBannerTextMaxWidth: number;
+  secondaryBannerTextColor?: string | null;
+  secondaryBannerVerticalTextAlign?: string | null;
+  secondaryBannerHorizontalTextAlign?: string | null;
+  secondaryBannerTextAlign?: string | null;
+  secondaryBannerTextPadding?: number | null;
+  secondaryBannerTextMaxWidth?: number | null;
+
+  // main banner
+  showAsMainBanner?: boolean | null;
+  mainBanner?: string | null;
+  mainBannerMobile?: string | null;
+  mainBannerTextColor?: string | null;
+  mainBannerVerticalTextAlign?: string | null;
+  mainBannerHorizontalTextAlign?: string | null;
+  mainBannerTextAlign?: string | null;
+  mainBannerTextPadding?: number | null;
+  mainBannerTextMaxWidth?: number | null;
+}
+
+// Promo
+export interface PromoModel extends TimestampModel, PromoBaseInterface, MainPageBannerModel {
+  showAsPromoPage: boolean;
 }
 
 export interface PromoProductModel extends PromoBaseInterface {
@@ -1078,37 +1081,13 @@ export enum PageStateModel {
   published = 'published',
 }
 
-export interface PageModel extends TimestampModel {
-  _id: ObjectIdModel;
-  nameI18n: TranslationModel;
-  titleI18n?: TranslationModel | null;
-  descriptionI18n?: TranslationModel | null;
+export interface PageModel extends TimestampModel, MainPageBannerModel {
   index: number;
-  slug: string;
   citySlug: string;
-  assetKeys: string[];
   pagesGroupId: ObjectIdModel;
-  content: string;
   state: PageStateModel;
   companySlug: string;
   pageScreenshot?: string | null;
-  mainBanner?: string | null;
-  mainBannerMobile?: string | null;
-  showAsMainBanner?: boolean | null;
-  mainBannerTextColor?: string | null;
-  mainBannerVerticalTextAlign?: string | null;
-  mainBannerHorizontalTextAlign?: string | null;
-  mainBannerTextAlign?: string | null;
-  mainBannerTextPadding?: number | null;
-  mainBannerTextMaxWidth?: number | null;
-  secondaryBanner?: string | null;
-  showAsSecondaryBanner?: boolean | null;
-  secondaryBannerTextColor?: string | null;
-  secondaryBannerVerticalTextAlign?: string | null;
-  secondaryBannerHorizontalTextAlign?: string | null;
-  secondaryBannerTextAlign?: string | null;
-  secondaryBannerTextPadding?: number | null;
-  secondaryBannerTextMaxWidth?: number | null;
 }
 
 export type PagesGroupTemplateModel = PagesGroupModel;

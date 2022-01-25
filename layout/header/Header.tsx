@@ -21,7 +21,7 @@ import {
   ROUTE_CMS,
   ROUTE_CONSOLE,
   ROUTE_CONTACTS,
-  ROUTE_DOCS_PAGES,
+  ROUTE_DOCS,
   ROUTE_PROFILE,
   ROUTE_SIGN_IN,
 } from '../../config/common';
@@ -348,7 +348,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                     return (
                       <li className='' key={`${page._id}`}>
                         <WpLink
-                          href={`${ROUTE_DOCS_PAGES}/${page.slug}`}
+                          href={`${ROUTE_DOCS}/${page.slug}`}
                           onClick={hideBurgerDropdown}
                           className={`flex items-center h-10 text-secondary-text`}
                         >
@@ -544,7 +544,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
                             <div
                               className='block py-1.5 px-3 text-primary-text hover:no-underline hover:text-theme'
                               onClick={() => {
-                                window.open(`${ROUTE_DOCS_PAGES}/${slug}`, '_blank');
+                                window.open(`${ROUTE_DOCS}/${slug}`, '_blank');
                               }}
                             >
                               {name}

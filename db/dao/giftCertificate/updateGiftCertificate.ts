@@ -113,7 +113,7 @@ export async function updateGiftCertificate({
         if (newUser) {
           await sendGiftCertificateEmail({
             citySlug: DEFAULT_CITY,
-            code: updatedGiftCertificate.code,
+            value: updatedGiftCertificate.value,
             companySiteSlug: updatedGiftCertificate.companySlug,
             locale: DEFAULT_LOCALE,
             to: newUser.email,

@@ -216,6 +216,7 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
           columns={columns}
           data={products}
           tableTestId={`${connection.attribute.name}-connection-list`}
+          testIdKey={'product.name'}
           onRowDoubleClick={(dataItem) => {
             const links = getCmsLinks({
               rubricSlug: dataItem.summary?.rubricSlug,
@@ -223,7 +224,6 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
             });
             window.open(links.rubrics.product.root, '_blank');
           }}
-          testIdKey={'product.name'}
         />
       </div>
     </WpAccordion>

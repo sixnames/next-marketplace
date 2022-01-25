@@ -208,6 +208,12 @@ export async function getServerSideProps(
     ],
   };
 
+  // set cache
+  context.res.setHeader(
+    'Cache-Control',
+    `public, max-age=60, s-max-age=300, stale-while-revalidate=60`,
+  );
+
   return {
     props: {
       ...props,

@@ -64,6 +64,7 @@ import {
   ProductDraftModel,
   PromoCodeModel,
   OrderPromoModel,
+  MainPageBannerModel,
 } from './dbModels';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { MessageSlug } from '../types/messageSlugTypes';
@@ -162,6 +163,7 @@ export interface CartInterface extends CartModel {
 export interface PromoInterface extends PromoModel {
   name?: string | null;
   description?: string | null;
+  title?: string | null;
 }
 
 export interface PromoCodeInterface extends PromoCodeModel {
@@ -630,6 +632,14 @@ export interface MobileTopFilters {
 export interface PagesGroupInterface extends PagesGroupModel {
   name?: string | null;
   pages?: PageInterface[];
+}
+
+export interface MainPageBannerInterface extends MainPageBannerModel {
+  name?: string | null;
+  title?: string | null;
+  description?: string | null;
+  asPage?: boolean;
+  asPromo?: boolean;
 }
 
 export interface PageInterface extends PageModel {

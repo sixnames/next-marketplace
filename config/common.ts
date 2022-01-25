@@ -399,7 +399,8 @@ export const PAGE_EDITOR_DEFAULT_VALUE: Value = {
 };
 
 // Routes
-export const ROUTE_DOCS_PAGES = '/docs';
+export const ROUTE_DOCS = '/docs';
+export const ROUTE_PROMO = '/promo';
 export const ROUTE_CONSOLE = '/console';
 export const ROUTE_CMS = `/cms`;
 export const ROUTE_CONSOLE_NAV_GROUP = 'console';
@@ -423,7 +424,7 @@ export const ROUTE_PROFILE_FAVORITE = `${ROUTE_PROFILE}/favorite`;
 export const ROUTE_PROFILE_COMPARE = `${ROUTE_PROFILE}/compare`;
 export const ROUTE_PROFILE_VIEWED = `${ROUTE_PROFILE}/viewed`;
 export const ROUTE_PROFILE_PROPOSALS = `${ROUTE_PROFILE}/proposals`;
-export const ROUTE_PROFILE_BONUS = `${ROUTE_PROFILE}/bonus`;
+export const ROUTE_PROFILE_GIFT_CERTIFICATES = `${ROUTE_PROFILE}/gift-certificates`;
 export const ROUTE_PROFILE_PREFERENCES = `${ROUTE_PROFILE}/preferences`;
 export const ROUTE_PROFILE_CHATS = `${ROUTE_PROFILE}/chats`;
 export const ROUTE_PROFILE_FEEDBACK = `${ROUTE_PROFILE}/feedback`;

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import ImageGallery, { ReactImageGalleryItem } from 'react-image-gallery';
-import { PAGE_EDITOR_DEFAULT_VALUE_STRING, ROUTE_DOCS_PAGES } from '../config/common';
+import { PAGE_EDITOR_DEFAULT_VALUE_STRING, ROUTE_DOCS, ROUTE_PROMO } from '../config/common';
 import { useConfigContext } from '../context/configContext';
 import { useSiteContext } from '../context/siteContext';
 import SiteLayout, { SiteLayoutProviderInterface } from '../layout/SiteLayout';
@@ -17,8 +17,8 @@ import WpTitle from './WpTitle';
 const MainPageConsumer: React.FC<MainPageInterface> = ({
   topProducts,
   topShops,
-  sliderPages,
-  bannerPages,
+  mainBanners,
+  secondaryBanners,
   topFilters,
   mobileTopFilters,
 }) => {
@@ -31,7 +31,7 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
   const autoplaySpeed = configs.mainBannerAutoplaySpeed;
   const sectionClassName = `mb-14 sm:mb-28`;
 
-  const sliderItems = sliderPages.reduce(
+  const sliderItems = mainBanners.reduce(
     (
       acc: ReactImageGalleryItem[],
       {
@@ -47,6 +47,7 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
         mainBannerTextMaxWidth,
         mainBannerTextAlign,
         showAsMainBanner,
+        asPage,
       },
     ) => {
       if (!mainBanner || !showAsMainBanner) {
@@ -62,7 +63,7 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
               <div key={mainBanner} className='overflow-hidden rounded-xl'>
                 <WpLink
                   target={'_blank'}
-                  href={`${ROUTE_DOCS_PAGES}/${slug}`}
+                  href={`${asPage ? ROUTE_DOCS : ROUTE_PROMO}/${slug}`}
                   className={`relative block ${mainBannerMobile ? '' : 'h-[400px] md:h-auto'}`}
                 >
                   {/*image*/}
@@ -187,13 +188,13 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
         ) : null}
 
         {/*promotions*/}
-        {bannerPages.length > 0 ? (
+        {secondaryBanners.length > 0 ? (
           <section className={sectionClassName}>
             <div className='text-2xl mb-4 font-medium'>
               <h2>Акции</h2>
             </div>
             <HorizontalScroll>
-              {bannerPages.map(
+              {secondaryBanners.map(
                 ({
                   secondaryBanner,
                   name,
@@ -205,6 +206,7 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
                   secondaryBannerTextAlign,
                   secondaryBannerTextMaxWidth,
                   showAsSecondaryBanner,
+                  asPage,
                 }) => {
                   if (!secondaryBanner || !showAsSecondaryBanner) {
                     return null;
@@ -218,7 +220,7 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
                       <WpLink
                         className='relative block'
                         target={'_blank'}
-                        href={`${ROUTE_DOCS_PAGES}/${slug}`}
+                        href={`${asPage ? ROUTE_DOCS : ROUTE_PROMO}/${slug}`}
                       >
                         <img
                           className='block relative z-10'
@@ -353,8 +355,8 @@ const MainPage: React.FC<MainPagePropsInterface> = ({
   topProducts,
   topShops,
   topFilters,
-  bannerPages,
-  sliderPages,
+  secondaryBanners,
+  mainBanners,
   mobileTopFilters,
   ...props
 }) => {
@@ -364,8 +366,8 @@ const MainPage: React.FC<MainPagePropsInterface> = ({
         topProducts={topProducts}
         topFilters={topFilters}
         topShops={topShops}
-        sliderPages={sliderPages}
-        bannerPages={bannerPages}
+        mainBanners={mainBanners}
+        secondaryBanners={secondaryBanners}
         mobileTopFilters={mobileTopFilters}
       />
     </SiteLayout>

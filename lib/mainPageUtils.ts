@@ -2,18 +2,20 @@ import { ObjectId } from 'mongodb';
 import {
   CATALOGUE_TOP_FILTERS_LIMIT,
   CATALOGUE_TOP_PRODUCTS_LIMIT,
+  DEFAULT_COMPANY_SLUG,
   FILTER_SEPARATOR,
   ROUTE_CATALOGUE,
   SORT_DESC,
 } from '../config/common';
-import { COL_SHOP_PRODUCTS, COL_SHOPS } from '../db/collectionNames';
+import { COL_PROMO, COL_SHOP_PRODUCTS, COL_SHOPS } from '../db/collectionNames';
 import { ignoreNoImageStage, summaryPipeline } from '../db/dao/constantPipelines';
 import { getDatabase } from '../db/mongodb';
 import {
   CompanyInterface,
+  MainPageBannerInterface,
   MobileTopFilters,
-  PageInterface,
   PagesGroupInterface,
+  PromoInterface,
   RubricInterface,
   ShopInterface,
   ShopProductInterface,
@@ -30,8 +32,8 @@ export interface MainPageInterface {
   topShops: ShopInterface[];
   topFilters: TopFilterInterface[];
   mobileTopFilters: MobileTopFilters;
-  sliderPages: PageInterface[];
-  bannerPages: PageInterface[];
+  mainBanners: MainPageBannerInterface[];
+  secondaryBanners: MainPageBannerInterface[];
 }
 
 interface GetMainPageDataInterface {
@@ -58,6 +60,7 @@ export async function getMainPageData({
   const { db } = await getDatabase();
   const shopProductsCollection = db.collection<ShopProductInterface>(COL_SHOP_PRODUCTS);
   const shopsCollection = db.collection<ShopInterface>(COL_SHOPS);
+  const promoCollection = db.collection<PromoInterface>(COL_PROMO);
 
   const companyRubricsMatch = domainCompany ? { companyId: new ObjectId(domainCompany._id) } : {};
   const shopProductsAggregation = await shopProductsCollection
@@ -221,32 +224,157 @@ export async function getMainPageData({
     });
   });
 
+  // banners
+  const promoCompanyMatch =
+    companySlug === DEFAULT_COMPANY_SLUG
+      ? {}
+      : {
+          companySlug,
+        };
+  const promoList = await promoCollection
+    .find({
+      ...promoCompanyMatch,
+      startAt: {
+        $lt: new Date(),
+      },
+      endAt: {
+        $gt: new Date(),
+      },
+    })
+    .toArray();
+
   const allPageGroups: PagesGroupInterface[] = castDbData([
     ...headerPageGroups,
     ...footerPageGroups,
   ]);
-  const sliderPages: PageInterface[] = [];
-  const bannerPages: PageInterface[] = [];
+  const mainBanners: MainPageBannerInterface[] = [];
+  const secondaryBanners: MainPageBannerInterface[] = [];
+
+  promoList.forEach((page) => {
+    // main banner
+    const showAsMainBanner = page.showAsMainBanner && page.mainBanner;
+    const existInSliderPages = mainBanners.find(({ _id }) => {
+      return _id === page._id;
+    });
+    if (!existInSliderPages && showAsMainBanner) {
+      const banner: MainPageBannerInterface = {
+        _id: page._id,
+        slug: page.slug,
+        assetKeys: page.assetKeys,
+        description: getFieldStringLocale(page.descriptionI18n, sessionLocale),
+        name: getFieldStringLocale(page.nameI18n, sessionLocale),
+        title: getFieldStringLocale(page.titleI18n, sessionLocale),
+        content: '',
+        descriptionI18n: {},
+        nameI18n: {},
+        titleI18n: {},
+        showAsMainBanner: page.showAsMainBanner,
+        mainBanner: page.mainBanner,
+        mainBannerHorizontalTextAlign: page.mainBannerHorizontalTextAlign,
+        mainBannerMobile: page.mainBannerMobile,
+        mainBannerTextAlign: page.mainBannerTextAlign,
+        mainBannerTextColor: page.mainBannerTextColor,
+        mainBannerTextMaxWidth: page.mainBannerTextMaxWidth,
+        mainBannerTextPadding: page.mainBannerTextPadding,
+        mainBannerVerticalTextAlign: page.mainBannerVerticalTextAlign,
+        asPromo: true,
+      };
+      mainBanners.push(banner);
+    }
+
+    // secondary banner
+    const showAsSecondaryBanner = page.showAsSecondaryBanner && page.secondaryBanner;
+    const existInBannerPages = secondaryBanners.find(({ _id }) => {
+      return _id === page._id;
+    });
+    if (!existInBannerPages && showAsSecondaryBanner) {
+      const banner: MainPageBannerInterface = {
+        _id: page._id,
+        slug: page.slug,
+        assetKeys: page.assetKeys,
+        description: getFieldStringLocale(page.descriptionI18n, sessionLocale),
+        name: getFieldStringLocale(page.nameI18n, sessionLocale),
+        title: getFieldStringLocale(page.titleI18n, sessionLocale),
+        content: '',
+        descriptionI18n: {},
+        nameI18n: {},
+        titleI18n: {},
+        showAsSecondaryBanner: page.showAsSecondaryBanner,
+        secondaryBanner: page.secondaryBanner,
+        secondaryBannerTextColor: page.secondaryBannerTextColor,
+        secondaryBannerVerticalTextAlign: page.secondaryBannerVerticalTextAlign,
+        secondaryBannerHorizontalTextAlign: page.secondaryBannerHorizontalTextAlign,
+        secondaryBannerTextAlign: page.secondaryBannerTextAlign,
+        secondaryBannerTextPadding: page.secondaryBannerTextPadding,
+        secondaryBannerTextMaxWidth: page.secondaryBannerTextMaxWidth,
+        asPromo: true,
+      };
+      secondaryBanners.push(banner);
+    }
+  });
 
   allPageGroups.forEach((pagesGroup) => {
     const { pages } = pagesGroup;
     (pages || []).forEach((page) => {
-      // main slide
+      // main banner
       const showAsMainBanner = page.showAsMainBanner && page.mainBanner;
-      const existInSliderPages = sliderPages.find(({ _id }) => {
+      const existInSliderPages = mainBanners.find(({ _id }) => {
         return _id === page._id;
       });
       if (!existInSliderPages && showAsMainBanner) {
-        sliderPages.push(page);
+        const banner: MainPageBannerInterface = {
+          _id: page._id,
+          slug: page.slug,
+          assetKeys: page.assetKeys,
+          description: page.description,
+          name: page.name,
+          title: page.title,
+          content: '',
+          descriptionI18n: {},
+          nameI18n: {},
+          titleI18n: {},
+          showAsMainBanner: page.showAsMainBanner,
+          mainBanner: page.mainBanner,
+          mainBannerHorizontalTextAlign: page.mainBannerHorizontalTextAlign,
+          mainBannerMobile: page.mainBannerMobile,
+          mainBannerTextAlign: page.mainBannerTextAlign,
+          mainBannerTextColor: page.mainBannerTextColor,
+          mainBannerTextMaxWidth: page.mainBannerTextMaxWidth,
+          mainBannerTextPadding: page.mainBannerTextPadding,
+          mainBannerVerticalTextAlign: page.mainBannerVerticalTextAlign,
+          asPage: true,
+        };
+        mainBanners.push(banner);
       }
 
-      // banners
+      // secondary banner
       const showAsSecondaryBanner = page.showAsSecondaryBanner && page.secondaryBanner;
-      const existInBannerPages = bannerPages.find(({ _id }) => {
+      const existInBannerPages = secondaryBanners.find(({ _id }) => {
         return _id === page._id;
       });
       if (!existInBannerPages && showAsSecondaryBanner) {
-        bannerPages.push(page);
+        const banner: MainPageBannerInterface = {
+          _id: page._id,
+          slug: page.slug,
+          assetKeys: page.assetKeys,
+          description: page.description,
+          name: page.name,
+          title: page.title,
+          content: '',
+          descriptionI18n: {},
+          nameI18n: {},
+          titleI18n: {},
+          showAsSecondaryBanner: page.showAsSecondaryBanner,
+          secondaryBanner: page.secondaryBanner,
+          secondaryBannerTextColor: page.secondaryBannerTextColor,
+          secondaryBannerVerticalTextAlign: page.secondaryBannerVerticalTextAlign,
+          secondaryBannerHorizontalTextAlign: page.secondaryBannerHorizontalTextAlign,
+          secondaryBannerTextAlign: page.secondaryBannerTextAlign,
+          secondaryBannerTextPadding: page.secondaryBannerTextPadding,
+          secondaryBannerTextMaxWidth: page.secondaryBannerTextMaxWidth,
+          asPage: true,
+        };
+        secondaryBanners.push(banner);
       }
     });
   });
@@ -261,7 +389,7 @@ export async function getMainPageData({
     topProducts: castDbData(topProducts),
     topShops: castDbData(topShops),
     mobileTopFilters: castDbData(mobileTopFilters),
-    sliderPages,
-    bannerPages,
+    mainBanners: castDbData(mainBanners),
+    secondaryBanners: castDbData(secondaryBanners),
   };
 }

@@ -22,6 +22,7 @@ export interface UpdatePromoInputInterface {
   _id: string;
   nameI18n: TranslationModel;
   descriptionI18n: TranslationModel;
+  titleI18n: TranslationModel;
 
   // discount
   discountPercent: number;

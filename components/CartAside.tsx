@@ -1,7 +1,11 @@
+import { useFormikContext } from 'formik';
 import * as React from 'react';
+import { DEFAULT_COMPANY_SLUG } from '../config/common';
 import { useConfigContext } from '../context/configContext';
+import { MakeAnOrderInputInterface } from '../db/dao/orders/makeAnOrder';
 import LayoutCard from '../layout/LayoutCard';
 import { noNaN } from '../lib/numbers';
+import { MakeOrderFormInterface, scrollToCartErrors } from '../pages/cart';
 import WpButton from './button/WpButton';
 import Currency from './Currency';
 
@@ -28,6 +32,7 @@ const CartAside: React.FC<CartAsideInterface> = ({
   const discount = noNaN(giftCertificateDiscount);
   const discountedPrice = noNaN(props.totalPrice) - discount;
   const totalPrice = discountedPrice < 0 ? 0 : discountedPrice;
+  const { values } = useFormikContext<MakeOrderFormInterface>();
 
   const { configs } = useConfigContext();
   return (
@@ -62,6 +67,24 @@ const CartAside: React.FC<CartAsideInterface> = ({
           testId={'cart-aside-confirm'}
           disabled={isWithShopless}
           className='w-full'
+          onClick={(e) => {
+            const input: MakeAnOrderInputInterface = {
+              name: values.name,
+              lastName: values.lastName,
+              email: values.email,
+              reservationDate: values.reservationDate,
+              comment: values.comment,
+              phone: values.phone,
+              companySlug: DEFAULT_COMPANY_SLUG,
+              shopConfigs: values.shopConfigs,
+              allowDelivery: true,
+              cartProductsFieldName: 'cartDeliveryProducts',
+            };
+            const noValid = scrollToCartErrors(input);
+            if (noValid) {
+              e.preventDefault();
+            }
+          }}
         >
           {buyButtonText}
         </WpButton>

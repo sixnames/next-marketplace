@@ -141,11 +141,11 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
       render: ({ dataItem }) => {
         return (
           <div className='flex flex-col gap-2'>
-            <div className='flex gap-3 justify-between'>
+            <div className='flex justify-between gap-3'>
               <span>Мин.</span>
               <Currency value={dataItem.minPrice} />
             </div>
-            <div className='flex gap-3 justify-between'>
+            <div className='flex justify-between gap-3'>
               <span>Макс.</span>
               <Currency value={dataItem.maxPrice} />
             </div>
@@ -210,7 +210,7 @@ export const ShopAddProductsList: React.FC<ShopAddProductsListInterface> = ({
   return (
     <ConsoleShopLayout shop={shop} basePath={layoutBasePath} breadcrumbs={breadcrumbs}>
       <Inner testId={`not-in-shop-products-list`}>
-        <div className={`text-3xl font-medium mb-2`}>Выберите товары из рубрики {rubricName}</div>
+        <div className={`mb-2 text-3xl font-medium`}>Выберите товары из рубрики {rubricName}</div>
         <div className={`mb-6`}>{catalogueCounterString}</div>
 
         <FormikRouterSearch testId={'products'} />
@@ -371,11 +371,11 @@ export const ShopAddProductsFinalStep: React.FC<ShopAddProductsListInterface> = 
       render: ({ dataItem }) => {
         return (
           <div className='flex flex-col gap-2'>
-            <div className='flex gap-3 justify-between'>
+            <div className='flex justify-between gap-3'>
               <span>Мин.</span>
               <Currency value={dataItem.minPrice} />
             </div>
-            <div className='flex gap-3 justify-between'>
+            <div className='flex justify-between gap-3'>
               <span>Макс.</span>
               <Currency value={dataItem.maxPrice} />
             </div>
@@ -429,7 +429,7 @@ export const ShopAddProductsFinalStep: React.FC<ShopAddProductsListInterface> = 
   return (
     <ConsoleShopLayout shop={shop} basePath={layoutBasePath} breadcrumbs={breadcrumbs}>
       <Inner testId={'not-in-shop-products-list-step-2'}>
-        <div className={`text-3xl font-medium mb-2`}>Заполните все поля</div>
+        <div className={`mb-2 text-3xl font-medium`}>Заполните все поля</div>
         <div className={`mb-6`}>{catalogueCounterString}</div>
 
         <div className={`max-w-full`}>

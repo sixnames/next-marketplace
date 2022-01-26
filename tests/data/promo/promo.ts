@@ -38,15 +38,13 @@ const promo: PromoModel[] = [
 
     // ui configs
     showAsPromoPage: true,
-    assetKeys: [
-      `/assets/${ASSETS_DIST_PROMO}/assets/${ASSETS_DIST_PROMO}_a/assets/${ASSETS_DIST_PROMO}_a.jpg`,
-    ],
-    content: `{"id":"1","version":1,"rows":[{"id":"el2yzj","cells":[{"id":"ppcfbj","size":6,"plugin":{"id":"ory/editor/core/content/image","version":1},"dataI18n":{"default":{"src":"/assets/${ASSETS_DIST_PROMO}/assets/${ASSETS_DIST_PROMO}_a/assets/${ASSETS_DIST_PROMO}_a.jpg"}},"rows":[],"inline":null},{"id":"hzq58d","size":6,"plugin":{"id":"ory/editor/core/content/slate","version":1},"dataI18n":{"default":{"slate":[{"children":[{"text":"Header A"}],"type":"HEADINGS/HEADING-ONE"},{"children":[{"text":"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad aliquam, amet aperiam aspernatur beatae commodi ea eos explicabo fuga iste necessitatibus porro, quam quia repellat sapiente sequi tempora ullam voluptas?"}]},{"children":[{"text":"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad aliquam, amet aperiam aspernatur beatae commodi ea eos explicabo fuga iste necessitatibus porro, quam quia repellat sapiente sequi tempora ullam voluptas?"}]},{"children":[{"text":"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad aliquam, amet aperiam aspernatur beatae commodi ea eos explicabo fuga iste necessitatibus porro, quam quia repellat sapiente sequi tempora ullam voluptas?"}]}]}},"rows":[],"inline":null}]}]}`,
+    assetKeys: [`/assets/${ASSETS_DIST_PROMO}/promo_a/page_a.jpg`],
+    content: `{"id":"1","version":1,"rows":[{"id":"el2yzj","cells":[{"id":"ppcfbj","size":6,"plugin":{"id":"ory/editor/core/content/image","version":1},"dataI18n":{"default":{"src":"/assets/${ASSETS_DIST_PROMO}/promo_a/page_a.jpg"}},"rows":[],"inline":null},{"id":"hzq58d","size":6,"plugin":{"id":"ory/editor/core/content/slate","version":1},"dataI18n":{"default":{"slate":[{"children":[{"text":"Header A"}],"type":"HEADINGS/HEADING-ONE"},{"children":[{"text":"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad aliquam, amet aperiam aspernatur beatae commodi ea eos explicabo fuga iste necessitatibus porro, quam quia repellat sapiente sequi tempora ullam voluptas?"}]},{"children":[{"text":"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad aliquam, amet aperiam aspernatur beatae commodi ea eos explicabo fuga iste necessitatibus porro, quam quia repellat sapiente sequi tempora ullam voluptas?"}]},{"children":[{"text":"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad aliquam, amet aperiam aspernatur beatae commodi ea eos explicabo fuga iste necessitatibus porro, quam quia repellat sapiente sequi tempora ullam voluptas?"}]}]}},"rows":[],"inline":null}]}]}`,
 
     // main banner
     showAsMainBanner: true,
-    mainBanner: `/assets/${ASSETS_DIST_PROMO}/assets/${ASSETS_DIST_PROMO}_a/main-banner.jpg`,
-    mainBannerMobile: `/assets/${ASSETS_DIST_PROMO}/assets/${ASSETS_DIST_PROMO}_a/main-banner-mobile.jpg`,
+    mainBanner: `/assets/${ASSETS_DIST_PROMO}/promo_a/main-banner.jpg`,
+    mainBannerMobile: `/assets/${ASSETS_DIST_PROMO}/promo_a/main-banner-mobile.jpg`,
     mainBannerTextColor: '#000000',
     mainBannerVerticalTextAlign: TEXT_VERTICAL_FLEX_OPTIONS[0]._id,
     mainBannerHorizontalTextAlign: TEXT_HORIZONTAL_FLEX_OPTIONS[0]._id,
@@ -56,7 +54,7 @@ const promo: PromoModel[] = [
 
     //secondary banner
     showAsSecondaryBanner: true,
-    secondaryBanner: `/assets/${ASSETS_DIST_PROMO}/assets/${ASSETS_DIST_PROMO}_a/secondary-banner-1.jpg`,
+    secondaryBanner: `/assets/${ASSETS_DIST_PROMO}/promo_a/secondary-banner-1.jpg`,
     secondaryBannerTextColor: '#000000',
     secondaryBannerVerticalTextAlign: TEXT_VERTICAL_FLEX_OPTIONS[0]._id,
     secondaryBannerHorizontalTextAlign: TEXT_HORIZONTAL_FLEX_OPTIONS[0]._id,

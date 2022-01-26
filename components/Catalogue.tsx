@@ -108,7 +108,7 @@ const CatalogueHead: React.FC<CatalogueHeadInterface> = ({
               />
             </div>
 
-            <div className='flex flex-wrap gap-6 items-center'>
+            <div className='flex flex-wrap items-center gap-6'>
               <WpButton
                 frameClassName='w-auto'
                 size={'small'}
@@ -363,7 +363,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
 
   if (catalogueData.totalProducts < 1) {
     return (
-      <div className='mb-12 catalogue'>
+      <div className='catalogue mb-12'>
         <WpBreadcrumbs config={state.breadcrumbs} />
         <Inner lowTop testId={'catalogue'}>
           <WpTitle testId={'catalogue-title'}>{catalogueData.catalogueTitle}</WpTitle>
@@ -374,7 +374,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
   }
 
   return (
-    <div className='mb-12 catalogue'>
+    <div className='catalogue mb-12'>
       <CatalogueHead
         catalogueHeadLayout={state.catalogueHeadLayout}
         breadcrumbs={state.breadcrumbs}
@@ -387,7 +387,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
       />
 
       <Inner lowTop testId={'catalogue'}>
-        <div className='grid lg:grid-cols-7 gap-8 mt-8'>
+        <div className='mt-8 grid gap-8 lg:grid-cols-7'>
           <CatalogueFilter
             basePath={state.basePath}
             clearSlug={state.clearSlug}
@@ -405,7 +405,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
           <div className='lg:col-span-5'>
             <div>
               {/*Mobile controls*/}
-              <div className='grid grid-cols-2 gap-4 md:gap-6 grid lg:hidden'>
+              <div className='grid grid grid-cols-2 gap-4 md:gap-6 lg:hidden'>
                 <WpButton theme={'secondary'} className='w-full' onClick={showFilterHandler} short>
                   Фильтр
                 </WpButton>
@@ -415,7 +415,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
                   menuPosition={'left'}
                   buttonClassName='w-full'
                   buttonText={() => (
-                    <span className='z-[5] flex items-center justify-center border-1 border-theme font-medium uppercase text-center text-sm transition-all duration-100 cursor-pointer disabled:opacity-50 disabled:pointer-events-none shadow-md hover:shadow-xl h-[var(--formInputHeight)] text-theme bg-secondary-button-background hover:ring-2 hover:ring-theme pl-4 pr-4 rounded-md w-full'>
+                    <span className='border-1 bg-secondary-button-background z-[5] flex h-[var(--formInputHeight)] w-full cursor-pointer items-center justify-center rounded-md border-theme pl-4 pr-4 text-center text-sm font-medium uppercase text-theme shadow-md transition-all duration-100 hover:shadow-xl hover:ring-2 hover:ring-theme disabled:pointer-events-none disabled:opacity-50'>
                       Сортировать
                     </span>
                   )}
@@ -423,35 +423,35 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
               </div>
 
               {/*Desktop controls*/}
-              <div className='hidden lg:flex items-center justify-between min-h-[var(--catalogueVieButtonSize)]'>
+              <div className='hidden min-h-[var(--catalogueVieButtonSize)] items-center justify-between lg:flex'>
                 <div className='flex items-center'>
-                  <div className='relative top-[-1px] text-secondary-text mr-6'>Сортировать</div>
+                  <div className='relative top-[-1px] mr-6 text-secondary-text'>Сортировать</div>
                   <MenuButtonWithName config={sortConfig} buttonClassName='text-primary-text' />
                 </div>
 
                 <div className='flex gap-4'>
                   <button
                     aria-label={'Отображение сетка'}
-                    className={`w-[var(--catalogueVieButtonSize)] h-[var(--catalogueVieButtonSize)] ${
+                    className={`h-[var(--catalogueVieButtonSize)] w-[var(--catalogueVieButtonSize)] ${
                       isRowView ? 'text-secondary-text' : 'text-primary-text'
                     }`}
                     onClick={() => setIsRowViewHandler(CATALOGUE_VIEW_GRID)}
                   >
                     <WpIcon
-                      className='w-[var(--catalogueVieButtonSize)] h-[var(--catalogueVieButtonSize)]'
+                      className='h-[var(--catalogueVieButtonSize)] w-[var(--catalogueVieButtonSize)]'
                       name={'grid'}
                     />
                   </button>
 
                   <button
                     aria-label={'Отображение список'}
-                    className={`w-[var(--catalogueVieButtonSize)] h-[var(--catalogueVieButtonSize)] text-[var(--wp-mid-gray-100)] ${
+                    className={`text-[var(--wp-mid-gray-100)] h-[var(--catalogueVieButtonSize)] w-[var(--catalogueVieButtonSize)] ${
                       isRowView ? 'text-primary-text' : 'text-secondary-text'
                     }`}
                     onClick={() => setIsRowViewHandler(CATALOGUE_VIEW_ROW)}
                   >
                     <WpIcon
-                      className='w-[var(--catalogueVieButtonSize)] h-[var(--catalogueVieButtonSize)]'
+                      className='h-[var(--catalogueVieButtonSize)] w-[var(--catalogueVieButtonSize)]'
                       name={'rows'}
                     />
                   </button>
@@ -459,10 +459,10 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
               </div>
 
               {/*Products*/}
-              <div className='relative pt-8 flex flex-wrap gap-4 md:gap-[1.5rem]'>
+              <div className='relative flex flex-wrap gap-4 pt-8 md:gap-[1.5rem]'>
                 {isPageLoading ? (
-                  <div className='absolute inset-0 z-50 w-full h-full'>
-                    <Spinner className='absolute inset-0 w-full h-[50vh]' isNested isTransparent />
+                  <div className='absolute inset-0 z-50 h-full w-full'>
+                    <Spinner className='absolute inset-0 h-[50vh] w-full' isNested isTransparent />
                   </div>
                 ) : null}
 
@@ -516,7 +516,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
         </div>
 
         {state.textBottom ? (
-          <div className='mb-16 border-t border-border-100 pt-2 mt-8'>
+          <div className='mb-16 mt-8 border-t border-border-100 pt-2'>
             <PageEditor value={JSON.parse(state.textBottom.content)} readOnly />
           </div>
         ) : null}
@@ -556,7 +556,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
               behavior: 'smooth',
             });
           }}
-          className='fixed right-inner-block-horizontal-padding bottom-28 lg:bottom-8 z-[777]'
+          className='fixed right-inner-block-horizontal-padding bottom-28 z-[777] lg:bottom-8'
           icon={'chevron-up'}
           circle
         />

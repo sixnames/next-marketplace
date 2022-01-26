@@ -59,6 +59,7 @@ const OneShopCompanyDeliveryCart: React.FC<OneShopCompanyCartFormInterface> = ({
     ...cart,
     name: sessionUser ? sessionUser.me.name : '',
     lastName: sessionUser ? sessionUser.me.lastName : '',
+    secondName: sessionUser ? sessionUser.me.secondName : '',
     email: sessionUser ? sessionUser.me.email : '',
     phone: sessionUser ? sessionUser.me.phone : '',
     comment: '',
@@ -109,6 +110,7 @@ const OneShopCompanyDeliveryCart: React.FC<OneShopCompanyCartFormInterface> = ({
         makeAnOrder({
           name: values.name,
           lastName: values.lastName,
+          secondName: values.secondName,
           email: values.email,
           reservationDate: values.reservationDate,
           comment: values.comment,
@@ -138,14 +140,14 @@ const OneShopCompanyDeliveryCart: React.FC<OneShopCompanyCartFormInterface> = ({
 
         return (
           <Form>
-            <div className='flex items-center gap-4 text-lg font-medium mb-6'>
-              <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
+            <div className='mb-6 flex items-center gap-4 text-lg font-medium'>
+              <div className='flex h-12 w-12 items-center justify-center rounded-full bg-secondary'>
                 1
               </div>
               <div>Товары</div>
             </div>
 
-            <div className='grid md:grid-cols-8 lg:grid-cols-16 gap-6'>
+            <div className='grid gap-6 md:grid-cols-8 lg:grid-cols-16'>
               <div className='md:col-span-5 lg:col-span-11' data-cy={'cart-products'}>
                 <div className='mb-20'>
                   {/*cart products*/}
@@ -164,15 +166,15 @@ const OneShopCompanyDeliveryCart: React.FC<OneShopCompanyCartFormInterface> = ({
                   </div>
                 </div>
 
-                <div className='relative z-20 mb-12'>
-                  <div className='flex items-center gap-4 mb-8 text-lg font-medium'>
-                    <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
+                <div className='relative z-20 mb-12' id={'cart-inputs'}>
+                  <div className='mb-8 flex items-center gap-4 text-lg font-medium'>
+                    <div className='flex h-12 w-12 items-center justify-center rounded-full bg-secondary'>
                       2
                     </div>
                     <div>Личные данные</div>
                   </div>
 
-                  <div className='lg:grid grid-cols-2 gap-x-6'>
+                  <div className='grid-cols-2 gap-x-6 lg:grid'>
                     <FormikInput
                       testId={'order-form-name'}
                       name={'name'}
@@ -187,6 +189,13 @@ const OneShopCompanyDeliveryCart: React.FC<OneShopCompanyCartFormInterface> = ({
                       name={'lastName'}
                       label={'Фамилия'}
                       testId={'lastName'}
+                    />
+
+                    <FormikInput
+                      disabled={disabled}
+                      name={'secondName'}
+                      label={'Отчество'}
+                      testId={'secondName'}
                     />
 
                     <FormikInput
@@ -219,8 +228,8 @@ const OneShopCompanyDeliveryCart: React.FC<OneShopCompanyCartFormInterface> = ({
 
                 {/* delivery and payment */}
                 <div className='relative z-20 mb-12'>
-                  <div className='flex items-center gap-4 mb-8 text-lg font-medium'>
-                    <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
+                  <div className='mb-8 flex items-center gap-4 text-lg font-medium'>
+                    <div className='flex h-12 w-12 items-center justify-center rounded-full bg-secondary'>
                       3
                     </div>
                     <div>Способ получения и оплата</div>
@@ -232,7 +241,7 @@ const OneShopCompanyDeliveryCart: React.FC<OneShopCompanyCartFormInterface> = ({
 
               {/*cart aside*/}
               <div className='md:col-span-3 lg:col-span-5'>
-                <div className='sticky top-16 lef-0'>
+                <div className='lef-0 sticky top-16'>
                   <CartAside
                     buyButtonText={'Оформить заказ'}
                     productsCount={cartDeliveryProducts.length}
@@ -243,7 +252,7 @@ const OneShopCompanyDeliveryCart: React.FC<OneShopCompanyCartFormInterface> = ({
 
                   {/*discount inputs*/}
                   <LayoutCard className='mb-4 overflow-hidden' testId={'cart-aside'}>
-                    <div className='p-6 grid gap-5'>
+                    <div className='grid gap-5 p-6'>
                       <InputLine
                         low
                         labelTag={'div'}
@@ -281,7 +290,7 @@ const OneShopCompanyDeliveryCart: React.FC<OneShopCompanyCartFormInterface> = ({
                       </InputLine>
 
                       <InputLine low labelTag={'div'} label={'Промокод'}>
-                        <div className='flex flex-col sm:flex-row gap-4 sm:items-center'>
+                        <div className='flex flex-col gap-4 sm:flex-row sm:items-center'>
                           <div className='flex-grow'>
                             <FormikInput
                               readOnly={Boolean(shop.promoCode?._id)}
@@ -366,6 +375,7 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
     ...cart,
     name: sessionUser ? sessionUser.me.name : '',
     lastName: sessionUser ? sessionUser.me.lastName : '',
+    secondName: sessionUser ? sessionUser.me.secondName : '',
     email: sessionUser ? sessionUser.me.email : '',
     phone: sessionUser ? sessionUser.me.phone : '',
     comment: '',
@@ -391,6 +401,7 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
         makeAnOrder({
           name: values.name,
           lastName: values.lastName,
+          secondName: values.secondName,
           email: values.email,
           reservationDate: values.reservationDate,
           comment: values.comment,
@@ -430,14 +441,14 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
               </div>
             ) : null}
 
-            <div className='flex items-center gap-4 text-lg font-medium mb-6'>
-              <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
+            <div className='mb-6 flex items-center gap-4 text-lg font-medium'>
+              <div className='flex h-12 w-12 items-center justify-center rounded-full bg-secondary'>
                 1
               </div>
               <div>Товары</div>
             </div>
 
-            <div className='grid md:grid-cols-8 lg:grid-cols-16 gap-6'>
+            <div className='grid gap-6 md:grid-cols-8 lg:grid-cols-16'>
               <div className='md:col-span-5 lg:col-span-11' data-cy={'cart-products'}>
                 <div className='mb-20'>
                   {/*cart products*/}
@@ -456,15 +467,15 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
                   </div>
                 </div>
 
-                <div className='relative z-20 mb-12'>
-                  <div className='flex items-center gap-4 mb-8 text-lg font-medium'>
-                    <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
+                <div className='relative z-20 mb-12' id={'cart-inputs'}>
+                  <div className='mb-8 flex items-center gap-4 text-lg font-medium'>
+                    <div className='flex h-12 w-12 items-center justify-center rounded-full bg-secondary'>
                       2
                     </div>
                     <div>Личные данные</div>
                   </div>
 
-                  <div className='lg:grid grid-cols-2 gap-x-6'>
+                  <div className='grid-cols-2 gap-x-6 lg:grid'>
                     <FormikInput
                       testId={'order-form-name'}
                       name={'name'}
@@ -479,6 +490,13 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
                       name={'lastName'}
                       label={'Фамилия'}
                       testId={'lastName'}
+                    />
+
+                    <FormikInput
+                      disabled={disabled}
+                      name={'secondName'}
+                      label={'Отчество'}
+                      testId={'secondName'}
                     />
 
                     <FormikInput
@@ -521,7 +539,7 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
 
               {/*cart aside*/}
               <div className='md:col-span-3 lg:col-span-5'>
-                <div className='sticky top-16 lef-0'>
+                <div className='lef-0 sticky top-16'>
                   <CartAside
                     isBooking
                     buyButtonText={configs.buyButtonText}
@@ -533,7 +551,7 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
 
                   {/*discount inputs*/}
                   <LayoutCard className='mb-4 overflow-hidden' testId={'cart-aside'}>
-                    <div className='p-6 grid gap-5'>
+                    <div className='grid gap-5 p-6'>
                       <InputLine
                         low
                         labelTag={'div'}
@@ -571,7 +589,7 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
                       </InputLine>
 
                       <InputLine low labelTag={'div'} label={'Промокод'}>
-                        <div className='flex flex-col sm:flex-row gap-4 sm:items-center'>
+                        <div className='flex flex-col gap-4 sm:flex-row sm:items-center'>
                           <div className='flex-grow'>
                             <FormikInput
                               testId={`promo-code-input-${domainCompany.mainShop?.slug}`}

@@ -23,6 +23,7 @@ describe('Promo code', () => {
     cy.wait(1500);
 
     // make an order
+    cy.getByCy(`order-form-privacy`).check();
     cy.getByCy(`cart-aside-confirm`).click();
     cy.wait(1500);
     cy.getByCy(`thank-you`).should('exist');

@@ -21,8 +21,9 @@ export function scrollToCartErrors(input: MakeAnOrderInputInterface): boolean {
   const noName = !input.name;
   const noEmail = !input.email;
   const noPhone = !input.phone;
+  const noPrivacy = !input.privacy;
 
-  if (distElement && (noName || noEmail || noPhone)) {
+  if (distElement && (noName || noEmail || noPhone || noPrivacy)) {
     window.scrollTo({
       top: noNaN(distElement.getBoundingClientRect().top),
       left: 0,

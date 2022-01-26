@@ -93,6 +93,7 @@ export interface MakeAnOrderInputInterface {
   comment?: string;
   companySlug?: string;
   allowDelivery: boolean;
+  privacy: boolean;
   shopConfigs: MakeAnOrderShopConfigInterface[];
   cartProductsFieldName: 'cartDeliveryProducts' | 'cartBookingProducts';
 }

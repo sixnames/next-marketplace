@@ -22,7 +22,7 @@ export const getConsoleShopAddProductsListPageSsr = async (
     shopId: `${query.shopId}`,
     rubricSlug: `${query.rubricSlug}`,
   });
-  const basePath = links.shop.rubrics.root;
+  const basePath = links.shop.rubrics.add;
   const payload = await getAddShopProductSsrData({
     locale,
     basePath,

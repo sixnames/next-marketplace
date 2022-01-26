@@ -17,7 +17,7 @@ const AsideNav: React.FC<AsideNavInterface> = ({ testId, className, config }) =>
         {config.map(({ name, children, testId }, groupIndex) => {
           return (
             <div className='mb-12' key={groupIndex} data-cy={testId}>
-              {name ? <div className='text-secondary-text mb-2'>{name}</div> : null}
+              {name ? <div className='mb-2 text-secondary-text'>{name}</div> : null}
               <ul>
                 {children.map((menuItem) => {
                   const { name, _id, onSelect, hidden, testId, current, counter } = menuItem;
@@ -36,7 +36,7 @@ const AsideNav: React.FC<AsideNavInterface> = ({ testId, className, config }) =>
                         }}
                         className={`${
                           isSelected ? 'text-theme' : 'text-primary-text'
-                        } group flex rounded-md items-center w-full py-2`}
+                        } group flex w-full items-center rounded-md py-2`}
                       >
                         {name}
 
@@ -52,7 +52,7 @@ const AsideNav: React.FC<AsideNavInterface> = ({ testId, className, config }) =>
       </div>
 
       {/*Mobile*/}
-      <div className='md:hidden flex'>
+      <div className='flex md:hidden'>
         <MenuButtonWithName
           config={config}
           buttonClassName='text-primary-text'

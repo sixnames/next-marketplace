@@ -1,11 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import "~react-image-gallery/styles/css/image-gallery.css";
+@import '~react-image-gallery/styles/css/image-gallery.css';
 
 @layer components {
   .input-border {
-    @apply border-gray-300 focus:border-gray-400 dark:border-gray-600 dark:focus:border-gray-400
+    @apply border-gray-300 focus:border-gray-400 dark:border-gray-600 dark:focus:border-gray-400;
   }
 }
 
@@ -153,11 +153,11 @@
     -webkit-appearance: none;
   }
 
-  input[type="color"]::-webkit-color-swatch-wrapper {
+  input[type='color']::-webkit-color-swatch-wrapper {
     padding: 0;
   }
 
-  input[type="color"]::-webkit-color-swatch {
+  input[type='color']::-webkit-color-swatch {
     border: none;
     border-radius: 0.5rem;
   }
@@ -189,7 +189,12 @@
 
   /* Blog */
   .blog-post-image-cover {
-   background-image: linear-gradient(to top, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.4) 65%, rgba(0, 0, 0, 0) 100%);
+    background-image: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.6),
+      rgba(0, 0, 0, 0.4) 65%,
+      rgba(0, 0, 0, 0) 100%
+    );
   }
 
   /* Footer */
@@ -408,7 +413,8 @@
   }
 
   @keyframes color {
-    100%, 0% {
+    100%,
+    0% {
       stroke: var(--theme);
     }
     40% {
@@ -417,15 +423,16 @@
     66% {
       stroke: var(--theme);
     }
-    80%, 90% {
+    80%,
+    90% {
       stroke: var(--theme);
     }
   }
 }
 
 /* Headless UI*/
-.headless-mobile-nav [type=button],
-.headless-menu [type=button] {
+.headless-mobile-nav [type='button'],
+.headless-menu [type='button'] {
   -webkit-appearance: none;
 }
 
@@ -433,7 +440,7 @@
 @font-face {
   font-family: 'Gilroy';
   src: url('/fonts/Gilroy-Light.woff2') format('woff2'),
-  url('/fonts/Gilroy-Light.woff') format('woff');
+    url('/fonts/Gilroy-Light.woff') format('woff');
   font-weight: 300;
   font-style: normal;
   font-display: optional;
@@ -443,7 +450,7 @@
 @font-face {
   font-family: 'Gilroy';
   src: url('/fonts/Gilroy-Regular.woff2') format('woff2'),
-  url('/fonts/Gilroy-Regular.woff') format('woff');
+    url('/fonts/Gilroy-Regular.woff') format('woff');
   font-weight: 400;
   font-style: normal;
   font-display: optional;
@@ -453,7 +460,7 @@
 @font-face {
   font-family: 'Gilroy';
   src: url('/fonts/Gilroy-Medium.woff2') format('woff2'),
-  url('/fonts/Gilroy-Medium.woff') format('woff');
+    url('/fonts/Gilroy-Medium.woff') format('woff');
   font-weight: 500;
   font-style: normal;
   font-display: optional;
@@ -463,7 +470,7 @@
 @font-face {
   font-family: 'Gilroy';
   src: url('/fonts/Gilroy-Bold.woff2') format('woff2'),
-  url('/fonts/Gilroy-Bold.woff') format('woff');
+    url('/fonts/Gilroy-Bold.woff') format('woff');
   font-weight: 700;
   font-style: normal;
   font-display: optional;
@@ -473,7 +480,7 @@
 @font-face {
   font-family: 'Gilroy';
   src: url('/fonts/Gilroy-Light.woff2') format('woff2'),
-  url('/fonts/Gilroy-Light.woff') format('woff');
+    url('/fonts/Gilroy-Light.woff') format('woff');
   font-weight: 300;
   font-style: normal;
   font-display: optional;
@@ -495,11 +502,11 @@
   --wp-error: rgb(var(--themeRGB));
   --wp-white-RGB: 255, 255, 255;
   --wp-white: rgb(var(--wp-white-RGB));
-  --wp-dark-pink: #99093E;
-  --wp-yellow: #E7C55A;
-  --wp-light-green: #93AF42;
-  --wp-dark-green: #3A8D4C;
-  --wp-dark-gray-100: #40454D;
+  --wp-dark-pink: #99093e;
+  --wp-yellow: #e7c55a;
+  --wp-light-green: #93af42;
+  --wp-dark-green: #3a8d4c;
+  --wp-dark-gray-100: #40454d;
 
   --wp-dark-gray-200-RGB: 43, 48, 57;
   --wp-dark-gray-200: rgb(var(--wp-dark-gray-200-RGB));
@@ -507,9 +514,9 @@
   --wp-dark-gray-300-RGB: 29, 34, 43;
   --wp-dark-gray-300: rgb(var(--wp-dark-gray-300-RGB));
   --wp-dark-gray-400: #14181d;
-  --wp-mid-gray-100: #6B6E74;
+  --wp-mid-gray-100: #6b6e74;
   --wp-light-gray-100: #aaacb0;
-  --wp-light-gray-200: #E8E9EA;
+  --wp-light-gray-200: #e8e9ea;
   --wp-light-gray-300-RGB: 242, 243, 243;
   --wp-light-gray-300: rgb(var(--wp-light-gray-300-RGB));
   --wp-light-gray-400: rgb(203, 205, 212);
@@ -562,7 +569,7 @@
   --lineGap-200: calc(var(--lineGap-100) * 2);
   --lineGap-300: calc(var(--lineGap-100) * 3);
   --lineGap-400: calc(var(--lineGap-100) * 4);
-  --lineGap-500: calc(var(--lineGap-100) * 5);;
+  --lineGap-500: calc(var(--lineGap-100) * 5);
 
   /*Sizes*/
   --logoWidth: 7rem;
@@ -1023,6 +1030,6 @@ table {
 }
 
 /*jivo chat*/
-[class^=cssLeaf_] {
+[class^='cssLeaf_'] {
   display: none !important;
 }

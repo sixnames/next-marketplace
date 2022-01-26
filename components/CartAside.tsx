@@ -37,12 +37,12 @@ const CartAside: React.FC<CartAsideInterface> = ({
   const { configs } = useConfigContext();
   return (
     <LayoutCard className='mb-4 overflow-hidden' testId={'cart-aside'}>
-      <div className='p-6 grid gap-5'>
-        <div className='font-bold text-2xl'>Ваш заказ</div>
+      <div className='grid gap-5 p-6'>
+        <div className='text-2xl font-bold'>Ваш заказ</div>
 
         <div className='flex items-baseline justify-between gap-2'>
           <div className='text-secondary-text'>Товары</div>
-          <div className='font-medium text-lg'>
+          <div className='text-lg font-medium'>
             {`${productsCount} шт. - `}
             <Currency testId={'cart-aside-total'} value={props.totalPrice} />
           </div>
@@ -55,7 +55,7 @@ const CartAside: React.FC<CartAsideInterface> = ({
           </div>
         ) : null}
 
-        <div className='flex justify-between items-baseline'>
+        <div className='flex items-baseline justify-between'>
           <div className='text-lg text-secondary-text'>Итого</div>
           <div className='text-2xl font-bold'>
             <Currency testId={'cart-aside-total'} value={totalPrice} />
@@ -90,7 +90,7 @@ const CartAside: React.FC<CartAsideInterface> = ({
         </WpButton>
 
         {isWithShopless ? (
-          <div className='text-red-500 font-medium' data-cy={`cart-aside-warning`}>
+          <div className='font-medium text-red-500' data-cy={`cart-aside-warning`}>
             Для оформления заказа необходимо выбрать магазины у всех товаров.
           </div>
         ) : null}

@@ -55,7 +55,7 @@ const PageGroupsList: React.FC<PageGroupsListInterface> = ({
         return (
           <WpLink
             testId={`${cellData}-link`}
-            className='text-primary-text hover:no-underline hover:text-link-text'
+            className='hover:text-link-text text-primary-text hover:no-underline'
             href={`${basePath}/${dataItem._id}`}
           >
             {cellData}

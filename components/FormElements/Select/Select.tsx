@@ -143,7 +143,7 @@ const Select: React.FC<SelectInterface> = ({
           })}
         </select>
         <WpIcon
-          className='absolute top-half right-5 w-3 h-3 transform translate-y-[-5px]'
+          className='top-half absolute right-5 h-3 w-3 translate-y-[-5px] transform'
           name={'chevron-down'}
         />
       </span>

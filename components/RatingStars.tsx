@@ -22,8 +22,8 @@ const RatingStars: React.FC<RatingStarsInterface> = ({
     return (
       <div className={`flex items-center text-lg font-medium ${className ? className : ''}`}>
         <span>{noNaN(rating)}</span>
-        <div className='text-wp-yellow ml-2'>
-          <WpIcon className='w-5 h-5' name={'star'} />
+        <div className='ml-2 text-wp-yellow'>
+          <WpIcon className='h-5 w-5' name={'star'} />
         </div>
       </div>
     );
@@ -37,9 +37,9 @@ const RatingStars: React.FC<RatingStarsInterface> = ({
   const starClassName = `relative z-10 shrink-0 ${starSizeClassName}`;
   return (
     <div className={`flex items-center text-[2rem] md:text-[2.5rem] ${className ? className : ''}`}>
-      {showRatingNumber ? <div className='text-lg font-medium mr-2'>{noNaN(rating)}</div> : null}
+      {showRatingNumber ? <div className='mr-2 text-lg font-medium'>{noNaN(rating)}</div> : null}
       <div className='relative'>
-        <div className='flex gap-[0.1rem] relative z-10'>
+        <div className='relative z-10 flex gap-[0.1rem]'>
           <WpIcon name={'star'} className={`${starClassName}`} />
           <WpIcon name={'star'} className={`${starClassName}`} />
           <WpIcon name={'star'} className={`${starClassName}`} />
@@ -48,7 +48,7 @@ const RatingStars: React.FC<RatingStarsInterface> = ({
         </div>
 
         <div
-          className='absolute top-0 left-0 z-20 flex gap-[0.1rem] text-wp-yellow overflow-hidden'
+          className='absolute top-0 left-0 z-20 flex gap-[0.1rem] overflow-hidden text-wp-yellow'
           style={{ width: `${filledRatingWidth}%` }}
         >
           <WpIcon name={'star'} className={`${starClassName}`} />

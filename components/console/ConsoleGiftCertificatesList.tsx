@@ -143,7 +143,7 @@ const ConsoleGiftCertificatesList: React.FC<ConsoleGiftCertificatesListInterface
 
   return (
     <div data-cy={'company-shops-list'} className='relative'>
-      <div className={`text-xl font-medium mb-2`}>{counterString}</div>
+      <div className={`mb-2 text-xl font-medium`}>{counterString}</div>
 
       <div className={`relative overflow-x-auto overflow-y-hidden`}>
         <WpTable<GiftCertificateInterface>

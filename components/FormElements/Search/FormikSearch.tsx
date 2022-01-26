@@ -9,7 +9,7 @@ interface FormikSearchInterface {
 
 const FormikSearch: React.FC<FormikSearchInterface> = ({ resetForm, testId }) => {
   return (
-    <div className='relative flex gap-4 mb-6'>
+    <div className='relative mb-6 flex gap-4'>
       <div className='flex-grow'>
         <FormikInput
           frameClass=''

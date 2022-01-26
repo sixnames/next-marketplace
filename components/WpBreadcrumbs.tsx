@@ -27,7 +27,7 @@ const WpBreadcrumbs: React.FC<BreadcrumbsInterface> = ({
       <Inner lowBottom={lowBottom} lowTop={lowTop}>
         <ul className={centered ? 'text-center' : ''}>
           {noMainPage ? null : (
-            <li className='inline mr-1'>
+            <li className='mr-1 inline'>
               <WpLink className={linkClassName} href={'/'}>
                 <span className='hover:text-theme'>{mainPageName}</span> —
               </WpLink>
@@ -38,14 +38,14 @@ const WpBreadcrumbs: React.FC<BreadcrumbsInterface> = ({
 
             if (isLastItem && !currentPageName) {
               return (
-                <li key={index} className='inline mr-1 text-secondary-text'>
+                <li key={index} className='mr-1 inline text-secondary-text'>
                   {configItem.name}
                 </li>
               );
             }
 
             return (
-              <li className='inline mr-1' key={index}>
+              <li className='mr-1 inline' key={index}>
                 <WpLink className={linkClassName} href={configItem.href}>
                   <span className='hover:text-theme'>{configItem.name}</span> —
                 </WpLink>
@@ -54,7 +54,7 @@ const WpBreadcrumbs: React.FC<BreadcrumbsInterface> = ({
           })}
 
           {currentPageName ? (
-            <li className='inline mr-1 text-secondary-text'>{currentPageName}</li>
+            <li className='mr-1 inline text-secondary-text'>{currentPageName}</li>
           ) : null}
         </ul>
       </Inner>

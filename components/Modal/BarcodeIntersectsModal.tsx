@@ -97,7 +97,7 @@ const BarcodeIntersectsModalConsumer: React.FC<BarcodeIntersectsModalConsumerInt
         {barcode}
       </WpTitle>
 
-      <div className={`text-xl font-medium mb-2`}>{catalogueCounterString}</div>
+      <div className={`mb-2 text-xl font-medium`}>{catalogueCounterString}</div>
 
       <div className={`overflow-x-auto overflow-y-hidden`}>
         <WpTable<ProductSummaryInterface>

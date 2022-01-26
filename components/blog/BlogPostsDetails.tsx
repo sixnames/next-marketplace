@@ -143,7 +143,7 @@ const BlogPostsDetails: React.FC<BlogPostsDetailsInterface> = ({ post, attribute
                     Атрибуты блог-поста
                   </WpTitle>
 
-                  <div className='grid sm:grid-cols-2 md:grid-cols-3 gap-x-8'>
+                  <div className='grid gap-x-8 sm:grid-cols-2 md:grid-cols-3'>
                     {attributes.map((attribute) => {
                       return (
                         <FakeInput

@@ -148,7 +148,7 @@ const ConsolePromoProducts: React.FC<ConsolePromoProductsInterface> = ({
           />
         </div>
 
-        <div className='flex flex-wrap gap-4 mb-6'>
+        <div className='mb-6 flex flex-wrap gap-4'>
           {filters.length > 0 ? (
             <WpButton
               size={'small'}

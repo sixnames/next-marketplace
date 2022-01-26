@@ -62,8 +62,8 @@ const InputLine: React.FC<InputLinePropsInterface> = ({
       {label ? (
         <TagName
           {...labelTagProps}
-          className={`flex items-start min-h-[1.3rem] mb-2 font-medium text-secondary-text ${
-            isHorizontal ? 'md:w-[220px] pt-1 flex-shrink-0' : 'truncate'
+          className={`mb-2 flex min-h-[1.3rem] items-start font-medium text-secondary-text ${
+            isHorizontal ? 'flex-shrink-0 pt-1 md:w-[220px]' : 'truncate'
           } ${labelClass ? labelClass : ''}`}
         >
           {label}
@@ -72,14 +72,14 @@ const InputLine: React.FC<InputLinePropsInterface> = ({
           ) : null}
           {labelLink ? <span className='ml-2'>{labelLink}</span> : null}
           {isRequired ? (
-            <sup className='relative inline-block -top-0.5 ml-1 text-lg leading-none text-red-500 font-medium'>
+            <sup className='relative -top-0.5 ml-1 inline-block text-lg font-medium leading-none text-red-500'>
               *
             </sup>
           ) : null}
           {description ? (
             <WpTooltip title={description}>
-              <div className='inline cursor-pointer ml-3'>
-                <WpIcon className='w-5 h-5' name={'question-circle'} />
+              <div className='ml-3 inline cursor-pointer'>
+                <WpIcon className='h-5 w-5' name={'question-circle'} />
               </div>
             </WpTooltip>
           ) : null}
@@ -92,8 +92,8 @@ const InputLine: React.FC<InputLinePropsInterface> = ({
             {children}
           </div>
           {lineIcon ? (
-            <div className='flex items-center justify-end flex-shrink-0 w-form-input-height h-form-input-height'>
-              <WpIcon className='w-6 h-6' name={lineIcon} />
+            <div className='flex h-form-input-height w-form-input-height flex-shrink-0 items-center justify-end'>
+              <WpIcon className='h-6 w-6' name={lineIcon} />
             </div>
           ) : null}
         </div>

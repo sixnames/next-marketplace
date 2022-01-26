@@ -131,7 +131,7 @@ const RoleNavConsumer: React.FC<RoleNavConsumerInterface> = ({ role, navItemGrou
         {navItemGroups.map((navGroup) => {
           return (
             <div key={navGroup._id} className='mb-8'>
-              <div className='mb-4 font-medium text-lg'>{navGroup.name}</div>
+              <div className='mb-4 text-lg font-medium'>{navGroup.name}</div>
               <div className='overflow-x-auto overflow-y-hidden'>
                 <WpTable<NavItemInterface> columns={columns} data={navGroup.children || []} />
               </div>

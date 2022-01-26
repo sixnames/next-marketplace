@@ -50,7 +50,7 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
   const metricsCodeAsString = `${yaMetrica}${googleAnalytics}`;
 
   return (
-    <div className='relative flex flex-col text-primary-text bg-primary min-h-full-height'>
+    <div className='relative flex min-h-full-height flex-col bg-primary text-primary-text'>
       <div dangerouslySetInnerHTML={{ __html: metricsCodeAsString }} />
 
       <Meta
@@ -66,7 +66,7 @@ const SiteLayoutConsumer: React.FC<SiteLayoutConsumerInterface> = ({
 
       <Header headerPageGroups={headerPageGroups} currentRubricSlug={currentRubricSlug} />
 
-      <div className='flex flex-col flex-grow'>
+      <div className='flex flex-grow flex-col'>
         <main className='flex-grow'>
           <ErrorBoundary>{children}</ErrorBoundary>
         </main>

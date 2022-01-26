@@ -14,7 +14,7 @@ const FieldErrorMessage: React.FC<FieldErrorMessageInterface> = ({ name, error, 
 
   return (
     <div
-      className={`font-medium text-red-500 mt-4 ${className ? className : ''}`}
+      className={`mt-4 font-medium text-red-500 ${className ? className : ''}`}
       data-cy={`${name}-error`}
     >
       {`${error}`}

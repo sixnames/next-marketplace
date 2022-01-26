@@ -47,14 +47,14 @@ const FormikLayoutSelect: React.FC<FormikLayoutSelectInterface> = ({
             showInlineError={showInlineError}
             error={error}
           >
-            <div className='flex flex-wrap gap-8 items-start'>
+            <div className='flex flex-wrap items-start gap-8'>
               {options.map(({ _id, asset }) => {
                 const isCurrent = fieldValue === _id;
 
                 return (
                   <div
                     data-cy={`${name}-${_id}`}
-                    className={`rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all cursor-pointer border-2 ${
+                    className={`cursor-pointer overflow-hidden rounded-xl border-2 shadow-sm transition-all hover:shadow-lg ${
                       isCurrent ? 'border-theme' : 'border-transparent'
                     }`}
                     key={_id}

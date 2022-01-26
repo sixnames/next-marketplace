@@ -77,7 +77,7 @@ const WpButton: React.FC<ButtonPropsInterface> = ({
             <WpIcon
               name={icon}
               className={`relative flex-shrink-0 ${
-                isSmall ? 'w-[0.875rem] h-[0.875rem]' : 'w-[1.25rem] h-[1.25rem] top-[1px]'
+                isSmall ? 'h-[0.875rem] w-[0.875rem]' : 'top-[1px] h-[1.25rem] w-[1.25rem]'
               } ${noChildren ? '' : 'mr-[5px]'}`}
             />
           )}

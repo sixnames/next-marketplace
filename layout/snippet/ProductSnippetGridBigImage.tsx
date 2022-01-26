@@ -75,30 +75,30 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
 
   return (
     <div
-      className={`relative z-10 hover:z-20 group rounded-md relative text-center flex flex-grow flex-col grid-snippet ${mainFrameClassName} ${
+      className={`group grid-snippet relative relative z-10 flex flex-grow flex-col rounded-md text-center hover:z-20 ${mainFrameClassName} ${
         className ? className : columnsClassName
       }`}
     >
       {/*edit button for admin*/}
       <ProductSnippetEditButton product={summary} />
 
-      <div className={`rounded-md h-full flex flex-col ${secondaryFrameClassName}`}>
+      <div className={`flex h-full flex-col rounded-md ${secondaryFrameClassName}`}>
         <div className='px-4 pt-6'>
-          <div className='relative flex justify-center dark:snippet-image mb-4'>
-            <div className='relative pb-[90%] w-[90%]'>
+          <div className='dark:snippet-image relative mb-4 flex justify-center'>
+            <div className='relative w-[90%] pb-[90%]'>
               <WpImage
                 loading={imageLoading}
                 url={mainImage}
                 alt={`${snippetTitle}`}
                 title={`${snippetTitle}`}
                 width={240}
-                className='absolute inset-0 w-full h-full object-contain'
+                className='absolute inset-0 h-full w-full object-contain'
               />
             </div>
             <WpLink
               testId={`${testId}-image-grid`}
               target={'_blank'}
-              className='block absolute z-10 inset-0 text-indent-full'
+              className='text-indent-full absolute inset-0 z-10 block'
               href={`/${slug}`}
             >
               {snippetTitle}
@@ -110,17 +110,17 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
             <WpLink
               testId={`${testId}-name-grid`}
               target={'_blank'}
-              className='text-lg block text-primary-text hover:no-underline hover:text-primary-text'
+              className='block text-lg text-primary-text hover:text-primary-text hover:no-underline'
               href={`/${slug}`}
             >
               {snippetTitle}
             </WpLink>
-            {name ? <div className='text-secondary-text mt-1'>{name}</div> : null}
+            {name ? <div className='mt-1 text-secondary-text'>{name}</div> : null}
           </div>
         </div>
 
         {/*price*/}
-        <div className='flex flex-col items-center justify-center px-4 mb-2 mt-auto'>
+        <div className='mb-2 mt-auto flex flex-col items-center justify-center px-4'>
           <ProductSnippetPrice size={'medium'} shopsCount={shopsCount} value={minPrice} />
         </div>
       </div>
@@ -129,7 +129,7 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
       <div
         className={
           showSnippetButtonsOnHover
-            ? `lg:absolute lg:top-[calc(100%-2px)] w-full left-0 lg:h-0 lg:overflow-hidden group-hover:h-auto lg:opacity-0 group-hover:opacity-100 transition-all rounded-bl-md rounded-br-md group-hover:shadow-md ${
+            ? `left-0 w-full rounded-bl-md rounded-br-md transition-all group-hover:h-auto group-hover:opacity-100 group-hover:shadow-md lg:absolute lg:top-[calc(100%-2px)] lg:h-0 lg:overflow-hidden lg:opacity-0 ${
                 showSnippetBackground
                   ? 'bg-secondary'
                   : 'bg-primary lg:border-l lg:border-r lg:border-b lg:border-border-200'
@@ -139,10 +139,10 @@ const ProductSnippetGridBigImage: React.FC<ProductSnippetInterface> = ({
       >
         {/*art*/}
         {showSnippetArticle ? (
-          <div className='text-secondary-text mb-2 text-center text-sm'>Артикул: {itemId}</div>
+          <div className='mb-2 text-center text-sm text-secondary-text'>Артикул: {itemId}</div>
         ) : null}
 
-        <div className='flex flex-wrap items-center justify-between gap-y-2 pl-4 py-2'>
+        <div className='flex flex-wrap items-center justify-between gap-y-2 py-2 pl-4'>
           <ProductAddToCartButton
             className='w-full'
             frameClassName={'w-auto'}

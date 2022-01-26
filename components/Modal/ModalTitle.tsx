@@ -31,7 +31,7 @@ const ModalTitle: React.FC<ModalTitleInterface> = ({
         >
           {children}
         </div>
-        {subtitle ? <div className='text-secondary-text mt-4'>{subtitle}</div> : null}
+        {subtitle ? <div className='mt-4 text-secondary-text'>{subtitle}</div> : null}
       </div>
 
       {right && <div className='mt-3 lg:mt-0'>{right}</div>}

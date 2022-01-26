@@ -28,7 +28,7 @@ const OrderDeliveryInfo: React.FC<OrderDeliveryInfoInterface> = ({
 
   return (
     <div className={`space-y-4 ${className ? className : ''}`}>
-      <div className={titleClassName || 'font-medium text-lg lg:text-xl'}>Адрес доставки</div>
+      <div className={titleClassName || 'text-lg font-medium lg:text-xl'}>Адрес доставки</div>
 
       <div className={itemClassName}>
         <div className={labelClassName}>Адрес:</div>

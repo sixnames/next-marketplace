@@ -110,7 +110,7 @@ const ConfigInput: React.FC<ConfigInputInterface> = ({ name, multi, variant, tes
                 </div>
 
                 {multi ? (
-                  <div className='flex items-center justify-center flex-shrink-0 w-[50px]'>
+                  <div className='flex w-[50px] flex-shrink-0 items-center justify-center'>
                     {isFirst ? (
                       <div />
                     ) : (
@@ -190,7 +190,7 @@ const ConfigTranslationInput: React.FC<ConfigTranslationInputInterface> = ({
               titleRight={
                 <WpTooltip title={accordionIconTooltip}>
                   <div>
-                    <WpIcon className={`w-4 h-4 ${accordionIconClass}`} name={accordionIcon} />
+                    <WpIcon className={`h-4 w-4 ${accordionIconClass}`} name={accordionIcon} />
                   </div>
                 </WpTooltip>
               }
@@ -420,7 +420,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
 
       return (
         <div>
-          <div className='cms-option flex gap-4 items-center'>
+          <div className='cms-option flex items-center gap-4'>
             <div>
               <WpCheckbox
                 disabled={!isParentSelected}
@@ -493,7 +493,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
     return (
       <div className='mb-24' data-cy={`${configSlug}-config`} key={configSlug}>
         <div
-          className='flex items-start min-h-[1.3rem] mb-3 font-medium overflow-ellipsis whitespace-nowrap text-secondary-text'
+          className='mb-3 flex min-h-[1.3rem] items-start overflow-ellipsis whitespace-nowrap font-medium text-secondary-text'
           data-cy={`${configSlug}-config-name`}
         >
           <span>{name}</span>
@@ -501,8 +501,8 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
             <React.Fragment>
               {' '}
               <WpTooltip title={description}>
-                <div className='inline-block cursor-pointer ml-3'>
-                  <WpIcon className='w-5 h-5' name={'question-circle'} />
+                <div className='ml-3 inline-block cursor-pointer'>
+                  <WpIcon className='h-5 w-5' name={'question-circle'} />
                 </div>
               </WpTooltip>
             </React.Fragment>
@@ -517,14 +517,14 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
               title={`${name}`}
               key={slug}
             >
-              <div className='ml-8 py-[var(--lineGap-200)] grid gap-4'>
+              <div className='ml-8 grid gap-4 py-[var(--lineGap-200)]'>
                 {(rubrics || []).map((rubric) => {
                   const configValue = alwaysArray(get(config.cities, `${slug}.${DEFAULT_LOCALE}`));
                   const categoryValue = `${rubric._id}`;
                   const isSelected = configValue.includes(categoryValue);
 
                   return (
-                    <div className='cms-option flex gap-4 items-center' key={`${rubric._id}`}>
+                    <div className='cms-option flex items-center gap-4' key={`${rubric._id}`}>
                       <div>
                         <WpCheckbox
                           testId={`${rubric.name}`}
@@ -572,7 +572,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
     return (
       <div className='mb-24' data-cy={`${configSlug}-config`} key={configSlug}>
         <div
-          className='flex items-start min-h-[1.3rem] mb-3 font-medium overflow-ellipsis whitespace-nowrap text-secondary-text'
+          className='mb-3 flex min-h-[1.3rem] items-start overflow-ellipsis whitespace-nowrap font-medium text-secondary-text'
           data-cy={`${configSlug}-config-name`}
         >
           <span>{name}</span>
@@ -580,8 +580,8 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
             <React.Fragment>
               {' '}
               <WpTooltip title={description}>
-                <div className='inline-block cursor-pointer ml-3'>
-                  <WpIcon className='w-5 h-5' name={'question-circle'} />
+                <div className='ml-3 inline-block cursor-pointer'>
+                  <WpIcon className='h-5 w-5' name={'question-circle'} />
                 </div>
               </WpTooltip>
             </React.Fragment>
@@ -600,7 +600,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
                 {(rubrics || []).map((rubric) => {
                   return (
                     <div className='mb-8' key={`${rubric._id}`}>
-                      <div className='font-medium text-lg'>{rubric.name}</div>
+                      <div className='text-lg font-medium'>{rubric.name}</div>
 
                       {(rubric.categories || []).map((category) => (
                         <div className='border-b border-border-300 py-6' key={`${category._id}`}>
@@ -627,7 +627,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
     return (
       <div className='mb-24' data-cy={`${configSlug}-config`} key={configSlug}>
         <div
-          className='flex items-start min-h-[1.3rem] mb-3 font-medium overflow-ellipsis whitespace-nowrap text-secondary-text'
+          className='mb-3 flex min-h-[1.3rem] items-start overflow-ellipsis whitespace-nowrap font-medium text-secondary-text'
           data-cy={`${configSlug}-config-name`}
         >
           <span>{name}</span>
@@ -635,8 +635,8 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
             <React.Fragment>
               {' '}
               <WpTooltip title={description}>
-                <div className='inline-block cursor-pointer ml-3'>
-                  <WpIcon className='w-5 h-5' name={'question-circle'} />
+                <div className='ml-3 inline-block cursor-pointer'>
+                  <WpIcon className='h-5 w-5' name={'question-circle'} />
                 </div>
               </WpTooltip>
             </React.Fragment>
@@ -668,7 +668,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
                     </WpAccordion>
                   );
                 })}
-                <div className='flex mb-12 mt-4'>
+                <div className='mb-12 mt-4 flex'>
                   <WpButton
                     theme={'secondary'}
                     size={'small'}
@@ -690,7 +690,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
     return (
       <div className='mb-24' data-cy={`${configSlug}-config`} key={configSlug}>
         <div
-          className='flex items-start min-h-[1.3rem] mb-3 font-medium overflow-ellipsis whitespace-nowrap text-secondary-text'
+          className='mb-3 flex min-h-[1.3rem] items-start overflow-ellipsis whitespace-nowrap font-medium text-secondary-text'
           data-cy={`${configSlug}-config-name`}
         >
           <span>{name}</span>
@@ -698,8 +698,8 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
             <React.Fragment>
               {' '}
               <WpTooltip title={description}>
-                <div className='inline-block cursor-pointer ml-3'>
-                  <WpIcon className='w-5 h-5' name={'question-circle'} />
+                <div className='ml-3 inline-block cursor-pointer'>
+                  <WpIcon className='h-5 w-5' name={'question-circle'} />
                 </div>
               </WpTooltip>
             </React.Fragment>
@@ -760,7 +760,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
                     </WpAccordion>
                   );
                 })}
-                <div className='flex mb-12 mt-4'>
+                <div className='mb-12 mt-4 flex'>
                   <WpButton
                     theme={'secondary'}
                     size={'small'}
@@ -781,7 +781,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
   return (
     <div className='mb-24' data-cy={`${configSlug}-config`} key={configSlug}>
       <div
-        className='flex items-start min-h-[1.3rem] mb-3 font-medium overflow-ellipsis whitespace-nowrap text-secondary-text'
+        className='mb-3 flex min-h-[1.3rem] items-start overflow-ellipsis whitespace-nowrap font-medium text-secondary-text'
         data-cy={`${configSlug}-config-name`}
       >
         <span>{name}</span>
@@ -789,8 +789,8 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
           <React.Fragment>
             {' '}
             <WpTooltip title={description}>
-              <div className='inline-block cursor-pointer ml-3'>
-                <WpIcon className='w-5 h-5' name={'question-circle'} />
+              <div className='ml-3 inline-block cursor-pointer'>
+                <WpIcon className='h-5 w-5' name={'question-circle'} />
               </div>
             </WpTooltip>
           </React.Fragment>
@@ -827,7 +827,7 @@ const FormikConfigInput: React.FC<FormikConfigInputInterface> = ({ config, rubri
                   </WpAccordion>
                 );
               })}
-              <div className='flex mb-12 mt-4'>
+              <div className='mb-12 mt-4 flex'>
                 <WpButton
                   theme={'secondary'}
                   size={'small'}

@@ -152,7 +152,7 @@ const WpMap: React.FC<WpMapInterface> = ({
             onCloseClick={() => setSelected(null)}
           >
             <div className='pb-2'>
-              <div className='mb-3 font-bold text-xl text-black'>{selected.name}</div>
+              <div className='mb-3 text-xl font-bold text-black'>{selected.name}</div>
               <div className='text-[1rem] text-black'>{selected.address?.readableAddress}</div>
             </div>
           </InfoWindow>

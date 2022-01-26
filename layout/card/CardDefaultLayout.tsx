@@ -55,14 +55,14 @@ const CardTitle: React.FC<CardTitleInterface> = ({
 
       {name ? (
         isMobile ? (
-          <div className='text-secondary-text mb-2'>{name}</div>
+          <div className='mb-2 text-secondary-text'>{name}</div>
         ) : (
-          <h2 className='text-secondary-text mb-2'>{name}</h2>
+          <h2 className='mb-2 text-secondary-text'>{name}</h2>
         )
       ) : null}
 
-      <div className='flex justify-between items-center'>
-        {showArticle ? <div className='text-secondary-text text-sm'>Арт: {itemId}</div> : null}
+      <div className='flex items-center justify-between'>
+        {showArticle ? <div className='text-sm text-secondary-text'>Арт: {itemId}</div> : null}
 
         {/*controls*/}
         <CardControls />
@@ -114,12 +114,12 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
     <article className='pb-20 pt-8 lg:pt-0' data-cy={`card`}>
       <WpBreadcrumbs currentPageName={cardTitle} config={cardBreadcrumbs} />
 
-      <div className='mb-28 relative bg-secondary shadow-md'>
+      <div className='relative mb-28 bg-secondary shadow-md'>
         <Inner className='relative z-20' lowBottom lowTop>
           {/*content holder*/}
           <div className='relative'>
             {/*mobile title*/}
-            <div className='relative z-20 lg:hidden pt-8'>
+            <div className='relative z-20 pt-8 lg:hidden'>
               <CardTitle
                 isMobile
                 showArticle={showArticle}
@@ -131,11 +131,11 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
             </div>
 
             {/*content*/}
-            <div className='relative z-20 grid gap-12 py-8 md:grid-cols-2 lg:py-10 lg:grid-cols-12'>
+            <div className='relative z-20 grid gap-12 py-8 md:grid-cols-2 lg:grid-cols-12 lg:py-10'>
               {/*image*/}
-              <div className='md:col-span-1 md:order-2 lg:col-span-3 flex justify-center items-center'>
+              <div className='flex items-center justify-center md:order-2 md:col-span-1 lg:col-span-3'>
                 {showCardImagesSlider ? (
-                  <div className='relative w-full min-h-[560px] md:min-h-[500px] md:h-[500px] lg:h-[600px]'>
+                  <div className='relative min-h-[560px] w-full md:h-[500px] md:min-h-[500px] lg:h-[600px]'>
                     <CardImageSlider
                       assets={assets}
                       showThumbnails={false}
@@ -151,20 +151,20 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                     />
                   </div>
                 ) : (
-                  <div className='relative w-full h-[320px] md:h-[500px] lg:h-[600px]'>
+                  <div className='relative h-[320px] w-full md:h-[500px] lg:h-[600px]'>
                     <WpImage
                       url={`${product.mainImage}`}
                       alt={cardTitle}
                       title={cardTitle}
                       width={240}
-                      className='absolute inset-0 w-full h-full object-contain'
+                      className='absolute inset-0 h-full w-full object-contain'
                     />
                   </div>
                 )}
               </div>
 
               {/*main data*/}
-              <div className='flex flex-col md:col-span-2 md:order-3 lg:col-span-7'>
+              <div className='flex flex-col md:order-3 md:col-span-2 lg:col-span-7'>
                 {/*desktop title*/}
                 <div className='visually-hidden lg:visually-visible'>
                   <CardTitle
@@ -182,7 +182,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                     {variants.map(({ _id, attribute, products }) => {
                       return (
                         <div key={`${_id}`} className='mb-8'>
-                          <div className='text-secondary-text mb-3 font-bold'>{`${attribute?.name}:`}</div>
+                          <div className='mb-3 font-bold text-secondary-text'>{`${attribute?.name}:`}</div>
                           <div className='flex flex-wrap gap-2'>
                             {products.map(({ option, productSlug, isCurrent }) => {
                               const name = `${option?.name} ${
@@ -210,7 +210,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                 ) : null}
 
                 {/*price*/}
-                <div className='flex flex-wrap gap-6 items-baseline mb-6 mt-auto'>
+                <div className='mb-6 mt-auto flex flex-wrap items-baseline gap-6'>
                   <CardPrices minPrice={minPrice} maxPrice={maxPrice} shopsCount={shopsCount} />
 
                   {/*availability*/}
@@ -237,7 +237,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                       ) : (
                         <React.Fragment>
                           В наличии в {shopsCount} {shopsCounterPostfix}. Посмотреть
-                          <WpIcon name={'eye'} className='w-5 h-5 ml-2' />
+                          <WpIcon name={'eye'} className='ml-2 h-5 w-5' />
                         </React.Fragment>
                       )}
                     </a>
@@ -245,8 +245,8 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                 </div>
 
                 {/*cart button*/}
-                <div className='flex flex-wrap gap-4 mb-8'>
-                  <div className='flex flex-col xs:flex-row gap-6 max-w-[460px]'>
+                <div className='mb-8 flex flex-wrap gap-4'>
+                  <div className='flex max-w-[460px] flex-col gap-6 xs:flex-row'>
                     <ProductAddToCartButton
                       available={maxAvailable}
                       disabled={isShopless}
@@ -261,7 +261,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
               </div>
 
               {/*list features*/}
-              <div className='flex flex-col justify-center md:col-span-1 md:order-1 lg:col-span-2'>
+              <div className='flex flex-col justify-center md:order-1 md:col-span-1 lg:col-span-2'>
                 {visibleListFeatures.map(({ attribute, readableValue }) => {
                   if (!attribute || !attribute.showInCard) {
                     return null;
@@ -269,7 +269,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
 
                   return (
                     <div key={`${attribute._id}`} className='mb-6'>
-                      <div className='text-secondary-text mb-1 font-bold'>{attribute.name}</div>
+                      <div className='mb-1 font-bold text-secondary-text'>{attribute.name}</div>
                       <div>{readableValue}</div>
                     </div>
                   );
@@ -284,7 +284,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
         {/* Features */}
         {showFeaturesSection ? (
           <div className='mb-28' id={`card-features`}>
-            <div className='grid gap-8 md:grid-cols-7 mb-12'>
+            <div className='mb-12 grid gap-8 md:grid-cols-7'>
               <div className='md:col-span-2'>
                 {/*icon features*/}
                 <CardIconFeatures
@@ -313,16 +313,16 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                 {/*brand / brand collection / manufacturer as features*/}
                 {brand || manufacturer || brandCollection ? (
                   <section className='mb-8 max-w-[30rem]'>
-                    <h2 className='text-2xl mb-4 font-medium'>Дополнительная информация</h2>
+                    <h2 className='mb-4 text-2xl font-medium'>Дополнительная информация</h2>
 
                     <ul className='space-y-4 sm:space-y-2'>
                       {brand ? (
-                        <li className='sm:flex justify-between'>
-                          <div className='text-secondary-text mb-1 font-bold sm:half-column'>
+                        <li className='justify-between sm:flex'>
+                          <div className='sm:half-column mb-1 font-bold text-secondary-text'>
                             Бренд
                           </div>
                           <div
-                            className='sm:text-right sm:half-column cursor-pointer hover:text-theme'
+                            className='sm:half-column cursor-pointer hover:text-theme sm:text-right'
                             onClick={() => {
                               router
                                 .push(
@@ -337,11 +337,11 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                       ) : null}
 
                       {brand?.mainUrl ? (
-                        <li className='sm:flex justify-between'>
-                          <div className='text-secondary-text mb-1 font-bold sm:half-column'>
+                        <li className='justify-between sm:flex'>
+                          <div className='sm:half-column mb-1 font-bold text-secondary-text'>
                             Сайт бренда
                           </div>
-                          <div className='sm:text-right sm:half-column'>
+                          <div className='sm:half-column sm:text-right'>
                             <a
                               className='text-primary-text'
                               target={'_blank'}
@@ -355,12 +355,12 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                       ) : null}
 
                       {brandCollection && brand ? (
-                        <li className='sm:flex justify-between'>
-                          <div className='text-secondary-text mb-1 font-bold sm:half-column'>
+                        <li className='justify-between sm:flex'>
+                          <div className='sm:half-column mb-1 font-bold text-secondary-text'>
                             Линейка бренда
                           </div>
                           <div
-                            className='sm:text-right sm:half-column cursor-pointer hover:text-theme'
+                            className='sm:half-column cursor-pointer hover:text-theme sm:text-right'
                             onClick={() => {
                               router
                                 .push(
@@ -375,22 +375,22 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                       ) : null}
 
                       {manufacturer ? (
-                        <li className='sm:flex justify-between'>
-                          <div className='text-secondary-text mb-1 font-bold sm:half-column'>
+                        <li className='justify-between sm:flex'>
+                          <div className='sm:half-column mb-1 font-bold text-secondary-text'>
                             Производитель
                           </div>
-                          <div className='sm:text-right sm:half-column'>{manufacturer.name}</div>
+                          <div className='sm:half-column sm:text-right'>{manufacturer.name}</div>
                         </li>
                       ) : null}
 
                       {manufacturer?.mainUrl ? (
-                        <li className='sm:flex justify-between'>
-                          <div className='text-secondary-text mb-1 font-bold sm:half-column'>
+                        <li className='justify-between sm:flex'>
+                          <div className='sm:half-column mb-1 font-bold text-secondary-text'>
                             Сайт производителя
                           </div>
-                          <div className='sm:text-right sm:half-column'>
+                          <div className='sm:half-column sm:text-right'>
                             <div
-                              className='text-primary-text cursor-pointer hover:underline'
+                              className='cursor-pointer text-primary-text hover:underline'
                               onClick={() => {
                                 window.open(`${manufacturer.mainUrl}`, '_blank');
                               }}
@@ -409,7 +409,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
         ) : null}
 
         {videos && videos.length > 0 ? (
-          <div className='space-y-8 mb-28'>
+          <div className='mb-28 space-y-8'>
             {videos.map((video, index) => {
               return (
                 <div className={`video-box`} key={index}>

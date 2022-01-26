@@ -23,31 +23,31 @@ const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
   }, []);
 
   return (
-    <div className='grid lg:grid-cols-7 lg:h-[500px] gap-8'>
+    <div className='grid gap-8 lg:h-[500px] lg:grid-cols-7'>
       {/* Shops list */}
-      <div className='lg:col-span-2 overflow-y-hidden overflow-x-auto lg:overflow-y-auto lg:overflow-x-hidden'>
+      <div className='overflow-x-auto overflow-y-hidden lg:col-span-2 lg:overflow-y-auto lg:overflow-x-hidden'>
         <div className='flex gap-6 lg:grid'>
           {shops.map(({ _id, name, address, mainImage, contacts, license }) => {
             return (
               <LayoutCard
                 key={`${_id}`}
-                className='grid grid-cols-3 min-w-[310px] lg:min-w-0 overflow-hidden'
+                className='grid min-w-[310px] grid-cols-3 overflow-hidden lg:min-w-0'
                 onClick={() => panTo(address.mapCoordinates)}
               >
-                <div className='col-span-1 relative shops-map-snippet'>
+                <div className='shops-map-snippet relative col-span-1'>
                   <WpImage
                     url={mainImage}
                     alt={name}
                     title={name}
                     width={150}
-                    className='absolute inset-0 w-full h-full object-cover'
+                    className='absolute inset-0 h-full w-full object-cover'
                   />
                 </div>
 
                 <div className='col-span-2 py-[var(--lineGap-75)] px-[var(--lineGap-100)] lg:py-[var(--lineGap-100)] lg:px-[var(--lineGap-150)]'>
-                  <div className='font-bold mb-3'>{name}</div>
+                  <div className='mb-3 font-bold'>{name}</div>
                   <div className='mb-3'>{address.readableAddress}</div>
-                  <div className='whitespace-nowrap flex flex-wrap gap-2 mb-3'>
+                  <div className='mb-3 flex flex-wrap gap-2 whitespace-nowrap'>
                     {(contacts.formattedPhones || []).map((phone) => {
                       return (
                         <LinkPhone
@@ -75,7 +75,7 @@ const ShopsMap: React.FC<ShopsMapInterface> = ({ shops }) => {
       </div>
 
       {/* Map */}
-      <div className='lg:col-span-5 relative h-[330px] lg:h-auto'>
+      <div className='relative h-[330px] lg:col-span-5 lg:h-auto'>
         <WpMap
           className='absolute inset-0'
           mapRef={mapRef}

@@ -62,13 +62,13 @@ const WpIconUpload: React.FC<WpIconUploadInterface> = ({
     >
       <WpTooltip title={tooltip}>
         <div
-          className='relative cursor-pointer text-secondary w-24 h-24 flex-shrink-0 border border-border-300 rounded-md bg-white overflow-hidden'
+          className='relative h-24 w-24 flex-shrink-0 cursor-pointer overflow-hidden rounded-md border border-border-300 bg-white text-secondary'
           style={{ width, height }}
         >
           <span className='absolute inset-0 z-30' {...getRootProps()} data-cy={testId}>
             <input
               {...getInputProps()}
-              className='absolute inset-0 block bg-transparent border-none'
+              className='absolute inset-0 block border-none bg-transparent'
               name={name}
               id={name}
             />
@@ -77,7 +77,7 @@ const WpIconUpload: React.FC<WpIconUploadInterface> = ({
           {previewIcon ? (
             <React.Fragment>
               <div
-                className='absolute inset-0 z-10 text-wp-dark-gray-400 icon-upload-preview'
+                className='icon-upload-preview absolute inset-0 z-10 text-wp-dark-gray-400'
                 dangerouslySetInnerHTML={{ __html: previewIcon }}
               />
               {removeImageHandler ? (
@@ -93,7 +93,7 @@ const WpIconUpload: React.FC<WpIconUploadInterface> = ({
               ) : null}
             </React.Fragment>
           ) : (
-            <WpIcon name={'image'} className='absolute top-[10%] left-[10%] w-[80%] h-[80%]' />
+            <WpIcon name={'image'} className='absolute top-[10%] left-[10%] h-[80%] w-[80%]' />
           )}
         </div>
       </WpTooltip>

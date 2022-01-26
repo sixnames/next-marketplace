@@ -63,7 +63,7 @@ const NavItemsPageConsumer: React.FC<NavItemsPageConsumerInterface> = ({ navItem
         if (!cellData) {
           return null;
         }
-        return <WpIcon className='w-6 h-6' name={cellData} />;
+        return <WpIcon className='h-6 w-6' name={cellData} />;
       },
     },
     {
@@ -153,7 +153,7 @@ const NavItemsPageConsumer: React.FC<NavItemsPageConsumerInterface> = ({ navItem
         {navItemGroups.map((navGroup) => {
           return (
             <div key={navGroup._id} className='relative mb-8'>
-              <div className='mb-4 font-medium text-lg'>{navGroup.name}</div>
+              <div className='mb-4 text-lg font-medium'>{navGroup.name}</div>
               <div className='overflow-x-auto overflow-y-hidden'>
                 <WpTable<NavItemInterface> columns={columns} data={navGroup.children || []} />
               </div>

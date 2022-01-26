@@ -36,18 +36,18 @@ const WpNotification: React.FC<NotificationInterface> = ({
   return (
     <div
       style={{ borderColor: variantColor }}
-      className={`'relative flex py-4 pr-[var(--controlButtonHeightSmall)] pl-3 min-w-[15rem] shadow-lg rounded-lg border-l-4 bg-primary dark:bg-secondary ${
+      className={`'relative flex min-w-[15rem] rounded-lg border-l-4 bg-primary py-4 pr-[var(--controlButtonHeightSmall)] pl-3 shadow-lg dark:bg-secondary ${
         className ? className : ''
       }`}
       data-cy={testId}
     >
       <WpIcon
         name={icon}
-        className='w-4 h-4 mt-[1px] mr-[10px] flex-shrink-0'
+        className='mt-[1px] mr-[10px] h-4 w-4 flex-shrink-0'
         style={{ fill: variantColor }}
       />
 
-      <div className='flex-grow grid gap-2'>
+      <div className='grid flex-grow gap-2'>
         {title ? <div className='font-medium'>{title}</div> : null}
         {message ? <div>{message}</div> : null}
       </div>

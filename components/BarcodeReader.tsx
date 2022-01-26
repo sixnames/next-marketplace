@@ -68,7 +68,7 @@ const BarcodeReader: React.FC<BarcodeReaderInterface> = ({ isVisible, setValue }
       )}
 
       {code ? (
-        <div className='flex flex-col sm:flex-row gap-6 mt-6'>
+        <div className='mt-6 flex flex-col gap-6 sm:flex-row'>
           <WpButton
             onClick={() => {
               setValue(code);

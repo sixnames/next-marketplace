@@ -84,20 +84,20 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
 
   return (
     <div
-      className={`flex flex-col sm:flex-row mb-4 py-8 px-4 bg-secondary rounded-lg gap-4 ${
+      className={`mb-4 flex flex-col gap-4 rounded-lg bg-secondary py-8 px-4 sm:flex-row ${
         isCanceled ? 'opacity-60' : ''
       }`}
     >
       {/*image*/}
-      <div className='flex flex-col gap-4 items-center px-2 w-full sm:w-28 lg:w-32'>
-        <div className='relative flex justify-center flex-shrink-0 w-[120px] h-[120px]'>
-          <div className='absolute top-0 left-0 w-full pb-[100%] w-full'>
+      <div className='flex w-full flex-col items-center gap-4 px-2 sm:w-28 lg:w-32'>
+        <div className='relative flex h-[120px] w-[120px] flex-shrink-0 justify-center'>
+          <div className='absolute top-0 left-0 w-full w-full pb-[100%]'>
             <WpImage
               url={productImageSrc}
               alt={`${originalName}`}
               title={`${originalName}`}
               width={120}
-              className='absolute inset-0 w-full h-full object-contain'
+              className='absolute inset-0 h-full w-full object-contain'
             />
           </div>
         </div>
@@ -189,17 +189,17 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
             </div>*/}
 
             {/*article*/}
-            <div className='flex flex-wrap gap-4 mb-3'>
-              <div className='text-secondary-text text-sm'>{`Артикул: ${itemId}`}</div>
+            <div className='mb-3 flex flex-wrap gap-4'>
+              <div className='text-sm text-secondary-text'>{`Артикул: ${itemId}`}</div>
               {barcode.length > 0 ? (
-                <div className='text-secondary-text text-sm'>
+                <div className='text-sm text-secondary-text'>
                   {`Штрихкод: ${barcode.join(', ')}`}
                 </div>
               ) : null}
             </div>
 
             {/*name*/}
-            <div className='text-lg font-bold flex-grow mb-2'>
+            <div className='mb-2 flex-grow text-lg font-bold'>
               {summary ? (
                 <WpLink
                   href={`/${companySlug}/${citySlug}/${summary.slug}`}
@@ -217,20 +217,20 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
                 <div>Доступно:{` ${shopProduct.available} шт.`}</div>
               </div>
             ) : (
-              <div className='text-red-500 font-medium mt-2'>Товар магазина не найден</div>
+              <div className='mt-2 font-medium text-red-500'>Товар магазина не найден</div>
             )}
 
             {/*suppliers*/}
             {supplierProducts.length > 0 ? (
               <div className='mt-6'>
-                <div className='font-medium text-lg mb-2'>Поставщики</div>
+                <div className='mb-2 text-lg font-medium'>Поставщики</div>
                 <ProductsListSuppliersList supplierProducts={supplierProducts} />
               </div>
             ) : null}
 
             {orderPromo && orderPromo.length > 0 ? (
               <div className='mt-6'>
-                <div className='font-medium text-lg mb-2'>Применённые акции</div>
+                <div className='mb-2 text-lg font-medium'>Применённые акции</div>
                 <div className='space-y-4 text-secondary-text'>
                   {orderPromo.map((promo) => {
                     return (
@@ -249,7 +249,7 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
 
           <div className='flex flex-col gap-4 lg:col-span-2'>
             {/*amount*/}
-            <div className='text-secondary-text w-full'>
+            <div className='w-full text-secondary-text'>
               <InputLine low label={'Количество'} name={`products[${orderProductIndex}].amount`}>
                 <FormikSpinnerInput
                   name={`products[${orderProductIndex}].amount`}
@@ -274,19 +274,19 @@ const OrderProduct: React.FC<OrderProductProductInterface> = ({
             </div>
 
             {/*price*/}
-            <div className='text-secondary-text items-baseline text-right'>
+            <div className='items-baseline text-right text-secondary-text'>
               <div className='mb-1'>Цена:</div>
               <Currency className='text-xl text-primary-text' value={price} />
             </div>
 
             {/* discounted price*/}
-            <div className='text-secondary-text items-baseline text-right'>
+            <div className='items-baseline text-right text-secondary-text'>
               <div className='mb-1'>Цена со скидкой:</div>
               <Currency className='text-xl text-primary-text' value={finalPrice} />
             </div>
 
             {/*total price*/}
-            <div className='text-secondary-text items-baseline text-right'>
+            <div className='items-baseline text-right text-secondary-text'>
               <div className='mb-1'>Итого:</div>
               <Currency className='text-2xl text-primary-text' value={totalPrice} />
             </div>
@@ -359,7 +359,7 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
 
   return (
     <Inner testId={`order-details`}>
-      <div className='grid gap-4 md:flex justify-between items-baseline mb-12'>
+      <div className='mb-12 grid items-baseline justify-between gap-4 md:flex'>
         <div>
           <WpTitle
             low
@@ -368,7 +368,7 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
           >
             {title}
           </WpTitle>
-          <div className='text-secondary-text mt-2'>
+          <div className='mt-2 text-secondary-text'>
             от <FormattedDateTime value={createdAt} />
           </div>
         </div>
@@ -391,7 +391,7 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
         {() => {
           return (
             <Form>
-              <div className='md:grid grid-cols-9 gap-8'>
+              <div className='grid-cols-9 gap-8 md:grid'>
                 <div className='col-span-6'>
                   {products?.map((orderProduct, orderProductIndex) => {
                     return (
@@ -408,7 +408,7 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
                 </div>
 
                 <div className='relative col-span-3'>
-                  <div className='sticky bg-secondary rounded-lg py-8 px-6'>
+                  <div className='sticky rounded-lg bg-secondary py-8 px-6'>
                     {/*status*/}
                     {showAdminUi ? (
                       <FormikSelect
@@ -419,7 +419,7 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
                         testId={'statusId'}
                       />
                     ) : (
-                      <div className='flex items-baseline justify-between mb-6'>
+                      <div className='mb-6 flex items-baseline justify-between'>
                         <div className='text-secondary-text'>Статус</div>
                         {status ? (
                           <div
@@ -429,13 +429,13 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
                             {status.name}
                           </div>
                         ) : (
-                          <div className='text-red-500 font-medium'>Статус не найден</div>
+                          <div className='font-medium text-red-500'>Статус не найден</div>
                         )}
                       </div>
                     )}
 
                     {/*delivery*/}
-                    <div className='flex items-baseline justify-between mb-6'>
+                    <div className='mb-6 flex items-baseline justify-between'>
                       <div className='text-secondary-text'>Доставка</div>
                       <div className='font-medium'>{deliveryName}</div>
                     </div>
@@ -452,14 +452,14 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
                     />
 
                     {/*payment*/}
-                    <div className='flex items-baseline justify-between mb-6'>
+                    <div className='mb-6 flex items-baseline justify-between'>
                       <div className='text-secondary-text'>Оплата</div>
                       <div className='font-medium'>{paymentName}</div>
                     </div>
 
                     {/*customer*/}
                     <div className='mb-6'>
-                      <div className='text-secondary-text mb-3'>Заказчик:</div>
+                      <div className='mb-3 text-secondary-text'>Заказчик:</div>
                       {customer ? (
                         <div className='space-y-2'>
                           <WpLink href={userLinks.root} className='font-medium text-primary-text'>
@@ -473,34 +473,34 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
                           </div>
                         </div>
                       ) : (
-                        <div className='text-red-500 font-medium'>Заказчик не найден</div>
+                        <div className='font-medium text-red-500'>Заказчик не найден</div>
                       )}
                     </div>
 
                     {/*comment*/}
                     {comment && comment.length > 0 ? (
                       <div className='mb-6'>
-                        <div className='text-secondary-text mb-2'>Комментарий заказчика:</div>
+                        <div className='mb-2 text-secondary-text'>Комментарий заказчика:</div>
                         <div className='prose'>{comment}</div>
                       </div>
                     ) : null}
 
                     {/*shop info*/}
                     <div className='mb-6'>
-                      <div className='text-secondary-text mb-2'>Магазин:</div>
+                      <div className='mb-2 text-secondary-text'>Магазин:</div>
 
                       {shop ? (
                         <div className='space-y-1'>
-                          <span className='text-primary-text font-medium'>{shop.name}</span>
+                          <span className='font-medium text-primary-text'>{shop.name}</span>
                           <div className='text-secondary-text'>{shop.address.readableAddress}</div>
                         </div>
                       ) : (
-                        <div className='text-red-500 font-medium'>Магазин не найден</div>
+                        <div className='font-medium text-red-500'>Магазин не найден</div>
                       )}
                     </div>
 
                     <div
-                      className='flex flex-wrap gap-2 items-baseline'
+                      className='flex flex-wrap items-baseline gap-2'
                       data-cy={'order-total-price'}
                     >
                       <div className='text-secondary-text'>Итого:</div>
@@ -513,7 +513,7 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
 
                     {totalPrice > discountedPrice ? (
                       <div data-cy={'order-discounted-price'}>
-                        <div className='flex flex-wrap gap-2 items-baseline'>
+                        <div className='flex flex-wrap items-baseline gap-2'>
                           <div className='text-secondary-text'>Со скидкой:</div>
                           <Currency
                             className='text-2xl'
@@ -526,7 +526,7 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
 
                     {giftCertificate ? (
                       <div className='mt-4' data-cy={'order-gift-certificate'}>
-                        <div className='text-secondary-text mb-1'>
+                        <div className='mb-1 text-secondary-text'>
                           Применён подарочный сертификат
                         </div>
                         <div>
@@ -540,7 +540,7 @@ const ConsoleOrderDetails: React.FC<CmsOrderDetailsInterface> = ({
 
                     {orderPromo && orderPromo.length > 0 ? (
                       <div className='mt-4' data-cy={'order-promo-list'}>
-                        <div className='text-secondary-text mb-1'>Применёные акции</div>
+                        <div className='mb-1 text-secondary-text'>Применёные акции</div>
                         <div>
                           {orderPromo.map((promoItem) => {
                             return (

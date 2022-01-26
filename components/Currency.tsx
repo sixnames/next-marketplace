@@ -28,7 +28,7 @@ const Currency: React.FC<CurrencyInterface> = ({
 
   return (
     <span
-      className={`inline-flex whitespace-nowrap items-baseline gap-1 ${className ? className : ''}`}
+      className={`inline-flex items-baseline gap-1 whitespace-nowrap ${className ? className : ''}`}
     >
       <NumberFormat
         value={finalValue}
@@ -46,7 +46,7 @@ const Currency: React.FC<CurrencyInterface> = ({
           );
         }}
       />
-      <span className={'font-normal text-secondary-text text-[0.75em]'}>{currency}</span>
+      <span className={'text-[0.75em] font-normal text-secondary-text'}>{currency}</span>
     </span>
   );
 };

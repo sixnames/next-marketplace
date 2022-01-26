@@ -26,13 +26,13 @@ const CatalogueHeadWithCategories: React.FC<CatalogueHeadDefaultInterface> = ({
         <WpTitle
           centered
           testId={'catalogue-title'}
-          subtitle={<div className='lg:hidden text-center'>{catalogueCounterString}</div>}
+          subtitle={<div className='text-center lg:hidden'>{catalogueCounterString}</div>}
         >
           {catalogueTitle}
         </WpTitle>
 
         {headCategories && headCategories.length > minCategoriesCount ? (
-          <div className='flex flex-wrap justify-between md:justify-center md:gap-x-4 gap-y-8 mt-8 mb-8'>
+          <div className='mt-8 mb-8 flex flex-wrap justify-between gap-y-8 md:justify-center md:gap-x-4'>
             {headCategories.map(({ _id, icon, name, slug }) => {
               const rubricSlug = alwaysString(query.rubricSlug);
               const categoryFilter = `${FILTER_CATEGORY_KEY}${FILTER_SEPARATOR}${slug}`;
@@ -55,13 +55,13 @@ const CatalogueHeadWithCategories: React.FC<CatalogueHeadDefaultInterface> = ({
 
               return (
                 <WpLink
-                  className='flex flex-col text-secondary-text items-center gap-2 max-w-[140px] min-w-[140px] md:max-w-[160px] md:min-w-[160px] hover:no-underline hover:text-theme'
+                  className='flex min-w-[140px] max-w-[140px] flex-col items-center gap-2 text-secondary-text hover:text-theme hover:no-underline md:min-w-[160px] md:max-w-[160px]'
                   href={href}
                   key={`${_id}`}
                 >
                   {icon ? (
                     <span
-                      className='block catalogue__head-icon text-theme'
+                      className='catalogue__head-icon block text-theme'
                       dangerouslySetInnerHTML={{ __html: icon?.icon }}
                     />
                   ) : null}

@@ -28,11 +28,11 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
     <div className='flex flex-col'>
       <div
         style={attributeStyle}
-        className='flex items-center min-h-[var(--minLinkHeight)] uppercase font-medium'
+        className='flex min-h-[var(--minLinkHeight)] items-center font-medium uppercase'
       >
         {name}
       </div>
-      <ul className='flex-grow flex flex-col'>
+      <ul className='flex flex-grow flex-col'>
         {(options || []).map((option) => {
           return (
             <li key={`${option._id}`}>
@@ -54,7 +54,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
         {showOptionsMoreLink ? (
           <li>
             <div
-              className='flex items-center min-h-[var(--minLinkHeight)] text-theme cursor-pointer hover:underline'
+              className='flex min-h-[var(--minLinkHeight)] cursor-pointer items-center text-theme hover:underline'
               onClick={() => {
                 router
                   .push(parentHref)
@@ -87,7 +87,7 @@ const StickyNavDropdownDefault: React.FC<StickyNavDropdownInterface> = ({
   }
 
   return (
-    <div className='grid gap-4 grid-cols-5'>
+    <div className='grid grid-cols-5 gap-4'>
       {(attributes || []).map((attribute) => {
         return (
           <StickyNavAttribute

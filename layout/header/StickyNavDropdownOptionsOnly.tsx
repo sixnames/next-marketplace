@@ -32,8 +32,8 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
               href={`${parentHref}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`}
             >
               {option.image ? (
-                <span className={`flex mb-4 ${isCentered ? 'justify-center' : ''}`}>
-                  <span className='block w-[100px] mx-auto'>
+                <span className={`mb-4 flex ${isCentered ? 'justify-center' : ''}`}>
+                  <span className='mx-auto block w-[100px]'>
                     <img src={option.image} width='100' height='100' alt={`${option.name}`} />
                   </span>
                 </span>
@@ -89,7 +89,7 @@ const StickyNavDropdownOptionsOnly: React.FC<StickyNavDropdownInterface> = ({
   }
 
   return (
-    <div className='grid gap-8 pb-10 grid-cols-5'>
+    <div className='grid grid-cols-5 gap-8 pb-10'>
       {(attributes || []).map((attribute) => {
         return (
           <StickyNavAttribute

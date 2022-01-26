@@ -17,7 +17,7 @@ const SeoContentNoIndexTrigger: React.FC<SeoContentNoIndexTriggerInterface> = ({
   }
 
   return (
-    <label className='flex gap-2 items-center cursor-pointer'>
+    <label className='flex cursor-pointer items-center gap-2'>
       <WpCheckbox
         checked={Boolean(seoContent.showForIndex)}
         name={'showForIndex'}

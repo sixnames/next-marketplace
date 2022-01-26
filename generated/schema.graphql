@@ -1892,7 +1892,8 @@ input UpdateAttributeInCategoryInput {
 }
 
 input UpdateAttributeInRubricInput {
-  attributeId: ObjectId!
+  attributeIds: [ObjectId!]!
+  attributesGroupId: ObjectId!
   rubricId: ObjectId!
 }
 

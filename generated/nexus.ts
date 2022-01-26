@@ -450,7 +450,8 @@ export interface NexusGenInputs {
   };
   UpdateAttributeInRubricInput: {
     // input type
-    attributeId: NexusGenScalars['ObjectId']; // ObjectId!
+    attributeIds: NexusGenScalars['ObjectId'][]; // [ObjectId!]!
+    attributesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
   };
   UpdateAttributesGroupInput: {

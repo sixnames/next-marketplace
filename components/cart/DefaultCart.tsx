@@ -52,7 +52,7 @@ export const CartDeliveryFields: React.FC<CartDeliveryFieldsInterface> = ({ inde
 
   return (
     <div>
-      <div className='grid lg:grid-cols-2 gap-6 mt-6' id={`delivery-fields-${index}`}>
+      <div className='mt-6 grid gap-6 lg:grid-cols-2' id={`delivery-fields-${index}`}>
         <FormikSelect
           low
           label={'Способ получения'}
@@ -152,12 +152,12 @@ const DefaultCartShop: React.FC<DefaultCartShopUIInterface> = ({
   return (
     <LayoutCard key={`${shop._id}`}>
       {/*shop info*/}
-      <div className='py-8 px-6 border-b border-border-200'>
+      <div className='border-b border-border-200 py-8 px-6'>
         <div className='mb-2'>
-          Магазин: <span className='font-medium text-lg'>{shop.name}</span>
+          Магазин: <span className='text-lg font-medium'>{shop.name}</span>
         </div>
         <div
-          className='cursor-pointer hover:text-theme transition-all'
+          className='cursor-pointer transition-all hover:text-theme'
           onClick={() => {
             showModal<MapModalInterface>({
               variant: MAP_MODAL,
@@ -180,7 +180,7 @@ const DefaultCartShop: React.FC<DefaultCartShopUIInterface> = ({
           <div className='text-theme'>Показать на карте</div>
         </div>
 
-        <div className='grid lg:grid-cols-2 gap-4 mt-6'>
+        <div className='mt-6 grid gap-4 lg:grid-cols-2'>
           <div>
             <InputLine
               low
@@ -220,7 +220,7 @@ const DefaultCartShop: React.FC<DefaultCartShopUIInterface> = ({
 
           <div>
             <InputLine low labelTag={'div'} label={'Промокод'}>
-              <div className='flex flex-col sm:flex-row gap-4 sm:items-center'>
+              <div className='flex flex-col gap-4 sm:flex-row sm:items-center'>
                 <div className='flex-grow'>
                   <FormikInput
                     testId={`promo-code-input-${shop.slug}`}
@@ -371,6 +371,7 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
       ...cart,
       name: sessionUser ? sessionUser.me.name : '',
       lastName: sessionUser ? sessionUser.me.lastName : '',
+      secondName: sessionUser ? sessionUser.me.secondName : '',
       email: sessionUser ? sessionUser.me.email : '',
       phone: sessionUser ? sessionUser.me.phone : '',
       comment: '',
@@ -411,6 +412,7 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
             makeAnOrder({
               name: values.name,
               lastName: values.lastName,
+              secondName: values.secondName,
               email: values.email,
               reservationDate: values.reservationDate,
               comment: values.comment,
@@ -433,14 +435,14 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
 
             return (
               <Form>
-                <div className='flex items-center gap-4 text-lg font-medium mb-6'>
-                  <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
+                <div className='mb-6 flex items-center gap-4 text-lg font-medium'>
+                  <div className='flex h-12 w-12 items-center justify-center rounded-full bg-secondary'>
                     1
                   </div>
                   <div>Товары</div>
                 </div>
 
-                <div className='grid md:grid-cols-8 lg:grid-cols-16 gap-6'>
+                <div className='grid gap-6 md:grid-cols-8 lg:grid-cols-16'>
                   <div className='md:col-span-5 lg:col-span-11' data-cy={'cart-products'}>
                     <div className='mb-20'>
                       {/*shopless products*/}
@@ -470,14 +472,14 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
                     </div>
 
                     <div className='relative z-20 mb-12' id={'cart-inputs'}>
-                      <div className='flex items-center gap-4 mb-8 text-lg font-medium'>
-                        <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
+                      <div className='mb-8 flex items-center gap-4 text-lg font-medium'>
+                        <div className='flex h-12 w-12 items-center justify-center rounded-full bg-secondary'>
                           2
                         </div>
                         <div>Личные данные</div>
                       </div>
 
-                      <div className='lg:grid grid-cols-2 gap-x-6'>
+                      <div className='grid-cols-2 gap-x-6 lg:grid'>
                         <FormikInput
                           testId={'order-form-name'}
                           name={'name'}
@@ -492,6 +494,13 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
                           name={'lastName'}
                           label={'Фамилия'}
                           testId={'lastName'}
+                        />
+
+                        <FormikInput
+                          disabled={disabled}
+                          name={'secondName'}
+                          label={'Отчество'}
+                          testId={'secondName'}
                         />
 
                         <FormikInput
@@ -525,7 +534,7 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
 
                   {/*cart aside*/}
                   <div className='md:col-span-3 lg:col-span-5'>
-                    <div className='sticky top-16 lef-0'>
+                    <div className='lef-0 sticky top-16'>
                       <CartAside
                         buyButtonText={'Оформить заказ'}
                         productsCount={cart.cartDeliveryProducts.length}
@@ -552,6 +561,7 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
             makeAnOrder({
               name: values.name,
               lastName: values.lastName,
+              secondName: values.secondName,
               email: values.email,
               reservationDate: values.reservationDate,
               comment: values.comment,
@@ -574,14 +584,14 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
 
             return (
               <Form>
-                <div className='flex items-center gap-4 text-lg font-medium mb-6'>
-                  <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
+                <div className='mb-6 flex items-center gap-4 text-lg font-medium'>
+                  <div className='flex h-12 w-12 items-center justify-center rounded-full bg-secondary'>
                     1
                   </div>
                   <div>Товары</div>
                 </div>
 
-                <div className='grid md:grid-cols-8 lg:grid-cols-16 gap-6'>
+                <div className='grid gap-6 md:grid-cols-8 lg:grid-cols-16'>
                   <div className='md:col-span-5 lg:col-span-11' data-cy={'cart-products'}>
                     <div className='mb-20'>
                       {/*shopless products*/}
@@ -612,14 +622,14 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
                     </div>
 
                     <div className='relative z-20 mb-12' id={'cart-inputs'}>
-                      <div className='flex items-center gap-4 mb-8 text-lg font-medium'>
-                        <div className='w-12 h-12 bg-secondary rounded-full flex items-center justify-center'>
+                      <div className='mb-8 flex items-center gap-4 text-lg font-medium'>
+                        <div className='flex h-12 w-12 items-center justify-center rounded-full bg-secondary'>
                           2
                         </div>
                         <div>Личные данные</div>
                       </div>
 
-                      <div className='lg:grid grid-cols-2 gap-x-6'>
+                      <div className='grid-cols-2 gap-x-6 lg:grid'>
                         <FormikInput
                           testId={'order-form-name'}
                           name={'name'}
@@ -634,6 +644,13 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
                           name={'lastName'}
                           label={'Фамилия'}
                           testId={'lastName'}
+                        />
+
+                        <FormikInput
+                          disabled={disabled}
+                          name={'secondName'}
+                          label={'Отчество'}
+                          testId={'secondName'}
                         />
 
                         <FormikInput
@@ -674,7 +691,7 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
 
                   {/*cart aside*/}
                   <div className='md:col-span-3 lg:col-span-5'>
-                    <div className='sticky top-16 lef-0'>
+                    <div className='lef-0 sticky top-16'>
                       <CartAside
                         isBooking
                         buyButtonText={configs.buyButtonText}

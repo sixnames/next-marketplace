@@ -568,6 +568,7 @@ function castOptionsForBreadcrumbs({
 }
 
 export interface GetCatalogueDataInterface {
+  asPath: string;
   locale: string;
   citySlug: string;
   basePath: string;
@@ -594,6 +595,7 @@ export const getCatalogueData = async ({
   currency,
   basePath,
   visibleCategoriesInNavDropdown,
+  asPath,
   ...props
 }: GetCatalogueDataInterface): Promise<CatalogueDataInterface | null> => {
   try {
@@ -1047,6 +1049,7 @@ export const getCatalogueData = async ({
 
     if (!search) {
       const seoContentParams = await getCatalogueAllSeoContents({
+        asPath,
         rubricSlug: rubric.slug,
         citySlug: citySlug,
         companySlug: companySlug,
@@ -1314,6 +1317,7 @@ export async function getCatalogueProps(
   const asPath = `${basePath}/${sortedFiltersPath}`;
 
   const rawCatalogueData = await getCatalogueData({
+    asPath,
     locale: props.sessionLocale,
     citySlug: props.citySlug,
     companySlug: props.domainCompany?.slug,

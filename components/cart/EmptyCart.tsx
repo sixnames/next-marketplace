@@ -14,7 +14,7 @@ const EmptyCart: React.FC = () => {
 
       <Inner lowTop testId={'cart'}>
         <WpTitle>Корзина пуста</WpTitle>
-        <div className='flex flex-wrap gap-4'>
+        <div className='mt-14 flex flex-wrap gap-4'>
           <WpButton
             frameClassName='w-auto'
             theme={'secondary'}

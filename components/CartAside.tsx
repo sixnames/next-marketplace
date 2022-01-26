@@ -32,7 +32,7 @@ const CartAside: React.FC<CartAsideInterface> = ({
   const discount = noNaN(giftCertificateDiscount);
   const discountedPrice = noNaN(props.totalPrice) - discount;
   const totalPrice = discountedPrice < 0 ? 0 : discountedPrice;
-  const { values } = useFormikContext<MakeOrderFormInterface>();
+  const { values, setFieldError } = useFormikContext<MakeOrderFormInterface>();
 
   const { configs } = useConfigContext();
   return (
@@ -77,10 +77,15 @@ const CartAside: React.FC<CartAsideInterface> = ({
               phone: values.phone,
               companySlug: DEFAULT_COMPANY_SLUG,
               shopConfigs: values.shopConfigs,
+              privacy: values.privacy,
               allowDelivery: true,
               cartProductsFieldName: 'cartDeliveryProducts',
             };
+
             const noValid = scrollToCartErrors(input);
+            if (!input.privacy) {
+              setFieldError('privacy', 'Обязательное поле');
+            }
             if (noValid) {
               e.preventDefault();
             }

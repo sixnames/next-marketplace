@@ -34,7 +34,7 @@ const PagesListPage: NextPage<PagesListPageInterface> = ({
   pagesGroup,
   cities,
 }) => {
-  const { root, parentLink, pages } = getCmsCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId: pageCompany._id,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
@@ -42,15 +42,15 @@ const PagesListPage: NextPage<PagesListPageInterface> = ({
     config: [
       {
         name: 'Компании',
-        href: parentLink,
+        href: links.parentLink,
       },
       {
         name: pageCompany.name,
-        href: root,
+        href: links.root,
       },
       {
         name: 'Группы страниц',
-        href: pages,
+        href: links.pages.parentLink,
       },
     ],
   };
@@ -59,7 +59,7 @@ const PagesListPage: NextPage<PagesListPageInterface> = ({
     <ConsoleLayout title={`${pagesGroup.name}`} {...layoutProps}>
       <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
         <Inner>
-          <PagesList cities={cities} basePath={pages} pagesGroup={pagesGroup} />
+          <PagesList cities={cities} basePath={links.pages.parentLink} pagesGroup={pagesGroup} />
         </Inner>
       </CmsCompanyLayout>
     </ConsoleLayout>

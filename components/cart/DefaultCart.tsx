@@ -24,6 +24,7 @@ import { CartTabIndexType, MakeOrderFormInterface } from '../../pages/cart';
 import { makeAnOrderSchema } from '../../validation/orderSchema';
 import WpButton from '../button/WpButton';
 import CartAside, { UseCartAsideDiscountsValuesInterface } from '../CartAside';
+import FormikCheckboxLine from '../FormElements/Checkbox/FormikCheckboxLine';
 import FormikInput from '../FormElements/Input/FormikInput';
 import InputLine from '../FormElements/Input/InputLine';
 import FormikSelect from '../FormElements/Select/FormikSelect';
@@ -376,6 +377,7 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
       phone: sessionUser ? sessionUser.me.phone : '',
       comment: '',
       reservationDate: null,
+      privacy: false,
       shopConfigs,
       [cartProductsFieldName]: shoplessCartProducts,
     };
@@ -417,6 +419,7 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
               reservationDate: values.reservationDate,
               comment: values.comment,
               phone: phoneToRaw(values.phone),
+              privacy: values.privacy,
               companySlug: domainCompany?.slug || DEFAULT_COMPANY_SLUG,
               shopConfigs: values.shopConfigs,
               allowDelivery: true,
@@ -523,6 +526,13 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
                           showInlineError
                         />
 
+                        <FormikCheckboxLine
+                          lineClassName='self-end'
+                          testId={'order-form-privacy'}
+                          label={'Даю согласие на обработку личных данных'}
+                          name={'privacy'}
+                        />
+
                         <FormikTextarea
                           testId={'order-form-comment'}
                           name={'comment'}
@@ -568,12 +578,14 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
               phone: phoneToRaw(values.phone),
               companySlug: domainCompany?.slug || DEFAULT_COMPANY_SLUG,
               shopConfigs: values.shopConfigs,
+              privacy: values.privacy,
               allowDelivery: false,
               cartProductsFieldName: 'cartBookingProducts',
             });
           }}
         >
-          {({ values }) => {
+          {({ values, errors }) => {
+            console.log(errors);
             const { cartBookingProducts, totalBookingPrice, shopConfigs } = values;
             const giftCertificateDiscount = shopConfigs.reduce(
               (acc: number, { giftCertificateDiscount }) => {
@@ -671,6 +683,13 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
                           disabled={disabled}
                           isRequired
                           showInlineError
+                        />
+
+                        <FormikCheckboxLine
+                          lineClassName='self-end'
+                          testId={'order-form-privacy'}
+                          label={'Даю согласие на обработку личных данных'}
+                          name={'privacy'}
                         />
 
                         <FormikTextarea

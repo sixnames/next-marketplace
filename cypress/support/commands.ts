@@ -167,6 +167,7 @@ Cypress.Commands.add('makeAnOrder', ({ callback, orderFields }: Cypress.MakeAnOr
   // cy.get('#reservationDate').click();
   // cy.get('.react-datepicker__day--024').click();
   cy.getByCy(`order-form-comment`).type('comment');
+  cy.getByCy(`order-form-privacy`).check();
 
   // should make an order and redirect to the thank-you page
   cy.getByCy(`cart-aside-confirm`).click();

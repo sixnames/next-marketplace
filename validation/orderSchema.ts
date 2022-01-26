@@ -8,5 +8,6 @@ export const makeAnOrderSchema = (args: ValidationSchemaArgsInterface) => {
     email: emailSchema(args),
     name: userNameSchema(args),
     phone: phoneSchema(args),
+    privacy: Yup.boolean().oneOf([true], 'Обязательное поле'),
   });
 };

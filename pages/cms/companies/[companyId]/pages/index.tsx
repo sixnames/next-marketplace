@@ -54,7 +54,7 @@ const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({
         <Inner>
           <PageGroupsList
             companySlug={pageCompany.slug}
-            basePath={links.pages}
+            basePath={links.pages.parentLink}
             pagesGroups={pagesGroups}
           />
         </Inner>

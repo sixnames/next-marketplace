@@ -1,14 +1,18 @@
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
+import FixedButtons from '../../components/button/FixedButtons';
+import WpButton from '../../components/button/WpButton';
 import Inner from '../../components/Inner';
 import PageEditor from '../../components/PageEditor';
 import WpBreadcrumbs from '../../components/WpBreadcrumbs';
 import { PAGE_STATE_PUBLISHED } from '../../config/common';
+import { useSiteUserContext } from '../../context/siteUserContext';
 import { COL_PAGES } from '../../db/collectionNames';
 import { getDatabase } from '../../db/mongodb';
 import { PageInterface } from '../../db/uiInterfaces';
 import SiteLayout, { SiteLayoutProviderInterface } from '../../layout/SiteLayout';
 import { getFieldStringLocale } from '../../lib/i18n';
+import { getConsolePagesLinks } from '../../lib/linkUtils';
 import { castDbData, getSiteInitialData } from '../../lib/ssrUtils';
 
 interface CreatedPageConsumerInterface {
@@ -16,12 +20,36 @@ interface CreatedPageConsumerInterface {
 }
 
 const CreatedPageConsumer: React.FC<CreatedPageConsumerInterface> = ({ page }) => {
+  const sessionUser = useSiteUserContext();
+  const links = getConsolePagesLinks({
+    basePath: sessionUser?.editLinkBasePath,
+    pageId: page._id,
+    pagesGroupId: page.pagesGroupId,
+  });
+  const showEditButton = sessionUser?.me.role?.cmsNavigation?.some(({ path }) => {
+    return path.includes(links.mainPath);
+  });
+
   return (
     <div className='mb-12'>
       <WpBreadcrumbs currentPageName={`${page.name}`} />
 
       <Inner lowTop>
         <PageEditor value={JSON.parse(page.content)} readOnly />
+
+        {showEditButton ? (
+          <FixedButtons>
+            <WpButton
+              size={'small'}
+              frameClassName={'w-auto'}
+              onClick={() => {
+                window.open(links.page.root, '_blank');
+              }}
+            >
+              Редактировать
+            </WpButton>
+          </FixedButtons>
+        ) : null}
       </Inner>
     </div>
   );

@@ -118,7 +118,7 @@ describe('Companies list', () => {
     cy.getByCy('companies-list').should('not.contain', '000001');
   });
 
-  it('Should update company configs', () => {
+  it.only('Should update company configs', () => {
     cy.getByCy(`company_a-update`).click();
     cy.wait(1500);
     cy.getByCy(`company-global-config`).click();

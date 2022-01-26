@@ -497,6 +497,7 @@ export async function getCatalogueSeoContentSlug({
 
 interface GetCatalogueAllSeoContentsInterface extends GetCatalogueSeoContentSlugInterface {
   locale: string;
+  asPath: string;
 }
 interface GetCatalogueAllSeoContentsPayloadInterface {
   seoContentTop?: SeoContentInterface | null;
@@ -522,12 +523,12 @@ export async function getCatalogueAllSeoContents(
   const { rubricSlug, seoContentSlug } = payload;
 
   const seoContentTopSlug = `${seoContentSlug}${CATALOGUE_SEO_TEXT_POSITION_TOP}`;
-  const seoContentTop = await seoContentsCollection.findOne({
+  let seoContentTop = await seoContentsCollection.findOne({
     slug: seoContentTopSlug,
   });
 
   const seoContentBottomSlug = `${seoContentSlug}${CATALOGUE_SEO_TEXT_POSITION_BOTTOM}`;
-  const seoContentBottom = await seoContentsCollection.findOne({
+  let seoContentBottom = await seoContentsCollection.findOne({
     slug: seoContentBottomSlug,
   });
 
@@ -535,6 +536,32 @@ export async function getCatalogueAllSeoContents(
   let editUrl = baseEditUrl;
   const textTopEditUrl = `${baseEditUrl}/seo-content/${seoContentTopSlug}`;
   const textBottomEditUrl = `${baseEditUrl}/seo-content/${seoContentBottomSlug}`;
+
+  if (!seoContentTop) {
+    const newBottomSeoContent = await seoContentsCollection.insertOne({
+      url: props.asPath,
+      slug: seoContentTopSlug,
+      content: PAGE_EDITOR_DEFAULT_VALUE_STRING,
+      companySlug: props.companySlug,
+      rubricSlug,
+    });
+    seoContentTop = await seoContentsCollection.findOne({
+      _id: newBottomSeoContent.insertedId,
+    });
+  }
+
+  if (!seoContentBottom) {
+    const newBottomSeoContent = await seoContentsCollection.insertOne({
+      url: props.asPath,
+      slug: seoContentBottomSlug,
+      content: PAGE_EDITOR_DEFAULT_VALUE_STRING,
+      companySlug: props.companySlug,
+      rubricSlug,
+    });
+    seoContentBottom = await seoContentsCollection.findOne({
+      _id: newBottomSeoContent.insertedId,
+    });
+  }
 
   return {
     editUrl,

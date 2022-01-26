@@ -1,7 +1,7 @@
 import { GetServerSidePropsContext } from 'next';
 import * as React from 'react';
 import { getDomain } from 'tldts';
-import { DEFAULT_CITY, ROUTE_CATALOGUE, SORT_DESC } from '../config/common';
+import { DEFAULT_CITY, SORT_DESC } from '../config/common';
 import { COL_COMPANIES, COL_PRODUCT_FACETS, COL_SHOP_PRODUCTS } from '../db/collectionNames';
 import { ignoreNoImageStage } from '../db/dao/constantPipelines';
 import { CompanyModel, ShopProductModel } from '../db/dbModels';
@@ -114,7 +114,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       return;
     }
 
-    initialSlugs.push(`${ROUTE_CATALOGUE}/${summary.slug}`);
+    initialSlugs.push(`/${summary.slug}`);
   });
 
   res.setHeader('Content-Type', 'text/xml');

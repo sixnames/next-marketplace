@@ -31,7 +31,7 @@ const PagesListPage: NextPage<PagesListPageInterface> = ({ layoutProps, pagesGro
     config: [
       {
         name: 'Группы страниц',
-        href: links.pages,
+        href: links.pages.parentLink,
       },
     ],
   };
@@ -41,7 +41,7 @@ const PagesListPage: NextPage<PagesListPageInterface> = ({ layoutProps, pagesGro
       <AppContentWrapper breadcrumbs={breadcrumbs}>
         <Inner>
           <WpTitle>{pagesGroup.name}</WpTitle>
-          <PagesList cities={cities} basePath={links.pages} pagesGroup={pagesGroup} />
+          <PagesList cities={cities} basePath={links.pages.parentLink} pagesGroup={pagesGroup} />
         </Inner>
       </AppContentWrapper>
     </ConsoleLayout>

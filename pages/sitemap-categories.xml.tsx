@@ -99,6 +99,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     const rubricSlug = rubric.slug;
     const basePath = `${ROUTE_CATALOGUE}/${rubricSlug}`;
     const catalogueData = await getCatalogueData({
+      asPath: basePath,
       locale,
       citySlug,
       companySlug,
@@ -114,7 +115,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         page: 1,
       },
     });
-    if (!catalogueData) {
+    if (!catalogueData || catalogueData.products.length < 1) {
       continue;
     }
     initialSlugs.push(basePath);
@@ -124,6 +125,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       const filter = `${FILTER_CATEGORY_KEY}${FILTER_SEPARATOR}${category.slug}`;
       if (useNoIndexRules) {
         const seoContentParams = await getCatalogueAllSeoContents({
+          asPath: `${basePath}/${filter}`,
           rubricSlug: rubric.slug,
           citySlug,
           companySlug,
@@ -146,6 +148,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         const filter = `${attribute.slug}${FILTER_SEPARATOR}${option.slug}`;
         if (useNoIndexRules) {
           const seoContentParams = await getCatalogueAllSeoContents({
+            asPath: `${basePath}/${filter}`,
             rubricSlug: rubric.slug,
             citySlug,
             companySlug,

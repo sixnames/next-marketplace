@@ -28,17 +28,18 @@ const PageDetailsPage: NextPage<PageDetailsPageInterface> = ({
 }) => {
   const links = getConsoleCompanyLinks({
     companyId: pageCompany._id,
+    pagesGroupId: page.pagesGroupId,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${page.name}`,
     config: [
       {
         name: 'Группы страниц',
-        href: links.pages,
+        href: links.pages.parentLink,
       },
       {
         name: `${page.pagesGroup?.name}`,
-        href: `${links.pages}/${page.pagesGroup?._id}`,
+        href: links.pages.root,
       },
     ],
   };

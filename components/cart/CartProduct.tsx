@@ -159,7 +159,7 @@ export const CartShoplessProduct: React.FC<CartProductPropsInterface> = ({
 
       <div className='mb-4 flex flex-wrap items-center gap-6'>
         <div>
-          <div className='text-secondary-text'>Цена за ед.</div>
+          {/*<div className='text-secondary-text'>Цена за ед.</div>*/}
           <ProductSnippetPrice shopsCount={shopsCount} value={minPrice} />
         </div>
 
@@ -226,10 +226,10 @@ export const CartProduct: React.FC<CartProductPropsWithAmountInterface> = ({
         snippetTitle={summary.snippetTitle}
       />
 
-      <div className='mt-auto flex flex-wrap gap-6'>
+      <div className='mt-auto flex flex-wrap items-center gap-6'>
         <div>
           {/*shop product price*/}
-          <div className='text-secondary-text'>Цена за ед.</div>
+          {/*<div className='text-secondary-text'>Цена за ед.</div>*/}
           <ProductShopPrices
             showDiscountedPrice={
               Boolean(cartProduct.promoProduct) &&

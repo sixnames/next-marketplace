@@ -12,6 +12,7 @@ import { getRequestParams } from '../../../lib/sessionHelpers';
 export interface CatalogueApiInputInterface {
   companySlug?: string;
   companyId?: string;
+  asPath: string;
   snippetVisibleAttributesCount?: number | null;
   visibleCategoriesInNavDropdown: string[];
   limit: number;
@@ -28,11 +29,13 @@ async function catalogueData(req: NextApiRequest, res: NextApiResponse) {
       snippetVisibleAttributesCount,
       visibleCategoriesInNavDropdown,
       limit,
+      asPath,
     } = input;
     const filtersArray = alwaysArray(query.filters).slice(1);
     const [rubricSlug, ...filters] = filtersArray;
 
     const rawCatalogueData = await getCatalogueData({
+      asPath,
       locale,
       companySlug,
       companyId,

@@ -8,7 +8,6 @@ import {
   ROUTE_BLOG,
   SORT_DESC,
 } from '../../../config/common';
-import { getConstantTranslation } from '../../../config/constantTranslations';
 import { alwaysArray } from '../../../lib/arrayUtils';
 import { castUrlFilters } from '../../../lib/castUrlFilters';
 import { castCatalogueParamToObject } from '../../../lib/catalogueUtils';
@@ -394,8 +393,6 @@ export const getCatalogueBlogSsr = async (
   const blogTitlePostfixConfig = props.initialData.configs.blogTitlePostfix;
   const blogTitlePostfix = blogTitlePostfixConfig ? ` ${blogTitlePostfixConfig}` : '';
 
-  const blogListName = getConstantTranslation(`nav.blog.${locale}`);
-  const keyword = blogTitlePrefix ? blogListName.toLocaleLowerCase() : blogListName;
   const selectedOptions = blogFilter
     .reduce((acc: CatalogueFilterAttributeOptionInterface[], attribute) => {
       const { isSelected, options } = attribute;
@@ -409,7 +406,7 @@ export const getCatalogueBlogSsr = async (
 
   const titleFilters = selectedOptions.length > 0 ? ` на тему ${selectedOptions.join(', ')}` : '';
 
-  const blogTitle = `${blogTitlePrefix}${keyword}${titleFilters}${blogTitlePostfix}`;
+  const blogTitle = `${blogTitlePrefix}${blogTitlePostfix}${titleFilters}`;
 
   return {
     props: {

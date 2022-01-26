@@ -18,6 +18,7 @@ import { CartTabIndexType, MakeOrderFormInterface } from '../../pages/cart';
 import { makeAnOrderSchema } from '../../validation/orderSchema';
 import WpButton from '../button/WpButton';
 import CartAside from '../CartAside';
+import FormikCheckboxLine from '../FormElements/Checkbox/FormikCheckboxLine';
 import FormikDatePicker from '../FormElements/Input/FormikDatePicker';
 import FormikInput from '../FormElements/Input/FormikInput';
 import InputLine from '../FormElements/Input/InputLine';
@@ -57,6 +58,7 @@ const OneShopCompanyDeliveryCart: React.FC<OneShopCompanyCartFormInterface> = ({
 
   const initialValues: MakeOrderFormInterface = {
     ...cart,
+    privacy: false,
     name: sessionUser ? sessionUser.me.name : '',
     lastName: sessionUser ? sessionUser.me.lastName : '',
     secondName: sessionUser ? sessionUser.me.secondName : '',
@@ -118,6 +120,7 @@ const OneShopCompanyDeliveryCart: React.FC<OneShopCompanyCartFormInterface> = ({
           companySlug: domainCompany.slug,
           shopConfigs: values.shopConfigs,
           allowDelivery: true,
+          privacy: values.privacy,
           cartProductsFieldName: 'cartDeliveryProducts',
         });
       }}
@@ -216,6 +219,13 @@ const OneShopCompanyDeliveryCart: React.FC<OneShopCompanyCartFormInterface> = ({
                       disabled={disabled}
                       isRequired
                       showInlineError
+                    />
+
+                    <FormikCheckboxLine
+                      lineClassName='self-end'
+                      testId={'order-form-privacy'}
+                      label={'Даю согласие на обработку личных данных'}
+                      name={'privacy'}
                     />
 
                     <FormikTextarea
@@ -380,6 +390,7 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
     phone: sessionUser ? sessionUser.me.phone : '',
     comment: '',
     reservationDate: null,
+    privacy: false,
     shopConfigs: [
       {
         _id: `${domainCompany.mainShop._id}`,
@@ -409,6 +420,7 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
           companySlug: domainCompany.slug,
           shopConfigs: values.shopConfigs,
           allowDelivery: false,
+          privacy: values.privacy,
           cartProductsFieldName: 'cartBookingProducts',
         });
       }}
@@ -517,6 +529,13 @@ const OneShopCompanyBookingCart: React.FC<OneShopCompanyCartFormInterface> = ({
                       disabled={disabled}
                       isRequired
                       showInlineError
+                    />
+
+                    <FormikCheckboxLine
+                      lineClassName='self-end'
+                      testId={'order-form-privacy'}
+                      label={'Даю согласие на обработку личных данных'}
+                      name={'privacy'}
                     />
 
                     {configs.showReservationDate ? (

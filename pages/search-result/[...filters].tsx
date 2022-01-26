@@ -35,6 +35,7 @@ export async function getServerSideProps(
 
   // catalogue
   const rawCatalogueData = await getCatalogueData({
+    asPath: '',
     locale: props.sessionLocale,
     citySlug: props.citySlug,
     companySlug: props.domainCompany?.slug,

@@ -171,6 +171,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
       const input: CatalogueApiInputInterface = {
         companyId,
         companySlug,
+        asPath: router.asPath,
         snippetVisibleAttributesCount: configs.snippetAttributesCount,
         visibleCategoriesInNavDropdown: configs.visibleCategoriesInNavDropdown,
         limit: configs.catalogueProductsCount,
@@ -203,6 +204,7 @@ const CatalogueConsumer: React.FC<CatalogueConsumerInterface> = ({
       configs.catalogueProductsCount,
       configs.snippetAttributesCount,
       configs.visibleCategoriesInNavDropdown,
+      router.asPath,
     ],
   );
 

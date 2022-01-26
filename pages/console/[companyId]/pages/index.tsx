@@ -32,7 +32,7 @@ const PageGroupsPage: NextPage<PageGroupsPageInterface> = ({ layoutProps, pagesG
           <WpTitle>{pageTitle}</WpTitle>
           <PageGroupsList
             companySlug={`${layoutProps.pageCompany.slug}`}
-            basePath={links.pages}
+            basePath={links.pages.parentLink}
             pagesGroups={pagesGroups}
           />
         </Inner>

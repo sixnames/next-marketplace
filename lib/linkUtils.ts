@@ -225,6 +225,31 @@ export function getConsoleGiftCertificateLinks({
   };
 }
 
+export interface GetConsolePagesLinksInterface {
+  basePath?: string;
+  pagesGroupId?: string | ObjectIdModel;
+  pageId?: string | ObjectIdModel;
+}
+
+export function getConsolePagesLinks({
+  basePath,
+  pageId,
+  pagesGroupId,
+}: GetConsolePagesLinksInterface) {
+  const mainPath = `/pages`;
+  const parentLink = `${basePath}${mainPath}`;
+  const root = `${parentLink}/${pagesGroupId}`;
+
+  return {
+    mainPath,
+    parentLink,
+    root,
+    page: {
+      root: `${root}/${pageId}`,
+    },
+  };
+}
+
 export interface GetConsoleBlogLinksInterface {
   basePath?: string;
   blogPostId?: string | ObjectIdModel;
@@ -251,6 +276,7 @@ interface GetCmsCompanyLinkInterface
     GetConsoleGiftCertificateLinks,
     GetConsoleCompanyPromoLinkInterface,
     GetConsoleBlogLinksInterface,
+    GetConsolePagesLinksInterface,
     GetConsoleUserLinksInterface {
   companyId?: string | ObjectIdModel;
   shopId?: string | ObjectIdModel;
@@ -268,6 +294,8 @@ export function getCmsCompanyLinks({
   giftCertificateId,
   userId,
   blogPostId,
+  pagesGroupId,
+  pageId,
 }: GetCmsCompanyLinkInterface) {
   const parentLink = basePath?.includes(ROUTE_CMS) ? `${basePath}/companies` : basePath;
   const root = `${parentLink}/${companyId}`;
@@ -280,9 +308,13 @@ export function getCmsCompanyLinks({
       basePath: root,
       giftCertificateId,
     }),
-    pages: `${root}/pages`,
     assets: `${root}/assets`,
     userCategories: `${root}/user-categories`,
+    pages: getConsolePagesLinks({
+      basePath: root,
+      pagesGroupId,
+      pageId,
+    }),
     promo: getConsoleCompanyPromoLinks({
       basePath: root,
       rubricSlug,
@@ -403,7 +435,8 @@ export function getCmsAttributesLinks({
 
 export interface GetCmsLinksInterface
   extends Omit<GetCmsCompanyLinkInterface, 'basePath'>,
-    GetCmsAttributesLinks {}
+    GetCmsAttributesLinks,
+    GetConsolePagesLinksInterface {}
 
 export function getCmsLinks(props: GetCmsLinksInterface) {
   const {
@@ -415,6 +448,8 @@ export function getCmsLinks(props: GetCmsLinksInterface) {
     orderId,
     attributeId,
     attributesGroupId,
+    pageId,
+    pagesGroupId,
   } = props;
   const root = ROUTE_CMS;
   const basePath = root;
@@ -430,6 +465,11 @@ export function getCmsLinks(props: GetCmsLinksInterface) {
       rubricSlug: rubricSlug,
       productId: productId,
       categoryId: categoryId,
+    }),
+    pages: getConsolePagesLinks({
+      basePath: root,
+      pagesGroupId,
+      pageId,
     }),
     blog: getConsoleBlogLinks({
       basePath,

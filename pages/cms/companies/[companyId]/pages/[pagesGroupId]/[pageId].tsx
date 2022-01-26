@@ -28,27 +28,28 @@ const PageDetailsPage: NextPage<PageDetailsPageInterface> = ({
   page,
   cities,
 }) => {
-  const { root, parentLink, pages } = getCmsCompanyLinks({
+  const links = getCmsCompanyLinks({
     companyId: pageCompany._id,
+    pagesGroupId: page.pagesGroupId,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${page.name}`,
     config: [
       {
         name: 'Компании',
-        href: parentLink,
+        href: links.parentLink,
       },
       {
         name: pageCompany.name,
-        href: root,
+        href: links.root,
       },
       {
         name: 'Группы страниц',
-        href: pages,
+        href: links.pages.parentLink,
       },
       {
         name: `${page.pagesGroup?.name}`,
-        href: `${pages}/${page.pagesGroup?._id}`,
+        href: links.pages.root,
       },
     ],
   };

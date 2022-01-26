@@ -114,7 +114,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         page: 1,
       },
     });
-    if (!catalogueData) {
+    if (!catalogueData || catalogueData.products.length < 1) {
       continue;
     }
     initialSlugs.push(basePath);

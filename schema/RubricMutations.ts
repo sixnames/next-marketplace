@@ -747,7 +747,7 @@ export const RubricMutations = extendType({
           }
 
           // check all
-          if (attributeIds.length === groupAttributeIds.length) {
+          if (attributeIds.length === groupAttributeIds.length && attributeIds.length !== 1) {
             const updatedRubricResult = await rubricsCollection.findOneAndUpdate(
               { _id: rubricId },
               {
@@ -807,7 +807,7 @@ export const RubricMutations = extendType({
             },
           );
           const updatedRubric = updatedRubricResult.value;
-          if (updatedRubricResult.ok && updatedRubric) {
+          if (!updatedRubricResult.ok || !updatedRubric) {
             return {
               success: false,
               message: await getApiMessage('rubrics.update.error'),
@@ -929,7 +929,7 @@ export const RubricMutations = extendType({
                 return;
               }
               mutationPayload = {
-                success: false,
+                success: true,
                 message: await getApiMessage('rubrics.update.success'),
               };
               await session.abortTransaction();
@@ -937,7 +937,7 @@ export const RubricMutations = extendType({
             }
 
             // check all
-            if (attributeIds.length === groupAttributeIds.length) {
+            if (attributeIds.length === groupAttributeIds.length && attributeIds.length !== 1) {
               const updatedRubricResult = await rubricsCollection.findOneAndUpdate(
                 { _id: rubricId },
                 {
@@ -977,7 +977,7 @@ export const RubricMutations = extendType({
                 return;
               }
               mutationPayload = {
-                success: false,
+                success: true,
                 message: await getApiMessage('rubrics.update.success'),
               };
               await session.abortTransaction();

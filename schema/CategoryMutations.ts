@@ -592,7 +592,7 @@ export const CategoryMutations = extendType({
                 return;
               }
               mutationPayload = {
-                success: false,
+                success: true,
                 message: await getApiMessage('rubrics.update.success'),
               };
               await session.abortTransaction();
@@ -600,7 +600,7 @@ export const CategoryMutations = extendType({
             }
 
             // check all
-            if (attributeIds.length === groupAttributeIds.length) {
+            if (attributeIds.length === groupAttributeIds.length && attributeIds.length !== 1) {
               const updatedCategoriesResult = await categoriesCollection.updateMany(
                 {
                   _id: {
@@ -624,7 +624,7 @@ export const CategoryMutations = extendType({
                 return;
               }
               mutationPayload = {
-                success: false,
+                success: true,
                 message: await getApiMessage('rubrics.update.success'),
               };
               await session.abortTransaction();

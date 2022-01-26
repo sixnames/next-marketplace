@@ -127,7 +127,7 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
           return (
             <div key={`${_id}`} className='mb-12'>
               <WpAccordion title={`${name}`} isOpen>
-                <div className={`overflow-x-auto mt-4`}>
+                <div className={`mt-4 overflow-x-auto`}>
                   <WpTable<AttributeInterface>
                     data={attributes}
                     columns={columns}

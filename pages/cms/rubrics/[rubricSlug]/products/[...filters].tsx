@@ -214,7 +214,7 @@ const RubricProductsConsumer: React.FC<ConsoleRubricProductsInterface> = ({
   return (
     <CmsRubricLayout rubric={rubric} breadcrumbs={breadcrumbs}>
       <Inner testId={'rubric-products-list'}>
-        <div className={`text-xl font-medium mb-2`}>{catalogueCounterString}</div>
+        <div className={`mb-2 text-xl font-medium`}>{catalogueCounterString}</div>
 
         <FormikRouterSearch testId={'products'} />
 

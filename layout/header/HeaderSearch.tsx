@@ -35,7 +35,7 @@ const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({
 
   return (
     <div>
-      <div className='grid gap-6 items-stretch sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'>
+      <div className='grid items-stretch gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'>
         {shopProducts.map((product) => {
           return (
             <ProductSnippetGridBigImage
@@ -50,7 +50,7 @@ const HeaderSearchResult: React.FC<HeaderSearchResultInterface> = ({
       </div>
       {isProductsFound ? (
         <WpLink
-          className='flex items-center min-h-[var(--minLinkHeightSmall)] text-theme'
+          className='flex min-h-[var(--minLinkHeightSmall)] items-center text-theme'
           href={`${ROUTE_SEARCH_RESULT}/${encodeURIComponent(string)}`}
           onClick={() => {
             setIsSearchOpen(false);
@@ -125,16 +125,16 @@ const HeaderSearch: React.FC<HeaderSearchInterface> = ({ setIsSearchOpen }) => {
 
   return (
     <div
-      className='fixed z-[110] inset-0 overflow-y-auto pb-8 bg-primary-dark shadow-lg lg:pb-4 lg:inset-y-auto lg:top-full lg:w-full lg:absolute'
+      className='fixed inset-0 z-[110] overflow-y-auto bg-primary-dark pb-8 shadow-lg lg:absolute lg:inset-y-auto lg:top-full lg:w-full lg:pb-4'
       data-cy={'search-dropdown'}
     >
       <OutsideClickHandler onOutsideClick={() => setIsSearchOpen(false)}>
         <Inner lowBottom>
-          <div className='pt-8 min-h-8 mb-8 text-xl font-medium text-center lg:hidden'>Поиск</div>
+          <div className='min-h-8 mb-8 pt-8 text-center text-xl font-medium lg:hidden'>Поиск</div>
 
           <div className='flex'>
             <form
-              className='flex-grow relative'
+              className='relative flex-grow'
               onSubmit={(e) => {
                 e.preventDefault();
                 if (string && string.length > minSearchLength) {
@@ -154,7 +154,7 @@ const HeaderSearch: React.FC<HeaderSearchInterface> = ({ setIsSearchOpen }) => {
                 autoFocus
               />
               <button
-                className='absolute z-30 top-0 right-0 overflow-hidden text-indent-full w-[var(--formInputHeight)] h-[var(--formInputHeight)]'
+                className='text-indent-full absolute top-0 right-0 z-30 h-[var(--formInputHeight)] w-[var(--formInputHeight)] overflow-hidden'
                 type={'submit'}
               >
                 search

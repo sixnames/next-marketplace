@@ -123,8 +123,8 @@ interface WpModalInterface {
 
 const WpModal: React.FC<WpModalInterface> = ({ modalType, modalProps = {} }) => {
   return (
-    <div className='fixed inset-0 z-[999] w-full h-[var(--fullHeight)] min-w-[320px] overflow-x-hidden overflow-y-auto'>
-      <div className='relative flex items-center justify-center z-20 w-full min-h-full p-inner-block-horizontal-padding bg-gray-700 bg-opacity-50'>
+    <div className='fixed inset-0 z-[999] h-[var(--fullHeight)] w-full min-w-[320px] overflow-y-auto overflow-x-hidden'>
+      <div className='relative z-20 flex min-h-full w-full items-center justify-center bg-gray-700 bg-opacity-50 p-inner-block-horizontal-padding'>
         <React.Suspense fallback={<Spinner />}>
           {modalType === ADULT_MODAL && <AdultModal {...modalProps} />}
 

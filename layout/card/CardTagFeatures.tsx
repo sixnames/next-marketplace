@@ -27,7 +27,7 @@ const CardTagFeatures: React.FC<CardTagFeaturesInterface> = ({
         }
         return (
           <div key={`${attribute._id}`} className='mb-14'>
-            <div className='text-2xl mb-4 font-medium'>{`${attribute.name}:`}</div>
+            <div className='mb-4 text-2xl font-medium'>{`${attribute.name}:`}</div>
             <ul className='flex flex-wrap gap-4'>
               {(attribute.options || []).map((option) => {
                 const name = `${option?.name}`;

@@ -63,21 +63,21 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({
   const productImageSrc = shopProduct ? `${summary?.mainImage}` : IMAGE_FALLBACK;
 
   return (
-    <div className='relative py-10 flex pr-[calc(var(--controlButtonHeightBig)+1rem)]'>
-      <div className='relative flex items-center justify-center px-4 w-20 lg:w-28 flex-shrink-0 w-[120px]'>
-        <div className='relative pb-[100%] w-full'>
+    <div className='relative flex py-10 pr-[calc(var(--controlButtonHeightBig)+1rem)]'>
+      <div className='relative flex w-20 w-[120px] flex-shrink-0 items-center justify-center px-4 lg:w-28'>
+        <div className='relative w-full pb-[100%]'>
           <WpImage
             url={productImageSrc}
             alt={`${originalName}`}
             title={`${originalName}`}
             width={240}
-            className='absolute inset-0 w-full h-full object-contain'
+            className='absolute inset-0 h-full w-full object-contain'
           />
         </div>
 
         <WpLink
           target={'_blank'}
-          className='block absolute z-10 inset-0 text-indent-full'
+          className='text-indent-full absolute inset-0 z-10 block'
           href={`/${slug}`}
         >
           {summary?.snippetTitle}
@@ -85,13 +85,13 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({
       </div>
 
       <div className='flex-grow'>
-        <div className='text-secondary-text mb-3 text-sm'>{`Артикул: ${itemId}`}</div>
+        <div className='mb-3 text-sm text-secondary-text'>{`Артикул: ${itemId}`}</div>
 
         <div className='grid gap-4 lg:flex lg:items-baseline lg:justify-between'>
-          <div className='text-lg font-bold flex-grow'>
+          <div className='flex-grow text-lg font-bold'>
             <WpLink
               target={'_blank'}
-              className='block text-primary-text hover:no-underline hover:text-primary-text'
+              className='block text-primary-text hover:text-primary-text hover:no-underline'
               href={`/${slug}`}
             >
               {summary?.snippetTitle}
@@ -99,12 +99,12 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({
           </div>
 
           <div>
-            <div className='flex items-baseline ml-auto flex-grow-0'>
+            <div className='ml-auto flex flex-grow-0 items-baseline'>
               <ProductShopPrices className='text-lg font-bold' price={price} size={'small'} />
-              <WpIcon name={'cross'} className='w-2 h-2 mx-4' />
+              <WpIcon name={'cross'} className='mx-4 h-2 w-2' />
               <div className='font-medium'>{amount}</div>
             </div>
-            <div className='flex gap-2 lg:justify-end text-secondary-text'>
+            <div className='flex gap-2 text-secondary-text lg:justify-end'>
               <span>Итого:</span>
               <Currency value={totalPrice} />
             </div>
@@ -157,17 +157,17 @@ const ProfileOrder: React.FC<ProfileOrderInterface> = ({ order, orderIndex }) =>
   return (
     <Disclosure>
       {({ open }) => (
-        <div className='mb-4 bg-secondary rounded-lg' data-cy={`profile-order-${itemId}`}>
+        <div className='mb-4 rounded-lg bg-secondary' data-cy={`profile-order-${itemId}`}>
           {/*Order head*/}
-          <div className='relative flex pr-[var(--controlButtonHeightBig)] items-start'>
+          <div className='relative flex items-start pr-[var(--controlButtonHeightBig)]'>
             <Disclosure.Button
-              className='flex items-center justify-center min-h-[4rem] w-20 lg:w-28'
+              className='flex min-h-[4rem] w-20 items-center justify-center lg:w-28'
               as={'div'}
             >
               <ControlButtonChevron isActive={open} testId={`profile-order-${itemId}-open`} />
             </Disclosure.Button>
 
-            <div className='grid gap-4 flex-grow items-baseline sm:grid-cols-2 lg:grid-cols-4 py-4'>
+            <div className='grid flex-grow items-baseline gap-4 py-4 sm:grid-cols-2 lg:grid-cols-4'>
               <div className='text-lg font-medium sm:pt-0'>{`№ ${orderId}`}</div>
               <div className='text-sm'>
                 от <FormattedDate value={createdAt} />
@@ -201,26 +201,26 @@ const ProfileOrder: React.FC<ProfileOrderInterface> = ({ order, orderIndex }) =>
           <Disclosure.Panel>
             <div data-cy={`profile-order-${itemId}-content`}>
               {/*shop info*/}
-              <div className='mb-6 pl-20 lg:pl-28 pr-6'>
+              <div className='mb-6 pl-20 pr-6 lg:pl-28'>
                 {firstProduct.shop ? (
                   <div className=''>
-                    <div className='text-secondary-text mb-2'>
+                    <div className='mb-2 text-secondary-text'>
                       магазин:{' '}
-                      <span className='text-primary-text font-medium'>
+                      <span className='font-medium text-primary-text'>
                         {firstProduct.shop.name}
                       </span>
                     </div>
                     <div className='text-sm'>{firstProduct.shop.address.readableAddress}</div>
                   </div>
                 ) : (
-                  <div className='text-theme font-medium'>Магазин не найден</div>
+                  <div className='font-medium text-theme'>Магазин не найден</div>
                 )}
               </div>
 
               {/*discount info*/}
               {giftCertificate ? (
-                <div className='mt-4 pl-20 lg:pl-28 pr-6'>
-                  <div className='text-secondary-text mb-1'>Применён подарочный сертификат</div>
+                <div className='mt-4 pl-20 pr-6 lg:pl-28'>
+                  <div className='mb-1 text-secondary-text'>Применён подарочный сертификат</div>
                   <div>
                     {giftCertificate.name ? `${giftCertificate.name}: ` : 'С кодом: '}
                     {giftCertificate.code}

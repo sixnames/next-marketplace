@@ -24,7 +24,7 @@ const AppSubNav: React.FC<AppSubNavInterface> = ({ navConfig }) => {
 
   return (
     <Inner lowTop>
-      <div className={'border-b border-[var(--border-300)] overflow-auto whitespace-nowrap'}>
+      <div className={'border-[var(--border-300)] overflow-auto whitespace-nowrap border-b'}>
         <div className={'flex items-baseline'}>
           {config.map(({ path, name, testId, shallow, disabled, hidden, exact }) => {
             if (hidden) {
@@ -40,7 +40,7 @@ const AppSubNav: React.FC<AppSubNavInterface> = ({ navConfig }) => {
 
             return (
               <WpLink
-                className={`flex pt-4 pb-4 text-lg mr-6 border-b-2 hover:no-underline hover:text-primary-text ${
+                className={`mr-6 flex border-b-2 pt-4 pb-4 text-lg hover:text-primary-text hover:no-underline ${
                   isCurrent ? activeClassName : staticClassName
                 } ${disabled ? disabledClassName : ''}`}
                 href={`${path}`}

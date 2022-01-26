@@ -67,9 +67,9 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
   const isCheckbox = React.useMemo(() => optionVariant === 'checkbox', [optionVariant]);
   const inputIcon = React.useMemo(() => {
     return isCheckbox ? (
-      <WpIcon className='absolute w-[10px] h-[10px] top-[2px] left-[2px]' name={'check'} />
+      <WpIcon className='absolute top-[2px] left-[2px] h-[10px] w-[10px]' name={'check'} />
     ) : (
-      <div className='absolute w-[10px] h-[10px] top-[2px] left-[2px] rounded-full bg-theme' />
+      <div className='absolute top-[2px] left-[2px] h-[10px] w-[10px] rounded-full bg-theme' />
     );
   }, [isCheckbox]);
 
@@ -103,7 +103,7 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
         return (
           <div>
             <div
-              className='transition duration-150 flex cursor-pointer hover:text-theme pt-3 pb-3'
+              className='flex cursor-pointer pt-3 pb-3 transition duration-150 hover:text-theme'
               onClick={() => {
                 if (isCheckbox) {
                   onOptionClickHandler(option);
@@ -114,7 +114,7 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
             >
               <div
                 data-cy={`option-${name}`}
-                className={`relative mr-2 w-[18px] h-[18px] flex-shrink-0 bg-secondary border-2 border-border-300 text-theme ${
+                className={`relative mr-2 h-[18px] w-[18px] flex-shrink-0 border-2 border-border-300 bg-secondary text-theme ${
                   isCheckbox ? checkboxClassName : radioClassName
                 }`}
               >
@@ -134,7 +134,7 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
 
       return (
         <div
-          className='transition duration-150 flex cursor-pointer hover:text-theme pt-3 pb-3'
+          className='flex cursor-pointer pt-3 pb-3 transition duration-150 hover:text-theme'
           onClick={() => {
             if (isCheckbox) {
               onOptionClickHandler(option);
@@ -145,7 +145,7 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
         >
           <div
             data-cy={`option-${name}`}
-            className={`relative mr-2 w-[18px] h-[18px] flex-shrink-0 bg-secondary border-2 border-border-300 text-theme ${
+            className={`relative mr-2 h-[18px] w-[18px] flex-shrink-0 border-2 border-border-300 bg-secondary text-theme ${
               isCheckbox ? checkboxClassName : radioClassName
             }`}
           >
@@ -225,7 +225,7 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
       />
 
       {notShowAsAlphabet ? (
-        <div className='grid sm:grid-cols-2 lg:grid-cols-3 gap-x-4'>
+        <div className='grid gap-x-4 sm:grid-cols-2 lg:grid-cols-3'>
           {(state || []).map(({ docs }) => {
             if (docs.length < 1) {
               return null;
@@ -243,9 +243,9 @@ const OptionsModal: React.FC<OptionsModalInterface> = ({
           }
 
           return (
-            <div className='mb-12 pb-12 border-b-2 border-secondary' key={letter}>
-              <div className='mb-6 font-medium text-xl uppercase'>{letter}</div>
-              <div className='grid sm:grid-cols-2 lg:grid-cols-3 gap-x-4'>
+            <div className='mb-12 border-b-2 border-secondary pb-12' key={letter}>
+              <div className='mb-6 text-xl font-medium uppercase'>{letter}</div>
+              <div className='grid gap-x-4 sm:grid-cols-2 lg:grid-cols-3'>
                 {docs.map((option) => {
                   return <div key={`${option._id}`}>{renderOption(option)}</div>;
                 })}

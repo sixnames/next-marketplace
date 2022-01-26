@@ -45,7 +45,7 @@ const CatalogueFilterAttributeOptions: React.FC<CatalogueFilterAttributePropsInt
 
       {hasMoreOptions ? (
         <div
-          className='uppercase cursor-pointer text-theme mt-6'
+          className='mt-6 cursor-pointer uppercase text-theme'
           onClick={() => {
             showModal<CatalogueAdditionalOptionsModalInterface>({
               variant: CATALOGUE_ADDITIONAL_OPTIONS_MODAL,
@@ -87,7 +87,7 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
           titleRight={
             attribute.isSelected && attribute.clearSlug ? (
               <div
-                className='ml-4 font-normal text-theme cursor-pointer hover:underline'
+                className='ml-4 cursor-pointer font-normal text-theme hover:underline'
                 onClick={() => {
                   router
                     .push(`${attribute.clearSlug}`)
@@ -118,11 +118,11 @@ const CatalogueFilterAttribute: React.FC<CatalogueFilterAttributePropsInterface>
 
   return (
     <div className='mb-12'>
-      <div className='flex items-baseline justify-between mb-4'>
+      <div className='mb-4 flex items-baseline justify-between'>
         <span className='text-lg font-bold'>{attribute.name}</span>
         {isSelected ? (
           <div
-            className='ml-4 font-medium text-theme cursor-pointer hover:underline'
+            className='ml-4 cursor-pointer font-medium text-theme hover:underline'
             onClick={() => {
               router
                 .push(`${clearSlug}`)

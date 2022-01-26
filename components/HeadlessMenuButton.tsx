@@ -87,7 +87,7 @@ const HeadlessMenuButton: React.FC<MenuButtonInterface> = ({
               <Menu.Button
                 as={buttonAs}
                 data-cy={testId}
-                className={`cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-theme rounded-lg focus-visible:ring-opacity-75 ${
+                className={`cursor-pointer rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-theme focus-visible:ring-opacity-75 ${
                   buttonClassName ? buttonClassName : ''
                 }`}
               >
@@ -96,7 +96,7 @@ const HeadlessMenuButton: React.FC<MenuButtonInterface> = ({
               <Menu.Items
                 className={`absolute ${
                   menuPosition === 'right' ? 'right-0' : 'left-0'
-                } cursor-pointer min-w-[200px] max-h-[300px] overflow-x-hidden overflow-y-auto mt-2 origin-top-right bg-secondary rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none`}
+                } mt-2 max-h-[300px] min-w-[200px] origin-top-right cursor-pointer overflow-y-auto overflow-x-hidden rounded-md bg-secondary shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none`}
               >
                 {config.map((group, groupIndex) => {
                   return (
@@ -106,7 +106,7 @@ const HeadlessMenuButton: React.FC<MenuButtonInterface> = ({
                       data-cy={group.testId}
                     >
                       {group.name ? (
-                        <div className='text-secondary-text px-4 py-2'>{group.name}</div>
+                        <div className='px-4 py-2 text-secondary-text'>{group.name}</div>
                       ) : null}
 
                       {group.children.map((menuItem) => {
@@ -131,9 +131,9 @@ const HeadlessMenuButton: React.FC<MenuButtonInterface> = ({
                                       isSelected
                                         ? 'text-theme'
                                         : 'text-primary-text hover:text-theme'
-                                    } cursor-pointer group flex gap-4 rounded-md items-center w-full px-4 py-2`}
+                                    } group flex w-full cursor-pointer items-center gap-4 rounded-md px-4 py-2`}
                                   >
-                                    {icon ? <WpIcon name={icon} className='w-4 h-4' /> : null}
+                                    {icon ? <WpIcon name={icon} className='h-4 w-4' /> : null}
                                     {name}
                                   </span>
                                 );

@@ -25,8 +25,8 @@ const CmsNav: React.FC<AppNavInterface> = ({
 
   return (
     <nav
-      className={`fixed top-[60px] overflow-y-auto inset-x-0 z-20 w-[250px] h-[calc(100vh-60px)] left-0 shadow-md bg-[#2B3039] ${
-        isCompact ? 'hidden lg:block w-[60px]' : 'block'
+      className={`fixed inset-x-0 top-[60px] left-0 z-20 h-[calc(100vh-60px)] w-[250px] overflow-y-auto bg-[#2B3039] shadow-md ${
+        isCompact ? 'hidden w-[60px] lg:block' : 'block'
       }`}
       onClick={() => {
         if (isMobile) {
@@ -38,7 +38,7 @@ const CmsNav: React.FC<AppNavInterface> = ({
       {pageCompany ? (
         <div>
           {pageCompany.logo ? (
-            <div className='px-[20px] pt-8 pb-8 relative'>
+            <div className='relative px-[20px] pt-8 pb-8'>
               <img
                 className='h-[70px] w-full object-contain'
                 src={pageCompany.logo}
@@ -47,7 +47,7 @@ const CmsNav: React.FC<AppNavInterface> = ({
                 alt={pageCompany.name}
               />
 
-              <div className='absolute left-[15%] w-[70%] h-[2px] bg-theme rounded bottom-0' />
+              <div className='absolute left-[15%] bottom-0 h-[2px] w-[70%] rounded bg-theme' />
             </div>
           ) : (
             <div>{pageCompany.name}</div>

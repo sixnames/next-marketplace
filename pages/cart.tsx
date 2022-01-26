@@ -93,11 +93,11 @@ const CartPageConsumer: React.FC = () => {
 
       <Inner lowTop testId={'cart'}>
         {/*tabs*/}
-        <div className='flex flex-wrap gap-x-6 gap-y-4 mb-8'>
+        <div className='mb-8 flex flex-wrap gap-x-6 gap-y-4'>
           {cartDeliveryProducts.length > 0 ? (
             <div
               data-cy={'cart-products-tab-trigger-0'}
-              className={`transition-all cursor-pointer ${
+              className={`cursor-pointer transition-all ${
                 tabIndex === 0 ? 'text-theme' : 'text-secondary-text'
               }`}
               onClick={() => {
@@ -113,7 +113,7 @@ const CartPageConsumer: React.FC = () => {
           {cartBookingProducts.length > 0 ? (
             <div
               data-cy={'cart-products-tab-trigger-1'}
-              className={`transition-all cursor-pointer ${
+              className={`cursor-pointer transition-all ${
                 tabIndex === 1 ? 'text-theme' : 'text-secondary-text'
               }`}
               onClick={() => {

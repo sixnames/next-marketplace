@@ -13,15 +13,15 @@ const ThemeTrigger: React.FC<ThemeTriggerInterface> = ({ className, style, stati
   return (
     <div
       style={style}
-      className={`flex items-center justify-center w-[30px] h-[30px] cursor-pointer ${
+      className={`flex h-[30px] w-[30px] cursor-pointer items-center justify-center ${
         staticColors ? 'text-[var(--wp-light-gray-100)]' : 'text-secondary-text'
       } ${className ? className : ''}`}
       onClick={toggleTheme}
     >
       {isDark ? (
-        <WpIcon name={'sun'} className={`w-[16px] h-[16px]`} />
+        <WpIcon name={'sun'} className={`h-[16px] w-[16px]`} />
       ) : (
-        <WpIcon name={'moon'} className={`w-[18px] h-[18px]`} />
+        <WpIcon name={'moon'} className={`h-[18px] w-[18px]`} />
       )}
     </div>
   );

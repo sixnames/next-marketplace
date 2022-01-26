@@ -63,13 +63,13 @@ const ConsoleRubricProductDetails: React.FC<ConsoleRubricProductDetailsInterface
         {() => {
           return (
             <Form noValidate>
-              <div className='relative w-[15rem] h-[15rem] mb-8'>
+              <div className='relative mb-8 h-[15rem] w-[15rem]'>
                 <WpImage
                   url={mainImage}
                   alt={originalName}
                   title={originalName}
                   width={240}
-                  className='absolute inset-0 w-full h-full object-contain'
+                  className='absolute inset-0 h-full w-full object-contain'
                 />
               </div>
 

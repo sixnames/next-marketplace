@@ -15,7 +15,7 @@ const LinkEmail: React.FC<LinkEmailInterface> = ({ value, className }) => {
       <a
         className={
           className ||
-          'text-primary-text no-underline cursor-default hover:cursor-default hover:no-underline'
+          'cursor-default text-primary-text no-underline hover:cursor-default hover:no-underline'
         }
         href={`mailto:${value}`}
       >

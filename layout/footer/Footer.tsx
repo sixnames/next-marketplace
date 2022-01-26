@@ -53,18 +53,18 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
   const blogLinkName = getConstantTranslation(`nav.blog.${locale}`);
 
   return (
-    <footer className='footer relative z-[100] pt-6 pb-8 bg-secondary'>
+    <footer className='footer relative z-[100] bg-secondary pt-6 pb-8'>
       <Inner className='flex flex-col gap-8'>
-        <div className='grid gap-x-8 gap-y-6 lg:gap-y-12 lg:grid-cols-6 items-baseline'>
-          <div className='flex flex-col lg:col-span-2 max-w-[480px]'>
-            <div className='text-2xl font-medium mb-6'>
+        <div className='grid items-baseline gap-x-8 gap-y-6 lg:grid-cols-6 lg:gap-y-12'>
+          <div className='flex max-w-[480px] flex-col lg:col-span-2'>
+            <div className='mb-6 text-2xl font-medium'>
               Подписывайтесь на скидки <span className='inline-block'>и рекомендации</span>
             </div>
             <div className='flex'>
               <div className='flex-grow'>
                 <FakeInput value={'Введите Ваш E-mail'} low theme={'secondary'} />
               </div>
-              <div className='flex-shrink-0 w-form-input-height ml-4'>
+              <div className='ml-4 w-form-input-height flex-shrink-0'>
                 <WpButton
                   className='w-full'
                   icon={'arrow-right'}
@@ -94,7 +94,7 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
             {/*main shop address*/}
             {configs.isOneShopCompany && domainCompany && domainCompany.mainShop ? (
               <div
-                className='mt-6 flex items-center gap-3 cursor-pointer hover:text-theme transition-all'
+                className='mt-6 flex cursor-pointer items-center gap-3 transition-all hover:text-theme'
                 onClick={() => {
                   showModal<MapModalInterface>({
                     variant: MAP_MODAL,
@@ -114,7 +114,7 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
                 }}
               >
                 <div className='text-theme'>
-                  <WpIcon name={'marker'} className='w-5 h-5' />
+                  <WpIcon name={'marker'} className='h-5 w-5' />
                 </div>
                 <div>{domainCompany.mainShop.address.readableAddress}</div>
               </div>
@@ -122,9 +122,9 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
 
             {/*phones*/}
             {phonesList && phonesList.length > 0 ? (
-              <div className='flex items-center gap-3 mt-6'>
+              <div className='mt-6 flex items-center gap-3'>
                 <div className='text-theme'>
-                  <WpIcon name={'phone'} className='w-5 h-5' />
+                  <WpIcon name={'phone'} className='h-5 w-5' />
                 </div>
                 <div>
                   {phonesList.map((phone) => {
@@ -145,9 +145,9 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
 
             {/*emails*/}
             {contactEmail && contactEmail.length > 0 ? (
-              <div className='flex items-center gap-3 mt-6'>
+              <div className='mt-6 flex items-center gap-3'>
                 <div className='text-theme'>
-                  <WpIcon name={'email'} className='w-5 h-5' />
+                  <WpIcon name={'email'} className='h-5 w-5' />
                 </div>
                 <div>
                   {contactEmail.map((email) => {
@@ -164,11 +164,11 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
             ) : null}
           </div>
 
-          <div className='grid sm:grid-cols-2 lg:grid-cols-4 lg:col-span-4 gap-x-6 gap-y-6'>
+          <div className='grid gap-x-6 gap-y-6 sm:grid-cols-2 lg:col-span-4 lg:grid-cols-4'>
             {footerPageGroups.map(({ name, _id, pages }, index) => {
               return (
                 <div key={`${_id}`} className='font-sm'>
-                  <div className='uppercase mb-1.5'>{name}</div>
+                  <div className='mb-1.5 uppercase'>{name}</div>
                   <ul>
                     {(pages || []).map(({ name, slug, _id }) => {
                       return (
@@ -176,7 +176,7 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
                           <WpLink
                             href={`${ROUTE_DOCS}/${slug}`}
                             target={'_blank'}
-                            className='block pt-1.5 pb-1.5 text-secondary-text hover:no-underline hover:text-theme cursor-pointer'
+                            className='block cursor-pointer pt-1.5 pb-1.5 text-secondary-text hover:text-theme hover:no-underline'
                           >
                             {name}
                           </WpLink>
@@ -189,7 +189,7 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
                         <WpLink
                           href={ROUTE_BLOG}
                           target={'_blank'}
-                          className='block pt-1.5 pb-1.5 text-secondary-text hover:no-underline hover:text-theme cursor-pointer'
+                          className='block cursor-pointer pt-1.5 pb-1.5 text-secondary-text hover:text-theme hover:no-underline'
                         >
                           {blogLinkName}
                         </WpLink>
@@ -201,7 +201,7 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
                         <WpLink
                           href={`${ROUTE_CONTACTS}`}
                           target={'_blank'}
-                          className='block pt-1.5 pb-1.5 text-secondary-text hover:no-underline hover:text-theme cursor-pointer'
+                          className='block cursor-pointer pt-1.5 pb-1.5 text-secondary-text hover:text-theme hover:no-underline'
                         >
                           {contactsLinkName}
                         </WpLink>
@@ -215,7 +215,7 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
         </div>
 
         <div>
-          <small className='text-secondary-text text-[1em]'>
+          <small className='text-[1em] text-secondary-text'>
             {configSiteName} © {configFoundationYear || new Date().getFullYear()} -{' '}
             {new Date().getFullYear()}
           </small>

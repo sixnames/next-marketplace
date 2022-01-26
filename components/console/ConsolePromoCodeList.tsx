@@ -88,7 +88,7 @@ const ConsolePromoCodeList: React.FC<ConsolePromoCodeListInterface> = ({
   return (
     <Inner testId={'promo-code-list-page'}>
       <div className='relative'>
-        <div className='overflow-y-hidden overflow-x-auto'>
+        <div className='overflow-x-auto overflow-y-hidden'>
           <WpTable<PromoCodeModel>
             columns={columns}
             data={promoCodes}

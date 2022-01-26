@@ -12,7 +12,7 @@ const RequestError: React.FC<RequestErrorInterface> = ({ message }) => {
     return getConstantTranslation(`messages.dataError.${locale}`);
   }, [locale]);
   return (
-    <div className='py-12 px-4 text-xl font-medium text-center text-red-500'>
+    <div className='py-12 px-4 text-center text-xl font-medium text-red-500'>
       {message || defaultErrorMessage}
     </div>
   );

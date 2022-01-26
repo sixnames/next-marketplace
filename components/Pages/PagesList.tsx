@@ -42,7 +42,7 @@ const PagesList: React.FC<PagesListInterface> = ({ pagesGroup, cities, isTemplat
         return (
           <WpLink
             testId={`${cellData}-link`}
-            className='text-primary-text hover:no-underline hover:text-link-text'
+            className='hover:text-link-text text-primary-text hover:no-underline'
             href={`${basePath}/${pagesGroup._id}/${dataItem._id}`}
           >
             {cellData}

@@ -81,24 +81,24 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({ cardData, compan
     <article className='pb-20 pt-8 lg:pt-0' data-cy={`card`}>
       <WpBreadcrumbs currentPageName={cardTitle} config={cardBreadcrumbs} />
 
-      <div className='mb-28 relative'>
+      <div className='relative mb-28'>
         <Inner lowBottom lowTop>
           {/*title*/}
           <div className='mb-8'>
             <WpTitle low>{cardTitle}</WpTitle>
-            {name ? <h2 className='text-secondary-text mt-3'>{name}</h2> : null}
-            <div className='flex items-center gap-4 mt-4'>
+            {name ? <h2 className='mt-3 text-secondary-text'>{name}</h2> : null}
+            <div className='mt-4 flex items-center gap-4'>
               {/*article*/}
               {showArticle ? (
-                <div className='text-secondary-text text-sm'>Арт: {product.itemId}</div>
+                <div className='text-sm text-secondary-text'>Арт: {product.itemId}</div>
               ) : null}
             </div>
           </div>
 
           {/*columns*/}
-          <div className='lg:grid lg:grid-cols-7 gap-8 mb-28 relative'>
+          <div className='relative mb-28 gap-8 lg:grid lg:grid-cols-7'>
             {/*gallery*/}
-            <div className='lg:col-span-4 relative z-20'>
+            <div className='relative z-20 lg:col-span-4'>
               {showCardImagesSlider ? (
                 <CardImageSlider
                   assets={assets}
@@ -119,14 +119,14 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({ cardData, compan
             </div>
 
             {/*data*/}
-            <div className='lg:col-span-3 relative z-10'>
+            <div className='relative z-10 lg:col-span-3'>
               <div className={stickyClassName}>
                 {/*main block*/}
                 <div className={`rounded-xl bg-secondary px-6 py-8 ${dataSectionClassName}`}>
                   {/*brand preview*/}
                   {brand && brand.logo ? (
                     <div
-                      className={`flex items-center mb-6 gap-3 relative cursor-pointer group`}
+                      className={`group relative mb-6 flex cursor-pointer items-center gap-3`}
                       onClick={() => {
                         router
                           .push(
@@ -136,7 +136,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({ cardData, compan
                       }}
                     >
                       <WpImage
-                        className='object-contain w-[70px] h-[70px]'
+                        className='h-[70px] w-[70px] object-contain'
                         url={brand.logo}
                         alt={`О бренде ${brand.name}`}
                         title={`О бренде ${brand.name}`}
@@ -147,7 +147,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({ cardData, compan
                   ) : null}
 
                   {/*price*/}
-                  <div className='flex flex-wrap gap-6 items-baseline mb-8'>
+                  <div className='mb-8 flex flex-wrap items-baseline gap-6'>
                     <CardPrices minPrice={minPrice} maxPrice={maxPrice} shopsCount={shopsCount} />
 
                     {/*availability*/}
@@ -174,14 +174,14 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({ cardData, compan
                         ) : (
                           <React.Fragment>
                             В наличии в {shopsCount} {shopsCounterPostfix}. Посмотреть
-                            <WpIcon name={'eye'} className='w-5 h-5 ml-2' />
+                            <WpIcon name={'eye'} className='ml-2 h-5 w-5' />
                           </React.Fragment>
                         )}
                       </a>
                     )}
                   </div>
 
-                  <div className='flex items-center justify-between flex-wrap gap-6'>
+                  <div className='flex flex-wrap items-center justify-between gap-6'>
                     {/*cart button*/}
                     <ProductAddToCartButton
                       available={maxAvailable}
@@ -204,8 +204,8 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({ cardData, compan
                     {variants.map(({ _id, attribute, products }) => {
                       return (
                         <div key={`${_id}`} className='mb-12'>
-                          <div className='text-secondary-text mb-3 font-bold'>{`${attribute?.name}:`}</div>
-                          <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-6'>
+                          <div className='mb-3 font-bold text-secondary-text'>{`${attribute?.name}:`}</div>
+                          <div className='grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 lg:grid-cols-5'>
                             {products.map(({ option, summary, isCurrent }) => {
                               const mainImage = summary?.mainImage;
                               const name = `${option?.name} ${
@@ -229,13 +229,13 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({ cardData, compan
                                       alt={name}
                                       title={name}
                                       width={100}
-                                      className='absolute inset-0 w-full h-full object-contain'
+                                      className='absolute inset-0 h-full w-full object-contain'
                                     />
                                   </div>
                                   <div className='mt-3 text-sm'>{name}</div>
                                   {isCurrent ? null : (
                                     <WpLink
-                                      className='absolute inset-0 z-30 block text-indent-full overflow-hidden'
+                                      className='text-indent-full absolute inset-0 z-30 block overflow-hidden'
                                       href={`/${summary?.slug}`}
                                     >
                                       {name}
@@ -258,7 +258,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({ cardData, compan
                   }
                   return (
                     <section key={`${attributesGroup._id}`} className={`${dataSectionClassName}`}>
-                      <h2 className='text-2xl mb-4 font-medium'>{attributesGroup.name}</h2>
+                      <h2 className='mb-4 text-2xl font-medium'>{attributesGroup.name}</h2>
 
                       <ul className='space-y-4 sm:space-y-2'>
                         {attributesGroup.attributes.map(({ attribute, readableValue }) => {
@@ -266,11 +266,11 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({ cardData, compan
                             return null;
                           }
                           return (
-                            <li key={`${attribute._id}`} className='sm:flex justify-between'>
-                              <div className='text-secondary-text mb-1 font-bold sm:half-column'>
+                            <li key={`${attribute._id}`} className='justify-between sm:flex'>
+                              <div className='sm:half-column mb-1 font-bold text-secondary-text'>
                                 {attribute.name}
                               </div>
-                              <div className='sm:text-right sm:half-column'>{readableValue}</div>
+                              <div className='sm:half-column sm:text-right'>{readableValue}</div>
                             </li>
                           );
                         })}
@@ -283,17 +283,17 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({ cardData, compan
                 {showCardBrands && (brand || manufacturer || brandCollection) ? (
                   <section className={`${dataSectionClassName}`}>
                     {cardBrandsLabel ? (
-                      <h2 className='text-2xl mb-4 font-medium'>{cardBrandsLabel}</h2>
+                      <h2 className='mb-4 text-2xl font-medium'>{cardBrandsLabel}</h2>
                     ) : null}
 
                     <ul className='space-y-4 sm:space-y-2'>
                       {brand ? (
-                        <li className='sm:flex justify-between'>
-                          <div className='text-secondary-text mb-1 font-bold sm:half-column'>
+                        <li className='justify-between sm:flex'>
+                          <div className='sm:half-column mb-1 font-bold text-secondary-text'>
                             Бренд
                           </div>
                           <div
-                            className='sm:text-right sm:half-column cursor-pointer hover:text-theme'
+                            className='sm:half-column cursor-pointer hover:text-theme sm:text-right'
                             onClick={() => {
                               router
                                 .push(
@@ -308,13 +308,13 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({ cardData, compan
                       ) : null}
 
                       {brand?.mainUrl ? (
-                        <li className='sm:flex justify-between'>
-                          <div className='text-secondary-text mb-1 font-bold sm:half-column'>
+                        <li className='justify-between sm:flex'>
+                          <div className='sm:half-column mb-1 font-bold text-secondary-text'>
                             Сайт бренда
                           </div>
-                          <div className='sm:text-right sm:half-column'>
+                          <div className='sm:half-column sm:text-right'>
                             <div
-                              className='text-primary-text cursor-pointer hover:underline'
+                              className='cursor-pointer text-primary-text hover:underline'
                               onClick={() => {
                                 window.open(`${brand.mainUrl}`, '_blank');
                               }}
@@ -326,12 +326,12 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({ cardData, compan
                       ) : null}
 
                       {brandCollection && brand ? (
-                        <li className='sm:flex justify-between'>
-                          <div className='text-secondary-text mb-1 font-bold sm:half-column'>
+                        <li className='justify-between sm:flex'>
+                          <div className='sm:half-column mb-1 font-bold text-secondary-text'>
                             Линейка бренда
                           </div>
                           <div
-                            className='sm:text-right sm:half-column cursor-pointer hover:text-theme'
+                            className='sm:half-column cursor-pointer hover:text-theme sm:text-right'
                             onClick={() => {
                               router
                                 .push(
@@ -346,22 +346,22 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({ cardData, compan
                       ) : null}
 
                       {manufacturer ? (
-                        <li className='sm:flex justify-between'>
-                          <div className='text-secondary-text mb-1 font-bold sm:half-column'>
+                        <li className='justify-between sm:flex'>
+                          <div className='sm:half-column mb-1 font-bold text-secondary-text'>
                             Производитель
                           </div>
-                          <div className='sm:text-right sm:half-column'>{manufacturer.name}</div>
+                          <div className='sm:half-column sm:text-right'>{manufacturer.name}</div>
                         </li>
                       ) : null}
 
                       {manufacturer?.mainUrl ? (
-                        <li className='sm:flex justify-between'>
-                          <div className='text-secondary-text mb-1 font-bold sm:half-column'>
+                        <li className='justify-between sm:flex'>
+                          <div className='sm:half-column mb-1 font-bold text-secondary-text'>
                             Сайт производителя
                           </div>
-                          <div className='sm:text-right sm:half-column'>
+                          <div className='sm:half-column sm:text-right'>
                             <div
-                              className='text-primary-text cursor-pointer hover:underline'
+                              className='cursor-pointer text-primary-text hover:underline'
                               onClick={() => {
                                 window.open(`${manufacturer.mainUrl}`, '_blank');
                               }}
@@ -409,7 +409,7 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({ cardData, compan
           <CardDynamicContent cardContent={cardContent} product={cardData.product} />
 
           {videos && videos.length > 0 ? (
-            <div className='space-y-8 mb-28'>
+            <div className='mb-28 space-y-8'>
               {videos.map((video, index) => {
                 return (
                   <div className={`video-box`} key={index}>

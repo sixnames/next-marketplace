@@ -52,20 +52,20 @@ const CardShop: React.FC<CardShopInterface> = ({ shop }) => {
   const disabled = amount + noNaN(inCartCount) > available;
 
   return (
-    <LayoutCard className='overflow-hidden gap-4 md:grid md:grid-cols-12'>
-      <div className='relative h-[120px] w-full md:col-span-4 lg:col-span-3 md:h-full'>
+    <LayoutCard className='gap-4 overflow-hidden md:grid md:grid-cols-12'>
+      <div className='relative h-[120px] w-full md:col-span-4 md:h-full lg:col-span-3'>
         <WpImage
           url={mainImage}
           alt={name}
           title={name}
           width={240}
-          className='absolute inset-0 w-full h-full object-cover'
+          className='absolute inset-0 h-full w-full object-cover'
         />
       </div>
 
       <div className='grid gap-4 px-4 py-6 md:col-span-8 lg:col-span-9 lg:grid-cols-5'>
         <div className='lg:col-span-3'>
-          <div className='text-xl font-medium mb-2'>{name}</div>
+          <div className='mb-2 text-xl font-medium'>{name}</div>
           <div className='mb-3'>
             <RatingStars rating={4.5} showRatingNumber={false} smallStars={true} className='' />
           </div>
@@ -116,7 +116,7 @@ const CardShop: React.FC<CardShopInterface> = ({ shop }) => {
             {configs.showShopProductAvailability ? (
               <React.Fragment>
                 {disabled ? (
-                  <div className='text-theme col-span-5'>Нет в наличии</div>
+                  <div className='col-span-5 text-theme'>Нет в наличии</div>
                 ) : (
                   <div className=''>В наличии {` ${available} `}шт.</div>
                 )}
@@ -124,7 +124,7 @@ const CardShop: React.FC<CardShopInterface> = ({ shop }) => {
             ) : null}
           </div>
 
-          <div className='max-w-[340px] grid gap-3 grid-cols-6'>
+          <div className='grid max-w-[340px] grid-cols-6 gap-3'>
             {disabled ? null : (
               <React.Fragment>
                 <div className='col-span-3'>
@@ -181,7 +181,7 @@ const CardShopsList: React.FC<CardShopsListInterface> = ({ cardShops }) => {
 
   return (
     <section id={`card-shops`} className='mb-28'>
-      <div className='mb-6 flex flex-col gap-4 items-baseline sm:flex-row sm:justify-between'>
+      <div className='mb-6 flex flex-col items-baseline gap-4 sm:flex-row sm:justify-between'>
         <h2 className='text-2xl font-medium'>Наличие в магазинах</h2>
 
         <ArrowTrigger

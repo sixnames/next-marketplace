@@ -2,9 +2,9 @@ name: Deploy to the stage
 
 on:
   workflow_dispatch:
-    types: [ opened, deleted ]
+    types: [opened, deleted]
   push:
-    branches: [ old_9999 ]
+    branches: [old_9999]
 
 jobs:
   deploy:

@@ -16,7 +16,7 @@ const ArrowTrigger: React.FC<ArrowTriggerInterface> = ({
 
   return (
     <div
-      className='flex items-center whitespace-nowrap text-theme cursor-pointer'
+      className='flex cursor-pointer items-center whitespace-nowrap text-theme'
       onClick={onClick}
     >
       {arrowPosition === 'left' ? (

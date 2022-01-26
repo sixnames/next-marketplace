@@ -66,21 +66,21 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
                 aria-label={'profile'}
               >
                 <span className={`relative`}>
-                  <WpIcon name={'user'} className='w-5 h-5' />
+                  <WpIcon name={'user'} className='h-5 w-5' />
                 </span>
               </Popover.Button>
 
-              <Popover.Panel className='absolute z-10 top-full right-0'>
+              <Popover.Panel className='absolute top-full right-0 z-10'>
                 <LayoutCard className='w-52 pb-4'>
                   <div className='pt-6 pb-6 pl-[var(--reachMenuItemHorizontalPadding)] pr-[var(--reachMenuItemHorizontalPadding)]'>
-                    <div className='font-medium text-sm'>{sessionUser.me.shortName}</div>
+                    <div className='text-sm font-medium'>{sessionUser.me.shortName}</div>
                   </div>
 
                   <ul className='divide-y divide-gray-300 dark:divide-gray-600'>
                     <li>
                       <WpLink
                         testId={`${testId}-user-dropdown-profile-link`}
-                        className='flex items-center min-h-[3rem] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme hover:no-underline cursor-pointer no-underline'
+                        className='flex min-h-[3rem] cursor-pointer items-center py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text no-underline hover:text-theme hover:no-underline'
                         href={`${ROUTE_PROFILE}`}
                       >
                         <span>Личный кабинет</span>
@@ -92,7 +92,7 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
                       <li>
                         <WpLink
                           testId={`${testId}-user-dropdown-cms-link`}
-                          className='flex items-center min-h-[3rem] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme hover:no-underline cursor-pointer no-underline'
+                          className='flex min-h-[3rem] cursor-pointer items-center py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text no-underline hover:text-theme hover:no-underline'
                           href={ROUTE_CMS}
                         >
                           <span>CMS</span>
@@ -105,7 +105,7 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
                       <li>
                         <WpLink
                           testId={`${testId}-user-dropdown-app-link`}
-                          className='flex items-center min-h-[3rem] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme hover:no-underline cursor-pointer no-underline'
+                          className='flex min-h-[3rem] cursor-pointer items-center py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text no-underline hover:text-theme hover:no-underline'
                           href={ROUTE_CONSOLE}
                         >
                           <span>Панель управления</span>
@@ -116,7 +116,7 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
                     <li onClick={signOut}>
                       <span
                         data-cy={`${testId}-sign-out-link`}
-                        className='flex items-center min-h-[3rem] py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text hover:text-theme cursor-pointer no-underline'
+                        className='flex min-h-[3rem] cursor-pointer items-center py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text no-underline hover:text-theme'
                       >
                         Выйти из аккаунта
                       </span>
@@ -139,7 +139,7 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
       className={`${middleLinkClassName} pr-2 pl-2`}
     >
       <span className={`relative`}>
-        <WpIcon name={'user'} className='w-5 h-5' />
+        <WpIcon name={'user'} className='h-5 w-5' />
       </span>
     </WpLink>
   );
@@ -161,14 +161,14 @@ const HeaderCartLink: React.FC<HeaderCartLinkInterface> = ({ testId }) => {
             className={`${middleLinkClassName} pl-2`}
           >
             <span className={`relative mr-3`}>
-              <WpIcon name={'cart'} className='w-5 h-5' />
+              <WpIcon name={'cart'} className='h-5 w-5' />
               <CounterSticker value={cart.productsCount} testId={'cart-counter'} />
             </span>
             <span className='hidden lg:block'>Корзина</span>
           </span>
         </Popover.Button>
 
-        <Popover.Panel className='absolute z-10 top-[90%] right-[var(--innerBlockHorizontalPadding)]'>
+        <Popover.Panel className='absolute top-[90%] right-[var(--innerBlockHorizontalPadding)] z-10'>
           <CartDropdown cart={cart} />
         </Popover.Panel>
       </Popover>
@@ -178,7 +178,7 @@ const HeaderCartLink: React.FC<HeaderCartLinkInterface> = ({ testId }) => {
   return (
     <span data-cy={`${testId}-cart-dropdown-trigger`} className={`${middleLinkClassName} pl-2`}>
       <span className={`relative mr-3`}>
-        <WpIcon name={'cart'} className='w-5 h-5' />
+        <WpIcon name={'cart'} className='h-5 w-5' />
       </span>
       <span className='hidden lg:block'>Корзина</span>
     </span>
@@ -215,9 +215,9 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
   const visibleOptionsCount = configs.stickyNavVisibleOptionsCount;
 
   return (
-    <div className='fixed inset-0 bg-primary z-[140] w-full pt-4 pb-8 overflow-y-auto min-w-[320px]'>
+    <div className='fixed inset-0 z-[140] w-full min-w-[320px] overflow-y-auto bg-primary pt-4 pb-8'>
       <Inner className='pb-24'>
-        <div className='flex items-center justify-between mb-8'>
+        <div className='mb-8 flex items-center justify-between'>
           <ButtonCross onClick={hideBurgerDropdown} />
           <div className='flex items-center gap-5'>
             <ThemeTrigger />
@@ -240,7 +240,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                   href={`${ROUTE_CATALOGUE}/${rubric.slug}`}
                   onClick={hideBurgerDropdown}
                   testId={`main-rubric-${rubric.name}`}
-                  className={`flex items-center justify-between min-h-[var(--minLinkHeight)] text-xl font-medium flex-grow ${
+                  className={`flex min-h-[var(--minLinkHeight)] flex-grow items-center justify-between text-xl font-medium ${
                     isCurrent ? 'text-theme' : 'text-primary-text'
                   }`}
                 >
@@ -262,7 +262,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                                   <WpLink
                                     href={`${ROUTE_CATALOGUE}/${rubric.slug}/${FILTER_CATEGORY_KEY}${FILTER_SEPARATOR}${category.slug}`}
                                     onClick={hideBurgerDropdown}
-                                    className={`flex items-center h-10 ${
+                                    className={`flex h-10 items-center ${
                                       isCurrent ? 'text-theme' : 'text-primary-text'
                                     }`}
                                   >
@@ -291,7 +291,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                                     <WpLink
                                       href={`${ROUTE_CATALOGUE}/${rubric.slug}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`}
                                       onClick={hideBurgerDropdown}
-                                      className={`flex items-center h-10 ${
+                                      className={`flex h-10 items-center ${
                                         isCurrent ? 'text-theme' : 'text-primary-text'
                                       }`}
                                     >
@@ -304,7 +304,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                               {showOptionsMoreLink ? (
                                 <li>
                                   <div
-                                    className='flex items-center h-10 text-theme font-medium cursor-pointer'
+                                    className='flex h-10 cursor-pointer items-center font-medium text-theme'
                                     onClick={() => {
                                       router
                                         .push(`${ROUTE_CATALOGUE}/${rubricSlug}`)
@@ -323,8 +323,8 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                     </div>
                   </Disclosure.Panel>
                   <Disclosure.Button as={'div'}>
-                    <button className='absolute top-0 right-0 z-[2] flex items-center justify-end w-[var(--minLinkHeight)] h-[var(--minLinkHeight)] flex-shrink-0 text-primary-text outline-none focus:outline-none'>
-                      <WpIcon name={'chevron-down'} className='w-5 h-5' />
+                    <button className='absolute top-0 right-0 z-[2] flex h-[var(--minLinkHeight)] w-[var(--minLinkHeight)] flex-shrink-0 items-center justify-end text-primary-text outline-none focus:outline-none'>
+                      <WpIcon name={'chevron-down'} className='h-5 w-5' />
                     </button>
                   </Disclosure.Button>
                 </Disclosure>
@@ -338,7 +338,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
             return (
               <div className='relative mb-8' key={`${_id}`}>
                 <div
-                  className={`flex items-center justify-between text-lg mb-3 font-medium flex-grow`}
+                  className={`mb-3 flex flex-grow items-center justify-between text-lg font-medium`}
                 >
                   {name}
                 </div>
@@ -350,7 +350,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                         <WpLink
                           href={`${ROUTE_DOCS}/${page.slug}`}
                           onClick={hideBurgerDropdown}
-                          className={`flex items-center h-10 text-secondary-text`}
+                          className={`flex h-10 items-center text-secondary-text`}
                         >
                           <span>{page.name}</span>
                         </WpLink>
@@ -364,7 +364,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                         <WpLink
                           href={`${ROUTE_CONTACTS}`}
                           onClick={hideBurgerDropdown}
-                          className={`flex items-center h-10 text-secondary-text`}
+                          className={`flex h-10 items-center text-secondary-text`}
                         >
                           <span>{contactsLinkName}</span>
                         </WpLink>
@@ -379,7 +379,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
           {showBlog ? (
             <div className='relative mb-8'>
               <div
-                className={`flex items-center justify-between text-lg mb-3 font-medium flex-grow text-primary-text`}
+                className={`mb-3 flex flex-grow items-center justify-between text-lg font-medium text-primary-text`}
                 onClick={() => {
                   hideBurgerDropdown();
                   window.open(`${ROUTE_BLOG}`, '_blank');
@@ -395,7 +395,7 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
           <div className='flex items-center'>
             <div>
               <div
-                className='flex items-center gap-3 cursor-pointer hover:text-theme transition-all'
+                className='flex cursor-pointer items-center gap-3 transition-all hover:text-theme'
                 onClick={() => {
                   hideBurgerDropdown();
                   showModal<MapModalInterface>({
@@ -416,18 +416,18 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
                 }}
               >
                 <div className='text-theme'>
-                  <WpIcon name={'marker'} className='w-5 h-5' />
+                  <WpIcon name={'marker'} className='h-5 w-5' />
                 </div>
                 <div>{domainCompany.mainShop.address.readableAddress}</div>
               </div>
 
-              <div className='flex items-center gap-3 mt-4'>
+              <div className='mt-4 flex items-center gap-3'>
                 <div className='text-theme'>
-                  <WpIcon name={'phone'} className='w-5 h-5' />
+                  <WpIcon name={'phone'} className='h-5 w-5' />
                 </div>
                 <div>
                   <LinkPhone
-                    className='text-primary-text hover:text-theme transition-all'
+                    className='text-primary-text transition-all hover:text-theme'
                     value={{
                       raw: phoneToRaw(callbackPhone),
                       readable: phoneToReadable(callbackPhone),
@@ -439,13 +439,13 @@ const BurgerDropdown: React.FC<BurgerDropdownInterface> = ({
           </div>
         ) : (
           <div
-            className='flex items-center min-h-[3rem] text-secondary-text cursor-pointer hover:text-theme transition-colors duration-200'
+            className='flex min-h-[3rem] cursor-pointer items-center text-secondary-text transition-colors duration-200 hover:text-theme'
             onClick={() => {
               router.push(`/#top-shops`).catch(console.log);
             }}
           >
             <div className={`relative mr-3`}>
-              <WpIcon name={'marker'} className='w-5 h-5' />
+              <WpIcon name={'marker'} className='h-5 w-5' />
             </div>
             <span>{domainCompany ? 'Наши магазины' : 'Магазины'}</span>
           </div>
@@ -513,7 +513,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
   return (
     <React.Fragment>
       <header
-        className='sticky lg:relative top-0 z-[130] bg-primary shadow-md lg:shadow-none'
+        className='sticky top-0 z-[130] bg-primary shadow-md lg:relative lg:shadow-none'
         style={
           {
             '--logoWidth': configLogoWidth,
@@ -529,10 +529,10 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
                 return (
                   <div
                     key={`${_id}`}
-                    className='header-sub-nav font-sm relative gap-6 cursor-pointer'
+                    className='header-sub-nav font-sm relative cursor-pointer gap-6'
                   >
                     <div
-                      className='flex items-center h-[30px] text-secondary-text'
+                      className='flex h-[30px] items-center text-secondary-text'
                       style={topTextColorStyle}
                     >
                       {name}
@@ -542,7 +542,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
                         return (
                           <li className='' key={`${_id}`}>
                             <div
-                              className='block py-1.5 px-3 text-primary-text hover:no-underline hover:text-theme'
+                              className='block py-1.5 px-3 text-primary-text hover:text-theme hover:no-underline'
                               onClick={() => {
                                 window.open(`${ROUTE_DOCS}/${slug}`, '_blank');
                               }}
@@ -556,7 +556,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
                       {index === 0 ? (
                         <li className=''>
                           <div
-                            className='block py-1.5 px-3 text-primary-text hover:no-underline hover:text-theme'
+                            className='block py-1.5 px-3 text-primary-text hover:text-theme hover:no-underline'
                             onClick={() => {
                               window.open(`${ROUTE_CONTACTS}`, '_blank');
                             }}
@@ -571,7 +571,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
               })}
               {showBlog ? (
                 <div
-                  className='flex items-center h-[30px] text-secondary-text hover:no-underline hover:text-theme cursor-pointer'
+                  className='flex h-[30px] cursor-pointer items-center text-secondary-text hover:text-theme hover:no-underline'
                   style={topTextColorStyle}
                   onClick={() => {
                     window.open(`${ROUTE_BLOG}`, '_blank');
@@ -582,7 +582,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
               ) : null}
             </div>
 
-            <div className='flex gap-6 items-center'>
+            <div className='flex items-center gap-6'>
               {callbackPhone && !isOneShopCompany ? (
                 <LinkPhone
                   style={topTextColorStyle}
@@ -602,8 +602,8 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
         </div>
 
         <Inner lowTop lowBottom className='relative'>
-          <div className='flex justify-between py-3 lg:py-6 lg:justify-between lg:py-4'>
-            <div className={`${middleSideClassName} justify-start hidden lg:inline-flex`}>
+          <div className='flex justify-between py-3 lg:justify-between lg:py-6 lg:py-4'>
+            <div className={`${middleSideClassName} hidden justify-start lg:inline-flex`}>
               {isOneShopCompany && domainCompany && domainCompany.mainShop ? (
                 <div className='flex items-center'>
                   <div>
@@ -625,21 +625,21 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
                           },
                         });
                       }}
-                      className='flex items-center gap-3 cursor-pointer hover:text-theme transition-all'
+                      className='flex cursor-pointer items-center gap-3 transition-all hover:text-theme'
                     >
                       <div className='text-theme'>
-                        <WpIcon name={'marker'} className='w-5 h-5' />
+                        <WpIcon name={'marker'} className='h-5 w-5' />
                       </div>
                       <div>{domainCompany.mainShop.address.readableAddress}</div>
                     </div>
 
-                    <div className='flex items-center gap-3 mt-2'>
+                    <div className='mt-2 flex items-center gap-3'>
                       <div className='text-theme'>
-                        <WpIcon name={'phone'} className='w-5 h-5' />
+                        <WpIcon name={'phone'} className='h-5 w-5' />
                       </div>
                       <div>
                         <LinkPhone
-                          className='text-primary-text hover:text-theme transition-all'
+                          className='text-primary-text transition-all hover:text-theme'
                           value={{
                             raw: phoneToRaw(callbackPhone),
                             readable: phoneToReadable(callbackPhone),
@@ -657,7 +657,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
                   }}
                 >
                   <div className={`relative mr-3`}>
-                    <WpIcon name={'marker'} className='w-5 h-5' />
+                    <WpIcon name={'marker'} className='h-5 w-5' />
                   </div>
                   <span>{domainCompany ? 'Наши магазины' : 'Магазины'}</span>
                 </div>
@@ -666,11 +666,11 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
 
             <WpLink
               href={'/'}
-              className='flex items-center flex-shrink-0 w-[var(--logoMobileWidth)] md:w-[var(--logoWidth)]'
+              className='flex w-[var(--logoMobileWidth)] flex-shrink-0 items-center md:w-[var(--logoWidth)]'
               aria-label={'Главная страница'}
             >
               <img
-                className='w-full h-auto object-contain object-left lg:object-center'
+                className='h-auto w-full object-contain object-left lg:object-center'
                 src={`${siteLogoSrc}`}
                 width='150'
                 height='24'
@@ -686,21 +686,21 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
                 className={`${middleLinkClassName} pr-2 pl-2`}
               >
                 <div className={`relative`}>
-                  <WpIcon name={'search'} className='w-5 h-5' />
+                  <WpIcon name={'search'} className='h-5 w-5' />
                 </div>
               </div>
 
               <HeaderProfileLink testId={'header'} />
 
-              <div className={`${middleLinkClassName} hidden lg:flex pr-2 pl-2`}>
+              <div className={`${middleLinkClassName} hidden pr-2 pl-2 lg:flex`}>
                 <div className={`relative`}>
-                  <WpIcon name={'compare'} className='w-5 h-5' />
+                  <WpIcon name={'compare'} className='h-5 w-5' />
                 </div>
               </div>
 
-              <div className={`${middleLinkClassName} hidden lg:flex pr-2 pl-2`}>
+              <div className={`${middleLinkClassName} hidden pr-2 pl-2 lg:flex`}>
                 <div className={`relative`}>
-                  <WpIcon name={'heart'} className='w-5 h-5' />
+                  <WpIcon name={'heart'} className='h-5 w-5' />
                 </div>
               </div>
 
@@ -713,7 +713,7 @@ const Header: React.FC<HeaderInterface> = ({ headerPageGroups, currentRubricSlug
                 className={`${middleLinkClassName} lg:hidden`}
               >
                 <div className={`relative`}>
-                  <WpIcon name={'burger'} className={'w-6 h-6'} />
+                  <WpIcon name={'burger'} className={'h-6 w-6'} />
                 </div>
               </div>
             </div>

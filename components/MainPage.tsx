@@ -73,7 +73,7 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
                     ) : null}
                     <source srcSet={mainBanner} />
                     <img
-                      className='block relative w-full h-full z-10 object-cover'
+                      className='relative z-10 block h-full w-full object-cover'
                       src={mainBanner}
                       alt={`${name}`}
                       title={`${name}`}
@@ -84,7 +84,7 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
 
                   {/*text*/}
                   <span
-                    className='absolute flex flex-col z-20 inset-0 p-4 lg:p-8 text-white'
+                    className='absolute inset-0 z-20 flex flex-col p-4 text-white lg:p-8'
                     style={
                       {
                         paddingTop: mainBannerTextPadding ? `${mainBannerTextPadding}%` : '2rem',
@@ -94,9 +94,9 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
                       } as React.CSSProperties
                     }
                   >
-                    <span className='max-w-full block whitespace-normal'>
+                    <span className='block max-w-full whitespace-normal'>
                       <span
-                        className='block font-medium text-2xl md:text-3xl lg:text-5xl'
+                        className='block text-2xl font-medium md:text-3xl lg:text-5xl'
                         style={{
                           color: mainBannerTextColor ? mainBannerTextColor : 'var(--textColor)',
                           maxWidth: mainBannerTextMaxWidth
@@ -108,7 +108,7 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
                       </span>
                       {description ? (
                         <span
-                          className='font-medium block text-2xl mt-8 md:mt-10 lg:mt-12'
+                          className='mt-8 block text-2xl font-medium md:mt-10 lg:mt-12'
                           style={{
                             color: mainBannerTextColor ? mainBannerTextColor : 'var(--textColor)',
                             maxWidth: mainBannerTextMaxWidth
@@ -136,7 +136,7 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
       <Inner testId={'main-page'}>
         {/*main banner*/}
         {sliderItems.length > 0 ? (
-          <div className='sm:mb-20 mb-14'>
+          <div className='mb-14 sm:mb-20'>
             <ImageGallery
               showBullets={sliderItems.length > 1}
               autoPlay={process.env.NODE_ENV !== 'development'}
@@ -164,14 +164,14 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
         {/*top products*/}
         {topProducts.length > 0 ? (
           <section className={sectionClassName}>
-            <div className='text-2xl mb-4 font-medium'>
+            <div className='mb-4 text-2xl font-medium'>
               <h2>Популярные товары</h2>
             </div>
             <HorizontalScroll>
               {topProducts.map((product) => {
                 return (
                   <div
-                    className='min-w-[220px] max-w-[220px] md:min-w-[280px] md:max-w-[280px] flex items-stretch'
+                    className='flex min-w-[220px] max-w-[220px] items-stretch md:min-w-[280px] md:max-w-[280px]'
                     key={`${product._id}`}
                   >
                     <ProductSnippetGridBigImage
@@ -190,7 +190,7 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
         {/*promotions*/}
         {secondaryBanners.length > 0 ? (
           <section className={sectionClassName}>
-            <div className='text-2xl mb-4 font-medium'>
+            <div className='mb-4 text-2xl font-medium'>
               <h2>Акции</h2>
             </div>
             <HorizontalScroll>
@@ -214,7 +214,7 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
 
                   return (
                     <div
-                      className='flex min-w-[80vw] sm:min-w-[21rem] w-[80vw] sm:w-[21rem] overflow-hidden rounded-lg'
+                      className='flex w-[80vw] min-w-[80vw] overflow-hidden rounded-lg sm:w-[21rem] sm:min-w-[21rem]'
                       key={`${secondaryBanner}`}
                     >
                       <WpLink
@@ -223,7 +223,7 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
                         href={`${asPage ? ROUTE_DOCS : ROUTE_PROMO}/${slug}`}
                       >
                         <img
-                          className='block relative z-10'
+                          className='relative z-10 block'
                           src={`${secondaryBanner}`}
                           width='526'
                           height='360'
@@ -231,7 +231,7 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
                           title={`${name}`}
                         />
                         <span
-                          className='absolute z-20 flex flex-col inset-0 p-8 text-white'
+                          className='absolute inset-0 z-20 flex flex-col p-8 text-white'
                           style={
                             {
                               paddingTop: secondaryBannerTextPadding
@@ -244,7 +244,7 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
                           }
                         >
                           <span
-                            className='block font-medium text-3xl max-w-[250px]'
+                            className='block max-w-[250px] text-3xl font-medium'
                             style={{
                               color: secondaryBannerTextColor
                                 ? secondaryBannerTextColor
@@ -269,12 +269,12 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
         {/*top filters*/}
         {topFilters.length > 0 ? (
           <section className={sectionClassName}>
-            <div className='text-2xl mb-4 font-medium'>
+            <div className='mb-4 text-2xl font-medium'>
               <h2>Популярные разделы</h2>
             </div>
 
             {/*Desktop*/}
-            <div className='hidden lg:flex flex-wrap gap-3'>
+            <div className='hidden flex-wrap gap-3 lg:flex'>
               {topFilters.map(({ name, href }) => {
                 return (
                   <TagLink href={`${href}`} key={href}>
@@ -297,7 +297,7 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
               </div>
 
               {topFiltersVisible ? (
-                <div className='flex flex-wrap gap-3 mt-3'>
+                <div className='mt-3 flex flex-wrap gap-3'>
                   {mobileTopFilters.hidden.map(({ name, href }) => {
                     return (
                       <TagLink href={`${href}`} key={href}>
@@ -309,7 +309,7 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
               ) : null}
 
               <div
-                className='mt-5 font-medium cursor-pointer text-theme'
+                className='mt-5 cursor-pointer font-medium text-theme'
                 onClick={() =>
                   setTopFiltersVisible((prevState) => {
                     return !prevState;
@@ -325,8 +325,8 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
         {/*top shops*/}
         {topShops.length > 0 ? (
           <section className={`${sectionClassName} relative`}>
-            <div className='absolute w-full h-[1px] top-[-50px] left-0' id={'top-shops'} />
-            <div className='text-2xl mb-4 font-medium flex items-baseline'>
+            <div className='absolute top-[-50px] left-0 h-[1px] w-full' id={'top-shops'} />
+            <div className='mb-4 flex items-baseline text-2xl font-medium'>
               <h2>Магазины{domainCompany ? ` ${domainCompany.name}` : ''}</h2>
               <span className='ml-3 text-xl text-theme'>({topShops.length})</span>
             </div>

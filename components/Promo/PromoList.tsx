@@ -84,7 +84,7 @@ const PromoList: React.FC<PromoListInterface> = ({ promoList, basePath, pageComp
 
   return (
     <div className='relative' data-cy={'promo-list'}>
-      <div className='overflow-y-hidden overflow-x-auto'>
+      <div className='overflow-x-auto overflow-y-hidden'>
         <WpTable<PromoInterface>
           testIdKey={'name'}
           columns={columns}

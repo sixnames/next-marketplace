@@ -16,13 +16,13 @@ const CardPrices: React.FC<CardPricesInterface> = ({ minPrice, maxPrice, shopsCo
   }
 
   return (
-    <div className='sm:inline-flex items-baseline'>
+    <div className='items-baseline sm:inline-flex'>
       {isMultiplePrice ? (
         <React.Fragment>
           <div className='mr-2'>Цена от</div>
           <div className='flex items-baseline text-2xl sm:text-3xl md:text-4xl'>
             <Currency value={minPrice} />
-            <div className='text-lg mx-2'>до</div>
+            <div className='mx-2 text-lg'>до</div>
             <Currency value={maxPrice} />
           </div>
         </React.Fragment>

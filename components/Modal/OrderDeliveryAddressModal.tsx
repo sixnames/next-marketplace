@@ -69,7 +69,7 @@ const OrderDeliveryAddressModal: React.FC<OrderDeliveryAddressModalInterface> = 
 
   if (!isLoaded) {
     return (
-      <div className='relative fixed inset-0 bg-primary'>
+      <div className='fixed relative inset-0 bg-primary'>
         <Spinner />
       </div>
     );
@@ -122,12 +122,12 @@ const OrderDeliveryAddressModal: React.FC<OrderDeliveryAddressModalInterface> = 
       {({ setFieldValue }) => {
         return (
           <Form>
-            <div className='fixed inset-0 bg-primary flex flex-col min-w-[320px]'>
+            <div className='fixed inset-0 flex min-w-[320px] flex-col bg-primary'>
               {/*title*/}
-              <div className='relative z-20 bg-primary wp-shadow-200'>
+              <div className='wp-shadow-200 relative z-20 bg-primary'>
                 <Inner wide>
                   <div className='flex items-center justify-between'>
-                    <div className='font-bold text-2xl md:text-3xl lg:text-4xl'>
+                    <div className='text-2xl font-bold md:text-3xl lg:text-4xl'>
                       Укажите адрес доставки
                     </div>
                     <ControlButton icon={'cross'} onClick={hideModal} />
@@ -135,14 +135,14 @@ const OrderDeliveryAddressModal: React.FC<OrderDeliveryAddressModalInterface> = 
                 </Inner>
               </div>
 
-              <div className='relative z-10 flex-grow grid grid-cols-6'>
+              <div className='relative z-10 grid flex-grow grid-cols-6'>
                 {/*form fields*/}
-                <div className='relative z-20 col-span-6 md:col-span-3 lg:col-span-2 bg-primary wp-shadow-200'>
-                  <div className='absolute inset-0 overflow-x-hidden overflow-y-auto'>
+                <div className='wp-shadow-200 relative z-20 col-span-6 bg-primary md:col-span-3 lg:col-span-2'>
+                  <div className='absolute inset-0 overflow-y-auto overflow-x-hidden'>
                     <Inner wide>
                       {/*address fields*/}
                       <div className='mb-16'>
-                        <div className='font-medium text-xl lg:text-2xl mb-4'>Адрес доставки</div>
+                        <div className='mb-4 text-xl font-medium lg:text-2xl'>Адрес доставки</div>
                         <FormikAddressInput
                           name={'address'}
                           label={'Адрес'}
@@ -175,9 +175,9 @@ const OrderDeliveryAddressModal: React.FC<OrderDeliveryAddressModalInterface> = 
 
                       {/*recipient fields*/}
                       <div className='mb-16'>
-                        <div className='font-medium text-xl lg:text-2xl mb-4'>
+                        <div className='mb-4 text-xl font-medium lg:text-2xl'>
                           Данные получателя{' '}
-                          <span className='text-sm text-secondary-text inline-block'>
+                          <span className='inline-block text-sm text-secondary-text'>
                             если получатель не вы
                           </span>
                         </div>
@@ -190,7 +190,7 @@ const OrderDeliveryAddressModal: React.FC<OrderDeliveryAddressModalInterface> = 
                 </div>
 
                 {/*map*/}
-                <div className='hidden md:block relative z-10 col-span-3 lg:col-span-4'>
+                <div className='relative z-10 col-span-3 hidden md:block lg:col-span-4'>
                   <GoogleMap
                     onLoad={onLoad}
                     mapContainerStyle={mapContainerStyle}

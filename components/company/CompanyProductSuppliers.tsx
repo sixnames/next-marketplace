@@ -147,7 +147,7 @@ const CompanyProductSuppliers: React.FC<CompanyProductSuppliersInterface> = ({
           {({ values, setFieldValue }) => {
             return (
               <Form>
-                <div className='md:grid gap-8 grid-cols-2'>
+                <div className='grid-cols-2 gap-8 md:grid'>
                   <FormikInput
                     label={'Наличие'}
                     testId={`available`}
@@ -217,7 +217,7 @@ const CompanyProductSuppliers: React.FC<CompanyProductSuppliersInterface> = ({
 
       {/*suppliers list*/}
       <div className='mb-16'>
-        <div className='overflow-x-auto overflow-y-hidden mb-8'>
+        <div className='mb-8 overflow-x-auto overflow-y-hidden'>
           <WpTable<SupplierProductInterface>
             columns={columns}
             data={shopProduct.supplierProducts}

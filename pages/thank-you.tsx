@@ -23,7 +23,7 @@ const ThankYouRoute: React.FC = () => {
           </p>
         </div>
 
-        <div className='flex gap-4 flex-wrap'>
+        <div className='flex flex-wrap gap-4'>
           <WpButton
             frameClassName={'w-auto'}
             theme={'secondary'}

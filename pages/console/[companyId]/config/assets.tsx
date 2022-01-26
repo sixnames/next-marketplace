@@ -71,7 +71,7 @@ const CompanyAssetsConsumer: React.FC<CompanyAssetsConsumerInterface> = ({ pageC
                   }}
                 >
                   {isEmpty ? (
-                    <div className='font-medium text-red-500 mt-4'>
+                    <div className='mt-4 font-medium text-red-500'>
                       Логотип обязателен к заполнению
                     </div>
                   ) : null}

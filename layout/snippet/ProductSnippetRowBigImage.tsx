@@ -46,7 +46,7 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
 
   return (
     <div
-      className={`group grid rounded-md relative md:grid-cols-12 py-6 px-5 w-full ${bgClassName} ${
+      className={`group relative grid w-full rounded-md py-6 px-5 md:grid-cols-12 ${bgClassName} ${
         className ? className : ''
       }`}
     >
@@ -56,22 +56,22 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
       <div className='md:col-span-4'>
         {/*image*/}
         <div className='relative flex-grow p-5'>
-          <div className='flex p-3 justify-center'>
-            <div className='relative pb-[100%] w-full'>
+          <div className='flex justify-center p-3'>
+            <div className='relative w-full pb-[100%]'>
               <WpImage
                 loading={imageLoading}
                 url={mainImage}
                 alt={`${snippetTitle}`}
                 title={`${snippetTitle}`}
                 width={100}
-                className='absolute inset-0 w-full h-full object-contain'
+                className='absolute inset-0 h-full w-full object-contain'
               />
             </div>
           </div>
           <WpLink
             testId={`${testId}-image-row`}
             target={'_blank'}
-            className='block absolute z-10 inset-0 text-indent-full'
+            className='text-indent-full absolute inset-0 z-10 block'
             href={`/${slug}`}
           >
             {snippetTitle}
@@ -80,9 +80,9 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
       </div>
 
       {/*data*/}
-      <div className='md:col-span-8 flex flex-col'>
+      <div className='flex flex-col md:col-span-8'>
         {showSnippetRating || showSnippetArticle ? (
-          <div className='flex items-baseline gap-4 mb-5'>
+          <div className='mb-5 flex items-baseline gap-4'>
             {/*rating*/}
             {showSnippetRating ? <RatingStars size={'small'} rating={4.9} /> : null}
 
@@ -98,12 +98,12 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
           <WpLink
             testId={`${testId}-name-row`}
             target={'_blank'}
-            className='block text-2xl font-medium text-primary-text hover:no-underline hover:text-primary-text'
+            className='block text-2xl font-medium text-primary-text hover:text-primary-text hover:no-underline'
             href={`/${slug}`}
           >
             {snippetTitle}
           </WpLink>
-          {name ? <div className='text-secondary-text mt-1'>{name}</div> : null}
+          {name ? <div className='mt-1 text-secondary-text'>{name}</div> : null}
         </div>
 
         {/*list features*/}
@@ -114,7 +114,7 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
                 return null;
               }
               return (
-                <div className='md:grid grid-cols-12 gap-x-4 gap-y-2' key={`${_id}`}>
+                <div className='grid-cols-12 gap-x-4 gap-y-2 md:grid' key={`${_id}`}>
                   <div className='col-span-5 text-secondary-text'>{attribute.name}</div>
                   <div className='col-span-7'>{readableValue}</div>
                 </div>
@@ -125,7 +125,7 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
 
         {/*rating features*/}
         {(ratingAttributes || []).length > 0 ? (
-          <div className='flex flex-wrap items-center min-h-control-button-height'>
+          <div className='min-h-control-button-height flex flex-wrap items-center'>
             {(ratingAttributes || []).map(({ _id, attribute, readableValue }) => {
               if (!attribute) {
                 return null;
@@ -133,7 +133,7 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
               return (
                 <div
                   key={`${_id}`}
-                  className='text-secondary-text text-sm uppercase whitespace-nowrap mr-3 mt-1 mb-1'
+                  className='mr-3 mt-1 mb-1 whitespace-nowrap text-sm uppercase text-secondary-text'
                 >
                   {`${attribute.name} ${readableValue}`}
                 </div>
@@ -144,7 +144,7 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
 
         {/*connections*/}
         {(variants || []).length > 0 && showSnippetConnections ? (
-          <div className='hidden md:block mt-2 mb-6'>
+          <div className='mt-2 mb-6 hidden md:block'>
             {(variants || []).map(({ _id, attribute, products }) => {
               return (
                 <div key={`${_id}`} className='mb-4'>
@@ -176,7 +176,7 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
         ) : null}
 
         {isShopless ? null : (
-          <div className='flex flex-wrap gap-4 items-baseline mt-auto mb-3'>
+          <div className='mt-auto mb-3 flex flex-wrap items-baseline gap-4'>
             {/*price*/}
             <ProductSnippetPrice shopsCount={shopsCount} value={minPrice} />
 
@@ -186,7 +186,7 @@ const ProductSnippetRowBigImage: React.FC<ProductSnippetInterface> = ({
         )}
 
         {/*controls*/}
-        <div className={`flex gap-2 justify-between`}>
+        <div className={`flex justify-between gap-2`}>
           <ProductAddToCartButton
             available={available}
             disabled={isShopless}

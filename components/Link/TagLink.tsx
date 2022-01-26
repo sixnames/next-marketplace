@@ -47,7 +47,7 @@ const TagLink: React.FC<TagLinkInterface> = ({
         prefetch={prefetch}
         shallow={shallow}
         onClick={onClick}
-        className={`${tagClassName} hover:no-underline hover:text-theme ${
+        className={`${tagClassName} hover:text-theme hover:no-underline ${
           className ? className : ''
         }`}
         {...props}

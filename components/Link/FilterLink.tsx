@@ -43,8 +43,8 @@ const FilterLink: React.FC<FilterLinkInterface> = ({
       }}
       className={`${
         disabled
-          ? 'cursor-default pointer-events-none opacity-50'
-          : 'cursor-pointer hover:text-theme transition-all'
+          ? 'pointer-events-none cursor-default opacity-50'
+          : 'cursor-pointer transition-all hover:text-theme'
       } ${className ? className : ''}`}
       {...props}
     >
@@ -54,7 +54,7 @@ const FilterLink: React.FC<FilterLinkInterface> = ({
       </span>
       {counter ? <span>{counter}</span> : null}
       {withCross ? (
-        <WpIcon className='flex-shrink-0 w-3 h-3 ml-2 fill-theme cursor-pointer' name={'cross'} />
+        <WpIcon className='ml-2 h-3 w-3 flex-shrink-0 cursor-pointer fill-theme' name={'cross'} />
       ) : null}
     </TagLink>
   );

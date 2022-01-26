@@ -83,7 +83,7 @@ const ShopAssets: React.FC<ShopAssetsInterface> = ({ shop, basePath, breadcrumbs
                     }}
                   >
                     {isEmpty ? (
-                      <div className='text-red-500 mt-4 font-medium'>
+                      <div className='mt-4 font-medium text-red-500'>
                         Логотип обязателен к заполнению
                       </div>
                     ) : null}

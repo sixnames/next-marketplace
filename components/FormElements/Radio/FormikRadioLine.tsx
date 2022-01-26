@@ -16,12 +16,12 @@ const FormikRadioLine: React.FC<FormikRadioLineInterface> = ({
 }) => {
   return (
     <label
-      className={`cursor-pointer flex items-center mr-4 min-h-[var(--formInputHeight)] ${
+      className={`mr-4 flex min-h-[var(--formInputHeight)] cursor-pointer items-center ${
         className ? className : ''
       }`}
     >
       <FormikRadio name={name} {...props} />
-      <span className='pl-2 flex-grow text-secondary-text'>{label}</span>
+      <span className='flex-grow pl-2 text-secondary-text'>{label}</span>
     </label>
   );
 };

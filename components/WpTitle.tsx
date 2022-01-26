@@ -48,7 +48,7 @@ const WpTitle: React.FC<TitlePropsInterface> = ({
           {children}
         </TagName>
       </div>
-      {subtitle && <div className={`text-secondary-text mt-[0.5rem]`}>{subtitle}</div>}
+      {subtitle && <div className={`mt-[0.5rem] text-secondary-text`}>{subtitle}</div>}
     </div>
   );
 };

@@ -16,12 +16,12 @@ const Radio: React.FC<RadioInterface> = ({ notValid, className, testId, checked,
   return (
     <label
       data-cy={testId}
-      className={`relative w-[16px] h-[16px] bg-primary border-2 rounded-full overflow-hidden cursor-pointer ${inputBorder} ${
+      className={`relative h-[16px] w-[16px] cursor-pointer overflow-hidden rounded-full border-2 bg-primary ${inputBorder} ${
         className ? className : ''
       }`}
     >
       <input className='visually-hidden radio-input' type={'radio'} {...props} />
-      <span className='absolute top-[1px] left-[1px] w-[10px] h-[10px] bg-primary rounded-full transition-all duration-200 block' />
+      <span className='absolute top-[1px] left-[1px] block h-[10px] w-[10px] rounded-full bg-primary transition-all duration-200' />
     </label>
   );
 };

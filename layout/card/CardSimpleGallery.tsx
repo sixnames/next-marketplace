@@ -23,14 +23,14 @@ const CardSimpleGallery: React.FC<CardSimpleGalleryInterface> = ({
   if (isSingleImage) {
     return (
       <div className={className}>
-        <div className='relative mb-12 lg:mb-0 w-full max-w-[480px] mx-auto'>
-          <div className='relative pb-[100%] w-full'>
+        <div className='relative mx-auto mb-12 w-full max-w-[480px] lg:mb-0'>
+          <div className='relative w-full pb-[100%]'>
             <WpImage
               url={mainImage}
               alt={alt}
               title={title}
               width={550}
-              className='absolute inset-0 w-full h-full object-contain'
+              className='absolute inset-0 h-full w-full object-contain'
               quality={quality}
             />
           </div>
@@ -41,21 +41,21 @@ const CardSimpleGallery: React.FC<CardSimpleGalleryInterface> = ({
 
   return (
     <div className={`${className ? className : ''}`}>
-      <div className='overflow-x-auto lg:overflow-x-visible max-w-full pb-6'>
-        <div className='flex mb-6 lg:mb-0 lg:grid lg:grid-cols-2 gap-x-6 gap-y-8'>
+      <div className='max-w-full overflow-x-auto pb-6 lg:overflow-x-visible'>
+        <div className='mb-6 flex gap-x-6 gap-y-8 lg:mb-0 lg:grid lg:grid-cols-2'>
           {assets.map((url, index) => {
             return (
               <div
                 key={url}
-                className='min-w-[260px] lg:min-w-full rounded-lg p-1 shadow-full hover:scale-125 transition-all bg-primary'
+                className='shadow-full min-w-[260px] rounded-lg bg-primary p-1 transition-all hover:scale-125 lg:min-w-full'
               >
-                <div className='relative pb-[100%] w-full'>
+                <div className='relative w-full pb-[100%]'>
                   <WpImage
                     url={url}
                     alt={`${alt} photo ${index}`}
                     title={`${title} photo ${index}`}
                     width={550}
-                    className='absolute inset-0 w-full h-full object-contain'
+                    className='absolute inset-0 h-full w-full object-contain'
                     quality={quality}
                   />
                 </div>

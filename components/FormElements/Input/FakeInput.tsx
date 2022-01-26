@@ -45,13 +45,13 @@ const FakeInput: React.FC<FakeInputInterface> = ({
     >
       <div className={`${inputClassName} ${className ? className : ''}`} data-cy={testId}>
         <div
-          className='relative flex items-center z-10 min-h-[var(--formInputHeight)] w-full py-1 pl-input-padding-horizontal pr-control-button-height'
+          className='relative z-10 flex min-h-[var(--formInputHeight)] w-full items-center py-1 pl-input-padding-horizontal pr-control-button-height'
           onClick={onClick}
         >
           {value}
         </div>
         {onClear ? (
-          <div onClick={onClear} className='absolute right-0 inset-y-0 z-20'>
+          <div onClick={onClear} className='absolute inset-y-0 right-0 z-20'>
             <ControlButton testId={`${testId}-clear`} title={'Очистить поле'} icon={'cross'} />
           </div>
         ) : null}

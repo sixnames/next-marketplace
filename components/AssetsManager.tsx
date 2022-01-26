@@ -73,14 +73,14 @@ const AssetsManager: React.FC<AssetsManagerInterface> = ({
                   {(draggableProvided) => (
                     <div
                       key={url}
-                      className='w-40 h-40 relative'
+                      className='relative h-40 w-40'
                       data-cy={`asset-preview-${draggableIndex}`}
                       ref={draggableProvided.innerRef}
                       {...draggableProvided.dragHandleProps}
                       {...draggableProvided.draggableProps}
                     >
                       <WpImage
-                        className='absolute t-0 l-0 w-full h-full object-contain'
+                        className='t-0 l-0 absolute h-full w-full object-contain'
                         url={url}
                         width={80}
                         alt={assetsTitle}

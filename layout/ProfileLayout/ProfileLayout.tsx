@@ -166,9 +166,9 @@ const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) =
 
       <Inner lowTop testId={'profile'}>
         <div className='flex flex-col gap-8 md:flex-row'>
-          <div className='relative z-20 md:w-[var(--catalogue-filter-width)] flex-shrink-0'>
+          <div className='relative z-20 flex-shrink-0 md:w-[var(--catalogue-filter-width)]'>
             <WpTitle>Личный кабинет</WpTitle>
-            <div className='text-5 font-medium mb-8 md:mb-12'>
+            <div className='text-5 mb-8 font-medium md:mb-12'>
               С возвращением, {sessionUser?.me.name}
             </div>
             <AsideNav

@@ -26,13 +26,13 @@ export const CmsNavItemName: React.FC<CmsNavItemNameInterface> = ({
   const iconType = icon as IconType;
   return (
     <span
-      className={`flex items-center gap-[10px] min-h-[44px] ${
-        compact ? 'py-[10px] justify-center' : 'px-[20px] py-[10px]'
+      className={`flex min-h-[44px] items-center gap-[10px] ${
+        compact ? 'justify-center py-[10px]' : 'px-[20px] py-[10px]'
       }`}
     >
       {icon ? (
         <span>
-          <WpIcon className='w-[18px] h-[18px]' name={iconType} />
+          <WpIcon className='h-[18px] w-[18px]' name={iconType} />
         </span>
       ) : null}
       {compact ? null : <span className=''>{name}</span>}
@@ -140,7 +140,7 @@ const CmsNavItem: React.FC<AppNavItemInterface> = ({
                       isCurrent ? 'bg-theme text-white' : 'text-white hover:text-theme'
                     }`}
                   >
-                    <span className='pr-[10px] py-[10px]'>{name}</span>
+                    <span className='py-[10px] pr-[10px]'>{name}</span>
                   </WpLink>
                 </li>
               );

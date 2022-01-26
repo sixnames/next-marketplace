@@ -24,7 +24,7 @@ const ProductSnippetPrice: React.FC<ProductSnippetPriceInterface> = ({
 
   if (!shopsCount || shopsCount < minimalShopsCount) {
     return (
-      <div className={`text-secondary-text text-sm ${className ? className : ''}`}>
+      <div className={`text-sm text-secondary-text ${className ? className : ''}`}>
         Нет в наличии
       </div>
     );
@@ -36,7 +36,7 @@ const ProductSnippetPrice: React.FC<ProductSnippetPriceInterface> = ({
         className ? className : ''
       }`}
     >
-      <span className='text-secondary-text text-[0.7em] mr-[0.35rem]'>
+      <span className='mr-[0.35rem] text-[0.7em] text-secondary-text'>
         {shopsCount === minimalShopsCount ? 'Цена ' : 'Цена от '}
       </span>
       <Currency value={value} />

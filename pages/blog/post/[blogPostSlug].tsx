@@ -62,12 +62,12 @@ const BlogPostMeta: React.FC<BlogListSnippetMetaInterface> = ({
   const sessionUser = useSiteUserContext();
 
   return (
-    <div className='flex items center flex-wrap gap-5 text-secondary-text mb-3'>
+    <div className='items center mb-3 flex flex-wrap gap-5 text-secondary-text'>
       <FormattedDate value={createdAt} />
       {/*views counter*/}
       {configs.showBlogPostViews ? (
         <div className='flex items-center gap-2'>
-          <WpIcon className='w-5 h-5' name={'eye'} />
+          <WpIcon className='h-5 w-5' name={'eye'} />
           <div>{viewsCount}</div>
         </div>
       ) : null}
@@ -84,7 +84,7 @@ const BlogPostMeta: React.FC<BlogListSnippetMetaInterface> = ({
             }
           }}
         >
-          <WpIcon className='w-4 h-4' name={'like'} />
+          <WpIcon className='h-4 w-4' name={'like'} />
           <div>{noNaN(likesCount)}</div>
         </div>
       </WpTooltip>
@@ -132,7 +132,7 @@ const BlogPostPageConsumer: React.FC<BlogPostPageConsumerInterface> = ({ post })
   }, [companySlug, post._id, sessionCity]);
 
   return (
-    <div className='mb-12 relative'>
+    <div className='relative mb-12'>
       <WpBreadcrumbs
         currentPageName={`${post.title}`}
         config={[

@@ -32,11 +32,11 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
     <div className='flex flex-col'>
       <div
         style={attributeStyle}
-        className='flex items-center pb-1 text-secondary-text text-lg font-medium'
+        className='flex items-center pb-1 text-lg font-medium text-secondary-text'
       >
         {name}
       </div>
-      <ul className='flex-grow flex flex-col'>
+      <ul className='flex flex-grow flex-col'>
         {(options || []).map((option) => {
           return (
             <li key={`${option._id}`}>
@@ -58,7 +58,7 @@ const StickyNavAttribute: React.FC<StickyNavAttributeInterface> = ({
         {showOptionsMoreLink ? (
           <li>
             <div
-              className='flex items-center py-1 text-theme cursor-pointer hover:underline'
+              className='flex cursor-pointer items-center py-1 text-theme hover:underline'
               onClick={() => {
                 router
                   .push(parentHref)
@@ -103,12 +103,12 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
           testId={`header-nav-dropdown-option`}
           prefetch={false}
           href={`${parentHref}/${categoryPath}`}
-          className='flex items-center gap-3 leading-snug text-secondary-text text-lg font-medium'
+          className='flex items-center gap-3 text-lg font-medium leading-snug text-secondary-text'
         >
           <span>{name}</span>
         </WpLink>
       </div>
-      <ul className='flex-grow flex flex-col'>
+      <ul className='flex flex-grow flex-col'>
         {(categories || []).map((childCategory, index) => {
           const childCategoryPath = `${FILTER_CATEGORY_KEY}${FILTER_SEPARATOR}${childCategory.slug}`;
           if (index < stickyNavVisibleSubCategoriesCount) {
@@ -132,7 +132,7 @@ const StickyNavCategory: React.FC<StickyNavCategoryInterface> = ({
         {showOptionsMoreLink ? (
           <li>
             <div
-              className='flex items-center py-1 text-theme cursor-pointer hover:underline'
+              className='flex cursor-pointer items-center py-1 text-theme hover:underline'
               onClick={() => {
                 router
                   .push(`${parentHref}/${categoryPath}`)
@@ -177,7 +177,7 @@ const StickyNavDropdownWithCategories: React.FC<StickyNavDropdownInterface> = ({
   return (
     <div className='grid grid-cols-6'>
       <div className='col-span-4 border-r border-border-300 pr-8'>
-        <div className={`grid gap-x-4 gap-y-8 grid-cols-4 ${categoryColumnsClassName}`}>
+        <div className={`grid grid-cols-4 gap-x-4 gap-y-8 ${categoryColumnsClassName}`}>
           {(categories || []).map((category) => {
             return (
               <StickyNavCategory
@@ -192,7 +192,7 @@ const StickyNavDropdownWithCategories: React.FC<StickyNavDropdownInterface> = ({
           })}
         </div>
       </div>
-      <div className='grid gap-x-4 gap-y-8 grid-cols-2 pl-8 col-span-2 self-start'>
+      <div className='col-span-2 grid grid-cols-2 gap-x-4 gap-y-8 self-start pl-8'>
         {(attributes || []).map((attribute) => {
           return (
             <StickyNavAttribute

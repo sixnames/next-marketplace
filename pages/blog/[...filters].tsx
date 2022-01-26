@@ -44,7 +44,7 @@ const BlogListSnippetMeta: React.FC<BlogListSnippetMetaInterface> = ({
 }) => {
   return (
     <div
-      className={`flex items center flex-wrap gap-5 mb-3 ${
+      className={`items center mb-3 flex flex-wrap gap-5 ${
         isLight ? 'text-white' : 'text-secondary-text'
       }`}
     >
@@ -52,7 +52,7 @@ const BlogListSnippetMeta: React.FC<BlogListSnippetMetaInterface> = ({
       {/*views counter*/}
       {showViews ? (
         <div className='flex items-center gap-2'>
-          <WpIcon className='w-5 h-5' name={'eye'} />
+          <WpIcon className='h-5 w-5' name={'eye'} />
           <div>{viewsCount}</div>
         </div>
       ) : null}
@@ -60,7 +60,7 @@ const BlogListSnippetMeta: React.FC<BlogListSnippetMetaInterface> = ({
       {/*likes counter*/}
       {likesCount ? (
         <div className='flex items-center gap-2'>
-          <WpIcon className='w-4 h-4' name={'like'} />
+          <WpIcon className='h-4 w-4' name={'like'} />
           <div>{likesCount}</div>
         </div>
       ) : null}
@@ -118,9 +118,9 @@ const BlogListSnippet: React.FC<BlogListSnippetInterface> = ({ post, showViews }
   return (
     <div className={`${snippetClassName} flex flex-col`}>
       {/*image*/}
-      <div className='relative flex-shrink-0 overflow-hidden h-[200px] group-hover:opacity-50 transition-opacity duration-150'>
+      <div className='relative h-[200px] flex-shrink-0 overflow-hidden transition-opacity duration-150 group-hover:opacity-50'>
         <WpImage
-          className='absolute h-full w-full inset-0 object-cover'
+          className='absolute inset-0 h-full w-full object-cover'
           url={`${post.previewImage}`}
           alt={`${post.title}`}
           title={`${post.title}`}
@@ -128,16 +128,16 @@ const BlogListSnippet: React.FC<BlogListSnippetInterface> = ({ post, showViews }
         />
         <WpLink
           testId={`${post.title}-image-link`}
-          className='block absolute z-20 inset-0 text-indent-full'
+          className='text-indent-full absolute inset-0 z-20 block'
           href={`${ROUTE_BLOG_POST}/${post.slug}`}
         >
           {post.title}
         </WpLink>
       </div>
 
-      <div className='px-4 py-6 flex flex-col flex-grow-1 h-full'>
+      <div className='flex-grow-1 flex h-full flex-col px-4 py-6'>
         {/*title*/}
-        <div className='font-medium text-lg mb-3'>
+        <div className='mb-3 text-lg font-medium'>
           <WpLink
             testId={`${post.title}-title-link`}
             className='block text-primary-text hover:no-underline'
@@ -171,17 +171,17 @@ const BlogListMainSnippet: React.FC<BlogListSnippetInterface> = ({ post, showVie
   return (
     <div className={`${snippetClassName} min-h-[300px] sm:col-span-2`}>
       <WpImage
-        className='absolute h-full w-full inset-0 object-cover'
+        className='absolute inset-0 h-full w-full object-cover'
         url={`${post.previewImage}`}
         alt={`${post.title}`}
         title={`${post.title}`}
         width={600}
       />
 
-      <div className='absolute inset-0 w-full h-full flex flex-col justify-end z-10'>
-        <div className='px-4 pb-6 pt-12 blog-post-image-cover'>
+      <div className='absolute inset-0 z-10 flex h-full w-full flex-col justify-end'>
+        <div className='blog-post-image-cover px-4 pb-6 pt-12'>
           {/*title*/}
-          <div className='font-medium text-xl mb-3 text-white'>{post.title}</div>
+          <div className='mb-3 text-xl font-medium text-white'>{post.title}</div>
 
           {/*meta*/}
           <BlogListSnippetMeta
@@ -202,7 +202,7 @@ const BlogListMainSnippet: React.FC<BlogListSnippetInterface> = ({ post, showVie
 
       <WpLink
         testId={`${post.title}-image-link`}
-        className='block absolute z-20 inset-0 text-indent-full'
+        className='text-indent-full absolute inset-0 z-20 block'
         href={`${ROUTE_BLOG_POST}/${post.slug}`}
       >
         {post.title}
@@ -215,7 +215,7 @@ const BlogListTopSnippet: React.FC<BlogListSnippetInterface> = ({ post, showView
   return (
     <div className='py-4'>
       {/*title*/}
-      <div className='font-medium text-lg mb-3'>
+      <div className='mb-3 text-lg font-medium'>
         <WpLink
           testId={`${post.title}-title-link`}
           className='block text-primary-text hover:no-underline'
@@ -251,7 +251,7 @@ const BlogFilterAttribute: React.FC<BlogFilterAttributeInterface> = ({
 
   return (
     <div className='mb-12'>
-      <div className='flex items-baseline justify-between mb-4'>
+      <div className='mb-4 flex items-baseline justify-between'>
         <span className='text-lg font-bold'>{name}</span>
         {isSelected ? (
           <WpLink href={`${clearSlug}`} className='font-medium text-theme'>
@@ -330,8 +330,8 @@ const BlogListPageConsumer: React.FC<BlogListPageConsumerInterface> = ({
           <WpTitle>{blogTitle}</WpTitle>
 
           {posts.length > 0 ? (
-            <div className={`grid lg:grid-cols-4 gap-6`}>
-              <div className={`grid gap-6 sm:grid-cols-2 md:grid-cols-3 col-span-3`}>
+            <div className={`grid gap-6 lg:grid-cols-4`}>
+              <div className={`col-span-3 grid gap-6 sm:grid-cols-2 md:grid-cols-3`}>
                 {posts.map((post, index) => {
                   if (index === 0) {
                     return (
@@ -353,13 +353,13 @@ const BlogListPageConsumer: React.FC<BlogListPageConsumerInterface> = ({
               </div>
 
               <div className='relative col-span-3 lg:col-span-1'>
-                <div className='absolute inset-0 h-full w-full relative lg:sticky lg:top-20 overflow-x-hidden overflow-y-auto lg:h-[calc(100vh-80px)]'>
+                <div className='absolute relative inset-0 h-full w-full overflow-y-auto overflow-x-hidden lg:sticky lg:top-20 lg:h-[calc(100vh-80px)]'>
                   <div className='pb-8'>
                     <BlogFilter blogFilter={blogFilter} />
 
                     {/*top posts*/}
-                    <div className='border border-border-100 rounded-md py-6 px-4'>
-                      <div className='text-lg font-bold mb-4'>Самые читаемые</div>
+                    <div className='rounded-md border border-border-100 py-6 px-4'>
+                      <div className='mb-4 text-lg font-bold'>Самые читаемые</div>
 
                       {topPosts.length > 0 ? (
                         <div className='divide-y-2 divide-border-100'>
@@ -380,7 +380,7 @@ const BlogListPageConsumer: React.FC<BlogListPageConsumerInterface> = ({
               </div>
             </div>
           ) : (
-            <div className='font-medium text-lg'>Мы пока готовим для Вас интересные статьи :)</div>
+            <div className='text-lg font-medium'>Мы пока готовим для Вас интересные статьи :)</div>
           )}
         </Inner>
       </div>

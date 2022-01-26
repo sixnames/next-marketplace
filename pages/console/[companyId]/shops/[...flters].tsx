@@ -141,7 +141,7 @@ const CompanyShopsPageConsumer: React.FC<CompanyShopsPageConsumerInterface> = ({
     <AppContentWrapper>
       <Inner testId={'shops-list'}>
         <WpTitle>{pageTitle}</WpTitle>
-        <div className={`text-xl font-medium mb-2`}>{counterString}</div>
+        <div className={`mb-2 text-xl font-medium`}>{counterString}</div>
         <FormikRouterSearch testId={'shops'} />
 
         <div className={`relative overflow-x-auto overflow-y-hidden`}>

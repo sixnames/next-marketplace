@@ -27,7 +27,7 @@ const ProductsListSuppliersList: React.FC<ProductsListSuppliersListInterface> = 
 
         return (
           <div key={`${supplierProduct._id}`}>
-            <div className='flex justify-between items-baseline gap-3 mb-2'>
+            <div className='mb-2 flex items-baseline justify-between gap-3'>
               <div className='whitespace-nowrap font-medium'>{supplier.name}</div>
               <div className='whitespace-nowrap text-sm text-secondary-text'>{variantName}</div>
             </div>

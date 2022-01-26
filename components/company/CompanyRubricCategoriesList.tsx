@@ -24,14 +24,14 @@ const CompanyRubricCategoriesList: React.FC<CompanyRubricCategoriesListInterface
       return (
         <div>
           {image ? (
-            <div className='w-[60px] h-[60px] mb-4'>
-              <div className='relative pb-[100%] w-full'>
+            <div className='mb-4 h-[60px] w-[60px]'>
+              <div className='relative w-full pb-[100%]'>
                 <WpImage
                   url={image}
                   alt={`${name}`}
                   title={`${name}`}
                   width={80}
-                  className='absolute inset-0 w-full h-full object-contain'
+                  className='absolute inset-0 h-full w-full object-contain'
                 />
               </div>
             </div>

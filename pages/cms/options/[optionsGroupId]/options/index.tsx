@@ -93,13 +93,13 @@ const OptionsGroupOptionsConsumer: React.FC<OptionsGroupOptionsConsumerInterface
       return (
         <div data-cy={name} data-url={optionUrl}>
           {image ? (
-            <div className='relative mb-4 w-[80px] h-[80px]'>
+            <div className='relative mb-4 h-[80px] w-[80px]'>
               <WpImage
                 url={image}
                 alt={`${name}`}
                 title={`${name}`}
                 width={80}
-                className='absolute inset-0 w-full h-full object-contain'
+                className='absolute inset-0 h-full w-full object-contain'
               />
             </div>
           ) : null}

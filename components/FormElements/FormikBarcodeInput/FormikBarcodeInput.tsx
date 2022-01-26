@@ -78,7 +78,7 @@ const FormikBarcodeInput: React.FC<FormikBarcodeInputPropsInterface> = ({
                 frameClassName={'w-auto'}
                 theme={'secondary'}
                 icon={isVisible ? 'camera-off' : 'camera'}
-                className='w-[var(--formInputHeight)] ml-6'
+                className='ml-6 w-[var(--formInputHeight)]'
                 short
               />
             </InputLine>

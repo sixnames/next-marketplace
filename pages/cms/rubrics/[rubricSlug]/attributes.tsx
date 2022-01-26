@@ -203,7 +203,7 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
                   />
                 }
               >
-                <div className={`overflow-x-auto mt-4`}>
+                <div className={`mt-4 overflow-x-auto`}>
                   <WpTable<AttributeInterface>
                     data={attributes}
                     columns={columns}

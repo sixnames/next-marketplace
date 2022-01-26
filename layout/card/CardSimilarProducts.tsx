@@ -14,7 +14,7 @@ const CardSimilarProducts: React.FC<CardSimilarProductsInterface> = ({ similarPr
 
   return (
     <section className='mb-28'>
-      <h2 className='text-2xl font-medium mb-6'>Вам может понравиться</h2>
+      <h2 className='mb-6 text-2xl font-medium'>Вам может понравиться</h2>
 
       <HorizontalScroll>
         {similarProducts.map((product) => {

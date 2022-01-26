@@ -9,7 +9,7 @@ const ColorPreview: React.FC<ColorPreviewInterface> = ({ color, testId, ...props
   return (
     <React.Fragment>
       <div
-        className='w-4 h-4 rounded-full'
+        className='h-4 w-4 rounded-full'
         style={color ? { backgroundColor: `${color}` } : undefined}
         data-cy={`${testId}-${color}`}
         {...props}

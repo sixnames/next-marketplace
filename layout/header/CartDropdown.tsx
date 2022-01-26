@@ -38,12 +38,12 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
 
   return (
     <div
-      className='shadow-xl overflow-hidden bg-primary dark:bg-wp-dark-gray-200 relative rounded-lg w-[30rem] max-w-[calc(100vw-(var(--innerBlockHorizontalPadding)*2))]'
+      className='relative w-[30rem] max-w-[calc(100vw-(var(--innerBlockHorizontalPadding)*2))] overflow-hidden rounded-lg bg-primary shadow-xl dark:bg-wp-dark-gray-200'
       style={cartDropdownCssVars}
       data-cy={'cart-dropdown'}
     >
       <div className='flex items-center justify-between p-[var(--framePadding)]'>
-        <div className='font-bold text-xl'>
+        <div className='text-xl font-bold'>
           Корзина <span className='font-normal text-secondary-text'>({productsCount})</span>
         </div>
         <div
@@ -73,19 +73,19 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
                 >
                   <div className={productImageClassName}>
                     <div className={productImageHolderClassName}>
-                      <div className='relative pb-[100%] w-full'>
+                      <div className='relative w-full pb-[100%]'>
                         <WpImage
                           url={`${summary.mainImage}`}
                           alt={`${summary.snippetTitle}`}
                           title={`${summary.snippetTitle}`}
                           width={100}
-                          className='absolute inset-0 w-full h-full object-contain'
+                          className='absolute inset-0 h-full w-full object-contain'
                         />
                       </div>
                     </div>
                   </div>
                   <div className={productContentClassName}>
-                    <div className='text-lg font-medium pr-[var(--controlButtonHeightSmall)] mb-[var(--textLineGap)]'>
+                    <div className='mb-[var(--textLineGap)] pr-[var(--controlButtonHeightSmall)] text-lg font-medium'>
                       {summary.snippetTitle}
                     </div>
 
@@ -102,7 +102,7 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
                       </div>
                     )}
 
-                    <div className='flex items-center justify-between mt-4'>
+                    <div className='mt-4 flex items-center justify-between'>
                       <SpinnerInput
                         name={'amount'}
                         value={amount}
@@ -157,19 +157,19 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
               <div key={`${_id}`} className={productClassName} data-cy={`cart-dropdown-product`}>
                 <div className={productImageClassName}>
                   <div className={productImageHolderClassName}>
-                    <div className='relative pb-[100%] w-full'>
+                    <div className='relative w-full pb-[100%]'>
                       <WpImage
                         url={`${product.mainImage}`}
                         alt={`${product.snippetTitle}`}
                         title={`${product.snippetTitle}`}
                         width={100}
-                        className='absolute inset-0 w-full h-full object-contain'
+                        className='absolute inset-0 h-full w-full object-contain'
                       />
                     </div>
                   </div>
                 </div>
                 <div className={productContentClassName}>
-                  <div className='text-lg font-medium pr-[var(--controlButtonHeightSmall)] mb-[var(--textLineGap)]'>
+                  <div className='mb-[var(--textLineGap)] pr-[var(--controlButtonHeightSmall)] text-lg font-medium'>
                     {snippetTitle}
                   </div>
 
@@ -178,10 +178,10 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
                     className='mb-[var(--textLineGap)]'
                     value={minPrice}
                   />
-                  <div className='text-theme text-sm'>Магазин не выбран</div>
+                  <div className='text-sm text-theme'>Магазин не выбран</div>
 
-                  <div className='flex items-center justify-between mt-4'>
-                    <div className='flex items-center justify-end ml-auto'>
+                  <div className='mt-4 flex items-center justify-between'>
+                    <div className='ml-auto flex items-center justify-end'>
                       <div className='absolute top-0 right-0 z-[5]'>
                         <ButtonCross
                           testId={`cart-dropdown-product-${index}-remove-from-cart`}
@@ -205,10 +205,10 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
           })}
         </div>
       </div>
-      <div className='p-[var(--framePadding)] border-t border-wp-light-gray-100 bg-primary dark:bg-wp-dark-gray-100 dark:border-wp-dark-gray-100'>
-        <div className='flex items-center justify-between mb-[var(--framePadding)]'>
+      <div className='border-t border-wp-light-gray-100 bg-primary p-[var(--framePadding)] dark:border-wp-dark-gray-100 dark:bg-wp-dark-gray-100'>
+        <div className='mb-[var(--framePadding)] flex items-center justify-between'>
           <div className='text-2xl text-secondary-text'>Итого</div>
-          <div className='text-2xl text-primary-text font-medium'>
+          <div className='text-2xl font-medium text-primary-text'>
             <Currency value={totalPrice} />
           </div>
         </div>

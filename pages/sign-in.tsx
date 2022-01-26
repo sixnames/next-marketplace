@@ -58,7 +58,7 @@ const SignInRoute: React.FC = () => {
       >
         {() => {
           return (
-            <Form className='max-w-[20rem] py-12 mx-auto'>
+            <Form className='mx-auto max-w-[20rem] py-12'>
               <WpTitle className='justify-center'>Авторизация</WpTitle>
 
               <FormikInput

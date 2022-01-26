@@ -49,18 +49,18 @@ const ConsoleLayoutConsumer: React.FC<ConsoleLayoutConsumerInterface> = ({
   const googleAnalytics = configs.googleAnalytics;
 
   return (
-    <div className={`min-h-full-height text-primary-text bg-primary`}>
+    <div className={`min-h-full-height bg-primary text-primary-text`}>
       <Meta title={title} showForIndex={false} />
       <div dangerouslySetInnerHTML={{ __html: `${yaMetrica}${googleAnalytics}` }} />
 
       {/*top bar*/}
-      <div className='fixed top-0 z-30 inset-x-0 flex items-center justify-between h-[60px] shadow-md bg-[#2B3039]'>
-        <div className='flex items-center text-white gap-2 pl-[5px]'>
+      <div className='fixed inset-x-0 top-0 z-30 flex h-[60px] items-center justify-between bg-[#2B3039] shadow-md'>
+        <div className='flex items-center gap-2 pl-[5px] text-white'>
           <ControlButton icon={'burger'} className='text-white' onClick={toggleCompactHandler} />
           <div className='font-medium'>{sessionUser.shortName}</div>
         </div>
 
-        <div className='flex items-center text-white gap-1 pr-[5px]'>
+        <div className='flex items-center gap-1 pr-[5px] text-white'>
           <div className='mr-4'>
             <LanguageTrigger />
           </div>
@@ -78,7 +78,7 @@ const ConsoleLayoutConsumer: React.FC<ConsoleLayoutConsumerInterface> = ({
 
       {/*content*/}
       <main
-        className={`relative min-h-full-height z-10 pt-[60px] ${
+        className={`relative z-10 min-h-full-height pt-[60px] ${
           isCompact ? wideContentClass : narrowContentClass
         }`}
       >

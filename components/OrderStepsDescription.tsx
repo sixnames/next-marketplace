@@ -12,8 +12,8 @@ const OrderStepsDescriptionItem: React.FC<OrderStepsDescriptionItemInterface> = 
 }) => {
   return (
     <div className='flex gap-6'>
-      <div className='flex flex-shrink-0 justify-center items-center w-20 h-20 border-[3px] border-secondary rounded-full text-theme'>
-        <WpIcon name={icon} className='w-[60%] h-[60%]' />
+      <div className='flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-full border-[3px] border-secondary text-theme'>
+        <WpIcon name={icon} className='h-[60%] w-[60%]' />
       </div>
       <div className='flex-grow'>
         <div className='prose max-w-[15rem]'>{children}</div>
@@ -25,7 +25,7 @@ const OrderStepsDescriptionItem: React.FC<OrderStepsDescriptionItemInterface> = 
 const OrderStepsDescription: React.FC = () => {
   return (
     <section>
-      <h2 className='text-2xl font-medium mb-6'>Процесс покупки</h2>
+      <h2 className='mb-6 text-2xl font-medium'>Процесс покупки</h2>
 
       <div className='grid gap-8 sm:grid-cols-2 lg:grid-cols-3'>
         <OrderStepsDescriptionItem icon={'grapes'}>

@@ -36,7 +36,7 @@ const ConsoleRubricProductConstructor: React.FC<ConsoleRubricProductConstructorI
             <Form>
               <SeoContentEditor filedName={'cardContent'} />
 
-              <div className='flex mb-12 mt-4'>
+              <div className='mb-12 mt-4 flex'>
                 <WpButton
                   theme={'secondary'}
                   size={'small'}

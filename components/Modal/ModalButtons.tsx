@@ -8,7 +8,7 @@ interface ModalButtonsInterface {
 const ModalButtons: React.FC<ModalButtonsInterface> = ({ children, className, withInner }) => {
   return (
     <div
-      className={`flex flex-wrap mt-5 ${className ? className : ''} ${
+      className={`mt-5 flex flex-wrap ${className ? className : ''} ${
         withInner ? 'px-inner-block-horizontal-padding' : ''
       }`}
     >

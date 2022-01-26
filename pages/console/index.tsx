@@ -15,22 +15,22 @@ const App: NextPage<GetConsoleMainPageDataPropsInterface> = ({ layoutProps }) =>
     <Inner>
       <WpTitle>Панель управления</WpTitle>
       <div className='mb-8 text-lg'>Ваши компании</div>
-      <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
+      <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3'>
         {(layoutProps.sessionUser.me.companies || []).map((company) => {
           const links = getConsoleCompanyLinks({
             companyId: company._id,
           });
           return (
             <div
-              className='bg-secondary rounded-lg shadow-lg grid grid-cols-4 gap-4 px-4 py-6 cursor-pointer'
+              className='grid cursor-pointer grid-cols-4 gap-4 rounded-lg bg-secondary px-4 py-6 shadow-lg'
               key={`${company._id}`}
               onClick={() => {
                 router.push(links.root).catch((e) => console.log(e));
               }}
             >
-              <div className='rounded-full overflow-hidden col-span-1'>
+              <div className='col-span-1 overflow-hidden rounded-full'>
                 <img
-                  className='w-full h-full object-contain'
+                  className='h-full w-full object-contain'
                   src={company.logo}
                   width='100'
                   height='100'

@@ -21,7 +21,7 @@ const StringButton: React.FC<StringButtonInterface> = ({
     <button
       type={type}
       disabled={disabled}
-      className={`relative z-10 flex items-center justify-center text-theme transition duration-150 font-medium disabled:opacity-70 ${
+      className={`relative z-10 flex items-center justify-center font-medium text-theme transition duration-150 disabled:opacity-70 ${
         className ? className : ''
       }`}
       data-cy={testId}

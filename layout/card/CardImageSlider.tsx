@@ -46,7 +46,7 @@ const CardImageSlider: React.FC<CardImageSliderInterface> = ({
             <div className='px-6 md:px-8'>
               <div>
                 <div
-                  className={`relative pb-[100%] w-full ${slideClassName ? slideClassName : ''}`}
+                  className={`relative w-full pb-[100%] ${slideClassName ? slideClassName : ''}`}
                 >
                   <WpImage
                     url={url}
@@ -55,7 +55,7 @@ const CardImageSlider: React.FC<CardImageSliderInterface> = ({
                     alt={`${slideTitle} ${index}`}
                     width={imageWidth}
                     loading={'eager'}
-                    className={`absolute inset-0 w-full h-full object-contain ${
+                    className={`absolute inset-0 h-full w-full object-contain ${
                       slideImageClassName ? slideImageClassName : ''
                     }`}
                   />
@@ -74,7 +74,7 @@ const CardImageSlider: React.FC<CardImageSliderInterface> = ({
               alt={`${slideTitle} ${index}`}
               width={imageWidth}
               loading={'eager'}
-              className={`w-full h-full object-contain ${
+              className={`h-full w-full object-contain ${
                 slideImageClassName ? slideImageClassName : ''
               }`}
             />
@@ -83,7 +83,7 @@ const CardImageSlider: React.FC<CardImageSliderInterface> = ({
       },
       renderThumbInner: () => {
         return (
-          <div className='relative pb-[100%] w-full'>
+          <div className='relative w-full pb-[100%]'>
             <WpImage
               url={url}
               quality={quality}
@@ -91,7 +91,7 @@ const CardImageSlider: React.FC<CardImageSliderInterface> = ({
               alt={`${slideTitle}`}
               width={80}
               loading={'eager'}
-              className='absolute inset-0 w-full h-full object-contain'
+              className='absolute inset-0 h-full w-full object-contain'
             />
           </div>
         );

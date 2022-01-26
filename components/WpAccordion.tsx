@@ -53,7 +53,7 @@ const WpAccordion: React.FC<WpAccordionInterface> = ({
         className={`flex items-center pr-2 pb-2 ${
           noTitleStyle
             ? ''
-            : 'min-h-[3rem] pt-2 pl-4 border-l-4 border-gray-500 shadow-md bg-secondary rounded-md'
+            : 'min-h-[3rem] rounded-md border-l-4 border-gray-500 bg-secondary pt-2 pl-4 shadow-md'
         } ${titleClassName ? titleClassName : ''}`}
       >
         {titleLeft ? <div>{titleLeft}</div> : null}
@@ -61,7 +61,7 @@ const WpAccordion: React.FC<WpAccordionInterface> = ({
         <div
           data-cy={testId}
           onClick={!disabled ? accordionHandler : undefined}
-          className={`flex items-center mr-4 overflow-ellipsis whitespace-nowrap ${
+          className={`mr-4 flex items-center overflow-ellipsis whitespace-nowrap ${
             lastInTree || disabled ? 'cursor-default' : 'cursor-pointer hover:text-theme'
           }`}
         >
@@ -70,8 +70,8 @@ const WpAccordion: React.FC<WpAccordionInterface> = ({
           {lastInTree || disabled ? null : (
             <div className={`relative ml-2`}>
               <WpIcon
-                className={`w-4 h-4 fill-theme transition transition-duration-150 ${
-                  open ? 'transform rotate-180' : ''
+                className={`transition-duration-150 h-4 w-4 fill-theme transition ${
+                  open ? 'rotate-180 transform' : ''
                 }`}
                 name={'chevron-down'}
               />

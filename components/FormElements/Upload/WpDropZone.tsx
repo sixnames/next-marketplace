@@ -52,8 +52,8 @@ const WpDropZone: React.FC<WpDropZoneInterface> = ({
       labelTag={'div'}
     >
       <div
-        className={`relative cursor-pointer flex items-center justify-center h-16 w-full rounded-lg bg-secondary border-2 border-border-300 ${
-          disabled ? 'opacity-50 pointer-events-none' : ''
+        className={`relative flex h-16 w-full cursor-pointer items-center justify-center rounded-lg border-2 border-border-300 bg-secondary ${
+          disabled ? 'pointer-events-none opacity-50' : ''
         }`}
         {...getRootProps()}
         data-cy={testId}
@@ -64,7 +64,7 @@ const WpDropZone: React.FC<WpDropZoneInterface> = ({
             : 'Перетащите файлы сюда. Или нажмите для выбора.'}
         </div>
 
-        <input {...getInputProps()} className='block absolute inset-0 z-30' />
+        <input {...getInputProps()} className='absolute inset-0 z-30 block' />
       </div>
     </InputLine>
   );

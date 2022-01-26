@@ -115,10 +115,10 @@ const FormikIconSelect: React.FC<FormikSelectInterface> = ({
               buttonText={() => {
                 return (
                   <span className={selectClassName}>
-                    <WpIcon name={field.value} className='w-4 h-4' />
+                    <WpIcon name={field.value} className='h-4 w-4' />
                     {field.value}
                     <WpIcon
-                      className='absolute top-half right-5 w-3 h-3 transform translate-y-[-5px]'
+                      className='top-half absolute right-5 h-3 w-3 translate-y-[-5px] transform'
                       name={'chevron-down'}
                     />
                   </span>

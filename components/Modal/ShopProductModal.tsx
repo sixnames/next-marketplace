@@ -38,17 +38,17 @@ const ShopProductModal: React.FC<ShopProductModalInterface> = ({ shopProduct, ti
       <ModalTitle>{title}</ModalTitle>
       <div className='flex gap-4'>
         <div className='w-28 flex-shrink-0'>
-          <div className='relative pb-[100%] w-full'>
+          <div className='relative w-full pb-[100%]'>
             <WpImage
               url={`${product?.mainImage}`}
               alt={`${product?.name}`}
               title={`${product?.name}`}
               width={100}
-              className='absolute inset-0 w-full h-full object-contain'
+              className='absolute inset-0 h-full w-full object-contain'
             />
           </div>
         </div>
-        <div className='font-medium text-lg'>{product?.name}</div>
+        <div className='text-lg font-medium'>{product?.name}</div>
       </div>
       <div className='flex-grow'>
         <Formik

@@ -136,11 +136,11 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({
                 style={linkStyle}
                 testId={`main-rubric-${rubric.slug}`}
                 onClick={hideDropdown}
-                className='relative flex items-center pt-[2px] h-[2.5rem] uppercase font-medium text-primary-text hover:no-underline hover:text-theme'
+                className='relative flex h-[2.5rem] items-center pt-[2px] font-medium uppercase text-primary-text hover:text-theme hover:no-underline'
               >
                 {name}
                 {isCurrent ? (
-                  <span className='absolute bottom-0 inset-x-0 w-full h-[2px] bg-theme' />
+                  <span className='absolute inset-x-0 bottom-0 h-[2px] w-full bg-theme' />
                 ) : null}
               </WpLink>
 
@@ -175,11 +175,11 @@ const StickyNavItem: React.FC<StickyNavItemInterface> = ({
         style={linkStyle}
         testId={`main-rubric-${rubric.slug}`}
         onClick={hideDropdown}
-        className='relative flex items-center pt-[2px] h-[2.5rem] uppercase font-medium text-primary-text hover:no-underline hover:text-theme'
+        className='relative flex h-[2.5rem] items-center pt-[2px] font-medium uppercase text-primary-text hover:text-theme hover:no-underline'
       >
         {name}
         {isCurrent ? (
-          <span className='absolute bottom-0 inset-x-0 w-full h-[2px] bg-theme' />
+          <span className='absolute inset-x-0 bottom-0 h-[2px] w-full bg-theme' />
         ) : null}
       </WpLink>
 
@@ -259,7 +259,7 @@ const StickyNav: React.FC<StickNavInterface> = ({ currentRubricSlug }) => {
     <nav
       style={style}
       data-cy={'sticky-nav'}
-      className='hidden sticky -top-1 left-0 z-[70] w-full shadow-lg bg-secondary lg:block'
+      className='sticky -top-1 left-0 z-[70] hidden w-full bg-secondary shadow-lg lg:block'
     >
       <Inner lowBottom lowTop>
         <ul className='flex justify-between'>

@@ -92,7 +92,7 @@ const DatePickerInput: React.FC<DatePickerInputInterface> = ({
       {icon ? (
         <WpIcon
           name={icon}
-          className='absolute top-half left-input-padding-horizontal z-20 w-input-icon-size h-input-icon-size transform -translate-y-1/2'
+          className='top-half absolute left-input-padding-horizontal z-20 h-input-icon-size w-input-icon-size -translate-y-1/2 transform'
         />
       ) : null}
 
@@ -118,7 +118,7 @@ const DatePickerInput: React.FC<DatePickerInputInterface> = ({
       />
 
       {onClear ? (
-        <div className='absolute top-half z-20 right-0 transform -translate-y-1/2'>
+        <div className='top-half absolute right-0 z-20 -translate-y-1/2 transform'>
           <ButtonCross onClick={onClear} testId={`${name}-clear`} />
         </div>
       ) : null}

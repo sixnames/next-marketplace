@@ -76,12 +76,12 @@ const CheckBoxFilterAttributeOptions: React.FC<CheckBoxFilterAttributeInterface>
             href={`${nextSlug}`}
             onClick={onClick}
             testId={testId}
-            className='flex items-start gap-2 w-full min-h-[1.5rem] mb-4 cursor-pointer text-primary-text hover:text-theme hover:no-underline'
+            className='mb-4 flex min-h-[1.5rem] w-full cursor-pointer items-start gap-2 text-primary-text hover:text-theme hover:no-underline'
           >
-            <span className='relative text-theme w-[18px] h-[18px] border border-border-300 rounded border-1 bg-secondary overflow-hidden text-theme flex-shrink-0'>
+            <span className='border-1 relative h-[18px] w-[18px] flex-shrink-0 overflow-hidden rounded border border-border-300 bg-secondary text-theme text-theme'>
               {isSelected ? (
                 <WpIcon
-                  className='absolute w-[14px] h-[14px] top-[1px] left-[1px] z-10'
+                  className='absolute top-[1px] left-[1px] z-10 h-[14px] w-[14px]'
                   name={'check'}
                 />
               ) : null}
@@ -94,7 +94,7 @@ const CheckBoxFilterAttributeOptions: React.FC<CheckBoxFilterAttributeInterface>
         ) : (
           <div
             data-cy={testId}
-            className='flex items-start gap-2 w-full min-h-[1.5rem] mb-4 cursor-pointer text-primary-text hover:text-theme hover:no-underline transition-all'
+            className='mb-4 flex min-h-[1.5rem] w-full cursor-pointer items-start gap-2 text-primary-text transition-all hover:text-theme hover:no-underline'
             onClick={() => {
               router
                 .push(`${nextSlug}`)
@@ -106,10 +106,10 @@ const CheckBoxFilterAttributeOptions: React.FC<CheckBoxFilterAttributeInterface>
                 .catch(console.log);
             }}
           >
-            <span className='relative text-theme w-[18px] h-[18px] border border-border-300 rounded border-1 bg-secondary overflow-hidden text-theme flex-shrink-0'>
+            <span className='border-1 relative h-[18px] w-[18px] flex-shrink-0 overflow-hidden rounded border border-border-300 bg-secondary text-theme text-theme'>
               {isSelected ? (
                 <WpIcon
-                  className='absolute w-[14px] h-[14px] top-[1px] left-[1px] z-10'
+                  className='absolute top-[1px] left-[1px] z-10 h-[14px] w-[14px]'
                   name={'check'}
                 />
               ) : null}
@@ -131,7 +131,7 @@ const CheckBoxFilterAttributeOptions: React.FC<CheckBoxFilterAttributeInterface>
 
             {hasMoreOptions ? (
               <div
-                className='uppercase cursor-pointer text-theme mt-2 mb-4'
+                className='mt-2 mb-4 cursor-pointer uppercase text-theme'
                 onClick={() => {
                   showModal<CatalogueAdditionalOptionsModalInterface>({
                     variant: CATALOGUE_ADDITIONAL_OPTIONS_MODAL,
@@ -165,7 +165,7 @@ const CheckBoxFilterAttributeOptions: React.FC<CheckBoxFilterAttributeInterface>
 
       {hasMoreOptions ? (
         <div
-          className='uppercase cursor-pointer text-theme mt-4'
+          className='mt-4 cursor-pointer uppercase text-theme'
           onClick={() => {
             showModal<CatalogueAdditionalOptionsModalInterface>({
               variant: CATALOGUE_ADDITIONAL_OPTIONS_MODAL,
@@ -212,7 +212,7 @@ const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
           titleRight={
             attribute.isSelected && attribute.clearSlug ? (
               <div
-                className='ml-4 text-theme font-normal cursor-pointer hover:underline'
+                className='ml-4 cursor-pointer font-normal text-theme hover:underline'
                 onClick={() => {
                   router
                     .push(`${attribute.clearSlug}`)
@@ -246,11 +246,11 @@ const CheckBoxFilterAttribute: React.FC<CheckBoxFilterAttributeInterface> = ({
     <div className={`mb-8`}>
       {/*attribute name*/}
       {attribute.name ? (
-        <div className='flex items-baseline mb-2 justify-between'>
-          <span className={`font-medium text-lg`}>{attribute.name}</span>
+        <div className='mb-2 flex items-baseline justify-between'>
+          <span className={`text-lg font-medium`}>{attribute.name}</span>
           {attribute.isSelected && attribute.clearSlug ? (
             <div
-              className='ml-4 text-theme cursor-pointer hover:underline'
+              className='ml-4 cursor-pointer text-theme hover:underline'
               onClick={() => {
                 router
                   .push(`${attribute.clearSlug}`)

@@ -18,7 +18,7 @@ const LinkPhone: React.FC<PhoneLinkInterface> = ({ value, style, className }) =>
         style={style}
         className={
           className ||
-          'text-primary-text no-underline cursor-default hover:cursor-default hover:no-underline'
+          'cursor-default text-primary-text no-underline hover:cursor-default hover:no-underline'
         }
         href={`tel:${value.raw}`}
       >

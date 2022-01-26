@@ -21,7 +21,7 @@ const CounterSticker: React.FC<CounterStickerInterface> = ({
 
   return (
     <div
-      className={`flex items-center justify-center text-sm text-white font-medium bg-theme rounded-[10px] h-[20px] min-w-[20px] ${absoluteClassName} ${
+      className={`flex h-[20px] min-w-[20px] items-center justify-center rounded-[10px] bg-theme text-sm font-medium text-white ${absoluteClassName} ${
         className ? className : ''
       }`}
       data-cy={testId}

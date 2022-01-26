@@ -93,7 +93,7 @@ const ConsoleGiftCertificateDetails: React.FC<ConsoleGiftCertificateDetailsInter
 
               {giftCertificate.user ? (
                 <div
-                  className='cursor-pointer hover:text-theme mb-6'
+                  className='mb-6 cursor-pointer hover:text-theme'
                   onClick={() => {
                     window.open(`${userRouteBasePath}/${giftCertificate.user?._id}`, '_blank');
                   }}

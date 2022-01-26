@@ -58,52 +58,52 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
 
   return (
     <div
-      className={`group rounded-md flex flex-col relative gap-4 grid-snippet ${mainFrameClassName} ${
+      className={`group grid-snippet relative flex flex-col gap-4 rounded-md ${mainFrameClassName} ${
         className ? className : columnsClassName
       }`}
     >
       {/*edit button for admin*/}
       <ProductSnippetEditButton product={summary} />
 
-      <div className='md:grid px-4 md:px-0 grid-cols-12 flex-grow'>
+      <div className='flex-grow grid-cols-12 px-4 md:grid md:px-0'>
         {/*image*/}
-        <div className='relative flex items-center justify-center flex-grow pt-4 pl-4 pr-4 col-span-3 dark:snippet-image'>
+        <div className='dark:snippet-image relative col-span-3 flex flex-grow items-center justify-center pt-4 pl-4 pr-4'>
           <WpImage
             loading={imageLoading}
             url={mainImage}
             alt={`${snippetTitle}`}
             title={`${snippetTitle}`}
             width={85}
-            className='w-full h-full object-contain'
+            className='h-full w-full object-contain'
           />
           <WpLink
             testId={`${testId}-image-grid`}
             target={'_blank'}
-            className='block absolute z-10 inset-0 text-indent-full'
+            className='text-indent-full absolute inset-0 z-10 block'
             href={`/${slug}`}
           >
             {snippetTitle}
           </WpLink>
         </div>
 
-        <div className='col-span-9 flex flex-col pt-12 pr-5 gap-4 min-h-[235px]'>
+        <div className='col-span-9 flex min-h-[235px] flex-col gap-4 pt-12 pr-5'>
           <div className='mb-auto'>
             {/*name*/}
             <div className='mb-3'>
               <WpLink
                 testId={`${testId}-name-grid`}
                 target={'_blank'}
-                className='text-lg sm:text-xl font-medium block text-primary-text hover:no-underline hover:text-primary-text'
+                className='block text-lg font-medium text-primary-text hover:text-primary-text hover:no-underline sm:text-xl'
                 href={`/${slug}`}
               >
                 {snippetTitle}
               </WpLink>
-              {name ? <div className='text-secondary-text mt-1'>{name}</div> : null}
+              {name ? <div className='mt-1 text-secondary-text'>{name}</div> : null}
             </div>
 
             {/*art*/}
             {showSnippetArticle ? (
-              <div className='text-secondary-text mb-5'>Артикул: {itemId}</div>
+              <div className='mb-5 text-secondary-text'>Артикул: {itemId}</div>
             ) : null}
 
             {/*list features*/}
@@ -116,7 +116,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
 
                   const isLast = index === (listAttributes || []).length - 1;
                   return (
-                    <span className='inline-block mr-1' key={`${readableValue}-${index}`}>
+                    <span className='mr-1 inline-block' key={`${readableValue}-${index}`}>
                       {isLast ? readableValue : `${readableValue},`}
                     </span>
                   );
@@ -130,11 +130,11 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
         </div>
       </div>
 
-      <div className='md:grid px-4 md:px-0 grid-cols-12'>
+      <div className='grid-cols-12 px-4 md:grid md:px-0'>
         {/*rating*/}
         <div className='col-span-3 flex flex-col md:h-control-button-height'>
           {showSnippetRating ? (
-            <div className='flex items-center justify-center h-control-button-height'>
+            <div className='flex h-control-button-height items-center justify-center'>
               <RatingStars size={'small'} rating={4.9} />
             </div>
           ) : null}
@@ -144,7 +144,7 @@ const ProductSnippetGridDefault: React.FC<ProductSnippetInterface> = ({
         <div className='col-span-9 flex flex-col'>
           <div
             className={`flex items-center justify-between pb-2  ${
-              showSnippetButtonsOnHover ? 'lg:opacity-0 group-hover:opacity-100 transition-all' : ''
+              showSnippetButtonsOnHover ? 'transition-all group-hover:opacity-100 lg:opacity-0' : ''
             }`}
           >
             <ProductAddToCartButton

@@ -71,7 +71,7 @@ const ProfileGiftCertificatesPageConsumer: React.FC<
       <WpTitle size={'small'}>Подарочные сертификаты</WpTitle>
       <div data-cy={'profile-gift-certificates'}>
         {giftCertificates.length > 0 ? (
-          <div className={`text-xl font-medium mb-2`}>{counterString}</div>
+          <div className={`mb-2 text-xl font-medium`}>{counterString}</div>
         ) : null}
         <WpTable<GiftCertificateInterface>
           columns={columns}

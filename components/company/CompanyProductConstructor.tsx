@@ -50,7 +50,7 @@ const CompanyProductConstructor: React.FC<CompanyProductConstructorInterface> = 
                   </WpAccordion>
                 );
               })}
-              <div className='flex mb-12 mt-4'>
+              <div className='mb-12 mt-4 flex'>
                 <WpButton size={'small'} type={'submit'} testId={`card-content-submit`}>
                   Сохранить
                 </WpButton>

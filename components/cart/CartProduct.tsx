@@ -44,25 +44,25 @@ const CartProductFrame: React.FC<CartProductFrameInterface> = ({
     <div className='space-y-4'>
       <LayoutCard
         defaultView={defaultView}
-        className='grid px-6 py-8 gap-6 sm:grid-cols-8 relative min-h-[311px]'
+        className='relative grid min-h-[311px] gap-6 px-6 py-8 sm:grid-cols-8'
         testId={'cart-product'}
       >
         {/*image*/}
-        <div className='flex flex-col gap-4 items-center justify-center sm:col-span-2'>
-          <div className='relative flex justify-center flex-shrink-0 w-full max-w-[180px]'>
-            <div className='relative pb-[100%] w-full'>
+        <div className='flex flex-col items-center justify-center gap-4 sm:col-span-2'>
+          <div className='relative flex w-full max-w-[180px] flex-shrink-0 justify-center'>
+            <div className='relative w-full pb-[100%]'>
               <WpImage
                 url={mainImage}
                 alt={`${snippetTitle}`}
                 title={`${snippetTitle}`}
                 width={240}
-                className='absolute inset-0 w-full h-full object-contain'
+                className='absolute inset-0 h-full w-full object-contain'
               />
             </div>
 
             <WpLink
               target={'_blank'}
-              className='block absolute z-10 inset-0 text-indent-full'
+              className='text-indent-full absolute inset-0 z-10 block'
               href={`/${slug}`}
             >
               {snippetTitle}
@@ -71,7 +71,7 @@ const CartProductFrame: React.FC<CartProductFrameInterface> = ({
         </div>
 
         {/*main data*/}
-        <div className='sm:col-span-6 flex flex-col'>{children}</div>
+        <div className='flex flex-col sm:col-span-6'>{children}</div>
 
         {/*remove button*/}
         <ButtonCross
@@ -108,16 +108,16 @@ const CartProductMainData: React.FC<CartProductMainDataInterface> = ({
 }) => {
   return (
     <React.Fragment>
-      <div className='text-secondary-text mb-3'>{`Артикул: ${itemId}`}</div>
+      <div className='mb-3 text-secondary-text'>{`Артикул: ${itemId}`}</div>
       <div className='mb-6'>
         <WpLink
           target={'_blank'}
-          className='block text-primary-text hover:no-underline hover:text-primary-text font-medium text-lg lg:text-2xl'
+          className='block text-lg font-medium text-primary-text hover:text-primary-text hover:no-underline lg:text-2xl'
           href={`/${slug}`}
         >
           {snippetTitle}
         </WpLink>
-        {name ? <div className='text-secondary-text mt-1'>{name}</div> : null}
+        {name ? <div className='mt-1 text-secondary-text'>{name}</div> : null}
       </div>
     </React.Fragment>
   );
@@ -157,13 +157,13 @@ export const CartShoplessProduct: React.FC<CartProductPropsInterface> = ({
         snippetTitle={snippetTitle}
       />
 
-      <div className='flex flex-wrap gap-6 mb-4 items-center'>
+      <div className='mb-4 flex flex-wrap items-center gap-6'>
         <div>
           <div className='text-secondary-text'>Цена за ед.</div>
           <ProductSnippetPrice shopsCount={shopsCount} value={minPrice} />
         </div>
 
-        <div className='flex justify-center items-center gap-4'>
+        <div className='flex items-center justify-center gap-4'>
           <ControlButton iconSize={'mid'} icon={'compare'} />
           <ControlButton iconSize={'mid'} icon={'heart'} />
         </div>
@@ -226,7 +226,7 @@ export const CartProduct: React.FC<CartProductPropsWithAmountInterface> = ({
         snippetTitle={summary.snippetTitle}
       />
 
-      <div className='flex flex-wrap gap-6 mt-auto'>
+      <div className='mt-auto flex flex-wrap gap-6'>
         <div>
           {/*shop product price*/}
           <div className='text-secondary-text'>Цена за ед.</div>
@@ -270,7 +270,7 @@ export const CartProduct: React.FC<CartProductPropsWithAmountInterface> = ({
           />
         </div>
 
-        <div className='flex justify-center self-start items-center gap-4'>
+        <div className='flex items-center justify-center gap-4 self-start'>
           <ControlButton iconSize={'mid'} icon={'compare'} />
           <ControlButton iconSize={'mid'} icon={'heart'} />
         </div>

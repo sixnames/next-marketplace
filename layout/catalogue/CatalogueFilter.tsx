@@ -47,26 +47,26 @@ const CatalogueFilter: React.FC<CatalogueFilterProviderInterface> = (props) => {
 
   return (
     <div
-      className={`lg:col-span-2 inset-0 fixed z-[140] lg:z-10 bg-primary lg:relative h-[var(--fullHeight,100vh)] lg:h-auto ${
+      className={`fixed inset-0 z-[140] h-[var(--fullHeight,100vh)] bg-primary lg:relative lg:z-10 lg:col-span-2 lg:h-auto ${
         isFilterVisible ? 'block' : 'hidden lg:block'
       }`}
     >
-      <div className='absolute inset-0 h-full lg:sticky overflow-x-hidden overflow-y-auto lg:h-[calc(100vh-80px)] lg:top-20 relative w-full px-inner-block-horizontal-padding py-inner-block-vertical-padding lg:p-0'>
+      <div className='absolute relative inset-0 h-full w-full overflow-y-auto overflow-x-hidden px-inner-block-horizontal-padding py-inner-block-vertical-padding lg:sticky lg:top-20 lg:h-[calc(100vh-80px)] lg:p-0'>
         <div className='lg:pr-[15px]'>
-          <div className='hidden lg:block text-secondary-text h-[var(--catalogueVieButtonSize)] flex items-center mb-8'>
+          <div className='mb-8 flex hidden h-[var(--catalogueVieButtonSize)] items-center text-secondary-text lg:block'>
             {catalogueCounterString}
           </div>
 
           {/* Mobile title */}
-          <div className='lg:hidden flex items-center justify-end min-h-[2rem] mb-4 text-lg font-medium'>
-            <div className='truncate text-center w-[calc(100%-(var(--formInputHeightSmall)*2))]'>
+          <div className='mb-4 flex min-h-[2rem] items-center justify-end text-lg font-medium lg:hidden'>
+            <div className='w-[calc(100%-(var(--formInputHeightSmall)*2))] truncate text-center'>
               Фильтр
             </div>
             <div
-              className='text-secondary-text flex items-center justify-center w-[var(--formInputHeightSmall)] h-[var(--formInputHeightSmall)]'
+              className='flex h-[var(--formInputHeightSmall)] w-[var(--formInputHeightSmall)] items-center justify-center text-secondary-text'
               onClick={hideFilterHandler}
             >
-              <WpIcon className='w-4 h-4' name={'cross'} />
+              <WpIcon className='h-4 w-4' name={'cross'} />
             </div>
           </div>
 

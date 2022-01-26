@@ -14,12 +14,12 @@ const SocialLink: React.FC<SocialLinkInterface> = ({ href, icon }) => {
 
   return (
     <div
-      className='cursor-pointer flex flex-shrink-0 w-8 h-8 items-center justify-center rounded-full bg-primary mr-4 hover:opacity-80 text-theme'
+      className='mr-4 flex h-8 w-8 flex-shrink-0 cursor-pointer items-center justify-center rounded-full bg-primary text-theme hover:opacity-80'
       onClick={() => {
         window.open(href, '_blank');
       }}
     >
-      <WpIcon className='w-4 h-4' name={icon} />
+      <WpIcon className='h-4 w-4' name={icon} />
     </div>
   );
 };

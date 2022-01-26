@@ -69,7 +69,7 @@ const Pager: React.FC<PagerInterface> = ({
 
   return (
     <div className={`${className ? className : 'pt-6 pb-16'}`}>
-      <div className={`flex flex-wrap justify-center items-center`}>
+      <div className={`flex flex-wrap items-center justify-center`}>
         {items.map(({ page, type, selected, disabled }, index) => {
           let children;
           const arrowClassName = `${disabled ? 'pointer-events-none opacity-50' : ''}`;
@@ -89,7 +89,7 @@ const Pager: React.FC<PagerInterface> = ({
             children = (
               <WpLink
                 onClick={onClick}
-                className={`flex items-center justify-center w-10 h-10 hover:no-underline ${
+                className={`flex h-10 w-10 items-center justify-center hover:no-underline ${
                   selected
                     ? ' pointer-events-none font-bold text-theme'
                     : 'text-primary-text hover:text-theme'
@@ -144,7 +144,7 @@ const Pager: React.FC<PagerInterface> = ({
       </div>
 
       {showMoreHandler && noNaN(totalPages) > page ? (
-        <div className='flex justify-center mt-6'>
+        <div className='mt-6 flex justify-center'>
           <WpButton
             isLoading={isLoading}
             size={'small'}

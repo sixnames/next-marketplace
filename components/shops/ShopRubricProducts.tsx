@@ -133,7 +133,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
       headTitle: 'Цена',
       render: ({ rowIndex }) => {
         return (
-          <div className='flex items-center gap-3 w-[120px]' data-cy={`${rowIndex}-price`}>
+          <div className='flex w-[120px] items-center gap-3' data-cy={`${rowIndex}-price`}>
             <FormikInput
               testId={`shop-product-price-${rowIndex}`}
               name={`input[${rowIndex}].price`}
@@ -150,11 +150,11 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
       render: ({ dataItem }) => {
         return (
           <div className='flex flex-col gap-2'>
-            <div className='flex gap-3 justify-between'>
+            <div className='flex justify-between gap-3'>
               <span>Мин.</span>
               <Currency value={dataItem.minPrice} />
             </div>
-            <div className='flex gap-3 justify-between'>
+            <div className='flex justify-between gap-3'>
               <span>Макс.</span>
               <Currency value={dataItem.maxPrice} />
             </div>
@@ -252,7 +252,7 @@ const ShopRubricProducts: React.FC<ShopRubricProductsInterface> = ({
   return (
     <ConsoleShopLayout shop={shop} basePath={layoutBasePath} breadcrumbs={breadcrumbs}>
       <Inner testId={`shop-rubric-products-list`}>
-        <div className={`text-3xl font-medium mb-2`}>{rubricName}</div>
+        <div className={`mb-2 text-3xl font-medium`}>{rubricName}</div>
         <div className={`mb-6`}>{catalogueCounterString}</div>
 
         <FormikRouterSearch testId={'products'} />

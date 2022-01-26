@@ -101,7 +101,7 @@ const ProfileDetailsRoute: React.FC = () => {
           return (
             <Form>
               <fieldset className='mb-20'>
-                <legend className='text-lg font-medium mb-4'>Персональные данные</legend>
+                <legend className='mb-4 text-lg font-medium'>Персональные данные</legend>
 
                 <FormikInput
                   label={'Имя'}
@@ -125,7 +125,7 @@ const ProfileDetailsRoute: React.FC = () => {
               </fieldset>
 
               <fieldset className='mb-20'>
-                <legend className='text-lg font-medium mb-4'>Контактные данные</legend>
+                <legend className='mb-4 text-lg font-medium'>Контактные данные</legend>
 
                 <FormikInput
                   label={'Email'}

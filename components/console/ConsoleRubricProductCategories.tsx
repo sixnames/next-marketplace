@@ -33,7 +33,7 @@ const ConsoleRubricProductCategories: React.FC<ConsoleRubricProductCategoriesInt
 
       return (
         <div>
-          <div className='cms-option flex gap-4 items-center'>
+          <div className='cms-option flex items-center gap-4'>
             <div>
               <WpCheckbox
                 disabled={hasSelectedChildren}

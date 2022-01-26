@@ -27,7 +27,7 @@ const Inner: React.FC<InnerInterface> = ({
     <React.Fragment>
       <div
         data-cy={testId}
-        className={`w-full ml-auto mr-auto pr-[var(--innerBlockHorizontalPadding)] pl-[var(--innerBlockHorizontalPadding)] ${
+        className={`ml-auto mr-auto w-full pr-[var(--innerBlockHorizontalPadding)] pl-[var(--innerBlockHorizontalPadding)] ${
           wide ? widthWideClass : widthClass
         } ${lowTop ? paddingTopLowClass : paddingTopClass} ${
           lowBottom ? paddingBottomLowClass : paddingBottomClass

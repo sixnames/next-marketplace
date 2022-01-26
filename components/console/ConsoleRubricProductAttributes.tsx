@@ -100,7 +100,7 @@ const ConsoleRubricProductAttributes: React.FC<ConsoleRubricProductAttributesInt
         }
         return (
           <div className='relative mb-16' key={`${attributesGroup._id}`}>
-            <div className='mb-4 font-medium text-xl'>{attributesGroup.name}</div>
+            <div className='mb-4 text-xl font-medium'>{attributesGroup.name}</div>
             {selectAttributesAST && selectAttributesAST.length > 0 ? (
               <div>
                 <div className={selectsListClassName}>

@@ -36,26 +36,26 @@ const CartShop: React.FC<CartShopInterface> = ({ shopProduct, testId, cartProduc
   } = shop;
 
   return (
-    <LayoutCard className='overflow-hidden gap-4 md:grid md:grid-cols-12'>
-      <div className='relative h-[120px] w-full md:col-span-4 lg:col-span-3 md:h-full'>
+    <LayoutCard className='gap-4 overflow-hidden md:grid md:grid-cols-12'>
+      <div className='relative h-[120px] w-full md:col-span-4 md:h-full lg:col-span-3'>
         <WpImage
           url={mainImage}
           alt={`${name}`}
           title={`${name}`}
           width={120}
-          className='absolute inset-0 w-full h-full object-cover'
+          className='absolute inset-0 h-full w-full object-cover'
         />
       </div>
 
       <div className='grid gap-4 px-4 py-6 md:col-span-8 lg:col-span-9 lg:grid-cols-5'>
         <div className='lg:col-span-3'>
-          <div className='text-xl font-medium mb-2'>{name}</div>
+          <div className='mb-2 text-xl font-medium'>{name}</div>
           <div className='mb-3'>
             <RatingStars rating={4.5} showRatingNumber={false} smallStars={true} className='' />
           </div>
 
           <div
-            className='cursor-pointer hover:text-theme transition-all'
+            className='cursor-pointer transition-all hover:text-theme'
             onClick={() => {
               showModal<MapModalInterface>({
                 variant: MAP_MODAL,

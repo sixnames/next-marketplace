@@ -168,7 +168,7 @@ export const SeoTextCitiesInfoList: React.FC<SeoContentCitiesInfoInterface> = ({
 
         return (
           <div key={citySlug}>
-            <div className='font-medium mb-2'>{city.name}</div>
+            <div className='mb-2 font-medium'>{city.name}</div>
 
             <SeoTextLocalesInfoList
               seoLocales={citySeoContent.seoLocales}

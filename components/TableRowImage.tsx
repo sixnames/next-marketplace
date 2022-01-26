@@ -11,13 +11,13 @@ interface TableRowImageInterface {
 
 const TableRowImage: React.FC<TableRowImageInterface> = ({ testId, src, alt, title }) => {
   return (
-    <div className='table-image relative w-[40px] h-[50px] pt-[5px] pb-[5px]' data-cy={testId}>
+    <div className='table-image relative h-[50px] w-[40px] pt-[5px] pb-[5px]' data-cy={testId}>
       <WpImage
         url={src}
         alt={alt}
         title={title}
         width={TABLE_IMAGE_WIDTH}
-        className='absolute inset-0 w-full h-full object-contain'
+        className='absolute inset-0 h-full w-full object-contain'
       />
     </div>
   );

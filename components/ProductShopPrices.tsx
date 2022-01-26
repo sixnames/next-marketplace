@@ -28,7 +28,7 @@ const ProductShopPrices: React.FC<ProductPricesInterface> = ({
 
   if (showDiscountedPrice) {
     return (
-      <div className={`flex gap-4 whitespace-nowrap items-baseline ${className ? className : ''}`}>
+      <div className={`flex items-baseline gap-4 whitespace-nowrap ${className ? className : ''}`}>
         <div>
           <Currency
             valueClassName={`${priseSizeClassName} ${withDiscount ? 'text-theme' : ''} font-medium`}
@@ -52,7 +52,7 @@ const ProductShopPrices: React.FC<ProductPricesInterface> = ({
   }
 
   return (
-    <div className={`flex gap-4 whitespace-nowrap items-baseline ${className ? className : ''}`}>
+    <div className={`flex items-baseline gap-4 whitespace-nowrap ${className ? className : ''}`}>
       <Currency valueClassName={`${priseSizeClassName} font-medium`} value={price} />
     </div>
   );

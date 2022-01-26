@@ -49,7 +49,7 @@ const ContactsRoute: React.FC = () => {
       <div className='pt-10'>
         <div
           className={`mb-16 ${
-            actualAddress && actualAddress.point ? 'grid lg:grid-cols-2 gap-12' : ''
+            actualAddress && actualAddress.point ? 'grid gap-12 lg:grid-cols-2' : ''
           }`}
         >
           <div>

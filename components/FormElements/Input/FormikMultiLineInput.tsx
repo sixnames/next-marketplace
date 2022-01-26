@@ -106,7 +106,7 @@ const FormikMultiLineInput: React.FC<FormikMultiLineInputInterface> = ({
         </WpButton>
 
         {removeIndex > NEGATIVE_INDEX ? (
-          <div className='absolute inset-0 gap-4 flex flex-col items-center justify-center w-full h-full z-20 rounded-md backdrop-blur-md'>
+          <div className='absolute inset-0 z-20 flex h-full w-full flex-col items-center justify-center gap-4 rounded-md backdrop-blur-md'>
             <div className='font-medium'>Вы уверенны, что хотите удалить поле?</div>
             <div className='flex gap-4'>
               <WpButton

@@ -86,7 +86,7 @@ const FormikTranslationsSelect: React.FC<FormikSelectInterface> = ({
               titleRight={
                 <WpTooltip title={accordionIconTooltip}>
                   <div className={accordionIconClass}>
-                    <WpIcon className='w-4 h-4' name={accordionIcon} />
+                    <WpIcon className='h-4 w-4' name={accordionIcon} />
                   </div>
                 </WpTooltip>
               }

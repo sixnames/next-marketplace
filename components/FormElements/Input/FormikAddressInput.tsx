@@ -115,7 +115,7 @@ const FormikAddressInputConsumer: React.FC<FormikAddressInputConsumerInterface> 
         low={true}
       />
       {isOpen ? (
-        <div className='absolute top-full left-0 w-full z-20 py-4 bg-secondary shadow-lg rounded-md divide-y divide-border-200'>
+        <div className='absolute top-full left-0 z-20 w-full divide-y divide-border-200 rounded-md bg-secondary py-4 shadow-lg'>
           {loading ? <Spinner isNested /> : null}
           {!loading
             ? results.map((result, index) => {
@@ -129,7 +129,7 @@ const FormikAddressInputConsumer: React.FC<FormikAddressInputConsumerInterface> 
                       }
                       setFieldValue(name, result);
                     }}
-                    className='px-4 py-2 min-h-[2rem] flex items-center cursor-pointer transition-all duration-200 hover:text-theme'
+                    className='flex min-h-[2rem] cursor-pointer items-center px-4 py-2 transition-all duration-200 hover:text-theme'
                     key={`${formattedAddress}-${index}`}
                   >
                     {formattedAddress}

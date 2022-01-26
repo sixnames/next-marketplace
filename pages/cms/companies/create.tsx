@@ -109,7 +109,7 @@ const CreateCompanyContent: React.FC = () => {
           {() => {
             return (
               <Form>
-                <CompanyMainFields />
+                <CompanyMainFields hidePersonnelInputs />
                 <WpButton type={'submit'} testId={'company-submit'}>
                   Создать компанию
                 </WpButton>

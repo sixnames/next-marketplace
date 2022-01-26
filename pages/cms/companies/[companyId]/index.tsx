@@ -123,6 +123,23 @@ const CompanyDetailsConsumer: React.FC<CompanyDetailsConsumerInterface> = ({ pag
                       staffIds: staff.map(({ _id }) => _id),
                     });
                   }}
+                  deleteStaffUserHandler={(userId) => {
+                    const staff = (values.staff || []).filter((user) => {
+                      return `${user._id}` !== userId;
+                    });
+
+                    updateCompanyHandler({
+                      domain: values.domain,
+                      name: `${values?.name}`,
+                      contacts: {
+                        emails: values.contacts.emails,
+                        phones: values.contacts.phones.map((phone) => phoneToRaw(phone)),
+                      },
+                      companyId: pageCompany?._id,
+                      ownerId: `${values.owner?._id}`,
+                      staffIds: staff.map(({ _id }) => _id),
+                    });
+                  }}
                 />
                 <WpButton type={'submit'} testId={'company-submit'}>
                   Сохранить

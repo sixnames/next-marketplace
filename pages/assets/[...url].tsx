@@ -54,7 +54,9 @@ export async function getServerSideProps(
     initialFileFormat === 'svg' ||
     initialFileFormat === 'ico'
   ) {
-    const exists = fs.existsSync(dist);
+    const distArray = dist.split('?');
+    const realDist = distArray[0];
+    const exists = fs.existsSync(realDist);
     if (!exists) {
       const file = await getSharpImage({
         filePath: IMAGE_FALLBACK,
@@ -80,11 +82,11 @@ export async function getServerSideProps(
     }
 
     const contentType = initialFileFormat === 'ico' ? 'image/ico' : 'image/svg+xml';
-    const stat = fs.statSync(dist);
+    const stat = fs.statSync(realDist);
     res.setHeader('Content-Type', contentType);
     res.setHeader('Content-Length', stat.size);
 
-    const buffer = fs.readFileSync(dist);
+    const buffer = fs.readFileSync(realDist);
     res.write(buffer);
     res.end();
     return {

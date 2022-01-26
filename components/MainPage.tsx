@@ -139,7 +139,7 @@ const MainPageConsumer: React.FC<MainPageInterface> = ({
           <div className='sm:mb-20 mb-14'>
             <ImageGallery
               showBullets={sliderItems.length > 1}
-              autoPlay
+              autoPlay={process.env.NODE_ENV !== 'development'}
               slideInterval={autoplaySpeed}
               showFullscreenButton={false}
               showPlayButton={false}

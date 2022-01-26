@@ -86,6 +86,7 @@ export interface MakeAnOrderShopConfigInterface {
 export interface MakeAnOrderInputInterface {
   name: string;
   lastName?: string | null;
+  secondName?: string | null;
   phone: string;
   email: string;
   reservationDate?: string | null;
@@ -201,6 +202,7 @@ export async function makeAnOrder({
         const createdUserResult = await usersCollection.insertOne({
           name: input.name,
           lastName: input.lastName,
+          secondName: input.secondName,
           email: input.email,
           roleId: guestRole._id,
           phone: phoneToRaw(input.phone),

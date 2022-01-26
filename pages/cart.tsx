@@ -13,7 +13,25 @@ import { useSiteContext } from '../context/siteContext';
 import { MakeAnOrderInputInterface } from '../db/dao/orders/makeAnOrder';
 import { CartInterface } from '../db/uiInterfaces';
 import SiteLayout, { SiteLayoutProviderInterface } from '../layout/SiteLayout';
+import { noNaN } from '../lib/numbers';
 import { getSiteInitialData } from '../lib/ssrUtils';
+
+export function scrollToCartErrors(input: MakeAnOrderInputInterface): boolean {
+  const distElement = document.getElementById('cart-inputs');
+  const noName = !input.name;
+  const noEmail = !input.email;
+  const noPhone = !input.phone;
+
+  if (distElement && (noName || noEmail || noPhone)) {
+    window.scrollTo({
+      top: noNaN(distElement.getBoundingClientRect().top),
+      left: 0,
+      behavior: 'smooth',
+    });
+    return true;
+  }
+  return false;
+}
 
 export type CartTabIndexType = 0 | 1;
 

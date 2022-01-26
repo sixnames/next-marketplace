@@ -114,12 +114,12 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
     <article className='pb-20 pt-8 lg:pt-0' data-cy={`card`}>
       <WpBreadcrumbs currentPageName={cardTitle} config={cardBreadcrumbs} />
 
-      <div className='mb-28 relative'>
+      <div className='mb-28 relative bg-secondary shadow-md'>
         <Inner className='relative z-20' lowBottom lowTop>
           {/*content holder*/}
           <div className='relative'>
             {/*mobile title*/}
-            <div className='relative z-20 lg:hidden pt-8 pr-inner-block-horizontal-padding'>
+            <div className='relative z-20 lg:hidden pt-8'>
               <CardTitle
                 isMobile
                 showArticle={showArticle}
@@ -131,7 +131,7 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
             </div>
 
             {/*content*/}
-            <div className='relative z-20 grid gap-12 py-8 pr-inner-block-horizontal-padding md:grid-cols-2 lg:py-10 lg:grid-cols-12'>
+            <div className='relative z-20 grid gap-12 py-8 md:grid-cols-2 lg:py-10 lg:grid-cols-12'>
               {/*image*/}
               <div className='md:col-span-1 md:order-2 lg:col-span-3 flex justify-center items-center'>
                 {showCardImagesSlider ? (
@@ -276,14 +276,8 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
                 })}
               </div>
             </div>
-
-            {/*bg*/}
-            <div className='absolute inset-x-0 inset-y-0 --xl:top-[10%] --xl:h-[80%] z-10 bg-secondary rounded-tr-xl rounded-br-xl wp-shadow-bottom-right-100' />
           </div>
         </Inner>
-
-        {/*bg left patch*/}
-        <div className='absolute z-10 inset-x-0 inset-y-0 --xl:top-[10%] --xl:h-[80%] left-0 w-[50%] bg-secondary' />
       </div>
 
       <Inner lowTop lowBottom>

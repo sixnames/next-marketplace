@@ -4,6 +4,8 @@ import {
   BRAND_OPTIONS_MODAL,
   MANUFACTURER_OPTIONS_MODAL,
 } from '../../config/modalVariants';
+import { useAppContext } from '../../context/appContext';
+import { useNotificationsContext } from '../../context/notificationsContext';
 import {
   BrandCollectionInterface,
   BrandInterface,
@@ -11,11 +13,10 @@ import {
   ProductFacetInterface,
 } from '../../db/uiInterfaces';
 import {
-  useUpdateProductBrandCollectionMutation,
-  useUpdateProductBrandMutation,
-  useUpdateProductManufacturerMutation,
-} from '../../generated/apolloComponents';
-import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+  useUpdateProductBrand,
+  useUpdateProductBrandCollection,
+  useUpdateProductManufacturer,
+} from '../../hooks/mutations/useProductMutations';
 import FakeInput from '../FormElements/Input/FakeInput';
 import InputLine from '../FormElements/Input/InputLine';
 import Inner from '../Inner';
@@ -38,26 +39,12 @@ const ConsoleRubricProductBrands: React.FC<ConsoleRubricProductBrandsInterface> 
   brandCollection,
   manufacturer,
 }) => {
-  const { onErrorCallback, onCompleteCallback, showLoading, showErrorNotification, showModal } =
-    useMutationCallbacks({
-      withModal: true,
-      reload: true,
-    });
+  const { showModal } = useAppContext();
+  const { showErrorNotification } = useNotificationsContext();
 
-  const [updateProductBrandMutation] = useUpdateProductBrandMutation({
-    onError: onErrorCallback,
-    onCompleted: (data) => onCompleteCallback(data.updateProductBrand),
-  });
-
-  const [updateProductBrandCollectionMutation] = useUpdateProductBrandCollectionMutation({
-    onError: onErrorCallback,
-    onCompleted: (data) => onCompleteCallback(data.updateProductBrandCollection),
-  });
-
-  const [updateProductManufacturerMutation] = useUpdateProductManufacturerMutation({
-    onError: onErrorCallback,
-    onCompleted: (data) => onCompleteCallback(data.updateProductManufacturer),
-  });
+  const [updateProductBrandMutation] = useUpdateProductBrand();
+  const [updateProductBrandCollectionMutation] = useUpdateProductBrandCollection();
+  const [updateProductManufacturerMutation] = useUpdateProductManufacturer();
 
   return (
     <Inner testId={'product-brands-list'}>
@@ -69,15 +56,10 @@ const ConsoleRubricProductBrands: React.FC<ConsoleRubricProductBrandsInterface> 
           onClear={
             product.brandSlug
               ? () => {
-                  showLoading();
                   updateProductBrandMutation({
-                    variables: {
-                      input: {
-                        productId: product._id,
-                        brandSlug: null,
-                      },
-                    },
-                  }).catch((e) => console.log(e));
+                    productId: `${product._id}`,
+                    brandSlug: null,
+                  }).catch(console.log);
                 }
               : undefined
           }
@@ -100,15 +82,10 @@ const ConsoleRubricProductBrands: React.FC<ConsoleRubricProductBrandsInterface> 
                   const brand = selectedOptions[0];
 
                   if (brand) {
-                    showLoading();
                     updateProductBrandMutation({
-                      variables: {
-                        input: {
-                          productId: product._id,
-                          brandSlug: brand.itemId,
-                        },
-                      },
-                    }).catch((e) => console.log(e));
+                      productId: `${product._id}`,
+                      brandSlug: brand.itemId,
+                    }).catch(console.log);
                     return;
                   }
                   showErrorNotification({ title: 'Бренд не указан' });
@@ -128,15 +105,10 @@ const ConsoleRubricProductBrands: React.FC<ConsoleRubricProductBrandsInterface> 
           onClear={
             product.brandCollectionSlug
               ? () => {
-                  showLoading();
                   updateProductBrandCollectionMutation({
-                    variables: {
-                      input: {
-                        productId: product._id,
-                        brandCollectionSlug: null,
-                      },
-                    },
-                  }).catch((e) => console.log(e));
+                    productId: `${product._id}`,
+                    brandCollectionSlug: null,
+                  }).catch(console.log);
                 }
               : undefined
           }
@@ -160,15 +132,10 @@ const ConsoleRubricProductBrands: React.FC<ConsoleRubricProductBrandsInterface> 
                   const brandCollection = selectedOptions[0];
 
                   if (brandCollection) {
-                    showLoading();
                     updateProductBrandCollectionMutation({
-                      variables: {
-                        input: {
-                          productId: product._id,
-                          brandCollectionSlug: brandCollection.itemId,
-                        },
-                      },
-                    }).catch((e) => console.log(e));
+                      productId: `${product._id}`,
+                      brandCollectionSlug: brandCollection.itemId,
+                    }).catch(console.log);
                     return;
                   }
                   showErrorNotification({ title: 'Коллекция бренда не указана' });
@@ -187,15 +154,10 @@ const ConsoleRubricProductBrands: React.FC<ConsoleRubricProductBrandsInterface> 
           onClear={
             product.manufacturerSlug
               ? () => {
-                  showLoading();
                   updateProductManufacturerMutation({
-                    variables: {
-                      input: {
-                        productId: product._id,
-                        manufacturerSlug: null,
-                      },
-                    },
-                  }).catch((e) => console.log(e));
+                    productId: `${product._id}`,
+                    manufacturerSlug: null,
+                  }).catch(console.log);
                 }
               : undefined
           }
@@ -216,15 +178,10 @@ const ConsoleRubricProductBrands: React.FC<ConsoleRubricProductBrandsInterface> 
                   : [],
                 onSubmit: (selectedOptions) => {
                   const manufacturer = selectedOptions[0];
-                  showLoading();
                   updateProductManufacturerMutation({
-                    variables: {
-                      input: {
-                        productId: product._id,
-                        manufacturerSlug: manufacturer.itemId,
-                      },
-                    },
-                  }).catch((e) => console.log(e));
+                    productId: `${product._id}`,
+                    manufacturerSlug: manufacturer.itemId,
+                  }).catch(console.log);
                 },
               },
             });

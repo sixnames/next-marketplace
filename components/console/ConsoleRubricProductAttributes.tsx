@@ -1,17 +1,17 @@
 import { Form, Formik } from 'formik';
 import * as React from 'react';
 import { ATTRIBUTE_OPTIONS_MODAL } from '../../config/modalVariants';
+import { useAppContext } from '../../context/appContext';
 import {
   OptionInterface,
   ProductAttributeInterface,
   ProductSummaryInterface,
 } from '../../db/uiInterfaces';
 import {
-  useUpdateProductNumberAttributeMutation,
-  useUpdateProductSelectAttributeMutation,
-  useUpdateProductTextAttributeMutation,
-} from '../../generated/apolloComponents';
-import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+  useUpdateProductNumberAttribute,
+  useUpdateProductSelectAttribute,
+  useUpdateProductTextAttribute,
+} from '../../hooks/mutations/useProductMutations';
 import { noNaN } from '../../lib/numbers';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
@@ -40,44 +40,25 @@ interface ConsoleRubricProductAttributesInterface {
 const ConsoleRubricProductAttributes: React.FC<ConsoleRubricProductAttributesInterface> = ({
   product,
 }) => {
-  const { showModal, onCompleteCallback, onErrorCallback, showLoading } = useMutationCallbacks({
-    // withModal: true,
-    reload: true,
-  });
+  const { showModal } = useAppContext();
   const { attributesGroups } = product;
 
-  const [updateProductSelectAttributeMutation] = useUpdateProductSelectAttributeMutation({
-    onError: onErrorCallback,
-    onCompleted: (data) => onCompleteCallback(data.updateProductSelectAttribute),
-  });
-
-  const [updateProductNumberAttributeMutation] = useUpdateProductNumberAttributeMutation({
-    onError: onErrorCallback,
-    onCompleted: (data) => onCompleteCallback(data.updateProductNumberAttribute),
-  });
-
-  const [updateProductTextAttributeMutation] = useUpdateProductTextAttributeMutation({
-    onError: onErrorCallback,
-    onCompleted: (data) => onCompleteCallback(data.updateProductTextAttribute),
-  });
+  const [updateProductSelectAttributeMutation] = useUpdateProductSelectAttribute();
+  const [updateProductNumberAttributeMutation] = useUpdateProductNumberAttribute();
+  const [updateProductTextAttributeMutation] = useUpdateProductTextAttribute();
 
   const clearSelectFieldHandler = React.useCallback(
     (productAttribute: ProductAttributeInterface) => {
       if (productAttribute.attribute?.optionsGroupId) {
-        showLoading();
         updateProductSelectAttributeMutation({
-          variables: {
-            input: {
-              productId: product._id,
-              attributeId: productAttribute.attributeId,
-              productAttributeId: productAttribute._id,
-              selectedOptionsIds: [],
-            },
-          },
-        }).catch((e) => console.log(e));
+          productId: `${product._id}`,
+          attributeId: `${productAttribute.attributeId}`,
+          productAttributeId: `${productAttribute._id}`,
+          selectedOptionsIds: [],
+        }).catch(console.log);
       }
     },
-    [product._id, showLoading, updateProductSelectAttributeMutation],
+    [product._id, updateProductSelectAttributeMutation],
   );
 
   return (
@@ -134,17 +115,12 @@ const ConsoleRubricProductAttributes: React.FC<ConsoleRubricProductAttributesInt
                                   castSelectedOptions,
                                 ),
                                 onSubmit: (value) => {
-                                  showLoading();
                                   updateProductSelectAttributeMutation({
-                                    variables: {
-                                      input: {
-                                        productId: product._id,
-                                        attributeId: attribute._id,
-                                        productAttributeId: productAttribute._id,
-                                        selectedOptionsIds: value.map(({ _id }) => _id),
-                                      },
-                                    },
-                                  }).catch((e) => console.log(e));
+                                    productId: `${product._id}`,
+                                    attributeId: `${attribute._id}`,
+                                    productAttributeId: `${productAttribute._id}`,
+                                    selectedOptionsIds: value.map(({ _id }) => `${_id}`),
+                                  }).catch(console.log);
                                 },
                               },
                             });
@@ -189,17 +165,12 @@ const ConsoleRubricProductAttributes: React.FC<ConsoleRubricProductAttributesInt
                                   castSelectedOptions,
                                 ),
                                 onSubmit: (value) => {
-                                  showLoading();
                                   updateProductSelectAttributeMutation({
-                                    variables: {
-                                      input: {
-                                        productId: product._id,
-                                        attributeId: productAttribute.attributeId,
-                                        productAttributeId: productAttribute._id,
-                                        selectedOptionsIds: value.map(({ _id }) => _id),
-                                      },
-                                    },
-                                  }).catch((e) => console.log(e));
+                                    productId: `${product._id}`,
+                                    attributeId: `${productAttribute.attributeId}`,
+                                    productAttributeId: `${productAttribute._id}`,
+                                    selectedOptionsIds: value.map(({ _id }) => `${_id}`),
+                                  }).catch(console.log);
                                 },
                               },
                             });
@@ -216,24 +187,19 @@ const ConsoleRubricProductAttributes: React.FC<ConsoleRubricProductAttributesInt
               <Formik
                 initialValues={{ attributes: numberAttributesAST }}
                 onSubmit={(values) => {
-                  showLoading();
                   updateProductNumberAttributeMutation({
-                    variables: {
-                      input: {
-                        productId: product._id,
-                        attributes: (values.attributes || []).map((attribute) => {
-                          return {
-                            attributeId: attribute.attributeId,
-                            productAttributeId: attribute._id,
-                            number:
-                              attribute.number && `${attribute.number}`.length > 0
-                                ? noNaN(attribute.number)
-                                : null,
-                          };
-                        }),
-                      },
-                    },
-                  }).catch((e) => console.log(e));
+                    productId: `${product._id}`,
+                    attributes: (values.attributes || []).map((attribute) => {
+                      return {
+                        attributeId: `${attribute.attributeId}`,
+                        productAttributeId: `${attribute._id}`,
+                        number:
+                          attribute.number && `${attribute.number}`.length > 0
+                            ? noNaN(attribute.number)
+                            : null,
+                      };
+                    }),
+                  }).catch(console.log);
                 }}
               >
                 {() => {
@@ -276,21 +242,16 @@ const ConsoleRubricProductAttributes: React.FC<ConsoleRubricProductAttributesInt
               <Formik
                 initialValues={{ attributes: stringAttributesAST }}
                 onSubmit={(values) => {
-                  showLoading();
                   updateProductTextAttributeMutation({
-                    variables: {
-                      input: {
-                        productId: product._id,
-                        attributes: (values.attributes || []).map((attribute) => {
-                          return {
-                            attributeId: attribute.attributeId,
-                            productAttributeId: attribute._id,
-                            textI18n: attribute.textI18n || null,
-                          };
-                        }),
-                      },
-                    },
-                  }).catch((e) => console.log(e));
+                    productId: `${product._id}`,
+                    attributes: (values.attributes || []).map((attribute) => {
+                      return {
+                        attributeId: `${attribute.attributeId}`,
+                        productAttributeId: `${attribute._id}`,
+                        textI18n: attribute.textI18n || null,
+                      };
+                    }),
+                  }).catch(console.log);
                 }}
               >
                 {() => {

@@ -687,6 +687,10 @@ export enum ProductDraftStateModel {
 export interface ProductDraftDiffModel {
   diff: DiffModel;
   createdAt: DateModel;
+  authorId: ObjectIdModel;
+  moderatorId?: ObjectIdModel | null;
+  moderatorComment?: string;
+  authorComment?: string;
 }
 
 export interface ProductDraftModel extends TimestampModel {

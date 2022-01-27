@@ -8,11 +8,14 @@ import {
 import { BARCODE_INTERSECTS_MODAL } from '../../config/modalVariants';
 import { useAppContext } from '../../context/appContext';
 import { useNotificationsContext } from '../../context/notificationsContext';
+import { AddProductToVariantInputInterface } from '../../db/dao/product/addProductToVariant';
 import { CopyProductInputInterface } from '../../db/dao/product/copyProduct';
 import { CreateProductInputInterface } from '../../db/dao/product/createProduct';
+import { CreateProductVariantInputInterface } from '../../db/dao/product/createProductVariant';
 import { CreateProductWithSyncErrorInputInterface } from '../../db/dao/product/createProductWithSyncError';
 import { DeleteProductInputInterface } from '../../db/dao/product/deleteProduct';
 import { DeleteProductAssetInputInterface } from '../../db/dao/product/deleteProductAsset';
+import { DeleteProductFromVariantInputInterface } from '../../db/dao/product/deleteProductFromVariant';
 import { UpdateProductInputInterface } from '../../db/dao/product/updateProduct';
 import { UpdateProductAssetIndexInputInterface } from '../../db/dao/product/updateProductAssetIndex';
 import { UpdateProductBrandInputInterface } from '../../db/dao/product/updateProductBrand';
@@ -237,6 +240,28 @@ export const useUpdateProductTextAttribute = () => {
   return useMutationHandler<ProductPayloadModel, UpdateProductTextAttributeInputInterface>({
     path: `${basePath}/attributes/text`,
     method: REQUEST_METHOD_PATCH,
+  });
+};
+
+// variants
+export const useCreateProductVariant = () => {
+  return useMutationHandler<ProductPayloadModel, CreateProductVariantInputInterface>({
+    path: `${basePath}/variants`,
+    method: REQUEST_METHOD_POST,
+  });
+};
+
+export const useAddProductToVariant = () => {
+  return useMutationHandler<ProductPayloadModel, AddProductToVariantInputInterface>({
+    path: `${basePath}/variants`,
+    method: REQUEST_METHOD_PATCH,
+  });
+};
+
+export const useDeleteProductFromVariant = () => {
+  return useMutationHandler<ProductPayloadModel, DeleteProductFromVariantInputInterface>({
+    path: `${basePath}/variants`,
+    method: REQUEST_METHOD_DELETE,
   });
 };
 

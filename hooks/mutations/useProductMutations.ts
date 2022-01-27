@@ -15,8 +15,14 @@ import { DeleteProductInputInterface } from '../../db/dao/product/deleteProduct'
 import { DeleteProductAssetInputInterface } from '../../db/dao/product/deleteProductAsset';
 import { UpdateProductInputInterface } from '../../db/dao/product/updateProduct';
 import { UpdateProductAssetIndexInputInterface } from '../../db/dao/product/updateProductAssetIndex';
+import { UpdateProductBrandInputInterface } from '../../db/dao/product/updateProductBrand';
+import { UpdateProductBrandCollectionInputInterface } from '../../db/dao/product/updateProductBrandCollection';
 import { UpdateProductCardContentInputInterface } from '../../db/dao/product/updateProductCardContent';
 import { UpdateProductCategoryInputInterface } from '../../db/dao/product/updateProductCategory';
+import { UpdateProductManufacturerInputInterface } from '../../db/dao/product/updateProductManufacturer';
+import { UpdateProductNumberAttributeInputInterface } from '../../db/dao/product/updateProductNumberAttribute';
+import { UpdateProductSelectAttributeInputInterface } from '../../db/dao/product/updateProductSelectAttribute';
+import { UpdateProductTextAttributeInputInterface } from '../../db/dao/product/updateProductTextAttribute';
 import { UpdateProductWithSyncErrorInputInterface } from '../../db/dao/product/updateProductWithSyncError';
 import { ProductPayloadModel } from '../../db/dbModels';
 import { getConsoleRubricLinks } from '../../lib/linkUtils';
@@ -188,6 +194,49 @@ export const useUpdateProductWithSyncError = () => {
         router.push(product.root).catch(console.log);
       }
     },
+  });
+};
+
+// attributes
+export const useUpdateProductBrand = () => {
+  return useMutationHandler<ProductPayloadModel, UpdateProductBrandInputInterface>({
+    path: `${basePath}/attributes/brand`,
+    method: REQUEST_METHOD_PATCH,
+  });
+};
+
+export const useUpdateProductBrandCollection = () => {
+  return useMutationHandler<ProductPayloadModel, UpdateProductBrandCollectionInputInterface>({
+    path: `${basePath}/attributes/brand-collection`,
+    method: REQUEST_METHOD_PATCH,
+  });
+};
+
+export const useUpdateProductManufacturer = () => {
+  return useMutationHandler<ProductPayloadModel, UpdateProductManufacturerInputInterface>({
+    path: `${basePath}/attributes/manufacturer`,
+    method: REQUEST_METHOD_PATCH,
+  });
+};
+
+export const useUpdateProductNumberAttribute = () => {
+  return useMutationHandler<ProductPayloadModel, UpdateProductNumberAttributeInputInterface>({
+    path: `${basePath}/attributes/number`,
+    method: REQUEST_METHOD_PATCH,
+  });
+};
+
+export const useUpdateProductSelectAttribute = () => {
+  return useMutationHandler<ProductPayloadModel, UpdateProductSelectAttributeInputInterface>({
+    path: `${basePath}/attributes/select`,
+    method: REQUEST_METHOD_PATCH,
+  });
+};
+
+export const useUpdateProductTextAttribute = () => {
+  return useMutationHandler<ProductPayloadModel, UpdateProductTextAttributeInputInterface>({
+    path: `${basePath}/attributes/text`,
+    method: REQUEST_METHOD_PATCH,
   });
 };
 

@@ -4,7 +4,7 @@ import FormikInput from '../../components/FormElements/Input/FormikInput';
 import FormikMultiLineInput from '../../components/FormElements/Input/FormikMultiLineInput';
 import FakeInput from '../../components/FormElements/Input/FakeInput';
 import InputLine from '../../components/FormElements/Input/InputLine';
-import { USERS_SEARCH_MODAL } from '../../config/modalVariants';
+import { CONFIRM_MODAL, USERS_SEARCH_MODAL } from '../../config/modalVariants';
 import { useAppContext } from '../../context/appContext';
 import { UserInterface } from '../../db/uiInterfaces';
 import { UpdateCompanyInput } from '../../generated/apolloComponents';
@@ -14,6 +14,7 @@ import WpButton from '../button/WpButton';
 import LinkEmail from '../Link/LinkEmail';
 import LinkPhone from '../Link/LinkPhone';
 import WpLink from '../Link/WpLink';
+import { ConfirmModalInterface } from '../Modal/ConfirmModal';
 import {
   UsersSearchModalControlsInterface,
   UsersSearchModalInterface,
@@ -27,14 +28,18 @@ export interface CompanyFormMainValuesInterface extends Omit<UpdateCompanyInput,
 
 interface CompanyMainFieldsInterface {
   inConsole?: boolean;
+  hidePersonnelInputs?: boolean;
   addStaffUserHandler?: (user: UserInterface) => void;
   setOwnerHandler?: (user: UserInterface) => void;
+  deleteStaffUserHandler?: (userId: string) => void;
 }
 
 const CompanyMainFields: React.FC<CompanyMainFieldsInterface> = ({
   inConsole,
   setOwnerHandler,
   addStaffUserHandler,
+  hidePersonnelInputs,
+  deleteStaffUserHandler,
 }) => {
   const { showModal, hideModal } = useAppContext();
   const { values, setFieldValue } = useFormikContext<CompanyFormMainValuesInterface>();
@@ -74,6 +79,34 @@ const CompanyMainFields: React.FC<CompanyMainFieldsInterface> = ({
       accessor: 'role',
       headTitle: 'Роль',
       render: ({ cellData }) => cellData.name,
+    },
+    {
+      render: ({ dataItem }) => {
+        if (!deleteStaffUserHandler) {
+          return null;
+        }
+        return (
+          <div className='flex justify-end'>
+            <ContentItemControls
+              testId={`${dataItem.name}`}
+              deleteTitle={'Удалить сотрудника'}
+              deleteHandler={() => {
+                showModal<ConfirmModalInterface>({
+                  variant: CONFIRM_MODAL,
+                  props: {
+                    testId: 'delete-company-staff-modal',
+                    message: `Вы уверенны, что хотите удалить сотрудника ${dataItem.fullName}?`,
+                    confirm: () => {
+                      deleteStaffUserHandler(`${dataItem._id}`);
+                    },
+                  },
+                });
+              }}
+            />
+          </div>
+        );
+      },
+      isHidden: !deleteStaffUserHandler,
     },
   ];
 
@@ -139,9 +172,11 @@ const CompanyMainFields: React.FC<CompanyMainFieldsInterface> = ({
 
       <FormikInput name={'domain'} label={'Домен'} testId={'domain'} showInlineError />
 
-      <FakeInput value={owner?.fullName} label={'Владелец'} testId={'ownerId'} />
+      {hidePersonnelInputs ? null : (
+        <FakeInput value={owner?.fullName} label={'Владелец'} testId={'ownerId'} />
+      )}
 
-      {inConsole ? null : (
+      {hidePersonnelInputs || inConsole ? null : (
         <InputLine labelTag={'div'}>
           <WpButton
             theme={'secondary'}
@@ -166,16 +201,18 @@ const CompanyMainFields: React.FC<CompanyMainFieldsInterface> = ({
         </InputLine>
       )}
 
-      <InputLine label={'Персонал компании'} labelTag={'div'}>
-        <WpTable<UserInterface>
-          columns={columns}
-          data={staff}
-          testIdKey={'itemId'}
-          emptyMessage={'Список пуст'}
-        />
-      </InputLine>
+      {hidePersonnelInputs ? null : (
+        <InputLine label={'Персонал компании'} labelTag={'div'}>
+          <WpTable<UserInterface>
+            columns={columns}
+            data={staff}
+            testIdKey={'itemId'}
+            emptyMessage={'Список пуст'}
+          />
+        </InputLine>
+      )}
 
-      {inConsole ? null : (
+      {hidePersonnelInputs || inConsole ? null : (
         <InputLine labelTag={'div'}>
           <WpButton
             theme={'secondary'}

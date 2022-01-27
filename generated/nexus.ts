@@ -445,12 +445,14 @@ export interface NexusGenInputs {
   };
   UpdateAttributeInCategoryInput: {
     // input type
-    attributeId: NexusGenScalars['ObjectId']; // ObjectId!
+    attributeIds: NexusGenScalars['ObjectId'][]; // [ObjectId!]!
+    attributesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
     categoryId: NexusGenScalars['ObjectId']; // ObjectId!
   };
   UpdateAttributeInRubricInput: {
     // input type
-    attributeId: NexusGenScalars['ObjectId']; // ObjectId!
+    attributeIds: NexusGenScalars['ObjectId'][]; // [ObjectId!]!
+    attributesGroupId: NexusGenScalars['ObjectId']; // ObjectId!
     rubricId: NexusGenScalars['ObjectId']; // ObjectId!
   };
   UpdateAttributesGroupInput: {

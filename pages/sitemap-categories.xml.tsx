@@ -123,9 +123,10 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     // categories
     for await (const category of catalogueData.headCategories || []) {
       const filter = `${FILTER_CATEGORY_KEY}${FILTER_SEPARATOR}${category.slug}`;
+      const asPath = `${basePath}/${filter}`;
       if (useNoIndexRules) {
         const seoContentParams = await getCatalogueAllSeoContents({
-          asPath: `${basePath}/${filter}`,
+          asPath,
           rubricSlug: rubric.slug,
           citySlug,
           companySlug,
@@ -136,7 +137,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           continue;
         }
       }
-      initialSlugs.push(`${basePath}/${filter}`);
+      initialSlugs.push(asPath);
     }
 
     // attributes
@@ -146,9 +147,10 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       }
       for await (const option of attribute.options || []) {
         const filter = `${attribute.slug}${FILTER_SEPARATOR}${option.slug}`;
+        const asPath = `${basePath}/${filter}`;
         if (useNoIndexRules) {
           const seoContentParams = await getCatalogueAllSeoContents({
-            asPath: `${basePath}/${filter}`,
+            asPath,
             rubricSlug: rubric.slug,
             citySlug,
             companySlug,
@@ -159,7 +161,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
             continue;
           }
         }
-        initialSlugs.push(`${basePath}/${filter}`);
+        initialSlugs.push(asPath);
       }
     }
   }

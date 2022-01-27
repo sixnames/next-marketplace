@@ -108,7 +108,8 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
               updateAttributeInRubricMutation({
                 variables: {
                   input: {
-                    attributeId: dataItem._id,
+                    attributeIds: [dataItem._id],
+                    attributesGroupId: dataItem.attributesGroupId,
                     rubricId: rubric._id,
                   },
                 },
@@ -135,7 +136,8 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
               toggleCmsCardAttributeInRubricMutation({
                 variables: {
                   input: {
-                    attributeId: dataItem._id,
+                    attributeIds: [dataItem._id],
+                    attributesGroupId: dataItem.attributesGroupId,
                     rubricId: rubric._id,
                   },
                 },
@@ -170,37 +172,63 @@ const RubricAttributesConsumer: React.FC<RubricAttributesConsumerInterface> = ({
       <Inner testId={'rubric-attributes'}>
         {(rubric.attributesGroups || []).map((attributesGroup) => {
           const { name, attributes, _id } = attributesGroup;
+          const allAttributeIds = (attributes || []).map(({ _id }) => _id);
+          const selectedCmsViewInGroup = (rubric.cmsCardAttributeIds || []).filter((_id) => {
+            return allAttributeIds.some((attributeId) => attributeId === _id);
+          });
+          const isDeleteAll = selectedCmsViewInGroup.length > 0;
           return (
             <div key={`${_id}`} className='mb-12'>
               <WpAccordion
                 isOpen
                 title={`${name}`}
                 titleRight={
-                  <ContentItemControls
-                    testId={`${attributesGroup.name}`}
-                    justifyContent={'flex-end'}
-                    deleteTitle={'Удалить группу атрибутов из рубрики'}
-                    deleteHandler={() => {
-                      showModal({
-                        variant: CONFIRM_MODAL,
-                        props: {
-                          testId: 'attributes-group-delete-modal',
-                          message: `Вы уверены, что хотите удалить группу атрибутов ${attributesGroup.name} из рубрики?`,
-                          confirm: () => {
-                            showLoading();
-                            return deleteAttributesGroupFromRubricMutation({
-                              variables: {
-                                input: {
-                                  rubricId: rubric._id,
-                                  attributesGroupId: attributesGroup._id,
-                                },
-                              },
-                            });
+                  <div className='flex gap-4'>
+                    <WpButton
+                      size='small'
+                      theme='secondary'
+                      onClick={() => {
+                        showLoading();
+                        toggleCmsCardAttributeInRubricMutation({
+                          variables: {
+                            input: {
+                              attributeIds: isDeleteAll ? [] : allAttributeIds,
+                              attributesGroupId: attributesGroup._id,
+                              rubricId: rubric._id,
+                            },
                           },
-                        },
-                      });
-                    }}
-                  />
+                        }).catch(console.log);
+                      }}
+                    >
+                      {`${isDeleteAll ? 'Отключить' : 'Выбрать'} все атрибуты для CMS карточки`}
+                    </WpButton>
+
+                    <ContentItemControls
+                      testId={`${attributesGroup.name}`}
+                      justifyContent={'flex-end'}
+                      deleteTitle={'Удалить группу атрибутов из рубрики'}
+                      deleteHandler={() => {
+                        showModal({
+                          variant: CONFIRM_MODAL,
+                          props: {
+                            testId: 'attributes-group-delete-modal',
+                            message: `Вы уверены, что хотите удалить группу атрибутов ${attributesGroup.name} из рубрики?`,
+                            confirm: () => {
+                              showLoading();
+                              return deleteAttributesGroupFromRubricMutation({
+                                variables: {
+                                  input: {
+                                    rubricId: rubric._id,
+                                    attributesGroupId: attributesGroup._id,
+                                  },
+                                },
+                              });
+                            },
+                          },
+                        });
+                      }}
+                    />
+                  </div>
                 }
               >
                 <div className={`mt-4 overflow-x-auto`}>

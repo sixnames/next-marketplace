@@ -104,6 +104,7 @@ export async function updateProduct({
         {
           $set: {
             ...values,
+            videos: (values.videos || []).filter((url) => url),
             rubricId: new ObjectId(rubricId),
             nameI18n,
             originalName,

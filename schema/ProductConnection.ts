@@ -24,6 +24,13 @@ import {
   deleteProductFromConnectionSchema,
 } from '../validation/productSchema';
 
+export const ProductPayload = objectType({
+  name: 'ProductPayload',
+  definition(t) {
+    t.implements('Payload');
+  },
+});
+
 export const ProductConnectionItem = objectType({
   name: 'ProductConnectionItem',
   definition(t) {

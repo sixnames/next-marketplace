@@ -156,7 +156,7 @@ export async function updateProductTextAttribute({
       payload: summary,
     };
   } catch (e) {
-    console.log(e);
+    console.log('updateProductTextAttribute', e);
     return {
       success: false,
       message: getResolverErrorMessage(e),

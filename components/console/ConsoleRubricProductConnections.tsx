@@ -5,17 +5,18 @@ import {
   CREATE_CONNECTION_MODAL,
   PRODUCT_SEARCH_MODAL,
 } from '../../config/modalVariants';
+import { useAppContext } from '../../context/appContext';
+import { useNotificationsContext } from '../../context/notificationsContext';
 import {
   ProductVariantInterface,
   ProductVariantItemInterface,
   ProductSummaryInterface,
 } from '../../db/uiInterfaces';
 import {
-  useAddProductToConnectionMutation,
-  useCreateProductConnectionMutation,
-  useDeleteProductFromConnectionMutation,
-} from '../../generated/apolloComponents';
-import useMutationCallbacks from '../../hooks/useMutationCallbacks';
+  useAddProductToVariant,
+  useCreateProductVariant,
+  useDeleteProductFromVariant,
+} from '../../hooks/mutations/useProductMutations';
 import { getCmsLinks } from '../../lib/linkUtils';
 import ContentItemControls from '../button/ContentItemControls';
 import FixedButtons from '../button/FixedButtons';
@@ -30,55 +31,44 @@ import WpAccordion from '../WpAccordion';
 import WpTable, { WpTableColumn } from '../WpTable';
 
 interface ProductConnectionControlsInterface {
-  connection: ProductVariantInterface;
+  variant: ProductVariantInterface;
   product: ProductSummaryInterface;
 }
 
 const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = ({
-  connection,
+  variant,
   product,
 }) => {
-  const { showModal, showLoading, onCompleteCallback, onErrorCallback } = useMutationCallbacks({
-    withModal: true,
-    reload: true,
-  });
-  const [addProductToConnectionMutation] = useAddProductToConnectionMutation({
-    onError: onErrorCallback,
-    onCompleted: (data) => onCompleteCallback(data.addProductToConnection),
-  });
+  const { showModal } = useAppContext();
+  const [addProductToConnectionMutation] = useAddProductToVariant();
 
   const excludedProductsIds: string[] = [];
-  const excludedOptionsSlugs = (connection.products || []).map(({ option, productId }) => {
+  const excludedOptionsSlugs = (variant.products || []).map(({ option, productId }) => {
     excludedProductsIds.push(`${productId}`);
-    return `${connection.attribute?.slug}${FILTER_SEPARATOR}${option?.slug}`;
+    return `${variant.attribute?.slug}${FILTER_SEPARATOR}${option?.slug}`;
   });
 
   return (
     <ContentItemControls
-      testId={`${connection.attribute?.name}-connection-product`}
+      testId={`${variant.attribute?.name}-connection-product`}
       createTitle={'Добавить товар к связи'}
       createHandler={() => {
         showModal<ProductSearchModalInterface>({
           variant: PRODUCT_SEARCH_MODAL,
           props: {
             rubricSlug: product.rubricSlug,
-            createHandler: (addProduct) => {
-              showLoading();
-              addProductToConnectionMutation({
-                variables: {
-                  input: {
-                    addProductId: addProduct._id,
-                    connectionId: connection._id,
-                    productId: product._id,
-                  },
-                },
-              }).catch((e) => console.log(e));
-            },
             createTitle: 'Добавить товар в связь',
             testId: 'add-product-to-connection-modal',
             excludedProductsIds,
             excludedOptionsSlugs,
-            attributesIds: [`${connection.attributeId}`],
+            attributesIds: [`${variant.attributeId}`],
+            createHandler: (addProduct) => {
+              addProductToConnectionMutation({
+                addProductId: `${addProduct._id}`,
+                variantId: `${variant._id}`,
+                productId: `${product._id}`,
+              }).catch(console.log);
+            },
           },
         });
       }}
@@ -88,25 +78,20 @@ const ProductConnectionControls: React.FC<ProductConnectionControlsInterface> = 
 
 export interface ProductConnectionsItemInterface {
   product: ProductSummaryInterface;
-  connection: ProductVariantInterface;
+  variant: ProductVariantInterface;
   connectionIndex: number;
 }
 
 const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
-  connection,
+  variant,
   product,
   connectionIndex,
 }) => {
-  const { showModal, showLoading, onCompleteCallback, onErrorCallback } = useMutationCallbacks({
-    withModal: true,
-    reload: true,
-  });
-  const [deleteProductFromConnectionMutation] = useDeleteProductFromConnectionMutation({
-    onError: onErrorCallback,
-    onCompleted: (data) => onCompleteCallback(data.deleteProductFromConnection),
-  });
+  const { showErrorNotification } = useNotificationsContext();
+  const { showModal } = useAppContext();
+  const [deleteProductFromConnectionMutation] = useDeleteProductFromVariant();
 
-  const { products } = connection;
+  const { products } = variant;
 
   const columns: WpTableColumn<ProductVariantItemInterface>[] = [
     {
@@ -176,19 +161,20 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
               showModal<ConfirmModalInterface>({
                 variant: CONFIRM_MODAL,
                 props: {
-                  message: `Вы уверенны, что хотите удалить ${dataItem?.summary?.snippetTitle} из связи ${connection.attribute?.name}?`,
+                  message: `Вы уверенны, что хотите удалить ${dataItem.summary?.snippetTitle} из связи ${variant.attribute?.name}?`,
                   testId: 'delete-product-from-connection-modal',
                   confirm: () => {
-                    showLoading();
+                    if (!dataItem.summary) {
+                      showErrorNotification({
+                        message: 'Summary not found',
+                      });
+                      return;
+                    }
                     deleteProductFromConnectionMutation({
-                      variables: {
-                        input: {
-                          deleteProductId: dataItem?.summary?._id,
-                          connectionId: connection._id,
-                          productId: product._id,
-                        },
-                      },
-                    }).catch((e) => console.log(e));
+                      deleteProductId: `${dataItem.summary._id}`,
+                      variantId: `${variant._id}`,
+                      productId: `${product._id}`,
+                    }).catch(console.log);
                   },
                 },
               });
@@ -199,23 +185,23 @@ const ProductConnectionsItem: React.FC<ProductConnectionsItemInterface> = ({
     },
   ];
 
-  if (!connection.attribute) {
+  if (!variant.attribute) {
     return null;
   }
 
   return (
     <WpAccordion
-      testId={`${connection.attribute.name}-connection`}
-      title={`${connection.attribute.name}`}
+      testId={`${variant.attribute.name}-connection`}
+      title={`${variant.attribute.name}`}
       isOpen
       className='mb-8'
-      titleRight={<ProductConnectionControls connection={connection} product={product} />}
+      titleRight={<ProductConnectionControls variant={variant} product={product} />}
     >
       <div className='mt-4'>
         <WpTable<ProductVariantItemInterface>
           columns={columns}
           data={products}
-          tableTestId={`${connection.attribute.name}-connection-list`}
+          tableTestId={`${variant.attribute.name}-connection-list`}
           testIdKey={'product.name'}
           onRowDoubleClick={(dataItem) => {
             const links = getCmsLinks({
@@ -237,14 +223,8 @@ interface ConsoleRubricProductConnectionsInterface {
 const ConsoleRubricProductConnections: React.FC<ConsoleRubricProductConnectionsInterface> = ({
   product,
 }) => {
-  const { onCompleteCallback, onErrorCallback, showLoading, showModal } = useMutationCallbacks({
-    withModal: true,
-    reload: true,
-  });
-  const [createProductConnectionMutation] = useCreateProductConnectionMutation({
-    onError: onErrorCallback,
-    onCompleted: (data) => onCompleteCallback(data.createProductConnection),
-  });
+  const { showModal } = useAppContext();
+  const [createProductConnectionMutation] = useCreateProductVariant();
 
   return (
     <Inner testId={'product-connections-list'}>
@@ -254,7 +234,7 @@ const ConsoleRubricProductConnections: React.FC<ConsoleRubricProductConnectionsI
             <ProductConnectionsItem
               key={`${connection._id}`}
               product={product}
-              connection={connection}
+              variant={connection}
               connectionIndex={connectionIndex}
             />
           );
@@ -271,12 +251,7 @@ const ConsoleRubricProductConnections: React.FC<ConsoleRubricProductConnectionsI
               props: {
                 product,
                 confirm: (input) => {
-                  showLoading();
-                  createProductConnectionMutation({
-                    variables: {
-                      input,
-                    },
-                  }).catch((e) => console.log(e));
+                  createProductConnectionMutation(input).catch(console.log);
                 },
               },
             })

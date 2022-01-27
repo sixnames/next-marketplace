@@ -183,7 +183,7 @@ export async function createProductVariant({
 
     return mutationPayload;
   } catch (e) {
-    console.log(e);
+    console.log('createProductVariant', e);
     return {
       success: false,
       message: getResolverErrorMessage(e),

@@ -148,6 +148,7 @@ export async function updateProductBrandCollection({
 
     return mutationPayload;
   } catch (e) {
+    console.log('updateProductBrandCollection', e);
     return {
       success: false,
       message: getResolverErrorMessage(e),

@@ -160,6 +160,7 @@ export async function updateProductBrand({
 
     return mutationPayload;
   } catch (e) {
+    console.log('updateProductBrand', e);
     return {
       success: false,
       message: getResolverErrorMessage(e),

@@ -38,12 +38,6 @@ input AddProductToCartInput {
   shopProductId: ObjectId!
 }
 
-input AddProductToConnectionInput {
-  addProductId: ObjectId!
-  connectionId: ObjectId!
-  productId: ObjectId!
-}
-
 input AddProductToShopInput {
   available: Int!
   price: Int!
@@ -536,11 +530,6 @@ input CreateOrderStatusInput {
   nameI18n: JSONObject!
 }
 
-input CreateProductConnectionInput {
-  attributeId: ObjectId!
-  productId: ObjectId!
-}
-
 input CreateRoleInput {
   descriptionI18n: JSONObject
   isCompanyStaff: Boolean!
@@ -621,12 +610,6 @@ input DeleteProductFromCartInput {
 
 input DeleteProductFromCategoryInput {
   categoryId: ObjectId!
-  productId: ObjectId!
-}
-
-input DeleteProductFromConnectionInput {
-  connectionId: ObjectId!
-  deleteProductId: ObjectId!
   productId: ObjectId!
 }
 
@@ -800,11 +783,6 @@ type Mutation {
   addProductToCart(input: AddProductToCartInput!): CartPayload!
 
   """
-  Should create product connection
-  """
-  addProductToConnection(input: AddProductToConnectionInput!): ProductPayload!
-
-  """
   Should add shop products supplier
   """
   addShopProductSupplier(input: AddShopProductSupplierInput!): ShopProductPayload!
@@ -888,11 +866,6 @@ type Mutation {
   Should create order status
   """
   createOrderStatus(input: CreateOrderStatusInput!): OrderStatusPayload!
-
-  """
-  Should create product connection
-  """
-  createProductConnection(input: CreateProductConnectionInput!): ProductPayload!
 
   """
   Should create role
@@ -998,11 +971,6 @@ type Mutation {
   Should delete product from cart
   """
   deleteProductFromCart(input: DeleteProductFromCartInput!): CartPayload!
-
-  """
-  Should delete product from connection and delete connection if there is no products left
-  """
-  deleteProductFromConnection(input: DeleteProductFromConnectionInput!): ProductPayload!
 
   """
   Should delete product from shop
@@ -1392,23 +1360,6 @@ type PointGeoJSON {
   Field that specifies the GeoJSON object type.
   """
   type: String!
-}
-
-type ProductConnection {
-  _id: ObjectId!
-  attributeId: ObjectId!
-  attributeNameI18n: JSONObject
-  attributeSlug: String!
-}
-
-type ProductConnectionItem {
-  _id: ObjectId!
-  productId: ObjectId!
-}
-
-type ProductPayload implements Payload {
-  message: String!
-  success: Boolean!
 }
 
 type Query {

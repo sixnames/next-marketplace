@@ -355,7 +355,7 @@ export async function updateProductSelectAttribute({
 
     return mutationPayload;
   } catch (e) {
-    console.log(e);
+    console.log('updateProductSelectAttribute', e);
     return {
       success: false,
       message: getResolverErrorMessage(e),

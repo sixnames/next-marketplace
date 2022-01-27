@@ -149,7 +149,7 @@ export async function updateProductNumberAttribute({
       payload: summary,
     };
   } catch (e) {
-    console.log(e);
+    console.log('updateProductNumberAttribute', e);
     return {
       success: false,
       message: getResolverErrorMessage(e),

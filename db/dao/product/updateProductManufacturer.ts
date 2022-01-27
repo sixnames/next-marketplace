@@ -150,6 +150,7 @@ export async function updateProductManufacturer({
 
     return mutationPayload;
   } catch (e) {
+    console.log('updateProductManufacturer', e);
     return {
       success: false,
       message: getResolverErrorMessage(e),

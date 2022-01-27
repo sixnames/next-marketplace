@@ -63,12 +63,6 @@ export type AddProductToCartInput = {
   amount: Scalars['Int'];
 };
 
-export type AddProductToConnectionInput = {
-  productId: Scalars['ObjectId'];
-  addProductId: Scalars['ObjectId'];
-  connectionId: Scalars['ObjectId'];
-};
-
 export type AddProductToShopInput = {
   shopId: Scalars['ObjectId'];
   productId: Scalars['ObjectId'];
@@ -574,11 +568,6 @@ export type CreateOrderStatusInput = {
   isCanceled: Scalars['Boolean'];
 };
 
-export type CreateProductConnectionInput = {
-  productId: Scalars['ObjectId'];
-  attributeId: Scalars['ObjectId'];
-};
-
 export type CreateRoleInput = {
   nameI18n: Scalars['JSONObject'];
   descriptionI18n?: Maybe<Scalars['JSONObject']>;
@@ -658,12 +647,6 @@ export type DeleteProductFromCartInput = {
 export type DeleteProductFromCategoryInput = {
   categoryId: Scalars['ObjectId'];
   productId: Scalars['ObjectId'];
-};
-
-export type DeleteProductFromConnectionInput = {
-  productId: Scalars['ObjectId'];
-  deleteProductId: Scalars['ObjectId'];
-  connectionId: Scalars['ObjectId'];
 };
 
 export type DeleteProductFromShopInput = {
@@ -921,12 +904,6 @@ export type Mutation = {
   updateOrderStatus: OrderStatusPayload;
   /** Should delete order status */
   deleteOrderStatus: OrderStatusPayload;
-  /** Should create product connection */
-  createProductConnection: ProductPayload;
-  /** Should create product connection */
-  addProductToConnection: ProductPayload;
-  /** Should delete product from connection and delete connection if there is no products left */
-  deleteProductFromConnection: ProductPayload;
   /** Should create role */
   createRole: RolePayload;
   /** Should update role */
@@ -1279,21 +1256,6 @@ export type MutationDeleteOrderStatusArgs = {
 };
 
 
-export type MutationCreateProductConnectionArgs = {
-  input: CreateProductConnectionInput;
-};
-
-
-export type MutationAddProductToConnectionArgs = {
-  input: AddProductToConnectionInput;
-};
-
-
-export type MutationDeleteProductFromConnectionArgs = {
-  input: DeleteProductFromConnectionInput;
-};
-
-
 export type MutationCreateRoleArgs = {
   input: CreateRoleInput;
 };
@@ -1595,26 +1557,6 @@ export type PointGeoJson = {
   type: Scalars['String'];
   /** Coordinates that specifies the object’s coordinates. If specifying latitude and longitude coordinates, list the longitude first and then latitude. */
   coordinates: Array<Scalars['Float']>;
-};
-
-export type ProductConnection = {
-  __typename?: 'ProductConnection';
-  _id: Scalars['ObjectId'];
-  attributeId: Scalars['ObjectId'];
-  attributeSlug: Scalars['String'];
-  attributeNameI18n?: Maybe<Scalars['JSONObject']>;
-};
-
-export type ProductConnectionItem = {
-  __typename?: 'ProductConnectionItem';
-  _id: Scalars['ObjectId'];
-  productId: Scalars['ObjectId'];
-};
-
-export type ProductPayload = Payload & {
-  __typename?: 'ProductPayload';
-  success: Scalars['Boolean'];
-  message: Scalars['String'];
 };
 
 export type Query = {
@@ -3089,45 +3031,6 @@ export type DeleteOrderStatusMutation = (
   & { deleteOrderStatus: (
     { __typename?: 'OrderStatusPayload' }
     & Pick<OrderStatusPayload, 'success' | 'message'>
-  ) }
-);
-
-export type CreateProductConnectionMutationVariables = Exact<{
-  input: CreateProductConnectionInput;
-}>;
-
-
-export type CreateProductConnectionMutation = (
-  { __typename?: 'Mutation' }
-  & { createProductConnection: (
-    { __typename?: 'ProductPayload' }
-    & Pick<ProductPayload, 'success' | 'message'>
-  ) }
-);
-
-export type AddProductToConnectionMutationVariables = Exact<{
-  input: AddProductToConnectionInput;
-}>;
-
-
-export type AddProductToConnectionMutation = (
-  { __typename?: 'Mutation' }
-  & { addProductToConnection: (
-    { __typename?: 'ProductPayload' }
-    & Pick<ProductPayload, 'success' | 'message'>
-  ) }
-);
-
-export type DeleteProductFromConnectionMutationVariables = Exact<{
-  input: DeleteProductFromConnectionInput;
-}>;
-
-
-export type DeleteProductFromConnectionMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteProductFromConnection: (
-    { __typename?: 'ProductPayload' }
-    & Pick<ProductPayload, 'success' | 'message'>
   ) }
 );
 
@@ -5424,108 +5327,6 @@ export function useDeleteOrderStatusMutation(baseOptions?: Apollo.MutationHookOp
 export type DeleteOrderStatusMutationHookResult = ReturnType<typeof useDeleteOrderStatusMutation>;
 export type DeleteOrderStatusMutationResult = Apollo.MutationResult<DeleteOrderStatusMutation>;
 export type DeleteOrderStatusMutationOptions = Apollo.BaseMutationOptions<DeleteOrderStatusMutation, DeleteOrderStatusMutationVariables>;
-export const CreateProductConnectionDocument = gql`
-    mutation CreateProductConnection($input: CreateProductConnectionInput!) {
-  createProductConnection(input: $input) {
-    success
-    message
-  }
-}
-    `;
-export type CreateProductConnectionMutationFn = Apollo.MutationFunction<CreateProductConnectionMutation, CreateProductConnectionMutationVariables>;
-
-/**
- * __useCreateProductConnectionMutation__
- *
- * To run a mutation, you first call `useCreateProductConnectionMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateProductConnectionMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createProductConnectionMutation, { data, loading, error }] = useCreateProductConnectionMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateProductConnectionMutation(baseOptions?: Apollo.MutationHookOptions<CreateProductConnectionMutation, CreateProductConnectionMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateProductConnectionMutation, CreateProductConnectionMutationVariables>(CreateProductConnectionDocument, options);
-      }
-export type CreateProductConnectionMutationHookResult = ReturnType<typeof useCreateProductConnectionMutation>;
-export type CreateProductConnectionMutationResult = Apollo.MutationResult<CreateProductConnectionMutation>;
-export type CreateProductConnectionMutationOptions = Apollo.BaseMutationOptions<CreateProductConnectionMutation, CreateProductConnectionMutationVariables>;
-export const AddProductToConnectionDocument = gql`
-    mutation AddProductToConnection($input: AddProductToConnectionInput!) {
-  addProductToConnection(input: $input) {
-    success
-    message
-  }
-}
-    `;
-export type AddProductToConnectionMutationFn = Apollo.MutationFunction<AddProductToConnectionMutation, AddProductToConnectionMutationVariables>;
-
-/**
- * __useAddProductToConnectionMutation__
- *
- * To run a mutation, you first call `useAddProductToConnectionMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAddProductToConnectionMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [addProductToConnectionMutation, { data, loading, error }] = useAddProductToConnectionMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useAddProductToConnectionMutation(baseOptions?: Apollo.MutationHookOptions<AddProductToConnectionMutation, AddProductToConnectionMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AddProductToConnectionMutation, AddProductToConnectionMutationVariables>(AddProductToConnectionDocument, options);
-      }
-export type AddProductToConnectionMutationHookResult = ReturnType<typeof useAddProductToConnectionMutation>;
-export type AddProductToConnectionMutationResult = Apollo.MutationResult<AddProductToConnectionMutation>;
-export type AddProductToConnectionMutationOptions = Apollo.BaseMutationOptions<AddProductToConnectionMutation, AddProductToConnectionMutationVariables>;
-export const DeleteProductFromConnectionDocument = gql`
-    mutation DeleteProductFromConnection($input: DeleteProductFromConnectionInput!) {
-  deleteProductFromConnection(input: $input) {
-    success
-    message
-  }
-}
-    `;
-export type DeleteProductFromConnectionMutationFn = Apollo.MutationFunction<DeleteProductFromConnectionMutation, DeleteProductFromConnectionMutationVariables>;
-
-/**
- * __useDeleteProductFromConnectionMutation__
- *
- * To run a mutation, you first call `useDeleteProductFromConnectionMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteProductFromConnectionMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteProductFromConnectionMutation, { data, loading, error }] = useDeleteProductFromConnectionMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useDeleteProductFromConnectionMutation(baseOptions?: Apollo.MutationHookOptions<DeleteProductFromConnectionMutation, DeleteProductFromConnectionMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteProductFromConnectionMutation, DeleteProductFromConnectionMutationVariables>(DeleteProductFromConnectionDocument, options);
-      }
-export type DeleteProductFromConnectionMutationHookResult = ReturnType<typeof useDeleteProductFromConnectionMutation>;
-export type DeleteProductFromConnectionMutationResult = Apollo.MutationResult<DeleteProductFromConnectionMutation>;
-export type DeleteProductFromConnectionMutationOptions = Apollo.BaseMutationOptions<DeleteProductFromConnectionMutation, DeleteProductFromConnectionMutationVariables>;
 export const CreateRoleDocument = gql`
     mutation CreateRole($input: CreateRoleInput!) {
   createRole(input: $input) {

@@ -1160,39 +1160,9 @@ type Mutation {
   updateOrderStatus(input: UpdateOrderStatusInput!): OrderStatusPayload!
 
   """
-  Should update product brand
-  """
-  updateProductBrand(input: UpdateProductBrandInput!): ProductPayload!
-
-  """
-  Should update product brand collection
-  """
-  updateProductBrandCollection(input: UpdateProductBrandCollectionInput!): ProductPayload!
-
-  """
   Should update cart product amount
   """
   updateProductInCart(input: UpdateProductInCartInput!): CartPayload!
-
-  """
-  Should update product manufacturer
-  """
-  updateProductManufacturer(input: UpdateProductManufacturerInput!): ProductPayload!
-
-  """
-  Should update product number attribute
-  """
-  updateProductNumberAttribute(input: UpdateProductNumberAttributeInput!): ProductPayload!
-
-  """
-  Should update product select attribute
-  """
-  updateProductSelectAttribute(input: UpdateProductSelectAttributeInput!): ProductPayload!
-
-  """
-  Should update product text attribute
-  """
-  updateProductTextAttribute(input: UpdateProductTextAttributeInput!): ProductPayload!
 
   """
   Should update role
@@ -1422,13 +1392,6 @@ type PointGeoJSON {
   Field that specifies the GeoJSON object type.
   """
   type: String!
-}
-
-type ProductAttribute {
-  _id: ObjectId!
-  attributeId: ObjectId!
-  number: Float
-  textI18n: JSONObject
 }
 
 type ProductConnection {
@@ -2037,53 +2000,9 @@ input UpdateOrderStatusInput {
   orderStatusId: ObjectId!
 }
 
-input UpdateProductBrandCollectionInput {
-  brandCollectionSlug: String
-  productId: ObjectId!
-}
-
-input UpdateProductBrandInput {
-  brandSlug: String
-  productId: ObjectId!
-}
-
 input UpdateProductInCartInput {
   amount: Int!
   cartProductId: ObjectId!
-}
-
-input UpdateProductManufacturerInput {
-  manufacturerSlug: String
-  productId: ObjectId!
-}
-
-input UpdateProductNumberAttributeInput {
-  attributes: [UpdateProductNumberAttributeItemInput!]!
-  productId: ObjectId!
-}
-
-input UpdateProductNumberAttributeItemInput {
-  attributeId: ObjectId!
-  number: Float
-  productAttributeId: ObjectId!
-}
-
-input UpdateProductSelectAttributeInput {
-  attributeId: ObjectId!
-  productAttributeId: ObjectId!
-  productId: ObjectId!
-  selectedOptionsIds: [ObjectId!]!
-}
-
-input UpdateProductTextAttributeInput {
-  attributes: [UpdateProductTextAttributeItemInput!]!
-  productId: ObjectId!
-}
-
-input UpdateProductTextAttributeItemInput {
-  attributeId: ObjectId!
-  productAttributeId: ObjectId!
-  textI18n: JSONObject
 }
 
 input UpdateRoleInput {

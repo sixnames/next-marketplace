@@ -594,54 +594,10 @@ export interface NexusGenInputs {
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
     orderStatusId: NexusGenScalars['ObjectId']; // ObjectId!
   };
-  UpdateProductBrandCollectionInput: {
-    // input type
-    brandCollectionSlug?: string | null; // String
-    productId: NexusGenScalars['ObjectId']; // ObjectId!
-  };
-  UpdateProductBrandInput: {
-    // input type
-    brandSlug?: string | null; // String
-    productId: NexusGenScalars['ObjectId']; // ObjectId!
-  };
   UpdateProductInCartInput: {
     // input type
     amount: number; // Int!
     cartProductId: NexusGenScalars['ObjectId']; // ObjectId!
-  };
-  UpdateProductManufacturerInput: {
-    // input type
-    manufacturerSlug?: string | null; // String
-    productId: NexusGenScalars['ObjectId']; // ObjectId!
-  };
-  UpdateProductNumberAttributeInput: {
-    // input type
-    attributes: NexusGenInputs['UpdateProductNumberAttributeItemInput'][]; // [UpdateProductNumberAttributeItemInput!]!
-    productId: NexusGenScalars['ObjectId']; // ObjectId!
-  };
-  UpdateProductNumberAttributeItemInput: {
-    // input type
-    attributeId: NexusGenScalars['ObjectId']; // ObjectId!
-    number?: number | null; // Float
-    productAttributeId: NexusGenScalars['ObjectId']; // ObjectId!
-  };
-  UpdateProductSelectAttributeInput: {
-    // input type
-    attributeId: NexusGenScalars['ObjectId']; // ObjectId!
-    productAttributeId: NexusGenScalars['ObjectId']; // ObjectId!
-    productId: NexusGenScalars['ObjectId']; // ObjectId!
-    selectedOptionsIds: NexusGenScalars['ObjectId'][]; // [ObjectId!]!
-  };
-  UpdateProductTextAttributeInput: {
-    // input type
-    attributes: NexusGenInputs['UpdateProductTextAttributeItemInput'][]; // [UpdateProductTextAttributeItemInput!]!
-    productId: NexusGenScalars['ObjectId']; // ObjectId!
-  };
-  UpdateProductTextAttributeItemInput: {
-    // input type
-    attributeId: NexusGenScalars['ObjectId']; // ObjectId!
-    productAttributeId: NexusGenScalars['ObjectId']; // ObjectId!
-    textI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
   };
   UpdateRoleInput: {
     // input type
@@ -867,13 +823,6 @@ export interface NexusGenObjects {
   OrderStatus: dbModels.OrderStatusModel;
   OrderStatusPayload: dbModels.OrderStatusPayloadModel;
   PointGeoJSON: dbModels.PointGeoJSONModel;
-  ProductAttribute: {
-    // root type
-    _id: NexusGenScalars['ObjectId']; // ObjectId!
-    attributeId: NexusGenScalars['ObjectId']; // ObjectId!
-    number?: number | null; // Float
-    textI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
-  };
   ProductConnection: {
     // root type
     _id: NexusGenScalars['ObjectId']; // ObjectId!
@@ -1378,13 +1327,7 @@ export interface NexusGenFieldTypes {
     updateOptionInGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
     updateOptionsGroup: NexusGenRootTypes['OptionsGroupPayload']; // OptionsGroupPayload!
     updateOrderStatus: NexusGenRootTypes['OrderStatusPayload']; // OrderStatusPayload!
-    updateProductBrand: NexusGenRootTypes['ProductPayload']; // ProductPayload!
-    updateProductBrandCollection: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateProductInCart: NexusGenRootTypes['CartPayload']; // CartPayload!
-    updateProductManufacturer: NexusGenRootTypes['ProductPayload']; // ProductPayload!
-    updateProductNumberAttribute: NexusGenRootTypes['ProductPayload']; // ProductPayload!
-    updateProductSelectAttribute: NexusGenRootTypes['ProductPayload']; // ProductPayload!
-    updateProductTextAttribute: NexusGenRootTypes['ProductPayload']; // ProductPayload!
     updateRole: NexusGenRootTypes['RolePayload']; // RolePayload!
     updateRoleNav: NexusGenRootTypes['RolePayload']; // RolePayload!
     updateRoleRule: NexusGenRootTypes['RoleRulePayload']; // RoleRulePayload!
@@ -1511,13 +1454,6 @@ export interface NexusGenFieldTypes {
     // field return type
     coordinates: number[]; // [Float!]!
     type: string; // String!
-  };
-  ProductAttribute: {
-    // field return type
-    _id: NexusGenScalars['ObjectId']; // ObjectId!
-    attributeId: NexusGenScalars['ObjectId']; // ObjectId!
-    number: number | null; // Float
-    textI18n: NexusGenScalars['JSONObject'] | null; // JSONObject
   };
   ProductConnection: {
     // field return type
@@ -2291,13 +2227,7 @@ export interface NexusGenFieldTypeNames {
     updateOptionInGroup: 'OptionsGroupPayload';
     updateOptionsGroup: 'OptionsGroupPayload';
     updateOrderStatus: 'OrderStatusPayload';
-    updateProductBrand: 'ProductPayload';
-    updateProductBrandCollection: 'ProductPayload';
     updateProductInCart: 'CartPayload';
-    updateProductManufacturer: 'ProductPayload';
-    updateProductNumberAttribute: 'ProductPayload';
-    updateProductSelectAttribute: 'ProductPayload';
-    updateProductTextAttribute: 'ProductPayload';
     updateRole: 'RolePayload';
     updateRoleNav: 'RolePayload';
     updateRoleRule: 'RoleRulePayload';
@@ -2424,13 +2354,6 @@ export interface NexusGenFieldTypeNames {
     // field return type name
     coordinates: 'Float';
     type: 'String';
-  };
-  ProductAttribute: {
-    // field return type name
-    _id: 'ObjectId';
-    attributeId: 'ObjectId';
-    number: 'Float';
-    textI18n: 'JSONObject';
   };
   ProductConnection: {
     // field return type name
@@ -3099,33 +3022,9 @@ export interface NexusGenArgTypes {
       // args
       input: NexusGenInputs['UpdateOrderStatusInput']; // UpdateOrderStatusInput!
     };
-    updateProductBrand: {
-      // args
-      input: NexusGenInputs['UpdateProductBrandInput']; // UpdateProductBrandInput!
-    };
-    updateProductBrandCollection: {
-      // args
-      input: NexusGenInputs['UpdateProductBrandCollectionInput']; // UpdateProductBrandCollectionInput!
-    };
     updateProductInCart: {
       // args
       input: NexusGenInputs['UpdateProductInCartInput']; // UpdateProductInCartInput!
-    };
-    updateProductManufacturer: {
-      // args
-      input: NexusGenInputs['UpdateProductManufacturerInput']; // UpdateProductManufacturerInput!
-    };
-    updateProductNumberAttribute: {
-      // args
-      input: NexusGenInputs['UpdateProductNumberAttributeInput']; // UpdateProductNumberAttributeInput!
-    };
-    updateProductSelectAttribute: {
-      // args
-      input: NexusGenInputs['UpdateProductSelectAttributeInput']; // UpdateProductSelectAttributeInput!
-    };
-    updateProductTextAttribute: {
-      // args
-      input: NexusGenInputs['UpdateProductTextAttributeInput']; // UpdateProductTextAttributeInput!
     };
     updateRole: {
       // args

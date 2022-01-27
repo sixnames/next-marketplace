@@ -18,7 +18,7 @@ import { DaoPropsInterface } from '../../uiInterfaces';
 
 export interface UpdateProductBrandCollectionInputInterface {
   productId: string;
-  brandCollectionSlug: string;
+  brandCollectionSlug?: string | null;
 }
 
 export async function updateProductBrandCollection({

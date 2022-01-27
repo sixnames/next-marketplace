@@ -1,9 +1,7 @@
 import { ObjectId } from 'mongodb';
 import { arg, extendType, inputObjectType, nonNull, objectType } from 'nexus';
-import { ATTRIBUTE_VARIANT_SELECT } from '../config/common';
-import { COL_ATTRIBUTES, COL_OPTIONS, COL_PRODUCT_SUMMARIES } from '../db/collectionNames';
+import { COL_OPTIONS, COL_PRODUCT_SUMMARIES } from '../db/collectionNames';
 import {
-  AttributeModel,
   OptionModel,
   ProductVariantItemModel,
   ProductVariantModel,
@@ -20,24 +18,8 @@ import {
 } from '../lib/sessionHelpers';
 import {
   addProductToConnectionSchema,
-  createProductConnectionSchema,
   deleteProductFromConnectionSchema,
 } from '../validation/productSchema';
-
-export const ProductPayload = objectType({
-  name: 'ProductPayload',
-  definition(t) {
-    t.implements('Payload');
-  },
-});
-
-export const ProductConnectionItem = objectType({
-  name: 'ProductConnectionItem',
-  definition(t) {
-    t.nonNull.objectId('_id');
-    t.nonNull.objectId('productId');
-  },
-});
 
 export const ProductConnection = objectType({
   name: 'ProductConnection',
@@ -46,14 +28,6 @@ export const ProductConnection = objectType({
     t.nonNull.objectId('attributeId');
     t.nonNull.string('attributeSlug');
     t.json('attributeNameI18n');
-  },
-});
-
-export const CreateProductConnectionInput = inputObjectType({
-  name: 'CreateProductConnectionInput',
-  definition(t) {
-    t.nonNull.objectId('productId');
-    t.nonNull.objectId('attributeId');
   },
 });
 
@@ -78,178 +52,6 @@ export const DeleteProductFromConnectionInput = inputObjectType({
 export const ProductConnectionMutations = extendType({
   type: 'Mutation',
   definition(t) {
-    // Should create product connection
-    t.nonNull.field('createProductConnection', {
-      type: 'ProductPayload',
-      description: 'Should create product connection',
-      args: {
-        input: nonNull(
-          arg({
-            type: 'CreateProductConnectionInput',
-          }),
-        ),
-      },
-      resolve: async (_root, args, context): Promise<ProductPayloadModel> => {
-        const { getApiMessage } = await getRequestParams(context);
-        const { db, client } = await getDatabase();
-        const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
-        const productSummariesCollection =
-          db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
-        const optionsCollection = db.collection<OptionModel>(COL_OPTIONS);
-
-        const session = client.startSession();
-        let mutationPayload: ProductPayloadModel = {
-          success: false,
-          message: await getApiMessage(`products.connection.createError`),
-        };
-
-        try {
-          await session.withTransaction(async () => {
-            // Permission
-            const { allow, message } = await getOperationPermission({
-              context,
-              slug: 'updateProduct',
-            });
-            if (!allow) {
-              mutationPayload = {
-                success: false,
-                message,
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Validate
-            const validationSchema = await getResolverValidationSchema({
-              context,
-              schema: createProductConnectionSchema,
-            });
-            await validationSchema.validate(args.input);
-
-            const { input } = args;
-            const { productId, attributeId } = input;
-
-            // Check all entities availability
-            const summary = await productSummariesCollection.findOne({ _id: productId });
-            const productAttribute = summary?.attributes.find((productAttribute) => {
-              return productAttribute.attributeId.equals(attributeId);
-            });
-            const attribute = await attributesCollection.findOne({
-              _id: attributeId,
-            });
-
-            // Find current attribute in product
-            if (!summary || !productAttribute || !attribute) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`products.update.notFound`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Check attribute variant. Must be as Select
-            if (attribute.variant !== ATTRIBUTE_VARIANT_SELECT) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`products.update.attributeVariantError`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Check if connection already exist
-            const exist = summary.variants.some((connection) => {
-              return connection.attributeId.equals(attributeId);
-            });
-            if (exist) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`products.connection.exist`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Find current option
-            const optionId = productAttribute.optionIds[0];
-            if (!optionId) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`products.connection.createError`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-            const option = await optionsCollection.findOne({ _id: optionId });
-            if (!option) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`products.connection.createError`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            // Update product
-            const updatedProductResult = await productSummariesCollection.findOneAndUpdate(
-              {
-                _id: productId,
-              },
-              {
-                $push: {
-                  variants: {
-                    _id: new ObjectId(),
-                    attributeId: attribute._id,
-                    attributeSlug: attribute.slug,
-                    products: [
-                      {
-                        _id: new ObjectId(),
-                        productId,
-                        optionId,
-                        productSlug: summary.slug,
-                      },
-                    ],
-                  },
-                },
-                $set: {
-                  updatedAt: new Date(),
-                },
-              },
-              {
-                returnDocument: 'after',
-              },
-            );
-            const updatedProduct = updatedProductResult.value;
-            if (!updatedProductResult.ok || !updatedProduct) {
-              mutationPayload = {
-                success: false,
-                message: await getApiMessage(`products.update.error`),
-              };
-              await session.abortTransaction();
-              return;
-            }
-
-            mutationPayload = {
-              success: true,
-              message: await getApiMessage('products.connection.createSuccess'),
-              payload: updatedProduct,
-            };
-          });
-
-          return mutationPayload;
-        } catch (e) {
-          console.log(e);
-          return {
-            success: false,
-            message: getResolverErrorMessage(e),
-          };
-        } finally {
-          await session.endSession();
-        }
-      },
-    });
-
     // Should add product to connection
     t.nonNull.field('addProductToConnection', {
       type: 'ProductPayload',

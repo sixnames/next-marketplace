@@ -32,24 +32,52 @@ export async function updateProductCounter({
 
     const { shopProductIds, citySlug } = input;
     const shopProductObjectIds = shopProductIds.map((_id) => new ObjectId(_id));
+    const shopProducts = await shopProductsCollection
+      .find(
+        {
+          _id: {
+            $in: shopProductObjectIds,
+          },
+        },
+        {
+          projection: {
+            _id: true,
+            views: true,
+          },
+        },
+      )
+      .toArray();
 
     if (!role.isStaff && shopProductObjectIds.length > 0) {
       const companySlug = input.companySlug || DEFAULT_COMPANY_SLUG;
-      const updatedShopProductsResult = await shopProductsCollection.updateMany(
-        {
-          _id: { $in: shopProductObjectIds },
-        },
-        {
-          $inc: {
-            [`views.${companySlug}.${citySlug}`]: VIEWS_COUNTER_STEP,
-          },
-        },
-      );
-      if (!updatedShopProductsResult.acknowledged) {
-        return {
-          success: false,
-          message: 'update error',
-        };
+      for await (const shopProduct of shopProducts) {
+        if (!shopProduct.views) {
+          await shopProductsCollection.findOneAndUpdate(
+            {
+              _id: shopProduct._id,
+            },
+            {
+              $set: {
+                views: {
+                  [companySlug]: {
+                    [citySlug]: VIEWS_COUNTER_STEP,
+                  },
+                },
+              },
+            },
+          );
+        } else {
+          await shopProductsCollection.findOneAndUpdate(
+            {
+              _id: shopProduct._id,
+            },
+            {
+              $inc: {
+                [`views.${companySlug}.${citySlug}`]: VIEWS_COUNTER_STEP,
+              },
+            },
+          );
+        }
       }
 
       return {

@@ -98,17 +98,10 @@ const CardDefaultLayout: React.FC<CardLayoutInterface> = ({ cardData, companySlu
     companySlug,
   });
 
-  const {
-    brand,
-    brandCollection,
-    manufacturer,
-    name,
-    variants,
-    assets,
-    minPrice,
-    maxPrice,
-    videos,
-  } = product;
+  const { brand, brandCollection, manufacturer, name, variants, assets, minPrice, maxPrice } =
+    product;
+
+  const videos = (product.videos || []).filter((video) => video);
 
   return (
     <article className='pb-20 pt-8 lg:pt-0' data-cy={`card`}>

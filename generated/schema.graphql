@@ -38,12 +38,6 @@ input AddProductToCartInput {
   shopProductId: ObjectId!
 }
 
-input AddProductToConnectionInput {
-  addProductId: ObjectId!
-  connectionId: ObjectId!
-  productId: ObjectId!
-}
-
 input AddProductToShopInput {
   available: Int!
   price: Int!
@@ -536,11 +530,6 @@ input CreateOrderStatusInput {
   nameI18n: JSONObject!
 }
 
-input CreateProductConnectionInput {
-  attributeId: ObjectId!
-  productId: ObjectId!
-}
-
 input CreateRoleInput {
   descriptionI18n: JSONObject
   isCompanyStaff: Boolean!
@@ -621,12 +610,6 @@ input DeleteProductFromCartInput {
 
 input DeleteProductFromCategoryInput {
   categoryId: ObjectId!
-  productId: ObjectId!
-}
-
-input DeleteProductFromConnectionInput {
-  connectionId: ObjectId!
-  deleteProductId: ObjectId!
   productId: ObjectId!
 }
 
@@ -800,11 +783,6 @@ type Mutation {
   addProductToCart(input: AddProductToCartInput!): CartPayload!
 
   """
-  Should create product connection
-  """
-  addProductToConnection(input: AddProductToConnectionInput!): ProductPayload!
-
-  """
   Should add shop products supplier
   """
   addShopProductSupplier(input: AddShopProductSupplierInput!): ShopProductPayload!
@@ -888,11 +866,6 @@ type Mutation {
   Should create order status
   """
   createOrderStatus(input: CreateOrderStatusInput!): OrderStatusPayload!
-
-  """
-  Should create product connection
-  """
-  createProductConnection(input: CreateProductConnectionInput!): ProductPayload!
 
   """
   Should create role
@@ -998,11 +971,6 @@ type Mutation {
   Should delete product from cart
   """
   deleteProductFromCart(input: DeleteProductFromCartInput!): CartPayload!
-
-  """
-  Should delete product from connection and delete connection if there is no products left
-  """
-  deleteProductFromConnection(input: DeleteProductFromConnectionInput!): ProductPayload!
 
   """
   Should delete product from shop
@@ -1160,39 +1128,9 @@ type Mutation {
   updateOrderStatus(input: UpdateOrderStatusInput!): OrderStatusPayload!
 
   """
-  Should update product brand
-  """
-  updateProductBrand(input: UpdateProductBrandInput!): ProductPayload!
-
-  """
-  Should update product brand collection
-  """
-  updateProductBrandCollection(input: UpdateProductBrandCollectionInput!): ProductPayload!
-
-  """
   Should update cart product amount
   """
   updateProductInCart(input: UpdateProductInCartInput!): CartPayload!
-
-  """
-  Should update product manufacturer
-  """
-  updateProductManufacturer(input: UpdateProductManufacturerInput!): ProductPayload!
-
-  """
-  Should update product number attribute
-  """
-  updateProductNumberAttribute(input: UpdateProductNumberAttributeInput!): ProductPayload!
-
-  """
-  Should update product select attribute
-  """
-  updateProductSelectAttribute(input: UpdateProductSelectAttributeInput!): ProductPayload!
-
-  """
-  Should update product text attribute
-  """
-  updateProductTextAttribute(input: UpdateProductTextAttributeInput!): ProductPayload!
 
   """
   Should update role
@@ -1422,30 +1360,6 @@ type PointGeoJSON {
   Field that specifies the GeoJSON object type.
   """
   type: String!
-}
-
-type ProductAttribute {
-  _id: ObjectId!
-  attributeId: ObjectId!
-  number: Float
-  textI18n: JSONObject
-}
-
-type ProductConnection {
-  _id: ObjectId!
-  attributeId: ObjectId!
-  attributeNameI18n: JSONObject
-  attributeSlug: String!
-}
-
-type ProductConnectionItem {
-  _id: ObjectId!
-  productId: ObjectId!
-}
-
-type ProductPayload implements Payload {
-  message: String!
-  success: Boolean!
 }
 
 type Query {
@@ -2037,53 +1951,9 @@ input UpdateOrderStatusInput {
   orderStatusId: ObjectId!
 }
 
-input UpdateProductBrandCollectionInput {
-  brandCollectionSlug: String
-  productId: ObjectId!
-}
-
-input UpdateProductBrandInput {
-  brandSlug: String
-  productId: ObjectId!
-}
-
 input UpdateProductInCartInput {
   amount: Int!
   cartProductId: ObjectId!
-}
-
-input UpdateProductManufacturerInput {
-  manufacturerSlug: String
-  productId: ObjectId!
-}
-
-input UpdateProductNumberAttributeInput {
-  attributes: [UpdateProductNumberAttributeItemInput!]!
-  productId: ObjectId!
-}
-
-input UpdateProductNumberAttributeItemInput {
-  attributeId: ObjectId!
-  number: Float
-  productAttributeId: ObjectId!
-}
-
-input UpdateProductSelectAttributeInput {
-  attributeId: ObjectId!
-  productAttributeId: ObjectId!
-  productId: ObjectId!
-  selectedOptionsIds: [ObjectId!]!
-}
-
-input UpdateProductTextAttributeInput {
-  attributes: [UpdateProductTextAttributeItemInput!]!
-  productId: ObjectId!
-}
-
-input UpdateProductTextAttributeItemInput {
-  attributeId: ObjectId!
-  productAttributeId: ObjectId!
-  textI18n: JSONObject
 }
 
 input UpdateRoleInput {

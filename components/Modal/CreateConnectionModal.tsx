@@ -2,8 +2,8 @@ import * as React from 'react';
 import { Form, Formik } from 'formik';
 import { ATTRIBUTE_VARIANT_SELECT } from '../../config/common';
 import { useNotificationsContext } from '../../context/notificationsContext';
+import { CreateProductVariantInputInterface } from '../../db/dao/product/createProductVariant';
 import { ProductAttributeInterface, ProductSummaryInterface } from '../../db/uiInterfaces';
-import { CreateProductConnectionInput } from '../../generated/apolloComponents';
 import useValidationSchema from '../../hooks/useValidationSchema';
 import { createProductConnectionModalSchema } from '../../validation/productSchema';
 import WpButton from '../button/WpButton';
@@ -15,7 +15,7 @@ import ModalTitle from './ModalTitle';
 
 export interface CreateConnectionModalInterface {
   product: ProductSummaryInterface;
-  confirm: (input: CreateProductConnectionInput) => void;
+  confirm: (input: CreateProductVariantInputInterface) => void;
 }
 
 const CreateConnectionModal: React.FC<CreateConnectionModalInterface> = ({ product, confirm }) => {
@@ -80,7 +80,10 @@ const CreateConnectionModal: React.FC<CreateConnectionModalInterface> = ({ produ
             return;
           }
 
-          confirm(values);
+          confirm({
+            productId: `${values.productId}`,
+            attributeId: `${values.attributeId}`,
+          });
         }}
       >
         {() => {

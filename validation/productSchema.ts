@@ -35,7 +35,7 @@ export const addProductToConnectionSchema = (args: ValidationSchemaArgsInterface
   return Yup.object({
     productId: productIdSchema(args),
     addProductId: productIdSchema(args),
-    connectionId: productConnectionIdSchema(args),
+    variantId: productConnectionIdSchema(args),
   });
 };
 
@@ -43,6 +43,6 @@ export const deleteProductFromConnectionSchema = (args: ValidationSchemaArgsInte
   return Yup.object({
     productId: productIdSchema(args),
     deleteProductId: productIdSchema(args),
-    connectionId: productConnectionIdSchema(args),
+    variantId: productConnectionIdSchema(args),
   });
 };

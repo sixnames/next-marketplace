@@ -3,6 +3,7 @@ import * as React from 'react';
 import { getDomain } from 'tldts';
 import {
   CATALOGUE_PRODUCTS_LIMIT,
+  CONFIG_GROUP_PROJECT,
   DEFAULT_CITY,
   DEFAULT_COMPANY_SLUG,
   DEFAULT_CURRENCY,
@@ -69,11 +70,30 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const companySlug = company?.slug || DEFAULT_COMPANY_SLUG;
 
   // get configs
-  const initialConfigs = await configsCollection
-    .find({
-      companySlug,
-    })
+  const projectConfigs = await configsCollection
+    .aggregate<ConfigModel>([
+      {
+        $match: {
+          group: CONFIG_GROUP_PROJECT,
+          companySlug: DEFAULT_COMPANY_SLUG,
+        },
+      },
+    ])
     .toArray();
+  const companyConfigs = await configsCollection
+    .aggregate<ConfigModel>([
+      {
+        $match: {
+          group: {
+            $ne: CONFIG_GROUP_PROJECT,
+          },
+          companySlug: companySlug || DEFAULT_COMPANY_SLUG,
+        },
+      },
+    ])
+    .toArray();
+
+  const initialConfigs = [...companyConfigs, ...projectConfigs];
   const configs = castConfigs({
     configs: initialConfigs,
     locale,

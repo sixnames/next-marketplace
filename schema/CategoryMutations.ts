@@ -9,9 +9,16 @@ import {
   DEFAULT_LOCALE,
   FILTER_SEPARATOR,
 } from '../config/common';
-import { COL_CATEGORIES, COL_COMPANIES, COL_CONFIGS, COL_RUBRICS } from '../db/collectionNames';
+import {
+  COL_ATTRIBUTES,
+  COL_CATEGORIES,
+  COL_COMPANIES,
+  COL_CONFIGS,
+  COL_RUBRICS,
+} from '../db/collectionNames';
 import { findDocumentByI18nField } from '../db/dao/findDocumentByI18nField';
 import {
+  AttributeModel,
   CategoryModel,
   CategoryPayloadModel,
   CompanyModel,
@@ -28,7 +35,7 @@ import {
   getRequestParams,
   getResolverValidationSchema,
 } from '../lib/sessionHelpers';
-import { deleteDocumentsTree, getParentTreeIds } from '../lib/treeUtils';
+import { deleteDocumentsTree, getChildrenTreeIds, getParentTreeIds } from '../lib/treeUtils';
 import { execUpdateProductTitles } from '../lib/updateProductTitles';
 import { createCategorySchema, updateCategorySchema } from '../validation/categorySchema';
 
@@ -77,7 +84,8 @@ export const UpdateAttributesGroupInCategoryInput = inputObjectType({
   name: 'UpdateAttributeInCategoryInput',
   definition(t) {
     t.nonNull.objectId('categoryId');
-    t.nonNull.objectId('attributeId');
+    t.nonNull.objectId('attributesGroupId');
+    t.nonNull.list.nonNull.objectId('attributeIds');
   },
 });
 
@@ -509,6 +517,7 @@ export const CategoryMutations = extendType({
         const { getApiMessage } = await getRequestParams(context);
         const { db, client } = await getDatabase();
         const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
+        const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
 
         const session = client.startSession();
 
@@ -519,7 +528,7 @@ export const CategoryMutations = extendType({
 
         try {
           await session.withTransaction(async () => {
-            // Permission
+            // permission
             const { allow, message } = await getOperationPermission({
               context,
               slug: 'updateCategory',
@@ -534,9 +543,9 @@ export const CategoryMutations = extendType({
             }
 
             const { input } = args;
-            const { categoryId, attributeId } = input;
+            const { categoryId, attributeIds, attributesGroupId } = input;
 
-            // Check category
+            // get category
             const category = await categoriesCollection.findOne({ _id: categoryId });
             if (!category) {
               mutationPayload = {
@@ -546,31 +555,114 @@ export const CategoryMutations = extendType({
               await session.abortTransaction();
               return;
             }
-
-            // update category
-            const exist = category.cmsCardAttributeIds.some((_id) => {
-              return _id.equals(attributeId);
+            const categoryIds = await getChildrenTreeIds({
+              _id: category._id,
+              collectionName: COL_CATEGORIES,
+              acc: [],
             });
-            const updater = exist
-              ? {
-                  $pull: {
-                    cmsCardAttributeIds: attributeId,
+
+            // get group attributes
+            const groupAttributes = await attributesCollection
+              .find({
+                attributesGroupId,
+              })
+              .toArray();
+            const groupAttributeIds = groupAttributes.map(({ _id }) => _id);
+
+            // uncheck all
+            if (attributeIds.length < 1) {
+              const updatedCategoriesResult = await categoriesCollection.updateMany(
+                {
+                  _id: {
+                    $in: categoryIds,
                   },
-                }
-              : {
-                  $addToSet: {
-                    cmsCardAttributeIds: attributeId,
+                },
+                {
+                  $pullAll: {
+                    cmsCardAttributeIds: groupAttributeIds,
                   },
+                },
+              );
+              if (!updatedCategoriesResult.acknowledged) {
+                mutationPayload = {
+                  success: false,
+                  message: await getApiMessage('rubrics.update.error'),
                 };
-            const updatedCategoryResult = await categoriesCollection.findOneAndUpdate(
-              { _id: categoryId },
-              updater,
+                await session.abortTransaction();
+                return;
+              }
+              mutationPayload = {
+                success: true,
+                message: await getApiMessage('rubrics.update.success'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // check all
+            if (attributeIds.length === groupAttributeIds.length && attributeIds.length !== 1) {
+              const updatedCategoriesResult = await categoriesCollection.updateMany(
+                {
+                  _id: {
+                    $in: categoryIds,
+                  },
+                },
+                {
+                  $addToSet: {
+                    cmsCardAttributeIds: {
+                      $each: groupAttributeIds,
+                    },
+                  },
+                },
+              );
+              if (!updatedCategoriesResult.acknowledged) {
+                mutationPayload = {
+                  success: false,
+                  message: await getApiMessage('rubrics.update.error'),
+                };
+                await session.abortTransaction();
+                return;
+              }
+              mutationPayload = {
+                success: true,
+                message: await getApiMessage('rubrics.update.success'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // get attributes
+            const categoryAttributes = groupAttributes.filter((attribute) => {
+              return attributeIds.some((_id) => attribute._id.equals(_id));
+            });
+            let cmsCardAttributeIds = [...(category.cmsCardAttributeIds || [])];
+            for await (const categoryAttribute of categoryAttributes) {
+              const attributeId = categoryAttribute._id;
+              const attributeExist = category.cmsCardAttributeIds?.some((_id) => {
+                return _id.equals(attributeId);
+              });
+              if (attributeExist) {
+                cmsCardAttributeIds = cmsCardAttributeIds.filter((_id) => {
+                  return !_id.equals(attributeId);
+                });
+              } else {
+                cmsCardAttributeIds.push(attributeId);
+              }
+            }
+            const updatedCategoriesResult = await categoriesCollection.updateMany(
               {
-                returnDocument: 'after',
+                _id: {
+                  $in: categoryIds,
+                },
+              },
+              {
+                $set: {
+                  cmsCardAttributeIds,
+                },
               },
             );
-            const updatedCategory = updatedCategoryResult.value;
-            if (!updatedCategoryResult.ok || !updatedCategory) {
+            // if (!updatedCategoryResult.ok) {
+            if (!updatedCategoriesResult.acknowledged) {
               mutationPayload = {
                 success: false,
                 message: await getApiMessage('categories.update.error'),
@@ -578,6 +670,10 @@ export const CategoryMutations = extendType({
               await session.abortTransaction();
               return;
             }
+
+            const updatedCategory = await categoriesCollection.findOne({
+              _id: category._id,
+            });
 
             mutationPayload = {
               success: true,

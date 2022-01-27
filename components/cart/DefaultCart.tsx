@@ -584,8 +584,7 @@ const DefaultCart: React.FC<DefaultCartInterface> = ({ cart, tabIndex }) => {
             });
           }}
         >
-          {({ values, errors }) => {
-            console.log(errors);
+          {({ values }) => {
             const { cartBookingProducts, totalBookingPrice, shopConfigs } = values;
             const giftCertificateDiscount = shopConfigs.reduce(
               (acc: number, { giftCertificateDiscount }) => {

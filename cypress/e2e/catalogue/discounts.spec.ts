@@ -1,4 +1,4 @@
-import { ROUTE_CATALOGUE } from 'config/common';
+import { ROUTE_CATALOGUE, ROUTE_CMS } from 'config/common';
 import { fixtureIds } from 'cypress/fixtures/fixtureIds';
 
 describe('Order discounts', () => {
@@ -40,9 +40,40 @@ describe('Order discounts', () => {
 
     // add customer comment
     cy.getByCy(`order-form-comment`).type('comment');
-    cy.getByCy(`order-form-privacy`).check();
+    cy.getByCy(`order-form-privacy-checkbox`).check();
 
     // should make an order and redirect to the thank-you page
     cy.getByCy(`cart-aside-confirm`).click();
+  });
+
+  it('Should make an order with promo code', () => {
+    cy.visit(`${ROUTE_CATALOGUE}/${fixtureIds.rubricWhiskeySlug}`);
+
+    // add promo product to the cart
+    cy.getByCy(`catalogue-item-0-add-to-cart-grid`).click();
+    cy.getByCy(`cart-modal-close`).click();
+
+    // add non promo product to the cart
+    cy.getByCy(`catalogue-item-1-add-to-cart-grid`).click();
+    cy.getByCy(`cart-modal-continue`).click();
+    cy.wait(1500);
+
+    // add promo code
+    cy.getByCy(`cart`).should('exist');
+    cy.getByCy(`promo-code-input-${fixtureIds.shopASlug}`).type('code');
+    cy.getByCy(`promo-code-submit-${fixtureIds.shopASlug}`).click();
+    cy.wait(1500);
+
+    // make an order
+    cy.getByCy(`order-form-privacy-checkbox`).check();
+    cy.getByCy(`cart-aside-confirm`).click();
+    cy.wait(1500);
+    cy.getByCy(`thank-you`).should('exist');
+
+    // check cms order
+    cy.visit(`${ROUTE_CMS}/orders`);
+    cy.getByCy('order-1000000-link').click();
+    cy.getByCy(`order-promo-list`).should('exist');
+    cy.getByCy(`order-discounted-price`).should('exist');
   });
 });

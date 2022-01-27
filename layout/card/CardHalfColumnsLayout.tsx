@@ -422,11 +422,11 @@ const CardHalfColumnsLayout: React.FC<CardLayoutInterface> = ({ cardData, compan
             </div>
           ) : null}
 
-          {/*shops*/}
-          {configs.isOneShopCompany ? null : <CardShopsList cardShops={cardShops} />}
-
           {/*similar products*/}
           <CardSimilarProducts similarProducts={similarProducts} />
+
+          {/*shops*/}
+          {configs.isOneShopCompany ? null : <CardShopsList cardShops={cardShops} />}
         </Inner>
       </div>
     </article>

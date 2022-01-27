@@ -1213,10 +1213,10 @@ export const getCatalogueData = async ({
 
     // get min and max prices
     const sortedPrices = [...prices].sort((a, b) => {
-      return a._id - b._id;
+      return noNaN(a?._id) - noNaN(b?._id);
     });
     let minPriceObject = sortedPrices[0];
-    if (minPriceObject._id === 0) {
+    if (minPriceObject?._id === 0) {
       minPriceObject = sortedPrices[1];
     }
     const maxPriceObject = sortedPrices[sortedPrices.length - 1];

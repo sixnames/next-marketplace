@@ -118,7 +118,8 @@ export const UpdateAttributeInRubricInput = inputObjectType({
   name: 'UpdateAttributeInRubricInput',
   definition(t) {
     t.nonNull.objectId('rubricId');
-    t.nonNull.objectId('attributeId');
+    t.nonNull.objectId('attributesGroupId');
+    t.nonNull.list.nonNull.objectId('attributeIds');
   },
 });
 
@@ -687,9 +688,9 @@ export const RubricMutations = extendType({
           const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
           const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
           const { input } = args;
-          const { rubricId, attributeId } = input;
+          const { rubricId, attributeIds, attributesGroupId } = input;
 
-          // Permission
+          // permission
           const { allow, message } = await getOperationPermission({
             context,
             slug: 'updateRubric',
@@ -701,7 +702,7 @@ export const RubricMutations = extendType({
             };
           }
 
-          // Check rubric availability
+          // get rubric
           const rubric = await rubricsCollection.findOne({ _id: rubricId });
           if (!rubric) {
             return {
@@ -710,33 +711,97 @@ export const RubricMutations = extendType({
             };
           }
 
-          // Check rubric attribute availability
-          const rubricAttribute = await attributesCollection.findOne({
-            _id: attributeId,
-          });
-          if (!rubricAttribute) {
+          // get group attributes
+          const groupAttributes = await attributesCollection
+            .find({
+              attributesGroupId,
+            })
+            .toArray();
+          const groupAttributeIds = groupAttributes.map(({ _id }) => _id);
+
+          // uncheck all
+          if (attributeIds.length < 1) {
+            const updatedRubricResult = await rubricsCollection.findOneAndUpdate(
+              { _id: rubricId },
+              {
+                $pullAll: {
+                  filterVisibleAttributeIds: groupAttributeIds,
+                },
+              },
+              {
+                returnDocument: 'after',
+              },
+            );
+            const updatedRubric = updatedRubricResult.value;
+            if (!updatedRubricResult.ok || !updatedRubric) {
+              return {
+                success: false,
+                message: await getApiMessage('rubrics.update.error'),
+              };
+            }
             return {
-              success: false,
-              message: await getApiMessage('rubrics.update.error'),
+              success: true,
+              message: await getApiMessage('rubrics.update.success'),
+              payload: updatedRubric,
             };
           }
-          const attributeExist = rubric.filterVisibleAttributeIds?.some((_id) => {
-            return _id.equals(attributeId);
-          });
-          const updater = attributeExist
-            ? {
-                $pull: {
-                  filterVisibleAttributeIds: attributeId,
-                },
-              }
-            : {
+
+          // check all
+          if (attributeIds.length === groupAttributeIds.length && attributeIds.length !== 1) {
+            const updatedRubricResult = await rubricsCollection.findOneAndUpdate(
+              { _id: rubricId },
+              {
                 $addToSet: {
-                  filterVisibleAttributeIds: attributeId,
+                  filterVisibleAttributeIds: {
+                    $each: groupAttributeIds,
+                  },
                 },
+              },
+              {
+                returnDocument: 'after',
+              },
+            );
+            const updatedRubric = updatedRubricResult.value;
+            if (!updatedRubricResult.ok || !updatedRubric) {
+              return {
+                success: false,
+                message: await getApiMessage('rubrics.update.error'),
               };
+            }
+            return {
+              success: true,
+              message: await getApiMessage('rubrics.update.success'),
+              payload: updatedRubric,
+            };
+          }
+
+          // get attributes
+          const rubricAttributes = groupAttributes.filter((attribute) => {
+            return attributeIds.some((_id) => attribute._id.equals(_id));
+          });
+
+          let filterVisibleAttributeIds = [...(rubric.filterVisibleAttributeIds || [])];
+          for await (const rubricAttribute of rubricAttributes) {
+            const attributeId = rubricAttribute._id;
+            const attributeExist = rubric.filterVisibleAttributeIds?.some((_id) => {
+              return _id.equals(attributeId);
+            });
+            if (attributeExist) {
+              filterVisibleAttributeIds = filterVisibleAttributeIds.filter((_id) => {
+                return !_id.equals(attributeId);
+              });
+            } else {
+              filterVisibleAttributeIds.push(attributeId);
+            }
+          }
+
           const updatedRubricResult = await rubricsCollection.findOneAndUpdate(
             { _id: rubricId },
-            updater,
+            {
+              $set: {
+                filterVisibleAttributeIds,
+              },
+            },
             {
               returnDocument: 'after',
             },
@@ -780,6 +845,7 @@ export const RubricMutations = extendType({
         const { db, client } = await getDatabase();
         const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
         const categoriesCollection = db.collection<CategoryModel>(COL_CATEGORIES);
+        const attributesCollection = db.collection<AttributeModel>(COL_ATTRIBUTES);
 
         const session = client.startSession();
 
@@ -790,7 +856,7 @@ export const RubricMutations = extendType({
 
         try {
           await session.withTransaction(async () => {
-            // Permission
+            // permission
             const { allow, message } = await getOperationPermission({
               context,
               slug: 'updateRubric',
@@ -805,9 +871,9 @@ export const RubricMutations = extendType({
             }
 
             const { input } = args;
-            const { rubricId, attributeId } = input;
+            const { rubricId, attributeIds, attributesGroupId } = input;
 
-            // Check rubric
+            // get rubric
             const rubric = await rubricsCollection.findOne({ _id: rubricId });
             if (!rubric) {
               mutationPayload = {
@@ -818,24 +884,133 @@ export const RubricMutations = extendType({
               return;
             }
 
-            // update category
-            const exist = rubric.cmsCardAttributeIds.some((_id) => {
-              return _id.equals(attributeId);
-            });
-            const updater = exist
-              ? {
-                  $pull: {
-                    cmsCardAttributeIds: attributeId,
+            // get group attributes
+            const groupAttributes = await attributesCollection
+              .find({
+                attributesGroupId,
+              })
+              .toArray();
+            const groupAttributeIds = groupAttributes.map(({ _id }) => _id);
+
+            // uncheck all
+            if (attributeIds.length < 1) {
+              const updatedRubricResult = await rubricsCollection.findOneAndUpdate(
+                { _id: rubricId },
+                {
+                  $pullAll: {
+                    cmsCardAttributeIds: groupAttributeIds,
                   },
-                }
-              : {
-                  $addToSet: {
-                    cmsCardAttributeIds: attributeId,
+                },
+                {
+                  returnDocument: 'after',
+                },
+              );
+              const updatedCategoriesResult = await categoriesCollection.updateMany(
+                {
+                  rubricId: rubric._id,
+                },
+                {
+                  $pullAll: {
+                    cmsCardAttributeIds: groupAttributeIds,
                   },
+                },
+              );
+              const updatedRubric = updatedRubricResult.value;
+              if (
+                !updatedRubricResult.ok ||
+                !updatedCategoriesResult.acknowledged ||
+                !updatedRubric
+              ) {
+                mutationPayload = {
+                  success: false,
+                  message: await getApiMessage('rubrics.update.error'),
                 };
+                await session.abortTransaction();
+                return;
+              }
+              mutationPayload = {
+                success: true,
+                message: await getApiMessage('rubrics.update.success'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // check all
+            if (attributeIds.length === groupAttributeIds.length && attributeIds.length !== 1) {
+              const updatedRubricResult = await rubricsCollection.findOneAndUpdate(
+                { _id: rubricId },
+                {
+                  $addToSet: {
+                    cmsCardAttributeIds: {
+                      $each: groupAttributeIds,
+                    },
+                  },
+                },
+                {
+                  returnDocument: 'after',
+                },
+              );
+              const updatedCategoriesResult = await categoriesCollection.updateMany(
+                {
+                  rubricId: rubric._id,
+                },
+                {
+                  $addToSet: {
+                    cmsCardAttributeIds: {
+                      $each: groupAttributeIds,
+                    },
+                  },
+                },
+              );
+              const updatedRubric = updatedRubricResult.value;
+              if (
+                !updatedRubricResult.ok ||
+                !updatedCategoriesResult.acknowledged ||
+                !updatedRubric
+              ) {
+                mutationPayload = {
+                  success: false,
+                  message: await getApiMessage('rubrics.update.error'),
+                };
+                await session.abortTransaction();
+                return;
+              }
+              mutationPayload = {
+                success: true,
+                message: await getApiMessage('rubrics.update.success'),
+              };
+              await session.abortTransaction();
+              return;
+            }
+
+            // get attributes
+            const rubricAttributes = groupAttributes.filter((attribute) => {
+              return attributeIds.some((_id) => attribute._id.equals(_id));
+            });
+
+            let cmsCardAttributeIds = [...(rubric.cmsCardAttributeIds || [])];
+            for await (const rubricAttribute of rubricAttributes) {
+              const attributeId = rubricAttribute._id;
+              const attributeExist = rubric.cmsCardAttributeIds?.some((_id) => {
+                return _id.equals(attributeId);
+              });
+              if (attributeExist) {
+                cmsCardAttributeIds = cmsCardAttributeIds.filter((_id) => {
+                  return !_id.equals(attributeId);
+                });
+              } else {
+                cmsCardAttributeIds.push(attributeId);
+              }
+            }
+
             const updatedRubricResult = await rubricsCollection.findOneAndUpdate(
               { _id: rubricId },
-              updater,
+              {
+                $set: {
+                  cmsCardAttributeIds,
+                },
+              },
               {
                 returnDocument: 'after',
               },
@@ -844,7 +1019,11 @@ export const RubricMutations = extendType({
               {
                 rubricId: rubric._id,
               },
-              updater,
+              {
+                $set: {
+                  cmsCardAttributeIds,
+                },
+              },
             );
             const updatedRubric = updatedRubricResult.value;
             if (

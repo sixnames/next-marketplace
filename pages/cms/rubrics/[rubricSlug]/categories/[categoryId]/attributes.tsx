@@ -1,6 +1,7 @@
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import * as React from 'react';
+import WpButton from '../../../../../../components/button/WpButton';
 import WpCheckbox from '../../../../../../components/FormElements/Checkbox/WpCheckbox';
 import Inner from '../../../../../../components/Inner';
 import WpAccordion from '../../../../../../components/WpAccordion';
@@ -84,7 +85,8 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
               toggleCmsCardAttributeInCategoryMutation({
                 variables: {
                   input: {
-                    attributeId: dataItem._id,
+                    attributeIds: [dataItem._id],
+                    attributesGroupId: dataItem.attributesGroupId,
                     categoryId: category._id,
                   },
                 },
@@ -123,10 +125,37 @@ const CategoryAttributesConsumer: React.FC<CategoryAttributesConsumerInterface> 
       <Inner testId={'category-attributes'}>
         {(category.rubric?.attributesGroups || []).map((attributesGroup) => {
           const { name, attributes, _id } = attributesGroup;
-
+          const allAttributeIds = (attributes || []).map(({ _id }) => _id);
+          const selectedCmsViewInGroup = (category.cmsCardAttributeIds || []).filter((_id) => {
+            return allAttributeIds.some((attributeId) => attributeId === _id);
+          });
+          const isDeleteAll = selectedCmsViewInGroup.length > 0;
           return (
             <div key={`${_id}`} className='mb-12'>
-              <WpAccordion title={`${name}`} isOpen>
+              <WpAccordion
+                title={`${name}`}
+                isOpen
+                titleRight={
+                  <WpButton
+                    size='small'
+                    theme='secondary'
+                    onClick={() => {
+                      showLoading();
+                      toggleCmsCardAttributeInCategoryMutation({
+                        variables: {
+                          input: {
+                            attributeIds: isDeleteAll ? [] : allAttributeIds,
+                            attributesGroupId: attributesGroup._id,
+                            categoryId: category._id,
+                          },
+                        },
+                      }).catch(console.log);
+                    }}
+                  >
+                    {`${isDeleteAll ? 'Отключить' : 'Выбрать'} все атрибуты для CMS карточки`}
+                  </WpButton>
+                }
+              >
                 <div className={`mt-4 overflow-x-auto`}>
                   <WpTable<AttributeInterface>
                     data={attributes}

@@ -7,7 +7,11 @@ import {
   SORT_DESC,
 } from '../../../config/common';
 import { COL_SHOP_PRODUCTS } from '../../../db/collectionNames';
-import { ignoreNoImageStage, summaryPipeline } from '../../../db/dao/constantPipelines';
+import {
+  ignoreNoImageStage,
+  shopProductsGroupPipeline,
+  summaryPipeline,
+} from '../../../db/dao/constantPipelines';
 import { ObjectIdModel } from '../../../db/dbModels';
 import { getDatabase } from '../../../db/mongodb';
 import { ShopProductInterface } from '../../../db/uiInterfaces';
@@ -82,36 +86,14 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         {
           $match: match,
         },
-        {
-          $group: {
-            _id: '$productId',
-            itemId: { $first: '$itemId' },
-            rubricId: { $first: '$rubricId' },
-            rubricSlug: { $first: `$rubricSlug` },
-            brandSlug: { $first: '$brandSlug' },
-            brandCollectionSlug: { $first: '$brandCollectionSlug' },
-            views: { $max: `$views.${companySlug}.${citySlug}` },
-            priorities: { $max: `$priorities.${companySlug}.${citySlug}` },
-            minPrice: {
-              $min: '$price',
-            },
-            maxPrice: {
-              $min: '$price',
-            },
-            available: {
-              $max: '$available',
-            },
-            filterSlugs: {
-              $first: '$filterSlugs',
-            },
-            shopProductIds: {
-              $addToSet: '$_id',
-            },
-          },
-        },
+        ...shopProductsGroupPipeline({
+          companySlug,
+          citySlug,
+        }),
         {
           $sort: {
-            priorities: SORT_DESC,
+            sortIndex: SORT_DESC,
+            available: SORT_DESC,
             views: SORT_DESC,
             _id: SORT_DESC,
           },
@@ -150,6 +132,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
           maxPrice: noNaN(shopProduct.maxPrice),
           name: getFieldStringLocale(summary?.nameI18n, locale),
           snippetTitle: getFieldStringLocale(summary?.snippetTitleI18n, locale),
+          shopProductIds: shopProduct.shopProductIds,
           variants: [],
         },
       });

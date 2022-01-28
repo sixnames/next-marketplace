@@ -1,7 +1,7 @@
 import { DEFAULT_LOCALE, SECONDARY_LOCALE } from '../../config/common';
 import { MessageBaseInterface } from '../../db/uiInterfaces';
 
-export const taskVariantMessages: MessageBaseInterface[] = [
+export const taskMessages: MessageBaseInterface[] = [
   // create
   {
     slug: 'taskVariants.create.error',

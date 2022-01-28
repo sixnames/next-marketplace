@@ -36,6 +36,7 @@ import { userCategoryMessages } from '../../apiMessages/userCategoryMessages';
 import { promoMessages } from '../../apiMessages/promoMessages';
 import { seoContentMessages } from '../../apiMessages/seoContentMessages';
 import { giftCertificateMessages } from '../../apiMessages/giftCertificateMessages';
+import { taskMessages } from '../../apiMessages/taskMessages';
 
 interface GenerateMessagesForGroupInterface {
   initialMessages: MessageBaseInterface[];
@@ -197,6 +198,10 @@ const config: GenerateMessagesForGroupInterface[] = [
   {
     initialMessages: giftCertificateMessages,
     groupName: 'Подарочный сертификат',
+  },
+  {
+    initialMessages: taskMessages,
+    groupName: 'Задачи',
   },
 ];
 

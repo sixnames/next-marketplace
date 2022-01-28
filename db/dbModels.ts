@@ -678,30 +678,55 @@ export interface ProductSummaryModel extends ProductFacetModel, TimestampModel {
   videos?: string[];
 }
 
-export enum ProductDraftStateModel {
-  pending = 'pending',
-  returned = 'returned',
+export enum ProductTicketStateModel {
+  editing = 'editing',
+  inspection = 'inspection',
+  moderation = 'moderation',
   confirmed = 'confirmed',
 }
 
-export interface ProductDraftDiffModel {
-  diff: DiffModel;
-  createdAt: DateModel;
-  authorId: ObjectIdModel;
-  moderatorId?: ObjectIdModel | null;
-  moderatorComment?: string;
-  authorComment?: string;
+export interface ProductTicketTaskVariantPricesModel {
+  symbol?: number;
+  attribute?: number;
+  picture?: number;
+  seoText?: number;
 }
 
-export interface ProductDraftModel extends TimestampModel {
+export interface ProductTicketTaskVariantModel {
   _id: ObjectIdModel;
+  nameI18n: TranslationModel;
+  prices: ProductTicketTaskVariantPricesModel;
+}
+
+export interface ProductTicketTaskModel {
+  _id: ObjectIdModel;
+  variantId: ObjectIdModel;
+  done: boolean;
+}
+
+export interface ProductTicketLogModel {
+  prevStateEnum: ProductTicketStateModel;
+  nextStateEnum: ProductTicketStateModel;
+  diff?: DiffModel | null;
+  draft?: ProductSummaryModel | null;
   authorId: ObjectIdModel;
+  inspectorId?: ObjectIdModel | null;
   moderatorId?: ObjectIdModel | null;
   moderatorComment?: string;
   authorComment?: string;
-  state: ProductDraftStateModel;
-  draft: ProductSummaryModel;
-  log: ProductDraftDiffModel[];
+  inspectorComment?: string;
+  createdAt: DateModel;
+}
+
+export interface ProductTicketModel extends TimestampModel {
+  createdById: ObjectIdModel;
+  authorId: ObjectIdModel;
+  productId: ObjectIdModel;
+  taskId: ObjectIdModel;
+  log: ProductTicketLogModel[];
+  createdAt: DateModel;
+  updatedAt: DateModel;
+  stateEnum: ProductTicketStateModel;
 }
 
 export interface ProductCardBreadcrumbModel {

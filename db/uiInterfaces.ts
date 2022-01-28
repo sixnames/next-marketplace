@@ -61,10 +61,13 @@ import {
   UserCategoryModel,
   UserModel,
   UserNotificationsModel,
-  ProductDraftModel,
   PromoCodeModel,
   OrderPromoModel,
   MainPageBannerModel,
+  ProductTicketModel,
+  ProductTicketTaskVariantModel,
+  ProductTicketTaskModel,
+  ProductTicketLogModel,
 } from './dbModels';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { MessageSlug } from '../types/messageSlugTypes';
@@ -296,8 +299,31 @@ export interface ProductSummaryInterface extends ProductSummaryModel, PricesInte
   ratingAttributes?: ProductAttributeInterface[] | null;
 }
 
-export interface ProductDraftInterface extends ProductDraftModel {
+// product tickets
+export interface ProductTicketTaskVariantInterface extends ProductTicketTaskVariantModel {
+  name?: string | null;
+}
+
+export interface ProductTicketTaskInterface extends ProductTicketTaskModel {
+  variant?: ProductTicketTaskVariantInterface | null;
+}
+
+export interface ProductTicketLogInterface extends ProductTicketLogModel {
+  prevState?: string | null;
+  nextState?: string | null;
+  draft?: ProductSummaryInterface | null;
+  author?: UserInterface | null;
+  inspector?: UserInterface | null;
+  moderator?: UserInterface | null;
+}
+
+export interface ProductTicketInterface extends ProductTicketModel {
   summary: ProductSummaryInterface;
+  author?: UserInterface | null;
+  creator?: UserInterface | null;
+  task: ProductTicketTaskInterface;
+  log: ProductTicketLogInterface[];
+  state?: string | null;
 }
 
 export interface BarcodeDoublesInterface {

@@ -678,47 +678,6 @@ export interface ProductSummaryModel extends ProductFacetModel, TimestampModel {
   videos?: string[];
 }
 
-export enum TicketStateModel {
-  editing = 'editing',
-  inspection = 'inspection',
-  moderation = 'moderation',
-  confirmed = 'confirmed',
-}
-
-export interface TicketTaskVariantModel {
-  _id: ObjectIdModel;
-  companySlug: string;
-  nameI18n: TranslationModel;
-}
-
-export interface TicketTaskModel {
-  variantId: ObjectIdModel;
-  done: boolean;
-}
-
-export interface TicketLogModel {
-  _id: ObjectIdModel;
-  prevStateEnum: TicketStateModel;
-  nextStateEnum: TicketStateModel;
-  diff?: DiffModel | null;
-  draft?: JSONObjectModel | null;
-  createdById: ObjectIdModel;
-  comment?: string;
-  createdAt: DateModel;
-}
-
-export interface TicketModel extends TimestampModel {
-  _id: ObjectIdModel;
-  companySlug: string;
-  stateEnum: TicketStateModel;
-  productId: ObjectIdModel;
-  createdById: ObjectIdModel;
-  task: TicketTaskModel;
-  log: TicketLogModel[];
-  createdAt: DateModel;
-  updatedAt: DateModel;
-}
-
 export interface ProductCardBreadcrumbModel {
   _id: ObjectIdModel;
   name: string;
@@ -1142,6 +1101,44 @@ export interface BlogLikeModel {
   _id: ObjectIdModel;
   blogPostId: ObjectIdModel;
   userId: ObjectIdModel;
+}
+
+// tasks
+export enum TaskStateModel {
+  editing = 'editing',
+  inspection = 'inspection',
+  moderation = 'moderation',
+  confirmed = 'confirmed',
+}
+
+export interface TaskVariantModel {
+  _id: ObjectIdModel;
+  companySlug: string;
+  nameI18n: TranslationModel;
+}
+
+export interface TaskLogModel {
+  _id: ObjectIdModel;
+  prevStateEnum: TaskStateModel;
+  nextStateEnum: TaskStateModel;
+  diff?: DiffModel | null;
+  draft?: JSONObjectModel | null;
+  createdById: ObjectIdModel;
+  comment?: string;
+  createdAt: DateModel;
+}
+
+export interface TaskModel extends TimestampModel {
+  _id: ObjectIdModel;
+  companySlug: string;
+  done: boolean;
+  variantId: ObjectIdModel;
+  stateEnum: TaskStateModel;
+  createdById: ObjectIdModel;
+  productId?: ObjectIdModel | null;
+  log: TaskLogModel[];
+  createdAt: DateModel;
+  updatedAt: DateModel;
 }
 
 // Payload

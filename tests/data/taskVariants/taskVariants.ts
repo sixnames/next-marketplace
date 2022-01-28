@@ -1,10 +1,10 @@
 import { DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE } from '../../../config/common';
-import { TicketTaskVariantModel } from '../../../db/dbModels';
+import { TaskVariantModel } from '../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
 require('dotenv').config();
 
-const ticketTaskVariants: TicketTaskVariantModel[] = [
+const taskVariants: TaskVariantModel[] = [
   {
     _id: getObjectId('ticket task variant a'),
     companySlug: DEFAULT_COMPANY_SLUG,
@@ -29,4 +29,4 @@ const ticketTaskVariants: TicketTaskVariantModel[] = [
 ];
 
 // @ts-ignore
-export = ticketTaskVariants;
+export = taskVariants;

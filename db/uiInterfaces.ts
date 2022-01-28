@@ -64,10 +64,9 @@ import {
   PromoCodeModel,
   OrderPromoModel,
   MainPageBannerModel,
-  TicketModel,
-  TicketTaskVariantModel,
-  TicketTaskModel,
-  TicketLogModel,
+  TaskModel,
+  TaskVariantModel,
+  TaskLogModel,
 } from './dbModels';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { MessageSlug } from '../types/messageSlugTypes';
@@ -300,29 +299,22 @@ export interface ProductSummaryInterface extends ProductSummaryModel, PricesInte
 }
 
 // product tickets
-export interface TicketTaskVariantInterface extends TicketTaskVariantModel {
+export interface TaskVariantInterface extends TaskVariantModel {
   name?: string | null;
 }
 
-export interface TicketTaskInterface extends TicketTaskModel {
-  variant?: TicketTaskVariantInterface | null;
-}
-
-export interface TicketLogInterface extends TicketLogModel {
+export interface TaskLogInterface extends TaskLogModel {
   prevState?: string | null;
   nextState?: string | null;
-  draft?: ProductSummaryInterface | null;
-  author?: UserInterface | null;
-  inspector?: UserInterface | null;
-  moderator?: UserInterface | null;
+  creator?: UserInterface | null;
 }
 
-export interface TicketInterface extends TicketModel {
+export interface TaskInterface extends TaskModel {
+  variant?: TaskVariantInterface | null;
   summary: ProductSummaryInterface;
   author?: UserInterface | null;
   creator?: UserInterface | null;
-  task: TicketTaskInterface;
-  log: TicketLogInterface[];
+  log: TaskLogInterface[];
   state?: string | null;
 }
 

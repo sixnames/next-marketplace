@@ -1106,7 +1106,7 @@ const baseRoleRules: RoleRuleBaseExtended[] = [
     },
   },
 
-  // Tickets
+  // Ticket task variants
   {
     allow: false,
     slug: 'createTicketTaskVariant',

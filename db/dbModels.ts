@@ -685,16 +685,10 @@ export enum TicketStateModel {
   confirmed = 'confirmed',
 }
 
-export interface TicketTaskVariantPricesModel {
-  symbol?: number;
-  attribute?: number;
-  picture?: number;
-}
-
 export interface TicketTaskVariantModel {
   _id: ObjectIdModel;
+  companySlug: string;
   nameI18n: TranslationModel;
-  prices: TicketTaskVariantPricesModel;
 }
 
 export interface TicketTaskModel {
@@ -703,21 +697,19 @@ export interface TicketTaskModel {
 }
 
 export interface TicketLogModel {
+  _id: ObjectIdModel;
   prevStateEnum: TicketStateModel;
   nextStateEnum: TicketStateModel;
   diff?: DiffModel | null;
-  draft?: ProductSummaryModel | null;
-  authorId: ObjectIdModel;
-  inspectorId?: ObjectIdModel | null;
-  moderatorId?: ObjectIdModel | null;
-  moderatorComment?: string;
-  authorComment?: string;
-  inspectorComment?: string;
+  draft?: JSONObjectModel | null;
+  createdById: ObjectIdModel;
+  comment?: string;
   createdAt: DateModel;
 }
 
 export interface TicketModel extends TimestampModel {
   _id: ObjectIdModel;
+  companySlug: string;
   stateEnum: TicketStateModel;
   productId: ObjectIdModel;
   createdById: ObjectIdModel;

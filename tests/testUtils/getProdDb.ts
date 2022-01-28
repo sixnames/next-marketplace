@@ -34,6 +34,8 @@ import {
   ProductSummaryModel,
   CatalogueNavModel,
   SessionLogModel,
+  TicketModel,
+  TicketTaskVariantModel,
 } from '../../db/dbModels';
 import {
   COL_ATTRIBUTES,
@@ -71,6 +73,8 @@ import {
   COL_PRODUCT_SUMMARIES,
   COL_CATALOGUE_NAV,
   COL_SESSION_LOGS,
+  COL_TICKETS,
+  COL_TICKET_TASK_VARIANTS,
 } from '../../db/collectionNames';
 import { Db, MongoClient } from 'mongodb';
 import path from 'path';
@@ -170,6 +174,17 @@ export async function updateIndexes(db: Db) {
   await createCollectionIfNotExist(COL_CARTS);
   const cartsCollection = db.collection<CartModel>(COL_CARTS);
   await cartsCollection.createIndex({ updatedAt: 1 }, { expireAfterSeconds: ISR_ONE_WEEK });
+
+  // Tickets
+  await createCollectionIfNotExist(COL_TICKETS);
+  const ticketsCollection = db.collection<TicketModel>(COL_TICKETS);
+  await ticketsCollection.createIndex({ companySlug: 1, createdAt: 1, _id: 1 });
+
+  // Ticket task variants
+  await createCollectionIfNotExist(COL_TICKET_TASK_VARIANTS);
+  const ticketTaskVariantsCollection =
+    db.collection<TicketTaskVariantModel>(COL_TICKET_TASK_VARIANTS);
+  await ticketTaskVariantsCollection.createIndex({ companySlug: 1, _id: 1 });
 
   // Seo contents
   await createCollectionIfNotExist(COL_SEO_CONTENTS);

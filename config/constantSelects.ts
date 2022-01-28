@@ -313,3 +313,63 @@ export const ISO_LANGUAGES = [
     nativeName: 'pl',
   },
 ];
+
+// task price targets
+export const TASK_PRICE_TARGETS: ConstantOptionsType = [
+  {
+    _id: 'field',
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'Поле',
+    },
+  },
+  {
+    _id: 'symbol',
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'Символ',
+    },
+  },
+];
+
+// task price actions
+export const TASK_PRICE_ACTIONS: ConstantOptionsType = [
+  {
+    _id: 'added',
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'Добавление',
+    },
+  },
+  {
+    _id: 'deleted',
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'Удаление',
+    },
+  },
+  {
+    _id: 'updated',
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'Обновление',
+    },
+  },
+];
+
+// task price slugs
+// TODO add many task price slugs
+export const TASK_PRICE_SLUGS: ConstantOptionsType = [
+  {
+    _id: 'selectAttribute',
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'Атрибут селект',
+    },
+  },
+];
+
+// task variant slugs
+// TODO add many task variant slugs
+export const TASK_VARIANT_SLUGS: ConstantOptionsType = [
+  {
+    _id: 'productAttributes',
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'Атрибуты товара',
+    },
+  },
+];

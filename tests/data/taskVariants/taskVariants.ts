@@ -4,9 +4,12 @@ import { getObjectId } from 'mongo-seeding';
 
 require('dotenv').config();
 
+// TODO prices, slug
 const taskVariants: TaskVariantModel[] = [
   {
     _id: getObjectId('task variant a'),
+    slug: '',
+    prices: [],
     companySlug: DEFAULT_COMPANY_SLUG,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Заполнить атрибуты',
@@ -14,6 +17,8 @@ const taskVariants: TaskVariantModel[] = [
   },
   {
     _id: getObjectId('task variant b'),
+    slug: '',
+    prices: [],
     companySlug: DEFAULT_COMPANY_SLUG,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Заполнить картинки',
@@ -21,6 +26,8 @@ const taskVariants: TaskVariantModel[] = [
   },
   {
     _id: getObjectId('task variant c'),
+    slug: '',
+    prices: [],
     companySlug: DEFAULT_COMPANY_SLUG,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Заполнить seo текст',

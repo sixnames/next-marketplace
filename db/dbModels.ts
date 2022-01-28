@@ -1112,10 +1112,19 @@ export enum TaskStateModel {
   done = 'done',
 }
 
+export interface TaskVariantPriceModel {
+  slug: string; // TASK_PRICE_SLUGS
+  price: number;
+  action: string; // TASK_PRICE_ACTIONS
+  target: string; // TASK_PRICE_TARGETS
+}
+
 export interface TaskVariantModel {
   _id: ObjectIdModel;
+  slug: string; // TASK_VARIANT_SLUGS
   companySlug: string;
   nameI18n: TranslationModel;
+  prices: TaskVariantPriceModel[];
 }
 
 export interface TaskLogModel {
@@ -1134,6 +1143,7 @@ export interface TaskModel extends TimestampModel {
   companySlug: string;
   variantId: ObjectIdModel;
   stateEnum: TaskStateModel;
+  executorId?: ObjectIdModel | null;
   createdById: ObjectIdModel;
   productId?: ObjectIdModel | null;
   log: TaskLogModel[];

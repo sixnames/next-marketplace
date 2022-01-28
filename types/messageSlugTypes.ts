@@ -723,5 +723,16 @@ export type MessageSlug =
   | 'seoContent.update.error'
   | 'seoContent.update.success'
 
+  // Ticket task variant ----------
+  | 'ticketTaskVariants.create.error'
+  | 'ticketTaskVariants.create.success'
+  | 'ticketTaskVariants.update.error'
+  | 'ticketTaskVariants.update.success'
+  | 'ticketTaskVariants.delete.error'
+  | 'ticketTaskVariants.delete.success'
+  // Promo validation
+  | 'validation.ticketTaskVariants.id'
+  | 'validation.ticketTaskVariants.name'
+
   // Fallback for empty key
   | 'none';

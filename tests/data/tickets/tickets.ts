@@ -1,10 +1,10 @@
 import { DRAFT_STATE_EDITING } from '../../../config/common';
-import { ProductTicketModel } from '../../../db/dbModels';
+import { TicketModel } from '../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
 require('dotenv').config();
 
-const promo: ProductTicketModel[] = [
+const tickets: TicketModel[] = [
   {
     _id: getObjectId('ticket a'),
     stateEnum: DRAFT_STATE_EDITING,
@@ -28,4 +28,4 @@ const promo: ProductTicketModel[] = [
 ];
 
 // @ts-ignore
-export = promo;
+export = tickets;

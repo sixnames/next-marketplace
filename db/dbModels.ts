@@ -685,24 +685,24 @@ export enum ProductTicketStateModel {
   confirmed = 'confirmed',
 }
 
-export interface ProductTicketTaskVariantPricesModel {
+export interface TicketTaskVariantPricesModel {
   symbol?: number;
   attribute?: number;
   picture?: number;
 }
 
-export interface ProductTicketTaskVariantModel {
+export interface TicketTaskVariantModel {
   _id: ObjectIdModel;
   nameI18n: TranslationModel;
-  prices: ProductTicketTaskVariantPricesModel;
+  prices: TicketTaskVariantPricesModel;
 }
 
-export interface ProductTicketTaskModel {
+export interface TicketTaskModel {
   variantId: ObjectIdModel;
   done: boolean;
 }
 
-export interface ProductTicketLogModel {
+export interface TicketLogModel {
   prevStateEnum: ProductTicketStateModel;
   nextStateEnum: ProductTicketStateModel;
   diff?: DiffModel | null;
@@ -716,13 +716,13 @@ export interface ProductTicketLogModel {
   createdAt: DateModel;
 }
 
-export interface ProductTicketModel extends TimestampModel {
+export interface TicketModel extends TimestampModel {
   _id: ObjectIdModel;
   stateEnum: ProductTicketStateModel;
   productId: ObjectIdModel;
   createdById: ObjectIdModel;
-  task: ProductTicketTaskModel;
-  log: ProductTicketLogModel[];
+  task: TicketTaskModel;
+  log: TicketLogModel[];
   createdAt: DateModel;
   updatedAt: DateModel;
 }

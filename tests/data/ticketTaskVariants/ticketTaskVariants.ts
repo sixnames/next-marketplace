@@ -1,19 +1,16 @@
 import { DEFAULT_LOCALE } from '../../../config/common';
-import {
-  ProductTicketTaskVariantModel,
-  ProductTicketTaskVariantPricesModel,
-} from '../../../db/dbModels';
+import { TicketTaskVariantModel, TicketTaskVariantPricesModel } from '../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
 require('dotenv').config();
 
-const prices: ProductTicketTaskVariantPricesModel = {
+const prices: TicketTaskVariantPricesModel = {
   symbol: 1,
   picture: 3,
   attribute: 4,
 };
 
-const promo: ProductTicketTaskVariantModel[] = [
+const ticketTaskVariants: TicketTaskVariantModel[] = [
   {
     _id: getObjectId('ticket task variant a'),
     nameI18n: {
@@ -38,4 +35,4 @@ const promo: ProductTicketTaskVariantModel[] = [
 ];
 
 // @ts-ignore
-export = promo;
+export = ticketTaskVariants;

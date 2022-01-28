@@ -689,7 +689,6 @@ export interface ProductTicketTaskVariantPricesModel {
   symbol?: number;
   attribute?: number;
   picture?: number;
-  seoText?: number;
 }
 
 export interface ProductTicketTaskVariantModel {
@@ -699,7 +698,6 @@ export interface ProductTicketTaskVariantModel {
 }
 
 export interface ProductTicketTaskModel {
-  _id: ObjectIdModel;
   variantId: ObjectIdModel;
   done: boolean;
 }
@@ -719,14 +717,14 @@ export interface ProductTicketLogModel {
 }
 
 export interface ProductTicketModel extends TimestampModel {
-  createdById: ObjectIdModel;
-  authorId: ObjectIdModel;
+  _id: ObjectIdModel;
+  stateEnum: ProductTicketStateModel;
   productId: ObjectIdModel;
-  taskId: ObjectIdModel;
+  createdById: ObjectIdModel;
+  task: ProductTicketTaskModel;
   log: ProductTicketLogModel[];
   createdAt: DateModel;
   updatedAt: DateModel;
-  stateEnum: ProductTicketStateModel;
 }
 
 export interface ProductCardBreadcrumbModel {

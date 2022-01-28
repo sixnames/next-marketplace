@@ -723,16 +723,16 @@ export type MessageSlug =
   | 'seoContent.update.error'
   | 'seoContent.update.success'
 
-  // Ticket task variant ----------
-  | 'ticketTaskVariants.create.error'
-  | 'ticketTaskVariants.create.success'
-  | 'ticketTaskVariants.update.error'
-  | 'ticketTaskVariants.update.success'
-  | 'ticketTaskVariants.delete.error'
-  | 'ticketTaskVariants.delete.success'
-  // Promo validation
-  | 'validation.ticketTaskVariants.id'
-  | 'validation.ticketTaskVariants.name'
+  // Task variant ----------
+  | 'taskVariants.create.error'
+  | 'taskVariants.create.success'
+  | 'taskVariants.update.error'
+  | 'taskVariants.update.success'
+  | 'taskVariants.delete.error'
+  | 'taskVariants.delete.success'
+  // Task variant validation
+  | 'validation.taskVariants.id'
+  | 'validation.taskVariants.name'
 
   // Fallback for empty key
   | 'none';

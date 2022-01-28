@@ -1,17 +1,17 @@
 import { DEFAULT_LOCALE, SECONDARY_LOCALE } from '../../config/common';
 import { MessageBaseInterface } from '../../db/uiInterfaces';
 
-export const ticketTaskVariantMessages: MessageBaseInterface[] = [
+export const taskVariantMessages: MessageBaseInterface[] = [
   // create
   {
-    slug: 'ticketTaskVariants.create.error',
+    slug: 'taskVariants.create.error',
     messageI18n: {
       [DEFAULT_LOCALE]: `Ошибка создания типа задачи`,
       [SECONDARY_LOCALE]: `Task variant create error`,
     },
   },
   {
-    slug: 'ticketTaskVariants.create.success',
+    slug: 'taskVariants.create.success',
     messageI18n: {
       [DEFAULT_LOCALE]: `Тип задачи создан`,
       [SECONDARY_LOCALE]: `Task variant created`,
@@ -20,14 +20,14 @@ export const ticketTaskVariantMessages: MessageBaseInterface[] = [
 
   // update
   {
-    slug: 'ticketTaskVariants.update.error',
+    slug: 'taskVariants.update.error',
     messageI18n: {
       [DEFAULT_LOCALE]: `Ошибка обновления типа задачи`,
       [SECONDARY_LOCALE]: `Task variant update error`,
     },
   },
   {
-    slug: 'ticketTaskVariants.update.success',
+    slug: 'taskVariants.update.success',
     messageI18n: {
       [DEFAULT_LOCALE]: `Тип задачи обновлён`,
       [SECONDARY_LOCALE]: `Task variant updated`,
@@ -36,14 +36,14 @@ export const ticketTaskVariantMessages: MessageBaseInterface[] = [
 
   // delete
   {
-    slug: 'ticketTaskVariants.delete.error',
+    slug: 'taskVariants.delete.error',
     messageI18n: {
       [DEFAULT_LOCALE]: `Ошибка удвления типа задачи`,
       [SECONDARY_LOCALE]: `Task variant delete error`,
     },
   },
   {
-    slug: 'ticketTaskVariants.delete.success',
+    slug: 'taskVariants.delete.success',
     messageI18n: {
       [DEFAULT_LOCALE]: `Тип задачи удалён`,
       [SECONDARY_LOCALE]: `Task variant removed`,
@@ -52,14 +52,14 @@ export const ticketTaskVariantMessages: MessageBaseInterface[] = [
 
   // validation
   {
-    slug: 'validation.ticketTaskVariants.id',
+    slug: 'validation.taskVariants.id',
     messageI18n: {
       [DEFAULT_LOCALE]: `ID типа задачи обязателен`,
       [SECONDARY_LOCALE]: `Task variant ID is required`,
     },
   },
   {
-    slug: 'validation.ticketTaskVariants.name',
+    slug: 'validation.taskVariants.name',
     messageI18n: {
       [DEFAULT_LOCALE]: `Название типа задачи обязательн`,
       [SECONDARY_LOCALE]: `Task variant name is required`,

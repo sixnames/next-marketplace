@@ -298,7 +298,7 @@ export interface ProductSummaryInterface extends ProductSummaryModel, PricesInte
   ratingAttributes?: ProductAttributeInterface[] | null;
 }
 
-// product tickets
+// tasks
 export interface TaskVariantInterface extends TaskVariantModel {
   name?: string | null;
 }

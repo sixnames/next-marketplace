@@ -1,4 +1,4 @@
-import { DEFAULT_COMPANY_SLUG, TICKET_STATE_EDITING } from '../../../config/common';
+import { DEFAULT_COMPANY_SLUG, TASK_STATE_EDITING } from '../../../config/common';
 import { TaskModel } from '../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
@@ -6,19 +6,19 @@ require('dotenv').config();
 
 const tasks: TaskModel[] = [
   {
-    _id: getObjectId('ticket a'),
-    stateEnum: TICKET_STATE_EDITING,
+    _id: getObjectId('task a'),
+    stateEnum: TASK_STATE_EDITING,
     productId: getObjectId('000010'),
     createdById: getObjectId('admin'),
     companySlug: DEFAULT_COMPANY_SLUG,
     done: false,
-    variantId: getObjectId('ticket task variant a'),
+    variantId: getObjectId('task variant a'),
     log: [
       {
-        _id: getObjectId('ticket a log a'),
+        _id: getObjectId('task a log a'),
         createdById: getObjectId('admin'),
-        prevStateEnum: TICKET_STATE_EDITING,
-        nextStateEnum: TICKET_STATE_EDITING,
+        prevStateEnum: TASK_STATE_EDITING,
+        nextStateEnum: TASK_STATE_EDITING,
         createdAt: new Date(),
       },
     ],

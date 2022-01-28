@@ -2,24 +2,24 @@ import * as Yup from 'yup';
 import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
 import { objectIdSchema, requiredStringTranslationSchema } from './schemaTemplates';
 
-export const ticketTaskVariantIdSchema = (args: ValidationSchemaArgsInterface) => {
-  return objectIdSchema({ ...args, slug: 'validation.ticketTaskVariants.id' });
+export const taskVariantIdSchema = (args: ValidationSchemaArgsInterface) => {
+  return objectIdSchema({ ...args, slug: 'validation.taskVariants.id' });
 };
 
-export const ticketTaskVariantNameSchema = (args: ValidationSchemaArgsInterface) => {
+export const taskVariantNameSchema = (args: ValidationSchemaArgsInterface) => {
   return requiredStringTranslationSchema({
     ...args,
-    slug: 'validation.ticketTaskVariants.name',
+    slug: 'validation.taskVariants.name',
   });
 };
 
-export const createTicketTaskVariantSchema = (args: ValidationSchemaArgsInterface) =>
+export const createTaskVariantSchema = (args: ValidationSchemaArgsInterface) =>
   Yup.object().shape({
-    nameI18n: ticketTaskVariantNameSchema(args),
+    nameI18n: taskVariantNameSchema(args),
   });
 
-export const updateTicketTaskVariantSchema = (args: ValidationSchemaArgsInterface) =>
+export const updateTaskVariantSchema = (args: ValidationSchemaArgsInterface) =>
   Yup.object().shape({
-    _id: ticketTaskVariantIdSchema(args),
-    nameI18n: ticketTaskVariantNameSchema(args),
+    _id: taskVariantIdSchema(args),
+    nameI18n: taskVariantNameSchema(args),
   });

@@ -6,21 +6,21 @@ require('dotenv').config();
 
 const taskVariants: TaskVariantModel[] = [
   {
-    _id: getObjectId('ticket task variant a'),
+    _id: getObjectId('task variant a'),
     companySlug: DEFAULT_COMPANY_SLUG,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Заполнить атрибуты',
     },
   },
   {
-    _id: getObjectId('ticket task variant b'),
+    _id: getObjectId('task variant b'),
     companySlug: DEFAULT_COMPANY_SLUG,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Заполнить картинки',
     },
   },
   {
-    _id: getObjectId('ticket task variant c'),
+    _id: getObjectId('task variant c'),
     companySlug: DEFAULT_COMPANY_SLUG,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Заполнить seo текст',

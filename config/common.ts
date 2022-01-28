@@ -11,7 +11,7 @@ import {
   OrderRequestStateModel,
   OrderRequestVariantModel,
   PageStateModel,
-  ProductDraftStateModel,
+  ProductTicketStateModel,
   SessionLogEventVariantEnum,
   SortDirectionModel,
   SupplierPriceVariantModel,
@@ -439,15 +439,16 @@ export const SUPPLIER_PRICE_VARIANT_ENUMS = [
 ];
 
 // draft
-export const DRAFT_STATE_PENDING = 'pending' as ProductDraftStateModel;
-export const DRAFT_STATE_RETURNED = 'returned' as ProductDraftStateModel;
-export const DRAFT_STATE_CONFIRMED = 'confirmed' as ProductDraftStateModel;
+export const DRAFT_STATE_EDITING = 'editing' as ProductTicketStateModel;
+export const DRAFT_STATE_INSPECTION = 'inspection' as ProductTicketStateModel;
+export const DRAFT_STATE_MODERATION = 'moderation' as ProductTicketStateModel;
+export const DRAFT_STATE_CONFIRMED = 'confirmed' as ProductTicketStateModel;
 
 // session log event variants
 export const SESSION_LOG_EVENT_VISIT = 'visit' as SessionLogEventVariantEnum;
 export const SESSION_LOG_EVENT_LEAVE = 'leave' as SessionLogEventVariantEnum;
-export const SESSION_LOG_EVENT_ADD_TO_CART = 'addToCartClick' as ProductDraftStateModel;
-export const SESSION_LOG_EVENT_MAKE_AN_ORDER = 'makeAnOrderClick' as ProductDraftStateModel;
+export const SESSION_LOG_EVENT_ADD_TO_CART = 'addToCartClick' as SessionLogEventVariantEnum;
+export const SESSION_LOG_EVENT_MAKE_AN_ORDER = 'makeAnOrderClick' as SessionLogEventVariantEnum;
 
 // Alphabets
 export const ALPHABET_EN = [

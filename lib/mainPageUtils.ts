@@ -8,7 +8,11 @@ import {
   SORT_DESC,
 } from '../config/common';
 import { COL_PROMO, COL_SHOP_PRODUCTS, COL_SHOPS } from '../db/collectionNames';
-import { ignoreNoImageStage, summaryPipeline } from '../db/dao/constantPipelines';
+import {
+  ignoreNoImageStage,
+  shopProductsGroupPipeline,
+  summaryPipeline,
+} from '../db/dao/constantPipelines';
 import { getDatabase } from '../db/mongodb';
 import {
   CompanyInterface,
@@ -72,35 +76,13 @@ export async function getMainPageData({
           ...ignoreNoImageStage,
         },
       },
-      {
-        $group: {
-          _id: '$productId',
-          itemId: { $first: '$itemId' },
-          rubricId: { $first: '$rubricId' },
-          rubricSlug: { $first: `$rubricSlug` },
-          brandSlug: { $first: '$brandSlug' },
-          brandCollectionSlug: { $first: '$brandCollectionSlug' },
-          views: { $max: `$views.${companySlug}.${citySlug}` },
-          priorities: { $max: `$priorities.${companySlug}.${citySlug}` },
-          minPrice: {
-            $min: '$price',
-          },
-          maxPrice: {
-            $min: '$price',
-          },
-          available: {
-            $max: '$available',
-          },
-          filterSlugs: {
-            $first: '$filterSlugs',
-          },
-          shopProductIds: {
-            $addToSet: '$_id',
-          },
-        },
-      },
+      ...shopProductsGroupPipeline({
+        companySlug,
+        citySlug,
+      }),
       {
         $sort: {
+          sortIndex: SORT_DESC,
           available: SORT_DESC,
           views: SORT_DESC,
           _id: SORT_DESC,
@@ -141,6 +123,7 @@ export async function getMainPageData({
         snippetTitle: getFieldStringLocale(summary.snippetTitleI18n, sessionLocale),
         minPrice: noNaN(shopProduct.minPrice),
         maxPrice: noNaN(shopProduct.maxPrice),
+        shopProductIds: shopProduct.shopProductIds,
         variants: [],
       },
     });

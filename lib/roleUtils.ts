@@ -174,6 +174,11 @@ export type RoleRuleSlugType =
   | 'addPromoProduct'
   | 'deletePromoProduct'
 
+  // Ticket
+  | 'createTicketTaskVariant'
+  | 'updateTicketTaskVariant'
+  | 'deleteTicketTaskVariant'
+
   // User
   | 'createUser'
   | 'updateUser'
@@ -1098,6 +1103,32 @@ const baseRoleRules: RoleRuleBaseExtended[] = [
     descriptionI18n: {},
     nameI18n: {
       ru: 'Удаление подарочного сертификата',
+    },
+  },
+
+  // Tickets
+  {
+    allow: false,
+    slug: 'createTicketTaskVariant',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Создание типа задачи',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateTicketTaskVariant',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление типа задачи',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deleteTicketTaskVariant',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление типа задачи',
     },
   },
 

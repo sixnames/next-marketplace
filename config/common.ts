@@ -11,7 +11,7 @@ import {
   OrderRequestStateModel,
   OrderRequestVariantModel,
   PageStateModel,
-  ProductTicketStateModel,
+  TicketStateModel,
   SessionLogEventVariantEnum,
   SortDirectionModel,
   SupplierPriceVariantModel,
@@ -439,10 +439,10 @@ export const SUPPLIER_PRICE_VARIANT_ENUMS = [
 ];
 
 // draft
-export const DRAFT_STATE_EDITING = 'editing' as ProductTicketStateModel;
-export const DRAFT_STATE_INSPECTION = 'inspection' as ProductTicketStateModel;
-export const DRAFT_STATE_MODERATION = 'moderation' as ProductTicketStateModel;
-export const DRAFT_STATE_CONFIRMED = 'confirmed' as ProductTicketStateModel;
+export const TICKET_STATE_EDITING = 'editing' as TicketStateModel;
+export const TICKET_STATE_INSPECTION = 'inspection' as TicketStateModel;
+export const TICKET_STATE_MODERATION = 'moderation' as TicketStateModel;
+export const TICKET_STATE_CONFIRMED = 'confirmed' as TicketStateModel;
 
 // session log event variants
 export const SESSION_LOG_EVENT_VISIT = 'visit' as SessionLogEventVariantEnum;

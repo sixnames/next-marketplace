@@ -4,8 +4,8 @@ import { getObjectId } from 'mongo-seeding';
 
 const navItemsDefaultSlug = 'navItem';
 
-const navItems: NavItemModel[] = [
-  // Console
+// Console
+const consoleNavItems: NavItemModel[] = [
   {
     _id: getObjectId(`${navItemsDefaultSlug} console-base`),
     slug: 'console',
@@ -138,8 +138,10 @@ const navItems: NavItemModel[] = [
     path: `/config`,
     navGroup: ROUTE_CONSOLE_NAV_GROUP,
   },
+];
 
-  // CMS
+// CMS
+const cmsNavItems: NavItemModel[] = [
   {
     _id: getObjectId(`${navItemsDefaultSlug} cms-base`),
     nameI18n: {
@@ -249,6 +251,17 @@ const navItems: NavItemModel[] = [
     index: 9,
     slug: 'cms-order-statuses',
     path: `${ROUTE_CMS}/order-statuses`,
+    navGroup: ROUTE_CMS_NAV_GROUP,
+  },
+  {
+    _id: getObjectId(`${navItemsDefaultSlug} task-variants`),
+    nameI18n: {
+      ru: 'Типы задач',
+      en: 'Task variants',
+    },
+    index: 10,
+    slug: 'cms-task-variants',
+    path: `${ROUTE_CMS}/task-variants`,
     navGroup: ROUTE_CMS_NAV_GROUP,
   },
   {
@@ -373,6 +386,8 @@ const navItems: NavItemModel[] = [
     navGroup: ROUTE_CMS_NAV_GROUP,
   },
 ];
+
+const navItems: NavItemModel[] = [...consoleNavItems, ...cmsNavItems];
 
 // @ts-ignore
 export = navItems;

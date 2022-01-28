@@ -678,7 +678,7 @@ export interface ProductSummaryModel extends ProductFacetModel, TimestampModel {
   videos?: string[];
 }
 
-export enum ProductTicketStateModel {
+export enum TicketStateModel {
   editing = 'editing',
   inspection = 'inspection',
   moderation = 'moderation',
@@ -703,8 +703,8 @@ export interface TicketTaskModel {
 }
 
 export interface TicketLogModel {
-  prevStateEnum: ProductTicketStateModel;
-  nextStateEnum: ProductTicketStateModel;
+  prevStateEnum: TicketStateModel;
+  nextStateEnum: TicketStateModel;
   diff?: DiffModel | null;
   draft?: ProductSummaryModel | null;
   authorId: ObjectIdModel;
@@ -718,7 +718,7 @@ export interface TicketLogModel {
 
 export interface TicketModel extends TimestampModel {
   _id: ObjectIdModel;
-  stateEnum: ProductTicketStateModel;
+  stateEnum: TicketStateModel;
   productId: ObjectIdModel;
   createdById: ObjectIdModel;
   task: TicketTaskModel;

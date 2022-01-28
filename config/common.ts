@@ -439,10 +439,11 @@ export const SUPPLIER_PRICE_VARIANT_ENUMS = [
 ];
 
 // draft
-export const TASK_STATE_EDITING = 'editing' as TaskStateModel;
+export const TASK_STATE_PENDING = 'pending' as TaskStateModel;
+export const TASK_STATE_IN_PROGRESS = 'inProgress' as TaskStateModel;
 export const TASK_STATE_INSPECTION = 'inspection' as TaskStateModel;
 export const TASK_STATE_MODERATION = 'moderation' as TaskStateModel;
-export const TASK_STATE_CONFIRMED = 'confirmed' as TaskStateModel;
+export const TASK_STATE_DONE = 'done' as TaskStateModel;
 
 // session log event variants
 export const SESSION_LOG_EVENT_VISIT = 'visit' as SessionLogEventVariantEnum;

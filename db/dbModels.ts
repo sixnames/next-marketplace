@@ -1105,10 +1105,11 @@ export interface BlogLikeModel {
 
 // tasks
 export enum TaskStateModel {
-  editing = 'editing',
+  pending = 'pending',
+  inProgress = 'inProgress',
   inspection = 'inspection',
   moderation = 'moderation',
-  confirmed = 'confirmed',
+  done = 'done',
 }
 
 export interface TaskVariantModel {
@@ -1131,7 +1132,6 @@ export interface TaskLogModel {
 export interface TaskModel extends TimestampModel {
   _id: ObjectIdModel;
   companySlug: string;
-  done: boolean;
   variantId: ObjectIdModel;
   stateEnum: TaskStateModel;
   createdById: ObjectIdModel;

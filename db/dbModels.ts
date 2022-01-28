@@ -761,6 +761,7 @@ export interface RoleModel extends TimestampModel {
   showAdminUiInCatalogue?: boolean;
   isModerator?: boolean;
   isContentManager?: boolean;
+  isInspector?: boolean;
   allowedAppNavigation: string[];
 }
 

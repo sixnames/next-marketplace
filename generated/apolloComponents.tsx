@@ -575,6 +575,7 @@ export type CreateRoleInput = {
   isCompanyStaff: Scalars['Boolean'];
   isModerator: Scalars['Boolean'];
   isContentManager: Scalars['Boolean'];
+  isInspector: Scalars['Boolean'];
   showAdminUiInCatalogue: Scalars['Boolean'];
 };
 
@@ -2186,6 +2187,7 @@ export type UpdateRoleInput = {
   isCompanyStaff: Scalars['Boolean'];
   isModerator: Scalars['Boolean'];
   isContentManager: Scalars['Boolean'];
+  isInspector: Scalars['Boolean'];
   showAdminUiInCatalogue: Scalars['Boolean'];
 };
 

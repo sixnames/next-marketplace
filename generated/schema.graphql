@@ -534,6 +534,7 @@ input CreateRoleInput {
   descriptionI18n: JSONObject
   isCompanyStaff: Boolean!
   isContentManager: Boolean!
+  isInspector: Boolean!
   isModerator: Boolean!
   isStaff: Boolean!
   nameI18n: JSONObject!
@@ -1960,6 +1961,7 @@ input UpdateRoleInput {
   descriptionI18n: JSONObject
   isCompanyStaff: Boolean!
   isContentManager: Boolean!
+  isInspector: Boolean!
   isModerator: Boolean!
   isStaff: Boolean!
   nameI18n: JSONObject!

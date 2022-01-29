@@ -444,7 +444,7 @@ export const TASK_VARIANT_SLUG_PRODUCT_VARIANTS = `product-variants`;
 export const TASK_VARIANT_SLUG_PRODUCT_BRANDS = `product-brand`;
 export const TASK_VARIANT_SLUG_PRODUCT_SEO_CONTENT = `product-seo-content`;
 export const TASK_VARIANT_SLUG_PRODUCT_DETAILS = `product-details`;
-export const Заполнить : ConstantOptionsType = [
+export const TASK_VARIANT_SLUGS: ConstantOptionsType = [
   {
     _id: TASK_VARIANT_SLUG_PRODUCT_ATTRIBUTES,
     nameI18n: {

@@ -1,4 +1,9 @@
 import { DEFAULT_COMPANY_SLUG, DEFAULT_LOCALE } from '../../../config/common';
+import {
+  TASK_VARIANT_SLUG_PRODUCT_ASSETS,
+  TASK_VARIANT_SLUG_PRODUCT_ATTRIBUTES,
+  TASK_VARIANT_SLUG_PRODUCT_SEO_CONTENT,
+} from '../../../config/constantSelects';
 import { TaskVariantModel } from '../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 
@@ -8,7 +13,7 @@ require('dotenv').config();
 const taskVariants: TaskVariantModel[] = [
   {
     _id: getObjectId('task variant a'),
-    slug: '',
+    slug: TASK_VARIANT_SLUG_PRODUCT_ATTRIBUTES,
     prices: [],
     companySlug: DEFAULT_COMPANY_SLUG,
     nameI18n: {
@@ -17,7 +22,7 @@ const taskVariants: TaskVariantModel[] = [
   },
   {
     _id: getObjectId('task variant b'),
-    slug: '',
+    slug: TASK_VARIANT_SLUG_PRODUCT_ASSETS,
     prices: [],
     companySlug: DEFAULT_COMPANY_SLUG,
     nameI18n: {
@@ -26,7 +31,7 @@ const taskVariants: TaskVariantModel[] = [
   },
   {
     _id: getObjectId('task variant c'),
-    slug: '',
+    slug: TASK_VARIANT_SLUG_PRODUCT_SEO_CONTENT,
     prices: [],
     companySlug: DEFAULT_COMPANY_SLUG,
     nameI18n: {

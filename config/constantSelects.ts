@@ -444,7 +444,7 @@ export const TASK_VARIANT_SLUG_PRODUCT_VARIANTS = `product-variants`;
 export const TASK_VARIANT_SLUG_PRODUCT_BRANDS = `product-brand`;
 export const TASK_VARIANT_SLUG_PRODUCT_SEO_CONTENT = `product-seo-content`;
 export const TASK_VARIANT_SLUG_PRODUCT_DETAILS = `product-details`;
-export const TASK_VARIANT_SLUGS: ConstantOptionsType = [
+export const Заполнить : ConstantOptionsType = [
   {
     _id: TASK_VARIANT_SLUG_PRODUCT_ATTRIBUTES,
     nameI18n: {
@@ -454,37 +454,37 @@ export const TASK_VARIANT_SLUGS: ConstantOptionsType = [
   {
     _id: TASK_VARIANT_SLUG_PRODUCT_ASSETS,
     nameI18n: {
-      [DEFAULT_LOCALE]: 'Изображения товара',
+      [DEFAULT_LOCALE]: 'Заполнить изображения товара',
     },
   },
   {
     _id: TASK_VARIANT_SLUG_PRODUCT_CATEGORIES,
     nameI18n: {
-      [DEFAULT_LOCALE]: 'Категории товара',
+      [DEFAULT_LOCALE]: 'Заполнить категории товара',
     },
   },
   {
     _id: TASK_VARIANT_SLUG_PRODUCT_VARIANTS,
     nameI18n: {
-      [DEFAULT_LOCALE]: 'Связи товара',
+      [DEFAULT_LOCALE]: 'Заполнить связи товара',
     },
   },
   {
     _id: TASK_VARIANT_SLUG_PRODUCT_BRANDS,
     nameI18n: {
-      [DEFAULT_LOCALE]: 'Бренд / Производитель товара',
+      [DEFAULT_LOCALE]: 'Назначить Бренд / Производителя товара',
     },
   },
   {
     _id: TASK_VARIANT_SLUG_PRODUCT_SEO_CONTENT,
     nameI18n: {
-      [DEFAULT_LOCALE]: 'Контент карточки товара',
+      [DEFAULT_LOCALE]: 'Заполнить контент карточки товара',
     },
   },
   {
     _id: TASK_VARIANT_SLUG_PRODUCT_DETAILS,
     nameI18n: {
-      [DEFAULT_LOCALE]: 'Детали товара',
+      [DEFAULT_LOCALE]: 'Заполнить детали товара',
     },
   },
 ];

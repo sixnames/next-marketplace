@@ -1,31 +1,38 @@
 import NextAuth, { NextAuthOptions } from 'next-auth';
-import Providers from 'next-auth/providers';
+import CredentialsProvider from 'next-auth/providers/credentials';
 import { NextApiRequest, NextApiResponse } from 'next';
 import bcrypt from 'bcryptjs';
+import { ISR_ONE_WEEK } from '../../../config/common';
 import { COL_USERS } from '../../../db/collectionNames';
 import { UserModel } from '../../../db/dbModels';
 import { getDatabase } from '../../../db/mongodb';
 
 const options: NextAuthOptions = {
   session: {
-    jwt: true,
+    strategy: 'jwt',
+    maxAge: ISR_ONE_WEEK,
   },
   jwt: {
     secret: process.env.JWT_SECRET,
-    signingKey: process.env.JWT_SIGNING_PRIVATE_KEY,
   },
+  secret: process.env.JWT_SECRET,
   providers: [
-    Providers.Credentials({
+    CredentialsProvider({
       name: 'Credentials',
       credentials: {
         email: { label: 'Email', type: 'email', placeholder: 'email' },
         password: { label: 'Password', type: 'password' },
         authKey: { label: 'auto', type: 'string' },
       },
-      authorize: async (credentials: Record<string, any>) => {
+      authorize: async (credentials) => {
         try {
           const { db } = await getDatabase();
           const collection = db.collection<UserModel>(COL_USERS);
+
+          if (!credentials?.email || !credentials?.password) {
+            return null;
+          }
+
           const user = await collection.findOne({ email: credentials.email });
 
           if (user) {
@@ -43,7 +50,7 @@ const options: NextAuthOptions = {
             return Promise.resolve(null);
           }
         } catch (e) {
-          console.log(e);
+          console.log('NextAuthOptions.providers.authorize', e);
           return Promise.resolve(null);
         }
       },

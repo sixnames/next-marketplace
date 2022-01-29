@@ -37,8 +37,7 @@ export const NOTIFICATION_TIMEOUT = ONE_SECOND * 5;
 export const MAIN_BANNER_AUTOPLAY_SPEED = ONE_SECOND * 3;
 
 export const ISR_ONE_SECOND = 1;
-export const ISR_FIVE_SECONDS = ISR_ONE_SECOND * 5;
-export const ISR_ONE_MINUTE = ONE_SECOND * 60;
+export const ISR_ONE_MINUTE = ISR_ONE_SECOND * 60;
 export const ISR_ONE_HOUR = ISR_ONE_MINUTE * 60;
 export const ISR_ONE_DAY = ISR_ONE_HOUR * 34;
 export const ISR_ONE_WEEK = ISR_ONE_DAY * 7;

@@ -2,7 +2,7 @@ import { Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { signOut } from 'next-auth/client';
+import { signOut } from 'next-auth/react';
 import WpButton from '../../components/button/WpButton';
 import FormikInput from '../../components/FormElements/Input/FormikInput';
 import { ConfirmModalInterface } from '../../components/Modal/ConfirmModal';

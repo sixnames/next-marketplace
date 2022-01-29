@@ -1,5 +1,9 @@
 import {
   ATTRIBUTE_POSITION_IN_TITLE_ENUMS,
+  ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
+  ATTRIBUTE_VARIANT_NUMBER,
+  ATTRIBUTE_VARIANT_SELECT,
+  ATTRIBUTE_VARIANT_STRING,
   ATTRIBUTE_VARIANTS_ENUMS,
   ATTRIBUTE_VIEW_VARIANTS_ENUMS,
   DEFAULT_LOCALE,
@@ -353,12 +357,66 @@ export const TASK_PRICE_ACTIONS: ConstantOptionsType = [
 ];
 
 // task price slugs
-// TODO add many task price slugs
 export const TASK_PRICE_SLUGS: ConstantOptionsType = [
+  // product
   {
-    _id: 'selectAttribute',
+    _id: `product-attribute-${ATTRIBUTE_VARIANT_SELECT}`,
     nameI18n: {
-      [DEFAULT_LOCALE]: 'Атрибут селект',
+      [DEFAULT_LOCALE]: 'Селект атрибут товара',
+    },
+  },
+  {
+    _id: `product-attribute-${ATTRIBUTE_VARIANT_MULTIPLE_SELECT}`,
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'Мульти-селект атрибут товара',
+    },
+  },
+  {
+    _id: `product-attribute-${ATTRIBUTE_VARIANT_NUMBER}`,
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'Числовой атрибут товара',
+    },
+  },
+  {
+    _id: `product-attribute-${ATTRIBUTE_VARIANT_STRING}`,
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'Текстовый атрибут товара',
+    },
+  },
+  {
+    _id: `product-assets`,
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'Изображения товара',
+    },
+  },
+  {
+    _id: `product-categories`,
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'Категории товара',
+    },
+  },
+  {
+    _id: `product-variants`,
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'Связи товара',
+    },
+  },
+  {
+    _id: `product-brand`,
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'Бренд / Производитель товара',
+    },
+  },
+  {
+    _id: `product-seo-content`,
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'Контент карточки товара',
+    },
+  },
+  {
+    _id: `product-details`,
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'Детали товара',
     },
   },
 ];

@@ -1188,6 +1188,7 @@ export type UserCategoryPayloadModel = PayloadType<UserCategoryModel>;
 export type UserPayloadModel = PayloadType<UserModel>;
 export type SeoContentPayloadModel = PayloadType<SeoContentModel>;
 export type SessionLogPayloadModel = PayloadType<SessionLogModel>;
+export type TaskVariantPayloadModel = PayloadType<TaskVariantModel>;
 
 export interface GiftCertificatePayloadModel extends PayloadType<GiftCertificateModel> {
   notAuth?: boolean;

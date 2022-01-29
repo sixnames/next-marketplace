@@ -319,15 +319,17 @@ export const ISO_LANGUAGES = [
 ];
 
 // task price targets
+export const TASK_PRICE_TARGET_FIELD = 'field';
+export const TASK_PRICE_TARGET_SYMBOL = 'symbol';
 export const TASK_PRICE_TARGETS: ConstantOptionsType = [
   {
-    _id: 'field',
+    _id: TASK_PRICE_TARGET_FIELD,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Поле',
     },
   },
   {
-    _id: 'symbol',
+    _id: TASK_PRICE_TARGET_SYMBOL,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Символ',
     },
@@ -335,21 +337,24 @@ export const TASK_PRICE_TARGETS: ConstantOptionsType = [
 ];
 
 // task price actions
+export const TASK_PRICE_ACTION_ADDED = 'added';
+export const TASK_PRICE_ACTION_DELETED = 'deleted';
+export const TASK_PRICE_ACTION_UPDATED = 'updated';
 export const TASK_PRICE_ACTIONS: ConstantOptionsType = [
   {
-    _id: 'added',
+    _id: TASK_PRICE_ACTION_ADDED,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Добавление',
     },
   },
   {
-    _id: 'deleted',
+    _id: TASK_PRICE_ACTION_DELETED,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Удаление',
     },
   },
   {
-    _id: 'updated',
+    _id: TASK_PRICE_ACTION_UPDATED,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Обновление',
     },
@@ -357,64 +362,74 @@ export const TASK_PRICE_ACTIONS: ConstantOptionsType = [
 ];
 
 // task price slugs
+export const TASK_PRICE_SLUG_PRODUCT_ATTRIBUTE_SELECT = `product-attribute-${ATTRIBUTE_VARIANT_SELECT}`;
+export const TASK_PRICE_SLUG_PRODUCT_ATTRIBUTE_MULTIPLE_SELECT = `product-attribute-${ATTRIBUTE_VARIANT_MULTIPLE_SELECT}`;
+export const TASK_PRICE_SLUG_PRODUCT_ATTRIBUTE_MULTIPLE_NUMBER = `product-attribute-${ATTRIBUTE_VARIANT_NUMBER}`;
+export const TASK_PRICE_SLUG_PRODUCT_ATTRIBUTE_MULTIPLE_STRING = `product-attribute-${ATTRIBUTE_VARIANT_STRING}`;
+export const TASK_PRICE_SLUG_PRODUCT_ASSETS = `product-assets`;
+export const TASK_PRICE_SLUG_PRODUCT_CATEGORIES = `product-categories`;
+export const TASK_PRICE_SLUG_PRODUCT_VARIANTS = `product-variants`;
+export const TASK_PRICE_SLUG_PRODUCT_BRANDS = `product-brand`;
+export const TASK_PRICE_SLUG_PRODUCT_SEO_CONTENT = `product-seo-content`;
+export const TASK_PRICE_SLUG_PRODUCT_DETAILS = `product-details`;
 export const TASK_PRICE_SLUGS: ConstantOptionsType = [
   // product
   {
-    _id: `product-attribute-${ATTRIBUTE_VARIANT_SELECT}`,
+    _id: TASK_PRICE_SLUG_PRODUCT_ATTRIBUTE_SELECT,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Селект атрибут товара',
     },
   },
   {
-    _id: `product-attribute-${ATTRIBUTE_VARIANT_MULTIPLE_SELECT}`,
+    _id: TASK_PRICE_SLUG_PRODUCT_ATTRIBUTE_MULTIPLE_SELECT,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Мульти-селект атрибут товара',
     },
   },
   {
-    _id: `product-attribute-${ATTRIBUTE_VARIANT_NUMBER}`,
+    _id: TASK_PRICE_SLUG_PRODUCT_ATTRIBUTE_MULTIPLE_NUMBER,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Числовой атрибут товара',
     },
   },
   {
-    _id: `product-attribute-${ATTRIBUTE_VARIANT_STRING}`,
+    _id: TASK_PRICE_SLUG_PRODUCT_ATTRIBUTE_MULTIPLE_STRING,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Текстовый атрибут товара',
     },
   },
   {
-    _id: `product-assets`,
+    _id: TASK_PRICE_SLUG_PRODUCT_ASSETS,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Изображения товара',
     },
   },
   {
-    _id: `product-categories`,
+    _id: TASK_PRICE_SLUG_PRODUCT_CATEGORIES,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Категории товара',
     },
   },
   {
-    _id: `product-variants`,
+    _id: TASK_PRICE_SLUG_PRODUCT_VARIANTS,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Связи товара',
     },
   },
   {
-    _id: `product-brand`,
+    _id: TASK_PRICE_SLUG_PRODUCT_BRANDS,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Бренд / Производитель товара',
     },
   },
   {
-    _id: `product-seo-content`,
+    _id: TASK_PRICE_SLUG_PRODUCT_SEO_CONTENT,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Контент карточки товара',
     },
   },
   {
-    _id: `product-details`,
+    _id: TASK_PRICE_SLUG_PRODUCT_DETAILS,
     nameI18n: {
       [DEFAULT_LOCALE]: 'Детали товара',
     },
@@ -425,7 +440,7 @@ export const TASK_PRICE_SLUGS: ConstantOptionsType = [
 // TODO add many task variant slugs
 export const TASK_VARIANT_SLUGS: ConstantOptionsType = [
   {
-    _id: 'productAttributes',
+    _id: 'product-attributes',
     nameI18n: {
       [DEFAULT_LOCALE]: 'Атрибуты товара',
     },

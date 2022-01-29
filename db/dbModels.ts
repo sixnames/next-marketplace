@@ -1115,8 +1115,8 @@ export enum TaskStateModel {
 export interface TaskVariantPriceModel {
   slug: string; // TASK_PRICE_SLUGS
   price: number;
-  action: string; // TASK_PRICE_ACTIONS
-  target: string; // TASK_PRICE_TARGETS
+  action: 'added' | 'deleted' | 'updated'; // TASK_PRICE_ACTIONS
+  target: 'field' | 'symbol'; // TASK_PRICE_TARGETS
 }
 
 export interface TaskVariantModel {

@@ -437,12 +437,54 @@ export const TASK_PRICE_SLUGS: ConstantOptionsType = [
 ];
 
 // task variant slugs
-// TODO add many task variant slugs
+export const TASK_VARIANT_SLUG_PRODUCT_ATTRIBUTES = `product-attributes`;
+export const TASK_VARIANT_SLUG_PRODUCT_ASSETS = `product-assets`;
+export const TASK_VARIANT_SLUG_PRODUCT_CATEGORIES = `product-categories`;
+export const TASK_VARIANT_SLUG_PRODUCT_VARIANTS = `product-variants`;
+export const TASK_VARIANT_SLUG_PRODUCT_BRANDS = `product-brand`;
+export const TASK_VARIANT_SLUG_PRODUCT_SEO_CONTENT = `product-seo-content`;
+export const TASK_VARIANT_SLUG_PRODUCT_DETAILS = `product-details`;
 export const TASK_VARIANT_SLUGS: ConstantOptionsType = [
   {
-    _id: 'product-attributes',
+    _id: TASK_VARIANT_SLUG_PRODUCT_ATTRIBUTES,
     nameI18n: {
-      [DEFAULT_LOCALE]: 'Атрибуты товара',
+      [DEFAULT_LOCALE]: 'Заполнить атрибуты товара',
+    },
+  },
+  {
+    _id: TASK_VARIANT_SLUG_PRODUCT_ASSETS,
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'Изображения товара',
+    },
+  },
+  {
+    _id: TASK_VARIANT_SLUG_PRODUCT_CATEGORIES,
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'Категории товара',
+    },
+  },
+  {
+    _id: TASK_VARIANT_SLUG_PRODUCT_VARIANTS,
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'Связи товара',
+    },
+  },
+  {
+    _id: TASK_VARIANT_SLUG_PRODUCT_BRANDS,
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'Бренд / Производитель товара',
+    },
+  },
+  {
+    _id: TASK_VARIANT_SLUG_PRODUCT_SEO_CONTENT,
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'Контент карточки товара',
+    },
+  },
+  {
+    _id: TASK_VARIANT_SLUG_PRODUCT_DETAILS,
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'Детали товара',
     },
   },
 ];

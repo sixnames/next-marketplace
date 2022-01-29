@@ -1141,10 +1141,11 @@ export interface TaskLogModel {
 export interface TaskModel extends TimestampModel {
   _id: ObjectIdModel;
   companySlug: string;
-  variantId: ObjectIdModel;
   stateEnum: TaskStateModel;
-  executorId?: ObjectIdModel | null;
+  nameI18n?: TranslationModel | null;
   createdById: ObjectIdModel;
+  variantId?: ObjectIdModel | null;
+  executorId?: ObjectIdModel | null;
   productId?: ObjectIdModel | null;
   log: TaskLogModel[];
   createdAt: DateModel;

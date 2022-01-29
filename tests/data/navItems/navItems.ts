@@ -254,6 +254,17 @@ const cmsNavItems: NavItemModel[] = [
     navGroup: ROUTE_CMS_NAV_GROUP,
   },
   {
+    _id: getObjectId(`${navItemsDefaultSlug} task-variants`),
+    nameI18n: {
+      ru: 'Типы задач',
+      en: 'Task variants',
+    },
+    index: 10,
+    slug: 'cms-task-variants',
+    path: `${ROUTE_CMS}/task-variants`,
+    navGroup: ROUTE_CMS_NAV_GROUP,
+  },
+  {
     _id: getObjectId(`${navItemsDefaultSlug} cms-brands`),
     nameI18n: {
       ru: 'Бренды',

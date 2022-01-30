@@ -3,8 +3,8 @@ import {
   REQUEST_METHOD_PATCH,
   REQUEST_METHOD_POST,
 } from '../../config/common';
-import { DeleteTaskVariantInputInterface } from '../../db/dao/shopProduct/deleteTaskVariant';
-import { UpdateTaskVariantInputInterface } from '../../db/dao/shopProduct/updateTaskVariant';
+import { DeleteTaskVariantInputInterface } from '../../db/dao/tasks/deleteTaskVariant';
+import { UpdateTaskVariantInputInterface } from '../../db/dao/tasks/updateTaskVariant';
 import { CreateTaskVariantInputInterface } from '../../db/dao/tasks/createTaskVariant';
 import { TaskVariantPayloadModel } from '../../db/dbModels';
 import { useMutationHandler } from './useFetch';

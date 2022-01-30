@@ -10,7 +10,7 @@ import { COL_TASK_VARIANTS } from '../../collectionNames';
 import { TaskVariantModel, TaskVariantPayloadModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
-import { CreateTaskVariantInputInterface } from '../tasks/createTaskVariant';
+import { CreateTaskVariantInputInterface } from './createTaskVariant';
 
 export interface UpdateTaskVariantInputInterface extends CreateTaskVariantInputInterface {
   _id: string;

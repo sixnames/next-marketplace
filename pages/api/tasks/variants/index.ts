@@ -4,8 +4,8 @@ import {
   REQUEST_METHOD_PATCH,
   REQUEST_METHOD_POST,
 } from '../../../../config/common';
-import { deleteTaskVariant } from '../../../../db/dao/shopProduct/deleteTaskVariant';
-import { updateTaskVariant } from '../../../../db/dao/shopProduct/updateTaskVariant';
+import { deleteTaskVariant } from '../../../../db/dao/tasks/deleteTaskVariant';
+import { updateTaskVariant } from '../../../../db/dao/tasks/updateTaskVariant';
 import { createTaskVariant } from '../../../../db/dao/tasks/createTaskVariant';
 import { sendApiRouteResponse } from '../../../../lib/sessionHelpers';
 

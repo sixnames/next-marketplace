@@ -83,7 +83,7 @@ const TaskVariantMainFields: React.FC<TaskVariantMainFieldsInterface> = ({
         return (
           <div className='flex justify-end'>
             <ContentItemControls
-              testId={dataItem.slug}
+              testId={`task-variant-price-${rowIndex}`}
               updateTitle={'Редактировать цену'}
               updateHandler={() => {
                 showModal<TaskVariantPriceModalInterface>({
@@ -125,7 +125,12 @@ const TaskVariantMainFields: React.FC<TaskVariantMainFieldsInterface> = ({
         showInlineError
       />
 
-      <FormikSelect name={'slug'} testId={'slug'} label={'Slug'} options={TASK_VARIANT_SLUGS} />
+      <FormikSelect
+        name={'slug'}
+        testId={'task-variant-slug'}
+        label={'Slug'}
+        options={TASK_VARIANT_SLUGS}
+      />
 
       <WpTable columns={columns} data={prices} />
 

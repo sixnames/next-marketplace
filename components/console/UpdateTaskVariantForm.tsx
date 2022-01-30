@@ -30,7 +30,7 @@ const UpdateTaskVariantForm: React.FC<UpdateTaskVariantFormInterface> = ({ taskV
   const [updateTaskVariantMutation] = useUpdateTaskVariant();
 
   return (
-    <Inner testId={'create-task-variant-page'}>
+    <Inner testId={'update-task-variant-page'}>
       <WpTitle>Обновление типа задачи</WpTitle>
       <Formik<UpdateTaskVariantInputInterface>
         initialValues={initialValues}

@@ -36,7 +36,11 @@ const ConsoleTaskVariantsList: React.FC<ConsoleTaskVariantsListInterface> = ({
           basePath,
           taskVariantId: dataItem._id,
         });
-        return <WpLink href={links.root}>{dataItem.name}</WpLink>;
+        return (
+          <WpLink href={links.root} testId={`${dataItem.name}`}>
+            {dataItem.name}
+          </WpLink>
+        );
       },
     },
     {
@@ -94,6 +98,7 @@ const ConsoleTaskVariantsList: React.FC<ConsoleTaskVariantsListInterface> = ({
         <WpButton
           size='small'
           frameClassName='w-auto'
+          testId={'create-task-variant-button'}
           onClick={() => {
             router.push(links.create).catch(console.log);
           }}

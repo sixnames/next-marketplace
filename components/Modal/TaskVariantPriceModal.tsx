@@ -35,7 +35,7 @@ const TaskVariantPriceModal: React.FC<TaskVariantPriceModalInterface> = ({
   };
 
   return (
-    <ModalFrame testId={'blog-post-modal'}>
+    <ModalFrame testId={'task-variant-price-modal'}>
       <ModalTitle>Цена типа задачи</ModalTitle>
 
       <Formik

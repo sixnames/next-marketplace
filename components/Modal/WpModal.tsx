@@ -55,6 +55,7 @@ import {
   USER_CATEGORY_MODAL,
   USERS_SEARCH_MODAL,
   CREATE_PROMO_CODE_MODAL,
+  TASK_VARIANT_PRICE_MODAL,
 } from '../../config/modalVariants';
 import Spinner from '../Spinner';
 
@@ -65,6 +66,7 @@ const ShopProductBarcodeIntersectsModal = dynamic(
   () => import('./ShopProductBarcodeIntersectsModal'),
 );
 const BlogPostModal = dynamic(() => import('./BlogPostModal'));
+const TaskVariantPriceModal = dynamic(() => import('./TaskVariantPriceModal'));
 const CreatePromoCodeModal = dynamic(() => import('./CreatePromoCodeModal'));
 const BlogAttributeModal = dynamic(() => import('./BlogAttributeModal'));
 const CatalogueAdditionalOptionsModal = dynamic(() => import('./CatalogueAdditionalOptionsModal'));
@@ -231,6 +233,8 @@ const WpModal: React.FC<WpModalInterface> = ({ modalType, modalProps = {} }) => 
           {modalType === GIFT_CERTIFICATE_MODAL && <GiftCertificateModal {...modalProps} />}
 
           {modalType === CREATE_PROMO_CODE_MODAL && <CreatePromoCodeModal {...modalProps} />}
+
+          {modalType === TASK_VARIANT_PRICE_MODAL && <TaskVariantPriceModal {...modalProps} />}
 
           {modalType === CATALOGUE_ADDITIONAL_OPTIONS_MODAL && (
             <CatalogueAdditionalOptionsModal {...modalProps} />

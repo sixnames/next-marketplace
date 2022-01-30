@@ -62,6 +62,18 @@ const CreateTaskVariantForm: React.FC<CreateTaskVariantFormInterface> = ({
                   );
                   setFieldValue('prices', newPrices);
                 }}
+                onPriceUpdateHandler={(taskVariantPrice, priceIndex) => {
+                  const newPrices = values.prices.reduce(
+                    (acc: TaskVariantPriceModel[], price, index) => {
+                      if (priceIndex === index) {
+                        return [...acc, taskVariantPrice];
+                      }
+                      return [...acc, price];
+                    },
+                    [],
+                  );
+                  setFieldValue('prices', newPrices);
+                }}
               />
               <FixedButtons>
                 <WpButton type={'submit'} size={'small'}>

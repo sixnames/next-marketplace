@@ -1,12 +1,12 @@
 import { getCmsLinks } from '../../../lib/linkUtils';
 
-describe('Categories', () => {
+describe('Task variants', () => {
   const links = getCmsLinks({});
   beforeEach(() => {
     cy.testAuth(links.taskVariants.parentLink);
   });
 
-  it('Should CRUD categories list', () => {
+  it('Should CRUD task variants', () => {
     cy.getByCy('task-variants-list').should('exist');
   });
 });

@@ -277,6 +277,7 @@ interface GetCmsCompanyLinkInterface
     GetConsoleCompanyPromoLinkInterface,
     GetConsoleBlogLinksInterface,
     GetConsolePagesLinksInterface,
+    GetConsoleTaskVariantLinks,
     GetConsoleUserLinksInterface {
   companyId?: string | ObjectIdModel;
   shopId?: string | ObjectIdModel;
@@ -296,6 +297,7 @@ export function getCmsCompanyLinks({
   blogPostId,
   pagesGroupId,
   pageId,
+  taskVariantId,
 }: GetCmsCompanyLinkInterface) {
   const parentLink = basePath?.includes(ROUTE_CMS) ? `${basePath}/companies` : basePath;
   const root = `${parentLink}/${companyId}`;
@@ -310,6 +312,10 @@ export function getCmsCompanyLinks({
     }),
     assets: `${root}/assets`,
     userCategories: `${root}/user-categories`,
+    taskVariants: getConsoleTaskVariantLinks({
+      basePath: root,
+      taskVariantId,
+    }),
     pages: getConsolePagesLinks({
       basePath: root,
       pagesGroupId,
@@ -433,9 +439,29 @@ export function getCmsAttributesLinks({
   };
 }
 
+export interface GetConsoleTaskVariantLinks {
+  taskVariantId?: string | ObjectIdModel;
+  basePath?: string;
+}
+
+export function getConsoleTaskVariantLinks({
+  taskVariantId,
+  basePath,
+}: GetConsoleTaskVariantLinks) {
+  const parentLink = `${basePath}/task-variants`;
+  const root = `${parentLink}/${taskVariantId}`;
+
+  return {
+    parentLink,
+    root,
+    create: `${parentLink}/create`,
+  };
+}
+
 export interface GetCmsLinksInterface
   extends Omit<GetCmsCompanyLinkInterface, 'basePath'>,
     GetCmsAttributesLinks,
+    GetConsoleTaskVariantLinks,
     GetConsolePagesLinksInterface {}
 
 export function getCmsLinks(props: GetCmsLinksInterface) {
@@ -450,6 +476,7 @@ export function getCmsLinks(props: GetCmsLinksInterface) {
     attributesGroupId,
     pageId,
     pagesGroupId,
+    taskVariantId,
   } = props;
   const root = ROUTE_CMS;
   const basePath = root;
@@ -487,6 +514,10 @@ export function getCmsLinks(props: GetCmsLinksInterface) {
       basePath,
       attributesGroupId,
       attributeId,
+    }),
+    taskVariants: getConsoleTaskVariantLinks({
+      basePath,
+      taskVariantId,
     }),
   };
 }

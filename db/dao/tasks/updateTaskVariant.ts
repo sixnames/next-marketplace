@@ -58,7 +58,11 @@ export async function updateTaskVariant({
       {
         _id: new ObjectId(_id),
       },
-      values,
+      {
+        $set: {
+          ...values,
+        },
+      },
       {
         returnDocument: 'after',
       },

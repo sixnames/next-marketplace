@@ -1,9 +1,9 @@
 import { Form, Formik } from 'formik';
 import * as React from 'react';
-import { TASK_VARIANT_SLUG_PRODUCT_ATTRIBUTES } from '../../config/constantSelects';
-import { CreateTaskVariantInputInterface } from '../../db/dao/tasks/createTaskVariant';
+import { UpdateTaskVariantInputInterface } from '../../db/dao/tasks/updateTaskVariant';
 import { TaskVariantPriceModel } from '../../db/dbModels';
-import { useCreateTaskVariant } from '../../hooks/mutations/useTaskMutations';
+import { TaskVariantInterface } from '../../db/uiInterfaces';
+import { useUpdateTaskVariant } from '../../hooks/mutations/useTaskMutations';
 import useValidationSchema from '../../hooks/useValidationSchema';
 import { createTaskVariantSchema } from '../../validation/taskVariantSchema';
 import FixedButtons from '../button/FixedButtons';
@@ -12,43 +12,43 @@ import TaskVariantMainFields from '../FormTemplates/TaskVariantMainFields';
 import Inner from '../Inner';
 import WpTitle from '../WpTitle';
 
-export interface CreateTaskVariantFormInterface {
-  companySlug: string;
-  basePath: string;
+export interface UpdateTaskVariantFormInterface {
+  taskVariant: TaskVariantInterface;
 }
 
-const CreateTaskVariantForm: React.FC<CreateTaskVariantFormInterface> = ({
-  companySlug,
-  basePath,
-}) => {
+const UpdateTaskVariantForm: React.FC<UpdateTaskVariantFormInterface> = ({ taskVariant }) => {
   const validationSchema = useValidationSchema({
     schema: createTaskVariantSchema,
   });
-  const initialValues: CreateTaskVariantInputInterface = {
-    nameI18n: {},
-    prices: [],
-    companySlug,
-    slug: TASK_VARIANT_SLUG_PRODUCT_ATTRIBUTES,
+  const initialValues: UpdateTaskVariantInputInterface = {
+    _id: `${taskVariant._id}`,
+    nameI18n: taskVariant.nameI18n,
+    prices: taskVariant.prices,
+    companySlug: taskVariant.companySlug,
+    slug: taskVariant.slug,
   };
-  const [createTaskVariantMutation] = useCreateTaskVariant(basePath);
+  const [updateTaskVariantMutation] = useUpdateTaskVariant();
 
   return (
     <Inner testId={'create-task-variant-page'}>
-      <WpTitle>Создание типа задачи</WpTitle>
-      <Formik<CreateTaskVariantInputInterface>
+      <WpTitle>Обновление типа задачи</WpTitle>
+      <Formik<UpdateTaskVariantInputInterface>
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={(values) => {
-          createTaskVariantMutation(values).catch(console.log);
+          updateTaskVariantMutation(values).catch(console.log);
         }}
       >
-        {({ values, setFieldValue }) => {
+        {({ values }) => {
           return (
             <Form>
               <TaskVariantMainFields
                 onPriceCreateHandler={(price) => {
                   const newPrices = [...values.prices, price];
-                  setFieldValue('prices', newPrices);
+                  updateTaskVariantMutation({
+                    ...values,
+                    prices: newPrices,
+                  }).catch(console.log);
                 }}
                 onPriceDeleteHandler={(priceIndex) => {
                   const newPrices = values.prices.reduce(
@@ -60,7 +60,10 @@ const CreateTaskVariantForm: React.FC<CreateTaskVariantFormInterface> = ({
                     },
                     [],
                   );
-                  setFieldValue('prices', newPrices);
+                  updateTaskVariantMutation({
+                    ...values,
+                    prices: newPrices,
+                  }).catch(console.log);
                 }}
                 onPriceUpdateHandler={(taskVariantPrice, priceIndex) => {
                   const newPrices = values.prices.reduce(
@@ -72,12 +75,15 @@ const CreateTaskVariantForm: React.FC<CreateTaskVariantFormInterface> = ({
                     },
                     [],
                   );
-                  setFieldValue('prices', newPrices);
+                  updateTaskVariantMutation({
+                    ...values,
+                    prices: newPrices,
+                  }).catch(console.log);
                 }}
               />
               <FixedButtons>
                 <WpButton type={'submit'} size={'small'} testId={'task-variant-submit'}>
-                  Создать
+                  Обновить
                 </WpButton>
               </FixedButtons>
             </Form>
@@ -88,4 +94,4 @@ const CreateTaskVariantForm: React.FC<CreateTaskVariantFormInterface> = ({
   );
 };
 
-export default CreateTaskVariantForm;
+export default UpdateTaskVariantForm;

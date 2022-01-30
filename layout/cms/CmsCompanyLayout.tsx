@@ -74,6 +74,11 @@ const CmsCompanyLayout: React.FC<CmsCompanyLayoutInterface> = ({
         path: links.userCategories,
       },
       {
+        name: 'Типы задач',
+        testId: 'company-task-variants',
+        path: links.taskVariants.parentLink,
+      },
+      {
         name: 'Основные настройки',
         testId: 'company-global-config',
         path: links.config.root,

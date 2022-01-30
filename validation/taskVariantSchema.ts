@@ -7,7 +7,11 @@ import {
   TASK_PRICE_TARGET_SYMBOL,
 } from '../config/constantSelects';
 import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
-import { objectIdSchema, requiredStringTranslationSchema } from './schemaTemplates';
+import {
+  objectIdSchema,
+  requiredStringSchema,
+  requiredStringTranslationSchema,
+} from './schemaTemplates';
 
 export const taskVariantIdSchema = (args: ValidationSchemaArgsInterface) => {
   return objectIdSchema({ ...args, slug: 'validation.taskVariants.id' });
@@ -19,15 +23,15 @@ export const taskVariantCommonFieldsSchema = (args: ValidationSchemaArgsInterfac
       ...args,
       slug: 'validation.taskVariants.name',
     }),
-    slug: requiredStringTranslationSchema({
+    slug: requiredStringSchema({
       ...args,
-      slug: 'validation.rubrics.name',
+      slug: 'validation.taskVariants.slug',
     }),
     prices: Yup.array().of(
       Yup.object({
-        slug: requiredStringTranslationSchema({
+        slug: requiredStringSchema({
           ...args,
-          slug: 'validation.rubrics.name',
+          slug: 'validation.taskVariants.priceSlug',
         }),
         price: Yup.number().nullable().required(),
         action: Yup.string().oneOf([

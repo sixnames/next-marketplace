@@ -1116,7 +1116,7 @@ export interface TaskVariantPriceModel {
   slug: string; // TASK_PRICE_SLUGS
   price: number;
   action: 'added' | 'deleted' | 'updated'; // TASK_PRICE_ACTIONS
-  target: 'field' | 'symbol'; // TASK_PRICE_TARGETS
+  target: 'field' | 'symbol' | 'task'; // TASK_PRICE_TARGETS
 }
 
 export interface TaskVariantModel {

@@ -8,5 +8,10 @@ describe('Task variants', () => {
 
   it('Should CRUD task variants', () => {
     cy.getByCy('task-variants-list').should('exist');
+
+    // should create
+    cy.getByCy('create-task-variant-button').click();
+    cy.wait(1500);
+    cy.getByCy('create-task-variant-page').should('exist');
   });
 });

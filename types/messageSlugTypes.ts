@@ -733,6 +733,8 @@ export type MessageSlug =
   // Task variant validation
   | 'validation.taskVariants.id'
   | 'validation.taskVariants.name'
+  | 'validation.taskVariants.slug'
+  | 'validation.taskVariants.priceSlug'
 
   // Fallback for empty key
   | 'none';

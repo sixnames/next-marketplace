@@ -319,9 +319,16 @@ export const ISO_LANGUAGES = [
 ];
 
 // task price targets
+export const TASK_PRICE_TARGET_TASK = 'task';
 export const TASK_PRICE_TARGET_FIELD = 'field';
 export const TASK_PRICE_TARGET_SYMBOL = 'symbol';
 export const TASK_PRICE_TARGETS: ConstantOptionsType = [
+  {
+    _id: TASK_PRICE_TARGET_TASK,
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'Задача',
+    },
+  },
   {
     _id: TASK_PRICE_TARGET_FIELD,
     nameI18n: {

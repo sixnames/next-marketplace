@@ -54,14 +54,28 @@ export const taskMessages: MessageBaseInterface[] = [
   {
     slug: 'validation.taskVariants.id',
     messageI18n: {
-      [DEFAULT_LOCALE]: `ID типа задачи обязателен`,
+      [DEFAULT_LOCALE]: `ID типа задачи обязательно`,
       [SECONDARY_LOCALE]: `Task variant ID is required`,
+    },
+  },
+  {
+    slug: 'validation.taskVariants.slug',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Slug типа задачи обязательно`,
+      [SECONDARY_LOCALE]: `Task variant slug is required`,
+    },
+  },
+  {
+    slug: 'validation.taskVariants.priceSlug',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Slug цены типа задачи обязательно`,
+      [SECONDARY_LOCALE]: `Task variant price slug is required`,
     },
   },
   {
     slug: 'validation.taskVariants.name',
     messageI18n: {
-      [DEFAULT_LOCALE]: `Название типа задачи обязательн`,
+      [DEFAULT_LOCALE]: `Название типа задачи обязательно`,
       [SECONDARY_LOCALE]: `Task variant name is required`,
     },
   },

@@ -35,6 +35,7 @@ const CreateTaskVariantForm: React.FC<CreateTaskVariantFormInterface> = ({
   return (
     <Inner testId={'create-task-variant-page'}>
       <WpTitle>Создание типа задачи</WpTitle>
+
       <Formik<CreateTaskVariantInputInterface>
         initialValues={initialValues}
         validationSchema={validationSchema}

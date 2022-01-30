@@ -150,7 +150,7 @@ const TaskVariantMainFields: React.FC<TaskVariantMainFieldsInterface> = ({
             });
           }}
         >
-          Добваить цену
+          Добаваить цену
         </WpButton>
       </div>
     </React.Fragment>

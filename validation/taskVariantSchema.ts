@@ -5,6 +5,7 @@ import {
   TASK_PRICE_ACTION_UPDATED,
   TASK_PRICE_TARGET_FIELD,
   TASK_PRICE_TARGET_SYMBOL,
+  TASK_PRICE_TARGET_TASK,
 } from '../config/constantSelects';
 import { ValidationSchemaArgsInterface } from '../types/validataionTypes';
 import {
@@ -39,7 +40,11 @@ export const taskVariantCommonFieldsSchema = (args: ValidationSchemaArgsInterfac
           TASK_PRICE_ACTION_DELETED,
           TASK_PRICE_ACTION_UPDATED,
         ]),
-        target: Yup.string().oneOf([TASK_PRICE_TARGET_FIELD, TASK_PRICE_TARGET_SYMBOL]),
+        target: Yup.string().oneOf([
+          TASK_PRICE_TARGET_FIELD,
+          TASK_PRICE_TARGET_SYMBOL,
+          TASK_PRICE_TARGET_TASK,
+        ]),
       }),
     ),
   };

@@ -195,7 +195,7 @@ interface RoleRuleBaseExtended extends Omit<RoleRuleBase, 'slug'> {
   slug: RoleRuleSlugType;
 }
 
-const baseRoleRules: RoleRuleBaseExtended[] = [
+export const roleRulesBase: RoleRuleBaseExtended[] = [
   // Attributes
   {
     allow: false,
@@ -1218,7 +1218,7 @@ export async function getRoleRulesAst({
     })
     .toArray();
 
-  const roleRulesAst = baseRoleRules.reduce((acc: RoleRuleInterface[], base) => {
+  const roleRulesAst = roleRulesBase.reduce((acc: RoleRuleInterface[], base) => {
     const existingRule = initialRoleRules.find(({ slug }) => base.slug === slug);
     if (!existingRule) {
       return [

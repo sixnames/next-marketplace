@@ -1,7 +1,8 @@
 import { RoleRuleModel } from '../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
+import { roleRulesBase } from '../../../lib/roleUtils';
 
-const roleRules: RoleRuleModel[] = [
+/*const roleRules: RoleRuleModel[] = [
   {
     _id: getObjectId('roleRule updateOrder'),
     slug: 'updateOrder',
@@ -112,7 +113,16 @@ const roleRules: RoleRuleModel[] = [
     descriptionI18n: {},
     roleId: getObjectId('companyOwnerRole'),
   },
-];
+];*/
+
+const roleRules: RoleRuleModel[] = roleRulesBase.map((base) => {
+  return {
+    ...base,
+    _id: getObjectId(`roleRule ${base.slug}`),
+    allow: true,
+    roleId: getObjectId('companyOwnerRole'),
+  };
+});
 
 // @ts-ignore
 export = roleRules;

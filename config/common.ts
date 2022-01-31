@@ -41,6 +41,8 @@ export const ISR_ONE_MINUTE = ISR_ONE_SECOND * 60;
 export const ISR_ONE_HOUR = ISR_ONE_MINUTE * 60;
 export const ISR_ONE_DAY = ISR_ONE_HOUR * 34;
 export const ISR_ONE_WEEK = ISR_ONE_DAY * 7;
+export const ISR_ONE_MONTH = ISR_ONE_WEEK * 4;
+export const ISR_SIX_MONTHS = ISR_ONE_MONTH * 6;
 
 //DATES
 export const DATE_FORMAT_DATE = 'dd-MM-yyyy';

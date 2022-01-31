@@ -1,4 +1,4 @@
-import { ISR_ONE_WEEK } from '../../config/common';
+import { ISR_ONE_WEEK, ISR_SIX_MONTHS } from '../../config/common';
 import {
   AttributeModel,
   BlogAttributeModel,
@@ -330,7 +330,6 @@ export async function updateIndexes(db: Db) {
   await promoCodesCollection.createIndex({ promoId: 1 });
   await promoCodesCollection.createIndex({ promoterId: 1 });
   await promoCodesCollection.createIndex({ code: 1, companyId: 1 }, { unique: true });
-  await promoCodesCollection.createIndex({ endAt: 1 }, { expireAfterSeconds: ISR_ONE_WEEK });
 
   // Promo products
   await createCollectionIfNotExist(COL_PROMO_PRODUCTS);
@@ -340,6 +339,7 @@ export async function updateIndexes(db: Db) {
   await promoProductsCollection.createIndex({ companyId: 1 });
   await promoProductsCollection.createIndex({ shopProductId: 1 });
   await promoProductsCollection.createIndex({ productId: 1 });
+  await promoProductsCollection.createIndex({ endAt: 1 }, { expireAfterSeconds: ISR_SIX_MONTHS });
 
   // Rubrics
   await createCollectionIfNotExist(COL_RUBRICS);

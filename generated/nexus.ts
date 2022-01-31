@@ -313,6 +313,7 @@ export interface NexusGenInputs {
     descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     isCompanyStaff: boolean; // Boolean!
     isContentManager: boolean; // Boolean!
+    isInspector: boolean; // Boolean!
     isModerator: boolean; // Boolean!
     isStaff: boolean; // Boolean!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!
@@ -587,6 +588,7 @@ export interface NexusGenInputs {
     descriptionI18n?: NexusGenScalars['JSONObject'] | null; // JSONObject
     isCompanyStaff: boolean; // Boolean!
     isContentManager: boolean; // Boolean!
+    isInspector: boolean; // Boolean!
     isModerator: boolean; // Boolean!
     isStaff: boolean; // Boolean!
     nameI18n: NexusGenScalars['JSONObject']; // JSONObject!

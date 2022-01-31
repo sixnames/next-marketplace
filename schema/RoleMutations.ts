@@ -32,6 +32,7 @@ export const CreateRoleInput = inputObjectType({
     t.nonNull.boolean('isCompanyStaff');
     t.nonNull.boolean('isModerator');
     t.nonNull.boolean('isContentManager');
+    t.nonNull.boolean('isInspector');
     t.nonNull.boolean('showAdminUiInCatalogue');
   },
 });
@@ -46,6 +47,7 @@ export const UpdateRoleInput = inputObjectType({
     t.nonNull.boolean('isCompanyStaff');
     t.nonNull.boolean('isModerator');
     t.nonNull.boolean('isContentManager');
+    t.nonNull.boolean('isInspector');
     t.nonNull.boolean('showAdminUiInCatalogue');
   },
 });

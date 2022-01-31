@@ -5,13 +5,13 @@ import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import FormikImageUpload from '../../../../components/FormElements/Upload/FormikImageUpload';
 import Inner from '../../../../components/Inner';
-import { ROUTE_CMS } from '../../../../config/common';
 import { COL_COMPANIES } from '../../../../db/collectionNames';
 import { getDatabase } from '../../../../db/mongodb';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from '../../../../db/uiInterfaces';
 import useMutationCallbacks from '../../../../hooks/useMutationCallbacks';
 import CmsCompanyLayout from '../../../../layout/cms/CmsCompanyLayout';
 import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
+import { getCmsCompanyLinks } from '../../../../lib/linkUtils';
 import {
   castDbData,
   getAppInitialData,
@@ -26,16 +26,19 @@ const CompanyAssetsConsumer: React.FC<CompanyAssetsConsumerInterface> = ({ pageC
   const { showErrorNotification, showLoading, hideLoading } = useMutationCallbacks({});
   const router = useRouter();
 
+  const links = getCmsCompanyLinks({
+    companyId: pageCompany._id,
+  });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Изображения',
     config: [
       {
         name: 'Компании',
-        href: `${ROUTE_CMS}/companies`,
+        href: links.parentLink,
       },
       {
         name: `${pageCompany?.name}`,
-        href: `${ROUTE_CMS}/companies/${pageCompany?._id}`,
+        href: links.root,
       },
     ],
   };

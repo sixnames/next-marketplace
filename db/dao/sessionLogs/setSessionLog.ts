@@ -193,7 +193,7 @@ export async function setSessionLog({
 
     // get session log
     let sessionIdCookie = cookies[SESSION_COOKIE_KEY];
-    const newSessionId = new ObjectId();
+    let newSessionId = new ObjectId();
 
     // set session log cookie if not exits
     const cookieOptions = {
@@ -214,11 +214,13 @@ export async function setSessionLog({
 
     // create new log if not exits
     if (!log) {
+      const newSessionId = new ObjectId();
+      nookies.set(context, SESSION_COOKIE_KEY, sessionIdCookie, cookieOptions);
       const createdLogResult = await createNewSessionLog({
         context,
         userRoleId: role._id,
         userId: user?._id,
-        sessionId,
+        sessionId: newSessionId,
         locale,
         companySlug,
         citySlug,

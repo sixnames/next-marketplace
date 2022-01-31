@@ -174,6 +174,11 @@ export type RoleRuleSlugType =
   | 'addPromoProduct'
   | 'deletePromoProduct'
 
+  // Task variants
+  | 'createTaskVariant'
+  | 'updateTaskVariant'
+  | 'deleteTaskVariant'
+
   // User
   | 'createUser'
   | 'updateUser'
@@ -190,7 +195,7 @@ interface RoleRuleBaseExtended extends Omit<RoleRuleBase, 'slug'> {
   slug: RoleRuleSlugType;
 }
 
-const baseRoleRules: RoleRuleBaseExtended[] = [
+export const roleRulesBase: RoleRuleBaseExtended[] = [
   // Attributes
   {
     allow: false,
@@ -1101,6 +1106,32 @@ const baseRoleRules: RoleRuleBaseExtended[] = [
     },
   },
 
+  // Task variants
+  {
+    allow: false,
+    slug: 'createTaskVariant',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Создание типа задачи',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateTaskVariant',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление типа задачи',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deleteTaskVariant',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление типа задачи',
+    },
+  },
+
   // User
   {
     allow: false,
@@ -1187,7 +1218,7 @@ export async function getRoleRulesAst({
     })
     .toArray();
 
-  const roleRulesAst = baseRoleRules.reduce((acc: RoleRuleInterface[], base) => {
+  const roleRulesAst = roleRulesBase.reduce((acc: RoleRuleInterface[], base) => {
     const existingRule = initialRoleRules.find(({ slug }) => base.slug === slug);
     if (!existingRule) {
       return [

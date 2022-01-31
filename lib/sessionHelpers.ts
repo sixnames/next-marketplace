@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getSession } from 'next-auth/client';
+import { getSession } from 'next-auth/react';
 import nookies from 'nookies';
 import { ArraySchema, ObjectSchema } from 'yup';
 import {

@@ -1,4 +1,4 @@
-import { ISR_ONE_WEEK } from '../../config/common';
+import { ISR_ONE_WEEK, ISR_SIX_MONTHS } from '../../config/common';
 import {
   AttributeModel,
   BlogAttributeModel,
@@ -34,6 +34,8 @@ import {
   ProductSummaryModel,
   CatalogueNavModel,
   SessionLogModel,
+  TaskModel,
+  TaskVariantModel,
 } from '../../db/dbModels';
 import {
   COL_ATTRIBUTES,
@@ -71,6 +73,8 @@ import {
   COL_PRODUCT_SUMMARIES,
   COL_CATALOGUE_NAV,
   COL_SESSION_LOGS,
+  COL_TASKS,
+  COL_TASK_VARIANTS,
 } from '../../db/collectionNames';
 import { Db, MongoClient } from 'mongodb';
 import path from 'path';
@@ -170,6 +174,16 @@ export async function updateIndexes(db: Db) {
   await createCollectionIfNotExist(COL_CARTS);
   const cartsCollection = db.collection<CartModel>(COL_CARTS);
   await cartsCollection.createIndex({ updatedAt: 1 }, { expireAfterSeconds: ISR_ONE_WEEK });
+
+  // Tasks
+  await createCollectionIfNotExist(COL_TASKS);
+  const tasksCollection = db.collection<TaskModel>(COL_TASKS);
+  await tasksCollection.createIndex({ companySlug: 1, createdAt: 1, _id: 1 });
+
+  // Task variants
+  await createCollectionIfNotExist(COL_TASK_VARIANTS);
+  const taskVariantsCollection = db.collection<TaskVariantModel>(COL_TASK_VARIANTS);
+  await taskVariantsCollection.createIndex({ companySlug: 1, _id: 1 });
 
   // Seo contents
   await createCollectionIfNotExist(COL_SEO_CONTENTS);
@@ -316,7 +330,6 @@ export async function updateIndexes(db: Db) {
   await promoCodesCollection.createIndex({ promoId: 1 });
   await promoCodesCollection.createIndex({ promoterId: 1 });
   await promoCodesCollection.createIndex({ code: 1, companyId: 1 }, { unique: true });
-  await promoCodesCollection.createIndex({ endAt: 1 }, { expireAfterSeconds: ISR_ONE_WEEK });
 
   // Promo products
   await createCollectionIfNotExist(COL_PROMO_PRODUCTS);
@@ -326,6 +339,7 @@ export async function updateIndexes(db: Db) {
   await promoProductsCollection.createIndex({ companyId: 1 });
   await promoProductsCollection.createIndex({ shopProductId: 1 });
   await promoProductsCollection.createIndex({ productId: 1 });
+  await promoProductsCollection.createIndex({ endAt: 1 }, { expireAfterSeconds: ISR_SIX_MONTHS });
 
   // Rubrics
   await createCollectionIfNotExist(COL_RUBRICS);

@@ -678,57 +678,6 @@ export interface ProductSummaryModel extends ProductFacetModel, TimestampModel {
   videos?: string[];
 }
 
-export enum ProductTicketStateModel {
-  editing = 'editing',
-  inspection = 'inspection',
-  moderation = 'moderation',
-  confirmed = 'confirmed',
-}
-
-export interface ProductTicketTaskVariantPricesModel {
-  symbol?: number;
-  attribute?: number;
-  picture?: number;
-  seoText?: number;
-}
-
-export interface ProductTicketTaskVariantModel {
-  _id: ObjectIdModel;
-  nameI18n: TranslationModel;
-  prices: ProductTicketTaskVariantPricesModel;
-}
-
-export interface ProductTicketTaskModel {
-  _id: ObjectIdModel;
-  variantId: ObjectIdModel;
-  done: boolean;
-}
-
-export interface ProductTicketLogModel {
-  prevStateEnum: ProductTicketStateModel;
-  nextStateEnum: ProductTicketStateModel;
-  diff?: DiffModel | null;
-  draft?: ProductSummaryModel | null;
-  authorId: ObjectIdModel;
-  inspectorId?: ObjectIdModel | null;
-  moderatorId?: ObjectIdModel | null;
-  moderatorComment?: string;
-  authorComment?: string;
-  inspectorComment?: string;
-  createdAt: DateModel;
-}
-
-export interface ProductTicketModel extends TimestampModel {
-  createdById: ObjectIdModel;
-  authorId: ObjectIdModel;
-  productId: ObjectIdModel;
-  taskId: ObjectIdModel;
-  log: ProductTicketLogModel[];
-  createdAt: DateModel;
-  updatedAt: DateModel;
-  stateEnum: ProductTicketStateModel;
-}
-
 export interface ProductCardBreadcrumbModel {
   _id: ObjectIdModel;
   name: string;
@@ -763,6 +712,7 @@ export interface RoleModel extends TimestampModel {
   showAdminUiInCatalogue?: boolean;
   isModerator?: boolean;
   isContentManager?: boolean;
+  isInspector?: boolean;
   allowedAppNavigation: string[];
 }
 
@@ -1153,6 +1103,55 @@ export interface BlogLikeModel {
   userId: ObjectIdModel;
 }
 
+// tasks
+export enum TaskStateModel {
+  pending = 'pending',
+  inProgress = 'inProgress',
+  inspection = 'inspection',
+  moderation = 'moderation',
+  done = 'done',
+}
+
+export interface TaskVariantPriceModel {
+  slug: string; // TASK_PRICE_SLUGS
+  price: number;
+  action: 'added' | 'deleted' | 'updated'; // TASK_PRICE_ACTIONS
+  target: 'field' | 'symbol' | 'task'; // TASK_PRICE_TARGETS
+}
+
+export interface TaskVariantModel {
+  _id: ObjectIdModel;
+  slug: string; // TASK_VARIANT_SLUGS
+  companySlug: string;
+  nameI18n: TranslationModel;
+  prices: TaskVariantPriceModel[];
+}
+
+export interface TaskLogModel {
+  _id: ObjectIdModel;
+  prevStateEnum: TaskStateModel;
+  nextStateEnum: TaskStateModel;
+  diff?: DiffModel | null;
+  draft?: JSONObjectModel | null;
+  createdById: ObjectIdModel;
+  comment?: string;
+  createdAt: DateModel;
+}
+
+export interface TaskModel extends TimestampModel {
+  _id: ObjectIdModel;
+  companySlug: string;
+  stateEnum: TaskStateModel;
+  nameI18n?: TranslationModel | null;
+  createdById: ObjectIdModel;
+  variantId?: ObjectIdModel | null;
+  executorId?: ObjectIdModel | null;
+  productId?: ObjectIdModel | null;
+  log: TaskLogModel[];
+  createdAt: DateModel;
+  updatedAt: DateModel;
+}
+
 // Payload
 export interface ConstructorAssetPayloadModel extends PayloadType<string> {
   payload: string;
@@ -1189,6 +1188,7 @@ export type UserCategoryPayloadModel = PayloadType<UserCategoryModel>;
 export type UserPayloadModel = PayloadType<UserModel>;
 export type SeoContentPayloadModel = PayloadType<SeoContentModel>;
 export type SessionLogPayloadModel = PayloadType<SessionLogModel>;
+export type TaskVariantPayloadModel = PayloadType<TaskVariantModel>;
 
 export interface GiftCertificatePayloadModel extends PayloadType<GiftCertificateModel> {
   notAuth?: boolean;

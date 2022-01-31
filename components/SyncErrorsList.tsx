@@ -3,9 +3,9 @@ import {
   CREATE_PRODUCT_WITH_SYNC_ERROR_MODAL,
   PRODUCT_SEARCH_MODAL,
 } from '../config/modalVariants';
+import { useAppContext } from '../context/appContext';
 import { AppPaginationInterface, NotSyncedProductInterface } from '../db/uiInterfaces';
 import { useUpdateProductWithSyncError } from '../hooks/mutations/useProductMutations';
-import useMutationCallbacks from '../hooks/useMutationCallbacks';
 import { getNumWord } from '../lib/i18n';
 import ContentItemControls from './button/ContentItemControls';
 import WpButton from './button/WpButton';
@@ -29,10 +29,7 @@ const SyncErrorsList: React.FC<SyncErrorsListInterface> = ({
   showControls = true,
   companySlug,
 }) => {
-  const { showModal } = useMutationCallbacks({
-    reload: true,
-  });
-
+  const { showModal } = useAppContext();
   const [updateProductWithSyncErrorMutation] = useUpdateProductWithSyncError();
 
   const columns: WpTableColumn<NotSyncedProductInterface>[] = [

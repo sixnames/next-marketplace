@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
-import { signIn } from 'next-auth/client';
+import { signIn } from 'next-auth/react';
 import { Form, Formik } from 'formik';
 import WpButton from '../components/button/WpButton';
 import FormikInput from '../components/FormElements/Input/FormikInput';
@@ -30,7 +30,7 @@ const SignInRoute: React.FC = () => {
         }}
         onSubmit={(values) => {
           showLoading();
-          signIn('credentials', {
+          signIn<any>('credentials', {
             redirect: false,
             ...values,
           })

@@ -2,7 +2,7 @@ import * as React from 'react';
 import '../styles/globals.css';
 import type { AppProps } from 'next/app';
 import { ApolloProvider } from '@apollo/client';
-import { Provider } from 'next-auth/client';
+import { SessionProvider } from 'next-auth/react';
 import Router from 'next/router';
 import NProgress from 'nprogress';
 import { SWRConfig } from 'swr';
@@ -36,7 +36,7 @@ function App({ Component, pageProps }: AppProps<PagePropsInterface>) {
   const apolloClient = useApollo(pageProps.initialApolloState);
 
   return (
-    <Provider session={session}>
+    <SessionProvider session={session}>
       <SWRConfig
         value={{
           fetcher: (resource, init) => {
@@ -72,7 +72,7 @@ function App({ Component, pageProps }: AppProps<PagePropsInterface>) {
           </ApolloProvider>
         </div>
       </SWRConfig>
-    </Provider>
+    </SessionProvider>
   );
 }
 

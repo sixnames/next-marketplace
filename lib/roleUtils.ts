@@ -174,6 +174,11 @@ export type RoleRuleSlugType =
   | 'addPromoProduct'
   | 'deletePromoProduct'
 
+  // Task
+  | 'createTask'
+  | 'updateTask'
+  | 'deleteTask'
+
   // Task variants
   | 'createTaskVariant'
   | 'updateTaskVariant'
@@ -1103,6 +1108,32 @@ export const roleRulesBase: RoleRuleBaseExtended[] = [
     descriptionI18n: {},
     nameI18n: {
       ru: 'Удаление подарочного сертификата',
+    },
+  },
+
+  // Tasks
+  {
+    allow: false,
+    slug: 'createTask',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Создание задачи',
+    },
+  },
+  {
+    allow: false,
+    slug: 'updateTask',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Обновление задачи',
+    },
+  },
+  {
+    allow: false,
+    slug: 'deleteTask',
+    descriptionI18n: {},
+    nameI18n: {
+      ru: 'Удаление задачи',
     },
   },
 

@@ -723,6 +723,16 @@ export type MessageSlug =
   | 'seoContent.update.error'
   | 'seoContent.update.success'
 
+  // Task ----------
+  | 'tasks.create.error'
+  | 'tasks.create.success'
+  | 'tasks.update.error'
+  | 'tasks.update.success'
+  | 'tasks.delete.error'
+  | 'tasks.delete.success'
+  // Task validation
+  | 'validation.tasks.id'
+
   // Task variant ----------
   | 'taskVariants.create.error'
   | 'taskVariants.create.success'

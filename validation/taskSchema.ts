@@ -18,6 +18,10 @@ export const taskVariantIdSchema = (args: ValidationSchemaArgsInterface) => {
   return objectIdSchema({ ...args, slug: 'validation.taskVariants.id' });
 };
 
+export const taskIdSchema = (args: ValidationSchemaArgsInterface) => {
+  return objectIdSchema({ ...args, slug: 'validation.tasks.id' });
+};
+
 export const taskVariantCommonFieldsSchema = (args: ValidationSchemaArgsInterface) => {
   return {
     nameI18n: requiredStringTranslationSchema({
@@ -60,5 +64,11 @@ export const updateTaskVariantSchema = (args: ValidationSchemaArgsInterface) => 
   return Yup.object({
     _id: taskVariantIdSchema(args),
     ...taskVariantCommonFieldsSchema(args),
+  });
+};
+
+export const updateTaskSchema = (args: ValidationSchemaArgsInterface) => {
+  return Yup.object({
+    _id: taskIdSchema(args),
   });
 };

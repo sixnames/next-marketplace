@@ -35,7 +35,7 @@ import {
   getRequestParams,
   getResolverValidationSchema,
 } from '../lib/sessionHelpers';
-import { deleteDocumentsTree, getChildrenTreeIds, getParentTreeIds } from '../lib/treeUtils';
+import { deleteDocumentsTree, getParentTreeIds } from '../lib/treeUtils';
 import { execUpdateProductTitles } from '../lib/updateProductTitles';
 import { createCategorySchema, updateCategorySchema } from '../validation/categorySchema';
 
@@ -555,11 +555,14 @@ export const CategoryMutations = extendType({
               await session.abortTransaction();
               return;
             }
-            const categoryIds = await getChildrenTreeIds({
-              _id: category._id,
-              collectionName: COL_CATEGORIES,
-              acc: [],
-            });
+
+            const childCategories = await categoriesCollection
+              .find({
+                parentTreeIds: category._id,
+              })
+              .toArray();
+            const childCategoryIds = childCategories.map(({ _id }) => _id);
+            const categoryIds = [category._id, ...childCategoryIds];
 
             // get group attributes
             const groupAttributes = await attributesCollection
@@ -568,6 +571,15 @@ export const CategoryMutations = extendType({
               })
               .toArray();
             const groupAttributeIds = groupAttributes.map(({ _id }) => _id);
+
+            if (categoryIds.length < 1) {
+              mutationPayload = {
+                success: false,
+                message: await getApiMessage('categories.update.notFound'),
+              };
+              await session.abortTransaction();
+              return;
+            }
 
             // uncheck all
             if (attributeIds.length < 1) {
@@ -635,7 +647,9 @@ export const CategoryMutations = extendType({
             const categoryAttributes = groupAttributes.filter((attribute) => {
               return attributeIds.some((_id) => attribute._id.equals(_id));
             });
+            console.log('categoryAttributes', categoryAttributes);
             let cmsCardAttributeIds = [...(category.cmsCardAttributeIds || [])];
+            console.log('cmsCardAttributeIds', cmsCardAttributeIds);
             for await (const categoryAttribute of categoryAttributes) {
               const attributeId = categoryAttribute._id;
               const attributeExist = category.cmsCardAttributeIds?.some((_id) => {
@@ -684,7 +698,7 @@ export const CategoryMutations = extendType({
 
           return mutationPayload;
         } catch (e) {
-          console.log(e);
+          console.log('toggleCmsCardAttributeInCategory', e);
           return {
             success: false,
             message: getResolverErrorMessage(e),

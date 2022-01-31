@@ -5,7 +5,7 @@ import { TaskVariantPriceModel } from '../../db/dbModels';
 import { TaskVariantInterface } from '../../db/uiInterfaces';
 import { useUpdateTaskVariant } from '../../hooks/mutations/useTaskMutations';
 import useValidationSchema from '../../hooks/useValidationSchema';
-import { createTaskVariantSchema } from '../../validation/taskVariantSchema';
+import { createTaskVariantSchema } from '../../validation/taskSchema';
 import FixedButtons from '../button/FixedButtons';
 import WpButton from '../button/WpButton';
 import TaskVariantMainFields from '../FormTemplates/TaskVariantMainFields';

@@ -2,6 +2,56 @@ import { DEFAULT_LOCALE, SECONDARY_LOCALE } from '../../config/common';
 import { MessageBaseInterface } from '../../db/uiInterfaces';
 
 export const taskMessages: MessageBaseInterface[] = [
+  // task
+  // create
+  {
+    slug: 'tasks.create.error',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Ошибка создания задачи`,
+      [SECONDARY_LOCALE]: `Task create error`,
+    },
+  },
+  {
+    slug: 'tasks.create.success',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Задача создан`,
+      [SECONDARY_LOCALE]: `Task created`,
+    },
+  },
+
+  // update
+  {
+    slug: 'tasks.update.error',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Ошибка обновления задачи`,
+      [SECONDARY_LOCALE]: `Task update error`,
+    },
+  },
+  {
+    slug: 'tasks.update.success',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Задача обновлёна`,
+      [SECONDARY_LOCALE]: `Task updated`,
+    },
+  },
+
+  // delete
+  {
+    slug: 'tasks.delete.error',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Ошибка удвления задачи`,
+      [SECONDARY_LOCALE]: `Task delete error`,
+    },
+  },
+  {
+    slug: 'tasks.delete.success',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `Задача удалёна`,
+      [SECONDARY_LOCALE]: `Task removed`,
+    },
+  },
+
+  // task variant
   // create
   {
     slug: 'taskVariants.create.error',
@@ -51,6 +101,13 @@ export const taskMessages: MessageBaseInterface[] = [
   },
 
   // validation
+  {
+    slug: 'validation.tasks.id',
+    messageI18n: {
+      [DEFAULT_LOCALE]: `ID задачи обязательно`,
+      [SECONDARY_LOCALE]: `Task ID is required`,
+    },
+  },
   {
     slug: 'validation.taskVariants.id',
     messageI18n: {

@@ -277,7 +277,8 @@ interface GetCmsCompanyLinkInterface
     GetConsoleCompanyPromoLinkInterface,
     GetConsoleBlogLinksInterface,
     GetConsolePagesLinksInterface,
-    GetConsoleTaskVariantLinks,
+    GetConsoleTaskVariantLinksInterface,
+    GetConsoleTaskLinksInterface,
     GetConsoleUserLinksInterface {
   companyId?: string | ObjectIdModel;
   shopId?: string | ObjectIdModel;
@@ -298,6 +299,7 @@ export function getCmsCompanyLinks({
   pagesGroupId,
   pageId,
   taskVariantId,
+  taskId,
 }: GetCmsCompanyLinkInterface) {
   const parentLink = basePath?.includes(ROUTE_CMS) ? `${basePath}/companies` : basePath;
   const root = `${parentLink}/${companyId}`;
@@ -315,6 +317,10 @@ export function getCmsCompanyLinks({
     taskVariants: getConsoleTaskVariantLinks({
       basePath: root,
       taskVariantId,
+    }),
+    tasks: getConsoleTaskLinks({
+      basePath: root,
+      taskId,
     }),
     pages: getConsolePagesLinks({
       basePath: root,
@@ -439,7 +445,7 @@ export function getCmsAttributesLinks({
   };
 }
 
-export interface GetConsoleTaskVariantLinks {
+export interface GetConsoleTaskVariantLinksInterface {
   taskVariantId?: string | ObjectIdModel;
   basePath?: string;
 }
@@ -447,9 +453,25 @@ export interface GetConsoleTaskVariantLinks {
 export function getConsoleTaskVariantLinks({
   taskVariantId,
   basePath,
-}: GetConsoleTaskVariantLinks) {
+}: GetConsoleTaskVariantLinksInterface) {
   const parentLink = `${basePath}/task-variants`;
   const root = `${parentLink}/${taskVariantId}`;
+
+  return {
+    parentLink,
+    root,
+    create: `${parentLink}/create`,
+  };
+}
+
+export interface GetConsoleTaskLinksInterface {
+  taskId?: string | ObjectIdModel;
+  basePath?: string;
+}
+
+export function getConsoleTaskLinks({ taskId, basePath }: GetConsoleTaskLinksInterface) {
+  const parentLink = `${basePath}/tasks`;
+  const root = `${parentLink}/${taskId}`;
 
   return {
     parentLink,
@@ -461,7 +483,6 @@ export function getConsoleTaskVariantLinks({
 export interface GetCmsLinksInterface
   extends Omit<GetCmsCompanyLinkInterface, 'basePath'>,
     GetCmsAttributesLinks,
-    GetConsoleTaskVariantLinks,
     GetConsolePagesLinksInterface {}
 
 export function getCmsLinks(props: GetCmsLinksInterface) {
@@ -477,6 +498,7 @@ export function getCmsLinks(props: GetCmsLinksInterface) {
     pageId,
     pagesGroupId,
     taskVariantId,
+    taskId,
   } = props;
   const root = ROUTE_CMS;
   const basePath = root;
@@ -518,6 +540,10 @@ export function getCmsLinks(props: GetCmsLinksInterface) {
     taskVariants: getConsoleTaskVariantLinks({
       basePath,
       taskVariantId,
+    }),
+    tasks: getConsoleTaskLinks({
+      basePath,
+      taskId,
     }),
   };
 }

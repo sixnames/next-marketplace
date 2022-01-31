@@ -1,4 +1,4 @@
-import { signOut } from 'next-auth/client';
+import { signOut } from 'next-auth/react';
 import * as React from 'react';
 import { useNotificationsContext } from '../context/notificationsContext';
 

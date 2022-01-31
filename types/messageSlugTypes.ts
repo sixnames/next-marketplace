@@ -723,5 +723,18 @@ export type MessageSlug =
   | 'seoContent.update.error'
   | 'seoContent.update.success'
 
+  // Task variant ----------
+  | 'taskVariants.create.error'
+  | 'taskVariants.create.success'
+  | 'taskVariants.update.error'
+  | 'taskVariants.update.success'
+  | 'taskVariants.delete.error'
+  | 'taskVariants.delete.success'
+  // Task variant validation
+  | 'validation.taskVariants.id'
+  | 'validation.taskVariants.name'
+  | 'validation.taskVariants.slug'
+  | 'validation.taskVariants.priceSlug'
+
   // Fallback for empty key
   | 'none';

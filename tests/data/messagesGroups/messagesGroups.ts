@@ -206,6 +206,12 @@ const messagesGroups: MessagesGroupModel[] = [
       ru: 'Подарочный сертификат',
     },
   },
+  {
+    _id: getObjectId('messagesGroups Задачи'),
+    nameI18n: {
+      ru: 'Задачи',
+    },
+  },
 ];
 
 // @ts-ignore

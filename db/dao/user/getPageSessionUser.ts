@@ -1,4 +1,4 @@
-import { getSession } from 'next-auth/client';
+import { getSession } from 'next-auth/react';
 import {
   ROLE_SLUG_ADMIN,
   ROUTE_CMS,

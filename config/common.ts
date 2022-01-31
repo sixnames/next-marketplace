@@ -11,7 +11,7 @@ import {
   OrderRequestStateModel,
   OrderRequestVariantModel,
   PageStateModel,
-  ProductTicketStateModel,
+  TaskStateModel,
   SessionLogEventVariantEnum,
   SortDirectionModel,
   SupplierPriceVariantModel,
@@ -37,11 +37,12 @@ export const NOTIFICATION_TIMEOUT = ONE_SECOND * 5;
 export const MAIN_BANNER_AUTOPLAY_SPEED = ONE_SECOND * 3;
 
 export const ISR_ONE_SECOND = 1;
-export const ISR_FIVE_SECONDS = ISR_ONE_SECOND * 5;
-export const ISR_ONE_MINUTE = ONE_SECOND * 60;
+export const ISR_ONE_MINUTE = ISR_ONE_SECOND * 60;
 export const ISR_ONE_HOUR = ISR_ONE_MINUTE * 60;
 export const ISR_ONE_DAY = ISR_ONE_HOUR * 34;
 export const ISR_ONE_WEEK = ISR_ONE_DAY * 7;
+export const ISR_ONE_MONTH = ISR_ONE_WEEK * 4;
+export const ISR_SIX_MONTHS = ISR_ONE_MONTH * 6;
 
 //DATES
 export const DATE_FORMAT_DATE = 'dd-MM-yyyy';
@@ -439,10 +440,11 @@ export const SUPPLIER_PRICE_VARIANT_ENUMS = [
 ];
 
 // draft
-export const DRAFT_STATE_EDITING = 'editing' as ProductTicketStateModel;
-export const DRAFT_STATE_INSPECTION = 'inspection' as ProductTicketStateModel;
-export const DRAFT_STATE_MODERATION = 'moderation' as ProductTicketStateModel;
-export const DRAFT_STATE_CONFIRMED = 'confirmed' as ProductTicketStateModel;
+export const TASK_STATE_PENDING = 'pending' as TaskStateModel;
+export const TASK_STATE_IN_PROGRESS = 'inProgress' as TaskStateModel;
+export const TASK_STATE_INSPECTION = 'inspection' as TaskStateModel;
+export const TASK_STATE_MODERATION = 'moderation' as TaskStateModel;
+export const TASK_STATE_DONE = 'done' as TaskStateModel;
 
 // session log event variants
 export const SESSION_LOG_EVENT_VISIT = 'visit' as SessionLogEventVariantEnum;

@@ -1,12 +1,7 @@
 import * as React from 'react';
 import { DEFAULT_CITY } from '../config/common';
 import { useConfigContext } from '../context/configContext';
-import { useSiteContext } from '../context/siteContext';
 import { InitialCardDataInterface, ProductAttributeInterface } from '../db/uiInterfaces';
-import {
-  AddProductToCartInput,
-  AddShoplessProductToCartInput,
-} from '../generated/apolloComponents';
 import { alwaysArray } from '../lib/arrayUtils';
 import { noNaN } from '../lib/numbers';
 import useGetSimilarProducts, {
@@ -17,8 +12,6 @@ import useUpdateCardCounter from './useUpdateCardCounter';
 interface UseCardDataPayloadInterface
   extends InitialCardDataInterface,
     UseGetSimilarProductsPayloadInterface {
-  addShoplessProductToCart: (input: AddShoplessProductToCartInput) => void;
-  addProductToCart: (input: AddProductToCartInput) => void;
   visibleListFeatures: ProductAttributeInterface[];
   visibleListFeaturesCount: number;
 }
@@ -34,7 +27,6 @@ const useCardData = ({
 }: UseCardDataInterface): UseCardDataPayloadInterface => {
   const shopsCounterPostfix = noNaN(cardData.shopsCount) > 1 ? 'магазинах' : 'магазине';
   const isShopless = noNaN(cardData.shopsCount) < 1;
-  const { addShoplessProductToCart, addProductToCart } = useSiteContext();
   const { configs, currentCity } = useConfigContext();
 
   // visible list features slice
@@ -62,8 +54,6 @@ const useCardData = ({
     ...cardData,
     shopsCounterPostfix,
     isShopless,
-    addShoplessProductToCart,
-    addProductToCart,
     visibleListFeaturesCount,
     visibleListFeatures,
     loading,

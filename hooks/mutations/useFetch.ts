@@ -89,6 +89,7 @@ export interface UseMutationInterface<T> {
   onSuccess?: (payload: T) => void;
   onError?: (payload?: T) => void;
   showNotification?: boolean;
+  showLoader?: boolean;
   reload?: boolean;
 }
 
@@ -106,6 +107,7 @@ export function useMutation<T extends PayloadModel>({
   onError,
   onSuccess,
   reload,
+  showLoader = true,
   showNotification = true,
 }: UseMutationInterface<T>): UseFetchPayload<T> {
   const { showErrorNotification, showSuccessNotification } = useNotificationsContext();
@@ -113,9 +115,15 @@ export function useMutation<T extends PayloadModel>({
   const [handler, { data, error, loading }] = useFetch<T>({
     input,
     reload,
-    onFetchStart: showLoading,
+    onFetchStart: () => {
+      if (showLoader) {
+        showLoading();
+      }
+    },
     onError: (payload) => {
-      hideLoading();
+      if (showLoader) {
+        hideLoading();
+      }
       if (showNotification) {
         showErrorNotification({
           title: payload?.message,
@@ -126,7 +134,9 @@ export function useMutation<T extends PayloadModel>({
       }
     },
     onSuccess: (payload) => {
-      hideLoading();
+      if (showLoader) {
+        hideLoading();
+      }
       if (showNotification) {
         showSuccessNotification({
           title: payload.message,
@@ -155,6 +165,7 @@ interface UseMutationHandlerInputInterface<TPayload extends PayloadModel> {
   onSuccess?: (payload: TPayload) => void;
   onError?: (payload?: TPayload) => void;
   showNotification?: boolean;
+  showLoader?: boolean;
 }
 
 export function useMutationHandler<TPayload extends PayloadModel, TArgs>({
@@ -164,6 +175,7 @@ export function useMutationHandler<TPayload extends PayloadModel, TArgs>({
   onSuccess,
   onError,
   showNotification,
+  showLoader,
 }: UseMutationHandlerInputInterface<TPayload>): UseMutationConsumerPayload<TPayload, TArgs> {
   const [handle, payload] = useMutation<TPayload>({
     input: path,
@@ -171,6 +183,7 @@ export function useMutationHandler<TPayload extends PayloadModel, TArgs>({
     onSuccess,
     onError,
     showNotification,
+    showLoader,
   });
 
   const handler = React.useCallback(

@@ -10,13 +10,8 @@ import WpImage from '../../components/WpImage';
 import { useConfigContext } from '../../context/configContext';
 import { useNotificationsContext } from '../../context/notificationsContext';
 import { useSiteContext } from '../../context/siteContext';
-import { CartInterface } from '../../db/uiInterfaces';
 import { noNaN } from '../../lib/numbers';
 import ProductSnippetPrice from '../snippet/ProductSnippetPrice';
-
-interface CartDropdownInterface {
-  cart: CartInterface;
-}
 
 const cartDropdownCssVars = {
   '--framePadding': '1.5rem',
@@ -27,14 +22,19 @@ const productClassName = 'relative grid grid-cols-8 pb-16 px-2 gap-4';
 const productImageClassName = 'relative col-span-2 flex items-start justify-center';
 const productImageHolderClassName = 'w-full';
 const productContentClassName = 'relative col-span-6';
+const minAmount = 1;
 
-const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
+const CartDropdown: React.FC = () => {
+  const { cart } = useSiteContext();
   const router = useRouter();
   const { configs } = useConfigContext();
   const { showErrorNotification } = useNotificationsContext();
-  const { deleteProductFromCart, updateProductInCart, clearCart } = useSiteContext();
+  const { deleteCartProduct, updateCartProduct, clearCart } = useSiteContext();
+  if (!cart) {
+    return null;
+  }
+
   const { productsCount, cartDeliveryProducts, cartBookingProducts, totalPrice } = cart;
-  const minAmount = 1;
 
   return (
     <div
@@ -116,9 +116,9 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
                         onChange={(e) => {
                           const amount = noNaN(e.target.value);
                           if (amount >= minAmount && amount <= noNaN(shopProduct?.available)) {
-                            updateProductInCart({
+                            updateCartProduct({
                               amount,
-                              cartProductId: _id,
+                              cartProductId: `${_id}`,
                             });
                           }
                         }}
@@ -131,8 +131,8 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
                             iconSize={'smaller'}
                             size={'small'}
                             onClick={() => {
-                              deleteProductFromCart({
-                                cartProductId: _id,
+                              deleteCartProduct({
+                                cartProductId: `${_id}`,
                               });
                             }}
                           />
@@ -188,8 +188,8 @@ const CartDropdown: React.FC<CartDropdownInterface> = ({ cart }) => {
                           iconSize={'smaller'}
                           size={'small'}
                           onClick={() => {
-                            deleteProductFromCart({
-                              cartProductId: _id,
+                            deleteCartProduct({
+                              cartProductId: `${_id}`,
                             });
                           }}
                         />

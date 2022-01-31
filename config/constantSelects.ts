@@ -15,6 +15,11 @@ import {
   SECONDARY_LOCALE,
   SUPPLIER_PRICE_VARIANT_CHARGE,
   SUPPLIER_PRICE_VARIANT_DISCOUNT,
+  TASK_STATE_DONE,
+  TASK_STATE_IN_PROGRESS,
+  TASK_STATE_INSPECTION,
+  TASK_STATE_MODERATION,
+  TASK_STATE_PENDING,
 } from './common';
 import { TranslationModel } from '../db/dbModels';
 import { getFieldStringLocale } from '../lib/i18n';
@@ -315,6 +320,45 @@ export const ISO_LANGUAGES = [
     name: 'Польский',
     slug: 'pl',
     nativeName: 'pl',
+  },
+];
+
+// task states
+export const TASK_STATE_OPTIONS: ConstantOptionsType = [
+  {
+    _id: TASK_STATE_PENDING,
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'В ожидании',
+      [SECONDARY_LOCALE]: 'Pending',
+    },
+  },
+  {
+    _id: TASK_STATE_IN_PROGRESS,
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'В процессе',
+      [SECONDARY_LOCALE]: 'In progress',
+    },
+  },
+  {
+    _id: TASK_STATE_INSPECTION,
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'У инстпектора',
+      [SECONDARY_LOCALE]: 'Inspection',
+    },
+  },
+  {
+    _id: TASK_STATE_MODERATION,
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'На модерации',
+      [SECONDARY_LOCALE]: 'Moderation',
+    },
+  },
+  {
+    _id: TASK_STATE_DONE,
+    nameI18n: {
+      [DEFAULT_LOCALE]: 'Выполнена',
+      [SECONDARY_LOCALE]: 'Done',
+    },
   },
 ];
 

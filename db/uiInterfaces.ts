@@ -841,14 +841,12 @@ export interface SsrConfigsInterface {
   buyButtonText: string;
 }
 
-export interface NextContextInterface {
-  req: NextApiRequest;
-  res: NextApiResponse;
-}
-
 export interface DaoPropsInterface<TInput> {
   input?: TInput;
-  context: NextContextInterface;
+  context: {
+    req: NextApiRequest;
+    res: NextApiResponse;
+  };
 }
 
 export interface ShopProductsAggregationInterface {

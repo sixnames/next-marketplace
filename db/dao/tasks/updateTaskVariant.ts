@@ -5,7 +5,7 @@ import {
   getRequestParams,
   getResolverValidationSchema,
 } from '../../../lib/sessionHelpers';
-import { updateTaskVariantSchema } from '../../../validation/taskVariantSchema';
+import { updateTaskVariantSchema } from '../../../validation/taskSchema';
 import { COL_TASK_VARIANTS } from '../../collectionNames';
 import { TaskVariantModel, TaskVariantPayloadModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';

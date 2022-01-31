@@ -74,6 +74,11 @@ const CmsCompanyLayout: React.FC<CmsCompanyLayoutInterface> = ({
         path: links.userCategories,
       },
       {
+        name: 'Задачи',
+        testId: 'company-tasks',
+        path: links.tasks.parentLink,
+      },
+      {
         name: 'Типы задач',
         testId: 'company-task-variants',
         path: links.taskVariants.parentLink,

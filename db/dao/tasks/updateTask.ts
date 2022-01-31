@@ -40,7 +40,7 @@ export async function updateTask({
       };
     }
 
-    // create
+    // update
     const createdTaskResult = await tasksCollection.findOneAndUpdate(
       {
         _id: new ObjectId(input._id),
@@ -73,7 +73,7 @@ export async function updateTask({
       payload: createdTask,
     };
   } catch (e) {
-    console.log('createTask', e);
+    console.log('updateTask', e);
     return {
       success: false,
       message: getResolverErrorMessage(e),

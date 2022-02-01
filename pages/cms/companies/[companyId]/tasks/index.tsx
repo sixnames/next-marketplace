@@ -1,16 +1,16 @@
 import { ObjectId } from 'mongodb';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import * as React from 'react';
-import UpdateTaskVariantForm, {
-  UpdateTaskVariantFormInterface,
-} from '../../../../../components/console/UpdateTaskVariantForm';
+import ConsoleTasksList, {
+  ConsoleTasksListInterface,
+} from '../../../../../components/console/ConsoleTasksList';
+import Inner from '../../../../../components/Inner';
 import { COL_COMPANIES } from '../../../../../db/collectionNames';
-import { getCompanyTaskVariantSsr } from '../../../../../db/dao/ssr/getCompanyTaskVariantSsr';
+import { getCompanyTasksListSsr } from '../../../../../db/dao/ssr/getCompanyTasksListSsr';
 import { getDatabase } from '../../../../../db/mongodb';
 import { AppContentWrapperBreadCrumbs, CompanyInterface } from '../../../../../db/uiInterfaces';
 import CmsCompanyLayout from '../../../../../layout/cms/CmsCompanyLayout';
 import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
-import { getFieldStringLocale } from '../../../../../lib/i18n';
 import { getCmsCompanyLinks } from '../../../../../lib/linkUtils';
 import {
   castDbData,
@@ -18,19 +18,21 @@ import {
   GetAppInitialDataPropsInterface,
 } from '../../../../../lib/ssrUtils';
 
-interface CreateTaskVariantDetailsConsumerInterface extends UpdateTaskVariantFormInterface {
+const pageTitle = 'Задачи';
+interface TasksListConsumerInterface extends ConsoleTasksListInterface {
   pageCompany: CompanyInterface;
 }
 
-const CreateTaskVariantDetailsConsumer: React.FC<CreateTaskVariantDetailsConsumerInterface> = ({
+const TasksListConsumer: React.FC<TasksListConsumerInterface> = ({
+  basePath,
   pageCompany,
-  taskVariant,
+  tasks,
 }) => {
   const links = getCmsCompanyLinks({
     companyId: pageCompany._id,
   });
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
-    currentPageName: `${taskVariant.name}`,
+    currentPageName: pageTitle,
     config: [
       {
         name: 'Компании',
@@ -40,38 +42,38 @@ const CreateTaskVariantDetailsConsumer: React.FC<CreateTaskVariantDetailsConsume
         name: `${pageCompany?.name}`,
         href: links.root,
       },
-      {
-        name: 'Типы задач',
-        href: links.taskVariants.parentLink,
-      },
     ],
   };
+
   return (
     <CmsCompanyLayout company={pageCompany} breadcrumbs={breadcrumbs}>
-      <UpdateTaskVariantForm taskVariant={taskVariant} />
+      <Inner>
+        <ConsoleTasksList basePath={basePath} tasks={tasks} />
+      </Inner>
     </CmsCompanyLayout>
   );
 };
 
-interface CreateTaskVariantDetailsPageInterface
+interface TasksListPageInterface
   extends GetAppInitialDataPropsInterface,
-    CreateTaskVariantDetailsConsumerInterface {}
+    TasksListConsumerInterface {}
 
-const CreateTaskVariantDetailsPage: React.FC<CreateTaskVariantDetailsPageInterface> = ({
+const TasksListPage: React.FC<TasksListPageInterface> = ({
   layoutProps,
   pageCompany,
-  taskVariant,
+  tasks,
+  basePath,
 }) => {
   return (
-    <ConsoleLayout {...layoutProps}>
-      <CreateTaskVariantDetailsConsumer pageCompany={pageCompany} taskVariant={taskVariant} />
+    <ConsoleLayout {...layoutProps} title={pageTitle}>
+      <TasksListConsumer tasks={tasks} basePath={basePath} pageCompany={pageCompany} />
     </ConsoleLayout>
   );
 };
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<CreateTaskVariantDetailsPageInterface>> => {
+): Promise<GetServerSidePropsResult<TasksListPageInterface>> => {
   const { props } = await getAppInitialData({ context });
   if (!props) {
     return {
@@ -97,27 +99,29 @@ export const getServerSideProps = async (
     };
   }
 
-  const payload = await getCompanyTaskVariantSsr({
+  const payload = await getCompanyTasksListSsr({
     locale: props.sessionLocale,
-    taskVariantId: `${context.query.taskVariantId}`,
+    companySlug: companyResult.slug,
   });
+
   if (!payload) {
     return {
       notFound: true,
     };
   }
-  const taskVariant = {
-    ...payload,
-    name: getFieldStringLocale(payload.nameI18n, props.sessionLocale),
-  };
+
+  const links = getCmsCompanyLinks({
+    companyId: companyResult._id,
+  });
 
   return {
     props: {
       ...props,
+      tasks: castDbData(payload),
       pageCompany: castDbData(companyResult),
-      taskVariant: castDbData(taskVariant),
+      basePath: links.root,
     },
   };
 };
 
-export default CreateTaskVariantDetailsPage;
+export default TasksListPage;

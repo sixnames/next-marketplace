@@ -311,7 +311,7 @@ export interface TaskLogInterface extends TaskLogModel {
 
 export interface TaskInterface extends TaskModel {
   variant?: TaskVariantInterface | null;
-  summary: ProductSummaryInterface;
+  product?: ProductSummaryInterface | null;
   executor?: UserInterface | null;
   creator?: UserInterface | null;
   name?: string | null;

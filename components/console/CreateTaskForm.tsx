@@ -27,7 +27,7 @@ const CreateTaskForm: React.FC<CreateTaskFormInterface> = ({
   const [createTaskMutation] = useCreateTask(basePath);
 
   return (
-    <Inner testId={'create-task-variant-page'}>
+    <Inner testId={'create-task-page'}>
       <WpTitle>Создание задачи</WpTitle>
 
       <Formik<CreateTaskInputInterface>

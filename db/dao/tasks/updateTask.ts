@@ -2,13 +2,14 @@ import { ObjectId } from 'mongodb';
 import getResolverErrorMessage from '../../../lib/getResolverErrorMessage';
 import { getOperationPermission, getRequestParams } from '../../../lib/sessionHelpers';
 import { COL_TASKS } from '../../collectionNames';
-import { TaskModel, TaskPayloadModel } from '../../dbModels';
+import { TaskModel, TaskPayloadModel, TaskStateModel } from '../../dbModels';
 import { getDatabase } from '../../mongodb';
 import { DaoPropsInterface } from '../../uiInterfaces';
 import { CreateTaskInputInterface } from './createTask';
 
 export interface UpdateTaskInputInterface extends CreateTaskInputInterface {
   _id: string;
+  stateEnum: TaskStateModel;
 }
 
 export async function updateTask({
@@ -50,8 +51,8 @@ export async function updateTask({
           nameI18n: input.nameI18n,
           stateEnum: input.stateEnum,
           variantId: input.variantId ? new ObjectId(input.variantId) : undefined,
-          executorId: input.executorId ? new ObjectId(input.executorId) : undefined,
-          productId: input.productId ? new ObjectId(input.productId) : undefined,
+          executorId: input.executor ? new ObjectId(input.executor._id) : undefined,
+          productId: input.product ? new ObjectId(input.product._id) : undefined,
           updatedAt: new Date(),
         },
       },

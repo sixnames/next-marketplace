@@ -5,6 +5,7 @@ import { phoneToRaw, phoneToReadable } from '../../../lib/phoneUtils';
 import { COL_TASK_VARIANTS, COL_TASKS, COL_USERS } from '../../collectionNames';
 import { getDatabase } from '../../mongodb';
 import { TaskInterface } from '../../uiInterfaces';
+import { getTaskNestedFieldsPipeline } from './getCompanyTaskSsr';
 
 export interface GetCompanyTaskVariantsListSsr {
   companySlug: string;
@@ -34,54 +35,21 @@ export async function getCompanyTasksListSsr({
           $lookup: {
             as: 'variant',
             from: COL_TASK_VARIANTS,
-            let: {
-              variantId: '$variantId',
-            },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $eq: ['$_id', '$$variantId'],
-                  },
-                },
-              },
-            ],
+            ...getTaskNestedFieldsPipeline('variantId'),
           },
         },
         {
           $lookup: {
             as: 'creator',
             from: COL_USERS,
-            let: {
-              createdById: '$createdById',
-            },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $eq: ['$_id', '$$createdById'],
-                  },
-                },
-              },
-            ],
+            ...getTaskNestedFieldsPipeline('createdById'),
           },
         },
         {
           $lookup: {
             as: 'executor',
             from: COL_USERS,
-            let: {
-              executorId: '$executorId',
-            },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $eq: ['$_id', '$$executorId'],
-                  },
-                },
-              },
-            ],
+            ...getTaskNestedFieldsPipeline('executorId'),
           },
         },
         {
@@ -106,7 +74,8 @@ export async function getCompanyTasksListSsr({
             name: getFieldStringLocale(taskVariant.variant.nameI18n, locale),
           }
         : null;
-      const name = variant ? variant.name : getFieldStringLocale(taskVariant.nameI18n, locale);
+      const originalName = getFieldStringLocale(taskVariant.nameI18n, locale);
+      const name = originalName || variant?.name;
 
       return {
         ...taskVariant,

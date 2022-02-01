@@ -59,16 +59,16 @@ async function updateProds() {
     }, []);
 
     console.log('allVariants', allVariants.length);
-    await summariesCollection.updateMany(
+    /*await summariesCollection.updateMany(
       {},
       {
         $set: {
           variants: [],
         },
       },
-    );
+    );*/
 
-    for await (const variant of allVariants) {
+    /*for await (const variant of allVariants) {
       const summaryIds = variant.products.map(({ productId }) => productId);
       await summariesCollection.updateMany(
         {
@@ -82,7 +82,7 @@ async function updateProds() {
           },
         },
       );
-    }
+    }*/
 
     // disconnect form db
     await client.close();

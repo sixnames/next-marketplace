@@ -32,7 +32,7 @@ export interface UsersSearchModalControlsInterface
 }
 
 export interface UsersSearchModalInterface {
-  testId?: string;
+  testId?: string | number | null;
   controlsColumn?: WpTableColumn<UserInterface>;
 }
 
@@ -105,7 +105,7 @@ const UsersSearchModal: React.FC<UsersSearchModalInterface> = ({
   ];
 
   return (
-    <ModalFrame testId={testId} size={'wide'}>
+    <ModalFrame testId={`${testId}`} size={'wide'}>
       <ModalTitle>Выберите пользователя</ModalTitle>
 
       <FormikIndividualSearch

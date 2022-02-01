@@ -2,10 +2,12 @@ import { useRouter } from 'next/router';
 import * as React from 'react';
 import { get } from 'lodash';
 import { CartModalInterface } from '../components/Modal/CartModal';
-import { REQUEST_METHOD_POST, ROUTE_THANK_YOU } from '../config/common';
 import { CART_MODAL } from '../config/modalVariants';
+import { AddCartProductInputInterface } from '../db/dao/cart/addCartProduct';
+import { DeleteCartProductInputInterface } from '../db/dao/cart/deleteCartProduct';
+import { UpdateCartProductInputInterface } from '../db/dao/cart/updateCartProduct';
 import { CheckGiftCertificateAvailabilityInputInterface } from '../db/dao/giftCertificate/checkGiftCertificateAvailability';
-import { MakeAnOrderInputInterface, MakeAnOrderPayloadModel } from '../db/dao/orders/makeAnOrder';
+import { MakeAnOrderInputInterface } from '../db/dao/orders/makeAnOrder';
 import { CheckPromoCodeAvailabilityInputInterface } from '../db/dao/promo/checkPromoCodeAvailability';
 import { SessionLogMakeAnOrderProductEventInputModel } from '../db/dao/sessionLogs/setSessionLog';
 import { CartProductsFieldNameType, GiftCertificateModel } from '../db/dbModels';
@@ -16,20 +18,13 @@ import {
   RubricInterface,
 } from '../db/uiInterfaces';
 import {
-  AddProductToCartInput,
-  AddShoplessProductToCartInput,
-  AddShopToCartProductInput,
-  DeleteProductFromCartInput,
-  UpdateProductInCartInput,
-  useAddProductToCartMutation,
-  useAddShoplessProductToCartMutation,
-  useAddShopToCartProductMutation,
-  useClearCartMutation,
-  useDeleteProductFromCartMutation,
-  useRepeatAnOrderMutation,
-  useUpdateProductInCartMutation,
-} from '../generated/apolloComponents';
-import { useMutation } from '../hooks/mutations/useFetch';
+  cartApiRouteBasePath,
+  useAddCartProduct,
+  useDeleteCartProduct,
+  useMakeAnOrder,
+  useRepeatOrder,
+  useUpdateCartProduct,
+} from '../hooks/mutations/useCartMutations';
 import { useCheckGiftCertificateMutation } from '../hooks/mutations/useGiftCertificateMutations';
 import { useCheckPromoCode } from '../hooks/mutations/usePromoMutations';
 import { useSetSessionLogHandler } from '../hooks/mutations/useSessionLogMutations';
@@ -57,13 +52,11 @@ interface CheckPromoCodeInputInterface
   onSuccess: (promoCode: PromoCodeInterface) => void;
 }
 
-interface SiteContextInterface extends SiteContextStateInterface {
+export interface SiteContextInterface extends SiteContextStateInterface {
   navRubrics: RubricInterface[];
-  addProductToCart: (input: AddProductToCartInput) => void;
-  addShoplessProductToCart: (input: AddShoplessProductToCartInput) => void;
-  addShopToCartProduct: (input: AddShopToCartProductInput) => void;
-  updateProductInCart: (input: UpdateProductInCartInput) => void;
-  deleteProductFromCart: (input: DeleteProductFromCartInput) => void;
+  addCartProduct: (input: AddCartProductInputInterface) => void;
+  updateCartProduct: (input: UpdateCartProductInputInterface) => void;
+  deleteCartProduct: (input: DeleteCartProductInputInterface) => void;
   checkGiftCertificate: (input: CheckGiftCertificateInputInterface) => void;
   checkPromoCode: (input: CheckPromoCodeInputInterface) => void;
   getShopProductInCartCount: (shopProductId: string, allowDelivery: boolean) => number;
@@ -77,11 +70,9 @@ const SiteContext = React.createContext<SiteContextInterface>({
   navRubrics: [],
   loadingCart: true,
   cart: null,
-  addProductToCart: () => undefined,
-  addShoplessProductToCart: () => undefined,
-  addShopToCartProduct: () => undefined,
-  updateProductInCart: () => undefined,
-  deleteProductFromCart: () => undefined,
+  addCartProduct: () => undefined,
+  updateCartProduct: () => undefined,
+  deleteCartProduct: () => undefined,
   getShopProductInCartCount: () => 0,
   makeAnOrder: () => undefined,
   repeatAnOrder: () => undefined,
@@ -105,7 +96,7 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
   const router = useRouter();
   const logHandler = useSetSessionLogHandler();
   const { showModal, showLoading, hideLoading } = useAppContext();
-  const { showErrorNotification, showSuccessNotification } = useNotificationsContext();
+  const { showSuccessNotification } = useNotificationsContext();
   const [state, setState] = React.useState<SiteContextStateInterface>({
     loadingCart: false,
     cart: null,
@@ -119,7 +110,11 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
           loadingCart: true,
         };
       });
-      fetch(`/api/cart/session-cart?${domainCompany ? `companyId=${domainCompany._id}` : ''}`)
+      fetch(
+        `${cartApiRouteBasePath}/session-cart?${
+          domainCompany ? `companyId=${domainCompany._id}` : ''
+        }`,
+      )
         .then((res) => res.json())
         .then((data) => {
           setState((prevState) => {
@@ -130,12 +125,12 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
             };
           });
           hideLoading();
-          if (callback) {
+          if (callback && typeof callback === 'function') {
             callback();
           }
         })
         .catch((e) => {
-          console.log(e);
+          console.log('refetchCartHandler', e);
           setState((prevState) => {
             return {
               ...prevState,
@@ -154,76 +149,36 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
     }
   }, [refetchCartHandler, state]);
 
-  const [addProductToCartMutation] = useAddProductToCartMutation({
-    onCompleted: () => {
-      refetchCartHandler(() => {
-        showModal<CartModalInterface>({
-          variant: CART_MODAL,
-        });
+  const [addCartProductMutation] = useAddCartProduct(() => {
+    refetchCartHandler(() => {
+      showModal<CartModalInterface>({
+        variant: CART_MODAL,
       });
-    },
+    });
   });
 
-  const [addShoplessProductToCartMutation] = useAddShoplessProductToCartMutation({
-    onCompleted: () => {
-      refetchCartHandler(() => {
-        showModal<CartModalInterface>({
-          variant: CART_MODAL,
-        });
+  const [updateProductInCartMutation] = useUpdateCartProduct(() => {
+    refetchCartHandler();
+  });
+  const [deleteCartProductMutation] = useDeleteCartProduct((payload) => {
+    refetchCartHandler(() => {
+      showSuccessNotification(payload);
+    });
+  });
+
+  const [makeAnOrderMutation] = useMakeAnOrder(() => {
+    refetchCartHandler();
+  });
+
+  const [repeatAnOrderMutation] = useRepeatOrder(() => {
+    refetchCartHandler(() => {
+      showModal<CartModalInterface>({
+        variant: CART_MODAL,
+        props: {
+          title: `Товары из заказа добавлены в корзину`,
+        },
       });
-    },
-  });
-
-  const [addShopToCartProductMutation] = useAddShopToCartProductMutation({
-    onCompleted: () => {
-      refetchCartHandler();
-    },
-  });
-
-  const [updateProductInCartMutation] = useUpdateProductInCartMutation({
-    onCompleted: () => {
-      refetchCartHandler();
-    },
-  });
-
-  const [deleteProductFromCartMutation] = useDeleteProductFromCartMutation({
-    onCompleted: () => {
-      refetchCartHandler();
-    },
-  });
-
-  const [clearCartMutation] = useClearCartMutation({
-    onCompleted: ({ clearCart }) => {
-      refetchCartHandler(() => {
-        showSuccessNotification(clearCart);
-      });
-    },
-  });
-
-  const [makeAnOrderMutation] = useMutation<MakeAnOrderPayloadModel>({
-    input: '/api/order/make',
-    onSuccess: (payload) => {
-      if (payload.success) {
-        refetchCartHandler();
-        router.push(ROUTE_THANK_YOU).catch(console.log);
-        return;
-      }
-      hideLoading();
-      showErrorNotification({ title: payload.message });
-    },
-  });
-
-  const [repeatAnOrderMutation] = useRepeatAnOrderMutation({
-    onCompleted: () => {
-      refetchCartHandler(() => {
-        showModal<CartModalInterface>({
-          variant: CART_MODAL,
-          props: {
-            title: `Товары из заказа добавлены в корзину`,
-          },
-        });
-      });
-    },
+    });
   });
 
   // gift certificate
@@ -273,76 +228,30 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
     [checkPromoCodeMutation, refetchCartHandler, sessionUser],
   );
 
-  const addProductToCart = React.useCallback(
-    (input: AddProductToCartInput) => {
-      addProductToCartMutation({
-        variables: {
-          input,
-        },
-      }).catch(() => {
-        showErrorNotification();
-      });
+  const addCartProduct = React.useCallback(
+    (input: AddCartProductInputInterface) => {
+      addCartProductMutation(input).catch(console.log);
     },
-    [addProductToCartMutation, showErrorNotification],
+    [addCartProductMutation],
   );
 
-  const addShoplessProductToCart = React.useCallback(
-    (input: AddShoplessProductToCartInput) => {
-      addShoplessProductToCartMutation({
-        variables: {
-          input,
-        },
-      }).catch(() => {
-        showErrorNotification();
-      });
+  const updateCartProduct = React.useCallback(
+    (input: UpdateCartProductInputInterface) => {
+      updateProductInCartMutation(input).catch(console.log);
     },
-    [addShoplessProductToCartMutation, showErrorNotification],
+    [updateProductInCartMutation],
   );
 
-  const addShopToCartProduct = React.useCallback(
-    (input: AddShopToCartProductInput) => {
-      addShopToCartProductMutation({
-        variables: {
-          input,
-        },
-      }).catch(() => {
-        showErrorNotification();
-      });
+  const deleteCartProduct = React.useCallback(
+    (input: DeleteCartProductInputInterface) => {
+      deleteCartProductMutation(input).catch(console.log);
     },
-    [addShopToCartProductMutation, showErrorNotification],
-  );
-
-  const updateProductInCart = React.useCallback(
-    (input: UpdateProductInCartInput) => {
-      updateProductInCartMutation({
-        variables: {
-          input,
-        },
-      }).catch(() => {
-        showErrorNotification();
-      });
-    },
-    [showErrorNotification, updateProductInCartMutation],
-  );
-
-  const deleteProductFromCart = React.useCallback(
-    (input: DeleteProductFromCartInput) => {
-      deleteProductFromCartMutation({
-        variables: {
-          input,
-        },
-      }).catch(() => {
-        showErrorNotification();
-      });
-    },
-    [deleteProductFromCartMutation, showErrorNotification],
+    [deleteCartProductMutation],
   );
 
   const clearCart = React.useCallback(() => {
-    clearCartMutation().catch(() => {
-      showErrorNotification();
-    });
-  }, [clearCartMutation, showErrorNotification]);
+    deleteCartProductMutation({ deleteAll: true }).catch(console.log);
+  }, [deleteCartProductMutation]);
 
   const makeAnOrder = React.useCallback(
     (input: MakeAnOrderInputInterface) => {
@@ -373,39 +282,18 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
       }
 
       // make and order
-      makeAnOrderMutation({
-        method: REQUEST_METHOD_POST,
-        body: JSON.stringify(input),
-      }).catch(() => {
-        hideLoading();
-        showErrorNotification();
-      });
+      makeAnOrderMutation(input).catch(console.log);
     },
-    [
-      hideLoading,
-      logHandler,
-      makeAnOrderMutation,
-      router.asPath,
-      showErrorNotification,
-      showLoading,
-      state.cart,
-    ],
+    [logHandler, makeAnOrderMutation, router.asPath, showLoading, state.cart],
   );
 
   const repeatAnOrder = React.useCallback(
     (_id: string) => {
       repeatAnOrderMutation({
-        variables: {
-          input: {
-            orderId: _id,
-          },
-        },
-      }).catch(() => {
-        hideLoading();
-        showErrorNotification();
-      });
+        orderId: _id,
+      }).catch(console.log);
     },
-    [hideLoading, repeatAnOrderMutation, showErrorNotification],
+    [repeatAnOrderMutation],
   );
 
   const getShopProductInCartCount = React.useCallback(
@@ -428,11 +316,9 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
   const initialValue = React.useMemo(() => {
     return {
       navRubrics,
-      addProductToCart,
-      addShoplessProductToCart,
-      addShopToCartProduct,
-      updateProductInCart,
-      deleteProductFromCart,
+      addCartProduct,
+      updateCartProduct,
+      deleteCartProduct,
       clearCart,
       makeAnOrder,
       repeatAnOrder,
@@ -444,11 +330,9 @@ const SiteContextProvider: React.FC<SiteContextProviderInterface> = ({
     };
   }, [
     navRubrics,
-    addProductToCart,
-    addShoplessProductToCart,
-    addShopToCartProduct,
-    updateProductInCart,
-    deleteProductFromCart,
+    addCartProduct,
+    updateCartProduct,
+    deleteCartProduct,
     clearCart,
     makeAnOrder,
     repeatAnOrder,

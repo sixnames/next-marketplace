@@ -2,7 +2,6 @@ export * from './Attribute';
 export * from './AttributesGroup';
 export * from './Brand';
 export * from './BrandCollection';
-export * from './Cart';
 export * from './CatalogueData';
 export * from './Category';
 export * from './CategoryMutations';

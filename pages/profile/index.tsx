@@ -46,7 +46,7 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({
   orderIndex,
   testId,
 }) => {
-  const { addProductToCart, getShopProductInCartCount } = useSiteContext();
+  const { addCartProduct, getShopProductInCartCount } = useSiteContext();
   const { originalName, summary, shopProduct, itemId, price, amount, totalPrice, productId } =
     orderProduct;
   const slug = `${summary?.slug}`;
@@ -119,9 +119,9 @@ const ProfileOrderProduct: React.FC<ProfileOrderProductInterface> = ({
               disabled={isCartButtonDisabled}
               size={'big'}
               onClick={() => {
-                addProductToCart({
+                addCartProduct({
                   amount: addToCartAmount,
-                  productId,
+                  productId: `${productId}`,
                   shopProductId: `${shopProduct?._id}`,
                 });
               }}

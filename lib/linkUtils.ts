@@ -471,7 +471,7 @@ export interface GetConsoleTaskLinksInterface {
 
 export function getConsoleTaskLinks({ taskId, basePath }: GetConsoleTaskLinksInterface) {
   const parentLink = `${basePath}/tasks`;
-  const root = `${parentLink}/${taskId}`;
+  const root = `${parentLink}/details/${taskId}`;
 
   return {
     parentLink,

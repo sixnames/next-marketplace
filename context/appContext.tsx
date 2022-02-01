@@ -81,7 +81,7 @@ const AppContextProvider: React.FC<AppContextProviderInterface> = ({
           });
         });
     }
-  }, [state.ipInfo]);
+  }, [configs.ipRegistryApiKey, state.ipInfo]);
 
   React.useEffect(() => {
     const inStorage = window.localStorage.getItem(ADULT_KEY);

@@ -17,7 +17,7 @@ const ProductAddToCartButton: React.FC<ProductAddToCartButtonInterface> = ({
   ...props
 }) => {
   const router = useRouter();
-  const { addShoplessProductToCart, addProductToCart } = useSiteContext();
+  const { addCartProduct } = useSiteContext();
   const logHandler = useSetSessionLogHandler();
   const inCart = useIsInCart({
     productId,
@@ -36,15 +36,15 @@ const ProductAddToCartButton: React.FC<ProductAddToCartButtonInterface> = ({
       frameClassName={frameClassName || 'w-auto'}
       onClick={() => {
         if (shopProductIds && shopProductIds.length < 2) {
-          addProductToCart({
+          addCartProduct({
             amount: 1,
-            productId: productId,
+            productId: `${productId}`,
             shopProductId: `${shopProductIds[0]}`,
           });
         } else {
-          addShoplessProductToCart({
+          addCartProduct({
             amount: 1,
-            productId: productId,
+            productId: `${productId}`,
           });
         }
         logHandler({

@@ -20,7 +20,7 @@ interface CartShopInterface {
 
 const CartShop: React.FC<CartShopInterface> = ({ shopProduct, testId, cartProductId }) => {
   const { showModal } = useAppContext();
-  const { addShopToCartProduct } = useSiteContext();
+  const { updateCartProduct } = useSiteContext();
   const marker = useShopMarker(shopProduct.shop);
   const { shop, oldPrice, price, discountedPercent, available } = shopProduct;
   if (!shop) {
@@ -108,9 +108,9 @@ const CartShop: React.FC<CartShopInterface> = ({ shopProduct, testId, cartProduc
           <WpButton
             testId={`cart-shops-${testId}-add-to-cart`}
             onClick={() => {
-              addShopToCartProduct({
-                cartProductId,
-                shopProductId: shopProduct._id,
+              updateCartProduct({
+                cartProductId: `${cartProductId}`,
+                shopProductId: `${shopProduct._id}`,
               });
             }}
           >

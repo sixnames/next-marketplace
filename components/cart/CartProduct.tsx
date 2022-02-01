@@ -38,7 +38,7 @@ const CartProductFrame: React.FC<CartProductFrameInterface> = ({
   slug,
   defaultView,
 }) => {
-  const { deleteProductFromCart } = useSiteContext();
+  const { deleteCartProduct } = useSiteContext();
 
   return (
     <div className='space-y-4'>
@@ -79,7 +79,7 @@ const CartProductFrame: React.FC<CartProductFrameInterface> = ({
           iconSize={'small'}
           className='absolute top-0 right-0 z-30'
           onClick={() => {
-            deleteProductFromCart({
+            deleteCartProduct({
               cartProductId,
             });
           }}
@@ -195,7 +195,7 @@ export const CartProduct: React.FC<CartProductPropsWithAmountInterface> = ({
   shopIndex,
 }) => {
   const { values } = useFormikContext();
-  const { updateProductInCart } = useSiteContext();
+  const { updateCartProduct } = useSiteContext();
   const { shopProduct, _id } = cartProduct;
   const minAmount = 1;
   const deliveryVariant = get(values, `shopConfigs[${shopIndex}].deliveryVariant`);
@@ -262,9 +262,9 @@ export const CartProduct: React.FC<CartProductPropsWithAmountInterface> = ({
             minusTestId={`cart-product-${testId}-minus`}
             frameClassName='w-[var(--buttonMinWidth)]'
             onChange={(e) => {
-              updateProductInCart({
+              updateCartProduct({
                 amount: noNaN(e.target.value),
-                cartProductId: _id,
+                cartProductId: `${_id}`,
               });
             }}
           />

@@ -15,11 +15,11 @@ import {
   GetAppInitialDataPropsInterface,
 } from '../../../lib/ssrUtils';
 
-interface CreateTaskVariantDetailsConsumerInterface extends UpdateTaskVariantFormInterface {
+interface TaskVariantDetailsConsumerInterface extends UpdateTaskVariantFormInterface {
   basePath: string;
 }
 
-const CreateTaskVariantDetailsConsumer: React.FC<CreateTaskVariantDetailsConsumerInterface> = ({
+const TaskVariantDetailsConsumer: React.FC<TaskVariantDetailsConsumerInterface> = ({
   basePath,
   taskVariant,
 }) => {
@@ -42,25 +42,25 @@ const CreateTaskVariantDetailsConsumer: React.FC<CreateTaskVariantDetailsConsume
   );
 };
 
-interface CreateTaskVariantDetailsPageInterface
+interface TaskVariantDetailsPageInterface
   extends GetAppInitialDataPropsInterface,
-    CreateTaskVariantDetailsConsumerInterface {}
+    TaskVariantDetailsConsumerInterface {}
 
-const CreateTaskVariantDetailsPage: React.FC<CreateTaskVariantDetailsPageInterface> = ({
+const TaskVariantDetailsPage: React.FC<TaskVariantDetailsPageInterface> = ({
   layoutProps,
   basePath,
   taskVariant,
 }) => {
   return (
     <ConsoleLayout {...layoutProps}>
-      <CreateTaskVariantDetailsConsumer basePath={basePath} taskVariant={taskVariant} />
+      <TaskVariantDetailsConsumer basePath={basePath} taskVariant={taskVariant} />
     </ConsoleLayout>
   );
 };
 
 export const getServerSideProps = async (
   context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<CreateTaskVariantDetailsPageInterface>> => {
+): Promise<GetServerSidePropsResult<TaskVariantDetailsPageInterface>> => {
   const { props } = await getAppInitialData({ context });
   if (!props) {
     return {
@@ -92,4 +92,4 @@ export const getServerSideProps = async (
   };
 };
 
-export default CreateTaskVariantDetailsPage;
+export default TaskVariantDetailsPage;

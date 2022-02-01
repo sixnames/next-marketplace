@@ -57,12 +57,6 @@ export type AddOptionToGroupInput = {
   gender?: Maybe<Gender>;
 };
 
-export type AddProductToCartInput = {
-  productId: Scalars['ObjectId'];
-  shopProductId: Scalars['ObjectId'];
-  amount: Scalars['Int'];
-};
-
 export type AddProductToShopInput = {
   shopId: Scalars['ObjectId'];
   productId: Scalars['ObjectId'];
@@ -78,11 +72,6 @@ export type AddShopProductSupplierInput = {
   variant: SupplierPriceVariant;
 };
 
-export type AddShopToCartProductInput = {
-  cartProductId: Scalars['ObjectId'];
-  shopProductId: Scalars['ObjectId'];
-};
-
 export type AddShopToCompanyInput = {
   companyId: Scalars['ObjectId'];
   name: Scalars['String'];
@@ -90,11 +79,6 @@ export type AddShopToCompanyInput = {
   license?: Maybe<Scalars['String']>;
   contacts: ContactsInput;
   address: AddressInput;
-};
-
-export type AddShoplessProductToCartInput = {
-  productId: Scalars['ObjectId'];
-  amount: Scalars['Int'];
 };
 
 export type Address = {
@@ -263,28 +247,6 @@ export type BrandsPaginationPayload = PaginationPayload & {
   hasPrevPage: Scalars['Boolean'];
   hasNextPage: Scalars['Boolean'];
   docs: Array<Brand>;
-};
-
-export type Cart = {
-  __typename?: 'Cart';
-  _id: Scalars['ObjectId'];
-  cartDeliveryProducts: Array<CartProduct>;
-  cartBookingProducts: Array<CartProduct>;
-};
-
-export type CartPayload = {
-  __typename?: 'CartPayload';
-  success: Scalars['Boolean'];
-  message: Scalars['String'];
-};
-
-export type CartProduct = Base & {
-  __typename?: 'CartProduct';
-  _id: Scalars['ObjectId'];
-  itemId: Scalars['String'];
-  amount: Scalars['Int'];
-  shopProductId?: Maybe<Scalars['ObjectId']>;
-  productId?: Maybe<Scalars['ObjectId']>;
 };
 
 export type CatalogueAdditionalOptionsInput = {
@@ -641,10 +603,6 @@ export type DeleteOptionFromGroupInput = {
   optionsGroupId: Scalars['ObjectId'];
 };
 
-export type DeleteProductFromCartInput = {
-  cartProductId: Scalars['ObjectId'];
-};
-
 export type DeleteProductFromCategoryInput = {
   categoryId: Scalars['ObjectId'];
   productId: Scalars['ObjectId'];
@@ -803,20 +761,6 @@ export type Mutation = {
   updateCollectionInBrand: BrandPayload;
   /** Should delete brand collection from brand */
   deleteCollectionFromBrand: BrandPayload;
-  /** Should add product to the cart or should increase product amount if already exist in cart */
-  addProductToCart: CartPayload;
-  /** Should add shopless product to the cart or should increase product amount if already exist in cart */
-  addShoplessProductToCart: CartPayload;
-  /** Should add shop to the cart product */
-  addShopToCartProduct: CartPayload;
-  /** Should update cart product amount */
-  updateProductInCart: CartPayload;
-  /** Should delete product from cart */
-  deleteProductFromCart: CartPayload;
-  /** Should delete all products from cart */
-  clearCart: CartPayload;
-  /** Should add all products to the cart from user's old order */
-  repeatOrder: CartPayload;
   /** Should update catalogue counters */
   updateCatalogueCounters: Scalars['Boolean'];
   /** Should create category */
@@ -1004,36 +948,6 @@ export type MutationUpdateCollectionInBrandArgs = {
 
 export type MutationDeleteCollectionFromBrandArgs = {
   input: DeleteCollectionFromBrandInput;
-};
-
-
-export type MutationAddProductToCartArgs = {
-  input: AddProductToCartInput;
-};
-
-
-export type MutationAddShoplessProductToCartArgs = {
-  input: AddShoplessProductToCartInput;
-};
-
-
-export type MutationAddShopToCartProductArgs = {
-  input: AddShopToCartProductInput;
-};
-
-
-export type MutationUpdateProductInCartArgs = {
-  input: UpdateProductInCartInput;
-};
-
-
-export type MutationDeleteProductFromCartArgs = {
-  input: DeleteProductFromCartInput;
-};
-
-
-export type MutationRepeatOrderArgs = {
-  input: RepeatOrderInput;
 };
 
 
@@ -1713,10 +1627,6 @@ export type QueryGetSupplierAlphabetListsArgs = {
   input?: Maybe<SupplierAlphabetInput>;
 };
 
-export type RepeatOrderInput = {
-  orderId: Scalars['ObjectId'];
-};
-
 export type Role = Timestamp & {
   __typename?: 'Role';
   createdAt: Scalars['Date'];
@@ -2174,11 +2084,6 @@ export type UpdateOrderStatusInput = {
   isCanceled: Scalars['Boolean'];
 };
 
-export type UpdateProductInCartInput = {
-  cartProductId: Scalars['ObjectId'];
-  amount: Scalars['Int'];
-};
-
 export type UpdateRoleInput = {
   roleId: Scalars['ObjectId'];
   nameI18n: Scalars['JSONObject'];
@@ -2500,100 +2405,6 @@ export type DeleteCollectionFromBrandMutation = (
   & { deleteCollectionFromBrand: (
     { __typename?: 'BrandPayload' }
     & Pick<BrandPayload, 'success' | 'message'>
-  ) }
-);
-
-export type CartPayloadFragment = (
-  { __typename?: 'CartPayload' }
-  & Pick<CartPayload, 'success' | 'message'>
-);
-
-export type AddProductToCartMutationVariables = Exact<{
-  input: AddProductToCartInput;
-}>;
-
-
-export type AddProductToCartMutation = (
-  { __typename?: 'Mutation' }
-  & { addProductToCart: (
-    { __typename?: 'CartPayload' }
-    & CartPayloadFragment
-  ) }
-);
-
-export type AddShoplessProductToCartMutationVariables = Exact<{
-  input: AddShoplessProductToCartInput;
-}>;
-
-
-export type AddShoplessProductToCartMutation = (
-  { __typename?: 'Mutation' }
-  & { addShoplessProductToCart: (
-    { __typename?: 'CartPayload' }
-    & CartPayloadFragment
-  ) }
-);
-
-export type AddShopToCartProductMutationVariables = Exact<{
-  input: AddShopToCartProductInput;
-}>;
-
-
-export type AddShopToCartProductMutation = (
-  { __typename?: 'Mutation' }
-  & { addShopToCartProduct: (
-    { __typename?: 'CartPayload' }
-    & CartPayloadFragment
-  ) }
-);
-
-export type UpdateProductInCartMutationVariables = Exact<{
-  input: UpdateProductInCartInput;
-}>;
-
-
-export type UpdateProductInCartMutation = (
-  { __typename?: 'Mutation' }
-  & { updateProductInCart: (
-    { __typename?: 'CartPayload' }
-    & CartPayloadFragment
-  ) }
-);
-
-export type DeleteProductFromCartMutationVariables = Exact<{
-  input: DeleteProductFromCartInput;
-}>;
-
-
-export type DeleteProductFromCartMutation = (
-  { __typename?: 'Mutation' }
-  & { deleteProductFromCart: (
-    { __typename?: 'CartPayload' }
-    & CartPayloadFragment
-  ) }
-);
-
-export type ClearCartMutationVariables = Exact<{ [key: string]: never; }>;
-
-
-export type ClearCartMutation = (
-  { __typename?: 'Mutation' }
-  & { clearCart: (
-    { __typename?: 'CartPayload' }
-    & CartPayloadFragment
-  ) }
-);
-
-export type RepeatAnOrderMutationVariables = Exact<{
-  input: RepeatOrderInput;
-}>;
-
-
-export type RepeatAnOrderMutation = (
-  { __typename?: 'Mutation' }
-  & { repeatOrder: (
-    { __typename?: 'CartPayload' }
-    & CartPayloadFragment
   ) }
 );
 
@@ -3491,12 +3302,6 @@ export type GetOptionAlphabetListsQuery = (
   )> }
 );
 
-export const CartPayloadFragmentDoc = gql`
-    fragment CartPayload on CartPayload {
-  success
-  message
-}
-    `;
 export const SelectOptionFragmentDoc = gql`
     fragment SelectOption on SelectOption {
   _id
@@ -3946,236 +3751,6 @@ export function useDeleteCollectionFromBrandMutation(baseOptions?: Apollo.Mutati
 export type DeleteCollectionFromBrandMutationHookResult = ReturnType<typeof useDeleteCollectionFromBrandMutation>;
 export type DeleteCollectionFromBrandMutationResult = Apollo.MutationResult<DeleteCollectionFromBrandMutation>;
 export type DeleteCollectionFromBrandMutationOptions = Apollo.BaseMutationOptions<DeleteCollectionFromBrandMutation, DeleteCollectionFromBrandMutationVariables>;
-export const AddProductToCartDocument = gql`
-    mutation AddProductToCart($input: AddProductToCartInput!) {
-  addProductToCart(input: $input) {
-    ...CartPayload
-  }
-}
-    ${CartPayloadFragmentDoc}`;
-export type AddProductToCartMutationFn = Apollo.MutationFunction<AddProductToCartMutation, AddProductToCartMutationVariables>;
-
-/**
- * __useAddProductToCartMutation__
- *
- * To run a mutation, you first call `useAddProductToCartMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAddProductToCartMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [addProductToCartMutation, { data, loading, error }] = useAddProductToCartMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useAddProductToCartMutation(baseOptions?: Apollo.MutationHookOptions<AddProductToCartMutation, AddProductToCartMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AddProductToCartMutation, AddProductToCartMutationVariables>(AddProductToCartDocument, options);
-      }
-export type AddProductToCartMutationHookResult = ReturnType<typeof useAddProductToCartMutation>;
-export type AddProductToCartMutationResult = Apollo.MutationResult<AddProductToCartMutation>;
-export type AddProductToCartMutationOptions = Apollo.BaseMutationOptions<AddProductToCartMutation, AddProductToCartMutationVariables>;
-export const AddShoplessProductToCartDocument = gql`
-    mutation AddShoplessProductToCart($input: AddShoplessProductToCartInput!) {
-  addShoplessProductToCart(input: $input) {
-    ...CartPayload
-  }
-}
-    ${CartPayloadFragmentDoc}`;
-export type AddShoplessProductToCartMutationFn = Apollo.MutationFunction<AddShoplessProductToCartMutation, AddShoplessProductToCartMutationVariables>;
-
-/**
- * __useAddShoplessProductToCartMutation__
- *
- * To run a mutation, you first call `useAddShoplessProductToCartMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAddShoplessProductToCartMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [addShoplessProductToCartMutation, { data, loading, error }] = useAddShoplessProductToCartMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useAddShoplessProductToCartMutation(baseOptions?: Apollo.MutationHookOptions<AddShoplessProductToCartMutation, AddShoplessProductToCartMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AddShoplessProductToCartMutation, AddShoplessProductToCartMutationVariables>(AddShoplessProductToCartDocument, options);
-      }
-export type AddShoplessProductToCartMutationHookResult = ReturnType<typeof useAddShoplessProductToCartMutation>;
-export type AddShoplessProductToCartMutationResult = Apollo.MutationResult<AddShoplessProductToCartMutation>;
-export type AddShoplessProductToCartMutationOptions = Apollo.BaseMutationOptions<AddShoplessProductToCartMutation, AddShoplessProductToCartMutationVariables>;
-export const AddShopToCartProductDocument = gql`
-    mutation AddShopToCartProduct($input: AddShopToCartProductInput!) {
-  addShopToCartProduct(input: $input) {
-    ...CartPayload
-  }
-}
-    ${CartPayloadFragmentDoc}`;
-export type AddShopToCartProductMutationFn = Apollo.MutationFunction<AddShopToCartProductMutation, AddShopToCartProductMutationVariables>;
-
-/**
- * __useAddShopToCartProductMutation__
- *
- * To run a mutation, you first call `useAddShopToCartProductMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAddShopToCartProductMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [addShopToCartProductMutation, { data, loading, error }] = useAddShopToCartProductMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useAddShopToCartProductMutation(baseOptions?: Apollo.MutationHookOptions<AddShopToCartProductMutation, AddShopToCartProductMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AddShopToCartProductMutation, AddShopToCartProductMutationVariables>(AddShopToCartProductDocument, options);
-      }
-export type AddShopToCartProductMutationHookResult = ReturnType<typeof useAddShopToCartProductMutation>;
-export type AddShopToCartProductMutationResult = Apollo.MutationResult<AddShopToCartProductMutation>;
-export type AddShopToCartProductMutationOptions = Apollo.BaseMutationOptions<AddShopToCartProductMutation, AddShopToCartProductMutationVariables>;
-export const UpdateProductInCartDocument = gql`
-    mutation UpdateProductInCart($input: UpdateProductInCartInput!) {
-  updateProductInCart(input: $input) {
-    ...CartPayload
-  }
-}
-    ${CartPayloadFragmentDoc}`;
-export type UpdateProductInCartMutationFn = Apollo.MutationFunction<UpdateProductInCartMutation, UpdateProductInCartMutationVariables>;
-
-/**
- * __useUpdateProductInCartMutation__
- *
- * To run a mutation, you first call `useUpdateProductInCartMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateProductInCartMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateProductInCartMutation, { data, loading, error }] = useUpdateProductInCartMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateProductInCartMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProductInCartMutation, UpdateProductInCartMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateProductInCartMutation, UpdateProductInCartMutationVariables>(UpdateProductInCartDocument, options);
-      }
-export type UpdateProductInCartMutationHookResult = ReturnType<typeof useUpdateProductInCartMutation>;
-export type UpdateProductInCartMutationResult = Apollo.MutationResult<UpdateProductInCartMutation>;
-export type UpdateProductInCartMutationOptions = Apollo.BaseMutationOptions<UpdateProductInCartMutation, UpdateProductInCartMutationVariables>;
-export const DeleteProductFromCartDocument = gql`
-    mutation DeleteProductFromCart($input: DeleteProductFromCartInput!) {
-  deleteProductFromCart(input: $input) {
-    ...CartPayload
-  }
-}
-    ${CartPayloadFragmentDoc}`;
-export type DeleteProductFromCartMutationFn = Apollo.MutationFunction<DeleteProductFromCartMutation, DeleteProductFromCartMutationVariables>;
-
-/**
- * __useDeleteProductFromCartMutation__
- *
- * To run a mutation, you first call `useDeleteProductFromCartMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteProductFromCartMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteProductFromCartMutation, { data, loading, error }] = useDeleteProductFromCartMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useDeleteProductFromCartMutation(baseOptions?: Apollo.MutationHookOptions<DeleteProductFromCartMutation, DeleteProductFromCartMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteProductFromCartMutation, DeleteProductFromCartMutationVariables>(DeleteProductFromCartDocument, options);
-      }
-export type DeleteProductFromCartMutationHookResult = ReturnType<typeof useDeleteProductFromCartMutation>;
-export type DeleteProductFromCartMutationResult = Apollo.MutationResult<DeleteProductFromCartMutation>;
-export type DeleteProductFromCartMutationOptions = Apollo.BaseMutationOptions<DeleteProductFromCartMutation, DeleteProductFromCartMutationVariables>;
-export const ClearCartDocument = gql`
-    mutation ClearCart {
-  clearCart {
-    ...CartPayload
-  }
-}
-    ${CartPayloadFragmentDoc}`;
-export type ClearCartMutationFn = Apollo.MutationFunction<ClearCartMutation, ClearCartMutationVariables>;
-
-/**
- * __useClearCartMutation__
- *
- * To run a mutation, you first call `useClearCartMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useClearCartMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [clearCartMutation, { data, loading, error }] = useClearCartMutation({
- *   variables: {
- *   },
- * });
- */
-export function useClearCartMutation(baseOptions?: Apollo.MutationHookOptions<ClearCartMutation, ClearCartMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<ClearCartMutation, ClearCartMutationVariables>(ClearCartDocument, options);
-      }
-export type ClearCartMutationHookResult = ReturnType<typeof useClearCartMutation>;
-export type ClearCartMutationResult = Apollo.MutationResult<ClearCartMutation>;
-export type ClearCartMutationOptions = Apollo.BaseMutationOptions<ClearCartMutation, ClearCartMutationVariables>;
-export const RepeatAnOrderDocument = gql`
-    mutation RepeatAnOrder($input: RepeatOrderInput!) {
-  repeatOrder(input: $input) {
-    ...CartPayload
-  }
-}
-    ${CartPayloadFragmentDoc}`;
-export type RepeatAnOrderMutationFn = Apollo.MutationFunction<RepeatAnOrderMutation, RepeatAnOrderMutationVariables>;
-
-/**
- * __useRepeatAnOrderMutation__
- *
- * To run a mutation, you first call `useRepeatAnOrderMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRepeatAnOrderMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [repeatAnOrderMutation, { data, loading, error }] = useRepeatAnOrderMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useRepeatAnOrderMutation(baseOptions?: Apollo.MutationHookOptions<RepeatAnOrderMutation, RepeatAnOrderMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<RepeatAnOrderMutation, RepeatAnOrderMutationVariables>(RepeatAnOrderDocument, options);
-      }
-export type RepeatAnOrderMutationHookResult = ReturnType<typeof useRepeatAnOrderMutation>;
-export type RepeatAnOrderMutationResult = Apollo.MutationResult<RepeatAnOrderMutation>;
-export type RepeatAnOrderMutationOptions = Apollo.BaseMutationOptions<RepeatAnOrderMutation, RepeatAnOrderMutationVariables>;
 export const CreateCategoryDocument = gql`
     mutation CreateCategory($input: CreateCategoryInput!) {
   createCategory(input: $input) {

@@ -3,6 +3,7 @@ import { ID_COUNTER_STEP } from '../../config/common';
 import { dbsConfig, getProdDb } from './getProdDb';
 import { COL_ID_COUNTERS, COL_PRODUCT_SUMMARIES } from '../../db/collectionNames';
 import { IdCounterModel, ProductSummaryModel, ProductVariantModel } from '../../db/dbModels';
+import fs from 'fs';
 require('dotenv').config();
 
 export async function getFastNextNumberItemId(collectionName: string, db: Db): Promise<string> {
@@ -59,6 +60,7 @@ async function updateProds() {
     }, []);
 
     console.log('allVariants', allVariants.length);
+    fs.writeFileSync(`./res/${dbConfig.dbName}.json`, JSON.stringify(allVariants, null, 2));
     /*await summariesCollection.updateMany(
       {},
       {

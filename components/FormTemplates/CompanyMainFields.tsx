@@ -4,10 +4,11 @@ import FormikInput from '../../components/FormElements/Input/FormikInput';
 import FormikMultiLineInput from '../../components/FormElements/Input/FormikMultiLineInput';
 import FakeInput from '../../components/FormElements/Input/FakeInput';
 import InputLine from '../../components/FormElements/Input/InputLine';
-import { CONFIRM_MODAL, USERS_SEARCH_MODAL } from '../../config/modalVariants';
+import { CONFIRM_MODAL } from '../../config/modalVariants';
 import { useAppContext } from '../../context/appContext';
 import { UserInterface } from '../../db/uiInterfaces';
 import { UpdateCompanyInput } from '../../generated/apolloComponents';
+import { useUserSearchModal } from '../../hooks/useUserSearchModal';
 import { getCmsLinks } from '../../lib/linkUtils';
 import ContentItemControls from '../button/ContentItemControls';
 import WpButton from '../button/WpButton';
@@ -15,10 +16,6 @@ import LinkEmail from '../Link/LinkEmail';
 import LinkPhone from '../Link/LinkPhone';
 import WpLink from '../Link/WpLink';
 import { ConfirmModalInterface } from '../Modal/ConfirmModal';
-import {
-  UsersSearchModalControlsInterface,
-  UsersSearchModalInterface,
-} from '../Modal/UsersSearchModal';
 import WpTable, { WpTableColumn } from '../WpTable';
 
 export interface CompanyFormMainValuesInterface extends Omit<UpdateCompanyInput, 'companyId'> {
@@ -41,6 +38,7 @@ const CompanyMainFields: React.FC<CompanyMainFieldsInterface> = ({
   hidePersonnelInputs,
   deleteStaffUserHandler,
 }) => {
+  const showUsersSearchModal = useUserSearchModal();
   const { showModal, hideModal } = useAppContext();
   const { values, setFieldValue } = useFormikContext<CompanyFormMainValuesInterface>();
 
@@ -110,44 +108,6 @@ const CompanyMainFields: React.FC<CompanyMainFieldsInterface> = ({
     },
   ];
 
-  function showUsersSearchModal({
-    createTitle,
-    updateTitle,
-    deleteTitle,
-    createHandler,
-    updateHandler,
-    deleteHandler,
-    disabled,
-    isDeleteDisabled,
-    isCreateDisabled,
-    isUpdateDisabled,
-  }: UsersSearchModalControlsInterface) {
-    showModal<UsersSearchModalInterface>({
-      variant: USERS_SEARCH_MODAL,
-      props: {
-        controlsColumn: {
-          render: ({ dataItem }) => {
-            return (
-              <ContentItemControls
-                justifyContent={'flex-end'}
-                testId={dataItem.itemId}
-                createTitle={createTitle}
-                updateTitle={updateTitle}
-                deleteTitle={deleteTitle}
-                createHandler={createHandler ? () => createHandler(dataItem) : undefined}
-                updateHandler={updateHandler ? () => updateHandler(dataItem) : undefined}
-                deleteHandler={deleteHandler ? () => deleteHandler(dataItem) : undefined}
-                disabled={disabled}
-                isDeleteDisabled={isDeleteDisabled ? isDeleteDisabled(dataItem) : undefined}
-                isCreateDisabled={isCreateDisabled ? isCreateDisabled(dataItem) : undefined}
-                isUpdateDisabled={isUpdateDisabled ? isUpdateDisabled(dataItem) : undefined}
-              />
-            );
-          },
-        },
-      },
-    });
-  }
   return (
     <React.Fragment>
       <FormikInput label={'Название'} name={'name'} testId={'name'} showInlineError isRequired />

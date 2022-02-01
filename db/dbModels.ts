@@ -1141,7 +1141,7 @@ export interface TaskLogModel {
 export interface TaskModel extends TimestampModel {
   _id: ObjectIdModel;
   companySlug: string;
-  stateEnum: TaskStateModel;
+  stateEnum: TaskStateModel; // TASK_STATE_OPTIONS
   nameI18n?: TranslationModel | null;
   createdById: ObjectIdModel;
   variantId?: ObjectIdModel | null;

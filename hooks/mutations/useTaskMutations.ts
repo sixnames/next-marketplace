@@ -14,15 +14,15 @@ import { TaskPayloadModel, TaskVariantPayloadModel } from '../../db/dbModels';
 import { getConsoleTaskLinks, getConsoleTaskVariantLinks } from '../../lib/linkUtils';
 import { useMutationHandler } from './useFetch';
 
-const basePath = '/api/tasks';
-const variantsBasePath = `${basePath}/variants`;
+const taskBasePath = '/api/tasks';
+const variantsBasePath = `${taskBasePath}/variants`;
 
 // tasks
 // create
 export const useCreateTask = (basePath: string) => {
   const router = useRouter();
   return useMutationHandler<TaskPayloadModel, CreateTaskInputInterface>({
-    path: basePath,
+    path: taskBasePath,
     method: REQUEST_METHOD_POST,
     reload: false,
     onSuccess: (payload) => {
@@ -39,7 +39,7 @@ export const useCreateTask = (basePath: string) => {
 // create
 export const useUpdateTask = () => {
   return useMutationHandler<TaskPayloadModel, UpdateTaskInputInterface>({
-    path: basePath,
+    path: taskBasePath,
     method: REQUEST_METHOD_PATCH,
   });
 };
@@ -47,7 +47,7 @@ export const useUpdateTask = () => {
 // create
 export const useDeleteTask = () => {
   return useMutationHandler<TaskPayloadModel, DeleteTaskInputInterface>({
-    path: basePath,
+    path: taskBasePath,
     method: REQUEST_METHOD_DELETE,
   });
 };

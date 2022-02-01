@@ -20,10 +20,12 @@ export function useUserSearchModal() {
     isDeleteDisabled,
     isCreateDisabled,
     isUpdateDisabled,
+    testId,
   }: UsersSearchModalControlsInterface) => {
     showModal<UsersSearchModalInterface>({
       variant: USERS_SEARCH_MODAL,
       props: {
+        testId,
         controlsColumn: {
           render: ({ dataItem }) => {
             return (

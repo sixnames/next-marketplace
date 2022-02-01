@@ -103,7 +103,7 @@ const ConsoleTasksList: React.FC<ConsoleTasksListInterface> = ({ basePath, tasks
   ];
 
   return (
-    <div className='relative' data-cy={'task-variants-list'}>
+    <div className='relative' data-cy={'tasks-list'}>
       <div className='overflow-x-auto overflow-y-hidden'>
         <WpTable<TaskInterface>
           testIdKey={'name'}
@@ -122,7 +122,7 @@ const ConsoleTasksList: React.FC<ConsoleTasksListInterface> = ({ basePath, tasks
         <WpButton
           size='small'
           frameClassName='w-auto'
-          testId={'create-task-variant-button'}
+          testId={'create-task-button'}
           onClick={() => {
             router.push(links.create).catch(console.log);
           }}

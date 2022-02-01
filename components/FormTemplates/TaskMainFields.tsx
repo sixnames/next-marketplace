@@ -51,6 +51,7 @@ const TaskMainFields: React.FC<TaskMainFieldsInterface> = ({ taskVariants }) => 
           testId={'add-executor'}
           onClick={() =>
             showUsersSearchModal({
+              testId: 'task-executor-search-modal',
               createTitle: 'Назначить исполнителем',
               createHandler: (user) => {
                 hideModal();
@@ -75,7 +76,7 @@ const TaskMainFields: React.FC<TaskMainFieldsInterface> = ({ taskVariants }) => 
               variant: PRODUCT_SEARCH_MODAL,
               props: {
                 createTitle: 'Добавить товар в задачу',
-                testId: 'set-task-product-modal',
+                testId: 'task-product-search-modal',
                 createHandler: (addProduct) => {
                   hideModal();
                   setFieldValue('product', addProduct);

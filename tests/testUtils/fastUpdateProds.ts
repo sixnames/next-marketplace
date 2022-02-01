@@ -1,8 +1,8 @@
 import { Db } from 'mongodb';
 import { ID_COUNTER_STEP } from '../../config/common';
 import { dbsConfig, getProdDb } from './getProdDb';
-import { COL_ID_COUNTERS, COL_PRODUCT_SUMMARIES } from '../../db/collectionNames';
-import { IdCounterModel, ProductSummaryModel, ProductVariantModel } from '../../db/dbModels';
+import { COL_ID_COUNTERS } from '../../db/collectionNames';
+import { IdCounterModel } from '../../db/dbModels';
 require('dotenv').config();
 
 export async function getFastNextNumberItemId(collectionName: string, db: Db): Promise<string> {
@@ -34,55 +34,7 @@ async function updateProds() {
     console.log('>>>>>>>>>>>>>>>>>>>>>>>>');
     console.log(' ');
     console.log(`Updating ${dbConfig.dbName} db`);
-    const { db, client } = await getProdDb(dbConfig);
-    const summariesCollection = db.collection<ProductSummaryModel>(COL_PRODUCT_SUMMARIES);
-
-    const summaries = await summariesCollection
-      .find({
-        'variants.1': {
-          $exists: true,
-        },
-      })
-      .toArray();
-
-    const variants = summaries.reduce((acc: ProductVariantModel[], { variants }) => {
-      return [...acc, ...(variants || [])];
-    }, []);
-    const allVariants = variants.reduce((acc: ProductVariantModel[], variant) => {
-      const exist = acc.some(({ _id }) => {
-        return _id.equals(variant._id);
-      });
-      if (exist) {
-        return acc;
-      }
-      return [...acc, variant];
-    }, []);
-
-    console.log('allVariants', allVariants.length);
-    await summariesCollection.updateMany(
-      {},
-      {
-        $set: {
-          variants: [],
-        },
-      },
-    );
-
-    for await (const variant of allVariants) {
-      const summaryIds = variant.products.map(({ productId }) => productId);
-      await summariesCollection.updateMany(
-        {
-          _id: {
-            $in: summaryIds,
-          },
-        },
-        {
-          $push: {
-            variants: variant,
-          },
-        },
-      );
-    }
+    const { client } = await getProdDb(dbConfig);
 
     // disconnect form db
     await client.close();

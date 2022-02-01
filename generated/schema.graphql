@@ -32,12 +32,6 @@ input AddOptionToGroupInput {
   variants: JSONObject!
 }
 
-input AddProductToCartInput {
-  amount: Int!
-  productId: ObjectId!
-  shopProductId: ObjectId!
-}
-
 input AddProductToShopInput {
   available: Int!
   price: Int!
@@ -53,11 +47,6 @@ input AddShopProductSupplierInput {
   variant: SupplierPriceVariant!
 }
 
-input AddShopToCartProductInput {
-  cartProductId: ObjectId!
-  shopProductId: ObjectId!
-}
-
 input AddShopToCompanyInput {
   address: AddressInput!
   citySlug: String!
@@ -65,11 +54,6 @@ input AddShopToCompanyInput {
   contacts: ContactsInput!
   license: String
   name: String!
-}
-
-input AddShoplessProductToCartInput {
-  amount: Int!
-  productId: ObjectId!
 }
 
 type Address {
@@ -232,25 +216,6 @@ type BrandsPaginationPayload implements PaginationPayload {
   totalActiveDocs: Int!
   totalDocs: Int!
   totalPages: Int!
-}
-
-type Cart {
-  _id: ObjectId!
-  cartBookingProducts: [CartProduct!]!
-  cartDeliveryProducts: [CartProduct!]!
-}
-
-type CartPayload {
-  message: String!
-  success: Boolean!
-}
-
-type CartProduct implements Base {
-  _id: ObjectId!
-  amount: Int!
-  itemId: String!
-  productId: ObjectId
-  shopProductId: ObjectId
 }
 
 input CatalogueAdditionalOptionsInput {
@@ -605,10 +570,6 @@ input DeleteOptionFromGroupInput {
   optionsGroupId: ObjectId!
 }
 
-input DeleteProductFromCartInput {
-  cartProductId: ObjectId!
-}
-
 input DeleteProductFromCategoryInput {
   categoryId: ObjectId!
   productId: ObjectId!
@@ -779,34 +740,14 @@ type Mutation {
   addOptionToGroup(input: AddOptionToGroupInput!): OptionsGroupPayload!
 
   """
-  Should add product to the cart or should increase product amount if already exist in cart
-  """
-  addProductToCart(input: AddProductToCartInput!): CartPayload!
-
-  """
   Should add shop products supplier
   """
   addShopProductSupplier(input: AddShopProductSupplierInput!): ShopProductPayload!
 
   """
-  Should add shop to the cart product
-  """
-  addShopToCartProduct(input: AddShopToCartProductInput!): CartPayload!
-
-  """
   Should create shop and add it to the company
   """
   addShopToCompany(input: AddShopToCompanyInput!): CompanyPayload!
-
-  """
-  Should add shopless product to the cart or should increase product amount if already exist in cart
-  """
-  addShoplessProductToCart(input: AddShoplessProductToCartInput!): CartPayload!
-
-  """
-  Should delete all products from cart
-  """
-  clearCart: CartPayload!
 
   """
   Should create attributes group
@@ -969,11 +910,6 @@ type Mutation {
   deleteOrderStatus(_id: ObjectId!): OrderStatusPayload!
 
   """
-  Should delete product from cart
-  """
-  deleteProductFromCart(input: DeleteProductFromCartInput!): CartPayload!
-
-  """
   Should delete product from shop
   """
   deleteProductFromShop(input: DeleteProductFromShopInput!): ShopPayload!
@@ -1022,11 +958,6 @@ type Mutation {
   Should move option to another options group
   """
   moveOption(input: MoveOptionInput!): OptionsGroupPayload!
-
-  """
-  Should add all products to the cart from user's old order
-  """
-  repeatOrder(input: RepeatOrderInput!): CartPayload!
 
   """
   Should toggle cms card attribute visibility
@@ -1127,11 +1058,6 @@ type Mutation {
   Should update order status
   """
   updateOrderStatus(input: UpdateOrderStatusInput!): OrderStatusPayload!
-
-  """
-  Should update cart product amount
-  """
-  updateProductInCart(input: UpdateProductInCartInput!): CartPayload!
 
   """
   Should update role
@@ -1497,10 +1423,6 @@ type Query {
   Should return validation messages list
   """
   getValidationMessages: [Message!]!
-}
-
-input RepeatOrderInput {
-  orderId: ObjectId!
 }
 
 type Role implements Timestamp {
@@ -1950,11 +1872,6 @@ input UpdateOrderStatusInput {
   isPayed: Boolean!
   nameI18n: JSONObject!
   orderStatusId: ObjectId!
-}
-
-input UpdateProductInCartInput {
-  amount: Int!
-  cartProductId: ObjectId!
 }
 
 input UpdateRoleInput {

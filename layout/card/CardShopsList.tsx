@@ -22,7 +22,7 @@ interface CardShopInterface {
 
 const CardShop: React.FC<CardShopInterface> = ({ shop }) => {
   const { configs } = useConfigContext();
-  const { addProductToCart, getShopProductInCartCount } = useSiteContext();
+  const { addCartProduct, getShopProductInCartCount } = useSiteContext();
   const { showModal } = useAppContext();
   const [amount, setAmount] = React.useState<number>(1);
 
@@ -150,10 +150,10 @@ const CardShop: React.FC<CardShopInterface> = ({ shop }) => {
                     disabled={disabled}
                     testId={`card-shops-${slug}-add-to-cart`}
                     onClick={() => {
-                      addProductToCart({
+                      addCartProduct({
                         amount,
-                        productId,
-                        shopProductId: cardShopProduct._id,
+                        productId: `${productId}`,
+                        shopProductId: `${cardShopProduct._id}`,
                       });
                     }}
                   >

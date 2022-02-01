@@ -169,7 +169,7 @@ const HeaderCartLink: React.FC<HeaderCartLinkInterface> = ({ testId }) => {
         </Popover.Button>
 
         <Popover.Panel className='absolute top-[90%] right-[var(--innerBlockHorizontalPadding)] z-10'>
-          <CartDropdown cart={cart} />
+          <CartDropdown />
         </Popover.Panel>
       </Popover>
     );

@@ -12,8 +12,8 @@ import {
   FILTER_SEPARATOR,
   ROUTE_CATALOGUE,
 } from '../config/common';
-import { COL_COMPANIES, COL_CONFIGS, COL_RUBRICS } from '../db/collectionNames';
-import { CompanyModel, ConfigModel, RubricModel } from '../db/dbModels';
+import { COL_COMPANIES, COL_CONFIGS, COL_RUBRICS, COL_SEO_CONTENTS } from '../db/collectionNames';
+import { CompanyModel, ConfigModel, RubricModel, SeoContentModel } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
 import { getCatalogueData } from '../lib/catalogueUtils';
 import {
@@ -22,7 +22,6 @@ import {
   getConfigListValue,
   getConfigNumberValue,
 } from '../lib/configsUtils';
-import { getCatalogueAllSeoContents } from '../lib/seoContentUtils';
 
 const SitemapXml: React.FC = () => {
   return <div />;
@@ -57,6 +56,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const companiesCollection = db.collection<CompanyModel>(COL_COMPANIES);
   const rubricsCollection = db.collection<RubricModel>(COL_RUBRICS);
   const configsCollection = db.collection<ConfigModel>(COL_CONFIGS);
+  const seoContentsCollection = db.collection<SeoContentModel>(COL_SEO_CONTENTS);
   const host = `${context.req.headers.host}`;
   const domain = getDomain(host, { validHosts: ['localhost'] });
   const locale = DEFAULT_LOCALE;
@@ -140,23 +140,38 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     }
     initialSlugs.push(basePath);
 
+    if (useNoIndexRules) {
+      const seoContents = await seoContentsCollection
+        .find(
+          {
+            companySlug,
+            rubricSlug: rubric.slug,
+            showForIndex: true,
+            slug: {
+              $regex: 'top',
+              $options: 'i',
+            },
+          },
+          {
+            projection: {
+              url: true,
+            },
+          },
+        )
+        .toArray();
+      seoContents.forEach(({ url }) => {
+        const newUrl = url.replace(`/${companySlug}/${DEFAULT_CITY}`, '');
+        if (!initialSlugs.includes(newUrl)) {
+          initialSlugs.push(newUrl);
+        }
+      });
+      continue;
+    }
+
     // categories
     for await (const category of catalogueData.headCategories || []) {
       const filter = `${FILTER_CATEGORY_KEY}${FILTER_SEPARATOR}${category.slug}`;
       const asPath = `${basePath}/${filter}`;
-      if (useNoIndexRules) {
-        const seoContentParams = await getCatalogueAllSeoContents({
-          asPath,
-          rubricSlug: rubric.slug,
-          citySlug,
-          companySlug,
-          filters: [filter],
-          locale,
-        });
-        if (!seoContentParams?.seoContentTop?.showForIndex) {
-          continue;
-        }
-      }
       initialSlugs.push(asPath);
     }
 
@@ -168,19 +183,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       for await (const option of attribute.options || []) {
         const filter = `${attribute.slug}${FILTER_SEPARATOR}${option.slug}`;
         const asPath = `${basePath}/${filter}`;
-        if (useNoIndexRules) {
-          const seoContentParams = await getCatalogueAllSeoContents({
-            asPath,
-            rubricSlug: rubric.slug,
-            citySlug,
-            companySlug,
-            filters: [filter],
-            locale,
-          });
-          if (!seoContentParams?.seoContentTop?.showForIndex) {
-            continue;
-          }
-        }
         initialSlugs.push(asPath);
       }
     }

@@ -42,7 +42,7 @@ const CreateTaskVariantDetailsConsumer: React.FC<CreateTaskVariantDetailsConsume
       },
       {
         name: 'Типы задач',
-        href: links.parentLink,
+        href: links.taskVariants.parentLink,
       },
     ],
   };

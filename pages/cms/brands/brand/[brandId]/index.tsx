@@ -10,11 +10,7 @@ import WpImageUpload from '../../../../../components/FormElements/Upload/WpImage
 import BrandMainFields from '../../../../../components/FormTemplates/BrandMainFields';
 import Inner from '../../../../../components/Inner';
 import WpTitle from '../../../../../components/WpTitle';
-import {
-  REQUEST_METHOD_DELETE,
-  REQUEST_METHOD_POST,
-  ROUTE_CMS,
-} from '../../../../../config/common';
+import { REQUEST_METHOD_DELETE, REQUEST_METHOD_POST } from '../../../../../config/common';
 import { COL_BRANDS } from '../../../../../db/collectionNames';
 import { getDatabase } from '../../../../../db/mongodb';
 import { AppContentWrapperBreadCrumbs, BrandInterface } from '../../../../../db/uiInterfaces';
@@ -26,6 +22,7 @@ import useMutationCallbacks from '../../../../../hooks/useMutationCallbacks';
 import useValidationSchema from '../../../../../hooks/useValidationSchema';
 import AppContentWrapper from '../../../../../layout/AppContentWrapper';
 import AppSubNav from '../../../../../layout/AppSubNav';
+import { getProjectLinks } from '../../../../../lib/getProjectLinks';
 import { getFieldStringLocale } from '../../../../../lib/i18n';
 import {
   castDbData,
@@ -65,31 +62,33 @@ const BrandDetailsConsumer: React.FC<BrandDetailsConsumerInterface> = ({ brand }
     showInCatalogueTitle: brand.showInCatalogueTitle || false,
   };
 
+  const links = getProjectLinks({
+    brandId: brand._id,
+  });
+
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${brand.name}`,
     config: [
       {
         name: 'Бренды',
-        href: `${ROUTE_CMS}/brands`,
+        href: links.cms.brands.url,
       },
     ],
   };
 
-  const navConfig = React.useMemo(() => {
-    return [
-      {
-        name: 'Детали',
-        testId: 'brand-details',
-        path: `${ROUTE_CMS}/brands/brand/${brand._id}`,
-        exact: true,
-      },
-      {
-        name: 'Коллекции',
-        testId: 'brand-collections',
-        path: `${ROUTE_CMS}/brands/brand/${brand._id}/collections/${brand._id}`,
-      },
-    ];
-  }, [brand._id]);
+  const navConfig = [
+    {
+      name: 'Детали',
+      testId: 'brand-details',
+      path: links.cms.brands.brand.brandId.url,
+      exact: true,
+    },
+    {
+      name: 'Коллекции',
+      testId: 'brand-collections',
+      path: links.cms.brands.brand.brandId.collections.url,
+    },
+  ];
 
   return (
     <AppContentWrapper breadcrumbs={breadcrumbs}>

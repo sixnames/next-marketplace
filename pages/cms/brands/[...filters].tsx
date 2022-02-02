@@ -16,7 +16,6 @@ import {
   CMS_BRANDS_LIMIT,
   DEFAULT_LOCALE,
   DEFAULT_PAGE,
-  ROUTE_CMS,
   SORT_ASC,
   SORT_DESC,
 } from '../../../config/common';
@@ -31,6 +30,7 @@ import AppContentWrapper from '../../../layout/AppContentWrapper';
 import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
 import { alwaysArray } from '../../../lib/arrayUtils';
 import { castUrlFilters } from '../../../lib/castUrlFilters';
+import { getProjectLinks } from '../../../lib/getProjectLinks';
 import { getFieldStringLocale } from '../../../lib/i18n';
 import {
   castDbData,
@@ -178,7 +178,8 @@ export const getServerSideProps = async (
     initialLimit: CMS_BRANDS_LIMIT,
     searchFieldName: '_id',
   });
-  const itemPath = `${ROUTE_CMS}/brands/brand`;
+  const links = getProjectLinks();
+  const itemPath = links.cms.brands.brand.url;
 
   const regexSearch = {
     $regex: search,

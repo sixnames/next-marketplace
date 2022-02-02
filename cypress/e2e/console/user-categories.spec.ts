@@ -1,9 +1,13 @@
-import { DEFAULT_LOCALE, ROUTE_CONSOLE } from 'config/common';
+import { DEFAULT_LOCALE } from 'config/common';
 import { fixtureIds } from 'cypress/fixtures/fixtureIds';
+import { getProjectLinks } from '../../../lib/getProjectLinks';
 
 describe('User categories', () => {
+  const links = getProjectLinks({
+    companyId: fixtureIds.companyA,
+  });
   beforeEach(() => {
-    cy.testAuth(`${ROUTE_CONSOLE}/${fixtureIds.companyA}/user-categories`, 'ownerA@gmail.com');
+    cy.testAuth(links.console.companyId.userCategories.url, 'ownerA@gmail.com');
   });
 
   it('Should CRUD user categories', () => {

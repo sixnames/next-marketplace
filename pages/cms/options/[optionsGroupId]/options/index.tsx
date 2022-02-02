@@ -12,7 +12,7 @@ import { OptionInGroupModalInterface } from '../../../../../components/Modal/Opt
 import RequestError from '../../../../../components/RequestError';
 import WpImage from '../../../../../components/WpImage';
 import WpTitle from '../../../../../components/WpTitle';
-import { DEFAULT_LOCALE, ROUTE_CMS, SORT_ASC } from '../../../../../config/common';
+import { DEFAULT_LOCALE, SORT_ASC } from '../../../../../config/common';
 import { getConstantTranslation } from '../../../../../config/constantTranslations';
 import {
   CONFIRM_MODAL,
@@ -37,6 +37,7 @@ import AppContentWrapper from '../../../../../layout/AppContentWrapper';
 import AppSubNav from '../../../../../layout/AppSubNav';
 import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
 import { sortObjectsByField } from '../../../../../lib/arrayUtils';
+import { getProjectLinks } from '../../../../../lib/getProjectLinks';
 import { getFieldStringLocale } from '../../../../../lib/i18n';
 import {
   castDbData,
@@ -69,27 +70,14 @@ const OptionsGroupOptionsConsumer: React.FC<OptionsGroupOptionsConsumerInterface
     onError: onErrorCallback,
   });
 
-  const navConfig = React.useMemo(() => {
-    return [
-      {
-        name: 'Опции',
-        testId: 'options',
-        path: `${ROUTE_CMS}/options/${optionsGroup._id}/options`,
-        exact: true,
-      },
-      {
-        name: 'Детали',
-        testId: 'details',
-        path: `${ROUTE_CMS}/options/${optionsGroup._id}`,
-        exact: true,
-      },
-    ];
-  }, [optionsGroup._id]);
-
   const renderOptions = React.useCallback(
     (option: OptionInterface) => {
       const { name, options, image } = option;
-      const optionUrl = `${ROUTE_CMS}/options/${optionsGroup._id}/options/${option._id}`;
+      const optionLinks = getProjectLinks({
+        optionsGroupId: optionsGroup._id,
+        optionId: option._id,
+      });
+      const optionUrl = optionLinks.cms.options.optionsGroupId.options.optionId.url;
       return (
         <div data-cy={name} data-url={optionUrl}>
           {image ? (
@@ -201,16 +189,34 @@ const OptionsGroupOptionsConsumer: React.FC<OptionsGroupOptionsConsumerInterface
 
   const { options, variant } = optionsGroup;
 
+  const links = getProjectLinks({
+    optionsGroupId: optionsGroup._id,
+  });
+  const navConfig = [
+    {
+      name: 'Опции',
+      testId: 'options',
+      path: links.cms.options.optionsGroupId.options.url,
+      exact: true,
+    },
+    {
+      name: 'Детали',
+      testId: 'details',
+      path: links.cms.options.optionsGroupId.url,
+      exact: true,
+    },
+  ];
+
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `Опции`,
     config: [
       {
         name: 'Группы опций',
-        href: `${ROUTE_CMS}/options`,
+        href: links.cms.options.url,
       },
       {
         name: `${optionsGroup.name}`,
-        href: `${ROUTE_CMS}/options/${optionsGroup._id}`,
+        href: links.cms.options.optionsGroupId.url,
       },
     ],
   };

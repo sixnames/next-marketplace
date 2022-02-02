@@ -2,10 +2,10 @@ import { useRouter } from 'next/router';
 import * as React from 'react';
 import Head from 'next/head';
 import parse from 'html-react-parser';
-import { ROUTE_CMS, ROUTE_CONSOLE } from '../config/common';
 import { useConfigContext } from '../context/configContext';
 import { alwaysArray } from '../lib/arrayUtils';
 import { getFilterUrlValues } from '../lib/getFilterUrlValues';
+import { getProjectLinks } from '../lib/getProjectLinks';
 
 export interface MetaInterface {
   title?: string;
@@ -28,6 +28,7 @@ const Meta: React.FC<MetaInterface> = ({
   noIndexFollow,
   seoSchema,
 }) => {
+  const links = getProjectLinks();
   const router = useRouter();
   const [canonicalUrl, setCanonicalUrl] = React.useState<string>('');
   const [showCanonical, setShowCanonical] = React.useState<boolean>(false);
@@ -193,8 +194,8 @@ const Meta: React.FC<MetaInterface> = ({
 
         {/*chat*/}
         {configs.chat &&
-        !router.asPath.includes(ROUTE_CMS) &&
-        !router.asPath.includes(ROUTE_CONSOLE) ? (
+        !router.asPath.includes(links.cms.url) &&
+        !router.asPath.includes(links.console.url) ? (
           <script src={configs.chat} async />
         ) : null}
       </Head>

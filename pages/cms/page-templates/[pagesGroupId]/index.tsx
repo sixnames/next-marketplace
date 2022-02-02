@@ -3,13 +3,13 @@ import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'n
 import Inner from '../../../../components/Inner';
 import PagesList, { PagesListInterface } from '../../../../components/Pages/PagesList';
 import WpTitle from '../../../../components/WpTitle';
-import { ROUTE_CMS } from '../../../../config/common';
 import { COL_CITIES } from '../../../../db/collectionNames';
 import { getDatabase } from '../../../../db/mongodb';
 import { AppContentWrapperBreadCrumbs, CityInterface } from '../../../../db/uiInterfaces';
 import AppContentWrapper from '../../../../layout/AppContentWrapper';
 import ConsoleLayout from '../../../../layout/cms/ConsoleLayout';
 import { sortObjectsByField } from '../../../../lib/arrayUtils';
+import { getProjectLinks } from '../../../../lib/getProjectLinks';
 import { getFieldStringLocale } from '../../../../lib/i18n';
 import { getPagesListSsr } from '../../../../lib/pageUtils';
 import {
@@ -23,7 +23,10 @@ interface PagesListPageInterface
     Omit<PagesListInterface, 'basePath' | 'breadcrumbs'> {}
 
 const PagesListPage: NextPage<PagesListPageInterface> = ({ layoutProps, cities, pagesGroup }) => {
-  const basePath = `${ROUTE_CMS}/page-templates`;
+  const links = getProjectLinks({
+    pagesGroupId: pagesGroup._id,
+  });
+  const basePath = links.cms.pageTemplates.url;
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${pagesGroup.name}`,
     config: [

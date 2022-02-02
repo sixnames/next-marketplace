@@ -18,8 +18,6 @@ import {
   IMAGE_FALLBACK,
   ROUTE_BLOG,
   ROUTE_CATALOGUE,
-  ROUTE_CMS,
-  ROUTE_CONSOLE,
   ROUTE_CONTACTS,
   ROUTE_DOCS,
   ROUTE_PROFILE,
@@ -36,6 +34,7 @@ import { useThemeContext } from '../../context/themeContext';
 import { PagesGroupInterface } from '../../db/uiInterfaces';
 import { useShopMarker } from '../../hooks/useShopMarker';
 import useSignOut from '../../hooks/useSignOut';
+import { getProjectLinks } from '../../lib/getProjectLinks';
 import { noNaN } from '../../lib/numbers';
 import { phoneToRaw, phoneToReadable } from '../../lib/phoneUtils';
 import LayoutCard from '../LayoutCard';
@@ -53,6 +52,7 @@ interface HeaderProfileLinkInterface {
 const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => {
   const signOut = useSignOut();
   const sessionUser = useSiteUserContext();
+  const links = getProjectLinks();
 
   if (sessionUser) {
     return (
@@ -93,7 +93,7 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
                         <WpLink
                           testId={`${testId}-user-dropdown-cms-link`}
                           className='flex min-h-[3rem] cursor-pointer items-center py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text no-underline hover:text-theme hover:no-underline'
-                          href={ROUTE_CMS}
+                          href={links.cms.url}
                         >
                           <span>CMS</span>
                         </WpLink>
@@ -106,7 +106,7 @@ const HeaderProfileLink: React.FC<HeaderProfileLinkInterface> = ({ testId }) => 
                         <WpLink
                           testId={`${testId}-user-dropdown-app-link`}
                           className='flex min-h-[3rem] cursor-pointer items-center py-[var(--reachMenuItemVerticalPadding)] px-[var(--reachMenuItemHorizontalPadding)] text-primary-text no-underline hover:text-theme hover:no-underline'
-                          href={ROUTE_CONSOLE}
+                          href={links.console.url}
                         >
                           <span>Панель управления</span>
                         </WpLink>

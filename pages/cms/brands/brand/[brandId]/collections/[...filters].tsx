@@ -16,7 +16,6 @@ import {
   CMS_BRANDS_LIMIT,
   DEFAULT_LOCALE,
   DEFAULT_PAGE,
-  ROUTE_CMS,
   SORT_ASC,
   SORT_DESC,
 } from '../../../../../../config/common';
@@ -38,6 +37,7 @@ import AppSubNav from '../../../../../../layout/AppSubNav';
 import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
 import { alwaysArray } from '../../../../../../lib/arrayUtils';
 import { castUrlFilters } from '../../../../../../lib/castUrlFilters';
+import { getProjectLinks } from '../../../../../../lib/getProjectLinks';
 import { getFieldStringLocale } from '../../../../../../lib/i18n';
 import {
   castDbData,
@@ -88,35 +88,37 @@ const BrandCollectionsConsumer: React.FC<BrandCollectionsConsumerInterface> = ({
     [brand._id, showModal, updateValidationSchema],
   );
 
+  const links = getProjectLinks({
+    brandId: brand._id,
+  });
+
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: 'Коллекции',
     config: [
       {
         name: 'Бренды',
-        href: `${ROUTE_CMS}/brands`,
+        href: links.cms.brands.url,
       },
       {
         name: `${brand.name}`,
-        href: `${ROUTE_CMS}/brands/${brand._id}`,
+        href: links.cms.brands.brand.brandId.url,
       },
     ],
   };
 
-  const navConfig = React.useMemo(() => {
-    return [
-      {
-        name: 'Детали',
-        testId: 'brand-details',
-        path: `${ROUTE_CMS}/brands/brand/${brand._id}`,
-        exact: true,
-      },
-      {
-        name: 'Коллекции',
-        testId: 'brand-collections',
-        path: `${ROUTE_CMS}/brands/brand/${brand._id}/collection`,
-      },
-    ];
-  }, [brand._id]);
+  const navConfig = [
+    {
+      name: 'Детали',
+      testId: 'brand-details',
+      path: links.cms.brands.brand.brandId.url,
+      exact: true,
+    },
+    {
+      name: 'Коллекции',
+      testId: 'brand-collections',
+      path: links.cms.brands.brand.brandId.collections.url,
+    },
+  ];
 
   const columns: WpTableColumn<BrandCollectionInterface>[] = [
     {

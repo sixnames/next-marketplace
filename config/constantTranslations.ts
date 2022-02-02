@@ -22,8 +22,8 @@ import {
   ATTRIBUTE_VARIANT_MULTIPLE_SELECT,
   ATTRIBUTE_VARIANT_STRING,
   ATTRIBUTE_VARIANT_NUMBER,
-  ROUTE_CMS_NAV_GROUP,
-  ROUTE_CONSOLE_NAV_GROUP,
+  NAV_GROUP_CMS,
+  NAV_GROUP_CONSOLE,
   GENDER_PLURAL,
   GENDER_SINGULAR,
   SUPPLIER_PRICE_VARIANT_DISCOUNT,
@@ -100,11 +100,11 @@ export const constantTranslations = {
     },
   },
   navGroups: {
-    [ROUTE_CMS_NAV_GROUP]: {
+    [NAV_GROUP_CMS]: {
       [DEFAULT_LOCALE]: 'CMS',
       [SECONDARY_LOCALE]: 'CMS',
     },
-    [ROUTE_CONSOLE_NAV_GROUP]: {
+    [NAV_GROUP_CONSOLE]: {
       [DEFAULT_LOCALE]: 'Панель управления компании',
       [SECONDARY_LOCALE]: 'Company console',
     },

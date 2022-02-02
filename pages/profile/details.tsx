@@ -10,7 +10,6 @@ import { UpdateMyPasswordModalInterface } from '../../components/Modal/UpdateMyP
 import RequestError from '../../components/RequestError';
 import StringButton from '../../components/StringButton';
 import WpTitle from '../../components/WpTitle';
-import { ROUTE_SIGN_IN } from '../../config/common';
 import { CONFIRM_MODAL, UPDATE_MY_PASSWORD_MODAL } from '../../config/modalVariants';
 import { useSiteUserContext } from '../../context/siteUserContext';
 import { getPageSessionUser } from '../../db/dao/user/getPageSessionUser';
@@ -24,9 +23,12 @@ import useValidationSchema from '../../hooks/useValidationSchema';
 import ProfileLayout from '../../layout/ProfileLayout/ProfileLayout';
 import RowWithGap from '../../layout/RowWithGap/RowWithGap';
 import SiteLayout, { SiteLayoutProviderInterface } from '../../layout/SiteLayout';
+import { getProjectLinks } from '../../lib/getProjectLinks';
 import { phoneToRaw } from '../../lib/phoneUtils';
 import { getSiteInitialData } from '../../lib/ssrUtils';
 import { updateMyProfileSchema } from '../../validation/userSchema';
+
+const links = getProjectLinks();
 
 const ProfileDetailsRoute: React.FC = () => {
   const router = useRouter();
@@ -76,7 +78,7 @@ const ProfileDetailsRoute: React.FC = () => {
                         redirect: false,
                       })
                         .then(() => {
-                          router.push(`${ROUTE_SIGN_IN}`).catch((e) => {
+                          router.push(links.signIn.url).catch((e) => {
                             console.log(e);
                           });
                         })
@@ -167,7 +169,7 @@ const ProfileDetailsRoute: React.FC = () => {
                                   redirect: false,
                                 })
                                   .then(() => {
-                                    router.push(`${ROUTE_SIGN_IN}`).catch((e) => {
+                                    router.push(links.signIn.url).catch((e) => {
                                       console.log(e);
                                     });
                                   })
@@ -225,7 +227,7 @@ export async function getServerSideProps(
     return {
       redirect: {
         permanent: false,
-        destination: ROUTE_SIGN_IN,
+        destination: links.signIn.url,
       },
     };
   }

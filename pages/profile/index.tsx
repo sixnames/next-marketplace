@@ -13,7 +13,7 @@ import WpIcon from '../../components/WpIcon';
 import WpImage from '../../components/WpImage';
 import WpTitle from '../../components/WpTitle';
 import WpTooltip from '../../components/WpTooltip';
-import { IMAGE_FALLBACK, ROUTE_SIGN_IN } from '../../config/common';
+import { IMAGE_FALLBACK } from '../../config/common';
 import { useSiteContext } from '../../context/siteContext';
 import {
   COL_GIFT_CERTIFICATES,
@@ -31,6 +31,7 @@ import { getDatabase } from '../../db/mongodb';
 import { OrderInterface, OrderProductInterface } from '../../db/uiInterfaces';
 import ProfileLayout from '../../layout/ProfileLayout/ProfileLayout';
 import SiteLayout, { SiteLayoutProviderInterface } from '../../layout/SiteLayout';
+import { getProjectLinks } from '../../lib/getProjectLinks';
 import { getFieldStringLocale } from '../../lib/i18n';
 import { noNaN } from '../../lib/numbers';
 import { castDbData, getSiteInitialData } from '../../lib/ssrUtils';
@@ -300,10 +301,11 @@ export async function getServerSideProps(
   });
 
   if (!sessionUser) {
+    const links = getProjectLinks();
     return {
       redirect: {
         permanent: false,
-        destination: ROUTE_SIGN_IN,
+        destination: links.signIn.url,
       },
     };
   }

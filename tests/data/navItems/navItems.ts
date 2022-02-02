@@ -1,4 +1,4 @@
-import { ROUTE_CONSOLE_NAV_GROUP, ROUTE_CMS_NAV_GROUP } from '../../../config/common';
+import { NAV_GROUP_CONSOLE, NAV_GROUP_CMS } from '../../../config/common';
 import { NavItemModel } from '../../../db/dbModels';
 import { getObjectId } from 'mongo-seeding';
 import { getProjectLinks } from '../../../lib/getProjectLinks';
@@ -18,7 +18,7 @@ const consoleNavItems: NavItemModel[] = [
     index: 0,
     icon: 'cart',
     path: '',
-    navGroup: ROUTE_CONSOLE_NAV_GROUP,
+    navGroup: NAV_GROUP_CONSOLE,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} console-orders`),
@@ -30,7 +30,7 @@ const consoleNavItems: NavItemModel[] = [
     index: 1,
     icon: 'cart',
     path: `/orders`,
-    navGroup: ROUTE_CONSOLE_NAV_GROUP,
+    navGroup: NAV_GROUP_CONSOLE,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} console-customers`),
@@ -42,7 +42,7 @@ const consoleNavItems: NavItemModel[] = [
     index: 2,
     icon: 'user',
     path: `/users`,
-    navGroup: ROUTE_CONSOLE_NAV_GROUP,
+    navGroup: NAV_GROUP_CONSOLE,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} console-user-categories`),
@@ -54,7 +54,7 @@ const consoleNavItems: NavItemModel[] = [
     index: 3,
     icon: 'user',
     path: `/user-categories`,
-    navGroup: ROUTE_CONSOLE_NAV_GROUP,
+    navGroup: NAV_GROUP_CONSOLE,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} console-shops`),
@@ -66,7 +66,7 @@ const consoleNavItems: NavItemModel[] = [
     index: 4,
     icon: 'marker',
     path: `/shops`,
-    navGroup: ROUTE_CONSOLE_NAV_GROUP,
+    navGroup: NAV_GROUP_CONSOLE,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} console-pages`),
@@ -78,7 +78,7 @@ const consoleNavItems: NavItemModel[] = [
     icon: 'filter',
     slug: 'console-pages',
     path: `/pages`,
-    navGroup: ROUTE_CONSOLE_NAV_GROUP,
+    navGroup: NAV_GROUP_CONSOLE,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} console-blog`),
@@ -90,7 +90,7 @@ const consoleNavItems: NavItemModel[] = [
     icon: 'pencil',
     slug: 'console-blog',
     path: `/blog`,
-    navGroup: ROUTE_CONSOLE_NAV_GROUP,
+    navGroup: NAV_GROUP_CONSOLE,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} console-promo`),
@@ -102,7 +102,7 @@ const consoleNavItems: NavItemModel[] = [
     icon: 'pencil',
     slug: 'console-promo',
     path: `/promo`,
-    navGroup: ROUTE_CONSOLE_NAV_GROUP,
+    navGroup: NAV_GROUP_CONSOLE,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} console-rubrics`),
@@ -114,7 +114,7 @@ const consoleNavItems: NavItemModel[] = [
     icon: 'filter',
     slug: 'console-rubrics',
     path: `/rubrics`,
-    navGroup: ROUTE_CONSOLE_NAV_GROUP,
+    navGroup: NAV_GROUP_CONSOLE,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} gift-certificates`),
@@ -126,7 +126,7 @@ const consoleNavItems: NavItemModel[] = [
     icon: 'filter',
     slug: 'gift-certificates',
     path: `/gift-certificates`,
-    navGroup: ROUTE_CONSOLE_NAV_GROUP,
+    navGroup: NAV_GROUP_CONSOLE,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} console-tasks`),
@@ -138,7 +138,7 @@ const consoleNavItems: NavItemModel[] = [
     icon: 'filter',
     slug: 'tasks',
     path: `/tasks`,
-    navGroup: ROUTE_CONSOLE_NAV_GROUP,
+    navGroup: NAV_GROUP_CONSOLE,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} console-task-variants`),
@@ -150,7 +150,7 @@ const consoleNavItems: NavItemModel[] = [
     icon: 'filter',
     slug: 'task-variants',
     path: `/task-variants`,
-    navGroup: ROUTE_CONSOLE_NAV_GROUP,
+    navGroup: NAV_GROUP_CONSOLE,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} console-config`),
@@ -162,7 +162,7 @@ const consoleNavItems: NavItemModel[] = [
     index: 99,
     icon: 'gear',
     path: `/config`,
-    navGroup: ROUTE_CONSOLE_NAV_GROUP,
+    navGroup: NAV_GROUP_CONSOLE,
   },
 ];
 
@@ -178,7 +178,7 @@ const cmsNavItems: NavItemModel[] = [
     slug: 'cms-base',
     icon: 'cart',
     path: links.cms.url,
-    navGroup: ROUTE_CMS_NAV_GROUP,
+    navGroup: NAV_GROUP_CMS,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} cms-orders`),
@@ -189,7 +189,7 @@ const cmsNavItems: NavItemModel[] = [
     index: 1,
     slug: 'cms-orders',
     path: '/cms/orders',
-    navGroup: ROUTE_CMS_NAV_GROUP,
+    navGroup: NAV_GROUP_CMS,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} cms-rubrics`),
@@ -200,7 +200,7 @@ const cmsNavItems: NavItemModel[] = [
     index: 2,
     slug: 'cms-rubrics',
     path: links.cms.rubrics.url,
-    navGroup: ROUTE_CMS_NAV_GROUP,
+    navGroup: NAV_GROUP_CMS,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} cms-companies`),
@@ -211,7 +211,7 @@ const cmsNavItems: NavItemModel[] = [
     index: 3,
     slug: 'cms-companies',
     path: links.cms.companies.url,
-    navGroup: ROUTE_CMS_NAV_GROUP,
+    navGroup: NAV_GROUP_CMS,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} cms-sync-errors`),
@@ -222,7 +222,7 @@ const cmsNavItems: NavItemModel[] = [
     index: 4,
     slug: 'cms-sync-errors',
     path: links.cms.syncErrors.url,
-    navGroup: ROUTE_CMS_NAV_GROUP,
+    navGroup: NAV_GROUP_CMS,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} cms-rubric-variants`),
@@ -233,7 +233,7 @@ const cmsNavItems: NavItemModel[] = [
     index: 5,
     slug: 'cms-rubric-variants',
     path: links.cms.rubricVariants.url,
-    navGroup: ROUTE_CMS_NAV_GROUP,
+    navGroup: NAV_GROUP_CMS,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} cms-attributes-groups`),
@@ -244,7 +244,7 @@ const cmsNavItems: NavItemModel[] = [
     index: 6,
     slug: 'cms-attributes',
     path: links.cms.attributes.url,
-    navGroup: ROUTE_CMS_NAV_GROUP,
+    navGroup: NAV_GROUP_CMS,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} cms-options-groups`),
@@ -255,7 +255,7 @@ const cmsNavItems: NavItemModel[] = [
     index: 7,
     slug: 'cms-options-groups',
     path: links.cms.options.url,
-    navGroup: ROUTE_CMS_NAV_GROUP,
+    navGroup: NAV_GROUP_CMS,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} cms-metrics`),
@@ -266,7 +266,7 @@ const cmsNavItems: NavItemModel[] = [
     index: 8,
     slug: 'cms-metrics',
     path: links.cms.metrics.url,
-    navGroup: ROUTE_CMS_NAV_GROUP,
+    navGroup: NAV_GROUP_CMS,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} cms-order-statuses`),
@@ -277,7 +277,7 @@ const cmsNavItems: NavItemModel[] = [
     index: 9,
     slug: 'cms-order-statuses',
     path: links.cms.orderStatuses.url,
-    navGroup: ROUTE_CMS_NAV_GROUP,
+    navGroup: NAV_GROUP_CMS,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} tasks`),
@@ -288,7 +288,7 @@ const cmsNavItems: NavItemModel[] = [
     index: 10,
     slug: 'cms-tasks',
     path: links.cms.tasks.url,
-    navGroup: ROUTE_CMS_NAV_GROUP,
+    navGroup: NAV_GROUP_CMS,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} task-variants`),
@@ -299,7 +299,7 @@ const cmsNavItems: NavItemModel[] = [
     index: 11,
     slug: 'cms-task-variants',
     path: links.cms.taskVariants.url,
-    navGroup: ROUTE_CMS_NAV_GROUP,
+    navGroup: NAV_GROUP_CMS,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} cms-brands`),
@@ -310,7 +310,7 @@ const cmsNavItems: NavItemModel[] = [
     index: 12,
     slug: 'cms-brands',
     path: links.cms.brands.url,
-    navGroup: ROUTE_CMS_NAV_GROUP,
+    navGroup: NAV_GROUP_CMS,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} cms-manufacturers`),
@@ -321,7 +321,7 @@ const cmsNavItems: NavItemModel[] = [
     index: 13,
     slug: 'cms-manufacturers',
     path: links.cms.manufacturers.url,
-    navGroup: ROUTE_CMS_NAV_GROUP,
+    navGroup: NAV_GROUP_CMS,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} cms-suppliers`),
@@ -332,7 +332,7 @@ const cmsNavItems: NavItemModel[] = [
     index: 14,
     slug: 'cms-suppliers',
     path: links.cms.suppliers.url,
-    navGroup: ROUTE_CMS_NAV_GROUP,
+    navGroup: NAV_GROUP_CMS,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} cms-users`),
@@ -343,7 +343,7 @@ const cmsNavItems: NavItemModel[] = [
     index: 15,
     slug: 'cms-users',
     path: links.cms.users.url,
-    navGroup: ROUTE_CMS_NAV_GROUP,
+    navGroup: NAV_GROUP_CMS,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} cms-blog`),
@@ -354,7 +354,7 @@ const cmsNavItems: NavItemModel[] = [
     index: 93,
     slug: 'cms-blog',
     path: links.cms.blog.url,
-    navGroup: ROUTE_CMS_NAV_GROUP,
+    navGroup: NAV_GROUP_CMS,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} cms-pages`),
@@ -365,7 +365,7 @@ const cmsNavItems: NavItemModel[] = [
     index: 94,
     slug: 'cms-pages',
     path: links.cms.pages.url,
-    navGroup: ROUTE_CMS_NAV_GROUP,
+    navGroup: NAV_GROUP_CMS,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} cms-page-templates`),
@@ -376,7 +376,7 @@ const cmsNavItems: NavItemModel[] = [
     index: 95,
     slug: 'cms-page-templates',
     path: links.cms.pageTemplates.url,
-    navGroup: ROUTE_CMS_NAV_GROUP,
+    navGroup: NAV_GROUP_CMS,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} cms-languages`),
@@ -387,7 +387,7 @@ const cmsNavItems: NavItemModel[] = [
     index: 96,
     slug: 'cms-languages',
     path: links.cms.languages.url,
-    navGroup: ROUTE_CMS_NAV_GROUP,
+    navGroup: NAV_GROUP_CMS,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} cms-nav-items`),
@@ -398,7 +398,7 @@ const cmsNavItems: NavItemModel[] = [
     index: 97,
     slug: 'cms-nav-items',
     path: links.cms.nav.url,
-    navGroup: ROUTE_CMS_NAV_GROUP,
+    navGroup: NAV_GROUP_CMS,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} cms-config`),
@@ -409,7 +409,7 @@ const cmsNavItems: NavItemModel[] = [
     index: 98,
     slug: 'cms-config',
     path: links.cms.config.url,
-    navGroup: ROUTE_CMS_NAV_GROUP,
+    navGroup: NAV_GROUP_CMS,
   },
   {
     _id: getObjectId(`${navItemsDefaultSlug} cms-roles`),
@@ -420,7 +420,7 @@ const cmsNavItems: NavItemModel[] = [
     index: 99,
     slug: 'cms-roles',
     path: links.cms.roles.url,
-    navGroup: ROUTE_CMS_NAV_GROUP,
+    navGroup: NAV_GROUP_CMS,
   },
 ];
 

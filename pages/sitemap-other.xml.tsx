@@ -6,14 +6,12 @@ import {
   DEFAULT_COMPANY_SLUG,
   DEFAULT_LOCALE,
   PAGE_STATE_PUBLISHED,
-  ROUTE_BLOG,
-  ROUTE_BLOG_POST,
-  ROUTE_CONTACTS,
 } from '../config/common';
 import { COL_BLOG_POSTS, COL_COMPANIES, COL_CONFIGS } from '../db/collectionNames';
 import { BlogPostModel, CompanyModel, ConfigModel } from '../db/dbModels';
 import { getDatabase } from '../db/mongodb';
 import { castConfigs, getConfigBooleanValue } from '../lib/configsUtils';
+import { getProjectLinks } from '../lib/getProjectLinks';
 
 const SitemapXml: React.FC = () => {
   return <div />;
@@ -24,13 +22,15 @@ interface CreateSitemapInterface {
   slugs: string[];
 }
 
+const links = getProjectLinks();
+
 const createSitemap = ({
   host,
   slugs,
 }: CreateSitemapInterface) => `<?xml version="1.0" encoding="UTF-8"?>
     <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
         <url>
-            <loc>https://${host}${ROUTE_CONTACTS}</loc>
+            <loc>https://${host}${links.contacts.url}</loc>
         </url>
         ${slugs
           .map((slug) => {
@@ -95,11 +95,13 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   // get blog slugs
   const showBlog = getConfigBooleanValue({ configs, slug: 'showBlog' });
   if (showBlog && blogPosts.length > 0) {
-    const blogBasePath = `${ROUTE_BLOG}`;
-    initialSlugs.push(blogBasePath);
+    initialSlugs.push(links.blog.url);
 
     blogPosts.forEach(({ slug }) => {
-      initialSlugs.push(`${ROUTE_BLOG_POST}/${slug}`);
+      const links = getProjectLinks({
+        blogPostSlug: slug,
+      });
+      initialSlugs.push(links.blog.post.blogPostSlug.url);
     });
   }
 

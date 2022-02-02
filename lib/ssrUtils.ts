@@ -3,7 +3,6 @@ import {
   DEFAULT_COMPANY_SLUG,
   PAGE_STATE_PUBLISHED,
   ROLE_SLUG_ADMIN,
-  ROUTE_SIGN_IN,
   SORT_ASC,
 } from '../config/common';
 import { COL_PAGES, COL_PAGES_GROUP } from '../db/collectionNames';
@@ -105,7 +104,7 @@ export async function getConsoleInitialData({
     return {
       redirect: {
         permanent: false,
-        destination: ROUTE_SIGN_IN,
+        destination: links.signIn.url,
       },
     };
   }
@@ -138,7 +137,7 @@ export async function getConsoleInitialData({
     return {
       redirect: {
         permanent: false,
-        destination: ROUTE_SIGN_IN,
+        destination: links.signIn.url,
       },
     };
   }
@@ -195,7 +194,7 @@ export async function getConsoleMainPageData({
     return {
       redirect: {
         permanent: false,
-        destination: ROUTE_SIGN_IN,
+        destination: links.signIn.url,
       },
     };
   }
@@ -272,7 +271,7 @@ export async function getAppInitialData({
     return {
       redirect: {
         permanent: false,
-        destination: ROUTE_SIGN_IN,
+        destination: links.signIn.url,
       },
     };
   }

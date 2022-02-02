@@ -8,7 +8,6 @@ import WpLink from '../../components/Link/WpLink';
 import { MapModalInterface } from '../../components/Modal/MapModal';
 import Socials from '../../components/Socials';
 import WpIcon from '../../components/WpIcon';
-import { ROUTE_BLOG, ROUTE_CONTACTS, ROUTE_DOCS } from '../../config/common';
 import { getConstantTranslation } from '../../config/constantTranslations';
 import { MAP_MODAL } from '../../config/modalVariants';
 import { useAppContext } from '../../context/appContext';
@@ -16,7 +15,10 @@ import { useConfigContext } from '../../context/configContext';
 import { useLocaleContext } from '../../context/localeContext';
 import { PagesGroupInterface } from '../../db/uiInterfaces';
 import { useShopMarker } from '../../hooks/useShopMarker';
+import { getProjectLinks } from '../../lib/getProjectLinks';
 import { phoneToRaw, phoneToReadable } from '../../lib/phoneUtils';
+
+const links = getProjectLinks();
 
 export interface FooterInterface {
   footerPageGroups: PagesGroupInterface[];
@@ -174,7 +176,7 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
                       return (
                         <li className='' key={`${_id}`}>
                           <WpLink
-                            href={`${ROUTE_DOCS}/${slug}`}
+                            href={`${links.docs.url}/${slug}`}
                             target={'_blank'}
                             className='block cursor-pointer pt-1.5 pb-1.5 text-secondary-text hover:text-theme hover:no-underline'
                           >
@@ -187,7 +189,7 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
                     {index === 0 && showBlog ? (
                       <li className=''>
                         <WpLink
-                          href={ROUTE_BLOG}
+                          href={links.blog.url}
                           target={'_blank'}
                           className='block cursor-pointer pt-1.5 pb-1.5 text-secondary-text hover:text-theme hover:no-underline'
                         >
@@ -199,7 +201,7 @@ const Footer: React.FC<FooterInterface> = ({ footerPageGroups }) => {
                     {index === 0 ? (
                       <li className=''>
                         <WpLink
-                          href={`${ROUTE_CONTACTS}`}
+                          href={links.contacts.url}
                           target={'_blank'}
                           className='block cursor-pointer pt-1.5 pb-1.5 text-secondary-text hover:text-theme hover:no-underline'
                         >

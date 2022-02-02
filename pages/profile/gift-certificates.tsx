@@ -5,7 +5,6 @@ import Currency from '../../components/Currency';
 import RequestError from '../../components/RequestError';
 import WpTable, { WpTableColumn } from '../../components/WpTable';
 import WpTitle from '../../components/WpTitle';
-import { ROUTE_SIGN_IN } from '../../config/common';
 import { useSiteUserContext } from '../../context/siteUserContext';
 import { COL_GIFT_CERTIFICATES } from '../../db/collectionNames';
 import { getPageSessionUser } from '../../db/dao/user/getPageSessionUser';
@@ -13,8 +12,11 @@ import { getDatabase } from '../../db/mongodb';
 import { GiftCertificateInterface } from '../../db/uiInterfaces';
 import ProfileLayout from '../../layout/ProfileLayout/ProfileLayout';
 import SiteLayout, { SiteLayoutProviderInterface } from '../../layout/SiteLayout';
+import { getProjectLinks } from '../../lib/getProjectLinks';
 import { getFieldStringLocale, getNumWord } from '../../lib/i18n';
 import { castDbData, getSiteInitialData } from '../../lib/ssrUtils';
+
+const links = getProjectLinks();
 
 interface ProfileGiftCertificatesPageConsumerInterface {
   giftCertificates: GiftCertificateInterface[];
@@ -117,7 +119,7 @@ export async function getServerSideProps(
     return {
       redirect: {
         permanent: false,
-        destination: ROUTE_SIGN_IN,
+        destination: links.signIn.url,
       },
     };
   }

@@ -1,8 +1,8 @@
 import { getSession } from 'next-auth/react';
 import {
   ROLE_SLUG_ADMIN,
-  ROUTE_CMS_NAV_GROUP,
-  ROUTE_CONSOLE_NAV_GROUP,
+  NAV_GROUP_CMS,
+  NAV_GROUP_CONSOLE,
   SORT_ASC,
 } from '../../../config/common';
 import { getProjectLinks } from '../../../lib/getProjectLinks';
@@ -126,7 +126,7 @@ export async function getPageSessionUser({
                     cond: {
                       $and: [
                         {
-                          $eq: ['$$navItem.navGroup', ROUTE_CONSOLE_NAV_GROUP],
+                          $eq: ['$$navItem.navGroup', NAV_GROUP_CONSOLE],
                         },
                         {
                           $ne: ['$$navItem.path', ''],
@@ -142,7 +142,7 @@ export async function getPageSessionUser({
                     cond: {
                       $and: [
                         {
-                          $eq: ['$$navItem.navGroup', ROUTE_CMS_NAV_GROUP],
+                          $eq: ['$$navItem.navGroup', NAV_GROUP_CMS],
                         },
                         {
                           $ne: ['$$navItem.path', links.cms.url],

@@ -400,18 +400,15 @@ export const PAGE_EDITOR_DEFAULT_VALUE: Value = {
 };
 
 // Routes
-export const ROUTE_DOCS = '/docs';
-export const ROUTE_PROMO = '/promo';
-export const ROUTE_CONSOLE_NAV_GROUP = 'console';
-export const ROUTE_CMS_NAV_GROUP = 'cms';
-export const ROUTE_SIGN_IN = '/sign-in';
-export const ROUTE_CONTACTS = `/contacts`;
 export const ROUTE_BLOG = `/blog`;
 export const ROUTE_BLOG_POST = `${ROUTE_BLOG}/post`;
 export const ROUTE_CATALOGUE = `/catalogue`;
 export const ROUTE_THANK_YOU = `/thank-you`;
-export const CMS_ORDERS_NAV_ITEM_SLUG = `${ROUTE_CMS_NAV_GROUP}-orders`;
-export const CONSOLE_ORDERS_NAV_ITEM_SLUG = `${ROUTE_CONSOLE_NAV_GROUP}-orders`;
+
+export const NAV_GROUP_CONSOLE = 'console';
+export const NAV_GROUP_CMS = 'cms';
+export const CMS_ORDERS_NAV_ITEM_SLUG = `${NAV_GROUP_CMS}-orders`;
+export const CONSOLE_ORDERS_NAV_ITEM_SLUG = `${NAV_GROUP_CONSOLE}-orders`;
 
 // query params
 export const QUERY_DATA_LAYOUT_PAGE = 'page';

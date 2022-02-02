@@ -1,8 +1,10 @@
-import { DEFAULT_LOCALE, GENDER_HE, GENDER_IT, GENDER_SHE, ROUTE_CMS } from 'config/common';
+import { DEFAULT_LOCALE, GENDER_HE, GENDER_IT, GENDER_SHE } from 'config/common';
+import { getProjectLinks } from '../../../lib/getProjectLinks';
 
 describe('Options', () => {
+  const links = getProjectLinks();
   beforeEach(() => {
-    cy.testAuth(`${ROUTE_CMS}/options`);
+    cy.testAuth(links.cms.options.url);
   });
 
   it('Should CRUD option in group', () => {
@@ -45,7 +47,7 @@ describe('Options', () => {
     cy.getByCy(`option-${childOptionName}`).should('not.exist');
 
     // Should update option
-    cy.visit(`${ROUTE_CMS}/options`);
+    cy.visit(links.cms.options.url);
     cy.getByCy(`Тип вина-update`).click();
     cy.wait(1500);
     cy.visitBlank('Крепленое');

@@ -1,8 +1,9 @@
-import { ROUTE_CMS } from 'config/common';
+import { getProjectLinks } from '../../../lib/getProjectLinks';
 
 describe('Users', () => {
+  const links = getProjectLinks();
   beforeEach(() => {
-    cy.testAuth(`${ROUTE_CMS}/users`);
+    cy.testAuth(links.cms.users.url);
   });
 
   it('Should CRUD users', () => {

@@ -1,8 +1,10 @@
-import { DEFAULT_LOCALE, ROUTE_CMS } from 'config/common';
+import { DEFAULT_LOCALE } from 'config/common';
+import { getProjectLinks } from '../../../lib/getProjectLinks';
 
 describe('Blog', () => {
+  const links = getProjectLinks();
   beforeEach(() => {
-    cy.testAuth(`${ROUTE_CMS}/blog`);
+    cy.testAuth(links.cms.blog.url);
   });
 
   it('Should CRUD product attributes', () => {
@@ -70,7 +72,7 @@ describe('Blog', () => {
     cy.wait(1500);
 
     // should delete post
-    cy.visit(`${ROUTE_CMS}/blog`);
+    cy.visit(links.cms.blog.url);
     cy.getByCy(`${updatedPostTitle}-delete`).click();
     cy.getByCy(`confirm`).click();
     cy.wait(1500);

@@ -7,7 +7,7 @@ import { getFieldStringLocale } from '../../../lib/i18n';
 import { getConsoleCompanyLinks } from '../../../lib/linkUtils';
 import { noNaN } from '../../../lib/numbers';
 import { castDbData, getConsoleInitialData } from '../../../lib/ssrUtils';
-import { ConsoleShopsListPageInterface } from '../../../pages/console/[companyId]/shops/[...flters]';
+import { ConsoleShopsListPageInterface } from '../../../pages/console/[companyId]/shops/[...filters]';
 import { COL_CITIES, COL_SHOP_PRODUCTS, COL_SHOPS } from '../../collectionNames';
 import { getDatabase } from '../../mongodb';
 import { AppPaginationAggregationInterface, ShopInterface } from '../../uiInterfaces';

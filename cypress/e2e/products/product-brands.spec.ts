@@ -1,8 +1,9 @@
-import { ROUTE_CMS } from 'config/common';
+import { getProjectLinks } from '../../../lib/getProjectLinks';
 
 describe('Rubric products', () => {
+  const links = getProjectLinks();
   beforeEach(() => {
-    cy.testAuth(`${ROUTE_CMS}/rubrics`);
+    cy.testAuth(links.cms.rubrics.url);
   });
 
   it('Should CRUD product brands', () => {

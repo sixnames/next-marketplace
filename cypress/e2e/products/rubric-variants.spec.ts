@@ -1,8 +1,10 @@
-import { DEFAULT_LOCALE, ROUTE_CMS } from 'config/common';
+import { DEFAULT_LOCALE } from 'config/common';
+import { getProjectLinks } from '../../../lib/getProjectLinks';
 
 describe('Rubric variants', () => {
+  const links = getProjectLinks();
   beforeEach(() => {
-    cy.testAuth(`${ROUTE_CMS}/rubric-variants`);
+    cy.testAuth(links.cms.rubricVariants.url);
   });
 
   it(`Should CRUD rubric variant`, () => {
@@ -35,7 +37,7 @@ describe('Rubric variants', () => {
     cy.getByCy(`nameI18n-${DEFAULT_LOCALE}`).clear().type(updatedRubricVariantName);
     cy.getByCy('rubric-variant-submit').click();
     cy.wait(1500);
-    cy.visit(`${ROUTE_CMS}/rubric-variants`);
+    cy.visit(links.cms.rubricVariants.url);
     cy.wait(1500);
     cy.getByCy(`${newRubricVariantName}-row`).should('not.exist');
     cy.getByCy(`${updatedRubricVariantName}-row`).should('exist');

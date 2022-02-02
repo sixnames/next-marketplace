@@ -159,8 +159,11 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
           },
         )
         .toArray();
+
       seoContents.forEach(({ url }) => {
-        const newUrl = url.replace(`/${companySlug}/${DEFAULT_CITY}`, '');
+        const newUrl = url
+          .replace(`/${companySlug}/${DEFAULT_CITY}`, '')
+          .replace(`/${DEFAULT_COMPANY_SLUG}/${DEFAULT_CITY}`, '');
         if (!initialSlugs.includes(newUrl)) {
           initialSlugs.push(newUrl);
         }

@@ -108,6 +108,6 @@ function normalizeFieldPath(urlPath: string) {
     return ${fieldsString};
   }
   `;
-  fs.writeFileSync('./lib/projectLinks.ts', output);
+  fs.writeFileSync('./lib/getProjectLinks.ts', output);
   // console.log(fields);
 })();

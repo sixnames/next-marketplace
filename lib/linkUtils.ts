@@ -1,5 +1,10 @@
-import { ROUTE_CMS, ROUTE_CONSOLE, ROUTE_PROFILE } from '../config/common';
+import { ROUTE_PROFILE } from '../config/common';
 import { ObjectIdModel } from '../db/dbModels';
+import { getProjectLinks } from './getProjectLinks';
+
+const links = getProjectLinks();
+const routeCms = links.cms.url;
+const routeConsole = links.console.url;
 
 // order
 interface GetOrderLinkInterface {
@@ -16,11 +21,11 @@ export function getOrderLink(props?: GetOrderLinkInterface) {
   const domain = props?.domain || `${process.env.DEFAULT_DOMAIN}`;
 
   if (variant === 'companyManager' && companyId && orderObjectId) {
-    path = `${ROUTE_CONSOLE}/orders/order/${orderObjectId.toHexString()}`;
+    path = `${routeConsole}/orders/order/${orderObjectId.toHexString()}`;
   }
 
   if (variant === 'siteAdmin' && orderObjectId) {
-    path = `${ROUTE_CMS}/orders/${orderObjectId.toHexString()}`;
+    path = `${routeCms}/orders/${orderObjectId.toHexString()}`;
   }
 
   return `${protocol}${domain}${path}`;
@@ -34,7 +39,7 @@ interface GetConsoleProductLinksInterface {
 
 export function getConsoleProductLinks({
   productId,
-  basePath = ROUTE_CMS,
+  basePath = routeCms,
 }: GetConsoleProductLinksInterface) {
   const parentLink = `${basePath}/products`;
   const itemPath = `${parentLink}/product`;
@@ -79,7 +84,7 @@ interface GetConsoleRubricLinkInterface
 }
 export function getConsoleRubricLinks({
   rubricSlug = '',
-  basePath = ROUTE_CMS,
+  basePath = routeCms,
   productId,
   categoryId,
 }: GetConsoleRubricLinkInterface) {
@@ -107,7 +112,7 @@ export function getConsoleRubricLinks({
 interface GetConsoleConfigsLinkInterface {
   basePath?: string;
 }
-export function getConsoleConfigsLinks({ basePath = ROUTE_CMS }: GetConsoleConfigsLinkInterface) {
+export function getConsoleConfigsLinks({ basePath = routeCms }: GetConsoleConfigsLinkInterface) {
   const parentLink = `${basePath}`;
   const root = `${parentLink}/config`;
   return {
@@ -285,7 +290,7 @@ interface GetCmsCompanyLinkInterface
 }
 export function getCmsCompanyLinks({
   companyId = '',
-  basePath = ROUTE_CMS,
+  basePath = routeCms,
   rubricSlug,
   shopId,
   productId,
@@ -301,7 +306,7 @@ export function getCmsCompanyLinks({
   taskVariantId,
   taskId,
 }: GetCmsCompanyLinkInterface) {
-  const parentLink = basePath?.includes(ROUTE_CMS) ? `${basePath}/companies` : basePath;
+  const parentLink = basePath?.includes(routeCms) ? `${basePath}/companies` : basePath;
   const root = `${parentLink}/${companyId}`;
 
   return {
@@ -368,7 +373,7 @@ interface GetConsoleUserLinksInterface {
 }
 
 export function getConsoleUserLinks({
-  basePath = ROUTE_CMS,
+  basePath = routeCms,
   orderId,
   userId,
 }: GetConsoleUserLinksInterface) {
@@ -399,7 +404,7 @@ interface GetConsoleCompanyLinkInterface extends GetCmsCompanyLinkInterface {
 export function getConsoleCompanyLinks(props: GetConsoleCompanyLinkInterface) {
   const links = getCmsCompanyLinks({
     ...props,
-    basePath: ROUTE_CONSOLE,
+    basePath: routeConsole,
   });
   const configRoot = `${links.root}/config`;
   const orderParentLink = `${links.root}/orders`;
@@ -500,7 +505,7 @@ export function getCmsLinks(props: GetCmsLinksInterface) {
     taskVariantId,
     taskId,
   } = props;
-  const root = ROUTE_CMS;
+  const root = routeCms;
   const basePath = root;
 
   return {

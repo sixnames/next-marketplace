@@ -6,7 +6,7 @@ import FixedButtons from '../../../../../components/button/FixedButtons';
 import WpButton from '../../../../../components/button/WpButton';
 import UserMainFields from '../../../../../components/FormTemplates/UserMainFields';
 import Inner from '../../../../../components/Inner';
-import { ROUTE_CMS, SORT_DESC } from '../../../../../config/common';
+import { SORT_DESC } from '../../../../../config/common';
 import { COL_ROLES, COL_USERS } from '../../../../../db/collectionNames';
 import { UpdateUserInputInterface } from '../../../../../db/dao/user/updateUser';
 import { getDatabase } from '../../../../../db/mongodb';
@@ -20,6 +20,7 @@ import useMutationCallbacks from '../../../../../hooks/useMutationCallbacks';
 import useValidationSchema from '../../../../../hooks/useValidationSchema';
 import CmsUserLayout from '../../../../../layout/cms/CmsUserLayout';
 import ConsoleLayout from '../../../../../layout/cms/ConsoleLayout';
+import { getProjectLinks } from '../../../../../lib/getProjectLinks';
 import { getFieldStringLocale } from '../../../../../lib/i18n';
 import { getFullName } from '../../../../../lib/nameUtils';
 import { phoneToRaw } from '../../../../../lib/phoneUtils';
@@ -55,12 +56,13 @@ const UserDetailsConsumer: React.FC<UserDetailsConsumerInterface> = ({ user, rol
     notifications: user.notifications,
   };
 
+  const links = getProjectLinks();
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${user.fullName}`,
     config: [
       {
         name: 'Пользователи',
-        href: `${ROUTE_CMS}/users`,
+        href: links.cms.users.url,
       },
     ],
   };

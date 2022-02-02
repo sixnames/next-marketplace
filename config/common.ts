@@ -402,8 +402,6 @@ export const PAGE_EDITOR_DEFAULT_VALUE: Value = {
 // Routes
 export const ROUTE_DOCS = '/docs';
 export const ROUTE_PROMO = '/promo';
-export const ROUTE_CONSOLE = '/console';
-export const ROUTE_CMS = `/cms`;
 export const ROUTE_CONSOLE_NAV_GROUP = 'console';
 export const ROUTE_CMS_NAV_GROUP = 'cms';
 export const ROUTE_SIGN_IN = '/sign-in';

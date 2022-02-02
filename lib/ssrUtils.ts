@@ -3,7 +3,6 @@ import {
   DEFAULT_COMPANY_SLUG,
   PAGE_STATE_PUBLISHED,
   ROLE_SLUG_ADMIN,
-  ROUTE_CMS,
   ROUTE_SIGN_IN,
   SORT_ASC,
 } from '../config/common';
@@ -15,7 +14,11 @@ import { CompanyInterface, PageInterface, PagesGroupInterface } from '../db/uiIn
 import { SiteLayoutCatalogueCreatedPages, SiteLayoutProviderInterface } from '../layout/SiteLayout';
 import { PagePropsInterface } from '../pages/_app';
 import { getPageCompanySsr } from './getPageCompanySsr';
+import { getProjectLinks } from './getProjectLinks';
 import { getI18nLocaleValue } from './i18n';
+
+const links = getProjectLinks();
+const routeCms = links.cms.url;
 
 export interface GetPageInitialDataCommonInterface {
   locale: string;
@@ -39,9 +42,9 @@ function checkPagePermission({
 
   // Check cms root url
   if (isCms) {
-    const cmsRootUrlList = finalUrl.split(ROUTE_CMS);
+    const cmsRootUrlList = finalUrl.split(routeCms);
     if (!cmsRootUrlList[1] || cmsRootUrlList[1] === excludedExtension) {
-      return initialAllowedAppNavItems.includes(ROUTE_CMS);
+      return initialAllowedAppNavItems.includes(routeCms);
     }
   }
 
@@ -52,7 +55,7 @@ function checkPagePermission({
 
   // Check nested urls
   const finalAllowedAppNavItems = initialAllowedAppNavItems.filter((path) => {
-    return path !== ROUTE_CMS && path !== '';
+    return path !== routeCms && path !== '';
   });
 
   if (finalUrl === '/') {

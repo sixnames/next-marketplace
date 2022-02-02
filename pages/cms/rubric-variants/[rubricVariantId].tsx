@@ -11,7 +11,6 @@ import FormikTranslationsInput from '../../../components/FormElements/Input/Form
 import FormikLayoutSelect from '../../../components/FormElements/Select/FormikLayoutSelect';
 import Inner from '../../../components/Inner';
 import WpTitle from '../../../components/WpTitle';
-import { ROUTE_CMS } from '../../../config/common';
 import {
   CARD_LAYOUT_OPTIONS,
   CATALOGUE_FILTER_LAYOUT_OPTIONS,
@@ -32,6 +31,7 @@ import useMutationCallbacks from '../../../hooks/useMutationCallbacks';
 import useValidationSchema from '../../../hooks/useValidationSchema';
 import AppContentWrapper from '../../../layout/AppContentWrapper';
 import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
+import { getProjectLinks } from '../../../lib/getProjectLinks';
 import { getFieldStringLocale } from '../../../lib/i18n';
 import {
   castDbData,
@@ -58,13 +58,15 @@ const RubricVariantConsumer: React.FC<RubricVariantConsumerInterface> = ({ rubri
     onCompleted: (data) => onCompleteCallback(data.updateRubricVariant),
   });
 
+  const links = getProjectLinks();
+
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `${rubricVariant.name}`,
     config: [
       {
         name: 'Типы рубрик',
         testId: 'rubric-variants-breadcrumb',
-        href: `${ROUTE_CMS}/rubric-variants`,
+        href: links.cms.rubricVariants.url,
       },
     ],
   };

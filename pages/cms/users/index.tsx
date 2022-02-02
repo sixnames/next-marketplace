@@ -1,17 +1,5 @@
-import * as React from 'react';
-import { ROUTE_CMS } from '../../../config/common';
+import { getCmsUsersListPageSsr } from '../../../db/dao/ssr/getCmsUsersListPageSsr';
+import CmsUsersListPage from './[...filters]';
 
-const UserIndex: React.FC = () => {
-  return <div />;
-};
-
-export const getServerSideProps = () => {
-  return {
-    redirect: {
-      permanent: true,
-      destination: `${ROUTE_CMS}/users/page-1`,
-    },
-  };
-};
-
-export default UserIndex;
+export const getServerSideProps = getCmsUsersListPageSsr;
+export default CmsUsersListPage;

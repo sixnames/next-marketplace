@@ -1,17 +1,5 @@
-import * as React from 'react';
-import { ROUTE_CMS } from '../../../config/common';
+import { getCmsManufacturersListPageSsr } from '../../../db/dao/ssr/getCmsManufacturersListPageSsr';
+import CmsManufacturersListPage from './[...filters]';
 
-const ManufacturersIndex: React.FC = () => {
-  return <div />;
-};
-
-export const getServerSideProps = () => {
-  return {
-    redirect: {
-      permanent: true,
-      destination: `${ROUTE_CMS}/manufacturers/page-1`,
-    },
-  };
-};
-
-export default ManufacturersIndex;
+export const getServerSideProps = getCmsManufacturersListPageSsr;
+export default CmsManufacturersListPage;

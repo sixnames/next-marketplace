@@ -1,7 +1,7 @@
+import { NextPage } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import ContentItemControls from '../../../components/button/ContentItemControls';
 import FixedButtons from '../../../components/button/FixedButtons';
 import WpButton from '../../../components/button/WpButton';
@@ -14,10 +14,8 @@ import { CreateUserModalInterface } from '../../../components/Modal/CreateUserMo
 import Pager from '../../../components/Pager';
 import WpTable, { WpTableColumn } from '../../../components/WpTable';
 import WpTitle from '../../../components/WpTitle';
-import { DEFAULT_PAGE, ROUTE_CMS, SORT_DESC } from '../../../config/common';
 import { CONFIRM_MODAL, CREATE_USER_MODAL } from '../../../config/modalVariants';
-import { COL_ROLES, COL_USER_CATEGORIES, COL_USERS } from '../../../db/collectionNames';
-import { getDatabase } from '../../../db/mongodb';
+import { getCmsUsersListPageSsr } from '../../../db/dao/ssr/getCmsUsersListPageSsr';
 import {
   AppPaginationInterface,
   RoleInterface,
@@ -28,28 +26,19 @@ import { useDeleteUserMutation } from '../../../hooks/mutations/useUserMutations
 import useMutationCallbacks from '../../../hooks/useMutationCallbacks';
 import AppContentWrapper from '../../../layout/AppContentWrapper';
 import ConsoleLayout from '../../../layout/cms/ConsoleLayout';
-import { alwaysArray } from '../../../lib/arrayUtils';
-import { castUrlFilters } from '../../../lib/castUrlFilters';
-import { getFieldStringLocale } from '../../../lib/i18n';
-import { getFullName } from '../../../lib/nameUtils';
-import { phoneToRaw, phoneToReadable } from '../../../lib/phoneUtils';
-import {
-  castDbData,
-  getAppInitialData,
-  GetAppInitialDataPropsInterface,
-} from '../../../lib/ssrUtils';
+import { GetAppInitialDataPropsInterface } from '../../../lib/ssrUtils';
 
 interface UsersConsumerFiltersInterface {
   roles: RoleInterface[];
 }
 
-interface UsersConsumerInterface extends AppPaginationInterface<UserInterface> {
+export interface CmsUsersListConsumerInterface extends AppPaginationInterface<UserInterface> {
   filters: UsersConsumerFiltersInterface;
 }
 
 const pageTitle = 'Пользователи';
 
-const UsersConsumer: React.FC<UsersConsumerInterface> = ({
+const CmsUsersListConsumer: React.FC<CmsUsersListConsumerInterface> = ({
   docs,
   page,
   totalPages,
@@ -189,270 +178,17 @@ const UsersConsumer: React.FC<UsersConsumerInterface> = ({
   );
 };
 
-interface UsersPageInterface extends GetAppInitialDataPropsInterface, UsersConsumerInterface {}
+export interface CmsUsersListPageInterface
+  extends GetAppInitialDataPropsInterface,
+    CmsUsersListConsumerInterface {}
 
-const UsersPage: NextPage<UsersPageInterface> = ({ layoutProps, ...props }) => {
+const CmsUsersListPage: NextPage<CmsUsersListPageInterface> = ({ layoutProps, ...props }) => {
   return (
     <ConsoleLayout {...layoutProps}>
-      <UsersConsumer {...props} />
+      <CmsUsersListConsumer {...props} />
     </ConsoleLayout>
   );
 };
 
-interface UsersAggregationInterface {
-  docs: UserInterface[];
-  totalDocs: number;
-  totalPages: number;
-  hasPrevPage: boolean;
-  hasNextPage: boolean;
-}
-
-export const getServerSideProps = async (
-  context: GetServerSidePropsContext,
-): Promise<GetServerSidePropsResult<UsersPageInterface>> => {
-  const { props } = await getAppInitialData({ context });
-  if (!props) {
-    return {
-      notFound: true,
-    };
-  }
-
-  const { query } = context;
-  const { filters, search } = query;
-  const locale = props.sessionLocale;
-
-  // Cast filters
-  const { page, skip, limit, clearSlug } = await castUrlFilters({
-    filters: alwaysArray(filters),
-    searchFieldName: '_id',
-  });
-  const itemPath = `${ROUTE_CMS}/users/user`;
-
-  const regexSearch = {
-    $regex: search,
-    $options: 'i',
-  };
-
-  const searchStage = search
-    ? [
-        {
-          $match: {
-            $or: [
-              {
-                email: regexSearch,
-              },
-              {
-                name: regexSearch,
-              },
-              {
-                lastName: regexSearch,
-              },
-              {
-                secondName: regexSearch,
-              },
-              {
-                phone: regexSearch,
-              },
-              {
-                itemId: regexSearch,
-              },
-            ],
-          },
-        },
-      ]
-    : [];
-
-  const { db } = await getDatabase();
-  const usersCollection = db.collection<UserInterface>(COL_USERS);
-  const rolesCollection = db.collection<RoleInterface>(COL_ROLES);
-
-  const usersAggregationResult = await usersCollection
-    .aggregate<UsersAggregationInterface>(
-      [
-        ...searchStage,
-        {
-          $facet: {
-            docs: [
-              {
-                $sort: {
-                  _id: SORT_DESC,
-                },
-              },
-              {
-                $skip: skip,
-              },
-              {
-                $limit: limit,
-              },
-
-              // get categories
-              {
-                $lookup: {
-                  from: COL_USER_CATEGORIES,
-                  as: 'categories',
-                  let: {
-                    categoryIds: '$categoryIds',
-                  },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $in: ['$_id', '$$categoryIds'],
-                        },
-                      },
-                    },
-                  ],
-                },
-              },
-
-              // get role
-              {
-                $lookup: {
-                  from: COL_ROLES,
-                  as: 'role',
-                  let: { roleId: '$roleId' },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $eq: ['$_id', '$$roleId'],
-                        },
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                $addFields: {
-                  role: { $arrayElemAt: ['$role', 0] },
-                },
-              },
-              {
-                $project: {
-                  password: false,
-                },
-              },
-            ],
-            countAllDocs: [
-              {
-                $count: 'totalDocs',
-              },
-            ],
-          },
-        },
-        {
-          $addFields: {
-            totalDocsObject: { $arrayElemAt: ['$countAllDocs', 0] },
-          },
-        },
-        {
-          $addFields: {
-            totalDocs: '$totalDocsObject.totalDocs',
-          },
-        },
-        {
-          $addFields: {
-            totalPagesFloat: {
-              $divide: ['$totalDocs', limit],
-            },
-          },
-        },
-        {
-          $addFields: {
-            totalPages: {
-              $ceil: '$totalPagesFloat',
-            },
-          },
-        },
-        {
-          $project: {
-            docs: 1,
-            totalDocs: 1,
-            totalPages: 1,
-            hasPrevPage: {
-              $gt: [page, DEFAULT_PAGE],
-            },
-            hasNextPage: {
-              $lt: [page, '$totalPages'],
-            },
-          },
-        },
-      ],
-      { allowDiskUse: true },
-    )
-    .toArray();
-  const usersResult = usersAggregationResult[0];
-  if (!usersResult) {
-    return {
-      notFound: true,
-    };
-  }
-
-  const docs: UserInterface[] = [];
-  for await (const user of usersResult.docs) {
-    docs.push({
-      ...user,
-      fullName: getFullName(user),
-      formattedPhone: {
-        raw: phoneToRaw(user.phone),
-        readable: phoneToReadable(user.phone),
-      },
-      categories: user.categories
-        ? user.categories.map((category) => {
-            return {
-              ...category,
-              name: getFieldStringLocale(category.nameI18n, locale),
-            };
-          })
-        : null,
-      role: user.role
-        ? {
-            ...user.role,
-            name: getFieldStringLocale(user.role.nameI18n, locale),
-          }
-        : null,
-    });
-  }
-
-  const rolesQueryResult = await rolesCollection
-    .find(
-      {},
-      {
-        projection: {
-          slug: false,
-        },
-        sort: {
-          _id: SORT_DESC,
-        },
-      },
-    )
-    .toArray();
-
-  const roles = rolesQueryResult.map((role) => {
-    return {
-      ...role,
-      name: getFieldStringLocale(role.nameI18n, locale),
-    };
-  });
-
-  const payload: UsersConsumerInterface = {
-    clearSlug,
-    totalDocs: usersResult.totalDocs,
-    totalPages: usersResult.totalPages,
-    itemPath,
-    page,
-    docs,
-    filters: {
-      roles,
-    },
-  };
-  const castedPayload = castDbData(payload);
-  return {
-    props: {
-      ...props,
-      ...castedPayload,
-    },
-  };
-};
-
-export default UsersPage;
+export const getServerSideProps = getCmsUsersListPageSsr;
+export default CmsUsersListPage;

@@ -5,7 +5,7 @@ import FormattedDateTime from '../../../../../../components/FormattedDateTime';
 import Inner from '../../../../../../components/Inner';
 import WpLink from '../../../../../../components/Link/WpLink';
 import WpTable, { WpTableColumn } from '../../../../../../components/WpTable';
-import { ROUTE_CMS, SORT_DESC } from '../../../../../../config/common';
+import { SORT_DESC } from '../../../../../../config/common';
 import {
   COL_ORDER_STATUSES,
   COL_ORDERS,
@@ -21,6 +21,7 @@ import {
 } from '../../../../../../db/uiInterfaces';
 import CmsUserLayout from '../../../../../../layout/cms/CmsUserLayout';
 import ConsoleLayout from '../../../../../../layout/cms/ConsoleLayout';
+import { getProjectLinks } from '../../../../../../lib/getProjectLinks';
 import { getFieldStringLocale } from '../../../../../../lib/i18n';
 import { getFullName } from '../../../../../../lib/nameUtils';
 import {
@@ -38,14 +39,20 @@ const UserOrdersConsumer: React.FC<UserOrdersInterface> = ({ user }) => {
     {
       accessor: 'itemId',
       headTitle: 'ID',
-      render: ({ cellData, dataItem }) => (
-        <WpLink
-          testId={`order-${dataItem.itemId}-link`}
-          href={`${ROUTE_CMS}/users/user/${user._id}/orders/${dataItem._id}`}
-        >
-          {cellData}
-        </WpLink>
-      ),
+      render: ({ cellData, dataItem }) => {
+        const links = getProjectLinks({
+          userId: user._id,
+          orderId: dataItem._id,
+        });
+        return (
+          <WpLink
+            testId={`order-${dataItem.itemId}-link`}
+            href={links.cms.users.user.userId.orders.orderId.url}
+          >
+            {cellData}
+          </WpLink>
+        );
+      },
     },
     {
       accessor: 'status',
@@ -75,16 +82,20 @@ const UserOrdersConsumer: React.FC<UserOrdersInterface> = ({ user }) => {
     },
   ];
 
+  const links = getProjectLinks({
+    userId: user._id,
+  });
+
   const breadcrumbs: AppContentWrapperBreadCrumbs = {
     currentPageName: `Заказы`,
     config: [
       {
         name: 'Пользователи',
-        href: `${ROUTE_CMS}/users`,
+        href: links.cms.users.url,
       },
       {
         name: `${user.fullName}`,
-        href: `${ROUTE_CMS}/users/${user._id}`,
+        href: links.cms.users.user.userId.url,
       },
     ],
   };

@@ -647,9 +647,8 @@ export const CategoryMutations = extendType({
             const categoryAttributes = groupAttributes.filter((attribute) => {
               return attributeIds.some((_id) => attribute._id.equals(_id));
             });
-            console.log('categoryAttributes', categoryAttributes);
             let cmsCardAttributeIds = [...(category.cmsCardAttributeIds || [])];
-            console.log('cmsCardAttributeIds', cmsCardAttributeIds);
+
             for await (const categoryAttribute of categoryAttributes) {
               const attributeId = categoryAttribute._id;
               const attributeExist = category.cmsCardAttributeIds?.some((_id) => {

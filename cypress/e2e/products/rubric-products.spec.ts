@@ -1,8 +1,9 @@
-import { ROUTE_CMS } from 'config/common';
+import { getProjectLinks } from '../../../lib/getProjectLinks';
 
 describe('Rubric products', () => {
+  const links = getProjectLinks();
   beforeEach(() => {
-    cy.testAuth(`${ROUTE_CMS}/rubrics`);
+    cy.testAuth(links.cms.rubrics.url);
   });
 
   it('Should CRUD rubric product', () => {
@@ -37,7 +38,7 @@ describe('Rubric products', () => {
     cy.getByCy('product-assets-list').should('exist');
 
     // Should delete product from rubric
-    cy.visit(`${ROUTE_CMS}/rubrics`);
+    cy.visit(links.cms.rubrics.url);
     cy.getByCy(`${mainRubricName}-update`).click();
     cy.getByCy('rubric-products-list').should('exist');
     cy.getByCy('products-search-input').clear().type(updatedProductName);

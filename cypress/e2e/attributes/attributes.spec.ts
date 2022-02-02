@@ -5,13 +5,14 @@ import {
   ATTRIBUTE_VARIANT_SELECT,
   ATTRIBUTE_VIEW_VARIANT_LIST,
   DEFAULT_LOCALE,
-  ROUTE_CMS,
   SECONDARY_LOCALE,
 } from 'config/common';
+import { getProjectLinks } from '../../../lib/getProjectLinks';
 
 describe('Attributes Groups', () => {
+  const links = getProjectLinks();
   beforeEach(() => {
-    cy.testAuth(`${ROUTE_CMS}/attributes`);
+    cy.testAuth(links.cms.attributes.url);
   });
 
   it('Should CRUD attributes group', () => {
@@ -76,7 +77,7 @@ describe('Attributes Groups', () => {
     cy.getByCy(`${attributeNewName}-row`).should('not.exist');
 
     // Should delete attributes group
-    cy.visit(`${ROUTE_CMS}/attributes`);
+    cy.visit(links.cms.attributes.url);
     cy.getByCy(`attributes-group-${updatedGroupName}-delete`).click();
     cy.getByCy(`delete-attributes-group-modal`).should('exist');
     cy.getByCy(`confirm`).click();

@@ -1,8 +1,10 @@
-import { DEFAULT_LOCALE, ROUTE_CMS } from 'config/common';
+import { DEFAULT_LOCALE } from 'config/common';
+import { getProjectLinks } from '../../../lib/getProjectLinks';
 
 describe('Manufacturers', () => {
+  const links = getProjectLinks();
   beforeEach(() => {
-    cy.testAuth(`${ROUTE_CMS}/manufacturers`);
+    cy.testAuth(links.cms.manufacturers.url);
   });
 
   it(`Should CRUD manufacturers`, () => {

@@ -1,9 +1,4 @@
-import {
-  REQUEST_METHOD_GET,
-  REQUEST_METHOD_PATCH,
-  REQUEST_METHOD_POST,
-  ROUTE_CMS,
-} from 'config/common';
+import { REQUEST_METHOD_GET, REQUEST_METHOD_PATCH, REQUEST_METHOD_POST } from 'config/common';
 import { fixtureIds } from 'cypress/fixtures/fixtureIds';
 import {
   SyncBlackListProductInterface,
@@ -15,6 +10,7 @@ import {
   SyncShopProductsResponseInterface,
   SyncUpdateOrderProductInterface,
 } from 'db/syncInterfaces';
+import { getProjectLinks } from '../../../lib/getProjectLinks';
 import { getCmsCompanyLinks } from '../../../lib/linkUtils';
 
 const validRequestParamsA = 'token=000001';
@@ -188,6 +184,8 @@ const errorCallback = (res: any) => {
 };
 
 describe('Sync', () => {
+  const links = getProjectLinks();
+  const syncErrorsPath = links.cms.syncErrors.url;
   beforeEach(() => {
     cy.testAuth(`/`);
   });
@@ -291,7 +289,7 @@ describe('Sync', () => {
       expect(body.success).equals(true);
     });
 
-    cy.visit(`${ROUTE_CMS}/sync-errors`);
+    cy.visit(syncErrorsPath);
     cy.getByCy('sync-errors-page').should('exist');
     cy.getByCy(`${errorBarcode}-create`).click();
     cy.getByCy('products-search-modal').should('exist');
@@ -302,7 +300,7 @@ describe('Sync', () => {
     cy.getByCy(`submit-new-product`).click();
     cy.wait(1500);
     cy.getByCy('product-details').should('exist');
-    cy.visit(`${ROUTE_CMS}/sync-errors`);
+    cy.visit(syncErrorsPath);
     cy.getByCy(`${errorBarcode}-create`).should('not.exist');
   });
 
@@ -317,7 +315,7 @@ describe('Sync', () => {
     });
 
     // Should create product with sync error
-    cy.visit(`${ROUTE_CMS}/sync-errors`);
+    cy.visit(syncErrorsPath);
     cy.getByCy('sync-errors-page').should('exist');
     cy.getByCy(`${errorBarcode}-create`).click();
     cy.getByCy('products-search-modal').should('exist');
@@ -458,7 +456,7 @@ describe('Sync', () => {
       const body = res.body as SyncResponseInterface;
       expect(body.success).equals(true);
     });
-    cy.visit(`${ROUTE_CMS}/sync-errors`);
+    cy.visit(syncErrorsPath);
 
     // should update sync error values
     cy.request({

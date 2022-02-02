@@ -1,9 +1,10 @@
-import { ROUTE_CMS } from 'config/common';
 import { ISO_LANGUAGES } from '../../../config/constantSelects';
+import { getProjectLinks } from '../../../lib/getProjectLinks';
 
 describe('Languages', () => {
+  const links = getProjectLinks();
   beforeEach(() => {
-    cy.testAuth(`${ROUTE_CMS}/languages`);
+    cy.testAuth(links.cms.languages.url);
   });
 
   it(`Should CRUD languages`, () => {

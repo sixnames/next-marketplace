@@ -1,8 +1,10 @@
-import { DEFAULT_LOCALE, ROUTE_CMS } from 'config/common';
+import { DEFAULT_LOCALE } from 'config/common';
+import { getProjectLinks } from '../../../lib/getProjectLinks';
 
 describe('Brands', () => {
+  const links = getProjectLinks();
   beforeEach(() => {
-    cy.testAuth(`${ROUTE_CMS}/brands`);
+    cy.testAuth(links.cms.brands.url);
   });
 
   it(`Should CRUD brands`, () => {
@@ -61,7 +63,7 @@ describe('Brands', () => {
     cy.getByCy(`${updatedBrandCollectionName}-row`).should('not.exist');
 
     // should delete brand
-    cy.visit(`${ROUTE_CMS}/brands`);
+    cy.visit(links.cms.brands.url);
     cy.getByCy(`${updatedBrandName}-delete`).click();
     cy.getByCy('confirm').click();
     cy.wait(1500);

@@ -1,8 +1,9 @@
-import { ROUTE_CMS } from 'config/common';
+import { getProjectLinks } from '../../../lib/getProjectLinks';
 
 describe('Rubric attributes', () => {
+  const links = getProjectLinks();
   beforeEach(() => {
-    cy.testAuth(`${ROUTE_CMS}/rubrics`);
+    cy.testAuth(links.cms.rubrics.url);
   });
 
   it('Should CRUD rubric attributes list', () => {

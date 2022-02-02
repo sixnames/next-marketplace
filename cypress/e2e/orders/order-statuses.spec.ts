@@ -1,8 +1,10 @@
-import { DEFAULT_LOCALE, ROUTE_CMS } from 'config/common';
+import { DEFAULT_LOCALE } from 'config/common';
+import { getProjectLinks } from '../../../lib/getProjectLinks';
 
 describe('Order statuses', () => {
+  const links = getProjectLinks();
   beforeEach(() => {
-    cy.testAuth(`${ROUTE_CMS}/order-statuses`);
+    cy.testAuth(links.cms.orderStatuses.url);
   });
 
   it(`Should CRUD order statuses`, () => {

@@ -1,9 +1,11 @@
-import { DEFAULT_LOCALE, GENDER_HE, GENDER_SHE, ROUTE_CMS, SECONDARY_LOCALE } from 'config/common';
+import { DEFAULT_LOCALE, GENDER_HE, GENDER_SHE, SECONDARY_LOCALE } from 'config/common';
+import { getProjectLinks } from '../../../lib/getProjectLinks';
 import { fixtureIds } from '../../fixtures/fixtureIds';
 
 describe('Rubrics', () => {
+  const links = getProjectLinks();
   beforeEach(() => {
-    cy.testAuth(`${ROUTE_CMS}/rubrics`);
+    cy.testAuth(links.cms.rubrics.url);
   });
 
   it('Should CRUD rubrics', () => {
@@ -62,7 +64,7 @@ describe('Rubrics', () => {
     cy.getByCy(`catalogueTitle-gender`).select(GENDER_HE);
     cy.getByCy('rubric-submit').click();
     cy.wait(1500);
-    cy.visit(`${ROUTE_CMS}/rubrics`);
+    cy.visit(links.cms.rubrics.url);
     cy.getByCy(`${updatedRubricName}-row`).should('exist');
   });
 });

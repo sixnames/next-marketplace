@@ -1,8 +1,10 @@
-import { DEFAULT_CITY, DEFAULT_LOCALE, ROUTE_CMS } from 'config/common';
+import { DEFAULT_CITY, DEFAULT_LOCALE } from 'config/common';
+import { getProjectLinks } from '../../../lib/getProjectLinks';
 
 describe('Pages', () => {
+  const links = getProjectLinks();
   beforeEach(() => {
-    cy.testAuth(`${ROUTE_CMS}/pages`);
+    cy.testAuth(links.cms.pages.url);
   });
 
   it('Should CRUD pages', () => {
@@ -55,7 +57,7 @@ describe('Pages', () => {
     cy.getByCy(`description-${DEFAULT_LOCALE}`).clear().type(updatedPageName);
     cy.getByCy(`index`).clear().type('1');
     cy.getByCy(`submit-page`).click();
-    cy.visit(`${ROUTE_CMS}/pages`);
+    cy.visit(links.cms.pages.url);
     cy.getByCy(`${updatedGroupName}-link`).click();
     cy.wait(1500);
     cy.getByCy(`${updatedPageName}-row`).should('exist');
@@ -68,7 +70,7 @@ describe('Pages', () => {
     cy.getByCy(`${updatedPageName}-row`).should('not.exist');
 
     // Should delete created pages group
-    cy.visit(`${ROUTE_CMS}/pages`);
+    cy.visit(links.cms.pages.url);
     cy.getByCy(`${updatedGroupName}-delete`).click();
     cy.getByCy(`delete-pages-group-modal`).should('exist');
     cy.getByCy('confirm').click();

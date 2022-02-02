@@ -76,9 +76,7 @@ function normalizeFieldPath(urlPath: string) {
     // const fieldName = normalizeFieldName(cleanName);
     const urlPath = normalizeUrlPath(page.path);
     const fieldPath = normalizeFieldPath(urlPath);
-    set(fields, fieldPath, {
-      url: urlPath,
-    });
+    set(fields, `${fieldPath}.url`, urlPath);
 
     if (page.name.includes('[') && !page.name.includes('...')) {
       props.add(cleanName);

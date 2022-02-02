@@ -1,4 +1,3 @@
-import { ROUTE_PROFILE } from '../config/common';
 import { ObjectIdModel } from '../db/dbModels';
 import { getProjectLinks } from './getProjectLinks';
 
@@ -17,15 +16,18 @@ interface GetOrderLinkInterface {
 export function getOrderLink(props?: GetOrderLinkInterface) {
   const { variant, companyId, orderObjectId } = props || {};
   const protocol = 'https://';
-  let path = ROUTE_PROFILE;
+  const links = getProjectLinks({
+    orderId: orderObjectId,
+  });
+  let path = links.profile.url;
   const domain = props?.domain || `${process.env.DEFAULT_DOMAIN}`;
 
   if (variant === 'companyManager' && companyId && orderObjectId) {
-    path = `${routeConsole}/orders/order/${orderObjectId.toHexString()}`;
+    path = links.console.companyId.orders.order.orderId.url;
   }
 
   if (variant === 'siteAdmin' && orderObjectId) {
-    path = `${routeCms}/orders/${orderObjectId.toHexString()}`;
+    path = links.cms.orders.orderId.url;
   }
 
   return `${protocol}${domain}${path}`;

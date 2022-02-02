@@ -9,12 +9,7 @@ import WpBreadcrumbs from '../../components/WpBreadcrumbs';
 import WpIcon from '../../components/WpIcon';
 import WpImage from '../../components/WpImage';
 import WpTitle from '../../components/WpTitle';
-import {
-  FILTER_SEPARATOR,
-  REQUEST_METHOD_POST,
-  ROUTE_BLOG,
-  ROUTE_BLOG_POST,
-} from '../../config/common';
+import { FILTER_SEPARATOR, REQUEST_METHOD_POST } from '../../config/common';
 import { useAppContext } from '../../context/appContext';
 import { useConfigContext } from '../../context/configContext';
 import { UpdateBlogAttributeCountersInputInterface } from '../../db/dao/blog/updateBlogAttributeCounters';
@@ -26,6 +21,9 @@ import {
 } from '../../db/uiInterfaces';
 import SiteLayout, { SiteLayoutProviderInterface } from '../../layout/SiteLayout';
 import { alwaysArray } from '../../lib/arrayUtils';
+import { getProjectLinks } from '../../lib/getProjectLinks';
+
+const links = getProjectLinks();
 
 interface BlogListSnippetMetaInterface {
   createdAt?: string | Date | null;
@@ -92,7 +90,7 @@ export const BlogListSnippetTags: React.FC<BlogListSnippetTagsInterface> = ({
               return (
                 <TagLink
                   size={'small'}
-                  href={`${ROUTE_BLOG}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`}
+                  href={`${links.blog.url}/${attribute.slug}${FILTER_SEPARATOR}${option.slug}`}
                   theme={theme}
                   key={`${option._id}`}
                 >
@@ -129,7 +127,7 @@ const BlogListSnippet: React.FC<BlogListSnippetInterface> = ({ post, showViews }
         <WpLink
           testId={`${post.title}-image-link`}
           className='text-indent-full absolute inset-0 z-20 block'
-          href={`${ROUTE_BLOG_POST}/${post.slug}`}
+          href={`${links.blog.post.url}/${post.slug}`}
         >
           {post.title}
         </WpLink>
@@ -141,7 +139,7 @@ const BlogListSnippet: React.FC<BlogListSnippetInterface> = ({ post, showViews }
           <WpLink
             testId={`${post.title}-title-link`}
             className='block text-primary-text hover:no-underline'
-            href={`${ROUTE_BLOG_POST}/${post.slug}`}
+            href={`${links.blog.post.url}/${post.slug}`}
           >
             {post.title}
           </WpLink>
@@ -203,7 +201,7 @@ const BlogListMainSnippet: React.FC<BlogListSnippetInterface> = ({ post, showVie
       <WpLink
         testId={`${post.title}-image-link`}
         className='text-indent-full absolute inset-0 z-20 block'
-        href={`${ROUTE_BLOG_POST}/${post.slug}`}
+        href={`${links.blog.post.url}/${post.slug}`}
       >
         {post.title}
       </WpLink>
@@ -219,7 +217,7 @@ const BlogListTopSnippet: React.FC<BlogListSnippetInterface> = ({ post, showView
         <WpLink
           testId={`${post.title}-title-link`}
           className='block text-primary-text hover:no-underline'
-          href={`${ROUTE_BLOG_POST}/${post.slug}`}
+          href={`${links.blog.post.url}/${post.slug}`}
         >
           {post.title}
         </WpLink>

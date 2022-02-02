@@ -5,23 +5,14 @@ import { HeadlessMenuGroupInterface } from '../../components/HeadlessMenuButton'
 import Inner from '../../components/Inner';
 import WpBreadcrumbs from '../../components/WpBreadcrumbs';
 import WpTitle from '../../components/WpTitle';
-import {
-  ROUTE_PROFILE,
-  ROUTE_PROFILE_GIFT_CERTIFICATES,
-  ROUTE_PROFILE_CHATS,
-  ROUTE_PROFILE_COMPARE,
-  ROUTE_PROFILE_DETAILS,
-  ROUTE_PROFILE_FAVORITE,
-  ROUTE_PROFILE_FEEDBACK,
-  ROUTE_PROFILE_PREFERENCES,
-  ROUTE_PROFILE_PROPOSALS,
-  ROUTE_PROFILE_VIEWED,
-} from '../../config/common';
 import { useSiteUserContext } from '../../context/siteUserContext';
+import { getProjectLinks } from '../../lib/getProjectLinks';
 
 interface ProfileLayoutInterface {
   testId?: string;
 }
+
+const links = getProjectLinks();
 
 const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) => {
   const router = useRouter();
@@ -37,10 +28,10 @@ const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) =
             name: 'История заказов',
             testId: 'profile-orders-link',
             current: () => {
-              return router.asPath === `${ROUTE_PROFILE}`;
+              return router.asPath === links.profile.url;
             },
             onSelect: () => {
-              router.push(`${ROUTE_PROFILE}`).catch(console.log);
+              router.push(links.profile.url).catch(console.log);
             },
           },
           {
@@ -48,46 +39,43 @@ const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) =
             name: 'Избранное',
             testId: 'profile-favorite-link',
             current: () => {
-              return router.asPath === `${ROUTE_PROFILE_FAVORITE}`;
+              return router.asPath === '';
             },
             onSelect: () => {
-              router.push(`${ROUTE_PROFILE_FAVORITE}`).catch(console.log);
+              router.push(`/`).catch(console.log);
             },
           },
           {
             _id: 'Сравнение',
             name: 'Сравнение',
-            href: ROUTE_PROFILE_COMPARE,
             testId: 'profile-compare-link',
             current: () => {
-              return router.asPath === `${ROUTE_PROFILE_COMPARE}`;
+              return router.asPath === '';
             },
             onSelect: () => {
-              router.push(`${ROUTE_PROFILE_COMPARE}`).catch(console.log);
+              router.push('/').catch(console.log);
             },
           },
           {
             _id: 'Просмотренные товары',
             name: 'Просмотренные товары',
-            href: ROUTE_PROFILE_VIEWED,
             testId: 'profile-viewed-link',
             current: () => {
-              return router.asPath === `${ROUTE_PROFILE_VIEWED}`;
+              return router.asPath === '';
             },
             onSelect: () => {
-              router.push(`${ROUTE_PROFILE_VIEWED}`).catch(console.log);
+              router.push('/').catch(console.log);
             },
           },
           {
             _id: 'Персональные предложения',
             name: 'Персональные предложения',
-            href: ROUTE_PROFILE_PROPOSALS,
             testId: 'profile-proposals-link',
             current: () => {
-              return router.asPath === `${ROUTE_PROFILE_PROPOSALS}`;
+              return router.asPath === '';
             },
             onSelect: () => {
-              router.push(`${ROUTE_PROFILE_PROPOSALS}`).catch(console.log);
+              router.push('/').catch(console.log);
             },
           },
         ],
@@ -98,61 +86,56 @@ const ProfileLayout: React.FC<ProfileLayoutInterface> = ({ children, testId }) =
           {
             _id: 'Подарочные сертификаты',
             name: 'Подарочные сертификаты',
-            href: ROUTE_PROFILE_GIFT_CERTIFICATES,
             testId: 'profile-gift-certificates',
             current: () => {
-              return router.asPath === `${ROUTE_PROFILE_GIFT_CERTIFICATES}`;
+              return router.asPath === links.profile.giftCertificates.url;
             },
             onSelect: () => {
-              router.push(ROUTE_PROFILE_GIFT_CERTIFICATES).catch(console.log);
+              router.push(links.profile.giftCertificates.url).catch(console.log);
             },
           },
           {
             _id: 'Мои предпочтения',
             name: 'Мои предпочтения',
-            href: ROUTE_PROFILE_PREFERENCES,
             testId: 'profile-preferences-link',
             current: () => {
-              return router.asPath === `${ROUTE_PROFILE_PREFERENCES}`;
+              return router.asPath === '';
             },
             onSelect: () => {
-              router.push(`${ROUTE_PROFILE_PREFERENCES}`).catch(console.log);
+              router.push('/').catch(console.log);
             },
           },
           {
             _id: 'Моя переписка',
             name: 'Моя переписка',
-            href: ROUTE_PROFILE_CHATS,
             testId: 'profile-chats-link',
             current: () => {
-              return router.asPath === `${ROUTE_PROFILE_CHATS}`;
+              return router.asPath === '';
             },
             onSelect: () => {
-              router.push(`${ROUTE_PROFILE_CHATS}`).catch(console.log);
+              router.push('/').catch(console.log);
             },
           },
           {
             _id: 'Мои отзывы',
             name: 'Мои отзывы',
-            href: ROUTE_PROFILE_FEEDBACK,
             testId: 'profile-feedback-link',
             current: () => {
-              return router.asPath === `${ROUTE_PROFILE_FEEDBACK}`;
+              return router.asPath === '';
             },
             onSelect: () => {
-              router.push(`${ROUTE_PROFILE_FEEDBACK}`).catch(console.log);
+              router.push('/').catch(console.log);
             },
           },
           {
             _id: 'Профиль',
             name: 'Профиль',
-            href: ROUTE_PROFILE_DETAILS,
             testId: 'profile-details-link',
             current: () => {
-              return router.asPath === `${ROUTE_PROFILE_DETAILS}`;
+              return router.asPath === links.profile.details.url;
             },
             onSelect: () => {
-              router.push(`${ROUTE_PROFILE_DETAILS}`).catch(console.log);
+              router.push(links.profile.details.url).catch(console.log);
             },
           },
         ],

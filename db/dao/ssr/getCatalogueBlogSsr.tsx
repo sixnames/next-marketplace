@@ -5,13 +5,13 @@ import {
   DEFAULT_PAGE,
   FILTER_SEPARATOR,
   PAGE_STATE_PUBLISHED,
-  ROUTE_BLOG,
   SORT_DESC,
 } from '../../../config/common';
 import { alwaysArray } from '../../../lib/arrayUtils';
 import { castUrlFilters } from '../../../lib/castUrlFilters';
 import { castCatalogueParamToObject } from '../../../lib/catalogueUtils';
 import { getFieldStringLocale } from '../../../lib/i18n';
+import { getConsoleBlogLinks } from '../../../lib/linkUtils';
 import { noNaN } from '../../../lib/numbers';
 import { castDbData, getSiteInitialData } from '../../../lib/ssrUtils';
 import { BlogListPageInterface } from '../../../pages/blog/[...filters]';
@@ -57,7 +57,8 @@ export const getCatalogueBlogSsr = async (
 
   const { db } = await getDatabase();
   const blogPostsCollection = db.collection<BlogPostInterface>(COL_BLOG_POSTS);
-  const basePath = ROUTE_BLOG;
+  const links = getConsoleBlogLinks({});
+  const basePath = links.mainPath;
 
   const viewsStage = {
     $addFields: {

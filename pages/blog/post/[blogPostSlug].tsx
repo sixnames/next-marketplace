@@ -8,12 +8,7 @@ import PageEditor from '../../../components/PageEditor';
 import WpBreadcrumbs from '../../../components/WpBreadcrumbs';
 import WpIcon from '../../../components/WpIcon';
 import WpTooltip from '../../../components/WpTooltip';
-import {
-  FILTER_SEPARATOR,
-  REQUEST_METHOD_POST,
-  ROUTE_BLOG,
-  SORT_DESC,
-} from '../../../config/common';
+import { FILTER_SEPARATOR, REQUEST_METHOD_POST, SORT_DESC } from '../../../config/common';
 import { getConstantTranslation } from '../../../config/constantTranslations';
 import { useAppContext } from '../../../context/appContext';
 import { useConfigContext } from '../../../context/configContext';
@@ -102,12 +97,12 @@ const BlogPostPageConsumer: React.FC<BlogPostPageConsumerInterface> = ({ post })
   const sessionUser = useSiteUserContext();
   const blogLinkName = getConstantTranslation(`nav.blog.${locale}`);
   const [isLikeAllowed, setIsLikeAllowed] = React.useState<boolean>(false);
-  const links = getConsoleBlogLinks({
+  const consoleLinks = getConsoleBlogLinks({
     basePath: sessionUser?.editLinkBasePath,
     blogPostId: post._id,
   });
   const showEditButton = sessionUser?.me.role?.cmsNavigation?.some(({ path }) => {
-    return path.includes(links.mainPath);
+    return path.includes(consoleLinks.mainPath);
   });
 
   React.useCallback(() => {
@@ -138,7 +133,7 @@ const BlogPostPageConsumer: React.FC<BlogPostPageConsumerInterface> = ({ post })
         config={[
           {
             name: blogLinkName,
-            href: ROUTE_BLOG,
+            href: consoleLinks.mainPath,
           },
         ]}
       />
@@ -167,7 +162,7 @@ const BlogPostPageConsumer: React.FC<BlogPostPageConsumerInterface> = ({ post })
               size={'small'}
               frameClassName={'w-auto'}
               onClick={() => {
-                window.open(links.root, '_blank');
+                window.open(consoleLinks.root, '_blank');
               }}
             >
               Редактировать

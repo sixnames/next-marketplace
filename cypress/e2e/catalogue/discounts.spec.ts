@@ -6,7 +6,7 @@ describe('Order discounts', () => {
     rubricSlug: fixtureIds.rubricWineSlug,
   });
   const whiskeyLinks = getProjectLinks({
-    rubricSlug: fixtureIds.rubricWineSlug,
+    rubricSlug: fixtureIds.rubricWhiskeySlug,
   });
   beforeEach(() => {
     cy.testAuth(wineLinks.catalogue.rubricSlug.url);

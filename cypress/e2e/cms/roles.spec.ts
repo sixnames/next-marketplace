@@ -1,8 +1,10 @@
-import { DEFAULT_LOCALE, ROUTE_CMS } from 'config/common';
+import { DEFAULT_LOCALE } from 'config/common';
+import { getProjectLinks } from '../../../lib/getProjectLinks';
 
 describe('User roles', () => {
+  const links = getProjectLinks();
   beforeEach(() => {
-    cy.testAuth(`${ROUTE_CMS}/roles`);
+    cy.testAuth(links.cms.roles.url);
   });
 
   it('Should CRUD role', () => {
@@ -34,7 +36,7 @@ describe('User roles', () => {
     cy.getByCy('role-submit').click();
 
     // Should display updated role in list
-    cy.visit(`${ROUTE_CMS}/roles`);
+    cy.visit(links.cms.roles.url);
     cy.getByCy(`${newRoleName}-row`).should('exist');
   });
 
@@ -88,7 +90,7 @@ describe('User roles', () => {
     cy.getByCy(`sign-in-password`).clear().type('password');
     cy.getByCy(`sign-in-submit`).click();
     cy.wait(1500);
-    cy.visit(`${ROUTE_CMS}/roles`);
+    cy.visit(links.cms.roles.url);
     cy.getByCy(`Контент менеджер-update`).click();
     cy.wait(1500);
     cy.getByCy('role-rules').click();
@@ -107,7 +109,7 @@ describe('User roles', () => {
     cy.getByCy(`sign-in-password`).clear().type('password');
     cy.getByCy(`sign-in-submit`).click();
     cy.wait(1500);
-    cy.visit(ROUTE_CMS);
+    cy.visit(links.cms.url);
     cy.wait(1500);
     cy.getByCy(`app-nav-item-cms-attributes`).click();
     cy.wait(1500);

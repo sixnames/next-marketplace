@@ -1,13 +1,10 @@
-import {
-  DEFAULT_LOCALE,
-  OPTIONS_GROUP_VARIANT_ICON,
-  ROUTE_CMS,
-  SECONDARY_LOCALE,
-} from 'config/common';
+import { DEFAULT_LOCALE, OPTIONS_GROUP_VARIANT_ICON, SECONDARY_LOCALE } from 'config/common';
+import { getProjectLinks } from '../../../lib/getProjectLinks';
 
 describe('Options Groups', () => {
+  const links = getProjectLinks();
   beforeEach(() => {
-    cy.testAuth(`${ROUTE_CMS}/options`);
+    cy.testAuth(links.cms.options.url);
   });
 
   it('Should CRUD options group', () => {

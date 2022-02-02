@@ -1,66 +1,66 @@
 import { ObjectId } from 'mongodb';
 
-type DynamicPagePropType = ObjectId | string | null | undefined;
+type DynamicPagePropType = ObjectId | string | null;
 export interface LinkPropsInterface {
-  basePath?: string;
-  card: DynamicPagePropType;
-  blogPostSlug: DynamicPagePropType;
-  rubricSlug: DynamicPagePropType;
-  pageSlug: DynamicPagePropType;
-  attributesGroupId: DynamicPagePropType;
-  blogPostId: DynamicPagePropType;
-  brandId: DynamicPagePropType;
-  companyId: DynamicPagePropType;
-  giftCertificateId: DynamicPagePropType;
-  pagesGroupId: DynamicPagePropType;
-  pageId: DynamicPagePropType;
-  promoId: DynamicPagePropType;
-  promoCodeId: DynamicPagePropType;
-  categoryId: DynamicPagePropType;
-  productId: DynamicPagePropType;
-  seoContentSlug: DynamicPagePropType;
-  shopId: DynamicPagePropType;
-  shopProductId: DynamicPagePropType;
-  orderId: DynamicPagePropType;
-  taskVariantId: DynamicPagePropType;
-  taskId: DynamicPagePropType;
-  optionsGroupId: DynamicPagePropType;
-  optionId: DynamicPagePropType;
-  roleId: DynamicPagePropType;
-  rubricVariantId: DynamicPagePropType;
-  userId: DynamicPagePropType;
-  promoSlug: DynamicPagePropType;
+  card?: DynamicPagePropType;
+  blogPostSlug?: DynamicPagePropType;
+  rubricSlug?: DynamicPagePropType;
+  pageSlug?: DynamicPagePropType;
+  attributesGroupId?: DynamicPagePropType;
+  blogPostId?: DynamicPagePropType;
+  brandId?: DynamicPagePropType;
+  companyId?: DynamicPagePropType;
+  giftCertificateId?: DynamicPagePropType;
+  pagesGroupId?: DynamicPagePropType;
+  pageId?: DynamicPagePropType;
+  promoId?: DynamicPagePropType;
+  promoCodeId?: DynamicPagePropType;
+  categoryId?: DynamicPagePropType;
+  productId?: DynamicPagePropType;
+  seoContentSlug?: DynamicPagePropType;
+  shopId?: DynamicPagePropType;
+  shopProductId?: DynamicPagePropType;
+  orderId?: DynamicPagePropType;
+  taskVariantId?: DynamicPagePropType;
+  taskId?: DynamicPagePropType;
+  optionsGroupId?: DynamicPagePropType;
+  optionId?: DynamicPagePropType;
+  roleId?: DynamicPagePropType;
+  rubricVariantId?: DynamicPagePropType;
+  userId?: DynamicPagePropType;
+  promoSlug?: DynamicPagePropType;
 }
 
-export function getProjectLinks({
-  card,
-  blogPostSlug,
-  rubricSlug,
-  pageSlug,
-  attributesGroupId,
-  blogPostId,
-  brandId,
-  companyId,
-  giftCertificateId,
-  pagesGroupId,
-  pageId,
-  promoId,
-  promoCodeId,
-  categoryId,
-  productId,
-  seoContentSlug,
-  shopId,
-  shopProductId,
-  orderId,
-  taskVariantId,
-  taskId,
-  optionsGroupId,
-  optionId,
-  roleId,
-  rubricVariantId,
-  userId,
-  promoSlug,
-}: LinkPropsInterface) {
+export function getProjectLinks(props?: LinkPropsInterface) {
+  const {
+    card,
+    blogPostSlug,
+    rubricSlug,
+    pageSlug,
+    attributesGroupId,
+    blogPostId,
+    brandId,
+    companyId,
+    giftCertificateId,
+    pagesGroupId,
+    pageId,
+    promoId,
+    promoCodeId,
+    categoryId,
+    productId,
+    seoContentSlug,
+    shopId,
+    shopProductId,
+    orderId,
+    taskVariantId,
+    taskId,
+    optionsGroupId,
+    optionId,
+    roleId,
+    rubricVariantId,
+    userId,
+    promoSlug,
+  } = props || {};
   return {
     '0': {
       url: `/0`,

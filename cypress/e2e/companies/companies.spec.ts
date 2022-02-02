@@ -1,7 +1,8 @@
-import { ROUTE_CMS } from 'config/common';
+import { getProjectLinks } from '../../../lib/getProjectLinks';
 
 describe('Companies list', () => {
-  const companiesPath = `${ROUTE_CMS}/companies`;
+  const links = getProjectLinks();
+  const companiesPath = links.cms.companies.url;
   beforeEach(() => {
     cy.testAuth(companiesPath);
   });

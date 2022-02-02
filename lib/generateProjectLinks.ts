@@ -87,7 +87,7 @@ function normalizeFieldPath(urlPath: string) {
 
   let propsString = '';
   props.forEach((prop) => {
-    propsString = `${propsString}${prop}: DynamicPagePropType; \n`;
+    propsString = `${propsString}${prop}?: DynamicPagePropType; \n`;
   });
 
   // const fieldsString = JSON.stringify(fields).replaceAll('"', '`');
@@ -98,13 +98,13 @@ function normalizeFieldPath(urlPath: string) {
   const output = `
   import { ObjectId } from 'mongodb';
   
-  type DynamicPagePropType = ObjectId | string | null | undefined;
+  type DynamicPagePropType = ObjectId | string | null;
   export interface LinkPropsInterface {
-    basePath?: string;
     ${propsString}
   }
   
-  export function getProjectLinks({${Array.from(props).join(',')}}: LinkPropsInterface) {
+  export function getProjectLinks(props?: LinkPropsInterface) {
+    const {${Array.from(props).join(',')}} = props || {};
     return ${fieldsString};
   }
   `;
